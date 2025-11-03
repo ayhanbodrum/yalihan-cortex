@@ -1,7 +1,7 @@
 @extends('layouts.frontend')
 
 @push('styles')
-    <link rel="stylesheet" href="{{ asset('css/professional-design-system.css') }}">
+    {{-- Removed: professional-design-system.css (file doesn't exist) --}}
 @endpush
 
 @section('title', 'İlanlar - Yalıhan Emlak')
