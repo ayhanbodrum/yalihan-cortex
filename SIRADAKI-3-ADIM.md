@@ -148,12 +148,45 @@ cat SIRADAKI-3-ADIM.md
 
 ```yaml
 Week 1 (5-11 Kasım):
-  Day 1: Modal, Checkbox, Radio ✅ (yarın!)
+  Day 1: Modal, Checkbox, Radio ✅ TAMAMLANDI!
   Day 2: Toggle, Dropdown, File-upload
   Day 3: Tabs, Accordion, Badge, Alert
-  Day 4-5: İlk 5 sayfa UI migration
+  Day 4-5: Component Library testing + docs
   
 SONUÇ: PHASE 3.2 (Component Library) tamamlanır!
+
+Week 2-3 (12-25 Kasım):
+  Frontend → Tailwind Migration
+  - layouts/frontend.blade.php
+  - yaliihan-* pages
+  - villas/* pages
+  - frontend/ilanlar/*
+  - pages/* & blog/*
+  
+SONUÇ: %100 Tailwind! 🎉
+```
+
+---
+
+## 📋 FRONTEND CSS KARARI (YENİ!) ✅
+
+```yaml
+KARAR: TAILWIND CSS (ONAYLANDI!)
+  
+Sebep:
+  ✅ Consistency (admin = frontend)
+  ✅ Component Library kullanılabilir
+  ✅ Dark mode hazır
+  ✅ Industry standard
+  
+Timeline:
+  Week 1-2: Component Library %100
+  Week 3-4: Frontend Migration
+  
+İlke:
+  - Yeni sayfa → SADECE Tailwind
+  - Bootstrap yasak (artık)
+  - Component Library kullan
 ```
 
 ---
