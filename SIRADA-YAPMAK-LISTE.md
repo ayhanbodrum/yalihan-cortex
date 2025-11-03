@@ -175,6 +175,192 @@ Day 3: Documentation (1 saat)
 
 ---
 
+## 🌍 ÖZEL MODÜLLER & API ENTEGRASYONLARı (YENİ!) 🆕
+
+### 8 Özel Modül Keşfedildi (Gece 03:00)
+
+```yaml
+Mevcut Sistemler:
+  1. TKGM Tapu Kadastro (%90) ✅
+  2. Arsa Hesaplama (%75) ✅
+  3. Türkiye Location API (%85) ✅
+  4. YKM Koordinat (%70) ✅
+  5. Google Maps (%80) ✅
+  6. WikiMapia Search (%95) ⭐
+  7. Yurt Dışı Gayrimenkul (%90) 💱
+  8. Etiket Sistemi (%85) 🏷️
+
+Ortalama: %83.75 ✅
+Rating: 9/10 ⭐⭐⭐⭐⭐⭐⭐⭐⭐
+
+Detay: OZEL-MODULLER-DURUM-RAPORU-2025-11-04.md
+       OZEL-MODULLER-EK-RAPOR-2025-11-04.md
+```
+
+---
+
+### 🇹🇷 TurkiyeAPI Entegrasyonu (PLANLI!)
+
+**API:** https://api.turkiyeapi.dev/docs
+
+**Ne kazandırır:**
+```yaml
+Yeni Özellikler:
+  🆕 Köyler (18,000+ köy) - Kırsal emlak!
+  🆕 Beldeler (400+ belde) - TATİL BÖLGELERİ!
+  🆕 Posta kodları (Experimental)
+  🆕 Nüfus, alan, rakım bilgisi
+  🆕 isCoastal (kıyı şehir) filtresi
+  🆕 isMetropolitan (büyükşehir) filtresi
+  🆕 Gelişmiş filtreleme (10+ parametre)
+  🆕 Pagination (offset, limit)
+  🆕 Sorting (ascending/descending)
+
+Endpoints:
+  ✅ GET /v1/provinces
+  ✅ GET /v1/districts
+  ✅ GET /v1/neighborhoods
+  🆕 GET /v1/villages (SİZDE YOK!)
+  🆕 GET /v1/towns (SİZDE YOK!)
+
+Emlak için kritik:
+  - Bodrum Gümüşlük = BELDE (town)
+  - Yalıkavak = BELDE
+  - Mevcut sistemde bulunamıyor! ❌
+```
+
+**Yapılacaklar:**
+```yaml
+1. TurkiyeAPIService.php oluştur (1 saat):
+   - getProvinces(), getDistricts(), getNeighborhoods()
+   - getVillages(), getTowns() 🆕
+   - Filtering support
+   - Cache (24 saat)
+
+2. LocationController entegrasyon (30dk):
+   - TurkiyeAPI fallback ekle
+   - Mevcut API ile birleştir
+
+3. Frontend dropdown (1 saat):
+   - Mahalle/Köy/Belde seçici
+   - Optgroup ile ayır
+   - Nüfus bilgisi göster
+
+4. Config (15dk):
+   - config/services.php → turkiyeapi section
+
+Toplam Süre: 2.5 saat
+```
+
+**Öncelik:** ORTA-YÜKSEK (1-2 hafta içinde)  
+**Zorluk:** KOLAY  
+**ROI:** YÜKSEK! (Tatil bölgeleri için kritik)
+
+---
+
+### 🗺️ WikiMapia İyileştirmeleri
+
+**Mevcut:** %95 ✅ (ÇOK İYİ!)  
+**URL:** http://127.0.0.1:8000/admin/wikimapia-search
+
+**Yapılacaklar:**
+```yaml
+1. UI Modernizasyon (1 saat):
+   - Neo classes → Tailwind
+   - Dark mode iyileştirme
+   - Mobile responsive
+
+2. Place Detay Modal (1 saat):
+   - Place ID tıklayınca modal açılsın
+   - Fotoğraflar, açıklama, yorumlar
+   - "İlana Ekle" butonu
+
+3. İlan-Place İlişkilendirme (2 saat):
+   - ilanlar.wikimapia_place_id field ekle
+   - İlan oluştururken otomatik site adı çek
+   - İlan detayda WikiMapia link göster
+
+4. Otomatik Site Adı (1 saat):
+   - İlan koordinatından otomatik site bul
+   - "Bu ilan Bahçeşehir Konutları'nda" göster
+
+Toplam Süre: 5 saat
+```
+
+**Öncelik:** ORTA (2 hafta içinde)  
+**Zorluk:** KOLAY-ORTA  
+**ROI:** YÜKSEK! (SEO & UX)
+
+---
+
+### 💱 Yurt Dışı - Kur API Entegrasyonu
+
+**Mevcut:** Çoklu para birimi var ✅ ama kur manuel!
+
+**Yapılacaklar:**
+```yaml
+1. TCMB API Entegrasyonu (1.5 saat):
+   - app/Services/TCMBService.php
+   - Günlük döviz kurları çek
+   - Cache (24 saat, günlük güncelle)
+
+2. Otomatik Kur Güncelleme (1 saat):
+   - php artisan schedule:run
+   - Günlük 09:00'da kurları güncelle
+   - ilanlar.fiyat_try_cached güncelle
+
+3. Kur Geçmişi (1 saat):
+   - kur_gecmisi tablosu
+   - Günlük kur değişimlerini kaydet
+   - Grafik gösterim
+
+4. Kur Hesaplayıcı Widget (1 saat):
+   - Admin panelde widget
+   - USD/EUR/GBP → TRY çevirici
+   - Real-time kur gösterimi
+
+Toplam Süre: 4.5 saat
+```
+
+**Öncelik:** YÜKSEK (1 hafta içinde)  
+**Zorluk:** ORTA  
+**ROI:** ÇOK YÜKSEK! (Yurt dışı ilanlar için kritik)
+
+---
+
+### 🏷️ Etiket - İlan Entegrasyonu
+
+**Mevcut:** CRM & Blog'da var ✅, İlan'da yok ❌
+
+**Yapılacaklar:**
+```yaml
+1. Database (30dk):
+   - ilan_etiket pivot tablosu
+   - Migration oluştur
+
+2. Model İlişki (15dk):
+   - Ilan::etiketler() ilişkisi
+   - Etiket::ilanlar() ilişkisi
+
+3. Admin UI (1 saat):
+   - İlan create/edit: Etiket seçici
+   - Çoklu etiket seçimi
+   - Renk/badge gösterimi
+
+4. İlan Listesi (30dk):
+   - Etiket badge'leri göster
+   - Etiket ile filtreleme
+   - "Fırsat", "Acil", "VIP" badge'leri
+
+Toplam Süre: 2 saat
+```
+
+**Öncelik:** ORTA (1-2 hafta içinde)  
+**Zorluk:** KOLAY  
+**ROI:** ORTA (Marketing için iyi)
+
+---
+
 ## 🚀 UZUN VADEL (Ongoing)
 
 ### PHASE 4: OPTIMIZATION
@@ -315,32 +501,40 @@ SONUÇ: Security holes tespit edilir!
 
 ---
 
-## 📅 2 HAFTALIK PLAN (5-18 Kasım)
+## 📅 2 HAFTALIK PLAN (5-18 Kasım) - GÜNCELLENDİ!
 
 ```
-Week 1: Component Library + UI başlangıç
-  Mon: Modal, Checkbox, Radio (3h)
+Week 1: Component Library + Özel Modüller
+  Mon: Modal, Checkbox, Radio (3h) ✅ TAMAMLANDI!
   Tue: Toggle, Dropdown, File upload (4h)
-  Wed: Accordion, Badge, Alert + Docs (3h)
-  Thu-Fri: İlk 5 sayfa UI migration (6h)
+  Wed: TurkiyeAPI Service (2.5h) 🆕
+  Thu: WikiMapia iyileştirmeleri (5h) 🆕
+  Fri: Yurt Dışı Kur API (4.5h) 🆕
 
-Week 2: UI Migration devam + Security
-  Mon-Wed: 10-15 sayfa migration (8h)
+Week 2: UI Migration + Security
+  Mon: Etiket-İlan entegrasyonu (2h) 🆕
+  Tue-Wed: İlk 10 sayfa UI migration (8h)
   Thu: Security audit (3h)
   Fri: Testing + cleanup (3h)
 
-SONUÇ: PHASE 3 tamamlanmış olur!
+SONUÇ: PHASE 3 + Özel Modüller tamamlanır!
 ```
 
 ---
 
-## 🚨 ACİL YAPILMASI GEREKENLER (Öncelik!)
+## 🚨 ACİL YAPILMASI GEREKENLER (Öncelik!) - GÜNCELLENDİ!
 
-1. **Component Library** (4-5 gün) - URGENT!
-2. **Security Audit** (1 gün) - CRITICAL!
-3. **UI Consistency** (1 hafta) - HIGH
+1. **Component Library** (4-5 gün) - URGENT! ⭐⭐⭐
+2. **TurkiyeAPI Entegrasyonu** (2.5 saat) - HIGH! 🆕 ⭐⭐⭐
+3. **Yurt Dışı Kur API** (4.5 saat) - HIGH! 🆕 ⭐⭐⭐
+4. **WikiMapia İyileştirmeleri** (5 saat) - MEDIUM 🆕 ⭐⭐
+5. **Security Audit** (1 gün) - CRITICAL! ⭐⭐⭐
+6. **UI Consistency** (1 hafta) - HIGH ⭐⭐
 
-**Diğerleri** daha sonra yapılabilir.
+**Neden TurkiyeAPI ve Kur API acil?**
+- Tatil bölgeleri (Gümüşlük, Yalıkavak) = Belde → Mevcut sistemde yok! ❌
+- Yurt dışı ilanlar manuel kur → Güncel değil! ❌
+- Kolay entegrasyon (2.5-4.5 saat) → Hızlı kazanç! ✅
 
 ---
 
