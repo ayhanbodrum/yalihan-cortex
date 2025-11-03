@@ -1,0 +1,174 @@
+{
+  "title": "Yazlık Takvim ve Rezervasyon Sistemi",
+  "version": "1.0.0",
+  "date": "2025-10-27",
+  "category": "yazlik-kiralama",
+  "tags": ["takvim", "rezervasyon", "senkronizasyon", "yazlık"],
+  "summary": "Yazlık ilanları için gelişmiş takvim ve rezervasyon sistemi oluşturuldu.",
+  "content": {
+    "overview": "Sistem, Airbnb, Booking.com ve Google Calendar entegrasyonlarını destekleyen, doluluk yönetimi ve otomatik senkronizasyon özelliklerine sahip kapsamlı bir takvim yönetim sistemidir.",
+    "database": {
+      "tables": [
+        {
+          "name": "ilan_takvim_sync",
+          "purpose": "Platform senkronizasyon ayarları",
+          "fields": [
+            "id",
+            "ilan_id",
+            "platform",
+            "external_listing_id",
+            "sync_enabled",
+            "sync_token",
+            "last_sync_at",
+            "last_sync_status",
+            "error_message",
+            "timestamps"
+          ]
+        },
+        {
+          "name": "yazlik_doluluk_durumlari",
+          "purpose": "Günlük doluluk takibi",
+          "fields": [
+            "id",
+            "ilan_id",
+            "tarih",
+            "durum",
+            "not",
+            "timestamps"
+          ]
+        },
+        {
+          "name": "yazlik_details",
+          "purpose": "Yazlık özel alanları",
+          "fields": [
+            "id",
+            "ilan_id",
+            "min_konaklama",
+            "max_misafir",
+            "havuz",
+            "gunluk_fiyat",
+            "sezon_baslangic",
+            "sezon_bitis",
+            "timestamps"
+          ]
+        }
+      ]
+    },
+    "models": {
+      "IlanTakvimSync": {
+        "purpose": "Platform senkronizasyonlarını yönetir",
+        "relationships": {
+          "ilan": "belongsTo"
+        }
+      },
+      "YazlikDolulukDurumu": {
+        "purpose": "Günlük doluluk durumlarını yönetir",
+        "relationships": {
+          "ilan": "belongsTo"
+        }
+      },
+      "YazlikDetail": {
+        "purpose": "Yazlık özel alanlarını yönetir",
+        "relationships": {
+          "ilan": "belongsTo"
+        }
+      }
+    },
+    "services": {
+      "CalendarSyncService": {
+        "purpose": "Platform senkronizasyon işlemlerini yönetir",
+        "methods": [
+          "syncCalendar",
+          "pushToExternalPlatform"
+        ],
+        "platforms": [
+          "airbnb",
+          "booking_com",
+          "google_calendar"
+        ]
+      }
+    },
+    "api": {
+      "base_url": "/api/admin/calendars/{ilanId}",
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/syncs",
+          "description": "Senkronizasyonları listele"
+        },
+        {
+          "method": "POST",
+          "path": "/syncs",
+          "description": "Senkronizasyon oluştur"
+        },
+        {
+          "method": "POST",
+          "path": "/syncs/{syncId}",
+          "description": "Senkronizasyon güncelle"
+        },
+        {
+          "method": "DELETE",
+          "path": "/syncs/{syncId}",
+          "description": "Senkronizasyon sil"
+        },
+        {
+          "method": "POST",
+          "path": "/manual-sync",
+          "description": "Manuel senkronizasyon"
+        },
+        {
+          "method": "GET",
+          "path": "/calendar",
+          "description": "Takvim bilgilerini getir"
+        },
+        {
+          "method": "POST",
+          "path": "/block",
+          "description": "Tarih engelleme"
+        }
+      ]
+    },
+    "features": [
+      "Çoklu platform senkronizasyonu (Airbnb, Booking.com, Google Calendar)",
+      "Otomatik ve manuel senkronizasyon",
+      "Günlük doluluk durumu takibi",
+      "Tarih engelleme/boşaltma",
+      "Sezon bazlı fiyatlandırma",
+      "Rezervasyon yönetimi"
+    ],
+    "usage_examples": {
+      "create_sync": "CalendarSyncService ile platform senkronizasyonu oluştur",
+      "get_availability": "YazlikDolulukDurumu ile 90 günlük doluluk bilgisi al",
+      "block_dates": "API endpoint ile tarih engelleme yap",
+      "manual_sync": "Manuel senkronizasyonu tetikle"
+    },
+    "files": {
+      "migrations": [
+        "database/migrations/2025_10_27_090614_create_ilan_takvim_sync_table.php",
+        "database/migrations/2025_10_27_090709_create_yazlik_doluluk_durumlari_table.php",
+        "database/migrations/2025_10_27_101837_create_yazlik_details_table.php"
+      ],
+      "models": [
+        "app/Models/IlanTakvimSync.php",
+        "app/Models/YazlikDolulukDurumu.php",
+        "app/Models/YazlikDetail.php"
+      ],
+      "controllers": [
+        "app/Http/Controllers/Admin/CalendarSyncController.php"
+      ],
+      "services": [
+        "app/Services/CalendarSyncService.php"
+      ],
+      "documentation": [
+        "TAKVIM_API_DOKUMANTASYONU.md",
+        "YAZLIK_DETAIL_TABLE_RAPORU.md",
+        "YAPILACAKLAR_2025_10_27.md"
+      ]
+    }
+  },
+  "notes": [
+    "Sistem, normal ilanlar ile yazlık ilanları arasında net ayrım yapar",
+    "Veritabanı normalizasyonu sağlanmıştır",
+    "Performans iyileştirmeleri yapılmıştır"
+  ]
+}

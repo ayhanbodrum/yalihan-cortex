@@ -1,0 +1,43 @@
+# Dependencies
+node_modules
+vendor
+
+# Build outputs
+public/build
+public/hot
+public/storage
+storage
+
+# Cache
+bootstrap/cache
+.phpunit.result.cache
+
+# Environment
+.env
+.env.*
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+storage/logs
+
+# Git
+.git
+.gitignore
+
+# Compiled
+*.min.js
+*.min.css
+
+# Legacy
+public/css/neo-unified.css
+

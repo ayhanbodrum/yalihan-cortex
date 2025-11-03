@@ -1,0 +1,89 @@
+{
+    "version": "1.0.0",
+    "last_updated": "2025-10-06",
+    "rules": [
+        {
+            "type": "field_naming",
+            "pattern": "^[a-z0-9_]+$",
+            "forbidden": [
+                "ad",
+                "soyad",
+                "baslik",
+                "aciklama",
+                "kategori_id",
+                "aktif",
+                "status",
+                "il_id",
+                "ilce_id",
+                "mahalle_id",
+                "telefon",
+                "adres",
+                "notlar",
+                "sira",
+                "tip",
+                "kanal",
+                "mesaj",
+                "okundu",
+                "gonderim_tarihi",
+                "okunma_tarihi",
+                "baslangic",
+                "bitis",
+                "konum",
+                "hatirlatma_gonder",
+                "hatirlatma_dakika",
+                "musteri_id",
+                "ilan_id",
+                "danisman_id",
+                "kisi_id",
+                "takip_tipi",
+                "son_takip_tarihi",
+                "sonraki_takip_tarihi",
+                "oncelik",
+                "gelir_duzeyi",
+                "medeni_status",
+                "dogum_tarihi",
+                "tc_kimlik",
+                "meslek"
+            ]
+        },
+        {
+            "type": "enum_naming",
+            "forbidden": [
+                "Aktif",
+                "Pasif",
+                "Potansiyel",
+                "Müşteri",
+                "Planlandı",
+                "Tamamlandı",
+                "İptal Edildi",
+                "Ertelendi",
+                "Kayıp",
+                "Düşük",
+                "Normal",
+                "Yüksek",
+                "Acil"
+            ]
+        },
+        {
+            "type": "directory_structure",
+            "required": [
+                "app/Modules",
+                "database/migrations",
+                "database/seeders",
+                "resources/views",
+                "config",
+                "routes"
+            ]
+        },
+        {
+            "type": "ai_integration",
+            "required": [
+                "config/ai.php",
+                "app/Modules/TalepAnaliz",
+                "app/Services/AI"
+            ]
+        }
+    ],
+    "ignore": [],
+    "learned": []
+}

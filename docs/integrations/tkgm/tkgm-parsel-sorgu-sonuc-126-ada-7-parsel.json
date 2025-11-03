@@ -1,0 +1,43 @@
+{
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [27.27891, 37.0954],
+            [27.27882, 37.09543],
+            [27.2787, 37.09544],
+            [27.27868, 37.09545],
+            [27.27854, 37.09524],
+            [27.27856, 37.09523],
+            [27.27878, 37.0952],
+            [27.27892, 37.09516],
+            [27.27897, 37.09518],
+            [27.27903, 37.09537],
+            [27.27891, 37.0954]
+          ]
+        ]
+      },
+      "properties": {
+        "ParselNo": "7",
+        "Alan": "900,01",
+        "Mevkii": "Kavak",
+        "Nitelik": "Arsa",
+        "Ada": "126",
+        "Il": "Muğla",
+        "Ilce": "Bodrum",
+        "Pafta": "",
+        "Mahalle": "Geriş"
+      }
+    }
+  ],
+  "type": "FeatureCollection",
+  "crs": {
+    "type": "name",
+    "properties": {
+      "name": "EPSG:4326"
+    }
+  }
+}

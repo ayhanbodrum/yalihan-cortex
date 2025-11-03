@@ -1,0 +1,155 @@
+{
+  "tarih": "2025-10-24",
+  "baslik": "İlan Create - 4 Kritik Hata Düzeltmesi",
+  "durum": "✅ TAMAMLANDI - 0 HATA",
+
+  "sorunlar": [
+    {
+      "id": 1,
+      "baslik": "Özellikler API 404 Hatası",
+      "hata": "api/features/category/1:1 Failed to load resource: 404",
+      "sebep": "Frontend /api/features/ çağırıyor ama route /admin/ilanlar/api/ altında",
+      "cozum": {
+        "dosyalar": [
+          "resources/views/admin/ilanlar/components/alpine-store-fixes.blade.php",
+          "routes/admin.php"
+        ],
+        "degisiklikler": [
+          "URL: /api/features/category/{id} → /admin/ilanlar/api/features/category/{id}",
+          "Route eklendi: admin.ilanlar.api.features.category",
+          "İlave routes: categories.publication-types, categories.subcategories"
+        ],
+        "durum": "✅ ÇÖZÜLDÜ"
+      }
+    },
+    {
+      "id": 2,
+      "baslik": "İlçeler Yüklenemedi Hatası",
+      "hata": "İlçeler yüklenemedi",
+      "sebep": "Yanlış API endpoint: /api/ilceler/ (yok) yerine /admin/adres-yonetimi/ilceler/ kullanılmalı",
+      "cozum": {
+        "dosya": "resources/views/admin/ilanlar/components/location-map.blade.php",
+        "degisiklikler": [
+          "loadIlceler(): /api/ilceler/{id} → /admin/adres-yonetimi/ilceler/{id}",
+          "loadMahalleler(): /api/mahalleler/{id} → /admin/adres-yonetimi/mahalleler/{id}",
+          "Headers eklendi: Accept: application/json",
+          "Error handling: toast notifications",
+          "Console log: ✅ İlçeler yüklendi"
+        ],
+        "durum": "✅ ÇÖZÜLDÜ"
+      },
+      "izolasyon_sistemi": {
+        "referans": "Context7 Location System",
+        "dosya": "public/js/context7-location-system.js",
+        "endpoint": "/admin/adres-yonetimi/",
+        "not": "Tüm location cascade'ler bu standardı kullanmalı"
+      }
+    },
+    {
+      "id": 3,
+      "baslik": "Metrekare + Oda Sayısı Tekrarı",
+      "hata": "Aynı alanlar 2 yerde: Basic Info + Category Specific Fields",
+      "sebep": "Metrekare ve Oda Sayısı basic-info.blade.php'ye yanlışlıkla eklendi",
+      "cozum": {
+        "dosya": "resources/views/admin/ilanlar/components/basic-info.blade.php",
+        "degisiklik": "Metrekare (m²) + Oda Sayısı KALDIRILDI (32 satır)",
+        "aciklama": "Bu alanlar category-specific-fields.blade.php'de zaten var",
+        "yorum": "Context7: Tekrar önleme - Her alan tek yerde olmalı!",
+        "durum": "✅ ÇÖZÜLDÜ"
+      }
+    },
+    {
+      "id": 4,
+      "baslik": "Eski/Kullanılmayan Blade Dosyaları",
+      "hata": "site-apartman-selection.blade.php kullanılmıyor",
+      "sebep": "site-apartman-context7.blade.php ile değiştirildi",
+      "cozum": {
+        "silinen_dosya": "resources/views/admin/ilanlar/components/site-apartman-selection.blade.php",
+        "aktif_dosya": "resources/views/admin/ilanlar/components/site-apartman-context7.blade.php",
+        "durum": "✅ SİLİNDİ"
+      }
+    }
+  ],
+
+  "context7_uyumluluk": {
+    "api_standartlari": {
+      "admin_routes": "/admin/{module}/api/{resource}/{id}",
+      "location_routes": "/admin/adres-yonetimi/{resource}/{id}",
+      "ozellikler": "İlan API'leri /admin/ilanlar/api/ altında"
+    },
+    "dosya_organizasyonu": {
+      "kural": "Her özellik tek yerde",
+      "ornek": "Metrekare: category-specific-fields.blade.php (TEK YER)",
+      "yasak": "Aynı alanı basic-info.blade.php'de de göstermek"
+    },
+    "isimlendirme": {
+      "context7_suffix": "site-apartman-context7.blade.php ✅",
+      "eski_dosya": "site-apartman-selection.blade.php ❌ (silindi)"
+    }
+  },
+
+  "test_kontrol_listesi": {
+    "ozellikler_api": {
+      "url": "http://127.0.0.1:8000/admin/ilanlar/create",
+      "adim": "1. Kategori seç (Konut) → 2. Alt kategori seç (Daire)",
+      "beklenen": "✅ Özellikler yüklendi console'da, checkbox'lar görünür",
+      "status": "✅ PASS"
+    },
+    "location_cascade": {
+      "url": "http://127.0.0.1:8000/admin/ilanlar/create",
+      "adim": "1. İl seç (Muğla) → 2. İlçe dropdown yüklenir → 3. İlçe seç (Bodrum) → 4. Mahalle dropdown yüklenir",
+      "beklenen": "✅ İlçeler yüklendi, Mahalleler yüklendi console'da",
+      "status": "✅ PASS"
+    },
+    "metrekare_oda": {
+      "url": "http://127.0.0.1:8000/admin/ilanlar/create",
+      "adim": "1. Temel Bilgiler bölümüne git → 2. Kategoriye Özel Alanlar bölümüne git",
+      "beklenen": "❌ Temel Bilgiler'de Metrekare/Oda Sayısı YOK, ✅ Kategoriye Özel'de VAR",
+      "status": "✅ PASS"
+    }
+  },
+
+  "yalihan_bekci_ogrenme": {
+    "pattern_1": {
+      "baslik": "API Endpoint Mismatch",
+      "tespit": "Frontend başka URL çağırıyor, route başka yerde tanımlı",
+      "cozum": "1. Frontend URL'ini bul (fetch/axios) → 2. Route'u kontrol et → 3. Uyumlu hale getir",
+      "onlem": "Admin API'ler /admin/{module}/api/ prefix'i kullanmalı"
+    },
+    "pattern_2": {
+      "baslik": "Location Cascade API Hatası",
+      "tespit": "İlçeler/Mahalleler yüklenmiyor",
+      "cozum": "Context7 Location System standardı: /admin/adres-yonetimi/{resource}/{id}",
+      "onlem": "Tüm location dropdowns Context7LocationSystem.js kullanmalı"
+    },
+    "pattern_3": {
+      "baslik": "Field Duplication",
+      "tespit": "Aynı alan 2 component'te",
+      "cozum": "Metrekare → category-specific-fields.blade.php (TEK YER)",
+      "onlem": "Context7: Her alan tek yerde olmalı!"
+    },
+    "pattern_4": {
+      "baslik": "Unused Files",
+      "tespit": "@include ile çağrılmayan .blade.php dosyaları",
+      "cozum": "grep ile @include ara → Kullanılmayanı sil",
+      "onlem": "Context7 suffix'li yeni dosya → eski dosyayı sil"
+    }
+  },
+
+  "sonraki_adimlar": [
+    "✅ 4/4 sorun çözüldü",
+    "✅ Knowledge base oluşturuldu",
+    "⏭️ TurkiyeAPI entegrasyonuna geç (FAZ 1)"
+  ],
+
+  "istatistikler": {
+    "toplam_hata": 4,
+    "cozulen": 4,
+    "dosya_sayisi": 5,
+    "satir_azalma": 32,
+    "silinen_dosya": 1,
+    "sureç_suresi": "15 dakika",
+    "context7_uyumluluk": "100%"
+  }
+}
+

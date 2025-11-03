@@ -1,0 +1,13 @@
+#!/bin/bash
+# Context7 Pre-Commit Hook - Sample
+# Bu dosyayı .githooks/pre-commit olarak kopyalayın ve chmod +x yapın
+
+echo "🔍 Context7 Pre-Commit Hook Sample"
+echo "Bu sample dosyasıdır. Aktif etmek için:"
+echo ""
+echo "  cp .githooks/pre-commit.sample .githooks/pre-commit"
+echo "  chmod +x .githooks/pre-commit"
+echo "  git config core.hooksPath .githooks"
+echo ""
+exit 0
+

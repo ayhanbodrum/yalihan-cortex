@@ -1,0 +1,120 @@
+{
+  "id": "ilan-kategorileri-refactor-2025-10-26",
+  "title": "İlan Kategorileri Yönetim Sistemi Yeniden Yapılandırma",
+  "date": "2025-10-26",
+  "summary": "İlan Kategorileri yönetim sistemi tamamen yeniden yapılandırıldı. Meta alanları kaldırıldı, seviye bazlı yapı getirildi, duplicate slug sorunu çözüldü.",
+  "type": "refactor",
+  "status": "completed",
+  "files_changed": [
+    "app/Http/Controllers/Admin/IlanKategoriController.php",
+    "resources/views/admin/ilan-kategorileri/index.blade.php",
+    "resources/views/admin/ilan-kategorileri/create.blade.php",
+    "resources/views/admin/ilan-kategorileri/edit.blade.php",
+    "resources/views/components/admin/neo-skeleton.blade.php"
+  ],
+  "key_changes": {
+    "controller": {
+      "store": {
+        "removed_fields": ["meta_title", "meta_description", "meta_keywords", "description"],
+        "added_fields": ["seviye", "parent_id validation"],
+        "duplicate_slug_handling": "Auto-increment slug system (villa-1, villa-2)"
+      },
+      "update": {
+        "removed_fields": ["meta_title", "meta_description", "meta_keywords", "description"],
+        "added_fields": ["seviye", "parent_id validation"],
+        "duplicate_slug_handling": "Auto-increment slug system with id exclusion"
+      }
+    },
+    "views": {
+      "create": {
+        "design": "Neo Design System",
+        "dynamic_fields": "Alpine.js parent_id field",
+        "validation": "Custom JavaScript validation"
+      },
+      "edit": {
+        "complete_rewrite": true,
+        "design": "Same as create view",
+        "dynamic_fields": "Alpine.js parent_id field"
+      },
+      "index": {
+        "ui_improvements": ["Compact filter layout", "Neo buttons", "Better table spacing", "Removed skeleton loading"]
+      }
+    }
+  },
+  "bugs_fixed": [
+    {
+      "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'meta_title'",
+      "solution": "Removed meta fields from controller methods"
+    },
+    {
+      "error": "An invalid form control with name='parent_id' is not focusable",
+      "solution": "Used x-show and :required binding for dynamic validation"
+    },
+    {
+      "error": "SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'villa'",
+      "solution": "Implemented auto-increment slug system"
+    },
+    {
+      "error": "Call to undefined method ilans()",
+      "solution": "Corrected relationship method from ilans() to ilanlar()"
+    }
+  ],
+  "database_structure": {
+    "table": "ilan_kategorileri",
+    "columns": [
+      "id",
+      "name",
+      "slug (unique)",
+      "seviye (0, 1, 2)",
+      "parent_id (nullable)",
+      "status (boolean)",
+      "order (integer)",
+      "aciklama (text)",
+      "timestamps"
+    ]
+  },
+  "seviye_logic": {
+    "0": "Ana Kategori (parent_id = null)",
+    "1": "Alt Kategori (parent_id = ana kategori id)",
+    "2": "Yayın Tipi (parent_id = alt kategori id)"
+  },
+  "validation_rules": {
+    "store": {
+      "name": "required|string|max:255",
+      "parent_id": "nullable|exists:ilan_kategorileri,id",
+      "seviye": "required|integer|in:0,1,2",
+      "status": "nullable|boolean",
+      "order": "nullable|integer|min:0"
+    },
+    "update": {
+      "name": "required|string|max:255",
+      "parent_id": "nullable|exists:ilan_kategorileri,id|not_in:id",
+      "seviye": "required|integer|in:0,1,2",
+      "status": "nullable|boolean",
+      "order": "nullable|integer|min:0"
+    }
+  },
+  "context7_compliance": {
+    "database_fields": "English only",
+    "model_relationships": "Correct",
+    "validation_rules": "Context7 compliant"
+  },
+  "lessons_learned": [
+    "Duplicate slug requires auto-increment system",
+    "Hidden fields can be validated using x-show and :required binding",
+    "Alpine.js state management enables smooth UX",
+    "Unused database columns should be removed via migration"
+  ],
+  "test_checklist": [
+    "Create main category",
+    "Create sub category (parent required)",
+    "Create publication type (parent required)",
+    "Duplicate slug handling",
+    "Level change (parent field show/hide)",
+    "Update category",
+    "Delete category (with sub-categories and listings check)"
+  ],
+  "related_documents": [
+    "YAPILAN_ISLER_2025_10_26.md"
+  ]
+}

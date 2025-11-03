@@ -1,0 +1,206 @@
+{
+  "ai_endpoints": {
+    "version": "3.4.0",
+    "last_updated": "2025-10-12",
+    "context7_compliant": true,
+    "categories": {
+      "settings_management": {
+        "base_path": "/admin/ai-settings",
+        "endpoints": [
+          {
+            "name": "AI Settings Index",
+            "method": "GET",
+            "path": "/admin/ai-settings",
+            "route_name": "admin.ai-settings.index",
+            "controller": "Admin\\AISettingsController@index",
+            "description": "Ana AI ayarları sayfası",
+            "response": "Blade view with all AI provider settings"
+          },
+          {
+            "name": "Update AI Settings",
+            "method": "PUT|POST",
+            "path": "/admin/ai-settings",
+            "route_name": "admin.ai-settings.update",
+            "controller": "Admin\\AISettingsController@update",
+            "description": "AI ayarlarını güncelle",
+            "request": {
+              "ai_anythingllm_url": "nullable|url",
+              "ai_anythingllm_api_key": "nullable|string",
+              "ai_openai_api_key": "nullable|string",
+              "ai_gemini_api_key": "nullable|string",
+              "ai_claude_api_key": "nullable|string"
+            }
+          },
+          {
+            "name": "Test AI Provider",
+            "method": "POST",
+            "path": "/admin/ai-settings/test-provider",
+            "route_name": "admin.ai-settings.test-provider",
+            "controller": "Admin\\AISettingsController@testProvider",
+            "description": "AI provider bağlantısını test et",
+            "request": {
+              "provider": "required|string|in:anythingllm,openai,gemini,claude"
+            },
+            "response": {
+              "success": "boolean",
+              "provider": "string",
+              "message": "string",
+              "response_time": "integer (ms)",
+              "details": "object"
+            }
+          },
+          {
+            "name": "Get Provider Status",
+            "method": "GET",
+            "path": "/admin/ai-settings/provider-status",
+            "route_name": "admin.ai-settings.provider-status",
+            "controller": "Admin\\AISettingsController@getProviderStatus",
+            "description": "Tüm provider'ların güncel durumunu getir",
+            "response": {
+              "success": "boolean",
+              "providers": {
+                "anythingllm": "object",
+                "openai": "object",
+                "gemini": "object",
+                "claude": "object"
+              }
+            }
+          }
+        ]
+      },
+      "content_generation": {
+        "base_path": "/stable-create",
+        "endpoints": [
+          {
+            "name": "AI Content Suggestions",
+            "method": "POST",
+            "path": "/stable-create/ai-suggest",
+            "description": "İlan için AI önerileri üret",
+            "request": {
+              "action": "required|in:title,description,location,price,all",
+              "kategori": "nullable|string",
+              "yayin_tipi": "nullable|string",
+              "lokasyon": "nullable|string",
+              "fiyat": "nullable|numeric",
+              "para_birimi": "nullable|string",
+              "metrekare": "nullable|numeric",
+              "ai_tone": "nullable|in:seo,kurumsal,hizli_satis,luks"
+            },
+            "response": {
+              "success": "boolean",
+              "variants": "array (for title)",
+              "description": "string (for description)",
+              "analysis": "object (for location/price)",
+              "metadata": {
+                "model": "string",
+                "provider": "string",
+                "response_time": "integer",
+                "cached": "boolean"
+              }
+            }
+          }
+        ]
+      },
+      "category_api": {
+        "base_path": "/api/categories",
+        "endpoints": [
+          {
+            "name": "Get Subcategories",
+            "method": "GET",
+            "path": "/api/categories/sub/{id}",
+            "description": "Ana kategoriye göre alt kategorileri getir",
+            "response": {
+              "success": "boolean",
+              "subcategories": "array[{id, name, parent_id}]",
+              "count": "integer",
+              "message": "string"
+            },
+            "context7_pattern": "IlanKategori::where('parent_id', $id)->where('status', true)->get()"
+          },
+          {
+            "name": "Get Publication Types",
+            "method": "GET",
+            "path": "/api/categories/publication-types/{id}",
+            "description": "Alt kategoriye göre yayın tiplerini getir",
+            "response": {
+              "success": "boolean",
+              "publication_types": "array[{id, name, parent_id}]",
+              "count": "integer",
+              "message": "string"
+            }
+          }
+        ]
+      },
+      "location_api": {
+        "base_path": "/api/location",
+        "endpoints": [
+          {
+            "name": "Get Districts",
+            "method": "GET",
+            "path": "/api/location/districts/{il_id}",
+            "description": "İle göre ilçeleri getir",
+            "response": {
+              "success": "boolean",
+              "districts": "array[{id, ilce_adi, il_id}]"
+            }
+          },
+          {
+            "name": "Get Neighborhoods",
+            "method": "GET",
+            "path": "/api/location/neighborhoods/{ilce_id}",
+            "description": "İlçeye göre mahalleleri getir",
+            "response": {
+              "success": "boolean",
+              "neighborhoods": "array[{id, mahalle_adi, ilce_id}]"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "context7_patterns": {
+    "api_response": {
+      "standard": {
+        "success": "boolean (required)",
+        "data": "any (required)",
+        "message": "string (optional)",
+        "metadata": "object (optional)",
+        "context7_compliant": "boolean (recommended)"
+      },
+      "error": {
+        "success": false,
+        "error": "string",
+        "details": "object (optional)"
+      }
+    },
+    "field_naming": {
+      "correct": [
+        "status",
+        "active",
+        "enabled",
+        "il_id",
+        "ilce_id",
+        "mahalle_id",
+        "para_birimi",
+        "ai_*"
+      ],
+      "forbidden": [
+        "durum",
+        "is_active",
+        "aktif",
+        "sehir",
+        "sehir_id",
+        "currency"
+      ]
+    }
+  },
+  "logging": {
+    "ai_connections": {
+      "path": "storage/logs/ai_connections.log",
+      "format": "[{timestamp}] {PROVIDER} - {STATUS} | Response: {time}ms | Details: {json}",
+      "implemented": true,
+      "date": "2025-10-12"
+    }
+  }
+}
+

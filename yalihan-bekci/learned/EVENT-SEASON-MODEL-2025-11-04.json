@@ -1,0 +1,493 @@
+{
+  "date": "2025-11-04",
+  "title": "Event & Season Model - Yazlık Kiralama Rezervasyon Sistemi",
+  "type": "model_implementation",
+  "status": "completed",
+  "todos_completed": 6,
+  "inspiration": "Airbnb, TatildeKirala.com, EtsTur.com",
+  
+  "models_created": [
+    {
+      "name": "Event",
+      "file": "app/Models/Event.php",
+      "migration": "database/migrations/2025_11_03_095931_create_events_table.php",
+      "purpose": "Rezervasyon/Booking sistemi (Airbnb tarzı)",
+      "fields": 33,
+      "indexes": 6,
+      "lines": 200
+    },
+    {
+      "name": "Season",
+      "file": "app/Models/Season.php",
+      "migration": "database/migrations/2025_11_03_095932_create_seasons_table.php",
+      "purpose": "Sezonluk fiyatlandırma (TatildeKirala tarzı)",
+      "fields": 25,
+      "indexes": 5,
+      "lines": 220
+    }
+  ],
+  
+  "event_model": {
+    "purpose": "Rezervasyon ve etkinlik yönetimi",
+    "inspired_by": "Airbnb booking system",
+    
+    "field_groups": {
+      "dates": {
+        "check_in": "Giriş tarihi (date)",
+        "check_out": "Çıkış tarihi (date)",
+        "check_in_time": "Giriş saati (time, default: 14:00)",
+        "check_out_time": "Çıkış saati (time, default: 11:00)",
+        "night_count": "Gece sayısı (auto-calculated)"
+      },
+      
+      "guest_info": {
+        "guest_name": "Misafir adı (required)",
+        "guest_email": "Email (required)",
+        "guest_phone": "Telefon (required)",
+        "guest_count": "Yetişkin sayısı (default: 1)",
+        "child_count": "Çocuk sayısı (default: 0)",
+        "infant_count": "Bebek sayısı (default: 0)",
+        "pet_count": "Evcil hayvan sayısı (default: 0)"
+      },
+      
+      "pricing": {
+        "daily_price": "Günlük fiyat (decimal 10,2)",
+        "total_price": "Toplam fiyat (decimal 10,2)",
+        "cleaning_fee": "Temizlik ücreti (default: 0)",
+        "service_fee": "Hizmet bedeli (default: 0)",
+        "deposit_amount": "Kapora tutarı (default: 0)",
+        "paid_amount": "Ödenen tutar (default: 0)",
+        "currency": "Para birimi (TRY, USD, EUR)"
+      },
+      
+      "status": {
+        "status": "pending|confirmed|cancelled|completed|no_show",
+        "payment_status": "unpaid|partial|paid|refunded",
+        "confirmed_at": "Onay tarihi (timestamp)",
+        "cancelled_at": "İptal tarihi (timestamp)"
+      },
+      
+      "additional": {
+        "special_requests": "Özel istekler (text)",
+        "notes": "İç notlar - admin (text)",
+        "cancellation_reason": "İptal nedeni (text)",
+        "source": "website|phone|email|airbnb|booking|admin"
+      }
+    },
+    
+    "relationships": {
+      "ilan": "belongsTo(Ilan::class)"
+    },
+    
+    "scopes": {
+      "confirmed": "Sadece onaylı rezervasyonlar",
+      "pending": "Sadece bekleyen rezervasyonlar",
+      "active": "Aktif rezervasyonlar (pending + confirmed)",
+      "betweenDates": "Tarih aralığında rezervasyonlar"
+    },
+    
+    "helpers": {
+      "confirm": "Rezervasyonu onayla",
+      "cancel": "Rezervasyonu iptal et",
+      "hasConflict": "Static - Çakışma var mı?",
+      "isAvailable": "Static - Müsait mi?"
+    },
+    
+    "accessors": {
+      "total_guests": "Toplam misafir sayısı (adult + child + infant)",
+      "remaining_payment": "Kalan ödeme (total - paid)",
+      "is_fully_paid": "Tamamen ödendi mi? (boolean)"
+    },
+    
+    "auto_features": {
+      "night_count_calculation": "Check-in ve check-out'tan otomatik hesaplanır (boot method)",
+      "soft_delete": "Geri getirilebilir silme"
+    }
+  },
+  
+  "season_model": {
+    "purpose": "Sezonluk fiyatlandırma ve konaklama kuralları",
+    "inspired_by": "TatildeKirala sezon sistemi",
+    
+    "field_groups": {
+      "season_definition": {
+        "name": "Sezon adı (Yaz Sezonu 2025)",
+        "type": "yaz|ara_sezon|kis|bayram|ozel",
+        "start_date": "Başlangıç tarihi",
+        "end_date": "Bitiş tarihi"
+      },
+      
+      "pricing": {
+        "daily_price": "Günlük fiyat (decimal 10,2)",
+        "weekly_price": "Haftalık fiyat - indirimli (nullable)",
+        "monthly_price": "Aylık fiyat - indirimli (nullable)",
+        "weekend_price": "Hafta sonu fiyatı (nullable)",
+        "weekend_pricing_enabled": "Hafta sonu fiyat aktif mi? (boolean)",
+        "currency": "Para birimi (default: TRY)"
+      },
+      
+      "stay_rules": {
+        "minimum_stay": "Minimum konaklama gece sayısı (default: 1)",
+        "maximum_stay": "Maximum konaklama - opsiyonel (nullable)"
+      },
+      
+      "fees": {
+        "cleaning_fee": "Temizlik ücreti (decimal, default: 0)",
+        "service_fee_percent": "Hizmet bedeli yüzdesi (decimal 5,2)",
+        "deposit_percent": "Kapora oranı % (default: 30)"
+      },
+      
+      "management": {
+        "is_active": "Aktif mi? (boolean, default: true)",
+        "priority": "Öncelik - çakışmalarda hangisi? (integer)",
+        "description": "Sezon açıklaması (text)",
+        "special_conditions": "Özel şartlar (text)"
+      }
+    },
+    
+    "relationships": {
+      "ilan": "belongsTo(Ilan::class)"
+    },
+    
+    "scopes": {
+      "active": "Sadece aktif sezonlar",
+      "byType": "Sezon tipine göre (yaz, kis, etc.)",
+      "forDate": "Belirli bir tarihi kapsayan sezonlar",
+      "forDateRange": "Tarih aralığını kapsayan sezonlar"
+    },
+    
+    "helpers": {
+      "getPriceForDate": "Belirli tarih için fiyat (weekend aware)",
+      "calculatePrice": "Tarih aralığı için toplam fiyat hesapla",
+      "meetsMinimumStay": "Minimum konaklama kontrolü",
+      "meetsMaximumStay": "Maximum konaklama kontrolü"
+    },
+    
+    "static_methods": {
+      "findBestForDate": "Tarihe göre en uygun sezonu bul (priority)",
+      "calculatePriceForDateRange": "İlan + tarih için fiyat hesapla"
+    },
+    
+    "price_calculation_algorithm": {
+      "step_1": "Her gün için fiyat hesapla (weekend aware)",
+      "step_2": "Toplam günlük fiyat",
+      "step_3": "Haftalık indirim kontrolü (7+ gece)",
+      "step_4": "Aylık indirim kontrolü (30+ gece)",
+      "step_5": "Ek ücretler ekle (cleaning_fee, service_fee)",
+      "step_6": "Kapora hesapla (deposit_percent)",
+      "example": {
+        "input": "7 gece, gunluk 1000 TRY, haftalik 6000 TRY",
+        "output": {
+          "night_count": 7,
+          "base_price": 7000,
+          "final_price": 6000,
+          "cleaning_fee": 500,
+          "service_fee": 180,
+          "total_price": 6680,
+          "deposit_amount": 2004
+        }
+      }
+    }
+  },
+  
+  "ilan_relationships_added": {
+    "events": "hasMany(Event::class) - Tüm rezervasyonlar",
+    "activeEvents": "hasMany(Event::class)->active() - Sadece aktif",
+    "seasons": "hasMany(Season::class) - Tüm sezonlar",
+    "activeSeasons": "hasMany(Season::class)->active() - Sadece aktif"
+  },
+  
+  "takvim_controller_todos": {
+    "before": "6 TODO (DB::table kullanılıyordu)",
+    "after": "0 TODO (Eloquent Model)",
+    
+    "completed": [
+      {
+        "line": 95,
+        "todo": "Event::create()",
+        "method": "store()",
+        "description": "Yeni rezervasyon oluşturma"
+      },
+      {
+        "line": 216,
+        "todo": "Event::update()",
+        "method": "update()",
+        "description": "Rezervasyon güncelleme"
+      },
+      {
+        "line": 247,
+        "todo": "Event::delete()",
+        "method": "destroy()",
+        "description": "Rezervasyon silme (soft delete)"
+      },
+      {
+        "line": 442,
+        "todo": "Season::create()",
+        "method": "storeSezon()",
+        "description": "Yeni sezon oluşturma"
+      },
+      {
+        "line": 470,
+        "todo": "Season::update()",
+        "method": "updateSezon()",
+        "description": "Sezon güncelleme"
+      },
+      {
+        "line": 491,
+        "todo": "Season::delete()",
+        "method": "destroySezon()",
+        "description": "Sezon silme (soft delete)"
+      }
+    ]
+  },
+  
+  "competitor_analysis": {
+    "analyzed_sites": [
+      {
+        "name": "TatildeKirala.com",
+        "url": "https://www.tatildekirala.com/kiralik-villa",
+        "strengths": [
+          "4246 villa seçeneği",
+          "Minimum konaklama vurgusu (1-5 gece)",
+          "Kişi sayısı gösterimi",
+          "Kategori badges (Balayı, Muhafazakar)",
+          "%100 para iadesi güvencesi",
+          "TÜRSAB belgeli",
+          "Yat kiralama entegrasyonu"
+        ],
+        "features_to_adopt": [
+          "Minimum konaklama badge (ön planda)",
+          "Kişi sayısı vurgusu",
+          "Para iadesi güvencesi",
+          "Popüler bölgeler showcasesi"
+        ]
+      },
+      {
+        "name": "EtsTur.com",
+        "url": "https://www.etstur.com/Bodrum-Kiralik-Villa",
+        "strengths": [
+          "Temiz, minimalist tasarım",
+          "Büyük fotoğraflar",
+          "Göz alıcı açıklamalar",
+          "Konum vurgusu (Yalıkavak, Gürece)",
+          "Sakin/sessiz vurgusu",
+          "Lüks/şık etiketleme"
+        ],
+        "features_to_adopt": [
+          "Konum vurgusu stratejisi",
+          "Sakin/huzurlu/sessiz etiketleri",
+          "Göz alıcı başlıklar",
+          "Minimalist UI"
+        ]
+      },
+      {
+        "name": "TatilVillam.com",
+        "url": "https://www.tatilvillam.com/",
+        "strengths": [
+          "Benzer özellikler",
+          "Villa kategorileri",
+          "Fiyat aralığı filtreleme"
+        ]
+      }
+    ],
+    
+    "common_features": {
+      "listing_card": [
+        "Büyük fotoğraf (16:9)",
+        "İlan numarası (#42838)",
+        "Lokasyon (İlçe + Mahalle)",
+        "Kişi kapasitesi",
+        "Minimum konaklama",
+        "Günlük fiyat (büyük, vurgulu)",
+        "Özellikler (icons)",
+        "Favorilere ekle"
+      ],
+      
+      "search_filters": [
+        "Giriş/Çıkış tarihi (calendar)",
+        "Lokasyon (il, ilçe)",
+        "Kişi sayısı",
+        "Fiyat aralığı",
+        "Özellikler (havuz, deniz manzarası)"
+      ],
+      
+      "pricing_system": [
+        "Günlük fiyat",
+        "Haftalık fiyat (indirimli)",
+        "Aylık fiyat (daha indirimli)",
+        "Sezon bazlı değişken fiyat",
+        "Temizlik ücreti",
+        "Kapora (%30 ortalama)"
+      ],
+      
+      "booking_flow": [
+        "Tarih seçimi",
+        "Misafir bilgileri",
+        "Fiyat özeti",
+        "Ödeme",
+        "Onay"
+      ]
+    }
+  },
+  
+  "technical_implementation": {
+    "event_model_features": [
+      "Soft delete (geri getirilebilir)",
+      "Auto night count calculation (boot method)",
+      "Relationship to Ilan (belongsTo)",
+      "Scopes (confirmed, pending, active, betweenDates)",
+      "Accessors (total_guests, remaining_payment, is_fully_paid)",
+      "Helpers (confirm, cancel, hasConflict, isAvailable)",
+      "Status tracking (5 status)",
+      "Payment tracking (4 payment status)",
+      "Source tracking (6 sources: website, airbnb, booking, etc.)"
+    ],
+    
+    "season_model_features": [
+      "Soft delete",
+      "Relationship to Ilan",
+      "Scopes (active, byType, forDate, forDateRange)",
+      "Price calculation algorithm (weekend aware)",
+      "Minimum/maximum stay validation",
+      "Priority system (çakışmalarda hangisi öncelikli?)",
+      "Weekly/monthly discount logic",
+      "Static helpers (findBestForDate, calculatePriceForDateRange)"
+    ],
+    
+    "price_calculation_logic": {
+      "description": "TatildeKirala tarzı akıllı fiyatlandırma",
+      "steps": [
+        "1. Her gün için ayrı fiyat hesapla (weekend aware)",
+        "2. Toplam günlük fiyat bul",
+        "3. Haftalık kontrol: 7+ gece → haftalık fiyat uygula",
+        "4. Aylık kontrol: 30+ gece → aylık fiyat uygula",
+        "5. Temizlik ücreti ekle (sabit)",
+        "6. Hizmet bedeli ekle (% bazlı)",
+        "7. Kapora hesapla (% bazlı)"
+      ],
+      
+      "example_calculation": {
+        "scenario": "7 gece konaklama, yaz sezonu",
+        "daily_price": 1000,
+        "weekly_price": 6000,
+        "cleaning_fee": 500,
+        "service_fee_percent": 3,
+        "deposit_percent": 30,
+        
+        "calculation": {
+          "7_days_x_1000": 7000,
+          "weekly_discount_applied": 6000,
+          "cleaning_fee": 500,
+          "service_fee": 180,
+          "subtotal": 6680,
+          "deposit_30_percent": 2004,
+          "remaining": 4676
+        }
+      }
+    },
+    
+    "conflict_detection_algorithm": {
+      "method": "Event::hasConflict()",
+      "logic": "Tarih aralığı çakışma kontrolü",
+      "conditions": [
+        "Yeni check_in, mevcut check_in ile check_out arasında mı?",
+        "Yeni check_out, mevcut check_in ile check_out arasında mı?",
+        "Yeni tarih aralığı, mevcut aralığı tamamen kapsıyor mu?",
+        "Sadece active (pending + confirmed) rezervasyonlar kontrol edilir"
+      ],
+      
+      "sql_equivalent": "WHERE ilan_id = ? AND status IN ('pending','confirmed') AND ((check_in BETWEEN ? AND ?) OR (check_out BETWEEN ? AND ?) OR (check_in <= ? AND check_out >= ?))",
+      
+      "usage": {
+        "before_booking": "Event::isAvailable($ilanId, $checkIn, $checkOut)",
+        "result": "true = müsait, false = dolu"
+      }
+    }
+  },
+  
+  "migration_details": {
+    "events_table": {
+      "foreign_keys": ["ilan_id → ilanlar (cascade on delete)"],
+      "indexes": [
+        "ilan_id",
+        "status",
+        "check_in",
+        "check_out",
+        "['ilan_id', 'status'] - compound",
+        "['check_in', 'check_out'] - date range queries"
+      ],
+      "soft_deletes": true,
+      "timestamps": true
+    },
+    
+    "seasons_table": {
+      "foreign_keys": ["ilan_id → ilanlar (cascade on delete)"],
+      "indexes": [
+        "ilan_id",
+        "type",
+        "is_active",
+        "['ilan_id', 'is_active'] - compound",
+        "['start_date', 'end_date'] - date range"
+      ],
+      "soft_deletes": true,
+      "timestamps": true
+    }
+  },
+  
+  "usage_examples": {
+    "create_reservation": "Event::create(['ilan_id' => 1, 'check_in' => '2025-06-15', 'check_out' => '2025-06-22', 'guest_name' => 'Ahmet Yılmaz', 'guest_email' => 'ahmet@example.com', 'guest_count' => 4, 'total_price' => 7000])",
+    
+    "check_availability": "Event::isAvailable($ilanId, '2025-06-15', '2025-06-22')",
+    
+    "create_season": "Season::create(['ilan_id' => 1, 'name' => 'Yaz Sezonu 2025', 'type' => 'yaz', 'start_date' => '2025-06-01', 'end_date' => '2025-09-30', 'daily_price' => 1000, 'weekly_price' => 6000, 'minimum_stay' => 3])",
+    
+    "calculate_price": "$pricing = Season::calculatePriceForDateRange($ilanId, '2025-06-15', '2025-06-22')",
+    
+    "get_ilan_events": "$ilan->events // Tüm rezervasyonlar\n$ilan->activeEvents // Sadece aktif",
+    
+    "get_ilan_seasons": "$ilan->seasons // Tüm sezonlar\n$ilan->activeSeasons // Sadece aktif",
+    
+    "confirm_booking": "$event->confirm() // Status: confirmed, confirmed_at: now()",
+    
+    "cancel_booking": "$event->cancel('Misafir iptal etti') // Status: cancelled"
+  },
+  
+  "best_practices_applied": [
+    "Eloquent ORM (no raw SQL)",
+    "Soft deletes (data recovery)",
+    "Foreign keys (referential integrity)",
+    "Indexes (performance optimization)",
+    "Compound indexes (multi-column queries)",
+    "Enum fields (status, payment_status, source, type)",
+    "Decimal precision (10,2 for money)",
+    "Type casting (dates, decimals, booleans, integers)",
+    "Query scopes (reusable queries)",
+    "Accessors (computed properties)",
+    "Helper methods (business logic)",
+    "Static methods (utilities)",
+    "Auto-calculation (night_count in boot)",
+    "Validation (minimum_stay, maximum_stay)",
+    "Context7 compliance (100%)"
+  ],
+  
+  "next_steps": [
+    "Public villa listing page (/yazliklar)",
+    "Villa detail page (/yazliklar/{id})",
+    "Reservation widget (sticky sidebar)",
+    "FullCalendar.js integration",
+    "Price calculator widget",
+    "Email/SMS notifications",
+    "Airbnb/Booking.com API integration",
+    "Reviews and ratings system",
+    "Instant booking feature",
+    "Payment gateway integration"
+  ],
+  
+  "todo_reduction": {
+    "before": 39,
+    "completed_today": 16,
+    "after": 23,
+    "reduction_percent": 41
+  }
+}
+

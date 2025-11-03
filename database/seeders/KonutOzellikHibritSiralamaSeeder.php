@@ -1,0 +1,307 @@
+<?php
+
+namespace Database\Seeders;
+
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+
+class KonutOzellikHibritSiralamaSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     */
+    public function run(): void
+    {
+        $konutOzellikleri = [
+            [
+                'ozellik_adi' => 'TV - Uydu',
+                'ozellik_slug' => 'tv-uydu',
+                'kullanim_sikligi' => 572,
+                'ai_oneri_yuzdesi' => 95.00,
+                'kullanici_tercih_yuzdesi' => 95.00,
+                'hibrit_skor' => 95.00,
+                'onem_seviyesi' => 'cok_onemli',
+                'siralama' => 1,
+                'aktif' => true,
+                'aciklama' => 'TV ve uydu sistemi özelliği'
+            ],
+            [
+                'ozellik_adi' => 'Özel Havuzlu',
+                'ozellik_slug' => 'ozel-havuzlu',
+                'kullanim_sikligi' => 570,
+                'ai_oneri_yuzdesi' => 90.00,
+                'kullanici_tercih_yuzdesi' => 90.00,
+                'hibrit_skor' => 90.00,
+                'onem_seviyesi' => 'cok_onemli',
+                'siralama' => 2,
+                'aktif' => true,
+                'aciklama' => 'Özel havuz özelliği'
+            ],
+            [
+                'ozellik_adi' => 'Ebeveyn Banyosu',
+                'ozellik_slug' => 'ebeveyn-banyosu',
+                'kullanim_sikligi' => 526,
+                'ai_oneri_yuzdesi' => 85.00,
+                'kullanici_tercih_yuzdesi' => 85.00,
+                'hibrit_skor' => 85.00,
+                'onem_seviyesi' => 'cok_onemli',
+                'siralama' => 3,
+                'aktif' => true,
+                'aciklama' => 'Ebeveyn banyosu özelliği'
+            ],
+            [
+                'ozellik_adi' => 'Internet Bağlantısı',
+                'ozellik_slug' => 'internet-baglantisi',
+                'kullanim_sikligi' => 549,
+                'ai_oneri_yuzdesi' => 90.00,
+                'kullanici_tercih_yuzdesi' => 90.00,
+                'hibrit_skor' => 90.00,
+                'onem_seviyesi' => 'cok_onemli',
+                'siralama' => 4,
+                'aktif' => true,
+                'aciklama' => 'Internet bağlantısı özelliği'
+            ],
+            [
+                'ozellik_adi' => 'Bebek Yatağı',
+                'ozellik_slug' => 'bebek-yatagi',
+                'kullanim_sikligi' => 340,
+                'ai_oneri_yuzdesi' => 80.00,
+                'kullanici_tercih_yuzdesi' => 80.00,
+                'hibrit_skor' => 80.00,
+                'onem_seviyesi' => 'onemli',
+                'siralama' => 5,
+                'aktif' => true,
+                'aciklama' => 'Bebek yatağı özelliği'
+            ],
+            [
+                'ozellik_adi' => 'Jakuzi',
+                'ozellik_slug' => 'jakuzi',
+                'kullanim_sikligi' => 397,
+                'ai_oneri_yuzdesi' => 75.00,
+                'kullanici_tercih_yuzdesi' => 75.00,
+                'hibrit_skor' => 75.00,
+                'onem_seviyesi' => 'onemli',
+                'siralama' => 6,
+                'aktif' => true,
+                'aciklama' => 'Jakuzi özelliği'
+            ],
+            [
+                'ozellik_adi' => 'Mama Sandalyesi',
+                'ozellik_slug' => 'mama-sandalyesi',
+                'kullanim_sikligi' => 205,
+                'ai_oneri_yuzdesi' => 70.00,
+                'kullanici_tercih_yuzdesi' => 70.00,
+                'hibrit_skor' => 70.00,
+                'onem_seviyesi' => 'onemli',
+                'siralama' => 7,
+                'aktif' => true,
+                'aciklama' => 'Mama sandalyesi özelliği'
+            ],
+            [
+                'ozellik_adi' => 'Çocuk Havuzu',
+                'ozellik_slug' => 'cocuk-havuzu',
+                'kullanim_sikligi' => 143,
+                'ai_oneri_yuzdesi' => 65.00,
+                'kullanici_tercih_yuzdesi' => 65.00,
+                'hibrit_skor' => 65.00,
+                'onem_seviyesi' => 'onemli',
+                'siralama' => 8,
+                'aktif' => true,
+                'aciklama' => 'Çocuk havuzu özelliği'
+            ],
+            [
+                'ozellik_adi' => 'Korunaklı havuz',
+                'ozellik_slug' => 'korunakli-havuz',
+                'kullanim_sikligi' => 258,
+                'ai_oneri_yuzdesi' => 70.00,
+                'kullanici_tercih_yuzdesi' => 70.00,
+                'hibrit_skor' => 70.00,
+                'onem_seviyesi' => 'onemli',
+                'siralama' => 9,
+                'aktif' => true,
+                'aciklama' => 'Korunaklı havuz özelliği'
+            ],
+            [
+                'ozellik_adi' => 'Isıtmalı Havuz',
+                'ozellik_slug' => 'isitmali-havuz',
+                'kullanim_sikligi' => 135,
+                'ai_oneri_yuzdesi' => 65.00,
+                'kullanici_tercih_yuzdesi' => 65.00,
+                'hibrit_skor' => 65.00,
+                'onem_seviyesi' => 'onemli',
+                'siralama' => 10,
+                'aktif' => true,
+                'aciklama' => 'Isıtmalı havuz özelliği'
+            ],
+            [
+                'ozellik_adi' => 'Sauna',
+                'ozellik_slug' => 'sauna',
+                'kullanim_sikligi' => 181,
+                'ai_oneri_yuzdesi' => 60.00,
+                'kullanici_tercih_yuzdesi' => 60.00,
+                'hibrit_skor' => 60.00,
+                'onem_seviyesi' => 'onemli',
+                'siralama' => 11,
+                'aktif' => true,
+                'aciklama' => 'Sauna özelliği'
+            ],
+            [
+                'ozellik_adi' => 'Kapalı Havuz',
+                'ozellik_slug' => 'kapali-havuz',
+                'kullanim_sikligi' => 136,
+                'ai_oneri_yuzdesi' => 60.00,
+                'kullanici_tercih_yuzdesi' => 60.00,
+                'hibrit_skor' => 60.00,
+                'onem_seviyesi' => 'onemli',
+                'siralama' => 12,
+                'aktif' => true,
+                'aciklama' => 'Kapalı havuz özelliği'
+            ],
+            [
+                'ozellik_adi' => 'Şömine',
+                'ozellik_slug' => 'somine',
+                'kullanim_sikligi' => 120,
+                'ai_oneri_yuzdesi' => 55.00,
+                'kullanici_tercih_yuzdesi' => 55.00,
+                'hibrit_skor' => 55.00,
+                'onem_seviyesi' => 'onemli',
+                'siralama' => 13,
+                'aktif' => true,
+                'aciklama' => 'Şömine özelliği'
+            ],
+            [
+                'ozellik_adi' => 'Hamam',
+                'ozellik_slug' => 'hamam',
+                'kullanim_sikligi' => 120,
+                'ai_oneri_yuzdesi' => 55.00,
+                'kullanici_tercih_yuzdesi' => 55.00,
+                'hibrit_skor' => 55.00,
+                'onem_seviyesi' => 'onemli',
+                'siralama' => 14,
+                'aktif' => true,
+                'aciklama' => 'Hamam özelliği'
+            ],
+            [
+                'ozellik_adi' => 'Masa Tenisi',
+                'ozellik_slug' => 'masa-tenisi',
+                'kullanim_sikligi' => 77,
+                'ai_oneri_yuzdesi' => 45.00,
+                'kullanici_tercih_yuzdesi' => 45.00,
+                'hibrit_skor' => 45.00,
+                'onem_seviyesi' => 'orta_onemli',
+                'siralama' => 15,
+                'aktif' => true,
+                'aciklama' => 'Masa tenisi özelliği'
+            ],
+            [
+                'ozellik_adi' => 'Oyun Alanı',
+                'ozellik_slug' => 'oyun-alani',
+                'kullanim_sikligi' => 79,
+                'ai_oneri_yuzdesi' => 45.00,
+                'kullanici_tercih_yuzdesi' => 45.00,
+                'hibrit_skor' => 45.00,
+                'onem_seviyesi' => 'orta_onemli',
+                'siralama' => 16,
+                'aktif' => true,
+                'aciklama' => 'Oyun alanı özelliği'
+            ],
+            [
+                'ozellik_adi' => 'Langırt',
+                'ozellik_slug' => 'langirt',
+                'kullanim_sikligi' => 62,
+                'ai_oneri_yuzdesi' => 40.00,
+                'kullanici_tercih_yuzdesi' => 40.00,
+                'hibrit_skor' => 40.00,
+                'onem_seviyesi' => 'orta_onemli',
+                'siralama' => 17,
+                'aktif' => true,
+                'aciklama' => 'Langırt özelliği'
+            ],
+            [
+                'ozellik_adi' => 'Yerden Isıtma',
+                'ozellik_slug' => 'yerden-isitma',
+                'kullanim_sikligi' => 38,
+                'ai_oneri_yuzdesi' => 35.00,
+                'kullanici_tercih_yuzdesi' => 35.00,
+                'hibrit_skor' => 35.00,
+                'onem_seviyesi' => 'orta_onemli',
+                'siralama' => 18,
+                'aktif' => true,
+                'aciklama' => 'Yerden ısıtma özelliği'
+            ],
+            [
+                'ozellik_adi' => 'Site İçınde',
+                'ozellik_slug' => 'site-icinde',
+                'kullanim_sikligi' => 39,
+                'ai_oneri_yuzdesi' => 35.00,
+                'kullanici_tercih_yuzdesi' => 35.00,
+                'hibrit_skor' => 35.00,
+                'onem_seviyesi' => 'orta_onemli',
+                'siralama' => 19,
+                'aktif' => true,
+                'aciklama' => 'Site içinde özelliği'
+            ],
+            [
+                'ozellik_adi' => 'Güvenlik',
+                'ozellik_slug' => 'guvenlik',
+                'kullanim_sikligi' => 24,
+                'ai_oneri_yuzdesi' => 30.00,
+                'kullanici_tercih_yuzdesi' => 30.00,
+                'hibrit_skor' => 30.00,
+                'onem_seviyesi' => 'orta_onemli',
+                'siralama' => 20,
+                'aktif' => true,
+                'aciklama' => 'Güvenlik özelliği'
+            ],
+            [
+                'ozellik_adi' => 'Jeneratör',
+                'ozellik_slug' => 'jenerator',
+                'kullanim_sikligi' => 18,
+                'ai_oneri_yuzdesi' => 25.00,
+                'kullanici_tercih_yuzdesi' => 25.00,
+                'hibrit_skor' => 25.00,
+                'onem_seviyesi' => 'dusuk_onemli',
+                'siralama' => 21,
+                'aktif' => true,
+                'aciklama' => 'Jeneratör özelliği'
+            ],
+            [
+                'ozellik_adi' => 'Bilardo',
+                'ozellik_slug' => 'bilardo',
+                'kullanim_sikligi' => 14,
+                'ai_oneri_yuzdesi' => 20.00,
+                'kullanici_tercih_yuzdesi' => 20.00,
+                'hibrit_skor' => 20.00,
+                'onem_seviyesi' => 'dusuk_onemli',
+                'siralama' => 22,
+                'aktif' => true,
+                'aciklama' => 'Bilardo özelliği'
+            ],
+            [
+                'ozellik_adi' => 'Denize Sıfır',
+                'ozellik_slug' => 'denize-sifir',
+                'kullanim_sikligi' => 1,
+                'ai_oneri_yuzdesi' => 15.00,
+                'kullanici_tercih_yuzdesi' => 15.00,
+                'hibrit_skor' => 15.00,
+                'onem_seviyesi' => 'dusuk_onemli',
+                'siralama' => 23,
+                'aktif' => true,
+                'aciklama' => 'Denize sıfır özelliği'
+            ]
+        ];
+
+        foreach ($konutOzellikleri as $ozellik) {
+            DB::table('konut_ozellik_hibrit_siralama')->updateOrInsert(
+                ['ozellik_slug' => $ozellik['ozellik_slug']],
+                array_merge($ozellik, [
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ])
+            );
+        }
+
+        $this->command->info('Konut özellikleri hibrit sıralama verileri başarıyla eklendi!');
+    }
+}

@@ -1,0 +1,217 @@
+@extends('admin.layouts.neo')
+
+@section('title', 'Talep Detayı: ' . $talep->id)
+
+@push('styles')
+    <style>
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .detail-card {
+            background-color: #fff;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            overflow: hidden;
+        }
+
+        .dark .detail-card {
+            background-color: #1f2937;
+            /* gray-800 */
+        }
+
+        .detail-card-header {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+            /* gray-200 */
+            font-size: 1.125rem;
+            /* text-lg */
+            font-weight: 600;
+            /* font-semibold */
+        }
+
+        .dark .detail-card-header {
+            border-bottom-color: #374151;
+            /* gray-700 */
+        }
+
+        .detail-list {
+            padding: 1.5rem;
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 1rem;
+        }
+
+        .detail-list dt {
+            font-weight: 500;
+            /* font-medium */
+            color: #6b7280;
+            /* gray-500 */
+        }
+
+        .dark .detail-list dt {
+            color: #9ca3af;
+            /* gray-400 */
+        }
+
+        .feature-tag {
+            display: inline-block;
+            background-color: #e0e7ff;
+            /* indigo-100 */
+            color: #4338ca;
+            /* indigo-800 */
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            /* text-sm */
+            font-weight: 500;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .dark .feature-tag {
+            background-color: #3730a3;
+            /* indigo-800 */
+            color: #e0e7ff;
+            /* indigo-100 */
+        }
+    </style>
+@endpush
+
+@section('content')
+    <div class="content-header mb-6">
+        <div class="container-fluid">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h1 class="text-2xl font-semibold text-gray-800 dark:text-gray-200">
+                        <i class="fas fa-clipboard-list mr-2 text-purple-600"></i>
+                        Talep Detayı #{{ $talep->id }}
+                    </h1>
+                    <p class="text-gray-600 dark:text-gray-400 mt-2">
+                        Müşteri talebinin tüm detayları ve statusu.
+                    </p>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <a href="{{ route('admin.talepler.index') }}" class="neo-btn neo-btn-secondary touch-target-optimized touch-target-optimized">
+                        <i class="fas fa-arrow-left mr-2"></i>Taleplere Dön
+                    </a>
+                    <a href="{{ route('admin.talepler.edit', $talep->id) }}" class="neo-btn-warning touch-target-optimized touch-target-optimized">
+                        <i class="fas fa-edit mr-2"></i>Düzenle
+                    </a>
+                    <form action="{{ route('admin.talepler.destroy', $talep->id) }}" method="POST"
+                        onsubmit="return confirm('Bu talebi silmek istediğinizden emin misiniz?');">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="neo-btn-danger touch-target-optimized touch-target-optimized">
+                            <i class="fas fa-trash-alt mr-2"></i>Sil
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <div class="detail-grid">
+            <!-- Müşteri ve Talep Bilgileri -->
+            <div class="detail-card">
+                <h3 class="detail-card-header dark:text-gray-200">Talep ve Müşteri Bilgileri</h3>
+                <dl class="detail-list">
+                    <dt>Müşteri</dt>
+                    <dd>
+                        @if ($talep->kisi)
+                            <a href="{{ route('admin.kisiler.show', $talep->kisi_id) }}"
+                                class="text-blue-600 hover:underline dark:text-blue-400">
+                                {{ $talep->kisi->tam_ad }}
+                            </a>
+                        @else
+                            <span class="text-red-500">İlişkili Müşteri Yok</span>
+                        @endif
+                    </dd>
+
+                    <dt>Sorumlu Danışman</dt>
+                    <dd>{{ $talep->kullanici->name ?? 'Atanmamış' }}</dd>
+
+                    <dt>Talep Tipi</dt>
+                    <dd><span
+                            class="badge badge-{{ $talep->talep_tipi === 'Alım' ? 'success' : ($talep->talep_tipi === 'Kiralama' ? 'info' : 'primary') }}">{{ $talep->talep_tipi }}</span>
+                    </dd>
+
+                    <dt>Durum</dt>
+                    <dd><span class="badge badge-light">{{ ucfirst($talep->status) }}</span></dd>
+
+                    <dt>Kategori</dt>
+                    <dd>{{ $talep->kategori->name ?? 'Belirtilmemiş' }}</dd>
+
+                    <dt>Açıklama</dt>
+                    <dd>{{ $talep->aciklama ?? '-' }}</dd>
+                </dl>
+            </div>
+
+            <!-- Aranan Konum Bilgileri -->
+            <div class="detail-card">
+                <h3 class="detail-card-header dark:text-gray-200">Aranan Konum</h3>
+                <dl class="detail-list">
+                    <dt>Tam Adres</dt>
+                    <dd>{{ $talep->tam_adres ?? 'Genel arama' }}</dd>
+
+                    <dt>Ülke</dt>
+                    <dd>{{ $talep->ulke->name ?? '-' }}</dd>
+
+                    <dt>Bölge</dt>
+                    <dd>{{ $talep->bolge->name ?? '-' }}</dd>
+
+                    <dt>Şehir</dt>
+                    <dd>{{ $talep->il->il_adi ?? '-' }}</dd>
+
+                    <dt>İlçe</dt>
+                    <dd>{{ $talep->ilce->name ?? '-' }}</dd>
+
+                    <dt>Mahalle</dt>
+                    <dd>{{ $talep->mahalle->name ?? '-' }}</dd>
+                </dl>
+            </div>
+
+            <!-- Aranan Kriterler -->
+            <div class="detail-card">
+                <h3 class="detail-card-header dark:text-gray-200">Aranan Kriterler</h3>
+                <dl class="detail-list">
+                    <dt>Fiyat Aralığı</dt>
+                    <dd>{{ number_format($talep->min_fiyat, 0) }} - {{ number_format($talep->max_fiyat, 0) }}
+                        {{ $talep->para_birimi }}</dd>
+
+                    <dt>Oda Sayısı Aralığı</dt>
+                    <dd>{{ $talep->min_oda_sayisi ?? 'Farketmez' }} - {{ $talep->max_oda_sayisi ?? 'Farketmez' }}
+                    </dd>
+
+                    <dt>Metrekare Aralığı</dt>
+                    <dd>{{ $talep->min_metrekare ?? 'Farketmez' }} m² - {{ $talep->max_metrekare ?? 'Farketmez' }} m²
+                    </dd>
+                </dl>
+            </div>
+
+            <!-- Ek Özellikler -->
+            <div class="detail-card">
+                <h3 class="detail-card-header dark:text-gray-200">İstenen Ek Özellikler</h3>
+                <div class="p-6">
+                    @if (!empty($talep->aranan_ozellikler_json))
+                        @foreach ($talep->aranan_ozellikler_json as $ozellik)
+                            <span class="feature-tag">{{ $ozellik }}</span>
+                        @endforeach
+                    @else
+                        <p class="text-gray-500 dark:text-gray-400">Belirtilen ek özellik bulunmamaktadır.</p>
+                    @endif
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-8 text-center">
+            <a href="{{ route('admin.talepler.eslesen', ['talep' => $talep->id]) }}" class="neo-btn neo-btn-primary btn-lg touch-target-optimized touch-target-optimized">
+                <i class="fas fa-search-location mr-2"></i>
+                Bu Talebe Uygun İlanları Bul
+            </a>
+        </div>
+    </div>
+@endsection

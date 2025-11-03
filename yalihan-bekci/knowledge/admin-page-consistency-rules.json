@@ -1,0 +1,176 @@
+{
+    "knowledge_id": "admin-page-consistency-rules-20251019",
+    "title": "Admin Sayfa Tutarlılık Kuralları",
+    "created_at": "2025-10-19T22:20:00Z",
+    "category": "admin_consistency_rules",
+    "compliance": "Context7 v3.5.0",
+    "authority": "Yalıhan Bekçi AI Guardian",
+
+    "critical_rules": [
+        {
+            "rule_id": "admin_layout_consistency",
+            "name": "Admin Layout Consistency",
+            "severity": "CRITICAL",
+            "description": "All admin pages must use admin.layouts.neo layout",
+            "detection_pattern": "@extends\\('layouts\\.admin'\\)",
+            "correct_pattern": "@extends('admin.layouts.neo')",
+            "auto_fix": true,
+            "message": "❌ Admin page using wrong layout. Use admin.layouts.neo for consistency",
+            "examples": {
+                "wrong": "@extends('layouts.admin')",
+                "correct": "@extends('admin.layouts.neo')"
+            }
+        },
+        {
+            "rule_id": "no_cdn_in_admin",
+            "name": "No CDN Dependencies in Admin",
+            "severity": "HIGH",
+            "description": "Admin pages must not use CDN dependencies",
+            "detection_pattern": "https://cdnjs\\.cloudflare\\.com|https://unpkg\\.com",
+            "correct_pattern": "@vite(['resources/css/...'])",
+            "auto_fix": false,
+            "message": "❌ CDN dependency detected in admin page. Migrate to local packages",
+            "examples": {
+                "wrong": "<link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css\">",
+                "correct": "@vite(['resources/css/fontawesome.css'])"
+            }
+        },
+        {
+            "rule_id": "single_route_per_page",
+            "name": "Single Route Per Page",
+            "severity": "MEDIUM",
+            "description": "Avoid unnecessary route redirects",
+            "detection_pattern": "Route::get.*redirect.*route\\('admin\\.",
+            "correct_pattern": "Direct route definition",
+            "auto_fix": false,
+            "message": "⚠️ Unnecessary route redirect detected. Use direct route definition",
+            "examples": {
+                "wrong": "Route::get('/stable-create', function () { return redirect()->route('admin.ilanlar.create'); });",
+                "correct": "Route::get('/admin/ilanlar/create', [IlanController::class, 'create']);"
+            }
+        }
+    ],
+
+    "detection_algorithms": [
+        {
+            "name": "admin_layout_scanner",
+            "description": "Scans admin view files for layout inconsistencies",
+            "files": ["resources/views/admin/**/*.blade.php"],
+            "pattern": "@extends\\('layouts\\.admin'\\)",
+            "action": "suggest_fix"
+        },
+        {
+            "name": "cdn_dependency_scanner",
+            "description": "Scans for CDN dependencies in admin pages",
+            "files": ["resources/views/admin/**/*.blade.php"],
+            "pattern": "https://cdnjs\\.cloudflare\\.com|https://unpkg\\.com",
+            "action": "warn_migration"
+        },
+        {
+            "name": "route_redirect_scanner",
+            "description": "Scans for unnecessary route redirects",
+            "files": ["routes/*.php"],
+            "pattern": "redirect.*route\\('admin\\.",
+            "action": "suggest_cleanup"
+        }
+    ],
+
+    "prevention_strategies": [
+        {
+            "strategy": "template_validation",
+            "description": "Validate admin page templates before creation",
+            "checks": [
+                "Layout extends admin.layouts.neo",
+                "No CDN dependencies",
+                "Proper Vite asset loading",
+                "Context7 compliant CSS classes"
+            ]
+        },
+        {
+            "strategy": "route_audit",
+            "description": "Regular audit of route structure",
+            "checks": [
+                "No unnecessary redirects",
+                "Direct route definitions",
+                "Proper naming conventions",
+                "Admin prefix consistency"
+            ]
+        },
+        {
+            "strategy": "view_standardization",
+            "description": "Enforce view file standards",
+            "checks": [
+                "Single source of truth per page",
+                "Consistent file naming",
+                "Proper component usage",
+                "Layout inheritance"
+            ]
+        }
+    ],
+
+    "auto_fix_templates": [
+        {
+            "name": "layout_fix",
+            "description": "Automatically fix layout inheritance",
+            "find": "@extends('layouts.admin')",
+            "replace": "@extends('admin.layouts.neo')",
+            "context": "admin_view_files"
+        },
+        {
+            "name": "cdn_to_vite",
+            "description": "Convert CDN links to Vite imports",
+            "find": "<link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css\">",
+            "replace": "@vite(['resources/css/fontawesome.css'])",
+            "context": "admin_view_files"
+        }
+    ],
+
+    "learning_cases": [
+        {
+            "case": "admin_create_page_fix",
+            "date": "2025-10-19",
+            "problem": "Admin ilanlar create sayfası tutarsızlıkları",
+            "solution": "Layout fix + CDN migration + Route cleanup",
+            "files_affected": [
+                "resources/views/admin/ilanlar/create.blade.php",
+                "routes/web.php",
+                "resources/css/leaflet.css"
+            ],
+            "outcome": "100% Context7 compliance achieved"
+        }
+    ],
+
+    "yalihan_bekci_commands": [
+        {
+            "command": "check_admin_consistency",
+            "description": "Check all admin pages for consistency issues",
+            "action": "scan_and_report"
+        },
+        {
+            "command": "fix_admin_layouts",
+            "description": "Auto-fix admin layout inconsistencies",
+            "action": "auto_fix"
+        },
+        {
+            "command": "migrate_cdn_dependencies",
+            "description": "Suggest CDN to local migration",
+            "action": "suggest_migration"
+        }
+    ],
+
+    "context7_integration": {
+        "rules_file": "context7-rules.json",
+        "authority_file": ".context7/authority.json",
+        "compliance_target": "100%",
+        "enforcement_level": "STRICT"
+    },
+
+    "documentation": {
+        "related_files": [
+            "yalihan-bekci/knowledge/CDN-TO-LOCAL-MIGRATION-RULES.md",
+            "yalihan-bekci/knowledge/admin-create-page-inconsistencies-2025-10-19.json",
+            ".context7/authority.json"
+        ],
+        "this_file": "yalihan-bekci/knowledge/admin-page-consistency-rules.json"
+    }
+}

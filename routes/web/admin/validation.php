@@ -1,0 +1,23 @@
+<?php
+
+use App\Http\Controllers\Admin\ValidationController;
+use Illuminate\Support\Facades\Route;
+
+/*
+|--------------------------------------------------------------------------
+| Admin Validation Routes
+|--------------------------------------------------------------------------
+|
+| Routes for real-time validation of form fields
+|
+*/
+
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    // Field-level validation
+    Route::post('/validate-field', [ValidationController::class, 'validateField'])
+        ->name('validate.field');
+        
+    // Step-level validation for form wizard
+    Route::post('/validate-step', [ValidationController::class, 'validateStep'])
+        ->name('validate.step');
+});

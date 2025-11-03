@@ -1,0 +1,215 @@
+{
+  "title": "Yalıhan Bekçi - Kod Kalite Kuralları",
+  "version": "1.0.0",
+  "date": "2025-11-01",
+  "category": "code_quality",
+  "description": "Eski kod, gereksiz tekrar, mantık hataları tespiti ve önleme kuralları",
+  
+  "critical_rules": {
+    "duplicate_detection": {
+      "priority": "CRITICAL",
+      "description": "Aynı işlevi gören birden fazla fonksiyon/method tespit edilmeli",
+      "patterns_to_detect": [
+        "Aynı isimli method'lar (Cannot redeclare)",
+        "Benzer isimli method'lar (suggestPrice, suggest_price, priceSuggest)",
+        "Aynı SQL query'leri farklı yerlerde",
+        "Aynı logic farklı controller'larda",
+        "Copy-paste kod blokları"
+      ],
+      "action": "WARN ve Consolidation öner",
+      "example": "AIController::suggestPrice() 2 kez tanımlanmış → Yeni olanı tut, eski olanı @deprecated yap veya sil"
+    },
+    
+    "obsolete_code_detection": {
+      "priority": "HIGH",
+      "description": "Eski, kullanılmayan, deprecated kodları tespit et",
+      "patterns_to_detect": [
+        "Hiç çağrılmayan method'lar",
+        "Eski route tanımları (kullanılmayan)",
+        "Eski migration'lar (rollback edilmiş)",
+        "TODO/FIXME yorumları (6 aydan eski)",
+        "Commented-out kod blokları (3+ satır)"
+      ],
+      "action": "DELETE öner veya @deprecated işaretle",
+      "retention_policy": {
+        "unused_methods": "6 ay kullanılmamışsa SİL",
+        "commented_code": "3 aydan eski ise SİL",
+        "deprecated_features": "@deprecated tag ekle, 1 sürüm sonra SİL"
+      }
+    },
+    
+    "heavy_code_detection": {
+      "priority": "HIGH",
+      "description": "Gereksiz ağırlık yapan, optimize edilmesi gereken kodlar",
+      "patterns_to_detect": [
+        "N+1 query problemi",
+        "Eager loading eksikliği",
+        "İçiçe loop'lar (3+ seviye)",
+        "Büyük array/collection işlemleri (memory)",
+        "Senkron API çağrıları (async olabilir)",
+        "Cache kullanılmayan sık çağrılan query'ler"
+      ],
+      "action": "OPTIMIZE öner",
+      "metrics": {
+        "max_query_count_per_request": 50,
+        "max_memory_usage_per_function": "128MB",
+        "max_execution_time": "5 seconds"
+      }
+    },
+    
+    "logic_consistency_check": {
+      "priority": "CRITICAL",
+      "description": "Mantık tutarsızlıkları, çelişen kurallar",
+      "patterns_to_detect": [
+        "Aynı field farklı naming (sehir vs city)",
+        "Aynı validation farklı yerlerde farklı kurallar",
+        "Çelişen business logic (A izin veriyor, B yasaklıyor)",
+        "Database column mismatch (code'da 'semt_id' DB'de 'mahalle_id')",
+        "Inconsistent response format (bazı JSON, bazı array)"
+      ],
+      "action": "FIX immediately ve standardize et",
+      "standards": {
+        "naming": "Context7 standards (English DB fields)",
+        "validation": "Tek bir ValidationRules class",
+        "response_format": "Her zaman JSON with success/data/metadata",
+        "error_handling": "Context7 error format"
+      }
+    }
+  },
+  
+  "response_guidelines": {
+    "negative_response_forbidden": {
+      "rule": "Kullanıcıya 'olmaz', 'yapamayız', 'imkansız' yanıtı VERİLMEZ",
+      "instead": "Nasıl yapılacağını, alternatifleri, çözüm yollarını AÇIKLA",
+      "examples": {
+        "bad": "Bu özellik eklenemez, çok karmaşık",
+        "good": "Bu özellik şu şekilde eklenebilir: 1) X modülü güncellenir, 2) Y API entegrasyonu yapılır, 3) Z testi eklenir. Tahmini süre: 2 gün"
+      }
+    },
+    
+    "solution_oriented": {
+      "rule": "Her soruna çözüm odaklı yaklaş",
+      "steps": [
+        "1. Problemi anla ve tanımla",
+        "2. Neden olduğunu tespit et",
+        "3. En az 2 alternatif çözüm öner",
+        "4. Her alternatifin pros/cons'unu listele",
+        "5. Öneriyi implement et"
+      ]
+    },
+    
+    "proactive_prevention": {
+      "rule": "Hata gerçekleşmeden önce engelle",
+      "actions": [
+        "Pre-commit hook'larla duplicate detection",
+        "PHPStan ile static analysis",
+        "Context7 compliance check before merge",
+        "Automated test coverage (min %80)"
+      ]
+    }
+  },
+  
+  "project_maturity_rules": {
+    "description": "Proje sona yaklaşırken uygulanacak kurallar",
+    "phase": "FINALIZATION",
+    "focus_areas": [
+      {
+        "area": "Code Quality",
+        "checks": [
+          "Hiç unused code yok",
+          "Tüm TODO/FIXME çözülmüş",
+          "Code coverage >80%",
+          "0 duplicate code",
+          "0 N+1 query"
+        ]
+      },
+      {
+        "area": "Performance",
+        "checks": [
+          "Page load <2s",
+          "API response <500ms",
+          "Database query <100ms average",
+          "Cache hit rate >90%"
+        ]
+      },
+      {
+        "area": "Standards",
+        "checks": [
+          "Context7 compliance 100%",
+          "PSR-12 coding standards",
+          "Laravel best practices",
+          "Security best practices (OWASP)"
+        ]
+      },
+      {
+        "area": "Documentation",
+        "checks": [
+          "All API endpoints documented",
+          "README complete",
+          "Deployment guide ready",
+          "User manual ready"
+        ]
+      }
+    ]
+  },
+  
+  "automated_checks": {
+    "enabled": true,
+    "frequency": "On every commit",
+    "tools": [
+      {
+        "name": "PHPStan",
+        "level": 8,
+        "config": "phpstan.neon"
+      },
+      {
+        "name": "PHP CS Fixer",
+        "config": ".php-cs-fixer.php"
+      },
+      {
+        "name": "Context7 Checker",
+        "script": "php context7_final_compliance_checker.php"
+      },
+      {
+        "name": "Duplicate Detector",
+        "script": "php artisan yalihan:check-duplicates"
+      }
+    ]
+  },
+  
+  "real_examples_from_today": {
+    "duplicate_method": {
+      "file": "app/Http/Controllers/Api/AIController.php",
+      "issue": "suggestPrice() method 2 kez tanımlanmış",
+      "detection": "PHP Fatal error: Cannot redeclare",
+      "solution": "Eski method → suggestPriceOld() + @deprecated tag",
+      "status": "FIXED",
+      "date": "2025-11-01",
+      "lesson": "Her yeni method eklemeden önce grep ile kontrol et"
+    },
+    "route_order_404": {
+      "file": "routes/admin.php",
+      "issue": "GET /admin/talep-portfolyo/ai-status → 404 Not Found",
+      "detection": "Laravel Telescope - 404 status",
+      "root_cause": "Generic route /{talep} özel route'dan ÖNCE tanımlanmış",
+      "wrong_order": "/{talep} (line 821) → /ai-status (line 825)",
+      "correct_order": "/ai-status (ÖNCE) → /{talep} (SONRA)",
+      "solution": "Route order değiştirildi: Özel route'lar generic route'ların ÖNÜNE taşındı",
+      "status": "FIXED",
+      "date": "2025-11-01",
+      "lesson": "Laravel route matching: Yukarıdan aşağı, ilk eşleşeni kullanır. Özel route'lar DAIMA generic route'lardan ÖNCE!"
+    }
+  },
+  
+  "enforcement": {
+    "pre_commit_hook": true,
+    "ci_cd_integration": true,
+    "manual_review_required_for": [
+      "New controller methods",
+      "Database migrations",
+      "Route additions",
+      "Core service modifications"
+    ]
+  }
+}
+

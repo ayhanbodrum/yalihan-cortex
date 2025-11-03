@@ -1,0 +1,430 @@
+<?php
+
+namespace App\Services;
+
+use App\Models\Ilan;
+use App\Models\IlanKategori;
+use Illuminate\Support\Str;
+
+/**
+ * Yalıhan Emlak Referans Numarası Sistemi
+ *
+ * Context7 Standardı: C7-REFERANS-NUMARA-2025-10-11
+ *
+ * Format: YE-{YAYINTIPI}-{LOKASYON}-{KATEGORI}-{SIRANO}
+ * Örnek: YE-SAT-YALKVK-DAİRE-001234
+ *
+ * Kullanım:
+ * $service = app(IlanReferansService::class);
+ * $referans = $service->generateReferansNo($ilan);
+ * $dosyaAdi = $service->generateDosyaAdi($ilan);
+ */
+class IlanReferansService
+{
+    /**
+     * Yalıhan Emlak prefix (sabit)
+     */
+    const PREFIX = 'YE';
+
+    /**
+     * Referans numarası oluştur
+     *
+     * Format: YE-{YAYINTIPI}-{LOKASYON}-{KATEGORI}-{SIRANO}
+     * Örnek: YE-SAT-YALKVK-DAİRE-001234
+     *
+     * @param Ilan $ilan
+     * @return string
+     */
+    public function generateReferansNo(Ilan $ilan): string
+    {
+        $parts = [
+            self::PREFIX,
+            $this->getYayinTipiKodu($ilan),
+            $this->getLokasyonKodu($ilan),
+            $this->getKategoriKodu($ilan),
+            $this->getSiraNo($ilan)
+        ];
+
+        return implode('-', array_filter($parts));
+    }
+
+    /**
+     * Kullanıcı dostu dosya adı oluştur
+     *
+     * Format: {Lokasyon} {YayınTipi} {Site} ({Mal Sahibi}) {Kategori} Ref No {ReferansNo}
+     * Örnek: Yalıkavak Satılık Ülkerler Sitesi (Ahmet Yılmaz) Daire Ref No YE-SAT-YALKVK-DAİRE-001234
+     *
+     * @param Ilan $ilan
+     * @return string
+     */
+    public function generateDosyaAdi(Ilan $ilan): string
+    {
+        $parts = [];
+
+        // Lokasyon (İlçe veya Mahalle)
+        if ($ilan->mahalle) {
+            $parts[] = $ilan->mahalle->mahalle_adi;
+        } elseif ($ilan->ilce) {
+            $parts[] = $ilan->ilce->ilce_adi;
+        } elseif ($ilan->il) {
+            $parts[] = $ilan->il->il_adi;
+        }
+
+        // Yayın Tipi (Satılık, Kiralık, vb.)
+        $parts[] = $this->getYayinTipiAdi($ilan);
+
+        // Site/Apartman
+        if ($ilan->site) {
+            $parts[] = $ilan->site->name;
+        }
+
+        // Mal Sahibi (Parantez içinde)
+        if ($ilan->ilanSahibi) {
+            $malSahibi = trim($ilan->ilanSahibi->ad . ' ' . $ilan->ilanSahibi->soyad);
+            $parts[] = "({$malSahibi})";
+        }
+
+        // Kategori
+        $parts[] = $this->getKategoriAdi($ilan);
+
+        // Referans No
+        $parts[] = "Ref No " . $this->generateReferansNo($ilan);
+
+        return implode(' ', array_filter($parts));
+    }
+
+    /**
+     * Kısa dosya adı (klasör adı için)
+     *
+     * Format: {ReferansNo}_{Lokasyon}_{Kategori}
+     * Örnek: YE-SAT-YALKVK-DAİRE-001234_Yalıkavak_Daire
+     *
+     * @param Ilan $ilan
+     * @return string
+     */
+    public function generateKisaDosyaAdi(Ilan $ilan): string
+    {
+        $referansNo = $this->generateReferansNo($ilan);
+        $lokasyon = $ilan->mahalle?->mahalle_adi ?? $ilan->ilce?->ilce_adi ?? $ilan->il?->il_adi ?? 'Bilinmeyen';
+        $kategori = $this->getKategoriAdi($ilan);
+
+        // Türkçe karakterleri kaldır (dosya adı için güvenli)
+        $lokasyon = $this->turkceKarakterTemizle($lokasyon);
+        $kategori = $this->turkceKarakterTemizle($kategori);
+
+        return "{$referansNo}_{$lokasyon}_{$kategori}";
+    }
+
+    /**
+     * Yayın tipi kodu (SAT, KİR, GÜN)
+     *
+     * @param Ilan $ilan
+     * @return string
+     */
+    protected function getYayinTipiKodu(Ilan $ilan): string
+    {
+        // İlan kategorisinden yayın tipini al
+        $kategori = $ilan->kategori;
+
+        if (!$kategori) {
+            return 'SAT'; // Varsayılan
+        }
+
+        $name = strtolower($kategori->name);
+
+        if (str_contains($name, 'satılık') || str_contains($name, 'satilik')) {
+            return 'SAT';
+        } elseif (str_contains($name, 'kiralık') || str_contains($name, 'kiralik')) {
+            return 'KİR';
+        } elseif (str_contains($name, 'günlük') || str_contains($name, 'gunluk')) {
+            return 'GÜN';
+        } elseif (str_contains($name, 'devren')) {
+            return 'DEV';
+        }
+
+        return 'SAT'; // Varsayılan
+    }
+
+    /**
+     * Yayın tipi adı (Satılık, Kiralık, vb.)
+     *
+     * @param Ilan $ilan
+     * @return string
+     */
+    protected function getYayinTipiAdi(Ilan $ilan): string
+    {
+        $kod = $this->getYayinTipiKodu($ilan);
+
+        $mapping = [
+            'SAT' => 'Satılık',
+            'KİR' => 'Kiralık',
+            'GÜN' => 'Günlük Kiralık',
+            'DEV' => 'Devren'
+        ];
+
+        return $mapping[$kod] ?? 'Satılık';
+    }
+
+    /**
+     * Lokasyon kodu (İlçe/Mahalle kısa adı)
+     *
+     * @param Ilan $ilan
+     * @return string
+     */
+    protected function getLokasyonKodu(Ilan $ilan): string
+    {
+        // Mahalle öncelikli, sonra ilçe, sonra il
+        $lokasyon = $ilan->mahalle?->mahalle_adi
+                    ?? $ilan->ilce?->ilce_adi
+                    ?? $ilan->il?->il_adi
+                    ?? 'GENEL';
+
+        // İlk 6 karakteri al ve büyük harfe çevir
+        $kod = mb_strtoupper(mb_substr($lokasyon, 0, 6), 'UTF-8');
+
+        // Türkçe karakterleri değiştir
+        $kod = str_replace(
+            ['Ç', 'Ğ', 'İ', 'Ö', 'Ş', 'Ü', 'ç', 'ğ', 'ı', 'ö', 'ş', 'ü'],
+            ['C', 'G', 'I', 'O', 'S', 'U', 'C', 'G', 'I', 'O', 'S', 'U'],
+            $kod
+        );
+
+        // Boşlukları kaldır
+        $kod = str_replace(' ', '', $kod);
+
+        return $kod;
+    }
+
+    /**
+     * Kategori kodu
+     *
+     * @param Ilan $ilan
+     * @return string
+     */
+    protected function getKategoriKodu(Ilan $ilan): string
+    {
+        $kategori = $ilan->kategori;
+
+        if (!$kategori) {
+            return 'GENEL';
+        }
+
+        // Ana kategoriyi al (parent varsa)
+        while ($kategori->parent) {
+            $kategori = $kategori->parent;
+        }
+
+        $name = mb_strtoupper($kategori->name, 'UTF-8');
+
+        // Bilinen kategoriler için özel kodlar
+        $kodlama = [
+            'DAİRE' => 'DAİRE',
+            'DAIRE' => 'DAİRE',
+            'VİLLA' => 'VİLLA',
+            'VILLA' => 'VİLLA',
+            'ARSA' => 'ARSA',
+            'YAZLIK' => 'YAZLK',
+            'İŞYERİ' => 'İŞYER',
+            'ISYERI' => 'İŞYER',
+            'OFİS' => 'OFİS',
+            'OFIS' => 'OFİS',
+            'DÜKKAN' => 'DÜKKAN',
+            'DEPO' => 'DEPO',
+            'BINA' => 'BİNA',
+        ];
+
+        foreach ($kodlama as $anahtar => $kod) {
+            if (str_contains($name, $anahtar)) {
+                return $kod;
+            }
+        }
+
+        // Varsayılan: İlk 5 karakter
+        return mb_substr($name, 0, 5);
+    }
+
+    /**
+     * Kategori adı (tam)
+     *
+     * @param Ilan $ilan
+     * @return string
+     */
+    protected function getKategoriAdi(Ilan $ilan): string
+    {
+        return $ilan->kategori?->name ?? 'Gayrimenkul';
+    }
+
+    /**
+     * Sıra numarası (6 haneli)
+     *
+     * @param Ilan $ilan
+     * @return string
+     */
+    protected function getSiraNo(Ilan $ilan): string
+    {
+        // İlan ID'yi 6 haneli formata çevir
+        return str_pad($ilan->id, 6, '0', STR_PAD_LEFT);
+    }
+
+    /**
+     * Türkçe karakter temizle (dosya adı için güvenli)
+     *
+     * @param string $text
+     * @return string
+     */
+    protected function turkceKarakterTemizle(string $text): string
+    {
+        $text = str_replace(
+            ['Ç', 'Ğ', 'İ', 'Ö', 'Ş', 'Ü', 'ç', 'ğ', 'ı', 'ö', 'ş', 'ü', ' '],
+            ['C', 'G', 'I', 'O', 'S', 'U', 'c', 'g', 'i', 'o', 's', 'u', '_'],
+            $text
+        );
+
+        // Özel karakterleri kaldır
+        $text = preg_replace('/[^A-Za-z0-9_-]/', '', $text);
+
+        return $text;
+    }
+
+    /**
+     * Referans numarasından ilan bul
+     *
+     * @param string $referansNo
+     * @return Ilan|null
+     */
+    public function findByReferansNo(string $referansNo): ?Ilan
+    {
+        // Referans numarasından ID'yi çıkar
+        // Format: YE-SAT-YALKVK-DAİRE-001234
+
+        $parts = explode('-', $referansNo);
+
+        if (count($parts) < 5) {
+            return null;
+        }
+
+        // Son kısım ID
+        $id = (int) ltrim(end($parts), '0');
+
+        return Ilan::find($id);
+    }
+
+    /**
+     * Toplu referans numarası güncelle (mevcut ilanlar için)
+     *
+     * @return array
+     */
+    public function updateAllReferansNumbers(): array
+    {
+        $ilanlar = Ilan::whereNull('referans_no')->get();
+        $updated = 0;
+        $errors = 0;
+
+        foreach ($ilanlar as $ilan) {
+            try {
+                $referansNo = $this->generateReferansNo($ilan);
+                $dosyaAdi = $this->generateDosyaAdi($ilan);
+
+                $ilan->update([
+                    'referans_no' => $referansNo,
+                    'dosya_adi' => $dosyaAdi
+                ]);
+
+                $updated++;
+            } catch (\Exception $e) {
+                $errors++;
+            }
+        }
+
+        return [
+            'success' => true,
+            'updated' => $updated,
+            'errors' => $errors,
+            'total' => $ilanlar->count()
+        ];
+    }
+
+    /**
+     * Referans numarası benzersizlik kontrolü
+     *
+     * @param string $referansNo
+     * @param int|null $excludeIlanId
+     * @return bool
+     */
+    public function isUnique(string $referansNo, ?int $excludeIlanId = null): bool
+    {
+        $query = Ilan::where('referans_no', $referansNo);
+
+        if ($excludeIlanId) {
+            $query->where('id', '!=', $excludeIlanId);
+        }
+
+        return $query->count() === 0;
+    }
+
+    /**
+     * Başarı mesajı oluştur (copyable referans no ile)
+     *
+     * @param Ilan $ilan
+     * @return array
+     */
+    public function getSuccessMessage(Ilan $ilan): array
+    {
+        $referansNo = $ilan->referans_no ?? $this->generateReferansNo($ilan);
+        $dosyaAdi = $ilan->dosya_adi ?? $this->generateDosyaAdi($ilan);
+
+        return [
+            'title' => '🎉 İlan Başarıyla Oluşturuldu!',
+            'referans_no' => $referansNo,
+            'dosya_adi' => $dosyaAdi,
+            'message' => "İlanınız başarıyla eklendi. Referans No: {$referansNo}",
+            'copy_text' => $dosyaAdi,
+            'show_modal' => true
+        ];
+    }
+
+    /**
+     * Arama query builder (referans no, telefon, portal, site)
+     *
+     * @param string $searchTerm
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function searchQuery(string $searchTerm)
+    {
+        $query = Ilan::query();
+
+        // Referans no ile arama
+        if (str_starts_with(strtoupper($searchTerm), 'YE-')) {
+            return $query->where('referans_no', 'LIKE', "%{$searchTerm}%");
+        }
+
+        // Telefon ile arama
+        if (preg_match('/^[0-9+\s()-]+$/', $searchTerm)) {
+            $cleanPhone = preg_replace('/[^0-9]/', '', $searchTerm);
+            return $query->whereHas('ilanSahibi', function($q) use ($cleanPhone) {
+                $q->where('telefon', 'LIKE', "%{$cleanPhone}%")
+                  ->orWhere('cep_telefonu', 'LIKE', "%{$cleanPhone}%");
+            });
+        }
+
+        // Portal ID ile arama
+        if (preg_match('/^\d{8,}$/', $searchTerm)) {
+            return $query->where(function($q) use ($searchTerm) {
+                $q->where('sahibinden_id', $searchTerm)
+                  ->orWhere('emlakjet_id', $searchTerm)
+                  ->orWhere('hepsiemlak_id', $searchTerm)
+                  ->orWhere('zingat_id', $searchTerm);
+            });
+        }
+
+        // Site/Apartman adı ile arama
+        return $query->where(function($q) use ($searchTerm) {
+            $q->where('baslik', 'LIKE', "%{$searchTerm}%")
+              ->orWhere('dosya_adi', 'LIKE', "%{$searchTerm}%")
+              ->orWhereHas('site', function($sq) use ($searchTerm) {
+                  $sq->where('name', 'LIKE', "%{$searchTerm}%");
+              });
+        });
+    }
+}
+

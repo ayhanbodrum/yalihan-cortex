@@ -1,0 +1,74 @@
+{
+  "version": "2025-10-20",
+  "priority": [
+    "stable_create_skeleton_retry_disable",
+    "talep_index_datasets_filters_eager",
+    "forbidden_patterns_cleanup",
+    "link_health_ci_blocking",
+    "ai_suggest_timeout_retry_toasts",
+    "neo_design_standardization",
+    "currency_mask_format_text_backend",
+    "csp_ai_hosts_ratelimit_logs",
+    "dynamic_features_loading_states",
+    "a11y_labels_aria_focus"
+  ],
+  "tasks": [
+    {
+      "id": "stable_create_skeleton_retry_disable",
+      "title": "Stable-Create kaskadlar: skeleton + retry + disable",
+      "acceptance": [
+        "Skeleton 100ms içinde görünür",
+        "Başarılı yanıt < 1s (hızlı ağ)",
+        "Hata durumunda Retry CTA ve toast"
+      ]
+    },
+    {
+      "id": "talep_index_datasets_filters_eager",
+      "title": "Talep index: dataset sağla + eager load + filtreler",
+      "details": {
+        "datasets": ["talepler", "statuslar", "kategoriler", "ulkeler", "talepTipleri"],
+        "eager": ["kisi", "kategori", "il", "ilce"],
+        "paginate": 20
+      }
+    },
+    {
+      "id": "forbidden_patterns_cleanup",
+      "title": "Context7 yasak pattern temizliği",
+      "patterns": ["durum", "is_active", "aktif", "sehir"],
+      "tooling": ["scripts/context7-forbidden-scan.php", ".context7/api.php get-migration-suggestions"]
+    },
+    {
+      "id": "link_health_ci_blocking",
+      "title": "Link Health CI entegrasyonu (bloklayıcı)",
+      "criteria": ["200 dışı → pipeline fail", "kritik admin sayfalar test edilir"]
+    },
+    {
+      "id": "ai_suggest_timeout_retry_toasts",
+      "title": "AI suggest timeout/retry ve kullanıcı dostu toasts",
+      "timeout_ms": 12000,
+      "retry": 1
+    },
+    {
+      "id": "neo_design_standardization",
+      "title": "Neo sınıflarıyla form standardizasyonu",
+      "classes": ["neo-input", "neo-select", "neo-switch", "neo-btn", "neo-card", "neo-form-group"]
+    },
+    {
+      "id": "currency_mask_format_text_backend",
+      "title": "Para birimi mask/format + yazıya çevirme",
+      "currencies": ["TRY", "USD", "EUR", "GBP"]
+    },
+    {
+      "id": "csp_ai_hosts_ratelimit_logs",
+      "title": "CSP connect-src AI host + rate limit + logs"
+    },
+    {
+      "id": "dynamic_features_loading_states",
+      "title": "Dinamik özellikler loading/empty/reset"
+    },
+    {
+      "id": "a11y_labels_aria_focus",
+      "title": "Erişilebilirlik: label/for, aria, focus rings"
+    }
+  ]
+}

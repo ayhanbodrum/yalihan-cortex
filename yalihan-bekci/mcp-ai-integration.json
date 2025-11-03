@@ -1,0 +1,74 @@
+{
+  "mcp_ai_integration": {
+    "timestamp": "2025-10-25T10:59:00Z",
+    "mcp_servers": {
+      "yalihan-bekci": {
+        "purpose": "AI Guardian System",
+        "ai_integration": {
+          "ai_core_system": "AICoreSystem ile entegrasyon",
+          "learning_patterns": "Öğrenme pattern'lerini analiz etme",
+          "context_analysis": "Context analizi ve öneriler",
+          "pattern_detection": "Hata pattern'lerini tespit etme"
+        },
+        "tools": [
+          "context7_validate - Context7 uyumluluğu",
+          "check_pattern - Hata pattern kontrolü",
+          "get_system_structure - Sistem yapısı analizi",
+          "get_learned_errors - Öğrenilen hatalar"
+        ]
+      },
+      "context7": {
+        "purpose": "Context7 compliance",
+        "ai_integration": {
+          "field_naming": "AI destekli field isimlendirme",
+          "compliance_check": "Otomatik uyumluluk kontrolü",
+          "suggestion_system": "AI öneri sistemi"
+        }
+      },
+      "memory": {
+        "purpose": "Cursor Memory System",
+        "ai_integration": {
+          "learning_storage": "AI öğrenme verilerini saklama",
+          "pattern_memory": "Pattern'leri hafızada tutma",
+          "context_memory": "Context bilgilerini saklama"
+        }
+      }
+    },
+    "ai_learning_workflow": {
+      "step_1": {
+        "action": "AI Core System analizi",
+        "mcp_tools": ["get_system_structure", "context7_validate"],
+        "output": "Sistem yapısı ve uyumluluk analizi"
+      },
+      "step_2": {
+        "action": "Pattern öğrenimi",
+        "mcp_tools": ["check_pattern", "get_learned_errors"],
+        "output": "Öğrenilen pattern'ler ve hatalar"
+      },
+      "step_3": {
+        "action": "AI entegrasyonu",
+        "mcp_tools": ["context7_validate", "ai_prompt_manager"],
+        "output": "AI destekli öneriler ve validasyon"
+      },
+      "step_4": {
+        "action": "Sürekli öğrenme",
+        "mcp_tools": ["get_learned_errors", "pattern_detection"],
+        "output": "Gelişen AI sistemi"
+      }
+    },
+    "cursor_integration": {
+      "ai_assistance": {
+        "code_generation": "AI destekli kod üretimi",
+        "pattern_suggestion": "Pattern önerileri",
+        "error_prevention": "Hata önleme",
+        "optimization": "Kod optimizasyonu"
+      },
+      "learning_cycle": {
+        "observe": "Kod değişikliklerini gözlemle",
+        "learn": "Pattern'leri öğren",
+        "suggest": "AI önerileri sun",
+        "improve": "Sistemi geliştir"
+      }
+    }
+  }
+}

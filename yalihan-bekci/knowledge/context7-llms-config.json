@@ -1,0 +1,80 @@
+{
+  "llms_sources": {
+    "tailwindcss": {
+      "url": "https://context7.com/tailwindlabs/tailwindcss.com/llms.txt",
+      "version": "4.x",
+      "your_version": "^4.1.14",
+      "enabled": true,
+      "check_interval": "daily",
+      "description": "Tailwind CSS v4 official documentation for AI/LLM consumption"
+    },
+    "laravel": {
+      "url": "https://context7.com/laravel/laravel.com/llms.txt",
+      "version": "11.x",
+      "your_version": "^10.10",
+      "enabled": true,
+      "check_interval": "daily",
+      "description": "Laravel framework documentation"
+    },
+    "alpinejs": {
+      "url": "https://context7.com/alpinejs/alpinejs.dev/llms.txt",
+      "version": "3.x",
+      "your_version": "^3.15.0",
+      "enabled": true,
+      "check_interval": "daily",
+      "description": "Alpine.js documentation"
+    },
+    "spatie-permission": {
+      "url": "https://context7.com/spatie/laravel-permission/llms.txt",
+      "version": "latest",
+      "your_version": "check_composer",
+      "enabled": true,
+      "check_interval": "weekly",
+      "description": "Spatie Laravel Permission package"
+    }
+  },
+  "ai_providers": {
+    "anythingllm": {
+      "name": "AnythingLLM",
+      "type": "local",
+      "url": "http://localhost:3001",
+      "enabled": true,
+      "features": ["embedding", "chat", "document_processing"]
+    },
+    "openai": {
+      "name": "OpenAI GPT",
+      "type": "cloud",
+      "url": "https://api.openai.com/v1",
+      "enabled": true,
+      "features": ["chat", "completion", "embedding"]
+    },
+    "gemini": {
+      "name": "Google Gemini",
+      "type": "cloud",
+      "url": "https://generativelanguage.googleapis.com/v1beta",
+      "enabled": true,
+      "features": ["vision", "ocr", "chat", "multimodal"]
+    },
+    "claude": {
+      "name": "Anthropic Claude",
+      "type": "cloud",
+      "url": "https://api.anthropic.com/v1",
+      "enabled": true,
+      "features": ["chat", "code_review", "quality_control"]
+    },
+    "ollama": {
+      "name": "Ollama Local",
+      "type": "local",
+      "url": "http://51.75.64.121:11434",
+      "enabled": true,
+      "model": "gemma2:2b",
+      "features": ["local_inference", "turkish_support"],
+      "recommended": true
+    }
+  },
+  "auto_sync": true,
+  "last_sync": "2025-10-12T18:45:00Z",
+  "sync_on_startup": true,
+  "cache_duration": 86400
+}
+

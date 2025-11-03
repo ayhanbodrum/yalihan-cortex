@@ -1,0 +1,411 @@
+{
+  "timestamp": "2025-10-23T23:30:00Z",
+  "task": "TurkiyeAPI Derin Entegrasyon Planı",
+  "status": "planning",
+  "priority": "high",
+  "category": "api_integration",
+
+  "strategic_overview": {
+    "api_name": "TurkiyeAPI",
+    "api_url": "https://api.turkiyeapi.dev/v1",
+    "documentation": "https://docs.turkiyeapi.dev/",
+    "github": "https://github.com/ubeydeozdmr/turkiye-api",
+    "license": "Free, no authentication required",
+    "total_implementation_time": "10 working days"
+  },
+
+  "why_turkiye_api": {
+    "advantages": [
+      "Güncel veri: Sürekli güncellenen il/ilçe/mahalle verisi",
+      "Zengin metadata: Nüfus, yüzölçümü, koordinat, rakım, bölge",
+      "Filtreleme: Kıyı ili, büyükşehir, bölge bazlı",
+      "Ücretsiz: Kimlik doğrulama yok, sınırsız kullanım",
+      "REST API: Kolay entegrasyon",
+      "SEO: Zengin içerik = daha iyi SEO",
+      "AI Prompt: Daha akıllı ve detaylı promptlar"
+    ],
+    "use_cases": [
+      "Location Cascade (İl → İlçe → Mahalle)",
+      "İlan Detay Sayfası (Zengin lokasyon bilgileri)",
+      "AI Content Generation (Daha akıllı promptlar)",
+      "Dashboard İstatistikleri",
+      "Gelişmiş Filtreleme (Kıyı illeri, büyükşehirler)",
+      "SEO Optimizasyonu"
+    ]
+  },
+
+  "api_endpoints": {
+    "provinces": {
+      "endpoint": "GET /v1/provinces",
+      "description": "Get all provinces (81)",
+      "filters": ["name", "isCoastal", "isMetropolitan", "region", "minPopulation", "maxPopulation"],
+      "response_fields": ["id", "name", "population", "area", "altitude", "coordinates", "region", "isCoastal", "isMetropolitan", "districts"]
+    },
+    "province_detail": {
+      "endpoint": "GET /v1/provinces/{id}",
+      "description": "Get single province with districts",
+      "response_includes": "Full province data + nested districts array"
+    },
+    "district_detail": {
+      "endpoint": "GET /v1/districts/{id}",
+      "description": "Get district with neighborhoods",
+      "response_includes": "District data + nested neighborhoods array"
+    }
+  },
+
+  "phases": {
+    "phase_1": {
+      "name": "Temel Altyapı",
+      "duration": "1-2 days",
+      "status": "pending",
+      "tasks": [
+        "TurkiyeAPIService.php oluştur",
+        "Cache mechanism (30 days)",
+        "Fallback to local database",
+        "Error handling & logging",
+        "Service Provider kaydı",
+        "Artisan command: turkiye-api:cache-warm",
+        "Scheduler: Monthly cache refresh",
+        "Test API endpoints"
+      ],
+      "files_to_create": [
+        "app/Services/TurkiyeAPIService.php",
+        "app/Console/Commands/TurkiyeAPICacheWarm.php"
+      ],
+      "files_to_update": [
+        "app/Providers/AppServiceProvider.php",
+        "app/Console/Kernel.php",
+        "routes/api.php"
+      ],
+      "key_features": {
+        "service_methods": [
+          "getProvinces(array $filters = [])",
+          "getProvince(int $id)",
+          "getDistricts(int $provinceId)",
+          "getNeighborhoods(int $districtId)",
+          "getCoastalProvinces()",
+          "getMetropolitanProvinces()",
+          "searchProvinces(string $query)"
+        ],
+        "fallback_methods": [
+          "getFallbackProvinces()",
+          "getFallbackProvince(int $id)",
+          "getFallbackDistricts(int $provinceId)",
+          "getFallbackNeighborhoods(int $districtId)"
+        ],
+        "cache_strategy": {
+          "provinces": "30 days (iller değişmez)",
+          "districts": "30 days",
+          "neighborhoods": "30 days",
+          "cache_warming": "Monthly via scheduler"
+        }
+      }
+    },
+
+    "phase_2": {
+      "name": "Location Cascade Modernizasyonu",
+      "duration": "2-3 days",
+      "status": "pending",
+      "tasks": [
+        "LocationController.php oluştur (API)",
+        "Dual format response (TurkiyeAPI + Context7)",
+        "Frontend update: location-map.blade.php",
+        "Context7LocationSystem.js update",
+        "Metadata display (population, area, region)",
+        "Filter support (coastal, metropolitan)"
+      ],
+      "files_to_create": [
+        "app/Http/Controllers/Api/LocationController.php"
+      ],
+      "files_to_update": [
+        "routes/api.php",
+        "resources/views/admin/ilanlar/components/location-map.blade.php",
+        "public/js/context7-location-system.js"
+      ],
+      "api_routes": {
+        "provinces": "GET /api/location/provinces",
+        "province_detail": "GET /api/location/provinces/{id}",
+        "districts": "GET /api/location/provinces/{provinceId}/districts",
+        "neighborhoods": "GET /api/location/districts/{districtId}/neighborhoods"
+      },
+      "response_format": {
+        "dual_compatibility": true,
+        "context7_format": "{ success, data, count }",
+        "legacy_format": "{ data, districts/neighborhoods }"
+      }
+    },
+
+    "phase_3": {
+      "name": "İlan Detay Sayfası - Zengin Lokasyon",
+      "duration": "1 day",
+      "status": "pending",
+      "tasks": [
+        "location-info.blade.php component oluştur",
+        "TurkiyeAPI metadata display",
+        "Population, area, altitude, region",
+        "Coastal/Metropolitan badges",
+        "Google Maps / OpenStreetMap links",
+        "İlan detay sayfasına entegre et"
+      ],
+      "files_to_create": [
+        "resources/views/components/ilan/location-info.blade.php"
+      ],
+      "files_to_update": [
+        "resources/views/admin/ilanlar/show.blade.php"
+      ],
+      "displayed_metadata": [
+        "İl/İlçe adı",
+        "Nüfus",
+        "Yüzölçümü (km²)",
+        "Rakım (m)",
+        "Bölge (Ege, Marmara, vb.)",
+        "Kıyı İli badge",
+        "Büyükşehir badge",
+        "Google Maps link",
+        "OpenStreetMap link"
+      ]
+    },
+
+    "phase_4": {
+      "name": "AI Prompt Zenginleştirme",
+      "duration": "1 day",
+      "status": "pending",
+      "tasks": [
+        "AIService.php update",
+        "generateIlanDescription() zenginleştir",
+        "TurkiyeAPI metadata AI prompt'a ekle",
+        "SEO-friendly keyword generation",
+        "Bölge bazlı içerik üretimi"
+      ],
+      "files_to_update": [
+        "app/Services/AIService.php"
+      ],
+      "ai_prompt_enhancement": {
+        "before": "Muğla, Bodrum'da satılık villa. Deniz manzaralı...",
+        "after": "Ege Bölgesi'nin incisi, Muğla'nın (1 milyon nüfus) dünyaca ünlü Bodrum ilçesinde, kıyı şeridinde satılık villa. Bu büyüleyici bölge, yüzölçümü 13,338 km² ile Türkiye'nin en gözde turizm merkezlerinden biri...",
+        "metadata_used": [
+          "region",
+          "population",
+          "area",
+          "isCoastal",
+          "isMetropolitan"
+        ],
+        "seo_improvement": "+20%"
+      }
+    },
+
+    "phase_5": {
+      "name": "Dashboard İstatistikleri",
+      "duration": "1-2 days",
+      "status": "pending",
+      "tasks": [
+        "DashboardController update",
+        "Büyükşehir istatistikleri widget",
+        "Kıyı illeri yazlık istatistikleri",
+        "Bölge bazlı ilan dağılımı chart",
+        "Metropolitan city performance",
+        "Coastal province analytics"
+      ],
+      "files_to_update": [
+        "app/Http/Controllers/Admin/DashboardController.php",
+        "resources/views/admin/dashboard.blade.php"
+      ],
+      "new_widgets": [
+        "Büyükşehir İlan İstatistikleri (30 şehir)",
+        "Kıyı İlleri Yazlık İstatistikleri",
+        "Bölge Bazlı Dağılım Chart",
+        "Top 10 Şehir (İlan sayısı)",
+        "Top 10 Şehir (Toplam değer)",
+        "Demographic Analytics",
+        "Regional Performance Report"
+      ]
+    },
+
+    "phase_6": {
+      "name": "Gelişmiş Filtreleme",
+      "duration": "1 day",
+      "status": "pending",
+      "tasks": [
+        "IlanController index() update",
+        "Bölge bazlı filtreleme",
+        "Kıyı illeri filtresi",
+        "Büyükşehir filtresi",
+        "Frontend filter UI",
+        "Query optimization"
+      ],
+      "files_to_update": [
+        "app/Http/Controllers/Admin/IlanController.php",
+        "resources/views/admin/ilanlar/index.blade.php"
+      ],
+      "new_filters": [
+        "Bölge (7 coğrafi bölge)",
+        "Sadece Kıyı İlleri (checkbox)",
+        "Sadece Büyükşehirler (checkbox)",
+        "Minimum nüfus",
+        "Maximum nüfus",
+        "Rakım aralığı"
+      ]
+    }
+  },
+
+  "technical_architecture": {
+    "service_layer": {
+      "class": "TurkiyeAPIService",
+      "namespace": "App\\Services",
+      "dependencies": [
+        "Illuminate\\Support\\Facades\\Http",
+        "Illuminate\\Support\\Facades\\Cache",
+        "Illuminate\\Support\\Facades\\Log"
+      ],
+      "cache_driver": "redis (recommended) or file",
+      "timeout": "10 seconds",
+      "retry": "3 attempts with exponential backoff"
+    },
+    "fallback_mechanism": {
+      "primary": "TurkiyeAPI",
+      "secondary": "Local database (iller, ilceler, mahalleler)",
+      "indicator": "source: 'turkiye_api' or 'local_db'",
+      "error_handling": "Log warning + use fallback + notify admin"
+    },
+    "response_format": {
+      "standard": {
+        "success": "boolean",
+        "data": "array|object",
+        "count": "integer",
+        "source": "'turkiye_api' | 'local_db'"
+      },
+      "dual_format": {
+        "context7": "{ success, data, count }",
+        "legacy": "{ data, districts/neighborhoods }"
+      }
+    }
+  },
+
+  "testing_strategy": {
+    "unit_tests": [
+      "TurkiyeAPIService::getProvinces()",
+      "TurkiyeAPIService::getProvince(id)",
+      "TurkiyeAPIService::getDistricts(provinceId)",
+      "TurkiyeAPIService::getNeighborhoods(districtId)",
+      "Fallback mechanism",
+      "Cache hit/miss"
+    ],
+    "integration_tests": [
+      "API connectivity",
+      "Frontend location cascade",
+      "AI prompt generation",
+      "Dashboard widgets",
+      "Filter functionality"
+    ],
+    "performance_tests": [
+      "Cache hit rate > 95%",
+      "API response time < 500ms",
+      "Fallback activation < 100ms",
+      "Dashboard load time < 2s"
+    ]
+  },
+
+  "success_metrics": {
+    "technical": {
+      "uptime": "> 99%",
+      "cache_hit_rate": "> 95%",
+      "fallback_errors": "0",
+      "api_response_time": "< 500ms",
+      "page_load_time": "< 2s"
+    },
+    "content": {
+      "seo_score": "+20%",
+      "ilan_description_quality": "+50%",
+      "user_engagement": "+30%",
+      "average_time_on_page": "+25%"
+    },
+    "dashboard": {
+      "new_widgets": "7",
+      "regional_analysis": "enabled",
+      "rich_reports": "enabled"
+    }
+  },
+
+  "timeline": {
+    "day_1_2": "FAZ 1 - Temel Altyapı",
+    "day_3_4": "FAZ 2 - Location Cascade Modernizasyonu",
+    "day_5": "FAZ 3 - İlan Detay Sayfası",
+    "day_6": "FAZ 4 - AI Prompt Zenginleştirme",
+    "day_7_8": "FAZ 5 - Dashboard İstatistikleri",
+    "day_9": "FAZ 6 - Gelişmiş Filtreleme",
+    "day_10": "Test + Optimizasyon + Dokümantasyon",
+    "total": "10 iş günü"
+  },
+
+  "yalihan_bekci_rules": {
+    "rule_1": "Always use TurkiyeAPIService, never direct HTTP calls",
+    "rule_2": "Always implement fallback to local database",
+    "rule_3": "Cache TurkiyeAPI responses (30 days for provinces)",
+    "rule_4": "Log all TurkiyeAPI errors for monitoring",
+    "rule_5": "Use dual format responses (TurkiyeAPI + local compatibility)",
+    "rule_6": "Enrich AI prompts with TurkiyeAPI metadata",
+    "rule_7": "Show data source indicator (turkiye_api vs local_db)",
+    "rule_8": "Never break existing Context7LocationSystem",
+    "rule_9": "Always maintain backward compatibility",
+    "rule_10": "Test fallback mechanism in every deployment"
+  },
+
+  "context7_compliance": {
+    "naming": "TurkiyeAPI (not TurkeyAPI)",
+    "service_class": "TurkiyeAPIService",
+    "cache_keys": "turkiye_api_*",
+    "response_format": "Context7 dual format",
+    "error_handling": "Context7 error patterns",
+    "logging": "Context7 log format"
+  },
+
+  "monitoring": {
+    "metrics_to_track": [
+      "TurkiyeAPI uptime",
+      "Cache hit rate",
+      "Fallback activation count",
+      "API response time",
+      "Error rate",
+      "Daily API call count",
+      "Cache size",
+      "Memory usage"
+    ],
+    "alerts": {
+      "turkiye_api_down": "Email to admin",
+      "cache_hit_rate_low": "Slack notification",
+      "fallback_errors": "Immediate notification",
+      "high_response_time": "Warning log"
+    }
+  },
+
+  "documentation": {
+    "files_to_create": [
+      "docs/integrations/turkiye-api-integration.md",
+      "docs/api/location-api-v2.md",
+      "yalihan-bekci/knowledge/turkiye-api-complete-guide.json"
+    ],
+    "topics_to_cover": [
+      "TurkiyeAPI overview",
+      "Service usage examples",
+      "Cache strategy",
+      "Fallback mechanism",
+      "Frontend integration",
+      "AI prompt enhancement",
+      "Dashboard widgets",
+      "Troubleshooting",
+      "Performance optimization"
+    ]
+  },
+
+  "next_steps": {
+    "immediate": "User approval to start FAZ 1",
+    "preparation": [
+      "Review TurkiyeAPI documentation",
+      "Test API endpoints manually",
+      "Plan cache strategy",
+      "Design fallback mechanism"
+    ],
+    "first_task": "Create TurkiyeAPIService.php with basic methods"
+  }
+}
+

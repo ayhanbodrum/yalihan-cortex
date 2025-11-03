@@ -1,0 +1,107 @@
+{
+  "kategori_islemleri_plan": {
+    "timestamp": "2025-10-25T10:59:00Z",
+    "mevcut_kategoriler": {
+      "konut": {
+        "ozellikler": [
+          "Oda sayısı", "Banyo sayısı", "Metrekare", "Kat", "Isıtma", "Asansör",
+          "Balkon", "Bahçe", "Otopark", "Güvenlik", "Site içinde", "Denize sıfır"
+        ],
+        "ai_destekli": [
+          "Fiyat tahmini", "Özellik önerileri", "Benzer ilanlar", "Değerleme"
+        ],
+        "hibrit_siralama": "Önem sırasına göre sıralama"
+      },
+      "arsa": {
+        "ozellikler": [
+          "Ada", "Parsel", "İmar durumu", "KAKS", "TAKS", "Gabari",
+          "Elektrik", "Su", "Yol", "Kanalizasyon", "Doğalgaz"
+        ],
+        "ai_destekli": [
+          "Değerleme", "İmar analizi", "Yatırım potansiyeli", "Fiyat tahmini"
+        ],
+        "hibrit_siralama": "Kullanım sıklığına göre"
+      },
+      "yazlik": {
+        "ozellikler": [
+          "Günlük fiyat", "Minimum konaklama", "Havuz", "Sezon",
+          "Denize mesafe", "Plaj", "Bahçe", "Barbekü", "WiFi"
+        ],
+        "ai_destekli": [
+          "Fiyat optimizasyonu", "Sezon analizi", "Rezervasyon önerileri"
+        ],
+        "hibrit_siralama": "Sezon bazlı önem"
+      },
+      "isyeri": {
+        "ozellikler": [
+          "Metrekare", "Kat", "Otopark", "Asansör", "Lokasyon",
+          "Cephe", "Giriş", "Güvenlik", "Klima", "Internet"
+        ],
+        "ai_destekli": [
+          "Kira analizi", "Lokasyon değerlendirmesi", "Yatırım önerileri"
+        ],
+        "hibrit_siralama": "Lokasyon önemine göre"
+      }
+    },
+    "ai_entegrasyon_planı": {
+      "form_generation": {
+        "purpose": "Kategori bazlı akıllı form üretimi",
+        "ai_features": [
+          "Context'e göre alan önerileri",
+          "Zorunlu alan tespiti",
+          "AI destekli alan işaretleme",
+          "Kullanıcı deneyimi optimizasyonu"
+        ]
+      },
+      "matrix_management": {
+        "purpose": "AI destekli matrix yönetimi",
+        "ai_features": [
+          "Field dependency analizi",
+          "AI suggestion flagging",
+          "Auto-fill önerileri",
+          "Smart calculations"
+        ]
+      },
+      "hibrit_siralama": {
+        "purpose": "AI destekli hibrit sıralama",
+        "ai_features": [
+          "Kullanım sıklığı analizi",
+          "AI öneri skorları",
+          "Kullanıcı tercih analizi",
+          "Dinamik sıralama"
+        ]
+      },
+      "suggestion_engine": {
+        "purpose": "AI öneri motoru",
+        "ai_features": [
+          "Context bazlı öneriler",
+          "Pattern analizi",
+          "Başarı oranı takibi",
+          "Sürekli öğrenme"
+        ]
+      }
+    },
+    "implementation_steps": {
+      "step_1": {
+        "action": "Mevcut kategori analizi",
+        "tools": ["get_system_structure", "context7_validate"],
+        "output": "Kategori yapısı ve özellikler"
+      },
+      "step_2": {
+        "action": "AI entegrasyonu",
+        "tools": ["ai_core_system", "mcp_integration"],
+        "output": "AI destekli kategori yönetimi"
+      },
+      "step_3": {
+        "action": "Hibrit sıralama",
+        "tools": ["ai_learning_engine", "pattern_analysis"],
+        "output": "Akıllı sıralama sistemi"
+      },
+      "step_4": {
+        "action": "Sürekli öğrenme",
+        "tools": ["ai_core_system", "mcp_learning"],
+        "output": "Gelişen AI sistemi"
+      }
+    }
+  }
+}

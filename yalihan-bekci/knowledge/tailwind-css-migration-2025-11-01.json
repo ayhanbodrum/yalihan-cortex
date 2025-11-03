@@ -1,0 +1,93 @@
+{
+  "event": "tailwind_css_mandatory_migration",
+  "date": "2025-11-01",
+  "severity": "CRITICAL",
+  "impact": "ALL_PAGES",
+  "decision": {
+    "from": "Neo Design System (custom classes)",
+    "to": "Pure Tailwind CSS + Mandatory Transitions",
+    "reason": "Simplicity, maintainability, modern UX",
+    "enforcement": "IMMEDIATE for new code, GRADUAL for existing"
+  },
+  "forbidden_patterns": {
+    "neo_classes": [
+      "neo-btn",
+      "neo-card",
+      "neo-input",
+      "neo-select",
+      "neo-form-group",
+      "neo-label",
+      "neo-textarea",
+      "neo-badge",
+      "neo-*"
+    ],
+    "bootstrap_classes": [
+      "btn-",
+      "card-",
+      "form-control"
+    ]
+  },
+  "mandatory_requirements": {
+    "transitions": {
+      "all_interactive_elements": "transition-all duration-200 ease-in-out",
+      "buttons": "hover:scale-105 active:scale-95",
+      "cards": "hover:shadow-xl hover:-translate-y-1",
+      "inputs": "focus:ring-2 focus:ring-{color}-500",
+      "enforcement": "STRICT"
+    },
+    "dark_mode": {
+      "required": true,
+      "every_element": "Must have dark: variant",
+      "example": "bg-white dark:bg-gray-800"
+    },
+    "responsive": {
+      "approach": "mobile-first",
+      "breakpoints": ["sm", "md", "lg", "xl", "2xl"],
+      "required": true
+    }
+  },
+  "migration_examples": {
+    "button": {
+      "before": "<button class=\"neo-btn neo-btn-primary\">Kaydet</button>",
+      "after": "<button class=\"px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg disabled:opacity-50 dark:bg-blue-500\">Kaydet</button>"
+    },
+    "card": {
+      "before": "<div class=\"neo-card\"><div class=\"neo-card-header\">Başlık</div></div>",
+      "after": "<div class=\"bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 transition-all duration-300 hover:shadow-xl hover:-translate-y-1\"><div class=\"px-6 py-4 border-b border-gray-200 dark:border-gray-700\"><h2 class=\"text-xl font-bold text-gray-900 dark:text-white\">Başlık</h2></div></div>"
+    },
+    "input": {
+      "before": "<input class=\"neo-input\">",
+      "after": "<input class=\"w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 transition-all duration-200\">"
+    }
+  },
+  "authority_update": {
+    "file": ".context7/authority.json",
+    "version": "4.0.0 → 5.0.0",
+    "breaking_changes": true
+  },
+  "documentation": {
+    "primary": ".context7/TAILWIND-TRANSITION-RULE.md",
+    "authority": ".context7/authority.json",
+    "memory": "Cursor Memory ID: 10619216"
+  },
+  "enforcement_tools": {
+    "yalihan_bekci": {
+      "validation": "context7_validate tool",
+      "auto_check": "Every code suggestion",
+      "violation_detection": "Active"
+    },
+    "pre_commit_hook": {
+      "check_neo_classes": true,
+      "check_transitions": true,
+      "check_dark_mode": true,
+      "blocking": true
+    }
+  },
+  "first_migration_target": "resources/views/admin/talepler/create.blade.php",
+  "context7_compliance_impact": {
+    "before": "98.82%",
+    "after_migration": "99.50% (target)",
+    "benefit": "Cleaner code, better performance, modern UX"
+  }
+}
+

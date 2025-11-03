@@ -1,0 +1,24 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="512" height="512" rx="64" fill="#f97316"/>
+
+  <!-- House Icon -->
+  <svg x="128" y="128" width="256" height="256" viewBox="0 0 256 256" fill="none">
+    <!-- House Base -->
+    <path d="M128 32L240 112V224H176V160H80V224H16V112L128 32Z" fill="white"/>
+
+    <!-- Door -->
+    <rect x="112" y="160" width="32" height="64" fill="#f97316"/>
+
+    <!-- Windows -->
+    <rect x="64" y="128" width="24" height="24" fill="#f97316"/>
+    <rect x="168" y="128" width="24" height="24" fill="#f97316"/>
+
+    <!-- Roof Details -->
+    <path d="M128 32L16 112L128 80L240 112L128 32Z" fill="#ea580c"/>
+  </svg>
+
+  <!-- Text -->
+  <text x="256" y="400" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="32" font-weight="bold">Yalıhan</text>
+  <text x="256" y="440" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="16">Emlak</text>
+</svg>

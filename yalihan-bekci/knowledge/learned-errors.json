@@ -1,0 +1,384 @@
+{
+  "undefined_variables": {
+    "taslak": {
+      "variable": "$taslak",
+      "solution": "Controller'da $taslak tanımlanmalı",
+      "sources": [
+        "admin-detayli-test-raporu.md",
+        "admin-kapsamli-test-raporu.md"
+      ],
+      "occurrences": 344
+    },
+    "status": {
+      "variable": "$status",
+      "solution": "Controller'da $status tanımlanmalı",
+      "sources": [
+        "admin-detayli-test-raporu.md",
+        "admin-kapsamli-test-raporu.md"
+      ],
+      "occurrences": 602
+    },
+    "etiketler": {
+      "variable": "$etiketler",
+      "solution": "Controller'da $etiketler tanımlanmalı",
+      "sources": [
+        "admin-kapsamli-test-raporu.md"
+      ],
+      "occurrences": 172
+    },
+    "ulkeler": {
+      "variable": "$ulkeler",
+      "solution": "Controller'da $ulkeler tanımlanmalı",
+      "sources": [
+        "admin-kapsamli-test-raporu.md"
+      ],
+      "occurrences": 172
+    }
+  },
+  "missing_tables": {
+    "talepler": {
+      "table": "talepler",
+      "solution": "Migration oluştur: create_talepler_table",
+      "sources": [
+        "admin-detayli-test-raporu.md"
+      ]
+    }
+  },
+  "context7_violations": {},
+  "common_errors": {
+    "dom_element_null_value": {
+      "name": "dom_element_null_value",
+      "pattern": "document.getElementById(X).value → null.value error",
+      "cause": "Element yokken .value erişimi",
+      "solution": "const el = document.getElementById(X); const val = el?.value;",
+      "best_practice": "Her zaman optional chaining kullan (?.)",
+      "files_affected": [
+        "location.js",
+        "ai.js"
+      ],
+      "context7_compliant": true,
+      "learnedAt": "2025-10-12T14:52:22.285Z",
+      "manual": true
+    },
+    "dom_setvalue_null_guard": {
+      "name": "dom_setvalue_null_guard",
+      "pattern": "document.getElementById(X).value = Y → null.value setter error",
+      "cause": "Element bulunamadan .value setter çağrılıyor",
+      "solution": "const el = document.getElementById(X); if (el) el.value = Y;",
+      "best_practice": "Her zaman element varlığını kontrol et (Context7)",
+      "locations": [
+        "placeMarker",
+        "getCurrentLocation",
+        "searchAddress",
+        "marker dragend"
+      ],
+      "files_affected": [
+        "location.js (4 farklı yer)"
+      ],
+      "context7_compliant": true,
+      "severity": "medium",
+      "learnedAt": "2025-10-12T15:08:19.318Z",
+      "manual": true
+    },
+    "google_maps_callback_timing": {
+      "name": "google_maps_callback_timing",
+      "pattern": "InvalidValueError: initMap is not a function",
+      "cause": "Google Maps callback=initMap çağrılıyor ama function henüz yüklenmemiş",
+      "solution": "callback kaldır, manuel init: setInterval ile google !== undefined && window.initMap kontrol et",
+      "best_practice": "Async external library yüklemelerinde callback yerine manuel polling (Context7)",
+      "files_affected": [
+        "create.blade.php",
+        "location.js"
+      ],
+      "context7_compliant": true,
+      "severity": "medium",
+      "learnedAt": "2025-10-12T15:14:10.050Z",
+      "manual": true
+    },
+    "modal_opens_on_load": {
+      "name": "modal_opens_on_load",
+      "pattern": "Modal açılışta görünüyor - x-show condition hatası",
+      "cause": "editingPhoto = {} (boş obje) truthy değer, x-show=\"editingPhoto\" modal açıyor",
+      "solution": "editingPhoto = null + x-show=\"editingPhoto && editingPhoto.url\" (Context7 uyumlu)",
+      "best_practice": "Modal state için null kullan, x-show için double condition (Context7)",
+      "files_affected": [
+        "photos.js",
+        "listing-photos.blade.php"
+      ],
+      "context7_compliant": true,
+      "severity": "medium",
+      "learnedAt": "2025-10-12T15:25:21.311Z",
+      "manual": true
+    },
+    "modal_null_property_access": {
+      "name": "modal_null_property_access",
+      "pattern": "Cannot read properties of null (reading property) - modal form elements",
+      "cause": "editingPhoto = null ama form elemanları hala property'lere erişmeye çalışıyor",
+      "solution": "Optional chaining (?.) + fallback values (Context7 uyumlu)",
+      "best_practice": "Modal form elemanlarında null guard + fallback değerler (Context7)",
+      "files_affected": [
+        "listing-photos.blade.php",
+        "photos.js"
+      ],
+      "context7_compliant": true,
+      "severity": "medium",
+      "learnedAt": "2025-10-12T15:28:03.492Z",
+      "manual": true
+    },
+    "function_not_imported": {
+      "name": "function_not_imported",
+      "pattern": "showLoading is not defined - helper function missing",
+      "cause": "categories.js içinde showLoading/hideLoading fonksiyonları tanımlı değil",
+      "solution": "Helper functions'ları her modülde tanımla (Context7 uyumlu)",
+      "best_practice": "Her modül kendi helper functions'ını içermeli (Context7)",
+      "files_affected": [
+        "categories.js",
+        "core.js"
+      ],
+      "context7_compliant": true,
+      "severity": "medium",
+      "learnedAt": "2025-10-12T15:28:03.495Z",
+      "manual": true
+    },
+    "api_route_404": {
+      "name": "api_route_404",
+      "pattern": "Failed to load resource: 404 Not Found - API route missing",
+      "cause": "/api/ai/suggestions, /api/categories/sub/ endpoints tanımlı değil",
+      "solution": "routes/api.php veya routes/web.php içinde route tanımla (Context7 uyumlu)",
+      "best_practice": "API endpoints için route tanımları ekle (Context7)",
+      "files_affected": [
+        "routes/api.php",
+        "routes/web.php"
+      ],
+      "context7_compliant": true,
+      "severity": "medium",
+      "learnedAt": "2025-10-12T15:33:03.972Z",
+      "manual": true
+    },
+    "api_method_not_allowed": {
+      "name": "api_method_not_allowed",
+      "pattern": "405 Method Not Allowed - POST route missing",
+      "cause": "/admin/ilanlar/draft POST method tanımlı değil",
+      "solution": "Route::post(\"/admin/ilanlar/draft\", [Controller::class, \"method\"]) (Context7 uyumlu)",
+      "best_practice": "Draft save için POST route tanımla (Context7)",
+      "files_affected": [
+        "routes/web.php",
+        "app/Http/Controllers/"
+      ],
+      "context7_compliant": true,
+      "severity": "medium",
+      "learnedAt": "2025-10-12T15:33:03.976Z",
+      "manual": true
+    }
+  },
+  "lastScan": "2025-11-03T06:20:42.156Z",
+  "alpine_undefined": {
+    "portalStatuses_not_defined": {
+      "name": "portalStatuses_not_defined",
+      "function": "portalStatuses",
+      "cause": "publication.js component data structure eksik",
+      "solution": "publicationManager() içine portalStatuses objesi ekle",
+      "files_affected": [
+        "publication.js",
+        "components/publication-status.blade.php"
+      ],
+      "context7_compliant": true,
+      "learnedAt": "2025-10-12T14:47:15.810Z",
+      "manual": true
+    },
+    "formatMainPrice_not_defined": {
+      "name": "formatMainPrice_not_defined",
+      "function": "formatMainPrice",
+      "cause": "price.js getter var ama setter/method yok",
+      "solution": "formatMainPrice() method ekle, input formatlamak için",
+      "files_affected": [
+        "price.js",
+        "components/price-management.blade.php"
+      ],
+      "context7_compliant": true,
+      "learnedAt": "2025-10-12T14:47:15.822Z",
+      "manual": true
+    },
+    "showLoading_not_defined": {
+      "name": "showLoading_not_defined",
+      "function": "showLoading",
+      "cause": "location.js helper function tanımsız",
+      "solution": "showLoading, hideLoading, showNotification global helper ekle",
+      "files_affected": [
+        "location.js"
+      ],
+      "context7_compliant": true,
+      "learnedAt": "2025-10-12T14:47:15.823Z",
+      "manual": true
+    },
+    "editingPhoto_null_guard": {
+      "name": "editingPhoto_null_guard",
+      "function": "editingPhoto",
+      "cause": "photos.js editingPhoto: null başlangıç, component null.property erişimi",
+      "solution": "editingPhoto: { url:'', name:'', ... } varsayılan obje ver",
+      "files_affected": [
+        "photos.js",
+        "components/listing-photos.blade.php"
+      ],
+      "context7_compliant": true,
+      "learnedAt": "2025-10-12T14:47:15.823Z",
+      "manual": true
+    },
+    "editingPhoto_close_modal_null": {
+      "name": "editingPhoto_close_modal_null",
+      "function": "closeEditModal",
+      "cause": "Modal kapatılınca editingPhoto = null yapılıyor",
+      "solution": "null yerine boş obje assign et: { url:'', name:'', ... }",
+      "pattern": "Alpine x-model null.property hatası önleme",
+      "files_affected": [
+        "photos.js"
+      ],
+      "context7_compliant": true,
+      "learnedAt": "2025-10-12T14:52:22.280Z",
+      "manual": true
+    },
+    "xmodel_optional_chaining_error": {
+      "name": "xmodel_optional_chaining_error",
+      "pattern": "Invalid left-hand side in assignment - x-model ile ?. kullanımı",
+      "cause": "x-model=\"editingPhoto?.title || ''\" - Alpine.js assignment yapamıyor",
+      "solution": "x-show=\"editingPhoto\" wrapper + x-model=\"editingPhoto.title\" (Context7 uyumlu)",
+      "best_practice": "x-model için null guard wrapper kullan, optional chaining değil (Context7)",
+      "files_affected": [
+        "listing-photos.blade.php"
+      ],
+      "context7_compliant": true,
+      "severity": "high",
+      "learnedAt": "2025-10-12T15:30:31.984Z",
+      "manual": true
+    },
+    "modal_form_wrapper_condition": {
+      "name": "modal_form_wrapper_condition",
+      "pattern": "Cannot read properties of null - modal form elemanları null iken render ediliyor",
+      "cause": "x-show=\"editingPhoto\" wrapper var ama form elemanları hala render ediliyor",
+      "solution": "x-show=\"editingPhoto && editingPhoto.url\" - daha güçlü condition (Context7 uyumlu)",
+      "best_practice": "Modal form wrapper için double condition kullan (Context7)",
+      "files_affected": [
+        "listing-photos.blade.php"
+      ],
+      "context7_compliant": true,
+      "severity": "high",
+      "learnedAt": "2025-10-12T15:45:09.687Z",
+      "manual": true
+    },
+    "alpine_reactive_system_null_access": {
+      "name": "alpine_reactive_system_null_access",
+      "pattern": "Cannot read properties of null - Alpine reactive system DOM render",
+      "cause": "editingPhoto = null ama Alpine.js reactive system DOM elemanlarını render ediyor",
+      "solution": "editingPhoto = {} (boş obje) + x-show condition (Context7 uyumlu)",
+      "best_practice": "Alpine reactive system için null yerine boş obje kullan (Context7)",
+      "files_affected": [
+        "photos.js",
+        "listing-photos.blade.php"
+      ],
+      "context7_compliant": true,
+      "severity": "high",
+      "learnedAt": "2025-10-12T15:50:15.185Z",
+      "manual": true
+    }
+  },
+  "vite_directive_missing": {
+    "@vite_missing_in_blade": {
+      "name": "@vite_missing_in_blade",
+      "pattern": "11 Alpine fonksiyon undefined",
+      "cause": "@vite direktifi blade'de eksik",
+      "solution": "@vite(['resources/js/admin/stable-create.js']) ekle",
+      "location": "@push('scripts') içinde",
+      "severity": "critical",
+      "fix_time": "10 dakika",
+      "files_affected": [
+        "stable-create.blade.php"
+      ],
+      "learnedAt": "2025-10-12T14:16:47.539Z",
+      "manual": true
+    },
+    "vite_manifest_file_not_found": {
+      "name": "vite_manifest_file_not_found",
+      "pattern": "Unable to locate file in Vite manifest: resources/js/admin/stable-create.js",
+      "cause": "Vite manifest cache sorunu - dosya var ama manifest güncel değil",
+      "solution": "Vite restart + cache clear + Laravel cache clear (Context7 uyumlu)",
+      "best_practice": "Vite manifest sorunları için cache clearing (Context7)",
+      "files_affected": [
+        "vite.config.js",
+        "public/hot",
+        "node_modules/.vite"
+      ],
+      "context7_compliant": true,
+      "severity": "high",
+      "learnedAt": "2025-10-12T15:59:42.795Z",
+      "manual": true
+    }
+  },
+  "vite_cache_issue": {
+    "vite_cache_old_modules": {
+      "name": "vite_cache_old_modules",
+      "pattern": "Eski modül yükleniyor, yeni fonksiyonlar tanımsız",
+      "cause": "node_modules/.vite/ cache eski",
+      "solution": "rm -rf node_modules/.vite && vite restart",
+      "severity": "high",
+      "fix_time": "5 dakika",
+      "learnedAt": "2025-10-12T14:16:47.541Z",
+      "manual": true
+    }
+  },
+  "tailwind_errors": {
+    "@tailwind_directives_missing": {
+      "name": "@tailwind_directives_missing",
+      "pattern": "@layer base is used but no @tailwind base",
+      "cause": "neo-unified.css'de @tailwind base/components/utilities eksik",
+      "solution": "@tailwind base; @tailwind components; @tailwind utilities; ekle (dosya başına)",
+      "location": "resources/css/neo-unified.css",
+      "severity": "critical",
+      "fix_time": "2 dakika",
+      "learnedAt": "2025-10-12T14:16:47.541Z",
+      "manual": true
+    },
+    "tailwind_v4_apply_restriction": {
+      "name": "tailwind_v4_apply_restriction",
+      "pattern": "Cannot apply unknown utility class",
+      "cause": "Tailwind v4 @apply'ı kısıtlamış, Neo'da 138 @apply var",
+      "solution": "Tailwind v4 → v3.4.18 downgrade: npm install -D tailwindcss@^3.4.18",
+      "severity": "critical",
+      "fix_time": "15 dakika",
+      "breaking_change": true,
+      "version_lock": "tailwindcss: ^3.4.18 (package.json'da kilitle)",
+      "learnedAt": "2025-10-12T14:16:47.541Z",
+      "manual": true
+    }
+  },
+  "csp_violations": {
+    "leaflet_css_blocked": {
+      "name": "leaflet_css_blocked",
+      "pattern": "Refused to load stylesheet from unpkg.com",
+      "cause": "CSP style-src directive'de unpkg.com yok",
+      "solution": "SecurityMiddleware.php → style-src'e https://unpkg.com ekle",
+      "location": "app/Http/Middleware/SecurityMiddleware.php",
+      "severity": "medium",
+      "fix_time": "5 dakika",
+      "learnedAt": "2025-10-12T14:16:47.541Z",
+      "manual": true
+    }
+  },
+  "component_include_missing_modules": {
+    "component_include_without_vite": {
+      "name": "component_include_without_vite",
+      "pattern": "@include components use Alpine but @vite missing",
+      "cause": "Blade includes components with Alpine x-data, but modules not loaded",
+      "solution": "Add @vite(['resources/js/admin/stable-create.js']) to @push('scripts')",
+      "location": "@push('scripts') section (NOT @section if layout uses @stack)",
+      "severity": "critical",
+      "fix_time": "5 dakika",
+      "files_affected": [
+        "create.blade.php",
+        "components/*.blade.php"
+      ],
+      "context7_compliant": true,
+      "learnedAt": "2025-10-12T14:42:09.147Z",
+      "manual": true
+    }
+  }
+}

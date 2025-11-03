@@ -1,0 +1,38 @@
+name: Context7 Rules Sync
+
+on:
+  push:
+    paths:
+      - "docs/context7-rules.md"
+  pull_request:
+    paths:
+      - "docs/context7-rules.md"
+
+jobs:
+  sync-rules:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+
+      - name: Install Context7 MCP
+        run: npm install -g @upstash/context7-mcp@latest
+
+      - name: Sync Context7 Rules
+        run: |
+          npx @upstash/context7-mcp@latest memory sync \
+            --rules docs/context7-rules.md \
+            --api-key ${{ secrets.CONTEXT7_API_KEY }}
+
+      - name: Backup Memory
+        run: |
+          npx @upstash/context7-mcp@latest memory backup \
+            --api-key ${{ secrets.CONTEXT7_API_KEY }}
+
+      - name: Notify Success
+        run: echo "Context7 Rules synced successfully"

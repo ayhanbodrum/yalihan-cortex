@@ -1,0 +1,576 @@
+{
+    "folders": [
+        {
+            "path": ".",
+            "name": "EmlakPro - Yalıhan Emlak Yönetim Sistemi"
+        }
+    ],
+    "settings": {
+        // ==========================================
+        // 📋 GENEL AYARLAR
+        // ==========================================
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+            "source.fixAll": "explicit"
+        },
+        "files.autoSave": "afterDelay",
+        "editor.tabSize": 4,
+        "editor.insertSpaces": true,
+        "editor.detectIndentation": false,
+        "editor.trimAutoWhitespace": true,
+        "editor.renderWhitespace": "boundary",
+        "editor.wordWrap": "on",
+        "editor.minimap.enabled": true,
+        "editor.bracketPairColorization.enabled": true,
+        "editor.guides.bracketPairs": true,
+        "editor.suggest.showKeywords": false,
+        "editor.suggest.showSnippets": true,
+        "editor.quickSuggestions": {
+            "other": true,
+            "comments": false,
+            "strings": true
+        },
+
+        // ==========================================
+        // 🤖 CONTEXT7 & AI ENTEGRASYONU (GÜÇLENDİRİLDİ)
+        // ==========================================
+        "context7.enabled": true,
+        "context7.autoUpdate": true,
+        "context7.memoryManagement": true,
+        "context7.documentationSync": true,
+        "context7.ruleSync": true,
+        "context7.rulesPath": ".cursor/rules",
+        "context7.docsPath": "docs",
+        "context7.memoryPath": ".cursor/memory",
+        "context7.autoSync": true,
+        "context7.backupEnabled": true,
+        "context7.contextAware": true,
+        "context7.smartSuggestions": true,
+        "context7.codeAnalysis": true,
+        "context7.performanceTracking": true,
+
+        // ==========================================
+        // 📝 DOKÜMANTASYON AYARLARI
+        // ==========================================
+        "markdown.preview.breaks": true,
+        "markdown.preview.linkify": true,
+        "markdown.extension.toc.levels": "2..6",
+        "workbench.startupEditor": "readme",
+        "markdown.preview.typographer": true,
+        "markdown.preview.lineHeight": 1.6,
+
+        // ==========================================
+        // 💻 PROGRAMLAMA DİLLERİ AYARLARI
+        // ==========================================
+
+        // PHP Ayarları
+        "intelephense.files.maxSize": 5000000,
+        "php.validate.enable": true,
+        "php.suggest.basic": true,
+        "php.validate.run": "onType",
+        "php.executablePath": "/Applications/MAMP/bin/php/php8.3.8/bin/php",
+        "php.debug.executablePath": "/Applications/MAMP/bin/php/php8.3.8/bin/php",
+
+        // JavaScript/TypeScript
+        "typescript.validate.enable": false,
+        "javascript.validate.enable": true,
+        "typescript.preferences.includePackageJsonAutoImports": "off",
+        "typescript.suggest.enabled": false,
+        "typescript.preferences.exclude": [
+            "mcp-server/**/*",
+            "**/mcp-server/**"
+        ],
+
+        // Blade Template
+        "blade.format.enable": true,
+
+        // ==========================================
+        // 🎨 FORMATTER AYARLARI
+        // ==========================================
+        "[blade]": {
+            "editor.tabSize": 4,
+            "editor.insertSpaces": true,
+            "editor.defaultFormatter": "shufo.vscode-blade-formatter"
+        },
+        "[php]": {
+            "editor.tabSize": 4,
+            "editor.insertSpaces": true
+        },
+        "[javascript]": {
+            "editor.tabSize": 2,
+            "editor.insertSpaces": true,
+            "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "[vue]": {
+            "editor.tabSize": 2,
+            "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "[css]": {
+            "editor.tabSize": 2,
+            "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "[scss]": {
+            "editor.tabSize": 2,
+            "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "[json]": {
+            "editor.tabSize": 2,
+            "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "[jsonc]": {
+            "editor.tabSize": 2,
+            "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "[markdown]": {
+            "editor.wordWrap": "bounded",
+            "editor.wordWrapColumn": 120,
+            "editor.rulers": [120],
+            "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+
+        // Prettier Genel Ayarları
+        "prettier.tabWidth": 2,
+        "prettier.useTabs": false,
+        "prettier.semi": true,
+        "prettier.singleQuote": true,
+        "prettier.trailingComma": "es5",
+        "prettier.bracketSpacing": true,
+        "prettier.arrowParens": "avoid",
+        "prettier.endOfLine": "lf",
+
+        // ==========================================
+        // 📁 DOSYA YÖNETİMİ
+        // ==========================================
+        "files.associations": {
+            "*.blade.php": "blade",
+            "*.env": "dotenv",
+            "*.env.example": "dotenv",
+            "*.md": "markdown",
+            ".copilot-context.md": "markdown",
+            "mcp-server/*.js": "javascript",
+            "*.mdc": "markdown",
+            "*.neon": "yaml"
+        },
+
+        // Dosya Organizasyonu
+        "explorer.fileNesting.enabled": true,
+        "explorer.fileNesting.expand": false,
+        "explorer.fileNesting.patterns": {
+            "*.blade.php": "${capture}.js, ${capture}.css, ${capture}.scss",
+            "*.php": "${capture}Request.php, ${capture}Test.php, ${capture}Factory.php, ${capture}Seeder.php",
+            "*.js": "${capture}.min.js, ${capture}.map",
+            "composer.json": "composer.lock, artisan",
+            "package.json": "package-lock.json, yarn.lock, pnpm-lock.yaml, vite.config.js",
+            ".env": ".env.example, .env.local, .env.production",
+            "README.md": "CHANGELOG.md, LICENSE, .gitignore, .copilot-context.md, API_TOKEN_SETUP.md",
+            "*.mdc": "${capture}.md, ${capture}.txt",
+            "phpunit.xml": "phpunit.xml.dist",
+            "vite.config.js": "postcss.config.js, tailwind.config.js"
+        },
+
+        // ==========================================
+        // 🔍 ARAMA VE HARİÇ TUTMA
+        // ==========================================
+        "search.exclude": {
+            "**/node_modules": true,
+            "**/vendor": true,
+            "**/storage/logs": true,
+            "**/storage/framework": true,
+            "**/bootstrap/cache": true,
+            "**/public/storage": true,
+            "**/.git": true,
+            "**/tests/coverage": true
+        },
+        "files.exclude": {
+            "**/storage/logs": true,
+            "**/bootstrap/cache": true,
+            "**/.DS_Store": true,
+            "**/Thumbs.db": true
+        },
+        "files.watcherExclude": {
+            "**/vendor/**": true,
+            "**/node_modules/**": true,
+            "**/storage/**": true,
+            "**/.git/**": true
+        },
+
+        // ==========================================
+        // 🖥️ TERMINAL AYARLARI
+        // ==========================================
+        "terminal.integrated.defaultProfile.osx": "zsh",
+        "terminal.integrated.cwd": "${workspaceFolder}",
+        "terminal.integrated.scrollback": 10000,
+        "terminal.integrated.enablePersistentSessions": true,
+        "terminal.integrated.shellIntegration.enabled": true,
+
+        // ==========================================
+        // 🎨 EMMET VE HTML AYARLARI
+        // ==========================================
+        "emmet.includeLanguages": {
+            "blade": "html",
+            "vue": "html",
+            "javascript": "javascriptreact"
+        },
+        "emmet.triggerExpansionOnTab": true,
+
+        // ==========================================
+        // 🔧 LINTING VE KALİTE KONTROLÜ
+        // ==========================================
+        "eslint.validate": [
+            "javascript",
+            "javascriptreact",
+            "typescript",
+            "vue"
+        ],
+        "eslint.workingDirectories": ["."],
+        "css.validate": true,
+        "scss.validate": true,
+        "less.validate": true,
+
+        // ==========================================
+        // 📊 GİT AYARLARI
+        // ==========================================
+        "git.autofetch": true,
+        "git.enableSmartCommit": true,
+        "git.confirmSync": false,
+        "git.inputValidation": true,
+        "git.inputValidationSubjectLength": 50,
+        "git.inputValidationLength": 72,
+
+        // ==========================================
+        // 🎯 TODO TREE AYARLARI
+        // ==========================================
+        "todo-tree.tree.showScanModeButton": false,
+        "todo-tree.general.tags": [
+            "BUG",
+            "HACK",
+            "FIXME",
+            "TODO",
+            "XXX",
+            "[ ]",
+            "[x]"
+        ],
+        "todo-tree.regex.regex": "(//|#|<!--|;|/\\*|^|^\\s*(-|\\d+.))\\s*($TAGS)",
+
+        // ==========================================
+        // 🚀 PERFORMANS AYARLARI
+        // ==========================================
+        "editor.largeFileOptimizations": true,
+        "files.maxMemoryForLargeFilesMB": 4096,
+        "search.maxResults": 10000,
+        "editor.maxTokenizationLineLength": 20000,
+
+        // ==========================================
+        // 🎨 WORKBENCH AYARLARI
+        // ==========================================
+        "workbench.editor.enablePreview": false,
+        "workbench.editor.showTabs": "multiple",
+        "workbench.sideBar.location": "left",
+        "workbench.panel.defaultLocation": "bottom",
+        "workbench.statusBar.visible": true,
+        "workbench.editorAssociations": {
+            "*.md": "vscode.markdown.preview.editor"
+        },
+
+        // ==========================================
+        // 🔧 DEBUG AYARLARI
+        // ==========================================
+        "debug.javascript.autoAttachFilter": "onlyWithFlag",
+        "debug.node.autoAttach": "on",
+        "php.debug.ideKey": "VSCODE",
+
+        // ==========================================
+        // 📦 EXTENSIONS AYARLARI
+        // ==========================================
+        "extensions.ignoreRecommendations": false,
+        "git.ignoreLimitWarning": true
+    },
+
+    // ==========================================
+    // 📦 ÖNERİLEN UZANTILAR
+    // ==========================================
+    "extensions": {
+        "recommendations": [
+            // PHP & Laravel
+            "bmewburn.vscode-intelephense-client",
+            "onecentlin.laravel-extension-pack",
+            "amiralizadeh9480.laravel-extra-intellisense",
+            "shufo.vscode-blade-formatter",
+
+            // JavaScript & TypeScript
+            "ms-vscode.vscode-typescript-next",
+            "esbenp.prettier-vscode",
+            "dbaeumer.vscode-eslint",
+
+            // Vue.js
+            "vue.volar",
+
+            // CSS & Styling
+            "bradlc.vscode-tailwindcss",
+            "formulahendry.auto-rename-tag",
+
+            // Environment & Config
+            "mikestead.dotenv",
+            "ms-vscode.vscode-json",
+
+            // Development Tools
+            "ms-vscode.vscode-css-peek",
+            "christian-kohler.path-intellisense",
+            "gruntfuggly.todo-tree",
+            "aaron-bond.better-comments",
+
+            // Markdown & Documentation
+            "yzhang.markdown-all-in-one",
+            "shd101wyy.markdown-preview-enhanced",
+            "bierner.markdown-mermaid",
+            "davidanson.vscode-markdownlint",
+
+            // Git & Version Control
+            "eamodio.gitlens",
+
+            // Database
+            "cweijan.vscode-mysql-client2",
+
+            // Testing
+            "ms-vscode.test-adapter-converter",
+
+            // Icons & Themes
+            "pkief.material-icon-theme",
+            "ms-vscode.vscode-icons",
+
+            // Debug
+            "xdebug.php-debug",
+            "ms-vscode.vscode-js-debug",
+
+            // Live Server
+            "ritwickdey.liveserver",
+
+            // AI & Copilot
+            "github.copilot",
+            "github.copilot-chat",
+            "upstash.context7-mcp"
+        ]
+    },
+
+    // ==========================================
+    // 🛠️ GÖREV TANIMLARI
+    // ==========================================
+    "tasks": {
+        "version": "2.0.0",
+        "tasks": [
+            {
+                "label": "🚀 Start MySQL (MAMP)",
+                "type": "shell",
+                "command": "./start-mysql.sh",
+                "group": "build",
+                "presentation": {
+                    "echo": true,
+                    "reveal": "always",
+                    "focus": false,
+                    "panel": "shared"
+                },
+                "problemMatcher": []
+            },
+            {
+                "label": "🌐 Start Laravel Server",
+                "type": "shell",
+                "command": "./start-laravel.sh",
+                "group": "build",
+                "presentation": {
+                    "echo": true,
+                    "reveal": "always",
+                    "focus": false,
+                    "panel": "shared"
+                },
+                "problemMatcher": []
+            },
+            {
+                "label": "🤖 Start MCP Server",
+                "type": "shell",
+                "command": "./start-mcp-server.sh",
+                "group": "build",
+                "presentation": {
+                    "echo": true,
+                    "reveal": "always",
+                    "focus": false,
+                    "panel": "shared"
+                },
+                "problemMatcher": []
+            },
+            {
+                "label": "💾 Backup Database",
+                "type": "shell",
+                "command": "./backup-database.sh",
+                "group": "build",
+                "presentation": {
+                    "echo": true,
+                    "reveal": "always",
+                    "focus": false,
+                    "panel": "shared"
+                }
+            },
+            {
+                "label": "🧹 Laravel: Clear Cache",
+                "type": "shell",
+                "command": "php artisan cache:clear && php artisan config:clear && php artisan route:clear && php artisan view:clear",
+                "group": "build",
+                "presentation": {
+                    "echo": true,
+                    "reveal": "always",
+                    "focus": false,
+                    "panel": "shared"
+                }
+            },
+            {
+                "label": "🗄️ Laravel: Run Migrations",
+                "type": "shell",
+                "command": "php artisan migrate",
+                "group": "build",
+                "presentation": {
+                    "echo": true,
+                    "reveal": "always",
+                    "focus": false,
+                    "panel": "shared"
+                }
+            },
+            {
+                "label": "🧪 Test MCP Server",
+                "type": "shell",
+                "command": "curl http://localhost:4000/health && echo '\n' && curl http://localhost:4000/modules",
+                "group": "test",
+                "presentation": {
+                    "echo": true,
+                    "reveal": "always",
+                    "focus": false,
+                    "panel": "shared"
+                }
+            },
+            {
+                "label": "📚 Context7: Update Rules",
+                "type": "shell",
+                "command": "php artisan context7:update-rules",
+                "group": "build",
+                "presentation": {
+                    "echo": true,
+                    "reveal": "always",
+                    "focus": false,
+                    "panel": "shared"
+                }
+            },
+            {
+                "label": "🧠 Context7: Sync Memory",
+                "type": "shell",
+                "command": "php artisan context7:sync-memory",
+                "group": "build",
+                "presentation": {
+                    "echo": true,
+                    "reveal": "always",
+                    "focus": false,
+                    "panel": "shared"
+                }
+            },
+            {
+                "label": "💾 Context7: Backup Memory",
+                "type": "shell",
+                "command": "php artisan context7:backup-memory",
+                "group": "build",
+                "presentation": {
+                    "echo": true,
+                    "reveal": "always",
+                    "focus": false,
+                    "panel": "shared"
+                }
+            },
+            {
+                "label": "🔧 Composer Install",
+                "type": "shell",
+                "command": "composer install",
+                "group": "build",
+                "presentation": {
+                    "echo": true,
+                    "reveal": "always",
+                    "focus": false,
+                    "panel": "shared"
+                }
+            },
+            {
+                "label": "📦 NPM Install",
+                "type": "shell",
+                "command": "npm install",
+                "group": "build",
+                "presentation": {
+                    "echo": true,
+                    "reveal": "always",
+                    "focus": false,
+                    "panel": "shared"
+                }
+            },
+            {
+                "label": "🏗️ Build Assets",
+                "type": "shell",
+                "command": "npm run build",
+                "group": "build",
+                "presentation": {
+                    "echo": true,
+                    "reveal": "always",
+                    "focus": false,
+                    "panel": "shared"
+                }
+            },
+            {
+                "label": "🧪 Run Tests",
+                "type": "shell",
+                "command": "php artisan test",
+                "group": "test",
+                "presentation": {
+                    "echo": true,
+                    "reveal": "always",
+                    "focus": false,
+                    "panel": "shared"
+                }
+            }
+        ]
+    },
+
+    // ==========================================
+    // 🐛 DEBUG KONFIGÜRASYONLARI
+    // ==========================================
+    "launch": {
+        "version": "0.2.0",
+        "configurations": [
+            {
+                "name": "Laravel",
+                "type": "php",
+                "request": "launch",
+                "program": "${workspaceFolder}/artisan",
+                "args": ["serve"],
+                "cwd": "${workspaceFolder}",
+                "port": 8000,
+                "runtimeArgs": ["-dxdebug.start_with_request=yes"],
+                "env": {
+                    "XDEBUG_MODE": "debug,develop",
+                    "XDEBUG_CONFIG": "client_port=9003"
+                }
+            },
+            {
+                "name": "Listen for Xdebug",
+                "type": "php",
+                "request": "launch",
+                "port": 9003,
+                "pathMappings": {
+                    "/app": "${workspaceFolder}"
+                }
+            },
+            {
+                "name": "Launch Chrome",
+                "request": "launch",
+                "type": "chrome",
+                "url": "http://localhost:8000",
+                "webRoot": "${workspaceFolder}/public",
+                "sourceMapPathOverrides": {
+                    "/app/*": "${workspaceFolder}/*"
+                }
+            }
+        ]
+    }
+}

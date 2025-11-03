@@ -1,0 +1,133 @@
+{
+  "tarih": "2025-10-23",
+  "konu": "Route Order - 422 Hatasının Önlenmesi",
+  "durum": "CRITICAL_FIX",
+  "severity": "HIGH",
+
+  "problem": {
+    "hata_kodu": "422 Unprocessable Content",
+    "sebep": "Route sıralaması yanlış - Generic route spesifik route'ları yakalıyor",
+    "etkilenen_endpoint": [
+      "/admin/adres-yonetimi/ilceler/4",
+      "/admin/adres-yonetimi/mahalleler/31"
+    ],
+    "konsol_hatasi": "Failed to load resource: the server responded with a status of 422"
+  },
+
+  "root_cause": {
+    "yanlis_siralama": {
+      "before": [
+        "Route::get('/{type}/{id}', ...)",
+        "Route::get('/ilceler/{ilId}', ...)",
+        "Route::get('/mahalleler/{ilceId}', ...)"
+      ],
+      "problem": "/{type}/{id} tüm /ilceler/4 gibi istekleri yakalar",
+      "result": "Controller'a type='ilceler', id='4' gelir → show() metodu çalışır → 422 hatası"
+    }
+  },
+
+  "solution": {
+    "dogru_siralama": {
+      "after": [
+        "Route::get('/ilceler/{ilId}', ...)",
+        "Route::get('/mahalleler/{ilceId}', ...)",
+        "Route::get('/{type}/{id}', ...)"
+      ],
+      "kural": "SPECIFIC ROUTES FIRST, GENERIC ROUTES LAST",
+      "mantik": "Laravel routes yukarıdan aşağıya kontrol eder, ilk eşleşeni kullanır"
+    }
+  },
+
+  "context7_route_order_rules": {
+    "priority_order": [
+      "1. Exact matches (no parameters)",
+      "2. Specific parameters with constraints",
+      "3. Generic parameters ({type}, {id})",
+      "4. Catch-all routes"
+    ],
+    "example_correct": [
+      "Route::get('/ulkeler', ...)",
+      "Route::get('/iller', ...)",
+      "Route::get('/ilceler', ...)",
+      "Route::get('/iller/{ulkeId}', ...)",
+      "Route::get('/ilceler/{ilId}', ...)",
+      "Route::get('/mahalleler/{ilceId}', ...)",
+      "Route::get('/{type}/{id}/edit', ...)",
+      "Route::get('/{type}/{id}', ...)"
+    ],
+    "example_wrong": [
+      "Route::get('/{type}/{id}', ...)",
+      "Route::get('/ilceler/{ilId}', ...)"
+    ]
+  },
+
+  "yalihan_bekci_auto_check": {
+    "detection_pattern": "Route::get\\('\/\\{\\w+\\}\/\\{\\w+\\}'.*\\n.*Route::get\\('\\/\\w+\\/\\{\\w+\\}'",
+    "alert": "⚠️ HATA: Generic route spesifik route'dan önce!",
+    "suggestion": "Spesifik route'ları yukarı taşı",
+    "severity": "HIGH",
+    "auto_fix": true,
+    "fix_action": "Reorder routes: specific first, generic last"
+  },
+
+  "prevention_checklist": [
+    "☐ Exact routes (no parameters) en üstte",
+    "☐ Spesifik parametreli routes ortada",
+    "☐ Generic routes ({type}, {id}) en altta",
+    "☐ Catch-all routes en sonda",
+    "☐ Test et: curl route'ları doğru controller'a gidiyor mu?"
+  ],
+
+  "test_commands": {
+    "test_specific_route": "curl http://127.0.0.1:8000/admin/adres-yonetimi/ilceler/4",
+    "expected": "200 OK - getIlcelerByIl() çalışmalı",
+    "wrong_result": "422 - show() çalıştı (yanlış route match)",
+    "debug": "php artisan route:list | grep 'adres-yonetimi'"
+  },
+
+  "learned_pattern": {
+    "pattern_name": "Route Order Violation",
+    "detection": "Generic route before specific route",
+    "fix": "Move specific routes above generic routes",
+    "prevention": "Always order routes: exact → specific → generic → catch-all"
+  },
+
+  "git_hook_addition": {
+    "file": ".githooks/pre-commit-route-check",
+    "check": "Detect generic routes before specific routes",
+    "command": "grep -A 50 'Route::get' routes/*.php | check order",
+    "block_commit": true
+  },
+
+  "real_world_example": {
+    "wrong": {
+      "code": "Route::get('/{type}/{id}', 'show');\nRoute::get('/ilceler/{ilId}', 'getIlcelerByIl');",
+      "result": "/ilceler/4 → show('ilceler', '4') → 422"
+    },
+    "correct": {
+      "code": "Route::get('/ilceler/{ilId}', 'getIlcelerByIl');\nRoute::get('/{type}/{id}', 'show');",
+      "result": "/ilceler/4 → getIlcelerByIl('4') → 200"
+    }
+  },
+
+  "impact": {
+    "before_fix": {
+      "error_count": "Multiple 422 errors",
+      "affected_pages": ["Adres Yönetimi index"],
+      "cascade_broken": true,
+      "user_experience": "Data loads but not displayed"
+    },
+    "after_fix": {
+      "error_count": 0,
+      "affected_pages": "All working",
+      "cascade_working": true,
+      "user_experience": "Perfect"
+    }
+  },
+
+  "context7_compliance": "100%",
+  "status": "FIXED",
+  "applied_to": "routes/admin.php",
+  "next_action": "Add pre-commit hook for route order checking"
+}
+

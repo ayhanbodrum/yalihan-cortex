@@ -1,0 +1,284 @@
+{
+  "rule_id": "CONTEXT7-STATUS-FIELD-001",
+  "title": "Status Field Zorunlu Standardı",
+  "category": "database",
+  "severity": "CRITICAL",
+  "enabled": true,
+  "created_at": "2025-10-24T17:00:00Z",
+  "updated_at": "2025-10-24T17:00:00Z",
+
+  "description": "Tüm tablolarda status field TINYINT(1) boolean olmalıdır. VARCHAR, ENUM veya Türkçe değerler YASAK.",
+
+  "context7_compliance": {
+    "standard": "Status fields MUST be TINYINT(1)",
+    "rationale": "Boolean status provides consistent queries, validation, and API responses across the entire system.",
+    "compliance_level": "MANDATORY"
+  },
+
+  "forbidden_patterns": {
+    "migrations": [
+      {
+        "pattern": "\\$table->string\\('status'\\)",
+        "message": "❌ Status field ASLA string olamaz! Kullan: $table->tinyInteger('status')->default(1)",
+        "severity": "CRITICAL"
+      },
+      {
+        "pattern": "\\$table->varchar\\('status'",
+        "message": "❌ Status field ASLA varchar olamaz! Kullan: $table->tinyInteger('status')->default(1)",
+        "severity": "CRITICAL"
+      },
+      {
+        "pattern": "\\$table->enum\\('status'",
+        "message": "❌ Status field ASLA enum olamaz! Kullan: $table->tinyInteger('status')->default(1)",
+        "severity": "CRITICAL"
+      },
+      {
+        "pattern": "->default\\('Aktif'\\)",
+        "message": "❌ Status default ASLA Türkçe olamaz! Kullan: ->default(1)",
+        "severity": "CRITICAL"
+      },
+      {
+        "pattern": "->default\\('Pasif'\\)",
+        "message": "❌ Status default ASLA Türkçe olamaz! Kullan: ->default(0)",
+        "severity": "CRITICAL"
+      },
+      {
+        "pattern": "->default\\('active'\\)",
+        "message": "❌ Status default string olamaz! Kullan: ->default(1)",
+        "severity": "CRITICAL"
+      },
+      {
+        "pattern": "->default\\('inactive'\\)",
+        "message": "❌ Status default string olamaz! Kullan: ->default(0)",
+        "severity": "CRITICAL"
+      }
+    ],
+
+    "controllers": [
+      {
+        "pattern": "where\\('status',\\s*'Aktif'\\)",
+        "message": "❌ Query'de Türkçe status kullanma! Kullan: where('status', true)",
+        "severity": "HIGH"
+      },
+      {
+        "pattern": "where\\('status',\\s*'Pasif'\\)",
+        "message": "❌ Query'de Türkçe status kullanma! Kullan: where('status', false)",
+        "severity": "HIGH"
+      },
+      {
+        "pattern": "where\\('status',\\s*'active'\\)",
+        "message": "❌ Query'de string status kullanma! Kullan: where('status', true)",
+        "severity": "HIGH"
+      },
+      {
+        "pattern": "where\\('status',\\s*'inactive'\\)",
+        "message": "❌ Query'de string status kullanma! Kullan: where('status', false)",
+        "severity": "HIGH"
+      }
+    ],
+
+    "models": [
+      {
+        "pattern": "protected \\$fillable.*status.*(?!.*protected \\$casts.*status.*boolean)",
+        "message": "⚠️ Model'de status field var AMA cast eksik! Ekle: 'status' => 'boolean'",
+        "severity": "MEDIUM"
+      }
+    ],
+
+    "validation": [
+      {
+        "pattern": "'status'\\s*=>\\s*'in:Aktif,Pasif'",
+        "message": "❌ Validation'da Türkçe status kullanma! Kullan: 'status' => 'boolean'",
+        "severity": "HIGH"
+      },
+      {
+        "pattern": "'status'\\s*=>\\s*'in:active,inactive'",
+        "message": "❌ Validation'da string status kullanma! Kullan: 'status' => 'boolean'",
+        "severity": "HIGH"
+      }
+    ]
+  },
+
+  "required_patterns": {
+    "migrations": {
+      "correct": "$table->tinyInteger('status')->default(1)->comment('0=inactive, 1=active (Context7 boolean)');",
+      "examples": [
+        "// ✅ DOĞRU:",
+        "$table->tinyInteger('status')->default(1);",
+        "$table->tinyInteger('status')->default(0);",
+        "$table->tinyInteger('status')->default(1)->comment('0=inactive, 1=active');",
+        "",
+        "// ❌ YANLIŞ:",
+        "$table->string('status')->default('Aktif');",
+        "$table->varchar('status', 255);",
+        "$table->enum('status', ['Aktif', 'Pasif']);",
+        "$table->enum('status', ['active', 'inactive']);"
+      ]
+    },
+
+    "models": {
+      "correct": "protected $casts = [\n    'status' => 'boolean',\n];",
+      "examples": [
+        "// ✅ DOĞRU:",
+        "protected $casts = [",
+        "    'status' => 'boolean',",
+        "];",
+        "",
+        "// ❌ YANLIŞ:",
+        "// Cast yok!",
+        "protected $casts = [",
+        "    'status' => 'string',  // ❌",
+        "];"
+      ]
+    },
+
+    "controllers": {
+      "correct": "where('status', true) // or where('status', false)",
+      "examples": [
+        "// ✅ DOĞRU:",
+        "Model::where('status', true)->get();",
+        "Model::where('status', false)->get();",
+        "$model->status = true;",
+        "$model->status = false;",
+        "",
+        "// ❌ YANLIŞ:",
+        "Model::where('status', 'Aktif')->get();  // ❌ Turkish",
+        "Model::where('status', 'active')->get(); // ❌ String",
+        "$model->status = 'Aktif';                // ❌ Turkish"
+      ]
+    },
+
+    "validation": {
+      "correct": "'status' => 'boolean'",
+      "examples": [
+        "// ✅ DOĞRU:",
+        "'status' => 'boolean',",
+        "'status' => 'required|boolean',",
+        "'status' => 'nullable|boolean',",
+        "",
+        "// ❌ YANLIŞ:",
+        "'status' => 'in:Aktif,Pasif',        // ❌ Turkish",
+        "'status' => 'in:active,inactive',    // ❌ String"
+      ]
+    }
+  },
+
+  "exceptions": {
+    "complex_status_fields": [
+      {
+        "table": "blog_posts",
+        "field": "status",
+        "reason": "Multi-state status (draft, published, scheduled, archived)",
+        "allowed_type": "VARCHAR or ENUM",
+        "allowed_values": ["draft", "published", "scheduled", "archived"],
+        "note": "NOT a simple active/inactive boolean - complex workflow status"
+      },
+      {
+        "table": "blog_comments",
+        "field": "status",
+        "reason": "Multi-state status (pending, approved, spam, deleted)",
+        "allowed_type": "VARCHAR or ENUM",
+        "allowed_values": ["pending", "approved", "spam", "deleted"],
+        "note": "NOT a simple active/inactive boolean - moderation workflow"
+      },
+      {
+        "table": "yazlik_rezervasyonlar",
+        "field": "status",
+        "reason": "Multi-state status (beklemede, onaylandi, iptal, tamamlandi)",
+        "allowed_type": "ENUM",
+        "allowed_values": ["beklemede", "onaylandi", "iptal", "tamamlandi"],
+        "note": "NOT a simple active/inactive boolean - reservation workflow"
+      },
+      {
+        "table": "gorevler",
+        "field": "status",
+        "reason": "Multi-state status (Beklemede, Devam Ediyor, Tamamlandi, Iptal)",
+        "allowed_type": "VARCHAR or ENUM",
+        "allowed_values": ["Beklemede", "Devam Ediyor", "Tamamlandi", "Iptal"],
+        "note": "NOT a simple active/inactive boolean - task workflow"
+      },
+      {
+        "table": "eslesmeler",
+        "field": "status",
+        "reason": "Multi-state status (beklemede, eslesti, iptal)",
+        "allowed_type": "VARCHAR or ENUM",
+        "allowed_values": ["beklemede", "eslesti", "iptal"],
+        "note": "NOT a simple active/inactive boolean - matching workflow"
+      }
+    ],
+
+    "how_to_decide": {
+      "use_boolean_if": [
+        "Status sadece 2 state'e sahip (active/inactive, enabled/disabled, on/off)",
+        "Status bir toggle switch ile temsil edilebilir",
+        "Status bir workflow'un parçası değil",
+        "Status sadece kayıdın 'görünür/gizli' olduğunu gösterir"
+      ],
+      "use_enum_varchar_if": [
+        "Status 3+ farklı değere sahip",
+        "Status bir workflow'un state'ini temsil ediyor (draft → published → archived)",
+        "Status değerleri anlamlı kelimeler gerektiriyor (not just on/off)",
+        "Status değerleri kullanıcıya gösterilecek (UI'da label olarak)"
+      ]
+    }
+  },
+
+  "automated_checks": {
+    "pre_commit_hook": {
+      "enabled": true,
+      "script": ".git/hooks/pre-commit",
+      "checks": [
+        "Scan migration files for forbidden status patterns",
+        "Scan controller files for Turkish status queries",
+        "Scan model files for missing status casting"
+      ]
+    },
+
+    "ci_pipeline": {
+      "enabled": true,
+      "checks": [
+        "Database schema audit for non-boolean status fields",
+        "Code audit for string status queries"
+      ]
+    }
+  },
+
+  "crisis_history": {
+    "VIO-2025-01-24-001": {
+      "table": "ilan_kategorileri",
+      "problem": "status VARCHAR(255) default 'Aktif'",
+      "fixed": "2025-10-24",
+      "solution": "Migration to TINYINT(1)"
+    },
+    "VIO-2025-01-24-002": {
+      "table": "ilan_kategori_yayin_tipleri",
+      "problem": "status VARCHAR(255) default 'Aktif'",
+      "fixed": "2025-10-24",
+      "solution": "Migration to TINYINT(1)"
+    },
+    "VIO-2025-10-24-MASTER": {
+      "affected_tables": 22,
+      "problem": "Sistem-wide status field inconsistency",
+      "analysis": "docs/context7/STATUS_FIELD_CRISIS_ANALYSIS.md",
+      "solution": "Master migration + prevention system"
+    }
+  },
+
+  "documentation": [
+    "docs/context7/STATUS_FIELD_CRISIS_ANALYSIS.md",
+    "stubs/migration.context7-status.stub",
+    "yalihan-bekci/rules/status-field-standard.json"
+  ],
+
+  "quick_reference": {
+    "✅ ALWAYS USE": "$table->tinyInteger('status')->default(1);",
+    "❌ NEVER USE": [
+      "$table->string('status')",
+      "$table->enum('status', ['Aktif', 'Pasif'])",
+      "->default('Aktif')",
+      "where('status', 'Aktif')"
+    ],
+    "🎯 GOAL": "100% Context7 compliance - All status fields are boolean"
+  }
+}
+

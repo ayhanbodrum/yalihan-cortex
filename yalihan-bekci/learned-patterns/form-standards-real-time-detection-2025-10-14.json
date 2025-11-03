@@ -1,0 +1,271 @@
+{
+    "pattern_id": "form_standards_real_time_detection",
+    "date": "2025-10-14",
+    "category": "form_validation_automated",
+    "severity": "critical",
+    "description": "Form standartları gerçek zamanlı tespit sistemi",
+    "real_time_detection": {
+        "enabled": true,
+        "check_on_save": true,
+        "check_on_commit": true,
+        "auto_suggest_fix": true
+    },
+    "detection_rules": {
+        "input_fields": {
+            "required_classes": [
+                "w-full",
+                "px-4",
+                "py-3",
+                "border",
+                "rounded-lg",
+                "focus:ring-2"
+            ],
+            "dark_mode_required": [
+                "dark:bg-gray-700",
+                "dark:border-gray-600",
+                "dark:text-gray-100"
+            ],
+            "error_handling": "@error directive required",
+            "auto_fix": {
+                "enabled": true,
+                "template": "<input type=\"{type}\" name=\"{name}\" id=\"{id}\" value=\"{{ old('{name}') }}\" {required} class=\"w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 @error('{name}') border-red-500 @enderror\" placeholder=\"{placeholder}\">"
+            }
+        },
+        "select_fields": {
+            "required_classes": [
+                "w-full",
+                "px-4",
+                "py-3",
+                "border",
+                "rounded-lg"
+            ],
+            "dark_mode_required": ["dark:bg-gray-700", "dark:text-gray-100"],
+            "empty_option_required": true,
+            "auto_fix": {
+                "enabled": true,
+                "template": "<select name=\"{name}\" id=\"{id}\" {required} class=\"w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 @error('{name}') border-red-500 @enderror\">\n    <option value=\"\">Seçiniz</option>\n    <!-- options -->\n</select>"
+            }
+        },
+        "label_fields": {
+            "required_classes": ["block", "text-sm", "font-medium", "mb-2"],
+            "dark_mode_required": ["dark:text-gray-300"],
+            "auto_fix": {
+                "enabled": true,
+                "template": "<label for=\"{for}\" class=\"block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2\">\n    {label_text} {required_star}\n</label>"
+            }
+        },
+        "context7_live_search": {
+            "required_attributes": [
+                "data-search-type",
+                "data-placeholder",
+                "data-max-results"
+            ],
+            "detection": "class=\"context7-live-search\"",
+            "warning_if_missing": [
+                "data-search-type",
+                "data-creatable",
+                "data-add-modal-id"
+            ]
+        },
+        "alpine_js_warnings": {
+            "problematic_patterns": [
+                "@submit.prevent=\"submitForm\"",
+                "x-data=\"\" without component",
+                "Alpine.data() not defined"
+            ],
+            "suggestions": [
+                "Use normal form submission instead of @submit.prevent",
+                "Define Alpine component before use",
+                "Check Alpine.js is loaded"
+            ]
+        }
+    },
+    "real_time_triggers": {
+        "file_save": {
+            "enabled": true,
+            "check_patterns": [
+                "*.blade.php files",
+                "Form input/select/label changes"
+            ],
+            "action": "Show instant warning in IDE"
+        },
+        "git_commit": {
+            "enabled": true,
+            "pre_commit_hook": true,
+            "action": "Block commit if violations > threshold",
+            "threshold": {
+                "max_violations": 5,
+                "max_warnings": 10
+            }
+        },
+        "pr_creation": {
+            "enabled": true,
+            "action": "Comment on PR with violations",
+            "auto_assign_reviewer": true
+        }
+    },
+    "auto_fix_suggestions": {
+        "input_missing_px-4_py-3": {
+            "detect": "<input[^>]*class=\"[^\"]*(?!px-4)[^\"]*\"",
+            "fix": "Add 'px-4 py-3' to class attribute",
+            "auto_apply": false,
+            "show_diff": true
+        },
+        "input_missing_dark_mode": {
+            "detect": "<input[^>]*class=\"[^\"]*(?!dark:)[^\"]*\"",
+            "fix": "Add 'dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100'",
+            "auto_apply": false,
+            "show_diff": true
+        },
+        "select_missing_empty_option": {
+            "detect": "<select[^>]*>(?!\\s*<option value=\"\">)",
+            "fix": "Add <option value=\"\">Seçiniz</option> as first option",
+            "auto_apply": true,
+            "show_diff": true
+        },
+        "label_missing_mb-2": {
+            "detect": "<label[^>]*class=\"[^\"]*(?!mb-2)[^\"]*\"",
+            "fix": "Add 'mb-2' to class attribute",
+            "auto_apply": true,
+            "show_diff": true
+        }
+    },
+    "ide_integration": {
+        "vscode": {
+            "extension_name": "yalihan-bekci-form-checker",
+            "features": [
+                "Real-time linting",
+                "Auto-fix suggestions",
+                "Hover tooltips with standard templates",
+                "Snippet completion"
+            ],
+            "settings": {
+                "yalihanBekci.formStandards.enabled": true,
+                "yalihanBekci.formStandards.autoFix": false,
+                "yalihanBekci.formStandards.showWarnings": true
+            }
+        },
+        "phpstorm": {
+            "inspection_name": "YalihanBekciFormStandards",
+            "severity": "ERROR",
+            "scope": "*.blade.php"
+        }
+    },
+    "notification_channels": {
+        "terminal": {
+            "enabled": true,
+            "emoji": true,
+            "color": true,
+            "format": "❌ [Form Standards] {file}:{line} - {message}"
+        },
+        "slack": {
+            "enabled": false,
+            "webhook": "https://hooks.slack.com/...",
+            "channel": "#yalihan-bekci-alerts",
+            "mention_user": "@developer"
+        },
+        "telegram": {
+            "enabled": false,
+            "bot_token": "YOUR_BOT_TOKEN",
+            "chat_id": "YOUR_CHAT_ID"
+        }
+    },
+    "learning_mode": {
+        "enabled": true,
+        "track_violations": true,
+        "update_patterns": true,
+        "suggest_new_rules": true,
+        "ml_prediction": {
+            "enabled": false,
+            "model": "form_standards_predictor",
+            "accuracy_threshold": 0.85
+        }
+    },
+    "statistics": {
+        "total_checks": 0,
+        "total_violations": 0,
+        "total_auto_fixes": 0,
+        "most_common_violations": [
+            {
+                "type": "missing_px-4_py-3",
+                "count": 321,
+                "auto_fix_success_rate": 0.95
+            },
+            {
+                "type": "missing_dark_mode",
+                "count": 106,
+                "auto_fix_success_rate": 0.92
+            },
+            {
+                "type": "missing_empty_option",
+                "count": 18,
+                "auto_fix_success_rate": 1.0
+            }
+        ],
+        "compliance_trend": [
+            {
+                "date": "2025-10-14",
+                "compliance": 44.36
+            }
+        ]
+    },
+    "examples": {
+        "before": {
+            "input": "<input type=\"text\" name=\"email\" class=\"form-control\">",
+            "violation": "Missing: w-full, px-4, py-3, rounded-lg, focus:ring-2, dark mode support",
+            "severity": "error"
+        },
+        "after": {
+            "input": "<input type=\"text\" name=\"email\" id=\"email\" value=\"{{ old('email') }}\" required class=\"w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 @error('email') border-red-500 @enderror\" placeholder=\"E-posta adresiniz\">",
+            "compliance": "100%",
+            "auto_fixed": [
+                "Added w-full px-4 py-3",
+                "Added dark mode support",
+                "Added focus:ring-2",
+                "Added @error directive"
+            ]
+        }
+    },
+    "checklist": {
+        "on_file_save": [
+            "✅ Check all input fields for required classes",
+            "✅ Check all select fields for empty option",
+            "✅ Check all labels for mb-2",
+            "✅ Check dark mode support",
+            "✅ Check @error directives",
+            "✅ Check Context7 Live Search attributes",
+            "✅ Check Alpine.js patterns"
+        ],
+        "on_git_commit": [
+            "✅ Run full form standards checker",
+            "✅ Count total violations",
+            "✅ Block if violations > threshold",
+            "✅ Generate compliance report",
+            "✅ Update Yalıhan Bekçi statistics"
+        ],
+        "on_pr_creation": [
+            "✅ Add automated comment with violations",
+            "✅ Suggest auto-fixes",
+            "✅ Compare compliance with main branch",
+            "✅ Request changes if compliance drops"
+        ]
+    },
+    "integration_commands": {
+        "check_file": "php tools/context7/form-standards-checker.php --file={file}",
+        "auto_fix_file": "php tools/context7/form-standards-fixer.php --file={file}",
+        "check_all": "php tools/context7/form-standards-checker.php",
+        "report": "php tools/context7/form-standards-checker.php --report=json > report.json"
+    },
+    "future_enhancements": [
+        "AI-powered auto-fix suggestions",
+        "Visual diff preview before applying fixes",
+        "Integration with Laravel Pint for code formatting",
+        "Real-time collaboration warnings",
+        "Compliance dashboard",
+        "Historical compliance trends",
+        "Team leaderboard (most compliant developer)"
+    ],
+    "status": "active",
+    "last_updated": "2025-10-14T12:00:00.000Z",
+    "version": "1.0.0"
+}

@@ -1,0 +1,86 @@
+{
+  "ai_core_system_analysis": {
+    "timestamp": "2025-10-25T10:59:00Z",
+    "system_components": {
+      "AICoreSystem": {
+        "purpose": "AI sisteminin kalbi - öğrenme ve test",
+        "key_methods": [
+          "teachAI() - AI'yi öğretir",
+          "testAI() - AI'yi test eder",
+          "learnFromAI() - AI'den öğrenir",
+          "updateSuccessRate() - Başarı oranını günceller"
+        ],
+        "dependencies": [
+          "FlexibleStorageManager",
+          "AIPromptManager",
+          "AILearningEngine",
+          "AIService"
+        ]
+      },
+      "FlexibleStorageManager": {
+        "purpose": "Esnek depolama sistemi",
+        "providers": [
+          "LocalMySQLProvider",
+          "RemoteMySQLProvider",
+          "GoogleDriveProvider",
+          "AWSS3Provider"
+        ],
+        "key_features": [
+          "Local/Remote geçiş",
+          "Otomatik senkronizasyon",
+          "Pattern depolama",
+          "Context tabanlı organizasyon"
+        ]
+      },
+      "AIPromptManager": {
+        "purpose": "AI prompt yönetimi",
+        "templates": [
+          "form_generation",
+          "matrix_management",
+          "suggestion_engine",
+          "hibrit_siralama"
+        ],
+        "context_rules": [
+          "konut - Oda sayısı, Banyo, Metrekare, Kat, Isıtma",
+          "arsa - Ada, Parsel, İmar durumu, KAKS, TAKS",
+          "yazlik - Günlük fiyat, Minimum konaklama, Havuz",
+          "isyeri - Metrekare, Kat, Otopark, Lokasyon"
+        ]
+      },
+      "AILearningEngine": {
+        "purpose": "AI öğrenme motoru",
+        "key_features": [
+          "Pattern analizi",
+          "Başarı oranı hesaplama",
+          "Benzerlik analizi",
+          "Öğrenme verisi kaydetme"
+        ]
+      }
+    },
+    "integration_points": {
+      "AISystemIntegration": {
+        "purpose": "Tüm sistemi AI destekli hale getirir",
+        "features": [
+          "generateSmartForm() - Akıllı form üretimi",
+          "manageMatrix() - AI destekli matrix yönetimi",
+          "generateSuggestions() - AI önerileri",
+          "generateHibritSiralama() - Hibrit sıralama"
+        ]
+      }
+    },
+    "learning_patterns": {
+      "context_based_learning": {
+        "konut": "Konut özellikleri ve form alanları",
+        "arsa": "Arsa özellikleri ve değerleme",
+        "yazlik": "Yazlık kiralama ve sezon analizi",
+        "isyeri": "İşyeri özellikleri ve kira analizi"
+      },
+      "ai_teaching_methods": {
+        "prompt_templates": "Context'e göre prompt oluşturma",
+        "pattern_analysis": "Öğrenilen pattern'leri analiz etme",
+        "success_tracking": "Başarı oranını takip etme",
+        "continuous_learning": "Sürekli öğrenme ve gelişim"
+      }
+    }
+  }
+}

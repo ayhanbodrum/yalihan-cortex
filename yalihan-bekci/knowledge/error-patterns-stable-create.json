@@ -1,0 +1,255 @@
+{
+  "error_patterns": [
+    {
+      "id": "ref-error-function-not-defined",
+      "pattern": "Uncaught ReferenceError: (\\w+) is not defined",
+      "example": "Uncaught ReferenceError: loadAltKategoriler is not defined",
+      "category": "javascript",
+      "severity": "critical",
+      "context7_compliant": true,
+      "solution": {
+        "diagnosis": "Fonksiyon tanımlı ama window scope'una export edilmemiş",
+        "steps": [
+          "1. İlgili JS modülünü bul (örn: resources/js/admin/stable-create/categories.js)",
+          "2. Fonksiyonu window'a export et: window.functionName = functionName",
+          "3. Vite build yap: npx vite build",
+          "4. Sayfayı yenile ve test et"
+        ],
+        "code_example": "// ❌ HATALI\nfunction loadAltKategoriler(id) { ... }\n\n// ✅ DOĞRU\nfunction loadAltKategoriler(id) { ... }\nwindow.loadAltKategoriler = loadAltKategoriler;"
+      },
+      "real_cases": [
+        {
+          "date": "2025-10-13",
+          "file": "resources/js/admin/stable-create/categories.js",
+          "function": "loadAltKategoriler",
+          "fix": "window.loadAltKategoriler = loadAltKategoriler;"
+        },
+        {
+          "date": "2025-10-13",
+          "file": "resources/js/admin/stable-create/categories.js",
+          "function": "loadYayinTipleri",
+          "fix": "window.loadYayinTipleri = loadYayinTipleri;"
+        },
+        {
+          "date": "2025-10-13",
+          "file": "resources/js/admin/stable-create/fields.js",
+          "function": "addCustomFeature",
+          "fix": "addCustomFeature() { this.addFeature(); } // Alias method"
+        }
+      ]
+    },
+    {
+      "id": "form-validation-not-focusable",
+      "pattern": "An invalid form control with name='([^']+)' is not focusable",
+      "example": "An invalid form control with name='person_ad_soyad' is not focusable",
+      "category": "html",
+      "severity": "high",
+      "context7_compliant": true,
+      "solution": {
+        "diagnosis": "Hidden form içinde required attribute olan input var",
+        "steps": [
+          "1. İlgili Blade component'i bul (örn: person-crm.blade.php)",
+          "2. Hidden form içindeki required attribute'larını kaldır",
+          "3. VEYA: Formu tamamen style='display: none' yap",
+          "4. Sayfayı yenile ve form submit test et"
+        ],
+        "code_example": "<!-- ❌ HATALI -->\n<div class=\"hidden\">\n  <input name=\"person_ad_soyad\" required>\n</div>\n\n<!-- ✅ ÇÖZÜM 1: required kaldır -->\n<div class=\"hidden\">\n  <input name=\"person_ad_soyad\">\n</div>\n\n<!-- ✅ ÇÖZÜM 2: Formu tamamen disable et -->\n<div class=\"hidden\" style=\"display: none;\">\n  <!-- Artık kullanılmıyor -->\n</div>"
+      },
+      "real_cases": [
+        {
+          "date": "2025-10-13",
+          "file": "resources/views/admin/ilanlar/components/person-crm.blade.php",
+          "fields": ["person_ad_soyad", "person_telefon"],
+          "fix": "Hidden formu tamamen kaldırıldı, dropdown sistemi kullanıldı"
+        }
+      ]
+    },
+    {
+      "id": "database-table-not-found",
+      "pattern": "SQLSTATE\\[42S02\\]: Base table or view not found: 1146 Table '([^']+)' doesn't exist",
+      "example": "SQLSTATE[42S02]: Base table or view not found: 1146 Table 'sites' doesn't exist",
+      "category": "database",
+      "severity": "critical",
+      "context7_compliant": true,
+      "solution": {
+        "diagnosis": "Validation rule 'exists' kullanıyor ama tablo yok",
+        "steps": [
+          "1. Controller'da ilgili validation rule'u bul",
+          "2. 'required|exists:table,id' → 'nullable' olarak değiştir",
+          "3. Form'da field'ı optional yap",
+          "4. Context7 comment ekle: // Context7: table yoksa optional"
+        ],
+        "code_example": "// ❌ HATALI\n'site_id' => 'required|exists:sites,id',\n\n// ✅ DOĞRU (Context7 uyumlu)\n'site_id' => 'nullable', // Context7: sites tablosu yoksa optional"
+      },
+      "real_cases": [
+        {
+          "date": "2025-10-13",
+          "file": "app/Http/Controllers/Admin/SmartIlanController.php",
+          "table": "sites",
+          "field": "site_id",
+          "fix": "'site_id' => 'nullable', // Context7: sites tablosu yoksa optional"
+        }
+      ]
+    },
+    {
+      "id": "google-maps-undefined-property",
+      "pattern": "Cannot read properties of undefined \\(reading 'ROADMAP'\\)",
+      "example": "Cannot read properties of undefined (reading 'ROADMAP')",
+      "category": "javascript",
+      "severity": "high",
+      "context7_compliant": true,
+      "solution": {
+        "diagnosis": "Google Maps API henüz yüklenmemiş, google.maps.MapTypeId undefined",
+        "steps": [
+          "1. location.js'de initializeMap fonksiyonunu bul",
+          "2. Güvenli kontrol ekle: typeof google === 'undefined'",
+          "3. Retry mekanizması ekle: setTimeout(initializeMap, 1000)",
+          "4. Ancak sonra map'i başlat"
+        ],
+        "code_example": "// ❌ HATALI\nfunction initializeMap() {\n  const map = new google.maps.Map(...);\n}\n\n// ✅ DOĞRU (Context7: Safe initialization)\nfunction initializeMap() {\n  if (typeof google === 'undefined' || !google.maps || !google.maps.MapTypeId) {\n    console.warn('⚠️ Google Maps API not loaded yet, will retry...');\n    setTimeout(initializeMap, 1000);\n    return;\n  }\n  const map = new google.maps.Map(...);\n}"
+      },
+      "real_cases": [
+        {
+          "date": "2025-10-13",
+          "file": "resources/js/admin/stable-create/location.js",
+          "function": "initializeMap",
+          "fix": "Güvenli başlatma kontrolü ve retry mekanizması eklendi"
+        }
+      ]
+    },
+    {
+      "id": "vite-build-module-not-found",
+      "pattern": "Could not resolve \"([^\"]+)\" from \"([^\"]+)\"",
+      "example": "Could not resolve \"../components/LocationManager.js\" from \"resources/js/admin/stable-create/location.js\"",
+      "category": "build",
+      "severity": "critical",
+      "context7_compliant": true,
+      "solution": {
+        "diagnosis": "Import edilen dosya yok veya yol yanlış",
+        "steps": [
+          "1. Dosya gerçekten var mı kontrol et",
+          "2. Import path'i düzelt veya import'u kaldır",
+          "3. Eğer optional ise: import'u comment'le",
+          "4. npx vite build ile test et"
+        ],
+        "code_example": "// ❌ HATALI\nimport LocationManager from '../components/LocationManager.js';\n\n// ✅ ÇÖZÜM 1: Path düzelt\nimport LocationManager from '../../components/LocationManager.js';\n\n// ✅ ÇÖZÜM 2: Optional ise kaldır (Context7)\n// import LocationManager from '../components/LocationManager.js'; // Optional"
+      },
+      "real_cases": [
+        {
+          "date": "2025-10-13",
+          "file": "resources/js/admin/stable-create/location.js",
+          "module": "LocationManager.js",
+          "fix": "Import comment'lendi, basic Google Maps initialization kullanıldı"
+        }
+      ]
+    },
+    {
+      "id": "api-response-key-mismatch",
+      "pattern": "Cannot read properties of undefined \\(reading '(\\w+)'\\)",
+      "example": "Cannot read properties of undefined (reading 'kategoriler')",
+      "category": "javascript",
+      "severity": "medium",
+      "context7_compliant": true,
+      "solution": {
+        "diagnosis": "API response'daki key JavaScript'te farklı bekleniyor",
+        "steps": [
+          "1. Browser console'da API response'u incele",
+          "2. Gerçek key'i bul (örn: 'subcategories' değil 'types')",
+          "3. JavaScript'te fallback ekle: data.subcategories || data.kategoriler || []",
+          "4. API endpoint'i güncelle (gerekirse)"
+        ],
+        "code_example": "// ❌ HATALI\nfetch('/api/categories/sub/1')\n  .then(data => {\n    populateAltKategoriler(data.kategoriler); // Key yanlış!\n  });\n\n// ✅ DOĞRU (Context7: Fallback)\nfetch('/api/categories/sub/1')\n  .then(data => {\n    populateAltKategoriler(data.subcategories || data.kategoriler || []);\n  });"
+      },
+      "real_cases": [
+        {
+          "date": "2025-10-13",
+          "file": "resources/js/admin/stable-create/categories.js",
+          "function": "loadAltKategoriler",
+          "expected_key": "kategoriler",
+          "actual_key": "subcategories",
+          "fix": "data.subcategories || data.kategoriler || [] fallback eklendi"
+        },
+        {
+          "date": "2025-10-13",
+          "file": "resources/js/admin/stable-create/categories.js",
+          "function": "loadYayinTipleri",
+          "expected_key": "yayinTipleri",
+          "actual_key": "types",
+          "fix": "data.types || data.yayinTipleri || [] fallback eklendi"
+        }
+      ]
+    }
+  ],
+  "context7_principles": {
+    "field_naming": {
+      "correct": [
+        "ilan_sahibi_id",
+        "il_id",
+        "ilce_id",
+        "mahalle_id",
+        "site_id",
+        "kisiler",
+        "status",
+        "active",
+        "enabled"
+      ],
+      "forbidden": [
+        "musteri_id",
+        "customer_id",
+        "city_id",
+        "district_id",
+        "durum",
+        "aktif",
+        "is_active",
+        "sehir",
+        "musteriler"
+      ]
+    },
+    "validation": {
+      "required_fields": [
+        "baslik",
+        "ana_kategori_id",
+        "alt_kategori_id",
+        "yayin_tipi_id",
+        "il_id",
+        "ilce_id",
+        "ilan_sahibi_id",
+        "fiyat"
+      ],
+      "nullable_fields": [
+        "site_id",
+        "mahalle_id",
+        "danisman_id",
+        "aciklama",
+        "detayli_adres",
+        "latitude",
+        "longitude"
+      ]
+    },
+    "ui_consistency": {
+      "dropdown_classes": "w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent",
+      "input_classes": {
+        "large": "w-full px-4 py-4 text-lg border ...",
+        "standard": "w-full px-4 py-3 border ...",
+        "small": "w-full px-3 py-2 text-sm border ..."
+      }
+    }
+  },
+  "quality_checklist": [
+    "npx vite build başarılı mı?",
+    "Console'da error var mı?",
+    "Tüm dropdown'lar aynı stil mi?",
+    "Required alanlar çalışıyor mu?",
+    "Hidden formlarda gereksiz required var mı?",
+    "Context7 compliance sağlanıyor mu?",
+    "API endpoint'leri doğru mu?",
+    "Google Maps düzgün yükleniyor mu?",
+    "Toast bildirimler çalışıyor mu?",
+    "Form submit başarılı mı?"
+  ],
+  "last_update": "2025-10-13T23:00:00+03:00",
+  "context7_compliance": "98.82%",
+  "total_fixes": 12,
+  "ai_learning": true
+}
+

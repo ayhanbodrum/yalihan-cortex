@@ -1,0 +1,121 @@
+{
+  "category": "context7",
+  "type": "critical_standard",
+  "title": "Location System: mahalle_id Standardı",
+  "date": "2025-10-31",
+  "severity": "critical",
+  "tags": ["location", "mahalle_id", "context7", "database", "javascript"],
+  "problem": {
+    "description": "location.js dosyası 'semt_id' elementini arıyordu ama blade dosyalarında 'mahalle_id' kullanılıyor",
+    "impact": "Mahalle dropdown'ları hiç çalışmıyordu, console'da 'semt_id elementi bulunamadı' hatası veriyordu",
+    "affected_files": [
+      "resources/js/admin/ilan-create/location.js",
+      "resources/views/admin/ilanlar/components/location-map.blade.php"
+    ]
+  },
+  "database_structure": {
+    "ilanlar": {
+      "mahalle_id": "unsignedBigInteger (nullable)",
+      "foreign_key": "mahalleler.id",
+      "status": "ACTIVE"
+    },
+    "kisiler": {
+      "mahalle_id": "NOT EXISTS",
+      "note": "Kisiler tablosunda sadece il_id ve ilce_id var, mahalle_id YOK",
+      "status": "BY_DESIGN"
+    },
+    "sites": {
+      "mahalle_id": "unsignedBigInteger (nullable)",
+      "foreign_key": "mahalleler.id",
+      "status": "ACTIVE"
+    }
+  },
+  "context7_standard": {
+    "rule": "Mahalle için SADECE 'mahalle_id' kullanılır, 'semt_id' YASAK",
+    "reason": "Database kolonları mahalle_id, tablo adı mahalleler",
+    "element_naming": {
+      "correct": "mahalle_id",
+      "forbidden": ["semt_id", "mahalle", "semt"],
+      "blade_files": "id='mahalle_id' name='mahalle_id'",
+      "javascript_selectors": "document.getElementById('mahalle_id')"
+    }
+  },
+  "fixed_functions": [
+    {
+      "function": "updateFormValues()",
+      "change": "const semtSelect = document.getElementById('semt_id') → const mahalleSelect = document.getElementById('mahalle_id')",
+      "file": "resources/js/admin/ilan-create/location.js"
+    },
+    {
+      "function": "clearIlceler()",
+      "change": "const semtSelect = document.getElementById('semt_id') → const mahalleSelect = document.getElementById('mahalle_id')",
+      "file": "resources/js/admin/ilan-create/location.js"
+    },
+    {
+      "function": "populateIlceler()",
+      "change": "const semtSelect = document.getElementById('semt_id') → const mahalleSelect = document.getElementById('mahalle_id')",
+      "file": "resources/js/admin/ilan-create/location.js"
+    },
+    {
+      "function": "clearSemtler()",
+      "change": "const semtSelect = document.getElementById('semt_id') → const mahalleSelect = document.getElementById('mahalle_id')",
+      "file": "resources/js/admin/ilan-create/location.js"
+    },
+    {
+      "function": "populateSemtler()",
+      "change": "const semtSelect = document.getElementById('semt_id') → const mahalleSelect = document.getElementById('mahalle_id')",
+      "file": "resources/js/admin/ilan-create/location.js"
+    },
+    {
+      "function": "advancedLocationManager() - instance 1",
+      "change": "selectedSemt → selectedMahalle, semtler → mahalleler",
+      "file": "resources/js/admin/ilan-create/location.js",
+      "line": "834-880"
+    },
+    {
+      "function": "advancedLocationManager() - instance 2",
+      "change": "selectedSemt → selectedMahalle, semtler → mahalleler",
+      "file": "resources/js/admin/ilan-create/location.js",
+      "line": "1279-1332"
+    }
+  ],
+  "enforcement": {
+    "pre_commit_hook": "Check for 'semt_id' in location-related files",
+    "linter_rule": "Warn on getElementById('semt_id') in any file",
+    "code_review": "Reject PRs using 'semt_id' instead of 'mahalle_id'"
+  },
+  "api_endpoints": {
+    "correct": "/api/location/neighborhoods/{ilce_id}",
+    "response_field": "mahalle (from mahalleler table)",
+    "note": "API endpoint 'neighborhoods' ancak database field ve form element 'mahalle_id'"
+  },
+  "testing": {
+    "test_case": "İlan oluşturma sayfasında İl → İlçe → Mahalle cascade",
+    "expected_behavior": "İlçe seçilince mahalle dropdown populate olmalı",
+    "console_check": "'mahalle_id elementi bulunamadı' hatası ÇIKMAMALI"
+  },
+  "related_files": {
+    "blade_components": [
+      "resources/views/admin/ilanlar/components/location-map.blade.php",
+      "resources/views/admin/kisiler/edit.blade.php (mahalle YOK - by design)"
+    ],
+    "javascript_modules": [
+      "resources/js/admin/ilan-create/location.js"
+    ],
+    "migrations": [
+      "database/migrations/2025_10_10_073304_create_ilanlar_table.php",
+      "database/migrations/2025_10_16_220234_create_sites_table.php",
+      "database/migrations/2025_10_22_160000_create_site_apartmanlar_table.php"
+    ]
+  },
+  "lessons_learned": {
+    "1": "Database column naming ile JavaScript selector naming tutarlı olmalı",
+    "2": "Türkçe terim tutarsızlığı (semt vs mahalle) sorunlara yol açıyor",
+    "3": "Context7 standardına göre 'mahalle' seçildi, 'semt' terk edildi",
+    "4": "Console error'ları önemli ipuçları verir: 'semt_id elementi bulunamadı'"
+  },
+  "migration_complete": true,
+  "verification_date": "2025-10-31",
+  "verified_by": "Context7 AI Assistant"
+}
+

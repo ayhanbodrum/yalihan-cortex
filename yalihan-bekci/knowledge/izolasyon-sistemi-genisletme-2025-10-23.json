@@ -1,0 +1,265 @@
+{
+  "tarih": "2025-10-23",
+  "konu": "İzolasyon Sistemi Genişletme Planı",
+  "durum": "PLANNING",
+  "version": "2.0.0",
+
+  "konsept": {
+    "tanim": "Tekrar eden kodları izole edip merkezi sistemler oluşturma",
+    "prensip": "DRY (Don't Repeat Yourself)",
+    "amaç": "Kod tekrarını önlemek, bakım kolaylığı, performans artışı",
+    "pattern": "Tekrar Eden Kod → İzole Et → Merkezi Sistem → Tüm Projede Kullan"
+  },
+
+  "mevcut_sistemler": [
+    {
+      "name": "Location System",
+      "status": "PRODUCTION_READY",
+      "file": "public/js/context7-location-system.js",
+      "size": "15KB",
+      "coverage": ["Adres Yönetimi", "İlan Create/Edit", "Kişi Create/Edit", "Eşleştirme"],
+      "features": ["Cache", "Cascade", "Events", "Error Handling"],
+      "performance": "150x faster with cache"
+    }
+  ],
+
+  "planlanan_sistemler": [
+    {
+      "name": "Category System",
+      "priority": "HIGH",
+      "file": "public/js/context7-category-system.js",
+      "purpose": "İlan kategorileri, yayın tipleri, alt kategoriler",
+      "methods": [
+        "loadKategoriler(parentId)",
+        "loadYayinTipleri(kategoriId)",
+        "selectKategori(kategoriId)",
+        "setupCategoryCascade(config)"
+      ],
+      "coverage": ["İlan Create/Edit", "Kategori Yönetimi", "Gelişmiş Arama", "Raporlama"],
+      "estimated_reduction": "200+ lines of duplicate code"
+    },
+    {
+      "name": "Feature System",
+      "priority": "HIGH",
+      "file": "public/js/context7-feature-system.js",
+      "purpose": "Özellikler, özellik kategorileri, seçili özellikler",
+      "methods": [
+        "loadOzellikler(kategoriId)",
+        "loadOzellikKategorileri()",
+        "addFeature(featureId)",
+        "removeFeature(featureId)",
+        "getSelectedFeatures()",
+        "renderFeatureCheckboxes(container, features)"
+      ],
+      "coverage": ["İlan Create/Edit", "Özellik Yönetimi", "Filtreleme", "Arama"],
+      "estimated_reduction": "150+ lines of duplicate code"
+    },
+    {
+      "name": "Person System",
+      "priority": "HIGH",
+      "file": "public/js/context7-person-system.js",
+      "purpose": "Kişi arama, danışman filtreleme, duplicate check",
+      "methods": [
+        "searchKisiler(query, filters)",
+        "getDanismanlar()",
+        "getIlanSahipleri()",
+        "checkDuplicate(field, value, excludeId)",
+        "setupLiveSearch(inputElement, config)"
+      ],
+      "coverage": ["İlan Create/Edit", "Kişi Yönetimi", "Eşleştirme", "Talepler"],
+      "estimated_reduction": "180+ lines of duplicate code"
+    },
+    {
+      "name": "AI System",
+      "priority": "MEDIUM",
+      "file": "public/js/context7-ai-system.js",
+      "purpose": "AI içerik üretimi, analiz, suggestions",
+      "methods": [
+        "generateTitle(data, context)",
+        "generateDescription(data, context)",
+        "generateSuggestions(context)",
+        "analyzePrice(data)",
+        "analyzeListing(data)",
+        "getAIStatus()",
+        "showAILoading()",
+        "hideAILoading()"
+      ],
+      "coverage": ["İlan Create/Edit", "İçerik Üretimi", "Fiyat Analizi", "Öneriler"],
+      "estimated_reduction": "250+ lines of duplicate code"
+    },
+    {
+      "name": "Media System",
+      "priority": "MEDIUM",
+      "file": "public/js/context7-media-system.js",
+      "purpose": "Fotoğraf yükleme, sıralama, galeri yönetimi",
+      "methods": [
+        "uploadPhoto(file, type)",
+        "uploadMultiple(files, type)",
+        "reorderPhotos(photoIds)",
+        "setMainPhoto(photoId)",
+        "deletePhoto(photoId)",
+        "generatePreview(file)",
+        "showGallery(photos)"
+      ],
+      "coverage": ["İlan Create/Edit", "Kişi Fotoğrafları", "Site Fotoğrafları", "Belge Yüklemeleri"],
+      "estimated_reduction": "300+ lines of duplicate code"
+    },
+    {
+      "name": "Site System",
+      "priority": "MEDIUM",
+      "file": "public/js/context7-site-system.js",
+      "purpose": "Site arama, site özellikleri, live search",
+      "methods": [
+        "searchSites(query, filters)",
+        "getSiteDetails(siteId)",
+        "loadSiteFeatures()",
+        "renderSiteFeatures(container, features)",
+        "setupSiteLiveSearch(inputElement)"
+      ],
+      "coverage": ["İlan Create/Edit", "Site Yönetimi", "Filtreleme"],
+      "estimated_reduction": "120+ lines of duplicate code"
+    },
+    {
+      "name": "Price System",
+      "priority": "LOW",
+      "file": "public/js/context7-price-system.js",
+      "purpose": "Fiyat formatı, para birimi, hesaplamalar",
+      "methods": [
+        "formatPrice(price, currency)",
+        "parsePrice(priceString)",
+        "loadCurrencies()",
+        "convertPrice(amount, from, to)",
+        "calculateM2Price(totalPrice, area)",
+        "calculateTotalPrice(m2Price, area)",
+        "calculateSeasonalPrice(basePrice, season)"
+      ],
+      "coverage": ["İlan Create/Edit", "Fiyat Analizleri", "Raporlar", "Filtreleme"],
+      "estimated_reduction": "100+ lines of duplicate code"
+    },
+    {
+      "name": "Validation System",
+      "priority": "LOW",
+      "file": "public/js/context7-validation-system.js",
+      "purpose": "Form validasyonu, hata gösterimi",
+      "methods": [
+        "addRule(field, rules)",
+        "removeRule(field)",
+        "validate(formData)",
+        "validateField(field, value)",
+        "showError(field, message)",
+        "clearErrors()",
+        "validateTCKN(tcKimlikNo)",
+        "validateIBAN(iban)",
+        "validatePhoneNumber(phone)"
+      ],
+      "coverage": ["Tüm Form Sayfaları", "Kişi Create/Edit", "İlan Create/Edit", "Ayarlar"],
+      "estimated_reduction": "200+ lines of duplicate code"
+    },
+    {
+      "name": "Notification System",
+      "priority": "LOW",
+      "file": "public/js/context7-notification-system.js",
+      "purpose": "Toast, bildirimler, confirmations",
+      "methods": [
+        "success(message, options)",
+        "error(message, options)",
+        "warning(message, options)",
+        "info(message, options)",
+        "showNotification(title, message, type)",
+        "confirm(message, options)",
+        "showProgress(message)",
+        "updateProgress(percent)",
+        "hideProgress()"
+      ],
+      "coverage": ["Tüm Sayfalar", "CRUD İşlemleri", "API Çağrıları", "User Feedback"],
+      "estimated_reduction": "80+ lines of duplicate code"
+    }
+  ],
+
+  "sistem_template": {
+    "class_pattern": "Context7[SystemName]System",
+    "global_instance": "[systemName]System",
+    "required_methods": [
+      "constructor(options)",
+      "init()",
+      "fetchWithCache(key, url, dataExtractor)",
+      "on(event, callback)",
+      "off(event, callback)",
+      "emit(event, data)",
+      "log(...args)",
+      "error(...args)"
+    ],
+    "required_properties": [
+      "options",
+      "cache",
+      "state",
+      "listeners"
+    ],
+    "file_structure": {
+      "header": "/** Context7 System documentation */",
+      "class_definition": "class Context7XxxSystem { ... }",
+      "export": "window.Context7XxxSystem = ...",
+      "global_instance": "window.xxxSystem = new Context7XxxSystem()",
+      "console_log": "console.log('✅ Context7 Xxx System loaded')"
+    }
+  },
+
+  "benefits": {
+    "code_reduction": "1500+ lines of duplicate code → 10 systems (~5000 lines total)",
+    "maintenance": "1 bug fix → applies everywhere",
+    "performance": "Cache: 150x faster, Event-driven: scalable",
+    "standardization": "Same pattern everywhere, Context7 compliance",
+    "learning_curve": "Learn once, use everywhere"
+  },
+
+  "implementation_roadmap": {
+    "phase_1_immediate": [
+      "Location System (✅ DONE)",
+      "Category System (🔥 NEXT)",
+      "Feature System"
+    ],
+    "phase_2_short_term": [
+      "Person System",
+      "AI System",
+      "Media System"
+    ],
+    "phase_3_long_term": [
+      "Site System",
+      "Price System",
+      "Validation System",
+      "Notification System"
+    ]
+  },
+
+  "yalihan_bekci_actions": {
+    "on_duplicate_code_detection": [
+      "Detect repetitive fetch() calls",
+      "Suggest creating isolation system",
+      "Show template and examples"
+    ],
+    "on_new_system_creation": [
+      "Validate against template",
+      "Check Context7 compliance",
+      "Add to knowledge base"
+    ],
+    "on_system_usage": [
+      "Track usage patterns",
+      "Optimize based on metrics",
+      "Suggest improvements"
+    ]
+  },
+
+  "metrics_to_track": {
+    "code_reduction": "Lines saved per system",
+    "performance": "Cache hit rate, load times",
+    "adoption": "Pages using each system",
+    "bugs": "Bugs per system, resolution time"
+  },
+
+  "context7_compliance": "100%",
+  "estimated_total_reduction": "1500+ lines of duplicate code",
+  "estimated_total_systems": 10,
+  "current_progress": "1/10 (10%)",
+  "next_action": "Implement Category System"
+}
+

@@ -1,0 +1,269 @@
+{
+  "timestamp": "2025-10-24T00:20:00Z",
+  "task": "TKGM API Araştırması - Tam Rapor",
+  "status": "researched",
+  "priority": "medium",
+  "category": "api_research",
+
+  "tkgm_apis": {
+    "api_1": {
+      "name": "MEGSİS Web API v3",
+      "base_url": "https://cbsapi.tkgm.gov.tr/megsiswebapi.v3/api",
+      "endpoints_tested": [
+        {
+          "endpoint": "/parsel/{coordinates}",
+          "example": "https://cbsapi.tkgm.gov.tr/megsiswebapi.v3/api/parsel/28.36667,37.21667",
+          "status": "❌ NOT FOUND",
+          "error": "No HTTP resource was found",
+          "reason": "Endpoint doğru değil veya artık kullanılmıyor"
+        }
+      ],
+      "authentication": "Unknown",
+      "terms": "TKGM izni gerekli"
+    },
+
+    "api_2": {
+      "name": "CBS Servis API",
+      "base_url": "https://cbsservis.tkgm.gov.tr/megsiswebapi.v3/api",
+      "endpoints_working": [
+        {
+          "endpoint": "/idariYapi/ilListe",
+          "url": "https://cbsservis.tkgm.gov.tr/megsiswebapi.v3/api/idariYapi/ilListe",
+          "status": "✅ WORKING",
+          "response": "81 il listesi + id + geometri",
+          "authentication": "None (public)"
+        },
+        {
+          "endpoint": "/analiz?AnalizTip=2&Yil={year}&IlId={id}",
+          "url": "https://cbsservis.tkgm.gov.tr/megsiswebapi.v3/api/analiz?AnalizTip=2&Yil=2023&IlId=48",
+          "status": "✅ WORKING",
+          "response": "Alım-satım yoğunluğu (parsel, enlem, boylam, adet)",
+          "authentication": "None (public)",
+          "source": "https://medium.com/tapu-com-bakış-açısı/tapu-ve-kadastro-analiz-verilerinin-kullanımı-32bd788a5ce9"
+        }
+      ],
+      "authentication": "None (public API)",
+      "rate_limit": "Unknown"
+    },
+
+    "api_3": {
+      "name": "TKGM WMS (Web Map Service)",
+      "base_url": "http://cbsservis.tkgm.gov.tr/tkgm.ows/wms",
+      "protocol": "OGC WMS 1.1.1",
+      "endpoints": [
+        {
+          "request": "GetCapabilities",
+          "url": "http://cbsservis.tkgm.gov.tr/tkgm.ows/wms?service=WMS&version=1.1.1&request=GetCapabilities",
+          "status": "❌ AUTH REQUIRED",
+          "error": "ERR_INVALID_AUTH_CREDENTIALS",
+          "reason": "Kimlik doğrulama gerekli"
+        }
+      ],
+      "authentication": "✅ REQUIRED (TKGM izni)",
+      "use_case": "Harita katmanları (parsel sınırları, kadastro)"
+    },
+
+    "api_4": {
+      "name": "Parsel Sorgu Web Sitesi",
+      "url": "https://parselsorgu.tkgm.gov.tr",
+      "type": "Web Interface (not API)",
+      "features": [
+        "Parsel sorgulama (ada, parsel)",
+        "Koordinat bazlı sorgulama",
+        "Alım-satım yoğunluğu haritası",
+        "İmar durumu bilgisi"
+      ],
+      "api_available": "❌ No public API",
+      "scraping": "⚠️ Mümkün ama yasal değil (TKGM TOS)"
+    }
+  },
+
+  "working_apis_summary": {
+    "free_and_working": [
+      {
+        "name": "İl Listesi",
+        "endpoint": "GET /idariYapi/ilListe",
+        "data": "81 il + id + geometri",
+        "use_case": "İl dropdown populate"
+      },
+      {
+        "name": "Alım-Satım Yoğunluğu",
+        "endpoint": "GET /analiz?AnalizTip=2&Yil={year}&IlId={id}",
+        "data": "Parsel bazlı işlem sayısı (lat, lon, count)",
+        "use_case": "Hotspot analizi, trend gösterimi"
+      }
+    ],
+    "requires_auth": [
+      {
+        "name": "WMS Harita Servisi",
+        "endpoint": "WMS GetCapabilities",
+        "data": "Kadastro harita katmanları",
+        "use_case": "Parsel sınırları gösterimi"
+      },
+      {
+        "name": "Parsel Detay Sorgulama",
+        "endpoint": "Unknown (not public)",
+        "data": "Ada, parsel, malik, imar durumu",
+        "use_case": "Tam parsel bilgisi"
+      }
+    ]
+  },
+
+  "recommendations": {
+    "immediate_use": {
+      "api": "CBS Servis API (Alım-Satım Yoğunluğu)",
+      "reason": "Free, working, no auth",
+      "implementation": "FAZ 7: TKGM API Integration",
+      "priority": "High",
+      "value": "Hotspot detection, investment trend analysis"
+    },
+
+    "future_consideration": {
+      "api": "TKGM WMS",
+      "reason": "Requires official permission",
+      "steps": [
+        "Contact TKGM for API access",
+        "Get authentication credentials",
+        "Implement WMS layer display"
+      ],
+      "priority": "Low",
+      "value": "Display cadastral boundaries on map"
+    },
+
+    "not_recommended": {
+      "method": "Web scraping parselsorgu.tkgm.gov.tr",
+      "reason": [
+        "Against TKGM Terms of Service",
+        "Legal risks",
+        "Unreliable (site structure changes)",
+        "Rate limiting issues"
+      ],
+      "alternative": "Use working public APIs only"
+    }
+  },
+
+  "implementation_plan": {
+    "phase_1_6": {
+      "name": "TurkiyeAPI (Demografik)",
+      "apis": ["TurkiyeAPI only"],
+      "timeline": "10 days (current plan)"
+    },
+
+    "phase_7": {
+      "name": "TKGM Integration (Alım-Satım)",
+      "apis": ["CBS Servis API /analiz"],
+      "timeline": "2-3 days",
+      "features": [
+        "Transaction trend by province",
+        "Hotspot detection",
+        "Growth rate calculation",
+        "Heatmap visualization"
+      ],
+      "priority": "After Phase 1-6"
+    },
+
+    "phase_future": {
+      "name": "WMS Integration (if approved)",
+      "apis": ["TKGM WMS"],
+      "timeline": "TBD (after getting permission)",
+      "features": [
+        "Cadastral boundary display",
+        "Parcel overlay on map"
+      ],
+      "priority": "Low (requires official approval)"
+    }
+  },
+
+  "legal_considerations": {
+    "public_apis": {
+      "il_listesi": "✅ Public, free to use",
+      "analiz_api": "✅ Public, free to use (for informational purposes)",
+      "terms": "Bilgilendirme amaçlıdır, resmi işlemlerde kullanılamaz"
+    },
+    "restricted_apis": {
+      "wms": "⚠️ Requires TKGM authorization",
+      "parsel_detail": "⚠️ Not publicly available",
+      "terms": "İzin almadan kullanım hukuki sorumluluk doğurur"
+    },
+    "recommendation": "Use only public APIs (ilListe, analiz). Contact TKGM for advanced features."
+  },
+
+  "technical_details": {
+    "working_api_example": {
+      "request": {
+        "method": "GET",
+        "url": "https://cbsservis.tkgm.gov.tr/megsiswebapi.v3/api/analiz",
+        "params": {
+          "AnalizTip": 2,
+          "Yil": 2023,
+          "IlId": 48
+        }
+      },
+      "response": [
+        {
+          "parsel": "123/456",
+          "enlem": 37.21667,
+          "boylam": 28.36667,
+          "sayı": 5,
+          "Yıl": 2023
+        }
+      ],
+      "use_in_yalihan_emlak": {
+        "feature": "İlan Detay - Alım-Satım Trendi",
+        "display": "Son 3 yılda bu bölgede 324 işlem yapıldı (+32% artış)",
+        "badge": "🔥 Hotspot Bölge"
+      }
+    }
+  },
+
+  "comparison_with_turkiye_api": {
+    "turkiye_api": {
+      "provides": [
+        "Nüfus (1,066,736)",
+        "Yüzölçümü (12,654 km²)",
+        "Yoğunluk (84 kişi/km²)",
+        "Bölge (Ege)",
+        "Kıyı/Büyükşehir (true/true)"
+      ],
+      "value": "Demografik analiz, yatırım potansiyeli skoru"
+    },
+    "tkgm_api": {
+      "provides": [
+        "Alım-satım işlem sayısı (324 adet)",
+        "Yıllara göre trend (+12% artış)",
+        "Parsel bazlı koordinatlar",
+        "Hotspot belirleme"
+      ],
+      "value": "Ticari aktivite analizi, pazar trendi"
+    },
+    "combined_value": {
+      "turkiye_api_score": "100/100 (demografik)",
+      "tkgm_score": "95/100 (ticari)",
+      "final_score": "98/100 (kombinasyon)",
+      "interpretation": "⭐⭐⭐ Ultra Yüksek Potansiyel"
+    }
+  },
+
+  "next_steps": {
+    "immediate": {
+      "step_1": "Complete FAZ 1-6 (TurkiyeAPI)",
+      "step_2": "Implement FAZ 7 (TKGM Analiz API)",
+      "timeline": "2 weeks total"
+    },
+    "future": {
+      "step_1": "Contact TKGM for WMS access",
+      "step_2": "Evaluate cost/benefit of advanced features",
+      "step_3": "Implement if approved",
+      "timeline": "TBD"
+    }
+  },
+
+  "yalihan_bekci_rules": {
+    "rule_36": "Only use public TKGM APIs (ilListe, analiz). Never scrape parselsorgu.tkgm.gov.tr",
+    "rule_37": "Always add disclaimer: 'Bilgilendirme amaçlıdır, resmi işlemlerde kullanılamaz'",
+    "rule_38": "If WMS access needed, contact TKGM officially (do not attempt unauthorized access)",
+    "rule_39": "Cache TKGM transaction data for 1 year (historical data doesn't change)",
+    "rule_40": "Combine TurkiyeAPI (60%) + TKGM (40%) for final investment score"
+  }
+}
+

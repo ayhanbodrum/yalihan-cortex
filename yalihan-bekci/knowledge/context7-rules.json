@@ -1,0 +1,147 @@
+{
+  "forbidden": {
+    "durum": {
+      "value": "durum",
+      "reason": "status kullan",
+      "sources": [
+        "02-CONTEXT7-RULES-SIMPLIFIED.md"
+      ],
+      "severity": "critical"
+    },
+    "is_active": {
+      "value": "is_active",
+      "reason": "status kullan",
+      "sources": [
+        "02-CONTEXT7-RULES-SIMPLIFIED.md"
+      ],
+      "severity": "critical"
+    },
+    "aktif": {
+      "value": "aktif",
+      "reason": "active kullan",
+      "sources": [
+        "02-CONTEXT7-RULES-SIMPLIFIED.md"
+      ],
+      "severity": "critical"
+    },
+    "sehir": {
+      "value": "sehir",
+      "reason": "il kullan",
+      "sources": [
+        "02-CONTEXT7-RULES-SIMPLIFIED.md"
+      ],
+      "severity": "critical"
+    },
+    "sehir_id": {
+      "value": "sehir_id",
+      "reason": "il_id kullan",
+      "sources": [
+        "02-CONTEXT7-RULES-SIMPLIFIED.md"
+      ],
+      "severity": "critical"
+    },
+    "ad_soyad": {
+      "value": "ad_soyad",
+      "reason": "tam_ad accessor kullan",
+      "sources": [
+        "02-CONTEXT7-RULES-SIMPLIFIED.md"
+      ],
+      "severity": "critical"
+    },
+    "full_name": {
+      "value": "full_name",
+      "reason": "name kullan",
+      "sources": [
+        "02-CONTEXT7-RULES-SIMPLIFIED.md"
+      ],
+      "severity": "critical"
+    },
+    "btn-": {
+      "value": "btn-",
+      "reason": "neo-btn kullan (Neo Design)",
+      "sources": [
+        "02-CONTEXT7-RULES-SIMPLIFIED.md"
+      ],
+      "severity": "critical"
+    },
+    "card-": {
+      "value": "card-",
+      "reason": "neo-card kullan (Neo Design)",
+      "sources": [
+        "02-CONTEXT7-RULES-SIMPLIFIED.md"
+      ],
+      "severity": "critical"
+    },
+    "form-control": {
+      "value": "form-control",
+      "reason": "neo-input kullan",
+      "sources": [
+        "02-CONTEXT7-RULES-SIMPLIFIED.md"
+      ],
+      "severity": "critical"
+    }
+  },
+  "required": {
+    "Değişken kontrolü: $taslak": {
+      "value": "Değişken kontrolü: $taslak",
+      "reason": "Controller'da $taslak tanımlanmalı",
+      "sources": [
+        "admin/admin-detayli-test-raporu.md",
+        "admin/admin-kapsamli-test-raporu.md"
+      ],
+      "severity": "warning"
+    },
+    "Değişken kontrolü: $status": {
+      "value": "Değişken kontrolü: $status",
+      "reason": "Controller'da $status tanımlanmalı",
+      "sources": [
+        "admin/admin-detayli-test-raporu.md",
+        "admin/admin-kapsamli-test-raporu.md"
+      ],
+      "severity": "warning"
+    },
+    "Değişken kontrolü: $etiketler": {
+      "value": "Değişken kontrolü: $etiketler",
+      "reason": "Controller'da $etiketler tanımlanmalı",
+      "sources": [
+        "admin/admin-kapsamli-test-raporu.md"
+      ],
+      "severity": "warning"
+    },
+    "Değişken kontrolü: $ulkeler": {
+      "value": "Değişken kontrolü: $ulkeler",
+      "reason": "Controller'da $ulkeler tanımlanmalı",
+      "sources": [
+        "admin/admin-kapsamli-test-raporu.md"
+      ],
+      "severity": "warning"
+    }
+  },
+  "patterns": [
+    {
+      "type": "code_violation",
+      "forbidden": "sehir",
+      "context": "// ✅ DOĞRU\n$ilan->il          // İl ilişkisi\n$ilan->ilce        // İlçe ilişkisi\n$ilan->mahalle     ",
+      "source": "02-CONTEXT7-RULES-SIMPLIFIED.md"
+    },
+    {
+      "type": "code_violation",
+      "forbidden": "sehir",
+      "context": "// ✅ DOĞRU Format\n\"{il}, {ilce}, {mahalle}\"\nÖrnek: \"Muğla, Bodrum, Yalıkavak\"\n\n// ❌ YANLIŞ\n\"{sehir},",
+      "source": "02-CONTEXT7-RULES-SIMPLIFIED.md"
+    },
+    {
+      "type": "code_violation",
+      "forbidden": "ad_soyad",
+      "context": "// ✅ DOĞRU (Accessor kullan)\n$kisi->tam_ad  // \"Ahmet Yılmaz\"\n\n// ✅ DOĞRU (Eloquent)\nCONCAT(ad, ' ',",
+      "source": "02-CONTEXT7-RULES-SIMPLIFIED.md"
+    },
+    {
+      "type": "code_violation",
+      "forbidden": "full_name",
+      "context": "// ✅ DOĞRU (Accessor kullan)\n$kisi->tam_ad  // \"Ahmet Yılmaz\"\n\n// ✅ DOĞRU (Eloquent)\nCONCAT(ad, ' ',",
+      "source": "02-CONTEXT7-RULES-SIMPLIFIED.md"
+    }
+  ],
+  "lastLoaded": "2025-11-03T06:20:42.130Z"
+}

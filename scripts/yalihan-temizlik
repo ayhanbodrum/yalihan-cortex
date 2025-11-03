@@ -1,0 +1,11 @@
+#!/bin/bash
+# 🧹 Yalıhan Temizlik - Kod Temizleme Aracı
+# Hızlı erişim scripti
+
+# Proje kök dizini
+YALIHAN_PROJECT_ROOT="/Users/macbookpro/Projects/yalihanemlakwarp"
+export YALIHAN_PROJECT_ROOT
+
+# Ana tool'u çalıştır
+exec "$YALIHAN_PROJECT_ROOT/scripts/code-cleanup-tool.sh" "$@"
+

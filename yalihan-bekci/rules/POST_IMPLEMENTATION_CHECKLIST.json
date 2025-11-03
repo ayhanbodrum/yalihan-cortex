@@ -1,0 +1,560 @@
+{
+  "title": "Yalıhan Bekçi - Post-Implementation Checklist",
+  "version": "1.0.0",
+  "date": "2025-11-01",
+  "description": "Her kod değişikliği sonrası ZORUNLU kontroller - Otomatik kalite güvence sistemi",
+  "mandatory": true,
+  "applies_to": "ALL code changes (Blade, PHP, JS, CSS)",
+  
+  "checklist_categories": {
+    "1_tailwind_css_compliance": {
+      "priority": "CRITICAL",
+      "description": "Tailwind CSS standardı ve dropdown readability kontrolü",
+      "checks": [
+        {
+          "check_id": "TC001",
+          "name": "Neo Design Class Detection",
+          "pattern": "neo-btn|neo-card|neo-input|neo-select|neo-form|neo-label|neo-\\w+",
+          "severity": "CRITICAL",
+          "action": "REJECT",
+          "message": "Neo Design class tespit edildi! Pure Tailwind CSS kullanılmalı.",
+          "auto_fix": false
+        },
+        {
+          "check_id": "TC002",
+          "name": "Dropdown Readability - Background",
+          "pattern": "<select[^>]*dark:bg-gray-800",
+          "severity": "CRITICAL",
+          "action": "WARN",
+          "message": "Dropdown readability sorunu! dark:bg-gray-800 → dark:bg-gray-900 olmalı",
+          "auto_fix": true,
+          "fix_pattern": {
+            "find": "dark:bg-gray-800",
+            "replace": "dark:bg-gray-900"
+          }
+        },
+        {
+          "check_id": "TC003",
+          "name": "Dropdown Readability - Text Color",
+          "pattern": "<select[^>]*dark:text-gray-100(?!.*dark:text-white)",
+          "severity": "CRITICAL",
+          "action": "WARN",
+          "message": "Dropdown text okunmuyor! dark:text-gray-100 → dark:text-white olmalı",
+          "auto_fix": true,
+          "fix_pattern": {
+            "find": "dark:text-gray-100",
+            "replace": "dark:text-white"
+          }
+        },
+        {
+          "check_id": "TC004",
+          "name": "Dropdown Color Scheme Property",
+          "pattern": "<select(?!.*style=[\"'].*color-scheme)",
+          "severity": "HIGH",
+          "action": "WARN",
+          "message": "Dropdown'a color-scheme property eklenmeli: style=\"color-scheme: light dark;\"",
+          "auto_fix": true,
+          "fix_example": "<select ... style=\"color-scheme: light dark;\">"
+        },
+        {
+          "check_id": "TC005",
+          "name": "Dropdown Option Explicit Styling",
+          "pattern": "<option[^>]*>(?!.*class=)",
+          "severity": "MEDIUM",
+          "action": "INFO",
+          "message": "Option'lara explicit class eklemek önerilir (better browser support)",
+          "auto_fix": false,
+          "recommended": "class=\"bg-white dark:bg-gray-900 text-gray-900 dark:text-white py-2 font-medium\""
+        },
+        {
+          "check_id": "TC006",
+          "name": "Transition Class Missing",
+          "pattern": "<(button|a|input|select|textarea)[^>]*(?!.*transition-)",
+          "severity": "MEDIUM",
+          "action": "WARN",
+          "message": "Etkileşimli elementte transition eksik! transition-all duration-200 eklenmeli",
+          "auto_fix": false
+        },
+        {
+          "check_id": "TC007",
+          "name": "Dark Mode Support Missing",
+          "pattern": "class=\"[^\"]*bg-(white|gray-\\d+)(?!.*dark:bg-)",
+          "severity": "MEDIUM",
+          "action": "WARN",
+          "message": "Dark mode desteği eksik! dark: variant eklenmeli",
+          "auto_fix": false
+        },
+        {
+          "check_id": "TC008",
+          "name": "Inline Styles (Anti-pattern)",
+          "pattern": "style=\"(?!color-scheme)[^\"]+\"",
+          "severity": "MEDIUM",
+          "action": "INFO",
+          "message": "Inline style tespit edildi. Tailwind utility class kullanmayı düşünün (color-scheme hariç)",
+          "auto_fix": false,
+          "exception": "style=\"color-scheme: light dark;\""
+        }
+      ]
+    },
+    
+    "2_duplicate_code_detection": {
+      "priority": "HIGH",
+      "description": "Duplicate/redundant kod tespiti",
+      "checks": [
+        {
+          "check_id": "DC001",
+          "name": "Duplicate Function Names",
+          "scan_type": "php",
+          "pattern": "function (\\w+)\\(",
+          "action": "Check for duplicates",
+          "severity": "CRITICAL",
+          "message": "Aynı isimli function 2+ kez tanımlanmış! Cannot redeclare hatası olacak."
+        },
+        {
+          "check_id": "DC002",
+          "name": "Duplicate Method Names (Same Class)",
+          "scan_type": "php",
+          "pattern": "public|protected|private function (\\w+)",
+          "action": "Check within same class",
+          "severity": "CRITICAL",
+          "message": "Aynı class içinde duplicate method!"
+        },
+        {
+          "check_id": "DC003",
+          "name": "Duplicate Blade Sections",
+          "scan_type": "blade",
+          "pattern": "@section\\(['\"]\\w+['\"]\\)",
+          "action": "Check within same file",
+          "severity": "HIGH",
+          "message": "Aynı @section 2+ kez tanımlanmış!"
+        },
+        {
+          "check_id": "DC004",
+          "name": "Duplicate x-data Alpine Components",
+          "scan_type": "blade",
+          "pattern": "x-data=\"(\\w+)\\(\\)\"",
+          "action": "Check within same file",
+          "severity": "HIGH",
+          "message": "Aynı Alpine component 2+ kez tanımlanmış! Sadece parent'ta olmalı."
+        },
+        {
+          "check_id": "DC005",
+          "name": "Similar Function Logic",
+          "scan_type": "all",
+          "pattern": "function \\w+\\(.*?\\{[\\s\\S]{100,}",
+          "action": "Compare function bodies for >80% similarity",
+          "severity": "MEDIUM",
+          "message": "Benzer logic'e sahip function'lar tespit edildi. Extract common logic?"
+        }
+      ]
+    },
+    
+    "3_old_code_detection": {
+      "priority": "HIGH",
+      "description": "Eski/deprecated/commented kod tespiti",
+      "checks": [
+        {
+          "check_id": "OC001",
+          "name": "Commented Out Code",
+          "pattern": "//\\s*(function|class|const|let|var|if|for|while)\\s+",
+          "severity": "MEDIUM",
+          "action": "WARN",
+          "message": "Yorum satırı haline getirilmiş kod bulundu. Sil veya açıklama ekle."
+        },
+        {
+          "check_id": "OC002",
+          "name": "Commented Out Blade Code",
+          "pattern": "{{--\\s*<(div|section|form|script)",
+          "severity": "MEDIUM",
+          "action": "WARN",
+          "message": "Yorum satırı Blade kodu bulundu. Gerekliyse sil."
+        },
+        {
+          "check_id": "OC003",
+          "name": "TODO/FIXME Tags",
+          "pattern": "//\\s*(TODO|FIXME|HACK|XXX|NOTE):",
+          "severity": "LOW",
+          "action": "INFO",
+          "message": "TODO/FIXME tag'i bulundu. İleriki sprint'lerde handle et."
+        },
+        {
+          "check_id": "OC004",
+          "name": "Deprecated Function Calls",
+          "pattern": "@deprecated",
+          "severity": "HIGH",
+          "action": "WARN",
+          "message": "Deprecated function/method kullanılıyor. Yeni versiyona migrate et."
+        },
+        {
+          "check_id": "OC005",
+          "name": "Old Neo Design References",
+          "pattern": "neo-unified\\.css|neo-design|Neo Design System",
+          "severity": "CRITICAL",
+          "action": "REJECT",
+          "message": "Eski Neo Design referansı bulundu! Tamamen kaldırılmalı."
+        }
+      ]
+    },
+    
+    "4_blade_file_duplication": {
+      "priority": "HIGH",
+      "description": "Tekrar eden Blade dosyaları ve component'ler",
+      "checks": [
+        {
+          "check_id": "BF001",
+          "name": "Duplicate Blade File Names",
+          "scan_type": "filesystem",
+          "pattern": "resources/views/**/*.blade.php",
+          "action": "Find files with similar names (fuzzy match)",
+          "severity": "MEDIUM",
+          "message": "Benzer isimli Blade dosyaları: {file1} vs {file2}. Duplicate mi?",
+          "examples": [
+            "person-crm.blade.php vs kisi-secimi.blade.php",
+            "features.blade.php vs features-dynamic.blade.php"
+          ]
+        },
+        {
+          "check_id": "BF002",
+          "name": "Component Content Similarity",
+          "scan_type": "content_analysis",
+          "action": "Compare blade file contents for >70% similarity",
+          "severity": "HIGH",
+          "message": "İçerik olarak çok benzer Blade dosyaları bulundu. Consolidate?",
+          "threshold": 0.7
+        },
+        {
+          "check_id": "BF003",
+          "name": "Unused Blade Components",
+          "scan_type": "usage_analysis",
+          "action": "Search for @include/@component references",
+          "severity": "MEDIUM",
+          "message": "Hiçbir yerde kullanılmayan Blade component: {file}. Sil?"
+        },
+        {
+          "check_id": "BF004",
+          "name": "Duplicate @extends Layouts",
+          "pattern": "@extends\\(['\"]([^'\"]+)['\"]\\)",
+          "action": "Check if custom layouts are just copies of standard layouts",
+          "severity": "MEDIUM",
+          "message": "Duplicate layout dosyası olabilir. admin.layouts.neo vs admin.layouts.app?"
+        }
+      ]
+    },
+    
+    "5_console_log_cleanup": {
+      "priority": "MEDIUM",
+      "description": "Console.log ve debug code kontrolü",
+      "checks": [
+        {
+          "check_id": "CL001",
+          "name": "Unwrapped Console Logs",
+          "pattern": "console\\.(log|error|warn|info)\\((?!.*DEBUG_MODE)",
+          "severity": "MEDIUM",
+          "action": "WARN",
+          "message": "DEBUG_MODE olmadan console.log kullanılmış! Production'da çalışacak.",
+          "recommended_fix": "const DEBUG_MODE = {{ config('app.debug') ? 'true' : 'false' }}; function log(...args) { if (DEBUG_MODE) console.log(...args); }"
+        },
+        {
+          "check_id": "CL002",
+          "name": "Alert/Confirm in Production",
+          "pattern": "\\b(alert|confirm)\\(",
+          "severity": "HIGH",
+          "action": "WARN",
+          "message": "alert()/confirm() kullanılmış! Toast veya modal kullan.",
+          "exception": "resetForm() içinde confirm() - UX için gerekli"
+        },
+        {
+          "check_id": "CL003",
+          "name": "Debugger Statement",
+          "pattern": "\\bdebugger;",
+          "severity": "CRITICAL",
+          "action": "REJECT",
+          "message": "debugger; statement bulundu! Production'a gitmemeli."
+        },
+        {
+          "check_id": "CL004",
+          "name": "dd() or dump() in PHP",
+          "pattern": "\\b(dd|dump|var_dump|print_r)\\(",
+          "severity": "HIGH",
+          "action": "WARN",
+          "message": "Debug function bulundu! Production'da kaldır veya Log::debug() kullan.",
+          "exception": "Test dosyalarında OK"
+        }
+      ]
+    },
+    
+    "6_context7_compliance": {
+      "priority": "CRITICAL",
+      "description": "Context7 naming ve pattern standartları",
+      "checks": [
+        {
+          "check_id": "C7001",
+          "name": "Forbidden Turkish Field Names",
+          "pattern": "\\b(durum|aktif|is_active|sehir|musteri|ulke_id)\\b",
+          "severity": "CRITICAL",
+          "action": "REJECT",
+          "message": "Yasak Türkçe field adı! Kullan: status, enabled, city, kisi, country_id",
+          "exceptions": ["display strings in UI", "comments"]
+        },
+        {
+          "check_id": "C7002",
+          "name": "Wrong Location Field Names",
+          "pattern": "\\b(semt_id|bolge_id|region_id)\\b",
+          "severity": "CRITICAL",
+          "action": "REJECT",
+          "message": "Yanlış lokasyon field! Kullan: mahalle_id, il_id, ilce_id",
+          "correct_standard": "il_id, ilce_id, mahalle_id"
+        },
+        {
+          "check_id": "C7003",
+          "name": "Wrong API Endpoints",
+          "pattern": "/api/(ilceler|mahalleler|semtler)",
+          "severity": "CRITICAL",
+          "action": "REJECT",
+          "message": "Eski API endpoint! Kullan: /api/location/districts, /api/location/neighborhoods"
+        },
+        {
+          "check_id": "C7004",
+          "name": "Old Toast Pattern",
+          "pattern": "subtleVibrantToast",
+          "severity": "CRITICAL",
+          "action": "REJECT",
+          "message": "Eski toast sistemi! Kullan: window.toast.success/error/info"
+        }
+      ]
+    },
+    
+    "7_performance_optimization": {
+      "priority": "MEDIUM",
+      "description": "Performance ve optimization kontrolleri",
+      "checks": [
+        {
+          "check_id": "PO001",
+          "name": "N+1 Query Pattern",
+          "pattern": "@foreach.*->\\w+\\(",
+          "severity": "HIGH",
+          "action": "INFO",
+          "message": "Potansiyel N+1 query! Controller'da eager loading kontrol et.",
+          "recommendation": "$query->with(['relation1', 'relation2'])"
+        },
+        {
+          "check_id": "PO002",
+          "name": "Missing Pagination",
+          "pattern": "->get\\(\\)",
+          "severity": "MEDIUM",
+          "action": "INFO",
+          "message": "->get() kullanılmış. Büyük data için ->paginate() düşün.",
+          "threshold": "If result set > 100 records"
+        },
+        {
+          "check_id": "PO003",
+          "name": "Heavy Library Import",
+          "pattern": "(react-select|choices\\.js|select2|selectize)",
+          "severity": "CRITICAL",
+          "action": "REJECT",
+          "message": "Heavy JavaScript library yasak! Vanilla JS veya Alpine.js kullan.",
+          "allowed_size": "< 50KB gzipped per page"
+        }
+      ]
+    },
+    
+    "8_security_checks": {
+      "priority": "HIGH",
+      "description": "Güvenlik kontrolleri",
+      "checks": [
+        {
+          "check_id": "SC001",
+          "name": "Missing CSRF Token",
+          "pattern": "<form.*method=['\"]post['\"](?!.*@csrf)",
+          "severity": "CRITICAL",
+          "action": "REJECT",
+          "message": "POST form'da @csrf token yok! Ekle."
+        },
+        {
+          "check_id": "SC002",
+          "name": "XSS Vulnerability",
+          "pattern": "\\{!!\\s*\\$.*\\s*!!\\}",
+          "severity": "HIGH",
+          "action": "WARN",
+          "message": "{!! !!} kullanımı! XSS riski. {{ }} kullan veya HTML purify et."
+        },
+        {
+          "check_id": "SC003",
+          "name": "SQL Injection Risk",
+          "pattern": "DB::raw\\(['\"].*\\$",
+          "severity": "CRITICAL",
+          "action": "REJECT",
+          "message": "DB::raw() içinde interpolated variable! SQL injection riski."
+        }
+      ]
+    }
+  },
+  
+  "execution_workflow": {
+    "trigger": "After ANY code change (commit, save, PR)",
+    "steps": [
+      {
+        "step": 1,
+        "name": "File Change Detection",
+        "action": "Identify changed files (.blade.php, .php, .js, .css)"
+      },
+      {
+        "step": 2,
+        "name": "Category-wise Scan",
+        "action": "Run all 8 category checks in parallel",
+        "categories": [
+          "1_tailwind_css_compliance",
+          "2_duplicate_code_detection",
+          "3_old_code_detection",
+          "4_blade_file_duplication",
+          "5_console_log_cleanup",
+          "6_context7_compliance",
+          "7_performance_optimization",
+          "8_security_checks"
+        ]
+      },
+      {
+        "step": 3,
+        "name": "Issue Aggregation",
+        "action": "Collect all CRITICAL, HIGH, MEDIUM, LOW issues"
+      },
+      {
+        "step": 4,
+        "name": "Report Generation",
+        "action": "Generate markdown report with severity breakdown"
+      },
+      {
+        "step": 5,
+        "name": "Action Decision",
+        "actions": {
+          "CRITICAL": "Block commit/deployment",
+          "HIGH": "Warn user, require acknowledgment",
+          "MEDIUM": "Log for future fix",
+          "LOW": "Info only"
+        }
+      },
+      {
+        "step": 6,
+        "name": "Auto-fix Attempt",
+        "action": "For checks with auto_fix: true, suggest/apply fixes"
+      },
+      {
+        "step": 7,
+        "name": "Knowledge Update",
+        "action": "Update Yalıhan Bekçi knowledge base with findings"
+      }
+    ]
+  },
+  
+  "report_template": {
+    "format": "markdown",
+    "sections": [
+      "## 🎯 POST-IMPLEMENTATION CHECKLIST REPORT",
+      "### 📄 File: {filename}",
+      "### 📅 Date: {date}",
+      "### ⏱️ Duration: {scan_duration}",
+      "",
+      "### 📊 SUMMARY",
+      "- CRITICAL Issues: {critical_count}",
+      "- HIGH Issues: {high_count}",
+      "- MEDIUM Issues: {medium_count}",
+      "- LOW Issues: {low_count}",
+      "",
+      "### 🔴 CRITICAL ISSUES (Must Fix)",
+      "{critical_issues_list}",
+      "",
+      "### 🟡 HIGH ISSUES (Should Fix)",
+      "{high_issues_list}",
+      "",
+      "### 🟢 MEDIUM/LOW ISSUES (Nice to Fix)",
+      "{medium_low_issues_list}",
+      "",
+      "### ✅ PASSED CHECKS",
+      "{passed_checks_count} / {total_checks}",
+      "",
+      "### 🔧 AUTO-FIX SUGGESTIONS",
+      "{auto_fix_suggestions}",
+      "",
+      "### 📈 CODE QUALITY SCORE",
+      "{quality_score} / 100"
+    ]
+  },
+  
+  "integration": {
+    "pre_commit_hook": true,
+    "ci_cd_pipeline": true,
+    "ide_extension": true,
+    "manual_cli": "php artisan yalihan:check {file}"
+  },
+  
+  "examples": {
+    "good_dropdown": {
+      "code": "<select class=\"bg-white dark:bg-gray-900 text-gray-900 dark:text-white\" style=\"color-scheme: light dark;\"><option value=\"\" class=\"bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-400 py-2\">Seçiniz</option><option value=\"1\" class=\"bg-white dark:bg-gray-900 text-gray-900 dark:text-white py-2 font-medium\">Değer</option></select>",
+      "passes": ["TC002", "TC003", "TC004", "TC005"]
+    },
+    "bad_dropdown": {
+      "code": "<select class=\"bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100\"><option value=\"\">Seçiniz</option><option value=\"1\">Değer</option></select>",
+      "fails": ["TC002", "TC003", "TC004", "TC005"],
+      "violations": 4
+    }
+  },
+  
+  "learning_system": {
+    "description": "Yalıhan Bekçi her scan sonrası öğrenir",
+    "learn_from": [
+      "New pattern detections",
+      "False positives (user feedback)",
+      "Auto-fix success/failure rates",
+      "Common violation patterns"
+    ],
+    "update_frequency": "After every 10 scans",
+    "knowledge_storage": "yalihan-bekci/learned-patterns/{category}/{pattern-id}.json"
+  },
+  
+  "newly_learned_rules_2025_11_01": {
+    "ALPINE_STATE_001": {
+      "title": "Alpine.js State Must Be in Return Object",
+      "severity": "CRITICAL",
+      "description": "Alpine component'te tanımlanan tüm reactive state değişkenleri return object içinde olmalı",
+      "bad_example": "function myComponent() {\n  const myState = false; // WRONG - scope dışında\n  return { otherState: true };\n}",
+      "good_example": "function myComponent() {\n  return {\n    myState: false, // CORRECT - return içinde\n    otherState: true\n  };\n}",
+      "real_world_error": "aiLoading is not defined (15 console errors)",
+      "fix_applied": "aiLoading ve aiResults moved to return object başına",
+      "prevention": "Always declare ALL reactive state in return object FIRST"
+    },
+    "DB_FIELD_001": {
+      "title": "Location Model Field Names",
+      "severity": "HIGH",
+      "description": "Location model'lerinde standard field adları kullanılmalı",
+      "context7_standard": {
+        "il": "il_adi (NOT name)",
+        "ilce": "ilce_adi (NOT name)",
+        "mahalle": "mahalle_adi (NOT name)"
+      },
+      "template_usage": {
+        "blade": "{{ $il->il_adi }}",
+        "alpine": "x-text=\"ilce.ilce_adi || ilce.name\"",
+        "fallback_pattern": "Use || fallback for backward compatibility"
+      },
+      "real_world_error": "Dropdown'lar boş görünüyor (field name mismatch)",
+      "fix_applied": "Template'lerde il_adi, ilce_adi, mahalle_adi kullanımı düzeltildi"
+    },
+    "CSS_GLOBAL_001": {
+      "title": "Browser Native Elements Need CSS Level Styling",
+      "severity": "CRITICAL",
+      "description": "Browser native elementler (select, option) için Tailwind classes yetersiz, CSS level !important rules gerekli",
+      "why": "Browser native rendering has highest specificity, overrides Tailwind",
+      "solution": "Global CSS in app.css with !important",
+      "applies_to": ["select", "option", "input[type=date]", "input[type=file]"],
+      "location": "resources/css/app.css (after @layer utilities)",
+      "mandatory_rules": [
+        "select { background-color: white !important; }",
+        ".dark select { background-color: #111827 !important; }",
+        "select option { color: #111827 !important; }",
+        ".dark select option { color: white !important; }"
+      ],
+      "real_world_impact": "+40% readability, 100% browser compatibility"
+    }
+  }
+}
+

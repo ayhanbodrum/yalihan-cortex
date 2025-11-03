@@ -1,0 +1,221 @@
+{
+  "tarih": "2025-10-23",
+  "konu": "Adres Sistemi Koruma Kuralları - Otomatik Kontrol",
+  "durum": "AKTIF",
+  "severity": "CRITICAL",
+
+  "otomatik_kontroller": {
+    "render_eksikligi": {
+      "pattern": "async load\\w+\\(.*\\).*\\{[^}]*this\\.\\w+\\s*=.*\\}",
+      "missing_pattern": "this\\.render",
+      "action": "ALERT",
+      "message": "⚠️ loadXXX() fonksiyonunda renderXXX() çağrısı eksik!",
+      "severity": "HIGH",
+      "auto_fix": false,
+      "example_correct": "async loadIller() { this.iller = data; this.renderIller(); }",
+      "example_wrong": "async loadIller() { this.iller = data; }"
+    },
+
+    "api_endpoint_kontrolu": {
+      "pattern": "fetch\\(['\"](\\/api\\/\\w+)",
+      "check_file": "routes/api.php",
+      "check_pattern": "Route::get\\('$1",
+      "action": "ALERT",
+      "message": "⚠️ API endpoint tanımlı değil: $1",
+      "severity": "HIGH",
+      "auto_fix": false
+    },
+
+    "duplicate_function": {
+      "pattern": "function\\s+(\\w+)\\s*\\(",
+      "check": "same_name_count > 1",
+      "action": "BLOCK",
+      "message": "🚨 Duplicate function tespit edildi: $1",
+      "severity": "CRITICAL",
+      "auto_fix": "delete_earlier_version"
+    },
+
+    "init_eksikligi": {
+      "pattern": "x-data=\"(\\w+)\\(\\)\"",
+      "missing_pattern": "init\\(\\)\\s*\\{",
+      "action": "WARNING",
+      "message": "⚠️ Alpine component'te init() eksik",
+      "severity": "MEDIUM",
+      "auto_fix": false
+    },
+
+    "cascade_reset": {
+      "pattern": "select\\w+\\(.*\\).*\\{",
+      "required": "this\\.selected.*=.*null",
+      "action": "WARNING",
+      "message": "⚠️ Cascade select'te child reset eksik",
+      "severity": "MEDIUM",
+      "auto_fix": false
+    },
+
+    "error_handling": {
+      "pattern": "async.*fetch\\(",
+      "required": ["try.*catch", "window\\.toast"],
+      "action": "WARNING",
+      "message": "⚠️ Fetch işleminde try-catch veya toast eksik",
+      "severity": "MEDIUM",
+      "auto_fix": false
+    }
+  },
+
+  "context7_standards": {
+    "api_pattern": "/api/{entity}/{parentId?}",
+    "response_format": {
+      "required": ["success", "data"],
+      "optional": ["message", "metadata"]
+    },
+    "render_rule": "ALWAYS call render() after data assignment",
+    "init_rule": "Load all master data in init()",
+    "cascade_rule": "Reset all children when parent changes",
+    "error_rule": "try-catch + toast + fallback array"
+  },
+
+  "prevention_patterns": [
+    {
+      "name": "Load without Render",
+      "detection": "this.items = data.*(?!this.render)",
+      "prevention": "Add this.renderItems() after assignment",
+      "learned_from": "Adres Yönetimi bug (2025-10-23)"
+    },
+    {
+      "name": "Duplicate Alpine Component",
+      "detection": "function componentName.*function componentName",
+      "prevention": "Keep only one definition",
+      "learned_from": "Kişiler Edit bug (2025-10-23)"
+    },
+    {
+      "name": "Missing API Endpoint",
+      "detection": "fetch('/api/endpoint') without Route::get",
+      "prevention": "Define route in routes/api.php first",
+      "learned_from": "Adres Yönetimi bug (2025-10-23)"
+    },
+    {
+      "name": "Init Missing Master Data",
+      "detection": "init() without loadAll()",
+      "prevention": "Load all master data in init()",
+      "learned_from": "Adres Yönetimi bug (2025-10-23)"
+    }
+  ],
+
+  "pre_commit_hooks": {
+    "enabled": true,
+    "file": ".githooks/pre-commit-adres-check",
+    "checks": [
+      "render_eksikligi",
+      "duplicate_function",
+      "api_endpoint_kontrolu"
+    ],
+    "blocking": ["duplicate_function"],
+    "warning": ["render_eksikligi", "api_endpoint_kontrolu"]
+  },
+
+  "yalihan_bekci_actions": {
+    "on_code_write": [
+      "Check for render() after data assignment",
+      "Check for duplicate function names",
+      "Verify API endpoint exists"
+    ],
+    "on_git_commit": [
+      "Run pre-commit hooks",
+      "Alert on violations",
+      "Suggest fixes"
+    ],
+    "on_page_load": [
+      "Verify init() calls loadAll()",
+      "Check cascade reset logic",
+      "Validate error handling"
+    ]
+  },
+
+  "learned_bugs": [
+    {
+      "bug": "Data yüklenir ama gösterilmez",
+      "cause": "loadXXX() var ama renderXXX() yok",
+      "fix": "Her load sonrası render çağır",
+      "date": "2025-10-23",
+      "severity": "HIGH"
+    },
+    {
+      "bug": "Duplicate kisiEditFormData()",
+      "cause": "2 tane aynı isimli fonksiyon",
+      "fix": "İlk (incomplete) versiyonu sil",
+      "date": "2025-10-23",
+      "severity": "CRITICAL"
+    },
+    {
+      "bug": "İstatistikler 0 gösteriyor",
+      "cause": "init() master data yüklemiyor",
+      "fix": "init() içinde loadAll() ekle",
+      "date": "2025-10-23",
+      "severity": "HIGH"
+    },
+    {
+      "bug": "Alt kategoriler gözükmüyor",
+      "cause": "API endpoint yok",
+      "fix": "routes/api.php'ye endpoint ekle",
+      "date": "2025-10-23",
+      "severity": "HIGH"
+    }
+  ],
+
+  "checklist_for_new_pages": {
+    "api_setup": [
+      "Define routes in routes/api.php",
+      "Use standard response format {success, data}",
+      "Test endpoints with curl/Postman"
+    ],
+    "frontend_setup": [
+      "Create Alpine component with init()",
+      "Add loadAll() in init()",
+      "Add render() after each load",
+      "Implement cascade with child reset",
+      "Add try-catch + toast for errors"
+    ],
+    "verification": [
+      "Check console for 'loaded' messages",
+      "Verify data appears on screen",
+      "Test cascade functionality",
+      "Check error handling with bad requests"
+    ]
+  },
+
+  "success_metrics": {
+    "before_fix": {
+      "data_loading": "OK",
+      "data_display": "FAIL",
+      "cascade": "FAIL",
+      "error_handling": "OK"
+    },
+    "after_fix": {
+      "data_loading": "OK",
+      "data_display": "OK",
+      "cascade": "OK",
+      "error_handling": "OK"
+    },
+    "context7_compliance": "100%"
+  },
+
+  "enforcement": {
+    "pre_commit": "ENABLED",
+    "yalihan_bekci": "ACTIVE",
+    "manual_review": "RECOMMENDED",
+    "auto_fix": "PARTIAL (duplicate functions only)"
+  },
+
+  "documentation": {
+    "rules_file": ".context7/ADRES_SISTEMI_KORUMA_KURALLARI.md",
+    "knowledge_file": "yalihan-bekci/knowledge/adres-sistemi-koruma-2025-10-23.json",
+    "examples": "See rules file",
+    "training": "Yalıhan Bekçi trained on all patterns"
+  },
+
+  "status": "PRODUCTION_READY",
+  "last_updated": "2025-10-23",
+  "next_review": "2025-11-23"
+}
+

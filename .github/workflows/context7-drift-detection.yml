@@ -1,0 +1,103 @@
+name: Context7 Drift Detection
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  drift-detection:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.2"
+          extensions: mbstring, dom, fileinfo, mysql
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+
+      - name: Install dependencies
+        run: composer install --no-dev --optimize-autoloader
+
+      - name: Install Context7 MCP
+        run: npm install -g @upstash/context7-mcp@latest
+
+      - name: Setup MySQL
+        run: |
+          sudo systemctl start mysql
+          mysql -u root -e "CREATE DATABASE IF NOT EXISTS yalihanemlak_db_test;"
+
+      - name: Run migrations
+        run: |
+          php artisan migrate --force --env=testing
+        env:
+          DB_CONNECTION: mysql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_DATABASE: yalihanemlak_db_test
+          DB_USERNAME: root
+          DB_PASSWORD: ""
+
+      - name: Check Documentation Drift
+        run: |
+          npx @upstash/context7-mcp@latest docs diff \
+            --database "mysql://root@localhost:3306/yalihanemlak_db_test" \
+            --master "docs/context7-master.md" \
+            --rules "docs/context7-rules.md" \
+            --api-key ${{ secrets.CONTEXT7_API_KEY }}
+
+      - name: Check Rules Compliance
+        run: |
+          npx @upstash/context7-mcp@latest rules check \
+            --rules "docs/context7-rules.md" \
+            --code-path "app/" \
+            --api-key ${{ secrets.CONTEXT7_API_KEY }}
+
+      - name: Validate Schema Consistency
+        run: |
+          npx @upstash/context7-mcp@latest schema validate \
+            --database "mysql://root@localhost:3306/yalihanemlak_db_test" \
+            --master "docs/context7-master.md" \
+            --strict \
+            --api-key ${{ secrets.CONTEXT7_API_KEY }}
+
+      - name: Check Code Quality
+        run: |
+          # PHPStan analizi
+          composer require --dev phpstan/phpstan
+          ./vendor/bin/phpstan analyse app/ --level=5 --no-progress
+
+          # Laravel Pint (kod formatı)
+          composer require --dev laravel/pint
+          ./vendor/bin/pint --test
+
+      - name: Security Check
+        run: |
+          # Laravel Security Checker
+          composer require --dev enlightn/security-checker
+          ./vendor/bin/security-checker security:check
+
+      - name: Fail on Drift
+        if: failure()
+        run: |
+          echo "❌ Drift tespit edildi! Merge durduruldu."
+          echo "Lütfen aşağıdaki dosyaları kontrol edin:"
+          echo "- docs/context7-master.md"
+          echo "- docs/context7-rules.md"
+          echo "- Kod kalitesi ve güvenlik kontrolleri"
+          exit 1
+
+      - name: Success
+        if: success()
+        run: |
+          echo "✅ Drift kontrolü başarılı! Tüm kontroller geçti."

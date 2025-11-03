@@ -1,0 +1,126 @@
+{
+  "id": "ilan-etiket-sistemi-2025-10-27",
+  "title": "İlan Etiket Sistemi - Tüm Alanlara Uygulama",
+  "date": "2025-10-27",
+  "summary": "İlan etiket sistemi tüm alanlara uygulandı. Database, model ilişkileri, seeder ve dokümantasyon tamamlandı.",
+  "type": "feature",
+  "status": "completed",
+  "files_created": [
+    "database/migrations/2025_10_27_085004_add_etiket_fields_to_etiketler_table.php",
+    "database/migrations/2025_10_27_085026_create_ilan_etiketler_table.php",
+    "database/seeders/IlanEtiketSeeder.php",
+    "ILAN_ETIKET_SISTEMI.md"
+  ],
+  "files_modified": [
+    "app/Models/Etiket.php",
+    "app/Models/Ilan.php"
+  ],
+  "database_changes": {
+    "etiketler_table": {
+      "added_fields": [
+        "type (promo, location, investment, feature)",
+        "icon (FontAwesome)",
+        "bg_color (background color)",
+        "badge_text (optional short text)",
+        "is_badge (boolean - show on image?)",
+        "target_url (SEO friendly link)"
+      ],
+      "added_indexes": ["type", "is_badge_status"]
+    },
+    "ilan_etiketler_table": {
+      "new_table": true,
+      "fields": [
+        "id",
+        "ilan_id (FK)",
+        "etiket_id (FK)",
+        "display_order",
+        "is_featured",
+        "timestamps"
+      ],
+      "constraints": ["unique(ilan_id, etiket_id)", "cascade delete"]
+    }
+  },
+  "model_relationships": {
+    "Ilan": {
+      "method": "etiketler()",
+      "type": "belongsToMany",
+      "pivot": "ilan_etiketler",
+      "with_pivot": ["display_order", "is_featured"],
+      "order_by": "display_order"
+    },
+    "Etiket": {
+      "methods": [
+        "ilanlar() - belongsToMany Ilan",
+        "scopeBadges() - badge olanları getir",
+        "scopeType() - tip'e göre filtrele"
+      ]
+    }
+  },
+  "etiket_types": {
+    "promo": {
+      "description": "Promosyon badges (Fırsat, İndirim)",
+      "examples": ["Fırsat", "İndirim", "Özel Fiyat"],
+      "is_badge": true,
+      "use_case": "Resim üstünde dikkat çekici badge"
+    },
+    "location": {
+      "description": "Lokasyon özellikleri",
+      "examples": ["Denize Sıfır", "Deniz Manzaralı"],
+      "is_badge": false,
+      "use_case": "İlan detayında özellik olarak göster"
+    },
+    "investment": {
+      "description": "Yatırım özellikleri (Golden Visa, Vatandaşlık)",
+      "examples": ["Golden Visa", "Vatandaşlık", "Pasaport"],
+      "is_badge": true,
+      "use_case": "Yatırım teşvikleri, SEO URL'lere bağlanabilir"
+    },
+    "feature": {
+      "description": "Genel özellikler",
+      "examples": ["Müstakil", "Havuzlu", "Özel Plajlı"],
+      "is_badge": false,
+      "use_case": "Filtreleme ve arama için"
+    }
+  },
+  "seeded_data": {
+    "total_tags": 12,
+    "by_type": {
+      "promo": 3,
+      "location": 2,
+      "investment": 3,
+      "feature": 4
+    },
+    "badges": {
+      "total": 6,
+      "promo": 3,
+      "investment": 3
+    }
+  },
+  "usage_examples": {
+    "attach_tags": "$ilan->etiketler()->attach([1, 2, 3]);",
+    "sync_tags": "$ilan->etiketler()->sync([1, 2, 3]);",
+    "get_badges": "$ilan->etiketler->where('is_badge', true);",
+    "filter_by_tags": "Ilan::whereHas('etiketler', fn($q) => $q->whereIn('slug', ['firsat', 'indirim']))->get();"
+  },
+  "frontend_integration": {
+    "badge_component": "resources/views/components/ilan-badge.blade.php",
+    "filtering": "Controller'dan etiket parametresi ile filtreleme",
+    "seo_urls": "target_url ile SEO-friendly yönlendirme"
+  },
+  "future_improvements": [
+    "Otomatik etiket önerisi",
+    "Toplu ilana etiket atama",
+    "Analytics (en çok tıklanan etiketler)",
+    "Hazır renk paleti şemaları",
+    "Çoklu dil desteği"
+  ],
+  "related_documents": [
+    "ILAN_ETIKET_SISTEMI.md",
+    "YAPILAN_ISLER_2025_10_26.md"
+  ],
+  "testing_commands": [
+    "php artisan migrate",
+    "php artisan db:seed --class=IlanEtiketSeeder",
+    "php artisan tinker - Execute: Etiket::type('promo')->get()"
+  ]
+}

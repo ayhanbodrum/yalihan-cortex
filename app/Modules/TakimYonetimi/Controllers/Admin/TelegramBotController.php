@@ -1,0 +1,235 @@
+<?php
+
+namespace App\Modules\TakimYonetimi\Controllers\Admin;
+
+use App\Http\Controllers\Controller;
+use App\Modules\TakimYonetimi\Services\TelegramBotService;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
+
+class TelegramBotController extends Controller
+{
+    protected $telegramService;
+
+    public function __construct(TelegramBotService $telegramService)
+    {
+        $this->telegramService = $telegramService;
+    }
+
+    public function index()
+    {
+        $botInfo = $this->telegramService->getBotInfo();
+        $webhookInfo = $this->telegramService->getWebhookInfo();
+        $settings = $this->telegramService->getSettings();
+
+        $teamId = 1;
+        $teamSettingKey = 'team:'.$teamId.':telegram_channel_id';
+        $teamChannelId = DB::table('site_settings')->where('key', $teamSettingKey)->value('value');
+
+        return view('admin.telegram-bot.index', compact('botInfo', 'webhookInfo', 'settings', 'teamId', 'teamChannelId'));
+    }
+
+    public function setWebhook(Request $request)
+    {
+        try {
+            $webhookUrl = config('services.telegram.webhook_url') ?: url('/api/telegram/webhook');
+            $result = $this->telegramService->setWebhook($webhookUrl);
+
+            if ($request->wantsJson() || $request->ajax()) {
+                if ($result['success']) {
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Webhook başarıyla ayarlandı!',
+                        'data' => $result['data'],
+                    ]);
+                }
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Webhook ayarlanamadı: '.$result['message'],
+                ], 400);
+            }
+
+            if ($result['success']) {
+                return redirect()->back()->with('success', 'Webhook başarıyla ayarlandı!');
+            }
+            return redirect()->back()->with('error', 'Webhook ayarlanamadı: '.$result['message']);
+        } catch (\Exception $e) {
+            Log::error('Telegram webhook ayarlama hatası: '.$e->getMessage());
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Bir hata oluştu: '.$e->getMessage(),
+                ], 500);
+            }
+            return redirect()->back()->with('error', 'Bir hata oluştu: '.$e->getMessage());
+        }
+    }
+
+    public function sendTestMessage(Request $request)
+    {
+        $request->validate([
+            'message' => 'nullable|string|max:1000',
+        ]);
+
+        try {
+            $message = $request->filled('message') ? $request->message : 'Context7 Telegram test mesajı';
+            $result = $this->telegramService->sendTestMessage($message);
+
+            if ($request->wantsJson() || $request->ajax()) {
+                if ($result['success']) {
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Test mesajı başarıyla gönderildi!',
+                    ]);
+                }
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Mesaj gönderilemedi: '.$result['message'],
+                ], 400);
+            }
+
+            if ($result['success']) {
+                return redirect()->back()->with('success', 'Test mesajı gönderildi.');
+            }
+            return redirect()->back()->with('error', 'Mesaj gönderilemedi: '.$result['message']);
+        } catch (\Exception $e) {
+            Log::error('Telegram test mesajı hatası: '.$e->getMessage());
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Bir hata oluştu: '.$e->getMessage(),
+                ], 500);
+            }
+            return redirect()->back()->with('error', 'Bir hata oluştu: '.$e->getMessage());
+        }
+    }
+
+    public function getWebhookInfo()
+    {
+        try {
+            $webhookInfo = $this->telegramService->getWebhookInfo();
+
+            return response()->json([
+                'success' => true,
+                'data' => $webhookInfo,
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Telegram webhook bilgisi alma hatası: '.$e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Webhook bilgisi alınamadı: '.$e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function updateSettings(Request $request)
+    {
+        $request->validate([
+            'bot_token' => 'sometimes|string',
+            'chat_id' => 'sometimes|string',
+            'auto_notifications' => 'sometimes|boolean',
+            'task_assignments' => 'sometimes|boolean',
+            'performance_reports' => 'sometimes|boolean',
+            'team_id' => 'sometimes|integer',
+            'telegram_channel_id' => 'sometimes|string',
+        ]);
+
+        try {
+            // Takım-Kanal eşlemesi DB'de saklanır (site_settings)
+            if ($request->filled('team_id') && $request->filled('telegram_channel_id')) {
+                $key = 'team:'.$request->integer('team_id').':telegram_channel_id';
+                DB::table('site_settings')->updateOrInsert(
+                    ['key' => $key],
+                    [
+                        'value' => $request->string('telegram_channel_id')->toString(),
+                        'description' => 'Takım Telegram Kanal ID',
+                        'group' => 'telegram',
+                        'updated_at' => now(),
+                        'created_at' => now(),
+                    ]
+                );
+            }
+
+            $result = $this->telegramService->updateSettings($request->all());
+
+            if ($request->wantsJson() || $request->ajax()) {
+                if ($result['success']) {
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Ayarlar başarıyla güncellendi!',
+                    ]);
+                }
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Ayarlar güncellenemedi: '.$result['message'],
+                ], 400);
+            }
+
+            if ($result['success']) {
+                return redirect()->back()->with('success', 'Ayarlar güncellendi.');
+            }
+            return redirect()->back()->with('error', 'Ayarlar güncellenemedi: '.$result['message']);
+        } catch (\Exception $e) {
+            Log::error('Telegram ayarları güncelleme hatası: '.$e->getMessage());
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Bir hata oluştu: '.$e->getMessage(),
+                ], 500);
+            }
+            return redirect()->back()->with('error', 'Bir hata oluştu: '.$e->getMessage());
+        }
+    }
+
+    public function status()
+    {
+        try {
+            $status = $this->telegramService->getStatus();
+
+            return response()->json([
+                'success' => true,
+                'connected' => $status['connected'] ?? false,
+                'webhook_set' => $status['webhook_set'] ?? false,
+                'pending_messages' => $status['pending_messages'] ?? 0,
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Telegram bot statusu alma hatası: '.$e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'connected' => false,
+                'webhook_set' => false,
+                'pending_messages' => 0,
+                'message' => 'Bot statusu alınamadı: '.$e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function testBot()
+    {
+        try {
+            $result = $this->telegramService->testBot();
+
+            if ($result['success']) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Bot testi başarılı!',
+                ]);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Bot testi başarısız: '.$result['message'],
+                ], 400);
+            }
+        } catch (\Exception $e) {
+            Log::error('Telegram bot testi hatası: '.$e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Bot testi sırasında hata oluştu: '.$e->getMessage(),
+            ], 500);
+        }
+    }
+}

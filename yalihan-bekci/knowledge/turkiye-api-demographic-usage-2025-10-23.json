@@ -1,0 +1,207 @@
+{
+  "timestamp": "2025-10-23T23:55:00Z",
+  "task": "TurkiyeAPI Demografik Bilgiler - Kullanım Analizi",
+  "status": "confirmed",
+  "priority": "high",
+  "category": "api_integration_demographics",
+
+  "available_demographic_data": {
+    "province_level": {
+      "population": "İl nüfusu (örn: 1,067,736)",
+      "area": "Yüzölçümü (km²)",
+      "altitude": "Rakım (m)",
+      "isCoastal": "Kıyı ili mi? (boolean)",
+      "isMetropolitan": "Büyükşehir mi? (boolean)",
+      "region": "Coğrafi bölge (Aegean, Marmara, etc.)",
+      "nuts2": "İstatistiki bölge seviye 2",
+      "nuts3": "İstatistiki bölge seviye 3"
+    },
+    "district_level": {
+      "population": "İlçe nüfusu (örn: Fethiye 177,563)",
+      "area": "İlçe yüzölçümü (km²)"
+    },
+    "calculated_metrics": {
+      "population_density": "Nüfus yoğunluğu (kişi/km²) = population / area",
+      "investment_score": "Yatırım potansiyeli skoru (0-100)",
+      "metropolitan_premium": "Büyükşehir fiyat primi (%)",
+      "coastal_premium": "Kıyı ili fiyat primi (%)"
+    }
+  },
+
+  "real_world_example": {
+    "province": "Muğla (ID: 48)",
+    "data": {
+      "population": 1067736,
+      "area": 12654,
+      "altitude": 659,
+      "isCoastal": true,
+      "isMetropolitan": true,
+      "region": "Aegean",
+      "top_district": {
+        "name": "Fethiye",
+        "population": 177563,
+        "area": 875,
+        "density": "203 kişi/km²"
+      }
+    }
+  },
+
+  "use_cases_for_real_estate": {
+    "use_case_1": {
+      "name": "İlan Detay Sayfası - Demografik Widget",
+      "component": "resources/views/components/ilan/demographic-info.blade.php",
+      "displays": [
+        "İl nüfusu",
+        "İlçe nüfusu",
+        "Nüfus yoğunluğu",
+        "Bölge",
+        "Rakım",
+        "Kıyı ili badge",
+        "Büyükşehir badge",
+        "Yatırım potansiyeli skoru (0-100)"
+      ],
+      "value": "Alıcı daha fazla bilgi ile daha bilinçli karar verir",
+      "seo_impact": "+20% keyword density",
+      "priority": "high"
+    },
+
+    "use_case_2": {
+      "name": "AI Content Generation Enhancement",
+      "file": "app/Services/AIService.php",
+      "method": "generateIlanDescription()",
+      "enhancement": "Nüfus, bölge, rakım, kıyı/büyükşehir bilgisi AI prompt'a eklenir",
+      "before": "Muğla, Bodrum'da satılık villa. Deniz manzaralı...",
+      "after": "Ege Bölgesi'nin parlayan yıldızı Muğla'nın (1 milyon nüfus), dünyaca ünlü Fethiye ilçesinde (177 bin nüfus) satılık villa! Stratejik lokasyon: 203 kişi/km² nüfus yoğunluğu...",
+      "content_length_increase": "+200%",
+      "seo_improvement": "+40%",
+      "priority": "high"
+    },
+
+    "use_case_3": {
+      "name": "Dashboard Demografik Analiz",
+      "file": "app/Http/Controllers/Admin/DashboardController.php",
+      "widgets": [
+        "Top 10 Nüfuslu Şehirler - İlan Dağılımı",
+        "Büyükşehir vs Normal İl Ortalama Fiyat",
+        "Kıyı vs İç Bölge Ortalama Fiyat",
+        "Nüfus Başına İlan Sayısı",
+        "Büyükşehir Fiyat Primi (%)",
+        "Kıyı İli Fiyat Primi (%)"
+      ],
+      "business_value": "Pazar segmentasyonu ve fiyatlandırma stratejisi",
+      "priority": "high"
+    },
+
+    "use_case_4": {
+      "name": "Gelişmiş Filtreleme - Nüfus Bazlı",
+      "filters": [
+        "İl Nüfusu (0-100K, 100K-500K, 500K-1M, 1M-5M, 5M+)",
+        "Nüfus Yoğunluğu (Düşük, Orta, Yüksek)",
+        "Sadece Büyükşehirler (checkbox)",
+        "Sadece Kıyı İlleri (checkbox)"
+      ],
+      "user_benefit": "Daha hızlı, daha akıllı arama",
+      "priority": "medium"
+    },
+
+    "use_case_5": {
+      "name": "Yatırım Potansiyeli Skorlama",
+      "algorithm": {
+        "isCoastal": "+30 puan",
+        "isMetropolitan": "+25 puan",
+        "population > 500K": "+20 puan",
+        "district_population > 100K": "+15 puan",
+        "region in [Aegean, Mediterranean]": "+10 puan",
+        "max_score": 100
+      },
+      "display": "İlan detay sayfasında progress bar",
+      "interpretation": {
+        "80-100": "⭐⭐⭐ Yüksek potansiyel",
+        "50-79": "⭐⭐ Orta potansiyel",
+        "0-49": "⭐ Gelişmekte olan"
+      },
+      "priority": "medium"
+    },
+
+    "use_case_6": {
+      "name": "Dinamik Fiyatlandırma Önerileri",
+      "logic": "Büyükşehir ve kıyı primlerini hesapla",
+      "formula": {
+        "base_price": "İlan fiyatı",
+        "metropolitan_premium": "+15% (büyükşehir ise)",
+        "coastal_premium": "+20% (kıyı ili ise)",
+        "high_density_premium": "+10% (yoğunluk > 300 kişi/km² ise)"
+      },
+      "output": "Önerilen fiyat aralığı",
+      "priority": "medium"
+    }
+  },
+
+  "business_value": {
+    "for_buyers": {
+      "informed_decisions": "Daha fazla bilgi ile daha bilinçli karar",
+      "investment_clarity": "Yatırım potansiyeli skoruyla açık değerlendirme",
+      "comparative_analysis": "Benzer bölgeleri karşılaştırma imkanı"
+    },
+    "for_sellers": {
+      "better_pricing": "Demografik veriye dayalı fiyatlandırma",
+      "targeted_marketing": "Doğru segmente doğru mesaj",
+      "seo_boost": "Zengin içerik = Daha fazla organik trafik"
+    },
+    "for_platform": {
+      "competitive_advantage": "Rakiplerde olmayan özellik",
+      "data_driven": "Veri odaklı karar desteği",
+      "ai_quality": "Daha kaliteli AI içerik",
+      "user_engagement": "Daha fazla sayfa görüntülenmesi"
+    }
+  },
+
+  "implementation_priority": {
+    "phase_1_essential": [
+      "TurkiyeAPIService (demographic methods)",
+      "İlan detay sayfası - Demografik widget",
+      "AI prompt enhancement"
+    ],
+    "phase_2_important": [
+      "Dashboard demografik analiz",
+      "Yatırım potansiyeli skorlama",
+      "Gelişmiş filtreleme"
+    ],
+    "phase_3_nice_to_have": [
+      "Dinamik fiyatlandırma önerileri",
+      "Trend analizi (yıllık nüfus artışı)",
+      "Bölgesel karşılaştırma raporları"
+    ]
+  },
+
+  "yalihan_bekci_rules": {
+    "rule_16": "Always display demographic data in user-friendly format (1,000,000 not 1000000)",
+    "rule_17": "Always calculate and show population density (kişi/km²) when both population and area are available",
+    "rule_18": "Always show investment potential score on ilan detail pages",
+    "rule_19": "Always enrich AI prompts with demographic data for better content quality",
+    "rule_20": "Always cache demographic data (30 days) to minimize API calls"
+  },
+
+  "context7_compliance": {
+    "naming": {
+      "nufus": "population",
+      "yuzolcumu": "area",
+      "rakim": "altitude",
+      "nufus_yogunlugu": "population_density",
+      "yatirim_potansiyeli": "investment_score"
+    },
+    "display_format": {
+      "population": "number_format() with Turkish locale",
+      "area": "number_format() + ' km²'",
+      "altitude": "number_format() + ' m'",
+      "density": "number_format() + ' kişi/km²'"
+    }
+  },
+
+  "next_steps": {
+    "immediate": "Start FAZ 1 - Create TurkiyeAPIService with demographic methods",
+    "then": "Implement demographic widget for ilan detail page",
+    "finally": "Enhance AI prompts with demographic data"
+  }
+}
+

@@ -1,0 +1,376 @@
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use App\Http\Controllers\Controller;
+use App\Services\AdvancedAIPropertyGenerator;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
+
+/**
+ * 🚀 Advanced AI Controller
+ *
+ * Enterprise seviye AI özellikleri için API endpoints
+ */
+class AdvancedAIController extends Controller
+{
+    private AdvancedAIPropertyGenerator $aiGenerator;
+
+    public function __construct(AdvancedAIPropertyGenerator $aiGenerator)
+    {
+        $this->aiGenerator = $aiGenerator;
+    }
+
+    /**
+     * Gelişmiş AI içerik üretimi
+     */
+    public function generateAdvancedContent(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'baslik' => 'nullable|string|max:255',
+            'kategori' => 'required|string|max:100',
+            'alt_kategori' => 'nullable|string|max:100',
+            'lokasyon' => 'nullable|string',
+            'il' => 'nullable|string',
+            'ilce' => 'nullable|string',
+            'mahalle' => 'nullable|string',
+            'fiyat' => 'nullable|numeric|min:0',
+            'metrekare' => 'nullable|numeric|min:0',
+            'ozellikler' => 'nullable|array',
+            'ozellikler.*' => 'string|max:100',
+            'oda_sayisi' => 'nullable|string',
+            'banyo_sayisi' => 'nullable|integer|min:0',
+            'balkon_var' => 'nullable|boolean',
+            'asansor_var' => 'nullable|boolean',
+            'kat_no' => 'nullable|integer|min:0',
+            'toplam_kat' => 'nullable|integer|min:0',
+            'ai_tone' => 'nullable|string|in:seo,kurumsal,hizli_satis,luks',
+            'ai_variant_count' => 'nullable|integer|min:1|max:10',
+            'ai_ab_test' => 'nullable|boolean',
+            'ai_languages' => 'nullable|array',
+            'ai_languages.*' => 'string|in:TR,EN,RU,DE',
+            'include_market_analysis' => 'nullable|boolean',
+            'include_seo_keywords' => 'nullable|boolean',
+            'include_price_analysis' => 'nullable|boolean',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors(),
+                'message' => 'Geçersiz veri formatı'
+            ], 422);
+        }
+
+        try {
+            // Property data hazırla
+            $propertyData = [
+                'baslik' => $request->baslik,
+                'kategori' => $request->kategori,
+                'alt_kategori' => $request->alt_kategori,
+                'lokasyon' => $request->lokasyon,
+                'il' => $request->il,
+                'ilce' => $request->ilce,
+                'mahalle' => $request->mahalle,
+                'fiyat' => $request->fiyat,
+                'metrekare' => $request->metrekare,
+                'ozellikler' => $request->ozellikler ?? [],
+                'oda_sayisi' => $request->oda_sayisi,
+                'banyo_sayisi' => $request->banyo_sayisi,
+                'balkon_var' => $request->balkon_var,
+                'asansor_var' => $request->asansor_var,
+                'kat_no' => $request->kat_no,
+                'toplam_kat' => $request->toplam_kat,
+            ];
+
+            // AI options hazırla
+            $aiOptions = [
+                'tone' => $request->ai_tone ?? 'seo',
+                'variant_count' => $request->ai_variant_count ?? 3,
+                'ab_test' => $request->ai_ab_test ?? false,
+                'languages' => $request->ai_languages ?? ['TR'],
+                'include_market_analysis' => $request->include_market_analysis ?? true,
+                'include_seo_keywords' => $request->include_seo_keywords ?? true,
+                'include_price_analysis' => $request->include_price_analysis ?? true,
+            ];
+
+            // AI içerik üret
+            $result = $this->aiGenerator->generateAdvancedContent($propertyData, $aiOptions);
+
+            return response()->json([
+                'success' => true,
+                'data' => $result,
+                'generated_at' => now()->toISOString(),
+                'processing_time' => microtime(true) - LARAVEL_START
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Advanced AI content generation failed', [
+                'error' => $e->getMessage(),
+                'request_data' => $request->all(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'AI içerik üretimi sırasında hata oluştu',
+                'error' => config('app.debug') ? $e->getMessage() : 'Lütfen daha sonra tekrar deneyin'
+            ], 500);
+        }
+    }
+
+    /**
+     * Pazar analizi
+     */
+    public function generateMarketAnalysis(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'il' => 'required|string',
+            'ilce' => 'nullable|string',
+            'mahalle' => 'nullable|string',
+            'kategori' => 'required|string',
+            'metrekare' => 'nullable|numeric|min:0',
+            'fiyat' => 'nullable|numeric|min:0',
+            'ozellikler' => 'nullable|array',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        try {
+            $propertyData = [
+                'il' => $request->il,
+                'ilce' => $request->ilce,
+                'mahalle' => $request->mahalle,
+                'kategori' => $request->kategori,
+                'metrekare' => $request->metrekare,
+                'fiyat' => $request->fiyat,
+                'ozellikler' => $request->ozellikler ?? [],
+            ];
+
+            $analysis = $this->aiGenerator->generateMarketAnalysis($propertyData);
+
+            return response()->json([
+                'success' => true,
+                'data' => $analysis,
+                'generated_at' => now()->toISOString()
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Market analysis generation failed', [
+                'error' => $e->getMessage(),
+                'request_data' => $request->all()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Pazar analizi oluşturulamadı',
+                'error' => config('app.debug') ? $e->getMessage() : 'Lütfen daha sonra tekrar deneyin'
+            ], 500);
+        }
+    }
+
+    /**
+     * Fiyat analizi
+     */
+    public function generatePriceAnalysis(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'il' => 'required|string',
+            'ilce' => 'nullable|string',
+            'mahalle' => 'nullable|string',
+            'kategori' => 'required|string',
+            'metrekare' => 'nullable|numeric|min:0',
+            'fiyat' => 'nullable|numeric|min:0',
+            'ozellikler' => 'nullable|array',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        try {
+            $propertyData = [
+                'il' => $request->il,
+                'ilce' => $request->ilce,
+                'mahalle' => $request->mahalle,
+                'kategori' => $request->kategori,
+                'metrekare' => $request->metrekare,
+                'fiyat' => $request->fiyat,
+                'ozellikler' => $request->ozellikler ?? [],
+            ];
+
+            $analysis = $this->aiGenerator->generatePriceAnalysis($propertyData);
+
+            return response()->json([
+                'success' => true,
+                'data' => $analysis,
+                'generated_at' => now()->toISOString()
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Price analysis generation failed', [
+                'error' => $e->getMessage(),
+                'request_data' => $request->all()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Fiyat analizi oluşturulamadı',
+                'error' => config('app.debug') ? $e->getMessage() : 'Lütfen daha sonra tekrar deneyin'
+            ], 500);
+        }
+    }
+
+    /**
+     * SEO anahtar kelimeler
+     */
+    public function generateSEOKeywords(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'il' => 'required|string',
+            'ilce' => 'nullable|string',
+            'mahalle' => 'nullable|string',
+            'kategori' => 'required|string',
+            'ozellikler' => 'nullable|array',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        try {
+            $propertyData = [
+                'il' => $request->il,
+                'ilce' => $request->ilce,
+                'mahalle' => $request->mahalle,
+                'kategori' => $request->kategori,
+                'ozellikler' => $request->ozellikler ?? [],
+            ];
+
+            $keywords = $this->aiGenerator->generateSEOKeywords($propertyData);
+
+            return response()->json([
+                'success' => true,
+                'data' => $keywords,
+                'generated_at' => now()->toISOString()
+            ]);
+        } catch (\Exception $e) {
+            Log::error('SEO keywords generation failed', [
+                'error' => $e->getMessage(),
+                'request_data' => $request->all()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'SEO anahtar kelimeler oluşturulamadı',
+                'error' => config('app.debug') ? $e->getMessage() : 'Lütfen daha sonra tekrar deneyin'
+            ], 500);
+        }
+    }
+
+    /**
+     * AI sistem sağlık durumu (Context7: status yerine health_status kullanıldı)
+     * Not: 'status' yerine her yerde 'health_status' veya 'yayinda_mi' kullanılmalıdır.
+     */
+    public function getSystemHealth()
+    {
+        try {
+            $health_status = [
+                'ai_service' => $this->checkAIServiceStatus(),
+                'database' => $this->checkDatabaseStatus(),
+                'cache' => $this->checkCacheStatus(),
+                'memory_usage' => [
+                    'current' => memory_get_usage(true),
+                    'peak' => memory_get_peak_usage(true),
+                    'limit' => ini_get('memory_limit')
+                ],
+                'timestamp' => now()->toISOString()
+            ];
+
+            return response()->json([
+                'success' => true,
+                'data' => $health_status
+            ]);
+        } catch (\Exception $e) {
+            Log::error('System health check failed', [
+                'error' => $e->getMessage()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Sistem sağlık kontrolü yapılamadı',
+                'error' => config('app.debug') ? $e->getMessage() : 'Lütfen daha sonra tekrar deneyin'
+            ], 500);
+        }
+    }
+
+    /**
+     * Yardımcı metodlar
+     */
+    private function checkAIServiceStatus(): array
+    {
+        try {
+            // AnythingLLM servis health_status kontrolü
+            $anythingLLM = app(\App\Services\AnythingLLMService::class);
+            $health = $anythingLLM->health();
+
+            return [
+                'status' => $health['ok'] ? 'active' : 'inactive',
+                'message' => $health['message'] ?? 'Service available',
+                'response_time' => microtime(true) - LARAVEL_START
+            ];
+        } catch (\Exception $e) {
+            return [
+                'status' => 'error',
+                'message' => $e->getMessage(),
+                'response_time' => 0
+            ];
+        }
+    }
+
+    private function checkDatabaseStatus(): array
+    {
+        try {
+            DB::connection()->getPdo();
+            return [
+                'status' => 'connected',
+                'message' => 'Database connection successful'
+            ];
+        } catch (\Exception $e) {
+            return [
+                'status' => 'disconnected',
+                'message' => $e->getMessage()
+            ];
+        }
+    }
+
+    private function checkCacheStatus(): array
+    {
+        try {
+            Cache::put('health_check', 'ok', 60);
+            $value = Cache::get('health_check');
+            Cache::forget('health_check');
+
+            return [
+                'status' => $value === 'ok' ? 'active' : 'inactive',
+                'message' => $value === 'ok' ? 'Cache system working' : 'Cache system not responding'
+            ];
+        } catch (\Exception $e) {
+            return [
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ];
+        }
+    }
+}

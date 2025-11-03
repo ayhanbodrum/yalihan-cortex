@@ -1,0 +1,27 @@
+{
+  "last_updated": "30 September 2025, 10:18",
+  "documentation": {
+    "total":       13,
+    "modules":        0,
+    "technical":        0,
+    "ai":        0
+  },
+  "rules": {
+    "total":        0,
+    "files": [
+      "kurallar.mdc",
+      "memory-check.mdc",
+      "emlakpro-rules.mdc"
+    ]
+  },
+  "memory": {
+    "total_records": 25,
+    "status": "active",
+    "auto_sync": true
+  },
+  "system": {
+    "context7_enabled": true,
+    "auto_update": true,
+    "backup_enabled": true
+  }
+}

@@ -1,0 +1,267 @@
+{
+  "meta": {
+    "date": "2025-11-02",
+    "severity": "CRITICAL",
+    "total_errors": 6,
+    "debugging_time": "41 minutes",
+    "preventable": "100%",
+    "learned_by": "yalihan-bekci"
+  },
+  "anti_patterns": {
+    "database_schema_assumption": {
+      "severity": "CRITICAL",
+      "description": "Database şeması kontrol edilmeden kolon varsayımı yapılması",
+      "examples": [
+        {
+          "error": "Etiket::get(['id', 'name', 'slug', 'type', 'icon'])",
+          "reason": "'type' ve 'icon' kolonları tabloda yok",
+          "fix": "DESCRIBE etiketler; komutunu çalıştır, gerçek kolonları kullan"
+        },
+        {
+          "error": "Ulke::orderBy('name')",
+          "reason": "'name' kolonu yok, gerçek kolon 'ulke_adi'",
+          "fix": "DESCRIBE ulkeler; komutunu çalıştır"
+        },
+        {
+          "error": "Ulke::where('status', true)",
+          "reason": "'status' boolean değil, VARCHAR('Aktif')",
+          "fix": "Kolon tipini kontrol et"
+        }
+      ],
+      "required_check": "DESCRIBE table_name; her query öncesi ZORUNLU",
+      "auto_detect": true,
+      "pre_commit_hook": true
+    },
+    "backslash_facade_usage": {
+      "severity": "CRITICAL",
+      "description": "Laravel facade'larını backslash ile kullanma",
+      "examples": [
+        {
+          "error": "\\Cache::remember(...)",
+          "fix": "use Illuminate\\Support\\Facades\\Cache; Cache::remember(...)"
+        },
+        {
+          "error": "\\DB::table(...)",
+          "fix": "use Illuminate\\Support\\Facades\\DB; DB::table(...)"
+        },
+        {
+          "error": "\\Log::info(...)",
+          "fix": "use Illuminate\\Support\\Facades\\Log; Log::info(...)"
+        }
+      ],
+      "required_check": "use statements kontrol et, backslash yasak",
+      "auto_detect": true,
+      "pre_commit_hook": true,
+      "auto_fix": true
+    },
+    "duplicate_method_definition": {
+      "severity": "CRITICAL",
+      "description": "Aynı method'u birden fazla kez tanımlama",
+      "examples": [
+        {
+          "error": "IlanController::bulkAction() line 987 ve 1013'te 2 kez",
+          "fix": "grep -n 'public function bulkAction' IlanController.php"
+        }
+      ],
+      "required_check": "grep -n 'public function methodName' File.php",
+      "auto_detect": true,
+      "pre_commit_hook": true
+    },
+    "model_accessor_vs_column": {
+      "severity": "MAJOR",
+      "description": "Model accessor'ı Query Builder'da column olarak kullanma",
+      "examples": [
+        {
+          "error": "Ulke::orderBy('name') // 'name' accessor, 'ulke_adi' column",
+          "fix": "Accessor sadece Eloquent'te çalışır, Query'de gerçek column kullan"
+        }
+      ],
+      "required_check": "Model'i kontrol et, accessor vs column ayır",
+      "auto_detect": false,
+      "pre_commit_hook": false
+    },
+    "context7_standard_assumption": {
+      "severity": "MAJOR",
+      "description": "Tüm tabloların Context7 uyumlu olduğunu varsayma",
+      "examples": [
+        {
+          "error": "IlanKategoriYayinTipi::get(['name', 'slug'])",
+          "reason": "Context7'de 'name, slug' beklenir ama 'yayin_tipi' var",
+          "fix": "DESCRIBE ile gerçek kolonları kontrol et"
+        }
+      ],
+      "required_check": "Schema kontrol, %98.82 compliance ≠ %100",
+      "auto_detect": false,
+      "pre_commit_hook": false
+    },
+    "cache_management": {
+      "severity": "MAJOR",
+      "description": "Büyük değişikliklerden sonra cache temizlenmemesi",
+      "examples": [
+        {
+          "error": "60+ dosya değişti, cache clear yapılmadı",
+          "fix": "composer dump-autoload --optimize && php artisan optimize:clear"
+        }
+      ],
+      "required_check": "Büyük refactoring sonrası cache clear ZORUNLU",
+      "auto_detect": false,
+      "pre_commit_hook": false
+    }
+  },
+  "required_workflow": {
+    "before_database_query": [
+      {
+        "step": 1,
+        "action": "DESCRIBE table_name;",
+        "description": "Gerçek kolon adlarını ve tiplerini öğren",
+        "mandatory": true
+      },
+      {
+        "step": 2,
+        "action": "php artisan migrate:status",
+        "description": "Pending migration var mı kontrol et",
+        "mandatory": false
+      },
+      {
+        "step": 3,
+        "action": "cat app/Models/ModelName.php",
+        "description": "Model $fillable, accessor, scope kontrol et",
+        "mandatory": true
+      },
+      {
+        "step": 4,
+        "action": "Kod yaz (gerçek kolonlara göre)",
+        "description": "Varsayım yapma, kontrol ettiğin kolonları kullan",
+        "mandatory": true
+      }
+    ],
+    "before_facade_usage": [
+      {
+        "step": 1,
+        "action": "use Illuminate\\Support\\Facades\\Cache; ekle",
+        "description": "Facade'ı import et",
+        "mandatory": true
+      },
+      {
+        "step": 2,
+        "action": "Cache::remember() kullan (backslash YOK!)",
+        "description": "Imported facade kullan",
+        "mandatory": true
+      },
+      {
+        "step": 3,
+        "action": "grep '\\\\Cache::' File.php",
+        "description": "Backslash kullanımı kontrol et",
+        "mandatory": true
+      }
+    ],
+    "before_add_method": [
+      {
+        "step": 1,
+        "action": "grep -n 'public function methodName' File.php",
+        "description": "Duplicate method var mı kontrol et",
+        "mandatory": true
+      },
+      {
+        "step": 2,
+        "action": "Varsa ESKİYİ SİL, yoksa YENİ EKLE",
+        "description": "Duplicate önle",
+        "mandatory": true
+      }
+    ],
+    "after_code_change": [
+      {
+        "step": 1,
+        "action": "php artisan route:clear",
+        "description": "Route cache temizle",
+        "mandatory": true
+      },
+      {
+        "step": 2,
+        "action": "Browser test",
+        "description": "Manuel test yap",
+        "mandatory": true
+      },
+      {
+        "step": 3,
+        "action": "Telescope kontrol",
+        "description": "Error log'larını kontrol et",
+        "mandatory": true
+      }
+    ],
+    "after_big_refactoring": [
+      {
+        "step": 1,
+        "action": "composer dump-autoload --optimize",
+        "description": "Autoload cache yeniden oluştur",
+        "mandatory": true
+      },
+      {
+        "step": 2,
+        "action": "php artisan optimize:clear",
+        "description": "Tüm cache'leri temizle",
+        "mandatory": true
+      },
+      {
+        "step": 3,
+        "action": "Web server restart (opsiyonel)",
+        "description": "Opcache temizle",
+        "mandatory": false
+      }
+    ]
+  },
+  "pre_commit_hooks": {
+    "check_backslash_facades": {
+      "command": "git diff --cached | grep -E '\\\\\\\\(Cache|DB|Log|Auth|View)::'",
+      "error_message": "❌ YASAK: Backslash facade kullanımı! \\Cache:: → Cache::",
+      "auto_fix": true,
+      "fix_script": "scripts/fix-backslash-facades.sh"
+    },
+    "check_duplicate_methods": {
+      "command": "php scripts/check-duplicate-methods.php",
+      "error_message": "❌ DUPLICATE: Aynı method 2+ kez tanımlanmış!",
+      "auto_fix": false
+    },
+    "check_database_columns": {
+      "command": "php scripts/validate-query-columns.php",
+      "error_message": "❌ UNKNOWN COLUMN: Query'de var olmayan kolon kullanımı!",
+      "auto_fix": false,
+      "note": "Şu an implement edilmedi, gelecekte eklenecek"
+    }
+  },
+  "metrics": {
+    "before": {
+      "errors": 6,
+      "debugging_minutes": 41,
+      "preventable_percentage": 100,
+      "schema_checks": 0,
+      "cache_clears": 0,
+      "test_frequency": "1x (end only)"
+    },
+    "after": {
+      "new_rules": 5,
+      "pre_commit_hooks": 3,
+      "auto_fix_scripts": 3,
+      "documentation_files": 2,
+      "enforcement": "MANDATORY"
+    }
+  },
+  "lessons_learned": {
+    "primary": "ASLA VARSAYIM YAPMA, HER ZAMAN KONTROL ET!",
+    "secondary": "Database schema = TEK gerçek kaynak",
+    "rules": [
+      "Schema kontrolü her query öncesi ZORUNLU",
+      "Facade import ZORUNLU, backslash YASAK",
+      "Duplicate method kontrolü ZORUNLU",
+      "Her adımda test et, sonra değil ŞİMDİ",
+      "Büyük değişiklik = Cache clear ZORUNLU"
+    ]
+  },
+  "integration": {
+    "cursor_rules": ".cursor/rules/yalihan-bekci-strict-rules.mdc",
+    "post_mortem": "POST_MORTEM_ANALYSIS_2025_11_02.md",
+    "admin_controller_lessons": "yalihan-bekci/learned/admin-controller-lessons-2025-11-02.json",
+    "system_improvements": "SYSTEM_IMPROVEMENTS_REPORT_2025_11_02.md"
+  }
+}
+

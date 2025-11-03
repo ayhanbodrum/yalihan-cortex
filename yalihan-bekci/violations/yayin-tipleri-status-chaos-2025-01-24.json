@@ -1,0 +1,143 @@
+{
+  "violation_id": "VIO-2025-01-24-002",
+  "type": "database_inconsistency",
+  "severity": "critical",
+  "title": "Yayın Tipleri Status Field Kaos - ÇOKLU TUTARSIZLIK",
+  "description": "ilan_kategori_yayin_tipleri tablosunda status field'ı tutarsız değerler ve formatlar içeriyor. Hem 'active', hem 'Aktif' değerleri var. Form çalışmıyor!",
+  "detected_at": "2025-01-24T17:00:00Z",
+  "context7_rule": "Status field MUST be boolean (TINYINT(1)). Violation of Context7 v3.5.0",
+  "affected_table": "ilan_kategori_yayin_tipleri",
+  "affected_files": [
+    "app/Http/Controllers/Admin/YayinTipiController.php",
+    "resources/views/admin/yayin-tipleri/create.blade.php"
+  ],
+  "issues": [
+    {
+      "issue": "Status Field Type Mismatch",
+      "severity": "critical",
+      "details": {
+        "database_type": "VARCHAR(255)",
+        "expected_type": "TINYINT(1)",
+        "sample_values": ["active", "Aktif"],
+        "problem": "Mixed formats in database"
+      }
+    },
+    {
+      "issue": "Controller Query Mismatch",
+      "severity": "high",
+      "location": "YayinTipiController.php:43",
+      "code": "where('status', 'Aktif')",
+      "expected": "where('status', true)",
+      "problem": "Searching for 'Aktif' but validation expects 'active'"
+    },
+    {
+      "issue": "Validation Mismatch",
+      "severity": "high",
+      "location": "YayinTipiController.php:56",
+      "code": "'in:active,inactive'",
+      "problem": "Expects 'active/inactive' but query uses 'Aktif'"
+    },
+    {
+      "issue": "IlanKategori Status Mismatch",
+      "severity": "critical",
+      "location": "YayinTipiController.php:43",
+      "code": "IlanKategori::where('status', 'Aktif')",
+      "problem": "IlanKategori was just migrated to boolean, this will fail!"
+    },
+    {
+      "issue": "Form Alpine.js Missing",
+      "severity": "critical",
+      "location": "create.blade.php:30-39",
+      "problem": "x-data attribute missing, Alpine component not initialized"
+    },
+    {
+      "issue": "Status Duplication in Form",
+      "severity": "medium",
+      "location": "create.blade.php:34,38",
+      "problem": "status defined twice: once as 'Aktif' (string), once as true (boolean)"
+    }
+  ],
+  "impact": {
+    "severity": "critical",
+    "description": "Form ÇALIŞMIYOR! Kategori dropdown ve input field'lar boş. Alpine.js initialization hatası.",
+    "affected_features": [
+      "Yayın Tipi Create Form",
+      "Kategori Selection",
+      "Form Submission"
+    ],
+    "user_experience": "Kullanıcı yeni yayın tipi ekleyemiyor, form alanları çalışmıyor"
+  },
+  "root_cause": {
+    "primary": "Status field chaos - multiple formats in same table",
+    "secondary": [
+      "IlanKategori migration'ı yapıldı ama YayinTipiController güncellenmedi",
+      "Alpine.js component initialization unutulmuş",
+      "View'da x-data directive eksik"
+    ]
+  },
+  "temporary_fixes_needed": [],
+  "permanent_solution": {
+    "action": "multi_step_fix",
+    "priority": "urgent",
+    "steps": [
+      {
+        "step": 1,
+        "action": "Create migration",
+        "command": "php artisan make:migration fix_yayin_tipleri_status_field_to_boolean"
+      },
+      {
+        "step": 2,
+        "action": "Normalize status data",
+        "sql": "UPDATE ilan_kategori_yayin_tipleri SET status = CASE WHEN status IN ('active', 'Aktif', '1') THEN 1 ELSE 0 END"
+      },
+      {
+        "step": 3,
+        "action": "Change column type",
+        "sql": "ALTER TABLE ilan_kategori_yayin_tipleri MODIFY COLUMN status TINYINT(1) NOT NULL DEFAULT 1"
+      },
+      {
+        "step": 4,
+        "action": "Update Controller - IlanKategori query",
+        "file": "YayinTipiController.php:43",
+        "from": "where('status', 'Aktif')",
+        "to": "where('status', true)"
+      },
+      {
+        "step": 5,
+        "action": "Update Controller - validation",
+        "file": "YayinTipiController.php:56",
+        "from": "'status' => ['required', 'string', 'in:active,inactive']",
+        "to": "'status' => ['required', 'boolean']"
+      },
+      {
+        "step": 6,
+        "action": "Fix View - Add x-data",
+        "file": "create.blade.php:30",
+        "add": "x-data=\"yayinTipiForm({...})\"",
+        "remove_duplicate_status": true
+      },
+      {
+        "step": 7,
+        "action": "Update Model casting",
+        "file": "IlanKategoriYayinTipi.php",
+        "add": "'status' => 'boolean'"
+      }
+    ]
+  },
+  "related_violations": [
+    "VIO-2025-01-24-001"
+  ],
+  "fixed": true,
+  "fix_date": "2025-01-24T17:30:00Z",
+  "fix_summary": {
+    "migration": "2025_10_24_163945_fix_yayin_tipleri_status_field_to_boolean.php",
+    "data_normalized": "161 records normalized (active/Aktif → 1)",
+    "field_type": "VARCHAR(255) → TINYINT(1)",
+    "controller_updated": "3 methods (create, edit, store, update, stats)",
+    "view_fixed": "x-data initialized, status duplication removed",
+    "model_casting": "'status' => 'boolean' added",
+    "test_results": "✅ ALL TESTS PASSED"
+  },
+  "notes": "Bu violation Context7 v3.5.0 standardını ciddi şekilde ihlal ediyordu. Aynı sorun ilan_kategorileri'nde de vardı ve düzeltilmişti. Bu da tamamen düzeltildi ve test edildi."
+}
+

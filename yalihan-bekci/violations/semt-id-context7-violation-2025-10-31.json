@@ -1,0 +1,98 @@
+{
+  "violation_report": {
+    "id": "VIO-2025-10-31-SEMT-ID",
+    "date": "2025-10-31T15:00:00Z",
+    "severity": "critical",
+    "type": "context7_naming_violation",
+    "status": "fixed",
+    "reported_by": "user_console_error"
+  },
+  "violation": {
+    "forbidden_term": "semt_id",
+    "correct_term": "mahalle_id",
+    "rule": "Context7 Location Standard",
+    "authority": "yalihan-bekci/knowledge/location-mahalle-id-standard.json"
+  },
+  "console_error": {
+    "message": "📍 semt_id elementi bulunamadı",
+    "file": "resources/js/admin/ilan-create/location.js",
+    "line": 253,
+    "impact": "Mahalle dropdown çalışmıyor"
+  },
+  "yalihan_bekci_knowledge": {
+    "rule": "Mahalle için SADECE 'mahalle_id' kullanılır, 'semt_id' YASAK",
+    "reason": "Database kolonları: mahalle_id, Tablo adı: mahalleler",
+    "documented": true,
+    "file": "yalihan-bekci/knowledge/location-mahalle-id-standard.json",
+    "enforcement": "Pre-commit hooks should check for semt_id usage"
+  },
+  "database_structure": {
+    "ilanlar_table": {
+      "column": "mahalle_id",
+      "type": "unsignedBigInteger nullable",
+      "foreign_key": "mahalleler.id",
+      "status": "CORRECT ✅"
+    },
+    "sites_table": {
+      "column": "mahalle_id",
+      "type": "unsignedBigInteger nullable",
+      "foreign_key": "mahalleler.id",
+      "status": "CORRECT ✅"
+    },
+    "kisiler_table": {
+      "column": "mahalle_id",
+      "exists": false,
+      "note": "By design - kisiler only has il_id and ilce_id",
+      "status": "CORRECT ✅ (no mahalle needed)"
+    }
+  },
+  "files_fixed": [
+    {
+      "file": "resources/js/admin/ilan-create/location.js",
+      "violations_found": 14,
+      "changes": [
+        "loadSemtler() → loadMahalleler()",
+        "clearSemtler() → clearMahalleler()",
+        "populateSemtler() → populateMahalleler()",
+        "semt_id → mahalle_id (getElementById)",
+        "semtler → mahalleler (variable names)",
+        "Semtler yükleniyor → Mahalleler yükleniyor (UI text)"
+      ]
+    }
+  ],
+  "context7_compliance": {
+    "before": "Using forbidden 'semt_id' in 14 places",
+    "after": "All converted to 'mahalle_id' ✅",
+    "improvement": "100% compliant"
+  },
+  "impact": {
+    "before": "Mahalle dropdown çalışmıyor",
+    "after": "Mahalle dropdown otomatik yükleniyor",
+    "user_experience": "Cascade working perfectly"
+  },
+  "pattern_learned": {
+    "title": "Function Naming Consistency",
+    "rule": "Function isimleri database column naming ile tutarlı olmalı",
+    "examples": {
+      "wrong": "loadSemtler(), clearSemtler(), populateSemtler()",
+      "correct": "loadMahalleler(), clearMahalleler(), populateMahalleler()"
+    },
+    "reason": "Code readability + Context7 compliance"
+  },
+  "enforcement_recommendation": {
+    "pre_commit_hook": "Reject commits with 'semt_id' in location files",
+    "linter_rule": "ESLint: warn on semt_id usage",
+    "code_review": "Check all location-related JS files"
+  },
+  "related_knowledge": [
+    "yalihan-bekci/knowledge/location-mahalle-id-standard.json",
+    "yalihan-bekci/knowledge/context7-rules.json"
+  ],
+  "verification": {
+    "api_test": "✅ /api/location/neighborhoods/1 returns 56 mahalleler",
+    "console_test": "✅ No more 'semt_id' errors",
+    "ui_test": "✅ Mahalle dropdown populated",
+    "verified_by": "Yalıhan Bekçi AI System"
+  }
+}
+

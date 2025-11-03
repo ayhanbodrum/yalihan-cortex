@@ -1,0 +1,81 @@
+[
+    {
+        "timestamp": "2025-10-01 14:58:59",
+        "violations_before": 142,
+        "compliance_before": 91.68,
+        "estimated_violations_after": 115,
+        "estimated_compliance_after": 93.35,
+        "improvements_applied": 1,
+        "target_reached": false
+    },
+    {
+        "timestamp": "2025-10-11 23:45:00",
+        "violations_before": 32,
+        "compliance_before": 98.82,
+        "violations_after": 5,
+        "compliance_after": 99.71,
+        "improvements_applied": 27,
+        "features_added": {
+            "ai_services": 3,
+            "api_endpoints": 5,
+            "context7_rules": 3,
+            "migrations": 1
+        },
+        "target_reached": true,
+        "milestone": "Sonraki Adımlar v3.4.0 Complete",
+        "details": {
+            "fixed_controllers": [
+                "KisiController",
+                "TalepController",
+                "TakimController",
+                "GorevController"
+            ],
+            "new_services": [
+                "IlanGecmisAIService",
+                "KategoriOzellikService",
+                "TKGMService"
+            ],
+            "new_rules": ["#66", "#68", "#69", "#70"],
+            "total_code_lines": 2015
+        }
+    },
+    {
+        "timestamp": "2025-10-12 09:30:00",
+        "violations_before": 5,
+        "compliance_before": 99.71,
+        "violations_after": 5,
+        "compliance_after": 99.71,
+        "improvements_applied": 4,
+        "features_added": {
+            "frontend_components": 4,
+            "alpine_components": 3,
+            "partial_files": 4,
+            "global_functions": 1
+        },
+        "target_reached": true,
+        "milestone": "Frontend UI v3.4.0 Integration Complete",
+        "details": {
+            "new_partials": [
+                "_ai-gecmis-analizi.blade.php",
+                "_tkgm-sorgu.blade.php",
+                "_anahtar-yonetimi.blade.php",
+                "_kategori-dinamik-alanlar.blade.php"
+            ],
+            "alpine_components": [
+                "kisiGecmisi",
+                "tkgmSorgu",
+                "kategoriDinamikAlanlar"
+            ],
+            "include_locations": [164, 737, 850, 1290],
+            "total_code_lines": 659,
+            "improvements": [
+                "Defensive programming (Alpine & toast guards)",
+                "Dark mode support",
+                "Loading states",
+                "Error handling",
+                "Auto-fill support",
+                "Responsive design"
+            ]
+        }
+    }
+]

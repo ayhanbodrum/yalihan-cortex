@@ -1,0 +1,161 @@
+{
+  "pattern_id": "user_create_password_confirmation_missing",
+  "date": "2025-10-14",
+  "category": "form_validation",
+  "severity": "critical",
+  "error": {
+    "type": "validation_error",
+    "message": "The password field confirmation does not match",
+    "location": "/admin/kullanicilar/create",
+    "root_cause": "password_confirmation field eksik blade template'de"
+  },
+  "problem": {
+    "description": "Kullanıcı ekleme formu çalışmıyor - şifre confirmation field eksik",
+    "symptoms": [
+      "Form submit olmuyor",
+      "Validation hatası: password confirmation does not match",
+      "Alpine.js @submit.prevent engelliyor ama submit() çalışmıyor",
+      "Neo Design System standartlarına uygun değil"
+    ],
+    "affected_files": [
+      "resources/views/admin/users/create.blade.php",
+      "app/Http/Controllers/Admin/UserController.php"
+    ]
+  },
+  "solution": {
+    "steps": [
+      {
+        "step": 1,
+        "action": "Blade template'i tamamen yeniden yaz - Neo Design System standardına uygun",
+        "details": {
+          "reference": "resources/views/admin/danisman/create.blade.php",
+          "structure": [
+            "Section 1: Temel Bilgiler (name, email, telefon, password, password_confirmation)",
+            "Section 2: Rol ve Yetki Bilgileri (role select)",
+            "Section 3: Durum ve Ayarlar (enabled, email_verified toggles)",
+            "Form Actions (İptal, Kaydet buttons)"
+          ]
+        }
+      },
+      {
+        "step": 2,
+        "action": "password_confirmation field ekle",
+        "code": {
+          "blade": "<div>\n    <label for=\"password_confirmation\" class=\"block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2\">\n        Şifre Tekrar *\n    </label>\n    <input type=\"password\" name=\"password_confirmation\" id=\"password_confirmation\" required\n        class=\"w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100\"\n        placeholder=\"Şifreyi tekrar girin\">\n</div>"
+        }
+      },
+      {
+        "step": 3,
+        "action": "Alpine.js @submit.prevent kaldır - normal form submission kullan",
+        "before": "<form method=\"POST\" action=\"{{ route('admin.kullanicilar.store') }}\" @submit.prevent=\"submitForm\">",
+        "after": "<form action=\"{{ route('admin.kullanicilar.store') }}\" method=\"POST\" class=\"space-y-6\">"
+      },
+      {
+        "step": 4,
+        "action": "Controller validation rules güncelle",
+        "code": {
+          "validation": "[\n    'name' => 'required|string|max:255',\n    'email' => 'required|string|email|max:255|unique:users',\n    'telefon' => 'nullable|string|max:20',\n    'password' => 'required|string|min:8|confirmed',\n    'role' => 'required|string|in:admin,danisman,editor,viewer',\n    'enabled' => 'nullable|boolean',\n    'email_verified' => 'nullable|boolean',\n]"
+        }
+      },
+      {
+        "step": 5,
+        "action": "Spatie Role assignment ekle",
+        "code": {
+          "php": "$user = User::create([...]);\n$user->assignRole($request->role);"
+        }
+      }
+    ],
+    "fixed_files": [
+      {
+        "file": "resources/views/admin/users/create.blade.php",
+        "changes": [
+          "Tamamen yeniden yazıldı - Neo Design System",
+          "password_confirmation field eklendi",
+          "3 section yapısı (Temel Bilgiler, Rol, Durum)",
+          "Toggle switches (enabled, email_verified)",
+          "Rol açıklama kartları",
+          "Alpine.js kaldırıldı"
+        ]
+      },
+      {
+        "file": "app/Http/Controllers/Admin/UserController.php",
+        "changes": [
+          "Validation rules güncellendi",
+          "telefon field eklendi",
+          "role_id yerine role string kullanımı",
+          "enabled ve email_verified support",
+          "Spatie assignRole() entegrasyonu"
+        ]
+      }
+    ]
+  },
+  "prevention": {
+    "rules": [
+      {
+        "rule": "Password field için DAIMA password_confirmation field ekle",
+        "reason": "Laravel validation 'confirmed' kuralı bunu gerektirir"
+      },
+      {
+        "rule": "Form tasarımı için referans sayfa kullan (danisman/create.blade.php)",
+        "reason": "Neo Design System standartlarına uygun, test edilmiş"
+      },
+      {
+        "rule": "Form submission için Alpine.js @submit.prevent kullanma",
+        "reason": "Normal form submission daha basit ve güvenilir"
+      },
+      {
+        "rule": "Spatie Permission kullanıyorsan role_id değil role (string) kullan",
+        "reason": "assignRole() metodu role name (string) bekler"
+      }
+    ]
+  },
+  "neo_design_system_standards": {
+    "form_structure": {
+      "header": "Gradient header with title, description, back button",
+      "sections": [
+        {
+          "number": 1,
+          "badge_color": "purple/blue/green",
+          "title_icon": "emoji + text",
+          "content": "Grid layout (md:grid-cols-2)"
+        }
+      ],
+      "form_actions": "Sticky bottom bar with cancel + submit"
+    },
+    "input_field": {
+      "label": "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2",
+      "input": "w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-{color}-500",
+      "error": "@error('field') border-red-500 + red error message"
+    },
+    "toggle_switch": {
+      "container": "bg-{color}-50 dark:bg-{color}-900/20 rounded-lg p-4 border",
+      "switch": "Tailwind peer-checked toggle (14px width, 7px height)"
+    }
+  },
+  "context7_compliance": {
+    "enabled_instead_of_active": true,
+    "role_string_not_role_id": true,
+    "telefon_field": true,
+    "email_verified_at_timestamp": true
+  },
+  "related_patterns": [
+    "alpine-js-form-submission-issue",
+    "password-confirmation-missing",
+    "neo-design-system-form-standards",
+    "spatie-permission-role-assignment"
+  ],
+  "test_checklist": [
+    "✅ password_confirmation field var mı?",
+    "✅ Form submit çalışıyor mu?",
+    "✅ Validation çalışıyor mu?",
+    "✅ Role assignment Spatie ile yapılıyor mu?",
+    "✅ Neo Design System'e uygun mu?",
+    "✅ Dark mode çalışıyor mu?",
+    "✅ Responsive tasarım var mı?"
+  ],
+  "frequency": 1,
+  "last_occurrence": "2025-10-14T12:28:00.000Z",
+  "status": "fixed",
+  "impact": "high"
+}
+

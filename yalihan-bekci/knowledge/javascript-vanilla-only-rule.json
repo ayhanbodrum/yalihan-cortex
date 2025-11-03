@@ -1,0 +1,166 @@
+{
+  "critical_rule": {
+    "name": "VANILLA_JS_ONLY",
+    "created": "2025-10-13",
+    "severity": "CRITICAL",
+    "authority": ".context7/authority.json",
+    "status": "ACTIVE"
+  },
+
+  "rule_summary": "AĞIR KÜTÜPHANELER YASAK - Sadece Vanilla JS + Alpine.js",
+
+  "forbidden_libraries": {
+    "react_select": {
+      "size": "170KB",
+      "reason": "Çok ağır, basit arama için gereksiz",
+      "alternative": "Vanilla JS Context7LiveSearch (3KB)"
+    },
+    "choices_js": {
+      "size": "48KB",
+      "reason": "Orta ağır, bağımlılık yaratır",
+      "alternative": "Vanilla JS"
+    },
+    "select2": {
+      "size": "65KB",
+      "reason": "jQuery bağımlılığı, eski",
+      "alternative": "Vanilla JS"
+    },
+    "selectize_js": {
+      "size": "45KB",
+      "reason": "jQuery bağımlılığı",
+      "alternative": "Vanilla JS"
+    },
+    "any_library_over_10kb": {
+      "reason": "Bundle size şişer, performans düşer",
+      "alternative": "Vanilla JS implementation"
+    }
+  },
+
+  "allowed_technologies": {
+    "alpine_js": {
+      "size": "15KB",
+      "usage": "Reactive UI, form state",
+      "already_in_stack": true,
+      "reason": "Hafif, güçlü, yeterli"
+    },
+    "vanilla_js": {
+      "size": "0KB",
+      "usage": "Custom logic, API calls, search",
+      "pattern": "Class-based modules",
+      "reason": "Bağımlılık yok, tam kontrol"
+    },
+    "fetch_api": {
+      "size": "Built-in",
+      "usage": "API requests",
+      "reason": "Modern browser'larda native"
+    },
+    "dom_api": {
+      "size": "Built-in",
+      "usage": "DOM manipulation",
+      "reason": "Native JavaScript"
+    }
+  },
+
+  "real_world_example": {
+    "date": "2025-10-13",
+    "request": "Kişi ve site canlı arama",
+    "wrong_approach": {
+      "library": "React-Select",
+      "size": "170KB + React (100KB) = 270KB",
+      "complexity": "High",
+      "maintenance": "Zor"
+    },
+    "correct_approach": {
+      "implementation": "Vanilla JS Context7LiveSearch",
+      "size": "3KB",
+      "complexity": "Low (150 lines)",
+      "maintenance": "Kolay"
+    },
+    "improvement": "99% daha hafif!"
+  },
+
+  "bundle_size_limits": {
+    "per_page_js": "< 50KB gzipped",
+    "vendor_bundle": "< 100KB gzipped",
+    "total_bundle": "< 150KB gzipped",
+    "current_stable_create": {
+      "raw": "44.04 KB",
+      "gzipped": "11.57 KB",
+      "status": "✅ OPTIMAL"
+    }
+  },
+
+  "implementation_patterns": {
+    "live_search": {
+      "file": "public/js/context7-live-search-simple.js",
+      "class": "Context7LiveSearch",
+      "features": ["Debounce 300ms", "Min 2 chars", "Max 20 results", "Tailwind styling"],
+      "usage": "<div class='context7-live-search' data-search-type='kisiler'>",
+      "api": "/api/kisiler/search?q={query}"
+    },
+    "dropdown": {
+      "when": "Data < 50 items",
+      "implementation": "Standard HTML <select>",
+      "no_library_needed": true
+    },
+    "reactive_forms": {
+      "use": "Alpine.js",
+      "pattern": "x-data, x-model, @click",
+      "no_library_needed": true
+    }
+  },
+
+  "decision_tree": {
+    "need_search": {
+      "data_count_small": "< 50 items → Standard dropdown",
+      "data_count_medium": "50-500 items → Context7LiveSearch (Vanilla JS)",
+      "data_count_large": "> 500 items → Context7LiveSearch + Pagination"
+    },
+    "need_reactive_ui": {
+      "simple": "Alpine.js (x-data, x-model)",
+      "complex": "Still Alpine.js (enough for 99% cases)"
+    },
+    "need_validation": {
+      "simple": "HTML5 (required, pattern, type)",
+      "complex": "HTML5 + Vanilla JS validation class"
+    }
+  },
+
+  "enforcement": {
+    "yalihan_bekci": {
+      "will_alert": [
+        "npm install react-select",
+        "import { ... } from 'choices.js'",
+        "import Select2",
+        "Herhangi bir > 10KB search library"
+      ],
+      "will_suggest": [
+        "Vanilla JS Context7LiveSearch kullan",
+        "Alpine.js yeterli, yeni library ekleme",
+        "Bundle size kontrol et: < 50KB"
+      ]
+    },
+    "memory_mcp": {
+      "remember": [
+        "Vanilla JS standardı",
+        "Başarılı implementation'lar",
+        "Bundle size optimizasyonları"
+      ]
+    },
+    "context7_mcp": {
+      "rules": [
+        "Heavy library kullanımı = Context7 ihlali",
+        "Bundle size > 50KB = Warning",
+        "Vanilla JS çözümü yoksa danış"
+      ]
+    }
+  },
+
+  "success_criteria": {
+    "bundle_size": "< 50KB per page ✅",
+    "no_heavy_deps": "0 libraries > 10KB ✅",
+    "vanilla_js_first": "Always consider Vanilla JS first ✅",
+    "performance": "Fast load, fast interaction ✅"
+  }
+}
+

@@ -1,0 +1,126 @@
+{
+  "commonErrors": [
+    {
+      "pattern": "missing_loading_state",
+      "context": "ux_pattern",
+      "solution": "alpine_loading_state",
+      "frequency": 11,
+      "firstSeen": "2025-10-10T19:48:22.474Z",
+      "lastSeen": "2025-10-11T12:06:30.057Z",
+      "examples": [
+        "AI Settings - Form submit",
+        "Analytics - Refresh button",
+        "Analytics - Download button",
+        "Talepler - Filter submit"
+      ],
+      "autoFix": "Add x-data=\"{ loading: false }\" and :disabled=\"loading\"",
+      "priority": "High"
+    },
+    {
+      "pattern": "dom_size_exceeded",
+      "context": "performance",
+      "solution": "pagination_lazy_loading",
+      "frequency": 3,
+      "firstSeen": "2025-10-10T20:02:18.000Z",
+      "lastSeen": "2025-10-10T20:02:18.000Z",
+      "examples": [
+        "Talepler - DOM: 2809 (Budget: 1500)",
+        "Talep-Portfolyo - DOM: 2039",
+        "Kişiler - DOM: 2274"
+      ],
+      "autoFix": "Use pagination, lazy loading, or virtualization",
+      "priority": "Critical"
+    },
+    {
+      "pattern": "color_palette_inconsistency",
+      "context": "design_system",
+      "solution": "neo_design_system_colors",
+      "frequency": 5,
+      "firstSeen": "2025-10-10T20:02:18.000Z",
+      "lastSeen": "2025-10-10T20:02:18.000Z",
+      "examples": [
+        "Talepler - 17 farklı renk",
+        "Kişiler - 15 farklı renk",
+        "İlan Kategorileri - 11 farklı renk"
+      ],
+      "autoFix": "Use CSS variables: --neo-primary, --neo-success, etc.",
+      "priority": "Medium"
+    },
+    {
+      "pattern": "form_validation_feedback_missing",
+      "context": "ux_pattern",
+      "solution": "laravel_error_blade_directive",
+      "frequency": 3,
+      "firstSeen": "2025-10-10T20:02:18.000Z",
+      "lastSeen": "2025-10-10T20:02:18.000Z",
+      "examples": [
+        "AI Settings - Form validation yok",
+        "Analytics - Form validation yok",
+        "Yayın Tipleri - Form validation yok"
+      ],
+      "autoFix": "@error('field') <p class=\"text-red-600\">{{ $message }}</p> @enderror",
+      "priority": "High"
+    },
+    {
+      "pattern": "context7_forbidden_field",
+      "context": "database_query",
+      "solution": "use_context7_compliant_field",
+      "frequency": 1,
+      "firstSeen": "2025-10-10T19:38:00.000Z",
+      "lastSeen": "2025-10-10T19:38:00.000Z",
+      "examples": [
+        "ulkeler.name → ulkeler.ulke_adi"
+      ],
+      "autoFix": "Replace with Context7 compliant field name",
+      "priority": "Critical"
+    },
+    {
+      "pattern": "button_without_aria_label",
+      "context": "accessibility",
+      "solution": "add_aria_label_attribute",
+      "frequency": 2,
+      "firstSeen": "2025-10-10T20:02:18.000Z",
+      "lastSeen": "2025-10-10T20:02:18.000Z",
+      "examples": [
+        "Talepler - 70 button without label",
+        "Talep-Portfolyo - 83 button without label"
+      ],
+      "autoFix": "<button aria-label=\"Action name\"><i class=\"fas fa-icon\"></i></button>",
+      "priority": "Medium"
+    }
+  ],
+  "frequentFixes": [
+    {
+      "fix": "Add loading state",
+      "confidence": "High",
+      "appliedCount": 4,
+      "successRate": 100
+    },
+    {
+      "fix": "Use pagination for large datasets",
+      "confidence": "High",
+      "appliedCount": 0,
+      "successRate": 0
+    },
+    {
+      "fix": "Standardize color palette",
+      "confidence": "Medium",
+      "appliedCount": 0,
+      "successRate": 0
+    }
+  ],
+  "bestPractices": [
+    "Always use loading states for async operations",
+    "Keep DOM size under 1500 elements",
+    "Use Neo Design System color variables",
+    "Add form validation feedback",
+    "Use Context7 compliant field names",
+    "Add aria-label to icon-only buttons",
+    "Use pagination for tables with >50 rows",
+    "Keep color palette to 8-10 colors max"
+  ],
+  "lastUpdated": "2025-10-11T12:06:30.058Z",
+  "totalPatterns": 6,
+  "autoFixSuccess": 4,
+  "version": "4.0"
+}

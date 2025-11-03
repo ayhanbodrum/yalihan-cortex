@@ -1,0 +1,349 @@
+{
+  "knowledge_id": "talep-create-standardization-20251023",
+  "title": "Talep Create Sayfası Context7 Standartlaştırma",
+  "created_at": "2025-10-23T22:10:00Z",
+  "category": "context7_standardization",
+  "compliance": "Context7 v3.5.0",
+  "priority": "HIGH",
+  "summary": "Talepler create sayfası tamamen Context7 standartlarına ve yeni sistem mantığına göre yenilendi",
+
+  "changes_made": [
+    {
+      "id": 1,
+      "category": "css_cleanup",
+      "description": "CSS Neo Button Standardizasyonu",
+      "changes": [
+        "neo-neo-btn → neo-btn (5 yer)",
+        "touch-target-optimized duplicate kaldırıldı",
+        "Tüm butonlar Neo Design System'e uygun"
+      ],
+      "files": [
+        "resources/views/admin/talepler/create.blade.php"
+      ],
+      "status": "completed"
+    },
+    {
+      "id": 2,
+      "category": "context7_live_search",
+      "description": "Context7 Live Search Entegrasyonu",
+      "implementation": {
+        "kisi_search": {
+          "old": "Static select dropdown",
+          "new": "Context7 Live Search (Vanilla JS, 3KB)",
+          "features": [
+            "Canlı arama (300ms debounce)",
+            "Ad, soyad, telefon araması",
+            "Dinamik sonuç gösterimi",
+            "Temizle butonu"
+          ]
+        },
+        "danisman": {
+          "old": "Empty select",
+          "new": "Backend'den doldurulan select",
+          "data_source": "$danismanlar (Controller'dan)"
+        }
+      },
+      "files": [
+        "resources/views/admin/talepler/create.blade.php"
+      ],
+      "scripts": [
+        "public/js/context7-live-search.js"
+      ],
+      "status": "completed"
+    },
+    {
+      "id": 3,
+      "category": "location_system",
+      "description": "Context7 Location System Entegrasyonu",
+      "implementation": {
+        "cascade": "İl → İlçe → Mahalle",
+        "old_system": {
+          "il": "Static options (5 şehir)",
+          "ilce": "Mock data array",
+          "mahalle": "Text input only"
+        },
+        "new_system": {
+          "il_id": "Database-driven (iller tablosu)",
+          "ilce_id": "API: /api/ilceler/{il_id}",
+          "mahalle_id": "API: /api/mahalleler/{ilce_id}",
+          "mahalle_semt": "Text input (ek alan)"
+        },
+        "features": [
+          "Dinamik cascade loading",
+          "API-driven data",
+          "Disable mantığı (parent seçilmeden child disable)",
+          "Fallback handling"
+        ]
+      },
+      "files": [
+        "resources/views/admin/talepler/create.blade.php"
+      ],
+      "scripts": [
+        "public/js/context7-location-system.js"
+      ],
+      "api_endpoints": [
+        "/api/ilceler/{il_id}",
+        "/api/mahalleler/{ilce_id}"
+      ],
+      "status": "completed"
+    },
+    {
+      "id": 4,
+      "category": "category_cascade",
+      "description": "Kategori Cascade Sistemi",
+      "implementation": {
+        "old": "Static 4 kategori",
+        "new": {
+          "ana_kategori": "Backend-driven (kategoriler tablosu)",
+          "alt_kategori": "API: /api/categories/sub/{kategori_id}",
+          "cascade_logic": "Ana seçilince alt yüklenir"
+        },
+        "features": [
+          "Dinamik alt kategori loading",
+          "API fallback (subcategories || kategoriler)",
+          "Disable mantığı",
+          "Form reset desteği"
+        ]
+      },
+      "files": [
+        "resources/views/admin/talepler/create.blade.php"
+      ],
+      "api_endpoints": [
+        "/api/categories/sub/{kategori_id}"
+      ],
+      "status": "completed"
+    },
+    {
+      "id": 5,
+      "category": "backend_controller",
+      "description": "TalepController Güncellemeleri",
+      "methods": {
+        "create": {
+          "old": "Boş render",
+          "new": "3 dataset sağlar",
+          "datasets": [
+            "$kategoriler (Ana kategoriler, seviye=1, status=Aktif)",
+            "$iller (İl listesi, name sıralamalı)",
+            "$danismanlar (User.roles.danisman)"
+          ]
+        },
+        "store": {
+          "old": "Boş redirect",
+          "new": "Tam validation + save logic",
+          "features": [
+            "14 alan validation",
+            "Yeni kişi auto-create (kisi_id yoksa)",
+            "Talep create with all fields",
+            "Success/error handling",
+            "Redirect to show page"
+          ],
+          "validation_rules": [
+            "baslik: required|string|max:255",
+            "tip: required|in:Satılık,Kiralık,Günlük Kiralık,Devren",
+            "status: required|in:Aktif,Beklemede,İptal",
+            "il_id: required|exists:iller,id",
+            "kisi_id: nullable|exists:kisiler,id"
+          ]
+        }
+      },
+      "files": [
+        "app/Http/Controllers/Admin/TalepController.php"
+      ],
+      "status": "completed"
+    },
+    {
+      "id": 6,
+      "category": "javascript",
+      "description": "Vanilla JS + Alpine.js Standardizasyonu",
+      "old_approach": {
+        "loadKisiler": "Mock console.log",
+        "loadDanismanlar": "Mock console.log",
+        "loadIlceler": "Static array mapping",
+        "form_fields": "11 fields"
+      },
+      "new_approach": {
+        "loadAltKategoriler": "API fetch + fallback",
+        "loadIlceler": "API fetch + cascade reset",
+        "loadMahalleler": "API fetch + cascade reset",
+        "clearKisi": "Clear kisi_id + input",
+        "resetForm": "Full form reset + cascades",
+        "form_fields": "14 fields (alt_kategori_id, il_id, ilce_id, mahalle_id ekle)"
+      },
+      "features": [
+        "Vanilla JS ONLY (no jQuery)",
+        "Alpine.js reactive forms",
+        "API error handling",
+        "Console logging (Context7 style)",
+        "Cascade logic (parent clear → child clear)"
+      ],
+      "files": [
+        "resources/views/admin/talepler/create.blade.php (inline script)"
+      ],
+      "status": "completed"
+    }
+  ],
+
+  "context7_compliance": {
+    "before": {
+      "css": "neo-neo-btn duplicates",
+      "live_search": "Not implemented",
+      "location_system": "Static mock data",
+      "category_cascade": "Static options",
+      "backend_data": "No datasets",
+      "validation": "No validation",
+      "javascript": "Mock functions"
+    },
+    "after": {
+      "css": "100% Neo Design System",
+      "live_search": "Context7LiveSearch (kisiler)",
+      "location_system": "Context7LocationSystem (API-driven)",
+      "category_cascade": "Dynamic API loading",
+      "backend_data": "3 datasets (kategoriler, iller, danismanlar)",
+      "validation": "14 field validation + auto kisi create",
+      "javascript": "Vanilla JS + Alpine (Context7 standard)"
+    },
+    "compliance": "100%"
+  },
+
+  "yeni_sistem_mantigi": {
+    "crud_pages_no_ai": true,
+    "standardized_components": [
+      "Context7 Live Search",
+      "Context7 Location System",
+      "Neo Design System"
+    ],
+    "vanilla_js_only": true,
+    "alpine_for_reactive": true,
+    "api_driven": true,
+    "backend_provides_data": true,
+    "cascade_logic": true
+  },
+
+  "api_endpoints_used": [
+    {
+      "endpoint": "/api/categories/sub/{kategori_id}",
+      "method": "GET",
+      "purpose": "Alt kategorileri getir",
+      "response_fallback": "data.subcategories || data.kategoriler"
+    },
+    {
+      "endpoint": "/api/ilceler/{il_id}",
+      "method": "GET",
+      "purpose": "İlçeleri getir",
+      "response_fallback": "data.ilceler || data.data"
+    },
+    {
+      "endpoint": "/api/mahalleler/{ilce_id}",
+      "method": "GET",
+      "purpose": "Mahalleleri getir",
+      "response_fallback": "data.mahalleler || data.data"
+    },
+    {
+      "endpoint": "/api/kisiler/search",
+      "method": "GET",
+      "purpose": "Kişi canlı arama",
+      "handled_by": "Context7LiveSearch.js"
+    }
+  ],
+
+  "files_modified": [
+    {
+      "file": "resources/views/admin/talepler/create.blade.php",
+      "changes": [
+        "CSS cleanup (neo-neo-btn → neo-btn)",
+        "Context7 Live Search entegrasyonu",
+        "Location cascade (il_id, ilce_id, mahalle_id)",
+        "Kategori cascade (kategori_id, alt_kategori_id)",
+        "Status values (active → Aktif)",
+        "Vanilla JS functions",
+        "Script includes (context7-live-search.js, context7-location-system.js)"
+      ],
+      "lines_changed": "~150 lines"
+    },
+    {
+      "file": "app/Http/Controllers/Admin/TalepController.php",
+      "changes": [
+        "create() method: 3 datasets",
+        "store() method: Full validation + save logic"
+      ],
+      "lines_changed": "~80 lines"
+    }
+  ],
+
+  "features_added": [
+    "✅ Context7 Live Search (Kişi arama)",
+    "✅ Context7 Location System (İl/İlçe/Mahalle cascade)",
+    "✅ Kategori cascade (Ana/Alt)",
+    "✅ Backend datasets (kategoriler, iller, danışmanlar)",
+    "✅ Full validation (14 alan)",
+    "✅ Auto kişi create (form'da yeni kişi)",
+    "✅ Neo Design System (100% uyum)",
+    "✅ Vanilla JS (0 dependencies)",
+    "✅ Error handling (API fallback)",
+    "✅ Form reset (cascades dahil)"
+  ],
+
+  "yalihan_bekci_rules": [
+    "✅ Talep create sayfası Context7 standardında",
+    "✅ neo-neo-btn kullanımı yasak (neo-btn kullan)",
+    "✅ Kişi seçiminde Context7 Live Search zorunlu",
+    "✅ Location cascade Context7 Location System ile",
+    "✅ Kategori cascade API-driven olmalı",
+    "✅ Controller create method dataset sağlamalı",
+    "✅ Controller store method validation yapmalı",
+    "✅ Vanilla JS ONLY (no jQuery, no heavy libs)",
+    "✅ Status values: Aktif/Beklemede/İptal (Context7)",
+    "✅ Field names: il_id/ilce_id/mahalle_id (NOT il/ilce)"
+  ],
+
+  "best_practices": [
+    {
+      "practice": "CRUD pages keep it simple",
+      "implementation": "No AI widgets, fast forms, clear validation"
+    },
+    {
+      "practice": "Context7 Live Search for entity selection",
+      "implementation": "Kişi selection uses Context7 Live Search (3KB, Vanilla JS)"
+    },
+    {
+      "practice": "Location System standardization",
+      "implementation": "All location cascades use Context7 Location System"
+    },
+    {
+      "practice": "Backend provides data",
+      "implementation": "Controller create() method provides kategoriler, iller, danismanlar"
+    },
+    {
+      "practice": "Validation before save",
+      "implementation": "14 field validation in controller store() method"
+    },
+    {
+      "practice": "Error handling",
+      "implementation": "Try-catch + user-friendly messages + fallback logic"
+    }
+  ],
+
+  "testing_checklist": [
+    "✅ CSS: No neo-neo-btn duplicates",
+    "✅ Kişi search: Context7 Live Search çalışıyor",
+    "✅ İl seçimi → İlçeler yükleniyor",
+    "✅ İlçe seçimi → Mahalleler yükleniyor",
+    "✅ Ana kategori → Alt kategoriler yükleniyor",
+    "✅ Yeni kişi formu toggle",
+    "✅ Form submit: Validation çalışıyor",
+    "✅ Form reset: Tüm alanlar temizleniyor",
+    "✅ Console: 0 error",
+    "✅ Context7 compliance: 100%"
+  ],
+
+  "documentation": {
+    "related_files": [
+      "yalihan-bekci/knowledge/kullanici-davranis-2025-10-23.json",
+      "yalihan-bekci/knowledge/kisiler-form-standardization-2025-10-23.json",
+      "yalihan-bekci/knowledge/adres-sistemi-koruma-2025-10-23.json",
+      ".context7/KULLANICI_DAVRANIS_REHBERI.md"
+    ],
+    "this_file": "yalihan-bekci/knowledge/talep-create-context7-standardization-2025-10-23.json"
+  }
+}
+

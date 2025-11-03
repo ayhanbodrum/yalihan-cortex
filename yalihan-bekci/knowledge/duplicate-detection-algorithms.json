@@ -1,0 +1,307 @@
+{
+  "title": "Duplicate Detection Algorithms - Yalıhan Bekçi",
+  "version": "1.0.0",
+  "date": "2025-10-12",
+  "status": "active",
+  "description": "AI Settings duplicate sorunundan öğrenilen detection algoritmaları",
+
+  "algorithms": {
+    "html_structure_similarity": {
+      "name": "HTML Structure Similarity Detection",
+      "description": "HTML DOM yapısının benzerlik analizi",
+      "use_case": "Blade template'lerde duplicate HTML block detection",
+
+      "algorithm": {
+        "step1": "DOM tree parsing",
+        "step2": "Node structure extraction",
+        "step3": "Tree similarity calculation using Levenshtein distance",
+        "step4": "Threshold comparison (> 0.85 = duplicate)"
+      },
+
+      "implementation": {
+        "language": "PHP",
+        "library": "DOMDocument + custom similarity calculator",
+        "example": {
+          "input1": "<div class='provider-card'><h3>Provider</h3></div>",
+          "input2": "<div class='provider-card'><h3>Provider</h3></div>",
+          "similarity": 1.0,
+          "result": "DUPLICATE DETECTED"
+        }
+      },
+
+      "thresholds": {
+        "exact_match": 1.0,
+        "near_duplicate": 0.85,
+        "similar": 0.7,
+        "different": "< 0.7
+      },
+
+      "ai_settings_case": {
+        "problem": "AnythingLLM provider card duplicate",
+        "detection": "Similarity score: 0.95",
+        "action": "Removed duplicate, kept single source"
+      }
+    },
+
+    "css_class_usage_analysis": {
+      "name": "CSS Class Usage Analysis",
+      "description": "CSS class'ların kullanım analizi ve duplicate detection",
+      "use_case": "CSS class'ların birden fazla yerde tanımlanması",
+
+      "algorithm": {
+        "step1": "CSS file parsing",
+        "step2": "Class definition extraction",
+        "step3": "Usage tracking across templates",
+        "step4": "Duplicate definition detection"
+      },
+
+      "implementation": {
+        "language": "PHP + CSS Parser",
+        "library": "Sabberworm\CSS",
+        "example": {
+          "class": ".provider-card",
+          "definitions": 2,
+          "locations": ["styles.css", "components.css"],
+          "result": "DUPLICATE DEFINITION"
+        }
+      },
+
+      "ai_settings_case": {
+        "problem": ".provider-card class duplicate definitions",
+        "detection": "2 definitions found",
+        "action": "Consolidated into single definition"
+      }
+    },
+
+    "javascript_function_mapping": {
+      "name": "JavaScript Function Mapping",
+      "description": "JavaScript fonksiyonlarının duplicate detection",
+      "use_case": "Aynı fonksiyonun farklı dosyalarda tanımlanması",
+
+      "algorithm": {
+        "step1": "JavaScript AST parsing",
+        "step2": "Function signature extraction",
+        "step3": "Function body similarity analysis",
+        "step4": "Duplicate function detection"
+      },
+
+      "implementation": {
+        "language": "JavaScript",
+        "library": "@babel/parser + custom analyzer",
+        "example": {
+          "function": "testProvider()",
+          "occurrences": 2,
+          "similarity": 0.9,
+          "result": "DUPLICATE FUNCTION"
+        }
+      },
+
+      "ai_settings_case": {
+        "problem": "testProvider() function duplicate",
+        "detection": "Function found in 2 files",
+        "action": "Moved to shared utility file"
+      }
+    },
+
+    "template_content_analysis": {
+      "name": "Template Content Analysis",
+      "description": "Blade template içerik analizi ve duplicate detection",
+      "use_case": "Template'lerde duplicate content blocks",
+
+      "algorithm": {
+        "step1": "Blade template parsing",
+        "step2": "Content block extraction",
+        "step3": "Text similarity calculation",
+        "step4": "Content duplicate detection"
+      },
+
+      "implementation": {
+        "language": "PHP",
+        "library": "Custom Blade parser + text similarity",
+        "example": {
+          "block1": "@foreach providers as provider",
+          "block2": "@foreach providers as provider",
+          "similarity": 1.0,
+          "result": "DUPLICATE CONTENT BLOCK"
+        }
+      },
+
+      "ai_settings_case": {
+        "problem": "Provider foreach loop duplicate",
+        "detection": "Identical loops found",
+        "action": "Extracted to shared component"
+      }
+    },
+
+    "visual_element_similarity": {
+      "name": "Visual Element Similarity",
+      "description": "Görsel element benzerlik analizi",
+      "use_case": "UI element'lerinin görsel duplicate detection",
+
+      "algorithm": {
+        "step1": "Element screenshot capture",
+        "step2": "Image similarity analysis",
+        "step3": "Layout structure comparison",
+        "step4": "Visual duplicate detection"
+      },
+
+      "implementation": {
+        "language": "JavaScript + Python",
+        "library": "Puppeteer + OpenCV",
+        "example": {
+          "element1": "Provider card screenshot",
+          "element2": "Provider card screenshot",
+          "similarity": 0.95,
+          "result": "VISUAL DUPLICATE"
+        }
+      },
+
+      "ai_settings_case": {
+        "problem": "Provider cards visually identical",
+        "detection": "Visual similarity: 0.95",
+        "action": "Unified card design system"
+      }
+    }
+  },
+
+  "detection_workflows": {
+    "pre_commit_check": {
+      "name": "Pre-commit Duplicate Check",
+      "description": "Commit öncesi otomatik duplicate kontrolü",
+      "trigger": "git commit",
+
+      "workflow": [
+        "1. Changed files detection",
+        "2. HTML structure analysis",
+        "3. CSS class usage check",
+        "4. JavaScript function mapping",
+        "5. Template content analysis",
+        "6. Report generation",
+        "7. Commit approval/rejection"
+      ],
+
+      "commands": {
+        "php": "php artisan context7:check-duplicates",
+        "js": "npm run check-duplicates",
+        "css": "npm run check-css-duplicates"
+      }
+    },
+
+    "continuous_monitoring": {
+      "name": "Continuous Duplicate Monitoring",
+      "description": "Sürekli duplicate monitoring sistemi",
+      "trigger": "File changes",
+
+      "workflow": [
+        "1. File watcher activation",
+        "2. Real-time analysis",
+        "3. Duplicate detection",
+        "4. Developer notification",
+        "5. Suggestion generation"
+      ],
+
+      "tools": {
+        "file_watcher": "chokidar",
+        "analysis": "Custom duplicate detector",
+        "notification": "VS Code extension"
+      }
+    },
+
+    "periodic_audit": {
+      "name": "Periodic Duplicate Audit",
+      "description": "Periyodik duplicate audit sistemi",
+      "trigger": "Weekly cron job",
+
+      "workflow": [
+        "1. Full codebase scan",
+        "2. Comprehensive duplicate analysis",
+        "3. Report generation",
+        "4. Improvement suggestions",
+        "5. Team notification"
+      ],
+
+      "output": {
+        "report": "duplicate-audit-report.md",
+        "metrics": "duplicate-metrics.json",
+        "suggestions": "improvement-suggestions.md"
+      }
+    }
+  },
+
+  "ai_settings_specific_patterns": {
+    "provider_card_duplication": {
+      "pattern": "Provider kartlarının duplicate olması",
+      "detection": "HTML structure similarity > 0.85",
+      "solution": "Single provider card component",
+      "prevention": "Component-based architecture"
+    },
+
+    "configuration_form_duplication": {
+      "pattern": "Configuration form'larının tekrarı",
+      "detection": "Form structure similarity > 0.9",
+      "solution": "Shared configuration component",
+      "prevention": "Form component library"
+    },
+
+    "status_badge_duplication": {
+      "pattern": "Status badge'lerinin duplicate olması",
+      "detection": "CSS class + content similarity > 0.8",
+      "solution": "Unified status badge component",
+      "prevention": "Shared UI component system"
+    }
+  },
+
+  "learning_from_ai_settings": {
+    "root_cause_analysis": {
+      "primary_cause": "Template inheritance eksikliği",
+      "secondary_cause": "Component system kullanılmaması",
+      "tertiary_cause": "Code review process eksikliği"
+    },
+
+    "prevention_strategies": {
+      "immediate": [
+        "Template inheritance system kurulumu",
+        "Component library oluşturma",
+        "Code review checklist güncelleme"
+      ],
+      "long_term": [
+        "Automated duplicate detection",
+        "AI-powered code analysis",
+        "Visual duplicate detection"
+      ]
+    },
+
+    "success_metrics": {
+      "duplicate_reduction": "100% (AI Settings case)",
+      "development_speed": "No duplicate-related delays",
+      "code_quality": "Improved maintainability"
+    }
+  },
+
+  "implementation_roadmap": {
+    "phase1": {
+      "timeline": "Immediate",
+      "tasks": [
+        "Basic duplicate detection algorithms",
+        "Pre-commit hook integration",
+        "Context7 rule updates"
+      ]
+    },
+    "phase2": {
+      "timeline": "Q1 2025",
+      "tasks": [
+        "Advanced similarity algorithms",
+        "Visual duplicate detection",
+        "AI-powered analysis"
+      ]
+    },
+    "phase3": {
+      "timeline": "Q2 2025",
+      "tasks": [
+        "Automated refactoring",
+        "Predictive duplicate prevention",
+        "Full ecosystem integration"
+      ]
+    }
+  }
+}

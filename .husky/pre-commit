@@ -1,0 +1,19 @@
+#!/usr/bin/env sh
+
+echo "🔍 Yalıhan Bekçi - Pre-commit kontrolleri başlıyor..."
+echo ""
+
+# Lint-staged çalıştır (değişen dosyaları kontrol et)
+npx lint-staged
+
+# Context7 compliance kontrolü
+echo ""
+echo "📋 Context7 kontrolü..."
+php artisan standard:check --type=context7 || {
+    echo "❌ Context7 ihlali bulundu! Lütfen düzeltin."
+    echo "💡 Detay için: php artisan standard:check --type=context7"
+    exit 1
+}
+
+echo ""
+echo "✅ Tüm kontroller başarılı! Commit ediliyor..."

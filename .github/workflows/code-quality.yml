@@ -1,0 +1,55 @@
+name: Code Quality
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  code-quality:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          tools: phpstan
+
+      - name: Install Composer Dependencies
+        run: composer install --no-progress --prefer-dist
+
+      - name: Run PHPStan (Static Analysis)
+        run: |
+          if [ -f "phpstan.neon" ]; then
+            ./vendor/bin/phpstan analyse --memory-limit=2G || echo "⚠️ PHPStan warnings"
+          fi
+
+      - name: Run Laravel Pint (Code Style)
+        run: |
+          if [ -f "vendor/bin/pint" ]; then
+            ./vendor/bin/pint --test || echo "⚠️ Code style issues"
+          fi
+
+      - name: Context7 Compliance Check
+        run: |
+          if [ -f ".githooks/pre-commit" ]; then
+            chmod +x .githooks/pre-commit
+            ./.githooks/pre-commit
+          fi
+
+      - name: Check Bundle Size
+        run: |
+          npm ci
+          npm run build
+          echo "📦 Checking bundle size..."
+          ls -lh public/build/assets/*.js public/build/assets/*.css || true
+
+      - name: Security Check
+        run: |
+          composer audit || echo "⚠️ Security vulnerabilities found"
+

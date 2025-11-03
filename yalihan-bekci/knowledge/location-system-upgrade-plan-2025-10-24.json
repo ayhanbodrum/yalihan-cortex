@@ -1,0 +1,247 @@
+{
+  "timestamp": "2025-10-24T00:10:00Z",
+  "task": "Context7 Location System Upgrade - TurkiyeAPI Integration",
+  "status": "planning",
+  "priority": "high",
+  "category": "system_upgrade",
+
+  "current_system_analysis": {
+    "file": "public/js/context7-location-system.js",
+    "version": "1.0.0",
+    "quality": "excellent",
+    "features": [
+      "Cache system (5 min)",
+      "Event-driven architecture",
+      "Cascade dropdown management",
+      "State management",
+      "Error handling",
+      "Toast notifications",
+      "Debug mode"
+    ],
+    "strengths": [
+      "Clean architecture",
+      "Well documented",
+      "Flexible and extensible",
+      "Context7 compliant",
+      "Cache implemented",
+      "Event system"
+    ],
+    "limitations": [
+      "Only location data (no demographics)",
+      "5-minute cache (short for provinces)",
+      "No TurkiyeAPI integration",
+      "No TKGM API integration"
+    ]
+  },
+
+  "upgrade_plan": {
+    "goal": "Add TurkiyeAPI demographic data to Context7LocationSystem",
+    "approach": "Extend existing class, not replace",
+    "backward_compatible": true
+  },
+
+  "new_features": {
+    "feature_1": {
+      "name": "Province Demographics",
+      "methods": [
+        "getProvinceDemographics(ilId)",
+        "getDistrictDemographics(ilId, ilceId)",
+        "calculateInvestmentScore(ilId, ilceId)"
+      ],
+      "cache_duration": "30 days (2592000000 ms)",
+      "source": "TurkiyeAPI"
+    },
+
+    "feature_2": {
+      "name": "Transaction Trends",
+      "methods": [
+        "getTransactionTrend(ilId, years)",
+        "isHotspot(ilId, threshold)",
+        "getGrowthRate(ilId, year1, year2)"
+      ],
+      "cache_duration": "1 year (31536000000 ms)",
+      "source": "TKGM API"
+    },
+
+    "feature_3": {
+      "name": "Combined Score",
+      "methods": [
+        "getCombinedScore(ilId, ilceId)",
+        "getInvestmentRating(score)"
+      ],
+      "calculation": "TurkiyeAPI (60%) + TKGM (40%)"
+    }
+  },
+
+  "implementation_approach": {
+    "option_a": {
+      "name": "Extend Context7LocationSystem",
+      "pros": [
+        "Single class",
+        "Unified API",
+        "Easy to use"
+      ],
+      "cons": [
+        "Class becomes large",
+        "Mixed responsibilities"
+      ]
+    },
+    "option_b": {
+      "name": "Create Context7DemographicSystem (separate)",
+      "pros": [
+        "Separation of concerns",
+        "Smaller classes",
+        "Can be used independently"
+      ],
+      "cons": [
+        "Two classes to manage",
+        "More complex integration"
+      ],
+      "recommended": true
+    }
+  },
+
+  "proposed_architecture": {
+    "class_1": {
+      "name": "Context7LocationSystem",
+      "file": "public/js/context7-location-system.js (EXISTING)",
+      "purpose": "Location cascade (Ülke → İl → İlçe → Mahalle)",
+      "methods": [
+        "loadIller()",
+        "loadIlceler(ilId)",
+        "loadMahalleler(ilceId)",
+        "selectIl(ilId)",
+        "selectIlce(ilceId)"
+      ],
+      "cache": "5 minutes",
+      "status": "Keep as is, no breaking changes"
+    },
+
+    "class_2": {
+      "name": "Context7DemographicSystem",
+      "file": "public/js/context7-demographic-system.js (NEW)",
+      "purpose": "Demographic data (TurkiyeAPI + TKGM)",
+      "methods": [
+        "getProvinceDemographics(ilId)",
+        "getDistrictDemographics(ilceId)",
+        "getTransactionTrend(ilId, years)",
+        "calculateInvestmentScore(ilId, ilceId)",
+        "getCombinedScore(ilId, ilceId)",
+        "isHotspot(ilId, threshold)"
+      ],
+      "cache": {
+        "turkiye_api": "30 days",
+        "tkgm_api": "1 year"
+      },
+      "status": "Create new"
+    },
+
+    "integration": {
+      "how": "Both classes can work together or independently",
+      "example": {
+        "location_only": "Use Context7LocationSystem only",
+        "full_featured": "Use both Context7LocationSystem + Context7DemographicSystem",
+        "demographics_only": "Use Context7DemographicSystem only"
+      }
+    }
+  },
+
+  "code_structure": {
+    "context7_demographic_system": {
+      "constructor": {
+        "options": [
+          "enableCache (default: true)",
+          "cacheTimeout (default: 30 days)",
+          "debug (default: false)",
+          "apiBaseUrl (default: '/api')"
+        ]
+      },
+      "cache": {
+        "structure": {
+          "provinces": {},
+          "districts": {},
+          "transactions": {},
+          "timestamp": {}
+        }
+      },
+      "methods": {
+        "core": [
+          "getProvinceDemographics(ilId)",
+          "getDistrictDemographics(ilceId)",
+          "calculateDensity(population, area)",
+          "calculateInvestmentScore(provinceData, districtData)"
+        ],
+        "turkiye_api": [
+          "fetchProvince(ilId)",
+          "fetchDistrict(ilceId)",
+          "getCoastalProvinces()",
+          "getMetropolitanProvinces()"
+        ],
+        "tkgm_api": [
+          "fetchTransactionsByProvince(ilId, year)",
+          "fetchTransactionsByDistrict(ilceId, year)",
+          "getTransactionTrend(ilId, startYear, endYear)",
+          "calculateGrowthRate(year1Data, year2Data)",
+          "isHotspot(ilId, threshold)"
+        ],
+        "combined": [
+          "getCombinedScore(ilId, ilceId)",
+          "getInvestmentRating(score)",
+          "getFullReport(ilId, ilceId)"
+        ]
+      }
+    }
+  },
+
+  "usage_examples": {
+    "example_1": {
+      "name": "İlan Ekleme Formu - Location Only",
+      "code": "const locationSystem = new Context7LocationSystem();\nawait locationSystem.loadIller();\nawait locationSystem.selectIl(48);"
+    },
+
+    "example_2": {
+      "name": "İlan Detay Sayfası - Full Demographics",
+      "code": "const demoSystem = new Context7DemographicSystem();\nconst demographics = await demoSystem.getProvinceDemographics(48);\nconst score = await demoSystem.calculateInvestmentScore(demographics, districtData);"
+    },
+
+    "example_3": {
+      "name": "Dashboard - Combined System",
+      "code": "const locationSystem = new Context7LocationSystem();\nconst demoSystem = new Context7DemographicSystem();\n\nconst iller = await locationSystem.loadIller();\nfor (let il of iller) {\n  const demo = await demoSystem.getProvinceDemographics(il.id);\n  const trend = await demoSystem.getTransactionTrend(il.id, [2021, 2022, 2023]);\n}"
+    }
+  },
+
+  "migration_strategy": {
+    "phase_1": "Create Context7DemographicSystem.js (new file)",
+    "phase_2": "Add TurkiyeAPI methods",
+    "phase_3": "Add TKGM API methods",
+    "phase_4": "Add combined score calculation",
+    "phase_5": "Update ilan detail page to use both systems",
+    "phase_6": "Update dashboard to use both systems",
+    "backward_compatibility": "100% - existing code keeps working"
+  },
+
+  "benefits": {
+    "separation_of_concerns": "Location ≠ Demographics (different responsibilities)",
+    "cache_flexibility": "5 min for location, 30 days for demographics",
+    "independent_usage": "Can use one without the other",
+    "maintainability": "Easier to maintain smaller classes",
+    "testability": "Easier to test independently"
+  },
+
+  "next_steps": {
+    "step_1": "Complete FAZ 1 (TurkiyeAPIService backend)",
+    "step_2": "Create Context7DemographicSystem.js (frontend)",
+    "step_3": "Integrate both systems in ilan detail page",
+    "step_4": "Add to dashboard",
+    "step_5": "Documentation"
+  },
+
+  "context7_compliance": {
+    "naming": "Context7DemographicSystem (consistent with Context7LocationSystem)",
+    "structure": "Same pattern as Context7LocationSystem",
+    "cache_keys": "demo_province_{id}, demo_district_{id}, tkgm_transactions_{id}_{year}",
+    "error_handling": "Same pattern as location system",
+    "logging": "Same pattern with [Context7 Demographic] prefix"
+  }
+}
+

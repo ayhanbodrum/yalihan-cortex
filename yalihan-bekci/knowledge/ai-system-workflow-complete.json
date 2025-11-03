@@ -1,0 +1,354 @@
+{
+  "ai_system_name": "Yalıhan Bekçi - AI Guardian System",
+  "version": "1.0.0",
+  "last_updated": "2025-10-15T21:45:00Z",
+  "description": "AI sistemlerinin koruyucusu ve standardizatörü - Tam çalışma mantığı",
+  
+  "workflow_steps": {
+    "step_1": {
+      "name": "Kullanıcı AI İsteği Gönderir",
+      "description": "Frontend'den AI widget'ına tıklanır",
+      "example": "Kategori analizi butonuna tıklama"
+    },
+    "step_2": {
+      "name": "AI Controller API Endpoint'i Alır",
+      "description": "API endpoint'i request'i yakalar",
+      "endpoints": [
+        "POST /api/admin/ai/analyze",
+        "POST /api/admin/ai/suggest", 
+        "POST /api/admin/ai/generate"
+      ]
+    },
+    "step_3": {
+      "name": "Request Validation",
+      "description": "Veri doğrulama yapılır",
+      "validation_rules": {
+        "analyze": ["action", "data", "context"],
+        "suggest": ["context", "type"],
+        "generate": ["prompt", "options"]
+      }
+    },
+    "step_4": {
+      "name": "Cache Kontrolü",
+      "description": "Daha önce yapıldı mı kontrol edilir",
+      "cache_key": "ai_cache_" + md5(action + serialize(data) + serialize(context))",
+      "cache_duration": "3600 seconds (1 hour)"
+    },
+    "step_5": {
+      "name": "AIService Engine Devreye Girer",
+      "description": "Ana AI motoru başlatılır",
+      "file": "app/Services/AIService.php",
+      "methods": ["analyze()", "suggest()", "generate()"]
+    },
+    "step_6": {
+      "name": "Provider Seçimi",
+      "description": "AI provider seçilir",
+      "providers": ["OpenAI", "Google", "Claude", "DeepSeek", "Ollama"],
+      "selection_logic": "Active provider from settings table"
+    },
+    "step_7": {
+      "name": "Prompt Hazırlama",
+      "description": "AI'ya gönderilecek komut hazırlanır",
+      "prompt_types": [
+        "category_analysis",
+        "feature_suggestions", 
+        "content_generation",
+        "price_analysis",
+        "seo_optimization"
+      ]
+    },
+    "step_8": {
+      "name": "AI Provider'a İstek Gönderme",
+      "description": "HTTP request ile AI provider'a istek gönderilir",
+      "timeout": "30 seconds",
+      "retry_attempts": "3"
+    },
+    "step_9": {
+      "name": "Response Alınması",
+      "description": "AI'dan cevap gelir",
+      "response_format": "JSON",
+      "error_handling": "Fallback to other provider"
+    },
+    "step_10": {
+      "name": "Sonuç Formatlanması",
+      "description": "Kullanıcı dostu hale getirilir",
+      "formatting": "HTML, JSON, or plain text"
+    },
+    "step_11": {
+      "name": "Cache'e Kaydetme",
+      "description": "Sonuç cache'lenir",
+      "duration": "1 hour",
+      "purpose": "Performance optimization"
+    },
+    "step_12": {
+      "name": "Log Kaydı",
+      "description": "AiLog tablosuna kaydedilir",
+      "fields": ["action", "provider", "prompt", "response", "duration", "status", "user_id"]
+    },
+    "step_13": {
+      "name": "Kullanıcıya Response Dönme",
+      "description": "UI'da gösterilir",
+      "display": "AI widget with formatted results"
+    }
+  },
+  
+  "ai_operation_types": {
+    "analyze": {
+      "description": "Veri analizi yapar",
+      "usage": "Kategori optimizasyonu, özellik analizi, içerik analizi",
+      "code_example": "$result = $aiService->analyze($data, $context);",
+      "parameters": {
+        "data": "Analiz edilecek veri",
+        "context": "Analiz konteksti (type, action, etc.)"
+      }
+    },
+    "suggest": {
+      "description": "Akıllı öneriler sunar",
+      "usage": "Eksik özellikler, kategori önerileri, içerik önerileri",
+      "code_example": "$suggestions = $aiService->suggest($context, 'feature');",
+      "parameters": {
+        "context": "Öneri konteksti",
+        "type": "Öneri türü (category, feature, content, general)"
+      }
+    },
+    "generate": {
+      "description": "İçerik üretir",
+      "usage": "Başlık, açıklama, metin oluşturma",
+      "code_example": "$content = $aiService->generate($prompt, $options);",
+      "parameters": {
+        "prompt": "İçerik üretimi için komut",
+        "options": "Seçenekler (max_tokens, temperature, etc.)"
+      }
+    }
+  },
+  
+  "provider_management": {
+    "provider_selection": {
+      "method": "getActiveProvider()",
+      "source": "settings table where key = 'ai_provider'",
+      "cache_duration": "300 seconds (5 minutes)",
+      "default_provider": "openai"
+    },
+    "provider_configuration": {
+      "method": "getProviderConfig()",
+      "source": "settings table where group = 'ai_providers'",
+      "cache_duration": "300 seconds (5 minutes)",
+      "keys": [
+        "openai_api_key", "openai_model",
+        "google_api_key", "google_model", 
+        "claude_api_key", "claude_model",
+        "deepseek_api_key", "deepseek_model",
+        "ollama_url", "ollama_model"
+      ]
+    },
+    "provider_switching": {
+      "method": "switchProvider($provider)",
+      "process": [
+        "Validate provider exists",
+        "Update settings table",
+        "Clear cache",
+        "Update instance variables"
+      ]
+    }
+  },
+  
+  "cache_system": {
+    "cache_key_generation": {
+      "method": "generateCacheKey($action, $data, $context)",
+      "algorithm": "md5(action + serialize(data) + serialize(context))",
+      "prefix": "ai_cache_"
+    },
+    "cache_operations": {
+      "check": "Cache::has($cacheKey)",
+      "get": "Cache::get($cacheKey)",
+      "put": "Cache::put($cacheKey, $result, 3600)",
+      "duration": "3600 seconds (1 hour)"
+    },
+    "cache_benefits": [
+      "Faster response times",
+      "Reduced API costs",
+      "Better user experience",
+      "Reduced server load"
+    ]
+  },
+  
+  "logging_system": {
+    "log_model": "AiLog",
+    "log_fields": {
+      "action": "AI operation type (analyze, suggest, generate)",
+      "provider": "AI provider used (openai, google, claude, etc.)",
+      "prompt": "Input prompt sent to AI",
+      "response": "AI response received",
+      "duration": "Request duration in seconds",
+      "status": "success or error",
+      "user_id": "User who made the request"
+    },
+    "log_methods": {
+      "success": "logRequest($action, $prompt, $response, $duration)",
+      "error": "logError($action, $prompt, $error, $duration)"
+    }
+  },
+  
+  "monitoring_analytics": {
+    "health_check": {
+      "method": "healthCheck()",
+      "returns": {
+        "status": "healthy or unhealthy",
+        "provider": "current provider",
+        "response_time": "health check duration"
+      }
+    },
+    "statistics": {
+      "method": "getStats()",
+      "metrics": [
+        "total_requests",
+        "successful_requests", 
+        "failed_requests",
+        "average_response_time",
+        "most_used_provider",
+        "requests_today",
+        "requests_this_week",
+        "requests_this_month"
+      ]
+    },
+    "performance_tracking": [
+      "Response time monitoring",
+      "Success rate tracking",
+      "Error rate analysis",
+      "Provider performance comparison",
+      "Cost tracking per provider"
+    ]
+  },
+  
+  "ui_widget_system": {
+    "widget_component": "resources/views/admin/components/ai-widget.blade.php",
+    "widget_usage": {
+      "blade_syntax": "<x-admin.ai-widget :action=\"'analyze'\" :endpoint=\"'/api/admin/ai/analyze'\" :title=\"'AI Analiz'\" :data=\"$data\" :context=\"$context\" />",
+      "parameters": {
+        "action": "AI operation type",
+        "endpoint": "API endpoint URL",
+        "title": "Widget title",
+        "data": "Data to analyze",
+        "context": "Analysis context"
+      }
+    },
+    "widget_features": [
+      "Loading states with progress indicators",
+      "Error handling with retry options",
+      "Result formatting and display",
+      "Copy and regenerate functions",
+      "Settings and refresh options"
+    ],
+    "widget_states": {
+      "idle": "Ready to start analysis",
+      "loading": "Analysis in progress",
+      "success": "Analysis completed successfully",
+      "error": "Analysis failed with error"
+    }
+  },
+  
+  "error_handling": {
+    "fallback_mechanism": {
+      "description": "If primary provider fails, try other providers",
+      "order": ["openai", "google", "claude", "deepseek", "ollama"]
+    },
+    "retry_logic": {
+      "max_attempts": 3,
+      "timeout": 30,
+      "backoff_strategy": "exponential"
+    },
+    "error_types": [
+      "API key invalid",
+      "Rate limit exceeded", 
+      "Network timeout",
+      "Provider unavailable",
+      "Invalid response format"
+    ],
+    "graceful_degradation": {
+      "description": "Show user-friendly error messages",
+      "fallback_content": "Use cached results if available"
+    }
+  },
+  
+  "performance_optimization": {
+    "caching_strategy": {
+      "cache_duration": "1 hour",
+      "cache_key_strategy": "Content-based hashing",
+      "cache_invalidation": "Automatic expiration"
+    },
+    "rate_limiting": {
+      "description": "Prevent API abuse",
+      "implementation": "Per-user and per-provider limits"
+    },
+    "async_processing": {
+      "description": "Long operations in background",
+      "benefits": ["Non-blocking UI", "Better user experience"]
+    },
+    "provider_optimization": {
+      "cost_optimization": "Choose cheapest provider for task",
+      "performance_optimization": "Choose fastest provider",
+      "quality_optimization": "Choose best quality provider"
+    }
+  },
+  
+  "integration_points": {
+    "ozellik_kategorileri": {
+      "page": "/admin/ozellikler/kategoriler",
+      "ai_features": ["AI Analiz", "AI Eğitim", "Kategori optimizasyonu"],
+      "workflow": "analyze() method with category data"
+    },
+    "ilan_kategorileri": {
+      "page": "/admin/ilan-kategorileri", 
+      "ai_features": ["AI kategori analizi", "Optimizasyon önerileri"],
+      "workflow": "analyze() method with category optimization context"
+    },
+    "ozellikler": {
+      "page": "/admin/ozellikler",
+      "ai_features": ["AI özellik önerileri", "Akıllı arama"],
+      "workflow": "suggest() method with feature context"
+    },
+    "stable_create": {
+      "page": "/stable-create",
+      "ai_features": ["AI içerik üretimi", "Başlık önerileri"],
+      "workflow": "generate() method for content creation"
+    },
+    "ai_settings": {
+      "page": "/admin/ai-settings",
+      "ai_features": ["Provider yönetimi", "API key yönetimi", "Test fonksiyonları"],
+      "workflow": "healthCheck() and provider testing"
+    }
+  },
+  
+  "best_practices": {
+    "always_use_ai_service": "Her AI işlemi için AIService kullan",
+    "cache_results": "AI sonuçlarını cache'le (1 saat)",
+    "handle_errors_gracefully": "Error handling ekle, fallback mekanizması kullan",
+    "log_all_requests": "Tüm AI isteklerini logla (AiLog model)",
+    "use_standard_widgets": "Standart AI widget'ları kullan",
+    "monitor_performance": "AI performansını izle (response time, success rate)",
+    "secure_api_keys": "API key'leri güvenli sakla (settings table)",
+    "rate_limiting": "Rate limiting uygula (abuse koruması)",
+    "provider_switching": "Provider switching kullan (reliability)",
+    "cost_tracking": "Maliyet takibi yap (cost optimization)"
+  },
+  
+  "testing_monitoring": {
+    "health_check_endpoint": "GET /api/admin/ai/health",
+    "test_endpoints": [
+      "POST /api/admin/ai/analyze",
+      "POST /api/admin/ai/suggest", 
+      "POST /api/admin/ai/generate"
+    ],
+    "monitoring_urls": [
+      "GET /api/admin/ai/stats",
+      "GET /api/admin/ai/logs"
+    ],
+    "performance_metrics": [
+      "Response time",
+      "Success rate",
+      "Error rate", 
+      "Provider usage",
+      "Cost per request"
+    ]
+  }
+}

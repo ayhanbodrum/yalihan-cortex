@@ -1,0 +1,60 @@
+{
+  "title": "Kategori Preselect Event Fix - Category Changed Event Tetikleme",
+  "date": "2025-10-24",
+  "type": "bug_fix",
+  "severity": "high",
+  "issue": {
+    "symptom": "Sayfa yüklendiğinde mevcut kategori seçili olduğunda özellikler yüklenmiyor",
+    "root_cause": "onchange event'i sadece kullanıcı manuel değiştirdiğinde tetikleniyor, sayfa yüklendiğinde selected olan değer için tetiklenmiyor",
+    "affected_components": [
+      "resources/views/admin/ilanlar/components/category-system.blade.php",
+      "resources/views/admin/ilanlar/components/features-dynamic.blade.php"
+    ],
+    "console_error": "Event dispatch ediliyor ama FeaturesManager API çağrısı yapmıyor"
+  },
+  "solution": {
+    "approach": "DOMContentLoaded event'inde mevcut seçimleri kontrol et ve ilgili fonksiyonları çağır",
+    "implementation": "category-system.blade.php dosyasının sonuna DOMContentLoaded listener ekle",
+    "code_pattern": "document.addEventListener('DOMContentLoaded', function() { if (select.value) loadFunction(select.value); });",
+    "files_modified": [
+      "resources/views/admin/ilanlar/components/category-system.blade.php"
+    ]
+  },
+  "technical_details": {
+    "html_pattern": "old('ana_kategori_id') ile selected state korunuyor",
+    "javascript_issue": "onchange sadece user interaction'da tetikleniyor",
+    "fix": "Sayfa load'unda programmatically event tetikle",
+    "affected_functions": [
+      "loadAltKategoriler()",
+      "loadYayinTipleri()",
+      "category-changed custom event"
+    ]
+  },
+  "test_scenario": {
+    "before": "Kategori seçili → Sayfa yenile → Özellikler yüklenmiyor",
+    "after": "Kategori seçili → Sayfa yenile → Özellikler otomatik yükleniyor",
+    "expected_console": [
+      "🔄 Mevcut kategori seçimi tespit edildi: 1",
+      "🎯 Category-changed event dispatched: 1",
+      "🎯 Features: Category changed { category: { id: '1' } }"
+    ]
+  },
+  "related_patterns": {
+    "preselect_handling": "Form'da old() veya default value varsa, ilgili event'leri tetikle",
+    "cascade_systems": "Cascade dropdown'larda üst seviye seçiliyse alt seviyeleri yükle",
+    "custom_events": "Custom event'ler sadece manual değişiklikte değil, programmatic değişiklikte de tetiklenebilir"
+  },
+  "yalihan_bekci_rules": {
+    "rule_1": "Cascade dropdown'larda ALWAYS check preselected values on page load",
+    "rule_2": "old() kullanılan form field'larda DOMContentLoaded'da event tetikle",
+    "rule_3": "Custom event dispatch'ler manuel ve programmatic değişikliklerde çalışmalı",
+    "detection": "Console'da 'selected' ama 'event dispatched' yok → Preselect issue"
+  },
+  "context7_compliance": {
+    "vanilla_js": true,
+    "alpine_free": true,
+    "custom_events": "window.dispatchEvent(new CustomEvent())",
+    "dom_ready": "document.addEventListener('DOMContentLoaded')"
+  }
+}
+

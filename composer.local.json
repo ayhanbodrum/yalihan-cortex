@@ -1,0 +1,13 @@
+{
+    "require": {
+        "laravel/sanctum": "^3.3",
+        "php": "^8.1"
+    },
+    "require-dev": {
+        "barryvdh/laravel-ide-helper": "^2.13"
+    },
+    "config": {
+        "bin-dir": "bin",
+        "sort-packages": true
+    }
+}

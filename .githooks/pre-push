@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# Pre-push Hook - Build Verification
+echo "🔍 Running pre-push checks..."
+
+PROJECT_ROOT=$(git rev-parse --show-toplevel)
+
+# Check if build passes
+if [ -f "$PROJECT_ROOT/package.json" ]; then
+    echo "🏗️ Testing build process..."
+    if ! npm run build > /dev/null 2>&1; then
+        echo "❌ Build failed! Fix build issues before pushing."
+        exit 1
+    fi
+    echo "✅ Build test passed"
+fi
+
+echo "🎉 Pre-push checks completed successfully"

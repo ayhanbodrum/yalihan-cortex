@@ -1,0 +1,286 @@
+name: Form Data Monitoring
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'app/Http/Controllers/**'
+      - 'resources/views/**'
+      - 'database/migrations/**'
+      - 'database/seeders/**'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'app/Http/Controllers/**'
+      - 'resources/views/**'
+      - 'database/migrations/**'
+      - 'database/seeders/**'
+  schedule:
+    # Run daily at 6 AM UTC
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+    inputs:
+      fix_issues:
+        description: 'Attempt to fix issues automatically'
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  form-data-consistency:
+    runs-on: ubuntu-latest
+    name: Check Form Data Consistency
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: testing
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+        ports:
+          - 3306:3306
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.2'
+        extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick, mysql, pdo_mysql
+        coverage: none
+
+    - name: Copy .env
+      run: php -r "file_exists('.env') || copy('.env.testing', '.env');"
+
+    - name: Install dependencies
+      run: composer install --prefer-dist --no-progress --no-interaction --optimize-autoloader
+
+    - name: Generate key
+      run: php artisan key:generate
+
+    - name: Set up database
+      run: |
+        php artisan migrate --force --seed
+        php artisan db:seed --class=YayinTipleriSeeder --force || echo "YayinTipleriSeeder not found, continuing..."
+
+    - name: Run Form Data Consistency Tests
+      run: |
+        echo "::group::Running automated tests"
+        php artisan test --filter=IlanControllerYayinTipleriTest --stop-on-failure
+        echo "::endgroup::"
+
+    - name: Check Form Data Consistency
+      id: consistency_check
+      run: |
+        echo "::group::Checking form data consistency"
+        if [ "${{ inputs.fix_issues }}" == "true" ]; then
+          php artisan form:check-consistency --verbose --fix --report
+        else
+          php artisan form:check-consistency --verbose --report
+        fi
+
+        # Store exit code
+        echo "exit_code=$?" >> $GITHUB_OUTPUT
+        echo "::endgroup::"
+      continue-on-error: true
+
+    - name: Upload consistency report
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: form-consistency-report-${{ github.sha }}
+        path: storage/logs/form-consistency-report-*.json
+        retention-days: 30
+
+    - name: Check critical form data
+      run: |
+        echo "::group::Critical data verification"
+
+        # Check yayin tipleri count
+        YAYIN_COUNT=$(php artisan tinker --execute="echo App\\Models\\IlanKategoriYayinTipi::where('is_active', true)->count();")
+        echo "Active Yayin Tipleri: $YAYIN_COUNT"
+
+        if [ "$YAYIN_COUNT" -eq "0" ]; then
+          echo "::error title=Critical Error::No active yayin tipleri found - ilan create form will be broken!"
+          exit 1
+        fi
+
+        # Check kategoriler
+        ANA_COUNT=$(php artisan tinker --execute="echo App\\Modules\\Emlak\\Models\\IlanKategori::where('parent_id', null)->where('is_active', true)->count();" 2>/dev/null || echo "0")
+        ALT_COUNT=$(php artisan tinker --execute="echo App\\Modules\\Emlak\\Models\\IlanKategori::where('parent_id', '>', 0)->where('is_active', true)->count();" 2>/dev/null || echo "0")
+
+        echo "Ana Kategoriler: $ANA_COUNT"
+        echo "Alt Kategoriler: $ALT_COUNT"
+
+        if [ "$ANA_COUNT" -eq "0" ] || [ "$ALT_COUNT" -eq "0" ]; then
+          echo "::warning title=Form Warning::Missing kategoriler data - form dropdowns may be empty"
+        fi
+
+        echo "::endgroup::"
+
+    - name: Test form endpoints
+      run: |
+        echo "::group::Testing form endpoints"
+
+        # Start Laravel server in background
+        php artisan serve &
+        SERVER_PID=$!
+        sleep 5
+
+        # Test ilan create endpoint (would need auth in real scenario)
+        # For now, just check if routes are defined
+        php artisan route:list --name=admin.ilanlar.create
+        php artisan route:list --name=admin.yayin-tipleri.by-alt-kategori
+
+        # Kill server
+        kill $SERVER_PID
+        echo "::endgroup::"
+
+    - name: Comment on PR
+      if: github.event_name == 'pull_request' && steps.consistency_check.outputs.exit_code != '0'
+      uses: actions/github-script@v6
+      with:
+        script: |
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: '🚨 **Form Data Consistency Issues Found**\n\nThe form data consistency check found issues that could affect form functionality. Please review the consistency report artifact and fix any critical issues before merging.\n\n- Check yayin tipleri data\n- Verify kategoriler relationships\n- Ensure all required form data is present\n\nRun `php artisan form:check-consistency --verbose` locally for details.'
+          })
+
+    - name: Fail if critical issues found
+      if: steps.consistency_check.outputs.exit_code != '0'
+      run: |
+        echo "::error title=Form Data Issues::Critical form data consistency issues found. Check the consistency report."
+        exit 1
+
+  form-integration-tests:
+    runs-on: ubuntu-latest
+    name: Test Form Integration
+    needs: form-data-consistency
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: testing
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+        ports:
+          - 3306:3306
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.2'
+        extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick, mysql, pdo_mysql
+        coverage: none
+
+    - name: Copy .env
+      run: php -r "file_exists('.env') || copy('.env.testing', '.env');"
+
+    - name: Install dependencies
+      run: composer install --prefer-dist --no-progress --no-interaction --optimize-autoloader
+
+    - name: Generate key
+      run: php artisan key:generate
+
+    - name: Set up database
+      run: |
+        php artisan migrate --force --seed
+
+    - name: Run all yayin tipleri related tests
+      run: |
+        php artisan test --filter="YayinTip|yayin.*tip" --stop-on-failure
+
+    - name: Test JavaScript form integration
+      run: |
+        # This would ideally use a headless browser test
+        # For now, just verify the JavaScript functions exist in the blade file
+        echo "::group::Checking JavaScript integration"
+
+        if grep -q "updateYayinTipleri" resources/views/admin/ilanlar/partials/clean-form.blade.php; then
+          echo "✅ updateYayinTipleri function found"
+        else
+          echo "::error::updateYayinTipleri function missing from form"
+          exit 1
+        fi
+
+        if grep -q "window.kategoriData" resources/views/admin/ilanlar/partials/clean-form.blade.php; then
+          echo "✅ kategoriData object found"
+        else
+          echo "::error::kategoriData object missing from form"
+          exit 1
+        fi
+
+        echo "::endgroup::"
+
+    - name: Verify form data passing
+      run: |
+        echo "::group::Verifying form data passing"
+
+        # Check if create.blade.php passes yayinTipleri
+        if grep -q "yayinTipleri.*=>" resources/views/admin/ilanlar/create.blade.php; then
+          echo "✅ yayinTipleri data is passed to form"
+        else
+          echo "::error::yayinTipleri data not passed to form"
+          exit 1
+        fi
+
+        echo "::endgroup::"
+
+  notify-slack:
+    runs-on: ubuntu-latest
+    name: Notify on Issues
+    needs: [form-data-consistency, form-integration-tests]
+    if: failure() && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
+
+    steps:
+    - name: Notify Slack on failure
+      env:
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+      run: |
+        if [ -n "$SLACK_WEBHOOK" ]; then
+          curl -X POST -H 'Content-type: application/json' \
+            --data "{
+              \"text\": \":warning: Form Data Monitoring Failed\",
+              \"attachments\": [{
+                \"color\": \"danger\",
+                \"fields\": [{
+                  \"title\": \"Repository\",
+                  \"value\": \"${{ github.repository }}\",
+                  \"short\": true
+                }, {
+                  \"title\": \"Branch\",
+                  \"value\": \"${{ github.ref_name }}\",
+                  \"short\": true
+                }, {
+                  \"title\": \"Commit\",
+                  \"value\": \"${{ github.sha }}\",
+                  \"short\": true
+                }, {
+                  \"title\": \"Action\",
+                  \"value\": \"Check form data consistency and fix critical issues\",
+                  \"short\": false
+                }]
+              }]
+            }" \
+            $SLACK_WEBHOOK
+        else
+          echo "No Slack webhook configured"
+        fi

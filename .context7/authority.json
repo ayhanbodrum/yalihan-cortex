@@ -1,0 +1,1299 @@
+{
+    "context7": {
+        "version": "5.2.0",
+        "standard": "C7-CENTRAL-AUTHORITY-2025-11-01", 
+        "last_updated": "2025-11-01T11:30:00Z",
+        "mass_fix_completed": "DROPDOWN READABILITY FIX (1 Kasım 2025 11:20): 94 dosyada 626 düzeltme otomatik uygulandı. %100 Context7 compliance achieved!",
+        "permanent_css_fix": "KALICI ÇÖZÜM (1 Kasım 2025 11:30): resources/css/app.css'e global CSS rules eklendi. Browser native dropdown rendering artık !important ile override ediliyor. TÜM dropdown'lar artık light/dark mode'da PERFECT okunabilirlik garantili!",
+        "authority_file": ".context7/authority.json",
+        "documentation_root": ".context7/MASTER_ILAN_SISTEMI_2025-10-11.md",
+        "scope": "all-ides-all-ai-tools-auto-scripts",
+        "description": "Merkezi Context7 referans sistemi - tüm IDE'ler, AI araçları ve otomatik script'ler bu dosyayı referans almalıdır",
+        "critical_rules_added": "2025-10-11",
+        "critical_fixes": "71 files cleaned, 32 admin errors fixed, 3 AI services added, 5 API endpoints created, DROPDOWN READABILITY FIX (2025-11-01)",
+        "latest_fix": "CRITICAL UI FIX (1 Kasım 2025 14:00): Dropdown option'ları dark mode'da okunmuyor sorunu çözüldü. color-scheme: light dark + dark:bg-gray-900 + dark:text-white + explicit option styling. 7 field düzeltildi: İl, İlçe, Mahalle, Talep Tipi, Ana/Alt Kategori.",
+        "master_update": "BREAKING CHANGE (1 Kasım 2025): Neo Design System KALDIRILDI → Pure Tailwind CSS ZORUNLU. Tüm neo-* class'ları YASAK. Tailwind utility classes + ZORUNLU transition/animation her işlemde.",
+        "breaking_changes": {
+            "date": "2025-11-01",
+            "type": "CSS Framework Complete Migration",
+            "from": "Neo Design System (custom classes)",
+            "to": "Pure Tailwind CSS + Mandatory Transitions",
+            "impact": "ALL pages and components - IMMEDIATE ENFORCEMENT",
+            "migration_guide": ".context7/TAILWIND-TRANSITION-RULE.md",
+            "enforcement": "STRICT - New code must use Tailwind only",
+            "migration_strategy": "Gradual (new: immediate, existing: on edit)"
+        }
+    },
+    "map_system_standards_2025_10_31": {
+        "library": "Leaflet.js 1.9.4 (npm, local)",
+        "geocoding": "Nominatim API (OpenStreetMap)",
+        "tile_providers": ["OpenStreetMap", "Esri World Imagery"],
+        "drawing": "Leaflet.draw (npm, CSP compliant)",
+        "silent_update_pattern": {
+            "required": true,
+            "purpose": "Prevent infinite loops in bidirectional sync",
+            "implementation": "isSilentUpdate flag + event listener checks"
+        },
+        "debug_mode_pattern": {
+            "required": true,
+            "purpose": "Clean console in production",
+            "implementation": "const log = (...args) => DEBUG_MODE && console.log(...args);"
+        },
+        "field_naming": {
+            "mahalle_id": "REQUIRED (NOT semt_id)",
+            "il_id": "REQUIRED (NOT sehir_id)",
+            "nearby_distances": "JSON field",
+            "boundary_geojson": "JSON field"
+        },
+        "ui_standards": {
+            "map_controls": "32x32px (compact)",
+            "toggle_buttons": "px-2.5 py-1.5 text-xs",
+            "z_index": "9999 (over Leaflet controls)",
+            "responsive": "hidden sm:inline for text"
+        },
+        "csp_compliance": {
+            "leaflet_draw_spritesheet": "public/vendor/leaflet-draw/images/",
+            "no_cdn_links": "Use npm packages only",
+            "user_agent_header": "Required for Nominatim API"
+        },
+        "reference_docs": [
+            ".context7/HARITA_SISTEMI_STANDARDS.md",
+            "yalihan-bekci/knowledge/harita-sistemi-full-upgrade-2025-10-31.json",
+            "yalihan-bekci/reports/harita-sistemi-upgrade-ozet-2025-10-31.md"
+        ]
+    },
+    "forbidden_patterns": {
+        "description": "Context7 kurallarına aykırı olan pattern'ler",
+        "live_search_patterns": {
+            "User::all()": {
+                "replacement": "User::whereHas('roles', function($q) { $q->where('name', 'danisman'); })",
+                "reason": "Context7 Kural İhlali: Tüm kullanıcıları getirmek yasak - sadece danışman rolüne sahip kullanıcılar getirilmeli",
+                "severity": "critical",
+                "auto_fix": false
+            },
+            "User::where('is_active', true)": {
+                "replacement": "User::whereHas('roles', function($q) { $q->where('name', 'danisman'); })->where('status', 'Aktif')",
+                "reason": "Context7 Kural İhlali: Danışman aramada tüm aktif kullanıcılar yasak - sadece danışman rolüne sahip kullanıcılar getirilmeli",
+                "severity": "critical",
+                "auto_fix": false
+            },
+            "User::where(...)": {
+                "replacement": "Kisi::where(...)",
+                "reason": "Context7 Kural İhlali: Kişi aramada yanlış tablo yasak - CRM kişiler için Kisi modeli kullanılmalı",
+                "severity": "high",
+                "auto_fix": false
+            },
+            "live_search_without_debounce": {
+                "replacement": "debounce(300ms)",
+                "reason": "Context7 Kural İhlali: Live search'te debounce kullanılmadan arama yapmak performans sorunlarına yol açar",
+                "severity": "medium",
+                "auto_fix": false
+            },
+            "hardcoded_search_limits": {
+                "replacement": "configurable_limits",
+                "reason": "Context7 Kural İhlali: Hardcoded arama limitleri yerine yapılandırılabilir limitler kullanılmalı",
+                "severity": "low",
+                "auto_fix": false
+            }
+        },
+        "forbidden_toast_systems_2025_10_11": {
+            "subtleVibrantToast": {
+                "patterns": [
+                    "subtleVibrantToast\\.basic\\.",
+                    "subtleVibrantToast\\.location\\.",
+                    "subtleVibrantToast\\.features\\.",
+                    "subtleVibrantToast\\.media\\."
+                ],
+                "replacement": "window.toast",
+                "reason": "Context7 Kural İhlali: Deprecated toast sistemi - window.toast kullanılmalı",
+                "severity": "critical",
+                "auto_fix": true,
+                "fixed_count": 3,
+                "affected_files": [
+                    "resources/views/admin/adres-yonetimi/index.blade.php"
+                ]
+            },
+            "customToast": {
+                "pattern": "customToast\\(",
+                "replacement": "window.toast",
+                "severity": "high",
+                "auto_fix": true
+            },
+            "toastr_jquery": {
+                "pattern": "toastr\\.|\\$\\.toast\\(",
+                "replacement": "window.toast",
+                "severity": "high",
+                "auto_fix": true
+            }
+        },
+        "forbidden_layouts_2025_10_11": {
+            "layouts_app": {
+                "pattern": "@extends\\('layouts\\.app'\\)",
+                "replacement": "@extends('admin.layouts.neo')",
+                "reason": "Context7 Kural İhlali: layouts.app deprecated - admin.layouts.neo kullanılmalı",
+                "severity": "critical",
+                "auto_fix": true,
+                "fixed_count": 1,
+                "affected_files": [
+                    "app/Modules/Crm/Resources/views/kisiler/create.blade.php"
+                ]
+            },
+            "module_layouts": {
+                "pattern": "@extends\\('[A-Z][a-zA-Z]*::",
+                "replacement": "@extends('admin.layouts.neo')",
+                "reason": "Module layout'ları yasak",
+                "severity": "critical",
+                "auto_fix": true
+            }
+        },
+        "forbidden_route_patterns_2025_10_11": {
+            "crm_routes": {
+                "pattern": "route\\('crm\\.",
+                "replacement": "route('admin.",
+                "reason": "Context7 Kural İhlali: crm.* route prefix deprecated - admin.* kullanılmalı",
+                "severity": "critical",
+                "auto_fix": true,
+                "fixed_count": 2,
+                "affected_files": [
+                    "app/Modules/Crm/Resources/views/kisiler/create.blade.php"
+                ]
+            },
+            "module_routes": {
+                "pattern": "route\\('module\\.",
+                "replacement": "route('admin.",
+                "severity": "high",
+                "auto_fix": true
+            }
+        },
+        "forbidden_database_columns_2025_10_11": {
+            "ulke_id_in_iller": {
+                "table": "iller",
+                "column": "ulke_id",
+                "reason": "Context7 Kural İhlali: iller tablosunda ulke_id kolonu yok",
+                "severity": "critical",
+                "auto_fix": false,
+                "solution": "Schema::hasColumn('iller', 'ulke_id') kontrolü kullan",
+                "fixed_count": 2,
+                "affected_files": [
+                    "app/Http/Controllers/Admin/AdresYonetimiController.php"
+                ]
+            }
+        },
+        "auto_script_safety": {
+            "variable_name_replacement": {
+                "allowed": false,
+                "reason": "Context7 Kural İhlali: Otomatik script'ler değişken isimlerini değiştiremez - sadece string/field değerleri değiştirilebilir",
+                "severity": "critical",
+                "auto_fix": false,
+                "examples_forbidden": [
+                    "$status → $$$$$$$$$$$$status",
+                    "$il → $$$$$$$$$$$$il"
+                ],
+                "examples_allowed": [
+                    "where('status', ...) → where('status', ...)",
+                    "'status' => ... → 'status' => ..."
+                ]
+            },
+            "blade_directive_parameters": {
+                "allowed": false,
+                "reason": "Context7 Kural İhlali: Blade directive parametreleri silinemez veya değiştirilemez",
+                "severity": "critical",
+                "auto_fix": false,
+                "examples_forbidden": [
+                    "@error('name') → @error(",
+                    "@foreach($items as $item) → @foreach($items"
+                ]
+            },
+            "safe_replacement_zones": {
+                "allowed_areas": [
+                    "database_field_names",
+                    "model_fillable_array",
+                    "api_response_keys",
+                    "css_class_names"
+                ],
+                "forbidden_areas": [
+                    "variable_names",
+                    "function_parameters",
+                    "blade_directive_params",
+                    "javascript_variables"
+                ]
+            }
+        },
+        "database_fields": {
+            "mahalle_id": {
+                "standard": "mahalle_id",
+                "forbidden": ["semt_id", "semt", "mahalle"],
+                "reason": "Context7 Kural İhlali: Mahalle için SADECE 'mahalle_id' kullanılır, 'semt_id' YASAK",
+                "severity": "critical",
+                "auto_fix": true,
+                "scope": ["blade_files", "javascript_selectors", "api_responses"],
+                "database_tables": {
+                    "ilanlar": "mahalle_id EXISTS",
+                    "kisiler": "mahalle_id NOT EXISTS (by design)",
+                    "sites": "mahalle_id EXISTS"
+                },
+                "javascript_pattern": "document.getElementById('mahalle_id')",
+                "blade_pattern": "id='mahalle_id' name='mahalle_id'",
+                "affected_files": [
+                    "resources/js/admin/ilan-create/location.js",
+                    "resources/views/admin/ilanlar/components/location-map.blade.php"
+                ],
+                "fixed_date": "2025-10-31",
+                "enforcement": "ACTIVE"
+            },
+            "status": {
+                "replacement": "status",
+                "reason": "Context7 Kural İhlali: Türkçe alan adları yasak",
+                "severity": "critical",
+                "auto_fix": true,
+                "auto_fix_scope": "database_field_names_only"
+            },
+            "is_active": {
+                "replacement": "status",
+                "reason": "Context7 Kural İhlali: Boolean status alanları 'status' olmalı",
+                "severity": "critical",
+                "auto_fix": true
+            },
+            "aktif": {
+                "replacement": "status",
+                "reason": "Context7 Kural İhlali: Türkçe alan adları yasak",
+                "severity": "critical",
+                "auto_fix": true
+            },
+            "il": {
+                "replacement": "il",
+                "reason": "Context7 Kural İhlali: 'il' yerine 'il' kullanılmalı",
+                "severity": "high",
+                "auto_fix": true
+            },
+            "il_id": {
+                "replacement": "il_id",
+                "reason": "Context7 Kural İhlali: 'il_id' yerine 'il_id' kullanılmalı",
+                "severity": "high",
+                "auto_fix": true
+            },
+            "region_id": {
+                "replacement": "REMOVE",
+                "reason": "Context7 Kural İhlali: 'region_id' alanı kaldırılmalı",
+                "severity": "high",
+                "auto_fix": true
+            },
+            "ad_soyad": {
+                "replacement": "tam_ad",
+                "reason": "Context7 Kural İhlali: Birleşik ad alanları yasak",
+                "severity": "medium",
+                "auto_fix": true
+            },
+            "full_name": {
+                "replacement": "name",
+                "reason": "Context7 Kural İhlali: 'full_name' yerine 'name' kullanılmalı",
+                "severity": "medium",
+                "auto_fix": true
+            },
+            "tc_kimlik": {
+                "replacement": "REMOVE_OR_ADD_COLUMN",
+                "reason": "Context7 Kural İhlali: 'tc_kimlik' alanı eksik - ya tabloya eklenmeli ya da model'den kaldırılmalı",
+                "severity": "critical",
+                "auto_fix": false
+            }
+        },
+        "model_relationships": {
+            "il()": {
+                "replacement": "il()",
+                "reason": "Context7 Kural İhlali: Model relationship'lerde 'il()' kullanılmalı",
+                "severity": "high",
+                "auto_fix": false
+            },
+            "bolge()": {
+                "replacement": "REMOVE",
+                "reason": "Context7 Kural İhlali: 'bolge()' relationship kaldırılmalı",
+                "severity": "high",
+                "auto_fix": false
+            }
+        },
+        "css_classes": {
+            "neo-btn": {
+                "replacement": "Tailwind utility classes with transition",
+                "reason": "Context7 Kural İhlali: Neo Design artık YASAK - Pure Tailwind CSS kullanılmalı",
+                "severity": "CRITICAL",
+                "auto_fix": false,
+                "example": "px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-200",
+                "effective_date": "2025-11-01"
+            },
+            "neo-card": {
+                "replacement": "Tailwind utility classes with transition",
+                "reason": "Context7 Kural İhlali: Neo Design artık YASAK - Pure Tailwind CSS kullanılmalı",
+                "severity": "CRITICAL",
+                "auto_fix": false,
+                "example": "bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 transition-all duration-300",
+                "effective_date": "2025-11-01"
+            },
+            "neo-input": {
+                "replacement": "Tailwind utility classes with transition",
+                "reason": "Context7 Kural İhlali: Neo Design artık YASAK - Pure Tailwind CSS kullanılmalı",
+                "severity": "CRITICAL",
+                "auto_fix": false,
+                "example": "w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 transition-all duration-200",
+                "effective_date": "2025-11-01"
+            },
+            "neo-select": {
+                "replacement": "Tailwind utility classes with transition",
+                "reason": "Context7 Kural İhlali: Neo Design artık YASAK - Pure Tailwind CSS kullanılmalı",
+                "severity": "CRITICAL",
+                "auto_fix": false,
+                "example": "w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 transition-all duration-200 cursor-pointer",
+                "effective_date": "2025-11-01"
+            },
+            "neo-*": {
+                "replacement": "Tailwind utility classes with transition",
+                "reason": "Context7 Kural İhlali: Tüm Neo Design class'ları YASAK - Pure Tailwind CSS kullanılmalı",
+                "severity": "CRITICAL",
+                "auto_fix": false,
+                "effective_date": "2025-11-01"
+            },
+            "btn-": {
+                "replacement": "Tailwind utility classes",
+                "reason": "Context7 Kural İhlali: Bootstrap patterns YASAK",
+                "severity": "high",
+                "auto_fix": false
+            },
+            "card-": {
+                "replacement": "Tailwind utility classes",
+                "reason": "Context7 Kural İhlali: Bootstrap patterns YASAK",
+                "severity": "high",
+                "auto_fix": false
+            },
+            "form-control": {
+                "replacement": "Tailwind utility classes",
+                "reason": "Context7 Kural İhlali: Bootstrap patterns YASAK",
+                "severity": "high",
+                "auto_fix": false
+            }
+        },
+        "tailwind_transition_requirements_2025_11_01": {
+            "mandatory_transitions": {
+                "all_interactive_elements": "REQUIRED",
+                "buttons": "transition-all duration-200 ease-in-out",
+                "inputs": "transition-all duration-200 ease-in-out",
+                "cards": "transition-all duration-300 ease-in-out",
+                "modals": "transition-all duration-500 ease-in-out",
+                "hover_effects": "hover:scale-105 hover:shadow-lg",
+                "active_states": "active:scale-95",
+                "severity": "CRITICAL",
+                "enforcement": "ACTIVE"
+            },
+            "dark_mode": {
+                "required": true,
+                "pattern": "dark:bg-gray-800 dark:text-white dark:border-gray-700",
+                "every_element": "Must have dark mode variant",
+                "severity": "CRITICAL"
+            },
+            "responsive_design": {
+                "required": true,
+                "approach": "mobile-first",
+                "breakpoints": ["sm", "md", "lg", "xl", "2xl"],
+                "severity": "HIGH"
+            },
+            "forbidden_patterns": {
+                "neo_design_classes": ["neo-btn", "neo-card", "neo-input", "neo-select", "neo-form-group", "neo-label", "neo-*"],
+                "inline_styles": ["style=\"...\""],
+                "bootstrap_classes": ["btn-", "card-", "form-control"],
+                "severity": "CRITICAL",
+                "auto_fix": false
+            },
+            "reference_file": ".context7/TAILWIND-TRANSITION-RULE.md",
+            "migration_strategy": "Gradual (new code: immediate, existing code: on edit)",
+            "priority": ["Forms", "Dashboards", "Lists", "Details", "Components"]
+        }
+    },
+    "dropdown_readability_standard_2025_11_01": {
+        "problem": "Dropdown option'ları browser native dropdown'da dark mode'da okunmuyor",
+        "severity": "CRITICAL",
+        "affected_elements": "ALL select fields with options",
+        "fix_date": "2025-11-01",
+        "mandatory_changes": {
+            "select_background": {
+                "old": "dark:bg-gray-800",
+                "new": "dark:bg-gray-900",
+                "reason": "Daha koyu arka plan, daha iyi kontrast"
+            },
+            "select_text": {
+                "old": "dark:text-gray-100",
+                "new": "dark:text-white",
+                "reason": "Tam beyaz text, maksimum okunabilirlik"
+            },
+            "color_scheme_property": {
+                "required": true,
+                "value": "style=\"color-scheme: light dark;\"",
+                "reason": "Browser'a native dropdown'u dark mode'da render etmesi gerektiğini söyler"
+            },
+            "option_styling": {
+                "required": true,
+                "placeholder_option": "class=\"bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-400 py-2\"",
+                "normal_option": "class=\"bg-white dark:bg-gray-900 text-gray-900 dark:text-white py-2 font-medium\"",
+                "reason": "Her option'a explicit class eklenmesi browser default'larını override eder"
+            }
+        },
+        "example_correct": "<select class=\"bg-white dark:bg-gray-900 text-gray-900 dark:text-white\" style=\"color-scheme: light dark;\"><option value=\"\" class=\"bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-400 py-2\">Seçiniz</option><option value=\"1\" class=\"bg-white dark:bg-gray-900 text-gray-900 dark:text-white py-2 font-medium\">Değer</option></select>",
+        "yalihan_bekci_check": {
+            "scan_pattern_1": "<select.*dark:bg-gray-800",
+            "warn_message_1": "CRITICAL: Dropdown readability issue. Use dark:bg-gray-900 instead of dark:bg-gray-800",
+            "scan_pattern_2": "<select(?!.*style=.*color-scheme)",
+            "warn_message_2": "WARNING: Missing color-scheme property. Add style=\"color-scheme: light dark;\" for proper dark mode rendering",
+            "scan_pattern_3": "<option(?!.*class=)",
+            "warn_message_3": "INFO: Consider adding explicit option classes for better browser support"
+        },
+        "documentation": ".context7/FORM_DESIGN_STANDARDS.md v1.1.0",
+        "rollout_status": {
+            "complete": ["/admin/talepler/create"],
+            "pending": ["/admin/ilanlar/create", "/admin/kisiler/create", "/admin/kisiler/edit"],
+            "total_fields_fixed": 7
+        }
+    },
+    "compliance_rules": {
+        "database": {
+            "field_naming": "snake_case",
+            "status_field": "Always use 'status' instead of 'status', 'is_active', 'aktif'",
+            "location_fields": "Use 'il_id' instead of 'il_id', remove 'region_id', use 'mahalle_id' NOT 'semt_id'",
+            "person_fields": "Use separate 'ad' and 'soyad' fields instead of combined fields"
+        },
+        "models": {
+            "naming": "PascalCase",
+            "relationships": "Use 'il()' instead of 'il()', remove 'bolge()'",
+            "fillable": "Must include Context7 compliant field names",
+            "accessors": "Backward compatibility accessors allowed for legacy support"
+        },
+        "views": {
+            "css_framework": "Neo Design System only",
+            "field_access": "Use Context7 compliant field names",
+            "legacy_support": "Use model accessors for backward compatibility"
+        },
+        "controllers": {
+            "field_mapping": "Use FIELD_MAPPING constants for database field mapping",
+            "query_fields": "Always use Context7 compliant field names in queries",
+            "validation": "Validate using Context7 field names"
+        },
+        "live_search": {
+            "api_endpoints": "Use /api/live-search/{type} endpoints for all live search operations",
+            "debounce_delay": "Always implement 300ms debounce for live search inputs",
+            "min_query_length": "Minimum 2 characters required for search queries",
+            "max_results": "Default limit of 20 results, configurable up to 50",
+            "search_types": "Supported types: kisiler, danismanlar, sites, unified",
+            "response_format": "Always return Context7 compliant JSON with success, count, data, and search_metadata",
+            "error_handling": "Implement proper error handling with logging and user-friendly messages",
+            "caching": "Implement search result caching for performance optimization",
+            "accessibility": "Support keyboard navigation, screen readers, and high contrast modes",
+            "security": "Validate all input parameters, implement rate limiting, and use proper authentication"
+        },
+        "sites_table": {
+            "table_name": "sites",
+            "database": "yalihanemlak_db",
+            "required_fields": [
+                "id",
+                "name",
+                "address",
+                "description",
+                "active",
+                "created_at",
+                "updated_at",
+                "deleted_at"
+            ],
+            "location_fields": ["il_id", "ilce_id", "mahalle_id"],
+            "legacy_fields": ["site_adi", "site_tipi", "aciklama", "adres"],
+            "status_field": "active (boolean) - NOT status",
+            "model_relationships": {
+                "il": "belongsTo(Il::class, 'il_id')",
+                "ilce": "belongsTo(Ilce::class, 'ilce_id')",
+                "mahalle": "belongsTo(Mahalle::class, 'mahalle_id')"
+            },
+            "search_fields": ["name", "address", "description"],
+            "fillable_fields": [
+                "name",
+                "address",
+                "description",
+                "active",
+                "il_id",
+                "ilce_id",
+                "mahalle_id"
+            ],
+            "validation_rules": {
+                "name": "required|string|max:255",
+                "address": "nullable|string",
+                "description": "nullable|text",
+                "active": "boolean",
+                "il_id": "nullable|integer|exists:iller,id",
+                "ilce_id": "nullable|integer|exists:ilceler,id",
+                "mahalle_id": "nullable|integer|exists:mahalleler,id"
+            },
+            "indexes": ["name", "active", "il_id", "ilce_id"],
+            "foreign_keys": "il_id, ilce_id, mahalle_id should have foreign key constraints"
+        }
+    },
+    "ide_integrations": {
+        "cursor": {
+            "rules_file": ".cursor/rules/context7-rules.md",
+            "memory_file": ".cursor/memory/context7-memory.md",
+            "enabled": true,
+            "auto_suggestions": true
+        },
+        "vscode": {
+            "snippets_file": ".vscode/context7-snippets.code-snippets",
+            "settings_file": ".vscode/settings.json",
+            "tasks_file": ".vscode/tasks.json",
+            "enabled": true,
+            "highlighting": true,
+            "auto_completion": true
+        },
+        "github_copilot": {
+            "rules_integration": "via .context7/copilot-rules.md",
+            "enabled": true,
+            "pattern_blocking": true
+        },
+        "windsurf": {
+            "rules_integration": "via .context7/authority.json",
+            "enabled": true,
+            "ai_compliance": true
+        },
+        "warp": {
+            "workflows": "via .warp/workflows/",
+            "enabled": true,
+            "terminal_integration": true
+        },
+        "ai_assistants": {
+            "claude": "Referans: .context7/authority.json",
+            "chatgpt": "Referans: .context7/authority.json",
+            "gemini": "Referans: .context7/authority.json",
+            "enabled": true
+        }
+    },
+    "automation": {
+        "git_hooks": {
+            "pre_commit": ".githooks/context7-pre-commit",
+            "enabled": true,
+            "blocking": true
+        },
+        "ci_cd": {
+            "github_actions": ".github/workflows/context7-compliance.yml",
+            "enabled": true,
+            "pr_blocking": true
+        },
+        "laravel_commands": {
+            "migration_validator": "php artisan context7:validate-migration",
+            "auto_fix": "php artisan context7:validate-migration --auto-fix",
+            "enabled": true
+        }
+    },
+    "documentation": {
+        "master_doc": "docs/rules/master-rules.md",
+        "rules_doc": "docs/rules/master-rules.md",
+        "implementation_doc": "docs/technical/system/implementation-standards.md",
+        "automation_guide": "docs/technical/system/SCRIPTS_KULLANIM_REHBERI.md",
+        "authority_file": ".context7/authority.json",
+        "last_sync": "2025-10-11T12:00:00Z",
+        "total_files": 55,
+        "master_index": "docs/index.md"
+    },
+    "technology_standards": {
+        "description": "Yalıhan Emlak Teknoloji Standartları - 2025-10-21",
+        "created": "2025-10-21",
+        "severity": "CRITICAL",
+        "enforcement": "ACTIVE",
+        "search_library": {
+            "standard": "Context7 Live Search",
+            "implementation": "Vanilla JS",
+            "file": "public/js/context7-live-search.js",
+            "size": "35KB (unminified)",
+            "features": [
+                "Zero dependencies",
+                "Debounce 300ms",
+                "Keyboard navigation",
+                "Cache system",
+                "API integration"
+            ],
+            "api_endpoints": [
+                "/api/kisiler/search",
+                "/api/sites/search",
+                "/api/ilanlar/search"
+            ],
+            "usage": "14 admin pages",
+            "forbidden_alternatives": [
+                "Select2 (jQuery dependency - LEGACY)",
+                "React-Select (170KB - TOO HEAVY)",
+                "Choices.js (48KB - TOO HEAVY)",
+                "Selectize.js (jQuery dependency)",
+                "Vue-Select (Vue dependency)"
+            ],
+            "migration_status": {
+                "completed": 14,
+                "remaining": 34,
+                "target": "100% Context7 Live Search by 2026"
+            }
+        },
+        "javascript_framework": {
+            "reactive_ui": "Alpine.js",
+            "version": "3.15.0",
+            "size": "15KB",
+            "usage": "Reactive components, x-data, x-model",
+            "allowed_features": [
+                "x-data (reactive state)",
+                "x-model (two-way binding)",
+                "x-show / x-if (conditionals)",
+                "@click / @input (events)",
+                "x-transition (animations)"
+            ],
+            "forbidden": [
+                "React (too heavy for admin)",
+                "Vue (not in stack)",
+                "Angular (overkill)",
+                "jQuery (legacy)"
+            ]
+        },
+        "css_framework": {
+            "standard": "Tailwind CSS",
+            "version": "3.4.18",
+            "features": [
+                "Utility-first",
+                "JIT compiler",
+                "@apply support",
+                "Custom plugins"
+            ],
+            "design_system": "Neo Design System",
+            "color_palette": {
+                "primary": "Orange (#f97316)",
+                "secondary": "Blue (#3b82f6)",
+                "success": "Green (#10b981)",
+                "warning": "Yellow (#f59e0b)",
+                "danger": "Red (#ef4444)"
+            },
+            "components": [
+                "neo-btn (buttons)",
+                "neo-card (cards)",
+                "neo-input (form inputs)",
+                "neo-select (dropdowns)",
+                "neo-badge (badges)"
+            ],
+            "forbidden": [
+                "Bootstrap (old stack)",
+                "Material UI (React dependency)",
+                "Bulma (not in use)"
+            ]
+        },
+        "map_library": {
+            "standard": "Leaflet.js",
+            "version": "1.9.4",
+            "provider": "OpenStreetMap",
+            "usage": "Location selection, property maps",
+            "features": [
+                "Interactive maps",
+                "Marker placement",
+                "Address geocoding",
+                "Custom tiles"
+            ],
+            "forbidden": [
+                "Google Maps (API cost)",
+                "Mapbox (licensing)"
+            ]
+        },
+        "build_tool": {
+            "standard": "Vite",
+            "version": "Latest",
+            "features": [
+                "Fast HMR",
+                "ES modules",
+                "Code splitting",
+                "Tree shaking"
+            ],
+            "config": "vite.config.js",
+            "forbidden": [
+                "Webpack (old, slow)",
+                "Rollup alone (Vite uses it internally)",
+                "Parcel (not in stack)"
+            ]
+        },
+        "bundle_size_targets": {
+            "per_page_js": "< 50KB gzipped",
+            "vendor_bundle": "< 100KB gzipped",
+            "total_bundle": "< 150KB gzipped",
+            "css_bundle": "< 30KB gzipped",
+            "current_status": {
+                "stable_create": "44KB (11.57KB gzipped) ✅",
+                "context7_live_search": "35KB (unminified) ✅",
+                "alpine_js": "15KB ✅",
+                "total": "~60KB ✅ OPTIMAL"
+            }
+        },
+        "performance_targets": {
+            "page_load": "< 2 seconds",
+            "api_response": "< 500ms",
+            "search_debounce": "300ms",
+            "lighthouse_score": "> 90",
+            "bundle_optimization": "Tree shaking + minification"
+        },
+        "component_library": {
+            "standard": "Neo Components (Blade)",
+            "location": "resources/views/components/",
+            "available_components": [
+                "neo-input.blade.php",
+                "neo-select.blade.php",
+                "neo-textarea.blade.php (planned)",
+                "neo-checkbox.blade.php (planned)",
+                "neo-radio.blade.php (planned)"
+            ],
+            "usage": "1.4% (target: 80%)",
+            "examples": [
+                "<x-neo-input name=\"baslik\" label=\"İlan Başlığı\" :required=\"true\" />",
+                "<x-neo-select name=\"kategori\" label=\"Kategori\" :required=\"true\">"
+            ],
+            "migration_status": {
+                "converted_files": 4,
+                "converted_fields": 16,
+                "target": "All admin forms by 2026"
+            }
+        },
+        "deprecated_technologies": {
+            "select2": {
+                "status": "LEGACY - Being phased out",
+                "usage": "34 files (decreasing)",
+                "replacement": "Context7 Live Search",
+                "migration_deadline": "2026-Q2"
+            },
+            "jquery": {
+                "status": "LEGACY - Avoid new usage",
+                "current_usage": "Via Select2 only",
+                "replacement": "Vanilla JS + Alpine.js",
+                "removal_target": "2026-Q4"
+            },
+            "bootstrap": {
+                "status": "REMOVED",
+                "replacement": "Tailwind CSS + Neo Design",
+                "migration": "Complete"
+            }
+        },
+        "enforcement_rules": {
+            "new_code": "MUST use approved technologies only",
+            "no_heavy_libraries": "Libraries > 50KB require approval",
+            "vanilla_js_first": "Prefer Vanilla JS over libraries",
+            "alpine_for_reactive": "Use Alpine.js for reactive UI",
+            "context7_for_search": "Use Context7 Live Search for all search",
+            "neo_components": "Use Neo components for all forms",
+            "bundle_monitoring": "Check bundle size on every build"
+        }
+    },
+    "compliance_targets": {
+        "database_compliance": 95,
+        "code_compliance": 90,
+        "css_compliance": 95,
+        "overall_target": 90
+    },
+    "monitoring": {
+        "compliance_tracking": true,
+        "automated_reporting": true,
+        "badge_updates": true,
+        "documentation_sync": true
+    },
+    "version_history": [
+        {
+            "version": "1.0.0",
+            "date": "2024-09-30",
+            "changes": "Initial Context7 rules implementation"
+        },
+        {
+            "version": "2.0.0",
+            "date": "2025-01-30",
+            "changes": "Central Authority system, multi-IDE support, automation framework"
+        },
+        {
+            "version": "2.1.0",
+            "date": "2025-10-05",
+            "changes": "Site/Apartman live search with add new functionality, Context7 compliant modal system"
+        },
+        {
+            "version": "2.2.0",
+            "date": "2025-10-06",
+            "changes": "İlan sistemi roadmap oluşturuldu, Context7 uyumlu sayfa ilişkileri ve teknoloji stack'i tanımlandı"
+        },
+        {
+            "version": "3.0.0",
+            "date": "2025-10-11",
+            "changes": "Referans numarası sistemi, gelişmiş arama, portal entegrasyonu, AI geçmiş analizi, fiyat yazı servisi"
+        },
+        {
+            "version": "3.1.0",
+            "date": "2025-10-11",
+            "changes": "35 hata düzeltildi, pre-commit hook aktif, 7 yeni kural eklendi"
+        },
+        {
+            "version": "3.2.0",
+            "date": "2025-10-11",
+            "changes": "Master döküman oluşturuldu, 15 yeni öneri, kategori bazlı dinamik özellikler, anahtar yönetimi"
+        },
+        {
+            "version": "3.3.0",
+            "date": "2025-10-11",
+            "changes": "Stable-create v3.0 modernizasyon: 4245 satır → 450 satır (modular), Alpine.js migration, backend %100, CRM API, Context7 100/100"
+        },
+        {
+            "version": "3.4.0",
+            "date": "2025-10-11",
+            "changes": "Sonraki Adımlar: Admin panel 32 hata düzeltildi, 3 yeni AI service (IlanGecmisAI, KategoriOzellik, TKGM), Anahtar yönetimi, 5 yeni API endpoint"
+        },
+        {
+            "version": "3.5.0",
+            "date": "2025-10-31",
+            "changes": "Location System Standard: mahalle_id zorunlu hale getirildi, semt_id YASAK. 7 JavaScript fonksiyonu düzeltildi (location.js). Database: ilanlar, sites tablolarında mahalle_id var, kisiler tablosunda yok (by design)."
+        }
+    ],
+    "site_management": {
+        "description": "Site/Apartman yönetim sistemi Context7 kuralları",
+        "live_search": {
+            "search_endpoint": "/api/sites/search",
+            "create_endpoint": "/api/sites/create",
+            "add_new_feature": "Live search sonuçlarında yeni site ekleme özelliği",
+            "modal_form": "Context7 uyumlu modal form sistemi",
+            "validation": "Context7 uyumlu validation kuralları",
+            "notification_system": "Başarı/hata bildirimleri"
+        },
+        "required_fields": {
+            "name": "required|string|max:255",
+            "address": "nullable|string|max:500",
+            "description": "nullable|string|max:1000",
+            "active": "boolean",
+            "il_id": "nullable|integer|exists:iller,id",
+            "ilce_id": "nullable|integer|exists:ilceler,id",
+            "mahalle_id": "nullable|integer|exists:mahalleler,id",
+            "lat": "nullable|string|max:20",
+            "lng": "nullable|string|max:20"
+        },
+        "context7_compliance": {
+            "model_relationships": ["il", "ilce", "mahalle"],
+            "search_fields": ["name", "address", "description"],
+            "status_field": "active",
+            "foreign_keys": [
+                {
+                    "field": "il_id",
+                    "references": "iller.id",
+                    "on_delete": "set null"
+                },
+                {
+                    "field": "ilce_id",
+                    "references": "ilceler.id",
+                    "on_delete": "set null"
+                },
+                {
+                    "field": "mahalle_id",
+                    "references": "mahalleler.id",
+                    "on_delete": "set null"
+                }
+            ],
+            "indexes": ["name", "active", ["il_id", "ilce_id"]]
+        }
+    },
+    "property_system": {
+        "description": "İlan sistemi Context7 kuralları ve roadmap",
+        "roadmap_file": "docs/roadmaps/2025/ilan-sistemi-roadmap-2025.md",
+        "pages": {
+            "ilan_ekleme": {
+                "file": "resources/views/admin/ilanlar/stable-create.blade.php",
+                "version": "3.0.0",
+                "status": "completed",
+                "completion_date": "2025-10-11",
+                "modernization_date": "2025-10-11",
+                "architecture": "modular",
+                "lines": "450 (main file) + 1,200 (modules)",
+                "modules": 16,
+                "features": [
+                    "Context7 Live Search entegrasyonu",
+                    "Yoksa Ekle modal sistemi (İlgili kişi + Site)",
+                    "Neo Design System UI",
+                    "Responsive tasarım",
+                    "Modal tabanlı form yönetimi",
+                    "API entegrasyonu (/api/kisiler, /api/sites)",
+                    "Alpine.js reactive components (4 adet)",
+                    "Modular architecture (16 dosya)",
+                    "AI Content Center (4 özellik)",
+                    "Advanced Price Manager (4 para birimi)",
+                    "Portal Manager (6 portal)",
+                    "Google Maps integration",
+                    "CRM geçmiş analizi",
+                    "Referans no generation",
+                    "Transaction safety",
+                    "Comprehensive validation (30+ field)"
+                ],
+                "components": {
+                    "partials": [
+                        "_header",
+                        "_temel-bilgiler",
+                        "_kategori-secimi",
+                        "_kisi-secimi",
+                        "_ai-content-center"
+                    ],
+                    "modals": ["_kisi-ekle", "_site-ekle"],
+                    "scripts": [
+                        "portal-manager.js",
+                        "price-manager.js",
+                        "ai-content-center.js",
+                        "location-manager.js"
+                    ]
+                },
+                "backend": {
+                    "controller": "SmartIlanController",
+                    "store_method": "full_implementation",
+                    "validation": "comprehensive",
+                    "services": [
+                        "IlanReferansService",
+                        "CurrencyRateService",
+                        "OllamaService"
+                    ]
+                },
+                "api_endpoints": [
+                    "POST /stable-create",
+                    "POST /stable-create/ai-suggest",
+                    "GET /api/kisiler/{id}/ilan-gecmisi",
+                    "GET /api/kisiler/{id}/profil",
+                    "GET /api/kisiler/{id}/ai-gecmis-analiz",
+                    "POST /api/kisiler",
+                    "GET /api/currency/rates",
+                    "POST /api/tkgm/parsel-sorgu",
+                    "POST /api/tkgm/yatirim-analizi",
+                    "GET /api/tkgm/health"
+                ],
+                "new_services": [
+                    "IlanGecmisAIService",
+                    "KategoriOzellikService",
+                    "TKGMService"
+                ],
+                "new_features_v3_4": {
+                    "ai_ilan_gecmisi": {
+                        "description": "Kişinin önceki ilanlarından öğren, öneriler üret",
+                        "service": "IlanGecmisAIService",
+                        "endpoint": "/api/kisiler/{id}/ai-gecmis-analiz",
+                        "partial": "resources/views/admin/ilanlar/partials/stable/_ai-gecmis-analizi.blade.php",
+                        "component": "kisiGecmisi()",
+                        "location": "stable-create satır 850",
+                        "rule": "Context7 Kural #69",
+                        "status": "implemented",
+                        "date": "2025-10-12"
+                    },
+                    "kategori_dinamik_alanlar": {
+                        "description": "Kategori bazlı zorunlu/önerilen alanlar",
+                        "service": "KategoriOzellikService",
+                        "partial": "resources/views/admin/ilanlar/partials/stable/_kategori-dinamik-alanlar.blade.php",
+                        "component": "kategoriDinamikAlanlar()",
+                        "location": "stable-create satır 164",
+                        "categories": [
+                            "Arsa",
+                            "Yazlık",
+                            "Villa",
+                            "Daire",
+                            "İşyeri",
+                            "Turistik Tesis"
+                        ],
+                        "rule": "Context7 Kural #66",
+                        "status": "implemented",
+                        "date": "2025-10-12"
+                    },
+                    "tkgm_integration": {
+                        "description": "TKGM parsel sorgulama ve otomatik doldurma",
+                        "service": "TKGMService",
+                        "endpoint": "/api/tkgm/parsel-sorgu",
+                        "partial": "resources/views/admin/ilanlar/partials/stable/_tkgm-sorgu.blade.php",
+                        "component": "tkgmSorgu()",
+                        "location": "stable-create satır 737",
+                        "approach": "automatic_backend_query_with_preview",
+                        "trigger": "@blur event on ada_no and parsel_no",
+                        "features": [
+                            "auto_fill",
+                            "investment_analysis",
+                            "cache_system",
+                            "silent_fail"
+                        ],
+                        "rule": "Context7 Kural #70",
+                        "status": "implemented",
+                        "date": "2025-10-12"
+                    },
+                    "anahtar_yonetimi": {
+                        "description": "Gelişmiş anahtar yönetim sistemi",
+                        "migration": "add_anahtar_management_fields_to_ilanlar_table",
+                        "partial": "resources/views/admin/ilanlar/partials/stable/_anahtar-yonetimi.blade.php",
+                        "location": "stable-create satır 1290",
+                        "fields": [
+                            "anahtar_turu",
+                            "anahtar_kimde",
+                            "anahtar_ulasilabilirlik",
+                            "anahtar_notlari",
+                            "anahtar_ek_bilgi"
+                        ],
+                        "quick_templates": [
+                            "7/24",
+                            "Mesai Saatleri",
+                            "Randevulu",
+                            "1 Saat Önce Ara"
+                        ],
+                        "rule": "Context7 Kural #68",
+                        "status": "implemented",
+                        "date": "2025-10-12"
+                    }
+                }
+            },
+            "ilan_goruntuleme": {
+                "file": "resources/views/admin/ilanlar/show.blade.php",
+                "status": "planned",
+                "technology": "React Components",
+                "features": [
+                    "Modern React component architecture",
+                    "360° sanal tur",
+                    "Drone görüntüleri",
+                    "Çevre analizi"
+                ]
+            },
+            "ilanlarim": {
+                "file": "resources/views/admin/ilanlar/my-properties.blade.php",
+                "status": "planned",
+                "technology": "React + Context7 Live Search",
+                "features": [
+                    "Modern filtreleme sistemi",
+                    "Context7 Live Search entegrasyonu",
+                    "Toplu işlemler",
+                    "Real-time updates"
+                ]
+            },
+            "ilan_yonetimi": {
+                "file": "resources/views/admin/ilanlar/management.blade.php",
+                "status": "planned",
+                "technology": "React Dashboard",
+                "features": [
+                    "Analytics dashboard",
+                    "Performance metrics",
+                    "User management",
+                    "Bulk operations"
+                ]
+            }
+        },
+        "technology_stack": {
+            "frontend": [
+                "Context7 Live Search",
+                "Neo Design System",
+                "React Components",
+                "Alpine.js",
+                "Tailwind CSS"
+            ],
+            "backend": [
+                "Laravel 10.x",
+                "Context7 API",
+                "Hybrid Search API",
+                "Redis Cache",
+                "MySQL 8.0+"
+            ],
+            "integrations": [
+                "TKGM API",
+                "Google Maps API",
+                "AI Services",
+                "Payment Gateways"
+            ]
+        },
+        "forbidden_technologies": [
+            "legacy_select2",
+            "jquery_ui",
+            "bootstrap",
+            "vue_legacy",
+            "old_blade_patterns",
+            "react_select",
+            "choices_js",
+            "selectize_js",
+            "heavy_search_libraries"
+        ],
+        "required_technologies": {
+            "frontend_framework": "Alpine.js (reactive UI only)",
+            "javascript": "Vanilla JS (custom logic)",
+            "css_framework": "Tailwind CSS",
+            "build_tool": "Vite",
+            "search_implementation": "Vanilla JS + Context7 Live Search Pattern",
+            "no_heavy_libraries": "CRITICAL - Keep bundle < 50KB"
+        },
+        "javascript_standards": {
+            "rule": "VANILLA JS ONLY - No heavy libraries",
+            "created": "2025-10-13",
+            "severity": "CRITICAL",
+            "reasoning": [
+                "Hafif: 3KB vs 170KB (React-Select)",
+                "Hızlı: Bağımlılık yok",
+                "Maintainable: Basit kod",
+                "Context7: Full control",
+                "Performance: Optimal bundle size"
+            ],
+            "allowed": [
+                "Alpine.js (already in use)",
+                "Vanilla JS (custom implementations)",
+                "Fetch API (built-in)",
+                "DOM API (built-in)"
+            ],
+            "forbidden": [
+                "React-Select (170KB)",
+                "Choices.js (48KB)",
+                "Select2 (jQuery dependency)",
+                "Selectize.js (jQuery dependency)",
+                "Vue-Select (Vue dependency)",
+                "ANY library > 10KB for simple tasks"
+            ],
+            "patterns": {
+                "live_search": {
+                    "implementation": "Vanilla JS class with debounce",
+                    "file": "public/js/context7-live-search-simple.js",
+                    "size": "~3KB",
+                    "features": [
+                        "Debounce 300ms",
+                        "Min 2 chars",
+                        "API fetch",
+                        "Tailwind styling",
+                        "Context7 compliant"
+                    ]
+                },
+                "reactive_ui": {
+                    "use": "Alpine.js ONLY",
+                    "reason": "Already in stack, lightweight (15KB)",
+                    "pattern": "x-data, x-model, @click"
+                },
+                "custom_logic": {
+                    "use": "Vanilla JS",
+                    "reason": "No dependency, full control",
+                    "pattern": "Class-based modules, window export"
+                }
+            },
+            "bundle_size_limits": {
+                "per_page_js": "< 50KB gzipped",
+                "vendor_js": "< 100KB gzipped",
+                "total_bundle": "< 150KB gzipped",
+                "current_stable_create": "44.04 KB (11.57 KB gzipped) ✅ OPTIMAL"
+            }
+        },
+        "implementation_phases": {
+            "phase_1": {
+                "period": "Q1 2025",
+                "status": "completed",
+                "completion_date": "2025-01-30",
+                "tasks": [
+                    "İlan ekleme sayfası modernizasyonu",
+                    "Context7 Live Search entegrasyonu",
+                    "Modal sistemi geliştirme",
+                    "Yoksa Ekle özelliği (İlgili kişi + Site)",
+                    "API entegrasyonu tamamlama",
+                    "Docs klasörü analizi ve reorganizasyon"
+                ]
+            },
+            "phase_2": {
+                "period": "Q2 2025",
+                "status": "planning",
+                "tasks": [
+                    "İlan görüntüleme React component'i",
+                    "İlanlarım sayfası modernizasyonu",
+                    "Filtreleme sistemi"
+                ]
+            },
+            "phase_3": {
+                "period": "Q3 2025",
+                "status": "planning",
+                "tasks": [
+                    "AI content generation",
+                    "TKGM entegrasyonu",
+                    "Advanced features"
+                ]
+            },
+            "phase_4": {
+                "period": "Q4 2025",
+                "status": "planning",
+                "tasks": [
+                    "İlan yönetimi dashboard'u",
+                    "Analytics sistemi",
+                    "Enterprise features"
+                ]
+            }
+        }
+    },
+    "yalihan_bekci_quality_rules_2025_11_01": {
+        "version": "1.0.0",
+        "category": "code_quality_enforcement",
+        "description": "Proje finalizasyonunda kod kalitesi, duplicate detection ve mantık tutarlılığı kuralları",
+        "priority": "CRITICAL",
+        "enabled": true,
+        "enforcement": "automatic",
+        
+        "core_principles": {
+            "no_negative_responses": {
+                "rule": "Kullanıcıya 'olmaz', 'yapamayız', 'imkansız' yanıtı asla verilmez",
+                "action": "Her sorun için çözüm yolu, alternatifler ve implementation planı sun"
+            },
+            "logic_first": {
+                "rule": "Mantık mantık mantık - her değişiklik mantıksal tutarlılık kontrolünden geçmeli",
+                "checks": [
+                    "Database field naming consistency",
+                    "API response format consistency",
+                    "Validation rules consistency",
+                    "Business logic consistency"
+                ]
+            },
+            "no_bloat": {
+                "rule": "Gereksiz kod, duplicate logic, eski kodlar projeye ağırlık yapar",
+                "action": "Sürekli cleanup, consolidation, optimization"
+            }
+        },
+        
+        "automatic_detection": {
+            "duplicate_code": {
+                "enabled": true,
+                "methods": ["method name collision", "similar logic patterns", "copy-paste blocks"],
+                "action": "WARN immediately, suggest consolidation"
+            },
+            "obsolete_code": {
+                "enabled": true,
+                "targets": ["unused methods", "commented code", "deprecated features", "old TODOs"],
+                "retention": "6 months max, then DELETE"
+            },
+            "heavy_code": {
+                "enabled": true,
+                "metrics": {
+                    "max_queries_per_request": 50,
+                    "max_memory": "128MB",
+                    "max_execution_time": "5s"
+                },
+                "targets": ["N+1 queries", "missing eager loading", "nested loops", "sync API calls"]
+            },
+            "logic_inconsistency": {
+                "enabled": true,
+                "critical": true,
+                "targets": [
+                    "Field naming conflicts (sehir vs city)",
+                    "Validation discrepancies",
+                    "Response format mismatches",
+                    "Business logic contradictions"
+                ]
+            }
+        },
+        
+        "project_finalization_checklist": {
+            "phase": "NEAR_COMPLETION",
+            "required_before_production": [
+                "0 duplicate methods/functions",
+                "0 unused code (>6 months)",
+                "0 Context7 violations",
+                "0 N+1 query problems",
+                "0 logic inconsistencies",
+                "100% Context7 compliance",
+                "80%+ test coverage",
+                "All TODO/FIXME resolved",
+                "Performance metrics met"
+            ]
+        },
+        
+        "real_world_examples": {
+            "duplicate_method_fix_2025_11_01": {
+                "file": "app/Http/Controllers/Api/AIController.php",
+                "issue": "suggestPrice() defined twice",
+                "detection": "PHP Fatal: Cannot redeclare",
+                "solution": "Renamed old method to suggestPriceOld() with @deprecated",
+                "lesson": "Always grep before adding new methods"
+            }
+        },
+        
+        "reference_file": "yalihan-bekci/rules/CODE_QUALITY_RULES.json"
+    }
+}

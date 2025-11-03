@@ -1,0 +1,1209 @@
+<?php $__env->startSection('title', 'Talep-Portföy Eşleştirme'); ?>
+<?php $__env->startSection('meta_description',
+    'AI destekli talep-portföy eşleştirme sistemi - müşteri taleplerini uygun portföylerle
+    akıllı şekilde analiz eder ve önerir.'); ?>
+<?php $__env->startSection('meta_keywords', 'talep, portföy, eşleştirme, analiz, yapay zeka, emlak'); ?>
+<?php $__env->startSection('content'); ?>
+    <div class="neo-container">
+        <!-- Başlık ve aksiyonlar - Geliştirilmiş Header -->
+        <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 mb-8">
+            <div class="flex items-start gap-4">
+                <div class="neo-avatar neo-avatar-lg bg-gradient-to-br from-blue-500 to-purple-600 text-white">
+                    <i class="neo-icon neo-icon-brain text-2xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">Talep-Portföy Eşleştirme</h1>
+                    <p class="text-gray-600 dark:text-gray-400 text-lg">AI destekli analiz ve akıllı öneriler</p>
+                    <div class="flex items-center gap-4 mt-2">
+                        <div class="flex items-center gap-2 text-sm text-green-600 dark:text-green-400">
+                            <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                            <span>AI Sistemi Aktif</span>
+                        </div>
+                        <div class="text-sm text-gray-500 dark:text-gray-400">
+                            Son güncelleme: <?php echo e(now()->format('d.m.Y H:i')); ?>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="flex items-center gap-3">
+                <button type="button" class="neo-btn neo-btn-ghost touch-target-optimized touch-target-optimized" onclick="window.location.reload()">
+                    <i class="neo-icon neo-icon-refresh-cw"></i>
+                    Yenile
+                </button>
+                <button type="button" class="neo-btn neo-btn neo-btn-secondary touch-target-optimized touch-target-optimized" onclick="cacheTemizle()">
+                    <i class="neo-icon neo-icon-trash-2"></i>
+                    Cache Temizle
+                </button>
+                <button type="button" class="neo-btn neo-btn-gradient touch-target-optimized touch-target-optimized" onclick="topluAnaliz()">
+                    <i class="neo-icon neo-icon-zap"></i>
+                    Toplu AI Analiz
+                </button>
+            </div>
+        </div>
+
+        <!-- Geliştirilmiş İstatistik Kartları -->
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
+            <!-- Toplam Talep -->
+            <div
+                class="neo-card bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 border-blue-200 dark:border-blue-800/30">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="p-3 bg-blue-500 rounded-xl text-white shadow-md">
+                        <i class="neo-icon neo-icon-users text-xl"></i>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-2xl font-bold text-blue-700 dark:text-blue-300">
+                            <?php echo e($talepStats['toplam_talep'] ?? 0); ?></div>
+                        <div class="text-sm text-blue-600 dark:text-blue-400 font-medium">Toplam Talep</div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 text-sm">
+                    <span class="text-green-600 dark:text-green-400 font-medium">↗ %12</span>
+                    <span class="text-gray-600 dark:text-gray-400">Bu hafta</span>
+                </div>
+            </div>
+
+            <!-- Aktif Talep -->
+            <div
+                class="neo-card bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 border-green-200 dark:border-green-800/30">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="p-3 bg-green-500 rounded-xl text-white shadow-md">
+                        <i class="neo-icon neo-icon-check-circle text-xl"></i>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-2xl font-bold text-green-700 dark:text-green-300">
+                            <?php echo e($talepStats['status_talep'] ?? 0); ?></div>
+                        <div class="text-sm text-green-600 dark:text-green-400 font-medium">Aktif Talep</div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 text-sm">
+                    <span class="text-green-600 dark:text-green-400 font-medium">↗ %8</span>
+                    <span class="text-gray-600 dark:text-gray-400">Bu hafta</span>
+                </div>
+            </div>
+
+            <!-- Acil Talep -->
+            <div
+                class="neo-card bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-900/20 dark:to-amber-800/20 border-amber-200 dark:border-amber-800/30">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="p-3 bg-amber-500 rounded-xl text-white shadow-md">
+                        <i class="neo-icon neo-icon-alert-triangle text-xl"></i>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-2xl font-bold text-amber-700 dark:text-amber-300">
+                            <?php echo e($talepStats['acil_talep'] ?? 0); ?></div>
+                        <div class="text-sm text-amber-600 dark:text-amber-400 font-medium">Acil Talep</div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 text-sm">
+                    <span class="text-red-600 dark:text-red-400 font-medium">↗ %3</span>
+                    <span class="text-gray-600 dark:text-gray-400">Son 24 saat</span>
+                </div>
+            </div>
+
+            <!-- Toplam Portföy -->
+            <div
+                class="neo-card bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 border-purple-200 dark:border-purple-800/30">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="p-3 bg-purple-500 rounded-xl text-white shadow-md">
+                        <i class="neo-icon neo-icon-home text-xl"></i>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-2xl font-bold text-purple-700 dark:text-purple-300">
+                            <?php echo e($portfolyoStats['toplam_ilan'] ?? 0); ?></div>
+                        <div class="text-sm text-purple-600 dark:text-purple-400 font-medium">Toplam Portföy</div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 text-sm">
+                    <span class="text-green-600 dark:text-green-400 font-medium">↗ %5</span>
+                    <span class="text-gray-600 dark:text-gray-400">Bu ay</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Geliştirilmiş AI Durum Kartı -->
+        <div
+            class="bg-gray-50 dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-200 mb-8">
+            <div class="p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center gap-4">
+                        <div class="p-4 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl shadow-md">
+                            <i class="neo-icon neo-icon-cpu text-2xl text-white"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900 dark:text-white">AI Servis Durumu</h3>
+                            <p class="text-gray-600 dark:text-gray-400">Gerçek zamanlı sağlık kontrolü ve performans
+                                metrikleri</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="flex items-center gap-2 px-3 py-1 bg-green-100 dark:bg-green-900/30 rounded-full">
+                            <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                            <span class="text-sm font-medium text-green-700 dark:text-green-300">Sistem Aktif</span>
+                        </div>
+                        <button class="neo-btn neo-btn neo-btn-secondary touch-target-optimized touch-target-optimized" onclick="aiDurumKontrol()">
+                            <i class="neo-icon neo-icon-refresh-cw"></i>
+                            Durumu Kontrol Et
+                        </button>
+                    </div>
+                </div>
+
+                <div id="aiDurumCard"
+                    class="rounded-xl p-4 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border border-blue-200 dark:border-blue-800/30">
+                    <div class="flex items-center gap-3 text-blue-700 dark:text-blue-300">
+                        <div class="animate-spin">
+                            <i class="neo-icon neo-icon-loader"></i>
+                        </div>
+                        <div class="font-medium">AI servis durumu kontrol ediliyor...</div>
+                    </div>
+                </div>
+
+                <!-- AI Performans Metrikleri -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                    <div
+                        class="text-center p-4 bg-gray-50 dark:bg-gray-900/50 rounded-xl border border-gray-200 dark:border-gray-700">
+                        <div class="text-2xl font-bold text-blue-600 dark:text-blue-400">~2.3s</div>
+                        <div class="text-sm text-gray-600 dark:text-gray-400">Ortalama Yanıt Süresi</div>
+                    </div>
+                    <div
+                        class="text-center p-4 bg-gray-50 dark:bg-gray-900/50 rounded-xl border border-gray-200 dark:border-gray-700">
+                        <div class="text-2xl font-bold text-green-600 dark:text-green-400">99.2%</div>
+                        <div class="text-sm text-gray-600 dark:text-gray-400">Başarı Oranı</div>
+                    </div>
+                    <div
+                        class="text-center p-4 bg-gray-50 dark:bg-gray-900/50 rounded-xl border border-gray-200 dark:border-gray-700">
+                        <div class="text-2xl font-bold text-purple-600 dark:text-purple-400">1,247</div>
+                        <div class="text-sm text-gray-600 dark:text-gray-400">Bu Ay Analiz</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Geliştirilmiş Aktif Talepler Tablosu -->
+        <div
+            class="bg-gray-50 dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-200">
+            <div class="p-6 border-b border-gray-200 dark:border-gray-700">
+                <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+                    <div class="flex items-center gap-4">
+                        <div class="p-3 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl text-white">
+                            <i class="neo-icon neo-icon-list text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900 dark:text-white">Aktif Talepler</h3>
+                            <p class="text-gray-600 dark:text-gray-400">AI analizine hazır müşteri talepleri</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="flex items-center gap-2 px-4 py-2.5 bg-gray-100 dark:bg-gray-800 rounded-lg">
+                            <input type="checkbox" id="selectAll" class="w-5 h-5 text-blue-600 bg-gray-50 dark:bg-gray-800 border-gray-300 dark:border-gray-600 rounded focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-all duration-200 cursor-pointer" onchange="toggleSelectAll()">
+                            <label for="selectAll" class="text-sm font-medium text-gray-900 dark:text-white">Tümünü
+                                Seç</label>
+                        </div>
+                        <button class="neo-btn neo-btn-ghost touch-target-optimized touch-target-optimized" onclick="window.location.reload()">
+                            <i class="neo-icon neo-icon-refresh-cw"></i>
+                            Listele
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-gray-50 dark:bg-gray-900/50">
+                            <tr>
+                                <th
+                                    class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                    Seç</th>
+                                <th
+                                    class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                    Müşteri Bilgileri</th>
+                                <th
+                                    class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                    Talep Detayı</th>
+                                <th
+                                    class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                    Kategori</th>
+                                <th
+                                    class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                    Durum</th>
+                                <th
+                                    class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                    AI İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-gray-50 dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                            <?php $__empty_1 = true; $__currentLoopData = $talepler; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $talep): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors duration-150">
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <input type="checkbox"
+                                            class="talep-checkbox w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 dark:border-gray-600"
+                                            value="<?php echo e($talep->id); ?>">
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center gap-3">
+                                            <div
+                                                class="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center text-white font-semibold shadow-md">
+                                                <span><?php echo e(strtoupper(substr($talep->kisi->ad ?? '?', 0, 1))); ?></span>
+                                            </div>
+                                            <div>
+                                                <div class="font-medium text-gray-900 dark:text-white">
+                                                    <?php echo e($talep->kisi->ad ?? '—'); ?> <?php echo e($talep->kisi->soyad ?? ''); ?>
+
+                                                </div>
+                                                <div class="text-sm text-gray-600 dark:text-gray-400">
+                                                    <i class="neo-icon neo-icon-phone w-3 h-3"></i>
+                                                    <?php echo e($talep->kisi->telefon ?? '—'); ?>
+
+                                                </div>
+                                                <div class="text-xs text-gray-500 dark:text-gray-500 mt-1">
+                                                    ID: #<?php echo e($talep->id); ?>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="max-w-xs">
+                                            <div class="text-sm font-medium text-gray-900 dark:text-white mb-1">
+                                                <?php echo e(Str::limit($talep->aciklama ?? 'Açıklama yok', 60)); ?>
+
+                                            </div>
+                                            <div class="text-xs text-gray-500 dark:text-gray-500">
+                                                <?php echo e($talep->created_at ? $talep->created_at->format('d.m.Y H:i') : '—'); ?>
+
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span
+                                            class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300">
+                                            <i class="neo-icon neo-icon-tag w-3 h-3 mr-1"></i>
+                                            <?php echo e(ucfirst($talep->talep_tipi ?? 'Genel')); ?>
+
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <?php
+                                            $currentStatus = $talep->status ?? 'normal';
+                                            $statusStyle = match ($currentStatus) {
+                                                'acil'
+                                                    => 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300',
+                                                'beklemede'
+                                                    => 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300',
+                                                default
+                                                    => 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300',
+                                            };
+                                            $dotStyle = match ($currentStatus) {
+                                                'acil' => 'bg-red-500',
+                                                'beklemede' => 'bg-yellow-500',
+                                                default => 'bg-green-500',
+                                            };
+                                        ?>
+                                        <span
+                                            class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium <?php echo e($statusStyle); ?>">
+                                            <div class="w-2 h-2 rounded-full mr-2 <?php echo e($dotStyle); ?>"></div>
+                                            <?php echo e(ucfirst($talep->status ?? 'Aktif')); ?>
+
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center gap-2">
+                                            <button
+                                                class="inline-flex items-center px-4 py-2.5 text-xs font-medium text-white bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg hover:from-blue-600 hover:to-purple-700 focus:ring-2 focus:ring-blue-500 transition-all duration-150 shadow-sm"
+                                                onclick="talepAnaliz(<?php echo e($talep->id); ?>)">
+                                                <i class="neo-icon neo-icon-zap w-3 h-3 mr-1"></i>
+                                                AI Analiz
+                                            </button>
+                                            <button
+                                                class="inline-flex items-center px-4 py-2.5 text-xs font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-600 focus:ring-2 focus:ring-blue-500 transition-all duration-150"
+                                                onclick="portfoyOner(<?php echo e($talep->id); ?>)">
+                                                <i class="neo-icon neo-icon-lightbulb w-3 h-3 mr-1"></i>
+                                                Öneriler
+                                            </button>
+                                            <a class="inline-flex items-center px-4 py-2.5 text-xs font-medium text-blue-700 bg-blue-50 rounded-lg hover:bg-blue-100 dark:bg-blue-900/30 dark:text-blue-300 dark:hover:bg-blue-900/50 focus:ring-2 focus:ring-blue-500 transition-all duration-150"
+                                                href="<?php echo e(route('admin.talep-portfolyo.show', $talep->id)); ?>">
+                                                <i class="neo-icon neo-icon-eye w-3 h-3 mr-1"></i>
+                                                Detay
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
+                                <tr>
+                                    <td colspan="6" class="px-6 py-12">
+                                        <div class="text-center">
+                                            <div
+                                                class="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-700 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
+                                                <i class="neo-icon neo-icon-search text-2xl text-gray-400"></i>
+                                            </div>
+                                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Aktif
+                                                talep bulunamadı</h3>
+                                            <p class="text-gray-600 dark:text-gray-400 mb-6 max-w-md mx-auto">
+                                                Henüz analiz edilmeyi bekleyen talep bulunmuyor. Yeni talepler otomatik
+                                                olarak burada görünecek.
+                                            </p>
+                                            <div class="flex items-center justify-center gap-4">
+                                                <button onclick="window.location.reload()"
+                                                    class="neo-btn neo-btn neo-btn-primary touch-target-optimized touch-target-optimized">
+                                                    <i class="neo-icon neo-icon-refresh-cw"></i>
+                                                    Listeyi Yenile
+                                                </button>
+                                                <a href="<?php echo e(url('admin/talepler')); ?>" class="neo-btn neo-btn neo-btn-secondary touch-target-optimized touch-target-optimized">
+                                                    <i class="neo-icon neo-icon-plus"></i>
+                                                    Yeni Talep Ekle
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
+
+                <?php if($talepler->hasPages()): ?>
+                    <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50">
+                        <div class="flex items-center justify-between">
+                            <div class="text-sm text-gray-600 dark:text-gray-400">
+                                <?php echo e($talepler->firstItem()); ?>-<?php echo e($talepler->lastItem()); ?> arası, toplam
+                                <?php echo e($talepler->total()); ?> talep
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <?php echo e($talepler->links()); ?>
+
+                            </div>
+                        </div>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
+
+        <!-- Geliştirilmiş AI Analiz Modal -->
+        <div class="modal fade" id="aiAnalizModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content bg-gray-50 dark:bg-gray-800 border-0 shadow-2xl rounded-2xl overflow-hidden">
+                    <div class="modal-header bg-gradient-to-r from-blue-500 to-purple-600 text-white p-6 border-0">
+                        <div class="flex items-start gap-4 w-full justify-between">
+                            <div class="flex items-center gap-4">
+                                <div
+                                    class="neo-avatar neo-avatar-lg bg-gradient-to-br from-blue-500 to-purple-600 text-white">
+                                    <i class="neo-icon neo-icon-brain text-2xl"></i>
+                                </div>
+                                <div>
+                                    <h1 class="text-3xl font-bold text-white mb-1">AI Talep Analizi</h1>
+                                    <p class="text-blue-100 text-lg">Yapay zeka destekli detaylı analiz sonuçları</p>
+                                </div>
+                            </div>
+                            <button type="button" class="text-white hover:bg-white/20 rounded-lg p-2 transition-colors"
+                                data-bs-dismiss="modal" aria-label="Close">
+                                <i class="neo-icon neo-icon-x text-2xl"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="modal-body p-6">
+                        <div id="aiAnalizContent" class="py-8 text-center">
+                            <div
+                                class="inline-flex items-center gap-3 px-6 py-3 bg-blue-50 dark:bg-blue-900/30 rounded-xl text-blue-700 dark:text-blue-300">
+                                <div class="animate-spin">
+                                    <i class="neo-icon neo-icon-loader text-xl"></i>
+                                </div>
+                                <span class="font-medium">AI analizi yapılıyor, lütfen bekleyin...</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer p-6 bg-gray-50 dark:bg-gray-900/50 border-0">
+                        <button type="button" class="neo-btn neo-btn neo-btn-secondary touch-target-optimized touch-target-optimized" data-bs-dismiss="modal">
+                            <i class="neo-icon neo-icon-x"></i>
+                            Kapat
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Geliştirilmiş Toplu Analiz Modal -->
+        <div class="modal fade" id="topluAnalizModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content bg-gray-50 dark:bg-gray-800 border-0 shadow-2xl rounded-2xl overflow-hidden">
+                    <div class="modal-header bg-gradient-to-r from-purple-500 to-pink-600 text-white p-6 border-0">
+                        <div class="flex items-start gap-4 w-full justify-between">
+                            <div class="flex items-center gap-4">
+                                <div
+                                    class="neo-avatar neo-avatar-lg bg-gradient-to-br from-purple-500 to-pink-600 text-white">
+                                    <i class="neo-icon neo-icon-zap text-2xl"></i>
+                                </div>
+                                <div>
+                                    <h1 class="text-3xl font-bold text-white mb-1">Toplu AI Analiz</h1>
+                                    <p class="text-purple-100 text-lg">Seçili talepler için gelişmiş AI analizi</p>
+                                </div>
+                            </div>
+                            <button type="button" class="text-white hover:bg-white/20 rounded-lg p-2 transition-colors"
+                                data-bs-dismiss="modal" aria-label="Close">
+                                <i class="neo-icon neo-icon-x text-2xl"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="modal-body p-6">
+                        <div class="text-center mb-6">
+                            <div
+                                class="w-16 h-16 bg-gradient-to-br from-purple-100 to-pink-100 dark:from-purple-900/30 dark:to-pink-900/30 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                                <i class="neo-icon neo-icon-cpu text-2xl text-purple-600 dark:text-purple-400"></i>
+                            </div>
+                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Toplu Analiz Onayı</h3>
+                            <p class="text-gray-600 dark:text-gray-400">Seçili talepleri AI ile analiz etmek istediğinizden
+                                emin misiniz?</p>
+                        </div>
+
+                        <div class="grid grid-cols-3 gap-4 mb-6">
+                            <div
+                                class="text-center p-4 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-xl border border-blue-200 dark:border-blue-800/30">
+                                <div class="text-2xl font-bold text-blue-600 dark:text-blue-400" id="selectedCount">0
+                                </div>
+                                <div class="text-sm text-blue-700 dark:text-blue-300 font-medium">Seçili Talep</div>
+                            </div>
+                            <div
+                                class="text-center p-4 bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-900/20 dark:to-amber-800/20 rounded-xl border border-amber-200 dark:border-amber-800/30">
+                                <div class="text-2xl font-bold text-amber-600 dark:text-amber-400">~2-5</div>
+                                <div class="text-sm text-amber-700 dark:text-amber-300 font-medium">Dakika Süre</div>
+                            </div>
+                            <div
+                                class="text-center p-4 bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 rounded-xl border border-green-200 dark:border-green-800/30">
+                                <div class="text-2xl font-bold text-green-600 dark:text-green-400">99%</div>
+                                <div class="text-sm text-green-700 dark:text-green-300 font-medium">Başarı Oranı</div>
+                            </div>
+                        </div>
+
+                        <div
+                            class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800/30 rounded-xl p-4">
+                            <div class="flex items-start gap-3">
+                                <div class="p-1 bg-yellow-500 rounded-lg text-white">
+                                    <i class="neo-icon neo-icon-info w-4 h-4"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-medium text-yellow-800 dark:text-yellow-200 mb-1">Analiz Süreci</h4>
+                                    <p class="text-sm text-yellow-700 dark:text-yellow-300">
+                                        • Her talep için portföy eşleştirmesi yapılacak<br>
+                                        • AI skorlama ve öneri sistemi çalışacak<br>
+                                        • Sonuçlar otomatik olarak kaydedilecek
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer p-6 bg-gray-50 dark:bg-gray-900/50 border-0">
+                        <button type="button" class="neo-btn neo-btn neo-btn-secondary touch-target-optimized touch-target-optimized" data-bs-dismiss="modal">
+                            <i class="neo-icon neo-icon-x"></i>
+                            İptal
+                        </button>
+                        <button type="button" class="neo-btn neo-btn-gradient touch-target-optimized touch-target-optimized" onclick="topluAnalizBaslat()">
+                            <i class="neo-icon neo-icon-play"></i>
+                            Analizi Başlat
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startPush('scripts'); ?>
+    <script>
+        function aiDurumKontrol() {
+            fetch("<?php echo e(route('admin.talep-portfolyo.ai-status')); ?>")
+                .then(r => r.json())
+                .then(data => {
+                    const el = document.getElementById('aiDurumCard');
+                    if (!el) return;
+                    if (data.success) {
+                        const s = data.data;
+                        el.innerHTML = `
+                        <div class="neo-alert neo-alert-success">
+                            <i class="neo-icon neo-icon-check-circle"></i>
+                            <div>
+                                <div><strong>Durum:</strong> ${s.status === 'active' ? 'Aktif' : 'Pasif'}</div>
+                                <div class="neo-text-muted">Sağlayıcı: ${s.provider} • Model: ${s.model} • Versiyon: ${s.version}</div>
+                            </div>
+                        </div>`;
+                    } else {
+                        el.innerHTML = `
+                        <div class="neo-alert neo-alert-danger">
+                            <i class="neo-icon neo-icon-alert-triangle"></i>
+                            <div>AI durum kontrolü başarısız: ${data.message ?? 'Bilinmeyen hata'}</div>
+                        </div>`;
+                    }
+                })
+                .catch(() => {
+                    const el = document.getElementById('aiDurumCard');
+                    if (!el) return;
+                    el.innerHTML = `
+                    <div class="neo-alert neo-alert-danger">
+                        <i class="neo-icon neo-icon-alert-triangle"></i>
+                        <div>AI servisine erişilemedi</div>
+                    </div>`;
+                });
+        }
+
+        function talepAnaliz(talepId) {
+            const modal = new bootstrap.Modal(document.getElementById('aiAnalizModal'));
+            document.getElementById('aiAnalizContent').innerHTML =
+                '<div class="py-4 text-center"><div class="spinner-border" role="status"><span class="visually-hidden">Yükleniyor...</span></div></div>';
+            modal.show();
+
+            fetch(`${"<?php echo e(url('admin/talep-portfolyo')); ?>"}/${talepId}/analiz`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': "<?php echo e(csrf_token()); ?>"
+                    },
+                    body: JSON.stringify({
+                        ai_analiz: true
+                    })
+                })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success) {
+                        const a = data.analiz ?? {};
+                        document.getElementById('aiAnalizContent').innerHTML = `
+                    <div class="neo-alert neo-alert-success"><i class="neo-icon neo-icon-check-circle"></i> Talep analizi tamamlandı</div>
+                    <pre class="neo-code-block">${JSON.stringify(a, null, 2)}</pre>`;
+                    } else {
+                        document.getElementById('aiAnalizContent').innerHTML =
+                            `
+                    <div class="neo-alert neo-alert-danger"><i class="neo-icon neo-icon-alert-triangle"></i> ${data.error ?? data.message ?? 'Analiz başarısız'}</div>`;
+                    }
+                })
+                .catch(() => {
+                    document.getElementById('aiAnalizContent').innerHTML =
+                        `
+                <div class="neo-alert neo-alert-danger"><i class="neo-icon neo-icon-alert-triangle"></i> Sunucu hatası</div>`;
+                });
+        }
+
+        function updateSelectedCount() {
+            const selected = document.querySelectorAll('.talep-checkbox:checked');
+            const el = document.getElementById('selectedCount');
+            if (el) el.textContent = selected.length;
+        }
+
+        function topluAnaliz() {
+            const selected = document.querySelectorAll('.talep-checkbox:checked');
+            if (selected.length === 0) {
+                alert('Lütfen analiz edilecek talepleri seçin');
+                return;
+            }
+            updateSelectedCount();
+            new bootstrap.Modal(document.getElementById('topluAnalizModal')).show();
+        }
+
+        function topluAnalizBaslat() {
+            const selected = document.querySelectorAll('.talep-checkbox:checked');
+            const talepIds = Array.from(selected).map(cb => cb.value);
+
+            const aiModal = new bootstrap.Modal(document.getElementById('aiAnalizModal'));
+            document.getElementById('aiAnalizContent').innerHTML =
+                '<div class="py-4 text-center"><div class="spinner-border" role="status"><span class="visually-hidden">Analiz ediliyor...</span></div><p class="mt-2">' +
+                talepIds.length + ' talep analiz ediliyor...</p></div>';
+            aiModal.show();
+
+            fetch("<?php echo e(route('admin.talep-portfolyo.toplu-analiz')); ?>", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': "<?php echo e(csrf_token()); ?>"
+                    },
+                    body: JSON.stringify({
+                        talep_ids: talepIds
+                    })
+                })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById('aiAnalizContent').innerHTML =
+                            `
+                    <div class=\"neo-alert neo-alert-success\"><i class=\"neo-icon neo-icon-check-circle\"></i> ${data.message}</div>
+                    <div class=\"text-center mt-3\"><button class=\"neo-btn neo-btn neo-btn-primary\" onclick=\"location.reload()\">Sayfayı Yenile</button></div>`;
+                    } else {
+                        document.getElementById('aiAnalizContent').innerHTML =
+                            `<div class=\"neo-alert neo-alert-danger\">${data.message ?? 'Toplu analiz başarısız'}</div>`;
+                    }
+                })
+                .catch(() => {
+                    document.getElementById('aiAnalizContent').innerHTML =
+                        `<div class=\"neo-alert neo-alert-danger\">Sunucu hatası</div>`;
+                });
+        }
+
+        // Öneriler modalı - durum ve render
+        window._onerilerState = {
+            raw: [],
+            talepId: null,
+            filters: {
+                minScore: 0,
+                sortDir: 'desc',
+                priceMin: '',
+                priceMax: '',
+                il: '',
+                ilce: '',
+                highOnly: false,
+                currency: ''
+            }
+        };
+
+        function renderOneriler() {
+            const container = document.getElementById('onerilerContent');
+            const f = window._onerilerState.filters || {};
+            let list = Array.isArray(window._onerilerState.raw) ? [...window._onerilerState.raw] : [];
+            const originalCount = list.length;
+
+            // Skor filtresi (hızlı: ≥90)
+            const effMinScore = f.highOnly ? 90 : (Number(f.minScore) || 0);
+            list = list.filter(o => (o.score ?? 0) >= effMinScore);
+            // Fiyat filtresi
+            if (f.priceMin != null && f.priceMin !== '') list = list.filter(o => (Number(o.fiyat) || 0) >= Number(f
+                .priceMin));
+            if (f.priceMax != null && f.priceMax !== '') list = list.filter(o => (Number(o.fiyat) || 0) <= Number(f
+                .priceMax));
+            // Konum filtresi
+            if (f.il) list = list.filter(o => (o.adres_il || '').toString() === String(f.il));
+            if (f.ilce) list = list.filter(o => (o.adres_ilce || '').toString() === String(f.ilce));
+            // Para birimi filtresi
+            if (f.currency) list = list.filter(o => (o.para_birimi || '').toString().toUpperCase() === String(f.currency)
+                .toUpperCase());
+
+            // Sıralama
+            list.sort((a, b) => (f.sortDir === 'asc' ? (a.score ?? 0) - (b.score ?? 0) : (b.score ?? 0) - (a.score ?? 0)));
+
+            // Filtre özeti güncelle
+            updateFilterSummary(f, originalCount, list.length);
+
+            if (list.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12">
+                        <div class="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-700 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                            <i class="neo-icon neo-icon-search-x text-3xl text-gray-400"></i>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Hiç öneri bulunamadı</h3>
+                        <p class="text-gray-600 dark:text-gray-400 mb-6">Filtreleri gevşeterek daha fazla sonuç bulabilirsiniz</p>
+                        <button class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors duration-150" onclick="resetOneriFilters()">
+                            <i class="neo-icon neo-icon-refresh-ccw w-4 h-4 mr-2"></i>
+                            Filtreleri Sıfırla
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            const rows = list.map((o, index) => `
+                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors duration-150">
+                    <td class="px-4 py-2.5">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center text-white text-sm font-semibold">
+                                ${index + 1}
+                            </div>
+                            <span class="text-sm text-gray-600 dark:text-gray-400">#${o.id ?? '-'}</span>
+                        </div>
+                    </td>
+                    <td class="px-4 py-2.5">
+                        <div class="max-w-xs">
+                            <div class="font-medium text-gray-900 dark:text-white mb-1">${escapeHtml(o.baslik ?? '-')}</div>
+                            <div class="text-xs text-gray-500 dark:text-gray-500">${o.created_at ? new Date(o.created_at).toLocaleDateString('tr-TR') : ''}</div>
+                        </div>
+                    </td>
+                    <td class="px-4 py-2.5">
+                        <div class="font-semibold text-gray-900 dark:text-white">
+                            ${o.fiyat ? (Number(o.fiyat).toLocaleString('tr-TR') + ' ' + (o.para_birimi ?? '')) : '-'}
+                        </div>
+                    </td>
+                    <td class="px-4 py-2.5">
+                        <div class="text-sm text-gray-900 dark:text-white">
+                            <i class="neo-icon neo-icon-map-pin w-3 h-3 mr-1 text-red-500"></i>
+                            ${escapeHtml([o.adres_il, o.adres_ilce].filter(Boolean).join(' / ') || '-')}
+                        </div>
+                    </td>
+                    <td class="px-4 py-2.5">
+                        <div class="flex items-center gap-2">
+                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${badgeClass(o)}">${escapeHtml(o.etiket ?? 'Uygun')}</span>
+                            <div class="flex items-center gap-1">
+                                <div class="w-12 h-2 bg-gray-200 dark:bg-gray-800 rounded-full overflow-hidden">
+                                    <div class="h-full ${getScoreColor(o.score ?? 0)} transition-all duration-300" style="width: ${Math.min(o.score ?? 0, 100)}%"></div>
+                                </div>
+                                <span class="text-xs font-semibold text-gray-900 dark:text-white">${o.score ?? 0}</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-4 py-2.5">
+                        <div class="flex items-center gap-2">
+                            <a href="${"<?php echo e(url('admin/ilanlar')); ?>"}/${o.id}" class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-blue-700 bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/30 dark:text-blue-300 dark:hover:bg-blue-900/50 rounded-lg transition-colors duration-150">
+                                <i class="neo-icon neo-icon-eye w-3 h-3 mr-1"></i>
+                                Detay
+                            </a>
+                            <button class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-green-700 bg-green-50 hover:bg-green-100 dark:bg-green-900/30 dark:text-green-300 dark:hover:bg-green-900/50 rounded-lg transition-colors duration-150" onclick="sendToClient(${o.id})">
+                                <i class="neo-icon neo-icon-send w-3 h-3 mr-1"></i>
+                                Gönder
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+
+            container.innerHTML = `
+                <div class="bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gray-50 dark:bg-gray-900/50">
+                                <tr>
+                                    <th class="px-4 py-2.5 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Sıra</th>
+                                    <th class="px-4 py-2.5 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Emlak Detayı</th>
+                                    <th class="px-4 py-2.5 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Fiyat</th>
+                                    <th class="px-4 py-2.5 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Konum</th>
+                                    <th class="px-4 py-2.5 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">AI Uygunluğu</th>
+                                    <th class="px-4 py-2.5 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">İşlemler</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                                ${rows}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+        }
+
+        function updateFilterSummary(filters, originalCount, filteredCount) {
+            const summaryEl = document.getElementById('filterSummary');
+            const countEl = document.getElementById('resultCount');
+
+            let summary = [];
+            if (filters.highOnly) summary.push('Premium seçim');
+            if (filters.minScore > 0) summary.push(`Min skor: ${filters.minScore}`);
+            if (filters.il) summary.push(`İl: ${filters.il}`);
+            if (filters.priceMin) summary.push(`Min: ${Number(filters.priceMin).toLocaleString('tr-TR')}`);
+            if (filters.priceMax) summary.push(`Max: ${Number(filters.priceMax).toLocaleString('tr-TR')}`);
+
+            if (summaryEl) {
+                summaryEl.textContent = summary.length > 0 ? summary.join(', ') : 'Tüm öneriler gösteriliyor';
+            }
+            if (countEl) {
+                countEl.textContent = `${filteredCount} / ${originalCount} sonuç`;
+            }
+        }
+
+        function getScoreColor(score) {
+            if (score >= 90) return 'bg-green-500';
+            if (score >= 80) return 'bg-yellow-500';
+            if (score >= 70) return 'bg-orange-500';
+            return 'bg-red-500';
+        }
+
+        function sendToClient(ilanId) {
+            // Müşteriye öneri gönderme fonksiyonu
+            alert(`İlan #${ilanId} müşteriye gönderilecek (bu özellik geliştirme aşamasında)`);
+        }
+
+        function exportResults() {
+            // Sonuçları dışa aktarma fonksiyonu
+            alert('Sonuçlar Excel/PDF olarak dışa aktarılacak (bu özellik geliştirme aşamasında)');
+        }
+
+        function badgeClass(o) {
+            const s = o.score ?? 0;
+            if (s >= 90) return 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300';
+            if (s >= 80) return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300';
+            if (s >= 70) return 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300';
+            return 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300';
+        }
+
+        function escapeHtml(str) {
+            return String(str).replace(/[&<>"]/g, (c) => ({
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;'
+            } [c]));
+        }
+
+        function saveOneriFilters() {
+            try {
+                localStorage.setItem('tp_oneri_filters', JSON.stringify(window._onerilerState.filters));
+            } catch {}
+        }
+
+        function loadOneriFilters() {
+            try {
+                const saved = JSON.parse(localStorage.getItem('tp_oneri_filters') || '{}');
+                if (saved && typeof saved === 'object') {
+                    window._onerilerState.filters = Object.assign(window._onerilerState.filters, saved);
+                }
+            } catch {}
+            // Inputlara yansıt
+            const f = window._onerilerState.filters || {};
+            const minScoreEl = document.getElementById('minScore');
+            const sortDirEl = document.getElementById('sortDir');
+            const priceMinEl = document.getElementById('priceMin');
+            const priceMaxEl = document.getElementById('priceMax');
+            const ilEl = document.getElementById('filterIl');
+            const ilceEl = document.getElementById('filterIlce');
+            const highOnlyEl = document.getElementById('highOnly');
+            const currencyEl = document.getElementById('currencyFilter');
+            if (minScoreEl) minScoreEl.value = f.minScore ?? 0;
+            if (sortDirEl) sortDirEl.value = f.sortDir ?? 'desc';
+            if (priceMinEl) priceMinEl.value = f.priceMin ?? '';
+            if (priceMaxEl) priceMaxEl.value = f.priceMax ?? '';
+            if (ilEl) ilEl.value = f.il ?? '';
+            if (ilceEl) ilceEl.value = f.ilce ?? '';
+            if (highOnlyEl) highOnlyEl.checked = !!f.highOnly;
+            if (currencyEl) currencyEl.value = f.currency ?? '';
+            // Currency ve il listeleri yeni populate edilmiş olabilir, seçimi koru
+        }
+
+        function onOneriFilterChange() {
+            const minScore = parseInt(document.getElementById('minScore')?.value || '0', 10);
+            const sortDir = document.getElementById('sortDir')?.value || 'desc';
+            const priceMinVal = document.getElementById('priceMin')?.value;
+            const priceMaxVal = document.getElementById('priceMax')?.value;
+            const il = document.getElementById('filterIl')?.value || '';
+            const ilce = document.getElementById('filterIlce')?.value || '';
+            const highOnly = !!document.getElementById('highOnly')?.checked;
+            const currency = document.getElementById('currencyFilter')?.value || '';
+            window._onerilerState.filters = {
+                minScore,
+                sortDir,
+                priceMin: priceMinVal !== '' ? Number(priceMinVal) : '',
+                priceMax: priceMaxVal !== '' ? Number(priceMaxVal) : '',
+                il,
+                ilce,
+                highOnly,
+                currency
+            };
+            saveOneriFilters();
+            renderOneriler();
+        }
+
+        function onHighOnlyToggle() {
+            const cb = document.getElementById('highOnly');
+            if (!cb) return;
+            window._onerilerState.filters.highOnly = !!cb.checked;
+            saveOneriFilters();
+            renderOneriler();
+        }
+
+        function populateIlOptions() {
+            const ilSelect = document.getElementById('filterIl');
+            if (!ilSelect) return;
+            const uniqueIller = Array.from(new Set((window._onerilerState.raw || [])
+                .map(o => (o.adres_il || '').toString())
+                .filter(Boolean)));
+            ilSelect.innerHTML = '<option value="">Tümü</option>' + uniqueIller.map(v =>
+                `<option value="${escapeHtml(v)}">${escapeHtml(v)}</option>`).join('');
+            // Para birimi seçeneklerini önerilerden türet
+            const currencyEl = document.getElementById('currencyFilter');
+            if (currencyEl) {
+                const uniqueCurrencies = Array.from(new Set((window._onerilerState.raw || [])
+                    .map(o => (o.para_birimi || '').toString().toUpperCase())
+                    .filter(Boolean)));
+                currencyEl.innerHTML = '<option value="">Tümü</option>' + uniqueCurrencies.map(c =>
+                    `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
+            }
+        }
+
+        function onOneriIlChange() {
+            const il = document.getElementById('filterIl')?.value || '';
+            const ilceSelect = document.getElementById('filterIlce');
+            if (ilceSelect) {
+                const uniqueIlceler = Array.from(new Set((window._onerilerState.raw || [])
+                    .filter(o => (o.adres_il || '').toString() === il)
+                    .map(o => (o.adres_ilce || '').toString())
+                    .filter(Boolean)));
+                ilceSelect.innerHTML = '<option value="">Tümü</option>' + uniqueIlceler.map(v =>
+                    `<option value="${escapeHtml(v)}">${escapeHtml(v)}</option>`).join('');
+            }
+            onOneriFilterChange();
+        }
+
+        function resetOneriFilters() {
+            window._onerilerState.filters = {
+                minScore: 0,
+                sortDir: 'desc',
+                priceMin: '',
+                priceMax: '',
+                il: '',
+                ilce: '',
+                highOnly: false,
+                currency: ''
+            };
+            saveOneriFilters();
+            loadOneriFilters();
+            renderOneriler();
+        }
+
+        function portfoyOner(talepId) {
+            const modal = new bootstrap.Modal(document.getElementById('onerilerModal'));
+            const container = document.getElementById('onerilerContent');
+            container.innerHTML =
+                '<div class="text-center py-4"><div class="spinner-border" role="status"><span class="visually-hidden">Yükleniyor...</span></div></div>';
+            modal.show();
+
+            fetch(`${"<?php echo e(url('admin/talep-portfolyo')); ?>"}/${talepId}/portfolyo-oner`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': "<?php echo e(csrf_token()); ?>"
+                    }
+                })
+                .then(r => r.json())
+                .then(data => {
+                    if (!data.success) {
+                        container.innerHTML =
+                            `<div class=\"neo-alert neo-alert-danger\"><i class=\"neo-icon neo-icon-alert-triangle\"></i> ${data.message ?? 'Öneriler alınamadı'}</div>`;
+                        return;
+                    }
+                    window._onerilerState.raw = data.oneriler || [];
+                    window._onerilerState.talepId = talepId;
+                    // Filtreleri yükle ve seçenekleri doldur
+                    populateIlOptions();
+                    loadOneriFilters();
+                    onOneriIlChange();
+                    renderOneriler();
+                })
+                .catch(() => {
+                    container.innerHTML =
+                        '<div class="neo-alert neo-alert-danger"><i class="neo-icon neo-icon-alert-triangle"></i> Sunucu hatası</div>';
+                });
+        }
+
+        function cacheTemizle() {
+            if (!confirm('AI cache\'ini temizlemek istiyor musunuz?')) return;
+            fetch("<?php echo e(route('admin.talep-portfolyo.cache-temizle')); ?>", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': "<?php echo e(csrf_token()); ?>"
+                    }
+                })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success) alert('Cache başarıyla temizlendi');
+                    else alert('Cache temizleme hatası: ' + (data.message || 'Bilinmeyen'));
+                })
+                .catch(() => alert('Cache temizleme sırasında hata oluştu'));
+        }
+
+        function toggleSelectAll() {
+            const selectAll = document.getElementById('selectAll');
+            document.querySelectorAll('.talep-checkbox').forEach(cb => cb.checked = selectAll.checked);
+            updateSelectedCount();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            aiDurumKontrol();
+            document.querySelectorAll('.talep-checkbox').forEach(cb => cb.addEventListener('change',
+                updateSelectedCount));
+            // Modal açıldığında varsa kaydedilmiş filtreleri inputlara basabilmek için önceden yükle
+            loadOneriFilters();
+        });
+    </script>
+<?php $__env->stopPush(); ?>
+
+<!-- Geliştirilmiş AI Portföy Önerileri Modal -->
+<div class="modal fade" id="onerilerModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content bg-gray-50 dark:bg-gray-800 border-0 shadow-2xl rounded-2xl overflow-hidden">
+            <!-- Modern Header -->
+            <div class="modal-header bg-gradient-to-r from-emerald-500 to-teal-600 text-white border-0">
+                <div class="flex items-start gap-4 w-full justify-between">
+                    <div class="flex items-center gap-4">
+                        <div
+                            class="neo-avatar neo-avatar-lg bg-gradient-to-br from-emerald-500 to-teal-600 text-white">
+                            <i class="neo-icon neo-icon-target text-2xl"></i>
+                        </div>
+                        <div>
+                            <h1 class="text-3xl font-bold text-white mb-1">AI Portföy Önerileri</h1>
+                            <p class="text-white/70 text-lg mb-0">Akıllı eşleştirme ve gelişmiş filtreleme sistemi</p>
+                        </div>
+                    </div>
+                    <button type="button" class="text-white hover:bg-white/20 rounded-lg p-2 transition-colors"
+                        data-bs-dismiss="modal" aria-label="Close">
+                        <i class="neo-icon neo-icon-x text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="modal-body p-0">
+                <!-- Geliştirilmiş Filtre Paneli -->
+                <div class="p-6 bg-gray-50 dark:bg-gray-900/50 border-b border-gray-200 dark:border-gray-700">
+                    <div class="mb-4">
+                        <h6
+                            class="text-lg font-semibold text-gray-900 dark:text-white mb-2 flex items-center gap-2">
+                            <i class="neo-icon neo-icon-sliders text-blue-600"></i>
+                            Akıllı Filtreleme
+                        </h6>
+                        <p class="text-gray-600 dark:text-gray-400 text-sm mb-0">AI önerilerini özelleştirin ve en
+                            uygun portföy seçeneklerini bulun</p>
+                    </div>
+
+                    <!-- Filtre Grid -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                        <!-- Minimum Skor -->
+                        <div
+                            class="bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
+                            <div class="p-3">
+                                <label for="minScore"
+                                    class="block text-sm font-medium mb-2 text-gray-900 dark:text-white">
+                                    <i class="neo-icon neo-icon-trending-up text-blue-600 mr-1"></i>
+                                    Minimum Skor
+                                </label>
+                                <input id="minScore" type="number" min="0" max="100" value="0"
+                                    class="w-full px-4 py-2.5 text-sm rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    oninput="onOneriFilterChange()" />
+                                <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">0-100 arası</div>
+                            </div>
+                        </div>
+
+                        <!-- Sıralama -->
+                        <div
+                            class="bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
+                            <div class="p-3">
+                                <label for="sortDir"
+                                    class="block text-sm font-medium mb-2 text-gray-900 dark:text-white">
+                                    <i class="neo-icon neo-icon-arrow-up-down text-purple-600 mr-1"></i>
+                                    Sıralama
+                                </label>
+                                <select style="color-scheme: light dark;" id="sortDir"
+                                    class="w-full px-4 py-2.5 text-sm rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200"
+                                    onchange="onOneriFilterChange()">
+                                    <option value="desc">Skor: Yüksek → Düşük</option>
+                                    <option value="asc">Skor: Düşük → Yüksek</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Fiyat Aralığı -->
+                        <div
+                            class="bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
+                            <div class="p-3">
+                                <label class="block text-sm font-medium mb-2 text-gray-900 dark:text-white">
+                                    <i class="neo-icon neo-icon-dollar-sign text-green-600 mr-1"></i>
+                                    Fiyat Aralığı
+                                </label>
+                                <div class="mb-2">
+                                    <input id="priceMin" type="number" min="0" step="1000"
+                                        class="w-full px-4 py-2.5 text-sm rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        placeholder="Min fiyat" oninput="onOneriFilterChange()" />
+                                </div>
+                                <input id="priceMax" type="number" min="0" step="1000"
+                                    class="w-full px-4 py-2.5 text-sm rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    placeholder="Max fiyat" oninput="onOneriFilterChange()" />
+                            </div>
+                        </div>
+
+                        <!-- Konum -->
+                        <div
+                            class="bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
+                            <div class="p-3">
+                                <label class="block text-sm font-medium mb-2 text-gray-900 dark:text-white">
+                                    <i class="neo-icon neo-icon-map-pin text-red-600 mr-1"></i>
+                                    Konum
+                                </label>
+                                <div class="mb-2">
+                                    <select style="color-scheme: light dark;" id="filterIl"
+                                        class="w-full px-4 py-2.5 text-sm rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200"
+                                        onchange="onOneriIlChange()">
+                                        <option value="">Tüm İller</option>
+                                    </select>
+                                </div>
+                                <select style="color-scheme: light dark;" id="filterIlce"
+                                    class="w-full px-4 py-2.5 text-sm rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200"
+                                    onchange="onOneriFilterChange()">
+                                    <option value="">Tüm İlçeler</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Gelişmiş Filtreler -->
+                        <div
+                            class="bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
+                            <div class="p-3">
+                                <label class="block text-sm font-medium mb-3 text-gray-900 dark:text-white">
+                                    <i class="neo-icon neo-icon-filter text-amber-500 mr-1"></i>
+                                    Özel Filtreler
+                                </label>
+                                <div class="mb-3">
+                                    <label
+                                        class="inline-flex items-center gap-2 text-sm text-gray-900 dark:text-white">
+                                        <input id="highOnly" type="checkbox" class="w-5 h-5 text-blue-600 bg-gray-50 dark:bg-gray-800 border-gray-300 dark:border-gray-600 rounded focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-all duration-200 cursor-pointer"
+                                            onchange="onHighOnlyToggle()" />
+                                        <span>Premium Seçim (≥90)</span>
+                                    </label>
+                                </div>
+                                <div class="mb-3">
+                                    <select style="color-scheme: light dark;" id="currencyFilter"
+                                        class="w-full px-4 py-2.5 text-sm rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200"
+                                        onchange="onOneriFilterChange()">
+                                        <option value="">Tüm Para Birimleri</option>
+                                    </select>
+                                </div>
+                                <button type="button" class="neo-btn neo-btn neo-btn-secondary w-full touch-target-optimized touch-target-optimized"
+                                    onclick="resetOneriFilters()">
+                                    <i class="neo-icon neo-icon-refresh-ccw"></i>
+                                    Sıfırla
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Filtre Özeti -->
+                    <div
+                        class="mt-4 rounded-xl border border-blue-200 dark:border-blue-800/30 bg-blue-50 dark:bg-blue-900/20 p-3">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2 text-blue-800 dark:text-blue-200">
+                                <i class="neo-icon neo-icon-info"></i>
+                                <span id="filterSummary">Tüm öneriler gösteriliyor</span>
+                            </div>
+                            <div class="text-sm font-medium text-blue-900 dark:text-blue-100" id="resultCount">0 sonuç
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sonuçlar Alanı -->
+                <div class="p-6">
+                    <div id="onerilerContent" style="min-height: 400px;">
+                        <div class="py-10 text-center">
+                            <div
+                                class="inline-flex items-center justify-center bg-blue-100 dark:bg-blue-900/30 rounded-full w-16 h-16 mb-4">
+                                <div class="animate-spin text-blue-600 dark:text-blue-300">
+                                    <i class="neo-icon neo-icon-loader text-2xl"></i>
+                                </div>
+                            </div>
+                            <h5 class="text-lg font-medium text-gray-900 dark:text-white mb-1">AI Analizi Yapılıyor
+                            </h5>
+                            <p class="text-gray-600 dark:text-gray-400">Portföy önerileri hazırlanıyor, lütfen
+                                bekleyin...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer p-6 bg-gray-50 dark:bg-gray-900/50 border-0">
+                <div class="flex items-center justify-between w-full">
+                    <div class="text-sm text-gray-600 dark:text-gray-400">
+                        <i class="neo-icon neo-icon-clock mr-1"></i>
+                        Son güncelleme: Az önce
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button type="button" class="neo-btn neo-btn neo-btn-secondary touch-target-optimized touch-target-optimized" data-bs-dismiss="modal">
+                            <i class="neo-icon neo-icon-x"></i>
+                            Kapat
+                        </button>
+                        <button type="button" class="neo-btn neo-btn neo-btn-primary touch-target-optimized touch-target-optimized" onclick="exportResults()">
+                            <i class="neo-icon neo-icon-download"></i>
+                            Sonuçları İndir
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<?php echo $__env->make('admin.layouts.neo', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /Users/macbookpro/Projects/yalihanemlakwarp/resources/views/admin/talep-portfolyo/index.blade.php ENDPATH**/ ?>

@@ -1,0 +1,79 @@
+{
+    "mcpServers": {
+        "context7": {
+            "command": "npx",
+            "args": ["-y", "@upstash/context7-mcp@latest"],
+            "env": {
+                "DB_CONNECTION": "mysql",
+                "DB_HOST": "127.0.0.1",
+                "DB_PORT": "3306",
+                "DB_DATABASE": "yalihanemlak_db",
+                "DB_USERNAME": "root",
+                "DB_PASSWORD": "",
+                "CTX7_REPO_ROOT": "/Users/macbookpro/Projects/yalihanemlak",
+                "CTX7_MEMORY_TARGET": "/Users/macbookpro/Projects/yalihanemlak/docs/context7-master.md",
+                "CTX7_RULES_FILE": "/Users/macbookpro/Projects/yalihanemlak/docs/context7-rules.md",
+                "CTX7_CONFIG_FILE": "/Users/macbookpro/Projects/yalihanemlak/config/context7.json"
+            }
+        }
+    },
+    "rules": [
+        {
+            "name": "Context7: Sync Rules",
+            "trigger": {
+                "onFileChange": "docs/context7-rules.md"
+            },
+            "actions": [
+                {
+                    "type": "command",
+                    "command": "npx",
+                    "args": [
+                        "@upstash/context7-mcp@latest",
+                        "memory",
+                        "sync",
+                        "--rules",
+                        "docs/context7-rules.md"
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Context7: Sync Master Schema",
+            "trigger": {
+                "onFileChange": "docs/context7-master.md"
+            },
+            "actions": [
+                {
+                    "type": "command",
+                    "command": "npx",
+                    "args": [
+                        "@upstash/context7-mcp@latest",
+                        "memory",
+                        "sync",
+                        "--schema",
+                        "docs/context7-master.md"
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Context7: Sync Config",
+            "trigger": {
+                "onFileChange": "config/context7.json"
+            },
+            "actions": [
+                {
+                    "type": "command",
+                    "command": "npx",
+                    "args": [
+                        "@upstash/context7-mcp@latest",
+                        "config",
+                        "sync",
+                        "--config",
+                        "config/context7.json"
+                    ]
+                }
+            ]
+        }
+    ]
+}

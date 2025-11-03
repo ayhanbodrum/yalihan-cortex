@@ -1,0 +1,13 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use Illuminate\Http\Request;
+
+class FormValidationController extends AdminController
+{
+    public function index(Request $request)
+    {
+        return response()->json(['message' => 'Form Validation endpoint - to be implemented']);
+    }
+}

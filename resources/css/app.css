@@ -1,0 +1,298 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ===== NEO DESIGN SYSTEM - Design Tokens ===== */
+/* All Neo classes are now provided by Tailwind plugin (tailwind.config.js) */
+
+:root {
+    /* === SPACING TOKENS === */
+    --neo-spacing-xs: 0.25rem; /* 4px */
+    --neo-spacing-sm: 0.5rem; /* 8px */
+    --neo-spacing-md: 1rem; /* 16px */
+    --neo-spacing-lg: 1.5rem; /* 24px */
+    --neo-spacing-xl: 2rem; /* 32px */
+    --neo-spacing-2xl: 3rem; /* 48px */
+    --neo-spacing-3xl: 4rem; /* 64px */
+    --neo-spacing-4xl: 6rem; /* 96px */
+
+    /* === ANIMATION TOKENS === */
+    --neo-animation-fast: 150ms;
+    --neo-animation-base: 250ms;
+    --neo-animation-slow: 350ms;
+    --neo-animation-slower: 500ms;
+
+    /* === EASING FUNCTIONS === */
+    --neo-ease-linear: linear;
+    --neo-ease-in: cubic-bezier(0.4, 0, 1, 1);
+    --neo-ease-out: cubic-bezier(0, 0, 0.2, 1);
+    --neo-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+    --neo-ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    --neo-ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+    /* === COLOR TOKENS === */
+    --neo-color-primary-500: #3b82f6;
+    --neo-color-primary-600: #2563eb;
+    --neo-color-secondary-500: #64748b;
+    --neo-color-secondary-900: #0f172a;
+    --neo-color-success-500: #10b981;
+    --neo-color-warning-500: #f59e0b;
+    --neo-color-error-500: #ef4444;
+    --neo-color-info-500: #0ea5e9;
+
+    /* === SHADOW TOKENS === */
+    --neo-shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    --neo-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --neo-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+
+    /* === BORDER RADIUS TOKENS === */
+    --neo-radius-sm: 0.125rem; /* 2px */
+    --neo-radius-base: 0.25rem; /* 4px */
+    --neo-radius-md: 0.375rem; /* 6px */
+    --neo-radius-lg: 0.5rem; /* 8px */
+    --neo-radius-xl: 0.75rem; /* 12px */
+    --neo-radius-2xl: 1rem; /* 16px */
+
+    /* === TRANSITION TOKENS === */
+    --neo-transition-all: all var(--neo-animation-base) var(--neo-ease-in-out);
+    --neo-transition-colors:
+        color var(--neo-animation-base) var(--neo-ease-in-out),
+        background-color var(--neo-animation-base) var(--neo-ease-in-out),
+        border-color var(--neo-animation-base) var(--neo-ease-in-out);
+}
+
+/* Dark Mode Tokens */
+.dark {
+    --neo-color-shadow: rgba(0, 0, 0, 0.3);
+}
+
+/* Responsive Utilities */
+@media (max-width: 768px) {
+    :root {
+        --neo-spacing-md: 0.5rem; /* 8px */
+        --neo-spacing-lg: 1rem; /* 16px */
+        --neo-spacing-xl: 1.5rem; /* 24px */
+    }
+}
+
+/* ========================================
+   GLOBAL STYLES
+   ======================================== */
+
+@layer base {
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        @apply font-sans antialiased;
+        font-feature-settings: 'cv11', 'ss01';
+        text-rendering: optimizeLegibility;
+    }
+
+    /* ========================================
+       INPUT/TEXTAREA DEFAULT STYLES
+       Tailwind @layer base - NO !important!
+       Tailwind utility classes can override these
+       ======================================== */
+
+    /* Default input/textarea values - Tailwind cascade */
+    input[type='text'],
+    input[type='number'],
+    input[type='email'],
+    input[type='password'],
+    input[type='tel'],
+    input[type='date'],
+    input[type='time'],
+    textarea {
+        @apply text-black dark:text-white;
+        @apply font-semibold;
+    }
+
+    /* Default placeholder styles - Tailwind cascade */
+    input::placeholder,
+    textarea::placeholder {
+        @apply text-gray-600 dark:text-gray-500;
+        @apply font-semibold;
+        opacity: 1;
+    }
+}
+
+/* Component Layer */
+@layer components {
+    .hero-gradient {
+        background: linear-gradient(135deg, #2563eb 0%, #059669 100%);
+    }
+
+    .glass {
+        @apply bg-white/10 backdrop-blur-lg border border-white/20;
+    }
+
+    .card-hover {
+        @apply transition-all duration-300 hover:shadow-xl hover:-translate-y-1;
+    }
+
+    /* Context7 Sidebar Components */
+    .context7-sidebar {
+        @apply border-r border-gray-800/50;
+    }
+
+    .context7-sidebar-item {
+        @apply flex items-center text-sm px-3 py-2 rounded-lg text-gray-300 hover:text-white transition-colors duration-150;
+        position: relative;
+    }
+
+    .context7-sidebar-item:hover {
+        background: rgba(249, 115, 22, 0.08);
+    }
+
+    .context7-sidebar-item.active {
+        @apply text-white;
+        background: linear-gradient(
+            90deg,
+            rgba(249, 115, 22, 0.18) 0%,
+            rgba(249, 115, 22, 0.06) 100%
+        );
+    }
+
+    /* Context7 Table Components */
+    .c7-table {
+        @apply divide-y divide-gray-200 w-full;
+    }
+
+    .c7-thead tr th {
+        @apply px-6 py-3 text-left text-xs font-medium uppercase tracking-wider bg-gray-50 text-gray-700;
+    }
+
+    .dark .c7-thead tr th {
+        @apply bg-gray-800 text-gray-300;
+    }
+
+    .c7-tbody tr {
+        @apply bg-white;
+    }
+
+    .dark .c7-tbody tr {
+        @apply bg-gray-900;
+    }
+
+    .c7-tbody tr:hover {
+        @apply bg-gray-50;
+    }
+
+    .dark .c7-tbody tr:hover {
+        @apply bg-gray-800;
+    }
+}
+
+/* Utility Layer */
+@layer utilities {
+    .text-gradient {
+        @apply bg-gradient-to-r from-blue-600 to-emerald-600 bg-clip-text text-transparent;
+    }
+
+    .transition-smooth {
+        @apply transition-all duration-300 ease-in-out;
+    }
+
+    .shadow-glow {
+        box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+    }
+}
+
+/* ========================================
+   DROPDOWN READABILITY FIX - Context7 Standard
+   Date: 2025-11-01
+   Purpose: KALICI ÇÖZÜM - Browser native dropdown rendering override
+   ======================================== */
+
+/* Force all select and option elements to use proper colors */
+select {
+    /* Light mode */
+    background-color: white !important;
+    color: #111827 !important; /* gray-900 */
+}
+
+select option {
+    /* Light mode - CRITICAL for readability */
+    background-color: white !important;
+    color: #111827 !important; /* gray-900 */
+    font-weight: 500 !important;
+    padding: 0.5rem !important;
+}
+
+select option:hover {
+    background-color: #f3f4f6 !important; /* gray-100 */
+}
+
+/* Dark mode - CRITICAL FIX */
+.dark select {
+    background-color: #111827 !important; /* gray-900 */
+    color: white !important;
+}
+
+.dark select option {
+    background-color: #111827 !important; /* gray-900 - MUST be darker than gray-800 */
+    color: white !important; /* MUST be white, not gray-100 */
+    font-weight: 500 !important;
+    padding: 0.5rem !important;
+}
+
+.dark select option:hover {
+    background-color: #1f2937 !important; /* gray-800 */
+}
+
+/* Placeholder option (empty value) */
+select option[value=''] {
+    color: #9ca3af !important; /* gray-400 */
+    font-style: italic !important;
+}
+
+.dark select option[value=''] {
+    color: #6b7280 !important; /* gray-500 */
+}
+
+/* Disabled select */
+select:disabled {
+    background-color: #f3f4f6 !important; /* gray-100 */
+    color: #9ca3af !important; /* gray-400 */
+    cursor: not-allowed !important;
+}
+
+.dark select:disabled {
+    background-color: #374151 !important; /* gray-700 */
+    color: #6b7280 !important; /* gray-500 */
+}
+
+/* Focus state */
+select:focus {
+    outline: 2px solid #3b82f6 !important; /* blue-500 */
+    outline-offset: 2px !important;
+}
+
+.dark select:focus {
+    outline-color: #60a5fa !important; /* blue-400 */
+}
+
+/* ========================================
+   END DROPDOWN FIX
+   ======================================== */
+
+/* Touch Target Optimization */
+.touch-target-optimized {
+    min-width: 44px;
+    min-height: 44px;
+}
+
+/* Mobile Responsive */
+@media (max-width: 640px) {
+    .container-mobile {
+        @apply px-4;
+    }
+}
+
+/* ========================================
+   NOTE: Input/Textarea defaults moved to @layer base
+   Tailwind utility classes (text-black, placeholder-gray-600) can override
+   Browser native select/option still uses !important (necessary for native controls)
+   ======================================== */

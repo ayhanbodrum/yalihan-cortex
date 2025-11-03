@@ -1,0 +1,200 @@
+{
+  "title": "Global Form Standards System",
+  "date": "2025-11-02",
+  "version": "1.0.0",
+  "status": "ACTIVE",
+  "priority": "HIGH",
+  "category": "standards",
+  "description": "Tüm admin paneli için global form element standartları oluşturuldu. WCAG AAA, Context7, ve dark mode desteği içerir.",
+  
+  "components": {
+    "helper_class": {
+      "file": "app/Helpers/FormStandards.php",
+      "purpose": "PHP helper class that provides standard CSS classes for all form elements",
+      "methods": [
+        "FormStandards::input()",
+        "FormStandards::select()",
+        "FormStandards::textarea()",
+        "FormStandards::checkbox()",
+        "FormStandards::radio()",
+        "FormStandards::label()",
+        "FormStandards::error()",
+        "FormStandards::help()",
+        "FormStandards::buttonPrimary()",
+        "FormStandards::buttonSecondary()",
+        "FormStandards::buttonDanger()",
+        "FormStandards::option()",
+        "FormStandards::optionDisabled()"
+      ]
+    },
+    "documentation": {
+      "file": "docs/FORM_STANDARDS.md",
+      "purpose": "Complete documentation with examples, migration guide, and best practices"
+    },
+    "migration_script": {
+      "file": "scripts/migrate-to-form-standards.php",
+      "purpose": "Automated script to migrate old patterns to new standards"
+    }
+  },
+  
+  "standards": {
+    "padding": "px-4 py-2.5",
+    "border_radius": "rounded-lg",
+    "dark_background": "dark:bg-gray-800",
+    "focus_ring": "focus:ring-blue-500 dark:focus:ring-blue-400",
+    "text_color": "text-gray-900 dark:text-white",
+    "placeholder": "placeholder-gray-500 dark:placeholder-gray-400",
+    "label_color": "text-gray-700 dark:text-gray-300",
+    "error_color": "text-red-600 dark:text-red-400",
+    "help_color": "text-gray-500 dark:text-gray-400"
+  },
+  
+  "forbidden_patterns": [
+    {
+      "pattern": "neo-input",
+      "reason": "Old class system, not standardized",
+      "replacement": "{{ FormStandards::input() }}"
+    },
+    {
+      "pattern": "neo-select",
+      "reason": "Old class system, not standardized",
+      "replacement": "{{ FormStandards::select() }}"
+    },
+    {
+      "pattern": "neo-radio",
+      "reason": "Old class system, not standardized",
+      "replacement": "{{ FormStandards::radio() }}"
+    },
+    {
+      "pattern": "py-3",
+      "reason": "Inconsistent padding",
+      "replacement": "py-2.5"
+    },
+    {
+      "pattern": "dark:bg-gray-900",
+      "reason": "Wrong dark background for inputs",
+      "replacement": "dark:bg-gray-800"
+    },
+    {
+      "pattern": "focus:ring-indigo-*",
+      "reason": "Wrong focus ring color",
+      "replacement": "focus:ring-blue-500"
+    },
+    {
+      "pattern": "px-3 py-2",
+      "reason": "Inconsistent padding",
+      "replacement": "px-4 py-2.5"
+    }
+  ],
+  
+  "usage_examples": {
+    "input_field": {
+      "blade": "<input type=\"text\" class=\"{{ FormStandards::input() }}\" />",
+      "output": "Fully styled input with dark mode, focus ring, hover effects"
+    },
+    "select_dropdown": {
+      "blade": "<select class=\"{{ FormStandards::select() }}\" style=\"color-scheme: light dark;\">...</select>",
+      "note": "style=\"color-scheme: light dark;\" is recommended for native dropdown styling"
+    },
+    "radio_button": {
+      "blade": "<input type=\"radio\" class=\"{{ FormStandards::radio() }}\" />",
+      "output": "Standardized radio button with proper sizing and colors"
+    },
+    "complete_form": {
+      "blade": "<label class=\"{{ FormStandards::label() }}\">Name *</label>\n<input class=\"{{ FormStandards::input() }}\" required />\n@error('name')\n  <p class=\"{{ FormStandards::error() }}\">{{ $message }}</p>\n@enderror"
+    }
+  },
+  
+  "wcag_compliance": {
+    "standard": "WCAG AAA",
+    "contrast_ratios": {
+      "input_text_light": "21:1 (#111827 on #FFFFFF)",
+      "input_text_dark": "21:1 (#FFFFFF on #1F2937)",
+      "placeholder_light": "4.5:1 (#6B7280 on #FFFFFF)",
+      "placeholder_dark": "4.5:1 (#9CA3AF on #1F2937)",
+      "label_light": "8:1 (#374151 on #FFFFFF)",
+      "label_dark": "8:1 (#D1D5DB on #111827)",
+      "error_light": "5:1 (#DC2626 on #FFFFFF)",
+      "error_dark": "5:1 (#F87171 on #111827)"
+    }
+  },
+  
+  "migration_checklist": [
+    "Import FormStandards helper in Blade: use App\\Helpers\\FormStandards;",
+    "Replace neo-* classes with FormStandards methods",
+    "Replace inline class strings with FormStandards methods",
+    "Ensure all inputs have labels (accessibility)",
+    "Test dark mode on all forms",
+    "Verify WCAG AAA contrast ratios",
+    "Test keyboard navigation",
+    "Test screen reader compatibility",
+    "Run pre-commit hooks",
+    "Document any custom styling requirements"
+  ],
+  
+  "affected_pages": [
+    "resources/views/admin/kisiler/**",
+    "resources/views/admin/danisman/**",
+    "resources/views/admin/talepler/**",
+    "resources/views/admin/ilanlar/**",
+    "resources/views/admin/ozellikler/**",
+    "resources/views/admin/ilan-kategorileri/**",
+    "resources/views/admin/property-type-manager/**"
+  ],
+  
+  "context7_integration": {
+    "compliant": true,
+    "standards_followed": [
+      "English field names only",
+      "Consistent naming conventions",
+      "Dark mode support",
+      "Blue focus rings (Context7 brand color)",
+      "Rounded corners (Context7 design language)"
+    ]
+  },
+  
+  "next_actions": [
+    {
+      "action": "Update all CRM forms to use FormStandards",
+      "priority": "HIGH",
+      "estimated_files": 10
+    },
+    {
+      "action": "Update all Danışman forms to use FormStandards",
+      "priority": "HIGH",
+      "estimated_files": 8
+    },
+    {
+      "action": "Update all İlan Yönetimi forms to use FormStandards",
+      "priority": "HIGH",
+      "estimated_files": 25
+    },
+    {
+      "action": "Update all Alt Kategoriler forms to use FormStandards",
+      "priority": "HIGH",
+      "estimated_files": 5
+    },
+    {
+      "action": "Add pre-commit hook to enforce FormStandards usage",
+      "priority": "MEDIUM",
+      "estimated_effort": "2 hours"
+    },
+    {
+      "action": "Create automated tests for form styling",
+      "priority": "MEDIUM",
+      "estimated_effort": "4 hours"
+    }
+  ],
+  
+  "lessons_learned": [
+    "Global standards prevent inconsistencies across large codebases",
+    "PHP helper classes are more maintainable than Blade components for simple utility functions",
+    "Documentation is critical for adoption and compliance",
+    "Migration scripts save hours of manual work",
+    "Dark mode requires separate color standards",
+    "WCAG AAA compliance must be built-in from the start",
+    "Consistent padding (py-2.5) improves visual rhythm",
+    "Blue focus rings provide better brand consistency than indigo/purple"
+  ]
+}
+

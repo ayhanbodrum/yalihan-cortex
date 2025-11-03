@@ -1,0 +1,417 @@
+{
+  "ai_system_info": {
+    "version": "3.4.0",
+    "last_updated": "2025-10-12",
+    "status": "production_ready",
+    "compliance": {
+      "context7": true,
+      "percentage": "100%"
+    }
+  },
+  "providers": {
+    "anythingllm": {
+      "name": "AnythingLLM",
+      "type": "local_ai_server",
+      "enabled": true,
+      "config_keys": [
+        "ai_anythingllm_url",
+        "ai_anythingllm_api_key"
+      ],
+      "endpoint": "http://localhost:3001",
+      "test_endpoint": "/api/v1/workspace",
+      "features": [
+        "embedding",
+        "chat",
+        "document_processing",
+        "local_inference"
+      ],
+      "training_docs": [
+        "docs/ai-training/00-ANYTHINGLLM-MASTER-TRAINING.md",
+        "docs/ai-training/01-AI-FEATURES-GUIDE.md",
+        "docs/ai-training/02-CONTEXT7-RULES-SIMPLIFIED.md",
+        "docs/ai-training/03-DATABASE-SCHEMA-FOR-AI.md",
+        "docs/ai-training/04-PROMPT-TEMPLATES.md",
+        "docs/ai-training/05-USE-CASES-AND-SCENARIOS.md",
+        "docs/ai-training/06-API-REFERENCE.md",
+        "docs/ai-training/07-EMBEDDING-GUIDE.md",
+        "docs/ai-training/08-TRAINING-CHECKLIST.md",
+        "docs/ai-training/09-OLLAMA-INTEGRATION.md",
+        "docs/ai-training/10-REAL-WORLD-EXAMPLES.md"
+      ],
+      "context7_compliant": true
+    },
+    "openai": {
+      "name": "OpenAI GPT",
+      "type": "cloud_api",
+      "enabled": true,
+      "config_keys": [
+        "ai_openai_api_key"
+      ],
+      "endpoint": "https://api.openai.com/v1",
+      "test_endpoint": "/models",
+      "models": [
+        "gpt-4",
+        "gpt-4-turbo",
+        "gpt-3.5-turbo"
+      ],
+      "features": [
+        "chat",
+        "completion",
+        "embedding",
+        "function_calling"
+      ],
+      "use_cases": [
+        "complex_content_generation",
+        "multilingual_translation",
+        "advanced_reasoning"
+      ],
+      "context7_compliant": true
+    },
+    "gemini": {
+      "name": "Google Gemini",
+      "type": "cloud_api",
+      "enabled": true,
+      "config_keys": [
+        "ai_gemini_api_key"
+      ],
+      "endpoint": "https://generativelanguage.googleapis.com/v1beta",
+      "test_endpoint": "/models",
+      "models": [
+        "gemini-2.5-flash",
+        "gemini-pro"
+      ],
+      "features": [
+        "vision",
+        "ocr",
+        "image_analysis",
+        "chat",
+        "multimodal"
+      ],
+      "use_cases": [
+        "image_analysis",
+        "ocr_document_reading",
+        "object_detection",
+        "visual_qa"
+      ],
+      "context7_compliant": true
+    },
+    "claude": {
+      "name": "Anthropic Claude",
+      "type": "cloud_api",
+      "enabled": true,
+      "config_keys": [
+        "ai_claude_api_key"
+      ],
+      "endpoint": "https://api.anthropic.com/v1",
+      "test_endpoint": null,
+      "models": [
+        "claude-3",
+        "claude-3-opus",
+        "claude-3-sonnet"
+      ],
+      "features": [
+        "chat",
+        "code_review",
+        "quality_control",
+        "long_context"
+      ],
+      "use_cases": [
+        "code_review",
+        "quality_assurance",
+        "technical_writing",
+        "complex_analysis"
+      ],
+      "context7_compliant": true,
+      "note": "No public test endpoint available, API key validation only"
+    },
+    "ollama": {
+      "name": "Ollama Local AI",
+      "type": "local_ai_server",
+      "enabled": true,
+      "config_keys": [
+        "ai_ollama_url",
+        "ai_ollama_model"
+      ],
+      "endpoint": "http://51.75.64.121:11434",
+      "test_endpoint": "/api/tags",
+      "models": [
+        "gemma2:2b"
+      ],
+      "features": [
+        "local_inference",
+        "turkish_support",
+        "free_usage",
+        "privacy_focused"
+      ],
+      "use_cases": [
+        "listing_title_generation",
+        "description_writing",
+        "location_analysis",
+        "price_suggestions"
+      ],
+      "context7_compliant": true,
+      "recommended": true,
+      "cost": "$0 (free)"
+    }
+  },
+  "api_endpoints": {
+    "ai_settings": {
+      "index": "/admin/ai-settings",
+      "update": "/admin/ai-settings (PUT/POST)",
+      "test_provider": "/admin/ai-settings/test-provider (POST)",
+      "provider_status": "/admin/ai-settings/provider-status (GET)",
+      "statistics": "/admin/ai-settings/statistics (GET)"
+    },
+    "ai_content_generation": {
+      "title": "/stable-create/ai-suggest?action=title (POST)",
+      "description": "/stable-create/ai-suggest?action=description (POST)",
+      "location_analysis": "/stable-create/ai-suggest?action=location (POST)",
+      "price_suggestion": "/stable-create/ai-suggest?action=price (POST)",
+      "all": "/stable-create/ai-suggest?action=all (POST)"
+    },
+    "ai_advanced": {
+      "dashboard": "/admin/ai/dashboard (GET)",
+      "health": "/admin/ai/health (GET)",
+      "statistics": "/admin/ai/statistics (GET)",
+      "features": "/admin/ai/features (GET)"
+    }
+  },
+  "database_tables": {
+    "ai_chat_logs": {
+      "fields": [
+        "id",
+        "user_id",
+        "prompt",
+        "response",
+        "provider",
+        "model",
+        "tokens_used",
+        "response_time",
+        "created_at"
+      ],
+      "purpose": "AI request/response logging"
+    },
+    "ai_knowledge_base": {
+      "fields": [
+        "id",
+        "category",
+        "content",
+        "tags",
+        "usage_count",
+        "last_used_at"
+      ],
+      "purpose": "Learned AI knowledge storage"
+    },
+    "ai_embeddings": {
+      "fields": [
+        "id",
+        "knowledge_base_id",
+        "embedding_vector",
+        "model_name",
+        "dimensions",
+        "similarity_threshold"
+      ],
+      "purpose": "Vector embeddings for RAG"
+    },
+    "settings": {
+      "ai_related_keys": [
+        "ai_anythingllm_url",
+        "ai_anythingllm_api_key",
+        "ai_openai_api_key",
+        "ai_gemini_api_key",
+        "ai_claude_api_key",
+        "ai_ollama_url",
+        "ai_ollama_model"
+      ]
+    }
+  },
+  "features": {
+    "content_generation": {
+      "title_generation": {
+        "variants": 3,
+        "length": "60-80 characters",
+        "tones": [
+          "seo",
+          "kurumsal",
+          "hizli_satis",
+          "luks"
+        ],
+        "response_time": "<2s",
+        "cache_ttl": 3600
+      },
+      "description_generation": {
+        "word_count": "200-250",
+        "paragraphs": 3,
+        "tones": [
+          "seo",
+          "kurumsal",
+          "hizli_satis",
+          "luks"
+        ],
+        "response_time": "<3s",
+        "cache_ttl": 3600
+      }
+    },
+    "analysis": {
+      "location_analysis": {
+        "score_range": "0-100",
+        "grade": "A-D",
+        "potential": [
+          "Yüksek",
+          "Orta",
+          "Düşük"
+        ],
+        "response_time": "<2s",
+        "cache_ttl": 86400
+      },
+      "price_suggestion": {
+        "levels": 3,
+        "types": [
+          "Pazarlık (-10%)",
+          "Piyasa (+5%)",
+          "Premium (+15%)"
+        ],
+        "response_time": "<1s"
+      }
+    },
+    "provider_testing": {
+      "enabled": true,
+      "test_button": true,
+      "status_badges": true,
+      "logging": {
+        "file": "storage/logs/ai_connections.log",
+        "format": "[{timestamp}] {provider} - {status} | Response: {time}ms | Details: {json}"
+      },
+      "auto_refresh": {
+        "enabled": true,
+        "interval": 30000
+      }
+    }
+  },
+  "context7_rules": {
+    "field_naming": {
+      "correct": [
+        "status",
+        "active",
+        "enabled",
+        "il_id",
+        "ilce_id",
+        "mahalle_id",
+        "para_birimi",
+        "ai_*"
+      ],
+      "forbidden": [
+        "durum",
+        "is_active",
+        "aktif",
+        "sehir",
+        "sehir_id",
+        "currency"
+      ]
+    },
+    "api_response_format": {
+      "required_fields": [
+        "success",
+        "data",
+        "metadata"
+      ],
+      "optional_fields": [
+        "error",
+        "fallback",
+        "context7_compliant"
+      ],
+      "example": {
+        "success": true,
+        "data": {},
+        "metadata": {
+          "model": "gemma2:2b",
+          "response_time": 2150,
+          "confidence_score": 0.91
+        },
+        "context7_compliant": true
+      }
+    },
+    "security": {
+      "csrf_protection": true,
+      "rate_limiting": "10 requests/minute/user",
+      "pii_masking": true,
+      "auto_save": false,
+      "human_approval_required": true
+    }
+  },
+  "logs": {
+    "ai_connections": {
+      "path": "storage/logs/ai_connections.log",
+      "format": "[{timestamp}] {PROVIDER} - {STATUS} ✅/❌ | Response: {time}ms | Details: {json}",
+      "retention": "30 days"
+    },
+    "ai_requests": {
+      "path": "storage/logs/laravel.log",
+      "channel": "ai",
+      "level": "info"
+    }
+  },
+  "frontend": {
+    "pages": {
+      "ai_settings": "/admin/ai-settings",
+      "stable_create": "/stable-create",
+      "ai_dashboard": "/admin/ai/dashboard"
+    },
+    "components": {
+      "test_buttons": "public/js/ai-settings-test.js",
+      "status_badges": "resources/views/admin/ai-settings/index.blade.php",
+      "toast_notifications": "@admin.neo-toast"
+    }
+  },
+  "performance": {
+    "targets": {
+      "response_time": "<3s",
+      "success_rate": ">95%",
+      "cache_hit_rate": ">70%",
+      "uptime": ">99%"
+    },
+    "optimization": {
+      "caching": {
+        "driver": "redis",
+        "ttl": 3600
+      },
+      "fallback": {
+        "enabled": true,
+        "strategy": "template_based"
+      }
+    }
+  },
+  "documentation": {
+    "training": "docs/ai-training/",
+    "context7": "docs/context7/",
+    "reports": "docs/context7/reports/ai-sistem-gelisme-2025-10-12.md",
+    "master_guide": "docs/ai-training/00-ANYTHINGLLM-MASTER-TRAINING.md"
+  },
+  "learned_patterns": {
+    "successful_implementations": [
+      {
+        "feature": "AI Provider Testing",
+        "date": "2025-10-12",
+        "pattern": "Backend test methods + Frontend AJAX + Visual feedback + Auto logging",
+        "files": [
+          "app/Http/Controllers/Admin/AISettingsController.php",
+          "resources/views/admin/ai-settings/index.blade.php",
+          "public/js/ai-settings-test.js"
+        ]
+      },
+      {
+        "feature": "Real-time Status Badges",
+        "date": "2025-10-12",
+        "pattern": "Color-coded badges (green/red/blue/gray) + Auto-refresh every 30s",
+        "implementation": "updateProviderStatus() function with cache"
+      },
+      {
+        "feature": "Connection Logging",
+        "date": "2025-10-12",
+        "pattern": "Dual logging: Laravel log + Dedicated ai_connections.log",
+        "format": "[timestamp] PROVIDER - STATUS | Response: Xms | Details: {...}"
+      }
+    ]
+  }
+}
+
