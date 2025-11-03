@@ -31,14 +31,12 @@
         <link rel="stylesheet" href="{{ $cssNeo }}" />
     @endif
 
-    <!-- Quick Search CSS -->
-    <link rel="stylesheet" href="{{ asset('css/admin/quick-search.css') }}" />
-
-    <!-- Dynamic Form Fields CSS -->
-    <link rel="stylesheet" href="{{ asset('css/admin/dynamic-form-fields.css') }}" />
-
-    <!-- Form Standards CSS -->
-    <link rel="stylesheet" href="{{ asset('css/admin/form-standards.css') }}" />
+    {{-- Removed broken CSS links (files don't exist):
+         - quick-search.css
+         - dynamic-form-fields.css
+         - form-standards.css
+         Using Vite build instead
+    --}}
 
     <!-- Additional Styles -->
     <style>
