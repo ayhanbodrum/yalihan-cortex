@@ -96,12 +96,12 @@
         "YazlikRezervasyon.php"
       ],
       "lastModified": {
-        "file": "Photo.php",
-        "time": "2025-11-03T12:17:29.526Z"
+        "file": "ExchangeRate.php",
+        "time": "2025-11-04T16:17:34.141Z"
       }
     },
     "controllers": {
-      "count": 142,
+      "count": 143,
       "files": [
         "AI/AISearchController.php",
         "AI/AdvancedAIController.php",
@@ -203,6 +203,7 @@
         "Api/ElasticsearchController.php",
         "Api/EnvironmentAnalysisController.php",
         "Api/EventController.php",
+        "Api/ExchangeRateController.php",
         "Api/FeatureController.php",
         "Api/FeaturesController.php",
         "Api/FieldDependencyController.php",
@@ -247,12 +248,12 @@
         "VillaController.php"
       ],
       "lastModified": {
-        "file": "TakvimController.php",
-        "time": "2025-11-03T19:27:14.156Z"
+        "file": "WikimapiaSearchController.php",
+        "time": "2025-11-04T16:53:04.674Z"
       }
     },
     "migrations": {
-      "count": 102,
+      "count": 105,
       "files": [
         "2018_08_08_100000_create_telescope_entries_table.php",
         "2025_10_07_214858_create_users_table.php",
@@ -354,16 +355,19 @@
         "2025_11_03_095931_create_events_table.php",
         "2025_11_03_095932_create_seasons_table.php",
         "2025_11_03_101305_add_bedroom_layout_to_ilanlar_table.php",
+        "2025_11_04_113608_add_tcmb_fields_to_exchange_rates_table.php",
+        "2025_11_04_163654_add_latitude_longitude_to_site_apartmanlar_table.php",
+        "2025_11_05_000001_add_turkiyeapi_fields_to_ilanlar.php",
         "fixes/2025_10_24_170000_fix_all_status_fields_to_boolean_master.php",
         "fixes/2025_10_24_171000_fix_status_phase1_critical_tables.php"
       ],
       "lastModified": {
-        "file": "2025_11_03_101305_add_bedroom_layout_to_ilanlar_table.php",
-        "time": "2025-11-03T10:19:08.059Z"
+        "file": "2025_11_04_163654_add_latitude_longitude_to_site_apartmanlar_table.php",
+        "time": "2025-11-04T16:37:16.539Z"
       }
     },
     "views": {
-      "count": 371,
+      "count": 374,
       "files": [
         "admin/address/create.blade.php",
         "admin/address/index.blade.php",
@@ -404,6 +408,7 @@
         "admin/components/context7-components.blade.php",
         "admin/components/demo.blade.php",
         "admin/components/google-maps-setup-guide.blade.php",
+        "admin/components-demo.blade.php",
         "admin/crm/customers/index.blade.php",
         "admin/crm/dashboard-cards.blade.php",
         "admin/crm/dashboard-minimal.blade.php",
@@ -568,6 +573,8 @@
         "components/admin/bulk-actions.blade.php",
         "components/admin/button.blade.php",
         "components/admin/dropdown.blade.php",
+        "components/admin/exchange-rate-widget.blade.php",
+        "components/admin/file-upload.blade.php",
         "components/admin/input.blade.php",
         "components/admin/modal.blade.php",
         "components/admin/neo-loading.blade.php",
@@ -738,8 +745,8 @@
         "yaliihan-property-listing.blade.php"
       ],
       "lastModified": {
-        "file": "context7-components.blade.php",
-        "time": "2025-11-04T08:43:07.786Z"
+        "file": "index.blade.php",
+        "time": "2025-11-04T16:53:53.611Z"
       }
     },
     "routes": {
@@ -750,18 +757,40 @@
         },
         {
           "file": "routes/api.php",
-          "routes": 159
+          "routes": 166
         },
         {
           "file": "routes/admin.php",
-          "routes": 559
+          "routes": 564
         }
       ],
-      "endpoints": 892
+      "endpoints": 904
     },
-    "lastScan": "2025-11-04T08:51:21.171Z"
+    "lastScan": "2025-11-04T17:49:41.891Z"
   },
   "learnings": [
+    {
+      "topic": "WikiMapia Site/Apartman Kaydetme Sistemi",
+      "content": "WikiMapia search sayfasında haritaya tıklayarak site/apartman adlarını bulma ve veritabanına kaydetme özelliği eklendi. Leaflet harita entegrasyonu, z-index sorunları çözüldü, decimal cast hatası düzeltildi (float kullanılıyor), validation error handling iyileştirildi. Migration: latitude/longitude kolonları eklendi. Endpoints: POST /admin/wikimapia-search/save-site, GET /admin/wikimapia-search/saved-sites.",
+      "source": "yalihan-bekci/knowledge/wikimapia-site-kaydetme-2025-11-05.json",
+      "confidence": "critical",
+      "timestamp": "2025-11-05T18:00:00.000Z",
+      "lessons_learned": [
+        "Leaflet project/null hatası - animasyonlar kapatılmalı",
+        "Decimal cast hatası - decimal:8,6 formatı Laravel'de desteklenmiyor, float kullanılmalı",
+        "Z-index sorunu - modal kartları haritanın üstünde görünmeli (z-index: 10001-10002)",
+        "422 validation error - Accept: application/json header eklendi",
+        "Schema column kontrolü - Schema::hasColumn() ve Schema::hasTable() kullanılmalı"
+      ],
+      "files_modified": [
+        "resources/views/admin/wikimapia-search/index.blade.php",
+        "app/Http/Controllers/Admin/WikimapiaSearchController.php",
+        "app/Models/SiteApartman.php",
+        "app/Providers/TelescopeServiceProvider.php",
+        "routes/admin.php",
+        "database/migrations/2025_11_04_163654_add_latitude_longitude_to_site_apartmanlar_table.php"
+      ]
+    },
     {
       "topic": "Settings System Upgrade",
       "content": "Settings system tamamen yenilendi: Model fillable fix, 12 quick template, 3 bulk group, smart form, helper functions. Kritik: Setting model'de type, group, description fillable eklendi. Helper: setting(), setting_set(), setting_group() functions. UX: 3/10 → 10/10. Time saving: %95 (2min → 10sec).",
