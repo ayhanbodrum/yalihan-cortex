@@ -18,7 +18,7 @@
             <p class="text-gray-600 dark:text-gray-400 mt-2">Emlak danışmanlarınızı yönetin ve performanslarını takip edin</p>
         </div>
         <div class="flex items-center gap-3">
-            <a href="{{ route('admin.danisman.create') }}" class="neo-btn neo-btn-primary">
+            <a href="{{ route('admin.danisman.create') }}" class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg active:scale-95">
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
                 </svg>
@@ -29,7 +29,7 @@
 
     <!-- İstatistik Kartları -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div class="neo-card p-6">
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-200 p-6">
             <div class="flex items-center">
                 <div class="w-12 h-12 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
                     <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -43,7 +43,7 @@
             </div>
         </div>
 
-        <div class="neo-card p-6">
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-200 p-6">
             <div class="flex items-center">
                 <div class="w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-600 rounded-lg flex items-center justify-center">
                     <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -57,7 +57,7 @@
             </div>
         </div>
 
-        <div class="neo-card p-6">
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-200 p-6">
             <div class="flex items-center">
                 <div class="w-12 h-12 bg-gradient-to-r from-purple-500 to-violet-600 rounded-lg flex items-center justify-center">
                     <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -71,7 +71,7 @@
             </div>
         </div>
 
-        <div class="neo-card p-6">
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-200 p-6">
             <div class="flex items-center">
                 <div class="w-12 h-12 bg-gradient-to-r from-orange-500 to-amber-600 rounded-lg flex items-center justify-center">
                     <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -87,11 +87,11 @@
     </div>
 
     <!-- Filtreler -->
-    <div class="neo-card p-6">
+    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
         <form method="GET" action="{{ route('admin.danisman.index') }}">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
                 <div>
-                    <label class="neo-label">Arama</label>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Arama</label>
                     <input
                         type="text"
                         name="search"
@@ -102,7 +102,7 @@
                 </div>
 
                 <div>
-                    <label class="neo-label">Durum</label>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Durum</label>
                     <select style="color-scheme: light dark;" name="status" class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 transition-all duration-200">
                         <option value="">Tümü</option>
                         <option value="1" {{ ($filters['status'] ?? '') == '1' ? 'selected' : '' }}>Aktif</option>
@@ -111,7 +111,7 @@
                 </div>
 
                 <div>
-                    <label class="neo-label">Online Durum</label>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Online Durum</label>
                     <select style="color-scheme: light dark;" name="online" class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 transition-all duration-200">
                         <option value="">Tümü</option>
                         <option value="Online" {{ ($filters['online'] ?? '') === 'Online' ? 'selected' : '' }}>Online</option>
@@ -120,7 +120,7 @@
                 </div>
 
                 <div>
-                    <label class="neo-label">Sıralama</label>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Sıralama</label>
                     <select style="color-scheme: light dark;" name="sort" class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 transition-all duration-200">
                         <option value="created_desc" {{ ($filters['sort'] ?? '') === 'created_desc' ? 'selected' : '' }}>En Yeni</option>
                         <option value="created_asc" {{ ($filters['sort'] ?? '') === 'created_asc' ? 'selected' : '' }}>En Eski</option>
@@ -131,8 +131,8 @@
             </div>
 
             <div class="flex justify-end gap-3 mt-4">
-                <a href="{{ route('admin.danisman.index') }}" class="neo-btn neo-btn-secondary">Temizle</a>
-                <button type="submit" class="neo-btn neo-btn-primary">
+                <a href="{{ route('admin.danisman.index') }}" class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-sm">Temizle</a>
+                <button type="submit" class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg active:scale-95">
                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                     </svg>
@@ -143,19 +143,19 @@
     </div>
 
     <!-- Danışman Listesi -->
-    <div class="neo-card">
+    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden">
         <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
             <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Danışman Listesi</h3>
             <div class="flex items-center gap-3">
                 <span class="text-sm text-gray-500 dark:text-gray-400">{{ $danismanlar->total() }} danışman</span>
-                <button type="button" onclick="exportDanismanCsv()" class="neo-btn neo-btn-sm neo-btn-secondary">CSV İndir</button>
+                <button type="button" onclick="exportDanismanCsv()" class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-sm">CSV İndir</button>
             </div>
         </div>
 
         <div class="p-6">
             @if($danismanlar->count() > 0)
-                <div class="neo-table-responsive">
-                    <table class="neo-table">
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                         <thead>
                             <tr>
                                 <th class="admin-table-th">Danışman</th>
@@ -252,7 +252,7 @@
                     <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-white">Henüz danışman bulunmuyor</h3>
                     <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">İlk danışmanınızı ekleyerek başlayın.</p>
                     <div class="mt-6">
-                        <a href="{{ route('admin.danisman.create') }}" class="neo-btn neo-btn-primary">
+                        <a href="{{ route('admin.danisman.create') }}" class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg active:scale-95">
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
                             </svg>

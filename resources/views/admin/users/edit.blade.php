@@ -10,7 +10,7 @@
             <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Kullanıcı Düzenle</h1>
             <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ $user->name }} kullanıcısının bilgilerini güncelleyin</p>
         </div>
-        <a href="{{ route('admin.kullanicilar.index') }}" class="neo-btn neo-btn-secondary">
+        <a href="{{ route('admin.kullanicilar.index') }}" class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-sm">
             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
             </svg>
@@ -19,15 +19,15 @@
     </div>
 
     <!-- Form Card -->
-    <div class="neo-card">
+    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
         <form method="POST" action="{{ route('admin.kullanicilar.update', $user) }}" class="p-6 space-y-6">
             @csrf
             @method('PUT')
 
             <!-- Basic Info -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="neo-form-group">
-                    <label for="name" class="neo-label">İsim *</label>
+                <div class="space-y-2">
+                    <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">İsim *</label>
                     <input 
                         type="text" 
                         id="name" 
@@ -41,8 +41,8 @@
                     @enderror
                 </div>
 
-                <div class="neo-form-group">
-                    <label for="email" class="neo-label">E-posta *</label>
+                <div class="space-y-2">
+                    <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300">E-posta *</label>
                     <input 
                         type="email" 
                         id="email" 
@@ -59,8 +59,8 @@
 
             <!-- Password -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="neo-form-group">
-                    <label for="password" class="neo-label">Yeni Şifre</label>
+                <div class="space-y-2">
+                    <label for="password" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Yeni Şifre</label>
                     <input 
                         type="password" 
                         id="password" 
@@ -73,8 +73,8 @@
                     @enderror
                 </div>
 
-                <div class="neo-form-group">
-                    <label for="password_confirmation" class="neo-label">Şifre Tekrarı</label>
+                <div class="space-y-2">
+                    <label for="password_confirmation" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Şifre Tekrarı</label>
                     <input 
                         type="password" 
                         id="password_confirmation" 
@@ -86,8 +86,8 @@
 
             <!-- Role & Status -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="neo-form-group">
-                    <label for="role_id" class="neo-label">Rol *</label>
+                <div class="space-y-2">
+                    <label for="role_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Rol *</label>
                     <select style="color-scheme: light dark;" 
                         id="role_id" 
                         name="role_id" 
@@ -115,15 +115,15 @@
                     @enderror
                 </div>
 
-                <div class="neo-form-group">
-                    <label for="status" class="neo-label">Durum</label>
+                <div class="space-y-2">
+                    <label for="status" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Durum</label>
                     <label class="inline-flex items-center gap-3 cursor-pointer">
                         <input 
                             type="checkbox" 
                             id="status" 
                             name="status" 
                             value="1" 
-                            class="neo-switch" 
+                            class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600" 
                             {{ old('status', $user->status) ? 'checked' : '' }}
                         >
                         <span class="text-sm text-gray-900 dark:text-white">Kullanıcı Aktif</span>
@@ -135,7 +135,7 @@
             </div>
 
             <!-- User Info -->
-            <div class="neo-card bg-gray-50 dark:bg-gray-800/50 p-4">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm bg-gray-50 dark:bg-gray-800/50 p-4">
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                     <div>
                         <p class="text-gray-500 dark:text-gray-400">Kullanıcı ID</p>
@@ -164,10 +164,10 @@
 
             <!-- Actions -->
             <div class="flex items-center justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
-                <a href="{{ route('admin.kullanicilar.index') }}" class="neo-btn neo-btn-secondary">
+                <a href="{{ route('admin.kullanicilar.index') }}" class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-sm">
                     İptal
                 </a>
-                <button type="submit" class="neo-btn neo-btn-primary">
+                <button type="submit" class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg active:scale-95">
                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                     </svg>

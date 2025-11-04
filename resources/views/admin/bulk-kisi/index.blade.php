@@ -27,7 +27,7 @@
                     <p class="text-gray-600 mt-2">Çoklu kişi ekleme, düzenleme ve yönetim işlemleri</p>
                 </div>
                 <div class="flex space-x-3">
-                    <button @click="toggleImportModal()" class="neo-btn neo-btn neo-btn-secondary touch-target-optimized touch-target-optimized">
+                    <button @click="toggleImportModal()" class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-sm touch-target-optimized">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10">
@@ -35,7 +35,7 @@
                         </svg>
                         CSV Import
                     </button>
-                    <button @click="exportData()" :disabled="exporting" class="neo-btn neo-btn-success touch-target-optimized touch-target-optimized">
+                    <button @click="exportData()" :disabled="exporting" class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-green-600 to-emerald-600 rounded-lg hover:from-green-700 hover:to-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all duration-200 shadow-md hover:shadow-lg active:scale-95 touch-target-optimized">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12">
@@ -43,7 +43,7 @@
                         </svg>
                         <span x-text="exporting ? 'Exporting...' : 'Export CSV'"></span>
                     </button>
-                    <button @click="toggleBulkCreateModal()" class="neo-btn neo-btn neo-btn-primary touch-target-optimized touch-target-optimized">
+                    <button @click="toggleBulkCreateModal()" class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg active:scale-95 touch-target-optimized">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
@@ -56,7 +56,7 @@
 
         <!-- Statistics Cards -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <div class="neo-card p-6">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-200 p-6">
                 <div class="flex items-center">
                     <div class="p-3 rounded-full bg-blue-100 text-blue-600 mr-4">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -72,7 +72,7 @@
                 </div>
             </div>
 
-            <div class="neo-card p-6">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-200 p-6">
                 <div class="flex items-center">
                     <div class="p-3 rounded-full bg-green-100 text-green-600 mr-4">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -87,7 +87,7 @@
                 </div>
             </div>
 
-            <div class="neo-card p-6">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-200 p-6">
                 <div class="flex items-center">
                     <div class="p-3 rounded-full bg-red-100 text-red-600 mr-4">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -102,7 +102,7 @@
                 </div>
             </div>
 
-            <div class="neo-card p-6">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-200 p-6">
                 <div class="flex items-center">
                     <div class="p-3 rounded-full bg-purple-100 text-purple-600 mr-4">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -119,7 +119,7 @@
         </div>
 
         <!-- Bulk Operations Panel -->
-        <div class="neo-card p-6">
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-200 p-6">
             <h2 class="text-xl font-bold text-gray-800 mb-6">🔧 Toplu İşlemler</h2>
 
             <!-- Quick Actions -->
@@ -127,7 +127,7 @@
                 <div class="border border-gray-200 rounded-lg p-4 hover:border-blue-300 transition-colors">
                     <h3 class="font-semibold text-gray-800 mb-2">📝 Toplu Ekleme</h3>
                     <p class="text-sm text-gray-600 mb-3">Manuel olarak birden fazla kişi bilgisi girişi yapın.</p>
-                    <button @click="toggleBulkCreateModal()" class="neo-btn neo-btn-sm neo-btn neo-btn-primary w-full touch-target-optimized touch-target-optimized">
+                    <button @click="toggleBulkCreateModal()" class="inline-flex items-center justify-center px-3 py-2 text-xs font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg active:scale-95 w-full touch-target-optimized">
                         Başlat
                     </button>
                 </div>
@@ -135,7 +135,7 @@
                 <div class="border border-gray-200 rounded-lg p-4 hover:border-green-300 transition-colors">
                     <h3 class="font-semibold text-gray-800 mb-2">📤 CSV Import</h3>
                     <p class="text-sm text-gray-600 mb-3">CSV dosyasından toplu kişi bilgilerini içe aktarın.</p>
-                    <button @click="toggleImportModal()" class="neo-btn neo-btn-sm neo-btn-success w-full touch-target-optimized touch-target-optimized">
+                    <button @click="toggleImportModal()" class="inline-flex items-center justify-center px-3 py-2 text-xs font-medium text-white bg-gradient-to-r from-green-600 to-emerald-600 rounded-lg hover:from-green-700 hover:to-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all duration-200 shadow-md hover:shadow-lg active:scale-95 w-full touch-target-optimized">
                         Dosya Seç
                     </button>
                 </div>
@@ -143,7 +143,7 @@
                 <div class="border border-gray-200 rounded-lg p-4 hover:border-purple-300 transition-colors">
                     <h3 class="font-semibold text-gray-800 mb-2">🎯 Toplu Güncelleme</h3>
                     <p class="text-sm text-gray-600 mb-3">Seçili kişilerde toplu durum ve bilgi güncellemesi.</p>
-                    <button @click="toggleBulkUpdateModal()" class="neo-btn neo-btn-sm neo-btn neo-btn-secondary w-full touch-target-optimized touch-target-optimized">
+                    <button @click="toggleBulkUpdateModal()" class="inline-flex items-center justify-center px-3 py-2 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-sm w-full touch-target-optimized">
                         Güncelle
                     </button>
                 </div>
@@ -261,7 +261,7 @@
             </div>
 
             <div class="flex justify-between items-center mt-6">
-                <button @click="addPerson()" class="neo-btn neo-btn neo-btn-secondary touch-target-optimized touch-target-optimized">
+                <button @click="addPerson()" class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-sm touch-target-optimized">
                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
@@ -270,8 +270,8 @@
                 </button>
 
                 <div class="flex space-x-3">
-                    <button @click="closeBulkCreateModal()" class="neo-btn neo-btn-outline touch-target-optimized touch-target-optimized">İptal</button>
-                    <button @click="submitBulkCreate()" :disabled="submitting" class="neo-btn neo-btn neo-btn-primary touch-target-optimized touch-target-optimized">
+                    <button @click="closeBulkCreateModal()" class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-sm touch-target-optimized">İptal</button>
+                    <button @click="submitBulkCreate()" :disabled="submitting" class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg active:scale-95 touch-target-optimized">
                         <span x-text="submitting ? 'Kaydediliyor...' : 'Kaydet'"></span>
                     </button>
                 </div>
