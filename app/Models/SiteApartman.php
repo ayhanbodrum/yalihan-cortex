@@ -37,8 +37,8 @@ class SiteApartman extends Model
 
     protected $casts = [
         'site_ozellikleri' => 'array',
-        'latitude' => 'decimal:8,6',
-        'longitude' => 'decimal:9,6',
+        'latitude' => 'float',
+        'longitude' => 'float',
         'toplam_daire_sayisi' => 'integer'
     ];
 

@@ -15,7 +15,7 @@
             </h1>
             <p class="text-gray-600 dark:text-gray-400 mt-2">Site bilgilerini WikiMapia'dan çekin ve ilanlarınıza ekleyin</p>
         </div>
-        <a href="{{ route('admin.dashboard') }}" 
+        <a href="{{ route('admin.dashboard') }}"
            class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
@@ -38,7 +38,7 @@
                     </h2>
                     <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Haritaya tıklayarak konum seçin</p>
                 </div>
-                <div id="map" class="w-full h-[500px]"></div>
+                <div id="map" class="w-full relative" style="height: 500px; min-height: 500px; z-index: 1;"></div>
                 <div class="px-6 py-3 bg-gray-50 dark:bg-gray-800 text-xs text-gray-600 dark:text-gray-400">
                     <div class="flex items-center gap-2">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -61,23 +61,23 @@
                                 <label class="block text-sm font-medium text-gray-900 dark:text-white mb-2">
                                     Site/Apartman Adı
                                 </label>
-                                <input 
-                                    type="text" 
+                                <input
+                                    type="text"
                                     x-model="searchQuery"
                                     placeholder="Örn: Bahçeşehir Sitesi"
                                     class="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:ring-2 focus:ring-purple-500 transition-all duration-200">
                             </div>
-                            
+
                             <div>
                                 <label class="block text-sm font-medium text-gray-900 dark:text-white mb-2">
                                     Arama Yarıçapı
                                 </label>
                                 <div class="flex items-center gap-3">
-                                    <input 
-                                        type="range" 
-                                        x-model="searchRadius" 
-                                        min="0.01" 
-                                        max="2" 
+                                    <input
+                                        type="range"
+                                        x-model="searchRadius"
+                                        min="0.01"
+                                        max="2"
                                         step="0.1"
                                         class="flex-1">
                                     <span class="text-sm font-mono text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 px-3 py-2 rounded-lg min-w-[80px] text-center" x-text="(searchRadius * 100).toFixed(0) + ' km'"></span>
@@ -88,25 +88,25 @@
                         <div class="grid grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-sm font-medium text-gray-900 dark:text-white mb-2">Latitude</label>
-                                <input 
-                                    type="number" 
-                                    step="0.000001" 
+                                <input
+                                    type="number"
+                                    step="0.000001"
                                     x-model="searchLat"
                                     class="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:ring-2 focus:ring-purple-500 transition-all duration-200 font-mono text-sm">
                             </div>
-                            
+
                             <div>
                                 <label class="block text-sm font-medium text-gray-900 dark:text-white mb-2">Longitude</label>
-                                <input 
-                                    type="number" 
-                                    step="0.000001" 
+                                <input
+                                    type="number"
+                                    step="0.000001"
                                     x-model="searchLon"
                                     class="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:ring-2 focus:ring-purple-500 transition-all duration-200 font-mono text-sm">
                             </div>
                         </div>
 
                         <div class="flex gap-3 pt-2">
-                            <button 
+                            <button
                                 type="submit"
                                 :disabled="searching"
                                 class="flex-1 px-6 py-3 rounded-lg bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:from-purple-700 hover:to-pink-700 transition-all duration-200 shadow-md hover:shadow-lg font-medium flex items-center justify-center gap-2 disabled:opacity-50">
@@ -116,8 +116,8 @@
                                 <div x-show="searching" class="animate-spin w-5 h-5 border-2 border-white border-t-transparent rounded-full"></div>
                                 <span x-text="searching ? 'Aranıyor...' : 'Site/Apartman Ara'"></span>
                             </button>
-                            
-                            <button 
+
+                            <button
                                 type="button"
                                 @click="searchNearby"
                                 :disabled="searching"
@@ -133,12 +133,91 @@
                 </div>
             </div>
 
-            {{-- Results --}}
-            <div x-show="results.length > 0" x-cloak class="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
+            {{-- Site/Apartman Listesi Modal --}}
+            <div x-show="showSitesModal && filteredResults.length > 0" x-cloak
+                 class="fixed inset-0 z-[100] overflow-y-auto"
+                 @keydown.escape.window="showSitesModal = false"
+                 style="z-index: 9999;">
+                <div class="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity z-[9998]"
+                     @click="showSitesModal = false"></div>
+                <div class="flex min-h-screen items-center justify-center p-4 relative z-[9999]">
+                    <div @click.stop
+                         class="relative bg-white dark:bg-gray-900 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 w-full max-w-4xl max-h-[80vh] overflow-hidden z-[10000]">
+                        <div class="border-b border-gray-200 dark:border-gray-700 px-6 py-4 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                                    🏢 Bulunan Site/Apartmanlar (<span x-text="filteredResults.length"></span>)
+                                </h3>
+                                <button @click="showSitesModal = false"
+                                        class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors p-2 rounded-lg hover:bg-white/50 dark:hover:bg-gray-800">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="p-6 overflow-y-auto max-h-[60vh] relative" style="z-index: 10001;">
+                            <div class="space-y-3 relative" style="z-index: 10001;">
+                                <template x-for="(place, index) in filteredResults" :key="place.id">
+                                    <div class="group bg-gradient-to-r from-white to-gray-50 dark:from-gray-800 dark:to-gray-800 rounded-xl border-2 border-gray-200 dark:border-gray-700 hover:border-purple-500 dark:hover:border-purple-400 transition-all duration-200 overflow-hidden relative" style="z-index: 10002;">
+                                        <div class="p-4">
+                                            <div class="flex items-start justify-between gap-4">
+                                                <div class="flex-1">
+                                                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors" x-text="place.title"></h3>
+                                                    <p x-show="place.description" class="text-sm text-gray-600 dark:text-gray-400 mb-3 line-clamp-2" x-text="place.description"></p>
+                                                    <div class="flex flex-wrap gap-2 mb-3">
+                                                        <span x-show="place.location" class="inline-flex items-center gap-1 px-2 py-1 bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 rounded-full text-xs font-medium">
+                                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                                                            </svg>
+                                                            <span x-text="`${formatCoordinate(place.location?.latitude)}, ${formatCoordinate(place.location?.longitude)}`"></span>
+                                                        </span>
+                                                        <span class="inline-flex items-center gap-1 px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded-full text-xs font-medium" x-text="getSourceLabel(place.source || dataSource)"></span>
+                                                    </div>
+                                                    <div class="flex gap-2">
+                                                        <button
+                                                            type="button"
+                                                            @click="saveSite(place)"
+                                                            class="px-4 py-2 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white rounded-lg transition-all duration-200 text-sm font-medium flex items-center gap-2 shadow-md hover:shadow-lg">
+                                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                                            </svg>
+                                                            💾 Veritabanına Kaydet
+                                                        </button>
+                                                        <button
+                                                            type="button"
+                                                            @click="showPlaceDetail(place); showSitesModal = false"
+                                                            class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors duration-200 text-sm font-medium flex items-center gap-2">
+                                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                                            </svg>
+                                                            Detay
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                        <div class="border-t border-gray-200 dark:border-gray-700 px-6 py-4 bg-gray-50 dark:bg-gray-800 flex items-center justify-end gap-3">
+                            <button @click="showSitesModal = false"
+                                    class="px-6 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-white dark:hover:bg-gray-700 transition-colors duration-200 font-medium">
+                                Kapat
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Results (Liste görünümü - opsiyonel) --}}
+            <div x-show="results.length > 0 && !showSitesModal" x-cloak class="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
                 <div class="border-b border-gray-200 dark:border-gray-700 px-6 py-4">
                     <div class="flex items-center justify-between">
-                        <h2 class="text-lg font-semibold text-gray-900 dark:text-white">📋 Sonuçlar</h2>
-                        <span class="text-sm text-gray-600 dark:text-gray-400" x-text="`${results.length} yer bulundu`"></span>
+                        <h2 class="text-lg font-semibold text-gray-900 dark:text-white">📋 Site/Apartman Listesi</h2>
+                        <span class="text-sm text-gray-600 dark:text-gray-400" x-text="`${results.length} site/apartman bulundu`"></span>
                     </div>
                 </div>
                 <div class="p-6 space-y-4">
@@ -148,26 +227,26 @@
                                 <div class="flex items-start justify-between gap-4">
                                     <div class="flex-1">
                                         <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors" x-text="place.title"></h3>
-                                        
                                         <p x-show="place.description" class="text-sm text-gray-600 dark:text-gray-400 mb-3 line-clamp-2" x-text="place.description"></p>
-                                        
                                         <div class="flex flex-wrap gap-2 mb-3">
-                                            <span class="inline-flex items-center gap-1 px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded-full text-xs font-medium">
-                                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"/>
-                                                </svg>
-                                                ID: <span x-text="place.id"></span>
-                                            </span>
                                             <span x-show="place.location" class="inline-flex items-center gap-1 px-2 py-1 bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 rounded-full text-xs font-medium">
                                                 <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
                                                 </svg>
-                                                <span x-text="`${place.location?.latitude?.toFixed(5)}, ${place.location?.longitude?.toFixed(5)}`"></span>
+                                                <span x-text="`${formatCoordinate(place.location?.latitude)}, ${formatCoordinate(place.location?.longitude)}`"></span>
                                             </span>
                                         </div>
-                                        
                                         <div class="flex gap-2">
-                                            <button 
+                                            <button
+                                                type="button"
+                                                @click="saveSite(place)"
+                                                class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors duration-200 text-sm font-medium flex items-center gap-2">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                                </svg>
+                                                💾 Kaydet
+                                            </button>
+                                            <button
                                                 type="button"
                                                 @click="showPlaceDetail(place)"
                                                 class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors duration-200 text-sm font-medium flex items-center gap-2">
@@ -177,24 +256,6 @@
                                                 </svg>
                                                 Detay
                                             </button>
-                                            
-                                            <button 
-                                                type="button"
-                                                @click="selectSite(place)"
-                                                class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors duration-200 text-sm font-medium flex items-center gap-2">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                                                </svg>
-                                                Seç
-                                            </button>
-                                            
-                                            <a x-show="place.url" :href="place.url" target="_blank"
-                                               class="px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors duration-200 text-sm font-medium flex items-center gap-2">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
-                                                </svg>
-                                                WikiMapia
-                                            </a>
                                         </div>
                                     </div>
                                 </div>
@@ -223,8 +284,8 @@
                         <span class="text-2xl font-bold" x-text="stats.totalSearches"></span>
                     </div>
                     <div class="flex items-center justify-between">
-                        <span>Bulunan Yer</span>
-                        <span class="text-2xl font-bold" x-text="stats.totalPlaces"></span>
+                        <span>Son Arama Sonucu</span>
+                        <span class="text-2xl font-bold" x-text="stats.lastSearchResults"></span>
                     </div>
                     <div class="flex items-center justify-between">
                         <span>Seçilen Site</span>
@@ -239,11 +300,11 @@
                 <dl class="space-y-2 text-sm">
                     <div class="flex justify-between">
                         <dt class="text-gray-600 dark:text-gray-400">Latitude:</dt>
-                        <dd class="font-mono text-gray-900 dark:text-white" x-text="searchLat"></dd>
+                        <dd class="font-mono text-gray-900 dark:text-white" x-text="formatCoordinate(searchLat)"></dd>
                     </div>
                     <div class="flex justify-between">
                         <dt class="text-gray-600 dark:text-gray-400">Longitude:</dt>
-                        <dd class="font-mono text-gray-900 dark:text-white" x-text="searchLon"></dd>
+                        <dd class="font-mono text-gray-900 dark:text-white" x-text="formatCoordinate(searchLon)"></dd>
                     </div>
                     <div class="flex justify-between">
                         <dt class="text-gray-600 dark:text-gray-400">Yarıçap:</dt>
@@ -271,11 +332,11 @@
                     </li>
                     <li class="flex gap-2">
                         <span class="font-bold">3.</span>
-                        <span>"Detay" ile yer bilgilerini görün</span>
+                        <span>"Detay" butonuna tıklayarak site bilgilerini görüntüleyin</span>
                     </li>
                     <li class="flex gap-2">
                         <span class="font-bold">4.</span>
-                        <span>"Seç" ile ilana ekleyin</span>
+                        <span>"Seç" butonu ile site'yi ilana ekleyin ve kaydedin</span>
                     </li>
                 </ol>
             </div>
@@ -284,23 +345,24 @@
 
     {{-- Place Detail Modal --}}
     <div x-show="selectedPlace" x-cloak
-         class="fixed inset-0 z-50 overflow-y-auto"
-         @keydown.escape.window="selectedPlace = null">
-        
+         class="fixed inset-0 z-[100] overflow-y-auto"
+         @keydown.escape.window="selectedPlace = null"
+         style="z-index: 10001;">
+
         {{-- Backdrop --}}
         <div class="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity"
              @click="selectedPlace = null"></div>
-        
+
         {{-- Modal --}}
         <div class="flex min-h-screen items-center justify-center p-4">
             <div @click.stop
                  class="relative bg-white dark:bg-gray-900 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 w-full max-w-2xl transform transition-all">
-                
+
                 {{-- Header --}}
                 <div class="border-b border-gray-200 dark:border-gray-700 px-6 py-4 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20">
                     <div class="flex items-center justify-between">
                         <h3 class="text-xl font-semibold text-gray-900 dark:text-white" x-text="selectedPlace?.title"></h3>
-                        <button 
+                        <button
                             @click="selectedPlace = null"
                             class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors p-2 rounded-lg hover:bg-white/50 dark:hover:bg-gray-800">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -309,7 +371,7 @@
                         </button>
                     </div>
                 </div>
-                
+
                 {{-- Body --}}
                 <div class="p-6 max-h-[60vh] overflow-y-auto">
                     <div class="space-y-4">
@@ -318,22 +380,22 @@
                             <h4 class="font-semibold text-gray-900 dark:text-white mb-2">📝 Açıklama</h4>
                             <p class="text-gray-700 dark:text-gray-300 text-sm" x-text="selectedPlace?.description"></p>
                         </div>
-                        
+
                         {{-- Location Info --}}
                         <div>
                             <h4 class="font-semibold text-gray-900 dark:text-white mb-2">📍 Konum Bilgileri</h4>
                             <dl class="grid grid-cols-2 gap-3 text-sm">
                                 <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-3">
                                     <dt class="text-gray-600 dark:text-gray-400 mb-1">Latitude</dt>
-                                    <dd class="font-mono text-gray-900 dark:text-white" x-text="selectedPlace?.location?.latitude"></dd>
+                                    <dd class="font-mono text-gray-900 dark:text-white" x-text="formatCoordinate(selectedPlace?.location?.latitude)"></dd>
                                 </div>
                                 <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-3">
                                     <dt class="text-gray-600 dark:text-gray-400 mb-1">Longitude</dt>
-                                    <dd class="font-mono text-gray-900 dark:text-white" x-text="selectedPlace?.location?.longitude"></dd>
+                                    <dd class="font-mono text-gray-900 dark:text-white" x-text="formatCoordinate(selectedPlace?.location?.longitude)"></dd>
                                 </div>
                             </dl>
                         </div>
-                        
+
                         {{-- WikiMapia ID --}}
                         <div class="bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-lg p-4">
                             <div class="flex items-center justify-between">
@@ -348,10 +410,10 @@
                         </div>
                     </div>
                 </div>
-                
+
                 {{-- Footer --}}
                 <div class="border-t border-gray-200 dark:border-gray-700 px-6 py-4 bg-gray-50 dark:bg-gray-800 flex items-center justify-end gap-3">
-                    <button 
+                    <button
                         @click="selectedPlace = null"
                         class="px-6 py-2 rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-white dark:hover:bg-gray-700 transition-colors duration-200 font-medium">
                         Kapat
@@ -363,7 +425,7 @@
                         </svg>
                         WikiMapia'da Aç
                     </a>
-                    <button 
+                    <button
                         @click="selectSite(selectedPlace); selectedPlace = null"
                         class="px-6 py-2 rounded-lg bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white transition-all duration-200 shadow-md hover:shadow-lg font-medium flex items-center gap-2">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -401,56 +463,295 @@ function wikimapiaManager() {
         searchRadius: 0.5,
         searching: false,
         results: [],
+        filteredResults: [],
         selectedPlace: null,
+        showSitesModal: false,
         map: null,
         marker: null,
+        resultMarkers: [],
+        savedSiteMarkers: [],
         stats: {
             totalSearches: 0,
             totalPlaces: 0,
-            selectedSites: 0
+            lastSearchResults: 0,
+            selectedSites: 0,
+            savedSites: 0
         },
-        
-        init() {
-            this.$nextTick(() => {
-                this.initMap();
+        dataSource: 'unknown',
+        dataQuality: 'unknown',
+
+        // Get human-readable source label
+        getSourceLabel(source) {
+            const labels = {
+                'wikimapia': '🗺️ WikiMapia',
+                'openstreetmap': '🌍 OpenStreetMap',
+                'wikimapia_test': '⚠️ Test Data',
+                'unknown': '❓ Bilinmeyen'
+            };
+            return labels[source] || labels.unknown;
+        },
+
+        // Get quality badge color
+        getQualityColor(quality) {
+            const colors = {
+                'verified': 'bg-green-500',
+                'free_alternative': 'bg-blue-500',
+                'test_data': 'bg-yellow-500',
+                'unknown': 'bg-gray-500'
+            };
+            return colors[quality] || colors.unknown;
+        },
+
+        // Toast helper - Component-local (guaranteed available)
+        toast(type, message) {
+            let container = document.getElementById('toast-container');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'toast-container';
+                container.className = 'fixed top-4 right-4 z-50 space-y-2';
+                document.body.appendChild(container);
+            }
+            const colors = { success: 'bg-green-500', error: 'bg-red-500', warning: 'bg-yellow-500', info: 'bg-blue-500' };
+            const toastEl = document.createElement('div');
+            toastEl.className = (colors[type] || colors.info) + ' text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-3 transition-all duration-300';
+            toastEl.innerHTML = '<span>' + message + '</span><button onclick="this.parentElement.remove()" class="text-white hover:text-gray-200 ml-2 font-bold">✕</button>';
+            container.appendChild(toastEl);
+            setTimeout(function() { 
+                toastEl.style.opacity = '0'; 
+                toastEl.style.transform = 'translateX(100%)'; 
+                setTimeout(function() { toastEl.remove(); }, 300); 
+            }, 3000);
+        },
+
+        // Format coordinate helper - Consistent format everywhere
+        formatCoordinate(coord) {
+            if (!coord) return '0.000000';
+            return parseFloat(coord).toFixed(6);
+        },
+
+        // Site/Apartman filtreleme (sadece residential complexes)
+        filterSitesApartments(places) {
+            if (!places || !Array.isArray(places)) return [];
+
+            return places.filter(place => {
+                const title = (place.title || '').toLowerCase();
+                const description = (place.description || '').toLowerCase();
+                const type = (place.type || '').toLowerCase();
+                const category = (place.category || '').toLowerCase();
+
+                // Site/Apartman anahtar kelimeleri
+                const siteKeywords = ['site', 'sitesi', 'apartman', 'rezidans', 'residential', 'complex', 'building', 'apartment'];
+
+                // Kontrol et
+                const matchesTitle = siteKeywords.some(keyword => title.includes(keyword));
+                const matchesDescription = siteKeywords.some(keyword => description.includes(keyword));
+                const matchesType = type.includes('apartment') || type.includes('residential') || type.includes('building') || category.includes('building');
+
+                return matchesTitle || matchesDescription || matchesType;
             });
         },
         
+        init() {
+            // Load stats from localStorage
+            const savedStats = localStorage.getItem('wikimapia_stats');
+            if (savedStats) {
+                try {
+                    this.stats = { ...this.stats, ...JSON.parse(savedStats) };
+                } catch (e) {
+                    console.error('Stats load error:', e);
+                }
+            }
+
+            // Alpine.js init'ten sonra harita başlat (DOM hazır olduğundan emin ol)
+            this.$nextTick(() => {
+                // Kısa bir gecikme ile harita başlat (container render edilmiş olsun)
+                setTimeout(() => {
+                this.initMap();
+
+                    // Harita yüklendikten sonra kaydedilen siteleri yükle
+                    setTimeout(() => {
+                        if (this.map) {
+                            this.loadSavedSites();
+                        }
+                    }, 500);
+                }, 100);
+            });
+        },
+
         initMap() {
-            // Initialize Leaflet map
-            this.map = L.map('map').setView([this.searchLat, this.searchLon], 13);
-            
-            // Add tile layer
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '© OpenStreetMap contributors'
+            // Map container kontrolü
+            const mapContainer = document.getElementById('map');
+            if (!mapContainer) {
+                console.error('Map container not found!');
+                return;
+            }
+
+            // Harita container'ına düşük z-index (modal kartlarının üstünde görünmemesi için)
+            mapContainer.style.position = 'relative';
+            mapContainer.style.zIndex = '1';
+
+            // Initialize Leaflet map - Tüm animasyonlar kapalı (project/null hatası önleme)
+            this.map = L.map('map', {
+                zoomAnimation: false,
+                fadeAnimation: false,
+                markerZoomAnimation: false,
+                zoomControl: true,
+                doubleClickZoom: true,
+                scrollWheelZoom: true,
+                preferCanvas: false // Canvas render engine sorunları önleme
+            });
+
+            // View set et (animasyon olmadan)
+            this.map.setView([this.searchLat, this.searchLon], 13, {
+                animate: false,
+                reset: false
+            });
+
+            // Base layers (Street + Satellite)
+            const streetLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors',
+                maxZoom: 19
+            });
+
+            const satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                attribution: '© Esri, Maxar, Earthstar Geographics',
+                maxZoom: 19
+            });
+
+            // Add default layer
+            streetLayer.addTo(this.map);
+
+            // Layer control
+            const baseMaps = {
+                "🗺️ Sokak Haritası": streetLayer,
+                "🛰️ Uydu Görünümü": satelliteLayer
+            };
+
+            L.control.layers(baseMaps, null, {
+                position: 'topright'
             }).addTo(this.map);
-            
+
+            // Container boyutunu güncelle (responsive için)
+            setTimeout(() => {
+                if (this.map) {
+                    this.map.invalidateSize();
+                }
+            }, 200);
+
             // Add click event
             this.map.on('click', (e) => {
                 this.searchLat = e.latlng.lat.toFixed(6);
                 this.searchLon = e.latlng.lng.toFixed(6);
-                
+
                 // Update marker
                 if (this.marker) {
                     this.marker.setLatLng(e.latlng);
                 } else {
-                    this.marker = L.marker(e.latlng).addTo(this.map);
+                    this.marker = L.marker(e.latlng, {
+                        icon: L.icon({
+                            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png',
+                            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
+                            iconSize: [25, 41],
+                            iconAnchor: [12, 41],
+                            popupAnchor: [1, -34],
+                            shadowSize: [41, 41]
+                        })
+                    }).addTo(this.map);
                 }
-                
-                // Auto search nearby
+
+                // Auto search nearby site/apartman
                 this.searchNearby();
             });
         },
-        
-        async searchPlaces() {
-            if (!this.searchQuery) {
-                if (window.toast) window.toast('warning', 'Lütfen arama terimi girin');
+
+        // Kaydedilen siteleri yükle ve haritada göster
+        async loadSavedSites() {
+            // Harita kontrolü
+            if (!this.map) {
+                console.warn('Map not initialized yet, skipping saved sites load');
                 return;
             }
-            
+
+            try {
+                const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
+                const response = await fetch('{{ route("admin.wikimapia-search.saved-sites") }}', {
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken || '',
+                        'Accept': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    console.warn('Failed to load saved sites:', response.status);
+                    // 500 hatası sessizce devam et
+                    return;
+                }
+
+                // Response tipini kontrol et
+                const contentType = response.headers.get('content-type');
+                if (!contentType || !contentType.includes('application/json')) {
+                    console.warn('Non-JSON response from saved-sites');
+                    return;
+                }
+
+                const data = await response.json();
+                if (data.success && data.data && Array.isArray(data.data)) {
+                    // Eski marker'ları temizle
+                    this.savedSiteMarkers.forEach(marker => {
+                        if (this.map && this.map.hasLayer(marker)) {
+                            this.map.removeLayer(marker);
+                        }
+                    });
+                    this.savedSiteMarkers = [];
+
+                    // Yeni marker'ları ekle
+                    data.data.forEach(site => {
+                        if (!site.latitude || !site.longitude) return;
+
+                        try {
+                            const marker = L.marker([site.latitude, site.longitude], {
+                                icon: L.icon({
+                                    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png',
+                                    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
+                                    iconSize: [25, 41],
+                                    iconAnchor: [12, 41],
+                                    popupAnchor: [1, -34],
+                                    shadowSize: [41, 41]
+                                })
+                            }).addTo(this.map);
+
+                            marker.bindPopup(`
+                                <div class="p-2">
+                                    <h3 class="font-bold text-sm mb-1">${site.name || 'İsimsiz'}</h3>
+                                    <p class="text-xs text-gray-600">${site.tip || 'site'}</p>
+                                    ${site.address ? '<p class="text-xs text-gray-500 mt-1">' + site.address + '</p>' : ''}
+                                </div>
+                            `);
+
+                            this.savedSiteMarkers.push(marker);
+                        } catch (markerError) {
+                            console.error('Marker creation error:', markerError, site);
+                        }
+                    });
+
+                    this.stats.savedSites = data.data.length;
+                }
+            } catch (error) {
+                console.error('Saved sites load error:', error);
+                // Hata durumunda sessizce devam et (kullanıcıyı rahatsız etme)
+            }
+        },
+
+        async searchPlaces() {
+            if (!this.searchQuery) {
+                this.toast('warning', 'Lütfen arama terimi girin');
+                return;
+            }
+
             this.searching = true;
             this.stats.totalSearches++;
-            
+            localStorage.setItem('wikimapia_stats', JSON.stringify(this.stats));
+
             try {
                 const response = await fetch('{{ route("admin.wikimapia-search.search") }}', {
                     method: 'POST',
@@ -465,31 +766,32 @@ function wikimapiaManager() {
                         radius: parseFloat(this.searchRadius)
                     })
                 });
-                
+
                 const data = await response.json();
-                
-                if (data.success && data.data) {
+
+                                if (data.success && data.data) {
                     this.results = data.data.places || [];
+                    this.stats.lastSearchResults = this.results.length;
                     this.stats.totalPlaces += this.results.length;
+                    localStorage.setItem('wikimapia_stats', JSON.stringify(this.stats));
                     
-                    if (window.toast) {
-                        window.toast('success', `${this.results.length} yer bulundu!`);
-                    }
+                    this.toast('success', this.results.length + ' yer bulundu!');
                 } else {
-                    if (window.toast) window.toast('error', 'Sonuç bulunamadı');
+                    this.toast('error', 'Sonuç bulunamadı');
                 }
             } catch (error) {
                 console.error('Search error:', error);
-                if (window.toast) window.toast('error', 'Arama hatası oluştu');
+                this.toast('error', 'Arama hatası oluştu');
             } finally {
                 this.searching = false;
             }
         },
-        
+
         async searchNearby() {
             this.searching = true;
             this.stats.totalSearches++;
-            
+            localStorage.setItem('wikimapia_stats', JSON.stringify(this.stats));
+
             try {
                 const response = await fetch('{{ route("admin.wikimapia-search.nearby") }}', {
                     method: 'POST',
@@ -503,30 +805,92 @@ function wikimapiaManager() {
                         radius: parseFloat(this.searchRadius)
                     })
                 });
-                
+
                 const data = await response.json();
-                
+
                 if (data.success && data.data) {
-                    this.results = data.data.places || [];
+                    const allPlaces = data.data.places || [];
+
+                    // Site/Apartman filtreleme
+                    this.filteredResults = this.filterSitesApartments(allPlaces);
+                    this.results = this.filteredResults;
+
+                    // Eski marker'ları temizle
+                    this.resultMarkers.forEach(marker => this.map.removeLayer(marker));
+                    this.resultMarkers = [];
+
+                    // Yeni marker'ları ekle (sadece site/apartman)
+                    this.filteredResults.forEach(place => {
+                        if (place.location && place.location.latitude && place.location.longitude) {
+                            const marker = L.marker([place.location.latitude, place.location.longitude], {
+                                icon: L.icon({
+                                    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
+                                    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
+                                    iconSize: [25, 41],
+                                    iconAnchor: [12, 41],
+                                    popupAnchor: [1, -34],
+                                    shadowSize: [41, 41]
+                                })
+                            }).addTo(this.map);
+
+                            const popupContent = document.createElement('div');
+                            popupContent.className = 'p-2';
+                            popupContent.innerHTML = `
+                                <h3 class="font-bold text-sm mb-1">${place.title || 'İsimsiz'}</h3>
+                                ${place.description ? '<p class="text-xs text-gray-600 mb-2">' + place.description.substring(0, 100) + '...</p>' : ''}
+                                <button class="marker-save-btn mt-2 px-3 py-1 bg-green-600 text-white text-xs rounded hover:bg-green-700" data-place-id="${place.id}">
+                                    💾 Kaydet
+                                </button>
+                            `;
+
+                            const saveBtn = popupContent.querySelector('.marker-save-btn');
+                            saveBtn.addEventListener('click', (e) => {
+                                e.stopPropagation();
+                                this.saveSite(place);
+                                marker.closePopup();
+                            });
+
+                            marker.bindPopup(popupContent);
+
+                            marker.on('click', () => {
+                                this.showPlaceDetail(place);
+                            });
+
+                            this.resultMarkers.push(marker);
+                        }
+                    });
+
+                    this.stats.lastSearchResults = this.results.length;
                     this.stats.totalPlaces += this.results.length;
                     
-                    if (window.toast) {
-                        window.toast('success', `${this.results.length} yer bulundu!`);
+                    // Store source info in results
+                    this.dataSource = data.source || 'unknown';
+                    this.dataQuality = data.quality || 'unknown';
+                    
+                    localStorage.setItem('wikimapia_stats', JSON.stringify(this.stats));
+                    
+                    // Show data source in toast
+                    const sourceLabel = this.getSourceLabel(data.source);
+                    if (this.results.length > 0) {
+                        this.toast('success', this.results.length + ' site/apartman bulundu! (' + sourceLabel + ')');
+                        this.showSitesModal = true;
+                    } else {
+                        this.toast('warning', 'Yakınlarda site/apartman bulunamadı. Arama yarıçapını artırabilirsiniz.');
                     }
                 }
             } catch (error) {
                 console.error('Nearby search error:', error);
-                if (window.toast) window.toast('error', 'Yakındaki yerler bulunamadı');
+                this.toast('error', 'Yakındaki yerler bulunamadı');
             } finally {
                 this.searching = false;
             }
         },
-        
+
         showPlaceDetail(place) {
             this.selectedPlace = place;
         },
-        
-        selectSite(place) {
+
+                selectSite(place) {
             // LocalStorage'a kaydet
             localStorage.setItem('selectedWikimapiaSite', JSON.stringify({
                 wikimapia_id: place.id,
@@ -536,13 +900,15 @@ function wikimapiaManager() {
                 longitude: place.location?.longitude,
                 url: place.url
             }));
-            
+
+            // Update stats counter
             this.stats.selectedSites++;
+
+            // Save stats to localStorage (persistent)
+            localStorage.setItem('wikimapia_stats', JSON.stringify(this.stats));
             
-            if (window.toast) {
-                window.toast('success', `✅ ${place.title} seçildi! İlan formunda kullanılabilir.`);
-            }
-            
+            this.toast('success', '✅ ' + place.title + ' seçildi! İlan formunda kullanılabilir.');
+
             // Eğer iframe içindeyse parent'a mesaj gönder
             if (window.parent !== window) {
                 window.parent.postMessage({
@@ -554,6 +920,107 @@ function wikimapiaManager() {
                         longitude: place.location?.longitude
                     }
                 }, '*');
+            }
+        },
+
+        // Site/Apartman'ı veritabanına kaydet
+        async saveSite(place) {
+            if (!place || !place.title) {
+                this.toast('error', 'Site adı eksik!');
+                return;
+            }
+
+            if (!place.location || !place.location.latitude || !place.location.longitude) {
+                this.toast('error', 'Site koordinatları eksik!');
+                return;
+            }
+
+            // Koordinat validasyonu
+            const lat = parseFloat(place.location.latitude);
+            const lng = parseFloat(place.location.longitude);
+
+            if (isNaN(lat) || isNaN(lng) || lat === 0 || lng === 0) {
+                this.toast('error', 'Geçersiz koordinatlar!');
+                return;
+            }
+
+            if (lat < -90 || lat > 90 || lng < -180 || lng > 180) {
+                this.toast('error', 'Koordinatlar geçerli aralıkta değil!');
+                return;
+            }
+
+            try {
+                const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
+                if (!csrfToken) {
+                    this.toast('error', 'CSRF token bulunamadı! Sayfayı yenileyin.');
+                    return;
+                }
+
+                const response = await fetch('{{ route("admin.wikimapia-search.save-site") }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        name: place.title.trim(),
+                        latitude: lat,
+                        longitude: lng,
+                        description: (place.description || '').substring(0, 1000),
+                        address: (place.address || place.description || '').substring(0, 500),
+                        tip: (place.title || '').toLowerCase().includes('apartman') ? 'apartman' : 'site',
+                        wikimapia_id: place.id ? String(place.id) : null,
+                        source: place.source || this.dataSource || 'unknown'
+                    })
+                });
+
+                // Response tipini kontrol et
+                const contentType = response.headers.get('content-type');
+                if (!contentType || !contentType.includes('application/json')) {
+                    const text = await response.text();
+                    console.error('Non-JSON response:', text.substring(0, 200));
+                    this.toast('error', 'Sunucu hatası! Lütfen tekrar deneyin.');
+                    return;
+                }
+
+                let data;
+                try {
+                    data = await response.json();
+                } catch (jsonError) {
+                    const text = await response.text();
+                    console.error('JSON parse error:', text.substring(0, 500));
+                    this.toast('error', 'Sunucu yanıtı geçersiz! Status: ' + response.status);
+                    return;
+                }
+
+                if (data.success) {
+                    this.toast('success', '✅ ' + place.title + ' veritabanına kaydedildi!');
+                    this.stats.savedSites++;
+                    localStorage.setItem('wikimapia_stats', JSON.stringify(this.stats));
+
+                    // Kaydedilen siteleri yeniden yükle
+                    await this.loadSavedSites();
+                } else {
+                    // Validation error detaylarını göster
+                    let errorMsg = data.message || 'Kaydetme başarısız!';
+                    if (data.errors) {
+                        const errors = Object.values(data.errors).flat();
+                        errorMsg = errors.join(', ');
+                        console.error('Save site validation errors:', data.errors);
+                        console.error('Full error response:', JSON.stringify(data, null, 2));
+                    }
+                    console.error('Save site error response:', JSON.stringify(data, null, 2));
+                    console.error('Full error object:', data);
+                    this.toast('error', errorMsg);
+                }
+            } catch (error) {
+                console.error('Save site error:', error);
+                if (error instanceof SyntaxError) {
+                    this.toast('error', 'Sunucu yanıtı geçersiz! Lütfen tekrar deneyin.');
+                } else {
+                    this.toast('error', 'Kaydetme sırasında hata oluştu: ' + error.message);
+                }
             }
         }
     };

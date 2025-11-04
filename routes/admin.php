@@ -216,7 +216,7 @@ Route::middleware(['web'])->prefix('admin')->name('admin.')->group(function () {
     // İlan Yönetimi
     // Context7 Smart İlan System Routes
     Route::resource('/ilanlar', \App\Http\Controllers\Admin\IlanController::class)->parameters(['ilanlar' => 'ilan']);
-    
+
     // Bulk Actions (Context7: Toplu işlemler)
     Route::post('/ilanlar/bulk-action', [\App\Http\Controllers\Admin\IlanController::class, 'bulkAction'])
         ->name('ilanlar.bulk-action');
@@ -469,7 +469,7 @@ Route::prefix('ai-category')->name('ai-category.')->group(function () {
         Route::post('/toggle-feature', [\App\Http\Controllers\Admin\PropertyTypeManagerController::class, 'toggleFeature'])->name('toggle-feature');
         // 🆕 Yayın tipi oluşturma
         Route::post('/{kategoriId}/yayin-tipi', [\App\Http\Controllers\Admin\PropertyTypeManagerController::class, 'createYayinTipi'])->name('create-yayin-tipi');
-        
+
         // 🎯 POLYMORPHIC FEATURE ASSIGNMENT ENDPOINTS
         Route::post('/property-type/{propertyTypeId}/assign-feature', [\App\Http\Controllers\Admin\PropertyTypeManagerController::class, 'assignFeature'])->name('assign-feature');
         Route::delete('/property-type/{propertyTypeId}/unassign-feature', [\App\Http\Controllers\Admin\PropertyTypeManagerController::class, 'unassignFeature'])->name('unassign-feature');
@@ -509,6 +509,8 @@ Route::prefix('ai-category')->name('ai-category.')->group(function () {
         Route::post('/search-places', [\App\Http\Controllers\Admin\WikimapiaSearchController::class, 'searchPlaces'])->name('search-places');
         Route::post('/nearby', [\App\Http\Controllers\Admin\WikimapiaSearchController::class, 'nearby'])->name('nearby');
         Route::get('/place/{id}', [\App\Http\Controllers\Admin\WikimapiaSearchController::class, 'getPlaceDetails'])->name('place-details');
+        Route::post('/save-site', [\App\Http\Controllers\Admin\WikimapiaSearchController::class, 'saveSite'])->name('save-site');
+        Route::get('/saved-sites', [\App\Http\Controllers\Admin\WikimapiaSearchController::class, 'getSavedSites'])->name('saved-sites');
     });
 
     // Danışman Yönetimi (Standardize edildi - users tablosu kullanılıyor)
@@ -769,12 +771,12 @@ Route::prefix('ai-category')->name('ai-category.')->group(function () {
     // ⚠️ CRITICAL: Özel route'lar generic route'ların ÖNÜNDE olmalı!
     Route::prefix('talep-portfolyo')->name('talep-portfolyo.')->group(function () {
         Route::get('/', [App\Http\Controllers\Admin\TalepPortfolyoController::class, 'index'])->name('index');
-        
+
         // 🎯 Özel Route'lar (ÖNCE)
         Route::get('/ai-status', [App\Http\Controllers\Admin\TalepPortfolyoController::class, 'aiStatus'])->name('ai-status');
         Route::post('/toplu-analiz', [App\Http\Controllers\Admin\TalepPortfolyoController::class, 'topluAnaliz'])->name('toplu-analiz');
         Route::post('/cache-temizle', [App\Http\Controllers\Admin\TalepPortfolyoController::class, 'cacheTemizle'])->name('cache-temizle');
-        
+
         // 🔀 Generic Route'lar (SONRA) - {talep} her şeyi yakalar!
         Route::get('/{talep}', [App\Http\Controllers\Admin\TalepPortfolyoController::class, 'show'])->name('show');
         Route::post('/{talep}/analiz', [App\Http\Controllers\Admin\TalepPortfolyoController::class, 'analizEt'])->name('analiz');
@@ -913,13 +915,13 @@ Route::prefix('admin/bulk-kisi')->name('admin.bulk-kisi.')->middleware(['web'])-
 
 // Yazlik Kiralama Management Routes
 Route::prefix('admin/yazlik-kiralama')->name('admin.yazlik-kiralama.')->middleware(['web'])->group(function () {
-    
+
     // ⚠️ CRITICAL: Specific routes BEFORE dynamic {id} routes!
-    
+
     // Bookings Management (MUST be first!)
     Route::get('/bookings/{id?}', [\App\Http\Controllers\Admin\YazlikKiralamaController::class, 'bookings'])->name('bookings');
     Route::put('/bookings/{id}/status', [\App\Http\Controllers\Admin\YazlikKiralamaController::class, 'updateBookingStatus'])->name('bookings.update-status');
-    
+
     // Takvim - Calendar View (MUST be second!)
     Route::prefix('takvim')->name('takvim.')->group(function () {
         Route::get('/', [\App\Http\Controllers\Admin\TakvimController::class, 'index'])->name('index');
@@ -928,7 +930,7 @@ Route::prefix('admin/yazlik-kiralama')->name('admin.yazlik-kiralama.')->middlewa
         Route::put('/sezon/{id}', [\App\Http\Controllers\Admin\TakvimController::class, 'updateSezon'])->name('sezon.update');
         Route::delete('/sezon/{id}', [\App\Http\Controllers\Admin\TakvimController::class, 'destroySezon'])->name('sezon.destroy');
     });
-    
+
     // Resource routes (LAST - {id} catches everything else!)
     Route::get('/', [\App\Http\Controllers\Admin\YazlikKiralamaController::class, 'index'])->name('index');
     Route::get('/create', [\App\Http\Controllers\Admin\YazlikKiralamaController::class, 'create'])->name('create');
