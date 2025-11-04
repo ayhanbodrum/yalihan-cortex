@@ -119,6 +119,33 @@
   },
   "patterns": [
     {
+      "type": "best_practice",
+      "pattern": "Setting Model Fillable",
+      "rule": "Setting model fillable MUST include: key, value, type, description, group",
+      "example": "protected $fillable = ['key', 'value', 'type', 'description', 'group'];",
+      "violation": "Missing type, description or group in fillable causes save failure",
+      "source": "AYARLAR-SISTEM-UPGRADE-2025-11-05.md",
+      "severity": "critical",
+      "fixed": true
+    },
+    {
+      "type": "best_practice",
+      "pattern": "Setting Helper Functions",
+      "rule": "Use setting() helper instead of Setting::where()",
+      "example": "setting('site_name', 'Default') // ✅ GOOD\nSetting::where('key', 'site_name')->first()->value // ❌ BAD",
+      "source": "AYARLAR-SISTEM-UPGRADE-2025-11-05.md",
+      "severity": "medium"
+    },
+    {
+      "type": "best_practice",
+      "pattern": "Setting Key Format",
+      "rule": "Setting keys MUST be snake_case (lowercase, underscore only)",
+      "example": "site_name ✅\nsiteName ❌\nSite Name ❌\nsite-name ❌",
+      "validation": "regex:/^[a-z][a-z0-9_]*$/",
+      "source": "AYARLAR-SISTEM-UPGRADE-2025-11-05.md",
+      "severity": "high"
+    },
+    {
       "type": "code_violation",
       "forbidden": "sehir",
       "context": "// ✅ DOĞRU\n$ilan->il          // İl ilişkisi\n$ilan->ilce        // İlçe ilişkisi\n$ilan->mahalle     ",
@@ -143,5 +170,5 @@
       "source": "02-CONTEXT7-RULES-SIMPLIFIED.md"
     }
   ],
-  "lastLoaded": "2025-11-04T07:29:15.187Z"
+  "lastLoaded": "2025-11-04T08:51:21.126Z"
 }

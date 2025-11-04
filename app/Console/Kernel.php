@@ -12,6 +12,11 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
+        // TCMB Kur Güncelleme - Her gün 10:00'da (TCMB yayınlandıktan sonra)
+        $schedule->command('exchange:update')
+            ->dailyAt('10:00')
+            ->appendOutputTo(storage_path('logs/exchange-rates.log'));
+        
         // TestSprite otomatik öğrenme - Her gün 03:00'da
         $schedule->command('testsprite:auto-learn')
             ->dailyAt('03:00')

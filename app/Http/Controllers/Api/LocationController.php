@@ -12,6 +12,8 @@ use GuzzleHttp\Client;
 use App\Models\Il;
 use App\Models\Ilce;
 use App\Models\Mahalle;
+use App\Services\TurkiyeAPIService;
+use App\Services\UnifiedLocationService;
 
 class LocationController extends Controller
 {
@@ -382,6 +384,109 @@ class LocationController extends Controller
      * 📍 Adres doğrulama - Hiyerarşik kontrol
      * Context7 Kural #75: Address validation
      */
+    /**
+     * Get all location types (Mahalle + Belde + Köy)
+     * TurkiyeAPI Integration
+     * Context7: Enhanced with towns and villages
+     */
+    public function getAllLocationTypes($ilceId)
+    {
+        try {
+            $turkiyeAPI = app(TurkiyeAPIService::class);
+            $allLocations = $turkiyeAPI->getAllLocations($ilceId);
+            
+            return response()->json([
+                'success' => true,
+                'data' => $allLocations,
+                'counts' => [
+                    'neighborhoods' => count($allLocations['neighborhoods']),
+                    'towns' => count($allLocations['towns']),
+                    'villages' => count($allLocations['villages']),
+                    'total' => count($allLocations['neighborhoods']) + 
+                              count($allLocations['towns']) + 
+                              count($allLocations['villages'])
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'error' => 'Lokasyon verileri alınamadı',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+    
+    /**
+     * Get comprehensive location profile
+     * TurkiyeAPI + WikiMapia combined
+     * Context7: Unified location intelligence
+     */
+    public function getLocationProfile(Request $request)
+    {
+        $request->validate([
+            'lat' => 'required|numeric',
+            'lon' => 'required|numeric',
+            'district_id' => 'nullable|integer'
+        ]);
+        
+        try {
+            $unifiedService = app(UnifiedLocationService::class);
+            
+            $profile = $unifiedService->getLocationProfile(
+                $request->lat,
+                $request->lon,
+                $request->district_id
+            );
+            
+            return response()->json([
+                'success' => true,
+                'data' => $profile
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'error' => 'Lokasyon profili oluşturulamadı',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+    
+    /**
+     * Get nearest residential complexes (Sites/Apartments)
+     * WikiMapia powered
+     * Context7: Smart site detection
+     */
+    public function getNearestSites(Request $request)
+    {
+        $request->validate([
+            'lat' => 'required|numeric',
+            'lon' => 'required|numeric',
+            'limit' => 'sometimes|integer|min:1|max:20'
+        ]);
+        
+        try {
+            $unifiedService = app(UnifiedLocationService::class);
+            
+            $sites = $unifiedService->getNearestResidentialComplex(
+                $request->lat,
+                $request->lon,
+                $request->limit ?? 5
+            );
+            
+            return response()->json([
+                'success' => true,
+                'count' => count($sites),
+                'data' => $sites
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'error' => 'Yakın siteler bulunamadı',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
     public function validateAddress(Request $request)
     {
         $request->validate([

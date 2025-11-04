@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\EventController;
 use App\Http\Controllers\Api\SeasonController;
 use App\Http\Controllers\Api\BookingRequestController;
 use App\Http\Controllers\Api\BulkOperationsController;
+use App\Http\Controllers\Api\ExchangeRateController;
 
 /*
 |--------------------------------------------------------------------------
@@ -862,3 +863,17 @@ Route::post('/get-booking-price', [BookingRequestController::class, 'getPrice'])
 
 // Location API Routes (Context7 Standard)
 require __DIR__.'/api-location.php';
+
+// Exchange Rates API (TCMB Integration - Context7 Compliant)
+Route::prefix('exchange-rates')->group(function () {
+    Route::get('/', [ExchangeRateController::class, 'index'])->name('api.exchange-rates.index');
+    Route::get('/supported', [ExchangeRateController::class, 'supported'])->name('api.exchange-rates.supported');
+    Route::get('/{code}', [ExchangeRateController::class, 'show'])->name('api.exchange-rates.show');
+    Route::get('/{code}/history', [ExchangeRateController::class, 'history'])->name('api.exchange-rates.history');
+    Route::post('/convert', [ExchangeRateController::class, 'convert'])->name('api.exchange-rates.convert');
+    
+    // Admin only - force update
+    Route::post('/update', [ExchangeRateController::class, 'update'])
+        ->middleware(['web', 'auth'])
+        ->name('api.exchange-rates.update');
+});

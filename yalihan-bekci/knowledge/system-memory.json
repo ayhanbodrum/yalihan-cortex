@@ -363,7 +363,7 @@
       }
     },
     "views": {
-      "count": 367,
+      "count": 371,
       "files": [
         "admin/address/create.blade.php",
         "admin/address/index.blade.php",
@@ -402,6 +402,7 @@
         "admin/components/ai-monitor-widget.blade.php",
         "admin/components/ai-widget.blade.php",
         "admin/components/context7-components.blade.php",
+        "admin/components/demo.blade.php",
         "admin/components/google-maps-setup-guide.blade.php",
         "admin/crm/customers/index.blade.php",
         "admin/crm/dashboard-cards.blade.php",
@@ -560,6 +561,8 @@
         "blog/sitemap/index.blade.php",
         "blog/sitemap/xml.blade.php",
         "blog/tag.blade.php",
+        "components/admin/accordion-item.blade.php",
+        "components/admin/accordion.blade.php",
         "components/admin/alert.blade.php",
         "components/admin/badge.blade.php",
         "components/admin/bulk-actions.blade.php",
@@ -572,6 +575,7 @@
         "components/admin/neo-toast.blade.php",
         "components/admin/select.blade.php",
         "components/admin/table.blade.php",
+        "components/admin/tabs.blade.php",
         "components/admin/textarea.blade.php",
         "components/admin/toast.blade.php",
         "components/admin/toggle.blade.php",
@@ -734,8 +738,8 @@
         "yaliihan-property-listing.blade.php"
       ],
       "lastModified": {
-        "file": "index.blade.php",
-        "time": "2025-11-04T07:08:38.920Z"
+        "file": "context7-components.blade.php",
+        "time": "2025-11-04T08:43:07.786Z"
       }
     },
     "routes": {
@@ -755,9 +759,29 @@
       ],
       "endpoints": 892
     },
-    "lastScan": "2025-11-04T07:29:15.206Z"
+    "lastScan": "2025-11-04T08:51:21.171Z"
   },
   "learnings": [
+    {
+      "topic": "Settings System Upgrade",
+      "content": "Settings system tamamen yenilendi: Model fillable fix, 12 quick template, 3 bulk group, smart form, helper functions. Kritik: Setting model'de type, group, description fillable eklendi. Helper: setting(), setting_set(), setting_group() functions. UX: 3/10 → 10/10. Time saving: %95 (2min → 10sec).",
+      "source": "AYARLAR-SISTEM-UPGRADE-2025-11-05.md",
+      "confidence": "critical",
+      "timestamp": "2025-11-05T00:00:00.000Z",
+      "violations_fixed": [
+        "Setting fillable incomplete",
+        "JSON auto-casting breaking strings",
+        "No helper methods",
+        "Weak validation"
+      ]
+    },
+    {
+      "topic": "Component Library",
+      "content": "Component Library Phase 3 complete: Modal modernized (+7 features: ESC, backdrop blur, animations, sizes), File Upload new component (drag&drop, preview, validation), Demo page created (/admin/components-demo), Documentation complete. Total: 12+ components. All Tailwind CSS, Alpine.js, dark mode, accessibility.",
+      "source": "COMPONENT-LIBRARY-GUIDE.md",
+      "confidence": "high",
+      "timestamp": "2025-11-05T00:00:00.000Z"
+    },
     {
       "topic": "Context7",
       "content": "README.md içinde Context7 bilgisi var",

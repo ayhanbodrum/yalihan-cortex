@@ -7,7 +7,7 @@
         "admin-detayli-test-raporu.md",
         "admin-kapsamli-test-raporu.md"
       ],
-      "occurrences": 372
+      "occurrences": 380
     },
     "status": {
       "variable": "$status",
@@ -16,7 +16,7 @@
         "admin-detayli-test-raporu.md",
         "admin-kapsamli-test-raporu.md"
       ],
-      "occurrences": 651
+      "occurrences": 665
     },
     "etiketler": {
       "variable": "$etiketler",
@@ -24,7 +24,7 @@
       "sources": [
         "admin-kapsamli-test-raporu.md"
       ],
-      "occurrences": 186
+      "occurrences": 190
     },
     "ulkeler": {
       "variable": "$ulkeler",
@@ -32,7 +32,7 @@
       "sources": [
         "admin-kapsamli-test-raporu.md"
       ],
-      "occurrences": 186
+      "occurrences": 190
     }
   },
   "missing_tables": {
@@ -171,7 +171,7 @@
       "manual": true
     }
   },
-  "lastScan": "2025-11-04T07:29:15.214Z",
+  "lastScan": "2025-11-04T08:51:21.178Z",
   "alpine_undefined": {
     "portalStatuses_not_defined": {
       "name": "portalStatuses_not_defined",

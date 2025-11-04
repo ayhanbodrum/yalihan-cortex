@@ -164,6 +164,20 @@ Route::prefix('location')->group(function () {
         }
     });
 
+    // ========================================
+    // TurkiyeAPI + WikiMapia Integration
+    // Context7: Enhanced location with towns & villages
+    // ========================================
+    
+    // Get all location types (Mahalle + Belde + Köy)
+    Route::get('/all-types/{districtId}', [\App\Http\Controllers\Api\LocationController::class, 'getAllLocationTypes']);
+    
+    // Get comprehensive location profile (TurkiyeAPI + WikiMapia)
+    Route::post('/profile', [\App\Http\Controllers\Api\LocationController::class, 'getLocationProfile']);
+    
+    // Get nearest residential complexes (WikiMapia)
+    Route::post('/nearest-sites', [\App\Http\Controllers\Api\LocationController::class, 'getNearestSites']);
+    
     // Get location hierarchy for SEO URLs
     Route::get('/hierarchy/{type}/{id}', function ($type, $id) {
         try {

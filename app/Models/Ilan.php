@@ -103,6 +103,13 @@ class Ilan extends Model
         // İlişkisel Alanlar
         'ilan_sahibi_id',
         'ilgili_kisi_id',
+        
+        // TurkiyeAPI + WikiMapia Integration (5 Kasım 2025)
+        'location_type',           // mahalle, belde, koy
+        'location_data',           // TurkiyeAPI data (JSON)
+        'wikimapia_place_id',      // WikiMapia site/place ID
+        'environmental_scores',    // Calculated scores (JSON)
+        'nearby_places',           // Nearby places summary (JSON)
         'danisman_id',
         'ulke_id',
         'il_id',
@@ -273,6 +280,11 @@ class Ilan extends Model
         'kredi_uygun' => 'boolean',
         'takas_uygun' => 'boolean',
 
+        // TurkiyeAPI + WikiMapia data (JSON)
+        'location_data' => 'array',
+        'environmental_scores' => 'array',
+        'nearby_places' => 'array',
+        
         // Arsa boolean alanları
         'yola_cephe' => 'boolean',
         'altyapi_elektrik' => 'boolean',

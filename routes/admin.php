@@ -29,6 +29,11 @@ Route::middleware(['web'])->prefix('admin')->name('admin.')->group(function () {
         return redirect()->route('admin.dashboard');
     })->name('dashboard.index');
 
+    // Component Library Demo
+    Route::get('/components-demo', function () {
+        return view('admin.components-demo');
+    })->name('components.demo');
+
     // AI Dashboard route - REMOVED (consolidated into ai-settings)
 
 
@@ -659,6 +664,8 @@ Route::prefix('ai-category')->name('ai-category.')->group(function () {
         Route::get('/', [\App\Http\Controllers\Admin\AyarlarController::class, 'index'])->name('index');
         Route::get('/create', [\App\Http\Controllers\Admin\AyarlarController::class, 'create'])->name('create');
         Route::post('/', [\App\Http\Controllers\Admin\AyarlarController::class, 'store'])->name('store');
+        Route::post('/bulk-store', [\App\Http\Controllers\Admin\AyarlarController::class, 'bulkStore'])->name('bulk-store');
+        Route::post('/clear-caches', [\App\Http\Controllers\Admin\AyarlarController::class, 'clearCaches'])->name('clear-caches');
         Route::get('/{ayar}', [\App\Http\Controllers\Admin\AyarlarController::class, 'show'])->name('show');
         Route::get('/{ayar}/edit', [\App\Http\Controllers\Admin\AyarlarController::class, 'edit'])->name('edit');
         Route::put('/{ayar}', [\App\Http\Controllers\Admin\AyarlarController::class, 'update'])->name('update');
