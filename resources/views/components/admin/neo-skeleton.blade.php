@@ -3,9 +3,9 @@
     Context7 uyumlu skeleton loader
 
     Kullanım:
-    <x-admin.neo-skeleton type="card" />
-    <x-admin.neo-skeleton type="table" rows="5" />
-    <x-admin.neo-skeleton type="list" items="3" />
+    <x-admin.bg-gray-200 dark:bg-gray-700 type="card" />
+    <x-admin.bg-gray-200 dark:bg-gray-700 type="table" rows="5" />
+    <x-admin.bg-gray-200 dark:bg-gray-700 type="list" items="3" />
 
     @context7-compliant true
     @neo-design-system true
@@ -22,14 +22,14 @@
 ])
 
 @php
-    $animateClass = $animate ? 'neo-skeleton-animate' : '';
+    $animateClass = $animate ? 'animate-pulse' : '';
     $widthClass = $width === 'full' ? 'w-full' : $width;
     $roundedClass = 'rounded-' . $rounded;
 @endphp
 
 {{-- Text Skeleton --}}
 @if($type === 'text')
-    <div class="neo-skeleton {{ $animateClass }} {{ $widthClass }} {{ $roundedClass }}"
+    <div class="bg-gray-200 dark:bg-gray-700 {{ $animateClass }} {{ $widthClass }} {{ $roundedClass }}"
          style="height: {{ $height === 'auto' ? '1rem' : $height }}"
          role="status"
          aria-label="Yükleniyor...">
@@ -40,10 +40,10 @@
 {{-- Heading Skeleton --}}
 @if($type === 'heading')
     <div class="space-y-3">
-        <div class="neo-skeleton {{ $animateClass }} w-3/4 h-8 {{ $roundedClass }}" role="status" aria-label="Başlık yükleniyor...">
+        <div class="bg-gray-200 dark:bg-gray-700 {{ $animateClass }} w-3/4 h-8 {{ $roundedClass }}" role="status" aria-label="Başlık yükleniyor...">
             <span class="sr-only">Başlık yükleniyor...</span>
         </div>
-        <div class="neo-skeleton {{ $animateClass }} w-1/2 h-4 {{ $roundedClass }}" role="status" aria-label="Alt başlık yükleniyor...">
+        <div class="bg-gray-200 dark:bg-gray-700 {{ $animateClass }} w-1/2 h-4 {{ $roundedClass }}" role="status" aria-label="Alt başlık yükleniyor...">
             <span class="sr-only">Alt başlık yükleniyor...</span>
         </div>
     </div>
@@ -53,7 +53,7 @@
 @if($type === 'paragraph')
     <div class="space-y-2">
         @for($i = 0; $i < $rows; $i++)
-            <div class="neo-skeleton {{ $animateClass }} {{ $i === $rows - 1 ? 'w-3/4' : 'w-full' }} h-4 {{ $roundedClass }}"
+            <div class="bg-gray-200 dark:bg-gray-700 {{ $animateClass }} {{ $i === $rows - 1 ? 'w-3/4' : 'w-full' }} h-4 {{ $roundedClass }}"
                  role="status"
                  aria-label="Paragraf yükleniyor...">
                 <span class="sr-only">Paragraf yükleniyor...</span>
@@ -64,28 +64,28 @@
 
 {{-- Card Skeleton --}}
 @if($type === 'card')
-    <div class="neo-card p-6 space-y-4" role="status" aria-label="Kart yükleniyor...">
+    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6 space-y-4" role="status" aria-label="Kart yükleniyor...">
         <!-- Header -->
         <div class="flex items-center gap-3">
-            <div class="neo-skeleton {{ $animateClass }} w-12 h-12 rounded-full"></div>
+            <div class="bg-gray-200 dark:bg-gray-700 {{ $animateClass }} w-12 h-12 rounded-full"></div>
             <div class="flex-1 space-y-2">
-                <div class="neo-skeleton {{ $animateClass }} w-1/2 h-5 {{ $roundedClass }}"></div>
-                <div class="neo-skeleton {{ $animateClass }} w-1/3 h-4 {{ $roundedClass }}"></div>
+                <div class="bg-gray-200 dark:bg-gray-700 {{ $animateClass }} w-1/2 h-5 {{ $roundedClass }}"></div>
+                <div class="bg-gray-200 dark:bg-gray-700 {{ $animateClass }} w-1/3 h-4 {{ $roundedClass }}"></div>
             </div>
         </div>
 
         <!-- Body -->
         <div class="space-y-2">
             @for($i = 0; $i < 3; $i++)
-                <div class="neo-skeleton {{ $animateClass }} w-full h-4 {{ $roundedClass }}"></div>
+                <div class="bg-gray-200 dark:bg-gray-700 {{ $animateClass }} w-full h-4 {{ $roundedClass }}"></div>
             @endfor
-            <div class="neo-skeleton {{ $animateClass }} w-3/4 h-4 {{ $roundedClass }}"></div>
+            <div class="bg-gray-200 dark:bg-gray-700 {{ $animateClass }} w-3/4 h-4 {{ $roundedClass }}"></div>
         </div>
 
         <!-- Footer -->
         <div class="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-gray-700">
-            <div class="neo-skeleton {{ $animateClass }} w-24 h-8 {{ $roundedClass }}"></div>
-            <div class="neo-skeleton {{ $animateClass }} w-24 h-8 {{ $roundedClass }}"></div>
+            <div class="bg-gray-200 dark:bg-gray-700 {{ $animateClass }} w-24 h-8 {{ $roundedClass }}"></div>
+            <div class="bg-gray-200 dark:bg-gray-700 {{ $animateClass }} w-24 h-8 {{ $roundedClass }}"></div>
         </div>
 
         <span class="sr-only">Kart yükleniyor...</span>
@@ -94,13 +94,13 @@
 
 {{-- Table Skeleton --}}
 @if($type === 'table')
-    <div class="neo-card overflow-hidden" role="status" aria-label="Tablo yükleniyor...">
+    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden" role="status" aria-label="Tablo yükleniyor...">
         <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
             <thead class="bg-gray-50 dark:bg-gray-900/50">
                 <tr>
                     @for($i = 0; $i < 5; $i++)
                         <th class="px-4 py-2.5">
-                            <div class="neo-skeleton {{ $animateClass }} w-full h-3 {{ $roundedClass }}"></div>
+                            <div class="bg-gray-200 dark:bg-gray-700 {{ $animateClass }} w-full h-3 {{ $roundedClass }}"></div>
                         </th>
                     @endfor
                 </tr>
@@ -110,7 +110,7 @@
                     <tr>
                         @for($c = 0; $c < 5; $c++)
                             <td class="px-4 py-2.5">
-                                <div class="neo-skeleton {{ $animateClass }} w-full h-3 {{ $roundedClass }}"></div>
+                                <div class="bg-gray-200 dark:bg-gray-700 {{ $animateClass }} w-full h-3 {{ $roundedClass }}"></div>
                             </td>
                         @endfor
                     </tr>
@@ -126,12 +126,12 @@
     <div class="space-y-3" role="status" aria-label="Liste yükleniyor...">
         @for($i = 0; $i < $items; $i++)
             <div class="flex items-center gap-3 p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-                <div class="neo-skeleton {{ $animateClass }} w-10 h-10 rounded-full"></div>
+                <div class="bg-gray-200 dark:bg-gray-700 {{ $animateClass }} w-10 h-10 rounded-full"></div>
                 <div class="flex-1 space-y-2">
-                    <div class="neo-skeleton {{ $animateClass }} w-3/4 h-4 {{ $roundedClass }}"></div>
-                    <div class="neo-skeleton {{ $animateClass }} w-1/2 h-3 {{ $roundedClass }}"></div>
+                    <div class="bg-gray-200 dark:bg-gray-700 {{ $animateClass }} w-3/4 h-4 {{ $roundedClass }}"></div>
+                    <div class="bg-gray-200 dark:bg-gray-700 {{ $animateClass }} w-1/2 h-3 {{ $roundedClass }}"></div>
                 </div>
-                <div class="neo-skeleton {{ $animateClass }} w-20 h-8 {{ $roundedClass }}"></div>
+                <div class="bg-gray-200 dark:bg-gray-700 {{ $animateClass }} w-20 h-8 {{ $roundedClass }}"></div>
             </div>
         @endfor
         <span class="sr-only">Liste yükleniyor...</span>
@@ -141,10 +141,10 @@
 {{-- Avatar Skeleton --}}
 @if($type === 'avatar')
     <div class="flex items-center gap-3" role="status" aria-label="Profil yükleniyor...">
-        <div class="neo-skeleton {{ $animateClass }} w-12 h-12 rounded-full"></div>
+        <div class="bg-gray-200 dark:bg-gray-700 {{ $animateClass }} w-12 h-12 rounded-full"></div>
         <div class="flex-1 space-y-2">
-            <div class="neo-skeleton {{ $animateClass }} w-32 h-4 {{ $roundedClass }}"></div>
-            <div class="neo-skeleton {{ $animateClass }} w-24 h-3 {{ $roundedClass }}"></div>
+            <div class="bg-gray-200 dark:bg-gray-700 {{ $animateClass }} w-32 h-4 {{ $roundedClass }}"></div>
+            <div class="bg-gray-200 dark:bg-gray-700 {{ $animateClass }} w-24 h-3 {{ $roundedClass }}"></div>
         </div>
         <span class="sr-only">Profil yükleniyor...</span>
     </div>
@@ -152,7 +152,7 @@
 
 {{-- Image Skeleton --}}
 @if($type === 'image')
-    <div class="neo-skeleton {{ $animateClass }} {{ $widthClass }} {{ $roundedClass }}"
+    <div class="bg-gray-200 dark:bg-gray-700 {{ $animateClass }} {{ $widthClass }} {{ $roundedClass }}"
          style="height: {{ $height === 'auto' ? '200px' : $height }}"
          role="status"
          aria-label="Görsel yükleniyor...">
@@ -169,13 +169,13 @@
 @if($type === 'stats')
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
         @for($i = 0; $i < 4; $i++)
-            <div class="neo-card p-6" role="status" aria-label="İstatistik yükleniyor...">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6" role="status" aria-label="İstatistik yükleniyor...">
                 <div class="flex items-center justify-between">
                     <div class="flex-1 space-y-3">
-                        <div class="neo-skeleton {{ $animateClass }} w-24 h-4 {{ $roundedClass }}"></div>
-                        <div class="neo-skeleton {{ $animateClass }} w-16 h-8 {{ $roundedClass }}"></div>
+                        <div class="bg-gray-200 dark:bg-gray-700 {{ $animateClass }} w-24 h-4 {{ $roundedClass }}"></div>
+                        <div class="bg-gray-200 dark:bg-gray-700 {{ $animateClass }} w-16 h-8 {{ $roundedClass }}"></div>
                     </div>
-                    <div class="neo-skeleton {{ $animateClass }} w-12 h-12 rounded-full"></div>
+                    <div class="bg-gray-200 dark:bg-gray-700 {{ $animateClass }} w-12 h-12 rounded-full"></div>
                 </div>
                 <span class="sr-only">İstatistik kartı yükleniyor...</span>
             </div>
@@ -185,17 +185,17 @@
 
 {{-- Form Skeleton --}}
 @if($type === 'form')
-    <div class="neo-card p-6 space-y-6" role="status" aria-label="Form yükleniyor...">
+    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6 space-y-6" role="status" aria-label="Form yükleniyor...">
         @for($i = 0; $i < $rows; $i++)
             <div class="space-y-2">
-                <div class="neo-skeleton {{ $animateClass }} w-32 h-4 {{ $roundedClass }}"></div>
-                <div class="neo-skeleton {{ $animateClass }} w-full h-10 {{ $roundedClass }}"></div>
+                <div class="bg-gray-200 dark:bg-gray-700 {{ $animateClass }} w-32 h-4 {{ $roundedClass }}"></div>
+                <div class="bg-gray-200 dark:bg-gray-700 {{ $animateClass }} w-full h-10 {{ $roundedClass }}"></div>
             </div>
         @endfor
 
         <div class="flex items-center gap-3 pt-4">
-            <div class="neo-skeleton {{ $animateClass }} w-32 h-10 {{ $roundedClass }}"></div>
-            <div class="neo-skeleton {{ $animateClass }} w-32 h-10 {{ $roundedClass }}"></div>
+            <div class="bg-gray-200 dark:bg-gray-700 {{ $animateClass }} w-32 h-10 {{ $roundedClass }}"></div>
+            <div class="bg-gray-200 dark:bg-gray-700 {{ $animateClass }} w-32 h-10 {{ $roundedClass }}"></div>
         </div>
 
         <span class="sr-only">Form yükleniyor...</span>
@@ -204,7 +204,7 @@
 
 {{-- Custom Skeleton --}}
 @if($type === 'custom')
-    <div class="neo-skeleton {{ $animateClass }} {{ $widthClass }} {{ $roundedClass }}"
+    <div class="bg-gray-200 dark:bg-gray-700 {{ $animateClass }} {{ $widthClass }} {{ $roundedClass }}"
          style="height: {{ $height }}"
          role="status"
          aria-label="İçerik yükleniyor...">

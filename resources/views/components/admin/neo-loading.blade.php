@@ -54,8 +54,8 @@
     </div>
 @elseif($overlay)
     {{-- Overlay Loading --}}
-    <div class="neo-loading-overlay" role="status" aria-live="polite">
-        <div class="neo-loading-spinner">
+    <div class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center" role="status" aria-live="polite">
+        <div class="bg-white dark:bg-gray-800 rounded-xl p-8 shadow-2xl"
             @include('components.admin.partials.loading-' . $type, [
                 'size' => $size,
                 'color' => $color,
@@ -71,7 +71,7 @@
     {{-- Inline Loading --}}
     <div class="inline-flex items-center gap-2" role="status" aria-live="polite">
         @if ($type === 'spinner')
-            <svg class="neo-spin {{ $sizeClasses[$size] ?? $sizeClasses['md'] }} {{ $colorClasses[$color] ?? $colorClasses['primary'] }}"
+            <svg class="animate-spin {{ $sizeClasses[$size] ?? $sizeClasses['md'] }} {{ $colorClasses[$color] ?? $colorClasses['primary'] }}"
                 fill="none" viewBox="0 0 24 24" aria-hidden="true">
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
                 </circle>
@@ -80,17 +80,17 @@
                 </path>
             </svg>
         @elseif($type === 'dots')
-            <div class="neo-loading-dots" aria-hidden="true">
-                <div class="neo-loading-dot" style="background-color: currentColor"></div>
-                <div class="neo-loading-dot" style="background-color: currentColor"></div>
-                <div class="neo-loading-dot" style="background-color: currentColor"></div>
+            <div class="flex space-x-2" aria-hidden="true">
+                <div class="w-2 h-2 rounded-full animate-bounce" style="background-color: currentColor; animation-delay: 0ms"></div>
+                <div class="w-2 h-2 rounded-full animate-bounce" style="background-color: currentColor; animation-delay: 150ms"></div>
+                <div class="w-2 h-2 rounded-full animate-bounce" style="background-color: currentColor; animation-delay: 300ms"></div>
             </div>
         @elseif($type === 'bar')
             <div class="w-full h-1 bg-gray-200 dark:bg-gray-800 rounded-full overflow-hidden" aria-hidden="true">
-                <div class="neo-loading-bar {{ $colorClasses[$color] ?? $colorClasses['primary'] }}"></div>
+                <div class="h-full {{ $colorClasses[$color] ?? $colorClasses['primary'] }} animate-pulse" style="width: 100%; animation: progress 1.5s ease-in-out infinite;"></div>
             </div>
         @elseif($type === 'pulse')
-            <div class="neo-skeleton neo-skeleton-pulse {{ $sizeClasses[$size] ?? $sizeClasses['md'] }} rounded-full"
+            <div class="bg-gray-200 dark:bg-gray-700 animate-pulse {{ $sizeClasses[$size] ?? $sizeClasses['md'] }} rounded-full"
                 aria-hidden="true"></div>
         @endif
 
