@@ -93,7 +93,7 @@
         </div>
 
         <!-- Filtreler -->
-        <div class="neo-card p-6 mb-8">
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6 mb-8">
             <h2 class="text-xl font-bold text-gray-800 mb-4">🔍 Rapor Filtreleri</h2>
             <form method="GET" action="{{ route('admin.reports.ilanlar') }}"
                 class="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -146,7 +146,7 @@
         </div>
 
         <!-- Rapor İçeriği -->
-        <div class="neo-card">
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
             <div class="p-6">
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-xl font-bold text-gray-800">📈 İlan Analizi</h2>

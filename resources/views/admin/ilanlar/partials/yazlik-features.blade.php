@@ -6,7 +6,7 @@
     Kullanım: İlan create/edit formlarında yazlık amenities gösterimi
 --}}
 
-<div class="neo-card mt-6" x-data="{ expanded: true }">
+<div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm mt-6" x-data="{ expanded: true }">
     <div class="p-6 border-b border-gray-200 dark:border-gray-700 cursor-pointer" @click="expanded = !expanded">
         <div class="flex items-center justify-between">
             <div class="flex items-center">

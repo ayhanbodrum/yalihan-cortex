@@ -10,7 +10,7 @@ $pageIconClass = 'w-12 h-12 rounded-xl flex items-center justify-center mr-4';
 
 {{-- Stats Card Component --}}
 @php
-$statsCardClass = 'neo-card p-6';
+$statsCardClass = 'bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6';
 $statsIconClass = 'w-12 h-12 rounded-lg flex items-center justify-center';
 $statsValueClass = 'text-2xl font-bold';
 $statsLabelClass = 'text-sm text-gray-600 font-medium';
@@ -18,7 +18,7 @@ $statsLabelClass = 'text-sm text-gray-600 font-medium';
 
 {{-- Filter Component --}}
 @php
-$filterContainerClass = 'neo-card p-6 mb-8';
+$filterContainerClass = 'bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6 mb-8';
 $filterTitleClass = 'text-lg font-semibold text-gray-900 mb-4 flex items-center';
 $filterInputClass = 'neo-input';
 $filterLabelClass = 'block text-sm font-medium text-gray-700 mb-2';

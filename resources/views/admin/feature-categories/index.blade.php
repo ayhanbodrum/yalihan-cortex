@@ -26,7 +26,7 @@
     <div class="px-6">
         <!-- Stats Cards -->
         <div class="grid grid-cols-1 gap-6 sm:grid-cols-3 mb-8">
-            <div class="neo-card p-6">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                 <div class="flex items-center">
                     <div class="w-12 h-12 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
                         <i class="fas fa-tags text-white"></i>
@@ -38,7 +38,7 @@
                 </div>
             </div>
 
-            <div class="neo-card p-6">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                 <div class="flex items-center">
                     <div class="w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-600 rounded-lg flex items-center justify-center">
                         <i class="fas fa-check-circle text-white"></i>
@@ -50,7 +50,7 @@
                 </div>
             </div>
 
-            <div class="neo-card p-6">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                 <div class="flex items-center">
                     <div class="w-12 h-12 bg-gradient-to-r from-orange-500 to-yellow-600 rounded-lg flex items-center justify-center">
                         <i class="fas fa-list text-white"></i>
@@ -64,7 +64,7 @@
         </div>
 
         <!-- Categories Table -->
-        <div class="neo-card p-6">
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
             <div class="flex items-center justify-between mb-6">
                 <h2 class="text-xl font-bold text-gray-800">Feature Categories</h2>
                 <div class="flex gap-2">

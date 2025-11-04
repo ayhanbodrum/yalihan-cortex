@@ -3,7 +3,7 @@
 @section('content')
     <div class="container mx-auto px-4 py-6">
         <div class="mb-6">
-            <div class="neo-card">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
                 <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
                     <h1 class="admin-h1">Eşleşme Yönetimi</h1>
                     <div>
@@ -32,7 +32,7 @@
                     @endif
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="neo-card overflow-hidden">
+                        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden">
                             <div class="px-4 py-2.5 border-b border-gray-200 dark:border-gray-700">
                                 <h4 class="admin-h3">Talep-İlan Eşleşmeleri</h4>
                             </div>
@@ -82,7 +82,7 @@
                             </div>
                         </div>
 
-                        <div class="neo-card overflow-hidden">
+                        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden">
                             <div class="px-4 py-2.5 border-b border-gray-200 dark:border-gray-700">
                                 <h4 class="text-base font-medium text-gray-900 dark:text-white">Eşleşme İstatistikleri</h4>
                             </div>
@@ -132,7 +132,7 @@
                         </div>
                     </div>
 
-                    <div class="mt-6 neo-card overflow-hidden">
+                    <div class="mt-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden">
                         <div class="px-4 py-2.5 border-b border-gray-200 dark:border-gray-700">
                             <h4 class="text-base font-medium text-gray-900 dark:text-white">Eşleşme Ayarları</h4>
                         </div>

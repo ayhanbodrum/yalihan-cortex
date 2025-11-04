@@ -22,7 +22,7 @@
     </div>
 
     <div class="px-6">
-        <div class="neo-card p-6 max-w-2xl">
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6 max-w-2xl">
             <form action="{{ route('admin.ai-redirect.store') }}" method="POST">
                 @csrf
 

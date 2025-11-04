@@ -8,7 +8,7 @@
     <p class="text-lg text-gray-600 mt-2">Telegram bot yönetimi ve ayarları</p>
 </div>
 
-<div class="neo-card p-6 shadow-sm">
+<div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6 shadow-sm">
     <div class="text-center py-12">
         <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -47,7 +47,7 @@
             <div class="lg:col-span-2 space-y-6">
 
                 <!-- Temel Bilgiler -->
-                <div class="neo-card">
+                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
                     <div class="p-6">
                         <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
                             Temel Bilgiler
@@ -142,7 +142,7 @@
                 </div>
 
                 <!-- Uzmanlık Alanları -->
-                <div class="neo-card">
+                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
                     <div class="p-6">
                         <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
                             Uzmanlık Alanları
@@ -209,7 +209,7 @@
             <div class="space-y-6">
 
                 <!-- Profil Fotoğrafı -->
-                <div class="neo-card">
+                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
                     <div class="p-6">
                         <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
                             Profil Fotoğrafı
@@ -259,7 +259,7 @@
                 </div>
 
                 <!-- Durum -->
-                <div class="neo-card">
+                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
                     <div class="p-6">
                         <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
                             Durum
