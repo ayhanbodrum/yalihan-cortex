@@ -115,7 +115,7 @@
                             </svg>
                             Filtrele
                         </button>
-                        <button type="button" class="neo-btn neo-btn neo-btn-primary touch-target-optimized touch-target-optimized" onclick="refreshComments()">
+                        <button type="button" class="neo-btn inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg active:scale-95 touch-target-optimized touch-target-optimized" onclick="refreshComments()">
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
@@ -224,7 +224,7 @@
                                         <div class="flex space-x-2">
                                             @if ($comment->status === 'pending')
                                                 <button onclick="approveComment({{ $comment->id }})"
-                                                    class="neo-btn neo-btn neo-btn-primary text-xs px-3 py-1 touch-target-optimized touch-target-optimized">
+                                                    class="neo-btn inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg active:scale-95 text-xs px-3 py-1 touch-target-optimized touch-target-optimized">
                                                     <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor"
                                                         viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -316,7 +316,7 @@
                     <button type="button" class="neo-btn neo-btn neo-btn-secondary touch-target-optimized touch-target-optimized" onclick="closeRejectModal()">
                         İptal
                     </button>
-                    <button type="button" class="neo-btn neo-btn neo-btn-primary touch-target-optimized touch-target-optimized" onclick="confirmReject()">
+                    <button type="button" class="neo-btn inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg active:scale-95 touch-target-optimized touch-target-optimized" onclick="confirmReject()">
                         Reddet
                     </button>
                 </div>
@@ -338,7 +338,7 @@
                     <button type="button" class="neo-btn neo-btn neo-btn-secondary touch-target-optimized touch-target-optimized" onclick="closeSpamModal()">
                         İptal
                     </button>
-                    <button type="button" class="neo-btn neo-btn neo-btn-primary touch-target-optimized touch-target-optimized" onclick="confirmSpam()">
+                    <button type="button" class="neo-btn inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg active:scale-95 touch-target-optimized touch-target-optimized" onclick="confirmSpam()">
                         Spam Olarak İşaretle
                     </button>
                 </div>

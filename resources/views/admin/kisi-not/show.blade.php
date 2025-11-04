@@ -33,7 +33,7 @@
             <!-- Main Content -->
             <div class="lg:col-span-2 space-y-6">
                 <!-- Note Content -->
-                <div class="neo-card p-6">
+                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                     <div class="flex items-start justify-between mb-4">
                         <h2 class="text-xl font-bold text-gray-800">Not İçeriği</h2>
                         @if ($not['is_completed'] ?? false)
@@ -71,7 +71,7 @@
 
                 <!-- Note History -->
                 @if (isset($noteHistory) && count($noteHistory) > 0)
-                    <div class="neo-card p-6">
+                    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                         <h2 class="text-xl font-bold text-gray-800 mb-4">Not Geçmişi</h2>
                         <div class="space-y-4">
                             @foreach ($noteHistory as $history)
@@ -94,7 +94,7 @@
 
                 <!-- Related Notes -->
                 @if (isset($relatedNotes) && count($relatedNotes) > 0)
-                    <div class="neo-card p-6">
+                    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                         <h2 class="text-xl font-bold text-gray-800 mb-4">İlgili Notlar</h2>
                         <div class="space-y-3">
                             @foreach ($relatedNotes as $relatedNote)
@@ -123,7 +123,7 @@
             <!-- Sidebar -->
             <div class="space-y-6">
                 <!-- Note Information -->
-                <div class="neo-card p-6">
+                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                     <h3 class="text-lg font-semibold text-gray-800 mb-4">Not Bilgileri</h3>
                     <div class="space-y-4">
                         <div>
@@ -190,7 +190,7 @@
                 </div>
 
                 <!-- Person Information -->
-                <div class="neo-card p-6">
+                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                     <h3 class="text-lg font-semibold text-gray-800 mb-4">Kişi Bilgileri</h3>
                     <div class="flex items-center mb-4">
                         <div class="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center mr-3">
@@ -217,7 +217,7 @@
                 </div>
 
                 <!-- Quick Actions -->
-                <div class="neo-card p-6">
+                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                     <h3 class="text-lg font-semibold text-gray-800 mb-4">Hızlı İşlemler</h3>
                     <div class="space-y-3">
                         <button onclick="toggleComplete()"
@@ -252,7 +252,7 @@
 
                 <!-- Tags -->
                 @if (isset($availableTags) && count($availableTags) > 0)
-                    <div class="neo-card p-6">
+                    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                         <h3 class="text-lg font-semibold text-gray-800 mb-4">Mevcut Etiketler</h3>
                         <div class="flex flex-wrap gap-2">
                             @foreach ($availableTags as $tag)

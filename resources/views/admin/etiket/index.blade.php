@@ -28,7 +28,7 @@
     </div>
 
     <div class="px-6">
-        <div class="neo-card p-6">
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
             @if (session('success'))
                 <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-2.5 rounded relative mb-4" role="alert">
                     <strong class="font-bold">Success!</strong>

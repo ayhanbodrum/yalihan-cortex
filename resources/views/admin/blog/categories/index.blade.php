@@ -76,7 +76,7 @@
 @section('content')
     <div class="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
         <!-- Header with Actions -->
-        <div class="neo-card mb-8 p-8">
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm mb-8 p-8">
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
                 <div>
                     <h1
@@ -86,7 +86,7 @@
                     <p class="mt-3 text-lg text-gray-600">Blog yazılarınızı organize etmek için kategoriler oluşturun</p>
                 </div>
                 <div class="flex items-center space-x-3">
-                    <a href="{{ route('admin.blog.categories.create') }}" class="neo-btn neo-btn-primary touch-target-optimized touch-target-optimized">
+                    <a href="{{ route('admin.blog.categories.create') }}" class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg active:scale-95 touch-target-optimized touch-target-optimized">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
@@ -100,7 +100,7 @@
         <!-- Categories Grid -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <!-- Categories List -->
-            <div class="neo-card overflow-hidden">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden">
                 <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-800">
                     <h3 class="text-xl font-bold text-gray-800 flex items-center">
                         <svg class="w-6 h-6 mr-3 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -232,7 +232,7 @@
             </div>
 
             <!-- Quick Create Form -->
-            <div class="neo-card overflow-hidden">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden">
                 <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-800">
                     <h3 class="text-xl font-bold text-gray-800 flex items-center">
                         <svg class="w-6 h-6 mr-3 text-blue-600" fill="none" stroke="currentColor"
@@ -314,7 +314,7 @@
         </div>
 
         <!-- Quick Create Form -->
-        <div class="neo-card overflow-hidden">
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden">
             <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-800">
                 <h3 class="text-xl font-bold text-gray-800 flex items-center">
                     <svg class="w-6 h-6 mr-3 text-blue-600" fill="none" stroke="currentColor"
@@ -325,7 +325,7 @@
                     Hızlı Kategori Oluştur
                 </h3>
         @if (!$categories->isEmpty())
-            <div class="neo-card mt-8 overflow-hidden">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm mt-8 overflow-hidden">
                 <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-800">
                     <h3 class="text-xl font-bold text-gray-800 flex items-center">
                         <svg class="w-6 h-6 mr-3 text-blue-600" fill="none" stroke="currentColor"

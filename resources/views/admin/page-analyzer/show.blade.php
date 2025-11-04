@@ -32,7 +32,7 @@
             <!-- Main Content -->
             <div class="lg:col-span-2 space-y-6">
                 <!-- Session Overview -->
-                <div class="neo-card p-6">
+                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                     <h2 class="text-xl font-bold text-gray-800 mb-4">Session Overview</h2>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -76,14 +76,14 @@
 
                 <!-- Description -->
                 @if($specificResult['description'] ?? null)
-                    <div class="neo-card p-6">
+                    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                         <h2 class="text-xl font-bold text-gray-800 mb-4">Description</h2>
                         <p class="text-gray-700 leading-relaxed">{{ $specificResult['description'] }}</p>
                     </div>
                 @endif
 
                 <!-- Analysis Results -->
-                <div class="neo-card p-6">
+                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                     <h2 class="text-xl font-bold text-gray-800 mb-4">Analysis Results</h2>
 
                     @if(isset($specificResult['pages']) && count($specificResult['pages']) > 0)
@@ -135,7 +135,7 @@
 
                 <!-- Recommendations -->
                 @if(isset($specificResult['recommendations']) && count($specificResult['recommendations']) > 0)
-                    <div class="neo-card p-6">
+                    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                         <h2 class="text-xl font-bold text-gray-800 mb-4">Recommendations</h2>
                         <ul class="space-y-3">
                             @foreach($specificResult['recommendations'] as $recommendation)
@@ -152,7 +152,7 @@
             <!-- Sidebar -->
             <div class="space-y-6">
                 <!-- Quick Actions -->
-                <div class="neo-card p-6">
+                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                     <h3 class="text-lg font-semibold text-gray-800 mb-4">Quick Actions</h3>
                     <div class="space-y-3">
                         <button onclick="exportSession({{ $specificResult['id'] ?? 1 }}, 'pdf')"
@@ -176,7 +176,7 @@
                 </div>
 
                 <!-- Statistics -->
-                <div class="neo-card p-6">
+                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                     <h3 class="text-lg font-semibold text-gray-800 mb-4">Statistics</h3>
                     <div class="space-y-4">
                         <div class="flex items-center justify-between">
@@ -202,7 +202,7 @@
                 </div>
 
                 <!-- Timestamps -->
-                <div class="neo-card p-6">
+                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                     <h3 class="text-lg font-semibold text-gray-800 mb-4">Timestamps</h3>
                     <div class="space-y-3">
                         <div>

@@ -72,7 +72,7 @@
 @section('content')
     <div class="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
         <!-- Modern Header -->
-        <div class="neo-card mb-8 p-8">
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm mb-8 p-8">
             <div class="flex items-center justify-between">
                 <div>
                     <h1
@@ -110,7 +110,7 @@
                 <!-- Main Content -->
                 <div class="lg:col-span-2 space-y-6">
                     <!-- Basic Information -->
-                    <div class="neo-card overflow-hidden">
+                    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden">
                         <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-800">
                             <h3 class="text-xl font-bold text-gray-800 flex items-center">
                                 <svg class="w-6 h-6 mr-3 text-blue-600" fill="none" stroke="currentColor"
@@ -248,7 +248,7 @@
                 <!-- Sidebar -->
                 <div class="space-y-6">
                     <!-- Publish Settings -->
-                    <div class="neo-card overflow-hidden">
+                    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden">
                         <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-800">
                             <h3 class="text-xl font-bold text-gray-800 flex items-center">
                                 <svg class="w-6 h-6 mr-3 text-blue-600" fill="none" stroke="currentColor"
@@ -417,7 +417,7 @@
                     </div>
 
                     <!-- Actions -->
-                    <div class="neo-card overflow-hidden">
+                    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden">
                         <div class="p-6 space-y-3">
                             <button type="submit" class="neo-btn neo-btn-primary w-full touch-target-optimized touch-target-optimized">
                                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">

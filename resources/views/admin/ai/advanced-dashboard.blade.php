@@ -31,7 +31,7 @@
 
         <!-- System Health Status -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div class="neo-card p-6">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                 <div class="flex items-center justify-between">
                     <div>
                         <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Sistem Sağlığı</h3>
@@ -45,7 +45,7 @@
                 </div>
             </div>
 
-            <div class="neo-card p-6">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                 <div class="flex items-center justify-between">
                     <div>
                         <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Aktif Servisler</h3>
@@ -60,7 +60,7 @@
                 </div>
             </div>
 
-            <div class="neo-card p-6">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                 <div class="flex items-center justify-between">
                     <div>
                         <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Başarı Oranı</h3>
@@ -78,7 +78,7 @@
         </div>
 
         <!-- AI Features Overview -->
-        <div class="neo-card p-6 mb-8">
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6 mb-8">
             <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">🚀 AI Özellikleri</h2>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -215,7 +215,7 @@
         <!-- Performance Charts -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
             <!-- Response Time Chart -->
-            <div class="neo-card p-6">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                 <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-4">⚡ Response Time Trend</h3>
                 <div class="h-64 flex items-center justify-center bg-gray-50 dark:bg-gray-800 rounded-lg">
                     <p class="text-gray-500 dark:text-gray-400">Chart will be implemented with Chart.js</p>
@@ -223,7 +223,7 @@
             </div>
 
             <!-- Success Rate Chart -->
-            <div class="neo-card p-6">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                 <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-4">📊 Success Rate Trend</h3>
                 <div class="h-64 flex items-center justify-center bg-gray-50 dark:bg-gray-800 rounded-lg">
                     <p class="text-gray-500 dark:text-gray-400">Chart will be implemented with Chart.js</p>
@@ -232,7 +232,7 @@
         </div>
 
         <!-- Recent Activity -->
-        <div class="neo-card p-6">
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
             <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-4">📈 Son Aktiviteler</h3>
             <div class="space-y-4" id="recent-activities">
                 <!-- Activity items will be loaded here -->
@@ -243,7 +243,7 @@
     <!-- Test Modal -->
     <div id="test-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50">
         <div class="flex items-center justify-center min-h-screen p-4">
-            <div class="neo-card p-6 max-w-md w-full">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6 max-w-md w-full">
                 <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-4">🧪 AI Feature Test</h3>
                 <div id="test-content">
                     <!-- Test content will be loaded here -->

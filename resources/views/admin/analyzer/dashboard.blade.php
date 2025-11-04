@@ -50,7 +50,7 @@
         </div>
 
         <!-- Overall Health Status -->
-        <div class="neo-card p-6 mb-8">
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6 mb-8">
             <div class="flex items-center justify-between">
                 <div>
                     <h2 class="text-xl font-bold text-gray-800 mb-2">🏥 System Health</h2>
@@ -82,7 +82,7 @@
         </div>
 
         <!-- 🚀 Analyzer Yenilikleri -->
-        <div class="neo-card p-6 mb-8 bg-gradient-to-r from-purple-50 to-pink-50 border-purple-200">
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6 mb-8 bg-gradient-to-r from-purple-50 to-pink-50 border-purple-200">
             <div class="flex items-center justify-between mb-4">
                 <h2 class="text-xl font-bold text-purple-800 flex items-center">
                     🚀 Analyzer Yenilikleri
@@ -223,7 +223,7 @@
         <!-- Page Performance Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
             <!-- Telegram Bot -->
-            <div class="neo-card p-6">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="text-lg font-semibold text-gray-800">🤖 Telegram Bot</h3>
                     <div class="w-3 h-3 rounded-full bg-green-500"></div>
@@ -246,7 +246,7 @@
             </div>
 
             <!-- Address Management -->
-            <div class="neo-card p-6">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="text-lg font-semibold text-gray-800">🏠 Adres Yönetimi</h3>
                     <div class="w-3 h-3 rounded-full bg-green-500"></div>
@@ -271,7 +271,7 @@
             </div>
 
             <!-- My Listings -->
-            <div class="neo-card p-6">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="text-lg font-semibold text-gray-800">🏘️ My Listings</h3>
                     <div class="w-3 h-3 rounded-full bg-red-500"></div>
@@ -294,7 +294,7 @@
             </div>
 
             <!-- Analytics -->
-            <div class="neo-card p-6">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="text-lg font-semibold text-gray-800">📊 Analytics</h3>
                     <div class="w-3 h-3 rounded-full bg-red-500"></div>
@@ -317,7 +317,7 @@
             </div>
 
             <!-- Notifications -->
-            <div class="neo-card p-6">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="text-lg font-semibold text-gray-800">📢 Notifications</h3>
                     <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
@@ -342,7 +342,7 @@
         </div>
 
         <!-- 💡 Smart Recommendations -->
-        <div class="neo-card p-6">
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
             <div class="flex items-center justify-between mb-6">
                 <h2 class="text-xl font-bold text-gray-800 flex items-center">
                     💡 Smart Recommendations

@@ -27,7 +27,7 @@
             <!-- Main Content -->
             <div class="lg:col-span-2 space-y-6">
                 <!-- Location Information -->
-                <div class="neo-card p-6">
+                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                     <h2 class="text-xl font-bold text-gray-800 mb-4">Location Information</h2>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -69,7 +69,7 @@
                 </div>
 
                 <!-- Address Information -->
-                <div class="neo-card p-6">
+                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                     <h2 class="text-xl font-bold text-gray-800 mb-4">Address Information</h2>
 
                     <div class="space-y-4">
@@ -89,7 +89,7 @@
 
                 <!-- Coordinates -->
                 @if (isset($location['coordinates']))
-                    <div class="neo-card p-6">
+                    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                         <h2 class="text-xl font-bold text-gray-800 mb-4">Coordinates</h2>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -122,7 +122,7 @@
 
                 <!-- Location Details -->
                 @if (isset($location['details']))
-                    <div class="neo-card p-6">
+                    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                         <h2 class="text-xl font-bold text-gray-800 mb-4">Location Details</h2>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -149,7 +149,7 @@
             <!-- Sidebar -->
             <div class="space-y-6">
                 <!-- Quick Actions -->
-                <div class="neo-card p-6">
+                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                     <h3 class="text-lg font-semibold text-gray-800 mb-4">Quick Actions</h3>
                     <div class="space-y-3">
                         <button onclick="copyCoordinates()"
@@ -173,7 +173,7 @@
                 </div>
 
                 <!-- Statistics -->
-                <div class="neo-card p-6">
+                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                     <h3 class="text-lg font-semibold text-gray-800 mb-4">Statistics</h3>
                     <div class="space-y-4">
                         @if (isset($location['details']['population']))
@@ -210,7 +210,7 @@
                 </div>
 
                 <!-- Timestamps -->
-                <div class="neo-card p-6">
+                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                     <h3 class="text-lg font-semibold text-gray-800 mb-4">Timestamps</h3>
                     <div class="space-y-3">
                         <div>
@@ -231,7 +231,7 @@
 
                 <!-- Coordinates Info -->
                 @if (isset($location['coordinates']))
-                    <div class="neo-card p-6">
+                    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                         <h3 class="text-lg font-semibold text-gray-800 mb-4">Coordinates</h3>
                         <div class="space-y-3">
                             <div>
