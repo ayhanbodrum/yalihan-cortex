@@ -15,11 +15,11 @@
                 <p class="text-lg text-gray-600 mt-2">Manage AI system redirects and routing</p>
             </div>
             <div class="flex gap-3">
-                <a href="{{ route('admin.ai-redirect.create') }}" class="neo-btn neo-btn neo-btn-primary">
+                <a href="{{ route('admin.ai-redirect.create') }}" class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg active:scale-95">
                     <i class="fas fa-plus mr-2"></i>
                     New Redirect
                 </a>
-                <a href="{{ route('admin.ai-redirect.analytics') }}" class="neo-btn neo-btn neo-btn-secondary">
+                <a href="{{ route('admin.ai-redirect.analytics') }}" class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-sm">
                     <i class="fas fa-chart-bar mr-2"></i>
                     Analytics
                 </a>
@@ -28,22 +28,22 @@
     </div>
 
     <div class="px-6">
-        <div class="neo-card p-6">
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
             <!-- Quick Redirect Actions -->
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-                <a href="{{ route('admin.ai-settings.index') }}" class="neo-btn neo-btn neo-btn-primary text-center">
+                <a href="{{ route('admin.ai-settings.index') }}" class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg active:scale-95 text-center">
                     <i class="fas fa-cog mr-2"></i>
                     AI Settings
                 </a>
-                <a href="{{ route('admin.ai.advanced-dashboard') }}" class="neo-btn neo-btn neo-btn-secondary text-center">
+                <a href="{{ route('admin.ai.advanced-dashboard') }}" class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-sm text-center">
                     <i class="fas fa-tachometer-alt mr-2"></i>
                     AI Dashboard
                 </a>
-                <a href="{{ route('admin.danisman-ai.index') }}" class="neo-btn neo-btn-warning text-center">
+                <a href="{{ route('admin.danisman-ai.index') }}" class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-yellow-600 to-orange-600 rounded-lg hover:from-yellow-700 hover:to-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 transition-all duration-200 shadow-md hover:shadow-lg active:scale-95 text-center">
                     <i class="fas fa-robot mr-2"></i>
                     Danışman AI
                 </a>
-                <a href="{{ route('admin.page-analyzer.dashboard') }}" class="neo-btn neo-btn-info text-center">
+                <a href="{{ route('admin.page-analyzer.dashboard') }}" class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-cyan-600 to-blue-600 rounded-lg hover:from-cyan-700 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 transition-all duration-200 shadow-md hover:shadow-lg active:scale-95 text-center">
                     <i class="fas fa-search mr-2"></i>
                     Page Analyzer
                 </a>
@@ -51,7 +51,7 @@
 
             <!-- Redirect Statistics -->
             <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-                <div class="neo-card p-6">
+                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
                             <i class="fas fa-route text-2xl text-blue-600"></i>
@@ -63,7 +63,7 @@
                     </div>
                 </div>
 
-                <div class="neo-card p-6">
+                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
                             <i class="fas fa-check-circle text-2xl text-green-600"></i>
@@ -75,7 +75,7 @@
                     </div>
                 </div>
 
-                <div class="neo-card p-6">
+                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
                             <i class="fas fa-clock text-2xl text-yellow-600"></i>
@@ -87,7 +87,7 @@
                     </div>
                 </div>
 
-                <div class="neo-card p-6">
+                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
                             <i class="fas fa-star text-2xl text-purple-600"></i>

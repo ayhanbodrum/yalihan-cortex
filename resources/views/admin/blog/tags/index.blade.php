@@ -6,7 +6,7 @@
 @section('content')
     <div class="container mx-auto">
         <!-- Header with Actions -->
-        <div class="neo-card mb-6">
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm mb-6">
             <div class="p-6">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
                     <div>
@@ -15,7 +15,7 @@
                             oluşturun</p>
                     </div>
                     <div class="flex items-center space-x-3">
-                        <a href="{{ route('admin.blog.tags.create') }}" class="neo-btn neo-btn-primary touch-target-optimized touch-target-optimized">
+                        <a href="{{ route('admin.blog.tags.create') }}" class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg active:scale-95 touch-target-optimized">
                             <i class="fas fa-plus mr-2"></i>
                             Yeni Etiket
                         </a>
@@ -27,7 +27,7 @@
         <!-- Tags Grid -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <!-- Tags List -->
-            <div class="neo-card">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
                 <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-800">
                     <h3 class="text-lg font-semibold">Etiketler</h3>
                 </div>
@@ -63,11 +63,11 @@
 
                                     <div class="flex items-center space-x-2">
                                         <a href="{{ route('admin.blog.tags.edit', $tag) }}"
-                                            class="neo-btn neo-btn-secondary touch-target-optimized touch-target-optimized" title="Düzenle">
+                                            class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-sm touch-target-optimized touch-target-optimized" title="Düzenle">
                                             <i class="fas fa-edit"></i>
                                         </a>
                                         <a href="{{ route('blog.tag', $tag->slug) }}" target="_blank"
-                                            class="neo-btn neo-btn-secondary touch-target-optimized touch-target-optimized" title="Görüntüle">
+                                            class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-sm touch-target-optimized touch-target-optimized" title="Görüntüle">
                                             <i class="fas fa-external-link-alt"></i>
                                         </a>
 
@@ -77,7 +77,7 @@
                                             @csrf
                                             @method('PATCH')
                                             <button type="submit"
-                                                class="neo-btn neo-btn-secondary touch-target-optimized touch-target-optimized"
+                                                class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-sm touch-target-optimized touch-target-optimized"
                                                 title="{{ $item->status ? 'Pasif Yap' : 'Aktif Yap' }}">
                                                 <i class="fas fa-{{ $item->status ? 'eye-slash' : 'eye' }}"></i>
                                             </button>
@@ -89,7 +89,7 @@
                                                 class="inline">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="neo-btn-danger touch-target-optimized touch-target-optimized" title="Sil">
+                                                <button type="submit" class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-white bg-gradient-to-r from-red-600 to-red-700 rounded-lg hover:from-red-700 hover:to-red-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-all duration-200 shadow-md hover:shadow-lg active:scale-95 touch-target-optimized touch-target-optimized" title="Sil">
                                                     <i class="fas fa-trash"></i>
                                                 </button>
                                             </form>
@@ -110,7 +110,7 @@
             </div>
 
             <!-- Quick Create Form -->
-            <div class="neo-card">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
                 <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-800">
                     <h3 class="text-lg font-semibold">Hızlı Etiket Oluştur</h3>
                 </div>
@@ -166,7 +166,7 @@
                         </div>
 
                         <div class="flex items-center justify-end space-x-3 mt-6">
-                            <button type="reset" class="neo-btn neo-btn-secondary touch-target-optimized touch-target-optimized">
+                            <button type="reset" class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-sm touch-target-optimized touch-target-optimized">
                                 <i class="fas fa-times mr-2"></i>
                                 Temizle
                             </button>
@@ -182,7 +182,7 @@
 
         <!-- Statistics -->
         @if (!$tags->isEmpty())
-            <div class="neo-card mt-6">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm mt-6">
                 <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-800">
                     <h3 class="text-lg font-semibold">Etiket İstatistikleri</h3>
                 </div>

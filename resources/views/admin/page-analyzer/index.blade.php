@@ -15,11 +15,11 @@
                 <p class="text-lg text-gray-600 mt-2">Manage and view analysis sessions</p>
             </div>
             <div class="flex gap-3">
-                <a href="{{ route('admin.page-analyzer.create') }}" class="neo-btn neo-btn neo-btn-primary">
+                <a href="{{ route('admin.page-analyzer.create') }}" class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg active:scale-95">
                     <i class="fas fa-plus mr-2"></i>
                     New Analysis
                 </a>
-                <a href="{{ route('admin.page-analyzer.dashboard') }}" class="neo-btn neo-btn neo-btn-secondary">
+                <a href="{{ route('admin.page-analyzer.dashboard') }}" class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-sm">
                     <i class="fas fa-tachometer-alt mr-2"></i>
                     Live Dashboard
                 </a>
@@ -28,7 +28,7 @@
     </div>
 
     <div class="px-6">
-        <div class="neo-card p-6">
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-200 p-6">
             @if (session('success'))
                 <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-2.5 rounded relative mb-4" role="alert">
                     <strong class="font-bold">Success!</strong>
@@ -46,22 +46,22 @@
             <!-- Quick Actions -->
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
                 <button onclick="runQuickAnalysis('complete')"
-                        class="neo-btn neo-btn neo-btn-primary">
+                        class="inline-flex items-center justify-center px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg active:scale-95">
                     <i class="fas fa-search mr-2"></i>
                     Complete Analysis
                 </button>
                 <button onclick="runQuickAnalysis('performance')"
-                        class="neo-btn neo-btn neo-btn-secondary">
+                        class="inline-flex items-center justify-center px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-sm">
                     <i class="fas fa-tachometer-alt mr-2"></i>
                     Performance Check
                 </button>
                 <button onclick="runQuickAnalysis('security')"
-                        class="neo-btn neo-btn-warning">
+                        class="inline-flex items-center justify-center px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-yellow-600 to-orange-600 rounded-lg hover:from-yellow-700 hover:to-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 transition-all duration-200 shadow-md hover:shadow-lg active:scale-95">
                     <i class="fas fa-shield-alt mr-2"></i>
                     Security Scan
                 </button>
                 <button onclick="exportResults()"
-                        class="neo-btn neo-btn-info">
+                        class="inline-flex items-center justify-center px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-cyan-600 to-blue-600 rounded-lg hover:from-cyan-700 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 transition-all duration-200 shadow-md hover:shadow-lg active:scale-95">
                     <i class="fas fa-download mr-2"></i>
                     Export Results
                 </button>
@@ -141,7 +141,7 @@
                                         <i class="fas fa-search text-gray-400 text-4xl mb-4"></i>
                                         <p class="text-lg font-medium text-gray-900 mb-2">No analysis sessions found</p>
                                         <p class="text-gray-500 mb-4">Create your first analysis session to get started</p>
-                                        <a href="{{ route('admin.page-analyzer.create') }}" class="neo-btn neo-btn neo-btn-primary">
+                                        <a href="{{ route('admin.page-analyzer.create') }}" class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg active:scale-95">
                                             <i class="fas fa-plus mr-2"></i>
                                             Create Analysis Session
                                         </a>
@@ -155,7 +155,7 @@
 
             <!-- Statistics -->
             <div class="mt-8 grid grid-cols-1 md:grid-cols-4 gap-6">
-                <div class="neo-card p-6">
+                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-200 p-6">
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
                             <i class="fas fa-chart-line text-2xl text-blue-600"></i>
@@ -167,7 +167,7 @@
                     </div>
                 </div>
 
-                <div class="neo-card p-6">
+                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-200 p-6">
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
                             <i class="fas fa-globe text-2xl text-green-600"></i>
@@ -179,7 +179,7 @@
                     </div>
                 </div>
 
-                <div class="neo-card p-6">
+                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-200 p-6">
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
                             <i class="fas fa-exclamation-triangle text-2xl text-red-600"></i>
@@ -191,7 +191,7 @@
                     </div>
                 </div>
 
-                <div class="neo-card p-6">
+                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-200 p-6">
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
                             <i class="fas fa-star text-2xl text-yellow-600"></i>

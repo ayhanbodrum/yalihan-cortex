@@ -16,10 +16,10 @@
                 <p class="text-lg text-gray-600 mt-2">Analitik raporu detayları ve veriler</p>
             </div>
             <div class="flex gap-3">
-                <a href="{{ route('admin.analytics.edit', $analyticsItem['id']) }}" class="neo-btn neo-btn neo-btn-primary">
+                <a href="{{ route('admin.analytics.edit', $analyticsItem['id']) }}" class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg active:scale-95">
                     <i class="fas fa-edit mr-2"></i>Düzenle
                 </a>
-                <a href="{{ route('admin.analytics.index') }}" class="neo-btn neo-btn neo-btn-secondary">
+                <a href="{{ route('admin.analytics.index') }}" class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-sm">
                     <i class="fas fa-arrow-left mr-2"></i>Geri Dön
                 </a>
             </div>
@@ -30,7 +30,7 @@
         <!-- Ana İçerik -->
         <div class="lg:col-span-2 space-y-8">
             <!-- Rapor Bilgileri -->
-            <div class="neo-card p-6">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                 <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
                     <i class="fas fa-info-circle text-blue-500 mr-2"></i>
                     Rapor Bilgileri
@@ -114,7 +114,7 @@
             </div>
 
             <!-- Metrikler -->
-            <div class="neo-card p-6">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                 <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
                     <i class="fas fa-chart-line text-green-500 mr-2"></i>
                     Dahil Edilen Metrikler
@@ -156,7 +156,7 @@
             </div>
 
             <!-- Rapor Verileri (Mock Chart) -->
-            <div class="neo-card p-6">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                 <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
                     <i class="fas fa-chart-area text-purple-500 mr-2"></i>
                     Rapor Verileri
@@ -177,7 +177,7 @@
         <!-- Yan Panel -->
         <div class="space-y-6">
             <!-- Hızlı İstatistikler -->
-            <div class="neo-card p-6">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                 <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
                     <i class="fas fa-tachometer-alt text-blue-500 mr-2"></i>
                     Hızlı İstatistikler
@@ -203,7 +203,7 @@
             </div>
 
             <!-- İşlemler -->
-            <div class="neo-card p-6">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                 <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
                     <i class="fas fa-cogs text-gray-500 mr-2"></i>
                     İşlemler

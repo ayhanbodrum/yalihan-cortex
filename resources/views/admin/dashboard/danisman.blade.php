@@ -9,7 +9,7 @@
 @section('content')
     <div x-data="danismanDashboard()" x-init="init()" class="min-h-screen bg-gradient-to-br from-gray-50 to-orange-50">
         <!-- Header -->
-        <div class="neo-card mb-8 p-8">
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm mb-8 p-8">
             <div class="flex items-center justify-between">
                 <div>
                     <h1 class="text-4xl font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
@@ -29,7 +29,7 @@
                     </div>
                 </div>
                 <div class="flex gap-4">
-                    <button @click="generateReport()" :disabled="generatingReport" class="neo-btn neo-btn neo-btn-primary touch-target-optimized touch-target-optimized">
+                    <button @click="generateReport()" :disabled="generatingReport" class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg active:scale-95 touch-target-optimized">
                         <svg class="w-5 h-5 mr-2" :class="generatingReport ? 'animate-spin' : ''" fill="none"
                             stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -38,7 +38,7 @@
                         </svg>
                         <span x-text="generatingReport ? 'Hazırlanıyor...' : 'Performans Raporum'"></span>
                     </button>
-                    <a href="{{ route('admin.ilanlar.create') }}" class="neo-btn neo-btn neo-btn-secondary touch-target-optimized touch-target-optimized">
+                    <a href="{{ route('admin.ilanlar.create') }}" class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-sm touch-target-optimized">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
@@ -54,7 +54,7 @@
             <!-- İstatistik Kartları -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <!-- İlanlarım -->
-                <div class="neo-card p-6 hover:shadow-lg transition-shadow cursor-pointer"
+                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6 hover:shadow-lg transition-shadow cursor-pointer"
                     @click="navigateTo('{{ route('admin.ilanlar.index') }}')">
                     <div class="flex items-center justify-between">
                         <div>
@@ -82,7 +82,7 @@
                 </div>
 
                 <!-- Aktif İlanlarım -->
-                <div class="neo-card p-6 hover:shadow-lg transition-shadow cursor-pointer"
+                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6 hover:shadow-lg transition-shadow cursor-pointer"
                     @click="navigateTo('{{ route('admin.ilanlar.index') }}?status=aktif')">
                     <div class="flex items-center justify-between">
                         <div>
@@ -107,7 +107,7 @@
                 </div>
 
                 <!-- Müşterilerim -->
-                <div class="neo-card p-6 hover:shadow-lg transition-shadow cursor-pointer"
+                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6 hover:shadow-lg transition-shadow cursor-pointer"
                     @click="navigateTo('{{ route('admin.kisiler.index') }}')">
                     <div class="flex items-center justify-between">
                         <div>
@@ -135,7 +135,7 @@
                 </div>
 
                 <!-- Taleplerim -->
-                <div class="neo-card p-6 hover:shadow-lg transition-shadow cursor-pointer"
+                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6 hover:shadow-lg transition-shadow cursor-pointer"
                     @click="navigateTo('{{ route('admin.talepler.index') }}')">
                     <div class="flex items-center justify-between">
                         <div>
@@ -167,7 +167,7 @@
             <!-- Son İlanlarım ve Müşterilerim -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <!-- Son İlanlarım -->
-                <div class="neo-card p-8">
+                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-8">
                     <div class="flex items-center justify-between mb-6">
                         <h2 class="stat-card-value flex items-center">
                             <svg class="w-6 h-6 mr-3 text-blue-600" fill="none" stroke="currentColor"

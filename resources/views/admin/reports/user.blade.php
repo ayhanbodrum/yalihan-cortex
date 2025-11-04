@@ -5,7 +5,7 @@
 @section('content')
     <div class="min-h-screen">
         <!-- Header -->
-        <div class="neo-card mb-8 p-8">
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm mb-8 p-8">
             <div class="flex items-center justify-between">
                 <div>
                     <h1 class="text-4xl font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
@@ -16,7 +16,7 @@
                     </p>
                 </div>
                 <div class="flex gap-4">
-                    <button class="neo-btn neo-btn-primary touch-target-optimized touch-target-optimized" onclick="generateAccountReport()">
+                    <button class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg active:scale-95 touch-target-optimized touch-target-optimized" onclick="generateAccountReport()">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002 2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z">
@@ -33,7 +33,7 @@
             <!-- Hesap Durumu Kartları -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <!-- Profil Tamamlanma -->
-                <div class="neo-card p-6">
+                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-sm font-medium text-gray-600">Profil Tamamlanma</p>
@@ -123,7 +123,7 @@
             </div>
 
             <!-- Hesap Aktivite Özeti -->
-            <div class="neo-card p-8">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-8">
                 <h2 class="stat-card-value mb-6 flex items-center">
                     <svg class="w-6 h-6 mr-3 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -214,7 +214,7 @@
 
             <!-- Profil Tamamlama Rehberi -->
             @if (($stats['profile_complete'] ?? 0) < 100)
-                <div class="neo-card p-8">
+                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-8">
                     <h2 class="stat-card-value mb-6 flex items-center">
                         <svg class="w-6 h-6 mr-3 text-yellow-600" fill="none" stroke="currentColor"
                             viewBox="0 0 24 24">
@@ -290,7 +290,7 @@
                         </div>
                     </div>
                     <div class="mt-6 text-center">
-                        <a href="{{ url('/profile') }}" class="neo-btn neo-btn-primary touch-target-optimized touch-target-optimized">
+                        <a href="{{ url('/profile') }}" class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg active:scale-95 touch-target-optimized touch-target-optimized">
                             Profilimi Tamamla
                         </a>
                     </div>
@@ -298,7 +298,7 @@
             @endif
 
             <!-- Hızlı İşlemler -->
-            <div class="neo-card p-8">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-8">
                 <h2 class="stat-card-value mb-6 flex items-center">
                     <svg class="w-6 h-6 mr-3 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
