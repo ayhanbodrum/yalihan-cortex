@@ -16,7 +16,7 @@
                 <p class="text-lg text-gray-600 mt-2">Manage property addresses and locations</p>
             </div>
             <div class="flex gap-3">
-                <a href="{{ route('admin.address.create') }}" class="neo-btn neo-btn neo-btn-primary">
+                <a href="{{ route('admin.address.create') }}" class="inline-flex items-center px-4 py-2.5 text-sm font-medium inline-flex items-center px-4 py-2.5 text-sm font-medium inline-flex items-center px-4 py-2.5 text-sm font-medium-primary">
                     <i class="fas fa-plus mr-2"></i>
                     Add Address
                 </a>
@@ -27,7 +27,7 @@
     <div class="px-6">
         <!-- Stats Cards -->
         <div class="grid grid-cols-1 gap-6 sm:grid-cols-4 mb-8">
-            <div class="neo-card p-6">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                 <div class="flex items-center">
                     <div
                         class="w-12 h-12 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
@@ -40,7 +40,7 @@
                 </div>
             </div>
 
-            <div class="neo-card p-6">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                 <div class="flex items-center">
                     <div
                         class="w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-600 rounded-lg flex items-center justify-center">
@@ -54,7 +54,7 @@
                 </div>
             </div>
 
-            <div class="neo-card p-6">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                 <div class="flex items-center">
                     <div
                         class="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-600 rounded-lg flex items-center justify-center">
@@ -67,7 +67,7 @@
                 </div>
             </div>
 
-            <div class="neo-card p-6">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                 <div class="flex items-center">
                     <div
                         class="w-12 h-12 bg-gradient-to-r from-orange-500 to-yellow-600 rounded-lg flex items-center justify-center">
@@ -82,7 +82,7 @@
         </div>
 
         <!-- Address Table -->
-        <div class="neo-card p-6">
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
             <div class="flex items-center justify-between mb-6">
                 <h2 class="text-xl font-bold text-gray-800">Addresses</h2>
                 <div class="flex gap-2">
@@ -109,7 +109,7 @@
                         @endforeach
                     </select>
 
-                    <button onclick="filterAddresses()" class="neo-btn neo-btn-outline">
+                    <button onclick="filterAddresses()" class="inline-flex items-center px-4 py-2.5 text-sm font-medium inline-flex items-center px-4 py-2.5 text-sm font-medium-outline">
                         <i class="fas fa-search mr-2"></i>
                         Filter
                     </button>
