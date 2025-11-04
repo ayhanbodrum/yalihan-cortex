@@ -15,12 +15,12 @@
                                 sistemi</p>
                         </div>
                         <div class="flex items-center space-x-3">
-                            <button @click="showBulkQuery = true" class="neo-btn neo-btn neo-btn-secondary">
-                                <i class="fas fa-list mr-2"></i>
+                            <button @click="showBulkQuery = true" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200">
+                                <i class="fas fa-list"></i>
                                 Toplu Sorgulama
                             </button>
-                            <button @click="showHistory = true" class="neo-btn neo-btn neo-btn-secondary">
-                                <i class="fas fa-history mr-2"></i>
+                            <button @click="showHistory = true" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200">
+                                <i class="fas fa-history"></i>
                                 Sorgulama Geçmişi
                             </button>
                         </div>
@@ -35,42 +35,42 @@
 
                 <!-- Sorgulama Formu -->
                 <div class="lg:col-span-2">
-                    <div class="neo-card p-6">
-                        <h2 class="neo-title mb-6">Parsel Bilgileri Sorgulama</h2>
+                    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all p-6">
+                        <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">Parsel Bilgileri Sorgulama</h2>
 
                         <form @submit.prevent="queryParcel()" class="space-y-6">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <!-- Ada -->
                                 <div>
-                                    <label class="neo-label">Ada</label>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Ada</label>
                                     <input type="text" x-model="form.ada" class="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200"
                                         placeholder="Ada numarası (örn: 123)" required maxlength="20">
                                 </div>
 
                                 <!-- Parsel -->
                                 <div>
-                                    <label class="neo-label">Parsel</label>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Parsel</label>
                                     <input type="text" x-model="form.parsel" class="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200"
                                         placeholder="Parsel numarası (örn: 45)" required maxlength="20">
                                 </div>
 
                                 <!-- İl -->
                                 <div>
-                                    <label class="neo-label">İl</label>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">İl</label>
                                     <input type="text" x-model="form.il" class="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200"
                                         placeholder="İl adı (örn: İstanbul)" required maxlength="50">
                                 </div>
 
                                 <!-- İlçe -->
                                 <div>
-                                    <label class="neo-label">İlçe</label>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">İlçe</label>
                                     <input type="text" x-model="form.ilce" class="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200"
                                         placeholder="İlçe adı (örn: Kadıköy)" required maxlength="50">
                                 </div>
 
                                 <!-- Mahalle (İsteğe Bağlı) -->
                                 <div class="md:col-span-2">
-                                    <label class="neo-label">Mahalle (İsteğe Bağlı)</label>
+                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Mahalle (İsteğe Bağlı)</label>
                                     <input type="text" x-model="form.mahalle" class="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200" placeholder="Mahalle adı"
                                         maxlength="100">
                                 </div>
@@ -78,14 +78,14 @@
 
                             <!-- Submit Button -->
                             <div class="flex items-center justify-between">
-                                <button type="submit" class="neo-btn neo-btn neo-btn-primary" :disabled="loading">
-                                    <i class="fas fa-search mr-2"></i>
+                                <button type="submit" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50" :disabled="loading">
+                                    <i class="fas fa-search"></i>
                                     <span x-show="!loading">Parsel Sorgula</span>
                                     <span x-show="loading">Sorgulanıyor...</span>
                                 </button>
 
-                                <button type="button" @click="resetForm()" class="neo-btn neo-btn neo-btn-secondary">
-                                    <i class="fas fa-redo mr-2"></i>
+                                <button type="button" @click="resetForm()" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200">
+                                    <i class="fas fa-redo"></i>
                                     Temizle
                                 </button>
                             </div>
@@ -93,8 +93,8 @@
                     </div>
 
                     <!-- Sonuç Alanı -->
-                    <div x-show="result" class="neo-card p-6 mt-6">
-                        <h3 class="neo-subtitle mb-4">Sorgulama Sonucu</h3>
+                    <div x-show="result" class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all p-6 mt-6">
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Sorgulama Sonucu</h3>
 
                         <!-- Başarılı Sonuç -->
                         <div x-show="result && result.success" class="space-y-4">
@@ -150,8 +150,8 @@
                                         <p class="text-sm text-blue-700 mt-1">Bu parsel için KAKS/TAKS hesaplama ve yatırım
                                             analizi yapabilirsiniz.</p>
                                     </div>
-                                    <button @click="goToArsaCalculation()" class="neo-btn neo-btn neo-btn-primary">
-                                        <i class="fas fa-calculator mr-2"></i>
+                                    <button @click="goToArsaCalculation()" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200">
+                                        <i class="fas fa-calculator"></i>
                                         Hesapla
                                     </button>
                                 </div>
@@ -176,8 +176,8 @@
                 <!-- Sidebar -->
                 <div class="space-y-6">
                     <!-- Son Sorgular -->
-                    <div class="neo-card p-6">
-                        <h3 class="neo-subtitle mb-4">Son Sorgular</h3>
+                    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Son Sorgular</h3>
 
                         <div x-show="recentQueries.length === 0" class="text-center py-4">
                             <i class="fas fa-search text-gray-400 text-2xl mb-2"></i>
@@ -214,8 +214,8 @@
                     </div>
 
                     <!-- İstatistikler -->
-                    <div class="neo-card p-6">
-                        <h3 class="neo-subtitle mb-4">İstatistikler</h3>
+                    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">İstatistikler</h3>
 
                         <div class="space-y-4">
                             <div class="flex items-center justify-between">
@@ -232,15 +232,15 @@
                             </div>
                         </div>
 
-                        <button @click="loadStats()" class="neo-btn neo-btn neo-btn-secondary w-full mt-4">
-                            <i class="fas fa-sync mr-2"></i>
+                        <button @click="loadStats()" class="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 w-full mt-4">
+                            <i class="fas fa-sync"></i>
                             Güncelle
                         </button>
                     </div>
 
                     <!-- Yardım -->
-                    <div class="neo-card p-6">
-                        <h3 class="neo-subtitle mb-4">Kullanım Kılavuzu</h3>
+                    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Kullanım Kılavuzu</h3>
 
                         <div class="space-y-3 text-sm text-gray-600">
                             <div class="flex items-start">
@@ -285,8 +285,8 @@
                             placeholder="Format: ada,parsel,il,ilce,mahalle&#10;Örnek:&#10;123,45,İstanbul,Kadıköy,Fenerbahçe&#10;456,78,Ankara,Çankaya,Kızılay"></textarea>
 
                         <div class="flex items-center justify-between">
-                            <button @click="processBulkQuery()" class="neo-btn neo-btn neo-btn-primary" :disabled="bulkLoading">
-                                <i class="fas fa-search mr-2"></i>
+                            <button @click="processBulkQuery()" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50" :disabled="bulkLoading">
+                                <i class="fas fa-search"></i>
                                 <span x-show="!bulkLoading">Toplu Sorgula</span>
                                 <span x-show="bulkLoading">Sorgulanıyor...</span>
                             </button>
@@ -362,8 +362,8 @@
                                                 <span x-show="!query.success"
                                                     class="px-2 py-1 rounded-full text-xs bg-red-100 text-red-800">Başarısız</span>
                                                 <button @click="loadQuery(query)"
-                                                    class="neo-btn neo-btn-sm neo-btn neo-btn-secondary">
-                                                    <i class="fas fa-redo mr-1"></i>
+                                                    class="inline-flex items-center gap-1 px-2 py-1 text-xs rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200">
+                                                    <i class="fas fa-redo"></i>
                                                     Tekrar
                                                 </button>
                                             </div>
@@ -374,8 +374,8 @@
                         </div>
 
                         <div class="flex justify-center">
-                            <button @click="loadHistory()" class="neo-btn neo-btn neo-btn-secondary">
-                                <i class="fas fa-sync mr-2"></i>
+                            <button @click="loadHistory()" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200">
+                                <i class="fas fa-sync"></i>
                                 Geçmişi Yenile
                             </button>
                         </div>

@@ -2,7 +2,7 @@
   "lastOperations": [],
   "systemStructure": {
     "models": {
-      "count": 87,
+      "count": 90,
       "files": [
         "AIChatLog.php",
         "AIEmbedding.php",
@@ -28,6 +28,7 @@
         "CurrencyHistory.php",
         "Eslesme.php",
         "Etiket.php",
+        "Event.php",
         "ExchangeRate.php",
         "ExpertiseArea.php",
         "Feature.php",
@@ -71,9 +72,11 @@
         "Notification.php",
         "Ozellik.php",
         "OzellikKategori.php",
+        "Photo.php",
         "Proje.php",
         "PropertyType.php",
         "Role.php",
+        "Season.php",
         "Sehir.php",
         "Setting.php",
         "Site.php",
@@ -93,12 +96,12 @@
         "YazlikRezervasyon.php"
       ],
       "lastModified": {
-        "file": "Ilan.php",
-        "time": "2025-11-02T13:57:40.426Z"
+        "file": "Photo.php",
+        "time": "2025-11-03T12:17:29.526Z"
       }
     },
     "controllers": {
-      "count": 136,
+      "count": 142,
       "files": [
         "AI/AISearchController.php",
         "AI/AdvancedAIController.php",
@@ -177,6 +180,8 @@
         "Api/AnythingLLMProxyController.php",
         "Api/ApiDocController.php",
         "Api/AuthController.php",
+        "Api/BookingRequestController.php",
+        "Api/BulkOperationsController.php",
         "Api/CategoriesController.php",
         "Api/CategoryController.php",
         "Api/Context7AdvisorController.php",
@@ -197,6 +202,7 @@
         "Api/DanismanController.php",
         "Api/ElasticsearchController.php",
         "Api/EnvironmentAnalysisController.php",
+        "Api/EventController.php",
         "Api/FeatureController.php",
         "Api/FeaturesController.php",
         "Api/FieldDependencyController.php",
@@ -214,11 +220,13 @@
         "Api/NearbyPlacesController.php",
         "Api/PersonController.php",
         "Api/PersonSearchController.php",
+        "Api/PhotoController.php",
         "Api/PriceController.php",
         "Api/PropertyFeatureSuggestionController.php",
         "Api/PropertyValuationController.php",
         "Api/ReferenceController.php",
         "Api/SearchController.php",
+        "Api/SeasonController.php",
         "Api/SiteApartmanController.php",
         "Api/SiteController.php",
         "Api/SiteOzellikleriController.php",
@@ -235,15 +243,16 @@
         "Ilan/PropertyFeatureController.php",
         "IlanPublicController.php",
         "ProfileController.php",
-        "SecureFileController.php"
+        "SecureFileController.php",
+        "VillaController.php"
       ],
       "lastModified": {
         "file": "TakvimController.php",
-        "time": "2025-11-02T14:42:32.582Z"
+        "time": "2025-11-03T19:27:14.156Z"
       }
     },
     "migrations": {
-      "count": 98,
+      "count": 102,
       "files": [
         "2018_08_08_100000_create_telescope_entries_table.php",
         "2025_10_07_214858_create_users_table.php",
@@ -341,25 +350,26 @@
         "2025_11_01_220000_add_arsa_extended_fields_to_ilanlar_table.php",
         "2025_11_01_221500_add_konut_critical_fields_to_ilanlar_table.php",
         "2025_11_02_000001_create_polymorphic_features_system.php",
+        "2025_11_03_093414_create_photos_table.php",
+        "2025_11_03_095931_create_events_table.php",
+        "2025_11_03_095932_create_seasons_table.php",
+        "2025_11_03_101305_add_bedroom_layout_to_ilanlar_table.php",
         "fixes/2025_10_24_170000_fix_all_status_fields_to_boolean_master.php",
         "fixes/2025_10_24_171000_fix_status_phase1_critical_tables.php"
       ],
       "lastModified": {
-        "file": "2025_11_02_000001_create_polymorphic_features_system.php",
-        "time": "2025-11-02T13:57:40.406Z"
+        "file": "2025_11_03_101305_add_bedroom_layout_to_ilanlar_table.php",
+        "time": "2025-11-03T10:19:08.059Z"
       }
     },
     "views": {
-      "count": 360,
+      "count": 367,
       "files": [
-        "about.blade.php",
         "admin/address/create.blade.php",
         "admin/address/index.blade.php",
         "admin/adres-yonetimi/index.blade.php",
         "admin/ai/advanced-dashboard.blade.php",
         "admin/ai-category/index.blade.php",
-        "admin/ai-category/test.blade.php",
-        "admin/ai-core-test/index.blade.php",
         "admin/ai-monitor/index.blade.php",
         "admin/ai-redirect/create.blade.php",
         "admin/ai-redirect/edit.blade.php",
@@ -409,7 +419,6 @@
         "admin/dashboard/danisman.blade.php",
         "admin/dashboard/index.blade.php",
         "admin/dashboard/user.blade.php",
-        "admin/dashboard.blade.php",
         "admin/eslesme/index.blade.php",
         "admin/eslesmeler/create.blade.php",
         "admin/eslesmeler/index.blade.php",
@@ -430,15 +439,20 @@
         "admin/ilan-kategorileri/stats.blade.php",
         "admin/ilanlar/components/ai-content.blade.php",
         "admin/ilanlar/components/basic-info.blade.php",
+        "admin/ilanlar/components/bedroom-layout-manager.blade.php",
         "admin/ilanlar/components/category-system.blade.php",
+        "admin/ilanlar/components/event-booking-manager.blade.php",
         "admin/ilanlar/components/features-dynamic.blade.php",
         "admin/ilanlar/components/field-dependencies-dynamic.blade.php",
         "admin/ilanlar/components/key-management.blade.php",
         "admin/ilanlar/components/listing-photos.blade.php",
         "admin/ilanlar/components/location-map.blade.php",
+        "admin/ilanlar/components/photo-upload-manager.blade.php",
         "admin/ilanlar/components/price-management.blade.php",
         "admin/ilanlar/components/publication-status.blade.php",
+        "admin/ilanlar/components/season-pricing-manager.blade.php",
         "admin/ilanlar/components/site-apartman-context7.blade.php",
+        "admin/ilanlar/components/smart-field-organizer.blade.php",
         "admin/ilanlar/create.blade.php",
         "admin/ilanlar/edit.blade.php",
         "admin/ilanlar/index.blade.php",
@@ -470,9 +484,9 @@
         "admin/map/index.blade.php",
         "admin/notifications/index.blade.php",
         "admin/notifications/show.blade.php",
-        "admin/offline.blade.php",
         "admin/ozellikler/create.blade.php",
         "admin/ozellikler/edit.blade.php",
+        "admin/ozellikler/index-tabs.blade.php",
         "admin/ozellikler/index.blade.php",
         "admin/ozellikler/kategoriler/create.blade.php",
         "admin/ozellikler/kategoriler/edit.blade.php",
@@ -498,7 +512,6 @@
         "admin/settings/index.blade.php",
         "admin/setup-api-token.blade.php",
         "admin/smart-calculator/index.blade.php",
-        "admin/smart-calculator.blade.php",
         "admin/takim-yonetimi/gorevler/edit.blade.php",
         "admin/takim-yonetimi/gorevler/index.blade.php",
         "admin/takim-yonetimi/gorevler/raporlar.blade.php",
@@ -522,7 +535,6 @@
         "admin/talepler/show.blade.php",
         "admin/telegram/index.blade.php",
         "admin/telegram-bot/index.blade.php",
-        "admin/test-minimal.blade.php",
         "admin/tip-yonetimi/index.blade.php",
         "admin/tkgm-parsel/index.blade.php",
         "admin/users/create.blade.php",
@@ -532,7 +544,10 @@
         "admin/wikimapia-search/index.blade.php",
         "admin/yalihan-bekci/dashboard-simple.blade.php",
         "admin/yalihan-bekci/dashboard.blade.php",
+        "admin/yazlik-kiralama/bookings.blade.php",
+        "admin/yazlik-kiralama/create.blade.php",
         "admin/yazlik-kiralama/index.blade.php",
+        "admin/yazlik-kiralama/takvim.blade.php",
         "ai/explore.blade.php",
         "auth/.gitkeep",
         "blog/archive.blade.php",
@@ -567,6 +582,7 @@
         "components/ai-features.blade.php",
         "components/ai-hero.blade.php",
         "components/ai-smart-search.blade.php",
+        "components/checkbox.blade.php",
         "components/context7/alert.blade.php",
         "components/context7/badge.blade.php",
         "components/context7/breadcrumb.blade.php",
@@ -636,9 +652,7 @@
         "components/label.blade.php",
         "components/language-currency-selector.blade.php",
         "components/listing-card.blade.php",
-        "components/location-selector-simple.blade.php",
-        "components/location-selector-unified.blade.php",
-        "components/location-selector.blade.php",
+        "components/modal.blade.php",
         "components/neo/badge.blade.php",
         "components/neo/breadcrumb.blade.php",
         "components/neo/button.blade.php",
@@ -652,10 +666,10 @@
         "components/neo/stat-card.blade.php",
         "components/neo/status-badge.blade.php",
         "components/neo-input.blade.php",
-        "components/neo-location-selector-api.blade.php",
         "components/neo-select.blade.php",
         "components/price-converter.blade.php",
         "components/price-display.blade.php",
+        "components/radio.blade.php",
         "components/reference-generator.blade.php",
         "components/seo/meta-tags.blade.php",
         "components/seo/structured-data.blade.php",
@@ -687,8 +701,7 @@
         "ilans/index.blade.php",
         "layouts/admin.blade.php",
         "layouts/frontend.blade.php",
-        "modern-listing-detail.blade.php",
-        "modern-listings.blade.php",
+        "login.blade.php",
         "modules/takimyonetimi/admin/gorevler/index.blade.php",
         "pages/about.blade.php",
         "pages/advisors.blade.php",
@@ -708,6 +721,13 @@
         "vendor/pagination/simple-default.blade.php",
         "vendor/pagination/simple-tailwind.blade.php",
         "vendor/pagination/tailwind.blade.php",
+        "villas/components/availability-calendar.blade.php",
+        "villas/components/bedroom-layout-display.blade.php",
+        "villas/components/booking-form.blade.php",
+        "villas/components/photo-gallery.blade.php",
+        "villas/components/similar-villas.blade.php",
+        "villas/index.blade.php",
+        "villas/show.blade.php",
         "yaliihan-contact.blade.php",
         "yaliihan-home-clean.blade.php",
         "yaliihan-property-detail.blade.php",
@@ -715,27 +735,27 @@
       ],
       "lastModified": {
         "file": "index.blade.php",
-        "time": "2025-11-02T15:22:12.822Z"
+        "time": "2025-11-04T07:08:38.920Z"
       }
     },
     "routes": {
       "files": [
         {
           "file": "routes/web.php",
-          "routes": 170
+          "routes": 174
         },
         {
           "file": "routes/api.php",
-          "routes": 136
+          "routes": 159
         },
         {
           "file": "routes/admin.php",
           "routes": 559
         }
       ],
-      "endpoints": 865
+      "endpoints": 892
     },
-    "lastScan": "2025-11-03T06:20:42.154Z"
+    "lastScan": "2025-11-04T07:29:15.206Z"
   },
   "learnings": [
     {

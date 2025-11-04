@@ -4,43 +4,46 @@
 
 @section('content')
 <meta name="csrf-token" content="{{ csrf_token() }}">
-<div class="neo-container">
-    <div class="neo-header">
-        <h1 class="neo-title">🤖 AI Destekli Kategori Yönetimi</h1>
-        <p class="neo-subtitle">AI ile kategori analizi, öneriler ve hibrit sıralama</p>
+<div class="container mx-auto px-4 py-6">
+    <!-- Header -->
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">🤖 AI Destekli Kategori Yönetimi</h1>
+        <p class="text-gray-600 dark:text-gray-400">AI ile kategori analizi, öneriler ve hibrit sıralama</p>
     </div>
 
-    <div class="neo-grid">
+    <div class="space-y-6">
         <!-- Kategori Listesi -->
-        <div class="neo-card">
-            <div class="neo-card-header">
-                <h2 class="neo-card-title">📊 Kategoriler</h2>
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all">
+            <div class="border-b border-gray-200 dark:border-gray-700 px-6 py-4">
+                <h2 class="text-lg font-semibold text-gray-900 dark:text-white">📊 Kategoriler</h2>
             </div>
-            <div class="neo-card-body">
-                <div class="neo-grid grid-cols-2 gap-4">
+            <div class="p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     @foreach($categories as $category)
-                    <div class="neo-card neo-card-sm">
-                        <div class="neo-card-header">
-                            <h3 class="neo-card-title">{{ $category->name }}</h3>
-                            <span class="neo-badge neo-badge-primary">{{ $category->features->count() }} özellik</span>
+                    <div class="bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 p-4">
+                        <div class="border-b border-gray-200 dark:border-gray-700 pb-3 mb-3">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-base font-semibold text-gray-900 dark:text-white">{{ $category->name }}</h3>
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                                    {{ $category->features->count() }} özellik
+                                </span>
+                            </div>
                         </div>
-                        <div class="neo-card-body">
-                            <div class="neo-flex neo-justify-between neo-items-center">
-                                <span class="neo-text-sm neo-text-gray-600">{{ $category->ilanlar->count() }} ilan</span>
-                                <div class="neo-flex neo-gap-2">
-                                    <button onclick="analyzeCategory('{{ $category->slug }}')"
-                                            class="neo-btn neo-btn-sm neo-btn-primary">
-                                        🤖 Analiz Et
-                                    </button>
-                                    <button onclick="getSuggestions('{{ $category->slug }}')"
-                                            class="neo-btn neo-btn-sm neo-btn-success">
-                                        💡 Öneriler
-                                    </button>
-                                    <button onclick="generateHibritSiralama('{{ $category->slug }}')"
-                                            class="neo-btn neo-btn-sm neo-btn-warning">
-                                        📊 Hibrit Sıralama
-                                    </button>
-                                </div>
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                            <span class="text-sm text-gray-600 dark:text-gray-400">{{ $category->ilanlar->count() }} ilan</span>
+                            <div class="flex flex-wrap gap-2">
+                                <button onclick="analyzeCategory('{{ $category->slug }}')"
+                                        class="inline-flex items-center justify-center gap-2 px-3 py-1.5 text-sm rounded-md bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200">
+                                    🤖 Analiz Et
+                                </button>
+                                <button onclick="getSuggestions('{{ $category->slug }}')"
+                                        class="inline-flex items-center justify-center gap-2 px-3 py-1.5 text-sm rounded-md bg-gradient-to-r from-green-500 to-emerald-600 text-white hover:from-green-600 hover:to-emerald-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-all duration-200">
+                                    💡 Öneriler
+                                </button>
+                                <button onclick="generateHibritSiralama('{{ $category->slug }}')"
+                                        class="inline-flex items-center justify-center gap-2 px-3 py-1.5 text-sm rounded-md bg-yellow-500 text-white hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 transition-all duration-200">
+                                    📊 Hibrit Sıralama
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -50,41 +53,42 @@
         </div>
 
         <!-- AI Analiz Sonuçları -->
-        <div class="neo-card">
-            <div class="neo-card-header">
-                <h2 class="neo-card-title">🧠 AI Analiz Sonuçları</h2>
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all">
+            <div class="border-b border-gray-200 dark:border-gray-700 px-6 py-4">
+                <h2 class="text-lg font-semibold text-gray-900 dark:text-white">🧠 AI Analiz Sonuçları</h2>
             </div>
-            <div class="neo-card-body">
-                <div class="neo-alert neo-alert-info">
-                    <p><strong>💡 Kullanım:</strong> Kategorilerdeki butonlara tıklayarak AI analizi başlatabilirsiniz.</p>
+            <div class="p-6">
+                <div class="bg-blue-50 dark:bg-blue-900/30 border-l-4 border-blue-500 dark:border-blue-400 rounded-md p-4 mb-4">
+                    <p class="text-blue-800 dark:text-blue-200"><strong>💡 Kullanım:</strong> Kategorilerdeki butonlara tıklayarak AI analizi başlatabilirsiniz.</p>
                 </div>
 
-                <div id="aiAnalysisResult" class="neo-result" style="display: none;">
-                    <h3 class="neo-result-title">AI Analizi:</h3>
-                    <div id="analysisContent" class="neo-result-content"></div>
+                <div id="aiAnalysisResult" class="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-4 mt-4 hidden">
+                    <h3 class="text-base font-semibold text-gray-900 dark:text-white mb-2">AI Analizi:</h3>
+                    <div id="analysisContent" class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md p-3 font-mono text-sm whitespace-pre-wrap max-h-[300px] overflow-y-auto text-gray-900 dark:text-gray-100"></div>
                 </div>
 
-                <div id="aiSuggestionsResult" class="neo-result" style="display: none;">
-                    <h3 class="neo-result-title">AI Önerileri:</h3>
-                    <div id="suggestionsContent" class="neo-result-content"></div>
+                <div id="aiSuggestionsResult" class="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-4 mt-4 hidden">
+                    <h3 class="text-base font-semibold text-gray-900 dark:text-white mb-2">AI Önerileri:</h3>
+                    <div id="suggestionsContent" class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md p-3 font-mono text-sm whitespace-pre-wrap max-h-[300px] overflow-y-auto text-gray-900 dark:text-gray-100"></div>
                 </div>
 
-                <div id="hibritSiralamaResult" class="neo-result" style="display: none;">
-                    <h3 class="neo-result-title">Hibrit Sıralama:</h3>
-                    <div id="siralamaContent" class="neo-result-content"></div>
+                <div id="hibritSiralamaResult" class="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-4 mt-4 hidden">
+                    <h3 class="text-base font-semibold text-gray-900 dark:text-white mb-2">Hibrit Sıralama:</h3>
+                    <div id="siralamaContent" class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md p-3 font-mono text-sm whitespace-pre-wrap max-h-[300px] overflow-y-auto text-gray-900 dark:text-gray-100"></div>
                 </div>
             </div>
         </div>
 
         <!-- AI Öğretimi -->
-        <div class="neo-card">
-            <div class="neo-card-header">
-                <h2 class="neo-card-title">📚 AI Öğretimi</h2>
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all">
+            <div class="border-b border-gray-200 dark:border-gray-700 px-6 py-4">
+                <h2 class="text-lg font-semibold text-gray-900 dark:text-white">📚 AI Öğretimi</h2>
             </div>
-            <div class="neo-card-body">
-                <form id="aiTeachForm" class="neo-form">
-                    <div class="neo-form-group">
-                        <label class="neo-label">Kategori</label>
+            <div class="p-6">
+                <form id="aiTeachForm" class="space-y-4">
+                    @csrf
+                    <div class="space-y-2">
+                        <label for="teachCategory" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Kategori</label>
                         <select style="color-scheme: light dark;" name="category_slug" id="teachCategory" class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 transition-all duration-200">
                             @foreach($categories as $category)
                             <option value="{{ $category->slug }}">{{ $category->name }}</option>
@@ -92,110 +96,64 @@
                         </select>
                     </div>
 
-                    <div class="neo-form-group">
-                        <label class="neo-label">Örnek 1</label>
-                        <div class="neo-grid grid-cols-2 gap-2">
-                            <input type="text" name="examples[0][task]" class="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200" placeholder="Görev...">
-                            <input type="text" name="examples[0][expected_output]" class="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200" placeholder="Beklenen çıkış...">
+                    <div class="space-y-2">
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Örnek 1</label>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label for="example0_task" class="sr-only">Görev</label>
+                                <input type="text" id="example0_task" name="examples[0][task]" class="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200" placeholder="Görev...">
+                            </div>
+                            <div>
+                                <label for="example0_expected" class="sr-only">Beklenen çıkış</label>
+                                <input type="text" id="example0_expected" name="examples[0][expected_output]" class="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200" placeholder="Beklenen çıkış...">
+                            </div>
                         </div>
                     </div>
 
-                    <div class="neo-form-group">
-                        <label class="neo-label">Örnek 2</label>
-                        <div class="neo-grid grid-cols-2 gap-2">
-                            <input type="text" name="examples[1][task]" class="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200" placeholder="Görev...">
-                            <input type="text" name="examples[1][expected_output]" class="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200" placeholder="Beklenen çıkış...">
+                    <div class="space-y-2">
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Örnek 2</label>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label for="example1_task" class="sr-only">Görev</label>
+                                <input type="text" id="example1_task" name="examples[1][task]" class="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200" placeholder="Görev...">
+                            </div>
+                            <div>
+                                <label for="example1_expected" class="sr-only">Beklenen çıkış</label>
+                                <input type="text" id="example1_expected" name="examples[1][expected_output]" class="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200" placeholder="Beklenen çıkış...">
+                            </div>
                         </div>
                     </div>
 
-                    <button type="submit" class="neo-btn neo-btn-success">
+                    <button type="submit" class="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-md bg-gradient-to-r from-green-500 to-emerald-600 text-white hover:from-green-600 hover:to-emerald-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-all duration-200">
                         📚 AI'yi Öğret
                     </button>
                 </form>
 
-                <div id="aiTeachResult" class="neo-result mt-4" style="display: none;">
-                    <h3 class="neo-result-title">Öğretim Sonucu:</h3>
-                    <div id="teachResponse" class="neo-result-content"></div>
+                <div id="aiTeachResult" class="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-4 mt-4 hidden">
+                    <h3 class="text-base font-semibold text-gray-900 dark:text-white mb-2">Öğretim Sonucu:</h3>
+                    <div id="teachResponse" class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md p-3 font-mono text-sm whitespace-pre-wrap max-h-[300px] overflow-y-auto text-gray-900 dark:text-gray-100"></div>
                 </div>
             </div>
         </div>
 
         <!-- Tüm Kategoriler Analizi -->
-        <div class="neo-card">
-            <div class="neo-card-header">
-                <h2 class="neo-card-title">📊 Tüm Kategoriler Analizi</h2>
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all">
+            <div class="border-b border-gray-200 dark:border-gray-700 px-6 py-4">
+                <h2 class="text-lg font-semibold text-gray-900 dark:text-white">📊 Tüm Kategoriler Analizi</h2>
             </div>
-            <div class="neo-card-body">
-                <button id="analyzeAllCategories" class="neo-btn neo-btn-info">
+            <div class="p-6">
+                <button id="analyzeAllCategories" class="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-md bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200">
                     📊 Tüm Kategorileri Analiz Et
                 </button>
 
-                <div id="allCategoriesResult" class="neo-result mt-4" style="display: none;">
-                    <h3 class="neo-result-title">Tüm Kategoriler Analizi:</h3>
-                    <div id="allCategoriesContent" class="neo-result-content"></div>
+                <div id="allCategoriesResult" class="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-4 mt-4 hidden">
+                    <h3 class="text-base font-semibold text-gray-900 dark:text-white mb-2">Tüm Kategoriler Analizi:</h3>
+                    <div id="allCategoriesContent" class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md p-3 font-mono text-sm whitespace-pre-wrap max-h-[300px] overflow-y-auto text-gray-900 dark:text-gray-100"></div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-<style>
-.neo-result {
-    background: #f8f9fa;
-    border: 1px solid #e9ecef;
-    border-radius: 8px;
-    padding: 16px;
-    margin-top: 16px;
-}
-
-.neo-result-title {
-    font-size: 16px;
-    font-weight: 600;
-    margin-bottom: 8px;
-    color: #495057;
-}
-
-.neo-result-content {
-    background: #fff;
-    border: 1px solid #dee2e6;
-    border-radius: 4px;
-    padding: 12px;
-    font-family: monospace;
-    font-size: 14px;
-    white-space: pre-wrap;
-    max-height: 300px;
-    overflow-y: auto;
-}
-
-.neo-card-sm {
-    padding: 12px;
-}
-
-.neo-badge {
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 12px;
-    font-weight: 500;
-}
-
-.neo-badge-primary {
-    background: #007bff;
-    color: white;
-}
-
-.neo-alert {
-    padding: 12px 16px;
-    border-radius: 6px;
-    margin-bottom: 16px;
-    border-left: 4px solid;
-}
-
-.neo-alert-info {
-    background: #e3f2fd;
-    border-left-color: #2196f3;
-    color: #0d47a1;
-}
-</style>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -227,17 +185,17 @@ document.addEventListener('DOMContentLoaded', function() {
             if (data.success) {
                 console.log('✅ AI Analiz başarılı, sonuç gösteriliyor');
                 contentDiv.textContent = JSON.stringify(data.analysis, null, 2);
-                resultDiv.style.display = 'block';
-                console.log('🎯 Sonuç div gösterildi:', resultDiv.style.display);
+                resultDiv.classList.remove('hidden');
+                console.log('🎯 Sonuç div gösterildi');
             } else {
                 console.log('❌ AI Analiz hatası:', data.error);
                 contentDiv.textContent = 'Hata: ' + data.error;
-                resultDiv.style.display = 'block';
+                resultDiv.classList.remove('hidden');
             }
         } catch (error) {
             console.log('💥 JavaScript hatası:', error);
             contentDiv.textContent = 'Hata: ' + error.message;
-            resultDiv.style.display = 'block';
+            resultDiv.classList.remove('hidden');
         }
     };
 
@@ -262,14 +220,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
             if (data.success) {
                 contentDiv.textContent = JSON.stringify(data.suggestions, null, 2);
-                resultDiv.style.display = 'block';
+                resultDiv.classList.remove('hidden');
             } else {
                 contentDiv.textContent = 'Hata: ' + data.error;
-                resultDiv.style.display = 'block';
+                resultDiv.classList.remove('hidden');
             }
         } catch (error) {
             contentDiv.textContent = 'Hata: ' + error.message;
-            resultDiv.style.display = 'block';
+            resultDiv.classList.remove('hidden');
         }
     };
 
@@ -294,14 +252,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
             if (data.success) {
                 contentDiv.textContent = JSON.stringify(data.siralama, null, 2);
-                resultDiv.style.display = 'block';
+                resultDiv.classList.remove('hidden');
             } else {
                 contentDiv.textContent = 'Hata: ' + data.error;
-                resultDiv.style.display = 'block';
+                resultDiv.classList.remove('hidden');
             }
         } catch (error) {
             contentDiv.textContent = 'Hata: ' + error.message;
-            resultDiv.style.display = 'block';
+            resultDiv.classList.remove('hidden');
         }
     };
 
@@ -339,14 +297,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
             if (data.success) {
                 responseDiv.textContent = data.message;
-                resultDiv.style.display = 'block';
+                resultDiv.classList.remove('hidden');
             } else {
                 responseDiv.textContent = 'Hata: ' + data.error;
-                resultDiv.style.display = 'block';
+                resultDiv.classList.remove('hidden');
             }
         } catch (error) {
             responseDiv.textContent = 'Hata: ' + error.message;
-            resultDiv.style.display = 'block';
+            resultDiv.classList.remove('hidden');
         }
     });
 
@@ -367,14 +325,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
             if (data.success) {
                 contentDiv.textContent = JSON.stringify(data.results, null, 2);
-                resultDiv.style.display = 'block';
+                resultDiv.classList.remove('hidden');
             } else {
                 contentDiv.textContent = 'Hata: ' + data.error;
-                resultDiv.style.display = 'block';
+                resultDiv.classList.remove('hidden');
             }
         } catch (error) {
             contentDiv.textContent = 'Hata: ' + error.message;
-            resultDiv.style.display = 'block';
+            resultDiv.classList.remove('hidden');
         }
     });
 });

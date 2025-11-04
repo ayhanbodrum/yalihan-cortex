@@ -24,13 +24,13 @@
                 </select>
 
                 <!-- Export Button -->
-                <button class="neo-btn neo-btn neo-btn-secondary touch-target-optimized touch-target-optimized" @click="exportOpen = true">
+                <button class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200" @click="exportOpen = true">
                     <i class="fas fa-download"></i>
                     <span>Export</span>
                 </button>
 
                 <!-- Refresh Button -->
-                <button class="neo-btn neo-btn neo-btn-primary touch-target-optimized touch-target-optimized" :disabled="refreshing"
+                <button class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50" :disabled="refreshing"
                     @click="refreshing = true; refreshAnalytics()">
                     <i class="fas" :class="refreshing ? 'fa-spinner fa-spin' : 'fa-sync-alt'"></i>
                     <span x-text="refreshing ? 'Yenileniyor...' : 'Refresh'"></span>
@@ -45,142 +45,118 @@
 
         <!-- Summary Cards -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-            <div class="neo-card p-4">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all p-4">
                 <div class="flex items-center justify-between">
                     <div>
-                        <div class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Total Submissions</div>
+                        <div class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">Total Submissions</div>
                         <div class="text-xl font-semibold text-gray-900 dark:text-white" id="total-submissions">
                             {{ number_format($analytics['form_analytics']['total_submissions'] ?? 0) }}
                         </div>
                     </div>
-                    <i class="fas fa-clipboard-list text-2xl text-gray-300"></i>
+                    <i class="fas fa-clipboard-list text-2xl text-gray-300 dark:text-gray-600"></i>
                 </div>
             </div>
 
-            <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-950">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all p-4">
                 <div class="flex items-center justify-between">
                     <div>
-                        <div class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Completion Rate</div>
+                        <div class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">Completion Rate</div>
                         <div class="text-xl font-semibold text-gray-900 dark:text-white" id="completion-rate">
                             {{ number_format($analytics['form_analytics']['completion_rate'] ?? 0, 1) }}%
                         </div>
                     </div>
-                    <i class="fas fa-percentage text-2xl text-gray-300"></i>
+                    <i class="fas fa-percentage text-2xl text-gray-300 dark:text-gray-600"></i>
                 </div>
             </div>
 
-            <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-950">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all p-4">
                 <div class="flex items-center justify-between">
                     <div>
-                        <div class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Avg. Completion Time
+                        <div class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">Avg. Completion Time
                         </div>
                         <div class="text-xl font-semibold text-gray-900 dark:text-white" id="avg-completion-time">
                             {{ number_format($analytics['form_analytics']['average_completion_time'] ?? 0, 1) }} min
                         </div>
                     </div>
-                    <i class="fas fa-clock text-2xl text-gray-300"></i>
+                    <i class="fas fa-clock text-2xl text-gray-300 dark:text-gray-600"></i>
                 </div>
             </div>
 
             <!-- EmlakLoc v3.0 Analytics Cards -->
-            <div class="neo-card p-4">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all p-4">
                 <div class="flex items-center justify-between">
                     <div>
-                        <div class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Map Interactions</div>
+                        <div class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">Map Interactions</div>
                         <div class="text-xl font-semibold text-gray-900 dark:text-white" id="map-interactions">
                             {{ number_format($analytics['emlakloc_analytics']['map_interactions'] ?? 0) }}
                         </div>
                     </div>
-                    <i class="fas fa-map-marked-alt text-2xl text-gray-300"></i>
+                    <i class="fas fa-map-marked-alt text-2xl text-gray-300 dark:text-gray-600"></i>
                 </div>
             </div>
 
-            <div class="col-xl-3 col-md-6 mb-4">
-                <div class="neo-card p-4">
-                    <div class="card-body">
-                        <div class="row no-gutters align-items-center">
-                            <div class="col mr-2">
-                                <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
-                                    Popular Locations
-                                </div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800" id="popular-locations">
-                                    {{ number_format($analytics['emlakloc_analytics']['popular_locations_used'] ?? 0) }}
-                                </div>
-                            </div>
-                            <div class="col-auto">
-                                <i class="fas fa-star fa-2x text-gray-300"></i>
-                            </div>
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all p-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <div class="text-xs font-medium text-red-600 dark:text-red-400 uppercase tracking-wide mb-1">
+                            Popular Locations
+                        </div>
+                        <div class="text-xl font-semibold text-gray-900 dark:text-white" id="popular-locations">
+                            {{ number_format($analytics['emlakloc_analytics']['popular_locations_used'] ?? 0) }}
                         </div>
                     </div>
+                    <i class="fas fa-star text-2xl text-gray-300 dark:text-gray-600"></i>
                 </div>
             </div>
 
-            <div class="col-xl-3 col-md-6 mb-4">
-                <div class="neo-card p-4">
-                    <div class="card-body">
-                        <div class="row no-gutters align-items-center">
-                            <div class="col mr-2">
-                                <div class="text-xs font-weight-bold text-secondary text-uppercase mb-1">
-                                    Address Searches
-                                </div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800" id="address-searches">
-                                    {{ number_format($analytics['emlakloc_analytics']['address_searches'] ?? 0) }}
-                                </div>
-                            </div>
-                            <div class="col-auto">
-                                <i class="fas fa-search fa-2x text-gray-300"></i>
-                            </div>
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all p-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <div class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">
+                            Address Searches
+                        </div>
+                        <div class="text-xl font-semibold text-gray-900 dark:text-white" id="address-searches">
+                            {{ number_format($analytics['emlakloc_analytics']['address_searches'] ?? 0) }}
                         </div>
                     </div>
+                    <i class="fas fa-search text-2xl text-gray-300 dark:text-gray-600"></i>
                 </div>
             </div>
 
             <!-- Context7 Analytics Card -->
-            <div class="col-xl-3 col-md-6 mb-4">
-                <div class="neo-card p-4">
-                    <div class="card-body">
-                        <div class="row no-gutters align-items-center">
-                            <div class="col mr-2">
-                                <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                    Context7 Aramalar
-                                </div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800" id="neo-searches">
-                                    {{ number_format($analytics['context7_analytics']['total_searches'] ?? 0) }}
-                                </div>
-                            </div>
-                            <div class="col-auto">
-                                <i class="fas fa-search fa-2x text-gray-300"></i>
-                            </div>
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all p-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <div class="text-xs font-medium text-yellow-600 dark:text-yellow-400 uppercase tracking-wide mb-1">
+                            Context7 Aramalar
+                        </div>
+                        <div class="text-xl font-semibold text-gray-900 dark:text-white" id="neo-searches">
+                            {{ number_format($analytics['context7_analytics']['total_searches'] ?? 0) }}
                         </div>
                     </div>
+                    <i class="fas fa-search text-2xl text-gray-300 dark:text-gray-600"></i>
                 </div>
             </div>
 
             <!-- AI Analytics Card -->
-            <div class="col-xl-3 col-md-6 mb-4">
-                <div class="neo-card p-4">
-                    <div class="card-body">
-                        <div class="row no-gutters align-items-center">
-                            <div class="col mr-2">
-                                <div class="text-xs font-weight-bold text-purple text-uppercase mb-1">
-                                    AI Kullanımı
-                                </div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800" id="ai-usage">
-                                    {{ number_format($analytics['ai_analytics']['total_requests'] ?? 0) }}
-                                </div>
-                            </div>
-                            <div class="col-auto">
-                                <i class="fas fa-robot fa-2x text-gray-300"></i>
-                            </div>
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all p-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <div class="text-xs font-medium text-purple-600 dark:text-purple-400 uppercase tracking-wide mb-1">
+                            AI Kullanımı
+                        </div>
+                        <div class="text-xl font-semibold text-gray-900 dark:text-white" id="ai-usage">
+                            {{ number_format($analytics['ai_analytics']['total_requests'] ?? 0) }}
                         </div>
                     </div>
+                    <i class="fas fa-robot text-2xl text-gray-300 dark:text-gray-600"></i>
                 </div>
             </div>
 
             <!-- Charts Row -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
                 <!-- Conversion Funnel -->
-                <div class="neo-card p-4">
+                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all p-4">
                     <h6 class="mb-3 font-semibold text-gray-900 dark:text-white">
                         <i class="fas fa-funnel-dollar mr-2 text-orange-500"></i>
                         Conversion Funnel
@@ -189,7 +165,7 @@
                 </div>
 
                 <!-- Step Abandonment -->
-                <div class="neo-card p-4">
+                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all p-4">
                     <h6 class="mb-3 font-semibold text-gray-900 dark:text-white">
                         <i class="fas fa-exclamation-triangle mr-2 text-orange-500"></i>
                         Step Abandonment
@@ -200,7 +176,7 @@
 
             <!-- Context7 Analytics Section -->
             <div class="mb-6">
-                <div class="neo-card p-4">
+                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all p-4">
                     <h5 class="mb-4 font-semibold text-gray-900 dark:text-white">
                         <i class="fas fa-search mr-2 text-orange-500"></i>
                         Context7 Performans Dashboard
@@ -213,29 +189,29 @@
                                     <i class="fas fa-tachometer-alt mr-1"></i>
                                     Arama Performansı
                                 </h6>
-                                <div class="neo-metric">
-                                    <div class="d-flex align-items-center">
-                                        <div class="flex-grow-1">
-                                            <div class="neo-progress mb-2">
-                                                <div class="neo-progress-bar" id="search-accuracy" style="width: 0%"
+                                <div class="space-y-2">
+                                    <div class="flex items-center">
+                                        <div class="flex-1">
+                                            <div class="h-2 rounded-full bg-gray-200 dark:bg-gray-700 mb-2">
+                                                <div class="h-2 rounded-full bg-blue-500" id="search-accuracy" style="width: 0%"
                                                     role="progressbar"></div>
                                             </div>
-                                            <small class="text-muted">
+                                            <small class="text-sm text-gray-500 dark:text-gray-400">
                                                 Doğruluk Oranı: <span id="search-accuracy-percentage">0%</span>
                                             </small>
                                         </div>
                                         <div class="ml-3 text-right">
-                                            <div class="h4 mb-0 text-warning" id="successful-searches">0</div>
-                                            <small class="text-muted">Başarılı</small>
+                                            <div class="text-2xl font-bold text-yellow-600 dark:text-yellow-400" id="successful-searches">0</div>
+                                            <small class="text-sm text-gray-500 dark:text-gray-400">Başarılı</small>
                                         </div>
                                     </div>
-                                    <div class="d-flex align-items-center mt-2">
-                                        <div class="flex-grow-1">
-                                            <small class="text-muted">Başarısız</small>
+                                    <div class="flex items-center mt-2">
+                                        <div class="flex-1">
+                                            <small class="text-sm text-gray-500 dark:text-gray-400">Başarısız</small>
                                         </div>
                                         <div class="ml-3 text-right">
-                                            <div class="h4 mb-0 text-danger" id="failed-searches">0</div>
-                                            <small class="text-muted">Başarısız</small>
+                                            <div class="text-2xl font-bold text-red-600 dark:text-red-400" id="failed-searches">0</div>
+                                            <small class="text-sm text-gray-500 dark:text-gray-400">Başarısız</small>
                                         </div>
                                     </div>
                                 </div>
@@ -247,15 +223,15 @@
                                     <i class="fas fa-users mr-1"></i>
                                     Kullanıcı Davranışları
                                 </h6>
-                                <div class="neo-metric">
-                                    <div class="row text-center">
-                                        <div class="col-6">
-                                            <div class="h3 mb-0 text-warning" id="avg-search-time">0</div>
-                                            <small class="text-muted">Ort. Arama Süresi (sn)</small>
+                                <div class="space-y-2">
+                                    <div class="grid grid-cols-2 text-center gap-4">
+                                        <div>
+                                            <div class="text-2xl font-bold text-yellow-600 dark:text-yellow-400" id="avg-search-time">0</div>
+                                            <small class="text-sm text-gray-500 dark:text-gray-400">Ort. Arama Süresi (sn)</small>
                                         </div>
-                                        <div class="col-6">
-                                            <div class="h3 mb-0 text-info" id="avg-results-clicked">0</div>
-                                            <small class="text-muted">Ort. Sonuç Tıklama</small>
+                                        <div>
+                                            <div class="text-2xl font-bold text-blue-600 dark:text-blue-400" id="avg-results-clicked">0</div>
+                                            <small class="text-sm text-gray-500 dark:text-gray-400">Ort. Sonuç Tıklama</small>
                                         </div>
                                     </div>
                                 </div>
@@ -268,136 +244,121 @@
 
         <!-- Performance Metrics -->
         <div class="mb-6">
-            <div class="neo-card p-4">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all p-4">
                 <h6 class="mb-4 font-semibold text-gray-900 dark:text-white">
                     <i class="fas fa-tachometer-alt mr-2 text-orange-500"></i>
                     Performance Metrics
                 </h6>
                 <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <div class="text-center p-3 rounded-lg bg-gray-50 dark:bg-gray-800">
-                        <div class="text-2xl font-bold" id="page-load-time">
+                    <div class="text-center p-3 rounded-lg bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700">
+                        <div class="text-2xl font-bold text-gray-900 dark:text-white" id="page-load-time">
                             {{ number_format($analytics['form_analytics']['performance_metrics']['page_load_time'] ?? 0, 0) }}ms
                         </div>
-                        <div class="text-xs text-gray-500">Page Load Time</div>
+                        <div class="text-xs text-gray-500 dark:text-gray-400">Page Load Time</div>
                     </div>
-                    <div class="text-center p-3 rounded-lg bg-gray-50 dark:bg-gray-800">
-                        <div class="text-2xl font-bold" id="api-response-time">
+                    <div class="text-center p-3 rounded-lg bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700">
+                        <div class="text-2xl font-bold text-gray-900 dark:text-white" id="api-response-time">
                             {{ number_format($analytics['form_analytics']['performance_metrics']['api_response_time'] ?? 0, 0) }}ms
                         </div>
-                        <div class="text-xs text-gray-500">API Response Time</div>
+                        <div class="text-xs text-gray-500 dark:text-gray-400">API Response Time</div>
                     </div>
-                    <div class="text-center p-3 rounded-lg bg-gray-50 dark:bg-gray-800">
-                        <div class="text-2xl font-bold" id="error-rate">
+                    <div class="text-center p-3 rounded-lg bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700">
+                        <div class="text-2xl font-bold text-gray-900 dark:text-white" id="error-rate">
                             {{ number_format($analytics['form_analytics']['performance_metrics']['error_rate'] ?? 0, 2) }}%
                         </div>
-                        <div class="text-xs text-gray-500">Error Rate</div>
+                        <div class="text-xs text-gray-500 dark:text-gray-400">Error Rate</div>
                     </div>
-                    <div class="text-center p-3 rounded-lg bg-gray-50 dark:bg-gray-800">
-                        <div class="text-2xl font-bold" id="uptime">
+                    <div class="text-center p-3 rounded-lg bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700">
+                        <div class="text-2xl font-bold text-gray-900 dark:text-white" id="uptime">
                             {{ number_format($analytics['form_analytics']['performance_metrics']['uptime'] ?? 0, 2) }}%
                         </div>
-                        <div class="text-xs text-gray-500">Uptime</div>
+                        <div class="text-xs text-gray-500 dark:text-gray-400">Uptime</div>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- User Behavior -->
-        <div class="row mb-5">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
             <!-- Device Usage -->
-            <div class="col-xl-4 mb-4">
-                <div class="neo-card">
-                    <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">
-                            <i class="fas fa-mobile-alt mr-2"></i>
-                            Device Usage
-                        </h6>
-                    </div>
-                    <div class="card-body">
-                        <canvas id="device-usage-chart" width="400" height="200"></canvas>
-                    </div>
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all">
+                <div class="border-b border-gray-200 dark:border-gray-700 px-6 py-3">
+                    <h6 class="font-semibold text-blue-600 dark:text-blue-400">
+                        <i class="fas fa-mobile-alt mr-2"></i>
+                        Device Usage
+                    </h6>
+                </div>
+                <div class="p-4">
+                    <canvas id="device-usage-chart" width="400" height="200"></canvas>
                 </div>
             </div>
 
             <!-- Browser Usage -->
-            <div class="col-xl-4 mb-4">
-                <div class="neo-card">
-                    <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">
-                            <i class="fas fa-globe mr-2"></i>
-                            Browser Usage
-                        </h6>
-                    </div>
-                    <div class="card-body">
-                        <canvas id="browser-usage-chart" width="400" height="200"></canvas>
-                    </div>
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all">
+                <div class="border-b border-gray-200 dark:border-gray-700 px-6 py-3">
+                    <h6 class="font-semibold text-blue-600 dark:text-blue-400">
+                        <i class="fas fa-globe mr-2"></i>
+                        Browser Usage
+                    </h6>
+                </div>
+                <div class="p-4">
+                    <canvas id="browser-usage-chart" width="400" height="200"></canvas>
                 </div>
             </div>
 
             <!-- Session Duration -->
-            <div class="col-xl-4 mb-4">
-                <div class="neo-card">
-                    <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">
-                            <i class="fas fa-hourglass-half mr-2"></i>
-                            Session Duration
-                        </h6>
-                    </div>
-                    <div class="card-body">
-                        <div class="text-center">
-                            <div class="h2 text-primary" id="avg-session-duration">
-                                {{ number_format($analytics['form_analytics']['user_behavior']['session_duration'] ?? 0, 1) }}
-                            </div>
-                            <div class="text-muted">Average Minutes</div>
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all">
+                <div class="border-b border-gray-200 dark:border-gray-700 px-6 py-3">
+                    <h6 class="font-semibold text-blue-600 dark:text-blue-400">
+                        <i class="fas fa-hourglass-half mr-2"></i>
+                        Session Duration
+                    </h6>
+                </div>
+                <div class="p-4">
+                    <div class="text-center">
+                        <div class="text-3xl font-bold text-blue-600 dark:text-blue-400" id="avg-session-duration">
+                            {{ number_format($analytics['form_analytics']['user_behavior']['session_duration'] ?? 0, 1) }}
                         </div>
+                        <div class="text-sm text-gray-500 dark:text-gray-400">Average Minutes</div>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Real-time Activity -->
-        <div class="row">
-            <div class="col-12">
-                <div class="neo-card">
-                    <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">
-                            <i class="fas fa-broadcast-tower mr-2"></i>
-                            Real-time Activity
-                        </h6>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-3 text-center">
-                                <div class="realtime-metric">
-                                    <div class="metric-value text-success" id="current-sessions">
-                                        {{ number_format($analytics['real_time_analytics']['current_sessions'] ?? 0) }}
-                                    </div>
-                                    <div class="metric-label">Current Sessions</div>
+        <div class="mb-6">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all">
+                <div class="border-b border-gray-200 dark:border-gray-700 px-6 py-3">
+                    <h6 class="font-semibold text-blue-600 dark:text-blue-400">
+                        <i class="fas fa-broadcast-tower mr-2"></i>
+                        Real-time Activity
+                    </h6>
+                </div>
+                <div class="p-6">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+                            <div class="text-center">
+                                <div class="text-2xl font-bold text-green-600 dark:text-green-400" id="current-sessions">
+                                    {{ number_format($analytics['real_time_analytics']['current_sessions'] ?? 0) }}
                                 </div>
+                                <div class="text-sm text-gray-500 dark:text-gray-400">Current Sessions</div>
                             </div>
-                            <div class="col-md-3 text-center">
-                                <div class="realtime-metric">
-                                    <div class="metric-value text-info" id="recent-submissions">
-                                        {{ number_format($analytics['real_time_analytics']['recent_submissions'] ?? 0) }}
-                                    </div>
-                                    <div class="metric-label">Recent Submissions</div>
+                            <div class="text-center">
+                                <div class="text-2xl font-bold text-blue-600 dark:text-blue-400" id="recent-submissions">
+                                    {{ number_format($analytics['real_time_analytics']['recent_submissions'] ?? 0) }}
                                 </div>
+                                <div class="text-sm text-gray-500 dark:text-gray-400">Recent Submissions</div>
                             </div>
-                            <div class="col-md-3 text-center">
-                                <div class="realtime-metric">
-                                    <div class="metric-value text-warning" id="cpu-usage">
-                                        {{ number_format($analytics['real_time_analytics']['system_health']['cpu_usage'] ?? 0) }}%
-                                    </div>
-                                    <div class="metric-label">CPU Usage</div>
+                            <div class="text-center">
+                                <div class="text-2xl font-bold text-yellow-600 dark:text-yellow-400" id="cpu-usage">
+                                    {{ number_format($analytics['real_time_analytics']['system_health']['cpu_usage'] ?? 0) }}%
                                 </div>
+                                <div class="text-sm text-gray-500 dark:text-gray-400">CPU Usage</div>
                             </div>
-                            <div class="col-md-3 text-center">
-                                <div class="realtime-metric">
-                                    <div class="metric-value text-danger" id="memory-usage">
-                                        {{ number_format($analytics['real_time_analytics']['system_health']['memory_usage'] ?? 0) }}%
-                                    </div>
-                                    <div class="metric-label">Memory Usage</div>
+                            <div class="text-center">
+                                <div class="text-2xl font-bold text-red-600 dark:text-red-400" id="memory-usage">
+                                    {{ number_format($analytics['real_time_analytics']['system_health']['memory_usage'] ?? 0) }}%
                                 </div>
+                                <div class="text-sm text-gray-500 dark:text-gray-400">Memory Usage</div>
                             </div>
                         </div>
                     </div>
@@ -406,85 +367,86 @@
         </div>
 
         <!-- EmlakLoc v3.0 Analytics Section -->
-        <div class="row mb-5">
-            <div class="col-12">
-                <div class="neo-card">
-                    <div class="card-header py-3">
-                        <h5 class="mb-0 font-semibold">
-                            <i class="fas fa-map-marked-alt mr-2"></i>
-                            EmlakLoc v3.0 Performance Dashboard
-                        </h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
+        <div class="mb-6">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all">
+                <div class="border-b border-gray-200 dark:border-gray-700 px-6 py-3">
+                    <h5 class="font-semibold text-gray-900 dark:text-white">
+                        <i class="fas fa-map-marked-alt mr-2"></i>
+                        EmlakLoc v3.0 Performance Dashboard
+                    </h5>
+                </div>
+                <div class="p-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <!-- Top Neighborhoods -->
-                            <div class="col-md-6 mb-4">
-                                <h6 class="text-primary mb-3">
+                            <div>
+                                <h6 class="text-blue-600 dark:text-blue-400 mb-3">
                                     <i class="fas fa-star mr-1"></i>
                                     En Popüler Mahalleler
                                 </h6>
-                                <div id="top-neighborhoods-chart" style="height: 300px;">
+                                <div id="top-neighborhoods-chart" class="h-[300px]">
                                     <!-- Chart will be loaded here -->
                                 </div>
                             </div>
 
                             <!-- API Response Times -->
-                            <div class="col-md-6 mb-4">
-                                <h6 class="text-success mb-3">
+                            <div>
+                                <h6 class="text-green-600 dark:text-green-400 mb-3">
                                     <i class="fas fa-tachometer-alt mr-1"></i>
                                     API Response Times
                                 </h6>
-                                <div id="response-times-chart" style="height: 300px;">
+                                <div id="response-times-chart" class="h-[300px]">
                                     <!-- Chart will be loaded here -->
                                 </div>
                             </div>
 
                             <!-- Cache Performance -->
-                            <div class="col-md-6 mb-4">
-                                <h6 class="text-info mb-3">
+                            <div>
+                                <h6 class="text-blue-600 dark:text-blue-400 mb-3">
                                     <i class="fas fa-database mr-1"></i>
                                     Cache Performance
                                 </h6>
-                                <div class="d-flex align-items-center">
-                                    <div class="flex-grow-1">
-                                        <div class="neo-progress mb-2">
-                                            <div class="neo-progress-bar" id="cache-hit-rate" style="width: 0%"
-                                                role="progressbar"></div>
+                                <div class="space-y-2">
+                                    <div class="flex items-center">
+                                        <div class="flex-1">
+                                            <div class="h-2 rounded-full bg-gray-200 dark:bg-gray-700 mb-2">
+                                                <div class="h-2 rounded-full bg-green-500" id="cache-hit-rate" style="width: 0%"
+                                                    role="progressbar"></div>
+                                            </div>
+                                            <small class="text-sm text-gray-500 dark:text-gray-400">
+                                                Hit Rate: <span id="cache-hit-percentage">0%</span>
+                                            </small>
                                         </div>
-                                        <small class="text-muted">
-                                            Hit Rate: <span id="cache-hit-percentage">0%</span>
-                                        </small>
+                                        <div class="ml-3 text-right">
+                                            <div class="text-2xl font-bold text-green-600 dark:text-green-400" id="cache-hits">0</div>
+                                            <small class="text-sm text-gray-500 dark:text-gray-400">Hits</small>
+                                        </div>
                                     </div>
-                                    <div class="ml-3 text-right">
-                                        <div class="h4 mb-0 text-success" id="cache-hits">0</div>
-                                        <small class="text-muted">Hits</small>
-                                    </div>
-                                </div>
-                                <div class="d-flex align-items-center mt-2">
-                                    <div class="flex-grow-1">
-                                        <small class="text-muted">Misses</small>
-                                    </div>
-                                    <div class="ml-3 text-right">
-                                        <div class="h4 mb-0 text-danger" id="cache-misses">0</div>
-                                        <small class="text-muted">Misses</small>
+                                    <div class="flex items-center mt-2">
+                                        <div class="flex-1">
+                                            <small class="text-sm text-gray-500 dark:text-gray-400">Misses</small>
+                                        </div>
+                                        <div class="ml-3 text-right">
+                                            <div class="text-2xl font-bold text-red-600 dark:text-red-400" id="cache-misses">0</div>
+                                            <small class="text-sm text-gray-500 dark:text-gray-400">Misses</small>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
 
                             <!-- User Behavior -->
-                            <div class="col-md-6 mb-4">
-                                <h6 class="text-warning mb-3">
+                            <div>
+                                <h6 class="text-yellow-600 dark:text-yellow-400 mb-3">
                                     <i class="fas fa-users mr-1"></i>
                                     Kullanıcı Davranışları
                                 </h6>
-                                <div class="row text-center">
-                                    <div class="col-6">
-                                        <div class="h3 mb-0 text-primary" id="avg-session-duration">0</div>
-                                        <small class="text-muted">Ort. Oturum Süresi (dk)</small>
+                                <div class="grid grid-cols-2 text-center gap-4">
+                                    <div>
+                                        <div class="text-2xl font-bold text-blue-600 dark:text-blue-400" id="avg-session-duration">0</div>
+                                        <small class="text-sm text-gray-500 dark:text-gray-400">Ort. Oturum Süresi (dk)</small>
                                     </div>
-                                    <div class="col-6">
-                                        <div class="h3 mb-0 text-info" id="avg-interactions">0</div>
-                                        <small class="text-muted">Ort. Etkileşim/Session</small>
+                                    <div>
+                                        <div class="text-2xl font-bold text-blue-600 dark:text-blue-400" id="avg-interactions">0</div>
+                                        <small class="text-sm text-gray-500 dark:text-gray-400">Ort. Etkileşim/Session</small>
                                     </div>
                                 </div>
                             </div>
@@ -498,11 +460,11 @@
     <!-- Export Modal (Alpine) -->
     <div x-show="exportOpen" x-transition class="fixed inset-0 z-50 flex items-center justify-center p-4">
         <div class="absolute inset-0 bg-black/40" @click="exportOpen=false"></div>
-        <div class="relative neo-card w-full max-w-md">
-            <div class="flex items-center justify-between border-b border-gray-200 dark:border-gray-800 px-4 py-2.5">
-                <h5 class="text-sm font-semibold">Export Analytics Data</h5>
-                <button class="neo-icon-btn touch-target-optimized touch-target-optimized" @click="exportOpen=false" aria-label="Kapat">
-                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <div class="relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-2xl w-full max-w-md">
+            <div class="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 px-4 py-2.5">
+                <h5 class="text-sm font-semibold text-gray-900 dark:text-white">Export Analytics Data</h5>
+                <button class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors" @click="exportOpen=false" aria-label="Kapat">
+                    <svg class="w-5 h-5 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </button>
@@ -528,9 +490,9 @@
                     </select>
                 </div>
             </div>
-            <div class="flex justify-end gap-2 border-t border-gray-200 dark:border-gray-800 px-4 py-2.5">
-                <button type="button" class="neo-btn neo-btn neo-btn-secondary touch-target-optimized touch-target-optimized" @click="exportOpen=false">Cancel</button>
-                <button type="button" class="neo-btn neo-btn neo-btn-primary touch-target-optimized touch-target-optimized" :disabled="loading"
+            <div class="flex justify-end gap-2 border-t border-gray-200 dark:border-gray-700 px-4 py-2.5">
+                <button type="button" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200" @click="exportOpen=false">Cancel</button>
+                <button type="button" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50" :disabled="loading"
                     @click="loading = true; downloadExport()">
                     <i class="fas" :class="loading ? 'fa-spinner fa-spin' : 'fa-download'"></i>
                     <span x-text="loading ? 'İndiriliyor...' : 'Download'"></span>

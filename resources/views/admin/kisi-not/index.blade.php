@@ -15,11 +15,11 @@
                 <p class="text-lg text-gray-600 mt-2">Kişi notlarını yönetin ve takip edin</p>
             </div>
             <div class="flex space-x-3">
-                <a href="{{ route('admin.kisi-not.create') }}" class="neo-btn neo-btn neo-btn-primary">
+                <a href="{{ route('admin.kisi-not.create') }}" class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg">
                     <i class="fas fa-plus mr-2"></i>
                     Yeni Not
                 </a>
-                <button onclick="exportNotes()" class="neo-btn neo-btn neo-btn-secondary">
+                <button onclick="exportNotes()" class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-sm">
                     <i class="fas fa-download mr-2"></i>
                     Dışa Aktar
                 </button>
@@ -30,7 +30,7 @@
     <div class="px-6">
         <!-- Statistics Cards -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <div class="neo-card p-6">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-200 p-6">
                 <div class="flex items-center">
                     <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
                         <i class="fas fa-sticky-note text-blue-600 text-xl"></i>
@@ -42,7 +42,7 @@
                 </div>
             </div>
 
-            <div class="neo-card p-6">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-200 p-6">
                 <div class="flex items-center">
                     <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
                         <i class="fas fa-check-circle text-green-600 text-xl"></i>
@@ -54,7 +54,7 @@
                 </div>
             </div>
 
-            <div class="neo-card p-6">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-200 p-6">
                 <div class="flex items-center">
                     <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
                         <i class="fas fa-tags text-purple-600 text-xl"></i>
@@ -66,7 +66,7 @@
                 </div>
             </div>
 
-            <div class="neo-card p-6">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-200 p-6">
                 <div class="flex items-center">
                     <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
                         <i class="fas fa-chart-line text-orange-600 text-xl"></i>
@@ -80,7 +80,7 @@
         </div>
 
         <!-- Filters -->
-        <div class="neo-card p-6 mb-6">
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6 mb-6">
             <h3 class="text-lg font-semibold text-gray-800 mb-4">Filtreler</h3>
             <form method="GET" action="{{ route('admin.kisi-not.index') }}" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div>
@@ -113,11 +113,11 @@
                 </div>
 
                 <div class="flex items-end space-x-2">
-                    <button type="submit" class="neo-btn neo-btn neo-btn-primary flex-1">
+                    <button type="submit" class="inline-flex items-center justify-center px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg flex-1">
                         <i class="fas fa-search mr-2"></i>
                         Filtrele
                     </button>
-                    <a href="{{ route('admin.kisi-not.index') }}" class="neo-btn neo-btn neo-btn-secondary">
+                    <a href="{{ route('admin.kisi-not.index') }}" class="inline-flex items-center px-3 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-sm">
                         <i class="fas fa-times"></i>
                     </a>
                 </div>
@@ -125,37 +125,37 @@
         </div>
 
         <!-- Notes Table -->
-        <div class="neo-card">
-            <div class="neo-card-header">
-                <h3 class="text-lg font-semibold text-gray-800">Müşteri Notları</h3>
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden">
+            <div class="border-b border-gray-200 dark:border-gray-700 px-6 py-4 flex items-center justify-between">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Müşteri Notları</h3>
                 <div class="flex items-center space-x-2">
-                    <span class="text-sm text-gray-500">{{ count($notlar ?? []) }} not bulundu</span>
+                    <span class="text-sm text-gray-500 dark:text-gray-400">{{ count($notlar ?? []) }} not bulundu</span>
                 </div>
             </div>
 
-            <div class="neo-table-responsive">
-                <table class="neo-table">
-                    <thead>
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead class="bg-gray-50 dark:bg-gray-900/50">
                         <tr>
-                            <th class="neo-table-th">
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                                 <input type="checkbox" class="w-5 h-5 text-blue-600 bg-gray-50 dark:bg-gray-800 border-gray-300 dark:border-gray-600 rounded focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-all duration-200 cursor-pointer" onchange="toggleAllCheckboxes(this)">
                             </th>
-                            <th class="neo-table-th">Kişi</th>
-                            <th class="neo-table-th">Başlık</th>
-                            <th class="neo-table-th">Kategori</th>
-                            <th class="neo-table-th">Önem</th>
-                            <th class="neo-table-th">Durum</th>
-                            <th class="neo-table-th">Tarih</th>
-                            <th class="neo-table-th">İşlemler</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Kişi</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Başlık</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Kategori</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Önem</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Durum</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Tarih</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">İşlemler</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                         @forelse($notlar ?? [] as $not)
-                            <tr class="neo-table-tr hover:bg-gray-50">
-                                <td class="neo-table-td">
+                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors duration-150">
+                                <td class="px-6 py-4 whitespace-nowrap">
                                     <input type="checkbox" class="w-5 h-5 text-blue-600 bg-gray-50 dark:bg-gray-800 border-gray-300 dark:border-gray-600 rounded focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-all duration-200 cursor-pointer note-checkbox" value="{{ $not['id'] }}">
                                 </td>
-                                <td class="neo-table-td">
+                                <td class="px-6 py-4">
                                     <div class="flex items-center">
                                         <div class="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center mr-3">
                                             <i class="fas fa-user text-gray-600 text-sm"></i>
@@ -166,18 +166,18 @@
                                         </div>
                                     </div>
                                 </td>
-                                <td class="neo-table-td">
+                                <td class="px-6 py-4">
                                     <div class="max-w-xs">
                                         <div class="font-medium text-gray-900 truncate">{{ $not['baslik'] ?? 'Başlıksız' }}</div>
                                         <div class="text-sm text-gray-500 truncate">{{ Str::limit($not['icerik'] ?? '', 50) }}</div>
                                     </div>
                                 </td>
-                                <td class="neo-table-td">
+                                <td class="px-6 py-4 whitespace-nowrap">
                                     <span class="px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800">
                                         {{ ucfirst($not['kategori'] ?? 'genel') }}
                                     </span>
                                 </td>
-                                <td class="neo-table-td">
+                                <td class="px-6 py-4 whitespace-nowrap">
                                     @php
                                         $importance = $not['onem_derecesi'] ?? 'orta';
                                         $importanceColors = [
@@ -197,7 +197,7 @@
                                         {{ $importanceLabels[$importance] ?? 'Orta' }}
                                     </span>
                                 </td>
-                                <td class="neo-table-td">
+                                <td class="px-6 py-4 whitespace-nowrap">
                                     @if($not['is_completed'] ?? false)
                                         <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
                                             <i class="fas fa-check mr-1"></i>
@@ -210,15 +210,15 @@
                                         </span>
                                     @endif
                                 </td>
-                                <td class="neo-table-td">
-                                    <div class="text-sm text-gray-900">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900 dark:text-white">
                                         {{ \Carbon\Carbon::parse($not['created_at'] ?? now())->format('d.m.Y') }}
                                     </div>
                                     <div class="text-sm text-gray-500">
                                         {{ \Carbon\Carbon::parse($not['created_at'] ?? now())->format('H:i') }}
                                     </div>
                                 </td>
-                                <td class="neo-table-td">
+                                <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="flex items-center space-x-2">
                                         <a href="{{ route('admin.kisi-not.show', $not['id']) }}"
                                            class="text-blue-600 hover:text-blue-800" title="Görüntüle">
@@ -237,12 +237,12 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="8" class="neo-table-td text-center py-12">
+                                <td colspan="8" class="px-6 py-12 text-center">
                                     <div class="flex flex-col items-center">
                                         <i class="fas fa-sticky-note text-4xl text-gray-300 mb-4"></i>
-                                        <h3 class="text-lg font-medium text-gray-900 mb-2">Henüz not bulunmuyor</h3>
-                                        <p class="text-gray-500 mb-4">İlk notunuzu oluşturmak için yukarıdaki butonu kullanın.</p>
-                                        <a href="{{ route('admin.kisi-not.create') }}" class="neo-btn neo-btn neo-btn-primary">
+                                        <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">Henüz not bulunmuyor</h3>
+                                        <p class="text-gray-500 dark:text-gray-400 mb-4">İlk notunuzu oluşturmak için yukarıdaki butonu kullanın.</p>
+                                        <a href="{{ route('admin.kisi-not.create') }}" class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg">
                                             <i class="fas fa-plus mr-2"></i>
                                             Yeni Not Oluştur
                                         </a>
@@ -257,15 +257,15 @@
 
         <!-- Bulk Actions -->
         <div class="fixed bottom-4 right-4" id="bulkActionsPanel" style="display: none;">
-            <div class="neo-card p-4 shadow-lg">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 shadow-2xl">
                 <div class="flex items-center space-x-3">
-                    <span class="text-sm font-medium text-gray-700" id="selectedCount">0 seçildi</span>
+                    <span class="text-sm font-medium text-gray-700 dark:text-gray-300" id="selectedCount">0 seçildi</span>
                     <div class="flex space-x-2">
-                        <button onclick="bulkAction('complete')" class="neo-btn neo-btn-sm neo-btn-success">
+                        <button onclick="bulkAction('complete')" class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-white bg-gradient-to-r from-green-600 to-emerald-600 rounded-lg hover:from-green-700 hover:to-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all duration-200 shadow-sm">
                             <i class="fas fa-check mr-1"></i>
                             Tamamla
                         </button>
-                        <button onclick="bulkAction('delete')" class="neo-btn neo-btn-sm neo-btn-danger">
+                        <button onclick="bulkAction('delete')" class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-white bg-gradient-to-r from-red-600 to-pink-600 rounded-lg hover:from-red-700 hover:to-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-all duration-200 shadow-sm">
                             <i class="fas fa-trash mr-1"></i>
                             Sil
                         </button>

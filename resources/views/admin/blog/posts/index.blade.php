@@ -83,7 +83,7 @@
 @section('content')
     <div class="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
         <!-- Header with Actions -->
-        <div class="neo-card mb-8 p-8">
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm mb-8 p-8">
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
                 <div>
                     <h1
@@ -93,14 +93,14 @@
                     <p class="mt-3 text-lg text-gray-600">Tüm blog yazılarınızı yönetin</p>
                 </div>
                 <div class="flex items-center space-x-3">
-                    <a href="{{ route('admin.blog.posts.create') }}" class="neo-btn neo-btn-primary touch-target-optimized touch-target-optimized">
+                    <a href="{{ route('admin.blog.posts.create') }}" class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                         </svg>
                         Yeni Yazı
                     </a>
-                    <a href="{{ route('blog.index') }}" target="_blank" class="neo-btn neo-btn-secondary touch-target-optimized touch-target-optimized">
+                    <a href="{{ route('blog.index') }}" target="_blank" class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-sm">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
@@ -112,7 +112,7 @@
         </div>
 
         <!-- Filters -->
-        <div class="neo-card mb-8 p-6">
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm mb-8 p-6">
             <form method="GET" action="{{ route('admin.blog.posts.index') }}"
                 class="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div class="form-field">
@@ -149,14 +149,14 @@
                 <div class="form-field">
                     <label class="admin-label">&nbsp;</label>
                     <div class="flex space-x-2">
-                        <button type="submit" class="neo-btn neo-btn-primary touch-target-optimized touch-target-optimized">
+                        <button type="submit" class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg">
                             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                             </svg>
                             Filtrele
                         </button>
-                        <a href="{{ route('admin.blog.posts.index') }}" class="neo-btn neo-btn-secondary touch-target-optimized touch-target-optimized">
+                        <a href="{{ route('admin.blog.posts.index') }}" class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-sm">
                             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M6 18L18 6M6 6l12 12"></path>
@@ -169,7 +169,7 @@
         </div>
 
         <!-- Posts Table -->
-        <div class="neo-card overflow-hidden">
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden">
             <div class="p-6">
                 @if ($posts->isEmpty())
                     <x-neo.empty-state title="Henüz yazı yok" description="İlk blog yazınızı oluşturarak başlayın"

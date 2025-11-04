@@ -18,16 +18,16 @@
                     🏠 Adres Yönetimi
                 </h1>
                 <div class="flex space-x-3">
-                    <button @click="showStatsModal = true" class="neo-btn neo-btn neo-btn-secondary touch-target-optimized touch-target-optimized">
-                        <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <button @click="showStatsModal = true" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z">
                             </path>
                         </svg>
                         İstatistikler
                     </button>
-                    <button @click="showAddModal = true" class="neo-btn neo-btn neo-btn-primary touch-target-optimized touch-target-optimized">
-                        <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <button @click="showAddModal = true" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 shadow-md hover:shadow-lg">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                         </svg>
                         Yeni Ekle
@@ -38,7 +38,7 @@
 
         <!-- İstatistik Kartları -->
         <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-            <div class="neo-card bg-gradient-to-r from-blue-500 to-blue-600 text-white">
+            <div class="bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl shadow-lg hover:shadow-xl transition-all p-6">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-blue-100 text-sm">Toplam Ülke</p>
@@ -54,7 +54,7 @@
                 </div>
             </div>
 
-            <div class="neo-card bg-gradient-to-r from-green-500 to-green-600 text-white">
+            <div class="bg-gradient-to-r from-green-500 to-green-600 text-white rounded-xl shadow-lg hover:shadow-xl transition-all p-6">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-green-100 text-sm">Toplam İl</p>
@@ -70,7 +70,7 @@
                 </div>
             </div>
 
-            <div class="neo-card bg-gradient-to-r from-purple-500 to-purple-600 text-white">
+            <div class="bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-xl shadow-lg hover:shadow-xl transition-all p-6">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-purple-100 text-sm">Toplam İlçe</p>
@@ -86,7 +86,7 @@
                 </div>
             </div>
 
-            <div class="neo-card bg-gradient-to-r from-orange-500 to-orange-600 text-white">
+            <div class="bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-xl shadow-lg hover:shadow-xl transition-all p-6">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-orange-100 text-sm">Toplam Mahalle</p>
@@ -106,18 +106,18 @@
         </div>
 
         <!-- Arama ve Filtreleme -->
-        <div class="neo-card mb-6">
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6 mb-6">
             <div class="flex flex-col md:flex-row gap-4">
                 <div class="flex-1">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Arama</label>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Arama</label>
                     <input type="text" x-model="searchQuery" @input="filterData()"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        class="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200"
                         placeholder="Ülke, il, ilçe veya mahalle ara...">
                 </div>
                 <div class="md:w-48">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Kategori</label>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Kategori</label>
                     <select style="color-scheme: light dark;" x-model="filterType" @change="filterData()"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200">
+                        class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 transition-all duration-200">
                         <option value="">Tümü</option>
                         <option value="ulke">Ülkeler</option>
                         <option value="il">İller</option>
@@ -126,9 +126,9 @@
                     </select>
                 </div>
                 <div class="md:w-32">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Sıralama</label>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Sıralama</label>
                     <select style="color-scheme: light dark;" x-model="sortOrder" @change="sortData()"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200">
+                        class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 transition-all duration-200">
                         <option value="asc">A-Z</option>
                         <option value="desc">Z-A</option>
                     </select>
@@ -138,7 +138,7 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <!-- Ülkeler - Basic Theme (Mavi) -->
-            <div class="neo-card">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all p-6">
                 <div class="flex justify-between items-center mb-4">
                     <h2 class="text-lg font-semibold text-blue-800 dark:text-blue-200 flex items-center">
                         <div class="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center mr-2">
@@ -150,18 +150,18 @@
                         </div>
                         Ülkeler
                     </h2>
-                    <button @click="addItem('ulke')" class="neo-btn neo-btn neo-btn-secondary touch-target-optimized touch-target-optimized">
+                    <button @click="addItem('ulke')" class="inline-flex items-center justify-center p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4">
                             </path>
                         </svg>
                     </button>
                 </div>
-                <div id="list-ulkeler" class="text-sm text-gray-700">Yükleniyor...</div>
+                <div id="list-ulkeler" class="text-sm text-gray-700 dark:text-gray-300">Yükleniyor...</div>
             </div>
 
             <!-- İller - Location Theme (Yeşil) -->
-            <div class="neo-card">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all p-6">
                 <div class="flex justify-between items-center mb-4">
                     <h2 class="text-lg font-semibold text-green-800 dark:text-green-200 flex items-center">
                         <div class="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center mr-2">
@@ -173,18 +173,18 @@
                         </div>
                         İller
                     </h2>
-                    <button @click="addItem('il')" class="neo-btn neo-btn neo-btn-secondary touch-target-optimized touch-target-optimized" :disabled="!selectedUlke">
+                    <button @click="addItem('il')" class="inline-flex items-center justify-center p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50" :disabled="!selectedUlke">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4">
                             </path>
                         </svg>
                     </button>
                 </div>
-                <div id="list-iller" class="text-sm text-gray-700">Ülke seçin</div>
+                <div id="list-iller" class="text-sm text-gray-700 dark:text-gray-300">Ülke seçin</div>
             </div>
 
             <!-- İlçeler - Features Theme (Mor) -->
-            <div class="neo-card">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all p-6">
                 <div class="flex justify-between items-center mb-4">
                     <h2 class="text-lg font-semibold text-purple-800 dark:text-purple-200 flex items-center">
                         <div class="w-10 h-10 bg-purple-500 rounded-lg flex items-center justify-center mr-2">
@@ -196,18 +196,18 @@
                         </div>
                         İlçeler
                     </h2>
-                    <button @click="addItem('ilce')" class="neo-btn neo-btn neo-btn-secondary touch-target-optimized touch-target-optimized" :disabled="!selectedIl">
+                    <button @click="addItem('ilce')" class="inline-flex items-center justify-center p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50" :disabled="!selectedIl">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4">
                             </path>
                         </svg>
                     </button>
                 </div>
-                <div id="list-ilceler" class="text-sm text-gray-700">İl seçin</div>
+                <div id="list-ilceler" class="text-sm text-gray-700 dark:text-gray-300">İl seçin</div>
             </div>
 
             <!-- Mahalleler - Media Theme (Turuncu) -->
-            <div class="neo-card">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all p-6">
                 <div class="flex justify-between items-center mb-4">
                     <h2 class="text-lg font-semibold text-orange-800 dark:text-orange-200 flex items-center">
                         <div class="w-10 h-10 bg-orange-500 rounded-lg flex items-center justify-center mr-2">
@@ -221,27 +221,27 @@
                         </div>
                         Mahalleler
                     </h2>
-                    <button @click="addItem('mahalle')" class="neo-btn neo-btn neo-btn-secondary touch-target-optimized touch-target-optimized" :disabled="!selectedIlce">
+                    <button @click="addItem('mahalle')" class="inline-flex items-center justify-center p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50" :disabled="!selectedIlce">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4">
                             </path>
                         </svg>
                     </button>
                 </div>
-                <div id="list-mahalleler" class="text-sm text-gray-700">İlçe seçin</div>
+                <div id="list-mahalleler" class="text-sm text-gray-700 dark:text-gray-300">İlçe seçin</div>
             </div>
         </div>
 
         <!-- İstatistikler Modal -->
         <div x-show="showStatsModal" x-transition
             class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div class="neo-card p-6 w-full max-w-4xl mx-4 max-h-96 overflow-y-auto">
-                <h3 class="text-lg font-semibold mb-4">📊 Adres İstatistikleri</h3>
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-2xl p-6 w-full max-w-4xl mx-4 max-h-96 overflow-y-auto">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">📊 Adres İstatistikleri</h3>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="space-y-4">
-                        <h4 class="font-medium text-gray-800">Genel İstatistikler</h4>
-                        <div class="space-y-2">
+                        <h4 class="font-medium text-gray-800 dark:text-gray-200">Genel İstatistikler</h4>
+                        <div class="space-y-2 text-gray-700 dark:text-gray-300">
                             <div class="flex justify-between">
                                 <span>Toplam Ülke:</span>
                                 <span class="font-semibold" x-text="ulkeler.length">0</span>
@@ -262,8 +262,8 @@
                     </div>
 
                     <div class="space-y-4">
-                        <h4 class="font-medium text-gray-800">En Popüler</h4>
-                        <div class="space-y-2">
+                        <h4 class="font-medium text-gray-800 dark:text-gray-200">En Popüler</h4>
+                        <div class="space-y-2 text-gray-700 dark:text-gray-300">
                             <div class="flex justify-between">
                                 <span>En Çok İlçeli İl:</span>
                                 <span class="font-semibold">Muğla</span>
@@ -277,7 +277,7 @@
                 </div>
 
                 <div class="flex justify-end mt-6">
-                    <button @click="showStatsModal = false" class="neo-btn neo-btn neo-btn-secondary touch-target-optimized touch-target-optimized">
+                    <button @click="showStatsModal = false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200">
                         Kapat
                     </button>
                 </div>
@@ -287,19 +287,20 @@
         <!-- Add/Edit Modal -->
         <div x-show="showAddModal" x-transition
             class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div class="neo-card p-6 w-full max-w-md mx-4">
-                <h3 class="text-lg font-semibold mb-4" x-text="editingItem ? 'Düzenle' : 'Yeni Ekle'"></h3>
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-2xl p-6 w-full max-w-md mx-4">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4" x-text="editingItem ? 'Düzenle' : 'Yeni Ekle'"></h3>
 
                 <form name="addressForm" @submit.prevent="saveItem()" novalidate>
-                    <div class="neo-form-group">
-                        <label class="admin-label">
+                    @csrf
+                    <div class="space-y-2 mb-4">
+                        <label for="address_name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             <span x-text="getFieldLabel()"></span>
                         </label>
-                        <input type="text" name="name" x-model="formData.name" class="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200" required>
+                        <input type="text" id="address_name" name="name" x-model="formData.name" class="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200" required>
                     </div>
 
-                    <div class="neo-form-group" x-show="formData.type === 'il'">
-                        <label class="admin-label">Ülke</label>
+                    <div class="space-y-2 mb-4" x-show="formData.type === 'il'">
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Ülke</label>
                         <select style="color-scheme: light dark;" name="parent_id" x-model="formData.parent_id" class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 transition-all duration-200"
                             :required="formData.type === 'il'">
                             <option value="">Ülke Seçin</option>
@@ -309,8 +310,8 @@
                         </select>
                     </div>
 
-                    <div class="neo-form-group" x-show="formData.type === 'ilce'">
-                        <label class="admin-label">İl</label>
+                    <div class="space-y-2 mb-4" x-show="formData.type === 'ilce'">
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">İl</label>
                         <select style="color-scheme: light dark;" name="parent_id" x-model="formData.parent_id" class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 transition-all duration-200"
                             :required="formData.type === 'ilce'">
                             <option value="">İl Seçin</option>
@@ -320,8 +321,8 @@
                         </select>
                     </div>
 
-                    <div class="neo-form-group" x-show="formData.type === 'mahalle'">
-                        <label class="admin-label">İlçe</label>
+                    <div class="space-y-2 mb-4" x-show="formData.type === 'mahalle'">
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">İlçe</label>
                         <select style="color-scheme: light dark;" name="parent_id" x-model="formData.parent_id" class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 transition-all duration-200"
                             :required="formData.type === 'mahalle'">
                             <option value="">İlçe Seçin</option>
@@ -332,10 +333,10 @@
                     </div>
 
                     <div class="flex justify-end space-x-3">
-                        <button type="button" @click="closeModal()" class="neo-btn neo-btn neo-btn-secondary touch-target-optimized touch-target-optimized">
+                        <button type="button" @click="closeModal()" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200">
                             İptal
                         </button>
-                        <button type="submit" class="neo-btn neo-btn neo-btn-primary touch-target-optimized touch-target-optimized">
+                        <button type="submit" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200">
                             <span x-text="editingItem ? 'Güncelle' : 'Kaydet'"></span>
                         </button>
                     </div>

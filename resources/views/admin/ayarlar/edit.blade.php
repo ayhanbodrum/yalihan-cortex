@@ -3,40 +3,42 @@
 @section('title', 'Ayar Düzenle')
 
 @section('content')
-    <div class="neo-container max-w-4xl mx-auto">
-        <div class="neo-header">
-            <div class="neo-header-content">
-                <h1 class="neo-title">Ayar Düzenle</h1>
-                <p class="neo-subtitle">Sistem ayarlarını yapılandırın</p>
-            </div>
-            <div class="neo-header-actions">
-                <a href="{{ route('admin.ayarlar.index') }}" class="neo-btn neo-btn neo-btn-secondary touch-target-optimized touch-target-optimized">Geri Dön</a>
+    <div class="container max-w-4xl mx-auto px-4 py-6">
+        <div class="mb-8">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Ayar Düzenle</h1>
+                    <p class="text-gray-600 dark:text-gray-400 mt-1">Sistem ayarlarını yapılandırın</p>
+                </div>
+                <div>
+                    <a href="{{ route('admin.ayarlar.index') }}" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200">Geri Dön</a>
+                </div>
             </div>
         </div>
 
-        <div class="neo-card">
-            <div class="neo-card-header">
-                <h2 class="neo-card-title">Sistem Ayarları</h2>
-                <p class="neo-card-subtitle">Genel sistem konfigürasyonu</p>
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all">
+            <div class="border-b border-gray-200 dark:border-gray-700 px-6 py-4">
+                <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Sistem Ayarları</h2>
+                <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Genel sistem konfigürasyonu</p>
             </div>
-            <div class="neo-card-body">
+            <div class="p-6">
                 <form action="{{ route('admin.ayarlar.update', $ayar->id) }}" method="POST" class="space-y-6">
                     @csrf
                     @method('PUT')
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="neo-form-group">
-                            <label for="key" class="neo-label">Ayar Anahtarı <span class="text-red-500">*</span></label>
-                            <input id="key" name="key" type="text" class="w-full px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-black dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200 @error('key') neo-input-error @enderror" 
+                        <div class="space-y-2">
+                            <label for="key" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Ayar Anahtarı <span class="text-red-500">*</span></label>
+                            <input id="key" name="key" type="text" class="w-full px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-black dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200 @error('key') border-red-500 @enderror" 
                                 value="{{ old('key', $ayar->key) }}" required placeholder="Ayar anahtarını girin">
                             @error('key')
-                                <div class="neo-error-message">{{ $message }}</div>
+                                <div class="text-sm text-red-600 dark:text-red-400 mt-1">{{ $message }}</div>
                             @enderror
                         </div>
 
-                        <div class="neo-form-group">
-                            <label for="type" class="neo-label">Veri Tipi <span class="text-red-500">*</span></label>
-                            <select style="color-scheme: light dark;" id="type" name="type" class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 @error('type') w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-black dark:text-white focus:ring-2 focus:ring-blue-500-error @enderror transition-all duration-200" required>
+                        <div class="space-y-2">
+                            <label for="type" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Veri Tipi <span class="text-red-500">*</span></label>
+                            <select style="color-scheme: light dark;" id="type" name="type" class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 @error('type') border-red-500 @enderror transition-all duration-200" required>
                                 <option value="">Tip Seçin</option>
                                 <option value="string" {{ old('type', $ayar->type) == 'string' ? 'selected' : '' }}>Metin</option>
                                 <option value="integer" {{ old('type', $ayar->type) == 'integer' ? 'selected' : '' }}>Sayı</option>
@@ -44,64 +46,64 @@
                                 <option value="json" {{ old('type', $ayar->type) == 'json' ? 'selected' : '' }}>JSON</option>
                             </select>
                             @error('type')
-                                <div class="neo-error-message">{{ $message }}</div>
+                                <div class="text-sm text-red-600 dark:text-red-400 mt-1">{{ $message }}</div>
                             @enderror
                         </div>
                     </div>
 
-                    <div class="neo-form-group">
-                        <label for="value" class="neo-label">Değer <span class="text-red-500">*</span></label>
-                        <textarea id="value" name="value" class="w-full px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-black dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200 resize-vertical @error('value') neo-input-error @enderror" 
+                    <div class="space-y-2">
+                        <label for="value" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Değer <span class="text-red-500">*</span></label>
+                        <textarea id="value" name="value" class="w-full px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-black dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200 resize-vertical @error('value') border-red-500 @enderror" 
                             rows="4" placeholder="Ayar değerini girin">{{ old('value', $ayar->value) }}</textarea>
                         @error('value')
-                            <div class="neo-error-message">{{ $message }}</div>
+                            <div class="text-sm text-red-600 dark:text-red-400 mt-1">{{ $message }}</div>
                         @enderror
                     </div>
 
-                    <div class="neo-form-group">
-                        <label for="description" class="neo-label">Açıklama</label>
-                        <textarea id="description" name="description" class="w-full px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-black dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200 resize-vertical @error('description') neo-input-error @enderror" 
+                    <div class="space-y-2">
+                        <label for="description" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Açıklama</label>
+                        <textarea id="description" name="description" class="w-full px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-black dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200 resize-vertical @error('description') border-red-500 @enderror" 
                             rows="3" placeholder="Ayar hakkında açıklama">{{ old('description', $ayar->description) }}</textarea>
                         @error('description')
-                            <div class="neo-error-message">{{ $message }}</div>
+                            <div class="text-sm text-red-600 dark:text-red-400 mt-1">{{ $message }}</div>
                         @enderror
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="neo-form-group">
-                            <label for="group" class="neo-label">Grup</label>
-                            <input id="group" name="group" type="text" class="w-full px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-black dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200 @error('group') neo-input-error @enderror" 
+                        <div class="space-y-2">
+                            <label for="group" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Grup</label>
+                            <input id="group" name="group" type="text" class="w-full px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-black dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200 @error('group') border-red-500 @enderror" 
                                 value="{{ old('group', $ayar->group) }}" placeholder="Ayar grubu">
                             @error('group')
-                                <div class="neo-error-message">{{ $message }}</div>
+                                <div class="text-sm text-red-600 dark:text-red-400 mt-1">{{ $message }}</div>
                             @enderror
                         </div>
 
-                        <div class="neo-form-group">
-                            <label for="order" class="neo-label">Sıra</label>
-                            <input id="order" name="order" type="number" class="w-full px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-black dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200 @error('order') neo-input-error @enderror" 
+                        <div class="space-y-2">
+                            <label for="order" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Sıra</label>
+                            <input id="order" name="order" type="number" class="w-full px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-black dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200 @error('order') border-red-500 @enderror" 
                                 value="{{ old('order', $ayar->order ?? 0) }}" min="0" placeholder="0">
                             @error('order')
-                                <div class="neo-error-message">{{ $message }}</div>
+                                <div class="text-sm text-red-600 dark:text-red-400 mt-1">{{ $message }}</div>
                             @enderror
                         </div>
                     </div>
 
-                    <div class="neo-form-group">
+                    <div class="space-y-2">
                         <div class="flex items-center space-x-3">
                             <input type="checkbox" name="is_public" value="1" id="is_public" class="w-5 h-5 text-blue-600 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 rounded focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-all duration-200 cursor-pointer"
                                 {{ old('is_public', $ayar->is_public ?? false) ? 'checked' : '' }}>
-                            <label for="is_public" class="w-5 h-5 text-blue-600 bg-gray-50 dark:bg-gray-800 border-gray-300 dark:border-gray-600 rounded focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-all duration-200 cursor-pointer-label">Herkese açık ayar</label>
+                            <label for="is_public" class="text-sm font-medium text-gray-700 dark:text-gray-300 cursor-pointer">Herkese açık ayar</label>
                         </div>
                         @error('is_public')
-                            <div class="neo-error-message">{{ $message }}</div>
+                            <div class="text-sm text-red-600 dark:text-red-400 mt-1">{{ $message }}</div>
                         @enderror
                     </div>
 
                     <div class="flex justify-end space-x-4 pt-6 border-t border-gray-200 dark:border-gray-700">
-                        <a href="{{ route('admin.ayarlar.index') }}" class="neo-btn neo-btn neo-btn-secondary touch-target-optimized touch-target-optimized">İptal</a>
-                        <button type="submit" class="neo-btn neo-btn neo-btn-primary touch-target-optimized touch-target-optimized">
-                            <i class="neo-icon neo-icon-save mr-2"></i>Güncelle
+                        <a href="{{ route('admin.ayarlar.index') }}" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200">İptal</a>
+                        <button type="submit" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 shadow-md hover:shadow-lg">
+                            <i class="fas fa-save"></i>Güncelle
                         </button>
                     </div>
                 </form>

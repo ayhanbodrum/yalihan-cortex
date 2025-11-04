@@ -3,35 +3,35 @@
 @section('title', 'Kiralama Takvimi - ' . $ilan->baslik)
 
 @section('content')
-    <div class="neo-content p-6">
+    <div class="container mx-auto px-6 py-6">
         <!-- Page Header -->
-        <div class="neo-page-header mb-8">
+        <div class="mb-8">
             <div class="flex items-center justify-between">
                 <div>
                     <h1 class="text-3xl font-bold text-gray-900">Kiralama Takvimi</h1>
                     <p class="text-gray-600 mt-2">{{ $ilan->baslik }} - Rezervasyon yönetimi</p>
                 </div>
                 <div class="flex space-x-3">
-                    <button onclick="oncekiAy()" class="neo-btn neo-btn-secondary touch-target-optimized touch-target-optimized">
+                    <button onclick="oncekiAy()" class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-sm">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                         </svg>
                         Önceki Ay
                     </button>
-                    <button onclick="sonrakiAy()" class="neo-btn neo-btn-secondary touch-target-optimized touch-target-optimized">
+                    <button onclick="sonrakiAy()" class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-sm">
                         Sonraki Ay
                         <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                         </svg>
                     </button>
-                    <button onclick="buguneGit()" class="neo-btn neo-btn-primary touch-target-optimized touch-target-optimized">
+                    <button onclick="buguneGit()" class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>
                         Bugüne Git
                     </button>
-                    <button onclick="buAyaGit()" class="neo-btn neo-btn-primary touch-target-optimized touch-target-optimized">
+                    <button onclick="buAyaGit()" class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg">
                         Bu Aya Git
                     </button>
                 </div>
@@ -59,12 +59,12 @@
                     </div>
 
                     <div class="flex space-x-3">
-                        <button onclick="topluGuncelleModal()" class="neo-btn neo-btn neo-btn-secondary touch-target-optimized touch-target-optimized">
+                        <button onclick="topluGuncelleModal()" class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-sm">
                             <i class="fas fa-edit mr-2"></i>
                             Toplu Güncelle
                         </button>
 
-                        <button onclick="rezervasyonEkleModal()" class="neo-btn neo-btn neo-btn-primary touch-target-optimized touch-target-optimized">
+                        <button onclick="rezervasyonEkleModal()" class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg">
                             <i class="fas fa-plus mr-2"></i>
                             Rezervasyon Ekle
                         </button>
@@ -76,7 +76,7 @@
                     <div class="flex flex-wrap items-center justify-between gap-4">
                         <!-- Ay/Yıl Seçimi -->
                         <div class="flex items-center space-x-4">
-                            <button onclick="oncekiAy()" class="neo-btn neo-btn neo-btn-secondary touch-target-optimized touch-target-optimized">
+                            <button onclick="oncekiAy()" class="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-sm">
                                 <i class="fas fa-chevron-left"></i>
                             </button>
 
@@ -84,17 +84,17 @@
                                 {{ \Carbon\Carbon::now()->format('F Y') }}
                             </h2>
 
-                            <button onclick="sonrakiAy()" class="neo-btn neo-btn neo-btn-secondary touch-target-optimized touch-target-optimized">
+                            <button onclick="sonrakiAy()" class="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-sm">
                                 <i class="fas fa-chevron-right"></i>
                             </button>
                         </div>
 
                         <!-- Hızlı Navigasyon -->
                         <div class="flex items-center space-x-2">
-                            <button onclick="buguneGit()" class="neo-btn neo-btn-outline touch-target-optimized touch-target-optimized">
+                            <button onclick="buguneGit()" class="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-sm">
                                 Bugün
                             </button>
-                            <button onclick="buAyaGit()" class="neo-btn neo-btn-outline touch-target-optimized touch-target-optimized">
+                            <button onclick="buAyaGit()" class="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-sm">
                                 Bu Ay
                             </button>
                         </div>
@@ -230,10 +230,10 @@
                         </div>
 
                         <div class="flex justify-end space-x-3 mt-6">
-                            <button onclick="topluGuncelleModalKapat()" class="neo-btn neo-btn neo-btn-secondary touch-target-optimized touch-target-optimized">
+                            <button onclick="topluGuncelleModalKapat()" class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-sm">
                                 İptal
                             </button>
-                            <button onclick="topluGuncelleUygula()" class="neo-btn neo-btn neo-btn-primary touch-target-optimized touch-target-optimized">
+                            <button onclick="topluGuncelleUygula()" class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg">
                                 Uygula
                             </button>
                         </div>

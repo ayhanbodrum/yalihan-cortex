@@ -21,19 +21,19 @@
                 <p class="text-lg text-gray-600 mt-2">Sistem sayfalarının real-time analiz ve izleme merkezi</p>
             </div>
             <div class="flex gap-3">
-                <button onclick="startAnalysis()" id="analyzeBtn" class="neo-btn neo-btn neo-btn-primary touch-target-optimized">
+                <button onclick="startAnalysis()" id="analyzeBtn" class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed">
                     <i class="fas fa-play mr-2" id="analyzeIcon"></i>
                     <span id="analyzeText">Analizi Başlat</span>
                 </button>
-                <button onclick="refreshData()" id="refreshBtn" class="neo-btn neo-btn-outline touch-target-optimized">
+                <button onclick="refreshData()" id="refreshBtn" class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
                     <i class="fas fa-sync-alt mr-2" id="refreshIcon"></i>
                     <span id="refreshText">Yenile</span>
                 </button>
-                <button onclick="testModal()" class="neo-btn neo-btn-warning touch-target-optimized">
+                <button onclick="testModal()" class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-amber-600 to-orange-600 rounded-lg hover:from-amber-700 hover:to-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 transition-all duration-200 shadow-md hover:shadow-lg">
                     <i class="fas fa-bug mr-2"></i>
                     Test Modal
                 </button>
-                <a href="{{ route('admin.dashboard.index') }}" class="neo-btn neo-btn neo-btn-secondary touch-target-optimized">
+                <a href="{{ route('admin.dashboard.index') }}" class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-sm">
                     <i class="fas fa-arrow-left mr-2"></i>
                     Dashboard'a Dön
                 </a>
@@ -45,7 +45,7 @@
         <!-- Real-time Status Cards -->
         <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 mb-8">
             <!-- Total Pages -->
-            <div class="neo-card p-6">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-200 p-6">
                 <div class="flex items-center">
                     <div
                         class="w-12 h-12 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
@@ -63,7 +63,7 @@
             </div>
 
             <!-- High Score Pages -->
-            <div class="neo-card p-6">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-200 p-6">
                 <div class="flex items-center">
                     <div
                         class="w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-600 rounded-lg flex items-center justify-center">
@@ -81,7 +81,7 @@
             </div>
 
             <!-- Medium Score Pages -->
-            <div class="neo-card p-6">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-200 p-6">
                 <div class="flex items-center">
                     <div
                         class="w-12 h-12 bg-gradient-to-r from-orange-500 to-yellow-600 rounded-lg flex items-center justify-center">
@@ -99,7 +99,7 @@
             </div>
 
             <!-- Average Score -->
-            <div class="neo-card p-6">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-200 p-6">
                 <div class="flex items-center">
                     <div
                         class="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-600 rounded-lg flex items-center justify-center">
@@ -118,7 +118,7 @@
         </div>
 
         <!-- Real-time Analysis Controls -->
-        <div class="neo-card p-6 mb-8">
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6 mb-8">
             <div class="flex items-center justify-between mb-6">
                 <div>
                     <h2 class="text-2xl font-bold text-gray-800 flex items-center">
@@ -159,19 +159,19 @@
 
             <!-- Quick Actions -->
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <button onclick="analyzeCategory('AI Sistemi')" class="neo-btn neo-btn-outline text-left">
+                <button onclick="analyzeCategory('AI Sistemi')" class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-sm text-left">
                     <i class="fas fa-robot text-blue-500 mr-2"></i>
                     AI Sistemi Analizi
                 </button>
-                <button onclick="analyzeCategory('İlan Yönetimi')" class="neo-btn neo-btn-outline text-left">
+                <button onclick="analyzeCategory('İlan Yönetimi')" class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-sm text-left">
                     <i class="fas fa-home text-green-500 mr-2"></i>
                     İlan Yönetimi Analizi
                 </button>
-                <button onclick="analyzeCategory('CRM')" class="neo-btn neo-btn-outline text-left">
+                <button onclick="analyzeCategory('CRM')" class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-sm text-left">
                     <i class="fas fa-users text-indigo-500 mr-2"></i>
                     CRM Analizi
                 </button>
-                <button onclick="generateReport()" class="neo-btn neo-btn-outline text-left">
+                <button onclick="generateReport()" class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-sm text-left">
                     <i class="fas fa-file-pdf text-red-500 mr-2"></i>
                     Rapor Oluştur
                 </button>
@@ -179,7 +179,7 @@
         </div>
 
         <!-- Analysis Results -->
-        <div class="neo-card p-6 mb-8">
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6 mb-8">
             <div class="flex items-center justify-between mb-6">
                 <div>
                     <h2 class="text-2xl font-bold text-gray-800 flex items-center">
@@ -226,7 +226,7 @@
         </div>
 
         <!-- Summary Statistics -->
-        <div class="neo-card p-6">
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
             <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
                 <i class="fas fa-chart-bar text-green-500 mr-3"></i>
                 Özet İstatistikler
@@ -380,23 +380,13 @@
 @push('styles')
     <style>
         .neo-analyzer-category {
-            background: linear-gradient(135deg, #fafbfc, #f3f4f6);
-            border: 1px solid #e5e7eb;
-            border-radius: 1rem;
-            padding: 1.5rem;
-            transition: all 0.3s ease;
-        }
-
-        .neo-analyzer-category:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-            border-color: #d1d5db;
+            @apply bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700;
+            @apply border border-gray-200 dark:border-gray-600 rounded-xl p-6;
+            @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-lg;
         }
 
         .neo-analyzer-category h3 {
-            border-bottom: 2px solid #e5e7eb;
-            padding-bottom: 0.75rem;
-            margin-bottom: 1rem;
+            @apply border-b-2 border-gray-200 dark:border-gray-600 pb-3 mb-4;
         }
 
         /* Toast Notification Styles */

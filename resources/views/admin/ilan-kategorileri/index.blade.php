@@ -9,17 +9,19 @@
     emlak')
 
 @section('content')
-    <div class="neo-container" x-data="kategorilerManager()">
-        <div class="neo-header">
-            <div class="neo-header-content">
-                <h1 class="neo-title">İlan Kategorileri</h1>
-                <p class="neo-subtitle">Kategori yönetimi ve düzenleme</p>
-            </div>
-            <div class="neo-header-actions">
-                <a href="{{ route('admin.ilan-kategorileri.create') }}" class="neo-btn neo-btn-primary">
-                    <i class="neo-icon neo-icon-plus"></i>
-                    Yeni Kategori
-                </a>
+    <div class="container mx-auto px-4 py-6" x-data="kategorilerManager()">
+        <div class="mb-8">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">İlan Kategorileri</h1>
+                    <p class="text-gray-600 dark:text-gray-400">Kategori yönetimi ve düzenleme</p>
+                </div>
+                <div>
+                    <a href="{{ route('admin.ilan-kategorileri.create') }}" class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                        Yeni Kategori
+                    </a>
+                </div>
             </div>
         </div>
 
@@ -42,45 +44,47 @@
             </div>
         </div>
 
-        <div class="neo-card">
-            <div class="neo-card-header">
-                <h2 class="neo-card-title">Kategori Listesi</h2>
-                <div class="neo-card-actions">
-                    <a href="{{ route('admin.ilan-kategorileri.export') }}" class="neo-btn neo-btn-secondary">
-                        <i class="neo-icon neo-icon-download"></i>
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden">
+            <div class="border-b border-gray-200 dark:border-gray-700 px-6 py-4 flex items-center justify-between">
+                <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Kategori Listesi</h2>
+                <div>
+                    <a href="{{ route('admin.ilan-kategorileri.export') }}" class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-sm">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
                         Dışa Aktar
                     </a>
                 </div>
             </div>
 
-            <div class="neo-card-body">
+            <div class="p-6">
 
                 <!-- Toplu İşlemler Toolbar -->
-                <div x-show="selectedItems.length > 0" x-transition class="neo-bulk-actions-toolbar">
-                    <div class="neo-bulk-actions-info">
-                        <span x-text="selectedItems.length"></span> öğe seçildi
-                    </div>
-                    <div class="neo-bulk-actions-buttons touch-target-optimized touch-target-optimized">
-                        <button type="button" @click="bulkAction('activate')" class="neo-btn neo-btn-sm neo-btn-success touch-target-optimized touch-target-optimized"
-                            :disabled="processing" aria-label="Seçili kategorileri etkinleştir">
-                            <i class="neo-icon neo-icon-check"></i>
-                            Etkinleştir
-                        </button>
-                        <button type="button" @click="bulkAction('deactivate')" class="neo-btn neo-btn-sm neo-btn-warning touch-target-optimized touch-target-optimized"
-                            :disabled="processing" aria-label="Seçili kategorileri pasifleştir">
-                            <i class="neo-icon neo-icon-pause"></i>
-                            Pasifleştir
-                        </button>
-                        <button type="button" @click="bulkAction('delete')" class="neo-btn neo-btn-sm neo-btn-danger touch-target-optimized touch-target-optimized"
-                            :disabled="processing" aria-label="Seçili kategorileri sil">
-                            <i class="neo-icon neo-icon-trash"></i>
-                            Sil
-                        </button>
-                        <button type="button" @click="clearSelection()" class="neo-btn neo-btn-sm neo-btn neo-btn-secondary touch-target-optimized touch-target-optimized"
-                            aria-label="Seçimi temizle">
-                            <i class="neo-icon neo-icon-x"></i>
-                            Temizle
-                        </button>
+                <div x-show="selectedItems.length > 0" x-transition class="mb-4 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800/30 rounded-lg">
+                    <div class="flex items-center justify-between">
+                        <div class="text-sm font-medium text-blue-900 dark:text-blue-100">
+                            <span x-text="selectedItems.length"></span> öğe seçildi
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button type="button" @click="bulkAction('activate')" class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-white bg-gradient-to-r from-green-600 to-emerald-600 rounded-lg hover:from-green-700 hover:to-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all duration-200 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                                :disabled="processing" aria-label="Seçili kategorileri etkinleştir">
+                                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                Etkinleştir
+                            </button>
+                            <button type="button" @click="bulkAction('deactivate')" class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-white bg-gradient-to-r from-amber-600 to-orange-600 rounded-lg hover:from-amber-700 hover:to-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 transition-all duration-200 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                                :disabled="processing" aria-label="Seçili kategorileri pasifleştir">
+                                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                Pasifleştir
+                            </button>
+                            <button type="button" @click="bulkAction('delete')" class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-white bg-gradient-to-r from-red-600 to-pink-600 rounded-lg hover:from-red-700 hover:to-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-all duration-200 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                                :disabled="processing" aria-label="Seçili kategorileri sil">
+                                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                Sil
+                            </button>
+                            <button type="button" @click="clearSelection()" class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-sm"
+                                aria-label="Seçimi temizle">
+                                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                Temizle
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -186,8 +190,8 @@
                                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm">
                                             <div class="flex items-center justify-end space-x-2">
                                                 <a href="{{ route('admin.ilan-kategorileri.edit', $kategori) }}"
-                                                   class="neo-btn neo-btn-sm neo-btn-secondary">
-                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                   class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-sm">
+                                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                               d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                                     </svg>
@@ -200,8 +204,8 @@
                                                       class="inline-block">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="neo-btn neo-btn-sm neo-btn-danger" :disabled="processing">
-                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <button type="submit" class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-white bg-gradient-to-r from-red-600 to-pink-600 rounded-lg hover:from-red-700 hover:to-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-all duration-200 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed" :disabled="processing">
+                                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                                   d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                                         </svg>
@@ -230,7 +234,7 @@
                             Filtreleri değiştirin veya yeni bir kategori oluşturun.
                         </p>
                         <div class="mt-6">
-                            <a href="{{ route('admin.ilan-kategorileri.create') }}" class="neo-btn neo-btn-primary">
+                            <a href="{{ route('admin.ilan-kategorileri.create') }}" class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg">
                                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                                 </svg>

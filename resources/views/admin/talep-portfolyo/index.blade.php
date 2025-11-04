@@ -6,12 +6,12 @@
     akıllı şekilde analiz eder ve önerir.')
 @section('meta_keywords', 'talep, portföy, eşleştirme, analiz, yapay zeka, emlak')
 @section('content')
-    <div class="neo-container">
+    <div class="container mx-auto px-4 py-6">
         <!-- Başlık ve aksiyonlar - Geliştirilmiş Header -->
         <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 mb-8">
             <div class="flex items-start gap-4">
-                <div class="neo-avatar neo-avatar-lg bg-gradient-to-br from-blue-500 to-purple-600 text-white">
-                    <i class="neo-icon neo-icon-brain text-2xl"></i>
+                <div class="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 text-white rounded-2xl shadow-md">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
                 </div>
                 <div>
                     <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">Talep-Portföy Eşleştirme</h1>
@@ -28,16 +28,16 @@
                 </div>
             </div>
             <div class="flex items-center gap-3">
-                <button type="button" class="neo-btn neo-btn-ghost touch-target-optimized touch-target-optimized" onclick="window.location.reload()">
-                    <i class="neo-icon neo-icon-refresh-cw"></i>
+                <button type="button" class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-sm" onclick="window.location.reload()">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
                     Yenile
                 </button>
-                <button type="button" class="neo-btn neo-btn neo-btn-secondary touch-target-optimized touch-target-optimized" onclick="cacheTemizle()">
-                    <i class="neo-icon neo-icon-trash-2"></i>
+                <button type="button" class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-sm" onclick="cacheTemizle()">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                     Cache Temizle
                 </button>
-                <button type="button" class="neo-btn neo-btn-gradient touch-target-optimized touch-target-optimized" onclick="topluAnaliz()">
-                    <i class="neo-icon neo-icon-zap"></i>
+                <button type="button" class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-indigo-600 to-purple-600 rounded-lg hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200 shadow-md hover:shadow-lg animate-pulse" onclick="topluAnaliz()">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
                     Toplu AI Analiz
                 </button>
             </div>
@@ -47,10 +47,10 @@
         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
             <!-- Toplam Talep -->
             <div
-                class="neo-card bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 border-blue-200 dark:border-blue-800/30">
+                class="p-6 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 border border-blue-200 dark:border-blue-800/30 rounded-xl shadow-sm hover:shadow-md transition-all duration-200">
                 <div class="flex items-center justify-between mb-4">
                     <div class="p-3 bg-blue-500 rounded-xl text-white shadow-md">
-                        <i class="neo-icon neo-icon-users text-xl"></i>
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
                     </div>
                     <div class="text-right">
                         <div class="text-2xl font-bold text-blue-700 dark:text-blue-300">
@@ -66,10 +66,10 @@
 
             <!-- Aktif Talep -->
             <div
-                class="neo-card bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 border-green-200 dark:border-green-800/30">
+                class="p-6 bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 border border-green-200 dark:border-green-800/30 rounded-xl shadow-sm hover:shadow-md transition-all duration-200">
                 <div class="flex items-center justify-between mb-4">
                     <div class="p-3 bg-green-500 rounded-xl text-white shadow-md">
-                        <i class="neo-icon neo-icon-check-circle text-xl"></i>
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                     </div>
                     <div class="text-right">
                         <div class="text-2xl font-bold text-green-700 dark:text-green-300">
@@ -85,10 +85,10 @@
 
             <!-- Acil Talep -->
             <div
-                class="neo-card bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-900/20 dark:to-amber-800/20 border-amber-200 dark:border-amber-800/30">
+                class="p-6 bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-900/20 dark:to-amber-800/20 border border-amber-200 dark:border-amber-800/30 rounded-xl shadow-sm hover:shadow-md transition-all duration-200">
                 <div class="flex items-center justify-between mb-4">
                     <div class="p-3 bg-amber-500 rounded-xl text-white shadow-md">
-                        <i class="neo-icon neo-icon-alert-triangle text-xl"></i>
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
                     </div>
                     <div class="text-right">
                         <div class="text-2xl font-bold text-amber-700 dark:text-amber-300">
@@ -104,10 +104,10 @@
 
             <!-- Toplam Portföy -->
             <div
-                class="neo-card bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 border-purple-200 dark:border-purple-800/30">
+                class="p-6 bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 border border-purple-200 dark:border-purple-800/30 rounded-xl shadow-sm hover:shadow-md transition-all duration-200">
                 <div class="flex items-center justify-between mb-4">
                     <div class="p-3 bg-purple-500 rounded-xl text-white shadow-md">
-                        <i class="neo-icon neo-icon-home text-xl"></i>
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
                     </div>
                     <div class="text-right">
                         <div class="text-2xl font-bold text-purple-700 dark:text-purple-300">
@@ -129,7 +129,7 @@
                 <div class="flex items-center justify-between mb-6">
                     <div class="flex items-center gap-4">
                         <div class="p-4 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl shadow-md">
-                            <i class="neo-icon neo-icon-cpu text-2xl text-white"></i>
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/></svg>
                         </div>
                         <div>
                             <h3 class="text-xl font-bold text-gray-900 dark:text-white">AI Servis Durumu</h3>
@@ -142,8 +142,8 @@
                             <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
                             <span class="text-sm font-medium text-green-700 dark:text-green-300">Sistem Aktif</span>
                         </div>
-                        <button class="neo-btn neo-btn neo-btn-secondary touch-target-optimized touch-target-optimized" onclick="aiDurumKontrol()">
-                            <i class="neo-icon neo-icon-refresh-cw"></i>
+                        <button class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-sm" onclick="aiDurumKontrol()">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
                             Durumu Kontrol Et
                         </button>
                     </div>
@@ -153,7 +153,7 @@
                     class="rounded-xl p-4 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border border-blue-200 dark:border-blue-800/30">
                     <div class="flex items-center gap-3 text-blue-700 dark:text-blue-300">
                         <div class="animate-spin">
-                            <i class="neo-icon neo-icon-loader"></i>
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
                         </div>
                         <div class="font-medium">AI servis durumu kontrol ediliyor...</div>
                     </div>
@@ -187,7 +187,7 @@
                 <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
                     <div class="flex items-center gap-4">
                         <div class="p-3 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl text-white">
-                            <i class="neo-icon neo-icon-list text-xl"></i>
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
                         </div>
                         <div>
                             <h3 class="text-xl font-bold text-gray-900 dark:text-white">Aktif Talepler</h3>
@@ -197,11 +197,11 @@
                     <div class="flex items-center gap-3">
                         <div class="flex items-center gap-2 px-4 py-2.5 bg-gray-100 dark:bg-gray-800 rounded-lg">
                             <input type="checkbox" id="selectAll" class="w-5 h-5 text-blue-600 bg-gray-50 dark:bg-gray-800 border-gray-300 dark:border-gray-600 rounded focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-all duration-200 cursor-pointer" onchange="toggleSelectAll()">
-                            <label for="selectAll" class="text-sm font-medium text-gray-900 dark:text-white">Tümünü
+                            <label for="selectAll" class="text-sm font-medium text-gray-900 dark:text-white cursor-pointer">Tümünü
                                 Seç</label>
                         </div>
-                        <button class="neo-btn neo-btn-ghost touch-target-optimized touch-target-optimized" onclick="window.location.reload()">
-                            <i class="neo-icon neo-icon-refresh-cw"></i>
+                        <button class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-sm" onclick="window.location.reload()">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
                             Listele
                         </button>
                     </div>
@@ -250,8 +250,8 @@
                                                 <div class="font-medium text-gray-900 dark:text-white">
                                                     {{ $talep->kisi->ad ?? '—' }} {{ $talep->kisi->soyad ?? '' }}
                                                 </div>
-                                                <div class="text-sm text-gray-600 dark:text-gray-400">
-                                                    <i class="neo-icon neo-icon-phone w-3 h-3"></i>
+                                                <div class="text-sm text-gray-600 dark:text-gray-400 flex items-center gap-1">
+                                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
                                                     {{ $talep->kisi->telefon ?? '—' }}
                                                 </div>
                                                 <div class="text-xs text-gray-500 dark:text-gray-500 mt-1">
@@ -273,7 +273,7 @@
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <span
                                             class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300">
-                                            <i class="neo-icon neo-icon-tag w-3 h-3 mr-1"></i>
+                                            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
                                             {{ ucfirst($talep->talep_tipi ?? 'Genel') }}
                                         </span>
                                     </td>
@@ -305,18 +305,18 @@
                                             <button
                                                 class="inline-flex items-center px-4 py-2.5 text-xs font-medium text-white bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg hover:from-blue-600 hover:to-purple-700 focus:ring-2 focus:ring-blue-500 transition-all duration-150 shadow-sm"
                                                 onclick="talepAnaliz({{ $talep->id }})">
-                                                <i class="neo-icon neo-icon-zap w-3 h-3 mr-1"></i>
+                                                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
                                                 AI Analiz
                                             </button>
                                             <button
                                                 class="inline-flex items-center px-4 py-2.5 text-xs font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-600 focus:ring-2 focus:ring-blue-500 transition-all duration-150"
                                                 onclick="portfoyOner({{ $talep->id }})">
-                                                <i class="neo-icon neo-icon-lightbulb w-3 h-3 mr-1"></i>
+                                                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
                                                 Öneriler
                                             </button>
                                             <a class="inline-flex items-center px-4 py-2.5 text-xs font-medium text-blue-700 bg-blue-50 rounded-lg hover:bg-blue-100 dark:bg-blue-900/30 dark:text-blue-300 dark:hover:bg-blue-900/50 focus:ring-2 focus:ring-blue-500 transition-all duration-150"
                                                 href="{{ route('admin.talep-portfolyo.show', $talep->id) }}">
-                                                <i class="neo-icon neo-icon-eye w-3 h-3 mr-1"></i>
+                                                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                                                 Detay
                                             </a>
                                         </div>
@@ -328,7 +328,7 @@
                                         <div class="text-center">
                                             <div
                                                 class="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-700 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
-                                                <i class="neo-icon neo-icon-search text-2xl text-gray-400"></i>
+                                                <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                                             </div>
                                             <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Aktif
                                                 talep bulunamadı</h3>
@@ -338,12 +338,12 @@
                                             </p>
                                             <div class="flex items-center justify-center gap-4">
                                                 <button onclick="window.location.reload()"
-                                                    class="neo-btn neo-btn neo-btn-primary touch-target-optimized touch-target-optimized">
-                                                    <i class="neo-icon neo-icon-refresh-cw"></i>
+                                                    class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg">
+                                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
                                                     Listeyi Yenile
                                                 </button>
-                                                <a href="{{ url('admin/talepler') }}" class="neo-btn neo-btn neo-btn-secondary touch-target-optimized touch-target-optimized">
-                                                    <i class="neo-icon neo-icon-plus"></i>
+                                                <a href="{{ url('admin/talepler') }}" class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-sm">
+                                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                                                     Yeni Talep Ekle
                                                 </a>
                                             </div>
@@ -378,9 +378,8 @@
                     <div class="modal-header bg-gradient-to-r from-blue-500 to-purple-600 text-white p-6 border-0">
                         <div class="flex items-start gap-4 w-full justify-between">
                             <div class="flex items-center gap-4">
-                                <div
-                                    class="neo-avatar neo-avatar-lg bg-gradient-to-br from-blue-500 to-purple-600 text-white">
-                                    <i class="neo-icon neo-icon-brain text-2xl"></i>
+                                <div class="flex items-center justify-center w-16 h-16 bg-white/20 rounded-2xl">
+                                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
                                 </div>
                                 <div>
                                     <h1 class="text-3xl font-bold text-white mb-1">AI Talep Analizi</h1>
@@ -389,7 +388,7 @@
                             </div>
                             <button type="button" class="text-white hover:bg-white/20 rounded-lg p-2 transition-colors"
                                 data-bs-dismiss="modal" aria-label="Close">
-                                <i class="neo-icon neo-icon-x text-2xl"></i>
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                             </button>
                         </div>
                     </div>
@@ -398,15 +397,15 @@
                             <div
                                 class="inline-flex items-center gap-3 px-6 py-3 bg-blue-50 dark:bg-blue-900/30 rounded-xl text-blue-700 dark:text-blue-300">
                                 <div class="animate-spin">
-                                    <i class="neo-icon neo-icon-loader text-xl"></i>
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
                                 </div>
                                 <span class="font-medium">AI analizi yapılıyor, lütfen bekleyin...</span>
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer p-6 bg-gray-50 dark:bg-gray-900/50 border-0">
-                        <button type="button" class="neo-btn neo-btn neo-btn-secondary touch-target-optimized touch-target-optimized" data-bs-dismiss="modal">
-                            <i class="neo-icon neo-icon-x"></i>
+                        <button type="button" class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-sm" data-bs-dismiss="modal">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                             Kapat
                         </button>
                     </div>
@@ -421,9 +420,8 @@
                     <div class="modal-header bg-gradient-to-r from-purple-500 to-pink-600 text-white p-6 border-0">
                         <div class="flex items-start gap-4 w-full justify-between">
                             <div class="flex items-center gap-4">
-                                <div
-                                    class="neo-avatar neo-avatar-lg bg-gradient-to-br from-purple-500 to-pink-600 text-white">
-                                    <i class="neo-icon neo-icon-zap text-2xl"></i>
+                                <div class="flex items-center justify-center w-16 h-16 bg-white/20 rounded-2xl">
+                                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
                                 </div>
                                 <div>
                                     <h1 class="text-3xl font-bold text-white mb-1">Toplu AI Analiz</h1>
@@ -432,7 +430,7 @@
                             </div>
                             <button type="button" class="text-white hover:bg-white/20 rounded-lg p-2 transition-colors"
                                 data-bs-dismiss="modal" aria-label="Close">
-                                <i class="neo-icon neo-icon-x text-2xl"></i>
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                             </button>
                         </div>
                     </div>
@@ -440,7 +438,7 @@
                         <div class="text-center mb-6">
                             <div
                                 class="w-16 h-16 bg-gradient-to-br from-purple-100 to-pink-100 dark:from-purple-900/30 dark:to-pink-900/30 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                                <i class="neo-icon neo-icon-cpu text-2xl text-purple-600 dark:text-purple-400"></i>
+                                <svg class="w-8 h-8 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/></svg>
                             </div>
                             <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Toplu Analiz Onayı</h3>
                             <p class="text-gray-600 dark:text-gray-400">Seçili talepleri AI ile analiz etmek istediğinizden
@@ -470,7 +468,7 @@
                             class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800/30 rounded-xl p-4">
                             <div class="flex items-start gap-3">
                                 <div class="p-1 bg-yellow-500 rounded-lg text-white">
-                                    <i class="neo-icon neo-icon-info w-4 h-4"></i>
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                                 </div>
                                 <div>
                                     <h4 class="font-medium text-yellow-800 dark:text-yellow-200 mb-1">Analiz Süreci</h4>
@@ -484,12 +482,12 @@
                         </div>
                     </div>
                     <div class="modal-footer p-6 bg-gray-50 dark:bg-gray-900/50 border-0">
-                        <button type="button" class="neo-btn neo-btn neo-btn-secondary touch-target-optimized touch-target-optimized" data-bs-dismiss="modal">
-                            <i class="neo-icon neo-icon-x"></i>
+                        <button type="button" class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-sm" data-bs-dismiss="modal">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                             İptal
                         </button>
-                        <button type="button" class="neo-btn neo-btn-gradient touch-target-optimized touch-target-optimized" onclick="topluAnalizBaslat()">
-                            <i class="neo-icon neo-icon-play"></i>
+                        <button type="button" class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-indigo-600 to-purple-600 rounded-lg hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200 shadow-md hover:shadow-lg" onclick="topluAnalizBaslat()">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                             Analizi Başlat
                         </button>
                     </div>
@@ -1005,9 +1003,8 @@
             <div class="modal-header bg-gradient-to-r from-emerald-500 to-teal-600 text-white border-0">
                 <div class="flex items-start gap-4 w-full justify-between">
                     <div class="flex items-center gap-4">
-                        <div
-                            class="neo-avatar neo-avatar-lg bg-gradient-to-br from-emerald-500 to-teal-600 text-white">
-                            <i class="neo-icon neo-icon-target text-2xl"></i>
+                        <div class="flex items-center justify-center w-16 h-16 bg-white/20 rounded-2xl">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
                         </div>
                         <div>
                             <h1 class="text-3xl font-bold text-white mb-1">AI Portföy Önerileri</h1>
@@ -1016,7 +1013,7 @@
                     </div>
                     <button type="button" class="text-white hover:bg-white/20 rounded-lg p-2 transition-colors"
                         data-bs-dismiss="modal" aria-label="Close">
-                        <i class="neo-icon neo-icon-x text-2xl"></i>
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                     </button>
                 </div>
             </div>
@@ -1027,7 +1024,7 @@
                     <div class="mb-4">
                         <h6
                             class="text-lg font-semibold text-gray-900 dark:text-white mb-2 flex items-center gap-2">
-                            <i class="neo-icon neo-icon-sliders text-blue-600"></i>
+                            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
                             Akıllı Filtreleme
                         </h6>
                         <p class="text-gray-600 dark:text-gray-400 text-sm mb-0">AI önerilerini özelleştirin ve en
@@ -1041,8 +1038,8 @@
                             class="bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
                             <div class="p-3">
                                 <label for="minScore"
-                                    class="block text-sm font-medium mb-2 text-gray-900 dark:text-white">
-                                    <i class="neo-icon neo-icon-trending-up text-blue-600 mr-1"></i>
+                                    class="block text-sm font-medium mb-2 text-gray-900 dark:text-white flex items-center gap-1">
+                                    <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
                                     Minimum Skor
                                 </label>
                                 <input id="minScore" type="number" min="0" max="100" value="0"
@@ -1057,8 +1054,8 @@
                             class="bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
                             <div class="p-3">
                                 <label for="sortDir"
-                                    class="block text-sm font-medium mb-2 text-gray-900 dark:text-white">
-                                    <i class="neo-icon neo-icon-arrow-up-down text-purple-600 mr-1"></i>
+                                    class="block text-sm font-medium mb-2 text-gray-900 dark:text-white flex items-center gap-1">
+                                    <svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"/></svg>
                                     Sıralama
                                 </label>
                                 <select style="color-scheme: light dark;" id="sortDir"
@@ -1074,8 +1071,8 @@
                         <div
                             class="bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
                             <div class="p-3">
-                                <label class="block text-sm font-medium mb-2 text-gray-900 dark:text-white">
-                                    <i class="neo-icon neo-icon-dollar-sign text-green-600 mr-1"></i>
+                                <label class="block text-sm font-medium mb-2 text-gray-900 dark:text-white flex items-center gap-1">
+                                    <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                                     Fiyat Aralığı
                                 </label>
                                 <div class="mb-2">
@@ -1093,8 +1090,8 @@
                         <div
                             class="bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
                             <div class="p-3">
-                                <label class="block text-sm font-medium mb-2 text-gray-900 dark:text-white">
-                                    <i class="neo-icon neo-icon-map-pin text-red-600 mr-1"></i>
+                                <label class="block text-sm font-medium mb-2 text-gray-900 dark:text-white flex items-center gap-1">
+                                    <svg class="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                                     Konum
                                 </label>
                                 <div class="mb-2">
@@ -1116,8 +1113,8 @@
                         <div
                             class="bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
                             <div class="p-3">
-                                <label class="block text-sm font-medium mb-3 text-gray-900 dark:text-white">
-                                    <i class="neo-icon neo-icon-filter text-amber-500 mr-1"></i>
+                                <label class="block text-sm font-medium mb-3 text-gray-900 dark:text-white flex items-center gap-1">
+                                    <svg class="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>
                                     Özel Filtreler
                                 </label>
                                 <div class="mb-3">
@@ -1135,9 +1132,9 @@
                                         <option value="">Tüm Para Birimleri</option>
                                     </select>
                                 </div>
-                                <button type="button" class="neo-btn neo-btn neo-btn-secondary w-full touch-target-optimized touch-target-optimized"
+                                <button type="button" class="inline-flex items-center justify-center w-full px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-sm"
                                     onclick="resetOneriFilters()">
-                                    <i class="neo-icon neo-icon-refresh-ccw"></i>
+                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
                                     Sıfırla
                                 </button>
                             </div>
@@ -1149,7 +1146,7 @@
                         class="mt-4 rounded-xl border border-blue-200 dark:border-blue-800/30 bg-blue-50 dark:bg-blue-900/20 p-3">
                         <div class="flex items-center justify-between">
                             <div class="flex items-center gap-2 text-blue-800 dark:text-blue-200">
-                                <i class="neo-icon neo-icon-info"></i>
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                                 <span id="filterSummary">Tüm öneriler gösteriliyor</span>
                             </div>
                             <div class="text-sm font-medium text-blue-900 dark:text-blue-100" id="resultCount">0 sonuç
@@ -1165,7 +1162,7 @@
                             <div
                                 class="inline-flex items-center justify-center bg-blue-100 dark:bg-blue-900/30 rounded-full w-16 h-16 mb-4">
                                 <div class="animate-spin text-blue-600 dark:text-blue-300">
-                                    <i class="neo-icon neo-icon-loader text-2xl"></i>
+                                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
                                 </div>
                             </div>
                             <h5 class="text-lg font-medium text-gray-900 dark:text-white mb-1">AI Analizi Yapılıyor
@@ -1179,17 +1176,17 @@
 
             <div class="modal-footer p-6 bg-gray-50 dark:bg-gray-900/50 border-0">
                 <div class="flex items-center justify-between w-full">
-                    <div class="text-sm text-gray-600 dark:text-gray-400">
-                        <i class="neo-icon neo-icon-clock mr-1"></i>
+                    <div class="text-sm text-gray-600 dark:text-gray-400 flex items-center gap-1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                         Son güncelleme: Az önce
                     </div>
                     <div class="flex items-center gap-2">
-                        <button type="button" class="neo-btn neo-btn neo-btn-secondary touch-target-optimized touch-target-optimized" data-bs-dismiss="modal">
-                            <i class="neo-icon neo-icon-x"></i>
+                        <button type="button" class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-sm" data-bs-dismiss="modal">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                             Kapat
                         </button>
-                        <button type="button" class="neo-btn neo-btn neo-btn-primary touch-target-optimized touch-target-optimized" onclick="exportResults()">
-                            <i class="neo-icon neo-icon-download"></i>
+                        <button type="button" class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg" onclick="exportResults()">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
                             Sonuçları İndir
                         </button>
                     </div>

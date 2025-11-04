@@ -3,7 +3,7 @@
 @section('title', 'Talep Detay - ' . $talep->kisi->ad . ' ' . $talep->kisi->soyad)
 
 @section('content')
-    <div class="neo-content p-6">
+    <div class="container mx-auto px-6 py-6">
         <!-- Modern Page Header -->
         <div class="mb-8">
             <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
@@ -81,7 +81,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
             <!-- Müşteri ve Talep Bilgileri -->
             <div class="lg:col-span-2">
-                <div class="neo-card">
+                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
                     <div class="p-6">
                         <div class="flex items-center gap-3 mb-6">
                             <div
@@ -245,7 +245,7 @@
                 </div>
 
                 <!-- Özellik Tercihleri -->
-                <div class="neo-card">
+                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
                     <div class="p-6">
                         <div class="flex items-center gap-3 mb-6">
                             <div
@@ -319,7 +319,7 @@
 
         <!-- Modern AI Analiz Sonucu -->
         @if ($analizSonucu)
-            <div class="neo-card mb-8">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm mb-8">
                 <div class="p-6">
                     <div class="flex items-center gap-3 mb-6">
                         <div
@@ -439,12 +439,12 @@
         @endif
 
         <!-- Eşleşen Portföyler -->
-        <div class="neo-card mb-8">
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm mb-8">
             <div class="p-6">
                 <div class="flex items-center justify-between mb-6">
                     <div class="flex items-center gap-3">
                         <div class="p-3 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl text-white">
-                            <i class="neo-icon neo-icon-home text-xl"></i>
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
                         </div>
                         <div>
                             <h3 class="text-xl font-bold text-gray-900 dark:text-white">Eşleşen Portföyler</h3>
@@ -459,7 +459,7 @@
                     @if (count($eslesenPortfolyolar) > 0)
                         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                             @foreach ($eslesenPortfolyolar as $eslesme)
-                                <div class="neo-card hover:shadow-xl transition-all duration-300">
+                                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-xl transition-all duration-300">
                                     <div class="p-6">
                                         <div class="flex justify-between items-center mb-4">
                                             <h6 class="text-lg font-bold text-gray-900 dark:text-white">Portföy #{{ $eslesme['ilan']->id }}</h6>
@@ -484,7 +484,7 @@
                                                         alt="Portföy" class="w-full h-full object-cover">
                                                 @else
                                                     <div class="w-full h-full bg-gray-100 dark:bg-gray-800 flex flex-col items-center justify-center">
-                                                        <i class="neo-icon neo-icon-home text-4xl text-gray-400 mb-2"></i>
+                                                        <svg class="w-16 h-16 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
                                                         <p class="text-gray-500 dark:text-gray-400 text-sm">Fotoğraf yok</p>
                                                     </div>
                                                 @endif
@@ -540,13 +540,13 @@
                                         </div>
                                         <div class="p-4 border-t border-gray-200 dark:border-gray-700">
                                             <div class="flex gap-2">
-                                                <button class="neo-btn neo-btn neo-btn-primary neo-btn-sm flex-1 touch-target-optimized touch-target-optimized"
+                                                <button class="inline-flex items-center justify-center px-3 py-2 text-xs font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-md flex-1"
                                                     onclick="portfolyoOner({{ $eslesme['ilan']->id }}, '{{ $eslesme['oneri_derecesi'] }}')">
-                                                    <i class="neo-icon neo-icon-check"></i> Öner
+                                                    <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Öner
                                                 </button>
                                                 <a href="{{ route('admin.ilanlar.show', $eslesme['ilan']->id) }}"
-                                                    class="neo-btn neo-btn neo-btn-secondary neo-btn-sm flex-1 touch-target-optimized touch-target-optimized">
-                                                    <i class="neo-icon neo-icon-eye"></i> Detay
+                                                    class="inline-flex items-center justify-center px-3 py-2 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-sm flex-1">
+                                                    <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg> Detay
                                                 </a>
                                             </div>
                                         </div>
@@ -557,7 +557,7 @@
                     @else
                         <div class="text-center py-12">
                             <div class="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-700 rounded-full flex items-center justify-center mx-auto mb-6">
-                                <i class="neo-icon neo-icon-search text-3xl text-gray-400"></i>
+                                <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                             </div>
                             <h5 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Eşleşen portföy bulunamadı</h5>
                             <p class="text-gray-600 dark:text-gray-400 mb-6">
@@ -567,9 +567,9 @@
                                     Henüz AI analizi yapılmamış.
                                 @endif
                             </p>
-                            <button class="neo-btn neo-btn neo-btn-primary touch-target-optimized touch-target-optimized"
+                            <button class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-indigo-600 to-purple-600 rounded-lg hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200 shadow-md hover:shadow-lg animate-pulse"
                                 onclick="talepAnaliz({{ $talep->id }})">
-                                <i class="neo-icon neo-icon-cpu"></i>
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/></svg>
                                 {{ $analizSonucu ? 'Yeniden Analiz Et' : 'AI Analiz Yap' }}
                             </button>
                         </div>
@@ -598,7 +598,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="neo-btn neo-btn neo-btn-secondary touch-target-optimized touch-target-optimized" data-bs-dismiss="modal">Kapat</button>
+                    <button type="button" class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-sm" data-bs-dismiss="modal">Kapat</button>
                 </div>
             </div>
         </div>
@@ -645,8 +645,8 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="neo-btn neo-btn neo-btn-secondary touch-target-optimized touch-target-optimized" data-bs-dismiss="modal">İptal</button>
-                    <button type="button" class="neo-btn neo-btn neo-btn-primary touch-target-optimized touch-target-optimized" onclick="portfolyoOnerGonder()">Öneriyi
+                    <button type="button" class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-sm" data-bs-dismiss="modal">İptal</button>
+                    <button type="button" class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg" onclick="portfolyoOnerGonder()">Öneriyi
                         Gönder</button>
                 </div>
             </div>
