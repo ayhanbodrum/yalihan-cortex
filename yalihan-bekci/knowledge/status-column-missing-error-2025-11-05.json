@@ -1,0 +1,233 @@
+{
+  "title": "Status Kolonu Bulunamadı Hatası - SQLSTATE[42S22]",
+  "date": "2025-11-05",
+  "category": "error",
+  "severity": "critical",
+  "status": "resolved",
+  
+  "error": {
+    "code": "SQLSTATE[42S22]",
+    "message": "Column not found: 1054 Unknown column 'status' in 'where clause'",
+    "description": "Kodda 'status' kolonu kullanılıyor ama veritabanında bu kolon yok"
+  },
+
+  "affected_tables": [
+    {
+      "table": "ilan_kategorileri",
+      "status_column_exists": false,
+      "code_usage": [
+        "app/Models/IlanKategori.php::where('status', true)",
+        "app/Http/Controllers/Admin/PropertyTypeManagerController.php",
+        "app/Http/Controllers/Admin/IlanController.php"
+      ]
+    },
+    {
+      "table": "ilanlar",
+      "status_column_exists": false,
+      "code_usage": [
+        "app/Models/Ilan.php::where('status', 'yayinda')",
+        "app/Http/Controllers/VillaController.php",
+        "app/Http/Controllers/IlanPublicController.php"
+      ]
+    },
+    {
+      "table": "kisiler",
+      "status_column_exists": false,
+      "code_usage": [
+        "app/Models/Kisi.php::where('status', 'Aktif')",
+        "app/Http/Controllers/Admin/IlanController.php"
+      ]
+    },
+    {
+      "table": "site_apartmanlar",
+      "status_column_exists": false,
+      "code_usage": [
+        "app/Models/SiteApartman.php::where('status', 'active')",
+        "app/Http/Controllers/Admin/WikimapiaSearchController.php"
+      ]
+    }
+  ],
+
+  "root_cause": {
+    "description": "Kodda 'status' kolonu kullanılıyor ama veritabanı migration'larında bu kolonlar oluşturulmamış veya farklı isimlerle oluşturulmuş",
+    "possible_reasons": [
+      "Migration'lar çalıştırılmamış",
+      "Migration'lar farklı veritabanında çalıştırılmış",
+      "Status kolonu farklı isimle oluşturulmuş (enabled, aktif, etc.)",
+      "Context7 migration'ları eksik"
+    ]
+  },
+
+  "solution": {
+    "approach_1": {
+      "name": "Schema::hasColumn() Kontrolü (ÖNERİLEN)",
+      "description": "Kodda status kullanmadan önce kolonun varlığını kontrol et",
+      "code": "if (Schema::hasColumn('ilan_kategorileri', 'status')) {\n    $query->where('status', true);\n}",
+      "files_to_update": [
+        "app/Models/IlanKategori.php",
+        "app/Models/Ilan.php",
+        "app/Models/Kisi.php",
+        "app/Models/SiteApartman.php",
+        "app/Http/Controllers/Admin/WikimapiaSearchController.php"
+      ]
+    },
+    "approach_2": {
+      "name": "Migration Oluştur",
+      "description": "Eksik status kolonlarını ekleyen migration oluştur",
+      "code": "php artisan make:migration add_status_column_to_ilan_kategorileri_table",
+      "steps": [
+        "1. Migration oluştur",
+        "2. Status kolonunu ekle",
+        "3. Migration çalıştır: php artisan migrate"
+      ]
+    },
+    "approach_3": {
+      "name": "Alternatif Kolon Kullan",
+      "description": "Eğer status kolonu yoksa, alternatif kolon kullan (enabled, aktif, etc.)",
+      "code": "$query->where('enabled', true); // status yerine enabled"
+    }
+  },
+
+  "implementation": {
+    "step_1": {
+      "action": "Kolon varlığını kontrol et",
+      "code": "use Illuminate\\Support\\Facades\\Schema;\n\nif (Schema::hasColumn('ilan_kategorileri', 'status')) {\n    $query->where('status', true);\n} else {\n    // Alternatif: enabled, aktif, etc.\n    $query->where('enabled', true);\n}"
+    },
+    "step_2": {
+      "action": "Model scope'larında kontrol ekle",
+      "code": "public function scopeActive($query) {\n    if (Schema::hasColumn($this->getTable(), 'status')) {\n        return $query->where('status', true);\n    }\n    // Fallback\n    if (Schema::hasColumn($this->getTable(), 'enabled')) {\n        return $query->where('enabled', true);\n    }\n    return $query;\n}"
+    },
+    "step_3": {
+      "action": "Migration oluştur (eğer gerekirse)",
+      "code": "Schema::table('ilan_kategorileri', function (Blueprint $table) {\n    if (!Schema::hasColumn('ilan_kategorileri', 'status')) {\n        $table->boolean('status')->default(true)->after('seviye');\n    }\n});"
+    }
+  },
+
+  "context7_forbidden_rules": {
+    "reference": ".context7/authority.json",
+    "forbidden_database_columns": {
+      "ulke_id_in_iller": {
+        "pattern": "iller tablosunda ulke_id kolonu yok",
+        "solution": "Schema::hasColumn('iller', 'ulke_id') kontrolü kullan",
+        "severity": "critical",
+        "auto_fix": false
+      },
+      "status_in_tables": {
+        "pattern": "Bazı tablolarda status kolonu yok ama kodda kullanılıyor",
+        "solution": "Schema::hasColumn() kontrolü ZORUNLU",
+        "severity": "critical",
+        "auto_fix": false,
+        "affected_tables": [
+          "ilan_kategorileri",
+          "ilanlar",
+          "kisiler",
+          "site_apartmanlar"
+        ]
+      }
+    },
+    "database_fields_rules": {
+      "status": {
+        "standard": "status",
+        "forbidden": ["durum", "is_active", "aktif"],
+        "replacement": "status",
+        "reason": "Context7 Kural İhlali: Türkçe alan adları yasak",
+        "severity": "critical",
+        "auto_fix": true,
+        "note": "AMA status kolonu tabloda olmayabilir! Schema::hasColumn() kontrolü ZORUNLU"
+      }
+    }
+  },
+  "prevention": {
+    "rules": [
+      "1. Her zaman Schema::hasColumn() kontrolü yap (Context7 YASAKLI KOMUT KURALI)",
+      "2. Migration'ları test et",
+      "3. Model scope'larında fallback mekanizması ekle",
+      "4. Context7 standartlarına uy: status kolonu varsa boolean olmalı",
+      "5. .context7/authority.json'daki forbidden_database_columns kurallarına uy"
+    ],
+    "best_practices": [
+      "Kolon varlığını kontrol etmeden kullanma",
+      "Migration'ları her zaman çalıştır",
+      "Test ortamında migration'ları kontrol et",
+      "Schema::hasColumn() wrapper fonksiyonu oluştur"
+    ]
+  },
+
+  "examples": {
+    "wrong": {
+      "code": "$query->where('status', true);",
+      "problem": "Status kolonu yoksa hata verir - Context7 YASAKLI KOMUT İHLALİ",
+      "context7_violation": "forbidden_database_columns pattern'ine aykırı"
+    },
+    "correct": {
+      "code": "if (Schema::hasColumn('ilan_kategorileri', 'status')) {\n    $query->where('status', true);\n}",
+      "benefit": "Kolon yoksa hata vermez, güvenli - Context7 UYUMLU",
+      "context7_compliant": true,
+      "reference": ".context7/authority.json -> forbidden_database_columns"
+    },
+    "context7_pattern": {
+      "code": "// Context7 YASAKLI KOMUT KURALI (authority.json)\n// ulke_id_in_iller pattern'i gibi\nif (Schema::hasColumn($this->getTable(), 'status')) {\n    return $query->where('status', true);\n}\nreturn $query; // Kolon yoksa filtreleme yapma",
+      "benefit": "Context7 standartlarına tam uyumlu",
+      "source": ".context7/authority.json -> forbidden_database_columns"
+    },
+    "better": {
+      "code": "public function scopeActive($query) {\n    if (Schema::hasColumn($this->getTable(), 'status')) {\n        return $query->where('status', true);\n    }\n    return $query; // Kolon yoksa filtreleme yapma\n}",
+      "benefit": "Model scope'unda merkezi kontrol"
+    }
+  },
+
+  "files_to_check": [
+    "app/Models/IlanKategori.php",
+    "app/Models/Ilan.php",
+    "app/Models/Kisi.php",
+    "app/Models/SiteApartman.php",
+    "app/Http/Controllers/Admin/WikimapiaSearchController.php",
+    "app/Http/Controllers/Admin/PropertyTypeManagerController.php",
+    "app/Http/Controllers/Admin/IlanController.php",
+    "app/Http/Controllers/VillaController.php",
+    "app/Http/Controllers/IlanPublicController.php"
+  ],
+
+  "context7_compliance": {
+    "status": "required",
+    "rules": [
+      "Status kolonu boolean olmalı (true/false)",
+      "Status kolonu varsa Schema::hasColumn() kontrolü yapılmalı",
+      "Fallback mekanizması olmalı (enabled, aktif, etc.)"
+    ]
+  },
+
+  "related_errors": [
+    "SQLSTATE[42S22]: Column not found",
+    "Unknown column in 'where clause'",
+    "Migration eksik kolonlar"
+  ],
+
+  "learned_from": {
+    "error_occurred": "2025-11-05",
+    "user_report": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'",
+    "investigation": "Kodda status kullanılıyor ama veritabanında kolon yok",
+    "context7_check": "Yasaklı komutlar kontrolü: .context7/authority.json -> forbidden_database_columns pattern'ine uygun çözüm gerekli"
+  },
+  "yalihan_bekci_learning": {
+    "priority": "critical",
+    "category": "context7_forbidden_patterns",
+    "rule_reference": ".context7/authority.json -> forbidden_database_columns",
+    "similar_cases": [
+      {
+        "pattern": "ulke_id_in_iller",
+        "solution": "Schema::hasColumn('iller', 'ulke_id') kontrolü",
+        "severity": "critical",
+        "auto_fix": false
+      },
+      {
+        "pattern": "status_in_tables",
+        "solution": "Schema::hasColumn() kontrolü ZORUNLU",
+        "severity": "critical",
+        "auto_fix": false
+      }
+    ],
+    "enforcement": "Context7 YASAKLI KOMUT KURALI - Otomatik kontrol edilmeli"
+  }
+}
+
