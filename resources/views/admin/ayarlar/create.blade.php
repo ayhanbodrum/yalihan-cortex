@@ -23,7 +23,7 @@
 
     <div class="px-6">
         <div class="max-w-2xl mx-auto">
-            <form action="{{ route('admin.ayarlar.store') }}" method="POST" class="neo-card p-6">
+            <form action="{{ route('admin.ayarlar.store') }}" method="POST" class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                 @csrf
 
                 <div class="space-y-6">

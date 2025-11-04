@@ -33,7 +33,7 @@
             @csrf
             @method('PUT')
 
-            <div class="neo-card p-6 mb-6">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6 mb-6">
                 <h2 class="text-xl font-bold text-gray-800 mb-4">Temel Bilgiler</h2>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -75,7 +75,7 @@
                 </div>
             </div>
 
-            <div class="neo-card p-6 mb-6">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6 mb-6">
                 <h2 class="text-xl font-bold text-gray-800 mb-4">Detaylar</h2>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -133,7 +133,7 @@
                 </div>
             </div>
 
-            <div class="neo-card p-6 mb-6">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6 mb-6">
                 <h2 class="text-xl font-bold text-gray-800 mb-4">Ayarlar</h2>
 
                 <div class="space-y-4">
@@ -151,7 +151,7 @@
                 </div>
             </div>
 
-            <div class="neo-card p-6 mb-6">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6 mb-6">
                 <h2 class="text-xl font-bold text-gray-800 mb-4">Not Geçmişi</h2>
 
                 <div class="space-y-3">

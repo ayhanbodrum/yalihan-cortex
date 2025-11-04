@@ -30,7 +30,7 @@
                         Sisteme yeni kullanıcı ekleyin
                     </p>
                 </div>
-                <a href="{{ route('admin.kullanicilar.index') }}" class="neo-btn neo-btn neo-btn-secondary touch-target-optimized touch-target-optimized">
+                <a href="{{ route('admin.kullanicilar.index') }}" class="neo-btn inline-flex items-center px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-sm touch-target-optimized touch-target-optimized">
                     ← Geri Dön
                 </a>
             </div>
@@ -222,10 +222,10 @@
             {{-- Form Actions --}}
             <div
                 class="flex items-center justify-between bg-gray-50 dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-6">
-                <a href="{{ route('admin.kullanicilar.index') }}" class="neo-btn neo-btn neo-btn-secondary touch-target-optimized touch-target-optimized">
+                <a href="{{ route('admin.kullanicilar.index') }}" class="neo-btn inline-flex items-center px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-sm touch-target-optimized touch-target-optimized">
                     ← İptal
                 </a>
-                <button type="submit" class="neo-btn neo-btn neo-btn-primary touch-target-optimized touch-target-optimized">
+                <button type="submit" class="neo-btn inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg active:scale-95 touch-target-optimized touch-target-optimized">
                     <i class="fas fa-save mr-2"></i>
                     Kaydet
                 </button>

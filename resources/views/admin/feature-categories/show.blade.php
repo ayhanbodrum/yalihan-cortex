@@ -32,7 +32,7 @@
             <!-- Main Information -->
             <div class="lg:col-span-2 space-y-6">
                 <!-- Basic Information -->
-                <div class="neo-card p-6">
+                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                     <h2 class="text-xl font-bold text-gray-800 mb-4">Basic Information</h2>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -88,7 +88,7 @@
 
                 <!-- Description -->
                 @if($featureCategory->description)
-                    <div class="neo-card p-6">
+                    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                         <h2 class="text-xl font-bold text-gray-800 mb-4">Description</h2>
                         <p class="text-gray-700 leading-relaxed">{{ $featureCategory->description }}</p>
                     </div>
@@ -96,7 +96,7 @@
 
                 <!-- Property Types -->
                 @if($featureCategory->applies_to)
-                    <div class="neo-card p-6">
+                    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                         <h2 class="text-xl font-bold text-gray-800 mb-4">Applies To Property Types</h2>
                         <div class="flex flex-wrap gap-2">
                             @foreach(explode(',', $featureCategory->applies_to) as $type)
@@ -110,7 +110,7 @@
 
                 <!-- SEO Information -->
                 @if($featureCategory->meta_title || $featureCategory->meta_description || $featureCategory->seo_keywords)
-                    <div class="neo-card p-6">
+                    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                         <h2 class="text-xl font-bold text-gray-800 mb-4">SEO Information</h2>
 
                         @if($featureCategory->meta_title)
@@ -146,7 +146,7 @@
             <!-- Sidebar -->
             <div class="space-y-6">
                 <!-- Quick Actions -->
-                <div class="neo-card p-6">
+                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                     <h3 class="text-lg font-semibold text-gray-800 mb-4">Quick Actions</h3>
                     <div class="space-y-3">
                         <a href="{{ route('admin.feature-categories.edit', $featureCategory) }}"
@@ -164,7 +164,7 @@
                 </div>
 
                 <!-- Statistics -->
-                <div class="neo-card p-6">
+                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                     <h3 class="text-lg font-semibold text-gray-800 mb-4">Statistics</h3>
                     <div class="space-y-4">
                         <div class="flex items-center justify-between">
@@ -189,7 +189,7 @@
                 </div>
 
                 <!-- Timestamps -->
-                <div class="neo-card p-6">
+                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                     <h3 class="text-lg font-semibold text-gray-800 mb-4">Timestamps</h3>
                     <div class="space-y-3">
                         <div>

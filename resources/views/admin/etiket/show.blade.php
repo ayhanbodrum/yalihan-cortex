@@ -32,7 +32,7 @@
             <!-- Main Content -->
             <div class="lg:col-span-2 space-y-6">
                 <!-- Etiket Information -->
-                <div class="neo-card p-6">
+                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                     <h2 class="text-xl font-bold text-gray-800 mb-4">Etiket Information</h2>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -100,14 +100,14 @@
 
                 <!-- Description -->
                 @if($etiket->description)
-                    <div class="neo-card p-6">
+                    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                         <h2 class="text-xl font-bold text-gray-800 mb-4">Description</h2>
                         <p class="text-gray-700 leading-relaxed">{{ $etiket->description }}</p>
                     </div>
                 @endif
 
                 <!-- Associated Kisiler -->
-                <div class="neo-card p-6">
+                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                     <h2 class="text-xl font-bold text-gray-800 mb-4">Associated Kisiler</h2>
 
                     @if($etiket->kisiler && count($etiket->kisiler) > 0)
@@ -161,7 +161,7 @@
             <!-- Sidebar -->
             <div class="space-y-6">
                 <!-- Quick Actions -->
-                <div class="neo-card p-6">
+                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                     <h3 class="text-lg font-semibold text-gray-800 mb-4">Quick Actions</h3>
                     <div class="space-y-3">
                         <a href="{{ route('admin.etiket.edit', $etiket->id) }}"
@@ -179,7 +179,7 @@
                 </div>
 
                 <!-- Statistics -->
-                <div class="neo-card p-6">
+                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                     <h3 class="text-lg font-semibold text-gray-800 mb-4">Statistics</h3>
                     <div class="space-y-4">
                         <div class="flex items-center justify-between">
@@ -213,7 +213,7 @@
                 </div>
 
                 <!-- Timestamps -->
-                <div class="neo-card p-6">
+                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                     <h3 class="text-lg font-semibold text-gray-800 mb-4">Timestamps</h3>
                     <div class="space-y-3">
                         <div>
@@ -233,7 +233,7 @@
                 </div>
 
                 <!-- Preview -->
-                <div class="neo-card p-6">
+                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                     <h3 class="text-lg font-semibold text-gray-800 mb-4">Preview</h3>
                     <div class="p-4 bg-gray-50 rounded-lg border">
                         <div class="flex items-center">

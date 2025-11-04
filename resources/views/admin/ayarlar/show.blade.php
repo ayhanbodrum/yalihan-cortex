@@ -33,7 +33,7 @@
                 <!-- Main Content -->
                 <div class="lg:col-span-2 space-y-6">
                     <!-- Setting Details -->
-                    <div class="neo-card p-6">
+                    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                         <h2 class="text-xl font-bold text-gray-800 mb-4">Ayar Bilgileri</h2>
 
                         <div class="space-y-4">
@@ -87,7 +87,7 @@
                     </div>
 
                     <!-- Value Editor -->
-                    <div class="neo-card p-6">
+                    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                         <h2 class="text-xl font-bold text-gray-800 mb-4">Değer Düzenleyici</h2>
 
                         <form action="{{ route('admin.ayarlar.update', $setting->id) }}" method="POST">
@@ -139,7 +139,7 @@
                 <!-- Sidebar -->
                 <div class="space-y-6">
                     <!-- Setting Info -->
-                    <div class="neo-card p-6">
+                    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                         <h3 class="text-lg font-semibold text-gray-800 mb-4">Ayar Bilgileri</h3>
                         <div class="space-y-3">
                             <div>
@@ -159,7 +159,7 @@
                     </div>
 
                     <!-- Quick Actions -->
-                    <div class="neo-card p-6">
+                    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                         <h3 class="text-lg font-semibold text-gray-800 mb-4">Hızlı İşlemler</h3>
                         <div class="space-y-3">
                             <a href="{{ route('admin.ayarlar.edit', $setting->id) }}"
@@ -189,7 +189,7 @@
                     </div>
 
                     <!-- Related Settings -->
-                    <div class="neo-card p-6">
+                    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                         <h3 class="text-lg font-semibold text-gray-800 mb-4">İlgili Ayarlar</h3>
                         <div class="space-y-2">
                             <a href="{{ route('admin.ayarlar.index', ['group' => $setting->group]) }}"

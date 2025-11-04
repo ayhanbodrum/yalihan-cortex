@@ -32,7 +32,7 @@
             <!-- Main Content -->
             <div class="lg:col-span-2 space-y-6">
                 <!-- Redirect Information -->
-                <div class="neo-card p-6">
+                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                     <h2 class="text-xl font-bold text-gray-800 mb-4">Redirect Information</h2>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -62,7 +62,7 @@
                 </div>
 
                 <!-- Analytics -->
-                <div class="neo-card p-6">
+                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                     <h2 class="text-xl font-bold text-gray-800 mb-4">Analytics</h2>
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -84,7 +84,7 @@
                 </div>
 
                 <!-- Usage Chart -->
-                <div class="neo-card p-6">
+                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                     <h2 class="text-xl font-bold text-gray-800 mb-4">Usage Over Time</h2>
 
                     <div class="h-64 flex items-center justify-center bg-gray-50 rounded-lg">
@@ -100,7 +100,7 @@
             <!-- Sidebar -->
             <div class="space-y-6">
                 <!-- Quick Actions -->
-                <div class="neo-card p-6">
+                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                     <h3 class="text-lg font-semibold text-gray-800 mb-4">Quick Actions</h3>
                     <div class="space-y-3">
                         <a href="{{ route('admin.ai-redirect.edit', $redirectData['id']) }}"
@@ -124,7 +124,7 @@
                 </div>
 
                 <!-- Statistics -->
-                <div class="neo-card p-6">
+                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                     <h3 class="text-lg font-semibold text-gray-800 mb-4">Statistics</h3>
                     <div class="space-y-4">
                         <div class="flex items-center justify-between">
@@ -150,7 +150,7 @@
                 </div>
 
                 <!-- Timestamps -->
-                <div class="neo-card p-6">
+                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
                     <h3 class="text-lg font-semibold text-gray-800 mb-4">Timestamps</h3>
                     <div class="space-y-3">
                         <div>
