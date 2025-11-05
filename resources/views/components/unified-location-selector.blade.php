@@ -161,7 +161,7 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Ülke -->
-                <div class="neo-form-field">
+                <div class="space-y-2">
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                         🌍 Ülke @if ($required) <span class="text-red-500">*</span> @endif
                     </label>
@@ -180,7 +180,7 @@
                 </div>
 
                 <!-- İl -->
-                <div class="neo-form-field">
+                <div class="space-y-2">
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                         🏙️ İl @if ($required) <span class="text-red-500">*</span> @endif
                     </label>
@@ -198,7 +198,7 @@
                 </div>
 
                 <!-- İlçe -->
-                <div class="neo-form-field">
+                <div class="space-y-2">
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                         🏘️ İlçe @if ($required) <span class="text-red-500">*</span> @endif
                     </label>
@@ -216,7 +216,7 @@
                 </div>
 
                 <!-- Mahalle -->
-                <div class="neo-form-field">
+                <div class="space-y-2">
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                         🏠 Mahalle
                     </label>

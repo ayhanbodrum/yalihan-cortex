@@ -8,7 +8,7 @@
 
 @section('content')
     <!-- Neo Page Header -->
-    <div class="neo-page-header">
+    <div class="mb-6 pb-4 border-b border-gray-200 dark:border-gray-700">
         <div class="flex justify-between items-start">
             <div>
                 <h1 class="text-2xl font-bold text-gray-900 dark:text-white flex items-center">

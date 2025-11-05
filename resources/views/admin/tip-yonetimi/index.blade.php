@@ -5,7 +5,7 @@
 @section('content')
     <div class="prose max-w-none p-6">
         <!-- Page Header -->
-        <div class="neo-page-header mb-8">
+        <div class="mb-6 pb-4 border-b border-gray-200 dark:border-gray-700 mb-8">
             <div class="flex items-center justify-between">
                 <div>
                     <h1 class="text-3xl font-bold text-gray-900">Tip Yönetimi</h1>

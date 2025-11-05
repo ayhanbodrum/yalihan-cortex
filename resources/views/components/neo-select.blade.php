@@ -27,7 +27,7 @@
     {{-- Select Dropdown --}}
     <select name="{{ $name }}"
             id="{{ $name }}"
-            class="neo-form-input @error($name) border-red-500 @enderror"
+            class="w-full px-3 py-2 rounded-md border border-gray-200 bg-white text-sm focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-800 @error($name) border-red-500 @enderror"
             {{ $required ? 'required' : '' }}
             {{ $attributes->except(['class']) }}>
 

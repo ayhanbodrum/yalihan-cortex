@@ -307,15 +307,15 @@
 
 @push('styles')
     <style>
-        .neo-checkbox-wrapper {
+        .accent-blue-600 rounded border-gray-300 text-blue-600 focus:ring-blue-500 dark:border-gray-700-wrapper {
             @apply flex items-center gap-2 cursor-pointer;
         }
 
-        .neo-checkbox {
+        .accent-blue-600 rounded border-gray-300 text-blue-600 focus:ring-blue-500 dark:border-gray-700 {
             @apply w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 focus:ring-2;
         }
 
-        .neo-checkbox-label {
+        .accent-blue-600 rounded border-gray-300 text-blue-600 focus:ring-blue-500 dark:border-gray-700-label {
             @apply text-sm font-medium text-gray-900 dark:text-white;
         }
 

@@ -39,7 +39,7 @@
 
         <!-- Overview + Mini Usage Chart -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-            <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800 p-4 lg:neo-col-span-2">
+            <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800 p-4 lg:col-span-2">
                 <div class="grid grid-cols-4 gap-4">
                     <div
                         class="bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg p-3 transition-all duration-300 hover:shadow-md">
@@ -153,7 +153,7 @@
                                     <td x-text="proc.pid"></td>
                                     <td x-text="proc.cpu"></td>
                                     <td x-text="proc.mem"></td>
-                                    <td class="neo-break-all" x-text="proc.command"></td>
+                                    <td class="break-all" x-text="proc.command"></td>
                                 </tr>
                             </template>
                         </tbody>
@@ -313,7 +313,7 @@
             </div>
 
             <!-- Sayfa Sağlığı -->
-            <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800 p-4 lg:neo-col-span-3">
+            <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800 p-4 lg:col-span-3">
                 <div class="flex items-center justify-between mb-2">
                     <h2 class="font-semibold flex items-center gap-2">
                         <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">

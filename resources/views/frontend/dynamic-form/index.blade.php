@@ -7,8 +7,8 @@
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <div class="container mx-auto">
     <div class="neo-header">
-        <h1 class="neo-title">🎯 Dinamik Form Oluşturucu</h1>
-        <p class="neo-subtitle">AI destekli 2D Matrix sistemi ile otomatik form oluşturma</p>
+        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">🎯 Dinamik Form Oluşturucu</h1>
+        <p class="text-lg text-gray-600 dark:text-gray-400">AI destekli 2D Matrix sistemi ile otomatik form oluşturma</p>
     </div>
 
     <!-- Form Seçimi -->
@@ -19,8 +19,8 @@
         </div>
         <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800-body">
             <form id="formSelector" class="neo-form-selector">
-                <div class="neo-form-row">
-                    <div class="neo-form-col">
+                <div class="flex flex-wrap gap-4">
+                    <div class="flex-1 min-w-0">
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" for="kategori">Kategori</label>
                         <select id="kategori" name="kategori" class="w-full px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200 cursor-pointer appearance-none" required>
                             <option value="">Kategori Seçiniz...</option>
@@ -29,7 +29,7 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="neo-form-col">
+                    <div class="flex-1 min-w-0">
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" for="yayin_tipi">Yayın Tipi</label>
                         <select id="yayin_tipi" name="yayin_tipi" class="w-full px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200 cursor-pointer appearance-none" required>
                             <option value="">Yayın Tipi Seçiniz...</option>
@@ -38,7 +38,7 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="neo-form-col neo-form-col-auto">
+                    <div class="flex-1 min-w-0 flex-1 min-w-0-auto">
                         <button type="submit" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg">
                             <i class="text-gray-400-generate"></i> Form Oluştur
                         </button>
@@ -102,14 +102,14 @@
     margin-bottom: 30px;
 }
 
-.neo-title {
+.text-2xl font-bold text-gray-900 dark:text-white {
     font-size: 2.5rem;
     font-weight: 700;
     color: #1a1a1a;
     margin-bottom: 10px;
 }
 
-.neo-subtitle {
+.text-lg text-gray-600 dark:text-gray-400 {
     font-size: 1.1rem;
     color: #666;
     margin: 0;
@@ -159,18 +159,18 @@
     align-items: end;
 }
 
-.neo-form-row {
+.flex flex-wrap gap-4 {
     display: flex;
     gap: 20px;
     align-items: end;
     width: 100%;
 }
 
-.neo-form-col {
+.flex-1 min-w-0 {
     flex: 1;
 }
 
-.neo-form-col-auto {
+.flex-1 min-w-0-auto {
     flex: 0 0 auto;
 }
 
@@ -285,7 +285,7 @@
     margin-bottom: 8px;
 }
 
-.neo-required {
+.text-red-500 {
     color: #dc3545;
     font-weight: bold;
 }
@@ -324,19 +324,19 @@
     white-space: nowrap;
 }
 
-.neo-checkbox-group {
+.accent-blue-600 rounded border-gray-300 text-blue-600 focus:ring-blue-500 dark:border-gray-700-group {
     display: flex;
     align-items: center;
     gap: 10px;
 }
 
-.neo-checkbox {
+.accent-blue-600 rounded border-gray-300 text-blue-600 focus:ring-blue-500 dark:border-gray-700 {
     width: 18px;
     height: 18px;
     accent-color: #007bff;
 }
 
-.neo-checkbox-label {
+.accent-blue-600 rounded border-gray-300 text-blue-600 focus:ring-blue-500 dark:border-gray-700-label {
     font-weight: 500;
     color: #333;
     cursor: pointer;
@@ -438,12 +438,12 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
-    .neo-form-row {
+    .flex flex-wrap gap-4 {
         flex-direction: column;
         gap: 15px;
     }
 
-    .neo-form-col {
+    .flex-1 min-w-0 {
         width: 100%;
     }
 
