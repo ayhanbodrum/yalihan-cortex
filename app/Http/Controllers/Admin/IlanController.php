@@ -100,26 +100,19 @@ class IlanController extends AdminController
             'goruntulenme', 'created_at', 'updated_at'
         ]);
 
-        // Paginate FIRST (efficient: only loads needed rows)
-        $ilanlar = $query->paginate(20);
-        
-        // Eager load relationships AFTER pagination (only for displayed items)
-        // ⚡ PERFORMANCE: Use select() to load only needed columns
-        $ilanlar->load([
+        // ✅ EAGER LOADING: Prevent N+1 queries
+        $query->with([
             'ilanSahibi:id,ad,soyad,telefon',
-            'userDanisman:id,name,email',
-            'altKategori:id,name,icon',
-            'anaKategori:id,name',
-            'yayinTipi:id,name',
+            'danisman:id,name,email',
             'il:id,il_adi',
             'ilce:id,ilce_adi',
-            'yazlikDetail:ilan_id,min_konaklama,max_misafir,havuz,gunluk_fiyat,haftalik_fiyat,aylik_fiyat',
-            'fotograflar' => function($q) {
-                $q->select('id', 'ilan_id', 'dosya_yolu', 'sira')
-                  ->where('sira', 1) // Only first photo
-                  ->limit(1);
-            }
+            'anaKategori:id,name',
+            'altKategori:id,name',
         ]);
+
+        // Paginate FIRST (efficient: only loads needed rows)
+        // ✅ Eager loading already applied with with() above
+        $ilanlar = $query->paginate(20);
 
         // ⚡ CACHE: Statistics (5 min cache)
         $stats = Cache::remember('admin.ilanlar.stats', 300, function () {
