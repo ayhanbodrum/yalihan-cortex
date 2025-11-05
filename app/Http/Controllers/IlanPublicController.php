@@ -14,8 +14,7 @@ class IlanPublicController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Ilan::with(['il', 'ilce', 'mahalle', 'ilanSahibi', 'danisman', 'kategori'])
-            ->where('status', 'Aktif'); // Context7 compliant!
+        $query = Ilan::where('status', 'Aktif'); // Context7 compliant!
 
         // Kategori filtresi
         if ($request->filled('kategori')) {

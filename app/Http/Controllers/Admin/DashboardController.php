@@ -326,7 +326,18 @@ class DashboardController extends AdminController
     private function getDashboardData()
     {
         // View'in beklediği format: quickStats, recentIlanlar, recentUsers
-        $recentIlanlar = \App\Models\Ilan::latest('created_at')->limit(5)->get();
+        // ✅ EAGER LOADING: Prevent N+1 queries
+        $recentIlanlar = \App\Models\Ilan::with([
+            'ilanSahibi:id,ad,soyad',
+            'il:id,il_adi',
+            'ilce:id,ilce_adi',
+            'kategori:id,name'
+        ])
+        ->select(['id', 'baslik', 'ilan_basligi', 'fiyat', 'para_birimi', 'status', 
+                  'ilan_sahibi_id', 'il_id', 'ilce_id', 'kategori_id', 'created_at'])
+        ->latest('created_at')
+        ->limit(5)
+        ->get();
         $recentUsers = \App\Models\User::latest('created_at')->limit(5)->get();
         
         return [
@@ -419,9 +430,15 @@ class DashboardController extends AdminController
         $activities = [];
         
         // Son eklenen ilanlar
-        $recentIlanlar = \App\Models\Ilan::latest('created_at')
-            ->limit(3)
-            ->get();
+        // ✅ EAGER LOADING: Prevent N+1 queries
+        $recentIlanlar = \App\Models\Ilan::with([
+            'danisman:id,name',
+            'ilanSahibi:id,ad,soyad'
+        ])
+        ->select(['id', 'baslik', 'danisman_id', 'created_at'])
+        ->latest('created_at')
+        ->limit(3)
+        ->get();
         
         foreach ($recentIlanlar as $ilan) {
             $activities[] = [
@@ -429,7 +446,7 @@ class DashboardController extends AdminController
                 'type' => 'ilan_created',
                 'message' => 'Yeni ilan eklendi: ' . ($ilan->baslik ?? 'Başlıksız'),
                 'time' => $ilan->created_at->diffForHumans(),
-                'user' => $ilan->user->name ?? 'System'
+                'user' => $ilan->danisman->name ?? 'System'
             ];
         }
         
