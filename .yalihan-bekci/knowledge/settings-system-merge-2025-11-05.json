@@ -1,0 +1,218 @@
+{
+    "knowledge_type": "settings_system_standards",
+    "standard": "C7-SETTINGS-MERGE-2025-11-05",
+    "title": "Site Ayarları Sistemi Birleştirme Standartları",
+    "date": "2025-11-05",
+    "version": "1.0.0",
+    "description": "Site ayarları sistemindeki duplikasyonların kaldırılması ve tek kaynak prensibine geçiş standartları",
+    
+    "problem": {
+        "description": "Geçmişte site ayarları için birden fazla model, controller ve route kullanılıyordu",
+        "duplications": {
+            "models": [
+                {
+                    "name": "SiteSetting",
+                    "status": "deprecated",
+                    "replacement": "Setting",
+                    "usage": "TelegramBotController'da kullanılıyordu"
+                },
+                {
+                    "name": "Setting",
+                    "status": "active",
+                    "usage": "Ana ayarlar sistemi - AyarlarController'da kullanılıyor"
+                }
+            ],
+            "controllers": [
+                {
+                    "name": "SettingsController",
+                    "status": "removed",
+                    "reason": "Placeholder - sadece JSON response döndürüyordu",
+                    "replacement": "AyarlarController"
+                },
+                {
+                    "name": "UserSettingsController",
+                    "status": "removed",
+                    "reason": "Placeholder - sadece JSON response döndürüyordu",
+                    "replacement": "AyarlarController"
+                },
+                {
+                    "name": "AyarlarController",
+                    "status": "active",
+                    "usage": "Ana ayarlar controller'ı - /admin/ayarlar"
+                },
+                {
+                    "name": "AISettingsController",
+                    "status": "active",
+                    "usage": "AI ayarları için ayrı sayfa - /admin/ai-settings"
+                }
+            ],
+            "routes": [
+                {
+                    "route": "admin.settings.update",
+                    "status": "removed",
+                    "replacement": "admin.ayarlar.bulk-update"
+                },
+                {
+                    "route": "admin.user-settings.*",
+                    "status": "removed",
+                    "replacement": "admin.ayarlar.*"
+                },
+                {
+                    "route": "admin.settings.location",
+                    "status": "removed",
+                    "replacement": "admin.ayarlar.*"
+                }
+            ],
+            "tables": [
+                {
+                    "name": "site_settings",
+                    "status": "deprecated",
+                    "migration": "required",
+                    "target": "settings"
+                },
+                {
+                    "name": "settings",
+                    "status": "active",
+                    "model": "Setting"
+                }
+            ]
+        }
+    },
+    
+    "solution": {
+        "single_source_of_truth": {
+            "model": "Setting",
+            "table": "settings",
+            "controller": "AyarlarController",
+            "route_prefix": "admin.ayarlar",
+            "helper_file": "app/Helpers/settings_helper.php"
+        },
+        "ai_settings_separation": {
+            "controller": "AISettingsController",
+            "route_prefix": "admin.ai-settings",
+            "page": "/admin/ai-settings",
+            "note": "AI ayarları admin/ayarlar sayfasından link ile yönlendirilir"
+        },
+        "migration_steps": [
+            {
+                "step": 1,
+                "action": "SiteSetting modelini deprecated olarak işaretle",
+                "implementation": "Wrapper methods ile Setting modeline yönlendir"
+            },
+            {
+                "step": 2,
+                "action": "TelegramBotController'da SiteSetting → Setting",
+                "implementation": "SiteSetting::getValue() → Setting::get(), SiteSetting::updateOrCreate() → Setting::set()"
+            },
+            {
+                "step": 3,
+                "action": "Placeholder controller'ları kaldır",
+                "implementation": "SettingsController ve UserSettingsController silindi"
+            },
+            {
+                "step": 4,
+                "action": "Duplikate route'ları temizle",
+                "implementation": "admin.settings.* ve admin.user-settings.* route'ları kaldırıldı"
+            },
+            {
+                "step": 5,
+                "action": "Seeder dosyalarını güncelle",
+                "implementation": "InitialSettingsSeeder ve Context7ModuleSeeder → Setting modeline geçirildi"
+            },
+            {
+                "step": 6,
+                "action": "DB::table() → Eloquent",
+                "implementation": "DB::table('site_settings') → Setting::set()"
+            }
+        ]
+    },
+    
+    "standards": {
+        "forbidden": [
+            "SiteSetting::getValue()",
+            "SiteSetting::setValue()",
+            "SiteSetting::getGroup()",
+            "DB::table('site_settings')",
+            "SettingsController",
+            "UserSettingsController",
+            "admin.settings.* routes",
+            "admin.user-settings.* routes"
+        ],
+        "required": [
+            "Setting::get()",
+            "Setting::set()",
+            "Setting::getByGroup()",
+            "AyarlarController",
+            "admin.ayarlar.* routes",
+            "setting() helper function",
+            "setting_set() helper function"
+        ],
+        "migration_map": {
+            "SiteSetting::getValue($key, $default)": "Setting::get($key, $default)",
+            "SiteSetting::setValue($key, $value, $group)": "Setting::set($key, $value, $group, $type, $description)",
+            "SiteSetting::getGroup($group)": "Setting::getByGroup($group)",
+            "SiteSetting::getPublicSettings()": "Setting::where('group', 'public')->get()",
+            "DB::table('site_settings')->where('key', $key)->value('value')": "Setting::get($key)",
+            "DB::table('site_settings')->updateOrInsert(...)": "Setting::set($key, $value, $group, $type, $description)"
+        }
+    },
+    
+    "files_changed": {
+        "updated": [
+            "app/Modules/TakimYonetimi/Controllers/Admin/TelegramBotController.php",
+            "app/Models/SiteSetting.php",
+            "database/seeders/InitialSettingsSeeder.php",
+            "database/seeders/Context7ModuleSeeder.php",
+            "routes/admin.php",
+            "resources/views/admin/settings/index.blade.php"
+        ],
+        "deleted": [
+            "app/Http/Controllers/Admin/SettingsController.php",
+            "app/Http/Controllers/Admin/UserSettingsController.php"
+        ],
+        "deprecated": [
+            "app/Models/SiteSetting.php"
+        ]
+    },
+    
+    "enforcement": {
+        "level": "STRICT",
+        "auto_fix": true,
+        "check_on": [
+            "code_review",
+            "pre_commit",
+            "new_code"
+        ],
+        "rules": [
+            "SiteSetting kullanımı tespit edildiğinde otomatik olarak Setting'e çevrilmeli",
+            "SettingsController veya UserSettingsController kullanımı tespit edildiğinde AyarlarController'a yönlendirilmeli",
+            "admin.settings.* route kullanımı tespit edildiğinde admin.ayarlar.* olarak değiştirilmeli"
+        ]
+    },
+    
+    "database_migration": {
+        "required": true,
+        "source_table": "site_settings",
+        "target_table": "settings",
+        "note": "Production'da manuel migration gerekebilir - site_settings tablosundaki veriler settings tablosuna taşınmalı",
+        "migration_script": "TODO: Create migration script to move data from site_settings to settings"
+    },
+    
+    "reference": {
+        "authority_file": ".context7/authority.json",
+        "standard_key": "settings_system_standards_2025_11_05",
+        "related_standards": [
+            "C7-SINGLE-SOURCE-OF-TRUTH-2025-11-05",
+            "C7-DATABASE-STANDARDIZATION-2025-11-05"
+        ]
+    },
+    
+    "lessons_learned": [
+        "Placeholder controller'lar oluşturulmamalı - direkt implement edilmeli",
+        "Aynı amaç için birden fazla model kullanılmamalı",
+        "Route duplikasyonları önlenmeli - tek kaynak prensibi",
+        "DB::table() yerine Eloquent kullanılmalı",
+        "AI ayarları gibi özel ayarlar ayrı sayfada olabilir ama ana ayarlar sayfasından erişilebilir olmalı"
+    ]
+}
+

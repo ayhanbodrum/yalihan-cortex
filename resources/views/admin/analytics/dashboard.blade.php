@@ -449,6 +449,7 @@
                                         <small class="text-sm text-gray-500 dark:text-gray-400">Ort. Etkileşim/Session</small>
                                     </div>
                                 </div>
+                                {{-- ✅ FIX: "Misses" alanı kaldırıldı - Cache Performance'a ait, burada gereksiz --}}
                             </div>
                         </div>
                     </div>

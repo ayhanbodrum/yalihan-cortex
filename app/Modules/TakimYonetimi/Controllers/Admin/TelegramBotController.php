@@ -4,7 +4,7 @@ namespace App\Modules\TakimYonetimi\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Modules\TakimYonetimi\Services\TelegramBotService;
-use App\Models\SiteSetting;
+use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -25,8 +25,8 @@ class TelegramBotController extends Controller
 
         $teamId = 1;
         $teamSettingKey = 'team:'.$teamId.':telegram_channel_id';
-        // ✅ STANDARDIZED: Using Eloquent instead of DB::table()
-        $teamChannelId = SiteSetting::where('key', $teamSettingKey)->value('value');
+        // ✅ STANDARDIZED: Using Setting model instead of SiteSetting (merged)
+        $teamChannelId = Setting::get($teamSettingKey);
 
         return view('admin.telegram-bot.index', compact('botInfo', 'webhookInfo', 'settings', 'teamId', 'teamChannelId'));
     }
@@ -138,17 +138,16 @@ class TelegramBotController extends Controller
         ]);
 
         try {
-            // ✅ STANDARDIZED: Using Eloquent instead of DB::table()
-            // Takım-Kanal eşlemesi DB'de saklanır (site_settings)
+            // ✅ STANDARDIZED: Using Setting model instead of SiteSetting (merged)
+            // Takım-Kanal eşlemesi DB'de saklanır (settings tablosu)
             if ($request->filled('team_id') && $request->filled('telegram_channel_id')) {
                 $key = 'team:'.$request->integer('team_id').':telegram_channel_id';
-                SiteSetting::updateOrCreate(
-                    ['key' => $key],
-                    [
-                        'value' => $request->string('telegram_channel_id')->toString(),
-                        'description' => 'Takım Telegram Kanal ID',
-                        'group' => 'telegram',
-                    ]
+                Setting::set(
+                    $key,
+                    $request->string('telegram_channel_id')->toString(),
+                    'telegram',
+                    'string',
+                    'Takım Telegram Kanal ID'
                 );
             }
 

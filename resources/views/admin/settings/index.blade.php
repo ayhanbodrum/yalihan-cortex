@@ -20,7 +20,18 @@
                 <li class="mr-6"><a class="tab-link active" href="#genel">Genel</a></li>
                 <li class="mr-6"><a class="tab-link" href="#bildirim">Bildirimler</a></li>
                 <li class="mr-6"><a class="tab-link" href="#portal">Portal Entegrasyonları</a></li>
-                <li class="mr-6"><a class="tab-link" href="#ai">AI & Yapay Zeka</a></li>
+                <li class="mr-6">
+                    <a href="{{ route('admin.ai-settings.index') }}" 
+                       class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                        AI & Yapay Zeka
+                        <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </a>
+                </li>
                 <li class="mr-6"><a class="tab-link" href="#fiyat">Fiyatlandırma</a></li>
                 <li class="mr-6"><a class="tab-link" href="#qrcode">QR Kod</a></li>
                 <li class="mr-6"><a class="tab-link" href="#navigation">Navigasyon</a></li>
@@ -32,13 +43,17 @@
                 <div id="genel" class="tab-content">
                     <h2 class="text-lg font-semibold mb-2">Genel Ayarlar</h2>
                     <div class="mb-4">
-                        <label class="block mb-1 font-medium">Site Başlığı</label>
-                        <input type="text" name="site_title" class="admin-input w-full"
-                            value="{{ $settings['site_title'] ?? '' }}">
+                        <label class="block mb-1 font-medium text-gray-900 dark:text-white">Site Başlığı</label>
+                        <input type="text" 
+                               name="site_title" 
+                               class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                               value="{{ $settings['site_title'] ?? '' }}">
                     </div>
                     <div class="mb-4">
-                        <label class="block mb-1 font-medium">Varsayılan Para Birimi</label>
-                        <select style="color-scheme: light dark;" name="default_currency" class="admin-input w-full transition-all duration-200">
+                        <label class="block mb-1 font-medium text-gray-900 dark:text-white">Varsayılan Para Birimi</label>
+                        <select style="color-scheme: light dark;" 
+                                name="default_currency" 
+                                class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200">
                             <option value="TRY" @if (($settings['default_currency'] ?? '') == 'TRY') selected @endif>₺ Türk Lirası</option>
                             <option value="USD" @if (($settings['default_currency'] ?? '') == 'USD') selected @endif>$ Dolar</option>
                             <option value="EUR" @if (($settings['default_currency'] ?? '') == 'EUR') selected @endif>€ Euro</option>
@@ -61,93 +76,30 @@
                 <div id="portal" class="tab-content hidden">
                     <h2 class="text-lg font-semibold mb-2">Portal Entegrasyonları</h2>
                     <div class="mb-4">
-                        <label class="block mb-1 font-medium">Sahibinden.com API Anahtarı</label>
-                        <input type="text" name="sahibinden_api_key" class="admin-input w-full"
-                            value="{{ $settings['sahibinden_api_key'] ?? '' }}">
+                        <label class="block mb-1 font-medium text-gray-900 dark:text-white">Sahibinden.com API Anahtarı</label>
+                        <input type="text" 
+                               name="sahibinden_api_key" 
+                               class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                               value="{{ $settings['sahibinden_api_key'] ?? '' }}">
                     </div>
                     <div class="mb-4">
-                        <label class="block mb-1 font-medium">Hepsiemlak API Anahtarı</label>
-                        <input type="text" name="hepsiemlak_api_key" class="admin-input w-full"
-                            value="{{ $settings['hepsiemlak_api_key'] ?? '' }}">
+                        <label class="block mb-1 font-medium text-gray-900 dark:text-white">Hepsiemlak API Anahtarı</label>
+                        <input type="text" 
+                               name="hepsiemlak_api_key" 
+                               class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                               value="{{ $settings['hepsiemlak_api_key'] ?? '' }}">
                     </div>
                 </div>
-                <div id="ai" class="tab-content hidden">
-                    <h2 class="text-lg font-semibold mb-2">AI & Yapay Zeka Ayarları</h2>
-
-                    {{-- AI Provider Status --}}
-                    @if (isset($settings['ai_provider_status']))
-                        <div class="mb-6 p-4 bg-gray-50 rounded-lg">
-                            <h3 class="text-md font-medium mb-3">🤖 AI Sağlayıcı Durumu</h3>
-                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                                @foreach ($settings['ai_provider_status'] as $provider => $status)
-                                    <div
-                                        class="text-center p-3 rounded-lg {{ $status['status_provider'] ? 'bg-green-100 border-2 border-green-500' : 'bg-gray-100' }}">
-                                        <div class="font-medium capitalize">{{ $provider }}</div>
-                                        <div class="text-sm">
-                                            @if ($status['configured'])
-                                                <span class="text-green-600">✅ Yapılandırıldı</span>
-                                            @else
-                                                <span class="text-red-600">❌ Eksik</span>
-                                            @endif
-                                        </div>
-                                        @if ($status['status_provider'])
-                                            <div class="text-xs text-green-600 font-bold">AKTİF</div>
-                                        @endif
-                                    </div>
-                                @endforeach
-                            </div>
-                        </div>
-                    @endif
-
-                    <div class="mb-4">
-                        <label class="block mb-1 font-medium">AI Sağlayıcısı</label>
-                        <select style="color-scheme: light dark;" name="ai_provider" class="admin-input w-full transition-all duration-200">
-                            <option value="deepseek" @if (($settings['ai_provider'] ?? 'deepseek') == 'deepseek') selected @endif>DeepSeek</option>
-                            <option value="openai" @if (($settings['ai_provider'] ?? '') == 'openai') selected @endif>OpenAI GPT</option>
-                            <option value="google" @if (($settings['ai_provider'] ?? '') == 'google') selected @endif>Google Gemini</option>
-                            <option value="anthropic" @if (($settings['ai_provider'] ?? '') == 'anthropic') selected @endif>Claude (Anthropic)
-                            </option>
-                            <option value="ollama" @if (($settings['ai_provider'] ?? '') == 'ollama') selected @endif>Ollama (Local)
-                            </option>
-                        </select>
-                    </div>
-                    <div class="mb-4">
-                        <label class="block mb-1 font-medium">OpenAI API Anahtarı</label>
-                        <input type="text" name="openai_api_key" class="admin-input w-full"
-                            value="{{ $settings['openai_api_key'] ?? '' }}" placeholder="sk-...">
-                    </div>
-                    <div class="mb-4">
-                        <label class="block mb-1 font-medium">DeepSeek API Anahtarı</label>
-                        <input type="text" name="deepseek_api_key" class="admin-input w-full"
-                            value="{{ $settings['deepseek_api_key'] ?? '' }}" placeholder="sk-...">
-                    </div>
-                    <div class="mb-4">
-                        <label class="block mb-1 font-medium">Google Gemini API Anahtarı</label>
-                        <input type="text" name="google_api_key" class="admin-input w-full"
-                            value="{{ $settings['google_api_key'] ?? '' }}" placeholder="AIza...">
-                    </div>
-                    <div class="mb-4">
-                        <label class="block mb-1 font-medium">Anthropic Claude API Anahtarı</label>
-                        <input type="text" name="anthropic_api_key" class="admin-input w-full"
-                            value="{{ $settings['anthropic_api_key'] ?? '' }}" placeholder="sk-ant-...">
-                    </div>
-                    <div class="mb-4">
-                        <label class="block mb-1 font-medium">Otomatik İlan Açıklaması</label>
-                        <input type="checkbox" name="ai_auto_description"
-                            @if ($settings['ai_auto_description'] ?? false) checked @endif>
-                        <span class="ml-2">Aktif</span>
-                    </div>
-                    <div class="mb-4">
-                        <label class="block mb-1 font-medium">Akıllı Etiket Önerileri</label>
-                        <input type="checkbox" name="ai_smart_tags" @if ($settings['ai_smart_tags'] ?? false) checked @endif>
-                        <span class="ml-2">Aktif</span>
-                    </div>
-                </div>
+                {{-- ✅ AI & Yapay Zeka sekmesi kaldırıldı - Duplikasyon önlendi --}}
+                {{-- AI ayarları artık /admin/ai-settings sayfasında yönetiliyor --}}
+                {{-- Context7 Standard: C7-SINGLE-SOURCE-OF-TRUTH-2025-11-05 --}}
                 <div id="fiyat" class="tab-content hidden">
                     <h2 class="text-lg font-semibold mb-2">Fiyatlandırma Ayarları</h2>
                     <div class="mb-4">
-                        <label class="block mb-1 font-medium">Fiyat Yuvarlama</label>
-                        <select style="color-scheme: light dark;" name="price_rounding" class="admin-input w-full transition-all duration-200">
+                        <label class="block mb-1 font-medium text-gray-900 dark:text-white">Fiyat Yuvarlama</label>
+                        <select style="color-scheme: light dark;" 
+                                name="price_rounding" 
+                                class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200">
                             <option value="none" @if (($settings['price_rounding'] ?? '') == 'none') selected @endif>Yok</option>
                             <option value="nearest_1000" @if (($settings['price_rounding'] ?? '') == 'nearest_1000') selected @endif>En Yakın 1.000
                             </option>

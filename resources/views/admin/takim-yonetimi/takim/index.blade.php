@@ -131,41 +131,56 @@
 
         <form method="GET" action="{{ route('admin.takim-yonetimi.takim.index') }}"
             class="grid grid-cols-1 md:grid-cols-5 gap-4">
-            <div class="form-field">
-                <input type="text" class="admin-input" name="search" placeholder="Üye ara..."
-                    value="{{ request('search') }}">
+            <div class="space-y-2 relative">
+                <input type="text" 
+                       class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200" 
+                       name="search" 
+                       placeholder="Üye ara..."
+                       value="{{ request('search') }}">
             </div>
-            <div class="form-field">
-                <select style="color-scheme: light dark;" class="admin-input transition-all duration-200" name="rol">
-                    <option value="">Tüm Roller</option>
+            <div class="space-y-2 relative">
+                <select style="color-scheme: light dark;" 
+                        class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200" 
+                        name="rol">
+                    <option value="" class="bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-400">Tüm Roller</option>
                     @foreach (['admin', 'danisman', 'alt_kullanici', 'musteri_temsilcisi'] as $rol)
-                        <option value="{{ $rol }}" {{ request('rol') == $rol ? 'selected' : '' }}>
+                        <option value="{{ $rol }}" 
+                                class="bg-white dark:bg-gray-900 text-gray-900 dark:text-white" 
+                                {{ request('rol') == $rol ? 'selected' : '' }}>
                             {{ ucfirst(str_replace('_', ' ', $rol)) }}
                         </option>
                     @endforeach
                 </select>
             </div>
-            <div class="form-field">
-                <select style="color-scheme: light dark;" class="admin-input transition-all duration-200" name="status">
-                    <option value="">Tüm Durumlar</option>
+            <div class="space-y-2 relative">
+                <select style="color-scheme: light dark;" 
+                        class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200" 
+                        name="status">
+                    <option value="" class="bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-400">Tüm Durumlar</option>
                     @foreach (['active', 'pasif', 'izinli', 'tatilde'] as $statusOption)
-                        <option value="{{ $statusOption }}" {{ request('status') == $statusOption ? 'selected' : '' }}>
+                        <option value="{{ $statusOption }}" 
+                                class="bg-white dark:bg-gray-900 text-gray-900 dark:text-white" 
+                                {{ request('status') == $statusOption ? 'selected' : '' }}>
                             {{ ucfirst($statusOption) }}
                         </option>
                     @endforeach
                 </select>
             </div>
-            <div class="form-field">
-                <select style="color-scheme: light dark;" class="admin-input transition-all duration-200" name="lokasyon">
-                    <option value="">Tüm Lokasyonlar</option>
+            <div class="space-y-2 relative">
+                <select style="color-scheme: light dark;" 
+                        class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200" 
+                        name="lokasyon">
+                    <option value="" class="bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-400">Tüm Lokasyonlar</option>
                     @foreach ($lokasyonlar ?? [] as $lokasyon)
-                        <option value="{{ $lokasyon }}" {{ request('lokasyon') == $lokasyon ? 'selected' : '' }}>
+                        <option value="{{ $lokasyon }}" 
+                                class="bg-white dark:bg-gray-900 text-gray-900 dark:text-white" 
+                                {{ request('lokasyon') == $lokasyon ? 'selected' : '' }}>
                             {{ $lokasyon }}
                         </option>
                     @endforeach
                 </select>
             </div>
-            <div class="form-field">
+            <div class="space-y-2 relative">
                 <button type="submit" class="inline-flex items-center px-6 py-3 bg-orange-600 text-white font-semibold rounded-lg shadow-md hover:bg-orange-700 hover:scale-105 hover:shadow-lg active:scale-95 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:outline-none transition-all duration-200 w-full touch-target-optimized touch-target-optimized">
                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

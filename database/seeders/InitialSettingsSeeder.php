@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\LanguageSetting;
-use App\Models\SiteSetting;
+use App\Models\Setting;
 use Illuminate\Database\Seeder;
 
 class InitialSettingsSeeder extends Seeder
@@ -68,9 +68,13 @@ class InitialSettingsSeeder extends Seeder
         ];
 
         foreach ($siteSettings as $setting) {
-            SiteSetting::updateOrCreate(
-                ['key' => $setting['key']],
-                $setting
+            // ✅ STANDARDIZED: Using Setting model instead of SiteSetting (merged)
+            Setting::set(
+                $setting['key'],
+                $setting['value'],
+                $setting['group'],
+                $setting['type'],
+                $setting['description'] ?? null
             );
         }
 

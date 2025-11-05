@@ -2,7 +2,7 @@
     "context7": {
         "version": "5.2.0",
         "standard": "C7-CENTRAL-AUTHORITY-2025-11-01", 
-        "last_updated": "2025-11-01T11:30:00Z",
+        "last_updated": "2025-11-05T00:00:00Z",
         "mass_fix_completed": "DROPDOWN READABILITY FIX (1 Kasım 2025 11:20): 94 dosyada 626 düzeltme otomatik uygulandı. %100 Context7 compliance achieved!",
         "permanent_css_fix": "KALICI ÇÖZÜM (1 Kasım 2025 11:30): resources/css/app.css'e global CSS rules eklendi. Browser native dropdown rendering artık !important ile override ediliyor. TÜM dropdown'lar artık light/dark mode'da PERFECT okunabilirlik garantili!",
         "authority_file": ".context7/authority.json",
@@ -10,8 +10,8 @@
         "scope": "all-ides-all-ai-tools-auto-scripts",
         "description": "Merkezi Context7 referans sistemi - tüm IDE'ler, AI araçları ve otomatik script'ler bu dosyayı referans almalıdır",
         "critical_rules_added": "2025-10-11",
-        "critical_fixes": "71 files cleaned, 32 admin errors fixed, 3 AI services added, 5 API endpoints created, DROPDOWN READABILITY FIX (2025-11-01)",
-        "latest_fix": "CRITICAL UI FIX (1 Kasım 2025 14:00): Dropdown option'ları dark mode'da okunmuyor sorunu çözüldü. color-scheme: light dark + dark:bg-gray-900 + dark:text-white + explicit option styling. 7 field düzeltildi: İl, İlçe, Mahalle, Talep Tipi, Ana/Alt Kategori.",
+        "critical_fixes": "71 files cleaned, 32 admin errors fixed, 3 AI services added, 5 API endpoints created, DROPDOWN READABILITY FIX (2025-11-01), SETTINGS SYSTEM MERGE (2025-11-05)",
+        "latest_fix": "SETTINGS SYSTEM MERGE (5 Kasım 2025): Site ayarları duplikasyonları kaldırıldı. SiteSetting → Setting, placeholder controller'lar kaldırıldı, route'lar temizlendi. Tek kaynak prensibi uygulandı.",
         "master_update": "BREAKING CHANGE (1 Kasım 2025): Neo Design System KALDIRILDI → Pure Tailwind CSS ZORUNLU. Tüm neo-* class'ları YASAK. Tailwind utility classes + ZORUNLU transition/animation her işlemde.",
         "breaking_changes": {
             "date": "2025-11-01",
@@ -2127,5 +2127,105 @@
         },
         
         "enforcement": "STRICT - Kullanıcı 'kod kontrolü yapalım' dediğinde tüm analizler çalıştırılmalı"
+    },
+    
+    "settings_system_standards_2025_11_05": {
+        "standard": "C7-SETTINGS-MERGE-2025-11-05",
+        "description": "Site Ayarları Sistemi Standartları - Duplikasyon önleme ve tek kaynak prensibi",
+        "last_updated": "2025-11-05T00:00:00Z",
+        "version": "1.0.0",
+        
+        "forbidden_patterns": {
+            "SiteSetting_model": {
+                "pattern": "SiteSetting::",
+                "replacement": "Setting::",
+                "reason": "Context7 Kural İhlali: SiteSetting deprecated - Setting modeli kullanılmalı",
+                "severity": "critical",
+                "auto_fix": true,
+                "migration_guide": "SiteSetting::getValue() → Setting::get(), SiteSetting::setValue() → Setting::set()"
+            },
+            "SettingsController": {
+                "pattern": "SettingsController",
+                "replacement": "AyarlarController",
+                "reason": "Context7 Kural İhlali: SettingsController placeholder - AyarlarController kullanılmalı",
+                "severity": "critical",
+                "auto_fix": false
+            },
+            "UserSettingsController": {
+                "pattern": "UserSettingsController",
+                "replacement": "AyarlarController",
+                "reason": "Context7 Kural İhlali: UserSettingsController placeholder - AyarlarController kullanılmalı",
+                "severity": "critical",
+                "auto_fix": false
+            },
+            "site_settings_table": {
+                "pattern": "DB::table\\('site_settings'\\)",
+                "replacement": "Setting::",
+                "reason": "Context7 Kural İhlali: site_settings tablosu deprecated - settings tablosu ve Setting modeli kullanılmalı",
+                "severity": "critical",
+                "auto_fix": true
+            },
+            "admin_settings_routes": {
+                "pattern": "route\\('admin\\.settings\\.",
+                "replacement": "route('admin.ayarlar.",
+                "reason": "Context7 Kural İhlali: admin.settings.* route'ları deprecated - admin.ayarlar.* kullanılmalı",
+                "severity": "high",
+                "auto_fix": true
+            }
+        },
+        
+        "required_standards": {
+            "single_model": {
+                "model": "Setting",
+                "table": "settings",
+                "description": "Tek bir Setting modeli kullanılmalı - SiteSetting deprecated",
+                "controller": "AyarlarController",
+                "route_prefix": "admin.ayarlar"
+            },
+            "ai_settings_separation": {
+                "controller": "AISettingsController",
+                "route_prefix": "admin.ai-settings",
+                "description": "AI ayarları ayrı sayfada - /admin/ai-settings",
+                "note": "admin/ayarlar sayfasından admin.ai-settings.index'e link ile yönlendirilir"
+            },
+            "helper_functions": {
+                "file": "app/Helpers/settings_helper.php",
+                "functions": ["setting()", "setting_set()", "setting_group()", "setting_groups()"],
+                "description": "Helper fonksiyonlar Setting modelini kullanır",
+                "required": true
+            }
+        },
+        
+        "migration_guide": {
+            "SiteSetting_to_Setting": {
+                "SiteSetting::getValue($key, $default)": "Setting::get($key, $default)",
+                "SiteSetting::setValue($key, $value, $group)": "Setting::set($key, $value, $group, $type, $description)",
+                "SiteSetting::getGroup($group)": "Setting::getByGroup($group)",
+                "SiteSetting::getPublicSettings()": "Setting::where('group', 'public')->get()"
+            },
+            "DB_table_to_Eloquent": {
+                "DB::table('site_settings')->where('key', $key)->value('value')": "Setting::get($key)",
+                "DB::table('site_settings')->updateOrInsert(...)": "Setting::set($key, $value, $group, $type, $description)"
+            },
+            "controller_consolidation": {
+                "SettingsController": "Use AyarlarController instead",
+                "UserSettingsController": "Use AyarlarController instead",
+                "admin.settings.* routes": "Use admin.ayarlar.* routes instead"
+            }
+        },
+        
+        "database_migration": {
+            "source_table": "site_settings",
+            "target_table": "settings",
+            "note": "site_settings tablosundaki veriler settings tablosuna migrate edilmeli",
+            "migration_required": true,
+            "production_check": "Production'da manuel migration gerekebilir"
+        },
+        
+        "enforcement": "STRICT - Tüm SiteSetting kullanımları Setting'e çevrilmeli",
+        "reference": {
+            "knowledge_base": ".yalihan-bekci/knowledge/settings-system-merge-2025-11-05.json",
+            "standard_doc": "C7-SETTINGS-MERGE-2025-11-05"
+        }
     }
 }

@@ -695,8 +695,8 @@ Route::prefix('ai-category')->name('ai-category.')->group(function () {
         Route::delete('/{ayar}', [\App\Http\Controllers\Admin\AyarlarController::class, 'destroy'])->name('destroy');
     });
     
-    // Settings form route (for admin.settings.index view)
-    Route::post('/settings/update', [\App\Http\Controllers\Admin\AyarlarController::class, 'bulkUpdate'])->name('settings.update');
+    // ✅ REMOVED: Duplicate route - Use admin.ayarlar.bulk-update instead
+    // Route::post('/settings/update', [\App\Http\Controllers\Admin\AyarlarController::class, 'bulkUpdate'])->name('settings.update');
 
     // AI Ayarları
     Route::prefix('/ai-settings')->name('ai-settings.')->group(function () {
@@ -859,10 +859,11 @@ Route::prefix('ai-category')->name('ai-category.')->group(function () {
         Route::put('/', [\App\Http\Controllers\Admin\ProfileController::class, 'update'])->name('update');
     });
 
-    Route::prefix('ayarlarim')->name('ayarlarim.')->group(function () {
-        Route::get('/', [\App\Http\Controllers\Admin\UserSettingsController::class, 'index'])->name('index');
-        Route::put('/', [\App\Http\Controllers\Admin\UserSettingsController::class, 'update'])->name('update');
-    });
+    // ✅ REMOVED: UserSettingsController placeholder - Use admin.ayarlar instead
+    // Route::prefix('ayarlarim')->name('ayarlarim.')->group(function () {
+    //     Route::get('/', [\App\Http\Controllers\Admin\UserSettingsController::class, 'index'])->name('index');
+    //     Route::put('/', [\App\Http\Controllers\Admin\UserSettingsController::class, 'update'])->name('update');
+    // });
 
     Route::prefix('adres-yonetimi')->name('adres-yonetimi.')->group(function () {
         Route::get('/', [\App\Http\Controllers\Admin\AdresYonetimiController::class, 'index'])->name('index');
@@ -886,8 +887,8 @@ Route::prefix('ai-category')->name('ai-category.')->group(function () {
         Route::delete('/{type}/{id}', [\App\Http\Controllers\Admin\AdresYonetimiController::class, 'destroy'])->name('destroy');
     });
 
-    // Add new Konum Ayarları route
-    Route::get('/ayarlar/konum', [\App\Http\Controllers\Admin\SettingsController::class, 'locationSettings'])->name('settings.location');
+    // ✅ REMOVED: SettingsController placeholder - Use admin.ayarlar instead
+    // Route::get('/ayarlar/konum', [\App\Http\Controllers\Admin\SettingsController::class, 'locationSettings'])->name('settings.location');
 
     // Page Analyzer Routes
     Route::prefix('/page-analyzer')->name('page-analyzer.')->group(function () {

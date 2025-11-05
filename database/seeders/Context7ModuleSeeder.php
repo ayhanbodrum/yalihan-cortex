@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use App\Models\Setting;
 
 /**
  * Context7 Module Seeder
@@ -309,9 +310,13 @@ class Context7ModuleSeeder extends Seeder
         ];
 
         foreach ($siteSettings as $setting) {
-            DB::table('site_settings')->updateOrInsert(
-                ['key' => $setting['key']],
-                $setting
+            // ✅ STANDARDIZED: Using Setting model instead of DB::table('site_settings')
+            Setting::set(
+                $setting['key'],
+                $setting['value'],
+                $setting['group'] ?? 'general',
+                $setting['type'],
+                $setting['description'] ?? null
             );
         }
 

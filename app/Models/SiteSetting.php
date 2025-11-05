@@ -5,6 +5,19 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
 
+/**
+ * @deprecated This model is deprecated. Use Setting model instead.
+ * SiteSetting has been merged into Setting model for Context7 compliance.
+ * 
+ * Migration guide:
+ * - Replace SiteSetting::getValue() with Setting::get()
+ * - Replace SiteSetting::setValue() with Setting::set()
+ * - Replace SiteSetting::getGroup() with Setting::getByGroup()
+ * 
+ * All data should be migrated from site_settings table to settings table.
+ * 
+ * @see \App\Models\Setting
+ */
 class SiteSetting extends Model
 {
     protected $fillable = [
@@ -20,40 +33,37 @@ class SiteSetting extends Model
         'one_cikan' => 'boolean', // Context7: status → one_cikan
     ];
 
+    /**
+     * @deprecated Use Setting::get() instead
+     */
     public static function getValue($key, $default = null)
     {
-        return Cache::remember('setting.'.$key, 3600, function () use ($key, $default) {
-            $setting = static::where('key', $key)->first();
-
-            return $setting ? $setting->value : $default;
-        });
+        return Setting::get($key, $default);
     }
 
+    /**
+     * @deprecated Use Setting::set() instead
+     */
     public static function setValue($key, $value, $group = 'general')
     {
-        $setting = static::updateOrCreate(
-            ['key' => $key],
-            [
-                'value' => $value,
-                'group' => $group,
-                'type' => is_bool($value) ? 'boolean' : (is_numeric($value) ? 'number' : 'text'),
-            ]
-        );
-
-        Cache::forget('setting.'.$key);
-
-        return $setting;
+        return Setting::set($key, $value, $group);
     }
 
+    /**
+     * @deprecated Use Setting::getByGroup() instead
+     */
     public static function getGroup($group)
     {
-        return static::where('group', $group)->get();
+        return Setting::getByGroup($group);
     }
 
+    /**
+     * @deprecated Use Setting::getByGroup('public') with appropriate filter instead
+     */
     public static function getPublicSettings()
     {
         return Cache::remember('public_settings', 3600, function () {
-            return static::where('is_public', true)->get();
+            return Setting::where('group', 'public')->get();
         });
     }
 }
