@@ -104,10 +104,12 @@ class IlanController extends AdminController
         $query->with([
             'ilanSahibi:id,ad,soyad,telefon',
             'danisman:id,name,email',
+            'userDanisman:id,name,email', // Template'de kullanılıyor
             'il:id,il_adi',
             'ilce:id,ilce_adi',
             'anaKategori:id,name',
             'altKategori:id,name',
+            'yayinTipi:id,name', // Template'de kullanılıyor
         ]);
 
         // Paginate FIRST (efficient: only loads needed rows)
