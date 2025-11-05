@@ -32,15 +32,13 @@ class AIPromptManager
      */
     public function saveLearnedPrompt($context, $prompt, $successRate)
     {
-        DB::table('ai_core_system')->updateOrInsert(
+        \App\Models\AICoreSystem::updateOrCreate(
             ['context' => $context, 'task_type' => 'learned_prompt'],
             [
                 'prompt_template' => $prompt,
                 'success_rate' => $successRate,
                 'usage_count' => 1,
                 'is_active' => true,
-                'created_at' => now(),
-                'updated_at' => now()
             ]
         );
     }
@@ -51,8 +49,7 @@ class AIPromptManager
     public function getBestPrompt($context)
     {
         $learnedPrompts = Cache::remember("best_prompt_{$context}", 3600, function () use ($context) {
-            return DB::table('ai_core_system')
-                ->where('context', $context)
+            return \App\Models\AICoreSystem::where('context', $context)
                 ->where('enabled', true)
                 ->orderBy('success_rate', 'desc')
                 ->first();

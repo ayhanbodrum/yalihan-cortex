@@ -175,7 +175,7 @@ class AILearningEngine
      */
     private function saveLearningData($prompt, $expectedOutput, $actualOutput, $accuracy)
     {
-        DB::table('ai_learning_data')->insert([
+        \App\Models\AILearningData::create([
             'context' => $this->extractContext($prompt),
             'input_data' => $prompt,
             'expected_output' => $expectedOutput,

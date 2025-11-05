@@ -55,9 +55,8 @@ class AIService
         $cacheKey = "konut_hibrit_siralama_{$kategoriSlug}";
 
         return Cache::remember($cacheKey, 3600, function () use ($kategoriSlug) {
-            return DB::table('konut_ozellik_hibrit_siralama')
-                ->where('active', true)
-                ->orderBy('siralama', 'asc')
+            return \App\Models\KonutOzellikHibritSiralama::active()
+                ->ordered()
                 ->get()
                 ->toArray();
         });

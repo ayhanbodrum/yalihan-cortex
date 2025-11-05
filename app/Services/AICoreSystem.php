@@ -70,8 +70,7 @@ class AICoreSystem
     private function getLearnedPatterns($context)
     {
         return Cache::remember("ai_patterns_{$context}", 3600, function () use ($context) {
-            return DB::table('ai_core_system')
-                ->where('context', $context)
+            return \App\Models\AICoreSystem::where('context', $context)
                 ->where('enabled', true)
                 ->orderBy('success_rate', 'desc')
                 ->first();
@@ -104,8 +103,7 @@ class AICoreSystem
      */
     public function updateSuccessRate($context, $taskType, $isSuccess)
     {
-        $current = DB::table('ai_core_system')
-            ->where('context', $context)
+        $current = \App\Models\AICoreSystem::where('context', $context)
             ->where('task_type', $taskType)
             ->first();
 
@@ -114,13 +112,10 @@ class AICoreSystem
             $newSuccess = $current->success_rate + ($isSuccess ? 1 : 0);
             $newRate = ($newSuccess / $newCount) * 100;
 
-            DB::table('ai_core_system')
-                ->where('id', $current->id)
-                ->update([
-                    'success_rate' => $newRate,
-                    'usage_count' => $newCount,
-                    'updated_at' => now()
-                ]);
+            $current->update([
+                'success_rate' => $newRate,
+                'usage_count' => $newCount,
+            ]);
         }
     }
 }

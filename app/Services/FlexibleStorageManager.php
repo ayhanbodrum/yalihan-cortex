@@ -99,39 +99,38 @@ class LocalMySQLProvider
 {
     public function store($key, $data)
     {
-        return DB::table('ai_storage')->updateOrInsert(
+        return \App\Models\AIStorage::updateOrCreate(
             ['storage_key' => $key],
             [
-                'data' => json_encode($data),
+                'data' => $data,
                 'type' => 'pattern',
                 'context' => $this->extractContext($key),
-                'updated_at' => now()
             ]
         );
     }
 
     public function get($key)
     {
-        $record = DB::table('ai_storage')->where('storage_key', $key)->first();
-        return $record ? json_decode($record->data, true) : null;
+        $record = \App\Models\AIStorage::findByKey($key);
+        return $record ? $record->data : null;
     }
 
     public function delete($key)
     {
-        return DB::table('ai_storage')->where('storage_key', $key)->delete();
+        return \App\Models\AIStorage::where('storage_key', $key)->delete();
     }
 
     public function exists($key)
     {
-        return DB::table('ai_storage')->where('storage_key', $key)->exists();
+        return \App\Models\AIStorage::where('storage_key', $key)->exists();
     }
 
     public function list($prefix = '')
     {
-        $query = DB::table('ai_storage');
+        $query = \App\Models\AIStorage::query();
 
         if ($prefix) {
-            $query->where('storage_key', 'like', $prefix . '%');
+            $query->byPrefix($prefix);
         }
 
         return $query->pluck('storage_key')->toArray();

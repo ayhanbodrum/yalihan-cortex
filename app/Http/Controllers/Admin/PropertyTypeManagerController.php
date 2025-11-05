@@ -8,6 +8,7 @@ use App\Models\Feature;
 use App\Models\FeatureCategory;
 use App\Models\FeatureAssignment;
 use App\Models\KategoriYayinTipiFieldDependency;
+use App\Models\AltKategoriYayinTipi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -27,12 +28,12 @@ class PropertyTypeManagerController extends AdminController
     public function index()
     {
         $query = IlanKategori::where('seviye', 0);
-        
+
         // Context7: Schema kontrolü ile status kolonu
         if (Schema::hasColumn('ilan_kategorileri', 'status')) {
             $query->where('status', true); // ✅ Sadece aktif ana kategoriler
         }
-        
+
         $kategoriler = $query->with(['children' => function($q) {
                 $q->where('seviye', 1);
                 // Context7: Schema kontrolü ile status kolonu
@@ -96,7 +97,7 @@ class PropertyTypeManagerController extends AdminController
                 'seviye' => $kategori->seviye,
                 'beklenen_seviye' => 0
             ]);
-            
+
             // Eğer alt kategori veya yayın tipi ise, ana kategoriye yönlendir
             if ($kategori->parent_id) {
                 $anaKategori = IlanKategori::find($kategori->parent_id);
@@ -164,7 +165,7 @@ class PropertyTypeManagerController extends AdminController
                 ->distinct()
                 ->pluck('parent_id')
                 ->toArray();
-            
+
             Log::info('PropertyTypeManager: Veritabanında mevcut parent_id değerleri', [
                 'parent_ids' => $tumParentIdler,
                 'aradigimiz_id' => $kategoriId,
@@ -213,8 +214,7 @@ class PropertyTypeManagerController extends AdminController
             foreach($altKategoriler as $altKat) {
                 // Bu alt kategorinin aktif yayın tipleri (pivot tablodan)
                 try {
-                    $activeYayinTipleri = DB::table('alt_kategori_yayin_tipi')
-                        ->where('alt_kategori_id', $altKat->id)
+                    $activeYayinTipleri = AltKategoriYayinTipi::where('alt_kategori_id', $altKat->id)
                         ->where('enabled', 1)
                         ->pluck('yayin_tipi_id');
                     $altKategoriYayinTipleri[$altKat->id] = $activeYayinTipleri;
@@ -297,7 +297,7 @@ class PropertyTypeManagerController extends AdminController
     {
         try {
             $existingCount = IlanKategoriYayinTipi::where('kategori_id', $kategoriId)->count();
-            
+
             // Debug log - Geliştirme modunda çalışır
             if (config('app.debug')) {
                 $existingRecords = IlanKategoriYayinTipi::where('kategori_id', $kategoriId)->get();
@@ -309,7 +309,7 @@ class PropertyTypeManagerController extends AdminController
                     })->toArray()
                 ]);
             }
-            
+
             if ($existingCount > 0) {
                 return;
             }
@@ -337,7 +337,7 @@ class PropertyTypeManagerController extends AdminController
                 }
                 $order++;
             }
-            
+
             // Debug log - Yayın tipleri oluşturuldu
             if (config('app.debug')) {
                 $createdRecords = IlanKategoriYayinTipi::where('kategori_id', $kategoriId)->get();
@@ -373,7 +373,7 @@ class PropertyTypeManagerController extends AdminController
             $altKategoriId = $validated['alt_kategori_id'];
             $yayinTipiId = $validated['yayin_tipi_id'];
             $enabled = $validated['enabled'];
-            
+
             // Debug log
             Log::info('toggleYayinTipi called', [
                 'kategori_id' => $kategoriId,
@@ -404,7 +404,7 @@ class PropertyTypeManagerController extends AdminController
 
         if ($enabled) {
             // İlişkiyi ekle veya güncelle
-            DB::table('alt_kategori_yayin_tipi')->updateOrInsert(
+            AltKategoriYayinTipi::updateOrCreate(
                 [
                     'alt_kategori_id' => $altKategoriId,
                     'yayin_tipi_id' => $yayinTipiId
@@ -418,8 +418,7 @@ class PropertyTypeManagerController extends AdminController
             );
         } else {
             // İlişkiyi kaldır veya disabled yap
-            DB::table('alt_kategori_yayin_tipi')
-                ->where('alt_kategori_id', $altKategoriId)
+            AltKategoriYayinTipi::where('alt_kategori_id', $altKategoriId)
                 ->where('yayin_tipi_id', $yayinTipiId)
                 ->update([
                     'enabled' => false,
@@ -523,8 +522,7 @@ class PropertyTypeManagerController extends AdminController
             }
 
             // Alt kategori ilişkilerini kaldır
-            DB::table('alt_kategori_yayin_tipi')
-                ->where('yayin_tipi_id', $yayinTipiId)
+            AltKategoriYayinTipi::where('yayin_tipi_id', $yayinTipiId)
                 ->delete();
 
             // Feature assignment ilişkilerini kaldır
@@ -602,8 +600,7 @@ class PropertyTypeManagerController extends AdminController
             }
 
             // Alt kategori yayın tipi ilişkilerini kaldır
-            DB::table('alt_kategori_yayin_tipi')
-                ->where('alt_kategori_id', $altKategoriId)
+            AltKategoriYayinTipi::where('alt_kategori_id', $altKategoriId)
                 ->delete();
 
             // Alt kategoriyi soft delete yap
@@ -647,7 +644,7 @@ class PropertyTypeManagerController extends AdminController
 
         // ✅ POLYMORPHIC: Her yayın tipi için feature assignments
         $fieldDependencies = [];
-        
+
         // Context7: Tablo kontrolü ile güvenli sorgulama
         if (Schema::hasTable('feature_assignments')) {
             foreach ($yayinTipleri as $yayinTipi) {
@@ -664,9 +661,9 @@ class PropertyTypeManagerController extends AdminController
                     } else {
                         $assignments = collect([]);
                     }
-                    
+
                     $fieldDependencies[$yayinTipi->slug ?? $yayinTipi->yayin_tipi] = $assignments;
-                    
+
                     Log::info('Feature assignments loaded for property type', [
                         'property_type' => $yayinTipi->yayin_tipi,
                         'assignments_count' => $assignments->count()
@@ -1255,7 +1252,7 @@ class PropertyTypeManagerController extends AdminController
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
-            
+
             Log::error('Feature sync failed', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
@@ -1282,7 +1279,7 @@ class PropertyTypeManagerController extends AdminController
 
         try {
             $assignment = FeatureAssignment::findOrFail($assignmentId);
-            
+
             $assignment->update($request->only([
                 'is_required',
                 'is_visible',
