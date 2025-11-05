@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Models\Ozellik;
+use App\Models\OzellikKategori;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
 use App\Services\AIService;
@@ -39,8 +41,7 @@ class SmartFieldGenerationService
      */
     private function getExistingFields($kategoriSlug, $yayinTipi)
     {
-        $query = DB::table('ozellikler')
-            ->join('ozellik_kategorileri', 'ozellikler.kategori_id', '=', 'ozellik_kategorileri.id')
+        $query = Ozellik::join('ozellik_kategorileri', 'ozellikler.kategori_id', '=', 'ozellik_kategorileri.id')
             ->where('ozellik_kategorileri.slug', $kategoriSlug)
             ->where('ozellikler.status', 1);
 
@@ -175,16 +176,14 @@ class SmartFieldGenerationService
             $matrix = [];
 
             // Tüm özellik kategorilerini al
-            $ozellikKategorileri = DB::table('ozellik_kategorileri')
-                ->where('status', 'active')
+            $ozellikKategorileri = OzellikKategori::where('status', true)
                 ->orderBy('order')
                 ->get();
 
             foreach ($ozellikKategorileri as $kategori) {
-                $ozellikler = DB::table('ozellikler')
-                    ->where('kategori_id', $kategori->id)
+                $ozellikler = Ozellik::where('kategori_id', $kategori->id)
                     ->where('status', 1)
-                    ->orderBy('order')
+                    ->orderBy('sira')
                     ->get();
 
                 $matrix[$kategori->slug] = [

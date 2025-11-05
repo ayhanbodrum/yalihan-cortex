@@ -96,12 +96,12 @@
         "YazlikRezervasyon.php"
       ],
       "lastModified": {
-        "file": "ExchangeRate.php",
-        "time": "2025-11-04T16:17:34.141Z"
+        "file": "Ilan.php",
+        "time": "2025-11-04T18:56:09.271Z"
       }
     },
     "controllers": {
-      "count": 143,
+      "count": 144,
       "files": [
         "AI/AISearchController.php",
         "AI/AdvancedAIController.php",
@@ -165,6 +165,7 @@
         "Admin/ValidationController.php",
         "Admin/WikimapiaSearchController.php",
         "Admin/YalihanBekciController.php",
+        "Admin/YayinTipiYoneticisiController.php",
         "Admin/YazlikKiralamaController.php",
         "Api/AIChatController.php",
         "Api/AIContentController.php",
@@ -248,12 +249,12 @@
         "VillaController.php"
       ],
       "lastModified": {
-        "file": "WikimapiaSearchController.php",
-        "time": "2025-11-04T16:53:04.674Z"
+        "file": "IlanKategoriController.php",
+        "time": "2025-11-05T06:45:33.220Z"
       }
     },
     "migrations": {
-      "count": 105,
+      "count": 106,
       "files": [
         "2018_08_08_100000_create_telescope_entries_table.php",
         "2025_10_07_214858_create_users_table.php",
@@ -358,16 +359,17 @@
         "2025_11_04_113608_add_tcmb_fields_to_exchange_rates_table.php",
         "2025_11_04_163654_add_latitude_longitude_to_site_apartmanlar_table.php",
         "2025_11_05_000001_add_turkiyeapi_fields_to_ilanlar.php",
+        "2025_11_05_000001_create_feature_assignments_table.php",
         "fixes/2025_10_24_170000_fix_all_status_fields_to_boolean_master.php",
         "fixes/2025_10_24_171000_fix_status_phase1_critical_tables.php"
       ],
       "lastModified": {
-        "file": "2025_11_04_163654_add_latitude_longitude_to_site_apartmanlar_table.php",
-        "time": "2025-11-04T16:37:16.539Z"
+        "file": "2025_11_05_000001_create_feature_assignments_table.php",
+        "time": "2025-11-04T19:29:15.024Z"
       }
     },
     "views": {
-      "count": 374,
+      "count": 375,
       "files": [
         "admin/address/create.blade.php",
         "admin/address/index.blade.php",
@@ -550,6 +552,7 @@
         "admin/wikimapia-search/index.blade.php",
         "admin/yalihan-bekci/dashboard-simple.blade.php",
         "admin/yalihan-bekci/dashboard.blade.php",
+        "admin/yayin-tipi-yoneticisi/index.blade.php",
         "admin/yazlik-kiralama/bookings.blade.php",
         "admin/yazlik-kiralama/create.blade.php",
         "admin/yazlik-kiralama/index.blade.php",
@@ -745,8 +748,8 @@
         "yaliihan-property-listing.blade.php"
       ],
       "lastModified": {
-        "file": "index.blade.php",
-        "time": "2025-11-04T16:53:53.611Z"
+        "file": "show.blade.php",
+        "time": "2025-11-04T21:10:25.332Z"
       }
     },
     "routes": {
@@ -761,12 +764,12 @@
         },
         {
           "file": "routes/admin.php",
-          "routes": 564
+          "routes": 574
         }
       ],
-      "endpoints": 904
+      "endpoints": 914
     },
-    "lastScan": "2025-11-04T17:49:41.891Z"
+    "lastScan": "2025-11-05T06:46:15.719Z"
   },
   "learnings": [
     {

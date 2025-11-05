@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\IlanKategoriYayinTipi;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -80,8 +81,7 @@ class CategoriesController extends Controller
             $parentId = $category->parent_id ?: $categoryId;
 
             // ilan_kategori_yayin_tipleri tablosundan getir
-            $yayinTipleri = DB::table('ilan_kategori_yayin_tipleri')
-                ->where('kategori_id', $parentId)
+            $yayinTipleri = IlanKategoriYayinTipi::where('kategori_id', $parentId)
                 ->where('status', 'Aktif')
                 ->orderBy('order')
                 ->orderBy('yayin_tipi')

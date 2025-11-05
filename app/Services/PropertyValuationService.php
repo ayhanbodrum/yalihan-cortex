@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Ilan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
@@ -227,8 +228,7 @@ class PropertyValuationService
      */
     private function findSimilarProperties($parcelData)
     {
-        $query = DB::table('ilanlar')
-            ->where('il', $parcelData['il'])
+        $query = Ilan::where('il', $parcelData['il'])
             ->where('ilce', $parcelData['ilce'])
             ->where('nitelik', $parcelData['nitelik'])
             ->whereNotNull('fiyat')
@@ -341,8 +341,7 @@ class PropertyValuationService
     public function getMarketTrends($location, $period = 12)
     {
         try {
-            $trends = DB::table('ilanlar')
-                ->select(
+            $trends = Ilan::select(
                     DB::raw('YEAR(created_at) as year'),
                     DB::raw('MONTH(created_at) as month'),
                     DB::raw('AVG(fiyat) as avg_price'),

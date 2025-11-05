@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\User;
+use App\Models\Ilan;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
 class AnalyticsController extends AdminController
@@ -18,7 +19,7 @@ class AnalyticsController extends AdminController
         $totalKategoriler = \App\Models\IlanKategori::count();
         $totalKullanicilar = \App\Models\User::count();
         $newIlanlarThisMonth = \App\Models\Ilan::whereMonth('created_at', now()->month)->count();
-        
+
         // Son 7 günün ilan trendi
         $ilanTrendi = [];
         for ($i = 6; $i >= 0; $i--) {
@@ -29,7 +30,7 @@ class AnalyticsController extends AdminController
                 'count' => $count
             ];
         }
-        
+
         // Kategori dağılımı (Top 5)
         $kategoriDagilimi = \App\Models\IlanKategori::withCount('ilanlar')
             ->orderBy('ilanlar_count', 'desc')
@@ -41,12 +42,12 @@ class AnalyticsController extends AdminController
                     'count' => $kategori->ilanlar_count
                 ];
             });
-        
+
         // En popüler kategori
         $topKategori = \App\Models\IlanKategori::withCount('ilanlar')
             ->orderBy('ilanlar_count', 'desc')
             ->first();
-        
+
         $metrics = [
             'total_ilanlar' => $totalIlanlar,
             'total_kategoriler' => $totalKategoriler,
@@ -58,10 +59,10 @@ class AnalyticsController extends AdminController
             'top_kategori_count' => $topKategori ? $topKategori->ilanlar_count : 0,
             'last_updated' => now()->format('d.m.Y H:i')
         ];
-        
+
         // Period for dashboard
         $period = $request->get('period', '7d');
-        
+
         return view('admin.analytics.dashboard', compact('metrics', 'period'));
     }
 
@@ -75,7 +76,7 @@ class AnalyticsController extends AdminController
         $totalKategoriler = \App\Models\IlanKategori::count();
         $totalKullanicilar = \App\Models\User::count();
         $newIlanlarThisMonth = \App\Models\Ilan::whereMonth('created_at', now()->month)->count();
-        
+
         // Son 7 günün ilan trendi
         $ilanTrendi = [];
         for ($i = 6; $i >= 0; $i--) {
@@ -86,7 +87,7 @@ class AnalyticsController extends AdminController
                 'count' => $count
             ];
         }
-        
+
         // Kategori dağılımı (Top 5)
         $kategoriDagilimi = \App\Models\IlanKategori::withCount('ilanlar')
             ->orderBy('ilanlar_count', 'desc')
@@ -98,12 +99,12 @@ class AnalyticsController extends AdminController
                     'count' => $kategori->ilanlar_count
                 ];
             });
-        
+
         // En popüler kategori
         $topKategori = \App\Models\IlanKategori::withCount('ilanlar')
             ->orderBy('ilanlar_count', 'desc')
             ->first();
-        
+
         $metrics = [
             'total_ilanlar' => $totalIlanlar,
             'total_kategoriler' => $totalKategoriler,
@@ -284,9 +285,9 @@ class AnalyticsController extends AdminController
     private function getDashboardMetrics()
     {
         return [
-            'total_users' => DB::table('users')->count(),
-            'total_properties' => DB::table('ilanlar')->count(),
-            'active_properties' => DB::table('ilanlar')->whereNotNull('status')->count(),
+            'total_users' => User::count(),
+            'total_properties' => Ilan::count(),
+            'active_properties' => Ilan::whereNotNull('status')->count(),
             'total_views' => 45623, // Mock data - implement actual tracking
             'conversion_rate' => 3.2, // Mock data
             'avg_session_duration' => '4:32', // Mock data

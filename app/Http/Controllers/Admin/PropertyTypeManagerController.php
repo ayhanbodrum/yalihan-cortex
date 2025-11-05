@@ -529,8 +529,7 @@ class PropertyTypeManagerController extends AdminController
 
             // Feature assignment ilişkilerini kaldır
             if (Schema::hasTable('feature_assignments')) {
-                DB::table('feature_assignments')
-                    ->where('assignable_type', IlanKategoriYayinTipi::class)
+                FeatureAssignment::where('assignable_type', IlanKategoriYayinTipi::class)
                     ->where('assignable_id', $yayinTipiId)
                     ->delete();
             }
@@ -873,30 +872,32 @@ class PropertyTypeManagerController extends AdminController
                     'updated_at' => now(),
                 ];
 
-                $existing = DB::table('kategori_yayin_tipi_field_dependencies')
-                    ->where('kategori_slug', $request->kategori_slug)
+                $existing = KategoriYayinTipiFieldDependency::where('kategori_slug', $request->kategori_slug)
                     ->where('yayin_tipi', $yayinKey)
                     ->where('field_slug', $request->field_slug)
                     ->first();
 
                 if ($existing) {
                     $fieldId = $existing->id;
-                    DB::table('kategori_yayin_tipi_field_dependencies')
-                        ->where('id', $fieldId)
-                        ->update(['enabled' => $enabled, 'updated_at' => now()]);
+                    $existing->update(['enabled' => $enabled, 'updated_at' => now()]);
                 } else {
-                    $fieldId = DB::table('kategori_yayin_tipi_field_dependencies')->insertGetId(array_merge([
+                    $field = KategoriYayinTipiFieldDependency::create(array_merge([
                         'kategori_slug' => $request->kategori_slug,
                         // Yayın tipi ID olarak saklanır (string de olabilir)
                         'yayin_tipi' => $yayinKey,
                         'field_slug' => $request->field_slug,
                     ], $defaults));
+                    $fieldId = $field->id;
                 }
             } else {
                 // Doğrudan güncelle
-                $updated = DB::table('kategori_yayin_tipi_field_dependencies')
-                    ->where('id', $fieldId)
-                    ->update(['enabled' => $enabled, 'updated_at' => now()]);
+                $field = KategoriYayinTipiFieldDependency::find($fieldId);
+                if ($field) {
+                    $field->update(['enabled' => $enabled, 'updated_at' => now()]);
+                    $updated = 1;
+                } else {
+                    $updated = 0;
+                }
                 if ($updated === 0) {
                     throw new \Exception('Field not found or update failed');
                 }

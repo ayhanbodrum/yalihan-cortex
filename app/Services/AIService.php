@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\KategoriYayinTipiFieldDependency;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
@@ -154,8 +155,7 @@ class AIService
     public function autoFillFields(string $kategoriSlug, string $yayinTipi, array $existingData = []): array
     {
         // AI-enabled field'ları getir
-        $aiFields = DB::table('kategori_yayin_tipi_field_dependencies')
-            ->where('kategori_slug', $kategoriSlug)
+        $aiFields = KategoriYayinTipiFieldDependency::where('kategori_slug', $kategoriSlug)
             ->where('yayin_tipi', $yayinTipi)
             ->where('ai_auto_fill', 1)
             ->where('enabled', 1)

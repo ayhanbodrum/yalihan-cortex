@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Ilan;
 use App\Models\IlanKategori;
+use App\Models\Il;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class IlanPublicController extends Controller
 {
@@ -48,7 +48,7 @@ class IlanPublicController extends Controller
 
         // Filtreler için veriler
         $kategoriler = IlanKategori::where('parent_id', null)->get();
-        $iller = DB::table('iller')->orderBy('il_adi')->get();
+        $iller = Il::orderBy('il_adi')->get();
 
         return view('frontend.ilanlar.index', compact('ilanlar', 'kategoriler', 'iller'));
     }
@@ -59,8 +59,8 @@ class IlanPublicController extends Controller
     public function show($id)
     {
         $ilan = Ilan::with([
-            'il', 'ilce', 'mahalle', 
-            'ilanSahibi', 'danisman', 
+            'il', 'ilce', 'mahalle',
+            'ilanSahibi', 'danisman',
             'kategori', 'parentKategori',
             'ilanFotograflari'
         ])
@@ -98,7 +98,7 @@ class IlanPublicController extends Controller
     public function kategoriIlanlari($kategoriId)
     {
         $kategori = IlanKategori::findOrFail($kategoriId);
-        
+
         $ilanlar = Ilan::with(['il', 'ilce', 'kategori'])
             ->where('status', 'Aktif') // Context7 compliant!
             ->where('kategori_id', $kategoriId)

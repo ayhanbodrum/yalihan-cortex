@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\IlanKategori;
+use App\Models\KategoriYayinTipiFieldDependency;
 use App\Models\Ozellik;
 use App\Services\AICoreSystem;
 use App\Services\AISystemIntegration;
@@ -162,8 +163,7 @@ class AICategoryManager
     private function getCategoryFields($categorySlug)
     {
         return Cache::remember("category_fields_{$categorySlug}", 3600, function () use ($categorySlug) {
-            return DB::table('kategori_yayin_tipi_field_dependencies')
-                ->where('kategori_slug', $categorySlug)
+            return KategoriYayinTipiFieldDependency::where('kategori_slug', $categorySlug)
                 ->get()
                 ->map(function ($field) {
                     return [

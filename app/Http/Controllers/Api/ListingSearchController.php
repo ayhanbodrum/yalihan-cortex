@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\Il;
+use App\Models\Ilce;
+use App\Models\Mahalle;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -100,8 +103,7 @@ class ListingSearchController extends Controller
     public function getProvinces()
     {
         try {
-            $provinces = DB::table('iller')
-                ->select('id', 'il_adi as il')
+            $provinces = Il::select('id', 'il_adi as il')
                 ->orderBy('il_adi')
                 ->get();
 
@@ -121,8 +123,7 @@ class ListingSearchController extends Controller
     public function getDistricts($provinceId)
     {
         try {
-            $districts = DB::table('ilceler')
-                ->select('id', 'ilce_adi as ilce')
+            $districts = Ilce::select('id', 'ilce_adi as ilce')
                 ->where('il_id', $provinceId)
                 ->orderBy('ilce_adi')
                 ->get();
@@ -145,8 +146,7 @@ class ListingSearchController extends Controller
     public function getNeighborhoods($districtId)
     {
         try {
-            $neighborhoods = DB::table('mahalleler')
-                ->select('id', 'mahalle_adi as mahalle')
+            $neighborhoods = Mahalle::select('id', 'mahalle_adi as mahalle')
                 ->where('ilce_id', $districtId)
                 ->orderBy('mahalle_adi')
                 ->get();

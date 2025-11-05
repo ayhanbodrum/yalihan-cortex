@@ -500,8 +500,7 @@ class LocationController extends Controller
             $validationResults = [];
 
             // Context7: İl-İlçe ilişkisi doğrulama
-            $district = \DB::table('ilceler')
-                ->where('id', $request->ilce_id)
+            $district = Ilce::where('id', $request->ilce_id)
                 ->where('il_id', $request->il_id)
                 ->first();
 
@@ -518,8 +517,7 @@ class LocationController extends Controller
 
             // Context7: Mahalle-İlçe ilişkisi doğrulama
             if ($request->mahalle_id) {
-                $neighborhood = \DB::table('mahalleler')
-                    ->where('id', $request->mahalle_id)
+                $neighborhood = Mahalle::where('id', $request->mahalle_id)
                     ->where('ilce_id', $request->ilce_id)
                     ->first();
 

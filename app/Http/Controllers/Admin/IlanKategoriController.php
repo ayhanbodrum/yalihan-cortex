@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Ilan;
 use App\Models\IlanKategori;
 use App\Models\IlanKategoriYayinTipi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Exception;
 
@@ -360,21 +362,18 @@ class IlanKategoriController extends AdminController
     private function calculateCategoryPopularity($categoryId)
     {
         // Basit popülarlik hesaplama
-        return DB::table('ilans')
-            ->where('kategori_id', $categoryId)
+        return Ilan::where('kategori_id', $categoryId)
             ->where('created_at', '>=', now()->subDays(30))
             ->count();
     }
 
     private function calculateCategoryGrowth($categoryId)
     {
-        $thisMonth = DB::table('ilans')
-            ->where('kategori_id', $categoryId)
+        $thisMonth = Ilan::where('kategori_id', $categoryId)
             ->where('created_at', '>=', now()->startOfMonth())
             ->count();
 
-        $lastMonth = DB::table('ilans')
-            ->where('kategori_id', $categoryId)
+        $lastMonth = Ilan::where('kategori_id', $categoryId)
             ->whereBetween('created_at', [
                 now()->subMonth()->startOfMonth(),
                 now()->subMonth()->endOfMonth()
@@ -420,10 +419,9 @@ class IlanKategoriController extends AdminController
 
     private function getPopularCategories()
     {
-        return DB::table('ilan_kategorileri')
-            ->select('name', DB::raw('COUNT(*) as ilan_count'))
-            ->join('ilans', 'ilan_kategorileri.id', '=', 'ilans.kategori_id')
-            ->where('ilans.created_at', '>=', now()->subDays(30))
+        return IlanKategori::select('name', DB::raw('COUNT(*) as ilan_count'))
+            ->join('ilanlar', 'ilan_kategorileri.id', '=', 'ilanlar.kategori_id')
+            ->where('ilanlar.created_at', '>=', now()->subDays(30))
             ->groupBy('ilan_kategorileri.id', 'name')
             ->orderBy('ilan_count', 'desc')
             ->limit(10)
@@ -437,8 +435,7 @@ class IlanKategoriController extends AdminController
 
         for ($i = 5; $i >= 0; $i--) {
             $month = now()->subMonths($i);
-            $count = DB::table('ilans')
-                ->where('created_at', '>=', $month->startOfMonth())
+            $count = Ilan::where('created_at', '>=', $month->startOfMonth())
                 ->where('created_at', '<=', $month->endOfMonth())
                 ->count();
 
@@ -451,14 +448,14 @@ class IlanKategoriController extends AdminController
         return $trends;
     }
 
-    private function getSeasonalData()
+        private function getSeasonalData()
     {
         // Mevsimsel veriler
         return [
-            'spring' => DB::table('ilans')->whereMonth('created_at', '>=', 3)->whereMonth('created_at', '<=', 5)->count(),
-            'summer' => DB::table('ilans')->whereMonth('created_at', '>=', 6)->whereMonth('created_at', '<=', 8)->count(),
-            'autumn' => DB::table('ilans')->whereMonth('created_at', '>=', 9)->whereMonth('created_at', '<=', 11)->count(),
-            'winter' => DB::table('ilans')->whereIn(DB::raw('MONTH(created_at)'), [12, 1, 2])->count(),
+            'spring' => Ilan::whereMonth('created_at', '>=', 3)->whereMonth('created_at', '<=', 5)->count(),
+            'summer' => Ilan::whereMonth('created_at', '>=', 6)->whereMonth('created_at', '<=', 8)->count(),
+            'autumn' => Ilan::whereMonth('created_at', '>=', 9)->whereMonth('created_at', '<=', 11)->count(),
+            'winter' => Ilan::whereIn(DB::raw('MONTH(created_at)'), [12, 1, 2])->count(),
         ];
     }
 
@@ -611,9 +608,8 @@ class IlanKategoriController extends AdminController
             ], 400);
         }
 
-        // Yayın tiplerini al (ilan_kategori_yayin_tipleri tablosundan)
-        $yayinTipleri = DB::table('ilan_kategori_yayin_tipleri')
-            ->select(['id', 'yayin_tipi as name']) // Database: yayin_tipi → API: name
+                // Yayın tiplerini al (ilan_kategori_yayin_tipleri tablosundan)
+        $yayinTipleri = IlanKategoriYayinTipi::select(['id', 'yayin_tipi as name']) // Database: yayin_tipi → API: name
             ->where('kategori_id', $kategoriId)
             ->where(function($query) {
                 // Boolean veya string 'Aktif' kontrolü
@@ -630,18 +626,16 @@ class IlanKategoriController extends AdminController
         ]);
     }
 
-    private function getPerformanceInsights()
+        private function getPerformanceInsights()
     {
         return [
-            'most_active_category' => DB::table('ilan_kategorileri')
-                ->select('name', DB::raw('COUNT(*) as count'))
-                ->join('ilans', 'ilan_kategorileri.id', '=', 'ilans.kategori_id')
+            'most_active_category' => IlanKategori::select('name', DB::raw('COUNT(*) as count'))
+                ->join('ilanlar', 'ilan_kategorileri.id', '=', 'ilanlar.kategori_id')
                 ->groupBy('ilan_kategorileri.id', 'name')
                 ->orderBy('count', 'desc')
                 ->first(),
-            'least_active_category' => DB::table('ilan_kategorileri')
-                ->select('name', DB::raw('COUNT(*) as count'))
-                ->leftJoin('ilans', 'ilan_kategorileri.id', '=', 'ilans.kategori_id')
+            'least_active_category' => IlanKategori::select('name', DB::raw('COUNT(*) as count'))
+                ->leftJoin('ilanlar', 'ilan_kategorileri.id', '=', 'ilanlar.kategori_id')
                 ->groupBy('ilan_kategorileri.id', 'name')
                 ->orderBy('count', 'asc')
                 ->first()

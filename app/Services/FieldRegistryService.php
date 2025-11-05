@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\KategoriYayinTipiFieldDependency;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
@@ -190,8 +191,7 @@ class FieldRegistryService
      */
     protected function getFieldDependencies(?string $category = null): array
     {
-        $query = DB::table('kategori_yayin_tipi_field_dependencies')
-            ->select([
+        $query = KategoriYayinTipiFieldDependency::select([
                 'field_slug',
                 'field_name',
                 'field_type',
