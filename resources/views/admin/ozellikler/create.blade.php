@@ -4,7 +4,7 @@
 
 @section('content')
     <!-- Context7: Temiz Özellik Create Form -->
-    <div class="neo-container" x-data="ozellikForm()">
+    <div class="container mx-auto" x-data="ozellikForm()">
 
         <!-- Header -->
         <div class="neo-header">
@@ -20,7 +20,7 @@
 
         <!-- Success Message -->
         @if(session('success'))
-            <div class="neo-alert neo-alert-success mb-6">
+            <div class="rounded-lg border border-blue-200 bg-blue-50 p-4 text-blue-800 dark:bg-blue-900 dark:border-blue-800 dark:text-blue-200 rounded-lg border border-blue-200 bg-blue-50 p-4 text-blue-800 dark:bg-blue-900 dark:border-blue-800 dark:text-blue-200-success mb-6">
                 {{ session('success') }}
             </div>
         @endif

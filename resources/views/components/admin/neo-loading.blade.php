@@ -3,10 +3,10 @@
     Context7 uyumlu loading göstergeleri
 
     Kullanım:
-    <x-admin.neo-loading />  <!-- Varsayılan spinner -->
-    <x-admin.neo-loading type="dots" />  <!-- Dots loader -->
-    <x-admin.neo-loading type="bar" />  <!-- Progress bar -->
-    <x-admin.neo-loading overlay="true" />  <!-- Full overlay -->
+    <x-admin.animate-spin />  <!-- Varsayılan spinner -->
+    <x-admin.animate-spin type="dots" />  <!-- Dots loader -->
+    <x-admin.animate-spin type="bar" />  <!-- Progress bar -->
+    <x-admin.animate-spin overlay="true" />  <!-- Full overlay -->
 
     @context7-compliant true
     @neo-design-system true

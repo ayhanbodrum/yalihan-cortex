@@ -3,18 +3,18 @@
 @section('title', 'AI Monitoring Dashboard')
 
 @section('content')
-    <div class="neo-container neo-mx-auto p-6" x-data="monitorUI()" x-init="init()">
+    <div class="container mx-auto neo-mx-auto p-6" x-data="monitorUI()" x-init="init()">
         <!-- Header -->
         <div class="flex items-center justify-between mb-4">
             <div class="flex items-center gap-3">
-                <h1 class="neo-text-2xl neo-font-bold">AI Monitoring</h1>
-                <span class="text-sm neo-text-gray-500">(Yerel Geliştirici İzleme)</span>
+                <h1 class="text-2xl neo-font-bold">AI Monitoring</h1>
+                <span class="text-sm text-gray-500">(Yerel Geliştirici İzleme)</span>
             </div>
             <div class="flex items-center gap-3">
                 <div class="flex items-center gap-2">
                     <span class="text-sm">Genel Durum:</span>
                     <span :class="overallBadgeClass()"
-                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium rounded-lg neo-px-2 neo-py-1 text-xs neo-transition-all neo-duration-300">
+                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium rounded-lg px-2 neo-py-1 text-xs transition-all neo-duration-300">
                         <span x-show="overall?.level === 'green'">🟢 İyi</span>
                         <span x-show="overall?.level === 'yellow'">🟡 Uyarı</span>
                         <span x-show="overall?.level === 'red'">🔴 Kritik</span>
@@ -31,31 +31,31 @@
                         <option :value="30000">30s</option>
                         <option :value="60000">60s</option>
                     </select>
-                    <span class="text-xs neo-text-gray-500" x-show="lastUpdated" x-text="'Son: ' + lastUpdated"></span>
+                    <span class="text-xs text-gray-500" x-show="lastUpdated" x-text="'Son: ' + lastUpdated"></span>
                 </div>
                 <button @click="refreshAll()" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg text-xs touch-target-optimized touch-target-optimized">Yenile</button>
             </div>
         </div>
 
         <!-- Overview + Mini Usage Chart -->
-        <div class="neo-grid neo-grid-cols-1 lg:neo-grid-cols-3 gap-6 mb-6">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
             <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800 p-4 lg:neo-col-span-2">
-                <div class="neo-grid neo-grid-cols-4 gap-4">
+                <div class="grid grid-cols-4 gap-4">
                     <div
-                        class="neo-bg-gradient-to-r neo-from-blue-50 neo-to-blue-100 rounded-lg p-3 neo-transition-all neo-duration-300 hover:neo-shadow-md">
-                        <div class="text-xs neo-text-blue-600 flex items-center gap-1">
+                        class="neo-bg-gradient-to-r neo-from-blue-50 neo-to-blue-100 rounded-lg p-3 transition-all neo-duration-300 hover:neo-shadow-md">
+                        <div class="text-xs text-blue-600 flex items-center gap-1">
                             <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
                                 <path
                                     d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z" />
                             </svg>
                             Aktif MCP
                         </div>
-                        <div class="neo-text-2xl font-semibold neo-text-blue-800" x-text="overall?.mcp_count ?? 0">
+                        <div class="text-2xl font-semibold text-blue-800" x-text="overall?.mcp_count ?? 0">
                         </div>
                     </div>
                     <div
-                        class="neo-bg-gradient-to-r neo-from-green-50 neo-to-green-100 rounded-lg p-3 neo-transition-all neo-duration-300 hover:neo-shadow-md">
-                        <div class="text-xs neo-text-green-600 flex items-center gap-1">
+                        class="neo-bg-gradient-to-r neo-from-green-50 neo-to-green-100 rounded-lg p-3 transition-all neo-duration-300 hover:neo-shadow-md">
+                        <div class="text-xs text-green-600 flex items-center gap-1">
                             <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd"
                                     d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
@@ -63,11 +63,11 @@
                             </svg>
                             API OK
                         </div>
-                        <div class="neo-text-2xl font-semibold neo-text-green-800" x-text="overall?.api_ok ?? 0"></div>
+                        <div class="text-2xl font-semibold text-green-800" x-text="overall?.api_ok ?? 0"></div>
                     </div>
                     <div
-                        class="neo-bg-gradient-to-r neo-from-purple-50 neo-to-purple-100 rounded-lg p-3 neo-transition-all neo-duration-300 hover:neo-shadow-md">
-                        <div class="text-xs neo-text-purple-600 flex items-center gap-1">
+                        class="neo-bg-gradient-to-r neo-from-purple-50 neo-to-purple-100 rounded-lg p-3 transition-all neo-duration-300 hover:neo-shadow-md">
+                        <div class="text-xs text-purple-600 flex items-center gap-1">
                             <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd"
                                     d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
@@ -75,12 +75,12 @@
                             </svg>
                             Uptime %
                         </div>
-                        <div class="neo-text-2xl font-semibold neo-text-purple-800" x-text="uptimePercent() + '%'">
+                        <div class="text-2xl font-semibold text-purple-800" x-text="uptimePercent() + '%'">
                         </div>
                     </div>
                     <div
-                        class="neo-bg-gradient-to-r neo-from-orange-50 neo-to-orange-100 rounded-lg p-3 neo-transition-all neo-duration-300 hover:neo-shadow-md">
-                        <div class="text-xs neo-text-orange-600 flex items-center gap-1">
+                        class="neo-bg-gradient-to-r neo-from-orange-50 neo-to-orange-100 rounded-lg p-3 transition-all neo-duration-300 hover:neo-shadow-md">
+                        <div class="text-xs text-orange-600 flex items-center gap-1">
                             <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd"
                                     d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
@@ -88,7 +88,7 @@
                             </svg>
                             Ort. Latency
                         </div>
-                        <div class="neo-text-2xl font-semibold neo-text-orange-800" x-text="avgLatency() + 'ms'"></div>
+                        <div class="text-2xl font-semibold text-orange-800" x-text="avgLatency() + 'ms'"></div>
                     </div>
                 </div>
             </div>
@@ -97,11 +97,11 @@
                     <h2 class="font-semibold">MCP Kullanım Mini-Chart</h2>
                     <button @click="refreshMcp()" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 bg-white text-gray-700 rounded-lg hover:bg-gray-50 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-gray-500 transition-all duration-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700 text-xs touch-target-optimized touch-target-optimized">Yenile</button>
                 </div>
-                <div class="neo-space-y-2" x-show="overall?.mcp_usage">
+                <div class="space-y-2" x-show="overall?.mcp_usage">
                     <template x-for="[key, count] in sortedUsage()" :key="key">
                         <div>
-                            <div class="flex justify-between text-xs neo-text-gray-600">
-                                <span class="neo-font-mono" x-text="key"></span>
+                            <div class="flex justify-between text-xs text-gray-600">
+                                <span class="font-mono" x-text="key"></span>
                                 <span x-text="count"></span>
                             </div>
                             <div class="neo-w-full h-2 neo-bg-gray-200 rounded-lg">
@@ -111,13 +111,13 @@
                             </div>
                         </div>
                     </template>
-                    <div x-show="!overall?.mcp_usage" class="text-xs neo-text-gray-400">Veri yok</div>
+                    <div x-show="!overall?.mcp_usage" class="text-xs text-gray-400">Veri yok</div>
                 </div>
             </div>
         </div>
 
         <!-- MCP + API -->
-        <div class="neo-grid neo-grid-cols-1 md:neo-grid-cols-2 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- MCP Table -->
             <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800 p-4">
                 <div class="flex items-center justify-between mb-2">
@@ -126,7 +126,7 @@
                 </div>
                 <div class="neo-overflow-x-auto">
                     <!-- Skeleton Loader -->
-                    <div x-show="loadingMcp" class="neo-space-y-2 mb-2">
+                    <div x-show="loadingMcp" class="space-y-2 mb-2">
                         <div class="neo-animate-pulse h-6 neo-bg-gray-100 rounded-lg"></div>
                         <div class="neo-animate-pulse h-6 neo-bg-gray-100 rounded-lg"></div>
                         <div class="neo-animate-pulse h-6 neo-bg-gray-100 rounded-lg"></div>
@@ -144,7 +144,7 @@
                         <tbody>
                             <template x-if="mcp.length === 0">
                                 <tr>
-                                    <td colspan="5" class="neo-text-center neo-text-gray-400">Kayıt yok</td>
+                                    <td colspan="5" class="text-center text-gray-400">Kayıt yok</td>
                                 </tr>
                             </template>
                             <template x-for="proc in mcp" :key="proc.pid">
@@ -167,23 +167,23 @@
                     <h2 class="font-semibold">API Health Check</h2>
                     <button @click="refreshApis()" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 bg-white text-gray-700 rounded-lg hover:bg-gray-50 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-gray-500 transition-all duration-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700 text-xs touch-target-optimized touch-target-optimized">Yenile</button>
                 </div>
-                <ul class="neo-space-y-2">
+                <ul class="space-y-2">
                     <template x-for="(status, name) in apis" :key="name">
                         <li
-                            class="flex items-center justify-between text-sm neo-bg-gray-50 rounded-lg neo-px-2 neo-py-1">
-                            <span class="neo-font-mono" x-text="name"></span>
+                            class="flex items-center justify-between text-sm neo-bg-gray-50 rounded-lg px-2 neo-py-1">
+                            <span class="font-mono" x-text="name"></span>
                             <div class="flex items-center gap-2">
                                 <span :class="statusBadgeClass(status?.status)"
                                     x-text="status?.status || 'UNKNOWN'"></span>
                                 </span>
-                                <span class="text-xs neo-text-gray-500" x-show="status?.latency_ms"
+                                <span class="text-xs text-gray-500" x-show="status?.latency_ms"
                                     x-text="(status?.latency_ms || '') + 'ms'"></span>
-                                <span class="text-xs neo-text-gray-500" x-show="status?.http_code"
+                                <span class="text-xs text-gray-500" x-show="status?.http_code"
                                     x-text="'HTTP ' + (status?.http_code || '')"></span>
                             </div>
                         </li>
                     </template>
-                    <li x-show="Object.keys(apis).length===0" class="neo-text-center neo-text-gray-400 text-sm">Veri
+                    <li x-show="Object.keys(apis).length===0" class="text-center text-gray-400 text-sm">Veri
                         yok
                     </li>
                 </ul>
@@ -191,7 +191,7 @@
         </div>
 
         <!-- Ekosistem Analizi -->
-        <div class="neo-grid neo-grid-cols-1 lg:neo-grid-cols-3 gap-6 neo-mt-6">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 neo-mt-6">
             <!-- Context7 Uyumluluk Durumu -->
             <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800 p-4">
                 <div class="flex items-center justify-between mb-2">
@@ -205,39 +205,39 @@
                     </h2>
                     <button @click="refreshCodeHealth()" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 bg-white text-gray-700 rounded-lg hover:bg-gray-50 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-gray-500 transition-all duration-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700 text-xs touch-target-optimized touch-target-optimized">Kontrol Et</button>
                 </div>
-                <div class="neo-space-y-3">
+                <div class="space-y-3">
                     <div class="flex items-center justify-between">
                         <span class="text-sm">Uyumluluk:</span>
-                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium neo-px-2 neo-py-1" :class="complianceBadgeClass()">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium px-2 neo-py-1" :class="complianceBadgeClass()">
                             @{{ codeHealth?.compliance_status === 'compliant' ? 'Uyumlu' : 'Uyumsuz' }}
                         </span>
                     </div>
                     <div class="flex items-center justify-between">
                         <span class="text-sm">Sağlık Skoru:</span>
-                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium neo-px-2 neo-py-1"
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium px-2 neo-py-1"
                             :class="codeHealthBadgeClass()">@{{ codeHealth?.health_score ?? 0 }}%</span>
                     </div>
 
                     <!-- Context7 Önerileri -->
                     <div x-show="codeHealth?.suggestions?.length > 0" class="neo-mt-3">
-                        <div class="text-xs font-semibold neo-text-orange-700 mb-1">📋 Öneriler:</div>
+                        <div class="text-xs font-semibold text-orange-700 mb-1">📋 Öneriler:</div>
                         <template x-for="suggestion in (codeHealth?.suggestions || [])" :key="suggestion">
-                            <div class="text-xs neo-bg-orange-50 neo-text-orange-700 rounded-lg p-2 mb-1">
+                            <div class="text-xs neo-bg-orange-50 text-orange-700 rounded-lg p-2 mb-1">
                                 @{{ suggestion }}
                             </div>
                         </template>
                     </div>
 
                     <!-- Sorunlar Listesi -->
-                    <div x-show="codeHealth?.issues?.length > 0" class="neo-space-y-1 neo-mt-2">
+                    <div x-show="codeHealth?.issues?.length > 0" class="space-y-1 neo-mt-2">
                         <template x-for="issue in (codeHealth?.issues || [])" :key="issue.type">
                             <div class="text-xs neo-bg-gray-50 rounded-lg p-2">
-                                <div class="flex justify-between neo-items-start">
+                                <div class="flex justify-between items-start">
                                     <div class="flex-1">
                                         <span class="font-semibold">@{{ issueTypeLabel(issue.type) }}</span>
-                                        <div class="neo-text-gray-500 neo-mt-1" x-show="issue.description">
+                                        <div class="text-gray-500 neo-mt-1" x-show="issue.description">
                                             @{{ issue.description || '' }}</div>
-                                        <div x-show="issue.suggestion" class="neo-text-blue-600 neo-mt-1 text-xs">
+                                        <div x-show="issue.suggestion" class="text-blue-600 neo-mt-1 text-xs">
                                             💡 @{{ issue.suggestion }}
                                         </div>
                                     </div>
@@ -252,12 +252,12 @@
                     <div x-show="codeHealth?.action_required"
                         class="neo-bg-red-50 neo-border neo-border-red-200 rounded-lg p-2 neo-mt-3">
                         <div class="flex items-center gap-2">
-                            <svg class="w-3.5 h-3.5 neo-text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                            <svg class="w-3.5 h-3.5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd"
                                     d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
                                     clip-rule="evenodd" />
                             </svg>
-                            <span class="text-xs neo-text-red-700 font-semibold">Acil aksiyon gerekli!</span>
+                            <span class="text-xs text-red-700 font-semibold">Acil aksiyon gerekli!</span>
                         </div>
                     </div>
                 </div>
@@ -276,14 +276,14 @@
                     </h2>
                     <button @click="refreshDuplicates()" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 bg-white text-gray-700 rounded-lg hover:bg-gray-50 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-gray-500 transition-all duration-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700 text-xs touch-target-optimized touch-target-optimized">Yenile</button>
                 </div>
-                <div class="neo-space-y-2 neo-max-h-48 neo-overflow-y-auto">
+                <div class="space-y-2 neo-max-h-48 neo-overflow-y-auto">
                     <template x-for="dup in duplicateFiles" :key="dup.name">
                         <div class="text-xs neo-bg-yellow-50 rounded-lg p-2">
-                            <div class="font-semibold neo-text-yellow-800">@{{ dup.name }}</div>
-                            <div class="neo-text-yellow-600">@{{ dup.count }} dosya</div>
+                            <div class="font-semibold text-yellow-800">@{{ dup.name }}</div>
+                            <div class="text-yellow-600">@{{ dup.count }} dosya</div>
                         </div>
                     </template>
-                    <div x-show="duplicateFiles.length === 0" class="text-xs neo-text-gray-400">Duplike dosya yok
+                    <div x-show="duplicateFiles.length === 0" class="text-xs text-gray-400">Duplike dosya yok
                     </div>
                 </div>
             </div>
@@ -301,14 +301,14 @@
                     </h2>
                     <button @click="refreshConflicts()" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 bg-white text-gray-700 rounded-lg hover:bg-gray-50 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-gray-500 transition-all duration-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700 text-xs touch-target-optimized touch-target-optimized">Yenile</button>
                 </div>
-                <div class="neo-space-y-2 neo-max-h-48 neo-overflow-y-auto">
+                <div class="space-y-2 neo-max-h-48 neo-overflow-y-auto">
                     <template x-for="conflict in conflictingRoutes" :key="conflict.uri_methods">
                         <div class="text-xs neo-bg-red-50 rounded-lg p-2">
-                            <div class="font-semibold neo-text-red-800">@{{ conflict.uri_methods }}</div>
-                            <div class="neo-text-red-600">@{{ conflict.count }} çakışma</div>
+                            <div class="font-semibold text-red-800">@{{ conflict.uri_methods }}</div>
+                            <div class="text-red-600">@{{ conflict.count }} çakışma</div>
                         </div>
                     </template>
-                    <div x-show="conflictingRoutes.length === 0" class="text-xs neo-text-gray-400">Çakışma yok</div>
+                    <div x-show="conflictingRoutes.length === 0" class="text-xs text-gray-400">Çakışma yok</div>
                 </div>
             </div>
 
@@ -341,25 +341,25 @@
                             <template x-for="row in pagesHealth" :key="row.url">
                                 <tr>
                                     <td class="font-semibold">@{{ row.name }}</td>
-                                    <td class="neo-font-mono neo-text-[11px] neo-max-w-[360px] neo-truncate"
+                                    <td class="font-mono neo-text-[11px] neo-max-w-[360px] neo-truncate"
                                         :title="row.url">@{{ row.url }}</td>
                                     <td><span :class="statusBadgeClass(row.status)">@{{ row.status }}</span></td>
                                     <td>@{{ row.http_code ?? '—' }}</td>
                                     <td>@{{ row.latency_ms ?? '—' }}ms</td>
                                     <td>
                                         <span x-show="row.markers_found"
-                                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium neo-bg-green-200 neo-text-green-800 neo-mr-1">Bulundu</span>
+                                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium neo-bg-green-200 text-green-800 neo-mr-1">Bulundu</span>
                                         <span x-show="!row.markers_found"
-                                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium neo-bg-yellow-200 neo-text-yellow-800 neo-mr-1">Eksik</span>
+                                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium neo-bg-yellow-200 text-yellow-800 neo-mr-1">Eksik</span>
                                         <template x-for="m in (row.missing_markers || [])" :key="m">
                                             <span
-                                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium neo-bg-gray-200 neo-text-gray-800 neo-mr-1">@{{ m }}</span>
+                                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium neo-bg-gray-200 text-gray-800 neo-mr-1">@{{ m }}</span>
                                         </template>
                                     </td>
                                 </tr>
                             </template>
                             <tr x-show="pagesHealth.length === 0">
-                                <td colspan="6" class="neo-text-center neo-text-gray-400">Kayıt yok</td>
+                                <td colspan="6" class="text-center text-gray-400">Kayıt yok</td>
                             </tr>
                         </tbody>
                     </table>
@@ -368,12 +368,12 @@
         </div>
 
         <!-- Logs -->
-        <div class="neo-grid neo-grid-cols-1 md:neo-grid-cols-2 gap-6 neo-mt-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 neo-mt-6">
             <!-- Context7 Öğretim ve Öneri Paneli -->
             <div x-show="codeHealth?.action_required || codeHealth?.suggestions?.length > 0" class="neo-mt-6">
                 <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800 p-6">
                     <div class="flex items-center justify-between mb-4">
-                        <h2 class="neo-font-bold neo-text-lg flex items-center gap-2">
+                        <h2 class="neo-font-bold text-lg flex items-center gap-2">
                             🎓 Context7 Öğretim ve Öneriler
                         </h2>
                         <button @click="runContext7Fix()" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg text-sm touch-target-optimized touch-target-optimized">
@@ -383,34 +383,34 @@
 
                     <!-- Önemli Kurallar Hatırlatması -->
                     <div class="neo-bg-blue-50 neo-border neo-border-blue-200 rounded-lg-lg p-4 mb-4">
-                        <h3 class="font-semibold neo-text-blue-800 mb-2">📚 Context7 Temel Kuralları:</h3>
-                        <ul class="neo-space-y-2">
-                            <li class="flex neo-items-start gap-2 text-sm neo-text-blue-700">
+                        <h3 class="font-semibold text-blue-800 mb-2">📚 Context7 Temel Kuralları:</h3>
+                        <ul class="space-y-2">
+                            <li class="flex items-start gap-2 text-sm text-blue-700">
                                 <span>❌</span>
                                 <div>
                                     <strong>Yasaklı Alan Adları:</strong>
-                                    <code class="neo-bg-blue-100 neo-px-1 rounded-lg">status</code>,
-                                    <code class="neo-bg-blue-100 neo-px-1 rounded-lg">is_active</code>,
-                                    <code class="neo-bg-blue-100 neo-px-1 rounded-lg">aktif</code>,
-                                    <code class="neo-bg-blue-100 neo-px-1 rounded-lg">ad_soyad</code>,
-                                    <code class="neo-bg-blue-100 neo-px-1 rounded-lg">region_id</code>
+                                    <code class="neo-bg-blue-100 px-1 rounded-lg">status</code>,
+                                    <code class="neo-bg-blue-100 px-1 rounded-lg">is_active</code>,
+                                    <code class="neo-bg-blue-100 px-1 rounded-lg">aktif</code>,
+                                    <code class="neo-bg-blue-100 px-1 rounded-lg">ad_soyad</code>,
+                                    <code class="neo-bg-blue-100 px-1 rounded-lg">region_id</code>
                                 </div>
                             </li>
-                            <li class="flex neo-items-start gap-2 text-sm neo-text-blue-700">
+                            <li class="flex items-start gap-2 text-sm text-blue-700">
                                 <span>✅</span>
                                 <div>
                                     <strong>Doğru Alan Adları:</strong>
-                                    <code class="neo-bg-green-100 neo-px-1 rounded-lg">status</code>,
-                                    <code class="neo-bg-green-100 neo-px-1 rounded-lg">tam_ad</code>,
-                                    <code class="neo-bg-green-100 neo-px-1 rounded-lg">il_id</code>
+                                    <code class="neo-bg-green-100 px-1 rounded-lg">status</code>,
+                                    <code class="neo-bg-green-100 px-1 rounded-lg">tam_ad</code>,
+                                    <code class="neo-bg-green-100 px-1 rounded-lg">il_id</code>
                                 </div>
                             </li>
-                            <li class="flex neo-items-start gap-2 text-sm neo-text-blue-700">
+                            <li class="flex items-start gap-2 text-sm text-blue-700">
                                 <span>🚫</span>
                                 <div><strong>AI asla kendi kafasına göre tablo/kolon yaratamaz</strong> - sadece mevcut
                                     şemayı kullanır</div>
                             </li>
-                            <li class="flex neo-items-start gap-2 text-sm neo-text-blue-700">
+                            <li class="flex items-start gap-2 text-sm text-blue-700">
                                 <span>📖</span>
                                 <div><strong>Master dosyalara sadakat zorunlu</strong> - Context7 kuralları referans
                                     alınmalı</div>
@@ -420,36 +420,36 @@
 
                     <!-- Otomatik Düzeltme Komutları -->
                     <div class="neo-bg-gray-50 rounded-lg-lg p-4 mb-4">
-                        <h3 class="font-semibold neo-text-gray-800 mb-2">⚡ Hızlı Düzeltme Komutları:</h3>
-                        <div class="neo-grid neo-grid-cols-1 md:neo-grid-cols-2 gap-3">
+                        <h3 class="font-semibold text-gray-800 mb-2">⚡ Hızlı Düzeltme Komutları:</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                             <button @click="copyCommand('./scripts/context7-check.sh --auto-fix')"
-                                class="neo-text-left neo-bg-gray-800 neo-text-green-400 neo-font-mono text-xs p-3 rounded-lg hover:neo-bg-gray-700 neo-transition-colors">
+                                class="text-left neo-bg-gray-800 text-green-400 font-mono text-xs p-3 rounded-lg hover:neo-bg-gray-700 neo-transition-colors">
                                 ./scripts/context7-check.sh --auto-fix
                             </button>
                             <button @click="copyCommand('php artisan context7:validate-migration --all')"
-                                class="neo-text-left neo-bg-gray-800 neo-text-green-400 neo-font-mono text-xs p-3 rounded-lg hover:neo-bg-gray-700 neo-transition-colors">
+                                class="text-left neo-bg-gray-800 text-green-400 font-mono text-xs p-3 rounded-lg hover:neo-bg-gray-700 neo-transition-colors">
                                 php artisan context7:validate-migration --all
                             </button>
                             <button @click="copyCommand('php artisan view:clear && php artisan config:clear')"
-                                class="neo-text-left neo-bg-gray-800 neo-text-green-400 neo-font-mono text-xs p-3 rounded-lg hover:neo-bg-gray-700 neo-transition-colors">
+                                class="text-left neo-bg-gray-800 text-green-400 font-mono text-xs p-3 rounded-lg hover:neo-bg-gray-700 neo-transition-colors">
                                 php artisan view:clear && php artisan config:clear
                             </button>
                             <button @click="copyCommand('grep -r \"status\\|is_active\" app/ resources/')"
-                                class="neo-text-left neo-bg-gray-800 neo-text-green-400 neo-font-mono text-xs p-3 rounded-lg hover:neo-bg-gray-700 neo-transition-colors">
+                                class="text-left neo-bg-gray-800 text-green-400 font-mono text-xs p-3 rounded-lg hover:neo-bg-gray-700 neo-transition-colors">
                                 grep -r "status|is_active" app/ resources/
                             </button>
                         </div>
                     </div>
 
                     <!-- Öneriler Listesi -->
-                    <div x-show="codeHealth?.suggestions?.length > 0" class="neo-space-y-2">
-                        <h3 class="font-semibold neo-text-gray-800 mb-2">💡 Akıllı Öneriler:</h3>
+                    <div x-show="codeHealth?.suggestions?.length > 0" class="space-y-2">
+                        <h3 class="font-semibold text-gray-800 mb-2">💡 Akıllı Öneriler:</h3>
                         <template x-for="(suggestion, index) in (codeHealth?.suggestions || [])" :key="index">
                             <div
-                                class="flex neo-items-start gap-3 neo-bg-yellow-50 neo-border neo-border-yellow-200 rounded-lg p-3">
-                                <span class="neo-text-yellow-600 neo-font-bold text-sm">@{{ index + 1 }}.</span>
+                                class="flex items-start gap-3 neo-bg-yellow-50 neo-border neo-border-yellow-200 rounded-lg p-3">
+                                <span class="text-yellow-600 neo-font-bold text-sm">@{{ index + 1 }}.</span>
                                 <div class="flex-1">
-                                    <p class="text-sm neo-text-yellow-800">@{{ suggestion }}</p>
+                                    <p class="text-sm text-yellow-800">@{{ suggestion }}</p>
                                 </div>
                                 <button @click="applySuggestion(index)"
                                     class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2-outline inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2-sm text-xs touch-target-optimized touch-target-optimized">
@@ -462,7 +462,7 @@
             </div>
 
             <!-- Logs -->
-            <div class="neo-grid neo-grid-cols-1 md:neo-grid-cols-2 gap-6 neo-mt-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 neo-mt-6">
                 <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800 p-4">
                     <div class="flex items-center justify-between mb-2">
                         <h2 class="font-semibold">Self-Healing Log (Son 10)</h2>
@@ -531,9 +531,9 @@
                     },
                     statusBadgeClass(st) {
                         const s = (st || '').toUpperCase();
-                        if (s === 'OK') return 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium rounded-lg neo-px-2 neo-py-0.5 neo-bg-green-200';
-                        if (s === 'ERROR') return 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium rounded-lg neo-px-2 neo-py-0.5 neo-bg-yellow-200';
-                        return 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium rounded-lg neo-px-2 neo-py-0.5 neo-bg-red-200';
+                        if (s === 'OK') return 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium rounded-lg px-2 neo-py-0.5 neo-bg-green-200';
+                        if (s === 'ERROR') return 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium rounded-lg px-2 neo-py-0.5 neo-bg-yellow-200';
+                        return 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium rounded-lg px-2 neo-py-0.5 neo-bg-red-200';
                     },
                     usageWidth(count) {
                         const max = Math.max(1, ...Object.values(this.overall?.mcp_usage || {
@@ -792,9 +792,9 @@
                     },
                     codeHealthBadgeClass() {
                         const score = this.codeHealth?.health_score || 0;
-                        if (score >= 80) return 'neo-bg-green-200 neo-text-green-800';
-                        if (score >= 60) return 'neo-bg-yellow-200 neo-text-yellow-800';
-                        return 'neo-bg-red-200 neo-text-red-800';
+                        if (score >= 80) return 'neo-bg-green-200 text-green-800';
+                        if (score >= 60) return 'neo-bg-yellow-200 text-yellow-800';
+                        return 'neo-bg-red-200 text-red-800';
                     },
                     issueTypeLabel(type) {
                         const labels = {
@@ -812,21 +812,21 @@
                     },
                     complianceBadgeClass() {
                         const status = this.codeHealth?.compliance_status;
-                        if (status === 'compliant') return 'neo-bg-green-200 neo-text-green-800';
-                        return 'neo-bg-red-200 neo-text-red-800';
+                        if (status === 'compliant') return 'neo-bg-green-200 text-green-800';
+                        return 'neo-bg-red-200 text-red-800';
                     },
                     severityClass(severity) {
                         switch (severity) {
                             case 'critical':
-                                return 'neo-text-red-700';
+                                return 'text-red-700';
                             case 'high':
-                                return 'neo-text-orange-700';
+                                return 'text-orange-700';
                             case 'medium':
-                                return 'neo-text-yellow-700';
+                                return 'text-yellow-700';
                             case 'low':
-                                return 'neo-text-gray-700';
+                                return 'text-gray-700';
                             default:
-                                return 'neo-text-gray-600';
+                                return 'text-gray-600';
                         }
                     }
                 }

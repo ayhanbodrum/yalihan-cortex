@@ -508,17 +508,17 @@
                     if (data.success) {
                         const s = data.data;
                         el.innerHTML = `
-                        <div class="neo-alert neo-alert-success">
-                            <i class="neo-icon neo-icon-check-circle"></i>
+                        <div class="rounded-lg border border-blue-200 bg-blue-50 p-4 text-blue-800 dark:bg-blue-900 dark:border-blue-800 dark:text-blue-200 rounded-lg border border-blue-200 bg-blue-50 p-4 text-blue-800 dark:bg-blue-900 dark:border-blue-800 dark:text-blue-200-success">
+                            <i class="text-gray-400 text-gray-400-check-circle"></i>
                             <div>
                                 <div><strong>Durum:</strong> ${s.status === 'active' ? 'Aktif' : 'Pasif'}</div>
-                                <div class="neo-text-muted">Sağlayıcı: ${s.provider} • Model: ${s.model} • Versiyon: ${s.version}</div>
+                                <div class="text-muted">Sağlayıcı: ${s.provider} • Model: ${s.model} • Versiyon: ${s.version}</div>
                             </div>
                         </div>`;
                     } else {
                         el.innerHTML = `
-                        <div class="neo-alert neo-alert-danger">
-                            <i class="neo-icon neo-icon-alert-triangle"></i>
+                        <div class="rounded-lg border border-blue-200 bg-blue-50 p-4 text-blue-800 dark:bg-blue-900 dark:border-blue-800 dark:text-blue-200 rounded-lg border border-red-200 bg-red-50 p-4 text-red-800 dark:bg-red-900 dark:border-red-800 dark:text-red-200">
+                            <i class="text-gray-400 text-gray-400-alert-triangle"></i>
                             <div>AI durum kontrolü başarısız: ${data.message ?? 'Bilinmeyen hata'}</div>
                         </div>`;
                     }
@@ -527,8 +527,8 @@
                     const el = document.getElementById('aiDurumCard');
                     if (!el) return;
                     el.innerHTML = `
-                    <div class="neo-alert neo-alert-danger">
-                        <i class="neo-icon neo-icon-alert-triangle"></i>
+                    <div class="rounded-lg border border-blue-200 bg-blue-50 p-4 text-blue-800 dark:bg-blue-900 dark:border-blue-800 dark:text-blue-200 rounded-lg border border-red-200 bg-red-50 p-4 text-red-800 dark:bg-red-900 dark:border-red-800 dark:text-red-200">
+                        <i class="text-gray-400 text-gray-400-alert-triangle"></i>
                         <div>AI servisine erişilemedi</div>
                     </div>`;
                 });
@@ -555,18 +555,18 @@
                     if (data.success) {
                         const a = data.analiz ?? {};
                         document.getElementById('aiAnalizContent').innerHTML = `
-                    <div class="neo-alert neo-alert-success"><i class="neo-icon neo-icon-check-circle"></i> Talep analizi tamamlandı</div>
+                    <div class="rounded-lg border border-blue-200 bg-blue-50 p-4 text-blue-800 dark:bg-blue-900 dark:border-blue-800 dark:text-blue-200 rounded-lg border border-blue-200 bg-blue-50 p-4 text-blue-800 dark:bg-blue-900 dark:border-blue-800 dark:text-blue-200-success"><i class="text-gray-400 text-gray-400-check-circle"></i> Talep analizi tamamlandı</div>
                     <pre class="neo-code-block">${JSON.stringify(a, null, 2)}</pre>`;
                     } else {
                         document.getElementById('aiAnalizContent').innerHTML =
                             `
-                    <div class="neo-alert neo-alert-danger"><i class="neo-icon neo-icon-alert-triangle"></i> ${data.error ?? data.message ?? 'Analiz başarısız'}</div>`;
+                    <div class="rounded-lg border border-blue-200 bg-blue-50 p-4 text-blue-800 dark:bg-blue-900 dark:border-blue-800 dark:text-blue-200 rounded-lg border border-red-200 bg-red-50 p-4 text-red-800 dark:bg-red-900 dark:border-red-800 dark:text-red-200"><i class="text-gray-400 text-gray-400-alert-triangle"></i> ${data.error ?? data.message ?? 'Analiz başarısız'}</div>`;
                     }
                 })
                 .catch(() => {
                     document.getElementById('aiAnalizContent').innerHTML =
                         `
-                <div class="neo-alert neo-alert-danger"><i class="neo-icon neo-icon-alert-triangle"></i> Sunucu hatası</div>`;
+                <div class="rounded-lg border border-blue-200 bg-blue-50 p-4 text-blue-800 dark:bg-blue-900 dark:border-blue-800 dark:text-blue-200 rounded-lg border border-red-200 bg-red-50 p-4 text-red-800 dark:bg-red-900 dark:border-red-800 dark:text-red-200"><i class="text-gray-400 text-gray-400-alert-triangle"></i> Sunucu hatası</div>`;
                 });
         }
 
@@ -611,16 +611,16 @@
                     if (data.success) {
                         document.getElementById('aiAnalizContent').innerHTML =
                             `
-                    <div class=\"neo-alert neo-alert-success\"><i class=\"neo-icon neo-icon-check-circle\"></i> ${data.message}</div>
+                    <div class=\"rounded-lg border border-blue-200 bg-blue-50 p-4 text-blue-800 dark:bg-blue-900 dark:border-blue-800 dark:text-blue-200 rounded-lg border border-blue-200 bg-blue-50 p-4 text-blue-800 dark:bg-blue-900 dark:border-blue-800 dark:text-blue-200-success\"><i class=\"text-gray-400 text-gray-400-check-circle\"></i> ${data.message}</div>
                     <div class=\"text-center mt-3\"><button class=\"inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg\" onclick=\"location.reload()\">Sayfayı Yenile</button></div>`;
                     } else {
                         document.getElementById('aiAnalizContent').innerHTML =
-                            `<div class=\"neo-alert neo-alert-danger\">${data.message ?? 'Toplu analiz başarısız'}</div>`;
+                            `<div class=\"rounded-lg border border-blue-200 bg-blue-50 p-4 text-blue-800 dark:bg-blue-900 dark:border-blue-800 dark:text-blue-200 rounded-lg border border-red-200 bg-red-50 p-4 text-red-800 dark:bg-red-900 dark:border-red-800 dark:text-red-200\">${data.message ?? 'Toplu analiz başarısız'}</div>`;
                     }
                 })
                 .catch(() => {
                     document.getElementById('aiAnalizContent').innerHTML =
-                        `<div class=\"neo-alert neo-alert-danger\">Sunucu hatası</div>`;
+                        `<div class=\"rounded-lg border border-blue-200 bg-blue-50 p-4 text-blue-800 dark:bg-blue-900 dark:border-blue-800 dark:text-blue-200 rounded-lg border border-red-200 bg-red-50 p-4 text-red-800 dark:bg-red-900 dark:border-red-800 dark:text-red-200\">Sunucu hatası</div>`;
                 });
         }
 
@@ -671,12 +671,12 @@
                 container.innerHTML = `
                     <div class="text-center py-12">
                         <div class="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-700 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                            <i class="neo-icon neo-icon-search-x text-3xl text-gray-400"></i>
+                            <i class="text-gray-400 text-gray-400-search-x text-3xl text-gray-400"></i>
                         </div>
                         <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Hiç öneri bulunamadı</h3>
                         <p class="text-gray-600 dark:text-gray-400 mb-6">Filtreleri gevşeterek daha fazla sonuç bulabilirsiniz</p>
                         <button class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors duration-150" onclick="resetOneriFilters()">
-                            <i class="neo-icon neo-icon-refresh-ccw w-4 h-4 mr-2"></i>
+                            <i class="text-gray-400 text-gray-400-refresh-ccw w-4 h-4 mr-2"></i>
                             Filtreleri Sıfırla
                         </button>
                     </div>
@@ -707,7 +707,7 @@
                     </td>
                     <td class="px-4 py-2.5">
                         <div class="text-sm text-gray-900 dark:text-white">
-                            <i class="neo-icon neo-icon-map-pin w-3 h-3 mr-1 text-red-500"></i>
+                            <i class="text-gray-400 text-gray-400-map-pin w-3 h-3 mr-1 text-red-500"></i>
                             ${escapeHtml([o.adres_il, o.adres_ilce].filter(Boolean).join(' / ') || '-')}
                         </div>
                     </td>
@@ -725,11 +725,11 @@
                     <td class="px-4 py-2.5">
                         <div class="flex items-center gap-2">
                             <a href="${"{{ url('admin/ilanlar') }}"}/${o.id}" class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-blue-700 bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/30 dark:text-blue-300 dark:hover:bg-blue-900/50 rounded-lg transition-colors duration-150">
-                                <i class="neo-icon neo-icon-eye w-3 h-3 mr-1"></i>
+                                <i class="text-gray-400 text-gray-400-eye w-3 h-3 mr-1"></i>
                                 Detay
                             </a>
                             <button class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-green-700 bg-green-50 hover:bg-green-100 dark:bg-green-900/30 dark:text-green-300 dark:hover:bg-green-900/50 rounded-lg transition-colors duration-150" onclick="sendToClient(${o.id})">
-                                <i class="neo-icon neo-icon-send w-3 h-3 mr-1"></i>
+                                <i class="text-gray-400 text-gray-400-send w-3 h-3 mr-1"></i>
                                 Gönder
                             </button>
                         </div>
@@ -945,7 +945,7 @@
                 .then(data => {
                     if (!data.success) {
                         container.innerHTML =
-                            `<div class=\"neo-alert neo-alert-danger\"><i class=\"neo-icon neo-icon-alert-triangle\"></i> ${data.message ?? 'Öneriler alınamadı'}</div>`;
+                            `<div class=\"rounded-lg border border-blue-200 bg-blue-50 p-4 text-blue-800 dark:bg-blue-900 dark:border-blue-800 dark:text-blue-200 rounded-lg border border-red-200 bg-red-50 p-4 text-red-800 dark:bg-red-900 dark:border-red-800 dark:text-red-200\"><i class=\"text-gray-400 text-gray-400-alert-triangle\"></i> ${data.message ?? 'Öneriler alınamadı'}</div>`;
                         return;
                     }
                     window._onerilerState.raw = data.oneriler || [];
@@ -958,7 +958,7 @@
                 })
                 .catch(() => {
                     container.innerHTML =
-                        '<div class="neo-alert neo-alert-danger"><i class="neo-icon neo-icon-alert-triangle"></i> Sunucu hatası</div>';
+                        '<div class="rounded-lg border border-blue-200 bg-blue-50 p-4 text-blue-800 dark:bg-blue-900 dark:border-blue-800 dark:text-blue-200 rounded-lg border border-red-200 bg-red-50 p-4 text-red-800 dark:bg-red-900 dark:border-red-800 dark:text-red-200"><i class="text-gray-400 text-gray-400-alert-triangle"></i> Sunucu hatası</div>';
                 });
         }
 

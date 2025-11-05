@@ -76,7 +76,7 @@
                                     </svg>
                                 </div>
                             </div>
-                            <button class="neo-icon-btn touch-target-optimized touch-target-optimized" @click="toggleDark()" :aria-pressed="dark.toString()"
+                            <button class="text-gray-400-btn touch-target-optimized touch-target-optimized" @click="toggleDark()" :aria-pressed="dark.toString()"
                                 aria-label="Tema">
                                 <svg x-show="!dark" class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
                                     <path
@@ -117,49 +117,49 @@
                     <div class="w-full px-4 sm:px-6 lg:px-8 py-6">
                         {{-- Flash Messages --}}
                         @if (session('success'))
-                            <div class="neo-alert neo-alert-success mb-6" x-data="{ show: true }" x-show="show" x-transition>
+                            <div class="rounded-lg border border-blue-200 bg-blue-50 p-4 text-blue-800 dark:bg-blue-900 dark:border-blue-800 dark:text-blue-200 rounded-lg border border-blue-200 bg-blue-50 p-4 text-blue-800 dark:bg-blue-900 dark:border-blue-800 dark:text-blue-200-success mb-6" x-data="{ show: true }" x-show="show" x-transition>
                                 <div class="flex items-center">
-                                    <i class="neo-icon neo-icon-check-circle mr-3"></i>
+                                    <i class="text-gray-400 text-gray-400-check-circle mr-3"></i>
                                     <span>{{ session('success') }}</span>
                                 </div>
-                                <button @click="show = false" class="neo-alert-close">
-                                    <i class="neo-icon neo-icon-close"></i>
+                                <button @click="show = false" class="rounded-lg border border-blue-200 bg-blue-50 p-4 text-blue-800 dark:bg-blue-900 dark:border-blue-800 dark:text-blue-200-close">
+                                    <i class="text-gray-400 text-gray-400-close"></i>
                                 </button>
                             </div>
                         @endif
 
                         @if (session('error'))
-                            <div class="neo-alert neo-alert-error mb-6" x-data="{ show: true }" x-show="show" x-transition>
+                            <div class="rounded-lg border border-blue-200 bg-blue-50 p-4 text-blue-800 dark:bg-blue-900 dark:border-blue-800 dark:text-blue-200 rounded-lg border border-blue-200 bg-blue-50 p-4 text-blue-800 dark:bg-blue-900 dark:border-blue-800 dark:text-blue-200-error mb-6" x-data="{ show: true }" x-show="show" x-transition>
                                 <div class="flex items-center">
-                                    <i class="neo-icon neo-icon-exclamation-circle mr-3"></i>
+                                    <i class="text-gray-400 text-gray-400-exclamation-circle mr-3"></i>
                                     <span>{{ session('error') }}</span>
                                 </div>
-                                <button @click="show = false" class="neo-alert-close">
-                                    <i class="neo-icon neo-icon-close"></i>
+                                <button @click="show = false" class="rounded-lg border border-blue-200 bg-blue-50 p-4 text-blue-800 dark:bg-blue-900 dark:border-blue-800 dark:text-blue-200-close">
+                                    <i class="text-gray-400 text-gray-400-close"></i>
                                 </button>
                             </div>
                         @endif
 
                         @if (session('warning'))
-                            <div class="neo-alert neo-alert-warning mb-6" x-data="{ show: true }" x-show="show" x-transition>
+                            <div class="rounded-lg border border-blue-200 bg-blue-50 p-4 text-blue-800 dark:bg-blue-900 dark:border-blue-800 dark:text-blue-200 rounded-lg border border-blue-200 bg-blue-50 p-4 text-blue-800 dark:bg-blue-900 dark:border-blue-800 dark:text-blue-200-warning mb-6" x-data="{ show: true }" x-show="show" x-transition>
                                 <div class="flex items-center">
-                                    <i class="neo-icon neo-icon-exclamation-triangle mr-3"></i>
+                                    <i class="text-gray-400 text-gray-400-exclamation-triangle mr-3"></i>
                                     <span>{{ session('warning') }}</span>
                                 </div>
-                                <button @click="show = false" class="neo-alert-close">
-                                    <i class="neo-icon neo-icon-close"></i>
+                                <button @click="show = false" class="rounded-lg border border-blue-200 bg-blue-50 p-4 text-blue-800 dark:bg-blue-900 dark:border-blue-800 dark:text-blue-200-close">
+                                    <i class="text-gray-400 text-gray-400-close"></i>
                                 </button>
                             </div>
                         @endif
 
                         @if (session('info'))
-                            <div class="neo-alert neo-alert-info mb-6" x-data="{ show: true }" x-show="show" x-transition>
+                            <div class="rounded-lg border border-blue-200 bg-blue-50 p-4 text-blue-800 dark:bg-blue-900 dark:border-blue-800 dark:text-blue-200 rounded-lg border border-blue-200 bg-blue-50 p-4 text-blue-800 dark:bg-blue-900 dark:border-blue-800 dark:text-blue-200-info mb-6" x-data="{ show: true }" x-show="show" x-transition>
                                 <div class="flex items-center">
-                                    <i class="neo-icon neo-icon-info-circle mr-3"></i>
+                                    <i class="text-gray-400 text-gray-400-info-circle mr-3"></i>
                                     <span>{{ session('info') }}</span>
                                 </div>
-                                <button @click="show = false" class="neo-alert-close">
-                                    <i class="neo-icon neo-icon-close"></i>
+                                <button @click="show = false" class="rounded-lg border border-blue-200 bg-blue-50 p-4 text-blue-800 dark:bg-blue-900 dark:border-blue-800 dark:text-blue-200-close">
+                                    <i class="text-gray-400 text-gray-400-close"></i>
                                 </button>
                             </div>
                         @endif

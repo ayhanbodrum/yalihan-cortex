@@ -4,15 +4,15 @@
 
 @section('content')
 @if(session('success'))
-    <div class="neo-alert neo-alert-success mb-4">
-        <i class="neo-icon neo-icon-check-circle"></i>
+    <div class="rounded-lg border border-blue-200 bg-blue-50 p-4 text-blue-800 dark:bg-blue-900 dark:border-blue-800 dark:text-blue-200 rounded-lg border border-blue-200 bg-blue-50 p-4 text-blue-800 dark:bg-blue-900 dark:border-blue-800 dark:text-blue-200-success mb-4">
+        <i class="text-gray-400 text-gray-400-check-circle"></i>
         {{ session('success') }}
     </div>
 @endif
 
 @if(session('error'))
-    <div class="neo-alert neo-alert-danger mb-4">
-        <i class="neo-icon neo-icon-x-circle"></i>
+    <div class="rounded-lg border border-blue-200 bg-blue-50 p-4 text-blue-800 dark:bg-blue-900 dark:border-blue-800 dark:text-blue-200 rounded-lg border border-red-200 bg-red-50 p-4 text-red-800 dark:bg-red-900 dark:border-red-800 dark:text-red-200 mb-4">
+        <i class="text-gray-400 text-gray-400-x-circle"></i>
         {{ session('error') }}
     </div>
 @endif

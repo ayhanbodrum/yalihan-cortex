@@ -5,7 +5,7 @@
 
 @section('content')
 <meta name="csrf-token" content="{{ csrf_token() }}">
-<div class="neo-container">
+<div class="container mx-auto">
     <div class="neo-header">
         <h1 class="neo-title">🎯 Dinamik Form Oluşturucu</h1>
         <p class="neo-subtitle">AI destekli 2D Matrix sistemi ile otomatik form oluşturma</p>
@@ -40,7 +40,7 @@
                     </div>
                     <div class="neo-form-col neo-form-col-auto">
                         <button type="submit" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg">
-                            <i class="neo-icon-generate"></i> Form Oluştur
+                            <i class="text-gray-400-generate"></i> Form Oluştur
                         </button>
                     </div>
                 </div>
@@ -54,7 +54,7 @@
             <h2 class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800-title">Dinamik Form</h2>
             <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800-actions">
                 <button type="button" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 bg-white text-gray-700 rounded-lg hover:bg-gray-50 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-gray-500 transition-all duration-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700" onclick="resetForm()">
-                    <i class="neo-icon-reset"></i> Sıfırla
+                    <i class="text-gray-400-reset"></i> Sıfırla
                 </button>
             </div>
         </div>
@@ -91,7 +91,7 @@
 
 <style>
 /* Neo Design System - Dynamic Form Styles */
-.neo-container {
+.container mx-auto {
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
@@ -457,7 +457,7 @@
 }
 
 /* Loading States */
-.neo-loading {
+.animate-spin {
     opacity: 0.6;
     pointer-events: none;
 }
@@ -478,13 +478,13 @@
 }
 
 /* Icons */
-.neo-icon-generate::before { content: "⚡"; }
-.neo-icon-reset::before { content: "🔄"; }
-.neo-icon-save::before { content: "💾"; }
-.neo-icon-suggestion::before { content: "💡"; }
-.neo-icon-autofill::before { content: "🤖"; }
-.neo-icon-calculation::before { content: "🧮"; }
-.neo-icon-clear::before { content: "🗑️"; }
+.text-gray-400-generate::before { content: "⚡"; }
+.text-gray-400-reset::before { content: "🔄"; }
+.text-gray-400-save::before { content: "💾"; }
+.text-gray-400-suggestion::before { content: "💡"; }
+.text-gray-400-autofill::before { content: "🤖"; }
+.text-gray-400-calculation::before { content: "🧮"; }
+.text-gray-400-clear::before { content: "🗑️"; }
 </style>
 
 <script>
@@ -542,12 +542,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 dynamicFormContainer.innerHTML = data.form_html;
                 updateAIStatus(data.fields_count);
             } else {
-                dynamicFormContainer.innerHTML = '<div class="neo-alert neo-alert-error">' + data.message + '</div>';
+                dynamicFormContainer.innerHTML = '<div class="rounded-lg border border-blue-200 bg-blue-50 p-4 text-blue-800 dark:bg-blue-900 dark:border-blue-800 dark:text-blue-200 rounded-lg border border-blue-200 bg-blue-50 p-4 text-blue-800 dark:bg-blue-900 dark:border-blue-800 dark:text-blue-200-error">' + data.message + '</div>';
             }
 
         } catch (error) {
             console.error('Form yükleme hatası:', error);
-            dynamicFormContainer.innerHTML = '<div class="neo-alert neo-alert-error">Form yüklenirken hata oluştu.</div>';
+            dynamicFormContainer.innerHTML = '<div class="rounded-lg border border-blue-200 bg-blue-50 p-4 text-blue-800 dark:bg-blue-900 dark:border-blue-800 dark:text-blue-200 rounded-lg border border-blue-200 bg-blue-50 p-4 text-blue-800 dark:bg-blue-900 dark:border-blue-800 dark:text-blue-200-error">Form yüklenirken hata oluştu.</div>';
         }
     }
 

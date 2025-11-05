@@ -71,7 +71,7 @@
         <div class="space-y-1 mb-3">
             <!-- Dashboard -->
             <a href="{{ route('admin.dashboard.index') }}"
-               class="neo-sidebar-item c7-tip {{ request()->routeIs('admin.dashboard.*') ? 'active' : '' }}"
+               class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors dark:text-gray-300 dark:hover:text-gray-100 dark:hover:bg-gray-800 c7-tip {{ request()->routeIs('admin.dashboard.*') ? 'active' : '' }}"
                aria-current="{{ request()->routeIs('admin.dashboard.*') ? 'page' : '' }}"
                :data-tip="open ? '' : 'Dashboard'" :title="open ? '' : 'Dashboard'">
                 <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -83,7 +83,7 @@
             <!-- İlanlar -->
             @if (\Illuminate\Support\Facades\Route::has('admin.ilanlar.index'))
             <a href="{{ route('admin.ilanlar.index') }}"
-               class="neo-sidebar-item c7-tip {{ request()->routeIs('admin.ilanlar.*') ? 'active' : '' }}"
+               class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors dark:text-gray-300 dark:hover:text-gray-100 dark:hover:bg-gray-800 c7-tip {{ request()->routeIs('admin.ilanlar.*') ? 'active' : '' }}"
                aria-current="{{ request()->routeIs('admin.ilanlar.*') ? 'page' : '' }}"
                :data-tip="open ? '' : 'İlanlar'" :title="open ? '' : 'İlanlar'">
                 <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -96,7 +96,7 @@
             <!-- CRM (Kişiler) -->
             @if (\Illuminate\Support\Facades\Route::has('admin.kisiler.index'))
             <a href="{{ route('admin.kisiler.index') }}"
-               class="neo-sidebar-item c7-tip {{ request()->routeIs('admin.kisiler.*') ? 'active' : '' }}"
+               class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors dark:text-gray-300 dark:hover:text-gray-100 dark:hover:bg-gray-800 c7-tip {{ request()->routeIs('admin.kisiler.*') ? 'active' : '' }}"
                aria-current="{{ request()->routeIs('admin.kisiler.*') ? 'page' : '' }}"
                :data-tip="open ? '' : 'Kişiler'" :title="open ? '' : 'Kişiler'">
                 <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -109,7 +109,7 @@
             <!-- Raporlar -->
             @if (\Illuminate\Support\Facades\Route::has('admin.reports.index'))
             <a href="{{ route('admin.reports.index') }}"
-               class="neo-sidebar-item c7-tip {{ request()->routeIs('admin.reports.*') ? 'active' : '' }}"
+               class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors dark:text-gray-300 dark:hover:text-gray-100 dark:hover:bg-gray-800 c7-tip {{ request()->routeIs('admin.reports.*') ? 'active' : '' }}"
                aria-current="{{ request()->routeIs('admin.reports.*') ? 'page' : '' }}"
                :data-tip="open ? '' : 'Raporlar'" :title="open ? '' : 'Raporlar'">
                 <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -122,7 +122,7 @@
             <!-- Bildirimler -->
             @if (\Illuminate\Support\Facades\Route::has('admin.notifications.index'))
             <a href="{{ route('admin.notifications.index') }}"
-               class="neo-sidebar-item c7-tip {{ request()->routeIs('admin.notifications.*') ? 'active' : '' }}"
+               class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors dark:text-gray-300 dark:hover:text-gray-100 dark:hover:bg-gray-800 c7-tip {{ request()->routeIs('admin.notifications.*') ? 'active' : '' }}"
                aria-current="{{ request()->routeIs('admin.notifications.*') ? 'page' : '' }}"
                :data-tip="open ? '' : 'Bildirimler'" :title="open ? '' : 'Bildirimler'">
                 <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -135,7 +135,7 @@
             <!-- Ayarlar -->
             @if (\Illuminate\Support\Facades\Route::has('admin.ayarlar.index'))
             <a href="{{ route('admin.ayarlar.index') }}"
-               class="neo-sidebar-item c7-tip {{ request()->routeIs('admin.ayarlar.*') ? 'active' : '' }}"
+               class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors dark:text-gray-300 dark:hover:text-gray-100 dark:hover:bg-gray-800 c7-tip {{ request()->routeIs('admin.ayarlar.*') ? 'active' : '' }}"
                aria-current="{{ request()->routeIs('admin.ayarlar.*') ? 'page' : '' }}"
                :data-tip="open ? '' : 'Ayarlar'" :title="open ? '' : 'Ayarlar'">
                 <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -151,7 +151,7 @@
 
         <!-- Kullanıcılar -->
         <a href="{{ route('admin.kullanicilar.index') }}"
-            class="neo-sidebar-item c7-tip {{ request()->routeIs('admin.kullanicilar.*') ? 'active' : '' }}"
+            class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors dark:text-gray-300 dark:hover:text-gray-100 dark:hover:bg-gray-800 c7-tip {{ request()->routeIs('admin.kullanicilar.*') ? 'active' : '' }}"
             :data-tip="open ? '' : 'Kullanıcılar'" :title="open ? '' : 'Kullanıcılar'">
             <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -162,7 +162,7 @@
 
         <!-- Danışmanlar -->
         <a href="{{ route('admin.danisman.index') }}"
-            class="neo-sidebar-item c7-tip {{ request()->routeIs('admin.danisman.*') ? 'active' : '' }}"
+            class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors dark:text-gray-300 dark:hover:text-gray-100 dark:hover:bg-gray-800 c7-tip {{ request()->routeIs('admin.danisman.*') ? 'active' : '' }}"
             :data-tip="open ? '' : 'Danışmanlar'" :title="open ? '' : 'Danışmanlar'">
             <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -174,7 +174,7 @@
         <!-- CRM Yönetimi -->
         <div class="neo-sidebar-group">
             <button @click="toggleMenu('crm')"
-                class="neo-sidebar-item c7-tip w-full flex items-center justify-between"
+                class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors dark:text-gray-300 dark:hover:text-gray-100 dark:hover:bg-gray-800 c7-tip w-full flex items-center justify-between"
                 :aria-expanded="activeMenu === 'crm'"
                 aria-controls="menu-crm"
                 :data-tip="open ? '' : 'CRM Yönetimi'" :title="open ? '' : 'CRM Yönetimi'">
@@ -200,7 +200,7 @@
                 x-transition:leave-end="opacity-0 transform scale-95" class="ml-6 space-y-1">
 
                 <a href="{{ route('admin.kisiler.index') }}"
-                    class="neo-sidebar-item c7-tip {{ request()->routeIs('admin.kisiler.*') ? 'active' : '' }}"
+                    class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors dark:text-gray-300 dark:hover:text-gray-100 dark:hover:bg-gray-800 c7-tip {{ request()->routeIs('admin.kisiler.*') ? 'active' : '' }}"
                     :data-tip="open ? '' : 'Kişiler'" :title="open ? '' : 'Kişiler'">
                     <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -210,7 +210,7 @@
                 </a>
 
                 <a href="{{ route('admin.talepler.index') }}"
-                    class="neo-sidebar-item c7-tip {{ request()->routeIs('admin.talepler.*') ? 'active' : '' }}"
+                    class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors dark:text-gray-300 dark:hover:text-gray-100 dark:hover:bg-gray-800 c7-tip {{ request()->routeIs('admin.talepler.*') ? 'active' : '' }}"
                     :data-tip="open ? '' : 'Talepler'" :title="open ? '' : 'Talepler'">
                     <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -220,7 +220,7 @@
                 </a>
 
                 <a href="{{ route('admin.eslesmeler.index') }}"
-                    class="neo-sidebar-item c7-tip {{ request()->routeIs('admin.eslesmeler.*') ? 'active' : '' }}"
+                    class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors dark:text-gray-300 dark:hover:text-gray-100 dark:hover:bg-gray-800 c7-tip {{ request()->routeIs('admin.eslesmeler.*') ? 'active' : '' }}"
                     :data-tip="open ? '' : 'Eşleşmeler'" :title="open ? '' : 'Eşleşmeler'">
                     <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -230,7 +230,7 @@
                 </a>
 
                 <a href="{{ route('admin.crm.index') }}"
-                    class="neo-sidebar-item c7-tip {{ request()->routeIs('admin.crm.*') ? 'active' : '' }}"
+                    class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors dark:text-gray-300 dark:hover:text-gray-100 dark:hover:bg-gray-800 c7-tip {{ request()->routeIs('admin.crm.*') ? 'active' : '' }}"
                     :data-tip="open ? '' : 'AI Önerileri'" :title="open ? '' : 'AI Önerileri'">
                     <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6l4 2" />
@@ -242,7 +242,7 @@
 
         <!-- Talepler -->
         <a href="{{ route('admin.talepler.index') }}"
-            class="neo-sidebar-item c7-tip {{ request()->routeIs('admin.talepler.*') ? 'active' : '' }}"
+            class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors dark:text-gray-300 dark:hover:text-gray-100 dark:hover:bg-gray-800 c7-tip {{ request()->routeIs('admin.talepler.*') ? 'active' : '' }}"
             :data-tip="open ? '' : 'Talepler'" :title="open ? '' : 'Talepler'">
             <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -253,7 +253,7 @@
 
         <!-- İlanlar -->
         <a href="{{ route('admin.ilanlar.index') }}"
-            class="neo-sidebar-item c7-tip {{ request()->routeIs('admin.ilanlar.*') ? 'active' : '' }}"
+            class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors dark:text-gray-300 dark:hover:text-gray-100 dark:hover:bg-gray-800 c7-tip {{ request()->routeIs('admin.ilanlar.*') ? 'active' : '' }}"
             :data-tip="open ? '' : 'İlanlar'" :title="open ? '' : 'İlanlar'">
             <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -265,7 +265,7 @@
         <!-- İlan Yönetimi -->
         <div class="neo-sidebar-group">
             <button @click="toggleMenu('ilan-yonetimi')"
-                class="neo-sidebar-item c7-tip w-full flex items-center justify-between"
+                class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors dark:text-gray-300 dark:hover:text-gray-100 dark:hover:bg-gray-800 c7-tip w-full flex items-center justify-between"
                 :aria-expanded="activeMenu === 'ilan-yonetimi'"
                 aria-controls="menu-ilan-yonetimi"
                 :data-tip="open ? '' : 'İlan Yönetimi'" :title="open ? '' : 'İlan Yönetimi'">
@@ -291,7 +291,7 @@
                 x-transition:leave-end="opacity-0 transform scale-95" class="ml-6 space-y-1">
 
                 <a href="{{ route('admin.ilan-kategorileri.index') }}"
-                    class="neo-sidebar-item c7-tip {{ request()->routeIs('admin.ilan-kategorileri.*') ? 'active' : '' }}"
+                    class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors dark:text-gray-300 dark:hover:text-gray-100 dark:hover:bg-gray-800 c7-tip {{ request()->routeIs('admin.ilan-kategorileri.*') ? 'active' : '' }}"
                     :data-tip="open ? '' : 'Kategoriler'" :title="open ? '' : 'Kategoriler'">
                     <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -301,7 +301,7 @@
                 </a>
 
                 <a href="{{ route('module.ozellikler.index') }}"
-                    class="neo-sidebar-item c7-tip {{ request()->routeIs('module.ozellikler.*') ? 'active' : '' }}"
+                    class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors dark:text-gray-300 dark:hover:text-gray-100 dark:hover:bg-gray-800 c7-tip {{ request()->routeIs('module.ozellikler.*') ? 'active' : '' }}"
                     :data-tip="open ? '' : 'Özellikler'" :title="open ? '' : 'Özellikler'">
                     <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -311,7 +311,7 @@
                 </a>
 
                 <a href="{{ route('admin.property-type-manager.index') }}"
-                    class="neo-sidebar-item c7-tip {{ request()->routeIs('admin.property-type-manager.*') ? 'active' : '' }}"
+                    class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors dark:text-gray-300 dark:hover:text-gray-100 dark:hover:bg-gray-800 c7-tip {{ request()->routeIs('admin.property-type-manager.*') ? 'active' : '' }}"
                     :data-tip="open ? '' : 'Yayın Tipi Yöneticisi'" :title="open ? '' : 'Yayın Tipi Yöneticisi'">
                     <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -324,7 +324,7 @@
 
         <!-- Raporlar -->
         <a href="{{ route('admin.reports.index') }}"
-            class="neo-sidebar-item c7-tip {{ request()->routeIs('admin.reports.*') ? 'active' : '' }}"
+            class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors dark:text-gray-300 dark:hover:text-gray-100 dark:hover:bg-gray-800 c7-tip {{ request()->routeIs('admin.reports.*') ? 'active' : '' }}"
             :data-tip="open ? '' : 'Raporlar'" :title="open ? '' : 'Raporlar'">
             <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -335,7 +335,7 @@
 
         <!-- Bildirimler -->
         <a href="{{ route('admin.notifications.index') }}"
-            class="neo-sidebar-item c7-tip {{ request()->routeIs('admin.notifications.*') ? 'active' : '' }}"
+            class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors dark:text-gray-300 dark:hover:text-gray-100 dark:hover:bg-gray-800 c7-tip {{ request()->routeIs('admin.notifications.*') ? 'active' : '' }}"
             :data-tip="open ? '' : 'Bildirimler'" :title="open ? '' : 'Bildirimler'">
             <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -347,7 +347,7 @@
         <!-- AI Sistemi -->
         <div class="neo-sidebar-group">
             <button @click="toggleMenu('ai')"
-                class="neo-sidebar-item c7-tip w-full flex items-center justify-between"
+                class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors dark:text-gray-300 dark:hover:text-gray-100 dark:hover:bg-gray-800 c7-tip w-full flex items-center justify-between"
                 :aria-expanded="activeMenu === 'ai'"
                 aria-controls="menu-ai"
                 :data-tip="open ? '' : 'AI Sistemi'" :title="open ? '' : 'AI Sistemi'">
@@ -370,13 +370,13 @@
                 x-transition:leave-start="opacity-100 transform scale-100"
                 x-transition:leave-end="opacity-0 transform scale-95" class="ml-6 space-y-1">
                 @if (\Illuminate\Support\Facades\Route::has('admin.ai.dashboard'))
-                    <a href="{{ route('admin.ai.dashboard') }}" class="neo-sidebar-item c7-tip">AI Dashboard</a>
+                    <a href="{{ route('admin.ai.dashboard') }}" class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors dark:text-gray-300 dark:hover:text-gray-100 dark:hover:bg-gray-800 c7-tip">AI Dashboard</a>
                 @endif
                 @if (\Illuminate\Support\Facades\Route::has('admin.ai.wizard'))
-                    <a href="{{ route('admin.ai.wizard') }}" class="neo-sidebar-item c7-tip">Wizard</a>
+                    <a href="{{ route('admin.ai.wizard') }}" class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors dark:text-gray-300 dark:hover:text-gray-100 dark:hover:bg-gray-800 c7-tip">Wizard</a>
                 @endif
                 @if (\Illuminate\Support\Facades\Route::has('admin.ai.settings'))
-                    <a href="{{ route('admin.ai.settings') }}" class="neo-sidebar-item c7-tip">AI Ayarları</a>
+                    <a href="{{ route('admin.ai.settings') }}" class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors dark:text-gray-300 dark:hover:text-gray-100 dark:hover:bg-gray-800 c7-tip">AI Ayarları</a>
                 @endif
             </div>
         </div>
@@ -384,7 +384,7 @@
         <!-- Takım Yönetimi -->
         <div class="neo-sidebar-group">
             <button @click="toggleMenu('team')"
-                class="neo-sidebar-item c7-tip w-full flex items-center justify-between"
+                class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors dark:text-gray-300 dark:hover:text-gray-100 dark:hover:bg-gray-800 c7-tip w-full flex items-center justify-between"
                 :aria-expanded="activeMenu === 'team'"
                 aria-controls="menu-team"
                 :data-tip="open ? '' : 'Takım Yönetimi'" :title="open ? '' : 'Takım Yönetimi'">
@@ -403,15 +403,15 @@
             </button>
             <div id="menu-team" x-show="activeMenu === 'team'" x-transition class="ml-6 space-y-1">
                 @if (\Illuminate\Support\Facades\Route::has('admin.team.members'))
-                    <a href="{{ route('admin.team.members') }}" class="neo-sidebar-item c7-tip">Takım
+                    <a href="{{ route('admin.team.members') }}" class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors dark:text-gray-300 dark:hover:text-gray-100 dark:hover:bg-gray-800 c7-tip">Takım
                         Üyeleri</a>
                 @endif
                 @if (\Illuminate\Support\Facades\Route::has('admin.team.tasks'))
-                    <a href="{{ route('admin.team.tasks') }}" class="neo-sidebar-item c7-tip">Görevler</a>
+                    <a href="{{ route('admin.team.tasks') }}" class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors dark:text-gray-300 dark:hover:text-gray-100 dark:hover:bg-gray-800 c7-tip">Görevler</a>
                 @endif
                 @if (\Illuminate\Support\Facades\Route::has('admin.team.performance'))
                     <a href="{{ route('admin.team.performance') }}"
-                        class="neo-sidebar-item c7-tip">Performans</a>
+                        class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors dark:text-gray-300 dark:hover:text-gray-100 dark:hover:bg-gray-800 c7-tip">Performans</a>
                 @endif
             </div>
         </div>
@@ -419,7 +419,7 @@
         <!-- Analytics -->
         <div class="neo-sidebar-group">
             <button @click="toggleMenu('analytics')"
-                class="neo-sidebar-item c7-tip w-full flex items-center justify-between"
+                class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors dark:text-gray-300 dark:hover:text-gray-100 dark:hover:bg-gray-800 c7-tip w-full flex items-center justify-between"
                 :aria-expanded="activeMenu === 'analytics'"
                 aria-controls="menu-analytics"
                 :data-tip="open ? '' : 'Analytics'" :title="open ? '' : 'Analytics'">
@@ -438,16 +438,16 @@
             </button>
             <div id="menu-analytics" x-show="activeMenu === 'analytics'" x-transition class="ml-6 space-y-1">
                 @if (\Illuminate\Support\Facades\Route::has('admin.analytics.index'))
-                    <a href="{{ route('admin.analytics.index') }}" class="neo-sidebar-item c7-tip">Genel
+                    <a href="{{ route('admin.analytics.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors dark:text-gray-300 dark:hover:text-gray-100 dark:hover:bg-gray-800 c7-tip">Genel
                         Analytics</a>
                 @endif
                 @if (\Illuminate\Support\Facades\Route::has('admin.analytics.telegram'))
-                    <a href="{{ route('admin.analytics.telegram') }}" class="neo-sidebar-item c7-tip">Telegram
+                    <a href="{{ route('admin.analytics.telegram') }}" class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors dark:text-gray-300 dark:hover:text-gray-100 dark:hover:bg-gray-800 c7-tip">Telegram
                         Bot</a>
                 @endif
                 @if (\Illuminate\Support\Facades\Route::has('admin.analytics.reports'))
                     <a href="{{ route('admin.analytics.reports') }}"
-                        class="neo-sidebar-item c7-tip">Raporlar</a>
+                        class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors dark:text-gray-300 dark:hover:text-gray-100 dark:hover:bg-gray-800 c7-tip">Raporlar</a>
                 @endif
             </div>
         </div>
@@ -455,7 +455,7 @@
         <!-- Telegram Bot -->
         <div class="neo-sidebar-group">
             <button @click="toggleMenu('telegram')"
-                class="neo-sidebar-item c7-tip w-full flex items-center justify-between"
+                class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors dark:text-gray-300 dark:hover:text-gray-100 dark:hover:bg-gray-800 c7-tip w-full flex items-center justify-between"
                 :aria-expanded="activeMenu === 'telegram'"
                 aria-controls="menu-telegram"
                 :data-tip="open ? '' : 'Telegram Bot'" :title="open ? '' : 'Telegram Bot'">
@@ -474,25 +474,25 @@
             </button>
             <div id="menu-telegram" x-show="activeMenu === 'telegram'" x-transition class="ml-6 space-y-1">
                 @if (\Illuminate\Support\Facades\Route::has('admin.telegram-bot.index'))
-                    <a href="{{ route('admin.telegram-bot.index') }}" class="neo-sidebar-item c7-tip">Genel</a>
+                    <a href="{{ route('admin.telegram-bot.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors dark:text-gray-300 dark:hover:text-gray-100 dark:hover:bg-gray-800 c7-tip">Genel</a>
                 @endif
                 @if (\Illuminate\Support\Facades\Route::has('admin.telegram-bot.status'))
-                    <a href="{{ route('admin.telegram-bot.status') }}" class="neo-sidebar-item c7-tip">Durum</a>
+                    <a href="{{ route('admin.telegram-bot.status') }}" class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors dark:text-gray-300 dark:hover:text-gray-100 dark:hover:bg-gray-800 c7-tip">Durum</a>
                 @endif
                 @if (\Illuminate\Support\Facades\Route::has('admin.telegram-bot.webhook-info'))
                     <a href="{{ route('admin.telegram-bot.webhook-info') }}"
-                        class="neo-sidebar-item c7-tip">Webhook Bilgisi</a>
+                        class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors dark:text-gray-300 dark:hover:text-gray-100 dark:hover:bg-gray-800 c7-tip">Webhook Bilgisi</a>
                 @endif
                 @if (\Illuminate\Support\Facades\Route::has('admin.telegram-bot.index'))
                     <a href="{{ route('admin.telegram-bot.index') }}"
-                        class="neo-sidebar-item c7-tip">Eylemler</a>
+                        class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors dark:text-gray-300 dark:hover:text-gray-100 dark:hover:bg-gray-800 c7-tip">Eylemler</a>
                 @endif
             </div>
         </div>
 
         <!-- Ayarlar -->
         <a href="{{ route('admin.ayarlar.index') }}"
-            class="neo-sidebar-item c7-tip {{ request()->routeIs('admin.ayarlar.*') ? 'active' : '' }}"
+            class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors dark:text-gray-300 dark:hover:text-gray-100 dark:hover:bg-gray-800 c7-tip {{ request()->routeIs('admin.ayarlar.*') ? 'active' : '' }}"
             :data-tip="open ? '' : 'Ayarlar'" :title="open ? '' : 'Ayarlar'">
             <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -506,7 +506,7 @@
         <!-- Blog Yönetimi -->
         <div class="neo-sidebar-group">
             <button @click="toggleMenu('blog')"
-                class="neo-sidebar-item c7-tip w-full flex items-center justify-between"
+                class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors dark:text-gray-300 dark:hover:text-gray-100 dark:hover:bg-gray-800 c7-tip w-full flex items-center justify-between"
                 :aria-expanded="activeMenu === 'blog'"
                 aria-controls="menu-blog"
                 :data-tip="open ? '' : 'Blog Yönetimi'" :title="open ? '' : 'Blog Yönetimi'">
@@ -525,13 +525,13 @@
             </button>
             <div id="menu-blog" x-show="activeMenu === 'blog'" x-transition class="ml-6 space-y-1">
                 @if (\Illuminate\Support\Facades\Route::has('admin.blog.posts.index'))
-                    <a href="{{ route('admin.blog.posts.index') }}" class="neo-sidebar-item c7-tip">Yazılar</a>
+                    <a href="{{ route('admin.blog.posts.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors dark:text-gray-300 dark:hover:text-gray-100 dark:hover:bg-gray-800 c7-tip">Yazılar</a>
                 @endif
                 @if (\Illuminate\Support\Facades\Route::has('admin.blog.categories.index'))
-                    <a href="{{ route('admin.blog.categories.index') }}" class="neo-sidebar-item c7-tip">Kategoriler</a>
+                    <a href="{{ route('admin.blog.categories.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors dark:text-gray-300 dark:hover:text-gray-100 dark:hover:bg-gray-800 c7-tip">Kategoriler</a>
                 @endif
                 @if (\Illuminate\Support\Facades\Route::has('admin.blog.comments.index'))
-                    <a href="{{ route('admin.blog.comments.index') }}" class="neo-sidebar-item c7-tip">Yorumlar</a>
+                    <a href="{{ route('admin.blog.comments.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors dark:text-gray-300 dark:hover:text-gray-100 dark:hover:bg-gray-800 c7-tip">Yorumlar</a>
                 @endif
             </div>
         </div>
@@ -539,7 +539,7 @@
         <!-- Adres Yönetimi -->
         @if (\Illuminate\Support\Facades\Route::has('admin.adres-yonetimi.index'))
         <a href="{{ route('admin.adres-yonetimi.index') }}"
-            class="neo-sidebar-item c7-tip {{ request()->routeIs('admin.adres-yonetimi.*') ? 'active' : '' }}"
+            class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors dark:text-gray-300 dark:hover:text-gray-100 dark:hover:bg-gray-800 c7-tip {{ request()->routeIs('admin.adres-yonetimi.*') ? 'active' : '' }}"
             :data-tip="open ? '' : 'Adres Yönetimi'" :title="open ? '' : 'Adres Yönetimi'">
             <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -554,7 +554,7 @@
         <!-- Test Sayfaları -->
         <div class="neo-sidebar-group">
             <button @click="toggleMenu('test')"
-                class="neo-sidebar-item c7-tip w-full flex items-center justify-between"
+                class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors dark:text-gray-300 dark:hover:text-gray-100 dark:hover:bg-gray-800 c7-tip w-full flex items-center justify-between"
                 :aria-expanded="activeMenu === 'test'"
                 aria-controls="menu-test"
                 :data-tip="open ? '' : 'Test Sayfaları'" :title="open ? '' : 'Test Sayfaları'">
@@ -580,7 +580,7 @@
                 x-transition:leave-end="opacity-0 transform scale-95" class="ml-6 space-y-1">
 
                 <a href="{{ route('admin.notifications.test-page') }}"
-                    class="neo-sidebar-item c7-tip {{ request()->routeIs('admin.notifications.test-page') ? 'active' : '' }}"
+                    class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors dark:text-gray-300 dark:hover:text-gray-100 dark:hover:bg-gray-800 c7-tip {{ request()->routeIs('admin.notifications.test-page') ? 'active' : '' }}"
                     :data-tip="open ? '' : 'Pusher Test'" :title="open ? '' : 'Pusher Test'">
                     <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
