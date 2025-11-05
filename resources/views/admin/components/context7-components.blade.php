@@ -74,7 +74,7 @@ $icons = [
 {{-- Page Header Macro --}}
 @push('styles')
 <style>
-.neo-page-wrapper {
+.container mx-auto px-4 py-6 {
     @apply space-y-6;
 }
 </style>

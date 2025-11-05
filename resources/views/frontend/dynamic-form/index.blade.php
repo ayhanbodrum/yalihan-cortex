@@ -18,7 +18,7 @@
             <p class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800-subtitle">Kategori ve yayın tipi seçerek dinamik form oluşturun</p>
         </div>
         <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800-body">
-            <form id="formSelector" class="neo-form-selector">
+            <form id="formSelector" class="space-y-2">
                 <div class="flex flex-wrap gap-4">
                     <div class="flex-1 min-w-0">
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" for="kategori">Kategori</label>
@@ -153,7 +153,7 @@
     padding: 24px;
 }
 
-.neo-form-selector {
+.space-y-2 {
     display: flex;
     gap: 20px;
     align-items: end;
@@ -238,7 +238,7 @@
     max-width: 100%;
 }
 
-.neo-form-header {
+.flex items-center justify-between mb-4 {
     text-align: center;
     margin-bottom: 30px;
     padding: 20px;
@@ -246,20 +246,20 @@
     border-radius: 12px;
 }
 
-.neo-form-title {
+.text-2xl font-bold text-gray-900 dark:text-white mb-2 {
     font-size: 1.8rem;
     font-weight: 600;
     color: #1a1a1a;
     margin: 0 0 10px 0;
 }
 
-.neo-form-subtitle {
+.text-lg text-gray-600 dark:text-gray-400 mb-4 {
     font-size: 1rem;
     color: #666;
     margin: 0;
 }
 
-.neo-form-section {
+.space-y-4 mb-6 {
     margin-bottom: 30px;
     padding: 20px;
     background: #f8f9fa;
@@ -267,7 +267,7 @@
     border-left: 4px solid #007bff;
 }
 
-.neo-section-title {
+.text-xl font-semibold text-gray-900 dark:text-white mb-4 {
     font-size: 1.2rem;
     font-weight: 600;
     color: #1a1a1a;
@@ -402,7 +402,7 @@
     border-left: 4px solid #2196f3;
 }
 
-.neo-form-actions {
+.flex items-center justify-end gap-2 mt-6 {
     text-align: center;
     margin-top: 30px;
     padding-top: 20px;

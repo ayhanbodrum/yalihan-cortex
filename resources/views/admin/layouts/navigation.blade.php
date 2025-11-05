@@ -178,7 +178,7 @@
             <!-- User Menu -->
             <div class="flex items-center">
                 <!-- Dark Mode Toggle -->
-                <button id="neo-dark-toggle"
+                <button id="flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-300 dark:hover:text-gray-100 dark:hover:bg-gray-800"
                     class="mr-3 p-2 rounded-lg text-gray-500 hover:text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500"
                     aria-label="Tema" title="Tema">
                     <svg id="icon-moon" class="h-5 w-5 hidden" viewBox="0 0 24 24" fill="currentColor">
@@ -235,7 +235,7 @@
 
             <!-- Mobile menu button -->
             <div class="md:hidden flex items-center">
-                <button id="neo-mobile-toggle"
+                <button id="flex md:hidden items-center justify-center p-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-300 dark:hover:text-gray-100 dark:hover:bg-gray-800"
                     class="inline-flex items-center justify-center p-2 rounded-lg text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500">
                     <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -247,7 +247,7 @@
     </div>
 
     <!-- Neo Mobile Menu -->
-    <div id="neo-mobile-menu" class="hidden md:hidden">
+    <div id="flex flex-col md:hidden bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700" class="hidden md:hidden">
         <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white/90 backdrop-blur border-t border-gray-200">
             <a href="{{ route('admin.dashboard.index') }}"
                 class="block px-4 py-2.5 rounded-lg text-base font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100">Dashboard</a>
@@ -271,7 +271,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             // Dark Mode Init & Toggle
             const htmlEl = document.documentElement
-            const toggleBtn = document.getElementById('neo-dark-toggle')
+            const toggleBtn = document.getElementById('flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-300 dark:hover:text-gray-100 dark:hover:bg-gray-800')
             const iconMoon = document.getElementById('icon-moon')
             const iconSun = document.getElementById('icon-sun')
             const STORAGE_KEY = 'neo:theme'
@@ -301,8 +301,8 @@
             }
 
             // Neo Mobile Menu Toggle
-            const mobileToggle = document.getElementById('neo-mobile-toggle')
-            const mobileMenu = document.getElementById('neo-mobile-menu')
+            const mobileToggle = document.getElementById('flex md:hidden items-center justify-center p-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-300 dark:hover:text-gray-100 dark:hover:bg-gray-800')
+            const mobileMenu = document.getElementById('flex flex-col md:hidden bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700')
 
             if (mobileToggle && mobileMenu) {
                 mobileToggle.addEventListener('click', function() {

@@ -86,7 +86,7 @@
                 <div x-show="suggestions.length > 0" class="p-2">
                     <template x-for="suggestion in suggestions" :key="suggestion.id">
                         <div @click="selectLocation(suggestion)"
-                             class="neo-suggestion-item flex items-center p-3 hover:bg-{{ $theme }}-50 dark:hover:bg-{{ $theme }}-900/20 cursor-pointer rounded-lg transition-colors">
+                             class="flex items-center gap-2 p-2 rounded-md hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer flex items-center p-3 hover:bg-{{ $theme }}-50 dark:hover:bg-{{ $theme }}-900/20 cursor-pointer rounded-lg transition-colors">
                             <div class="w-10 h-10 bg-{{ $theme }}-500 rounded-full flex items-center justify-center mr-3 text-white font-semibold text-sm"
                                  x-text="suggestion.icon || '📍'"></div>
                             <div class="flex-1">
