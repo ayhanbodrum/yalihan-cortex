@@ -807,7 +807,7 @@
         function setupContext7Suggestions() {
             // Real-time suggestions based on user interactions
             document.addEventListener('click', function(e) {
-                if (e.target.matches('[data-neo-track]')) {
+                if (e.target.matches('[data-w-full h-2 bg-gray-200 rounded-full dark:bg-gray-700]')) {
                     trackContext7Interaction(e.target.dataset.context7Track);
                 }
             });

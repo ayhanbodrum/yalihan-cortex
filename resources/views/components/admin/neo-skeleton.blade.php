@@ -8,7 +8,7 @@
     <x-admin.bg-gray-200 dark:bg-gray-700 type="list" items="3" />
 
     @context7-compliant true
-    @neo-design-system true
+    @space-y-4 true
 --}}
 
 @props([

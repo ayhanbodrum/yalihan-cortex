@@ -27,7 +27,7 @@
     @if ($cssApp = $viteAsset('resources/css/app.css'))
         <link rel="stylesheet" href="{{ $cssApp }}" />
     @endif
-    @if ($cssNeo = $viteAsset('resources/css/neo-unified.css'))
+    @if ($cssNeo = $viteAsset('resources/css/space-y-4.css'))
         <link rel="stylesheet" href="{{ $cssNeo }}" />
     @endif
 

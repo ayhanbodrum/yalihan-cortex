@@ -7,7 +7,7 @@
     <x-admin.fixed top-4 right-4 z-50 max-w-sm w-full bg-white rounded-lg shadow-lg border border-gray-200 p-4 transition-all duration-300 dark:bg-gray-800 dark:border-gray-700 type="success" message="İşlem başarılı!" />  <!-- Manuel -->
 
     @context7-compliant true
-    @neo-design-system true
+    @space-y-4 true
 --}}
 
 @props([

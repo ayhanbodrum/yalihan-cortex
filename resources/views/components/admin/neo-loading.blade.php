@@ -9,7 +9,7 @@
     <x-admin.animate-spin overlay="true" />  <!-- Full overlay -->
 
     @context7-compliant true
-    @neo-design-system true
+    @space-y-4 true
 --}}
 
 @props([

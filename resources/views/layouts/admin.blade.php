@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Yönetim Paneli')</title>
-    {{-- Removed: neo-unified.css (file doesn't exist, using Vite build instead) --}}
+    {{-- Removed: space-y-4.css (file doesn't exist, using Vite build instead) --}}
     @stack('styles')
 </head>
 
