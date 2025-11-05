@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Models\Il;
 use App\Models\Ilce;
 use App\Models\Mahalle;
+use App\Models\Ilan;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -25,66 +26,89 @@ class ListingSearchController extends Controller
         $limit = (int) ($request->input('limit', 20));
 
         try {
-            // ✅ Context7 uyumlu sorgu
-            $base = DB::table('ilanlar as i')
-                ->select(
-                    'i.id',
-                    'i.baslik',
-                    'i.slug',
-                    'i.status',
-                    'i.fiyat',
-                    'i.para_birimi',
-                    'i.site_id',
-                    'i.ilan_sahibi_id',
-                    'i.danisman_id',
-                    's.name as site_name', // ✅ Context7: site_adi → site_name
-                    'k.ad as sahibi_ad',
-                    'k.soyad as sahibi_soyad',
-                    'k.telefon as sahibi_telefon',
-                    'u.name as danisman_ad',
-                    'u.email as danisman_email'
-                )
-                ->leftJoin('sites as s', 's.id', '=', 'i.site_id')
-                ->leftJoin('kisiler as k', 'k.id', '=', 'i.ilan_sahibi_id')
-                ->leftJoin('users as u', 'u.id', '=', 'i.danisman_id');
+            // ✅ Context7: Eloquent ile eager loading
+            $query = Ilan::with(['ilanSahibi', 'danisman'])
+                ->select([
+                    'ilanlar.id',
+                    'ilanlar.baslik',
+                    'ilanlar.slug',
+                    'ilanlar.status',
+                    'ilanlar.fiyat',
+                    'ilanlar.para_birimi',
+                    'ilanlar.site_id',
+                    'ilanlar.ilan_sahibi_id',
+                    'ilanlar.danisman_id',
+                    'ilanlar.created_at',
+                ]);
+
+            // Site ilişkisi için join (Ilan modelinde site() ilişkisi yok)
+            $query->leftJoin('sites as s', 's.id', '=', 'ilanlar.site_id')
+                ->addSelect('s.name as site_name');
 
             // Apply filters by type
-            $base->where(function ($w) use ($q, $type) {
+            $query->where(function ($w) use ($q, $type) {
                 if ($type === 'owner') {
-                    $w->where(function ($q2) use ($q) {
-                        $q2->where('k.ad', 'like', "%{$q}%")
-                           ->orWhere('k.soyad', 'like', "%{$q}%");
+                    $w->whereHas('ilanSahibi', function ($q2) use ($q) {
+                        $q2->where('ad', 'like', "%{$q}%")
+                           ->orWhere('soyad', 'like', "%{$q}%");
                     });
                 } elseif ($type === 'phone') {
                     $digits = preg_replace('/\D+/', '', $q);
-                    $w->where('k.telefon', 'like', "%{$digits}%");
+                    $w->whereHas('ilanSahibi', function ($q2) use ($digits) {
+                        $q2->where('telefon', 'like', "%{$digits}%");
+                    });
                 } elseif ($type === 'site') {
                     // ✅ Context7: Sadece sites tablosundan ara
                     $w->where('s.name', 'like', "%{$q}%");
                 } elseif ($type === 'advisor') {
-                    $w->where(function ($q2) use ($q) {
-                        $q2->where('u.name', 'like', "%{$q}%")
-                           ->orWhere('u.email', 'like', "%{$q}%");
+                    $w->whereHas('danisman', function ($q2) use ($q) {
+                        $q2->where('name', 'like', "%{$q}%")
+                           ->orWhere('email', 'like', "%{$q}%");
                     });
                 } else { // all
                     $digits = preg_replace('/\D+/', '', $q);
                     $w->where(function ($q2) use ($q, $digits) {
-                        $q2->where('k.ad', 'like', "%{$q}%")
-                           ->orWhere('k.soyad', 'like', "%{$q}%")
-                           ->orWhere('k.telefon', 'like', "%{$digits}%")
-                           ->orWhere('s.name', 'like', "%{$q}%") // ✅ Context7 uyumlu
-                           ->orWhere('u.name', 'like', "%{$q}%")
-                           ->orWhere('u.email', 'like', "%{$q}%");
+                        $q2->whereHas('ilanSahibi', function ($q3) use ($q, $digits) {
+                            $q3->where('ad', 'like', "%{$q}%")
+                               ->orWhere('soyad', 'like', "%{$q}%")
+                               ->orWhere('telefon', 'like', "%{$digits}%");
+                        })
+                        ->orWhere('s.name', 'like', "%{$q}%")
+                        ->orWhereHas('danisman', function ($q3) use ($q) {
+                            $q3->where('name', 'like', "%{$q}%")
+                               ->orWhere('email', 'like', "%{$q}%");
+                        });
                     });
                 }
             });
 
-            $results = $base->orderBy('i.created_at', 'desc')->limit($limit)->get();
+            $results = $query->orderBy('ilanlar.created_at', 'desc')->limit($limit)->get();
+
+            // Format response data
+            $formattedResults = $results->map(function ($ilan) {
+                return [
+                    'id' => $ilan->id,
+                    'baslik' => $ilan->baslik,
+                    'slug' => $ilan->slug,
+                    'status' => $ilan->status,
+                    'fiyat' => $ilan->fiyat,
+                    'para_birimi' => $ilan->para_birimi,
+                    'site_id' => $ilan->site_id,
+                    'ilan_sahibi_id' => $ilan->ilan_sahibi_id,
+                    'danisman_id' => $ilan->danisman_id,
+                    'site_name' => $ilan->site_name ?? null,
+                    'sahibi_ad' => $ilan->ilanSahibi->ad ?? null,
+                    'sahibi_soyad' => $ilan->ilanSahibi->soyad ?? null,
+                    'sahibi_telefon' => $ilan->ilanSahibi->telefon ?? null,
+                    'danisman_ad' => $ilan->danisman->name ?? null,
+                    'danisman_email' => $ilan->danisman->email ?? null,
+                ];
+            });
 
             return response()->json([
                 'success' => true,
-                'count' => $results->count(),
-                'data' => $results,
+                'count' => $formattedResults->count(),
+                'data' => $formattedResults,
             ]);
         } catch (\Throwable $e) {
             Log::error('ListingSearchController@search error: ' . $e->getMessage(), [
