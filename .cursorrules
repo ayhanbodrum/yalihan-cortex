@@ -1,0 +1,159 @@
+# Cursor Rules - Yalıhan Emlak Context7 Standards
+
+## 🎨 TAILWIND CSS - MASTER CSS FRAMEWORK
+
+**CRITICAL RULE:** Tailwind CSS is the **ONLY** CSS framework allowed in this project.
+
+### ✅ REQUIRED:
+- **ALL styling must use Tailwind utility classes**
+- Tailwind plugins for extended functionality
+- `@apply` directive in CSS files (only in `@layer base`)
+- Tailwind config customization (`tailwind.config.js`)
+
+### ❌ FORBIDDEN:
+- Bootstrap (`btn-`, `card-`, `form-control`)
+- Neo Design System (`neo-btn`, `neo-card`, `neo-input`, `neo-*`)
+- Foundation, Bulma, Material UI
+- Custom CSS classes that duplicate Tailwind functionality
+- Global CSS rules that override Tailwind utilities
+- `!important` in global CSS (except browser native controls: `select`/`option`)
+
+### 🎯 Examples:
+
+**✅ CORRECT:**
+```html
+<button class="px-4 py-2.5 bg-blue-600 text-white rounded-lg 
+               hover:bg-blue-700 hover:scale-105 
+               active:scale-95 
+               focus:ring-2 focus:ring-blue-500 
+               transition-all duration-200 
+               shadow-md hover:shadow-lg">
+    Kaydet
+</button>
+```
+
+**❌ WRONG:**
+```html
+<button class="neo-btn neo-btn-primary">Kaydet</button>
+<button class="btn btn-primary">Kaydet</button>
+```
+
+### 📚 Documentation:
+- `.context7/TAILWIND-TRANSITION-RULE.md`
+- `.context7/authority.json` → `master_css_framework`
+
+---
+
+## 🚫 FORBIDDEN PATTERNS
+
+### Database Fields:
+- `durum` → `status`
+- `is_active` → `status`
+- `aktif` → `status`
+- `sehir` / `sehir_id` → `il` / `il_id`
+- `ad_soyad` → `tam_ad` (display only)
+- `full_name` → `name`
+
+### CSS Classes:
+- `neo-*` → Tailwind utility classes
+- `btn-*` → Tailwind utility classes
+- `card-*` → Tailwind utility classes
+- `form-control` → Tailwind utility classes
+
+### Layouts:
+- `@extends('layouts.app')` → `@extends('admin.layouts.neo')`
+
+### Routes:
+- `route('crm.*')` → `route('admin.*')`
+
+---
+
+## ✅ REQUIRED STANDARDS
+
+### 1. Transition/Animation (MANDATORY):
+```html
+<!-- ALWAYS add transitions -->
+transition-all duration-200 ease-in-out
+hover:scale-105 hover:shadow-lg
+active:scale-95
+```
+
+### 2. Dark Mode (MANDATORY):
+```html
+<!-- EVERY element must have dark mode variant -->
+bg-white dark:bg-gray-800
+text-gray-900 dark:text-white
+border-gray-200 dark:border-gray-700
+```
+
+### 3. Responsive Design (MANDATORY):
+```html
+<!-- Mobile-first approach -->
+grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3
+```
+
+---
+
+## 🔍 CONTEXT7 COMPLIANCE CHECK
+
+Before any code suggestion, ALWAYS check:
+
+1. ✅ Does this use Tailwind CSS utility classes?
+2. ✅ Does this have transitions/animations?
+3. ✅ Does this have dark mode variants?
+4. ✅ Does this use forbidden Turkish field names?
+5. ✅ Is this Context7 compliant?
+
+---
+
+## 📚 CONTEXT7 RESOURCES
+
+- **Authority:** `.context7/authority.json`
+- **Memory:** `.context7/CONTEXT7_MEMORY_SYSTEM.md`
+- **Tailwind Guide:** `.context7/TAILWIND-TRANSITION-RULE.md`
+- **Form Standards:** `.context7/FORM_DESIGN_STANDARDS.md`
+- **Map Standards:** `.context7/HARITA_SISTEMI_STANDARDS.md`
+
+---
+
+## 🎯 CSS FRAMEWORK ENFORCEMENT
+
+**Status:** STRICT - Tailwind CSS is the ONLY CSS framework
+
+**Auto-reject patterns:**
+- Any Bootstrap classes
+- Any Neo Design System classes
+- Custom CSS that duplicates Tailwind
+
+**Required on code review:**
+- All styling uses Tailwind utilities
+- Transitions present on interactive elements
+- Dark mode variants present
+- Responsive design (mobile-first)
+
+---
+
+## 🤖 AI ASSISTANT INSTRUCTIONS
+
+When suggesting code:
+1. **ALWAYS use Tailwind CSS utility classes**
+2. **NEVER suggest Bootstrap, Neo Design, or custom CSS**
+3. **ALWAYS include transitions** (`transition-all duration-200`)
+4. **ALWAYS include dark mode variants** (`dark:bg-gray-800`)
+5. **ALWAYS check Context7 compliance** before suggesting
+
+---
+
+## 📖 REFERENCE
+
+For complete rules, see:
+- `.context7/authority.json` (master authority file)
+- `.yalihan-bekci/knowledge/` (learned patterns)
+- `.context7/TAILWIND-TRANSITION-RULE.md` (detailed guide)
+
+---
+
+**Last Updated:** 2025-11-05
+**Version:** Context7 v5.2.0
+**Enforcement:** STRICT
+
