@@ -15,14 +15,14 @@
             </p>
         </div>
         <div class="flex space-x-2">
-            <a href="{{ route('admin.talepler.show', ['talep' => $talep->id]) }}" class="inline-flex items-center px-4 py-2.5 border border-transparent text-sm leading-4 font-medium rounded-lg shadow-sm text-white neo-btn neo-btn-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 touch-target-optimized touch-target-optimized">
+            <a href="{{ route('admin.talepler.show', ['talep' => $talep->id]) }}" class="inline-flex items-center px-4 py-2.5 border border-transparent text-sm leading-4 font-medium rounded-lg shadow-sm text-white inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 touch-target-optimized touch-target-optimized">
                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                 </svg>
                 Talep Detayları
             </a>
-            <a href="{{ route('admin.talepler.edit', $talep) }}" class="inline-flex items-center px-4 py-2.5 border border-transparent text-sm leading-4 font-medium rounded-lg shadow-sm text-white neo-btn-warning focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 touch-target-optimized touch-target-optimized">
+            <a href="{{ route('admin.talepler.edit', $talep) }}" class="inline-flex items-center px-4 py-2.5 border border-transparent text-sm leading-4 font-medium rounded-lg shadow-sm text-white inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2-warning focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 touch-target-optimized touch-target-optimized">
                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
                 </svg>

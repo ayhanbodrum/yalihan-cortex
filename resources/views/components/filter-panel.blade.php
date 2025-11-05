@@ -77,7 +77,7 @@
         box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
     }
 
-    .ultra-modern-neo-btn neo-btn-secondary {
+    .ultra-modern-inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 bg-white text-gray-700 rounded-lg hover:bg-gray-50 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-gray-500 transition-all duration-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700 {
         background: rgba(107, 114, 128, 0.1);
         color: #4a5568;
         border: 2px solid rgba(107, 114, 128, 0.2);
@@ -89,7 +89,7 @@
         backdrop-filter: blur(10px);
     }
 
-    .ultra-modern-neo-btn neo-btn-secondary:hover {
+    .ultra-modern-inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 bg-white text-gray-700 rounded-lg hover:bg-gray-50 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-gray-500 transition-all duration-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700:hover {
         background: rgba(107, 114, 128, 0.2);
         transform: translateY(-2px);
         box-shadow: 0 4px 15px rgba(107, 114, 128, 0.2);
@@ -249,7 +249,7 @@
                 <span>Filtrele & Ara</span>
             </button>
 
-            <a href="{{ $action }}" class="ultra-modern-neo-btn neo-btn-secondary flex items-center space-x-2">
+            <a href="{{ $action }}" class="ultra-modern-inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 bg-white text-gray-700 rounded-lg hover:bg-gray-50 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-gray-500 transition-all duration-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700 flex items-center space-x-2">
                 <i class="fas fa-refresh"></i>
                 <span>Tümünü Göster</span>
             </a>

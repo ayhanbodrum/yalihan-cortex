@@ -1,9 +1,9 @@
 {{--
-    Context7 Component Library ve neo-card-integration.md referans alınmıştır.
+    Context7 Component Library ve rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800-integration.md referans alınmıştır.
     Bu component, modül başlığı ve kısa açıklama ile birlikte, modülün ana fonksiyonlarını ve AI öneri kutusunu içerir.
 --}}
 @props(['module'])
-<div class="bg-white rounded-2xl shadow-lg p-8 max-w-3xl mx-auto mt-8 neo-card">
+<div class="bg-white rounded-2xl shadow-lg p-8 max-w-3xl mx-auto mt-8 rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800">
     <div class="flex items-center gap-4 mb-4">
         <div
             class="w-12 h-12 rounded-full bg-gradient-to-tr from-blue-500 via-purple-500 to-pink-400 flex items-center justify-center text-white text-2xl font-bold shadow">

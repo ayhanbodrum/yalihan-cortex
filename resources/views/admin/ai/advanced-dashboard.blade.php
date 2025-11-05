@@ -249,10 +249,10 @@
                     <!-- Test content will be loaded here -->
                 </div>
                 <div class="mt-6 flex justify-end space-x-3">
-                    <button onclick="closeTestModal()" class="neo-btn neo-btn--secondary touch-target-optimized touch-target-optimized">
+                    <button onclick="closeTestModal()" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2--secondary touch-target-optimized touch-target-optimized">
                         Kapat
                     </button>
-                    <button onclick="runTest()" class="neo-btn neo-btn--primary touch-target-optimized touch-target-optimized">
+                    <button onclick="runTest()" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2--primary touch-target-optimized touch-target-optimized">
                         Test Çalıştır
                     </button>
                 </div>

@@ -6,10 +6,10 @@
     <div class="flex justify-between items-center mb-6">
         <h1 class="admin-h1">{{ $etiket->ad }} Etiketini Düzenle</h1>
         <div class="flex space-x-2">
-            <a href="{{ route('admin.etiketler.index') }}" class="neo-btn neo-btn-secondary touch-target-optimized touch-target-optimized">
+            <a href="{{ route('admin.etiketler.index') }}" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 bg-white text-gray-700 rounded-lg hover:bg-gray-50 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-gray-500 transition-all duration-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700 touch-target-optimized touch-target-optimized">
                 <i class="bi bi-arrow-left mr-2"></i> Geri Dön
             </a>
-            <a href="{{ route('admin.etiketler.show', $etiket) }}" class="neo-btn neo-btn-secondary touch-target-optimized touch-target-optimized">
+            <a href="{{ route('admin.etiketler.show', $etiket) }}" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 bg-white text-gray-700 rounded-lg hover:bg-gray-50 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-gray-500 transition-all duration-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700 touch-target-optimized touch-target-optimized">
                 <i class="bi bi-eye mr-2"></i> Görüntüle
             </a>
         </div>
@@ -71,10 +71,10 @@
                 </div>
 
                 <div class="flex items-center justify-between pt-6 border-t border-gray-200">
-                    <a href="{{ route('admin.etiketler.index') }}" class="neo-btn neo-btn-secondary touch-target-optimized touch-target-optimized">
+                    <a href="{{ route('admin.etiketler.index') }}" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 bg-white text-gray-700 rounded-lg hover:bg-gray-50 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-gray-500 transition-all duration-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700 touch-target-optimized touch-target-optimized">
                         <i class="bi bi-x-circle mr-2"></i> İptal
                     </a>
-                    <button type="submit" class="neo-btn neo-btn-primary touch-target-optimized touch-target-optimized">
+                    <button type="submit" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg touch-target-optimized touch-target-optimized">
                         <i class="bi bi-check-circle mr-2"></i> Güncelle
                     </button>
                 </div>

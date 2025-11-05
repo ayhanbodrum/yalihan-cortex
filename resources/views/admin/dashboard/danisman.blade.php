@@ -178,7 +178,7 @@
                             </svg>
                             Son İlanlarım
                         </h2>
-                        <a href="{{ route('admin.ilanlar.index') }}" class="neo-btn neo-btn-primary touch-target-optimized touch-target-optimized">
+                        <a href="{{ route('admin.ilanlar.index') }}" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg touch-target-optimized touch-target-optimized">
                             Tümünü Gör
                         </a>
                     </div>
@@ -206,7 +206,7 @@
                                     </path>
                                 </svg>
                                 <p>Henüz ilan eklenmemiş</p>
-                                <a href="{{ route('admin.ilanlar.create') }}" class="neo-btn neo-btn-primary mt-4 touch-target-optimized touch-target-optimized">
+                                <a href="{{ route('admin.ilanlar.create') }}" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg mt-4 touch-target-optimized touch-target-optimized">
                                     İlk İlanını Ekle
                                 </a>
                             </div>
@@ -226,7 +226,7 @@
                             </svg>
                             Son Müşterilerim
                         </h2>
-                        <a href="{{ route('admin.kisiler.index') }}" class="neo-btn neo-btn-primary touch-target-optimized touch-target-optimized">
+                        <a href="{{ route('admin.kisiler.index') }}" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg touch-target-optimized touch-target-optimized">
                             Tümünü Gör
                         </a>
                     </div>

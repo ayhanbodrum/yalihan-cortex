@@ -7,7 +7,7 @@
         <h1 class="admin-h1">AI Talep Analizi</h1>
         <form action="{{ route('admin.talepler.analiz.toplu') }}" method="POST">
             @csrf
-            <button type="submit" class="neo-btn neo-btn neo-btn-primary touch-target-optimized touch-target-optimized">
+            <button type="submit" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg touch-target-optimized touch-target-optimized">
                 <i class="fas fa-sync-alt mr-2"></i> Toplu Analiz
             </button>
         </form>

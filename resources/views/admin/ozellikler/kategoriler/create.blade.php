@@ -6,7 +6,7 @@
     <div class="flex justify-between items-center">
         <h1 class="text-2xl font-semibold text-gray-800 dark:text-gray-200">Yeni Özellik Kategorisi</h1>
         <a href="{{ route('admin.ozellikler.kategoriler.index') }}"
-            class="px-4 py-2 neo-btn-outline rounded-lg shadow-sm transition-colors duration-200 touch-target-optimized touch-target-optimized">
+            class="px-4 py-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2-outline rounded-lg shadow-sm transition-colors duration-200 touch-target-optimized touch-target-optimized">
             <i class="fas fa-arrow-left mr-2"></i> Geri Dön
         </a>
     </div>

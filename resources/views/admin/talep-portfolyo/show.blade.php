@@ -192,7 +192,7 @@
 
             <!-- Lokasyon Tercihleri -->
             <div class="space-y-6">
-                <div class="neo-card">
+                <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800">
                     <div class="p-6">
                         <div class="flex items-center gap-3 mb-6">
                             <div
@@ -639,7 +639,7 @@
                         </div>
                         <div class="mb-3">
                             <label for="notlar" class="admin-label">Notlar</label>
-                            <textarea class="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200 neo-input" id="notlar" name="notlar" rows="3"
+                            <textarea class="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200 w-full px-3 py-2 rounded-md border border-gray-200 bg-white text-sm placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:border-gray-800 dark:text-gray-100 transition-colors" id="notlar" name="notlar" rows="3"
                                 placeholder="Müşteriye özel notlar ekleyin..."></textarea>
                         </div>
                     </form>
@@ -679,7 +679,7 @@
                     <i class="fas fa-check-circle"></i> ${data.message}
                 </div>
                 <div class="text-center mt-3">
-                    <button class="neo-btn neo-btn neo-btn-primary touch-target-optimized touch-target-optimized" onclick="location.reload()">
+                    <button class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg touch-target-optimized touch-target-optimized" onclick="location.reload()">
                         <i class="fas fa-refresh"></i> Sayfayı Yenile
                     </button>
                 </div>

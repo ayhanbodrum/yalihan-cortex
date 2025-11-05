@@ -94,17 +94,17 @@
                     </p>
                 </div>
                 <div class="flex items-center space-x-2">
-                    <a href="{{ route('admin.talepler.index') }}" class="neo-btn neo-btn-secondary touch-target-optimized touch-target-optimized">
+                    <a href="{{ route('admin.talepler.index') }}" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 bg-white text-gray-700 rounded-lg hover:bg-gray-50 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-gray-500 transition-all duration-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700 touch-target-optimized touch-target-optimized">
                         <i class="fas fa-arrow-left mr-2"></i>Taleplere Dön
                     </a>
-                    <a href="{{ route('admin.talepler.edit', $talep->id) }}" class="neo-btn-warning touch-target-optimized touch-target-optimized">
+                    <a href="{{ route('admin.talepler.edit', $talep->id) }}" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2-warning touch-target-optimized touch-target-optimized">
                         <i class="fas fa-edit mr-2"></i>Düzenle
                     </a>
                     <form action="{{ route('admin.talepler.destroy', $talep->id) }}" method="POST"
                         onsubmit="return confirm('Bu talebi silmek istediğinizden emin misiniz?');">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="neo-btn-danger touch-target-optimized touch-target-optimized">
+                        <button type="submit" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2-danger touch-target-optimized touch-target-optimized">
                             <i class="fas fa-trash-alt mr-2"></i>Sil
                         </button>
                     </form>
@@ -208,7 +208,7 @@
         </div>
 
         <div class="mt-8 text-center">
-            <a href="{{ route('admin.talepler.eslesen', ['talep' => $talep->id]) }}" class="neo-btn neo-btn-primary btn-lg touch-target-optimized touch-target-optimized">
+            <a href="{{ route('admin.talepler.eslesen', ['talep' => $talep->id]) }}" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg btn-lg touch-target-optimized touch-target-optimized">
                 <i class="fas fa-search-location mr-2"></i>
                 Bu Talebe Uygun İlanları Bul
             </a>

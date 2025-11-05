@@ -33,13 +33,13 @@
                                     d="M4 8h16M4 16h16" />
                             </svg></span>
                         <span class="font-medium text-gray-800" x-text="feature.name"></span>
-                        <span class="neo-badge neo-badge-primary text-xs" x-text="feature.group ?? 'Genel'"></span>
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium-primary text-xs" x-text="feature.group ?? 'Genel'"></span>
                     </div>
                 </template>
             </div>
         </div>
     @endforeach
     <div class="mt-6">
-        <button class="neo-neo-btn neo-btn-primary" @click="$dispatch('save-features')">Kaydet</button>
+        <button class="neo-inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg" @click="$dispatch('save-features')">Kaydet</button>
     </div>
 </div>

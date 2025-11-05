@@ -23,7 +23,7 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
                 <!-- Property 1 -->
-                <div class="neo-card">
+                <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800">
                     <div class="property-image">
                         <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=400&h=300&fit=crop"
                             alt="Modern Villa - Yalıkavak">
@@ -78,13 +78,13 @@
                         <div class="property-price">₺8,500,000</div>
                         <div class="action-buttons-main">
                             <button class="btn-outline" onclick="openModal('propertyDetail')">Detayları Gör</button>
-                            <button class="neo-btn neo-btn-primary" onclick="contactProperty()">İletişime Geç</button>
+                            <button class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg" onclick="contactProperty()">İletişime Geç</button>
                         </div>
                     </div>
                 </div>
 
                 <!-- Property 2 -->
-                <div class="neo-card">
+                <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800">
                     <div class="property-image">
                         <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=400&h=300&fit=crop"
                             alt="Lüks Daire - Gümbet">
@@ -139,13 +139,13 @@
                         <div class="property-price">₺15,000 <span class="price-period">/ay</span></div>
                         <div class="action-buttons-main">
                             <button class="btn-outline" onclick="openModal('propertyDetail')">Detayları Gör</button>
-                            <button class="neo-btn neo-btn-primary" onclick="contactProperty()">İletişime Geç</button>
+                            <button class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg" onclick="contactProperty()">İletişime Geç</button>
                         </div>
                     </div>
                 </div>
 
                 <!-- Property 3 -->
-                <div class="neo-card">
+                <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800">
                     <div class="property-image">
                         <img src="https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=400&h=300&fit=crop"
                             alt="Deniz Manzaralı Villa - Bitez">
@@ -200,7 +200,7 @@
                         <div class="property-price">₺12,500,000</div>
                         <div class="action-buttons-main">
                             <button class="btn-outline" onclick="openModal('propertyDetail')">Detayları Gör</button>
-                            <button class="neo-btn neo-btn-primary" onclick="contactProperty()">İletişime Geç</button>
+                            <button class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg" onclick="contactProperty()">İletişime Geç</button>
                         </div>
                     </div>
                 </div>
@@ -362,7 +362,7 @@
             }, observerOptions);
 
             // Observe all property cards
-            const propertyCards = document.querySelectorAll('.neo-card');
+            const propertyCards = document.querySelectorAll('.rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800');
             propertyCards.forEach(card => {
                 observer.observe(card);
             });

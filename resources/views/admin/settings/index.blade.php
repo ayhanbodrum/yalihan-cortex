@@ -15,7 +15,7 @@
         </div>
 
         <!-- Settings Content -->
-        <div class="neo-card">
+        <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800">
             <ul class="flex border-b mb-6">
                 <li class="mr-6"><a class="tab-link active" href="#genel">Genel</a></li>
                 <li class="mr-6"><a class="tab-link" href="#bildirim">Bildirimler</a></li>

@@ -68,7 +68,7 @@
                                 <p class="text-gray-500 dark:text-gray-400">Bu kategori için yeni yazılar yayınlandığında
                                     burada görünecek.</p>
                                 <div class="mt-6">
-                                    <a href="{{ route('blog.index') }}" class="neo-btn neo-btn-primary">
+                                    <a href="{{ route('blog.index') }}" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg">
                                         <i class="fas fa-arrow-left mr-2"></i>
                                         Tüm Yazılara Dön
                                     </a>
@@ -219,7 +219,7 @@
                             <form class="space-y-3">
                             <input type="email" placeholder="E-posta adresiniz"
                             class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
-                            <button type="submit" class="w-full neo-btn neo-btn-primary btn-sm">
+                            <button type="submit" class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg btn-sm">
                             <i class="fas fa-envelope mr-2"></i>
                             Abone Ol
                             </button>

@@ -17,8 +17,8 @@
         <!-- Categories Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             @foreach ($kategoriler as $key => $kategori)
-                <div class="neo-card">
-                    <div class="neo-card-header">
+                <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800">
+                    <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800-header">
                         <div class="flex items-center justify-between">
                             <div class="flex items-center">
                                 <span class="text-3xl mr-3">{{ $kategori['icon'] }}</span>

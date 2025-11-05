@@ -15,11 +15,11 @@
                 <p class="text-lg text-gray-600 mt-2">Category details and information</p>
             </div>
             <div class="flex gap-3">
-                <a href="{{ route('admin.feature-categories.edit', $featureCategory) }}" class="neo-btn neo-btn neo-btn-primary">
+                <a href="{{ route('admin.feature-categories.edit', $featureCategory) }}" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg">
                     <i class="fas fa-edit mr-2"></i>
                     Edit Category
                 </a>
-                <a href="{{ route('admin.feature-categories.index') }}" class="neo-btn neo-btn neo-btn-secondary">
+                <a href="{{ route('admin.feature-categories.index') }}" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 bg-white text-gray-700 rounded-lg hover:bg-gray-50 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-gray-500 transition-all duration-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700">
                     <i class="fas fa-arrow-left mr-2"></i>
                     Back to Categories
                 </a>

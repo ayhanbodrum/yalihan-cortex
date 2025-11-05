@@ -612,7 +612,7 @@
                         document.getElementById('aiAnalizContent').innerHTML =
                             `
                     <div class=\"neo-alert neo-alert-success\"><i class=\"neo-icon neo-icon-check-circle\"></i> ${data.message}</div>
-                    <div class=\"text-center mt-3\"><button class=\"neo-btn neo-btn neo-btn-primary\" onclick=\"location.reload()\">Sayfayı Yenile</button></div>`;
+                    <div class=\"text-center mt-3\"><button class=\"inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg\" onclick=\"location.reload()\">Sayfayı Yenile</button></div>`;
                     } else {
                         document.getElementById('aiAnalizContent').innerHTML =
                             `<div class=\"neo-alert neo-alert-danger\">${data.message ?? 'Toplu analiz başarısız'}</div>`;

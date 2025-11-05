@@ -102,7 +102,7 @@
 
         {{-- View All Button --}}
         <div class="text-center mt-16">
-            <a href="{{ route('ilanlar.index') }}" class="ds-neo-btn neo-btn-primary px-10 py-4 text-lg">
+            <a href="{{ route('ilanlar.index') }}" class="ds-inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg px-10 py-4 text-lg">
                 Tüm İlanları Görüntüle
                 <i class="fas fa-arrow-right ml-3"></i>
             </a>

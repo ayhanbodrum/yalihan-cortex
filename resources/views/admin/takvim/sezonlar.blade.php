@@ -70,7 +70,7 @@
                     </p>
                 </div>
 
-                <button onclick="yeniSezonModal()" class="neo-btn neo-btn-primary touch-target-optimized touch-target-optimized">
+                <button onclick="yeniSezonModal()" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg touch-target-optimized touch-target-optimized">
                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -135,14 +135,14 @@
 
                                 <div class="flex space-x-2">
                                     <button onclick="sezonDuzenle({{ $sezon['id'] }})"
-                                        class="neo-btn neo-btn-secondary text-sm px-3 py-1 touch-target-optimized touch-target-optimized">
+                                        class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 bg-white text-gray-700 rounded-lg hover:bg-gray-50 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-gray-500 transition-all duration-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700 text-sm px-3 py-1 touch-target-optimized touch-target-optimized">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                         </svg>
                                     </button>
                                     <button onclick="sezonSil({{ $sezon['id'] }}, '{{ $sezon['adi'] ?? 'Sezon' }}')"
-                                        class="neo-btn-danger text-sm px-3 py-1 touch-target-optimized touch-target-optimized">
+                                        class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2-danger text-sm px-3 py-1 touch-target-optimized touch-target-optimized">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -311,10 +311,10 @@
                     </form>
 
                     <div class="flex justify-end space-x-3 mt-6">
-                        <button onclick="yeniSezonModalKapat()" class="neo-btn neo-btn-secondary touch-target-optimized touch-target-optimized">
+                        <button onclick="yeniSezonModalKapat()" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 bg-white text-gray-700 rounded-lg hover:bg-gray-50 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-gray-500 transition-all duration-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700 touch-target-optimized touch-target-optimized">
                             İptal
                         </button>
-                        <button onclick="sezonKaydet()" class="neo-btn neo-btn-primary touch-target-optimized touch-target-optimized">
+                        <button onclick="sezonKaydet()" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg touch-target-optimized touch-target-optimized">
                             Kaydet
                         </button>
                     </div>
@@ -409,10 +409,10 @@
                     </form>
 
                     <div class="flex justify-end space-x-3 mt-6">
-                        <button onclick="sezonDuzenleModalKapat()" class="neo-btn neo-btn-secondary touch-target-optimized touch-target-optimized">
+                        <button onclick="sezonDuzenleModalKapat()" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 bg-white text-gray-700 rounded-lg hover:bg-gray-50 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-gray-500 transition-all duration-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700 touch-target-optimized touch-target-optimized">
                             İptal
                         </button>
-                        <button onclick="sezonGuncelle()" class="neo-btn neo-btn-primary touch-target-optimized touch-target-optimized">
+                        <button onclick="sezonGuncelle()" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg touch-target-optimized touch-target-optimized">
                             Güncelle
                         </button>
                     </div>

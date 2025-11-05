@@ -69,7 +69,7 @@
                                             <p><strong>Özellikler:</strong> {{ $eslesme['emlak']->oda_sayisi }} Oda,
                                                 {{ $eslesme['emlak']->metraj }} m²</p>
                                             <a href="{{ route('admin.emlaklar.show', $eslesme['emlak']->id) }}"
-                                                class="btn btn-sm neo-btn neo-btn-primary touch-target-optimized touch-target-optimized">Detaylar</a>
+                                                class="btn btn-sm inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg touch-target-optimized touch-target-optimized">Detaylar</a>
                                         </div>
                                     </div>
                                 </div>

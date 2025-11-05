@@ -6,7 +6,7 @@
     <div class="flex justify-between items-center">
         <h1 class="text-2xl font-semibold text-gray-800 dark:text-gray-200">Kategori Düzenle: {{ $kategori->name }}</h1>
         <a href="{{ route('admin.ozellikler.kategoriler.index') }}"
-            class="px-4 py-2 neo-btn-outline  rounded-lg shadow-sm transition-colors duration-200 touch-target-optimized touch-target-optimized">
+            class="px-4 py-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2-outline  rounded-lg shadow-sm transition-colors duration-200 touch-target-optimized touch-target-optimized">
             <i class="fas fa-arrow-left mr-2"></i> Geri Dön
         </a>
     </div>
@@ -77,7 +77,7 @@
                     <a href="{{ route('admin.ozellikler.kategoriler.index') }}"
                         class="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg shadow-sm text-sm">İptal</a>
                     <button type="submit"
-                        class="px-5 py-2 neo-btn neo-btn-primary rounded-lg text-sm font-medium touch-target-optimized touch-target-optimized">Güncelle</button>
+                        class="px-5 py-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg rounded-lg text-sm font-medium touch-target-optimized touch-target-optimized">Güncelle</button>
                 </div>
             </form>
         </div>

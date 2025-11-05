@@ -24,10 +24,10 @@
 
         <!-- Filters -->
         <div
-            class="neo-card neo-card-elevated p-6 mb-6 bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700">
+            class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800 rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800-elevated p-6 mb-6 bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div>
-                    <label class="neo-label block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Durum</label>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Durum</label>
                     <select class="w-full px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200 w-full">
                         <option value="">Tümü</option>
                         <option value="beklemede">Beklemede</option>
@@ -38,7 +38,7 @@
                     </select>
                 </div>
                 <div>
-                    <label class="neo-label block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Öncelik</label>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Öncelik</label>
                     <select class="w-full px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200 w-full">
                         <option value="">Tümü</option>
                         <option value="dusuk">Düşük</option>
@@ -48,7 +48,7 @@
                     </select>
                 </div>
                 <div>
-                    <label class="neo-label block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Atanan
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Atanan
                         Kişi</label>
                     <select class="w-full px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200 w-full">
                         <option value="">Tümü</option>
@@ -70,13 +70,13 @@
 
         <!-- Tasks List -->
         <div
-            class="neo-card neo-card-elevated bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700">
+            class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800 rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800-elevated bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700">
             <div class="p-6">
                 @if ($gorevler->count() > 0)
                     <div class="space-y-4">
                         @foreach ($gorevler as $gorev)
                             <div
-                                class="neo-card neo-card-flat p-4 border border-gray-200 dark:border-gray-600 rounded-lg hover:shadow-md transition-shadow">
+                                class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800 rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800-flat p-4 border border-gray-200 dark:border-gray-600 rounded-lg hover:shadow-md transition-shadow">
                                 <div class="flex items-center justify-between">
                                     <div class="flex-1">
                                         <div class="flex items-center space-x-3">
@@ -84,11 +84,11 @@
                                                 {{ $gorev->baslik }}
                                             </h3>
                                             <span
-                                                class="neo-badge neo-badge-{{ $gorev->status === 'tamamlandi' ? 'success' : ($gorev->status === 'devam_ediyor' ? 'warning' : 'secondary') }}">
+                                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium-{{ $gorev->status === 'tamamlandi' ? 'success' : ($gorev->status === 'devam_ediyor' ? 'warning' : 'secondary') }}">
                                                 {{ ucfirst(str_replace('_', ' ', $gorev->status)) }}
                                             </span>
                                             <span
-                                                class="neo-badge neo-badge-{{ $gorev->oncelik === 'kritik' ? 'danger' : ($gorev->oncelik === 'yuksek' ? 'warning' : 'secondary') }}">
+                                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium-{{ $gorev->oncelik === 'kritik' ? 'danger' : ($gorev->oncelik === 'yuksek' ? 'warning' : 'secondary') }}">
                                                 {{ ucfirst($gorev->oncelik) }}
                                             </span>
                                         </div>

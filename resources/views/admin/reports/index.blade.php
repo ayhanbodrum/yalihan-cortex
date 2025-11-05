@@ -82,7 +82,7 @@
         </div>
 
         <!-- Filtreler -->
-        <div class="neo-card p-6 mb-8">
+        <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800 p-6 mb-8">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div class="form-field">
                     <label class="admin-label">Rapor Türü</label>
@@ -123,7 +123,7 @@
         </div>
 
         <!-- Raporlar Tablosu -->
-        <div class="neo-card">
+        <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800">
             <div class="px-6 py-4 border-b border-gray-200">
                 <h3 class="text-lg font-semibold text-gray-900">Rapor Listesi</h3>
             </div>
@@ -235,7 +235,7 @@
             </div>
             <h3 class="text-lg font-medium text-gray-900 mb-2">Henüz rapor bulunmuyor</h3>
             <p class="text-gray-500 mb-6">İlk raporunuzu oluşturmak için aşağıdaki butona tıklayın.</p>
-            <button class="neo-btn neo-btn-primary touch-target-optimized touch-target-optimized">
+            <button class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg touch-target-optimized touch-target-optimized">
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                 </svg>

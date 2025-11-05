@@ -210,20 +210,20 @@
                 </h3>
 
                 <div class="space-y-3">
-                    <button class="w-full neo-btn neo-btn-outline text-left" onclick="exportReport()">
+                    <button class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2-outline text-left" onclick="exportReport()">
                         <i class="fas fa-download mr-2"></i>
                         Raporu İndir
                     </button>
-                    <button class="w-full neo-btn neo-btn-outline text-left" onclick="shareReport()">
+                    <button class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2-outline text-left" onclick="shareReport()">
                         <i class="fas fa-share mr-2"></i>
                         Raporu Paylaş
                     </button>
-                    <button class="w-full neo-btn neo-btn-outline text-left" onclick="duplicateReport()">
+                    <button class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2-outline text-left" onclick="duplicateReport()">
                         <i class="fas fa-copy mr-2"></i>
                         Raporu Kopyala
                     </button>
                     <hr class="my-2">
-                    <button class="w-full neo-btn neo-btn-danger text-left" onclick="deleteReport()" id="deleteBtn">
+                    <button class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2-danger text-left" onclick="deleteReport()" id="deleteBtn">
                         <i class="fas fa-trash mr-2"></i>
                         Raporu Sil
                     </button>

@@ -17,7 +17,7 @@ Usage: <x-neo.form-field name="email" label="E-posta" type="email" required />
 
 @php
     $id = $name ?: 'field_' . uniqid();
-    $inputClasses = 'neo-input';
+    $inputClasses = 'w-full px-3 py-2 rounded-md border border-gray-200 bg-white text-sm placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:border-gray-800 dark:text-gray-100 transition-colors';
 
     if ($error || $errors->has($name)) {
         $inputClasses .= ' border-red-500 focus:ring-red-500';

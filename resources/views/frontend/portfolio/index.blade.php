@@ -148,7 +148,7 @@
             <div class="col-md-4">
                 <div class="input-group">
                     <input type="text" class="w-full px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200" placeholder="Lokasyon ara..." id="location-search">
-                    <button class="btn neo-btn neo-btn-primary" type="button">
+                    <button class="btn inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg" type="button">
                         <i class="fas fa-search"></i>
                     </button>
                 </div>
@@ -210,7 +210,7 @@
                     <!-- Action Buttons -->
                     <div class="d-grid gap-2">
                         <a href="{{ route('frontend.property.detail', $property->id) }}" 
-                           class="btn neo-btn neo-btn-primary">
+                           class="btn inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg">
                             <i class="fas fa-eye me-2"></i>Detayları Gör
                         </a>
                         <button class="btn btn-outline-primary" onclick="shareProperty({{ $property->id }})">

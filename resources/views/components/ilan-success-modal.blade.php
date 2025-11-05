@@ -58,7 +58,7 @@
                         🏷️ Referans Numarası
                     </h3>
                     <button onclick="copyToClipboard('{{ $successData['referans_no'] }}')"
-                            class="neo-btn neo-btn-sm neo-neo-btn neo-btn-secondary">
+                            class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2-sm neo-inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 bg-white text-gray-700 rounded-lg hover:bg-gray-50 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-gray-500 transition-all duration-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700">
                         📋 Kopyala
                     </button>
                 </div>
@@ -81,7 +81,7 @@
                         📁 Önerilen Dosya Adı
                     </h3>
                     <button onclick="copyToClipboard('{{ $successData['dosya_adi'] }}')"
-                            class="neo-btn neo-btn-sm neo-btn-success">
+                            class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2-sm inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2-success">
                         📋 Kopyala
                     </button>
                 </div>
@@ -131,17 +131,17 @@
             {{-- Action Buttons --}}
             <div class="flex gap-3">
                 <a href="{{ route('admin.ilanlar.show', $ilan->id) }}"
-                   class="flex-1 neo-btn neo-neo-btn neo-btn-primary">
+                   class="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 neo-inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg">
                     👁️ İlanı Görüntüle
                 </a>
 
                 <a href="{{ route('admin.ilanlar.edit', $ilan->id) }}"
-                   class="flex-1 neo-btn neo-neo-btn neo-btn-secondary">
+                   class="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 neo-inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 bg-white text-gray-700 rounded-lg hover:bg-gray-50 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-gray-500 transition-all duration-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700">
                     ✏️ İlanı Düzenle
                 </a>
 
                 <a href="{{ route('admin.ilanlar.create') }}"
-                   class="flex-1 neo-btn neo-btn-success">
+                   class="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2-success">
                     ➕ Yeni İlan Ekle
                 </a>
             </div>
@@ -176,7 +176,7 @@ document.addEventListener('keydown', function(e) {
 /* Smooth transitions */
 [x-cloak] { display: none !important; }
 
-.neo-btn-sm {
+.inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2-sm {
     @apply px-3 py-1.5 text-sm;
 }
 

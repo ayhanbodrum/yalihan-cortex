@@ -37,7 +37,7 @@
 
         <!-- Smart Search Input -->
         <div class="neo-location-search mb-6">
-            <label class="neo-label block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 🏠 Akıllı Adres Arama @if ($required) <span class="text-red-500">*</span> @endif
             </label>
 
@@ -118,7 +118,7 @@
 
         <!-- Popular Locations Grid -->
         <div x-show="popularLocations.length > 0" class="neo-popular-locations mb-6">
-            <h3 class="neo-label block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+            <h3 class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
                 🔥 Popüler Lokasyonlar
             </h3>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -137,7 +137,7 @@
     @if ($level === 'basic' || in_array('hierarchy', $features))
         <!-- Traditional Hierarchy Selector -->
         <div class="neo-hierarchy-selector">
-            <h3 class="neo-label block text-sm font-medium text-gray-700 dark:text-gray-300 mb-4">
+            <h3 class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300 mb-4">
                 @if ($level === 'basic')
                     📋 Standart Konum Seçimi
                 @else
@@ -162,7 +162,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Ülke -->
                 <div class="neo-form-field">
-                    <label class="neo-label block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                         🌍 Ülke @if ($required) <span class="text-red-500">*</span> @endif
                     </label>
                     <select x-model="selectedCountry"
@@ -181,7 +181,7 @@
 
                 <!-- İl -->
                 <div class="neo-form-field">
-                    <label class="neo-label block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                         🏙️ İl @if ($required) <span class="text-red-500">*</span> @endif
                     </label>
                     <select x-model="selectedProvince"
@@ -199,7 +199,7 @@
 
                 <!-- İlçe -->
                 <div class="neo-form-field">
-                    <label class="neo-label block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                         🏘️ İlçe @if ($required) <span class="text-red-500">*</span> @endif
                     </label>
                     <select x-model="selectedDistrict"
@@ -217,7 +217,7 @@
 
                 <!-- Mahalle -->
                 <div class="neo-form-field">
-                    <label class="neo-label block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                         🏠 Mahalle
                     </label>
                     <select x-model="selectedNeighborhood"

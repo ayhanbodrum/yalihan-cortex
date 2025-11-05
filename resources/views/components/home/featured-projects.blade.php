@@ -65,7 +65,7 @@
                                 <div class="text-sm text-primary-700 font-semibold">
                                     {{ $proje->status ?? 'Devam Ediyor' }}
                                 </div>
-                                <a href="#" class="ds-neo-btn neo-btn-primary text-sm px-3 py-1.5">
+                                <a href="#" class="ds-inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg text-sm px-3 py-1.5">
                                     <i class="fas fa-info-circle mr-1.5"></i>
                                     İncele
                                 </a>

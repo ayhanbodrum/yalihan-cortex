@@ -3,17 +3,17 @@
 @section('title', 'Kategorisiz Özellikler Listesi')
 
 @section('content')
-    <div class="neo-card">
+    <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800">
         <div class="p-6">
             <div class="flex justify-between items-center mb-4">
                 <h1 class="text-2xl font-semibold text-gray-800 dark:text-gray-200">
                     <i class="fas fa-exclamation-triangle mr-2"></i> Kategorisiz Özellikler
                 </h1>
                 <div class="flex space-x-2">
-                    <a href="{{ route('admin.ozellikler.kategoriler.index') }}" class="neo-btn neo-btn-secondary touch-target-optimized touch-target-optimized">
+                    <a href="{{ route('admin.ozellikler.kategoriler.index') }}" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 bg-white text-gray-700 rounded-lg hover:bg-gray-50 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-gray-500 transition-all duration-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700 touch-target-optimized touch-target-optimized">
                         <i class="fas fa-tag mr-2"></i> Kategorilere Dön
                     </a>
-                    <a href="{{ route('admin.ozellikler.features.create') }}" class="neo-btn neo-btn-primary touch-target-optimized touch-target-optimized">
+                    <a href="{{ route('admin.ozellikler.features.create') }}" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg touch-target-optimized touch-target-optimized">
                         <i class="fas fa-plus mr-2"></i> Yeni Özellik Ekle
                     </a>
                 </div>

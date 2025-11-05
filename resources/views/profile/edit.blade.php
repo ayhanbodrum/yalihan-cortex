@@ -49,60 +49,60 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <!-- Ad Soyad -->
-                    <div class="neo-field">
-                        <label for="name" class="neo-label">
+                    <div class="space-y-2">
+                        <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             Ad Soyad <span class="text-red-500">*</span>
                         </label>
                         <input id="name" type="text" name="name" value="{{ old('name', $user->name) }}" required
-                            class="w-full px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200 {{ $errors->has('name') ? 'neo-error' : '' }}"
+                            class="w-full px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200 {{ $errors->has('name') ? 'text-red-600 dark:text-red-400' : '' }}"
                             placeholder="Ad ve soyadınızı girin...">
                         @error('name')
-                            <p class="neo-error-message">{{ $message }}</p>
+                            <p class="text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                         @enderror
                     </div>
 
                     <!-- E-posta -->
-                    <div class="neo-field">
-                        <label for="email" class="neo-label">
+                    <div class="space-y-2">
+                        <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             E-posta Adresi <span class="text-red-500">*</span>
                         </label>
                         <input id="email" type="email" name="email" value="{{ old('email', $user->email) }}"
                             required class="w-full px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200 {{ $errors->has('email') ? 'border-red-500' : '' }}"
                             placeholder="ornek@email.com">
                         @error('email')
-                            <p class="neo-error-message">{{ $message }}</p>
+                            <p class="text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                         @enderror
                     </div>
 
                     <!-- Unvan -->
-                    <div class="neo-field">
-                        <label for="title" class="neo-label">Unvan</label>
+                    <div class="space-y-2">
+                        <label for="title" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Unvan</label>
                         <input id="title" type="text" name="title" value="{{ old('title', $user->title) }}"
                             class="w-full px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200 {{ $errors->has('title') ? 'border-red-500' : '' }}"
                             placeholder="Unvanınızı girin...">
                         @error('title')
-                            <p class="neo-error-message">{{ $message }}</p>
+                            <p class="text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                         @enderror
                     </div>
 
                     <!-- Pozisyon -->
-                    <div class="neo-field">
-                        <label for="position" class="neo-label">Pozisyon</label>
+                    <div class="space-y-2">
+                        <label for="position" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Pozisyon</label>
                         <input id="position" type="text" name="position" value="{{ old('position', $user->position) }}"
                             class="w-full px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200 {{ $errors->has('position') ? 'border-red-500' : '' }}"
                             placeholder="Pozisyonunuzu girin...">
                         @error('position')
-                            <p class="neo-error-message">{{ $message }}</p>
+                            <p class="text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                         @enderror
                     </div>
 
                     <!-- Profil Fotoğrafı -->
-                    <div class="neo-field md:col-span-2">
-                        <label for="profile_photo" class="neo-label">Profil Fotoğrafı</label>
+                    <div class="space-y-2 md:col-span-2">
+                        <label for="profile_photo" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Profil Fotoğrafı</label>
                         <input id="profile_photo" type="file" name="profile_photo" accept="image/*"
                             class="w-full px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200 {{ $errors->has('profile_photo') ? 'border-red-500' : '' }}">
                         @error('profile_photo')
-                            <p class="neo-error-message">{{ $message }}</p>
+                            <p class="text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                         @enderror
 
                         @if ($user->profile_photo_path)
@@ -138,37 +138,37 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <!-- Telefon -->
-                    <div class="neo-field">
-                        <label for="phone_number" class="neo-label">Telefon</label>
+                    <div class="space-y-2">
+                        <label for="phone_number" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Telefon</label>
                         <input id="phone_number" type="tel" name="phone_number"
                             value="{{ old('phone_number', $user->phone_number) }}"
                             class="w-full px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200 {{ $errors->has('phone_number') ? 'border-red-500' : '' }}"
                             placeholder="05XX XXX XXXX">
                         @error('phone_number')
-                            <p class="neo-error-message">{{ $message }}</p>
+                            <p class="text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                         @enderror
                     </div>
 
                     <!-- WhatsApp -->
-                    <div class="neo-field">
-                        <label for="whatsapp_number" class="neo-label">WhatsApp</label>
+                    <div class="space-y-2">
+                        <label for="whatsapp_number" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">WhatsApp</label>
                         <input id="whatsapp_number" type="tel" name="whatsapp_number"
                             value="{{ old('whatsapp_number', $user->whatsapp_number) }}"
                             class="w-full px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200 {{ $errors->has('whatsapp_number') ? 'border-red-500' : '' }}"
                             placeholder="05XX XXX XXXX">
                         @error('whatsapp_number')
-                            <p class="neo-error-message">{{ $message }}</p>
+                            <p class="text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                         @enderror
                     </div>
 
                     <!-- Adres -->
-                    <div class="neo-field md:col-span-2">
-                        <label for="office_address" class="neo-label">Adres</label>
+                    <div class="space-y-2 md:col-span-2">
+                        <label for="office_address" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Adres</label>
                         <textarea id="office_address" name="office_address" rows="3"
                             class="w-full px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200 resize-vertical {{ $errors->has('office_address') ? 'border-red-500' : '' }}"
                             placeholder="Adres bilgilerinizi girin...">{{ old('office_address', $user->office_address) }}</textarea>
                         @error('office_address')
-                            <p class="neo-error-message">{{ $message }}</p>
+                            <p class="text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                         @enderror
                     </div>
                 </div>
@@ -182,50 +182,50 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <!-- LinkedIn -->
-                    <div class="neo-field">
-                        <label for="linkedin_profile" class="neo-label">LinkedIn</label>
+                    <div class="space-y-2">
+                        <label for="linkedin_profile" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">LinkedIn</label>
                         <input id="linkedin_profile" type="url" name="linkedin_profile"
                             value="{{ old('linkedin_profile', $user->linkedin_profile) }}"
                             class="w-full px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200 {{ $errors->has('linkedin_profile') ? 'border-red-500' : '' }}"
                             placeholder="https://linkedin.com/in/kullaniciadi">
                         @error('linkedin_profile')
-                            <p class="neo-error-message">{{ $message }}</p>
+                            <p class="text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                         @enderror
                     </div>
 
                     <!-- Twitter -->
-                    <div class="neo-field">
-                        <label for="twitter_profile" class="neo-label">Twitter</label>
+                    <div class="space-y-2">
+                        <label for="twitter_profile" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Twitter</label>
                         <input id="twitter_profile" type="url" name="twitter_profile"
                             value="{{ old('twitter_profile', $user->twitter_profile) }}"
                             class="w-full px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200 {{ $errors->has('twitter_profile') ? 'border-red-500' : '' }}"
                             placeholder="https://twitter.com/kullaniciadi">
                         @error('twitter_profile')
-                            <p class="neo-error-message">{{ $message }}</p>
+                            <p class="text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                         @enderror
                     </div>
 
                     <!-- Instagram -->
-                    <div class="neo-field">
-                        <label for="instagram_profile" class="neo-label">Instagram</label>
+                    <div class="space-y-2">
+                        <label for="instagram_profile" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Instagram</label>
                         <input id="instagram_profile" type="url" name="instagram_profile"
                             value="{{ old('instagram_profile', $user->instagram_profile) }}"
                             class="w-full px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200 {{ $errors->has('instagram_profile') ? 'border-red-500' : '' }}"
                             placeholder="https://instagram.com/kullaniciadi">
                         @error('instagram_profile')
-                            <p class="neo-error-message">{{ $message }}</p>
+                            <p class="text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                         @enderror
                     </div>
 
                     <!-- Facebook -->
-                    <div class="neo-field">
-                        <label for="facebook_profile" class="neo-label">Facebook</label>
+                    <div class="space-y-2">
+                        <label for="facebook_profile" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Facebook</label>
                         <input id="facebook_profile" type="url" name="facebook_profile"
                             value="{{ old('facebook_profile', $user->facebook_profile) }}"
                             class="w-full px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200 {{ $errors->has('facebook_profile') ? 'border-red-500' : '' }}"
                             placeholder="https://facebook.com/kullaniciadi">
                         @error('facebook_profile')
-                            <p class="neo-error-message">{{ $message }}</p>
+                            <p class="text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                         @enderror
                     </div>
                 </div>
@@ -237,13 +237,13 @@
             <div class="p-4">
                 <h2 class="text-sm font-medium text-gray-900 mb-4">Biyografi</h2>
 
-                <div class="neo-field">
-                    <label for="bio" class="neo-label">Hakkımda</label>
+                <div class="space-y-2">
+                    <label for="bio" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Hakkımda</label>
                     <textarea id="bio" name="bio" rows="4"
                         class="w-full px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200 resize-vertical {{ $errors->has('bio') ? 'border-red-500' : '' }}"
                         placeholder="Kendiniz hakkında kısa bir açıklama yazın...">{{ old('bio', $user->bio) }}</textarea>
                     @error('bio')
-                        <p class="neo-error-message">{{ $message }}</p>
+                        <p class="text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                     @enderror
                 </div>
             </div>
@@ -270,7 +270,7 @@
     <script>
         // Form field focus effects
         document.addEventListener('DOMContentLoaded', function() {
-            const formInputs = document.querySelectorAll('.neo-input, .neo-textarea');
+            const formInputs = document.querySelectorAll('.w-full px-3 py-2 rounded-md border border-gray-200 bg-white text-sm placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:border-gray-800 dark:text-gray-100 transition-colors, .neo-textarea');
 
             formInputs.forEach(input => {
                 input.addEventListener('focus', function() {

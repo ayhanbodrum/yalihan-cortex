@@ -107,7 +107,7 @@
                         </button>
                     @endif
 
-                    <button class="btn neo-btn neo-btn-primary flex items-center gap-2" onclick="toggleFavorite()">
+                    <button class="btn inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg flex items-center gap-2" onclick="toggleFavorite()">
                         <span id="favoriteIcon">{{ $isFavorite ? '❤️' : '🤍' }}</span>
                         <span>Favori</span>
                     </button>
@@ -243,7 +243,7 @@
 
                     <div class="space-y-3">
                         <a href="tel:{{ $propertyAgent['phone'] }}"
-                            class="w-full btn neo-btn neo-btn-primary flex items-center justify-center gap-2">
+                            class="w-full btn inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg flex items-center justify-center gap-2">
                             <span>📞</span>
                             <span>Ara</span>
                         </a>
@@ -292,7 +292,7 @@
                                 placeholder="Mesajınızı yazın..."></textarea>
                         </div>
 
-                        <button type="submit" class="w-full btn neo-btn neo-btn-primary">
+                        <button type="submit" class="w-full btn inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg">
                             Mesaj Gönder
                         </button>
                     </form>
@@ -403,7 +403,7 @@
         @apply px-4 py-2 rounded-lg font-medium transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2;
     }
 
-    .neo-btn neo-btn-primary {
+    .inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg {
         @apply bg-orange-500 text-white hover:bg-orange-600 focus:ring-orange-500;
     }
 

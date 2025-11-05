@@ -31,14 +31,14 @@
                 <!-- Sol Kolon -->
                 <div class="space-y-6">
                     <!-- Müşteri Seçimi -->
-                    <div class="neo-card">
-                        <div class="neo-card-header">
-                            <h3 class="neo-card-title">👤 Müşteri Bilgileri</h3>
+                    <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800">
+                        <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800-header">
+                            <h3 class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800-title">👤 Müşteri Bilgileri</h3>
                         </div>
-                        <div class="neo-card-body space-y-4">
+                        <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800-body space-y-4">
                             <!-- Context7 Live Search: Müşteri -->
-                            <div class="neo-form-group">
-                                <label class="neo-label required">Müşteri</label>
+                            <div class="space-y-2 relative">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 required">Müşteri</label>
                                 <div class="context7-live-search"
                                      data-endpoint="/api/admin/kisiler/search"
                                      data-target-input="kisi_id"
@@ -49,17 +49,17 @@
                                 </div>
                                 <button type="button" @click="clearKisi()"
                                     x-show="form.kisi_id"
-                                    class="neo-btn neo-btn-secondary neo-btn-sm mt-2">
+                                    class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 bg-white text-gray-700 rounded-lg hover:bg-gray-50 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-gray-500 transition-all duration-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2-sm mt-2">
                                     🗑️ Temizle
                                 </button>
                                 @error('kisi_id')
-                                    <p class="neo-error">{{ $message }}</p>
+                                    <p class="text-red-600 dark:text-red-400">{{ $message }}</p>
                                 @enderror
                             </div>
 
                             <!-- Danışman Seçimi -->
-                            <div class="neo-form-group">
-                                <label for="danisman_id" class="neo-label">Danışman</label>
+                            <div class="space-y-2 relative">
+                                <label for="danisman_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Danışman</label>
                                 <select style="color-scheme: light dark;" name="danisman_id" id="danisman_id" class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 transition-all duration-200" x-model="form.danisman_id">
                                     <option value="">Danışman seçin...</option>
                                     @foreach($danismanlar ?? [] as $danisman)
@@ -67,21 +67,21 @@
                                     @endforeach
                                 </select>
                                 @error('danisman_id')
-                                    <p class="neo-error">{{ $message }}</p>
+                                    <p class="text-red-600 dark:text-red-400">{{ $message }}</p>
                                 @enderror
                             </div>
                         </div>
                     </div>
 
                     <!-- Talep Seçimi -->
-                    <div class="neo-card">
-                        <div class="neo-card-header">
-                            <h3 class="neo-card-title">🎯 Talep Bilgileri</h3>
+                    <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800">
+                        <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800-header">
+                            <h3 class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800-title">🎯 Talep Bilgileri</h3>
                         </div>
-                        <div class="neo-card-body">
+                        <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800-body">
                             <!-- Context7 Live Search: Talep -->
-                            <div class="neo-form-group">
-                                <label class="neo-label">Talep (İsteğe Bağlı)</label>
+                            <div class="space-y-2 relative">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Talep (İsteğe Bağlı)</label>
                                 <div class="context7-live-search"
                                      data-endpoint="/api/admin/talepler/search"
                                      data-target-input="talep_id"
@@ -92,11 +92,11 @@
                                 </div>
                                 <button type="button" @click="clearTalep()"
                                     x-show="form.talep_id"
-                                    class="neo-btn neo-btn-secondary neo-btn-sm mt-2">
+                                    class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 bg-white text-gray-700 rounded-lg hover:bg-gray-50 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-gray-500 transition-all duration-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2-sm mt-2">
                                     🗑️ Temizle
                                 </button>
                                 @error('talep_id')
-                                    <p class="neo-error">{{ $message }}</p>
+                                    <p class="text-red-600 dark:text-red-400">{{ $message }}</p>
                                 @enderror
                             </div>
                         </div>
@@ -106,14 +106,14 @@
                 <!-- Sağ Kolon -->
                 <div class="space-y-6">
                     <!-- İlan Seçimi -->
-                    <div class="neo-card">
-                        <div class="neo-card-header">
-                            <h3 class="neo-card-title">🏠 İlan Bilgileri</h3>
+                    <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800">
+                        <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800-header">
+                            <h3 class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800-title">🏠 İlan Bilgileri</h3>
                         </div>
-                        <div class="neo-card-body">
+                        <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800-body">
                             <!-- Context7 Live Search: İlan -->
-                            <div class="neo-form-group">
-                                <label class="neo-label required">İlan</label>
+                            <div class="space-y-2 relative">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 required">İlan</label>
                                 <div class="context7-live-search"
                                      data-endpoint="/api/admin/ilanlar/search"
                                      data-target-input="ilan_id"
@@ -124,24 +124,24 @@
                                 </div>
                                 <button type="button" @click="clearIlan()"
                                     x-show="form.ilan_id"
-                                    class="neo-btn neo-btn-secondary neo-btn-sm mt-2">
+                                    class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 bg-white text-gray-700 rounded-lg hover:bg-gray-50 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-gray-500 transition-all duration-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2-sm mt-2">
                                     🗑️ Temizle
                                 </button>
                                 @error('ilan_id')
-                                    <p class="neo-error">{{ $message }}</p>
+                                    <p class="text-red-600 dark:text-red-400">{{ $message }}</p>
                                 @enderror
                             </div>
                         </div>
                     </div>
 
                     <!-- Eşleştirme Detayları -->
-                    <div class="neo-card">
-                        <div class="neo-card-header">
-                            <h3 class="neo-card-title">⚙️ Eşleştirme Detayları</h3>
+                    <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800">
+                        <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800-header">
+                            <h3 class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800-title">⚙️ Eşleştirme Detayları</h3>
                         </div>
-                        <div class="neo-card-body space-y-4">
-                            <div class="neo-form-group">
-                                <label for="status" class="neo-label required">Durum</label>
+                        <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800-body space-y-4">
+                            <div class="space-y-2 relative">
+                                <label for="status" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 required">Durum</label>
                                 <select style="color-scheme: light dark;" name="status" id="status" class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 transition-all duration-200" required x-model="form.status">
                                     <option value="">Durum seçin...</option>
                                     <option value="Aktif">Aktif</option>
@@ -150,23 +150,23 @@
                                     <option value="Tamamlandı">Tamamlandı</option>
                                 </select>
                                 @error('status')
-                                    <p class="neo-error">{{ $message }}</p>
+                                    <p class="text-red-600 dark:text-red-400">{{ $message }}</p>
                                 @enderror
                             </div>
 
-                            <div class="neo-form-group">
+                            <div class="space-y-2 relative">
                                 <label class="w-5 h-5 text-blue-600 bg-gray-50 dark:bg-gray-800 border-gray-300 dark:border-gray-600 rounded focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-all duration-200 cursor-pointer-wrapper">
                                     <input type="checkbox" name="one_cikan" value="1" class="w-5 h-5 text-blue-600 bg-gray-50 dark:bg-gray-800 border-gray-300 dark:border-gray-600 rounded focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-all duration-200 cursor-pointer" x-model="form.one_cikan">
                                     <span class="w-5 h-5 text-blue-600 bg-gray-50 dark:bg-gray-800 border-gray-300 dark:border-gray-600 rounded focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-all duration-200 cursor-pointer-label">Öne Çıkan Eşleştirme</span>
                                 </label>
                             </div>
 
-                            <div class="neo-form-group">
-                                <label for="eslesme_tarihi" class="neo-label">Eşleştirme Tarihi</label>
+                            <div class="space-y-2 relative">
+                                <label for="eslesme_tarihi" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Eşleştirme Tarihi</label>
                                 <input type="datetime-local" name="eslesme_tarihi" id="eslesme_tarihi" class="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200"
                                     x-model="form.eslesme_tarihi">
                                 @error('eslesme_tarihi')
-                                    <p class="neo-error">{{ $message }}</p>
+                                    <p class="text-red-600 dark:text-red-400">{{ $message }}</p>
                                 @enderror
                             </div>
                         </div>
@@ -175,17 +175,17 @@
             </div>
 
             <!-- Notlar Bölümü -->
-            <div class="neo-card">
-                <div class="neo-card-header">
-                    <h3 class="neo-card-title">📝 Notlar ve Açıklamalar</h3>
+            <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800">
+                <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800-header">
+                    <h3 class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800-title">📝 Notlar ve Açıklamalar</h3>
                 </div>
-                <div class="neo-card-body">
-                    <div class="neo-form-group">
-                        <label for="notlar" class="neo-label">Eşleştirme Notları</label>
+                <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800-body">
+                    <div class="space-y-2 relative">
+                        <label for="notlar" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Eşleştirme Notları</label>
                         <textarea name="notlar" id="notlar" rows="4" class="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200 resize-vertical" x-model="form.notlar"
                             placeholder="Bu eşleştirme hakkında notlarınızı buraya yazabilirsiniz..."></textarea>
                         @error('notlar')
-                            <p class="neo-error">{{ $message }}</p>
+                            <p class="text-red-600 dark:text-red-400">{{ $message }}</p>
                         @enderror
                     </div>
                 </div>
@@ -194,7 +194,7 @@
             <!-- Form Actions -->
             <div class="flex flex-col sm:flex-row gap-4 pt-6 border-t border-gray-200 dark:border-gray-700">
                 <button type="submit" :disabled="loading"
-                    class="neo-btn neo-btn-primary disabled:opacity-50" aria-label="Eşleştirmeyi kaydet">
+                    class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg disabled:opacity-50" aria-label="Eşleştirmeyi kaydet">
                     <svg x-show="!loading" class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                     </svg>
@@ -207,14 +207,14 @@
                 </button>
 
                 <button type="button" @click="resetForm()"
-                    class="neo-btn neo-btn-secondary">
+                    class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 bg-white text-gray-700 rounded-lg hover:bg-gray-50 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-gray-500 transition-all duration-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700">
                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
                     </svg>
                     Formu Temizle
                 </button>
 
-                <a href="{{ route('admin.eslesmeler.index') }}" class="neo-btn neo-btn-secondary">
+                <a href="{{ route('admin.eslesmeler.index') }}" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 bg-white text-gray-700 rounded-lg hover:bg-gray-50 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-gray-500 transition-all duration-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700">
                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                     </svg>

@@ -33,7 +33,7 @@
         .navbar-brand {
             font-weight: bold;
         }
-        .neo-badge {
+        .inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {
             background: linear-gradient(45deg, #28a745, #20c997);
             color: white;
             padding: 2px 8px;
@@ -52,7 +52,7 @@
                 <div class="p-3">
                     <h5 class="text-white mb-3">
                         <i class="fas fa-building"></i> Yalihan Emlak
-                        <span class="neo-badge">C7</span>
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium">C7</span>
                     </h5>
 
                     <nav class="nav flex-column">
@@ -97,7 +97,7 @@
                                 <div class="nav-item dropdown">
                                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
                                         <i class="fas fa-user-circle"></i> {{ auth()->user()->name }}
-                                        <span class="neo-badge">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium">
                                             Status: {{ auth()->user()->status ? 'Aktif' : 'Pasif' }}
                                         </span>
                                     </a>

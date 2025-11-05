@@ -12,7 +12,7 @@
 
 <div class="space-y-2">
     {{-- Label --}}
-    <label for="{{ $name }}" class="neo-label">
+    <label for="{{ $name }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
         {{ $label }}
         @if ($required)
             <span class="text-red-500 ml-1">*</span>

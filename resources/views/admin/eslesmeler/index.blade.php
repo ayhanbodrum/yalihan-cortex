@@ -4,7 +4,7 @@
 
 @section('content')
     <!-- Context7 AI Önerileri Banner -->
-    <div class="neo-card mb-6 p-6 bg-gradient-to-r from-green-50 to-blue-50 border border-green-200">
+    <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800 mb-6 p-6 bg-gradient-to-r from-green-50 to-blue-50 border border-green-200">
         <div class="flex items-center justify-between">
             <div class="flex items-center">
                 <div class="w-12 h-12 bg-gradient-to-r from-green-500 to-blue-600 rounded-lg flex items-center justify-center mr-4">
@@ -39,7 +39,7 @@
         </h1>
         <p class="text-lg text-gray-600 mt-2">Müşteri talepleri ile ilanları eşleştirin ve akıllı öneriler alın</p>
         <div class="flex items-center space-x-3 mt-4">
-            <a href="{{ route('admin.eslesmeler.create') }}" class="neo-btn neo-btn-primary touch-target-optimized touch-target-optimized">
+            <a href="{{ route('admin.eslesmeler.create') }}" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg touch-target-optimized touch-target-optimized">
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6">
                     </path>
@@ -129,7 +129,7 @@
         </div>
 
         <!-- 🔍 Filtreler -->
-        <div class="neo-card mb-8">
+        <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800 mb-8">
             <div class="p-6">
                 <h2 class="text-xl font-semibold text-gray-800 flex items-center">
                     <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center w-6 h-6 rounded-lg flex items-center justify-center mr-3">
@@ -201,7 +201,7 @@
                     </div>
 
                     <div class="flex justify-end space-x-4 mt-4">
-                        <button type="submit" class="neo-btn neo-btn-primary touch-target-optimized touch-target-optimized">
+                        <button type="submit" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg touch-target-optimized touch-target-optimized">
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -209,7 +209,7 @@
                             Filtrele
                         </button>
                         <a href="{{ route('admin.eslesmeler.index') }}"
-                            class="neo-btn neo-btn-secondary touch-target-optimized touch-target-optimized">
+                            class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 bg-white text-gray-700 rounded-lg hover:bg-gray-50 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-gray-500 transition-all duration-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700 touch-target-optimized touch-target-optimized">
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M6 18L18 6M6 6l12 12" />
@@ -222,7 +222,7 @@
         </div>
 
         <!-- 📋 Eşleştirme Listesi -->
-        <div class="neo-card">
+        <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800">
             <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-800">
                 <div class="flex justify-between items-center">
                     <h2 class="text-xl font-bold text-gray-800 flex items-center">

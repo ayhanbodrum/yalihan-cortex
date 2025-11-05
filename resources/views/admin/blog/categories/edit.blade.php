@@ -14,7 +14,7 @@
                         <p class="text-gray-600 dark:text-gray-400 mt-1">{{ $category->name }} kategorisini düzenle</p>
                     </div>
                     <div>
-                        <a href="{{ route('admin.blog.categories.index') }}" class="neo-btn-outline-primary touch-target-optimized touch-target-optimized">
+                        <a href="{{ route('admin.blog.categories.index') }}" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2-outline-primary touch-target-optimized touch-target-optimized">
                             <i class="fas fa-arrow-left mr-2"></i>
                             Kategorilere Dön
                         </a>
@@ -116,10 +116,10 @@
                     </div>
 
                     <div class="flex justify-end mt-6 space-x-3">
-                        <a href="{{ route('admin.blog.categories.index') }}" class="neo-btn-outline-secondary touch-target-optimized touch-target-optimized">
+                        <a href="{{ route('admin.blog.categories.index') }}" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2-outline-secondary touch-target-optimized touch-target-optimized">
                             İptal
                         </a>
-                        <button type="submit" class="neo-btn neo-btn-primary touch-target-optimized touch-target-optimized">
+                        <button type="submit" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg touch-target-optimized touch-target-optimized">
                             <i class="fas fa-save mr-2"></i>
                             Değişiklikleri Kaydet
                         </button>

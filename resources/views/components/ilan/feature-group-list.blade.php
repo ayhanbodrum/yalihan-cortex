@@ -15,7 +15,7 @@
             </div>
             <div class="flex flex-wrap gap-2">
                 @foreach ($items as $feature)
-                    <span class="neo-badge neo-badge-primary text-sm">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium-primary text-sm">
                         {{ $feature['name'] }}
                     </span>
                 @endforeach

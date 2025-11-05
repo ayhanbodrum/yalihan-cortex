@@ -20,7 +20,7 @@ $statsLabelClass = 'text-sm text-gray-600 font-medium';
 @php
 $filterContainerClass = 'bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6 mb-8';
 $filterTitleClass = 'text-lg font-semibold text-gray-900 mb-4 flex items-center';
-$filterInputClass = 'neo-input';
+$filterInputClass = 'w-full px-3 py-2 rounded-md border border-gray-200 bg-white text-sm placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:border-gray-800 dark:text-gray-100 transition-colors';
 $filterLabelClass = 'block text-sm font-medium text-gray-700 mb-2';
 @endphp
 
@@ -34,8 +34,8 @@ $tableStatsClass = 'text-sm text-gray-500 dark:text-gray-400 flex items-center';
 
 {{-- Button Component --}}
 @php
-$btnPrimaryClass = 'neo-btn-primary';
-$btnSecondaryClass = 'neo-btn-secondary';
+$btnPrimaryClass = 'inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg';
+$btnSecondaryClass = 'inline-flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 bg-white text-gray-700 rounded-lg hover:bg-gray-50 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-gray-500 transition-all duration-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700';
 $btnSuccessClass = 'inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors duration-200';
 $btnDangerClass = 'inline-flex items-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-colors duration-200';
 @endphp

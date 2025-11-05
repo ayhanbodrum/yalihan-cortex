@@ -12,7 +12,7 @@
                     <p class="text-gray-600 mt-2">Müşteri kategorileri için etiketleri yönetin</p>
                 </div>
                 <div class="flex space-x-3">
-                    <a href="{{ route('admin.etiketler.create') }}" class="neo-btn neo-btn-primary touch-target-optimized touch-target-optimized">
+                    <a href="{{ route('admin.etiketler.create') }}" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg touch-target-optimized touch-target-optimized">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                             xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -32,7 +32,7 @@
         @endif
 
         <!-- Etiket Tablosu -->
-        <div class="neo-card">
+        <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800">
             <div class="overflow-x-auto">
                 <table class="admin-table">
                     <thead class="admin-table-header">

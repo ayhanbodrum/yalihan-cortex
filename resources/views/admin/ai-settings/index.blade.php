@@ -53,7 +53,7 @@
             @method('PUT')
 
             {{-- Provider Selection System --}}
-            <div class="neo-card border-l-4 border-blue-500 overflow-hidden hover:shadow-xl transition-all duration-300">
+            <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800 border-l-4 border-blue-500 overflow-hidden hover:shadow-xl transition-all duration-300">
                 <div
                     class="bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20 px-6 py-4 border-b border-blue-100">
                     <div class="flex items-center justify-between">
@@ -111,7 +111,7 @@
             </div>
 
             {{-- API Keys Configuration --}}
-            <div class="neo-card border-l-4 border-green-500 overflow-hidden hover:shadow-xl transition-all duration-300">
+            <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800 border-l-4 border-green-500 overflow-hidden hover:shadow-xl transition-all duration-300">
                 <div
                     class="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 px-6 py-4 border-b border-green-100">
                     <div class="flex items-center justify-between">
@@ -429,7 +429,7 @@
             </div>
 
             {{-- AI Test Message Area --}}
-            <div class="neo-card border-l-4 border-purple-500 overflow-hidden hover:shadow-xl transition-all duration-300">
+            <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800 border-l-4 border-purple-500 overflow-hidden hover:shadow-xl transition-all duration-300">
                 <div
                     class="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 px-6 py-4 border-b border-purple-100">
                     <div class="flex items-center justify-between">
@@ -563,7 +563,7 @@
         </form>
 
         {{-- Context7: AI Usage Analytics Dashboard --}}
-        <div class="neo-card border-l-4 border-purple-500 mt-8">
+        <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800 border-l-4 border-purple-500 mt-8">
             <div
                 class="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 px-6 py-4 border-b border-purple-100">
                 <div class="flex items-center justify-between">

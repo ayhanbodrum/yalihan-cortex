@@ -12,16 +12,16 @@
     </div>
 
     <!-- Form Seçimi -->
-    <div class="neo-card">
-        <div class="neo-card-header">
-            <h2 class="neo-card-title">Form Parametrelerini Seçin</h2>
-            <p class="neo-card-subtitle">Kategori ve yayın tipi seçerek dinamik form oluşturun</p>
+    <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800">
+        <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800-header">
+            <h2 class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800-title">Form Parametrelerini Seçin</h2>
+            <p class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800-subtitle">Kategori ve yayın tipi seçerek dinamik form oluşturun</p>
         </div>
-        <div class="neo-card-body">
+        <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800-body">
             <form id="formSelector" class="neo-form-selector">
                 <div class="neo-form-row">
                     <div class="neo-form-col">
-                        <label class="neo-label" for="kategori">Kategori</label>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" for="kategori">Kategori</label>
                         <select id="kategori" name="kategori" class="w-full px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200 cursor-pointer appearance-none" required>
                             <option value="">Kategori Seçiniz...</option>
                             @foreach($kategoriler as $slug => $name)
@@ -30,7 +30,7 @@
                         </select>
                     </div>
                     <div class="neo-form-col">
-                        <label class="neo-label" for="yayin_tipi">Yayın Tipi</label>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" for="yayin_tipi">Yayın Tipi</label>
                         <select id="yayin_tipi" name="yayin_tipi" class="w-full px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200 cursor-pointer appearance-none" required>
                             <option value="">Yayın Tipi Seçiniz...</option>
                             @foreach($yayinTipleri as $slug => $name)
@@ -39,7 +39,7 @@
                         </select>
                     </div>
                     <div class="neo-form-col neo-form-col-auto">
-                        <button type="submit" class="neo-btn neo-btn-primary">
+                        <button type="submit" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg">
                             <i class="neo-icon-generate"></i> Form Oluştur
                         </button>
                     </div>
@@ -49,16 +49,16 @@
     </div>
 
     <!-- Form Preview -->
-    <div id="formPreview" class="neo-card" style="display: none;">
-        <div class="neo-card-header">
-            <h2 class="neo-card-title">Dinamik Form</h2>
-            <div class="neo-card-actions">
-                <button type="button" class="neo-btn neo-btn-secondary" onclick="resetForm()">
+    <div id="formPreview" class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800" style="display: none;">
+        <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800-header">
+            <h2 class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800-title">Dinamik Form</h2>
+            <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800-actions">
+                <button type="button" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 bg-white text-gray-700 rounded-lg hover:bg-gray-50 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-gray-500 transition-all duration-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700" onclick="resetForm()">
                     <i class="neo-icon-reset"></i> Sıfırla
                 </button>
             </div>
         </div>
-        <div class="neo-card-body">
+        <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800-body">
             <div id="dynamicFormContainer">
                 <!-- Dinamik form burada yüklenecek -->
             </div>
@@ -66,11 +66,11 @@
     </div>
 
     <!-- AI Status -->
-    <div class="neo-card">
-        <div class="neo-card-header">
-            <h3 class="neo-card-title">🤖 AI Sistem Durumu</h3>
+    <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800">
+        <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800-header">
+            <h3 class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800-title">🤖 AI Sistem Durumu</h3>
         </div>
-        <div class="neo-card-body">
+        <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800-body">
             <div class="neo-ai-status">
                 <div class="neo-status-item">
                     <span class="neo-status-label">AI Model:</span>
@@ -115,7 +115,7 @@
     margin: 0;
 }
 
-.neo-card {
+.rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800 {
     background: #fff;
     border-radius: 12px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.08);
@@ -123,7 +123,7 @@
     overflow: hidden;
 }
 
-.neo-card-header {
+.rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800-header {
     padding: 20px 24px;
     border-bottom: 1px solid #f0f0f0;
     display: flex;
@@ -131,25 +131,25 @@
     align-items: center;
 }
 
-.neo-card-title {
+.rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800-title {
     font-size: 1.3rem;
     font-weight: 600;
     color: #1a1a1a;
     margin: 0;
 }
 
-.neo-card-subtitle {
+.rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800-subtitle {
     font-size: 0.9rem;
     color: #666;
     margin: 5px 0 0 0;
 }
 
-.neo-card-actions {
+.rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800-actions {
     display: flex;
     gap: 10px;
 }
 
-.neo-card-body {
+.rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800-body {
     padding: 24px;
 }
 
@@ -174,7 +174,7 @@
     flex: 0 0 auto;
 }
 
-.neo-label {
+.block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 {
     display: block;
     font-weight: 500;
     color: #333;
@@ -197,7 +197,7 @@
     box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
 }
 
-.neo-btn {
+.inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 {
     display: inline-flex;
     align-items: center;
     gap: 8px;
@@ -211,24 +211,24 @@
     text-decoration: none;
 }
 
-.neo-btn-primary {
+.inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg {
     background: linear-gradient(135deg, #007bff, #0056b3);
     color: white;
 }
 
-.neo-btn-primary:hover {
+.inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg:hover {
     background: linear-gradient(135deg, #0056b3, #004085);
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(0,123,255,0.3);
 }
 
-.neo-btn-secondary {
+.inline-flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 bg-white text-gray-700 rounded-lg hover:bg-gray-50 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-gray-500 transition-all duration-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700 {
     background: #f8f9fa;
     color: #495057;
     border: 1px solid #dee2e6;
 }
 
-.neo-btn-secondary:hover {
+.inline-flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 bg-white text-gray-700 rounded-lg hover:bg-gray-50 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-gray-500 transition-all duration-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700:hover {
     background: #e9ecef;
     transform: translateY(-1px);
 }
@@ -274,11 +274,11 @@
     margin: 0 0 20px 0;
 }
 
-.neo-field-group {
+.space-y-2-group {
     margin-bottom: 20px;
 }
 
-.neo-field-label {
+.space-y-2-label {
     display: block;
     font-weight: 500;
     color: #333;
@@ -290,14 +290,14 @@
     font-weight: bold;
 }
 
-.neo-field-input {
+.space-y-2-input {
     position: relative;
     display: flex;
     align-items: center;
     gap: 10px;
 }
 
-.neo-input, .neo-textarea, .neo-select {
+.w-full px-3 py-2 rounded-md border border-gray-200 bg-white text-sm placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:border-gray-800 dark:text-gray-100 transition-colors, .neo-textarea, .neo-select {
     flex: 1;
     padding: 12px 16px;
     border: 2px solid #e0e0e0;
@@ -312,13 +312,13 @@
     resize: vertical;
 }
 
-.neo-input:focus, .neo-textarea:focus, .neo-select:focus {
+.w-full px-3 py-2 rounded-md border border-gray-200 bg-white text-sm placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:border-gray-800 dark:text-gray-100 transition-colors:focus, .neo-textarea:focus, .neo-select:focus {
     outline: none;
     border-color: #007bff;
     box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
 }
 
-.neo-field-unit {
+.space-y-2-unit {
     color: #666;
     font-weight: 500;
     white-space: nowrap;
