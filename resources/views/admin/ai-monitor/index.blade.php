@@ -3,25 +3,25 @@
 @section('title', 'AI Monitoring Dashboard')
 
 @section('content')
-    <div class="container mx-auto neo-mx-auto p-6" x-data="monitorUI()" x-init="init()">
+    <div class="container mx-auto mx-auto p-6" x-data="monitorUI()" x-init="init()">
         <!-- Header -->
         <div class="flex items-center justify-between mb-4">
             <div class="flex items-center gap-3">
-                <h1 class="text-2xl neo-font-bold">AI Monitoring</h1>
+                <h1 class="text-2xl font-bold">AI Monitoring</h1>
                 <span class="text-sm text-gray-500">(Yerel Geliştirici İzleme)</span>
             </div>
             <div class="flex items-center gap-3">
                 <div class="flex items-center gap-2">
                     <span class="text-sm">Genel Durum:</span>
                     <span :class="overallBadgeClass()"
-                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium rounded-lg px-2 neo-py-1 text-xs transition-all neo-duration-300">
+                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium rounded-lg px-2 py-1 text-xs transition-all duration-300">
                         <span x-show="overall?.level === 'green'">🟢 İyi</span>
                         <span x-show="overall?.level === 'yellow'">🟡 Uyarı</span>
                         <span x-show="overall?.level === 'red'">🔴 Kritik</span>
                         <span x-show="!overall?.level || overall?.level === 'unknown'">⚪ Bilinmiyor</span>
                     </span>
                 </div>
-                <div class="neo-hidden md:flex items-center gap-2">
+                <div class="hidden md:flex items-center gap-2">
                     <label class="text-xs flex items-center gap-1">
                         <input type="checkbox" x-model="autoRefresh" class="w-5 h-5 text-blue-600 bg-gray-50 dark:bg-gray-800 border-gray-300 dark:border-gray-600 rounded focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-all duration-200 cursor-pointer h-3.5 w-3.5" />
                         Otomatik
@@ -42,7 +42,7 @@
             <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800 p-4 lg:neo-col-span-2">
                 <div class="grid grid-cols-4 gap-4">
                     <div
-                        class="neo-bg-gradient-to-r neo-from-blue-50 neo-to-blue-100 rounded-lg p-3 transition-all neo-duration-300 hover:neo-shadow-md">
+                        class="bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg p-3 transition-all duration-300 hover:shadow-md">
                         <div class="text-xs text-blue-600 flex items-center gap-1">
                             <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
                                 <path
@@ -54,7 +54,7 @@
                         </div>
                     </div>
                     <div
-                        class="neo-bg-gradient-to-r neo-from-green-50 neo-to-green-100 rounded-lg p-3 transition-all neo-duration-300 hover:neo-shadow-md">
+                        class="bg-gradient-to-r from-green-50 to-green-100 rounded-lg p-3 transition-all duration-300 hover:shadow-md">
                         <div class="text-xs text-green-600 flex items-center gap-1">
                             <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd"
@@ -66,7 +66,7 @@
                         <div class="text-2xl font-semibold text-green-800" x-text="overall?.api_ok ?? 0"></div>
                     </div>
                     <div
-                        class="neo-bg-gradient-to-r neo-from-purple-50 neo-to-purple-100 rounded-lg p-3 transition-all neo-duration-300 hover:neo-shadow-md">
+                        class="bg-gradient-to-r from-purple-50 to-purple-100 rounded-lg p-3 transition-all duration-300 hover:shadow-md">
                         <div class="text-xs text-purple-600 flex items-center gap-1">
                             <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd"
@@ -79,7 +79,7 @@
                         </div>
                     </div>
                     <div
-                        class="neo-bg-gradient-to-r neo-from-orange-50 neo-to-orange-100 rounded-lg p-3 transition-all neo-duration-300 hover:neo-shadow-md">
+                        class="bg-gradient-to-r from-orange-50 to-orange-100 rounded-lg p-3 transition-all duration-300 hover:shadow-md">
                         <div class="text-xs text-orange-600 flex items-center gap-1">
                             <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd"
@@ -104,7 +104,7 @@
                                 <span class="font-mono" x-text="key"></span>
                                 <span x-text="count"></span>
                             </div>
-                            <div class="neo-w-full h-2 neo-bg-gray-200 rounded-lg">
+                            <div class="w-full h-2 bg-gray-200 rounded-lg">
                                 <div class="h-2 rounded-lg" :class="mcpTypeColor(key)"
                                     :style="{ width: usageWidth(count) }">
                                 </div>
@@ -124,14 +124,14 @@
                     <h2 class="font-semibold">MCP Server Durumu</h2>
                     <button @click="refreshMcp()" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 bg-white text-gray-700 rounded-lg hover:bg-gray-50 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-gray-500 transition-all duration-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700 text-xs touch-target-optimized touch-target-optimized">Yenile</button>
                 </div>
-                <div class="neo-overflow-x-auto">
+                <div class="overflow-x-auto">
                     <!-- Skeleton Loader -->
                     <div x-show="loadingMcp" class="space-y-2 mb-2">
-                        <div class="neo-animate-pulse h-6 neo-bg-gray-100 rounded-lg"></div>
-                        <div class="neo-animate-pulse h-6 neo-bg-gray-100 rounded-lg"></div>
-                        <div class="neo-animate-pulse h-6 neo-bg-gray-100 rounded-lg"></div>
+                        <div class="animate-pulse h-6 bg-gray-100 rounded-lg"></div>
+                        <div class="animate-pulse h-6 bg-gray-100 rounded-lg"></div>
+                        <div class="animate-pulse h-6 bg-gray-100 rounded-lg"></div>
                     </div>
-                    <table class="neo-table neo-w-full text-xs">
+                    <table class="neo-table w-full text-xs">
                         <thead>
                             <tr>
                                 <th>Kullanıcı</th>
@@ -170,7 +170,7 @@
                 <ul class="space-y-2">
                     <template x-for="(status, name) in apis" :key="name">
                         <li
-                            class="flex items-center justify-between text-sm neo-bg-gray-50 rounded-lg px-2 neo-py-1">
+                            class="flex items-center justify-between text-sm bg-gray-50 rounded-lg px-2 py-1">
                             <span class="font-mono" x-text="name"></span>
                             <div class="flex items-center gap-2">
                                 <span :class="statusBadgeClass(status?.status)"
@@ -191,7 +191,7 @@
         </div>
 
         <!-- Ekosistem Analizi -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 neo-mt-6">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
             <!-- Context7 Uyumluluk Durumu -->
             <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800 p-4">
                 <div class="flex items-center justify-between mb-2">
@@ -208,40 +208,40 @@
                 <div class="space-y-3">
                     <div class="flex items-center justify-between">
                         <span class="text-sm">Uyumluluk:</span>
-                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium px-2 neo-py-1" :class="complianceBadgeClass()">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium px-2 py-1" :class="complianceBadgeClass()">
                             @{{ codeHealth?.compliance_status === 'compliant' ? 'Uyumlu' : 'Uyumsuz' }}
                         </span>
                     </div>
                     <div class="flex items-center justify-between">
                         <span class="text-sm">Sağlık Skoru:</span>
-                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium px-2 neo-py-1"
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium px-2 py-1"
                             :class="codeHealthBadgeClass()">@{{ codeHealth?.health_score ?? 0 }}%</span>
                     </div>
 
                     <!-- Context7 Önerileri -->
-                    <div x-show="codeHealth?.suggestions?.length > 0" class="neo-mt-3">
+                    <div x-show="codeHealth?.suggestions?.length > 0" class="mt-3">
                         <div class="text-xs font-semibold text-orange-700 mb-1">📋 Öneriler:</div>
                         <template x-for="suggestion in (codeHealth?.suggestions || [])" :key="suggestion">
-                            <div class="text-xs neo-bg-orange-50 text-orange-700 rounded-lg p-2 mb-1">
+                            <div class="text-xs bg-orange-50 text-orange-700 rounded-lg p-2 mb-1">
                                 @{{ suggestion }}
                             </div>
                         </template>
                     </div>
 
                     <!-- Sorunlar Listesi -->
-                    <div x-show="codeHealth?.issues?.length > 0" class="space-y-1 neo-mt-2">
+                    <div x-show="codeHealth?.issues?.length > 0" class="space-y-1 mt-2">
                         <template x-for="issue in (codeHealth?.issues || [])" :key="issue.type">
-                            <div class="text-xs neo-bg-gray-50 rounded-lg p-2">
+                            <div class="text-xs bg-gray-50 rounded-lg p-2">
                                 <div class="flex justify-between items-start">
                                     <div class="flex-1">
                                         <span class="font-semibold">@{{ issueTypeLabel(issue.type) }}</span>
-                                        <div class="text-gray-500 neo-mt-1" x-show="issue.description">
+                                        <div class="text-gray-500 mt-1" x-show="issue.description">
                                             @{{ issue.description || '' }}</div>
-                                        <div x-show="issue.suggestion" class="text-blue-600 neo-mt-1 text-xs">
+                                        <div x-show="issue.suggestion" class="text-blue-600 mt-1 text-xs">
                                             💡 @{{ issue.suggestion }}
                                         </div>
                                     </div>
-                                    <span class="font-semibold neo-ml-2"
+                                    <span class="font-semibold ml-2"
                                         :class="severityClass(issue.severity)">@{{ issue.count }}</span>
                                 </div>
                             </div>
@@ -250,7 +250,7 @@
 
                     <!-- Aksiyon Gerekli Uyarısı -->
                     <div x-show="codeHealth?.action_required"
-                        class="neo-bg-red-50 neo-border neo-border-red-200 rounded-lg p-2 neo-mt-3">
+                        class="bg-red-50 border border-red-200 rounded-lg p-2 mt-3">
                         <div class="flex items-center gap-2">
                             <svg class="w-3.5 h-3.5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd"
@@ -276,9 +276,9 @@
                     </h2>
                     <button @click="refreshDuplicates()" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 bg-white text-gray-700 rounded-lg hover:bg-gray-50 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-gray-500 transition-all duration-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700 text-xs touch-target-optimized touch-target-optimized">Yenile</button>
                 </div>
-                <div class="space-y-2 neo-max-h-48 neo-overflow-y-auto">
+                <div class="space-y-2 max-h-48 overflow-y-auto">
                     <template x-for="dup in duplicateFiles" :key="dup.name">
-                        <div class="text-xs neo-bg-yellow-50 rounded-lg p-2">
+                        <div class="text-xs bg-yellow-50 rounded-lg p-2">
                             <div class="font-semibold text-yellow-800">@{{ dup.name }}</div>
                             <div class="text-yellow-600">@{{ dup.count }} dosya</div>
                         </div>
@@ -301,9 +301,9 @@
                     </h2>
                     <button @click="refreshConflicts()" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 bg-white text-gray-700 rounded-lg hover:bg-gray-50 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-gray-500 transition-all duration-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700 text-xs touch-target-optimized touch-target-optimized">Yenile</button>
                 </div>
-                <div class="space-y-2 neo-max-h-48 neo-overflow-y-auto">
+                <div class="space-y-2 max-h-48 overflow-y-auto">
                     <template x-for="conflict in conflictingRoutes" :key="conflict.uri_methods">
-                        <div class="text-xs neo-bg-red-50 rounded-lg p-2">
+                        <div class="text-xs bg-red-50 rounded-lg p-2">
                             <div class="font-semibold text-red-800">@{{ conflict.uri_methods }}</div>
                             <div class="text-red-600">@{{ conflict.count }} çakışma</div>
                         </div>
@@ -325,8 +325,8 @@
                     </h2>
                     <button @click="refreshPagesHealth()" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 bg-white text-gray-700 rounded-lg hover:bg-gray-50 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-gray-500 transition-all duration-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700 text-xs touch-target-optimized touch-target-optimized">Yenile</button>
                 </div>
-                <div class="neo-overflow-x-auto">
-                    <table class="neo-table neo-w-full text-xs">
+                <div class="overflow-x-auto">
+                    <table class="neo-table w-full text-xs">
                         <thead>
                             <tr>
                                 <th>Sayfa</th>
@@ -341,19 +341,19 @@
                             <template x-for="row in pagesHealth" :key="row.url">
                                 <tr>
                                     <td class="font-semibold">@{{ row.name }}</td>
-                                    <td class="font-mono neo-text-[11px] neo-max-w-[360px] neo-truncate"
+                                    <td class="font-mono neo-text-[11px] neo-max-w-[360px] truncate"
                                         :title="row.url">@{{ row.url }}</td>
                                     <td><span :class="statusBadgeClass(row.status)">@{{ row.status }}</span></td>
                                     <td>@{{ row.http_code ?? '—' }}</td>
                                     <td>@{{ row.latency_ms ?? '—' }}ms</td>
                                     <td>
                                         <span x-show="row.markers_found"
-                                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium neo-bg-green-200 text-green-800 neo-mr-1">Bulundu</span>
+                                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-200 text-green-800 mr-1">Bulundu</span>
                                         <span x-show="!row.markers_found"
-                                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium neo-bg-yellow-200 text-yellow-800 neo-mr-1">Eksik</span>
+                                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-200 text-yellow-800 mr-1">Eksik</span>
                                         <template x-for="m in (row.missing_markers || [])" :key="m">
                                             <span
-                                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium neo-bg-gray-200 text-gray-800 neo-mr-1">@{{ m }}</span>
+                                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-200 text-gray-800 mr-1">@{{ m }}</span>
                                         </template>
                                     </td>
                                 </tr>
@@ -368,12 +368,12 @@
         </div>
 
         <!-- Logs -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 neo-mt-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
             <!-- Context7 Öğretim ve Öneri Paneli -->
-            <div x-show="codeHealth?.action_required || codeHealth?.suggestions?.length > 0" class="neo-mt-6">
+            <div x-show="codeHealth?.action_required || codeHealth?.suggestions?.length > 0" class="mt-6">
                 <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800 p-6">
                     <div class="flex items-center justify-between mb-4">
-                        <h2 class="neo-font-bold text-lg flex items-center gap-2">
+                        <h2 class="font-bold text-lg flex items-center gap-2">
                             🎓 Context7 Öğretim ve Öneriler
                         </h2>
                         <button @click="runContext7Fix()" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg text-sm touch-target-optimized touch-target-optimized">
@@ -382,27 +382,27 @@
                     </div>
 
                     <!-- Önemli Kurallar Hatırlatması -->
-                    <div class="neo-bg-blue-50 neo-border neo-border-blue-200 rounded-lg-lg p-4 mb-4">
+                    <div class="bg-blue-50 border border-blue-200 rounded-lg-lg p-4 mb-4">
                         <h3 class="font-semibold text-blue-800 mb-2">📚 Context7 Temel Kuralları:</h3>
                         <ul class="space-y-2">
                             <li class="flex items-start gap-2 text-sm text-blue-700">
                                 <span>❌</span>
                                 <div>
                                     <strong>Yasaklı Alan Adları:</strong>
-                                    <code class="neo-bg-blue-100 px-1 rounded-lg">status</code>,
-                                    <code class="neo-bg-blue-100 px-1 rounded-lg">is_active</code>,
-                                    <code class="neo-bg-blue-100 px-1 rounded-lg">aktif</code>,
-                                    <code class="neo-bg-blue-100 px-1 rounded-lg">ad_soyad</code>,
-                                    <code class="neo-bg-blue-100 px-1 rounded-lg">region_id</code>
+                                    <code class="bg-blue-100 px-1 rounded-lg">status</code>,
+                                    <code class="bg-blue-100 px-1 rounded-lg">is_active</code>,
+                                    <code class="bg-blue-100 px-1 rounded-lg">aktif</code>,
+                                    <code class="bg-blue-100 px-1 rounded-lg">ad_soyad</code>,
+                                    <code class="bg-blue-100 px-1 rounded-lg">region_id</code>
                                 </div>
                             </li>
                             <li class="flex items-start gap-2 text-sm text-blue-700">
                                 <span>✅</span>
                                 <div>
                                     <strong>Doğru Alan Adları:</strong>
-                                    <code class="neo-bg-green-100 px-1 rounded-lg">status</code>,
-                                    <code class="neo-bg-green-100 px-1 rounded-lg">tam_ad</code>,
-                                    <code class="neo-bg-green-100 px-1 rounded-lg">il_id</code>
+                                    <code class="bg-green-100 px-1 rounded-lg">status</code>,
+                                    <code class="bg-green-100 px-1 rounded-lg">tam_ad</code>,
+                                    <code class="bg-green-100 px-1 rounded-lg">il_id</code>
                                 </div>
                             </li>
                             <li class="flex items-start gap-2 text-sm text-blue-700">
@@ -419,23 +419,23 @@
                     </div>
 
                     <!-- Otomatik Düzeltme Komutları -->
-                    <div class="neo-bg-gray-50 rounded-lg-lg p-4 mb-4">
+                    <div class="bg-gray-50 rounded-lg-lg p-4 mb-4">
                         <h3 class="font-semibold text-gray-800 mb-2">⚡ Hızlı Düzeltme Komutları:</h3>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                             <button @click="copyCommand('./scripts/context7-check.sh --auto-fix')"
-                                class="text-left neo-bg-gray-800 text-green-400 font-mono text-xs p-3 rounded-lg hover:neo-bg-gray-700 neo-transition-colors">
+                                class="text-left bg-gray-800 text-green-400 font-mono text-xs p-3 rounded-lg hover:bg-gray-700 transition-colors">
                                 ./scripts/context7-check.sh --auto-fix
                             </button>
                             <button @click="copyCommand('php artisan context7:validate-migration --all')"
-                                class="text-left neo-bg-gray-800 text-green-400 font-mono text-xs p-3 rounded-lg hover:neo-bg-gray-700 neo-transition-colors">
+                                class="text-left bg-gray-800 text-green-400 font-mono text-xs p-3 rounded-lg hover:bg-gray-700 transition-colors">
                                 php artisan context7:validate-migration --all
                             </button>
                             <button @click="copyCommand('php artisan view:clear && php artisan config:clear')"
-                                class="text-left neo-bg-gray-800 text-green-400 font-mono text-xs p-3 rounded-lg hover:neo-bg-gray-700 neo-transition-colors">
+                                class="text-left bg-gray-800 text-green-400 font-mono text-xs p-3 rounded-lg hover:bg-gray-700 transition-colors">
                                 php artisan view:clear && php artisan config:clear
                             </button>
                             <button @click="copyCommand('grep -r \"status\\|is_active\" app/ resources/')"
-                                class="text-left neo-bg-gray-800 text-green-400 font-mono text-xs p-3 rounded-lg hover:neo-bg-gray-700 neo-transition-colors">
+                                class="text-left bg-gray-800 text-green-400 font-mono text-xs p-3 rounded-lg hover:bg-gray-700 transition-colors">
                                 grep -r "status|is_active" app/ resources/
                             </button>
                         </div>
@@ -446,8 +446,8 @@
                         <h3 class="font-semibold text-gray-800 mb-2">💡 Akıllı Öneriler:</h3>
                         <template x-for="(suggestion, index) in (codeHealth?.suggestions || [])" :key="index">
                             <div
-                                class="flex items-start gap-3 neo-bg-yellow-50 neo-border neo-border-yellow-200 rounded-lg p-3">
-                                <span class="text-yellow-600 neo-font-bold text-sm">@{{ index + 1 }}.</span>
+                                class="flex items-start gap-3 bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+                                <span class="text-yellow-600 font-bold text-sm">@{{ index + 1 }}.</span>
                                 <div class="flex-1">
                                     <p class="text-sm text-yellow-800">@{{ suggestion }}</p>
                                 </div>
@@ -462,7 +462,7 @@
             </div>
 
             <!-- Logs -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 neo-mt-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                 <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800 p-4">
                     <div class="flex items-center justify-between mb-2">
                         <h2 class="font-semibold">Self-Healing Log (Son 10)</h2>
@@ -474,14 +474,14 @@
                             <button @click="refreshSelf()" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 bg-white text-gray-700 rounded-lg hover:bg-gray-50 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-gray-500 transition-all duration-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700 text-xs touch-target-optimized touch-target-optimized">Yenile</button>
                         </div>
                     </div>
-                    <pre class="neo-bg-gray-50 p-2 rounded-lg text-xs neo-overflow-x-auto h-56"><template x-for="(line, idx) in filteredSelfHealing()" :key="idx">@{{ line + '\n' }}</template></pre>
+                    <pre class="bg-gray-50 p-2 rounded-lg text-xs overflow-x-auto h-56"><template x-for="(line, idx) in filteredSelfHealing()" :key="idx">@{{ line + '\n' }}</template></pre>
                 </div>
                 <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800 p-4">
                     <div class="flex items-center justify-between mb-2">
                         <h2 class="font-semibold">Son 10 Hata</h2>
                         <button @click="refreshErrors()" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 bg-white text-gray-700 rounded-lg hover:bg-gray-50 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-gray-500 transition-all duration-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700 text-xs touch-target-optimized touch-target-optimized">Yenile</button>
                     </div>
-                    <pre class="neo-bg-gray-50 p-2 rounded-lg text-xs neo-overflow-x-auto h-56"><template x-for="(line, idx) in recentErrors" :key="idx">@{{ line + '\n' }}</template></pre>
+                    <pre class="bg-gray-50 p-2 rounded-lg text-xs overflow-x-auto h-56"><template x-for="(line, idx) in recentErrors" :key="idx">@{{ line + '\n' }}</template></pre>
                 </div>
             </div>
         </div>
@@ -524,16 +524,16 @@
                     // UI Helpers
                     overallBadgeClass() {
                         const level = this.overall?.level || 'unknown';
-                        if (level === 'green') return 'neo-bg-green-200';
-                        if (level === 'yellow') return 'neo-bg-yellow-200';
-                        if (level === 'red') return 'neo-bg-red-200';
-                        return 'neo-bg-gray-200';
+                        if (level === 'green') return 'bg-green-200';
+                        if (level === 'yellow') return 'bg-yellow-200';
+                        if (level === 'red') return 'bg-red-200';
+                        return 'bg-gray-200';
                     },
                     statusBadgeClass(st) {
                         const s = (st || '').toUpperCase();
-                        if (s === 'OK') return 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium rounded-lg px-2 neo-py-0.5 neo-bg-green-200';
-                        if (s === 'ERROR') return 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium rounded-lg px-2 neo-py-0.5 neo-bg-yellow-200';
-                        return 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium rounded-lg px-2 neo-py-0.5 neo-bg-red-200';
+                        if (s === 'OK') return 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium rounded-lg px-2 py-0.5 bg-green-200';
+                        if (s === 'ERROR') return 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium rounded-lg px-2 py-0.5 bg-yellow-200';
+                        return 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium rounded-lg px-2 py-0.5 bg-red-200';
                     },
                     usageWidth(count) {
                         const max = Math.max(1, ...Object.values(this.overall?.mcp_usage || {
@@ -639,16 +639,16 @@
                     },
                     mcpTypeColor(key) {
                         const colors = {
-                            'context7': 'neo-bg-teal-500',
-                            'puppeteer': 'neo-bg-purple-500',
-                            'memory': 'neo-bg-indigo-500',
-                            'filesystem': 'neo-bg-green-500',
-                            'yalihan-bekci': 'neo-bg-blue-500',
-                            'laravel': 'neo-bg-orange-500',
-                            'git': 'neo-bg-gray-500',
-                            'ollama': 'neo-bg-red-500'
+                            'context7': 'bg-teal-500',
+                            'puppeteer': 'bg-purple-500',
+                            'memory': 'bg-indigo-500',
+                            'filesystem': 'bg-green-500',
+                            'yalihan-bekci': 'bg-blue-500',
+                            'laravel': 'bg-orange-500',
+                            'git': 'bg-gray-500',
+                            'ollama': 'bg-red-500'
                         };
-                        return colors[key] || 'neo-bg-blue-500';
+                        return colors[key] || 'bg-blue-500';
                     },
                     uptimePercent() {
                         const total = this.overall?.api_total || 0;
@@ -792,9 +792,9 @@
                     },
                     codeHealthBadgeClass() {
                         const score = this.codeHealth?.health_score || 0;
-                        if (score >= 80) return 'neo-bg-green-200 text-green-800';
-                        if (score >= 60) return 'neo-bg-yellow-200 text-yellow-800';
-                        return 'neo-bg-red-200 text-red-800';
+                        if (score >= 80) return 'bg-green-200 text-green-800';
+                        if (score >= 60) return 'bg-yellow-200 text-yellow-800';
+                        return 'bg-red-200 text-red-800';
                     },
                     issueTypeLabel(type) {
                         const labels = {
@@ -812,8 +812,8 @@
                     },
                     complianceBadgeClass() {
                         const status = this.codeHealth?.compliance_status;
-                        if (status === 'compliant') return 'neo-bg-green-200 text-green-800';
-                        return 'neo-bg-red-200 text-red-800';
+                        if (status === 'compliant') return 'bg-green-200 text-green-800';
+                        return 'bg-red-200 text-red-800';
                     },
                     severityClass(severity) {
                         switch (severity) {
