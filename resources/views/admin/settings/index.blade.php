@@ -37,7 +37,7 @@
                 <li class="mr-6"><a class="tab-link" href="#navigation">Navigasyon</a></li>
                 <li><a class="tab-link" href="#kullanici">Kullanıcı Yönetimi</a></li>
             </ul>
-            <form method="POST" action="{{ route('admin.settings.update') }}">
+            <form method="POST" action="{{ route('admin.ayarlar.bulk-update') }}">
                 @csrf
                 @method('POST')
                 <div id="genel" class="tab-content">
