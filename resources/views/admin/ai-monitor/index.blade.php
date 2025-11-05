@@ -341,7 +341,7 @@
                             <template x-for="row in pagesHealth" :key="row.url">
                                 <tr>
                                     <td class="font-semibold">@{{ row.name }}</td>
-                                    <td class="font-mono neo-text-[11px] neo-max-w-[360px] truncate"
+                                    <td class="font-mono text-[11px] max-w-[360px] truncate"
                                         :title="row.url">@{{ row.url }}</td>
                                     <td><span :class="statusBadgeClass(row.status)">@{{ row.status }}</span></td>
                                     <td>@{{ row.http_code ?? '—' }}</td>

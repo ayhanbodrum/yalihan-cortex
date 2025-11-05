@@ -50,7 +50,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <input type="text" name="search" placeholder="Search etiketler..."
                         class="w-full px-3 py-2 rounded-md border border-gray-200 bg-white text-sm focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-800 col-span-2" value="{{ request('search') }}">
-                    <select style="color-scheme: light dark;" name="status" class="neo- w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500  w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 form-select transition-all duration-200" onchange="this.form.submit()">
+                    <select style="color-scheme: light dark;" name="status" class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 form-select transition-all duration-200" onchange="this.form.submit()">
                         <option value="">All Status</option>
                         <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>Active</option>
                         <option value="inactive" {{ request('status') == 'inactive' ? 'selected' : '' }}>Inactive</option>
@@ -67,7 +67,7 @@
             <form id="bulkForm" action="{{ route('admin.etiket.bulk-action') }}" method="POST" class="mb-6">
                 @csrf
                 <div class="flex items-center gap-4">
-                    <select style="color-scheme: light dark;" name="action" class="neo- w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500  w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 form-select transition-all duration-200">
+                    <select style="color-scheme: light dark;" name="action" class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 form-select transition-all duration-200">
                         <option value="">Bulk Actions</option>
                         <option value="activate">Activate</option>
                         <option value="deactivate">Deactivate</option>
