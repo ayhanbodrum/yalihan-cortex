@@ -33,7 +33,7 @@
                 </div>
                 <x-feature-modal-selector 
                     category-slug="ic-ozellikleri"
-                    :selected-features="getSelectedByCategory('ic-ozellikleri')"
+                    :selected-features="collect($selectedFeatures)->where('categorySlug', 'ic-ozellikleri')->values()->all()"
                     :ilan-id="$ilanId"
                     @features-selected="handleFeaturesSelected($event.detail)" />
             </div>
@@ -62,7 +62,7 @@
                 </div>
                 <x-feature-modal-selector 
                     category-slug="dis-ozellikleri"
-                    :selected-features="getSelectedByCategory('dis-ozellikleri')"
+                    :selected-features="collect($selectedFeatures)->where('categorySlug', 'dis-ozellikleri')->values()->all()"
                     :ilan-id="$ilanId"
                     @features-selected="handleFeaturesSelected($event.detail)" />
             </div>
@@ -92,7 +92,7 @@
                 </div>
                 <x-feature-modal-selector 
                     category-slug="muhit"
-                    :selected-features="getSelectedByCategory('muhit')"
+                    :selected-features="collect($selectedFeatures)->where('categorySlug', 'muhit')->values()->all()"
                     :ilan-id="$ilanId"
                     @features-selected="handleFeaturesSelected($event.detail)" />
             </div>
@@ -121,7 +121,7 @@
                 </div>
                 <x-feature-modal-selector 
                     category-slug="ulasim"
-                    :selected-features="getSelectedByCategory('ulasim')"
+                    :selected-features="collect($selectedFeatures)->where('categorySlug', 'ulasim')->values()->all()"
                     :ilan-id="$ilanId"
                     @features-selected="handleFeaturesSelected($event.detail)" />
             </div>
@@ -150,7 +150,7 @@
                 </div>
                 <x-feature-modal-selector 
                     category-slug="cephe"
-                    :selected-features="getSelectedByCategory('cephe')"
+                    :selected-features="collect($selectedFeatures)->where('categorySlug', 'cephe')->values()->all()"
                     :ilan-id="$ilanId"
                     @features-selected="handleFeaturesSelected($event.detail)" />
             </div>
@@ -179,7 +179,7 @@
                 </div>
                 <x-feature-modal-selector 
                     category-slug="manzara"
-                    :selected-features="getSelectedByCategory('manzara')"
+                    :selected-features="collect($selectedFeatures)->where('categorySlug', 'manzara')->values()->all()"
                     :ilan-id="$ilanId"
                     @features-selected="handleFeaturesSelected($event.detail)" />
             </div>
