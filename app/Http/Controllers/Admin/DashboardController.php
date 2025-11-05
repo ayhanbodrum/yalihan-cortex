@@ -404,7 +404,14 @@ class DashboardController extends AdminController
             'total_ilanlar' => 0,
             'active_ilanlar' => 0,
             'total_kullanicilar' => 0,
-            'total_danismanlar' => 0
+            'total_danismanlar' => 0,
+            'system_status' => [
+                'database' => 'unknown',
+                'cache' => 'unknown',
+                'storage' => 'unknown'
+            ],
+            'recent_ilanlar' => collect([]),
+            'recent_kullanicilar' => collect([]),
         ];
     }
 

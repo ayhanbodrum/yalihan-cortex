@@ -1,8 +1,6 @@
-@extends('admin.layouts.neo')
+<?php $__env->startSection('title', 'Dashboard'); ?>
 
-@section('title', 'Dashboard')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <!-- Page Header -->
     <div class="mb-8">
@@ -28,7 +26,8 @@
                             <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">Toplam İlan</dt>
                             <dd class="flex items-baseline">
                                 <div class="text-2xl font-semibold text-gray-900 dark:text-white">
-                                    {{ $quickStats['total_ilanlar'] }}
+                                    <?php echo e($quickStats['total_ilanlar']); ?>
+
                                 </div>
                             </dd>
                         </dl>
@@ -53,7 +52,8 @@
                             <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">Aktif İlan</dt>
                             <dd class="flex items-baseline">
                                 <div class="text-2xl font-semibold text-gray-900 dark:text-white">
-                                    {{ $quickStats['active_ilanlar'] }}
+                                    <?php echo e($quickStats['active_ilanlar']); ?>
+
                                 </div>
                             </dd>
                         </dl>
@@ -78,7 +78,8 @@
                             <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">Toplam Kullanıcı</dt>
                             <dd class="flex items-baseline">
                                 <div class="text-2xl font-semibold text-gray-900 dark:text-white">
-                                    {{ $quickStats['total_kullanicilar'] }}
+                                    <?php echo e($quickStats['total_kullanicilar']); ?>
+
                                 </div>
                             </dd>
                         </dl>
@@ -103,7 +104,8 @@
                             <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">Toplam Danışman</dt>
                             <dd class="flex items-baseline">
                                 <div class="text-2xl font-semibold text-gray-900 dark:text-white">
-                                    {{ $quickStats['total_danismanlar'] }}
+                                    <?php echo e($quickStats['total_danismanlar']); ?>
+
                                 </div>
                             </dd>
                         </dl>
@@ -113,9 +115,28 @@
         </div>
     </div>
 
-    {{-- TCMB Exchange Rate Widget --}}
+    
     <div class="mb-8">
-        <x-admin.exchange-rate-widget />
+        <?php if (isset($component)) { $__componentOriginald2f839ab96561ffcc1f13eae0542280e = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginald2f839ab96561ffcc1f13eae0542280e = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.admin.exchange-rate-widget','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? (array) $attributes->getIterator() : [])); ?>
+<?php $component->withName('admin.exchange-rate-widget'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag && $constructor = (new ReflectionClass(Illuminate\View\AnonymousComponent::class))->getConstructor()): ?>
+<?php $attributes = $attributes->except(collect($constructor->getParameters())->map->getName()->all()); ?>
+<?php endif; ?>
+<?php $component->withAttributes([]); ?>
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginald2f839ab96561ffcc1f13eae0542280e)): ?>
+<?php $attributes = $__attributesOriginald2f839ab96561ffcc1f13eae0542280e; ?>
+<?php unset($__attributesOriginald2f839ab96561ffcc1f13eae0542280e); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginald2f839ab96561ffcc1f13eae0542280e)): ?>
+<?php $component = $__componentOriginald2f839ab96561ffcc1f13eae0542280e; ?>
+<?php unset($__componentOriginald2f839ab96561ffcc1f13eae0542280e); ?>
+<?php endif; ?>
     </div>
 
     <!-- Tables Grid -->
@@ -137,27 +158,28 @@
                         </tr>
                     </thead>
                     <tbody class="bg-gray-50 dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                        @forelse($quickStats['recent_ilanlar'] ?? [] as $ilan)
+                        <?php $__empty_1 = true; $__currentLoopData = $quickStats['recent_ilanlar']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $ilan): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                         <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">{{ $ilan->id }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">{{ Str::limit($ilan->baslik, 30) }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">{{ number_format($ilan->fiyat) }} {{ $ilan->para_birimi }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white"><?php echo e($ilan->id); ?></td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white"><?php echo e(Str::limit($ilan->baslik, 30)); ?></td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white"><?php echo e(number_format($ilan->fiyat)); ?> <?php echo e($ilan->para_birimi); ?></td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                    @if($ilan->status == 'Aktif') bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200
-                                    @else bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400 @endif">
-                                    {{ $ilan->status }}
+                                    <?php if($ilan->status == 'Aktif'): ?> bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200
+                                    <?php else: ?> bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400 <?php endif; ?>">
+                                    <?php echo e($ilan->status); ?>
+
                                 </span>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{{ optional($ilan->created_at)->format('d.m.Y') }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400"><?php echo e(optional($ilan->created_at)->format('d.m.Y')); ?></td>
                         </tr>
-                        @empty
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                         <tr>
                             <td colspan="5" class="px-6 py-8 text-center text-sm text-gray-500 dark:text-gray-400">
                                 Henüz ilan eklenmemiş
                             </td>
                         </tr>
-                        @endforelse
+                        <?php endif; ?>
                     </tbody>
                 </table>
             </div>
@@ -180,27 +202,28 @@
                         </tr>
                     </thead>
                     <tbody class="bg-gray-50 dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                        @forelse($quickStats['recent_kullanicilar'] ?? [] as $user)
+                        <?php $__empty_1 = true; $__currentLoopData = $quickStats['recent_kullanicilar']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                         <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">{{ $user->id }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">{{ $user->name }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{{ $user->email }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white"><?php echo e($user->id); ?></td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white"><?php echo e($user->name); ?></td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400"><?php echo e($user->email); ?></td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                    @if($user->status) bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200
-                                    @else bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400 @endif">
-                                    {{ $user->status ? 'Aktif' : 'Pasif' }}
+                                    <?php if($user->status): ?> bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200
+                                    <?php else: ?> bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400 <?php endif; ?>">
+                                    <?php echo e($user->status ? 'Aktif' : 'Pasif'); ?>
+
                                 </span>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{{ optional($user->created_at)->format('d.m.Y') }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400"><?php echo e(optional($user->created_at)->format('d.m.Y')); ?></td>
                         </tr>
-                        @empty
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                         <tr>
                             <td colspan="5" class="px-6 py-8 text-center text-sm text-gray-500 dark:text-gray-400">
                                 Henüz kullanıcı eklenmemiş
                             </td>
                         </tr>
-                        @endforelse
+                        <?php endif; ?>
                     </tbody>
                 </table>
             </div>
@@ -214,23 +237,26 @@
         </div>
         <div class="px-6 py-4">
             <dl class="grid grid-cols-1 gap-5 sm:grid-cols-3">
-                @foreach($quickStats['system_status'] as $service => $status)
+                <?php $__currentLoopData = $quickStats['system_status']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $service => $status): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                 <div class="px-4 py-5 bg-gray-50 dark:bg-gray-900 rounded-lg">
-                    <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate capitalize">{{ $service }}</dt>
+                    <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate capitalize"><?php echo e($service); ?></dt>
                     <dd class="mt-1 flex items-center">
                         <span class="flex items-center text-sm font-semibold 
-                            @if($status == 'online') text-green-600 dark:text-green-400
-                            @else text-red-600 dark:text-red-400 @endif">
+                            <?php if($status == 'online'): ?> text-green-600 dark:text-green-400
+                            <?php else: ?> text-red-600 dark:text-red-400 <?php endif; ?>">
                             <span class="w-2 h-2 rounded-full mr-2 
-                                @if($status == 'online') bg-green-500
-                                @else bg-red-500 @endif"></span>
-                            {{ $status == 'online' ? 'Online' : 'Offline' }}
+                                <?php if($status == 'online'): ?> bg-green-500
+                                <?php else: ?> bg-red-500 <?php endif; ?>"></span>
+                            <?php echo e($status == 'online' ? 'Online' : 'Offline'); ?>
+
                         </span>
                     </dd>
                 </div>
-                @endforeach
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
             </dl>
         </div>
     </div>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('admin.layouts.neo', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /Users/macbookpro/Projects/yalihanemlakwarp/resources/views/admin/dashboard/index.blade.php ENDPATH**/ ?>
