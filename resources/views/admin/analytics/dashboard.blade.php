@@ -130,7 +130,7 @@
                         <div class="text-xs font-medium text-yellow-600 dark:text-yellow-400 uppercase tracking-wide mb-1">
                             Context7 Aramalar
                         </div>
-                        <div class="text-xl font-semibold text-gray-900 dark:text-white" id="neo-searches">
+                        <div class="text-xl font-semibold text-gray-900 dark:text-white" id="space-y-2">
                             {{ number_format($analytics['context7_analytics']['total_searches'] ?? 0) }}
                         </div>
                     </div>
@@ -756,8 +756,8 @@
             document.getElementById('avg-results-clicked').textContent = (context7Data.avg_results_clicked || 0).toFixed(1);
 
             // Update total searches
-            if (document.getElementById('neo-searches')) {
-                document.getElementById('neo-searches').textContent = (context7Data.total_searches || 0)
+            if (document.getElementById('space-y-2')) {
+                document.getElementById('space-y-2').textContent = (context7Data.total_searches || 0)
                     .toLocaleString();
             }
         }

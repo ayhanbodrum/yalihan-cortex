@@ -34,7 +34,7 @@
     <!-- Neo classes provided by Tailwind plugin (tailwind.config.js) -->
 
     <!-- Context7 Toast Utility System -->
-    <link href="{{ asset('css/admin/neo-toast.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/admin/fixed top-4 right-4 z-50 max-w-sm w-full bg-white rounded-lg shadow-lg border border-gray-200 p-4 transition-all duration-300 dark:bg-gray-800 dark:border-gray-700.css') }}" rel="stylesheet">
     <link href="{{ asset('css/admin/animate-pulse bg-gray-200 dark:bg-gray-700 rounded.css') }}" rel="stylesheet">
 
     <!-- PHASE 2: AJAX & UI Utilities (Context7 Standards) -->
@@ -194,7 +194,7 @@
     <!-- Alpine.js - Vite app.js içinde yükleniyor (CDN kaldırıldı) -->
 
     <!-- Context7 Toast Component Include -->
-    <x-admin.neo-toast />
+    <x-admin.fixed top-4 right-4 z-50 max-w-sm w-full bg-white rounded-lg shadow-lg border border-gray-200 p-4 transition-all duration-300 dark:bg-gray-800 dark:border-gray-700 />
 
     <script>
         // Neo Admin Alpine.js Functions

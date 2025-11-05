@@ -172,7 +172,7 @@
         </a>
 
         <!-- CRM Yönetimi -->
-        <div class="neo-sidebar-group">
+        <div class="space-y-1 mb-4">
             <button @click="toggleMenu('crm')"
                 class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors dark:text-gray-300 dark:hover:text-gray-100 dark:hover:bg-gray-800 c7-tip w-full flex items-center justify-between"
                 :aria-expanded="activeMenu === 'crm'"
@@ -263,7 +263,7 @@
         </a>
 
         <!-- İlan Yönetimi -->
-        <div class="neo-sidebar-group">
+        <div class="space-y-1 mb-4">
             <button @click="toggleMenu('ilan-yonetimi')"
                 class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors dark:text-gray-300 dark:hover:text-gray-100 dark:hover:bg-gray-800 c7-tip w-full flex items-center justify-between"
                 :aria-expanded="activeMenu === 'ilan-yonetimi'"
@@ -345,7 +345,7 @@
         </a>
 
         <!-- AI Sistemi -->
-        <div class="neo-sidebar-group">
+        <div class="space-y-1 mb-4">
             <button @click="toggleMenu('ai')"
                 class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors dark:text-gray-300 dark:hover:text-gray-100 dark:hover:bg-gray-800 c7-tip w-full flex items-center justify-between"
                 :aria-expanded="activeMenu === 'ai'"
@@ -382,7 +382,7 @@
         </div>
 
         <!-- Takım Yönetimi -->
-        <div class="neo-sidebar-group">
+        <div class="space-y-1 mb-4">
             <button @click="toggleMenu('team')"
                 class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors dark:text-gray-300 dark:hover:text-gray-100 dark:hover:bg-gray-800 c7-tip w-full flex items-center justify-between"
                 :aria-expanded="activeMenu === 'team'"
@@ -417,7 +417,7 @@
         </div>
 
         <!-- Analytics -->
-        <div class="neo-sidebar-group">
+        <div class="space-y-1 mb-4">
             <button @click="toggleMenu('analytics')"
                 class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors dark:text-gray-300 dark:hover:text-gray-100 dark:hover:bg-gray-800 c7-tip w-full flex items-center justify-between"
                 :aria-expanded="activeMenu === 'analytics'"
@@ -453,7 +453,7 @@
         </div>
 
         <!-- Telegram Bot -->
-        <div class="neo-sidebar-group">
+        <div class="space-y-1 mb-4">
             <button @click="toggleMenu('telegram')"
                 class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors dark:text-gray-300 dark:hover:text-gray-100 dark:hover:bg-gray-800 c7-tip w-full flex items-center justify-between"
                 :aria-expanded="activeMenu === 'telegram'"
@@ -504,7 +504,7 @@
         </a>
 
         <!-- Blog Yönetimi -->
-        <div class="neo-sidebar-group">
+        <div class="space-y-1 mb-4">
             <button @click="toggleMenu('blog')"
                 class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors dark:text-gray-300 dark:hover:text-gray-100 dark:hover:bg-gray-800 c7-tip w-full flex items-center justify-between"
                 :aria-expanded="activeMenu === 'blog'"
@@ -552,7 +552,7 @@
         @endif
 
         <!-- Test Sayfaları -->
-        <div class="neo-sidebar-group">
+        <div class="space-y-1 mb-4">
             <button @click="toggleMenu('test')"
                 class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors dark:text-gray-300 dark:hover:text-gray-100 dark:hover:bg-gray-800 c7-tip w-full flex items-center justify-between"
                 :aria-expanded="activeMenu === 'test'"

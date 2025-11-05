@@ -6,7 +6,7 @@
 @section('content')
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <div class="container mx-auto">
-    <div class="neo-header">
+    <div class="flex items-center justify-between mb-6">
         <h1 class="text-2xl font-bold text-gray-900 dark:text-white">🎯 Dinamik Form Oluşturucu</h1>
         <p class="text-lg text-gray-600 dark:text-gray-400">AI destekli 2D Matrix sistemi ile otomatik form oluşturma</p>
     </div>
@@ -72,17 +72,17 @@
         </div>
         <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800-body">
             <div class="neo-ai-status">
-                <div class="neo-status-item">
-                    <span class="neo-status-label">AI Model:</span>
-                    <span class="neo-status-value" id="aiModel">Yükleniyor...</span>
+                <div class="flex items-center gap-2 p-2 rounded-md hover:bg-gray-50 dark:hover:bg-gray-800">
+                    <span class="font-medium text-gray-700 dark:text-gray-300">AI Model:</span>
+                    <span class="text-sm text-gray-600 dark:text-gray-400" id="aiModel">Yükleniyor...</span>
                 </div>
-                <div class="neo-status-item">
-                    <span class="neo-status-label">Bağlantı:</span>
-                    <span class="neo-status-value" id="aiConnection">Kontrol ediliyor...</span>
+                <div class="flex items-center gap-2 p-2 rounded-md hover:bg-gray-50 dark:hover:bg-gray-800">
+                    <span class="font-medium text-gray-700 dark:text-gray-300">Bağlantı:</span>
+                    <span class="text-sm text-gray-600 dark:text-gray-400" id="aiConnection">Kontrol ediliyor...</span>
                 </div>
-                <div class="neo-status-item">
-                    <span class="neo-status-label">Özellikler:</span>
-                    <span class="neo-status-value" id="aiFeatures">Hesaplanıyor...</span>
+                <div class="flex items-center gap-2 p-2 rounded-md hover:bg-gray-50 dark:hover:bg-gray-800">
+                    <span class="font-medium text-gray-700 dark:text-gray-300">Özellikler:</span>
+                    <span class="text-sm text-gray-600 dark:text-gray-400" id="aiFeatures">Hesaplanıyor...</span>
                 </div>
             </div>
         </div>
@@ -97,7 +97,7 @@
     padding: 20px;
 }
 
-.neo-header {
+.flex items-center justify-between mb-6 {
     text-align: center;
     margin-bottom: 30px;
 }
@@ -416,7 +416,7 @@
     gap: 20px;
 }
 
-.neo-status-item {
+.flex items-center gap-2 p-2 rounded-md hover:bg-gray-50 dark:hover:bg-gray-800 {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -426,12 +426,12 @@
     border-left: 4px solid #007bff;
 }
 
-.neo-status-label {
+.font-medium text-gray-700 dark:text-gray-300 {
     font-weight: 500;
     color: #495057;
 }
 
-.neo-status-value {
+.text-sm text-gray-600 dark:text-gray-400 {
     font-weight: 600;
     color: #007bff;
 }
@@ -462,7 +462,7 @@
     pointer-events: none;
 }
 
-.neo-spinner {
+.animate-spin rounded-full border-2 border-gray-300 border-t-blue-600 {
     display: inline-block;
     width: 20px;
     height: 20px;
@@ -522,7 +522,7 @@ document.addEventListener('DOMContentLoaded', function() {
     async function loadDynamicForm(kategori, yayinTipi) {
         try {
             formPreview.style.display = 'block';
-            dynamicFormContainer.innerHTML = '<div class="neo-spinner"></div> Form yükleniyor...';
+            dynamicFormContainer.innerHTML = '<div class="animate-spin rounded-full border-2 border-gray-300 border-t-blue-600"></div> Form yükleniyor...';
 
             const response = await fetch('/dynamic-form/render', {
                 method: 'POST',

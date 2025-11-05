@@ -173,9 +173,9 @@
             showNotification(message, type) {
                 // Neo notification system
                 const notification = document.createElement('div');
-                notification.className = `neo-notification neo-notification-${type} fixed top-4 right-4 z-50`;
+                notification.className = `fixed top-4 right-4 z-50 max-w-sm w-full bg-white rounded-lg shadow-lg border border-gray-200 p-4 dark:bg-gray-800 dark:border-gray-700 fixed top-4 right-4 z-50 max-w-sm w-full bg-white rounded-lg shadow-lg border border-gray-200 p-4 dark:bg-gray-800 dark:border-gray-700-${type} fixed top-4 right-4 z-50`;
                 notification.innerHTML = `
-                <div class="neo-notification-content bg-white p-4 rounded-lg shadow-lg border-l-4 ${
+                <div class="fixed top-4 right-4 z-50 max-w-sm w-full bg-white rounded-lg shadow-lg border border-gray-200 p-4 dark:bg-gray-800 dark:border-gray-700-content bg-white p-4 rounded-lg shadow-lg border-l-4 ${
                     type === 'success' ? 'border-green-500' :
                     type === 'error' ? 'border-red-500' : 'border-blue-500'
                 }">
@@ -232,7 +232,7 @@
         overflow-y: auto;
     }
 
-    .neo-notification {
+    .fixed top-4 right-4 z-50 max-w-sm w-full bg-white rounded-lg shadow-lg border border-gray-200 p-4 dark:bg-gray-800 dark:border-gray-700 {
         animation: slideIn 0.3s ease-out;
     }
 
