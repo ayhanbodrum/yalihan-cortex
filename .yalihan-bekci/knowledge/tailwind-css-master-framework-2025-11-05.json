@@ -1,0 +1,172 @@
+{
+  "timestamp": "2025-11-05T00:00:00Z",
+  "topic": "Tailwind CSS Master CSS Framework Declaration",
+  "category": "architecture",
+  "priority": "CRITICAL",
+  "status": "ACTIVE",
+  
+  "declaration": {
+    "title": "Tailwind CSS is the MASTER CSS Framework",
+    "status": "PRIMARY AND ONLY CSS FRAMEWORK",
+    "enforcement": "STRICT",
+    "effective_date": "2025-11-05",
+    "authority_source": ".context7/authority.json"
+  },
+
+  "rules": {
+    "primary_rule": "Tailwind CSS is the ONLY CSS framework allowed in this project",
+    "forbidden_frameworks": [
+      "Bootstrap",
+      "Neo Design System (custom classes)",
+      "Foundation",
+      "Bulma",
+      "Material UI",
+      "Any other CSS framework"
+    ],
+    "required_usage": [
+      "ALL styling must use Tailwind utility classes",
+      "Tailwind plugins for extended functionality",
+      "@apply directive in CSS files (only in @layer base)",
+      "Tailwind config customization (tailwind.config.js)"
+    ],
+    "exceptions": {
+      "allowed": [
+        "@layer base for browser native controls (select/option) - !important required",
+        "Custom CSS for third-party library overrides (only when Tailwind cannot handle)",
+        "Animation keyframes (if Tailwind animation utilities insufficient)"
+      ],
+      "forbidden": [
+        "Custom CSS classes that duplicate Tailwind functionality",
+        "Global CSS rules that override Tailwind utilities",
+        "!important in global CSS (except browser native controls)"
+      ]
+    }
+  },
+
+  "implementation_standards": {
+    "button": {
+      "pattern": "Tailwind utility classes with transitions",
+      "example": "px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200",
+      "forbidden": "neo-btn, btn-primary, custom CSS classes"
+    },
+    "form_input": {
+      "pattern": "Tailwind utility classes with focus states",
+      "example": "w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 transition-all duration-200",
+      "forbidden": "neo-input, form-control, custom input classes"
+    },
+    "card": {
+      "pattern": "Tailwind utility classes with shadows and borders",
+      "example": "bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 transition-all duration-300 hover:shadow-xl",
+      "forbidden": "neo-card, card, custom card classes"
+    },
+    "badge": {
+      "pattern": "Tailwind utility classes with color variants",
+      "example": "px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
+      "forbidden": "neo-badge, badge, custom badge classes"
+    }
+  },
+
+  "migration_strategy": {
+    "new_code": {
+      "rule": "MUST use Tailwind CSS only",
+      "enforcement": "IMMEDIATE",
+      "review": "Code review will reject non-Tailwind CSS"
+    },
+    "existing_code": {
+      "rule": "Gradual migration on edit",
+      "enforcement": "When editing existing files, migrate to Tailwind",
+      "priority": "High-traffic pages first"
+    },
+    "legacy_code": {
+      "rule": "Keep as-is until edit",
+      "enforcement": "No forced migration for untouched files",
+      "note": "But ALL new code must use Tailwind"
+    }
+  },
+
+  "context7_compliance": {
+    "authority_file": ".context7/authority.json",
+    "section": "master_css_framework",
+    "documentation": ".context7/TAILWIND-TRANSITION-RULE.md",
+    "compliance_level": "100% for new code",
+    "migration_progress": "Ongoing for existing code"
+  },
+
+  "yalihan_bekci_rules": {
+    "new_rules": [
+      {
+        "rule": "Tailwind CSS is the MASTER CSS framework",
+        "reason": "Single source of truth for styling",
+        "enforcement": "STRICT",
+        "auto_reject": true
+      },
+      {
+        "rule": "NEVER use Bootstrap, Neo Design System, or any other CSS framework",
+        "reason": "Tailwind CSS is the only allowed framework",
+        "severity": "CRITICAL",
+        "auto_fix": false
+      },
+      {
+        "rule": "ALWAYS use Tailwind utility classes",
+        "reason": "Consistency, maintainability, performance",
+        "example": "px-4 py-2 bg-blue-600 text-white rounded-lg",
+        "severity": "CRITICAL"
+      },
+      {
+        "rule": "ONLY use @layer base for browser native controls",
+        "reason": "Tailwind cascade system",
+        "exception": "select/option elements require !important",
+        "severity": "HIGH"
+      }
+    ],
+    "forbidden_patterns": [
+      {
+        "pattern": "class=\"neo-btn\"",
+        "replacement": "Tailwind utility classes",
+        "reason": "Neo Design System is deprecated"
+      },
+      {
+        "pattern": "class=\"btn btn-primary\"",
+        "replacement": "Tailwind utility classes",
+        "reason": "Bootstrap is forbidden"
+      },
+      {
+        "pattern": "custom CSS classes that duplicate Tailwind",
+        "replacement": "Tailwind utility classes",
+        "reason": "Maintainability and consistency"
+      }
+    ]
+  },
+
+  "benefits": {
+    "technical": [
+      "Single CSS framework = consistent styling",
+      "Smaller bundle size (Tailwind JIT)",
+      "Better performance (utility-first)",
+      "Easier maintenance (standard patterns)"
+    ],
+    "developer_experience": [
+      "No context switching between frameworks",
+      "Consistent API across all components",
+      "Better IDE autocomplete",
+      "Easier onboarding"
+    ],
+    "maintainability": [
+      "Single source of truth",
+      "Easier refactoring",
+      "Better code review",
+      "Reduced technical debt"
+    ]
+  },
+
+  "related_files": [
+    ".context7/authority.json",
+    ".context7/TAILWIND-TRANSITION-RULE.md",
+    "tailwind.config.js",
+    "resources/css/app.css"
+  ],
+
+  "commit_message": "📋 CONTEXT7: Tailwind CSS declared as MASTER CSS framework",
+  "tags": ["tailwind", "css", "architecture", "context7", "master-framework", "standards"]
+}
+

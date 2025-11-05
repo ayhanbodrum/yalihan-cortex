@@ -1,0 +1,144 @@
+{
+  "timestamp": "2025-11-05T00:00:00Z",
+  "topic": "Dizin Temizliği - MD Dosyaları ve Gereksiz Dosyalar",
+  "category": "maintenance",
+  "priority": "HIGH",
+  "status": "IN_PROGRESS",
+  
+  "root_md_files_analysis": {
+    "total_count": 63,
+    "categories": {
+      "important_active": [
+        "README.md",
+        "CLI_GUIDE.md",
+        "STANDARDIZATION_GUIDE.md",
+        "MODERNIZATION_PLAN.md",
+        "APP-MODULES-ARCHITECTURE.md",
+        "KOMUTLAR_REHBERI.md",
+        "NEO-TO-TAILWIND-PATTERN-GUIDE.md",
+        "COMPONENT-LIBRARY-GUIDE.md",
+        "COMPONENT-USAGE-EXAMPLES.md",
+        "ILAN_YONETIMI_ANALIZ.md",
+        "SIRADA-YAPMAK-LISTE.md",
+        "SIRADAKI-3-ADIM.md"
+      ],
+      "recent_reports_keep": [
+        "TURKIYEAPI-WIKIMAPIA-ENTEGRASYON-2025-11-05.md",
+        "WIKIMAPIA-FULL-AUDIT-2025-11-05.md",
+        "TCMB-KUR-API-RAPOR-2025-11-05.md",
+        "PHASE3-PROGRESS-2025-11-05.md"
+      ],
+      "old_reports_archive": [
+        "GECE-COMPREHENSIVE-REPORT-2025-11-05.md",
+        "GECE-FINAL-COMPREHENSIVE-REPORT-2025-11-05.md",
+        "BUGUN-GECE-FINAL-2025-11-05.md",
+        "BUGUN-TAMAMLANAN-2025-11-04-FINAL.md",
+        "BUGUN-FINAL-OZET-2025-11-04-GECE.md",
+        "BU-GECE-FINAL-OZET.md",
+        "GECE-FINAL-OZET-2025-11-04.md",
+        "GECE-FINAL-RAPOR-2025-11-04.md",
+        "YARIN-PLAN-2025-11-05.md"
+      ],
+      "migration_reports_archive": [
+        "50-SAYFA-ULTIMATE-FINAL-2025-11-05.md",
+        "15-SAYFA-LEGENDARY-FINAL-2025-11-05.md",
+        "12-SAYFA-HARDCORE-MODE-FINAL-2025-11-05.md",
+        "9-SAYFA-MIGRATION-FINAL-2025-11-05.md",
+        "6-SAYFA-MIGRATION-FINAL-2025-11-05.md",
+        "TALEPLER-INDEX-MIGRATION-REPORT-2025-11-05.md",
+        "AI-CATEGORY-MIGRATION-REPORT-2025-11-05.md",
+        "COMPONENT-LIBRARY-COMPLETE-REPORT-2025-11-05.md",
+        "COMPONENT-LIBRARY-COMPLETE.md"
+      ],
+      "duplicate_or_redundant": [
+        "COMPONENT-LIBRARY-README.md",
+        "COMPONENT-USAGE-GUIDE.md",
+        "PROJE-ANATOMISI-DEGERLENDIRME.md",
+        "PROJE-ANATOMISI-VE-ONERILER-2025-11-04.md"
+      ],
+      "old_analysis_archive": [
+        "AI-ANALIZLERIN-DEGERLENDIRMESI.md",
+        "ANYTHINGLLM-N8N-ENTEGRASYON-PLANI.md",
+        "API-ENTEGRASYON-PLANI-2025-11-04.md",
+        "AYARLAR-CREATE-ANALIZ.md",
+        "AYARLAR-SISTEM-UPGRADE-2025-11-05.md",
+        "DIZIN-BOYUTU-ANALIZI.md",
+        "ESKi-FRONTEND-TEMIZLIK-PLANI.md",
+        "FRONTEND-CSS-KARAR.md",
+        "FRONTEND-DETAYLI-TARAMA-RAPORU.md",
+        "FRONTEND-INCELEME-RAPORU.md",
+        "GIT-BUYUK-DOSYA-ANALIZI.md",
+        "GIT-FRESH-START-RAPORU.md",
+        "GIT-TEMIZLIK-SECENEKLER.md",
+        "HORIZON-COZUM.md",
+        "HORIZON-VS-TELESCOPE-ACIKLAMA.md",
+        "KRITIK_VERI_KURTARMA_RAPORU.md",
+        "KULLANILMAYAN-DOSYALAR-RAPORU.md",
+        "OZEL-MODULLER-DURUM-RAPORU-2025-11-04.md",
+        "OZEL-MODULLER-EK-RAPOR-2025-11-04.md",
+        "TAILWIND-V4-BETA-DETAYLI-ANALIZ.md",
+        "TAILWIND-V4-FRONTEND-STRATEJISI.md",
+        "TAILWIND-V4-MIGRATION-SORUN.md",
+        "TEMIZLIK-RAPORU-2025-11-04.md",
+        "WIKIMAPIA-API-ISSUE-2025-11-05.md",
+        "YALIHANEMLAK_ULTRA_BOS_SEBEB_RAPORU.md"
+      ]
+    }
+  },
+  
+  "duplicate_files_detected": {
+    "md_duplicate_detector_result": {
+      "total_duplicates": 18,
+      "critical": [
+        "README.md (427 instances)",
+        "readme.md (107 instances)",
+        "CHANGELOG.md (91 instances)",
+        "HISTORY.md (72 instances)"
+      ],
+      "note": "Çoğu node_modules içinde, root dizinde değil"
+    }
+  },
+  
+  "cleanup_plan": {
+    "keep_in_root": [
+      "README.md",
+      "CLI_GUIDE.md",
+      "STANDARDIZATION_GUIDE.md",
+      "MODERNIZATION_PLAN.md",
+      "APP-MODULES-ARCHITECTURE.md",
+      "KOMUTLAR_REHBERI.md",
+      "NEO-TO-TAILWIND-PATTERN-GUIDE.md",
+      "COMPONENT-LIBRARY-GUIDE.md",
+      "COMPONENT-USAGE-EXAMPLES.md",
+      "ILAN_YONETIMI_ANALIZ.md",
+      "SIRADA-YAPMAK-LISTE.md",
+      "SIRADAKI-3-ADIM.md",
+      "TURKIYEAPI-WIKIMAPIA-ENTEGRASYON-2025-11-05.md",
+      "WIKIMAPIA-FULL-AUDIT-2025-11-05.md",
+      "TCMB-KUR-API-RAPOR-2025-11-05.md",
+      "PHASE3-PROGRESS-2025-11-05.md"
+    ],
+    "archive_to_docs": [
+      "docs/archive/reports-2025-11-05/old-reports/",
+      "docs/archive/reports-2025-11-05/migration-reports/",
+      "docs/archive/reports-2025-11-05/analysis-reports/"
+    ],
+    "delete_duplicates": [
+      "COMPONENT-LIBRARY-README.md (duplicate of COMPONENT-LIBRARY-GUIDE.md)",
+      "COMPONENT-USAGE-GUIDE.md (duplicate of COMPONENT-USAGE-EXAMPLES.md)",
+      "PROJE-ANATOMISI-DEGERLENDIRME.md (duplicate of PROJE-ANATOMISI-VE-ONERILER-2025-11-04.md)"
+    ]
+  },
+  
+  "context7_compliance": {
+    "status": "✅ COMPLIANT",
+    "note": "Temizlik işlemi Context7 standartlarına uygun"
+  },
+  
+  "related_files": [
+    "docs/archive/",
+    "README.md",
+    "CLI_GUIDE.md"
+  ]
+}
+

@@ -1,0 +1,84 @@
+{
+  "timestamp": "2025-11-05T00:00:00Z",
+  "topic": "alt_kategori_yayin_tipi Tablo Eksikliği - Migration Çalıştırıldı",
+  "category": "bug_fix",
+  "priority": "HIGH",
+  "status": "COMPLETED",
+  
+  "problem": {
+    "description": "PropertyTypeManagerController show() metodunda alt_kategori_yayin_tipi tablosu bulunamadı",
+    "error": "SQLSTATE[42S02]: Base table or view not found: 1146 Table 'yalihanemlak_ultra.alt_kategori_yayin_tipi' doesn't exist",
+    "location": "app/Http/Controllers/Admin/PropertyTypeManagerController.php:217",
+    "symptom": "Sayfa yüklenemiyor, QueryException hatası"
+  },
+  
+  "cozum": {
+    "yapilan_islemler": {
+      "1_migration_bulundu": {
+        "dosya": "database/migrations/2025_10_29_170932_create_alt_kategori_yayin_tipi_table.php",
+        "durum": "Pending (çalıştırılmamış)"
+      },
+      "2_migration_calistirildi": {
+        "komut": "php artisan migrate --path=database/migrations/2025_10_29_170932_create_alt_kategori_yayin_tipi_table.php",
+        "sonuc": "✅ Tablo oluşturuldu"
+      },
+      "3_controller_guvenlik": {
+        "degisiklik": "Schema::hasTable() kontrolü eklendi, try-catch ile hata yönetimi",
+        "dosya": "app/Http/Controllers/Admin/PropertyTypeManagerController.php",
+        "satir": "209-230"
+      }
+    },
+    "tablo_yapisi": {
+      "tablo_adi": "alt_kategori_yayin_tipi",
+      "kolonlar": {
+        "id": "bigint unsigned, primary key",
+        "alt_kategori_id": "bigint unsigned, foreign key -> ilan_kategorileri.id",
+        "yayin_tipi_id": "bigint unsigned, foreign key -> ilan_kategori_yayin_tipleri.id",
+        "enabled": "boolean, default true",
+        "order": "integer, default 0",
+        "created_at": "timestamp",
+        "updated_at": "timestamp"
+      },
+      "indexler": [
+        "unique(['alt_kategori_id', 'yayin_tipi_id'])",
+        "index(['alt_kategori_id', 'enabled'])",
+        "index('yayin_tipi_id')"
+      ],
+      "foreign_keys": {
+        "alt_kategori_id": "ilan_kategorileri.id -> onDelete('cascade')",
+        "yayin_tipi_id": "ilan_kategori_yayin_tipleri.id -> onDelete('cascade')"
+      }
+    }
+  },
+  
+  "controller_degisiklikleri": {
+    "once": {
+      "kod": "DB::table('alt_kategori_yayin_tipi')->where(...)->pluck('yayin_tipi_id');",
+      "sorun": "Tablo yoksa exception fırlatıyor"
+    },
+    "sonra": {
+      "kod": "if (Schema::hasTable('alt_kategori_yayin_tipi')) { try { ... } catch { ... } }",
+      "fayda": "Tablo yoksa veya hata varsa güvenli şekilde boş array döndürüyor"
+    }
+  },
+  
+  "context7_compliance": {
+    "status": "✅ COMPLIANT",
+    "note": "Schema::hasTable() kontrolü eklendi, Context7 standartlarına uygun"
+  },
+  
+  "dosyalar": {
+    "migration": "database/migrations/2025_10_29_170932_create_alt_kategori_yayin_tipi_table.php",
+    "degistirilen": [
+      "app/Http/Controllers/Admin/PropertyTypeManagerController.php"
+    ]
+  },
+  
+  "notlar": {
+    "tablo_amaci": "Alt kategoriler ile yayın tipleri arasındaki ilişkiyi yönetir (pivot table)",
+    "ornek": "Arsa > İmarlı Arsa > [Satılık, Kiralık] ilişkisi bu tabloda saklanır",
+    "enabled_field": "Yayın tipinin o alt kategoride aktif olup olmadığını belirler",
+    "sonraki_adim": "Tablo boş olduğu için ilişkiler manuel olarak veya seeder ile oluşturulmalı"
+  }
+}
+

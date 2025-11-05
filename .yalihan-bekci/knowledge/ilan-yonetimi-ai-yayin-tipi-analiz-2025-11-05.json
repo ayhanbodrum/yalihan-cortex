@@ -1,0 +1,409 @@
+{
+  "timestamp": "2025-11-05T00:00:00Z",
+  "topic": "İlan Yönetimi & Yazlık Kiralama - AI Desteği ve Yayın Tipi Analizi",
+  "category": "system_analysis",
+  "priority": "HIGH",
+  "status": "COMPLETED",
+
+  "ilan_yonetimi_ai_durumu": {
+    "mevcut_ai_servisleri": {
+      "AIService": {
+        "location": "app/Services/AIService.php",
+        "features": [
+          "analyze() - Genel analiz",
+          "suggest() - Öneri sistemi",
+          "generate() - İçerik üretimi",
+          "getKonutHibritSiralama() - Özellik sıralama",
+          "calculateHibritSkor() - Skor hesaplama"
+        ],
+        "status": "✅ ACTIVE",
+        "integration": "İlan yönetimi için kullanılabilir"
+      },
+      "AI API Endpoints": {
+        "location": "routes/ai.php, routes/admin-ai.php",
+        "endpoints": [
+          "POST /api/ai/generate-description - İlan açıklaması",
+          "POST /api/ai/predict-price - Fiyat tahmini",
+          "POST /api/ai/analyze-request - Talep analizi",
+          "POST /api/ai/chat - AI chatbot"
+        ],
+        "status": "✅ ACTIVE",
+        "rate_limiting": "Dakikada 10-30 istek (endpoint'e göre)"
+      },
+      "AI Prompts": {
+        "location": "ai/prompts/",
+        "mevcut_prompts": [
+          "arsa-aciklama-olustur.prompt.md",
+          "daire-aciklama-olustur.prompt.md",
+          "daire-baslik-olustur.prompt.md",
+          "villa-aciklama-olustur.prompt.md",
+          "villa-baslik-olustur.prompt.md",
+          "ilan-ekleme-aciklama-olustur.prompt.md",
+          "ilan-ekleme-baslik-olustur.prompt.md",
+          "ilan-ekleme-fiyat-onerisi.prompt.md",
+          "ilan-ekleme-lokasyon-analizi.prompt.md"
+        ],
+        "yazlik_ozel_prompt": "❌ YOK",
+        "status": "⚠️ Yazlık için özel prompt eksik"
+      }
+    },
+    "ai_desteği_ihtiyacı": {
+      "mevcut_durum": "✅ Var ama eksik",
+      "yapılabilirler": [
+        {
+          "feature": "Yazlık özel açıklama üretimi",
+          "priority": "MEDIUM",
+          "effort": "2 saat",
+          "description": "Yazlık kiralama için sezon, fiyatlandırma, konaklama bilgilerini içeren özel AI prompt"
+        },
+        {
+          "feature": "Yazlık fiyat önerisi",
+          "priority": "HIGH",
+          "effort": "3 saat",
+          "description": "Sezonluk fiyatlandırma, günlük/haftalık/aylık kira önerileri için AI"
+        },
+        {
+          "feature": "Yazlık başlık üretimi",
+          "priority": "MEDIUM",
+          "effort": "1 saat",
+          "description": "Yazlık için özel başlık formatı (sezon, konum, özellikler vurgusu)"
+        },
+        {
+          "feature": "İlan-Yazlık eşleştirme",
+          "priority": "LOW",
+          "effort": "4 saat",
+          "description": "Talep ile yazlık ilanlarını AI ile eşleştirme"
+        }
+      ],
+      "ileride_kullanilacak": [
+        {
+          "feature": "Otomatik açıklama güncelleme",
+          "priority": "LOW",
+          "timeline": "6+ ay",
+          "description": "Sezon değişikliklerinde otomatik açıklama güncelleme"
+        },
+        {
+          "feature": "Dinamik fiyat önerisi",
+          "priority": "MEDIUM",
+          "timeline": "3-6 ay",
+          "description": "Pazar analizi + AI ile dinamik fiyat önerisi"
+        },
+        {
+          "feature": "SEO optimizasyonu",
+          "priority": "HIGH",
+          "timeline": "1-3 ay",
+          "description": "AI ile SEO-friendly açıklama ve meta tag üretimi"
+        }
+      ]
+    },
+    "ai_entegrasyon_önerileri": {
+      "yazlik_kiralama": {
+        "controller": "app/Http/Controllers/Admin/YazlikKiralamaController.php",
+        "öneriler": [
+          {
+            "method": "generateYazlikDescription()",
+            "ai_prompt": "yazlik-aciklama-olustur.prompt.md",
+            "inputs": [
+              "ilan_baslik",
+              "konum (il, ilçe, mahalle)",
+              "sezon_bilgileri (yaz, ara_sezon, kış)",
+              "fiyatlandırma (günlük, haftalık, aylık)",
+              "özellikler (havuz, deniz_mesafesi, yatak_sayisi)",
+              "minimum_konaklama",
+              "environmental_scores (WikiMapia verileri)"
+            ],
+            "output": "Sezonluk fiyatlandırma vurgulu, çevre özellikleri içeren açıklama",
+            "priority": "HIGH"
+          },
+          {
+            "method": "suggestYazlikPrice()",
+            "ai_prompt": "yazlik-fiyat-onerisi.prompt.md",
+            "inputs": [
+              "konum",
+              "sezon",
+              "metrekare",
+              "yatak_sayisi",
+              "havuz_var",
+              "deniz_mesafesi",
+              "pazar_fiyatlari (benzer ilanlar)"
+            ],
+            "output": "Sezon bazlı fiyat önerileri (günlük/haftalık/aylık)",
+            "priority": "HIGH"
+          },
+          {
+            "method": "generateYazlikTitle()",
+            "ai_prompt": "yazlik-baslik-olustur.prompt.md",
+            "inputs": [
+              "konum",
+              "sezon",
+              "ana_ozellikler (havuz, deniz, vb.)",
+              "fiyat_araligi"
+            ],
+            "output": "SEO-friendly, çekici başlık",
+            "priority": "MEDIUM"
+          }
+        ]
+      },
+      "genel_ilan_yonetimi": {
+        "mevcut": "✅ Var",
+        "iyilestirilebilir": [
+          "Fiyat önerisi - daha akıllı algoritma",
+          "Açıklama - kategori bazlı özelleştirme",
+          "Lokasyon analizi - WikiMapia entegrasyonu"
+        ]
+      }
+    }
+  },
+
+  "yayin_tipi_sistemi": {
+    "mevcut_durum": "✅ GÜÇLÜ SİSTEM",
+    "yapı": {
+      "model": "IlanKategoriYayinTipi",
+      "table": "ilan_kategori_yayin_tipleri",
+      "fields": [
+        "kategori_id (FK → ilan_kategorileri)",
+        "yayin_tipi (VARCHAR - Satılık, Kiralık, Günlük, vb.)",
+        "status (TINYINT(1) - boolean)",
+        "order (INTEGER - sıralama)"
+      ],
+      "relationships": [
+        "kategori() → IlanKategori",
+        "ilanlar() → Ilan (yayin_tipi_id FK)",
+        "gerekliOzellikler() → Özellik kategorileri (pivot)"
+      ]
+    },
+    "controller": {
+      "name": "YayinTipiYoneticisiController",
+      "location": "app/Http/Controllers/Admin/YayinTipiYoneticisiController.php",
+      "features": [
+        "index() - Tek sayfada tüm kategoriler ve yayın tipleri",
+        "store() - Yayın tipi ekleme (AJAX)",
+        "update() - Yayın tipi güncelleme (AJAX)",
+        "destroy() - Yayın tipi silme (validation ile)",
+        "toggleStatus() - Durum değiştirme (AJAX)",
+        "updateOrder() - Sıralama güncelleme (AJAX)"
+      ],
+      "status": "✅ COMPLETE"
+    },
+    "validation": {
+      "required": "yayin_tipi_id zorunlu (ValidationManager.js)",
+      "rules": [
+        "Kategori bazlı yayın tipleri",
+        "Aynı kategori için duplicate kontrolü",
+        "İlan ilişkisi varsa silme engeli",
+        "Schema::hasColumn() kontrolleri (Context7)"
+      ],
+      "status": "✅ ROBUST"
+    },
+    "critical_features": {
+      "kategori_bazli_yayin_tipleri": {
+        "status": "✅ IMPLEMENTED",
+        "description": "Her kategori için farklı yayın tipleri (Konut: Satılık/Kiralık, Yazlık: Günlük/Haftalık/Aylık)"
+      },
+      "ozellik_baglantilari": {
+        "status": "✅ IMPLEMENTED",
+        "description": "Yayın tipine göre zorunlu özellikler (pivot table: ilan_kategori_ozellik_baglanti)",
+        "usage": "Günlük kiralama → Minimum konaklama, havuz, vb. zorunlu olabilir"
+      },
+      "siralama_sistemi": {
+        "status": "✅ IMPLEMENTED",
+        "description": "order field ile yayın tipleri sıralanabilir",
+        "usage": "Admin panelden drag-drop ile sıralama"
+      },
+      "status_yonetimi": {
+        "status": "✅ IMPLEMENTED",
+        "description": "Yayın tipi aktif/pasif yapılabilir",
+        "context7": "Schema::hasColumn() kontrolü ile güvenli"
+      }
+    },
+    "onemli_notlar": {
+      "yayin_tipi_id_vs_yayinlama_tipi": {
+        "yayin_tipi_id": "✅ YENİ SİSTEM - Foreign key (IlanKategoriYayinTipi)",
+        "yayinlama_tipi": "⚠️ LEGACY - String field (deprecated, backward compatibility için)",
+        "recommendation": "Yeni kodda sadece yayin_tipi_id kullan"
+      },
+      "kategori_iliskisi": {
+        "description": "Yayın tipleri kategori bazlıdır",
+        "example": "Konut kategorisi → Satılık, Kiralık",
+        "example2": "Yazlık alt kategorisi → Günlük, Haftalık, Aylık",
+        "note": "Alt kategori için parent'ın yayın tipleri kullanılabilir (routes/api.php'de logic var)"
+      },
+      "ozellik_validation": {
+        "description": "Yayın tipine göre zorunlu özellikler tanımlanabilir",
+        "usage": "Günlük kiralama yazlık → Havuz, Minimum konaklama zorunlu",
+        "implementation": "gerekliOzellikler() relationship + pivot table"
+      }
+    },
+    "iyilestirme_onerileri": {
+      "priority_high": [
+        {
+          "feature": "Yayın tipi bazlı form validasyonu",
+          "description": "Yayın tipi seçildiğinde form alanları dinamik güncellensin",
+          "example": "Günlük kiralama seçilince → günlük_fiyat, minimum_konaklama zorunlu",
+          "effort": "3 saat",
+          "priority": "HIGH"
+        },
+        {
+          "feature": "Yayın tipi bazlı özellik filtreleme",
+          "description": "Yayın tipine göre sadece ilgili özellikler gösterilsin",
+          "example": "Günlük kiralama → Havuz, Deniz mesafesi, Yatak sayısı",
+          "effort": "2 saat",
+          "priority": "MEDIUM"
+        }
+      ],
+      "priority_medium": [
+        {
+          "feature": "Yayın tipi bazlı fiyatlandırma şablonu",
+          "description": "Yayın tipine göre fiyatlandırma alanları otomatik dolsun",
+          "example": "Günlük → günlük_fiyat, Haftalık → haftalik_fiyat",
+          "effort": "2 saat",
+          "priority": "MEDIUM"
+        },
+        {
+          "feature": "Yayın tipi istatistikleri",
+          "description": "Hangi yayın tipinde kaç ilan var, hangisi popüler",
+          "effort": "1 saat",
+          "priority": "LOW"
+        }
+      ]
+    }
+  },
+
+  "yazlik_kiralama_ai_durumu": {
+    "mevcut_ai_desteği": "⚠️ EKSİK",
+    "durum": {
+      "genel_promptlar": "✅ Var (ilan-ekleme-*.prompt.md)",
+      "yazlik_ozel_promptlar": "❌ YOK",
+      "ai_integration": "❌ YOK (YazlikKiralamaController'da)",
+      "sezon_bazli_ai": "❌ YOK"
+    },
+    "gerekli_ai_prompts": [
+      {
+        "file": "yazlik-aciklama-olustur.prompt.md",
+        "description": "Yazlık kiralama için özel açıklama üretimi",
+        "inputs": [
+          "konum",
+          "sezon_bilgileri",
+          "fiyatlandırma (günlük/haftalık/aylık)",
+          "özellikler",
+          "minimum_konaklama",
+          "environmental_scores (WikiMapia)"
+        ],
+        "priority": "HIGH"
+      },
+      {
+        "file": "yazlik-fiyat-onerisi.prompt.md",
+        "description": "Sezonluk fiyat önerisi",
+        "inputs": [
+          "konum",
+          "sezon",
+          "özellikler",
+          "pazar_fiyatlari"
+        ],
+        "priority": "HIGH"
+      },
+      {
+        "file": "yazlik-baslik-olustur.prompt.md",
+        "description": "Yazlık için özel başlık formatı",
+        "inputs": [
+          "konum",
+          "sezon",
+          "ana_ozellikler",
+          "fiyat"
+        ],
+        "priority": "MEDIUM"
+      }
+    ],
+    "ai_entegrasyon_önerileri": {
+      "controller_methods": [
+        {
+          "method": "generateDescription()",
+          "location": "YazlikKiralamaController",
+          "description": "AI ile yazlık açıklaması üret",
+          "ai_service": "AIService::generate()",
+          "prompt": "yazlik-aciklama-olustur.prompt.md",
+          "effort": "2 saat"
+        },
+        {
+          "method": "suggestPrice()",
+          "location": "YazlikKiralamaController",
+          "description": "Sezon bazlı fiyat önerisi",
+          "ai_service": "AIService::suggest()",
+          "prompt": "yazlik-fiyat-onerisi.prompt.md",
+          "effort": "3 saat"
+        },
+        {
+          "method": "generateTitle()",
+          "location": "YazlikKiralamaController",
+          "description": "SEO-friendly başlık üret",
+          "ai_service": "AIService::generate()",
+          "prompt": "yazlik-baslik-olustur.prompt.md",
+          "effort": "1 saat"
+        }
+      ]
+    }
+  },
+
+  "oncelik_siralamasi": {
+    "yayin_tipi": {
+      "status": "✅ COMPLETE",
+      "priority": "MAINTAIN",
+      "actions": [
+        "Mevcut sistemi koru",
+        "Yayın tipi bazlı form validasyonu ekle (HIGH)",
+        "Yayın tipi bazlı özellik filtreleme (MEDIUM)"
+      ]
+    },
+    "ai_desteği": {
+      "status": "⚠️ PARTIAL",
+      "priority": "ENHANCE",
+      "immediate_actions": [
+        "Yazlık özel AI prompt'ları oluştur (HIGH - 6 saat)",
+        "YazlikKiralamaController'a AI entegrasyonu (HIGH - 6 saat)",
+        "Genel AI prompt'ları iyileştir (MEDIUM - 2 saat)"
+      ],
+      "future_actions": [
+        "SEO optimizasyonu (1-3 ay)",
+        "Dinamik fiyat önerisi (3-6 ay)",
+        "Otomatik açıklama güncelleme (6+ ay)"
+      ]
+    }
+  },
+
+  "context7_compliance": {
+    "status": "✅ FULLY_COMPLIANT",
+    "checks": [
+      "✅ Schema::hasColumn() kontrolleri",
+      "✅ feature_category_id (not category_id)",
+      "✅ status field (not durum/aktif)",
+      "✅ yayin_tipi_id foreign key",
+      "✅ Context7 field naming"
+    ]
+  },
+
+  "sonuc_ve_oneriler": {
+    "yayin_tipi": {
+      "durum": "✅ GÜÇLÜ SİSTEM - Sadece iyileştirmeler gerekli",
+      "oncelik": "MAINTAIN & ENHANCE",
+      "tavsiye": "Mevcut sistemi koru, yayın tipi bazlı validasyon ekle"
+    },
+    "ai_desteği": {
+      "durum": "⚠️ EKSİK - Özellikle yazlık için",
+      "oncelik": "ADD MISSING FEATURES",
+      "tavsiye": "Yazlık özel AI prompt'ları ve entegrasyonu ekle (toplam ~12 saat)"
+    },
+    "genel_tavsiye": "Yayın Tipi sistemi mükemmel, AI desteğini yazlık için genişlet"
+  },
+
+  "related_files": [
+    "app/Http/Controllers/Admin/YayinTipiYoneticisiController.php",
+    "app/Http/Controllers/Admin/YazlikKiralamaController.php",
+    "app/Models/IlanKategoriYayinTipi.php",
+    "app/Models/Ilan.php",
+    "app/Services/AIService.php",
+    "routes/ai.php",
+    "routes/admin-ai.php",
+    "ai/prompts/"
+  ]
+}
+

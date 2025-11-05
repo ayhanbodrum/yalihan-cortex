@@ -1,0 +1,215 @@
+{
+  "timestamp": "2025-11-05T00:00:00Z",
+  "topic": "category_id vs feature_category_id Error Analysis",
+  "category": "database",
+  "priority": "CRITICAL",
+  "status": "FIXED",
+  
+  "error": {
+    "message": "Column not found: 1054 Unknown column 'category_id' in 'where clause'",
+    "location": "app/Http/Controllers/Admin/OzellikController.php:39",
+    "query": "SELECT count(*) AS aggregate FROM `features` WHERE `category_id` IS NULL",
+    "affected_files": [
+      "app/Http/Controllers/Admin/OzellikController.php"
+    ]
+  },
+
+  "root_causes": {
+    "primary": {
+      "title": "Migration Çakışması",
+      "description": "İki farklı migration dosyası farklı kolon isimleri kullanıyor",
+      "migrations": [
+        {
+          "file": "database/migrations/2025_10_15_172758_create_features_table.php",
+          "column": "feature_category_id",
+          "status": "CORRECT",
+          "line": 19
+        },
+        {
+          "file": "database/migrations/2025_11_02_000001_create_polymorphic_features_system.php",
+          "column": "category_id",
+          "status": "WRONG",
+          "line": 35,
+          "note": "Bu migration çalıştırılırsa features tablosunu yeniden oluşturur ve category_id kolonu ekler"
+        }
+      ],
+      "impact": "Veritabanında hangi migration'ın çalıştığına bağlı olarak farklı kolon isimleri olabilir"
+    },
+    "secondary": {
+      "title": "Controller'da Eski Field Adı Kullanımı",
+      "description": "Controller kodunda eski field adı (category_id) kullanılıyor",
+      "locations": [
+        {
+          "file": "app/Http/Controllers/Admin/OzellikController.php",
+          "line": 18,
+          "code": "$query->where('category_id', $request->category_id)",
+          "should_be": "$query->where('feature_category_id', $request->category_id)"
+        },
+        {
+          "file": "app/Http/Controllers/Admin/OzellikController.php",
+          "line": 37,
+          "code": "Feature::whereNull('category_id')",
+          "should_be": "Feature::whereNull('feature_category_id')"
+        },
+        {
+          "file": "app/Http/Controllers/Admin/OzellikController.php",
+          "line": 46,
+          "code": "Feature::whereNull('category_id')->count()",
+          "should_be": "Feature::whereNull('feature_category_id')->count()"
+        },
+        {
+          "file": "app/Http/Controllers/Admin/OzellikController.php",
+          "line": 79,
+          "code": "'category_id' => 'nullable|exists:feature_categories,id'",
+          "should_be": "'feature_category_id' => 'nullable|exists:feature_categories,id'"
+        },
+        {
+          "file": "app/Http/Controllers/Admin/OzellikController.php",
+          "line": 106,
+          "code": "'category_id' => 'nullable|exists:feature_categories,id'",
+          "should_be": "'feature_category_id' => 'nullable|exists:feature_categories,id'"
+        }
+      ]
+    },
+    "tertiary": {
+      "title": "Model Relationship Doğru Ama Kod Yanlış",
+      "description": "Feature ve FeatureCategory modelleri doğru foreign key kullanıyor ama controller'da eski field adı kullanılıyor",
+      "models": {
+        "Feature": {
+          "relationship": "belongsTo(FeatureCategory::class, 'feature_category_id')",
+          "status": "CORRECT",
+          "line": 82
+        },
+        "FeatureCategory": {
+          "relationship": "hasMany(Feature::class, 'feature_category_id')",
+          "status": "CORRECT",
+          "line": 50
+        }
+      }
+    }
+  },
+
+  "why_this_happened": {
+    "migration_history": [
+      {
+        "date": "2025-10-15",
+        "migration": "create_features_table.php",
+        "column": "feature_category_id",
+        "reason": "İlk migration - Context7 standardına uygun"
+      },
+      {
+        "date": "2025-11-02",
+        "migration": "create_polymorphic_features_system.php",
+        "column": "category_id",
+        "reason": "Yeni migration - Eski field adı kullanılmış (hatalı)"
+      }
+    ],
+    "code_evolution": [
+      {
+        "phase": "Initial",
+        "field": "category_id",
+        "reason": "İlk geliştirme aşamasında basit field adı kullanılmış"
+      },
+      {
+        "phase": "Context7 Standardization",
+        "field": "feature_category_id",
+        "reason": "Context7 kurallarına göre daha açıklayıcı field adı kullanılmış"
+      },
+      {
+        "phase": "Code Not Updated",
+        "field": "category_id (hala kullanılıyor)",
+        "reason": "Controller kodları güncellenmemiş"
+      }
+    ]
+  },
+
+  "fixes_applied": {
+    "controller_fixes": [
+      {
+        "file": "app/Http/Controllers/Admin/OzellikController.php",
+        "changes": [
+          "Line 18: category_id → feature_category_id",
+          "Line 37: category_id → feature_category_id",
+          "Line 46: category_id → feature_category_id",
+          "Line 79: category_id → feature_category_id (validation)",
+          "Line 106: category_id → feature_category_id (validation)",
+          "Added: Schema facade import",
+          "Added: Backward compatibility for category_id request parameter"
+        ]
+      }
+    ],
+    "schema_checks": [
+      {
+        "feature": "Schema::hasColumn checks added",
+        "reason": "Context7 compliance - status/enabled kolonları için"
+      }
+    ]
+  },
+
+  "prevention": {
+    "rules": [
+      {
+        "rule": "ALWAYS check existing migrations before creating new ones",
+        "reason": "Kolon isimleri tutarlı olmalı"
+      },
+      {
+        "rule": "ALWAYS use feature_category_id (not category_id) for features table",
+        "reason": "Context7 standardı - açıklayıcı field adları"
+      },
+      {
+        "rule": "ALWAYS update controller code when field names change",
+        "reason": "Kod ve veritabanı senkronize olmalı"
+      },
+      {
+        "rule": "ALWAYS check Model relationships before using field names in queries",
+        "reason": "Model'lerdeki foreign key tanımları doğru referans"
+      }
+    ],
+    "migration_best_practices": [
+      "Kolon isimleri Context7 standartlarına uygun olmalı",
+      "Yeni migration'lar mevcut kolonları kontrol etmeli",
+      "Migration'lar test edilmeli",
+      "Kod değişiklikleri migration ile birlikte yapılmalı"
+    ]
+  },
+
+  "context7_compliance": {
+    "field_naming": {
+      "standard": "feature_category_id",
+      "forbidden": "category_id",
+      "reason": "Daha açıklayıcı ve Context7 uyumlu"
+    },
+    "model_relationships": {
+      "status": "CORRECT",
+      "foreign_key": "feature_category_id",
+      "verified": true
+    }
+  },
+
+  "lessons_learned": {
+    "key_insights": [
+      "Migration çakışmaları ciddi sorunlara yol açabilir",
+      "Controller kodları model değişikliklerinden sonra güncellenmeli",
+      "Field adı değişiklikleri tüm kod tabanında yapılmalı",
+      "Context7 standartlarına uyumluluk kontrolü kritik"
+    ],
+    "common_mistakes": [
+      "Eski field adlarını kullanmaya devam etmek",
+      "Migration'ları kontrol etmeden yeni migration oluşturmak",
+      "Model relationship'lerini kontrol etmeden query yazmak",
+      "Backward compatibility eklememek"
+    ]
+  },
+
+  "related_files": [
+    "app/Http/Controllers/Admin/OzellikController.php",
+    "app/Models/Feature.php",
+    "app/Models/FeatureCategory.php",
+    "database/migrations/2025_10_15_172758_create_features_table.php",
+    "database/migrations/2025_11_02_000001_create_polymorphic_features_system.php"
+  ],
+
+  "commit_message": "🔧 FIX: category_id → feature_category_id - Context7 compliance",
+  "tags": ["database", "migration", "context7", "bug-fix", "field-naming"]
+}
+

@@ -1,0 +1,60 @@
+{
+  "timestamp": "2025-11-05T00:00:00Z",
+  "topic": "Property Type Manager - Seviye Düzeltmesi",
+  "category": "bug_fix",
+  "priority": "HIGH",
+  "status": "COMPLETED",
+  
+  "problem": {
+    "description": "Property Type Manager sayfasında veri görünmüyordu",
+    "root_cause": "Controller seviye=0 arıyordu ama seeder seviye=1 oluşturuyordu",
+    "symptom": "http://127.0.0.1:8000/admin/property-type-manager sayfası boş görünüyordu",
+    "veritabani_durumu": {
+      "seviye_0": 0,
+      "seviye_1": 5,
+      "seviye_2": 33
+    }
+  },
+  
+  "cozum": {
+    "yapilan_degisiklikler": {
+      "CompleteIlanKategoriSeeder.php": {
+        "ana_kategoriler": "seviye 1 → seviye 0",
+        "alt_kategoriler": "seviye 2 → seviye 1",
+        "sebep": "Controller PropertyTypeManagerController seviye=0 arıyor"
+      }
+    },
+    "sonuc": {
+      "seviye_0": 5,
+      "seviye_1": 33,
+      "seviye_2": 0
+    },
+    "dogrulama": "php artisan db:seed --class=CompleteIlanKategoriSeeder çalıştırıldı"
+  },
+  
+  "context7_compliance": {
+    "status": "✅ COMPLIANT",
+    "note": "Schema::hasColumn kontrolü korundu, status field Context7 standartlarına uygun"
+  },
+  
+  "dosyalar": {
+    "degistirilen": [
+      "database/seeders/CompleteIlanKategoriSeeder.php"
+    ],
+    "ilgili": [
+      "app/Http/Controllers/Admin/PropertyTypeManagerController.php",
+      "resources/views/admin/property-type-manager/index.blade.php"
+    ]
+  },
+  
+  "notlar": {
+    "seviye_sistemi": {
+      "seviye_0": "Ana kategoriler (Konut, Arsa, İşyeri, Turistik Tesis, Projeler)",
+      "seviye_1": "Alt kategoriler (Daire, Villa, İmarlı Arsa, vb.)",
+      "seviye_2": "Artık kullanılmıyor (eski sistem)"
+    },
+    "controller_beklentisi": "PropertyTypeManagerController::index() seviye=0 arıyor",
+    "controller_show": "PropertyTypeManagerController::show() seviye=1 alt kategorileri arıyor"
+  }
+}
+
