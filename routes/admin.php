@@ -809,9 +809,7 @@ Route::prefix('ai-category')->name('ai-category.')->group(function () {
 
     // Bildirim Sistemi Routes
     Route::prefix('notifications')->name('notifications.')->group(function () {
-        Route::get('/', function () {
-            return view('admin.notifications.test');
-        })->name('index');
+        Route::get('/', [\App\Http\Controllers\Admin\NotificationController::class, 'index'])->name('index');
         Route::get('/create', [\App\Http\Controllers\Admin\NotificationController::class, 'create'])->name('create');
         Route::post('/', [\App\Http\Controllers\Admin\NotificationController::class, 'store'])->name('store');
         Route::get('/{notification}', [\App\Http\Controllers\Admin\NotificationController::class, 'show'])->name('show');
@@ -828,11 +826,12 @@ Route::prefix('ai-category')->name('ai-category.')->group(function () {
         Route::get('/api/recent', [\App\Http\Controllers\Admin\NotificationController::class, 'recent'])->name('api.recent');
 
         // Test Endpoints
-        Route::get('/test', function () {
-            return view('admin.notifications.test');
+        Route::get('/test', [\App\Http\Controllers\Admin\NotificationController::class, 'testRealTime'])->name('test');
+        Route::get('/test-page', function () {
+            return view('admin.notifications.index');
         })->name('test-page');
 
-        Route::post('/test', [\App\Http\Controllers\Admin\NotificationController::class, 'testRealTime'])->name('test');
+        Route::post('/test', [\App\Http\Controllers\Admin\NotificationController::class, 'testRealTime'])->name('test.post');
         Route::post('/test-sms', [\App\Http\Controllers\Admin\NotificationController::class, 'testSms'])->name('test-sms');
         Route::post('/test-email', [\App\Http\Controllers\Admin\NotificationController::class, 'testEmail'])->name('test-email');
     });

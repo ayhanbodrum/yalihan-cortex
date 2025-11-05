@@ -34,8 +34,7 @@
     <!-- Neo classes provided by Tailwind plugin (tailwind.config.js) -->
 
     <!-- Context7 Toast Utility System -->
-    <link href="<?php echo e(asset('css/admin/fixed top-4 right-4 z-50 max-w-sm w-full bg-white rounded-lg shadow-lg border border-gray-200 p-4 transition-all duration-300 dark:bg-gray-800 dark:border-gray-700.css')); ?>" rel="stylesheet">
-    <link href="<?php echo e(asset('css/admin/animate-pulse bg-gray-200 dark:bg-gray-700 rounded.css')); ?>" rel="stylesheet">
+    <!-- Toast component uses Tailwind CSS classes directly, no external CSS needed -->
 
     <!-- PHASE 2: AJAX & UI Utilities (Context7 Standards) -->
     <script src="<?php echo e(asset('js/admin/toast-system.js')); ?>" defer></script>

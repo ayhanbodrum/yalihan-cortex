@@ -1,26 +1,25 @@
-@extends('admin.layouts.neo')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="container mx-auto px-4 py-6">
     <!-- Header -->
     <div class="mb-6 flex items-center justify-between">
         <div>
             <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-                {{ $kategori->icon ?? '🏠' }}{{ $kategori->name }}
+                <?php echo e($kategori->icon ?? '🏠'); ?><?php echo e($kategori->name); ?>
+
             </h1>
             <p class="text-gray-600 dark:text-gray-400">
                 Yayın Tipi Yöneticisi - Tek Sayfada Yönetim
             </p>
         </div>
         <div class="flex items-center gap-3">
-            <a href="{{ route('admin.property-type-manager.field-dependencies', $kategori->id) }}"
+            <a href="<?php echo e(route('admin.property-type-manager.field-dependencies', $kategori->id)); ?>"
                class="inline-flex items-center px-4 py-2.5 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-medium rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-all duration-200 shadow-lg transform hover:scale-105 active:scale-95">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                 </svg>
                 Özellik Yönetimi
             </a>
-            <a href="{{ route('admin.property-type-manager.index') }}"
+            <a href="<?php echo e(route('admin.property-type-manager.index')); ?>"
                class="inline-flex items-center px-4 py-2 bg-gray-600 text-white font-semibold rounded-lg shadow-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 dark:bg-gray-800 dark:hover:bg-gray-600">
                 <i class="fas fa-arrow-left mr-2"></i>
                 Geri Dön
@@ -32,7 +31,7 @@
     <div class="bg-gray-50 dark:bg-gray-800 rounded-xl shadow-lg p-6 mb-6">
         <div class="flex items-center justify-between mb-4">
             <h2 class="text-xl font-bold text-gray-900 dark:text-white">
-                📢 {{ $kategori->name }} - Yayın Tipleri
+                📢 <?php echo e($kategori->name); ?> - Yayın Tipleri
             </h2>
             <button onclick="showAddYayinTipiModal()" class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg shadow-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 transform hover:scale-105 active:scale-95 text-sm">
                 <i class="fas fa-plus mr-2"></i>
@@ -41,65 +40,61 @@
         </div>
 
         <!-- Yayın Tipleri Listesi -->
-        @if(($allYayinTipleri ?? collect())->isNotEmpty())
+        <?php if(($allYayinTipleri ?? collect())->isNotEmpty()): ?>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-            @foreach($allYayinTipleri as $yayinTipi)
-                @php
+            <?php $__currentLoopData = $allYayinTipleri; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $yayinTipi): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                <?php
                     // Filtreleme: Sadece gereksiz yayın tiplerini gizle
                     $excludedYayinTipleri = ['Devren Satılık', 'Günlük Kiralık'];
-                    // ✅ FIX: Property kontrolü - yayin_tipi property'si var mı kontrol et
-                    $yayinTipiAdi = is_object($yayinTipi) && property_exists($yayinTipi, 'yayin_tipi') 
-                        ? $yayinTipi->yayin_tipi 
-                        : (is_array($yayinTipi) ? ($yayinTipi['yayin_tipi'] ?? null) : null);
-                    
-                    if ($yayinTipiAdi && in_array($yayinTipiAdi, $excludedYayinTipleri)) {
+                    if (in_array($yayinTipi->yayin_tipi, $excludedYayinTipleri)) {
                         continue;
                     }
-                @endphp
+                ?>
                 <div class="flex items-center justify-between p-4 bg-white dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600 hover:shadow-md transition-all duration-200">
                     <div class="flex items-center gap-3">
                         <span class="text-lg font-semibold text-gray-900 dark:text-white">
-                            {{ $yayinTipiAdi ?? ($yayinTipi->yayin_tipi ?? 'N/A') }}
+                            <?php echo e($yayinTipi->yayin_tipi); ?>
+
                         </span>
-                        @if(isset($yayinTipi->status) && $yayinTipi->status)
+                        <?php if($yayinTipi->status): ?>
                             <span class="px-2 py-1 text-xs font-medium bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 rounded-full">
                                 Aktif
                             </span>
-                        @else
+                        <?php else: ?>
                             <span class="px-2 py-1 text-xs font-medium bg-gray-100 dark:bg-gray-600 text-gray-800 dark:text-gray-200 rounded-full">
                                 Pasif
                             </span>
-                        @endif
+                        <?php endif; ?>
                     </div>
                     <button
-                        onclick="deleteYayinTipi({{ $yayinTipi->id }}, '{{ $yayinTipi->yayin_tipi }}')"
+                        onclick="deleteYayinTipi(<?php echo e($yayinTipi->id); ?>, '<?php echo e($yayinTipi->yayin_tipi); ?>')"
                         class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-white bg-gradient-to-r from-red-600 to-red-700 rounded-lg hover:from-red-700 hover:to-red-800 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-all duration-200 shadow-sm hover:shadow-md active:scale-95">
                         <i class="fas fa-trash mr-1.5"></i>
                         Sil
                     </button>
                 </div>
-            @endforeach
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         </div>
-        @else
+        <?php else: ?>
         <div class="text-center py-8">
             <i class="fas fa-inbox text-4xl text-gray-300 dark:text-gray-600 mb-3"></i>
             <p class="text-gray-500 dark:text-gray-400 mb-4">
                 Henüz yayın tipi eklenmemiş.
             </p>
         </div>
-        @endif
+        <?php endif; ?>
     </div>
 
     <!-- 1. Ana Kategori > Alt Kategori > Yayın Tipi Hiyerarşisi -->
     <div class="bg-gray-50 dark:bg-gray-800 rounded-xl shadow-lg p-6 mb-6">
         <div class="flex items-center justify-between mb-4">
             <h2 class="text-xl font-bold text-gray-900 dark:text-white">
-                1️⃣ {{ $kategori->name }} > Alt Kategoriler
+                1️⃣ <?php echo e($kategori->name); ?> > Alt Kategoriler
             </h2>
         </div>
 
         <!-- Uyarı: Yanlış eklenen yayın tipleri -->
-        @if(isset($yanlisEklenenYayinTipleri) && $yanlisEklenenYayinTipleri->isNotEmpty())
+        <?php if(isset($yanlisEklenenYayinTipleri) && $yanlisEklenenYayinTipleri->isNotEmpty()): ?>
         <div class="mb-6 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
             <div class="flex items-start gap-3">
                 <i class="fas fa-exclamation-triangle text-yellow-600 dark:text-yellow-400 mt-0.5"></i>
@@ -111,18 +106,18 @@
                         Aşağıdaki kayıtlar <strong>alt kategori</strong> olarak eklenmiş ancak <strong>yayın tipi</strong> olmalı:
                     </p>
                     <ul class="list-disc list-inside text-sm text-yellow-800 dark:text-yellow-200 mb-3 space-y-1">
-                        @foreach($yanlisEklenenYayinTipleri as $yanlis)
+                        <?php $__currentLoopData = $yanlisEklenenYayinTipleri; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $yanlis): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <li>
-                            <strong>{{ $yanlis->name }}</strong>
-                            (ID: {{ $yanlis->id }}, Seviye: {{ $yanlis->seviye }})
+                            <strong><?php echo e($yanlis->name); ?></strong>
+                            (ID: <?php echo e($yanlis->id); ?>, Seviye: <?php echo e($yanlis->seviye); ?>)
                         </li>
-                        @endforeach
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </ul>
                     <p class="text-sm text-yellow-800 dark:text-yellow-200 mb-3">
                         Bu kayıtları silip yukarıdaki <strong>"Yayın Tipi Ekle"</strong> butonunu kullanarak doğru şekilde ekleyin.
                     </p>
                     <div class="flex gap-2">
-                        <a href="{{ route('admin.ilan-kategorileri.index') }}?search={{ urlencode($yanlisEklenenYayinTipleri->first()->name) }}"
+                        <a href="<?php echo e(route('admin.ilan-kategorileri.index')); ?>?search=<?php echo e(urlencode($yanlisEklenenYayinTipleri->first()->name)); ?>"
                            class="text-xs text-yellow-700 dark:text-yellow-300 hover:underline">
                             <i class="fas fa-edit mr-1"></i> Bu Kayıtları Düzenle
                         </a>
@@ -130,10 +125,10 @@
                 </div>
             </div>
         </div>
-        @endif
+        <?php endif; ?>
 
         <!-- Her Alt Kategori İçin Yayın Tipleri -->
-        @if(($altKategoriler ?? collect())->isEmpty())
+        <?php if(($altKategoriler ?? collect())->isEmpty()): ?>
         <div class="mb-6 last:mb-0 border-b dark:border-gray-700 pb-6 last:border-0 last:pb-0">
             <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
                 <div class="flex items-start gap-3">
@@ -147,34 +142,34 @@
                         </p>
 
                         <!-- Debug Bilgisi (Sadece geliştirme modunda) -->
-                        @if(config('app.debug'))
+                        <?php if(config('app.debug')): ?>
                         <div class="mt-3 p-3 bg-gray-100 dark:bg-gray-900 rounded text-xs font-mono">
                             <div class="text-gray-900 dark:text-white mb-1">
                                 <strong>Debug Info:</strong>
                             </div>
                             <div class="text-gray-600 dark:text-gray-400 space-y-1">
-                                <div>Kategori ID: <span class="font-bold">{{ $kategori->id }}</span></div>
-                                <div>Kategori Adı: <span class="font-bold">{{ $kategori->name }}</span></div>
-                                <div>Parent ID: <span class="font-bold">{{ $kategori->parent_id ?? 'NULL' }}</span></div>
-                                <div>Seviye: <span class="font-bold">{{ $kategori->seviye }}</span></div>
+                                <div>Kategori ID: <span class="font-bold"><?php echo e($kategori->id); ?></span></div>
+                                <div>Kategori Adı: <span class="font-bold"><?php echo e($kategori->name); ?></span></div>
+                                <div>Parent ID: <span class="font-bold"><?php echo e($kategori->parent_id ?? 'NULL'); ?></span></div>
+                                <div>Seviye: <span class="font-bold"><?php echo e($kategori->seviye); ?></span></div>
                             </div>
                             <div class="mt-2 pt-2 border-t border-gray-300 dark:border-gray-700">
-                                <a href="{{ route('admin.ilan-kategorileri.create') }}?parent_id={{ $kategori->id }}&seviye=1"
+                                <a href="<?php echo e(route('admin.ilan-kategorileri.create')); ?>?parent_id=<?php echo e($kategori->id); ?>&seviye=1"
                                    class="text-blue-600 dark:text-blue-400 hover:underline">
                                     ➕ Alt Kategori Oluştur
                                 </a>
                             </div>
                         </div>
-                        @endif
+                        <?php endif; ?>
 
                         <!-- Hızlı Erişim -->
                         <div class="mt-3 flex gap-2">
-                            <a href="{{ route('admin.ilan-kategorileri.index') }}"
+                            <a href="<?php echo e(route('admin.ilan-kategorileri.index')); ?>"
                                class="text-xs text-blue-600 dark:text-blue-400 hover:underline">
                                 <i class="fas fa-list mr-1"></i> Tüm Kategorileri Görüntüle
                             </a>
                             <span class="text-blue-300 dark:text-blue-700">|</span>
-                            <a href="{{ route('admin.ilan-kategorileri.create') }}?parent_id={{ $kategori->id }}&seviye=1"
+                            <a href="<?php echo e(route('admin.ilan-kategorileri.create')); ?>?parent_id=<?php echo e($kategori->id); ?>&seviye=1"
                                class="text-xs text-blue-600 dark:text-blue-400 hover:underline">
                                 <i class="fas fa-plus mr-1"></i> Yeni Alt Kategori Ekle
                             </a>
@@ -183,22 +178,23 @@
                 </div>
             </div>
         </div>
-        @endif
+        <?php endif; ?>
 
-        @foreach($altKategoriler as $altKategori)
+        <?php $__currentLoopData = $altKategoriler; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $altKategori): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
         <div class="mb-6 last:mb-0 border-b dark:border-gray-700 pb-6 last:border-0 last:pb-0">
             <!-- Alt Kategori Başlığı -->
             <div class="flex items-center justify-between mb-3">
                 <div class="flex items-center gap-3">
                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-                        {{ $altKategori->name }}
+                        <?php echo e($altKategori->name); ?>
+
                     </h3>
                     <span class="text-xs px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full">
-                        {{ $altKategoriYayinTipleri[$altKategori->id]->count() ?? 0 }} yayın tipi
+                        <?php echo e($altKategoriYayinTipleri[$altKategori->id]->count() ?? 0); ?> yayın tipi
                     </span>
                 </div>
                 <button
-                    onclick="deleteAltKategori({{ $altKategori->id }}, '{{ $altKategori->name }}')"
+                    onclick="deleteAltKategori(<?php echo e($altKategori->id); ?>, '<?php echo e($altKategori->name); ?>')"
                     class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-white bg-gradient-to-r from-red-600 to-red-700 rounded-lg hover:from-red-700 hover:to-red-800 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-all duration-200 shadow-sm hover:shadow-md active:scale-95">
                     <i class="fas fa-trash mr-1.5"></i>
                     Sil
@@ -207,8 +203,8 @@
 
             <!-- Bu Alt Kategorinin Yayın Tipleri -->
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-                @foreach($allYayinTipleri as $yayinTipi)
-                    @php
+                <?php $__currentLoopData = $allYayinTipleri; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $yayinTipi): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <?php
                         // ✅ FIX: Pivot tablo kontrolü (alt_kategori_yayin_tipi)
                         $activeIds = $altKategoriYayinTipleri[$altKategori->id] ?? collect([]);
                         $active = $activeIds->contains($yayinTipi->id);
@@ -219,22 +215,23 @@
                         if (in_array($yayinTipi->yayin_tipi, $excludedYayinTipleri)) {
                             continue; // Skip this iteration
                         }
-                    @endphp
+                    ?>
 
-                    <label class="flex items-center p-3 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer {{ $active ? 'bg-green-50 dark:bg-green-900/20 border-green-300 dark:border-green-700' : 'bg-gray-50 dark:bg-gray-800 border-gray-300 dark:border-gray-600' }}">
+                    <label class="flex items-center p-3 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer <?php echo e($active ? 'bg-green-50 dark:bg-green-900/20 border-green-300 dark:border-green-700' : 'bg-gray-50 dark:bg-gray-800 border-gray-300 dark:border-gray-600'); ?>">
                         <input type="checkbox"
                                class="rounded mr-2 yayin-tipi-toggle"
-                               data-alt-kategori-id="{{ $altKategori->id }}"
-                               data-yayin-tipi-id="{{ $yayinTipi->id }}"
-                               data-yayin-tipi-name="{{ $yayinTipi->yayin_tipi }}"
-                               {{ $active ? 'checked' : '' }}
+                               data-alt-kategori-id="<?php echo e($altKategori->id); ?>"
+                               data-yayin-tipi-id="<?php echo e($yayinTipi->id); ?>"
+                               data-yayin-tipi-name="<?php echo e($yayinTipi->yayin_tipi); ?>"
+                               <?php echo e($active ? 'checked' : ''); ?>
+
                                onchange="toggleYayinTipiRelation(this)">
-                        <span class="text-sm font-medium text-gray-900 dark:text-white">{{ $yayinTipi->yayin_tipi }}</span>
+                        <span class="text-sm font-medium text-gray-900 dark:text-white"><?php echo e($yayinTipi->yayin_tipi); ?></span>
                     </label>
-                @endforeach
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
             </div>
         </div>
-        @endforeach
+        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
     </div>
 
     <!-- 2. Relations Grid (Gerçek Veriler) -->
@@ -245,17 +242,17 @@
                     🔗 Alan İlişkileri
                 </h2>
                 <span class="text-xs px-2 py-1 bg-lime-100 dark:bg-lime-900 text-lime-800 dark:text-lime-200 rounded-full">
-                    {{ count($fieldDependencies) }} Alan
+                    <?php echo e(count($fieldDependencies)); ?> Alan
                 </span>
             </div>
-            <a href="{{ route('admin.property-type-manager.field-dependencies', $kategori->id) }}"
+            <a href="<?php echo e(route('admin.property-type-manager.field-dependencies', $kategori->id)); ?>"
                class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-semibold rounded-lg shadow-lg hover:from-green-700 hover:to-emerald-700 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:ring-offset-2 transition-all duration-200 transform hover:scale-105 active:scale-95 text-sm">
                 <i class="fas fa-cog mr-2"></i>
                 Alan İlişkilerini Yönet
             </a>
         </div>
 
-        @if(count($fieldDependencies) > 0)
+        <?php if(count($fieldDependencies) > 0): ?>
             <div class="overflow-x-auto">
                 <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                     <thead class="bg-gray-50 dark:bg-gray-900">
@@ -263,34 +260,36 @@
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
                                 Alan
                             </th>
-                            @foreach($allYayinTipleri as $yayinTipi)
-                                @php
+                            <?php $__currentLoopData = $allYayinTipleri; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $yayinTipi): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <?php
                                     // ✅ Filtreleme: Sadece gereksiz yayın tiplerini gizle
                                     // Satılık ve Kiralık artık gösterilecek (filtre kaldırıldı)
                                     $excludedYayinTipleri = ['Devren Satılık', 'Günlük Kiralık'];
                                     if (in_array($yayinTipi->yayin_tipi ?? $yayinTipi->name, $excludedYayinTipleri)) {
                                         continue;
                                     }
-                                @endphp
+                                ?>
                             <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
-                                {{ $yayinTipi->name ?? $yayinTipi->yayin_tipi }}
+                                <?php echo e($yayinTipi->name ?? $yayinTipi->yayin_tipi); ?>
+
                             </th>
-                            @endforeach
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </tr>
                     </thead>
                     <tbody class="bg-gray-50 dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                        @foreach($fieldDependencies as $fieldSlug => $fieldData)
+                        <?php $__currentLoopData = $fieldDependencies; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $fieldSlug => $fieldData): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <tr class="hover:bg-gray-50 dark:hover:bg-gray-900">
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="flex items-center">
-                                    <span class="text-xl mr-2">{{ $fieldData['field_icon'] }}</span>
+                                    <span class="text-xl mr-2"><?php echo e($fieldData['field_icon']); ?></span>
                                     <span class="text-sm font-medium text-gray-900 dark:text-white">
-                                        {{ $fieldData['field_name'] }}
+                                        <?php echo e($fieldData['field_name']); ?>
+
                                     </span>
                                 </div>
                             </td>
-                            @foreach($allYayinTipleri as $yayinTipi)
-                                @php
+                            <?php $__currentLoopData = $allYayinTipleri; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $yayinTipi): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <?php
                                     // ✅ Filtreleme: Sadece gereksiz yayın tiplerini gizle
                                     // Satılık ve Kiralık artık gösterilecek (filtre kaldırıldı)
                                     $excludedYayinTipleri = ['Devren Satılık', 'Günlük Kiralık'];
@@ -310,40 +309,41 @@
                                         })
                                         ->first();
                                     $fieldDepId = $fieldDep ? $fieldDep->id : null;
-                                @endphp
+                                ?>
                             <td class="px-6 py-4 whitespace-nowrap text-center">
                                 <input type="checkbox"
                                        class="rounded field-dependency-toggle"
-                                       data-field-id="{{ $fieldDepId }}"
-                                       data-field-slug="{{ $fieldSlug }}"
-                                       data-field-name="{{ $fieldData['field_name'] }}"
-                                       data-field-type="{{ $fieldData['field_type'] }}"
-                                       data-field-category="{{ $fieldData['field_category'] ?? 'general' }}"
-                                       data-yayin-tipi-id="{{ $yayinTipi->id }}"
-                                       data-yayin-tipi-slug="{{ $yayinTipiKeySlug }}"
-                                       {{ $enabled ? 'checked' : '' }}
+                                       data-field-id="<?php echo e($fieldDepId); ?>"
+                                       data-field-slug="<?php echo e($fieldSlug); ?>"
+                                       data-field-name="<?php echo e($fieldData['field_name']); ?>"
+                                       data-field-type="<?php echo e($fieldData['field_type']); ?>"
+                                       data-field-category="<?php echo e($fieldData['field_category'] ?? 'general'); ?>"
+                                       data-yayin-tipi-id="<?php echo e($yayinTipi->id); ?>"
+                                       data-yayin-tipi-slug="<?php echo e($yayinTipiKeySlug); ?>"
+                                       <?php echo e($enabled ? 'checked' : ''); ?>
+
                                        onchange="toggleFieldDependency(this)">
                             </td>
-                            @endforeach
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </tr>
-                        @endforeach
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </tbody>
                 </table>
             </div>
-        @else
+        <?php else: ?>
             <!-- Empty State -->
             <div class="text-center py-8">
                 <i class="fas fa-inbox text-4xl text-gray-300 dark:text-gray-600 mb-3"></i>
                 <p class="text-gray-500 dark:text-gray-400 mb-4">
                     Bu kategori için alan ilişkisi tanımlı değil.
                 </p>
-                <a href="{{ route('admin.property-type-manager.field-dependencies', $kategori->id) }}"
+                <a href="<?php echo e(route('admin.property-type-manager.field-dependencies', $kategori->id)); ?>"
                    class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg shadow-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 transform hover:scale-105 active:scale-95">
                     <i class="fas fa-plus mr-2"></i>
                     Alan İlişkilerini Tanımla
                 </a>
             </div>
-        @endif
+        <?php endif; ?>
     </div>
 
     <!-- 4. Features Toggle -->
@@ -352,24 +352,25 @@
             ✨ Özellikler
         </h2>
 
-        @foreach($featureCategories as $category)
+        <?php $__currentLoopData = $featureCategories; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $category): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
         <div class="mb-6 last:mb-0">
             <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">
-                {{ $category->name }}
+                <?php echo e($category->name); ?>
+
             </h3>
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-                @foreach($category->features as $feature)
+                <?php $__currentLoopData = $category->features; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $feature): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                 <label class="flex items-center p-3 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer">
                     <input type="checkbox"
                             class="rounded mr-2"
-                            data-feature-id="{{ $feature->id }}"
-                            {{ $feature->status ? 'checked' : '' }}>
-                    <span class="text-sm text-gray-900 dark:text-white">{{ $feature->name }}</span>
+                            data-feature-id="<?php echo e($feature->id); ?>"
+                            <?php echo e($feature->status ? 'checked' : ''); ?>>
+                    <span class="text-sm text-gray-900 dark:text-white"><?php echo e($feature->name); ?></span>
                 </label>
-                @endforeach
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
             </div>
         </div>
-        @endforeach
+        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
     </div>
 
     <!-- Save Button -->
@@ -428,24 +429,24 @@
 
         <form id="addYayinTipiForm" onsubmit="addYayinTipi(event)">
             <!-- Alt Kategori Seçimi -->
-            @if(($altKategoriler ?? collect())->isNotEmpty())
+            <?php if(($altKategoriler ?? collect())->isNotEmpty()): ?>
             <div class="mb-4">
                 <label class="block text-sm font-medium text-gray-900 dark:text-white mb-2">
                     Alt Kategori Seçin
                 </label>
                 <select id="modalAltKategori" class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-black dark:text-white rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200">
                     <option value="">Seçin...</option>
-                    @foreach($altKategoriler as $altKat)
-                        <option value="{{ $altKat->id }}">{{ $altKat->name }}</option>
-                    @endforeach
+                    <?php $__currentLoopData = $altKategoriler; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $altKat): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <option value="<?php echo e($altKat->id); ?>"><?php echo e($altKat->name); ?></option>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 </select>
             </div>
-            @else
+            <?php else: ?>
             <input type="hidden" id="modalAltKategori" value="">
             <div class="mb-4 text-sm text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded p-3">
                 Bu kategori için alt kategori bulunmuyor. Yayın tipi doğrudan ana kategoriye eklenecek.
             </div>
-            @endif
+            <?php endif; ?>
 
             <!-- Yayın Tipi Adı -->
             <div class="mb-4">
@@ -476,9 +477,10 @@
     </div>
 </div>
 
-@push('scripts')
-<script data-timestamp="{{ time() }}">
-// 🔄 Property Type Manager - Optimized v5.0 - {{ time() }}
+<?php $__env->startPush('scripts'); ?>
+<script data-timestamp="<?php echo e(time()); ?>">
+// 🔄 Property Type Manager - Optimized v5.0 - <?php echo e(time()); ?>
+
 console.log('✅ PropertyTypeManager scripts loaded! v5.0 (Optimized)');
 
 // ============================================================================
@@ -599,7 +601,7 @@ async function toggleYayinTipiRelation(checkbox) {
 
     try {
         const data = await PropertyTypeManager.request(
-            '{{ route("admin.property-type-manager.toggle-yayin-tipi", $kategori->id) }}',
+            '<?php echo e(route("admin.property-type-manager.toggle-yayin-tipi", $kategori->id)); ?>',
             {
                 alt_kategori_id: altKategoriId,
                 yayin_tipi_id: yayinTipiId,
@@ -644,7 +646,7 @@ async function toggleFieldDependency(checkbox) {
 
     try {
         const payload = upsertMode ? {
-            kategori_slug: '{{ $kategori->slug }}',
+            kategori_slug: '<?php echo e($kategori->slug); ?>',
             field_slug: fieldSlug,
             field_name: fieldName || 'Field',
             field_type: fieldType || 'text',
@@ -658,7 +660,7 @@ async function toggleFieldDependency(checkbox) {
         };
 
         const data = await PropertyTypeManager.request(
-            '{{ route("admin.property-type-manager.toggle-field-dependency") }}',
+            '<?php echo e(route("admin.property-type-manager.toggle-field-dependency")); ?>',
             payload
         );
 
@@ -692,7 +694,7 @@ async function deleteYayinTipi(yayinTipiId, yayinTipiName) {
     PropertyTypeManager.showLoading(true);
 
     try {
-        const url = `{{ route('admin.property-type-manager.destroy-yayin-tipi', [$kategori->id, ':id']) }}`.replace(':id', yayinTipiId);
+        const url = `<?php echo e(route('admin.property-type-manager.destroy-yayin-tipi', [$kategori->id, ':id'])); ?>`.replace(':id', yayinTipiId);
         const data = await PropertyTypeManager.request(url, {}, 'DELETE');
 
         if (data.success) {
@@ -718,7 +720,7 @@ async function deleteAltKategori(altKategoriId, altKategoriName) {
     PropertyTypeManager.showLoading(true);
 
     try {
-        const url = `{{ route('admin.property-type-manager.destroy-alt-kategori', [$kategori->id, ':id']) }}`.replace(':id', altKategoriId);
+        const url = `<?php echo e(route('admin.property-type-manager.destroy-alt-kategori', [$kategori->id, ':id'])); ?>`.replace(':id', altKategoriId);
         const data = await PropertyTypeManager.request(url, {}, 'DELETE');
 
         if (data.success) {
@@ -765,7 +767,7 @@ async function addYayinTipi(e) {
 
     try {
         const data = await PropertyTypeManager.request(
-            "{{ route('admin.property-type-manager.create-yayin-tipi', $kategori->id) }}",
+            "<?php echo e(route('admin.property-type-manager.create-yayin-tipi', $kategori->id)); ?>",
             { name }
         );
 
@@ -854,7 +856,7 @@ async function saveChanges() {
         // Alan ilişkileri
         document.querySelectorAll('[data-field-slug][data-yayin-tipi]').forEach(cb => {
             changes.field_dependencies.push({
-                kategori_slug: '{{ $kategori->slug }}',
+                kategori_slug: '<?php echo e($kategori->slug); ?>',
                 yayin_tipi: cb.dataset.yayinTipi,
                 field_slug: cb.dataset.fieldSlug,
                 field_name: cb.dataset.fieldName || 'Field',
@@ -883,7 +885,7 @@ async function saveChanges() {
         }
 
         const data = await PropertyTypeManager.request(
-            '{{ route("admin.property-type-manager.bulk-save", $kategori->id) }}',
+            '<?php echo e(route("admin.property-type-manager.bulk-save", $kategori->id)); ?>',
             changes
         );
 
@@ -898,5 +900,7 @@ async function saveChanges() {
     }
 }
 </script>
-@endpush
-@endsection
+<?php $__env->stopPush(); ?>
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('admin.layouts.neo', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /Users/macbookpro/Projects/yalihanemlakwarp/resources/views/admin/property-type-manager/show.blade.php ENDPATH**/ ?>

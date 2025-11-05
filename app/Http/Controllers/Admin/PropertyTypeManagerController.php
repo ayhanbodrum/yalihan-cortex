@@ -214,8 +214,8 @@ class PropertyTypeManagerController extends AdminController
             try {
                 $altKategoriIds = $altKategoriler->pluck('id')->toArray();
                 
-                // Tüm alt kategoriler için yayın tiplerini tek query'de al
-                $allYayinTipleri = AltKategoriYayinTipi::whereIn('alt_kategori_id', $altKategoriIds)
+                // ✅ FIX: Farklı değişken adı kullan (allYayinTipleri ile çakışmasın)
+                $altKategoriYayinTipleriRaw = AltKategoriYayinTipi::whereIn('alt_kategori_id', $altKategoriIds)
                     ->where('enabled', 1)
                     ->get()
                     ->groupBy('alt_kategori_id')
@@ -225,7 +225,7 @@ class PropertyTypeManagerController extends AdminController
                 
                 // Her alt kategori için yayın tiplerini ata
                 foreach($altKategoriler as $altKat) {
-                    $altKategoriYayinTipleri[$altKat->id] = $allYayinTipleri->get($altKat->id, collect([]));
+                    $altKategoriYayinTipleri[$altKat->id] = $altKategoriYayinTipleriRaw->get($altKat->id, collect([]));
                 }
             } catch (\Exception $e) {
                 // Tablo henüz yoksa veya hata varsa boş array
