@@ -65,6 +65,8 @@ class AISettingsController extends AdminController
             'claude_model',
             'deepseek_api_key',
             'deepseek_model',
+            'minimax_api_key',
+            'minimax_model',
             'ollama_url',
             'ollama_model',
 
@@ -93,6 +95,7 @@ class AISettingsController extends AdminController
             'openai_api_key',
             'claude_api_key',
             'deepseek_api_key',
+            'minimax_api_key',
             'ai_anythingllm_api_key',
             'ai_openai_api_key',
             'ai_gemini_api_key',
@@ -132,7 +135,7 @@ class AISettingsController extends AdminController
     {
         $data = $request->validate([
             // Provider Settings
-            'ai_provider' => 'nullable|string|in:google,openai,anthropic,deepseek,ollama',
+            'ai_provider' => 'nullable|string|in:google,openai,anthropic,deepseek,minimax,ollama',
 
             // API Keys
             'google_api_key' => 'nullable|string',
@@ -143,6 +146,8 @@ class AISettingsController extends AdminController
             'claude_model' => 'nullable|string|in:claude-3-opus-20240229,claude-3-sonnet-20240229,claude-3-haiku-20240307',
             'deepseek_api_key' => 'nullable|string',
             'deepseek_model' => 'nullable|string|in:deepseek-chat,deepseek-coder',
+            'minimax_api_key' => 'nullable|string',
+            'minimax_model' => 'nullable|string|in:minimax-m2,minimax-m2-32k',
             'ollama_url' => 'nullable|url',
             'ollama_model' => 'nullable|string|in:qwen2.5:3b,qwen2.5:latest,gemma2:2b,phi3:mini,nomic-embed-text:latest,llama2,llama3,mistral,codellama',
 
@@ -232,6 +237,10 @@ class AISettingsController extends AdminController
 
                 case 'deepseek':
                     $result = $this->testDeepSeekConnection();
+                    break;
+
+                case 'minimax':
+                    $result = $this->testMiniMaxConnection();
                     break;
 
                 case 'ollama':
@@ -469,6 +478,81 @@ class AISettingsController extends AdminController
                 'success' => false,
                 'message' => 'DeepSeek yanıt vermedi: ' . $response->status(),
                 'details' => ['status' => $response->status()]
+            ];
+        } catch (\Exception $e) {
+            return [
+                'success' => false,
+                'message' => 'Bağlantı hatası: ' . $e->getMessage(),
+                'details' => ['error' => $e->getMessage()]
+            ];
+        }
+    }
+
+    /**
+     * Test MiniMax Connection
+     */
+    private function testMiniMaxConnection(): array
+    {
+        $apiKey = Setting::where('key', 'minimax_api_key')->value('value');
+        $model = Setting::where('key', 'minimax_model')->value('value') ?? 'minimax-m2';
+
+        if (!$apiKey) {
+            return [
+                'success' => false,
+                'message' => 'MiniMax API Key tanımlanmamış',
+                'details' => []
+            ];
+        }
+
+        // API key'i decrypt et (şifrelenmişse)
+        try {
+            $decrypted = decrypt($apiKey);
+            $apiKey = $decrypted;
+        } catch (\Exception $e) {
+            // API key zaten plain text, olduğu gibi kullan
+        }
+
+        if (empty($apiKey)) {
+            return [
+                'success' => false,
+                'message' => 'MiniMax API Key tanımlanmamış',
+                'details' => []
+            ];
+        }
+
+        try {
+            // MiniMax API test - simple chat completion test
+            $response = Http::timeout(30)
+                ->withHeaders([
+                    'Authorization' => 'Bearer ' . $apiKey,
+                    'Content-Type' => 'application/json'
+                ])
+                ->post('https://api.minimax.chat/v1/text/chatcompletion_v2', [
+                    'model' => $model,
+                    'messages' => [
+                        ['role' => 'user', 'content' => 'Test']
+                    ],
+                    'max_tokens' => 10
+                ]);
+
+            if ($response->successful()) {
+                return [
+                    'success' => true,
+                    'message' => 'MiniMax bağlantısı başarılı',
+                    'details' => [
+                        'status' => 200,
+                        'model' => $model
+                    ]
+                ];
+            }
+
+            return [
+                'success' => false,
+                'message' => 'MiniMax yanıt vermedi: ' . $response->status(),
+                'details' => [
+                    'status' => $response->status(),
+                    'body' => $response->body()
+                ]
             ];
         } catch (\Exception $e) {
             return [

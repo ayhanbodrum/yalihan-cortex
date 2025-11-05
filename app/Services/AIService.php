@@ -323,6 +323,8 @@ Sadece önerilen değeri döndür (açıklama veya birim olmadan).
                 return $this->callClaude($action, $prompt, $options);
             case 'deepseek':
                 return $this->callDeepSeek($action, $prompt, $options);
+            case 'minimax':
+                return $this->callMiniMax($action, $prompt, $options);
             case 'ollama':
                 return $this->callOllama($action, $prompt, $options);
             default:
@@ -446,6 +448,56 @@ Sadece önerilen değeri döndür (açıklama veya birim olmadan).
         return $data['choices'][0]['message']['content'] ?? '';
     }
 
+    protected function callMiniMax($action, $prompt, $options)
+    {
+        $apiKey = $this->config['minimax_api_key'] ?? '';
+        $model = $this->config['minimax_model'] ?? 'minimax-m2';
+
+        if (empty($apiKey)) {
+            throw new \Exception('MiniMax API key not configured');
+        }
+
+        // MiniMax API v2 endpoint
+        $response = Http::withHeaders([
+            'Authorization' => 'Bearer ' . $apiKey,
+            'Content-Type' => 'application/json',
+        ])->timeout(60)->post('https://api.minimax.chat/v1/text/chatcompletion_v2', [
+            'model' => $model,
+            'messages' => [
+                [
+                    'role' => 'user',
+                    'content' => $prompt
+                ]
+            ],
+            'temperature' => $options['temperature'] ?? 0.7,
+            'max_tokens' => $options['max_tokens'] ?? 2000,
+            'stream' => false,
+        ]);
+
+        if (!$response->successful()) {
+            $errorBody = $response->body();
+            Log::error('MiniMax API error', [
+                'status' => $response->status(),
+                'body' => $errorBody,
+            ]);
+            throw new \Exception('MiniMax API error: ' . $errorBody);
+        }
+
+        $data = $response->json();
+        
+        // MiniMax response format: { "choices": [{ "message": { "content": "..." } }] }
+        if (isset($data['choices'][0]['message']['content'])) {
+            return $data['choices'][0]['message']['content'];
+        }
+
+        // Fallback: try alternative response format
+        if (isset($data['reply'])) {
+            return $data['reply'];
+        }
+
+        throw new \Exception('Unexpected MiniMax API response format');
+    }
+
     protected function callOllama($action, $prompt, $options)
     {
         $url = $this->config['ollama_url'] ?? 'http://localhost:11434';
@@ -565,6 +617,7 @@ Sadece önerilen değeri döndür (açıklama veya birim olmadan).
                 'google_api_key', 'google_model',
                 'claude_api_key', 'claude_model',
                 'deepseek_api_key', 'deepseek_model',
+                'minimax_api_key', 'minimax_model',
                 'ollama_url', 'ollama_model'
             ];
 

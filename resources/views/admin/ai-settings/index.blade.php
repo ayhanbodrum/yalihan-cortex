@@ -76,7 +76,7 @@
                 </div>
                 <div class="p-6">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        @foreach (['google' => ['name' => '🧠 Google Gemini', 'desc' => 'Hızlı ve güçlü', 'badge' => 'Önerilen'], 'openai' => ['name' => '🤖 OpenAI GPT', 'desc' => 'Yaratıcı ve akıllı', 'badge' => 'Popüler'], 'anthropic' => ['name' => '🎭 Anthropic Claude', 'desc' => 'Güvenli ve etik', 'badge' => 'Güvenli'], 'deepseek' => ['name' => '🔍 DeepSeek', 'desc' => 'Araştırma odaklı', 'badge' => 'Yeni'], 'ollama' => ['name' => '🏠 Ollama Local', 'desc' => 'Gizlilik odaklı, offline AI', 'badge' => 'Güvenli']] as $key => $provider)
+                        @foreach (['google' => ['name' => '🧠 Google Gemini', 'desc' => 'Hızlı ve güçlü', 'badge' => 'Önerilen'], 'openai' => ['name' => '🤖 OpenAI GPT', 'desc' => 'Yaratıcı ve akıllı', 'badge' => 'Popüler'], 'anthropic' => ['name' => '🎭 Anthropic Claude', 'desc' => 'Güvenli ve etik', 'badge' => 'Güvenli'], 'deepseek' => ['name' => '🔍 DeepSeek', 'desc' => 'Araştırma odaklı', 'badge' => 'Yeni'], 'minimax' => ['name' => '🚀 MiniMax', 'desc' => 'Yüksek performanslı, ölçeklenebilir', 'badge' => 'Kurumsal'], 'ollama' => ['name' => '🏠 Ollama Local', 'desc' => 'Gizlilik odaklı, offline AI', 'badge' => 'Güvenli']] as $key => $provider)
                             <div
                                 class="provider-option relative {{ ($statistics['active_provider'] ?? '') === $key ? 'selected' : '' }}">
                                 <input type="radio" name="ai_provider" id="provider_{{ $key }}"
@@ -295,6 +295,55 @@
                                             {{ ($settings['deepseek_model'] ?? '') === 'deepseek-coder' ? 'selected' : '' }}>
                                             DeepSeek Coder</option>
                                     </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- MiniMax API --}}
+                        <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
+                            <div class="flex items-center gap-3 mb-3">
+                                <span class="text-2xl">🚀</span>
+                                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">MiniMax</h3>
+                                <span class="px-2 py-1 bg-orange-100 text-orange-800 text-xs rounded-full">Kurumsal</span>
+                                <a href="https://platform.minimax.io/" target="_blank" rel="noopener noreferrer"
+                                    class="ml-auto text-xs text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 underline">
+                                    📚 Dokümantasyon
+                                </a>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label for="minimax_api_key"
+                                        class="block text-sm font-medium text-gray-900 dark:text-white mb-2">
+                                        API Key *
+                                    </label>
+                                    <input type="password" name="minimax_api_key" id="minimax_api_key"
+                                        value="{{ old('minimax_api_key', $settings['minimax_api_key'] ?? '') }}"
+                                        class="w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white {{ $errors->has('minimax_api_key') ? 'border-red-500' : 'border-gray-300 dark:border-gray-600' }}"
+                                        placeholder="MiniMax API Key">
+                                    @error('minimax_api_key')
+                                        <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                                    @enderror
+                                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                                        💡 MiniMax API anahtarınızı <a href="https://platform.minimax.io/" target="_blank" class="text-blue-600 hover:underline">platform.minimax.io</a> adresinden alabilirsiniz
+                                    </p>
+                                </div>
+                                <div>
+                                    <label for="minimax_model"
+                                        class="block text-sm font-medium text-gray-900 dark:text-white mb-2">
+                                        Model
+                                    </label>
+                                    <select style="color-scheme: light dark;" name="minimax_model" id="minimax_model"
+                                        class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white transition-all duration-200">
+                                        <option value="minimax-m2"
+                                            {{ ($settings['minimax_model'] ?? 'minimax-m2') === 'minimax-m2' ? 'selected' : '' }}>
+                                            MiniMax M2 (Önerilen)</option>
+                                        <option value="minimax-m2-32k"
+                                            {{ ($settings['minimax_model'] ?? '') === 'minimax-m2-32k' ? 'selected' : '' }}>
+                                            MiniMax M2 32K</option>
+                                    </select>
+                                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                                        📊 Context Length: 200k tokens | Max Output: 128k tokens
+                                    </p>
                                 </div>
                             </div>
                         </div>

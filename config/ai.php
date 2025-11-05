@@ -17,6 +17,9 @@ return [
 
     'deepseek_api_key' => env('DEEPSEEK_API_KEY', null),
 
+    'minimax_api_key' => env('MINIMAX_API_KEY', null),
+    'minimax_model' => env('MINIMAX_MODEL', 'minimax-m2'),
+
     'google_api_key' => env('GOOGLE_API_KEY', null),
 
     'google_model' => env('GOOGLE_MODEL', 'gemini-2.5-flash'),
