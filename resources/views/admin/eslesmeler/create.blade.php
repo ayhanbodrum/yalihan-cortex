@@ -6,7 +6,7 @@
 
 @section('content')
     <!-- Context7: Eşleşme Form Component -->
-    <div class="neo-content p-6" x-data="eslesmeForm()">
+    <div class="prose max-w-none p-6" x-data="eslesmeForm()">
 
         <!-- Page Header -->
         <div class="mb-6">

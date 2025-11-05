@@ -10,7 +10,7 @@
 ])
 
 @php
-    $baseClasses = 'neo-table-cell px-6 py-4 whitespace-nowrap text-sm text-gray-900';
+    $baseClasses = 'min-w-full divide-y divide-gray-200 dark:divide-gray-700-cell px-6 py-4 whitespace-nowrap text-sm text-gray-900';
     $classes = $baseClasses . ' ' . $class;
 @endphp
 

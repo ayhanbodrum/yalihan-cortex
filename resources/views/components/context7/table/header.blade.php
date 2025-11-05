@@ -13,7 +13,7 @@
 
 @php
     $baseClasses =
-        'neo-table-header-cell px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider';
+        'min-w-full divide-y divide-gray-200 dark:divide-gray-700-header-cell px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider';
 
     if ($sortable) {
         $baseClasses .= ' cursor-pointer hover:bg-gray-100 select-none';

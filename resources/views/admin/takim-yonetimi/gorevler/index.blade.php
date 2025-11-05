@@ -212,7 +212,7 @@
             <div class="overflow-x-auto" x-data="{ contentLoaded: true }" x-init="setTimeout(() => contentLoaded = true, 100)">
                 <!-- Skeleton Loading State -->
                 <div x-show="!contentLoaded" x-transition>
-                    <x-admin.neo-skeleton type="table" rows="5" />
+                    <x-admin.animate-pulse bg-gray-200 dark:bg-gray-700 rounded type="table" rows="5" />
                 </div>
 
                 <!-- Actual Content -->

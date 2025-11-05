@@ -11,7 +11,7 @@
 ])
 
 @php
-    $baseClasses = 'neo-table-row';
+    $baseClasses = 'min-w-full divide-y divide-gray-200 dark:divide-gray-700-row';
 
     if ($hoverable) {
         $baseClasses .= ' hover:bg-gray-50 transition-colors duration-150';

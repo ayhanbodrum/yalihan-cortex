@@ -13,7 +13,7 @@
 ])
 
 @php
-    $baseClasses = 'neo-table min-w-full divide-y divide-gray-200 bg-white shadow-sm rounded-lg overflow-hidden';
+    $baseClasses = 'min-w-full divide-y divide-gray-200 dark:divide-gray-700 min-w-full divide-y divide-gray-200 bg-white shadow-sm rounded-lg overflow-hidden';
 
     if ($striped) {
         $baseClasses .= ' table-striped';
@@ -27,22 +27,22 @@
 @endphp
 
 @if ($responsive)
-    <div class="neo-table-responsive overflow-x-auto">
+    <div class="min-w-full divide-y divide-gray-200 dark:divide-gray-700-responsive overflow-x-auto">
 @endif
 
 <table {{ $attributes->merge(['class' => $classes]) }}>
     @if (isset($header))
-        <thead class="neo-table-header bg-gray-50">
+        <thead class="min-w-full divide-y divide-gray-200 dark:divide-gray-700-header bg-gray-50">
             {{ $header }}
         </thead>
     @endif
 
-    <tbody class="neo-table-body bg-white divide-y divide-gray-200">
+    <tbody class="min-w-full divide-y divide-gray-200 dark:divide-gray-700-body bg-white divide-y divide-gray-200">
         {{ $slot }}
     </tbody>
 
     @if (isset($footer))
-        <tfoot class="neo-table-footer bg-gray-50">
+        <tfoot class="min-w-full divide-y divide-gray-200 dark:divide-gray-700-footer bg-gray-50">
             {{ $footer }}
         </tfoot>
     @endif

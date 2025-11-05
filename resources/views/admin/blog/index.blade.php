@@ -4,7 +4,7 @@
 @section('page-title', 'Blog & Haber Yönetimi')
 
 @section('content')
-    <div class="neo-content p-6">
+    <div class="prose max-w-none p-6">
         <!-- Page Header -->
         <div class="neo-page-header mb-8">
             <div class="flex items-center justify-between">

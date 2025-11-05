@@ -35,7 +35,7 @@
 
     <!-- Context7 Toast Utility System -->
     <link href="{{ asset('css/admin/neo-toast.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/admin/neo-skeleton.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/admin/animate-pulse bg-gray-200 dark:bg-gray-700 rounded.css') }}" rel="stylesheet">
 
     <!-- PHASE 2: AJAX & UI Utilities (Context7 Standards) -->
     <script src="{{ asset('js/admin/toast-system.js') }}" defer></script>
@@ -101,11 +101,11 @@
                                 </button>
                                 <div x-show="o" @click.away="o=false" x-transition
                                     class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg shadow-md py-1">
-                                    <a href="{{ route('profile.edit') }}" class="neo-menu-item">Profil</a>
-                                    <a href="{{ route('admin.ayarlar.index') }}" class="neo-menu-item">Ayarlar</a>
+                                    <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-800">Profil</a>
+                                    <a href="{{ route('admin.ayarlar.index') }}" class="block px-4 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-800">Ayarlar</a>
                                     <div class="my-1 border-t border-gray-200 dark:border-gray-800"></div>
                                     <form method="POST" action="{{ route('logout') }}">@csrf
-                                        <button type="submit" class="neo-menu-item w-full text-left">Çıkış</button>
+                                        <button type="submit" class="block px-4 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-800 w-full text-left">Çıkış</button>
                                     </form>
                                 </div>
                             </div>
