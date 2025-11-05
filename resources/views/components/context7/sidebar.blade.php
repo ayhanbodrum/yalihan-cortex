@@ -20,7 +20,7 @@
 @endphp
 
 <!-- Context7 Sidebar Component -->
-<aside class="neo-sidebar w-64 bg-gray-900 text-white transition-all duration-300 ease-in-out dark:bg-gray-950"
+<aside class="flex flex-col h-full bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 w-64 bg-gray-900 text-white transition-all duration-300 ease-in-out dark:bg-gray-950"
     x-data="{
         open: (localStorage.getItem('sidebar_open') ?? 'false') === 'true',
         activeMenu: localStorage.getItem('sidebar_active_menu') || null,
@@ -32,7 +32,7 @@
     :class="{ 'w-16': !open, 'w-64': open }" aria-label="Ana menü">
 
     <!-- Sidebar Header -->
-    <div class="neo-sidebar-header p-6 border-b border-gray-700 dark:border-gray-800">
+    <div class="flex flex-col h-full bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700-header p-6 border-b border-gray-700 dark:border-gray-800">
         <div class="flex items-center space-x-3">
             <div
                 class="w-10 h-10 bg-gradient-to-r from-orange-500 to-amber-500 rounded-lg flex items-center justify-center">
@@ -64,7 +64,7 @@
     </div>
 
     <!-- Navigation Menu -->
-    <nav class="neo-sidebar-nav p-4 space-y-2">
+    <nav class="flex flex-col h-full bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700-nav p-4 space-y-2">
 
         <!-- Hızlı Erişim -->
         <div class="text-xs uppercase tracking-wide text-gray-400 px-2" x-show="open">Hızlı Erişim</div>
@@ -593,7 +593,7 @@
     </nav>
 
     <!-- Sidebar Footer -->
-    <div class="neo-sidebar-footer p-4 border-t border-gray-700 mt-auto">
+    <div class="flex flex-col h-full bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700-footer p-4 border-t border-gray-700 mt-auto">
         <div class="flex items-center space-x-3">
             <div
                 class="w-8 h-8 bg-gradient-to-r from-orange-500 to-amber-500 rounded-full flex items-center justify-center">

@@ -87,7 +87,7 @@
                                 </svg>
                             </button>
                             <div class="relative" x-data="{ o: false }">
-                                <button @click="o=!o" class="neo-chip">
+                                <button @click="o=!o" class="inline-flex items-center gap-2 px-2 py-1 rounded-md border border-gray-200 bg-white hover:bg-gray-50 transition-colors dark:bg-gray-800 dark:border-gray-800 dark:hover:bg-gray-700">
                                     <div
                                         class="w-8 h-8 rounded-full bg-gradient-to-r from-primary-500 to-amber-500 text-white grid place-items-center">
                                         <span

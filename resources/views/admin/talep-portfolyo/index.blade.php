@@ -556,7 +556,7 @@
                         const a = data.analiz ?? {};
                         document.getElementById('aiAnalizContent').innerHTML = `
                     <div class="rounded-lg border border-blue-200 bg-blue-50 p-4 text-blue-800 dark:bg-blue-900 dark:border-blue-800 dark:text-blue-200 rounded-lg border border-blue-200 bg-blue-50 p-4 text-blue-800 dark:bg-blue-900 dark:border-blue-800 dark:text-blue-200-success"><i class="text-gray-400 text-gray-400-check-circle"></i> Talep analizi tamamlandı</div>
-                    <pre class="neo-code-block">${JSON.stringify(a, null, 2)}</pre>`;
+                    <pre class="bg-gray-900 text-gray-100 rounded-lg p-4 overflow-x-auto font-mono text-sm">${JSON.stringify(a, null, 2)}</pre>`;
                     } else {
                         document.getElementById('aiAnalizContent').innerHTML =
                             `

@@ -14,7 +14,7 @@
 ])
 
 @php
-    $baseClasses = 'neo-modal fixed inset-0 z-50 overflow-y-auto';
+    $baseClasses = 'fixed inset-0 z-50 flex items-center justify-center p-4 fixed inset-0 z-50 overflow-y-auto';
 
     // Size classes
     $sizeClasses = [
@@ -36,7 +36,7 @@
     x-transition:leave-end="opacity-0" class="{{ $classes }}" style="display: none;">
 
     <!-- Backdrop -->
-    <div class="neo-modal-backdrop fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
+    <div class="fixed inset-0 bg-black bg-opacity-50 z-40 fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
         @if ($dismissible) @click="open = false" @endif></div>
 
     <!-- Modal Container -->
@@ -51,7 +51,7 @@
 
             <!-- Modal Header -->
             @if (isset($header))
-                <div class="neo-modal-header bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4 border-b border-gray-200">
+                <div class="fixed inset-0 z-50 flex items-center justify-center p-4-header bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4 border-b border-gray-200">
                     <div class="flex items-center justify-between">
                         <div class="flex items-center">
                             @if (isset($icon))
@@ -79,14 +79,14 @@
             @endif
 
             <!-- Modal Body -->
-            <div class="neo-modal-body bg-white px-4 pt-5 pb-4 sm:p-6">
+            <div class="fixed inset-0 z-50 flex items-center justify-center p-4-body bg-white px-4 pt-5 pb-4 sm:p-6">
                 {{ $slot }}
             </div>
 
             <!-- Modal Footer -->
             @if (isset($footer))
                 <div
-                    class="neo-modal-footer bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse border-t border-gray-200">
+                    class="fixed inset-0 z-50 flex items-center justify-center p-4-footer bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse border-t border-gray-200">
                     {{ $footer }}
                 </div>
             @endif
