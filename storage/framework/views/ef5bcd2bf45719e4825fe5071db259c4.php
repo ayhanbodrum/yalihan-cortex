@@ -158,7 +158,7 @@
                         </tr>
                     </thead>
                     <tbody class="bg-gray-50 dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                        <?php $__empty_1 = true; $__currentLoopData = $quickStats['recent_ilanlar']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $ilan): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                        <?php $__empty_1 = true; $__currentLoopData = $quickStats['recent_ilanlar'] ?? []; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $ilan): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                         <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white"><?php echo e($ilan->id); ?></td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white"><?php echo e(Str::limit($ilan->baslik, 30)); ?></td>
@@ -202,7 +202,7 @@
                         </tr>
                     </thead>
                     <tbody class="bg-gray-50 dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                        <?php $__empty_1 = true; $__currentLoopData = $quickStats['recent_kullanicilar']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                        <?php $__empty_1 = true; $__currentLoopData = $quickStats['recent_kullanicilar'] ?? []; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                         <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white"><?php echo e($user->id); ?></td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white"><?php echo e($user->name); ?></td>
