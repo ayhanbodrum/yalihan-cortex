@@ -107,7 +107,9 @@
                     </div>
 
                     <div class="flex gap-3">
-                        <button type="button" class="neo-btn neo-btn neo-btn-secondary touch-target-optimized touch-target-optimized" onclick="applyFilters()">
+                        <button type="button" 
+                                class="inline-flex items-center px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-all duration-200 font-medium shadow-sm hover:shadow-md" 
+                                onclick="applyFilters()">
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z">
@@ -115,7 +117,9 @@
                             </svg>
                             Filtrele
                         </button>
-                        <button type="button" class="neo-btn inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg active:scale-95 touch-target-optimized touch-target-optimized" onclick="refreshComments()">
+                        <button type="button" 
+                                class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg active:scale-95" 
+                                onclick="refreshComments()">
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
@@ -224,7 +228,7 @@
                                         <div class="flex space-x-2">
                                             @if ($comment->status === 'pending')
                                                 <button onclick="approveComment({{ $comment->id }})"
-                                                    class="neo-btn inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg active:scale-95 text-xs px-3 py-1 touch-target-optimized touch-target-optimized">
+                                                    class="inline-flex items-center px-3 py-1 text-xs font-medium text-white bg-gradient-to-r from-green-600 to-emerald-600 rounded-lg hover:from-green-700 hover:to-emerald-700 transition-all duration-200 shadow-sm hover:shadow-md">
                                                     <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor"
                                                         viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -236,7 +240,7 @@
 
                                             @if ($comment->status !== 'rejected')
                                                 <button onclick="rejectComment({{ $comment->id }})"
-                                                    class="neo-btn neo-btn neo-btn-secondary text-xs px-3 py-1 touch-target-optimized touch-target-optimized">
+                                                    class="inline-flex items-center px-3 py-1 text-xs font-medium bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-all duration-200 shadow-sm hover:shadow-md">
                                                     <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor"
                                                         viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -258,7 +262,7 @@
                                             </button>
 
                                             <button onclick="deleteComment({{ $comment->id }})"
-                                                class="neo-btn neo-btn neo-btn-secondary text-xs px-3 py-1 text-red-600 hover:text-red-700 touch-target-optimized touch-target-optimized">
+                                                class="inline-flex items-center px-3 py-1 text-xs font-medium bg-red-600 hover:bg-red-700 text-white rounded-lg transition-all duration-200 shadow-sm hover:shadow-md">
                                                 <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor"
                                                     viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -313,10 +317,14 @@
                         placeholder="Yorumu neden reddettiğinizi belirtin..."></textarea>
                 </div>
                 <div class="flex justify-end space-x-3 mt-6">
-                    <button type="button" class="neo-btn neo-btn neo-btn-secondary touch-target-optimized touch-target-optimized" onclick="closeRejectModal()">
+                    <button type="button" 
+                            class="inline-flex items-center px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-all duration-200 font-medium shadow-sm hover:shadow-md" 
+                            onclick="closeRejectModal()">
                         İptal
                     </button>
-                    <button type="button" class="neo-btn inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg active:scale-95 touch-target-optimized touch-target-optimized" onclick="confirmReject()">
+                    <button type="button" 
+                            class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg active:scale-95" 
+                            onclick="confirmReject()">
                         Reddet
                     </button>
                 </div>
@@ -335,10 +343,14 @@
                         placeholder="Bu yorumun neden spam olduğunu belirtin..."></textarea>
                 </div>
                 <div class="flex justify-end space-x-3 mt-6">
-                    <button type="button" class="neo-btn neo-btn neo-btn-secondary touch-target-optimized touch-target-optimized" onclick="closeSpamModal()">
+                    <button type="button" 
+                            class="inline-flex items-center px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-all duration-200 font-medium shadow-sm hover:shadow-md" 
+                            onclick="closeSpamModal()">
                         İptal
                     </button>
-                    <button type="button" class="neo-btn inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg active:scale-95 touch-target-optimized touch-target-optimized" onclick="confirmSpam()">
+                    <button type="button" 
+                            class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg active:scale-95" 
+                            onclick="confirmSpam()">
                         Spam Olarak İşaretle
                     </button>
                 </div>

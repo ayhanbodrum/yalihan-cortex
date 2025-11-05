@@ -133,37 +133,15 @@ class WikimapiaService
                     'body' => substr($response->body(), 0, 500),
                 ]);
 
-                if ($response->successful()) {
+                                if ($response->successful()) {
                     $data = $response->json();
 
-                    // API boş dönüyorsa deneme verisi döndür
-                    if (empty($data) || !isset($data['places'])) {
-                        Log::warning('Wikimapia API returned empty response, using demo data');
-
-                        // Deneme verisi
+                    // API boş dönüyorsa BOŞ ARRAY döndür (Controller Nominatim'e geçecek)
+                    if (empty($data) || !isset($data['places']) || empty($data['places'])) {
+                        Log::info('Wikimapia API returned empty response, will fallback to OpenStreetMap Nominatim');
                         return [
-                            'places' => [
-                                [
-                                    'id' => rand(1000, 9999),
-                                    'title' => 'Deneme Site 1',
-                                    'description' => 'Bu bir deneme verisidir. Wikimapia API\'den veri gelmediği için gösterilmektedir.',
-                                    'location' => [
-                                        'latitude' => $latMin + (($latMax - $latMin) / 2),
-                                        'longitude' => $lonMin + (($lonMax - $lonMin) / 2),
-                                    ],
-                                    'url' => 'https://wikimapia.org',
-                                ],
-                                [
-                                    'id' => rand(1000, 9999),
-                                    'title' => 'Deneme Apartman',
-                                    'description' => 'Deneme açıklama metni',
-                                    'location' => [
-                                        'latitude' => $latMin + (($latMax - $latMin) / 2) + 0.001,
-                                        'longitude' => $lonMin + (($lonMax - $lonMin) / 2) + 0.001,
-                                    ],
-                                    'url' => 'https://wikimapia.org',
-                                ],
-                            ]
+                            'places' => [],
+                            'found' => 0
                         ];
                     }
 

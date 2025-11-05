@@ -1,41 +1,5 @@
 <?php $__env->startSection('title', 'AI Destekli Talep Yönetimi'); ?>
 
-<?php $__env->startPush('styles'); ?>
-    <style>
-        .ai-badge {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-
-            0%,
-            100% {
-                opacity: 1;
-            }
-
-            50% {
-                opacity: 0.7;
-            }
-        }
-
-        .status-active {
-            @apply bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200;
-        }
-
-        .status-pending {
-            @apply bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200;
-        }
-
-        .status-matched {
-            @apply bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200;
-        }
-
-        .status-closed {
-            @apply bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200;
-        }
-    </style>
-<?php $__env->stopPush(); ?>
 
 <?php $__env->startSection('content'); ?>
     <div x-data="taleplerData()" class="space-y-6">
@@ -43,22 +7,22 @@
         
         <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
             <div class="flex items-center gap-3">
-                <div class="neo-icon-container bg-gradient-to-br from-blue-500 to-purple-600">
+                <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
                     <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293L18.707 8.707A1 1 0 0119 9.414V19a2 2 0 01-2 2z" />
                     </svg>
                 </div>
                 <div>
-                    <h1 class="neo-title">🤖 AI Destekli Talep Yönetimi</h1>
-                    <p class="neo-subtitle">Context7 Intelligence ile akıllı talep analizi ve eşleştirme</p>
+                    <h1 class="text-3xl font-bold text-gray-900 dark:text-white">🤖 AI Destekli Talep Yönetimi</h1>
+                    <p class="text-gray-600 dark:text-gray-400">Context7 Intelligence ile akıllı talep analizi ve eşleştirme</p>
                 </div>
             </div>
 
             <div class="flex items-center gap-3">
                 
                 <button @click="showBatchAnalysisModal = true"
-                    class="neo-btn neo-btn neo-btn-secondary flex items-center gap-2 ai-badge touch-target-optimized touch-target-optimized">
+                    class="inline-flex items-center gap-2 px-4 py-2 text-sm rounded-lg bg-gradient-to-r from-indigo-500 to-purple-600 text-white hover:from-indigo-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-all duration-200 animate-pulse">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M13 10V3L4 14h7v7l9-11h-7z" />
@@ -67,7 +31,7 @@
                 </button>
 
                 
-                <a href="<?php echo e(route('admin.talepler.create')); ?>" class="neo-btn neo-btn neo-btn-primary touch-target-optimized touch-target-optimized">
+                <a href="<?php echo e(route('admin.talepler.create')); ?>" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 shadow-md hover:shadow-lg">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -79,13 +43,13 @@
 
         
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div class="neo-card p-6">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all p-6">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Toplam Talepler</p>
                         <p class="text-2xl font-bold text-gray-900 dark:text-white"><?php echo e($talepler->total()); ?></p>
                     </div>
-                    <div class="neo-icon-container bg-blue-500">
+                    <div class="w-12 h-12 bg-blue-500 rounded-xl flex items-center justify-center shadow-lg">
                         <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h10a2 2 0 012 2v14a2 2 0 01-2 2z" />
@@ -97,13 +61,13 @@
                 </div>
             </div>
 
-            <div class="neo-card p-6">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all p-6">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm font-medium text-gray-600 dark:text-gray-400">AI Eşleştirme Oranı</p>
                         <p class="text-2xl font-bold text-gray-900 dark:text-white">%87</p>
                     </div>
-                    <div class="neo-icon-container ai-badge">
+                    <div class="w-12 h-12 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg animate-pulse">
                         <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M13 10V3L4 14h7v7l9-11h-7z" />
@@ -115,13 +79,13 @@
                 </div>
             </div>
 
-            <div class="neo-card p-6">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all p-6">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Ortalama Yanıt Süresi</p>
                         <p class="text-2xl font-bold text-gray-900 dark:text-white">2.4s</p>
                     </div>
-                    <div class="neo-icon-container bg-green-500">
+                    <div class="w-12 h-12 bg-green-500 rounded-xl flex items-center justify-center shadow-lg">
                         <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -133,14 +97,14 @@
                 </div>
             </div>
 
-            <div class="neo-card p-6">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all p-6">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Başarılı Eşleşme</p>
                         <p class="text-2xl font-bold text-gray-900 dark:text-white">
                             <?php echo e($talepler->where('status', 'eslestirildi')->count()); ?></p>
                     </div>
-                    <div class="neo-icon-container bg-purple-500">
+                    <div class="w-12 h-12 bg-purple-500 rounded-xl flex items-center justify-center shadow-lg">
                         <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
@@ -154,7 +118,7 @@
         </div>
 
         
-        <div class="neo-card p-6">
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all p-6">
             <div class="flex items-center justify-between mb-4">
                 <h3 class="font-semibold text-gray-900 dark:text-white">Akıllı Filtreler</h3>
                 <button @click="showAdvancedFilters = !showAdvancedFilters"
@@ -249,17 +213,17 @@
                     <button type="submit"
                             :disabled="filterLoading"
                             @click="filterLoading = true"
-                            class="neo-btn neo-btn neo-btn-primary touch-target-optimized touch-target-optimized">
+                            class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50">
                         <svg class="w-4 h-4" :class="filterLoading ? 'animate-spin' : ''" fill="none" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                         </svg>
                         Filtrele
                     </button>
-                    <a href="<?php echo e(route('admin.talepler.index')); ?>" class="neo-btn neo-btn neo-btn-secondary touch-target-optimized touch-target-optimized">
+                    <a href="<?php echo e(route('admin.talepler.index')); ?>" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200">
                         Temizle
                     </a>
-                    <button @click="runAISearch()" type="button" class="neo-btn ai-badge text-white touch-target-optimized touch-target-optimized">
+                    <button @click="runAISearch()" type="button" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-indigo-500 to-purple-600 text-white hover:from-indigo-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-all duration-200">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M13 10V3L4 14h7v7l9-11h-7z" />
@@ -275,13 +239,13 @@
             
             <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
                 <?php $__currentLoopData = $talepler; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $talep): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                    <div class="neo-card group hover:shadow-lg transition-all duration-300">
+                    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm group hover:shadow-lg transition-all duration-300">
                         
                         <div class="p-6 border-b border-gray-200 dark:border-gray-700">
                             <div class="flex items-start justify-between">
                                 <div class="flex items-start gap-3">
                                     <div
-                                        class="neo-icon-container bg-gradient-to-br from-blue-500 to-purple-600 text-white">
+                                        class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg text-white">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
@@ -307,7 +271,12 @@
                                 
                                 <div class="flex items-center gap-2">
                                     <span
-                                        class="px-2 py-1 text-xs font-semibold rounded-full status-<?php echo e(strtolower($talep->status ?? 'active')); ?>">
+                                        class="px-2 py-1 text-xs font-semibold rounded-full 
+                                        <?php if(strtolower($talep->status ?? 'active') === 'active'): ?> bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200
+                                        <?php elseif(strtolower($talep->status ?? 'active') === 'pending'): ?> bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200
+                                        <?php elseif(strtolower($talep->status ?? 'active') === 'matched'): ?> bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200
+                                        <?php else: ?> bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200
+                                        <?php endif; ?>">
                                         <?php echo e($talep->status ?? 'Aktif'); ?>
 
                                     </span>
@@ -402,7 +371,7 @@
                                 <div class="flex items-center gap-2">
                                     
                                     <button @click="analyzeWithAI(<?php echo e($talep->id); ?>)"
-                                        class="text-xs px-3 py-1.5 ai-badge text-white rounded-full hover:opacity-80 transition-opacity">
+                                        class="text-xs px-3 py-1.5 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-full hover:from-indigo-600 hover:to-purple-700 transition-all duration-200 animate-pulse">
                                         <svg class="w-3 h-3 inline mr-1" fill="none" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M13 10V3L4 14h7v7l9-11h-7z" />
@@ -412,7 +381,7 @@
 
                                     
                                     <button @click="findMatches(<?php echo e($talep->id); ?>)"
-                                        class="text-xs px-3 py-1.5 bg-green-500 text-white rounded-full hover:bg-green-600 transition-colors">
+                                        class="text-xs px-3 py-1.5 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-full hover:from-green-600 hover:to-emerald-700 transition-all duration-200">
                                         <svg class="w-3 h-3 inline mr-1" fill="none" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -424,7 +393,7 @@
                                 <div class="flex items-center gap-1">
                                     
                                     <a href="<?php echo e(route('admin.talepler.show', $talep)); ?>"
-                                        class="neo-btn neo-btn-sm neo-btn neo-btn-secondary touch-target-optimized touch-target-optimized">
+                                        class="inline-flex items-center justify-center p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -435,7 +404,7 @@
 
                                     
                                     <a href="<?php echo e(route('admin.talepler.edit', $talep)); ?>"
-                                        class="neo-btn neo-btn-sm neo-btn neo-btn-secondary touch-target-optimized touch-target-optimized">
+                                        class="inline-flex items-center justify-center p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -449,14 +418,14 @@
             </div>
 
             
-            <div class="neo-card p-4">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-4">
                 <?php echo e($talepler->appends(request()->query())->links('pagination::tailwind')); ?>
 
             </div>
         <?php else: ?>
             
-            <div class="neo-card p-12 text-center">
-                <div class="neo-icon-container bg-gray-100 dark:bg-gray-800 mx-auto mb-4">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-12 text-center">
+                <div class="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-xl flex items-center justify-center mx-auto mb-4">
                     <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293L18.707 8.707A1 1 0 0119 9.414V19a2 2 0 01-2 2z" />
@@ -468,7 +437,7 @@
                 <p class="text-gray-600 dark:text-gray-400 mb-6">
                     İlk talebi ekleyerek AI destekli eşleştirme sistemini kullanmaya başlayın.
                 </p>
-                <a href="<?php echo e(route('admin.talepler.create')); ?>" class="neo-btn neo-btn neo-btn-primary touch-target-optimized touch-target-optimized">
+                <a href="<?php echo e(route('admin.talepler.create')); ?>" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 shadow-md hover:shadow-lg">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -487,13 +456,13 @@
             <div class="flex items-center justify-center min-h-screen px-4">
                 <div class="fixed inset-0 bg-black/50 backdrop-blur-sm" @click="showAnalysisModal = false"></div>
                 <div
-                    class="neo-modal neo-modal-lg bg-gray-50 dark:bg-gray-800 rounded-2xl shadow-2xl max-w-2xl w-full relative border border-gray-200 dark:border-gray-700">
+                    class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-2xl w-full relative border border-gray-200 dark:border-gray-700">
                     
-                    <div class="neo-modal-header px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                    <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
                         <div class="flex items-center justify-between">
                             <div class="flex items-center gap-3">
                                 <div
-                                    class="neo-icon-container w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+                                    class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
                                     <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M13 10V3L4 14h7v7l9-11h-7z" />
@@ -506,7 +475,7 @@
                                 </div>
                             </div>
                             <button @click="showAnalysisModal = false"
-                                class="neo-btn neo-btn-ghost p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors touch-target-optimized touch-target-optimized">
+                                class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
                                 <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M6 18L18 6M6 6l12 12" />
@@ -516,13 +485,13 @@
                     </div>
 
                     
-                    <div class="neo-modal-body px-6 py-6">
+                    <div class="px-6 py-6">
                         <div x-show="isAnalyzing" class="text-center py-12">
-                            <div class="neo-loading-container">
+                            <div>
                                 <div
-                                    class="neo-spinner w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4">
+                                    class="w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4">
                                 </div>
-                                <div class="neo-loading-text">
+                                <div>
                                     <h4 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">AI Analiz
                                         Yapılıyor</h4>
                                     <p class="text-gray-600 dark:text-gray-400">Talep detayları analiz ediliyor ve
@@ -531,15 +500,15 @@
                             </div>
                         </div>
 
-                        <div x-show="!isAnalyzing && analysisResult" class="neo-analysis-results space-y-6">
+                        <div x-show="!isAnalyzing && analysisResult" class="space-y-6">
                             
-                            <div x-html="analysisResult" class="neo-content"></div>
+                            <div x-html="analysisResult"></div>
                         </div>
                     </div>
 
                     
                     <div
-                        class="neo-modal-footer px-6 py-4 bg-gradient-to-r from-gray-50 to-blue-50 dark:from-gray-700 dark:to-blue-900/20 rounded-b-2xl border-t border-gray-200 dark:border-gray-600">
+                        class="px-6 py-4 bg-gradient-to-r from-gray-50 to-blue-50 dark:from-gray-700 dark:to-blue-900/20 rounded-b-2xl border-t border-gray-200 dark:border-gray-600">
                         <div class="flex items-center justify-between">
                             <div class="text-sm text-gray-600 dark:text-gray-400">
                                 <span class="inline-flex items-center gap-1">
@@ -551,15 +520,15 @@
                                 </span>
                             </div>
                             <div class="flex items-center gap-3">
-                                <button @click="showAnalysisModal = false" class="neo-btn neo-btn neo-btn-secondary touch-target-optimized touch-target-optimized">
-                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor">
+                                <button @click="showAnalysisModal = false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M6 18L18 6M6 6l12 12" />
                                     </svg>
                                     Kapat
                                 </button>
-                                <button class="neo-btn neo-btn neo-btn-primary touch-target-optimized touch-target-optimized">
-                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor">
+                                <button class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                                     </svg>
@@ -581,13 +550,13 @@
             <div class="flex items-center justify-center min-h-screen px-4">
                 <div class="fixed inset-0 bg-black/50 backdrop-blur-sm" @click="showBatchAnalysisModal = false"></div>
                 <div
-                    class="neo-modal neo-modal-xl bg-gray-50 dark:bg-gray-800 rounded-2xl shadow-2xl max-w-4xl w-full relative border border-gray-200 dark:border-gray-700">
+                    class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-4xl w-full relative border border-gray-200 dark:border-gray-700">
                     
-                    <div class="neo-modal-header px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                    <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
                         <div class="flex items-center justify-between">
                             <div class="flex items-center gap-3">
                                 <div
-                                    class="neo-icon-container w-10 h-10 bg-gradient-to-r from-green-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
+                                    class="w-10 h-10 bg-gradient-to-r from-green-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
                                     <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M13 10V3L4 14h7v7l9-11h-7z" />
@@ -600,7 +569,7 @@
                                 </div>
                             </div>
                             <button @click="showBatchAnalysisModal = false"
-                                class="neo-btn neo-btn-ghost p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors touch-target-optimized touch-target-optimized">
+                                class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
                                 <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M6 18L18 6M6 6l12 12" />
@@ -630,10 +599,10 @@
                     </div>
                     <div class="px-6 py-4 bg-gray-50 dark:bg-gray-800 rounded-b-xl">
                         <div class="flex items-center justify-end gap-3">
-                            <button @click="showBatchAnalysisModal = false" class="neo-btn neo-btn neo-btn-secondary touch-target-optimized touch-target-optimized">
+                            <button @click="showBatchAnalysisModal = false" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200">
                                 İptal
                             </button>
-                            <button @click="runBatchAnalysis()" class="neo-btn ai-badge text-white touch-target-optimized touch-target-optimized">
+                            <button @click="runBatchAnalysis()" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-indigo-500 to-purple-600 text-white hover:from-indigo-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-all duration-200">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M13 10V3L4 14h7v7l9-11h-7z" />

@@ -10,6 +10,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\YazlikRezervasyon;
+use App\Models\YazlikFiyatlandirma;
 
 /**
  * App\Models\Ilan
@@ -475,6 +477,24 @@ class Ilan extends Model
     public function activeSeasons()
     {
         return $this->hasMany(Season::class)->active();
+    }
+
+    /**
+     * Yazlık rezervasyonları
+     * Context7: Yazlık kiralama sistemi için rezervasyon ilişkisi
+     */
+    public function yazlikRezervasyonlar(): HasMany
+    {
+        return $this->hasMany(YazlikRezervasyon::class);
+    }
+
+    /**
+     * Yazlık fiyatlandırmaları
+     * Context7: Yazlık kiralama sistemi için sezonluk fiyatlandırma ilişkisi
+     */
+    public function yazlikFiyatlandirma(): HasMany
+    {
+        return $this->hasMany(YazlikFiyatlandirma::class);
     }
 
     /**

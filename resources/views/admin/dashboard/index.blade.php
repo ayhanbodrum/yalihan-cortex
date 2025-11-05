@@ -113,6 +113,11 @@
         </div>
     </div>
 
+    {{-- TCMB Exchange Rate Widget --}}
+    <div class="mb-8">
+        <x-admin.exchange-rate-widget />
+    </div>
+
     <!-- Tables Grid -->
     <div class="grid grid-cols-1 gap-5 lg:grid-cols-2 mb-8">
         <!-- Son Eklenen İlanlar -->

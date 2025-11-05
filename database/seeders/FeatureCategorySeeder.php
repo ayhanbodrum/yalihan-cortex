@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Schema;
 use App\Models\FeatureCategory;
 use App\Models\Feature;
 use Illuminate\Support\Str;
@@ -24,19 +25,33 @@ class FeatureCategorySeeder extends Seeder
         $this->command->info('🎯 Özellik Kategorileri ve Özellikleri oluşturuluyor...');
         $this->command->info('');
 
+        // Context7: Schema kontrolü (yasaklı komut kuralı)
+        $hasAppliesToColumn = Schema::hasColumn('feature_categories', 'applies_to');
+        $hasStatusColumn = Schema::hasColumn('feature_categories', 'status');
+
         // ============================================
         // 1️⃣ GENEL ÖZELLİKLER (Tüm kategoriler için)
         // ============================================
+        $genelData = [
+            'name' => 'Genel Özellikler',
+            'description' => 'Tüm ilan tipleri için ortak özellikler',
+            'icon' => 'fas fa-list',
+            'order' => 1,
+        ];
+
+        // Context7: status kolonu varsa ekle
+        if ($hasStatusColumn) {
+            $genelData['status'] = true;
+        }
+
+        // Context7: applies_to kolonu varsa ekle
+        if ($hasAppliesToColumn) {
+            $genelData['applies_to'] = json_encode(['all']);
+        }
+
         $genel = FeatureCategory::updateOrCreate(
             ['slug' => 'genel-ozellikler'],
-            [
-                'name' => 'Genel Özellikler',
-                'description' => 'Tüm ilan tipleri için ortak özellikler',
-                'icon' => 'fas fa-list',
-                'order' => 1,
-                'status' => true,
-                'applies_to' => json_encode(['all']), // Hepsine uygulanır
-            ]
+            $genelData
         );
         $this->command->info('✅ Genel Özellikler kategorisi oluşturuldu');
 
@@ -52,16 +67,24 @@ class FeatureCategorySeeder extends Seeder
         // ============================================
         // 2️⃣ ARSA ÖZELLİKLERİ
         // ============================================
+        $arsaData = [
+            'name' => 'Arsa Özellikleri',
+            'description' => 'Arsa ilanları için özel özellikler',
+            'icon' => 'fas fa-map',
+            'order' => 2,
+        ];
+
+        if ($hasStatusColumn) {
+            $arsaData['status'] = true;
+        }
+
+        if ($hasAppliesToColumn) {
+            $arsaData['applies_to'] = json_encode(['arsa']);
+        }
+
         $arsa = FeatureCategory::updateOrCreate(
             ['slug' => 'arsa-ozellikleri'],
-            [
-                'name' => 'Arsa Özellikleri',
-                'description' => 'Arsa ilanları için özel özellikler',
-                'icon' => 'fas fa-map',
-                'order' => 2,
-                'status' => true,
-                'applies_to' => json_encode(['arsa']), // Sadece arsa
-            ]
+            $arsaData
         );
         $this->command->info('✅ Arsa Özellikleri kategorisi oluşturuldu');
 
@@ -83,16 +106,24 @@ class FeatureCategorySeeder extends Seeder
         // ============================================
         // 3️⃣ KONUT ÖZELLİKLERİ
         // ============================================
+        $konutData = [
+            'name' => 'Konut Özellikleri',
+            'description' => 'Konut ilanları için özel özellikler',
+            'icon' => 'fas fa-home',
+            'order' => 3,
+        ];
+
+        if ($hasStatusColumn) {
+            $konutData['status'] = true;
+        }
+
+        if ($hasAppliesToColumn) {
+            $konutData['applies_to'] = json_encode(['konut']);
+        }
+
         $konut = FeatureCategory::updateOrCreate(
             ['slug' => 'konut-ozellikleri'],
-            [
-                'name' => 'Konut Özellikleri',
-                'description' => 'Konut ilanları için özel özellikler',
-                'icon' => 'fas fa-home',
-                'order' => 3,
-                'status' => true,
-                'applies_to' => json_encode(['konut']), // Sadece konut
-            ]
+            $konutData
         );
         $this->command->info('✅ Konut Özellikleri kategorisi oluşturuldu');
 
@@ -114,16 +145,24 @@ class FeatureCategorySeeder extends Seeder
         // ============================================
         // 4️⃣ TİCARİ ÖZELLİKLER
         // ============================================
+        $ticariData = [
+            'name' => 'Ticari Özellikler',
+            'description' => 'İşyeri ilanları için özel özellikler',
+            'icon' => 'fas fa-briefcase',
+            'order' => 4,
+        ];
+
+        if ($hasStatusColumn) {
+            $ticariData['status'] = true;
+        }
+
+        if ($hasAppliesToColumn) {
+            $ticariData['applies_to'] = json_encode(['isyeri']);
+        }
+
         $ticari = FeatureCategory::updateOrCreate(
             ['slug' => 'ticari-ozellikler'],
-            [
-                'name' => 'Ticari Özellikler',
-                'description' => 'İşyeri ilanları için özel özellikler',
-                'icon' => 'fas fa-briefcase',
-                'order' => 4,
-                'status' => true,
-                'applies_to' => json_encode(['isyeri']), // Sadece ticari/işyeri
-            ]
+            $ticariData
         );
         $this->command->info('✅ Ticari Özellikler kategorisi oluşturuldu');
 
@@ -140,16 +179,24 @@ class FeatureCategorySeeder extends Seeder
         // ============================================
         // 5️⃣ YAZLIK ÖZELLİKLERİ
         // ============================================
+        $yazlikData = [
+            'name' => 'Yazlık Özellikleri',
+            'description' => 'Yazlık kiralama için özel özellikler',
+            'icon' => 'fas fa-umbrella-beach',
+            'order' => 5,
+        ];
+
+        if ($hasStatusColumn) {
+            $yazlikData['status'] = true;
+        }
+
+        if ($hasAppliesToColumn) {
+            $yazlikData['applies_to'] = json_encode(['yazlik-kiralama']);
+        }
+
         $yazlik = FeatureCategory::updateOrCreate(
             ['slug' => 'yazlik-ozellikleri'],
-            [
-                'name' => 'Yazlık Özellikleri',
-                'description' => 'Yazlık kiralama için özel özellikler',
-                'icon' => 'fas fa-umbrella-beach',
-                'order' => 5,
-                'status' => true,
-                'applies_to' => json_encode(['yazlik-kiralama']), // Sadece yazlık
-            ]
+            $yazlikData
         );
         $this->command->info('✅ Yazlık Özellikleri kategorisi oluşturuldu');
 
@@ -185,10 +232,11 @@ class FeatureCategorySeeder extends Seeder
      */
     private function createFeatures(FeatureCategory $category, array $features): void
     {
+        // Context7: Schema kontrolü
+        $hasStatusColumn = Schema::hasColumn('features', 'status');
+
         foreach ($features as $index => $feature) {
-            Feature::updateOrCreate(
-                ['slug' => $feature['slug']],
-                [
+            $featureData = [
                     'name' => $feature['name'],
                     'feature_category_id' => $category->id,
                     'type' => $feature['input_type'] ?? 'text',
@@ -198,8 +246,16 @@ class FeatureCategorySeeder extends Seeder
                 'is_filterable' => true,
                     'is_searchable' => false,
                     'order' => $index + 1,
-                'status' => true,
-                ]
+            ];
+
+            // Context7: status kolonu varsa ekle
+            if ($hasStatusColumn) {
+                $featureData['status'] = true;
+            }
+
+            Feature::updateOrCreate(
+                ['slug' => $feature['slug']],
+                $featureData
             );
         }
 

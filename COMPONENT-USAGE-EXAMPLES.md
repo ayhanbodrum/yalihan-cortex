@@ -73,7 +73,7 @@
     name="maintenance_mode"
     label="Bakım Modu"
     :checked="old('maintenance_mode', setting('maintenance_mode', false))"
-    help="Aktif olduğunda site bakım sayfası gösterir"
+    help="Etkin olduğunda site bakım sayfası gösterir"
 />
 ```
 
@@ -340,7 +340,7 @@ php artisan serve
 ```blade
 <x-radio
     name="status"
-    label="Aktif"
+    label="Etkin"
     value="active"
     help="İlan görünür ve aranabilir olur"
 />
@@ -352,7 +352,7 @@ php artisan serve
     <form method="POST" action="...">
         @csrf
         <x-checkbox name="verified" label="Onaylı" />
-        <x-admin.toggle name="active" label="Aktif" />
+        <x-admin.toggle name="active" label="Etkin" />
         
         <x-slot:footer>
             <button type="submit">Kaydet</button>
@@ -374,4 +374,6 @@ php artisan serve
 **Özet:** Component'ler **GERÇEKTEN işe yarıyor!** Kod kısalıyor, bakım kolaylaşıyor, dark mode otomatik geliyor! 🎉
 
 **Şimdi:** Bir sayfada dene, farkı gör! 🚀
+
+
 

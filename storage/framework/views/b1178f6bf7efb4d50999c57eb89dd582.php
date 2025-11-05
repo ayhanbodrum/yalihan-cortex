@@ -27,16 +27,70 @@
         </div>
     </div>
 
+    <!-- 0. Ana Yayın Tipleri Listesi -->
+    <div class="bg-gray-50 dark:bg-gray-800 rounded-xl shadow-lg p-6 mb-6">
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="text-xl font-bold text-gray-900 dark:text-white">
+                📢 <?php echo e($kategori->name); ?> - Yayın Tipleri
+            </h2>
+            <button onclick="showAddYayinTipiModal()" class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg shadow-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 transform hover:scale-105 active:scale-95 text-sm">
+                <i class="fas fa-plus mr-2"></i>
+                Yayın Tipi Ekle
+            </button>
+        </div>
+
+        <!-- Yayın Tipleri Listesi -->
+        <?php if(($allYayinTipleri ?? collect())->isNotEmpty()): ?>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+            <?php $__currentLoopData = $allYayinTipleri; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $yayinTipi): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                <?php
+                    // Filtreleme: Sadece gereksiz yayın tiplerini gizle
+                    $excludedYayinTipleri = ['Devren Satılık', 'Günlük Kiralık'];
+                    if (in_array($yayinTipi->yayin_tipi, $excludedYayinTipleri)) {
+                        continue;
+                    }
+                ?>
+                <div class="flex items-center justify-between p-4 bg-white dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600 hover:shadow-md transition-all duration-200">
+                    <div class="flex items-center gap-3">
+                        <span class="text-lg font-semibold text-gray-900 dark:text-white">
+                            <?php echo e($yayinTipi->yayin_tipi); ?>
+
+                        </span>
+                        <?php if($yayinTipi->status): ?>
+                            <span class="px-2 py-1 text-xs font-medium bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 rounded-full">
+                                Aktif
+                            </span>
+                        <?php else: ?>
+                            <span class="px-2 py-1 text-xs font-medium bg-gray-100 dark:bg-gray-600 text-gray-800 dark:text-gray-200 rounded-full">
+                                Pasif
+                            </span>
+                        <?php endif; ?>
+                    </div>
+                    <button
+                        onclick="deleteYayinTipi(<?php echo e($yayinTipi->id); ?>, '<?php echo e($yayinTipi->yayin_tipi); ?>')"
+                        class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-white bg-gradient-to-r from-red-600 to-red-700 rounded-lg hover:from-red-700 hover:to-red-800 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-all duration-200 shadow-sm hover:shadow-md active:scale-95">
+                        <i class="fas fa-trash mr-1.5"></i>
+                        Sil
+                    </button>
+                </div>
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+        </div>
+        <?php else: ?>
+        <div class="text-center py-8">
+            <i class="fas fa-inbox text-4xl text-gray-300 dark:text-gray-600 mb-3"></i>
+            <p class="text-gray-500 dark:text-gray-400 mb-4">
+                Henüz yayın tipi eklenmemiş.
+            </p>
+        </div>
+        <?php endif; ?>
+    </div>
+
     <!-- 1. Ana Kategori > Alt Kategori > Yayın Tipi Hiyerarşisi -->
     <div class="bg-gray-50 dark:bg-gray-800 rounded-xl shadow-lg p-6 mb-6">
         <div class="flex items-center justify-between mb-4">
             <h2 class="text-xl font-bold text-gray-900 dark:text-white">
                 1️⃣ <?php echo e($kategori->name); ?> > Alt Kategoriler
             </h2>
-            <button onclick="showAddYayinTipiModal()" class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg shadow-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 transform hover:scale-105 active:scale-95 text-sm">
-                <i class="fas fa-plus mr-2"></i>
-                Yayın Tipi Ekle
-            </button>
         </div>
 
         <!-- Uyarı: Yanlış eklenen yayın tipleri -->
@@ -54,7 +108,7 @@
                     <ul class="list-disc list-inside text-sm text-yellow-800 dark:text-yellow-200 mb-3 space-y-1">
                         <?php $__currentLoopData = $yanlisEklenenYayinTipleri; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $yanlis): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <li>
-                            <strong><?php echo e($yanlis->name); ?></strong> 
+                            <strong><?php echo e($yanlis->name); ?></strong>
                             (ID: <?php echo e($yanlis->id); ?>, Seviye: <?php echo e($yanlis->seviye); ?>)
                         </li>
                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
@@ -63,7 +117,7 @@
                         Bu kayıtları silip yukarıdaki <strong>"Yayın Tipi Ekle"</strong> butonunu kullanarak doğru şekilde ekleyin.
                     </p>
                     <div class="flex gap-2">
-                        <a href="<?php echo e(route('admin.ilan-kategorileri.index')); ?>?search=<?php echo e(urlencode($yanlisEklenenYayinTipleri->first()->name)); ?>" 
+                        <a href="<?php echo e(route('admin.ilan-kategorileri.index')); ?>?search=<?php echo e(urlencode($yanlisEklenenYayinTipleri->first()->name)); ?>"
                            class="text-xs text-yellow-700 dark:text-yellow-300 hover:underline">
                             <i class="fas fa-edit mr-1"></i> Bu Kayıtları Düzenle
                         </a>
@@ -86,7 +140,7 @@
                         <p class="text-sm text-blue-800 dark:text-blue-200 mb-3">
                             Alt kategori oluşturduktan sonra yayın tipi eşleştirmelerini burada yönetebilirsiniz.
                         </p>
-                        
+
                         <!-- Debug Bilgisi (Sadece geliştirme modunda) -->
                         <?php if(config('app.debug')): ?>
                         <div class="mt-3 p-3 bg-gray-100 dark:bg-gray-900 rounded text-xs font-mono">
@@ -100,22 +154,22 @@
                                 <div>Seviye: <span class="font-bold"><?php echo e($kategori->seviye); ?></span></div>
                             </div>
                             <div class="mt-2 pt-2 border-t border-gray-300 dark:border-gray-700">
-                                <a href="<?php echo e(route('admin.ilan-kategorileri.create')); ?>?parent_id=<?php echo e($kategori->id); ?>&seviye=1" 
+                                <a href="<?php echo e(route('admin.ilan-kategorileri.create')); ?>?parent_id=<?php echo e($kategori->id); ?>&seviye=1"
                                    class="text-blue-600 dark:text-blue-400 hover:underline">
                                     ➕ Alt Kategori Oluştur
                                 </a>
                             </div>
                         </div>
                         <?php endif; ?>
-                        
+
                         <!-- Hızlı Erişim -->
                         <div class="mt-3 flex gap-2">
-                            <a href="<?php echo e(route('admin.ilan-kategorileri.index')); ?>" 
+                            <a href="<?php echo e(route('admin.ilan-kategorileri.index')); ?>"
                                class="text-xs text-blue-600 dark:text-blue-400 hover:underline">
                                 <i class="fas fa-list mr-1"></i> Tüm Kategorileri Görüntüle
                             </a>
                             <span class="text-blue-300 dark:text-blue-700">|</span>
-                            <a href="<?php echo e(route('admin.ilan-kategorileri.create')); ?>?parent_id=<?php echo e($kategori->id); ?>&seviye=1" 
+                            <a href="<?php echo e(route('admin.ilan-kategorileri.create')); ?>?parent_id=<?php echo e($kategori->id); ?>&seviye=1"
                                class="text-xs text-blue-600 dark:text-blue-400 hover:underline">
                                 <i class="fas fa-plus mr-1"></i> Yeni Alt Kategori Ekle
                             </a>
@@ -130,13 +184,21 @@
         <div class="mb-6 last:mb-0 border-b dark:border-gray-700 pb-6 last:border-0 last:pb-0">
             <!-- Alt Kategori Başlığı -->
             <div class="flex items-center justify-between mb-3">
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-                    <?php echo e($altKategori->name); ?>
+                <div class="flex items-center gap-3">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                        <?php echo e($altKategori->name); ?>
 
-                </h3>
-                <span class="text-xs px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full">
-                    <?php echo e($altKategoriYayinTipleri[$altKategori->id]->count() ?? 0); ?> yayın tipi
-                </span>
+                    </h3>
+                    <span class="text-xs px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full">
+                        <?php echo e($altKategoriYayinTipleri[$altKategori->id]->count() ?? 0); ?> yayın tipi
+                    </span>
+                </div>
+                <button
+                    onclick="deleteAltKategori(<?php echo e($altKategori->id); ?>, '<?php echo e($altKategori->name); ?>')"
+                    class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-white bg-gradient-to-r from-red-600 to-red-700 rounded-lg hover:from-red-700 hover:to-red-800 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-all duration-200 shadow-sm hover:shadow-md active:scale-95">
+                    <i class="fas fa-trash mr-1.5"></i>
+                    Sil
+                </button>
             </div>
 
             <!-- Bu Alt Kategorinin Yayın Tipleri -->
@@ -146,9 +208,10 @@
                         // ✅ FIX: Pivot tablo kontrolü (alt_kategori_yayin_tipi)
                         $activeIds = $altKategoriYayinTipleri[$altKategori->id] ?? collect([]);
                         $active = $activeIds->contains($yayinTipi->id);
-                        
-                        // ⚠️ Filtreleme: Belirli yayın tiplerini gösterme
-                        $excludedYayinTipleri = ['Devren Satılık', 'Günlük Kiralık', 'Satılık'];
+
+                        // ✅ Filtreleme: Sadece gereksiz yayın tiplerini gizle
+                        // Satılık ve Kiralık artık gösterilecek (filtre kaldırıldı)
+                        $excludedYayinTipleri = ['Devren Satılık', 'Günlük Kiralık'];
                         if (in_array($yayinTipi->yayin_tipi, $excludedYayinTipleri)) {
                             continue; // Skip this iteration
                         }
@@ -199,8 +262,9 @@
                             </th>
                             <?php $__currentLoopData = $allYayinTipleri; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $yayinTipi): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <?php
-                                    // ⚠️ Filtreleme: Belirli yayın tiplerini gösterme
-                                    $excludedYayinTipleri = ['Devren Satılık', 'Günlük Kiralık', 'Satılık'];
+                                    // ✅ Filtreleme: Sadece gereksiz yayın tiplerini gizle
+                                    // Satılık ve Kiralık artık gösterilecek (filtre kaldırıldı)
+                                    $excludedYayinTipleri = ['Devren Satılık', 'Günlük Kiralık'];
                                     if (in_array($yayinTipi->yayin_tipi ?? $yayinTipi->name, $excludedYayinTipleri)) {
                                         continue;
                                     }
@@ -226,12 +290,13 @@
                             </td>
                             <?php $__currentLoopData = $allYayinTipleri; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $yayinTipi): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <?php
-                                    // ⚠️ Filtreleme: Belirli yayın tiplerini gösterme
-                                    $excludedYayinTipleri = ['Devren Satılık', 'Günlük Kiralık', 'Satılık'];
+                                    // ✅ Filtreleme: Sadece gereksiz yayın tiplerini gizle
+                                    // Satılık ve Kiralık artık gösterilecek (filtre kaldırıldı)
+                                    $excludedYayinTipleri = ['Devren Satılık', 'Günlük Kiralık'];
                                     if (in_array($yayinTipi->yayin_tipi ?? $yayinTipi->name, $excludedYayinTipleri)) {
                                         continue;
                                     }
-                                    
+
                                     $enabled = $fieldData['yayin_tipleri'][$yayinTipi->id] ?? false;
                                     // ✅ Field dependency ID'yi ID ya da slug ile bul
                                     $yayinTipiKeyId = (string)$yayinTipi->id;
@@ -426,7 +491,7 @@ console.log('✅ PropertyTypeManager scripts loaded! v5.0 (Optimized)');
 const PropertyTypeManager = {
     csrfToken: null,
     debounceTimers: {},
-    
+
     // CSRF token'ı initialize et
     init() {
         this.csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
@@ -438,23 +503,29 @@ const PropertyTypeManager = {
         }
         return this;
     },
-    
+
     // Generic AJAX request handler
     async request(url, data = {}, method = 'POST') {
         if (!this.csrfToken) {
             throw new Error('CSRF token not initialized');
         }
-        
-        const response = await fetch(url, {
+
+        const options = {
             method,
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
                 'X-CSRF-TOKEN': this.csrfToken
-            },
-            body: JSON.stringify(data)
-        });
-        
+            }
+        };
+
+        // DELETE için body göndermeyelim
+        if (method !== 'GET' && method !== 'DELETE') {
+            options.body = JSON.stringify(data);
+        }
+
+        const response = await fetch(url, options);
+
         // Content-Type validation
         const contentType = response.headers.get('content-type');
         if (!contentType?.includes('application/json')) {
@@ -462,21 +533,21 @@ const PropertyTypeManager = {
             console.error('❌ Non-JSON response:', text.substring(0, 500));
             throw new Error('Server returned HTML instead of JSON');
         }
-        
+
         if (!response.ok) {
             const errorData = await response.json();
             throw new Error(errorData.message || `HTTP ${response.status}`);
         }
-        
+
         return response.json();
     },
-    
+
     // Debounce helper
     debounce(key, callback, delay = 300) {
         clearTimeout(this.debounceTimers[key]);
         this.debounceTimers[key] = setTimeout(callback, delay);
     },
-    
+
     // Toast notifications
     showSuccess(message) {
         if (window.toast?.success) {
@@ -490,7 +561,7 @@ const PropertyTypeManager = {
             }
         }
     },
-    
+
     showError(message) {
         if (window.toast?.error) {
             window.toast.error(message);
@@ -503,7 +574,7 @@ const PropertyTypeManager = {
             }
         }
     },
-    
+
     // Loading overlay
     showLoading(show = true) {
         const overlay = document.getElementById('loadingOverlay');
@@ -523,11 +594,11 @@ async function toggleYayinTipiRelation(checkbox) {
     const { altKategoriId, yayinTipiId, yayinTipiName } = checkbox.dataset;
     const enabled = checkbox.checked;
     const label = checkbox.closest('label');
-    
+
     // Loading state
     checkbox.disabled = true;
     label?.classList.add('opacity-50', 'cursor-wait');
-    
+
     try {
         const data = await PropertyTypeManager.request(
             '<?php echo e(route("admin.property-type-manager.toggle-yayin-tipi", $kategori->id)); ?>',
@@ -537,19 +608,19 @@ async function toggleYayinTipiRelation(checkbox) {
                 enabled: enabled
             }
         );
-        
+
         if (data.success) {
             // Visual feedback - Optimized class toggle
             const classes = {
                 active: ['bg-green-50', 'dark:bg-green-900/20', 'border-green-300', 'dark:border-green-700'],
                 inactive: ['bg-gray-50', 'dark:bg-gray-800', 'border-gray-300', 'dark:border-gray-600']
             };
-            
+
             if (label) {
                 label.classList.remove(...(enabled ? classes.inactive : classes.active));
                 label.classList.add(...(enabled ? classes.active : classes.inactive));
             }
-            
+
             PropertyTypeManager.showSuccess(`${yayinTipiName} ${enabled ? 'etkinleştirildi' : 'devre dışı bırakıldı'}`);
             console.log('✅ Yayın tipi ilişkisi güncellendi:', data);
         }
@@ -569,10 +640,10 @@ async function toggleFieldDependency(checkbox) {
     const { fieldId, fieldSlug, fieldName, fieldType, fieldCategory, yayinTipiId, yayinTipiSlug } = checkbox.dataset;
     const enabled = checkbox.checked;
     const upsertMode = !fieldId;
-    
+
     // Loading state
     checkbox.disabled = true;
-    
+
     try {
         const payload = upsertMode ? {
             kategori_slug: '<?php echo e($kategori->slug); ?>',
@@ -587,18 +658,18 @@ async function toggleFieldDependency(checkbox) {
             field_id: parseInt(fieldId),
             enabled: enabled
         };
-        
+
         const data = await PropertyTypeManager.request(
             '<?php echo e(route("admin.property-type-manager.toggle-field-dependency")); ?>',
             payload
         );
-        
+
         if (data.success) {
             // Upsert mode: field_id'yi DOM'a kaydet
             if (upsertMode && data.data?.field_id) {
                 checkbox.setAttribute('data-field-id', data.data.field_id);
             }
-            
+
             PropertyTypeManager.showSuccess('Alan ilişkisi güncellendi');
             console.log('✅ Field dependency güncellendi:', data);
         }
@@ -608,6 +679,58 @@ async function toggleFieldDependency(checkbox) {
         PropertyTypeManager.showError(error.message || 'Alan ilişkisi güncellenemedi!');
     } finally {
         checkbox.disabled = false;
+    }
+}
+
+// ============================================================================
+// 🎯 YAYIN TİPİ SİLME
+// ============================================================================
+
+async function deleteYayinTipi(yayinTipiId, yayinTipiName) {
+    if (!confirm(`"${yayinTipiName}" yayın tipini silmek istediğinize emin misiniz?\n\n⚠️ Bu yayın tipine ait ilanlar varsa silme işlemi başarısız olacaktır.`)) {
+        return;
+    }
+
+    PropertyTypeManager.showLoading(true);
+
+    try {
+        const url = `<?php echo e(route('admin.property-type-manager.destroy-yayin-tipi', [$kategori->id, ':id'])); ?>`.replace(':id', yayinTipiId);
+        const data = await PropertyTypeManager.request(url, {}, 'DELETE');
+
+        if (data.success) {
+            PropertyTypeManager.showSuccess(`"${yayinTipiName}" yayın tipi başarıyla silindi! Sayfa yenileniyor...`);
+            setTimeout(() => location.reload(), 1500);
+        }
+    } catch (error) {
+        PropertyTypeManager.showLoading(false);
+        PropertyTypeManager.showError(error.message || 'Yayın tipi silinirken bir hata oluştu!');
+        console.error('❌ Delete error:', error);
+    }
+}
+
+// ============================================================================
+// 🎯 ALT KATEGORİ SİLME
+// ============================================================================
+
+async function deleteAltKategori(altKategoriId, altKategoriName) {
+    if (!confirm(`"${altKategoriName}" alt kategorisini silmek istediğinize emin misiniz?\n\n⚠️ Bu alt kategoriye ait ilanlar veya alt kategoriler varsa silme işlemi başarısız olacaktır.`)) {
+        return;
+    }
+
+    PropertyTypeManager.showLoading(true);
+
+    try {
+        const url = `<?php echo e(route('admin.property-type-manager.destroy-alt-kategori', [$kategori->id, ':id'])); ?>`.replace(':id', altKategoriId);
+        const data = await PropertyTypeManager.request(url, {}, 'DELETE');
+
+        if (data.success) {
+            PropertyTypeManager.showSuccess(`"${altKategoriName}" alt kategorisi başarıyla silindi! Sayfa yenileniyor...`);
+            setTimeout(() => location.reload(), 1500);
+        }
+    } catch (error) {
+        PropertyTypeManager.showLoading(false);
+        PropertyTypeManager.showError(error.message || 'Alt kategori silinirken bir hata oluştu!');
+        console.error('❌ Delete error:', error);
     }
 }
 
@@ -633,21 +756,21 @@ function closeAddYayinTipiModal() {
 // Yeni Yayın Tipi Ekle
 async function addYayinTipi(e) {
     e.preventDefault();
-    
+
     const name = document.getElementById('modalYayinTipi')?.value?.trim();
     if (!name) {
         PropertyTypeManager.showError('Yayın tipi adı gerekli');
         return;
     }
-    
+
     PropertyTypeManager.showLoading(true);
-    
+
     try {
         const data = await PropertyTypeManager.request(
             "<?php echo e(route('admin.property-type-manager.create-yayin-tipi', $kategori->id)); ?>",
             { name }
         );
-        
+
         if (data.success) {
             PropertyTypeManager.showSuccess('Yayın tipi eklendi! Sayfa yenileniyor...');
             setTimeout(() => location.reload(), 1000);
@@ -665,7 +788,7 @@ document.addEventListener('DOMContentLoaded', function() {
         modal.addEventListener('click', (e) => {
             if (e.target === modal) closeAddYayinTipiModal();
         });
-        
+
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
                 closeAddYayinTipiModal();
@@ -683,14 +806,14 @@ function toggleAllYayinTipleri(checked) {
     PropertyTypeManager.debounce('bulkToggle', () => {
         const checkboxes = document.querySelectorAll('.yayin-tipi-toggle');
         const count = Array.from(checkboxes).filter(cb => cb.checked !== checked).length;
-        
+
         if (count === 0) {
             PropertyTypeManager.showSuccess('Tüm değerler zaten bu durumda');
             return;
         }
-        
+
         PropertyTypeManager.showLoading(true);
-        
+
         let completed = 0;
         checkboxes.forEach(cb => {
             if (cb.checked !== checked) {
@@ -710,7 +833,7 @@ function toggleAllYayinTipleri(checked) {
 // Toplu Kaydetme (Bulk Save)
 async function saveChanges() {
     PropertyTypeManager.showLoading(true);
-    
+
     try {
         // Tüm değişiklikleri topla
         const changes = {
@@ -718,7 +841,7 @@ async function saveChanges() {
             field_dependencies: [],
             features: []
         };
-        
+
         // Yayın tipleri
         document.querySelectorAll('[data-alt-kategori-id][data-yayin-tipi]').forEach(cb => {
             if (cb.checked !== (cb.dataset.active === 'true')) {
@@ -729,7 +852,7 @@ async function saveChanges() {
                 });
             }
         });
-        
+
         // Alan ilişkileri
         document.querySelectorAll('[data-field-slug][data-yayin-tipi]').forEach(cb => {
             changes.field_dependencies.push({
@@ -742,7 +865,7 @@ async function saveChanges() {
                 enabled: cb.checked
             });
         });
-        
+
         // Özellikler
         document.querySelectorAll('[data-feature-id]').forEach(cb => {
             changes.features.push({
@@ -750,22 +873,22 @@ async function saveChanges() {
                 enabled: cb.checked
             });
         });
-        
-        const totalChanges = changes.yayin_tipleri.length + 
-                           changes.field_dependencies.length + 
+
+        const totalChanges = changes.yayin_tipleri.length +
+                           changes.field_dependencies.length +
                            changes.features.length;
-        
+
         if (totalChanges === 0) {
             PropertyTypeManager.showLoading(false);
             PropertyTypeManager.showSuccess('Değişiklik yok');
             return;
         }
-        
+
         const data = await PropertyTypeManager.request(
             '<?php echo e(route("admin.property-type-manager.bulk-save", $kategori->id)); ?>',
             changes
         );
-        
+
         if (data.success) {
             PropertyTypeManager.showSuccess(`${totalChanges} değişiklik kaydedildi! Sayfa yenileniyor...`);
             setTimeout(() => location.reload(), 2000);

@@ -187,24 +187,49 @@
                     @else
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             @foreach($kategoriListesi as $kategori)
-                                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 hover:shadow-lg transition-all hover:-translate-y-1">
-                                    <div class="flex items-center justify-between mb-4">
-                                        <h3 class="text-lg font-bold text-gray-900 dark:text-white">
-                                            {{ $kategori->name }}
-                                        </h3>
-                                        <span class="text-2xl">{{ $kategori->icon ?? '📦' }}</span>
+                                <div class="group bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 overflow-hidden">
+                                    {{-- Icon Header --}}
+                                    <div class="relative h-32 bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 flex items-center justify-center">
+                                        @php
+                                            $iconClass = $kategori->icon ?? 'fas fa-list';
+                                            $isFontAwesome = str_starts_with($iconClass, 'fas ') || str_starts_with($iconClass, 'far ') || str_starts_with($iconClass, 'fab ') || str_starts_with($iconClass, 'fal ');
+                                        @endphp
+                                        @if($isFontAwesome)
+                                            <i class="{{ $iconClass }} text-5xl text-blue-600 dark:text-blue-400 group-hover:scale-110 transition-transform duration-300"></i>
+                                        @else
+                                            <span class="text-5xl group-hover:scale-110 transition-transform duration-300">{{ $kategori->icon ?? '📦' }}</span>
+                                        @endif
+                                        {{-- Gradient Overlay --}}
+                                        <div class="absolute inset-0 bg-gradient-to-t from-white/50 dark:from-gray-800/50 to-transparent"></div>
                                     </div>
-                                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
-                                        {{ $kategori->description ?? 'Açıklama yok' }}
-                                    </p>
-                                    <div class="flex items-center justify-between text-sm">
-                                        <span class="text-gray-500 dark:text-gray-400">
-                                            {{ $kategori->features_count }} özellik
-                                        </span>
-                                        <a href="{{ route('admin.ozellikler.kategoriler.show', $kategori) }}" 
-                                           class="text-blue-600 hover:text-blue-700 dark:text-blue-400 font-semibold">
-                                            Detay →
-                                        </a>
+
+                                    {{-- Content --}}
+                                    <div class="p-6">
+                                        <div class="mb-3">
+                                            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                                                {{ $kategori->name }}
+                                            </h3>
+                                            <p class="text-sm text-gray-600 dark:text-gray-400 line-clamp-2">
+                                                {{ $kategori->description ?? 'Açıklama yok' }}
+                                            </p>
+                                        </div>
+
+                                        {{-- Stats & Action --}}
+                                        <div class="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-gray-700">
+                                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300">
+                                                <svg class="w-3 h-3 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                                                </svg>
+                                                {{ $kategori->features_count ?? 0 }} özellik
+                                            </span>
+                                            <a href="{{ route('admin.ozellikler.kategoriler.show', $kategori) }}" 
+                                               class="inline-flex items-center text-sm font-semibold text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 group-hover:gap-2 gap-1 transition-all duration-200">
+                                                Detay
+                                                <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                                </svg>
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
                             @endforeach

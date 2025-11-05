@@ -114,11 +114,12 @@ class AISettingsController extends AdminController
         }
 
         // AI Provider Statistics for View
+        $activeProvider = $settings['ai_provider'] ?? 'openai';
         $statistics = [
             'active_providers' => count(array_filter($settings, function ($value, $key) {
                 return str_contains($key, 'api_key') && !empty($value);
             }, ARRAY_FILTER_USE_BOTH)),
-            'active_provider' => 'anythingllm', // Default to AnythingLLM for initial display
+            'active_provider' => $activeProvider, // Context7: Aktif provider'ı ayarlardan al
         ];
 
         return view('admin.ai-settings.index', [
@@ -173,8 +174,19 @@ class AISettingsController extends AdminController
                 $value = encrypt($value);
             }
 
-            Setting::updateOrCreate(['key' => $key], ['value' => $value]);
+            // Context7: Setting model'de type ve group ekle
+            $settingData = [
+                'value' => $value,
+                'type' => in_array($key, $apiKeyFields) ? 'string' : (is_numeric($value) ? 'integer' : 'string'),
+                'group' => 'ai',
+            ];
+
+            Setting::updateOrCreate(['key' => $key], $settingData);
         }
+
+        // Cache temizle
+        Cache::forget('ai_provider');
+        Cache::forget('ai_config');
 
         Cache::forget('services.anythingllm');
 
@@ -216,6 +228,14 @@ class AISettingsController extends AdminController
                 case 'claude':
                 case 'anthropic':
                     $result = $this->testClaudeConnection();
+                    break;
+
+                case 'deepseek':
+                    $result = $this->testDeepSeekConnection();
+                    break;
+
+                case 'ollama':
+                    $result = $this->testOllamaConnectionPrivate();
                     break;
 
                 default:
@@ -290,7 +310,9 @@ class AISettingsController extends AdminController
      */
     private function testOpenAIConnection(): array
     {
-        $apiKey = Setting::where('key', 'ai_openai_api_key')->value('value');
+        // Context7: Yeni sistem (openai_api_key) + legacy (ai_openai_api_key)
+        $apiKey = Setting::where('key', 'openai_api_key')->value('value') 
+                ?? Setting::where('key', 'ai_openai_api_key')->value('value');
 
         if (!$apiKey) {
             return [
@@ -332,7 +354,9 @@ class AISettingsController extends AdminController
      */
     private function testGeminiConnection(): array
     {
-        $apiKey = Setting::where('key', 'ai_google_api_key')->value('value');
+        // Context7: Yeni sistem (google_api_key) + legacy (ai_google_api_key)
+        $apiKey = Setting::where('key', 'google_api_key')->value('value')
+                ?? Setting::where('key', 'ai_google_api_key')->value('value');
 
         if (!$apiKey) {
             return [
@@ -375,7 +399,9 @@ class AISettingsController extends AdminController
      */
     private function testClaudeConnection(): array
     {
-        $apiKey = Setting::where('key', 'ai_claude_api_key')->value('value');
+        // Context7: Yeni sistem (claude_api_key) + legacy (ai_claude_api_key)
+        $apiKey = Setting::where('key', 'claude_api_key')->value('value')
+                ?? Setting::where('key', 'ai_claude_api_key')->value('value');
 
         if (!$apiKey) {
             return [
@@ -397,6 +423,99 @@ class AISettingsController extends AdminController
                 'success' => false,
                 'message' => 'Hata: ' . $e->getMessage(),
                 'details' => ['error' => $e->getMessage()]
+            ];
+        }
+    }
+
+    /**
+     * Test DeepSeek Connection
+     */
+    private function testDeepSeekConnection(): array
+    {
+        $apiKey = Setting::where('key', 'deepseek_api_key')->value('value');
+
+        if (!$apiKey) {
+            return [
+                'success' => false,
+                'message' => 'DeepSeek API Key tanımlanmamış',
+                'details' => []
+            ];
+        }
+
+        try {
+            // DeepSeek API test - simple chat completion test
+            $response = Http::timeout(10)
+                ->withHeaders([
+                    'Authorization' => 'Bearer ' . $apiKey,
+                    'Content-Type' => 'application/json'
+                ])
+                ->post('https://api.deepseek.com/v1/chat/completions', [
+                    'model' => 'deepseek-chat',
+                    'messages' => [
+                        ['role' => 'user', 'content' => 'Test']
+                    ],
+                    'max_tokens' => 10
+                ]);
+
+            if ($response->successful()) {
+                return [
+                    'success' => true,
+                    'message' => 'DeepSeek bağlantısı başarılı',
+                    'details' => ['status' => 200]
+                ];
+            }
+
+            return [
+                'success' => false,
+                'message' => 'DeepSeek yanıt vermedi: ' . $response->status(),
+                'details' => ['status' => $response->status()]
+            ];
+        } catch (\Exception $e) {
+            return [
+                'success' => false,
+                'message' => 'Bağlantı hatası: ' . $e->getMessage(),
+                'details' => ['error' => $e->getMessage()]
+            ];
+        }
+    }
+
+    /**
+     * Test Ollama Connection (Private method for testProvider)
+     */
+    private function testOllamaConnectionPrivate(): array
+    {
+        $ollamaUrl = Setting::where('key', 'ollama_url')->value('value') ?? 'http://localhost:11434';
+        $model = Setting::where('key', 'ollama_model')->value('value') ?? 'llama2';
+
+        try {
+            $response = Http::timeout(10)->post($ollamaUrl . '/api/generate', [
+                'model' => $model,
+                'prompt' => 'Test',
+                'stream' => false
+            ]);
+
+            if ($response->successful()) {
+                return [
+                    'success' => true,
+                    'message' => 'Ollama bağlantısı başarılı',
+                    'details' => [
+                        'status' => 200,
+                        'url' => $ollamaUrl,
+                        'model' => $model
+                    ]
+                ];
+            }
+
+            return [
+                'success' => false,
+                'message' => 'Ollama yanıt vermedi: ' . $response->status(),
+                'details' => ['status' => $response->status(), 'url' => $ollamaUrl]
+            ];
+        } catch (\Exception $e) {
+            return [
+                'success' => false,
+                'message' => 'Bağlantı hatası: ' . $e->getMessage(),
+                'details' => ['error' => $e->getMessage(), 'url' => $ollamaUrl]
             ];
         }
     }

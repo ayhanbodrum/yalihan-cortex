@@ -11,6 +11,7 @@ use App\Models\KategoriYayinTipiFieldDependency;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Schema;
 
 class PropertyTypeManagerController extends AdminController
 {
@@ -25,12 +26,20 @@ class PropertyTypeManagerController extends AdminController
      */
     public function index()
     {
-        $kategoriler = IlanKategori::where('seviye', 0)
-            ->where('status', true) // ✅ Sadece aktif ana kategoriler
-            ->with(['children' => function($query) {
-                $query->where('seviye', 1)
-                    ->where('status', true) // ✅ Sadece aktif alt kategoriler
-                    ->orderByRaw('COALESCE(`order`, 999999) ASC') // ✅ Order null değerleri sona
+        $query = IlanKategori::where('seviye', 0);
+        
+        // Context7: Schema kontrolü ile status kolonu
+        if (Schema::hasColumn('ilan_kategorileri', 'status')) {
+            $query->where('status', true); // ✅ Sadece aktif ana kategoriler
+        }
+        
+        $kategoriler = $query->with(['children' => function($q) {
+                $q->where('seviye', 1);
+                // Context7: Schema kontrolü ile status kolonu
+                if (Schema::hasColumn('ilan_kategorileri', 'status')) {
+                    $q->where('status', true); // ✅ Sadece aktif alt kategoriler
+                }
+                $q->orderByRaw('COALESCE(`order`, 999999) ASC') // ✅ Order null değerleri sona
                     ->orderBy('name', 'ASC'); // ✅ İkincil sıralama
             }])
             ->orderByRaw('COALESCE(`order`, 999999) ASC') // ✅ Order null değerleri sona
@@ -53,10 +62,13 @@ class PropertyTypeManagerController extends AdminController
                     ];
                 })->toArray(),
                 // Tüm alt kategorileri de kontrol et (debug için)
-                'tum_alt_kategoriler' => IlanKategori::where('seviye', 1)
-                    ->where('status', true)
-                    ->select(['id', 'name', 'parent_id', 'seviye', 'status'])
-                    ->get()
+                'tum_alt_kategoriler' => (function() {
+                    $query = IlanKategori::where('seviye', 1);
+                    if (Schema::hasColumn('ilan_kategorileri', 'status')) {
+                        $query->where('status', true);
+                    }
+                    return $query->select(['id', 'name', 'parent_id', 'seviye', 'status'])->get();
+                })()
                     ->map(function($alt) {
                         return ['id' => $alt->id, 'name' => $alt->name, 'parent_id' => $alt->parent_id, 'seviye' => $alt->seviye, 'status' => $alt->status];
                     })->toArray()
@@ -97,13 +109,19 @@ class PropertyTypeManagerController extends AdminController
 
         // Alt kategoriler (seviye=1) - İyileştirilmiş sorgu
         // ✅ Status filtresi eklendi (opsiyonel - varsayılan: sadece aktif kategoriler)
-        $altKategoriler = IlanKategori::where('parent_id', $kategoriId)
-            ->where('seviye', 1)
-            ->where('status', true) // ✅ Plan: Status filtresi eklendi (aktif kategoriler)
-            ->with(['children' => function($query) {
-                $query->where('seviye', 2)
-                    ->where('status', true) // ✅ Alt kategori çocukları için de status filtresi
-                    ->orderByRaw('COALESCE(`order`, 999999) ASC');
+        $altKategorilerQuery = IlanKategori::where('parent_id', $kategoriId)
+            ->where('seviye', 1);
+        // Context7: Schema kontrolü ile status kolonu
+        if (Schema::hasColumn('ilan_kategorileri', 'status')) {
+            $altKategorilerQuery->where('status', true); // ✅ Plan: Status filtresi eklendi (aktif kategoriler)
+        }
+        $altKategoriler = $altKategorilerQuery->with(['children' => function($query) {
+                $query->where('seviye', 2);
+                // Context7: Schema kontrolü ile status kolonu
+                if (Schema::hasColumn('ilan_kategorileri', 'status')) {
+                    $query->where('status', true); // ✅ Alt kategori çocukları için de status filtresi
+                }
+                $query->orderByRaw('COALESCE(`order`, 999999) ASC');
             }])
             ->orderByRaw('COALESCE(`order`, 999999) ASC') // ✅ Plan: Order null değerleri sona alındı
             ->orderBy('name', 'ASC') // ✅ Plan: İkincil sıralama eklendi
@@ -112,9 +130,13 @@ class PropertyTypeManagerController extends AdminController
         // ✅ Tüm kategoriler için tutarlı: Yanlış eklenen yayın tiplerini tespit et
         // Seviye=1 olarak eklenmiş ama yayın tipi olmalı (seviye kontrolü yapılmadan)
         // NOT: "Günlük Kiralama", "Haftalık Kiralama", "Aylık Kiralama" geçerli alt kategorilerdir
-        $yanlisEklenenYayinTipleri = IlanKategori::where('parent_id', $kategoriId)
-            ->where('seviye', 1)
-            ->where('status', true) // ✅ Aktif olanları kontrol et
+        $yanlisEklenenYayinTipleriQuery = IlanKategori::where('parent_id', $kategoriId)
+            ->where('seviye', 1);
+        // Context7: Schema kontrolü ile status kolonu
+        if (Schema::hasColumn('ilan_kategorileri', 'status')) {
+            $yanlisEklenenYayinTipleriQuery->where('status', true); // ✅ Aktif olanları kontrol et
+        }
+        $yanlisEklenenYayinTipleri = $yanlisEklenenYayinTipleriQuery
             ->whereIn('name', ['Satılık', 'Kiralık', 'Kat Karşılığı', 'Günlük', 'Haftalık', 'Aylık'])
             ->whereNotIn('name', ['Günlük Kiralama', 'Haftalık Kiralama', 'Aylık Kiralama']) // ✅ Geçerli alt kategorileri hariç tut
             ->get();
@@ -187,13 +209,29 @@ class PropertyTypeManagerController extends AdminController
         // Her alt kategori için hangi yayın tipleri aktif?
         // ✅ FIX: Yeni pivot tablo kullan (alt_kategori_yayin_tipi)
         $altKategoriYayinTipleri = [];
-        foreach($altKategoriler as $altKat) {
-            // Bu alt kategorinin aktif yayın tipleri (pivot tablodan)
-            $activeYayinTipleri = DB::table('alt_kategori_yayin_tipi')
-                ->where('alt_kategori_id', $altKat->id)
-                ->where('enabled', 1)
-                ->pluck('yayin_tipi_id');
-            $altKategoriYayinTipleri[$altKat->id] = $activeYayinTipleri;
+        if (Schema::hasTable('alt_kategori_yayin_tipi')) {
+            foreach($altKategoriler as $altKat) {
+                // Bu alt kategorinin aktif yayın tipleri (pivot tablodan)
+                try {
+                    $activeYayinTipleri = DB::table('alt_kategori_yayin_tipi')
+                        ->where('alt_kategori_id', $altKat->id)
+                        ->where('enabled', 1)
+                        ->pluck('yayin_tipi_id');
+                    $altKategoriYayinTipleri[$altKat->id] = $activeYayinTipleri;
+                } catch (\Exception $e) {
+                    // Tablo henüz yoksa veya hata varsa boş array
+                    Log::warning('alt_kategori_yayin_tipi tablosu sorgulanamadı', [
+                        'error' => $e->getMessage(),
+                        'alt_kategori_id' => $altKat->id
+                    ]);
+                    $altKategoriYayinTipleri[$altKat->id] = collect([]);
+                }
+            }
+        } else {
+            // Tablo yoksa tüm alt kategoriler için boş array
+            foreach($altKategoriler as $altKat) {
+                $altKategoriYayinTipleri[$altKat->id] = collect([]);
+            }
         }
 
         // Field dependencies - Grouped by yayin_tipi (Opsiyonel - tablo yoksa boş array)
@@ -460,6 +498,141 @@ class PropertyTypeManagerController extends AdminController
     }
 
     /**
+     * Yayın tipini sil (soft delete)
+     */
+    public function destroyYayinTipi(Request $request, $kategoriId, $yayinTipiId)
+    {
+        try {
+            $yayinTipi = IlanKategoriYayinTipi::findOrFail($yayinTipiId);
+
+            // Kategori kontrolü
+            if ($yayinTipi->kategori_id != $kategoriId) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Yayın tipi bu kategoriye ait değil!'
+                ], 403);
+            }
+
+            // Bu yayın tipine ait ilan var mı kontrol et
+            $ilanCount = $yayinTipi->ilanlar()->count();
+            if ($ilanCount > 0) {
+                return response()->json([
+                    'success' => false,
+                    'message' => "Bu yayın tipine ait {$ilanCount} ilan bulunuyor. Önce ilanları silin veya başka bir yayın tipine taşıyın."
+                ], 422);
+            }
+
+            // Alt kategori ilişkilerini kaldır
+            DB::table('alt_kategori_yayin_tipi')
+                ->where('yayin_tipi_id', $yayinTipiId)
+                ->delete();
+
+            // Feature assignment ilişkilerini kaldır
+            if (Schema::hasTable('feature_assignments')) {
+                DB::table('feature_assignments')
+                    ->where('assignable_type', IlanKategoriYayinTipi::class)
+                    ->where('assignable_id', $yayinTipiId)
+                    ->delete();
+            }
+
+            // Yayın tipini soft delete yap
+            $yayinTipi->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Yayın tipi başarıyla silindi',
+                'data' => [
+                    'id' => $yayinTipiId,
+                    'name' => $yayinTipi->yayin_tipi
+                ]
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Yayın tipi silme hatası', [
+                'yayin_tipi_id' => $yayinTipiId,
+                'kategori_id' => $kategoriId,
+                'error' => $e->getMessage()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Yayın tipi silinirken bir hata oluştu: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Alt kategoriyi sil (soft delete)
+     */
+    public function destroyAltKategori(Request $request, $kategoriId, $altKategoriId)
+    {
+        try {
+            $altKategori = IlanKategori::findOrFail($altKategoriId);
+
+            // Kategori kontrolü
+            if ($altKategori->parent_id != $kategoriId) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Alt kategori bu ana kategoriye ait değil!'
+                ], 403);
+            }
+
+            // Seviye kontrolü
+            if ($altKategori->seviye != 1) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Bu kategori bir alt kategori değil!'
+                ], 403);
+            }
+
+            // Bu alt kategoriye ait ilan var mı kontrol et
+            $ilanCount = $altKategori->ilanlar()->count();
+            if ($ilanCount > 0) {
+                return response()->json([
+                    'success' => false,
+                    'message' => "Bu alt kategoriye ait {$ilanCount} ilan bulunuyor. Önce ilanları silin veya başka bir kategoriye taşıyın."
+                ], 422);
+            }
+
+            // Alt kategoriye ait çocuk kategoriler var mı kontrol et
+            $cocukKategoriCount = IlanKategori::where('parent_id', $altKategoriId)->count();
+            if ($cocukKategoriCount > 0) {
+                return response()->json([
+                    'success' => false,
+                    'message' => "Bu alt kategoriye ait {$cocukKategoriCount} alt kategori bulunuyor. Önce alt kategorileri silin."
+                ], 422);
+            }
+
+            // Alt kategori yayın tipi ilişkilerini kaldır
+            DB::table('alt_kategori_yayin_tipi')
+                ->where('alt_kategori_id', $altKategoriId)
+                ->delete();
+
+            // Alt kategoriyi soft delete yap
+            $altKategori->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Alt kategori başarıyla silindi',
+                'data' => [
+                    'id' => $altKategoriId,
+                    'name' => $altKategori->name
+                ]
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Alt kategori silme hatası', [
+                'alt_kategori_id' => $altKategoriId,
+                'kategori_id' => $kategoriId,
+                'error' => $e->getMessage()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Alt kategori silinirken bir hata oluştu: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
      * Field Dependencies Management - Index (Polymorphic Feature System)
      * ✅ Yeni polymorphic feature assignment sistemi
      */
@@ -476,22 +649,42 @@ class PropertyTypeManagerController extends AdminController
         // ✅ POLYMORPHIC: Her yayın tipi için feature assignments
         $fieldDependencies = [];
         
-        foreach ($yayinTipleri as $yayinTipi) {
-            // Bu yayın tipine atanmış feature'ları al
-            $assignments = $yayinTipi->featureAssignments()
-                ->with(['feature' => function($q) {
-                    $q->with('category');
-                }])
-                ->visible()
-                ->ordered()
-                ->get();
-            
-            $fieldDependencies[$yayinTipi->slug ?? $yayinTipi->yayin_tipi] = $assignments;
-            
-            Log::info('Feature assignments loaded for property type', [
-                'property_type' => $yayinTipi->yayin_tipi,
-                'assignments_count' => $assignments->count()
-            ]);
+        // Context7: Tablo kontrolü ile güvenli sorgulama
+        if (Schema::hasTable('feature_assignments')) {
+            foreach ($yayinTipleri as $yayinTipi) {
+                try {
+                    // Bu yayın tipine atanmış feature'ları al
+                    if (method_exists($yayinTipi, 'featureAssignments')) {
+                        $assignments = $yayinTipi->featureAssignments()
+                            ->with(['feature' => function($q) {
+                                $q->with('category');
+                            }])
+                            ->visible()
+                            ->ordered()
+                            ->get();
+                    } else {
+                        $assignments = collect([]);
+                    }
+                    
+                    $fieldDependencies[$yayinTipi->slug ?? $yayinTipi->yayin_tipi] = $assignments;
+                    
+                    Log::info('Feature assignments loaded for property type', [
+                        'property_type' => $yayinTipi->yayin_tipi,
+                        'assignments_count' => $assignments->count()
+                    ]);
+                } catch (\Exception $e) {
+                    Log::warning('Feature assignments yüklenemedi', [
+                        'error' => $e->getMessage(),
+                        'yayin_tipi_id' => $yayinTipi->id
+                    ]);
+                    $fieldDependencies[$yayinTipi->slug ?? $yayinTipi->yayin_tipi] = collect([]);
+                }
+            }
+        } else {
+            // Tablo yoksa tüm yayın tipleri için boş array
+            foreach ($yayinTipleri as $yayinTipi) {
+                $fieldDependencies[$yayinTipi->slug ?? $yayinTipi->yayin_tipi] = collect([]);
+            }
         }
 
         // Tüm mevcut features (assignment için)

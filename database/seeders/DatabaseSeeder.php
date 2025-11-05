@@ -8,10 +8,14 @@ use Illuminate\Database\Seeder;
  * Database Seeder
  *
  * Context7 standartlarına uygun ana seeder.
- * Context7MasterSeeder'ı çağırarak tüm verileri yükler.
+ * TEK MASTER SEEDER: Context7MasterSeeder tüm verileri yönetir.
  *
- * Context7 Standardı: C7-DATABASE-SEEDER-2025-09-13
- * Versiyon: 4.0.0
+ * Kullanım:
+ *   php artisan db:seed                    → Tüm verileri seed eder
+ *   php artisan db:seed --class=Context7MasterSeeder  → Aynı sonuç
+ *
+ * Context7 Standardı: C7-DATABASE-SEEDER-2025-11-05
+ * Versiyon: 5.0.0 (Tek Master Seeder)
  */
 class DatabaseSeeder extends Seeder
 {
@@ -21,13 +25,14 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->command->info('🚀 Database Seeder başlatılıyor...');
-        $this->command->info('📋 Context7 Standardı: C7-DATABASE-SEEDER-2025-09-13');
-        $this->command->info('🔧 Versiyon: 4.0.0 (Context7 Entegrasyonu)');
+        $this->command->info('📋 Context7 Standardı: C7-DATABASE-SEEDER-2025-11-05');
+        $this->command->info('🔧 Versiyon: 5.0.0 (Tek Master Seeder)');
+        $this->command->info('📦 Master Seeder: Context7MasterSeeder');
         $this->command->newLine();
 
-        // Context7 Master Seeder'ı çağır
+        // ✅ TEK MASTER SEEDER - Tüm verileri Context7 kurallarına göre yükler
         $this->call([
-            // Context7MasterSeeder::class,  // Tüm Context7 seeder'larını yönetir
+            Context7MasterSeeder::class,
         ]);
 
         $this->command->newLine();

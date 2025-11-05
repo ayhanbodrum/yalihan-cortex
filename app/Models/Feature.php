@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
 class Feature extends Model
@@ -12,23 +13,29 @@ class Feature extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'category_id',
+        'feature_category_id', // Context7: Veritabanında feature_category_id var
         'name',
         'slug',
         'description',
+        'type', // Context7: Veritabanında type var
+        'options', // Context7: Veritabanında options var (JSON)
+        'unit', // Context7: Veritabanında unit var
+        'is_required',
+        'is_filterable',
+        'is_searchable',
+        'order',
+        'status', // Context7: Veritabanında status var
+        // Legacy fields (backward compatibility)
+        'category_id',
         'field_type',
         'field_options',
         'field_unit',
         'field_icon',
-        'is_required',
-        'is_filterable',
-        'is_searchable',
         'validation_rules',
         'ai_auto_fill',
         'ai_suggestion',
         'ai_calculation',
         'ai_prompt',
-        'order',
         'enabled',
         'show_in_listing',
         'show_in_detail',
@@ -36,7 +43,8 @@ class Feature extends Model
     ];
 
     protected $casts = [
-        'field_options' => 'array',
+        'options' => 'array', // Context7: Veritabanında options var
+        'field_options' => 'array', // Legacy
         'is_required' => 'boolean',
         'is_filterable' => 'boolean',
         'is_searchable' => 'boolean',
@@ -44,6 +52,7 @@ class Feature extends Model
         'ai_suggestion' => 'boolean',
         'ai_calculation' => 'boolean',
         'enabled' => 'boolean',
+        'status' => 'boolean', // Context7: Veritabanında status var
         'show_in_listing' => 'boolean',
         'show_in_detail' => 'boolean',
         'show_in_filter' => 'boolean',
@@ -66,10 +75,11 @@ class Feature extends Model
 
     /**
      * Get the category that owns the feature
+     * Context7: Veritabanında feature_category_id kolonu var
      */
     public function category()
     {
-        return $this->belongsTo(FeatureCategory::class, 'category_id');
+        return $this->belongsTo(FeatureCategory::class, 'feature_category_id');
     }
 
     /**
@@ -139,10 +149,16 @@ class Feature extends Model
 
     /**
      * Scope: Only enabled features
+     * Context7: Schema kontrolü ile status/enabled
      */
     public function scopeEnabled($query)
     {
-        return $query->where('enabled', true);
+        if (Schema::hasColumn('features', 'status')) {
+            return $query->where('status', true);
+        } elseif (Schema::hasColumn('features', 'enabled')) {
+            return $query->where('enabled', true);
+        }
+        return $query;
     }
 
     /**

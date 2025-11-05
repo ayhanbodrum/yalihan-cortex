@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Models\Feature;
 use App\Models\FeatureCategory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 
 class OzellikController extends AdminController
 {
@@ -13,9 +14,10 @@ class OzellikController extends AdminController
         // PHASE 2.2: Tab-based UI - Collect all data
         
         // Tab 1: Tüm Özellikler
+        // Context7: feature_category_id kullanılmalı (category_id yok)
         $query = Feature::with('category')->orderBy('order')->orderBy('name');
         if ($request->has('category_id') && $request->category_id) {
-            $query->where('category_id', $request->category_id);
+            $query->where('feature_category_id', $request->category_id);
         }
         if ($request->has('enabled') && $request->enabled !== '') {
             $query->where('enabled', $request->enabled == '1' ? true : false);
@@ -34,16 +36,19 @@ class OzellikController extends AdminController
         $kategoriListesi = $kategoriQuery->paginate(20, ['*'], 'kategoriler_page');
 
         // Tab 3: Kategorisiz Özellikler
-        $kategorisizOzellikler = Feature::whereNull('category_id')
+        // Context7: feature_category_id kullanılmalı (category_id yok)
+        $kategorisizOzellikler = Feature::whereNull('feature_category_id')
             ->orderBy('name')
             ->paginate(20, ['*'], 'kategorisiz_page');
 
         // İstatistikler
+        // Context7: Schema kontrolü ile enabled/status ve feature_category_id
+        $enabledColumn = Schema::hasColumn('features', 'status') ? 'status' : 'enabled';
         $istatistikler = [
             'toplam' => Feature::count(),
-            'aktif' => Feature::where('enabled', true)->count(),
-            'pasif' => Feature::where('enabled', false)->count(),
-            'kategorisiz' => Feature::whereNull('category_id')->count(),
+            'aktif' => Feature::where($enabledColumn, true)->count(),
+            'pasif' => Feature::where($enabledColumn, false)->count(),
+            'kategorisiz' => Feature::whereNull('feature_category_id')->count(),
             'kategori_sayisi' => FeatureCategory::count(),
         ];
 
@@ -71,13 +76,19 @@ class OzellikController extends AdminController
     public function store(Request $request)
     {
         // ✅ POLYMORPHIC: Updated field names
+        // Context7: feature_category_id kullanılmalı (category_id yok)
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'category_id' => 'nullable|exists:feature_categories,id',
+            'feature_category_id' => 'nullable|exists:feature_categories,id',
             'field_type' => 'required|in:text,number,boolean,select,checkbox,radio,textarea',
             'enabled' => 'required|boolean',
             'order' => 'nullable|integer',
         ]);
+        
+        // Request'ten category_id gelirse feature_category_id'ye map et
+        if ($request->has('category_id') && !$request->has('feature_category_id')) {
+            $validated['feature_category_id'] = $request->category_id;
+        }
 
         Feature::create($validated);
 
@@ -98,9 +109,10 @@ class OzellikController extends AdminController
         $ozellik = Feature::findOrFail($id);
 
         // ✅ POLYMORPHIC: Updated field names
+        // Context7: feature_category_id kullanılmalı (category_id yok)
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'category_id' => 'nullable|exists:feature_categories,id',
+            'feature_category_id' => 'nullable|exists:feature_categories,id',
             'field_type' => 'required|in:text,number,boolean,select,checkbox,radio,textarea',
             'enabled' => 'required|boolean',
             'order' => 'nullable|integer',

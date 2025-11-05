@@ -7,6 +7,7 @@ use App\Models\Feature;
 use App\Models\OzellikKategori;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
@@ -23,10 +24,16 @@ class OzellikKategoriController extends AdminController
                     ->orWhere('description', 'like', "%{$q}%");
             });
         }
+        // Context7: Schema kontrolü (status vs enabled)
         if ($request->filled('status')) {
             $status = (bool) $request->input('status');
-            $query->where('enabled', $status);
+            if (Schema::hasColumn('feature_categories', 'status')) {
+                $query->where('status', $status);
+            } elseif (Schema::hasColumn('feature_categories', 'enabled')) {
+                $query->where('enabled', $status);
+            }
         }
+        
         $kategoriler = $query->withCount('features')->orderBy('order')->orderBy('name')->paginate(20)->withQueryString();
         return view('admin.ozellikler.kategoriler.index', compact('kategoriler'));
     }

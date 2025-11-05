@@ -115,6 +115,30 @@
         </div>
     </div>
 
+    
+    <div class="mb-8">
+        <?php if (isset($component)) { $__componentOriginald2f839ab96561ffcc1f13eae0542280e = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginald2f839ab96561ffcc1f13eae0542280e = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.admin.exchange-rate-widget','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? (array) $attributes->getIterator() : [])); ?>
+<?php $component->withName('admin.exchange-rate-widget'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag && $constructor = (new ReflectionClass(Illuminate\View\AnonymousComponent::class))->getConstructor()): ?>
+<?php $attributes = $attributes->except(collect($constructor->getParameters())->map->getName()->all()); ?>
+<?php endif; ?>
+<?php $component->withAttributes([]); ?>
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginald2f839ab96561ffcc1f13eae0542280e)): ?>
+<?php $attributes = $__attributesOriginald2f839ab96561ffcc1f13eae0542280e; ?>
+<?php unset($__attributesOriginald2f839ab96561ffcc1f13eae0542280e); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginald2f839ab96561ffcc1f13eae0542280e)): ?>
+<?php $component = $__componentOriginald2f839ab96561ffcc1f13eae0542280e; ?>
+<?php unset($__componentOriginald2f839ab96561ffcc1f13eae0542280e); ?>
+<?php endif; ?>
+    </div>
+
     <!-- Tables Grid -->
     <div class="grid grid-cols-1 gap-5 lg:grid-cols-2 mb-8">
         <!-- Son Eklenen İlanlar -->

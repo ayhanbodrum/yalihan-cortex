@@ -98,4 +98,23 @@ return [
         'format' => env('WIKIMAPIA_FORMAT', 'json'), // xml, json, jsonp, kml
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | OpenStreetMap Nominatim Service (FREE Alternative)
+    |--------------------------------------------------------------------------
+    |
+    | FREE geocoding and place search service
+    | Rate limit: 1 request/second
+    | Coverage: Worldwide
+    |
+    */
+
+    'nominatim' => [
+        'base_url' => env('NOMINATIM_BASE_URL', 'https://nominatim.openstreetmap.org'),
+        'email' => env('NOMINATIM_EMAIL', env('MAIL_FROM_ADDRESS', 'admin@yalihanemlak.com.tr')),
+        'timeout' => env('NOMINATIM_TIMEOUT', 10),
+        'cache_enabled' => env('NOMINATIM_CACHE_ENABLED', true),
+        'cache_ttl' => env('NOMINATIM_CACHE_TTL', 3600),
+    ],
+
 ];

@@ -103,7 +103,7 @@
             </div>
 
             <!-- Section 6: Kişi Bilgileri (CRM) -->
-            <div class="neo-card" x-data="{ selectedPerson: null }">
+            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm" x-data="{ selectedPerson: null }">
                 <?php echo $__env->make('admin.ilanlar.partials.stable._kisi-secimi', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
             </div>
 

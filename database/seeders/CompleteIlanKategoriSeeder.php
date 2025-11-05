@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Schema;
 use App\Models\IlanKategori;
 use Illuminate\Support\Str;
 
@@ -14,26 +15,44 @@ class CompleteIlanKategoriSeeder extends Seeder
      */
     public function run(): void
     {
-        // ✅ Ana Kategoriler
+        $this->command->info('📂 Context7: İlan Kategorileri seed ediliyor...');
+        
+        // Context7: status kolonu kontrolü (yasaklı komut kuralı)
+        $hasStatusColumn = Schema::hasColumn('ilan_kategorileri', 'status');
+        
+        if (!$hasStatusColumn) {
+            $this->command->warn('⚠️ status kolonu yok! Varsayılan değer kullanılacak.');
+        }
+
+        // ✅ Ana Kategoriler (Emlak Yönetimi)
         $anaKategoriler = [
-            ['name' => 'Konut', 'slug' => 'konut', 'status' => true],
-            ['name' => 'Arsa', 'slug' => 'arsa', 'status' => true],
-            ['name' => 'İşyeri', 'slug' => 'isyeri', 'status' => true],
-            ['name' => 'Turistik Tesis', 'slug' => 'turistik-tesis', 'status' => true],
-            ['name' => 'Projeler', 'slug' => 'projeler', 'status' => true],
+            ['name' => 'Konut', 'slug' => 'konut', 'order' => 1],
+            ['name' => 'Arsa', 'slug' => 'arsa', 'order' => 2],
+            ['name' => 'İşyeri', 'slug' => 'isyeri', 'order' => 3],
+            ['name' => 'Turistik Tesis', 'slug' => 'turistik-tesis', 'order' => 4],
+            ['name' => 'Projeler', 'slug' => 'projeler', 'order' => 5],
         ];
 
         foreach ($anaKategoriler as $kategoriData) {
+            $data = [
+                'name' => $kategoriData['name'],
+                'parent_id' => null,
+                'seviye' => 0, // Ana kategori (seviye 0)
+                'order' => $kategoriData['order'],
+            ];
+
+            // Context7: status kolonu varsa ekle (Schema::hasColumn kontrolü)
+            if ($hasStatusColumn) {
+                $data['status'] = true;
+            }
+
             IlanKategori::updateOrCreate(
                 ['slug' => $kategoriData['slug']],
-                [
-                    'name' => $kategoriData['name'],
-                    'parent_id' => null,
-                    'status' => $kategoriData['status'],
-                    'seviye' => 1, // Ana kategori
-                ]
+                $data
             );
         }
+
+        $this->command->info('   ✓ ' . count($anaKategoriler) . ' ana kategori oluşturuldu');
 
         // ✅ Alt Kategoriler
         $altKategoriler = [
@@ -85,17 +104,25 @@ class CompleteIlanKategoriSeeder extends Seeder
             $parent = IlanKategori::where('slug', $kategoriData['parent_slug'])->first();
 
             if ($parent) {
+                $data = [
+                    'name' => $kategoriData['name'],
+                    'parent_id' => $parent->id,
+                    'seviye' => 1, // Alt kategori (seviye 1)
+                ];
+
+                // Context7: status kolonu varsa ekle (Schema::hasColumn kontrolü)
+                if ($hasStatusColumn) {
+                    $data['status'] = true;
+                }
+
                 IlanKategori::updateOrCreate(
                     ['slug' => $kategoriData['slug']],
-                    [
-                        'name' => $kategoriData['name'],
-                        'parent_id' => $parent->id,
-                        'status' => true,
-                        'seviye' => 2, // Alt kategori
-                    ]
+                    $data
                 );
             }
         }
+
+        $this->command->info('   ✓ ' . count($altKategoriler) . ' alt kategori oluşturuldu');
 
         $this->command->info('✅ Kategori hiyerarşisi tamamlandı!');
         $this->command->info('   Ana Kategoriler: ' . IlanKategori::whereNull('parent_id')->count());

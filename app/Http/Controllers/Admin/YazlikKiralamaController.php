@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Models\Ilan;
 use App\Models\IlanFotografi;
 use App\Models\IlanKategori;
+use App\Models\FeatureCategory;
+use App\Models\YazlikRezervasyon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -73,13 +75,13 @@ class YazlikKiralamaController extends AdminController
         $ilanlar = $query->orderBy('created_at', 'desc')
                         ->paginate(20);
 
-        // Statistics
+        // Statistics - Context7: Eloquent relationship kullanımı
         try {
-            $activeReservations = DB::table('yazlik_rezervasyonlar')
-                ->join('ilanlar', 'yazlik_rezervasyonlar.ilan_id', '=', 'ilanlar.id')
-                ->where('ilanlar.kategori_id', $yazlikKategori->id)
-                ->whereIn('yazlik_rezervasyonlar.status', ['beklemede', 'onaylandi'])
-                ->count();
+            $activeReservations = YazlikRezervasyon::whereHas('ilan', function($q) use ($yazlikKategori) {
+                $q->where('kategori_id', $yazlikKategori->id);
+            })
+            ->whereIn('status', ['beklemede', 'onaylandi'])
+            ->count();
         } catch (\Exception $e) {
             $activeReservations = 0;
         }
@@ -447,35 +449,31 @@ class YazlikKiralamaController extends AdminController
 
     /**
      * Handle booking management
+     * Context7: Eloquent relationship kullanımı - DB::table() yerine
      */
     public function bookings(Request $request, $id = null)
     {
-        $query = DB::table('yazlik_rezervasyonlar')
-            ->join('ilanlar', 'yazlik_rezervasyonlar.ilan_id', '=', 'ilanlar.id')
-            ->select([
-                'yazlik_rezervasyonlar.*',
-                'ilanlar.baslik as ilan_baslik'
-            ]);
+        $query = YazlikRezervasyon::with('ilan:id,baslik');
 
         if ($id) {
-            $query->where('yazlik_rezervasyonlar.ilan_id', $id);
+            $query->where('ilan_id', $id);
         }
 
         if ($request->filled('status')) {
-            $query->where('yazlik_rezervasyonlar.status', $request->get('status'));
+            $query->where('status', $request->get('status'));
         }
 
         if ($request->filled('date_range')) {
             $dateRange = explode(' - ', $request->get('date_range'));
             if (count($dateRange) === 2) {
-                $query->whereBetween('yazlik_rezervasyonlar.check_in', [
+                $query->whereBetween('check_in', [
                     Carbon::parse($dateRange[0])->format('Y-m-d'),
                     Carbon::parse($dateRange[1])->format('Y-m-d')
                 ]);
             }
         }
 
-        $bookings = $query->orderBy('yazlik_rezervasyonlar.created_at', 'desc')
+        $bookings = $query->orderBy('created_at', 'desc')
                          ->paginate(20);
 
         return view('admin.yazlik-kiralama.bookings', compact('bookings', 'id'));
@@ -483,6 +481,7 @@ class YazlikKiralamaController extends AdminController
 
     /**
      * Update booking status
+     * Context7: Eloquent model kullanımı - DB::table() yerine
      */
     public function updateBookingStatus(Request $request, $bookingId)
     {
@@ -499,14 +498,12 @@ class YazlikKiralamaController extends AdminController
         }
 
         try {
-            DB::table('yazlik_rezervasyonlar')
-                ->where('id', $bookingId)
-                ->update([
-                    'status' => $request->status,
-                    'admin_notes' => $request->notes,
-                    'updated_at' => now(),
-                    'updated_by' => auth()->id()
-                ]);
+            $booking = YazlikRezervasyon::findOrFail($bookingId);
+            $booking->update([
+                'status' => $request->status,
+                'iptal_nedeni' => $request->notes, // Context7: iptal_nedeni field kullan
+                'updated_at' => now(),
+            ]);
 
             Log::info('Booking status updated', [
                 'booking_id' => $bookingId,
@@ -535,27 +532,77 @@ class YazlikKiralamaController extends AdminController
 
     /**
      * Helper methods
+     * Context7: FeatureCategory sistemi ile entegrasyon - hardcoded array yerine dinamik
      */
     private function getAmenityOptions()
     {
-        return [
-            'wifi' => 'Wi-Fi',
-            'parking' => 'Otopark',
-            'pool' => 'Havuz',
-            'garden' => 'Bahçe',
-            'sea_view' => 'Deniz Manzarası',
-            'mountain_view' => 'Dağ Manzarası',
-            'air_conditioning' => 'Klima',
-            'heating' => 'Isıtma',
-            'kitchen' => 'Mutfak',
-            'dishwasher' => 'Bulaşık Makinesi',
-            'washing_machine' => 'Çamaşır Makinesi',
-            'tv' => 'TV',
-            'balcony' => 'Balkon',
-            'terrace' => 'Teras',
-            'bbq' => 'Barbekü',
-            'security' => 'Güvenlik'
-        ];
+        try {
+            // FeatureCategory'den yazlık kategorisi için özellikleri al
+            $yazlikCategories = FeatureCategory::where(function($q) {
+                $q->where('applies_to', 'like', '%yazlik%')
+                  ->orWhere('applies_to', 'like', '%yazlık%')
+                  ->orWhereNull('applies_to'); // Tümü için geçerli olanlar
+            })
+            ->where('enabled', true)
+            ->with(['features' => function($q) {
+                $q->where('status', true)->orderBy('order');
+            }])
+            ->get();
+
+            $amenities = [];
+            foreach ($yazlikCategories as $category) {
+                foreach ($category->features as $feature) {
+                    $amenities[$feature->id] = $feature->name;
+                }
+            }
+
+            // Fallback: Eğer hiç özellik yoksa varsayılan listeyi döndür
+            if (empty($amenities)) {
+                return [
+                    'wifi' => 'Wi-Fi',
+                    'parking' => 'Otopark',
+                    'pool' => 'Havuz',
+                    'garden' => 'Bahçe',
+                    'sea_view' => 'Deniz Manzarası',
+                    'mountain_view' => 'Dağ Manzarası',
+                    'air_conditioning' => 'Klima',
+                    'heating' => 'Isıtma',
+                    'kitchen' => 'Mutfak',
+                    'dishwasher' => 'Bulaşık Makinesi',
+                    'washing_machine' => 'Çamaşır Makinesi',
+                    'tv' => 'TV',
+                    'balcony' => 'Balkon',
+                    'terrace' => 'Teras',
+                    'bbq' => 'Barbekü',
+                    'security' => 'Güvenlik'
+                ];
+            }
+
+            return $amenities;
+        } catch (\Exception $e) {
+            Log::warning('FeatureCategory entegrasyonu hatası, fallback kullanılıyor', [
+                'error' => $e->getMessage()
+            ]);
+            // Fallback to hardcoded list
+            return [
+                'wifi' => 'Wi-Fi',
+                'parking' => 'Otopark',
+                'pool' => 'Havuz',
+                'garden' => 'Bahçe',
+                'sea_view' => 'Deniz Manzarası',
+                'mountain_view' => 'Dağ Manzarası',
+                'air_conditioning' => 'Klima',
+                'heating' => 'Isıtma',
+                'kitchen' => 'Mutfak',
+                'dishwasher' => 'Bulaşık Makinesi',
+                'washing_machine' => 'Çamaşır Makinesi',
+                'tv' => 'TV',
+                'balcony' => 'Balkon',
+                'terrace' => 'Teras',
+                'bbq' => 'Barbekü',
+                'security' => 'Güvenlik'
+            ];
+        }
     }
 
     private function getRentalTypeOptions()
@@ -571,14 +618,13 @@ class YazlikKiralamaController extends AdminController
     private function calculateMonthlyRevenue()
     {
         try {
-            // Try yazlik_rezervasyonlar first (new table)
-            return DB::table('yazlik_rezervasyonlar')
-                ->where('status', 'onaylandi')
+            // Context7: Eloquent relationship kullanımı
+            return YazlikRezervasyon::where('status', 'onaylandi')
                 ->whereMonth('check_in', date('m'))
                 ->whereYear('check_in', date('Y'))
                 ->sum('toplam_fiyat') ?? 0;
         } catch (\Exception $e) {
-            // Fallback to mock data if table doesn't exist
+            Log::warning('Monthly revenue hesaplama hatası', ['error' => $e->getMessage()]);
             return 0;
         }
     }
@@ -586,14 +632,32 @@ class YazlikKiralamaController extends AdminController
     private function getBookingStats($ilanId)
     {
         try {
+            // Context7: Eloquent relationship kullanımı
+            $ilan = Ilan::with('yazlikRezervasyonlar')->findOrFail($ilanId);
+            $rezervasyonlar = $ilan->yazlikRezervasyonlar;
+            
+            $totalDays = $rezervasyonlar->where('status', 'onaylandi')->sum(function($r) {
+                return $r->check_in->diffInDays($r->check_out);
+            });
+            $confirmedCount = $rezervasyonlar->where('status', 'onaylandi')->count();
+            $avgStayDuration = $confirmedCount > 0 ? round($totalDays / $confirmedCount, 1) : 0;
+            
+            // Occupancy rate hesaplama (basit versiyon - geliştirilebilir)
+            $yearDays = 365;
+            $bookedDays = $rezervasyonlar->where('status', 'onaylandi')->sum(function($r) {
+                return $r->check_in->diffInDays($r->check_out);
+            });
+            $occupancyRate = $yearDays > 0 ? round(($bookedDays / $yearDays) * 100, 1) : 0;
+            
             return [
-                'total_bookings' => DB::table('yazlik_rezervasyonlar')->where('ilan_id', $ilanId)->count(),
-                'confirmed_bookings' => DB::table('yazlik_rezervasyonlar')->where('ilan_id', $ilanId)->where('status', 'onaylandi')->count(),
-                'pending_bookings' => DB::table('yazlik_rezervasyonlar')->where('ilan_id', $ilanId)->where('status', 'beklemede')->count(),
-                'occupancy_rate' => 75.5, // Mock data
-                'avg_stay_duration' => 5.2 // Mock data
+                'total_bookings' => $rezervasyonlar->count(),
+                'confirmed_bookings' => $confirmedCount,
+                'pending_bookings' => $rezervasyonlar->where('status', 'beklemede')->count(),
+                'occupancy_rate' => $occupancyRate,
+                'avg_stay_duration' => $avgStayDuration
             ];
         } catch (\Exception $e) {
+            Log::warning('Booking stats hesaplama hatası', ['ilan_id' => $ilanId, 'error' => $e->getMessage()]);
             return [
                 'total_bookings' => 0,
                 'confirmed_bookings' => 0,
@@ -607,13 +671,40 @@ class YazlikKiralamaController extends AdminController
     private function getRevenueStats($ilanId)
     {
         try {
+            // Context7: Eloquent relationship kullanımı
+            $ilan = Ilan::with('yazlikRezervasyonlar')->findOrFail($ilanId);
+            $onayliRezervasyonlar = $ilan->yazlikRezervasyonlar->where('status', 'onaylandi');
+            
+            $monthlyRevenue = $onayliRezervasyonlar->filter(function($r) {
+                return $r->created_at->month == date('m') && $r->created_at->year == date('Y');
+            })->sum('toplam_fiyat');
+            
+            $totalRevenue = $onayliRezervasyonlar->sum('toplam_fiyat');
+            
+            // Average nightly rate hesaplama
+            $totalNights = $onayliRezervasyonlar->sum(function($r) {
+                return $r->check_in->diffInDays($r->check_out);
+            });
+            $avgNightlyRate = $totalNights > 0 ? round($totalRevenue / $totalNights, 2) : 0;
+            
+            // Revenue growth (basit versiyon - geliştirilebilir)
+            $lastMonthRevenue = $onayliRezervasyonlar->filter(function($r) {
+                $lastMonth = Carbon::now()->subMonth();
+                return $r->created_at->month == $lastMonth->month && $r->created_at->year == $lastMonth->year;
+            })->sum('toplam_fiyat');
+            
+            $revenueGrowth = $lastMonthRevenue > 0 
+                ? round((($monthlyRevenue - $lastMonthRevenue) / $lastMonthRevenue) * 100, 1) 
+                : 0;
+            
             return [
-                'monthly_revenue' => DB::table('yazlik_rezervasyonlar')->where('ilan_id', $ilanId)->where('status', 'onaylandi')->whereMonth('created_at', date('m'))->sum('toplam_fiyat') ?? 0,
-                'total_revenue' => DB::table('yazlik_rezervasyonlar')->where('ilan_id', $ilanId)->where('status', 'onaylandi')->sum('toplam_fiyat') ?? 0,
-                'avg_nightly_rate' => 850, // Mock data
-                'revenue_growth' => 12.5 // Mock data percentage
+                'monthly_revenue' => $monthlyRevenue,
+                'total_revenue' => $totalRevenue,
+                'avg_nightly_rate' => $avgNightlyRate,
+                'revenue_growth' => $revenueGrowth
             ];
         } catch (\Exception $e) {
+            Log::warning('Revenue stats hesaplama hatası', ['ilan_id' => $ilanId, 'error' => $e->getMessage()]);
             return [
                 'monthly_revenue' => 0,
                 'total_revenue' => 0,

@@ -110,3 +110,5 @@ function exchangeRateWidget() {
 // Global helper function for inline usage
 window.exchangeRateWidget = exchangeRateWidget;
 
+
+
