@@ -544,8 +544,15 @@ class IlanController extends AdminController
         $typeSummary = $this->getTypeSummary($ilan);
         $typeSpecificFields = $this->getTypeSpecificFields($ilan);
 
-        $previousIlan = Ilan::where('id', '<', $ilan->id)->orderBy('id', 'desc')->first();
-        $nextIlan = Ilan::where('id', '>', $ilan->id)->orderBy('id', 'asc')->first();
+        // ✅ EAGER LOADING: Previous/Next ilanlar için de eager loading
+        $previousIlan = Ilan::where('id', '<', $ilan->id)
+            ->with(['ilanSahibi:id,ad,soyad', 'il:id,il_adi', 'ilce:id,ilce_adi'])
+            ->orderBy('id', 'desc')
+            ->first();
+        $nextIlan = Ilan::where('id', '>', $ilan->id)
+            ->with(['ilanSahibi:id,ad,soyad', 'il:id,il_adi', 'ilce:id,ilce_adi'])
+            ->orderBy('id', 'asc')
+            ->first();
 
         return view('admin.ilanlar.show', compact(
             'ilan',
@@ -860,6 +867,7 @@ class IlanController extends AdminController
     {
         $query = Ilan::with([
             'ilanSahibi:id,ad,soyad',
+            'danisman:id,name,email',
             'kategori:id,name',
             'il:id,il_adi',
             'ilce:id,ilce_adi'

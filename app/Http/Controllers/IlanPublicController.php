@@ -44,6 +44,19 @@ class IlanPublicController extends Controller
             });
         }
 
+        // ✅ EAGER LOADING: Select optimization ile birlikte
+        $query->select([
+            'id', 'baslik', 'fiyat', 'para_birimi', 'status',
+            'kategori_id', 'il_id', 'ilce_id', 'slug',
+            'created_at', 'updated_at'
+        ]);
+        
+        $query->with([
+            'il:id,il_adi',
+            'ilce:id,ilce_adi',
+            'kategori:id,name'
+        ]);
+        
         $ilanlar = $query->orderBy('created_at', 'desc')->paginate(12);
 
         // Filtreler için veriler
