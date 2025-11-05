@@ -379,13 +379,13 @@
 
 @push('styles')
     <style>
-        .neo-analyzer-category {
+        .p-4 rounded-lg border border-gray-200 bg-white dark:bg-gray-800 dark:border-gray-700 {
             @apply bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700;
             @apply border border-gray-200 dark:border-gray-600 rounded-xl p-6;
             @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-lg;
         }
 
-        .neo-analyzer-category h3 {
+        .p-4 rounded-lg border border-gray-200 bg-white dark:bg-gray-800 dark:border-gray-700 h3 {
             @apply border-b-2 border-gray-200 dark:border-gray-600 pb-3 mb-4;
         }
 
@@ -611,7 +611,7 @@
                 const pages = categorizedPages[categoryName];
 
                 const categoryDiv = document.createElement('div');
-                categoryDiv.className = 'neo-analyzer-category';
+                categoryDiv.className = 'p-4 rounded-lg border border-gray-200 bg-white dark:bg-gray-800 dark:border-gray-700';
 
                 categoryDiv.innerHTML = `
                     <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">

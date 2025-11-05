@@ -71,7 +71,7 @@
             <h3 class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800-title">🤖 AI Sistem Durumu</h3>
         </div>
         <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800-body">
-            <div class="neo-ai-status">
+            <div class="flex items-center gap-2 p-2 rounded-md">
                 <div class="flex items-center gap-2 p-2 rounded-md hover:bg-gray-50 dark:hover:bg-gray-800">
                     <span class="font-medium text-gray-700 dark:text-gray-300">AI Model:</span>
                     <span class="text-sm text-gray-600 dark:text-gray-400" id="aiModel">Yükleniyor...</span>
@@ -234,7 +234,7 @@
 }
 
 /* Dynamic Form Styles */
-.neo-dynamic-form {
+.space-y-4 {
     max-width: 100%;
 }
 
@@ -342,14 +342,14 @@
     cursor: pointer;
 }
 
-.neo-ai-features {
+.space-y-2 {
     display: flex;
     gap: 10px;
     margin-top: 10px;
     flex-wrap: wrap;
 }
 
-.neo-ai-btn {
+.inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-200 {
     display: inline-flex;
     align-items: center;
     gap: 6px;
@@ -362,37 +362,37 @@
     background: #fff;
 }
 
-.neo-ai-suggestion {
+.p-4 rounded-lg border border-gray-200 bg-gray-50 dark:bg-gray-800 dark:border-gray-700 {
     color: #007bff;
     border-color: #007bff;
 }
 
-.neo-ai-suggestion:hover {
+.p-4 rounded-lg border border-gray-200 bg-gray-50 dark:bg-gray-800 dark:border-gray-700:hover {
     background: #007bff;
     color: white;
 }
 
-.neo-ai-autofill {
+.p-4 rounded-lg bg-green-50 dark:bg-green-900 border border-green-200 dark:border-green-800 {
     color: #28a745;
     border-color: #28a745;
 }
 
-.neo-ai-autofill:hover {
+.p-4 rounded-lg bg-green-50 dark:bg-green-900 border border-green-200 dark:border-green-800:hover {
     background: #28a745;
     color: white;
 }
 
-.neo-ai-calculation {
+.p-4 rounded-lg bg-blue-50 dark:bg-blue-900 border border-blue-200 dark:border-blue-800 {
     color: #ffc107;
     border-color: #ffc107;
 }
 
-.neo-ai-calculation:hover {
+.p-4 rounded-lg bg-blue-50 dark:bg-blue-900 border border-blue-200 dark:border-blue-800:hover {
     background: #ffc107;
     color: #212529;
 }
 
-.neo-ai-actions {
+.flex items-center gap-2 {
     display: flex;
     gap: 15px;
     margin: 30px 0;
@@ -410,7 +410,7 @@
 }
 
 /* AI Status Styles */
-.neo-ai-status {
+.flex items-center gap-2 p-2 rounded-md {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 20px;
@@ -447,11 +447,11 @@
         width: 100%;
     }
 
-    .neo-ai-features {
+    .space-y-2 {
         flex-direction: column;
     }
 
-    .neo-ai-actions {
+    .flex items-center gap-2 {
         flex-direction: column;
     }
 }

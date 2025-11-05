@@ -29,14 +29,14 @@
 
     @if ($level === 'advanced')
         <!-- Level Badge -->
-        <div class="neo-location-level-badge mb-4">
+        <div class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 mb-4">
             <span class="level-badge bg-gradient-to-r from-purple-500 to-indigo-600 text-white px-3 py-1 rounded-full text-sm font-medium">
                 🚀 Gelişmiş Konum Seçici
             </span>
         </div>
 
         <!-- Smart Search Input -->
-        <div class="neo-location-search mb-6">
+        <div class="w-full px-4 py-2 rounded-lg border border-gray-200 bg-white text-sm focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-800 mb-6">
             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 🏠 Akıllı Adres Arama @if ($required) <span class="text-red-500">*</span> @endif
             </label>
@@ -117,14 +117,14 @@
         </div>
 
         <!-- Popular Locations Grid -->
-        <div x-show="popularLocations.length > 0" class="neo-popular-locations mb-6">
+        <div x-show="popularLocations.length > 0" class="space-y-4 mb-6">
             <h3 class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
                 🔥 Popüler Lokasyonlar
             </h3>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
                 <template x-for="location in popularLocations" :key="location.id">
                     <button @click="selectLocation(location)"
-                            class="neo-location-card p-4 bg-gradient-to-br from-{{ $theme }}-50 to-{{ $theme }}-100 dark:from-{{ $theme }}-900/20 dark:to-{{ $theme }}-800/20 border-2 border-transparent hover:border-{{ $theme }}-300 rounded-xl transition-all transform hover:scale-105">
+                            class="rounded-lg border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all dark:border-gray-700 dark:bg-gray-800 p-4 bg-gradient-to-br from-{{ $theme }}-50 to-{{ $theme }}-100 dark:from-{{ $theme }}-900/20 dark:to-{{ $theme }}-800/20 border-2 border-transparent hover:border-{{ $theme }}-300 rounded-xl transition-all transform hover:scale-105">
                         <div class="text-2xl mb-2" x-text="location.icon"></div>
                         <div class="font-semibold text-gray-900 dark:text-white text-sm" x-text="location.name"></div>
                         <div class="text-xs text-gray-500 dark:text-gray-400" x-text="location.type"></div>
@@ -136,7 +136,7 @@
 
     @if ($level === 'basic' || in_array('hierarchy', $features))
         <!-- Traditional Hierarchy Selector -->
-        <div class="neo-hierarchy-selector">
+        <div class="space-y-2">
             <h3 class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300 mb-4">
                 @if ($level === 'basic')
                     📋 Standart Konum Seçimi
@@ -237,10 +237,10 @@
 
     @if ($level === 'advanced' && in_array('nearby', $features))
         <!-- Nearby Services Section -->
-        <div x-show="selectedLocation" class="neo-nearby-services mt-8 p-6 bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-blue-900/20 dark:to-indigo-800/20 rounded-xl border border-blue-200 dark:border-blue-800">
-            <div class="neo-services-header mb-4">
+        <div x-show="selectedLocation" class="space-y-4 mt-8 p-6 bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-blue-900/20 dark:to-indigo-800/20 rounded-xl border border-blue-200 dark:border-blue-800">
+            <div class="flex items-center justify-between mb-4 mb-4">
                 <h3 class="text-lg font-semibold text-blue-800 dark:text-blue-200 mb-2">🎯 Yakınında Neler Var?</h3>
-                <div class="neo-distance-filter flex space-x-2">
+                <div class="flex items-center gap-2 p-2 rounded-md border border-gray-200 dark:border-gray-700 flex space-x-2">
                     <button @click="nearbyRadius = 500"
                             :class="nearbyRadius === 500 ? 'bg-blue-500 text-white' : 'bg-white text-blue-500'"
                             class="px-3 py-1 rounded-full text-sm font-medium border border-blue-300 transition-colors">
@@ -259,9 +259,9 @@
                 </div>
             </div>
 
-            <div x-show="nearbyServices.length > 0" class="neo-services-grid grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div x-show="nearbyServices.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 grid grid-cols-2 md:grid-cols-4 gap-4">
                 <template x-for="service in nearbyServices" :key="service.type">
-                    <div class="neo-service-item bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-600">
+                    <div class="p-4 rounded-lg border border-gray-200 bg-white hover:shadow-md transition-all dark:border-gray-700 dark:bg-gray-800 bg-white dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-600">
                         <div class="text-center">
                             <div class="text-2xl mb-2" x-text="service.icon"></div>
                             <div class="font-semibold text-sm text-gray-900 dark:text-white" x-text="service.name"></div>
