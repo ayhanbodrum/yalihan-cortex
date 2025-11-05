@@ -11,9 +11,9 @@
 
 <body class="bg-gray-50 min-h-screen flex flex-col">
     <header class="bg-white border-b border-gray-200 shadow-sm">
-        <div class="neo-container neo-mx-auto neo-py-3 neo-flex neo-items-center neo-justify-between">
+        <div class="neo-container neo-mx-auto neo-py-3 flex items-center justify-between">
             <a href="/admin" class="neo-text-xl neo-font-bold neo-text-blue-700">Yönetim Paneli</a>
-            <nav class="neo-flex neo-gap-6">
+            <nav class="flex gap-6">
                 <a href="/admin/dashboard"
                     class="neo-text-gray-700 hover:neo-text-blue-600 neo-font-medium">Dashboard</a>
                 <a href="/admin/tkgm-parsel" class="neo-text-gray-700 hover:neo-text-blue-600 neo-font-medium">TKGM
@@ -30,7 +30,7 @@
         @yield('content')
     </main>
     <footer class="bg-white border-t border-gray-200 neo-py-6 neo-mt-8">
-        <div class="neo-container neo-mx-auto neo-text-center neo-text-gray-500 neo-text-sm">
+        <div class="neo-container neo-mx-auto neo-text-center neo-text-gray-500 text-sm">
             © {{ date('Y') }} Yalıhan Emlak Yönetim Paneli
         </div>
     </footer>
