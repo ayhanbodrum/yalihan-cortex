@@ -101,9 +101,12 @@ trait HasFeatures
             ->whereNotIn('feature_id', $featureIds)
             ->delete();
 
+        // ✅ OPTIMIZED: N+1 query önlendi - Tüm feature'ları tek query'de al
+        $features = Feature::whereIn('id', $featureIds)->get()->keyBy('id');
+        
         // Add new assignments
         foreach ($featureIds as $featureId) {
-            $feature = Feature::find($featureId);
+            $feature = $features->get($featureId);
             if ($feature && !$feature->isAssignedTo($this)) {
                 $this->assignFeature($feature);
             }

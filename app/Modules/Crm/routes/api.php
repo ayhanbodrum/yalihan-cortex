@@ -5,7 +5,9 @@ use App\Modules\Crm\Controllers\EtiketApiController;
 use App\Modules\Crm\Controllers\KisiApiController;
 use Illuminate\Support\Facades\Route;
 
-Route::prefix('api/crm')->middleware(['web', 'auth'])->name('api.crm.')->group(function () {
+// ✅ API route - CSRF koruması gerekmez (token-based auth)
+// Not: web middleware yerine api middleware kullanılmalı, ancak auth için web gerekli ise bu şekilde bırakılabilir
+Route::prefix('api/crm')->middleware(['api', 'auth:sanctum'])->name('api.crm.')->group(function () {
     // Kişi Rotaları
     Route::apiResource('kisiler', KisiApiController::class);
     Route::get('kisi/search', [KisiApiController::class, 'search'])->name('kisi.search');

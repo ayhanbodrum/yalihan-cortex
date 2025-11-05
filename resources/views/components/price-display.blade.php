@@ -13,6 +13,7 @@
     'rentalType' => null,
     'dailyPrice' => null,
     'weeklyPrice' => null,
+    'monthlyPrice' => null,
     'seasonalPrice' => null,
     'showContactButton' => true,
 ])
@@ -21,21 +22,72 @@
     @switch($displayType)
         @case('tam_fiyat')
             {{-- Tam Fiyat Göster --}}
-            <div class="text-2xl font-bold text-gray-900">
+            <div class="text-2xl font-bold text-gray-900 dark:text-white">
                 {{ number_format($price, 0, ',', '.') }} {{ $currency }}
+                @if ($rentalType)
+                    @switch($rentalType)
+                        @case('gunluk')
+                            <span class="text-lg font-normal text-gray-600 dark:text-gray-400">/Gün</span>
+                        @break
+                        @case('haftalik')
+                            <span class="text-lg font-normal text-gray-600 dark:text-gray-400">/Hafta</span>
+                        @break
+                        @case('aylik')
+                        @case('uzun_donem')
+                            <span class="text-lg font-normal text-gray-600 dark:text-gray-400">/Ay</span>
+                        @break
+                        @case('sezonluk')
+                            <span class="text-lg font-normal text-gray-600 dark:text-gray-400">/Sezon</span>
+                        @break
+                    @endswitch
+                @endif
             </div>
         @break
 
         @case('baslayan_fiyat')
             {{-- Başlayan Fiyat --}}
             <div class="space-y-2">
-                <div class="text-lg text-gray-600">Başlayan Fiyat</div>
-                <div class="text-2xl font-bold text-gray-900">
+                <div class="text-lg text-gray-600 dark:text-gray-400">Başlayan Fiyat</div>
+                <div class="text-2xl font-bold text-gray-900 dark:text-white">
                     {{ number_format($startingPrice ?? ($minPrice ?? $price), 0, ',', '.') }} {{ $currency }}
+                    @if ($rentalType)
+                        @switch($rentalType)
+                            @case('gunluk')
+                                <span class="text-lg font-normal text-gray-600 dark:text-gray-400">/Gün</span>
+                            @break
+                            @case('haftalik')
+                                <span class="text-lg font-normal text-gray-600 dark:text-gray-400">/Hafta</span>
+                            @break
+                            @case('aylik')
+                            @case('uzun_donem')
+                                <span class="text-lg font-normal text-gray-600 dark:text-gray-400">/Ay</span>
+                            @break
+                            @case('sezonluk')
+                                <span class="text-lg font-normal text-gray-600 dark:text-gray-400">/Sezon</span>
+                            @break
+                        @endswitch
+                    @endif
                 </div>
                 @if ($maxPrice && $maxPrice > ($startingPrice ?? ($minPrice ?? $price)))
-                    <div class="text-sm text-gray-500">
+                    <div class="text-sm text-gray-500 dark:text-gray-400">
                         - {{ number_format($maxPrice, 0, ',', '.') }} {{ $currency }}
+                        @if ($rentalType)
+                            @switch($rentalType)
+                                @case('gunluk')
+                                    <span>/Gün</span>
+                                @break
+                                @case('haftalik')
+                                    <span>/Hafta</span>
+                                @break
+                                @case('aylik')
+                                @case('uzun_donem')
+                                    <span>/Ay</span>
+                                @break
+                                @case('sezonluk')
+                                    <span>/Sezon</span>
+                                @break
+                            @endswitch
+                        @endif
                     </div>
                 @endif
             </div>
@@ -88,30 +140,38 @@
             </div>
     @endswitch
 
-    {{-- Kiralama Fiyatları (Eğer kiralama ise) --}}
-    @if ($rentalType && in_array($rentalType, ['gunluk', 'haftalik', 'sezonluk']))
-        <div class="mt-3 p-3 bg-gray-50 rounded-lg">
-            <div class="text-sm font-medium text-gray-700 mb-2">Kiralama Fiyatları:</div>
-            <div class="space-y-1 text-sm">
-                @if ($dailyPrice)
-                    <div class="flex justify-between">
-                        <span>Günlük:</span>
-                        <span class="font-medium">{{ number_format($dailyPrice, 0, ',', '.') }}
-                            {{ $currency }}</span>
+    {{-- Kiralama Fiyatları (Eğer kiralama ise ve çoklu fiyat varsa) --}}
+    @if ($rentalType && (($dailyPrice && $dailyPrice != $price) || ($weeklyPrice && $weeklyPrice != $price) || ($monthlyPrice && $monthlyPrice != $price) || ($seasonalPrice && $seasonalPrice != $price)))
+        <div class="mt-3 p-4 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl border border-blue-200 dark:border-blue-800/30">
+            <div class="text-sm font-semibold text-gray-800 dark:text-gray-200 mb-3 flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                Tüm Kiralama Fiyatları:
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                @if ($dailyPrice && $dailyPrice != $price)
+                    <div class="flex justify-between items-center p-2 bg-white dark:bg-gray-800 rounded-lg">
+                        <span class="text-sm text-gray-700 dark:text-gray-300">📅 Günlük:</span>
+                        <span class="font-bold text-blue-600 dark:text-blue-400">{{ number_format($dailyPrice, 0, ',', '.') }} {{ $currency }}/Gün</span>
                     </div>
                 @endif
-                @if ($weeklyPrice)
-                    <div class="flex justify-between">
-                        <span>Haftalık:</span>
-                        <span class="font-medium">{{ number_format($weeklyPrice, 0, ',', '.') }}
-                            {{ $currency }}</span>
+                @if ($weeklyPrice && $weeklyPrice != $price)
+                    <div class="flex justify-between items-center p-2 bg-white dark:bg-gray-800 rounded-lg">
+                        <span class="text-sm text-gray-700 dark:text-gray-300">📆 Haftalık:</span>
+                        <span class="font-bold text-blue-600 dark:text-blue-400">{{ number_format($weeklyPrice, 0, ',', '.') }} {{ $currency }}/Hafta</span>
                     </div>
                 @endif
-                @if ($seasonalPrice)
-                    <div class="flex justify-between">
-                        <span>Sezonluk:</span>
-                        <span class="font-medium">{{ number_format($seasonalPrice, 0, ',', '.') }}
-                            {{ $currency }}</span>
+                @if ($monthlyPrice && $monthlyPrice != $price)
+                    <div class="flex justify-between items-center p-2 bg-white dark:bg-gray-800 rounded-lg">
+                        <span class="text-sm text-gray-700 dark:text-gray-300">🗓️ Aylık:</span>
+                        <span class="font-bold text-blue-600 dark:text-blue-400">{{ number_format($monthlyPrice, 0, ',', '.') }} {{ $currency }}/Ay</span>
+                    </div>
+                @endif
+                @if ($seasonalPrice && $seasonalPrice != $price)
+                    <div class="flex justify-between items-center p-2 bg-white dark:bg-gray-800 rounded-lg">
+                        <span class="text-sm text-gray-700 dark:text-gray-300">🌅 Sezonluk:</span>
+                        <span class="font-bold text-blue-600 dark:text-blue-400">{{ number_format($seasonalPrice, 0, ',', '.') }} {{ $currency }}/Sezon</span>
                     </div>
                 @endif
             </div>

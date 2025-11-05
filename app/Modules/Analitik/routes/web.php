@@ -5,7 +5,8 @@ use App\Modules\Analitik\Controllers\Admin\DashboardController;
 use App\Modules\Analitik\Controllers\Admin\RaporController;
 use App\Modules\Analitik\Controllers\Admin\IstatistikController;
 
-Route::prefix('admin/analitik')->name('admin.analitik.')->middleware(['auth', 'admin'])->group(function () {
+// ✅ CSRF koruması: web middleware grubu otomatik olarak CSRF koruması sağlar
+Route::prefix('admin/analitik')->name('admin.analitik.')->middleware(['web', 'auth', 'admin'])->group(function () {
 
     // Dashboard
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');

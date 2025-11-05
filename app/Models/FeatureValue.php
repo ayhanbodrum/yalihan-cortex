@@ -135,8 +135,12 @@ class FeatureValue extends Model
      */
     public static function bulkSetForModel($model, array $values)
     {
+        // ✅ OPTIMIZED: N+1 query önlendi - Tüm feature'ları tek query'de al
+        $featureSlugs = array_keys($values);
+        $features = Feature::whereIn('slug', $featureSlugs)->get()->keyBy('slug');
+        
         foreach ($values as $featureSlug => $value) {
-            $feature = Feature::where('slug', $featureSlug)->first();
+            $feature = $features->get($featureSlug);
             if ($feature) {
                 static::setForModel($model, $feature, $value);
             }

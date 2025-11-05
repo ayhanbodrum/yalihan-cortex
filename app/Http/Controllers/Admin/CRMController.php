@@ -10,8 +10,16 @@ use Illuminate\Http\Response;
 
 class CRMController extends AdminController
 {
+    /**
+     * Display CRM dashboard
+     * Context7: CRM ana sayfası ve istatistikler
+     *
+     * @param Request $request
+     * @return \Illuminate\View\View
+     */
     public function index(Request $request)
     {
+        // ✅ OPTIMIZED: İstatistikleri cache ile optimize et (opsiyonel)
         $stats = [
             'toplam_kisi' => Kisi::count(),
             'active_kisi' => Kisi::where('status', 'Aktif')->count(),
@@ -21,19 +29,36 @@ class CRMController extends AdminController
             'basarili_eslesme' => Eslesme::where('status', 'Başarılı')->count(),
         ];
 
+        // ✅ OPTIMIZED: N+1 query önlendi - Tüm mükerrer email'leri tek query'de al
+        $mukerrerEmails = Kisi::select('email')
+            ->whereNotNull('email')
+            ->groupBy('email')
+            ->havingRaw('COUNT(*) > 1')
+            ->pluck('email');
+        
+        // ✅ EAGER LOADING: Tüm mükerrer kişileri tek query'de yükle
+        $mukerrerKisiler = Kisi::whereIn('email', $mukerrerEmails)
+            ->select(['id', 'ad', 'soyad', 'telefon', 'email'])
+            ->get()
+            ->groupBy('email')
+            ->map(function($kisiler, $email) {
+                return [
+                    'email' => $email,
+                    'sayi' => $kisiler->count(),
+                    'kisiler' => $kisiler->map(function($kisi) {
+                        return [
+                            'id' => $kisi->id,
+                            'ad' => $kisi->ad,
+                            'soyad' => $kisi->soyad,
+                            'telefon' => $kisi->telefon
+                        ];
+                    })->values()
+                ];
+            })
+            ->values();
+
         $aiOnerileri = [
-            'mukerrer_kisiler' => Kisi::select('email')
-                ->whereNotNull('email')
-                ->groupBy('email')
-                ->havingRaw('COUNT(*) > 1')
-                ->get()
-                ->map(function($item) {
-                    return [
-                        'email' => $item->email,
-                        'sayi' => Kisi::where('email', $item->email)->count(),
-                        'kisiler' => Kisi::where('email', $item->email)->get(['id', 'ad', 'soyad', 'telefon'])
-                    ];
-                }),
+            'mukerrer_kisiler' => $mukerrerKisiler,
             'eksik_bilgiler' => Kisi::where(function($query) {
                 $query->whereNull('email')
                       ->orWhereNull('telefon')
@@ -44,12 +69,21 @@ class CRMController extends AdminController
             'yuksek_skorlu_eslesmeler' => Eslesme::where('skor', '>=', 8)->count(),
         ];
         
-        // ✅ Etiketler (needed by customers/index filter)
-        $etiketler = \App\Models\Etiket::orderBy('name')->get();
+        // ✅ OPTIMIZED: Select optimization
+        $etiketler = \App\Models\Etiket::select(['id', 'name', 'color', 'status'])
+            ->orderBy('name')
+            ->get();
 
         return view('admin.crm.index', compact('stats', 'aiOnerileri', 'etiketler'));
     }
 
+    /**
+     * AI analysis for CRM data
+     * Context7: AI destekli CRM analizi
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function aiAnalyze(Request $request)
     {
         $type = $request->get('type', 'all');
@@ -57,18 +91,36 @@ class CRMController extends AdminController
         $analysis = [];
 
         if ($type === 'all' || $type === 'duplicates') {
-            $analysis['duplicates'] = Kisi::select('email')
+            // ✅ OPTIMIZED: N+1 query önlendi
+            $duplicateEmails = Kisi::select('email')
                 ->whereNotNull('email')
                 ->groupBy('email')
                 ->havingRaw('COUNT(*) > 1')
+                ->pluck('email');
+            
+            // ✅ EAGER LOADING: Tüm duplicate kayıtları tek query'de yükle
+            $duplicateRecords = Kisi::whereIn('email', $duplicateEmails)
+                ->select(['id', 'ad', 'soyad', 'telefon', 'email', 'created_at'])
                 ->get()
-                ->map(function($item) {
+                ->groupBy('email')
+                ->map(function($records, $email) {
                     return [
-                        'email' => $item->email,
-                        'count' => Kisi::where('email', $item->email)->count(),
-                        'records' => Kisi::where('email', $item->email)->get(['id', 'ad', 'soyad', 'telefon', 'created_at'])
+                        'email' => $email,
+                        'count' => $records->count(),
+                        'records' => $records->map(function($record) {
+                            return [
+                                'id' => $record->id,
+                                'ad' => $record->ad,
+                                'soyad' => $record->soyad,
+                                'telefon' => $record->telefon,
+                                'created_at' => $record->created_at
+                            ];
+                        })->values()
                     ];
-                });
+                })
+                ->values();
+            
+            $analysis['duplicates'] = $duplicateRecords;
         }
 
         if ($type === 'all' || $type === 'missing') {
@@ -96,6 +148,13 @@ class CRMController extends AdminController
         ]);
     }
 
+    /**
+     * Fix duplicate customer records
+     * Context7: Mükerrer kayıt düzeltme
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function fixDuplicates(Request $request)
     {
         $email = $request->get('email');
@@ -116,6 +175,13 @@ class CRMController extends AdminController
         ]);
     }
 
+    /**
+     * Generate CRM report
+     * Context7: CRM raporu oluşturma
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function generateReport(Request $request)
     {
         $report = [

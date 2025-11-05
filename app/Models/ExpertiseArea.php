@@ -5,10 +5,11 @@ namespace App\Models;
 use App\Modules\Auth\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\HasActiveScope;
 
 class ExpertiseArea extends Model
 {
-    use HasFactory;
+    use HasFactory, HasActiveScope;
 
     /**
      * The attributes that are mass assignable.
@@ -44,14 +45,5 @@ class ExpertiseArea extends Model
             ->withTimestamps();
     }
 
-    /**
-     * Scope a query to only include active expertise areas.
-     *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    public function scopeActive($query)
-    {
-        return $query->where('status', true);
-    }
+    // ✅ REFACTORED: scopeActive moved to HasActiveScope trait
 }

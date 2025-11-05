@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Resources\IlanInternalResource;
 use App\Models\Ilan;
 use App\Models\IlanKategori;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class MyListingsController extends AdminController
 {
@@ -42,11 +45,13 @@ class MyListingsController extends AdminController
         
         if ($request->has('search') && $request->search) {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
-                $q->where('baslik', 'like', "%{$search}%")
-                  ->orWhere('aciklama', 'like', "%{$search}%")
-                  ->orWhere('adres', 'like', "%{$search}%");
-            });
+            $referansService = app(\App\Services\IlanReferansService::class);
+            
+            // İlanReferansService'in searchQuery metodunu kullan
+            $searchQuery = $referansService->searchQuery($search);
+            
+            // Kullanıcıya ait ilanları filtrele
+            $query->whereIn('id', $searchQuery->where('danisman_id', $user->id)->pluck('id'));
         }
         
         // Paginate first, then eager load (more efficient)
@@ -111,12 +116,15 @@ class MyListingsController extends AdminController
             $query->where('alt_kategori_id', $request->category);
         }
         
-        if ($request->has('search')) {
+        if ($request->has('search') && $request->search) {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
-                $q->where('baslik', 'like', "%{$search}%")
-                  ->orWhere('aciklama', 'like', "%{$search}%");
-            });
+            $referansService = app(\App\Services\IlanReferansService::class);
+            
+            // İlanReferansService'in searchQuery metodunu kullan
+            $searchQuery = $referansService->searchQuery($search);
+            
+            // Kullanıcıya ait ilanları filtrele
+            $query->whereIn('id', $searchQuery->where('danisman_id', $user->id)->pluck('id'));
         }
         
         $listings = $query->orderBy('updated_at', 'desc')
@@ -124,7 +132,7 @@ class MyListingsController extends AdminController
         
         return response()->json([
             'success' => true,
-            'data' => $listings
+            'data' => IlanInternalResource::collection($listings)
         ]);
     }
     
@@ -232,27 +240,89 @@ class MyListingsController extends AdminController
     /**
      * Export listings to Excel/PDF
      * 
+     * Context7 Standardı: C7-MYLISTINGS-EXPORT-2025-11-05
+     * 
+     * GET /admin/my-listings/export?format=excel|pdf
+     * 
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
+     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse|\Illuminate\Http\Response
      */
     public function export(Request $request)
     {
-        $user = Auth::user();
-        $format = $request->get('format', 'excel'); // excel or pdf
-        
-        $listings = Ilan::with(['altKategori', 'anaKategori', 'il', 'ilce'])
-                       ->where('danisman_id', $user->id)
-                       ->get();
-        
-        // TODO: Implement Excel/PDF export
-        // For now, return JSON
-        return response()->json([
-            'success' => true,
-            'message' => 'Export feature - to be implemented',
-            'data' => [
-                'total' => $listings->count(),
-                'format' => $format
-            ]
+        $request->validate([
+            'format' => 'nullable|in:excel,pdf'
         ]);
+
+        $user = Auth::user();
+        $format = $request->input('format', 'excel');
+        
+        $listings = Ilan::with(['altKategori:id,name', 'anaKategori:id,name', 'il:id,il_adi', 'ilce:id,ilce_adi'])
+                       ->where('danisman_id', $user->id)
+                       ->orderBy('updated_at', 'desc')
+                       ->get();
+
+        if ($format === 'pdf') {
+            return $this->exportPdf($listings, $user);
+        }
+
+        return $this->exportExcel($listings, $user);
+    }
+
+    /**
+     * Export to Excel
+     */
+    protected function exportExcel($listings, $user)
+    {
+        $data = [
+            ['İlanlarım - Excel Raporu'],
+            ['Danışman', $user->name],
+            ['Email', $user->email],
+            ['Tarih', now()->format('d.m.Y H:i')],
+            ['Toplam İlan', $listings->count()],
+            [''],
+            ['ID', 'Referans No', 'Başlık', 'Kategori', 'İl', 'İlçe', 'Fiyat', 'Para Birimi', 'Durum', 'Görüntülenme', 'Oluşturulma Tarihi'],
+        ];
+
+        foreach ($listings as $listing) {
+            $data[] = [
+                $listing->id,
+                $listing->referans_no ?? '-',
+                $listing->baslik ?? 'Başlıksız',
+                $listing->altKategori?->name ?? $listing->anaKategori?->name ?? '-',
+                $listing->il?->il_adi ?? '-',
+                $listing->ilce?->ilce_adi ?? '-',
+                $listing->fiyat ?? 0,
+                $listing->para_birimi ?? 'TL',
+                $listing->status ?? 'Aktif',
+                $listing->goruntulenme ?? 0,
+                $listing->created_at?->format('d.m.Y H:i') ?? '-',
+            ];
+        }
+
+        $dosyaAdi = "Ilanlarim_" . now()->format('Ymd_His') . '.xlsx';
+
+        return Excel::download(new class($data) implements \Maatwebsite\Excel\Concerns\FromArray {
+            protected $data;
+            public function __construct($data) { $this->data = $data; }
+            public function array(): array { return $this->data; }
+        }, $dosyaAdi);
+    }
+
+    /**
+     * Export to PDF
+     */
+    protected function exportPdf($listings, $user)
+    {
+        $data = [
+            'listings' => $listings,
+            'user' => $user,
+            'tarih' => now()->format('d.m.Y H:i'),
+        ];
+
+        $pdf = Pdf::loadView('admin.ilanlar.exports.my-listings-pdf', $data);
+        
+        $dosyaAdi = "Ilanlarim_" . now()->format('Ymd_His') . '.pdf';
+
+        return $pdf->download($dosyaAdi);
     }
 }

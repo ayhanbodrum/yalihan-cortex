@@ -3,13 +3,13 @@
 namespace App\Jobs;
 
 use App\Modules\Emlak\Models\Ilan;
+use App\Models\IlanNearby;
 use App\Services\Location\NearbyService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\DB;
 
 class FetchNearbyForIlanJob implements ShouldQueue
 {
@@ -44,14 +44,13 @@ class FetchNearbyForIlanJob implements ShouldQueue
         $service = app(NearbyService::class);
         $data = $service->fetchNearby((float) $lat, (float) $lng, $this->radius, $this->categories);
 
-        DB::table('ilan_nearby')->updateOrInsert(
+        // ✅ STANDARDIZED: Using Eloquent instead of DB::table()
+        IlanNearby::updateOrCreate(
             ['ilan_id' => $ilan->id],
             [
-                'summary' => json_encode($data['summary'] ?? []),
-                'items' => json_encode($data['items'] ?? []),
+                'summary' => $data['summary'] ?? [],
+                'items' => $data['items'] ?? [],
                 'fetched_at' => now(),
-                'updated_at' => now(),
-                'created_at' => now(),
             ]
         );
     }

@@ -2,9 +2,14 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Requests\Admin\DashboardWidgetRequest;
+use App\Models\DashboardWidget;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use App\Services\Cache\CacheHelper;
+use App\Services\Response\ResponseService;
+use App\Services\Logging\LogService;
 use Illuminate\Support\Facades\DB;
 
 class DashboardController extends AdminController
@@ -12,20 +17,22 @@ class DashboardController extends AdminController
     /**
      * Display the main dashboard.
      * Context7: Ana dashboard sayfası
+     *
+     * @return \Illuminate\View\View
+     * @throws \Exception
      */
-    public function index()
+    public function index(): \Illuminate\View\View
     {
         try {
-            // Cache key for dashboard data
-            $cacheKey = 'admin_dashboard_' . Auth::id();
-
-            $dashboardData = Cache::remember($cacheKey, 300, function () {
+            // ✅ STANDARDIZED: Using CacheHelper with user-specific cache
+            $dashboardData = CacheHelper::remember('dashboard', 'data', 'short', function () {
                 return $this->getDashboardData();
             });
 
             return view('admin.dashboard.index', $dashboardData);
         } catch (\Exception $e) {
-            \Log::error('Dashboard error: ' . $e->getMessage());
+            // ✅ STANDARDIZED: Using LogService
+            LogService::error('Dashboard error', [], $e);
             
             return view('admin.dashboard.index', [
                 'quickStats' => $this->getEmptyStats(),
@@ -38,6 +45,9 @@ class DashboardController extends AdminController
     /**
      * Show the form for creating a new dashboard widget.
      * Context7: Yeni widget oluşturma
+     *
+     * @return \Illuminate\View\View
+     * @throws \Exception
      */
     public function create()
     {
@@ -65,40 +75,38 @@ class DashboardController extends AdminController
     /**
      * Store a newly created dashboard widget.
      * Context7: Widget kaydetme
+     *
+     * @param DashboardWidgetRequest $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
+     * @throws \Exception
      */
-    public function store(Request $request)
+    public function store(DashboardWidgetRequest $request): \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
     {
         try {
-            $request->validate([
-                'name' => 'required|string|max:255',
-                'type' => 'required|in:stat,chart,table,activity',
-                'data_source' => 'required|string',
-                'position_x' => 'required|integer|min:0',
-                'position_y' => 'required|integer|min:0',
-                'width' => 'required|integer|min:1|max:12',
-                'height' => 'required|integer|min:1|max:6'
+            // ✅ STANDARDIZED: Using Form Request
+            $validated = $request->validated();
+
+            // ✅ DashboardWidget model kullanımı
+            $widget = DashboardWidget::create([
+                'name' => $validated['name'],
+                'type' => $validated['type'],
+                'data_source' => $validated['data_source'],
+                'position_x' => $validated['position_x'],
+                'position_y' => $validated['position_y'],
+                'width' => $validated['width'],
+                'height' => $validated['height'],
+                'user_id' => Auth::id(),
+                'settings' => $validated['settings'] ?? null,
             ]);
 
-            $widgetData = [
-                'name' => $request->name,
-                'type' => $request->type,
-                'data_source' => $request->data_source,
-                'position_x' => $request->position_x,
-                'position_y' => $request->position_y,
-                'width' => $request->width,
-                'height' => $request->height,
-                'user_id' => Auth::id(),
-                'created_at' => now()
-            ];
-
-            // TODO: DashboardWidget model oluşturulduğunda kullanılacak
-            // DashboardWidget::create($widgetData);
+            // Clear cache
+            CacheHelper::forget('dashboard', 'data', ['user_id' => Auth::id()]);
 
             if ($request->expectsJson()) {
                 return response()->json([
                     'success' => true,
                     'message' => 'Widget başarıyla oluşturuldu',
-                    'data' => $widgetData
+                    'data' => $widget
                 ], 201);
             }
 
@@ -118,11 +126,16 @@ class DashboardController extends AdminController
     /**
      * Display the specified dashboard widget.
      * Context7: Widget detayları
+     *
+     * @param int|string $id
+     * @return \Illuminate\View\View|\Illuminate\Http\JsonResponse
+     * @throws \Exception
      */
     public function show($id)
     {
         try {
-            $widget = $this->getSampleWidget($id);
+            // ✅ DashboardWidget model kullanımı
+            $widget = DashboardWidget::forUser(Auth::id())->findOrFail($id);
 
             if (!$widget) {
                 if (request()->expectsJson()) {
@@ -158,11 +171,16 @@ class DashboardController extends AdminController
     /**
      * Show the form for editing the specified dashboard widget.
      * Context7: Widget düzenleme
+     *
+     * @param int|string $id
+     * @return \Illuminate\View\View
+     * @throws \Exception
      */
     public function edit($id)
     {
         try {
-            $widget = $this->getSampleWidget($id);
+            // ✅ DashboardWidget model kullanımı
+            $widget = DashboardWidget::forUser(Auth::id())->findOrFail($id);
 
             if (!$widget) {
                 return redirect()->route('admin.dashboard.index')->with('error', 'Widget bulunamadı');
@@ -191,42 +209,41 @@ class DashboardController extends AdminController
     /**
      * Update the specified dashboard widget.
      * Context7: Widget güncelleme
+     *
+     * @param DashboardWidgetRequest $request
+     * @param int $id
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
+     * @throws \Exception
      */
-    public function update(Request $request, $id)
+    public function update(DashboardWidgetRequest $request, int $id): \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
     {
         try {
-            $request->validate([
-                'name' => 'required|string|max:255',
-                'type' => 'required|in:stat,chart,table,activity',
-                'data_source' => 'required|string',
-                'position_x' => 'required|integer|min:0',
-                'position_y' => 'required|integer|min:0',
-                'width' => 'required|integer|min:1|max:12',
-                'height' => 'required|integer|min:1|max:6'
+            // ✅ STANDARDIZED: Using Form Request
+            $validated = $request->validated();
+
+            // ✅ DashboardWidget model kullanımı
+            $widget = DashboardWidget::forUser(Auth::id())->findOrFail($id);
+            
+            $widget->update([
+                'name' => $validated['name'],
+                'type' => $validated['type'],
+                'data_source' => $validated['data_source'],
+                'position_x' => $validated['position_x'],
+                'position_y' => $validated['position_y'],
+                'width' => $validated['width'],
+                'height' => $validated['height'],
+                'settings' => $validated['settings'] ?? $widget->settings,
             ]);
 
-            $widgetData = [
-                'name' => $request->name,
-                'type' => $request->type,
-                'data_source' => $request->data_source,
-                'position_x' => $request->position_x,
-                'position_y' => $request->position_y,
-                'width' => $request->width,
-                'height' => $request->height,
-                'updated_at' => now()
-            ];
-
-            // TODO: DashboardWidget model ile güncelleme
-            // DashboardWidget::where('id', $id)->update($widgetData);
-
             // Clear cache
-            Cache::forget('admin_dashboard_' . Auth::id());
+            // ✅ STANDARDIZED: Using CacheHelper
+            CacheHelper::forget('dashboard', 'data', ['user_id' => Auth::id()]);
 
             if ($request->expectsJson()) {
                 return response()->json([
                     'success' => true,
                     'message' => 'Widget başarıyla güncellendi',
-                    'data' => $widgetData
+                    'data' => $widget
                 ]);
             }
 
@@ -246,15 +263,21 @@ class DashboardController extends AdminController
     /**
      * Remove the specified dashboard widget.
      * Context7: Widget silme
+     *
+     * @param int $id
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
+     * @throws \Exception
      */
-    public function destroy($id)
+    public function destroy(int $id): \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
     {
         try {
-            // TODO: DashboardWidget model ile silme
-            // DashboardWidget::findOrFail($id)->delete();
+            // ✅ DashboardWidget model kullanımı
+            $widget = DashboardWidget::forUser(Auth::id())->findOrFail($id);
+            $widget->delete();
 
             // Clear cache
-            Cache::forget('admin_dashboard_' . Auth::id());
+            // ✅ STANDARDIZED: Using CacheHelper
+            CacheHelper::forget('dashboard', 'data', ['user_id' => Auth::id()]);
 
             if (request()->expectsJson()) {
                 return response()->json([
@@ -278,6 +301,9 @@ class DashboardController extends AdminController
 
     /**
      * Context7: Dashboard verilerini getir
+     *
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
      */
     public function getDashboardStats()
     {
@@ -298,12 +324,16 @@ class DashboardController extends AdminController
 
     /**
      * Context7: Dashboard widget'larını yenile
+     *
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
      */
     public function refresh()
     {
         try {
             // Clear cache
-            Cache::forget('admin_dashboard_' . Auth::id());
+            // ✅ STANDARDIZED: Using CacheHelper
+            CacheHelper::forget('dashboard', 'data', ['user_id' => Auth::id()]);
 
             $dashboardData = $this->getDashboardData();
 
@@ -322,6 +352,8 @@ class DashboardController extends AdminController
 
     /**
      * Context7: Dashboard verilerini hazırla
+     *
+     * @return array
      */
     private function getDashboardData()
     {
@@ -363,6 +395,8 @@ class DashboardController extends AdminController
 
     /**
      * Context7: Boş istatistikler (hata durumu için)
+     *
+     * @return array
      */
     private function getEmptyStats()
     {
@@ -376,6 +410,8 @@ class DashboardController extends AdminController
 
     /**
      * Context7: Boş grafik verileri
+     *
+     * @return array
      */
     private function getEmptyCharts()
     {
@@ -393,6 +429,9 @@ class DashboardController extends AdminController
 
     /**
      * Context7: Örnek widget verisi
+     *
+     * @param int|string $id
+     * @return array|null
      */
     private function getSampleWidget($id)
     {
@@ -424,6 +463,8 @@ class DashboardController extends AdminController
 
     /**
      * Context7: Gerçek aktiviteleri database'den çek
+     *
+     * @return array
      */
     private function getRecentActivities()
     {
@@ -470,6 +511,8 @@ class DashboardController extends AdminController
 
     /**
      * Context7: Conversion rate hesapla (Talep -> İlan eşleşme oranı)
+     *
+     * @return float
      */
     private function calculateConversionRate()
     {
@@ -486,6 +529,8 @@ class DashboardController extends AdminController
 
     /**
      * Context7: Grafik verilerini database'den çek
+     *
+     * @return array
      */
     private function getChartData()
     {

@@ -28,6 +28,27 @@ Route::get('/health', function () {
     ]);
 });
 
+// Feature API Routes (Modal Selector)
+Route::prefix('admin/features')->middleware(['web', 'auth'])->group(function () {
+    Route::get('/category/{categorySlug}', [\App\Http\Controllers\Api\FeatureController::class, 'getByCategory'])->name('api.features.category.slug');
+    Route::get('/categories', [\App\Http\Controllers\Api\FeatureController::class, 'getCategories'])->name('api.features.categories');
+});
+
+// QR Code API Routes
+Route::prefix('qrcode')->middleware(['web'])->group(function () {
+    Route::get('/listing/{ilanId}', [\App\Http\Controllers\Api\QRCodeController::class, 'generateForListing'])->name('api.qrcode.listing');
+    Route::get('/whatsapp/{ilanId}', [\App\Http\Controllers\Api\QRCodeController::class, 'generateForWhatsApp'])->name('api.qrcode.whatsapp');
+    Route::get('/ai-suggestions/{ilanId}', [\App\Http\Controllers\Api\QRCodeController::class, 'getAISuggestions'])->name('api.qrcode.ai-suggestions');
+    Route::get('/statistics', [\App\Http\Controllers\Api\QRCodeController::class, 'getStatistics'])->name('api.qrcode.statistics')->middleware('auth');
+});
+
+// Listing Navigation API Routes
+Route::prefix('navigation')->middleware(['web'])->group(function () {
+    Route::get('/listing/{ilanId}', [\App\Http\Controllers\Api\ListingNavigationController::class, 'getNavigation'])->name('api.navigation.listing');
+    Route::get('/similar/{ilanId}', [\App\Http\Controllers\Api\ListingNavigationController::class, 'getSimilar'])->name('api.navigation.similar');
+    Route::get('/ai-suggestions/{ilanId}', [\App\Http\Controllers\Api\ListingNavigationController::class, 'getAISuggestions'])->name('api.navigation.ai-suggestions');
+});
+
 // PHASE 2.3: Bulk Operations API (Context7 Compliant)
 Route::prefix('admin/bulk')->middleware(['web', 'auth'])->group(function () {
     Route::post('/assign-category', [BulkOperationsController::class, 'assignCategory'])->name('api.bulk.assign-category');
@@ -36,18 +57,18 @@ Route::prefix('admin/bulk')->middleware(['web', 'auth'])->group(function () {
     Route::post('/reorder', [BulkOperationsController::class, 'reorder'])->name('api.bulk.reorder');
 });
 
-// ✅ Category API - Publication Types (Yayın Tipleri)  
+// ✅ Category API - Publication Types (Yayın Tipleri)
 Route::get('/categories/publication-types/{kategoriId}', function ($kategoriId) {
     // ✅ FIX: Alt kategori ID ise, pivot tablodan filtrelenmiş yayın tiplerini getir
     $kategori = \App\Models\IlanKategori::find($kategoriId);
-    
+
     if (!$kategori) {
         return response()->json(['success' => false, 'message' => 'Kategori bulunamadı'], 404);
     }
-    
+
     // Ana kategori mi, alt kategori mi?
     $anaKategoriId = $kategori->parent_id ?: $kategoriId;
-    
+
     // Eğer alt kategori ise, pivot tablodan filtrelenmiş yayın tiplerini getir
     if ($kategori->parent_id) {
         // Alt kategori - pivot tablodan çek
@@ -55,7 +76,7 @@ Route::get('/categories/publication-types/{kategoriId}', function ($kategoriId) 
             ->where('alt_kategori_id', $kategoriId)
             ->where('enabled', 1)
             ->pluck('yayin_tipi_id');
-        
+
         $raw = \Illuminate\Support\Facades\DB::table('ilan_kategori_yayin_tipleri')
             ->whereIn('id', $yayinTipleriIds)
             ->where('status', 1)
@@ -69,7 +90,7 @@ Route::get('/categories/publication-types/{kategoriId}', function ($kategoriId) 
             ->orderBy('order')
             ->get(['id', 'yayin_tipi', 'kategori_id', 'order']);
     }
-    
+
     $yayinTipleri = collect($raw)->map(function($item) {
         return [
             'id' => $item->id,
@@ -78,7 +99,7 @@ Route::get('/categories/publication-types/{kategoriId}', function ($kategoriId) 
             'order' => $item->order ?? 0
         ];
     });
-    
+
     return response()->json([
         'success' => true,
         'types' => $yayinTipleri,
@@ -93,7 +114,7 @@ Route::get('/categories/sub/{anaKategoriId}', function ($anaKategoriId) {
         ->where('status', true)
         ->orderBy('name')
         ->get(['id', 'name', 'parent_id']);
-    
+
     return response()->json([
         'success' => true,
         'subcategories' => $altKategoriler,
@@ -185,7 +206,7 @@ Route::prefix('admin/ai')->group(function () {
     Route::post('/switch-provider', [\App\Http\Controllers\Api\AIController::class, 'switchProvider']);
     Route::get('/stats', [\App\Http\Controllers\Api\AIController::class, 'getStats']);
     Route::get('/logs', [\App\Http\Controllers\Api\AIController::class, 'getLogs']);
-    
+
     // 🤖 Talepler Create - AI Assistant Endpoints (2025-11-01)
     Route::post('/suggest-price', [\App\Http\Controllers\Api\AIController::class, 'suggestPrice']);
     Route::post('/find-matches', [\App\Http\Controllers\Api\AIController::class, 'findMatches']);
@@ -230,7 +251,7 @@ Route::prefix('kisiler')->group(function () {
 Route::prefix('users')->group(function () {
     // Danışman araması (Context7 Live Search için)
     Route::get('/search', [\App\Http\Controllers\Api\UserController::class, 'search'])->name('api.users.search');
-    
+
     // Tüm danışmanlar
     Route::get('/danismanlar', [\App\Http\Controllers\Api\UserController::class, 'danismanlar'])->name('api.users.danismanlar');
 });
@@ -424,7 +445,7 @@ Route::prefix('categories')->group(function () {
                 ]
             ]);
         } catch (\Exception $e) {
-            \Log::error('Yayın tipi yükleme hatası:', [
+            \Illuminate\Support\Facades\Log::error('Yayın tipi yükleme hatası:', [
                 'kategori_id' => $id,
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
@@ -833,21 +854,21 @@ Route::prefix('wikimapia')->name('wikimapia.')->group(function () {
 Route::prefix('admin')->group(function () {
     Route::get('/field-dependencies', [\App\Http\Controllers\Api\FieldDependencyController::class, 'index']);
     Route::get('/field-dependencies/category/{kategoriId}', [\App\Http\Controllers\Api\FieldDependencyController::class, 'getByCategory']);
-    
+
     // Photo Management API (Context7 Compliant)
     Route::post('/photos/upload', [PhotoController::class, 'upload'])->name('api.photos.upload');
     Route::get('/ilanlar/{id}/photos', [PhotoController::class, 'index'])->name('api.ilanlar.photos');
     Route::patch('/photos/{id}', [PhotoController::class, 'update'])->name('api.photos.update');
     Route::delete('/photos/{id}', [PhotoController::class, 'destroy'])->name('api.photos.destroy');
     Route::post('/ilanlar/{id}/photos/reorder', [PhotoController::class, 'reorder'])->name('api.ilanlar.photos.reorder');
-    
+
     // Event/Booking Management API (Context7 Compliant)
     Route::get('/ilanlar/{id}/events', [EventController::class, 'index'])->name('api.ilanlar.events');
     Route::post('/events', [EventController::class, 'store'])->name('api.events.store');
     Route::patch('/events/{id}', [EventController::class, 'update'])->name('api.events.update');
     Route::delete('/events/{id}', [EventController::class, 'destroy'])->name('api.events.destroy');
     Route::post('/events/check-availability', [EventController::class, 'checkAvailability'])->name('api.events.check-availability');
-    
+
     // Season Pricing Management API (Context7 Compliant)
     Route::get('/ilanlar/{id}/seasons', [SeasonController::class, 'index'])->name('api.ilanlar.seasons');
     Route::post('/seasons', [SeasonController::class, 'store'])->name('api.seasons.store');
@@ -861,6 +882,12 @@ Route::post('/booking-request', [BookingRequestController::class, 'store'])->nam
 Route::post('/check-availability', [BookingRequestController::class, 'checkAvailability'])->name('api.check-availability');
 Route::post('/get-booking-price', [BookingRequestController::class, 'getPrice'])->name('api.get-booking-price');
 
+// Arsa Calculation API Routes
+Route::prefix('admin/api/arsa')->middleware(['web', 'auth'])->name('api.arsa.')->group(function () {
+    Route::post('/calculate', [\App\Http\Controllers\Admin\ArsaCalculationController::class, 'calculate'])->name('calculate');
+    Route::post('/tkgm-query', [\App\Http\Controllers\Admin\ArsaCalculationController::class, 'tkgmQuery'])->name('tkgm-query');
+});
+
 // Location API Routes (Context7 Standard)
 require __DIR__.'/api-location.php';
 
@@ -871,9 +898,31 @@ Route::prefix('exchange-rates')->group(function () {
     Route::get('/{code}', [ExchangeRateController::class, 'show'])->name('api.exchange-rates.show');
     Route::get('/{code}/history', [ExchangeRateController::class, 'history'])->name('api.exchange-rates.history');
     Route::post('/convert', [ExchangeRateController::class, 'convert'])->name('api.exchange-rates.convert');
-    
+
     // Admin only - force update
     Route::post('/update', [ExchangeRateController::class, 'update'])
         ->middleware(['web', 'auth'])
         ->name('api.exchange-rates.update');
+});
+
+// Reference & File Management API (Context7 Compliant)
+// Ref numarası, Basename, Portal numarası yönetimi
+Route::prefix('reference')->middleware(['web', 'auth'])->group(function () {
+    // Ref numarası oluştur
+    Route::post('/generate', [\App\Http\Controllers\Api\ReferenceController::class, 'generateRef'])->name('api.reference.generate');
+
+    // Ref numarası doğrula
+    Route::get('/validate/{referansNo}', [\App\Http\Controllers\Api\ReferenceController::class, 'validateRef'])->name('api.reference.validate');
+
+    // Basename oluştur/güncelle
+    Route::post('/basename', [\App\Http\Controllers\Api\ReferenceController::class, 'generateBasename'])->name('api.reference.basename');
+
+    // Portal numarası güncelle
+    Route::post('/portal', [\App\Http\Controllers\Api\ReferenceController::class, 'updatePortalNumber'])->name('api.reference.portal');
+
+    // İlan için ref ve basename bilgilerini getir
+    Route::get('/{ilanId}', [\App\Http\Controllers\Api\ReferenceController::class, 'getReferenceInfo'])->name('api.reference.info');
+
+    // Toplu ref numarası oluştur (batch)
+    Route::post('/batch-generate', [\App\Http\Controllers\Api\ReferenceController::class, 'batchGenerateRef'])->name('api.reference.batch-generate');
 });

@@ -130,8 +130,79 @@
                                             </div>
                                             <div class="text-sm text-gray-500">
                                                 #{{ $listing->id }}
+                                                @if($listing->dosya_adi)
+                                                    <div class="text-xs text-gray-400 mt-1" title="{{ $listing->dosya_adi }}">
+                                                        {{ Str::limit($listing->dosya_adi, 30) }}
+                                                    </div>
+                                                @endif
                                             </div>
                                         </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="space-y-1">
+                                        @if($listing->referans_no)
+                                            <div class="flex items-center gap-2">
+                                                <code class="px-2 py-1 bg-gray-100 text-gray-800 text-xs font-mono rounded">
+                                                    {{ $listing->referans_no }}
+                                                </code>
+                                                <button onclick="copyToClipboard('{{ $listing->referans_no }}', 'Ref No')" 
+                                                        class="text-gray-400 hover:text-gray-600 transition-colors" 
+                                                        title="Kopyala">
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        @else
+                                            <button onclick="generateRef({{ $listing->id }})" 
+                                                    class="text-xs px-2 py-1 bg-blue-100 text-blue-700 rounded hover:bg-blue-200 transition-colors">
+                                                Ref Oluştur
+                                            </button>
+                                        @endif
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="space-y-1 text-xs">
+                                        @if($listing->sahibinden_id)
+                                            <div class="flex items-center gap-1">
+                                                <span class="text-gray-600">SH:</span>
+                                                <code class="text-gray-800">{{ $listing->sahibinden_id }}</code>
+                                                <button onclick="copyToClipboard('{{ $listing->sahibinden_id }}', 'Sahibinden ID')" 
+                                                        class="text-gray-400 hover:text-gray-600">
+                                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        @endif
+                                        @if($listing->emlakjet_id)
+                                            <div class="flex items-center gap-1">
+                                                <span class="text-gray-600">EJ:</span>
+                                                <code class="text-gray-800">{{ $listing->emlakjet_id }}</code>
+                                                <button onclick="copyToClipboard('{{ $listing->emlakjet_id }}', 'Emlakjet ID')" 
+                                                        class="text-gray-400 hover:text-gray-600">
+                                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        @endif
+                                        @if($listing->hepsiemlak_id)
+                                            <div class="flex items-center gap-1">
+                                                <span class="text-gray-600">HE:</span>
+                                                <code class="text-gray-800">{{ $listing->hepsiemlak_id }}</code>
+                                                <button onclick="copyToClipboard('{{ $listing->hepsiemlak_id }}', 'Hepsiemlak ID')" 
+                                                        class="text-gray-400 hover:text-gray-600">
+                                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        @endif
+                                        @if(!$listing->sahibinden_id && !$listing->emlakjet_id && !$listing->hepsiemlak_id)
+                                            <span class="text-gray-400 text-xs">-</span>
+                                        @endif
                                     </div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
@@ -429,5 +500,41 @@
                 applyFilters();
             }
         });
+
+        // Kopyalama fonksiyonu
+        function copyToClipboard(text, label) {
+            navigator.clipboard.writeText(text).then(function() {
+                window.toast?.success(`${label} kopyalandı: ${text}`);
+            }, function(err) {
+                console.error('Kopyalama hatası:', err);
+                window.toast?.error('Kopyalama başarısız');
+            });
+        }
+
+        // Ref numarası oluştur
+        async function generateRef(ilanId) {
+            try {
+                const response = await fetch('/api/reference/generate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || ''
+                    },
+                    body: JSON.stringify({ ilan_id: ilanId })
+                });
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    window.toast?.success('Ref numarası oluşturuldu');
+                    location.reload(); // Sayfayı yenile
+                } else {
+                    throw new Error(data.message || 'Ref numarası oluşturulamadı');
+                }
+            } catch (error) {
+                console.error('Ref oluşturma hatası:', error);
+                window.toast?.error('Ref numarası oluşturulamadı: ' + error.message);
+            }
+        }
     </script>
 @endpush

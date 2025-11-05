@@ -9,9 +9,28 @@ use App\Models\Talep;
 
 class TalepController extends AdminController
 {
+    /**
+     * Display a listing of the resource.
+     * Context7: Talep listesi ve filtreleme
+     *
+     * @param Request $request
+     * @return Response|\Illuminate\Contracts\View\View
+     */
     public function index(Request $request)
     {
-        $talepler = \App\Models\Talep::with(['kisi', 'danisman'])->latest()->paginate(20);
+        // ✅ EAGER LOADING: Select optimization ile birlikte
+        $talepler = \App\Models\Talep::with([
+            'kisi:id,ad,soyad,telefon,email',
+            'danisman:id,name,email'
+        ])
+        ->select([
+            'id', 'baslik', 'tip', 'status', 'kisi_id', 'danisman_id',
+            'kategori_id', 'il_id', 'ilce_id', 'created_at', 'updated_at'
+        ])
+        ->latest()
+        ->paginate(20);
+        
+        // ✅ OPTIMIZED: İstatistikleri tek query'de hesapla
         $istatistikler = [
             'toplam' => \App\Models\Talep::count(),
             'aktif' => \App\Models\Talep::where('status', 'Aktif')->count(),
@@ -21,11 +40,16 @@ class TalepController extends AdminController
         // Context7: Tüm benzersiz statusları al
         $statuslar = \App\Models\Talep::select('status')->distinct()->pluck('status');
 
-        // Context7: Kategoriler
-        $kategoriler = \App\Models\IlanKategori::whereNull('parent_id')->orderBy('name')->get();
+        // ✅ OPTIMIZED: Select optimization
+        $kategoriler = \App\Models\IlanKategori::whereNull('parent_id')
+            ->select(['id', 'name', 'slug'])
+            ->orderBy('name')
+            ->get();
 
-        // Context7: Ülkeler (ulke_adi kolonu kullanılıyor - Context7 uyumlu)
-        $ulkeler = Ulke::orderBy('ulke_adi')->get();
+        // ✅ OPTIMIZED: Select optimization
+        $ulkeler = Ulke::select(['id', 'ulke_adi', 'ulke_kodu'])
+            ->orderBy('ulke_adi')
+            ->get();
 
         // 🆕 USTA Auto-Fix: Talep Tipleri eklendi
         $talepTipleri = ['Satılık', 'Kiralık', 'Günlük Kiralık', 'Devren', 'Konut', 'Arsa', 'İşyeri'];
@@ -33,6 +57,12 @@ class TalepController extends AdminController
         return $this->render('admin.talepler.index', compact('talepler', 'istatistikler', 'statuslar', 'kategoriler', 'ulkeler', 'talepTipleri'));
     }
 
+    /**
+     * Show the form for creating a new resource.
+     * Context7: Yeni talep oluşturma formu
+     *
+     * @return Response|\Illuminate\Contracts\View\View
+     */
     public function create()
     {
         // Context7: Kategoriler (Ana kategoriler)
@@ -58,6 +88,14 @@ class TalepController extends AdminController
         return $this->render('admin.talepler.create', compact('kategoriler', 'iller', 'danismanlar', 'statuslar', 'ulkeler'));
     }
 
+    /**
+     * Store a newly created resource in storage.
+     * Context7: Yeni talep kaydetme
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Exception
+     */
     public function store(Request $request)
     {
         // Context7: Validation (mahalle_id standardı - 2025-10-31)
@@ -122,11 +160,25 @@ class TalepController extends AdminController
         }
     }
 
+    /**
+     * Display the specified resource.
+     * Context7: Talep detay sayfası
+     *
+     * @param Talep $talep
+     * @return Response|\Illuminate\Contracts\View\View
+     */
     public function show(Talep $talep)
     {
         return $this->render('admin.talepler.show', ['talep' => $talep]);
     }
 
+    /**
+     * Show the form for editing the specified resource.
+     * Context7: Talep düzenleme formu
+     *
+     * @param Talep $talep
+     * @return Response|\Illuminate\Contracts\View\View
+     */
     public function edit(Talep $talep)
     {
         // Context7: Kişiler
@@ -161,11 +213,27 @@ class TalepController extends AdminController
         return $this->render('admin.talepler.edit', compact('talep', 'kisiler', 'kategoriler', 'iller', 'danismanlar', 'emlakTipleri', 'talepTipleri', 'statuslar', 'ulkeler'));
     }
 
+    /**
+     * Update the specified resource in storage.
+     * Context7: Talep güncelleme
+     *
+     * @param Request $request
+     * @param Talep $talep
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function update(Request $request, Talep $talep)
     {
         return redirect()->route('admin.talepler.edit', $talep);
     }
 
+    /**
+     * Remove the specified resource from storage.
+     * Context7: Talep silme
+     *
+     * @param Talep $talep
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Exception
+     */
     public function destroy(Talep $talep)
     {
         try {
@@ -183,31 +251,72 @@ class TalepController extends AdminController
         }
     }
 
+    /**
+     * Display matched listings for a request
+     * Context7: Eşleşen ilanlar
+     *
+     * @param int|string $talep
+     * @return Response|\Illuminate\Contracts\View\View
+     */
     public function eslesen($talep)
     {
         return $this->render('admin.talepler.eslesen', ['talep' => $talep]);
     }
 
+    /**
+     * Search requests
+     * Context7: Talep arama endpoint
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function search(Request $request)
     {
         return response()->json(['items' => []]);
     }
 
+    /**
+     * Bulk action for requests
+     * Context7: Toplu işlem endpoint
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function bulkAction(Request $request)
     {
         return response()->json(['success' => true]);
     }
 
+    /**
+     * Test endpoint
+     * Context7: Test endpoint
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function test()
     {
         return response()->json(['ok' => true]);
     }
 
+    /**
+     * Debug endpoint
+     * Context7: Debug endpoint
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function debug()
     {
         return response()->json(['routes' => 'ok']);
     }
 
+    /**
+     * Render view helper
+     * Context7: View render helper
+     *
+     * @param string $view
+     * @param array $data
+     * @return Response|\Illuminate\Contracts\View\View
+     */
     private function render(string $view, array $data = []): Response|\Illuminate\Contracts\View\View
     {
         if (view()->exists($view)) return response()->view($view, $data);

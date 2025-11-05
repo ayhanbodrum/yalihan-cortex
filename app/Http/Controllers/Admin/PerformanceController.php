@@ -2,6 +2,14 @@
 
 namespace App\Http\Controllers\Admin;
 
+/**
+ * @deprecated Bu controller'ın fonksiyonelliği IlanController içinde mevcuttur.
+ * Performance route'ları: admin.ilanlar.api-performance
+ * 
+ * Context7 Standard: C7-DEPRECATED-PERFORMANCE-2025-11-05
+ * Bu controller kullanılmıyor, IlanController içinde performance metodları var.
+ */
+
 use Illuminate\Http\Request;
 
 class PerformanceController extends AdminController

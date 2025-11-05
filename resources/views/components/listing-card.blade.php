@@ -99,10 +99,27 @@
     @if ($showPrice && $ilan->fiyat)
         <div class="mb-4">
             <div class="text-2xl font-bold text-blue-600 dark:text-blue-400">
-                {{ number_format($ilan->fiyat, 0, ',', '.') }} ₺
+                {{ number_format($ilan->fiyat, 0, ',', '.') }} {{ $ilan->para_birimi ?? 'TRY' }}
+                @if ($ilan->kiralama_turu)
+                    @switch($ilan->kiralama_turu)
+                        @case('gunluk')
+                            <span class="text-lg font-normal text-gray-600 dark:text-gray-400">/Gün</span>
+                        @break
+                        @case('haftalik')
+                            <span class="text-lg font-normal text-gray-600 dark:text-gray-400">/Hafta</span>
+                        @break
+                        @case('aylik')
+                        @case('uzun_donem')
+                            <span class="text-lg font-normal text-gray-600 dark:text-gray-400">/Ay</span>
+                        @break
+                        @case('sezonluk')
+                            <span class="text-lg font-normal text-gray-600 dark:text-gray-400">/Sezon</span>
+                        @break
+                    @endswitch
+                @endif
             </div>
             @if ($ilan->fiyat_tipi)
-                <div class="text-sm text-gray-500">{{ $ilan->fiyat_tipi }}</div>
+                <div class="text-sm text-gray-500 dark:text-gray-400">{{ $ilan->fiyat_tipi }}</div>
             @endif
         </div>
     @endif
@@ -115,7 +132,7 @@
                 <span class="text-xs text-gray-500">{{ $ilan->kategori->name ?? '' }}</span>
             @endif
         </div>
-        <div class="flex space-x-2">
+        <div class="flex space-x-2 items-center">
             <button onclick="toggleListingStatus({{ $ilan->id }})"
                 class="text-xs text-blue-600 hover:text-blue-800 dark:text-blue-400 font-medium">
                 {{ $ilan->status_mi ? 'Pasifleştir' : 'Aktifleştir' }}
@@ -124,6 +141,25 @@
                 class="text-xs text-green-600 hover:text-green-800 dark:text-green-400 font-medium">
                 Kopyala
             </button>
+            {{-- QR Code Button --}}
+            <div class="relative" x-data="{ showQR: false }">
+                <button @click="showQR = !showQR"
+                        class="text-xs text-purple-600 hover:text-purple-800 dark:text-purple-400 font-medium"
+                        title="QR Kod">
+                    <i class="fas fa-qrcode"></i>
+                </button>
+                <div x-show="showQR" 
+                     @click.away="showQR = false"
+                     x-transition:enter="transition ease-out duration-200"
+                     x-transition:enter-start="opacity-0 transform scale-95"
+                     x-transition:enter-end="opacity-100 transform scale-100"
+                     x-transition:leave="transition ease-in duration-150"
+                     x-transition:leave-start="opacity-100 transform scale-100"
+                     x-transition:leave-end="opacity-0 transform scale-95"
+                     class="absolute right-0 mt-2 z-50">
+                    <x-qr-code-display :ilan="$ilan" :size="'small'" />
+                </div>
+            </div>
         </div>
     </div>
 </div>

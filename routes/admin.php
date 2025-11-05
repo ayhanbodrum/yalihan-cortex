@@ -84,6 +84,13 @@ Route::middleware(['web'])->prefix('admin')->name('admin.')->group(function () {
         Route::post('/update-order', [\App\Http\Controllers\Admin\YayinTipiYoneticisiController::class, 'updateOrder'])->name('update-order');
     });
 
+    // Yalihan Bekçi Monitoring Dashboard
+    Route::prefix('/yalihan-bekci')->name('yalihan-bekci.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\YalihanBekciController::class, 'index'])->name('index');
+        Route::get('/live-data', [\App\Http\Controllers\Admin\YalihanBekciController::class, 'liveData'])->name('live-data');
+        Route::post('/run-check', [\App\Http\Controllers\Admin\YalihanBekciController::class, 'runCheck'])->name('run-check');
+    });
+
     // Performance routes
 
     // Alias routes for backwards compatibility
@@ -680,12 +687,16 @@ Route::prefix('ai-category')->name('ai-category.')->group(function () {
         Route::get('/create', [\App\Http\Controllers\Admin\AyarlarController::class, 'create'])->name('create');
         Route::post('/', [\App\Http\Controllers\Admin\AyarlarController::class, 'store'])->name('store');
         Route::post('/bulk-store', [\App\Http\Controllers\Admin\AyarlarController::class, 'bulkStore'])->name('bulk-store');
+        Route::post('/bulk-update', [\App\Http\Controllers\Admin\AyarlarController::class, 'bulkUpdate'])->name('bulk-update');
         Route::post('/clear-caches', [\App\Http\Controllers\Admin\AyarlarController::class, 'clearCaches'])->name('clear-caches');
         Route::get('/{ayar}', [\App\Http\Controllers\Admin\AyarlarController::class, 'show'])->name('show');
         Route::get('/{ayar}/edit', [\App\Http\Controllers\Admin\AyarlarController::class, 'edit'])->name('edit');
         Route::put('/{ayar}', [\App\Http\Controllers\Admin\AyarlarController::class, 'update'])->name('update');
         Route::delete('/{ayar}', [\App\Http\Controllers\Admin\AyarlarController::class, 'destroy'])->name('destroy');
     });
+    
+    // Settings form route (for admin.settings.index view)
+    Route::post('/settings/update', [\App\Http\Controllers\Admin\AyarlarController::class, 'bulkUpdate'])->name('settings.update');
 
     // AI Ayarları
     Route::prefix('/ai-settings')->name('ai-settings.')->group(function () {

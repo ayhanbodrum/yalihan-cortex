@@ -1,0 +1,845 @@
+{
+  "title": "TÜM DIŞ API'LER DOKÜMANTASYONU",
+  "version": "1.0.0",
+  "last_updated": "2025-11-05T23:30:00Z",
+  "description": "Yalıhan Emlak projesinde kullanılan tüm dış API'lerin detaylı dokümantasyonu",
+  "category": "api_documentation",
+  "status": "active",
+  
+  "apis": {
+    "turkiyeapi": {
+      "name": "TurkiyeAPI",
+      "official_name": "TurkiyeAPI.dev",
+      "description": "Türkiye'nin idari bölümleri (İl, İlçe, Mahalle, Belde, Köy) için REST API",
+      "base_url": "https://api.turkiyeapi.dev/api/v1",
+      "documentation_url": "https://docs.turkiyeapi.dev",
+      "service_file": "app/Services/TurkiyeAPIService.php",
+      "authentication": {
+        "type": "none",
+        "required": false,
+        "api_key": false
+      },
+      "rate_limiting": {
+        "free_tier": "Yüksek",
+        "notes": "Rate limit belirtilmemiş, cache kullanılıyor"
+      },
+      "cache_strategy": {
+        "ttl": 86400,
+        "unit": "seconds",
+        "description": "24 saat cache"
+      },
+      
+      "endpoints": {
+        "provinces": {
+          "method": "GET",
+          "url": "/provinces",
+          "description": "Tüm illeri getirir",
+          "parameters": {
+            "page": {
+              "type": "integer",
+              "optional": true,
+              "default": 1,
+              "description": "Sayfa numarası"
+            },
+            "per_page": {
+              "type": "integer",
+              "optional": true,
+              "default": 81,
+              "description": "Sayfa başına kayıt sayısı"
+            }
+          },
+          "response_structure": {
+            "status": "OK",
+            "data": [
+              {
+                "id": 1,
+                "name": "Adana",
+                "population": 2270298,
+                "area": 13844,
+                "altitude": 25,
+                "areaCode": [322],
+                "isCoastal": true,
+                "isMetropolitan": true,
+                "nuts": {
+                  "nuts1": {
+                    "code": "TR6",
+                    "name": {
+                      "en": "Mediterranean",
+                      "tr": "Akdeniz"
+                    }
+                  },
+                  "nuts2": {
+                    "code": "TR62",
+                    "name": "Adana"
+                  },
+                  "nuts3": "TR621"
+                },
+                "coordinates": {
+                  "latitude": 37.001667,
+                  "longitude": 35.328889
+                },
+                "maps": {
+                  "googleMaps": "https://goo.gl/maps/...",
+                  "openStreetMap": "https://www.openstreetmap.org/..."
+                },
+                "region": {
+                  "en": "Mediterranean",
+                  "tr": "Akdeniz"
+                }
+              }
+            ],
+            "meta": {
+              "total": 81,
+              "page": 1,
+              "per_page": 81
+            }
+          },
+          "service_method": "getProvinces()",
+          "return_type": "array",
+          "cache_key": "turkiyeapi.provinces"
+        },
+        
+        "districts": {
+          "method": "GET",
+          "url": "/districts",
+          "description": "İlçeleri getirir (province ID'ye göre)",
+          "parameters": {
+            "provinceId": {
+              "type": "integer",
+              "required": true,
+              "description": "İl ID'si"
+            },
+            "page": {
+              "type": "integer",
+              "optional": true,
+              "default": 1
+            },
+            "per_page": {
+              "type": "integer",
+              "optional": true,
+              "default": 100
+            }
+          },
+          "response_structure": {
+            "status": "OK",
+            "data": [
+              {
+                "id": 1757,
+                "name": "Aladağ",
+                "population": 16954,
+                "area": 1340,
+                "province": {
+                  "id": 1,
+                  "name": "Adana"
+                }
+              }
+            ]
+          },
+          "service_method": "getDistricts($provinceId)",
+          "return_type": "array",
+          "cache_key": "turkiyeapi.districts.{provinceId}"
+        },
+        
+        "neighborhoods": {
+          "method": "GET",
+          "url": "/neighborhoods",
+          "description": "Mahalleleri getirir (district ID'ye göre)",
+          "parameters": {
+            "districtId": {
+              "type": "integer",
+              "required": true,
+              "description": "İlçe ID'si"
+            },
+            "page": {
+              "type": "integer",
+              "optional": true,
+              "default": 1
+            },
+            "per_page": {
+              "type": "integer",
+              "optional": true,
+              "default": 100
+            }
+          },
+          "response_structure": {
+            "status": "OK",
+            "data": [
+              {
+                "id": 12345,
+                "name": "Mahalle Adı",
+                "population": 5000,
+                "postcode": "34000"
+              }
+            ]
+          },
+          "service_method": "getNeighborhoods($districtId)",
+          "return_type": "array",
+          "cache_key": "turkiyeapi.neighborhoods.{districtId}",
+          "demographic_data": {
+            "population": true,
+            "postcode": true
+          }
+        },
+        
+        "towns": {
+          "method": "GET",
+          "url": "/towns",
+          "description": "Beldeleri getirir (district ID'ye göre) - TATİL BÖLGELERİ!",
+          "parameters": {
+            "districtId": {
+              "type": "integer",
+              "required": true,
+              "description": "İlçe ID'si"
+            },
+            "page": {
+              "type": "integer",
+              "optional": true,
+              "default": 1
+            },
+            "per_page": {
+              "type": "integer",
+              "optional": true,
+              "default": 100
+            }
+          },
+          "response_structure": {
+            "status": "OK",
+            "data": [
+              {
+                "id": 12345,
+                "name": "Belde Adı",
+                "population": 3000,
+                "postcode": "48400",
+                "isCoastal": true,
+                "area": 150.5
+              }
+            ]
+          },
+          "service_method": "getTowns($districtId)",
+          "return_type": "array",
+          "cache_key": "turkiyeapi.towns.{districtId}",
+          "demographic_data": {
+            "population": true,
+            "postcode": true,
+            "isCoastal": true,
+            "area": true
+          },
+          "use_case": "Tatil bölgeleri, yazlık emlak"
+        },
+        
+        "villages": {
+          "method": "GET",
+          "url": "/villages",
+          "description": "Köyleri getirir (district ID'ye göre) - KIRSAL EMLAK!",
+          "parameters": {
+            "districtId": {
+              "type": "integer",
+              "required": true,
+              "description": "İlçe ID'si"
+            },
+            "limit": {
+              "type": "integer",
+              "optional": true,
+              "default": 100,
+              "description": "Sonuç limiti"
+            },
+            "offset": {
+              "type": "integer",
+              "optional": true,
+              "default": 0,
+              "description": "Başlangıç noktası"
+            }
+          },
+          "response_structure": {
+            "status": "OK",
+            "data": [
+              {
+                "id": 12345,
+                "name": "Köy Adı",
+                "population": 500,
+                "postcode": "34000"
+              }
+            ]
+          },
+          "service_method": "getVillages($districtId, $limit = 100)",
+          "return_type": "array",
+          "cache_key": "turkiyeapi.villages.{districtId}.{limit}",
+          "demographic_data": {
+            "population": true,
+            "postcode": true
+          },
+          "use_case": "Kırsal emlak, arsa"
+        },
+        
+        "location_details": {
+          "method": "GET",
+          "url": "/{type}/{id}",
+          "description": "Belirli bir lokasyonun detaylarını getirir",
+          "parameters": {
+            "type": {
+              "type": "string",
+              "required": true,
+              "enum": ["provinces", "districts", "neighborhoods", "towns", "villages"],
+              "description": "Lokasyon tipi"
+            },
+            "id": {
+              "type": "integer",
+              "required": true,
+              "description": "Lokasyon ID'si"
+            }
+          },
+          "service_method": "getLocationDetails($type, $id)",
+          "return_type": "array|null",
+          "cache_key": "turkiyeapi.location.{type}.{id}"
+        }
+      },
+      
+      "unified_methods": {
+        "getAllLocations": {
+          "description": "Bir ilçe için tüm lokasyon tiplerini getirir (Mahalle + Belde + Köy)",
+          "method": "getAllLocations($districtId)",
+          "return_type": "array",
+          "structure": {
+            "neighborhoods": [],
+            "towns": [],
+            "villages": []
+          },
+          "cache_key": "turkiyeapi.all_locations.{districtId}",
+          "use_case": "Unified location selector için"
+        },
+        
+        "searchLocations": {
+          "description": "Lokasyonları arama (tüm tiplerde)",
+          "method": "searchLocations($query, $type = 'all')",
+          "parameters": {
+            "query": "string - Arama terimi",
+            "type": "string - 'all', 'province', 'district', 'neighborhood', 'town', 'village'"
+          },
+          "return_type": "array",
+          "cache_key": "turkiyeapi.search.{query}.{type}",
+          "cache_ttl": 3600
+        }
+      },
+      
+      "demographic_data_available": {
+        "population": {
+          "available": true,
+          "levels": ["province", "district", "neighborhood", "town", "village"],
+          "source": "TurkiyeAPI"
+        },
+        "area": {
+          "available": true,
+          "levels": ["province", "district", "town"],
+          "source": "TurkiyeAPI"
+        },
+        "postcode": {
+          "available": true,
+          "levels": ["neighborhood", "town", "village"],
+          "source": "TurkiyeAPI"
+        },
+        "isCoastal": {
+          "available": true,
+          "levels": ["province", "town"],
+          "source": "TurkiyeAPI"
+        },
+        "altitude": {
+          "available": true,
+          "levels": ["province"],
+          "source": "TurkiyeAPI"
+        },
+        "coordinates": {
+          "available": true,
+          "levels": ["province", "district"],
+          "source": "TurkiyeAPI"
+        }
+      },
+      
+      "error_handling": {
+        "timeout": 10,
+        "retry": false,
+        "fallback": "Empty array",
+        "logging": "Log::error / Log::warning"
+      },
+      
+      "usage_examples": {
+        "get_provinces": "TurkiyeAPIService::getProvinces()",
+        "get_districts": "TurkiyeAPIService::getDistricts(1) // Adana",
+        "get_all_locations": "TurkiyeAPIService::getAllLocations(1219) // Ceyhan ilçesi",
+        "search": "TurkiyeAPIService::searchLocations('Bodrum', 'district')"
+      },
+      
+      "integration_points": {
+        "UnifiedLocationService": "TurkiyeAPI + WikiMapia entegrasyonu",
+        "LocationController": "API endpoint'leri",
+        "Ilan Model": "mahalle_id, location_data field'ları"
+      }
+    },
+    
+    "tcmb": {
+      "name": "TCMB",
+      "official_name": "Türkiye Cumhuriyet Merkez Bankası",
+      "description": "Günlük döviz kurları (USD, EUR, GBP, vb.)",
+      "base_url": "https://www.tcmb.gov.tr/kurlar/today.xml",
+      "documentation_url": "https://www.tcmb.gov.tr/kurlar/",
+      "service_file": "app/Services/TCMBCurrencyService.php",
+      "authentication": {
+        "type": "none",
+        "required": false
+      },
+      "rate_limiting": {
+        "free_tier": "Yüksek",
+        "notes": "Günlük güncelleme, cache kullanılıyor"
+      },
+      "cache_strategy": {
+        "ttl": 3600,
+        "unit": "seconds",
+        "description": "1 saat cache (medium priority)"
+      },
+      
+      "endpoints": {
+        "today_rates": {
+          "method": "GET",
+          "url": "/kurlar/today.xml",
+          "description": "Günün döviz kurlarını XML formatında getirir",
+          "response_format": "XML",
+          "supported_currencies": ["USD", "EUR", "GBP", "CHF", "CAD", "AUD", "JPY"],
+          "response_structure": {
+            "Tarih_Date": {
+              "Tarih": "04.11.2025",
+              "Date": "11/04/2025",
+              "Bulten_No": "2025/208",
+              "Currency": [
+                {
+                  "Kod": "USD",
+                  "CurrencyCode": "USD",
+                  "Unit": 1,
+                  "Isim": "ABD DOLARI",
+                  "CurrencyName": "US DOLLAR",
+                  "ForexBuying": "42.0042",
+                  "ForexSelling": "42.0798",
+                  "BanknoteBuying": "41.9748",
+                  "BanknoteSelling": "42.1430"
+                }
+              ]
+            }
+          },
+          "service_method": "getTodayRates()",
+          "return_type": "array|null",
+          "cache_key": "currency.tcmb_rates_today"
+        }
+      },
+      
+      "service_methods": {
+        "getTodayRates": {
+          "description": "Günün döviz kurlarını getirir",
+          "return_type": "array|null",
+          "fallback": "Database'den son bilinen kurlar"
+        },
+        "updateRates": {
+          "description": "Döviz kurlarını veritabanına kaydeder",
+          "return_type": "int (güncellenen kayıt sayısı)",
+          "model": "ExchangeRate"
+        },
+        "getRate": {
+          "description": "Belirli bir para birimi için kur getirir",
+          "parameters": {
+            "currencyCode": "string (USD, EUR, vb.)",
+            "type": "string ('buying', 'selling', 'average')"
+          },
+          "return_type": "float|null"
+        },
+        "convertToTRY": {
+          "description": "Belirli bir para birimini TRY'ye çevirir",
+          "parameters": {
+            "amount": "float",
+            "fromCurrency": "string"
+          },
+          "return_type": "float"
+        },
+        "convertFromTRY": {
+          "description": "TRY'yi belirli bir para birimine çevirir",
+          "parameters": {
+            "amount": "float",
+            "toCurrency": "string"
+          },
+          "return_type": "float"
+        },
+        "getRateHistory": {
+          "description": "Para birimi için kur geçmişi getirir",
+          "parameters": {
+            "currencyCode": "string",
+            "days": "int (default: 30)"
+          },
+          "return_type": "Collection"
+        },
+        "getSupportedCurrencies": {
+          "description": "Desteklenen para birimlerini getirir",
+          "return_type": "array"
+        },
+        "getCurrencySymbol": {
+          "description": "Para birimi sembolünü getirir",
+          "parameters": {
+            "code": "string"
+          },
+          "return_type": "string"
+        }
+      },
+      
+      "currency_symbols": {
+        "TRY": "₺",
+        "USD": "$",
+        "EUR": "€",
+        "GBP": "£",
+        "CHF": "CHF",
+        "CAD": "C$",
+        "AUD": "A$",
+        "JPY": "¥"
+      },
+      
+      "error_handling": {
+        "timeout": 10,
+        "retry": false,
+        "fallback": "Database'den son bilinen kurlar",
+        "logging": "LogService::warning / LogService::error"
+      },
+      
+      "database_integration": {
+        "model": "ExchangeRate",
+        "fields": [
+          "currency_code",
+          "rate_date",
+          "rate_to_try",
+          "buying_rate",
+          "selling_rate",
+          "source"
+        ]
+      },
+      
+      "usage_examples": {
+        "get_rates": "$service->getTodayRates()",
+        "get_usd_rate": "$service->getRate('USD', 'selling')",
+        "convert_to_try": "$service->convertToTRY(1000, 'USD')",
+        "update_rates": "$service->updateRates()"
+      },
+      
+      "integration_points": {
+        "PriceController": "Fiyat dönüşümleri",
+        "Ilan Model": "para_birimi field'ı",
+        "PriceDisplay Component": "Çoklu para birimi gösterimi"
+      }
+    },
+    
+    "wikimapia": {
+      "name": "WikiMapia",
+      "official_name": "WikiMapia API",
+      "description": "Çevresel özellikler, yakındaki yerler, site/apartman bilgileri",
+      "base_url": "https://api.wikimapia.org",
+      "documentation_url": "https://wikimapia.org/api/",
+      "service_file": "app/Services/WikimapiaService.php",
+      "authentication": {
+        "type": "api_key",
+        "required": true,
+        "config_key": "services.wikimapia.api_key"
+      },
+      "rate_limiting": {
+        "free_tier": "Orta",
+        "notes": "API key gerekiyor, cache kullanılıyor"
+      },
+      "cache_strategy": {
+        "ttl": "config('services.wikimapia.cache_ttl')",
+        "unit": "seconds",
+        "default": 86400
+      },
+      
+      "endpoints": {
+        "place_getbyid": {
+          "function": "place.getbyid",
+          "description": "ID'ye göre yer bilgisi getirir",
+          "parameters": {
+            "key": "string (API key)",
+            "id": "integer (Place ID)",
+            "format": "string (json, xml)",
+            "language": "string (tr, en)",
+            "data_blocks": "string (main, location, etc.)"
+          },
+          "service_method": "getPlaceById($id, $dataBlocks = ['main', 'location'])",
+          "return_type": "array|null",
+          "cache_key": "wikimapia.place.{id}.{dataBlocks}"
+        },
+        
+        "place_getbyarea": {
+          "function": "place.getbyarea",
+          "description": "Bounding box içindeki yerleri getirir",
+          "parameters": {
+            "key": "string (API key)",
+            "bbox": "string (lonMin,latMin,lonMax,latMax)",
+            "format": "string",
+            "language": "string",
+            "data_blocks": "string",
+            "page": "integer",
+            "count": "integer",
+            "category": "integer (optional)"
+          },
+          "service_method": "getPlacesByArea($lonMin, $latMin, $lonMax, $latMax, $options = [])",
+          "return_type": "array|null",
+          "cache_key": "wikimapia.area.{bbox}.{page}.{count}",
+          "fallback": "Boş array (Nominatim'e geçer)"
+        },
+        
+        "place_getnearest": {
+          "function": "place.getnearest",
+          "description": "Koordinatlara en yakın yerleri getirir",
+          "parameters": {
+            "key": "string (API key)",
+            "lat": "float",
+            "lon": "float",
+            "format": "string",
+            "language": "string",
+            "count": "integer",
+            "category": "integer (optional)",
+            "data_blocks": "string"
+          },
+          "service_method": "getNearestPlaces($lat, $lon, $options = [])",
+          "return_type": "array|null",
+          "cache_key": "wikimapia.nearest.{lat},{lon}.{count}"
+        },
+        
+        "place_search": {
+          "function": "place.search",
+          "description": "İsme göre yer arama",
+          "parameters": {
+            "key": "string (API key)",
+            "q": "string (query)",
+            "lat": "float",
+            "lon": "float",
+            "format": "string",
+            "language": "string",
+            "page": "integer",
+            "count": "integer"
+          },
+          "service_method": "searchPlaces($query, $lat, $lon, $options = [])",
+          "return_type": "array|null",
+          "cache_key": "wikimapia.search.{query}.{lat},{lon}.{page}"
+        },
+        
+        "category_getall": {
+          "function": "category.getall",
+          "description": "Tüm kategorileri getirir",
+          "parameters": {
+            "key": "string (API key)",
+            "format": "string",
+            "language": "string",
+            "page": "integer",
+            "count": "integer"
+          },
+          "service_method": "getAllCategories($page = 1, $count = 50)",
+          "return_type": "array|null",
+          "cache_key": "wikimapia.categories.all.{page}.{count}"
+        },
+        
+        "street_getbyid": {
+          "function": "street.getbyid",
+          "description": "Sokak bilgisi getirir",
+          "parameters": {
+            "key": "string (API key)",
+            "id": "integer (Street ID)",
+            "format": "string",
+            "language": "string"
+          },
+          "service_method": "getStreetById($id)",
+          "return_type": "array|null",
+          "cache_key": "wikimapia.street.{id}"
+        }
+      },
+      
+      "special_methods": {
+        "searchResidentialComplexes": {
+          "description": "Site/apartman araması için optimize edilmiş",
+          "method": "searchResidentialComplexes($query, $lat, $lon, $radius = 0.05)",
+          "return_type": "array|null",
+          "cache_key": "wikimapia.residential.{query}.{lat},{lon}.{radius}",
+          "use_case": "Site/apartman adı araması"
+        }
+      },
+      
+      "error_handling": {
+        "timeout": "config('services.wikimapia.timeout')",
+        "retry": false,
+        "fallback": "null (Nominatim'e geçer)",
+        "logging": "Log::error / Log::warning"
+      },
+      
+      "usage_examples": {
+        "get_place": "$service->getPlaceById(12345)",
+        "get_nearest": "$service->getNearestPlaces(41.0082, 28.9784, ['count' => 50])",
+        "search_site": "$service->searchResidentialComplexes('Site Adı', 41.0082, 28.9784)"
+      },
+      
+      "integration_points": {
+        "UnifiedLocationService": "Çevresel özellikler analizi",
+        "IlanNearby Model": "Yakındaki yerler",
+        "AkilliCevreAnaliziService": "Akıllı çevre analizi"
+      }
+    },
+    
+    "nominatim": {
+      "name": "Nominatim",
+      "official_name": "OpenStreetMap Nominatim",
+      "description": "OpenStreetMap tabanlı geocoding ve reverse geocoding",
+      "base_url": "https://nominatim.openstreetmap.org",
+      "documentation_url": "https://nominatim.org/release-docs/latest/api/Overview/",
+      "service_file": "app/Services/NominatimService.php",
+      "authentication": {
+        "type": "none",
+        "required": false,
+        "user_agent": "required (proje adı)"
+      },
+      "rate_limiting": {
+        "free_tier": "1 request/second",
+        "notes": "User-Agent header zorunlu"
+      },
+      "cache_strategy": {
+        "ttl": 86400,
+        "unit": "seconds",
+        "description": "24 saat cache"
+      },
+      
+      "endpoints": {
+        "search": {
+          "method": "GET",
+          "url": "/search",
+          "description": "Adrese göre koordinat arama (geocoding)",
+          "parameters": {
+            "q": "string (address query)",
+            "format": "json",
+            "limit": "integer",
+            "countrycodes": "tr",
+            "addressdetails": "1"
+          },
+          "service_method": "search($query, $limit = 5)",
+          "return_type": "array"
+        },
+        
+        "reverse": {
+          "method": "GET",
+          "url": "/reverse",
+          "description": "Koordinata göre adres arama (reverse geocoding)",
+          "parameters": {
+            "lat": "float",
+            "lon": "float",
+            "format": "json",
+            "addressdetails": "1"
+          },
+          "service_method": "reverse($lat, $lon)",
+          "return_type": "array|null"
+        }
+      },
+      
+      "error_handling": {
+        "timeout": 10,
+        "retry": false,
+        "fallback": "null",
+        "logging": "Log::error"
+      },
+      
+      "usage_examples": {
+        "search_address": "$service->search('Bodrum, Muğla')",
+        "reverse_geocode": "$service->reverse(41.0082, 28.9784)"
+      },
+      
+      "integration_points": {
+        "WikiMapia fallback": "WikiMapia boş dönerse kullanılır",
+        "LocationController": "Adres arama"
+      }
+    }
+  },
+  
+  "unified_services": {
+    "UnifiedLocationService": {
+      "description": "TurkiyeAPI + WikiMapia entegrasyonu",
+      "service_file": "app/Services/UnifiedLocationService.php",
+      "dependencies": [
+        "TurkiyeAPIService",
+        "WikimapiaService"
+      ],
+      "methods": {
+        "getLocationProfile": {
+          "description": "Kapsamlı lokasyon profili (resmi + çevresel)",
+          "parameters": {
+            "lat": "float",
+            "lon": "float",
+            "districtId": "integer|null"
+          },
+          "return_type": "array",
+          "structure": {
+            "coordinates": {},
+            "official": {},
+            "environment": {},
+            "scores": {},
+            "suggestions": []
+          },
+          "cache_key": "unified.location.{lat}.{lon}.{districtId}",
+          "cache_ttl": 3600
+        }
+      }
+    }
+  },
+  
+  "best_practices": {
+    "caching": {
+      "strategy": "Her API için uygun TTL değerleri",
+      "keys": "API adı + endpoint + parametreler",
+      "invalidation": "Manuel veya zaman bazlı"
+    },
+    "error_handling": {
+      "timeout": "Her API için timeout değeri",
+      "fallback": "Database'den son bilinen veriler",
+      "logging": "LogService veya Log facade kullanımı"
+    },
+    "rate_limiting": {
+      "respect": "API rate limit'lerine uyum",
+      "cache": "Cache kullanarak gereksiz istekleri azaltma",
+      "queue": "Büyük işlemler için queue kullanımı"
+    },
+    "standardization": {
+      "cache": "CacheHelper kullanımı",
+      "logging": "LogService kullanımı",
+      "error_handling": "ErrorHandlerService kullanımı"
+    }
+  },
+  
+  "integration_checklist": {
+    "new_api_integration": [
+      "Service class oluştur",
+      "Config dosyasına ekle (services.php)",
+      "Cache stratejisi belirle",
+      "Error handling ekle",
+      "Logging ekle",
+      "Unit test yaz",
+      "Dokümantasyonu güncelle"
+    ]
+  },
+  
+  "monitoring": {
+    "metrics": {
+      "api_calls": "API çağrı sayıları",
+      "cache_hits": "Cache hit oranları",
+      "error_rates": "Hata oranları",
+      "response_times": "Yanıt süreleri"
+    },
+    "alerts": {
+      "high_error_rate": "Yüksek hata oranı",
+      "timeout_issues": "Timeout sorunları",
+      "cache_misses": "Yüksek cache miss oranı"
+    }
+  },
+  
+  "reference": {
+    "turkiyeapi_docs": "https://docs.turkiyeapi.dev",
+    "tcmb_docs": "https://www.tcmb.gov.tr/kurlar/",
+    "wikimapia_docs": "https://wikimapia.org/api/",
+    "nominatim_docs": "https://nominatim.org/release-docs/latest/api/Overview/",
+    "knowledge_base": ".yalihan-bekci/knowledge/external-apis-documentation-2025-11-05.json"
+  }
+}
+

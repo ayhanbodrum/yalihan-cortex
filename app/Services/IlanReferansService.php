@@ -95,24 +95,65 @@ class IlanReferansService
 
     /**
      * Kısa dosya adı (klasör adı için)
-     *
-     * Format: {ReferansNo}_{Lokasyon}_{Kategori}
-     * Örnek: YE-SAT-YALKVK-DAİRE-001234_Yalıkavak_Daire
+     * 
+     * Context7 Standardı: Doküman formatına uygun
+     * Format: {LOKASYON_KODU}-{YAYINTIPI}{YIL}-{SIRANO}_{Lokasyon}_{Site}_{Kategori}_{MalSahibi}
+     * Örnek: YLK-S25-0012_Yalikavak_Sandima_No5_Daire_AKucuk
      *
      * @param Ilan $ilan
      * @return string
      */
     public function generateKisaDosyaAdi(Ilan $ilan): string
     {
-        $referansNo = $this->generateReferansNo($ilan);
+        // Lokasyon kodu (ilk 3 harf)
+        $lokasyonKodu = mb_strtoupper(mb_substr($this->getLokasyonKodu($ilan), 0, 3), 'UTF-8');
+        
+        // Yayın tipi kodu (ilk harf)
+        $yayinTipi = $this->getYayinTipiKodu($ilan);
+        $yayinTipiKodu = substr($yayinTipi, 0, 1); // S, K, G, D
+        
+        // Yıl (son 2 rakam)
+        $yilKodu = substr(date('Y'), -2);
+        
+        // Sıra numarası (4 haneli)
+        $siraNo = $this->getSiraNo($ilan);
+        $siraNoKodu = substr($siraNo, -4); // Son 4 hane
+        
+        // Referans kısmı: YLK-S25-0012
+        $refKisim = "{$lokasyonKodu}-{$yayinTipiKodu}{$yilKodu}-{$siraNoKodu}";
+        
+        // Lokasyon adı (temizlenmiş)
         $lokasyon = $ilan->mahalle?->mahalle_adi ?? $ilan->ilce?->ilce_adi ?? $ilan->il?->il_adi ?? 'Bilinmeyen';
-        $kategori = $this->getKategoriAdi($ilan);
-
-        // Türkçe karakterleri kaldır (dosya adı için güvenli)
         $lokasyon = $this->turkceKarakterTemizle($lokasyon);
+        
+        // Site adı (varsa)
+        $site = '';
+        if ($ilan->site) {
+            $site = $this->turkceKarakterTemizle($ilan->site->name);
+        }
+        
+        // Kategori (temizlenmiş)
+        $kategori = $this->getKategoriAdi($ilan);
         $kategori = $this->turkceKarakterTemizle($kategori);
-
-        return "{$referansNo}_{$lokasyon}_{$kategori}";
+        
+        // Mal sahibi (varsa, baş harfleri)
+        $malSahibi = '';
+        if ($ilan->ilanSahibi) {
+            $ad = $ilan->ilanSahibi->ad ?? '';
+            $soyad = $ilan->ilanSahibi->soyad ?? '';
+            if ($ad && $soyad) {
+                $malSahibi = mb_substr($ad, 0, 1) . mb_substr($soyad, 0, 1);
+                $malSahibi = mb_strtoupper($malSahibi, 'UTF-8');
+            }
+        }
+        
+        // Parçaları birleştir
+        $parts = [$refKisim, $lokasyon];
+        if ($site) $parts[] = $site;
+        $parts[] = $kategori;
+        if ($malSahibi) $parts[] = $malSahibi;
+        
+        return implode('_', array_filter($parts));
     }
 
     /**
@@ -255,15 +296,31 @@ class IlanReferansService
     }
 
     /**
-     * Sıra numarası (6 haneli)
+     * Sıra numarası (6 haneli) - Sequence tablosu ile benzersiz
      *
      * @param Ilan $ilan
      * @return string
      */
     protected function getSiraNo(Ilan $ilan): string
     {
-        // İlan ID'yi 6 haneli formata çevir
-        return str_pad($ilan->id, 6, '0', STR_PAD_LEFT);
+        // Sequence tablosundan benzersiz sıra numarası al
+        $yayinTipi = $this->getYayinTipiKodu($ilan);
+        $lokasyonKodu = $this->getLokasyonKodu($ilan);
+        $kategoriKodu = $this->getKategoriKodu($ilan);
+        $year = date('Y');
+
+        $sequenceKey = \App\Models\RefSequence::generateSequenceKey(
+            $yayinTipi,
+            $lokasyonKodu,
+            $kategoriKodu,
+            $year
+        );
+
+        // Thread-safe sequence numarası al
+        $sequence = \App\Models\RefSequence::getNextSequence($sequenceKey);
+
+        // 6 haneli formata çevir
+        return str_pad($sequence, 6, '0', STR_PAD_LEFT);
     }
 
     /**

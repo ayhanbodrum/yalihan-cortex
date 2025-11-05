@@ -33,9 +33,26 @@
                         {{-- Price Tag --}}
                         <div class="absolute top-4 right-4">
                             <div class="bg-white/90 backdrop-blur-sm px-4 py-2 rounded-xl shadow-lg">
-                                <span
-                                    class="text-lg font-bold text-blue-600">{{ number_format($ilan->fiyat, 0, ',', '.') }}
-                                    ₺</span>
+                                <span class="text-lg font-bold text-blue-600 dark:text-blue-400">
+                                    {{ number_format($ilan->fiyat, 0, ',', '.') }} {{ $ilan->para_birimi ?? 'TRY' }}
+                                    @if ($ilan->kiralama_turu)
+                                        @switch($ilan->kiralama_turu)
+                                            @case('gunluk')
+                                                <span class="text-sm font-normal text-gray-600 dark:text-gray-400">/Gün</span>
+                                            @break
+                                            @case('haftalik')
+                                                <span class="text-sm font-normal text-gray-600 dark:text-gray-400">/Hafta</span>
+                                            @break
+                                            @case('aylik')
+                                            @case('uzun_donem')
+                                                <span class="text-sm font-normal text-gray-600 dark:text-gray-400">/Ay</span>
+                                            @break
+                                            @case('sezonluk')
+                                                <span class="text-sm font-normal text-gray-600 dark:text-gray-400">/Sezon</span>
+                                            @break
+                                        @endswitch
+                                    @endif
+                                </span>
                             </div>
                         </div>
 

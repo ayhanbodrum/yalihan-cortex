@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use App\Models\Setting;
 use App\Models\AiLog;
+use App\Services\Cache\CacheHelper;
 
 class AIService
 {
@@ -52,14 +53,19 @@ class AIService
      */
     public function getKonutHibritSiralama($kategoriSlug = 'konut', $context = [])
     {
-        $cacheKey = "konut_hibrit_siralama_{$kategoriSlug}";
-
-        return Cache::remember($cacheKey, 3600, function () use ($kategoriSlug) {
-            return \App\Models\KonutOzellikHibritSiralama::active()
-                ->ordered()
-                ->get()
-                ->toArray();
-        });
+        // ✅ STANDARDIZED: Using CacheHelper with standard key format
+        return CacheHelper::remember(
+            'ai',
+            'konut_hibrit_siralama',
+            'medium', // 1 hour
+            function () use ($kategoriSlug) {
+                return \App\Models\KonutOzellikHibritSiralama::active()
+                    ->ordered()
+                    ->get()
+                    ->toArray();
+            },
+            ['kategori' => $kategoriSlug]
+        );
     }
 
     /**
@@ -493,10 +499,41 @@ Sadece önerilen değeri döndür (açıklama veya birim olmadan).
             'category' => 'Bu kategoriler için öneriler sun:',
             'feature' => 'Bu özellikler için öneriler sun:',
             'content' => 'Bu içerik için öneriler sun:',
+            'qr_code' => 'QR kod kullanımı için öneriler sun. İlan bilgilerine göre QR kodun nerede ve nasıl kullanılacağına dair pratik öneriler ver:',
+            'navigation' => 'İlan navigasyonu için öneriler sun. Kullanıcı deneyimini iyileştirmek için önceki/sonraki ilan navigasyonu ve benzer ilanlar önerileri ver:',
             'general' => 'Genel öneriler sun:'
         ];
 
-        return ($prompts[$type] ?? $prompts['general']) . "\n\n" . json_encode($context, JSON_PRETTY_PRINT);
+        $basePrompt = $prompts[$type] ?? $prompts['general'];
+        
+        // QR Code için özel prompt
+        if ($type === 'qr_code' && isset($context['ilan'])) {
+            $basePrompt .= "\n\nİlan Bilgileri:\n";
+            $basePrompt .= "- Başlık: " . ($context['ilan']['baslik'] ?? 'N/A') . "\n";
+            $basePrompt .= "- Kategori: " . ($context['ilan']['kategori'] ?? 'N/A') . "\n";
+            $basePrompt .= "- Lokasyon: " . ($context['ilan']['lokasyon'] ?? 'N/A') . "\n";
+            $basePrompt .= "- Fiyat: " . ($context['ilan']['fiyat'] ?? 'N/A') . "\n";
+            $basePrompt .= "\nQR kod kullanım önerileri:\n";
+            $basePrompt .= "- Fiziksel görüntülemelerde nerede kullanılmalı?\n";
+            $basePrompt .= "- Print materyallerde nasıl yerleştirilmeli?\n";
+            $basePrompt .= "- Sosyal medya paylaşımlarında nasıl kullanılmalı?\n";
+            $basePrompt .= "- Mobil kullanıcı deneyimi için öneriler\n";
+        }
+        
+        // Navigation için özel prompt
+        if ($type === 'navigation' && isset($context['ilan'])) {
+            $basePrompt .= "\n\nİlan Bilgileri:\n";
+            $basePrompt .= "- Başlık: " . ($context['ilan']['baslik'] ?? 'N/A') . "\n";
+            $basePrompt .= "- Kategori: " . ($context['ilan']['kategori'] ?? 'N/A') . "\n";
+            $basePrompt .= "- Lokasyon: " . ($context['ilan']['lokasyon'] ?? 'N/A') . "\n";
+            $basePrompt .= "- Fiyat: " . ($context['ilan']['fiyat'] ?? 'N/A') . "\n";
+            $basePrompt .= "\nNavigasyon önerileri:\n";
+            $basePrompt .= "- Hangi ilanlar önceki/sonraki olarak gösterilmeli?\n";
+            $basePrompt .= "- Benzer ilanlar nasıl belirlenmeli?\n";
+            $basePrompt .= "- Kullanıcı deneyimini iyileştirmek için ne yapılmalı?\n";
+        }
+
+        return $basePrompt . "\n\n" . json_encode($context, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
     }
 
     protected function formatResponse($response, $duration)
@@ -521,7 +558,8 @@ Sadece önerilen değeri döndür (açıklama veya birim olmadan).
 
     protected function getProviderConfig()
     {
-        return Cache::remember('ai_config', 300, function () {
+        // ✅ STANDARDIZED: Using CacheHelper
+        return CacheHelper::remember('ai', 'config', 'short', function () {
             $keys = [
                 'openai_api_key', 'openai_model',
                 'google_api_key', 'google_model',
@@ -582,7 +620,8 @@ Sadece önerilen değeri döndür (açıklama veya birim olmadan).
             ['value' => $provider]
         );
 
-        Cache::forget('ai_provider');
+        // ✅ STANDARDIZED: Using CacheHelper
+        CacheHelper::forget('ai', 'provider');
         $this->provider = $provider;
         $this->config = $this->getProviderConfig();
     }

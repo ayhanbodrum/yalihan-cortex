@@ -22,10 +22,13 @@
                 <li class="mr-6"><a class="tab-link" href="#portal">Portal Entegrasyonları</a></li>
                 <li class="mr-6"><a class="tab-link" href="#ai">AI & Yapay Zeka</a></li>
                 <li class="mr-6"><a class="tab-link" href="#fiyat">Fiyatlandırma</a></li>
+                <li class="mr-6"><a class="tab-link" href="#qrcode">QR Kod</a></li>
+                <li class="mr-6"><a class="tab-link" href="#navigation">Navigasyon</a></li>
                 <li><a class="tab-link" href="#kullanici">Kullanıcı Yönetimi</a></li>
             </ul>
             <form method="POST" action="{{ route('admin.settings.update') }}">
                 @csrf
+                @method('POST')
                 <div id="genel" class="tab-content">
                     <h2 class="text-lg font-semibold mb-2">Genel Ayarlar</h2>
                     <div class="mb-4">
@@ -153,6 +156,130 @@
                         </select>
                     </div>
                 </div>
+                
+                {{-- QR Code Settings Tab --}}
+                <div id="qrcode" class="tab-content hidden">
+                    <h2 class="text-lg font-semibold mb-4">QR Kod Ayarları</h2>
+                    
+                    <div class="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                        <h3 class="text-md font-semibold text-blue-900 dark:text-blue-100 mb-2">📱 QR Kod Özellikleri</h3>
+                        <p class="text-sm text-blue-700 dark:text-blue-300">
+                            İlanlar için QR kod oluşturma ve yönetim ayarları. QR kodlar mobil cihazlarla hızlı erişim sağlar.
+                        </p>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="flex items-center">
+                            <input type="checkbox" name="qrcode_enabled" value="1"
+                                @if (($settings['qrcode_enabled'] ?? 'true') == 'true' || ($settings['qrcode_enabled'] ?? true) === true) checked @endif
+                                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                            <span class="ml-2 font-medium">QR Kod Özelliğini Aktif Et</span>
+                        </label>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1 ml-6">
+                            QR kod özelliğini tüm sistemde aktif/pasif yapar
+                        </p>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="block mb-1 font-medium">Varsayılan QR Kod Boyutu (Piksel)</label>
+                        <input type="number" name="qrcode_default_size" min="100" max="1000" step="50"
+                            class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+                            value="{{ $settings['qrcode_default_size'] ?? '300' }}">
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                            Önerilen: 200 (küçük), 300 (orta), 400 (büyük)
+                        </p>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="flex items-center">
+                            <input type="checkbox" name="qrcode_show_on_cards" value="1"
+                                @if (($settings['qrcode_show_on_cards'] ?? 'true') == 'true' || ($settings['qrcode_show_on_cards'] ?? true) === true) checked @endif
+                                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                            <span class="ml-2 font-medium">İlan Kartlarında QR Kod Göster</span>
+                        </label>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1 ml-6">
+                            İlan listesi kartlarında QR kod butonu gösterilir
+                        </p>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="flex items-center">
+                            <input type="checkbox" name="qrcode_show_on_detail" value="1"
+                                @if (($settings['qrcode_show_on_detail'] ?? 'true') == 'true' || ($settings['qrcode_show_on_detail'] ?? true) === true) checked @endif
+                                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                            <span class="ml-2 font-medium">İlan Detay Sayfasında QR Kod Göster</span>
+                        </label>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1 ml-6">
+                            İlan detay sayfalarında QR kod widget'ı gösterilir
+                        </p>
+                    </div>
+                </div>
+                
+                {{-- Navigation Settings Tab --}}
+                <div id="navigation" class="tab-content hidden">
+                    <h2 class="text-lg font-semibold mb-4">Navigasyon Ayarları</h2>
+                    
+                    <div class="mb-6 p-4 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
+                        <h3 class="text-md font-semibold text-green-900 dark:text-green-100 mb-2">🧭 İlan Navigasyon Özellikleri</h3>
+                        <p class="text-sm text-green-700 dark:text-green-300">
+                            İlanlar arasında gezinme, önceki/sonraki ilan ve benzer ilanlar özellikleri.
+                        </p>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="flex items-center">
+                            <input type="checkbox" name="navigation_enabled" value="1"
+                                @if (($settings['navigation_enabled'] ?? 'true') == 'true' || ($settings['navigation_enabled'] ?? true) === true) checked @endif
+                                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                            <span class="ml-2 font-medium">Navigasyon Özelliğini Aktif Et</span>
+                        </label>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1 ml-6">
+                            İlan navigasyon özelliğini tüm sistemde aktif/pasif yapar
+                        </p>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="block mb-1 font-medium">Varsayılan Navigasyon Modu</label>
+                        <select name="navigation_default_mode" 
+                            class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200">
+                            <option value="default" @if (($settings['navigation_default_mode'] ?? 'default') == 'default') selected @endif>
+                                Varsayılan (Tüm ilanlar)
+                            </option>
+                            <option value="category" @if (($settings['navigation_default_mode'] ?? '') == 'category') selected @endif>
+                                Kategori Bazlı
+                            </option>
+                            <option value="location" @if (($settings['navigation_default_mode'] ?? '') == 'location') selected @endif>
+                                Konum Bazlı
+                            </option>
+                        </select>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                            Önceki/sonraki ilan gösterim yöntemi
+                        </p>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="block mb-1 font-medium">Benzer İlanlar Gösterim Sayısı</label>
+                        <input type="number" name="navigation_similar_limit" min="1" max="12" step="1"
+                            class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+                            value="{{ $settings['navigation_similar_limit'] ?? '4' }}">
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                            Benzer ilanlar bölümünde gösterilecek ilan sayısı (1-12 arası)
+                        </p>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="flex items-center">
+                            <input type="checkbox" name="navigation_show_similar" value="1"
+                                @if (($settings['navigation_show_similar'] ?? 'true') == 'true' || ($settings['navigation_show_similar'] ?? true) === true) checked @endif
+                                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                            <span class="ml-2 font-medium">Benzer İlanlar Bölümünü Göster</span>
+                        </label>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1 ml-6">
+                            İlan detay sayfalarında benzer ilanlar bölümü gösterilir
+                        </p>
+                    </div>
+                </div>
+                
                 <div id="kullanici" class="tab-content hidden">
                     <h2 class="text-lg font-semibold mb-2">Kullanıcı Yönetimi</h2>
                     <div class="mb-4">

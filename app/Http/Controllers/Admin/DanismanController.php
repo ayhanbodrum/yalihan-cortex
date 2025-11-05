@@ -92,10 +92,17 @@ class DanismanController extends AdminController
 
         $basariOrani = $toplamIlan > 0 ? round(($aktifIlan / $toplamIlan) * 100, 1) : 0.0;
 
+        // ✅ Talep sayısı implementasyonu
+        $toplamTalep = \App\Models\Talep::where('danisman_id', $id)->count();
+        $aktifTalep = \App\Models\Talep::where('danisman_id', $id)
+            ->where('status', 'Aktif')
+            ->count();
+
         $performans = [
             'toplam_ilan' => $toplamIlan,
             'status_ilan' => $aktifIlan,
-            'toplam_talep' => 0, // TODO: Implement talep count
+            'toplam_talep' => $toplamTalep,
+            'aktif_talep' => $aktifTalep,
             'basari_orani' => $basariOrani,
             'musteri_memnuniyeti' => 80.0,
             'ai_skor' => 70.0,

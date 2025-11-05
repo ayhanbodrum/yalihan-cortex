@@ -1,0 +1,153 @@
+{
+  "title": "Fiyat Geçmişi Grafik Sistemi - Price History Chart System",
+  "date": "2025-11-05",
+  "category": "analytics",
+  "type": "feature",
+  "status": "completed",
+  "summary": "İlan fiyat geçmişini görsel grafiklerle gösteren interaktif chart sistemi. Chart.js ile line chart, trend analizi ve istatistikler.",
+  "details": {
+    "component": {
+      "file": "resources/views/components/price-history-chart.blade.php",
+      "props": {
+        "ilan": "Ilan model instance (required)",
+        "height": "Chart height (default: '400px')",
+        "showStats": "Show statistics cards (default: true)",
+        "showTable": "Show price history table (default: true)"
+      }
+    },
+    "features": {
+      "interactive_chart": {
+        "library": "Chart.js 4.4.0",
+        "type": "Line Chart",
+        "features": [
+          "Hover tooltips with detailed information",
+          "Smooth animations",
+          "Responsive design",
+          "Dark mode support"
+        ]
+      },
+      "statistics": {
+        "initial_price": "Başlangıç fiyatı",
+        "current_price": "Güncel fiyat",
+        "max_price": "En yüksek fiyat",
+        "price_change": "Fiyat değişimi (tutar ve yüzde)"
+      },
+      "time_range_filter": {
+        "options": [
+          "Son 7 Gün",
+          "Son 30 Gün",
+          "Son 3 Ay",
+          "Son 1 Yıl",
+          "Tüm Zamanlar"
+        ],
+        "implementation": "API endpoint with range parameter"
+      },
+      "price_history_table": {
+        "columns": [
+          "Tarih",
+          "Eski Fiyat",
+          "Yeni Fiyat",
+          "Değişim (tutar ve yüzde)",
+          "Değişim Nedeni"
+        ],
+        "features": [
+          "Color-coded price changes (green for increase, red for decrease)",
+          "Formatted dates and prices",
+          "Change reason translation"
+        ]
+      }
+    },
+    "api_endpoint": {
+      "route": "/admin/ilanlar/{ilan}/price-history",
+      "method": "GET",
+      "parameters": {
+        "range": "Time range filter (7, 30, 90, 365, or 'all')"
+      },
+      "response": {
+        "success": "boolean",
+        "data": "Array of price history records"
+      },
+      "features": [
+        "Automatic initial price record if no history exists",
+        "Time range filtering",
+        "Ascending date order for chart rendering"
+      ]
+    },
+    "data_model": {
+      "table": "ilan_price_history",
+      "fields": {
+        "ilan_id": "Ilan ID",
+        "old_price": "Previous price",
+        "new_price": "New price",
+        "currency": "Currency code",
+        "change_reason": "Reason for change (manual_update, price_adjustment, market_change, seasonal, negotiation, promotion)",
+        "changed_by": "User ID who made the change",
+        "created_at": "Timestamp of change"
+      }
+    },
+    "visualization": {
+      "chart_type": "Line Chart",
+      "styling": {
+        "line_color": "rgb(59, 130, 246) - Blue",
+        "background_gradient": "rgba(59, 130, 246, 0.1)",
+        "point_radius": 5,
+        "point_hover_radius": 8,
+        "border_width": 3,
+        "tension": 0.4
+      },
+      "tooltips": {
+        "show_price": true,
+        "show_change": true,
+        "show_change_percent": true
+      }
+    },
+    "statistics_cards": {
+      "initial_price": {
+        "color": "blue",
+        "gradient": "from-blue-50 to-blue-100"
+      },
+      "current_price": {
+        "color": "green",
+        "gradient": "from-green-50 to-green-100"
+      },
+      "max_price": {
+        "color": "orange",
+        "gradient": "from-orange-50 to-orange-100"
+      },
+      "price_change": {
+        "color": "dynamic (green for positive, red for negative)",
+        "gradient": "from-purple-50 to-purple-100"
+      }
+    },
+    "usage": {
+      "basic": "<x-price-history-chart :ilan=\"$ilan\" />",
+      "with_options": "<x-price-history-chart :ilan=\"$ilan\" :showStats=\"true\" :showTable=\"true\" :height=\"'350px'\" />",
+      "minimal": "<x-price-history-chart :ilan=\"$ilan\" :showStats=\"false\" :showTable=\"false\" />"
+    }
+  },
+  "implementation": {
+    "controller_method": "IlanController@priceHistoryApi",
+    "route": "admin.ilanlar.price-history",
+    "model": "IlanPriceHistory",
+    "observer": "IlanObserver (auto-saves price changes)",
+    "chart_library": "Chart.js 4.4.0 (CDN)"
+  },
+  "benefits": [
+    "Görsel fiyat trend analizi",
+    "Fiyat değişimlerini kolay takip",
+    "Zaman aralığı filtreleme",
+    "Detaylı istatistikler",
+    "Kullanıcı dostu arayüz"
+  ],
+  "related_components": [
+    "price-display.blade.php",
+    "rental-price-calculator.blade.php"
+  ],
+  "context7_compliance": {
+    "dark_mode": true,
+    "responsive": true,
+    "tailwind_css": true,
+    "alpine_js": true
+  }
+}
+

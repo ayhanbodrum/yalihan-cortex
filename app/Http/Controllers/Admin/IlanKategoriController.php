@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Requests\Admin\IlanKategoriRequest;
+use App\Http\Requests\Admin\IlanKategoriSuggestRequest;
+use App\Http\Requests\Admin\IlanKategoriFieldUpdateRequest;
 use App\Models\Ilan;
 use App\Models\IlanKategori;
 use App\Models\IlanKategoriYayinTipi;
@@ -17,16 +20,25 @@ class IlanKategoriController extends AdminController
      * Kategori listesi sayfası
      * GET /admin/ilan-kategorileri
      * @context7: İstatistikler ve filtreleme ile kategori listesi
+     *
+     * @param Request $request
+     * @return \Illuminate\View\View
      */
-    public function index(Request $request)
+    public function index(Request $request): \Illuminate\View\View
     {
         // Filtreleme parametreleri
         $search = $request->get('search');
         $seviye = $request->get('seviye');
         $durum = $request->get('status');
 
-        // Kategori sorgusu
-        $query = IlanKategori::with(['parent', 'children']);
+        // ✅ EAGER LOADING: Select optimization ile birlikte
+        $query = IlanKategori::with([
+            'parent:id,name,slug',
+            'children:id,name,slug,parent_id,status'
+        ])->select([
+            'id', 'name', 'slug', 'parent_id', 'status',
+            'seviye', 'order', 'created_at', 'updated_at'
+        ]);
 
         // Arama filtresi
         if ($search) {
@@ -68,8 +80,10 @@ class IlanKategoriController extends AdminController
      * Yeni kategori oluşturma formu
      * GET /admin/ilan-kategorileri/create
      * @context7: Kategori oluşturma formu sayfası
+     *
+     * @return \Illuminate\View\View
      */
-    public function create()
+    public function create(): \Illuminate\View\View
     {
         $anaKategoriler = IlanKategori::whereNull('parent_id')
             ->where('status', true)
@@ -83,20 +97,18 @@ class IlanKategoriController extends AdminController
      * Yeni kategori kaydetme
      * POST /admin/ilan-kategorileri
      * @context7: Form verilerini doğrulayıp yeni kategori oluşturur
+     *
+     * @param IlanKategoriRequest $request
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(Request $request)
+    public function store(IlanKategoriRequest $request): \Illuminate\Http\RedirectResponse
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'parent_id' => 'nullable|exists:ilan_kategorileri,id',
-            'seviye' => 'required|integer|in:0,1,2',
-            'status' => 'nullable|boolean',
-            'order' => 'nullable|integer|min:0'
-        ]);
+        // ✅ STANDARDIZED: Using Form Request
+        $validated = $request->validated();
 
         try {
-            $seviye = (int) $request->input('seviye');
-            $parentId = $request->input('parent_id');
+            $seviye = (int) $validated['seviye'];
+            $parentId = $validated['parent_id'] ?? null;
 
             if (($seviye == 1 || $seviye == 2) && !$parentId) {
                 return back()->withInput()->with('error', 'Alt kategori veya Yayın Tipi için Üst Kategori seçmelisiniz.');
@@ -106,7 +118,7 @@ class IlanKategoriController extends AdminController
                 return back()->withInput()->with('error', 'Ana kategorinin üst kategorisi olamaz.');
             }
 
-            $baseSlug = Str::slug($request->name);
+            $baseSlug = Str::slug($validated['name']);
             $slug = $baseSlug;
             $counter = 1;
 
@@ -116,12 +128,12 @@ class IlanKategoriController extends AdminController
             }
 
             $kategori = IlanKategori::create([
-                'name' => $request->name,
+                'name' => $validated['name'],
                 'slug' => $slug,
                 'seviye' => $seviye,
                 'parent_id' => $parentId,
-                'status' => $request->boolean('status', true),
-                'order' => $request->input('order') ?: 0,
+                'status' => $validated['status'] ?? true,
+                'order' => $validated['order'] ?? 0,
                 'aciklama' => ''
             ]);
 
@@ -138,26 +150,37 @@ class IlanKategoriController extends AdminController
      * Tekil kategori görüntüleme
      * GET /admin/ilan-kategorileri/{id}
      * @context7: Kategori detay sayfası ve istatistikleri
+     *
+     * @param int $id
+     * @return \Illuminate\View\View
      */
-    public function show($id)
+    public function show(int $id): \Illuminate\View\View
     {
-        $kategori = IlanKategori::with(['parent', 'children', 'ilans'])
-            ->findOrFail($id);
+        // ✅ EAGER LOADING: Tüm ilişkileri önceden yükle
+        $kategori = IlanKategori::with([
+            'parent:id,name,slug',
+            'children:id,name,slug,parent_id,status',
+            'ilans' => function($query) {
+                $query->select(['id', 'baslik', 'fiyat', 'para_birimi', 'status', 'is_published',
+                               'kategori_id', 'created_at', 'ilan_sahibi_id', 'danisman_id']);
+            }
+        ])->findOrFail($id);
 
-        // Kategori istatistikleri
+        // ✅ OPTIMIZED: İstatistikleri tek query'de hesapla
         $stats = [
-            'toplam_ilan' => $kategori->ilanlar()->count(),
-            'aktif_ilan' => $kategori->ilanlar()->where('is_published', true)->count(),
-            'son_30_gun' => $kategori->ilanlar()->where('created_at', '>=', now()->subDays(30))->count(),
-            'alt_kategoriler' => $kategori->children()->count(),
+            'toplam_ilan' => $kategori->ilans->count(),
+            'aktif_ilan' => $kategori->ilans->where('is_published', true)->count(),
+            'son_30_gun' => $kategori->ilans->filter(function($ilan) {
+                return $ilan->created_at >= now()->subDays(30);
+            })->count(),
+            'alt_kategoriler' => $kategori->children->count(),
         ];
 
-        // Son ilanlar
-        $son_ilanlar = $kategori->ilanlar()
-            ->with(['kullanici', 'lokasyon'])
-            ->latest()
-            ->limit(10)
-            ->get();
+        // ✅ OPTIMIZED: Eager loaded ilişkileri kullan
+        $son_ilanlar = $kategori->ilans
+            ->load(['ilanSahibi:id,ad,soyad,telefon', 'danisman:id,name,email'])
+            ->sortByDesc('created_at')
+            ->take(10);
 
         return view('admin.ilan-kategorileri.show', compact('kategori', 'stats', 'son_ilanlar'));
     }
@@ -166,8 +189,11 @@ class IlanKategoriController extends AdminController
      * Kategori düzenleme formu
      * GET /admin/ilan-kategorileri/{id}/edit
      * @context7: Kategori düzenleme formu sayfası
+     *
+     * @param int $id
+     * @return \Illuminate\View\View
      */
-    public function edit($id)
+    public function edit(int $id): \Illuminate\View\View
     {
         $kategori = IlanKategori::findOrFail($id);
 
@@ -184,22 +210,21 @@ class IlanKategoriController extends AdminController
      * Kategori güncelleme
      * PUT /admin/ilan-kategorileri/{id}
      * @context7: Kategori bilgilerini günceller
+     *
+     * @param IlanKategoriRequest $request
+     * @param int $id
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(Request $request, $id)
+    public function update(IlanKategoriRequest $request, int $id): \Illuminate\Http\RedirectResponse
     {
         $kategori = IlanKategori::findOrFail($id);
 
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'parent_id' => 'nullable|exists:ilan_kategorileri,id|not_in:' . $id,
-            'seviye' => 'required|integer|in:0,1,2',
-            'status' => 'nullable|boolean',
-            'order' => 'nullable|integer|min:0'
-        ]);
+        // ✅ STANDARDIZED: Using Form Request
+        $validated = $request->validated();
 
         try {
-            $seviye = (int) $request->input('seviye');
-            $parentId = $request->input('parent_id');
+            $seviye = (int) $validated['seviye'];
+            $parentId = $validated['parent_id'] ?? null;
 
             if (($seviye == 1 || $seviye == 2) && !$parentId) {
                 return back()->withInput()->with('error', 'Alt kategori veya Yayın Tipi için Üst Kategori seçmelisiniz.');
@@ -209,7 +234,7 @@ class IlanKategoriController extends AdminController
                 return back()->withInput()->with('error', 'Ana kategorinin üst kategorisi olamaz.');
             }
 
-            $baseSlug = Str::slug($request->name);
+            $baseSlug = Str::slug($validated['name']);
             $slug = $baseSlug;
             $counter = 1;
 
@@ -219,12 +244,12 @@ class IlanKategoriController extends AdminController
             }
 
             $kategori->update([
-                'name' => $request->name,
+                'name' => $validated['name'],
                 'slug' => $slug,
                 'seviye' => $seviye,
                 'parent_id' => $parentId,
-                'status' => $request->boolean('status', true),
-                'order' => $request->input('order') ?: 0,
+                'status' => $validated['status'] ?? true,
+                'order' => $validated['order'] ?? 0,
                 'aciklama' => ''
             ]);
 
@@ -241,8 +266,11 @@ class IlanKategoriController extends AdminController
      * Kategori silme
      * DELETE /admin/ilan-kategorileri/{id}
      * @context7: Kategori silme işlemi (soft delete)
+     *
+     * @param int $id
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function destroy($id)
+    public function destroy(int $id): \Illuminate\Http\RedirectResponse
     {
         try {
             $kategori = IlanKategori::findOrFail($id);
@@ -269,6 +297,9 @@ class IlanKategoriController extends AdminController
 
     /**
      * Kategori performans metrikleri
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function getPerformance(Request $request)
     {
@@ -298,21 +329,21 @@ class IlanKategoriController extends AdminController
 
     /**
      * AI destekli kategori önerileri
+     *
+     * @param IlanKategoriSuggestRequest $request
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function suggestCategories(Request $request)
+    public function suggestCategories(IlanKategoriSuggestRequest $request): \Illuminate\Http\JsonResponse
     {
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'features' => 'nullable|array'
-        ]);
+        // ✅ STANDARDIZED: Using Form Request
+        $validated = $request->validated();
 
         try {
             // Basit kategori önerisi mantığı
             $suggestions = $this->generateCategorySuggestions(
-                $request->title,
-                $request->description,
-                $request->features ?? []
+                $validated['title'],
+                $validated['description'] ?? '',
+                $validated['features'] ?? []
             );
 
             return response()->json($suggestions);
@@ -323,6 +354,9 @@ class IlanKategoriController extends AdminController
 
     /**
      * Kategori trendleri
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function getTrends(Request $request)
     {
@@ -341,6 +375,9 @@ class IlanKategoriController extends AdminController
 
     /**
      * AI analiz
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function aiAnalysis(Request $request)
     {
@@ -483,19 +520,21 @@ class IlanKategoriController extends AdminController
      * Inline güncelleme (AJAX endpoint)
      * POST /admin/ilan-kategorileri/{id}/inline-update
      * @context7: Tablo üzerinden hızlı düzenleme
+     *
+     * @param IlanKategoriFieldUpdateRequest $request
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function inlineUpdate(Request $request, $id)
+    public function inlineUpdate(IlanKategoriFieldUpdateRequest $request, int $id): \Illuminate\Http\JsonResponse
     {
         try {
             $kategori = IlanKategori::findOrFail($id);
 
-            $request->validate([
-                'field' => 'required|string|in:name,description,status,sort_order',
-                'value' => 'required'
-            ]);
+            // ✅ STANDARDIZED: Using Form Request
+            $validated = $request->validated();
 
-            $field = $request->field;
-            $value = $request->value;
+            $field = $validated['field'];
+            $value = $validated['value'];
 
             // Field'a göre değeri ayarla
             switch ($field) {
@@ -538,6 +577,9 @@ class IlanKategoriController extends AdminController
     /**
      * Alt kategorileri getir (AJAX endpoint)
      * GET /admin/ilan-kategorileri/alt-kategoriler?parent_id={id}
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function getAltKategoriler(Request $request)
     {
@@ -566,6 +608,9 @@ class IlanKategoriController extends AdminController
     /**
      * Kategoriye özel özellikleri getir (AJAX endpoint)
      * GET /admin/ilan-kategorileri/{id}/ozellikler
+     *
+     * @param int|string $kategoriId
+     * @return \Illuminate\Http\JsonResponse
      */
     public function getOzellikler($kategoriId)
     {
@@ -596,6 +641,9 @@ class IlanKategoriController extends AdminController
     /**
      * Yayın tiplerini getir (AJAX endpoint)
      * GET /admin/ilan-kategorileri/yayin-tipleri?kategori_id={id}
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function getYayinTipleri(Request $request)
     {
@@ -642,6 +690,13 @@ class IlanKategoriController extends AdminController
         ];
     }
 
+    /**
+     * Toplu işlem (AJAX endpoint)
+     * POST /admin/ilan-kategorileri/bulk-action
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function bulkAction(Request $request)
     {
         try {
@@ -658,11 +713,12 @@ class IlanKategoriController extends AdminController
 
             $count = 0;
 
-            foreach ($ids as $id) {
-                $kategori = IlanKategori::find($id);
+            // ✅ EAGER LOADING: Tüm kategorileri ilişkileriyle birlikte yükle
+            $kategoriler = IlanKategori::with(['children:id,parent_id', 'ilans:id,kategori_id'])
+                ->whereIn('id', $ids)
+                ->get();
 
-                if (!$kategori) continue;
-
+            foreach ($kategoriler as $kategori) {
                 switch ($action) {
                     case 'activate':
                         $kategori->update(['status' => true]);
@@ -675,7 +731,8 @@ class IlanKategoriController extends AdminController
                         break;
 
                     case 'delete':
-                        if ($kategori->children()->count() === 0 && $kategori->ilanlar()->count() === 0) {
+                        // ✅ OPTIMIZED: Eager loaded ilişkileri kullan
+                        if ($kategori->children->isEmpty() && $kategori->ilans->isEmpty()) {
                             $kategori->delete();
                             $count++;
                         }
@@ -694,7 +751,8 @@ class IlanKategoriController extends AdminController
         } catch (\Exception $e) {
             DB::rollBack();
 
-            \Log::error('Bulk action error', [
+            // ✅ STANDARDIZED: Using ResponseService (automatic logging)
+            Log::error('Bulk action error', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);

@@ -16,6 +16,11 @@
         </div>
     </div>
 
+    {{-- Feature Categories Modal (Revy.com.tr Style) --}}
+    <div class="mb-6">
+        <x-feature-categories-modal :ilan-id="null" :selected-features="[]" />
+    </div>
+
     <div id="field-dependencies-container" class="space-y-6">
         {{-- Empty State - Enhanced --}}
         <div id="fields-empty-state"

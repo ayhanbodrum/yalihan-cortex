@@ -1,0 +1,171 @@
+{
+  "title": "TurkiyeAPI Demografik Bilgi Analizi",
+  "date": "2025-11-05",
+  "category": "api_analysis",
+  "status": "completed",
+  "summary": "TurkiyeAPI'de mevcut ve eksik demografik bilgilerin analizi",
+  
+  "api_info": {
+    "base_url": "https://api.turkiyeapi.dev/api/v1",
+    "documentation": "https://api.turkiyeapi.dev/docs",
+    "service_file": "app/Services/TurkiyeAPIService.php"
+  },
+  
+  "mevcut_demografik_bilgiler": {
+    "population": {
+      "durum": "✅ VAR",
+      "detay": "Nüfus bilgisi mevcut",
+      "yerler": [
+        "Provinces (İller) - population field",
+        "Districts (İlçeler) - population field",
+        "Neighborhoods (Mahalleler) - population field",
+        "Towns (Beldeler) - population field",
+        "Villages (Köyler) - population field"
+      ],
+      "ornek": {
+        "province": "İstanbul: 15,655,924",
+        "district": "Ataşehir: 416,529",
+        "neighborhood": "Varies by location"
+      }
+    },
+    "area": {
+      "durum": "✅ VAR",
+      "detay": "Alan bilgisi (km²)",
+      "yerler": [
+        "Provinces - area field",
+        "Districts - area field",
+        "Towns - area field"
+      ]
+    },
+    "is_coastal": {
+      "durum": "✅ VAR",
+      "detay": "Kıyı durumu (true/false)",
+      "yerler": [
+        "Provinces - isCoastal field",
+        "Towns - isCoastal field"
+      ]
+    },
+    "postcode": {
+      "durum": "✅ VAR",
+      "detay": "Posta kodu",
+      "yerler": [
+        "Neighborhoods - postcode field",
+        "Towns - postcode field",
+        "Villages - postcode field"
+      ]
+    }
+  },
+  
+  "eksik_demografik_bilgiler": {
+    "age_distribution": {
+      "durum": "❌ YOK",
+      "aciklama": "Yaş dağılımı bilgisi yok",
+      "ornek_ihtiyac": "0-18, 19-35, 36-50, 51-65, 65+ yaş grupları"
+    },
+    "gender_distribution": {
+      "durum": "❌ YOK",
+      "aciklama": "Cinsiyet dağılımı bilgisi yok",
+      "ornek_ihtiyac": "Kadın/Erkek nüfus oranı"
+    },
+    "education_level": {
+      "durum": "❌ YOK",
+      "aciklama": "Eğitim seviyesi dağılımı yok",
+      "ornek_ihtiyac": "İlkokul, Ortaokul, Lise, Üniversite mezunları"
+    },
+    "marital_status": {
+      "durum": "❌ YOK",
+      "aciklama": "Medeni durum dağılımı yok",
+      "ornek_ihtiyac": "Evli, Bekar, Boşanmış, Dul"
+    },
+    "income_level": {
+      "durum": "❌ YOK",
+      "aciklama": "Gelir seviyesi bilgisi yok",
+      "ornek_ihtiyac": "Ortalama gelir, gelir dağılımı"
+    },
+    "household_size": {
+      "durum": "❌ YOK",
+      "aciklama": "Hane halkı büyüklüğü yok",
+      "ornek_ihtiyac": "Ortalama hane halkı sayısı"
+    },
+    "employment_rate": {
+      "durum": "❌ YOK",
+      "aciklama": "İstihdam oranı yok",
+      "ornek_ihtiyac": "Çalışan nüfus oranı"
+    },
+    "housing_ownership": {
+      "durum": "❌ YOK",
+      "aciklama": "Konut sahipliği bilgisi yok",
+      "ornek_ihtiyac": "Kira/Sahipli oranı"
+    }
+  },
+  
+  "alternatif_kaynaklar": {
+    "tuik": {
+      "name": "Türkiye İstatistik Kurumu (TÜİK)",
+      "url": "https://data.tuik.gov.tr",
+      "aciklama": "Detaylı demografik veriler mevcut",
+      "veri_tipleri": [
+        "Yaş dağılımı",
+        "Cinsiyet dağılımı",
+        "Eğitim durumu",
+        "Medeni durum",
+        "Gelir dağılımı",
+        "İstihdam oranları"
+      ],
+      "not": "API erişimi sınırlı, veri indirme gerekebilir"
+    },
+    "turkiyeapi_future": {
+      "durum": "Planlanmış olabilir",
+      "not": "API dokümantasyonu güncel değil, gelecekte eklenebilir"
+    }
+  },
+  
+  "mevcut_kullanim": {
+    "service_methods": [
+      "getProvinces() - population var",
+      "getDistricts() - population var",
+      "getNeighborhoods() - population var",
+      "getTowns() - population, area, isCoastal var",
+      "getVillages() - population var",
+      "getAllLocations() - population, area, isCoastal, postcode var"
+    ],
+    "kullanilan_alanlar": {
+      "population": "Nüfus bilgisi gösteriliyor",
+      "area": "Alan bilgisi gösteriliyor",
+      "isCoastal": "Kıyı durumu gösteriliyor",
+      "postcode": "Posta kodu gösteriliyor"
+    }
+  },
+  
+  "oneriler": {
+    "1_tuik_entegrasyonu": {
+      "aciklama": "TÜİK verilerini entegre etmek",
+      "zorluk": "Yüksek - API erişimi sınırlı, veri formatı farklı",
+      "fayda": "Detaylı demografik analiz imkanı"
+    },
+    "2_turkiyeapi_extension": {
+      "aciklama": "TurkiyeAPI'ye demografik bilgi eklemek için özellik talebi",
+      "zorluk": "Düşük - API sağlayıcısına bağlı",
+      "fayda": "Merkezi API'den tüm veriler"
+    },
+    "3_manuel_veri_ekleme": {
+      "aciklama": "Önemli lokasyonlar için manuel demografik veri ekleme",
+      "zorluk": "Orta - Veri güncelleme gerekli",
+      "fayda": "Hızlı çözüm, özelleştirilebilir"
+    }
+  },
+  
+  "sonuc": {
+    "ozet": "TurkiyeAPI'de sadece temel nüfus bilgisi var. Detaylı demografik bilgiler (yaş, cinsiyet, eğitim, gelir) yok.",
+    "mevcut": "Population (nüfus), area (alan), isCoastal (kıyı), postcode (posta kodu)",
+    "eksik": "Yaş dağılımı, cinsiyet dağılımı, eğitim durumu, medeni durum, gelir seviyesi, hane halkı büyüklüğü, istihdam oranı, konut sahipliği",
+    "alternatif": "TÜİK verileri kullanılabilir ancak API erişimi sınırlı"
+  },
+  
+  "reference": {
+    "api_docs": "https://api.turkiyeapi.dev/docs",
+    "service_file": "app/Services/TurkiyeAPIService.php",
+    "knowledge_base": ".yalihan-bekci/knowledge/turkiyeapi-demographic-analysis-2025-11-05.json"
+  }
+}
+

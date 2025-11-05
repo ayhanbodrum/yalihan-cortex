@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Requests\Admin\PhotoRequest;
+use App\Http\Requests\Admin\PhotoBulkActionRequest;
 use App\Models\Photo;
 use App\Models\Ilan;
 use Illuminate\Http\Request;
@@ -15,8 +17,11 @@ class PhotoController extends AdminController
     /**
      * Display a listing of the photos.
      * Context7: Fotoğraf galeri yönetimi
+     *
+     * @param Request $request
+     * @return \Illuminate\View\View|\Illuminate\Http\JsonResponse
      */
-    public function index(Request $request)
+    public function index(Request $request): \Illuminate\View\View|\Illuminate\Http\JsonResponse
     {
         try {
             $perPage = $request->get('per_page', 24);
@@ -54,8 +59,10 @@ class PhotoController extends AdminController
     /**
      * Show the form for creating a new photo upload.
      * Context7: Fotoğraf yükleme formu
+     *
+     * @return \Illuminate\View\View
      */
-    public function create()
+    public function create(): \Illuminate\View\View
     {
         try {
             $categories = $this->getPhotoCategories();
@@ -71,8 +78,12 @@ class PhotoController extends AdminController
     /**
      * Store newly uploaded photos.
      * Context7: Fotoğraf yükleme ve kaydetme
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
+     * @throws \Exception
      */
-    public function store(Request $request)
+    public function store(Request $request): \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
     {
         try {
             $validator = Validator::make($request->all(), [
@@ -118,7 +129,7 @@ class PhotoController extends AdminController
                 // Image optimization
                 $optimizedSize = $this->optimizeImage($path);
 
-                // ✅ TODO TAMAMLANDI: Photo model ile kaydet
+                // Photo model ile kaydet
                 $photoModel = Photo::create([
                     'ilan_id' => $request->ilan_id ?? null,
                     'path' => $path,
@@ -175,8 +186,12 @@ class PhotoController extends AdminController
     /**
      * Display the specified photo.
      * Context7: Fotoğraf detayları ve bilgileri
+     *
+     * @param int $id
+     * @return \Illuminate\View\View|\Illuminate\Http\JsonResponse
+     * @throws \Exception
      */
-    public function show($id)
+    public function show(int $id): \Illuminate\View\View|\Illuminate\Http\JsonResponse
     {
         try {
             $photo = $this->getSamplePhoto($id);
@@ -218,8 +233,12 @@ class PhotoController extends AdminController
     /**
      * Show the form for editing the specified photo.
      * Context7: Fotoğraf bilgilerini düzenleme
+     *
+     * @param int $id
+     * @return \Illuminate\View\View
+     * @throws \Exception
      */
-    public function edit($id)
+    public function edit(int $id): \Illuminate\View\View
     {
         try {
             $photo = $this->getSamplePhoto($id);
@@ -239,24 +258,23 @@ class PhotoController extends AdminController
     /**
      * Update the specified photo information.
      * Context7: Fotoğraf bilgileri güncelleme
+     *
+     * @param PhotoRequest $request
+     * @param int $id
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
+     * @throws \Exception
      */
-    public function update(Request $request, $id)
+    public function update(PhotoRequest $request, int $id): \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
     {
         try {
-            $request->validate([
-                'category' => 'required|string|max:50',
-                'title' => 'required|string|max:255',
-                'description' => 'nullable|string|max:1000',
-                'alt_text' => 'nullable|string|max:255',
-                'tags' => 'nullable|string',
-                'is_featured' => 'boolean'
-            ]);
+            // ✅ STANDARDIZED: Using Form Request
+            $validated = $request->validated();
 
-            // ✅ TODO TAMAMLANDI: Photo model ile güncelleme
+            // Photo model ile güncelleme
             $photo = Photo::findOrFail($id);
             $photo->update([
-                'category' => $request->category,
-                'is_featured' => $request->boolean('is_featured'),
+                'category' => $validated['category'],
+                'is_featured' => $validated['is_featured'] ?? false,
                 'order' => $request->order ?? $photo->order,
             ]);
 
@@ -297,8 +315,12 @@ class PhotoController extends AdminController
     /**
      * Remove the specified photo.
      * Context7: Fotoğraf silme
+     *
+     * @param int $id
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
+     * @throws \Exception
      */
-    public function destroy($id)
+    public function destroy(int $id): \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
     {
         try {
             $photo = $this->getSamplePhoto($id);
@@ -322,7 +344,7 @@ class PhotoController extends AdminController
                 Storage::disk('public')->delete($photo['thumbnail_path']);
             }
 
-            // ✅ TODO TAMAMLANDI: Photo model ile silme
+            // Photo model ile silme
             $photoModel = Photo::findOrFail($id);
             
             // Dosyaları sil
@@ -358,25 +380,25 @@ class PhotoController extends AdminController
 
     /**
      * Context7: Toplu fotoğraf işlemleri
+     *
+     * @param PhotoBulkActionRequest $request
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
      */
-    public function bulkAction(Request $request)
+    public function bulkAction(PhotoBulkActionRequest $request): \Illuminate\Http\JsonResponse
     {
         try {
-            $request->validate([
-                'action' => 'required|in:delete,move,feature,unfeature',
-                'photo_ids' => 'required|array|min:1',
-                'photo_ids.*' => 'integer',
-                'target_category' => 'required_if:action,move|string|max:50'
-            ]);
+            // ✅ STANDARDIZED: Using Form Request
+            $validated = $request->validated();
 
-            $action = $request->action;
-            $photoIds = $request->photo_ids;
+            $action = $validated['action'];
+            $photoIds = $validated['photo_ids'];
             $processedCount = 0;
 
             foreach ($photoIds as $photoId) {
                 switch ($action) {
                     case 'delete':
-                        // ✅ TODO TAMAMLANDI: Photo model ile delete
+                        // Photo model ile delete
                         $photo = Photo::find($photoId);
                         if ($photo) {
                             Storage::disk('public')->delete($photo->path);
@@ -389,13 +411,13 @@ class PhotoController extends AdminController
                         break;
                         
                     case 'move':
-                        // ✅ TODO TAMAMLANDI: Photo model ile category update
-                        Photo::where('id', $photoId)->update(['category' => $request->target_category]);
+                        // Photo model ile category update
+                        Photo::where('id', $photoId)->update(['category' => $validated['target_category'] ?? null]);
                         $processedCount++;
                         break;
                         
                     case 'feature':
-                        // ✅ TODO TAMAMLANDI: Photo model ile featured update
+                        // Photo model ile featured update
                         $photo = Photo::find($photoId);
                         if ($photo) {
                             $photo->setAsFeatured();
@@ -404,7 +426,7 @@ class PhotoController extends AdminController
                         break;
                         
                     case 'unfeature':
-                        // ✅ TODO TAMAMLANDI: Photo model ile unfeatured update
+                        // Photo model ile unfeatured update
                         Photo::where('id', $photoId)->update(['is_featured' => false]);
                         $processedCount++;
                         break;
@@ -425,8 +447,12 @@ class PhotoController extends AdminController
 
     /**
      * Context7: Fotoğraf optimizasyonu
+     *
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
      */
-    public function optimize($id)
+    public function optimize(int $id): \Illuminate\Http\JsonResponse
     {
         try {
             $photo = $this->getSamplePhoto($id);
@@ -457,6 +483,11 @@ class PhotoController extends AdminController
 
     /**
      * Context7: Örnek fotoğraf verileri
+     *
+     * @param string $category
+     * @param string $search
+     * @param int $perPage
+     * @return array
      */
     private function getPhotos($category = 'all', $search = '', $perPage = 24)
     {
@@ -502,6 +533,8 @@ class PhotoController extends AdminController
 
     /**
      * Context7: Fotoğraf kategorileri
+     *
+     * @return array
      */
     private function getPhotoCategories()
     {
@@ -518,6 +551,8 @@ class PhotoController extends AdminController
 
     /**
      * Context7: Fotoğraf istatistikleri
+     *
+     * @return array
      */
     private function getPhotoStats()
     {
@@ -536,6 +571,9 @@ class PhotoController extends AdminController
 
     /**
      * Context7: Örnek fotoğraf detayı
+     *
+     * @param int|string $id
+     * @return array|null
      */
     private function getSamplePhoto($id)
     {
@@ -545,6 +583,9 @@ class PhotoController extends AdminController
 
     /**
      * Context7: Thumbnail oluşturma (mock)
+     *
+     * @param string $originalPath
+     * @return string|null
      */
     private function createThumbnail($originalPath)
     {
@@ -552,9 +593,12 @@ class PhotoController extends AdminController
     }
 
     /**
-     * ✅ TODO TAMAMLANDI: Thumbnail generation
+     * Thumbnail generation
+     *
+     * @param string $originalPath
+     * @return string|null
      */
-    private function generateThumbnail($originalPath)
+    private function generateThumbnail(string $originalPath): ?string
     {
         try {
             $thumbnailPath = 'thumbnails/' . basename($originalPath);
@@ -579,9 +623,12 @@ class PhotoController extends AdminController
     }
 
     /**
-     * ✅ TODO TAMAMLANDI: Image optimization
+     * Image optimization
+     *
+     * @param string $path
+     * @return int|null
      */
-    private function optimizeImage($path)
+    private function optimizeImage(string $path): ?int
     {
         try {
             $image = Image::make(Storage::disk('public')->path($path));
@@ -607,9 +654,12 @@ class PhotoController extends AdminController
     }
 
     /**
-     * ✅ TODO TAMAMLANDI: Views increment
+     * Views increment
+     *
+     * @param int $id
+     * @return int
      */
-    private function incrementPhotoViews($id)
+    private function incrementPhotoViews(int $id): int
     {
         try {
             $photo = Photo::findOrFail($id);

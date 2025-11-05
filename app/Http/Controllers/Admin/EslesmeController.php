@@ -8,6 +8,13 @@ use App\Models\Eslesme;
 
 class EslesmeController extends AdminController
 {
+    /**
+     * Display a listing of the resource.
+     * Context7: Eşleştirme listesi ve filtreleme
+     *
+     * @param Request $request
+     * @return Response|\Illuminate\Contracts\View\View
+     */
     public function index(Request $request)
     {
         $eslesmeler = \App\Models\Eslesme::with(['ilan', 'kisi', 'danisman'])->latest()->paginate(20);
@@ -20,6 +27,12 @@ class EslesmeController extends AdminController
         return $this->render('admin.eslesmeler.index', compact('eslesmeler', 'istatistikler'));
     }
 
+    /**
+     * Show the form for creating a new resource.
+     * Context7: Yeni eşleştirme oluşturma formu
+     *
+     * @return Response|\Illuminate\Contracts\View\View
+     */
     public function create()
     {
         // Context7: Provide datasets for form
@@ -57,6 +70,14 @@ class EslesmeController extends AdminController
         return $this->render('admin.eslesmeler.create', $data);
     }
 
+    /**
+     * Store a newly created resource in storage.
+     * Context7: Yeni eşleştirme kaydetme
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Exception
+     */
     public function store(Request $request)
     {
         // Context7 Validation Rules
@@ -99,21 +120,51 @@ class EslesmeController extends AdminController
         }
     }
 
+    /**
+     * Display the specified resource.
+     * Context7: Eşleştirme detay sayfası
+     *
+     * @param int|string|Eslesme $eslesme
+     * @return Response|\Illuminate\Contracts\View\View
+     */
     public function show($eslesme)
     {
         return $this->render('admin.eslesmeler.show', ['eslesme' => $eslesme]);
     }
 
+    /**
+     * Show the form for editing the specified resource.
+     * Context7: Eşleştirme düzenleme formu
+     *
+     * @param int|string|Eslesme $eslesme
+     * @return Response|\Illuminate\Contracts\View\View
+     */
     public function edit($eslesme)
     {
         return $this->render('admin.eslesmeler.edit', ['eslesme' => $eslesme]);
     }
 
+    /**
+     * Update the specified resource in storage.
+     * Context7: Eşleştirme güncelleme
+     *
+     * @param Request $request
+     * @param int|string|Eslesme $eslesme
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function update(Request $request, $eslesme)
     {
         return redirect()->route('admin.eslesmeler.edit', $eslesme);
     }
 
+    /**
+     * Remove the specified resource from storage.
+     * Context7: Eşleştirme silme
+     *
+     * @param Eslesme $eslesme
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Exception
+     */
     public function destroy(Eslesme $eslesme)
     {
         try {
@@ -134,17 +185,35 @@ class EslesmeController extends AdminController
         }
     }
 
+    /**
+     * Auto match requests with listings
+     * Context7: Otomatik eşleştirme
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function autoMatch()
     {
         return response()->json(['created' => 0]);
     }
 
+    /**
+     * Bulk create matches
+     * Context7: Toplu eşleştirme oluşturma
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function bulkCreate(Request $request)
     {
         return response()->json(['created' => 0]);
     }
 
-    // API Endpoints for Form Data
+    /**
+     * Get persons for form dropdown
+     * Context7: Form için kişi listesi API
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getKisiler()
     {
         try {
@@ -168,6 +237,12 @@ class EslesmeController extends AdminController
         }
     }
 
+    /**
+     * Get advisors for form dropdown
+     * Context7: Form için danışman listesi API
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getDanismanlar()
     {
         try {
@@ -183,6 +258,12 @@ class EslesmeController extends AdminController
         }
     }
 
+    /**
+     * Get requests for form dropdown
+     * Context7: Form için talep listesi API
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getTalepler()
     {
         try {
@@ -207,6 +288,12 @@ class EslesmeController extends AdminController
         }
     }
 
+    /**
+     * Get listings for form dropdown
+     * Context7: Form için ilan listesi API
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getIlanlar()
     {
         try {
@@ -234,6 +321,13 @@ class EslesmeController extends AdminController
         }
     }
 
+    /**
+     * Get AI matching suggestions
+     * Context7: AI destekli eşleştirme önerileri
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getAIEslesmeOnerileri(Request $request)
     {
         try {
@@ -265,6 +359,14 @@ class EslesmeController extends AdminController
         }
     }
 
+    /**
+     * Render view helper
+     * Context7: View render helper
+     *
+     * @param string $view
+     * @param array $data
+     * @return Response|\Illuminate\Contracts\View\View
+     */
     private function render(string $view, array $data = []): Response|\Illuminate\Contracts\View\View
     {
         if (view()->exists($view)) return response()->view($view, $data);

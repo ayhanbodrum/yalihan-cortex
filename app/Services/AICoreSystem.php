@@ -4,6 +4,7 @@ namespace App\Services;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
+use App\Services\Cache\CacheHelper;
 use App\Services\FlexibleStorageManager;
 use App\Services\AIPromptManager;
 use App\Services\AILearningEngine;
@@ -69,12 +70,19 @@ class AICoreSystem
      */
     private function getLearnedPatterns($context)
     {
-        return Cache::remember("ai_patterns_{$context}", 3600, function () use ($context) {
-            return \App\Models\AICoreSystem::where('context', $context)
-                ->where('enabled', true)
-                ->orderBy('success_rate', 'desc')
-                ->first();
-        });
+        // ✅ STANDARDIZED: Using CacheHelper with context param
+        return CacheHelper::remember(
+            'ai',
+            'patterns',
+            'medium',
+            function () use ($context) {
+                return \App\Models\AICoreSystem::where('context', $context)
+                    ->where('enabled', true)
+                    ->orderBy('success_rate', 'desc')
+                    ->first();
+            },
+            ['context' => $context]
+        );
     }
 
     /**

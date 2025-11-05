@@ -1,0 +1,145 @@
+{
+  "title": "Kiralama Fiyat Gösterimi Standardı - Rental Price Display Standard",
+  "date": "2025-11-05",
+  "category": "ui_ux",
+  "type": "standardization",
+  "status": "completed",
+  "summary": "Kiralama ilanlarında fiyat gösterimi 'ay - gün - sezonluk' formatında standartlaştırıldı. TEKCE.com benzeri net gösterim.",
+  "details": {
+    "standard_format": {
+      "description": "Kiralama fiyat gösterimi standart formatı",
+      "format": "Fiyat + Para Birimi + Periyot",
+      "examples": {
+        "gunluk": "2.500 TL/Gün",
+        "haftalik": "15.000 TL/Hafta",
+        "aylik": "75.000 TL/Ay",
+        "uzun_donem": "75.000 TL/Ay",
+        "sezonluk": "150.000 TL/Sezon"
+      }
+    },
+    "updated_components": {
+      "price-display.blade.php": {
+        "file": "resources/views/components/price-display.blade.php",
+        "changes": [
+          "Tam fiyat gösteriminde kiralama türüne göre '/Gün', '/Ay', '/Sezon' eklendi",
+          "Başlangıç fiyatında periyot gösterimi eklendi",
+          "Çoklu fiyat gösterimi iyileştirildi (günlük, haftalık, aylık, sezonluk)",
+          "Dark mode desteği eklendi",
+          "monthlyPrice parametresi eklendi"
+        ]
+      },
+      "ilan-card-rental.blade.php": {
+        "file": "resources/views/components/ilan-card-rental.blade.php",
+        "changes": [
+          "monthlyPrice parametresi eklendi",
+          "Varsayılan fiyat gösteriminde periyot eklendi",
+          "Dark mode desteği eklendi"
+        ]
+      },
+      "listing-card.blade.php": {
+        "file": "resources/views/components/listing-card.blade.php",
+        "changes": [
+          "Kiralama türüne göre fiyat formatı eklendi",
+          "Dark mode desteği eklendi"
+        ]
+      },
+      "admin-ilanlar-show.blade.php": {
+        "file": "resources/views/admin/ilanlar/show.blade.php",
+        "changes": [
+          "Ana fiyat gösteriminde periyot eklendi",
+          "Yazlık detay fiyatlarında periyot eklendi (Günlük, Haftalık, Aylık)",
+          "Dark mode desteği eklendi"
+        ]
+      },
+      "frontend-ilanlar-show.blade.php": {
+        "file": "resources/views/frontend/ilanlar/show.blade.php",
+        "changes": [
+          "Ana fiyat gösteriminde periyot eklendi",
+          "Benzer ilanlar fiyat gösteriminde periyot eklendi",
+          "Dark mode desteği eklendi"
+        ]
+      }
+    },
+    "rental_types": {
+      "gunluk": {
+        "display": "/Gün",
+        "description": "Günlük kiralama",
+        "example": "2.500 TL/Gün"
+      },
+      "haftalik": {
+        "display": "/Hafta",
+        "description": "Haftalık kiralama",
+        "example": "15.000 TL/Hafta"
+      },
+      "aylik": {
+        "display": "/Ay",
+        "description": "Aylık kiralama",
+        "example": "75.000 TL/Ay"
+      },
+      "uzun_donem": {
+        "display": "/Ay",
+        "description": "Uzun dönem kiralama (aylık)",
+        "example": "75.000 TL/Ay"
+      },
+      "sezonluk": {
+        "display": "/Sezon",
+        "description": "Sezonluk kiralama",
+        "example": "150.000 TL/Sezon"
+      }
+    },
+    "implementation_pattern": {
+      "blade_template": "@if ($ilan->kiralama_turu)\n    @switch($ilan->kiralama_turu)\n        @case('gunluk')\n            <span class=\"text-lg font-normal text-gray-600 dark:text-gray-400\">/Gün</span>\n        @break\n        @case('aylik')\n        @case('uzun_donem')\n            <span class=\"text-lg font-normal text-gray-600 dark:text-gray-400\">/Ay</span>\n        @break\n        @case('sezonluk')\n            <span class=\"text-lg font-normal text-gray-600 dark:text-gray-400\">/Sezon</span>\n        @break\n    @endswitch\n@endif",
+      "component_usage": "<x-price-display \n    :price=\"$ilan->fiyat\" \n    :currency=\"$ilan->para_birimi ?? 'TRY'\" \n    :rentalType=\"$ilan->kiralama_turu\" \n    :dailyPrice=\"$ilan->gunluk_fiyat\" \n    :weeklyPrice=\"$ilan->haftalik_fiyat\"\n    :monthlyPrice=\"$ilan->aylik_fiyat\" \n    :seasonalPrice=\"$ilan->sezonluk_fiyat\" />"
+    },
+    "multiple_price_display": {
+      "enabled": true,
+      "description": "Çoklu fiyat gösterimi (günlük, haftalık, aylık, sezonluk)",
+      "condition": "Ana fiyattan farklı fiyatlar varsa gösterilir",
+      "layout": "Grid layout (1-2 columns, responsive)",
+      "styling": "Gradient background, card-based display"
+    },
+    "currency_display": {
+      "format": "Fiyat + Para Birimi + Periyot",
+      "example": "75.000 TL/Ay",
+      "default_currency": "TRY",
+      "supported_currencies": ["TRY", "USD", "EUR", "GBP"]
+    },
+    "dark_mode_support": {
+      "enabled": true,
+      "text_classes": "dark:text-white, dark:text-gray-400",
+      "background_classes": "dark:bg-gray-800, dark:bg-gray-900",
+      "border_classes": "dark:border-gray-700, dark:border-gray-800"
+    },
+    "reference": {
+      "tekce_com": "https://tekce.com/tr/blog/ipuclari-ve-oneriler/farkli-web-sitelerindeki-farkli-fiyatlar",
+      "description": "TEKCE.com benzeri net fiyat gösterimi standardı"
+    }
+  },
+  "rules": {
+    "always_include": [
+      "Para birimi gösterimi (TRY, USD, EUR, GBP)",
+      "Kiralama türüne göre periyot gösterimi (/Gün, /Ay, /Sezon)",
+      "Dark mode desteği",
+      "Responsive tasarım"
+    ],
+    "forbidden_patterns": [
+      "Fiyat gösteriminde periyot eksikliği (kiralama ilanlarında)",
+      "Hardcoded para birimi (₺ yerine para_birimi field kullanılmalı)",
+      "Dark mode eksikliği"
+    ]
+  },
+  "benefits": [
+    "Kiralama fiyatları daha net gösteriliyor",
+    "Kullanıcı deneyimi iyileşti",
+    "TEKCE.com benzeri profesyonel görünüm",
+    "Dark mode desteği ile modern UX",
+    "Çoklu fiyat gösterimi ile esneklik"
+  ],
+  "related_standards": [
+    "Context7 Compliance",
+    "Tailwind CSS Standards",
+    "Dark Mode Standards",
+    "Responsive Design Standards"
+  ]
+}
+

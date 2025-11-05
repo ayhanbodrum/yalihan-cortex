@@ -8,10 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Traits\HasActiveScope;
 
 class AIKnowledgeBase extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, HasActiveScope;
 
     protected $table = 'ai_knowledge_base';
 
@@ -67,10 +68,7 @@ class AIKnowledgeBase extends Model
     }
 
     // Scopes
-    public function scopeActive($query)
-    {
-        return $query->where('status', true);
-    }
+    // ✅ REFACTORED: scopeActive moved to HasActiveScope trait
 
     public function scopeByCategory($query, $category)
     {

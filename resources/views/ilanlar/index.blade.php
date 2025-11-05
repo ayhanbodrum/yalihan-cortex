@@ -66,19 +66,46 @@
             <div class="container mx-auto px-4 lg:px-8">
                 <div class="flex flex-wrap gap-4 items-center justify-between">
                     <div class="flex flex-wrap gap-4">
-                        <button
-                            class="px-6 py-3 bg-blue-600 text-white rounded-full font-semibold hover:bg-blue-700 transition-colors">
+                        <a href="{{ route('ilanlar.index') }}"
+                            class="px-6 py-3 bg-blue-600 text-white rounded-full font-semibold hover:bg-blue-700 transition-all duration-200 hover:scale-105">
                             Tümü ({{ $totalCount ?? 0 }})
-                        </button>
-                        <button
-                            class="px-6 py-3 bg-gray-100 text-gray-700 rounded-full font-semibold hover:bg-gray-200 transition-colors">
+                        </a>
+                        <a href="{{ route('ilanlar.index', ['yayin_tipi' => 'satilik']) }}"
+                            class="px-6 py-3 bg-gray-100 text-gray-700 rounded-full font-semibold hover:bg-gray-200 transition-all duration-200 hover:scale-105">
                             Satılık ({{ $filteredCount ?? 0 }})
-                        </button>
-                        <button
-                            class="px-6 py-3 bg-gray-100 text-gray-700 rounded-full font-semibold hover:bg-gray-200 transition-colors">
+                        </a>
+                        <a href="{{ route('ilanlar.index', ['yayin_tipi' => 'kiralik']) }}"
+                            class="px-6 py-3 bg-gray-100 text-gray-700 rounded-full font-semibold hover:bg-gray-200 transition-all duration-200 hover:scale-105">
                             Kiralık
-                        </button>
+                        </a>
                     </div>
+
+                    {{-- Kiralama Türü Filtreleri --}}
+                    @if(request('yayin_tipi') == 'kiralik' || request('kiralama_turu'))
+                    <div class="flex flex-wrap gap-2 mt-4">
+                        <span class="text-sm text-gray-600 dark:text-gray-400 font-medium">Kiralama Türü:</span>
+                        <a href="{{ route('ilanlar.index', array_merge(request()->all(), ['kiralama_turu' => null])) }}"
+                            class="px-4 py-2 text-sm rounded-full {{ !request('kiralama_turu') ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }} transition-all duration-200">
+                            Tümü
+                        </a>
+                        <a href="{{ route('ilanlar.index', array_merge(request()->all(), ['kiralama_turu' => 'gunluk'])) }}"
+                            class="px-4 py-2 text-sm rounded-full {{ request('kiralama_turu') == 'gunluk' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }} transition-all duration-200">
+                            Günlük
+                        </a>
+                        <a href="{{ route('ilanlar.index', array_merge(request()->all(), ['kiralama_turu' => 'haftalik'])) }}"
+                            class="px-4 py-2 text-sm rounded-full {{ request('kiralama_turu') == 'haftalik' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }} transition-all duration-200">
+                            Haftalık
+                        </a>
+                        <a href="{{ route('ilanlar.index', array_merge(request()->all(), ['kiralama_turu' => 'aylik'])) }}"
+                            class="px-4 py-2 text-sm rounded-full {{ request('kiralama_turu') == 'aylik' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }} transition-all duration-200">
+                            Aylık
+                        </a>
+                        <a href="{{ route('ilanlar.index', array_merge(request()->all(), ['kiralama_turu' => 'sezonluk'])) }}"
+                            class="px-4 py-2 text-sm rounded-full {{ request('kiralama_turu') == 'sezonluk' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }} transition-all duration-200">
+                            Sezonluk
+                        </a>
+                    </div>
+                    @endif
 
                     <div class="flex items-center gap-4">
                         <select
@@ -136,8 +163,25 @@
                                     {{-- Price --}}
                                     <div class="absolute bottom-4 right-4">
                                         <div class="bg-white/90 backdrop-blur-sm rounded-lg px-4 py-2.5">
-                                            <span class="text-2xl font-bold text-gray-900">
-                                                {{ number_format($ilan->fiyat ?? 0, 0, ',', '.') }} ₺
+                                            <span class="text-2xl font-bold text-gray-900 dark:text-white">
+                                                {{ number_format($ilan->fiyat ?? 0, 0, ',', '.') }} {{ $ilan->para_birimi ?? 'TRY' }}
+                                                @if ($ilan->kiralama_turu)
+                                                    @switch($ilan->kiralama_turu)
+                                                        @case('gunluk')
+                                                            <span class="text-lg font-normal text-gray-600 dark:text-gray-400">/Gün</span>
+                                                        @break
+                                                        @case('haftalik')
+                                                            <span class="text-lg font-normal text-gray-600 dark:text-gray-400">/Hafta</span>
+                                                        @break
+                                                        @case('aylik')
+                                                        @case('uzun_donem')
+                                                            <span class="text-lg font-normal text-gray-600 dark:text-gray-400">/Ay</span>
+                                                        @break
+                                                        @case('sezonluk')
+                                                            <span class="text-lg font-normal text-gray-600 dark:text-gray-400">/Sezon</span>
+                                                        @break
+                                                    @endswitch
+                                                @endif
                                             </span>
                                         </div>
                                     </div>

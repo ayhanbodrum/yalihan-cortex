@@ -17,15 +17,27 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use App\Services\Ilan\IlanBulkService;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
 use Barryvdh\DomPDF\Facade\Pdf;
+use App\Services\Ilan\IlanPhotoService;
+use App\Services\Ilan\IlanExportService;
+use App\Services\Ilan\IlanTypeHelper;
+use App\Services\Ilan\IlanFeatureService;
+use App\Services\Cache\CacheHelper;
+use App\Services\Response\ResponseService;
+use App\Services\Logging\LogService;
 
 class IlanController extends AdminController
 {
     /**
      * Display a listing of the resource.
+     * Context7: İlan listesi ve filtreleme
+     *
+     * @param Request $request
+     * @return \Illuminate\View\View
      */
     public function index(Request $request)
     {
@@ -55,6 +67,11 @@ class IlanController extends AdminController
             $query->where('kategori_id', $request->kategori);
         }
 
+        // Filter by rental type (kiralama türü)
+        if ($request->has('kiralama_turu') && $request->kiralama_turu) {
+            $query->where('kiralama_turu', $request->kiralama_turu);
+        }
+
         // Filter by price range
         if ($request->has('min_fiyat') && $request->min_fiyat) {
             $query->where('fiyat', '>=', $request->min_fiyat);
@@ -62,6 +79,41 @@ class IlanController extends AdminController
 
         if ($request->has('max_fiyat') && $request->max_fiyat) {
             $query->where('fiyat', '<=', $request->max_fiyat);
+        }
+
+        // Filter by rental price range (günlük/aylık/sezonluk)
+        if ($request->has('kiralama_fiyat_turu') && $request->has('min_kiralama_fiyat')) {
+            $fiyatTuru = $request->kiralama_fiyat_turu;
+            $minFiyat = $request->min_kiralama_fiyat;
+            
+            switch ($fiyatTuru) {
+                case 'gunluk':
+                    $query->where('gunluk_fiyat', '>=', $minFiyat);
+                    break;
+                case 'aylik':
+                    $query->where('aylik_fiyat', '>=', $minFiyat);
+                    break;
+                case 'sezonluk':
+                    $query->where('sezonluk_fiyat', '>=', $minFiyat);
+                    break;
+            }
+        }
+
+        if ($request->has('kiralama_fiyat_turu') && $request->has('max_kiralama_fiyat')) {
+            $fiyatTuru = $request->kiralama_fiyat_turu;
+            $maxFiyat = $request->max_kiralama_fiyat;
+            
+            switch ($fiyatTuru) {
+                case 'gunluk':
+                    $query->where('gunluk_fiyat', '<=', $maxFiyat);
+                    break;
+                case 'aylik':
+                    $query->where('aylik_fiyat', '<=', $maxFiyat);
+                    break;
+                case 'sezonluk':
+                    $query->where('sezonluk_fiyat', '<=', $maxFiyat);
+                    break;
+            }
         }
 
         // Filter by location
@@ -97,6 +149,7 @@ class IlanController extends AdminController
             'id', 'baslik', 'fiyat', 'para_birimi', 'status', 'is_published',
             'kategori_id', 'ana_kategori_id', 'alt_kategori_id', 'yayin_tipi_id',
             'ilan_sahibi_id', 'danisman_id', 'il_id', 'ilce_id',
+            'kiralama_turu', 'gunluk_fiyat', 'haftalik_fiyat', 'aylik_fiyat', 'sezonluk_fiyat',
             'goruntulenme', 'created_at', 'updated_at'
         ]);
 
@@ -117,7 +170,8 @@ class IlanController extends AdminController
         $ilanlar = $query->paginate(20);
 
         // ⚡ CACHE: Statistics (5 min cache)
-        $stats = Cache::remember('admin.ilanlar.stats', 300, function () {
+        // ✅ STANDARDIZED: Using CacheHelper
+        $stats = CacheHelper::remember('ilan', 'stats', 'short', function () {
             return [
                 'total' => Ilan::count(),
                 'active' => Ilan::where('status', 'active')->count(),
@@ -129,7 +183,8 @@ class IlanController extends AdminController
         });
 
         // ⚡ CACHE: Filter options (1 hour cache)
-        $kategoriler = Cache::remember('admin.ilanlar.filter.kategoriler', 3600, function () {
+        // ✅ STANDARDIZED: Using CacheHelper
+        $kategoriler = CacheHelper::remember('category', 'filter_list', 'medium', function () {
             return IlanKategori::whereNull('parent_id')
                 ->where('status', 1)
                 ->orderBy('name')
@@ -137,7 +192,8 @@ class IlanController extends AdminController
                 ->get();
         });
         
-        $iller = Cache::remember('admin.ilanlar.filter.iller', 3600, function () {
+        // ✅ STANDARDIZED: Using CacheHelper
+        $iller = CacheHelper::remember('location', 'il_list', 'medium', function () {
             return Il::orderBy('il_adi')->select(['id', 'il_adi'])->get();
         });
 
@@ -146,6 +202,8 @@ class IlanController extends AdminController
 
     /**
      * Test page for category cascading
+     *
+     * @return \Illuminate\View\View
      */
     public function testCategories()
     {
@@ -166,6 +224,9 @@ class IlanController extends AdminController
 
     /**
      * Show the form for creating a new resource.
+     * Context7: Yeni ilan oluşturma formu
+     *
+     * @return \Illuminate\View\View
      */
     public function create()
     {
@@ -239,7 +300,8 @@ class IlanController extends AdminController
 
             return null;
         } catch (\Exception $e) {
-            \Log::warning('Context7 AutoSave Retrieval Error: ' . $e->getMessage());
+            // ✅ STANDARDIZED: Using LogService
+            LogService::warning('Context7 AutoSave Retrieval Error', ['error' => $e->getMessage()]);
             return null;
         }
     }
@@ -247,6 +309,10 @@ class IlanController extends AdminController
     /**
      * Store a newly created resource in storage.
      * Context7: Form field mapping fixed (2025-10-21)
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
+     * @throws \Exception
      */
     public function store(Request $request)
     {
@@ -435,7 +501,8 @@ class IlanController extends AdminController
             // Attach features to ilan (pivot table: ilan_feature)
             if (!empty($featuresToAttach)) {
                 $ilan->features()->attach($featuresToAttach);
-                \Log::info('✅ Features attached to ilan', [
+                // ✅ STANDARDIZED: Using LogService
+                LogService::action('features_attached', 'ilan', $ilan->id, [
                     'ilan_id' => $ilan->id,
                     'features_count' => count($featuresToAttach),
                     'features' => array_keys($featuresToAttach),
@@ -507,11 +574,10 @@ class IlanController extends AdminController
         } catch (\Exception $e) {
             DB::rollBack();
 
-            Log::error('İlan oluşturma hatası', [
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
-                'request' => $request->except(['_token', 'password']),
-            ]);
+            // ✅ STANDARDIZED: Using ResponseService (automatic logging)
+            if ($request->expectsJson()) {
+                return ResponseService::serverError('İlan oluşturulurken hata oluştu', $e);
+            }
 
             return redirect()->back()
                 ->with('error', 'İlan oluşturulurken bir hata oluştu: ' . $e->getMessage())
@@ -521,6 +587,10 @@ class IlanController extends AdminController
 
     /**
      * Display the specified resource.
+     * Context7: İlan detay sayfası
+     *
+     * @param Ilan $ilan
+     * @return \Illuminate\View\View
      */
     public function show(Ilan $ilan)
     {
@@ -540,11 +610,12 @@ class IlanController extends AdminController
             }
         ]);
 
-        // Prepare type-related variables for the view
-        $typeColor = $this->getTypeColor($ilan);
-        $typeIcon = $this->getTypeIcon($ilan);
-        $typeSummary = $this->getTypeSummary($ilan);
-        $typeSpecificFields = $this->getTypeSpecificFields($ilan);
+        // ✅ REFACTORED: Use IlanTypeHelper service
+        $typeHelper = app(IlanTypeHelper::class);
+        $typeColor = $typeHelper->getTypeColor($ilan);
+        $typeIcon = $typeHelper->getTypeIcon($ilan);
+        $typeSummary = $typeHelper->getTypeSummary($ilan);
+        $typeSpecificFields = $typeHelper->getTypeSpecificFields($ilan);
 
         // ✅ EAGER LOADING: Previous/Next ilanlar için de eager loading
         $previousIlan = Ilan::where('id', '<', $ilan->id)
@@ -569,6 +640,10 @@ class IlanController extends AdminController
 
     /**
      * Show the form for editing the specified resource.
+     * Context7: İlan düzenleme formu
+     *
+     * @param Ilan $ilan
+     * @return \Illuminate\View\View
      */
     public function edit(Ilan $ilan)
     {
@@ -626,6 +701,12 @@ class IlanController extends AdminController
 
     /**
      * Update the specified resource in storage.
+     * Context7: İlan güncelleme
+     *
+     * @param Request $request
+     * @param Ilan $ilan
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
+     * @throws \Exception
      */
     public function update(Request $request, Ilan $ilan)
     {
@@ -832,12 +913,10 @@ class IlanController extends AdminController
         } catch (\Exception $e) {
             DB::rollBack();
 
-            Log::error('İlan güncelleme hatası', [
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
-                'ilan_id' => $ilan->id,
-                'request' => $request->except(['_token', 'password']),
-            ]);
+            // ✅ STANDARDIZED: Using ResponseService (automatic logging)
+            if ($request->expectsJson()) {
+                return ResponseService::serverError('İlan güncellenirken hata oluştu', $e);
+            }
 
             return redirect()->back()
                 ->with('error', 'İlan güncellenirken bir hata oluştu: ' . $e->getMessage())
@@ -847,6 +926,11 @@ class IlanController extends AdminController
 
     /**
      * Remove the specified resource from storage.
+     * Context7: İlan silme (soft delete)
+     *
+     * @param Ilan $ilan
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
+     * @throws \Exception
      */
     public function destroy(Ilan $ilan)
     {
@@ -857,13 +941,21 @@ class IlanController extends AdminController
             return redirect()->route('admin.ilanlar.index')
                 ->with('success', 'İlan başarıyla silindi.');
         } catch (\Exception $e) {
-            return redirect()->back()
-                ->with('error', 'İlan silinirken bir hata oluştu: ' . $e->getMessage());
+            // ✅ STANDARDIZED: Using ResponseService
+            if (request()->expectsJson()) {
+                return ResponseService::serverError('İlan silinirken hata oluştu', $e);
+            }
+
+            return ResponseService::backError('İlan silinirken bir hata oluştu: ' . $e->getMessage());
         }
     }
 
     /**
      * Search listings via AJAX
+     * Context7: İlan arama endpoint
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function search(Request $request)
     {
@@ -908,6 +1000,10 @@ class IlanController extends AdminController
 
     /**
      * Filter listings
+     * Context7: İlan filtreleme endpoint
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function filter(Request $request)
     {
@@ -977,6 +1073,10 @@ class IlanController extends AdminController
 
     /**
      * Live search for listings
+     * Context7: Canlı arama endpoint
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function liveSearch(Request $request)
     {
@@ -1012,6 +1112,10 @@ class IlanController extends AdminController
 
     /**
      * Bulk update listings
+     * Context7: Toplu güncelleme endpoint
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function bulkUpdate(Request $request)
     {
@@ -1029,30 +1133,22 @@ class IlanController extends AdminController
         }
 
         try {
-            $updateData = array_filter($request->update_data, function($value) {
-                return $value !== null && $value !== '';
-            });
-
-            $updateData['updated_at'] = now();
-
-            $updatedCount = Ilan::whereIn('id', $request->ids)->update($updateData);
-
-            return response()->json([
-                'success' => true,
-                'message' => "{$updatedCount} ilan başarıyla güncellendi.",
-                'updated_count' => $updatedCount
-            ]);
-
+            $service = app(IlanBulkService::class);
+            $result = $service->bulkUpdate($request->ids, $request->update_data);
+            $status = $result['success'] ? 200 : 400;
+            return response()->json($result, $status);
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Toplu güncelleme sırasında bir hata oluştu: ' . $e->getMessage()
-            ], 500);
+            // ✅ STANDARDIZED: Using ResponseService
+            return ResponseService::serverError('Toplu güncelleme sırasında bir hata oluştu', $e);
         }
     }
 
     /**
      * Bulk delete listings
+     * Context7: Toplu silme endpoint
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function bulkDelete(Request $request)
     {
@@ -1069,24 +1165,22 @@ class IlanController extends AdminController
         }
 
         try {
-            $deletedCount = Ilan::whereIn('id', $request->ids)->delete();
-
-            return response()->json([
-                'success' => true,
-                'message' => "{$deletedCount} ilan başarıyla silindi.",
-                'deleted_count' => $deletedCount
-            ]);
-
+            $service = app(IlanBulkService::class);
+            $result = $service->bulkDelete($request->ids);
+            $status = $result['success'] ? 200 : 400;
+            return response()->json($result, $status);
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'İlan silme sırasında bir hata oluştu: ' . $e->getMessage()
-            ], 500);
+            // ✅ STANDARDIZED: Using ResponseService
+            return ResponseService::serverError('Toplu silme sırasında bir hata oluştu', $e);
         }
     }
 
     /**
      * Toggle listing status
+     * Context7: İlan durumunu değiştir
+     *
+     * @param Ilan $ilan
+     * @return \Illuminate\Http\JsonResponse
      */
     public function toggleStatus(Ilan $ilan)
     {
@@ -1115,6 +1209,11 @@ class IlanController extends AdminController
 
     /**
      * Update listing status
+     * Context7: İlan durumunu güncelle
+     *
+     * @param Request $request
+     * @param Ilan $ilan
+     * @return \Illuminate\Http\JsonResponse
      */
     public function updateStatus(Request $request, Ilan $ilan)
     {
@@ -1167,6 +1266,10 @@ class IlanController extends AdminController
 
     /**
      * Generate AI-powered title for listing
+     * Context7: AI destekli başlık üretimi
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function generateAiTitle(Request $request)
     {
@@ -1207,6 +1310,10 @@ class IlanController extends AdminController
 
     /**
      * Generate AI-powered description for listing
+     * Context7: AI destekli açıklama üretimi
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function generateAiDescription(Request $request)
     {
@@ -1244,6 +1351,10 @@ class IlanController extends AdminController
 
     /**
      * Get dynamic fields based on property type
+     * Context7: Emlak tipine göre dinamik alanlar
+     *
+     * @param string $propertyType
+     * @return \Illuminate\Http\JsonResponse
      */
     public function getDynamicFields($propertyType)
     {
@@ -1295,6 +1406,10 @@ class IlanController extends AdminController
 
     /**
      * Get AI property suggestions
+     * Context7: AI destekli emlak önerileri
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function getAIPropertySuggestions(Request $request)
     {
@@ -1324,22 +1439,17 @@ class IlanController extends AdminController
 
     /**
      * Export listings to Excel
+     * Context7: İlanları Excel'e aktar
+     *
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\StreamedResponse|\Illuminate\Http\RedirectResponse
      */
     public function exportExcel(Request $request)
     {
         try {
-            $query = Ilan::with(['ilanSahibi', 'userDanisman', 'kategori', 'il', 'ilce']);
-
-            // Apply same filters as index
-            if ($request->has('search') && $request->search) {
-                $search = $request->search;
-                $query->where(function($q) use ($search) {
-                    $q->where('baslik', 'like', "%{$search}%")
-                      ->orWhere('aciklama', 'like', "%{$search}%");
-                });
-            }
-
-            $ilanlar = $query->get();
+            $exportService = app(IlanExportService::class);
+            $query = $exportService->getExportQuery($request);
+            $ilanlar = $query->limit(1000)->get();
 
             // Simple CSV export (mock implementation)
             $headers = [
@@ -1379,11 +1489,17 @@ class IlanController extends AdminController
 
     /**
      * Export listings to PDF
+     * Context7: İlanları PDF'e aktar
+     *
+     * @param Request $request
+     * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse
      */
     public function exportPdf(Request $request)
     {
         try {
-            $ilanlar = Ilan::with(['ilanSahibi', 'kategori', 'il'])->limit(50)->get();
+            $exportService = app(IlanExportService::class);
+            $query = $exportService->getExportQuery($request);
+            $ilanlar = $query->limit(200)->get();
 
             return view('admin.ilanlar.pdf', compact('ilanlar'));
 
@@ -1394,50 +1510,19 @@ class IlanController extends AdminController
 
     /**
      * Upload photos for a listing
+     * Context7: İlan fotoğrafları yükle
+     *
+     * @param Request $request
+     * @param Ilan $ilan
+     * @return \Illuminate\Http\JsonResponse
      */
     public function uploadPhotos(Request $request, Ilan $ilan)
     {
-        $validator = Validator::make($request->all(), [
-            'photos' => 'required|array|max:10',
-            'photos.*' => 'required|image|mimes:jpeg,png,jpg,gif|max:5120' // 5MB max
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'errors' => $validator->errors()
-            ], 422);
-        }
-
         try {
-            $uploadedPhotos = [];
-
-            foreach ($request->file('photos') as $photo) {
-                $fileName = time() . '_' . uniqid() . '.' . $photo->getClientOriginalExtension();
-                $path = $photo->storeAs('ilan-fotograflari/' . $ilan->id, $fileName, 'public');
-
-                $fotografModel = IlanFotografi::create([
-                    'ilan_id' => $ilan->id,
-                    'dosya_adi' => $fileName,
-                    'dosya_yolu' => $path,
-                    'boyut' => $photo->getSize(),
-                    'sira' => IlanFotografi::where('ilan_id', $ilan->id)->count() + 1,
-                    'status' => true
-                ]);
-
-                $uploadedPhotos[] = [
-                    'id' => $fotografModel->id,
-                    'url' => Storage::url($path),
-                    'name' => $fileName
-                ];
-            }
-
-            return response()->json([
-                'success' => true,
-                'message' => count($uploadedPhotos) . ' fotoğraf başarıyla yüklendi.',
-                'photos' => $uploadedPhotos
-            ]);
-
+            $service = app(IlanPhotoService::class);
+            $result = $service->uploadPhotos($ilan, (array) $request->file('photos'));
+            $status = $result['success'] ? 200 : 422;
+            return response()->json($result, $status);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
@@ -1448,23 +1533,19 @@ class IlanController extends AdminController
 
     /**
      * Delete a photo from listing
+     * Context7: İlan fotoğrafı sil
+     *
+     * @param Ilan $ilan
+     * @param IlanFotografi $photo
+     * @return \Illuminate\Http\JsonResponse
      */
     public function deletePhoto(Ilan $ilan, IlanFotografi $photo)
     {
         try {
-            // Delete file from storage
-            if (Storage::disk('public')->exists($photo->dosya_yolu)) {
-                Storage::disk('public')->delete($photo->dosya_yolu);
-            }
-
-            // Delete from database
-            $photo->delete();
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Fotoğraf başarıyla silindi.'
-            ]);
-
+            $service = app(IlanPhotoService::class);
+            $result = $service->deletePhoto($ilan, $photo);
+            $status = $result['success'] ? 200 : 400;
+            return response()->json($result, $status);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
@@ -1475,40 +1556,20 @@ class IlanController extends AdminController
 
     /**
      * Update photo order
+     * Context7: Fotoğraf sıralamasını güncelle
+     *
+     * @param Request $request
+     * @param Ilan $ilan
+     * @return \Illuminate\Http\JsonResponse
      */
     public function updatePhotoOrder(Request $request, Ilan $ilan)
     {
-        $validator = Validator::make($request->all(), [
-            'photo_orders' => 'required|array',
-            'photo_orders.*' => 'required|integer'
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'errors' => $validator->errors()
-            ], 422);
-        }
-
         try {
-            DB::beginTransaction();
-
-            foreach ($request->photo_orders as $photoId => $order) {
-                IlanFotografi::where('id', $photoId)
-                    ->where('ilan_id', $ilan->id)
-                    ->update(['sira' => $order]);
-            }
-
-            DB::commit();
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Fotoğraf sıralaması güncellendi.'
-            ]);
-
+            $service = app(IlanPhotoService::class);
+            $result = $service->updatePhotoOrder($ilan, (array) $request->photo_orders);
+            $status = $result['success'] ? 200 : 422;
+            return response()->json($result, $status);
         } catch (\Exception $e) {
-            DB::rollback();
-
             return response()->json([
                 'success' => false,
                 'message' => 'Sıralama güncelleme sırasında hata: ' . $e->getMessage()
@@ -1518,22 +1579,64 @@ class IlanController extends AdminController
 
     /**
      * Get price history API
+     * Context7: Fiyat geçmişi API endpoint
+     *
+     * @param Ilan $ilan
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function priceHistoryApi(Ilan $ilan)
+    public function priceHistoryApi(Ilan $ilan, Request $request)
     {
-        $history = IlanPriceHistory::where('ilan_id', $ilan->id)
-            ->with('degistirenUser')
-            ->orderBy('created_at', 'desc')
-            ->get();
+        $query = IlanPriceHistory::where('ilan_id', $ilan->id);
+        
+        // Time range filter
+        $range = $request->get('range', 'all');
+        if ($range !== 'all') {
+            $days = (int) $range;
+            $query->where('created_at', '>=', now()->subDays($days));
+        }
+        
+        $history = $query->orderBy('created_at', 'asc')->get();
+        
+        // İlk kayıt yoksa, ilanın ilk fiyatını ekle
+        if ($history->isEmpty() && $ilan->fiyat) {
+            $history = collect([[
+                'id' => 0,
+                'ilan_id' => $ilan->id,
+                'old_price' => $ilan->fiyat,
+                'new_price' => $ilan->fiyat,
+                'currency' => $ilan->para_birimi ?? 'TRY',
+                'change_reason' => 'initial',
+                'changed_by' => null,
+                'created_at' => $ilan->created_at
+            ]]);
+        } else if ($history->isNotEmpty() && $history->first()->old_price === null) {
+            // İlk kayıt old_price null ise, ilanın başlangıç fiyatını ekle
+            $firstRecord = $history->first();
+            $history->prepend([
+                'id' => 0,
+                'ilan_id' => $ilan->id,
+                'old_price' => $firstRecord->new_price,
+                'new_price' => $firstRecord->new_price,
+                'currency' => $firstRecord->currency ?? 'TRY',
+                'change_reason' => 'initial',
+                'changed_by' => null,
+                'created_at' => $ilan->created_at ?? $firstRecord->created_at
+            ]);
+        }
 
         return response()->json([
             'success' => true,
-            'data' => $history
+            'data' => $history->values()
         ]);
     }
 
     /**
      * Save draft listing
+     * Context7: Taslak kaydetme
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function saveDraft(Request $request)
     {
@@ -1562,6 +1665,10 @@ class IlanController extends AdminController
 
     /**
      * Context7 uyumlu auto-save listing data
+     * Context7: Otomatik kayıt endpoint
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function autoSave(Request $request)
     {
@@ -1596,7 +1703,8 @@ class IlanController extends AdminController
             ]);
 
         } catch (\Exception $e) {
-            \Log::error('Context7 AutoSave Error: ' . $e->getMessage(), [
+            // ✅ STANDARDIZED: Using LogService
+            LogService::error('Context7 AutoSave Error', [
                 'user_id' => Auth::id(),
                 'request_data' => $request->all()
             ]);
@@ -1611,6 +1719,10 @@ class IlanController extends AdminController
 
     /**
      * Get user's listings (ilanlarim)
+     * Context7: Kullanıcının ilanları
+     *
+     * @param Request $request
+     * @return \Illuminate\View\View
      */
     public function ilanlarim(Request $request)
     {
@@ -1625,6 +1737,11 @@ class IlanController extends AdminController
 
     /**
      * Refresh listing rate/stats
+     * Context7: İlan istatistiklerini yenile
+     *
+     * @param Request $request
+     * @param Ilan $ilan
+     * @return \Illuminate\Http\JsonResponse
      */
     public function refreshRate(Request $request, Ilan $ilan)
     {
@@ -1653,139 +1770,17 @@ class IlanController extends AdminController
         }
     }
 
-    /**
-     * Get type color for the listing
-     */
-    private function getTypeColor($ilan)
-    {
-        if (!$ilan->kategori) {
-            return 'bg-gray-100 text-gray-800';
-        }
-
-        $categoryName = strtolower($ilan->kategori->ad ?? '');
-
-        $colorMap = [
-            'satılık' => 'bg-green-100 text-green-800',
-            'kiralık' => 'bg-blue-100 text-blue-800',
-            'daire' => 'bg-purple-100 text-purple-800',
-            'villa' => 'bg-orange-100 text-orange-800',
-            'arsa' => 'bg-yellow-100 text-yellow-800',
-            'ofis' => 'bg-gray-100 text-gray-800',
-            'dükkan' => 'bg-red-100 text-red-800',
-        ];
-
-        foreach ($colorMap as $key => $color) {
-            if (strpos($categoryName, $key) !== false) {
-                return $color;
-            }
-        }
-
-        return 'bg-gray-100 text-gray-800';
-    }
+    // ✅ REFACTORED: Type helper methods moved to IlanTypeHelper service
+    // See: App\Services\Ilan\IlanTypeHelper
 
     /**
-     * Get type icon for the listing
-     */
-    private function getTypeIcon($ilan)
-    {
-        if (!$ilan->kategori) {
-            return 'fas fa-building';
-        }
-
-        $categoryName = strtolower($ilan->kategori->ad ?? '');
-
-        $iconMap = [
-            'daire' => 'fas fa-home',
-            'villa' => 'fas fa-house-user',
-            'arsa' => 'fas fa-mountain',
-            'ofis' => 'fas fa-building',
-            'dükkan' => 'fas fa-store',
-            'depo' => 'fas fa-warehouse',
-            'fabrika' => 'fas fa-industry',
-        ];
-
-        foreach ($iconMap as $key => $icon) {
-            if (strpos($categoryName, $key) !== false) {
-                return $icon;
-            }
-        }
-
-        return 'fas fa-building';
-    }
-
-    /**
-     * Get type summary for the listing
-     */
-    private function getTypeSummary($ilan)
-    {
-        return [
-            'type' => optional($ilan->kategori)->ad ?? 'Kategorisiz',
-            'price' => number_format($ilan->fiyat) . ' ' . $ilan->para_birimi,
-            'area' => ($ilan->net_metrekare ? $ilan->net_metrekare . ' m²' : 'Belirtilmemiş'),
-            'category' => optional($ilan->kategori)->ad ?? 'Yok',
-            'status' => ucfirst($ilan->status),
-            'special' => $this->getSpecialBadge($ilan)
-        ];
-    }
-
-    /**
-     * Get type specific fields for the listing
-     */
-    private function getTypeSpecificFields($ilan)
-    {
-        $fields = [];
-
-        // Base fields that all properties have
-        $fields['genel'] = [
-            'title' => 'Genel Bilgiler',
-            'icon' => 'fas fa-info-circle',
-            'color' => 'blue',
-            'fields' => [
-                'fiyat' => [
-                    'label' => 'Fiyat',
-                    'value' => number_format($ilan->fiyat) . ' ' . $ilan->para_birimi,
-                    'type' => 'price'
-                ],
-                'status' => [
-                    'label' => 'Durum',
-                    'value' => $ilan->status,
-                    'type' => 'status'
-                ],
-                'ilan_tarihi' => [
-                    'label' => 'İlan Tarihi',
-                    'value' => $ilan->created_at ? $ilan->created_at->format('d.m.Y') : 'Belirtilmemiş',
-                    'type' => 'date'
-                ]
-            ]
-        ];
-
-        return $fields;
-    }
-
-    /**
-     * Get special badge for the listing
-     */
-    private function getSpecialBadge($ilan)
-    {
-        if ($ilan->is_published && $ilan->enabled) {
-            return 'Yayında';
-        }
-
-        if ($ilan->status === 'Aktif') {
-            return 'Hazır';
-        }
-
-        if ($ilan->created_at && $ilan->created_at->isToday()) {
-            return 'Yeni İlan';
-        }
-
-        return null;
-    }
-
-    /**
-     * Get features by category (API endpoint)
+     * Get features by category
+     * Context7: Kategoriye göre özellikler
      * GET /admin/ilanlar/api/features/category/{categoryId}
      * GET /api/admin/features?category_id={categoryId}
+     *
+     * @param int|null $categoryId
+     * @return \Illuminate\Http\JsonResponse
      */
     public function getFeaturesByCategory($categoryId = null)
     {
@@ -1801,88 +1796,15 @@ class IlanController extends AdminController
                 ], 400);
             }
 
-            $category = IlanKategori::findOrFail($categoryId);
+            // ✅ REFACTORED: Use IlanFeatureService
+            $featureService = app(IlanFeatureService::class);
             $yayinTipi = request()->get('yayin_tipi');
-
-            $featureCategories = \App\Models\FeatureCategory::with(['features' => function($query) use ($category, $yayinTipi) {
-                $query->where('status', true)
-                      ->where(function($q) use ($category) {
-                          $q->where('applies_to', 'all')
-                            ->orWhere('applies_to', $category->slug)
-                            ->orWhere('applies_to', 'like', "%,{$category->slug},%")
-                            ->orWhere('applies_to', 'like', "{$category->slug},%")
-                            ->orWhere('applies_to', 'like', "%,{$category->slug}");
-                      });
-
-                if ($yayinTipi) {
-                    $yayinTipiLower = strtolower($yayinTipi);
-                    $query->where(function($q) use ($category, $yayinTipiLower) {
-                        $q->where('applies_to', 'all')
-                          ->orWhere('applies_to', 'like', "%{$category->slug}|{$yayinTipiLower}")
-                          ->orWhere('applies_to', 'like', "{$category->slug}|{$yayinTipiLower}%")
-                          ->orWhere('applies_to', 'like', "%|{$yayinTipiLower}")
-                          ->orWhere('applies_to', 'like', "{$yayinTipiLower}|%")
-                          ->orWhere('applies_to', $yayinTipiLower);
-                    });
-                }
-
-                $query->orderBy('order');
-            }])
-            ->whereHas('features', function($query) use ($category, $yayinTipi) {
-                $query->where('status', true)
-                      ->where(function($q) use ($category) {
-                          $q->where('applies_to', 'all')
-                            ->orWhere('applies_to', $category->slug)
-                            ->orWhere('applies_to', 'like', "%,{$category->slug},%")
-                            ->orWhere('applies_to', 'like', "{$category->slug},%")
-                            ->orWhere('applies_to', 'like', "%,{$category->slug}");
-                      });
-
-                if ($yayinTipi) {
-                    $yayinTipiLower = strtolower($yayinTipi);
-                    $query->where(function($q) use ($category, $yayinTipiLower) {
-                        $q->where('applies_to', 'all')
-                          ->orWhere('applies_to', 'like', "%{$category->slug}|{$yayinTipiLower}")
-                          ->orWhere('applies_to', 'like', "{$category->slug}|{$yayinTipiLower}%")
-                          ->orWhere('applies_to', 'like', "%|{$yayinTipiLower}")
-                          ->orWhere('applies_to', 'like', "{$yayinTipiLower}|%")
-                          ->orWhere('applies_to', $yayinTipiLower);
-                    });
-                }
-            })
-            ->where('status', true)
-            ->orderBy('order')
-            ->get();
-
-            $transformed = $featureCategories->map(function($cat) {
-                return [
-                    'id' => $cat->id,
-                    'name' => $cat->name,
-                    'slug' => $cat->slug,
-                    'icon' => $cat->icon ?? 'fas fa-star',
-                    'features' => $cat->features->map(function($feature) {
-                        return [
-                            'id' => $feature->id,
-                            'name' => $feature->name,
-                            'slug' => $feature->slug,
-                            'type' => $feature->type ?? 'boolean',
-                            'options' => $feature->options ?? null,
-                            'unit' => $feature->unit ?? null,
-                            'required' => $feature->required ?? false,
-                            'description' => $feature->description ?? null,
-                        ];
-                    })
-                ];
-            });
+            $result = $featureService->getFeaturesByCategory($categoryId, $yayinTipi);
 
             return response()->json([
                 'success' => true,
-                'data' => $transformed,
-                'debug' => [
-                    'category_slug' => $category->slug,
-                    'yayin_tipi' => $yayinTipi,
-                    'total_features' => $transformed->sum(fn($cat) => count($cat['features']))
-                ]
+                'data' => $result['feature_categories'],
+                'debug' => $result['metadata']
             ]);
 
         } catch (\Exception $e) {
@@ -1894,10 +1816,12 @@ class IlanController extends AdminController
     }
 
     /**
-     * Bulk Actions for İlanlar
+     * Bulk action for listings
      * Context7: Toplu işlemler (activate, deactivate, delete, export, assign)
-     * 
      * Yalıhan Bekçi: Advanced bulk operations implementation
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function bulkAction(Request $request)
     {
@@ -1906,7 +1830,7 @@ class IlanController extends AdminController
                 'action' => 'required|string|in:activate,deactivate,delete,export,assign_danisman,add_tag,remove_tag',
                 'ids' => 'required|array|min:1',
                 'ids.*' => 'integer|exists:ilanlar,id',
-                'value' => 'nullable', // For assign_danisman, add_tag operations
+                'value' => 'nullable',
             ]);
 
             if ($validator->fails()) {
@@ -1917,121 +1841,25 @@ class IlanController extends AdminController
                 ], 422);
             }
 
-            $action = $request->input('action');
-            $ids = $request->input('ids');
-            $value = $request->input('value');
+            // Export işlemi ayrı tutulur
+            if ($request->action === 'export') {
+                $ilanlar = Ilan::with(['kategori', 'ilanSahibi', 'danisman'])
+                    ->whereIn('id', $request->ids)
+                    ->get();
 
-            DB::beginTransaction();
-
-            $affected = 0;
-
-            switch ($action) {
-                case 'activate':
-                    $affected = Ilan::whereIn('id', $ids)->update([
-                        'status' => 'active',
-                        'is_published' => true,
-                        'updated_at' => now()
-                    ]);
-                    $message = "{$affected} ilan aktif yapıldı.";
-                    break;
-
-                case 'deactivate':
-                    $affected = Ilan::whereIn('id', $ids)->update([
-                        'status' => 'inactive',
-                        'is_published' => false,
-                        'updated_at' => now()
-                    ]);
-                    $message = "{$affected} ilan pasif yapıldı.";
-                    break;
-
-                case 'delete':
-                    $affected = Ilan::whereIn('id', $ids)->delete();
-                    $message = "{$affected} ilan silindi.";
-                    break;
-
-                case 'export':
-                    // Export to Excel/PDF
-                    $ilanlar = Ilan::with(['kategori', 'ilanSahibi', 'danisman'])
-                        ->whereIn('id', $ids)
-                        ->get();
-                    
-                    // Return Excel export
-                    DB::commit();
-                    return Excel::download(
-                        new \App\Exports\IlanlarExport($ilanlar),
-                        'ilanlar_' . date('Y-m-d_His') . '.xlsx'
-                    );
-
-                case 'assign_danisman':
-                    if (!$value || !is_numeric($value)) {
-                        return response()->json([
-                            'success' => false,
-                            'message' => 'Danışman seçilmedi.'
-                        ], 422);
-                    }
-
-                    $affected = Ilan::whereIn('id', $ids)->update([
-                        'danisman_id' => $value,
-                        'updated_at' => now()
-                    ]);
-                    $message = "{$affected} ilana danışman atandı.";
-                    break;
-
-                case 'add_tag':
-                    if (!$value || !is_numeric($value)) {
-                        return response()->json([
-                            'success' => false,
-                            'message' => 'Etiket seçilmedi.'
-                        ], 422);
-                    }
-
-                    foreach ($ids as $ilanId) {
-                        $ilan = Ilan::find($ilanId);
-                        if ($ilan) {
-                            $ilan->etiketler()->syncWithoutDetaching([$value]);
-                            $affected++;
-                        }
-                    }
-                    $message = "{$affected} ilana etiket eklendi.";
-                    break;
-
-                case 'remove_tag':
-                    if (!$value || !is_numeric($value)) {
-                        return response()->json([
-                            'success' => false,
-                            'message' => 'Etiket seçilmedi.'
-                        ], 422);
-                    }
-
-                    foreach ($ids as $ilanId) {
-                        $ilan = Ilan::find($ilanId);
-                        if ($ilan) {
-                            $ilan->etiketler()->detach([$value]);
-                            $affected++;
-                        }
-                    }
-                    $message = "{$affected} ilandan etiket kaldırıldı.";
-                    break;
-
-                default:
-                    return response()->json([
-                        'success' => false,
-                        'message' => 'Geçersiz işlem.'
-                    ], 400);
+                return Excel::download(
+                    new \App\Exports\IlanlarExport($ilanlar),
+                    'ilanlar_' . date('Y-m-d_His') . '.xlsx'
+                );
             }
 
-            DB::commit();
-
-            return response()->json([
-                'success' => true,
-                'message' => $message,
-                'affected' => $affected
-            ]);
+            $service = app(IlanBulkService::class);
+            $result = $service->bulkAction($request->action, $request->ids, $request->value);
+            $status = $result['success'] ? 200 : 400;
+            return response()->json($result, $status);
 
         } catch (\Exception $e) {
-            DB::rollBack();
             \Log::error('Bulk action error: ' . $e->getMessage());
-            
             return response()->json([
                 'success' => false,
                 'message' => 'İşlem sırasında hata oluştu: ' . $e->getMessage()

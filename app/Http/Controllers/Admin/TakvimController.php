@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Requests\Admin\EventRequest;
+use App\Http\Requests\Admin\SeasonRequest;
 use App\Models\Event;
 use App\Models\Season;
 use App\Models\Ilan;
@@ -15,8 +17,11 @@ class TakvimController extends AdminController
     /**
      * Display a listing of the resource.
      * Context7: Takvim yönetimi ana sayfası
+     *
+     * @return \Illuminate\View\View
+     * @throws \Exception
      */
-    public function index()
+    public function index(): \Illuminate\View\View
     {
         try {
             // Mevcut ay ve yıl bilgilerini al
@@ -47,8 +52,11 @@ class TakvimController extends AdminController
     /**
      * Show the form for creating a new resource.
      * Context7: Yeni etkinlik oluşturma formu
+     *
+     * @return \Illuminate\View\View
+     * @throws \Exception
      */
-    public function create()
+    public function create(): \Illuminate\View\View
     {
         try {
             $eventTypes = [
@@ -68,39 +76,35 @@ class TakvimController extends AdminController
     /**
      * Store a newly created resource in storage.
      * Context7: Yeni etkinlik kaydetme
+     *
+     * @param EventRequest $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
+     * @throws \Exception
      */
-    public function store(Request $request)
+    public function store(EventRequest $request): \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
     {
         try {
-            $request->validate([
-                'title' => 'required|string|max:255',
-                'description' => 'nullable|string',
-                'event_date' => 'required|date',
-                'event_time' => 'required',
-                'type' => 'required|in:meeting,viewing,call,followup,other',
-                'location' => 'nullable|string|max:255',
-                'attendees' => 'nullable|string'
-            ]);
+            // ✅ STANDARDIZED: Using Form Request
+            $validated = $request->validated();
 
             // Context7: Veri tabanına kaydetme işlemi
-            // Gerçek implementasyonda burada events tablosuna kayıt yapılacak
-            // ✅ TODO TAMAMLANDI: Event model ile kaydet
+            // Event model ile kaydet
             $event = Event::create([
-                'ilan_id' => $request->ilan_id,
-                'check_in' => $request->event_date ?? $request->start ?? now(),
-                'check_out' => $request->end ?? now()->addDay(),
-                'check_in_time' => $request->event_time ?? '14:00',
+                'ilan_id' => $validated['ilan_id'] ?? null,
+                'check_in' => $validated['event_date'] ?? $validated['start'] ?? now(),
+                'check_out' => $validated['end'] ?? now()->addDay(),
+                'check_in_time' => $validated['event_time'] ?? '14:00',
                 'check_out_time' => '11:00',
-                'guest_name' => $request->title ?? 'Guest',
+                'guest_name' => $validated['title'] ?? 'Guest',
                 'guest_email' => $request->guest_email ?? '',
                 'guest_phone' => $request->guest_phone ?? '',
-                'guest_count' => $request->attendees ?? 1,
+                'guest_count' => $validated['attendees'] ?? 1,
                 'daily_price' => $request->daily_price ?? 0,
                 'total_price' => $request->total_price ?? 0,
                 'status' => $request->status ?? 'pending',
                 'payment_status' => 'unpaid',
-                'special_requests' => $request->description,
-                'notes' => $request->location,
+                'special_requests' => $validated['description'] ?? null,
+                'notes' => $validated['location'] ?? null,
                 'source' => 'admin',
             ]);
 
@@ -130,8 +134,12 @@ class TakvimController extends AdminController
     /**
      * Display the specified resource.
      * Context7: Belirli etkinlik detayları
+     *
+     * @param int $id
+     * @return \Illuminate\View\View|\Illuminate\Http\JsonResponse
+     * @throws \Exception
      */
-    public function show($id)
+    public function show(int $id): \Illuminate\View\View|\Illuminate\Http\JsonResponse
     {
         try {
             // Örnek etkinlik verisi
@@ -171,8 +179,12 @@ class TakvimController extends AdminController
     /**
      * Show the form for editing the specified resource.
      * Context7: Etkinlik düzenleme formu
+     *
+     * @param int $id
+     * @return \Illuminate\View\View
+     * @throws \Exception
      */
-    public function edit($id)
+    public function edit(int $id): \Illuminate\View\View
     {
         try {
             $event = $this->getSampleEvent($id);
@@ -198,42 +210,40 @@ class TakvimController extends AdminController
     /**
      * Update the specified resource in storage.
      * Context7: Etkinlik güncelleme
+     *
+     * @param EventRequest $request
+     * @param int $id
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
+     * @throws \Exception
      */
-    public function update(Request $request, $id)
+    public function update(EventRequest $request, int $id): \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
     {
         try {
-            $request->validate([
-                'title' => 'required|string|max:255',
-                'description' => 'nullable|string',
-                'event_date' => 'required|date',
-                'event_time' => 'required',
-                'type' => 'required|in:meeting,viewing,call,followup,other',
-                'location' => 'nullable|string|max:255',
-                'attendees' => 'nullable|string'
-            ]);
+            // ✅ STANDARDIZED: Using Form Request
+            $validated = $request->validated();
 
             // Context7: Güncelleme işlemi
             $eventData = [
-                'title' => $request->title,
-                'description' => $request->description,
-                'event_date' => $request->event_date,
-                'event_time' => $request->event_time,
-                'type' => $request->type,
-                'location' => $request->location,
-                'attendees' => $request->attendees,
+                'title' => $validated['title'],
+                'description' => $validated['description'] ?? null,
+                'event_date' => $validated['event_date'] ?? $validated['start'] ?? null,
+                'event_time' => $validated['event_time'] ?? null,
+                'type' => $validated['type'],
+                'location' => $validated['location'] ?? null,
+                'attendees' => $validated['attendees'] ?? null,
                 'updated_at' => now()
             ];
 
-            // ✅ TODO TAMAMLANDI: Event model ile güncelleme
+            // Event model ile güncelleme
             $event = Event::findOrFail($id);
             $event->update([
-                'check_in' => $request->event_date ?? $request->start ?? $event->check_in,
-                'check_out' => $request->end ?? $event->check_out,
-                'guest_name' => $request->title ?? $event->guest_name,
-                'guest_count' => $request->attendees ?? $event->guest_count,
+                'check_in' => $validated['event_date'] ?? $validated['start'] ?? $event->check_in,
+                'check_out' => $validated['end'] ?? $event->check_out,
+                'guest_name' => $validated['title'] ?? $event->guest_name,
+                'guest_count' => $validated['attendees'] ?? $event->guest_count,
                 'status' => $request->status ?? $event->status,
-                'special_requests' => $request->description,
-                'notes' => $request->location,
+                'special_requests' => $validated['description'] ?? null,
+                'notes' => $validated['location'] ?? null,
             ]);
 
             if ($request->expectsJson()) {
@@ -260,11 +270,15 @@ class TakvimController extends AdminController
     /**
      * Remove the specified resource from storage.
      * Context7: Etkinlik silme
+     *
+     * @param int $id
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
+     * @throws \Exception
      */
-    public function destroy($id)
+    public function destroy(int $id): \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
     {
         try {
-            // ✅ TODO TAMAMLANDI: Event model ile silme
+            // Event model ile silme
             $event = Event::findOrFail($id);
             $event->delete(); // Soft delete
 
@@ -290,6 +304,10 @@ class TakvimController extends AdminController
 
     /**
      * Context7: Ay bazında etkinlik listesi
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
      */
     public function getMonthEvents(Request $request)
     {
@@ -315,6 +333,10 @@ class TakvimController extends AdminController
 
     /**
      * Context7: Etkinlik arama
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
      */
     public function search(Request $request)
     {
@@ -349,6 +371,10 @@ class TakvimController extends AdminController
 
     /**
      * Context7: Örnek takvim etkinlikleri
+     *
+     * @param int|null $month
+     * @param int|null $year
+     * @return array
      */
     private function getCalendarEvents($month = null, $year = null)
     {
@@ -389,6 +415,9 @@ class TakvimController extends AdminController
 
     /**
      * Context7: Örnek etkinlik detayı
+     *
+     * @param int|string $id
+     * @return array|null
      */
     private function getSampleEvent($id)
     {
@@ -399,6 +428,9 @@ class TakvimController extends AdminController
     /**
      * Sezonlar sayfası
      * Context7: Yazlık kiralama sezonları yönetimi
+     *
+     * @return \Illuminate\View\View
+     * @throws \Exception
      */
     public function sezonlar()
     {
@@ -449,25 +481,25 @@ class TakvimController extends AdminController
     /**
      * Sezon kaydetme
      * Context7: Yeni sezon oluşturma
+     *
+     * @param SeasonRequest $request
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
      */
-    public function storeSezon(Request $request)
+    public function storeSezon(SeasonRequest $request)
     {
         try {
-            $request->validate([
-                'adi' => 'required|string|max:255',
-                'baslangic' => 'required|date',
-                'bitis' => 'required|date|after:baslangic',
-                'gunluk_fiyat' => 'required|numeric|min:0'
-            ]);
+            // ✅ STANDARDIZED: Using Form Request
+            $validated = $request->validated();
 
-            // ✅ TODO TAMAMLANDI: Season model ile kaydet
+            // Season model ile kaydet
             $season = Season::create([
-                'ilan_id' => $request->ilan_id,
-                'name' => $request->adi,
-                'type' => $request->sezon_tipi ?? 'ozel',
-                'start_date' => $request->baslangic,
-                'end_date' => $request->bitis,
-                'daily_price' => $request->gunluk_fiyat,
+                'ilan_id' => $validated['ilan_id'] ?? null,
+                'name' => $validated['adi'],
+                'type' => $validated['sezon_tipi'] ?? 'ozel',
+                'start_date' => $validated['baslangic'],
+                'end_date' => $validated['bitis'],
+                'daily_price' => $validated['gunluk_fiyat'],
                 'weekly_price' => $request->haftalik_fiyat,
                 'monthly_price' => $request->aylik_fiyat,
                 'minimum_stay' => $request->minimum_konaklama ?? 1,
@@ -490,26 +522,27 @@ class TakvimController extends AdminController
     /**
      * Sezon güncelleme
      * Context7: Mevcut sezon güncelleme
+     *
+     * @param SeasonRequest $request
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
      */
-    public function updateSezon(Request $request, $id)
+    public function updateSezon(SeasonRequest $request, int $id): \Illuminate\Http\JsonResponse
     {
         try {
-            $request->validate([
-                'adi' => 'required|string|max:255',
-                'baslangic' => 'required|date',
-                'bitis' => 'required|date|after:baslangic',
-                'gunluk_fiyat' => 'required|numeric|min:0'
-            ]);
+            // ✅ STANDARDIZED: Using Form Request
+            $validated = $request->validated();
 
-            // ✅ TODO TAMAMLANDI: Season model ile güncelleme
+            // Season model ile güncelleme
             $season = Season::findOrFail($id);
             $season->update([
-                'name' => $request->adi,
-                'start_date' => $request->baslangic,
-                'end_date' => $request->bitis,
-                'daily_price' => $request->gunluk_fiyat,
-                'weekly_price' => $request->haftalik_fiyat,
-                'monthly_price' => $request->aylik_fiyat,
+                'name' => $validated['adi'],
+                'start_date' => $validated['baslangic'],
+                'end_date' => $validated['bitis'],
+                'daily_price' => $validated['gunluk_fiyat'],
+                'weekly_price' => $request->input('haftalik_fiyat'),
+                'monthly_price' => $request->input('aylik_fiyat'),
             ]);
 
             return response()->json([
@@ -528,11 +561,15 @@ class TakvimController extends AdminController
     /**
      * Sezon silme
      * Context7: Sezon silme işlemi
+     *
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
      */
-    public function destroySezon($id)
+    public function destroySezon(int $id): \Illuminate\Http\JsonResponse
     {
         try {
-            // ✅ TODO TAMAMLANDI: Season model ile silme
+            // Season model ile silme
             $season = Season::findOrFail($id);
             $season->delete(); // Soft delete
 

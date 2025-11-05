@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use App\Services\Logging\LogService;
 
 class ListingSearchController extends Controller
 {
@@ -111,7 +112,9 @@ class ListingSearchController extends Controller
                 'data' => $formattedResults,
             ]);
         } catch (\Throwable $e) {
-            Log::error('ListingSearchController@search error: ' . $e->getMessage(), [
+            // ✅ STANDARDIZED: Using LogService
+            LogService::api('/api/search', [], null, null);
+            LogService::error('ListingSearchController@search error', [
                 'q' => $q,
                 'type' => $type,
             ]);
@@ -157,7 +160,9 @@ class ListingSearchController extends Controller
                 'data' => $districts
             ]);
         } catch (\Throwable $e) {
-            Log::error('ListingSearchController@getDistricts error: ' . $e->getMessage(), [
+            // ✅ STANDARDIZED: Using LogService
+            LogService::api('/api/districts', [], null, null);
+            LogService::error('ListingSearchController@getDistricts error', [
                 'province_id' => $provinceId
             ]);
             return response()->json([
@@ -180,7 +185,9 @@ class ListingSearchController extends Controller
                 'data' => $neighborhoods
             ]);
         } catch (\Throwable $e) {
-            Log::error('ListingSearchController@getNeighborhoods error: ' . $e->getMessage(), [
+            // ✅ STANDARDIZED: Using LogService
+            LogService::api('/api/neighborhoods', [], null, null);
+            LogService::error('ListingSearchController@getNeighborhoods error', [
                 'district_id' => $districtId
             ]);
             return response()->json([

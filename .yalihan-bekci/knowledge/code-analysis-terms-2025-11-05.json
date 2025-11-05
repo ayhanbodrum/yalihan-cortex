@@ -1,0 +1,288 @@
+{
+  "timestamp": "2025-11-05T00:00:00Z",
+  "topic": "Kod Kontrolü Terimleri ve Araçları",
+  "category": "code-quality",
+  "priority": "HIGH",
+  "status": "ACTIVE",
+  
+  "code_analysis_terms": {
+    "1_lint_control": {
+      "name": "Lint Kontrolü",
+      "turkish_name": "Lint Kontrolü",
+      "description": "Syntax hataları, type hataları, coding standards kontrolü",
+      "what_it_finds": [
+        "Syntax hataları",
+        "Type hataları",
+        "Coding standards ihlalleri",
+        "Import eksiklikleri"
+      ],
+      "what_it_cannot_find": [
+        "Yarım kalmış kodlar",
+        "Kullanılmayan fonksiyonlar",
+        "Dead code",
+        "Orphaned code"
+      ],
+      "tools": ["PHPStan", "PHP CS Fixer", "Laravel Pint", "IDE Linter"],
+      "when_to_use": "Her kod değişikliğinden sonra, commit öncesi"
+    },
+    
+    "2_dead_code_analysis": {
+      "name": "Dead Code Analysis",
+      "turkish_name": "Kullanılmayan Kod Analizi",
+      "description": "Hiçbir yerden çağrılmayan, kullanılmayan kodları bulur",
+      "what_it_finds": [
+        "Kullanılmayan fonksiyonlar",
+        "Kullanılmayan sınıflar",
+        "Hiçbir yerden çağrılmayan metodlar",
+        "Kullanılmayan import'lar",
+        "Eski, artık kullanılmayan kodlar"
+      ],
+      "tools": ["PHPStan (level 5+)", "Psalm", "PHP Dead Code Detector"],
+      "when_to_use": "Kod temizliği, refactoring öncesi, büyük değişikliklerden sonra"
+    },
+    
+    "3_orphaned_code": {
+      "name": "Orphaned Code",
+      "turkish_name": "Yetim Kod",
+      "description": "Hiçbir yerden çağrılmayan, route'a bağlı olmayan kodlar",
+      "what_it_finds": [
+        "Route'a bağlı olmayan controller'lar",
+        "Hiçbir controller'dan çağrılmayan service'ler",
+        "Kullanılmayan model metodları",
+        "Bağımlılığı olmayan sınıflar"
+      ],
+      "tools": ["Custom Script", "PHPStan", "Static Analysis"],
+      "when_to_use": "Kod temizliği, modül kaldırma, büyük refactoring"
+    },
+    
+    "4_incomplete_implementation": {
+      "name": "Incomplete Implementation",
+      "turkish_name": "Yarım Kalmış Kod",
+      "description": "TODO/FIXME yorumları, boş metodlar, stub kodlar",
+      "what_it_finds": [
+        "TODO/FIXME/HACK/XXX yorumları",
+        "Boş metodlar (stub)",
+        "Yorum satırına alınmış kod",
+        "return null; ile biten metodlar",
+        "Eksik implementasyonlar"
+      ],
+      "tools": ["Custom Script", "Grep", "Code Review"],
+      "when_to_use": "Sprint planlama, kod review, refactoring öncesi"
+    },
+    
+    "5_disabled_code": {
+      "name": "Disabled Code",
+      "turkish_name": "Devre Dışı Kod",
+      "description": "TEMPORARILY DISABLED, yorum satırına alınmış route'lar",
+      "what_it_finds": [
+        "Devre dışı bırakılmış route'lar",
+        "TEMPORARILY DISABLED kodlar",
+        "Yorum satırına alınmış kod blokları",
+        "Feature flag'ler ile kapatılmış kodlar"
+      ],
+      "tools": ["Custom Script", "Grep", "Code Review"],
+      "when_to_use": "Kod temizliği, feature removal, tech debt temizliği"
+    },
+    
+    "6_code_coverage": {
+      "name": "Code Coverage",
+      "turkish_name": "Kod Kapsamı",
+      "description": "Test edilmemiş kod satırları, çalışma zamanında çalışmayan kodlar",
+      "what_it_finds": [
+        "Test edilmemiş kod satırları",
+        "Çalışma zamanında çalışmayan kodlar",
+        "Unreachable code",
+        "Test coverage eksiklikleri"
+      ],
+      "tools": ["PHPUnit Coverage", "Xdebug", "Pest Coverage"],
+      "when_to_use": "Test yazımı, test stratejisi, quality assurance"
+    },
+    
+    "7_dependency_analysis": {
+      "name": "Dependency Analysis",
+      "turkish_name": "Bağımlılık Analizi",
+      "description": "Kullanılmayan bağımlılıklar, eksik bağımlılıklar, çakışan bağımlılıklar",
+      "what_it_finds": [
+        "Kullanılmayan composer paketleri",
+        "Eksik bağımlılıklar",
+        "Çakışan bağımlılıklar",
+        "Circular dependencies",
+        "Unused imports"
+      ],
+      "tools": ["Composer", "PHPStan", "PHP Depend"],
+      "when_to_use": "Dependency cleanup, package management, performance optimization"
+    },
+    
+    "8_security_analysis": {
+      "name": "Security Analysis",
+      "turkish_name": "Güvenlik Analizi",
+      "description": "SQL injection, XSS, CSRF, authentication, authorization hataları",
+      "what_it_finds": [
+        "SQL injection riskleri",
+        "XSS açıkları",
+        "CSRF koruması eksiklikleri",
+        "Authentication/Authorization hataları",
+        "Sensitive data exposure"
+      ],
+      "tools": ["PHPStan (security rules)", "Larastan", "Custom Security Scanner"],
+      "when_to_use": "Security audit, pre-deployment, security review"
+    },
+    
+    "9_performance_analysis": {
+      "name": "Performance Analysis",
+      "turkish_name": "Performans Analizi",
+      "description": "N+1 query problemleri, slow queries, memory leaks, inefficient code",
+      "what_it_finds": [
+        "N+1 query problemleri",
+        "Slow database queries",
+        "Memory leaks",
+        "Inefficient loops",
+        "Unoptimized queries"
+      ],
+      "tools": ["Laravel Debugbar", "Telescope", "Blackfire", "Xdebug Profiler"],
+      "when_to_use": "Performance optimization, scalability planning, bottleneck identification"
+    },
+    
+    "10_code_duplication": {
+      "name": "Code Duplication",
+      "turkish_name": "Kod Tekrarı",
+      "description": "Aynı kod bloklarının tekrarı, DRY prensibi ihlalleri",
+      "what_it_finds": [
+        "Aynı kod bloklarının tekrarı",
+        "Duplicated functions",
+        "Copy-paste code",
+        "Similar code blocks"
+      ],
+      "tools": ["PHPCPD", "PHP Depend", "Custom Script"],
+      "when_to_use": "Code refactoring, maintainability improvement, DRY principle"
+    }
+  },
+  
+  "comprehensive_code_check": {
+    "name": "Kapsamlı Kod Kontrolü",
+    "turkish_name": "Kod Kontrolü",
+    "description": "Tüm kod kalitesi kontrollerini içeren kapsamlı analiz",
+    "when_user_says": [
+      "kod kontrolü yapalım",
+      "code review yap",
+      "kod analizi yap",
+      "code check yap",
+      "kod kontrolü",
+      "code control"
+    ],
+    "steps": [
+      "1. Lint Kontrolü (Syntax, Type hataları)",
+      "2. Dead Code Analysis (Kullanılmayan kodlar)",
+      "3. Orphaned Code Detection (Yetim kodlar)",
+      "4. Incomplete Implementation (TODO/FIXME)",
+      "5. Disabled Code (Devre dışı kodlar)",
+      "6. Code Coverage (Test kapsamı)",
+      "7. Dependency Analysis (Bağımlılıklar)",
+      "8. Security Analysis (Güvenlik)",
+      "9. Performance Analysis (N+1, slow queries)",
+      "10. Code Duplication (Kod tekrarı)"
+    ],
+    "output_format": {
+      "summary": "Özet rapor",
+      "detailed_report": "Detaylı rapor",
+      "json_report": "JSON formatında rapor",
+      "actionable_items": "Yapılabilir maddeler listesi"
+    }
+  },
+  
+  "additional_tools": {
+    "static_analysis": {
+      "phpstan": {
+        "description": "PHP Static Analysis Tool",
+        "levels": "0-9 (9 en katı)",
+        "recommended_level": 5,
+        "finds": ["Type errors", "Dead code", "Unused code"]
+      },
+      "psalm": {
+        "description": "PHP Static Analysis Tool (Psalm)",
+        "features": ["Type checking", "Dead code detection", "Security issues"]
+      }
+    },
+    "code_quality": {
+      "php_cs_fixer": {
+        "description": "PHP Code Style Fixer",
+        "finds": ["Coding standards violations"]
+      },
+      "laravel_pint": {
+        "description": "Laravel Code Style Fixer",
+        "finds": ["Laravel coding standards"]
+      }
+    },
+    "testing": {
+      "phpunit": {
+        "description": "PHP Unit Testing",
+        "coverage": true
+      },
+      "pest": {
+        "description": "PHP Testing Framework",
+        "coverage": true
+      }
+    },
+    "security": {
+      "larastan": {
+        "description": "Laravel-specific static analysis",
+        "finds": ["Laravel-specific issues", "Security vulnerabilities"]
+      },
+      "enlightn": {
+        "description": "Laravel Security & Performance Scanner",
+        "finds": ["Security issues", "Performance problems"]
+      }
+    }
+  },
+  
+  "recommended_workflow": {
+    "daily": [
+      "Lint Kontrolü (IDE otomatik)",
+      "Quick Dead Code Check (kullanılmayan import'lar)"
+    ],
+    "weekly": [
+      "TODO/FIXME Review",
+      "Disabled Code Check",
+      "Code Duplication Check"
+    ],
+    "before_deployment": [
+      "Full Lint Control",
+      "Security Analysis",
+      "Performance Analysis",
+      "Code Coverage Check"
+    ],
+    "refactoring": [
+      "Dead Code Analysis",
+      "Orphaned Code Detection",
+      "Dependency Analysis",
+      "Code Duplication"
+    ]
+  },
+  
+  "yalihan_bekci_commands": {
+    "code_check": {
+      "command": "kod kontrolü yapalım",
+      "description": "Kapsamlı kod kontrolü - tüm analizleri çalıştırır",
+      "actions": [
+        "Lint kontrolü",
+        "Dead code analysis",
+        "Orphaned code detection",
+        "Incomplete implementation check",
+        "Disabled code check",
+        "Security analysis",
+        "Performance analysis",
+        "Code duplication check"
+      ]
+    },
+    "quick_check": {
+      "command": "hızlı kod kontrolü",
+      "description": "Hızlı kod kontrolü - sadece kritik kontroller",
+      "actions": [
+        "Lint kontrolü",
+        "TODO/FIXME check",
+        "Security critical issues"
+      ]
+    }
+  }
+}
+

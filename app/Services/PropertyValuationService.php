@@ -4,8 +4,8 @@ namespace App\Services;
 
 use App\Models\Ilan;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
+use App\Services\Logging\LogService;
 
 class PropertyValuationService
 {
@@ -35,7 +35,12 @@ class PropertyValuationService
             ];
             
         } catch (\Exception $e) {
-            Log::error('Arsa değerleme hatası: ' . $e->getMessage());
+            // ✅ STANDARDIZED: Using LogService
+            LogService::error('Arsa değerleme hatası', [
+                'parcel_data' => $parcelData,
+                'market_data' => $marketData
+            ], $e);
+            
             return [
                 'success' => false,
                 'message' => 'Arsa değerleme hesaplanamadı: ' . $e->getMessage()
@@ -215,7 +220,11 @@ class PropertyValuationService
             ];
             
         } catch (\Exception $e) {
-            Log::error('Karşılaştırmalı analiz hatası: ' . $e->getMessage());
+            // ✅ STANDARDIZED: Using LogService
+            LogService::error('Karşılaştırmalı analiz hatası', [
+                'parcel_data' => $parcelData
+            ], $e);
+            
             return [
                 'success' => false,
                 'message' => 'Karşılaştırmalı analiz yapılamadı: ' . $e->getMessage()
@@ -279,7 +288,11 @@ class PropertyValuationService
             ];
             
         } catch (\Exception $e) {
-            Log::error('ROI hesaplama hatası: ' . $e->getMessage());
+            // ✅ STANDARDIZED: Using LogService
+            LogService::error('ROI hesaplama hatası', [
+                'investment_data' => $investmentData
+            ], $e);
+            
             return [
                 'success' => false,
                 'message' => 'ROI hesaplanamadı: ' . $e->getMessage()
@@ -327,7 +340,11 @@ class PropertyValuationService
             ];
             
         } catch (\Exception $e) {
-            Log::error('Vergi hesaplama hatası: ' . $e->getMessage());
+            // ✅ STANDARDIZED: Using LogService
+            LogService::error('Vergi hesaplama hatası', [
+                'property_data' => $propertyData
+            ], $e);
+            
             return [
                 'success' => false,
                 'message' => 'Vergi hesaplanamadı: ' . $e->getMessage()
@@ -386,7 +403,12 @@ class PropertyValuationService
             ];
             
         } catch (\Exception $e) {
-            Log::error('Market trend analizi hatası: ' . $e->getMessage());
+            // ✅ STANDARDIZED: Using LogService
+            LogService::error('Market trend analizi hatası', [
+                'location' => $location,
+                'period' => $period
+            ], $e);
+            
             return [
                 'success' => false,
                 'message' => 'Market trend analizi yapılamadı: ' . $e->getMessage()
@@ -428,7 +450,11 @@ class PropertyValuationService
             ];
             
         } catch (\Exception $e) {
-            Log::error('Finansal rapor oluşturma hatası: ' . $e->getMessage());
+            // ✅ STANDARDIZED: Using LogService
+            LogService::error('Finansal rapor oluşturma hatası', [
+                'property_data' => $propertyData
+            ], $e);
+            
             return [
                 'success' => false,
                 'message' => 'Finansal rapor oluşturulamadı: ' . $e->getMessage()

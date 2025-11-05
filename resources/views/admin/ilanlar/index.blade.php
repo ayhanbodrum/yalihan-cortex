@@ -118,6 +118,18 @@
                 </div>
 
                 <div>
+                    <label class="block text-sm font-medium text-gray-900 dark:text-white mb-2">Kiralama Türü</label>
+                    <select name="kiralama_turu" class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 transition-all duration-200">
+                        <option value="">Tümü</option>
+                        <option value="gunluk" {{ request('kiralama_turu') == 'gunluk' ? 'selected' : '' }}>Günlük</option>
+                        <option value="haftalik" {{ request('kiralama_turu') == 'haftalik' ? 'selected' : '' }}>Haftalık</option>
+                        <option value="aylik" {{ request('kiralama_turu') == 'aylik' ? 'selected' : '' }}>Aylık</option>
+                        <option value="uzun_donem" {{ request('kiralama_turu') == 'uzun_donem' ? 'selected' : '' }}>Uzun Dönem</option>
+                        <option value="sezonluk" {{ request('kiralama_turu') == 'sezonluk' ? 'selected' : '' }}>Sezonluk</option>
+                    </select>
+                </div>
+
+                <div>
                     <label class="block text-sm font-medium text-gray-900 dark:text-white mb-2">Sıralama</label>
                     <select  name="sort" class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 transition-all duration-200">
                         <option value="created_desc" {{ request('sort') === 'created_desc' ? 'selected' : '' }}>En Yeni</option>
@@ -284,7 +296,24 @@
                                     </div>
                                 </td>
                                 <td class="px-6 py-4 text-sm font-medium text-gray-900 dark:text-white">
-                                    {{ number_format($ilan->fiyat ?? 0, 0, ',', '.') }} {{ $ilan->para_birimi ?? 'TL' }}
+                                    {{ number_format($ilan->fiyat ?? 0, 0, ',', '.') }} {{ $ilan->para_birimi ?? 'TRY' }}
+                                    @if ($ilan->kiralama_turu)
+                                        @switch($ilan->kiralama_turu)
+                                            @case('gunluk')
+                                                <span class="text-xs text-gray-600 dark:text-gray-400">/Gün</span>
+                                            @break
+                                            @case('haftalik')
+                                                <span class="text-xs text-gray-600 dark:text-gray-400">/Hafta</span>
+                                            @break
+                                            @case('aylik')
+                                            @case('uzun_donem')
+                                                <span class="text-xs text-gray-600 dark:text-gray-400">/Ay</span>
+                                            @break
+                                            @case('sezonluk')
+                                                <span class="text-xs text-gray-600 dark:text-gray-400">/Sezon</span>
+                                            @break
+                                        @endswitch
+                                    @endif
                                 </td>
                                 <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">
                                     @if($ilan->ilanSahibi)

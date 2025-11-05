@@ -307,14 +307,21 @@ class AIEmbedding extends Model
         foreach ($types as $type) {
             if (! class_exists($type)) {
                 $orphaned += static::where('embeddable_type', $type)->delete();
-
                 continue;
             }
 
             $embeddings = static::where('embeddable_type', $type)->get();
+            
+            if ($embeddings->isEmpty()) {
+                continue;
+            }
 
+            // ✅ OPTIMIZED: N+1 query önlendi - Tüm embeddable_id'leri tek query'de kontrol et
+            $embeddableIds = $embeddings->pluck('embeddable_id')->toArray();
+            $existingIds = $type::whereIn('id', $embeddableIds)->pluck('id')->toArray();
+            
             foreach ($embeddings as $embedding) {
-                if (! $type::find($embedding->embeddable_id)) {
+                if (! in_array($embedding->embeddable_id, $existingIds)) {
                     $embedding->delete();
                     $orphaned++;
                 }

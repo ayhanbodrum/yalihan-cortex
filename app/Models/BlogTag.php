@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Str;
+use App\Traits\HasActiveScope;
 
 class BlogTag extends Model
 {
-    use HasFactory;
+    use HasFactory, HasActiveScope;
 
     protected $fillable = [
         'name',
@@ -47,10 +48,7 @@ class BlogTag extends Model
     }
 
     // Scopes
-    public function scopeActive($query)
-    {
-        return $query->where('status', true);
-    }
+    // ✅ REFACTORED: scopeActive moved to HasActiveScope trait
 
     public function scopePopular($query, $limit = 10)
     {

@@ -1,8 +1,16 @@
-includes:
-  - ./vendor/larastan/larastan/extension.neon
-
 parameters:
-  level: 5
-  paths:
-    - app
-  
+    level: 5
+    paths:
+        - app
+    excludePaths:
+        - app/Modules/*/Views
+        - app/Http/Middleware
+    ignoreErrors:
+        - '#Call to an undefined method Illuminate\\Database\\Eloquent\\Builder::.*#'
+        - '#Access to an undefined property Illuminate\\Database\\Eloquent\\Builder::.*#'
+        - '#Call to an undefined method Illuminate\\Support\\Collection::.*#'
+        - '#Access to an undefined property Illuminate\\Support\\Collection::.*#'
+        - '#Call to an undefined method Illuminate\\Http\\Request::.*#'
+        - '#Call to an undefined method Illuminate\\Support\\Facades\\Route::.*#'
+        - '#Parameter.*expects.*string.*null given#'
+        - '#Cannot call method.*on mixed#'

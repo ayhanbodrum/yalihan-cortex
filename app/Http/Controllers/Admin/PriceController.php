@@ -2,19 +2,33 @@
 
 namespace App\Http\Controllers\Admin;
 
+/**
+ * @deprecated Bu controller'ın fonksiyonelliği IlanController içinde mevcuttur.
+ * Price route'ları: admin.ilanlar.price-history, admin.ilanlar.refresh-rate
+ * 
+ * Context7 Standard: C7-DEPRECATED-PRICE-2025-11-05
+ * Bu controller kullanılmıyor, IlanController içinde price metodları var.
+ */
+
+use App\Http\Requests\Admin\PriceRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use App\Services\Cache\CacheHelper;
+use App\Services\Response\ResponseService;
 
 class PriceController extends AdminController
 {
     /**
      * Display a listing of price records and analysis.
      * Context7: Fiyat yönetimi ve analiz dashboard
+     *
+     * @param Request $request
+     * @return \Illuminate\View\View|\Illuminate\Http\JsonResponse
      */
-    public function index(Request $request)
+    public function index(Request $request): \Illuminate\View\View|\Illuminate\Http\JsonResponse
     {
         try {
             $perPage = $request->get('per_page', 20);
@@ -42,22 +56,22 @@ class PriceController extends AdminController
 
             return view('admin.prices.index', compact('priceRecords', 'priceStats', 'priceAnalysis', 'filters'));
         } catch (\Exception $e) {
+            // ✅ STANDARDIZED: Using ResponseService
             if ($request->expectsJson()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Fiyat verileri yüklenirken hata: ' . $e->getMessage()
-                ], 500);
+                return ResponseService::serverError('Fiyat verileri yüklenirken hata oluştu', $e);
             }
 
-            return back()->with('error', 'Fiyat verileri yüklenirken hata: ' . $e->getMessage());
+            return ResponseService::backError('Fiyat verileri yüklenirken hata: ' . $e->getMessage());
         }
     }
 
     /**
      * Show the form for creating a new price record.
      * Context7: Yeni fiyat kaydı oluşturma
+     *
+     * @return \Illuminate\View\View
      */
-    public function create()
+    public function create(): \Illuminate\View\View
     {
         try {
             $propertyTypes = $this->getPropertyTypes();
@@ -74,70 +88,41 @@ class PriceController extends AdminController
     /**
      * Store a newly created price record.
      * Context7: Yeni fiyat kaydı kaydetme
+     *
+     * @param PriceRequest $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
      */
-    public function store(Request $request)
+    public function store(PriceRequest $request): \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
     {
         try {
-            $validator = Validator::make($request->all(), [
-                'property_id' => 'nullable|integer',
-                'property_type' => 'required|string|max:50',
-                'transaction_type' => 'required|in:satis,kira',
-                'price' => 'required|numeric|min:0',
-                'currency' => 'required|in:TRY,USD,EUR',
-                'price_per_m2' => 'nullable|numeric|min:0',
-                'il_id' => 'required|integer',
-                'ilce_id' => 'nullable|integer',
-                'mahalle_id' => 'nullable|integer',
-                'area_m2' => 'nullable|numeric|min:0',
-                'room_count' => 'nullable|string|max:20',
-                'building_age' => 'nullable|integer|min:0',
-                'floor' => 'nullable|integer',
-                'heating_type' => 'nullable|string|max:50',
-                'features' => 'nullable|array',
-                'market_analysis' => 'nullable|string|max:1000',
-                'source' => 'required|string|max:100',
-                'confidence_level' => 'required|integer|min:1|max:10',
-                'is_verified' => 'boolean',
-                'recorded_at' => 'nullable|date'
-            ]);
-
-            if ($validator->fails()) {
-                if ($request->expectsJson()) {
-                    return response()->json([
-                        'success' => false,
-                        'message' => 'Validation hatası',
-                        'errors' => $validator->errors()
-                    ], 422);
-                }
-
-                return back()->withErrors($validator)->withInput();
-            }
+            // ✅ STANDARDIZED: Using Form Request
+            $validated = $request->validated();
 
             // Fiyat analizi ve hesaplamalar
-            $priceAnalysis = $this->analyzePriceData($request->all());
+            $priceAnalysis = $this->analyzePriceData($validated);
 
             $priceData = [
                 'id' => time(), // Mock ID
-                'property_id' => $request->property_id,
-                'property_type' => $request->property_type,
-                'transaction_type' => $request->transaction_type,
-                'price' => $request->price,
-                'currency' => $request->currency,
-                'price_per_m2' => $request->price_per_m2 ?? ($request->area_m2 ? $request->price / $request->area_m2 : null),
-                'il_id' => $request->il_id,
-                'ilce_id' => $request->ilce_id,
-                'mahalle_id' => $request->mahalle_id,
-                'area_m2' => $request->area_m2,
-                'room_count' => $request->room_count,
-                'building_age' => $request->building_age,
-                'floor' => $request->floor,
-                'heating_type' => $request->heating_type,
-                'features' => $request->features ? json_encode($request->features) : null,
-                'market_analysis' => $request->market_analysis,
-                'source' => $request->source,
-                'confidence_level' => $request->confidence_level,
-                'is_verified' => $request->boolean('is_verified', false),
-                'recorded_at' => $request->recorded_at ?? now(),
+                'property_id' => $validated['property_id'] ?? null,
+                'property_type' => $validated['property_type'],
+                'transaction_type' => $validated['transaction_type'],
+                'price' => $validated['price'],
+                'currency' => $validated['currency'],
+                'price_per_m2' => $validated['price_per_m2'] ?? ($validated['area_m2'] ?? null ? $validated['price'] / $validated['area_m2'] : null),
+                'il_id' => $validated['il_id'],
+                'ilce_id' => $validated['ilce_id'] ?? null,
+                'mahalle_id' => $validated['mahalle_id'] ?? null,
+                'area_m2' => $validated['area_m2'] ?? null,
+                'room_count' => $validated['room_count'] ?? null,
+                'building_age' => $validated['building_age'] ?? null,
+                'floor' => $validated['floor'] ?? null,
+                'heating_type' => $validated['heating_type'] ?? null,
+                'features' => isset($validated['features']) ? json_encode($validated['features']) : null,
+                'market_analysis' => $validated['market_analysis'] ?? null,
+                'source' => $validated['source'],
+                'confidence_level' => $validated['confidence_level'],
+                'is_verified' => $validated['is_verified'] ?? false,
+                'recorded_at' => $validated['recorded_at'] ?? now(),
                 'price_analysis' => json_encode($priceAnalysis),
                 'created_by' => Auth::id(),
                 'created_at' => now(),
@@ -145,11 +130,14 @@ class PriceController extends AdminController
             ];
 
             // TODO: PriceRecord model ile kaydetme
+            // Plan: PriceRecord model oluşturulduğunda aktif edilecek
+            // Not: Şu anda fiyat geçmişi IlanPriceHistory model'i ile yönetiliyor
             // PriceRecord::create($priceData);
 
             // Cache temizle
-            Cache::forget('price_stats');
-            Cache::forget('price_analysis');
+            // ✅ STANDARDIZED: Using CacheHelper
+            CacheHelper::forget('price', 'stats');
+            CacheHelper::forget('price', 'analysis');
 
             if ($request->expectsJson()) {
                 return response()->json([
@@ -175,8 +163,11 @@ class PriceController extends AdminController
     /**
      * Display the specified price record.
      * Context7: Fiyat kaydı detayları ve analiz
+     *
+     * @param int $id
+     * @return \Illuminate\View\View|\Illuminate\Http\JsonResponse
      */
-    public function show($id)
+    public function show(int $id): \Illuminate\View\View|\Illuminate\Http\JsonResponse
     {
         try {
             $priceRecord = $this->getSamplePriceRecord($id);
@@ -224,8 +215,11 @@ class PriceController extends AdminController
     /**
      * Show the form for editing the specified price record.
      * Context7: Fiyat kaydı düzenleme formu
+     *
+     * @param int $id
+     * @return \Illuminate\View\View
      */
-    public function edit($id)
+    public function edit(int $id): \Illuminate\View\View
     {
         try {
             $priceRecord = $this->getSamplePriceRecord($id);
@@ -248,8 +242,12 @@ class PriceController extends AdminController
     /**
      * Update the specified price record.
      * Context7: Fiyat kaydı güncelleme
+     *
+     * @param PriceRequest $request
+     * @param int $id
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
      */
-    public function update(Request $request, $id)
+    public function update(PriceRequest $request, int $id): \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
     {
         try {
             $priceRecord = $this->getSamplePriceRecord($id);
@@ -265,61 +263,47 @@ class PriceController extends AdminController
                 return back()->with('error', 'Fiyat kaydı bulunamadı');
             }
 
-            $request->validate([
-                'property_type' => 'required|string|max:50',
-                'transaction_type' => 'required|in:satis,kira',
-                'price' => 'required|numeric|min:0',
-                'currency' => 'required|in:TRY,USD,EUR',
-                'price_per_m2' => 'nullable|numeric|min:0',
-                'il_id' => 'required|integer',
-                'ilce_id' => 'nullable|integer',
-                'mahalle_id' => 'nullable|integer',
-                'area_m2' => 'nullable|numeric|min:0',
-                'room_count' => 'nullable|string|max:20',
-                'building_age' => 'nullable|integer|min:0',
-                'floor' => 'nullable|integer',
-                'heating_type' => 'nullable|string|max:50',
-                'features' => 'nullable|array',
-                'market_analysis' => 'nullable|string|max:1000',
-                'source' => 'required|string|max:100',
-                'confidence_level' => 'required|integer|min:1|max:10',
-                'is_verified' => 'boolean'
-            ]);
+            // ✅ STANDARDIZED: Using Form Request
+            $validated = $request->validated();
 
             // Güncellenen fiyat analizi
-            $priceAnalysis = $this->analyzePriceData($request->all());
+            $priceAnalysis = $this->analyzePriceData($validated);
 
             $updateData = [
-                'property_type' => $request->property_type,
-                'transaction_type' => $request->transaction_type,
-                'price' => $request->price,
-                'currency' => $request->currency,
-                'price_per_m2' => $request->price_per_m2 ?? ($request->area_m2 ? $request->price / $request->area_m2 : null),
-                'il_id' => $request->il_id,
-                'ilce_id' => $request->ilce_id,
-                'mahalle_id' => $request->mahalle_id,
-                'area_m2' => $request->area_m2,
-                'room_count' => $request->room_count,
-                'building_age' => $request->building_age,
-                'floor' => $request->floor,
-                'heating_type' => $request->heating_type,
-                'features' => $request->features ? json_encode($request->features) : null,
-                'market_analysis' => $request->market_analysis,
-                'source' => $request->source,
-                'confidence_level' => $request->confidence_level,
-                'is_verified' => $request->boolean('is_verified', false),
+                'property_type' => $validated['property_type'],
+                'transaction_type' => $validated['transaction_type'],
+                'price' => $validated['price'],
+                'currency' => $validated['currency'],
+                'price_per_m2' => $validated['price_per_m2'] ?? ($validated['area_m2'] ?? null ? $validated['price'] / $validated['area_m2'] : null),
+                'il_id' => $validated['il_id'],
+                'ilce_id' => $validated['ilce_id'] ?? null,
+                'mahalle_id' => $validated['mahalle_id'] ?? null,
+                'area_m2' => $validated['area_m2'] ?? null,
+                'room_count' => $validated['room_count'] ?? null,
+                'building_age' => $validated['building_age'] ?? null,
+                'floor' => $validated['floor'] ?? null,
+                'heating_type' => $validated['heating_type'] ?? null,
+                'features' => isset($validated['features']) ? json_encode($validated['features']) : null,
+                'market_analysis' => $validated['market_analysis'] ?? null,
+                'source' => $validated['source'],
+                'confidence_level' => $validated['confidence_level'],
+                'is_verified' => $validated['is_verified'] ?? false,
                 'price_analysis' => json_encode($priceAnalysis),
                 'updated_by' => Auth::id(),
                 'updated_at' => now()
             ];
 
             // TODO: PriceRecord model ile güncelleme
+            // Plan: PriceRecord model oluşturulduğunda aktif edilecek
+            // Not: Şu anda fiyat geçmişi IlanPriceHistory model'i ile yönetiliyor
             // PriceRecord::where('id', $id)->update($updateData);
 
             // Cache temizle
-            Cache::forget('price_stats');
-            Cache::forget('price_analysis');
-            Cache::forget('price_record_' . $id);
+            // ✅ STANDARDIZED: Using CacheHelper
+            CacheHelper::forget('price', 'stats');
+            CacheHelper::forget('price', 'analysis');
+            // ✅ STANDARDIZED: Using CacheHelper
+            CacheHelper::forget('price', 'record', ['id' => $id]);
 
             if ($request->expectsJson()) {
                 return response()->json([
@@ -345,8 +329,11 @@ class PriceController extends AdminController
     /**
      * Remove the specified price record.
      * Context7: Fiyat kaydı silme
+     *
+     * @param int $id
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
      */
-    public function destroy($id)
+    public function destroy(int $id): \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
     {
         try {
             $priceRecord = $this->getSamplePriceRecord($id);
@@ -363,12 +350,16 @@ class PriceController extends AdminController
             }
 
             // TODO: PriceRecord model ile silme
+            // Plan: PriceRecord model oluşturulduğunda aktif edilecek
+            // Not: Şu anda fiyat geçmişi IlanPriceHistory model'i ile yönetiliyor
             // PriceRecord::findOrFail($id)->delete();
 
             // Cache temizle
-            Cache::forget('price_stats');
-            Cache::forget('price_analysis');
-            Cache::forget('price_record_' . $id);
+            // ✅ STANDARDIZED: Using CacheHelper
+            CacheHelper::forget('price', 'stats');
+            CacheHelper::forget('price', 'analysis');
+            // ✅ STANDARDIZED: Using CacheHelper
+            CacheHelper::forget('price', 'record', ['id' => $id]);
 
             if (request()->expectsJson()) {
                 return response()->json([
@@ -392,6 +383,9 @@ class PriceController extends AdminController
 
     /**
      * Context7: Piyasa analizi ve fiyat tahmin
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function analyze(Request $request)
     {
@@ -422,6 +416,9 @@ class PriceController extends AdminController
 
     /**
      * Context7: Bölgesel fiyat karşılaştırması
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function compareRegions(Request $request)
     {
@@ -446,6 +443,9 @@ class PriceController extends AdminController
 
     /**
      * Context7: Fiyat trendleri
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function trends(Request $request)
     {
@@ -454,9 +454,16 @@ class PriceController extends AdminController
             $propertyType = $request->get('property_type', 'all');
             $region = $request->get('region', 'all');
 
-            $trends = Cache::remember('price_trends_' . $period . '_' . $propertyType . '_' . $region, 1800, function () use ($period, $propertyType, $region) {
-                return $this->calculatePriceTrends($period, $propertyType, $region);
-            });
+            // ✅ STANDARDIZED: Using CacheHelper with params
+            $trends = CacheHelper::remember(
+                'price',
+                'trends',
+                'medium',
+                function () use ($period, $propertyType, $region) {
+                    return $this->calculatePriceTrends($period, $propertyType, $region);
+                },
+                ['period' => $period, 'type' => $propertyType, 'region' => $region]
+            );
 
             return response()->json([
                 'success' => true,

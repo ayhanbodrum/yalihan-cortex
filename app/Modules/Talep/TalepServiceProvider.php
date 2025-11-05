@@ -47,9 +47,12 @@ class TalepServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        // ✅ FIXED: Deprecated service yerine TalepAnaliz service'ini kullan
         // Talep modülü için servis sınıflarını bağla
         $this->app->bind('talep.analiz', function ($app) {
-            return new \App\Modules\Talep\Services\AIAnalizService;
+            // Deprecated: \App\Modules\Talep\Services\AIAnalizService
+            // Yeni: TalepAnaliz modülündeki service'i kullan
+            return new \App\Modules\TalepAnaliz\Services\AIAnalizService;
         });
 
         // Config dosyalarının birleştirilmesi

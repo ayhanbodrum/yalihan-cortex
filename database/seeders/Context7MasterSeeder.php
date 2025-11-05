@@ -102,6 +102,18 @@ class Context7MasterSeeder extends Seeder
             $this->command->warn('   ⚠️ feature_categories tablosu yok');
         }
 
+        // 8b. Revy.com.tr Tarzı Özellik Kategorileri (Modal Seçim Sistemi)
+        $this->command->info('🎨 8b. Revy.com.tr tarzı özellik kategorileri seed ediliyor...');
+        if (Schema::hasTable('feature_categories') && Schema::hasTable('features')) {
+            try {
+                $this->call(RevyStyleFeatureCategoriesSeeder::class);
+            } catch (\Exception $e) {
+                $this->command->warn('   ⚠️ RevyStyleFeatureCategoriesSeeder hatası: ' . $e->getMessage());
+            }
+        } else {
+            $this->command->warn('   ⚠️ feature_categories veya features tablosu yok');
+        }
+
         // 9. Temel Özellikler (Schema kontrolü ile)
         $this->command->info('🏷️ 9. Temel özellikler seed ediliyor...');
         if (Schema::hasTable('features')) {

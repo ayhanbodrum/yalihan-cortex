@@ -292,6 +292,22 @@
                 </div>
             </div>
 
+            {{-- QR Code and Navigation --}}
+            <div class="mt-12">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    {{-- QR Code --}}
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">QR Kod</h3>
+                        <x-qr-code-display :ilan="$villa" :size="'medium'" :showLabel="true" :showDownload="true" />
+                    </div>
+                    
+                    {{-- Navigation --}}
+                    <div>
+                        <x-listing-navigation :ilan="$villa" :mode="'default'" :showSimilar="false" />
+                    </div>
+                </div>
+            </div>
+            
             {{-- Similar Villas --}}
             @if($similarVillas && $similarVillas->count() > 0)
             <div class="mt-16">

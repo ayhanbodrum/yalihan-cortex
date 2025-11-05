@@ -1,0 +1,336 @@
+{
+  "timestamp": "2025-11-05T00:00:00Z",
+  "topic": "Ek Kod Analiz Araçları",
+  "category": "code-quality-tools",
+  "priority": "HIGH",
+  "status": "ACTIVE",
+  
+  "additional_tools": {
+    "1_static_analysis": {
+      "phpstan": {
+        "name": "PHPStan",
+        "description": "PHP Static Analysis Tool - En popüler PHP static analyzer",
+        "install": "composer require --dev phpstan/phpstan",
+        "config_file": "phpstan.neon",
+        "levels": "0-9 (9 en katı, 5 önerilen)",
+        "finds": [
+          "Type errors",
+          "Dead code",
+          "Unused code",
+          "Missing type hints",
+          "Null pointer exceptions",
+          "Array access on possibly null values"
+        ],
+        "usage": "vendor/bin/phpstan analyse app --level=5",
+        "recommended_level": 5,
+        "when_to_use": "Her commit öncesi, CI/CD pipeline'da",
+        "integration": "Laravel için larastan paketi önerilir"
+      },
+      "psalm": {
+        "name": "Psalm",
+        "description": "PHP Static Analysis Tool - Vimeo tarafından geliştirilmiş",
+        "install": "composer require --dev vimeo/psalm",
+        "config_file": "psalm.xml",
+        "features": [
+          "Type checking",
+          "Dead code detection",
+          "Security issues",
+          "Performance issues",
+          "Bug detection"
+        ],
+        "usage": "vendor/bin/psalm",
+        "when_to_use": "PHPStan alternatifi, daha detaylı analiz istendiğinde",
+        "integration": "Laravel için özel plugin'ler mevcut"
+      },
+      "larastan": {
+        "name": "Larastan",
+        "description": "Laravel-specific static analysis - PHPStan için Laravel eklentisi",
+        "install": "composer require --dev larastan/larastan",
+        "config_file": "phpstan.neon",
+        "finds": [
+          "Laravel-specific issues",
+          "Eloquent query problems",
+          "Route issues",
+          "Service provider issues",
+          "Laravel facade usage"
+        ],
+        "usage": "vendor/bin/phpstan analyse app --level=5",
+        "when_to_use": "Laravel projelerinde PHPStan ile birlikte",
+        "recommended": true
+      }
+    },
+    
+    "2_code_quality": {
+      "php_cs_fixer": {
+        "name": "PHP CS Fixer",
+        "description": "PHP Code Style Fixer - Coding standards otomatik düzeltir",
+        "install": "composer require --dev friendsofphp/php-cs-fixer",
+        "config_file": ".php_cs",
+        "finds": [
+          "Coding standards violations",
+          "PSR-12 violations",
+          "Indentation issues",
+          "Spacing issues"
+        ],
+        "usage": "vendor/bin/php-cs-fixer fix app",
+        "when_to_use": "Kod formatını otomatik düzeltmek için",
+        "integration": "Pre-commit hook olarak kullanılabilir"
+      },
+      "laravel_pint": {
+        "name": "Laravel Pint",
+        "description": "Laravel Code Style Fixer - Laravel ekibi tarafından",
+        "install": "composer require --dev laravel/pint",
+        "config_file": "pint.json (opsiyonel)",
+        "finds": [
+          "Laravel coding standards",
+          "PSR-12 violations",
+          "Laravel best practices"
+        ],
+        "usage": "vendor/bin/pint",
+        "when_to_use": "Laravel projelerinde PHP CS Fixer alternatifi",
+        "recommended": true
+      }
+    },
+    
+    "3_security": {
+      "enlightn": {
+        "name": "Enlightn",
+        "description": "Laravel Security & Performance Scanner",
+        "install": "composer require --dev enlightn/enlightn",
+        "config_file": "config/enlightn.php",
+        "finds": [
+          "Security vulnerabilities",
+          "Performance problems",
+          "Best practice violations",
+          "Configuration issues"
+        ],
+        "usage": "php artisan enlightn",
+        "when_to_use": "Security audit, pre-deployment check",
+        "recommended": true
+      },
+      "roave_security_advisories": {
+        "name": "Roave Security Advisories",
+        "description": "Composer paket güvenlik açıklarını kontrol eder",
+        "install": "composer require --dev roave/security-advisories:dev-latest",
+        "finds": [
+          "Vulnerable packages",
+          "Security advisories",
+          "Outdated packages with security issues"
+        ],
+        "usage": "composer update --dry-run (otomatik kontrol)",
+        "when_to_use": "Sürekli - composer update öncesi",
+        "recommended": true
+      },
+      "laravel_shift": {
+        "name": "Laravel Shift",
+        "description": "Laravel upgrade ve security check service",
+        "type": "SaaS",
+        "finds": [
+          "Security vulnerabilities",
+          "Laravel version upgrades",
+          "Deprecated features"
+        ],
+        "when_to_use": "Laravel version upgrade planlarken",
+        "note": "Ücretli servis, ama güvenlik kontrolleri ücretsiz"
+      }
+    },
+    
+    "4_testing": {
+      "phpunit": {
+        "name": "PHPUnit",
+        "description": "PHP Unit Testing Framework",
+        "install": "composer require --dev phpunit/phpunit",
+        "config_file": "phpunit.xml",
+        "features": [
+          "Unit tests",
+          "Integration tests",
+          "Feature tests",
+          "Code coverage"
+        ],
+        "usage": "vendor/bin/phpunit --coverage-html=coverage",
+        "when_to_use": "Test yazımı ve code coverage analizi",
+        "recommended": true
+      },
+      "pest": {
+        "name": "Pest",
+        "description": "PHP Testing Framework - Modern, elegant",
+        "install": "composer require --dev pestphp/pest",
+        "config_file": "tests/Pest.php",
+        "features": [
+          "Modern syntax",
+          "Better readability",
+          "Code coverage",
+          "PHPUnit compatible"
+        ],
+        "usage": "vendor/bin/pest --coverage",
+        "when_to_use": "Yeni test yazımı, PHPUnit alternatifi",
+        "recommended": false
+      }
+    },
+    
+    "5_performance": {
+      "laravel_debugbar": {
+        "name": "Laravel Debugbar",
+        "description": "Laravel development toolbar - Query, performance analysis",
+        "install": "composer require barryvdh/laravel-debugbar --dev",
+        "finds": [
+          "N+1 queries",
+          "Slow queries",
+          "Memory usage",
+          "Query count",
+          "Route information"
+        ],
+        "usage": "Otomatik - development mode'da aktif",
+        "when_to_use": "Development sırasında sürekli",
+        "recommended": true
+      },
+      "laravel_telescope": {
+        "name": "Laravel Telescope",
+        "description": "Laravel debugging and monitoring tool",
+        "install": "composer require laravel/telescope --dev",
+        "finds": [
+          "Query logs",
+          "Request/Response data",
+          "Exception traces",
+          "Cache operations",
+          "Job processing"
+        ],
+        "usage": "/telescope (web interface)",
+        "when_to_use": "Development ve staging environment'larında",
+        "recommended": true
+      },
+      "blackfire": {
+        "name": "Blackfire",
+        "description": "PHP Performance Profiler",
+        "type": "SaaS",
+        "finds": [
+          "Performance bottlenecks",
+          "Memory leaks",
+          "Slow functions",
+          "I/O operations"
+        ],
+        "when_to_use": "Production performance analysis",
+        "note": "Ücretli servis, ama free tier mevcut"
+      },
+      "xdebug": {
+        "name": "Xdebug",
+        "description": "PHP Debugger and Profiler",
+        "install": "pecl install xdebug",
+        "finds": [
+          "Code coverage",
+          "Function traces",
+          "Performance profiling"
+        ],
+        "usage": "xdebug.profiler_enable=1",
+        "when_to_use": "Development sırasında profiling",
+        "note": "Production'da kullanılmamalı (performans etkisi)"
+      }
+    },
+    
+    "6_code_duplication": {
+      "phpcpd": {
+        "name": "PHPCPD",
+        "description": "PHP Copy/Paste Detector",
+        "install": "composer require --dev sebastian/phpcpd",
+        "finds": [
+          "Duplicate code blocks",
+          "Copy-paste code",
+          "Similar code patterns"
+        ],
+        "usage": "vendor/bin/phpcpd app",
+        "when_to_use": "Code refactoring öncesi, DRY principle kontrolü",
+        "recommended": true
+      },
+      "php_depend": {
+        "name": "PHPDepend",
+        "description": "PHP Dependency Analyzer",
+        "install": "composer require --dev pdepend/pdepend",
+        "finds": [
+          "Code complexity",
+          "Cyclomatic complexity",
+          "Dependencies",
+          "Code duplication"
+        ],
+        "usage": "vendor/bin/pdepend app",
+        "when_to_use": "Code quality metrics, complexity analysis",
+        "recommended": false
+      }
+    },
+    
+    "7_dependency_analysis": {
+      "composer_unused": {
+        "name": "Composer Unused",
+        "description": "Kullanılmayan Composer paketlerini bulur",
+        "install": "composer require --dev icanhazstring/composer-unused",
+        "finds": [
+          "Unused packages",
+          "Unused dependencies",
+          "Dead dependencies"
+        ],
+        "usage": "vendor/bin/composer-unused",
+        "when_to_use": "Dependency cleanup, package management",
+        "recommended": true
+      },
+      "composer_require_checker": {
+        "name": "Composer Require Checker",
+        "description": "Eksik bağımlılıkları kontrol eder",
+        "install": "composer require --dev maglnet/composer-require-checker",
+        "finds": [
+          "Missing dependencies",
+          "Undefined dependencies",
+          "Circular dependencies"
+        ],
+        "usage": "vendor/bin/composer-require-checker",
+        "when_to_use": "Dependency validation, production deployment öncesi",
+        "recommended": true
+      }
+    },
+    
+    "8_api_documentation": {
+      "scribe": {
+        "name": "Scribe",
+        "description": "Laravel API Documentation Generator",
+        "install": "composer require --dev knuckleswtf/scribe",
+        "finds": [
+          "API documentation",
+          "Missing API docs",
+          "API endpoint analysis"
+        ],
+        "usage": "php artisan scribe:generate",
+        "when_to_use": "API documentation oluşturma",
+        "recommended": false
+      }
+    }
+  },
+  
+  "recommended_tool_stack": {
+    "essential": [
+      "PHPStan (Larastan)",
+      "Laravel Pint",
+      "Enlightn",
+      "Laravel Debugbar",
+      "Composer Unused"
+    ],
+    "recommended": [
+      "PHPCPD",
+      "Laravel Telescope",
+      "Roave Security Advisories",
+      "Composer Require Checker"
+    ],
+    "optional": [
+      "Psalm",
+      "Blackfire",
+      "Pest",
+      "Scribe"
+    ]
+  },
+  
+  "integration_with_comprehensive_check": {
+    "note": "scripts/comprehensive-code-check.php ile entegre edilebilir",
+    "phpstan": "Script içinde exec() ile çalıştırılabilir",
+    "phpcpd": "Script içinde exec() ile çalıştırılabilir",
+    "composer_unused": "Script içinde exec() ile çalıştırılabilir",
+    "enlightn": "Artisan command olarak çalıştırılabilir"
+  }
+}
+

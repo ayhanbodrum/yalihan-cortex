@@ -4,9 +4,9 @@ namespace App\Modules\TakimYonetimi\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Modules\TakimYonetimi\Services\TelegramBotService;
+use App\Models\SiteSetting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\DB;
 
 class TelegramBotController extends Controller
 {
@@ -25,7 +25,8 @@ class TelegramBotController extends Controller
 
         $teamId = 1;
         $teamSettingKey = 'team:'.$teamId.':telegram_channel_id';
-        $teamChannelId = DB::table('site_settings')->where('key', $teamSettingKey)->value('value');
+        // ✅ STANDARDIZED: Using Eloquent instead of DB::table()
+        $teamChannelId = SiteSetting::where('key', $teamSettingKey)->value('value');
 
         return view('admin.telegram-bot.index', compact('botInfo', 'webhookInfo', 'settings', 'teamId', 'teamChannelId'));
     }
@@ -137,17 +138,16 @@ class TelegramBotController extends Controller
         ]);
 
         try {
+            // ✅ STANDARDIZED: Using Eloquent instead of DB::table()
             // Takım-Kanal eşlemesi DB'de saklanır (site_settings)
             if ($request->filled('team_id') && $request->filled('telegram_channel_id')) {
                 $key = 'team:'.$request->integer('team_id').':telegram_channel_id';
-                DB::table('site_settings')->updateOrInsert(
+                SiteSetting::updateOrCreate(
                     ['key' => $key],
                     [
                         'value' => $request->string('telegram_channel_id')->toString(),
                         'description' => 'Takım Telegram Kanal ID',
                         'group' => 'telegram',
-                        'updated_at' => now(),
-                        'created_at' => now(),
                     ]
                 );
             }

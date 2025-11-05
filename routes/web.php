@@ -616,8 +616,7 @@ Route::middleware('auth')->group(function () {
     // Kullanıcı Yönetimi - MOVED TO admin.php with proper AuthController
     // Route kullanıcılar yönetimi admin.php'ye taşındı
 
-    // Settings Management
-    Route::resource('/ayarlar', AyarlarController::class);
+    // Settings Management (Legacy - moved to admin.php)
     Route::get('/settings', function () {
         return redirect()->route('admin.ayarlar.index');
     });

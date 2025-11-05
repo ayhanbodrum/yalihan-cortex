@@ -1,0 +1,222 @@
+{
+  "title": "Emlak Kartlarında Demografik Bilgi Gösterimi - TÜİK Entegrasyonu",
+  "date": "2025-11-05",
+  "category": "feature_enhancement",
+  "type": "analysis",
+  "status": "pending",
+  "summary": "TÜİK R paketi analizi ve emlak kartlarında demografik bilgi gösterimi önerisi",
+  
+  "tuik_r_package_analysis": {
+    "github_url": "https://github.com/emraher/tuik",
+    "language": "R",
+    "features": [
+      "TÜİK verilerine erişim",
+      "Demografik veriler (nüfus, yaş, eğitim)",
+      "Coğrafi seviyeler (il, ilçe, mahalle)",
+      "İstatistiksel analizler",
+      "Görselleştirme araçları"
+    ],
+    "limitation": "R paketi - PHP/Laravel projesinde direkt kullanılamaz"
+  },
+  
+  "current_situation": {
+    "property_card_info": {
+      "title": "Başlık",
+      "price": "Fiyat",
+      "location": "Konum (İl/İlçe)",
+      "room_count": "Oda sayısı",
+      "area": "Metrekare",
+      "bathroom_count": "Banyo sayısı",
+      "rental_details": "Kiralama bilgileri (varsa)"
+    },
+    "available_data": {
+      "turkiyeapi": {
+        "population": "✅ VAR (Mahalle/Belde/Köy seviyesinde)",
+        "area": "✅ VAR",
+        "isCoastal": "✅ VAR",
+        "postcode": "✅ VAR"
+      },
+      "tuik": {
+        "age_distribution": "❌ YOK (TÜİK'ten alınabilir)",
+        "gender_distribution": "❌ YOK (TÜİK'ten alınabilir)",
+        "education_level": "❌ YOK (TÜİK'ten alınabilir)",
+        "income_level": "❌ YOK (TÜİK'ten alınabilir)",
+        "employment_rate": "❌ YOK (TÜİK'ten alınabilir)"
+      }
+    }
+  },
+  
+  "proposal": {
+    "show_demographic_info": true,
+    "location": "Emlak kartının altında (küçük ikonlar + sayılar)",
+    "display_style": "Compact, minimal, non-intrusive",
+    
+    "suggested_demographic_data": {
+      "primary": {
+        "population": {
+          "source": "TurkiyeAPI",
+          "display": "👥 12,500",
+          "tooltip": "Mahalle nüfusu",
+          "priority": "high"
+        },
+        "education_level": {
+          "source": "TÜİK",
+          "display": "🎓 %68 Üniversite",
+          "tooltip": "Üniversite mezun oranı",
+          "priority": "high"
+        },
+        "average_age": {
+          "source": "TÜİK",
+          "display": "📊 35-44 yaş",
+          "tooltip": "Ortalama yaş grubu",
+          "priority": "medium"
+        }
+      },
+      "secondary": {
+        "gender_ratio": {
+          "source": "TÜİK",
+          "display": "⚖️ %51 Kadın",
+          "tooltip": "Cinsiyet dağılımı",
+          "priority": "low"
+        },
+        "household_size": {
+          "source": "TÜİK",
+          "display": "👨‍👩‍👧‍👦 3.2 kişi",
+          "tooltip": "Ortalama hane halkı büyüklüğü",
+          "priority": "low"
+        },
+        "employment_rate": {
+          "source": "TÜİK",
+          "display": "💼 %65 İstihdam",
+          "tooltip": "İstihdam oranı",
+          "priority": "medium"
+        }
+      }
+    },
+    
+    "ui_design": {
+      "placement": "Kart altında, fiyat bilgisinin altında",
+      "layout": "Grid 3 kolon (mobilde tek kolon)",
+      "style": "Compact badges, hover tooltips",
+      "colors": "Subtle, non-competing with main info",
+      "conditional": "Sadece mahalle/belde seviyesinde göster"
+    }
+  },
+  
+  "benefits": {
+    "for_buyers": [
+      "Yatırım analizi - Hangi bölgeler daha değerli?",
+      "Hedef kitle bilgisi - Kimler burada yaşıyor?",
+      "Yaşam kalitesi göstergesi - Eğitim seviyesi, gelir",
+      "Uzun vadeli değer artışı tahmini"
+    ],
+    "for_agents": [
+      "Müşteri tercihlerine göre öneri",
+      "Pazarlama stratejisi - Hangi özellikler öne çıkarılmalı?",
+      "Fiyat karşılaştırması - Benzer demografik profiller"
+    ],
+    "for_platform": [
+      "Rekabet avantajı - Daha detaylı bilgi",
+      "SEO - 'Bodrum demografik bilgi' gibi aramalar",
+      "Kullanıcı memnuniyeti - Daha bilinçli karar"
+    ]
+  },
+  
+  "implementation_plan": {
+    "phase_1_basic": {
+      "description": "TurkiyeAPI'den mevcut nüfus bilgisini göster",
+      "effort": "Düşük",
+      "timeline": "1 gün",
+      "features": [
+        "Nüfus bilgisi gösterimi",
+        "Sadece mahalle/belde seviyesinde",
+        "Kart altında compact badge"
+      ]
+    },
+    "phase_2_tuik_integration": {
+      "description": "TÜİK verilerini entegre et",
+      "effort": "Orta-Yüksek",
+      "timeline": "3-5 gün",
+      "features": [
+        "TÜİK veri indirme/API",
+        "Cache sistemi",
+        "Eğitim seviyesi gösterimi",
+        "Yaş dağılımı gösterimi"
+      ],
+      "challenges": [
+        "TÜİK API erişimi sınırlı",
+        "Veri güncelleme sıklığı",
+        "Veri formatı dönüşümü"
+      ]
+    },
+    "phase_3_advanced": {
+      "description": "Gelişmiş analiz ve görselleştirme",
+      "effort": "Yüksek",
+      "timeline": "7-10 gün",
+      "features": [
+        "Demografik trend grafikleri",
+        "Karşılaştırma özelliği",
+        "AI destekli öneriler",
+        "Yatırım potansiyeli skoru"
+      ]
+    }
+  },
+  
+  "recommendation": {
+    "verdict": "✅ EVET, kesinlikle faydalı!",
+    "priority": "HIGH",
+    "reasoning": [
+      "Yatırımcılar için kritik bilgi",
+      "Rekabet avantajı sağlar",
+      "Kullanıcı deneyimini iyileştirir",
+      "TurkiyeAPI'den nüfus bilgisi zaten mevcut (Phase 1 kolay)",
+      "TÜİK entegrasyonu için zaman alabilir ama değerli"
+    ],
+    "start_with": "Phase 1 - TurkiyeAPI nüfus bilgisi",
+    "then_add": "Phase 2 - TÜİK entegrasyonu (önemli lokasyonlar için)"
+  },
+  
+  "ui_example": {
+    "card_structure": {
+      "top": "Fotoğraf, başlık, fiyat",
+      "middle": "Oda, m², banyo bilgileri",
+      "bottom": "Demografik bilgiler (yeni)",
+      "actions": "Detay butonları"
+    },
+    "demographic_section": {
+      "html_structure": "<div class='demographic-info grid grid-cols-3 gap-2 mt-3 pt-3 border-t'>...</div>",
+      "items": [
+        "👥 12,500 nüfus",
+        "🎓 %68 Üniversite",
+        "📊 35-44 yaş"
+      ],
+      "style": "Compact, subtle, tooltip on hover"
+    }
+  },
+  
+  "technical_considerations": {
+    "performance": {
+      "cache": "Demografik verileri cache'le (24 saat)",
+      "lazy_load": "Kartlar görünür olduğunda yükle",
+      "api_calls": "Batch request'ler kullan"
+    },
+    "data_source": {
+      "primary": "TurkiyeAPI (nüfus)",
+      "secondary": "TÜİK (detaylı demografik)",
+      "fallback": "Manuel veri girişi (önemli lokasyonlar)"
+    },
+    "scalability": {
+      "note": "Tüm mahalleler için demografik veri yüklemek maliyetli",
+      "solution": "Sadece aktif ilanların olduğu mahalleler için",
+      "optimization": "Öncelikli lokasyonlar için cache"
+    }
+  },
+  
+  "reference": {
+    "tuik_r_package": "https://github.com/emraher/tuik",
+    "tuik_data_portal": "https://data.tuik.gov.tr",
+    "turkiyeapi_docs": "https://api.turkiyeapi.dev/docs",
+    "knowledge_base": ".yalihan-bekci/knowledge/demographic-info-on-property-cards-2025-11-05.json"
+  }
+}
+

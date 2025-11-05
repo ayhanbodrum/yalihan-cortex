@@ -6,13 +6,44 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 use App\Modules\Crm\Models\Kisi;
+use App\Modules\Crm\Services\KisiService;
+use App\Services\Response\ResponseService;
 
 class KisiController extends AdminController
 {
+    protected $kisiService;
+
+    /**
+     * Constructor
+     * Context7: KisiService dependency injection
+     *
+     * @param KisiService $kisiService
+     */
+    public function __construct(KisiService $kisiService)
+    {
+        $this->kisiService = $kisiService;
+    }
+
+    /**
+     * Display a listing of the resource.
+     * Context7: Kişi listesi ve filtreleme
+     *
+     * @param Request $request
+     * @return Response|\Illuminate\Contracts\View\View
+     */
     public function index(Request $request)
     {
-        // Context7 uyumlu sorgu oluşturma
-        $query = Kisi::with(['danisman', 'il', 'ilce', 'mahalle']);
+        // ✅ EAGER LOADING: Select optimization ile birlikte
+        $query = Kisi::with([
+            'danisman:id,name,email',
+            'il:id,il_adi',
+            'ilce:id,ilce_adi',
+            'mahalle:id,mahalle_adi'
+        ])->select([
+            'id', 'ad', 'soyad', 'telefon', 'email', 'status',
+            'danisman_id', 'il_id', 'ilce_id', 'mahalle_id',
+            'kisi_tipi', 'musteri_tipi', 'created_at', 'updated_at'
+        ]);
 
         // Context7 uyumlu arama
         $search = trim((string) $request->get('q'));
@@ -103,10 +134,12 @@ class KisiController extends AdminController
 
         $filters = ['q' => $search, 'status' => $status, 'sort' => $sort, 'danisman_id' => $danismanId, 'kisi_tipi' => $kisiTipi]; // Context7: kisi_tipi
 
-        // Context7: View için değişkenler
+        // ✅ OPTIMIZED: Select optimization
         $danismanlar = \App\Models\User::whereHas('roles', function ($q) {
             $q->where('name', 'danisman');
-        })->get();
+        })
+        ->select(['id', 'name', 'email'])
+        ->get();
 
         if (view()->exists('admin.kisiler.index')) {
             return response()->view('admin.kisiler.index', compact('kisiler', 'filters', 'stats', 'istatistikler', 'olasiKopyalar', 'taslak', 'danismanlar'));
@@ -114,6 +147,12 @@ class KisiController extends AdminController
         return $this->renderAny(['Crm::musteriler.index'], compact('kisiler', 'filters', 'istatistikler'));
     }
 
+    /**
+     * Show the form for creating a new resource.
+     * Context7: Yeni kişi oluşturma formu
+     *
+     * @return Response|\Illuminate\Contracts\View\View
+     */
     public function create()
     {
         $danismanlar = \App\Models\User::whereHas('roles', function ($q) {
@@ -126,6 +165,14 @@ class KisiController extends AdminController
         return $this->renderAny(['admin.kisiler.create', 'Crm::kisiler.create'], compact('danismanlar', 'iller', 'musteriTipleri', 'kaynaklar'));
     }
 
+    /**
+     * Store a newly created resource in storage.
+     * Context7: Yeni kişi kaydetme
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
+     * @throws \Exception
+     */
     public function store(Request $request)
     {
         // Context7 uyumlu validasyon (mahalle_id added - 2025-10-31, adres_detay fixed - 2025-11-01)
@@ -146,18 +193,18 @@ class KisiController extends AdminController
         ]);
 
         try {
-            // Context7 uyumlu kişi oluşturma
-            $kisi = Kisi::create($validated);
+            // ✅ REFACTORED: Use KisiService
+            $kisi = $this->kisiService->createKisi($validated);
 
             return redirect()
                 ->route('admin.kisiler.index')
                 ->with('success', $kisi->ad . ' ' . $kisi->soyad . ' başarıyla eklendi! ✅');
         } catch (\Exception $e) {
-            \Log::error('Kişi oluşturma hatası:', [
-                'error' => $e->getMessage(),
-                'validated' => $validated ?? null
-            ]);
-            
+            // ✅ STANDARDIZED: Using ResponseService (automatic logging)
+            if ($request->expectsJson()) {
+                return ResponseService::serverError('Kişi eklenirken hata oluştu', $e);
+            }
+
             return redirect()
                 ->back()
                 ->withInput()
@@ -165,11 +212,25 @@ class KisiController extends AdminController
         }
     }
 
+    /**
+     * Display the specified resource.
+     * Context7: Kişi detay sayfası
+     *
+     * @param int|string|Kisi $kisi
+     * @return Response|\Illuminate\Contracts\View\View
+     */
     public function show($kisi)
     {
         return $this->renderAny(['admin.kisiler.show', 'Crm::musteriler.show'], ['kisi' => $this->resolve($kisi)]);
     }
 
+    /**
+     * Show the form for editing the specified resource.
+     * Context7: Kişi düzenleme formu
+     *
+     * @param int|string|Kisi $kisi
+     * @return Response|\Illuminate\Contracts\View\View
+     */
     public function edit($kisi)
     {
         $kisi = $this->resolve($kisi);
@@ -199,6 +260,15 @@ class KisiController extends AdminController
         ]);
     }
 
+    /**
+     * Update the specified resource in storage.
+     * Context7: Kişi güncelleme
+     *
+     * @param Request $request
+     * @param Kisi $kisi
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
+     * @throws \Exception
+     */
     public function update(Request $request, Kisi $kisi)
     {
         // Context7: Validation (mahalle_id added - 2025-10-31, adres_detay fixed - 2025-11-01)
@@ -223,8 +293,8 @@ class KisiController extends AdminController
             // Remove non-existent fields
             $updateData = collect($validated)->except(['etiketler_ids'])->toArray();
             
-            // Update kişi
-            $kisi->update($updateData);
+            // ✅ REFACTORED: Use KisiService
+            $this->kisiService->updateKisi($kisi, $updateData);
             
             // Sync etiketler (tags) if provided
             if ($request->has('etiketler_ids')) {
@@ -235,12 +305,11 @@ class KisiController extends AdminController
                 ->route('admin.kisiler.edit', $kisi->id)
                 ->with('success', $kisi->ad . ' ' . $kisi->soyad . ' başarıyla güncellendi! ✅');
         } catch (\Exception $e) {
-            \Log::error('Kişi güncelleme hatası:', [
-                'kisi_id' => $kisi->id,
-                'error' => $e->getMessage(),
-                'validated' => $validated ?? null
-            ]);
-            
+            // ✅ STANDARDIZED: Using ResponseService (automatic logging)
+            if ($request->expectsJson()) {
+                return ResponseService::serverError('Kişi güncellenirken hata oluştu', $e);
+            }
+
             return redirect()
                 ->back()
                 ->withInput()
@@ -248,12 +317,20 @@ class KisiController extends AdminController
         }
     }
 
+    /**
+     * Remove the specified resource from storage.
+     * Context7: Kişi silme
+     *
+     * @param Kisi $kisi
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
+     * @throws \Exception
+     */
     public function destroy(Kisi $kisi)
     {
         try {
-            // Kişiyi sil
+            // ✅ REFACTORED: Use KisiService
             $kisiAdi = $kisi->ad . ' ' . $kisi->soyad;
-            $kisi->delete();
+            $this->kisiService->deleteKisi($kisi);
 
             // JSON response for AJAX requests
             if (request()->expectsJson()) {
@@ -283,6 +360,13 @@ class KisiController extends AdminController
         }
     }
 
+    /**
+     * Search persons
+     * Context7: Kişi arama endpoint
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function search(Request $request)
     {
         // Context7 uyumlu kişi arama
@@ -314,6 +398,13 @@ class KisiController extends AdminController
         return response()->json(['items' => $kisiler]);
     }
 
+    /**
+     * Check for duplicate persons
+     * Context7: Mükerrer kişi kontrolü
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function checkDuplicate(Request $request)
     {
         // Context7 uyumlu mükerrer kontrolü
@@ -362,6 +453,13 @@ class KisiController extends AdminController
         ]);
     }
 
+    /**
+     * Bulk action for persons
+     * Context7: Toplu işlem endpoint
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function bulkAction(Request $request)
     {
         // Context7 uyumlu toplu işlemler
@@ -398,6 +496,13 @@ class KisiController extends AdminController
         return response()->json(['success' => true, 'message' => $message]);
     }
 
+    /**
+     * AI analysis for person
+     * Context7: AI destekli kişi analizi
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function aiAnalyze(Request $request)
     {
         // Context7 uyumlu AI analiz önerileri
@@ -459,17 +564,39 @@ class KisiController extends AdminController
         ]);
     }
 
+    /**
+     * Person tracking page
+     * Context7: Kişi takip sayfası
+     *
+     * @param Request $request
+     * @return Response|\Illuminate\Contracts\View\View
+     */
     public function takip(Request $request)
     {
         return $this->renderAny(['admin.kisiler.takip', 'Crm::musteriler.index']);
     }
 
+    /**
+     * Resolve person from various types
+     * Context7: Kişi resolver helper
+     *
+     * @param int|string|Kisi $kisi
+     * @return Kisi
+     */
     private function resolve($kisi): Kisi
     {
         if ($kisi instanceof Kisi) return $kisi;
         return Kisi::query()->findOrFail($kisi);
     }
 
+    /**
+     * Render any available view
+     * Context7: View render helper
+     *
+     * @param array $views
+     * @param array $data
+     * @return Response|\Illuminate\Contracts\View\View
+     */
     private function renderAny(array $views, array $data = []): Response|\Illuminate\Contracts\View\View
     {
         foreach ($views as $view) {

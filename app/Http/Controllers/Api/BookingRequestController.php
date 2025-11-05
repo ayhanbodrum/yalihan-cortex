@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Ilan;
+use App\Models\BookingRequest;
+use App\Mail\BookingRequestMail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
@@ -39,8 +41,26 @@ class BookingRequestController extends Controller
             $villa = Ilan::with(['il', 'ilce', 'ilanSahibi', 'danisman'])
                 ->findOrFail($request->villa_id);
 
-            // Rezervasyon bilgileri
+            // ✅ Database'e kaydet
+            $bookingRequest = BookingRequest::create([
+                'ilan_id' => $villa->id,
+                'guest_name' => $request->name,
+                'guest_phone' => $request->phone,
+                'guest_email' => $request->email,
+                'guest_message' => $request->message,
+                'check_in' => $request->check_in,
+                'check_out' => $request->check_out,
+                'guests' => $request->guests,
+                'nights' => $request->nights ?? 1,
+                'total_price' => $request->total_price ?? 0,
+                'villa_title' => $villa->baslik,
+                'villa_location' => ($villa->il->il_adi ?? '') . ', ' . ($villa->ilce->ilce_adi ?? ''),
+                'status' => 'pending',
+            ]);
+
+            // Rezervasyon bilgileri (email için)
             $bookingData = [
+                'booking_reference' => $bookingRequest->booking_reference,
                 'villa_id' => $villa->id,
                 'villa_title' => $villa->baslik,
                 'villa_location' => ($villa->il->il_adi ?? '') . ', ' . ($villa->ilce->ilce_adi ?? ''),
@@ -53,22 +73,19 @@ class BookingRequestController extends Controller
                 'guest_phone' => $request->phone,
                 'guest_email' => $request->email,
                 'guest_message' => $request->message,
-                'created_at' => now(),
             ];
 
             // Log the request
             Log::info('Booking Request Received', $bookingData);
 
-            // Email gönder (owner ve admin'e)
+            // ✅ Email gönder (admin ve villa sahibine)
             $this->sendBookingNotification($villa, $bookingData);
-
-            // TODO: Database'e kaydet (booking_requests table)
-            // BookingRequest::create($bookingData);
 
             return response()->json([
                 'success' => true,
                 'message' => 'Rezervasyon talebiniz başarıyla alındı. En kısa sürede sizinle iletişime geçeceğiz.',
-                'booking_reference' => 'BK-' . now()->format('Ymd') . '-' . strtoupper(substr(md5($request->email), 0, 6)),
+                'booking_reference' => $bookingRequest->booking_reference,
+                'booking_id' => $bookingRequest->id,
             ], 201);
 
         } catch (\Exception $e) {
@@ -87,19 +104,38 @@ class BookingRequestController extends Controller
 
     /**
      * Send booking notification email
+     * 
+     * Context7 Standardı: C7-BOOKING-MAIL-2025-11-05
      */
     private function sendBookingNotification($villa, $bookingData)
     {
-        // TODO: Email template ile gönder
-        // Mail::to(config('app.booking_email'))->send(new BookingRequestMail($bookingData));
-        
-        // Şimdilik sadece log
-        Log::info('Booking Notification', [
-            'to' => config('app.booking_email', 'info@yalihanemlak.com'),
-            'villa' => $villa->baslik,
-            'guest' => $bookingData['guest_name'],
-            'dates' => $bookingData['check_in'] . ' - ' . $bookingData['check_out'],
-        ]);
+        try {
+            // Admin'e email gönder
+            $adminEmail = config('app.booking_email', config('mail.from.address'));
+            Mail::to($adminEmail)->send(new BookingRequestMail($villa, $bookingData));
+
+            // Villa sahibine email gönder (eğer email varsa)
+            if ($villa->ilanSahibi && $villa->ilanSahibi->email) {
+                Mail::to($villa->ilanSahibi->email)->send(new BookingRequestMail($villa, $bookingData));
+            }
+
+            // Danışmana email gönder (eğer varsa)
+            if ($villa->danisman && $villa->danisman->email) {
+                Mail::to($villa->danisman->email)->send(new BookingRequestMail($villa, $bookingData));
+            }
+
+            Log::info('Booking Notification Sent', [
+                'admin_email' => $adminEmail,
+                'villa' => $villa->baslik,
+                'booking_reference' => $bookingData['booking_reference'] ?? 'N/A',
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Booking Notification Error', [
+                'error' => $e->getMessage(),
+                'villa_id' => $villa->id,
+                'guest_email' => $bookingData['guest_email'] ?? 'N/A',
+            ]);
+        }
     }
 
     /**

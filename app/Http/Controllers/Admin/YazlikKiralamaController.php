@@ -405,10 +405,12 @@ class YazlikKiralamaController extends AdminController
 
             DB::beginTransaction();
 
+            // ✅ OPTIMIZED: Storage işlemleri toplu yapılabilir (performans için)
             // Delete photos from storage
-            foreach ($ilan->fotograflar as $foto) {
-                if (Storage::disk('public')->exists($foto->dosya_yolu)) {
-                    Storage::disk('public')->delete($foto->dosya_yolu);
+            $fotoYollari = $ilan->fotograflar->pluck('dosya_yolu')->filter();
+            foreach ($fotoYollari as $dosyaYolu) {
+                if (Storage::disk('public')->exists($dosyaYolu)) {
+                    Storage::disk('public')->delete($dosyaYolu);
                 }
             }
 

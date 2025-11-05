@@ -22,6 +22,25 @@
                         <i class="fas fa-eye mr-2"></i>
                         Websitesinde Görüntüle
                     </a>
+                    {{-- QR Code Button --}}
+                    <div class="relative" x-data="{ showQR: false }">
+                        <button @click="showQR = !showQR"
+                                class="inline-flex items-center px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
+                            <i class="fas fa-qrcode mr-2"></i>
+                            QR Kod
+                        </button>
+                        <div x-show="showQR" 
+                             @click.away="showQR = false"
+                             x-transition:enter="transition ease-out duration-200"
+                             x-transition:enter-start="opacity-0 transform scale-95"
+                             x-transition:enter-end="opacity-100 transform scale-100"
+                             x-transition:leave="transition ease-in duration-150"
+                             x-transition:leave-start="opacity-100 transform scale-100"
+                             x-transition:leave-end="opacity-0 transform scale-95"
+                             class="absolute right-0 mt-2 z-50">
+                            <x-qr-code-display :ilan="$ilan" :size="'medium'" />
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -181,8 +200,25 @@
                         <div class="space-y-3">
                             <div class="flex justify-between items-center">
                                 <span class="text-gray-600 dark:text-gray-400">Fiyat:</span>
-                                <span class="text-2xl font-bold text-green-600">
-                                    {{ number_format($ilan->fiyat ?? 0, 0, ',', '.') }} ₺
+                                <span class="text-2xl font-bold text-green-600 dark:text-green-400">
+                                    {{ number_format($ilan->fiyat ?? 0, 0, ',', '.') }} {{ $ilan->para_birimi ?? 'TRY' }}
+                                    @if ($ilan->kiralama_turu)
+                                        @switch($ilan->kiralama_turu)
+                                            @case('gunluk')
+                                                <span class="text-lg font-normal text-gray-600 dark:text-gray-400">/Gün</span>
+                                            @break
+                                            @case('haftalik')
+                                                <span class="text-lg font-normal text-gray-600 dark:text-gray-400">/Hafta</span>
+                                            @break
+                                            @case('aylik')
+                                            @case('uzun_donem')
+                                                <span class="text-lg font-normal text-gray-600 dark:text-gray-400">/Ay</span>
+                                            @break
+                                            @case('sezonluk')
+                                                <span class="text-lg font-normal text-gray-600 dark:text-gray-400">/Sezon</span>
+                                            @break
+                                        @endswitch
+                                    @endif
                                 </span>
                             </div>
                             <div class="flex justify-between">
@@ -263,6 +299,11 @@
                         </div>
                     @endif
 
+                    <!-- Fiyat Geçmişi Grafik -->
+                    <div>
+                        <x-price-history-chart :ilan="$ilan" :showStats="true" :showTable="true" :height="'350px'" />
+                    </div>
+
                     <!-- Yazlık Detayları -->
                     @if($ilan->yazlikDetail)
                     <div class="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-xl shadow-lg p-6 border border-blue-200 dark:border-blue-800">
@@ -298,21 +339,21 @@
                             @if($ilan->yazlikDetail->gunluk_fiyat)
                             <div class="flex justify-between">
                                 <span class="text-gray-600 dark:text-gray-400">Günlük Fiyat:</span>
-                                <span class="font-semibold text-green-600">{{ number_format($ilan->yazlikDetail->gunluk_fiyat, 0, ',', '.') }} ₺</span>
+                                <span class="font-semibold text-green-600 dark:text-green-400">{{ number_format($ilan->yazlikDetail->gunluk_fiyat, 0, ',', '.') }} {{ $ilan->para_birimi ?? 'TRY' }}/Gün</span>
                             </div>
                             @endif
 
                             @if($ilan->yazlikDetail->haftalik_fiyat)
                             <div class="flex justify-between">
                                 <span class="text-gray-600 dark:text-gray-400">Haftalık Fiyat:</span>
-                                <span class="font-semibold text-green-600">{{ number_format($ilan->yazlikDetail->haftalik_fiyat, 0, ',', '.') }} ₺</span>
+                                <span class="font-semibold text-green-600 dark:text-green-400">{{ number_format($ilan->yazlikDetail->haftalik_fiyat, 0, ',', '.') }} {{ $ilan->para_birimi ?? 'TRY' }}/Hafta</span>
                             </div>
                             @endif
 
                             @if($ilan->yazlikDetail->aylik_fiyat)
                             <div class="flex justify-between">
                                 <span class="text-gray-600 dark:text-gray-400">Aylık Fiyat:</span>
-                                <span class="font-semibold text-green-600">{{ number_format($ilan->yazlikDetail->aylik_fiyat, 0, ',', '.') }} ₺</span>
+                                <span class="font-semibold text-green-600 dark:text-green-400">{{ number_format($ilan->yazlikDetail->aylik_fiyat, 0, ',', '.') }} {{ $ilan->para_birimi ?? 'TRY' }}/Ay</span>
                             </div>
                             @endif
 
@@ -376,6 +417,11 @@
                     </div>
                 </div>
             </div>
+        </div>
+        
+        {{-- Listing Navigation --}}
+        <div class="mt-8">
+            <x-listing-navigation :ilan="$ilan" :mode="'default'" :showSimilar="true" :similarLimit="4" />
         </div>
     </div>
 

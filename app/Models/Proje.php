@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Traits\HasActiveScope;
 
 class Proje extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, HasActiveScope;
 
     protected $table = 'projeler';
 
@@ -111,10 +112,7 @@ class Proje extends Model
     }
 
     // Scope'lar
-    public function scopeActive($query)
-    {
-        return $query->where('status', true);
-    }
+    // ✅ REFACTORED: scopeActive moved to HasActiveScope trait
 
     public function scopeByUser($query, $userId)
     {

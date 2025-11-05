@@ -71,12 +71,26 @@ trait SearchableTrait
      */
     public function scopeFilter(Builder $query, array $filters = []): Builder
     {
+        if (empty($filters)) {
+            return $query;
+        }
+
+        // ✅ OPTIMIZED: Schema builder'ı cache'le - hasColumn() her seferinde çağrılmasın
+        $schema = $this->getConnection()->getSchemaBuilder();
+        $tableName = $this->getTable();
+        $validColumns = [];
+
         foreach ($filters as $field => $value) {
             if (empty($value)) {
                 continue;
             }
 
-            if ($this->getConnection()->getSchemaBuilder()->hasColumn($this->getTable(), $field)) {
+            // Column kontrolü cache'le (aynı request içinde tekrar kullanılabilir)
+            if (!isset($validColumns[$field])) {
+                $validColumns[$field] = $schema->hasColumn($tableName, $field);
+            }
+
+            if ($validColumns[$field]) {
                 if (is_array($value)) {
                     $query->whereIn($field, $value);
                 } else {

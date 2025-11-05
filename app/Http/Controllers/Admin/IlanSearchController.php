@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Resources\IlanInternalResource;
+use App\Http\Resources\IlanPublicResource;
 use App\Models\Ilan;
 use App\Services\IlanReferansService;
 use Illuminate\Http\Request;
@@ -37,7 +39,11 @@ class IlanSearchController extends AdminController
             ->paginate(15);
 
         if ($request->expectsJson()) {
-            return response()->json($ilanlar);
+            // Admin endpoint - Internal resource kullan
+            return response()->json([
+                'success' => true,
+                'data' => IlanInternalResource::collection($ilanlar)
+            ]);
         }
 
         return view('admin.ilan-search.index', compact('ilanlar'));
@@ -184,44 +190,32 @@ class IlanSearchController extends AdminController
         // Arama query oluştur
         $query = $this->referansService->searchQuery($searchTerm);
 
-        // İlanları getir (eager loading)
+        // İlanları getir (eager loading - optimize edilmiş)
         $ilanlar = $query->with([
-            'kategori',
-            'il',
-            'ilce',
-            'mahalle',
-            'site',
-            'ilanSahibi',
-            'danisman'
+            'kategori:id,name',
+            'il:id,il_adi',
+            'ilce:id,ilce_adi',
+            'mahalle:id,mahalle_adi',
+            'site:id,name',
+            'ilanSahibi:id,ad,soyad,telefon,cep_telefonu,email',
+            'danisman:id,name,email',
+            'fotograflar' => function($q) {
+                $q->select('id', 'ilan_id', 'dosya_yolu', 'sira', 'kapak_fotografi')
+                  ->orderBy('sira')
+                  ->limit(5); // İlk 5 fotoğraf
+            }
         ])
         ->latest()
         ->limit($limit)
         ->get();
 
-        // Response formatla
+        // Response formatla - Admin endpoint olduğu için Internal Resource kullan
         return response()->json([
             'success' => true,
             'search_term' => $searchTerm,
             'detected_type' => $detectedType,
             'count' => $ilanlar->count(),
-            'results' => $ilanlar->map(function($ilan) {
-                return [
-                    'id' => $ilan->id,
-                    'referans_no' => $ilan->referans_no,
-                    'dosya_adi' => $ilan->dosya_adi,
-                    'baslik' => $ilan->baslik,
-                    'fiyat' => $ilan->fiyat,
-                    'kategori' => $ilan->kategori?->name,
-                    'lokasyon' => $this->getLokasyonText($ilan),
-                    'site' => $ilan->site?->name,
-                    'mal_sahibi' => $ilan->ilanSahibi?->full_name ?? null,
-                    'telefon' => $ilan->ilanSahibi?->telefon ?? null,
-                    'status' => $ilan->status,
-                    'created_at' => $ilan->created_at?->format('d.m.Y'),
-                    'url' => route('admin.ilanlar.show', $ilan->id),
-                    'edit_url' => route('admin.ilanlar.edit', $ilan->id),
-                ];
-            })
+            'results' => IlanInternalResource::collection($ilanlar)
         ]);
     }
 
@@ -244,9 +238,11 @@ class IlanSearchController extends AdminController
             ], 404);
         }
 
+        $ilan->load(['kategori', 'il', 'ilce', 'site', 'ilanSahibi', 'fotograflar']);
+        
         return response()->json([
             'success' => true,
-            'ilan' => $ilan->load(['kategori', 'il', 'ilce', 'site', 'ilanSahibi'])
+            'data' => new IlanInternalResource($ilan)
         ]);
     }
 
@@ -279,7 +275,7 @@ class IlanSearchController extends AdminController
             'success' => true,
             'phone' => $phone,
             'count' => $ilanlar->count(),
-            'results' => $ilanlar
+            'results' => IlanInternalResource::collection($ilanlar)
         ]);
     }
 
@@ -320,9 +316,11 @@ class IlanSearchController extends AdminController
             ], 404);
         }
 
+        $ilan->load(['fotograflar']);
+        
         return response()->json([
             'success' => true,
-            'ilan' => $ilan
+            'data' => new IlanInternalResource($ilan)
         ]);
     }
 
@@ -354,7 +352,7 @@ class IlanSearchController extends AdminController
             'success' => true,
             'site_name' => $siteName,
             'count' => $ilanlar->count(),
-            'results' => $ilanlar
+            'results' => IlanInternalResource::collection($ilanlar)
         ]);
     }
 

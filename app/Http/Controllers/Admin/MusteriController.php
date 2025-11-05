@@ -2,6 +2,15 @@
 
 namespace App\Http\Controllers\Admin;
 
+/**
+ * @deprecated Bu controller artık kullanılmıyor. 
+ * Lütfen KisiController kullanın (admin.kisiler.* route'ları).
+ * Geriye dönük uyumluluk için redirect route'ları mevcuttur.
+ * 
+ * Context7 Standard: C7-DEPRECATED-MUSTERI-2025-11-05
+ * Bu controller'ın tüm metodları KisiController'a taşınmıştır.
+ */
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;

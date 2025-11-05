@@ -80,8 +80,8 @@
                             </p>
 
                             <div class="flex items-center justify-between mb-3">
-                                <x-price-converter :price="$ilan->fiyat" currency="TRY" />
-                                <div class="text-sm text-gray-500">
+                                <x-price-converter :price="$ilan->fiyat" :currency="$ilan->para_birimi ?? 'TRY'" :rentalType="$ilan->kiralama_turu" />
+                                <div class="text-sm text-gray-500 dark:text-gray-400">
                                     {{ ucfirst($ilan->emlak_turu) }}
                                 </div>
                             </div>

@@ -26,12 +26,22 @@ class AyarlarController extends AdminController
         'system' => 'Sistem Ayarları',
         'security' => 'Güvenlik',
         'performance' => 'Performans',
+        'qrcode' => 'QR Kod Ayarları',
+        'navigation' => 'Navigasyon Ayarları',
     ];
 
     public function index(Request $request)
     {
         $settings = Setting::orderBy('group')->orderBy('key')->get()->groupBy('group');
         $groups = self::GROUPS;
+        
+        // Get all settings as key-value array for easy access in view
+        $settingsArray = Setting::all()->pluck('value', 'key')->toArray();
+        
+        // Try to use settings/index.blade.php first, fallback to ayarlar/index.blade.php
+        if (view()->exists('admin.settings.index')) {
+            return view('admin.settings.index', compact('settings', 'groups'))->with('settings', $settingsArray);
+        }
 
         return view('admin.ayarlar.index', compact('settings', 'groups'));
     }
@@ -258,6 +268,86 @@ class AyarlarController extends AdminController
 
         return redirect()->route('admin.ayarlar.index')
             ->with('success', 'Ayar silindi!');
+    }
+
+    /**
+     * Bulk update settings (for settings form)
+     * Context7: Handle form submission from settings page
+     */
+    public function bulkUpdate(Request $request)
+    {
+        try {
+            $settingsToUpdate = $request->except(['_token', '_method']);
+            
+            foreach ($settingsToUpdate as $key => $value) {
+                // Handle checkboxes (they don't send value if unchecked)
+                if (in_array($key, ['qrcode_enabled', 'qrcode_show_on_cards', 'qrcode_show_on_detail', 
+                                    'navigation_enabled', 'navigation_show_similar', 
+                                    'email_notifications', 'sms_notifications', 
+                                    'ai_auto_description', 'ai_smart_tags',
+                                    'user_registration', 'password_strength'])) {
+                    $value = $request->has($key) ? 'true' : 'false';
+                }
+                
+                // Determine type based on key
+                $type = 'string';
+                if (in_array($key, ['qrcode_default_size', 'navigation_similar_limit', 'max_upload_size', 'session_lifetime'])) {
+                    $type = 'integer';
+                } elseif (in_array($key, ['qrcode_enabled', 'qrcode_show_on_cards', 'qrcode_show_on_detail',
+                                          'navigation_enabled', 'navigation_show_similar',
+                                          'email_notifications', 'sms_notifications',
+                                          'ai_auto_description', 'ai_smart_tags',
+                                          'user_registration', 'password_strength', 'maintenance_mode'])) {
+                    $type = 'boolean';
+                }
+                
+                // Determine group based on key prefix
+                $group = 'general';
+                if (str_starts_with($key, 'qrcode_')) {
+                    $group = 'qrcode';
+                } elseif (str_starts_with($key, 'navigation_')) {
+                    $group = 'navigation';
+                } elseif (str_starts_with($key, 'ai_') || str_starts_with($key, 'openai_') || str_starts_with($key, 'deepseek_') || str_starts_with($key, 'google_') || str_starts_with($key, 'anthropic_') || str_starts_with($key, 'ollama_')) {
+                    $group = 'ai';
+                } elseif (str_starts_with($key, 'email_') || str_starts_with($key, 'smtp_')) {
+                    $group = 'email';
+                } elseif (str_starts_with($key, 'social_')) {
+                    $group = 'social';
+                } elseif (str_starts_with($key, 'seo_') || str_starts_with($key, 'google_analytics')) {
+                    $group = 'seo';
+                } elseif (str_starts_with($key, 'currency_') || str_starts_with($key, 'default_currency') || str_starts_with($key, 'price_')) {
+                    $group = 'currency';
+                } elseif (str_starts_with($key, 'user_') || str_starts_with($key, 'password_')) {
+                    $group = 'system';
+                } elseif (str_starts_with($key, 'maintenance_') || str_starts_with($key, 'max_upload_') || str_starts_with($key, 'session_')) {
+                    $group = 'system';
+                }
+                
+                Setting::updateOrCreate(
+                    ['key' => $key],
+                    [
+                        'value' => $value,
+                        'type' => $type,
+                        'group' => $group,
+                    ]
+                );
+            }
+            
+            // Clear cache
+            Setting::clearCache();
+            
+            // Clear QR Code and Navigation caches
+            \Illuminate\Support\Facades\Cache::tags(['qrcode', 'navigation'])->flush();
+            
+            return redirect()->route('admin.ayarlar.index')
+                ->with('success', 'Ayarlar başarıyla güncellendi!');
+        } catch (\Exception $e) {
+            \App\Services\Logging\LogService::error('Settings bulk update failed', [], $e);
+            
+            return redirect()->back()
+                ->with('error', 'Ayarlar güncellenirken hata oluştu: ' . $e->getMessage())
+                ->withInput();
+        }
     }
 
     /**

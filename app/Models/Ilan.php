@@ -257,6 +257,17 @@ class Ilan extends Model
         'ruhsat_durumu',
         'personel_kapasitesi',
         'isyeri_cephesi',
+
+        // Referans & Dosyalama Sistemi (Context7 Standardı)
+        'referans_no',
+        'dosya_adi',
+        'sahibinden_id',
+        'emlakjet_id',
+        'hepsiemlak_id',
+        'zingat_id',
+        'hurriyetemlak_id',
+        'portal_sync_status',
+        'portal_pricing',
     ];
 
     /**
@@ -324,6 +335,10 @@ class Ilan extends Model
         'ciro_bilgisi' => 'float',
         'personel_kapasitesi' => 'integer',
         'isyeri_cephesi' => 'integer',
+
+        // Referans & Dosyalama Sistemi (Context7 Standardı)
+        'portal_sync_status' => 'array',
+        'portal_pricing' => 'array',
     ];
 
     // ======================================================================
@@ -536,6 +551,8 @@ class Ilan extends Model
     public function ozellikler(): BelongsToMany
     {
         // TODO: listing_feature ile ilan_feature tablolarını tekilleştir.
+        // Plan: Migration oluştur, listing_feature tablosunu ilan_feature'e merge et, eski tabloyu kaldır
+        // Not: Bu değişiklik için veri migration gerekli, dikkatli yapılmalı
         return $this->belongsToMany(Feature::class, 'ilan_feature', 'ilan_id', 'feature_id')
             ->withPivot('value')
             ->withTimestamps();

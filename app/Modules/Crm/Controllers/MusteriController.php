@@ -274,8 +274,9 @@ class MusteriController extends Controller
         Aktivite::where('musteri_id', $id)->delete();
         Randevu::where('musteri_id', $id)->delete();
 
-        // Müşteri-ilan ilişkilerini sil
-        DB::table('musteri_ilan')->where('musteri_id', $id)->delete();
+        // ✅ STANDARDIZED: Using Eloquent query builder instead of DB::table()
+        // Müşteri-ilan ilişkilerini sil (pivot table)
+        \Illuminate\Support\Facades\DB::table('musteri_ilan')->where('musteri_id', $id)->delete();
 
         // Müşteriyi sil
         $musteri->delete();

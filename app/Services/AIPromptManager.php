@@ -4,6 +4,7 @@ namespace App\Services;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
+use App\Services\Cache\CacheHelper;
 
 class AIPromptManager
 {
@@ -48,12 +49,19 @@ class AIPromptManager
      */
     public function getBestPrompt($context)
     {
-        $learnedPrompts = Cache::remember("best_prompt_{$context}", 3600, function () use ($context) {
-            return \App\Models\AICoreSystem::where('context', $context)
-                ->where('enabled', true)
-                ->orderBy('success_rate', 'desc')
-                ->first();
-        });
+        // ✅ STANDARDIZED: Using CacheHelper
+        $learnedPrompts = CacheHelper::remember(
+            'ai',
+            'best_prompt',
+            'medium',
+            function () use ($context) {
+                return \App\Models\AICoreSystem::where('context', $context)
+                    ->where('enabled', true)
+                    ->orderBy('success_rate', 'desc')
+                    ->first();
+            },
+            ['context' => $context]
+        );
 
         if ($learnedPrompts) {
             return $learnedPrompts->prompt_template;

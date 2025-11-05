@@ -4,7 +4,8 @@ use App\Modules\TalepAnaliz\Controllers\TalepAnalizController;
 use Illuminate\Support\Facades\Route;
 
 // Talep Analiz Rotaları - Admin Panel
-Route::middleware(['auth', 'role:admin,danisman'])->prefix('admin/talep-analiz')->name('admin.talep-analiz.')->group(function () {
+// ✅ CSRF koruması: web middleware grubu otomatik olarak CSRF koruması sağlar
+Route::middleware(['web', 'auth', 'role:admin,danisman'])->prefix('admin/talep-analiz')->name('admin.talep-analiz.')->group(function () {
     // Ana analiz sayfası
     Route::get('/', [TalepAnalizController::class, 'index'])->name('index');
 
@@ -17,6 +18,10 @@ Route::middleware(['auth', 'role:admin,danisman'])->prefix('admin/talep-analiz')
     // Toplu analiz işlemi
     Route::post('/toplu-analiz', [TalepAnalizController::class, 'topluAnalizEt'])->name('toplu');
 
-    // PDF rapor oluşturma
+    // Progress tracking
+    Route::get('/progress/{jobId}', [TalepAnalizController::class, 'getProgress'])->name('progress');
+    Route::get('/results/{jobId}', [TalepAnalizController::class, 'getResults'])->name('results');
+
+    // PDF/Excel rapor oluşturma
     Route::get('/{id}/rapor', [TalepAnalizController::class, 'raporOlustur'])->name('rapor');
 });

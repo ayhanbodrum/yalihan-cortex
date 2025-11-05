@@ -1295,5 +1295,837 @@
         },
         
         "reference_file": "yalihan-bekci/rules/CODE_QUALITY_RULES.json"
+    },
+    "standardization_standards_2025_11_05": {
+        "version": "1.0.0",
+        "last_updated": "2025-11-05T12:00:00Z",
+        "category": "code_standardization",
+        "description": "Context7 Code Standardization Standards - Cache, Error Handling, Logging",
+        "enforcement": "STRICT",
+        "status": "ACTIVE",
+        
+        "cache_standardization": {
+            "service": "App\\Services\\Cache\\CacheService",
+            "helper": "App\\Services\\Cache\\CacheHelper",
+            "forbidden_patterns": [
+                "Cache::remember",
+                "Cache::get",
+                "Cache::put",
+                "Cache::forget"
+            ],
+            "required_pattern": "CacheHelper::remember|CacheHelper::get|CacheHelper::put|CacheHelper::forget",
+            "key_format": "emlak_pro:{namespace}:{key}:{params}",
+            "ttl_presets": {
+                "very_short": "60 seconds",
+                "short": "5 minutes",
+                "medium": "1 hour",
+                "long": "24 hours",
+                "very_long": "7 days"
+            },
+            "examples": {
+                "correct": "CacheHelper::remember('currency', 'tcmb_rates_today', 'medium', function() { return $data; })",
+                "incorrect": "Cache::remember('tcmb.rates.today', 3600, function() { return $data; })"
+            }
+        },
+        
+        "error_handling_standardization": {
+            "service": "App\\Services\\Response\\ResponseService",
+            "handler": "App\\Services\\Response\\ErrorHandlerService",
+            "forbidden_patterns": [
+                "response()->json(['success' => false])",
+                "redirect()->back()->with('error')"
+            ],
+            "required_pattern": "ResponseService::success|ResponseService::error|ResponseService::serverError|ResponseService::backError",
+            "api_response_format": {
+                "success": {
+                    "success": true,
+                    "message": "string",
+                    "data": "mixed",
+                    "timestamp": "ISO 8601"
+                },
+                "error": {
+                    "success": false,
+                    "message": "string",
+                    "errors": "array",
+                    "code": "string",
+                    "timestamp": "ISO 8601"
+                }
+            },
+            "automatic_logging": true,
+            "examples": {
+                "correct": "ResponseService::serverError('Hata mesajı', $exception)",
+                "incorrect": "return response()->json(['error' => 'Hata'], 500)"
+            }
+        },
+        
+        "logging_standardization": {
+            "service": "App\\Services\\Logging\\LogService",
+            "helper": "App\\Services\\Logging\\LogHelper",
+            "forbidden_patterns": [
+                "Log::info",
+                "Log::error",
+                "Log::warning",
+                "Log::debug",
+                "logger("
+            ],
+            "required_pattern": "LogService::info|LogService::error|LogService::warning|LogService::debug|LogService::api|LogService::database|LogService::auth|LogService::ai",
+            "log_levels": ["debug", "info", "warning", "error", "critical"],
+            "log_channels": ["stack", "api", "database", "auth", "payment", "ai"],
+            "automatic_context": [
+                "timestamp",
+                "url",
+                "method",
+                "user_id",
+                "ip"
+            ],
+            "specialized_methods": {
+                "api": "LogService::api('/endpoint', $requestData, $responseData, $duration)",
+                "database": "LogService::database('operation', 'table', $data, $affectedRows)",
+                "auth": "LogService::auth('event', $userId, $context)",
+                "ai": "LogService::ai('operation', 'provider', $context, $duration)",
+                "action": "LogService::action('action', 'resource', $resourceId, $context)"
+            },
+            "examples": {
+                "correct": "LogService::error('Hata oluştu', ['context' => '...'], $exception)",
+                "incorrect": "Log::error('Hata: ' . $e->getMessage())"
+            }
+        },
+        
+        "migration_checklist": {
+            "cache": [
+                "Cache::remember → CacheHelper::remember",
+                "Cache::get → CacheHelper::get",
+                "Cache::put → CacheHelper::put",
+                "Cache::forget → CacheHelper::forget",
+                "Key format kontrolü",
+                "TTL preset kullanımı"
+            ],
+            "error_handling": [
+                "response()->json() → ResponseService::success/error",
+                "redirect()->back()->with('error') → ResponseService::backError",
+                "Exception handler'ları güncelle",
+                "Automatic logging kontrolü"
+            ],
+            "logging": [
+                "Log::info → LogService::info",
+                "Log::error → LogService::error",
+                "Log::warning → LogService::warning",
+                "Context bilgisi ekle",
+                "Specialized method kullanımı"
+            ]
+        },
+        
+        "reference_docs": [
+            ".context7/STANDARDIZATION_STANDARDS.md",
+            ".yalihan-bekci/knowledge/standardization-standards-2025-11-05.json"
+        ],
+        
+        "migration_status": {
+            "total_files": 18,
+            "migrated_files": 18,
+            "total_usage": 150,
+            "migrated_usage": 150,
+            "last_migration": "2025-11-05T12:00:00Z"
+        }
+    },
+    "todo_analysis_2025_11_05": {
+        "version": "1.0.0",
+        "last_updated": "2025-11-05T12:30:00Z",
+        "status": "ANALYZED",
+        
+        "completed_todos": {
+            "count": 16,
+            "files_cleaned": [
+                "PhotoController.php",
+                "TakvimController.php"
+            ],
+            "cleaned_date": "2025-11-05T12:30:00Z"
+        },
+        
+        "remaining_todos": {
+            "total": 21,
+            "by_priority": {
+                "high": 0,
+                "medium": 5,
+                "low": 16
+            },
+            "by_category": {
+                "model_waiting": 6,
+                "refactoring": 1,
+                "feature": 2,
+                "other": 12
+            }
+        },
+        
+        "priority_todos": [
+            {
+                "file": "TalepAnalizController.php",
+                "todo": "Toplu analiz özelliği",
+                "priority": "medium",
+                "estimated_time": "4-6 hours"
+            },
+            {
+                "file": "TalepAnalizController.php",
+                "todo": "Rapor oluşturma",
+                "priority": "medium",
+                "estimated_time": "3-4 hours"
+            },
+            {
+                "file": "BookingRequestController.php",
+                "todo": "Database kaydetme, email template",
+                "priority": "medium",
+                "estimated_time": "2-3 hours"
+            }
+        ],
+        
+        "reference_docs": [
+            ".context7/TODO_ANALYSIS.md"
+        ]
+    },
+    "phpdoc_standardization_2025_11_05": {
+        "version": "1.0.0",
+        "last_updated": "2025-11-05T18:00:00Z",
+        "status": "IN_PROGRESS",
+        "description": "PHPDoc standardizasyonu - Controller metodlarına @param, @return, @throws tag'leri eklendi",
+        
+        "standard_format": {
+            "description": "PHPDoc standart formatı",
+            "template": "/**\n * Kısa açıklama (1 satır)\n * Detaylı açıklama (opsiyonel)\n * Context7: İlgili bilgi (varsa)\n *\n * @param Type $paramName Açıklama\n * @return Type Açıklama\n * @throws ExceptionType Açıklama (varsa)\n */",
+            "required_tags": ["@param", "@return"],
+            "optional_tags": ["@throws"]
+        },
+        
+        "completed_controllers": {
+            "PhotoController": {
+                "file": "app/Http/Controllers/Admin/PhotoController.php",
+                "methods": 17,
+                "status": "completed"
+            },
+            "TakvimController": {
+                "file": "app/Http/Controllers/Admin/TakvimController.php",
+                "methods": 15,
+                "status": "completed"
+            },
+            "DashboardController": {
+                "file": "app/Http/Controllers/Admin/DashboardController.php",
+                "methods": 16,
+                "status": "completed"
+            },
+            "IlanKategoriController": {
+                "file": "app/Http/Controllers/Admin/IlanKategoriController.php",
+                "methods": 16,
+                "status": "completed"
+            },
+            "PriceController": {
+                "file": "app/Http/Controllers/Admin/PriceController.php",
+                "methods": 10,
+                "status": "completed"
+            },
+            "IlanController": {
+                "file": "app/Http/Controllers/Admin/IlanController.php",
+                "methods": 31,
+                "status": "completed"
+            },
+            "TalepController": {
+                "file": "app/Http/Controllers/Admin/TalepController.php",
+                "methods": 12,
+                "status": "completed"
+            },
+            "KisiController": {
+                "file": "app/Http/Controllers/Admin/KisiController.php",
+                "methods": 13,
+                "status": "completed"
+            },
+            "CRMController": {
+                "file": "app/Http/Controllers/Admin/CRMController.php",
+                "methods": 4,
+                "status": "completed"
+            },
+            "EslesmeController": {
+                "file": "app/Http/Controllers/Admin/EslesmeController.php",
+                "methods": 14,
+                "status": "completed"
+            }
+        },
+        
+        "statistics": {
+            "total_controllers": 10,
+            "total_methods": 148,
+            "public_methods": 120,
+            "private_methods": 28,
+            "tag_counts": {
+                "@param": 148,
+                "@return": 148,
+                "@throws": 55
+            }
+        },
+        
+        "benefits": [
+            "Kod dokümantasyonu iyileşti",
+            "IDE autocomplete desteği arttı",
+            "Type safety iyileşti",
+            "Context7 uyumlu açıklamalar eklendi",
+            "Kod okunabilirliği arttı",
+            "API dokümantasyonu için hazır"
+        ],
+        
+        "next_steps": [
+            "KisiController PHPDoc ekle",
+            "CRMController PHPDoc ekle",
+            "EslesmeController PHPDoc ekle",
+            "Service metodlarına PHPDoc ekle",
+            "Model metodlarına PHPDoc ekle"
+        ],
+        
+        "reference_docs": [
+            ".yalihan-bekci/knowledge/phpdoc-standardization-2025-11-05.json"
+        ]
+    },
+    "rental_price_display_standard_2025_11_05": {
+        "version": "1.0.0",
+        "last_updated": "2025-11-05T20:00:00Z",
+        "status": "COMPLETED",
+        "description": "Kiralama fiyat gösterimi standardı - TEKCE.com benzeri 'ay - gün - sezonluk' formatı",
+        
+        "standard_format": {
+            "format": "Fiyat + Para Birimi + Periyot",
+            "examples": {
+                "gunluk": "2.500 TL/Gün",
+                "haftalik": "15.000 TL/Hafta",
+                "aylik": "75.000 TL/Ay",
+                "uzun_donem": "75.000 TL/Ay",
+                "sezonluk": "150.000 TL/Sezon"
+            }
+        },
+        
+        "rental_types": {
+            "gunluk": "/Gün",
+            "haftalik": "/Hafta",
+            "aylik": "/Ay",
+            "uzun_donem": "/Ay",
+            "sezonluk": "/Sezon"
+        },
+        
+        "updated_files": {
+            "price-display.blade.php": "Kiralama türüne göre periyot gösterimi eklendi",
+            "ilan-card-rental.blade.php": "monthlyPrice parametresi ve periyot gösterimi",
+            "listing-card.blade.php": "Kiralama türüne göre fiyat formatı",
+            "admin/ilanlar/show.blade.php": "Ana fiyat ve yazlık detay fiyatları",
+            "admin/ilanlar/index.blade.php": "Liste tablosunda fiyat gösterimi",
+            "frontend/ilanlar/show.blade.php": "Ana fiyat ve benzer ilanlar",
+            "ilanlar/index.blade.php": "Frontend liste sayfası fiyat gösterimi",
+            "components/home/featured-properties.blade.php": "Öne çıkan ilanlar fiyat gösterimi",
+            "ilanlar/danisman-ilanlari.blade.php": "Danışman ilanları fiyat gösterimi",
+            "price-converter.blade.php": "Fiyat dönüştürücü component rental type desteği"
+        },
+        
+        "implementation_rule": {
+            "description": "Kiralama ilanlarında fiyat gösterimi ZORUNLU olarak periyot içermelidir",
+            "pattern": "@if ($ilan->kiralama_turu)\n    @switch($ilan->kiralama_turu)\n        @case('gunluk'): /Gün\n        @case('aylik'): /Ay\n        @case('uzun_donem'): /Ay\n        @case('sezonluk'): /Sezon\n    @endswitch\n@endif",
+            "required": true,
+            "enforcement": "STRICT - All rental listings must show period"
+        },
+        
+        "multiple_price_display": {
+            "enabled": true,
+            "description": "Ana fiyattan farklı fiyatlar varsa gösterilir (günlük, haftalık, aylık, sezonluk)",
+            "layout": "Grid layout (responsive)"
+        },
+        
+        "currency_display": {
+            "format": "Fiyat + Para Birimi + Periyot",
+            "default": "TRY",
+            "supported": ["TRY", "USD", "EUR", "GBP"]
+        },
+        
+        "dark_mode": {
+            "required": true,
+            "classes": "dark:text-white, dark:text-gray-400, dark:bg-gray-800"
+        },
+        
+        "reference": {
+            "tekce_com": "https://tekce.com/tr/blog/ipuclari-ve-oneriler/farkli-web-sitelerindeki-farkli-fiyatlar",
+            "knowledge_base": ".yalihan-bekci/knowledge/rental-price-display-standard-2025-11-05.json"
+        }
+    },
+    "price_history_chart_system_2025_11_05": {
+        "version": "1.0.0",
+        "last_updated": "2025-11-05T21:00:00Z",
+        "status": "COMPLETED",
+        "description": "Fiyat geçmişi grafik sistemi - Chart.js ile interaktif line chart, trend analizi ve istatistikler",
+        
+        "component": {
+            "file": "resources/views/components/price-history-chart.blade.php",
+            "props": {
+                "ilan": "Ilan model (required)",
+                "height": "Chart height (default: '400px')",
+                "showStats": "Show statistics (default: true)",
+                "showTable": "Show history table (default: true)"
+            }
+        },
+        
+        "features": {
+            "interactive_chart": {
+                "library": "Chart.js 4.4.0",
+                "type": "Line Chart",
+                "features": ["Hover tooltips", "Smooth animations", "Responsive", "Dark mode"]
+            },
+            "statistics": {
+                "initial_price": "Başlangıç fiyatı",
+                "current_price": "Güncel fiyat",
+                "max_price": "En yüksek fiyat",
+                "price_change": "Fiyat değişimi (tutar ve yüzde)"
+            },
+            "time_range_filter": {
+                "options": ["Son 7 Gün", "Son 30 Gün", "Son 3 Ay", "Son 1 Yıl", "Tüm Zamanlar"]
+            },
+            "price_history_table": {
+                "columns": ["Tarih", "Eski Fiyat", "Yeni Fiyat", "Değişim", "Neden"]
+            }
+        },
+        
+        "api_endpoint": {
+            "route": "/admin/ilanlar/{ilan}/price-history",
+            "method": "GET",
+            "parameters": {
+                "range": "Time range (7, 30, 90, 365, 'all')"
+            }
+        },
+        
+        "usage": {
+            "basic": "<x-price-history-chart :ilan=\"$ilan\" />",
+            "with_options": "<x-price-history-chart :ilan=\"$ilan\" :showStats=\"true\" :showTable=\"true\" :height=\"'350px'\" />"
+        },
+        
+        "implementation": {
+            "controller": "IlanController@priceHistoryApi",
+            "model": "IlanPriceHistory",
+            "observer": "IlanObserver (auto-saves changes)",
+            "chart_library": "Chart.js 4.4.0"
+        },
+        
+        "reference": {
+            "knowledge_base": ".yalihan-bekci/knowledge/price-history-chart-system-2025-11-05.json"
+        }
+    },
+    "revy_style_feature_categories_2025_11_05": {
+        "version": "1.0.0",
+        "last_updated": "2025-11-05T22:00:00Z",
+        "status": "COMPLETED",
+        "description": "Revy.com.tr tarzı modal tabanlı özellik seçim sistemi için kategori ve özellik seeder'ı",
+        
+        "categories": {
+            "ic_ozellikleri": {
+                "name": "İç Özellikleri",
+                "slug": "ic-ozellikleri",
+                "type": "interior",
+                "order": 10,
+                "features_count": 34
+            },
+            "dis_ozellikleri": {
+                "name": "Dış Özellikleri",
+                "slug": "dis-ozellikleri",
+                "type": "exterior",
+                "order": 20,
+                "features_count": 13
+            },
+            "muhit": {
+                "name": "Muhit",
+                "slug": "muhit",
+                "type": "neighborhood",
+                "order": 30,
+                "features_count": 10
+            },
+            "ulasim": {
+                "name": "Ulaşım",
+                "slug": "ulasim",
+                "type": "transportation",
+                "order": 40,
+                "features_count": 8
+            },
+            "cephe": {
+                "name": "Cephe",
+                "slug": "cephe",
+                "type": "facade",
+                "order": 50,
+                "features_count": 10
+            },
+            "manzara": {
+                "name": "Manzara",
+                "slug": "manzara",
+                "type": "view",
+                "order": 60,
+                "features_count": 12
+            }
+        },
+        
+        "total_statistics": {
+            "categories": 6,
+            "features": 87
+        },
+        
+        "seeder": {
+            "file": "database/seeders/RevyStyleFeatureCategoriesSeeder.php",
+            "master_integration": "Context7MasterSeeder.php (8b. adım)",
+            "command": "php artisan db:seed --class=RevyStyleFeatureCategoriesSeeder"
+        },
+        
+        "component_integration": {
+            "feature_modal_selector": "resources/views/components/feature-modal-selector.blade.php",
+            "feature_categories_modal": "resources/views/components/feature-categories-modal.blade.php",
+            "api_endpoint": "/api/admin/features/category/{categorySlug}",
+            "controller": "App\\Http\\Controllers\\Api\\FeatureController"
+        },
+        
+        "context7_compliance": {
+            "status": "✅ COMPLIANT",
+            "schema_checks": true,
+            "field_naming": "English slugs, Turkish names",
+            "no_forbidden_patterns": true
+        },
+        
+        "reference": {
+            "inspiration": "Revy.com.tr modal tabanlı özellik seçim sistemi",
+            "knowledge_base": ".yalihan-bekci/knowledge/revy-style-feature-categories-2025-11-05.json"
+        }
+    },
+    "demographic_info_on_property_cards_2025_11_05": {
+        "version": "1.0.0",
+        "last_updated": "2025-11-05T23:00:00Z",
+        "status": "PROPOSED",
+        "description": "Emlak kartlarında demografik bilgi gösterimi - TÜİK ve TurkiyeAPI entegrasyonu",
+        
+        "tuik_r_package_analysis": {
+            "github_url": "https://github.com/emraher/tuik",
+            "language": "R",
+            "limitation": "R paketi - PHP/Laravel'de direkt kullanılamaz",
+            "note": "TÜİK verilerine alternatif erişim yöntemi gerekli"
+        },
+        
+        "recommendation": {
+            "verdict": "✅ EVET, kesinlikle faydalı!",
+            "priority": "HIGH",
+            "reasoning": [
+                "Yatırımcılar için kritik bilgi",
+                "Rekabet avantajı sağlar",
+                "Kullanıcı deneyimini iyileştirir",
+                "TurkiyeAPI'den nüfus bilgisi zaten mevcut"
+            ]
+        },
+        
+        "suggested_data": {
+            "primary": {
+                "population": {
+                    "source": "TurkiyeAPI",
+                    "available": true,
+                    "priority": "high"
+                },
+                "education_level": {
+                    "source": "TÜİK",
+                    "available": false,
+                    "priority": "high"
+                },
+                "average_age": {
+                    "source": "TÜİK",
+                    "available": false,
+                    "priority": "medium"
+                }
+            },
+            "secondary": {
+                "gender_ratio": "TÜİK",
+                "household_size": "TÜİK",
+                "employment_rate": "TÜİK"
+            }
+        },
+        
+        "component": {
+            "file": "resources/views/components/demographic-info-card.blade.php",
+            "props": {
+                "population": "Nüfus bilgisi",
+                "educationLevel": "Eğitim seviyesi (%)",
+                "averageAge": "Ortalama yaş",
+                "genderRatio": "Kadın nüfus oranı (%)",
+                "householdSize": "Hane halkı büyüklüğü",
+                "employmentRate": "İstihdam oranı (%)",
+                "compact": "Kompakt görünüm (boolean)"
+            }
+        },
+        
+        "implementation_plan": {
+            "phase_1": {
+                "description": "TurkiyeAPI nüfus bilgisini göster",
+                "effort": "Düşük",
+                "timeline": "1 gün",
+                "status": "ready"
+            },
+            "phase_2": {
+                "description": "TÜİK verilerini entegre et",
+                "effort": "Orta-Yüksek",
+                "timeline": "3-5 gün",
+                "status": "pending"
+            }
+        },
+        
+        "benefits": {
+            "for_buyers": [
+                "Yatırım analizi",
+                "Hedef kitle bilgisi",
+                "Yaşam kalitesi göstergesi",
+                "Uzun vadeli değer artışı tahmini"
+            ],
+            "for_platform": [
+                "Rekabet avantajı",
+                "SEO faydası",
+                "Kullanıcı memnuniyeti"
+            ]
+        },
+        
+        "reference": {
+            "tuik_r_package": "https://github.com/emraher/tuik",
+            "tuik_data_portal": "https://data.tuik.gov.tr",
+            "knowledge_base": ".yalihan-bekci/knowledge/demographic-info-on-property-cards-2025-11-05.json"
+        }
+    },
+    "external_apis_documentation_2025_11_05": {
+        "version": "1.0.0",
+        "last_updated": "2025-11-05T23:30:00Z",
+        "status": "ACTIVE",
+        "description": "Tüm dış API'lerin detaylı dokümantasyonu",
+        
+        "apis": {
+            "turkiyeapi": {
+                "name": "TurkiyeAPI",
+                "endpoints": 7,
+                "unified_methods": 2,
+                "demographic_data": true,
+                "cache_ttl": 86400
+            },
+            "tcmb": {
+                "name": "TCMB",
+                "endpoints": 1,
+                "service_methods": 8,
+                "supported_currencies": 7,
+                "cache_ttl": 3600
+            },
+            "wikimapia": {
+                "name": "WikiMapia",
+                "endpoints": 6,
+                "special_methods": 1,
+                "api_key_required": true,
+                "cache_ttl": 86400
+            },
+            "nominatim": {
+                "name": "Nominatim",
+                "endpoints": 2,
+                "rate_limit": "1 req/sec",
+                "cache_ttl": 86400
+            }
+        },
+        
+        "unified_services": {
+            "UnifiedLocationService": {
+                "dependencies": ["TurkiyeAPIService", "WikimapiaService"],
+                "methods": 1
+            }
+        },
+        
+        "statistics": {
+            "total_apis": 4,
+            "total_endpoints": 17,
+            "total_methods": 20,
+            "unified_services": 1
+        },
+        
+        "reference": {
+            "knowledge_base": ".yalihan-bekci/knowledge/external-apis-documentation-2025-11-05.json",
+            "turkiyeapi_docs": "https://docs.turkiyeapi.dev",
+            "tcmb_docs": "https://www.tcmb.gov.tr/kurlar/",
+            "wikimapia_docs": "https://wikimapia.org/api/",
+            "nominatim_docs": "https://nominatim.org/release-docs/latest/api/Overview/"
+        }
+    },
+    "flynax_plugins_analysis_2025_11_05": {
+        "version": "1.0.0",
+        "last_updated": "2025-11-05T23:45:00Z",
+        "status": "COMPLETED",
+        "description": "Flynax plugin'lerinin projede mevcut olup olmadığı ve ihtiyaç analizi",
+        
+        "summary": {
+            "total_plugins": 10,
+            "fully_implemented": 5,
+            "partially_implemented": 2,
+            "not_implemented": 3,
+            "implementation_rate": "70%"
+        },
+        
+        "fully_implemented": [
+            "Currency Converter",
+            "Filter",
+            "Location Filter",
+            "OpenAI",
+            "Social Meta Tags"
+        ],
+        
+        "partially_implemented": [
+            {
+                "plugin": "Listing Carousel",
+                "status": "Grid var, carousel yok",
+                "needs": "Swipe gestures, auto-scroll, touch navigation"
+            },
+            {
+                "plugin": "Listing Label",
+                "status": "Basit badge var, gelişmiş label yok",
+                "needs": "Admin label yönetimi, label bazlı filtreleme"
+            }
+        ],
+        
+        "not_implemented": [
+            {
+                "plugin": "Listing Navigation",
+                "priority": "HIGH",
+                "effort": "1-2 gün",
+                "reason": "Kullanıcı deneyimi iyileştirmesi"
+            },
+            {
+                "plugin": "QR Code Generator",
+                "priority": "HIGH",
+                "effort": "1 gün",
+                "reason": "Mobil pazarlama faydası"
+            },
+            {
+                "plugin": "Field Bound Boxes",
+                "priority": "MEDIUM",
+                "effort": "2-3 gün",
+                "reason": "Ana sayfa navigasyon iyileştirmesi"
+            }
+        ],
+        
+        "recommendations": {
+            "high_priority": [
+                "Listing Navigation",
+                "QR Code Generator"
+            ],
+            "medium_priority": [
+                "Listing Carousel",
+                "Field Bound Boxes"
+            ]
+        },
+        
+        "reference": {
+            "knowledge_base": ".yalihan-bekci/knowledge/flynax-plugins-analysis-2025-11-05.json",
+            "flynax_plugins": "https://www.flynax.com/plugins/"
+        }
+    },
+    
+    "code_quality_analysis_2025_11_05": {
+        "standard": "C7-CODE-CHECK-2025-11-05",
+        "description": "Kapsamlı kod kontrolü sistemi - Yalıhan Bekçi entegrasyonu",
+        "script": "scripts/comprehensive-code-check.php",
+        "knowledge_base": ".yalihan-bekci/knowledge/code-analysis-terms-2025-11-05.json",
+        
+        "when_user_says": [
+            "kod kontrolü yapalım",
+            "code review yap",
+            "kod analizi yap",
+            "code check yap",
+            "kod kontrolü",
+            "code control",
+            "comprehensive code check"
+        ],
+        
+        "analysis_types": {
+            "1_lint_control": {
+                "name": "Lint Kontrolü",
+                "description": "Syntax hataları, type hataları, coding standards",
+                "finds": ["Syntax errors", "Type errors", "Coding standards violations"],
+                "cannot_find": ["Dead code", "Orphaned code", "Incomplete implementations"]
+            },
+            "2_dead_code": {
+                "name": "Dead Code Analysis",
+                "description": "Kullanılmayan fonksiyonlar, sınıflar, metodlar",
+                "finds": ["Unused functions", "Unused classes", "Unused methods", "Unused imports"]
+            },
+            "3_orphaned_code": {
+                "name": "Orphaned Code",
+                "description": "Route'a bağlı olmayan controller'lar, kullanılmayan service'ler",
+                "finds": ["Unrouted controllers", "Unused services", "Unused model methods"]
+            },
+            "4_incomplete": {
+                "name": "Incomplete Implementation",
+                "description": "TODO/FIXME, boş metodlar, stub kodlar",
+                "finds": ["TODO/FIXME comments", "Empty methods", "Stub methods", "Commented code"]
+            },
+            "5_disabled": {
+                "name": "Disabled Code",
+                "description": "TEMPORARILY DISABLED, devre dışı route'lar",
+                "finds": ["Disabled routes", "Temporarily disabled code", "Commented route blocks"]
+            },
+            "6_duplication": {
+                "name": "Code Duplication",
+                "description": "Kod tekrarı, DRY prensibi ihlalleri",
+                "finds": ["Duplicate code blocks", "Similar methods", "Copy-paste code"]
+            },
+            "7_security": {
+                "name": "Security Analysis",
+                "description": "SQL injection, XSS, CSRF, authentication hataları",
+                "finds": ["SQL injection risks", "XSS vulnerabilities", "CSRF protection gaps"]
+            },
+            "8_performance": {
+                "name": "Performance Analysis",
+                "description": "N+1 queries, slow queries, memory leaks",
+                "finds": ["N+1 query problems", "Slow database queries", "Memory leaks"]
+            },
+            "9_dependency": {
+                "name": "Dependency Analysis",
+                "description": "Kullanılmayan paketler, eksik bağımlılıklar",
+                "finds": ["Unused packages", "Missing dependencies", "Circular dependencies"]
+            },
+            "10_coverage": {
+                "name": "Code Coverage",
+                "description": "Test edilmemiş kod, test kapsamı",
+                "finds": ["Untested code", "Low test coverage", "Missing tests"]
+            }
+        },
+        
+        "tools": {
+            "phpstan": {
+                "description": "PHP Static Analysis Tool",
+                "recommended_level": 5,
+                "finds": ["Type errors", "Dead code", "Unused code"]
+            },
+            "psalm": {
+                "description": "PHP Static Analysis Tool",
+                "finds": ["Type checking", "Dead code detection", "Security issues"]
+            },
+            "laravel_pint": {
+                "description": "Laravel Code Style Fixer",
+                "finds": ["Coding standards violations"]
+            },
+            "enlightn": {
+                "description": "Laravel Security & Performance Scanner",
+                "finds": ["Security issues", "Performance problems"]
+            }
+        },
+        
+        "workflow": {
+            "daily": ["Lint Kontrolü (IDE otomatik)", "Quick Dead Code Check"],
+            "weekly": ["TODO/FIXME Review", "Disabled Code Check", "Code Duplication"],
+            "before_deployment": ["Full Lint Control", "Security Analysis", "Performance Analysis"],
+            "refactoring": ["Dead Code Analysis", "Orphaned Code Detection", "Dependency Analysis"]
+        },
+        
+        "commands": {
+            "comprehensive_check": {
+                "command": "php scripts/comprehensive-code-check.php",
+                "description": "Tüm kod kontrolü analizlerini çalıştırır",
+                "output": ".yalihan-bekci/reports/comprehensive-code-check-{timestamp}.json"
+            },
+            "quick_check": {
+                "description": "Hızlı kod kontrolü - sadece kritik kontroller",
+                "includes": ["Lint", "TODO/FIXME", "Security critical"]
+            }
+        },
+        
+        "enforcement": "STRICT - Kullanıcı 'kod kontrolü yapalım' dediğinde tüm analizler çalıştırılmalı"
     }
 }

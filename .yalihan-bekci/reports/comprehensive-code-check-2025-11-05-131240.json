@@ -1,0 +1,845 @@
+{
+    "timestamp": "2025-11-05 13:12:08",
+    "summary": {
+        "lint": 0,
+        "dead_code": -1471,
+        "orphaned_code": 35,
+        "incomplete": {
+            "todos": 23,
+            "empty_methods": 0,
+            "stub_methods": 2
+        },
+        "disabled_code": 5,
+        "duplication": 125,
+        "security": 10,
+        "performance": 45,
+        "dependency": 10,
+        "test_coverage": 1
+    },
+    "details": {
+        "lint": [],
+        "dead_code": {
+            "total_classes": 485,
+            "called_methods": 1956,
+            "unused_potential": -1471
+        },
+        "orphaned_code": [
+            "app\/Http\/Controllers\/AI\/AdvancedAIController.php",
+            "app\/Http\/Controllers\/Admin\/AdminController.php",
+            "app\/Http\/Controllers\/Admin\/ArsaCalculationController.php",
+            "app\/Http\/Controllers\/Admin\/KategoriOzellikApiController.php",
+            "app\/Http\/Controllers\/Admin\/MusteriController.php",
+            "app\/Http\/Controllers\/Admin\/PerformanceController.php",
+            "app\/Http\/Controllers\/Admin\/PriceController.php",
+            "app\/Http\/Controllers\/Admin\/YalihanBekciController.php",
+            "app\/Http\/Controllers\/Api\/AIFeatureSuggestionController.php",
+            "app\/Http\/Controllers\/Api\/AdvancedAIController.php",
+            "app\/Http\/Controllers\/Api\/AkilliCevreAnaliziController.php",
+            "app\/Http\/Controllers\/Api\/AnythingLLMProxyController.php",
+            "app\/Http\/Controllers\/Api\/Context7AdvisorController.php",
+            "app\/Http\/Controllers\/Api\/Context7AuthController.php",
+            "app\/Http\/Controllers\/Api\/Context7Controller.php",
+            "app\/Http\/Controllers\/Api\/Context7CrmController.php",
+            "app\/Http\/Controllers\/Api\/Context7DashboardController.php",
+            "app\/Http\/Controllers\/Api\/Context7EmlakController.php",
+            "app\/Http\/Controllers\/Api\/Context7OzellikController.php",
+            "app\/Http\/Controllers\/Api\/Context7ProjeController.php",
+            "app\/Http\/Controllers\/Api\/Context7TeamController.php",
+            "app\/Http\/Controllers\/Api\/Context7TelegramAutomationController.php",
+            "app\/Http\/Controllers\/Api\/Context7TelegramWebhookController.php",
+            "app\/Http\/Controllers\/Api\/CrmController.php",
+            "app\/Http\/Controllers\/Api\/CurrencyController.php",
+            "app\/Http\/Controllers\/Api\/HybridSearchController.php",
+            "app\/Http\/Controllers\/Api\/ImageAIController.php",
+            "app\/Http\/Controllers\/Api\/LanguageController.php",
+            "app\/Http\/Controllers\/Api\/ListingSearchController.php",
+            "app\/Http\/Controllers\/Api\/LiveSearchController.php",
+            "app\/Http\/Controllers\/Api\/NearbyPlacesController.php",
+            "app\/Http\/Controllers\/Api\/PersonController.php",
+            "app\/Http\/Controllers\/Api\/PropertyFeatureSuggestionController.php",
+            "app\/Http\/Controllers\/Api\/PropertyValuationController.php",
+            "app\/Http\/Controllers\/Api\/SmartFieldController.php"
+        ],
+        "incomplete": {
+            "todos": [
+                {
+                    "file": "app\/Models\/Ilan.php",
+                    "line": 553,
+                    "text": "\/\/ TODO"
+                },
+                {
+                    "file": "app\/Http\/Controllers\/Admin\/DashboardController.php",
+                    "line": 100,
+                    "text": "\/\/ TODO"
+                },
+                {
+                    "file": "app\/Http\/Controllers\/Admin\/DashboardController.php",
+                    "line": 235,
+                    "text": "\/\/ TODO"
+                },
+                {
+                    "file": "app\/Http\/Controllers\/Admin\/DashboardController.php",
+                    "line": 275,
+                    "text": "\/\/ TODO"
+                },
+                {
+                    "file": "app\/Http\/Controllers\/Admin\/PriceController.php",
+                    "line": 124,
+                    "text": "\/\/ TODO"
+                },
+                {
+                    "file": "app\/Http\/Controllers\/Admin\/PriceController.php",
+                    "line": 288,
+                    "text": "\/\/ TODO"
+                },
+                {
+                    "file": "app\/Http\/Controllers\/Admin\/PriceController.php",
+                    "line": 344,
+                    "text": "\/\/ TODO"
+                },
+                {
+                    "file": "app\/Http\/Controllers\/Admin\/DanismanController.php",
+                    "line": 98,
+                    "text": "\/\/ TODO"
+                },
+                {
+                    "file": "app\/Http\/Controllers\/Admin\/PhotoController.php",
+                    "line": 467,
+                    "text": "\/\/ TODO"
+                },
+                {
+                    "file": "app\/Http\/Controllers\/Admin\/AdresYonetimiController.php",
+                    "line": 197,
+                    "text": "\/\/ TODO"
+                },
+                {
+                    "file": "app\/Http\/Controllers\/Admin\/MusteriController.php",
+                    "line": 139,
+                    "text": "\/\/ TODO"
+                },
+                {
+                    "file": "app\/Http\/Controllers\/Admin\/MusteriController.php",
+                    "line": 305,
+                    "text": "\/\/ TODO"
+                },
+                {
+                    "file": "app\/Http\/Controllers\/Admin\/MusteriController.php",
+                    "line": 353,
+                    "text": "\/\/ TODO"
+                },
+                {
+                    "file": "app\/Http\/Controllers\/Admin\/MyListingsController.php",
+                    "line": 247,
+                    "text": "\/\/ TODO"
+                },
+                {
+                    "file": "app\/Http\/Controllers\/Api\/UserController.php",
+                    "line": 30,
+                    "text": "\/\/ TODO"
+                },
+                {
+                    "file": "app\/Http\/Controllers\/Api\/BookingRequestController.php",
+                    "line": 65,
+                    "text": "\/\/ TODO"
+                },
+                {
+                    "file": "app\/Http\/Controllers\/Api\/BookingRequestController.php",
+                    "line": 93,
+                    "text": "\/\/ TODO"
+                },
+                {
+                    "file": "app\/Modules\/TalepAnaliz\/Controllers\/TalepAnalizController.php",
+                    "line": 50,
+                    "text": "\/\/ TODO"
+                },
+                {
+                    "file": "app\/Modules\/TalepAnaliz\/Controllers\/TalepAnalizController.php",
+                    "line": 80,
+                    "text": "\/\/ TODO"
+                },
+                {
+                    "file": "app\/Services\/AI\/TalepPortfolyoAIService.php",
+                    "line": 116,
+                    "text": "\/\/ TODO"
+                },
+                {
+                    "file": "app\/Services\/AI\/TalepPortfolyoAIService.php",
+                    "line": 118,
+                    "text": "\/\/ TODO"
+                },
+                {
+                    "file": "app\/Services\/AI\/TalepPortfolyoAIService.php",
+                    "line": 261,
+                    "text": "\/\/ TODO"
+                },
+                {
+                    "file": "app\/Console\/Commands\/YalihanBekciMonitor.php",
+                    "line": 159,
+                    "text": "\/\/ TODO"
+                }
+            ],
+            "empty_methods": [],
+            "stub_methods": [
+                {
+                    "file": "app\/Services\/FlexibleStorageManager.php",
+                    "line": 240,
+                    "method": [
+                        "get",
+                        5683
+                    ]
+                },
+                {
+                    "file": "app\/Services\/FlexibleStorageManager.php",
+                    "line": 252,
+                    "method": [
+                        "get",
+                        6007
+                    ]
+                }
+            ]
+        },
+        "disabled_code": [
+            {
+                "file": "app\/Http\/Controllers\/Admin\/PropertyTypeManagerController.php",
+                "line": 420,
+                "text": "\/\/ İlişkiyi kaldır veya disabled"
+            },
+            {
+                "file": "app\/Modules\/Emlak\/Models\/Ilan.php",
+                "line": 278,
+                "text": "\/\/ 'stage' => IlanStage::class, \/\/ Temporarily disabled"
+            },
+            {
+                "file": "app\/Modules\/Talep\/TalepServiceProvider.php",
+                "line": 16,
+                "text": "\/\/ TEMPORARILY DISABLED"
+            },
+            {
+                "file": "app\/Modules\/Talep\/routes\/web.php",
+                "line": 3,
+                "text": "\/\/ Routes are disabled"
+            },
+            {
+                "file": "app\/Modules\/Talep\/routes\/api.php",
+                "line": 7,
+                "text": "\/\/ Routes are disabled"
+            }
+        ],
+        "duplication": [
+            {
+                "count": 18,
+                "methods": [
+                    {
+                        "file": "app\/Models\/AIKnowledgeBase.php",
+                        "method": "scopeActive"
+                    },
+                    {
+                        "file": "app\/Models\/ExpertiseArea.php",
+                        "method": "scopeActive"
+                    },
+                    {
+                        "file": "app\/Models\/Proje.php",
+                        "method": "scopeActive"
+                    },
+                    {
+                        "file": "app\/Models\/CategoryField.php",
+                        "method": "scopeActive"
+                    },
+                    {
+                        "file": "app\/Models\/PropertyType.php",
+                        "method": "scopeActive"
+                    },
+                    {
+                        "file": "app\/Models\/BlogCategory.php",
+                        "method": "scopeActive"
+                    },
+                    {
+                        "file": "app\/Models\/CommissionRate.php",
+                        "method": "scopeActive"
+                    },
+                    {
+                        "file": "app\/Models\/BlogTag.php",
+                        "method": "scopeActive"
+                    },
+                    {
+                        "file": "app\/Models\/Gorev.php",
+                        "method": "scopeActive"
+                    },
+                    {
+                        "file": "app\/Models\/MusteriEtiket.php",
+                        "method": "scopeActive"
+                    },
+                    {
+                        "file": "app\/Models\/LanguageSetting.php",
+                        "method": "scopeActive"
+                    },
+                    {
+                        "file": "app\/Models\/Etiket.php",
+                        "method": "scopeActive"
+                    },
+                    {
+                        "file": "app\/Models\/TaxRate.php",
+                        "method": "scopeActive"
+                    },
+                    {
+                        "file": "app\/Models\/Bildirim.php",
+                        "method": "scopeActive"
+                    },
+                    {
+                        "file": "app\/Models\/YazlikFiyatlandirma.php",
+                        "method": "scopeActive"
+                    },
+                    {
+                        "file": "app\/Models\/KisiAdres.php",
+                        "method": "scopeActive"
+                    },
+                    {
+                        "file": "app\/Models\/Site.php",
+                        "method": "scopeAktif"
+                    },
+                    {
+                        "file": "app\/Modules\/Emlak\/Models\/Ozellik.php",
+                        "method": "scopeAktif"
+                    }
+                ]
+            },
+            {
+                "count": 2,
+                "methods": [
+                    {
+                        "file": "app\/Models\/AIKnowledgeBase.php",
+                        "method": "scopeByCategory"
+                    },
+                    {
+                        "file": "app\/Models\/Photo.php",
+                        "method": "scopeByCategory"
+                    }
+                ]
+            },
+            {
+                "count": 2,
+                "methods": [
+                    {
+                        "file": "app\/Models\/AIKnowledgeBase.php",
+                        "method": "scopeByLanguage"
+                    },
+                    {
+                        "file": "app\/Models\/AIEmbedding.php",
+                        "method": "scopeByLanguage"
+                    }
+                ]
+            },
+            {
+                "count": 2,
+                "methods": [
+                    {
+                        "file": "app\/Models\/AIKnowledgeBase.php",
+                        "method": "scopeRecentlyUsed"
+                    },
+                    {
+                        "file": "app\/Models\/AIEmbedding.php",
+                        "method": "scopeRecentlyUsed"
+                    }
+                ]
+            },
+            {
+                "count": 2,
+                "methods": [
+                    {
+                        "file": "app\/Models\/AIKnowledgeBase.php",
+                        "method": "scopePopular"
+                    },
+                    {
+                        "file": "app\/Models\/AIEmbedding.php",
+                        "method": "scopePopular"
+                    }
+                ]
+            },
+            {
+                "count": 2,
+                "methods": [
+                    {
+                        "file": "app\/Models\/AIKnowledgeBase.php",
+                        "method": "incrementUsage"
+                    },
+                    {
+                        "file": "app\/Models\/AIEmbedding.php",
+                        "method": "incrementUsage"
+                    }
+                ]
+            },
+            {
+                "count": 5,
+                "methods": [
+                    {
+                        "file": "app\/Models\/SiteApartman.php",
+                        "method": "il"
+                    },
+                    {
+                        "file": "app\/Models\/Musteri.php",
+                        "method": "il"
+                    },
+                    {
+                        "file": "app\/Models\/Ilce.php",
+                        "method": "il"
+                    },
+                    {
+                        "file": "app\/Models\/Talep.php",
+                        "method": "il"
+                    },
+                    {
+                        "file": "app\/Models\/Site.php",
+                        "method": "il"
+                    }
+                ]
+            },
+            {
+                "count": 4,
+                "methods": [
+                    {
+                        "file": "app\/Models\/SiteApartman.php",
+                        "method": "ilce"
+                    },
+                    {
+                        "file": "app\/Models\/Mahalle.php",
+                        "method": "ilce"
+                    },
+                    {
+                        "file": "app\/Models\/Talep.php",
+                        "method": "ilce"
+                    },
+                    {
+                        "file": "app\/Models\/Site.php",
+                        "method": "ilce"
+                    }
+                ]
+            },
+            {
+                "count": 3,
+                "methods": [
+                    {
+                        "file": "app\/Models\/SiteApartman.php",
+                        "method": "mahalle"
+                    },
+                    {
+                        "file": "app\/Models\/Talep.php",
+                        "method": "mahalle"
+                    },
+                    {
+                        "file": "app\/Models\/Site.php",
+                        "method": "mahalle"
+                    }
+                ]
+            },
+            {
+                "count": 3,
+                "methods": [
+                    {
+                        "file": "app\/Models\/SiteApartman.php",
+                        "method": "creator"
+                    },
+                    {
+                        "file": "app\/Models\/YazlikDolulukDurumu.php",
+                        "method": "createdBy"
+                    },
+                    {
+                        "file": "app\/Models\/AnahtarYonetimi.php",
+                        "method": "creator"
+                    }
+                ]
+            },
+            {
+                "count": 2,
+                "methods": [
+                    {
+                        "file": "app\/Models\/SiteApartman.php",
+                        "method": "updater"
+                    },
+                    {
+                        "file": "app\/Models\/AnahtarYonetimi.php",
+                        "method": "updater"
+                    }
+                ]
+            },
+            {
+                "count": 4,
+                "methods": [
+                    {
+                        "file": "app\/Models\/SiteApartman.php",
+                        "method": "scopeActive"
+                    },
+                    {
+                        "file": "app\/Modules\/Emlak\/Models\/Ilan.php",
+                        "method": "scopeAktif"
+                    },
+                    {
+                        "file": "app\/Modules\/Talep\/Models\/Talep.php",
+                        "method": "scopeAktif"
+                    },
+                    {
+                        "file": "app\/Modules\/TakimYonetimi\/Models\/TakimUyesi.php",
+                        "method": "scopeAktif"
+                    }
+                ]
+            },
+            {
+                "count": 2,
+                "methods": [
+                    {
+                        "file": "app\/Models\/SiteApartman.php",
+                        "method": "scopeByIl"
+                    },
+                    {
+                        "file": "app\/Models\/Site.php",
+                        "method": "scopeByIl"
+                    }
+                ]
+            },
+            {
+                "count": 2,
+                "methods": [
+                    {
+                        "file": "app\/Models\/SiteApartman.php",
+                        "method": "scopeByIlce"
+                    },
+                    {
+                        "file": "app\/Models\/Site.php",
+                        "method": "scopeByIlce"
+                    }
+                ]
+            },
+            {
+                "count": 2,
+                "methods": [
+                    {
+                        "file": "app\/Models\/Category.php",
+                        "method": "scopeMain"
+                    },
+                    {
+                        "file": "app\/Models\/BlogComment.php",
+                        "method": "scopeParentComments"
+                    }
+                ]
+            },
+            {
+                "count": 3,
+                "methods": [
+                    {
+                        "file": "app\/Models\/Category.php",
+                        "method": "scopeFeatured"
+                    },
+                    {
+                        "file": "app\/Models\/BlogPost.php",
+                        "method": "scopeFeatured"
+                    },
+                    {
+                        "file": "app\/Models\/Photo.php",
+                        "method": "scopeFeatured"
+                    }
+                ]
+            },
+            {
+                "count": 6,
+                "methods": [
+                    {
+                        "file": "app\/Models\/Category.php",
+                        "method": "scopeOfType"
+                    },
+                    {
+                        "file": "app\/Models\/Season.php",
+                        "method": "scopeByType"
+                    },
+                    {
+                        "file": "app\/Models\/FeatureCategory.php",
+                        "method": "scopeOfType"
+                    },
+                    {
+                        "file": "app\/Models\/AIStorage.php",
+                        "method": "scopeByType"
+                    },
+                    {
+                        "file": "app\/Models\/Etiket.php",
+                        "method": "scopeType"
+                    },
+                    {
+                        "file": "app\/Models\/Notification.php",
+                        "method": "scopeByType"
+                    }
+                ]
+            },
+            {
+                "count": 2,
+                "methods": [
+                    {
+                        "file": "app\/Models\/Category.php",
+                        "method": "boot"
+                    },
+                    {
+                        "file": "app\/Models\/FeatureCategory.php",
+                        "method": "boot"
+                    }
+                ]
+            },
+            {
+                "count": 11,
+                "methods": [
+                    {
+                        "file": "app\/Models\/Event.php",
+                        "method": "ilan"
+                    },
+                    {
+                        "file": "app\/Models\/IlanTakvimSync.php",
+                        "method": "ilan"
+                    },
+                    {
+                        "file": "app\/Models\/Season.php",
+                        "method": "ilan"
+                    },
+                    {
+                        "file": "app\/Models\/Photo.php",
+                        "method": "ilan"
+                    },
+                    {
+                        "file": "app\/Models\/YazlikDolulukDurumu.php",
+                        "method": "ilan"
+                    },
+                    {
+                        "file": "app\/Modules\/Finans\/Models\/Komisyon.php",
+                        "method": "ilan"
+                    },
+                    {
+                        "file": "app\/Modules\/Finans\/Models\/FinansalIslem.php",
+                        "method": "ilan"
+                    },
+                    {
+                        "file": "app\/Modules\/Talep\/Models\/IlanTalepEslesme.php",
+                        "method": "ilan"
+                    },
+                    {
+                        "file": "app\/Modules\/CRMSatis\/Models\/Sozlesme.php",
+                        "method": "ilan"
+                    },
+                    {
+                        "file": "app\/Modules\/CRMSatis\/Models\/SatisRaporu.php",
+                        "method": "ilan"
+                    },
+                    {
+                        "file": "app\/Modules\/CRMSatis\/Models\/Satis.php",
+                        "method": "ilan"
+                    }
+                ]
+            },
+            {
+                "count": 3,
+                "methods": [
+                    {
+                        "file": "app\/Models\/Event.php",
+                        "method": "scopePending"
+                    },
+                    {
+                        "file": "app\/Models\/AIChatLog.php",
+                        "method": "scopePending"
+                    },
+                    {
+                        "file": "app\/Models\/BlogComment.php",
+                        "method": "scopePending"
+                    }
+                ]
+            }
+        ],
+        "security": [
+            {
+                "file": "app\/Modules\/TalepAnaliz\/Routes\/web.php",
+                "type": "missing_csrf_protection",
+                "text": "CSRF middleware eksik olabilir"
+            },
+            {
+                "file": "app\/Modules\/Auth\/routes\/web.php",
+                "type": "missing_csrf_protection",
+                "text": "CSRF middleware eksik olabilir"
+            },
+            {
+                "file": "app\/Modules\/Crm\/routes\/api.php",
+                "type": "missing_csrf_protection",
+                "text": "CSRF middleware eksik olabilir"
+            },
+            {
+                "file": "app\/Modules\/Admin\/routes\/web.php",
+                "type": "missing_csrf_protection",
+                "text": "CSRF middleware eksik olabilir"
+            },
+            {
+                "file": "app\/Modules\/Analitik\/routes\/web.php",
+                "type": "missing_csrf_protection",
+                "text": "CSRF middleware eksik olabilir"
+            },
+            {
+                "file": "app\/Modules\/Analitik\/routes\/api.php",
+                "type": "missing_csrf_protection",
+                "text": "CSRF middleware eksik olabilir"
+            },
+            {
+                "file": "app\/Modules\/Talep\/routes\/api.php",
+                "type": "missing_csrf_protection",
+                "text": "CSRF middleware eksik olabilir"
+            },
+            {
+                "file": "app\/Modules\/TakimYonetimi\/routes\/web.php",
+                "type": "missing_csrf_protection",
+                "text": "CSRF middleware eksik olabilir"
+            },
+            {
+                "file": "app\/Modules\/TakimYonetimi\/routes\/api.php",
+                "type": "missing_csrf_protection",
+                "text": "CSRF middleware eksik olabilir"
+            },
+            {
+                "file": "app\/Services\/Integration\/EmlakProYalihanIntegrationService.php",
+                "type": "missing_csrf_protection",
+                "text": "CSRF middleware eksik olabilir"
+            }
+        ],
+        "performance": [
+            {
+                "file": "app\/Traits\/HasFeatures.php",
+                "line": 105,
+                "type": "potential_n_plus_one",
+                "text": "Loop içinde database query - N+1 riski"
+            },
+            {
+                "file": "app\/Traits\/SearchableTrait.php",
+                "line": 74,
+                "type": "potential_n_plus_one",
+                "text": "Loop içinde database query - N+1 riski"
+            },
+            {
+                "file": "app\/Models\/FeatureValue.php",
+                "line": 138,
+                "type": "potential_n_plus_one",
+                "text": "Loop içinde database query - N+1 riski"
+            },
+            {
+                "file": "app\/Models\/AIEmbedding.php",
+                "line": 307,
+                "type": "potential_n_plus_one",
+                "text": "Loop içinde database query - N+1 riski"
+            },
+            {
+                "file": "app\/Http\/Controllers\/Admin\/YazlikKiralamaController.php",
+                "line": 409,
+                "type": "potential_n_plus_one",
+                "text": "Loop içinde database query - N+1 riski"
+            },
+            {
+                "file": "app\/Http\/Controllers\/Admin\/PropertyTypeManagerController.php",
+                "line": 214,
+                "type": "potential_n_plus_one",
+                "text": "Loop içinde database query - N+1 riski"
+            },
+            {
+                "file": "app\/Http\/Controllers\/Admin\/PropertyTypeManagerController.php",
+                "line": 232,
+                "type": "potential_n_plus_one",
+                "text": "Loop içinde database query - N+1 riski"
+            },
+            {
+                "file": "app\/Http\/Controllers\/Admin\/PropertyTypeManagerController.php",
+                "line": 254,
+                "type": "potential_n_plus_one",
+                "text": "Loop içinde database query - N+1 riski"
+            },
+            {
+                "file": "app\/Http\/Controllers\/Admin\/PropertyTypeManagerController.php",
+                "line": 319,
+                "type": "potential_n_plus_one",
+                "text": "Loop içinde database query - N+1 riski"
+            },
+            {
+                "file": "app\/Http\/Controllers\/Admin\/PropertyTypeManagerController.php",
+                "line": 650,
+                "type": "potential_n_plus_one",
+                "text": "Loop içinde database query - N+1 riski"
+            },
+            {
+                "file": "app\/Http\/Controllers\/Admin\/PropertyTypeManagerController.php",
+                "line": 681,
+                "type": "potential_n_plus_one",
+                "text": "Loop içinde database query - N+1 riski"
+            },
+            {
+                "file": "app\/Http\/Controllers\/Admin\/PropertyTypeManagerController.php",
+                "line": 947,
+                "type": "potential_n_plus_one",
+                "text": "Loop içinde database query - N+1 riski"
+            },
+            {
+                "file": "app\/Http\/Controllers\/Admin\/PropertyTypeManagerController.php",
+                "line": 1066,
+                "type": "potential_n_plus_one",
+                "text": "Loop içinde database query - N+1 riski"
+            },
+            {
+                "file": "app\/Http\/Controllers\/Admin\/OzellikKategoriController.php",
+                "line": 156,
+                "type": "potential_n_plus_one",
+                "text": "Loop içinde database query - N+1 riski"
+            },
+            {
+                "file": "app\/Http\/Controllers\/Admin\/SystemMonitorController.php",
+                "line": 71,
+                "type": "potential_n_plus_one",
+                "text": "Loop içinde database query - N+1 riski"
+            },
+            {
+                "file": "app\/Http\/Controllers\/Admin\/IlanController.php",
+                "line": 824,
+                "type": "potential_n_plus_one",
+                "text": "Loop içinde database query - N+1 riski"
+            },
+            {
+                "file": "app\/Http\/Controllers\/Admin\/DashboardController.php",
+                "line": 485,
+                "type": "potential_n_plus_one",
+                "text": "Loop içinde database query - N+1 riski"
+            },
+            {
+                "file": "app\/Http\/Controllers\/Admin\/IlanSegmentController.php",
+                "line": 337,
+                "type": "potential_n_plus_one",
+                "text": "Loop içinde database query - N+1 riski"
+            },
+            {
+                "file": "app\/Http\/Controllers\/Admin\/IlanKategoriController.php",
+                "line": 446,
+                "type": "potential_n_plus_one",
+                "text": "Loop içinde database query - N+1 riski"
+            },
+            {
+                "file": "app\/Http\/Controllers\/Admin\/IlanKategoriController.php",
+                "line": 721,
+                "type": "potential_n_plus_one",
+                "text": "Loop içinde database query - N+1 riski"
+            }
+        ],
+        "dependency": {
+            "unused_packages": [
+                "bacon\/bacon-qr-code",
+                "blade-ui-kit\/blade-heroicons",
+                "blade-ui-kit\/blade-icons",
+                "brick\/math",
+                "carbonphp\/carbon-doctrine-types",
+                "darkaonline\/l5-swagger",
+                "dasprid\/enum",
+                "dflydev\/dot-access-data",
+                "doctrine\/annotations",
+                "doctrine\/dbal"
+            ]
+        },
+        "test_coverage": {
+            "total_test_files": 1,
+            "test_classes": [
+                "Context7ComplianceTest"
+            ]
+        }
+    }
+}

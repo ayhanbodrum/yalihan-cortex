@@ -6,7 +6,8 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
+use App\Models\User;
+use App\Services\Logging\LogService;
 use Symfony\Component\HttpFoundation\Response;
 
 class TrackUserActivity
@@ -29,24 +30,22 @@ class TrackUserActivity
 
                 $userId = $user->id;
 
-                // Son aktivite zamanını güncelle
-                DB::table('users')
-                    ->where('id', $userId)
-                    ->update([
-                        'last_activity_at' => now(),
-                    ]);
+                // ✅ STANDARDIZED: Using Eloquent instead of DB::table()
+                User::where('id', $userId)->update([
+                    'last_activity_at' => now(),
+                ]);
 
                 // Kullanıcının çevrimiçi olduğunu belirt (5 dakika için)
                 $expiresAt = now()->addMinutes(5);
                 Cache::put('user-online-'.$userId, true, $expiresAt);
 
             } catch (\Exception $e) {
-                // Hata statusunda sessizce devam et, kullanıcı deneyimini etkilemesin
-                \Illuminate\Support\Facades\Log::error('Kullanıcı aktivitesi güncellenemedi: '.$e->getMessage(), [
+                // ✅ STANDARDIZED: Using LogService
+                LogService::error('Kullanıcı aktivitesi güncellenemedi', [
                     'user_id' => Auth::id(),
                     'url' => $request->url(),
                     'method' => $request->method(),
-                ]);
+                ], $e);
             }
         }
 

@@ -1,5 +1,5 @@
 {{-- Price Converter Component --}}
-@props(['price', 'currency' => 'TRY', 'showConverter' => true])
+@props(['price', 'currency' => 'TRY', 'showConverter' => true, 'rentalType' => null])
 
 @php
     $currencyService = app(\App\Services\CurrencyService::class);
@@ -10,7 +10,26 @@
 <div class="price-converter-wrapper" x-data="{ showConverter: false }">
     {{-- Ana fiyat --}}
     <div class="flex items-center gap-2">
-        <span class="text-2xl font-bold text-primary-600">{{ $formattedPrice }}</span>
+        <span class="text-2xl font-bold text-primary-600 dark:text-primary-400">
+            {{ $formattedPrice }}
+            @if ($rentalType)
+                @switch($rentalType)
+                    @case('gunluk')
+                        <span class="text-lg font-normal text-gray-600 dark:text-gray-400">/Gün</span>
+                    @break
+                    @case('haftalik')
+                        <span class="text-lg font-normal text-gray-600 dark:text-gray-400">/Hafta</span>
+                    @break
+                    @case('aylik')
+                    @case('uzun_donem')
+                        <span class="text-lg font-normal text-gray-600 dark:text-gray-400">/Ay</span>
+                    @break
+                    @case('sezonluk')
+                        <span class="text-lg font-normal text-gray-600 dark:text-gray-400">/Sezon</span>
+                    @break
+                @endswitch
+            @endif
+        </span>
 
         @if ($showConverter)
             <button @click="showConverter = !showConverter"

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\IlanPublicResource;
 use App\Models\Ilan;
 use App\Models\IlanKategori;
 use App\Models\Il;
@@ -56,7 +57,22 @@ class IlanPublicController extends Controller
             'kategori:id,name'
         ]);
         
+        $query->with(['fotograflar']);
         $ilanlar = $query->orderBy('created_at', 'desc')->paginate(12);
+
+        // API response
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'data' => IlanPublicResource::collection($ilanlar->items()),
+                'meta' => [
+                    'current_page' => $ilanlar->currentPage(),
+                    'last_page' => $ilanlar->lastPage(),
+                    'per_page' => $ilanlar->perPage(),
+                    'total' => $ilanlar->total(),
+                ]
+            ]);
+        }
 
         // Filtreler için veriler
         $kategoriler = IlanKategori::where('parent_id', null)->get();
@@ -71,23 +87,32 @@ class IlanPublicController extends Controller
     public function show($id)
     {
         $ilan = Ilan::with([
-            'il', 'ilce', 'mahalle',
-            'ilanSahibi', 'danisman',
-            'kategori', 'parentKategori',
-            'ilanFotograflari'
+            'il:id,il_adi',
+            'ilce:id,ilce_adi',
+            'mahalle:id,mahalle_adi',
+            'kategori:id,name',
+            'parentKategori:id,name',
+            'fotograflar' => function($q) {
+                $q->select('id', 'ilan_id', 'dosya_yolu', 'sira', 'kapak_fotografi', 'alt_text')
+                  ->orderBy('sira');
+            }
         ])
         ->where('status', 'Aktif') // Context7 compliant!
         ->findOrFail($id);
 
-        // Benzer ilanlar
-        $benzerIlanlar = Ilan::with(['il', 'ilce', 'kategori'])
-            ->where('status', 'Aktif') // Context7 compliant!
-            ->where('kategori_id', $ilan->kategori_id)
-            ->where('id', '!=', $ilan->id)
-            ->limit(4)
-            ->get();
+        // API response
+        if (request()->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'data' => new IlanPublicResource($ilan)
+            ]);
+        }
 
-        return view('frontend.ilanlar.show', compact('ilan', 'benzerIlanlar'));
+        // Benzer ilanlar (ListingNavigationService kullanıyoruz artık)
+        $navigationService = app(\App\Services\ListingNavigationService::class);
+        $similar = $navigationService->getSimilar($ilan, 4);
+
+        return view('frontend.ilanlar.show', compact('ilan', 'similar'));
     }
 
     /**

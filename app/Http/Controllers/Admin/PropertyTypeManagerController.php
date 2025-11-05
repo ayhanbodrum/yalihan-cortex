@@ -208,22 +208,31 @@ class PropertyTypeManagerController extends AdminController
         }
 
         // Her alt kategori için hangi yayın tipleri aktif?
-        // ✅ FIX: Yeni pivot tablo kullan (alt_kategori_yayin_tipi)
+        // ✅ OPTIMIZED: N+1 query önlendi - Tüm alt kategori yayın tiplerini tek query'de al
         $altKategoriYayinTipleri = [];
         if (Schema::hasTable('alt_kategori_yayin_tipi')) {
-            foreach($altKategoriler as $altKat) {
-                // Bu alt kategorinin aktif yayın tipleri (pivot tablodan)
-                try {
-                    $activeYayinTipleri = AltKategoriYayinTipi::where('alt_kategori_id', $altKat->id)
-                        ->where('enabled', 1)
-                        ->pluck('yayin_tipi_id');
-                    $altKategoriYayinTipleri[$altKat->id] = $activeYayinTipleri;
-                } catch (\Exception $e) {
-                    // Tablo henüz yoksa veya hata varsa boş array
-                    Log::warning('alt_kategori_yayin_tipi tablosu sorgulanamadı', [
-                        'error' => $e->getMessage(),
-                        'alt_kategori_id' => $altKat->id
-                    ]);
+            try {
+                $altKategoriIds = $altKategoriler->pluck('id')->toArray();
+                
+                // Tüm alt kategoriler için yayın tiplerini tek query'de al
+                $allYayinTipleri = AltKategoriYayinTipi::whereIn('alt_kategori_id', $altKategoriIds)
+                    ->where('enabled', 1)
+                    ->get()
+                    ->groupBy('alt_kategori_id')
+                    ->map(function ($items) {
+                        return $items->pluck('yayin_tipi_id');
+                    });
+                
+                // Her alt kategori için yayın tiplerini ata
+                foreach($altKategoriler as $altKat) {
+                    $altKategoriYayinTipleri[$altKat->id] = $allYayinTipleri->get($altKat->id, collect([]));
+                }
+            } catch (\Exception $e) {
+                // Tablo henüz yoksa veya hata varsa boş array
+                Log::warning('alt_kategori_yayin_tipi tablosu sorgulanamadı', [
+                    'error' => $e->getMessage(),
+                ]);
+                foreach($altKategoriler as $altKat) {
                     $altKategoriYayinTipleri[$altKat->id] = collect([]);
                 }
             }
@@ -250,6 +259,31 @@ class PropertyTypeManagerController extends AdminController
                 ];
             }
 
+            // ✅ OPTIMIZED: N+1 query önlendi - Tüm slug'ları tek query'de al
+            $yayinTipiSlugs = $fieldDependenciesRaw
+                ->filter(fn($dep) => !is_numeric($dep->yayin_tipi))
+                ->pluck('yayin_tipi')
+                ->unique()
+                ->toArray();
+            
+            $yayinTipiSlugToId = [];
+            if (!empty($yayinTipiSlugs)) {
+                $yayinTipiSlugToId = IlanKategori::whereIn('slug', $yayinTipiSlugs)
+                    ->where('seviye', 2)
+                    ->pluck('id', 'slug')
+                    ->toArray();
+                
+                // Slug'da bulunamazsa yayin_tipi field'ına göre ara
+                $missingSlugs = array_diff($yayinTipiSlugs, array_keys($yayinTipiSlugToId));
+                if (!empty($missingSlugs)) {
+                    $additionalYayinTipleri = IlanKategori::whereIn('yayin_tipi', $missingSlugs)
+                        ->where('seviye', 2)
+                        ->pluck('id', 'yayin_tipi')
+                        ->toArray();
+                    $yayinTipiSlugToId = array_merge($yayinTipiSlugToId, $additionalYayinTipleri);
+                }
+            }
+
             // Her field için yayın tipi durumları
             foreach($fieldDependenciesRaw as $dep) {
                 if(isset($fieldDependencies[$dep->field_slug])) {
@@ -257,14 +291,7 @@ class PropertyTypeManagerController extends AdminController
                     if (is_numeric($dep->yayin_tipi)) {
                         $yayinTipiId = (int)$dep->yayin_tipi;
                     } else {
-                        $yayinTipiId = IlanKategori::where('slug', $dep->yayin_tipi)
-                            ->where('seviye', 2)
-                            ->first()?->id;
-                        if (!$yayinTipiId) {
-                            $yayinTipiId = IlanKategori::where('yayin_tipi', $dep->yayin_tipi)
-                                ->where('seviye', 2)
-                                ->first()?->id;
-                        }
+                        $yayinTipiId = $yayinTipiSlugToId[$dep->yayin_tipi] ?? null;
                     }
 
                     if($yayinTipiId) {
@@ -646,22 +673,24 @@ class PropertyTypeManagerController extends AdminController
         $fieldDependencies = [];
 
         // Context7: Tablo kontrolü ile güvenli sorgulama
-        if (Schema::hasTable('feature_assignments')) {
+        // ✅ OPTIMIZED: N+1 query önlendi - Tüm feature assignments'ları eager load ile al
+        if (Schema::hasTable('feature_assignments') && method_exists($yayinTipleri->first(), 'featureAssignments')) {
+            $yayinTipiIds = $yayinTipleri->pluck('id')->toArray();
+            
+            // Tüm yayın tipleri için feature assignments'ları tek query'de al
+            $allAssignments = \App\Models\FeatureAssignment::whereIn('assignable_id', $yayinTipiIds)
+                ->where('assignable_type', get_class($yayinTipleri->first()))
+                ->with(['feature' => function($q) {
+                    $q->with('category');
+                }])
+                ->visible()
+                ->ordered()
+                ->get()
+                ->groupBy('assignable_id');
+            
             foreach ($yayinTipleri as $yayinTipi) {
                 try {
-                    // Bu yayın tipine atanmış feature'ları al
-                    if (method_exists($yayinTipi, 'featureAssignments')) {
-                        $assignments = $yayinTipi->featureAssignments()
-                            ->with(['feature' => function($q) {
-                                $q->with('category');
-                            }])
-                            ->visible()
-                            ->ordered()
-                            ->get();
-                    } else {
-                        $assignments = collect([]);
-                    }
-
+                    $assignments = $allAssignments->get($yayinTipi->id, collect([]));
                     $fieldDependencies[$yayinTipi->slug ?? $yayinTipi->yayin_tipi] = $assignments;
 
                     Log::info('Feature assignments loaded for property type', [
@@ -677,7 +706,7 @@ class PropertyTypeManagerController extends AdminController
                 }
             }
         } else {
-            // Tablo yoksa tüm yayın tipleri için boş array
+            // Tablo yoksa veya method yoksa boş array
             foreach ($yayinTipleri as $yayinTipi) {
                 $fieldDependencies[$yayinTipi->slug ?? $yayinTipi->yayin_tipi] = collect([]);
             }

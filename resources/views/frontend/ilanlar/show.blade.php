@@ -77,10 +77,26 @@
                         </div>
                         
                         <div class="text-right">
-                            <div class="text-3xl font-bold text-blue-600">
-                                {{ number_format($ilan->fiyat, 0, ',', '.') }}
+                            <div class="text-3xl font-bold text-blue-600 dark:text-blue-400">
+                                {{ number_format($ilan->fiyat, 0, ',', '.') }} {{ $ilan->para_birimi ?? 'TRY' }}
+                                @if ($ilan->kiralama_turu)
+                                    @switch($ilan->kiralama_turu)
+                                        @case('gunluk')
+                                            <span class="text-lg font-normal text-gray-600 dark:text-gray-400">/Gün</span>
+                                        @break
+                                        @case('haftalik')
+                                            <span class="text-lg font-normal text-gray-600 dark:text-gray-400">/Hafta</span>
+                                        @break
+                                        @case('aylik')
+                                        @case('uzun_donem')
+                                            <span class="text-lg font-normal text-gray-600 dark:text-gray-400">/Ay</span>
+                                        @break
+                                        @case('sezonluk')
+                                            <span class="text-lg font-normal text-gray-600 dark:text-gray-400">/Sezon</span>
+                                        @break
+                                    @endswitch
+                                @endif
                             </div>
-                            <div class="text-sm text-gray-500">{{ $ilan->para_birimi }}</div>
                         </div>
                     </div>
 
@@ -176,17 +192,32 @@
                             <i class="fas fa-whatsapp mr-2"></i>WhatsApp
                         </button>
                     </div>
+                    
+                    {{-- QR Code --}}
+                    <div class="mt-4">
+                        <x-qr-code-display :ilan="$ilan" :size="'medium'" :showLabel="true" :showDownload="true" />
+                    </div>
+                </div>
+                
+                {{-- Listing Navigation --}}
+                <div class="mt-6">
+                    <x-listing-navigation :ilan="$ilan" :mode="'default'" :showSimilar="true" :similarLimit="4" />
                 </div>
             </div>
 
             <!-- Sidebar -->
             <div class="lg:col-span-1">
+                <!-- QR Code Widget -->
+                <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
+                    <x-qr-code-display :ilan="$ilan" :size="'small'" :showLabel="true" :showDownload="true" />
+                </div>
+                
                 <!-- Similar Properties -->
-                @if($benzerIlanlar->count() > 0)
+                @if($similar && $similar->count() > 0)
                     <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
                         <h3 class="text-lg font-semibold text-gray-900 mb-4">Benzer İlanlar</h3>
                         <div class="space-y-4">
-                            @foreach($benzerIlanlar as $benzerIlan)
+                            @foreach($similar as $benzerIlan)
                                 <div class="flex gap-3">
                                     <div class="w-20 h-16 bg-gray-200 rounded-lg flex-shrink-0">
                                         @if($benzerIlan->ilanFotograflari && $benzerIlan->ilanFotograflari->count() > 0)
@@ -202,11 +233,29 @@
                                     <div class="flex-1 min-w-0">
                                         <h4 class="text-sm font-medium text-gray-900 line-clamp-2">
                                             <a href="{{ route('ilanlar.show', $benzerIlan->id) }}" class="hover:text-blue-600">
-                                                {{ $benzerIlan->baslik }}
+                                                {{ $benzerIlan->baslik ?? 'İlan #' . $benzerIlan->id }}
                                             </a>
                                         </h4>
-                                        <p class="text-sm text-blue-600 font-medium">
-                                            {{ number_format($benzerIlan->fiyat, 0, ',', '.') }} {{ $benzerIlan->para_birimi }}
+                                        <p class="text-sm text-blue-600 dark:text-blue-400 font-medium">
+                                            @if($benzerIlan->fiyat)
+                                            {{ number_format($benzerIlan->fiyat, 0, ',', '.') }} {{ $benzerIlan->para_birimi ?? 'TRY' }}
+                                            @if ($benzerIlan->kiralama_turu)
+                                                @switch($benzerIlan->kiralama_turu)
+                                                    @case('gunluk')
+                                                        <span class="text-xs text-gray-600 dark:text-gray-400">/Gün</span>
+                                                    @break
+                                                    @case('haftalik')
+                                                        <span class="text-xs text-gray-600 dark:text-gray-400">/Hafta</span>
+                                                    @break
+                                                    @case('aylik')
+                                                    @case('uzun_donem')
+                                                        <span class="text-xs text-gray-600 dark:text-gray-400">/Ay</span>
+                                                    @break
+                                                    @case('sezonluk')
+                                                        <span class="text-xs text-gray-600 dark:text-gray-400">/Sezon</span>
+                                                    @break
+                                                @endswitch
+                                            @endif
                                         </p>
                                         <p class="text-xs text-gray-500">
                                             @if($benzerIlan->il)

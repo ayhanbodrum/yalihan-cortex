@@ -3,10 +3,10 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
 use App\Models\ExchangeRate;
 use Carbon\Carbon;
+use App\Services\Cache\CacheHelper;
+use App\Services\Logging\LogService;
 
 /**
  * TCMB (Türkiye Cumhuriyet Merkez Bankası) Currency Service
@@ -27,13 +27,19 @@ class TCMBCurrencyService
      */
     public function getTodayRates()
     {
-        return Cache::remember('tcmb.rates.today', 3600, function () {
+        // ✅ STANDARDIZED: Using CacheHelper
+        return CacheHelper::remember(
+            'currency',
+            'tcmb_rates_today',
+            'medium', // 1 hour
+            function () {
             try {
                 // TCMB XML endpoint
                 $response = Http::timeout(10)->get($this->tcmbUrl);
                 
                 if (!$response->successful()) {
-                    Log::warning('TCMB API error', ['status' => $response->status()]);
+                    // ✅ STANDARDIZED: Using LogService
+                    LogService::warning('TCMB API error', ['status' => $response->status()]);
                     return $this->getFallbackRates();
                 }
                 
@@ -65,7 +71,8 @@ class TCMBCurrencyService
                 
                 return $rates;
             } catch (\Exception $e) {
-                Log::error('TCMB API exception', ['error' => $e->getMessage()]);
+                // ✅ STANDARDIZED: Using LogService
+                LogService::error('TCMB API exception', [], $e);
                 return $this->getFallbackRates();
             }
         });
@@ -81,7 +88,8 @@ class TCMBCurrencyService
         $rates = $this->getTodayRates();
         
         if (!$rates) {
-            Log::warning('TCMB rates empty, skipping update');
+            // ✅ STANDARDIZED: Using LogService
+            LogService::warning('TCMB rates empty, skipping update');
             return 0;
         }
         
@@ -105,15 +113,18 @@ class TCMBCurrencyService
                 
                 $updated++;
             } catch (\Exception $e) {
-                Log::error("Failed to update rate for {$code}", ['error' => $e->getMessage()]);
+                // ✅ STANDARDIZED: Using LogService
+                LogService::error("Failed to update rate for {$code}", ['code' => $code], $e);
             }
         }
         
         // Clear cache
-        Cache::forget('tcmb.rates.today');
-        Cache::forget('exchange.rates.latest');
+        // ✅ STANDARDIZED: Using CacheHelper
+        CacheHelper::forget('currency', 'tcmb_rates_today');
+        CacheHelper::forget('currency', 'exchange_rates_latest');
         
-        Log::info("TCMB rates updated", ['count' => $updated]);
+        // ✅ STANDARDIZED: Using LogService
+        LogService::info("TCMB rates updated", ['count' => $updated]);
         
         return $updated;
     }
@@ -157,7 +168,8 @@ class TCMBCurrencyService
         $rate = $this->getRate($fromCurrency, 'selling');
         
         if (!$rate) {
-            Log::warning("No rate found for {$fromCurrency}");
+            // ✅ STANDARDIZED: Using LogService
+            LogService::warning("No rate found for {$fromCurrency}", ['currency' => $fromCurrency]);
             return $amount; // Return original if rate not found
         }
         
