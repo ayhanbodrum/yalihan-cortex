@@ -327,43 +327,43 @@
             <h2 class="text-4xl font-bold mb-4">Hayalinizdeki Evi Bulun!</h2>
             <p class="text-xl mb-8 opacity-95">Uzman ekibimiz size yardımcı olmaya hazır</p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <button
-                    class="bg-white text-blue-600 dark:bg-gray-800 dark:text-blue-400 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 dark:hover:bg-gray-700 active:scale-95 transition-all duration-200 shadow-lg hover:shadow-xl focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-blue-600">
-                    📞 Hemen Ara: 0533 209 03 02
-                </button>
-                <button
-                    class="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 dark:hover:bg-gray-800 dark:hover:text-blue-400 active:scale-95 transition-all duration-200 focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-blue-600">
+                <a href="tel:+905332090302"
+                    class="inline-flex items-center justify-center bg-white text-blue-600 dark:bg-gray-800 dark:text-blue-400 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 dark:hover:bg-gray-700 active:scale-95 transition-all duration-200 shadow-lg hover:shadow-xl focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-blue-600">
+                    📞 Hemen Ara: <span class="font-bold">0533 209 03 02</span>
+                </a>
+                <a href="{{ url('/iletisim') }}"
+                    class="inline-flex items-center justify-center border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 dark:hover:bg-gray-800 dark:hover:text-blue-400 active:scale-95 transition-all duration-200 focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-blue-600">
                     📧 İletişim Formu
-                </button>
+                </a>
             </div>
         </div>
     </section>
 
     <!-- Modal Containers -->
-    <div id="virtualTour" class="fixed inset-0 hidden items-center justify-center z-50">
+    <div id="virtualTour" class="fixed inset-0 hidden items-center justify-center z-50" role="dialog" aria-modal="true" aria-labelledby="virtualTourTitle">
         <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeModal('virtualTour')"></div>
         <div class="relative bg-white dark:bg-gray-900 rounded-3xl shadow-2xl max-w-3xl w-full mx-4 p-6 sm:p-8 overflow-y-auto max-h-[90vh]">
             <div class="flex items-start justify-between gap-4 mb-4">
                 <div>
-                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white">360° Sanal Tur</h3>
+                    <h3 id="virtualTourTitle" class="text-2xl font-bold text-gray-900 dark:text-white">360° Sanal Tur</h3>
                     <p class="text-sm text-gray-600 dark:text-gray-400">Portföyün sanal turuna göz atın.</p>
                 </div>
                 <button type="button" class="text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 transition-colors" onclick="closeModal('virtualTour')" aria-label="Kapat">
                     <i class="fas fa-times text-xl"></i>
                 </button>
             </div>
-            <div class="aspect-video rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
-                <span class="text-sm text-gray-500 dark:text-gray-400">Sanal tur içeriği yakında eklenecek.</span>
+            <div class="aspect-video rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-800">
+                <iframe src="https://www.youtube.com/embed/0dJjjA7vJ4k" title="Yalıhan Emlak Sanal Tur" loading="lazy" allowfullscreen class="w-full h-full"></iframe>
             </div>
         </div>
     </div>
 
-    <div id="gallery" class="fixed inset-0 hidden items-center justify-center z-50">
+    <div id="gallery" class="fixed inset-0 hidden items-center justify-center z-50" role="dialog" aria-modal="true" aria-labelledby="galleryTitle">
         <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeModal('gallery')"></div>
         <div class="relative bg-white dark:bg-gray-900 rounded-3xl shadow-2xl max-w-4xl w-full mx-4 p-6 sm:p-8 overflow-y-auto max-h-[90vh]">
             <div class="flex items-start justify-between gap-4 mb-4">
                 <div>
-                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white">Galeri</h3>
+                    <h3 id="galleryTitle" class="text-2xl font-bold text-gray-900 dark:text-white">Galeri</h3>
                     <p class="text-sm text-gray-600 dark:text-gray-400">Seçili portföye ait görseller.</p>
                 </div>
                 <button type="button" class="text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 transition-colors" onclick="closeModal('gallery')" aria-label="Kapat">
@@ -371,38 +371,46 @@
                 </button>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div class="aspect-video rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-800"></div>
-                <div class="aspect-video rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-800"></div>
-                <div class="aspect-video rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-800"></div>
-                <div class="aspect-video rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-800"></div>
+                <img src="https://images.unsplash.com/photo-1600607687920-cc9f2bea8d2a?auto=format&fit=crop&w=900&q=80" alt="Geniş salon" loading="lazy" class="w-full h-full object-cover rounded-2xl">
+                <img src="https://images.unsplash.com/photo-1600607687927-94321ca97283?auto=format&fit=crop&w=900&q=80" alt="Modern mutfak" loading="lazy" class="w-full h-full object-cover rounded-2xl">
+                <img src="https://images.unsplash.com/photo-1602526211073-5bc0bb984f06?auto=format&fit=crop&w=900&q=80" alt="Deniz manzaralı teras" loading="lazy" class="w-full h-full object-cover rounded-2xl">
+                <img src="https://images.unsplash.com/photo-1600585154340-0ef3c08dcdb6?auto=format&fit=crop&w=900&q=80" alt="Özel havuz" loading="lazy" class="w-full h-full object-cover rounded-2xl">
             </div>
         </div>
     </div>
 
-    <div id="map" class="fixed inset-0 hidden items-center justify-center z-50">
+    <div id="map" class="fixed inset-0 hidden items-center justify-center z-50" role="dialog" aria-modal="true" aria-labelledby="mapTitle">
         <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeModal('map')"></div>
         <div class="relative bg-white dark:bg-gray-900 rounded-3xl shadow-2xl max-w-3xl w-full mx-4 p-6 sm:p-8 overflow-hidden">
             <div class="flex items-start justify-between gap-4 mb-4">
                 <div>
-                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white">Lokasyon Haritası</h3>
+                    <h3 id="mapTitle" class="text-2xl font-bold text-gray-900 dark:text-white">Lokasyon Haritası</h3>
                     <p class="text-sm text-gray-600 dark:text-gray-400">Portföyün bulunduğu konumu inceleyin.</p>
                 </div>
                 <button type="button" class="text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 transition-colors" onclick="closeModal('map')" aria-label="Kapat">
                     <i class="fas fa-times text-xl"></i>
                 </button>
             </div>
-            <div class="rounded-2xl overflow-hidden h-72 bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
-                <span class="text-sm text-gray-500 dark:text-gray-400">Harita bileşeni yakında eklenecek.</span>
-            </div>
+            <x-yaliihan.map-component :center="[
+                'lat' => 37.0581,
+                'lng' => 27.258,
+            ]" :zoom="14" :markers="[
+                [
+                    'position' => ['lat' => 37.0581, 'lng' => 27.258],
+                    'title' => 'Deniz Manzaralı Villa',
+                    'content' => 'Bitez, Bodrum - Sanal tur ile ayrıntıları görüntüleyin',
+                    'icon' => null,
+                ],
+            ]" height="320px" class="rounded-2xl overflow-hidden" />
         </div>
     </div>
 
-    <div id="propertyDetail" class="fixed inset-0 hidden items-center justify-center z-50">
+    <div id="propertyDetail" class="fixed inset-0 hidden items-center justify-center z-50" role="dialog" aria-modal="true" aria-labelledby="propertyDetailTitle">
         <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeModal('propertyDetail')"></div>
         <div class="relative bg-white dark:bg-gray-900 rounded-3xl shadow-2xl max-w-4xl w-full mx-4 p-6 sm:p-8 overflow-y-auto max-h-[90vh]">
             <div class="flex items-start justify-between gap-4 mb-4">
                 <div>
-                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white">İlan Detayları</h3>
+                    <h3 id="propertyDetailTitle" class="text-2xl font-bold text-gray-900 dark:text-white">İlan Detayları</h3>
                     <p class="text-sm text-gray-600 dark:text-gray-400">Ayrıntılı bilgi için portföy sayfasına gidin.</p>
                 </div>
                 <button type="button" class="text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 transition-colors" onclick="closeModal('propertyDetail')" aria-label="Kapat">
@@ -410,13 +418,26 @@
                 </button>
             </div>
             <div class="space-y-4 text-gray-700 dark:text-gray-300 text-sm leading-relaxed">
-                <p>Bu bölüm gerçek ilan içeriğiyle değiştirilecek. Şimdilik demo verileri görüntülenmektedir.</p>
-                <ul class="list-disc list-inside space-y-2">
-                    <li>Geniş salon ve panoramik manzara.</li>
-                    <li>Özel havuz ve peyzajlı bahçe.</li>
-                    <li>Güvenlik, otopark ve akıllı ev sistemi.</li>
-                </ul>
-                <a href="{{ route('frontend.ilanlar.index') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all duration-200">
+                <p class="text-base">Deniz manzaralı villamız akıllı ev sistemi, otomatik panjur, merkezi ısıtma-soğutma ve tüm odalarda yerden ısıtma altyapısı içerir. Zemin katta geniş bir yaşam alanı, üst katta üç suit oda ve bodrum katta misafir bölümü bulunmaktadır.</p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="rounded-2xl border border-gray-200 dark:border-gray-700 p-4">
+                        <p class="font-semibold text-gray-900 dark:text-white mb-1">Teknik Özellikler</p>
+                        <ul class="list-disc list-inside space-y-1 text-gray-600 dark:text-gray-400">
+                            <li>350 m² kapalı alan</li>
+                            <li>İkiz havuz sistemi</li>
+                            <li>Güneş panelleri ve enerji depolama</li>
+                        </ul>
+                    </div>
+                    <div class="rounded-2xl border border-gray-200 dark:border-gray-700 p-4">
+                        <p class="font-semibold text-gray-900 dark:text-white mb-1">Satış Notları</p>
+                        <ul class="list-disc list-inside space-y-1 text-gray-600 dark:text-gray-400">
+                            <li>Tapu hazır, borçsuz</li>
+                            <li>Mobilyalı teslim seçeneği</li>
+                            <li>Yatırım ve vatandaşlık için uygun</li>
+                        </ul>
+                    </div>
+                </div>
+                <a href="{{ url('/ilanlar') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all duration-200">
                     Tüm İlanları Gör
                     <i class="fas fa-arrow-right text-xs"></i>
                 </a>
@@ -567,19 +588,9 @@
                 // Redirect to contact page after toast
                 setTimeout(() => {
                     try {
-                        // ✅ FIX: Safe route checking without Blade error
-                        @php
-                            $contactRoute = null;
-                            try {
-                                $contactRoute = route('frontend.contact.index');
-                            } catch (\Exception $e) {
-                                // Route doesn't exist, use fallback
-                            }
-                        @endphp
+                        const contactUrl = "{{ url('/iletisim') }}";
 
-                        const contactUrl = @json($contactRoute ?? '#contact');
-
-                        if (contactUrl && contactUrl !== '#contact') {
+                        if (contactUrl) {
                             window.location.href = contactUrl;
                             console.log('Context7: Redirecting to contact page');
                         } else {
