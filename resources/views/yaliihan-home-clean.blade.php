@@ -339,6 +339,91 @@
         </div>
     </section>
 
+    <!-- Modal Containers -->
+    <div id="virtualTour" class="fixed inset-0 hidden items-center justify-center z-50">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeModal('virtualTour')"></div>
+        <div class="relative bg-white dark:bg-gray-900 rounded-3xl shadow-2xl max-w-3xl w-full mx-4 p-6 sm:p-8 overflow-y-auto max-h-[90vh]">
+            <div class="flex items-start justify-between gap-4 mb-4">
+                <div>
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white">360° Sanal Tur</h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">Portföyün sanal turuna göz atın.</p>
+                </div>
+                <button type="button" class="text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 transition-colors" onclick="closeModal('virtualTour')" aria-label="Kapat">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="aspect-video rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
+                <span class="text-sm text-gray-500 dark:text-gray-400">Sanal tur içeriği yakında eklenecek.</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="gallery" class="fixed inset-0 hidden items-center justify-center z-50">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeModal('gallery')"></div>
+        <div class="relative bg-white dark:bg-gray-900 rounded-3xl shadow-2xl max-w-4xl w-full mx-4 p-6 sm:p-8 overflow-y-auto max-h-[90vh]">
+            <div class="flex items-start justify-between gap-4 mb-4">
+                <div>
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white">Galeri</h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">Seçili portföye ait görseller.</p>
+                </div>
+                <button type="button" class="text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 transition-colors" onclick="closeModal('gallery')" aria-label="Kapat">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="aspect-video rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-800"></div>
+                <div class="aspect-video rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-800"></div>
+                <div class="aspect-video rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-800"></div>
+                <div class="aspect-video rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-800"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="map" class="fixed inset-0 hidden items-center justify-center z-50">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeModal('map')"></div>
+        <div class="relative bg-white dark:bg-gray-900 rounded-3xl shadow-2xl max-w-3xl w-full mx-4 p-6 sm:p-8 overflow-hidden">
+            <div class="flex items-start justify-between gap-4 mb-4">
+                <div>
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white">Lokasyon Haritası</h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">Portföyün bulunduğu konumu inceleyin.</p>
+                </div>
+                <button type="button" class="text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 transition-colors" onclick="closeModal('map')" aria-label="Kapat">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="rounded-2xl overflow-hidden h-72 bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
+                <span class="text-sm text-gray-500 dark:text-gray-400">Harita bileşeni yakında eklenecek.</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="propertyDetail" class="fixed inset-0 hidden items-center justify-center z-50">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeModal('propertyDetail')"></div>
+        <div class="relative bg-white dark:bg-gray-900 rounded-3xl shadow-2xl max-w-4xl w-full mx-4 p-6 sm:p-8 overflow-y-auto max-h-[90vh]">
+            <div class="flex items-start justify-between gap-4 mb-4">
+                <div>
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white">İlan Detayları</h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">Ayrıntılı bilgi için portföy sayfasına gidin.</p>
+                </div>
+                <button type="button" class="text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 transition-colors" onclick="closeModal('propertyDetail')" aria-label="Kapat">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="space-y-4 text-gray-700 dark:text-gray-300 text-sm leading-relaxed">
+                <p>Bu bölüm gerçek ilan içeriğiyle değiştirilecek. Şimdilik demo verileri görüntülenmektedir.</p>
+                <ul class="list-disc list-inside space-y-2">
+                    <li>Geniş salon ve panoramik manzara.</li>
+                    <li>Özel havuz ve peyzajlı bahçe.</li>
+                    <li>Güvenlik, otopark ve akıllı ev sistemi.</li>
+                </ul>
+                <a href="{{ route('frontend.ilanlar.index') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all duration-200">
+                    Tüm İlanları Gör
+                    <i class="fas fa-arrow-right text-xs"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
     <!-- JavaScript Functions -->
     <script>
         // ✅ CONTEXT7: Vanilla JS com error handling completo
@@ -381,11 +466,14 @@
 
                 const modal = document.getElementById(modalId);
                 if (modal && modal.classList) {
-                    modal.classList.add('active');
+                    modal.classList.remove('hidden');
+                    modal.classList.add('flex');
+                    modal.setAttribute('aria-hidden', 'false');
+                    document.body.classList.add('overflow-hidden');
                     console.log('Context7: Modal opened', modalId);
                 } else {
                     if (typeof showToast === 'function') {
-                        showToast('Modal açılıyor...', 'info');
+                        showToast('İçerik hazırlanıyor', 'info');
                     }
                     console.warn('Context7: Modal not found', modalId);
                 }
@@ -396,6 +484,39 @@
                 }
             }
         }
+
+        function closeModal(modalId) {
+            try {
+                if (!modalId) {
+                    console.error('Context7: closeModal - modalId is null');
+                    return;
+                }
+
+                const modal = document.getElementById(modalId);
+                if (modal && modal.classList) {
+                    modal.classList.remove('flex');
+                    modal.classList.add('hidden');
+                    modal.setAttribute('aria-hidden', 'true');
+
+                    const openModals = document.querySelectorAll('.fixed.inset-0.flex');
+                    if (!openModals || openModals.length === 0) {
+                        document.body.classList.remove('overflow-hidden');
+                    }
+                    console.log('Context7: Modal closed', modalId);
+                }
+            } catch (error) {
+                console.error('Context7: closeModal error', error);
+            }
+        }
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') {
+                const activeModal = document.querySelector('.fixed.inset-0.flex');
+                if (activeModal && activeModal.id) {
+                    closeModal(activeModal.id);
+                }
+            }
+        });
 
         // Share Property Function - FIX: API checks adicionados
         function shareProperty() {
