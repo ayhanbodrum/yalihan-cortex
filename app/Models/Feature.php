@@ -23,8 +23,8 @@ class Feature extends Model
         'is_required',
         'is_filterable',
         'is_searchable',
-        'order',
-        'status', // Context7: Veritabanında status var
+        'display_order', // Context7: Veritabanında display_order var
+        'status', // Context7: Veritabanında status var (enabled değil!)
         // Legacy fields (backward compatibility)
         'category_id',
         'field_type',
@@ -36,7 +36,6 @@ class Feature extends Model
         'ai_suggestion',
         'ai_calculation',
         'ai_prompt',
-        'enabled',
         'show_in_listing',
         'show_in_detail',
         'show_in_filter',
@@ -51,12 +50,11 @@ class Feature extends Model
         'ai_auto_fill' => 'boolean',
         'ai_suggestion' => 'boolean',
         'ai_calculation' => 'boolean',
-        'enabled' => 'boolean',
-        'status' => 'boolean', // Context7: Veritabanında status var
+        'status' => 'boolean', // Context7: Veritabanında status var (enabled YASAK!)
         'show_in_listing' => 'boolean',
         'show_in_detail' => 'boolean',
         'show_in_filter' => 'boolean',
-        'order' => 'integer',
+        'display_order' => 'integer',
     ];
 
     /**
@@ -131,7 +129,7 @@ class Feature extends Model
             array_merge([
                 'is_required' => $this->is_required,
                 'is_visible' => true,
-                'order' => $this->order,
+                'display_order' => $this->display_order, // Context7: order → display_order
             ], $config)
         );
     }
@@ -149,15 +147,17 @@ class Feature extends Model
 
     /**
      * Scope: Only enabled features
-     * Context7: Schema kontrolü ile status/enabled
+     * Context7: ONLY status field (enabled FORBIDDEN)
      */
     public function scopeEnabled($query)
     {
+        // ✅ Context7: ONLY check status field
+        // ❌ REMOVED: enabled field check (Context7 violation)
         if (Schema::hasColumn('features', 'status')) {
             return $query->where('status', true);
-        } elseif (Schema::hasColumn('features', 'enabled')) {
-            return $query->where('enabled', true);
         }
+
+        // If status column doesn't exist, return all (graceful degradation)
         return $query;
     }
 
@@ -198,7 +198,7 @@ class Feature extends Model
      */
     public function scopeOrdered($query)
     {
-        return $query->orderBy('order')->orderBy('name');
+        return $query->orderBy('display_order')->orderBy('name');
     }
 
     /**

@@ -96,6 +96,13 @@ if git diff --cached | grep "@error(" | grep -v "@error('[a-zA-Z_]" > /dev/null;
     ERRORS=$((ERRORS + 1))
 fi
 
+# 8. Yalıhan Bekçi - Commit Önerisi (Uyarı modunda)
+echo ""
+echo "🧠 Yalıhan Bekçi - Commit Önerisi..."
+if [ -f ".yalihan-bekci/tools/git-commit-suggester.sh" ]; then
+    bash .yalihan-bekci/tools/git-commit-suggester.sh --suggest --warn 2>/dev/null || true
+fi
+
 # Sonuç
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"

@@ -1,0 +1,335 @@
+{
+  "knowledge_type": "git_commit_standards",
+  "version": "1.0.0",
+  "created_at": "2025-11-13T00:00:00Z",
+  "last_updated": "2025-11-13T00:00:00Z",
+  "status": "ACTIVE",
+  "enforcement": "RECOMMENDED",
+  "priority": "HIGH",
+
+  "summary": {
+    "title": "Git Commit Frequency Standards",
+    "description": "Commit sıklığı kuralları ve Yalıhan Bekçi commit önerisi sistemi",
+    "scope": "All git commits in the project",
+    "priority": "HIGH"
+  },
+
+  "commit_frequency_rules": {
+    "golden_rule": "Her mantıksal değişiklik = 1 commit",
+    "principle": "Küçük ve sık commit yap, büyük ve nadir commit yapma",
+
+    "minimum_frequency": {
+      "description": "Minimum commit sıklığı",
+      "rule": "Her çalışma günü en az 1 commit",
+      "examples": [
+        "Gün sonu cleanup → 1 commit",
+        "Küçük bug fix → 1 commit",
+        "Dokümantasyon güncelleme → 1 commit"
+      ]
+    },
+
+    "optimal_frequency": {
+      "description": "Optimal commit sıklığı",
+      "rule": "Her mantıksal değişiklik için 1 commit",
+      "frequency": "30-60 dakikada 1 commit (mantıksal birim tamamlandıysa)",
+      "daily_target": "3-10 commit (normal çalışma)",
+      "feature_target": "5-15 commit (adım adım)"
+    },
+
+    "maximum_frequency": {
+      "description": "Maksimum commit sıklığı (sınırlar)",
+      "rules": [
+        "Her satır değişikliği → Commit yapma (çok fazla)",
+        "Her dakika → Commit yapma (gereksiz)",
+        "Yarım kalmış kod → Commit yapma"
+      ]
+    }
+  },
+
+  "when_to_commit": {
+    "immediately": {
+      "description": "Hemen commit yapılmalı",
+      "conditions": [
+        "Küçük bug düzeltmesi",
+        "Typo düzeltmesi",
+        "Tek dosya değişikliği",
+        "Context7 compliance düzeltmesi",
+        "Test geçiyor"
+      ],
+      "examples": [
+        "fix(context7): order → display_order in Feature.php",
+        "fix: typo in comment",
+        "docs: update README"
+      ]
+    },
+
+    "when_completed": {
+      "description": "Tamamlandığında commit yapılmalı",
+      "conditions": [
+        "Feature tamamlandı",
+        "Refactoring bitti",
+        "Migration hazır",
+        "Component tamamlandı"
+      ],
+      "examples": [
+        "feat: add user profile page",
+        "refactor: optimize query performance",
+        "chore: update dependencies"
+      ]
+    },
+
+    "end_of_day": {
+      "description": "Gün sonunda commit yapılmalı",
+      "conditions": [
+        "Günlük temizlik",
+        "Lint düzeltmeleri",
+        "Dokümantasyon güncellemeleri"
+      ],
+      "examples": [
+        "chore: code cleanup",
+        "style: fix lint errors",
+        "docs: update documentation"
+      ]
+    }
+  },
+
+  "when_not_to_commit": {
+    "description": "Commit yapılmamalı",
+    "conditions": [
+      "Kod çalışmıyor",
+      "Test geçmiyor",
+      "Yarım kalmış özellik",
+      "Debug kodları var (console.log, dd(), var_dump())",
+      "Geçici çözümler (TODO, FIXME, HACK)"
+    ]
+  },
+
+  "commit_message_format": {
+    "standard": "type(scope): description",
+    "types": {
+      "feat": "Yeni feature",
+      "fix": "Bug fix",
+      "docs": "Documentation",
+      "style": "Formatting, missing semicolons",
+      "refactor": "Code refactoring",
+      "test": "Adding tests",
+      "chore": "Maintenance tasks"
+    },
+    "examples": {
+      "good": [
+        "feat(forms): add autocomplete component with search",
+        "fix(validation): fix email regex pattern bug",
+        "docs(components): update form component documentation",
+        "refactor(css): migrate Neo classes to Tailwind",
+        "chore(deps): update dependencies to latest versions"
+      ],
+      "bad": [
+        "Update files",
+        "Fix bug",
+        "WIP",
+        "asdasd"
+      ]
+    }
+  },
+
+  "yalihan_bekci_commit_suggestions": {
+    "monitoring": {
+      "description": "Git değişikliklerini izleme",
+      "checks": [
+        "git status kontrolü",
+        "Değişiklik analizi",
+        "Mantıksal birim tespiti",
+        "Commit hazırlık kontrolü"
+      ]
+    },
+
+    "analysis_rules": {
+      "single_file_change": {
+        "condition": "Tek dosya değişikliği",
+        "suggestion": "Hemen commit yapılabilir",
+        "example": "fix(context7): order → display_order in Feature.php"
+      },
+      "multiple_related_files": {
+        "condition": "İlgili dosyalar değişti",
+        "suggestion": "Tek commit yapılabilir",
+        "example": "fix(context7): improve compliance in multiple models"
+      },
+      "unrelated_changes": {
+        "condition": "İlişkisiz değişiklikler",
+        "suggestion": "Ayrı commit'ler yapılmalı",
+        "example": "fix(context7): ... ve feat(api): ... ayrı commit'ler"
+      },
+      "large_changes": {
+        "condition": "Büyük değişiklikler (10+ dosya)",
+        "suggestion": "Mantıksal gruplara böl",
+        "example": "Her grup için ayrı commit"
+      }
+    },
+
+    "warning_triggers": {
+      "no_commit_long_time": {
+        "condition": "2+ saat commit yok",
+        "warning": "⚠️ Uzun süredir commit yapılmadı. Değişiklikler kaybolabilir!",
+        "suggestion": "Mantıksal birimler tamamlandıysa commit yap"
+      },
+      "too_many_changes": {
+        "condition": "20+ dosya değişti",
+        "warning": "⚠️ Çok fazla değişiklik var. Mantıksal gruplara böl!",
+        "suggestion": "İlgili dosyaları grupla ve ayrı commit'ler yap"
+      },
+      "uncommitted_debug_code": {
+        "condition": "console.log, dd(), var_dump() var",
+        "warning": "⚠️ Debug kodları var. Commit yapmadan önce temizle!",
+        "suggestion": "Debug kodlarını kaldır, sonra commit yap"
+      },
+      "incomplete_feature": {
+        "condition": "TODO, FIXME, HACK yorumları var",
+        "warning": "⚠️ Yarım kalmış özellik var. Tamamlanana kadar commit yapma!",
+        "suggestion": "Özelliği tamamla, sonra commit yap"
+      }
+    },
+
+    "commit_suggestions": {
+      "ready_to_commit": {
+        "condition": "Mantıksal birim tamamlandı, test geçiyor, temiz kod",
+        "suggestion": "✅ Commit yapılabilir!",
+        "message_template": "type(scope): description"
+      },
+      "group_suggestions": {
+        "context7_fixes": {
+          "files_pattern": "*context7*|*Context7*",
+          "suggestion": "fix(context7): improve compliance",
+          "group": "Context7 compliance düzeltmeleri"
+        },
+        "model_changes": {
+          "files_pattern": "app/Models/*.php",
+          "suggestion": "fix(models): update field mappings",
+          "group": "Model düzeltmeleri"
+        },
+        "controller_changes": {
+          "files_pattern": "app/Http/Controllers/**/*.php",
+          "suggestion": "fix(controllers): update logic",
+          "group": "Controller düzeltmeleri"
+        },
+        "script_changes": {
+          "files_pattern": "scripts/*.sh|scripts/*.php",
+          "suggestion": "enhance(scripts): improve functionality",
+          "group": "Script geliştirmeleri"
+        }
+      }
+    }
+  },
+
+  "learning_patterns": {
+    "commit_frequency_learning": {
+      "description": "Commit sıklığı öğrenme",
+      "patterns": [
+        {
+          "pattern": "Küçük düzeltmeler → Hemen commit",
+          "example": "fix(context7): order → display_order",
+          "frequency": "immediate"
+        },
+        {
+          "pattern": "Feature adımları → Adım adım commit",
+          "example": "feat: add model → feat: add controller → feat: add view",
+          "frequency": "per_step"
+        },
+        {
+          "pattern": "Gün sonu → Tek commit",
+          "example": "chore: code cleanup",
+          "frequency": "end_of_day"
+        }
+      ]
+    },
+
+    "false_positive_learning": {
+      "description": "False positive commit önerilerini öğrenme",
+      "patterns": [
+        {
+          "pattern": "Backward compatibility değişiklikleri",
+          "should_commit": true,
+          "reason": "Geçiş dönemi için gerekli"
+        },
+        {
+          "pattern": "Deprecated model güncellemeleri",
+          "should_commit": true,
+          "reason": "Backward compatibility için gerekli"
+        },
+        {
+          "pattern": "Yorum satırı değişiklikleri",
+          "should_commit": false,
+          "reason": "Kod değişikliği değil"
+        }
+      ]
+    }
+  },
+
+  "implementation": {
+    "yalihan_bekci_tool": {
+      "name": "git-commit-suggester",
+      "description": "Git değişikliklerini analiz edip commit önerisi yapar",
+      "location": ".yalihan-bekci/tools/git-commit-suggester.sh",
+      "features": [
+        "Git status analizi",
+        "Değişiklik gruplama",
+        "Commit mesajı önerisi",
+        "Uyarı sistemi",
+        "Öğrenme sistemi"
+      ]
+    },
+
+    "integration_points": {
+      "pre_commit_hook": {
+        "description": "Pre-commit hook'ta commit önerisi",
+        "location": ".githooks/pre-commit",
+        "action": "Değişiklikleri analiz et, öneri göster"
+      },
+      "daily_check": {
+        "description": "Günlük commit kontrolü",
+        "location": ".yalihan-bekci/tools/daily-commit-check.sh",
+        "action": "Uzun süredir commit yoksa uyar"
+      }
+    }
+  },
+
+  "examples": {
+    "scenario_1_small_fixes": {
+      "description": "Küçük düzeltmeler",
+      "changes": [
+        "app/Models/Feature.php (order → display_order)",
+        "app/Http/Controllers/Api/BookingRequestController.php (date fields)"
+      ],
+      "suggestion": "fix(context7): improve compliance in models and controllers",
+      "frequency": "immediate"
+    },
+    "scenario_2_large_feature": {
+      "description": "Büyük feature",
+      "changes": [
+        "app/Models/UserProfile.php (new)",
+        "app/Http/Controllers/UserProfileController.php (new)",
+        "resources/views/admin/user-profile.blade.php (new)"
+      ],
+      "suggestion": [
+        "feat(models): add UserProfile model",
+        "feat(controllers): add UserProfileController",
+        "feat(views): add user profile page"
+      ],
+      "frequency": "per_step"
+    },
+    "scenario_3_mixed_changes": {
+      "description": "Karışık değişiklikler",
+      "changes": [
+        "app/Models/Feature.php (fix)",
+        "scripts/context7-full-scan.sh (enhance)",
+        "docs/README.md (docs)"
+      ],
+      "suggestion": [
+        "fix(context7): order → display_order in Feature.php",
+        "enhance(scripts): add learning system to context7 scanner",
+        "docs: update README"
+      ],
+      "frequency": "separate_commits"
+    }
+  }
+}
+

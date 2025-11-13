@@ -12,6 +12,12 @@
     'badgeText' => 'Satılık',
     'isFavorite' => false,
     'showActions' => true,
+    'gallery' => [],
+    'virtualTourUrl' => null,
+    'mapLocation' => null,
+    'detailPayload' => [],
+    'contactPayload' => [],
+    'shareUrl' => null,
 ])
 
 @php
@@ -22,6 +28,11 @@
     ];
 
     $badgeClass = $badgeClasses[$badge] ?? 'bg-gray-500 text-white';
+    $hasVirtualTour = filled($virtualTourUrl);
+    $galleryItems = is_array($gallery) ? $gallery : [];
+    $hasGallery = count($galleryItems) > 0;
+    $hasMap = is_array($mapLocation) && !empty($mapLocation['lat']) && !empty($mapLocation['lng']);
+    $shareTarget = $shareUrl ?? request()->url();
 @endphp
 
 <div
@@ -44,7 +55,7 @@
 
         <!-- Favorite Button -->
         <div class="absolute top-5 right-5 w-12 h-12 bg-white/90 dark:bg-gray-800/90 backdrop-blur-md rounded-2xl flex items-center justify-center cursor-pointer hover:bg-red-500 hover:text-white transition-all duration-300 shadow-lg"
-            onclick="toggleFavorite(this)">
+            data-role="favorite">
             @if ($isFavorite)
                 <span class="text-red-500 text-xl">❤️</span>
             @else
@@ -58,34 +69,39 @@
                 class="absolute bottom-5 left-5 right-5 opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-500">
                 <div class="flex gap-3">
                     <button
-                        class="flex-1 bg-white/95 dark:bg-gray-800/95 backdrop-blur-md p-3 rounded-2xl hover:bg-blue-500 dark:hover:bg-blue-600 hover:text-white transition-all duration-300 text-center shadow-lg font-medium"
-                        data-property-id="{{ $property->id ?? $title }}"
-                        onclick="openVirtualTourModal(this)" title="360° Sanal Tur">
+                        class="flex-1 bg-white/95 dark:bg-gray-800/95 backdrop-blur-md p-3 rounded-2xl hover:bg-blue-500 dark:hover:bg-blue-600 hover:text-white transition-all duration-300 text-center shadow-lg font-medium {{ $hasVirtualTour ? '' : 'opacity-40 pointer-events-none cursor-not-allowed' }}"
+                        data-role="virtual-tour"
+                        data-virtual-tour="{{ $hasVirtualTour ? e($virtualTourUrl) : '' }}"
+                        title="360° Sanal Tur"
+                        aria-disabled="{{ $hasVirtualTour ? 'false' : 'true' }}">
                         <div class="text-lg mb-1">🔄</div>
                         <div class="text-xs">Sanal Tur</div>
                     </button>
                     <button
-                        class="flex-1 bg-white/95 dark:bg-gray-800/95 backdrop-blur-md p-3 rounded-2xl hover:bg-blue-500 dark:hover:bg-blue-600 hover:text-white transition-all duration-300 text-center shadow-lg font-medium"
-                        data-gallery='@json($property->photos ?? [])'
-                        onclick="openGalleryModal(this)" title="Fotoğraf Galerisi">
+                        class="flex-1 bg-white/95 dark:bg-gray-800/95 backdrop-blur-md p-3 rounded-2xl hover:bg-blue-500 dark:hover:bg-blue-600 hover:text-white transition-all duration-300 text-center shadow-lg font-medium {{ $hasGallery ? '' : 'opacity-40 pointer-events-none cursor-not-allowed' }}"
+                        data-role="gallery"
+                        data-gallery='@json($galleryItems)'
+                        title="Fotoğraf Galerisi"
+                        aria-disabled="{{ $hasGallery ? 'false' : 'true' }}">
                         <div class="text-lg mb-1">📸</div>
                         <div class="text-xs">Galeri</div>
                     </button>
                     <button
-                        class="flex-1 bg-white/95 dark:bg-gray-800/95 backdrop-blur-md p-3 rounded-2xl hover:bg-blue-500 dark:hover:bg-blue-600 hover:text-white transition-all duration-300 text-center shadow-lg font-medium"
-                        data-location='@json([
-                            'lat' => $property->latitude ?? null,
-                            'lng' => $property->longitude ?? null,
-                            'title' => $title,
-                            'content' => $location,
-                        ])'
-                        onclick="openMapModal(this)" title="Haritada Göster">
+                        class="flex-1 bg-white/95 dark:bg-gray-800/95 backdrop-blur-md p-3 rounded-2xl hover:bg-blue-500 dark:hover:bg-blue-600 hover:text-white transition-all duration-300 text-center shadow-lg font-medium {{ $hasMap ? '' : 'opacity-40 pointer-events-none cursor-not-allowed' }}"
+                        data-role="map"
+                        data-location='@json($mapLocation)'
+                        title="Haritada Göster"
+                        aria-disabled="{{ $hasMap ? 'false' : 'true' }}">
                         <div class="text-lg mb-1">🗺️</div>
                         <div class="text-xs">Harita</div>
                     </button>
                     <button
                         class="flex-1 bg-white/95 dark:bg-gray-800/95 backdrop-blur-md p-3 rounded-2xl hover:bg-blue-500 dark:hover:bg-blue-600 hover:text-white transition-all duration-300 text-center shadow-lg font-medium"
-                        onclick="shareProperty()" title="Paylaş">
+                        data-role="share"
+                        data-share-url="{{ e($shareTarget) }}"
+                        data-share-title="{{ e($title) }}"
+                        data-share-text="{{ e('Bu harika portföyü inceleyin!') }}"
+                        title="Paylaş">
                         <div class="text-lg mb-1">📤</div>
                         <div class="text-xs">Paylaş</div>
                     </button>
@@ -134,27 +150,14 @@
         <div class="flex gap-3">
             <button
                 class="flex-1 border-2 border-blue-500 dark:border-blue-400 text-blue-500 dark:text-blue-400 py-3 px-6 rounded-2xl hover:bg-blue-500 hover:text-white dark:hover:bg-blue-600 dark:hover:text-white transition-all duration-300 font-semibold text-lg"
-                data-details='@json([
-                    'title' => $title,
-                    'location' => $location,
-                    'price' => $price,
-                    'beds' => $beds,
-                    'baths' => $baths,
-                    'area' => $area,
-                    'description' => $property->short_description ?? null,
-                ])'
-                onclick="openPropertyDetailModal(this)">
+                data-role="property-detail"
+                data-detail='@json($detailPayload)'>
                 Detayları Gör
             </button>
             <button
                 class="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700 text-white py-3 px-6 rounded-2xl hover:from-blue-600 hover:to-blue-700 dark:hover:from-blue-700 dark:hover:to-blue-800 transition-all duration-300 font-semibold text-lg shadow-lg hover:shadow-xl"
-                data-property='@json([
-                    'id' => $property->id ?? null,
-                    'title' => $title,
-                    'location' => $location,
-                    'price' => $price,
-                ])'
-                onclick="contactProperty(this)">
+                data-role="contact"
+                data-contact='@json($contactPayload)'>
                 İletişime Geç
             </button>
         </div>
@@ -168,39 +171,48 @@
             return;
         }
 
-        cardRoot.querySelectorAll('[onclick^="toggleFavorite"]').forEach(btn => {
+        cardRoot.querySelectorAll('[data-role="favorite"]').forEach(btn => {
             btn.addEventListener('click', () => handleFavorite(btn));
-            btn.removeAttribute('onclick');
         });
 
-        cardRoot.querySelectorAll('[onclick^="openVirtualTourModal"]').forEach(btn => {
-            btn.addEventListener('click', () => openModalWithData('virtualTour', btn.dataset.propertyId || null));
-            btn.removeAttribute('onclick');
+        cardRoot.querySelectorAll('[data-role="virtual-tour"]').forEach(btn => {
+            const url = btn.dataset.virtualTour;
+            if (!url) {
+                return;
+            }
+            btn.addEventListener('click', () => openModalWithData('virtualTour', url));
         });
 
-        cardRoot.querySelectorAll('[onclick^="openGalleryModal"]').forEach(btn => {
-            btn.addEventListener('click', () => openModalWithData('gallery', btn.dataset.gallery || '[]'));
-            btn.removeAttribute('onclick');
+        cardRoot.querySelectorAll('[data-role="gallery"]').forEach(btn => {
+            const gallery = btn.dataset.gallery;
+            if (!gallery || gallery === '[]') {
+                return;
+            }
+            btn.addEventListener('click', () => openModalWithData('gallery', gallery));
         });
 
-        cardRoot.querySelectorAll('[onclick^="openMapModal"]').forEach(btn => {
-            btn.addEventListener('click', () => openModalWithData('map', btn.dataset.location || null));
-            btn.removeAttribute('onclick');
+        cardRoot.querySelectorAll('[data-role="map"]').forEach(btn => {
+            const location = btn.dataset.location;
+            if (!location) {
+                return;
+            }
+            btn.addEventListener('click', () => openModalWithData('map', location));
         });
 
-        cardRoot.querySelectorAll('[onclick^="openPropertyDetailModal"]').forEach(btn => {
-            btn.addEventListener('click', () => openModalWithData('propertyDetail', btn.dataset.details || null));
-            btn.removeAttribute('onclick');
+        cardRoot.querySelectorAll('[data-role="property-detail"]').forEach(btn => {
+            const detail = btn.dataset.detail;
+            if (!detail) {
+                return;
+            }
+            btn.addEventListener('click', () => openModalWithData('propertyDetail', detail));
         });
 
-        cardRoot.querySelectorAll('[onclick^="shareProperty"]').forEach(btn => {
+        cardRoot.querySelectorAll('[data-role="share"]').forEach(btn => {
             btn.addEventListener('click', () => handleShare(btn));
-            btn.removeAttribute('onclick');
         });
 
-        cardRoot.querySelectorAll('[onclick^="contactProperty"]').forEach(btn => {
+        cardRoot.querySelectorAll('[data-role="contact"]').forEach(btn => {
             btn.addEventListener('click', () => handleContact(btn));
-            btn.removeAttribute('onclick');
         });
 
         function handleFavorite(element) {
@@ -212,23 +224,32 @@
             dispatchToast(isFavorited ? 'Favorilerden çıkarıldı' : 'Favorilere eklendi', 'success');
         }
 
-        function handleShare() {
+        function handleShare(button) {
+            const shareUrl = button?.dataset?.shareUrl || window.location.href;
+            const shareTitle = button?.dataset?.shareTitle || 'Yalıhan Emlak Portföyü';
+            const shareText = button?.dataset?.shareText || 'Bu harika portföyü inceleyin!';
             if (navigator.share) {
                 navigator.share({
-                    title: '{{ $title }} - Yalıhan Emlak',
-                    text: 'Bu harika emlakı inceleyin!',
-                    url: window.location.href
+                    title: shareTitle,
+                    text: shareText,
+                    url: shareUrl
                 });
             } else {
-                dispatchToast('Paylaşım linki kopyalandı!', 'success');
+                navigator.clipboard?.writeText(shareUrl).then(() => {
+                    dispatchToast('Paylaşım linki kopyalandı!', 'success');
+                }).catch(() => dispatchToast('Paylaşım linki: ' + shareUrl, 'info'));
             }
         }
 
         function handleContact(button) {
             try {
-                const payload = button?.dataset?.property ? JSON.parse(button.dataset.property) : {};
+                const payload = button?.dataset?.contact ? JSON.parse(button.dataset.contact) : {};
                 if (payload?.id && window.openPropertyContactModal) {
                     window.openPropertyContactModal(payload);
+                    return;
+                }
+                if (payload?.contact_url) {
+                    window.location.href = payload.contact_url;
                     return;
                 }
             } catch (error) {
@@ -254,7 +275,10 @@
                 return;
             }
             const toast = document.createElement('div');
-            toast.className = `fixed top-4 right-4 bg-white rounded-lg p-4 shadow-lg border-l-4 ${type === 'success' ? 'border-green-500' : 'border-red-500'} z-50 transform translate-x-full transition-transform duration-300`;
+            const borderClass = type === 'success'
+                ? 'border-green-500'
+                : (type === 'info' ? 'border-blue-500' : 'border-red-500');
+            toast.className = `fixed top-4 right-4 bg-white rounded-lg p-4 shadow-lg border-l-4 ${borderClass} z-50 transform translate-x-full transition-transform duration-300`;
             toast.innerHTML = message;
             document.body.appendChild(toast);
             setTimeout(() => toast.classList.remove('translate-x-full'), 100);

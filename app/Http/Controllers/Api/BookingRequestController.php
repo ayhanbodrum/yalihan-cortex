@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Ilan;
 use App\Models\BookingRequest;
 use App\Mail\BookingRequestMail;
+use App\Services\Response\ResponseService;
+use App\Traits\ValidatesApiRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
@@ -17,13 +19,15 @@ use Illuminate\Support\Facades\Log;
  */
 class BookingRequestController extends Controller
 {
+    use ValidatesApiRequests;
     /**
      * Submit booking request
      * POST /api/booking-request
      */
     public function store(Request $request)
     {
-        $request->validate([
+        // ✅ REFACTORED: Using ValidatesApiRequests trait
+        $validated = $this->validateRequestWithResponse($request, [
             'villa_id' => 'required|exists:ilanlar,id',
             'check_in' => 'required|date|after_or_equal:today',
             'check_out' => 'required|date|after:check_in',
@@ -35,6 +39,10 @@ class BookingRequestController extends Controller
             'nights' => 'nullable|integer',
             'total_price' => 'nullable|numeric',
         ]);
+
+        if ($validated instanceof \Illuminate\Http\JsonResponse) {
+            return $validated;
+        }
 
         try {
             // Villa bilgilerini al
@@ -81,13 +89,11 @@ class BookingRequestController extends Controller
             // ✅ Email gönder (admin ve villa sahibine)
             $this->sendBookingNotification($villa, $bookingData);
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Rezervasyon talebiniz başarıyla alındı. En kısa sürede sizinle iletişime geçeceğiz.',
+            // ✅ REFACTORED: Using ResponseService
+            return ResponseService::success([
                 'booking_reference' => $bookingRequest->booking_reference,
                 'booking_id' => $bookingRequest->id,
-            ], 201);
-
+            ], 'Rezervasyon talebiniz başarıyla alındı. En kısa sürede sizinle iletişime geçeceğiz.', 201);
         } catch (\Exception $e) {
             Log::error('Booking Request Error', [
                 'error' => $e->getMessage(),
@@ -95,16 +101,14 @@ class BookingRequestController extends Controller
                 'email' => $request->email,
             ]);
 
-            return response()->json([
-                'success' => false,
-                'message' => 'Rezervasyon talebi gönderilirken bir hata oluştu. Lütfen telefon ile iletişime geçin.',
-            ], 500);
+            // ✅ REFACTORED: Using ResponseService
+            return ResponseService::serverError('Rezervasyon talebi gönderilirken bir hata oluştu. Lütfen telefon ile iletişime geçin.', $e);
         }
     }
 
     /**
      * Send booking notification email
-     * 
+     *
      * Context7 Standardı: C7-BOOKING-MAIL-2025-11-05
      */
     private function sendBookingNotification($villa, $bookingData)
@@ -144,38 +148,43 @@ class BookingRequestController extends Controller
      */
     public function checkAvailability(Request $request)
     {
-        $request->validate([
+        // ✅ REFACTORED: Using ValidatesApiRequests trait
+        $validated = $this->validateRequestWithResponse($request, [
             'villa_id' => 'required|exists:ilanlar,id',
             'check_in' => 'required|date|after_or_equal:today',
             'check_out' => 'required|date|after:check_in',
         ]);
 
+        if ($validated instanceof \Illuminate\Http\JsonResponse) {
+            return $validated;
+        }
+
         $villa = Ilan::findOrFail($request->villa_id);
-        
+
         // Check for conflicts in events table
         $hasConflict = $villa->events()
-            ->where(function($q) use ($request) {
+            ->where(function ($q) use ($request) {
                 $q->whereBetween('check_in', [$request->check_in, $request->check_out])
-                  ->orWhereBetween('check_out', [$request->check_in, $request->check_out])
-                  ->orWhere(function($q) use ($request) {
-                      $q->where('check_in', '<=', $request->check_in)
-                        ->where('check_out', '>=', $request->check_out);
-                  });
+                    ->orWhereBetween('check_out', [$request->check_in, $request->check_out])
+                    ->orWhere(function ($q) use ($request) {
+                        $q->where('check_in', '<=', $request->check_in)
+                            ->where('check_out', '>=', $request->check_out);
+                    });
             })
             ->where('status', '!=', 'cancelled')
             ->exists();
 
         if ($hasConflict) {
-            return response()->json([
+            // ✅ REFACTORED: Using ResponseService
+            return ResponseService::success([
                 'available' => false,
-                'message' => 'Seçtiğiniz tarihler müsait değil. Lütfen başka tarih seçin.',
-            ]);
+            ], 'Seçtiğiniz tarihler müsait değil. Lütfen başka tarih seçin.');
         }
 
-        return response()->json([
+        // ✅ REFACTORED: Using ResponseService
+        return ResponseService::success([
             'available' => true,
-            'message' => 'Tarihler müsait! Rezervasyon talebini gönderebilirsiniz.',
-        ]);
+        ], 'Tarihler müsait! Rezervasyon talebini gönderebilirsiniz.');
     }
 
     /**
@@ -184,36 +193,41 @@ class BookingRequestController extends Controller
      */
     public function getPrice(Request $request)
     {
-        $request->validate([
+        // ✅ REFACTORED: Using ValidatesApiRequests trait
+        $validated = $this->validateRequestWithResponse($request, [
             'villa_id' => 'required|exists:ilanlar,id',
             'check_in' => 'required|date',
             'check_out' => 'required|date|after:check_in',
             'guests' => 'required|integer|min:1',
         ]);
 
+        if ($validated instanceof \Illuminate\Http\JsonResponse) {
+            return $validated;
+        }
+
         $villa = Ilan::findOrFail($request->villa_id);
-        
+
         $checkIn = \Carbon\Carbon::parse($request->check_in);
         $checkOut = \Carbon\Carbon::parse($request->check_out);
         $nights = $checkIn->diffInDays($checkOut);
 
         // Try to get seasonal price
         $season = $villa->seasons()
-            ->where('is_active', true)
-            ->where('start_date', '<=', $request->check_in)
-            ->where('end_date', '>=', $request->check_out)
+            ->where('status', true) // Context7: is_active → status
+            ->where('baslangic_tarihi', '<=', $request->check_in) // Context7: start_date → baslangic_tarihi
+            ->where('bitis_tarihi', '>=', $request->check_out) // Context7: end_date → bitis_tarihi
             ->first();
 
         $dailyPrice = $season ? $season->daily_price : ($villa->gunluk_fiyat ?? 0);
         $subtotal = $dailyPrice * $nights;
-        
+
         // Calculate fees
         $cleaningFee = 500; // Fixed
         $serviceFee = round($subtotal * 0.05); // 5%
         $totalPrice = $subtotal + $cleaningFee + $serviceFee;
 
-        return response()->json([
-            'success' => true,
+        // ✅ REFACTORED: Using ResponseService
+        return ResponseService::success([
             'nights' => $nights,
             'daily_price' => $dailyPrice,
             'subtotal' => $subtotal,
@@ -222,7 +236,6 @@ class BookingRequestController extends Controller
             'total_price' => $totalPrice,
             'currency' => 'TRY',
             'season_name' => $season->name ?? null,
-        ]);
+        ], 'Fiyat hesaplaması başarıyla tamamlandı');
     }
 }
-

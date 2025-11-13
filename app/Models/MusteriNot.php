@@ -6,73 +6,34 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class MusteriNot extends Model
+/**
+ * MusteriNot Model - DEPRECATED
+ *
+ * Context7 Compliance: Use KisiNot instead
+ *
+ * @deprecated Use App\Models\KisiNot instead (Context7 compliance)
+ * @see App\Models\KisiNot
+ *
+ * This is an alias for backward compatibility.
+ * New code should use KisiNot.
+ *
+ * Migration Guide:
+ * 1. Replace: use App\Models\MusteriNot → use App\Models\KisiNot
+ * 2. Replace: MusteriNot::class → KisiNot::class
+ * 3. Database: RENAME TABLE musteri_notlar TO kisi_notlar (if not already)
+ */
+class MusteriNot extends KisiNot
 {
     use HasFactory;
 
-    protected $table = 'musteri_notlar';
-
-    protected $fillable = [
-        'kisi_id',
-        'user_id',
-        'not',
-        'tip',
-        'hatirlatma_tarihi',
-        'tamamlandi',
-    ];
-
-    protected $casts = [
-        'hatirlatma_tarihi' => 'datetime',
-        'tamamlandi' => 'boolean',
-    ];
+    // ✅ Context7: Inherits everything from KisiNot
+    // This model now points to kisi_notlar table (via parent)
 
     /**
-     * Bu notun sahibi kişi
+     * Override table name to maintain backward compatibility
+     * Context7: Table renamed to kisi_notlar via migration (2025_11_06_230100)
+     *
+     * @var string
      */
-    public function kisi(): BelongsTo
-    {
-        return $this->belongsTo(Kisi::class);
-    }
-
-    /**
-     * Bu notu oluşturan kullanıcı
-     */
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
-
-    /**
-     * Önemli notlar
-     */
-    public function scopeOnemli($query)
-    {
-        return $query->where('tip', 'Önemli');
-    }
-
-    /**
-     * Hatırlatma notları
-     */
-    public function scopeHatirlatma($query)
-    {
-        return $query->where('tip', 'Hatırlatma');
-    }
-
-    /**
-     * Tamamlanmamış notlar
-     */
-    public function scopeTamamlanmamis($query)
-    {
-        return $query->where('tamamlandi', false);
-    }
-
-    /**
-     * Geciken hatırlatmalar
-     */
-    public function scopeGecikenHatirlatmalar($query)
-    {
-        return $query->where('tip', 'Hatırlatma')
-            ->where('tamamlandi', false)
-            ->where('hatirlatma_tarihi', '<', now());
-    }
+    protected $table = 'kisi_notlar'; // Context7: Table renamed from old name to kisi_notlar (migration completed)
 }

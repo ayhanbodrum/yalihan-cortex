@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Season;
 use App\Models\Ilan;
+use App\Services\Response\ResponseService;
+use App\Traits\ValidatesApiRequests;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
@@ -15,6 +17,8 @@ use Carbon\Carbon;
  */
 class SeasonController extends Controller
 {
+    use ValidatesApiRequests;
+
     /**
      * Get seasons for ilan
      * GET /api/admin/ilanlar/{id}/seasons
@@ -22,26 +26,23 @@ class SeasonController extends Controller
     public function index($ilanId)
     {
         $seasons = Season::where('ilan_id', $ilanId)
-            ->orderBy('start_date')
+            ->orderBy('baslangic_tarihi') // ✅ Context7: Tablodaki gerçek kolon adı
             ->get()
             ->map(fn($season) => [
                 'id' => $season->id,
-                'season_type' => $season->type,
-                'name' => $season->name,
-                'start_date' => $season->start_date,
-                'end_date' => $season->end_date,
-                'daily_price' => $season->daily_price,
-                'weekly_price' => $season->weekly_price,
-                'monthly_price' => $season->monthly_price,
-                'minimum_stay' => $season->minimum_stay,
-                'maximum_stay' => $season->maximum_stay,
-                'is_active' => $season->is_active,
+                'season_type' => $season->sezon_tipi, // ✅ Context7: Tablodaki gerçek kolon adı
+                'start_date' => $season->baslangic_tarihi, // Backward compatibility için accessor kullanılıyor
+                'end_date' => $season->bitis_tarihi, // Backward compatibility için accessor kullanılıyor
+                'daily_price' => $season->gunluk_fiyat, // Backward compatibility için accessor kullanılıyor
+                'weekly_price' => $season->haftalik_fiyat, // Backward compatibility için accessor kullanılıyor
+                'monthly_price' => $season->aylik_fiyat, // Backward compatibility için accessor kullanılıyor
+                'minimum_stay' => $season->minimum_konaklama, // Backward compatibility için accessor kullanılıyor
+                'maximum_stay' => $season->maksimum_konaklama, // Backward compatibility için accessor kullanılıyor
+                'status' => $season->status, // Context7: is_active → status
             ]);
 
-        return response()->json([
-            'success' => true,
-            'seasons' => $seasons
-        ]);
+        // ✅ REFACTORED: Using ResponseService
+        return ResponseService::success(['seasons' => $seasons], 'Sezonlar başarıyla getirildi');
     }
 
     /**
@@ -50,10 +51,10 @@ class SeasonController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        // ✅ REFACTORED: Using ValidatesApiRequests trait
+        $validated = $this->validateRequestWithResponse($request, [
             'ilan_id' => 'required|exists:ilanlar,id',
-            'season_type' => 'required|in:yaz,kis,ara_sezon,bayram,ozel',
-            'name' => 'required|string|max:255',
+            'season_type' => 'required|in:yaz,kis,ara_sezon',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after:start_date',
             'daily_price' => 'required|numeric|min:0',
@@ -61,29 +62,29 @@ class SeasonController extends Controller
             'monthly_price' => 'nullable|numeric|min:0',
             'minimum_stay' => 'nullable|integer|min:1',
             'maximum_stay' => 'nullable|integer|min:1',
-            'is_active' => 'nullable|boolean',
+            'status' => 'nullable|boolean', // Context7: is_active → status
+            'is_active' => 'nullable|boolean', // Backward compatibility (deprecated)
         ]);
+
+        if ($validated instanceof \Illuminate\Http\JsonResponse) {
+            return $validated;
+        }
 
         $season = Season::create([
             'ilan_id' => $request->ilan_id,
-            'name' => $request->name,
-            'type' => $request->season_type,
-            'start_date' => $request->start_date,
-            'end_date' => $request->end_date,
-            'daily_price' => $request->daily_price,
-            'weekly_price' => $request->weekly_price,
-            'monthly_price' => $request->monthly_price,
-            'minimum_stay' => $request->minimum_stay ?? 1,
-            'maximum_stay' => $request->maximum_stay,
-            'is_active' => $request->is_active ?? true,
-            'currency' => 'TRY',
+            'sezon_tipi' => $request->season_type, // ✅ Context7: Tablodaki gerçek kolon adı
+            'baslangic_tarihi' => $request->start_date, // ✅ Context7: Tablodaki gerçek kolon adı
+            'bitis_tarihi' => $request->end_date, // ✅ Context7: Tablodaki gerçek kolon adı
+            'gunluk_fiyat' => $request->daily_price, // ✅ Context7: Tablodaki gerçek kolon adı
+            'haftalik_fiyat' => $request->weekly_price, // ✅ Context7: Tablodaki gerçek kolon adı
+            'aylik_fiyat' => $request->monthly_price, // ✅ Context7: Tablodaki gerçek kolon adı
+            'minimum_konaklama' => $request->minimum_stay ?? 1, // ✅ Context7: Tablodaki gerçek kolon adı
+            'maksimum_konaklama' => $request->maximum_stay, // ✅ Context7: Tablodaki gerçek kolon adı
+            'status' => $request->status ?? $request->is_active ?? true, // Context7: status preferred, is_active backward compat
         ]);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Sezon oluşturuldu',
-            'season' => $season
-        ], 201);
+        // ✅ REFACTORED: Using ResponseService
+        return ResponseService::success(['season' => $season], 'Sezon oluşturuldu', 201);
     }
 
     /**
@@ -94,9 +95,9 @@ class SeasonController extends Controller
     {
         $season = Season::findOrFail($id);
 
-        $request->validate([
-            'season_type' => 'nullable|in:yaz,kis,ara_sezon,bayram,ozel',
-            'name' => 'nullable|string|max:255',
+        // ✅ REFACTORED: Using ValidatesApiRequests trait
+        $validated = $this->validateRequestWithResponse($request, [
+            'season_type' => 'nullable|in:yaz,kis,ara_sezon',
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date',
             'daily_price' => 'nullable|numeric|min:0',
@@ -104,28 +105,33 @@ class SeasonController extends Controller
             'monthly_price' => 'nullable|numeric|min:0',
             'minimum_stay' => 'nullable|integer|min:1',
             'maximum_stay' => 'nullable|integer|min:1',
-            'is_active' => 'nullable|boolean',
+            'status' => 'nullable|boolean', // Context7: is_active → status
+            'is_active' => 'nullable|boolean', // Backward compatibility (deprecated)
         ]);
 
+        if ($validated instanceof \Illuminate\Http\JsonResponse) {
+            return $validated;
+        }
+
         $updateData = [];
-        if ($request->has('season_type')) $updateData['type'] = $request->season_type;
-        if ($request->has('name')) $updateData['name'] = $request->name;
-        if ($request->has('start_date')) $updateData['start_date'] = $request->start_date;
-        if ($request->has('end_date')) $updateData['end_date'] = $request->end_date;
-        if ($request->has('daily_price')) $updateData['daily_price'] = $request->daily_price;
-        if ($request->has('weekly_price')) $updateData['weekly_price'] = $request->weekly_price;
-        if ($request->has('monthly_price')) $updateData['monthly_price'] = $request->monthly_price;
-        if ($request->has('minimum_stay')) $updateData['minimum_stay'] = $request->minimum_stay;
-        if ($request->has('maximum_stay')) $updateData['maximum_stay'] = $request->maximum_stay;
-        if ($request->has('is_active')) $updateData['is_active'] = $request->is_active;
+        if ($request->has('season_type')) $updateData['sezon_tipi'] = $request->season_type;
+        if ($request->has('start_date')) $updateData['baslangic_tarihi'] = $request->start_date;
+        if ($request->has('end_date')) $updateData['bitis_tarihi'] = $request->end_date;
+        if ($request->has('daily_price')) $updateData['gunluk_fiyat'] = $request->daily_price;
+        if ($request->has('weekly_price')) $updateData['haftalik_fiyat'] = $request->weekly_price;
+        if ($request->has('monthly_price')) $updateData['aylik_fiyat'] = $request->monthly_price;
+        if ($request->has('minimum_stay')) $updateData['minimum_konaklama'] = $request->minimum_stay;
+        if ($request->has('maximum_stay')) $updateData['maksimum_konaklama'] = $request->maximum_stay;
+        if ($request->has('status')) {
+            $updateData['status'] = $request->status;
+        } elseif ($request->has('is_active')) {
+            $updateData['status'] = $request->is_active; // Backward compatibility
+        }
 
         $season->update($updateData);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Sezon güncellendi',
-            'season' => $season
-        ]);
+        // ✅ REFACTORED: Using ResponseService
+        return ResponseService::success(['season' => $season], 'Sezon güncellendi');
     }
 
     /**
@@ -137,10 +143,8 @@ class SeasonController extends Controller
         $season = Season::findOrFail($id);
         $season->delete();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Sezon silindi'
-        ]);
+        // ✅ REFACTORED: Using ResponseService
+        return ResponseService::success(null, 'Sezon silindi');
     }
 
     /**
@@ -149,11 +153,16 @@ class SeasonController extends Controller
      */
     public function calculatePrice(Request $request)
     {
-        $request->validate([
+        // ✅ REFACTORED: Using ValidatesApiRequests trait
+        $validated = $this->validateRequestWithResponse($request, [
             'ilan_id' => 'required|exists:ilanlar,id',
             'check_in' => 'required|date',
             'check_out' => 'required|date|after:check_in',
         ]);
+
+        if ($validated instanceof \Illuminate\Http\JsonResponse) {
+            return $validated;
+        }
 
         $checkIn = Carbon::parse($request->check_in);
         $checkOut = Carbon::parse($request->check_out);
@@ -161,42 +170,39 @@ class SeasonController extends Controller
 
         // Find applicable season
         $season = Season::where('ilan_id', $request->ilan_id)
-            ->where('is_active', true)
-            ->where('start_date', '<=', $request->check_in)
-            ->where('end_date', '>=', $request->check_out)
+            ->where('status', true) // ✅ Context7: Tablodaki gerçek kolon adı
+            ->where('baslangic_tarihi', '<=', $request->check_in) // ✅ Context7: Tablodaki gerçek kolon adı
+            ->where('bitis_tarihi', '>=', $request->check_out) // ✅ Context7: Tablodaki gerçek kolon adı
             ->first();
 
         if (!$season) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Bu tarihler için sezon fiyatı bulunamadı'
-            ], 404);
+            // ✅ REFACTORED: Using ResponseService
+            return ResponseService::notFound('Bu tarihler için sezon fiyatı bulunamadı');
         }
 
-        $totalPrice = $season->daily_price * $nights;
+        $totalPrice = $season->gunluk_fiyat * $nights; // ✅ Context7: Tablodaki gerçek kolon adı
 
         // Weekly discount
-        if ($nights >= 7 && $season->weekly_price) {
+        if ($nights >= 7 && $season->haftalik_fiyat) { // ✅ Context7: Tablodaki gerçek kolon adı
             $weeks = floor($nights / 7);
             $remainingNights = $nights % 7;
-            $totalPrice = ($weeks * $season->weekly_price) + ($remainingNights * $season->daily_price);
+            $totalPrice = ($weeks * $season->haftalik_fiyat) + ($remainingNights * $season->gunluk_fiyat);
         }
 
         // Monthly discount
-        if ($nights >= 30 && $season->monthly_price) {
+        if ($nights >= 30 && $season->aylik_fiyat) { // ✅ Context7: Tablodaki gerçek kolon adı
             $months = floor($nights / 30);
             $remainingNights = $nights % 30;
-            $totalPrice = ($months * $season->monthly_price) + ($remainingNights * $season->daily_price);
+            $totalPrice = ($months * $season->aylik_fiyat) + ($remainingNights * $season->gunluk_fiyat);
         }
 
-        return response()->json([
-            'success' => true,
-            'season' => $season->name,
+        // ✅ REFACTORED: Using ResponseService
+        return ResponseService::success([
+            'season' => $season->sezon_tipi, // ✅ Context7: Tablodaki gerçek kolon adı
             'nights' => $nights,
-            'daily_price' => $season->daily_price,
+            'daily_price' => $season->gunluk_fiyat, // Backward compatibility için accessor kullanılıyor
             'total_price' => $totalPrice,
             'currency' => 'TRY'
-        ]);
+        ], 'Fiyat hesaplandı');
     }
 }
-

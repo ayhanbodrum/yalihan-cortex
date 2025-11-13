@@ -56,239 +56,32 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-                <!-- Property 1 -->
-                <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800 group">
-                    <!-- Property Image -->
-                    <div class="relative h-64 overflow-hidden rounded-t-xl">
-                        <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=400&h=300&fit=crop"
-                            alt="Modern Villa - Yalıkavak"
-                            class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
-                        <!-- Gradient Overlay -->
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                        <!-- Badge -->
-                        <div class="absolute top-4 left-4 bg-green-500 text-white px-3 py-1.5 rounded-full text-sm font-semibold shadow-lg">Satılık</div>
-                        <!-- Favorite Button -->
-                        <div class="absolute top-4 right-4 w-10 h-10 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-full flex items-center justify-center cursor-pointer hover:bg-red-500 hover:text-white transition-all duration-300 shadow-lg dark:text-gray-300"
-                            onclick="toggleFavorite(this)">
-                            <span class="text-gray-600 dark:text-gray-300 text-xl">🤍</span>
-                        </div>
-                        <!-- Action Overlay -->
-                        <div class="absolute bottom-4 left-4 right-4 opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-500">
-                            <div class="flex gap-2">
-                                <button class="flex-1 bg-white/95 dark:bg-gray-800/95 backdrop-blur-md p-2.5 rounded-xl hover:bg-blue-500 hover:text-white dark:hover:bg-blue-600 transition-all duration-300 text-center shadow-lg font-medium text-xs"
-                                    onclick="openModal('virtualTour')">
-                                    <div class="text-base mb-0.5">🔄</div>
-                                    <div>Sanal Tur</div>
-                                </button>
-                                <button class="flex-1 bg-white/95 dark:bg-gray-800/95 backdrop-blur-md p-2.5 rounded-xl hover:bg-blue-500 hover:text-white dark:hover:bg-blue-600 transition-all duration-300 text-center shadow-lg font-medium text-xs"
-                                    onclick="openModal('gallery')">
-                                    <div class="text-base mb-0.5">📸</div>
-                                    <div>Galeri</div>
-                                </button>
-                                <button class="flex-1 bg-white/95 dark:bg-gray-800/95 backdrop-blur-md p-2.5 rounded-xl hover:bg-blue-500 hover:text-white dark:hover:bg-blue-600 transition-all duration-300 text-center shadow-lg font-medium text-xs"
-                                    onclick="openModal('map')">
-                                    <div class="text-base mb-0.5">🗺️</div>
-                                    <div>Harita</div>
-                                </button>
-                                <button class="flex-1 bg-white/95 dark:bg-gray-800/95 backdrop-blur-md p-2.5 rounded-xl hover:bg-blue-500 hover:text-white dark:hover:bg-blue-600 transition-all duration-300 text-center shadow-lg font-medium text-xs"
-                                    onclick="shareProperty()">
-                                    <div class="text-base mb-0.5">📤</div>
-                                    <div>Paylaş</div>
-                                </button>
-                            </div>
-                        </div>
+                @forelse($featuredProperties as $property)
+                    <x-yaliihan.property-card
+                        :image="$property['cover_image']"
+                        :title="$property['title']"
+                        :location="$property['location']"
+                        :price="$property['price_display']"
+                        :price-period="$property['price_period']"
+                        :beds="$property['beds']"
+                        :baths="$property['baths']"
+                        :area="$property['area']"
+                        :badge="$property['badge']"
+                        :badge-text="$property['badge_text']"
+                        :gallery="$property['gallery']"
+                        :virtual-tour-url="$property['virtual_tour_url']"
+                        :map-location="$property['map_location']"
+                        :detail-payload="$property['detail_payload']"
+                        :contact-payload="$property['contact_payload']"
+                        :share-url="$property['share_url']"
+                    />
+                @empty
+                    <div class="col-span-full flex flex-col items-center justify-center rounded-3xl border border-dashed border-blue-300 dark:border-blue-700/60 bg-white dark:bg-gray-900 p-10 text-center shadow-sm">
+                        <div class="text-4xl mb-4">🏗️</div>
+                        <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">Yakında Harika Portföyler Burada</h3>
+                        <p class="text-sm text-gray-600 dark:text-gray-400 max-w-md">Şu anda yayınlanmış portföy bulunmuyor. En güncel ilanlarımızı yakında burada görebilirsiniz.</p>
                     </div>
-                    <!-- Property Content -->
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2 line-clamp-2">Modern Villa - Yalıkavak</h3>
-                        <p class="text-gray-600 dark:text-gray-300 mb-4 flex items-center text-sm">
-                            <span class="text-blue-500 dark:text-blue-400 mr-2">📍</span> Yalıkavak, Bodrum
-                        </p>
-                        <!-- Property Details -->
-                        <div class="grid grid-cols-3 gap-4 mb-4">
-                            <div class="text-center p-3 bg-gray-50 dark:bg-gray-700 rounded-xl">
-                                <div class="text-2xl mb-1">🛏️</div>
-                                <div class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide font-medium">Yatak</div>
-                                <div class="font-bold text-gray-900 dark:text-white text-lg">4</div>
-                            </div>
-                            <div class="text-center p-3 bg-gray-50 dark:bg-gray-700 rounded-xl">
-                                <div class="text-2xl mb-1">🚿</div>
-                                <div class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide font-medium">Banyo</div>
-                                <div class="font-bold text-gray-900 dark:text-white text-lg">3</div>
-                            </div>
-                            <div class="text-center p-3 bg-gray-50 dark:bg-gray-700 rounded-xl">
-                                <div class="text-2xl mb-1">📐</div>
-                                <div class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide font-medium">m²</div>
-                                <div class="font-bold text-gray-900 dark:text-white text-lg">250</div>
-                            </div>
-                        </div>
-                        <!-- Price -->
-                        <div class="text-2xl font-bold text-blue-600 dark:text-blue-400 mb-4">₺8,500,000</div>
-                        <!-- Action Buttons -->
-                        <div class="flex gap-3">
-                            <button class="flex-1 border-2 border-blue-500 dark:border-blue-400 text-blue-500 dark:text-blue-400 py-2.5 px-4 rounded-lg hover:bg-blue-500 hover:text-white dark:hover:bg-blue-600 dark:hover:text-white transition-all duration-300 font-semibold text-sm"
-                                onclick="openModal('propertyDetail')">Detayları Gör</button>
-                            <button class="flex-1 bg-blue-600 dark:bg-blue-500 text-white py-2.5 px-4 rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg font-semibold text-sm"
-                                onclick="contactProperty()">İletişime Geç</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Property 2 -->
-                <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800 group">
-                    <!-- Property Image -->
-                    <div class="relative h-64 overflow-hidden rounded-t-xl">
-                        <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=400&h=300&fit=crop"
-                            alt="Lüks Daire - Gümbet"
-                            class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
-                        <!-- Gradient Overlay -->
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                        <!-- Badge -->
-                        <div class="absolute top-4 left-4 bg-blue-500 text-white px-3 py-1.5 rounded-full text-sm font-semibold shadow-lg">Kiralık</div>
-                        <!-- Favorite Button -->
-                        <div class="absolute top-4 right-4 w-10 h-10 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-full flex items-center justify-center cursor-pointer hover:bg-red-500 hover:text-white transition-all duration-300 shadow-lg dark:text-gray-300"
-                            onclick="toggleFavorite(this)">
-                            <span class="text-gray-600 dark:text-gray-300 text-xl">🤍</span>
-                        </div>
-                        <!-- Action Overlay -->
-                        <div class="absolute bottom-4 left-4 right-4 opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-500">
-                            <div class="flex gap-2">
-                                <button class="flex-1 bg-white/95 dark:bg-gray-800/95 backdrop-blur-md p-2.5 rounded-xl hover:bg-blue-500 hover:text-white dark:hover:bg-blue-600 transition-all duration-300 text-center shadow-lg font-medium text-xs"
-                                    onclick="openModal('virtualTour')">
-                                    <div class="text-base mb-0.5">🔄</div>
-                                    <div>Sanal Tur</div>
-                                </button>
-                                <button class="flex-1 bg-white/95 dark:bg-gray-800/95 backdrop-blur-md p-2.5 rounded-xl hover:bg-blue-500 hover:text-white dark:hover:bg-blue-600 transition-all duration-300 text-center shadow-lg font-medium text-xs"
-                                    onclick="openModal('gallery')">
-                                    <div class="text-base mb-0.5">📸</div>
-                                    <div>Galeri</div>
-                                </button>
-                                <button class="flex-1 bg-white/95 dark:bg-gray-800/95 backdrop-blur-md p-2.5 rounded-xl hover:bg-blue-500 hover:text-white dark:hover:bg-blue-600 transition-all duration-300 text-center shadow-lg font-medium text-xs"
-                                    onclick="openModal('map')">
-                                    <div class="text-base mb-0.5">🗺️</div>
-                                    <div>Harita</div>
-                                </button>
-                                <button class="flex-1 bg-white/95 dark:bg-gray-800/95 backdrop-blur-md p-2.5 rounded-xl hover:bg-blue-500 hover:text-white dark:hover:bg-blue-600 transition-all duration-300 text-center shadow-lg font-medium text-xs"
-                                    onclick="shareProperty()">
-                                    <div class="text-base mb-0.5">📤</div>
-                                    <div>Paylaş</div>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Property Content -->
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2 line-clamp-2">Lüks Daire - Gümbet</h3>
-                        <p class="text-gray-600 dark:text-gray-300 mb-4 flex items-center text-sm">
-                            <span class="text-blue-500 dark:text-blue-400 mr-2">📍</span> Gümbet, Bodrum
-                        </p>
-                        <!-- Property Details -->
-                        <div class="grid grid-cols-3 gap-4 mb-4">
-                            <div class="text-center p-3 bg-gray-50 dark:bg-gray-700 rounded-xl">
-                                <div class="text-2xl mb-1">🛏️</div>
-                                <div class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide font-medium">Yatak</div>
-                                <div class="font-bold text-gray-900 dark:text-white text-lg">2</div>
-                            </div>
-                            <div class="text-center p-3 bg-gray-50 dark:bg-gray-700 rounded-xl">
-                                <div class="text-2xl mb-1">🚿</div>
-                                <div class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide font-medium">Banyo</div>
-                                <div class="font-bold text-gray-900 dark:text-white text-lg">2</div>
-                            </div>
-                            <div class="text-center p-3 bg-gray-50 dark:bg-gray-700 rounded-xl">
-                                <div class="text-2xl mb-1">📐</div>
-                                <div class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide font-medium">m²</div>
-                                <div class="font-bold text-gray-900 dark:text-white text-lg">120</div>
-                            </div>
-                        </div>
-                        <!-- Price -->
-                        <div class="text-2xl font-bold text-blue-600 dark:text-blue-400 mb-4">₺15,000 <span class="text-lg text-gray-500 dark:text-gray-400 font-normal">/ay</span></div>
-                        <!-- Action Buttons -->
-                        <div class="flex gap-3">
-                            <button class="flex-1 border-2 border-blue-500 dark:border-blue-400 text-blue-500 dark:text-blue-400 py-2.5 px-4 rounded-lg hover:bg-blue-500 hover:text-white dark:hover:bg-blue-600 dark:hover:text-white transition-all duration-300 font-semibold text-sm"
-                                onclick="openModal('propertyDetail')">Detayları Gör</button>
-                            <button class="flex-1 bg-blue-600 dark:bg-blue-500 text-white py-2.5 px-4 rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg font-semibold text-sm"
-                                onclick="contactProperty()">İletişime Geç</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Property 3 -->
-                <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800 group">
-                    <!-- Property Image -->
-                    <div class="relative h-64 overflow-hidden rounded-t-xl">
-                        <img src="https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=400&h=300&fit=crop"
-                            alt="Deniz Manzaralı Villa - Bitez"
-                            class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
-                        <!-- Gradient Overlay -->
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                        <!-- Badge -->
-                        <div class="absolute top-4 left-4 bg-purple-500 text-white px-3 py-1.5 rounded-full text-sm font-semibold shadow-lg">Öne Çıkan</div>
-                        <!-- Favorite Button -->
-                        <div class="absolute top-4 right-4 w-10 h-10 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-full flex items-center justify-center cursor-pointer hover:bg-red-500 hover:text-white transition-all duration-300 shadow-lg dark:text-gray-300"
-                            onclick="toggleFavorite(this)">
-                            <span class="text-gray-600 dark:text-gray-300 text-xl">🤍</span>
-                        </div>
-                        <!-- Action Overlay -->
-                        <div class="absolute bottom-4 left-4 right-4 opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-500">
-                            <div class="flex gap-2">
-                                <button class="flex-1 bg-white/95 dark:bg-gray-800/95 backdrop-blur-md p-2.5 rounded-xl hover:bg-blue-500 hover:text-white dark:hover:bg-blue-600 transition-all duration-300 text-center shadow-lg font-medium text-xs"
-                                    onclick="openModal('virtualTour')">
-                                    <div class="text-base mb-0.5">🔄</div>
-                                    <div>Sanal Tur</div>
-                                </button>
-                                <button class="flex-1 bg-white/95 dark:bg-gray-800/95 backdrop-blur-md p-2.5 rounded-xl hover:bg-blue-500 hover:text-white dark:hover:bg-blue-600 transition-all duration-300 text-center shadow-lg font-medium text-xs"
-                                    onclick="openModal('gallery')">
-                                    <div class="text-base mb-0.5">📸</div>
-                                    <div>Galeri</div>
-                                </button>
-                                <button class="flex-1 bg-white/95 dark:bg-gray-800/95 backdrop-blur-md p-2.5 rounded-xl hover:bg-blue-500 hover:text-white dark:hover:bg-blue-600 transition-all duration-300 text-center shadow-lg font-medium text-xs"
-                                    onclick="openModal('map')">
-                                    <div class="text-base mb-0.5">🗺️</div>
-                                    <div>Harita</div>
-                                </button>
-                                <button class="flex-1 bg-white/95 dark:bg-gray-800/95 backdrop-blur-md p-2.5 rounded-xl hover:bg-blue-500 hover:text-white dark:hover:bg-blue-600 transition-all duration-300 text-center shadow-lg font-medium text-xs"
-                                    onclick="shareProperty()">
-                                    <div class="text-base mb-0.5">📤</div>
-                                    <div>Paylaş</div>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Property Content -->
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2 line-clamp-2">Deniz Manzaralı Villa - Bitez</h3>
-                        <p class="text-gray-600 dark:text-gray-300 mb-4 flex items-center text-sm">
-                            <span class="text-blue-500 dark:text-blue-400 mr-2">📍</span> Bitez, Bodrum
-                        </p>
-                        <!-- Property Details -->
-                        <div class="grid grid-cols-3 gap-4 mb-4">
-                            <div class="text-center p-3 bg-gray-50 dark:bg-gray-700 rounded-xl">
-                                <div class="text-2xl mb-1">🛏️</div>
-                                <div class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide font-medium">Yatak</div>
-                                <div class="font-bold text-gray-900 dark:text-white text-lg">5</div>
-                            </div>
-                            <div class="text-center p-3 bg-gray-50 dark:bg-gray-700 rounded-xl">
-                                <div class="text-2xl mb-1">🚿</div>
-                                <div class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide font-medium">Banyo</div>
-                                <div class="font-bold text-gray-900 dark:text-white text-lg">4</div>
-                            </div>
-                            <div class="text-center p-3 bg-gray-50 dark:bg-gray-700 rounded-xl">
-                                <div class="text-2xl mb-1">📐</div>
-                                <div class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide font-medium">m²</div>
-                                <div class="font-bold text-gray-900 dark:text-white text-lg">350</div>
-                            </div>
-                        </div>
-                        <!-- Price -->
-                        <div class="text-2xl font-bold text-blue-600 dark:text-blue-400 mb-4">₺12,500,000</div>
-                        <!-- Action Buttons -->
-                        <div class="flex gap-3">
-                            <button class="flex-1 border-2 border-blue-500 dark:border-blue-400 text-blue-500 dark:text-blue-400 py-2.5 px-4 rounded-lg hover:bg-blue-500 hover:text-white dark:hover:bg-blue-600 dark:hover:text-white transition-all duration-300 font-semibold text-sm"
-                                onclick="openModal('propertyDetail')">Detayları Gör</button>
-                            <button class="flex-1 bg-blue-600 dark:bg-blue-500 text-white py-2.5 px-4 rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg font-semibold text-sm"
-                                onclick="contactProperty()">İletişime Geç</button>
-                        </div>
-                    </div>
-                </div>
+                @endforelse
             </div>
         </div>
     </section>
@@ -302,20 +95,26 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="text-center transform hover:scale-105 transition-transform duration-300">
-                    <div class="text-6xl mb-4">🏠</div>
-                    <h3 class="text-2xl font-semibold text-gray-900 dark:text-white mb-4 transition-colors duration-300">Geniş Portföy</h3>
-                    <p class="text-gray-600 dark:text-gray-300 transition-colors duration-300">Bodrum'un her bölgesinde binlerce emlak seçeneği</p>
+                <div class="text-center p-8 bg-gray-50 dark:bg-gray-900/40 rounded-3xl border border-gray-200 dark:border-gray-700 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+                    <div class="text-4xl font-black text-blue-600 dark:text-blue-400 mb-3">
+                        {{ number_format($stats['active_listings'] ?? 0) }}+
+                    </div>
+                    <h3 class="text-2xl font-semibold text-gray-900 dark:text-white mb-2 transition-colors duration-300">Aktif Portföy</h3>
+                    <p class="text-gray-600 dark:text-gray-300 transition-colors duration-300">Güncel, doğrulanmış ve yayında olan ilanlarımızla hayalinizdeki evi keşfedin.</p>
                 </div>
-                <div class="text-center transform hover:scale-105 transition-transform duration-300">
-                    <div class="text-6xl mb-4">🤝</div>
-                    <h3 class="text-2xl font-semibold text-gray-900 dark:text-white mb-4 transition-colors duration-300">Güvenilir Hizmet</h3>
-                    <p class="text-gray-600 dark:text-gray-300 transition-colors duration-300">20+ yıllık deneyim ve müşteri memnuniyeti</p>
+                <div class="text-center p-8 bg-gray-50 dark:bg-gray-900/40 rounded-3xl border border-gray-200 dark:border-gray-700 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+                    <div class="text-4xl font-black text-blue-600 dark:text-blue-400 mb-3">
+                        {{ $stats['experience_years'] ?? 0 }}+
+                    </div>
+                    <h3 class="text-2xl font-semibold text-gray-900 dark:text-white mb-2 transition-colors duration-300">Yıllık Deneyim</h3>
+                    <p class="text-gray-600 dark:text-gray-300 transition-colors duration-300">Bölgeyi bilen danışmanlarımızla süreç boyunca yanınızdayız.</p>
                 </div>
-                <div class="text-center transform hover:scale-105 transition-transform duration-300">
-                    <div class="text-6xl mb-4">📱</div>
-                    <h3 class="text-2xl font-semibold text-gray-900 dark:text-white mb-4 transition-colors duration-300">Modern Teknoloji</h3>
-                    <p class="text-gray-600 dark:text-gray-300 transition-colors duration-300">360° sanal tur, harita entegrasyonu ve daha fazlası</p>
+                <div class="text-center p-8 bg-gray-50 dark:bg-gray-900/40 rounded-3xl border border-gray-200 dark:border-gray-700 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+                    <div class="text-4xl font-black text-blue-600 dark:text-blue-400 mb-3">
+                        {{ number_format($stats['happy_customers'] ?? 0) }}+
+                    </div>
+                    <h3 class="text-2xl font-semibold text-gray-900 dark:text-white mb-2 transition-colors duration-300">Mutlu Müşteri</h3>
+                    <p class="text-gray-600 dark:text-gray-300 transition-colors duration-300">Referanslarımızla büyüyen portföyümüz; güvenilir yatırım ortağınız.</p>
                 </div>
             </div>
         </div>
@@ -352,8 +151,12 @@
                     <i class="fas fa-times text-xl"></i>
                 </button>
             </div>
-            <div class="aspect-video rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-800">
-                <iframe src="https://www.youtube.com/embed/0dJjjA7vJ4k" title="Yalıhan Emlak Sanal Tur" loading="lazy" allowfullscreen class="w-full h-full"></iframe>
+            <div class="aspect-video rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-800 relative">
+                <iframe data-role="virtual-tour-iframe" title="Portföy Sanal Tur" loading="lazy" allowfullscreen class="w-full h-full hidden"></iframe>
+                <div data-role="virtual-tour-placeholder" class="absolute inset-0 flex flex-col items-center justify-center gap-3 text-gray-500 dark:text-gray-400 text-sm">
+                    <span class="text-4xl">🎥</span>
+                    <p>Sanal tur içerikleri yakında eklenecek.</p>
+                </div>
             </div>
         </div>
     </div>
@@ -370,11 +173,10 @@
                     <i class="fas fa-times text-xl"></i>
                 </button>
             </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <img src="https://images.unsplash.com/photo-1600607687920-cc9f2bea8d2a?auto=format&fit=crop&w=900&q=80" alt="Geniş salon" loading="lazy" class="w-full h-full object-cover rounded-2xl">
-                <img src="https://images.unsplash.com/photo-1600607687927-94321ca97283?auto=format&fit=crop&w=900&q=80" alt="Modern mutfak" loading="lazy" class="w-full h-full object-cover rounded-2xl">
-                <img src="https://images.unsplash.com/photo-1602526211073-5bc0bb984f06?auto=format&fit=crop&w=900&q=80" alt="Deniz manzaralı teras" loading="lazy" class="w-full h-full object-cover rounded-2xl">
-                <img src="https://images.unsplash.com/photo-1600585154340-0ef3c08dcdb6?auto=format&fit=crop&w=900&q=80" alt="Özel havuz" loading="lazy" class="w-full h-full object-cover rounded-2xl">
+            <div data-role="gallery-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+            <div data-role="gallery-placeholder" class="flex flex-col items-center justify-center gap-3 py-10 text-gray-500 dark:text-gray-400 text-sm">
+                <span class="text-4xl">🖼️</span>
+                <p>Bu portföy için henüz galeri görseli bulunamadı.</p>
             </div>
         </div>
     </div>
@@ -385,23 +187,19 @@
             <div class="flex items-start justify-between gap-4 mb-4">
                 <div>
                     <h3 id="mapTitle" class="text-2xl font-bold text-gray-900 dark:text-white">Lokasyon Haritası</h3>
-                    <p class="text-sm text-gray-600 dark:text-gray-400">Portföyün bulunduğu konumu inceleyin.</p>
+                    <p class="text-sm text-gray-600 dark:text-gray-400" data-role="map-address">Portföyün bulunduğu konumu inceleyin.</p>
                 </div>
                 <button type="button" class="text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 transition-colors" onclick="closeModal('map')" aria-label="Kapat">
                     <i class="fas fa-times text-xl"></i>
                 </button>
             </div>
-            <x-yaliihan.map-component :center="[
-                'lat' => 37.0581,
-                'lng' => 27.258,
-            ]" :zoom="14" :markers="[
-                [
-                    'position' => ['lat' => 37.0581, 'lng' => 27.258],
-                    'title' => 'Deniz Manzaralı Villa',
-                    'content' => 'Bitez, Bodrum - Sanal tur ile ayrıntıları görüntüleyin',
-                    'icon' => null,
-                ],
-            ]" height="320px" class="rounded-2xl overflow-hidden" />
+            <div class="rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-800">
+                <iframe data-role="map-frame" title="Portföy Haritası" loading="lazy" referrerpolicy="no-referrer-when-downgrade" class="w-full h-72 hidden"></iframe>
+                <div data-role="map-placeholder" class="flex flex-col items-center justify-center gap-3 py-10 text-gray-500 dark:text-gray-400 text-sm">
+                    <span class="text-4xl">🗺️</span>
+                    <p>Konum bilgisi bulunamadı. Lütfen danışmanımızla iletişime geçin.</p>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -417,28 +215,19 @@
                     <i class="fas fa-times text-xl"></i>
                 </button>
             </div>
-            <div class="space-y-4 text-gray-700 dark:text-gray-300 text-sm leading-relaxed">
-                <p class="text-base">Deniz manzaralı villamız akıllı ev sistemi, otomatik panjur, merkezi ısıtma-soğutma ve tüm odalarda yerden ısıtma altyapısı içerir. Zemin katta geniş bir yaşam alanı, üst katta üç suit oda ve bodrum katta misafir bölümü bulunmaktadır.</p>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div class="rounded-2xl border border-gray-200 dark:border-gray-700 p-4">
-                        <p class="font-semibold text-gray-900 dark:text-white mb-1">Teknik Özellikler</p>
-                        <ul class="list-disc list-inside space-y-1 text-gray-600 dark:text-gray-400">
-                            <li>350 m² kapalı alan</li>
-                            <li>İkiz havuz sistemi</li>
-                            <li>Güneş panelleri ve enerji depolama</li>
-                        </ul>
-                    </div>
-                    <div class="rounded-2xl border border-gray-200 dark:border-gray-700 p-4">
-                        <p class="font-semibold text-gray-900 dark:text-white mb-1">Satış Notları</p>
-                        <ul class="list-disc list-inside space-y-1 text-gray-600 dark:text-gray-400">
-                            <li>Tapu hazır, borçsuz</li>
-                            <li>Mobilyalı teslim seçeneği</li>
-                            <li>Yatırım ve vatandaşlık için uygun</li>
-                        </ul>
-                    </div>
+            <div class="space-y-6 text-gray-700 dark:text-gray-300 text-sm leading-relaxed">
+                <div>
+                    <p data-role="detail-price" class="text-2xl font-semibold text-blue-600 dark:text-blue-400 mb-1"></p>
+                    <p data-role="detail-location" class="text-sm text-gray-500 dark:text-gray-400">Lokasyon bilgisi yakında eklenecek.</p>
                 </div>
-                <a href="{{ url('/ilanlar') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all duration-200">
-                    Tüm İlanları Gör
+                <p data-role="detail-description" class="text-base">Bu portföy için açıklama hazırlanıyor. Danışmanlarımız en kısa sürede içeriği güncelleyecek.</p>
+                <div>
+                    <h4 class="text-sm font-semibold text-gray-900 dark:text-white mb-2">Öne Çıkan Özellikler</h4>
+                    <ul data-role="detail-features" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></ul>
+                    <p data-role="detail-features-placeholder" class="text-sm text-gray-500 dark:text-gray-400">Öne çıkan özellikler yakında burada listelenecek.</p>
+                </div>
+                <a data-role="detail-link" href="{{ url('/portfolio') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all duration-200" target="_blank" rel="noopener">
+                    Detay Sayfasına Git
                     <i class="fas fa-arrow-right text-xs"></i>
                 </a>
             </div>
@@ -447,321 +236,354 @@
 
     <!-- JavaScript Functions -->
     <script>
-        // ✅ CONTEXT7: Vanilla JS com error handling completo
-        // Favorite Toggle Function - FIX: Null checks adicionados
-        function toggleFavorite(element) {
-            try {
-                if (!element) {
-                    console.error('Context7: toggleFavorite - element is null');
-                    return;
-                }
+        (function () {
+            const BODY = document.body;
 
-                const span = element.querySelector('span');
-                if (!span) {
-                    console.error('Context7: toggleFavorite - span not found');
-                    return;
-                }
-
-                const isFavorited = span.textContent === '❤️';
-                span.textContent = isFavorited ? '🤍' : '❤️';
-                span.className = isFavorited ? 'text-gray-600 dark:text-gray-300 text-xl' : 'text-red-500 text-xl';
-
-                // Toast notification
-                if (typeof showToast === 'function') {
-                    showToast(isFavorited ? 'Favorilerden çıkarıldı' : 'Favorilere eklendi', 'success');
-                }
-
-                console.log('Context7: Favorite toggled', isFavorited ? 'removed' : 'added');
-            } catch (error) {
-                console.error('Context7: toggleFavorite error', error);
-            }
-        }
-
-        // Modal Functions - FIX: Null checks adicionados
-        function openModal(modalId) {
-            try {
-                if (!modalId) {
-                    console.error('Context7: openModal - modalId is null');
-                    return;
-                }
-
-                const modal = document.getElementById(modalId);
-                if (modal && modal.classList) {
-                    modal.classList.remove('hidden');
-                    modal.classList.add('flex');
-                    modal.setAttribute('aria-hidden', 'false');
-                    document.body.classList.add('overflow-hidden');
-                    console.log('Context7: Modal opened', modalId);
-                } else {
-                    if (typeof showToast === 'function') {
-                        showToast('İçerik hazırlanıyor', 'info');
-                    }
-                    console.warn('Context7: Modal not found', modalId);
-                }
-            } catch (error) {
-                console.error('Context7: openModal error', error);
-                if (typeof showToast === 'function') {
-                    showToast('Modal açılırken hata oluştu', 'error');
-                }
-            }
-        }
-
-        function closeModal(modalId) {
-            try {
-                if (!modalId) {
-                    console.error('Context7: closeModal - modalId is null');
-                    return;
-                }
-
-                const modal = document.getElementById(modalId);
-                if (modal && modal.classList) {
-                    modal.classList.remove('flex');
-                    modal.classList.add('hidden');
-                    modal.setAttribute('aria-hidden', 'true');
-
-                    const openModals = document.querySelectorAll('.fixed.inset-0.flex');
-                    if (!openModals || openModals.length === 0) {
-                        document.body.classList.remove('overflow-hidden');
-                    }
-                    console.log('Context7: Modal closed', modalId);
-                }
-            } catch (error) {
-                console.error('Context7: closeModal error', error);
-            }
-        }
-
-        document.addEventListener('keydown', (event) => {
-            if (event.key === 'Escape') {
-                const activeModal = document.querySelector('.fixed.inset-0.flex');
-                if (activeModal && activeModal.id) {
-                    closeModal(activeModal.id);
-                }
-            }
-        });
-
-        // Share Property Function - FIX: API checks adicionados
-        function shareProperty() {
-            try {
-                if (navigator.share) {
-                    navigator.share({
-                        title: 'Yalıhan Emlak - Modern Villa',
-                        text: 'Bu harika emlakı inceleyin!',
-                        url: window.location.href
-                    }).then(() => {
-                        console.log('Context7: Share successful');
-                    }).catch(error => {
-                        console.error('Context7: Share error', error);
-                    });
-                } else {
-                    // Fallback for browsers that don't support Web Share API
-                    if (navigator.clipboard && navigator.clipboard.writeText) {
-                        navigator.clipboard.writeText(window.location.href).then(() => {
-                            if (typeof showToast === 'function') {
-                                showToast('Paylaşım linki kopyalandı!', 'success');
-                            }
-                            console.log('Context7: Link copied to clipboard');
-                        }).catch(error => {
-                            console.error('Context7: Clipboard error', error);
-                            if (typeof showToast === 'function') {
-                                showToast('Link kopyalanamadı', 'error');
-                            }
-                        });
-                    } else {
-                        console.warn('Context7: Web Share API and Clipboard API not supported');
-                        if (typeof showToast === 'function') {
-                            showToast('Paylaşım desteklenmiyor', 'error');
-                        }
-                    }
-                }
-            } catch (error) {
-                console.error('Context7: shareProperty error', error);
-            }
-        }
-
-        // Contact Property Function - FIX: Safe route checking
-        function contactProperty() {
-            try {
-                if (typeof showToast === 'function') {
-                    showToast('İletişim formu açılıyor...', 'success');
-                }
-
-                // Redirect to contact page after toast
-                setTimeout(() => {
+            const parsePayload = (payload) => {
+                if (typeof payload === 'string') {
                     try {
-                        const contactUrl = "{{ url('/iletisim') }}";
-
-                        if (contactUrl) {
-                            window.location.href = contactUrl;
-                            console.log('Context7: Redirecting to contact page');
-                        } else {
-                            console.log('Context7: Contact page not configured, scrolling to #contact');
-                            const contactSection = document.getElementById('contact');
-                            if (contactSection && contactSection.scrollIntoView) {
-                                contactSection.scrollIntoView({ behavior: 'smooth' });
-                            } else {
-                                // Final fallback - just show message
-                                if (typeof showToast === 'function') {
-                                    showToast('İletişim sayfası yapım aşamasında', 'info');
-                                }
-                            }
-                        }
+                        return JSON.parse(payload);
                     } catch (error) {
-                        console.error('Context7: Contact redirect error', error);
+                        return payload;
                     }
-                }, 1000);
+                }
+                return payload;
+            };
 
-                console.log('Context7: Contact property initiated');
-            } catch (error) {
-                console.error('Context7: contactProperty error', error);
-            }
-        }
+            const formatVirtualTourUrl = (url) => {
+                if (!url || typeof url !== 'string') {
+                    return '';
+                }
 
-        // Toast Notification Function - FIX: Null checks e cleanup
-        function showToast(message, type = 'success') {
-            try {
+                const trimmed = url.trim();
+                if (trimmed.includes('watch?v=')) {
+                    return trimmed.replace('watch?v=', 'embed/');
+                }
+                if (trimmed.includes('youtu.be/')) {
+                    return trimmed.replace('youtu.be/', 'youtube.com/embed/');
+                }
+                return trimmed;
+            };
+
+            const showModal = (modal) => {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                modal.setAttribute('aria-hidden', 'false');
+                BODY.classList.add('overflow-hidden');
+            };
+
+            const hideModal = (modal) => {
+                modal.classList.remove('flex');
+                modal.classList.add('hidden');
+                modal.setAttribute('aria-hidden', 'true');
+
+                const openModals = document.querySelectorAll('.fixed.inset-0.flex');
+                if (openModals.length === 0) {
+                    BODY.classList.remove('overflow-hidden');
+                }
+            };
+
+            const resetVirtualTourModal = (modal) => {
+                const iframe = modal.querySelector('[data-role="virtual-tour-iframe"]');
+                const placeholder = modal.querySelector('[data-role="virtual-tour-placeholder"]');
+                if (iframe) {
+                    iframe.src = '';
+                    iframe.classList.add('hidden');
+                }
+                placeholder?.classList.remove('hidden');
+            };
+
+            const resetGalleryModal = (modal) => {
+                const grid = modal.querySelector('[data-role="gallery-grid"]');
+                const placeholder = modal.querySelector('[data-role="gallery-placeholder"]');
+                if (grid) {
+                    grid.innerHTML = '';
+                }
+                placeholder?.classList.remove('hidden');
+            };
+
+            const resetMapModal = (modal) => {
+                const frame = modal.querySelector('[data-role="map-frame"]');
+                const placeholder = modal.querySelector('[data-role="map-placeholder"]');
+                if (frame) {
+                    frame.src = '';
+                    frame.classList.add('hidden');
+                }
+                placeholder?.classList.remove('hidden');
+            };
+
+            const resetPropertyDetailModal = (modal) => {
+                modal.querySelector('#propertyDetailTitle').textContent = 'İlan Detayları';
+                const price = modal.querySelector('[data-role="detail-price"]');
+                const location = modal.querySelector('[data-role="detail-location"]');
+                const description = modal.querySelector('[data-role="detail-description"]');
+                const features = modal.querySelector('[data-role="detail-features"]');
+                const featuresPlaceholder = modal.querySelector('[data-role="detail-features-placeholder"]');
+                const link = modal.querySelector('[data-role="detail-link"]');
+
+                if (price) price.textContent = '';
+                if (location) location.textContent = 'Lokasyon bilgisi yakında eklenecek.';
+                if (description) description.textContent = 'Bu portföy için açıklama hazırlanıyor. Danışmanlarımız en kısa sürede içeriği güncelleyecek.';
+                if (features) features.innerHTML = '';
+                if (featuresPlaceholder) featuresPlaceholder.classList.remove('hidden');
+                if (link) {
+                    link.classList.remove('hidden');
+                    link.setAttribute('href', '{{ url('/portfolio') }}');
+                }
+            };
+
+            const updateVirtualTourModal = (modal, payload) => {
+                const iframe = modal.querySelector('[data-role="virtual-tour-iframe"]');
+                const placeholder = modal.querySelector('[data-role="virtual-tour-placeholder"]');
+                const url = typeof payload === 'string' ? payload : payload?.url ?? '';
+                const embedUrl = formatVirtualTourUrl(url);
+
+                if (embedUrl && iframe) {
+                    iframe.src = embedUrl;
+                    iframe.classList.remove('hidden');
+                    placeholder?.classList.add('hidden');
+                } else {
+                    placeholder?.classList.remove('hidden');
+                    iframe?.classList.add('hidden');
+                }
+            };
+
+            const updateGalleryModal = (modal, payload) => {
+                const grid = modal.querySelector('[data-role="gallery-grid"]');
+                const placeholder = modal.querySelector('[data-role="gallery-placeholder"]');
+                const images = Array.isArray(payload) ? payload : Array.isArray(payload?.gallery) ? payload.gallery : [];
+
+                if (!grid) {
+                    return;
+                }
+                
+                grid.innerHTML = '';
+
+                if (images.length === 0) {
+                    placeholder?.classList.remove('hidden');
+                    return;
+                }
+                
+                placeholder?.classList.add('hidden');
+
+                images.forEach((image) => {
+                    if (!image?.url) {
+                        return;
+                    }
+
+                    const figure = document.createElement('figure');
+                    figure.className = 'relative overflow-hidden rounded-2xl bg-gray-100 dark:bg-gray-800';
+
+                    const img = document.createElement('img');
+                    img.src = image.url;
+                    img.alt = image.alt || 'Portföy görseli';
+                    img.loading = 'lazy';
+                    img.className = 'w-full h-full object-cover';
+
+                    figure.appendChild(img);
+                    grid.appendChild(figure);
+                });
+            };
+
+            const updateMapModal = (modal, payload) => {
+                const frame = modal.querySelector('[data-role="map-frame"]');
+                const placeholder = modal.querySelector('[data-role="map-placeholder"]');
+                const address = modal.querySelector('[data-role="map-address"]');
+
+                const data = typeof payload === 'object' && !Array.isArray(payload) ? payload : {};
+                const lat = data?.lat ?? data?.latitude;
+                const lng = data?.lng ?? data?.longitude;
+                const locationText = data?.content || data?.title || 'Konum bilgisi yakında eklenecek.';
+
+                if (address) {
+                    address.textContent = locationText;
+                }
+
+                if (lat && lng && frame) {
+                    const src = `https://www.google.com/maps?q=${lat},${lng}&hl=tr&z=15&output=embed`;
+                    frame.src = src;
+                    frame.classList.remove('hidden');
+                    placeholder?.classList.add('hidden');
+                } else {
+                    placeholder?.classList.remove('hidden');
+                    frame?.classList.add('hidden');
+                }
+            };
+
+            const updatePropertyDetailModal = (modal, payload) => {
+                const data = typeof payload === 'object' && !Array.isArray(payload) ? payload : {};
+                const title = data?.title || 'İlan Detayları';
+                const price = modal.querySelector('[data-role="detail-price"]');
+                const location = modal.querySelector('[data-role="detail-location"]');
+                const description = modal.querySelector('[data-role="detail-description"]');
+                const features = modal.querySelector('[data-role="detail-features"]');
+                const featuresPlaceholder = modal.querySelector('[data-role="detail-features-placeholder"]');
+                const link = modal.querySelector('[data-role="detail-link"]');
+
+                modal.querySelector('#propertyDetailTitle').textContent = title;
+                if (price) price.textContent = data?.price || '';
+                if (location) location.textContent = data?.location || 'Lokasyon bilgisi yakında eklenecek.';
+                if (description) description.textContent = data?.description || 'Bu portföy için açıklama hazırlanıyor. Danışmanlarımız en kısa sürede içeriği güncelleyecek.';
+
+                if (features) {
+                    features.innerHTML = '';
+                    const featureList = Array.isArray(data?.features) ? data.features : [];
+                    if (featureList.length === 0) {
+                        featuresPlaceholder?.classList.remove('hidden');
+                    } else {
+                        featuresPlaceholder?.classList.add('hidden');
+                        featureList.forEach((feature) => {
+                            if (!feature?.label || !feature?.value) {
+                                return;
+                            }
+                            const item = document.createElement('li');
+                            item.className = 'rounded-2xl border border-gray-200 dark:border-gray-700 px-4 py-3 flex items-center justify-between text-sm';
+                            item.innerHTML = `<span class="text-gray-500 dark:text-gray-400">${feature.label}</span><span class="font-semibold text-gray-900 dark:text-white">${feature.value}</span>`;
+                            features.appendChild(item);
+                        });
+                    }
+                }
+
+                if (link) {
+                    if (data?.link) {
+                        link.setAttribute('href', data.link);
+                        link.classList.remove('hidden');
+                    } else {
+                        link.classList.add('hidden');
+                    }
+                }
+            };
+
+            window.openYaliihanModal = function (modalId, payload) {
+                const modal = document.getElementById(modalId);
+                if (!modal) {
+                    return;
+                }
+
+                const data = parsePayload(payload);
+
+                switch (modalId) {
+                    case 'virtualTour':
+                        updateVirtualTourModal(modal, data);
+                        break;
+                    case 'gallery':
+                        updateGalleryModal(modal, data);
+                        break;
+                    case 'map':
+                        updateMapModal(modal, data);
+                        break;
+                    case 'propertyDetail':
+                        updatePropertyDetailModal(modal, data);
+                        break;
+                }
+
+                showModal(modal);
+            };
+
+            window.closeModal = function (modalId) {
+                const modal = document.getElementById(modalId);
+                if (!modal) {
+                    return;
+                }
+
+                switch (modalId) {
+                    case 'virtualTour':
+                        resetVirtualTourModal(modal);
+                        break;
+                    case 'gallery':
+                        resetGalleryModal(modal);
+                        break;
+                    case 'map':
+                        resetMapModal(modal);
+                        break;
+                    case 'propertyDetail':
+                        resetPropertyDetailModal(modal);
+                        break;
+                }
+
+                hideModal(modal);
+            };
+
+            const showToast = (message, type = 'success') => {
                 if (!message) {
-                    console.warn('Context7: showToast - empty message');
                     return;
                 }
-
+                
                 const toast = document.createElement('div');
-                if (!toast) {
-                    console.error('Context7: Failed to create toast element');
-                    return;
-                }
-
-                const bgColor = type === 'success' ? 'bg-green-500' : type === 'error' ? 'bg-red-500' : 'bg-blue-500';
+                const background = type === 'success' ? 'bg-green-500' : type === 'error' ? 'bg-red-500' : 'bg-blue-500';
                 const icon = type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️';
 
-                toast.className =
-                    `fixed top-4 right-4 ${bgColor} text-white rounded-2xl p-4 shadow-2xl z-50 transform translate-x-full transition-transform duration-300 max-w-sm`;
-                toast.innerHTML = `
-                    <div class="flex items-center">
-                        <span class="text-2xl mr-3">${icon}</span>
-                        <span class="font-medium">${message}</span>
-                    </div>
-                `;
+                toast.className = `fixed top-4 right-4 ${background} text-white rounded-2xl p-4 shadow-2xl z-50 transform translate-x-full transition-transform duration-300 max-w-sm`;
+                toast.innerHTML = `<div class="flex items-center"><span class="text-2xl mr-3">${icon}</span><span class="font-medium">${message}</span></div>`;
 
-                // Safe appendChild
-                if (document.body) {
                     document.body.appendChild(toast);
-                } else {
-                    console.error('Context7: document.body not available');
-                    return;
-                }
 
-                // Show toast
                 setTimeout(() => {
-                    if (toast && toast.classList) {
                         toast.classList.remove('translate-x-full');
-                    }
                 }, 100);
 
-                // Hide toast after 3 seconds
                 setTimeout(() => {
-                    if (toast && toast.classList) {
                         toast.classList.add('translate-x-full');
-                    }
-
                     setTimeout(() => {
-                        if (document.body && document.body.contains(toast)) {
+                        if (document.body.contains(toast)) {
                             document.body.removeChild(toast);
                         }
                     }, 300);
                 }, 3000);
+            };
 
-                console.log('Context7: Toast shown', message, type);
-            } catch (error) {
-                console.error('Context7: showToast error', error);
-            }
-        }
+            window.showToast = showToast;
 
-        // Make showToast globally available
-        window.showToast = showToast;
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape') {
+                    const activeModal = document.querySelector('.fixed.inset-0.flex');
+                    if (activeModal?.id) {
+                        window.closeModal(activeModal.id);
+                    }
+                }
+            });
 
-        // Smooth scroll for anchor links - FIX: Error handling eklendi
-        document.addEventListener('DOMContentLoaded', function() {
-            try {
-                // Add smooth scrolling to all anchor links
+            document.addEventListener('DOMContentLoaded', () => {
                 const anchorLinks = document.querySelectorAll('a[href^="#"]');
-                if (!anchorLinks || anchorLinks.length === 0) {
-                    console.log('Context7: No anchor links found');
-                } else {
-                    anchorLinks.forEach(link => {
-                        if (!link) return;
-
-                        link.addEventListener('click', function(e) {
-                            try {
-                                e.preventDefault();
-                                const href = this.getAttribute('href');
-                                if (!href || href.length <= 1) return;
-
+                anchorLinks.forEach((link) => {
+                    link.addEventListener('click', (event) => {
+                        const href = link.getAttribute('href');
+                        if (!href || href.length <= 1) {
+                            return;
+                        }
                                 const targetId = href.substring(1);
-                                const targetElement = document.getElementById(targetId);
+                        const target = document.getElementById(targetId);
+                        if (!target) {
+                            return;
+                        }
+                        event.preventDefault();
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    });
+                });
 
-                                if (targetElement && targetElement.scrollIntoView) {
-                                    targetElement.scrollIntoView({
-                                        behavior: 'smooth',
-                                        block: 'start'
-                                    });
-                                } else {
-                                    console.warn('Context7: Target element not found', targetId);
-                                }
-                            } catch (error) {
-                                console.error('Context7: Anchor scroll error', error);
+                try {
+                    const observer = new IntersectionObserver((entries) => {
+                        entries.forEach((entry) => {
+                            if (entry.isIntersecting) {
+                                    entry.target.classList.add('animate-fade-in');
+                                observer.unobserve(entry.target);
                             }
                         });
+                    }, {
+                        threshold: 0.15,
+                        rootMargin: '0px 0px -40px 0px'
                     });
 
-                    console.log('Context7: Anchor links initialized', anchorLinks.length);
-                }
-
-                // Add intersection observer for animations
-                try {
-                    const observerOptions = {
-                        threshold: 0.1,
-                        rootMargin: '0px 0px -50px 0px'
-                    };
-
-                    const observer = new IntersectionObserver((entries) => {
-                        entries.forEach(entry => {
-                            try {
-                                if (entry && entry.isIntersecting && entry.target && entry.target.classList) {
-                                    entry.target.classList.add('animate-fade-in');
-                                }
-                            } catch (error) {
-                                console.error('Context7: Observer entry error', error);
-                            }
-                        });
-                    }, observerOptions);
-
-                    // Observe all property cards
-                    const propertyCards = document.querySelectorAll('.rounded-xl.border');
-                    if (propertyCards && propertyCards.length > 0) {
-                        propertyCards.forEach(card => {
-                            if (card && observer) {
-                                observer.observe(card);
-                            }
-                        });
-                        console.log('Context7: Property cards observer initialized', propertyCards.length);
-                    }
+                    document.querySelectorAll('.property-card').forEach((card) => observer.observe(card));
                 } catch (error) {
-                    console.error('Context7: IntersectionObserver error', error);
+                    console.error('IntersectionObserver error', error);
                 }
-            } catch (error) {
-                console.error('Context7: DOMContentLoaded main error', error);
-            }
-        });
 
-        // Add CSS for animations - FIX: Safe DOM manipulation
-        try {
             const style = document.createElement('style');
-            if (style) {
                 style.textContent = `
                     .animate-fade-in {
                         animation: fadeInUp 0.6s ease-out forwards;
                     }
-
                     @keyframes fadeInUp {
                         from {
                             opacity: 0;
@@ -773,13 +595,8 @@
                         }
                     }
                 `;
-                if (document.head) {
                     document.head.appendChild(style);
-                    console.log('Context7: Animation styles added');
-                }
-            }
-        } catch (error) {
-            console.error('Context7: Style injection error', error);
-        }
+            });
+        })();
     </script>
 @endsection

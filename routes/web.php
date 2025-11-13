@@ -17,9 +17,7 @@ Route::middleware(['web', 'throttle:secure_file'])->group(function () {
 });
 
 // Yalihan Design System - Clean Version
-Route::get('/yalihan', function () {
-    return view('yaliihan-home-clean');
-})->name('yalihan.home');
+Route::get('/yalihan', HomeController::class)->name('yalihan.home');
 
 // Context7 Gerçek Admin Paneli - Demo yerine gerçek proje
 Route::get('/context7-demo', function () {

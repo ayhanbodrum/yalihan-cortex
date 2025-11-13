@@ -39,7 +39,7 @@ class AIPromptManager
                 'prompt_template' => $prompt,
                 'success_rate' => $successRate,
                 'usage_count' => 1,
-                'is_active' => true,
+                'status' => true, // Context7: is_active → status
             ]
         );
     }
@@ -56,7 +56,7 @@ class AIPromptManager
             'medium',
             function () use ($context) {
                 return \App\Models\AICoreSystem::where('context', $context)
-                    ->where('enabled', true)
+                    ->where('status', true) // Context7: enabled → status
                     ->orderBy('success_rate', 'desc')
                     ->first();
             },
