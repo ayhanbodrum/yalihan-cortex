@@ -19,4 +19,3 @@ L.Icon.Default.mergeOptions({
 console.log('✅ Leaflet.js loaded from npm package (Context7: Local, not CDN)');
 
 export default L;
-

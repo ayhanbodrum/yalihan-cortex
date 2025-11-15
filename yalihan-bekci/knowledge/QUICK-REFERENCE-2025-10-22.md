@@ -54,6 +54,7 @@ Context7LiveSearch (3KB)        // NOT Choices.js (48KB)
 ```
 
 **Para Birimleri:**
+
 ```
 TRY: ₺ | USD: $ | EUR: € | GBP: £
 ```
@@ -85,8 +86,8 @@ havuz, havuz_turu, havuz_boyut
 
 ```html
 <div class="context7-live-search" data-search-type="kisiler">
-    <input type="hidden" name="kisi_id">
-    <input type="text" class="neo-input">
+    <input type="hidden" name="kisi_id" />
+    <input type="text" class="neo-input" />
     <div class="context7-search-results ..."></div>
 </div>
 <script src="/js/context7-live-search-simple.js"></script>
@@ -146,4 +147,3 @@ php artisan migrate --path=database/migrations/FILE.php
 **Güncelleme:** 22 Ekim 2025 Akşam  
 **Context7:** %100 ✅  
 **Status:** PRODUCTION READY
-

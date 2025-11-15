@@ -55,9 +55,9 @@ USTA: "Bu hatayı 5 kez gördüm, otomatik düzeltme öneriyorum! ✅"
 
 **Fayda:**
 
--   ✅ Sık rastlanan hataları tanır
--   ✅ Otomatik çözüm önerir
--   ✅ Zamanla daha akıllı olur
+- ✅ Sık rastlanan hataları tanır
+- ✅ Otomatik çözüm önerir
+- ✅ Zamanla daha akıllı olur
 
 ---
 
@@ -67,10 +67,10 @@ USTA: "Bu hatayı 5 kez gördüm, otomatik düzeltme öneriyorum! ✅"
 
 **Test Ediliyor:**
 
--   ✅ Input validation (XSS koruması)
--   ✅ CSRF token varlığı
--   ✅ Sensitive data exposure
--   ✅ SQL injection riski
+- ✅ Input validation (XSS koruması)
+- ✅ CSRF token varlığı
+- ✅ Sensitive data exposure
+- ✅ SQL injection riski
 
 **Sonuçlar:**
 
@@ -81,8 +81,8 @@ Notifications: 🚨 High Risk (5 sorun)
 
 **Öneriler:**
 
--   ❌ 12 input validation eksik
--   ⚠️ Form CSRF token'ları kontrol edilmeli
+- ❌ 12 input validation eksik
+- ⚠️ Form CSRF token'ları kontrol edilmeli
 
 ---
 
@@ -92,12 +92,12 @@ Notifications: 🚨 High Risk (5 sorun)
 
 **Kontrol Edilen:**
 
--   ✅ Page title (30-60 karakter)
--   ✅ Meta description (120-160 karakter)
--   ✅ H1 tags (sadece 1 olmalı)
--   ✅ Image alt texts
--   ✅ OpenGraph tags (Facebook/Twitter)
--   ✅ Canonical URL
+- ✅ Page title (30-60 karakter)
+- ✅ Meta description (120-160 karakter)
+- ✅ H1 tags (sadece 1 olmalı)
+- ✅ Image alt texts
+- ✅ OpenGraph tags (Facebook/Twitter)
+- ✅ Canonical URL
 
 **Sonuçlar:**
 
@@ -113,9 +113,9 @@ Analytics:    70/100 (Grade: C)
 
 **Sorunlar:**
 
--   ❌ 5 sayfada meta description eksik
--   ⚠️ OpenGraph tags incomplete
--   ⚠️ Bazı title'lar kısa (<30 karakter)
+- ❌ 5 sayfada meta description eksik
+- ⚠️ OpenGraph tags incomplete
+- ⚠️ Bazı title'lar kısa (<30 karakter)
 
 ---
 
@@ -125,12 +125,12 @@ Analytics:    70/100 (Grade: C)
 
 **Test Edilen:**
 
--   ✅ Image alt text
--   ✅ Form labels
--   ✅ Button accessibility
--   ✅ Lang attribute
--   ✅ Keyboard navigation
--   ✅ Color contrast
+- ✅ Image alt text
+- ✅ Form labels
+- ✅ Button accessibility
+- ✅ Lang attribute
+- ✅ Keyboard navigation
+- ✅ Color contrast
 
 **Sonuçlar:**
 
@@ -142,9 +142,9 @@ WCAG Level AAA: 0 sayfa
 
 **Sorunlar:**
 
--   ⚠️ 5-22 input without labels
--   ⚠️ 1 sayfa missing lang attribute
--   ⚠️ 1 button without text/label
+- ⚠️ 5-22 input without labels
+- ⚠️ 1 sayfa missing lang attribute
+- ⚠️ 1 button without text/label
 
 ---
 
@@ -154,11 +154,11 @@ WCAG Level AAA: 0 sayfa
 
 **Kontrol Edilen:**
 
--   ✅ Viewport meta tag
--   ✅ Horizontal scroll
--   ✅ Touch-friendly elements (44x44px)
--   ✅ Mobile-specific CSS
--   ✅ Load time per device
+- ✅ Viewport meta tag
+- ✅ Horizontal scroll
+- ✅ Touch-friendly elements (44x44px)
+- ✅ Mobile-specific CSS
+- ✅ Load time per device
 
 **Sonuçlar:**
 
@@ -173,8 +173,8 @@ Overall Mobile Score: 83/100 ✅
 
 **Sorunlar:**
 
--   ⚠️ Bazı sayfalar missing viewport meta
--   ⚠️ Bazı button'lar küçük (<44px)
+- ⚠️ Bazı sayfalar missing viewport meta
+- ⚠️ Bazı button'lar küçük (<44px)
 
 ---
 
@@ -192,9 +192,9 @@ Overall Mobile Score: 83/100 ✅
 
 **Kritik Metrikler:**
 
--   Response Time: <200ms = A, <500ms = B
--   Status Code: 200 = Healthy
--   Error Rate: 0% = Perfect ✅
+- Response Time: <200ms = A, <500ms = B
+- Status Code: 200 = Healthy
+- Error Rate: 0% = Perfect ✅
 
 ---
 
@@ -204,14 +204,14 @@ Overall Mobile Score: 83/100 ✅
 
 **Kontrol Edilen:**
 
--   ✅ Console errors
--   ✅ JavaScript errors
--   ✅ Inline styles
--   ✅ Deprecated HTML tags
--   ✅ Empty elements
--   ✅ Duplicate IDs
--   ✅ DOM size
--   ✅ Script/style count
+- ✅ Console errors
+- ✅ JavaScript errors
+- ✅ Inline styles
+- ✅ Deprecated HTML tags
+- ✅ Empty elements
+- ✅ Duplicate IDs
+- ✅ DOM size
+- ✅ Script/style count
 
 **Sonuçlar:**
 
@@ -225,9 +225,9 @@ Analytics:    80/100 (Grade: B)
 
 **Sorunlar:**
 
--   ⚠️ 5-15 empty elements per page
--   ⚠️ 1 page with duplicate IDs
--   ⚠️ 1 page with 8 H1 tags
+- ⚠️ 5-15 empty elements per page
+- ⚠️ 1 page with duplicate IDs
+- ⚠️ 1 page with 8 H1 tags
 
 ---
 
@@ -268,12 +268,12 @@ Analytics:    ✅ Within Budget (Grade: A)
 
 **İzlenen:**
 
--   ✅ Total requests
--   ✅ API calls
--   ✅ Slow requests (>1000ms)
--   ✅ Failed requests
--   ✅ Average response time
--   ✅ Resource types
+- ✅ Total requests
+- ✅ API calls
+- ✅ Slow requests (>1000ms)
+- ✅ Failed requests
+- ✅ Average response time
+- ✅ Resource types
 
 **Sonuçlar:**
 
@@ -287,7 +287,7 @@ Analytics:    ✅ Healthy (12 requests, 5ms avg)
 
 **Sorunlar:**
 
--   ⚠️ Kişiler sayfasında 1 failed request
+- ⚠️ Kişiler sayfasında 1 failed request
 
 ---
 
@@ -297,11 +297,11 @@ Analytics:    ✅ Healthy (12 requests, 5ms avg)
 
 **Desteklenen:**
 
--   ✅ Undefined variable → Add to compact()
--   ✅ Missing table → Run migration
--   ✅ Missing relationship → Add to model
--   ✅ Missing CSRF → Add token to form
--   ✅ Missing alt text → Add alt attribute
+- ✅ Undefined variable → Add to compact()
+- ✅ Missing table → Run migration
+- ✅ Missing relationship → Add to model
+- ✅ Missing CSRF → Add token to form
+- ✅ Missing alt text → Add alt attribute
 
 **Örnek Öneri:**
 
@@ -547,9 +547,9 @@ Raporlar:
 
 ### **İlgili Dokümantasyon:**
 
--   `USTA_3.0_MASTER_SISTEM.md` - USTA 3.0 özellikleri
--   `USTA_DOSYA_IHTIYAC_ANALIZI.md` - Dosya ihtiyaç analizi
--   `ADMIN_KAPSAMLI_TEST_OZETI.md` - Test genel özet
+- `USTA_3.0_MASTER_SISTEM.md` - USTA 3.0 özellikleri
+- `USTA_DOSYA_IHTIYAC_ANALIZI.md` - Dosya ihtiyaç analizi
+- `ADMIN_KAPSAMLI_TEST_OZETI.md` - Test genel özet
 
 ---
 
@@ -567,11 +567,11 @@ Raporlar:
 
 ### **İstatistikler:**
 
--   **Test Süresi:** 27 saniye
--   **Rapor Boyutu:** 800+ satır
--   **Tespit Edilen Sorun:** 50+
--   **Kategori:** 7 alan
--   **Detay Seviyesi:** Profesyonel
+- **Test Süresi:** 27 saniye
+- **Rapor Boyutu:** 800+ satır
+- **Tespit Edilen Sorun:** 50+
+- **Kategori:** 7 alan
+- **Detay Seviyesi:** Profesyonel
 
 ### **Final Not:**
 

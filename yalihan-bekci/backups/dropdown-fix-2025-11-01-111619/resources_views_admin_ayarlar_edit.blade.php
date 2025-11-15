@@ -27,7 +27,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="neo-form-group">
                             <label for="key" class="neo-label">Ayar Anahtarı <span class="text-red-500">*</span></label>
-                            <input id="key" name="key" type="text" class="neo-input @error('key') neo-input-error @enderror" 
+                            <input id="key" name="key" type="text" class="neo-input @error('key') neo-input-error @enderror"
                                 value="{{ old('key', $ayar->key) }}" required placeholder="Ayar anahtarını girin">
                             @error('key')
                                 <div class="neo-error-message">{{ $message }}</div>
@@ -51,7 +51,7 @@
 
                     <div class="neo-form-group">
                         <label for="value" class="neo-label">Değer <span class="text-red-500">*</span></label>
-                        <textarea id="value" name="value" class="neo-textarea @error('value') neo-input-error @enderror" 
+                        <textarea id="value" name="value" class="neo-textarea @error('value') neo-input-error @enderror"
                             rows="4" placeholder="Ayar değerini girin">{{ old('value', $ayar->value) }}</textarea>
                         @error('value')
                             <div class="neo-error-message">{{ $message }}</div>
@@ -60,7 +60,7 @@
 
                     <div class="neo-form-group">
                         <label for="description" class="neo-label">Açıklama</label>
-                        <textarea id="description" name="description" class="neo-textarea @error('description') neo-input-error @enderror" 
+                        <textarea id="description" name="description" class="neo-textarea @error('description') neo-input-error @enderror"
                             rows="3" placeholder="Ayar hakkında açıklama">{{ old('description', $ayar->description) }}</textarea>
                         @error('description')
                             <div class="neo-error-message">{{ $message }}</div>
@@ -70,7 +70,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="neo-form-group">
                             <label for="group" class="neo-label">Grup</label>
-                            <input id="group" name="group" type="text" class="neo-input @error('group') neo-input-error @enderror" 
+                            <input id="group" name="group" type="text" class="neo-input @error('group') neo-input-error @enderror"
                                 value="{{ old('group', $ayar->group) }}" placeholder="Ayar grubu">
                             @error('group')
                                 <div class="neo-error-message">{{ $message }}</div>
@@ -79,7 +79,7 @@
 
                         <div class="neo-form-group">
                             <label for="order" class="neo-label">Sıra</label>
-                            <input id="order" name="order" type="number" class="neo-input @error('order') neo-input-error @enderror" 
+                            <input id="order" name="order" type="number" class="neo-input @error('order') neo-input-error @enderror"
                                 value="{{ old('order', $ayar->order ?? 0) }}" min="0" placeholder="0">
                             @error('order')
                                 <div class="neo-error-message">{{ $message }}</div>

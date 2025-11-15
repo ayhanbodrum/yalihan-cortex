@@ -334,15 +334,25 @@ class IlanSegmentController extends AdminController
      */
     private function uploadDocuments(Ilan $ilan, array $files): void
     {
+        // ✅ PERFORMANCE FIX: N+1 query önlendi - Bulk insert kullanıldı
+        $documents = [];
         foreach ($files as $file) {
             $path = $file->store('ilan-documents/' . $ilan->id, 'public');
 
-            $ilan->documents()->create([
+            $documents[] = [
+                'ilan_id' => $ilan->id,
                 'filename' => $file->getClientOriginalName(),
                 'path' => $path,
                 'mime_type' => $file->getMimeType(),
                 'size' => $file->getSize(),
-            ]);
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
+        }
+
+        // ✅ PERFORMANCE FIX: Bulk insert (N query → 1 query)
+        if (!empty($documents)) {
+            \Illuminate\Support\Facades\DB::table('ilan_documents')->insert($documents);
         }
     }
 }

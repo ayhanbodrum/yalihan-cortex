@@ -166,10 +166,7 @@
       "name": "WMS Integration (if approved)",
       "apis": ["TKGM WMS"],
       "timeline": "TBD (after getting permission)",
-      "features": [
-        "Cadastral boundary display",
-        "Parcel overlay on map"
-      ],
+      "features": ["Cadastral boundary display", "Parcel overlay on map"],
       "priority": "Low (requires official approval)"
     }
   },
@@ -266,4 +263,3 @@
     "rule_40": "Combine TurkiyeAPI (60%) + TKGM (40%) for final investment score"
   }
 }
-

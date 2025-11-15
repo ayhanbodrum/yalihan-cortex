@@ -6,28 +6,25 @@
  * ve raporlama motorunu kullanarak sonuçları görselleştirir.
  */
 
-const express = require("express");
-const bodyParser = require("body-parser");
-const fs = require("fs");
-const path = require("path");
+const express = require('express');
+const bodyParser = require('body-parser');
+const fs = require('fs');
+const path = require('path');
 
 // TestSprite MCP bileşenleri
-const migrationCollector = require("../collectors/migration-collector");
-const seederCollector = require("../collectors/seeder-collector");
-const knowledgeBase = require("../knowledge/knowledge-base");
-const reportingEngine = require("../reporting/reporting-engine");
-const context7RuleLoader = require("../knowledge/context7-rule-loader");
-const systemMemory = require("../knowledge/system-memory");
-const techUpdater = require("../knowledge/tech-updater");
+const migrationCollector = require('../collectors/migration-collector');
+const seederCollector = require('../collectors/seeder-collector');
+const knowledgeBase = require('../knowledge/knowledge-base');
+const reportingEngine = require('../reporting/reporting-engine');
+const context7RuleLoader = require('../knowledge/context7-rule-loader');
+const systemMemory = require('../knowledge/system-memory');
+const techUpdater = require('../knowledge/tech-updater');
 
 class TestSpriteMCP {
     constructor() {
         this.app = express();
         this.port = process.env.BEKCI_PORT || process.env.GUARDIAN_PORT || 3334;
-        this.configPath = path.join(
-            __dirname,
-            "../../.context7/testsprite.config.json"
-        );
+        this.configPath = path.join(__dirname, '../../.context7/testsprite.config.json');
         this.config = this.loadConfig();
 
         this.setupServer();
@@ -36,19 +33,16 @@ class TestSpriteMCP {
     loadConfig() {
         try {
             if (fs.existsSync(this.configPath)) {
-                return JSON.parse(fs.readFileSync(this.configPath, "utf8"));
+                return JSON.parse(fs.readFileSync(this.configPath, 'utf8'));
             }
         } catch (error) {
-            console.error(
-                "Yapılandırma dosyası yüklenirken hata oluştu:",
-                error
-            );
+            console.error('Yapılandırma dosyası yüklenirken hata oluştu:', error);
         }
 
         // Varsayılan yapılandırma
         return {
             autoCorrect: false,
-            reportPath: path.join(__dirname, "../../reports/testsprite"),
+            reportPath: path.join(__dirname, '../../reports/testsprite'),
             notifyOnError: true,
             testInterval: 3600000, // 1 saat
             rules: {
@@ -80,24 +74,24 @@ class TestSpriteMCP {
         this.app.use(bodyParser.json());
 
         // Ana endpoint
-        this.app.get("/", (req, res) => {
+        this.app.get('/', (req, res) => {
             res.json({
-                name: "Yalıhan Bekçi",
-                description: "Context7 Otomatik Öğrenme ve Koruma Sistemi",
-                emoji: "🛡️",
-                version: "1.0.0",
-                status: "running",
+                name: 'Yalıhan Bekçi',
+                description: 'Context7 Otomatik Öğrenme ve Koruma Sistemi',
+                emoji: '🛡️',
+                version: '1.0.0',
+                status: 'running',
                 features: [
-                    "Context7 Kural Öğrenme",
-                    "Sistem Yapısı Analizi",
-                    "Pattern Tanıma",
-                    "Otomatik Doğrulama",
+                    'Context7 Kural Öğrenme',
+                    'Sistem Yapısı Analizi',
+                    'Pattern Tanıma',
+                    'Otomatik Doğrulama',
                 ],
             });
         });
 
         // Test başlatma endpointi
-        this.app.post("/run-tests", async (req, res) => {
+        this.app.post('/run-tests', async (req, res) => {
             try {
                 const testResults = await this.runTests(req.body);
                 res.json(testResults);
@@ -107,21 +101,21 @@ class TestSpriteMCP {
         });
 
         // Bilgi tabanı sorgulama endpointi
-        this.app.get("/knowledge", (req, res) => {
-            const query = req.query.q || "";
+        this.app.get('/knowledge', (req, res) => {
+            const query = req.query.q || '';
             const results = knowledgeBase.search(query);
             res.json(results);
         });
 
         // Rapor oluşturma endpointi
-        this.app.get("/reports", (req, res) => {
-            const reportType = req.query.type || "summary";
+        this.app.get('/reports', (req, res) => {
+            const reportType = req.query.type || 'summary';
             const report = reportingEngine.generateReport(reportType);
             res.json(report);
         });
 
         // Context7 kurallarını getir (MCP için)
-        this.app.get("/context7/rules", (req, res) => {
+        this.app.get('/context7/rules', (req, res) => {
             const rules = context7RuleLoader.loadRules();
             res.json({
                 success: true,
@@ -135,7 +129,7 @@ class TestSpriteMCP {
         });
 
         // Kod validate et (MCP için)
-        this.app.post("/context7/validate", (req, res) => {
+        this.app.post('/context7/validate', (req, res) => {
             const { code, filePath } = req.body;
             const violations = context7RuleLoader.checkCode(code, filePath);
             res.json({
@@ -147,7 +141,7 @@ class TestSpriteMCP {
         });
 
         // Pattern'leri getir (MCP için)
-        this.app.get("/patterns/common", (req, res) => {
+        this.app.get('/patterns/common', (req, res) => {
             const patterns = knowledgeBase.getCommonPatterns(10);
             res.json({
                 success: true,
@@ -156,7 +150,7 @@ class TestSpriteMCP {
         });
 
         // Sistem durumunu getir (MCP için)
-        this.app.get("/system/status", (req, res) => {
+        this.app.get('/system/status', (req, res) => {
             const status = systemMemory.getSystemStatus();
             res.json({
                 success: true,
@@ -165,7 +159,7 @@ class TestSpriteMCP {
         });
 
         // Son işlemi getir (MCP için)
-        this.app.get("/system/last-operation", (req, res) => {
+        this.app.get('/system/last-operation', (req, res) => {
             const lastOp = systemMemory.getLastOperation();
             res.json({
                 success: true,
@@ -174,7 +168,7 @@ class TestSpriteMCP {
         });
 
         // Sistem yapısını öğren (MCP için)
-        this.app.post("/system/learn", (req, res) => {
+        this.app.post('/system/learn', (req, res) => {
             const structure = systemMemory.learnSystemStructure();
             res.json({
                 success: true,
@@ -183,7 +177,7 @@ class TestSpriteMCP {
         });
 
         // Teknoloji güncellemelerini kontrol et (MCP için)
-        this.app.get("/tech/updates", async (req, res) => {
+        this.app.get('/tech/updates', async (req, res) => {
             try {
                 const updates = await techUpdater.checkForUpdates();
                 const report = techUpdater.generateReport();
@@ -200,7 +194,7 @@ class TestSpriteMCP {
         });
 
         // Kullanılan teknolojileri göster (MCP için)
-        this.app.get("/tech/stack", async (req, res) => {
+        this.app.get('/tech/stack', async (req, res) => {
             await techUpdater.detectTechnologies();
             res.json({
                 success: true,
@@ -210,12 +204,10 @@ class TestSpriteMCP {
     }
 
     async runTests(options = {}) {
-        console.log("TestSprite MCP testleri başlatılıyor...");
+        console.log('TestSprite MCP testleri başlatılıyor...');
 
         const results = {
-            migrations: await migrationCollector.runTests(
-                this.config.rules.migrations
-            ),
+            migrations: await migrationCollector.runTests(this.config.rules.migrations),
             seeders: await seederCollector.runTests(this.config.rules.seeders),
             timestamp: new Date().toISOString(),
         };
@@ -226,29 +218,25 @@ class TestSpriteMCP {
         // Hata varsa bildirim gönder
         if (
             this.config.notifyOnError &&
-            (results.migrations.errors.length > 0 ||
-                results.seeders.errors.length > 0)
+            (results.migrations.errors.length > 0 || results.seeders.errors.length > 0)
         ) {
             this.sendNotification(results);
         }
 
         // Rapor oluştur
-        const report = reportingEngine.generateReport("detailed", results);
+        const report = reportingEngine.generateReport('detailed', results);
 
         return {
             summary: {
                 totalTests: results.migrations.total + results.seeders.total,
                 passedTests: results.migrations.passed + results.seeders.passed,
-                failedTests:
-                    results.migrations.errors.length +
-                    results.seeders.errors.length,
+                failedTests: results.migrations.errors.length + results.seeders.errors.length,
                 successRate:
                     (
                         ((results.migrations.passed + results.seeders.passed) /
-                            (results.migrations.total +
-                                results.seeders.total)) *
+                            (results.migrations.total + results.seeders.total)) *
                         100
-                    ).toFixed(2) + "%",
+                    ).toFixed(2) + '%',
             },
             reportUrl: `/reports?id=${report.id}`,
         };
@@ -256,25 +244,25 @@ class TestSpriteMCP {
 
     sendNotification(results) {
         // Bildirim gönderme işlemi burada gerçekleştirilecek
-        console.log("Hata bildirimi gönderiliyor...");
+        console.log('Hata bildirimi gönderiliyor...');
         // Örneğin: Email, Slack, Discord vb.
     }
 
     start() {
         this.app.listen(this.port, () => {
-            console.log("╔══════════════════════════════════════════╗");
-            console.log("║   🛡️  YALİHAN BEKÇİ BAŞLATILDI        ║");
-            console.log("╚══════════════════════════════════════════╝");
+            console.log('╔══════════════════════════════════════════╗');
+            console.log('║   🛡️  YALİHAN BEKÇİ BAŞLATILDI        ║');
+            console.log('╚══════════════════════════════════════════╝');
             console.log(`📍 Port: ${this.port}`);
-            console.log("🧠 Otomatik Öğrenme: AKTİF");
-            console.log("🎯 Context7 Koruması: AKTİF");
-            console.log("⚡ Kodunuzu korumaya hazır!");
-            console.log("");
+            console.log('🧠 Otomatik Öğrenme: AKTİF');
+            console.log('🎯 Context7 Koruması: AKTİF');
+            console.log('⚡ Kodunuzu korumaya hazır!');
+            console.log('');
         });
 
         // Context7 kurallarını otomatik öğren
-        if (process.env.AUTO_LEARN === "true") {
-            console.log("🧠 Context7 kuralları öğreniliyor...");
+        if (process.env.AUTO_LEARN === 'true') {
+            console.log('🧠 Context7 kuralları öğreniliyor...');
             context7RuleLoader.autoLearn();
             systemMemory.autoLearn();
             techUpdater.autoCheck();
@@ -284,10 +272,7 @@ class TestSpriteMCP {
         if (this.config.testInterval > 0) {
             setInterval(() => {
                 this.runTests().catch((error) => {
-                    console.error(
-                        "Periyodik test çalıştırılırken hata oluştu:",
-                        error
-                    );
+                    console.error('Periyodik test çalıştırılırken hata oluştu:', error);
                 });
             }, this.config.testInterval);
         }

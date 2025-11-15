@@ -3,7 +3,7 @@
 /**
  * Tailwind Pattern Standardization Script
  * Yalıhan Bekçi - 2 Kasım 2025
- * 
+ *
  * Farklı Tailwind pattern'lerini tek standarda çevirir:
  * - px-3 py-2 → px-4 py-2.5
  * - rounded-md → rounded-lg
@@ -65,27 +65,27 @@ $replacements = [
         'stat' => 'padding_standardized',
         'description' => 'Padding standardized (px-3 py-2 → px-4 py-2.5)',
     ],
-    
+
     // Border Radius: rounded-md → rounded-lg
     '/\brounded-md\b/' => [
         'replacement' => 'rounded-lg',
         'stat' => 'border_radius_standardized',
         'description' => 'Border radius standardized (rounded-md → rounded-lg)',
     ],
-    
+
     // Focus Ring: indigo → blue
     '/focus:ring-indigo-(\d+)/' => [
         'replacement' => 'focus:ring-blue-$1',
         'stat' => 'focus_ring_standardized',
         'description' => 'Focus ring color standardized (indigo → blue)',
     ],
-    
+
     '/focus:border-indigo-(\d+)/' => [
         'replacement' => 'focus:border-blue-$1',
         'stat' => 'focus_ring_standardized',
         'description' => 'Focus border color standardized (indigo → blue)',
     ],
-    
+
     // Dark Background: gray-700 → gray-800
     '/dark:bg-gray-700\b/' => [
         'replacement' => 'dark:bg-gray-800',
@@ -97,37 +97,37 @@ $replacements = [
 // Process each file
 foreach ($bladeFiles as $file) {
     $stats['files_checked']++;
-    
+
     $content = file_get_contents($file);
     $originalContent = $content;
     $fileModified = false;
-    
+
     // Apply replacements
     foreach ($replacements as $pattern => $config) {
         $matches = preg_match_all($pattern, $content);
-        
+
         if ($matches > 0) {
             $content = preg_replace($pattern, $config['replacement'], $content);
             $stats[$config['stat']] += $matches;
             $fileModified = true;
-            
+
             if ($verbose) {
                 echo "  ✓ " . $config['description'] . " ({$matches}x)\n";
             }
         }
     }
-    
+
     // Save changes
     if ($fileModified) {
         $stats['files_modified']++;
-        
+
         if (!$dryRun) {
             file_put_contents($file, $content);
         }
-        
+
         $relativePath = str_replace(getcwd() . '/', '', $file);
         echo "✅ " . $relativePath . "\n";
-        
+
         if ($verbose) {
             echo "\n";
         }
@@ -153,10 +153,10 @@ echo "  indigo → blue (focus): {$stats['focus_ring_standardized']}\n";
 echo "  dark:bg-gray-700 → gray-800: {$stats['dark_bg_standardized']}\n";
 echo "\n";
 
-$totalReplacements = 
-    $stats['padding_standardized'] + 
-    $stats['border_radius_standardized'] + 
-    $stats['focus_ring_standardized'] + 
+$totalReplacements =
+    $stats['padding_standardized'] +
+    $stats['border_radius_standardized'] +
+    $stats['focus_ring_standardized'] +
     $stats['dark_bg_standardized'];
 
 echo "Toplam: {$totalReplacements} pattern standardized\n";
@@ -179,4 +179,3 @@ echo "\n";
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
 
 exit($dryRun ? 0 : 0);
-

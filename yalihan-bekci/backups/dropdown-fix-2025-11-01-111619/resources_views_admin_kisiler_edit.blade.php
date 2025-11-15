@@ -253,7 +253,7 @@
                             <label for="il_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
                                 <span class="block text-sm font-medium text-gray-700 dark:text-gray-300-text">İl</span>
                             </label>
-                            <select id="il_id" name="il_id" 
+                            <select id="il_id" name="il_id"
                                     x-model="formData.il_id"
                                     @change="formData.il_id = $event.target.value; onIlChange($event.target.value)"
                                     class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200">
@@ -286,7 +286,7 @@
                             </label>
                             <select id="mahalle_id" name="mahalle_id"
                                     x-model="formData.mahalle_id"
-                                    class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200 disabled:bg-gray-100 dark:disabled:bg-gray-700 disabled:text-gray-500 dark:disabled:text-gray-400" 
+                                    class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200 disabled:bg-gray-100 dark:disabled:bg-gray-700 disabled:text-gray-500 dark:disabled:text-gray-400"
                                     :disabled="!formData.ilce_id">
                                 <option value="">Mahalle Seçin</option>
                             </select>
@@ -353,7 +353,7 @@
         async function loadIlceler(ilId) {
             console.log('📍 loadIlceler called with İl ID:', ilId);
             const ilceSelect = document.getElementById('ilce_id');
-            
+
             if (!ilceSelect) {
                 console.error('❌ İlçe select element bulunamadı!');
                 return;
@@ -423,7 +423,7 @@
                 init() {
                     console.log('✅ Kişi Edit Form initialized for ID:', this.kisiId);
                     console.log('📊 Form Data:', this.formData);
-                    
+
                     // Context7: Auto-load İlçeler and Mahalleler cascade (2025-10-31)
                     if (this.formData.il_id) {
                         console.log('🗺️ İl ID mevcut, cascade load başlıyor...');
@@ -439,11 +439,11 @@
                     console.log('🔄 onIlChange called with:', ilId);
                     console.log('🔍 Current formData.il_id:', this.formData.il_id);
                     console.log('🔍 DOM il_id value:', document.getElementById('il_id').value);
-                    
+
                     // Reset ilce and mahalle
                     this.formData.ilce_id = '';
                     this.formData.mahalle_id = '';
-                    
+
                     if (ilId) {
                         await this.loadIlcelerInternal(ilId, false);
                     } else {
@@ -452,7 +452,7 @@
                         if (ilceSelect) {
                             ilceSelect.innerHTML = '<option value="">İlçe Seçin</option>';
                         }
-                        
+
                         // Clear mahalle dropdown
                         const mahalleSelect = document.getElementById('mahalle_id');
                         if (mahalleSelect) {
@@ -468,14 +468,14 @@
                         console.log('⏭️ onIlceChange skipped (data restoration in progress)');
                         return;
                     }
-                    
+
                     console.log('🔄 onIlceChange called with:', ilceId);
                     console.log('🔍 Current formData.ilce_id:', this.formData.ilce_id);
                     console.log('🔍 DOM ilce_id value:', document.getElementById('ilce_id').value);
-                    
+
                     // Reset mahalle
                     this.formData.mahalle_id = '';
-                    
+
                     if (ilceId) {
                         await this.loadMahalleler(ilceId);
                     } else {
@@ -491,7 +491,7 @@
                 async loadIlcelerInternal(ilId, preserveSelection = false) {
                     console.log('📍 loadIlcelerInternal called with İl ID:', ilId, 'preserve:', preserveSelection);
                     const ilceSelect = document.getElementById('ilce_id');
-                    
+
                     if (!ilceSelect) {
                         console.error('❌ İlçe select element bulunamadı!');
                         return;
@@ -530,9 +530,9 @@
                                     // CRITICAL: Set both Alpine model and DOM value (NO dispatchEvent!)
                                     this.formData.ilce_id = String(savedIlceId);
                                     ilceSelect.value = String(savedIlceId);
-                                    
+
                                     console.log('✅ İlçe restored:', savedIlceId, '(DOM value:', ilceSelect.value + ')');
-                                    
+
                                     // Load mahalleler
                                     this.loadMahalleler(savedIlceId).then(() => {
                                         // Restore mahalle selection
@@ -544,7 +544,7 @@
                                                     mahalleSelect.value = String(savedMahalleId);
                                                     console.log('✅ Mahalle restored:', savedMahalleId, '(DOM value:', mahalleSelect.value + ')');
                                                 }
-                                                
+
                                                 // CRITICAL: Reset flag after restoration complete
                                                 this.isRestoringData = false;
                                                 console.log('🎉 Data restoration complete, flag reset');

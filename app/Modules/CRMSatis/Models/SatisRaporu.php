@@ -199,7 +199,7 @@ class SatisRaporu extends BaseModel
      */
     public function tamamlanabilirMi(): bool
     {
-        return $this->status === 'hazirlaniyor' && 
+        return $this->status === 'hazirlaniyor' &&
                !empty($this->rapor_metni) &&
                !empty($this->analiz_sonuclari);
     }
@@ -218,22 +218,22 @@ class SatisRaporu extends BaseModel
     public function getPerformansSkoruAttribute(): float
     {
         $skor = 0;
-        
+
         // Satış sayısı skoru (0-40 puan)
         if ($this->satis_sayisi > 0) {
             $skor += min(40, $this->satis_sayisi * 2);
         }
-        
+
         // Başarı oranı skoru (0-30 puan)
         if ($this->basari_orani > 0) {
             $skor += min(30, $this->basari_orani * 0.3);
         }
-        
+
         // Müşteri memnuniyeti skoru (0-30 puan)
         if ($this->musteri_memnuniyeti > 0) {
             $skor += min(30, $this->musteri_memnuniyeti * 0.3);
         }
-        
+
         return $skor;
     }
 
@@ -243,7 +243,7 @@ class SatisRaporu extends BaseModel
     public function getPerformansSeviyesiAttribute(): string
     {
         $skor = $this->performans_skoru;
-        
+
         return match(true) {
             $skor >= 80 => 'Mükemmel',
             $skor >= 60 => 'İyi',

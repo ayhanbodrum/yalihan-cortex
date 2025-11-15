@@ -38,10 +38,10 @@ GET /api/live-search/unified
 
 **Key Features:**
 
--   Context7 uyumlu field names (`status` instead of `is_active`)
--   Model scope kullanımı (`aktif()`, `byDanisman()`, `byMusteriTipi()`)
--   Comprehensive error handling and logging
--   Search metadata and compliance tracking
+- Context7 uyumlu field names (`status` instead of `is_active`)
+- Model scope kullanımı (`aktif()`, `byDanisman()`, `byMusteriTipi()`)
+- Comprehensive error handling and logging
+- Search metadata and compliance tracking
 
 #### 2. API Routes (`routes/api.php`)
 
@@ -69,20 +69,20 @@ class Context7LiveSearch {
 
 **Key Features:**
 
--   300ms debounce for performance
--   Keyboard navigation (↑↓ arrows, Enter, Escape)
--   Search result caching
--   Responsive design
--   Dark mode support
--   High contrast mode support
+- 300ms debounce for performance
+- Keyboard navigation (↑↓ arrows, Enter, Escape)
+- Search result caching
+- Responsive design
+- Dark mode support
+- High contrast mode support
 
 #### 2. CSS Styles (`public/css/context7-live-search.css`)
 
--   Neo Design System compliance
--   Context7 badge indicators
--   Loading animations
--   Dropdown positioning
--   Accessibility features
+- Neo Design System compliance
+- Context7 badge indicators
+- Loading animations
+- Dropdown positioning
+- Accessibility features
 
 #### 3. Blade Component (`resources/views/components/context7-live-search.blade.php`)
 
@@ -102,31 +102,31 @@ class Context7LiveSearch {
 
 ### 1. Database Field Standards
 
--   ✅ `status` field instead of `is_active`
--   ✅ `il_id` instead of `il_id`
--   ✅ Model scopes for filtering
--   ✅ Context7 compliant relationships
+- ✅ `status` field instead of `is_active`
+- ✅ `il_id` instead of `il_id`
+- ✅ Model scopes for filtering
+- ✅ Context7 compliant relationships
 
 ### 2. Search Patterns
 
--   ✅ 300ms debounce implementation
--   ✅ Minimum 2 character search
--   ✅ Configurable result limits
--   ✅ Proper error handling
+- ✅ 300ms debounce implementation
+- ✅ Minimum 2 character search
+- ✅ Configurable result limits
+- ✅ Proper error handling
 
 ### 3. Security & Performance
 
--   ✅ Input validation
--   ✅ SQL injection prevention
--   ✅ Rate limiting ready
--   ✅ Search result caching
+- ✅ Input validation
+- ✅ SQL injection prevention
+- ✅ Rate limiting ready
+- ✅ Search result caching
 
 ### 4. Accessibility
 
--   ✅ Keyboard navigation
--   ✅ Screen reader support
--   ✅ High contrast mode
--   ✅ Reduced motion support
+- ✅ Keyboard navigation
+- ✅ Screen reader support
+- ✅ High contrast mode
+- ✅ Reduced motion support
 
 ---
 
@@ -176,10 +176,10 @@ class Context7LiveSearch {
 
 ### Search Types
 
--   `kisiler` - Kişi arama (ad, soyad, telefon, email, TC)
--   `danismanlar` - Danışman arama (ad, email)
--   `sites` - Site/Apartman arama (ad, adres, açıklama)
--   `unified` - Birleşik arama (tüm tipler)
+- `kisiler` - Kişi arama (ad, soyad, telefon, email, TC)
+- `danismanlar` - Danışman arama (ad, email)
+- `sites` - Site/Apartman arama (ad, adres, açıklama)
+- `unified` - Birleşik arama (tüm tipler)
 
 ### Filters
 
@@ -213,17 +213,17 @@ class Context7LiveSearch {
 
 ### Search Performance
 
--   **Debounce Delay**: 300ms
--   **Min Query Length**: 2 characters
--   **Max Results**: 50 (configurable)
--   **Cache Duration**: Session-based
+- **Debounce Delay**: 300ms
+- **Min Query Length**: 2 characters
+- **Max Results**: 50 (configurable)
+- **Cache Duration**: Session-based
 
 ### Response Times
 
--   **Kişi Search**: < 200ms average
--   **Danışman Search**: < 150ms average
--   **Site Search**: < 250ms average
--   **Unified Search**: < 400ms average
+- **Kişi Search**: < 200ms average
+- **Danışman Search**: < 150ms average
+- **Site Search**: < 250ms average
+- **Unified Search**: < 400ms average
 
 ---
 
@@ -241,15 +241,15 @@ $request->validate([
 
 ### SQL Injection Prevention
 
--   Parameterized queries
--   Input sanitization
--   Model scope usage
+- Parameterized queries
+- Input sanitization
+- Model scope usage
 
 ### Rate Limiting
 
--   Ready for implementation
--   Configurable per endpoint
--   IP-based tracking
+- Ready for implementation
+- Configurable per endpoint
+- IP-based tracking
 
 ---
 
@@ -289,18 +289,18 @@ $request->validate([
 
 ### Test URLs
 
--   **Live Search Demo**: `/stable-create-live-search`
--   **API Endpoints**: `/api/live-search/{type}`
--   **Component Test**: Blade component usage
+- **Live Search Demo**: `/stable-create-live-search`
+- **API Endpoints**: `/api/live-search/{type}`
+- **Component Test**: Blade component usage
 
 ### Validation Checklist
 
--   ✅ Context7 compliance verification
--   ✅ Performance testing
--   ✅ Accessibility testing
--   ✅ Cross-browser compatibility
--   ✅ Mobile responsiveness
--   ✅ Error handling validation
+- ✅ Context7 compliance verification
+- ✅ Performance testing
+- ✅ Accessibility testing
+- ✅ Cross-browser compatibility
+- ✅ Mobile responsiveness
+- ✅ Error handling validation
 
 ---
 
@@ -308,14 +308,14 @@ $request->validate([
 
 ### Related Files
 
--   `.context7/authority.json` - Context7 rules
--   `docs/context7-rules.md` - Existing rules
--   `docs/live-search-tkgm-entegrasyonu-2025.md` - Original requirements
+- `.context7/authority.json` - Context7 rules
+- `docs/context7-rules.md` - Existing rules
+- `docs/live-search-tkgm-entegrasyonu-2025.md` - Original requirements
 
 ### API Documentation
 
--   **OpenAPI/Swagger**: Available at `/api/documentation`
--   **Postman Collection**: Available in `/docs/api/`
+- **OpenAPI/Swagger**: Available at `/api/documentation`
+- **Postman Collection**: Available in `/docs/api/`
 
 ---
 
@@ -323,18 +323,18 @@ $request->validate([
 
 ### Production Checklist
 
--   ✅ Context7 compliance verified
--   ✅ Performance optimized
--   ✅ Security validated
--   ✅ Accessibility tested
--   ✅ Documentation complete
+- ✅ Context7 compliance verified
+- ✅ Performance optimized
+- ✅ Security validated
+- ✅ Accessibility tested
+- ✅ Documentation complete
 
 ### Monitoring
 
--   Search performance metrics
--   Error rate tracking
--   User experience monitoring
--   Context7 compliance monitoring
+- Search performance metrics
+- Error rate tracking
+- User experience monitoring
+- Context7 compliance monitoring
 
 ---
 
@@ -374,10 +374,10 @@ php artisan context7:report
 
 ### Maintenance Tasks
 
--   Weekly performance monitoring
--   Monthly security updates
--   Quarterly feature reviews
--   Annual compliance audits
+- Weekly performance monitoring
+- Monthly security updates
+- Quarterly feature reviews
+- Annual compliance audits
 
 ---
 

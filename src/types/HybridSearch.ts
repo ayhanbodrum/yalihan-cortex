@@ -1,6 +1,6 @@
 /**
  * Hybrid Search System - TypeScript Type Definitions
- * 
+ *
  * Context7 Standardı: C7-HYBRID-SEARCH-TYPES-2025-01-30
  * Versiyon: 1.0.0
  * Son Güncelleme: 30 Ocak 2025
@@ -189,10 +189,10 @@ export type SearchTypeSpecificProps<T extends SearchType> = HybridSearchProps & 
 };
 
 // Union type for all possible response formats
-export type HybridSearchApiResponse = 
-    | HybridSearchResponse 
-    | Select2Response 
-    | Context7Response 
+export type HybridSearchApiResponse =
+    | HybridSearchResponse
+    | Select2Response
+    | Context7Response
     | HybridSearchError;
 
 // Type guard functions
@@ -205,7 +205,12 @@ export function isSelect2Response(response: any): response is Select2Response {
 }
 
 export function isContext7Response(response: any): response is Context7Response {
-    return response && typeof response === 'object' && response.success === true && Array.isArray(response.data);
+    return (
+        response &&
+        typeof response === 'object' &&
+        response.success === true &&
+        Array.isArray(response.data)
+    );
 }
 
 export function isHybridSearchError(response: any): response is HybridSearchError {
@@ -217,15 +222,15 @@ export function validateSearchQuery(query: string): { isValid: boolean; error?: 
     if (!query || typeof query !== 'string') {
         return { isValid: false, error: ERROR_MESSAGES.VALIDATION_ERROR };
     }
-    
+
     if (query.length < 2) {
         return { isValid: false, error: ERROR_MESSAGES.MIN_LENGTH_ERROR };
     }
-    
+
     if (query.length > 100) {
         return { isValid: false, error: ERROR_MESSAGES.MAX_LENGTH_ERROR };
     }
-    
+
     return { isValid: true };
 }
 
@@ -236,7 +241,7 @@ export function validateSearchType(type: string): type is SearchType {
 // Helper functions
 export function formatDisplayText(option: HybridSearchOption): string {
     const { data } = option;
-    
+
     if (data.ad && data.soyad) {
         // Kişi formatı
         return `${data.ad} ${data.soyad} (${data.email})`;
@@ -251,7 +256,7 @@ export function formatDisplayText(option: HybridSearchOption): string {
 export function getSearchHint(option: HybridSearchOption, searchType: SearchType): string {
     const { data } = option;
     const typeLabel = SEARCH_TYPE_LABELS[searchType];
-    
+
     if (data.status === true || data.status === 'Aktif') {
         return `${typeLabel} • Aktif`;
     } else {

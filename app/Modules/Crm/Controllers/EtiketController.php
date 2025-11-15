@@ -47,7 +47,7 @@ class EtiketController extends Controller
 
         $this->etiketService->createEtiket($validatedData);
 
-        return redirect()->route('crm.etiketler.index')->with('success', 'Etiket başarıyla oluşturuldu.');
+        return redirect()->route('admin.etiketler.index')->with('success', 'Etiket başarıyla oluşturuldu.'); // Context7: crm.* → admin.*
     }
 
     /**
@@ -78,7 +78,7 @@ class EtiketController extends Controller
 
         $this->etiketService->updateEtiket($etiket, $validatedData);
 
-        return redirect()->route('crm.etiketler.index')->with('success', 'Etiket başarıyla güncellendi.');
+        return redirect()->route('admin.etiketler.index')->with('success', 'Etiket başarıyla güncellendi.'); // Context7: crm.* → admin.*
     }
 
     /**
@@ -88,10 +88,10 @@ class EtiketController extends Controller
     {
         // Etikete bağlı kişiler varsa silme işlemini engelle veya kullanıcıyı uyar
         if ($etiket->kisiler()->count() > 0) {
-            return redirect()->route('crm.etiketler.index')->with('error', 'Bu etiket kişilere bağlı olduğu için silinemez.');
+            return redirect()->route('admin.etiketler.index')->with('error', 'Bu etiket kişilere bağlı olduğu için silinemez.'); // Context7: crm.* → admin.*
         }
         $this->etiketService->deleteEtiket($etiket);
 
-        return redirect()->route('crm.etiketler.index')->with('success', 'Etiket başarıyla silindi.');
+        return redirect()->route('admin.etiketler.index')->with('success', 'Etiket başarıyla silindi.'); // Context7: crm.* → admin.*
     }
 }

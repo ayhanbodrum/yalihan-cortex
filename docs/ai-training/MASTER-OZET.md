@@ -123,22 +123,20 @@ Maliyet: $0 (Ücretsiz)
 ### **AI Bilecek:**
 
 ```yaml
-Context7:
-  ✅ status (NOT durum)
-  ✅ il_id (NOT sehir_id)
-  ✅ neo-* (NOT btn-*)
+Context7: ✅ status (NOT durum)
+    ✅ il_id (NOT sehir_id)
+    ✅ neo-* (NOT btn-*)
 
 Özellikler:
-  ✅ Başlık: 3 varyant, 60-80 karakter
-  ✅ Açıklama: 200-250 kelime, 3 paragraf
-  ✅ Lokasyon: Skor, Harf, Potansiyel
-  ✅ Fiyat: 3 seviye öneri
+    ✅ Başlık: 3 varyant, 60-80 karakter
+    ✅ Açıklama: 200-250 kelime, 3 paragraf
+    ✅ Lokasyon: Skor, Harf, Potansiyel
+    ✅ Fiyat: 3 seviye öneri
 
-Teknik:
-  ✅ Database schema
-  ✅ API endpoints
-  ✅ Ollama integration
-  ✅ Error handling
+Teknik: ✅ Database schema
+    ✅ API endpoints
+    ✅ Ollama integration
+    ✅ Error handling
 ```
 
 ---

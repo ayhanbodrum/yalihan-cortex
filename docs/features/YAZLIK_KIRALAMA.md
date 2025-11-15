@@ -1,4 +1,5 @@
 # Yazlık Kiralama Sistemi - Consolidated
+
 # 🏖️ YAZLIK KİRALAMA SİSTEMİ - MASTER DOKÜMAN
 
 ## 📋 GENEL BAKIŞ
@@ -58,12 +59,14 @@ Yazlık kiralama sistemi, emlak platformunda turizm amaçlı kısa süreli kiral
 **Path:** `app/Models/YazlikFiyatlandirma.php`
 
 **Önemli Metodlar:**
+
 - `calculatePrice($days)` - Gün sayısına göre fiyat hesaplama
 - `scopeActive()` - Aktif fiyatlandırmalar
 - `scopeTarihAraliginda($baslangic, $bitis)` - Tarih aralığı filtreleme
 - `getSezonTipleri()` - Sezon tipleri array
 
 **Sezon Tipleri:**
+
 - `yaz` - Yaz Sezonu
 - `ara_sezon` - Ara Sezon
 - `kis` - Kış Sezonu
@@ -73,12 +76,14 @@ Yazlık kiralama sistemi, emlak platformunda turizm amaçlı kısa süreli kiral
 **Path:** `app/Models/YazlikRezervasyon.php`
 
 **Önemli Metodlar:**
+
 - `scopeCakisan($checkIn, $checkOut, $excludeId)` - Çakışan rezervasyonlar
 - `updateDurum($status, $not)` - Durum güncelleme
 - `iptalEdilebilinirMi()` - İptal edilebilirlik kontrolü
 - `getKonaklumaSuresiAttribute()` - Konaklama süresi (gün)
 
 **Status Enum:**
+
 - `beklemede` - Beklemede
 - `onaylandi` - Onaylandı
 - `iptal` - İptal Edildi
@@ -91,6 +96,7 @@ Yazlık kiralama sistemi, emlak platformunda turizm amaçlı kısa süreli kiral
 **Path:** `app/Http/Controllers/Admin/YazlikKiralamaController.php`
 
 **Ana Metodlar:**
+
 - Yazlık ilan yönetimi (CRUD)
 - Rezervasyon yönetimi
 - Sezon yönetimi
@@ -102,6 +108,7 @@ Yazlık kiralama sistemi, emlak platformunda turizm amaçlı kısa süreli kiral
 **Path:** `app/Http/Controllers/Admin/TakvimController.php`
 
 **Ana Metodlar:**
+
 - Takvim görünümü
 - Rezervasyon takvimi API
 - Tarih bloklama
@@ -165,14 +172,14 @@ resources/views/yazlik-kiralama/
 Yazlık kiralama sistemi özel feature kategorileri kullanır:
 
 1. **Yazlık Özellikleri** (slug: `yazlik-ozellikleri`)
-   - Havuz özellikleri
-   - Denize uzaklık
-   - Minimum konaklama
-   - vb.
+    - Havuz özellikleri
+    - Denize uzaklık
+    - Minimum konaklama
+    - vb.
 
 2. **Yazlık Ekstra Özellikler**
-   - Ekstra tesisler
-   - Aktivite olanakları
+    - Ekstra tesisler
+    - Aktivite olanakları
 
 ## 🚀 SEEDER'LAR
 
@@ -274,17 +281,20 @@ Yazlık Kiralama Sistemi için **kapsamlı backend altyapısı** tamamlandı. Si
 #### Yeni Tablolar (3)
 
 **a) `ilan_takvim_sync`**
+
 - Platform senkronizasyon ayarları
 - Airbnb, Booking.com, Google Calendar desteği
 - Sync token yönetimi
 - Last sync tracking
 
 **b) `yazlik_doluluk_durumlari`**
+
 - Günlük doluluk takibi
 - Tarih bazlı durum yönetimi (available, reserved, blocked, maintenance)
 - Not ve açıklama desteği
 
 **c) `yazlik_details`**
+
 - Yazlık özel alanları (30+ field)
 - Konaklama bilgileri (min_konaklama, max_misafir)
 - Havuz detayları
@@ -297,17 +307,21 @@ Yazlık Kiralama Sistemi için **kapsamlı backend altyapısı** tamamlandı. Si
 ### 2. 🔧 Backend Bileşenleri
 
 #### Models (3)
+
 - ✅ `IlanTakvimSync` - Platform senkronizasyonları
 - ✅ `YazlikDolulukDurumu` - Doluluk durumları
 - ✅ `YazlikDetail` - Yazlık özel alanları
 
 #### Controllers (1)
+
 - ✅ `CalendarSyncController` - 7 API endpoint
 
 #### Services (1)
+
 - ✅ `CalendarSyncService` - Platform senkronizasyon logic
 
 #### API Endpoints (7)
+
 1. `GET /api/admin/calendars/{ilan}/syncs` - Senkronizasyonları listele
 2. `POST /api/admin/calendars/{ilan}/syncs` - Senkronizasyon oluştur
 3. `POST /api/admin/calendars/{ilan}/syncs/{sync}` - Senkronizasyon güncelle
@@ -321,6 +335,7 @@ Yazlık Kiralama Sistemi için **kapsamlı backend altyapısı** tamamlandı. Si
 ### 3. 🔗 İlişkiler ve Entegrasyonlar
 
 #### Ilan Model İlişkileri
+
 ```php
 public function yazlikDetail()
 {
@@ -339,6 +354,7 @@ public function dolulukDurumlari()
 ```
 
 #### Controller Entegrasyonu
+
 - ✅ `IlanController::store()` - Yazlık detayları kaydetme
 - ✅ `IlanController::update()` - Yazlık detayları güncelleme
 
@@ -347,6 +363,7 @@ public function dolulukDurumlari()
 ## 🎯 Özellikler
 
 ### Takvim Senkronizasyonu
+
 - ✅ Airbnb entegrasyonu
 - ✅ Booking.com entegrasyonu
 - ✅ Google Calendar entegrasyonu
@@ -355,12 +372,14 @@ public function dolulukDurumlari()
 - ✅ Senkronizasyon geçmişi
 
 ### Doluluk Yönetimi
+
 - ✅ Günlük durum takibi
 - ✅ 90 günlük görünüm
 - ✅ Tarih engelleme
 - ✅ Durumlar (available, reserved, blocked, maintenance)
 
 ### Yazlık Özel Alanları
+
 - ✅ Konaklama kuralları (min_konaklama, max_misafir)
 - ✅ Havuz bilgileri (türü, boyutu, derinliği)
 - ✅ Fiyatlandırma (4 farklı süre)
@@ -374,6 +393,7 @@ public function dolulukDurumlari()
 ## 📚 Dokümantasyon
 
 ### Oluşturulan Dosyalar
+
 1. ✅ `TAKVIM_API_DOKUMANTASYONU.md` - API kullanım kılavuzu
 2. ✅ `YAZLIK_DETAIL_TABLE_RAPORU.md` - Veritabanı dokümantasyonu
 3. ✅ `YAPILACAKLAR_2025_10_27.md` - Günlük yapılacaklar
@@ -381,6 +401,7 @@ public function dolulukDurumlari()
 5. ✅ `YAPILACAKLAR_LISTESI_GENEL.md` - Genel yapılacaklar
 
 ### MCP Öğrenimi
+
 - ✅ `yalihan-bekci/knowledge/takvim-sistem-2025-10-27.json`
 - ✅ README.md güncellendi
 
@@ -389,11 +410,13 @@ public function dolulukDurumlari()
 ## 📊 İstatistikler
 
 ### Veritabanı
+
 - **Yeni Tablo:** 3
 - **Toplam Field:** 48 field
 - **İlişki:** 4 (Ilan ↔ YazlikDetail, Ilan ↔ TakvimSync, Ilan ↔ Doluluk)
 
 ### Kod
+
 - **Controller:** 1 (CalendarSyncController)
 - **Service:** 1 (CalendarSyncService)
 - **Model:** 3 (IlanTakvimSync, YazlikDolulukDurumu, YazlikDetail)
@@ -401,6 +424,7 @@ public function dolulukDurumlari()
 - **Migration:** 4
 
 ### Dokümantasyon
+
 - **MD Dosyası:** 5
 - **JSON Knowledge:** 1
 - **README:** Güncellendi
@@ -410,17 +434,20 @@ public function dolulukDurumlari()
 ## 🎯 Sonraki Adımlar
 
 ### Öncelik 1: Frontend Entegrasyonu
+
 - [ ] Takvim UI component'i
 - [ ] Senkronizasyon yönetim sayfası
 - [ ] Doluluk görünümü
 - [ ] Tarih seçimi ve engelleme
 
 ### Öncelik 2: Test
+
 - [ ] Unit test'ler
 - [ ] Integration test'ler
 - [ ] API test'leri
 
 ### Öncelik 3: Platform Entegrasyonları
+
 - [ ] Airbnb API entegrasyonu
 - [ ] Booking.com API entegrasyonu
 - [ ] Google Calendar API entegrasyonu
@@ -430,16 +457,19 @@ public function dolulukDurumlari()
 ## 💡 Teknik Detaylar
 
 ### Performans
+
 - Yazlık özel alanları ayrı tabloda
 - Sadece yazlık sorgularında ilgili tablo kullanılır
 - İndexler performansı artırır
 
 ### Güvenlik
+
 - Tüm API endpoint'leri auth middleware ile korunur
 - Validation kuralları uygulanır
 - Error handling mekanizması mevcut
 
 ### Uyumluluk
+
 - Context7 standartlarına uygun
 - Laravel best practices
 - RESTful API tasarımı
@@ -459,6 +489,7 @@ Yazlık Takvim ve Rezervasyon Sistemi için backend altyapısı başarıyla tama
 
 **Hazırlayan:** Yalıhan Bekçi AI System  
 **Tarih:** 27 Ekim 2025 13:30
+
 # 🏖️ Yazlık Airbnb Tarzı Entegrasyon - Rapor
 
 **Tarih:** 27 Ekim 2025  
@@ -469,28 +500,33 @@ Yazlık Takvim ve Rezervasyon Sistemi için backend altyapısı başarıyla tama
 ## 📊 Eklenen Yeni Alanlar (24 Alan)
 
 ### 1. Kurulum Bilgileri (4 alan)
+
 - ✅ `oda_sayisi` - Oda sayısı
 - ✅ `banyo_sayisi` - Banyo sayısı
 - ✅ `yatak_sayisi` - Yatak sayısı
 - ✅ `yatak_turleri` - Yatak türleri (JSON array)
 
 ### 2. Ücret Dahil Hizmetler (4 alan)
+
 - ✅ `carsaf_dahil` - Çarşaf dahil mi?
 - ✅ `havlu_dahil` - Havlu dahil mi?
 - ✅ `internet_dahil` - İnternet dahil mi?
 - ✅ `klima_var` - Klima var mı?
 
 ### 3. Yakınlık Bilgileri (4 alan)
+
 - ✅ `restoran_mesafe` - Restoran mesafe (km)
 - ✅ `market_mesafe` - Market mesafe (km)
 - ✅ `deniz_mesafe` - Deniz mesafe (km)
 - ✅ `merkez_mesafe` - Merkez mesafe (km)
 
 ### 4. Havuz Detayları (2 alan)
+
 - ✅ `havuz_boyut_en` - Havuz genişlik (m)
 - ✅ `havuz_boyut_boy` - Havuz uzunluk (m)
 
 ### 5. Olanaklar (5 alan)
+
 - ✅ `bahce_var` - Bahçe var mı?
 - ✅ `tv_var` - TV var mı?
 - ✅ `barbeku_var` - Barbekü var mı?
@@ -498,6 +534,7 @@ Yazlık Takvim ve Rezervasyon Sistemi için backend altyapısı başarıyla tama
 - ✅ `bahce_masasi_var` - Bahçe masası var mı?
 
 ### 6. Özellikler (5 alan)
+
 - ✅ `manzara` - Manzara türü (Deniz, Doğa, Şehir)
 - ✅ `ozel_isaretler` - Özel işaretler (JSON array)
 - ✅ `ev_tipi` - Ev tipi (Villa, Bungalov, vs.)
@@ -508,6 +545,7 @@ Yazlık Takvim ve Rezervasyon Sistemi için backend altyapısı başarıyla tama
 ## 📋 Kullanım Örnekleri
 
 ### Örnek 1: Villa Yazlık
+
 ```php
 $yazlikDetail = YazlikDetail::create([
     'ilan_id' => 1,
@@ -541,6 +579,7 @@ $yazlikDetail = YazlikDetail::create([
 ```
 
 ### Örnek 2: Yakınlık Bilgileri
+
 ```php
 $yazlikDetail->update([
     'restoran_mesafe' => 1,
@@ -555,28 +594,34 @@ $yazlikDetail->update([
 ## 🎯 Özellik Kategorileri
 
 ### Kurulum Bilgileri
+
 - Oda, banyo, yatak sayıları
 - Yatak türleri (Çift kişilik, Tek kişilik, Çekyat)
 
 ### Ücret Dahil Hizmetler
+
 - Çarşaf, Havlu
 - Elektrik, Su, İnternet
 - Klima
 
 ### Yakınlık Bilgileri (km)
+
 - Restoran, Market
 - Deniz/Plaj, Merkez
 
 ### Havuz Detayları
+
 - Havuz boyut (En x Boy)
 - Derinlik
 - Türü (Özel/Ortak)
 
 ### Olanaklar
+
 - Bahçe, TV, Barbekü
 - Şezlong, Bahçe masası
 
 ### Özellikler
+
 - Manzara türü
 - Özel işaretler
 - Ev tipi ve konsepti
@@ -595,6 +640,7 @@ $yazlikDetail->update([
 
 **Hazırlayan:** Yalıhan Bekçi AI System  
 **Tarih:** 27 Ekim 2025 15:15
+
 # Yazlık Detay Tablosu - Rapor
 
 **Tarih:** 27 Ekim 2025  
@@ -621,57 +667,57 @@ Ana `ilanlar` tablosundaki yazlık özel alanları ayrı bir tabloya taşındı.
 CREATE TABLE yazlik_details (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
     ilan_id BIGINT UNSIGNED UNIQUE NOT NULL,
-    
+
     -- Konaklama Bilgileri
     min_konaklama INT DEFAULT 1,
     max_misafir INT NULL,
     temizlik_ucreti DECIMAL(10,2) NULL,
-    
+
     -- Havuz Bilgileri
     havuz BOOLEAN DEFAULT FALSE,
     havuz_turu VARCHAR(255) NULL,
     havuz_boyut VARCHAR(255) NULL,
     havuz_derinlik VARCHAR(255) NULL,
-    
+
     -- Fiyatlandırma
     gunluk_fiyat DECIMAL(10,2) NULL,
     haftalik_fiyat DECIMAL(10,2) NULL,
     aylik_fiyat DECIMAL(10,2) NULL,
     sezonluk_fiyat DECIMAL(10,2) NULL,
-    
+
     -- Sezon Bilgileri
     sezon_baslangic DATE NULL,
     sezon_bitis DATE NULL,
-    
+
     -- Enerji Bilgileri
     elektrik_dahil BOOLEAN DEFAULT FALSE,
     su_dahil BOOLEAN DEFAULT FALSE,
-    
+
     -- Notlar ve Özel Bilgiler
     ozel_notlar TEXT NULL,
     musteri_notlari TEXT NULL,
     indirim_notlari TEXT NULL,
-    
+
     -- İndirim ve Ödeme
     indirimli_fiyat DECIMAL(10,2) NULL,
     anahtar_kimde VARCHAR(255) NULL,
     anahtar_notlari TEXT NULL,
     sahip_ozel_notlari TEXT NULL,
     sahip_iletisim_tercihi VARCHAR(255) NULL,
-    
+
     -- EİDS Onay
     eids_onayli BOOLEAN DEFAULT FALSE,
     eids_onay_tarihi DATE NULL,
     eids_belge_no VARCHAR(255) NULL,
-    
+
     -- Timestamps
     created_at TIMESTAMP NULL,
     updated_at TIMESTAMP NULL,
     deleted_at TIMESTAMP NULL,
-    
+
     -- Foreign Key
     FOREIGN KEY (ilan_id) REFERENCES ilanlar(id) ON DELETE CASCADE,
-    
+
     -- Indexes
     INDEX idx_ilan_id (ilan_id),
     INDEX idx_sezon_baslangic (sezon_baslangic),
@@ -684,6 +730,7 @@ CREATE TABLE yazlik_details (
 ## 🔗 Model İlişkileri
 
 ### Ilan Model
+
 ```php
 public function yazlikDetail()
 {
@@ -692,6 +739,7 @@ public function yazlikDetail()
 ```
 
 ### YazlikDetail Model
+
 ```php
 public function ilan(): BelongsTo
 {
@@ -704,6 +752,7 @@ public function ilan(): BelongsTo
 ## 📦 Kullanım Örnekleri
 
 ### Yazlık İlanı Oluşturma
+
 ```php
 $ilan = Ilan::create([
     'baslik' => 'Denize Sıfır Yazlık',
@@ -722,6 +771,7 @@ $ilan->yazlikDetail()->create([
 ```
 
 ### Yazlık İlanı Okuma
+
 ```php
 $ilan = Ilan::with('yazlikDetail')->find(1);
 
@@ -732,6 +782,7 @@ if ($ilan->yazlikDetail) {
 ```
 
 ### Yazlık İlanlarını Listeleme
+
 ```php
 $yazliklar = Ilan::whereHas('yazlikDetail')->get();
 
@@ -745,21 +796,25 @@ $yazliklar = Ilan::has('yazlikDetail')->get();
 ## 🔄 Migrasyon Aşamaları
 
 ### 1. Migration Oluşturuldu
+
 ```bash
 php artisan make:migration create_yazlik_details_table
 ```
 
 ### 2. Migration Çalıştırıldı
+
 ```bash
 php artisan migrate
 ```
 
 ### 3. Model Oluşturuldu
+
 ```bash
 php artisan make:model YazlikDetail
 ```
 
 ### 4. İlişkiler Eklendi
+
 - `Ilan` modeline `yazlikDetail()` eklendi
 - `YazlikDetail` modeline `ilan()` eklendi
 
@@ -768,16 +823,19 @@ php artisan make:model YazlikDetail
 ## 📊 Avantajlar
 
 ### 1. Performans
+
 - ✅ Sadece yazlık ilanları sorgulandığında `yazlik_details` tablosu kullanılır
 - ✅ Normal ilan sorguları daha hızlı çalışır
 - ✅ İndexler ile arama performansı artar
 
 ### 2. Kod Düzeni
+
 - ✅ Yazlık özel alanları merkezi bir yerde
 - ✅ Bakım ve güncelleme kolay
 - ✅ Kod tekrarı azalır
 
 ### 3. Veritabanı
+
 - ✅ Normalizasyon sağlandı
 - ✅ Null değerler azaldı
 - ✅ İlişkisel yapı güçlendi
@@ -787,14 +845,17 @@ php artisan make:model YazlikDetail
 ## 🔮 İleriye Dönük Planlar
 
 ### 1. Veri Taşıma
+
 - Mevcut `ilanlar` tablosundaki yazlık alanlarını `yazlik_details` tablosuna taşı
 - Migration ile otomatik veri aktarımı
 
 ### 2. API Güncellemeleri
+
 - Yazlık detay endpoint'leri
 - Bulk update işlemleri
 
 ### 3. Yönetim Paneli
+
 - Yazlık detay sayfası
 - Fiyatlandırma yönetimi
 - Sezon yönetimi
@@ -804,11 +865,13 @@ php artisan make:model YazlikDetail
 ## 📝 Notlar
 
 ### Önemli
+
 - `ilan_id` UNIQUE olarak işaretlendi (bir ilanın tek yazlık detayı olabilir)
 - `onDelete('cascade')` ile ilan silindiğinde detaylar da silinir
 - Soft delete kullanılıyor (`deleted_at` kolonu)
 
 ### Eksik Alanlar (İleride Eklenecek)
+
 - `park_yeri_sayisi`
 - `teras`
 - `bahçe`
@@ -832,6 +895,7 @@ php artisan make:model YazlikDetail
 
 **Son Güncelleme:** 27 Ekim 2025  
 **Durum:** ✅ Tamamlandı
+
 # 🏖️ Yazlık Kiralama Özellikleri - Detaylı Liste
 
 **Tarih:** 27 Ekim 2025  
@@ -848,6 +912,7 @@ Yazlık kiralama sistemi, günlük, haftalık, aylık ve sezonluk kiralama işle
 ## 🏠 1. KONAKLAMA BİLGİLERİ
 
 ### 1.1 Minimum Konaklama
+
 - **Alan:** `min_konaklama`
 - **Tip:** Integer
 - **Varsayılan:** 1
@@ -855,12 +920,14 @@ Yazlık kiralama sistemi, günlük, haftalık, aylık ve sezonluk kiralama işle
 - **Örnek:** 2, 3, 7, 14 gün
 
 ### 1.2 Maksimum Misafir
+
 - **Alan:** `max_misafir`
 - **Tip:** Integer (nullable)
 - **Açıklama:** Maksimum misafir kapasitesi
 - **Örnek:** 4, 6, 8, 10 kişi
 
 ### 1.3 Temizlik Ücreti
+
 - **Alan:** `temizlik_ucreti`
 - **Tip:** Decimal (10,2) (nullable)
 - **Açıklama:** Temizlik ücreti (TRY)
@@ -871,6 +938,7 @@ Yazlık kiralama sistemi, günlük, haftalık, aylık ve sezonluk kiralama işle
 ## 🏊 2. HAVUZ BİLGİLERİ
 
 ### 2.1 Havuz
+
 - **Alan:** `havuz`
 - **Tip:** Boolean
 - **Varsayılan:** false
@@ -878,56 +946,63 @@ Yazlık kiralama sistemi, günlük, haftalık, aylık ve sezonluk kiralama işle
 - **Değerler:** true/false
 
 ### 2.2 Havuz Türü
+
 - **Alan:** `havuz_turu`
 - **Tip:** String (nullable)
 - **Açıklama:** Havuz türü
-- **Örnek:** 
-  - Özel Havuz
-  - Ortak Havuz
-  - Deniz Havuzu
-  - Havuz Yok
+- **Örnek:**
+    - Özel Havuz
+    - Ortak Havuz
+    - Deniz Havuzu
+    - Havuz Yok
 
 ### 2.3 Havuz Boyutu
+
 - **Alan:** `havuz_boyut`
 - **Tip:** String (nullable)
 - **Açıklama:** Havuz boyut bilgisi
-- **Örnek:** 
-  - Küçük (5x3m)
-  - Orta (10x5m)
-  - Büyük (15x7m)
+- **Örnek:**
+    - Küçük (5x3m)
+    - Orta (10x5m)
+    - Büyük (15x7m)
 
 ### 2.4 Havuz Derinliği
+
 - **Alan:** `havuz_derinlik`
 - **Tip:** String (nullable)
 - **Açıklama:** Havuz derinlik bilgisi
-- **Örnek:** 
-  - Sığ (0.5-1m)
-  - Orta (1-1.5m)
-  - Derin (1.5-2m)
+- **Örnek:**
+    - Sığ (0.5-1m)
+    - Orta (1-1.5m)
+    - Derin (1.5-2m)
 
 ---
 
 ## 💰 3. FİYATLANDIRMA
 
 ### 3.1 Günlük Fiyat
+
 - **Alan:** `gunluk_fiyat`
 - **Tip:** Decimal (10,2) (nullable)
 - **Açıklama:** Günlük kiralama fiyatı
 - **Örnek:** 1.500.00 ₺
 
 ### 3.2 Haftalık Fiyat
+
 - **Alan:** `haftalik_fiyat`
 - **Tip:** Decimal (10,2) (nullable)
 - **Açıklama:** Haftalık kiralama fiyatı
 - **Örnek:** 8.000.00 ₺
 
 ### 3.3 Aylık Fiyat
+
 - **Alan:** `aylik_fiyat`
 - **Tip:** Decimal (10,2) (nullable)
 - **Açıklama:** Aylık kiralama fiyatı
 - **Örnek:** 25.000.00 ₺
 
 ### 3.4 Sezonluk Fiyat
+
 - **Alan:** `sezonluk_fiyat`
 - **Tip:** Decimal (10,2) (nullable)
 - **Açıklama:** Sezonluk kiralama fiyatı
@@ -938,12 +1013,14 @@ Yazlık kiralama sistemi, günlük, haftalık, aylık ve sezonluk kiralama işle
 ## 📅 4. SEZON BİLGİLERİ
 
 ### 4.1 Sezon Başlangıcı
+
 - **Alan:** `sezon_baslangic`
 - **Tip:** Date (nullable)
 - **Açıklama:** Sezon başlangıç tarihi
 - **Örnek:** 01.06.2025
 
 ### 4.2 Sezon Bitişi
+
 - **Alan:** `sezon_bitis`
 - **Tip:** Date (nullable)
 - **Açıklama:** Sezon bitiş tarihi
@@ -954,6 +1031,7 @@ Yazlık kiralama sistemi, günlük, haftalık, aylık ve sezonluk kiralama işle
 ## ⚡ 5. ENERJİ BİLGİLERİ
 
 ### 5.1 Elektrik Dahil
+
 - **Alan:** `elektrik_dahil`
 - **Tip:** Boolean
 - **Varsayılan:** false
@@ -961,6 +1039,7 @@ Yazlık kiralama sistemi, günlük, haftalık, aylık ve sezonluk kiralama işle
 - **Değerler:** true/false
 
 ### 5.2 Su Dahil
+
 - **Alan:** `su_dahil`
 - **Tip:** Boolean
 - **Varsayılan:** false
@@ -972,18 +1051,21 @@ Yazlık kiralama sistemi, günlük, haftalık, aylık ve sezonluk kiralama işle
 ## 📝 6. NOTLAR
 
 ### 6.1 Özel Notlar
+
 - **Alan:** `ozel_notlar`
 - **Tip:** Text (nullable)
 - **Açıklama:** İlan sahibinin özel notları
 - **Örnek:** "Deniz manzaralı, sessiz sakin"
 
 ### 6.2 Müşteri Notları
+
 - **Alan:** `musteri_notlari`
 - **Tip:** Text (nullable)
 - **Açıklama:** Müşterilere özel notlar
 - **Örnek:** "Check-in saat 14:00, check-out 11:00"
 
 ### 6.3 İndirim Notları
+
 - **Alan:** `indirim_notlari`
 - **Tip:** Text (nullable)
 - **Açıklama:** İndirim şartları ve açıklamaları
@@ -994,16 +1076,18 @@ Yazlık kiralama sistemi, günlük, haftalık, aylık ve sezonluk kiralama işle
 ## 🔑 7. ANAHTAR BİLGİLERİ
 
 ### 7.1 Anahtar Kimde
+
 - **Alan:** `anahtar_kimde`
 - **Tip:** String (nullable)
 - **Açıklama:** Anahtar kimde
-- **Örnek:** 
-  - Sahip
-  - Kapıcı
-  - Güvenlik
-  - Otomatik Kilit
+- **Örnek:**
+    - Sahip
+    - Kapıcı
+    - Güvenlik
+    - Otomatik Kilit
 
 ### 7.2 Anahtar Notları
+
 - **Alan:** `anahtar_notlari`
 - **Tip:** Text (nullable)
 - **Açıklama:** Anahtar ile ilgili notlar
@@ -1014,26 +1098,29 @@ Yazlık kiralama sistemi, günlük, haftalık, aylık ve sezonluk kiralama işle
 ## 👤 8. SAHİP BİLGİLERİ
 
 ### 8.1 Sahip Özel Notları
+
 - **Alan:** `sahip_ozel_notlari`
 - **Tip:** Text (nullable)
 - **Açıklama:** Sahip özel notları (sadece yöneticiler görebilir)
 - **Örnek:** "2. kattaki komşuya dikkat"
 
 ### 8.2 Sahip İletişim Tercihi
+
 - **Alan:** `sahip_iletisim_tercihi`
 - **Tip:** String (nullable)
 - **Açıklama:** Sahibin iletişim tercihi
 - **Örnek:**
-  - Telefon
-  - WhatsApp
-  - Email
-  - Web Sitesi
+    - Telefon
+    - WhatsApp
+    - Email
+    - Web Sitesi
 
 ---
 
 ## 🏷️ 9. EİDS ONAY BİLGİLERİ
 
 ### 9.1 EİDS Onaylı
+
 - **Alan:** `eids_onayli`
 - **Tip:** Boolean
 - **Varsayılan:** false
@@ -1041,12 +1128,14 @@ Yazlık kiralama sistemi, günlük, haftalık, aylık ve sezonluk kiralama işle
 - **Değerler:** true/false
 
 ### 9.2 EİDS Onay Tarihi
+
 - **Alan:** `eids_onay_tarihi`
 - **Tip:** Date (nullable)
 - **Açıklama:** EİDS onay tarihi
 - **Örnek:** 15.05.2025
 
 ### 9.3 EİDS Belge No
+
 - **Alan:** `eids_belge_no`
 - **Tip:** String (nullable)
 - **Açıklama:** EİDS belge numarası
@@ -1057,6 +1146,7 @@ Yazlık kiralama sistemi, günlük, haftalık, aylık ve sezonluk kiralama işle
 ## 💸 10. İNDİRİM BİLGİLERİ
 
 ### 10.1 İndirimli Fiyat
+
 - **Alan:** `indirimli_fiyat`
 - **Tip:** Decimal (10,2) (nullable)
 - **Açıklama:** İndirimli fiyat
@@ -1066,25 +1156,26 @@ Yazlık kiralama sistemi, günlük, haftalık, aylık ve sezonluk kiralama işle
 
 ## 📊 ÖZET TABLO
 
-| Kategori | Alan Sayısı | Açıklama |
-|----------|-------------|----------|
-| **Konaklama** | 3 | Minimum/Maksimum konaklama bilgileri |
-| **Havuz** | 4 | Havuz türü, boyut, derinlik |
-| **Fiyatlandırma** | 4 | Günlük, haftalık, aylık, sezonluk |
-| **Sezon** | 2 | Başlangıç ve bitiş tarihleri |
-| **Enerji** | 2 | Elektrik ve su dahilleri |
-| **Notlar** | 3 | Özel, müşteri, indirim notları |
-| **Anahtar** | 2 | Anahtar bilgileri |
-| **Sahip** | 2 | Sahip özel bilgileri |
-| **EİDS** | 3 | Onay bilgileri |
-| **İndirim** | 1 | İndirimli fiyat |
-| **TOPLAM** | **26** | |
+| Kategori          | Alan Sayısı | Açıklama                             |
+| ----------------- | ----------- | ------------------------------------ |
+| **Konaklama**     | 3           | Minimum/Maksimum konaklama bilgileri |
+| **Havuz**         | 4           | Havuz türü, boyut, derinlik          |
+| **Fiyatlandırma** | 4           | Günlük, haftalık, aylık, sezonluk    |
+| **Sezon**         | 2           | Başlangıç ve bitiş tarihleri         |
+| **Enerji**        | 2           | Elektrik ve su dahilleri             |
+| **Notlar**        | 3           | Özel, müşteri, indirim notları       |
+| **Anahtar**       | 2           | Anahtar bilgileri                    |
+| **Sahip**         | 2           | Sahip özel bilgileri                 |
+| **EİDS**          | 3           | Onay bilgileri                       |
+| **İndirim**       | 1           | İndirimli fiyat                      |
+| **TOPLAM**        | **26**      |                                      |
 
 ---
 
 ## 🎯 KULLANIM SENARYOLARI
 
 ### Senaryo 1: Günlük Kiralama
+
 ```
 min_konaklama: 2 gün
 max_misafir: 6 kişi
@@ -1093,6 +1184,7 @@ havuz: Var
 ```
 
 ### Senaryo 2: Haftalık Kiralama
+
 ```
 min_konaklama: 7 gün
 max_misafir: 8 kişi
@@ -1102,6 +1194,7 @@ su_dahil: Var
 ```
 
 ### Senaryo 3: Sezonluk Kiralama
+
 ```
 sezon_baslangic: 01.06.2025
 sezon_bitis: 31.08.2025
@@ -1114,15 +1207,18 @@ eids_onayli: Var
 ## 💡 TEKNİK NOTLAR
 
 ### Veritabanı İndexleri
+
 - `ilan_id` - Primary key ve foreign key
 - `sezon_baslangic` - Sezon bazlı sorgulamalar
 - `sezon_bitis` - Sezon bazlı sorgulamalar
 
 ### İlişki
+
 - **1:1** - Bir ilan bir yazlık detayına sahip olabilir
 - **Cascade** - İlan silinince detaylar da silinir
 
 ### Validation Kuralları
+
 - Tarih alanları geçerli tarih formatında olmalı
 - Fiyat alanları pozitif olmalı
 - Sezon başlangıç tarihi bitiş tarihinden önce olmalı
@@ -1134,6 +1230,7 @@ eids_onayli: Var
 Yazlık kiralama sistemi 26 özel alan ile kapsamlı bir kiralama yönetim sistemi sunmaktadır. Sistem günlük, haftalık, aylık ve sezonluk kiralama işlemlerini desteklemektedir.
 
 **Özellikler:**
+
 - ✅ Konaklama kuralları
 - ✅ Havuz bilgileri
 - ✅ Fiyatlandırma

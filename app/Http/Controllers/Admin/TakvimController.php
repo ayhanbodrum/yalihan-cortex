@@ -34,10 +34,10 @@ class TakvimController extends AdminController
             // İstatistikler
             $stats = [
                 'total_events' => collect($events)->count(),
-                'this_week' => collect($events)->filter(function($event) {
+                'this_week' => collect($events)->filter(function ($event) {
                     return Carbon::parse($event['date'])->isCurrentWeek();
                 })->count(),
-                'upcoming' => collect($events)->filter(function($event) {
+                'upcoming' => collect($events)->filter(function ($event) {
                     return Carbon::parse($event['date'])->isFuture();
                 })->count()
             ];
@@ -345,7 +345,7 @@ class TakvimController extends AdminController
             $type = $request->get('type', '');
 
             // Mock arama sonuçları
-            $events = collect($this->getCalendarEvents())->filter(function($event) use ($query, $type) {
+            $events = collect($this->getCalendarEvents())->filter(function ($event) use ($query, $type) {
                 $matchesQuery = empty($query) ||
                     str_contains(strtolower($event['title']), strtolower($query)) ||
                     str_contains(strtolower($event['description'] ?? ''), strtolower($query));
@@ -443,7 +443,7 @@ class TakvimController extends AdminController
                     'baslangic' => '2024-06-01',
                     'bitis' => '2024-09-15',
                     'gunluk_fiyat' => 5000,
-                    'enabled' => true,
+                    'status' => true, // Context7: enabled → status
                     'sezon_tipi' => 'yuksek',
                     'minimum_konaklama_gun' => 7,
                     'maksimum_konaklama_gun' => 30
@@ -454,7 +454,7 @@ class TakvimController extends AdminController
                     'baslangic' => '2024-09-16',
                     'bitis' => '2024-11-30',
                     'gunluk_fiyat' => 3000,
-                    'enabled' => true,
+                    'status' => true, // Context7: enabled → status
                     'sezon_tipi' => 'orta',
                     'minimum_konaklama_gun' => 3,
                     'maksimum_konaklama_gun' => 15
@@ -465,7 +465,7 @@ class TakvimController extends AdminController
                     'baslangic' => '2024-12-01',
                     'bitis' => '2025-05-31',
                     'gunluk_fiyat' => 2000,
-                    'enabled' => false,
+                    'status' => false, // Context7: enabled → status
                     'sezon_tipi' => 'dusuk',
                     'minimum_konaklama_gun' => 2,
                     'maksimum_konaklama_gun' => 10
@@ -503,7 +503,7 @@ class TakvimController extends AdminController
                 'weekly_price' => $request->haftalik_fiyat,
                 'monthly_price' => $request->aylik_fiyat,
                 'minimum_stay' => $request->minimum_konaklama ?? 1,
-                'is_active' => true,
+                'status' => true, // Context7: is_active → status
             ]);
 
             return response()->json([

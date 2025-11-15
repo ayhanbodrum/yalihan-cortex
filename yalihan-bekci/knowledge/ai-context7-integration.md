@@ -26,12 +26,12 @@
 
 ### **Özellikler**
 
--   ✅ 5 AI Provider konfigürasyonu
--   ✅ Test butonu her provider'da
--   ✅ Gerçek zamanlı durum göstergesi (Yeşil ✅ / Kırmızı ❌)
--   ✅ Otomatik loglama (`storage/logs/ai_connections.log`)
--   ✅ Toast bildirimleri
--   ✅ 30 saniye otomatik yenileme
+- ✅ 5 AI Provider konfigürasyonu
+- ✅ Test butonu her provider'da
+- ✅ Gerçek zamanlı durum göstergesi (Yeşil ✅ / Kırmızı ❌)
+- ✅ Otomatik loglama (`storage/logs/ai_connections.log`)
+- ✅ Toast bildirimleri
+- ✅ 30 saniye otomatik yenileme
 
 ---
 
@@ -188,34 +188,34 @@ ai_chat_logs
 
 ### **1. Title Generation (Başlık Üretimi)**
 
--   **Variants:** 3
--   **Length:** 60-80 characters
--   **Tones:** seo, kurumsal, hizli_satis, luks
--   **Response Time:** <2s
--   **Cache:** 1 hour TTL
+- **Variants:** 3
+- **Length:** 60-80 characters
+- **Tones:** seo, kurumsal, hizli_satis, luks
+- **Response Time:** <2s
+- **Cache:** 1 hour TTL
 
 ### **2. Description Generation (Açıklama Üretimi)**
 
--   **Word Count:** 200-250
--   **Paragraphs:** 3
--   **Tones:** seo, kurumsal, hizli_satis, luks
--   **Response Time:** <3s
--   **Cache:** 1 hour TTL
+- **Word Count:** 200-250
+- **Paragraphs:** 3
+- **Tones:** seo, kurumsal, hizli_satis, luks
+- **Response Time:** <3s
+- **Cache:** 1 hour TTL
 
 ### **3. Location Analysis (Lokasyon Analizi)**
 
--   **Score:** 0-100
--   **Grade:** A, B, C, D
--   **Potential:** Yüksek, Orta, Düşük
--   **Response Time:** <2s
--   **Cache:** 24 hours TTL
+- **Score:** 0-100
+- **Grade:** A, B, C, D
+- **Potential:** Yüksek, Orta, Düşük
+- **Response Time:** <2s
+- **Cache:** 24 hours TTL
 
 ### **4. Price Suggestion (Fiyat Önerisi)**
 
--   **Levels:** 3 (Pazarlık, Piyasa, Premium)
--   **Calculation:** Base price ± percentage
--   **Response Time:** <1s
--   **Cache:** None (real-time)
+- **Levels:** 3 (Pazarlık, Piyasa, Premium)
+- **Calculation:** Base price ± percentage
+- **Response Time:** <1s
+- **Cache:** None (real-time)
 
 ---
 
@@ -297,28 +297,28 @@ Laravel Log (structured) + Dedicated Log (ai_connections.log)
 
 ### **Backend**
 
--   ✅ AISettingsController implemented
--   ✅ Test methods for all 5 providers
--   ✅ Logging system active
--   ✅ Cache integration
--   ✅ Error handling
--   ✅ Fallback mechanism
+- ✅ AISettingsController implemented
+- ✅ Test methods for all 5 providers
+- ✅ Logging system active
+- ✅ Cache integration
+- ✅ Error handling
+- ✅ Fallback mechanism
 
 ### **Frontend**
 
--   ✅ AI Settings page (/admin/ai-settings)
--   ✅ Test buttons (5 providers)
--   ✅ Status badges (color-coded)
--   ✅ Toast notifications
--   ✅ Auto-refresh (30s)
--   ✅ Dark mode support
+- ✅ AI Settings page (/admin/ai-settings)
+- ✅ Test buttons (5 providers)
+- ✅ Status badges (color-coded)
+- ✅ Toast notifications
+- ✅ Auto-refresh (30s)
+- ✅ Dark mode support
 
 ### **Context7**
 
--   ✅ Field names: English only
--   ✅ API format: Standard
--   ✅ No forbidden patterns
--   ✅ Compliance: 100%
+- ✅ Field names: English only
+- ✅ API format: Standard
+- ✅ No forbidden patterns
+- ✅ Compliance: 100%
 
 ---
 

@@ -10,20 +10,19 @@
 
 ```yaml
 Sunucular:
-  CasaOS: http://51.75.64.121:81 (Web UI)
-  AnythingLLM: http://51.75.64.121:3051 (Knowledge Base)
-  n8n: https://n8n.yalihanemlak.com.tr:5678 (Automation)
-  Ollama: http://ollama-host:11434 (Local LLM)
+    CasaOS: http://51.75.64.121:81 (Web UI)
+    AnythingLLM: http://51.75.64.121:3051 (Knowledge Base)
+    n8n: https://n8n.yalihanemlak.com.tr:5678 (Automation)
+    Ollama: http://ollama-host:11434 (Local LLM)
 
 Depolama:
-  Google Drive: Yapay zeka öğrenim bilgileri
+    Google Drive: Yapay zeka öğrenim bilgileri
 
-Avantajlar:
-  ✅ Kendi sunucu (maliyet yok!)
-  ✅ Ollama (local, $0 API cost)
-  ✅ n8n (kendi sunucu, güvenli)
-  ✅ AnythingLLM (knowledge management)
-  ✅ Google Drive (dokümantasyon merkezi)
+Avantajlar: ✅ Kendi sunucu (maliyet yok!)
+    ✅ Ollama (local, $0 API cost)
+    ✅ n8n (kendi sunucu, güvenli)
+    ✅ AnythingLLM (knowledge management)
+    ✅ Google Drive (dokümantasyon merkezi)
 ```
 
 ---
@@ -33,22 +32,24 @@ Avantajlar:
 ### ✅ GÜÇLÜ YÖNLER
 
 **1. Maliyet Avantajı:**
+
 ```yaml
 Önceki Endişe:
-  - n8n Cloud: $20-50/ay
-  - OpenAI API: $100-200/ay
-  - Toplam: $120-250/ay
+    - n8n Cloud: $20-50/ay
+    - OpenAI API: $100-200/ay
+    - Toplam: $120-250/ay
 
 Gerçek Durum:
-  ✅ n8n: $0 (kendi sunucu!)
-  ✅ Ollama: $0 (local!)
-  ✅ AnythingLLM: $0 (self-hosted!)
-  ✅ Toplam: $0/ay 🎉
+    ✅ n8n: $0 (kendi sunucu!)
+    ✅ Ollama: $0 (local!)
+    ✅ AnythingLLM: $0 (self-hosted!)
+    ✅ Toplam: $0/ay 🎉
 
 SONUÇ: Maliyet endişesi yok!
 ```
 
 **2. Privacy & Security:**
+
 ```yaml
 ✅ Tüm veriler kendi sunucuda
 ✅ Müşteri bilgileri dışarı çıkmıyor
@@ -57,13 +58,13 @@ SONUÇ: Maliyet endişesi yok!
 ```
 
 **3. Knowledge Management:**
+
 ```yaml
-AnythingLLM ile:
-  ✅ Tüm dökümanları yükle (PDF, MD, TXT)
-  ✅ RAG (Retrieval Augmented Generation)
-  ✅ Chat with your docs
-  ✅ Team knowledge base
-  ✅ Embedding storage (local)
+AnythingLLM ile: ✅ Tüm dökümanları yükle (PDF, MD, TXT)
+    ✅ RAG (Retrieval Augmented Generation)
+    ✅ Chat with your docs
+    ✅ Team knowledge base
+    ✅ Embedding storage (local)
 ```
 
 ---
@@ -71,22 +72,24 @@ AnythingLLM ile:
 ### ⚠️ ZORLUKLAR
 
 **1. Öğrenme Eğrisi:**
+
 ```yaml
 AnythingLLM: 2-3 gün
-  - Setup & configuration
-  - Document embedding
-  - Prompt engineering
+    - Setup & configuration
+    - Document embedding
+    - Prompt engineering
 
 n8n: 3-5 gün
-  - Workflow creation
-  - Node configuration
-  - Error handling
-  - Testing & debugging
+    - Workflow creation
+    - Node configuration
+    - Error handling
+    - Testing & debugging
 
 TOPLAM: 1-1.5 hafta
 ```
 
 **2. Maintenance:**
+
 ```yaml
 ⚠️ Sunucu bakımı
 ⚠️ Ollama model updates
@@ -95,6 +98,7 @@ TOPLAM: 1-1.5 hafta
 ```
 
 **3. Integration Complexity:**
+
 ```yaml
 Laravel ↔ n8n: Webhook entegrasyonu
 n8n ↔ Ollama: API calls
@@ -109,6 +113,7 @@ Google Drive ↔ AnythingLLM: Document sync
 ### SEÇENEK A: Şimdi Başla (Önerilen!)
 
 **Neden Şimdi Mantıklı:**
+
 ```yaml
 ✅ Kendi sunucu (maliyet yok)
 ✅ Component Library ile paralel çalışılabilir
@@ -118,18 +123,20 @@ Google Drive ↔ AnythingLLM: Document sync
 ```
 
 **Timeline:**
+
 ```yaml
 Week 1 (Paralel):
-  Sabah: Component Library (3 saat)
-  Öğlen: AnythingLLM setup (2 saat)
-  
+    Sabah: Component Library (3 saat)
+    Öğlen: AnythingLLM setup (2 saat)
+
 Week 2:
-  Day 1-2: Dökümanları yükle
-  Day 3-4: İlk n8n workflow'ları
-  Day 5: Test & refinement
+    Day 1-2: Dökümanları yükle
+    Day 3-4: İlk n8n workflow'ları
+    Day 5: Test & refinement
 ```
 
 **İlk 5 Workflow (Basit):**
+
 ```yaml
 1. Yeni ilan → Google Drive backup
 2. Rezervasyon → Email notification
@@ -143,6 +150,7 @@ Week 2:
 ### SEÇENEK B: 2 Hafta Sonra (Güvenli)
 
 **Neden Bekle:**
+
 ```yaml
 ✅ Component Library tamamen biter
 ✅ UI Consistency biter
@@ -151,6 +159,7 @@ Week 2:
 ```
 
 **Timeline:**
+
 ```yaml
 Week 3-4: Component Library + UI
 Week 5-6: AnythingLLM + n8n
@@ -163,20 +172,22 @@ Week 5-6: AnythingLLM + n8n
 **Neden?**
 
 **1. ROI Çok Yüksek:**
+
 ```yaml
 AnythingLLM:
-  Setup: 4-6 saat
-  Kazanç: Team knowledge base (∞ value)
-  ROI: ∞
-  
+    Setup: 4-6 saat
+    Kazanç: Team knowledge base (∞ value)
+    ROI: ∞
+
 n8n İlk 5 Workflow:
-  Setup: 8-10 saat
-  Kazanç: Otomatik backup, notification, reporting
-  Time saved: 2-3 saat/gün
-  ROI: %800+
+    Setup: 8-10 saat
+    Kazanç: Otomatik backup, notification, reporting
+    Time saved: 2-3 saat/gün
+    ROI: %800+
 ```
 
 **2. Maliyet Yok:**
+
 ```yaml
 Önceki hesap: $100-200/ay maliyet
 Gerçek: $0/ay (kendi sunucu + Ollama)
@@ -185,23 +196,21 @@ SONUÇ: Risk yok, maliyet yok, sadece kazanç!
 ```
 
 **3. Learning Investment:**
+
 ```yaml
-AnythingLLM + n8n becerisi:
-  ✅ Gelecekte her projede kullanılabilir
-  ✅ Team skill upgrade
-  ✅ Competitive advantage
+AnythingLLM + n8n becerisi: ✅ Gelecekte her projede kullanılabilir
+    ✅ Team skill upgrade
+    ✅ Competitive advantage
 ```
 
 **4. Paralel Çalışılabilir:**
+
 ```yaml
-Sabah (09:00-12:00):
-  ✅ Component Library (focus work)
-  
-Öğlen (13:00-15:00):
-  ✅ AnythingLLM/n8n (learning + setup)
-  
-Akşam (16:00-17:00):
-  ✅ Testing + refinement
+Sabah (09:00-12:00): ✅ Component Library (focus work)
+
+Öğlen (13:00-15:00): ✅ AnythingLLM/n8n (learning + setup)
+
+Akşam (16:00-17:00): ✅ Testing + refinement
 ```
 
 ---
@@ -211,6 +220,7 @@ Akşam (16:00-17:00):
 ### PHASE 1: AnythingLLM Setup (1-2 gün)
 
 **Day 1: Initial Setup**
+
 ```bash
 1. AnythingLLM'e giriş yap
    http://51.75.64.121:3051
@@ -231,6 +241,7 @@ Akşam (16:00-17:00):
 ```
 
 **Day 2: Google Drive Integration**
+
 ```yaml
 1. Google Drive connector setup
 2. Döküman senkronizasyonu
@@ -243,6 +254,7 @@ Akşam (16:00-17:00):
 ### PHASE 2: n8n İlk Workflow'lar (3-4 gün)
 
 **Day 1: Webhook Setup**
+
 ```javascript
 // Laravel → n8n webhook
 Route::post('/webhooks/n8n/ilan-created', function(Request $request) {
@@ -255,6 +267,7 @@ Route::post('/webhooks/n8n/ilan-created', function(Request $request) {
 ```
 
 **Day 2-3: İlk 5 Workflow**
+
 ```yaml
 Workflow 1: Yeni İlan → Google Drive Backup
   Trigger: Webhook (ilan-created)
@@ -299,6 +312,7 @@ Workflow 5: Fotoğraf Upload → Process
 ```
 
 **Day 4: Testing & Refinement**
+
 ```yaml
 1. Test her workflow'u manuel
 2. Error handling ekle
@@ -311,6 +325,7 @@ Workflow 5: Fotoğraf Upload → Process
 ### PHASE 3: AnythingLLM + n8n Integration (2-3 gün)
 
 **RAG-Powered Workflows:**
+
 ```yaml
 Workflow: AI-Powered İlan Açıklaması
   Trigger: Webhook (ilan-aciklama-olustur)
@@ -339,23 +354,23 @@ Workflow: AI-Powered Talep Matching
 
 ```yaml
 AnythingLLM Setup:
-  Zaman: 6 saat
-  Kazanç:
-    - Team knowledge base (soru-cevap anında)
-    - Time saved: 1 saat/gün
-    - Aylık: 20 saat ($1000 değer)
-  ROI: %16,600 (ilk ay)
+    Zaman: 6 saat
+    Kazanç:
+        - Team knowledge base (soru-cevap anında)
+        - Time saved: 1 saat/gün
+        - Aylık: 20 saat ($1000 değer)
+    ROI: %16,600 (ilk ay)
 
 n8n İlk 5 Workflow:
-  Zaman: 10 saat
-  Kazanç:
-    - Otomatik backup: 30dk/gün → 10 saat/ay ($500)
-    - Email automation: 1 saat/gün → 20 saat/ay ($1000)
-    - Rapor: 1 saat/gün → 20 saat/ay ($1000)
-    - Auto-assign: 30dk/gün → 10 saat/ay ($500)
-    - Image processing: 1 saat/gün → 20 saat/ay ($1000)
-  Toplam: 80 saat/ay ($4000)
-  ROI: %40,000 (ilk ay)
+    Zaman: 10 saat
+    Kazanç:
+        - Otomatik backup: 30dk/gün → 10 saat/ay ($500)
+        - Email automation: 1 saat/gün → 20 saat/ay ($1000)
+        - Rapor: 1 saat/gün → 20 saat/ay ($1000)
+        - Auto-assign: 30dk/gün → 10 saat/ay ($500)
+        - Image processing: 1 saat/gün → 20 saat/ay ($1000)
+    Toplam: 80 saat/ay ($4000)
+    ROI: %40,000 (ilk ay)
 
 TOTAL ROI: %56,600 🚀🚀🚀
 ```
@@ -365,24 +380,27 @@ TOTAL ROI: %56,600 🚀🚀🚀
 ## ⚠️ RİSKLER & MİTİGATİON
 
 **Risk 1: Context Switching**
+
 ```yaml
 Risk: Component Library + n8n = çok şey aynı anda
 Mitigation: Sabah component, öğlen n8n (time-boxing)
 ```
 
 **Risk 2: Öğrenme Eğrisi**
+
 ```yaml
 Risk: n8n workflow debugging zor olabilir
 Mitigation: Basit workflow'larla başla, yavaş yavaş karmaşıklaştır
 ```
 
 **Risk 3: Maintenance Overhead**
+
 ```yaml
 Risk: n8n workflow'ları kırılabilir
 Mitigation:
-  - Comprehensive error handling
-  - Logging + monitoring
-  - Fallback mechanisms
+    - Comprehensive error handling
+    - Logging + monitoring
+    - Fallback mechanisms
 ```
 
 ---
@@ -392,29 +410,31 @@ Mitigation:
 ### ✅ YAPILMASI GEREKENLER (Öncelik Sırası)
 
 **Week 1 (5-8 Kasım):**
+
 ```yaml
 Day 1 (Pazartesi):
-  Sabah: Modal + Checkbox components (3h)
-  Öğlen: AnythingLLM setup (2h)
-  
+    Sabah: Modal + Checkbox components (3h)
+    Öğlen: AnythingLLM setup (2h)
+
 Day 2 (Salı):
-  Sabah: Radio + Toggle components (3h)
-  Öğlen: Dökümanları AnythingLLM'e yükle (2h)
-  
+    Sabah: Radio + Toggle components (3h)
+    Öğlen: Dökümanları AnythingLLM'e yükle (2h)
+
 Day 3 (Çarşamba):
-  Sabah: Dropdown + File-upload (3h)
-  Öğlen: n8n ilk workflow (backup) (2h)
-  
+    Sabah: Dropdown + File-upload (3h)
+    Öğlen: n8n ilk workflow (backup) (2h)
+
 Day 4 (Perşembe):
-  Sabah: Tabs + Accordion (3h)
-  Öğlen: n8n workflow 2-3 (email, rapor) (2h)
-  
+    Sabah: Tabs + Accordion (3h)
+    Öğlen: n8n workflow 2-3 (email, rapor) (2h)
+
 Day 5 (Cuma):
-  Sabah: Badge + Alert + Testing (3h)
-  Öğlen: n8n workflow 4-5 (assign, image) (2h)
+    Sabah: Badge + Alert + Testing (3h)
+    Öğlen: n8n workflow 4-5 (assign, image) (2h)
 ```
 
 **Week 2:**
+
 ```yaml
 - Component Library %100 ✅
 - n8n 5 workflow çalışıyor ✅
@@ -429,6 +449,7 @@ Day 5 (Cuma):
 ### ✅ SEÇENEK A'YI ÖNERİYORUM (Paralel)
 
 **Neden?**
+
 1. ✅ Maliyet $0 (kendi sunucu + Ollama)
 2. ✅ ROI %56,000+ (ilk ay!)
 3. ✅ Time-boxing ile yönetilebilir
@@ -436,11 +457,13 @@ Day 5 (Cuma):
 5. ✅ Component Library'ye zarar vermez
 
 **Nasıl?**
+
 - Sabah: Deep work (Component Library)
 - Öğlen: Learning + Setup (AnythingLLM/n8n)
 - Akşam: Test + Refinement
 
 **Sonuç:**
+
 - Week 1: Component Library %100 ✅
 - Week 1: n8n 5 workflow ✅
 - Week 1: AnythingLLM hazır ✅
@@ -475,10 +498,12 @@ Day 5 (Cuma):
 **YARIN SABAH İKİ SEÇENEK:**
 
 **A) Component Library Only (Güvenli):**
+
 - 09:00-12:00: Modal + Checkbox + Radio
 - Sonuç: 3 component hazır
 
 **B) Paralel (Risk alarak):**
+
 - 09:00-11:30: Modal + Checkbox (2.5h)
 - 11:30-12:00: AnythingLLM test (30dk)
 - Sonuç: 2 component + AnythingLLM başlangıç
@@ -486,6 +511,7 @@ Day 5 (Cuma):
 **BENİM TAVSİYEM: SEÇENEK B!**
 
 Çünkü:
+
 - ✅ ROI çok yüksek
 - ✅ Maliyet $0
 - ✅ 30dk test mantıklı (değerlendirme için)
@@ -493,4 +519,3 @@ Day 5 (Cuma):
 ---
 
 **İyi geceler! Yarın AnythingLLM test edelim! 🤖🚀**
-

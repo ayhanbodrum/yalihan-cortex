@@ -16,27 +16,27 @@ class SiteOzellikleriSeeder extends Seeder
     {
         $ozellikleri = [
             // Security Features
-            ['name' => 'Güvenlik', 'type' => 'security', 'description' => '7/24 Güvenlik hizmeti', 'order' => 1],
-            ['name' => 'Kamera Sistemi', 'type' => 'security', 'description' => 'CCTV güvenlik kameraları', 'order' => 2],
-            
+            ['name' => 'Güvenlik', 'type' => 'security', 'description' => '7/24 Güvenlik hizmeti', 'display_order' => 1],
+            ['name' => 'Kamera Sistemi', 'type' => 'security', 'description' => 'CCTV güvenlik kameraları', 'display_order' => 2],
+
             // Parking
-            ['name' => 'Otopark', 'type' => 'amenity', 'description' => 'Kapalı otopark', 'order' => 3],
-            ['name' => 'Açık Otopark', 'type' => 'amenity', 'description' => 'Açık otopark alanı', 'order' => 4],
-            
+            ['name' => 'Otopark', 'type' => 'amenity', 'description' => 'Kapalı otopark', 'display_order' => 3],
+            ['name' => 'Açık Otopark', 'type' => 'amenity', 'description' => 'Açık otopark alanı', 'display_order' => 4],
+
             // Sports & Recreation
-            ['name' => 'Havuz', 'type' => 'facility', 'description' => 'Yüzme havuzu', 'order' => 5],
-            ['name' => 'Spor Salonu', 'type' => 'facility', 'description' => 'Fitness merkezi', 'order' => 6],
-            ['name' => 'Sauna', 'type' => 'facility', 'description' => 'Sauna ve spa', 'order' => 7],
-            ['name' => 'Oyun Alanı', 'type' => 'facility', 'description' => 'Çocuk oyun alanı', 'order' => 8],
-            
+            ['name' => 'Havuz', 'type' => 'facility', 'description' => 'Yüzme havuzu', 'display_order' => 5],
+            ['name' => 'Spor Salonu', 'type' => 'facility', 'description' => 'Fitness merkezi', 'display_order' => 6],
+            ['name' => 'Sauna', 'type' => 'facility', 'description' => 'Sauna ve spa', 'display_order' => 7],
+            ['name' => 'Oyun Alanı', 'type' => 'facility', 'description' => 'Çocuk oyun alanı', 'display_order' => 8],
+
             // Building Features
-            ['name' => 'Asansör', 'type' => 'amenity', 'description' => 'Asansör sistemi', 'order' => 9],
-            ['name' => 'Jeneratör', 'type' => 'amenity', 'description' => 'Yedek jeneratör', 'order' => 10],
-            
+            ['name' => 'Asansör', 'type' => 'amenity', 'description' => 'Asansör sistemi', 'display_order' => 9],
+            ['name' => 'Jeneratör', 'type' => 'amenity', 'description' => 'Yedek jeneratör', 'display_order' => 10],
+
             // Social Areas
-            ['name' => 'Sosyal Tesis', 'type' => 'facility', 'description' => 'Sosyal tesis alanı', 'order' => 11],
-            ['name' => 'Peyzaj', 'type' => 'amenity', 'description' => 'Peyzaj bahçe', 'order' => 12],
-            ['name' => 'Çamaşırhane', 'type' => 'amenity', 'description' => 'Ortak çamaşırhane', 'order' => 13],
+            ['name' => 'Sosyal Tesis', 'type' => 'facility', 'description' => 'Sosyal tesis alanı', 'display_order' => 11],
+            ['name' => 'Peyzaj', 'type' => 'amenity', 'description' => 'Peyzaj bahçe', 'display_order' => 12],
+            ['name' => 'Çamaşırhane', 'type' => 'amenity', 'description' => 'Ortak çamaşırhane', 'display_order' => 13],
         ];
 
         foreach ($ozellikleri as $ozellik) {

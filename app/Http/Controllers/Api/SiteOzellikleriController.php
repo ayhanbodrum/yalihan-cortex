@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Services\Response\ResponseService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Log;
 
 class SiteOzellikleriController extends Controller
 {
@@ -28,19 +30,13 @@ class SiteOzellikleriController extends Controller
                 ['id' => 'kapi_gorevlisi', 'name' => 'Kapı Görevlisi', 'icon' => '🚪'],
             ];
 
-            return response()->json([
-                'success' => true,
+            return ResponseService::success([
                 'data' => $ozellikler
-            ]);
+            ], 'Site özellikleri başarıyla getirildi');
 
         } catch (\Exception $e) {
-            \Log::error('Site özellikleri yükleme hatası: ' . $e->getMessage());
-            
-            return response()->json([
-                'success' => false,
-                'message' => 'Özellikler yüklenemedi',
-                'error' => $e->getMessage()
-            ], 500);
+            Log::error('Site özellikleri yükleme hatası: ' . $e->getMessage());
+            return ResponseService::serverError('Site özellikleri yüklenirken hata oluştu.', $e);
         }
     }
 
@@ -52,4 +48,3 @@ class SiteOzellikleriController extends Controller
         return $this->index(); // Tüm özellikler aktif
     }
 }
-

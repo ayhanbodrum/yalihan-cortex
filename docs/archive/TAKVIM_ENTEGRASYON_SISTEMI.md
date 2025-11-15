@@ -41,6 +41,7 @@ CREATE TABLE ilan_takvim_sync (
 ```
 
 **İndeksler:**
+
 - `unique(ilan_id, platform)` - Bir ilan için her platformta tek kayıt
 - `index(platform, sync_enabled)` - Aktif senkronizasyonlar
 - `index(last_sync_at, next_sync_at)` - Otomatik senkronizasyon
@@ -62,6 +63,7 @@ CREATE TABLE yazlik_doluluk_durumlari (
 ```
 
 **İndeksler:**
+
 - `unique(ilan_id, tarih)` - Her tarih için tek durum
 - `index(ilan_id, durum)` - Durum bazlı sorgular
 - `index(tarih, durum)` - Tarih aralığı sorguları
@@ -75,6 +77,7 @@ CREATE TABLE yazlik_doluluk_durumlari (
 **Dosya:** `app/Models/IlanTakvimSync.php`
 
 **Metodlar:**
+
 ```php
 // İlişkiler
 public function ilan(): BelongsTo
@@ -90,6 +93,7 @@ public function markAsFailed($error)
 ```
 
 **Kullanım:**
+
 ```php
 $sync = IlanTakvimSync::where('ilan_id', 1)->where('platform', 'airbnb')->first();
 
@@ -108,6 +112,7 @@ if ($sync->needsSync()) {
 **Dosya:** `app/Models/YazlikDolulukDurumu.php`
 
 **Metodlar:**
+
 ```php
 // İlişkiler
 public function ilan(): BelongsTo
@@ -143,6 +148,7 @@ public function setBloke($aciklama = null)
 **Metodlar:**
 
 #### 1. syncCalendar()
+
 Belirli bir ilan ve platform için senkronizasyon yapar.
 
 ```php
@@ -158,6 +164,7 @@ $result = $service->syncCalendar($ilanId, 'airbnb');
 ```
 
 #### 2. syncAllCalendars()
+
 Tüm aktif senkronizasyonları çalıştırır.
 
 ```php
@@ -172,6 +179,7 @@ $results = $service->syncAllCalendars();
 ```
 
 #### 3. createSync()
+
 Yeni bir senkronizasyon kaydı oluşturur.
 
 ```php
@@ -190,24 +198,24 @@ $sync = $service->createSync($ilanId, 'airbnb', [
 ### Desteklenen Platformlar
 
 1. **Airbnb**
-   - API: Airbnb API v3
-   - Gerekli: OAuth token + Listing ID
-   - Sync: Availability calendar
+    - API: Airbnb API v3
+    - Gerekli: OAuth token + Listing ID
+    - Sync: Availability calendar
 
 2. **Booking.com**
-   - API: Booking.com Connectivity API
-   - Gerekli: API key + hotel ID
-   - Sync: Availability data
+    - API: Booking.com Connectivity API
+    - Gerekli: API key + hotel ID
+    - Sync: Availability data
 
 3. **Google Calendar**
-   - API: Google Calendar API v3
-   - Gerekli: OAuth credentials + Calendar ID
-   - Sync: Event-based sync
+    - API: Google Calendar API v3
+    - Gerekli: OAuth credentials + Calendar ID
+    - Sync: Event-based sync
 
 4. **Calendar.com**
-   - API: Calendar.com API
-   - Gerekli: API key
-   - Sync: Availability sync
+    - API: Calendar.com API
+    - Gerekli: API key
+    - Sync: Availability sync
 
 ### Platform Metodları
 
@@ -301,6 +309,7 @@ protected function schedule(Schedule $schedule)
 ```
 
 **Kod:**
+
 ```php
 public function handle()
 {
@@ -503,20 +512,20 @@ $rateLimits = [
 ## 🚀 GELECEK GELİŞTİRMELER
 
 1. **Çoklu Platform Senkronizasyonu**
-   - Aynı anda birden fazla platform
-   - Konflik çözümü (önce rezerve olan kazanır)
+    - Aynı anda birden fazla platform
+    - Konflik çözümü (önce rezerve olan kazanır)
 
 2. **Akıllı Fiyat Senkronizasyonu**
-   - Dinamik fiyatlandırma
-   - Sezona göre otomatik fiyat güncelleme
+    - Dinamik fiyatlandırma
+    - Sezona göre otomatik fiyat güncelleme
 
 3. **Rezervasyon Onay Akışı**
-   - Otomatik onay
-   - Manuel onay workflow'u
+    - Otomatik onay
+    - Manuel onay workflow'u
 
 4. **Bildirim Sistemi**
-   - Email/SMS bildirimleri
-   - Slack/Telegram entegrasyonu
+    - Email/SMS bildirimleri
+    - Slack/Telegram entegrasyonu
 
 ---
 

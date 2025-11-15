@@ -179,18 +179,25 @@
             </svg>
             İptal
         </a>
-        <button type="submit" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg touch-target-optimized">
-            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <button type="submit"
+                id="talep-form-submit-btn"
+                class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg touch-target-optimized disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                onsubmit="const btn = document.getElementById('talep-form-submit-btn'); const icon = document.getElementById('talep-form-submit-icon'); const text = document.getElementById('talep-form-submit-text'); const spinner = document.getElementById('talep-form-submit-spinner'); if(btn && icon && text && spinner) { btn.disabled = true; icon.classList.add('hidden'); spinner.classList.remove('hidden'); text.textContent = 'Kaydediliyor...'; }">
+            <svg id="talep-form-submit-icon" class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
             </svg>
-            {{ $submitText ?? 'Kaydet' }}
+            <svg id="talep-form-submit-spinner" class="hidden w-4 h-4 mr-2 animate-spin" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <span id="talep-form-submit-text">{{ $submitText ?? 'Kaydet' }}</span>
         </button>
     </div>
 </div>
 
 @push('styles')
     <style>
-        /* Context7 Form Field Standards */
+        /* Form field standards */
         .form-field {
             @apply space-y-2;
         }
@@ -217,7 +224,7 @@
             @apply bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 cursor-not-allowed;
         }
 
-        /* Context7 Button Standards */
+        /* Button standards */
         .inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2.inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg {
             @apply inline-flex items-center px-6 py-3;
             @apply bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800;
@@ -242,11 +249,11 @@
 @endpush
 
 @push('scripts')
-    <!-- Context7 Select2 Legacy Manager -->
+    <!-- Legacy Select2 Manager -->
     <script src="{{ asset('js/admin/select2-legacy-manager.js') }}"></script>
 
     <script>
-        // LEGACY_SELECT2 - 2025-01-30 - Context7'e geçiş yapılacak
+        // LEGACY_SELECT2 - 2025-01-30 - Modern form integration pending
         $(document).ready(function() {
             // Legacy mode enable et
             document.body.classList.add('legacy-select2');

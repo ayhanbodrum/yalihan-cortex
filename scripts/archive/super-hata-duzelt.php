@@ -33,7 +33,7 @@ if (file_exists($gorevController)) {
             "public function index(Request \$request)\n    {\n        \$status = \$request->get('status');",
             $content
         );
-        
+
         if (!str_contains($content, "'status'")) {
             $content = preg_replace(
                 '/compact\((.*?)\)/',
@@ -42,7 +42,7 @@ if (file_exists($gorevController)) {
                 1
             );
         }
-        
+
         file_put_contents($gorevController, $content);
         echo "✅ GorevController - status eklendi\n";
         $duzeltmeler[] = 'GorevController::index()';
@@ -76,5 +76,3 @@ if (count($duzeltmeler) > 0) {
 }
 
 echo "\n✨ Süper hata düzeltici tamamlandı!\n";
-
-

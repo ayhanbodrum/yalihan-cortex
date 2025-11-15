@@ -6,10 +6,12 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
 
 /**
  * Standardized Response Service
- * 
+ *
  * Context7 Response Standardization
  * Provides consistent response formats for API and web requests
  */
@@ -17,27 +19,50 @@ class ResponseService
 {
     /**
      * Standard success response for API
-     * 
+     *
      * @param mixed $data Response data
      * @param string $message Success message
      * @param int $status HTTP status code
      * @return JsonResponse
      */
-    public static function success($data = null, string $message = 'İşlem başarılı', int $status = 200): JsonResponse
+    public static function success($data = null, string $message = 'İşlem başarılı', int $status = 200, array $meta = []): JsonResponse
     {
+        $payloadData = $data;
+        $responseMeta = $meta;
+
+        if ($data instanceof LengthAwarePaginator) {
+            $payloadData = $data->items();
+            $responseMeta = array_merge($responseMeta, [
+                'current_page' => $data->currentPage(),
+                'per_page' => $data->perPage(),
+                'total' => $data->total(),
+                'last_page' => $data->lastPage(),
+            ]);
+        } elseif ($data instanceof Paginator) {
+            $payloadData = $data->items();
+            $responseMeta = array_merge($responseMeta, [
+                'current_page' => $data->currentPage(),
+                'per_page' => $data->perPage(),
+            ]);
+        }
+
         $response = [
             'success' => true,
             'message' => $message,
-            'data' => $data,
+            'data' => $payloadData,
             'timestamp' => now()->toISOString(),
         ];
+
+        if (! empty($responseMeta)) {
+            $response['meta'] = $responseMeta;
+        }
 
         return response()->json($response, $status);
     }
 
     /**
      * Standard error response for API
-     * 
+     *
      * @param string $message Error message
      * @param int $status HTTP status code
      * @param array $errors Additional error details
@@ -71,7 +96,7 @@ class ResponseService
 
     /**
      * Standard validation error response
-     * 
+     *
      * @param array $errors Validation errors
      * @param string $message Error message
      * @return JsonResponse
@@ -83,7 +108,7 @@ class ResponseService
 
     /**
      * Standard not found response
-     * 
+     *
      * @param string $message Error message
      * @return JsonResponse
      */
@@ -94,7 +119,7 @@ class ResponseService
 
     /**
      * Standard unauthorized response
-     * 
+     *
      * @param string $message Error message
      * @return JsonResponse
      */
@@ -105,7 +130,7 @@ class ResponseService
 
     /**
      * Standard forbidden response
-     * 
+     *
      * @param string $message Error message
      * @return JsonResponse
      */
@@ -116,7 +141,7 @@ class ResponseService
 
     /**
      * Standard server error response
-     * 
+     *
      * @param string $message Error message
      * @param \Throwable|null $exception Exception for logging
      * @return JsonResponse
@@ -132,7 +157,7 @@ class ResponseService
 
     /**
      * Standard rate limit response
-     * 
+     *
      * @param string $message Error message
      * @param int $retryAfter Seconds to retry
      * @return JsonResponse
@@ -146,7 +171,7 @@ class ResponseService
 
     /**
      * Web redirect response with success message
-     * 
+     *
      * @param string $route Route name
      * @param string $message Success message
      * @return RedirectResponse
@@ -158,7 +183,7 @@ class ResponseService
 
     /**
      * Web redirect response with error message
-     * 
+     *
      * @param string $route Route name
      * @param string $message Error message
      * @return RedirectResponse
@@ -170,7 +195,7 @@ class ResponseService
 
     /**
      * Web back redirect with success message
-     * 
+     *
      * @param string $message Success message
      * @return RedirectResponse
      */
@@ -181,7 +206,7 @@ class ResponseService
 
     /**
      * Web back redirect with error message
-     * 
+     *
      * @param string $message Error message
      * @return RedirectResponse
      */
@@ -192,7 +217,7 @@ class ResponseService
 
     /**
      * Log error with context
-     * 
+     *
      * @param string $message
      * @param int $status
      * @param array $errors
@@ -215,7 +240,7 @@ class ResponseService
 
     /**
      * Log exception with context
-     * 
+     *
      * @param \Throwable $exception
      * @return void
      */
@@ -234,4 +259,3 @@ class ResponseService
         ]);
     }
 }
-

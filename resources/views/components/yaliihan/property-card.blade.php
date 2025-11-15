@@ -21,6 +21,25 @@
 ])
 
 @php
+    if (filled($property)) {
+        $image = data_get($property, 'cover_image', $image);
+        $gallery = data_get($property, 'gallery', $gallery);
+        $title = data_get($property, 'title', $title);
+        $location = data_get($property, 'location', $location);
+        $price = data_get($property, 'price_display', $price);
+        $pricePeriod = data_get($property, 'price_period', $pricePeriod);
+        $beds = data_get($property, 'beds', $beds);
+        $baths = data_get($property, 'baths', $baths);
+        $area = data_get($property, 'area', $area);
+        $badge = data_get($property, 'badge', $badge);
+        $badgeText = data_get($property, 'badge_text', $badgeText);
+        $virtualTourUrl = data_get($property, 'virtual_tour_url', $virtualTourUrl);
+        $mapLocation = data_get($property, 'map_location', $mapLocation);
+        $detailPayload = data_get($property, 'detail_payload', $detailPayload);
+        $contactPayload = data_get($property, 'contact_payload', $contactPayload);
+        $shareUrl = data_get($property, 'share_url', $shareUrl);
+    }
+
     $badgeClasses = [
         'sale' => 'bg-green-500 text-white',
         'rent' => 'bg-blue-500 text-white',

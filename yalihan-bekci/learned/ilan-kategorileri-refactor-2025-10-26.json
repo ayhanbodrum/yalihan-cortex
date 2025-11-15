@@ -37,7 +37,12 @@
         "dynamic_fields": "Alpine.js parent_id field"
       },
       "index": {
-        "ui_improvements": ["Compact filter layout", "Neo buttons", "Better table spacing", "Removed skeleton loading"]
+        "ui_improvements": [
+          "Compact filter layout",
+          "Neo buttons",
+          "Better table spacing",
+          "Removed skeleton loading"
+        ]
       }
     }
   },
@@ -114,7 +119,5 @@
     "Update category",
     "Delete category (with sub-categories and listings check)"
   ],
-  "related_documents": [
-    "YAPILAN_ISLER_2025_10_26.md"
-  ]
+  "related_documents": ["YAPILAN_ISLER_2025_10_26.md"]
 }

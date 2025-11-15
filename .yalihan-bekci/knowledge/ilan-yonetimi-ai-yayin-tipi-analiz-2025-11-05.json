@@ -133,12 +133,7 @@
           {
             "method": "generateYazlikTitle()",
             "ai_prompt": "yazlik-baslik-olustur.prompt.md",
-            "inputs": [
-              "konum",
-              "sezon",
-              "ana_ozellikler (havuz, deniz, vb.)",
-              "fiyat_araligi"
-            ],
+            "inputs": ["konum", "sezon", "ana_ozellikler (havuz, deniz, vb.)", "fiyat_araligi"],
             "output": "SEO-friendly, çekici başlık",
             "priority": "MEDIUM"
           }
@@ -294,23 +289,13 @@
       {
         "file": "yazlik-fiyat-onerisi.prompt.md",
         "description": "Sezonluk fiyat önerisi",
-        "inputs": [
-          "konum",
-          "sezon",
-          "özellikler",
-          "pazar_fiyatlari"
-        ],
+        "inputs": ["konum", "sezon", "özellikler", "pazar_fiyatlari"],
         "priority": "HIGH"
       },
       {
         "file": "yazlik-baslik-olustur.prompt.md",
         "description": "Yazlık için özel başlık formatı",
-        "inputs": [
-          "konum",
-          "sezon",
-          "ana_ozellikler",
-          "fiyat"
-        ],
+        "inputs": ["konum", "sezon", "ana_ozellikler", "fiyat"],
         "priority": "MEDIUM"
       }
     ],
@@ -406,4 +391,3 @@
     "ai/prompts/"
   ]
 }
-

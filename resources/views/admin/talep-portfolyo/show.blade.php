@@ -10,16 +10,16 @@
                 <div class="flex-1">
                     <div class="flex items-center gap-3 mb-2">
                         <div
-                            class="w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-600 rounded-xl flex items-center justify-center">
+                            class="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center">
                             <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                             </svg>
                         </div>
                         <div>
-                            <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Talep Detayı</h1>
-                            <p class="text-gray-600 dark:text-gray-400 mt-1">{{ $talep->kisi->ad }}
-                                {{ $talep->kisi->soyad }} - AI Destekli Analiz</p>
+                            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Talep Detayı</h1>
+                            <p class="text-gray-600 dark:text-gray-400">{{ $talep->kisi->ad }}
+                                {{ $talep->kisi->soyad }}</p>
                         </div>
                     </div>
                     <!-- Breadcrumb -->
@@ -37,41 +37,34 @@
                 <div class="flex flex-wrap gap-3">
                     <!-- AI Analiz Butonu -->
                     <button
-                        class="group relative inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-purple-300 dark:focus:ring-purple-800"
+                        class="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
                         onclick="talepAnaliz({{ $talep->id }})">
-                        <div
-                            class="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl blur opacity-0 group-hover:opacity-75 transition-opacity duration-300">
-                        </div>
-                        <svg class="w-5 h-5 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                         </svg>
-                        <span class="relative z-10">AI Analiz</span>
+                        AI Analiz
                     </button>
 
                     <!-- Portföy Öner Butonu -->
                     <button
-                        class="group relative inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-green-300 dark:focus:ring-green-800"
+                        class="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors duration-200"
                         onclick="portfolyoOnerModal()">
-                        <div
-                            class="absolute inset-0 bg-gradient-to-r from-green-600 to-emerald-600 rounded-xl blur opacity-0 group-hover:opacity-75 transition-opacity duration-300">
-                        </div>
-                        <svg class="w-5 h-5 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                         </svg>
-                        <span class="relative z-10">Portföy Öner</span>
+                        Portföy Öner
                     </button>
 
                     <!-- Geri Butonu -->
                     <a href="{{ route('admin.talep-portfolyo.index') }}"
-                        class="group inline-flex items-center gap-2 px-4 py-2.5 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white font-medium rounded-xl border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transform hover:-translate-y-0.5 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600 shadow-sm hover:shadow-md">
-                        <svg class="w-5 h-5 text-gray-500 group-hover:text-gray-700 dark:group-hover:text-gray-300 transition-colors duration-300"
-                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        class="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                         </svg>
-                        <span>Geri</span>
+                        Geri
                     </a>
                 </div>
             </div>
@@ -85,7 +78,7 @@
                     <div class="p-6">
                         <div class="flex items-center gap-3 mb-6">
                             <div
-                                class="w-10 h-10 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center">
+                                class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
                                 <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
@@ -196,7 +189,7 @@
                     <div class="p-6">
                         <div class="flex items-center gap-3 mb-6">
                             <div
-                                class="w-10 h-10 bg-gradient-to-r from-green-500 to-emerald-500 rounded-lg flex items-center justify-center">
+                                class="w-10 h-10 bg-green-600 rounded-lg flex items-center justify-center">
                                 <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor"
                                     viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -249,7 +242,7 @@
                     <div class="p-6">
                         <div class="flex items-center gap-3 mb-6">
                             <div
-                                class="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
+                                class="w-10 h-10 bg-purple-600 rounded-lg flex items-center justify-center">
                                 <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor"
                                     viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -323,7 +316,7 @@
                 <div class="p-6">
                     <div class="flex items-center gap-3 mb-6">
                         <div
-                            class="w-10 h-10 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg flex items-center justify-center">
+                            class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
                             <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
@@ -343,7 +336,7 @@
                         <div class="space-y-6">
                             <div class="flex items-center gap-2 mb-4">
                                 <div
-                                    class="w-8 h-8 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center">
+                                    class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
                                     <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor"
                                         viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -392,7 +385,7 @@
                         <div class="space-y-6">
                             <div class="flex items-center gap-2 mb-4">
                                 <div
-                                    class="w-8 h-8 bg-gradient-to-r from-green-500 to-emerald-500 rounded-lg flex items-center justify-center">
+                                    class="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center">
                                     <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor"
                                         viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -443,7 +436,7 @@
             <div class="p-6">
                 <div class="flex items-center justify-between mb-6">
                     <div class="flex items-center gap-3">
-                        <div class="p-3 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl text-white">
+                        <div class="p-3 bg-blue-600 rounded-lg text-white">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
                         </div>
                         <div>
@@ -540,7 +533,7 @@
                                         </div>
                                         <div class="p-4 border-t border-gray-200 dark:border-gray-700">
                                             <div class="flex gap-2">
-                                                <button class="inline-flex items-center justify-center px-3 py-2 text-xs font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-md flex-1"
+                                                <button class="inline-flex items-center justify-center px-3 py-2 text-xs font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200 flex-1"
                                                     onclick="portfolyoOner({{ $eslesme['ilan']->id }}, '{{ $eslesme['oneri_derecesi'] }}')">
                                                     <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Öner
                                                 </button>
@@ -556,7 +549,7 @@
                         </div>
                     @else
                         <div class="text-center py-12">
-                            <div class="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-700 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <div class="w-20 h-20 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-6">
                                 <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                             </div>
                             <h5 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Eşleşen portföy bulunamadı</h5>
@@ -567,7 +560,7 @@
                                     Henüz AI analizi yapılmamış.
                                 @endif
                             </p>
-                            <button class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-indigo-600 to-purple-600 rounded-lg hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200 shadow-md hover:shadow-lg animate-pulse"
+                            <button class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
                                 onclick="talepAnaliz({{ $talep->id }})">
                                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/></svg>
                                 {{ $analizSonucu ? 'Yeniden Analiz Et' : 'AI Analiz Yap' }}
@@ -580,74 +573,103 @@
     </div>
 
     <!-- AI Analiz Modal -->
-    <div class="modal fade" id="aiAnalizModal" tabindex="-1">
+    <div class="modal fade" id="aiAnalizModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">🤖 AI Talep Analizi</h5>
-                    <button type="button" class="btn-close touch-target-optimized touch-target-optimized" data-bs-dismiss="modal"></button>
+            <div class="modal-content bg-white dark:bg-gray-800 border-0 shadow-lg rounded-lg overflow-hidden">
+                <div class="modal-header bg-blue-600 text-white p-4 border-0">
+                    <div class="flex items-center justify-between w-full">
+                        <div class="flex items-center gap-3">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                            </svg>
+                            <h2 class="text-xl font-bold">AI Talep Analizi</h2>
+                        </div>
+                        <button type="button" class="text-white hover:bg-white/20 rounded-lg p-2 transition-colors" data-bs-dismiss="modal" aria-label="Close">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body p-6">
                     <div id="aiAnalizContent">
-                        <div class="text-center py-4">
-                            <div class="spinner-border text-primary" role="status">
-                                <span class="visually-hidden">Analiz ediliyor...</span>
+                        <div class="py-8 text-center">
+                            <div class="inline-flex items-center gap-3 px-6 py-3 bg-blue-50 dark:bg-blue-900/30 rounded-xl text-blue-700 dark:text-blue-300">
+                                <div class="animate-spin">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                                    </svg>
+                                </div>
+                                <span class="font-medium">AI analizi yapılıyor, lütfen bekleyin...</span>
                             </div>
-                            <p class="mt-2">AI analizi yapılıyor, lütfen bekleyin...</p>
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-sm" data-bs-dismiss="modal">Kapat</button>
+                <div class="modal-footer p-4 bg-gray-50 dark:bg-gray-900/50 border-t border-gray-200 dark:border-gray-700">
+                    <button type="button" class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200" data-bs-dismiss="modal">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                        Kapat
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Portföy Önerisi Modal -->
-    <div class="modal fade" id="portfolyoOnerModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">🤝 Portföy Önerisi</h5>
-                    <button type="button" class="btn-close touch-target-optimized touch-target-optimized" data-bs-dismiss="modal"></button>
+    <div class="modal fade" id="portfolyoOnerModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content bg-white dark:bg-gray-800 border-0 shadow-lg rounded-lg overflow-hidden">
+                <div class="modal-header bg-blue-600 text-white p-4 border-0">
+                    <div class="flex items-center justify-between w-full">
+                        <div class="flex items-center gap-3">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                            </svg>
+                            <h2 class="text-xl font-bold">Portföy Önerisi</h2>
+                        </div>
+                        <button type="button" class="text-white hover:bg-white/20 rounded-lg p-2 transition-colors" data-bs-dismiss="modal" aria-label="Close">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body p-6">
                     <form id="portfolyoOnerForm">
-                        <div class="mb-3">
-                            <label for="ilan_id" class="admin-label">Portföy Seçin</label>
-                            <select style="color-scheme: light dark;" class="admin-input transition-all duration-200" id="ilan_id" name="ilan_id" required>
+                        <div class="mb-4">
+                            <label for="ilan_id" class="block text-sm font-medium text-gray-900 dark:text-white mb-2">Portföy Seçin</label>
+                            <select style="color-scheme: light dark;" class="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-200" id="ilan_id" name="ilan_id" required>
                                 <option value="">Portföy seçin...</option>
                                 @foreach ($eslesenPortfolyolar as $eslesme)
                                     <option value="{{ $eslesme['ilan']->id }}"
                                         data-skor="{{ $eslesme['eslesme_skoru'] }}"
                                         data-uygunluk="{{ $eslesme['uygunluk_derecesi'] }}">
-                                        #{{ $eslesme['ilan']->id }} - {{ $eslesme['ilan']->ilan_basligi ?? 'Başlık yok' }}
+                                        #{{ $eslesme['ilan']->id }} - {{ $eslesme['ilan']->baslik ?? $eslesme['ilan']->ilan_basligi ?? 'Başlık yok' }}
                                         ({{ number_format($eslesme['eslesme_skoru'], 1) }}/10)
                                     </option>
                                 @endforeach
                             </select>
                         </div>
-                        <div class="mb-3">
-                            <label for="oneri_derecesi" class="admin-label">Öneri Derecesi</label>
-                            <select style="color-scheme: light dark;" class="admin-input transition-all duration-200" id="oneri_derecesi" name="oneri_derecesi" required>
+                        <div class="mb-4">
+                            <label for="oneri_derecesi" class="block text-sm font-medium text-gray-900 dark:text-white mb-2">Öneri Derecesi</label>
+                            <select style="color-scheme: light dark;" class="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-200" id="oneri_derecesi" name="oneri_derecesi" required>
                                 <option value="kesinlikle_oner">Kesinlikle Öner</option>
                                 <option value="oner">Öner</option>
                                 <option value="dusun">Düşün</option>
                                 <option value="onerme">Önerme</option>
                             </select>
                         </div>
-                        <div class="mb-3">
-                            <label for="notlar" class="admin-label">Notlar</label>
-                            <textarea class="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200 w-full px-3 py-2 rounded-md border border-gray-200 bg-white text-sm placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:border-gray-800 dark:text-gray-100 transition-colors" id="notlar" name="notlar" rows="3"
-                                placeholder="Müşteriye özel notlar ekleyin..."></textarea>
+                        <div class="mb-4">
+                            <label for="notlar" class="block text-sm font-medium text-gray-900 dark:text-white mb-2">Notlar</label>
+                            <textarea class="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-colors duration-200" id="notlar" name="notlar" rows="3" placeholder="Müşteriye özel notlar ekleyin..."></textarea>
                         </div>
                     </form>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-sm" data-bs-dismiss="modal">İptal</button>
-                    <button type="button" class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg" onclick="portfolyoOnerGonder()">Öneriyi
-                        Gönder</button>
+                <div class="modal-footer p-4 bg-gray-50 dark:bg-gray-900/50 border-t border-gray-200 dark:border-gray-700">
+                    <button type="button" class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200" data-bs-dismiss="modal">İptal</button>
+                    <button type="button" class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200" onclick="portfolyoOnerGonder()">Öneriyi Gönder</button>
                 </div>
             </div>
         </div>
@@ -674,31 +696,49 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        document.getElementById('aiAnalizContent').innerHTML = `
-                <div class="alert alert-success">
-                    <i class="fas fa-check-circle"></i> ${data.message}
+                        document.getElementById('aiAnalizContent').innerHTML = \`
+                <div class="rounded-lg border border-green-200 bg-green-50 p-4 text-green-800 dark:bg-green-900 dark:border-green-800 dark:text-green-200 mb-4">
+                    <div class="flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <span class="font-medium">\${data.message}</span>
+                    </div>
                 </div>
                 <div class="text-center mt-3">
-                    <button class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg touch-target-optimized touch-target-optimized" onclick="location.reload()">
-                        <i class="fas fa-refresh"></i> Sayfayı Yenile
+                    <button class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200" onclick="location.reload()">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                        </svg>
+                        Sayfayı Yenile
                     </button>
                 </div>
-            `;
+            \`;
                     } else {
-                        document.getElementById('aiAnalizContent').innerHTML = `
-                <div class="alert alert-danger">
-                    <i class="fas fa-exclamation-triangle"></i> ${data.message}
+                        document.getElementById('aiAnalizContent').innerHTML = \`
+                <div class="rounded-lg border border-red-200 bg-red-50 p-4 text-red-800 dark:bg-red-900 dark:border-red-800 dark:text-red-200">
+                    <div class="flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <span class="font-medium">\${data.message || 'Analiz başarısız'}</span>
+                    </div>
                 </div>
-            `;
+            \`;
                     }
                 })
                 .catch(error => {
                     console.error('Talep analiz hatası:', error);
-                    document.getElementById('aiAnalizContent').innerHTML = `
-            <div class="alert alert-danger">
-                <i class="fas fa-exclamation-triangle"></i> Analiz sırasında hata oluştu
+                    document.getElementById('aiAnalizContent').innerHTML = \`
+            <div class="rounded-lg border border-red-200 bg-red-50 p-4 text-red-800 dark:bg-red-900 dark:border-red-800 dark:text-red-200">
+                <div class="flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <span class="font-medium">Analiz sırasında hata oluştu</span>
+                </div>
             </div>
-        `;
+        \`;
                 });
         }
 
@@ -749,94 +789,27 @@
         }
 
         // İlan seçildiğinde öneri derecesini otomatik ayarla
-        document.getElementById('ilan_id').addEventListener('change', function() {
-            const selectedOption = this.options[this.selectedIndex];
-            if (selectedOption.dataset.skor) {
-                const skor = parseFloat(selectedOption.dataset.skor);
-                let oneriDerecesi = 'dusun';
+        document.addEventListener('DOMContentLoaded', function() {
+            const ilanIdSelect = document.getElementById('ilan_id');
+            if (ilanIdSelect) {
+                ilanIdSelect.addEventListener('change', function() {
+                    const selectedOption = this.options[this.selectedIndex];
+                    if (selectedOption && selectedOption.dataset.skor) {
+                        const skor = parseFloat(selectedOption.dataset.skor);
+                        let oneriDerecesi = 'dusun';
 
-                if (skor >= 8) oneriDerecesi = 'kesinlikle_oner';
-                else if (skor >= 6) oneriDerecesi = 'oner';
-                else if (skor >= 4) oneriDerecesi = 'dusun';
-                else oneriDerecesi = 'onerme';
+                        if (skor >= 8) oneriDerecesi = 'kesinlikle_oner';
+                        else if (skor >= 6) oneriDerecesi = 'oner';
+                        else if (skor >= 4) oneriDerecesi = 'dusun';
+                        else oneriDerecesi = 'onerme';
 
-                document.getElementById('oneri_derecesi').value = oneriDerecesi;
+                        const oneriDerecesiSelect = document.getElementById('oneri_derecesi');
+                        if (oneriDerecesiSelect) {
+                            oneriDerecesiSelect.value = oneriDerecesi;
+                        }
+                    }
+                });
             }
         });
     </script>
-@endpush
-
-@push('styles')
-    <style>
-        .portfolyo-card {
-            transition: transform 0.2s, box-shadow 0.2s;
-            border: 1px solid #e9ecef;
-        }
-
-        .portfolyo-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        }
-
-        .portfolyo-image {
-            height: 200px;
-            overflow: hidden;
-            border-radius: 8px;
-        }
-
-        .portfolyo-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .no-image-placeholder {
-            height: 200px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            background-color: #f8f9fa;
-            border-radius: 8px;
-        }
-
-        .portfolyo-details p {
-            margin-bottom: 0.5rem;
-            font-size: 14px;
-        }
-
-        .eslesme-details {
-            background-color: #f8f9fa;
-            padding: 1rem;
-            border-radius: 8px;
-            margin-top: 1rem;
-        }
-
-        .stat-card {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 1rem;
-            background-color: #f8f9fa;
-            border-radius: 8px;
-            margin-bottom: 1rem;
-        }
-
-        .stat-label {
-            font-size: 12px;
-            color: #6c757d;
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-value {
-            font-size: 16px;
-            font-weight: 600;
-        }
-
-        .card-tools {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-    </style>
 @endpush

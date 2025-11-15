@@ -21,7 +21,8 @@ class ToastUtility {
         if (!document.getElementById('toast-container')) {
             this.toastContainer = document.createElement('div');
             this.toastContainer.id = 'toast-container';
-            this.toastContainer.className = 'fixed top-4 right-4 z-[9999] flex flex-col gap-3 pointer-events-none';
+            this.toastContainer.className =
+                'fixed top-4 right-4 z-[9999] flex flex-col gap-3 pointer-events-none';
             this.toastContainer.setAttribute('aria-live', 'polite');
             this.toastContainer.setAttribute('aria-atomic', 'true');
             document.body.appendChild(this.toastContainer);
@@ -48,7 +49,7 @@ class ToastUtility {
             icon: options.icon || this.getDefaultIcon(type),
             action: options.action || null,
             onClose: options.onClose || null,
-            position: options.position || 'top-right'
+            position: options.position || 'top-right',
         };
 
         // Max toast kontrolü
@@ -133,12 +134,13 @@ class ToastUtility {
      * Toast CSS sınıfları
      */
     getToastClasses(type) {
-        const baseClasses = 'neo-toast pointer-events-auto transform transition-all duration-300 ease-out opacity-0 translate-x-full';
+        const baseClasses =
+            'neo-toast pointer-events-auto transform transition-all duration-300 ease-out opacity-0 translate-x-full';
         const typeClasses = {
             success: 'neo-toast-success',
             error: 'neo-toast-error',
             warning: 'neo-toast-warning',
-            info: 'neo-toast-info'
+            info: 'neo-toast-info',
         };
 
         return `${baseClasses} ${typeClasses[type] || typeClasses.info}`;
@@ -152,7 +154,7 @@ class ToastUtility {
             success: 'neo-icon neo-icon-check-circle text-green-600 dark:text-green-400',
             error: 'neo-icon neo-icon-alert-circle text-red-600 dark:text-red-400',
             warning: 'neo-icon neo-icon-alert-triangle text-yellow-600 dark:text-yellow-400',
-            info: 'neo-icon neo-icon-info text-blue-600 dark:text-blue-400'
+            info: 'neo-icon neo-icon-info text-blue-600 dark:text-blue-400',
         };
 
         return icons[type] || icons.info;
@@ -166,7 +168,7 @@ class ToastUtility {
             success: '✓',
             error: '✕',
             warning: '⚠',
-            info: 'ℹ'
+            info: 'ℹ',
         };
 
         return icons[type] || icons.info;
@@ -202,7 +204,7 @@ class ToastUtility {
      * Toast'ı kaldır
      */
     remove(toastId) {
-        const toast = this.toasts.find(t => t.id === toastId);
+        const toast = this.toasts.find((t) => t.id === toastId);
         if (!toast) return;
 
         // Animasyon ile kaldır
@@ -213,7 +215,7 @@ class ToastUtility {
             if (toast.element.parentElement) {
                 toast.element.remove();
             }
-            this.toasts = this.toasts.filter(t => t.id !== toastId);
+            this.toasts = this.toasts.filter((t) => t.id !== toastId);
         }, 300);
     }
 
@@ -221,7 +223,7 @@ class ToastUtility {
      * Tüm toast'ları temizle
      */
     clearAll() {
-        this.toasts.forEach(toast => {
+        this.toasts.forEach((toast) => {
             this.remove(toast.id);
         });
     }
@@ -295,4 +297,3 @@ if (typeof window !== 'undefined') {
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = ToastUtility;
 }
-

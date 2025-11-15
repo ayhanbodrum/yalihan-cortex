@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
  */
 class KisiEtiket extends Pivot
 {
-    protected $table = 'kisi_etiket';
+    protected $table = 'etiket_kisi';
 
     protected $fillable = [
         'kisi_id',
@@ -34,10 +34,11 @@ class KisiEtiket extends Pivot
 
     /**
      * Etiket ile ilişki
+     * Context7: Points to Etiket model (not MusteriEtiket)
      */
     public function etiket()
     {
-        return $this->belongsTo(MusteriEtiket::class, 'etiket_id');
+        return $this->belongsTo(Etiket::class, 'etiket_id');
     }
 
     /**

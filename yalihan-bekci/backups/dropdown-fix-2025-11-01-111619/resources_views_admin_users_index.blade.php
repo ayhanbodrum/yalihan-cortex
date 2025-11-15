@@ -68,7 +68,7 @@
                             <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
                         </svg>
                         <div>
-                            <span class="font-semibold">Mükerrer e-postalar:</span> 
+                            <span class="font-semibold">Mükerrer e-postalar:</span>
                             {{ implode(', ', array_slice($duplicateEmails,0,3)) }}@if(count($duplicateEmails)>3) ve {{ count($duplicateEmails)-3 }} tane daha...@endif
                         </div>
                     </div>
@@ -79,7 +79,7 @@
                             <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
                         </svg>
                         <div>
-                            <span class="font-semibold">Pasif hesaplar:</span> 
+                            <span class="font-semibold">Pasif hesaplar:</span>
                             {{ implode(', ', $passiveEmails) }}@if($passiveCount>count($passiveEmails)) ve {{ $passiveCount-count($passiveEmails) }} tane daha...@endif
                         </div>
                     </div>
@@ -103,7 +103,7 @@
                     <p class="text-xs text-gray-500 dark:text-gray-400">{{ $users->total() }} kullanıcı</p>
                 </div>
             </div>
-            <button type="button" onclick="exportUsersCsv()" 
+            <button type="button" onclick="exportUsersCsv()"
                     class="flex items-center gap-2 px-4 py-2 rounded-lg
                            border border-gray-300 dark:border-gray-600
                            bg-white dark:bg-gray-800
@@ -125,42 +125,42 @@
                     <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                     </svg>
-                    <input type="text" name="search" 
-                           class="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg 
+                    <input type="text" name="search"
+                           class="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg
                                   bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100
                                   placeholder-gray-400 dark:placeholder-gray-500
                                   focus:ring-2 focus:ring-blue-500 focus:border-blue-500
                                   transition-colors"
-                           placeholder="İsim veya email ara..." 
+                           placeholder="İsim veya email ara..."
                            value="{{ request('search') }}"
                            onchange="this.form.submit()">
                 </form>
 
                 {{-- Status Pills --}}
                 <div class="flex items-center gap-2">
-                    <a href="{{ route('admin.kullanicilar.index') }}" 
+                    <a href="{{ route('admin.kullanicilar.index') }}"
                        class="px-3 py-1.5 rounded-lg text-sm font-medium transition-all
                               {{ !request('status') ? 'bg-blue-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600' }}">
                         Tümü
                     </a>
-                    <a href="{{ route('admin.kullanicilar.index', ['status' => '1']) }}" 
+                    <a href="{{ route('admin.kullanicilar.index', ['status' => '1']) }}"
                        class="px-3 py-1.5 rounded-lg text-sm font-medium transition-all
                               {{ request('status') == '1' ? 'bg-green-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600' }}">
                         Aktif
                     </a>
-                    <a href="{{ route('admin.kullanicilar.index', ['status' => '0']) }}" 
+                    <a href="{{ route('admin.kullanicilar.index', ['status' => '0']) }}"
                        class="px-3 py-1.5 rounded-lg text-sm font-medium transition-all
                               {{ request('status') == '0' ? 'bg-red-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600' }}">
                         Pasif
                     </a>
                 </div>
-                
+
                 {{-- Role Filter --}}
                 <form method="GET" class="flex items-center gap-2">
                     <input type="hidden" name="status" value="{{ request('status') }}">
                     <input type="hidden" name="search" value="{{ request('search') }}">
                     <select name="role" onchange="this.form.submit()"
-                            class="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg 
+                            class="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg
                                    bg-white dark:bg-gray-800 text-sm text-gray-700 dark:text-gray-300
                                    focus:ring-2 focus:ring-blue-500 cursor-pointer transition-colors">
                         <option value="">Tüm Roller</option>
@@ -170,9 +170,9 @@
                         <option value="editor" {{ request('role')=='editor' ? 'selected' : '' }}>Editor</option>
                     </select>
                 </form>
-                
+
                 {{-- New User Button (Moved Here) --}}
-                <a href="{{ route('admin.kullanicilar.create') }}" 
+                <a href="{{ route('admin.kullanicilar.create') }}"
                    class="flex items-center gap-2 px-4 py-2 rounded-lg
                           bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700
                           text-white font-semibold text-sm
@@ -192,7 +192,7 @@
                 <thead class="bg-gradient-to-r from-gray-100 to-gray-200 dark:from-gray-900 dark:to-gray-800">
                     <tr>
                         <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
-                            <a href="{{ request()->fullUrlWithQuery(['sort'=> request('sort')==='id_asc' ? 'id_desc' : 'id_asc']) }}" 
+                            <a href="{{ request()->fullUrlWithQuery(['sort'=> request('sort')==='id_asc' ? 'id_desc' : 'id_asc']) }}"
                                class="flex items-center gap-1 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                                 ID
                                 <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
@@ -201,7 +201,7 @@
                             </a>
                         </th>
                         <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
-                            <a href="{{ request()->fullUrlWithQuery(['sort'=> request('sort')==='name_asc' ? 'name_desc' : 'name_asc']) }}" 
+                            <a href="{{ request()->fullUrlWithQuery(['sort'=> request('sort')==='name_asc' ? 'name_desc' : 'name_asc']) }}"
                                class="flex items-center gap-1 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                                 İsim
                                 <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
@@ -213,7 +213,7 @@
                         <th class="px-6 py-4 text-center text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Rol</th>
                         <th class="px-6 py-4 text-center text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Durum</th>
                         <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
-                            <a href="{{ request()->fullUrlWithQuery(['sort'=> request('sort')==='date_asc' ? 'date_desc' : 'date_asc']) }}" 
+                            <a href="{{ request()->fullUrlWithQuery(['sort'=> request('sort')==='date_asc' ? 'date_desc' : 'date_asc']) }}"
                                class="flex items-center gap-1 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                                 Kayıt Tarihi
                                 <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
@@ -233,10 +233,10 @@
                                     {{ $user->id }}
                                 </span>
                             </td>
-                            
+
                             {{-- Name + Avatar --}}
                             <td class="px-6 py-4">
-                                <a href="{{ route('admin.kullanicilar.edit', $user) }}" 
+                                <a href="{{ route('admin.kullanicilar.edit', $user) }}"
                                    class="flex items-center gap-3 group">
                                     {{-- Avatar --}}
                                     <div class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center text-white font-bold text-lg shadow-lg ring-2 ring-white dark:ring-gray-700">
@@ -248,15 +248,15 @@
                                     </span>
                                 </a>
                             </td>
-                            
+
                             {{-- Email --}}
                             <td class="px-6 py-4">
-                                <a href="mailto:{{ $user->email }}" 
+                                <a href="mailto:{{ $user->email }}"
                                    class="text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                                     {{ $user->email }}
                                 </a>
                             </td>
-                            
+
                             {{-- Role --}}
                             <td class="px-6 py-4 text-center">
                                 @php
@@ -264,7 +264,7 @@
                                         return ucfirst(str_replace('_', ' ', $name));
                                     });
                                     $primaryRole = $roleNames->first() ?? 'Rol Yok';
-                                    
+
                                     $roleColors = [
                                         'Super Admin' => 'bg-gradient-to-br from-purple-100 to-fuchsia-100 dark:from-purple-900/30 dark:to-fuchsia-900/30 text-purple-800 dark:text-purple-400 border border-purple-300 dark:border-purple-700',
                                         'Admin' => 'bg-gradient-to-br from-red-100 to-rose-100 dark:from-red-900/30 dark:to-rose-900/30 text-red-800 dark:text-red-400 border border-red-300 dark:border-red-700',
@@ -278,18 +278,18 @@
                                     {{ $primaryRole }}
                                 </span>
                             </td>
-                            
+
                             {{-- Status --}}
                             <td class="px-6 py-4 text-center">
-                                <span class="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-bold rounded-full 
-                                             {{ $user->status 
-                                                ? 'bg-gradient-to-br from-green-100 to-emerald-100 dark:from-green-900/30 dark:to-emerald-900/30 text-green-800 dark:text-green-400 border border-green-300 dark:border-green-700' 
+                                <span class="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-bold rounded-full
+                                             {{ $user->status
+                                                ? 'bg-gradient-to-br from-green-100 to-emerald-100 dark:from-green-900/30 dark:to-emerald-900/30 text-green-800 dark:text-green-400 border border-green-300 dark:border-green-700'
                                                 : 'bg-gradient-to-br from-red-100 to-rose-100 dark:from-red-900/30 dark:to-rose-900/30 text-red-800 dark:text-red-400 border border-red-300 dark:border-red-700' }}">
                                     <span class="w-2 h-2 rounded-full {{ $user->status ? 'bg-green-500 animate-pulse' : 'bg-red-500' }}"></span>
                                     {{ $user->status ? 'Aktif' : 'Pasif' }}
                                 </span>
                             </td>
-                            
+
                             {{-- Created At --}}
                             <td class="px-6 py-4">
                                 <div class="text-sm font-medium text-gray-900 dark:text-gray-100">
@@ -299,7 +299,7 @@
                                     {{ $user->created_at->format('H:i') }}
                                 </div>
                             </td>
-                            
+
                             {{-- Actions --}}
                             <td class="px-6 py-4">
                                 <div class="flex items-center justify-center gap-2">
@@ -314,7 +314,7 @@
                                         </svg>
                                     </a>
 
-                                    <form method="POST" action="{{ route('admin.kullanicilar.destroy', $user) }}" 
+                                    <form method="POST" action="{{ route('admin.kullanicilar.destroy', $user) }}"
                                           class="inline-block"
                                           onsubmit="return confirm('⚠️ Bu kullanıcıyı silmek istediğinizden emin misiniz?\n\nKullanıcı: {{ $user->name }}\nE-posta: {{ $user->email }}')">
                                         @csrf
@@ -365,7 +365,7 @@
 // Quick Filter Status (Vanilla JS)
 function quickFilterStatus(value){
     const url = new URL(window.location.href);
-    if(value === '') url.searchParams.delete('status'); 
+    if(value === '') url.searchParams.delete('status');
     else url.searchParams.set('status', value);
     window.location.href = url.toString();
 }
@@ -374,7 +374,7 @@ function quickFilterStatus(value){
 function exportUsersCsv(){
     const rows = Array.from(document.querySelectorAll('table tbody tr'));
     let csv = 'ID,İsim,E-posta,Rol,Durum,Kayıt Tarihi\n';
-    
+
     rows.forEach(r=>{
         const cells = r.querySelectorAll('td');
         if(cells.length > 1){
@@ -387,15 +387,15 @@ function exportUsersCsv(){
             csv += `"${id}","${name}","${email}","${role}","${status}","${date}"\n`;
         }
     });
-    
+
     const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
     a.download = 'kullanicilar_'+(new Date().toISOString().split('T')[0])+'.csv';
-    document.body.appendChild(a); 
-    a.click(); 
+    document.body.appendChild(a);
+    a.click();
     a.remove();
-    
+
     window.toast?.success('✅ Kullanıcılar CSV olarak indirildi');
 }
 

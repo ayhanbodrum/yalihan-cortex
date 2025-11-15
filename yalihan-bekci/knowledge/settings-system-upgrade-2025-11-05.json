@@ -4,7 +4,7 @@
   "version": "2.0.0",
   "status": "COMPLETED",
   "context7_compliance": "100%",
-  
+
   "critical_fixes": {
     "model_fillable": {
       "problem": "Setting model fillable eksikti - type, group, description save edilmiyordu",
@@ -25,7 +25,7 @@
       "fixed": true
     }
   },
-  
+
   "changes": {
     "model": {
       "file": "app/Models/Setting.php",
@@ -68,10 +68,7 @@
     },
     "routes": {
       "file": "routes/admin.php",
-      "changes": [
-        "POST /admin/ayarlar/bulk-store",
-        "POST /admin/ayarlar/clear-caches"
-      ]
+      "changes": ["POST /admin/ayarlar/bulk-store", "POST /admin/ayarlar/clear-caches"]
     },
     "helper": {
       "file": "app/Helpers/settings_helper.php",
@@ -84,20 +81,26 @@
     },
     "composer": {
       "file": "composer.json",
-      "changes": [
-        "autoload.files: Added settings_helper.php"
-      ]
+      "changes": ["autoload.files: Added settings_helper.php"]
     }
   },
-  
+
   "features": {
     "quick_templates": {
       "count": 12,
       "list": [
-        "site_name", "site_description", "default_language",
-        "maintenance_mode", "max_upload_size", "session_lifetime",
-        "social_media", "smtp_host", "ai_provider",
-        "default_currency", "force_https", "google_analytics_id"
+        "site_name",
+        "site_description",
+        "default_language",
+        "maintenance_mode",
+        "max_upload_size",
+        "session_lifetime",
+        "social_media",
+        "smtp_host",
+        "ai_provider",
+        "default_currency",
+        "force_https",
+        "google_analytics_id"
       ],
       "usage": "Click card → Form auto-fills → Save",
       "time_saving": "95% faster (2min → 10sec)"
@@ -146,7 +149,7 @@
       "live_update": true
     }
   },
-  
+
   "performance": {
     "cache": {
       "enabled": true,
@@ -159,7 +162,7 @@
       "json_setting": "90% faster (syntax errors reduced)"
     }
   },
-  
+
   "code_quality": {
     "before": {
       "fillable_correct": false,
@@ -174,14 +177,14 @@
       "ui_rating": "10/10"
     }
   },
-  
+
   "usage_examples": {
     "quick_template": "Click 🏠 Site Adı → Auto-fill → Save (10 seconds)",
     "bulk_group": "Click 📧 Email SMTP 'Hepsini Ekle' → 5 settings created (5 seconds)",
     "manual_json": "Type: JSON → Syntax editor opens → Validation active",
     "autocomplete": "Type 'gen' in group → Shows 'general' suggestion"
   },
-  
+
   "yalihan_bekci_rules": {
     "always_use_snake_case": "Key formatı: site_name (NOT siteName)",
     "use_helper_functions": "setting('key') instead of Setting::where('key'...)",
@@ -189,7 +192,7 @@
     "validate_json": "Always validate JSON format before save",
     "group_organization": "Use predefined groups for consistency"
   },
-  
+
   "violations_fixed": [
     "VIO-SETTINGS-001: Model fillable incomplete",
     "VIO-SETTINGS-002: JSON casting breaking string values",
@@ -197,7 +200,7 @@
     "VIO-SETTINGS-004: Weak validation",
     "VIO-SETTINGS-005: No bulk operations"
   ],
-  
+
   "files_modified": [
     "app/Models/Setting.php",
     "app/Http/Controllers/Admin/AyarlarController.php",
@@ -205,13 +208,10 @@
     "routes/admin.php",
     "composer.json"
   ],
-  
+
   "files_created": [
     "app/Helpers/settings_helper.php",
     "AYARLAR-SISTEM-UPGRADE-2025-11-05.md",
     "yalihan-bekci/knowledge/settings-system-upgrade-2025-11-05.json"
   ]
 }
-
-
-

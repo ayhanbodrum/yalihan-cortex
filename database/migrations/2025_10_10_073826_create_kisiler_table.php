@@ -26,7 +26,7 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
-            
+
             $table->index(['status', 'kisi_tipi']);
             $table->index(['il_id', 'ilce_id']);
             $table->index('user_id');

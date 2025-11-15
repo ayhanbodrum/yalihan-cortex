@@ -77,7 +77,7 @@ class AICoreSystem
             'medium',
             function () use ($context) {
                 return \App\Models\AICoreSystem::where('context', $context)
-                    ->where('enabled', true)
+                    ->where('status', true) // Context7: enabled → status
                     ->orderBy('success_rate', 'desc')
                     ->first();
             },

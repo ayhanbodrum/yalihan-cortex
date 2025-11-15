@@ -10,4 +10,3 @@ echo "  chmod +x .githooks/pre-commit"
 echo "  git config core.hooksPath .githooks"
 echo ""
 exit 0
-

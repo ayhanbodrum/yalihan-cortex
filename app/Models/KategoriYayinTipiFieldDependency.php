@@ -21,9 +21,9 @@ class KategoriYayinTipiFieldDependency extends Model
         'field_options',
         'field_unit',
         'field_icon',
-        'enabled',
+        'status', // Context7: enabled → status
         'required',
-        'order',
+        'display_order', // Context7: order → display_order
         'ai_auto_fill',
         'ai_suggestion',
         'ai_calculation',
@@ -34,14 +34,14 @@ class KategoriYayinTipiFieldDependency extends Model
 
     protected $casts = [
         'field_options' => 'array',
-        'enabled' => 'boolean',
+        'status' => 'boolean', // Context7: enabled → status
         'required' => 'boolean',
         'ai_auto_fill' => 'boolean',
         'ai_suggestion' => 'boolean',
         'ai_calculation' => 'boolean',
         'searchable' => 'boolean',
         'show_in_card' => 'boolean',
-        'order' => 'integer'
+        'display_order' => 'integer' // Context7: order → display_order
     ];
 
     /**
@@ -49,7 +49,7 @@ class KategoriYayinTipiFieldDependency extends Model
      */
     public function scopeEnabled($query)
     {
-        return $query->where('enabled', true);
+        return $query->where('status', true); // Context7: enabled → status
     }
 
     /**
@@ -102,6 +102,6 @@ class KategoriYayinTipiFieldDependency extends Model
      */
     public function scopeOrdered($query)
     {
-        return $query->orderBy('order')->orderBy('field_name');
+        return $query->orderBy('display_order')->orderBy('field_name'); // Context7: order → display_order
     }
 }

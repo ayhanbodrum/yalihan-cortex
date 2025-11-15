@@ -38,11 +38,11 @@ class TalepPortfolyoController extends AdminController
 
         // Context7: View compatibility - $portfolyoStats alias (Database schema uyumlu)
         $portfolyoStats = [
-            'toplam_ilan' => \App\Modules\Emlak\Models\Ilan::count(),
+            'toplam_ilan' => \App\Models\Ilan::count(),
             // yayin_tipi_id kolonu olmadığı için alternatif sorgu
-            'satilik_ilan' => \App\Modules\Emlak\Models\Ilan::where('status', 'Aktif')->where('fiyat', '>', 0)->count(),
-            'kiralik_ilan' => \App\Modules\Emlak\Models\Ilan::where('status', 'Aktif')->where('fiyat', '<=', 100000)->count(),
-            'acil_ilan' => \App\Modules\Emlak\Models\Ilan::where('status', 'Aktif')->count(),
+            'satilik_ilan' => \App\Models\Ilan::where('status', 'Aktif')->where('fiyat', '>', 0)->count(),
+            'kiralik_ilan' => \App\Models\Ilan::where('status', 'Aktif')->where('fiyat', '<=', 100000)->count(),
+            'acil_ilan' => \App\Models\Ilan::where('status', 'Aktif')->count(),
         ];
 
         return view('admin.talep-portfolyo.index', compact('talepler', 'istatistikler', 'talepStats', 'portfolyoStats'));
@@ -131,7 +131,7 @@ class TalepPortfolyoController extends AdminController
             // Basit bir mock analiz: her talep için uygun ilan sayısını hesapla
             $sonuclar = collect($talepIds)->map(function ($id) {
                 // Context7: İlişkilerle birlikte veri çek
-                $oneriler = \App\Modules\Emlak\Models\Ilan::with(['il', 'ilce'])
+                $oneriler = \App\Models\Ilan::with(['il', 'ilce'])
                     ->where('status', 'Aktif')
                     ->orderByDesc('created_at')
                     ->limit(3)
@@ -139,7 +139,7 @@ class TalepPortfolyoController extends AdminController
                     ->map(function ($ilan) {
                         // Context7: İlişkiden il/ilce adlarını ekle
                         $ilan->adres_il = $ilan->il->il_adi ?? null;
-                        $ilan->adres_ilce = $ilan->ilce->ad ?? null;
+                        $ilan->adres_ilce = $ilan->ilce->ilce_adi ?? null;
                         return $ilan;
                     });
 
@@ -193,7 +193,7 @@ class TalepPortfolyoController extends AdminController
         $talepModel = \App\Models\Talep::findOrFail($talep);
 
         // Context7: İlişkilerle birlikte veri çek - adres_il/adres_ilce yerine il_id/ilce_id + relations
-        $oneriler = \App\Modules\Emlak\Models\Ilan::with(['il', 'ilce'])
+        $oneriler = \App\Models\Ilan::with(['il', 'ilce'])
             ->where('status', 'Aktif')
             ->orderByDesc('created_at')
             ->limit(5)
@@ -206,7 +206,7 @@ class TalepPortfolyoController extends AdminController
                 $ilan->etiket = $etiket;
                 // Context7: İlişkiden il/ilce adlarını ekle
                 $ilan->adres_il = $ilan->il->il_adi ?? null;
-                $ilan->adres_ilce = $ilan->ilce->ad ?? null;
+                $ilan->adres_ilce = $ilan->ilce->ilce_adi ?? null;
                 return $ilan;
             });
 

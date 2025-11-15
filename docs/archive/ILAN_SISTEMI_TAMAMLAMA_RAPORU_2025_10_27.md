@@ -8,25 +8,30 @@
 ## 📊 Yapılan İşlemler
 
 ### 1. Yazlık Detay Tablosu Oluşturuldu
+
 - ✅ `yazlik_details` tablosu migration
 - ✅ 30+ yazlık özel alanı
 - ✅ Konaklama, havuz, fiyatlandırma alanları
 
 ### 2. Model Entegrasyonu
+
 - ✅ `YazlikDetail` model oluşturuldu
 - ✅ `Ilan` model'e `yazlikDetail()` ilişkisi eklendi
 - ✅ Yazlık detay bilgileri görüntülenebilir
 
 ### 3. Controller Entegrasyonu
+
 - ✅ `IlanController::store()` - Yazlık detayları kaydetme
 - ✅ `IlanController::update()` - Yazlık detayları güncelleme
 - ✅ `IlanController::index()` - Yazlık detayları listeleme
 
 ### 4. View Güncellemeleri
+
 - ✅ Layout değişikliği: `unified` → `neo`
 - ✅ Context7 standartlarına uyum
 
 ### 5. Kategori Sistemi Dokümante Edildi
+
 - ✅ 5 Ana kategori
 - ✅ 17 Alt kategori
 - ✅ 28+ Yayın tipi
@@ -37,6 +42,7 @@
 ## 🎯 Sistem Özellikleri
 
 ### Yazlık Detay Alanları
+
 - Minimum/Maksimum konaklama
 - Misafir sayısı
 - Havuz bilgileri (türü, boyutu, derinliği)
@@ -47,6 +53,7 @@
 - EİDS onay bilgileri
 
 ### İlan Yönetimi
+
 - Kategori bazlı dinamik özellik gösterimi
 - Yazlık detayları otomatik kayıt/güncelleme
 - Context7 standartlarına uyum

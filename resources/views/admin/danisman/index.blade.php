@@ -27,6 +27,57 @@
         </div>
     </div>
 
+    <!-- Flash Messages -->
+    @if(session('success'))
+        <div id="success-message" class="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border-l-4 border-green-500 rounded-lg shadow-lg p-4 mb-6 animate-slide-in">
+            <div class="flex items-center">
+                <div class="flex-shrink-0">
+                    <svg class="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <div class="ml-3">
+                    <p class="text-sm font-semibold text-green-800 dark:text-green-200">
+                        {{ session('success') }}
+                    </p>
+                </div>
+                <div class="ml-auto pl-3">
+                    <button onclick="this.parentElement.parentElement.parentElement.remove()"
+                            class="text-green-500 hover:text-green-700 dark:hover:text-green-300 transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div class="bg-gradient-to-r from-red-50 to-rose-50 dark:from-red-900/20 dark:to-rose-900/20 border-l-4 border-red-500 rounded-lg shadow-lg p-4 mb-6 animate-slide-in">
+            <div class="flex items-center">
+                <div class="flex-shrink-0">
+                    <svg class="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <div class="ml-3">
+                    <p class="text-sm font-semibold text-red-800 dark:text-red-200">
+                        {{ session('error') }}
+                    </p>
+                </div>
+                <div class="ml-auto pl-3">
+                    <button onclick="this.parentElement.parentElement.parentElement.remove()"
+                            class="text-red-500 hover:text-red-700 dark:hover:text-red-300 transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    @endif
+
     <!-- İstatistik Kartları -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-200 p-6">
@@ -153,6 +204,14 @@
         </div>
 
         <div class="p-6">
+            <x-admin.meta-info
+                title="Danışmanlar"
+                :meta="['total' => $danismanlar->total(), 'current_page' => $danismanlar->currentPage(), 'last_page' => $danismanlar->lastPage(), 'per_page' => $danismanlar->perPage()]"
+                :show-per-page="true"
+                :per-page-options="[20,50,100]"
+                listId="danismanlar"
+                listEndpoint="/api/admin/api/v1/danismanlar"
+            />
             @if($danismanlar->count() > 0)
                 <div class="overflow-x-auto">
                     <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
@@ -162,7 +221,7 @@
                                 <th class="admin-table-th">İletişim</th>
                                 <th class="admin-table-th">Ünvan</th>
                                 <th class="admin-table-th">Performans</th>
-                                <th class="admin-table-th">Durum</th>
+                                <th class="admin-table-th">Durum / Sosyal Medya</th>
                                 <th class="admin-table-th">Kayıt Tarihi</th>
                                 <th class="admin-table-th" width="150">İşlemler</th>
                             </tr>
@@ -194,7 +253,25 @@
                                 </td>
                                 <td class="px-6 py-4">
                                     <div class="text-sm text-gray-900 dark:text-white">{{ $danisman->title ?? 'Danışman' }}</div>
-                                    <div class="text-sm text-gray-500 dark:text-gray-400">{{ $danisman->uzmanlik_alani ?? 'Genel' }}</div>
+                                    @if($danisman->position)
+                                        <div class="text-xs text-gray-600 dark:text-gray-400">
+                                            {{ config('danisman.positions.' . $danisman->position, $danisman->position) }}
+                                        </div>
+                                    @endif
+                                    @if($danisman->department)
+                                        <div class="text-xs text-gray-600 dark:text-gray-400">
+                                            {{ config('danisman.departments.' . $danisman->department, $danisman->department) }}
+                                        </div>
+                                    @endif
+                                    <div class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                                        @if($danisman->uzmanlik_alanlari && count($danisman->uzmanlik_alanlari) > 0)
+                                            {{ implode(', ', $danisman->uzmanlik_alanlari) }}
+                                        @elseif($danisman->uzmanlik_alani)
+                                            {{ $danisman->uzmanlik_alani }}
+                                        @else
+                                            Genel
+                                        @endif
+                                    </div>
                                 </td>
                                 <td class="px-6 py-4">
                                     <div class="flex items-center">
@@ -206,10 +283,59 @@
                                     </div>
                                 </td>
                                 <td class="px-6 py-4">
-                                    <div class="flex items-center gap-2">
-                                        <x-neo.status-badge :value="$danisman->status ? 'Aktif' : 'Pasif'" />
-                                        @if($danisman->last_activity_at && $danisman->last_activity_at->isAfter(now()->subMinutes(5)))
-                                            <x-neo.status-badge value="Online" category="info" />
+                                    <div class="space-y-2">
+                                        <div class="flex items-center gap-2 flex-wrap">
+                                            {{-- ✅ Context7: Sadece aktif durum göster (status field kullanımı) --}}
+                                            @php
+                                                // Context7: status field kullanımı (aktif/is_active YASAK)
+                                                $statusValue = null;
+                                                
+                                                // Boolean status kontrolü
+                                                if (is_bool($danisman->status)) {
+                                                    $statusValue = $danisman->status ? 'aktif' : 'pasif';
+                                                } elseif ($danisman->status === 1 || $danisman->status === '1') {
+                                                    $statusValue = 'aktif';
+                                                } elseif ($danisman->status === 0 || $danisman->status === '0') {
+                                                    $statusValue = 'pasif';
+                                                } else {
+                                                    // Default: aktif
+                                                    $statusValue = 'aktif';
+                                                }
+                                                
+                                                // status_text varsa ve geçerli bir durum ise kullan
+                                                if (!empty($danisman->status_text)) {
+                                                    $statusText = strtolower(trim($danisman->status_text));
+                                                    // Sadece geçerli durumlar
+                                                    $validStatuses = ['aktif', 'pasif', 'taslak', 'onay_bekliyor', 'yayinda', 'satildi', 'kiralandi', 'arsivlendi'];
+                                                    if (in_array($statusText, $validStatuses)) {
+                                                        $statusValue = $statusText;
+                                                    }
+                                                }
+                                            @endphp
+                                            
+                                            {{-- ✅ Context7: Tek durum badge'i göster --}}
+                                            <x-neo.status-badge :value="$statusValue" size="xs" />
+                                            
+                                            {{-- Online durum badge'i (ayrı) --}}
+                                            @if($danisman->last_activity_at && $danisman->last_activity_at->isAfter(now()->subMinutes(5)))
+                                                <x-neo.status-badge value="Online" category="info" size="xs" />
+                                            @endif
+                                        </div>
+                                        
+                                        {{-- Sosyal medya linkleri --}}
+                                        @php
+                                            $hasSocialMedia = !empty($danisman->instagram_profile) ||
+                                                             !empty($danisman->linkedin_profile) ||
+                                                             !empty($danisman->facebook_profile) ||
+                                                             !empty($danisman->twitter_profile) ||
+                                                             !empty($danisman->youtube_channel) ||
+                                                             !empty($danisman->tiktok_profile) ||
+                                                             !empty($danisman->whatsapp_number) ||
+                                                             !empty($danisman->telegram_username) ||
+                                                             !empty($danisman->website);
+                                        @endphp
+                                        @if($hasSocialMedia)
+                                            <x-admin.danisman-social-links :danisman="$danisman" size="xs" />
                                         @endif
                                     </div>
                                 </td>
@@ -263,12 +389,46 @@
             @endif
         </div>
     </div>
-</div>
+    </div>
 @endsection
+
+@push('styles')
+<style>
+    @keyframes slide-in {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .animate-slide-in {
+        animation: slide-in 0.3s ease-out;
+    }
+</style>
+@endpush
 
 @push('scripts')
 <script>
-function exportDanismanCsv() {
+    // Auto-hide success messages after 5 seconds
+    document.addEventListener('DOMContentLoaded', function() {
+        const successMessage = document.getElementById('success-message');
+        if (successMessage) {
+            setTimeout(function() {
+                successMessage.style.transition = 'opacity 0.5s ease-out, transform 0.5s ease-out';
+                successMessage.style.opacity = '0';
+                successMessage.style.transform = 'translateY(-10px)';
+                setTimeout(function() {
+                    successMessage.remove();
+                }, 500);
+            }, 5000);
+        }
+    });
+
+    function exportDanismanCsv() {
     const rows = Array.from(document.querySelectorAll('table tbody tr'));
     let csv = 'Ad,E-posta,Telefon,Ünvan,Performans,Durum,Kayıt Tarihi\n';
 
@@ -293,5 +453,61 @@ function exportDanismanCsv() {
     a.click();
     a.remove();
 }
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  const paginate = document.querySelector('.mt-6') || document.querySelector('.px-6.py-4 + .mt-6')
+  const tableBody = document.querySelector('table tbody')
+  if (!window.ApiAdapter || !paginate || !tableBody) return
+  const statusEl = document.getElementById('meta-status')
+  const totalEl = document.getElementById('meta-total')
+  const pageEl = document.getElementById('meta-page')
+  const container = document.querySelector('[data-meta="true"]')
+  const perSelect = container.querySelector('select[data-per-page-select]')
+  let currentPer = 20
+  const urlInit = new URL(window.location.href)
+  const qPer = parseInt(urlInit.searchParams.get('per_page')||'')
+  const storageKey = 'yalihan_admin_per_page'
+  const sPer = parseInt(localStorage.getItem(storageKey)||'')
+  if (qPer) { currentPer = qPer; perSelect.value = String(qPer) }
+  else if (sPer) { currentPer = sPer; perSelect.value = String(sPer) }
+  perSelect.addEventListener('change', function(){ currentPer = parseInt(perSelect.value||'20'); const u = new URL(window.location.href); u.searchParams.set('per_page', String(currentPer)); window.history.replaceState({}, '', u.toString()); loadPage(1) })
+
+  function setLoading(f){ statusEl.setAttribute('aria-busy', f?'true':'false'); statusEl.textContent = f ? 'Yükleniyor…' : '' }
+  function renderRows(items){
+    if (!items || items.length === 0){ tableBody.innerHTML = '<tr><td colspan="7" class="px-6 py-12 text-center text-gray-500 dark:text-gray-400">Kayıt bulunamadı</td></tr>'; return }
+    const rows = items.map(function(it){
+      const name = it.name || ''
+      const email = it.email || ''
+      return (
+        '<tr>'
+        + '<td class="px-6 py-4">' + name + '<div class="text-sm text-gray-500">' + email + '</div></td>'
+        + '<td class="px-6 py-4">' + (it.phone_number || '-') + '</td>'
+        + '<td class="px-6 py-4">' + '' + '</td>'
+        + '<td class="px-6 py-4">' + '' + '</td>'
+        + '<td class="px-6 py-4">' + '' + '</td>'
+        + '<td class="px-6 py-4">' + '' + '</td>'
+        + '<td class="px-6 py-4"><a href="/admin/danisman/'+(it.id||'')+'" class="text-blue-600">Detay</a></td>'
+        + '</tr>'
+      )
+    }).join('')
+    tableBody.innerHTML = rows
+  }
+  function updateMeta(meta){
+    if (!meta) return
+    totalEl.textContent = 'Toplam: ' + (meta.total != null ? meta.total : '-')
+    pageEl.innerHTML = '📄 Sayfa: ' + (meta.current_page || 1) + ' / ' + (meta.last_page || 1)
+    if (meta.per_page){ currentPer = parseInt(meta.per_page); perSelect.value = String(meta.per_page); localStorage.setItem(storageKey, String(meta.per_page)) }
+    const links = paginate.querySelectorAll('a[href*="page="]')
+    links.forEach(function(a){ const u=new URL(a.href, window.location.origin); const p=parseInt(u.searchParams.get('page')||'1'); a.setAttribute('aria-label','Sayfa ' + p); if (p === meta.current_page) { a.setAttribute('aria-disabled','true') } else { a.removeAttribute('aria-disabled') } })
+  }
+  function loadPage(page){
+    setLoading(true)
+    window.ApiAdapter.get('/danismanlar', { page: Number(page||1), per_page: currentPer })
+      .then(function(res){ renderRows(res.data||[]); updateMeta(res.meta||null); setLoading(false) })
+      .catch(function(err){ setLoading(false); const a=document.createElement('div'); a.setAttribute('role','alert'); a.className='px-6 py-2 text-sm text-red-600'; a.textContent='Hata: '+((err.response&&err.response.message)||err.message||'Bilinmeyen hata'); paginate.parentNode.insertBefore(a,paginate); setTimeout(function(){ a.remove() }, 4000) })
+  }
+  // Auto-init çalışıyor; ek init gerekmez
+})
 </script>
 @endpush

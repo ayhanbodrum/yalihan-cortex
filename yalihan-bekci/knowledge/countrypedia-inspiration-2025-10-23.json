@@ -64,14 +64,7 @@
         "session_key": "compare_list",
         "max_items": 3,
         "compare_page": "/ilanlar/karsilastir",
-        "fields_to_compare": [
-          "Fiyat",
-          "Metrekare",
-          "Oda sayısı",
-          "Kat",
-          "Yaş",
-          "Özellikler"
-        ],
+        "fields_to_compare": ["Fiyat", "Metrekare", "Oda sayısı", "Kat", "Yaş", "Özellikler"],
         "use_case": "3 benzer ilanı yan yana karşılaştır"
       },
       "priority": "high",
@@ -85,13 +78,7 @@
         "export_formats": ["Excel", "PDF", "CSV"],
         "route": "GET /favoriler/export/{format}",
         "use_laravel_excel": true,
-        "fields_to_export": [
-          "Başlık",
-          "Lokasyon",
-          "Fiyat",
-          "Metrekare",
-          "URL"
-        ],
+        "fields_to_export": ["Başlık", "Lokasyon", "Fiyat", "Metrekare", "URL"],
         "use_case": "Favorilerimi Excel'e aktar, başkasıyla paylaş"
       },
       "priority": "medium",
@@ -126,10 +113,7 @@
       "yalihan_emlak_adaptation": {
         "ui": "A-Z harf çubuğu (sidebar)",
         "logic": "Click 'B' → scroll to Bodrum, Bursa, etc.",
-        "applicable_pages": [
-          "/ilanlar (tüm ilanlar)",
-          "/admin/adres-yonetimi (iller)"
-        ],
+        "applicable_pages": ["/ilanlar (tüm ilanlar)", "/admin/adres-yonetimi (iller)"],
         "use_case": "Hızlı alfabetik gezinme"
       },
       "priority": "low",
@@ -219,4 +203,3 @@
     ]
   }
 }
-

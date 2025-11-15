@@ -394,9 +394,7 @@
       "resources/views/admin/ilanlar/components/key-management.blade.php",
       "public/js/admin/components/ModernFormWizard.js"
     ],
-    "verified": [
-      "resources/views/admin/ilanlar/edit.blade.php (publication-status include exists)"
-    ]
+    "verified": ["resources/views/admin/ilanlar/edit.blade.php (publication-status include exists)"]
   },
 
   "next_steps": {
@@ -428,4 +426,3 @@
     "auto_suggest": "When creating forms, suggest: Essential inline + Advanced in accordion"
   }
 }
-

@@ -70,4 +70,3 @@ class EventRequest extends FormRequest
         }
     }
 }
-

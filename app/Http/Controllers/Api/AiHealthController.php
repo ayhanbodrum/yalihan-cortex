@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Services\Response\ResponseService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Http;
 
@@ -28,13 +29,12 @@ class AiHealthController extends Controller
 
         $availableCount = collect($providers)->filter(fn($p) => $p['available'])->count();
 
-        return response()->json([
-            'success' => true,
+        return ResponseService::success([
             'providers' => $providers,
             'available_count' => $availableCount,
             'total_count' => count($providers),
             'timestamp' => now()->toIso8601String(),
-        ]);
+        ], 'AI sağlayıcı durumu başarıyla kontrol edildi');
     }
 
     /**
@@ -138,4 +138,3 @@ class AiHealthController extends Controller
         }
     }
 }
-

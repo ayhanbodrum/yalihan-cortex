@@ -1,0 +1,220 @@
+{
+  "title": "TurkiyeAPI Adres Yönetimi Sistemi - Çalışma Mantığı",
+  "date": "2025-11-12",
+  "version": "1.0.0",
+  "status": "production-ready",
+  "context7_compliance": true,
+  "system": {
+    "name": "Adres Yönetimi",
+    "api": "TurkiyeAPI (https://api.turkiyeapi.dev)",
+    "components": [
+      "İl (Province)",
+      "İlçe (District)",
+      "Mahalle (Neighborhood)"
+    ]
+  },
+  "architecture": {
+    "two_stage_process": {
+      "stage_1_fetch": {
+        "description": "TurkiyeAPI'den veri çekme (veritabanına kaydetmeden)",
+        "purpose": "Kullanıcıya önizleme gösterme",
+        "features": [
+          "UI'da gösterim",
+          "TurkiyeAPI badge",
+          "Sync edilmemiş etiketi",
+          "Sayfa yenilendiğinde kaybolur"
+        ]
+      },
+      "stage_2_sync": {
+        "description": "Çekilen verileri veritabanına kaydetme",
+        "purpose": "Kalıcı veri saklama",
+        "features": [
+          "Transaction güvenliği",
+          "Duplicate kontrolü",
+          "ID eşleştirmesi",
+          "Kalıcı kayıt"
+        ]
+      }
+    }
+  },
+  "critical_logic": {
+    "district_id_mapping": {
+      "problem": "TurkiyeAPI ID'si ile DB ID'si farklı olabilir",
+      "solution": "İki aşamalı eşleştirme",
+      "steps": [
+        "1. DB'de ilçe var mı kontrol et",
+        "2. Varsa: İlçe adına göre TurkiyeAPI ID'sini bul",
+        "3. Yoksa: TurkiyeAPI ID'sine göre DB ID'sini bul",
+        "4. TurkiyeAPI ID'si ile mahalleleri çek",
+        "5. DB ID'si ile mahalleleri kaydet"
+      ],
+      "example": {
+        "bodrum": {
+          "turkiyeapi_id": 1234,
+          "db_id": 1,
+          "mapping_method": "İlçe adına göre eşleştirme"
+        }
+      }
+    }
+  },
+  "endpoints": {
+    "fetch": {
+      "url": "/admin/adres-yonetimi/fetch-from-turkiyeapi",
+      "method": "POST",
+      "parameters": {
+        "province_id": "İl ID (opsiyonel)",
+        "district_id": "İlçe ID (opsiyonel)",
+        "type": "auto|districts|neighborhoods"
+      },
+      "response": {
+        "success": true,
+        "data": {
+          "districts": [],
+          "neighborhoods": [],
+          "towns": [],
+          "villages": []
+        },
+        "counts": {
+          "districts": 0,
+          "neighborhoods": 0,
+          "total": 0
+        }
+      }
+    },
+    "sync": {
+      "url": "/admin/adres-yonetimi/sync-from-turkiyeapi",
+      "method": "POST",
+      "parameters": {
+        "type": "all|provinces|districts|neighborhoods",
+        "province_id": "İl ID (opsiyonel)",
+        "district_id": "İlçe ID (opsiyonel)"
+      },
+      "response": {
+        "success": true,
+        "results": {
+          "provinces": 0,
+          "districts": 0,
+          "neighborhoods": 0
+        }
+      }
+    }
+  },
+  "files": {
+    "backend": {
+      "controller": "app/Http/Controllers/Admin/AdresYonetimiController.php",
+      "methods": [
+        "getIller() - Otomatik il yükleme",
+        "fetchFromTurkiyeAPI() - Seçimli veri çekme",
+        "syncFromTurkiyeAPI() - Veri senkronizasyonu"
+      ]
+    },
+    "frontend": {
+      "view": "resources/views/admin/adres-yonetimi/index.blade.php",
+      "functions": [
+        "fetchFromTurkiyeAPI() - Frontend fetch",
+        "syncFromTurkiyeAPI() - Frontend sync",
+        "selectIlce() - İlçe seçimi"
+      ]
+    },
+    "service": {
+      "class": "app/Services/TurkiyeAPIService.php",
+      "methods": [
+        "getProvinces() - İlleri çek",
+        "getDistricts() - İlçeleri çek",
+        "getNeighborhoods() - Mahalleleri çek"
+      ]
+    }
+  },
+  "workflow": {
+    "scenario_1_new_province": {
+      "steps": [
+        "1. İl dropdown'ından seç",
+        "2. 'TurkiyeAPI'den Çek' → İlçeler gelir",
+        "3. 'Seçime Göre Sync Et' → İlçeler DB'ye kaydedilir"
+      ]
+    },
+    "scenario_2_new_neighborhoods": {
+      "steps": [
+        "1. İl: Muğla seç",
+        "2. İlçe: Bodrum seç",
+        "3. 'TurkiyeAPI'den Çek' → 574 mahalle gelir",
+        "4. 'Seçime Göre Sync Et' → Mahalleler DB'ye kaydedilir"
+      ]
+    },
+    "scenario_3_specific_district": {
+      "steps": [
+        "1. İl: Muğla seç",
+        "2. İlçe: Bodrum seç",
+        "3. 'TurkiyeAPI'den Çek' → Sadece Bodrum mahalleleri",
+        "4. 'Seçime Göre Sync Et' → Sadece Bodrum mahalleleri kaydedilir"
+      ]
+    }
+  },
+  "ui_features": {
+    "fetch_indicator": {
+      "description": "Çekilen veriler bilgi kutusu",
+      "shows": [
+        "İlçe sayısı",
+        "Mahalle sayısı",
+        "Belde sayısı",
+        "Köy sayısı"
+      ],
+      "badge": "TurkiyeAPI",
+      "status": "Sync edilmemiş"
+    },
+    "sync_button": {
+      "disabled_condition": "Seçim yapılmadığında disabled",
+      "warning": "Tüm verileri sync etmek zaman aşımına neden olabilir"
+    }
+  },
+  "performance": {
+    "fetch": {
+      "speed": "Hızlı (sadece API çağrısı)",
+      "database": "Yazma yok",
+      "ui": "Gösterim"
+    },
+    "sync": {
+      "speed": "Yavaş olabilir (DB yazma)",
+      "transaction": "Kullanılır",
+      "batch": "Insert yapılabilir"
+    }
+  },
+  "debugging": {
+    "frontend_logs": [
+      "🔍 syncFromTurkiyeAPI çağrıldı",
+      "🔍 fetchSelectedIlId",
+      "🔍 fetchSelectedIlceId",
+      "🔍 Belirlenen provinceId",
+      "🔍 Belirlenen districtId",
+      "🔍 Sync Response",
+      "🔍 Sync Results"
+    ],
+    "backend_logs": [
+      "TurkiyeAPI: İlçe eşleştirildi",
+      "TurkiyeAPI: İlçe ID X için Y mahalle çekildi",
+      "TurkiyeAPI: İlçe bulunamadı"
+    ]
+  },
+  "context7_compliance": {
+    "database_fields": {
+      "il_adi": "NOT sehir_adi",
+      "ilce_adi": "NOT district_name",
+      "mahalle_adi": "NOT neighborhood_name",
+      "il_id": "NOT sehir_id",
+      "ilce_id": "NOT district_id"
+    },
+    "ui_components": {
+      "css": "Tailwind CSS utility classes",
+      "js": "Vanilla JS (NO heavy libraries)",
+      "framework": "Alpine.js reactive components"
+    }
+  },
+  "important_notes": [
+    "ID eşleştirmesi kritik - TurkiyeAPI ID ≠ DB ID olabilir",
+    "Sync butonu sadece seçim yapıldığında aktif",
+    "Tüm verileri sync etmek zaman aşımına neden olabilir",
+    "İlçe adına göre eşleştirme yapılır",
+    "TurkiyeAPI ID'si ile çekilir, DB ID'si ile kaydedilir"
+  ]
+}
+

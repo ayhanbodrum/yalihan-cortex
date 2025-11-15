@@ -16,12 +16,12 @@ n8n, açık kaynaklı bir workflow automation platformudur. Zapier ve Make (Inte
 
 ### **Özellikler:**
 
--   ✅ 400+ entegrasyon
--   ✅ Self-hosted (kendi sunucunuzda)
--   ✅ Görsel workflow editörü
--   ✅ Webhook desteği
--   ✅ Cron job scheduler
--   ✅ Database bağlantıları
+- ✅ 400+ entegrasyon
+- ✅ Self-hosted (kendi sunucunuzda)
+- ✅ Görsel workflow editörü
+- ✅ Webhook desteği
+- ✅ Cron job scheduler
+- ✅ Database bağlantıları
 
 ---
 
@@ -62,7 +62,7 @@ n8n start
 
 ```yaml
 # docker-compose.n8n.yml
-version: "3.8"
+version: '3.8'
 
 services:
     n8n:
@@ -70,7 +70,7 @@ services:
         container_name: yalihanemlak_n8n
         restart: unless-stopped
         ports:
-            - "5678:5678"
+            - '5678:5678'
         environment:
             - N8N_BASIC_AUTH_ACTIVE=true
             - N8N_BASIC_AUTH_USER=admin
@@ -487,23 +487,19 @@ server {
 ### **Emlak Otomasyonları:**
 
 1. **Yeni İlan Yayınlama:**
-
     - Laravel → n8n → Sahibinden API
     - Laravel → n8n → Hürriyet Emlak API
 
 2. **Müşteri Takibi:**
-
     - Yeni kişi → Google Sheets
     - Yeni kişi → CRM sistemi sync
 
 3. **Bildirimler:**
-
     - Yeni ilan → Telegram/WhatsApp
     - Fiyat değişikliği → Email
     - Randevu hatırlatma → SMS
 
 4. **Raporlama:**
-
     - Günlük satış raporu → Email
     - Haftalık performans → Slack
 
@@ -552,10 +548,10 @@ app(App\Services\N8nService::class)->sendNotification('test', ['message' => 'Hel
 
 ## 📚 Kaynaklar
 
--   [n8n Documentation](https://docs.n8n.io)
--   [n8n Community](https://community.n8n.io)
--   [n8n Templates](https://n8n.io/workflows)
--   [Laravel HTTP Client](https://laravel.com/docs/http-client)
+- [n8n Documentation](https://docs.n8n.io)
+- [n8n Community](https://community.n8n.io)
+- [n8n Templates](https://n8n.io/workflows)
+- [Laravel HTTP Client](https://laravel.com/docs/http-client)
 
 ---
 

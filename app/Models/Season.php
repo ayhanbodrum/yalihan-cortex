@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Carbon\Carbon;
 
 /**
@@ -13,46 +12,39 @@ use Carbon\Carbon;
  */
 class Season extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
+
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'yazlik_fiyatlandirma';
 
     protected $fillable = [
         'ilan_id',
-        'name',
-        'type',
-        'start_date',
-        'end_date',
-        'daily_price',
-        'weekly_price',
-        'monthly_price',
-        'currency',
-        'minimum_stay',
-        'maximum_stay',
-        'weekend_price',
-        'weekend_pricing_enabled',
-        'cleaning_fee',
-        'service_fee_percent',
-        'deposit_percent',
-        'is_active',
-        'priority',
-        'description',
-        'special_conditions',
+        'sezon_tipi', // ✅ Context7: Tablodaki gerçek kolon adı
+        'baslangic_tarihi', // ✅ Context7: Tablodaki gerçek kolon adı
+        'bitis_tarihi', // ✅ Context7: Tablodaki gerçek kolon adı
+        'gunluk_fiyat', // ✅ Context7: Tablodaki gerçek kolon adı
+        'haftalik_fiyat', // ✅ Context7: Tablodaki gerçek kolon adı
+        'aylik_fiyat', // ✅ Context7: Tablodaki gerçek kolon adı
+        'minimum_konaklama', // ✅ Context7: Tablodaki gerçek kolon adı
+        'maksimum_konaklama', // ✅ Context7: Tablodaki gerçek kolon adı
+        'ozel_gunler', // ✅ Context7: Tablodaki gerçek kolon adı
+        'status', // ✅ Context7: Tablodaki gerçek kolon adı
     ];
 
     protected $casts = [
-        'start_date' => 'date',
-        'end_date' => 'date',
-        'daily_price' => 'decimal:2',
-        'weekly_price' => 'decimal:2',
-        'monthly_price' => 'decimal:2',
-        'weekend_price' => 'decimal:2',
-        'cleaning_fee' => 'decimal:2',
-        'service_fee_percent' => 'decimal:2',
-        'minimum_stay' => 'integer',
-        'maximum_stay' => 'integer',
-        'deposit_percent' => 'integer',
-        'priority' => 'integer',
-        'is_active' => 'boolean',
-        'weekend_pricing_enabled' => 'boolean',
+        'baslangic_tarihi' => 'date',
+        'bitis_tarihi' => 'date',
+        'gunluk_fiyat' => 'decimal:2',
+        'haftalik_fiyat' => 'decimal:2',
+        'aylik_fiyat' => 'decimal:2',
+        'minimum_konaklama' => 'integer',
+        'maksimum_konaklama' => 'integer',
+        'ozel_gunler' => 'array',
+        'status' => 'boolean',
     ];
 
     /**
@@ -68,7 +60,7 @@ class Season extends Model
      */
     public function scopeActive($query)
     {
-        return $query->where('is_active', true);
+        return $query->where('status', true);
     }
 
     /**
@@ -76,7 +68,7 @@ class Season extends Model
      */
     public function scopeByType($query, $type)
     {
-        return $query->where('type', $type);
+        return $query->where('sezon_tipi', $type);
     }
 
     /**
@@ -84,9 +76,9 @@ class Season extends Model
      */
     public function scopeForDate($query, $date)
     {
-        return $query->where('start_date', '<=', $date)
-                    ->where('end_date', '>=', $date)
-                    ->active();
+        return $query->where('baslangic_tarihi', '<=', $date)
+            ->where('bitis_tarihi', '>=', $date)
+            ->active();
     }
 
     /**
@@ -95,13 +87,61 @@ class Season extends Model
     public function scopeForDateRange($query, $startDate, $endDate)
     {
         return $query->where(function ($q) use ($startDate, $endDate) {
-            $q->whereBetween('start_date', [$startDate, $endDate])
-              ->orWhereBetween('end_date', [$startDate, $endDate])
-              ->orWhere(function ($q) use ($startDate, $endDate) {
-                  $q->where('start_date', '<=', $startDate)
-                    ->where('end_date', '>=', $endDate);
-              });
+            $q->whereBetween('baslangic_tarihi', [$startDate, $endDate])
+                ->orWhereBetween('bitis_tarihi', [$startDate, $endDate])
+                ->orWhere(function ($q) use ($startDate, $endDate) {
+                    $q->where('baslangic_tarihi', '<=', $startDate)
+                        ->where('bitis_tarihi', '>=', $endDate);
+                });
         })->active();
+    }
+
+    /**
+     * Backward compatibility accessors
+     */
+    public function getStartDateAttribute()
+    {
+        return $this->baslangic_tarihi;
+    }
+
+    public function getEndDateAttribute()
+    {
+        return $this->bitis_tarihi;
+    }
+
+    public function getTypeAttribute()
+    {
+        return $this->sezon_tipi;
+    }
+
+    public function getDailyPriceAttribute()
+    {
+        return $this->gunluk_fiyat;
+    }
+
+    public function getWeeklyPriceAttribute()
+    {
+        return $this->haftalik_fiyat;
+    }
+
+    public function getMonthlyPriceAttribute()
+    {
+        return $this->aylik_fiyat;
+    }
+
+    public function getMinimumStayAttribute()
+    {
+        return $this->minimum_konaklama;
+    }
+
+    public function getMaximumStayAttribute()
+    {
+        return $this->maksimum_konaklama;
+    }
+
+    public function getIsActiveAttribute()
+    {
+        return $this->status;
     }
 
     /**
@@ -112,12 +152,15 @@ class Season extends Model
      */
     public function getPriceForDate($date, $isWeekend = false)
     {
-        // Hafta sonu fiyatı aktif ve hafta sonuysa
-        if ($this->weekend_pricing_enabled && $isWeekend && $this->weekend_price) {
-            return (float) $this->weekend_price;
+        // Özel günler kontrolü (ozel_gunler JSON'dan)
+        if ($this->ozel_gunler && is_array($this->ozel_gunler)) {
+            $dateKey = Carbon::parse($date)->format('Y-m-d');
+            if (isset($this->ozel_gunler[$dateKey])) {
+                return (float) $this->ozel_gunler[$dateKey];
+            }
         }
 
-        return (float) $this->daily_price;
+        return (float) $this->gunluk_fiyat;
     }
 
     /**
@@ -145,32 +188,24 @@ class Season extends Model
         // Haftalık/aylık indirim kontrolü
         $finalPrice = $dailyTotal;
 
-        if ($nightCount >= 30 && $this->monthly_price) {
+        if ($nightCount >= 30 && $this->aylik_fiyat) {
             // Aylık indirim
             $monthCount = floor($nightCount / 30);
             $remainingDays = $nightCount % 30;
-            $finalPrice = ($this->monthly_price * $monthCount) + ($this->daily_price * $remainingDays);
-        } elseif ($nightCount >= 7 && $this->weekly_price) {
+            $finalPrice = ($this->aylik_fiyat * $monthCount) + ($this->gunluk_fiyat * $remainingDays);
+        } elseif ($nightCount >= 7 && $this->haftalik_fiyat) {
             // Haftalık indirim
             $weekCount = floor($nightCount / 7);
             $remainingDays = $nightCount % 7;
-            $finalPrice = ($this->weekly_price * $weekCount) + ($this->daily_price * $remainingDays);
+            $finalPrice = ($this->haftalik_fiyat * $weekCount) + ($this->gunluk_fiyat * $remainingDays);
         }
-
-        // Ek ücretler
-        $cleaningFee = (float) $this->cleaning_fee;
-        $serviceFee = $finalPrice * ((float) $this->service_fee_percent / 100);
-        $depositAmount = $finalPrice * ($this->deposit_percent / 100);
 
         return [
             'night_count' => $nightCount,
             'base_price' => $dailyTotal,
             'final_price' => $finalPrice,
-            'cleaning_fee' => $cleaningFee,
-            'service_fee' => $serviceFee,
-            'total_price' => $finalPrice + $cleaningFee + $serviceFee,
-            'deposit_amount' => $depositAmount,
-            'currency' => $this->currency,
+            'total_price' => $finalPrice,
+            'currency' => 'TRY', // para_birimi ilanlar tablosunda
         ];
     }
 
@@ -179,7 +214,7 @@ class Season extends Model
      */
     public function meetsMinimumStay($nightCount)
     {
-        return $nightCount >= $this->minimum_stay;
+        return $nightCount >= $this->minimum_konaklama;
     }
 
     /**
@@ -187,11 +222,11 @@ class Season extends Model
      */
     public function meetsMaximumStay($nightCount)
     {
-        if (!$this->maximum_stay) {
+        if (!$this->maksimum_konaklama) {
             return true;
         }
 
-        return $nightCount <= $this->maximum_stay;
+        return $nightCount <= $this->maksimum_konaklama;
     }
 
     /**
@@ -201,7 +236,7 @@ class Season extends Model
     {
         return static::where('ilan_id', $ilanId)
             ->forDate($date)
-            ->orderBy('priority', 'desc')
+            ->orderBy('baslangic_tarihi', 'desc')
             ->first();
     }
 
@@ -212,7 +247,7 @@ class Season extends Model
     {
         $season = static::where('ilan_id', $ilanId)
             ->forDateRange($checkIn, $checkOut)
-            ->orderBy('priority', 'desc')
+            ->orderBy('baslangic_tarihi', 'desc') // ✅ Context7: Tablodaki gerçek kolon adı
             ->first();
 
         if (!$season) {

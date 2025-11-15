@@ -175,12 +175,7 @@
         },
         "deploy_production": {
           "trigger": "push to main",
-          "jobs": [
-            "Run tests",
-            "Build assets",
-            "Deploy to server",
-            "Send Slack notification"
-          ],
+          "jobs": ["Run tests", "Build assets", "Deploy to server", "Send Slack notification"],
           "duration": "5-8 minutes"
         },
         "code_quality": {
@@ -309,11 +304,7 @@
     "violations_fixed": 8,
     "files_updated": 3,
     "compliance_improvement": "+6.3% (92.5% → 98.8%)",
-    "patterns_learned": [
-      "durum → status",
-      "aktif → active",
-      "taslak → draft"
-    ]
+    "patterns_learned": ["durum → status", "aktif → active", "taslak → draft"]
   },
   "documentation_created": [
     "HORIZON_SENTRY_SETUP_GUIDE.md",
@@ -406,4 +397,3 @@
     "production_readiness": "90%"
   }
 }
-

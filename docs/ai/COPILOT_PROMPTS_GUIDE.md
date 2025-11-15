@@ -149,10 +149,10 @@ Role-based access control dahil et"
 
 Copilot'a ASLA bunları söyleme:
 
--   "Bootstrap kullan"
--   "jQuery ekle"
--   "status field oluştur"
--   "is_active boolean ekle"
--   "il_id relationship oluştur"
+- "Bootstrap kullan"
+- "jQuery ekle"
+- "status field oluştur"
+- "is_active boolean ekle"
+- "il_id relationship oluştur"
 
 Bu patterns Context7 kurallarına aykırıdır!

@@ -28,19 +28,19 @@
                     <span class="text-red-500 font-bold">*</span>
                 </label>
                 <div class="relative">
-                    <input 
-                        type="text" 
-                        name="fiyat" 
-                        id="fiyat" 
+                    <input
+                        type="text"
+                        name="fiyat"
+                        id="fiyat"
                         x-model="mainPriceInput"
-                        @input="onPriceInputChange()" 
-                        @blur="onPriceBlur()" 
+                        @input="onPriceInputChange()"
+                        @blur="onPriceBlur()"
                         required
                         placeholder="450000 veya 450-"
                         class="w-full px-5 py-4 pr-32
-                               border-2 border-gray-300 dark:border-gray-600 
-                               rounded-xl 
-                               bg-white dark:bg-gray-800 
+                               border-2 border-gray-300 dark:border-gray-600
+                               rounded-xl
+                               bg-white dark:bg-gray-800
                                text-gray-900 dark:text-gray-100 text-lg font-semibold
                                placeholder-gray-400 dark:placeholder-gray-500
                                focus:ring-4 focus:ring-yellow-500/20 focus:border-yellow-500 dark:focus:border-yellow-400
@@ -48,15 +48,15 @@
                                hover:border-gray-400 dark:hover:border-gray-500
                                shadow-sm hover:shadow-md focus:shadow-lg">
                     <div class="absolute inset-y-0 right-0 flex items-center pr-4">
-                        <select 
-                            x-model="mainCurrency" 
-                            @change="onCurrencyChange()" 
-                            name="para_birimi" 
+                        <select
+                            x-model="mainCurrency"
+                            @change="onCurrencyChange()"
+                            name="para_birimi"
                             required
-                            class="px-3 py-2 
+                            class="px-3 py-2
                                    border-0 border-l-2 border-gray-200 dark:border-gray-600
-                                   bg-gray-50 dark:bg-gray-700 
-                                   text-gray-900 dark:text-gray-100 
+                                   bg-gray-50 dark:bg-gray-700
+                                   text-gray-900 dark:text-gray-100
                                    font-semibold text-sm rounded-r-lg
                                    focus:outline-none focus:ring-2 focus:ring-yellow-500/50
                                    cursor-pointer">
@@ -67,7 +67,7 @@
                         </select>
                     </div>
                 </div>
-                
+
                 <!-- Price Display - Enhanced -->
                 <div class="mt-4 space-y-3">
                     <div class="flex items-center gap-2 p-3 bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 rounded-xl border border-yellow-200 dark:border-yellow-800/30">
@@ -187,9 +187,9 @@
                         <input type="text" x-model="startingPriceFormatted" @input="formatStartingPrice()"
                             name="baslangic_fiyati"
                             class="w-full px-4 py-3.5
-                                   border-2 border-gray-300 dark:border-gray-600 
-                                   rounded-xl 
-                                   bg-white dark:bg-gray-800 
+                                   border-2 border-gray-300 dark:border-gray-600
+                                   rounded-xl
+                                   bg-white dark:bg-gray-800
                                    text-gray-900 dark:text-gray-100
                                    placeholder-gray-400 dark:placeholder-gray-500
                                    focus:ring-4 focus:ring-green-500/20 focus:border-green-500 dark:focus:border-green-400

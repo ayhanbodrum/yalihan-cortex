@@ -1,24 +1,24 @@
 {{--
     Alert Component
-    
+
     @component x-admin.alert
     @description Modern alert/notification boxes with icons
-    
+
     @props
         - type: string (optional) - Alert type (success, info, warning, error) - default: info
         - dismissible: bool (optional) - Can be dismissed - default: false
         - icon: bool (optional) - Show icon - default: true
         - title: string (optional) - Alert title
-    
+
     @example
         <x-admin.alert type="success" :dismissible="true">
             Property successfully saved!
         </x-admin.alert>
-        
+
         <x-admin.alert type="error" title="Error">
             An error occurred while saving.
         </x-admin.alert>
-    
+
     @accessibility
         - ARIA role="alert"
         - Color contrast compliance
@@ -63,7 +63,7 @@ $types = [
 $style = $types[$type] ?? $types['info'];
 @endphp
 
-<div 
+<div
     @if($dismissible)
     x-data="{ show: true }"
     x-show="show"
@@ -92,7 +92,7 @@ $style = $types[$type] ?? $types['info'];
                 {{ $title }}
             </h3>
             @endif
-            
+
             <div class="text-sm {{ $style['text'] }}">
                 {{ $slot }}
             </div>
@@ -103,8 +103,8 @@ $style = $types[$type] ?? $types['info'];
         <button
             type="button"
             @click="show = false"
-            class="{{ $style['text'] }} ml-3 flex-shrink-0 inline-flex rounded-lg p-1.5 
-                   hover:bg-black/10 dark:hover:bg-white/10 
+            class="{{ $style['text'] }} ml-3 flex-shrink-0 inline-flex rounded-lg p-1.5
+                   hover:bg-black/10 dark:hover:bg-white/10
                    focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-{{ explode('-', $style['text'])[1] }}-500
                    transition-colors duration-200"
         >

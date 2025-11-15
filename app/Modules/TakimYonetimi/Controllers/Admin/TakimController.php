@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\View\View;
 
 class TakimController extends Controller
@@ -62,7 +63,7 @@ class TakimController extends Controller
         // İstatistikler
         $istatistikler = [
             'toplam_uye' => $takimUyeleri->total(),
-            'status_uye' => TakimUyesi::where('status', 'active')->count(),
+            'status_uye' => TakimUyesi::where('status', 'aktif')->count(),
             'toplam_gorev' => \App\Modules\TakimYonetimi\Models\Gorev::count(),
             'ortalama_performans' => TakimUyesi::avg('performans_skoru') ?? 0,
         ];
@@ -111,7 +112,7 @@ class TakimController extends Controller
         // Aktif görevler
         $statusGorevler = $takimUyesi->gorevler()
             ->whereIn('status', ['bekliyor', 'devam_ediyor'])
-            ->orderBy('deadline', 'asc')
+            ->orderBy('bitis_tarihi', 'asc')
             ->limit(10)
             ->get();
 
@@ -356,20 +357,24 @@ class TakimController extends Controller
         // Takım genel performansı
         $genelPerformans = [
             'toplam_uye' => TakimUyesi::count(),
-            'status_uye' => TakimUyesi::where('status', 'active')->count(),
+            'status_uye' => TakimUyesi::where('status', 'aktif')->count(),
             'toplam_gorev' => Gorev::count(),
             'tamamlanan_gorev' => Gorev::where('status', 'tamamlandi')->count(),
             'devam_eden_gorev' => Gorev::where('status', 'devam_ediyor')->count(),
-            'geciken_gorev' => Gorev::where('deadline', '<', now())
+            'geciken_gorev' => Gorev::where('bitis_tarihi', '<', now())
                 ->where('status', '!=', 'tamamlandi')
                 ->count(),
         ];
 
-        // Rol bazlı dağılım
-        $rolDagilimi = TakimUyesi::selectRaw('rol, COUNT(*) as sayi')
-            ->groupBy('rol')
+        // Rol/Departman bazlı dağılım (Context7: schema uyumu)
+        $groupColumn = Schema::hasColumn('takim_uyeleri', 'rol')
+            ? 'rol'
+            : (Schema::hasColumn('takim_uyeleri', 'departman') ? 'departman' : 'status');
+
+        $rolDagilimi = TakimUyesi::selectRaw($groupColumn . ' as grp, COUNT(*) as sayi')
+            ->groupBy('grp')
             ->get()
-            ->pluck('sayi', 'rol');
+            ->pluck('sayi', 'grp');
 
         // Performans dağılımı
         $performansDagilimi = [
@@ -387,11 +392,17 @@ class TakimController extends Controller
             ->orderBy('ortalama_performans', 'desc')
             ->get();
 
+        // Context7: Danışmanlar listesi (view için gerekli)
+        $danismanlar = \App\Models\User::whereHas('roles', function($q) {
+            $q->where('name', 'danisman');
+        })->select(['id', 'name', 'email'])->get();
+
         return view('admin.takim-yonetimi.takim.takim-performans', compact(
             'genelPerformans',
             'rolDagilimi',
             'performansDagilimi',
-            'lokasyonPerformans'
+            'lokasyonPerformans',
+            'danismanlar'
         ));
     }
 

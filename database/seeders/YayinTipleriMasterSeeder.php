@@ -11,7 +11,7 @@ class YayinTipleriMasterSeeder extends Seeder
     /**
      * 20 Yayın Tipi - Kapsamlı Tanımlamalar
      * Context7 Compliant - 2025-10-23
-     * 
+     *
      * NOT: Yayın tipleri ilan_kategori_yayin_tipleri tablosunda
      * Her yayın tipi birden fazla kategoriye bağlanabilir
      */
@@ -26,7 +26,7 @@ class YayinTipleriMasterSeeder extends Seeder
                 'kategori_uygunluk' => ['Tüm kategoriler'],
                 'min_alan_m2' => 20,
                 'min_fiyat' => 100000,
-                'order' => 1,
+                'display_order' => 1,
             ],
             [
                 'yayin_tipi' => 'Kiralık',
@@ -34,7 +34,7 @@ class YayinTipleriMasterSeeder extends Seeder
                 'kategori_uygunluk' => ['Tüm kategoriler'],
                 'min_alan_m2' => null,
                 'min_fiyat' => 1000,
-                'order' => 2,
+                'display_order' => 2,
             ],
             [
                 'yayin_tipi' => 'Günlük Kiralık',
@@ -42,7 +42,7 @@ class YayinTipleriMasterSeeder extends Seeder
                 'kategori_uygunluk' => ['Yazlık', 'Apart', 'Villa', 'Turistik Tesisler'],
                 'min_alan_m2' => null,
                 'min_fiyat' => 500,
-                'order' => 3,
+                'display_order' => 3,
             ],
             [
                 'yayin_tipi' => 'Sezonluk Kiralık',
@@ -50,7 +50,7 @@ class YayinTipleriMasterSeeder extends Seeder
                 'kategori_uygunluk' => ['Yazlık', 'Villa', 'Turistik Tesisler'],
                 'min_alan_m2' => null,
                 'min_fiyat' => 10000,
-                'order' => 4,
+                'display_order' => 4,
             ],
             [
                 'yayin_tipi' => 'Devren',
@@ -58,7 +58,7 @@ class YayinTipleriMasterSeeder extends Seeder
                 'kategori_uygunluk' => ['Dükkan', 'Restaurant/Cafe', 'Otel', 'Fabrika'],
                 'min_alan_m2' => null,
                 'min_fiyat' => 50000,
-                'order' => 5,
+                'display_order' => 5,
             ],
 
             // ====== ÖZEL YAYIN TİPLERİ (15) ======
@@ -68,7 +68,7 @@ class YayinTipleriMasterSeeder extends Seeder
                 'kategori_uygunluk' => ['İmarlı Arsa', 'Turistik Arsa', 'Ticari Arsa'],
                 'min_alan_m2' => 200,
                 'min_fiyat' => null,
-                'order' => 6,
+                'display_order' => 6,
             ],
             [
                 'yayin_tipi' => 'Yatırımlık',
@@ -76,7 +76,7 @@ class YayinTipleriMasterSeeder extends Seeder
                 'kategori_uygunluk' => ['Tüm kategoriler'],
                 'min_alan_m2' => null,
                 'min_fiyat' => null,
-                'order' => 7,
+                'display_order' => 7,
             ],
             [
                 'yayin_tipi' => 'Acil Satılık',
@@ -84,7 +84,7 @@ class YayinTipleriMasterSeeder extends Seeder
                 'kategori_uygunluk' => ['Tüm kategoriler'],
                 'min_alan_m2' => null,
                 'min_fiyat' => null,
-                'order' => 8,
+                'display_order' => 8,
             ],
             [
                 'yayin_tipi' => 'İhaleli Satış',
@@ -92,7 +92,7 @@ class YayinTipleriMasterSeeder extends Seeder
                 'kategori_uygunluk' => ['Arsa', 'İşyeri', 'Turistik Tesis'],
                 'min_alan_m2' => null,
                 'min_fiyat' => null,
-                'order' => 9,
+                'display_order' => 9,
             ],
             [
                 'yayin_tipi' => 'Trampalı',
@@ -100,7 +100,7 @@ class YayinTipleriMasterSeeder extends Seeder
                 'kategori_uygunluk' => ['Tüm kategoriler'],
                 'min_alan_m2' => null,
                 'min_fiyat' => null,
-                'order' => 10,
+                'display_order' => 10,
             ],
             [
                 'yayin_tipi' => 'Krediye Uygun',
@@ -108,7 +108,7 @@ class YayinTipleriMasterSeeder extends Seeder
                 'kategori_uygunluk' => ['Konut', 'İşyeri'],
                 'min_alan_m2' => null,
                 'min_fiyat' => null,
-                'order' => 11,
+                'display_order' => 11,
             ],
             [
                 'yayin_tipi' => 'Lüks Segment',
@@ -116,7 +116,7 @@ class YayinTipleriMasterSeeder extends Seeder
                 'kategori_uygunluk' => ['Villa', 'Residence', 'Plaza/AVM'],
                 'min_alan_m2' => 150,
                 'min_fiyat' => 5000000,
-                'order' => 12,
+                'display_order' => 12,
             ],
             [
                 'yayin_tipi' => 'İnşaat Halinde',
@@ -124,7 +124,7 @@ class YayinTipleriMasterSeeder extends Seeder
                 'kategori_uygunluk' => ['Konut Projesi', 'Villa', 'Daire'],
                 'min_alan_m2' => null,
                 'min_fiyat' => null,
-                'order' => 13,
+                'display_order' => 13,
             ],
             [
                 'yayin_tipi' => 'Sıfır/Yeni',
@@ -132,7 +132,7 @@ class YayinTipleriMasterSeeder extends Seeder
                 'kategori_uygunluk' => ['Konut', 'İşyeri'],
                 'min_alan_m2' => null,
                 'min_fiyat' => null,
-                'order' => 14,
+                'display_order' => 14,
             ],
             [
                 'yayin_tipi' => 'Öğrenci Evi',
@@ -140,7 +140,7 @@ class YayinTipleriMasterSeeder extends Seeder
                 'kategori_uygunluk' => ['Daire', 'Apart', 'Müstakil Ev'],
                 'min_alan_m2' => 40,
                 'min_fiyat' => null,
-                'order' => 15,
+                'display_order' => 15,
             ],
             [
                 'yayin_tipi' => 'Sahibinden',
@@ -148,7 +148,7 @@ class YayinTipleriMasterSeeder extends Seeder
                 'kategori_uygunluk' => ['Tüm kategoriler'],
                 'min_alan_m2' => null,
                 'min_fiyat' => null,
-                'order' => 16,
+                'display_order' => 16,
             ],
             [
                 'yayin_tipi' => 'Ofis Dönüşümlü',
@@ -156,7 +156,7 @@ class YayinTipleriMasterSeeder extends Seeder
                 'kategori_uygunluk' => ['Daire', 'Ofis'],
                 'min_alan_m2' => 50,
                 'min_fiyat' => null,
-                'order' => 17,
+                'display_order' => 17,
             ],
             [
                 'yayin_tipi' => 'Sosyal Konut',
@@ -164,7 +164,7 @@ class YayinTipleriMasterSeeder extends Seeder
                 'kategori_uygunluk' => ['Konut Projesi', 'Daire'],
                 'min_alan_m2' => null,
                 'min_fiyat' => null,
-                'order' => 18,
+                'display_order' => 18,
             ],
             [
                 'yayin_tipi' => 'Ön Satış',
@@ -172,7 +172,7 @@ class YayinTipleriMasterSeeder extends Seeder
                 'kategori_uygunluk' => ['Projeler'],
                 'min_alan_m2' => null,
                 'min_fiyat' => null,
-                'order' => 19,
+                'display_order' => 19,
             ],
             [
                 'yayin_tipi' => 'Resmi Kurum',
@@ -180,7 +180,7 @@ class YayinTipleriMasterSeeder extends Seeder
                 'kategori_uygunluk' => ['Tüm kategoriler'],
                 'min_alan_m2' => null,
                 'min_fiyat' => null,
-                'order' => 20,
+                'display_order' => 20,
             ],
         ];
 
@@ -248,7 +248,7 @@ class YayinTipleriMasterSeeder extends Seeder
                         'aciklama' => null,
                         'min_alan_m2' => null,
                         'min_fiyat' => null,
-                        'order' => 99,
+                        'display_order' => 99,
                     ];
                 }
 
@@ -259,7 +259,7 @@ class YayinTipleriMasterSeeder extends Seeder
                     ],
                     [
                         'status' => 'Aktif',
-                        'order' => $yayinTipiTanim['order'] ?? 99,
+                        'display_order' => $yayinTipiTanim['display_order'] ?? 99,
                     ]
                 );
 
@@ -277,4 +277,3 @@ class YayinTipleriMasterSeeder extends Seeder
         $this->command->info("   🎯 Benzersiz tip: " . IlanKategoriYayinTipi::distinct('yayin_tipi')->count('yayin_tipi'));
     }
 }
-

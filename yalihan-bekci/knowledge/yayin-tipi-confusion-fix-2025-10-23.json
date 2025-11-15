@@ -93,8 +93,8 @@
               "parent_id": "Konut ID",
               "required_features": "✅ Bahçe, Otopark (MANTIKLI)",
               "children": [
-                {"name": "Satılık", "seviye": 2, "required_features": "❌ (ANLAMSIZ)"},
-                {"name": "Kiralık", "seviye": 2, "required_features": "❌ (ANLAMSIZ)"}
+                { "name": "Satılık", "seviye": 2, "required_features": "❌ (ANLAMSIZ)" },
+                { "name": "Kiralık", "seviye": 2, "required_features": "❌ (ANLAMSIZ)" }
               ]
             }
           },
@@ -104,8 +104,8 @@
               "parent_id": "Konut ID",
               "required_features": "✅ Asansör, Kat (MANTIKLI)",
               "children": [
-                {"name": "Satılık", "seviye": 2},
-                {"name": "Kiralık", "seviye": 2}
+                { "name": "Satılık", "seviye": 2 },
+                { "name": "Kiralık", "seviye": 2 }
               ]
             }
           }
@@ -166,10 +166,10 @@
   "what_is_yayin_tipi": {
     "definition": "İlanın hangi amaçla yayınlandığı",
     "examples": [
-      {"name": "Satılık", "meaning": "İlan satış için"},
-      {"name": "Kiralık", "meaning": "İlan uzun süreli kiralama için"},
-      {"name": "Günlük Kiralık", "meaning": "İlan günlük/haftalık kiralama için"},
-      {"name": "Devren", "meaning": "İşyeri devir için"}
+      { "name": "Satılık", "meaning": "İlan satış için" },
+      { "name": "Kiralık", "meaning": "İlan uzun süreli kiralama için" },
+      { "name": "Günlük Kiralık", "meaning": "İlan günlük/haftalık kiralama için" },
+      { "name": "Devren", "meaning": "İşyeri devir için" }
     ],
     "NOT_examples": [
       "Villa (Bu ALT KATEGORİ)",
@@ -259,4 +259,3 @@
     "key_lesson": "Hierarchical data'da her seviyenin amacı farklı. Özellik zorunluluğu kategoriye bağlı, yayın tipine değil. Mantık hatası = kullanıcı kafası karışır."
   }
 }
-

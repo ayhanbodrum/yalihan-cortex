@@ -90,4 +90,3 @@ echo "   • Backup: $BACKUP_DIR"
 echo ""
 echo "🔄 Sonraki adım: php artisan view:clear"
 echo "═══════════════════════════════════════"
-

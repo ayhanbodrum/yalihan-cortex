@@ -13,6 +13,7 @@
 **Strateji:** `direct_columns`
 
 **Alanlar (16):**
+
 ```sql
 ada_no, parsel_no, ada_parsel,
 imar_statusu, kaks, taks, gabari,
@@ -23,12 +24,14 @@ elektrik_altyapisi, su_altyapisi, dogalgaz_altyapisi
 ```
 
 **Neden Direct Column?**
+
 - ✅ Standart alanlar (her arsada var)
 - ✅ Sık aranır (index gerekli)
 - ✅ TKGM standardı (değişmez)
 - ✅ Basit veri tipleri
 
 **Yeni Alan Eklerken:**
+
 ```bash
 # 1. Migration oluştur
 php artisan make:migration add_[field]_to_ilanlar_table
@@ -50,6 +53,7 @@ php artisan fields:validate
 **Strateji:** `direct_columns`
 
 **Alanlar (Core):**
+
 ```sql
 oda_sayisi, salon_sayisi, banyo_sayisi,
 kat, toplam_kat,
@@ -60,6 +64,7 @@ site_ozellikleri (JSON)
 ```
 
 **Neden Direct Column?**
+
 - ✅ Standart alanlar (her konutta var)
 - ✅ Sık filtrelenir (fiyat/m², oda sayısı)
 - ✅ Performans kritik (en çok ilan kategorisi)
@@ -71,22 +76,23 @@ site_ozellikleri (JSON)
 **Strateji:** `separate_tables`
 
 **Tablo Yapısı:**
+
 ```sql
 ilanlar (Core fields)
   ├─ id, baslik, fiyat, kategori_id
-  
+
 yazlik_details (Yazlık özel alanlar)
   ├─ ilan_id (FK)
   ├─ gunluk_fiyat, haftalik_fiyat, aylik_fiyat
   ├─ havuz, deniz_manzarasi, wifi_hizi
   └─ min_konaklama, max_konaklama
-  
+
 yazlik_fiyatlandirma (Sezonluk pricing - 1:N)
   ├─ ilan_id (FK)
   ├─ sezon_tipi (yaz, kis, ara_sezon)
   ├─ gunluk_fiyat, haftalik_fiyat
   └─ sezon_baslangic, sezon_bitis
-  
+
 yazlik_rezervasyonlar (Booking sistem - 1:N)
   ├─ ilan_id (FK)
   ├─ check_in, check_out
@@ -95,6 +101,7 @@ yazlik_rezervasyonlar (Booking sistem - 1:N)
 ```
 
 **Neden Separate Tables?**
+
 - ✅ Kompleks iş mantığı (sezonluk fiyatlandırma)
 - ✅ 1:N ilişkiler (3 sezon = 3 fiyat)
 - ✅ Ayrı business logic (rezervasyon sistemi)
@@ -102,12 +109,14 @@ yazlik_rezervasyonlar (Booking sistem - 1:N)
 - ✅ External integrations (Airbnb, Booking.com)
 
 **Avantajlar:**
+
 - ✅ `ilanlar` tablosu temiz kalıyor
 - ✅ Sezonluk fiyat değişikliği kolay
 - ✅ Rezervasyon sistemi bağımsız
 - ✅ Platform sync etkilenmiyor
 
 **Yeni Alan Eklerken:**
+
 ```bash
 # Statik alan için:
 php artisan make:migration add_[field]_to_yazlik_details_table
@@ -123,17 +132,20 @@ php artisan make:migration create_yazlik_[feature]_table
 **Strateji:** `direct_columns_monitored`
 
 **Mevcut Alanlar (6):**
+
 ```sql
 isyeri_tipi, kira_bilgisi, ciro_bilgisi,
 ruhsat_durumu, personel_kapasitesi, isyeri_cephesi
 ```
 
 **Neden Direct (Şimdilik)?**
+
 - ✅ Az kullanılan (ilanların ~%10'u)
 - ✅ Basit alanlar
 - ⚠️ Monitored (growth izlenecek)
 
 **İzleme Kriterleri:**
+
 ```yaml
 EĞER aşağıdakilerden biri olursa → Separate Table'a geç:
 
@@ -144,6 +156,7 @@ EĞER aşağıdakilerden biri olursa → Separate Table'a geç:
 ```
 
 **Separate Table'a Geçiş Planı (İhtiyaç halinde):**
+
 ```sql
 -- Gelecekte:
 ilanlar (Core)
@@ -160,6 +173,7 @@ isyeri_ruhsatlar (License history)
 **Strateji:** `features` (Entity-Attribute-Value)
 
 **Kullanım Senaryosu:**
+
 ```yaml
 ✅ UYGUN:
   - Nadir kullanılan özellikler (%5 < usage)
@@ -180,18 +194,20 @@ isyeri_ruhsatlar (License history)
 ```
 
 **Tablo Yapısı:**
+
 ```sql
 features
   ├─ id, name, type, feature_category_id
-  
+
 feature_categories
   ├─ id, name, applies_to (JSON)
-  
+
 ilan_feature (Pivot)
   ├─ ilan_id, feature_id, value
 ```
 
 **Yeni Feature Eklerken:**
+
 ```bash
 # Admin Panel → Özellikler → Yeni Özellik
 # applies_to: ["arsa", "konut"] seç
@@ -271,19 +287,20 @@ fi
 
 ## 📊 MEVCUT DURUM ANALİZİ
 
-| Kategori | Strateji | Alan Sayısı | Durum |
-|----------|----------|-------------|-------|
-| **Arsa** | Direct Columns | 16 | ✅ Optimal |
-| **Konut** | Direct Columns | ~12 | ✅ Optimal |
-| **Yazlık** | Separate Tables | 3 tablo | ✅ BEST PRACTICE |
-| **İşyeri** | Direct (Monitored) | 6 | ⚠️ İzleniyor |
-| **Features** | EAV | 100+ | ✅ Optimal |
+| Kategori     | Strateji           | Alan Sayısı | Durum            |
+| ------------ | ------------------ | ----------- | ---------------- |
+| **Arsa**     | Direct Columns     | 16          | ✅ Optimal       |
+| **Konut**    | Direct Columns     | ~12         | ✅ Optimal       |
+| **Yazlık**   | Separate Tables    | 3 tablo     | ✅ BEST PRACTICE |
+| **İşyeri**   | Direct (Monitored) | 6           | ⚠️ İzleniyor     |
+| **Features** | EAV                | 100+        | ✅ Optimal       |
 
 ---
 
 ## 🚀 BEST PRACTICES
 
 ### **DO:**
+
 - ✅ Standart alanlar için direct columns kullan
 - ✅ Time-based data için separate tables kullan
 - ✅ Nadir alanlar için features kullan
@@ -291,6 +308,7 @@ fi
 - ✅ Separate table geçişinde migration plan hazırla
 
 ### **DON'T:**
+
 - ❌ Her yeni alan için migration yapma (nadir alanlar Features'ta olmalı)
 - ❌ Time-based data'yı direct column'da tutma
 - ❌ Kompleks JSON'ları ilanlar tablosunda şişirme
@@ -301,6 +319,7 @@ fi
 ## 📝 MIGRATION PATTERN'LERİ
 
 ### **Pattern 1: Direct Column Ekleme**
+
 ```php
 // Migration: 2025_11_01_add_new_field_to_ilanlar.php
 public function up()
@@ -313,6 +332,7 @@ public function up()
 ```
 
 ### **Pattern 2: Separate Table Oluşturma**
+
 ```php
 // Migration: 2025_11_01_create_category_details_table.php
 public function up()
@@ -322,13 +342,14 @@ public function up()
         $table->foreignId('ilan_id')->constrained('ilanlar')->onDelete('cascade');
         $table->string('special_field')->nullable();
         $table->timestamps();
-        
+
         $table->index('ilan_id');
     });
 }
 ```
 
 ### **Pattern 3: Feature Ekleme (No Migration)**
+
 ```php
 // Seeder veya Admin Panel
 Feature::create([

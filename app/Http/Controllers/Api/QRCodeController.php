@@ -6,19 +6,22 @@ use App\Http\Controllers\Controller;
 use App\Models\Ilan;
 use App\Services\QRCodeService;
 use App\Services\AIService;
-use Illuminate\Http\Request;
 use App\Services\Response\ResponseService;
 use App\Services\Logging\LogService;
+use App\Traits\ValidatesApiRequests;
+use Illuminate\Http\Request;
 
 /**
  * QR Code API Controller
- * 
+ *
  * Context7: QR code generation API endpoints
  * - Generate QR codes for listings
  * - AI-powered QR code suggestions
  */
 class QRCodeController extends Controller
 {
+    use ValidatesApiRequests;
+
     protected QRCodeService $qrCodeService;
     protected AIService $aiService;
 
@@ -30,25 +33,37 @@ class QRCodeController extends Controller
 
     /**
      * Generate QR code for a listing
-     * 
+     *
      * @param Request $request
      * @param int $ilanId
      * @return \Illuminate\Http\JsonResponse
      */
     public function generateForListing(Request $request, int $ilanId)
     {
+        // ✅ REFACTORED: Using ValidatesApiRequests trait (optional validation)
+        $validated = $this->validateRequestFlexible($request, [
+            'size' => 'sometimes|integer|min:100|max:1000',
+            'format' => 'sometimes|in:png,jpg,svg',
+            'foreground' => 'sometimes|array|size:3',
+            'background' => 'sometimes|array|size:3'
+        ]);
+
+        if ($validated instanceof \Illuminate\Http\JsonResponse) {
+            return $validated;
+        }
+
         try {
             $ilan = Ilan::findOrFail($ilanId);
-            
+
             $options = [
                 'size' => $request->input('size', 300),
                 'format' => $request->input('format', 'png'),
                 'foreground' => $request->input('foreground', [0, 0, 0]),
                 'background' => $request->input('background', [255, 255, 255])
             ];
-            
+
             $qrData = $this->qrCodeService->generateForListing($ilanId, $options);
-            
+
             return ResponseService::success([
                 'qr_code' => $qrData,
                 'ilan' => [
@@ -65,19 +80,28 @@ class QRCodeController extends Controller
 
     /**
      * Generate QR code for WhatsApp sharing
-     * 
+     *
      * @param Request $request
      * @param int $ilanId
      * @return \Illuminate\Http\JsonResponse
      */
     public function generateForWhatsApp(Request $request, int $ilanId)
     {
+        // ✅ REFACTORED: Using ValidatesApiRequests trait (optional validation)
+        $validated = $this->validateRequestFlexible($request, [
+            'phone' => 'sometimes|string|max:20'
+        ]);
+
+        if ($validated instanceof \Illuminate\Http\JsonResponse) {
+            return $validated;
+        }
+
         try {
             $ilan = Ilan::findOrFail($ilanId);
             $phoneNumber = $request->input('phone', config('app.whatsapp_number'));
-            
+
             $qrData = $this->qrCodeService->generateForWhatsApp($ilanId, $phoneNumber);
-            
+
             return ResponseService::success([
                 'qr_code' => $qrData,
                 'whatsapp_url' => "https://wa.me/{$phoneNumber}",
@@ -94,16 +118,17 @@ class QRCodeController extends Controller
 
     /**
      * Get AI-powered QR code suggestions
-     * 
+     *
      * @param Request $request
      * @param int $ilanId
      * @return \Illuminate\Http\JsonResponse
      */
     public function getAISuggestions(Request $request, int $ilanId)
     {
+        // ✅ REFACTORED: Using ValidatesApiRequests trait (no validation needed, but consistent pattern)
         try {
             $ilan = Ilan::findOrFail($ilanId);
-            
+
             // AI service ile QR code kullanım önerileri
             $context = [
                 'ilan' => [
@@ -115,9 +140,9 @@ class QRCodeController extends Controller
                 ],
                 'type' => 'qr_code_suggestions'
             ];
-            
+
             $suggestions = $this->aiService->suggest($context, 'qr_code');
-            
+
             return ResponseService::success([
                 'suggestions' => $suggestions,
                 'usage_tips' => [
@@ -135,14 +160,14 @@ class QRCodeController extends Controller
 
     /**
      * Get QR code statistics
-     * 
+     *
      * @return \Illuminate\Http\JsonResponse
      */
     public function getStatistics()
     {
         try {
             $stats = $this->qrCodeService->getStatistics();
-            
+
             return ResponseService::success($stats, 'QR kod istatistikleri başarıyla alındı');
         } catch (\Exception $e) {
             LogService::error('QR code statistics failed', [], $e);
@@ -150,4 +175,3 @@ class QRCodeController extends Controller
         }
     }
 }
-

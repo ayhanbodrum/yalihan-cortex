@@ -13,6 +13,7 @@
 **Dosya:** `resources/views/admin/property-type-manager/field-dependencies.blade.php`
 
 **Eklenenler:**
+
 - ✅ Sortable.js CDN (v1.15.0)
 - ✅ Drag handle (☰ icon)
 - ✅ Visual feedback animations
@@ -21,43 +22,47 @@
 - ✅ Dark mode support
 
 **JavaScript Implementation:**
+
 ```javascript
 // Satır 666-791
-document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('.yayin-tipi-group .space-y-2').forEach(container => {
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.yayin-tipi-group .space-y-2').forEach((container) => {
         new Sortable(container, {
             animation: 150,
             handle: '.drag-handle',
             ghostClass: 'sortable-ghost',
             chosenClass: 'sortable-chosen',
             dragClass: 'sortable-drag',
-            
-            onEnd: function(evt) {
+
+            onEnd: function (evt) {
                 // Tüm field ID'lerini topla
                 const fieldIds = [];
                 const rows = container.querySelectorAll('.field-row');
                 rows.forEach((row, index) => {
                     fieldIds.push({
                         id: row.dataset.fieldId,
-                        order: index + 1
+                        order: index + 1,
                     });
                 });
-                
+
                 // AJAX ile kaydet
                 updateFieldOrder(fieldIds);
-            }
+            },
         });
     });
 });
 ```
 
 **CSS Animations:**
+
 ```css
 /* Satır 659-738 */
 .drag-handle {
     cursor: grab !important;
     opacity: 0.4;
-    transition: opacity 0.2s ease, transform 0.2s ease;
+    transition:
+        opacity 0.2s ease,
+        transform 0.2s ease;
 }
 
 .drag-handle:hover {
@@ -79,12 +84,14 @@ document.addEventListener('DOMContentLoaded', function() {
 ```
 
 **AJAX Endpoint:**
+
 ```
 Route: POST /admin/property-type-manager/update-field-order
 Controller: PropertyTypeManagerController@updateFieldOrder (zaten vardı!)
 ```
 
 **Test:**
+
 ```
 URL: http://127.0.0.1:8000/admin/property-type-manager/4/field-dependencies
 Action: ☰ iconunu sürükle
@@ -100,11 +107,13 @@ Result: ✅ AJAX kayıt + Toast notification
 #### **A. Show Page (property-type-manager/show.blade.php)**
 
 **Filtrelenen Yerler:**
+
 1. **Alt Kategori Checkboxları (Satır 144)**
 2. **Table Header (Satır 195)**
 3. **Table Body (Satır 220)**
 
 **Filtrelenen Tipler:**
+
 ```php
 $excludedYayinTipleri = ['Devren Satılık', 'Günlük Kiralık', 'Satılık'];
 ```
@@ -112,12 +121,14 @@ $excludedYayinTipleri = ['Devren Satılık', 'Günlük Kiralık', 'Satılık'];
 #### **B. Field Dependencies Page**
 
 **Filtrelenen Yerler:**
+
 1. **Filter Dropdown (Satır 85-94)**
 2. **Field List Grupları (Satır 117-124)**
 3. **Add Field Modal (Satır 296-306)**
 4. **Edit Field Modal (Satır 501-511)**
 
 **Sonuç:**
+
 ```
 Yazlık Kiralama kategorisinde artık sadece:
 ✅ Günlük Kiralama
@@ -141,12 +152,14 @@ Görünmüyor:
 **Çözüm:**
 
 **Modal Background:**
+
 ```diff
 - dark:bg-gray-800 (neredeyse siyah)
 + dark:bg-gray-700 (orta gri) ✨
 ```
 
 **Input Fields:**
+
 ```diff
 - dark:bg-gray-700 dark:border-gray-600
 + dark:bg-gray-600 dark:border-gray-500 ✨
@@ -156,18 +169,21 @@ Görünmüyor:
 ```
 
 **Disabled/Readonly Fields:**
+
 ```diff
 - dark:bg-gray-900 dark:text-gray-400 opacity-75
 + dark:bg-gray-600 dark:text-gray-300 opacity-80 ✨
 ```
 
 **Borders:**
+
 ```diff
 - dark:border-gray-700
 + dark:border-gray-600 ✨
 ```
 
 **Impact:**
+
 - ✅ %50 daha açık renkler
 - ✅ Daha iyi okunabilirlik
 - ✅ Daha net kontrastlar
@@ -178,6 +194,7 @@ Görünmüyor:
 ## 📊 TEKNİK DETAYLAR
 
 ### **JavaScript Kütüphaneleri:**
+
 ```javascript
 Sortable.js v1.15.0 (CDN)
 - Size: ~15 KB (minified)
@@ -186,22 +203,24 @@ Sortable.js v1.15.0 (CDN)
 ```
 
 ### **AJAX Endpoints:**
+
 ```yaml
 1. Update Field Order:
-   - Route: POST /admin/property-type-manager/update-field-order
-   - Request: { fields: [{ id: 1, order: 1 }, ...] }
-   - Response: { success: true, message: '✅ Sıralama güncellendi!' }
+    - Route: POST /admin/property-type-manager/update-field-order
+    - Request: { fields: [{ id: 1, order: 1 }, ...] }
+    - Response: { success: true, message: '✅ Sıralama güncellendi!' }
 
 2. Toggle Field Dependency:
-   - Route: POST /admin/property-type-manager/toggle-field-dependency
-   - Already exists (satır 745)
+    - Route: POST /admin/property-type-manager/toggle-field-dependency
+    - Already exists (satır 745)
 ```
 
 ### **Database Updates:**
+
 ```sql
 -- Sıralama güncellemesi
-UPDATE kategori_yayin_tipi_field_dependencies 
-SET `order` = ? 
+UPDATE kategori_yayin_tipi_field_dependencies
+SET `order` = ?
 WHERE id = ?
 ```
 
@@ -210,6 +229,7 @@ WHERE id = ?
 ## 🎯 KULLANICI DENEYİMİ
 
 ### **Öncesi:**
+
 ```
 ❌ Sıralama: Sadece modal'dan "order" input'u ile (yavaş)
 ❌ Yayın Tipleri: Gereksiz tipler görünüyor (karışık)
@@ -217,6 +237,7 @@ WHERE id = ?
 ```
 
 ### **Sonrası:**
+
 ```
 ✅ Sıralama: Drag & drop ile anında (hızlı!)
 ✅ Yayın Tipleri: Sadece alakalı tipler (temiz)
@@ -228,6 +249,7 @@ WHERE id = ?
 ## 📈 PERFORMANS
 
 ### **Drag & Drop:**
+
 ```
 Animation Duration: 150ms
 AJAX Response: ~50-100ms
@@ -235,6 +257,7 @@ Total UX Time: ~200ms (instant feel)
 ```
 
 ### **Filtreleme:**
+
 ```
 Server Side: 0ms (Blade compile-time)
 Client Side: 0ms (no JavaScript)
@@ -242,6 +265,7 @@ Impact: Sadece HTML output azalır
 ```
 
 ### **Modal Render:**
+
 ```
 Light Mode: No change
 Dark Mode: Renk optimizasyonu only
@@ -255,12 +279,14 @@ Performance: 0ms overhead
 ### **Drag & Drop States:**
 
 **1. Normal State:**
+
 ```
 📋 Field Name [Type] [☰]
 Opacity: 0.4 (hafif görünür)
 ```
 
 **2. Hover State:**
+
 ```
 📋 Field Name [Type] [☰] ← PULSE ANIMATION
 Opacity: 1.0
@@ -268,6 +294,7 @@ Transform: scale(1.1)
 ```
 
 **3. Dragging State:**
+
 ```
 ┌─────────────────────────┐
 │ 📋 Field Name (ROTATE)  │ ← Active element
@@ -278,6 +305,7 @@ Cursor: grabbing
 ```
 
 **4. Ghost State (Placeholder):**
+
 ```
 [PURPLE GRADIENT BOX]
 Border: 2px dashed #667eea
@@ -290,6 +318,7 @@ Opacity: 0.4
 ## 🔍 CODE QUALITY
 
 ### **Context7 Compliance:**
+
 ```
 ✅ Vanilla JavaScript (Sortable.js library allowed)
 ✅ English field names (order, field_id)
@@ -300,6 +329,7 @@ Opacity: 0.4
 ```
 
 ### **Accessibility:**
+
 ```
 ✅ Keyboard navigation (Tab, Enter, Esc)
 ✅ Screen reader labels (aria-labels implied)
@@ -309,6 +339,7 @@ Opacity: 0.4
 ```
 
 ### **Browser Compatibility:**
+
 ```
 ✅ Chrome/Edge: Full support
 ✅ Firefox: Full support
@@ -322,21 +353,23 @@ Opacity: 0.4
 ## 📁 MODIFIED FILES
 
 ### **1. field-dependencies.blade.php** (Ana dosya)
+
 ```yaml
 Lines Added: ~150
 Lines Modified: ~20
 Changes:
-  - Sortable.js integration (66 lines JS)
-  - CSS animations (80 lines)
-  - Yayın tipi filtreleme (4 yerde)
-  - Modal renk iyileştirmeleri (8 değişiklik)
+    - Sortable.js integration (66 lines JS)
+    - CSS animations (80 lines)
+    - Yayın tipi filtreleme (4 yerde)
+    - Modal renk iyileştirmeleri (8 değişiklik)
 ```
 
 ### **2. show.blade.php** (Property Type Manager)
+
 ```yaml
 Lines Modified: 3
 Changes:
-  - Yayın tipi filtreleme (3 yerde)
+    - Yayın tipi filtreleme (3 yerde)
 ```
 
 ---
@@ -344,6 +377,7 @@ Changes:
 ## 🚀 DEPLOYMENT NOTES
 
 ### **Production Ready:**
+
 ```
 ✅ No database changes needed
 ✅ No migration required
@@ -355,6 +389,7 @@ Changes:
 ```
 
 ### **Testing Checklist:**
+
 ```
 ✅ Drag & drop çalışıyor (browser test)
 ✅ AJAX kayıt çalışıyor (network tab)
@@ -372,6 +407,7 @@ Changes:
 ### **Drag & Drop Kullanımı:**
 
 **1. Normal Kullanım:**
+
 ```
 1. Field listesinde ☰ iconunu gör
 2. Hover yap → Icon büyüsün + pulse animasyonu
@@ -382,6 +418,7 @@ Changes:
 ```
 
 **2. Keyboard Shortcuts:**
+
 ```
 Tab: Next field
 Shift+Tab: Previous field
@@ -392,6 +429,7 @@ Esc: Rename mode'dan çık
 ### **Yayın Tipi Filtresi Düzenleme:**
 
 **Kod Konumu:**
+
 ```php
 // show.blade.php (3 yer)
 Satır 144, 195, 220
@@ -404,6 +442,7 @@ $excludedYayinTipleri = ['Devren Satılık', 'Günlük Kiralık', 'Satılık'];
 ```
 
 **Değiştirmek için:**
+
 ```php
 // Örnek 1: Sadece "Satılık" gizle
 $excludedYayinTipleri = ['Satılık'];
@@ -420,6 +459,7 @@ $excludedYayinTipleri = [];
 ## 📊 STATISTICS
 
 ### **Bugünün İş Yükü:**
+
 ```yaml
 Total Files Modified: 8
 Total Lines Changed: ~600
@@ -431,6 +471,7 @@ Time Spent: ~8 saat
 ```
 
 ### **Özellik Dağılımı:**
+
 ```
 1. Bug Fixes: 10 adet ✅
 2. Field Strategy: Hybrid implementation ✅
@@ -450,6 +491,7 @@ Time Spent: ~8 saat
 ## 🎯 BAŞARI KRİTERLERİ
 
 ### **Functionality:**
+
 ```
 ✅ Drag & drop smooth ve responsive
 ✅ AJAX kayıt %100 çalışıyor
@@ -460,6 +502,7 @@ Time Spent: ~8 saat
 ```
 
 ### **Performance:**
+
 ```
 ✅ Sortable.js: +15 KB (minimal)
 ✅ Animation: GPU-accelerated
@@ -469,6 +512,7 @@ Time Spent: ~8 saat
 ```
 
 ### **UX/UI:**
+
 ```
 ✅ Intuitive drag handle (☰)
 ✅ Visual feedback (rotate, shadow)
@@ -496,6 +540,7 @@ graph LR
 ```
 
 **Adımlar:**
+
 1. User ☰ iconunu sürükler
 2. `onEnd` event tetiklenir
 3. Tüm field ID'leri + yeni sıralama toplanır
@@ -518,6 +563,7 @@ graph TD
 ```
 
 **Adımlar:**
+
 1. Controller: `$yayinTipleri` collection'ı view'a gönderir
 2. Blade: `@foreach` ile loop
 3. Her yayın tipi için `excludedYayinTipleri` kontrolü
@@ -529,6 +575,7 @@ graph TD
 ## 🎨 DARK MODE COMPARISON
 
 ### **Öncesi (gray-800):**
+
 ```
 Modal Background: #1f2937 (çok koyu)
 Input Background: #374151 (koyu)
@@ -537,6 +584,7 @@ Border: #4b5563 (zor görünür)
 ```
 
 ### **Sonrası (gray-700/600):**
+
 ```
 Modal Background: #374151 (orta gri) ✨
 Input Background: #4b5563 (açık gri) ✨
@@ -552,6 +600,7 @@ Border: #6b7280 (belirgin) ✨
 ## 📚 DOCUMENTATION
 
 ### **Oluşturulan Dokümanlar:**
+
 ```
 1. ILAN_YONETIMI_KAPSAMLI_DUZELTME_PLANI_2025_11_01.md
 2. ILAN_YONETIMI_DUZELTME_RAPORU_2025_11_01.md
@@ -574,16 +623,19 @@ Border: #6b7280 (belirgin) ✨
 ## 🚦 NEXT STEPS
 
 ### **HEMEN (0 dk):** ✅ TAMAMLANDI
+
 - ✅ Drag & Drop implementasyonu
 - ✅ Yayın tipi filtreleme
 - ✅ Modal renk iyileştirmeleri
 
 ### **ŞİMDİ (15 dk):**
+
 1. 🧪 Browser test (Final QA)
 2. 📝 Git commit
 3. 📚 README güncelle
 
 ### **YARIN (Opsiyonel):**
+
 1. 📊 jQuery Migration (4-5 saat)
 2. 🎨 Feature-Yayın Tipi Admin UI (3 saat)
 3. 🔄 Bulk Edit Features (2 saat)
@@ -621,6 +673,7 @@ jQuery: Temporarily kept (6 files dependent)
 ```
 
 **Today's Achievement:**
+
 - 🔧 10 Bug fixed
 - ⭐ 3 Major features added
 - 🎨 2 UX improvements
@@ -633,4 +686,3 @@ jQuery: Temporarily kept (6 files dependent)
 **Son Test:** Browser (ID=1, ID=4)  
 **Durum:** ✅ TAMAMLANDI ✨  
 **Next:** Browser test → Git commit → README
-

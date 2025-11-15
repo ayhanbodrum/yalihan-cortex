@@ -5,14 +5,14 @@
   "oncelik": "HIGH",
   "kategori": "form-standards-migration",
   "etiketler": ["okunabilirlik", "bg-white", "form-standards", "wcag-aaa", "user-choice"],
-  
+
   "kullanici_secimi": {
     "secenek": "Seçenek 1",
     "aciklama": "Sadece form input/select/textarea alanlarını düzelt",
     "neden": "Hızlı (10 dk) + Etki yüksek (%95) + Risk düşük",
     "tercih_nedeni": "Kullanıcı '1' dedi → En mantıklı seçenek"
   },
-  
+
   "tamamlanan_dosyalar": {
     "1_category-system.blade.php": {
       "durum": "✅ DÜZELTİLDİ",
@@ -43,9 +43,7 @@
     },
     "4_basic-info.blade.php": {
       "durum": "✅ DÜZELTİLDİ",
-      "degisiklikler": [
-        "2x bg-gray-50 → bg-white"
-      ],
+      "degisiklikler": ["2x bg-gray-50 → bg-white"],
       "alanlar": ["Başlık input", "Açıklama textarea"]
     },
     "5_price-management.blade.php": {
@@ -60,9 +58,7 @@
     },
     "6_kisi-secimi.blade.php": {
       "durum": "✅ DÜZELTİLDİ",
-      "degisiklikler": [
-        "3x bg-gray-50 → bg-white"
-      ],
+      "degisiklikler": ["3x bg-gray-50 → bg-white"],
       "alanlar": ["Kişi türü select", "Kişi seçimi select", "İlan danışmanı select"]
     },
     "7_site-apartman-context7.blade.php": {
@@ -81,7 +77,7 @@
       "karar": "Dokunulmadı (hedef form input'ları)"
     }
   },
-  
+
   "istatistikler": {
     "toplam_dosya": 8,
     "duzeltilen_dosya": 7,
@@ -92,7 +88,7 @@
     "toplam_duzeltme": 41,
     "sure": "~10 dakika"
   },
-  
+
   "okunabilirlik_iyilestirmesi": {
     "light_mode": {
       "onceki": {
@@ -120,7 +116,7 @@
       "not": "Zaten mükemmeldi, değiştirilmedi"
     }
   },
-  
+
   "duzeltme_kapsami": {
     "duzeltilen_form_elements": [
       "Input fields (text, number)",
@@ -141,7 +137,7 @@
       "sebep": "Hedef sadece form input'ları - diğerleri standart ve uygun"
     }
   },
-  
+
   "test_sonuclari": {
     "cache_temizleme": "✅ BAŞARILI (php artisan view:clear + config:clear)",
     "linter_check": "✅ 0 HATA (5 dosya kontrol edildi)",
@@ -149,7 +145,7 @@
     "okunabilirlik_testi": "⏳ Kullanıcı feedback bekleniyor",
     "test_url": "http://127.0.0.1:8000/admin/ilanlar/create"
   },
-  
+
   "kritik_ogrenme_noktalari": {
     "1_hedef_odakli_duzeltme": "Sadece form alanlarını düzelt, diğer bg-gray-50 kullanımlarına dokunma",
     "2_container_vs_input": "Container backgrounds (bg-gray-50) != Form inputs (bg-white)",
@@ -159,7 +155,7 @@
     "6_replace_all_dikkat": "replace_all kullanırken container backgrounds'ları da değiştirebilir - dikkatli ol!",
     "7_manuel_replace_guvenli": "Form input'ları manuel context ile replace et (daha güvenli)"
   },
-  
+
   "tasarim_kararlari": {
     "1_sadece_form_alanlari": {
       "karar": "Sadece input/select/textarea alanlarını bg-white yap",
@@ -181,7 +177,7 @@
       "sebep": "Doğru renk standartları, form input değil"
     }
   },
-  
+
   "etki_analizi": {
     "form_alanlari_okunabilirligi": {
       "onceki": "17.5:1 kontrast (AA)",
@@ -204,7 +200,7 @@
       "browser_console": "Temiz (CSS uyarısı yok)"
     }
   },
-  
+
   "manuel_test_kontrol_listesi": {
     "test_url": "http://127.0.0.1:8000/admin/ilanlar/create",
     "section_1_temel_bilgiler": [
@@ -227,23 +223,16 @@
       "Para birimi select beyaz mı?",
       "Başlangıç fiyatı input beyaz mı?"
     ],
-    "section_6_kisi_bilgileri": [
-      "Tüm select'ler beyaz mı?"
-    ],
-    "section_7_site_apartman": [
-      "Arama input'u beyaz mı?"
-    ],
-    "section_10_yayin_durumu": [
-      "Status select beyaz mı?",
-      "Öncelik select beyaz mı?"
-    ],
+    "section_6_kisi_bilgileri": ["Tüm select'ler beyaz mı?"],
+    "section_7_site_apartman": ["Arama input'u beyaz mı?"],
+    "section_10_yayin_durumu": ["Status select beyaz mı?", "Öncelik select beyaz mı?"],
     "dark_mode_testi": [
       "Dark mode toggle çalışıyor mu?",
       "Form alanları dark mode'da gri mi?",
       "Kontrast yeterli mi?"
     ]
   },
-  
+
   "sonraki_adimlar": {
     "immediate": [
       "✅ Cache temizlendi",
@@ -270,17 +259,15 @@
       "not": "Bu sayfalarda da form input'ları varsa aynı işlemi uygula"
     }
   },
-  
+
   "dokumanlar": {
     "olusurulan": [
       "SECENEK-1-FORM-MIGRATION-2025-11-03.md (detaylı rapor)",
       "yalihan-bekci/learned/secenek-1-form-migration-complete-2025-11-03.json (bu dosya)"
     ],
-    "guncellenecek": [
-      "KOMUTLAR_REHBERI.md (yeni form standards eklenecek)"
-    ]
+    "guncellenecek": ["KOMUTLAR_REHBERI.md (yeni form standards eklenecek)"]
   },
-  
+
   "komutlar": {
     "cache_temizle": "php artisan view:clear && php artisan config:clear",
     "linter_check": "read_lints tool (5 dosya → 0 hata)",
@@ -288,4 +275,3 @@
     "grep_bg_gray_50": "grep -r 'bg-gray-50' resources/views/admin/ilanlar"
   }
 }
-

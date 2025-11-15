@@ -80,16 +80,8 @@
 
     "end_of_day": {
       "description": "Gün sonunda commit yapılmalı",
-      "conditions": [
-        "Günlük temizlik",
-        "Lint düzeltmeleri",
-        "Dokümantasyon güncellemeleri"
-      ],
-      "examples": [
-        "chore: code cleanup",
-        "style: fix lint errors",
-        "docs: update documentation"
-      ]
+      "conditions": ["Günlük temizlik", "Lint düzeltmeleri", "Dokümantasyon güncellemeleri"],
+      "examples": ["chore: code cleanup", "style: fix lint errors", "docs: update documentation"]
     }
   },
 
@@ -123,12 +115,7 @@
         "refactor(css): migrate Neo classes to Tailwind",
         "chore(deps): update dependencies to latest versions"
       ],
-      "bad": [
-        "Update files",
-        "Fix bug",
-        "WIP",
-        "asdasd"
-      ]
+      "bad": ["Update files", "Fix bug", "WIP", "asdasd"]
     }
   },
 
@@ -332,4 +319,3 @@
     }
   }
 }
-

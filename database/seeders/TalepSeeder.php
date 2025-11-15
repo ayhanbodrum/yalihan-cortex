@@ -154,4 +154,3 @@ class TalepSeeder extends Seeder
         $this->command->info('📊 Context7 uyumlu talep verileri hazır.');
     }
 }
-

@@ -5,10 +5,11 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Photo;
 use App\Models\Ilan;
+use App\Services\Response\ResponseService;
+use App\Traits\ValidatesApiRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use Intervention\Image\Facades\Image;
 
 /**
  * Photo Management API Controller
@@ -17,70 +18,60 @@ use Intervention\Image\Facades\Image;
  */
 class PhotoController extends Controller
 {
+    use ValidatesApiRequests;
+
     /**
      * Upload photo (single or multiple)
      * POST /api/admin/photos/upload
      */
     public function upload(Request $request)
     {
-        $request->validate([
+        // ✅ REFACTORED: Using ValidatesApiRequests trait
+        $validated = $this->validateRequestWithResponse($request, [
             'photo' => 'required|image|mimes:jpeg,jpg,png,webp|max:10240', // 10 MB
             'ilan_id' => 'required|exists:ilanlar,id',
-            'order' => 'nullable|integer',
+            'display_order' => 'nullable|integer',
             'is_featured' => 'nullable|boolean',
         ]);
+
+        if ($validated instanceof \Illuminate\Http\JsonResponse) {
+            return $validated;
+        }
 
         $ilan = Ilan::findOrFail($request->ilan_id);
         $file = $request->file('photo');
 
         // Generate unique filename
         $filename = Str::random(40) . '.' . $file->getClientOriginalExtension();
-        
+
         // Upload paths
         $uploadPath = 'ilanlar/' . $ilan->id . '/photos';
-        $thumbnailPath = 'ilanlar/' . $ilan->id . '/thumbnails';
 
         // Store original
         $path = $file->storeAs($uploadPath, $filename, 'public');
 
-        // Create thumbnail (400x300)
-        $thumbnailFilename = 'thumb_' . $filename;
-        $img = Image::make($file);
-        $img->fit(400, 300);
-        
-        Storage::disk('public')->put(
-            $thumbnailPath . '/' . $thumbnailFilename,
-            (string) $img->encode()
-        );
-
-        // Get image dimensions
-        $imageInfo = getimagesize($file);
-
         // Create photo record
         $photo = Photo::create([
             'ilan_id' => $ilan->id,
-            'path' => $path,
-            'thumbnail' => $thumbnailPath . '/' . $thumbnailFilename,
-            'category' => 'genel',
-            'is_featured' => $request->is_featured ?? false,
-            'order' => $request->order ?? Photo::where('ilan_id', $ilan->id)->count(),
-            'size' => $file->getSize(),
+            'dosya_yolu' => $path, // ✅ Context7: Tablodaki gerçek kolon adı
+            'dosya_adi' => $filename,
+            'dosya_boyutu' => (string) $file->getSize(),
             'mime_type' => $file->getMimeType(),
-            'width' => $imageInfo[0] ?? null,
-            'height' => $imageInfo[1] ?? null,
+            'kapak_fotografi' => $request->is_featured ?? false, // ✅ Context7: Tablodaki gerçek kolon adı
+            'sira' => $request->display_order ?? $request->order ?? Photo::where('ilan_id', $ilan->id)->count(), // Context7: display_order preferred
         ]);
 
-        return response()->json([
-            'success' => true,
+        // ✅ REFACTORED: Using ResponseService
+        return ResponseService::success([
             'photo' => [
                 'id' => $photo->id,
-                'url' => Storage::url($photo->path),
-                'thumbnail' => Storage::url($photo->thumbnail),
+                'url' => Storage::url($photo->dosya_yolu),
+                'thumbnail' => Storage::url($photo->dosya_yolu), // Thumbnail için aynı dosya_yolu kullanılıyor
                 'filename' => $filename,
-                'is_featured' => $photo->is_featured,
-                'order' => $photo->order,
+                'is_featured' => $photo->kapak_fotografi,
+                'display_order' => $photo->sira, // Context7: API response'da display_order kullan
             ]
-        ]);
+        ], 'Fotoğraf başarıyla yüklendi');
     }
 
     /**
@@ -90,20 +81,18 @@ class PhotoController extends Controller
     public function index($ilanId)
     {
         $photos = Photo::where('ilan_id', $ilanId)
-            ->orderBy('order')
+            ->orderBy('sira') // ✅ Context7: Tablodaki gerçek kolon adı
             ->get()
             ->map(fn($photo) => [
                 'id' => $photo->id,
-                'url' => Storage::url($photo->path),
-                'thumbnail' => Storage::url($photo->thumbnail),
-                'is_featured' => $photo->is_featured,
-                'order' => $photo->order,
+                'url' => Storage::url($photo->dosya_yolu),
+                'thumbnail' => Storage::url($photo->dosya_yolu), // Thumbnail için aynı dosya_yolu kullanılıyor
+                'is_featured' => $photo->kapak_fotografi,
+                'display_order' => $photo->sira, // Context7: API response'da display_order kullan
             ]);
 
-        return response()->json([
-            'success' => true,
-            'photos' => $photos
-        ]);
+        // ✅ REFACTORED: Using ResponseService
+        return ResponseService::success(['photos' => $photos], 'Fotoğraflar başarıyla getirildi');
     }
 
     /**
@@ -114,24 +103,29 @@ class PhotoController extends Controller
     {
         $photo = Photo::findOrFail($id);
 
-        $request->validate([
+        // ✅ REFACTORED: Using ValidatesApiRequests trait
+        $validated = $this->validateRequestWithResponse($request, [
             'is_featured' => 'nullable|boolean',
-            'order' => 'nullable|integer',
-            'category' => 'nullable|string',
+            'display_order' => 'nullable|integer',
         ]);
+
+        if ($validated instanceof \Illuminate\Http\JsonResponse) {
+            return $validated;
+        }
 
         // If setting as featured, remove featured from others
         if ($request->has('is_featured') && $request->is_featured) {
             Photo::where('ilan_id', $photo->ilan_id)
-                ->update(['is_featured' => false]);
+                ->update(['kapak_fotografi' => false]); // ✅ Context7: Tablodaki gerçek kolon adı
         }
 
-        $photo->update($request->only(['is_featured', 'order', 'category']));
-
-        return response()->json([
-            'success' => true,
-            'photo' => $photo
+        $photo->update([
+            'kapak_fotografi' => $request->is_featured ?? $photo->kapak_fotografi,
+            'sira' => $request->display_order ?? $request->order ?? $photo->sira, // Context7: display_order preferred
         ]);
+
+        // ✅ REFACTORED: Using ResponseService
+        return ResponseService::success(['photo' => $photo], 'Fotoğraf başarıyla güncellendi');
     }
 
     /**
@@ -143,19 +137,14 @@ class PhotoController extends Controller
         $photo = Photo::findOrFail($id);
 
         // Delete files from storage
-        if (Storage::disk('public')->exists($photo->path)) {
-            Storage::disk('public')->delete($photo->path);
-        }
-        if ($photo->thumbnail && Storage::disk('public')->exists($photo->thumbnail)) {
-            Storage::disk('public')->delete($photo->thumbnail);
+        if (Storage::disk('public')->exists($photo->dosya_yolu)) {
+            Storage::disk('public')->delete($photo->dosya_yolu);
         }
 
         $photo->delete();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Fotoğraf silindi'
-        ]);
+        // ✅ REFACTORED: Using ResponseService
+        return ResponseService::success(null, 'Fotoğraf silindi');
     }
 
     /**
@@ -164,22 +153,24 @@ class PhotoController extends Controller
      */
     public function reorder(Request $request, $ilanId)
     {
-        $request->validate([
+        // ✅ REFACTORED: Using ValidatesApiRequests trait
+        $validated = $this->validateRequestWithResponse($request, [
             'photos' => 'required|array',
-            'photos.*.id' => 'required|exists:photos,id',
-            'photos.*.order' => 'required|integer',
+            'photos.*.id' => 'required|exists:ilan_fotograflari,id',
+            'photos.*.display_order' => 'required|integer',
         ]);
+
+        if ($validated instanceof \Illuminate\Http\JsonResponse) {
+            return $validated;
+        }
 
         foreach ($request->photos as $photoData) {
             Photo::where('id', $photoData['id'])
                 ->where('ilan_id', $ilanId)
-                ->update(['order' => $photoData['order']]);
+                ->update(['sira' => $photoData['display_order'] ?? $photoData['order'] ?? 0]); // Context7: display_order preferred
         }
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Sıralama güncellendi'
-        ]);
+        // ✅ REFACTORED: Using ResponseService
+        return ResponseService::success(null, 'Sıralama güncellendi');
     }
 }
-

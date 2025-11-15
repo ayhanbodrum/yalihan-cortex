@@ -79,26 +79,23 @@ Kimlik: ✅ **GEREKLİ** (Kullanıcı adı + Şifre)
 Ücret: ❓ Bilinmiyor (İzin başvurusu gerekli)
 
 Endpoints:
-  WFS: /wfs?REQUEST=GetFeature&TYPENAME=TKGM:mahalleler
-  WMS: /wms?REQUEST=GetMap&LAYERS=TKGM:MEGSIS
+    WFS: /wfs?REQUEST=GetFeature&TYPENAME=TKGM:mahalleler
+    WMS: /wms?REQUEST=GetMap&LAYERS=TKGM:MEGSIS
 
-Veri:
-  ✅ Mahalle sınırları (geometri)
-  ✅ İlçe sınırları (geometri)
-  ✅ Parsel sınırları (geometri)
-  ✅ Ada/Parsel numaraları
-  ✅ Kadastro katmanları
+Veri: ✅ Mahalle sınırları (geometri)
+    ✅ İlçe sınırları (geometri)
+    ✅ Parsel sınırları (geometri)
+    ✅ Ada/Parsel numaraları
+    ✅ Kadastro katmanları
 
-Kullanım:
-  ⚠️ Harita üzerinde parsel sınırları gösterimi
-  ⚠️ Kadastro overlay
-  ⚠️ Görsel zenginleştirme
+Kullanım: ⚠️ Harita üzerinde parsel sınırları gösterimi
+    ⚠️ Kadastro overlay
+    ⚠️ Görsel zenginleştirme
 
-Gereksinimler:
-  1. TKGM'ye resmi başvuru
-  2. Kullanım amacı belirt
-  3. Kullanıcı adı/şifre al
-  4. İzin onayı bekle
+Gereksinimler: 1. TKGM'ye resmi başvuru
+    2. Kullanım amacı belirt
+    3. Kullanıcı adı/şifre al
+    4. İzin onayı bekle
 ```
 
 **ÖNERİ:** ⭐⭐ **DÜŞÜK ÖNCELİK** (İsteğe bağlı, izin gerekli)
@@ -113,17 +110,15 @@ Kimlik: ❌ Gerekmiyor
 Ücret: 🆓 Ücretsiz
 Kaynak: GitHub - emreuenal/turkiye-il-ilce-sokak-mahalle
 
-Veri:
-  ✅ İl, İlçe, Mahalle, Sokak listesi
-  ✅ Posta kodları
-  ❌ Nüfus verisi yok
-  ❌ Demografik veri yok
-  ❌ Alım-satım verisi yok
+Veri: ✅ İl, İlçe, Mahalle, Sokak listesi
+    ✅ Posta kodları
+    ❌ Nüfus verisi yok
+    ❌ Demografik veri yok
+    ❌ Alım-satım verisi yok
 
-Kullanım:
-  ⚠️ Sadece adres listesi
-  ⚠️ Dropdown populate için
-  ⚠️ TurkiyeAPI'ye alternatif değil (eksik veri)
+Kullanım: ⚠️ Sadece adres listesi
+    ⚠️ Dropdown populate için
+    ⚠️ TurkiyeAPI'ye alternatif değil (eksik veri)
 ```
 
 **ÖNERİ:** ⭐⭐⭐ **YEDEK PLAN** (TurkiyeAPI fallback olarak)
@@ -141,7 +136,7 @@ KATMAN 1 - DEMOGRAFİK (TurkiyeAPI):
     ✅ Yoğunluk: 84 / 305 kişi/km²
     ✅ Kıyı İli + Büyükşehir
     ✅ Yatırım Skoru: 100/100
-  
+
   Kullanım:
     - İlan detay sayfası
     - AI içerik zenginleştirme
@@ -154,7 +149,7 @@ KATMAN 2 - TİCARİ AKTİVİTE (TKGM Analiz):
     ✅ 3 yıl trend: +32%
     ✅ Hotspot: 🔥 Evet
     ✅ Ticari Skor: 95/100
-  
+
   Kullanım:
     - İlan detay: Trend gösterimi
     - Dashboard: Hotspot haritası
@@ -166,7 +161,7 @@ KATMAN 3 - KADASTRO (TKGM WFS/WMS) - İSTEĞE BAĞLI:
     ✅ Parsel sınırları
     ✅ Ada/Parsel numarası
     ✅ Geometri bilgisi
-  
+
   Kullanım:
     - Harita: Parsel overlay
     - Görsel: Profesyonel görünüm
@@ -182,21 +177,21 @@ KOMBİNE YATIRIM SKORU:
 
 ## 📊 **API KARŞILAŞTIRMA TABLOSU**
 
-| Özellik | TurkiyeAPI | TKGM Analiz | TKGM WFS/WMS | Adres API |
-|---------|-----------|-------------|--------------|-----------|
-| **Kimlik** | ❌ | ❌ | ✅ Gerekli | ❌ |
-| **Ücret** | 🆓 | 🆓 | ❓ | 🆓 |
-| **Nüfus** | ✅ | ❌ | ❌ | ❌ |
-| **Yoğunluk** | ✅ | ❌ | ❌ | ❌ |
-| **Bölge** | ✅ | ❌ | ❌ | ❌ |
-| **Kıyı/Büyükşehir** | ✅ | ❌ | ❌ | ❌ |
-| **Alım-Satım** | ❌ | ✅ | ❌ | ❌ |
-| **Trend** | ❌ | ✅ | ❌ | ❌ |
-| **Parsel Sınırı** | ❌ | ❌ | ✅ | ❌ |
-| **Ada/Parsel** | ❌ | ❌ | ✅ | ❌ |
-| **Mahalle Listesi** | ✅ | ❌ | ✅ | ✅ |
-| **Koordinat** | ✅ | ✅ | ✅ | ❌ |
-| **Hazır** | ✅ | ✅ | ⚠️ İzin | ✅ |
+| Özellik             | TurkiyeAPI | TKGM Analiz | TKGM WFS/WMS | Adres API |
+| ------------------- | ---------- | ----------- | ------------ | --------- |
+| **Kimlik**          | ❌         | ❌          | ✅ Gerekli   | ❌        |
+| **Ücret**           | 🆓         | 🆓          | ❓           | 🆓        |
+| **Nüfus**           | ✅         | ❌          | ❌           | ❌        |
+| **Yoğunluk**        | ✅         | ❌          | ❌           | ❌        |
+| **Bölge**           | ✅         | ❌          | ❌           | ❌        |
+| **Kıyı/Büyükşehir** | ✅         | ❌          | ❌           | ❌        |
+| **Alım-Satım**      | ❌         | ✅          | ❌           | ❌        |
+| **Trend**           | ❌         | ✅          | ❌           | ❌        |
+| **Parsel Sınırı**   | ❌         | ❌          | ✅           | ❌        |
+| **Ada/Parsel**      | ❌         | ❌          | ✅           | ❌        |
+| **Mahalle Listesi** | ✅         | ❌          | ✅           | ✅        |
+| **Koordinat**       | ✅         | ✅          | ✅           | ❌        |
+| **Hazır**           | ✅         | ✅          | ⚠️ İzin      | ✅        |
 
 ---
 
@@ -211,11 +206,11 @@ Risk: %0 (açık API, ücretsiz)
 ROI: Mükemmel
 
 Kazanç:
-  - Nüfus: 1,066,736
-  - Yoğunluk: 305 kişi/km²
-  - Yatırım Skoru: 100/100
-  - AI içerik: +200% kalite
-  - SEO: +40% anahtar kelime
+    - Nüfus: 1,066,736
+    - Yoğunluk: 305 kişi/km²
+    - Yatırım Skoru: 100/100
+    - AI içerik: +200% kalite
+    - SEO: +40% anahtar kelime
 ```
 
 ---
@@ -229,10 +224,10 @@ Risk: %0 (açık API, ücretsiz)
 ROI: Çok iyi
 
 Kazanç:
-  - Alım-satım: 324 işlem
-  - Trend: +32% artış
-  - Hotspot: 🔥 Belirleme
-  - Yatırım Skoru: 98/100 (kombine)
+    - Alım-satım: 324 işlem
+    - Trend: +32% artış
+    - Hotspot: 🔥 Belirleme
+    - Yatırım Skoru: 98/100 (kombine)
 ```
 
 ---
@@ -284,12 +279,11 @@ RİSK: %0 (Açık API'ler)
 ### **GELECEKTE (İsteğe Bağlı):**
 
 ```yaml
-SONRA (İzin Gerekirse):
-  3️⃣ TKGM WFS/WMS (FAZ 8) → TBD
-     ├─ TKGM başvurusu
-     ├─ İzin onayı bekle
-     ├─ Kullanıcı adı/şifre al
-     └─ Parsel overlay ekle
+SONRA (İzin Gerekirse): 3️⃣ TKGM WFS/WMS (FAZ 8) → TBD
+    ├─ TKGM başvurusu
+    ├─ İzin onayı bekle
+    ├─ Kullanıcı adı/şifre al
+    └─ Parsel overlay ekle
 
 DEĞER: ⭐⭐ (İyi ama zorunlu değil)
 RİSK: ⚠️ İzin süreci belirsiz
@@ -300,6 +294,7 @@ RİSK: ⚠️ İzin süreci belirsiz
 ## 🎯 **ÖNCELİK: TurkiyeAPI BAŞLA!**
 
 **Neden?**
+
 ```
 ✅ Ücretsiz, açık API
 ✅ Kimlik doğrulama yok
@@ -310,6 +305,7 @@ RİSK: ⚠️ İzin süreci belirsiz
 ```
 
 **Bodrum Örneği:**
+
 ```
 Muğla: 1,066,736 nüfus
 Bodrum: 198,335 nüfus
@@ -319,11 +315,10 @@ Yatırım Skoru: 100/100 ⭐⭐⭐
 
 ---
 
-**🚀 BAŞLAYALIM MI?** 
+**🚀 BAŞLAYALIM MI?**
 
 "Başla" dersen **TurkiyeAPIService.php** oluşturmaya başlıyorum!
 
 ⏱️ **Süre:** 4-5 saat (bugün bitirebiliriz!)  
 🎯 **Hedef:** Bodrum demografik verisi sisteme entegre!  
 ✅ **Sonuç:** Yatırım skoru 100/100 hesaplama çalışır!
-

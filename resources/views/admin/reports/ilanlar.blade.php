@@ -134,7 +134,7 @@
                 </div>
 
                 <div class="flex items-end">
-                    <button type="submit" 
+                    <button type="submit"
                             class="inline-flex items-center justify-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all duration-200 font-semibold shadow-md hover:shadow-lg hover:scale-105 active:scale-95 w-full">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -152,7 +152,7 @@
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-xl font-bold text-gray-800">📈 İlan Analizi</h2>
                     <div class="flex space-x-2">
-                        <button onclick="exportToExcel()" 
+                        <button onclick="exportToExcel()"
                                 class="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-all duration-200 font-medium shadow-sm hover:shadow-md">
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -161,7 +161,7 @@
                             </svg>
                             Excel Export
                         </button>
-                        <button onclick="exportToPDF()" 
+                        <button onclick="exportToPDF()"
                                 class="inline-flex items-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-all duration-200 font-medium shadow-sm hover:shadow-md">
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -204,13 +204,13 @@
                                                     <div
                                                         class="h-10 w-10 rounded-full bg-gradient-to-r from-orange-500 to-amber-600 flex items-center justify-center">
                                                         <span
-                                                            class="text-sm font-medium text-white">{{ substr($listing->title, 0, 2) }}</span>
+                                                            class="text-sm font-medium text-white">{{ substr($listing->baslik ?? '', 0, 2) }}</span>
                                                     </div>
                                                 </div>
                                                 <div class="ml-4">
-                                                    <div class="text-sm font-medium text-gray-900">
-                                                        {{ Str::limit($listing->title, 30) }}</div>
-                                                    <div class="text-sm text-gray-500">
+                                                    <div class="text-sm font-medium text-gray-900 dark:text-gray-100">
+                                                        {{ Str::limit($listing->baslik ?? 'Başlık Yok', 30) }}</div>
+                                                    <div class="text-sm text-gray-500 dark:text-gray-400">
                                                         {{ $listing->property_type ?? 'Belirtilmemiş' }}</div>
                                                 </div>
                                             </div>
@@ -221,23 +221,23 @@
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             <x-neo.status-badge :value="ucfirst($listing->status ?? 'Belirtilmemiş')" />
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
                                             <div class="font-medium">
-                                                {{ number_format($listing->price ?? 0, 0, ',', '.') }} ₺</div>
-                                            <div class="text-gray-500">{{ $listing->currency ?? 'TL' }}</div>
+                                                {{ number_format($listing->fiyat ?? 0, 0, ',', '.') }} ₺</div>
+                                            <div class="text-gray-500 dark:text-gray-400">{{ $listing->para_birimi ?? 'TRY' }}</div>
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                                             {{ $listing->location ?? 'Belirtilmemiş' }}
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                                             {{ $listing->created_at ? $listing->created_at->format('d.m.Y') : 'Belirtilmemiş' }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                             <div class="flex space-x-2">
                                                 <a href="{{ route('admin.ilanlar.show', $listing) }}"
-                                                    class="text-blue-600 hover:text-blue-900">Görüntüle</a>
+                                                    class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 transition-colors duration-200">Görüntüle</a>
                                                 <a href="{{ route('admin.ilanlar.edit', $listing) }}"
-                                                    class="text-green-600 hover:text-green-900">Düzenle</a>
+                                                    class="text-green-600 hover:text-green-900 dark:text-green-400 dark:hover:text-green-300 transition-colors duration-200">Düzenle</a>
                                             </div>
                                         </td>
                                     </tr>

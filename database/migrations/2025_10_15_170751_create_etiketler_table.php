@@ -15,11 +15,11 @@ return new class extends Migration
             $table->string('color')->default('#3B82F6');
             $table->text('description')->nullable();
             $table->boolean('status')->default(true);
-            $table->integer('order')->default(0);
+            $table->integer('display_order')->default(0); // Context7: order → display_order
             $table->timestamps();
             $table->softDeletes();
 
-            $table->index(['status', 'order']);
+            $table->index(['status', 'display_order']); // Context7: order → display_order
             $table->index('slug');
         });
     }

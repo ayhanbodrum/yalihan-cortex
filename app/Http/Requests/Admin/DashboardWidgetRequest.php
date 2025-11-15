@@ -58,4 +58,3 @@ class DashboardWidgetRequest extends FormRequest
         ];
     }
 }
-

@@ -296,7 +296,7 @@ export const LazyComponents = {
             <div class="location-map-container">
                 <div id="map" class="w-full h-64 rounded-lg border"></div>
                 <div class="mt-4">
-                    <button type="button" class="neo-neo-btn neo-btn-primary" onclick="initMap()">
+                    <button type="button" class="inline-flex items-center px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all duration-200" onclick="initMap()">
                         <i class="fas fa-map-marker-alt mr-2"></i>
                         Haritayı Başlat
                     </button>
@@ -386,7 +386,7 @@ export const LazyComponents = {
                     <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-4"></i>
                     <p class="text-gray-600 mb-4">Görselleri buraya sürükleyin veya tıklayın</p>
                     <input type="file" multiple accept="image/*" class="hidden" id="photo-upload">
-                    <button type="button" class="neo-neo-btn neo-btn-primary" onclick="document.getElementById('photo-upload').click()">
+                    <button type="button" class="inline-flex items-center px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all duration-200" onclick="document.getElementById('photo-upload').click()">
                         Görsel Seç
                     </button>
                 </div>

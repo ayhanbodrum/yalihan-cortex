@@ -4,6 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 return new class extends Migration
 {
@@ -24,7 +25,9 @@ return new class extends Migration
             ->first();
 
         if (!$yazlikKiralama) {
-            throw new \Exception('Yazlık Kiralama kategorisi bulunamadı!');
+            // Yazlık Kiralama kategorisi yoksa migration'ı atla
+            Log::warning('Yazlık Kiralama kategorisi bulunamadı, migration atlanıyor.');
+            return;
         }
 
         // 3. Alt kategorileri bul
@@ -40,10 +43,10 @@ return new class extends Migration
 
         // 4. Yayın tiplerini tanımla
         $yayinTipleri = [
-            ['name' => 'Günlük Kiralama', 'slug' => 'gunluk-kiralama', 'order' => 1],
-            ['name' => 'Haftalık Kiralama', 'slug' => 'haftalik-kiralama', 'order' => 2],
-            ['name' => 'Aylık Kiralama', 'slug' => 'aylik-kiralama', 'order' => 3],
-            ['name' => 'Sezonluk Kiralama', 'slug' => 'sezonluk-kiralama', 'order' => 4],
+            ['name' => 'Günlük Kiralama', 'slug' => 'gunluk-kiralama', 'display_order' => 1], // Context7: order → display_order
+            ['name' => 'Haftalık Kiralama', 'slug' => 'haftalik-kiralama', 'display_order' => 2], // Context7: order → display_order
+            ['name' => 'Aylık Kiralama', 'slug' => 'aylik-kiralama', 'display_order' => 3], // Context7: order → display_order
+            ['name' => 'Sezonluk Kiralama', 'slug' => 'sezonluk-kiralama', 'display_order' => 4], // Context7: order → display_order
         ];
 
         // 5. Her alt kategori için yayın tiplerini oluştur
@@ -55,14 +58,14 @@ return new class extends Migration
             foreach ($yayinTipleri as $yayin) {
                 // Duplicate slug olmaması için slug'a alt kategori ekle
                 $slug = $altKategori->slug . '-' . $yayin['slug'];
-                
+
                 DB::table('ilan_kategorileri')->insert([
                     'name' => $yayin['name'],
                     'slug' => $slug,
                     'aciklama' => $altKategori->name . ' - ' . $yayin['name'],
                     'parent_id' => $altKategori->id,
                     'seviye' => 2,
-                    'order' => $yayin['order'],
+                    'display_order' => $yayin['display_order'], // Context7: order → display_order
                     'status' => 1,
                     'icon' => 'fa-calendar',
                     'created_at' => now(),

@@ -4,9 +4,7 @@
   "time": "14:00",
   "category": "ui_ux_fix",
   "severity": "CRITICAL",
-  "affected_pages": [
-    "/admin/talepler/create"
-  ],
+  "affected_pages": ["/admin/talepler/create"],
   "problem": {
     "description": "Dropdown option'ları (İl, İlçe, Mahalle, Kategori vb.) browser native dropdown'da okunmuyor!",
     "user_report": "yazılar okun muyor il adı vs",
@@ -52,7 +50,7 @@
     },
     "contrast_ratios": {
       "old_combo": {
-        "bg": "rgb(31, 41, 55)", 
+        "bg": "rgb(31, 41, 55)",
         "text": "rgb(243, 244, 246)",
         "ratio": "~8:1",
         "status": "GOOD but not perfect for dropdown"
@@ -149,11 +147,7 @@
       "status": "✅ COMPLETE"
     },
     "phase_2": {
-      "pages": [
-        "/admin/ilanlar/create",
-        "/admin/kisiler/create",
-        "/admin/kisiler/edit"
-      ],
+      "pages": ["/admin/ilanlar/create", "/admin/kisiler/create", "/admin/kisiler/edit"],
       "status": "🔜 PENDING"
     },
     "phase_3": {
@@ -169,4 +163,3 @@
     "severity_level": "CRITICAL"
   }
 }
-

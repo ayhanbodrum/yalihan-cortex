@@ -6,16 +6,22 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
+     *
+     * ⚠️ CONTEXT7 PERMANENT STANDARD:
+     * - ALWAYS use 'status' field, NEVER use 'enabled'
+     * - Pre-commit hook will BLOCK migrations with 'enabled'
+     * - This is a PERMANENT STANDARD - NO EXCEPTIONS
      */
     public function up(): void
     {
         Schema::create('{{ table }}', function (Blueprint $table) {
             $table->id();
 
-            // ✅ CONTEXT7 STANDARD: Status field MUST be TINYINT(1) boolean
-            // NEVER use VARCHAR, ENUM, or Turkish values like 'Aktif'
+            // ✅ CONTEXT7 PERMANENT STANDARD: Status field MUST be TINYINT(1) boolean
+            // ❌ NEVER use VARCHAR, ENUM, or Turkish values like 'Aktif'
+            // ❌ NEVER use 'enabled' → This will be BLOCKED by pre-commit hook
             // Default: 1 (active), 0 (inactive)
-            $table->tinyInteger('status')->default(1)->comment('0=inactive, 1=active (Context7 boolean)');
+            $table->tinyInteger('status')->default(1)->comment('0=inactive, 1=active (Context7 boolean - PERMANENT STANDARD)');
 
             $table->timestamps();
         });
@@ -29,4 +35,3 @@ return new class extends Migration
         Schema::dropIfExists('{{ table }}');
     }
 };
-

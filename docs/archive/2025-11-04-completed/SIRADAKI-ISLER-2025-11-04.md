@@ -14,21 +14,23 @@
 **Durum:** %60 tamamlanmış (backend hazır, model eksik)
 
 ### Neden Yüksek Öncelik?
+
 ```yaml
 Sebep:
-  - Rezervasyon sistemi yarım kalmış
-  - TakvimController'da 6 TODO var
-  - Production'da kullanılıyor ama model yok
-  - DB::table() kullanılıyor (Photo gibi)
+    - Rezervasyon sistemi yarım kalmış
+    - TakvimController'da 6 TODO var
+    - Production'da kullanılıyor ama model yok
+    - DB::table() kullanılıyor (Photo gibi)
 
 Faydası:
-  - Rezervasyon sistemi tamamlanır
-  - 6 TODO biter (29 → 23)
-  - Eloquent avantajları
-  - Airbnb/Booking entegrasyonu hazır olur
+    - Rezervasyon sistemi tamamlanır
+    - 6 TODO biter (29 → 23)
+    - Eloquent avantajları
+    - Airbnb/Booking entegrasyonu hazır olur
 ```
 
 ### Yapılacaklar:
+
 ```bash
 1. Event Model oluştur (1 saat)
    - php artisan make:model Event -m
@@ -59,6 +61,7 @@ TOPLAM: 3 saat, 6 TODO tamamlanır
 **Risk:** Düşük
 
 ### Yapılacaklar:
+
 ```bash
 1. Unused routes tespiti (15 dk)
    - grep ile kullanılmayan route'ları bul
@@ -77,6 +80,7 @@ TOPLAM: 45 dakika
 ```
 
 **Faydası:**
+
 - Daha temiz routing
 - Daha hızlı route resolution
 - Karışıklık azalır
@@ -89,6 +93,7 @@ TOPLAM: 45 dakika
 **Amaç:** Photo Model'in çalıştığını doğrula
 
 ### Test Senaryoları:
+
 ```php
 1. Photo oluştur ve kaydet
    - Upload test
@@ -112,6 +117,7 @@ TOPLAM: 45 dakika
 ```
 
 **Faydası:**
+
 - Production'a güvenle çıkabilir
 - Bug tespiti
 - Regression prevention
@@ -124,6 +130,7 @@ TOPLAM: 45 dakika
 **Hedef:** Component adoption %5 → %70 (3 ay)
 
 ### İlk Adım - Migration Strategy:
+
 ```bash
 1. Component inventory (30 dk)
    - Hangi component'ler var?
@@ -149,6 +156,7 @@ TOPLAM: 3 saat (ilk gün)
 ```
 
 **Faydası:**
+
 - Tutarlı UI/UX
 - Kolay bakım
 - Dark mode otomatik
@@ -162,6 +170,7 @@ TOPLAM: 3 saat (ilk gün)
 **Amaç:** 75 MB log sorununu kalıcı çöz
 
 ### Yapılacaklar:
+
 ```bash
 1. Laravel logging.php güncelle
    - daily rotation
@@ -176,6 +185,7 @@ TOPLAM: 15 dakika
 ```
 
 **config/logging.php:**
+
 ```php
 'daily' => [
     'driver' => 'daily',
@@ -190,19 +200,20 @@ TOPLAM: 15 dakika
 
 ## 📊 ÖNCELİK MATRİSİ
 
-| Öncelik | İş | Süre | Fayda | TODO Azalması | Zorluk |
-|---------|----|----- |-------|---------------|--------|
-| 🔴 1 | **Event/Season Model** | 3 saat | 🔥🔥🔥 Yüksek | -6 TODO | Orta |
-| 🟡 2 | **Routes Temizliği** | 45 dk | 🔥🔥 Orta | 0 | Düşük |
-| 🟢 3 | **Photo Model Test** | 30 dk | 🔥🔥 Orta | 0 | Düşük |
-| 🔵 4 | **Component Migration** | 3 saat | 🔥🔥🔥 Yüksek | 0 | Yüksek |
-| 🟣 5 | **Log Rotation** | 15 dk | 🔥 Düşük | 0 | Çok Düşük |
+| Öncelik | İş                      | Süre   | Fayda         | TODO Azalması | Zorluk    |
+| ------- | ----------------------- | ------ | ------------- | ------------- | --------- |
+| 🔴 1    | **Event/Season Model**  | 3 saat | 🔥🔥🔥 Yüksek | -6 TODO       | Orta      |
+| 🟡 2    | **Routes Temizliği**    | 45 dk  | 🔥🔥 Orta     | 0             | Düşük     |
+| 🟢 3    | **Photo Model Test**    | 30 dk  | 🔥🔥 Orta     | 0             | Düşük     |
+| 🔵 4    | **Component Migration** | 3 saat | 🔥🔥🔥 Yüksek | 0             | Yüksek    |
+| 🟣 5    | **Log Rotation**        | 15 dk  | 🔥 Düşük      | 0             | Çok Düşük |
 
 ---
 
 ## 🚀 TAVSİYE EDİLEN SIRALAMA
 
 ### Şimdi (Akşam):
+
 ```yaml
 ✅ Log Rotation ayarla (15 dk) → Hızlı win
 ✅ Routes temizliği (45 dk) → Kolay
@@ -213,6 +224,7 @@ FAYDA: Hızlı sonuçlar, proje daha stabil
 ```
 
 ### Yarın (5 Kasım):
+
 ```yaml
 ✅ Event/Season Model (3 saat) → 6 TODO biter
 ✅ Component migration başlat (ilk adım, 2 saat)
@@ -222,6 +234,7 @@ FAYDA: Major features tamamlanır
 ```
 
 ### Bu Hafta (6-10 Kasım):
+
 ```yaml
 ✅ Component migration devam (10 saat)
 ✅ Diğer TODO'lar (5 saat)
@@ -236,6 +249,7 @@ HEDEF: TODO 29 → <15
 ## 💡 BENIM TAVSİYEM
 
 ### Senaryo A: "Hızlı Kazanımlar" (1.5 saat)
+
 ```yaml
 1. Log Rotation (15 dk) ⚡
 2. Routes Temizliği (45 dk) 🧹
@@ -245,6 +259,7 @@ Fayda: Günü güzel kapat, yarın büyük işe başla
 ```
 
 ### Senaryo B: "Büyük Vurgu" (3 saat)
+
 ```yaml
 1. Event/Season Model (3 saat) 🎯
 
@@ -253,6 +268,7 @@ Risk: Yorucu olabilir
 ```
 
 ### Senaryo C: "Dengeli" (2 saat)
+
 ```yaml
 1. Log Rotation (15 dk) ⚡
 2. Routes Temizliği (45 dk) 🧹
@@ -274,4 +290,3 @@ Fayda: Hem hızlı win, hem progress
 5. **Bugünlük yeter, yarın devam?**
 
 **Senin kararın! 😊**
-

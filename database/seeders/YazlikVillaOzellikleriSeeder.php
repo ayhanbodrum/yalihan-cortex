@@ -9,7 +9,7 @@ use App\Models\Feature;
 
 /**
  * Yazlık Villa Özellikleri Seeder
- * 
+ *
  * Yazlık kiralama için villa özelliklerini oluşturur.
  * Etstur.com ve benzeri sitelerden çıkarılan özellikler.
  */
@@ -122,7 +122,7 @@ class YazlikVillaOzellikleriSeeder extends Seeder
             'slug' => $slug,
             'description' => "Yazlık villa {$name}",
             'icon' => '🏖️',
-            'order' => (FeatureCategory::max('order') ?? 0) + 1,
+            'display_order' => (FeatureCategory::max('order') ?? 0) + 1,
         ];
 
         // Context7: applies_to kolonu varsa ekle
@@ -167,7 +167,7 @@ class YazlikVillaOzellikleriSeeder extends Seeder
             'feature_category_id' => $categoryId,
             'name' => $name,
             'slug' => $slug,
-            'order' => $order,
+            'display_order' => $order,
         ];
 
         // Context7: type kolonu varsa ekle
@@ -215,4 +215,3 @@ class YazlikVillaOzellikleriSeeder extends Seeder
         }
     }
 }
-

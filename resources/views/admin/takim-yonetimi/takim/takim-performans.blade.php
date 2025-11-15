@@ -64,7 +64,7 @@
                         <select style="color-scheme: light dark;" id="danismanFiltresi" class="admin-input transition-all duration-200" onchange="danismanFiltresiDegistir()">
                             <option value="">Tüm Danışmanlar</option>
                             @foreach ($danismanlar ?? [] as $danisman)
-                                <option value="{{ $danisman->id }}">{{ $danisman->ad }} {{ $danisman->soyad }}</option>
+                                <option value="{{ $danisman->id }}">{{ $danisman->name }}</option>
                             @endforeach
                         </select>
                     </div>

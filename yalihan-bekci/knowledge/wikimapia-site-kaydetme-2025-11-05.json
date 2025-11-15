@@ -4,7 +4,7 @@
   "category": "feature",
   "status": "completed",
   "description": "WikiMapia search sayfasında haritaya tıklayarak site/apartman adlarını bulma ve veritabanına kaydetme özelliği eklendi",
-  
+
   "features": [
     {
       "name": "Harita Tıklama ile Site Bulma",
@@ -170,4 +170,3 @@
     "Site/apartman silme özelliği"
   ]
 }
-

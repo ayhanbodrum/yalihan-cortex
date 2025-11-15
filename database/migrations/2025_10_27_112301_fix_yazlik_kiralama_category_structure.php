@@ -38,7 +38,7 @@ return new class extends Migration
                 'parent_id' => $yazlikKiralama->id,
                 'seviye' => 1,
                 'status' => 1,
-                'order' => 3,
+                'display_order' => 3, // Context7: order → display_order
                 'icon' => 'home',
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -53,7 +53,7 @@ return new class extends Migration
                 'parent_id' => $yazlikKiralama->id,
                 'seviye' => 1,
                 'status' => 1,
-                'order' => 4,
+                'display_order' => 4, // Context7: order → display_order
                 'icon' => 'home',
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -69,7 +69,7 @@ return new class extends Migration
                 'parent_id' => $yazlikKiralama->id,
                 'seviye' => 2,
                 'status' => 1,
-                'order' => 1,
+                'display_order' => 1, // Context7: order → display_order
                 'icon' => 'calendar-day',
                 'aciklama' => 'Günlük kiralık yazlık ilanları',
                 'created_at' => now(),
@@ -85,7 +85,7 @@ return new class extends Migration
                 'parent_id' => $yazlikKiralama->id,
                 'seviye' => 2,
                 'status' => 1,
-                'order' => 2,
+                'display_order' => 2, // Context7: order → display_order
                 'icon' => 'calendar-week',
                 'aciklama' => 'Haftalık kiralık yazlık ilanları',
                 'created_at' => now(),
@@ -101,7 +101,7 @@ return new class extends Migration
                 'parent_id' => $yazlikKiralama->id,
                 'seviye' => 2,
                 'status' => 1,
-                'order' => 3,
+                'display_order' => 3, // Context7: order → display_order
                 'icon' => 'calendar-alt',
                 'aciklama' => 'Aylık kiralık yazlık ilanları',
                 'created_at' => now(),
@@ -117,7 +117,7 @@ return new class extends Migration
                 'parent_id' => $yazlikKiralama->id,
                 'seviye' => 2,
                 'status' => 1,
-                'order' => 4,
+                'display_order' => 4, // Context7: order → display_order
                 'icon' => 'calendar',
                 'aciklama' => 'Sezonluk kiralık yazlık ilanları',
                 'created_at' => now(),

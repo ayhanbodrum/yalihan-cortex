@@ -9,6 +9,7 @@
 ## 📊 GENEL DURUM
 
 ### Güçlü Yönler ✅
+
 - CRUD Excellence (OzellikKategoriController)
 - Alpine.js (No jQuery!)
 - Dark mode support
@@ -16,6 +17,7 @@
 - Form reorganization mükemmel
 
 ### İyileştirme Alanları ⚠️
+
 - View dosyaları eksik (CRITICAL!)
 - AJAX usage minimal
 - UI consistency karışık (Neo + Tailwind hybrid)
@@ -40,6 +42,7 @@ PHASE 4: OPTIMIZATION       → Ongoing   (Nice to Have)
 ### 1. Eksik View Dosyaları ✅ URGENT
 
 **Sorun:**
+
 ```php
 // Route var AMA view yok!
 Route::get('/bookings', ...)->name('bookings');
@@ -51,19 +54,21 @@ resources/views/admin/yazlik-kiralama/takvim.blade.php
 ```
 
 **Çözüm:**
+
 1. `bookings.blade.php` oluştur
-   - Rezervasyon listesi
-   - Filtreleme (tarih, status)
-   - Pagination
-   - Action buttons (view, edit, cancel)
+    - Rezervasyon listesi
+    - Filtreleme (tarih, status)
+    - Pagination
+    - Action buttons (view, edit, cancel)
 
 2. `takvim.blade.php` oluştur
-   - Calendar view (month/week)
-   - Event display
-   - Booking overlay
-   - Season pricing indicators
+    - Calendar view (month/week)
+    - Event display
+    - Booking overlay
+    - Season pricing indicators
 
 **Standart:**
+
 - Pure Tailwind CSS (Neo değil!)
 - Alpine.js for interactivity
 - Dark mode support
@@ -76,6 +81,7 @@ resources/views/admin/yazlik-kiralama/takvim.blade.php
 ### 2. Component Integration ✅ URGENT
 
 **Sorun:**
+
 ```blade
 <!-- ilanlar/create.blade.php'de VAR: -->
 @include('admin.ilanlar.components.event-booking-manager')
@@ -85,6 +91,7 @@ resources/views/admin/yazlik-kiralama/takvim.blade.php
 ```
 
 **Çözüm:**
+
 1. Reusable components'leri adapte et
 2. `yazlik-kiralama/create.blade.php` veya `edit.blade.php`'ye ekle
 3. API endpoints kontrol et (zaten var mı?)
@@ -96,6 +103,7 @@ resources/views/admin/yazlik-kiralama/takvim.blade.php
 ### 3. Database Schema Validation ✅ URGENT
 
 **Kontrol:**
+
 ```bash
 # Migration var mı?
 ls -la database/migrations/*_yazlik_rezervasyonlar.php
@@ -105,6 +113,7 @@ grep -r "yazlik_rezervasyonlar" app/Models/
 ```
 
 **Eğer eksikse:**
+
 - Migration oluştur
 - Model ilişkilerini ekle
 - Seeder hazırla
@@ -122,6 +131,7 @@ grep -r "yazlik_rezervasyonlar" app/Models/
 ### 1. AJAX Migration (Full Page Reload → AJAX)
 
 **Sorun:**
+
 ```javascript
 // ❌ ŞİMDİ:
 form.submit() → Full page reload → Yavaş, kesintili
@@ -131,12 +141,14 @@ axios.post('/api/...') → Toast notification → Hızlı, smooth
 ```
 
 **Hedef Sayfalar:**
+
 - Yayın tipi ekleme modal
 - Özellik kategorisi ekleme
 - Toplu işlemler
 - İlan güncelleme
 
 **Implementation:**
+
 ```javascript
 // Pattern:
 async function handleSubmit(formData) {
@@ -158,6 +170,7 @@ async function handleSubmit(formData) {
 ### 2. Tab-Based UI (Navigation Fix)
 
 **Sorun:**
+
 ```
 ❌ ŞİMDİ:
 /admin/ozellikler (ana liste)
@@ -173,6 +186,7 @@ async function handleSubmit(formData) {
 ```
 
 **Implementation:**
+
 1. Alpine.js tab component
 2. URL hash navigation (#all, #categories, #orphans)
 3. Browser back/forward support
@@ -185,11 +199,13 @@ async function handleSubmit(formData) {
 ### 3. Bulk Operations (Toplu İşlemler)
 
 **Eksik:**
+
 - Toplu kategori atama
 - Toplu enable/disable
 - Kategori merge/split tools
 
 **Implementation:**
+
 1. Multiple select (checkbox)
 2. Bulk action dropdown
 3. Confirmation modal
@@ -211,20 +227,23 @@ async function handleSubmit(formData) {
 **Hedef:** Hybrid yaklaşımdan Pure Tailwind'e geçiş
 
 **Strateji:**
+
 ```yaml
 Touch and Convert Methodology:
-  - Yeni sayfa yazıyorsan → Pure Tailwind
-  - Var olan sayfayı düzeltiyorsan → Neo→Tailwind
-  - Çalışan sayfaya dokunmuyorsan → Olduğu gibi bırak
+    - Yeni sayfa yazıyorsan → Pure Tailwind
+    - Var olan sayfayı düzeltiyorsan → Neo→Tailwind
+    - Çalışan sayfaya dokunmuyorsan → Olduğu gibi bırak
 ```
 
 **Öncelikli Sayfalar:**
+
 1. `admin/kisiler/edit.blade.php` (28 Neo class)
 2. `admin/ayarlar/*` (19 Neo class)
 3. `admin/danisman/*` (15 Neo class)
 4. `admin/ozellikler/show.blade.php` (eski stil)
 
 **Pattern:**
+
 ```blade
 <!-- ÖNCE (Neo): -->
 <button class="neo-btn neo-btn-primary">Kaydet</button>
@@ -244,6 +263,7 @@ Touch and Convert Methodology:
 **Hedef:** Reusable Blade components
 
 **Oluşturulacak Components:**
+
 ```
 components/
 ├── forms/
@@ -275,6 +295,7 @@ components/
 **Sorun:** Vanilla JS dosyaları organize değil
 
 **Hedef:**
+
 ```
 resources/js/
 ├── admin/
@@ -338,29 +359,29 @@ resources/js/
 
 ```yaml
 1. PLAN:
-   - Task detayını yaz
-   - Etkilenen dosyaları listele
-   - Süre tahmini yap
+    - Task detayını yaz
+    - Etkilenen dosyaları listele
+    - Süre tahmini yap
 
 2. IMPLEMENT:
-   - TODO list oluştur
-   - Kod yaz
-   - Commit (conventional commits)
+    - TODO list oluştur
+    - Kod yaz
+    - Commit (conventional commits)
 
 3. TEST:
-   - Manuel test
-   - Linter check (npm run lint)
-   - Context7 check (php artisan standard:check)
+    - Manuel test
+    - Linter check (npm run lint)
+    - Context7 check (php artisan standard:check)
 
 4. DOCUMENT:
-   - Yalıhan Bekçi'ye öğret
-   - Changelog güncelle
-   - Screenshot/video (önemliyse)
+    - Yalıhan Bekçi'ye öğret
+    - Changelog güncelle
+    - Screenshot/video (önemliyse)
 
 5. DEPLOY:
-   - Git commit + push
-   - Build assets (npm run build)
-   - Clear cache
+    - Git commit + push
+    - Build assets (npm run build)
+    - Clear cache
 ```
 
 ---
@@ -368,16 +389,19 @@ resources/js/
 ## 🎯 İLK 3 GÜN (QUICK WINS)
 
 ### GÜN 1: Critical Fixes
+
 - ✅ `bookings.blade.php` oluştur
 - ✅ `takvim.blade.php` oluştur
 - ✅ Component integration
 
 ### GÜN 2: AJAX Migration (Phase 1)
+
 - ✅ Yayın tipi modal → AJAX
 - ✅ Özellik kategorisi → AJAX
 - ✅ Toast notification system
 
 ### GÜN 3: Tab-Based UI
+
 - ✅ `/admin/ozellikler` tab system
 - ✅ URL hash navigation
 - ✅ State persistence
@@ -409,4 +433,3 @@ TOTAL PROGRESS: 0/13 (0%)
 ---
 
 **Not:** Bu roadmap dinamik bir dokümandır. Her tamamlanan task sonrası güncellenecektir.
-

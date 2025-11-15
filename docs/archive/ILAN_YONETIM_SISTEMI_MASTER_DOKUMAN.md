@@ -35,15 +35,14 @@ Frontend: Vanilla JS + Alpine.js + Neo Design System
 Database: MySQL 8.0 (yalihanemlak_ultra)
 Context7 Compliance: %98.82
 
-Ana Modüller:
-  ✅ İlan Ekleme/Düzenleme
-  ✅ Kategori Yönetimi
-  ✅ Özellik Yönetimi (Features)
-  ✅ Yayın Tipi Yönetimi
-  ✅ Harita Entegrasyonu (OpenStreetMap)
-  ✅ AI İçerik Üretimi
-  ✅ Fiyat Hesaplama
-  ✅ Fotoğraf Yönetimi
+Ana Modüller: ✅ İlan Ekleme/Düzenleme
+    ✅ Kategori Yönetimi
+    ✅ Özellik Yönetimi (Features)
+    ✅ Yayın Tipi Yönetimi
+    ✅ Harita Entegrasyonu (OpenStreetMap)
+    ✅ AI İçerik Üretimi
+    ✅ Fiyat Hesaplama
+    ✅ Fotoğraf Yönetimi
 ```
 
 ### İlan Sistemi Akış Şeması
@@ -72,23 +71,23 @@ graph TD
 
 ```yaml
 Backend:
-  - Framework: Laravel 10.x
-  - ORM: Eloquent
-  - Database: MySQL 8.0
-  - Cache: Redis
-  - Queue: Database Queue
+    - Framework: Laravel 10.x
+    - ORM: Eloquent
+    - Database: MySQL 8.0
+    - Cache: Redis
+    - Queue: Database Queue
 
 Frontend:
-  - Vanilla JavaScript (Node.js Modülleri)
-  - Alpine.js (Reactive UI)
-  - Tailwind CSS + Neo Design System
-  - Context7 Live Search
-  - Leaflet (Harita)
+    - Vanilla JavaScript (Node.js Modülleri)
+    - Alpine.js (Reactive UI)
+    - Tailwind CSS + Neo Design System
+    - Context7 Live Search
+    - Leaflet (Harita)
 
 Integrations:
-  - TKGM API (Parsel Sorgulama)
-  - OpenStreetMap (Harita)
-  - AI Services (İçerik Üretimi)
+    - TKGM API (Parsel Sorgulama)
+    - OpenStreetMap (Harita)
+    - AI Services (İçerik Üretimi)
 ```
 
 ### Dosya Yapısı
@@ -139,58 +138,58 @@ resources/
 
 ```yaml
 1. Temel Bilgiler:
-   - Başlık (zorunlu)
-   - Açıklama (tinymce)
-   - Metrekare
-   - Oda Sayısı
-   
+    - Başlık (zorunlu)
+    - Açıklama (tinymce)
+    - Metrekare
+    - Oda Sayısı
+
 2. Kategori Sistemi:
-   - Ana Kategori (dropdown)
-   - Alt Kategori (dinamik yükleme)
-   - Yayın Tipi (dinamik yükleme)
-   
+    - Ana Kategori (dropdown)
+    - Alt Kategori (dinamik yükleme)
+    - Yayın Tipi (dinamik yükleme)
+
 3. Kategoriye Özel Alanlar:
-   - Dinamik yükleme (kategori bazlı)
-   - Arsa: ada_no, parsel_no, imar_statusu
-   - Yazlık: gunluk_fiyat, havuz, sezon_baslangic
-   
+    - Dinamik yükleme (kategori bazlı)
+    - Arsa: ada_no, parsel_no, imar_statusu
+    - Yazlık: gunluk_fiyat, havuz, sezon_baslangic
+
 4. Özellikler (Features):
-   - Dinamik yükleme (kategori bazlı)
-   - Gruplu gösterim (feature categories)
-   - Checkbox + Number + Select input tipleri
-   
+    - Dinamik yükleme (kategori bazlı)
+    - Gruplu gösterim (feature categories)
+    - Checkbox + Number + Select input tipleri
+
 5. Fiyat Yönetimi:
-   - Fiyat (zorunlu)
-   - Para Birimi (TRY/USD/EUR)
-   - Gelişmiş Fiyat (m² fiyatı)
-   
+    - Fiyat (zorunlu)
+    - Para Birimi (TRY/USD/EUR)
+    - Gelişmiş Fiyat (m² fiyatı)
+
 6. Lokasyon ve Harita:
-   - İl seçimi
-   - İlçe seçimi (dinamik)
-   - Mahalle seçimi (dinamik)
-   - Adres detayı
-   - Harita konumu (OpenStreetMap)
-   
+    - İl seçimi
+    - İlçe seçimi (dinamik)
+    - Mahalle seçimi (dinamik)
+    - Adres detayı
+    - Harita konumu (OpenStreetMap)
+
 7. Site/Apartman Seçimi:
-   - Site/Apartman dropdown
-   - Context7 Live Search entegrasyonu
-   
+    - Site/Apartman dropdown
+    - Context7 Live Search entegrasyonu
+
 8. Kişi Bilgileri:
-   - İlan Sahibi
-   - İlgili Kişi
-   - Danışman
-   - Context7 Live Search
-   
+    - İlan Sahibi
+    - İlgili Kişi
+    - Danışman
+    - Context7 Live Search
+
 9. Fotoğraflar:
-   - Drag & Drop yükleme
-   - Önizleme
-   - Sıralama
-   
+    - Drag & Drop yükleme
+    - Önizleme
+    - Sıralama
+
 10. AI İçerik:
     - Başlık önerisi
     - Açıklama önerisi
     - Fiyat analizi
-    
+
 11. İlan Durumu:
     - Status (Taslak/Aktif/Pasif)
     - Öncelik
@@ -203,7 +202,7 @@ resources/
 
 ```javascript
 // 1. Ana Kategori Seçimi
-Ana Kategori (change) 
+Ana Kategori (change)
   → API: /api/categories/sub/{categoryId}
   → Alt Kategori Dropdown Doldurulur
 
@@ -249,27 +248,27 @@ Response: {
 
 ```yaml
 Ana Kategoriler:
-  - Arsa
-  - Konut
-  - İşyeri
-  - Yazlık
+    - Arsa
+    - Konut
+    - İşyeri
+    - Yazlık
 
 Alt Kategoriler:
-  Arsa:
-    - Arsa
-    - Bağ
-    - Bahçe
-    - Tarla
-  Konut:
-    - Daire
-    - Villa
-    - Müstakil
-  İşyeri:
-    - Ofis
-    - Mağaza
-    - Depo
-  Yazlık:
-    - Yazlık Kiralama
+    Arsa:
+        - Arsa
+        - Bağ
+        - Bahçe
+        - Tarla
+    Konut:
+        - Daire
+        - Villa
+        - Müstakil
+    İşyeri:
+        - Ofis
+        - Mağaza
+        - Depo
+    Yazlık:
+        - Yazlık Kiralama
 ```
 
 ### İlişki Yapısı
@@ -280,11 +279,11 @@ class IlanKategori extends Model {
     public function children() {
         return $this->hasMany(IlanKategori::class, 'parent_id');
     }
-    
+
     public function parent() {
         return $this->belongsTo(IlanKategori::class, 'parent_id');
     }
-    
+
     public function yayinTipleri() {
         return $this->hasMany(IlanKategoriYayinTipi::class, 'kategori_id');
     }
@@ -295,7 +294,7 @@ class Ilan extends Model {
     public function kategori() {
         return $this->belongsTo(IlanKategori::class);
     }
-    
+
     public function ozellikler() {
         return $this->belongsToMany(Feature::class, 'ilan_feature');
     }
@@ -310,34 +309,34 @@ class Ilan extends Model {
 
 ```yaml
 1. Temel Bilgiler:
-   - Oda sayısı
-   - Banyo sayısı
-   - Metrekare
-   
+    - Oda sayısı
+    - Banyo sayısı
+    - Metrekare
+
 2. Oda Düzeni:
-   - Salon sayısı
-   - Balkon sayısı
-   - Mutfak tipi
-   
+    - Salon sayısı
+    - Balkon sayısı
+    - Mutfak tipi
+
 3. Bina Özellikleri:
-   - Asansör
-   - Güvenlik
-   - Bina yaşı
-   
+    - Asansör
+    - Güvenlik
+    - Bina yaşı
+
 4. Lüks Özellikler:
-   - Havuz
-   - Jakuzi
-   - Sauna
-   
+    - Havuz
+    - Jakuzi
+    - Sauna
+
 5. Arsa Bilgileri:
-   - İmar durumu
-   - KAKS
-   - TAKS
-   
+    - İmar durumu
+    - KAKS
+    - TAKS
+
 6. Enerji ve Çevre:
-   - Enerji sınıfı
-   - Güneş paneli
-   - Yağmur suyu depolama
+    - Enerji sınıfı
+    - Güneş paneli
+    - Yağmur suyu depolama
 ```
 
 ### Feature Tipleri
@@ -380,18 +379,16 @@ NULL: Tüm emlak türleri için geçerli
 ```yaml
 URL: /admin/property-type-manager
 
-Sayfalar:
-  1. Index (Kategori Listesi)
-  2. Show (Detaylı Yönetim)
-  
-Özellikler:
-  ✅ Kategori görüntüleme
-  ✅ Alt kategori görüntüleme
-  ✅ Yayın tipi toggle (on/off)
-  ✅ Relations Grid (Alan-Yayın Tipi ilişkileri)
-  ✅ Features Grid (Özellik-Yayın Tipi ilişkileri)
-  ✅ Bulk Save (Toplu kaydetme)
-  ✅ Yayın Tipi Ekleme
+Sayfalar: 1. Index (Kategori Listesi)
+    2. Show (Detaylı Yönetim)
+
+Özellikler: ✅ Kategori görüntüleme
+    ✅ Alt kategori görüntüleme
+    ✅ Yayın tipi toggle (on/off)
+    ✅ Relations Grid (Alan-Yayın Tipi ilişkileri)
+    ✅ Features Grid (Özellik-Yayın Tipi ilişkileri)
+    ✅ Bulk Save (Toplu kaydetme)
+    ✅ Yayın Tipi Ekleme
 ```
 
 ### Relations Grid
@@ -401,8 +398,8 @@ Sütunlar: Yayın Tipleri (Satılık, Kiralık, vb.)
 Satırlar: Field Dependencies (ada_no, parsel_no, vb.)
 
 Checkbox Mantığı:
-  ✓ Ticked: Bu field bu yayın tipi için görünür
-  ✗ Unticked: Bu field bu yayın tipi için gizli
+    ✓ Ticked: Bu field bu yayın tipi için görünür
+    ✗ Unticked: Bu field bu yayın tipi için gizli
 ```
 
 ### Bulk Save
@@ -426,15 +423,15 @@ Body: {
 ```yaml
 Library: Leaflet.js
 Tile Provider: OpenStreetMap
-Layers: 
-  - Streets
-  - Satellite (future)
+Layers:
+    - Streets
+    - Satellite (future)
 
 Özellikler:
-  - Marker konumlandırma
-  - Drag & Drop marker
-  - Koordinat gösterimi (lat/lng)
-  - Adres arama (future)
+    - Marker konumlandırma
+    - Drag & Drop marker
+    - Koordinat gösterimi (lat/lng)
+    - Adres arama (future)
 ```
 
 ### Location Model
@@ -460,19 +457,19 @@ $location = [
 
 ```yaml
 Ana Fiyat:
-  - Fiyat (decimal)
-  - Para Birimi (TRY/USD/EUR/GBP)
-  - Emlak Tipi (M2/Satılık/Kiralık)
-  
+    - Fiyat (decimal)
+    - Para Birimi (TRY/USD/EUR/GBP)
+    - Emlak Tipi (M2/Satılık/Kiralık)
+
 Gelişmiş Fiyat:
-  - M2 Fiyatı (otomatik hesaplanır)
-  - Aylık Ödeme (kira ise)
-  
+    - M2 Fiyatı (otomatik hesaplanır)
+    - Aylık Ödeme (kira ise)
+
 Yazlık Özel Fiyatlar:
-  - Günlük Fiyat
-  - Haftalık Fiyat
-  - Aylık Fiyat
-  - Minimum Konaklama Günü
+    - Günlük Fiyat
+    - Haftalık Fiyat
+    - Aylık Fiyat
+    - Minimum Konaklama Günü
 ```
 
 ### Fiyat Hesaplama
@@ -503,16 +500,16 @@ function getDisplayPrice(price, currency, emlak_tipi) {
 Endpoint: /api/ai/generate
 
 Özellikler:
-  - Başlık önerisi
-  - Açıklama önerisi
-  - Fiyat analizi
-  - Lokasyon analizi
-  
+    - Başlık önerisi
+    - Açıklama önerisi
+    - Fiyat analizi
+    - Lokasyon analizi
+
 Sağlayıcılar:
-  - OpenAI (GPT-4)
-  - DeepSeek
-  - Google Gemini
-  - Ollama (local)
+    - OpenAI (GPT-4)
+    - DeepSeek
+    - Google Gemini
+    - Ollama (local)
 ```
 
 ### AI İçerik Süreci
@@ -525,13 +522,13 @@ const formData = {
     metrekare: 150,
     oda_sayisi: 3,
     il: 'İstanbul',
-    fiyat: 5000000
+    fiyat: 5000000,
 };
 
 // 3. AI API'ye gönderilir
 const response = await fetch('/api/ai/generate', {
     method: 'POST',
-    body: JSON.stringify(formData)
+    body: JSON.stringify(formData),
 });
 
 // 4. Yeni içerikler form alanlarına yazılır
@@ -557,26 +554,26 @@ CREATE TABLE ilanlar (
     oda_sayisi INT,
     kategori_id BIGINT,
     status ENUM('Taslak','Aktif','Pasif'),
-    
+
     -- Arsa fields
     ada_no VARCHAR(50),
     parsel_no VARCHAR(50),
     imar_statusu VARCHAR(100),
     kaks DECIMAL(5,2),
     taks DECIMAL(5,2),
-    
+
     -- Yazlık fields
     gunluk_fiyat DECIMAL(10,2),
     havuz BOOLEAN,
     sezon_baslangic DATE,
     sezon_bitis DATE,
-    
+
     -- Location
     il_id BIGINT,
     ilce_id BIGINT,
     latitude DECIMAL(10,8),
     longitude DECIMAL(11,8),
-    
+
     created_at TIMESTAMP,
     updated_at TIMESTAMP
 );
@@ -716,15 +713,13 @@ IlanKategoriYayinTipi
 ### Cascade İlişkiler
 
 ```yaml
-Kategori Seçimi:
-  → Alt Kategoriler yüklenir
-  → Yayın Tipleri yüklenir
-  → 'category-changed' event
+Kategori Seçimi: → Alt Kategoriler yüklenir
+    → Yayın Tipleri yüklenir
+    → 'category-changed' event
 
-Yayın Tipi Seçimi:
-  → Category-specific fields yüklenir
-  → Features filtrelenir (applies_to)
-  → Field dependencies kontrol edilir
+Yayın Tipi Seçimi: → Category-specific fields yüklenir
+    → Features filtrelenir (applies_to)
+    → Field dependencies kontrol edilir
 ```
 
 ---
@@ -741,13 +736,13 @@ UI/UX Score: 95/100
 Performance Score: 92/100
 
 Modül Durumu:
-  ✅ İlan Ekleme: %100
-  ✅ Kategori Sistemi: %100
-  ✅ Özellik Sistemi: %100
-  ✅ Yayın Tipi: %100
-  ✅ Harita: %100
-  ✅ Fiyat: %100
-  ✅ AI: %90
+    ✅ İlan Ekleme: %100
+    ✅ Kategori Sistemi: %100
+    ✅ Özellik Sistemi: %100
+    ✅ Yayın Tipi: %100
+    ✅ Harita: %100
+    ✅ Fiyat: %100
+    ✅ AI: %90
 ```
 
 ---
@@ -758,27 +753,27 @@ Modül Durumu:
 
 ```yaml
 1. Kategori Seçimi:
-   - Ana Kategori seç
-   - Alt Kategori seç
-   - Yayın Tipi seç
+    - Ana Kategori seç
+    - Alt Kategori seç
+    - Yayın Tipi seç
 
 2. Bilgileri Doldur:
-   - Temel bilgiler (başlık, açıklama)
-   - Kategoriye özel alanlar
-   - Özellikler seç
+    - Temel bilgiler (başlık, açıklama)
+    - Kategoriye özel alanlar
+    - Özellikler seç
 
 3. Lokasyon:
-   - İl/İlçe seç
-   - Haritada konumu belirle
+    - İl/İlçe seç
+    - Haritada konumu belirle
 
 4. Fiyat:
-   - Fiyat gir
-   - Para birimi seç
+    - Fiyat gir
+    - Para birimi seç
 
 5. Kaydet:
-   - Fotoğraf yükle
-   - AI içerik oluştur (opsiyonel)
-   - Kaydet
+    - Fotoğraf yükle
+    - AI içerik oluştur (opsiyonel)
+    - Kaydet
 ```
 
 ---
@@ -789,19 +784,19 @@ Modül Durumu:
 
 ```yaml
 1. Context7 Compliance:
-   - Field names: İngilizce olmalı
-   - Yasak kelimeler: durum, aktif, sehir
-   - Doğru kullanımlar: status, enabled, il
+    - Field names: İngilizce olmalı
+    - Yasak kelimeler: durum, aktif, sehir
+    - Doğru kullanımlar: status, enabled, il
 
 2. Performance:
-   - N+1 sorgu problemi önlenmeli
-   - with() kullanımı gerekli
-   - Cache mekanizması aktif
+    - N+1 sorgu problemi önlenmeli
+    - with() kullanımı gerekli
+    - Cache mekanizması aktif
 
 3. Security:
-   - CSRF token zorunlu
-   - Input validation
-   - XSS protection
+    - CSRF token zorunlu
+    - Input validation
+    - XSS protection
 ```
 
 ---
@@ -809,4 +804,3 @@ Modül Durumu:
 **Son Güncelleme:** 26 Ekim 2025  
 **Durum:** ✅ Aktif ve Çalışıyor  
 **Versiyon:** 3.0
-

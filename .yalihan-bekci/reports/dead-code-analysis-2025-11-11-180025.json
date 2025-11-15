@@ -1,0 +1,33 @@
+{
+    "timestamp": "2025-11-11 18:00:25",
+    "mcp_enabled": true,
+    "mcp_results": {
+        "rules": {
+            "forbidden": [],
+            "required": []
+        }
+    },
+    "unused_classes": [
+        {
+            "class": "FieldRegistryService",
+            "file": "app\/Services\/FieldRegistryService.php",
+            "reason": "Not referenced anywhere"
+        }
+    ],
+    "unused_methods": [],
+    "unused_traits": [],
+    "unused_interfaces": [],
+    "unused_constants": [],
+    "summary": {
+        "total_classes": 350,
+        "used_classes": 1158,
+        "unused_classes": 1,
+        "total_traits": 7,
+        "used_traits": 314,
+        "unused_traits": 0,
+        "total_interfaces": 0,
+        "used_interfaces": 8,
+        "unused_interfaces": 0,
+        "cleanup_opportunity": 1
+    }
+}

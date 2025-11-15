@@ -11,7 +11,7 @@ class Eslesme extends Model
 
     protected $table = 'eslesmeler';
     protected $fillable = [
-        'kisi_id','ilan_id','talep_id','danisman_id','one_cikan','notlar','status','eslesme_tarihi','son_guncelleme'
+        'kisi_id','ilan_id','talep_id','danisman_id','skor','one_cikan','notlar','status','eslesme_tarihi','son_guncelleme'
     ];
 
     public function kisi() { return $this->belongsTo(Kisi::class, 'kisi_id'); }

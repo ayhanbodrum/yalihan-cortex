@@ -8,17 +8,15 @@
 class PropertyMediaGallery {
     constructor(container) {
         this.container =
-            typeof container === "string"
-                ? document.querySelector(container)
-                : container;
+            typeof container === 'string' ? document.querySelector(container) : container;
 
         if (!this.container) {
-            console.warn("[PropertyMediaGallery] Container not found");
+            console.warn('[PropertyMediaGallery] Container not found');
             return;
         }
 
         this.state = {
-            activeTab: "photos",
+            activeTab: 'photos',
             currentImageIndex: 0,
             currentVideoIndex: 0,
             isLightboxOpen: false,
@@ -38,7 +36,7 @@ class PropertyMediaGallery {
         this.render();
         this.bindEvents();
         this.loadSampleData();
-        console.log("[PropertyMediaGallery] Initialized successfully");
+        console.log('[PropertyMediaGallery] Initialized successfully');
     }
 
     render() {
@@ -403,55 +401,44 @@ class PropertyMediaGallery {
 
     cacheElements() {
         // Tabs
-        this.elements.tabs = this.container.querySelectorAll("[data-tab]");
-        this.elements.tabContents =
-            this.container.querySelectorAll("[data-content]");
+        this.elements.tabs = this.container.querySelectorAll('[data-tab]');
+        this.elements.tabContents = this.container.querySelectorAll('[data-content]');
 
         // Photos
-        this.elements.mainPhoto = this.container.querySelector(".main-photo");
-        this.elements.photoPlaceholder =
-            this.container.querySelector(".photo-placeholder");
-        this.elements.photoThumbnails =
-            this.container.querySelector(".photo-thumbnails");
-        this.elements.photoUploadInput =
-            this.container.querySelector(".upload-input");
+        this.elements.mainPhoto = this.container.querySelector('.main-photo');
+        this.elements.photoPlaceholder = this.container.querySelector('.photo-placeholder');
+        this.elements.photoThumbnails = this.container.querySelector('.photo-thumbnails');
+        this.elements.photoUploadInput = this.container.querySelector('.upload-input');
 
         // Videos
-        this.elements.mainVideo = this.container.querySelector(".main-video");
-        this.elements.videoPlaceholder =
-            this.container.querySelector(".video-placeholder");
-        this.elements.videoList = this.container.querySelector(".video-list");
-        this.elements.videoUploadInput = this.container.querySelector(
-            ".video-upload-input"
-        );
+        this.elements.mainVideo = this.container.querySelector('.main-video');
+        this.elements.videoPlaceholder = this.container.querySelector('.video-placeholder');
+        this.elements.videoList = this.container.querySelector('.video-list');
+        this.elements.videoUploadInput = this.container.querySelector('.video-upload-input');
 
         // Tours
-        this.elements.tourIframe = this.container.querySelector(".tour-iframe");
-        this.elements.tourPlaceholder =
-            this.container.querySelector(".tour-placeholder");
-        this.elements.tourList = this.container.querySelector(".tour-list");
+        this.elements.tourIframe = this.container.querySelector('.tour-iframe');
+        this.elements.tourPlaceholder = this.container.querySelector('.tour-placeholder');
+        this.elements.tourList = this.container.querySelector('.tour-list');
 
         // Lightbox
-        this.elements.lightboxModal =
-            this.container.querySelector(".lightbox-modal");
-        this.elements.lightboxImage =
-            this.container.querySelector(".lightbox-image");
-        this.elements.lightboxClose =
-            this.container.querySelector(".lightbox-close");
+        this.elements.lightboxModal = this.container.querySelector('.lightbox-modal');
+        this.elements.lightboxImage = this.container.querySelector('.lightbox-image');
+        this.elements.lightboxClose = this.container.querySelector('.lightbox-close');
     }
 
     bindEvents() {
         // Tab switching
         this.elements.tabs.forEach((tab) => {
-            tab.addEventListener("click", (e) => {
+            tab.addEventListener('click', (e) => {
                 const tabName = e.currentTarget.dataset.tab;
                 this.switchTab(tabName);
             });
         });
 
         // Button actions
-        this.container.addEventListener("click", (e) => {
-            const action = e.target.closest("[data-action]")?.dataset.action;
+        this.container.addEventListener('click', (e) => {
+            const action = e.target.closest('[data-action]')?.dataset.action;
             if (action) {
                 this.handleAction(action, e);
             }
@@ -459,7 +446,7 @@ class PropertyMediaGallery {
 
         // File uploads
         if (this.elements.photoUploadInput) {
-            this.elements.photoUploadInput.addEventListener("change", (e) => {
+            this.elements.photoUploadInput.addEventListener('change', (e) => {
                 this.handlePhotoUpload(e.target.files);
             });
         }
@@ -469,14 +456,14 @@ class PropertyMediaGallery {
 
         // Lightbox close
         if (this.elements.lightboxClose) {
-            this.elements.lightboxClose.addEventListener("click", () => {
+            this.elements.lightboxClose.addEventListener('click', () => {
                 this.closeLightbox();
             });
         }
 
         // ESC key to close lightbox
-        document.addEventListener("keydown", (e) => {
-            if (e.key === "Escape" && this.state.isLightboxOpen) {
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && this.state.isLightboxOpen) {
                 this.closeLightbox();
             }
         });
@@ -485,100 +472,83 @@ class PropertyMediaGallery {
     switchTab(tabName) {
         // Update active tab
         this.elements.tabs.forEach((tab) => {
-            tab.classList.toggle("neo-tab-active", tab.dataset.tab === tabName);
+            tab.classList.toggle('neo-tab-active', tab.dataset.tab === tabName);
         });
 
         // Update active content
         this.elements.tabContents.forEach((content) => {
-            content.classList.toggle(
-                "neo-tab-active",
-                content.dataset.content === tabName
-            );
+            content.classList.toggle('neo-tab-active', content.dataset.content === tabName);
         });
 
         this.state.activeTab = tabName;
 
         // Show fade in animation
-        const activeContent = this.container.querySelector(
-            `[data-content="${tabName}"]`
-        );
+        const activeContent = this.container.querySelector(`[data-content="${tabName}"]`);
         if (activeContent) {
-            activeContent.style.opacity = "0";
+            activeContent.style.opacity = '0';
             setTimeout(() => {
-                activeContent.style.opacity = "1";
+                activeContent.style.opacity = '1';
             }, 50);
         }
     }
 
     handleAction(action, event) {
         switch (action) {
-            case "addMedia":
+            case 'addMedia':
                 this.showAddMediaModal();
                 break;
-            case "fullscreen":
+            case 'fullscreen':
                 this.toggleFullscreen();
                 break;
-            case "prevPhoto":
+            case 'prevPhoto':
                 this.navigatePhoto(-1);
                 break;
-            case "nextPhoto":
+            case 'nextPhoto':
                 this.navigatePhoto(1);
                 break;
-            case "uploadVideo":
+            case 'uploadVideo':
                 this.elements.videoUploadInput?.click();
                 break;
-            case "addVideoLink":
+            case 'addVideoLink':
                 this.showVideoLinkModal();
                 break;
-            case "addVirtualTour":
+            case 'addVirtualTour':
                 this.showVirtualTourModal();
                 break;
-            case "uploadFloorPlan":
-                this.container
-                    .querySelector(".floor-plan-upload-input")
-                    ?.click();
+            case 'uploadFloorPlan':
+                this.container.querySelector('.floor-plan-upload-input')?.click();
                 break;
-            case "uploadDocument":
-                this.container.querySelector(".document-upload-input")?.click();
+            case 'uploadDocument':
+                this.container.querySelector('.document-upload-input')?.click();
                 break;
         }
     }
 
     setupDragAndDrop() {
-        const uploadAreas = this.container.querySelectorAll(".neo-upload-zone");
+        const uploadAreas = this.container.querySelectorAll('.neo-upload-zone');
 
         uploadAreas.forEach((area) => {
-            ["dragenter", "dragover", "dragleave", "drop"].forEach(
-                (eventName) => {
-                    area.addEventListener(
-                        eventName,
-                        this.preventDefaults,
-                        false
-                    );
-                }
-            );
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach((eventName) => {
+                area.addEventListener(eventName, this.preventDefaults, false);
+            });
 
-            ["dragenter", "dragover"].forEach((eventName) => {
+            ['dragenter', 'dragover'].forEach((eventName) => {
+                area.addEventListener(eventName, () => area.classList.add('neo-drag-over'), false);
+            });
+
+            ['dragleave', 'drop'].forEach((eventName) => {
                 area.addEventListener(
                     eventName,
-                    () => area.classList.add("neo-drag-over"),
+                    () => area.classList.remove('neo-drag-over'),
                     false
                 );
             });
 
-            ["dragleave", "drop"].forEach((eventName) => {
-                area.addEventListener(
-                    eventName,
-                    () => area.classList.remove("neo-drag-over"),
-                    false
-                );
-            });
-
-            area.addEventListener("drop", (e) => {
+            area.addEventListener('drop', (e) => {
                 const files = e.dataTransfer.files;
-                if (area.classList.contains("photo-upload-area")) {
+                if (area.classList.contains('photo-upload-area')) {
                     this.handlePhotoUpload(files);
-                } else if (area.classList.contains("video-upload-area")) {
+                } else if (area.classList.contains('video-upload-area')) {
                     this.handleVideoUpload(files);
                 }
             });
@@ -592,7 +562,7 @@ class PropertyMediaGallery {
 
     handlePhotoUpload(files) {
         Array.from(files).forEach((file, index) => {
-            if (file.type.startsWith("image/")) {
+            if (file.type.startsWith('image/')) {
                 const reader = new FileReader();
                 reader.onload = (e) => {
                     const imageData = {
@@ -601,7 +571,7 @@ class PropertyMediaGallery {
                         name: file.name,
                         size: this.formatFileSize(file.size),
                         type: file.type,
-                        date: new Date().toLocaleDateString("tr-TR"),
+                        date: new Date().toLocaleDateString('tr-TR'),
                     };
 
                     this.state.images.push(imageData);
@@ -626,9 +596,7 @@ class PropertyMediaGallery {
             .map(
                 (image, index) => `
             <div class="photo-thumbnail neo-glass-effect cursor-pointer ${
-                index === this.state.currentImageIndex
-                    ? "ring-2 ring-blue-500"
-                    : ""
+                index === this.state.currentImageIndex ? 'ring-2 ring-blue-500' : ''
             }"
                  data-index="${index}" onclick="window.propertyMediaGallery.showPhoto(${index})">
                 <img src="${image.src}" alt="${
@@ -637,7 +605,7 @@ class PropertyMediaGallery {
             </div>
         `
             )
-            .join("");
+            .join('');
 
         this.elements.photoThumbnails.innerHTML = html;
     }
@@ -651,18 +619,17 @@ class PropertyMediaGallery {
         if (this.elements.mainPhoto && this.elements.photoPlaceholder) {
             this.elements.mainPhoto.src = image.src;
             this.elements.mainPhoto.alt = image.name;
-            this.elements.mainPhoto.style.display = "block";
-            this.elements.photoPlaceholder.style.display = "none";
+            this.elements.mainPhoto.style.display = 'block';
+            this.elements.photoPlaceholder.style.display = 'none';
 
             // Update photo info
-            const titleEl = this.container.querySelector(".photo-title");
-            const descEl = this.container.querySelector(".photo-description");
-            const dateEl = this.container.querySelector(".photo-date");
-            const sizeEl = this.container.querySelector(".photo-size");
+            const titleEl = this.container.querySelector('.photo-title');
+            const descEl = this.container.querySelector('.photo-description');
+            const dateEl = this.container.querySelector('.photo-date');
+            const sizeEl = this.container.querySelector('.photo-size');
 
             if (titleEl) titleEl.textContent = image.name;
-            if (descEl)
-                descEl.textContent = image.description || "Emlak fotoğrafı";
+            if (descEl) descEl.textContent = image.description || 'Emlak fotoğrafı';
             if (dateEl) dateEl.textContent = image.date;
             if (sizeEl) sizeEl.textContent = image.size;
         }
@@ -671,8 +638,7 @@ class PropertyMediaGallery {
 
         // Add lightbox click handler
         if (this.elements.mainPhoto) {
-            this.elements.mainPhoto.onclick = () =>
-                this.openLightbox(image.src);
+            this.elements.mainPhoto.onclick = () => this.openLightbox(image.src);
         }
     }
 
@@ -686,17 +652,17 @@ class PropertyMediaGallery {
     openLightbox(imageSrc) {
         if (this.elements.lightboxModal && this.elements.lightboxImage) {
             this.elements.lightboxImage.src = imageSrc;
-            this.elements.lightboxModal.classList.remove("hidden");
+            this.elements.lightboxModal.classList.remove('hidden');
             this.state.isLightboxOpen = true;
-            document.body.style.overflow = "hidden";
+            document.body.style.overflow = 'hidden';
         }
     }
 
     closeLightbox() {
         if (this.elements.lightboxModal) {
-            this.elements.lightboxModal.classList.add("hidden");
+            this.elements.lightboxModal.classList.add('hidden');
             this.state.isLightboxOpen = false;
-            document.body.style.overflow = "auto";
+            document.body.style.overflow = 'auto';
         }
     }
 
@@ -713,17 +679,17 @@ class PropertyMediaGallery {
             const badge = this.container.querySelector(`[data-count="${key}"]`);
             if (badge) {
                 badge.textContent = count;
-                badge.style.display = count > 0 ? "inline-flex" : "none";
+                badge.style.display = count > 0 ? 'inline-flex' : 'none';
             }
         });
     }
 
     formatFileSize(bytes) {
-        if (bytes === 0) return "0 Bytes";
+        if (bytes === 0) return '0 Bytes';
         const k = 1024;
-        const sizes = ["Bytes", "KB", "MB", "GB"];
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
         const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
     }
 
     loadSampleData() {
@@ -733,19 +699,19 @@ class PropertyMediaGallery {
             const sampleImages = [
                 {
                     id: 1,
-                    src: "https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=800",
-                    name: "Oturma Odası",
-                    description: "Geniş ve ferah oturma alanı",
-                    size: "2.3 MB",
-                    date: "19.10.2025",
+                    src: 'https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=800',
+                    name: 'Oturma Odası',
+                    description: 'Geniş ve ferah oturma alanı',
+                    size: '2.3 MB',
+                    date: '19.10.2025',
                 },
                 {
                     id: 2,
-                    src: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800",
-                    name: "Mutfak",
-                    description: "Modern mutfak tasarımı",
-                    size: "1.8 MB",
-                    date: "19.10.2025",
+                    src: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800',
+                    name: 'Mutfak',
+                    description: 'Modern mutfak tasarımı',
+                    size: '1.8 MB',
+                    date: '19.10.2025',
                 },
             ];
 
@@ -758,9 +724,7 @@ class PropertyMediaGallery {
 
     showAddMediaModal() {
         // Simple implementation - could be enhanced with a proper modal
-        alert(
-            "Medya ekleme modalı açılacak. Bu özellik geliştirme aşamasında."
-        );
+        alert('Medya ekleme modalı açılacak. Bu özellik geliştirme aşamasında.');
     }
 
     toggleFullscreen() {
@@ -777,20 +741,18 @@ class PropertyMediaGallery {
     }
 
     showVideoLinkModal() {
-        const url = prompt("YouTube veya Vimeo video linkini girin:");
+        const url = prompt('YouTube veya Vimeo video linkini girin:');
         if (url) {
             // Process video URL and add to list
-            console.log("Video URL added:", url);
+            console.log('Video URL added:', url);
         }
     }
 
     showVirtualTourModal() {
-        const url = prompt(
-            "Sanal tur linkini girin (Matterport, Kuula, etc.):"
-        );
+        const url = prompt('Sanal tur linkini girin (Matterport, Kuula, etc.):');
         if (url) {
             // Process tour URL and add to list
-            console.log("Virtual tour URL added:", url);
+            console.log('Virtual tour URL added:', url);
         }
     }
 
@@ -802,9 +764,7 @@ class PropertyMediaGallery {
     }
 
     removeImage(imageId) {
-        this.state.images = this.state.images.filter(
-            (img) => img.id !== imageId
-        );
+        this.state.images = this.state.images.filter((img) => img.id !== imageId);
         this.renderPhotoThumbnails();
         this.updateTabCounts();
     }
@@ -821,16 +781,14 @@ class PropertyMediaGallery {
 }
 
 // Auto-initialize when DOM is ready
-document.addEventListener("DOMContentLoaded", function () {
-    const galleryContainer = document.getElementById("property-media-gallery");
+document.addEventListener('DOMContentLoaded', function () {
+    const galleryContainer = document.getElementById('property-media-gallery');
     if (galleryContainer) {
-        window.propertyMediaGallery = new PropertyMediaGallery(
-            galleryContainer
-        );
+        window.propertyMediaGallery = new PropertyMediaGallery(galleryContainer);
     }
 });
 
 // Export for module usage
-if (typeof module !== "undefined" && module.exports) {
+if (typeof module !== 'undefined' && module.exports) {
     module.exports = PropertyMediaGallery;
 }

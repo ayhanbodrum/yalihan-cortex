@@ -12,11 +12,10 @@
 Admin Panel: v3.4.18 (mevcut)
 Frontend: v4.1 (yeni)
 
-Sorun:
-  ❌ package.json'da tek versiyon olur
-  ❌ İki farklı config gerekir
-  ❌ Build process karmaşık
-  ❌ Component Library paylaşımlı olmaz
+Sorun: ❌ package.json'da tek versiyon olur
+    ❌ İki farklı config gerekir
+    ❌ Build process karmaşık
+    ❌ Component Library paylaşımlı olmaz
 
 Sonuç: KARMAŞIK, tavsiye etmem
 ```
@@ -30,13 +29,12 @@ Admin Panel: v4.1 (migration)
 Frontend: v4.1 (yeni)
 Component Library: v4.1 (yeni)
 
-Avantajlar:
-  ✅ Tek config
-  ✅ Tek build system
-  ✅ Component Library paylaşımlı
-  ✅ 100x hızlı HMR (her yerde!)
-  ✅ Modern features (her yerde!)
-  ✅ Daha kolay maintainability
+Avantajlar: ✅ Tek config
+    ✅ Tek build system
+    ✅ Component Library paylaşımlı
+    ✅ 100x hızlı HMR (her yerde!)
+    ✅ Modern features (her yerde!)
+    ✅ Daha kolay maintainability
 
 Sonuç: ÇOK MANTIKLI! 🎯
 ```
@@ -49,14 +47,13 @@ Sonuç: ÇOK MANTIKLI! 🎯
 
 ```yaml
 Durum:
-  - Neo classes: %7.4 (951 kullanım)
-  - Pure Tailwind: %92.6 (11,998 kullanım)
+    - Neo classes: %7.4 (951 kullanım)
+    - Pure Tailwind: %92.6 (11,998 kullanım)
 
-v3 → v4 Migration:
-  ✅ Çoğu Tailwind class aynı
-  ✅ Neo classes zaten kaldırılacak
-  ✅ Breaking changes az
-  
+v3 → v4 Migration: ✅ Çoğu Tailwind class aynı
+    ✅ Neo classes zaten kaldırılacak
+    ✅ Breaking changes az
+
 Risk: DÜŞÜK!
 ```
 
@@ -66,14 +63,13 @@ Risk: DÜŞÜK!
 
 ```yaml
 Durum:
-  - 3 component oluşturuldu (Modal, Checkbox, Radio)
-  - 7 component daha yapılacak
-  
-v4.1 ile:
-  ✅ Yeni component'ler direkt v4.1
-  ✅ Mevcut 3 component → kolay update
-  ✅ text-shadow, masks kullanılabilir
-  
+    - 3 component oluşturuldu (Modal, Checkbox, Radio)
+    - 7 component daha yapılacak
+
+v4.1 ile: ✅ Yeni component'ler direkt v4.1
+    ✅ Mevcut 3 component → kolay update
+    ✅ text-shadow, masks kullanılabilir
+
 Risk: YOK!
 ```
 
@@ -83,14 +79,13 @@ Risk: YOK!
 
 ```yaml
 Durum:
-  - Bootstrap temizlendi
-  - Sıfırdan başlayacaksınız
-  
-v4.1 ile:
-  ✅ En son teknoloji
-  ✅ 100x hızlı HMR
-  ✅ Modern CSS features
-  
+    - Bootstrap temizlendi
+    - Sıfırdan başlayacaksınız
+
+v4.1 ile: ✅ En son teknoloji
+    ✅ 100x hızlı HMR
+    ✅ Modern CSS features
+
 Risk: YOK!
 ```
 
@@ -101,6 +96,7 @@ Risk: YOK!
 ### ŞIMDI (Bu Gece/Sabah): Tüm Proje v4.1 🚀
 
 **Neden Şimdi?**
+
 ```yaml
 ✅ Frontend yok (sıfırdan)
 ✅ Component Library yeni (3 component)
@@ -135,30 +131,30 @@ npm install
 
 ```javascript
 // vite.config.js
-import tailwindcss from '@tailwindcss/vite'
+import tailwindcss from '@tailwindcss/vite';
 
 export default {
-  plugins: [
-    tailwindcss() // Yeni v4 plugin
-  ]
-}
+    plugins: [
+        tailwindcss(), // Yeni v4 plugin
+    ],
+};
 ```
 
 ```css
 /* resources/css/app.css */
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @theme {
-  /* Custom colors */
-  --color-primary: #3b82f6;
-  --color-secondary: #8b5cf6;
-  --color-lime: #84cc16;
-  
-  /* Spacing */
-  --spacing-tight: 0.5rem;
-  
-  /* Fonts */
-  --font-sans: Inter, system-ui, sans-serif;
+    /* Custom colors */
+    --color-primary: #3b82f6;
+    --color-secondary: #8b5cf6;
+    --color-lime: #84cc16;
+
+    /* Spacing */
+    --spacing-tight: 0.5rem;
+
+    /* Fonts */
+    --font-sans: Inter, system-ui, sans-serif;
 }
 ```
 
@@ -167,22 +163,18 @@ export default {
 ### Phase 3: Component Library Update (1 saat) 🔄
 
 ```yaml
-Modal.blade.php:
-  ✅ Syntax aynı (değişiklik gerekmez)
-  ✅ Test et
+Modal.blade.php: ✅ Syntax aynı (değişiklik gerekmez)
+    ✅ Test et
 
-Checkbox.blade.php:
-  ✅ Syntax aynı
-  ✅ Test et
+Checkbox.blade.php: ✅ Syntax aynı
+    ✅ Test et
 
-Radio.blade.php:
-  ✅ Syntax aynı
-  ✅ Test et
+Radio.blade.php: ✅ Syntax aynı
+    ✅ Test et
 
-Yeni Component'ler:
-  ✅ Direkt v4.1 syntax
-  ✅ text-shadow kullan
-  ✅ mask kullan (gerekirse)
+Yeni Component'ler: ✅ Direkt v4.1 syntax
+    ✅ text-shadow kullan
+    ✅ mask kullan (gerekirse)
 ```
 
 ---
@@ -190,19 +182,17 @@ Yeni Component'ler:
 ### Phase 4: Admin Panel Test (1 saat) 🧪
 
 ```yaml
-Test Sayfaları:
-  1. /admin/dashboard
-  2. /admin/ilanlar/create
-  3. /admin/yazlik-kiralama/create
-  4. /admin/ozellikler
-  5. Login page
+Test Sayfaları: 1. /admin/dashboard
+    2. /admin/ilanlar/create
+    3. /admin/yazlik-kiralama/create
+    4. /admin/ozellikler
+    5. Login page
 
-Kontroller:
-  ✅ Neo classes çalışıyor mu?
-  ✅ Pure Tailwind çalışıyor mu?
-  ✅ Dark mode çalışıyor mu?
-  ✅ Forms çalışıyor mu?
-  ✅ Modals çalışıyor mu?
+Kontroller: ✅ Neo classes çalışıyor mu?
+    ✅ Pure Tailwind çalışıyor mu?
+    ✅ Dark mode çalışıyor mu?
+    ✅ Forms çalışıyor mu?
+    ✅ Modals çalışıyor mu?
 ```
 
 ---
@@ -229,19 +219,16 @@ php artisan serve
 ### Minimal Breaking Changes (v3 → v4)
 
 ```yaml
-Config:
-  ✅ tailwind.config.js → Çalışmaya devam eder
-  ✅ Yeni @theme opsiyonel (zorunlu değil)
+Config: ✅ tailwind.config.js → Çalışmaya devam eder
+    ✅ Yeni @theme opsiyonel (zorunlu değil)
 
-Classes:
-  ✅ Çoğu class aynı
-  ⚠️ Bazı deprecated class'lar kaldırılmış
-  ✅ Kolayca değiştirilebilir
+Classes: ✅ Çoğu class aynı
+    ⚠️ Bazı deprecated class'lar kaldırılmış
+    ✅ Kolayca değiştirilebilir
 
-Plugins:
-  ⚠️ Bazı plugin'ler güncelleme gerektirebilir
-  ✅ @tailwindcss/forms (güncelle)
-  ✅ Alpine.js (sorun yok)
+Plugins: ⚠️ Bazı plugin'ler güncelleme gerektirebilir
+    ✅ @tailwindcss/forms (güncelle)
+    ✅ Alpine.js (sorun yok)
 ```
 
 ---
@@ -249,29 +236,25 @@ Plugins:
 ## 🎊 MIGRATION SONRASI
 
 ```yaml
-Admin Panel:
-  ✅ v4.1 ile çalışıyor
-  ✅ 100x hızlı HMR! 🔥
-  ✅ Neo → Tailwind migration devam
-  ✅ Yeni features (text-shadow, masks)
+Admin Panel: ✅ v4.1 ile çalışıyor
+    ✅ 100x hızlı HMR! 🔥
+    ✅ Neo → Tailwind migration devam
+    ✅ Yeni features (text-shadow, masks)
 
-Component Library:
-  ✅ v4.1 syntax
-  ✅ 7 component daha ekle
-  ✅ Modern features kullan
+Component Library: ✅ v4.1 syntax
+    ✅ 7 component daha ekle
+    ✅ Modern features kullan
 
-Frontend:
-  ✅ Sıfırdan v4.1 ile başla
-  ✅ En son teknoloji
-  ✅ text-shadow, masks kullan
-  ✅ Wide gamut colors
-  ✅ Container queries (native)
+Frontend: ✅ Sıfırdan v4.1 ile başla
+    ✅ En son teknoloji
+    ✅ text-shadow, masks kullan
+    ✅ Wide gamut colors
+    ✅ Container queries (native)
 
-Development:
-  ✅ 100x hızlı HMR (1ms!)
-  ✅ 5x hızlı build
-  ✅ Instant refresh
-  ✅ Zevk! 🎉
+Development: ✅ 100x hızlı HMR (1ms!)
+    ✅ 5x hızlı build
+    ✅ Instant refresh
+    ✅ Zevk! 🎉
 ```
 
 ---
@@ -281,19 +264,17 @@ Development:
 ```yaml
 Risk Seviyesi: DÜŞÜK ✅
 
-Sebepler:
-  ✅ v4.1 stable (3 Nisan 2025)
-  ✅ Admin %92.6 Tailwind (risk düşük)
-  ✅ Component Library yeni (kolay update)
-  ✅ Frontend yok (risk yok)
-  ✅ Breaking changes minimal
-  ✅ Rollback kolay (git)
+Sebepler: ✅ v4.1 stable (3 Nisan 2025)
+    ✅ Admin %92.6 Tailwind (risk düşük)
+    ✅ Component Library yeni (kolay update)
+    ✅ Frontend yok (risk yok)
+    ✅ Breaking changes minimal
+    ✅ Rollback kolay (git)
 
-Korumalar:
-  ✅ Git commit (öncesi)
-  ✅ Test environment
-  ✅ Kademeli test
-  ✅ Rollback planı
+Korumalar: ✅ Git commit (öncesi)
+    ✅ Test environment
+    ✅ Kademeli test
+    ✅ Rollback planı
 ```
 
 ---
@@ -303,24 +284,20 @@ Korumalar:
 **SEÇENEK B: Tüm Proje v4.1** ⭐⭐⭐⭐⭐
 
 ```yaml
-Avantajlar:
-  🔥 100x hızlı HMR (her yerde!)
-  🔥 5x hızlı build
-  ✨ Text shadows, masks
-  🌈 Wide gamut colors
-  📦 Container queries (native)
-  🎯 Tek config, tek sistem
-  ✅ Component Library paylaşımlı
-  ✅ Modern teknoloji
+Avantajlar: 🔥 100x hızlı HMR (her yerde!)
+    🔥 5x hızlı build
+    ✨ Text shadows, masks
+    🌈 Wide gamut colors
+    📦 Container queries (native)
+    🎯 Tek config, tek sistem
+    ✅ Component Library paylaşımlı
+    ✅ Modern teknoloji
 
-Risk:
-  ✅ DÜŞÜK
+Risk: ✅ DÜŞÜK
 
-Süre:
-  ⚡ 3-4 saat
+Süre: ⚡ 3-4 saat
 
-Fayda:
-  🚀 YÜKSEK!
+Fayda: 🚀 YÜKSEK!
 ```
 
 ---
@@ -334,4 +311,3 @@ Fayda:
 3. 🤔 **Daha fazla analiz** → Risk analizi derinleştir
 
 Hangisini tercih edersiniz? 😊
-

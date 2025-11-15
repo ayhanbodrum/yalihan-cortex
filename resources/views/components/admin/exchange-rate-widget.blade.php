@@ -1,13 +1,13 @@
 {{--
     Exchange Rate Widget Component
-    
+
     @component x-admin.exchange-rate-widget
     @description TCMB Kur Widget - Dashboard için döviz kurları gösterimi
-    
+
     @props
         - compact: bool (optional) - Compact mode (default: false)
         - showChart: bool (optional) - Show chart (default: false)
-    
+
     @example
         <x-admin.exchange-rate-widget />
         <x-admin.exchange-rate-widget :compact="true" />
@@ -18,19 +18,19 @@
     'showChart' => false,
 ])
 
-<div 
+<div
     x-data="{
         rates: [],
         loading: true,
         error: null,
         lastUpdate: null,
-        
+
         async fetchRates() {
             this.loading = true;
             try {
                 const response = await fetch('/api/exchange-rates');
                 const data = await response.json();
-                
+
                 if (data.success) {
                     // TCMB API returns object with currency codes as keys
                     // Convert to array for easier iteration
@@ -52,7 +52,7 @@
                 this.loading = false;
             }
         },
-        
+
         getCurrencySymbol(code) {
             const symbols = {
                 'USD': '$',
@@ -65,19 +65,19 @@
             };
             return symbols[code] || '💵';
         },
-        
+
         formatRate(rate) {
             return parseFloat(rate).toFixed(4);
         },
-        
+
         formatTime(timestamp) {
             if (!timestamp) return '';
             const date = new Date(timestamp);
-            return date.toLocaleString('tr-TR', { 
-                day: '2-digit', 
-                month: '2-digit', 
-                hour: '2-digit', 
-                minute: '2-digit' 
+            return date.toLocaleString('tr-TR', {
+                day: '2-digit',
+                month: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit'
             });
         }
     }"
@@ -99,18 +99,18 @@
                 <p class="text-xs text-gray-500 dark:text-gray-400" x-text="'Son güncelleme: ' + formatTime(lastUpdate)"></p>
             </div>
         </div>
-        
-        <button 
+
+        <button
             @click="fetchRates()"
             :disabled="loading"
             class="p-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-all duration-200 disabled:opacity-50"
             title="Yenile"
         >
-            <svg 
+            <svg
                 class="w-5 h-5 transition-transform duration-500"
                 :class="{ 'animate-spin': loading }"
-                fill="none" 
-                stroke="currentColor" 
+                fill="none"
+                stroke="currentColor"
                 viewBox="0 0 24 24"
             >
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />

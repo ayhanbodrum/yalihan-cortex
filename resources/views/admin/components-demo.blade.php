@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Component Library Demo - Yalıhan Emlak</title>
-    
+
     {{-- Tailwind CSS CDN --}}
     <script src="https://cdn.tailwindcss.com"></script>
-    
+
     {{-- Alpine.js --}}
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    
+
     {{-- Custom Styles --}}
     <style>
         [x-cloak] { display: none !important; }
@@ -27,9 +27,9 @@
                 <p class="text-sm text-gray-600 dark:text-gray-400">Yalıhan Emlak Warp - Modern Tailwind Components</p>
             </div>
             <div class="flex items-center gap-4">
-                <button 
+                <button
                     @click="darkMode = !darkMode"
-                    class="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 
+                    class="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600
                            bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300
                            hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200
                            flex items-center gap-2"
@@ -82,27 +82,27 @@
 
             <div x-data="{ showModal: false, showScrollableModal: false }" class="space-y-3">
                 {{-- Basic Modal Button --}}
-                <button 
+                <button
                     @click="showModal = true"
-                    class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg 
+                    class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg
                            transition-colors duration-200 font-medium"
                 >
                     Açık Basic Modal
                 </button>
 
                 {{-- Scrollable Modal Button --}}
-                <button 
+                <button
                     @click="showScrollableModal = true"
-                    class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg 
+                    class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg
                            transition-colors duration-200 font-medium ml-2"
                 >
                     Açık Scrollable Modal
                 </button>
 
                 {{-- Basic Modal --}}
-                <x-admin.modal 
-                    title="Edit User" 
-                    size="lg" 
+                <x-admin.modal
+                    title="Edit User"
+                    size="lg"
                     bind="showModal"
                 >
                     <div class="space-y-4">
@@ -115,16 +115,16 @@
                             <input type="email" value="john@example.com" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white">
                         </div>
                     </div>
-                    
+
                     <x-slot:footer>
                         <div class="flex items-center justify-end gap-3">
-                            <button 
+                            <button
                                 @click="showModal = false"
                                 class="px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors duration-200"
                             >
                                 Cancel
                             </button>
-                            <button 
+                            <button
                                 class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200"
                             >
                                 Save Changes
@@ -134,9 +134,9 @@
                 </x-admin.modal>
 
                 {{-- Scrollable Modal --}}
-                <x-admin.modal 
-                    title="Long Content Modal" 
-                    size="md" 
+                <x-admin.modal
+                    title="Long Content Modal"
+                    size="md"
                     bind="showScrollableModal"
                     :scrollable="true"
                 >
@@ -147,9 +147,9 @@
                         </p>
                         @endfor
                     </div>
-                    
+
                     <x-slot:footer>
-                        <button 
+                        <button
                             @click="showScrollableModal = false"
                             class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors duration-200"
                         >
@@ -216,7 +216,7 @@
             <div class="space-y-4">
                 <div>
                     <p class="text-sm font-medium text-gray-900 dark:text-white mb-3">Property Status</p>
-                    
+
                     <x-radio
                         name="status"
                         label="Active"
@@ -387,7 +387,7 @@
                             Actions ▼
                         </button>
                     </x-slot:trigger>
-                    
+
                     <a href="#" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
                         Edit
                     </a>
@@ -409,7 +409,7 @@
                             </svg>
                         </button>
                     </x-slot:trigger>
-                    
+
                     <div class="px-4 py-2 text-xs text-gray-500 dark:text-gray-400 border-b border-gray-200 dark:border-gray-700">
                         Property Options
                     </div>
@@ -505,19 +505,19 @@
                     >
                         <div class="flex items-center justify-between">
                             <span class="font-medium text-gray-900 dark:text-white">What is included in the property?</span>
-                            <svg 
+                            <svg
                                 class="w-5 h-5 text-gray-500 transition-transform duration-200"
                                 :class="{ 'rotate-180': openItem === 1 }"
-                                fill="none" 
-                                stroke="currentColor" 
+                                fill="none"
+                                stroke="currentColor"
                                 viewBox="0 0 24 24"
                             >
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                             </svg>
                         </div>
                     </button>
-                    <div 
-                        x-show="openItem === 1" 
+                    <div
+                        x-show="openItem === 1"
                         x-transition
                         class="px-4 py-3 bg-gray-50 dark:bg-gray-800/50 border-t border-gray-200 dark:border-gray-700"
                     >
@@ -535,19 +535,19 @@
                     >
                         <div class="flex items-center justify-between">
                             <span class="font-medium text-gray-900 dark:text-white">What are the payment options?</span>
-                            <svg 
+                            <svg
                                 class="w-5 h-5 text-gray-500 transition-transform duration-200"
                                 :class="{ 'rotate-180': openItem === 2 }"
-                                fill="none" 
-                                stroke="currentColor" 
+                                fill="none"
+                                stroke="currentColor"
                                 viewBox="0 0 24 24"
                             >
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                             </svg>
                         </div>
                     </button>
-                    <div 
-                        x-show="openItem === 2" 
+                    <div
+                        x-show="openItem === 2"
                         x-transition
                         class="px-4 py-3 bg-gray-50 dark:bg-gray-800/50 border-t border-gray-200 dark:border-gray-700"
                     >
@@ -565,19 +565,19 @@
                     >
                         <div class="flex items-center justify-between">
                             <span class="font-medium text-gray-900 dark:text-white">Is the property ready to move in?</span>
-                            <svg 
+                            <svg
                                 class="w-5 h-5 text-gray-500 transition-transform duration-200"
                                 :class="{ 'rotate-180': openItem === 3 }"
-                                fill="none" 
-                                stroke="currentColor" 
+                                fill="none"
+                                stroke="currentColor"
                                 viewBox="0 0 24 24"
                             >
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                             </svg>
                         </div>
                     </button>
-                    <div 
-                        x-show="openItem === 3" 
+                    <div
+                        x-show="openItem === 3"
                         x-transition
                         class="px-4 py-3 bg-gray-50 dark:bg-gray-800/50 border-t border-gray-200 dark:border-gray-700"
                     >
@@ -602,7 +602,7 @@
         <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">
             ✅ Available Components (12)
         </h2>
-        
+
         <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
             <div class="flex items-center gap-2 p-3 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
                 <span class="text-green-600 dark:text-green-400 text-xl">✓</span>
@@ -733,16 +733,16 @@ window.toast = function(type, message) {
         warning: 'bg-yellow-500',
         info: 'bg-blue-500'
     };
-    
+
     const toast = document.createElement('div');
     toast.className = `${colors[type] || colors.info} text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-3 animate-slide-in`;
     toast.innerHTML = `
         <span>${message}</span>
         <button onclick="this.parentElement.remove()" class="text-white hover:text-gray-200">✕</button>
     `;
-    
+
     container.appendChild(toast);
-    
+
     setTimeout(() => {
         toast.style.opacity = '0';
         toast.style.transform = 'translateX(100%)';
@@ -770,4 +770,3 @@ window.toast = function(type, message) {
 
 </body>
 </html>
-

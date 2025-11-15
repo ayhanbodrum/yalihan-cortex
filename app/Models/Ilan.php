@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Traits\HasFeatures;
+use App\Traits\Filterable;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -12,6 +13,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\YazlikRezervasyon;
 use App\Models\YazlikFiyatlandirma;
+use App\Enums\IlanStatus;
+use App\Enums\YayinTipi;
 
 /**
  * App\Models\Ilan
@@ -24,7 +27,6 @@ use App\Models\YazlikFiyatlandirma;
  * @property Carbon|null $ilan_tarihi
  * @property bool $enabled
  * @property string $status
- * @property bool $is_published
  * @property int|null $proje_id
  *
  * // İlişkisel Alanlar
@@ -75,270 +77,404 @@ use App\Models\YazlikFiyatlandirma;
  */
 class Ilan extends Model
 {
-    use HasFactory, SoftDeletes, HasFeatures;
+    use HasFactory, SoftDeletes, HasFeatures, Filterable;
 
     protected $table = 'ilanlar';
 
     /**
+     * Searchable fields for Filterable trait
+     *
+     * @var array
+     */
+    protected $searchable = ['baslik', 'aciklama'];
+
+    /**
      * The attributes that are mass assignable.
+     *
+     * Context7 Compliance: Tüm field'lar database ile senkronize edildi (6 Kasım 2025)
+     *
+     * Field Kategorileri:
+     * ✅ REQUIRED: Zorunlu field'lar (validation'da kontrol edilir)
+     * ⚠️ CONDITIONAL: Koşullu gerekli (kategori/ilan tipine göre)
+     * 🔵 OPTIONAL: Opsiyonel field'lar
+     * 🟡 LEGACY: Eski sistemden kalan, deprecated field'lar
+     * 🔴 EXCLUDED: Model'de yok ama database'de var (auto-managed: id, created_at, updated_at, deleted_at)
      *
      * @var array<int, string>
      */
     protected $fillable = [
-        'baslik',
-        'ilan_basligi', // İlan başlığı için
-        'aciklama',
-        'ilan_aciklamasi', // İlan açıklaması için
-        'fiyat',
-        'fiyat_orijinal',
-        'fiyat_try_cached',
-        'para_birimi',
-        'para_birimi_orijinal',
-        'kur_orani',
-        'kur_tarihi',
-        'ilan_tarihi',
-        'enabled',
-        'status',
-        'is_published',
-        'proje_id',
+        // ======================================================================
+        // ✅ REQUIRED FIELDS - Temel İlan Bilgileri
+        // ======================================================================
+        'baslik',                    // ✅ REQUIRED: İlan başlığı (varchar(255), NOT NULL)
+        'aciklama',                  // ✅ REQUIRED: İlan açıklaması (text, NULL allowed)
+        'fiyat',                     // ✅ REQUIRED: Ana fiyat bilgisi (decimal(15,2), NULL allowed)
+        'para_birimi',               // ✅ REQUIRED: Para birimi (varchar(10), NOT NULL, default: TRY)
+        'status',                    // ✅ REQUIRED: İlan durumu (varchar(255), NOT NULL, default: 'Aktif')
+        'il_id',                     // ✅ REQUIRED: İl bilgisi (bigint unsigned, NULL allowed)
+        'ilce_id',                   // ✅ REQUIRED: İlçe bilgisi (bigint unsigned, NULL allowed)
+        'mahalle_id',                // ✅ REQUIRED: Mahalle bilgisi (bigint unsigned, NULL allowed)
+        'ana_kategori_id',           // ✅ REQUIRED: Ana kategori (bigint unsigned, NULL allowed)
+        'alt_kategori_id',          // ✅ REQUIRED: Alt kategori (bigint unsigned, NULL allowed)
+        'yayin_tipi_id',            // ✅ REQUIRED: Yayın tipi (bigint unsigned, NULL allowed)
+
+        // ======================================================================
+        // ⚠️ CONDITIONAL FIELDS - Kategori/Tip Bazlı Gerekli Alanlar
+        // ======================================================================
+
+        // Arsa İçin Gerekli (kategori = arsa)
+        'ada_no',                    // ⚠️ CONDITIONAL: Arsa için gerekli (varchar(50), NULL allowed)
+        'parsel_no',                 // ⚠️ CONDITIONAL: Arsa için gerekli (varchar(50), NULL allowed)
+        'ada_parsel',                // ⚠️ CONDITIONAL: Arsa için gerekli (varchar(100), NULL allowed)
+        'imar_statusu',              // ⚠️ CONDITIONAL: Arsa için önemli (varchar(100), NULL allowed)
+        'alan_m2',                   // ⚠️ CONDITIONAL: Arsa için gerekli (decimal(12,2), NULL allowed)
+        'yola_cephe',                // ⚠️ CONDITIONAL: Arsa için önemli (tinyint(1), NOT NULL, default: 0)
+        'altyapi_elektrik',          // ⚠️ CONDITIONAL: Arsa için önemli (tinyint(1), NOT NULL, default: 0)
+        'altyapi_su',                // ⚠️ CONDITIONAL: Arsa için önemli (tinyint(1), NOT NULL, default: 0)
+        'altyapi_dogalgaz',          // ⚠️ CONDITIONAL: Arsa için önemli (tinyint(1), NOT NULL, default: 0)
+        'kaks',                      // ⚠️ CONDITIONAL: Arsa için önemli (decimal(5,2), NULL allowed)
+        'taks',                      // ⚠️ CONDITIONAL: Arsa için önemli (decimal(5,2), NULL allowed)
+        'gabari',                    // ⚠️ CONDITIONAL: Arsa için önemli (decimal(5,2), NULL allowed)
+
+        // Daire/Villa İçin Gerekli (kategori = daire, villa)
+        'oda_sayisi',                // ⚠️ CONDITIONAL: Daire/Villa için gerekli (int, NULL allowed)
+        'banyo_sayisi',              // ⚠️ CONDITIONAL: Daire/Villa için gerekli (int, NULL allowed)
+        'salon_sayisi',              // ⚠️ CONDITIONAL: Daire/Villa için önemli (int, NULL allowed)
+        'net_m2',                    // ⚠️ CONDITIONAL: Daire/Villa için gerekli (decimal(10,2), NULL allowed)
+        'brut_m2',                   // ⚠️ CONDITIONAL: Daire/Villa için gerekli (decimal(10,2), NULL allowed)
+        'kat',                       // ⚠️ CONDITIONAL: Daire/Villa için önemli (int, NULL allowed)
+        'toplam_kat',                // ⚠️ CONDITIONAL: Daire/Villa için önemli (int, NULL allowed)
+        'bina_yasi',                 // ⚠️ CONDITIONAL: Daire/Villa için önemli (year, NULL allowed)
+        'isitma',                    // ⚠️ CONDITIONAL: Daire/Villa için önemli (varchar(255), NULL allowed)
+        'isinma_tipi',               // ⚠️ CONDITIONAL: Daire/Villa için önemli (varchar(255), NULL allowed)
+        'esyali',                    // ⚠️ CONDITIONAL: Daire/Villa için önemli (tinyint(1), NOT NULL, default: 0)
+        'site_ozellikleri',          // ⚠️ CONDITIONAL: Site içi için önemli (json, NULL allowed)
+        'aidat',                     // ⚠️ CONDITIONAL: Daire/Villa için önemli (varchar(255), NULL allowed)
+
+        // Yazlık Kiralama İçin Gerekli (kategori = yazlık)
+        'gunluk_fiyat',              // ⚠️ CONDITIONAL: Yazlık için gerekli (decimal(10,2), NULL allowed)
+        'haftalik_fiyat',            // ⚠️ CONDITIONAL: Yazlık için önemli (decimal(10,2), NULL allowed)
+        'aylik_fiyat',               // ⚠️ CONDITIONAL: Yazlık için önemli (decimal(10,2), NULL allowed)
+        'sezonluk_fiyat',            // ⚠️ CONDITIONAL: Yazlık için önemli (decimal(10,2), NULL allowed)
+        'min_konaklama',             // ⚠️ CONDITIONAL: Yazlık için önemli (int, NULL allowed)
+        'max_misafir',               // ⚠️ CONDITIONAL: Yazlık için önemli (int, NULL allowed)
+        'temizlik_ucreti',           // ⚠️ CONDITIONAL: Yazlık için önemli (decimal(10,2), NULL allowed)
+        'havuz',                     // ⚠️ CONDITIONAL: Yazlık için önemli (tinyint(1), NOT NULL, default: 0)
+        'havuz_turu',                // ⚠️ CONDITIONAL: Havuz varsa gerekli (varchar(50), NULL allowed)
+        'havuz_boyut',               // ⚠️ CONDITIONAL: Havuz varsa önemli (varchar(50), NULL allowed)
+        'havuz_derinlik',            // ⚠️ CONDITIONAL: Havuz varsa önemli (decimal(5,2), NULL allowed)
+        'sezon_baslangic',           // ⚠️ CONDITIONAL: Yazlık için önemli (date, NULL allowed)
+        'sezon_bitis',               // ⚠️ CONDITIONAL: Yazlık için önemli (date, NULL allowed)
+        'elektrik_dahil',            // ⚠️ CONDITIONAL: Yazlık için önemli (tinyint(1), NOT NULL, default: 0)
+        'su_dahil',                  // ⚠️ CONDITIONAL: Yazlık için önemli (tinyint(1), NOT NULL, default: 0)
+
+        // İşyeri İçin Gerekli (kategori = isyeri)
+        'isyeri_tipi',               // ⚠️ CONDITIONAL: İşyeri için gerekli (varchar(255), NULL allowed)
+        'kira_bilgisi',              // ⚠️ CONDITIONAL: İşyeri için önemli (text, NULL allowed)
+        'ciro_bilgisi',              // ⚠️ CONDITIONAL: İşyeri için önemli (decimal(15,2), NULL allowed)
+        'ruhsat_durumu',             // ⚠️ CONDITIONAL: İşyeri için önemli (varchar(255), NULL allowed)
+        'personel_kapasitesi',       // ⚠️ CONDITIONAL: İşyeri için önemli (int, NULL allowed)
+        'isyeri_cephesi',            // ⚠️ CONDITIONAL: İşyeri için önemli (int, NULL allowed)
+
+        // ======================================================================
+        // 🔵 OPTIONAL FIELDS - Opsiyonel Bilgiler
+        // ======================================================================
 
         // İlişkisel Alanlar
-        'ilan_sahibi_id',
-        'ilgili_kisi_id',
-        
+        'ilan_sahibi_id',            // 🔵 OPTIONAL: İlan sahibi (kisi_id) - NULL allowed
+        'ilgili_kisi_id',            // 🔵 OPTIONAL: İlgili kişi (kisi_id) - NULL allowed
+        'danisman_id',               // 🔵 OPTIONAL: Danışman (user_id) - NULL allowed
+        'user_id',                   // 🔵 OPTIONAL: User (user_id) - NULL allowed - legacy
+        'kategori_id',               // 🔵 OPTIONAL: Legacy kategori (bigint unsigned) - deprecated
+        'proje_id',                  // 🔵 OPTIONAL: Proje ID - NULL allowed
+        'ulke_id',                   // 🔵 OPTIONAL: Ülke ID - NULL allowed
+
+        // Adres Detayları
+        'adres',                     // 🔵 OPTIONAL: Tam adres metni (varchar(255), NULL allowed)
+        'lat',                       // 🔵 OPTIONAL: Latitude (decimal(10,8), NULL allowed) - database'de 'lat'
+        'lng',                       // 🔵 OPTIONAL: Longitude (decimal(11,8), NULL allowed) - database'de 'lng'
+        'latitude',                  // 🔵 OPTIONAL: Latitude alias - legacy
+        'longitude',                 // 🔵 OPTIONAL: Longitude alias - legacy
+
+        // Yapı Detayları
+        'taban_alani',               // 🔵 OPTIONAL: Taban alanı (decimal(12,2), NULL allowed)
+        'yola_cephesi',              // 🔵 OPTIONAL: Yola cephesi (decimal(8,2), NULL allowed)
+
+        // İlan Yönetimi
+        'ilan_no',                   // 🔵 OPTIONAL: İlan numarası (varchar(255), UNIQUE, NULL allowed)
+        'referans_no',               // 🔵 OPTIONAL: Referans numarası (varchar(50), UNIQUE, NULL allowed)
+        'dosya_adi',                 // 🔵 OPTIONAL: Dosya adı (varchar(255), NULL allowed)
+        'slug',                      // 🔵 OPTIONAL: SEO slug - auto-generated
+        'goruntulenme',              // 🔵 OPTIONAL: Görüntülenme sayısı (int, NOT NULL, default: 0)
+
+        // Portal Entegrasyonları
+        'sahibinden_id',             // 🔵 OPTIONAL: Sahibinden portal ID (varchar(50), NULL allowed)
+        'emlakjet_id',               // 🔵 OPTIONAL: Emlakjet portal ID (varchar(50), NULL allowed)
+        'hepsiemlak_id',             // 🔵 OPTIONAL: Hepsiemlak portal ID (varchar(50), NULL allowed)
+        'zingat_id',                 // 🔵 OPTIONAL: Zingat portal ID (varchar(50), NULL allowed)
+        'hurriyetemlak_id',          // 🔵 OPTIONAL: Hurriyetemlak portal ID (varchar(50), NULL allowed)
+        'portal_sync_status',        // 🔵 OPTIONAL: Portal senkronizasyon durumu (json, NULL allowed)
+        'portal_pricing',            // 🔵 OPTIONAL: Portal fiyatlandırma bilgileri (json, NULL allowed)
+
+        // Anahtar Yönetimi
+        'anahtar_kimde',             // 🔵 OPTIONAL: Anahtar kimde bilgisi (varchar(255), NULL allowed)
+        'anahtar_turu',              // 🔵 OPTIONAL: Anahtar türü (enum: mal_sahibi, danisman, kapici, emlakci, yonetici, diger)
+        'anahtar_notlari',           // 🔵 OPTIONAL: Anahtar notları (text, NULL allowed)
+        'anahtar_ulasilabilirlik',   // 🔵 OPTIONAL: Anahtar ulaşılabilirlik (varchar(100), NULL allowed)
+        'anahtar_ek_bilgi',          // 🔵 OPTIONAL: Anahtar ek bilgi (varchar(255), NULL allowed)
+
+        // Medya
+        'youtube_video_url',         // 🔵 OPTIONAL: YouTube video URL
+        'sanal_tur_url',             // 🔵 OPTIONAL: Sanal tur URL
+
         // TurkiyeAPI + WikiMapia Integration (5 Kasım 2025)
-        'location_type',           // mahalle, belde, koy
-        'location_data',           // TurkiyeAPI data (JSON)
-        'wikimapia_place_id',      // WikiMapia site/place ID
-        'environmental_scores',    // Calculated scores (JSON)
-        'nearby_places',           // Nearby places summary (JSON)
-        'danisman_id',
-        'ulke_id',
-        'il_id',
-        'ilce_id',
-        'mahalle_id',
-        'ana_kategori_id',
-        'alt_kategori_id',
-        // Yayın tipi - Foreign key (yeni güvenli sistem)
-        'yayin_tipi_id',
-        // Legacy string field (deprecated - sadece geriye uyumluluk için)
-        'yayinlama_tipi',
+        'location_type',             // 🔵 OPTIONAL: Lokasyon tipi (mahalle, belde, koy)
+        'location_data',             // 🔵 OPTIONAL: TurkiyeAPI data (JSON)
+        'wikimapia_place_id',        // 🔵 OPTIONAL: WikiMapia site/place ID
+        'environmental_scores',      // 🔵 OPTIONAL: Hesaplanan skorlar (JSON)
+        'nearby_places',             // 🔵 OPTIONAL: Yakın yerler özeti (JSON)
 
-        // Analitik, SEO ve CRM Alanları
-        'slug',
-        'view_count',
-        'favorite_count',
-        'son_islem_tarihi',
-        'son_islem_fiyati',
-        'islem_tipi',
+        // ======================================================================
+        // 🟡 LEGACY FIELDS - Eski Sistemden Kalan (Deprecated)
+        // ======================================================================
+        'ilan_basligi',              // 🟡 LEGACY: İlan başlığı için - 'baslik' kullanılmalı
+        'ilan_aciklamasi',           // 🟡 LEGACY: İlan açıklaması için - 'aciklama' kullanılmalı
+        'yayinlama_tipi',            // 🟡 LEGACY: String field - 'yayin_tipi_id' kullanılmalı
+        'fiyat_orijinal',            // 🟡 LEGACY: Orijinal fiyat - çoklu para birimi desteği için
+        'fiyat_try_cached',          // 🟡 LEGACY: TRY cache fiyatı - çoklu para birimi desteği için
+        'para_birimi_orijinal',      // 🟡 LEGACY: Orijinal para birimi - çoklu para birimi desteği için
+        'kur_orani',                 // 🟡 LEGACY: Kur oranı - çoklu para birimi desteği için
+        'kur_tarihi',                // 🟡 LEGACY: Kur tarihi - çoklu para birimi desteği için
+        'ilan_tarihi',               // 🟡 LEGACY: İlan tarihi - 'created_at' kullanılmalı
+        'view_count',                // 🟡 LEGACY: Görüntülenme sayısı - 'goruntulenme' kullanılmalı
+        'favorite_count',            // 🟡 LEGACY: Favori sayısı - artık kullanılmıyor
+        'son_islem_tarihi',          // 🟡 LEGACY: Son işlem tarihi
+        'son_islem_fiyati',          // 🟡 LEGACY: Son işlem fiyatı
+        'islem_tipi',                // 🟡 LEGACY: İşlem tipi
+        'balkon_sayisi',             // 🟡 LEGACY: Balkon sayısı - artık kullanılmıyor
+        'brut_alan',                 // 🟡 LEGACY: Brut alan - 'brut_m2' kullanılmalı
+        'net_alan',                  // 🟡 LEGACY: Net alan - 'net_m2' kullanılmalı
+        'yas',                       // 🟡 LEGACY: Yaş - 'bina_yasi' kullanılmalı
+        'isitma_tipi',               // 🟡 LEGACY: Isıtma tipi - 'isinma_tipi' veya 'isitma' kullanılmalı
+        'yakit_tipi',                // 🟡 LEGACY: Yakıt tipi - artık kullanılmıyor
+        'esya_statusu',              // 🟡 LEGACY: Eşya durumu - 'esyali' boolean kullanılmalı
+        'site_icerisinde',           // 🟡 LEGACY: Site içinde - 'site_ozellikleri' kullanılmalı
+        'kredi_uygun',               // 🟡 LEGACY: Krediye uygun - artık kullanılmıyor
+        'takas_uygun',               // 🟡 LEGACY: Takasa uygun - artık kullanılmıyor
+        'tapu_statusu',              // 🟡 LEGACY: Tapu durumu - artık kullanılmıyor
+        'hisse_orani',               // 🟡 LEGACY: Hisse oranı - artık kullanılmıyor
+        'cephe_sayisi',              // 🟡 LEGACY: Cephe sayısı - artık kullanılmıyor
+        'ifraz_durumu',              // 🟡 LEGACY: İfraz durumu - artık kullanılmıyor
+        'tapu_durumu',               // 🟡 LEGACY: Tapu durumu - artık kullanılmıyor
+        'yol_durumu',                // 🟡 LEGACY: Yol durumu - artık kullanılmıyor
+        'ifrazsiz',                  // 🟡 LEGACY: İfrazsiz - artık kullanılmıyor
+        'kat_karsiligi',             // 🟡 LEGACY: Kat karşılığı - artık kullanılmıyor
+        'tapu_tipi',                 // 🟡 LEGACY: Tapu tipi - artık kullanılmıyor
+        'krediye_uygun',             // 🟡 LEGACY: Krediye uygun - artık kullanılmıyor
+        'dynamic_fields',            // 🟡 LEGACY: Dinamik field'lar (JSON) - artık kullanılmıyor
+        'adres_mahalle',             // 🟡 LEGACY: Adres mahalle - 'mahalle_id' kullanılmalı
+        'adres_detay',               // 🟡 LEGACY: Adres detay - 'adres' kullanılmalı
+        'sokak',                     // 🟡 LEGACY: Sokak - artık kullanılmıyor
+        'cadde',                     // 🟡 LEGACY: Cadde - artık kullanılmıyor
+        'bulvar',                    // 🟡 LEGACY: Bulvar - artık kullanılmıyor
+        'bina_no',                   // 🟡 LEGACY: Bina numarası - artık kullanılmıyor
+        'daire_no',                  // 🟡 LEGACY: Daire numarası - artık kullanılmıyor
+        'posta_kodu',                // 🟡 LEGACY: Posta kodu - artık kullanılmıyor
+        'nearby_distances',          // 🟡 LEGACY: Yakın mesafeler (JSON) - artık kullanılmıyor
+        'boundary_geojson',          // 🟡 LEGACY: Boundary GeoJSON - artık kullanılmıyor
+        'boundary_area',             // 🟡 LEGACY: Boundary alanı - artık kullanılmıyor
+        'elektrik_altyapisi',        // 🟡 LEGACY: Elektrik altyapısı - 'altyapi_elektrik' kullanılmalı
+        'su_altyapisi',              // 🟡 LEGACY: Su altyapısı - 'altyapi_su' kullanılmalı
+        'dogalgaz_altyapisi',        // 🟡 LEGACY: Doğalgaz altyapısı - 'altyapi_dogalgaz' kullanılmalı
+        'havuz_var',                 // 🟡 LEGACY: Havuz var - 'havuz' boolean kullanılmalı
+        'ozel_notlar',               // 🟡 LEGACY: Özel notlar - artık kullanılmıyor
+        'musteri_notlari',           // 🟡 LEGACY: Müşteri notları - artık kullanılmıyor
+        'indirimli_fiyat',           // 🟡 LEGACY: İndirimli fiyat - artık kullanılmıyor
+        'indirim_notlari',           // 🟡 LEGACY: İndirim notları - artık kullanılmıyor
+        'sahip_ozel_notlari',        // 🟡 LEGACY: Sahip özel notları - artık kullanılmıyor
+        'sahip_iletisim_tercihi',     // 🟡 LEGACY: Sahip iletişim tercihi - artık kullanılmıyor
+        'eids_onayli',               // 🟡 LEGACY: EİDS onaylı - artık kullanılmıyor
+        'eids_onay_tarihi',          // 🟡 LEGACY: EİDS onay tarihi - artık kullanılmıyor
+        'eids_belge_no',             // 🟡 LEGACY: EİDS belge no - artık kullanılmıyor
 
-        // Diğer Alanlar
-        'youtube_video_url',
-        'sanal_tur_url',
-        'ada_no',
-        'parsel_no',
-        'latitude',
-        'longitude',
-
-        // İlan tipine özel alanlar
-        'oda_sayisi',
-        'banyo_sayisi',
-        'net_metrekare',
-        'brut_metrekare',
-        // legacy isimler
-        'balkon_sayisi',
-        'brut_alan',
-        'net_alan',
-        'yas',
-        'kat',
-        'toplam_kat',
-        'isitma_tipi', // legacy
-        'isitma',
-        'yakit_tipi',
-        'esyali',
-        'esya_statusu',
-        'site_icerisinde',
-        'kredi_uygun',
-        'takas_uygun',
-        'tapu_statusu',
-        'hisse_orani',
-        'alan_m2',
-        'imar_statusu',
-        'kaks',
-        'taks',
-        'gabari',
-        'cephe_sayisi',
-        'ifraz_durumu',
-        'tapu_durumu',
-        'yol_durumu',
-        'ifrazsiz',
-        'kat_karsiligi',
-        'tapu_tipi',
-        'krediye_uygun',
-        'dynamic_fields', // JSON formatında kategori özel alanları
-
-        // Adres detayları
-        'adres_mahalle',
-        'adres_detay',
-        
-        // 🆕 PHASE 1: Address Components (Structured Address - 2025-10-31)
-        'sokak',
-        'cadde',
-        'bulvar',
-        'bina_no',
-        'daire_no',
-        'posta_kodu',
-        
-        // 🆕 PHASE 2: Distance Data (2025-10-31)
-        'nearby_distances',
-        
-        // 🆕 PHASE 3: Property Boundary (2025-10-31)
-        'boundary_geojson',
-        'boundary_area',
-
-        // Arsa özellikleri
-        'ada_parsel',
-        'yola_cephe',
-        'altyapi_elektrik',
-        'altyapi_su',
-        'altyapi_dogalgaz',
-        // legacy isimler
-        'yola_cephesi',
-        'elektrik_altyapisi',
-        'su_altyapisi',
-        'dogalgaz_altyapisi',
-
-        // Yazlık kiralama özellikleri
-        'min_konaklama',
-        'temizlik_ucreti',
-        'havuz',
-        // legacy
-        'havuz_var',
-        'max_misafir',
-        'gunluk_fiyat',
-        'haftalik_fiyat',
-        'aylik_fiyat',
-        'sezonluk_fiyat',
-
-        // Havuz detayları
-        'havuz_turu',
-        'havuz_boyut',
-        'havuz_derinlik',
-
-        // Sezonluk alanlar
-        'sezon_baslangic',
-        'sezon_bitis',
-        'elektrik_dahil',
-        'su_dahil',
-
-        // Özel notlar ve indirim bilgileri (sadece admin panelinde görünür)
-        'ozel_notlar',
-        'musteri_notlari',
-        'indirimli_fiyat',
-        'indirim_notlari',
-        'anahtar_kimde',
-        'anahtar_notlari',
-        'sahip_ozel_notlari',
-        'sahip_iletisim_tercihi',
-
-        // EİDS Onay Durumu
-        'eids_onayli',
-        'eids_onay_tarihi',
-        'eids_belge_no',
-
-        // Villa/Daire Eksik Alanları (YENİ)
-        'isinma_tipi',
-        'site_ozellikleri',
-
-        // İşyeri Alanları (YENİ)
-        'isyeri_tipi',
-        'kira_bilgisi',
-        'ciro_bilgisi',
-        'ruhsat_durumu',
-        'personel_kapasitesi',
-        'isyeri_cephesi',
-
-        // Referans & Dosyalama Sistemi (Context7 Standardı)
-        'referans_no',
-        'dosya_adi',
-        'sahibinden_id',
-        'emlakjet_id',
-        'hepsiemlak_id',
-        'zingat_id',
-        'hurriyetemlak_id',
-        'portal_sync_status',
-        'portal_pricing',
+        // ======================================================================
+        // 🔴 EXCLUDED FIELDS - Auto-managed (Model'de yok ama database'de var)
+        // ======================================================================
+        // 'id' - Auto-increment primary key
+        // 'created_at' - Auto-managed timestamp
+        // 'updated_at' - Auto-managed timestamp
+        // 'deleted_at' - Soft delete timestamp
     ];
 
     /**
      * The attributes that should be cast.
      *
+     * Context7 Compliance: Tüm field'lar database type'larına göre cast edildi (6 Kasım 2025)
+     *
      * @var array<string, string>
      */
     protected $casts = [
-        'ilan_tarihi' => 'datetime',
-        'son_islem_tarihi' => 'datetime',
-        'enabled' => 'boolean',
-        'is_published' => 'boolean',
-        'fiyat' => 'float',
-        'fiyat_orijinal' => 'float',
-        'fiyat_try_cached' => 'float',
-        'kur_orani' => 'float',
-        'kur_tarihi' => 'date',
-        'son_islem_fiyati' => 'float',
-        'latitude' => 'float',
-        'longitude' => 'float',
-        'esyali' => 'boolean',
-        'site_icerisinde' => 'boolean',
-        'kredi_uygun' => 'boolean',
-        'takas_uygun' => 'boolean',
+        // ======================================================================
+        // ✅ REQUIRED FIELDS - Casts
+        // ======================================================================
+        'fiyat' => 'float',                          // ✅ REQUIRED: decimal(15,2) → float
+        'status' => IlanStatus::class,               // ✅ REQUIRED: varchar(255) → Enum (Context7)
+        'para_birimi' => 'string',                   // ✅ REQUIRED: varchar(10) → string
+        'baslik' => 'string',                        // ✅ REQUIRED: varchar(255) → string
+        'aciklama' => 'string',                      // ✅ REQUIRED: text → string
 
-        // TurkiyeAPI + WikiMapia data (JSON)
-        'location_data' => 'array',
-        'environmental_scores' => 'array',
-        'nearby_places' => 'array',
-        
-        // Arsa boolean alanları
-        'yola_cephe' => 'boolean',
-        'altyapi_elektrik' => 'boolean',
-        'altyapi_su' => 'boolean',
-        'altyapi_dogalgaz' => 'boolean',
-        // legacy
-        'elektrik_altyapisi' => 'boolean',
-        'su_altyapisi' => 'boolean',
-        'dogalgaz_altyapisi' => 'boolean',
+        // ======================================================================
+        // ⚠️ CONDITIONAL FIELDS - Casts
+        // ======================================================================
 
-        // Yazlık kiralama boolean alanları
-        'havuz' => 'boolean',
-        'havuz_var' => 'boolean',
-        'elektrik_dahil' => 'boolean',
-        'su_dahil' => 'boolean',
+        // Arsa İçin
+        'ada_no' => 'string',                        // ⚠️ CONDITIONAL: varchar(50) → string
+        'parsel_no' => 'string',                     // ⚠️ CONDITIONAL: varchar(50) → string
+        'ada_parsel' => 'string',                    // ⚠️ CONDITIONAL: varchar(100) → string
+        'imar_statusu' => 'string',                  // ⚠️ CONDITIONAL: varchar(100) → string
+        'alan_m2' => 'float',                        // ⚠️ CONDITIONAL: decimal(12,2) → float
+        'yola_cephe' => 'boolean',                   // ⚠️ CONDITIONAL: tinyint(1) → boolean
+        'altyapi_elektrik' => 'boolean',             // ⚠️ CONDITIONAL: tinyint(1) → boolean
+        'altyapi_su' => 'boolean',                   // ⚠️ CONDITIONAL: tinyint(1) → boolean
+        'altyapi_dogalgaz' => 'boolean',             // ⚠️ CONDITIONAL: tinyint(1) → boolean
+        'kaks' => 'float',                           // ⚠️ CONDITIONAL: decimal(5,2) → float
+        'taks' => 'float',                           // ⚠️ CONDITIONAL: decimal(5,2) → float
+        'gabari' => 'float',                         // ⚠️ CONDITIONAL: decimal(5,2) → float
+        'taban_alani' => 'float',                    // ⚠️ CONDITIONAL: decimal(12,2) → float
+        'yola_cephesi' => 'float',                   // ⚠️ CONDITIONAL: decimal(8,2) → float
 
-        // Sezonluk tarih alanları
-        'sezon_baslangic' => 'date',
-        'sezon_bitis' => 'date',
+        // Daire/Villa İçin
+        'oda_sayisi' => 'integer',                   // ⚠️ CONDITIONAL: int → integer
+        'banyo_sayisi' => 'integer',                 // ⚠️ CONDITIONAL: int → integer
+        'salon_sayisi' => 'integer',                 // ⚠️ CONDITIONAL: int → integer
+        'net_m2' => 'float',                         // ⚠️ CONDITIONAL: decimal(10,2) → float
+        'brut_m2' => 'float',                        // ⚠️ CONDITIONAL: decimal(10,2) → float
+        'kat' => 'integer',                          // ⚠️ CONDITIONAL: int → integer
+        'toplam_kat' => 'integer',                   // ⚠️ CONDITIONAL: int → integer
+        'bina_yasi' => 'integer',                    // ⚠️ CONDITIONAL: year → integer
+        'isitma' => 'string',                        // ⚠️ CONDITIONAL: varchar(255) → string
+        'isinma_tipi' => 'string',                   // ⚠️ CONDITIONAL: varchar(255) → string
+        'esyali' => 'boolean',                       // ⚠️ CONDITIONAL: tinyint(1) → boolean
+        'site_ozellikleri' => 'array',                // ⚠️ CONDITIONAL: json → array
+        'aidat' => 'string',                         // ⚠️ CONDITIONAL: varchar(255) → string
 
-        // Numeric alanları
-        'net_metrekare' => 'float',
-        'brut_metrekare' => 'float',
-        'yola_cephesi' => 'float', // legacy
-        'min_konaklama' => 'integer',
-        'max_misafir' => 'integer',
-        'temizlik_ucreti' => 'float',
-        'gunluk_fiyat' => 'float',
-        'haftalik_fiyat' => 'float',
-        'aylik_fiyat' => 'float',
-        'sezonluk_fiyat' => 'float',
+        // Yazlık Kiralama İçin
+        'gunluk_fiyat' => 'float',                   // ⚠️ CONDITIONAL: decimal(10,2) → float
+        'haftalik_fiyat' => 'float',                 // ⚠️ CONDITIONAL: decimal(10,2) → float
+        'aylik_fiyat' => 'float',                    // ⚠️ CONDITIONAL: decimal(10,2) → float
+        'sezonluk_fiyat' => 'float',                 // ⚠️ CONDITIONAL: decimal(10,2) → float
+        'min_konaklama' => 'integer',                // ⚠️ CONDITIONAL: int → integer
+        'max_misafir' => 'integer',                  // ⚠️ CONDITIONAL: int → integer
+        'temizlik_ucreti' => 'float',                // ⚠️ CONDITIONAL: decimal(10,2) → float
+        'havuz' => 'boolean',                        // ⚠️ CONDITIONAL: tinyint(1) → boolean
+        'havuz_turu' => 'string',                    // ⚠️ CONDITIONAL: varchar(50) → string
+        'havuz_boyut' => 'string',                   // ⚠️ CONDITIONAL: varchar(50) → string
+        'havuz_derinlik' => 'float',                  // ⚠️ CONDITIONAL: decimal(5,2) → float
+        'sezon_baslangic' => 'date',                 // ⚠️ CONDITIONAL: date → date
+        'sezon_bitis' => 'date',                     // ⚠️ CONDITIONAL: date → date
+        'elektrik_dahil' => 'boolean',               // ⚠️ CONDITIONAL: tinyint(1) → boolean
+        'su_dahil' => 'boolean',                     // ⚠️ CONDITIONAL: tinyint(1) → boolean
 
-        // Villa/Daire & İşyeri Casts (YENİ)
-        'site_ozellikleri' => 'array',
-        'ciro_bilgisi' => 'float',
-        'personel_kapasitesi' => 'integer',
-        'isyeri_cephesi' => 'integer',
+        // İşyeri İçin
+        'isyeri_tipi' => 'string',                   // ⚠️ CONDITIONAL: varchar(255) → string
+        'kira_bilgisi' => 'string',                  // ⚠️ CONDITIONAL: text → string
+        'ciro_bilgisi' => 'float',                   // ⚠️ CONDITIONAL: decimal(15,2) → float
+        'ruhsat_durumu' => 'string',                 // ⚠️ CONDITIONAL: varchar(255) → string
+        'personel_kapasitesi' => 'integer',          // ⚠️ CONDITIONAL: int → integer
+        'isyeri_cephesi' => 'integer',               // ⚠️ CONDITIONAL: int → integer
 
-        // Referans & Dosyalama Sistemi (Context7 Standardı)
-        'portal_sync_status' => 'array',
-        'portal_pricing' => 'array',
+        // ======================================================================
+        // 🔵 OPTIONAL FIELDS - Casts
+        // ======================================================================
+
+        // İlişkisel Alanlar
+        'ilan_sahibi_id' => 'integer',               // 🔵 OPTIONAL: bigint unsigned → integer
+        'ilgili_kisi_id' => 'integer',               // 🔵 OPTIONAL: bigint unsigned → integer
+        'danisman_id' => 'integer',                  // 🔵 OPTIONAL: bigint unsigned → integer
+        'user_id' => 'integer',                      // 🔵 OPTIONAL: bigint unsigned → integer
+        'kategori_id' => 'integer',                  // 🔵 OPTIONAL: bigint unsigned → integer (legacy)
+        'proje_id' => 'integer',                     // 🔵 OPTIONAL: bigint unsigned → integer
+        'ulke_id' => 'integer',                      // 🔵 OPTIONAL: bigint unsigned → integer
+        'il_id' => 'integer',                        // 🔵 OPTIONAL: bigint unsigned → integer
+        'ilce_id' => 'integer',                      // 🔵 OPTIONAL: bigint unsigned → integer
+        'mahalle_id' => 'integer',                   // 🔵 OPTIONAL: bigint unsigned → integer
+        'ana_kategori_id' => 'integer',              // 🔵 OPTIONAL: bigint unsigned → integer
+        'alt_kategori_id' => 'integer',              // 🔵 OPTIONAL: bigint unsigned → integer
+        'yayin_tipi_id' => 'integer',                // 🔵 OPTIONAL: bigint unsigned → integer
+
+        // Adres Detayları
+        'adres' => 'string',                         // 🔵 OPTIONAL: varchar(255) → string
+        'lat' => 'float',                            // 🔵 OPTIONAL: decimal(10,8) → float
+        'lng' => 'float',                            // 🔵 OPTIONAL: decimal(11,8) → float
+        'latitude' => 'float',                       // 🔵 OPTIONAL: decimal(10,8) → float (legacy)
+        'longitude' => 'float',                      // 🔵 OPTIONAL: decimal(11,8) → float (legacy)
+
+        // İlan Yönetimi
+        'ilan_no' => 'string',                       // 🔵 OPTIONAL: varchar(255) → string
+        'referans_no' => 'string',                   // 🔵 OPTIONAL: varchar(50) → string
+        'dosya_adi' => 'string',                     // 🔵 OPTIONAL: varchar(255) → string
+        'slug' => 'string',                          // 🔵 OPTIONAL: varchar(255) → string
+        'goruntulenme' => 'integer',                 // 🔵 OPTIONAL: int → integer
+
+        // Anahtar Yönetimi
+        'anahtar_kimde' => 'string',                 // 🔵 OPTIONAL: varchar(255) → string
+        'anahtar_turu' => 'string',                  // 🔵 OPTIONAL: enum → string
+        'anahtar_notlari' => 'string',               // 🔵 OPTIONAL: text → string
+        'anahtar_ulasilabilirlik' => 'string',       // 🔵 OPTIONAL: varchar(100) → string
+        'anahtar_ek_bilgi' => 'string',              // 🔵 OPTIONAL: varchar(255) → string
+
+        // Medya
+        'youtube_video_url' => 'string',             // 🔵 OPTIONAL: varchar(255) → string
+        'sanal_tur_url' => 'string',                 // 🔵 OPTIONAL: varchar(255) → string
+
+        // TurkiyeAPI + WikiMapia Integration
+        'location_type' => 'string',                 // 🔵 OPTIONAL: varchar(255) → string
+        'location_data' => 'array',                  // 🔵 OPTIONAL: json → array
+        'wikimapia_place_id' => 'string',            // 🔵 OPTIONAL: varchar(255) → string
+        'environmental_scores' => 'array',           // 🔵 OPTIONAL: json → array
+        'nearby_places' => 'array',                  // 🔵 OPTIONAL: json → array
+
+        // Portal Entegrasyonları
+        'sahibinden_id' => 'string',                 // 🔵 OPTIONAL: varchar(50) → string
+        'emlakjet_id' => 'string',                   // 🔵 OPTIONAL: varchar(50) → string
+        'hepsiemlak_id' => 'string',                 // 🔵 OPTIONAL: varchar(50) → string
+        'zingat_id' => 'string',                     // 🔵 OPTIONAL: varchar(50) → string
+        'hurriyetemlak_id' => 'string',              // 🔵 OPTIONAL: varchar(50) → string
+        'portal_sync_status' => 'array',             // 🔵 OPTIONAL: json → array
+        'portal_pricing' => 'array',                 // 🔵 OPTIONAL: json → array
+
+        // ======================================================================
+        // 🟡 LEGACY FIELDS - Casts
+        // ======================================================================
+        'ilan_tarihi' => 'datetime',                 // 🟡 LEGACY: datetime
+        'son_islem_tarihi' => 'datetime',            // 🟡 LEGACY: datetime
+        'fiyat_orijinal' => 'float',                 // 🟡 LEGACY: float
+        'fiyat_try_cached' => 'float',                // 🟡 LEGACY: float
+        'para_birimi_orijinal' => 'string',          // 🟡 LEGACY: string
+        'kur_orani' => 'float',                      // 🟡 LEGACY: float
+        'kur_tarihi' => 'date',                      // 🟡 LEGACY: date
+        'view_count' => 'integer',                   // 🟡 LEGACY: integer
+        'favorite_count' => 'integer',               // 🟡 LEGACY: integer
+        'son_islem_fiyati' => 'float',               // 🟡 LEGACY: float
+        'islem_tipi' => 'string',                    // 🟡 LEGACY: string
+        'brut_alan' => 'float',                      // 🟡 LEGACY: float
+        'net_alan' => 'float',                       // 🟡 LEGACY: float
+        'yas' => 'integer',                          // 🟡 LEGACY: integer
+        'isitma_tipi' => 'string',                   // 🟡 LEGACY: string
+        'yakit_tipi' => 'string',                    // 🟡 LEGACY: string
+        'esya_statusu' => 'string',                  // 🟡 LEGACY: string
+        'site_icerisinde' => 'boolean',              // 🟡 LEGACY: boolean
+        'kredi_uygun' => 'boolean',                  // 🟡 LEGACY: boolean
+        'takas_uygun' => 'boolean',                  // 🟡 LEGACY: boolean
+        'yayinlama_tipi' => 'string',                // 🟡 LEGACY: string
+        'havuz_var' => 'boolean',                    // 🟡 LEGACY: boolean
+        'elektrik_altyapisi' => 'boolean',           // 🟡 LEGACY: boolean
+        'su_altyapisi' => 'boolean',                 // 🟡 LEGACY: boolean
+        'dogalgaz_altyapisi' => 'boolean',           // 🟡 LEGACY: boolean
+        'dynamic_fields' => 'array',                 // 🟡 LEGACY: array
+        'nearby_distances' => 'array',                // 🟡 LEGACY: array
+        'boundary_geojson' => 'array',               // 🟡 LEGACY: array
+        'boundary_area' => 'float',                  // 🟡 LEGACY: float
     ];
 
     // ======================================================================
@@ -420,12 +556,48 @@ class Ilan extends Model
     }
 
     /**
-     * Yayın tipi ilişkisi (Foreign Key - Güvenli Sistem)
+     * Yayın tipi ilişkisi
+     * ✅ Context7: yayin_tipi_id → IlanKategoriYayinTipi tablosundan (ilan_kategori_yayin_tipleri)
+     * ⚠️ DEPRECATED: Eski sistem (ilan_kategorileri seviye=2) artık kullanılmıyor
      */
     public function yayinTipi(): BelongsTo
     {
+        // ✅ Context7: ilan_kategori_yayin_tipleri tablosunu kullan
+        return $this->belongsTo(\App\Models\IlanKategoriYayinTipi::class, 'yayin_tipi_id');
+    }
+
+    /**
+     * Yayın tipi ilişkisi (Legacy - ilan_kategorileri seviye=2)
+     * ⚠️ DEPRECATED: Artık kullanılmıyor, yayinTipi() kullanılmalı
+     */
+    public function yayinTipiLegacy(): BelongsTo
+    {
         return $this->belongsTo(IlanKategori::class, 'yayin_tipi_id')
-            ->where('seviye', 2); // Sadece yayın tiplerini getir
+            ->where('seviye', 2);
+    }
+
+    /**
+     * Demirbaşlar ilişkisi (pivot)
+     * ✅ Context7: İlan ile demirbaşlar arasındaki ilişki
+     */
+    public function demirbaslar()
+    {
+        return $this->belongsToMany(Demirbas::class, 'ilan_demirbas', 'ilan_id', 'demirbas_id')
+            ->withPivot(['brand', 'model', 'quantity', 'notes', 'display_order', 'status'])
+            ->wherePivot('status', true)
+            ->withTimestamps()
+            ->orderByPivot('display_order');
+    }
+
+    /**
+     * Demirbaşlar ilişkisi (tümü - status filtresi olmadan)
+     */
+    public function tumDemirbaslar()
+    {
+        return $this->belongsToMany(Demirbas::class, 'ilan_demirbas', 'ilan_id', 'demirbas_id')
+            ->withPivot(['brand', 'model', 'quantity', 'notes', 'display_order', 'status'])
+            ->withTimestamps()
+            ->orderByPivot('display_order');
     }
 
     // --- Diğer İlişkiler ---
@@ -581,9 +753,9 @@ class Ilan extends Model
     public function etiketler(): BelongsToMany
     {
         return $this->belongsToMany(Etiket::class, 'ilan_etiketler')
-                    ->withPivot(['display_order', 'is_featured'])
-                    ->orderByPivot('display_order')
-                    ->withTimestamps();
+            ->withPivot(['display_order', 'is_featured'])
+            ->orderByPivot('display_order')
+            ->withTimestamps();
     }
 
     /**
@@ -646,7 +818,8 @@ class Ilan extends Model
      */
     public function scopeActive($query)
     {
-        return $query->where('enabled', true)->where('status', 'yayinda');
+        // Context7: enabled kolonu YOK, sadece status var!
+        return $query->where('status', 'yayinda');
     }
 
     /**
@@ -656,5 +829,47 @@ class Ilan extends Model
     {
         return $query->where('ana_kategori_id', $kategoriId)
             ->orWhere('alt_kategori_id', $kategoriId);
+    }
+
+    /**
+     * Ana kategoriye göre filtreleme scope'u
+     * Context7: Ana kategori ile ilanları getirir
+     */
+    public function scopeAnaKategoriyeGore($query, $kategoriId)
+    {
+        return $query->where('ana_kategori_id', $kategoriId);
+    }
+
+    /**
+     * Alt kategoriye göre filtreleme scope'u
+     * Context7: Alt kategori ile ilanları getirir
+     */
+    public function scopeAltKategoriyeGore($query, $kategoriId)
+    {
+        return $query->where('alt_kategori_id', $kategoriId);
+    }
+
+    /**
+     * Yayın tipine göre filtreleme scope'u
+     * Context7: Yayın tipi ile ilanları getirir
+     */
+    public function scopeYayinTipineGore($query, $yayinTipiId)
+    {
+        return $query->where('yayin_tipi_id', $yayinTipiId);
+    }
+
+    /**
+     * Ana ve alt kategoriye göre filtreleme scope'u
+     * Context7: Hem ana hem alt kategori ile ilanları getirir
+     */
+    public function scopeKategoriHiyerarsisineGore($query, $anaKategoriId, $altKategoriId = null)
+    {
+        $query->where('ana_kategori_id', $anaKategoriId);
+
+        if ($altKategoriId) {
+            $query->where('alt_kategori_id', $altKategoriId);
+        }
+
+        return $query;
     }
 }

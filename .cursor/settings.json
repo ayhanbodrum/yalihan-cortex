@@ -15,6 +15,16 @@
                 "CTX7_RULES_FILE": "/Users/macbookpro/Projects/yalihanemlak/docs/context7-rules.md",
                 "CTX7_CONFIG_FILE": "/Users/macbookpro/Projects/yalihanemlak/config/context7.json"
             }
+        },
+        "yalihan-bekci": {
+            "command": "node",
+            "args": [
+                "/Users/macbookpro/Projects/yalihanai /yalihan-bekci/server/mcp-server.js"
+            ],
+            "env": {
+                "PROJECT_ROOT": "/Users/macbookpro/Projects/yalihanai ",
+                "AUTO_LEARN": "true"
+            }
         }
     },
     "rules": [

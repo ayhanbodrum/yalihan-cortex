@@ -3,7 +3,7 @@
  * İlan Kategorileri sisteminden uyarlandı
  */
 
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener('DOMContentLoaded', function () {
     initDragAndDrop();
     initToastSystem();
     initKeyboardSupport();
@@ -18,66 +18,64 @@ let originalPosition = null;
  * Ana Drag & Drop sistemini başlat
  */
 function initDragAndDrop() {
-    const sortableContainer = document.getElementById("sortable-yayin-tipleri");
+    const sortableContainer = document.getElementById('sortable-yayin-tipleri');
 
     if (!sortableContainer) {
-        console.warn("Sortable container bulunamadı");
+        console.warn('Sortable container bulunamadı');
         return;
     }
 
-    console.log("🎯 Yayın Tipleri Drag & Drop sistemi başlatılıyor...");
+    console.log('🎯 Yayın Tipleri Drag & Drop sistemi başlatılıyor...');
 
     // Yayın tipleri için drag & drop
-    sortableContainer.addEventListener("dragstart", handleDragStart);
-    sortableContainer.addEventListener("dragend", handleDragEnd);
-    sortableContainer.addEventListener("dragover", handleDragOver);
-    sortableContainer.addEventListener("drop", handleDrop);
-    sortableContainer.addEventListener("dragenter", handleDragEnter);
-    sortableContainer.addEventListener("dragleave", handleDragLeave);
+    sortableContainer.addEventListener('dragstart', handleDragStart);
+    sortableContainer.addEventListener('dragend', handleDragEnd);
+    sortableContainer.addEventListener('dragover', handleDragOver);
+    sortableContainer.addEventListener('drop', handleDrop);
+    sortableContainer.addEventListener('dragenter', handleDragEnter);
+    sortableContainer.addEventListener('dragleave', handleDragLeave);
 }
 
 /**
  * Drag başlangıcı
  */
 function handleDragStart(e) {
-    if (!e.target.classList.contains("yayin-tipi-item")) {
+    if (!e.target.classList.contains('yayin-tipi-item')) {
         return;
     }
 
     draggedElement = e.target;
-    originalPosition = Array.from(e.target.parentNode.children).indexOf(
-        e.target,
-    );
+    originalPosition = Array.from(e.target.parentNode.children).indexOf(e.target);
 
     draggedData = {
         id: e.target.dataset.yayinTipiId,
-        type: "yayin-tipi",
+        type: 'yayin-tipi',
     };
 
     // Visual feedback
-    e.target.style.opacity = "0.5";
-    e.target.classList.add("dragging", "sortable-chosen");
+    e.target.style.opacity = '0.5';
+    e.target.classList.add('dragging', 'sortable-chosen');
 
     // Drag & drop için veri ayarla
-    e.dataTransfer.effectAllowed = "move";
-    e.dataTransfer.setData("text/html", e.target.outerHTML);
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/html', e.target.outerHTML);
 
     // Drop zone'ları göster
     showAllDropZones();
 
-    console.log("🎯 Drag başlatıldı:", draggedData);
+    console.log('🎯 Drag başlatıldı:', draggedData);
 }
 
 /**
  * Drag bitişi
  */
 function handleDragEnd(e) {
-    if (!e.target.classList.contains("yayin-tipi-item")) {
+    if (!e.target.classList.contains('yayin-tipi-item')) {
         return;
     }
 
-    e.target.style.opacity = "1";
-    e.target.classList.remove("dragging", "sortable-chosen");
+    e.target.style.opacity = '1';
+    e.target.classList.remove('dragging', 'sortable-chosen');
 
     hideAllDropZones();
 
@@ -86,7 +84,7 @@ function handleDragEnd(e) {
     draggedData = null;
     originalPosition = null;
 
-    console.log("✅ Drag tamamlandı");
+    console.log('✅ Drag tamamlandı');
 }
 
 /**
@@ -94,7 +92,7 @@ function handleDragEnd(e) {
  */
 function handleDragOver(e) {
     e.preventDefault();
-    e.dataTransfer.dropEffect = "move";
+    e.dataTransfer.dropEffect = 'move';
 
     if (draggedElement && draggedData) {
         const afterElement = getDragAfterElement(e.currentTarget, e.clientY);
@@ -108,8 +106,8 @@ function handleDragOver(e) {
 function handleDragEnter(e) {
     e.preventDefault();
 
-    if (e.target.classList.contains("drop-zone-indicator")) {
-        e.target.classList.add("active");
+    if (e.target.classList.contains('drop-zone-indicator')) {
+        e.target.classList.add('active');
     }
 }
 
@@ -117,8 +115,8 @@ function handleDragEnter(e) {
  * Drag leave
  */
 function handleDragLeave(e) {
-    if (e.target.classList.contains("drop-zone-indicator")) {
-        e.target.classList.remove("active");
+    if (e.target.classList.contains('drop-zone-indicator')) {
+        e.target.classList.remove('active');
     }
 }
 
@@ -130,7 +128,7 @@ function handleDrop(e) {
 
     if (!draggedElement || !draggedData) return;
 
-    const container = document.getElementById("sortable-yayin-tipleri");
+    const container = document.getElementById('sortable-yayin-tipleri');
     if (!container) return;
 
     const afterElement = getDragAfterElement(container, e.clientY);
@@ -147,16 +145,14 @@ function handleDrop(e) {
 
     hideAllDropZones();
 
-    console.log("📦 Drop tamamlandı, sıralama güncelleniyor...");
+    console.log('📦 Drop tamamlandı, sıralama güncelleniyor...');
 }
 
 /**
  * En yakın element'i bul
  */
 function getDragAfterElement(container, y) {
-    const draggableElements = [
-        ...container.querySelectorAll(".yayin-tipi-item:not(.dragging)"),
-    ];
+    const draggableElements = [...container.querySelectorAll('.yayin-tipi-item:not(.dragging)')];
 
     return draggableElements.reduce(
         (closest, child) => {
@@ -169,7 +165,7 @@ function getDragAfterElement(container, y) {
                 return closest;
             }
         },
-        { offset: Number.NEGATIVE_INFINITY },
+        { offset: Number.NEGATIVE_INFINITY }
     ).element;
 }
 
@@ -177,10 +173,10 @@ function getDragAfterElement(container, y) {
  * Drop zone'ları göster
  */
 function showAllDropZones() {
-    const indicators = document.querySelectorAll(".drop-zone-indicator");
+    const indicators = document.querySelectorAll('.drop-zone-indicator');
     indicators.forEach((indicator) => {
-        indicator.classList.remove("hidden");
-        indicator.style.display = "block";
+        indicator.classList.remove('hidden');
+        indicator.style.display = 'block';
     });
 }
 
@@ -188,11 +184,11 @@ function showAllDropZones() {
  * Drop zone'ları gizle
  */
 function hideAllDropZones() {
-    const indicators = document.querySelectorAll(".drop-zone-indicator");
+    const indicators = document.querySelectorAll('.drop-zone-indicator');
     indicators.forEach((indicator) => {
-        indicator.classList.add("hidden");
-        indicator.classList.remove("active");
-        indicator.style.display = "none";
+        indicator.classList.add('hidden');
+        indicator.classList.remove('active');
+        indicator.style.display = 'none';
     });
 }
 
@@ -201,14 +197,14 @@ function hideAllDropZones() {
  */
 function highlightDropZone(element) {
     // Önceki highlight'ları temizle
-    document.querySelectorAll(".drop-zone-indicator.active").forEach((el) => {
-        el.classList.remove("active");
+    document.querySelectorAll('.drop-zone-indicator.active').forEach((el) => {
+        el.classList.remove('active');
     });
 
     if (element) {
-        const indicator = element.querySelector(".drop-zone-indicator");
+        const indicator = element.querySelector('.drop-zone-indicator');
         if (indicator) {
-            indicator.classList.add("active");
+            indicator.classList.add('active');
         }
     }
 }
@@ -219,24 +215,24 @@ function highlightDropZone(element) {
 async function updateYayinTipiOrder(container) {
     const yayinTipleri = [];
 
-    container.querySelectorAll(".yayin-tipi-item").forEach((item, index) => {
+    container.querySelectorAll('.yayin-tipi-item').forEach((item, index) => {
         yayinTipleri.push({
             id: parseInt(item.dataset.yayinTipiId),
             order: index + 1,
         });
     });
 
-    console.log("📤 Gönderilen sıralama verisi:", yayinTipleri);
+    console.log('📤 Gönderilen sıralama verisi:', yayinTipleri);
 
     try {
-        const response = await fetch("/admin/yayin-tipleri/reorder", {
-            method: "POST",
+        const response = await fetch('/admin/yayin-tipleri/reorder', {
+            method: 'POST',
             headers: {
-                "Content-Type": "application/json",
-                "X-CSRF-TOKEN": document
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document
                     .querySelector('meta[name="csrf-token"]')
-                    .getAttribute("content"),
-                Accept: "application/json",
+                    .getAttribute('content'),
+                Accept: 'application/json',
             },
             body: JSON.stringify({ yayin_tipleri: yayinTipleri }),
         });
@@ -244,20 +240,17 @@ async function updateYayinTipiOrder(container) {
         const data = await response.json();
 
         if (!response.ok) {
-            throw new Error(data.message || "Sıralama güncellenemedi");
+            throw new Error(data.message || 'Sıralama güncellenemedi');
         }
 
         // Başarılı güncelleme
         updateOrderNumbers();
-        showToast(data.message || "Yayın tipi sırası güncellendi!", "success");
+        showToast(data.message || 'Yayın tipi sırası güncellendi!', 'success');
 
-        console.log("✅ Sıralama başarıyla güncellendi");
+        console.log('✅ Sıralama başarıyla güncellendi');
     } catch (error) {
-        console.error("❌ Sıralama hatası:", error);
-        showToast(
-            "Sıralama güncellenirken hata oluştu: " + error.message,
-            "error",
-        );
+        console.error('❌ Sıralama hatası:', error);
+        showToast('Sıralama güncellenirken hata oluştu: ' + error.message, 'error');
 
         // Hata durumunda sayfayı yenile
         setTimeout(() => {
@@ -270,8 +263,8 @@ async function updateYayinTipiOrder(container) {
  * Sıra numaralarını güncelle
  */
 function updateOrderNumbers() {
-    document.querySelectorAll(".yayin-tipi-item").forEach((item, index) => {
-        const numberElement = item.querySelector(".order-number");
+    document.querySelectorAll('.yayin-tipi-item').forEach((item, index) => {
+        const numberElement = item.querySelector('.order-number');
         if (numberElement) {
             numberElement.textContent = index + 1;
         }
@@ -283,10 +276,10 @@ function updateOrderNumbers() {
  */
 function initToastSystem() {
     // Toast container yoksa oluştur
-    if (!document.getElementById("toast-container")) {
-        const container = document.createElement("div");
-        container.id = "toast-container";
-        container.className = "fixed top-4 right-4 z-50 space-y-2";
+    if (!document.getElementById('toast-container')) {
+        const container = document.createElement('div');
+        container.id = 'toast-container';
+        container.className = 'fixed top-4 right-4 z-50 space-y-2';
         document.body.appendChild(container);
     }
 }
@@ -294,16 +287,16 @@ function initToastSystem() {
 /**
  * Toast göster
  */
-function showToast(message, type = "success", duration = 3000) {
-    const container = document.getElementById("toast-container");
+function showToast(message, type = 'success', duration = 3000) {
+    const container = document.getElementById('toast-container');
 
-    const toast = document.createElement("div");
-    const toastId = "toast-" + Date.now();
+    const toast = document.createElement('div');
+    const toastId = 'toast-' + Date.now();
     toast.id = toastId;
 
-    const bgColor = type === "success" ? "bg-green-500" : "bg-red-500";
+    const bgColor = type === 'success' ? 'bg-green-500' : 'bg-red-500';
     const icon =
-        type === "success"
+        type === 'success'
             ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>'
             : '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>';
 
@@ -325,7 +318,7 @@ function showToast(message, type = "success", duration = 3000) {
 
     // Show animation
     setTimeout(() => {
-        toast.classList.remove("translate-x-full");
+        toast.classList.remove('translate-x-full');
     }, 100);
 
     // Auto hide
@@ -342,7 +335,7 @@ function showToast(message, type = "success", duration = 3000) {
 function hideToast(toastId) {
     const toast = document.getElementById(toastId);
     if (toast) {
-        toast.classList.add("translate-x-full");
+        toast.classList.add('translate-x-full');
         setTimeout(() => {
             if (toast.parentNode) {
                 toast.parentNode.removeChild(toast);
@@ -355,25 +348,25 @@ function hideToast(toastId) {
  * Klavye desteği
  */
 function initKeyboardSupport() {
-    document.addEventListener("keydown", function (e) {
+    document.addEventListener('keydown', function (e) {
         const focusedItem = document.activeElement;
 
-        if (focusedItem && focusedItem.classList.contains("yayin-tipi-item")) {
+        if (focusedItem && focusedItem.classList.contains('yayin-tipi-item')) {
             switch (e.key) {
-                case "ArrowUp":
+                case 'ArrowUp':
                     e.preventDefault();
                     moveYayinTipiUp(focusedItem);
                     break;
-                case "ArrowDown":
+                case 'ArrowDown':
                     e.preventDefault();
                     moveYayinTipiDown(focusedItem);
                     break;
-                case "Enter":
-                case " ":
+                case 'Enter':
+                case ' ':
                     e.preventDefault();
                     toggleYayinTipiEdit(focusedItem);
                     break;
-                case "Escape":
+                case 'Escape':
                     e.preventDefault();
                     focusedItem.blur();
                     break;
@@ -424,4 +417,4 @@ window.YayinTipleriDragDrop = {
     updateOrderNumbers,
 };
 
-console.log("🎯 Yayın Tipleri Drag & Drop sistemi yüklendi!");
+console.log('🎯 Yayın Tipleri Drag & Drop sistemi yüklendi!');

@@ -20,7 +20,14 @@
         "name": "Konaklama Bilgileri",
         "slug": "konaklama-bilgileri",
         "features_count": 6,
-        "features": ["Maksimum Misafir", "Minimum Konaklama", "Check-In Saati", "Check-Out Saati", "Rezervasyon Tipi", "İptal Politikası"],
+        "features": [
+          "Maksimum Misafir",
+          "Minimum Konaklama",
+          "Check-In Saati",
+          "Check-Out Saati",
+          "Rezervasyon Tipi",
+          "İptal Politikası"
+        ],
         "purpose": "Misafir kapasitesi ve rezervasyon kuralları",
         "order": 20,
         "industry_standard": "Airbnb + Booking.com"
@@ -29,7 +36,13 @@
         "name": "Fiyatlandırma",
         "slug": "fiyatlandirma",
         "features_count": 5,
-        "features": ["Temizlik Ücreti", "Depozito", "Ekstra Misafir Ücreti", "Hafta Sonu İlavesi", "Sezon Fiyatlandırması"],
+        "features": [
+          "Temizlik Ücreti",
+          "Depozito",
+          "Ekstra Misafir Ücreti",
+          "Hafta Sonu İlavesi",
+          "Sezon Fiyatlandırması"
+        ],
         "purpose": "Ek ücretler ve fiyat varyasyonları",
         "order": 21,
         "industry_standard": "VRBO + Airbnb"
@@ -38,7 +51,15 @@
         "name": "Havuz ve Su Sporları",
         "slug": "havuz-su-sporlari",
         "features_count": 7,
-        "features": ["Havuz (5 tip)", "Havuz Boyutu", "Havuz Isıtması", "Jakuzi", "Denize Mesafe", "Plaj", "Su Sporları"],
+        "features": [
+          "Havuz (5 tip)",
+          "Havuz Boyutu",
+          "Havuz Isıtması",
+          "Jakuzi",
+          "Denize Mesafe",
+          "Plaj",
+          "Su Sporları"
+        ],
         "purpose": "Yaz tatili su aktiviteleri",
         "order": 22,
         "industry_standard": "Vacation Rental Standard"
@@ -47,7 +68,14 @@
         "name": "Dış Mekan Özellikleri",
         "slug": "dis-mekan",
         "features_count": 6,
-        "features": ["Bahçe (4 tip)", "Teras", "Barbekü", "Dış Mobilya", "Çocuk Oyun Alanı", "Manzara (6 tip)"],
+        "features": [
+          "Bahçe (4 tip)",
+          "Teras",
+          "Barbekü",
+          "Dış Mobilya",
+          "Çocuk Oyun Alanı",
+          "Manzara (6 tip)"
+        ],
         "purpose": "Dış alan kullanımı ve manzara",
         "order": 23,
         "industry_standard": "Universal Standard"
@@ -56,7 +84,16 @@
         "name": "İç Mekan Donanımları",
         "slug": "ic-mekan-donanimlari",
         "features_count": 8,
-        "features": ["Mutfak Tipi", "Bulaşık Makinesi", "Çamaşır Makinesi", "Kurutma Makinesi", "Fırın", "Mikrodalga", "Buzdolabı", "Eşyalı (4 seviye)"],
+        "features": [
+          "Mutfak Tipi",
+          "Bulaşık Makinesi",
+          "Çamaşır Makinesi",
+          "Kurutma Makinesi",
+          "Fırın",
+          "Mikrodalga",
+          "Buzdolabı",
+          "Eşyalı (4 seviye)"
+        ],
         "purpose": "Ev aletleri ve donanımlar",
         "order": 24,
         "industry_standard": "Airbnb Essentials"
@@ -65,7 +102,16 @@
         "name": "Konfor ve Eğlence",
         "slug": "konfor-eglence",
         "features_count": 8,
-        "features": ["Klima (4 seviye)", "Isıtma (5 tip)", "Wi-Fi", "TV (4 tip)", "Ses Sistemi", "Evcil Hayvan (4 politika)", "Güvenlik (5 tip)", "Otopark (4 tip)"],
+        "features": [
+          "Klima (4 seviye)",
+          "Isıtma (5 tip)",
+          "Wi-Fi",
+          "TV (4 tip)",
+          "Ses Sistemi",
+          "Evcil Hayvan (4 politika)",
+          "Güvenlik (5 tip)",
+          "Otopark (4 tip)"
+        ],
         "purpose": "Konfor ve eğlence sistemleri",
         "order": 25,
         "industry_standard": "Universal Amenities"
@@ -82,14 +128,8 @@
         "sezonluk_fiyat (decimal 10,2)",
         "temizlik_ucreti (decimal 10,2)"
       ],
-      "capacity": [
-        "max_misafir (int)",
-        "min_konaklama (int)"
-      ],
-      "season": [
-        "sezon_baslangic (date)",
-        "sezon_bitis (date)"
-      ],
+      "capacity": ["max_misafir (int)", "min_konaklama (int)"],
+      "season": ["sezon_baslangic (date)", "sezon_bitis (date)"],
       "pool": [
         "havuz (tinyint 1)",
         "havuz_var (tinyint 1)",
@@ -127,11 +167,7 @@
         "Extra guest fee ✅",
         "Amenities (40+) ✅"
       ],
-      "missing": [
-        "Instant Book badge",
-        "Superhost status",
-        "Review system"
-      ]
+      "missing": ["Instant Book badge", "Superhost status", "Review system"]
     },
     "booking_com_features": {
       "coverage": "90%",
@@ -141,10 +177,7 @@
         "Flexible pricing ✅",
         "Property ratings ready ✅"
       ],
-      "missing": [
-        "Genius program",
-        "Sustainability badges"
-      ]
+      "missing": ["Genius program", "Sustainability badges"]
     },
     "vrbo_features": {
       "coverage": "92%",
@@ -154,10 +187,7 @@
         "Pet policy ✅",
         "Property management ✅"
       ],
-      "missing": [
-        "Owner direct contact",
-        "Rental agreement templates"
-      ]
+      "missing": ["Owner direct contact", "Rental agreement templates"]
     }
   },
 
@@ -282,4 +312,3 @@
     "arsa-yazlik-migrations-2025-10-22.json"
   ]
 }
-

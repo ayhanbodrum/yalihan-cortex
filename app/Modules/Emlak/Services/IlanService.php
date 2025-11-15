@@ -18,7 +18,7 @@ class IlanService
     {
         return DB::transaction(function () use ($data) {
             $ilan = Ilan::create($data);
-            
+
             // İlan oluşturulduğunda aktivite kaydı
             $ilan->aktiviteler()->create([
                 'tip' => 'ilan_olusturuldu',
@@ -26,7 +26,7 @@ class IlanService
                 'user_id' => auth()->id(),
                 'tarih' => now(),
             ]);
-            
+
             return $ilan;
         });
     }
@@ -38,7 +38,7 @@ class IlanService
     {
         return DB::transaction(function () use ($ilan, $data) {
             $ilan->update($data);
-            
+
             // İlan güncellendiğinde aktivite kaydı
             $ilan->aktiviteler()->create([
                 'tip' => 'ilan_guncellendi',
@@ -46,7 +46,7 @@ class IlanService
                 'user_id' => auth()->id(),
                 'tarih' => now(),
             ]);
-            
+
             return $ilan;
         });
     }
@@ -59,7 +59,7 @@ class IlanService
         return DB::transaction(function () use ($ilan) {
             // İlişkili aktiviteleri sil
             $ilan->aktiviteler()->delete();
-            
+
             // İlanı sil
             return $ilan->delete();
         });

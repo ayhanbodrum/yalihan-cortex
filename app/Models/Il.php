@@ -25,8 +25,11 @@ class Il extends BaseModel
     protected $table = 'iller';
 
     protected $fillable = [
-        'il_kodu',
         'il_adi',
+        'plaka_kodu',
+        'telefon_kodu',
+        'lat',
+        'lng',
     ];
 
     /**

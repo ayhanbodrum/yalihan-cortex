@@ -17,9 +17,7 @@
         "touch-target-optimized duplicate kaldırıldı",
         "Tüm butonlar Neo Design System'e uygun"
       ],
-      "files": [
-        "resources/views/admin/talepler/create.blade.php"
-      ],
+      "files": ["resources/views/admin/talepler/create.blade.php"],
       "status": "completed"
     },
     {
@@ -43,12 +41,8 @@
           "data_source": "$danismanlar (Controller'dan)"
         }
       },
-      "files": [
-        "resources/views/admin/talepler/create.blade.php"
-      ],
-      "scripts": [
-        "public/js/context7-live-search.js"
-      ],
+      "files": ["resources/views/admin/talepler/create.blade.php"],
+      "scripts": ["public/js/context7-live-search.js"],
       "status": "completed"
     },
     {
@@ -75,16 +69,9 @@
           "Fallback handling"
         ]
       },
-      "files": [
-        "resources/views/admin/talepler/create.blade.php"
-      ],
-      "scripts": [
-        "public/js/context7-location-system.js"
-      ],
-      "api_endpoints": [
-        "/api/ilceler/{il_id}",
-        "/api/mahalleler/{ilce_id}"
-      ],
+      "files": ["resources/views/admin/talepler/create.blade.php"],
+      "scripts": ["public/js/context7-location-system.js"],
+      "api_endpoints": ["/api/ilceler/{il_id}", "/api/mahalleler/{ilce_id}"],
       "status": "completed"
     },
     {
@@ -105,12 +92,8 @@
           "Form reset desteği"
         ]
       },
-      "files": [
-        "resources/views/admin/talepler/create.blade.php"
-      ],
-      "api_endpoints": [
-        "/api/categories/sub/{kategori_id}"
-      ],
+      "files": ["resources/views/admin/talepler/create.blade.php"],
+      "api_endpoints": ["/api/categories/sub/{kategori_id}"],
       "status": "completed"
     },
     {
@@ -146,9 +129,7 @@
           ]
         }
       },
-      "files": [
-        "app/Http/Controllers/Admin/TalepController.php"
-      ],
+      "files": ["app/Http/Controllers/Admin/TalepController.php"],
       "status": "completed"
     },
     {
@@ -176,9 +157,7 @@
         "Console logging (Context7 style)",
         "Cascade logic (parent clear → child clear)"
       ],
-      "files": [
-        "resources/views/admin/talepler/create.blade.php (inline script)"
-      ],
+      "files": ["resources/views/admin/talepler/create.blade.php (inline script)"],
       "status": "completed"
     }
   ],
@@ -262,10 +241,7 @@
     },
     {
       "file": "app/Http/Controllers/Admin/TalepController.php",
-      "changes": [
-        "create() method: 3 datasets",
-        "store() method: Full validation + save logic"
-      ],
+      "changes": ["create() method: 3 datasets", "store() method: Full validation + save logic"],
       "lines_changed": "~80 lines"
     }
   ],
@@ -346,4 +322,3 @@
     "this_file": "yalihan-bekci/knowledge/talep-create-context7-standardization-2025-10-23.json"
   }
 }
-

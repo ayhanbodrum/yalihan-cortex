@@ -5,7 +5,9 @@
 @section('styles')
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
     <style>
-        [x-cloak] { display: none !important; }
+        [x-cloak] {
+            display: none !important;
+        }
     </style>
 @endsection
 
@@ -61,7 +63,8 @@
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Ad *</label>
                             <input type="text" name="ad" x-model="formData.ad" required
-                                class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-black dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200 @error('ad') border-red-500 @enderror" placeholder="Adını girin...">
+                                class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-black dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200 @error('ad') border-red-500 @enderror"
+                                placeholder="Adını girin...">
                             @error('ad')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
@@ -71,7 +74,8 @@
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Soyad *</label>
                             <input type="text" name="soyad" x-model="formData.soyad" required
-                                class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-black dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200 @error('soyad') border-red-500 @enderror" placeholder="Soyadını girin...">
+                                class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-black dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200 @error('soyad') border-red-500 @enderror"
+                                placeholder="Soyadını girin...">
                             @error('soyad')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
@@ -82,9 +86,9 @@
                             <label class="block text-sm font-medium text-gray-700 mb-1">Telefon</label>
                             <input type="tel" name="telefon" x-model="formData.telefon" @blur="validateTelefon()"
                                 class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-black dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200 @error('telefon') border-red-500 @enderror"
-                                :class="{ 'border-red-500': errors.telefon }"
-                                placeholder="0555 123 45 67">
-                            <p x-show="errors.telefon" x-text="errors.telefon" class="mt-1 text-sm text-red-600" x-cloak></p>
+                                :class="{ 'border-red-500': errors.telefon }" placeholder="0555 123 45 67">
+                            <p x-show="errors.telefon" x-text="errors.telefon" class="mt-1 text-sm text-red-600" x-cloak>
+                            </p>
                             @error('telefon')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
@@ -95,8 +99,7 @@
                             <label class="block text-sm font-medium text-gray-700 mb-1">E-posta</label>
                             <input type="email" name="email" x-model="formData.email" @blur="validateEmail()"
                                 class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-black dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200 @error('email') border-red-500 @enderror"
-                                :class="{ 'border-red-500': errors.email }"
-                                placeholder="ornek@email.com">
+                                :class="{ 'border-red-500': errors.email }" placeholder="ornek@email.com">
                             <p x-show="errors.email" x-text="errors.email" class="mt-1 text-sm text-red-600" x-cloak></p>
                             @error('email')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -110,9 +113,9 @@
                                 @blur="validateTcKimlik()"
                                 @input="formData.tc_kimlik = formData.tc_kimlik.replace(/\D/g, '')"
                                 class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-black dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200 @error('tc_kimlik') border-red-500 @enderror"
-                                :class="{ 'border-red-500': errors.tc_kimlik }"
-                                placeholder="12345678901">
-                            <p x-show="errors.tc_kimlik" x-text="errors.tc_kimlik" class="mt-1 text-sm text-red-600" x-cloak></p>
+                                :class="{ 'border-red-500': errors.tc_kimlik }" placeholder="12345678901">
+                            <p x-show="errors.tc_kimlik" x-text="errors.tc_kimlik" class="mt-1 text-sm text-red-600"
+                                x-cloak></p>
                             @error('tc_kimlik')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
@@ -120,8 +123,8 @@
 
                         {{-- Kişi Tipi --}}
                         <div>
-                            <label class="block text-sm font-medium text-gray-900 dark:text-white mb-1">Kişi Tipi</label>
-                            <select style="color-scheme: light dark;" name="kisi_tipi" x-model="formData.kisi_tipi"
+                            <label class="block text-sm font-medium text-gray-900 dark:text-white mb-1">Kişi Tipi *</label>
+                            <select style="color-scheme: light dark;" name="kisi_tipi" x-model="formData.kisi_tipi" required
                                 class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-black dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200 @error('kisi_tipi') border-red-500 @enderror">
                                 <option value="">Seçin...</option>
                                 <option value="Müşteri">Müşteri</option>
@@ -170,7 +173,7 @@
                             <select style="color-scheme: light dark;" name="danisman_id" x-model="formData.danisman_id"
                                 class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-black dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200 @error('danisman_id') border-red-500 @enderror">
                                 <option value="">Seçin...</option>
-                                @foreach ($danismanlar as $danisman)
+                                @foreach ($danismanlar ?? [] as $danisman)
                                     <option value="{{ $danisman->id }}">{{ $danisman->name }}</option>
                                 @endforeach
                             </select>
@@ -189,11 +192,40 @@
                         📍 Adres Bilgileri
                     </h2>
 
+                    {{-- Context7: TurkiyeAPI Fetch Butonu --}}
+                    <div
+                        class="mb-4 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                        <div class="flex items-center gap-3 flex-wrap">
+                            <span class="text-sm font-medium text-blue-800 dark:text-blue-200">TurkiyeAPI'den Veri
+                                Çek:</span>
+                            <button type="button" @click="fetchFromTurkiyeAPI()"
+                                :disabled="fetching || (!formData.il_id && !formData.ilce_id)"
+                                class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed text-sm">
+                                <svg x-show="!fetching" class="w-4 h-4" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                </svg>
+                                <div x-show="fetching"
+                                    class="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full">
+                                </div>
+                                <span x-text="fetching ? 'Çekiliyor...' : 'TurkiyeAPI\'den Çek'"></span>
+                            </button>
+                            <span x-show="fetching" class="text-xs text-blue-600 dark:text-blue-400">
+                                <span x-text="fetchingMessage"></span>
+                            </span>
+                        </div>
+                        <p class="text-xs text-blue-600 dark:text-blue-400 mt-2">
+                            💡 İl veya İlçe seçerek TurkiyeAPI'den güncel verileri çekebilirsiniz.
+                        </p>
+                    </div>
+
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                         {{-- İl --}}
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">İl</label>
-                            <select style="color-scheme: light dark;" name="il_id" x-model="formData.il_id" @change="loadIlceler()"
+                            <select style="color-scheme: light dark;" name="il_id" x-model="formData.il_id"
+                                @change="loadIlceler()"
                                 class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-black dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200 @error('il_id') border-red-500 @enderror">
                                 <option value="">Seçin...</option>
                                 @foreach ($iller as $il)
@@ -208,12 +240,16 @@
                         {{-- İlçe --}}
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">İlçe</label>
-                            <select style="color-scheme: light dark;" name="ilce_id" x-model="formData.ilce_id" @change="loadMahalleler()"
+                            <select style="color-scheme: light dark;" name="ilce_id" x-model="formData.ilce_id"
+                                @change="loadMahalleler()"
                                 class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-black dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200 @error('ilce_id') border-red-500 @enderror"
                                 :disabled="!formData.il_id || loadingIlceler">
-                                <option value="" x-text="!formData.il_id ? 'Önce il seçin...' : (loadingIlceler ? 'Yükleniyor...' : 'İlçe seçin...')"></option>
-                                <template x-for="ilce in ilceler" :key="ilce.id">
-                                    <option :value="ilce.id" x-text="ilce.ilce_adi"></option>
+                                <option value=""
+                                    x-text="!formData.il_id ? 'Önce il seçin...' : (loadingIlceler ? 'Yükleniyor...' : 'İlçe seçin...')">
+                                </option>
+                                <template x-for="ilce in ilceler" :key="ilce.id || ilce.temp_id">
+                                    <option :value="ilce.id || ''"
+                                        x-text="ilce.ilce_adi + (ilce._from_turkiyeapi ? ' (TurkiyeAPI)' : '')"></option>
                                 </template>
                             </select>
                             @error('ilce_id')
@@ -227,9 +263,13 @@
                             <select style="color-scheme: light dark;" name="mahalle_id" x-model="formData.mahalle_id"
                                 class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-black dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200 @error('mahalle_id') border-red-500 @enderror"
                                 :disabled="!formData.ilce_id || loadingMahalleler">
-                                <option value="" x-text="!formData.ilce_id ? 'Önce ilçe seçin...' : (loadingMahalleler ? 'Yükleniyor...' : 'Mahalle seçin...')"></option>
-                                <template x-for="mahalle in mahalleler" :key="mahalle.id">
-                                    <option :value="mahalle.id" x-text="mahalle.mahalle_adi"></option>
+                                <option value=""
+                                    x-text="!formData.ilce_id ? 'Önce ilçe seçin...' : (loadingMahalleler ? 'Yükleniyor...' : 'Mahalle seçin...')">
+                                </option>
+                                <template x-for="mahalle in mahalleler" :key="mahalle.id || mahalle.temp_id">
+                                    <option :value="mahalle.id || ''"
+                                        x-text="mahalle.mahalle_adi + (mahalle._from_turkiyeapi ? ' (TurkiyeAPI)' : '')">
+                                    </option>
                                 </template>
                             </select>
                             @error('mahalle_id')
@@ -241,10 +281,10 @@
                     {{-- Adres --}}
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Adres (Detay)</label>
-                        <textarea name="adres" x-model="formData.adres" rows="2"
-                            class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-black dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200 @error('adres') border-red-500 @enderror"
+                        <textarea name="adres_detay" x-model="formData.adres_detay" rows="2"
+                            class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-black dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200 @error('adres_detay') border-red-500 @enderror"
                             placeholder="Sokak, cadde, bina no, daire no..."></textarea>
-                        @error('adres')
+                        @error('adres_detay')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
@@ -277,10 +317,13 @@
                     </button>
 
                     <div class="flex space-x-3">
-                        <a href="{{ route('admin.kisiler.index') }}" class="inline-flex items-center px-4 py-2 text-sm font-medium bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 focus:ring-2 focus:ring-blue-500 transition-all duration-200">
+                        <a href="{{ route('admin.kisiler.index') }}"
+                            class="inline-flex items-center px-4 py-2 text-sm font-medium bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 focus:ring-2 focus:ring-blue-500 transition-all duration-200">
                             ← Geri Dön
                         </a>
-                        <button type="submit" class="bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 shadow-lg hover:shadow-xl" :disabled="loading">
+                        <button type="submit"
+                            class="bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 shadow-lg hover:shadow-xl"
+                            :disabled="loading">
                             <span x-show="!loading">✅ Kişiyi Kaydet</span>
                             <span x-show="loading" x-cloak>⏳ Kaydediliyor...</span>
                         </button>
@@ -298,6 +341,8 @@
                 loading: false,
                 loadingIlceler: false,
                 loadingMahalleler: false,
+                fetching: false,
+                fetchingMessage: '',
                 errors: {
                     telefon: '',
                     email: '',
@@ -315,7 +360,7 @@
                     il_id: '{{ old('il_id') }}',
                     ilce_id: '{{ old('ilce_id') }}',
                     mahalle_id: '{{ old('mahalle_id') }}',
-                    adres: '{{ old('adres') }}',
+                    adres_detay: '{{ old('adres_detay') }}',
                     notlar: '{{ old('notlar') }}'
                 },
                 ilceler: [],
@@ -368,7 +413,7 @@
                     return true;
                 },
 
-                // Context7 Location System - Load İlçeler
+                // Context7 Location System - Load İlçeler (Otomatik TurkiyeAPI desteği)
                 async loadIlceler() {
                     if (!this.formData.il_id) {
                         this.ilceler = [];
@@ -384,19 +429,30 @@
                     this.mahalleler = [];
 
                     try {
+                        // Context7: Sadece veritabanından veri çek
                         const response = await fetch(`/api/ilceler/${this.formData.il_id}`);
                         const data = await response.json();
-                        this.ilceler = data.data || data.districts || [];
-                        console.log(`✅ ${this.ilceler.length} ilçe yüklendi`);
+                        const dbIlceler = data.data || data.districts || [];
+
+                        console.log(`✅ DB'den ${dbIlceler.length} ilçe yüklendi`);
+                        this.ilceler = dbIlceler;
+
+                        if (dbIlceler.length === 0) {
+                            console.log('⚠️ DB\'de ilçe bulunamadı');
+                            window.toast?.info('Bu il için ilçe bulunamadı');
+                        }
                     } catch (error) {
                         console.error('❌ İlçeler yüklenemedi:', error);
                         this.ilceler = [];
+                        window.toast?.error('İlçeler yüklenemedi');
                     } finally {
                         this.loadingIlceler = false;
                     }
                 },
 
-                // Context7 Location System - Load Mahalleler
+                // Context7: TurkiyeAPI kullanımı kaldırıldı - Sadece veritabanından veri çekiliyor
+
+                // Context7 Location System - Load Mahalleler (Otomatik TurkiyeAPI desteği)
                 async loadMahalleler() {
                     if (!this.formData.ilce_id) {
                         this.mahalleler = [];
@@ -408,15 +464,144 @@
                     this.formData.mahalle_id = '';
 
                     try {
+                        // Context7: Sadece veritabanından veri çek
                         const response = await fetch(`/api/mahalleler/${this.formData.ilce_id}`);
                         const data = await response.json();
-                        this.mahalleler = data.data || data.neighborhoods || [];
-                        console.log(`✅ ${this.mahalleler.length} mahalle yüklendi`);
+                        const dbMahalleler = data.data || data.neighborhoods || [];
+
+                        console.log(`✅ DB'den ${dbMahalleler.length} mahalle yüklendi`);
+                        this.mahalleler = dbMahalleler;
+
+                        if (dbMahalleler.length === 0) {
+                            console.log('⚠️ DB\'de mahalle bulunamadı');
+                            window.toast?.info('Bu ilçe için mahalle bulunamadı');
+                        }
                     } catch (error) {
                         console.error('❌ Mahalleler yüklenemedi:', error);
                         this.mahalleler = [];
+                        window.toast?.error('Mahalleler yüklenemedi');
                     } finally {
                         this.loadingMahalleler = false;
+                    }
+                },
+
+                // Context7: TurkiyeAPI kullanımı kaldırıldı - Sadece veritabanından veri çekiliyor
+
+                // Context7: TurkiyeAPI'den Veri Çekme
+                async fetchFromTurkiyeAPI() {
+                    if (!this.formData.il_id && !this.formData.ilce_id) {
+                        window.toast?.error('Lütfen en az bir il veya ilçe seçin');
+                        return;
+                    }
+
+                    this.fetching = true;
+                    this.fetchingMessage = 'Veriler çekiliyor...';
+
+                    try {
+                        const requestBody = {
+                            type: 'auto'
+                        };
+
+                        if (this.formData.il_id) {
+                            requestBody.province_id = parseInt(this.formData.il_id);
+                        }
+
+                        if (this.formData.ilce_id) {
+                            requestBody.district_id = parseInt(this.formData.ilce_id);
+                        }
+
+                        const response = await fetch('{{ route('admin.adres-yonetimi.fetch-from-turkiyeapi') }}', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
+                                    'content')
+                            },
+                            body: JSON.stringify(requestBody)
+                        });
+
+                        const data = await response.json();
+
+                        if (data.success) {
+                            const counts = data.counts || {};
+                            let message = '✅ TurkiyeAPI\'den veriler çekildi!\n\n';
+
+                            // İlçeleri ekle
+                            if (data.data.districts && data.data.districts.length > 0 && this.formData.il_id) {
+                                // Önce fetch'ten gelen ilçeleri temizle
+                                this.ilceler = this.ilceler.filter(ilce =>
+                                    !ilce._from_turkiyeapi || ilce.il_id != this.formData.il_id
+                                );
+
+                                // Yeni çekilen ilçeleri ekle
+                                data.data.districts.forEach((turkiyeIlce, index) => {
+                                    const existingIlce = this.ilceler.find(ilce =>
+                                        ilce.il_id == this.formData.il_id &&
+                                        ilce.ilce_adi.toLowerCase() === turkiyeIlce.name.toLowerCase() &&
+                                        ilce.id !== null
+                                    );
+
+                                    if (!existingIlce) {
+                                        this.ilceler.push({
+                                            id: null,
+                                            il_id: this.formData.il_id,
+                                            ilce_adi: turkiyeIlce.name,
+                                            _from_turkiyeapi: true,
+                                            temp_id: `temp_ilce_${index}`
+                                        });
+                                    }
+                                });
+                                message += `📊 İlçeler: ${counts.districts}\n`;
+                            }
+
+                            // Mahalleleri ekle
+                            if (data.data.neighborhoods && data.data.neighborhoods.length > 0 && this.formData
+                                .ilce_id) {
+                                // Önce fetch'ten gelen mahalleleri temizle
+                                this.mahalleler = this.mahalleler.filter(mahalle =>
+                                    !mahalle._from_turkiyeapi || mahalle.ilce_id != this.formData.ilce_id
+                                );
+
+                                // Yeni çekilen mahalleleri ekle
+                                data.data.neighborhoods.forEach((turkiyeMahalle, index) => {
+                                    const existingMahalle = this.mahalleler.find(mahalle =>
+                                        mahalle.ilce_id == this.formData.ilce_id &&
+                                        mahalle.mahalle_adi.toLowerCase() === turkiyeMahalle.name
+                                        .toLowerCase() &&
+                                        mahalle.id !== null
+                                    );
+
+                                    if (!existingMahalle) {
+                                        this.mahalleler.push({
+                                            id: null,
+                                            ilce_id: this.formData.ilce_id,
+                                            mahalle_adi: turkiyeMahalle.name,
+                                            _from_turkiyeapi: true,
+                                            temp_id: `temp_mahalle_${index}`
+                                        });
+                                    }
+                                });
+                                message += `📍 Mahalleler: ${counts.neighborhoods}\n`;
+                            }
+
+                            message +=
+                                `\n💡 Bu verileri veritabanına kaydetmek için Adres Yönetimi sayfasını kullanabilirsiniz.`;
+                            window.toast?.success(message);
+                            this.fetchingMessage =
+                                `✅ ${counts.districts || 0} ilçe, ${counts.neighborhoods || 0} mahalle çekildi`;
+                        } else {
+                            window.toast?.error('Veri çekme hatası: ' + (data.message || 'Bilinmeyen hata'));
+                            this.fetchingMessage = 'Hata oluştu';
+                        }
+                    } catch (error) {
+                        console.error('Fetch error:', error);
+                        window.toast?.error('Veri çekme işlemi sırasında hata oluştu: ' + error.message);
+                        this.fetchingMessage = 'Hata oluştu';
+                    } finally {
+                        setTimeout(() => {
+                            this.fetching = false;
+                            this.fetchingMessage = '';
+                        }, 2000);
                     }
                 },
 
@@ -435,7 +620,7 @@
                             il_id: '',
                             ilce_id: '',
                             mahalle_id: '',
-                            adres: '',
+                            adres_detay: '',
                             notlar: ''
                         };
                         this.ilceler = [];
@@ -463,4 +648,3 @@
         console.log('📍 Context7 Location System ready for Kişi Create');
     </script>
 @endpush
-

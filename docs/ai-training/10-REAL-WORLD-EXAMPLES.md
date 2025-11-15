@@ -10,6 +10,7 @@
 ### **Örnek 1: Lüks Villa - Yalıkavak**
 
 **Input Data:**
+
 ```yaml
 Kategori: Villa
 Yayın Tipi: Satılık
@@ -17,47 +18,50 @@ Lokasyon: Muğla, Bodrum, Yalıkavak
 Fiyat: 15.000.000 TRY
 Alan: 500 m² (bina), 1200 m² (arsa)
 Özellikler:
-  - 6 yatak odası
-  - 5 banyo
-  - Özel infinity havuz
-  - Deniz manzarası (180 derece)
-  - Denize 150m
-  - Smart home sistem
-  - Özel iskele
+    - 6 yatak odası
+    - 5 banyo
+    - Özel infinity havuz
+    - Deniz manzarası (180 derece)
+    - Denize 150m
+    - Smart home sistem
+    - Özel iskele
 Tone: luks
 ```
 
 **AI Generated Title (Lüks):**
+
 ```
 "Yalıkavak'ın En Prestijli Noktasında Denizle İç İçe Eşsiz Villa"
 ```
 
 **AI Generated Description (Lüks):**
+
 ```
-Bodrum Yalıkavak'ın prime lokasyonunda, Ege'nin turkuaz sularına nazır bu 
+Bodrum Yalıkavak'ın prime lokasyonunda, Ege'nin turkuaz sularına nazır bu
 muhteşem villa, modern lüksün ve konforun tüm unsurlarını bir araya getiriyor.
 
-500 m² iç mekan, 1200 m²조경 bahçe içinde konumlanmış villa; 6 yatak odası, 
-5 banyo, özel infinity havuz, smart home sistem ve özel iskele ile 
-ayrıcalıklı yaşamın tüm detaylarını sunuyor. 180 derece deniz manzarası 
+500 m² iç mekan, 1200 m²조경 bahçe içinde konumlanmış villa; 6 yatak odası,
+5 banyo, özel infinity havuz, smart home sistem ve özel iskele ile
+ayrıcalıklı yaşamın tüm detaylarını sunuyor. 180 derece deniz manzarası
 eşliğinde, gün batımının tadını özel terasınızda çıkarabilirsiniz.
 
-Yalıkavak'ın sosyal yaşamına 5 dakika, marina'ya yürüme mesafesinde. 
-Bu özel konut, denizle iç içe yaşamak ve ayrıcalığı hissetmek isteyenler 
-için benzersiz bir fırsat sunuyor. Detaylar ve özel görüşme için lütfen 
+Yalıkavak'ın sosyal yaşamına 5 dakika, marina'ya yürüme mesafesinde.
+Bu özel konut, denizle iç içe yaşamak ve ayrıcalığı hissetmek isteyenler
+için benzersiz bir fırsat sunuyor. Detaylar ve özel görüşme için lütfen
 bizimle iletişime geçin.
 ```
 
 **Metadata:**
+
 ```json
 {
-  "word_count": 148,
-  "paragraph_count": 3,
-  "seo_score": 82,
-  "tone": "luks",
-  "target_audience": "Premium buyers",
-  "estimated_ctr": "High",
-  "price_mention": false
+    "word_count": 148,
+    "paragraph_count": 3,
+    "seo_score": 82,
+    "tone": "luks",
+    "target_audience": "Premium buyers",
+    "estimated_ctr": "High",
+    "price_mention": false
 }
 ```
 
@@ -66,6 +70,7 @@ bizimle iletişime geçin.
 ### **Örnek 2: Uygun Fiyatlı Daire - Gümbet**
 
 **Input Data:**
+
 ```yaml
 Kategori: Daire
 Yayın Tipi: Satılık
@@ -73,43 +78,46 @@ Lokasyon: Muğla, Bodrum, Gümbet
 Fiyat: 1.800.000 TRY
 Alan: 90 m²
 Özellikler:
-  - 2+1
-  - 2. kat
-  - Asansör
-  - Site içinde havuz
-  - Denize 200m
+    - 2+1
+    - 2. kat
+    - Asansör
+    - Site içinde havuz
+    - Denize 200m
 Tone: seo
 ```
 
 **AI Generated Title (SEO):**
+
 ```
 "Gümbet Satılık 2+1 Daire - Denize 200m Havuzlu Sitede 1.8M ₺"
 ```
 
 **AI Generated Description (SEO):**
+
 ```
-Bodrum Gümbet'in en popüler lokasyonlarında, denize 200 metre mesafede 
-satılık 2+1 daire. 90 m² kullanım alanına sahip daire, geniş salon, 
+Bodrum Gümbet'in en popüler lokasyonlarında, denize 200 metre mesafede
+satılık 2+1 daire. 90 m² kullanım alanına sahip daire, geniş salon,
 2 yatak odası, modern mutfak ve banyo ile konforlu yaşam sunuyor.
 
-Site içinde havuz, güvenlik, otopark ve çocuk oyun alanı mevcut. 
-2. katta konumlanmış daire asansörlü blokta. Denize yürüme mesafesinde, 
+Site içinde havuz, güvenlik, otopark ve çocuk oyun alanı mevcut.
+2. katta konumlanmış daire asansörlü blokta. Denize yürüme mesafesinde,
 market, restaurant ve toplu taşıma duraklarına çok yakın.
 
-1.800.000 ₺ fiyat ile Gümbet bölgesinde uygun fiyatlı seçenek. 
-Hem yaz evi hem de yatırım amaçlı kullanıma uygun. İlk görüşmeleri 
+1.800.000 ₺ fiyat ile Gümbet bölgesinde uygun fiyatlı seçenek.
+Hem yaz evi hem de yatırım amaçlı kullanıma uygun. İlk görüşmeleri
 başlatmak için hemen arayın!
 ```
 
 **Metadata:**
+
 ```json
 {
-  "word_count": 127,
-  "seo_score": 91,
-  "keywords": ["Gümbet", "2+1", "satılık", "deniz", "havuz"],
-  "keyword_density": 0.024,
-  "target_audience": "Middle-income buyers",
-  "estimated_ctr": "Very High"
+    "word_count": 127,
+    "seo_score": 91,
+    "keywords": ["Gümbet", "2+1", "satılık", "deniz", "havuz"],
+    "keyword_density": 0.024,
+    "target_audience": "Middle-income buyers",
+    "estimated_ctr": "Very High"
 }
 ```
 
@@ -118,6 +126,7 @@ başlatmak için hemen arayın!
 ### **Örnek 3: Arsa - Turgutreis**
 
 **Input Data:**
+
 ```yaml
 Kategori: Arsa
 İmar: İmarlı
@@ -130,14 +139,16 @@ Tone: kurumsal
 ```
 
 **AI Generated Title (Kurumsal):**
+
 ```
 "Turgutreis İmarlı Arsa - 1500 m² KAKS 1.2 Yatırım Fırsatı"
 ```
 
 **AI Generated Description (Kurumsal):**
+
 ```
-Bodrum Turgutreis bölgesinde tamamen imar dahilinde 1500 m² arsa. 
-KAKS 1.2 ve TAKS 0.30 değerleri ile toplam 1800 m² inşaat alanı 
+Bodrum Turgutreis bölgesinde tamamen imar dahilinde 1500 m² arsa.
+KAKS 1.2 ve TAKS 0.30 değerleri ile toplam 1800 m² inşaat alanı
 imkanı sunmaktadır.
 
 Teknik Özellikler:
@@ -147,24 +158,25 @@ Teknik Özellikler:
 - Maksimum kat: 4 kat
 - Altyapı: Elektrik, su, doğalgaz mevcut
 
-Turgutreis'in gelişen bölgesinde, denize 800 metre mesafede konumlanmış 
-arsa, bölgenin yıllık %12-15 değer artış potansiyeli göz önünde 
-bulundurulduğunda yüksek yatırım getirisi vaat etmektedir. 
+Turgutreis'in gelişen bölgesinde, denize 800 metre mesafede konumlanmış
+arsa, bölgenin yıllık %12-15 değer artış potansiyeli göz önünde
+bulundurulduğunda yüksek yatırım getirisi vaat etmektedir.
 8.000.000 ₺ fiyat ile m² başı 5,333 ₺ bölge ortalamasına uygundur.
 
-Detaylı imar bilgileri, projeksiyonlar ve fizibilite raporları için 
+Detaylı imar bilgileri, projeksiyonlar ve fizibilite raporları için
 iletişime geçiniz.
 ```
 
 **Metadata:**
+
 ```json
 {
-  "word_count": 154,
-  "tone": "kurumsal",
-  "technical_details": true,
-  "roi_mentioned": true,
-  "target_audience": "Investors",
-  "estimated_conversion": "Medium-High"
+    "word_count": 154,
+    "tone": "kurumsal",
+    "technical_details": true,
+    "roi_mentioned": true,
+    "target_audience": "Investors",
+    "estimated_conversion": "Medium-High"
 }
 ```
 
@@ -175,6 +187,7 @@ iletişime geçiniz.
 ### **Örnek 4: Seasonal Rental Villa**
 
 **Input Data:**
+
 ```yaml
 Kategori: Yazlık Villa
 Yayın Tipi: Günlük Kiralık
@@ -182,23 +195,25 @@ Lokasyon: Bodrum, Bitez
 Haftalık Fiyat: 35.000 TRY (Yaz)
 Alan: 180 m²
 Özellikler:
-  - 4 yatak odası
-  - Özel havuz
-  - Denize 100m
-  - Max 8 kişi
-  - Minimum 7 gün
-  - Temizlik dahil
+    - 4 yatak odası
+    - Özel havuz
+    - Denize 100m
+    - Max 8 kişi
+    - Minimum 7 gün
+    - Temizlik dahil
 Tone: hizli_satis
 ```
 
 **AI Generated Title (Hızlı Satış):**
+
 ```
 "Bitez Denize 100m Kiralık Villa - Haftalık 35K ₺ Havuz + 4 Oda!"
 ```
 
 **AI Generated Description (Hızlı Satış):**
+
 ```
-Bodrum Bitez'de denize sadece 100 metre mesafede kiralık yazlık villa! 
+Bodrum Bitez'de denize sadece 100 metre mesafede kiralık yazlık villa!
 Aileniz ve arkadaşlarınızla unutulmaz bir tatil için ideal.
 
 Villa Özellikleri:
@@ -219,32 +234,33 @@ HEMEN ARAYIN: 0533 209 03 02
 ```
 
 **Seasonal Pricing AI:**
+
 ```json
 {
-  "yaz_sezon": {
-    "period": "15 Haziran - 15 Eylül",
-    "weekly_price": 35000,
-    "daily_price": 5000,
-    "min_stay": 7
-  },
-  "ara_sezon": {
-    "period": "1 Mayıs - 14 Haziran, 16 Eylül - 31 Ekim",
-    "weekly_price": 21000,
-    "discount": "40%",
-    "min_stay": 5
-  },
-  "kis_sezon": {
-    "period": "1 Kasım - 30 Nisan",
-    "weekly_price": 10500,
-    "discount": "70%",
-    "min_stay": 3
-  },
-  "yillik_gelir_tahmini": {
-    "optimistic": 560000,
-    "realistic": 420000,
-    "conservative": 280000,
-    "occupancy_rate": "60%"
-  }
+    "yaz_sezon": {
+        "period": "15 Haziran - 15 Eylül",
+        "weekly_price": 35000,
+        "daily_price": 5000,
+        "min_stay": 7
+    },
+    "ara_sezon": {
+        "period": "1 Mayıs - 14 Haziran, 16 Eylül - 31 Ekim",
+        "weekly_price": 21000,
+        "discount": "40%",
+        "min_stay": 5
+    },
+    "kis_sezon": {
+        "period": "1 Kasım - 30 Nisan",
+        "weekly_price": 10500,
+        "discount": "70%",
+        "min_stay": 3
+    },
+    "yillik_gelir_tahmini": {
+        "optimistic": 560000,
+        "realistic": 420000,
+        "conservative": 280000,
+        "occupancy_rate": "60%"
+    }
 }
 ```
 
@@ -255,6 +271,7 @@ HEMEN ARAYIN: 0533 209 03 02
 ### **Örnek 5: Cafe Devren**
 
 **Input Data:**
+
 ```yaml
 Kategori: İşyeri - Cafe
 Yayın Tipi: Devren Kiralık
@@ -267,13 +284,15 @@ Tone: kurumsal
 ```
 
 **AI Generated Title:**
+
 ```
 "Bodrum Merkez Devren Kiralık Cafe - 120 m² İşlek Lokasyon"
 ```
 
 **AI Generated Description:**
+
 ```
-Bodrum Merkez'in en işlek caddelerinde, yüksek insan trafiğine sahip 
+Bodrum Merkez'in en işlek caddelerinde, yüksek insan trafiğine sahip
 bölgede 120 m² cafe. Mevcut işletme ile birlikte devren kiralık.
 
 İşletme Bilgileri:
@@ -289,7 +308,7 @@ Finansal:
 - ROI: ~18 ay (yüksek getiri)
 - Sezon: Haziran-Eylül peak
 
-Tüm ekipmanlar (espresso, fırın, buzdolabı), dekor, müşteri portföyü 
+Tüm ekipmanlar (espresso, fırın, buzdolabı), dekor, müşteri portföyü
 ve tecrübeli personel dahil. Anahtar teslim fırsat!
 
 İş planı, finansal detaylar ve görüşme için iletişime geçiniz.
@@ -302,23 +321,27 @@ ve tecrübeli personel dahil. Anahtar teslim fırsat!
 ### **Aynı İlan, 3 Farklı Portal:**
 
 **Base Data:**
+
 ```yaml
 Villa, Yalıkavak, 3.5M ₺, Satılık
 ```
 
 #### **Sahibinden.com (Max 50 karakter):**
+
 ```
 "Yalıkavak Satılık Villa 3.5M ₺ Deniz"
 (48 karakter)
 ```
 
 #### **Hepsiemlak (60-70 karakter):**
+
 ```
 "Bodrum Yalıkavak'ta Deniz Manzaralı Satılık Villa - 3.5M ₺"
 (63 karakter)
 ```
 
 #### **Emlakjet (70-80 karakter):**
+
 ```
 "Yalıkavak Premium Lokasyonda Özel Havuzlu Deniz Manzaralı Satılık Villa - 3.5M ₺"
 (87 karakter - biraz uzun, kısaltılmalı)
@@ -335,7 +358,7 @@ Revised:
 ### **❌ Başarısız Başlık Örnekleri:**
 
 ```
-1. "Villa satılık" 
+1. "Villa satılık"
    Sorun: Lokasyon yok, fiyat yok, çok kısa
 
 2. "🏠 Süper villa KAÇIRMAYIN!! 🌊"
@@ -379,38 +402,42 @@ Revised:
 **Data:** Villa, Yalıkavak, 3.5M ₺
 
 #### **1. SEO Tone:**
+
 ```
 "Yalıkavak Deniz Manzaralı Satılık Villa - 5+2 Havuzlu 3.5M ₺"
 
-Açıklama: Bodrum Yalıkavak'ta deniz manzaralı satılık villa. 
-250 m² kullanım alanı, 5 yatak odası, özel havuz, modern mutfak. 
+Açıklama: Bodrum Yalıkavak'ta deniz manzaralı satılık villa.
+250 m² kullanım alanı, 5 yatak odası, özel havuz, modern mutfak.
 Denize 200 metre, marina 1 km. Yatırım için ideal...
 ```
 
 #### **2. Kurumsal Tone:**
+
 ```
 "Yalıkavak Bölgesinde Yüksek Yatırım Getirili Villa Projesi"
 
-Açıklama: Prime lokasyonda konumlanmış villa, bölgenin artan 
-değerine paralel olarak yıllık %15-20 değer artış potansiyeli 
+Açıklama: Prime lokasyonda konumlanmış villa, bölgenin artan
+değerine paralel olarak yıllık %15-20 değer artış potansiyeli
 sunmaktadır. Detaylı fizibilite raporu ve yatırım analizi için...
 ```
 
 #### **3. Hızlı Satış Tone:**
+
 ```
 "FIRSATTAN! Yalıkavak Denize Sıfır Villa - Bu Hafta %10 İndirim!"
 
-Açıklama: Kaçırılmayacak fırsat! Yalıkavak'ta denize sadece 200 metre 
+Açıklama: Kaçırılmayacak fırsat! Yalıkavak'ta denize sadece 200 metre
 mesafede villa. Normal fiyat 3.9M ₺ iken, sadece bu hafta 3.5M ₺!
 İlk gören alır! HEMEN ARAYIN!
 ```
 
 #### **4. Lüks Tone:**
+
 ```
 "Yalıkavak'ın En Prestijli Noktasında Eşsiz Villa"
 
-Açıklama: Bodrum Yalıkavak'ın prime lokasyonunda, denizle iç içe 
-konumlanmış bu muhteşem villa, modern lüksün ve konforun tüm unsurlarını 
+Açıklama: Bodrum Yalıkavak'ın prime lokasyonunda, denizle iç içe
+konumlanmış bu muhteşem villa, modern lüksün ve konforun tüm unsurlarını
 bir araya getiriyor. Her detayında zarafet... Fiyat talep üzerine.
 ```
 
@@ -421,105 +448,109 @@ bir araya getiriyor. Her detayında zarafet... Fiyat talep üzerine.
 ### **Örnek: Yalıkavak Premium Lokasyon**
 
 **Input:**
+
 ```yaml
 Lokasyon: Muğla, Bodrum, Yalıkavak
 Nearby:
-  - Yalıkavak Marina: 1.2 km
-  - Palmarina: 1.5 km
-  - Okul: 350m
-  - Hastane: 2.8 km
-  - Market: 180m
-  - Plaj: 400m
+    - Yalıkavak Marina: 1.2 km
+    - Palmarina: 1.5 km
+    - Okul: 350m
+    - Hastane: 2.8 km
+    - Market: 180m
+    - Plaj: 400m
 ```
 
 **AI Analiz:**
+
 ```json
 {
-  "score": 94,
-  "grade": "A+",
-  "potential": "Çok Yüksek",
-  "analysis": {
-    "merkeze_yakinlik": {
-      "score": 24,
-      "max": 25,
-      "detail": "Marina 1.2km, tüm sosyal hayata merkezi"
+    "score": 94,
+    "grade": "A+",
+    "potential": "Çok Yüksek",
+    "analysis": {
+        "merkeze_yakinlik": {
+            "score": 24,
+            "max": 25,
+            "detail": "Marina 1.2km, tüm sosyal hayata merkezi"
+        },
+        "sosyal_tesisler": {
+            "score": 20,
+            "max": 20,
+            "detail": "Okul 350m, market 180m - tüm ihtiyaçlar yakın"
+        },
+        "ulasim": {
+            "score": 19,
+            "max": 20,
+            "detail": "Ana yol 200m, dolmuş hattı 100m"
+        },
+        "altyapi": {
+            "score": 20,
+            "max": 20,
+            "detail": "Elektrik, su, doğalgaz, fiber internet tam"
+        },
+        "gelisim_potansiyeli": {
+            "score": 14,
+            "max": 15,
+            "detail": "Yeni marina projeleri, değer artışı %18/yıl"
+        }
     },
-    "sosyal_tesisler": {
-      "score": 20,
-      "max": 20,
-      "detail": "Okul 350m, market 180m - tüm ihtiyaçlar yakın"
-    },
-    "ulasim": {
-      "score": 19,
-      "max": 20,
-      "detail": "Ana yol 200m, dolmuş hattı 100m"
-    },
-    "altyapi": {
-      "score": 20,
-      "max": 20,
-      "detail": "Elektrik, su, doğalgaz, fiber internet tam"
-    },
-    "gelisim_potansiyeli": {
-      "score": 14,
-      "max": 15,
-      "detail": "Yeni marina projeleri, değer artışı %18/yıl"
-    }
-  },
-  "reasoning": "Premium tatil bölgesi, tüm sosyal tesislere yakın, yüksek turist talebi, yıllık %15-20 değer artışı. Yatırım için A+ lokasyon.",
-  "investment_recommendation": "Kesinlikle alınmalı - uzun vadede %100+ getiri",
-  "risk_level": "Çok Düşük"
+    "reasoning": "Premium tatil bölgesi, tüm sosyal tesislere yakın, yüksek turist talebi, yıllık %15-20 değer artışı. Yatırım için A+ lokasyon.",
+    "investment_recommendation": "Kesinlikle alınmalı - uzun vadede %100+ getiri",
+    "risk_level": "Çok Düşük"
 }
 ```
 
 ### **Örnek: İç Bölge Arsa**
 
 **Input:**
+
 ```yaml
 Lokasyon: Muğla, Marmaris, İçmeler
 Nearby:
-  - Merkez: 8 km
-  - Deniz: 3 km
-  - Okul: Yok (en yakın 5 km)
-  - Hastane: 10 km
+    - Merkez: 8 km
+    - Deniz: 3 km
+    - Okul: Yok (en yakın 5 km)
+    - Hastane: 10 km
 ```
 
 **AI Analiz:**
+
 ```json
 {
-  "score": 52,
-  "grade": "C",
-  "potential": "Orta",
-  "analysis": {
-    "merkeze_yakinlik": {
-      "score": 12,
-      "max": 25,
-      "detail": "Merkeze 8 km - orta mesafe"
+    "score": 52,
+    "grade": "C",
+    "potential": "Orta",
+    "analysis": {
+        "merkeze_yakinlik": {
+            "score": 12,
+            "max": 25,
+            "detail": "Merkeze 8 km - orta mesafe"
+        },
+        "sosyal_tesisler": {
+            "score": 8,
+            "max": 20,
+            "detail": "Okul 5 km, hastane 10 km - uzak"
+        },
+        "ulasim": {
+            "score": 10,
+            "max": 20,
+            "detail": "Dolmuş hattında değil, özel araç gerekli"
+        },
+        "altyapi": {
+            "score": 15,
+            "max": 20,
+            "detail": "Elektrik var, su sondaj, doğalgaz yok"
+        },
+        "gelisim_potansiyeli": {
+            "score": 7,
+            "max": 15,
+            "detail": "Yavaş gelişim bölgesi, uzun vadeli yatırım"
+        }
     },
-    "sosyal_tesisler": {
-      "score": 8,
-      "max": 20,
-      "detail": "Okul 5 km, hastane 10 km - uzak"
-    },
-    "ulasim": {
-      "score": 10,
-      "max": 20,
-      "detail": "Dolmuş hattında değil, özel araç gerekli"
-    },
-    "altyapi": {
-      "score": 15,
-      "max": 20,
-      "detail": "Elektrik var, su sondaj, doğalgaz yok"
-    },
-    "gelisim_potansiyeli": {
-      "score": 7,
-      "max": 15,
-      "detail": "Yavaş gelişim bölgesi, uzun vadeli yatırım"
-    }
-  },
-  "reasoning": "Orta seviye lokasyon. Merkeze uzak ama sakin yaşam için uygun. Yatırım süresi 5-10 yıl.",
-  "investment_recommendation": "Uzun vadeli düşünülebilir, kısa vade için riskli",
-  "risk_level": "Orta",
-  "target_buyer": "Emekli, doğa seven, yabancı alıcılar"
+    "reasoning": "Orta seviye lokasyon. Merkeze uzak ama sakin yaşam için uygun. Yatırım süresi 5-10 yıl.",
+    "investment_recommendation": "Uzun vadeli düşünülebilir, kısa vade için riskli",
+    "risk_level": "Orta",
+    "target_buyer": "Emekli, doğa seven, yabancı alıcılar"
 }
 ```
 
@@ -530,6 +561,7 @@ Nearby:
 ### **Örnek: Villa Fiyat Değerlendirmesi**
 
 **Input:**
+
 ```yaml
 Girilen Fiyat: 2.800.000 TRY
 Kategori: Villa
@@ -539,46 +571,47 @@ Alan: 200 m²
 ```
 
 **AI Analiz:**
+
 ```json
 {
-  "analysis": {
-    "entered_price": 2800000,
-    "currency": "TRY",
-    "price_per_sqm": 14000,
-    "area_average": 15500,
-    "difference": "-9.7%",
-    "verdict": "Bölge ortalamasının altında"
-  },
-  "suggestions": [
-    {
-      "level": "Pazarlık Payı",
-      "price": 2520000,
-      "change": "-10%",
-      "reasoning": "Hızlı satış için önerilen fiyat",
-      "estimated_days": "30-45 gün"
+    "analysis": {
+        "entered_price": 2800000,
+        "currency": "TRY",
+        "price_per_sqm": 14000,
+        "area_average": 15500,
+        "difference": "-9.7%",
+        "verdict": "Bölge ortalamasının altında"
     },
-    {
-      "level": "Piyasa Ortalaması",
-      "price": 3100000,
-      "change": "+10.7%",
-      "reasoning": "Bölge ortalamasına uygun fiyat",
-      "estimated_days": "60-90 gün",
-      "recommended": true
-    },
-    {
-      "level": "Premium",
-      "price": 3500000,
-      "change": "+25%",
-      "reasoning": "Deniz manzarası ve havuz gibi özel özellikler için",
-      "estimated_days": "90-120 gün"
+    "suggestions": [
+        {
+            "level": "Pazarlık Payı",
+            "price": 2520000,
+            "change": "-10%",
+            "reasoning": "Hızlı satış için önerilen fiyat",
+            "estimated_days": "30-45 gün"
+        },
+        {
+            "level": "Piyasa Ortalaması",
+            "price": 3100000,
+            "change": "+10.7%",
+            "reasoning": "Bölge ortalamasına uygun fiyat",
+            "estimated_days": "60-90 gün",
+            "recommended": true
+        },
+        {
+            "level": "Premium",
+            "price": 3500000,
+            "change": "+25%",
+            "reasoning": "Deniz manzarası ve havuz gibi özel özellikler için",
+            "estimated_days": "90-120 gün"
+        }
+    ],
+    "recommendation": {
+        "suggested_price": 3100000,
+        "reasoning": "Deniz manzarası ve havuz özellikleri dikkate alındığında, bölge ortalaması olan 3.1M ₺ uygun olur. Girilen 2.8M ₺ düşük kalıyor.",
+        "market_positioning": "Orta-Üst segment",
+        "competition": "5 benzer ilan, ortalama 3.2M ₺"
     }
-  ],
-  "recommendation": {
-    "suggested_price": 3100000,
-    "reasoning": "Deniz manzarası ve havuz özellikleri dikkate alındığında, bölge ortalaması olan 3.1M ₺ uygun olur. Girilen 2.8M ₺ düşük kalıyor.",
-    "market_positioning": "Orta-Üst segment",
-    "competition": "5 benzer ilan, ortalama 3.2M ₺"
-  }
 }
 ```
 
@@ -589,6 +622,7 @@ Alan: 200 m²
 ### **Örnek: Premium Alıcı**
 
 **Input:**
+
 ```yaml
 Kişi ID: 245
 Ad Soyad: Mehmet Demir
@@ -600,46 +634,47 @@ Son Aktivite: 5 ilan görüntüledi (son 7 gün)
 ```
 
 **AI CRM Analizi:**
+
 ```json
 {
-  "crm_score": 92,
-  "segment": "Premium Yatırımcı",
-  "profile": {
-    "buyer_readiness": "Sıcak (90%)",
-    "budget_level": "Yüksek",
-    "decision_speed": "Hızlı (2-4 hafta)",
-    "investment_focus": true
-  },
-  "behavioral_insights": {
-    "search_pattern": "Aktif (5 ilan/hafta)",
-    "price_range": "Stabil (8-12M ₺)",
-    "location_flexibility": "Yüksek (Bodrum geneli)",
-    "property_type": "Villa + Arsa (gelişim projesi)"
-  },
-  "recommended_approach": {
-    "communication": "Profesyonel, rakamlar odaklı",
-    "focus": "ROI, yatırım getirisi, pazar analizi",
-    "meeting": "Ofis ortamı, finansal sunumlar hazırla",
-    "follow_up": "48 saat içinde (sıcak müşteri)"
-  },
-  "matching_listings": [
-    {
-      "id": 234,
-      "match_score": 95,
-      "reason": "8.5M ₺, Yalıkavak, arsa + proje, %22 ROI tahmini"
+    "crm_score": 92,
+    "segment": "Premium Yatırımcı",
+    "profile": {
+        "buyer_readiness": "Sıcak (90%)",
+        "budget_level": "Yüksek",
+        "decision_speed": "Hızlı (2-4 hafta)",
+        "investment_focus": true
     },
-    {
-      "id": 567,
-      "match_score": 88,
-      "reason": "10M ₺, Gölköy, villa + bağımsız bölüm, kiralama potansiyeli"
-    }
-  ],
-  "next_steps": [
-    "1. Top 3 ilanı email ile gönder (detaylı finansal analiz ile)",
-    "2. 48 saat içinde takip araması yap",
-    "3. Saha gezisi planla (2-3 ilan birlikte)",
-    "4. Yatırım raporu hazırla (ROI, risk analizi)"
-  ]
+    "behavioral_insights": {
+        "search_pattern": "Aktif (5 ilan/hafta)",
+        "price_range": "Stabil (8-12M ₺)",
+        "location_flexibility": "Yüksek (Bodrum geneli)",
+        "property_type": "Villa + Arsa (gelişim projesi)"
+    },
+    "recommended_approach": {
+        "communication": "Profesyonel, rakamlar odaklı",
+        "focus": "ROI, yatırım getirisi, pazar analizi",
+        "meeting": "Ofis ortamı, finansal sunumlar hazırla",
+        "follow_up": "48 saat içinde (sıcak müşteri)"
+    },
+    "matching_listings": [
+        {
+            "id": 234,
+            "match_score": 95,
+            "reason": "8.5M ₺, Yalıkavak, arsa + proje, %22 ROI tahmini"
+        },
+        {
+            "id": 567,
+            "match_score": 88,
+            "reason": "10M ₺, Gölköy, villa + bağımsız bölüm, kiralama potansiyeli"
+        }
+    ],
+    "next_steps": [
+        "1. Top 3 ilanı email ile gönder (detaylı finansal analiz ile)",
+        "2. 48 saat içinde takip araması yap",
+        "3. Saha gezisi planla (2-3 ilan birlikte)",
+        "4. Yatırım raporu hazırla (ROI, risk analizi)"
+    ]
 }
 ```
 
@@ -650,11 +685,13 @@ Son Aktivite: 5 ilan görüntüledi (son 7 gün)
 ### **Case 1: Çok Düşük Fiyat**
 
 **Input:**
+
 ```yaml
 Villa, Yalıkavak, 500.000 TRY (çok düşük!)
 ```
 
 **AI Yanıtı:**
+
 ```
 ⚠️ Fiyat Anomalisi Tespit Edildi
 
@@ -674,12 +711,14 @@ Lütfen kontrol edin ve onaylayın.
 ### **Case 2: Eksik Konum Bilgisi**
 
 **Input:**
+
 ```yaml
 Kategori: Villa
 Lokasyon: "Bodrum" (İlçe yok!)
 ```
 
 **AI Yanıtı:**
+
 ```
 ⚠️ Eksik Lokasyon Bilgisi
 
@@ -700,12 +739,14 @@ Geçici Başlık:
 ### **Case 3: Kategori-Özellik Çakışması**
 
 **Input:**
+
 ```yaml
 Kategori: Arsa
 Özellikler: Asansör, Otopark (Arsada olmaz!)
 ```
 
 **AI Yanıtı:**
+
 ```
 ⚠️ Kategori-Özellik Uyumsuzluğu
 
@@ -731,6 +772,7 @@ Kategorinizi kontrol edin veya özellikleri düzeltin.
 ### **Case Study 1: SEO Başlık Optimizasyonu**
 
 **Before AI:**
+
 ```
 "Villa satılık Bodrum"
 CTR: %1.2
@@ -739,6 +781,7 @@ Lead: 1
 ```
 
 **After AI (SEO Tone):**
+
 ```
 "Yalıkavak Deniz Manzaralı Satılık Villa - 5+2 Havuzlu 3.5M ₺"
 CTR: %5.8 (+383%)
@@ -753,6 +796,7 @@ Lead: 14 (+1300%)
 ### **Case Study 2: Çoklu Varyant A/B Test**
 
 **Test Setup:**
+
 ```
 Variant A (SEO): "Gümüşlük Satılık 3+1 Daire - Deniz Manzaralı 2.5M ₺"
 Variant B (Emotion): "Gümüşlük'te Denize Nazır Lüks Daire - Özel Konum"
@@ -762,17 +806,18 @@ Traffic: 100 görüntülenme her variant
 ```
 
 **Sonuçlar:**
+
 ```
-Variant A (SEO): 
+Variant A (SEO):
   CTR: %6.2
   Lead: 3
   Conversion: %4.8
-  
+
 Variant B (Emotion):
   CTR: %8.1 (Kazanan!) 🏆
   Lead: 5
   Conversion: %6.2
-  
+
 Variant C (Value):
   CTR: %5.8
   Lead: 4
@@ -788,6 +833,7 @@ Variant C (Value):
 ### **Feedback Loop:**
 
 **Hafta 1:**
+
 ```
 AI Önerisi: "Yalıkavak villa satılık"
 Kullanıcı Düzenlemesi: "Yalıkavak deniz manzaralı satılık villa"
@@ -795,6 +841,7 @@ Kabul Oranı: %45
 ```
 
 **Hafta 4:**
+
 ```
 AI Önerisi: "Yalıkavak deniz manzaralı satılık villa"
 Kullanıcı: Olduğu gibi kabul ✅
@@ -802,6 +849,7 @@ Kabul Oranı: %78 (+73% iyileşme)
 ```
 
 **Hafta 8:**
+
 ```
 AI Önerisi: "Yalıkavak deniz manzaralı satılık villa - özel havuzlu"
 Kullanıcı: Minimal düzenleme
@@ -842,5 +890,4 @@ Cost (Ollama): $0 (Ücretsiz!) 🎉
 
 ---
 
-**🤖 ÖZET:** Gerçek örneklerle AI davranışlarını öğren, benzer durumlarda aynı yaklaşımı kullan!**
-
+**🤖 ÖZET:** Gerçek örneklerle AI davranışlarını öğren, benzer durumlarda aynı yaklaşımı kullan!\*\*

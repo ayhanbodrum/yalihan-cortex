@@ -5,7 +5,7 @@
   "type": "analysis",
   "status": "pending",
   "summary": "TÜİK R paketi analizi ve emlak kartlarında demografik bilgi gösterimi önerisi",
-  
+
   "tuik_r_package_analysis": {
     "github_url": "https://github.com/emraher/tuik",
     "language": "R",
@@ -18,7 +18,7 @@
     ],
     "limitation": "R paketi - PHP/Laravel projesinde direkt kullanılamaz"
   },
-  
+
   "current_situation": {
     "property_card_info": {
       "title": "Başlık",
@@ -45,12 +45,12 @@
       }
     }
   },
-  
+
   "proposal": {
     "show_demographic_info": true,
     "location": "Emlak kartının altında (küçük ikonlar + sayılar)",
     "display_style": "Compact, minimal, non-intrusive",
-    
+
     "suggested_demographic_data": {
       "primary": {
         "population": {
@@ -93,7 +93,7 @@
         }
       }
     },
-    
+
     "ui_design": {
       "placement": "Kart altında, fiyat bilgisinin altında",
       "layout": "Grid 3 kolon (mobilde tek kolon)",
@@ -102,7 +102,7 @@
       "conditional": "Sadece mahalle/belde seviyesinde göster"
     }
   },
-  
+
   "benefits": {
     "for_buyers": [
       "Yatırım analizi - Hangi bölgeler daha değerli?",
@@ -121,7 +121,7 @@
       "Kullanıcı memnuniyeti - Daha bilinçli karar"
     ]
   },
-  
+
   "implementation_plan": {
     "phase_1_basic": {
       "description": "TurkiyeAPI'den mevcut nüfus bilgisini göster",
@@ -143,11 +143,7 @@
         "Eğitim seviyesi gösterimi",
         "Yaş dağılımı gösterimi"
       ],
-      "challenges": [
-        "TÜİK API erişimi sınırlı",
-        "Veri güncelleme sıklığı",
-        "Veri formatı dönüşümü"
-      ]
+      "challenges": ["TÜİK API erişimi sınırlı", "Veri güncelleme sıklığı", "Veri formatı dönüşümü"]
     },
     "phase_3_advanced": {
       "description": "Gelişmiş analiz ve görselleştirme",
@@ -161,7 +157,7 @@
       ]
     }
   },
-  
+
   "recommendation": {
     "verdict": "✅ EVET, kesinlikle faydalı!",
     "priority": "HIGH",
@@ -175,7 +171,7 @@
     "start_with": "Phase 1 - TurkiyeAPI nüfus bilgisi",
     "then_add": "Phase 2 - TÜİK entegrasyonu (önemli lokasyonlar için)"
   },
-  
+
   "ui_example": {
     "card_structure": {
       "top": "Fotoğraf, başlık, fiyat",
@@ -185,15 +181,11 @@
     },
     "demographic_section": {
       "html_structure": "<div class='demographic-info grid grid-cols-3 gap-2 mt-3 pt-3 border-t'>...</div>",
-      "items": [
-        "👥 12,500 nüfus",
-        "🎓 %68 Üniversite",
-        "📊 35-44 yaş"
-      ],
+      "items": ["👥 12,500 nüfus", "🎓 %68 Üniversite", "📊 35-44 yaş"],
       "style": "Compact, subtle, tooltip on hover"
     }
   },
-  
+
   "technical_considerations": {
     "performance": {
       "cache": "Demografik verileri cache'le (24 saat)",
@@ -211,7 +203,7 @@
       "optimization": "Öncelikli lokasyonlar için cache"
     }
   },
-  
+
   "reference": {
     "tuik_r_package": "https://github.com/emraher/tuik",
     "tuik_data_portal": "https://data.tuik.gov.tr",
@@ -219,4 +211,3 @@
     "knowledge_base": ".yalihan-bekci/knowledge/demographic-info-on-property-cards-2025-11-05.json"
   }
 }
-

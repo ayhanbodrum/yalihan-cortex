@@ -2,14 +2,14 @@
 <?php
 /**
  * 🔄 BLADE COMPONENT CONVERTER
- * 
+ *
  * Raw HTML form elemanlarını Blade component'lere dönüştürür
- * 
+ *
  * Usage:
  *   php convert-to-blade-components.php --dry-run    # Preview only
  *   php convert-to-blade-components.php              # Apply changes
  *   php convert-to-blade-components.php --file=path  # Single file
- * 
+ *
  * Context7 Compliance: ✅
  * Yalıhan Bekçi: Smart Form Converter
  */
@@ -59,7 +59,7 @@ if ($singleFile) {
     $iterator = new RecursiveIteratorIterator(
         new RecursiveDirectoryIterator($directory)
     );
-    
+
     $files = [];
     foreach ($iterator as $file) {
         if ($file->getExtension() === 'php') {
@@ -72,46 +72,46 @@ foreach ($files as $filepath) {
     if (!file_exists($filepath)) {
         continue;
     }
-    
+
     $relativePath = str_replace(__DIR__ . '/../', '', $filepath);
     $content = file_get_contents($filepath);
     $originalContent = $content;
     $changed = false;
-    
+
     // PATTERN 1: Simple Text Inputs
     // <input type="text" name="name" class="..." value="{{ old('name') }}">
     // → <x-form.input name="name" :value="old('name')" />
-    
+
     $pattern = '/<input\s+([^>]*?)type="text"([^>]*?)>/s';
     preg_match_all($pattern, $content, $matches, PREG_SET_ORDER);
-    
+
     foreach ($matches as $match) {
         $fullTag = $match[0];
         $attrs = $match[1] . $match[2];
-        
+
         // Extract attributes
         $name = extractAttribute($attrs, 'name');
         $value = extractAttribute($attrs, 'value');
         $placeholder = extractAttribute($attrs, 'placeholder');
         $required = strpos($attrs, 'required') !== false;
         $id = extractAttribute($attrs, 'id');
-        
+
         if (!$name) {
             $stats['skipped_complex']++;
             continue; // Skip if no name
         }
-        
+
         // Look for label before input
         $labelPattern = '/<label[^>]*for=["\']?' . preg_quote($id ?: $name, '/') . '["\']?[^>]*>(.*?)<\/label>/s';
         preg_match($labelPattern, $content, $labelMatch);
         $label = $labelMatch ? strip_tags($labelMatch[1]) : ucfirst(str_replace('_', ' ', $name));
         $label = trim(str_replace('*', '', $label));
-        
+
         // Build component
         $component = '<x-form.input';
         $component .= "\n    name=\"{$name}\"";
         $component .= "\n    label=\"{$label}\"";
-        
+
         if ($value) {
             // Handle Laravel expressions
             if (strpos($value, '{{') !== false || strpos($value, '{!!') !== false) {
@@ -121,23 +121,23 @@ foreach ($files as $filepath) {
                 $component .= "\n    value=\"{$value}\"";
             }
         }
-        
+
         if ($placeholder) {
             $component .= "\n    placeholder=\"{$placeholder}\"";
         }
-        
+
         if ($required) {
             $component .= "\n    required";
         }
-        
+
         $component .= "\n/>";
-        
+
         // Only convert if we have a name
         if ($name && !isComplexInput($attrs)) {
             $content = str_replace($fullTag, $component, $content);
             $stats['inputs_converted']++;
             $changed = true;
-            
+
             // Remove the associated label if exists
             if ($labelMatch) {
                 $content = str_replace($labelMatch[0], '', $content);
@@ -146,114 +146,114 @@ foreach ($files as $filepath) {
             $stats['skipped_complex']++;
         }
     }
-    
+
     // PATTERN 2: Select Dropdowns
     $selectPattern = '/<select\s+([^>]*?)>(.*?)<\/select>/s';
     preg_match_all($selectPattern, $content, $selectMatches, PREG_SET_ORDER);
-    
+
     foreach ($selectMatches as $match) {
         $fullTag = $match[0];
         $attrs = $match[1];
         $options = $match[2];
-        
+
         $name = extractAttribute($attrs, 'name');
         $id = extractAttribute($attrs, 'id');
         $required = strpos($attrs, 'required') !== false;
-        
+
         if (!$name || isComplexSelect($options)) {
             $stats['skipped_complex']++;
             continue;
         }
-        
+
         // Look for label
         $labelPattern = '/<label[^>]*for=["\']?' . preg_quote($id ?: $name, '/') . '["\']?[^>]*>(.*?)<\/label>/s';
         preg_match($labelPattern, $content, $labelMatch);
         $label = $labelMatch ? strip_tags($labelMatch[1]) : ucfirst(str_replace('_', ' ', $name));
         $label = trim(str_replace('*', '', $label));
-        
+
         // Build component
         $component = '<x-form.select';
         $component .= "\n    name=\"{$name}\"";
         $component .= "\n    label=\"{$label}\"";
-        
+
         if ($required) {
             $component .= "\n    required";
         }
-        
+
         $component .= "\n>";
         $component .= "\n    {$options}";
         $component .= "\n</x-form.select>";
-        
+
         $content = str_replace($fullTag, $component, $content);
         $stats['selects_converted']++;
         $changed = true;
-        
+
         if ($labelMatch) {
             $content = str_replace($labelMatch[0], '', $content);
         }
     }
-    
+
     // PATTERN 3: Textareas
     $textareaPattern = '/<textarea\s+([^>]*?)>(.*?)<\/textarea>/s';
     preg_match_all($textareaPattern, $content, $textareaMatches, PREG_SET_ORDER);
-    
+
     foreach ($textareaMatches as $match) {
         $fullTag = $match[0];
         $attrs = $match[1];
         $value = $match[2];
-        
+
         $name = extractAttribute($attrs, 'name');
         $id = extractAttribute($attrs, 'id');
         $rows = extractAttribute($attrs, 'rows');
         $required = strpos($attrs, 'required') !== false;
-        
+
         if (!$name) {
             $stats['skipped_complex']++;
             continue;
         }
-        
+
         // Look for label
         $labelPattern = '/<label[^>]*for=["\']?' . preg_quote($id ?: $name, '/') . '["\']?[^>]*>(.*?)<\/label>/s';
         preg_match($labelPattern, $content, $labelMatch);
         $label = $labelMatch ? strip_tags($labelMatch[1]) : ucfirst(str_replace('_', ' ', $name));
         $label = trim(str_replace('*', '', $label));
-        
+
         // Build component
         $component = '<x-form.textarea';
         $component .= "\n    name=\"{$name}\"";
         $component .= "\n    label=\"{$label}\"";
-        
+
         if ($rows) {
             $component .= "\n    rows=\"{$rows}\"";
         }
-        
+
         if ($required) {
             $component .= "\n    required";
         }
-        
+
         $component .= "\n>";
         $component .= $value;
         $component .= "</x-form.textarea>";
-        
+
         $content = str_replace($fullTag, $component, $content);
         $stats['textareas_converted']++;
         $changed = true;
-        
+
         if ($labelMatch) {
             $content = str_replace($labelMatch[0], '', $content);
         }
     }
-    
+
     // Save if changed
     if ($changed) {
         $stats['files_processed']++;
-        
+
         if (!$dryRun) {
             file_put_contents($filepath, $content);
             echo "✅ {$relativePath}\n";
         } else {
             echo "📝 {$relativePath} (would be modified)\n";
-            
+
             // Show diff sample
             if ($stats['files_processed'] <= 3) {
                 echo "   Sample change:\n";
@@ -310,7 +310,7 @@ echo sprintf("  Inputs Converted:      %d\n", $stats['inputs_converted']);
 echo sprintf("  Selects Converted:     %d\n", $stats['selects_converted']);
 echo sprintf("  Textareas Converted:   %d\n", $stats['textareas_converted']);
 echo sprintf("  ────────────────────────────\n");
-echo sprintf("  TOTAL CONVERSIONS:     %d\n\n", 
+echo sprintf("  TOTAL CONVERSIONS:     %d\n\n",
     $stats['inputs_converted'] + $stats['selects_converted'] + $stats['textareas_converted']
 );
 echo sprintf("  Complex (Skipped):     %d\n\n", $stats['skipped_complex']);
@@ -332,4 +332,3 @@ echo "3. Verify form styling and functionality\n";
 echo "4. Manually fix complex forms that were skipped\n\n";
 
 echo "═══════════════════════════════════════════════════════════════\n\n";
-

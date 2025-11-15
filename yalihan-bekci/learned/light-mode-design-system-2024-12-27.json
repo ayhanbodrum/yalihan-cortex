@@ -7,7 +7,7 @@
   "version": "2.0.0",
   "context7_compliant": true,
   "wcag_level": "AAA (21:1 contrast)",
-  
+
   "color_palette": {
     "primary": {
       "blue_600": "#2563EB",
@@ -96,7 +96,7 @@
       }
     }
   },
-  
+
   "form_standards": {
     "input": {
       "classes": "w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 hover:border-blue-400",
@@ -135,7 +135,7 @@
       "helper_method": "FormStandards::label()"
     }
   },
-  
+
   "buttons": {
     "primary": {
       "classes": "px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 shadow-sm hover:shadow-md",
@@ -161,7 +161,7 @@
       "gray": "px-4 py-2.5 border-2 border-gray-300 text-gray-900 hover:bg-gray-50 font-medium rounded-lg transition-all duration-200"
     }
   },
-  
+
   "cards": {
     "default": {
       "classes": "bg-white rounded-xl shadow-lg p-6 border border-gray-200",
@@ -175,7 +175,7 @@
       "description": "text-sm text-gray-600"
     }
   },
-  
+
   "alerts": {
     "success": {
       "container": "bg-green-50 border-l-4 border-green-600 rounded-lg p-4 shadow-sm",
@@ -198,7 +198,7 @@
       "text": "text-sm text-red-700"
     }
   },
-  
+
   "badges": {
     "status_active": "px-3 py-1.5 text-xs font-medium rounded-full bg-green-100 text-green-800 border border-green-200",
     "status_pending": "px-3 py-1.5 text-xs font-medium rounded-full bg-orange-100 text-orange-800 border border-orange-200",
@@ -207,7 +207,7 @@
     "status_featured": "px-3 py-1.5 text-xs font-medium rounded-full bg-purple-100 text-purple-800 border border-purple-200",
     "status_archive": "px-3 py-1.5 text-xs font-medium rounded-full bg-gray-100 text-gray-800 border border-gray-200"
   },
-  
+
   "table": {
     "container": "bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200",
     "header_row": "bg-gray-50 border-b-2 border-gray-200",
@@ -216,7 +216,7 @@
     "body_cell": "px-6 py-4 text-sm text-gray-900",
     "divider": "divide-y divide-gray-200"
   },
-  
+
   "key_differences_dark_vs_light": {
     "backgrounds": {
       "page": "Light: bg-gray-100, Dark: bg-gray-900",
@@ -234,7 +234,7 @@
       "divider": "Light: border-gray-200, Dark: border-gray-700"
     }
   },
-  
+
   "critical_rules": [
     "✅ RULE 1: Light modda input arka planı MUTLAKA bg-gray-50 olmalı (bg-white değil!)",
     "✅ RULE 2: Light modda text rengi text-gray-900 olmalı (text-gray-700 değil!)",
@@ -244,7 +244,7 @@
     "✅ RULE 6: Tüm transition'lar 200ms duration",
     "✅ RULE 7: Hover efektleri her zaman aktif olmalı"
   ],
-  
+
   "common_mistakes": [
     "❌ HATA 1: bg-white kullanmak (bg-gray-50 olmalı)",
     "❌ HATA 2: text-gray-700 veya text-gray-100 kullanmak (text-gray-900 olmalı)",
@@ -252,7 +252,7 @@
     "❌ HATA 4: Dark mode class'larını light mode'da kullanmak",
     "❌ HATA 5: Focus ring'i unutmak"
   ],
-  
+
   "files_updated": {
     "helper": "/app/Helpers/FormStandards.php",
     "total_blade_files": 652,
@@ -261,7 +261,7 @@
       "/public/prototype-ui-light.html (Sadece light mode)"
     ]
   },
-  
+
   "usage_examples": {
     "blade_template": {
       "input": "<input type=\"text\" class=\"{{ FormStandards::input() }}\" placeholder=\"Örnek\">",
@@ -275,7 +275,7 @@
       "danger_button": "<button class=\"{{ FormStandards::buttonDanger() }}\">Sil</button>"
     }
   },
-  
+
   "component_anatomy": {
     "standard_input_field": {
       "structure": "Label + Input + Help/Error Text",
@@ -290,7 +290,7 @@
       "html": "<div>\n  <label class=\"block text-sm font-medium text-gray-900 mb-3\">Durum</label>\n  <div class=\"flex items-center space-x-6\">\n    <label class=\"flex items-center\">\n      <input type=\"radio\" name=\"status\" class=\"w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2\">\n      <span class=\"ml-2 text-gray-900\">Aktif</span>\n    </label>\n  </div>\n</div>"
     }
   },
-  
+
   "migration_applied": {
     "date": "2024-12-27",
     "affected_files": 652,
@@ -301,7 +301,7 @@
       "placeholder order fixed: gray-500 (light) / gray-400 (dark)"
     ]
   },
-  
+
   "testing": {
     "prototype_urls": [
       "http://127.0.0.1:8000/prototype-ui-elements.html",
@@ -314,7 +314,7 @@
       "/admin/ozellikler/create"
     ]
   },
-  
+
   "performance_notes": {
     "cache_clear_commands": [
       "php artisan view:clear",
@@ -324,14 +324,14 @@
     ],
     "browser_refresh": "Cmd+Shift+R (Mac) / Ctrl+Shift+R (Windows)"
   },
-  
+
   "related_files": [
     "/app/Helpers/FormStandards.php",
     "/resources/css/admin/neo.css",
     "/docs/FORM_STANDARDS.md",
     "/scripts/migrate-to-form-standards.php"
   ],
-  
+
   "yalihan_bekci_integration": {
     "learned_at": "2024-12-27T10:00:00Z",
     "confidence": "HIGH",
@@ -340,4 +340,3 @@
     "context7_compliance": "98.82%"
   }
 }
-

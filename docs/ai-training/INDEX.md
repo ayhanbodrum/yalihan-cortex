@@ -302,37 +302,37 @@ Embedding Time: ~5 dakika
 
 ### **Foundation (Temel):**
 
--   00-ANYTHINGLLM-MASTER-TRAINING.md
--   02-CONTEXT7-RULES-SIMPLIFIED.md
+- 00-ANYTHINGLLM-MASTER-TRAINING.md
+- 02-CONTEXT7-RULES-SIMPLIFIED.md
 
 ### **Data (Veri):**
 
--   03-DATABASE-SCHEMA-FOR-AI.md
+- 03-DATABASE-SCHEMA-FOR-AI.md
 
 ### **Features (Özellikler):**
 
--   01-AI-FEATURES-GUIDE.md
+- 01-AI-FEATURES-GUIDE.md
 
 ### **Prompts (Şablonlar):**
 
--   04-PROMPT-TEMPLATES.md
+- 04-PROMPT-TEMPLATES.md
 
 ### **Examples (Örnekler):**
 
--   05-USE-CASES-AND-SCENARIOS.md
--   10-REAL-WORLD-EXAMPLES.md
+- 05-USE-CASES-AND-SCENARIOS.md
+- 10-REAL-WORLD-EXAMPLES.md
 
 ### **API (Teknik):**
 
--   06-API-REFERENCE.md
--   09-OLLAMA-INTEGRATION.md
+- 06-API-REFERENCE.md
+- 09-OLLAMA-INTEGRATION.md
 
 ### **Setup (Kurulum):**
 
--   QUICK-START.md
--   07-EMBEDDING-GUIDE.md
--   08-TRAINING-CHECKLIST.md
--   README.md
+- QUICK-START.md
+- 07-EMBEDDING-GUIDE.md
+- 08-TRAINING-CHECKLIST.md
+- README.md
 
 ---
 
@@ -375,13 +375,13 @@ Embedding Time: ~5 dakika
 
 ### **Her Doküman İçin Kontrol Et:**
 
--   [ ] Markdown formatı düzgün
--   [ ] Başlıklar hiyerarşik (H1 → H6)
--   [ ] Code block'lar syntax highlighted
--   [ ] Türkçe karakterler düzgün (ş, ğ, ı)
--   [ ] JSON örnekleri valid
--   [ ] Linkler kırık değil
--   [ ] Metadata eksiksiz
+- [ ] Markdown formatı düzgün
+- [ ] Başlıklar hiyerarşik (H1 → H6)
+- [ ] Code block'lar syntax highlighted
+- [ ] Türkçe karakterler düzgün (ş, ğ, ı)
+- [ ] JSON örnekleri valid
+- [ ] Linkler kırık değil
+- [ ] Metadata eksiksiz
 
 ---
 

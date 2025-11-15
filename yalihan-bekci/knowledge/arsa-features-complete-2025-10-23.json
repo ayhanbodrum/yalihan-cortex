@@ -28,7 +28,14 @@
         "name": "Parsel Bilgileri",
         "slug": "parsel-bilgileri",
         "features_count": 6,
-        "features": ["Ada No", "Parsel No", "Tapu Durumu", "Yola Cephe", "Cephe Mesafesi", "Köşe Parsel"],
+        "features": [
+          "Ada No",
+          "Parsel No",
+          "Tapu Durumu",
+          "Yola Cephe",
+          "Cephe Mesafesi",
+          "Köşe Parsel"
+        ],
         "purpose": "Tapu ve parsel detayları",
         "order": 11
       },
@@ -36,7 +43,14 @@
         "name": "Altyapı ve Tesisatlar",
         "slug": "altyapi-tesisat",
         "features_count": 6,
-        "features": ["Elektrik", "Su", "Doğalgaz", "Kanalizasyon", "Telefon Hattı", "Fiber İnternet"],
+        "features": [
+          "Elektrik",
+          "Su",
+          "Doğalgaz",
+          "Kanalizasyon",
+          "Telefon Hattı",
+          "Fiber İnternet"
+        ],
         "purpose": "Altyapı mevcudiyeti",
         "order": 12
       },
@@ -44,7 +58,18 @@
         "name": "Tarımsal Özellikler",
         "slug": "tarimsal-ozellikler",
         "features_count": 10,
-        "features": ["Sulama Sistemi", "Zeytin Ağacı Sayısı", "Ağaç Yaşı", "Toprak Tipi", "Ürün Tipi", "Yıllık Verim", "Sera", "Ahır", "Ağıl", "Su Kuyusu"],
+        "features": [
+          "Sulama Sistemi",
+          "Zeytin Ağacı Sayısı",
+          "Ağaç Yaşı",
+          "Toprak Tipi",
+          "Ürün Tipi",
+          "Yıllık Verim",
+          "Sera",
+          "Ahır",
+          "Ağıl",
+          "Su Kuyusu"
+        ],
         "purpose": "Tarım ve hayvancılık özellikleri",
         "order": 13
       }
@@ -55,7 +80,16 @@
     "imar_ve_yapilasma": {
       "imar_durumu": {
         "type": "select",
-        "options": ["İmarlı", "İmarsız", "Tarla", "Konut İmarlı", "Villa İmarlı", "Ticari İmarlı", "Turizm İmarlı", "Sanayi İmarlı"],
+        "options": [
+          "İmarlı",
+          "İmarsız",
+          "Tarla",
+          "Konut İmarlı",
+          "Villa İmarlı",
+          "Ticari İmarlı",
+          "Turizm İmarlı",
+          "Sanayi İmarlı"
+        ],
         "required": false,
         "searchable": true,
         "show_on_card": true,
@@ -95,7 +129,14 @@
       }
     },
     "altyapi_tesisat": {
-      "all_boolean": ["Elektrik", "Su", "Doğalgaz", "Kanalizasyon", "Telefon Hattı", "Fiber İnternet"],
+      "all_boolean": [
+        "Elektrik",
+        "Su",
+        "Doğalgaz",
+        "Kanalizasyon",
+        "Telefon Hattı",
+        "Fiber İnternet"
+      ],
       "searchable": ["Elektrik", "Su", "Doğalgaz"],
       "show_on_card": ["Elektrik", "Su"]
     },
@@ -113,9 +154,9 @@
         "show_on_card": true
       },
       "numeric_features": {
-        "zeytin_agac_sayisi": {"unit": "adet"},
-        "agac_yasi": {"unit": "yıl"},
-        "yillik_verim": {"unit": "ton"}
+        "zeytin_agac_sayisi": { "unit": "adet" },
+        "agac_yasi": { "unit": "yıl" },
+        "yillik_verim": { "unit": "ton" }
       }
     }
   },
@@ -222,4 +263,3 @@
     "context7-compliance-report-2025-10-22.md"
   ]
 }
-

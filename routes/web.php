@@ -2,6 +2,16 @@
 
 use Illuminate\Support\Facades\Route;
 
+// Preferences Routes
+Route::prefix('preferences')->name('preferences.')->group(function () {
+    Route::post('/locale', function () {
+        return redirect()->back();
+    })->name('locale');
+    Route::post('/currency', function () {
+        return redirect()->back();
+    })->name('currency');
+});
+
 // Ana Sayfa - Gerçek Admin Paneli (Context7 Standartları)
 Route::get('/', function () {
     return redirect()->route('admin.dashboard.index');
@@ -17,7 +27,9 @@ Route::middleware(['web', 'throttle:secure_file'])->group(function () {
 });
 
 // Yalihan Design System - Clean Version
-Route::get('/yalihan', HomeController::class)->name('yalihan.home');
+Route::get('/yalihan', function () {
+    return view('yaliihan-home-clean');
+})->name('yalihan.home');
 
 // Context7 Gerçek Admin Paneli - Demo yerine gerçek proje
 Route::get('/context7-demo', function () {
@@ -54,10 +66,10 @@ Route::get('/ai/explore', [AISearchController::class, 'explore'])->name('ai.expl
 Route::prefix('yazliklar')->name('villas.')->group(function () {
     // Villa listing page
     Route::get('/', [VillaController::class, 'index'])->name('index');
-    
+
     // Villa detail page
     Route::get('/{id}', [VillaController::class, 'show'])->name('show');
-    
+
     // Availability check (AJAX)
     Route::post('/check-availability', [VillaController::class, 'checkAvailability'])->name('check-availability');
 });
@@ -213,9 +225,20 @@ Route::get('/danismanlar', function () {
     return view('pages.advisors');
 })->name('advisors');
 
+// Frontend Danışmanlar Routes
+Route::prefix('danismanlar')->name('frontend.danismanlar.')->group(function () {
+    Route::get('/', function () {
+        return view('frontend.danismanlar.index');
+    })->name('index');
+    Route::get('/{id}', function ($id) {
+        return view('frontend.danismanlar.show', compact('id'));
+    })->name('show');
+});
+
 // Public Ilan routes (only published)
 Route::prefix('ilanlar')->name('ilanlar.')->group(function () {
     Route::get('/', [IlanPublicController::class, 'index'])->name('index');
+    Route::get('/international', [IlanPublicController::class, 'international'])->name('international');
     Route::get('/kategori/{kategoriId}', [IlanPublicController::class, 'kategoriIlanlari'])->name('kategori');
     Route::get('/{id}', [IlanPublicController::class, 'show'])->name('show');
     Route::get('/{id}/calendar', [IlanPublicController::class, 'calendar'])->name('calendar');
@@ -226,7 +249,7 @@ Route::prefix('ilanlar')->name('ilanlar.')->group(function () {
 Route::prefix('portfolio')->name('frontend.portfolio.')->group(function () {
     Route::get('/', function () {
         $properties = \App\Models\Ilan::where('status', 'Aktif')
-            ->with(['il', 'ilce'])
+            ->with(['il', 'ilce', 'etiketler'])
             ->paginate(12);
 
         $stats = [
@@ -663,6 +686,8 @@ Route::middleware('auth')->group(function () {
         Route::put('/{kategori}/{id}', [\App\Http\Controllers\Admin\TipYonetimiController::class, 'update'])->name('update');
         Route::delete('/{kategori}/{id}', [\App\Http\Controllers\Admin\TipYonetimiController::class, 'destroy'])->name('destroy');
     });
+
+    // Feature API Routes (Modal Selector) - MOVED TO api-admin.php (API routes için)
 
     // AI Monitoring Dashboard
     Route::middleware(['web', 'auth', 'throttle:60,1'])->group(function () {

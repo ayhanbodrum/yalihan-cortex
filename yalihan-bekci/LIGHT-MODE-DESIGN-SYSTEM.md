@@ -9,10 +9,12 @@
 ## 📌 HIZLI ERİŞİM
 
 ### Prototip Sayfalar
+
 - **Light & Dark Toggle:** http://127.0.0.1:8000/prototype-ui-elements.html
 - **Light Mode Only:** http://127.0.0.1:8000/prototype-ui-light.html
 
 ### Kaynak Dosyalar
+
 - **Helper:** `/app/Helpers/FormStandards.php`
 - **Dokümantasyon:** `/docs/FORM_STANDARDS.md`
 - **Migration Script:** `/scripts/migrate-to-form-standards.php`
@@ -32,47 +34,53 @@
 
 ## 🎨 RENK ŞEBEKESİ
 
-| Element | Light Mode | Dark Mode |
-|---------|------------|-----------|
-| Sayfa BG | `bg-gray-100` | `bg-gray-900` |
-| Form BG | `bg-white` | `bg-gray-800` |
-| **Input BG** | **`bg-gray-50`** ⚠️ | `bg-gray-800` |
-| Text | `text-gray-900` | `text-white` |
-| Placeholder | `placeholder-gray-500` | `placeholder-gray-400` |
-| Border | `border-gray-300` | `border-gray-600` |
+| Element      | Light Mode             | Dark Mode              |
+| ------------ | ---------------------- | ---------------------- |
+| Sayfa BG     | `bg-gray-100`          | `bg-gray-900`          |
+| Form BG      | `bg-white`             | `bg-gray-800`          |
+| **Input BG** | **`bg-gray-50`** ⚠️    | `bg-gray-800`          |
+| Text         | `text-gray-900`        | `text-white`           |
+| Placeholder  | `placeholder-gray-500` | `placeholder-gray-400` |
+| Border       | `border-gray-300`      | `border-gray-600`      |
 
 ---
 
 ## 📝 STANDART ŞABLONLAR
 
 ### Input
+
 ```php
 <input type="text" class="{{ FormStandards::input() }}" />
 ```
 
 ### Select
+
 ```php
 <select class="{{ FormStandards::select() }}">...</select>
 ```
 
 ### Textarea
+
 ```php
 <textarea class="{{ FormStandards::textarea() }}"></textarea>
 ```
 
 ### Checkbox
+
 ```php
 <input type="checkbox" class="{{ FormStandards::checkbox() }}">
 <span class="ml-2 text-gray-900 dark:text-white">Label</span>
 ```
 
 ### Radio
+
 ```php
 <input type="radio" class="{{ FormStandards::radio() }}">
 <span class="ml-2 text-gray-900 dark:text-white">Label</span>
 ```
 
 ### Buttons
+
 ```php
 <button class="{{ FormStandards::buttonPrimary() }}">Kaydet</button>
 <button class="{{ FormStandards::buttonSecondary() }}">İptal</button>
@@ -94,6 +102,7 @@
 ## 🔄 UYGULAMA GEÇMİŞİ
 
 ### 27 Aralık 2024
+
 1. ✅ Light mode input backgrounds düzeltildi (`bg-gray-50`)
 2. ✅ Text renkleri standardize edildi (`text-gray-900`)
 3. ✅ Placeholder renkleri düzeltildi
@@ -112,7 +121,8 @@
 
 **Çözüm:** Input'lar için `bg-gray-50` kullanarak görsel ayrım sağlandı.
 
-**Öğreti:** 
+**Öğreti:**
+
 - Form elemanları ile container arasında **MUTLAKA** kontrast olmalı
 - Light mode: Container beyaz (white), Input açık gri (gray-50)
 - Dark mode: Container koyu gri (gray-800), Input daha koyu gri (gray-800)
@@ -124,6 +134,7 @@
 ## 📞 DESTEK
 
 Sorularınız için:
+
 - **Dokümantasyon:** `/docs/FORM_STANDARDS.md`
 - **Prototip:** `/prototype-ui-light.html`
 - **Yalıhan Bekçi:** `/yalihan-bekci/learned/`
@@ -131,4 +142,3 @@ Sorularınız için:
 ---
 
 **© 2024 Yalıhan Emlak - Design System v2.0.0**
-

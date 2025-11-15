@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * AI Storage Modeli
- * 
+ *
  * Flexible storage sistemi için AI verilerini saklar
  * Context7 Compliant
  */

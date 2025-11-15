@@ -5,7 +5,7 @@
   "description": "Her kod değişikliği sonrası ZORUNLU kontroller - Otomatik kalite güvence sistemi",
   "mandatory": true,
   "applies_to": "ALL code changes (Blade, PHP, JS, CSS)",
-  
+
   "checklist_categories": {
     "1_tailwind_css_compliance": {
       "priority": "CRITICAL",
@@ -96,7 +96,7 @@
         }
       ]
     },
-    
+
     "2_duplicate_code_detection": {
       "priority": "HIGH",
       "description": "Duplicate/redundant kod tespiti",
@@ -148,7 +148,7 @@
         }
       ]
     },
-    
+
     "3_old_code_detection": {
       "priority": "HIGH",
       "description": "Eski/deprecated/commented kod tespiti",
@@ -195,7 +195,7 @@
         }
       ]
     },
-    
+
     "4_blade_file_duplication": {
       "priority": "HIGH",
       "description": "Tekrar eden Blade dosyaları ve component'ler",
@@ -240,7 +240,7 @@
         }
       ]
     },
-    
+
     "5_console_log_cleanup": {
       "priority": "MEDIUM",
       "description": "Console.log ve debug code kontrolü",
@@ -282,7 +282,7 @@
         }
       ]
     },
-    
+
     "6_context7_compliance": {
       "priority": "CRITICAL",
       "description": "Context7 naming ve pattern standartları",
@@ -323,7 +323,7 @@
         }
       ]
     },
-    
+
     "7_performance_optimization": {
       "priority": "MEDIUM",
       "description": "Performance ve optimization kontrolleri",
@@ -357,7 +357,7 @@
         }
       ]
     },
-    
+
     "8_security_checks": {
       "priority": "HIGH",
       "description": "Güvenlik kontrolleri",
@@ -389,7 +389,7 @@
       ]
     }
   },
-  
+
   "execution_workflow": {
     "trigger": "After ANY code change (commit, save, PR)",
     "steps": [
@@ -445,7 +445,7 @@
       }
     ]
   },
-  
+
   "report_template": {
     "format": "markdown",
     "sections": [
@@ -479,14 +479,14 @@
       "{quality_score} / 100"
     ]
   },
-  
+
   "integration": {
     "pre_commit_hook": true,
     "ci_cd_pipeline": true,
     "ide_extension": true,
     "manual_cli": "php artisan yalihan:check {file}"
   },
-  
+
   "examples": {
     "good_dropdown": {
       "code": "<select class=\"bg-white dark:bg-gray-900 text-gray-900 dark:text-white\" style=\"color-scheme: light dark;\"><option value=\"\" class=\"bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-400 py-2\">Seçiniz</option><option value=\"1\" class=\"bg-white dark:bg-gray-900 text-gray-900 dark:text-white py-2 font-medium\">Değer</option></select>",
@@ -498,7 +498,7 @@
       "violations": 4
     }
   },
-  
+
   "learning_system": {
     "description": "Yalıhan Bekçi her scan sonrası öğrenir",
     "learn_from": [
@@ -510,7 +510,7 @@
     "update_frequency": "After every 10 scans",
     "knowledge_storage": "yalihan-bekci/learned-patterns/{category}/{pattern-id}.json"
   },
-  
+
   "newly_learned_rules_2025_11_01": {
     "ALPINE_STATE_001": {
       "title": "Alpine.js State Must Be in Return Object",
@@ -557,4 +557,3 @@
     }
   }
 }
-

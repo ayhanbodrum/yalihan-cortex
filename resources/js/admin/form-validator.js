@@ -269,12 +269,18 @@ class FormValidator {
 
         // Add new error
         const errorDiv = document.createElement('div');
+        const errId = `${field.id || field.name}-error`;
+        errorDiv.id = errId;
         errorDiv.className = 'field-error mt-1 text-sm text-red-600';
+        errorDiv.setAttribute('role', 'status');
+        errorDiv.setAttribute('aria-live', 'polite');
         errorDiv.textContent = message;
         field.parentElement.appendChild(errorDiv);
 
         // Add error styling to field
         field.classList.add('border-red-500', 'focus:ring-red-500');
+        field.setAttribute('aria-invalid', 'true');
+        field.setAttribute('aria-describedby', errId);
     }
 
     /**
@@ -288,6 +294,8 @@ class FormValidator {
         }
 
         field.classList.remove('border-red-500', 'focus:ring-red-500');
+        field.removeAttribute('aria-invalid');
+        field.removeAttribute('aria-describedby');
     }
 
     /**
@@ -297,7 +305,14 @@ class FormValidator {
         // Scroll to first error
         const firstError = this.form.querySelector('.field-error');
         if (firstError) {
-            firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            try {
+                const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                firstError.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' });
+            } catch {
+                firstError.scrollIntoView();
+            }
+            const field = this.form.querySelector('[aria-invalid="true"]');
+            if (field && typeof field.focus === 'function') field.focus();
         }
     }
 
@@ -307,7 +322,13 @@ class FormValidator {
      * @param {number} wait
      * @returns {function}
      */
+    // ✅ DUPLICATE REMOVED: debounce global.js'de tanımlı
     debounce(func, wait) {
+        // Global debounce kullan, yoksa fallback
+        if (window.debounce) {
+            return window.debounce(func, wait);
+        }
+        // Fallback implementation
         let timeout;
         return function executedFunction(...args) {
             const later = () => {

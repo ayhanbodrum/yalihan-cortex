@@ -67,7 +67,7 @@
     "total_files": 40
   },
   "centralized_css_growth": {
-    "after_phase_1_kb": 23.00,
+    "after_phase_1_kb": 23.0,
     "after_phase_2_kb": 33.39,
     "phase_2_addition_kb": 10.39,
     "total_css_file": "public/css/admin/neo-dashboard-components.css"
@@ -155,4 +155,3 @@
   "context7_compliance": "All changes maintain Context7 standards",
   "ai_guardian_status": "FAZ 2 başarıyla tamamlandı - Yarım yol geçildi!"
 }
-

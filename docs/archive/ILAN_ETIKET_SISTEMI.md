@@ -9,6 +9,7 @@
 ### Database Tabloları
 
 #### `etiketler` Tablosu
+
 ```php
 - id
 - name
@@ -27,6 +28,7 @@
 ```
 
 #### `ilan_etiketler` Pivot Tablosu
+
 ```php
 - id
 - ilan_id (FK -> ilanlar)
@@ -39,6 +41,7 @@
 ### Model İlişkileri
 
 #### `app/Models/Ilan.php`
+
 ```php
 public function etiketler(): BelongsToMany
 {
@@ -50,6 +53,7 @@ public function etiketler(): BelongsToMany
 ```
 
 #### `app/Models/Etiket.php`
+
 ```php
 public function ilanlar(): BelongsToMany
 {
@@ -75,31 +79,40 @@ public function scopeType($query, $type)
 ## 📊 Etiket Tipleri
 
 ### 1. `promo` - Promosyon Badge'leri
+
 Örnek: Fırsat, İndirim, Özel Fiyat
+
 - Resim üstünde badge olarak gösterilir
 - Dikkat çekici renkler kullanılır
 - İlan başlığı/yönlendirme yapabilir
 
 ### 2. `location` - Lokasyon Özellikleri
+
 Örnek: Denize Sıfır, Deniz Manzaralı
+
 - İlan detayında özellikler bölümünde gösterilir
 - Icon + text formatında
 - Filtreleme için kullanılabilir
 
 ### 3. `investment` - Yatırım Özellikleri
+
 Örnek: Golden Visa, Vatandaşlık, Pasaport
+
 - Yatırım teşvikleri için özel badge'ler
 - SEO-friendly URL'lere bağlanabilir
 - Farklı ülke bayrakları için kullanılabilir
 
 ### 4. `feature` - Genel Özellikler
+
 Örnek: Müstakil, Havuzlu, Özel Plajlı
+
 - Diğer özelliklerle uyumlu gösterim
 - Filtreleme ve arama için optimize
 
 ## 🎨 Frontend Gösterimi
 
 ### Badge Komponenti
+
 ```blade
 {{-- resources/views/components/ilan-badge.blade.php --}}
 @foreach($ilan->etiketler->where('is_badge', true)->sortBy('pivot.display_order') as $etiket)
@@ -112,10 +125,11 @@ public function scopeType($query, $type)
 ```
 
 ### Detay Sayfası
+
 ```blade
 <div class="ilan-etiketler">
     @foreach($ilan->etiketler as $etiket)
-        <span class="etiklet-etiketi" 
+        <span class="etiklet-etiketi"
               style="color: {{ $etiket->color }}; background: {{ $etiket->bg_color }};">
             <i class="{{ $etiket->icon }}"></i>
             {{ $etiket->name }}
@@ -127,38 +141,40 @@ public function scopeType($query, $type)
 ## 🔍 Filtreleme Sistemi
 
 ### Controller
+
 ```php
 public function index(Request $request)
 {
     $query = Ilan::query();
-    
+
     // Etiket filtresi
     if ($request->has('etiket')) {
         $query->whereHas('etiketler', function($q) use ($request) {
             $q->whereIn('etiketler.slug', $request->etiket);
         });
     }
-    
+
     // Tip filtresi (örn: sadece yatırım özelliği olanlar)
     if ($request->has('etiket_tip')) {
         $query->whereHas('etiketler', function($q) use ($request) {
             $q->where('etiketler.type', $request->etiket_tip);
         });
     }
-    
+
     return $query->paginate(12);
 }
 ```
 
 ### Frontend Filter
+
 ```html
 <div class="etiket-filtreleri">
     <h3>Promosyon</h3>
     @foreach(Etiket::type('promo')->where('is_badge', true)->get() as $etiket)
-        <label>
-            <input type="checkbox" name="etiket[]" value="{{ $etiket->slug }}">
-            {{ $etiket->name }}
-        </label>
+    <label>
+        <input type="checkbox" name="etiket[]" value="{{ $etiket->slug }}" />
+        {{ $etiket->name }}
+    </label>
     @endforeach
 </div>
 ```
@@ -166,6 +182,7 @@ public function index(Request $request)
 ## 📊 Örnek Kullanım Senaryoları
 
 ### Senaryo 1: Promosyon Badge'i
+
 ```php
 $firsatEtiketi = Etiket::where('slug', 'firsat')->first();
 $ilan = Ilan::find(1);
@@ -177,6 +194,7 @@ $ilan->etiketler()->attach($firsatEtiketi->id, [
 ```
 
 ### Senaryo 2: Çoklu Etiket Ekleme
+
 ```php
 $etiketler = ['denize-sifir', 'havuzlu', 'golden-visa'];
 $etiketIds = Etiket::whereIn('slug', $etiketler)->pluck('id');
@@ -185,6 +203,7 @@ $ilan->etiketler()->sync($etiketIds);
 ```
 
 ### Senaryo 3: Badge'li Etiketleri Getirme
+
 ```php
 $ilanlar = Ilan::whereHas('etiketler', function($q) {
     $q->where('is_badge', true);
@@ -194,6 +213,7 @@ $ilanlar = Ilan::whereHas('etiketler', function($q) {
 ## 🎯 SEO Optimizasyonu
 
 ### target_url Kullanımı
+
 ```php
 // Etiket oluştururken
 Etiket::create([
@@ -216,16 +236,19 @@ Etiket::create([
 ## 📝 Admin Panel Yönetimi
 
 ### Etiket Listesi
+
 ```php
 Route::get('/admin/ilan-etiketleri', [IlanEtiketController::class, 'index']);
 ```
 
 ### Etiket Oluşturma
+
 ```php
 Route::post('/admin/ilan-etiketleri', [IlanEtiketController::class, 'store']);
 ```
 
 ### İlan-Etiket Atama
+
 ```php
 Route::post('/admin/ilanlar/{ilan}/etiketler', [IlanController::class, 'attachEtiketler']);
 ```

@@ -42,7 +42,7 @@ class KisiController extends AdminController
         ])->select([
             'id', 'ad', 'soyad', 'telefon', 'email', 'status',
             'danisman_id', 'il_id', 'ilce_id', 'mahalle_id',
-            'kisi_tipi', 'musteri_tipi', 'created_at', 'updated_at'
+            'kisi_tipi', 'created_at', 'updated_at'
         ]);
 
         // Context7 uyumlu arama
@@ -93,7 +93,7 @@ class KisiController extends AdminController
                     CASE WHEN il_id IS NOT NULL THEN 10 ELSE 0 END +
                     CASE WHEN ilce_id IS NOT NULL THEN 10 ELSE 0 END +
                     CASE WHEN mahalle_id IS NOT NULL THEN 10 ELSE 0 END +
-                    CASE WHEN musteri_tipi IS NOT NULL THEN 10 ELSE 0 END +
+                    CASE WHEN kisi_tipi IS NOT NULL THEN 10 ELSE 0 END +
                     CASE WHEN meslek IS NOT NULL THEN 10 ELSE 0 END +
                     CASE WHEN gelir_duzeyi IS NOT NULL THEN 10 ELSE 0 END
                 ) DESC');
@@ -110,10 +110,10 @@ class KisiController extends AdminController
             'active' => Kisi::where('status', true)->count(), // Context7 uyumlu
             'pasif' => Kisi::pasif()->count(),
             'taslak' => Kisi::where('status', false)->count(), // Pasif kişi sayısı
-            'ev_sahibi' => Kisi::byMusteriTipi('ev_sahibi')->count(),
-            'satici' => Kisi::byMusteriTipi('satici')->count(),
-            'alici' => Kisi::byMusteriTipi('alici')->count(),
-            'kiraci' => Kisi::byMusteriTipi('kiraci')->count(),
+            'ev_sahibi' => Kisi::where('kisi_tipi', 'Ev Sahibi')->count(),
+            'satici' => Kisi::where('kisi_tipi', 'Satıcı')->count(),
+            'alici' => Kisi::where('kisi_tipi', 'Alıcı')->count(),
+            'kiraci' => Kisi::where('kisi_tipi', 'Kiracı')->count(),
         ];
 
         // Backward compatibility
@@ -134,12 +134,29 @@ class KisiController extends AdminController
 
         $filters = ['q' => $search, 'status' => $status, 'sort' => $sort, 'danisman_id' => $danismanId, 'kisi_tipi' => $kisiTipi]; // Context7: kisi_tipi
 
-        // ✅ OPTIMIZED: Select optimization
-        $danismanlar = \App\Models\User::whereHas('roles', function ($q) {
-            $q->where('name', 'danisman');
-        })
-        ->select(['id', 'name', 'email'])
-        ->get();
+        // ✅ Context7 & Yalıhan Bekçi: Danışman sorgusu standartı
+        // 1. Spatie Permission: whereHas('roles') kullan (roles plural, role singular YASAK)
+        // 2. Status kontrolü: where('status', 1) - Sadece aktif danışmanlar
+        // 3. Select optimization: select(['id', 'name', 'email'])
+        // 4. Eager loading: with('roles:id,name') - N+1 query önleme
+        // 5. Sıralama: orderBy('name')
+        $danismanlar = \App\Models\User::with('roles:id,name')
+            ->whereHas('roles', function ($q) {
+                $q->where('name', 'danisman');
+            })
+            ->where('status', 1) // ✅ Context7: Sadece aktif danışmanlar
+            ->select(['id', 'name', 'email'])
+            ->orderBy('name')
+            ->get();
+
+        // ✅ FALLBACK: Eğer role ile danışman bulunamazsa, aktif kullanıcıları göster
+        // Bu durum geçici bir çözümdür - kullanıcılara role atanmalı
+        if ($danismanlar->isEmpty()) {
+            $danismanlar = \App\Models\User::where('status', 1)
+                ->select(['id', 'name', 'email'])
+                ->orderBy('name')
+                ->get();
+        }
 
         if (view()->exists('admin.kisiler.index')) {
             return response()->view('admin.kisiler.index', compact('kisiler', 'filters', 'stats', 'istatistikler', 'olasiKopyalar', 'taslak', 'danismanlar'));
@@ -155,10 +172,35 @@ class KisiController extends AdminController
      */
     public function create()
     {
-        $danismanlar = \App\Models\User::whereHas('roles', function ($q) {
-            $q->where('name', 'danisman');
-        })->get();
-        $iller = \App\Models\Il::orderBy('il_adi')->get();
+        // ✅ Context7 & Yalıhan Bekçi: Danışman sorgusu standartı
+        // 1. Spatie Permission: whereHas('roles') kullan (roles plural, role singular YASAK)
+        // 2. Status kontrolü: where('status', 1) - Sadece aktif danışmanlar
+        // 3. Select optimization: select(['id', 'name', 'email'])
+        // 4. Eager loading: with('roles:id,name') - N+1 query önleme
+        // 5. Sıralama: orderBy('name')
+        $danismanlar = \App\Models\User::with('roles:id,name')
+            ->whereHas('roles', function ($q) {
+                $q->where('name', 'danisman');
+            })
+            ->where('status', 1) // ✅ Context7: Sadece aktif danışmanlar
+            ->select(['id', 'name', 'email'])
+            ->orderBy('name')
+            ->get();
+
+        // ✅ FALLBACK: Eğer role ile danışman bulunamazsa, aktif kullanıcıları göster
+        // Bu durum geçici bir çözümdür - kullanıcılara role atanmalı
+        if ($danismanlar->isEmpty()) {
+            $danismanlar = \App\Models\User::where('status', 1)
+                ->select(['id', 'name', 'email'])
+                ->orderBy('name')
+                ->get();
+        }
+
+        // ✅ N+1 FIX: Select optimization
+        $iller = \App\Models\Il::select(['id', 'il_adi'])
+            ->orderBy('il_adi')
+            ->get();
+
         $musteriTipleri = ['ev_sahibi', 'satici', 'alici', 'kiraci'];
         $kaynaklar = ['Web', 'Telefon', 'Referans', 'Sosyal Medya', 'Diğer'];
 
@@ -175,7 +217,7 @@ class KisiController extends AdminController
      */
     public function store(Request $request)
     {
-        // Context7 uyumlu validasyon (mahalle_id added - 2025-10-31, adres_detay fixed - 2025-11-01)
+        // Context7 uyumlu validasyon (mahalle_id added - 2025-10-31, adres fixed - 2025-11-13, kisi_tipi required - 2025-11-11)
         $validated = $request->validate([
             'ad' => 'required|string|max:255',
             'soyad' => 'required|string|max:255',
@@ -183,14 +225,20 @@ class KisiController extends AdminController
             'email' => 'nullable|email|max:255',
             'tc_kimlik' => 'nullable|string|max:11|min:11',
             'status' => 'required|string|in:Aktif,Pasif,Beklemede',
-            'kisi_tipi' => 'nullable|string|in:Müşteri,Potansiyel,Tedarikçi,Yatırımcı,Ev Sahibi,Alıcı,Kiracı,Satıcı',
+            'kisi_tipi' => 'required|string|in:Müşteri,Potansiyel,Tedarikçi,Yatırımcı,Ev Sahibi,Alıcı,Kiracı,Satıcı', // ✅ Context7: kisi_tipi required (NOT NULL constraint)
             'danisman_id' => 'nullable|exists:users,id',
             'il_id' => 'nullable|exists:iller,id',
             'ilce_id' => 'nullable|exists:ilceler,id',
             'mahalle_id' => 'nullable|exists:mahalleler,id',
-            'adres_detay' => 'nullable|string|max:500', // Context7: adres → adres_detay (database column name)
+            'adres_detay' => 'nullable|string|max:500', // Form field name
             'notlar' => 'nullable|string',
         ]);
+
+        // ✅ Context7: adres_detay → adres mapping (database column name)
+        if (isset($validated['adres_detay'])) {
+            $validated['adres'] = $validated['adres_detay'];
+            unset($validated['adres_detay']);
+        }
 
         try {
             // ✅ REFACTORED: Use KisiService
@@ -221,7 +269,18 @@ class KisiController extends AdminController
      */
     public function show($kisi)
     {
-        return $this->renderAny(['admin.kisiler.show', 'Crm::musteriler.show'], ['kisi' => $this->resolve($kisi)]);
+        $kisi = $this->resolve($kisi);
+
+        // ✅ N+1 FIX: Eager loading ekle
+        $kisi->load([
+            'danisman:id,name,email',
+            'il:id,il_adi',
+            'ilce:id,ilce_adi',
+            'mahalle:id,mahalle_adi',
+            'etiketler:id,name,color',
+        ]);
+
+        return $this->renderAny(['admin.kisiler.show', 'Crm::musteriler.show'], ['kisi' => $kisi]);
     }
 
     /**
@@ -234,14 +293,64 @@ class KisiController extends AdminController
     public function edit($kisi)
     {
         $kisi = $this->resolve($kisi);
-        $danismanlar = \App\Models\User::whereHas('roles', function ($q) {
-            $q->where('name', 'danisman');
-        })->get();
-        $iller = \App\Models\Il::orderBy('il_adi')->get();
-        $ilceler = $kisi->il_id ? \App\Models\Ilce::where('il_id', $kisi->il_id)->orderBy('ilce_adi')->get() : [];
-        $mahalleler = $kisi->ilce_id ? \App\Models\Mahalle::where('ilce_id', $kisi->ilce_id)->orderBy('mahalle_adi')->get() : [];
+
+        // ✅ N+1 FIX: Eager loading ekle
+        $kisi->load([
+            'danisman:id,name,email',
+            'il:id,il_adi',
+            'ilce:id,ilce_adi',
+            'mahalle:id,mahalle_adi',
+            'etiketler:id,name,color',
+        ]);
+
+        // ✅ Context7 & Yalıhan Bekçi: Danışman sorgusu standartı
+        // 1. Spatie Permission: whereHas('roles') kullan (roles plural, role singular YASAK)
+        // 2. Status kontrolü: where('status', 1) - Sadece aktif danışmanlar
+        // 3. Select optimization: select(['id', 'name', 'email'])
+        // 4. Eager loading: with('roles:id,name') - N+1 query önleme
+        // 5. Sıralama: orderBy('name')
+        $danismanlar = \App\Models\User::with('roles:id,name')
+            ->whereHas('roles', function ($q) {
+                $q->where('name', 'danisman');
+            })
+            ->where('status', 1) // ✅ Context7: Sadece aktif danışmanlar
+            ->select(['id', 'name', 'email'])
+            ->orderBy('name')
+            ->get();
+
+        // ✅ FALLBACK: Eğer role ile danışman bulunamazsa, aktif kullanıcıları göster
+        // Bu durum geçici bir çözümdür - kullanıcılara role atanmalı
+        if ($danismanlar->isEmpty()) {
+            $danismanlar = \App\Models\User::where('status', 1)
+                ->select(['id', 'name', 'email'])
+                ->orderBy('name')
+                ->get();
+        }
+
+        // ✅ N+1 FIX: Select optimization
+        $iller = \App\Models\Il::select(['id', 'il_adi'])
+            ->orderBy('il_adi')
+            ->get();
+
+        // ✅ N+1 FIX: Select optimization
+        $ilceler = $kisi->il_id ? \App\Models\Ilce::where('il_id', $kisi->il_id)
+            ->select(['id', 'ilce_adi'])
+            ->orderBy('ilce_adi')
+            ->get() : [];
+
+        // ✅ N+1 FIX: Select optimization
+        $mahalleler = $kisi->ilce_id ? \App\Models\Mahalle::where('ilce_id', $kisi->ilce_id)
+            ->select(['id', 'mahalle_adi'])
+            ->orderBy('mahalle_adi')
+            ->get() : [];
+
         $musteriTipleri = ['ev_sahibi', 'satici', 'alici', 'kiraci'];
-        $etiketler = \App\Models\Etiket::orderBy('name')->get(); // Context7: Etiketler eklendi
+
+        // ✅ N+1 FIX: Select optimization
+        $etiketler = \App\Modules\Crm\Models\Etiket::select(['id', 'name', 'color'])
+            ->orderBy('name')
+            ->get();
+
         $kaynaklar = ['Web', 'Telefon', 'Referans', 'Sosyal Medya', 'Diğer'];
 
         // Kişinin mevcut etiket ID'lerini al
@@ -271,7 +380,7 @@ class KisiController extends AdminController
      */
     public function update(Request $request, Kisi $kisi)
     {
-        // Context7: Validation (mahalle_id added - 2025-10-31, adres_detay fixed - 2025-11-01)
+        // Context7: Validation (mahalle_id added - 2025-10-31, adres fixed - 2025-11-13)
         $validated = $request->validate([
             'ad' => 'required|string|max:100',
             'soyad' => 'required|string|max:100',
@@ -283,19 +392,25 @@ class KisiController extends AdminController
             'il_id' => 'nullable|exists:iller,id',
             'ilce_id' => 'nullable|exists:ilceler,id',
             'mahalle_id' => 'nullable|exists:mahalleler,id',
-            'adres_detay' => 'nullable|string|max:500', // Context7: adres → adres_detay (database column name)
+            'adres_detay' => 'nullable|string|max:500', // Form field name
             'notlar' => 'nullable|string',
             'etiketler_ids' => 'nullable|array',
             'etiketler_ids.*' => 'exists:etiketler,id',
         ]);
 
+        // ✅ Context7: adres_detay → adres mapping (database column name)
+        if (isset($validated['adres_detay'])) {
+            $validated['adres'] = $validated['adres_detay'];
+            unset($validated['adres_detay']);
+        }
+
         try {
             // Remove non-existent fields
             $updateData = collect($validated)->except(['etiketler_ids'])->toArray();
-            
+
             // ✅ REFACTORED: Use KisiService
             $this->kisiService->updateKisi($kisi, $updateData);
-            
+
             // Sync etiketler (tags) if provided
             if ($request->has('etiketler_ids')) {
                 $kisi->etiketler()->sync($request->etiketler_ids);
@@ -583,10 +698,25 @@ class KisiController extends AdminController
      * @param int|string|Kisi $kisi
      * @return Kisi
      */
+    /**
+     * Context7: Kişi resolver helper
+     *
+     * @param int|string|Kisi $kisi
+     * @return Kisi
+     */
     private function resolve($kisi): Kisi
     {
-        if ($kisi instanceof Kisi) return $kisi;
-        return Kisi::query()->findOrFail($kisi);
+        if ($kisi instanceof Kisi) {
+            return $kisi;
+        }
+
+        // ✅ N+1 FIX: Eager loading ekle (default relationships)
+        return Kisi::with([
+            'danisman:id,name,email',
+            'il:id,il_adi',
+            'ilce:id,ilce_adi',
+            'mahalle:id,mahalle_adi',
+        ])->findOrFail($kisi);
     }
 
     /**

@@ -1,0 +1,34 @@
+{
+  "title": "Undefined Variables Prevention Pattern",
+  "date": "2025-11-07",
+  "category": "code-quality",
+  "severity": "high",
+  "description": "Controller metodlarında view'lara gönderilen değişkenlerin eksik olması durumunda PHP Notice/Error oluşur ve production'da sorunlara yol açar.",
+  "pattern": {
+    "problem": "Controller metodunda view'a gönderilmeyen değişken kullanımı",
+    "example_bad": "return view('admin.example.index', compact('items')); // $status değişkeni view'da kullanılıyor ama gönderilmiyor",
+    "example_good": "return view('admin.example.index', compact('items', 'status')); // Tüm kullanılan değişkenler gönderiliyor"
+  },
+  "prevention": {
+    "checklist": [
+      "View dosyasında kullanılan tüm değişkenleri kontrol et",
+      "Controller'da compact() veya with() ile gönderildiğinden emin ol",
+      "Filter değişkenleri ($status, $taslak, $statuslar) mutlaka gönder",
+      "İstatistik değişkenleri ($istatistikler, $stats) mutlaka gönder"
+    ],
+    "automated_check": "View dosyasında {{ $variable }} kullanımı varsa, controller'da compact('variable') kontrolü yapılmalı"
+  },
+  "fixed_controllers": [
+    "IlanController: $status, $taslak eklendi",
+    "BlogController: $status, $taslak eklendi",
+    "GorevController: $status eklendi",
+    "OzellikKategoriController: $status eklendi",
+    "DanismanController: $statuslar eklendi",
+    "TakimController: $statuslar eklendi"
+  ],
+  "impact": {
+    "before": "Production'da PHP Notice/Error, view render hataları, kullanıcı deneyimi bozulması",
+    "after": "Tüm değişkenler doğru şekilde gönderiliyor, hata yok"
+  }
+}
+

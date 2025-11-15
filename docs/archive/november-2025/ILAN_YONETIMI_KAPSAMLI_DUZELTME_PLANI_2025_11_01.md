@@ -3,26 +3,27 @@
 **Tarih:** 1 Kasım 2025  
 **Proje:** Yalıhan Emlak  
 **Context7 Compliance:** %100  
-**Yalıhan Bekçi Uyumlu:** ✅ EVET  
+**Yalıhan Bekçi Uyumlu:** ✅ EVET
 
 ---
 
 ## 📊 TEST EDİLEN SAYFALAR (6 Sayfa)
 
-| # | Sayfa | URL | Test Durumu | Veri |
-|---|-------|-----|-------------|------|
-| 1 | İlan Ekleme | `/admin/ilanlar/create` | ✅ TEST EDİLDİ | CRM + Danışman seçimi çalışıyor |
-| 2 | İlanlar Ana Sayfa | `/admin/ilanlar` | ✅ TEST EDİLDİ | 0 ilan (boş state) |
-| 3 | İlan Kategorileri | `/admin/ilan-kategorileri` | ✅ TEST EDİLDİ | 36 kategori (5 ana, 31 alt) |
-| 4 | Property Type Manager | `/admin/property-type-manager` | ✅ TEST EDİLDİ | 5 ana kategori |
-| 5 | Özellikler | `/admin/ozellikler` | ✅ TEST EDİLDİ | 100+ özellik |
-| 6 | Özellik Kategorileri | `/admin/ozellikler/kategoriler` | ✅ TEST EDİLDİ | 10 kategori |
+| #   | Sayfa                 | URL                             | Test Durumu    | Veri                            |
+| --- | --------------------- | ------------------------------- | -------------- | ------------------------------- |
+| 1   | İlan Ekleme           | `/admin/ilanlar/create`         | ✅ TEST EDİLDİ | CRM + Danışman seçimi çalışıyor |
+| 2   | İlanlar Ana Sayfa     | `/admin/ilanlar`                | ✅ TEST EDİLDİ | 0 ilan (boş state)              |
+| 3   | İlan Kategorileri     | `/admin/ilan-kategorileri`      | ✅ TEST EDİLDİ | 36 kategori (5 ana, 31 alt)     |
+| 4   | Property Type Manager | `/admin/property-type-manager`  | ✅ TEST EDİLDİ | 5 ana kategori                  |
+| 5   | Özellikler            | `/admin/ozellikler`             | ✅ TEST EDİLDİ | 100+ özellik                    |
+| 6   | Özellik Kategorileri  | `/admin/ozellikler/kategoriler` | ✅ TEST EDİLDİ | 10 kategori                     |
 
 ---
 
 ## 🎉 GENEL BAŞARILAR
 
 ### Tüm Sayfalarda Ortak Başarılar:
+
 1. ✅ **0 JavaScript Hatası** - Tüm sayfalarda
 2. ✅ **Context7 Live Search Aktif** - Vanilla JS (35KB, 0 dependency)
 3. ✅ **Dark Mode Support** - %100 uyumlu
@@ -41,29 +42,33 @@
 ### ⚡ KRİTİK HATALAR (3):
 
 #### 1. **Özellik Kategorileri Update - 500 Error** 🔴 P0
+
 **Lokasyon:** `PUT /admin/ozellikler/kategoriler/2`  
 **Telescope Hatası:**
+
 ```
-SQLSTATE[22032]: Invalid JSON text: "Invalid value." 
+SQLSTATE[22032]: Invalid JSON text: "Invalid value."
 at position 0 in value for column 'feature_categories.applies_to'
 ```
 
 **Sorun Detayı:**
+
 - Form STRING gönderiyor: `"arsa"`
 - Database JSON bekliyor: `["arsa"]`
 - Controller validation: `'applies_to' => ['nullable', 'string']`
 - Update method: Direkt string kaydediyor
 
 **Payload:**
+
 ```json
 {
-  "_method": "PUT",
-  "name": "Arsa Özellikleri",
-  "description": "Arsa ilanları için özel özellikler",
-  "applies_to": "arsa",  // ❌ STRING
-  "order": "2",
-  "status": "1",
-  "slug": "arsa-ozellikleri"
+    "_method": "PUT",
+    "name": "Arsa Özellikleri",
+    "description": "Arsa ilanları için özel özellikler",
+    "applies_to": "arsa", // ❌ STRING
+    "order": "2",
+    "status": "1",
+    "slug": "arsa-ozellikleri"
 }
 ```
 
@@ -72,14 +77,17 @@ at position 0 in value for column 'feature_categories.applies_to'
 ---
 
 #### 2. **İlanlar Sort Functionality Çalışmıyor** 🔴 P0
+
 **Lokasyon:** `/admin/ilanlar` - Sıralama dropdown
 
 **Sorun Detayı:**
+
 - Blade'de sort dropdown VAR (En Yeni, En Eski, Fiyat)
 - Controller'da `request('sort')` kontrolü YOK
 - Her zaman `updated_at DESC` ile sıralıyor (satır 33)
 
 **Blade Kod (Satır 122-127):**
+
 ```blade
 <select name="sort" ...>
     <option value="created_desc">En Yeni</option>
@@ -90,6 +98,7 @@ at position 0 in value for column 'feature_categories.applies_to'
 ```
 
 **Controller Kod (Satır 33):**
+
 ```php
 $query = Ilan::query()->orderBy('updated_at', 'desc'); // ❌ Hardcoded
 ```
@@ -99,11 +108,13 @@ $query = Ilan::query()->orderBy('updated_at', 'desc'); // ❌ Hardcoded
 ---
 
 #### 3. **Fotoğraf Upload Route Eksikti** ✅ DÜZELTİLDİ
+
 **Lokasyon:** `POST /api/photos/upload`
 
 **Sorun:** Route tanımlı değildi → 404 Error
 
 **Çözüm:** Plan modunda route eklendi:
+
 ```php
 Route::prefix('photos')->name('photos.')->group(function () {
     Route::post('/upload', [PhotoController::class, 'store']);
@@ -119,9 +130,11 @@ Route::prefix('photos')->name('photos.')->group(function () {
 ### ⚠️ TUTARSIZLIK HATALARI (5):
 
 #### 4. **İlanlar Stats - Dil Tutarsızlığı** 🟡 P1
+
 **Lokasyon:** `/admin/ilanlar` - İstatistik kartları
 
 **Sorun:**
+
 ```blade
 Satır 46: "Active Listings" (İngilizce) ❌
 Satır 60: "This Month" (İngilizce) ❌
@@ -129,12 +142,14 @@ Satır 74: "Pending Listings" (İngilizce) ❌
 ```
 
 **Diğer Sayfalarda:**
+
 - Kategoriler: "Toplam", "Ana", "Alt", "Active" (karışık)
 - Özellikler: "Toplam Özellik", "Aktif", "Pasif" (Türkçe)
 
 **Tutarsızlık:** Bazı sayfalar Türkçe, bazıları İngilizce
 
 **Yalıhan Bekçi Notu:**
+
 - ✅ Display text "Aktif" kullanımı İZİNLİ
 - ❌ Field name "aktif" YASAK
 - Bu değişiklik display text → ✅ UYGUN
@@ -142,9 +157,11 @@ Satır 74: "Pending Listings" (İngilizce) ❌
 ---
 
 #### 5. **Kategoriler Filter - Dil Tutarsızlığı** 🟡 P1
+
 **Lokasyon:** `/admin/ilan-kategorileri` - Status filter dropdown
 
 **Sorun:**
+
 ```blade
 Satır 102: "All Status" (İngilizce) ❌
 Satır 103: "Active" (İngilizce) ❌
@@ -161,13 +178,16 @@ Satır 121 (Özellikler): 'Aktif' : 'Pasif' (Türkçe)
 ---
 
 #### 6. **İlanlar Tablosu - Eksik Kolonlar** 🟡 P1
+
 **Lokasyon:** `/admin/ilanlar` - Tablo
 
 **Sorun:**
+
 - Controller'da eager load VAR: `ilanSahibi`, `userDanisman`
 - Tabloda kolon YOK
 
 **Controller (Satır 80-85):**
+
 ```php
 'ilanSahibi' => function($q) {
     $q->select('id', 'ad', 'soyad', 'telefon');
@@ -178,6 +198,7 @@ Satır 121 (Özellikler): 'Aktif' : 'Pasif' (Türkçe)
 ```
 
 **Blade Thead (Satır 156-161):**
+
 ```blade
 <th>İlan</th>
 <th>Tür & Kategori</th>
@@ -192,14 +213,17 @@ Satır 121 (Özellikler): 'Aktif' : 'Pasif' (Türkçe)
 ---
 
 #### 7. **İlanlar Tarih Kolonu - Yanlış Field** 🟡 P1
+
 **Lokasyon:** `/admin/ilanlar` - Tarih kolonu
 
 **Sorun:**
+
 ```blade
 Satır 220: {{ $ilan->created_at?->format('d.m.Y') }}
 ```
 
 **Neden Yanlış:**
+
 - İlan listesinde "en son ne zaman güncellendi" önemlidir
 - "Ne zaman oluşturuldu" daha az önemli
 - `updated_at` daha mantıklı
@@ -209,9 +233,11 @@ Satır 220: {{ $ilan->created_at?->format('d.m.Y') }}
 ---
 
 #### 8. **Manuel Toast Kullanımı - Code Duplication** 🟡 P2
+
 **Lokasyon:** `/admin/ilan-kategorileri` - Alpine.js component
 
 **Sorun:**
+
 ```javascript
 // Satır 426-440
 showSuccess(message) {
@@ -228,12 +254,14 @@ showError(message) {
 ```
 
 **Zaten Var:** `window.toast` utility
+
 ```javascript
 window.toast.success(message);
 window.toast.error(message);
 ```
 
 **Yalıhan Bekçi Kuralı:**
+
 - ✅ **ZORUNLU:** Context7 toast utility kullan
 - ❌ **YASAK:** Manuel toast oluştur
 
@@ -244,9 +272,11 @@ window.toast.error(message);
 ### 🧹 KOD KARMAŞASI (2):
 
 #### 9. **Gereksiz "Oluşturulma" Kolonları**
+
 **Lokasyon:** Çeşitli tablo görünümleri
 
 **Sorun:**
+
 - Özellik Kategorileri: "Oluşturulma" kolonu (satır 72, 127)
 - Kullanıcıya gereksiz bilgi
 - Tablo genişliği artıyor
@@ -256,17 +286,20 @@ window.toast.error(message);
 ---
 
 #### 10. **Applies_to Kolonu Eksik**
+
 **Lokasyon:** `/admin/ozellikler/kategoriler` - Tablo
 
 **Sorun:**
+
 - `applies_to` field DATABASE'de VAR (JSON array)
 - Tabloda gösterilMİYOR
 - Kullanıcı hangi kategorilere uygulandığını görememiyor
 
 **Örnek Data:**
+
 ```json
 {
-  "applies_to": ["arsa", "konut"]
+    "applies_to": ["arsa", "konut"]
 }
 ```
 
@@ -283,6 +316,7 @@ window.toast.error(message);
 **Değişiklik:** `update()` method (Satır 102-106 arası)
 
 **ÖNCE:**
+
 ```php
 if (empty($data['slug'])) {
     $data['slug'] = Str::slug($data['name']);
@@ -292,6 +326,7 @@ $kategori->update($data);
 ```
 
 **SONRA:**
+
 ```php
 // ✅ Context7 Fix: applies_to STRING → JSON array conversion
 if (!empty($data['applies_to'])) {
@@ -312,6 +347,7 @@ $kategori->update($data);
 ```
 
 **Yalıhan Bekçi Uygunluk:** ✅
+
 - Field name: `applies_to` (İngilizce) ✅
 - JSON handling ✅
 - Context7 comment ✅
@@ -325,6 +361,7 @@ $kategori->update($data);
 **Kontrol:** `$casts` array kontrol edilecek
 
 **Eklenecek (varsa):**
+
 ```php
 protected $casts = [
     'applies_to' => 'array',  // ✅ JSON → PHP array otomatik
@@ -337,6 +374,7 @@ protected $casts = [
 ```
 
 **Yalıhan Bekçi Uygunluk:** ✅
+
 - Field names İngilizce ✅
 - Boolean casting (not: is_active) ✅
 
@@ -349,11 +387,13 @@ protected $casts = [
 **Değişiklik:** Satır 33 kaldır + Satır 75'ten önce ekle
 
 **ÖNCE (Satır 33):**
+
 ```php
 $query = Ilan::query()->orderBy('updated_at', 'desc'); // ❌ Hardcoded
 ```
 
 **SONRA (Satır 75'ten önce):**
+
 ```php
 $query = Ilan::query(); // ✅ Order kaldırıldı
 
@@ -383,6 +423,7 @@ $ilanlar = $query->paginate(20);
 ```
 
 **Yalıhan Bekçi Uygunluk:** ✅
+
 - Parameter name: `sort` (İngilizce) ✅
 - Field names: `created_at`, `fiyat` (Context7 uyumlu) ✅
 - Efficient query pattern ✅
@@ -396,6 +437,7 @@ $ilanlar = $query->paginate(20);
 **3 Değişiklik:**
 
 **Satır 46:**
+
 ```blade
 <!-- ÖNCE -->
 <p class="text-sm text-gray-600 dark:text-gray-400">Active Listings</p>
@@ -405,6 +447,7 @@ $ilanlar = $query->paginate(20);
 ```
 
 **Satır 60:**
+
 ```blade
 <!-- ÖNCE -->
 <p class="text-sm text-gray-600 dark:text-gray-400">This Month</p>
@@ -414,6 +457,7 @@ $ilanlar = $query->paginate(20);
 ```
 
 **Satır 74:**
+
 ```blade
 <!-- ÖNCE -->
 <p class="text-sm text-gray-600 dark:text-gray-400">Pending Listings</p>
@@ -423,6 +467,7 @@ $ilanlar = $query->paginate(20);
 ```
 
 **Yalıhan Bekçi Uygunluk:** ✅
+
 - ✅ **Display text** değişikliği (İZİNLİ)
 - ✅ **Field names** dokunulmuyor (status, created_at → değişmedi)
 - ✅ Database etkilenmiyor
@@ -455,6 +500,7 @@ $ilanlar = $query->paginate(20);
 ```
 
 **Yalıhan Bekçi Uygunluk:** ✅
+
 - Field name: `status` (değişmedi) ✅
 - Field value: `1` / `0` (değişmedi) ✅
 - **Sadece option text** değişti (İZİNLİ) ✅
@@ -543,6 +589,7 @@ $ilanlar = $query->paginate(20);
 ```
 
 **Yalıhan Bekçi Uygunluk:** ✅
+
 - Relationship names: `ilanSahibi`, `userDanisman` (Context7 uyumlu) ✅
 - Field names: `ad`, `soyad`, `telefon`, `name`, `email` (doğru) ✅
 - Dark mode classes ✅
@@ -555,6 +602,7 @@ $ilanlar = $query->paginate(20);
 **Dosya:** `resources/views/admin/ilanlar/index.blade.php`
 
 **Değişiklik 1 - Thead (Satır 160):**
+
 ```blade
 <!-- ÖNCE -->
 <th class="admin-table-th">Tarih</th>
@@ -564,6 +612,7 @@ $ilanlar = $query->paginate(20);
 ```
 
 **Değişiklik 2 - Tbody (Satır 220):**
+
 ```blade
 <!-- ÖNCE -->
 <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
@@ -577,6 +626,7 @@ $ilanlar = $query->paginate(20);
 ```
 
 **Yalıhan Bekçi Uygunluk:** ✅
+
 - Field name: `updated_at` (İngilizce, Laravel standard) ✅
 - Format değişikliği ✅
 
@@ -587,6 +637,7 @@ $ilanlar = $query->paginate(20);
 **Dosya:** `resources/views/admin/ilan-kategorileri/index.blade.php`
 
 **Değişiklik 1 - KALDIR (Satır 426-440):**
+
 ```javascript
 // ❌ KALDIR: Manuel toast fonksiyonları
 showSuccess(message) {
@@ -607,6 +658,7 @@ showError(message) {
 ```
 
 **Değişiklik 2 - DEĞİŞTİR (Satır 382):**
+
 ```javascript
 // ÖNCE
 this.showSuccess(`Toplu işlem başarıyla tamamlandı`);
@@ -616,6 +668,7 @@ window.toast.success('Toplu işlem başarıyla tamamlandı');
 ```
 
 **Değişiklik 3 - DEĞİŞTİR (Satır 390):**
+
 ```javascript
 // ÖNCE
 this.showError('Toplu işlem sırasında hata oluştu');
@@ -625,6 +678,7 @@ window.toast.error('Toplu işlem sırasında hata oluştu');
 ```
 
 **Değişiklik 4 - DEĞİŞTİR (Satır 413):**
+
 ```javascript
 // ÖNCE
 this.showSuccess('Kategori başarıyla silindi');
@@ -634,6 +688,7 @@ window.toast.success('Kategori başarıyla silindi');
 ```
 
 **Değişiklik 5 - DEĞİŞTİR (Satır 420):**
+
 ```javascript
 // ÖNCE
 this.showError('Kategori silinirken hata oluştu');
@@ -643,6 +698,7 @@ window.toast.error('Kategori silinirken hata oluştu');
 ```
 
 **Yalıhan Bekçi Uygunluk:** ✅
+
 - ✅ **ZORUNLU:** window.toast kullanımı (Context7 standard)
 - ❌ **YASAK:** subtleVibrantToast (kullanılmamış)
 - ✅ Clean code (30 satır azaltıldı)
@@ -707,11 +763,11 @@ window.toast.error('Kategori silinirken hata oluştu');
     <div class="flex flex-wrap gap-1">
         @php
             // ✅ Yalıhan Bekçi: JSON decode handling
-            $appliesToArray = is_string($kategori->applies_to) 
-                ? json_decode($kategori->applies_to, true) 
+            $appliesToArray = is_string($kategori->applies_to)
+                ? json_decode($kategori->applies_to, true)
                 : $kategori->applies_to;
         @endphp
-        
+
         @if(is_array($appliesToArray) && count($appliesToArray) > 0)
             @foreach($appliesToArray as $type)
                 <span class="px-2 py-1 text-xs rounded-full bg-gradient-to-r from-purple-100 to-pink-100 dark:from-purple-900/30 dark:to-pink-900/30 border border-purple-200 dark:border-purple-800 text-purple-700 dark:text-purple-300 font-medium">
@@ -728,7 +784,7 @@ window.toast.error('Kategori silinirken hata oluştu');
 
 <!-- Durum kolonu -->
 <td class="px-6 py-4 whitespace-nowrap">
-    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
         {{ $kategori->status ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300' : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300' }}">
         {{ $kategori->status ? 'Aktif' : 'Pasif' }}  {{-- ✅ Display text --}}
     </span>
@@ -741,6 +797,7 @@ window.toast.error('Kategori silinirken hata oluştu');
 ```
 
 **Yalıhan Bekçi Uygunluk:** ✅
+
 - Field name: `applies_to` (İngilizce) ✅
 - Field name: `status` (değişmedi) ✅
 - JSON decode handling ✅
@@ -754,25 +811,30 @@ window.toast.error('Kategori silinirken hata oluştu');
 **İşlemler:**
 
 1. **Linter Check:**
+
 ```bash
 php artisan standard:check
 npm run lint
 ```
 
 2. **Context7 Compliance:**
+
 ```bash
 php artisan context7:check
 ```
 
 3. **Browser Test:**
+
 - `/admin/ilanlar` → Sort çalışıyor mu?
 - `/admin/ilan-kategorileri` → Toast çalışıyor mu?
 - `/admin/ozellikler/kategoriler` → Update çalışıyor mu? (500 → 200)
 
 4. **Telescope Check:**
+
 - `PUT /admin/ozellikler/kategoriler/2` → 500 → 200 OK
 
 5. **Yalıhan Bekçi Validation:**
+
 ```bash
 # Forbidden patterns check
 grep -r "durum\|aktif\|musteri" app/
@@ -783,14 +845,14 @@ grep -r "durum\|aktif\|musteri" app/
 
 ## 📂 ETKİLENECEK DOSYALAR (6 Adet)
 
-| # | Dosya | Satırlar | Değişiklik Tipi | YB Uyumlu |
-|---|-------|----------|-----------------|-----------|
-| 1 | `app/Http/Controllers/Admin/OzellikKategoriController.php` | 102-106 | JSON fix | ✅ |
-| 2 | `app/Models/FeatureCategory.php` | casts array | Model cast | ✅ |
-| 3 | `app/Http/Controllers/Admin/IlanController.php` | 33, 75 | Sort logic | ✅ |
-| 4 | `resources/views/admin/ilanlar/index.blade.php` | 46, 60, 74, 156-220 | Stats + kolonlar | ✅ |
-| 5 | `resources/views/admin/ilan-kategorileri/index.blade.php` | 102-104, 382-440 | Filter + toast | ✅ |
-| 6 | `resources/views/admin/ozellikler/kategoriler/index.blade.php` | 58-127 | Kolonlar | ✅ |
+| #   | Dosya                                                          | Satırlar            | Değişiklik Tipi  | YB Uyumlu |
+| --- | -------------------------------------------------------------- | ------------------- | ---------------- | --------- |
+| 1   | `app/Http/Controllers/Admin/OzellikKategoriController.php`     | 102-106             | JSON fix         | ✅        |
+| 2   | `app/Models/FeatureCategory.php`                               | casts array         | Model cast       | ✅        |
+| 3   | `app/Http/Controllers/Admin/IlanController.php`                | 33, 75              | Sort logic       | ✅        |
+| 4   | `resources/views/admin/ilanlar/index.blade.php`                | 46, 60, 74, 156-220 | Stats + kolonlar | ✅        |
+| 5   | `resources/views/admin/ilan-kategorileri/index.blade.php`      | 102-104, 382-440    | Filter + toast   | ✅        |
+| 6   | `resources/views/admin/ozellikler/kategoriler/index.blade.php` | 58-127              | Kolonlar         | ✅        |
 
 ---
 
@@ -798,24 +860,24 @@ grep -r "durum\|aktif\|musteri" app/
 
 ### Forbidden Patterns Kontrolü:
 
-| Pattern | Kullanım | Uygun mu? | Açıklama |
-|---------|----------|-----------|----------|
-| `durum` field | ❌ KULLANILMADI | ✅ | "status" kullanıldı |
-| `aktif` field | ❌ KULLANILMADI | ✅ | "status" veya "enabled" kullanıldı |
-| "Aktif" display text | ✅ KULLANILDI | ✅ | UI text (İZİNLİ) |
-| `musteri` | ❌ KULLANILMADI | ✅ | "kisi" kullanıldı (ilanSahibi) |
-| `subtleVibrantToast` | ❌ KULLANILMADI | ✅ | window.toast kullanıldı |
-| `layouts.app` | ❌ KULLANILMADI | ✅ | admin.layouts.neo kullanıldı |
+| Pattern              | Kullanım        | Uygun mu? | Açıklama                           |
+| -------------------- | --------------- | --------- | ---------------------------------- |
+| `durum` field        | ❌ KULLANILMADI | ✅        | "status" kullanıldı                |
+| `aktif` field        | ❌ KULLANILMADI | ✅        | "status" veya "enabled" kullanıldı |
+| "Aktif" display text | ✅ KULLANILDI   | ✅        | UI text (İZİNLİ)                   |
+| `musteri`            | ❌ KULLANILMADI | ✅        | "kisi" kullanıldı (ilanSahibi)     |
+| `subtleVibrantToast` | ❌ KULLANILMADI | ✅        | window.toast kullanıldı            |
+| `layouts.app`        | ❌ KULLANILMADI | ✅        | admin.layouts.neo kullanıldı       |
 
 ### Required Patterns Kontrolü:
 
-| Pattern | Kullanıldı mı? | Uygun mu? |
-|---------|----------------|-----------|
-| Context7 toast (`window.toast`) | ✅ | ✅ |
-| Vanilla JS | ✅ | ✅ |
-| Dark mode classes | ✅ | ✅ |
-| Para birimi field | ✅ (değişmedi) | ✅ |
-| CSRF protection | ✅ (değişmedi) | ✅ |
+| Pattern                         | Kullanıldı mı? | Uygun mu? |
+| ------------------------------- | -------------- | --------- |
+| Context7 toast (`window.toast`) | ✅             | ✅        |
+| Vanilla JS                      | ✅             | ✅        |
+| Dark mode classes               | ✅             | ✅        |
+| Para birimi field               | ✅ (değişmedi) | ✅        |
+| CSRF protection                 | ✅ (değişmedi) | ✅        |
 
 **TOPLAM UYGUNLUK: %100** ✅
 
@@ -825,23 +887,24 @@ grep -r "durum\|aktif\|musteri" app/
 
 ### Düzeltme Öncesi vs Sonrası:
 
-| Metrik | Önce | Sonra | İyileştirme |
-|--------|------|-------|-------------|
-| **500 Error** | 1 adet | 0 adet | ✅ %100 |
-| **Çalışmayan Feature** | 1 adet (Sort) | 0 adet | ✅ %100 |
-| **Dil Tutarsızlığı** | 5 yer | 0 yer | ✅ %100 |
-| **Eksik Kolon** | 3 adet | 0 adet | ✅ %100 |
-| **Gereksiz Kod** | 30 satır | 0 satır | ✅ %100 |
-| **Context7 Compliance** | 85% | 95% | ✅ +10% |
-| **UI/UX Tutarlılığı** | 70% | 85% | ✅ +15% |
-| **Kod Kalitesi** | 80% | 92% | ✅ +12% |
-| **GENEL SKOR** | 82/100 | 92/100 | ✅ +10 puan |
+| Metrik                  | Önce          | Sonra   | İyileştirme |
+| ----------------------- | ------------- | ------- | ----------- |
+| **500 Error**           | 1 adet        | 0 adet  | ✅ %100     |
+| **Çalışmayan Feature**  | 1 adet (Sort) | 0 adet  | ✅ %100     |
+| **Dil Tutarsızlığı**    | 5 yer         | 0 yer   | ✅ %100     |
+| **Eksik Kolon**         | 3 adet        | 0 adet  | ✅ %100     |
+| **Gereksiz Kod**        | 30 satır      | 0 satır | ✅ %100     |
+| **Context7 Compliance** | 85%           | 95%     | ✅ +10%     |
+| **UI/UX Tutarlılığı**   | 70%           | 85%     | ✅ +15%     |
+| **Kod Kalitesi**        | 80%           | 92%     | ✅ +12%     |
+| **GENEL SKOR**          | 82/100        | 92/100  | ✅ +10 puan |
 
 ---
 
 ## 🎯 DÜZELTME SONRASI HEDEFLER
 
 ### Anında İyileşmeler:
+
 1. ✅ **0 Kritik Bug** (500 error gidecek)
 2. ✅ **Sort Çalışacak** (kullanıcı sıralama yapabilecek)
 3. ✅ **Türkçe Tutarlılık** (tüm UI Türkçe)
@@ -849,6 +912,7 @@ grep -r "durum\|aktif\|musteri" app/
 5. ✅ **Temiz Kod** (30 satır gereksiz kod gitmiş)
 
 ### Sonraki Adımlar (Öneriler):
+
 1. Neo → Tailwind migration (3 sayfa)
 2. Search box eksikliklerini tamamla
 3. Bulk actions yaygınlaştır
@@ -859,16 +923,16 @@ grep -r "durum\|aktif\|musteri" app/
 
 ## ⏱️ TAHMİNİ SÜRE: 25 Dakika
 
-| Adım | İşlem | Süre |
-|------|-------|------|
-| 1-2 | JSON Bug + Model Cast | 10 dk |
-| 3 | Sort Implementation | 5 dk |
-| 4-5 | Dil Standardizasyonu | 5 dk |
-| 6-7 | İlanlar Kolonları | 8 dk |
-| 8 | Toast Cleanup | 3 dk |
-| 9 | Applies_to Göster | 5 dk |
-| 10 | Final Validation + Test | 10 dk |
-| **TOPLAM** | | **~46 dk** |
+| Adım       | İşlem                   | Süre       |
+| ---------- | ----------------------- | ---------- |
+| 1-2        | JSON Bug + Model Cast   | 10 dk      |
+| 3          | Sort Implementation     | 5 dk       |
+| 4-5        | Dil Standardizasyonu    | 5 dk       |
+| 6-7        | İlanlar Kolonları       | 8 dk       |
+| 8          | Toast Cleanup           | 3 dk       |
+| 9          | Applies_to Göster       | 5 dk       |
+| 10         | Final Validation + Test | 10 dk      |
+| **TOPLAM** |                         | **~46 dk** |
 
 ---
 
@@ -877,6 +941,7 @@ grep -r "durum\|aktif\|musteri" app/
 ### Bu Planda:
 
 **✅ YAPILACAK:**
+
 - Field names Context7 uyumlu (status, enabled, para_birimi)
 - Display text Türkçe (Aktif, Pasif, İlan Sahibi, Danışman)
 - window.toast kullanımı (manuel toast kaldırılacak)
@@ -886,6 +951,7 @@ grep -r "durum\|aktif\|musteri" app/
 - Accessibility korunacak
 
 **❌ YAPILMAYACAK:**
+
 - Database field name değişikliği YOK
 - Backend field name değişikliği YOK
 - Forbidden pattern kullanımı YOK
@@ -900,19 +966,20 @@ grep -r "durum\|aktif\|musteri" app/
 ### Plan Dosyası Kaydedildikten Sonra:
 
 1. **Plan Modundan Çık:**
-   - Cursor chat → Plan Mode butonunu kapat
-   - VEYA: `/execute` komutunu kullan
+    - Cursor chat → Plan Mode butonunu kapat
+    - VEYA: `/execute` komutunu kullan
 
 2. **Düzeltmelere Başla:**
-   - "hazır" veya "başla" yaz
-   - Otomatik olarak 10 adım uygulanacak
+    - "hazır" veya "başla" yaz
+    - Otomatik olarak 10 adım uygulanacak
 
 3. **Test Et:**
-   - Browser'da sayfalara git
-   - Telescope'ta hataları kontrol et
-   - Fonksiyonları test et
+    - Browser'da sayfalara git
+    - Telescope'ta hataları kontrol et
+    - Fonksiyonları test et
 
 4. **Commit:**
+
 ```bash
 git add .
 git commit -m "fix: İlan Yönetimi - 10 hata düzeltildi (Context7 uyumlu)"
@@ -932,6 +999,7 @@ git commit -m "fix: İlan Yönetimi - 10 hata düzeltildi (Context7 uyumlu)"
 ## 📞 DESTEK
 
 **Sorular:**
+
 - Plan uygulanırken hata olursa?
 - Yalıhan Bekçi ihlali tespit edilirse?
 - Test başarısız olursa?
@@ -945,4 +1013,3 @@ git commit -m "fix: İlan Yönetimi - 10 hata düzeltildi (Context7 uyumlu)"
 **Dosya:** `ILAN_YONETIMI_KAPSAMLI_DUZELTME_PLANI_2025_11_01.md`
 
 Plan modundan çıkınca bu dosyayı referans alarak tüm düzeltmeleri yapabilirim! 🚀
-

@@ -46,7 +46,7 @@ class TakimUyesi extends Model
 
     public static function getDurumlar(): array
     {
-        return ['active', 'pasif', 'izinli', 'tatilde'];
+        return ['aktif', 'pasif', 'izinli', 'tatilde'];
     }
 
     public static function getEkipler(): array
@@ -73,12 +73,12 @@ class TakimUyesi extends Model
     // Scopes
     public function scopeAktif($query)
     {
-        return $query->where('status', 'active');
+        return $query->where('status', 'aktif');
     }
 
     public function scopeRol($query, $rol)
     {
-        return $query->where('rol', $rol);
+        return $query->where('departman', $rol);
     }
 
     public function scopeLokasyon($query, $lokasyon)
@@ -117,13 +117,13 @@ class TakimUyesi extends Model
     public function getDurumEtiketiAttribute(): string
     {
         $etiketler = [
-            'active' => '<span class="badge bg-success">Aktif</span>',
+            'aktif' => '<span class="badge bg-success">Aktif</span>',
             'pasif' => '<span class="badge bg-secondary">Pasif</span>',
             'izinli' => '<span class="badge bg-warning">İzinli</span>',
             'tatilde' => '<span class="badge bg-info">Tatilde</span>',
         ];
 
-        return $etiketler[$this->status] ?? $etiketler['active'];
+        return $etiketler[$this->status] ?? $etiketler['aktif'];
     }
 
     public function getBasariOraniAttribute(): float
@@ -180,10 +180,22 @@ class TakimUyesi extends Model
         return $etiketler[$this->ekip] ?? $etiketler['diger'];
     }
 
+    protected function rol(): \Illuminate\Database\Eloquent\Casts\Attribute
+    {
+        return \Illuminate\Database\Eloquent\Casts\Attribute::make(
+            get: function ($value, array $attributes) {
+                return $attributes['departman'] ?? null;
+            },
+            set: function ($value) {
+                return ['departman' => $value];
+            }
+        );
+    }
+
     // Methods
     public function statusMi(): bool
     {
-        return $this->status === 'active';
+        return $this->status === 'aktif';
     }
 
     public function danismanMi(): bool

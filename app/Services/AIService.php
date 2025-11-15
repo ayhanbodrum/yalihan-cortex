@@ -23,19 +23,40 @@ class AIService
         $this->config = $this->getProviderConfig();
     }
 
-    public function analyze($data, $context = [])
+    /**
+     * Analyze data with AI
+     *
+     * @param mixed $data
+     * @param array $context
+     * @return array
+     */
+    public function analyze(mixed $data, array $context = []): array
     {
         $prompt = $this->buildAnalysisPrompt($data, $context);
         return $this->makeRequest('analyze', $prompt, $context);
     }
 
-    public function suggest($context, $type = 'general')
+    /**
+     * Get AI suggestions
+     *
+     * @param mixed $context
+     * @param string $type
+     * @return array
+     */
+    public function suggest(mixed $context, string $type = 'general'): array
     {
         $prompt = $this->buildSuggestionPrompt($context, $type);
         return $this->makeRequest('suggest', $prompt, $context);
     }
 
-    public function generate($prompt, $options = [])
+    /**
+     * Generate content with AI
+     *
+     * @param string $prompt
+     * @param array $options
+     * @return array
+     */
+    public function generate(string $prompt, array $options = []): array
     {
         return $this->makeRequest('generate', $prompt, $options);
     }
@@ -51,7 +72,7 @@ class AIService
      * @param array $context Ek bağlam
      * @return array Hibrit sıralama verileri
      */
-    public function getKonutHibritSiralama($kategoriSlug = 'konut', $context = [])
+    public function getKonutHibritSiralama(string $kategoriSlug = 'konut', array $context = []): array
     {
         // ✅ STANDARDIZED: Using CacheHelper with standard key format
         return CacheHelper::remember(
@@ -76,7 +97,7 @@ class AIService
      * @param float $kullaniciTercih Kullanıcı tercih yüzdesi
      * @return float Hibrit skor
      */
-    public function calculateHibritSkor($kullanimSikligi, $aiOneri, $kullaniciTercih)
+    public function calculateHibritSkor(int $kullanimSikligi, float $aiOneri, float $kullaniciTercih): float
     {
         // Normalize kullanım sıklığı (0-100 arası)
         $normalizedKullanim = min(100, ($kullanimSikligi / 6)); // 600 kullanım = 100 puan
@@ -93,7 +114,7 @@ class AIService
      * @param float $hibritSkor Hibrit skor
      * @return string Önem seviyesi
      */
-    public function determineOnemSeviyesi($hibritSkor)
+    public function determineOnemSeviyesi(float $hibritSkor): string
     {
         if ($hibritSkor >= 80) return 'cok_onemli';
         if ($hibritSkor >= 60) return 'onemli';
@@ -163,7 +184,7 @@ class AIService
         $aiFields = KategoriYayinTipiFieldDependency::where('kategori_slug', $kategoriSlug)
             ->where('yayin_tipi', $yayinTipi)
             ->where('ai_auto_fill', 1)
-            ->where('enabled', 1)
+            ->where('status', 1) // ✅ Context7: enabled → status
             ->get();
 
         $suggestions = [];
@@ -484,7 +505,7 @@ Sadece önerilen değeri döndür (açıklama veya birim olmadan).
         }
 
         $data = $response->json();
-        
+
         // MiniMax response format: { "choices": [{ "message": { "content": "..." } }] }
         if (isset($data['choices'][0]['message']['content'])) {
             return $data['choices'][0]['message']['content'];
@@ -557,7 +578,7 @@ Sadece önerilen değeri döndür (açıklama veya birim olmadan).
         ];
 
         $basePrompt = $prompts[$type] ?? $prompts['general'];
-        
+
         // QR Code için özel prompt
         if ($type === 'qr_code' && isset($context['ilan'])) {
             $basePrompt .= "\n\nİlan Bilgileri:\n";
@@ -571,7 +592,7 @@ Sadece önerilen değeri döndür (açıklama veya birim olmadan).
             $basePrompt .= "- Sosyal medya paylaşımlarında nasıl kullanılmalı?\n";
             $basePrompt .= "- Mobil kullanıcı deneyimi için öneriler\n";
         }
-        
+
         // Navigation için özel prompt
         if ($type === 'navigation' && isset($context['ilan'])) {
             $basePrompt .= "\n\nİlan Bilgileri:\n";

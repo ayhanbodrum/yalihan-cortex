@@ -29,7 +29,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="space-y-2">
                             <label for="key" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Ayar Anahtarı <span class="text-red-500">*</span></label>
-                            <input id="key" name="key" type="text" class="w-full px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-black dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200 @error('key') border-red-500 @enderror" 
+                            <input id="key" name="key" type="text" class="w-full px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-black dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200 @error('key') border-red-500 @enderror"
                                 value="{{ old('key', $ayar->key) }}" required placeholder="Ayar anahtarını girin">
                             @error('key')
                                 <div class="text-sm text-red-600 dark:text-red-400 mt-1">{{ $message }}</div>
@@ -53,7 +53,7 @@
 
                     <div class="space-y-2">
                         <label for="value" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Değer <span class="text-red-500">*</span></label>
-                        <textarea id="value" name="value" class="w-full px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-black dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200 resize-vertical @error('value') border-red-500 @enderror" 
+                        <textarea id="value" name="value" class="w-full px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-black dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200 resize-vertical @error('value') border-red-500 @enderror"
                             rows="4" placeholder="Ayar değerini girin">{{ old('value', $ayar->value) }}</textarea>
                         @error('value')
                             <div class="text-sm text-red-600 dark:text-red-400 mt-1">{{ $message }}</div>
@@ -62,7 +62,7 @@
 
                     <div class="space-y-2">
                         <label for="description" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Açıklama</label>
-                        <textarea id="description" name="description" class="w-full px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-black dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200 resize-vertical @error('description') border-red-500 @enderror" 
+                        <textarea id="description" name="description" class="w-full px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-black dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200 resize-vertical @error('description') border-red-500 @enderror"
                             rows="3" placeholder="Ayar hakkında açıklama">{{ old('description', $ayar->description) }}</textarea>
                         @error('description')
                             <div class="text-sm text-red-600 dark:text-red-400 mt-1">{{ $message }}</div>
@@ -72,7 +72,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="space-y-2">
                             <label for="group" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Grup</label>
-                            <input id="group" name="group" type="text" class="w-full px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-black dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200 @error('group') border-red-500 @enderror" 
+                            <input id="group" name="group" type="text" class="w-full px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-black dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200 @error('group') border-red-500 @enderror"
                                 value="{{ old('group', $ayar->group) }}" placeholder="Ayar grubu">
                             @error('group')
                                 <div class="text-sm text-red-600 dark:text-red-400 mt-1">{{ $message }}</div>
@@ -81,7 +81,7 @@
 
                         <div class="space-y-2">
                             <label for="order" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Sıra</label>
-                            <input id="order" name="order" type="number" class="w-full px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-black dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200 @error('order') border-red-500 @enderror" 
+                            <input id="order" name="order" type="number" class="w-full px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-black dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200 @error('order') border-red-500 @enderror"
                                 value="{{ old('order', $ayar->order ?? 0) }}" min="0" placeholder="0">
                             @error('order')
                                 <div class="text-sm text-red-600 dark:text-red-400 mt-1">{{ $message }}</div>

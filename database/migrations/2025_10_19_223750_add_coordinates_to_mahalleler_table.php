@@ -15,10 +15,10 @@ return new class extends Migration
             // Koordinat bilgileri ekle
             $table->decimal('enlem', 10, 8)->nullable()->after('mahalle_kodu')->comment('Latitude coordinate');
             $table->decimal('boylam', 11, 8)->nullable()->after('enlem')->comment('Longitude coordinate');
-            
+
             // Status alanı ekle
             $table->enum('status', ['Aktif', 'Pasif'])->default('Aktif')->after('boylam')->comment('Mahalle status');
-            
+
             // Index'ler ekle
             $table->index(['enlem', 'boylam'], 'idx_mahalleler_coordinates');
             $table->index('status', 'idx_mahalleler_status');

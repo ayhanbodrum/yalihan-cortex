@@ -16,7 +16,7 @@ class ArsaKategorileriSeeder extends Seeder
     {
         // Ana kategori: Arsa
         $arsa = IlanKategori::where('name', 'Arsa')->first();
-        
+
         if (!$arsa) {
             $this->command->error('❌ Arsa ana kategorisi bulunamadı!');
             return;
@@ -31,7 +31,7 @@ class ArsaKategorileriSeeder extends Seeder
                 'parent_id' => $arsa->id,
                 'seviye' => 1, // Alt kategori
                 'icon' => 'building-circle-check',
-                'order' => 1,
+                'display_order' => 1,
                 'status' => 'Aktif',
             ],
             [
@@ -41,7 +41,7 @@ class ArsaKategorileriSeeder extends Seeder
                 'parent_id' => $arsa->id,
                 'seviye' => 1,
                 'icon' => 'tractor',
-                'order' => 2,
+                'display_order' => 2,
                 'status' => 'Aktif',
             ],
             [
@@ -51,7 +51,7 @@ class ArsaKategorileriSeeder extends Seeder
                 'parent_id' => $arsa->id,
                 'seviye' => 1,
                 'icon' => 'tree',
-                'order' => 3,
+                'display_order' => 3,
                 'status' => 'Aktif',
             ],
             [
@@ -61,7 +61,7 @@ class ArsaKategorileriSeeder extends Seeder
                 'parent_id' => $arsa->id,
                 'seviye' => 1,
                 'icon' => 'grape',
-                'order' => 4,
+                'display_order' => 4,
                 'status' => 'Aktif',
             ],
             [
@@ -71,7 +71,7 @@ class ArsaKategorileriSeeder extends Seeder
                 'parent_id' => $arsa->id,
                 'seviye' => 1,
                 'icon' => 'seedling',
-                'order' => 5,
+                'display_order' => 5,
                 'status' => 'Aktif',
             ],
             [
@@ -81,7 +81,7 @@ class ArsaKategorileriSeeder extends Seeder
                 'parent_id' => $arsa->id,
                 'seviye' => 1,
                 'icon' => 'cow',
-                'order' => 6,
+                'display_order' => 6,
                 'status' => 'Aktif',
             ],
             [
@@ -91,7 +91,7 @@ class ArsaKategorileriSeeder extends Seeder
                 'parent_id' => $arsa->id,
                 'seviye' => 1,
                 'icon' => 'umbrella-beach',
-                'order' => 7,
+                'display_order' => 7,
                 'status' => 'Aktif',
             ],
             [
@@ -101,7 +101,7 @@ class ArsaKategorileriSeeder extends Seeder
                 'parent_id' => $arsa->id,
                 'seviye' => 1,
                 'icon' => 'industry',
-                'order' => 8,
+                'display_order' => 8,
                 'status' => 'Aktif',
             ],
             [
@@ -111,7 +111,7 @@ class ArsaKategorileriSeeder extends Seeder
                 'parent_id' => $arsa->id,
                 'seviye' => 1,
                 'icon' => 'store',
-                'order' => 9,
+                'display_order' => 9,
                 'status' => 'Aktif',
             ],
             [
@@ -121,7 +121,7 @@ class ArsaKategorileriSeeder extends Seeder
                 'parent_id' => $arsa->id,
                 'seviye' => 1,
                 'icon' => 'building-user',
-                'order' => 10,
+                'display_order' => 10,
                 'status' => 'Aktif',
             ],
             [
@@ -131,7 +131,7 @@ class ArsaKategorileriSeeder extends Seeder
                 'parent_id' => $arsa->id,
                 'seviye' => 1,
                 'icon' => 'tree-city',
-                'order' => 11,
+                'display_order' => 11,
                 'status' => 'Aktif',
             ],
         ];
@@ -161,4 +161,3 @@ class ArsaKategorileriSeeder extends Seeder
         $this->command->info("   📦 Toplam: " . ($created + $updated));
     }
 }
-

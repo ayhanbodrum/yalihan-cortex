@@ -171,8 +171,8 @@
                         </div>
                     </a>
 
-                    <!-- Müşteri Raporlarım -->
-                    <a href="{{ route('admin.reports.musteriler') }}" class="group">
+                    <!-- Kişi Raporlarım -->
+                    <a href="{{ route('admin.reports.kisiler') }}" class="group">
                         <div
                             class="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6 hover:from-green-100 hover:to-green-200 transition-all duration-300 border border-green-200">
                             <div class="flex items-center justify-between mb-4">
@@ -188,8 +188,8 @@
                                         d="M9 5l7 7-7 7"></path>
                                 </svg>
                             </div>
-                            <h3 class="text-lg font-semibold text-gray-900 mb-2">Müşteri Raporlarım</h3>
-                            <p class="text-sm text-gray-600">Müşterilerimin detaylı analizi</p>
+                            <h3 class="text-lg font-semibold text-gray-900 mb-2">Kişi Raporlarım</h3>
+                            <p class="text-sm text-gray-600">Kişilerimin detaylı analizi</p>
                         </div>
                     </a>
 
@@ -239,7 +239,7 @@
                         <span class="font-medium text-gray-900">İlanlarım Excel</span>
                     </button>
 
-                    <button onclick="exportMyReport('musteriler', 'excel')"
+                    <button onclick="exportMyReport('kisiler', 'excel')"
                         class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 bg-white text-gray-700 rounded-lg hover:bg-gray-50 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-gray-500 transition-all duration-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700 w-full justify-center touch-target-optimized touch-target-optimized">
                         <svg class="w-6 h-6 text-green-600 mr-2" fill="none" stroke="currentColor"
                             viewBox="0 0 24 24">
@@ -247,7 +247,7 @@
                                 d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
                             </path>
                         </svg>
-                        <span class="font-medium text-gray-900">Müşterilerim Excel</span>
+                        <span class="font-medium text-gray-900">Kişilerim Excel</span>
                     </button>
 
                     <button onclick="exportMyReport('ilanlar', 'pdf')"
@@ -291,6 +291,14 @@
                 const form = document.createElement('form');
                 form.method = 'POST';
 
+                // Map type names
+                const typeMap = {
+                    'ilanlar': 'ilan',
+                    'kisiler': 'kisi',
+                    'performance': 'performance'
+                };
+                const mappedType = typeMap[type] || type;
+
                 // Set action based on format
                 if (format === 'excel') {
                     form.action = '{{ route('admin.reports.export.excel') }}';
@@ -306,16 +314,10 @@
                 const typeInput = document.createElement('input');
                 typeInput.type = 'hidden';
                 typeInput.name = 'type';
-                typeInput.value = type;
-
-                const formatInput = document.createElement('input');
-                formatInput.type = 'hidden';
-                formatInput.name = 'format';
-                formatInput.value = format;
+                typeInput.value = mappedType;
 
                 form.appendChild(csrfToken);
                 form.appendChild(typeInput);
-                form.appendChild(formatInput);
 
                 document.body.appendChild(form);
                 form.submit();

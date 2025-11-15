@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string("user_agent")->nullable();
             $table->timestamp("searched_at");
             $table->timestamps();
-            
+
             $table->index(["query", "searched_at"]);
             $table->index(["type", "success"]);
         });

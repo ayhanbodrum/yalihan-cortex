@@ -3,9 +3,9 @@
 /**
  * Database Schema Usage Validator
  * Yalıhan Bekçi - 2 Kasım 2025
- * 
+ *
  * Query'lerde kullanılan kolon adlarının database'de var olup olmadığını kontrol eder.
- * 
+ *
  * NOT: Bu script henüz tam implement edilmedi. Gelecekte:
  * - Database'e bağlanacak
  * - DESCRIBE table_name çalıştıracak
@@ -32,31 +32,31 @@ foreach ($files as $file) {
     if (!file_exists($file)) {
         continue;
     }
-    
+
     $content = file_get_contents($file);
-    
+
     // Yaygın yanlış kullanımları tespit et
     $suspiciousQueries = [];
-    
+
     // 1. Türkçe kolon adları
     if (preg_match('/->orderBy\([\'"](?:durum|aktif|sehir|ad_soyad)[\'"]/', $content)) {
         $suspiciousQueries[] = "Türkçe kolon adı kullanımı (durum, aktif, sehir, etc.)";
     }
-    
+
     // 2. Context7'de yasaklı kolon adları
     if (preg_match('/->where\([\'"]is_active[\'"]/', $content)) {
         $suspiciousQueries[] = "is_active kullanımı ('enabled' kullanılmalı)";
     }
-    
+
     // 3. ->get(['...']) içinde yaygın hatalar
     if (preg_match('/->get\(\[[^\]]*[\'"]type[\'"][^\]]*\]\)/', $content)) {
         $suspiciousQueries[] = "->get(['type']) kullanımı (etiketler tablosunda yok!)";
     }
-    
+
     if (preg_match('/->get\(\[[^\]]*[\'"]icon[\'"][^\]]*\]\)/', $content)) {
         $suspiciousQueries[] = "->get(['icon']) kullanımı (etiketler tablosunda yok!)";
     }
-    
+
     if (!empty($suspiciousQueries)) {
         echo "\n⚠️  $file:\n";
         foreach ($suspiciousQueries as $query) {
@@ -82,4 +82,3 @@ if ($suspiciousPatterns > 0) {
 
 echo "\n✅ Schema validation tamamlandı.\n";
 exit(0);
-

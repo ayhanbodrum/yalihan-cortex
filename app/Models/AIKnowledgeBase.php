@@ -9,10 +9,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Traits\HasActiveScope;
+use App\Traits\HasAIUsageTracking;
 
 class AIKnowledgeBase extends Model
 {
-    use HasFactory, SoftDeletes, HasActiveScope;
+    use HasFactory, SoftDeletes, HasActiveScope, HasAIUsageTracking;
 
     protected $table = 'ai_knowledge_base';
 
@@ -51,6 +52,14 @@ class AIKnowledgeBase extends Model
         'usage_count' => 0,
     ];
 
+    /**
+     * Default language for scopeByLanguage()
+     * Used by HasAIUsageTracking trait
+     *
+     * @var string
+     */
+    protected $defaultLanguage = 'tr';
+
     // Relationships
     public function embeddings(): HasMany
     {
@@ -69,30 +78,16 @@ class AIKnowledgeBase extends Model
 
     // Scopes
     // ✅ REFACTORED: scopeActive moved to HasActiveScope trait
+    // ✅ REFACTORED: scopeByLanguage, scopeRecentlyUsed, scopePopular, incrementUsage moved to HasAIUsageTracking trait
 
     public function scopeByCategory($query, $category)
     {
         return $query->where('category', $category);
     }
 
-    public function scopeByLanguage($query, $language = 'tr')
-    {
-        return $query->where('language', $language);
-    }
-
     public function scopeByPriority($query, $minPriority = 1)
     {
         return $query->where('priority', '>=', $minPriority);
-    }
-
-    public function scopeRecentlyUsed($query, $days = 30)
-    {
-        return $query->where('last_used_at', '>=', Carbon::now()->subDays($days));
-    }
-
-    public function scopePopular($query, $minUsage = 10)
-    {
-        return $query->where('usage_count', '>=', $minUsage);
     }
 
     public function scopeSearch($query, $searchTerm)
@@ -155,11 +150,7 @@ class AIKnowledgeBase extends Model
     }
 
     // Methods
-    public function incrementUsage()
-    {
-        $this->increment('usage_count');
-        $this->update(['last_used_at' => Carbon::now()]);
-    }
+    // ✅ REFACTORED: incrementUsage moved to HasAIUsageTracking trait
 
     public function hasTag($tag)
     {
@@ -179,7 +170,7 @@ class AIKnowledgeBase extends Model
     public function removeTag($tag)
     {
         $tags = $this->tags ?? [];
-        $tags = array_filter($tags, fn ($t) => $t !== $tag);
+        $tags = array_filter($tags, fn($t) => $t !== $tag);
         $this->tags = array_values($tags);
         $this->save();
     }
@@ -215,7 +206,7 @@ class AIKnowledgeBase extends Model
         $currentChunk = '';
 
         foreach ($sentences as $sentence) {
-            if (strlen($currentChunk.' '.$sentence) > $maxChunkSize) {
+            if (strlen($currentChunk . ' ' . $sentence) > $maxChunkSize) {
                 if (! empty($currentChunk)) {
                     $chunks[] = trim($currentChunk);
                     $currentChunk = $sentence;
@@ -224,7 +215,7 @@ class AIKnowledgeBase extends Model
                     $words = explode(' ', $sentence);
                     $wordChunk = '';
                     foreach ($words as $word) {
-                        if (strlen($wordChunk.' '.$word) > $maxChunkSize) {
+                        if (strlen($wordChunk . ' ' . $word) > $maxChunkSize) {
                             if (! empty($wordChunk)) {
                                 $chunks[] = trim($wordChunk);
                                 $wordChunk = $word;
@@ -232,7 +223,7 @@ class AIKnowledgeBase extends Model
                                 $chunks[] = $word; // Single word is too long
                             }
                         } else {
-                            $wordChunk .= ($wordChunk ? ' ' : '').$word;
+                            $wordChunk .= ($wordChunk ? ' ' : '') . $word;
                         }
                     }
                     if (! empty($wordChunk)) {
@@ -240,7 +231,7 @@ class AIKnowledgeBase extends Model
                     }
                 }
             } else {
-                $currentChunk .= ($currentChunk ? ' ' : '').$sentence;
+                $currentChunk .= ($currentChunk ? ' ' : '') . $sentence;
             }
         }
 

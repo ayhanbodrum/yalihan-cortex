@@ -1,0 +1,368 @@
+{
+  "timestamp": "2025-11-09T12:00:00Z",
+  "topic": "Migration Execution & Schema Sync - Code-Database Mismatch Prevention",
+  "category": "database",
+  "priority": "CRITICAL",
+  "status": "ACTIVE",
+  "context7_compliance": true,
+
+  "problem_summary": {
+    "title": "Migration Çalıştırılmamış - Kod-Veritabanı Uyumsuzluğu",
+    "description": "Kod Context7 standartlarına göre güncellenmiş ama migration'lar çalıştırılmamış. Veritabanı eski şemada kalıyor, kod yeni şemayı bekliyor.",
+    "impact": "CRITICAL - Uygulama çalışmıyor, QueryException hataları",
+    "frequency": "Multiple occurrences - Common after Context7 standardization",
+    "examples": [
+      {
+        "error": "QueryException: Unknown column 'order' in 'field list'",
+        "cause": "Kod 'display_order' arıyor ama veritabanında 'order' var",
+        "migration": "2025_11_09_070721_rename_order_to_display_order_in_tables.php",
+        "status": "NOT RUN"
+      },
+      {
+        "error": "QueryException: Unknown column 'skor' in 'where clause'",
+        "cause": "Kod 'skor' kolonunu sorguluyor ama veritabanında yok",
+        "migration": "2025_11_09_095517_add_skor_column_to_eslesmeler_table_if_missing.php",
+        "status": "NOT RUN"
+      }
+    ]
+  },
+
+  "root_causes": {
+    "1_migration_not_executed": {
+      "title": "Migration Çalıştırılmamış",
+      "description": "Migration dosyası var ama php artisan migrate çalıştırılmamış",
+      "indicators": [
+        "Migration dosyası mevcut",
+        "php artisan migrate:status gösteriyor 'Pending'",
+        "Veritabanı şeması eski",
+        "Kod yeni şemayı bekliyor"
+      ],
+      "common_scenarios": [
+        {
+          "scenario": "Context7 Standardizasyon",
+          "description": "Kod güncellendi, migration oluşturuldu ama çalıştırılmadı",
+          "example": "order → display_order rename migration var ama çalıştırılmamış"
+        },
+        {
+          "scenario": "Yeni Feature",
+          "description": "Yeni kolon eklendi, migration oluşturuldu ama çalıştırılmadı",
+          "example": "skor kolonu için migration var ama çalıştırılmamış"
+        },
+        {
+          "scenario": "Database Restore",
+          "description": "Veritabanı eski backup'tan restore edildi, migration'lar tekrar çalıştırılmadı",
+          "example": "Production'dan test'e restore, migration'lar unutuldu"
+        }
+      ]
+    },
+
+    "2_code_database_mismatch": {
+      "title": "Kod-Veritabanı Şeması Uyumsuzluğu",
+      "description": "Kod güncellenmiş ama veritabanı güncellenmemiş",
+      "indicators": [
+        "Kod yeni kolon adını kullanıyor (display_order)",
+        "Veritabanında eski kolon adı var (order)",
+        "QueryException: Column not found"
+      ],
+      "context7_changes": [
+        {
+          "from": "order",
+          "to": "display_order",
+          "tables": ["ilan_kategorileri", "ilan_kategori_yayin_tipleri", "ozellik_kategorileri"],
+          "migration": "2025_11_09_070721_rename_order_to_display_order_in_tables.php",
+          "status": "MIGRATION EXISTS BUT NOT RUN"
+        },
+        {
+          "from": "missing",
+          "to": "skor",
+          "tables": ["eslesmeler"],
+          "migration": "2025_11_09_095517_add_skor_column_to_eslesmeler_table_if_missing.php",
+          "status": "MIGRATION EXISTS BUT NOT RUN"
+        }
+      ]
+    },
+
+    "3_cache_issues": {
+      "title": "Cache Sorunları",
+      "description": "Migration çalıştırıldı ama cache eski sorguları içeriyor",
+      "indicators": [
+        "Migration çalıştırıldı",
+        "Şema güncellendi",
+        "Ama hala eski hata görünüyor",
+        "Cache temizlenmemiş"
+      ],
+      "solution": "php artisan cache:clear && php artisan config:clear"
+    }
+  },
+
+  "learned_patterns": {
+    "detection_patterns": {
+      "1_query_exception_order": {
+        "error_type": "QueryException",
+        "sqlstate": "42S22",
+        "message_pattern": "Unknown column 'order' in 'field list'",
+        "cause": "Kod display_order arıyor ama veritabanında order var",
+        "action": "Run migration: 2025_11_09_070721_rename_order_to_display_order_in_tables.php"
+      },
+      "2_query_exception_missing_column": {
+        "error_type": "QueryException",
+        "sqlstate": "42S22",
+        "message_pattern": "Unknown column '{column}' in '{clause}'",
+        "cause": "Kod kolon arıyor ama veritabanında yok",
+        "action": "Check migration status, run missing migrations"
+      },
+      "3_cache_after_migration": {
+        "error_type": "QueryException (persistent)",
+        "symptom": "Migration çalıştırıldı ama hala eski hata",
+        "cause": "Cache eski sorguları içeriyor",
+        "action": "php artisan cache:clear"
+      }
+    },
+
+    "prevention_patterns": {
+      "1_migration_workflow": {
+        "rule": "ALWAYS run migrations immediately after creating them",
+        "workflow": [
+          "1. Create migration file",
+          "2. Write migration code",
+          "3. IMMEDIATELY run: php artisan migrate",
+          "4. Verify: php artisan migrate:status",
+          "5. Check schema: DESCRIBE table_name",
+          "6. Clear cache: php artisan cache:clear",
+          "7. Test: Open page/test endpoint"
+        ],
+        "severity": "CRITICAL"
+      },
+      "2_schema_check_before_code": {
+        "rule": "ALWAYS check column existence before using in code",
+        "pattern": "Schema::hasColumn() check or try-catch",
+        "example": "Schema::hasColumn('table', 'column') ? 'column' : 'old_column'",
+        "severity": "CRITICAL"
+      },
+      "3_context7_standardization_workflow": {
+        "rule": "ALWAYS follow Context7 standardization workflow",
+        "workflow": [
+          "1. Update code (new column name)",
+          "2. Create migration (rename/add column)",
+          "3. Run migration: php artisan migrate",
+          "4. Add backward compatibility (accessor/mutator)",
+          "5. Clear cache",
+          "6. Test",
+          "7. Document"
+        ],
+        "severity": "CRITICAL"
+      }
+    },
+
+    "fix_patterns": {
+      "1_run_migration": {
+        "pattern": "php artisan migrate",
+        "description": "Run pending migrations",
+        "verification": "php artisan migrate:status",
+        "context7_compliant": true
+      },
+      "2_schema_check_code": {
+        "pattern": "Schema::hasColumn() check",
+        "code": "Schema::hasColumn('table', 'column') ? 'column' : 'old_column'",
+        "description": "Safe column name detection",
+        "context7_compliant": true
+      },
+      "3_try_catch_safe_query": {
+        "pattern": "try-catch for missing columns",
+        "code": "try { $result = Model::where('column', $value)->count(); } catch (\\Exception $e) { $result = 0; }",
+        "description": "Safe query with fallback",
+        "context7_compliant": true
+      },
+      "4_clear_cache": {
+        "pattern": "php artisan cache:clear",
+        "description": "Clear cache after schema changes",
+        "commands": [
+          "php artisan cache:clear",
+          "php artisan config:clear",
+          "php artisan route:clear"
+        ],
+        "context7_compliant": true
+      }
+    }
+  },
+
+  "yalihan_bekci_rules": {
+    "new_rules": [
+      {
+        "rule": "ALWAYS check migration status before suggesting code changes",
+        "reason": "Prevent code-database mismatch errors",
+        "severity": "CRITICAL",
+        "action": "Run php artisan migrate:status before code suggestions",
+        "context7_compliance": true
+      },
+      {
+        "rule": "ALWAYS verify column existence before querying",
+        "reason": "Prevent QueryException: Column not found",
+        "severity": "CRITICAL",
+        "action": "Use Schema::hasColumn() or try-catch blocks",
+        "context7_compliance": true
+      },
+      {
+        "rule": "ALWAYS run migrations immediately after creating them",
+        "reason": "Code expects new schema immediately",
+        "severity": "CRITICAL",
+        "action": "Run php artisan migrate right after migration creation",
+        "context7_compliance": true
+      },
+      {
+        "rule": "ALWAYS clear cache after schema changes",
+        "reason": "Cache might contain old queries",
+        "severity": "HIGH",
+        "action": "Run php artisan cache:clear after migrations",
+        "context7_compliance": true
+      },
+      {
+        "rule": "NEVER suggest code that uses non-existent columns",
+        "reason": "Prevent QueryException errors",
+        "severity": "CRITICAL",
+        "action": "Verify column existence first, use schema checks",
+        "context7_compliance": true
+      },
+      {
+        "rule": "ALWAYS follow Context7 standardization workflow",
+        "reason": "Ensure code-database consistency",
+        "severity": "CRITICAL",
+        "workflow": [
+          "1. Update code",
+          "2. Create migration",
+          "3. Run migration",
+          "4. Add backward compatibility",
+          "5. Clear cache",
+          "6. Test"
+        ],
+        "context7_compliance": true
+      }
+    ],
+
+    "detection_commands": {
+      "check_migration_status": "php artisan migrate:status",
+      "check_table_structure": "DESCRIBE {table_name}",
+      "check_column_exists": "SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = '{database}' AND TABLE_NAME = '{table}' AND COLUMN_NAME = '{column}';",
+      "run_migrations": "php artisan migrate",
+      "clear_cache": "php artisan cache:clear && php artisan config:clear"
+    },
+
+    "fix_workflow": {
+      "step_1": "Identify error: QueryException: Column not found",
+      "step_2": "Check migration status: php artisan migrate:status",
+      "step_3": "Check table structure: DESCRIBE table_name",
+      "step_4": "Find migration file for the column",
+      "step_5": "Run migration: php artisan migrate",
+      "step_6": "Verify schema: DESCRIBE table_name (column should exist now)",
+      "step_7": "Clear cache: php artisan cache:clear",
+      "step_8": "Test: Open page/test endpoint",
+      "step_9": "If still error: Add schema check in code (Schema::hasColumn)"
+    }
+  },
+
+  "context7_compliance": {
+    "authority_file": ".context7/authority.json",
+    "section": "database_fields",
+    "standards": {
+      "order_field": {
+        "forbidden": "order",
+        "required": "display_order",
+        "migration": "2025_11_09_070721_rename_order_to_display_order_in_tables.php",
+        "status": "MIGRATION EXISTS - MUST RUN"
+      },
+      "migration_execution": {
+        "rule": "ALWAYS run migrations immediately after creating",
+        "workflow": "Create → Run → Verify → Clear Cache → Test",
+        "severity": "CRITICAL"
+      },
+      "schema_sync": {
+        "rule": "ALWAYS sync code and database schema",
+        "check": "Verify column existence before querying",
+        "pattern": "Schema::hasColumn() or try-catch"
+      }
+    }
+  },
+
+  "examples": {
+    "fixed_issues": [
+      {
+        "issue": "order → display_order mismatch",
+        "error": "QueryException: Unknown column 'order' in 'field list'",
+        "cause": "Migration not run: 2025_11_09_070721_rename_order_to_display_order_in_tables.php",
+        "fix": "php artisan migrate",
+        "verification": "DESCRIBE ilan_kategorileri; (should show display_order)",
+        "status": "FIXED",
+        "date": "2025-11-09"
+      },
+      {
+        "issue": "Missing skor column",
+        "error": "QueryException: Unknown column 'skor' in 'where clause'",
+        "cause": "Migration not run: 2025_11_09_095517_add_skor_column_to_eslesmeler_table_if_missing.php",
+        "fix": "php artisan migrate",
+        "verification": "DESCRIBE eslesmeler; (should show skor)",
+        "status": "FIXED",
+        "date": "2025-11-09"
+      },
+      {
+        "issue": "Cache after migration",
+        "error": "QueryException persists after migration",
+        "cause": "Cache contains old queries",
+        "fix": "php artisan cache:clear && php artisan config:clear",
+        "verification": "Page loads without error",
+        "status": "FIXED",
+        "date": "2025-11-09"
+      }
+    ],
+    "prevention_examples": [
+      {
+        "pattern": "Schema check before query",
+        "code": "Schema::hasColumn('ilan_kategorileri', 'display_order') ? 'display_order' : 'order'",
+        "description": "Safe column name detection",
+        "context7_compliant": true
+      },
+      {
+        "pattern": "Try-catch safe query",
+        "code": "try { $count = Eslesme::where('skor', '>=', 8)->count(); } catch (\\Exception $e) { $count = 0; }",
+        "description": "Safe query with fallback",
+        "context7_compliant": true
+      }
+    ]
+  },
+
+  "prevention_checklist": {
+    "before_code_suggestion": [
+      "✅ Check migration status: php artisan migrate:status",
+      "✅ Check table structure: DESCRIBE table_name",
+      "✅ Verify column existence",
+      "✅ Check Context7 compliance: .context7/authority.json"
+    ],
+    "after_migration_creation": [
+      "✅ IMMEDIATELY run: php artisan migrate",
+      "✅ Verify migration status: php artisan migrate:status",
+      "✅ Check schema: DESCRIBE table_name",
+      "✅ Clear cache: php artisan cache:clear",
+      "✅ Test: Open page/test endpoint"
+    ],
+    "context7_standardization": [
+      "✅ Update code (new column name)",
+      "✅ Create migration (rename/add column)",
+      "✅ Run migration: php artisan migrate",
+      "✅ Add backward compatibility (accessor/mutator)",
+      "✅ Clear cache",
+      "✅ Test",
+      "✅ Document"
+    ]
+  },
+
+  "related_files": [
+    ".context7/authority.json",
+    ".context7/ORDER_DISPLAY_ORDER_STANDARD.md",
+    ".context7/MIGRATION_COMPLIANCE_REPORT.md",
+    ".context7/MIGRATION_EXECUTION_STANDARD.md",
+    ".yalihan-bekci/knowledge/database-schema-sync-patterns-2025-11-08.json"
+  ],
+
+  "commit_message": "📚 YALIHAN-BEKCI: Migration execution standard learned - Code-database sync patterns",
+  "tags": ["database", "migration", "schema", "context7", "yalihan-bekci", "prevention", "critical"]
+}
+

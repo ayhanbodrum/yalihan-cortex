@@ -14,7 +14,7 @@
                     Önceden tanımlı değerlerle formu otomatik doldur
                 </p>
             </div>
-            <button 
+            <button
                 @click="showTemplates = !showTemplates"
                 class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
                 <span x-show="!showTemplates">▼ Şablonları Göster</span>
@@ -24,7 +24,7 @@
 
         <div x-show="showTemplates" x-transition class="grid md:grid-cols-3 gap-4" style="display: none;">
             {{-- Premium Villa Template --}}
-            <button 
+            <button
                 @click="applyTemplate('premium_villa')"
                 type="button"
                 class="p-4 bg-white dark:bg-gray-800 rounded-lg border-2 border-purple-300 dark:border-purple-600 hover:border-purple-500 hover:shadow-lg transition-all text-left">
@@ -36,7 +36,7 @@
             </button>
 
             {{-- Budget Villa Template --}}
-            <button 
+            <button
                 @click="applyTemplate('budget_villa')"
                 type="button"
                 class="p-4 bg-white dark:bg-gray-800 rounded-lg border-2 border-green-300 dark:border-green-600 hover:border-green-500 hover:shadow-lg transition-all text-left">
@@ -48,7 +48,7 @@
             </button>
 
             {{-- Seaside Villa Template --}}
-            <button 
+            <button
                 @click="applyTemplate('seaside_villa')"
                 type="button"
                 class="p-4 bg-white dark:bg-gray-800 rounded-lg border-2 border-blue-300 dark:border-blue-600 hover:border-blue-500 hover:shadow-lg transition-all text-left">
@@ -82,7 +82,7 @@
                     </div>
                 </div>
             </div>
-            <button 
+            <button
                 @click="applyAISuggestions()"
                 type="button"
                 class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold whitespace-nowrap">
@@ -194,7 +194,7 @@ function smartFieldOrganizer() {
             // Günlük fiyatdan haftalık hesapla
             const gunlukFiyat = document.getElementById('field_gunluk_fiyat');
             const haftalikFiyat = document.getElementById('field_haftalik_fiyat');
-            
+
             if (gunlukFiyat && gunlukFiyat.value && haftalikFiyat && !haftalikFiyat.value) {
                 haftalikFiyat.value = Math.round(gunlukFiyat.value * 6.5);
                 haftalikFiyat.dispatchEvent(new Event('change', { bubbles: true }));
@@ -207,17 +207,17 @@ function smartFieldOrganizer() {
 
             if (gunlukFiyat && gunlukFiyat.value) {
                 const basePrice = parseFloat(gunlukFiyat.value);
-                
+
                 if (yazSezon && !yazSezon.value) {
                     yazSezon.value = Math.round(basePrice * 1.4); // +40% yaz
                     yazSezon.dispatchEvent(new Event('change', { bubbles: true }));
                 }
-                
+
                 if (araSezon && !araSezon.value) {
                     araSezon.value = Math.round(basePrice * 0.8); // -20% ara
                     araSezon.dispatchEvent(new Event('change', { bubbles: true }));
                 }
-                
+
                 if (kisSezon && !kisSezon.value) {
                     kisSezon.value = Math.round(basePrice * 0.6); // -40% kış
                     kisSezon.dispatchEvent(new Event('change', { bubbles: true }));
@@ -227,12 +227,12 @@ function smartFieldOrganizer() {
             // Standart check-in/out saatleri
             const checkIn = document.getElementById('field_check_in');
             const checkOut = document.getElementById('field_check_out');
-            
+
             if (checkIn && !checkIn.value) {
                 checkIn.value = '15:00';
                 checkIn.dispatchEvent(new Event('change', { bubbles: true }));
             }
-            
+
             if (checkOut && !checkOut.value) {
                 checkOut.value = '11:00';
                 checkOut.dispatchEvent(new Event('change', { bubbles: true }));
@@ -251,4 +251,3 @@ function smartFieldOrganizer() {
 }
 </script>
 @endpush
-

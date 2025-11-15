@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Services\Response\ResponseService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class FeaturesController extends Controller
 {
@@ -15,20 +17,14 @@ class FeaturesController extends Controller
     {
         try {
             $features = $this->getCategoryFeatures($categoryId);
-            
-            return response()->json([
-                'success' => true,
+
+            return ResponseService::success([
                 'features' => $features,
                 'category_id' => $categoryId
-            ]);
+            ], 'Kategori özellikleri başarıyla getirildi');
         } catch (\Exception $e) {
-            \Log::error('Özellik yükleme hatası: ' . $e->getMessage());
-            
-            return response()->json([
-                'success' => false,
-                'message' => 'Özellikler yüklenemedi',
-                'error' => $e->getMessage()
-            ], 500);
+            Log::error('Özellik yükleme hatası: ' . $e->getMessage());
+            return ResponseService::serverError('Özellikler yüklenirken hata oluştu.', $e);
         }
     }
 
@@ -38,7 +34,7 @@ class FeaturesController extends Controller
     private function getCategoryFeatures($categoryId)
     {
         $features = [];
-        
+
         switch ($categoryId) {
             case 1: // Villa/Daire
             case 3: // Villa/Daire (alternatif ID)
@@ -54,7 +50,7 @@ class FeaturesController extends Controller
                     'otopark' => ['label' => 'Otopark', 'type' => 'checkbox', 'required' => false]
                 ];
                 break;
-                
+
             case 2: // Arsa
             case 4: // Arsa (alternatif ID)
                 $features = [
@@ -69,7 +65,7 @@ class FeaturesController extends Controller
                     'dogalgaz' => ['label' => 'Doğalgaz', 'type' => 'checkbox', 'required' => false]
                 ];
                 break;
-                
+
             case 3: // Yazlık
             case 5: // Yazlık (alternatif ID)
                 $features = [
@@ -84,7 +80,7 @@ class FeaturesController extends Controller
                     'cocuk_sayisi' => ['label' => 'Çocuk Sayısı', 'type' => 'number', 'required' => false]
                 ];
                 break;
-                
+
             case 4: // İşyeri
                 $features = [
                     'isyeri_tipi' => ['label' => 'İşyeri Tipi', 'type' => 'select', 'required' => true, 'options' => ['Ofis', 'Dükkan', 'Fabrika', 'Depo']],
@@ -96,14 +92,14 @@ class FeaturesController extends Controller
                     'depo' => ['label' => 'Depo', 'type' => 'checkbox', 'required' => false]
                 ];
                 break;
-                
+
             default:
                 $features = [
                     'genel_ozellik' => ['label' => 'Genel Özellik', 'type' => 'text', 'required' => false]
                 ];
                 break;
         }
-        
+
         return $features;
     }
 }

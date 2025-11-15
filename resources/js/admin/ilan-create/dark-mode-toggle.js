@@ -107,75 +107,15 @@ class DarkModeToggle {
 
             /* Smooth transitions */
             * {
-                transition: background-color 0.3s ease, 
-                           border-color 0.3s ease, 
+                transition: background-color 0.3s ease,
+                           border-color 0.3s ease,
                            color 0.3s ease,
                            box-shadow 0.3s ease;
             }
 
-            /* Dark mode specific styles */
-            .dark .neo-card {
-                background: var(--color-bg-secondary);
-                border-color: var(--color-border-primary);
-                color: var(--color-text-primary);
-            }
-
-            .dark .neo-input,
-            .dark .neo-select,
-            .dark .neo-textarea {
-                background: var(--color-bg-tertiary);
-                border-color: var(--color-border-secondary);
-                color: var(--color-text-primary);
-            }
-
-            .dark .neo-input:focus,
-            .dark .neo-select:focus,
-            .dark .neo-textarea:focus {
-                border-color: var(--color-accent-primary);
-                box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-            }
-
-            .dark .neo-btn-primary {
-                background: var(--color-accent-primary);
-                border-color: var(--color-accent-primary);
-                color: white;
-            }
-
-            .dark .neo-btn-primary:hover {
-                background: var(--color-accent-secondary);
-                border-color: var(--color-accent-secondary);
-            }
-
-            .dark .neo-btn-secondary {
-                background: var(--color-bg-tertiary);
-                border-color: var(--color-border-secondary);
-                color: var(--color-text-primary);
-            }
-
-            .dark .neo-btn-secondary:hover {
-                background: var(--color-bg-primary);
-                border-color: var(--color-border-primary);
-            }
-
-            .dark .neo-table {
-                background: var(--color-bg-secondary);
-                border-color: var(--color-border-primary);
-            }
-
-            .dark .neo-table th {
-                background: var(--color-bg-tertiary);
-                color: var(--color-text-primary);
-                border-color: var(--color-border-secondary);
-            }
-
-            .dark .neo-table td {
-                color: var(--color-text-primary);
-                border-color: var(--color-border-primary);
-            }
-
-            .dark .neo-table tbody tr:hover {
-                background: var(--color-bg-tertiary);
-            }
+            /* Context7: Neo classes removed - Tailwind CSS dark mode kullanılıyor */
+            /* Dark mode styles artık Tailwind'in dark: prefix'i ile yönetiliyor */
+            /* Table styles: Tailwind dark:bg-gray-800 dark:text-white dark:border-gray-700 kullanılmalı */
 
             /* AI Widget dark mode */
             .dark .ai-widget {

@@ -12,7 +12,7 @@ use App\Models\FeatureAssignment;
 
 /**
  * Yazlık Kiralık Ana Kategori Özellik İlişkilendirme Seeder
- * 
+ *
  * Yazlık Kiralık ana kategorisinin tüm yayın tipleri (Günlük, Haftalık, Sezonluk)
  * için Yazlık villa özelliklerini ilişkilendirir.
  */
@@ -30,7 +30,7 @@ class YazlikKiralikOzellikIliskilendirmeSeeder extends Seeder
 
         // Yazlık Kiralık ana kategoriyi bul
         $yazlikKiralik = IlanKategori::where('name', 'Yazlık Kiralık')->where('seviye', 0)->first();
-        
+
         if (!$yazlikKiralik) {
             $this->command->warn('⚠️ Yazlık Kiralık ana kategorisi bulunamadı! Önce YazlikKiralikAnaKategoriSeeder çalıştırın.');
             return;
@@ -66,14 +66,14 @@ class YazlikKiralikOzellikIliskilendirmeSeeder extends Seeder
             ->with(['features' => function($q) {
                 $hasStatusColumn = Schema::hasColumn('features', 'status');
                 $hasEnabledColumn = Schema::hasColumn('features', 'enabled');
-                
+
                 if ($hasStatusColumn) {
                     $q->where('status', true);
                 } elseif ($hasEnabledColumn) {
                     $q->where('enabled', true);
                 }
-                
-                $q->orderBy('order');
+
+                $q->orderBy('display_order');
             }])
             ->get();
 
@@ -102,7 +102,7 @@ class YazlikKiralikOzellikIliskilendirmeSeeder extends Seeder
                             [
                                 'is_required' => false,
                                 'is_visible' => true,
-                                'order' => $order,
+                                'display_order' => $order,
                                 'group_name' => $kategori->name,
                             ]
                         );
@@ -122,4 +122,3 @@ class YazlikKiralikOzellikIliskilendirmeSeeder extends Seeder
         $this->command->info("   📊 {$yayinTipleri->count()} yayın tipi × {$yazlikKategorileri->sum(fn($c) => $c->features->count())} özellik = {$toplamAtanan} atama");
     }
 }
-

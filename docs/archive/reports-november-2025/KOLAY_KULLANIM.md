@@ -17,6 +17,7 @@ npm run setup
 ```
 
 **Ne yapar?**
+
 - ✅ Tüm araçları kurar (ESLint, Prettier, Husky)
 - ✅ Pre-commit hooks'ları aktif eder
 - ✅ Ayarları otomatik yapar
@@ -66,6 +67,7 @@ git commit -m "feat: yeni özellik"
 ```
 
 **`npm run fix` ne yapar?**
+
 - ✅ Tüm kod formatını düzeltir
 - ✅ JavaScript hatalarını düzeltir
 - ✅ PHP formatını düzeltir
@@ -107,7 +109,7 @@ git commit -m "feat: new feature"
 
   1. resources/js/core.js:45
      → console.log kullanımı (kaldırılmalı)
-  
+
   2. resources/views/form.blade.php:12
      → Kod formatı bozuk
 
@@ -187,6 +189,7 @@ php artisan context7:check
 ### **"npm run setup ne zaman çalıştırmalıyım?"**
 
 Sadece:
+
 - ✅ İlk kez projeyi klonladığında
 - ✅ Yeni bir bilgisayara geçtiğinde
 - ✅ node_modules silindiyse
@@ -198,16 +201,15 @@ Sadece:
 ### **"Her commit'te ne kontrol ediliyor?"**
 
 ```yaml
-Otomatik Kontroller:
-  ✓ JavaScript syntax hatası
-  ✓ console.log kullanımı
-  ✓ Kod formatı
-  ✓ PHP standardı (PSR-12)
-  ✓ Context7 kuralları
-  ✓ Türkçe field isimleri
-  ✓ Neo class kullanımı
-  ✓ CSRF token eksikliği
-  ✓ Label eksikliği (accessibility)
+Otomatik Kontroller: ✓ JavaScript syntax hatası
+    ✓ console.log kullanımı
+    ✓ Kod formatı
+    ✓ PHP standardı (PSR-12)
+    ✓ Context7 kuralları
+    ✓ Türkçe field isimleri
+    ✓ Neo class kullanımı
+    ✓ CSRF token eksikliği
+    ✓ Label eksikliği (accessibility)
 ```
 
 **Hepsi otomatik! Sen sadece `git commit` yap.**
@@ -217,6 +219,7 @@ Otomatik Kontroller:
 ### **"Çok yavaş olur mu?"**
 
 Hayır! Çok hızlı:
+
 - ⚡ Sadece değiştirdiğin dosyalar kontrol edilir
 - ⚡ Paralel çalışır (hepsi aynı anda)
 - ⚡ Ortalama süre: **2-5 saniye**
@@ -337,4 +340,3 @@ gs                         # setup
 **Hazırsın!** Artık her commit otomatik kontrollü! 🚀
 
 **Sorun olursa:** `npm run fix` yap, halleder! 💪
-

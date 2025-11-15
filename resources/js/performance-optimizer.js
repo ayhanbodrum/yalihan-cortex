@@ -96,28 +96,34 @@ class PerformanceOptimizer {
 
     /**
      * Debouncing kurulumu
+     * ✅ DUPLICATE REMOVED: debounce/throttle zaten global.js'de tanımlı
+     * Burada sadece timer yönetimi için Map kullanılıyor
      */
     setupDebouncing() {
-        // Debounce fonksiyonu
-        window.debounce = (func, wait) => {
-            return (...args) => {
-                clearTimeout(this.debounceTimers.get(func));
-                const timer = setTimeout(() => func.apply(this, args), wait);
-                this.debounceTimers.set(func, timer);
+        // Debounce ve throttle global.js'de tanımlı, burada sadece timer yönetimi
+        // Eğer global.js yüklenmemişse fallback olarak tanımla
+        if (!window.debounce) {
+            window.debounce = (func, wait) => {
+                return (...args) => {
+                    clearTimeout(this.debounceTimers.get(func));
+                    const timer = setTimeout(() => func.apply(this, args), wait);
+                    this.debounceTimers.set(func, timer);
+                };
             };
-        };
+        }
 
-        // Throttle fonksiyonu
-        window.throttle = (func, limit) => {
-            let inThrottle;
-            return (...args) => {
-                if (!inThrottle) {
-                    func.apply(this, args);
-                    inThrottle = true;
-                    setTimeout(() => (inThrottle = false), limit);
-                }
+        if (!window.throttle) {
+            window.throttle = (func, limit) => {
+                let inThrottle;
+                return (...args) => {
+                    if (!inThrottle) {
+                        func.apply(this, args);
+                        inThrottle = true;
+                        setTimeout(() => (inThrottle = false), limit);
+                    }
+                };
             };
-        };
+        }
     }
 
     /**

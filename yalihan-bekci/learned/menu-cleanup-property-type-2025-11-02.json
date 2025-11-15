@@ -108,9 +108,7 @@
     }
   },
   "deleted_demo_files": {
-    "controllers": [
-      "app/Http/Controllers/Admin/KonutHibritSiralamaController.php"
-    ],
+    "controllers": ["app/Http/Controllers/Admin/KonutHibritSiralamaController.php"],
     "blade_directories": [
       "resources/views/admin/field-dependency/",
       "resources/views/admin/konut-hibrit-siralama/",
@@ -180,4 +178,3 @@
   "context7_compliance": "All changes maintain Context7 standards",
   "ai_guardian_status": "Property Type & Özellikler sistemi optimize edildi"
 }
-

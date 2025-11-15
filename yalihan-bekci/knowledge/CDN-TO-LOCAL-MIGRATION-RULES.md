@@ -49,7 +49,7 @@ npm install [package-name] --save
 
 ```css
 /* resources/css/[library].css */
-@import "[package-name]/dist/[library].css";
+@import '[package-name]/dist/[library].css';
 ```
 
 ### **Step 3: Add to Vite**
@@ -57,7 +57,7 @@ npm install [package-name] --save
 ```js
 // vite.config.js
 input: [
-    "resources/css/[library].css",
+    'resources/css/[library].css',
     // ... other files
 ];
 ```
@@ -89,9 +89,9 @@ npm run build # Build for production
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
 ```
 
--   External request to unpkg.com
--   Network dependency
--   CDN downtime risk
+- External request to unpkg.com
+- Network dependency
+- CDN downtime risk
 
 ### **After:**
 
@@ -101,12 +101,12 @@ npm install leaflet
 
 ```css
 /* resources/css/leaflet.css */
-@import "leaflet/dist/leaflet.css";
+@import 'leaflet/dist/leaflet.css';
 ```
 
 ```js
 // vite.config.js
-input: ["resources/css/leaflet.css"];
+input: ['resources/css/leaflet.css'];
 ```
 
 ```blade
@@ -115,10 +115,10 @@ input: ["resources/css/leaflet.css"];
 
 **Result:**
 
--   ✅ No CDN dependency
--   ✅ Faster load
--   ✅ Offline support
--   ✅ Bundled & minified by Vite
+- ✅ No CDN dependency
+- ✅ Faster load
+- ✅ Offline support
+- ✅ Bundled & minified by Vite
 
 ---
 
@@ -231,14 +231,13 @@ grep -r "unpkg.com\|cdn.jsdelivr.net\|cdnjs.cloudflare.com" resources/views/
 
 **Leave as CDN:**
 
--   Google Maps
--   Google Fonts (until font-display support)
--   External analytics
--   Very large libraries
+- Google Maps
+- Google Fonts (until font-display support)
+- External analytics
+- Very large libraries
 
 ---
 
 **Rule Status:** ✅ Active  
 **Enforcement:** Yalıhan Bekçi Auto-Detection  
 **Context7 Compliance:** v3.5.0+
-

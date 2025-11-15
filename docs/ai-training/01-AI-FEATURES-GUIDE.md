@@ -93,11 +93,11 @@ Kullanım: Kod analizi, optimizasyon
 
 **Kurallar:**
 
--   Her başlık 60-80 karakter
--   Lokasyon ZORUNLU
--   SEO anahtar kelimeleri
--   Fiyat opsiyonel (lüks ton'da gösterilmez)
--   Emoji YASAK
+- Her başlık 60-80 karakter
+- Lokasyon ZORUNLU
+- SEO anahtar kelimeleri
+- Fiyat opsiyonel (lüks ton'da gösterilmez)
+- Emoji YASAK
 
 ---
 
@@ -133,11 +133,11 @@ Kullanım: Kod analizi, optimizasyon
 
 **Kurallar:**
 
--   200-250 kelime
--   3 paragraf
--   SEO uyumlu
--   Profesyonel dil
--   Türkçe gramer kurallarına uygun
+- 200-250 kelime
+- 3 paragraf
+- SEO uyumlu
+- Profesyonel dil
+- Türkçe gramer kurallarına uygun
 
 **Paragraf Yapısı:**
 
@@ -188,11 +188,11 @@ Paragraf 3: Çevre, ulaşım, yatırım değeri (60-80 kelime)
 
 **Skor Kriterleri:**
 
--   Merkeze yakınlık: +25 puan
--   Sosyal tesisler: +20 puan
--   Ulaşım: +20 puan
--   Altyapı: +20 puan
--   Gelişim potansiyeli: +15 puan
+- Merkeze yakınlık: +25 puan
+- Sosyal tesisler: +20 puan
+- Ulaşım: +20 puan
+- Altyapı: +20 puan
+- Gelişim potansiyeli: +15 puan
 
 ---
 
@@ -248,10 +248,10 @@ Paragraf 3: Çevre, ulaşım, yatırım değeri (60-80 kelime)
 
 ### **Özellikler:**
 
--   OCR (Tapu, belge okuma)
--   Nesne tanıma (mobilya, mimari)
--   Kalite skorlama (1-10)
--   Otomatik etiketleme
+- OCR (Tapu, belge okuma)
+- Nesne tanıma (mobilya, mimari)
+- Kalite skorlama (1-10)
+- Otomatik etiketleme
 
 ### **Kullanım:**
 
@@ -317,10 +317,10 @@ FR: Français
 
 ### **Çeviri Kuralları:**
 
--   Ana açıklama: Türkçe (zorunlu)
--   Özet: Diğer diller (opsiyonel)
--   SEO: Dil bazlı anahtar kelimeler
--   Format: Her dil için ayrı alan
+- Ana açıklama: Türkçe (zorunlu)
+- Özet: Diğer diller (opsiyonel)
+- SEO: Dil bazlı anahtar kelimeler
+- Format: Her dil için ayrı alan
 
 **Örnek:**
 
@@ -751,14 +751,14 @@ Hatalı Kategori: → "Genel" kategorisi için default prompt
 
 **Özellikler:**
 
--   Kişinin önceki 20 ilanını analiz et
--   Başlık kalitesi (uzunluk, SEO, format)
--   Açıklama analizi (kelime sayısı, detay seviyesi)
--   Fiyat trendi (artış/azalış/stabil)
--   Kategori tercihleri
--   Lokasyon dağılımı
--   Fotoğraf kullanımı
--   Başarı metrikleri
+- Kişinin önceki 20 ilanını analiz et
+- Başlık kalitesi (uzunluk, SEO, format)
+- Açıklama analizi (kelime sayısı, detay seviyesi)
+- Fiyat trendi (artış/azalış/stabil)
+- Kategori tercihleri
+- Lokasyon dağılımı
+- Fotoğraf kullanımı
+- Başarı metrikleri
 
 **Kullanım:**
 
@@ -783,12 +783,12 @@ async function loadKisiHistory(kisiId) {
 
 **Kategoriler:**
 
--   **Arsa**: Ada/Parsel, İmar, TAKS/KAKS
--   **Yazlık**: Havuz, Minimum konaklama, Sezon
--   **Villa**: Bahçe, Otopark, Havuz
--   **Daire**: Oda sayısı, Banyo, Net m²
--   **İşyeri**: İşyeri tipi, Ciro, Personel
--   **Turistik Tesis**: Oda sayısı, Yıldız, Yatak kapasitesi
+- **Arsa**: Ada/Parsel, İmar, TAKS/KAKS
+- **Yazlık**: Havuz, Minimum konaklama, Sezon
+- **Villa**: Bahçe, Otopark, Havuz
+- **Daire**: Oda sayısı, Banyo, Net m²
+- **İşyeri**: İşyeri tipi, Ciro, Personel
+- **Turistik Tesis**: Oda sayısı, Yıldız, Yatak kapasitesi
 
 **Kullanım:**
 
@@ -806,24 +806,24 @@ $fields = $service->getOzelliklerByKategori($kategoriId);
 
 **Özellikler:**
 
--   Ada/Parsel → TKGM API sorgu
--   Otomatik alan doldurma
--   TAKS/KAKS hesaplama
--   İmar durumu tespit
--   Yatırım potansiyeli analizi
--   Cache sistemi (1 saat)
+- Ada/Parsel → TKGM API sorgu
+- Otomatik alan doldurma
+- TAKS/KAKS hesaplama
+- İmar durumu tespit
+- Yatırım potansiyeli analizi
+- Cache sistemi (1 saat)
 
 **Kullanım:**
 
 ```javascript
 async function queryTKGM() {
-    const response = await fetch("/api/tkgm/parsel-sorgu", {
-        method: "POST",
+    const response = await fetch('/api/tkgm/parsel-sorgu', {
+        method: 'POST',
         body: JSON.stringify({
-            ada: "126",
-            parsel: "7",
-            il: "Muğla",
-            ilce: "Bodrum",
+            ada: '126',
+            parsel: '7',
+            il: 'Muğla',
+            ilce: 'Bodrum',
         }),
     });
 
@@ -831,10 +831,9 @@ async function queryTKGM() {
 
     if (result.success) {
         // Alanları otomatik doldur
-        document.getElementById("alan_m2").value =
-            result.parsel_bilgileri.yuzolcumu;
-        document.getElementById("taks").value = result.parsel_bilgileri.taks;
-        document.getElementById("kaks").value = result.parsel_bilgileri.kaks;
+        document.getElementById('alan_m2').value = result.parsel_bilgileri.yuzolcumu;
+        document.getElementById('taks').value = result.parsel_bilgileri.taks;
+        document.getElementById('kaks').value = result.parsel_bilgileri.kaks;
 
         // Önerileri göster
         result.oneriler.forEach((oneri) => window.toast.info(oneri));

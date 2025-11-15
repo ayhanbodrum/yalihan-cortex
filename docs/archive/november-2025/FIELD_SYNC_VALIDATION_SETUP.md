@@ -10,9 +10,11 @@
 ## 📦 OLUŞTURULAN DOSYALAR
 
 ### 1️⃣ **ValidateFieldSync Command**
+
 **Dosya:** `app/Console/Commands/ValidateFieldSync.php`
 
 **Özellikler:**
+
 - ✅ ilanlar tablosu ve Field Dependencies karşılaştırması
 - ✅ Eksik alan tespiti
 - ✅ Fazla alan tespiti
@@ -21,6 +23,7 @@
 - ✅ Detaylı Markdown rapor oluşturma
 
 **Kullanım:**
+
 ```bash
 # Basit kullanım
 php artisan fields:validate
@@ -38,9 +41,11 @@ php artisan fields:validate --report
 ---
 
 ### 2️⃣ **FieldRegistryService**
+
 **Dosya:** `app/Services/FieldRegistryService.php`
 
 **Özellikler:**
+
 - ✅ Kategori bazlı strateji yönetimi
 - ✅ Database schema analizi
 - ✅ Field Dependencies parsing
@@ -49,6 +54,7 @@ php artisan fields:validate --report
 - ✅ Markdown rapor generator
 
 **Stratejiler:**
+
 ```php
 protected array $strategies = [
     'arsa' => 'direct_columns',
@@ -61,9 +67,11 @@ protected array $strategies = [
 ---
 
 ### 3️⃣ **Field Strategy Guide**
+
 **Dosya:** `FIELD_STRATEGY.md`
 
 **İçerik:**
+
 - 📋 Kategori bazlı stratejiler (Arsa, Konut, Yazlık, İşyeri, Custom)
 - 🎯 Karar ağacı (yeni alan eklerken)
 - ✅ Validation kullanımı
@@ -78,32 +86,34 @@ protected array $strategies = [
 ### **Validation Kapsamı:**
 
 1. **Eksik Alanlar:**
-   - Field Dependencies'de var ama ilanlar tablosunda YOK
-   - Migration önerisi ile birlikte
+    - Field Dependencies'de var ama ilanlar tablosunda YOK
+    - Migration önerisi ile birlikte
 
 2. **Fazla Alanlar:**
-   - ilanlar tablosunda var ama Field Dependencies'de YOK
-   - Field Dependencies ekleme önerisi
+    - ilanlar tablosunda var ama Field Dependencies'de YOK
+    - Field Dependencies ekleme önerisi
 
 3. **Tip Uyumsuzlukları:**
-   - DB: `decimal`, Dep: `number` → ⚠️ Warning
-   - DB: `varchar`, Dep: `string` → ✅ OK (eşleşir)
+    - DB: `decimal`, Dep: `number` → ⚠️ Warning
+    - DB: `varchar`, Dep: `string` → ✅ OK (eşleşir)
 
 4. **İstatistikler:**
-   - Toplam eşleşen alan sayısı
-   - Eksik/fazla alan sayısı
-   - Uyumsuzluk sayısı
+    - Toplam eşleşen alan sayısı
+    - Eksik/fazla alan sayısı
+    - Uyumsuzluk sayısı
 
 ---
 
 ## 💡 KULLANIM ÖRNEKLERİ
 
 ### **Örnek 1: Günlük Kontrol**
+
 ```bash
 php artisan fields:validate
 ```
 
 **Çıktı:**
+
 ```
 🔍 Field Sync Validation başlatılıyor...
 
@@ -137,6 +147,7 @@ php artisan fields:validate --fix
 ```
 
 **Çıktı:**
+
 ```
 🔧 DÜZELTME ÖNERİLERİ:
 
@@ -160,11 +171,13 @@ php artisan fields:validate --report
 ```
 
 **Çıktı:**
+
 ```
 📄 Detaylı rapor oluşturuldu: FIELD_SYNC_REPORT_2025_11_01_143022.md
 ```
 
 **Rapor İçeriği:**
+
 ```markdown
 # Field Sync Validation Report
 
@@ -172,13 +185,13 @@ php artisan fields:validate --report
 
 ## 📊 Özet
 
-| Metrik | Değer |
-|--------|-------|
-| ✅ Eşleşen | 45 |
-| ⚠️ Eksik | 2 |
-| ⚠️ Fazla | 1 |
-| ❌ Tip Uyumsuzluğu | 0 |
-| **DURUM** | ⚠️ UYARI |
+| Metrik             | Değer    |
+| ------------------ | -------- |
+| ✅ Eşleşen         | 45       |
+| ⚠️ Eksik           | 2        |
+| ⚠️ Fazla           | 1        |
+| ❌ Tip Uyumsuzluğu | 0        |
+| **DURUM**          | ⚠️ UYARI |
 
 ## 🎯 Kategori Stratejileri
 
@@ -211,6 +224,7 @@ echo "✅ Field sync OK"
 ```
 
 **Kurulum:**
+
 ```bash
 chmod +x .git/hooks/pre-commit
 ```
@@ -226,24 +240,24 @@ name: Field Validation
 on: [push, pull_request]
 
 jobs:
-  validate:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.2'
-      - name: Install Dependencies
-        run: composer install
-      - name: Validate Field Sync
-        run: php artisan fields:validate --report
-      - name: Upload Report
-        if: failure()
-        uses: actions/upload-artifact@v2
-        with:
-          name: field-sync-report
-          path: storage/logs/FIELD_SYNC_REPORT_*.md
+    validate:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: '8.2'
+            - name: Install Dependencies
+              run: composer install
+            - name: Validate Field Sync
+              run: php artisan fields:validate --report
+            - name: Upload Report
+              if: failure()
+              uses: actions/upload-artifact@v2
+              with:
+                  name: field-sync-report
+                  path: storage/logs/FIELD_SYNC_REPORT_*.md
 ```
 
 ---
@@ -286,35 +300,36 @@ jobs:
 ### **Test Senaryoları:**
 
 1. ✅ **Tüm alanlar senkron:**
-   - Command çalışıyor
-   - Stats doğru
-   - Exit code 0
+    - Command çalışıyor
+    - Stats doğru
+    - Exit code 0
 
 2. ✅ **Eksik alan tespiti:**
-   - Field Dependencies'de var
-   - ilanlar'da yok
-   - Migration önerisi veriliyor
+    - Field Dependencies'de var
+    - ilanlar'da yok
+    - Migration önerisi veriliyor
 
 3. ✅ **Fazla alan tespiti:**
-   - ilanlar'da var
-   - Field Dependencies'de yok
-   - Field Dependencies ekleme önerisi
+    - ilanlar'da var
+    - Field Dependencies'de yok
+    - Field Dependencies ekleme önerisi
 
 4. ✅ **Tip uyumsuzluğu:**
-   - `string` ↔ `varchar` → Eşleşir ✅
-   - `number` ↔ `decimal` → Eşleşir ✅
-   - `text` ↔ `varchar` → Uyarı ⚠️
+    - `string` ↔ `varchar` → Eşleşir ✅
+    - `number` ↔ `decimal` → Eşleşir ✅
+    - `text` ↔ `varchar` → Uyarı ⚠️
 
 5. ✅ **Rapor oluşturma:**
-   - Markdown format
-   - storage/logs/ konumu
-   - Timestamp doğru
+    - Markdown format
+    - storage/logs/ konumu
+    - Timestamp doğru
 
 ---
 
 ## 🎯 SONUÇ
 
 **TAMAMLANAN:**
+
 - ✅ ValidateFieldSync Command
 - ✅ FieldRegistryService
 - ✅ FIELD_STRATEGY.md (detaylı guide)
@@ -323,11 +338,13 @@ jobs:
 - ✅ Yalıhan Bekçi standartları
 
 **KULLANIMA HAZIR:**
+
 ```bash
 php artisan fields:validate
 ```
 
 **DEPLOYMENT:**
+
 - ✅ Production ready
 - ✅ Zero dependency
 - ✅ Laravel 10.x uyumlu
@@ -345,4 +362,3 @@ php artisan fields:validate
 **Oluşturan:** Cursor AI + Yalıhan Bekçi  
 **Tarih:** 1 Kasım 2025  
 **Durum:** ✅ Production Ready 🚀
-

@@ -3,6 +3,7 @@
 ## 🚨 TESPİT EDİLEN SORUNLAR
 
 ### 1. KATEGORİ KARMAŞASI
+
 ```
 General:   88 alan ❌ ÇOK FAZLA!
 Ozellik:   12 alan
@@ -12,16 +13,19 @@ Fiyat:      3 alan
 ```
 
 **Problem:**
+
 - 88 alan tek kategoride = kullanıcı kaybolur!
 - Mantıksal gruplandırma yok
 - Sıralama karışık
 
 ### 2. SIRALAMA SORUNU
+
 - `field_order` düzgün kullanılmamış
 - Alanlar rastgele sırada
 - İlişkili alanlar birbirinden uzak
 
 ### 3. DEFAULT VALUE SORUNU
+
 - Input'larda başlangıç değeri yok
 - Validation mesajları eksik
 - Placeholder'lar yetersiz
@@ -36,54 +40,54 @@ Fiyat:      3 alan
 
 ```yaml
 1. FIYATLANDIRMA (15 alan):
-   - Günlük Fiyat
-   - Haftalık Fiyat
-   - Aylık Fiyat
-   - Yaz Sezonu Fiyatı
-   - Kış Sezonu Fiyatı
-   - Ara Sezon Fiyatı
-   - Depozito
-   - Temizlik Ücreti
-   - Check-in/out Saatleri
-   - Minimum Konaklama
+    - Günlük Fiyat
+    - Haftalık Fiyat
+    - Aylık Fiyat
+    - Yaz Sezonu Fiyatı
+    - Kış Sezonu Fiyatı
+    - Ara Sezon Fiyatı
+    - Depozito
+    - Temizlik Ücreti
+    - Check-in/out Saatleri
+    - Minimum Konaklama
 
 2. FİZİKSEL ÖZELLİKLER (12 alan):
-   - Oda Sayısı
-   - Banyo Sayısı
-   - Maksimum Misafir
-   - Brüt/Net Metrekare
-   - Kat Bilgisi
-   - Denize Uzaklık
+    - Oda Sayısı
+    - Banyo Sayısı
+    - Maksimum Misafir
+    - Brüt/Net Metrekare
+    - Kat Bilgisi
+    - Denize Uzaklık
 
 3. DONANIM & TESİSAT (20 alan):
-   - Klima
-   - WiFi
-   - Çamaşır Makinesi
-   - Bulaşık Makinesi
-   - Mutfak Donanımı
-   - TV/Uydu
+    - Klima
+    - WiFi
+    - Çamaşır Makinesi
+    - Bulaşık Makinesi
+    - Mutfak Donanımı
+    - TV/Uydu
 
 4. DIŞMEKAN & OLANAKLAR (15 alan):
-   - Havuz
-   - Bahçe / Teras
-   - Barbekü / Mangal
-   - Deniz Manzarası
-   - Otopark
-   - Güvenlik
+    - Havuz
+    - Bahçe / Teras
+    - Barbekü / Mangal
+    - Deniz Manzarası
+    - Otopark
+    - Güvenlik
 
 5. YATAK ODASI & KONFOR (12 alan):
-   - Yatak Özellikleri
-   - Jakuzi
-   - Ensuite Banyo
-   - Balkon
-   - Havlu & Çarşaf
+    - Yatak Özellikleri
+    - Jakuzi
+    - Ensuite Banyo
+    - Balkon
+    - Havlu & Çarşaf
 
 6. EK HİZMETLER (14 alan):
-   - Temizlik Servisi
-   - Havuz Bakımı
-   - Evcil Hayvan
-   - Transfer
-   - Özel İstekler
+    - Temizlik Servisi
+    - Havuz Bakımı
+    - Evcil Hayvan
+    - Transfer
+    - Özel İstekler
 ```
 
 ### ÖNCE 2: AKILLI SIRALAMA
@@ -127,6 +131,7 @@ Sıralama Mantığı:
 ## 🛠️ İMPLEMENTASYON ADIMLARI
 
 ### ADIM 1: Database Migration (Field Recategorization)
+
 ```sql
 -- General'daki 88 alanı yeniden kategorize et
 UPDATE kategori_yayin_tipi_field_dependencies
@@ -149,10 +154,11 @@ WHERE kategori_slug = 'yazlik' AND field_category = 'general';
 ```
 
 ### ADIM 2: Field Order Update
+
 ```sql
 -- Mantıksal sıralama
 UPDATE kategori_yayin_tipi_field_dependencies
-SET `order` = 
+SET `order` =
     CASE field_slug
         -- FIYATLANDIRMA (1-15)
         WHEN 'gunluk_fiyat' THEN 1
@@ -165,72 +171,74 @@ SET `order` =
         WHEN 'minimum_konaklama' THEN 8
         WHEN 'check_in' THEN 9
         WHEN 'check_out' THEN 10
-        
+
         -- FİZİKSEL ÖZELLİKLER (11-25)
         WHEN 'oda_sayisi' THEN 11
         WHEN 'banyo_sayisi' THEN 12
         WHEN 'maksimum_misafir' THEN 13
         WHEN 'brut_metrekare' THEN 14
         WHEN 'denize_uzaklik' THEN 15
-        
+
         -- DONANIM (26-45)
         WHEN 'klima' THEN 26
         WHEN 'wifi' THEN 27
         WHEN 'camasir_makinesi' THEN 28
         WHEN 'bulasik_makinesi' THEN 29
-        
+
         -- DIŞ MEKAN (46-60)
         WHEN 'havuz' THEN 46
         WHEN 'bahce_teras' THEN 47
         WHEN 'deniz_manzarasi' THEN 48
-        
+
         ELSE 999
     END
 WHERE kategori_slug = 'yazlik';
 ```
 
 ### ADIM 3: UI Enhancement (Collapsible Categories)
+
 ```javascript
 // Accordion/collapsible kategoriler
 const categoryConfig = {
-    'fiyatlandirma': {
+    fiyatlandirma: {
         icon: '💰',
         title: 'Fiyatlandırma',
         color: 'blue',
-        collapsed: false  // Default açık
+        collapsed: false, // Default açık
     },
-    'fiziksel_ozellikler': {
+    fiziksel_ozellikler: {
         icon: '📐',
         title: 'Fiziksel Özellikler',
         color: 'purple',
-        collapsed: false
+        collapsed: false,
     },
-    'donanim_tesisat': {
+    donanim_tesisat: {
         icon: '🔌',
         title: 'Donanım & Tesisat',
         color: 'green',
-        collapsed: true   // Default kapalı
+        collapsed: true, // Default kapalı
     },
-    'dismekan_olanaklar': {
+    dismekan_olanaklar: {
         icon: '🏖️',
         title: 'Dış Mekan & Olanaklar',
         color: 'yellow',
-        collapsed: true
-    }
+        collapsed: true,
+    },
 };
 ```
 
 ### ADIM 4: Default Values Implementation
+
 ```javascript
 // Field defaults by type
 const fieldDefaults = {
-    'gunluk_fiyat': 0,
-    'check_in': '14:00',
-    'check_out': '10:00',
-    'minimum_konaklama': 3,
-    'maksimum_misafir': 2,
-    'klima': true,
-    'wifi': true
+    gunluk_fiyat: 0,
+    check_in: '14:00',
+    check_out: '10:00',
+    minimum_konaklama: 3,
+    maksimum_misafir: 2,
+    klima: true,
+    wifi: true,
 };
 ```
 
@@ -239,17 +247,20 @@ const fieldDefaults = {
 ## 🎯 UYGULAMA SIRASI
 
 ### Faz 1: Database Cleanup (1 saat)
+
 1. ✅ Field kategorilerini yeniden düzenle
 2. ✅ Field order'ları mantıklı sıraya al
 3. ✅ Default values ekle
 
 ### Faz 2: UI Enhancement (2 saat)
+
 1. ✅ Collapsible kategoriler ekle
 2. ✅ Kategori renklendirmesi
 3. ✅ Icon'lar ve başlıklar
 4. ✅ Drag & drop sıralama (admin için)
 
 ### Faz 3: Validation & Help (30 dk)
+
 1. ✅ Her field için help text
 2. ✅ Validation rules
 3. ✅ Error messages
@@ -281,7 +292,9 @@ const fieldDefaults = {
         <button class="ml-auto">▼</button>
     </h4>
     <div class="grid md:grid-cols-3 gap-4">
-        <select>Oda Sayısı</select>
+        <select>
+            Oda Sayısı
+        </select>
         <input type="number" placeholder="Banyo Sayısı" />
         <!-- ... -->
     </div>
@@ -304,16 +317,19 @@ const fieldDefaults = {
 **3 YOL:**
 
 **1️⃣ HIZLI (30 dk) - Sadece Sıralama:**
+
 - Database'de `order` kolonunu düzenle
 - Kritik alanları öne al
 - UI değişikliği YOK
 
 **2️⃣ ORTA (2 saat) - Kategori Düzenleme:**
+
 - "General" 88 alanı → 6 alt kategoriye böl
 - UI'da collapsible sections
 - Renk kodlaması
 
 **3️⃣ TAM (1 gün) - Profesyonel Sistem:**
+
 - Drag & drop admin panel
 - Visual field editor
 - Default value manager
@@ -328,4 +344,3 @@ const fieldDefaults = {
 3. **TAM** → Profesyonel field management sistemi
 
 **Hangisine başlayayım?** 🎯
-

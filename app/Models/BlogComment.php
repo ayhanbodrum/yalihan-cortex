@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Cache;
 
 class BlogComment extends Model
 {
@@ -171,6 +172,9 @@ class BlogComment extends Model
 
         // Update post comment count
         $this->post->updateCommentCount();
+
+        // ✅ CACHE INVALIDATION: İstatistik cache'ini temizle
+        Cache::forget('blog_comments_stats');
     }
 
     public function reject($moderatorId = null, $reason = null)
@@ -183,6 +187,9 @@ class BlogComment extends Model
 
         // Update post comment count
         $this->post->updateCommentCount();
+
+        // ✅ CACHE INVALIDATION: İstatistik cache'ini temizle
+        Cache::forget('blog_comments_stats');
     }
 
     public function markAsSpam($moderatorId = null, $reason = null)
@@ -195,6 +202,9 @@ class BlogComment extends Model
 
         // Update post comment count
         $this->post->updateCommentCount();
+
+        // ✅ CACHE INVALIDATION: İstatistik cache'ini temizle
+        Cache::forget('blog_comments_stats');
     }
 
     public function incrementLikes()
@@ -258,11 +268,17 @@ class BlogComment extends Model
             if ($comment->user && $comment->user->hasRole(['admin', 'editor'])) {
                 $comment->approve();
             }
+
+            // ✅ CACHE INVALIDATION: Yeni yorum eklendiğinde cache'i temizle
+            Cache::forget('blog_comments_stats');
         });
 
         static::deleted(function ($comment) {
             // Update post comment count when comment is deleted
             $comment->post->updateCommentCount();
+
+            // ✅ CACHE INVALIDATION: Yorum silindiğinde cache'i temizle
+            Cache::forget('blog_comments_stats');
         });
     }
 }

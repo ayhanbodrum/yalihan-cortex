@@ -34,23 +34,24 @@ class AyarlarController extends AdminController
     {
         $settings = Setting::orderBy('group')->orderBy('key')->get()->groupBy('group');
         $groups = self::GROUPS;
-        
+
         // Get all settings as key-value array for easy access in view
         $settingsArray = Setting::all()->pluck('value', 'key')->toArray();
-        
+
         // Try to use settings/index.blade.php first, fallback to ayarlar/index.blade.php
         if (view()->exists('admin.settings.index')) {
-            return view('admin.settings.index', compact('settings', 'groups'))->with('settings', $settingsArray);
+            return view('admin.settings.index', compact('settings', 'groups', 'settingsArray'))
+                ->with('settings', $settingsArray);
         }
 
-        return view('admin.ayarlar.index', compact('settings', 'groups'));
+        return view('admin.ayarlar.index', compact('settings', 'groups', 'settingsArray'));
     }
 
     public function create()
     {
         $groups = self::GROUPS;
         $templates = $this->getTemplates();
-        
+
         return view('admin.ayarlar.create', compact('groups', 'templates'));
     }
 
@@ -126,7 +127,7 @@ class AyarlarController extends AdminController
                 'icon' => '🌍',
                 'category' => 'general',
             ],
-            
+
             // System
             'maintenance_mode' => [
                 'key' => 'maintenance_mode',
@@ -155,7 +156,7 @@ class AyarlarController extends AdminController
                 'icon' => '⏰',
                 'category' => 'system',
             ],
-            
+
             // Social
             'social_media' => [
                 'key' => 'social_media',
@@ -171,7 +172,7 @@ class AyarlarController extends AdminController
                 'icon' => '📱',
                 'category' => 'social',
             ],
-            
+
             // Email
             'smtp_host' => [
                 'key' => 'smtp_host',
@@ -182,7 +183,7 @@ class AyarlarController extends AdminController
                 'icon' => '📧',
                 'category' => 'email',
             ],
-            
+
             // AI
             'ai_provider' => [
                 'key' => 'ai_provider',
@@ -193,7 +194,7 @@ class AyarlarController extends AdminController
                 'icon' => '🤖',
                 'category' => 'ai',
             ],
-            
+
             // Currency
             'default_currency' => [
                 'key' => 'default_currency',
@@ -204,7 +205,7 @@ class AyarlarController extends AdminController
                 'icon' => '💰',
                 'category' => 'currency',
             ],
-            
+
             // Security
             'force_https' => [
                 'key' => 'force_https',
@@ -215,7 +216,7 @@ class AyarlarController extends AdminController
                 'icon' => '🔒',
                 'category' => 'security',
             ],
-            
+
             // SEO
             'google_analytics_id' => [
                 'key' => 'google_analytics_id',
@@ -278,17 +279,17 @@ class AyarlarController extends AdminController
     {
         try {
             $settingsToUpdate = $request->except(['_token', '_method']);
-            
+
             foreach ($settingsToUpdate as $key => $value) {
                 // Handle checkboxes (they don't send value if unchecked)
-                if (in_array($key, ['qrcode_enabled', 'qrcode_show_on_cards', 'qrcode_show_on_detail', 
-                                    'navigation_enabled', 'navigation_show_similar', 
-                                    'email_notifications', 'sms_notifications', 
+                if (in_array($key, ['qrcode_enabled', 'qrcode_show_on_cards', 'qrcode_show_on_detail',
+                                    'navigation_enabled', 'navigation_show_similar',
+                                    'email_notifications', 'sms_notifications',
                                     'ai_auto_description', 'ai_smart_tags',
                                     'user_registration', 'password_strength'])) {
                     $value = $request->has($key) ? 'true' : 'false';
                 }
-                
+
                 // Determine type based on key
                 $type = 'string';
                 if (in_array($key, ['qrcode_default_size', 'navigation_similar_limit', 'max_upload_size', 'session_lifetime'])) {
@@ -300,7 +301,7 @@ class AyarlarController extends AdminController
                                           'user_registration', 'password_strength', 'maintenance_mode'])) {
                     $type = 'boolean';
                 }
-                
+
                 // Determine group based on key prefix
                 $group = 'general';
                 if (str_starts_with($key, 'qrcode_')) {
@@ -322,7 +323,7 @@ class AyarlarController extends AdminController
                 } elseif (str_starts_with($key, 'maintenance_') || str_starts_with($key, 'max_upload_') || str_starts_with($key, 'session_')) {
                     $group = 'system';
                 }
-                
+
                 Setting::updateOrCreate(
                     ['key' => $key],
                     [
@@ -332,18 +333,18 @@ class AyarlarController extends AdminController
                     ]
                 );
             }
-            
+
             // Clear cache
             Setting::clearCache();
-            
+
             // Clear QR Code and Navigation caches
             \Illuminate\Support\Facades\Cache::tags(['qrcode', 'navigation'])->flush();
-            
+
             return redirect()->route('admin.ayarlar.index')
                 ->with('success', 'Ayarlar başarıyla güncellendi!');
         } catch (\Exception $e) {
             \App\Services\Logging\LogService::error('Settings bulk update failed', [], $e);
-            
+
             return redirect()->back()
                 ->with('error', 'Ayarlar güncellenirken hata oluştu: ' . $e->getMessage())
                 ->withInput();
@@ -399,7 +400,7 @@ class AyarlarController extends AdminController
                     ],
                 ],
             ],
-            
+
             'ai_complete' => [
                 'name' => 'AI Provider Tam Kurulum',
                 'icon' => '🤖',
@@ -435,7 +436,7 @@ class AyarlarController extends AdminController
                     ],
                 ],
             ],
-            
+
             'security_basic' => [
                 'name' => 'Temel Güvenlik Ayarları',
                 'icon' => '🔒',

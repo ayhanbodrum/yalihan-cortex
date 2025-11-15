@@ -14,11 +14,11 @@ AnythingLLM platformunda Yalıhan Emlak sistemini %100 öğrenmiş, Context7 kur
 
 ### **Kapsam:**
 
--   13 kapsamlı eğitim dokümanı
--   15,000+ kelime içerik
--   Ollama gemma2:2b entegrasyonu
--   Context7 compliance %100
--   Production ready
+- 13 kapsamlı eğitim dokümanı
+- 15,000+ kelime içerik
+- Ollama gemma2:2b entegrasyonu
+- Context7 compliance %100
+- Production ready
 
 ---
 
@@ -27,13 +27,11 @@ AnythingLLM platformunda Yalıhan Emlak sistemini %100 öğrenmiş, Context7 kur
 ### **Foundation (Temel) - 3 Doküman:**
 
 1. **00-ANYTHINGLLM-MASTER-TRAINING.md** (617 satır, 14.8 KB)
-
     - Sistem kimliği, mimari, AI provider'lar
     - Ollama endpoint: http://51.75.64.121:11434
     - Güvenlik kuralları ve limitler
 
 2. **02-CONTEXT7-RULES-SIMPLIFIED.md** (350 satır, 6.4 KB)
-
     - Zorunlu alan adları
     - Yasaklar listesi
     - Neo Design System
@@ -46,13 +44,11 @@ AnythingLLM platformunda Yalıhan Emlak sistemini %100 öğrenmiş, Context7 kur
 ### **Features (Özellikler) - 3 Doküman:**
 
 4. **01-AI-FEATURES-GUIDE.md** (701 satır, 14.0 KB)
-
     - Başlık/açıklama/lokasyon/fiyat AI özellikleri
     - 4 ton profili detayları
     - Cache ve performans stratejileri
 
 5. **04-PROMPT-TEMPLATES.md** (644 satır, 12.0 KB)
-
     - 15+ prompt şablonu
     - Kategori özel prompt'lar
     - System prompt
@@ -65,7 +61,6 @@ AnythingLLM platformunda Yalıhan Emlak sistemini %100 öğrenmiş, Context7 kur
 ### **Examples (Örnekler) - 2 Doküman:**
 
 7. **05-USE-CASES-AND-SCENARIOS.md** (610 satır, 13.0 KB)
-
     - 8 gerçek senaryo
     - Dialog örnekleri
     - Edge case'ler
@@ -85,25 +80,22 @@ AnythingLLM platformunda Yalıhan Emlak sistemini %100 öğrenmiş, Context7 kur
 ### **Setup & QA (Kurulum) - 4 Doküman:**
 
 10. **QUICK-START.md** (221 satır, 4.3 KB)
-
-    -   5 dakikada kurulum
-    -   Hızlı başlangıç
+    - 5 dakikada kurulum
+    - Hızlı başlangıç
 
 11. **07-EMBEDDING-GUIDE.md** (639 satır, 13.1 KB)
-
-    -   Detaylı kurulum adımları
-    -   System prompt (kopyala-yapıştır)
-    -   Test senaryoları
+    - Detaylı kurulum adımları
+    - System prompt (kopyala-yapıştır)
+    - Test senaryoları
 
 12. **08-TRAINING-CHECKLIST.md** (433 satır, 8.9 KB)
-
-    -   Kontrol listesi
-    -   Test senaryoları
-    -   Final QA
+    - Kontrol listesi
+    - Test senaryoları
+    - Final QA
 
 13. **README.md** (245 satır, 5.6 KB)
-    -   Paket genel bakış
-    -   Version history
+    - Paket genel bakış
+    - Version history
 
 ---
 
@@ -177,27 +169,27 @@ Relevance Score: >0.80 ✅
 
 ✅ **İçerik Üretimi:**
 
--   Başlık: 3 varyant, 60-80 karakter, SEO optimize
--   Açıklama: 200-250 kelime, 3 paragraf, profesyonel
--   Çoklu ton: SEO, Kurumsal, Hızlı Satış, Lüks
+- Başlık: 3 varyant, 60-80 karakter, SEO optimize
+- Açıklama: 200-250 kelime, 3 paragraf, profesyonel
+- Çoklu ton: SEO, Kurumsal, Hızlı Satış, Lüks
 
 ✅ **Analiz:**
 
--   Lokasyon: Skor (0-100), Harf (A-D), Potansiyel
--   Fiyat: 3 seviye öneri, m² analizi
--   CRM: Müşteri segmentasyonu, eşleştirme skoru
+- Lokasyon: Skor (0-100), Harf (A-D), Potansiyel
+- Fiyat: 3 seviye öneri, m² analizi
+- CRM: Müşteri segmentasyonu, eşleştirme skoru
 
 ✅ **Context7:**
 
--   Field adı compliance %100
--   Yasakları biliyor
--   Neo Design System kuralları
+- Field adı compliance %100
+- Yasakları biliyor
+- Neo Design System kuralları
 
 ✅ **Teknik:**
 
--   Database schema biliyor
--   API endpoint'leri biliyor
--   Ollama entegrasyonu aktif
+- Database schema biliyor
+- API endpoint'leri biliyor
+- Ollama entegrasyonu aktif
 
 ---
 
@@ -205,12 +197,12 @@ Relevance Score: >0.80 ✅
 
 ### **Production Checklist:**
 
--   [x] **Dokümanlar:** 13/13 hazır ✅
--   [x] **Kontrol Script:** anythingllm-upload.sh ✅
--   [x] **System Prompt:** Hazır ✅
--   [x] **Test Senaryoları:** 10 adet ✅
--   [x] **Ollama:** Aktif ve stabil ✅
--   [x] **Context7:** %100 uyumlu ✅
+- [x] **Dokümanlar:** 13/13 hazır ✅
+- [x] **Kontrol Script:** anythingllm-upload.sh ✅
+- [x] **System Prompt:** Hazır ✅
+- [x] **Test Senaryoları:** 10 adet ✅
+- [x] **Ollama:** Aktif ve stabil ✅
+- [x] **Context7:** %100 uyumlu ✅
 
 ### **Kurulum Süresi:**
 
@@ -230,10 +222,10 @@ TOPLAM: ~5 dakika ✅
 
 **Kullanım:**
 
--   Başlık üretimi (3 varyant)
--   Açıklama yazımı (ton bazlı)
--   Lokasyon analizi
--   Fiyat önerisi
+- Başlık üretimi (3 varyant)
+- Açıklama yazımı (ton bazlı)
+- Lokasyon analizi
+- Fiyat önerisi
 
 **Zaman Tasarrufu:** 15 dk → 3 dk (%80)
 
@@ -241,10 +233,10 @@ TOPLAM: ~5 dakika ✅
 
 **Kullanım:**
 
--   Müşteri profil analizi
--   İlan eşleştirme
--   Segment belirleme
--   Yaklaşım stratejisi
+- Müşteri profil analizi
+- İlan eşleştirme
+- Segment belirleme
+- Yaklaşım stratejisi
 
 **Verimlilik:** +%65
 
@@ -252,9 +244,9 @@ TOPLAM: ~5 dakika ✅
 
 **Kullanım:**
 
--   Portal-özel başlıklar (6 portal)
--   Karakter limiti uyumu
--   SEO optimizasyonu
+- Portal-özel başlıklar (6 portal)
+- Karakter limiti uyumu
+- SEO optimizasyonu
 
 **Conversion:** +%40
 
@@ -262,9 +254,9 @@ TOPLAM: ~5 dakika ✅
 
 **Kullanım:**
 
--   Piyasa analizi
--   3 seviye öneri
--   ROI hesaplama
+- Piyasa analizi
+- 3 seviye öneri
+- ROI hesaplama
 
 **Doğruluk:** %91
 
@@ -346,21 +338,21 @@ Cache Hit: >70%
 
 ### **Hemen:**
 
--   [ ] AnythingLLM'e embed et
--   [ ] Test senaryolarını çalıştır
--   [ ] Production'da kullanmaya başla
+- [ ] AnythingLLM'e embed et
+- [ ] Test senaryolarını çalıştır
+- [ ] Production'da kullanmaya başla
 
 ### **1 Hafta:**
 
--   [ ] 20+ gerçek kullanım
--   [ ] User feedback topla
--   [ ] Prompt'ları fine-tune et
+- [ ] 20+ gerçek kullanım
+- [ ] User feedback topla
+- [ ] Prompt'ları fine-tune et
 
 ### **1 Ay:**
 
--   [ ] Performance benchmark
--   [ ] Doküman güncellemeleri
--   [ ] v1.1.0 planlaması
+- [ ] Performance benchmark
+- [ ] Doküman güncellemeleri
+- [ ] v1.1.0 planlaması
 
 ---
 

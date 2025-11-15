@@ -3,18 +3,18 @@
  * Her değişikliği kaydeder, sistem yapısını öğrenir
  */
 
-const fs = require("fs");
-const path = require("path");
+const fs = require('fs');
+const path = require('path');
 
 class SystemMemory {
     constructor() {
-        this.memoryPath = path.join(__dirname, "system-memory.json");
+        this.memoryPath = path.join(__dirname, 'system-memory.json');
         this.memory = this.loadMemory();
     }
 
     loadMemory() {
         if (fs.existsSync(this.memoryPath)) {
-            return JSON.parse(fs.readFileSync(this.memoryPath, "utf8"));
+            return JSON.parse(fs.readFileSync(this.memoryPath, 'utf8'));
         }
 
         return {
@@ -43,10 +43,7 @@ class SystemMemory {
 
         // Son 50 işlemi sakla
         if (this.memory.lastOperations.length > 50) {
-            this.memory.lastOperations = this.memory.lastOperations.slice(
-                0,
-                50
-            );
+            this.memory.lastOperations = this.memory.lastOperations.slice(0, 50);
         }
 
         this.memory.lastUpdate = new Date().toISOString();
@@ -60,16 +57,10 @@ class SystemMemory {
         const projectRoot = process.env.PROJECT_ROOT || process.cwd();
 
         this.memory.systemStructure = {
-            models: this.scanDirectory(path.join(projectRoot, "app/Models")),
-            controllers: this.scanDirectory(
-                path.join(projectRoot, "app/Http/Controllers")
-            ),
-            migrations: this.scanDirectory(
-                path.join(projectRoot, "database/migrations")
-            ),
-            views: this.scanDirectory(
-                path.join(projectRoot, "resources/views")
-            ),
+            models: this.scanDirectory(path.join(projectRoot, 'app/Models')),
+            controllers: this.scanDirectory(path.join(projectRoot, 'app/Http/Controllers')),
+            migrations: this.scanDirectory(path.join(projectRoot, 'database/migrations')),
+            views: this.scanDirectory(path.join(projectRoot, 'resources/views')),
             routes: this.analyzeRoutes(projectRoot),
             lastScan: new Date().toISOString(),
         };
@@ -110,9 +101,7 @@ class SystemMemory {
 
         const mostRecent = files.reduce((latest, file) => {
             const stat = fs.statSync(file);
-            return !latest || stat.mtime > latest.mtime
-                ? { file, mtime: stat.mtime }
-                : latest;
+            return !latest || stat.mtime > latest.mtime ? { file, mtime: stat.mtime } : latest;
         }, null);
 
         return mostRecent
@@ -124,17 +113,13 @@ class SystemMemory {
     }
 
     analyzeRoutes(projectRoot) {
-        const routeFiles = [
-            "routes/web.php",
-            "routes/api.php",
-            "routes/admin.php",
-        ];
+        const routeFiles = ['routes/web.php', 'routes/api.php', 'routes/admin.php'];
         const routes = { files: [], endpoints: 0 };
 
         routeFiles.forEach((routeFile) => {
             const fullPath = path.join(projectRoot, routeFile);
             if (fs.existsSync(fullPath)) {
-                const content = fs.readFileSync(fullPath, "utf8");
+                const content = fs.readFileSync(fullPath, 'utf8');
                 const routeCount = (content.match(/Route::/g) || []).length;
                 routes.files.push({ file: routeFile, routes: routeCount });
                 routes.endpoints += routeCount;
@@ -152,7 +137,7 @@ class SystemMemory {
             topic: learning.topic,
             content: learning.content,
             source: learning.source,
-            confidence: learning.confidence || "high",
+            confidence: learning.confidence || 'high',
             timestamp: new Date().toISOString(),
         });
 
@@ -189,7 +174,7 @@ class SystemMemory {
      * Otomatik öğrenme başlat
      */
     async autoLearn() {
-        console.log("🧠 Sistem yapısı öğreniliyor...");
+        console.log('🧠 Sistem yapısı öğreniliyor...');
 
         // Sistem yapısını öğren
         this.learnSystemStructure();
@@ -198,21 +183,19 @@ class SystemMemory {
         this.learnFromDocs();
 
         // Her 1 saatte bir yeniden öğren
-        setInterval(() => {
-            console.log("🔄 Sistem yapısı güncelleniyor...");
-            this.learnSystemStructure();
-            this.learnFromDocs();
-        }, 60 * 60 * 1000);
+        setInterval(
+            () => {
+                console.log('🔄 Sistem yapısı güncelleniyor...');
+                this.learnSystemStructure();
+                this.learnFromDocs();
+            },
+            60 * 60 * 1000
+        );
     }
 
     learnFromDocs() {
         const projectRoot = process.env.PROJECT_ROOT || process.cwd();
-        const docPaths = [
-            "docs/ai-training",
-            "docs/context7",
-            "docs/reports",
-            "README.md",
-        ];
+        const docPaths = ['docs/ai-training', 'docs/context7', 'docs/reports', 'README.md'];
 
         docPaths.forEach((docPath) => {
             const fullPath = path.join(projectRoot, docPath);
@@ -229,41 +212,37 @@ class SystemMemory {
     learnFromDirectory(dirPath) {
         const files = fs.readdirSync(dirPath);
         files.forEach((file) => {
-            if (file.endsWith(".md")) {
+            if (file.endsWith('.md')) {
                 this.learnFromFile(path.join(dirPath, file));
             }
         });
     }
 
     learnFromFile(filePath) {
-        const content = fs.readFileSync(filePath, "utf8");
+        const content = fs.readFileSync(filePath, 'utf8');
         const fileName = path.basename(filePath);
 
         // Context7 öğrenmeleri
-        if (content.includes("Context7") || content.includes("CONTEXT7")) {
+        if (content.includes('Context7') || content.includes('CONTEXT7')) {
             this.recordLearning({
-                topic: "Context7",
+                topic: 'Context7',
                 content: `${fileName} içinde Context7 bilgisi var`,
                 source: fileName,
-                confidence: "high",
+                confidence: 'high',
             });
         }
 
         // Yeni özellikler
-        if (
-            content.includes("YENİ") ||
-            content.includes("NEW") ||
-            content.includes("v3.")
-        ) {
+        if (content.includes('YENİ') || content.includes('NEW') || content.includes('v3.')) {
             const matches = content.match(/##\s+(.+?)\n/g);
             if (matches) {
                 matches.forEach((match) => {
-                    if (match.includes("YENİ") || match.includes("NEW")) {
+                    if (match.includes('YENİ') || match.includes('NEW')) {
                         this.recordLearning({
-                            topic: "Yeni Özellik",
-                            content: match.replace(/##\s+/, "").trim(),
+                            topic: 'Yeni Özellik',
+                            content: match.replace(/##\s+/, '').trim(),
                             source: fileName,
-                            confidence: "medium",
+                            confidence: 'medium',
                         });
                     }
                 });

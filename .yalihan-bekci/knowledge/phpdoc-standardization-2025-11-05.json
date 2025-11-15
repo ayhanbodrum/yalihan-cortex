@@ -15,93 +15,203 @@
         "methods_count": 17,
         "file": "app/Http/Controllers/Admin/PhotoController.php",
         "methods": [
-          "index", "create", "store", "show", "edit", "update", "destroy",
-          "bulkAction", "optimize", "getPhotos", "getPhotoCategories",
-          "getPhotoStats", "getSamplePhoto", "createThumbnail",
-          "generateThumbnail", "optimizeImage", "incrementPhotoViews"
+          "index",
+          "create",
+          "store",
+          "show",
+          "edit",
+          "update",
+          "destroy",
+          "bulkAction",
+          "optimize",
+          "getPhotos",
+          "getPhotoCategories",
+          "getPhotoStats",
+          "getSamplePhoto",
+          "createThumbnail",
+          "generateThumbnail",
+          "optimizeImage",
+          "incrementPhotoViews"
         ]
       },
       "TakvimController": {
         "methods_count": 15,
         "file": "app/Http/Controllers/Admin/TakvimController.php",
         "methods": [
-          "index", "create", "store", "show", "edit", "update", "destroy",
-          "getMonthEvents", "search", "getCalendarEvents", "getSampleEvent",
-          "sezonlar", "storeSezon", "updateSezon", "destroySezon"
+          "index",
+          "create",
+          "store",
+          "show",
+          "edit",
+          "update",
+          "destroy",
+          "getMonthEvents",
+          "search",
+          "getCalendarEvents",
+          "getSampleEvent",
+          "sezonlar",
+          "storeSezon",
+          "updateSezon",
+          "destroySezon"
         ]
       },
       "DashboardController": {
         "methods_count": 16,
         "file": "app/Http/Controllers/Admin/DashboardController.php",
         "methods": [
-          "index", "create", "store", "show", "edit", "update", "destroy",
-          "getDashboardStats", "refresh", "getDashboardData", "getEmptyStats",
-          "getEmptyCharts", "getSampleWidget", "getRecentActivities",
-          "calculateConversionRate", "getChartData"
+          "index",
+          "create",
+          "store",
+          "show",
+          "edit",
+          "update",
+          "destroy",
+          "getDashboardStats",
+          "refresh",
+          "getDashboardData",
+          "getEmptyStats",
+          "getEmptyCharts",
+          "getSampleWidget",
+          "getRecentActivities",
+          "calculateConversionRate",
+          "getChartData"
         ]
       },
       "IlanKategoriController": {
         "methods_count": 16,
         "file": "app/Http/Controllers/Admin/IlanKategoriController.php",
         "methods": [
-          "index", "create", "store", "show", "edit", "update", "destroy",
-          "getPerformance", "suggestCategories", "getTrends", "aiAnalysis",
-          "inlineUpdate", "getAltKategoriler", "getOzellikler",
-          "getYayinTipleri", "bulkAction"
+          "index",
+          "create",
+          "store",
+          "show",
+          "edit",
+          "update",
+          "destroy",
+          "getPerformance",
+          "suggestCategories",
+          "getTrends",
+          "aiAnalysis",
+          "inlineUpdate",
+          "getAltKategoriler",
+          "getOzellikler",
+          "getYayinTipleri",
+          "bulkAction"
         ]
       },
       "PriceController": {
         "methods_count": 10,
         "file": "app/Http/Controllers/Admin/PriceController.php",
         "methods": [
-          "index", "create", "store", "show", "edit", "update", "destroy",
-          "analyze", "compareRegions", "trends"
+          "index",
+          "create",
+          "store",
+          "show",
+          "edit",
+          "update",
+          "destroy",
+          "analyze",
+          "compareRegions",
+          "trends"
         ]
       },
       "IlanController": {
         "methods_count": 31,
         "file": "app/Http/Controllers/Admin/IlanController.php",
         "methods": [
-          "index", "testCategories", "create", "store", "show", "edit",
-          "update", "destroy", "search", "filter", "liveSearch",
-          "bulkUpdate", "bulkDelete", "toggleStatus", "updateStatus",
-          "generateAiTitle", "generateAiDescription", "getDynamicFields",
-          "getAIPropertySuggestions", "exportExcel", "exportPdf",
-          "uploadPhotos", "deletePhoto", "updatePhotoOrder", "priceHistoryApi",
-          "saveDraft", "autoSave", "ilanlarim", "refreshRate",
-          "getFeaturesByCategory", "bulkAction"
+          "index",
+          "testCategories",
+          "create",
+          "store",
+          "show",
+          "edit",
+          "update",
+          "destroy",
+          "search",
+          "filter",
+          "liveSearch",
+          "bulkUpdate",
+          "bulkDelete",
+          "toggleStatus",
+          "updateStatus",
+          "generateAiTitle",
+          "generateAiDescription",
+          "getDynamicFields",
+          "getAIPropertySuggestions",
+          "exportExcel",
+          "exportPdf",
+          "uploadPhotos",
+          "deletePhoto",
+          "updatePhotoOrder",
+          "priceHistoryApi",
+          "saveDraft",
+          "autoSave",
+          "ilanlarim",
+          "refreshRate",
+          "getFeaturesByCategory",
+          "bulkAction"
         ]
       },
-            "TalepController": {
+      "TalepController": {
         "methods_count": 12,
         "file": "app/Http/Controllers/Admin/TalepController.php",
         "methods": [
-          "index", "create", "store", "show", "edit", "update", "destroy",
-          "eslesen", "search", "bulkAction", "test", "debug"
+          "index",
+          "create",
+          "store",
+          "show",
+          "edit",
+          "update",
+          "destroy",
+          "eslesen",
+          "search",
+          "bulkAction",
+          "test",
+          "debug"
         ]
       },
       "KisiController": {
         "methods_count": 13,
         "file": "app/Http/Controllers/Admin/KisiController.php",
         "methods": [
-          "__construct", "index", "create", "store", "show", "edit", "update",
-          "destroy", "search", "checkDuplicate", "bulkAction", "aiAnalyze", "takip"
+          "__construct",
+          "index",
+          "create",
+          "store",
+          "show",
+          "edit",
+          "update",
+          "destroy",
+          "search",
+          "checkDuplicate",
+          "bulkAction",
+          "aiAnalyze",
+          "takip"
         ]
       },
       "CRMController": {
         "methods_count": 4,
         "file": "app/Http/Controllers/Admin/CRMController.php",
-        "methods": [
-          "index", "aiAnalyze", "fixDuplicates", "generateReport"
-        ]
+        "methods": ["index", "aiAnalyze", "fixDuplicates", "generateReport"]
       },
       "EslesmeController": {
         "methods_count": 14,
         "file": "app/Http/Controllers/Admin/EslesmeController.php",
         "methods": [
-          "index", "create", "store", "show", "edit", "update", "destroy",
-          "autoMatch", "bulkCreate", "getKisiler", "getDanismanlar",
-          "getTalepler", "getIlanlar", "getAIEslesmeOnerileri"
+          "index",
+          "create",
+          "store",
+          "show",
+          "edit",
+          "update",
+          "destroy",
+          "autoMatch",
+          "bulkCreate",
+          "getKisiler",
+          "getDanismanlar",
+          "getTalepler",
+          "getIlanlar",
+          "getAIEslesmeOnerileri"
         ]
       }
     },
@@ -167,4 +277,3 @@
     "Error Handling Standardization"
   ]
 }
-

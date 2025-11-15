@@ -10,6 +10,7 @@
 ## 🎯 HEDEF
 
 **Toplu İlan İşlemleri:**
+
 - Çoklu ilan seçimi (checkbox)
 - Toplu silme
 - Toplu status değiştirme (Aktif, Pasif, Taslak)
@@ -29,7 +30,7 @@
 /**
  * Bulk action handler
  * Context7: Toplu işlemler (delete, activate, deactivate, draft)
- * 
+ *
  * @param Request $request
  * @return \Illuminate\Http\JsonResponse
  */
@@ -43,17 +44,17 @@ public function bulkAction(Request $request)
 
     try {
         DB::beginTransaction();
-        
+
         $count = 0;
         $ids = $validated['ids'];
-        
+
         switch ($validated['action']) {
             case 'delete':
                 // Soft delete
                 $count = Ilan::whereIn('id', $ids)->delete();
                 $message = "{$count} ilan silindi";
                 break;
-                
+
             case 'activate':
                 $count = Ilan::whereIn('id', $ids)->update([
                     'status' => 'Aktif',
@@ -62,7 +63,7 @@ public function bulkAction(Request $request)
                 ]);
                 $message = "{$count} ilan aktif yapıldı";
                 break;
-                
+
             case 'deactivate':
                 $count = Ilan::whereIn('id', $ids)->update([
                     'status' => 'Pasif',
@@ -71,7 +72,7 @@ public function bulkAction(Request $request)
                 ]);
                 $message = "{$count} ilan pasif yapıldı";
                 break;
-                
+
             case 'draft':
                 $count = Ilan::whereIn('id', $ids)->update([
                     'status' => 'Taslak',
@@ -81,31 +82,31 @@ public function bulkAction(Request $request)
                 $message = "{$count} ilan taslak yapıldı";
                 break;
         }
-        
+
         DB::commit();
-        
+
         \Log::info('✅ Bulk action completed', [
             'action' => $validated['action'],
             'count' => $count,
             'ids' => $ids,
             'user_id' => Auth::id(),
         ]);
-        
+
         return response()->json([
             'success' => true,
             'message' => $message,
             'count' => $count,
         ]);
-        
+
     } catch (\Exception $e) {
         DB::rollBack();
-        
+
         \Log::error('❌ Bulk action failed', [
             'error' => $e->getMessage(),
             'action' => $validated['action'],
             'ids' => $ids,
         ]);
-        
+
         return response()->json([
             'success' => false,
             'message' => 'Toplu işlem başarısız: ' . $e->getMessage(),
@@ -115,6 +116,7 @@ public function bulkAction(Request $request)
 ```
 
 **Route Ekle:**
+
 ```php
 // routes/admin.php
 Route::post('/ilanlar/bulk-action', [\App\Http\Controllers\Admin\IlanController::class, 'bulkAction'])
@@ -128,13 +130,14 @@ Route::post('/ilanlar/bulk-action', [\App\Http\Controllers\Admin\IlanController:
 **Dosya:** `resources/views/admin/ilanlar/index.blade.php`
 
 **Thead'e checkbox ekle:**
+
 ```blade
 <thead>
     <tr>
         {{-- Select All Checkbox --}}
         <th class="admin-table-th w-12">
-            <input type="checkbox" 
-                   id="select-all" 
+            <input type="checkbox"
+                   id="select-all"
                    class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                    x-model="selectAll"
                    @change="toggleSelectAll()">
@@ -146,13 +149,14 @@ Route::post('/ilanlar/bulk-action', [\App\Http\Controllers\Admin\IlanController:
 ```
 
 **Tbody'de checkbox ekle:**
+
 ```blade
 <tbody>
     @foreach($ilanlar as $ilan)
     <tr>
         {{-- Row Checkbox --}}
         <td class="px-6 py-4">
-            <input type="checkbox" 
+            <input type="checkbox"
                    class="row-checkbox rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                    value="{{ $ilan->id }}"
                    x-model="selectedIds"
@@ -169,19 +173,20 @@ Route::post('/ilanlar/bulk-action', [\App\Http\Controllers\Admin\IlanController:
 ### **ADIM 3: Bulk Action UI (30 dk)**
 
 **Toolbar Ekle (Thead önce):**
+
 ```blade
 {{-- Bulk Actions Toolbar --}}
-<div x-show="selectedIds.length > 0" 
+<div x-show="selectedIds.length > 0"
      x-transition
      class="bg-blue-50 dark:bg-blue-900/20 border-b-2 border-blue-200 dark:border-blue-800 px-6 py-4 flex items-center justify-between">
-    
+
     <div class="flex items-center text-sm text-blue-800 dark:text-blue-300">
         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
         </svg>
         <span x-text="`${selectedIds.length} ilan seçildi`"></span>
     </div>
-    
+
     <div class="flex items-center gap-3">
         {{-- Activate Button --}}
         <button type="button"
@@ -193,7 +198,7 @@ Route::post('/ilanlar/bulk-action', [\App\Http\Controllers\Admin\IlanController:
             </svg>
             Aktif Yap
         </button>
-        
+
         {{-- Deactivate Button --}}
         <button type="button"
                 @click="bulkAction('deactivate')"
@@ -204,7 +209,7 @@ Route::post('/ilanlar/bulk-action', [\App\Http\Controllers\Admin\IlanController:
             </svg>
             Pasif Yap
         </button>
-        
+
         {{-- Draft Button --}}
         <button type="button"
                 @click="bulkAction('draft')"
@@ -215,7 +220,7 @@ Route::post('/ilanlar/bulk-action', [\App\Http\Controllers\Admin\IlanController:
             </svg>
             Taslak Yap
         </button>
-        
+
         {{-- Delete Button --}}
         <button type="button"
                 @click="confirmBulkDelete()"
@@ -226,7 +231,7 @@ Route::post('/ilanlar/bulk-action', [\App\Http\Controllers\Admin\IlanController:
             </svg>
             Sil
         </button>
-        
+
         {{-- Clear Selection --}}
         <button type="button"
                 @click="clearSelection()"
@@ -247,48 +252,48 @@ function bulkActionsManager() {
         selectedIds: [],
         selectAll: false,
         processing: false,
-        
+
         toggleSelectAll() {
             const checkboxes = document.querySelectorAll('.row-checkbox');
-            
+
             if (this.selectAll) {
-                this.selectedIds = Array.from(checkboxes).map(cb => parseInt(cb.value));
+                this.selectedIds = Array.from(checkboxes).map((cb) => parseInt(cb.value));
             } else {
                 this.selectedIds = [];
             }
-            
-            checkboxes.forEach(cb => cb.checked = this.selectAll);
+
+            checkboxes.forEach((cb) => (cb.checked = this.selectAll));
         },
-        
+
         updateSelectAll() {
             const checkboxes = document.querySelectorAll('.row-checkbox');
             const checkedCount = document.querySelectorAll('.row-checkbox:checked').length;
-            
+
             this.selectAll = checkedCount === checkboxes.length && checkboxes.length > 0;
         },
-        
+
         clearSelection() {
             this.selectedIds = [];
             this.selectAll = false;
-            document.querySelectorAll('.row-checkbox').forEach(cb => cb.checked = false);
+            document.querySelectorAll('.row-checkbox').forEach((cb) => (cb.checked = false));
         },
-        
+
         confirmBulkDelete() {
             if (this.selectedIds.length === 0) return;
-            
+
             if (confirm(`${this.selectedIds.length} ilanı silmek istediğinize emin misiniz?`)) {
                 this.bulkAction('delete');
             }
         },
-        
+
         async bulkAction(action) {
             if (this.selectedIds.length === 0) {
                 window.toast.error('Lütfen en az bir ilan seçin');
                 return;
             }
-            
+
             this.processing = true;
-            
+
             try {
                 const response = await fetch('{{ route("admin.ilanlar.bulk-action") }}', {
                     method: 'POST',
@@ -301,12 +306,12 @@ function bulkActionsManager() {
                         action: action,
                     }),
                 });
-                
+
                 const data = await response.json();
-                
+
                 if (data.success) {
                     window.toast.success(data.message);
-                    
+
                     // Reload page after 1 second
                     setTimeout(() => {
                         window.location.reload();
@@ -314,15 +319,14 @@ function bulkActionsManager() {
                 } else {
                     throw new Error(data.message || 'İşlem başarısız');
                 }
-                
             } catch (error) {
                 console.error('Bulk action error:', error);
                 window.toast.error(error.message || 'Toplu işlem başarısız');
             } finally {
                 this.processing = false;
             }
-        }
-    }
+        },
+    };
 }
 ```
 
@@ -331,6 +335,7 @@ function bulkActionsManager() {
 ## 🧪 TEST SENARYOSU
 
 ### **Test 1: Select All**
+
 ```
 1. İlanlar sayfasına git
 2. Thead'deki "Select All" checkbox'ı işaretle
@@ -340,6 +345,7 @@ function bulkActionsManager() {
 ```
 
 ### **Test 2: Bulk Activate**
+
 ```
 1. 3 ilan seç
 2. "Aktif Yap" butonuna tıkla
@@ -351,6 +357,7 @@ function bulkActionsManager() {
 ```
 
 ### **Test 3: Bulk Delete**
+
 ```
 1. 2 ilan seç
 2. "Sil" butonuna tıkla
@@ -365,6 +372,7 @@ function bulkActionsManager() {
 ## ✅ BEKLENEN SONUÇ
 
 **Önce:**
+
 ```yaml
 Bulk Operations: ❌ Yok
 Multi-select: ❌ Yok
@@ -372,6 +380,7 @@ Efficiency: Düşük (tek tek işlem)
 ```
 
 **Sonra:**
+
 ```yaml
 Bulk Operations: ✅ 4 action (delete, activate, deactivate, draft)
 Multi-select: ✅ Checkbox + Select All
@@ -382,4 +391,3 @@ UX: Excellent
 ---
 
 **BAŞLA!** 🚀
-

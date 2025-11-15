@@ -4,8 +4,9 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Services\AIService;
+use App\Services\Response\ResponseService;
+use App\Traits\ValidatesApiRequests;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use App\Models\IlanKategori;
 use App\Models\Feature;
 use App\Models\FeatureCategory;
@@ -13,6 +14,8 @@ use Illuminate\Support\Str;
 
 class IlanAIController extends Controller
 {
+    use ValidatesApiRequests;
+
     protected $aiService;
 
     public function __construct(AIService $aiService)
@@ -25,26 +28,22 @@ class IlanAIController extends Controller
      */
     public function autoDetectCategory(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        $validated = $this->validateRequestWithResponse($request, [
             'title' => 'required|string|max:255',
             'description' => 'nullable|string'
         ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Validation failed',
-                'errors' => $validator->errors()
-            ], 422);
+        if ($validated instanceof \Illuminate\Http\JsonResponse) {
+            return $validated;
         }
 
         try {
             $title = $request->input('title');
             $description = $request->input('description', '');
-            
+
             // AI prompt hazırla
             $prompt = $this->buildCategoryDetectionPrompt($title, $description);
-            
+
             // AI'dan kategori önerisi al
             $aiResult = $this->aiService->analyze([
                 'title' => $title,
@@ -56,26 +55,18 @@ class IlanAIController extends Controller
 
             // AI sonucunu parse et
             $suggestedCategory = $this->parseCategorySuggestion($aiResult['data']);
-            
+
             // En yakın kategoriyi bul
             $closestCategory = IlanKategori::where('name', 'like', "%{$suggestedCategory}%")->first();
-            
-            return response()->json([
-                'success' => true,
-                'data' => [
-                    'suggested_category' => $suggestedCategory,
-                    'category_id' => $closestCategory?->id,
-                    'confidence' => $this->calculateConfidence($title, $description, $suggestedCategory),
-                    'alternative_categories' => $this->getAlternativeCategories($suggestedCategory)
-                ]
-            ]);
 
+            return ResponseService::success([
+                'suggested_category' => $suggestedCategory,
+                'category_id' => $closestCategory?->id,
+                'confidence' => $this->calculateConfidence($title, $description, $suggestedCategory),
+                'alternative_categories' => $this->getAlternativeCategories($suggestedCategory)
+            ], 'Kategori tespiti başarıyla tamamlandı');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Category detection failed',
-                'error' => $e->getMessage()
-            ], 500);
+            return ResponseService::serverError('Kategori tespiti başarısız.', $e);
         }
     }
 
@@ -84,7 +75,7 @@ class IlanAIController extends Controller
      */
     public function suggestOptimalPrice(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        $validated = $this->validateRequestWithResponse($request, [
             'category_id' => 'required|exists:ilan_kategorileri,id',
             'location_id' => 'required|exists:iller,id',
             'features' => 'nullable|array',
@@ -92,23 +83,19 @@ class IlanAIController extends Controller
             'oda_sayisi' => 'nullable|integer|min:1'
         ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Validation failed',
-                'errors' => $validator->errors()
-            ], 422);
+        if ($validated instanceof \Illuminate\Http\JsonResponse) {
+            return $validated;
         }
 
         try {
             $data = $request->only(['category_id', 'location_id', 'features', 'metrekare', 'oda_sayisi']);
-            
+
             // Piyasa verilerini analiz et
             $marketData = $this->getMarketData($data);
-            
+
             // AI ile fiyat analizi
             $prompt = $this->buildPriceAnalysisPrompt($data, $marketData);
-            
+
             $aiResult = $this->aiService->analyze([
                 'property_data' => $data,
                 'market_data' => $marketData
@@ -117,24 +104,16 @@ class IlanAIController extends Controller
             ]);
 
             $priceAnalysis = $this->parsePriceAnalysis($aiResult['data']);
-            
-            return response()->json([
-                'success' => true,
-                'data' => [
-                    'suggested_price' => $priceAnalysis['suggested_price'],
-                    'price_range' => $priceAnalysis['price_range'],
-                    'confidence' => $priceAnalysis['confidence'],
-                    'market_comparison' => $priceAnalysis['market_comparison'],
-                    'factors' => $priceAnalysis['factors']
-                ]
-            ]);
 
+            return ResponseService::success([
+                'suggested_price' => $priceAnalysis['suggested_price'],
+                'price_range' => $priceAnalysis['price_range'],
+                'confidence' => $priceAnalysis['confidence'],
+                'market_comparison' => $priceAnalysis['market_comparison'],
+                'factors' => $priceAnalysis['factors']
+            ], 'Fiyat önerisi başarıyla oluşturuldu');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Price suggestion failed',
-                'error' => $e->getMessage()
-            ], 500);
+            return ResponseService::serverError('Fiyat önerisi başarısız.', $e);
         }
     }
 
@@ -143,7 +122,7 @@ class IlanAIController extends Controller
      */
     public function generateDescription(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        $validated = $this->validateRequestWithResponse($request, [
             'title' => 'required|string|max:255',
             'category_id' => 'required|exists:ilan_kategorileri,id',
             'features' => 'nullable|array',
@@ -152,40 +131,28 @@ class IlanAIController extends Controller
             'location.ilce' => 'nullable|exists:ilceler,id'
         ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Validation failed',
-                'errors' => $validator->errors()
-            ], 422);
+        if ($validated instanceof \Illuminate\Http\JsonResponse) {
+            return $validated;
         }
 
         try {
             $data = $request->all();
-            
+
             // AI prompt hazırla
             $prompt = $this->buildDescriptionPrompt($data);
-            
+
             $aiResult = $this->aiService->generate($prompt, [
                 'max_tokens' => 500,
                 'temperature' => 0.8
             ]);
 
-            return response()->json([
-                'success' => true,
-                'data' => [
-                    'description' => $aiResult['data'],
-                    'seo_score' => $this->calculateSEOScore($aiResult['data']),
-                    'keywords' => $this->extractKeywords($aiResult['data'])
-                ]
-            ]);
-
+            return ResponseService::success([
+                'description' => $aiResult['data'],
+                'seo_score' => $this->calculateSEOScore($aiResult['data']),
+                'keywords' => $this->extractKeywords($aiResult['data'])
+            ], 'Açıklama başarıyla üretildi');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Description generation failed',
-                'error' => $e->getMessage()
-            ], 500);
+            return ResponseService::serverError('Açıklama üretimi başarısız.', $e);
         }
     }
 
@@ -194,29 +161,25 @@ class IlanAIController extends Controller
      */
     public function optimizeForSEO(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        $validated = $this->validateRequestWithResponse($request, [
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'category_id' => 'required|exists:ilan_kategorileri,id'
         ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Validation failed',
-                'errors' => $validator->errors()
-            ], 422);
+        if ($validated instanceof \Illuminate\Http\JsonResponse) {
+            return $validated;
         }
 
         try {
             $data = $request->all();
-            
+
             // SEO analizi yap
             $seoAnalysis = $this->analyzeSEO($data);
-            
+
             // AI ile SEO optimizasyonu
             $prompt = $this->buildSEOOptimizationPrompt($data, $seoAnalysis);
-            
+
             $aiResult = $this->aiService->analyze([
                 'content' => $data,
                 'seo_analysis' => $seoAnalysis
@@ -225,24 +188,16 @@ class IlanAIController extends Controller
             ]);
 
             $optimization = $this->parseSEOOptimization($aiResult['data']);
-            
-            return response()->json([
-                'success' => true,
-                'data' => [
-                    'meta_title' => $optimization['meta_title'],
-                    'meta_description' => $optimization['meta_description'],
-                    'slug' => $optimization['slug'],
-                    'seo_score' => $optimization['seo_score'],
-                    'improvements' => $optimization['improvements']
-                ]
-            ]);
 
+            return ResponseService::success([
+                'meta_title' => $optimization['meta_title'],
+                'meta_description' => $optimization['meta_description'],
+                'slug' => $optimization['slug'],
+                'seo_score' => $optimization['seo_score'],
+                'improvements' => $optimization['improvements']
+            ], 'SEO optimizasyonu başarıyla tamamlandı');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'SEO optimization failed',
-                'error' => $e->getMessage()
-            ], 500);
+            return ResponseService::serverError('SEO optimizasyonu başarısız.', $e);
         }
     }
 
@@ -251,25 +206,21 @@ class IlanAIController extends Controller
      */
     public function analyzeUploadedImages(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        $validated = $this->validateRequestWithResponse($request, [
             'images' => 'required|array|min:1',
             'images.*' => 'required|string|url'
         ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Validation failed',
-                'errors' => $validator->errors()
-            ], 422);
+        if ($validated instanceof \Illuminate\Http\JsonResponse) {
+            return $validated;
         }
 
         try {
             $images = $request->input('images');
-            
+
             // Her görsel için AI analizi
             $analysisResults = [];
-            
+
             foreach ($images as $imageUrl) {
                 $analysis = $this->analyzeImage($imageUrl);
                 $analysisResults[] = [
@@ -277,25 +228,17 @@ class IlanAIController extends Controller
                     'analysis' => $analysis
                 ];
             }
-            
+
             // Genel değerlendirme
             $overallScore = $this->calculateOverallImageScore($analysisResults);
-            
-            return response()->json([
-                'success' => true,
-                'data' => [
-                    'images' => $analysisResults,
-                    'overall_score' => $overallScore,
-                    'recommendations' => $this->getImageRecommendations($analysisResults)
-                ]
-            ]);
 
+            return ResponseService::success([
+                'images' => $analysisResults,
+                'overall_score' => $overallScore,
+                'recommendations' => $this->getImageRecommendations($analysisResults)
+            ], 'Görsel analizi başarıyla tamamlandı');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Image analysis failed',
-                'error' => $e->getMessage()
-            ], 500);
+            return ResponseService::serverError('Görsel analizi başarısız.', $e);
         }
     }
 
@@ -304,22 +247,22 @@ class IlanAIController extends Controller
     private function buildCategoryDetectionPrompt($title, $description)
     {
         $categories = IlanKategori::pluck('name')->implode(', ');
-        
+
         return "Bu emlak ilanını analiz et ve en uygun kategoriyi öner:\n\n" .
-               "Başlık: {$title}\n" .
-               "Açıklama: {$description}\n\n" .
-               "Mevcut kategoriler: {$categories}\n\n" .
-               "Sadece kategori adını döndür.";
+            "Başlık: {$title}\n" .
+            "Açıklama: {$description}\n\n" .
+            "Mevcut kategoriler: {$categories}\n\n" .
+            "Sadece kategori adını döndür.";
     }
 
     private function parseCategorySuggestion($aiResult)
     {
         // AI sonucundan kategori adını çıkar
         $result = trim($aiResult);
-        
+
         // Kategori adını temizle
         $result = preg_replace('/[^\w\s]/', '', $result);
-        
+
         return $result;
     }
 
@@ -328,16 +271,16 @@ class IlanAIController extends Controller
         // Basit confidence hesaplama (gerçek uygulamada daha karmaşık olabilir)
         $keywords = strtolower($title . ' ' . $description);
         $categoryKeywords = strtolower($suggestedCategory);
-        
+
         $matches = 0;
         $words = explode(' ', $categoryKeywords);
-        
+
         foreach ($words as $word) {
             if (strpos($keywords, $word) !== false) {
                 $matches++;
             }
         }
-        
+
         return min(100, ($matches / count($words)) * 100);
     }
 
@@ -364,16 +307,16 @@ class IlanAIController extends Controller
     private function buildPriceAnalysisPrompt($data, $marketData)
     {
         return "Bu emlak için optimal fiyat önerisi yap:\n\n" .
-               "Özellikler: " . json_encode($data) . "\n" .
-               "Piyasa Verileri: " . json_encode($marketData) . "\n\n" .
-               "Fiyat önerisi ve gerekçelerini JSON formatında döndür.";
+            "Özellikler: " . json_encode($data) . "\n" .
+            "Piyasa Verileri: " . json_encode($marketData) . "\n\n" .
+            "Fiyat önerisi ve gerekçelerini JSON formatında döndür.";
     }
 
     private function parsePriceAnalysis($aiResult)
     {
         // AI sonucunu parse et
         $data = json_decode($aiResult, true);
-        
+
         return [
             'suggested_price' => $data['suggested_price'] ?? 0,
             'price_range' => $data['price_range'] ?? [],
@@ -386,24 +329,24 @@ class IlanAIController extends Controller
     private function buildDescriptionPrompt($data)
     {
         $category = IlanKategori::find($data['category_id'])->name ?? 'Emlak';
-        
+
         return "Bu {$category} için çekici ve SEO uyumlu bir açıklama yaz:\n\n" .
-               "Başlık: {$data['title']}\n" .
-               "Özellikler: " . json_encode($data['features']) . "\n" .
-               "Lokasyon: " . json_encode($data['location']) . "\n\n" .
-               "Açıklama en az 200 kelime olsun ve SEO anahtar kelimeleri içersin.";
+            "Başlık: {$data['title']}\n" .
+            "Özellikler: " . json_encode($data['features']) . "\n" .
+            "Lokasyon: " . json_encode($data['location']) . "\n\n" .
+            "Açıklama en az 200 kelime olsun ve SEO anahtar kelimeleri içersin.";
     }
 
     private function calculateSEOScore($description)
     {
         // Basit SEO skoru hesaplama
         $score = 0;
-        
+
         if (strlen($description) > 200) $score += 20;
         if (strlen($description) > 300) $score += 10;
         if (preg_match('/\b(daire|villa|arsa|satılık|kiralık)\b/i', $description)) $score += 15;
         if (preg_match('/\b(metrekare|m²|oda|banyo)\b/i', $description)) $score += 15;
-        
+
         return min(100, $score);
     }
 
@@ -412,9 +355,9 @@ class IlanAIController extends Controller
         // Basit anahtar kelime çıkarma
         $words = str_word_count(strtolower($description), 1, 'çğıöşüÇĞIÖŞÜ');
         $wordCount = array_count_values($words);
-        
+
         arsort($wordCount);
-        
+
         return array_slice(array_keys($wordCount), 0, 10);
     }
 
@@ -433,14 +376,14 @@ class IlanAIController extends Controller
         $words = str_word_count(strtolower($text), 1);
         $wordCount = array_count_values($words);
         $totalWords = count($words);
-        
+
         $densities = [];
         foreach ($wordCount as $word => $count) {
             if (strlen($word) > 3) {
                 $densities[$word] = ($count / $totalWords) * 100;
             }
         }
-        
+
         return $densities;
     }
 
@@ -450,11 +393,11 @@ class IlanAIController extends Controller
         $sentences = preg_split('/[.!?]+/', $text);
         $words = str_word_count($text);
         $syllables = $this->countSyllables($text);
-        
+
         if (count($sentences) > 0 && $words > 0) {
             return 206.835 - (1.015 * ($words / count($sentences))) - (84.6 * ($syllables / $words));
         }
-        
+
         return 0;
     }
 
@@ -467,17 +410,17 @@ class IlanAIController extends Controller
     private function buildSEOOptimizationPrompt($data, $seoAnalysis)
     {
         return "Bu içerik için SEO optimizasyonu yap:\n\n" .
-               "Başlık: {$data['title']}\n" .
-               "Açıklama: {$data['description']}\n" .
-               "Kategori: {$data['category_id']}\n\n" .
-               "SEO Analizi: " . json_encode($seoAnalysis) . "\n\n" .
-               "Meta title, meta description ve slug öner.";
+            "Başlık: {$data['title']}\n" .
+            "Açıklama: {$data['description']}\n" .
+            "Kategori: {$data['category_id']}\n\n" .
+            "SEO Analizi: " . json_encode($seoAnalysis) . "\n\n" .
+            "Meta title, meta description ve slug öner.";
     }
 
     private function parseSEOOptimization($aiResult)
     {
         $data = json_decode($aiResult, true);
-        
+
         return [
             'meta_title' => $data['meta_title'] ?? '',
             'meta_description' => $data['meta_description'] ?? '',
@@ -506,19 +449,19 @@ class IlanAIController extends Controller
     private function calculateOverallImageScore($analysisResults)
     {
         if (empty($analysisResults)) return 0;
-        
+
         $totalScore = 0;
         foreach ($analysisResults as $result) {
             $totalScore += $result['analysis']['quality_score'];
         }
-        
+
         return round($totalScore / count($analysisResults));
     }
 
     private function getImageRecommendations($analysisResults)
     {
         $recommendations = [];
-        
+
         foreach ($analysisResults as $result) {
             if ($result['analysis']['quality_score'] < 70) {
                 $recommendations[] = 'Görsel kalitesi iyileştirilebilir';
@@ -527,7 +470,7 @@ class IlanAIController extends Controller
                 $recommendations[] = 'Daha iyi ışıklandırma gerekli';
             }
         }
-        
+
         return array_unique($recommendations);
     }
 }

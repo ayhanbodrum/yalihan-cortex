@@ -5,14 +5,17 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\KategoriYayinTipiFieldDependency;
 use App\Models\IlanKategori;
+use App\Services\Response\ResponseService;
+use App\Traits\ValidatesApiRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 class FieldDependencyController extends Controller
 {
+    use ValidatesApiRequests;
     /**
      * Get field dependencies for a specific category and publication type
-     * 
+     *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
@@ -32,17 +35,13 @@ class FieldDependencyController extends Controller
             }
 
             if (!$kategoriSlug) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Kategori slug veya ID gerekli',
-                    'data' => []
-                ], 400);
+                return ResponseService::error('Kategori slug veya ID gerekli', 400);
             }
 
             // Query builder
             $query = KategoriYayinTipiFieldDependency::where('kategori_slug', $kategoriSlug)
-                ->where('enabled', true)
-                ->orderBy('order', 'asc');
+                ->where('status', true) // Context7: enabled → status
+                ->orderBy('display_order', 'asc'); // Context7: order → display_order
 
             // Yayın tipi filtresi (opsiyonel)
             if ($yayinTipi) {
@@ -81,8 +80,8 @@ class FieldDependencyController extends Controller
                             'type' => $field->field_type,
                             'category' => $field->field_category,
                             'required' => $field->required,
-                            'enabled' => $field->enabled,
-                            'order' => $field->order,
+                            'status' => $field->status, // Context7: enabled → status
+                            'display_order' => $field->display_order, // Context7: order → display_order
                             'icon' => $field->field_icon,
                             'options' => $field->field_options ? (is_array($field->field_options) ? $field->field_options : json_decode($field->field_options, true)) : null,
                             'unit' => $field->field_unit,
@@ -98,9 +97,7 @@ class FieldDependencyController extends Controller
                 ];
             })->values();
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Field dependencies loaded successfully',
+            return ResponseService::success([
                 'data' => $groupedFields,
                 'meta' => [
                     'kategori_slug' => $kategoriSlug,
@@ -108,18 +105,13 @@ class FieldDependencyController extends Controller
                     'total_fields' => $fields->count(),
                     'required_fields' => $fields->where('required', true)->count(),
                 ]
-            ]);
-
+            ], 'Field dependencies başarıyla yüklendi');
         } catch (\Exception $e) {
             Log::error('Field Dependencies API Error: ' . $e->getMessage(), [
                 'trace' => $e->getTraceAsString()
             ]);
 
-            return response()->json([
-                'success' => false,
-                'message' => 'Field dependencies yüklenemedi: ' . $e->getMessage(),
-                'data' => []
-            ], 500);
+            return ResponseService::serverError('Field dependencies yüklenirken hata oluştu.', $e);
         }
     }
 
@@ -186,8 +178,8 @@ class FieldDependencyController extends Controller
             $kategori = IlanKategori::findOrFail($kategoriId);
 
             $fields = KategoriYayinTipiFieldDependency::where('kategori_slug', $kategori->slug)
-                ->where('enabled', true)
-                ->orderBy('order', 'asc')
+                ->where('status', true) // Context7: enabled → status
+                ->orderBy('display_order', 'asc') // Context7: order → display_order
                 ->get();
 
             // Group by publication type
@@ -201,8 +193,7 @@ class FieldDependencyController extends Controller
                 })->values();
             });
 
-            return response()->json([
-                'success' => true,
+            return ResponseService::success([
                 'data' => [
                     'kategori' => [
                         'id' => $kategori->id,
@@ -211,13 +202,9 @@ class FieldDependencyController extends Controller
                     ],
                     'fields_by_yayin_tipi' => $byYayinTipi
                 ]
-            ]);
-
+            ], 'Kategori field dependencies başarıyla getirildi');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage()
-            ], 500);
+            return ResponseService::serverError('Field dependencies yüklenirken hata oluştu.', $e);
         }
     }
 }

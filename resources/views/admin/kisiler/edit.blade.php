@@ -190,7 +190,7 @@
                             </label>
                             <select style="color-scheme: light dark;" id="danisman_id" name="danisman_id" x-model="formData.danisman_id" required class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-black dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200">
                                 <option value="">Danışman seçin...</option>
-                                @foreach ($danismanlar as $danisman)
+                                @foreach ($danismanlar ?? [] as $danisman)
                                     <option value="{{ $danisman->id }}">
                                         {{ $danisman->name }} ({{ $danisman->email }})
                                         @if (isset($danisman->source) && $danisman->source == 'danisman_model')
@@ -253,7 +253,7 @@
                             <label for="il_id" class="block text-sm font-medium text-gray-900 dark:text-white">
                                 <span class="block text-sm font-medium text-gray-900 dark:text-white-text">İl</span>
                             </label>
-                            <select style="color-scheme: light dark;" id="il_id" name="il_id" 
+                            <select style="color-scheme: light dark;" id="il_id" name="il_id"
                                     x-model="formData.il_id"
                                     @change="formData.il_id = $event.target.value; onIlChange($event.target.value)"
                                     class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200">
@@ -286,7 +286,7 @@
                             </label>
                             <select style="color-scheme: light dark;" id="mahalle_id" name="mahalle_id"
                                     x-model="formData.mahalle_id"
-                                    class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200 disabled:bg-gray-100 dark:disabled:bg-gray-700 disabled:text-gray-500 dark:disabled:text-gray-400" 
+                                    class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200 disabled:bg-gray-100 dark:disabled:bg-gray-700 disabled:text-gray-500 dark:disabled:text-gray-400"
                                     :disabled="!formData.ilce_id">
                                 <option value="">Mahalle Seçin</option>
                             </select>
@@ -335,11 +335,18 @@
                     </svg>
                     İptal
                 </a>
-                <button type="submit" class="inline-flex items-center px-6 py-3 bg-orange-600 text-white font-semibold rounded-lg shadow-md hover:bg-orange-700 hover:scale-105 hover:shadow-lg active:scale-95 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:outline-none transition-all duration-200">
-                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <button type="submit"
+                        id="kisi-edit-submit-btn"
+                        class="inline-flex items-center px-6 py-3 bg-orange-600 text-white font-semibold rounded-lg shadow-md hover:bg-orange-700 hover:scale-105 hover:shadow-lg active:scale-95 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:outline-none transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                        onsubmit="const btn = document.getElementById('kisi-edit-submit-btn'); const icon = document.getElementById('kisi-edit-submit-icon'); const text = document.getElementById('kisi-edit-submit-text'); const spinner = document.getElementById('kisi-edit-submit-spinner'); if(btn && icon && text && spinner) { btn.disabled = true; icon.classList.add('hidden'); spinner.classList.remove('hidden'); text.textContent = 'Kaydediliyor...'; }">
+                    <svg id="kisi-edit-submit-icon" class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                     </svg>
-                    Değişiklikleri Kaydet
+                    <svg id="kisi-edit-submit-spinner" class="hidden w-4 h-4 mr-2 animate-spin" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <span id="kisi-edit-submit-text">Değişiklikleri Kaydet</span>
                 </button>
             </div>
         </form>
@@ -353,7 +360,7 @@
         async function loadIlceler(ilId) {
             console.log('📍 loadIlceler called with İl ID:', ilId);
             const ilceSelect = document.getElementById('ilce_id');
-            
+
             if (!ilceSelect) {
                 console.error('❌ İlçe select element bulunamadı!');
                 return;
@@ -423,7 +430,7 @@
                 init() {
                     console.log('✅ Kişi Edit Form initialized for ID:', this.kisiId);
                     console.log('📊 Form Data:', this.formData);
-                    
+
                     // Context7: Auto-load İlçeler and Mahalleler cascade (2025-10-31)
                     if (this.formData.il_id) {
                         console.log('🗺️ İl ID mevcut, cascade load başlıyor...');
@@ -439,11 +446,11 @@
                     console.log('🔄 onIlChange called with:', ilId);
                     console.log('🔍 Current formData.il_id:', this.formData.il_id);
                     console.log('🔍 DOM il_id value:', document.getElementById('il_id').value);
-                    
+
                     // Reset ilce and mahalle
                     this.formData.ilce_id = '';
                     this.formData.mahalle_id = '';
-                    
+
                     if (ilId) {
                         await this.loadIlcelerInternal(ilId, false);
                     } else {
@@ -452,7 +459,7 @@
                         if (ilceSelect) {
                             ilceSelect.innerHTML = '<option value="">İlçe Seçin</option>';
                         }
-                        
+
                         // Clear mahalle dropdown
                         const mahalleSelect = document.getElementById('mahalle_id');
                         if (mahalleSelect) {
@@ -468,14 +475,14 @@
                         console.log('⏭️ onIlceChange skipped (data restoration in progress)');
                         return;
                     }
-                    
+
                     console.log('🔄 onIlceChange called with:', ilceId);
                     console.log('🔍 Current formData.ilce_id:', this.formData.ilce_id);
                     console.log('🔍 DOM ilce_id value:', document.getElementById('ilce_id').value);
-                    
+
                     // Reset mahalle
                     this.formData.mahalle_id = '';
-                    
+
                     if (ilceId) {
                         await this.loadMahalleler(ilceId);
                     } else {
@@ -491,7 +498,7 @@
                 async loadIlcelerInternal(ilId, preserveSelection = false) {
                     console.log('📍 loadIlcelerInternal called with İl ID:', ilId, 'preserve:', preserveSelection);
                     const ilceSelect = document.getElementById('ilce_id');
-                    
+
                     if (!ilceSelect) {
                         console.error('❌ İlçe select element bulunamadı!');
                         return;
@@ -530,9 +537,9 @@
                                     // CRITICAL: Set both Alpine model and DOM value (NO dispatchEvent!)
                                     this.formData.ilce_id = String(savedIlceId);
                                     ilceSelect.value = String(savedIlceId);
-                                    
+
                                     console.log('✅ İlçe restored:', savedIlceId, '(DOM value:', ilceSelect.value + ')');
-                                    
+
                                     // Load mahalleler
                                     this.loadMahalleler(savedIlceId).then(() => {
                                         // Restore mahalle selection
@@ -544,7 +551,7 @@
                                                     mahalleSelect.value = String(savedMahalleId);
                                                     console.log('✅ Mahalle restored:', savedMahalleId, '(DOM value:', mahalleSelect.value + ')');
                                                 }
-                                                
+
                                                 // CRITICAL: Reset flag after restoration complete
                                                 this.isRestoringData = false;
                                                 console.log('🎉 Data restoration complete, flag reset');

@@ -21,37 +21,82 @@ class YazlikKiralamaController extends AdminController
      */
     public function index(Request $request)
     {
-        // Yazlık Kiralama kategorisini bul
-        $yazlikKategori = IlanKategori::where('slug', 'yazlik-kiralama')->first();
+        // Yazlık Kiralama kategorisini bul - Context7: Multiple slug fallback
+        $yazlikKategori = IlanKategori::where('slug', 'yazlik-kiralama')
+            ->orWhere('slug', 'yazlik-kiralik')
+            ->orWhere('name', 'like', '%Yazlık%Kiralama%')
+            ->orWhere('name', 'like', '%Yazlık%Kiralık%')
+            ->first();
 
         if (!$yazlikKategori) {
-            return redirect()->back()->with('error', 'Yazlık Kiralama kategorisi bulunamadı.');
+            // Fallback: Ana Yazlık kategorisini bul
+            $yazlikKategori = IlanKategori::where('slug', 'yazlik')
+                ->orWhere('name', 'like', '%Yazlık%')
+                ->where('seviye', 0)
+                ->first();
+
+            if (!$yazlikKategori) {
+                return redirect()->back()->with('error', 'Yazlık Kiralama kategorisi bulunamadı. Lütfen kategori yönetiminden Yazlık kategorisini oluşturun.');
+            }
         }
 
-        $query = Ilan::with(['kategori', 'fotograflar'])
-            ->where('kategori_id', $yazlikKategori->id);
+        // ✅ Context7: ana_kategori_id veya alt_kategori_id kullan (kategori_id yok)
+        $query = Ilan::with([
+            'anaKategori:id,name,slug',
+            'altKategori:id,name,slug',
+            'fotograflar:id,ilan_id,url,order'
+        ])
+            ->select([
+                'id',
+                'baslik',
+                'aciklama',
+                'fiyat',
+                'para_birimi',
+                'ana_kategori_id',
+                'alt_kategori_id',
+                'il_id',
+                'ilce_id',
+                'status',
+                'adres',
+                'created_at'
+            ])
+            ->where(function ($q) use ($yazlikKategori) {
+                $q->where('ana_kategori_id', $yazlikKategori->id)
+                    ->orWhere('alt_kategori_id', $yazlikKategori->id);
+            });
 
+        // ✅ REFACTORED: Filterable trait kullanımı - Code duplication azaltıldı
         // Search filters
         if ($request->filled('search')) {
             $search = $request->get('search');
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('baslik', 'LIKE', "%{$search}%")
-                  ->orWhere('aciklama', 'LIKE', "%{$search}%")
-                  ->orWhere('adres', 'LIKE', "%{$search}%");
+                    ->orWhere('aciklama', 'LIKE', "%{$search}%")
+                    ->orWhere('adres', 'LIKE', "%{$search}%");
             });
         }
 
+        // ✅ REFACTORED: Status filter (Filterable trait)
+        if ($request->filled('status')) {
+            $query->byStatus($request->get('status'));
+        }
+
+        // ✅ REFACTORED: Location filter
         if ($request->filled('il_id')) {
             $query->where('il_id', $request->get('il_id'));
         }
 
-        if ($request->filled('status')) {
-            $query->where('status', $request->get('status'));
-        }
-
+        // ✅ REFACTORED: Price range filter (Filterable trait)
         if ($request->filled('price_range')) {
             [$min, $max] = explode('-', $request->get('price_range'));
-            $query->whereBetween('fiyat', [(int)$min, (int)$max]);
+            $query->priceRange((int)$min, (int)$max, 'fiyat');
+        } else {
+            // ✅ REFACTORED: Min/max price filters (Filterable trait)
+            $query->priceRange(
+                $request->filled('min_fiyat') ? (float) $request->get('min_fiyat') : null,
+                $request->filled('max_fiyat') ? (float) $request->get('max_fiyat') : null,
+                'fiyat'
+            );
         }
 
         // Date range for seasonal rentals
@@ -72,22 +117,34 @@ class YazlikKiralamaController extends AdminController
             }
         }
 
-        $ilanlar = $query->orderBy('created_at', 'desc')
-                        ->paginate(20);
+        // ✅ REFACTORED: Sort (Filterable trait)
+        $query->sort($request->sort_by, $request->sort_order ?? 'desc', 'created_at');
+
+        $ilanlar = $query->paginate(20);
 
         // Statistics - Context7: Eloquent relationship kullanımı
         try {
-            $activeReservations = YazlikRezervasyon::whereHas('ilan', function($q) use ($yazlikKategori) {
-                $q->where('kategori_id', $yazlikKategori->id);
+            // ✅ N+1 FIX: Eager loading ekle
+            // ✅ Context7: ana_kategori_id veya alt_kategori_id kullan (kategori_id yok)
+            $activeReservations = YazlikRezervasyon::whereHas('ilan', function ($q) use ($yazlikKategori) {
+                $q->where(function ($query) use ($yazlikKategori) {
+                    $query->where('ana_kategori_id', $yazlikKategori->id)
+                        ->orWhere('alt_kategori_id', $yazlikKategori->id);
+                });
             })
-            ->whereIn('status', ['beklemede', 'onaylandi'])
-            ->count();
+                ->with('ilan:id,ana_kategori_id,alt_kategori_id')
+                ->whereIn('status', ['beklemede', 'onaylandi'])
+                ->count();
         } catch (\Exception $e) {
             $activeReservations = 0;
         }
 
+        // ✅ Context7: ana_kategori_id veya alt_kategori_id kullan (kategori_id yok)
         $stats = [
-            'total_yazlik' => Ilan::where('kategori_id', $yazlikKategori->id)->count(),
+            'total_yazlik' => Ilan::where(function ($q) use ($yazlikKategori) {
+                $q->where('ana_kategori_id', $yazlikKategori->id)
+                    ->orWhere('alt_kategori_id', $yazlikKategori->id);
+            })->count(),
             'active_reservations' => $activeReservations,
             'monthly_revenue' => $this->calculateMonthlyRevenue(),
             'occupancy_rate' => 75.5 // Mock data - implement real calculation
@@ -105,11 +162,11 @@ class YazlikKiralamaController extends AdminController
     {
         $kategoriler = IlanKategori::where('status', 1)
             ->where('slug', 'yazlik-kiralama')
-            ->orWhere('parent_id', function($q) {
+            ->orWhere('parent_id', function ($q) {
                 $q->select('id')
-                  ->from('ilan_kategorileri')
-                  ->where('slug', 'yazlik-kiralama')
-                  ->limit(1);
+                    ->from('ilan_kategorileri')
+                    ->where('slug', 'yazlik-kiralama')
+                    ->limit(1);
             })
             ->orderBy('name')
             ->get();
@@ -128,7 +185,7 @@ class YazlikKiralamaController extends AdminController
         $validator = Validator::make($request->all(), [
             'baslik' => 'required|string|max:255',
             'aciklama' => 'required|string',
-            'kategori_id' => 'required|exists:ilan_kategorileri,id',
+            'ana_kategori_id' => 'required|exists:ilan_kategorileri,id',
             'il_id' => 'required|exists:iller,id',
             'ilce_id' => 'required|exists:ilceler,id',
             'mahalle_id' => 'nullable|exists:mahalleler,id',
@@ -170,10 +227,11 @@ class YazlikKiralamaController extends AdminController
         try {
             DB::beginTransaction();
 
+            // ✅ Context7: ana_kategori_id kullan (kategori_id yok)
             $ilan = Ilan::create([
                 'baslik' => $request->baslik,
                 'aciklama' => $request->aciklama,
-                'kategori_id' => $request->kategori_id,
+                'ana_kategori_id' => $request->ana_kategori_id ?? $request->kategori_id,
                 'il_id' => $request->il_id,
                 'ilce_id' => $request->ilce_id,
                 'mahalle_id' => $request->mahalle_id,
@@ -206,7 +264,6 @@ class YazlikKiralamaController extends AdminController
 
                 'status' => $request->status,
                 'created_by' => auth()->id(),
-                'is_published' => $request->status === 'active'
             ]);
 
             // Handle photo uploads
@@ -238,7 +295,6 @@ class YazlikKiralamaController extends AdminController
                 'message' => 'Yazlık kiralama ilanı başarıyla oluşturuldu.',
                 'data' => ['ilan_id' => $ilan->id]
             ]);
-
         } catch (\Exception $e) {
             DB::rollback();
 
@@ -283,11 +339,11 @@ class YazlikKiralamaController extends AdminController
 
         $kategoriler = IlanKategori::where('status', 1)
             ->where('slug', 'yazlik-kiralama')
-            ->orWhere('parent_id', function($q) {
+            ->orWhere('parent_id', function ($q) {
                 $q->select('id')
-                  ->from('ilan_kategorileri')
-                  ->where('slug', 'yazlik-kiralama')
-                  ->limit(1);
+                    ->from('ilan_kategorileri')
+                    ->where('slug', 'yazlik-kiralama')
+                    ->limit(1);
             })
             ->orderBy('name')
             ->get();
@@ -313,7 +369,7 @@ class YazlikKiralamaController extends AdminController
         $validator = Validator::make($request->all(), [
             'baslik' => 'required|string|max:255',
             'aciklama' => 'required|string',
-            'kategori_id' => 'required|exists:ilan_kategorileri,id',
+            'ana_kategori_id' => 'required|exists:ilan_kategorileri,id',
             'il_id' => 'required|exists:iller,id',
             'ilce_id' => 'required|exists:ilceler,id',
             'mahalle_id' => 'nullable|exists:mahalleler,id',
@@ -337,17 +393,39 @@ class YazlikKiralamaController extends AdminController
         try {
             DB::beginTransaction();
 
-            $ilan->update($request->only([
-                'baslik', 'aciklama', 'kategori_id', 'il_id', 'ilce_id', 'mahalle_id',
-                'adres', 'fiyat', 'doviz', 'metrekare', 'max_guests', 'min_stay_days',
-                'rental_type', 'status', 'seasonal_availability', 'amenities',
-                'booking_type', 'cancellation_policy', 'security_deposit',
-                'cleaning_fee', 'extra_guest_fee'
-            ]));
+            // ✅ Context7: ana_kategori_id kullan (kategori_id yok)
+            $updateData = $request->only([
+                'baslik',
+                'aciklama',
+                'il_id',
+                'ilce_id',
+                'mahalle_id',
+                'adres',
+                'fiyat',
+                'doviz',
+                'metrekare',
+                'max_guests',
+                'min_stay_days',
+                'rental_type',
+                'status',
+                'seasonal_availability',
+                'amenities',
+                'booking_type',
+                'cancellation_policy',
+                'security_deposit',
+                'cleaning_fee',
+                'extra_guest_fee'
+            ]);
 
-            $ilan->is_published = $request->status === 'active';
-            $ilan->updated_by = auth()->id();
-            $ilan->save();
+            // ✅ Context7: ana_kategori_id ekle (kategori_id yerine)
+            if ($request->has('ana_kategori_id')) {
+                $updateData['ana_kategori_id'] = $request->ana_kategori_id;
+            } elseif ($request->has('kategori_id')) {
+                // Backward compatibility
+                $updateData['ana_kategori_id'] = $request->kategori_id;
+            }
+
+            $ilan->update($updateData);
 
             // Handle new photo uploads
             if ($request->hasFile('new_fotograflar')) {
@@ -378,7 +456,6 @@ class YazlikKiralamaController extends AdminController
                 'success' => true,
                 'message' => 'Yazlık kiralama ilanı başarıyla güncellendi.'
             ]);
-
         } catch (\Exception $e) {
             DB::rollback();
 
@@ -405,12 +482,19 @@ class YazlikKiralamaController extends AdminController
 
             DB::beginTransaction();
 
-            // ✅ OPTIMIZED: Storage işlemleri toplu yapılabilir (performans için)
+            // ✅ PERFORMANCE FIX: Storage işlemleri optimize edildi - Toplu silme
             // Delete photos from storage
-            $fotoYollari = $ilan->fotograflar->pluck('dosya_yolu')->filter();
-            foreach ($fotoYollari as $dosyaYolu) {
-                if (Storage::disk('public')->exists($dosyaYolu)) {
-                    Storage::disk('public')->delete($dosyaYolu);
+            $fotoYollari = $ilan->fotograflar->pluck('dosya_yolu')->filter()->toArray();
+
+            // ✅ PERFORMANCE FIX: Mevcut dosyaları filtrele ve toplu sil
+            if (!empty($fotoYollari)) {
+                $existingFiles = array_filter($fotoYollari, function ($path) {
+                    return Storage::disk('public')->exists($path);
+                });
+
+                // Toplu silme (Storage::delete() array kabul eder)
+                if (!empty($existingFiles)) {
+                    Storage::disk('public')->delete($existingFiles);
                 }
             }
 
@@ -432,7 +516,6 @@ class YazlikKiralamaController extends AdminController
                 'success' => true,
                 'message' => 'Yazlık kiralama ilanı başarıyla silindi.'
             ]);
-
         } catch (\Exception $e) {
             DB::rollback();
 
@@ -476,7 +559,7 @@ class YazlikKiralamaController extends AdminController
         }
 
         $bookings = $query->orderBy('created_at', 'desc')
-                         ->paginate(20);
+            ->paginate(20);
 
         return view('admin.yazlik-kiralama.bookings', compact('bookings', 'id'));
     }
@@ -517,7 +600,6 @@ class YazlikKiralamaController extends AdminController
                 'success' => true,
                 'message' => 'Rezervasyon durumu güncellendi.'
             ]);
-
         } catch (\Exception $e) {
             Log::error('Booking status update failed', [
                 'booking_id' => $bookingId,
@@ -540,16 +622,16 @@ class YazlikKiralamaController extends AdminController
     {
         try {
             // FeatureCategory'den yazlık kategorisi için özellikleri al
-            $yazlikCategories = FeatureCategory::where(function($q) {
+            $yazlikCategories = FeatureCategory::where(function ($q) {
                 $q->where('applies_to', 'like', '%yazlik%')
-                  ->orWhere('applies_to', 'like', '%yazlık%')
-                  ->orWhereNull('applies_to'); // Tümü için geçerli olanlar
+                    ->orWhere('applies_to', 'like', '%yazlık%')
+                    ->orWhereNull('applies_to'); // Tümü için geçerli olanlar
             })
-            ->where('enabled', true)
-            ->with(['features' => function($q) {
-                $q->where('status', true)->orderBy('order');
-            }])
-            ->get();
+                ->where('status', true) // Context7: enabled → status
+                ->with(['features' => function ($q) {
+                    $q->where('status', true)->orderBy('display_order');
+                }])
+                ->get();
 
             $amenities = [];
             foreach ($yazlikCategories as $category) {
@@ -637,20 +719,20 @@ class YazlikKiralamaController extends AdminController
             // Context7: Eloquent relationship kullanımı
             $ilan = Ilan::with('yazlikRezervasyonlar')->findOrFail($ilanId);
             $rezervasyonlar = $ilan->yazlikRezervasyonlar;
-            
-            $totalDays = $rezervasyonlar->where('status', 'onaylandi')->sum(function($r) {
+
+            $totalDays = $rezervasyonlar->where('status', 'onaylandi')->sum(function ($r) {
                 return $r->check_in->diffInDays($r->check_out);
             });
             $confirmedCount = $rezervasyonlar->where('status', 'onaylandi')->count();
             $avgStayDuration = $confirmedCount > 0 ? round($totalDays / $confirmedCount, 1) : 0;
-            
+
             // Occupancy rate hesaplama (basit versiyon - geliştirilebilir)
             $yearDays = 365;
-            $bookedDays = $rezervasyonlar->where('status', 'onaylandi')->sum(function($r) {
+            $bookedDays = $rezervasyonlar->where('status', 'onaylandi')->sum(function ($r) {
                 return $r->check_in->diffInDays($r->check_out);
             });
             $occupancyRate = $yearDays > 0 ? round(($bookedDays / $yearDays) * 100, 1) : 0;
-            
+
             return [
                 'total_bookings' => $rezervasyonlar->count(),
                 'confirmed_bookings' => $confirmedCount,
@@ -676,29 +758,29 @@ class YazlikKiralamaController extends AdminController
             // Context7: Eloquent relationship kullanımı
             $ilan = Ilan::with('yazlikRezervasyonlar')->findOrFail($ilanId);
             $onayliRezervasyonlar = $ilan->yazlikRezervasyonlar->where('status', 'onaylandi');
-            
-            $monthlyRevenue = $onayliRezervasyonlar->filter(function($r) {
+
+            $monthlyRevenue = $onayliRezervasyonlar->filter(function ($r) {
                 return $r->created_at->month == date('m') && $r->created_at->year == date('Y');
             })->sum('toplam_fiyat');
-            
+
             $totalRevenue = $onayliRezervasyonlar->sum('toplam_fiyat');
-            
+
             // Average nightly rate hesaplama
-            $totalNights = $onayliRezervasyonlar->sum(function($r) {
+            $totalNights = $onayliRezervasyonlar->sum(function ($r) {
                 return $r->check_in->diffInDays($r->check_out);
             });
             $avgNightlyRate = $totalNights > 0 ? round($totalRevenue / $totalNights, 2) : 0;
-            
+
             // Revenue growth (basit versiyon - geliştirilebilir)
-            $lastMonthRevenue = $onayliRezervasyonlar->filter(function($r) {
+            $lastMonthRevenue = $onayliRezervasyonlar->filter(function ($r) {
                 $lastMonth = Carbon::now()->subMonth();
                 return $r->created_at->month == $lastMonth->month && $r->created_at->year == $lastMonth->year;
             })->sum('toplam_fiyat');
-            
-            $revenueGrowth = $lastMonthRevenue > 0 
-                ? round((($monthlyRevenue - $lastMonthRevenue) / $lastMonthRevenue) * 100, 1) 
+
+            $revenueGrowth = $lastMonthRevenue > 0
+                ? round((($monthlyRevenue - $lastMonthRevenue) / $lastMonthRevenue) * 100, 1)
                 : 0;
-            
+
             return [
                 'monthly_revenue' => $monthlyRevenue,
                 'total_revenue' => $totalRevenue,

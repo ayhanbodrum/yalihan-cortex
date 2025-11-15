@@ -274,13 +274,15 @@
 
             console.log('📋 Yüklenecek kategori:', kategoriName, '(ID:', categoryId, ')');
 
-            // Alpine component'i bul ve trigger et
+            // Alpine component'i bul ve trigger et (yoksa sessiz fallback)
             const dinamikAlanComponent = document.querySelector('[x-data*="kategoriDinamikAlanlar"]');
             if (dinamikAlanComponent && dinamikAlanComponent.__x) {
                 console.log('✅ Alpine component bulundu, alanlar yükleniyor...');
                 dinamikAlanComponent.__x.$data.loadFieldsByKategori(categoryId, kategoriName);
             } else {
-                console.warn('⚠️ Alpine component bulunamadı');
+                console.log('ℹ️ Alpine component yok, FieldDependenciesManager fallback kullanılıyor');
+                // FieldDependenciesManager zaten category-changed eventini dinliyor ve render ediyor
+                // Ek bir işlem gerekmiyor; yalnızca bilgi amaçlı log bırakıyoruz
             }
         });
 

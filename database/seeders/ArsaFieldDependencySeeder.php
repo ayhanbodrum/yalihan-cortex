@@ -10,7 +10,7 @@ class ArsaFieldDependencySeeder extends Seeder
 {
     /**
      * Arsa kategorisi için alan ilişkileri
-     * 
+     *
      * Run with: php artisan db:seed --class=ArsaFieldDependencySeeder
      */
     public function run(): void
@@ -27,7 +27,7 @@ class ArsaFieldDependencySeeder extends Seeder
                 'field_icon' => '🗺️',
                 'enabled' => true,
                 'required' => false,
-                'order' => 1,
+                'display_order' => 1,
                 'searchable' => true,
                 'show_in_card' => true,
             ],
@@ -41,7 +41,7 @@ class ArsaFieldDependencySeeder extends Seeder
                 'field_icon' => '📍',
                 'enabled' => true,
                 'required' => false,
-                'order' => 2,
+                'display_order' => 2,
                 'searchable' => true,
                 'show_in_card' => true,
             ],
@@ -56,7 +56,7 @@ class ArsaFieldDependencySeeder extends Seeder
                 'field_icon' => '🏗️',
                 'enabled' => true,
                 'required' => false,
-                'order' => 3,
+                'display_order' => 3,
                 'searchable' => true,
                 'show_in_card' => true,
             ],
@@ -70,7 +70,7 @@ class ArsaFieldDependencySeeder extends Seeder
                 'field_icon' => '📊',
                 'enabled' => true,
                 'required' => false,
-                'order' => 4,
+                'display_order' => 4,
                 'searchable' => false,
                 'show_in_card' => false,
             ],
@@ -84,7 +84,7 @@ class ArsaFieldDependencySeeder extends Seeder
                 'field_icon' => '📈',
                 'enabled' => true,
                 'required' => false,
-                'order' => 5,
+                'display_order' => 5,
                 'searchable' => false,
                 'show_in_card' => false,
             ],
@@ -99,7 +99,7 @@ class ArsaFieldDependencySeeder extends Seeder
                 'field_icon' => '📏',
                 'enabled' => true,
                 'required' => false,
-                'order' => 6,
+                'display_order' => 6,
                 'searchable' => false,
                 'show_in_card' => false,
             ],
@@ -114,7 +114,7 @@ class ArsaFieldDependencySeeder extends Seeder
                 'field_icon' => '📐',
                 'enabled' => true,
                 'required' => true,
-                'order' => 7,
+                'display_order' => 7,
                 'searchable' => true,
                 'show_in_card' => true,
             ],
@@ -128,7 +128,7 @@ class ArsaFieldDependencySeeder extends Seeder
                 'field_icon' => '💰',
                 'enabled' => true,
                 'required' => true,
-                'order' => 8,
+                'display_order' => 8,
                 'searchable' => true,
                 'show_in_card' => true,
                 'ai_suggestion' => true,
@@ -145,7 +145,7 @@ class ArsaFieldDependencySeeder extends Seeder
                 'field_icon' => '🗺️',
                 'enabled' => true,
                 'required' => false,
-                'order' => 1,
+                'display_order' => 1,
                 'searchable' => true,
                 'show_in_card' => true,
             ],
@@ -159,7 +159,7 @@ class ArsaFieldDependencySeeder extends Seeder
                 'field_icon' => '📍',
                 'enabled' => true,
                 'required' => false,
-                'order' => 2,
+                'display_order' => 2,
                 'searchable' => true,
                 'show_in_card' => true,
             ],
@@ -174,7 +174,7 @@ class ArsaFieldDependencySeeder extends Seeder
                 'field_icon' => '📐',
                 'enabled' => true,
                 'required' => true,
-                'order' => 3,
+                'display_order' => 3,
                 'searchable' => true,
                 'show_in_card' => true,
             ],
@@ -188,7 +188,7 @@ class ArsaFieldDependencySeeder extends Seeder
                 'field_icon' => '💵',
                 'enabled' => true,
                 'required' => true,
-                'order' => 4,
+                'display_order' => 4,
                 'searchable' => true,
                 'show_in_card' => true,
             ],
@@ -199,7 +199,7 @@ class ArsaFieldDependencySeeder extends Seeder
             foreach ($fields as $field) {
                 KategoriYayinTipiFieldDependency::create($field);
             }
-            
+
             DB::commit();
             $this->command->info('✅ Arsa alan ilişkileri başarıyla eklendi! (' . count($fields) . ' alan)');
         } catch (\Exception $e) {
@@ -208,4 +208,3 @@ class ArsaFieldDependencySeeder extends Seeder
         }
     }
 }
-

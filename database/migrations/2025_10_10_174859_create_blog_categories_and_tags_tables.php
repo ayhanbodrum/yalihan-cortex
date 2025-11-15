@@ -16,10 +16,10 @@ return new class extends Migration
                 $table->string('slug')->unique();
                 $table->text('description')->nullable();
                 $table->string('status')->default('Aktif');
-                $table->integer('order')->default(0);
+                $table->integer('display_order')->default(0); // Context7: order → display_order
                 $table->timestamps();
                 $table->softDeletes();
-                
+
                 $table->index('status');
             });
         }
@@ -33,7 +33,7 @@ return new class extends Migration
                 $table->string('status')->default('Aktif');
                 $table->timestamps();
                 $table->softDeletes();
-                
+
                 $table->index('status');
             });
         }
@@ -45,7 +45,7 @@ return new class extends Migration
                 $table->foreignId('post_id')->constrained('blog_posts')->onDelete('cascade');
                 $table->foreignId('tag_id')->constrained('blog_tags')->onDelete('cascade');
                 $table->timestamps();
-                
+
                 $table->unique(['post_id', 'tag_id']);
             });
         }

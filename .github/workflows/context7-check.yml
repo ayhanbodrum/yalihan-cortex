@@ -1,0 +1,35 @@
+name: Context7 Compliance Check
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  context7-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+
+      - name: Install dependencies
+        run: |
+          composer install --no-interaction --no-progress --prefer-dist
+          chmod +x scripts/context7-full-scan.sh || true
+
+      - name: Run Context7 Compliance Scanner (JSON)
+        run: |
+          ./scripts/context7-full-scan.sh --json .context7/ci-report.json || exit 1
+
+      - name: Upload JSON Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: context7-ci-report
+          path: .context7/ci-report.json

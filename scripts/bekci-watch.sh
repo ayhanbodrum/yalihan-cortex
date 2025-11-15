@@ -62,35 +62,35 @@ start_watch() {
     echo ""
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     echo ""
-    
+
     log_info "Yalıhan Bekçi başlatılıyor..."
     log_info "Log dosyası: $LOG_DIR/bekci-watch.log"
     log_info "PID dosyası: $PID_FILE"
     echo ""
-    
+
     # Background process olarak çalıştır
     nohup bash -c "
         cd '$PROJECT_DIR'
         echo \$\$ > '$PID_FILE'
-        
+
         echo '[$(date '+%Y-%m-%d %H:%M:%S')] 🛡️ Yalıhan Bekçi gözlem başladı' >> '$LOG_DIR/bekci-watch.log'
-        
+
         LAST_VIOLATIONS=0
         CHECK_INTERVAL=30
-        
+
         while true; do
             echo '[$(date '+%Y-%m-%d %H:%M:%S')] 🔍 Tarama yapılıyor...' >> '$LOG_DIR/bekci-watch.log'
-            
+
             # Enforcement check
             OUTPUT=\$(php artisan bekci:enforce --scan 2>&1)
-            
+
             # İhlal sayısını bul
             VIOLATIONS=\$(echo \"\$OUTPUT\" | grep -oP '\\d+ ihlal bulundu' | grep -oP '\\d+' | head -1)
-            
+
             if [ -z \"\$VIOLATIONS\" ]; then
                 VIOLATIONS=0
             fi
-            
+
             # Değişiklik varsa bildir
             if [ \"\$VIOLATIONS\" -ne \"\$LAST_VIOLATIONS\" ]; then
                 if [ \"\$VIOLATIONS\" -eq 0 ]; then
@@ -103,19 +103,19 @@ start_watch() {
                 fi
                 LAST_VIOLATIONS=\$VIOLATIONS
             fi
-            
+
             # Context7 check
             CONTEXT7_OUTPUT=\$(php artisan context7:check 2>&1 | grep 'Context7 İhlali' | grep -oP '\\d+')
             if [ ! -z \"\$CONTEXT7_OUTPUT\" ]; then
                 echo '[$(date '+%Y-%m-%d %H:%M:%S')] 📊 Context7: \$CONTEXT7_OUTPUT ihlal' >> '$LOG_DIR/bekci-watch.log'
             fi
-            
+
             sleep \$CHECK_INTERVAL
         done
     " > /dev/null 2>&1 &
-    
+
     sleep 2
-    
+
     if check_running; then
         PID=$(cat "$PID_FILE")
         log_success "Yalıhan Bekçi başlatıldı! (PID: $PID)"
@@ -142,13 +142,13 @@ stop_watch() {
         log_warning "Yalıhan Bekçi zaten durmuş"
         exit 1
     fi
-    
+
     PID=$(cat "$PID_FILE")
     log_info "Yalıhan Bekçi durduruluyor... (PID: $PID)"
-    
+
     kill "$PID" 2>/dev/null
     rm -f "$PID_FILE"
-    
+
     log_success "Yalıhan Bekçi durduruldu!"
 }
 
@@ -160,7 +160,7 @@ status_check() {
     echo ""
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     echo ""
-    
+
     if check_running; then
         PID=$(cat "$PID_FILE")
         echo "✅ Durum: ÇALIŞIYOR"
@@ -186,7 +186,7 @@ view_logs() {
     echo ""
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     echo ""
-    
+
     if [ "$1" == "follow" ]; then
         echo "📡 Canlı log takibi (Ctrl+C ile çık)..."
         echo ""

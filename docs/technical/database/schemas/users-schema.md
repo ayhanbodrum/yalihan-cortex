@@ -4,54 +4,54 @@ Veritabanı: `yalihanemlak_db`
 
 ## Kolonlar
 
-| Kolon | Tip | Null | Varsayılan | Key | Extra | Açıklama |
-|---|---|---|---|---|---|---|
-| id | bigint unsigned | NO | NULL | PRI | auto_increment |  |
-| name | varchar(255) | NO | NULL |  |  |  |
-| email | varchar(255) | NO | NULL | UNI |  |  |
-| email_verified_at | timestamp | YES | NULL |  |  |  |
-| password | varchar(255) | NO | NULL |  |  |  |
-| remember_token | varchar(100) | YES | NULL |  |  |  |
-| role_id | bigint unsigned | YES | NULL | MUL |  |  |
-| is_active | tinyint(1) | NO | 1 |  |  |  |
-| last_login_at | timestamp | YES | NULL |  |  |  |
-| last_activity_at | timestamp | YES | NULL |  |  |  |
-| profile_photo_path | varchar(2048) | YES | NULL |  |  |  |
-| phone_number | varchar(20) | YES | NULL |  |  |  |
-| title | varchar(255) | YES | NULL |  |  |  |
-| bio | text | YES | NULL |  |  |  |
-| office_address | text | YES | NULL |  |  |  |
-| whatsapp_number | varchar(20) | YES | NULL |  |  |  |
-| instagram_profile | varchar(255) | YES | NULL |  |  |  |
-| linkedin_profile | varchar(255) | YES | NULL |  |  |  |
-| website | varchar(255) | YES | NULL |  |  |  |
-| is_verified | tinyint(1) | NO | 0 |  |  |  |
-| expertise_summary | text | YES | NULL |  |  |  |
-| certificates_info | text | YES | NULL |  |  |  |
-| deleted_at | timestamp | YES | NULL |  |  |  |
-| created_at | timestamp | YES | NULL |  |  |  |
-| updated_at | timestamp | YES | NULL |  |  |  |
-| position | varchar(255) | YES | NULL |  |  | Kullanıcının pozisyonu (örn: Müdür, Danışman) |
-| department | varchar(255) | YES | NULL |  |  | Kullanıcının departmanı |
-| employee_id | varchar(255) | YES | NULL | UNI |  | Personel kimlik numarası |
-| hire_date | date | YES | NULL |  |  | İşe başlama tarihi |
-| termination_date | date | YES | NULL |  |  | İşten ayrılma tarihi |
-| emergency_contact | varchar(255) | YES | NULL |  |  | Acil status iletişim bilgisi |
-| notes | text | YES | NULL |  |  | Kullanıcı hakkında notlar |
-| facebook_profile | varchar(255) | YES | NULL |  |  | Facebook profil linki |
-| twitter_profile | varchar(255) | YES | NULL |  |  | Twitter profil linki |
-| youtube_channel | varchar(255) | YES | NULL |  |  | YouTube kanal linki |
-| tiktok_profile | varchar(255) | YES | NULL |  |  | TikTok profil linki |
-| settings | json | YES | NULL |  |  | Kullanıcı ayarları (JSON) |
+| Kolon              | Tip             | Null | Varsayılan | Key | Extra          | Açıklama                                      |
+| ------------------ | --------------- | ---- | ---------- | --- | -------------- | --------------------------------------------- |
+| id                 | bigint unsigned | NO   | NULL       | PRI | auto_increment |                                               |
+| name               | varchar(255)    | NO   | NULL       |     |                |                                               |
+| email              | varchar(255)    | NO   | NULL       | UNI |                |                                               |
+| email_verified_at  | timestamp       | YES  | NULL       |     |                |                                               |
+| password           | varchar(255)    | NO   | NULL       |     |                |                                               |
+| remember_token     | varchar(100)    | YES  | NULL       |     |                |                                               |
+| role_id            | bigint unsigned | YES  | NULL       | MUL |                |                                               |
+| is_active          | tinyint(1)      | NO   | 1          |     |                |                                               |
+| last_login_at      | timestamp       | YES  | NULL       |     |                |                                               |
+| last_activity_at   | timestamp       | YES  | NULL       |     |                |                                               |
+| profile_photo_path | varchar(2048)   | YES  | NULL       |     |                |                                               |
+| phone_number       | varchar(20)     | YES  | NULL       |     |                |                                               |
+| title              | varchar(255)    | YES  | NULL       |     |                |                                               |
+| bio                | text            | YES  | NULL       |     |                |                                               |
+| office_address     | text            | YES  | NULL       |     |                |                                               |
+| whatsapp_number    | varchar(20)     | YES  | NULL       |     |                |                                               |
+| instagram_profile  | varchar(255)    | YES  | NULL       |     |                |                                               |
+| linkedin_profile   | varchar(255)    | YES  | NULL       |     |                |                                               |
+| website            | varchar(255)    | YES  | NULL       |     |                |                                               |
+| is_verified        | tinyint(1)      | NO   | 0          |     |                |                                               |
+| expertise_summary  | text            | YES  | NULL       |     |                |                                               |
+| certificates_info  | text            | YES  | NULL       |     |                |                                               |
+| deleted_at         | timestamp       | YES  | NULL       |     |                |                                               |
+| created_at         | timestamp       | YES  | NULL       |     |                |                                               |
+| updated_at         | timestamp       | YES  | NULL       |     |                |                                               |
+| position           | varchar(255)    | YES  | NULL       |     |                | Kullanıcının pozisyonu (örn: Müdür, Danışman) |
+| department         | varchar(255)    | YES  | NULL       |     |                | Kullanıcının departmanı                       |
+| employee_id        | varchar(255)    | YES  | NULL       | UNI |                | Personel kimlik numarası                      |
+| hire_date          | date            | YES  | NULL       |     |                | İşe başlama tarihi                            |
+| termination_date   | date            | YES  | NULL       |     |                | İşten ayrılma tarihi                          |
+| emergency_contact  | varchar(255)    | YES  | NULL       |     |                | Acil status iletişim bilgisi                  |
+| notes              | text            | YES  | NULL       |     |                | Kullanıcı hakkında notlar                     |
+| facebook_profile   | varchar(255)    | YES  | NULL       |     |                | Facebook profil linki                         |
+| twitter_profile    | varchar(255)    | YES  | NULL       |     |                | Twitter profil linki                          |
+| youtube_channel    | varchar(255)    | YES  | NULL       |     |                | YouTube kanal linki                           |
+| tiktok_profile     | varchar(255)    | YES  | NULL       |     |                | TikTok profil linki                           |
+| settings           | json            | YES  | NULL       |     |                | Kullanıcı ayarları (JSON)                     |
 
 ## Indexler
 
-| Index | Kolonlar | Unique |
-|---|---|---|
-| PRIMARY | id | Yes |
-| users_email_unique | email | Yes |
-| users_employee_id_unique | employee_id | Yes |
-| users_role_id_foreign | role_id | No |
+| Index                    | Kolonlar    | Unique |
+| ------------------------ | ----------- | ------ |
+| PRIMARY                  | id          | Yes    |
+| users_email_unique       | email       | Yes    |
+| users_employee_id_unique | employee_id | Yes    |
+| users_role_id_foreign    | role_id     | No     |
 
 ## DDL
 

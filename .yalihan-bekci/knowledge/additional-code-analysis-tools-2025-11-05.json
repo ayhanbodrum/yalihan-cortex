@@ -4,7 +4,7 @@
   "category": "code-quality-tools",
   "priority": "HIGH",
   "status": "ACTIVE",
-  
+
   "additional_tools": {
     "1_static_analysis": {
       "phpstan": {
@@ -59,7 +59,7 @@
         "recommended": true
       }
     },
-    
+
     "2_code_quality": {
       "php_cs_fixer": {
         "name": "PHP CS Fixer",
@@ -81,17 +81,13 @@
         "description": "Laravel Code Style Fixer - Laravel ekibi tarafından",
         "install": "composer require --dev laravel/pint",
         "config_file": "pint.json (opsiyonel)",
-        "finds": [
-          "Laravel coding standards",
-          "PSR-12 violations",
-          "Laravel best practices"
-        ],
+        "finds": ["Laravel coding standards", "PSR-12 violations", "Laravel best practices"],
         "usage": "vendor/bin/pint",
         "when_to_use": "Laravel projelerinde PHP CS Fixer alternatifi",
         "recommended": true
       }
     },
-    
+
     "3_security": {
       "enlightn": {
         "name": "Enlightn",
@@ -125,28 +121,19 @@
         "name": "Laravel Shift",
         "description": "Laravel upgrade ve security check service",
         "type": "SaaS",
-        "finds": [
-          "Security vulnerabilities",
-          "Laravel version upgrades",
-          "Deprecated features"
-        ],
+        "finds": ["Security vulnerabilities", "Laravel version upgrades", "Deprecated features"],
         "when_to_use": "Laravel version upgrade planlarken",
         "note": "Ücretli servis, ama güvenlik kontrolleri ücretsiz"
       }
     },
-    
+
     "4_testing": {
       "phpunit": {
         "name": "PHPUnit",
         "description": "PHP Unit Testing Framework",
         "install": "composer require --dev phpunit/phpunit",
         "config_file": "phpunit.xml",
-        "features": [
-          "Unit tests",
-          "Integration tests",
-          "Feature tests",
-          "Code coverage"
-        ],
+        "features": ["Unit tests", "Integration tests", "Feature tests", "Code coverage"],
         "usage": "vendor/bin/phpunit --coverage-html=coverage",
         "when_to_use": "Test yazımı ve code coverage analizi",
         "recommended": true
@@ -156,18 +143,13 @@
         "description": "PHP Testing Framework - Modern, elegant",
         "install": "composer require --dev pestphp/pest",
         "config_file": "tests/Pest.php",
-        "features": [
-          "Modern syntax",
-          "Better readability",
-          "Code coverage",
-          "PHPUnit compatible"
-        ],
+        "features": ["Modern syntax", "Better readability", "Code coverage", "PHPUnit compatible"],
         "usage": "vendor/bin/pest --coverage",
         "when_to_use": "Yeni test yazımı, PHPUnit alternatifi",
         "recommended": false
       }
     },
-    
+
     "5_performance": {
       "laravel_debugbar": {
         "name": "Laravel Debugbar",
@@ -203,12 +185,7 @@
         "name": "Blackfire",
         "description": "PHP Performance Profiler",
         "type": "SaaS",
-        "finds": [
-          "Performance bottlenecks",
-          "Memory leaks",
-          "Slow functions",
-          "I/O operations"
-        ],
+        "finds": ["Performance bottlenecks", "Memory leaks", "Slow functions", "I/O operations"],
         "when_to_use": "Production performance analysis",
         "note": "Ücretli servis, ama free tier mevcut"
       },
@@ -216,27 +193,19 @@
         "name": "Xdebug",
         "description": "PHP Debugger and Profiler",
         "install": "pecl install xdebug",
-        "finds": [
-          "Code coverage",
-          "Function traces",
-          "Performance profiling"
-        ],
+        "finds": ["Code coverage", "Function traces", "Performance profiling"],
         "usage": "xdebug.profiler_enable=1",
         "when_to_use": "Development sırasında profiling",
         "note": "Production'da kullanılmamalı (performans etkisi)"
       }
     },
-    
+
     "6_code_duplication": {
       "phpcpd": {
         "name": "PHPCPD",
         "description": "PHP Copy/Paste Detector",
         "install": "composer require --dev sebastian/phpcpd",
-        "finds": [
-          "Duplicate code blocks",
-          "Copy-paste code",
-          "Similar code patterns"
-        ],
+        "finds": ["Duplicate code blocks", "Copy-paste code", "Similar code patterns"],
         "usage": "vendor/bin/phpcpd app",
         "when_to_use": "Code refactoring öncesi, DRY principle kontrolü",
         "recommended": true
@@ -245,28 +214,19 @@
         "name": "PHPDepend",
         "description": "PHP Dependency Analyzer",
         "install": "composer require --dev pdepend/pdepend",
-        "finds": [
-          "Code complexity",
-          "Cyclomatic complexity",
-          "Dependencies",
-          "Code duplication"
-        ],
+        "finds": ["Code complexity", "Cyclomatic complexity", "Dependencies", "Code duplication"],
         "usage": "vendor/bin/pdepend app",
         "when_to_use": "Code quality metrics, complexity analysis",
         "recommended": false
       }
     },
-    
+
     "7_dependency_analysis": {
       "composer_unused": {
         "name": "Composer Unused",
         "description": "Kullanılmayan Composer paketlerini bulur",
         "install": "composer require --dev icanhazstring/composer-unused",
-        "finds": [
-          "Unused packages",
-          "Unused dependencies",
-          "Dead dependencies"
-        ],
+        "finds": ["Unused packages", "Unused dependencies", "Dead dependencies"],
         "usage": "vendor/bin/composer-unused",
         "when_to_use": "Dependency cleanup, package management",
         "recommended": true
@@ -275,34 +235,26 @@
         "name": "Composer Require Checker",
         "description": "Eksik bağımlılıkları kontrol eder",
         "install": "composer require --dev maglnet/composer-require-checker",
-        "finds": [
-          "Missing dependencies",
-          "Undefined dependencies",
-          "Circular dependencies"
-        ],
+        "finds": ["Missing dependencies", "Undefined dependencies", "Circular dependencies"],
         "usage": "vendor/bin/composer-require-checker",
         "when_to_use": "Dependency validation, production deployment öncesi",
         "recommended": true
       }
     },
-    
+
     "8_api_documentation": {
       "scribe": {
         "name": "Scribe",
         "description": "Laravel API Documentation Generator",
         "install": "composer require --dev knuckleswtf/scribe",
-        "finds": [
-          "API documentation",
-          "Missing API docs",
-          "API endpoint analysis"
-        ],
+        "finds": ["API documentation", "Missing API docs", "API endpoint analysis"],
         "usage": "php artisan scribe:generate",
         "when_to_use": "API documentation oluşturma",
         "recommended": false
       }
     }
   },
-  
+
   "recommended_tool_stack": {
     "essential": [
       "PHPStan (Larastan)",
@@ -317,14 +269,9 @@
       "Roave Security Advisories",
       "Composer Require Checker"
     ],
-    "optional": [
-      "Psalm",
-      "Blackfire",
-      "Pest",
-      "Scribe"
-    ]
+    "optional": ["Psalm", "Blackfire", "Pest", "Scribe"]
   },
-  
+
   "integration_with_comprehensive_check": {
     "note": "scripts/comprehensive-code-check.php ile entegre edilebilir",
     "phpstan": "Script içinde exec() ile çalıştırılabilir",
@@ -333,4 +280,3 @@
     "enlightn": "Artisan command olarak çalıştırılabilir"
   }
 }
-

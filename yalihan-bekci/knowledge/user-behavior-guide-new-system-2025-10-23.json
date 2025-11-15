@@ -4,7 +4,7 @@
   "category": "user_training",
   "priority": "CRITICAL",
   "context7_compliance": "100%",
-  
+
   "summary": {
     "title": "Yeni Sistem Kullanıcı Davranış Rehberi",
     "description": "Kullanıcılar eski karmaşık sistemi unutup yeni basit sistemi öğrenmeli. Yalıhan Bekçi kullanıcı davranışlarını izleyip rehberlik etmeli.",
@@ -12,7 +12,7 @@
     "user_request": "Kullanıcı nasıl davranmalı? Yeni sistemi öğrensin, eski sistemi unutsun. Bekçi öğrensin.",
     "bekci_role": "Kullanıcı rehberliği, davranış analizi, yanlış kullanım uyarısı"
   },
-  
+
   "old_system_problems": {
     "forgotten_behaviors": [
       "❌ Kategori eklerken AI Analiz butonuna tıklama",
@@ -28,7 +28,7 @@
       "CRUD basit olmalıydı ama karmaşıktı"
     ]
   },
-  
+
   "new_system_behaviors": {
     "correct_usage": {
       "kategori_yonetimi": {
@@ -44,7 +44,7 @@
         "time": "30 saniye (Önce: 2 dakika AI bekleme)",
         "steps": 3
       },
-      
+
       "ozellik_yonetimi": {
         "sayfa": "/admin/ozellikler",
         "kullanici_davranisi": [
@@ -58,7 +58,7 @@
         "time": "20 saniye",
         "steps": 3
       },
-      
+
       "ilan_create": {
         "sayfa": "/admin/ilanlar/create",
         "kullanici_davranisi": [
@@ -76,7 +76,7 @@
       }
     }
   },
-  
+
   "user_training": {
     "onboarding": {
       "step_1": {
@@ -98,7 +98,7 @@
         "duration": "10 saniye"
       }
     },
-    
+
     "tooltip_guides": {
       "kategori_page": {
         "trigger": "İlk 3 ziyarette",
@@ -114,7 +114,7 @@
       }
     }
   },
-  
+
   "bekci_monitoring": {
     "track_behaviors": [
       {
@@ -142,7 +142,7 @@
         "severity": "INFO"
       }
     ],
-    
+
     "wrong_usage_warnings": [
       {
         "scenario": "Kullanıcı kategori sayfasında 'AI' arıyor",
@@ -162,7 +162,7 @@
         }
       }
     ],
-    
+
     "success_tracking": [
       {
         "metric": "Kategori ekleme süresi",
@@ -181,7 +181,7 @@
       }
     ]
   },
-  
+
   "behavioral_analytics": {
     "track_events": [
       {
@@ -211,7 +211,7 @@
       }
     ]
   },
-  
+
   "comparison_guide": {
     "title": "ESKİ vs YENİ SİSTEM",
     "show_on": "İlk 3 admin panel ziyareti",
@@ -239,15 +239,11 @@
           "Hızlı CRUD (30 saniye)",
           "AI SADECE İlan Create/Edit'te"
         ],
-        "benefits": [
-          "Net ve anlaşılır",
-          "Hızlı (30 saniye vs 2 dakika)",
-          "AI sadece gerekli yerde"
-        ]
+        "benefits": ["Net ve anlaşılır", "Hızlı (30 saniye vs 2 dakika)", "AI sadece gerekli yerde"]
       }
     }
   },
-  
+
   "step_by_step_workflows": {
     "kategori_ekleme": {
       "title": "YENİ: Kategori Nasıl Eklenir?",
@@ -271,7 +267,7 @@
       "key_difference": "AI yok, direkt ekle!",
       "user_mindset": "Excel'e satır ekler gibi - basit!"
     },
-    
+
     "ozellik_ekleme": {
       "title": "YENİ: Özellik Nasıl Eklenir?",
       "old_workflow": [
@@ -294,7 +290,7 @@
       "key_difference": "AI yok, özellik adını direkt yaz!",
       "user_mindset": "Liste oluşturma - checkbox seçenekleri"
     },
-    
+
     "ilan_create": {
       "title": "YENİ: İlan Nasıl Oluşturulur? (AI VAR!)",
       "workflow": [
@@ -312,7 +308,7 @@
       "user_mindset": "AI asistan yardımıyla içerik oluşturma"
     }
   },
-  
+
   "bekci_learning_patterns": {
     "pattern_1_ai_search": {
       "trigger": "Kullanıcı CRUD sayfasında 'AI' kelimesini arar",
@@ -328,7 +324,7 @@
         "learn": "Kullanıcı eski sistemi arıyor, yönlendir"
       }
     },
-    
+
     "pattern_2_long_idle": {
       "trigger": "Kullanıcı kategori create form'da >60 saniye bekliyor",
       "detection": "Mouse idle + Form empty + Time >60s",
@@ -339,7 +335,7 @@
         "learn": "Form basit ama kullanıcı AI bekliyor"
       }
     },
-    
+
     "pattern_3_multiple_refresh": {
       "trigger": "Kullanıcı CRUD sayfasında 3+ kez refresh yapıyor",
       "detection": "Page reload count > 3 in 2 minutes",
@@ -352,7 +348,7 @@
         "learn": "Kullanıcı değişikliği fark etmedi"
       }
     },
-    
+
     "pattern_4_back_button": {
       "trigger": "Kullanıcı kategori create → geri → create → geri (loop)",
       "detection": "Back button > 2 kez in 1 minute",
@@ -364,7 +360,7 @@
         "learn": "Kullanıcı form'u dolduramıyor"
       }
     },
-    
+
     "pattern_5_success": {
       "trigger": "Kullanıcı kategori/özellik başarıyla ekledi (<30 saniye)",
       "detection": "Create success + Time <30s",
@@ -377,7 +373,7 @@
       }
     }
   },
-  
+
   "analytics_dashboard": {
     "metrics_to_track": [
       {
@@ -411,12 +407,12 @@
         "alert_if": "<70% (UX problemi var)"
       }
     ],
-    
+
     "dashboard_url": "/admin/yalihan-bekci/user-behavior",
     "update_frequency": "Real-time (WebSocket)",
     "report_frequency": "Günlük özet"
   },
-  
+
   "learning_system": {
     "bekci_learns": [
       {
@@ -443,16 +439,12 @@
       },
       {
         "question": "Hangi sayfa karışık?",
-        "signals": [
-          "Confusion rate per page",
-          "Idle time per page",
-          "Success rate per page"
-        ],
+        "signals": ["Confusion rate per page", "Idle time per page", "Success rate per page"],
         "action": "Problematik sayfayı tespit et → UX iyileştir",
         "threshold": "Page confusion >10%"
       }
     ],
-    
+
     "auto_improvements": [
       {
         "if": "Kategori ekleme >40% kullanıcı >60 saniye sürüyor",
@@ -468,20 +460,15 @@
       }
     ]
   },
-  
+
   "user_segments": {
     "segment_1_power_user": {
       "definition": "Hızlı adapte olan, yeni sistemi hemen anlayan",
-      "signals": [
-        "İlk denemede başarı",
-        "<30 saniye completion",
-        "AI arama yok",
-        "Sık kullanım"
-      ],
+      "signals": ["İlk denemede başarı", "<30 saniye completion", "AI arama yok", "Sık kullanım"],
       "bekci_treatment": "Minimal müdahale, başarı toastları",
       "percentage_target": ">60%"
     },
-    
+
     "segment_2_learner": {
       "definition": "Biraz yavaş ama öğrenen",
       "signals": [
@@ -493,7 +480,7 @@
       "bekci_treatment": "İlk birkaç kullanımda tooltip'ler",
       "percentage_target": ">30%"
     },
-    
+
     "segment_3_confused": {
       "definition": "Eski sistemi arayan, zorlanıyor",
       "signals": [
@@ -507,18 +494,15 @@
       "alert": "Bu segment >15% ise UX sorunu var!"
     }
   },
-  
+
   "onboarding_variants": {
     "variant_a_minimal": {
       "description": "Minimal bilgilendirme",
-      "components": [
-        "İlk giriş: 5 saniyelik toast",
-        "Tooltip: Sadece ilk 3 ziyaret"
-      ],
+      "components": ["İlk giriş: 5 saniyelik toast", "Tooltip: Sadece ilk 3 ziyaret"],
       "target_segment": "Power users",
       "test_duration": "1 hafta"
     },
-    
+
     "variant_b_guided": {
       "description": "Rehberli tanıtım",
       "components": [
@@ -529,7 +513,7 @@
       "target_segment": "Learners",
       "test_duration": "1 hafta"
     },
-    
+
     "variant_c_interactive": {
       "description": "İnteraktif öğretim",
       "components": [
@@ -541,10 +525,10 @@
       "target_segment": "Confused users",
       "test_duration": "1 hafta"
     },
-    
+
     "ab_test": "Bekçi 1 hafta test eder, en başarılısını seçer"
   },
-  
+
   "bekci_intelligence": {
     "learns_from": [
       "Kullanıcı tıklama patterns",
@@ -555,7 +539,7 @@
       "Success rate",
       "Repeat usage"
     ],
-    
+
     "adapts_by": [
       "Onboarding içeriğini optimize etme",
       "Tooltip pozisyonlarını değiştirme",
@@ -563,9 +547,9 @@
       "Problematik sayfaları tespit etme",
       "UX iyileştirme önerileri"
     ],
-    
+
     "reports_to": "Admin dashboard (/admin/yalihan-bekci/user-behavior)",
-    
+
     "auto_actions": [
       "Confusion rate >15% → UX alert",
       "AI search >20% → Onboarding yetersiz",
@@ -573,7 +557,7 @@
       "Completion time trend ↑ → Sorun büyüyor"
     ]
   },
-  
+
   "implementation": {
     "frontend_tracking": {
       "file": "resources/js/admin/user-behavior-tracker.js",
@@ -589,7 +573,7 @@
       ],
       "storage": "localStorage + API"
     },
-    
+
     "backend_api": {
       "endpoint": "POST /api/admin/yalihan-bekci/track-behavior",
       "payload": {
@@ -606,7 +590,7 @@
         "show_tooltip": "boolean"
       }
     },
-    
+
     "database_table": {
       "name": "user_behavior_logs",
       "columns": [
@@ -622,7 +606,7 @@
       "indexes": ["user_id", "page", "action", "created_at"]
     }
   },
-  
+
   "success_criteria": {
     "week_1": {
       "targets": [
@@ -631,13 +615,9 @@
         "AI arama attempts: <20%",
         "Success rate first try: >75%"
       ],
-      "actions_if_not_met": [
-        "Onboarding'i güçlendir",
-        "Tooltip'leri artır",
-        "Video tutorial ekle"
-      ]
+      "actions_if_not_met": ["Onboarding'i güçlendir", "Tooltip'leri artır", "Video tutorial ekle"]
     },
-    
+
     "week_2": {
       "targets": [
         "Kategori ekleme <30s: >80% kullanıcı",
@@ -646,7 +626,7 @@
         "Repeat usage: >50%"
       ]
     },
-    
+
     "month_1": {
       "targets": [
         "Kategori ekleme <30s: >90% kullanıcı",
@@ -657,7 +637,7 @@
       "result": "Sistem başarılı! Kullanıcılar adapte oldu ✅"
     }
   },
-  
+
   "bekci_commands": {
     "user_guidance": [
       {
@@ -677,20 +657,16 @@
       }
     ]
   },
-  
+
   "related_knowledge": [
     "category-crud-simplification-2025-10-23.json (bu dosya)",
     "site-ozellikleri-dynamic-system-2025-10-23.json",
     "kisiler-edit-standardization-2025-10-23.json",
     "javascript-vanilla-only-rule.json"
   ],
-  
+
   "mcp_teaching": {
-    "teach_to": [
-      "Memory MCP",
-      "Context7 MCP",
-      "Yalıhan Bekçi MCP"
-    ],
+    "teach_to": ["Memory MCP", "Context7 MCP", "Yalıhan Bekçi MCP"],
     "key_lessons": [
       "CRUD sayfaları minimal olmalı",
       "AI sadece içerik üretiminde",
@@ -700,4 +676,3 @@
     ]
   }
 }
-

@@ -6,9 +6,9 @@
     $pricing = $pricing ?? ['daily_price' => $villa->gunluk_fiyat ?? 0, 'currency' => 'TRY'];
 @endphp
 
-<div x-data="bookingForm({{ json_encode(['villa_id' => $villa->id, 'pricing' => $pricing]) }})" 
+<div x-data="bookingForm({{ json_encode(['villa_id' => $villa->id, 'pricing' => $pricing]) }})"
      class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-6 sticky top-24">
-    
+
     {{-- Price Header --}}
     <div class="mb-6 pb-6 border-b border-gray-200 dark:border-gray-700">
         <div class="flex items-end gap-2">
@@ -32,7 +32,7 @@
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Giriş
                 </label>
-                <input 
+                <input
                     type="date"
                     x-model="formData.check_in"
                     @change="calculatePrice()"
@@ -44,7 +44,7 @@
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Çıkış
                 </label>
-                <input 
+                <input
                     type="date"
                     x-model="formData.check_out"
                     @change="calculatePrice()"
@@ -59,7 +59,7 @@
             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 Misafir Sayısı
             </label>
-            <select 
+            <select
                 x-model="formData.guests"
                 required
                 class="w-full px-3 py-2.5 border-2 border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-black dark:text-white focus:ring-2 focus:ring-blue-500">
@@ -95,7 +95,7 @@
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Ad Soyad *
                 </label>
-                <input 
+                <input
                     type="text"
                     x-model="formData.name"
                     required
@@ -106,7 +106,7 @@
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Telefon *
                 </label>
-                <input 
+                <input
                     type="tel"
                     x-model="formData.phone"
                     required
@@ -117,7 +117,7 @@
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     E-posta *
                 </label>
-                <input 
+                <input
                     type="email"
                     x-model="formData.email"
                     required
@@ -128,7 +128,7 @@
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Mesajınız (Opsiyonel)
                 </label>
-                <textarea 
+                <textarea
                     x-model="formData.message"
                     rows="3"
                     placeholder="Özel istekleriniz..."
@@ -137,7 +137,7 @@
         </div>
 
         {{-- Submit Button --}}
-        <button 
+        <button
             type="submit"
             :disabled="loading"
             :class="loading ? 'opacity-50 cursor-not-allowed' : 'hover:from-blue-700 hover:to-purple-700'"
@@ -159,7 +159,7 @@
     </form>
 
     {{-- Success Message --}}
-    <div x-show="success" 
+    <div x-show="success"
          x-transition
          class="mt-4 p-4 bg-green-100 dark:bg-green-900/30 border-2 border-green-500 rounded-lg text-green-800 dark:text-green-300 text-sm"
          style="display: none;">
@@ -168,7 +168,7 @@
     </div>
 
     {{-- Error Message --}}
-    <div x-show="error" 
+    <div x-show="error"
          x-transition
          class="mt-4 p-4 bg-red-100 dark:bg-red-900/30 border-2 border-red-500 rounded-lg text-red-800 dark:text-red-300 text-sm"
          style="display: none;">
@@ -254,7 +254,7 @@ function bookingForm(data) {
                         message: ''
                     };
                     this.nights = 0;
-                    
+
                     // Scroll to success message
                     setTimeout(() => {
                         this.$el.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -275,4 +275,3 @@ function bookingForm(data) {
 }
 </script>
 @endpush
-

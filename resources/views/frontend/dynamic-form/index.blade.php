@@ -1,46 +1,50 @@
-@extends('layouts.app')
+@extends('admin.layouts.neo') {{-- Context7: layouts.app → admin.layouts.neo --}}
 
 @section('title', 'Dinamik Form Oluşturucu')
 @section('description', 'AI destekli dinamik form sistemi - Kategori ve yayın tipine göre otomatik form oluşturma')
 
 @section('content')
 <meta name="csrf-token" content="{{ csrf_token() }}">
-<div class="container mx-auto">
-    <div class="flex items-center justify-between mb-6">
-        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">🎯 Dinamik Form Oluşturucu</h1>
-        <p class="text-lg text-gray-600 dark:text-gray-400">AI destekli 2D Matrix sistemi ile otomatik form oluşturma</p>
+<div class="container mx-auto px-4 py-8">
+    <!-- Header -->
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">🎯 Dinamik Form Oluşturucu</h1>
+            <p class="text-lg text-gray-600 dark:text-gray-400">AI destekli 2D Matrix sistemi ile otomatik form oluşturma</p>
+        </div>
     </div>
 
     <!-- Form Seçimi -->
-    <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800">
-        <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800-header">
-            <h2 class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800-title">Form Parametrelerini Seçin</h2>
-            <p class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800-subtitle">Kategori ve yayın tipi seçerek dinamik form oluşturun</p>
+    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-200 mb-6">
+        <div class="p-6 border-b border-gray-200 dark:border-gray-700">
+            <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">Form Parametrelerini Seçin</h2>
+            <p class="text-sm text-gray-600 dark:text-gray-400">Kategori ve yayın tipi seçerek dinamik form oluşturun</p>
         </div>
-        <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800-body">
-            <form id="formSelector" class="space-y-2">
+        <div class="p-6">
+            <form id="formSelector" class="space-y-4">
                 <div class="flex flex-wrap gap-4">
-                    <div class="flex-1 min-w-0">
+                    <div class="flex-1 min-w-[200px]">
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" for="kategori">Kategori</label>
-                        <select id="kategori" name="kategori" class="w-full px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200 cursor-pointer appearance-none" required>
+                        <select id="kategori" name="kategori" class="w-full px-4 py-2.5 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200 cursor-pointer" style="color-scheme: light dark;" required aria-label="Kategori seçiniz">
                             <option value="">Kategori Seçiniz...</option>
                             @foreach($kategoriler as $slug => $name)
                                 <option value="{{ $slug }}">{{ $name }}</option>
                             @endforeach
                         </select>
                     </div>
-                    <div class="flex-1 min-w-0">
+                    <div class="flex-1 min-w-[200px]">
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" for="yayin_tipi">Yayın Tipi</label>
-                        <select id="yayin_tipi" name="yayin_tipi" class="w-full px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200 cursor-pointer appearance-none" required>
+                        <select id="yayin_tipi" name="yayin_tipi" class="w-full px-4 py-2.5 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200 cursor-pointer" style="color-scheme: light dark;" required aria-label="Yayın tipi seçiniz">
                             <option value="">Yayın Tipi Seçiniz...</option>
                             @foreach($yayinTipleri as $slug => $name)
                                 <option value="{{ $slug }}">{{ $name }}</option>
                             @endforeach
                         </select>
                     </div>
-                    <div class="flex-1 min-w-0 flex-1 min-w-0-auto">
-                        <button type="submit" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg">
-                            <i class="text-gray-400-generate"></i> Form Oluştur
+                    <div class="flex items-end">
+                        <button type="submit" class="inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition-all duration-200 shadow-md hover:shadow-lg font-medium" aria-label="Form oluştur">
+                            <span>⚡</span>
+                            <span>Form Oluştur</span>
                         </button>
                     </div>
                 </div>
@@ -49,16 +53,15 @@
     </div>
 
     <!-- Form Preview -->
-    <div id="formPreview" class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800" style="display: none;">
-        <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800-header">
-            <h2 class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800-title">Dinamik Form</h2>
-            <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800-actions">
-                <button type="button" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 bg-white text-gray-700 rounded-lg hover:bg-gray-50 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-gray-500 transition-all duration-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700" onclick="resetForm()">
-                    <i class="text-gray-400-reset"></i> Sıfırla
-                </button>
-            </div>
+    <div id="formPreview" class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-200 mb-6 hidden">
+        <div class="p-6 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+            <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Dinamik Form</h2>
+            <button type="button" onclick="resetForm()" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition-all duration-200 font-medium" aria-label="Formu sıfırla">
+                <span>🔄</span>
+                <span>Sıfırla</span>
+            </button>
         </div>
-        <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800-body">
+        <div class="p-6">
             <div id="dynamicFormContainer">
                 <!-- Dinamik form burada yüklenecek -->
             </div>
@@ -66,427 +69,44 @@
     </div>
 
     <!-- AI Status -->
-    <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800">
-        <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800-header">
-            <h3 class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800-title">🤖 AI Sistem Durumu</h3>
+    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-200">
+        <div class="p-6 border-b border-gray-200 dark:border-gray-700">
+            <h3 class="text-xl font-semibold text-gray-900 dark:text-white">🤖 AI Sistem Durumu</h3>
         </div>
-        <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800-body">
-            <div class="flex items-center gap-2 p-2 rounded-md">
-                <div class="flex items-center gap-2 p-2 rounded-md hover:bg-gray-50 dark:hover:bg-gray-800">
+        <div class="p-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg border-l-4 border-blue-500">
                     <span class="font-medium text-gray-700 dark:text-gray-300">AI Model:</span>
-                    <span class="text-sm text-gray-600 dark:text-gray-400" id="aiModel">Yükleniyor...</span>
+                    <span class="text-sm font-semibold text-blue-600 dark:text-blue-400" id="aiModel">Yükleniyor...</span>
                 </div>
-                <div class="flex items-center gap-2 p-2 rounded-md hover:bg-gray-50 dark:hover:bg-gray-800">
+                <div class="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg border-l-4 border-green-500">
                     <span class="font-medium text-gray-700 dark:text-gray-300">Bağlantı:</span>
-                    <span class="text-sm text-gray-600 dark:text-gray-400" id="aiConnection">Kontrol ediliyor...</span>
+                    <span class="text-sm font-semibold text-green-600 dark:text-green-400" id="aiConnection">Kontrol ediliyor...</span>
                 </div>
-                <div class="flex items-center gap-2 p-2 rounded-md hover:bg-gray-50 dark:hover:bg-gray-800">
+                <div class="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg border-l-4 border-purple-500">
                     <span class="font-medium text-gray-700 dark:text-gray-300">Özellikler:</span>
-                    <span class="text-sm text-gray-600 dark:text-gray-400" id="aiFeatures">Hesaplanıyor...</span>
+                    <span class="text-sm font-semibold text-purple-600 dark:text-purple-400" id="aiFeatures">Hesaplanıyor...</span>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
+@push('styles')
 <style>
-/* Neo Design System - Dynamic Form Styles */
-.container mx-auto {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-}
-
-.flex items-center justify-between mb-6 {
-    text-align: center;
-    margin-bottom: 30px;
-}
-
-.text-2xl font-bold text-gray-900 dark:text-white {
-    font-size: 2.5rem;
-    font-weight: 700;
-    color: #1a1a1a;
-    margin-bottom: 10px;
-}
-
-.text-lg text-gray-600 dark:text-gray-400 {
-    font-size: 1.1rem;
-    color: #666;
-    margin: 0;
-}
-
-.rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800 {
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-    margin-bottom: 20px;
-    overflow: hidden;
-}
-
-.rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800-header {
-    padding: 20px 24px;
-    border-bottom: 1px solid #f0f0f0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800-title {
-    font-size: 1.3rem;
-    font-weight: 600;
-    color: #1a1a1a;
-    margin: 0;
-}
-
-.rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800-subtitle {
-    font-size: 0.9rem;
-    color: #666;
-    margin: 5px 0 0 0;
-}
-
-.rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800-actions {
-    display: flex;
-    gap: 10px;
-}
-
-.rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800-body {
-    padding: 24px;
-}
-
-.space-y-2 {
-    display: flex;
-    gap: 20px;
-    align-items: end;
-}
-
-.flex flex-wrap gap-4 {
-    display: flex;
-    gap: 20px;
-    align-items: end;
-    width: 100%;
-}
-
-.flex-1 min-w-0 {
-    flex: 1;
-}
-
-.flex-1 min-w-0-auto {
-    flex: 0 0 auto;
-}
-
-.block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 {
-    display: block;
-    font-weight: 500;
-    color: #333;
-    margin-bottom: 8px;
-}
-
-.w-full px-3 py-2 rounded-md border border-gray-200 bg-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:border-gray-800 dark:text-gray-100 {
-    width: 100%;
-    padding: 12px 16px;
-    border: 2px solid #e0e0e0;
-    border-radius: 8px;
-    font-size: 1rem;
-    transition: all 0.3s ease;
-    background: #fff;
-}
-
-.w-full px-3 py-2 rounded-md border border-gray-200 bg-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:border-gray-800 dark:text-gray-100:focus {
-    outline: none;
-    border-color: #007bff;
-    box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
-}
-
-.inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 12px 20px;
-    border: none;
-    border-radius: 8px;
-    font-size: 1rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-decoration: none;
-}
-
-.inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg {
-    background: linear-gradient(135deg, #007bff, #0056b3);
-    color: white;
-}
-
-.inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg:hover {
-    background: linear-gradient(135deg, #0056b3, #004085);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0,123,255,0.3);
-}
-
-.inline-flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 bg-white text-gray-700 rounded-lg hover:bg-gray-50 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-gray-500 transition-all duration-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700 {
-    background: #f8f9fa;
-    color: #495057;
-    border: 1px solid #dee2e6;
-}
-
-.inline-flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 bg-white text-gray-700 rounded-lg hover:bg-gray-50 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-gray-500 transition-all duration-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700:hover {
-    background: #e9ecef;
-    transform: translateY(-1px);
-}
-
-/* Dynamic Form Styles */
-.space-y-4 {
-    max-width: 100%;
-}
-
-.flex items-center justify-between mb-4 {
-    text-align: center;
-    margin-bottom: 30px;
-    padding: 20px;
-    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-    border-radius: 12px;
-}
-
-.text-2xl font-bold text-gray-900 dark:text-white mb-2 {
-    font-size: 1.8rem;
-    font-weight: 600;
-    color: #1a1a1a;
-    margin: 0 0 10px 0;
-}
-
-.text-lg text-gray-600 dark:text-gray-400 mb-4 {
-    font-size: 1rem;
-    color: #666;
-    margin: 0;
-}
-
-.space-y-4 mb-6 {
-    margin-bottom: 30px;
-    padding: 20px;
-    background: #f8f9fa;
-    border-radius: 12px;
-    border-left: 4px solid #007bff;
-}
-
-.text-xl font-semibold text-gray-900 dark:text-white mb-4 {
-    font-size: 1.2rem;
-    font-weight: 600;
-    color: #1a1a1a;
-    margin: 0 0 20px 0;
-}
-
-.space-y-2-group {
-    margin-bottom: 20px;
-}
-
-.space-y-2-label {
-    display: block;
-    font-weight: 500;
-    color: #333;
-    margin-bottom: 8px;
-}
-
-.text-red-500 {
-    color: #dc3545;
-    font-weight: bold;
-}
-
-.space-y-2-input {
-    position: relative;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.w-full px-3 py-2 rounded-md border border-gray-200 bg-white text-sm placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:border-gray-800 dark:text-gray-100 transition-colors, .w-full px-3 py-2 rounded-md border border-gray-200 bg-white text-sm placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:border-gray-800 dark:text-gray-100 resize-vertical, .w-full px-3 py-2 rounded-md border border-gray-200 bg-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:border-gray-800 dark:text-gray-100 {
-    flex: 1;
-    padding: 12px 16px;
-    border: 2px solid #e0e0e0;
-    border-radius: 8px;
-    font-size: 1rem;
-    transition: all 0.3s ease;
-    background: #fff;
-}
-
-.w-full px-3 py-2 rounded-md border border-gray-200 bg-white text-sm placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:border-gray-800 dark:text-gray-100 resize-vertical {
-    min-height: 100px;
-    resize: vertical;
-}
-
-.w-full px-3 py-2 rounded-md border border-gray-200 bg-white text-sm placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:border-gray-800 dark:text-gray-100 transition-colors:focus, .w-full px-3 py-2 rounded-md border border-gray-200 bg-white text-sm placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:border-gray-800 dark:text-gray-100 resize-vertical:focus, .w-full px-3 py-2 rounded-md border border-gray-200 bg-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:border-gray-800 dark:text-gray-100:focus {
-    outline: none;
-    border-color: #007bff;
-    box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
-}
-
-.space-y-2-unit {
-    color: #666;
-    font-weight: 500;
-    white-space: nowrap;
-}
-
-.accent-blue-600 rounded border-gray-300 text-blue-600 focus:ring-blue-500 dark:border-gray-700-group {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.accent-blue-600 rounded border-gray-300 text-blue-600 focus:ring-blue-500 dark:border-gray-700 {
-    width: 18px;
-    height: 18px;
-    accent-color: #007bff;
-}
-
-.accent-blue-600 rounded border-gray-300 text-blue-600 focus:ring-blue-500 dark:border-gray-700-label {
-    font-weight: 500;
-    color: #333;
-    cursor: pointer;
-}
-
-.space-y-2 {
-    display: flex;
-    gap: 10px;
-    margin-top: 10px;
-    flex-wrap: wrap;
-}
-
-.inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-200 {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 8px 12px;
-    border: 1px solid #dee2e6;
-    border-radius: 6px;
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    background: #fff;
-}
-
-.p-4 rounded-lg border border-gray-200 bg-gray-50 dark:bg-gray-800 dark:border-gray-700 {
-    color: #007bff;
-    border-color: #007bff;
-}
-
-.p-4 rounded-lg border border-gray-200 bg-gray-50 dark:bg-gray-800 dark:border-gray-700:hover {
-    background: #007bff;
-    color: white;
-}
-
-.p-4 rounded-lg bg-green-50 dark:bg-green-900 border border-green-200 dark:border-green-800 {
-    color: #28a745;
-    border-color: #28a745;
-}
-
-.p-4 rounded-lg bg-green-50 dark:bg-green-900 border border-green-200 dark:border-green-800:hover {
-    background: #28a745;
-    color: white;
-}
-
-.p-4 rounded-lg bg-blue-50 dark:bg-blue-900 border border-blue-200 dark:border-blue-800 {
-    color: #ffc107;
-    border-color: #ffc107;
-}
-
-.p-4 rounded-lg bg-blue-50 dark:bg-blue-900 border border-blue-200 dark:border-blue-800:hover {
-    background: #ffc107;
-    color: #212529;
-}
-
-.flex items-center gap-2 {
-    display: flex;
-    gap: 15px;
-    margin: 30px 0;
-    padding: 20px;
-    background: linear-gradient(135deg, #e3f2fd, #bbdefb);
-    border-radius: 12px;
-    border-left: 4px solid #2196f3;
-}
-
-.flex items-center justify-end gap-2 mt-6 {
-    text-align: center;
-    margin-top: 30px;
-    padding-top: 20px;
-    border-top: 1px solid #e0e0e0;
-}
-
-/* AI Status Styles */
-.flex items-center gap-2 p-2 rounded-md {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 20px;
-}
-
-.flex items-center gap-2 p-2 rounded-md hover:bg-gray-50 dark:hover:bg-gray-800 {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px;
-    background: #f8f9fa;
-    border-radius: 8px;
-    border-left: 4px solid #007bff;
-}
-
-.font-medium text-gray-700 dark:text-gray-300 {
-    font-weight: 500;
-    color: #495057;
-}
-
-.text-sm text-gray-600 dark:text-gray-400 {
-    font-weight: 600;
-    color: #007bff;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    .flex flex-wrap gap-4 {
-        flex-direction: column;
-        gap: 15px;
+    /* Loading spinner animation */
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
     }
 
-    .flex-1 min-w-0 {
-        width: 100%;
+    .animate-spin {
+        animation: spin 1s linear infinite;
     }
-
-    .space-y-2 {
-        flex-direction: column;
-    }
-
-    .flex items-center gap-2 {
-        flex-direction: column;
-    }
-}
-
-/* Loading States */
-.animate-spin {
-    opacity: 0.6;
-    pointer-events: none;
-}
-
-.animate-spin rounded-full border-2 border-gray-300 border-t-blue-600 {
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    border: 2px solid #f3f3f3;
-    border-top: 2px solid #007bff;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-/* Icons */
-.text-gray-400-generate::before { content: "⚡"; }
-.text-gray-400-reset::before { content: "🔄"; }
-.text-gray-400-save::before { content: "💾"; }
-.text-gray-400-suggestion::before { content: "💡"; }
-.text-gray-400-autofill::before { content: "🤖"; }
-.text-gray-400-calculation::before { content: "🧮"; }
-.text-gray-400-clear::before { content: "🗑️"; }
 </style>
+@endpush
 
+@push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // Form selector
@@ -521,8 +141,13 @@ document.addEventListener('DOMContentLoaded', function() {
     // Load dynamic form
     async function loadDynamicForm(kategori, yayinTipi) {
         try {
-            formPreview.style.display = 'block';
-            dynamicFormContainer.innerHTML = '<div class="animate-spin rounded-full border-2 border-gray-300 border-t-blue-600"></div> Form yükleniyor...';
+            formPreview.classList.remove('hidden');
+            dynamicFormContainer.innerHTML = `
+                <div class="flex items-center justify-center gap-3 py-8">
+                    <div class="w-8 h-8 border-4 border-gray-300 border-t-blue-600 rounded-full animate-spin"></div>
+                    <span class="text-gray-600 dark:text-gray-400">Form yükleniyor...</span>
+                </div>
+            `;
 
             const response = await fetch('/dynamic-form/render', {
                 method: 'POST',
@@ -542,12 +167,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 dynamicFormContainer.innerHTML = data.form_html;
                 updateAIStatus(data.fields_count);
             } else {
-                dynamicFormContainer.innerHTML = '<div class="rounded-lg border border-blue-200 bg-blue-50 p-4 text-blue-800 dark:bg-blue-900 dark:border-blue-800 dark:text-blue-200 rounded-lg border border-blue-200 bg-blue-50 p-4 text-blue-800 dark:bg-blue-900 dark:border-blue-800 dark:text-blue-200-error">' + data.message + '</div>';
+                dynamicFormContainer.innerHTML = `
+                    <div class="rounded-lg border border-red-200 bg-red-50 dark:bg-red-900/20 dark:border-red-800 p-4 text-red-800 dark:text-red-200">
+                        ${data.message}
+                    </div>
+                `;
             }
 
         } catch (error) {
             console.error('Form yükleme hatası:', error);
-            dynamicFormContainer.innerHTML = '<div class="rounded-lg border border-blue-200 bg-blue-50 p-4 text-blue-800 dark:bg-blue-900 dark:border-blue-800 dark:text-blue-200 rounded-lg border border-blue-200 bg-blue-50 p-4 text-blue-800 dark:bg-blue-900 dark:border-blue-800 dark:text-blue-200-error">Form yüklenirken hata oluştu.</div>';
+            dynamicFormContainer.innerHTML = `
+                <div class="rounded-lg border border-red-200 bg-red-50 dark:bg-red-900/20 dark:border-red-800 p-4 text-red-800 dark:text-red-200">
+                    Form yüklenirken hata oluştu. Lütfen tekrar deneyin.
+                </div>
+            `;
         }
     }
 
@@ -576,8 +209,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Reset form
     window.resetForm = function() {
-        formPreview.style.display = 'none';
+        formPreview.classList.add('hidden');
         formSelector.reset();
+        dynamicFormContainer.innerHTML = '';
     };
 
     // AI Functions
@@ -643,4 +277,5 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 </script>
+@endpush
 @endsection

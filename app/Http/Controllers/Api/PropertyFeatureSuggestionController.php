@@ -4,11 +4,14 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Services\PropertyFeatureSuggestionService;
+use App\Services\Response\ResponseService;
+use App\Traits\ValidatesApiRequests;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 
 class PropertyFeatureSuggestionController extends Controller
 {
+    use ValidatesApiRequests;
+
     protected $featureSuggestionService;
 
     public function __construct(PropertyFeatureSuggestionService $featureSuggestionService)
@@ -21,17 +24,13 @@ class PropertyFeatureSuggestionController extends Controller
      */
     public function getFeatureSuggestions(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        $validated = $this->validateRequestWithResponse($request, [
             'category' => 'required|string',
             'sub_category' => 'sometimes|string'
         ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Validation failed',
-                'errors' => $validator->errors()
-            ], 422);
+        if ($validated instanceof \Illuminate\Http\JsonResponse) {
+            return $validated;
         }
 
         try {
@@ -40,17 +39,12 @@ class PropertyFeatureSuggestionController extends Controller
                 $request->input('sub_category')
             );
 
-            return response()->json([
-                'success' => true,
+            return ResponseService::success([
                 'data' => $suggestions
-            ]);
+            ], 'Özellik önerileri başarıyla getirildi');
 
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Özellik önerileri alınamadı',
-                'error' => $e->getMessage()
-            ], 500);
+            return ResponseService::serverError('Özellik önerileri alınırken hata oluştu.', $e);
         }
     }
 
@@ -59,17 +53,13 @@ class PropertyFeatureSuggestionController extends Controller
      */
     public function getSmartSuggestions(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        $validated = $this->validateRequestWithResponse($request, [
             'category' => 'required|string',
             'current_data' => 'sometimes|array'
         ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Validation failed',
-                'errors' => $validator->errors()
-            ], 422);
+        if ($validated instanceof \Illuminate\Http\JsonResponse) {
+            return $validated;
         }
 
         try {
@@ -78,20 +68,13 @@ class PropertyFeatureSuggestionController extends Controller
                 $request->input('current_data', [])
             );
 
-            return response()->json([
-                'success' => true,
-                'data' => [
-                    'suggestions' => $suggestions,
-                    'count' => count($suggestions)
-                ]
-            ]);
+            return ResponseService::success([
+                'suggestions' => $suggestions,
+                'count' => count($suggestions)
+            ], 'Akıllı öneriler başarıyla getirildi');
 
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Akıllı öneriler alınamadı',
-                'error' => $e->getMessage()
-            ], 500);
+            return ResponseService::serverError('Akıllı öneriler alınırken hata oluştu.', $e);
         }
     }
 
@@ -100,17 +83,13 @@ class PropertyFeatureSuggestionController extends Controller
      */
     public function validateFeatures(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        $validated = $this->validateRequestWithResponse($request, [
             'category' => 'required|string',
             'features' => 'required|array'
         ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Validation failed',
-                'errors' => $validator->errors()
-            ], 422);
+        if ($validated instanceof \Illuminate\Http\JsonResponse) {
+            return $validated;
         }
 
         try {
@@ -119,17 +98,12 @@ class PropertyFeatureSuggestionController extends Controller
 
             $validationResults = $this->validateCategoryFeatures($category, $features);
 
-            return response()->json([
-                'success' => true,
+            return ResponseService::success([
                 'data' => $validationResults
-            ]);
+            ], 'Özellik doğrulama başarıyla tamamlandı');
 
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Özellik doğrulama başarısız',
-                'error' => $e->getMessage()
-            ], 500);
+            return ResponseService::serverError('Özellik doğrulama başarısız.', $e);
         }
     }
 

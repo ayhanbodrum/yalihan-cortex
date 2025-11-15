@@ -470,7 +470,7 @@ Kural:
   - @include component kullanıyorsa
   - Component Alpine fonksiyon çağırıyorsa
   - → Modülleri yükle (@vite)
-  
+
   - Layout @stack('scripts') kullanıyorsa
   - → @push kullan (@section değil!)
 ```

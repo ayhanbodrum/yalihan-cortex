@@ -98,7 +98,7 @@
                         </div>
                     </div>
                 </div>
-                <a href="{{ route('admin.property-type-manager.index') }}" class="text-xs text-blue-600 hover:text-blue-700 font-medium">
+                <a href="{{ route('admin.property_types.index') }}" class="text-xs text-blue-600 hover:text-blue-700 font-medium">
                     Yönet →
                 </a>
             </div>
@@ -266,4 +266,3 @@ document.addEventListener('DOMContentLoaded', () => {
     animation: pulse-green 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 </style>
-

@@ -1,0 +1,168 @@
+{
+  "title": "Özellikler Sistemi Context7 Düzeltmeleri",
+  "date": "2025-11-12",
+  "type": "context7-compliance-fix",
+  "status": "completed",
+  "summary": {
+    "problem": "Özellikler sistemi (Features System) Context7 kurallarına uyumsuzdu",
+    "solution": "Migration ve Controller düzeltmeleri yapıldı",
+    "impact": "high",
+    "files_changed": 2
+  },
+  "issues_found": [
+    {
+      "type": "migration",
+      "severity": "critical",
+      "file": "database/migrations/2025_11_02_000001_create_polymorphic_features_system.php",
+      "problem": "enabled field kullanımı (Context7: enabled YASAK!)",
+      "fix": "enabled → status olarak değiştirildi",
+      "lines": [24, 29, 65, 74, 75, 77]
+    },
+    {
+      "type": "migration",
+      "severity": "critical",
+      "file": "database/migrations/2025_11_02_000001_create_polymorphic_features_system.php",
+      "problem": "category_id field kullanımı (Model feature_category_id bekliyor)",
+      "fix": "category_id → feature_category_id olarak değiştirildi",
+      "lines": [38, 74]
+    },
+    {
+      "type": "controller",
+      "severity": "high",
+      "file": "app/Http/Controllers/Admin/FeatureCategoryController.php",
+      "problem": "status validation 'in:active,inactive' (Context7: boolean olmalı!)",
+      "fix": "status => 'required|boolean' olarak değiştirildi",
+      "lines": [48, 115]
+    },
+    {
+      "type": "controller",
+      "severity": "medium",
+      "file": "app/Http/Controllers/Admin/FeatureCategoryController.php",
+      "problem": "order field validation (Context7: display_order kullanılmalı)",
+      "fix": "order → display_order olarak değiştirildi",
+      "lines": [47, 114]
+    }
+  ],
+  "context7_rules_applied": [
+    {
+      "rule": "enabled → status",
+      "description": "Database field'larında enabled YASAK, sadece status kullanılmalı",
+      "applied_to": ["feature_categories.status", "features.status"]
+    },
+    {
+      "rule": "category_id → feature_category_id",
+      "description": "Feature model'inde feature_category_id kullanılmalı",
+      "applied_to": ["features.feature_category_id"]
+    },
+    {
+      "rule": "order → display_order",
+      "description": "Sıralama için display_order kullanılmalı",
+      "applied_to": ["FeatureCategoryController validation"]
+    },
+    {
+      "rule": "boolean status",
+      "description": "status field'ı boolean olmalı, string değil",
+      "applied_to": ["FeatureCategoryController validation"]
+    }
+  ],
+  "migration_changes": {
+    "feature_categories": {
+      "before": "enabled boolean",
+      "after": "status boolean",
+      "indexes": {
+        "before": "['type', 'enabled']",
+        "after": "['type', 'status']"
+      }
+    },
+    "features": {
+      "before": {
+        "foreign_key": "category_id",
+        "status_field": "enabled"
+      },
+      "after": {
+        "foreign_key": "feature_category_id",
+        "status_field": "status"
+      },
+      "indexes": {
+        "before": [
+          "['category_id', 'enabled']",
+          "['field_type', 'enabled']",
+          "['is_filterable', 'enabled']"
+        ],
+        "after": [
+          "['feature_category_id', 'status']",
+          "['field_type', 'status']",
+          "['is_filterable', 'status']"
+        ]
+      }
+    }
+  },
+  "controller_changes": {
+    "FeatureCategoryController": {
+      "store_method": {
+        "before": {
+          "order": "'order' => 'nullable|integer|min:0'",
+          "status": "'status' => 'required|in:active,inactive'"
+        },
+        "after": {
+          "display_order": "'display_order' => 'nullable|integer|min:0'",
+          "status": "'status' => 'required|boolean'"
+        }
+      },
+      "update_method": {
+        "before": {
+          "order": "'order' => 'nullable|integer|min:0'",
+          "status": "'status' => 'required|in:active,inactive'"
+        },
+        "after": {
+          "display_order": "'display_order' => 'nullable|integer|min:0'",
+          "status": "'status' => 'required|boolean'"
+        }
+      }
+    }
+  },
+  "lessons_learned": [
+    {
+      "lesson": "Migration'larda Context7 kuralları kontrol edilmeli",
+      "pattern": "enabled field kullanımı → status kullanılmalı",
+      "prevention": "Migration oluştururken Context7 authority.json kontrol edilmeli"
+    },
+    {
+      "lesson": "Model ve Migration uyumluluğu kontrol edilmeli",
+      "pattern": "Model feature_category_id bekliyor ama migration category_id oluşturuyor",
+      "prevention": "Migration oluşturmadan önce Model fillable array kontrol edilmeli"
+    },
+    {
+      "lesson": "Controller validation'ları Context7 uyumlu olmalı",
+      "pattern": "status validation string olarak yapılmış (active/inactive)",
+      "prevention": "Boolean field'lar için boolean validation kullanılmalı"
+    }
+  ],
+  "next_steps": [
+    "Migration'ı çalıştır: php artisan migrate",
+    "Mevcut enabled field'ları status'a migrate et (2025_11_06_000003 migration'ı çalışacak)",
+    "Test: FeatureCategoryController store/update metodlarını test et",
+    "Script'leri güncelle: context7-full-scan.sh ve dead-code-analyzer.php çalışır durumda"
+  ],
+  "related_files": [
+    "database/migrations/2025_11_02_000001_create_polymorphic_features_system.php",
+    "database/migrations/2025_11_06_000003_remove_enabled_from_features_tables.php",
+    "app/Http/Controllers/Admin/FeatureCategoryController.php",
+    "app/Models/Feature.php",
+    "app/Models/FeatureCategory.php"
+  ],
+  "script_status": {
+    "context7-full-scan.sh": {
+      "status": "working",
+      "location": "scripts/context7-full-scan.sh",
+      "permissions": "executable",
+      "usage": "./scripts/context7-full-scan.sh [--mcp] [--report] [--json] [--help]"
+    },
+    "dead-code-analyzer.php": {
+      "status": "working",
+      "location": "scripts/dead-code-analyzer.php",
+      "permissions": "executable",
+      "usage": "php scripts/dead-code-analyzer.php [--mcp] [--context7]"
+    }
+  }
+}

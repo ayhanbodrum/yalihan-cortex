@@ -4,7 +4,7 @@
   "category": "maintenance",
   "priority": "HIGH",
   "status": "IN_PROGRESS",
-  
+
   "root_md_files_analysis": {
     "total_count": 63,
     "categories": {
@@ -85,7 +85,7 @@
       ]
     }
   },
-  
+
   "duplicate_files_detected": {
     "md_duplicate_detector_result": {
       "total_duplicates": 18,
@@ -98,7 +98,7 @@
       "note": "Çoğu node_modules içinde, root dizinde değil"
     }
   },
-  
+
   "cleanup_plan": {
     "keep_in_root": [
       "README.md",
@@ -129,16 +129,11 @@
       "PROJE-ANATOMISI-DEGERLENDIRME.md (duplicate of PROJE-ANATOMISI-VE-ONERILER-2025-11-04.md)"
     ]
   },
-  
+
   "context7_compliance": {
     "status": "✅ COMPLIANT",
     "note": "Temizlik işlemi Context7 standartlarına uygun"
   },
-  
-  "related_files": [
-    "docs/archive/",
-    "README.md",
-    "CLI_GUIDE.md"
-  ]
-}
 
+  "related_files": ["docs/archive/", "README.md", "CLI_GUIDE.md"]
+}

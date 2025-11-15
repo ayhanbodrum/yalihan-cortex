@@ -17,7 +17,16 @@ class EslesmeController extends AdminController
      */
     public function index(Request $request)
     {
-        $eslesmeler = \App\Models\Eslesme::with(['ilan', 'kisi', 'danisman'])->latest()->paginate(20);
+        // ✅ N+1 FIX: Eager loading with select optimization
+        $eslesmeler = \App\Models\Eslesme::with([
+            'ilan:id,baslik,fiyat,para_birimi,status',
+            'kisi:id,ad,soyad,telefon,email',
+            'danisman:id,name,email'
+        ])
+        ->select(['id', 'ilan_id', 'kisi_id', 'danisman_id', 'status', 'one_cikan', 'created_at'])
+        ->latest()
+        ->paginate(20);
+
         $istatistikler = [
             'toplam' => \App\Models\Eslesme::count(),
             'aktif' => \App\Models\Eslesme::where('status', 'Aktif')->count(),
@@ -36,23 +45,40 @@ class EslesmeController extends AdminController
     public function create()
     {
         // Context7: Provide datasets for form
+        // ✅ N+1 FIX: Select optimization
         $kisiler = \App\Models\Kisi::where('status', 'Aktif')
+            ->select(['id', 'ad', 'soyad', 'telefon', 'email'])
             ->orderBy('ad')
             ->get();
 
+        // ✅ N+1 FIX: Eager loading with select optimization
         $ilanlar = \App\Models\Ilan::where('status', 'Aktif')
-            ->with(['kategori', 'il', 'ilce'])
+            ->with([
+                'kategori:id,name,slug',
+                'il:id,il_adi',
+                'ilce:id,ilce_adi'
+            ])
+            ->select(['id', 'baslik', 'fiyat', 'para_birimi', 'kategori_id', 'il_id', 'ilce_id', 'created_at'])
             ->orderBy('created_at', 'desc')
             ->get();
 
+        // ✅ N+1 FIX: Eager loading with select optimization
         $talepler = \App\Models\Talep::where('status', 'Aktif')
-            ->with(['kisi', 'kategori'])
+            ->with([
+                'kisi:id,ad,soyad,telefon',
+                'kategori:id,name,slug'
+            ])
+            ->select(['id', 'baslik', 'kisi_id', 'kategori_id', 'il_id', 'ilce_id', 'created_at'])
             ->orderBy('created_at', 'desc')
             ->get();
 
+        // ✅ N+1 FIX: Select optimization
         $danismanlar = \App\Models\User::whereHas('roles', function ($q) {
             $q->where('name', 'danisman');
-        })->orderBy('name')->get();
+        })
+        ->select(['id', 'name', 'email'])
+        ->orderBy('name')
+        ->get();
 
         $data = [
             'pageTitle' => 'Yeni Eşleştirme Oluştur',
@@ -168,6 +194,9 @@ class EslesmeController extends AdminController
     public function destroy(Eslesme $eslesme)
     {
         try {
+            // ✅ N+1 FIX: Eager loading ekle
+            $eslesme->load('ilan:id,baslik');
+
             // Eşleşme bilgilerini al
             $eslesmeBilgi = 'Eşleşme #' . $eslesme->id;
             if ($eslesme->ilan) {
@@ -268,7 +297,7 @@ class EslesmeController extends AdminController
     {
         try {
             $talepler = \App\Models\Talep::select(['id', 'baslik', 'il', 'ilce', 'created_at'])
-                ->where('status', 'active')
+                ->where('status', 'Aktif') // Context7: Database değeri
                 ->orderBy('created_at', 'desc')
                 ->limit(100)
                 ->get()
@@ -298,7 +327,7 @@ class EslesmeController extends AdminController
     {
         try {
             $ilanlar = \App\Models\Ilan::select(['id', 'baslik', 'fiyat', 'para_birimi', 'adres_il', 'adres_ilce'])
-                ->where('status', 'active')
+                ->where('status', 'Aktif') // Context7: Database değeri
                 ->orderBy('created_at', 'desc')
                 ->limit(100)
                 ->get()
@@ -373,5 +402,3 @@ class EslesmeController extends AdminController
         return response('Eşleşmeler sayfaları hazır değil', 200);
     }
 }
-
-

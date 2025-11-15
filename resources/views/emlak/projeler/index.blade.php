@@ -1,4 +1,4 @@
-@extends('admin.layouts.unified')
+@extends('admin.layouts.neo')
 
 @section('title', 'Projeler')
 @section('page-title', 'Projeler')

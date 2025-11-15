@@ -1,9 +1,9 @@
 {{-- Bedroom Layout Manager Component --}}
 {{-- TatildeKirala/Airbnb "Nerede Uyuyacaksınız" özelliği --}}
 
-<div x-data="bedroomLayoutManager({{ json_encode($ilan->bedroom_layout ?? null) }})" 
+<div x-data="bedroomLayoutManager({{ json_encode($ilan->bedroom_layout ?? null) }})"
      class="bg-white dark:bg-gray-800 rounded-xl border-2 border-gray-200 dark:border-gray-700 p-6">
-    
+
     {{-- Header --}}
     <div class="flex items-center justify-between mb-6">
         <div>
@@ -14,7 +14,7 @@
                 Her odadaki yatak tiplerini belirleyin (TatildeKirala/Airbnb tarzı)
             </p>
         </div>
-        <button 
+        <button
             type="button"
             @click="addBedroom()"
             class="px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-semibold hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105">
@@ -28,7 +28,7 @@
             <div class="p-5 border-2 border-gray-300 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-900/50 hover:border-blue-500 dark:hover:border-blue-400 transition-colors">
                 <div class="flex items-start justify-between mb-4">
                     <h4 class="text-lg font-semibold text-gray-900 dark:text-white" x-text="`${index + 1}. Yatak Odası`"></h4>
-                    <button 
+                    <button
                         type="button"
                         @click="removeBedroom(index)"
                         class="text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 font-semibold text-sm">
@@ -42,7 +42,7 @@
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             Oda İsmi (Opsiyonel)
                         </label>
-                        <input 
+                        <input
                             type="text"
                             x-model="bedroom.room_name"
                             :placeholder="`${index + 1}. Yatak Odası`"
@@ -54,7 +54,7 @@
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             Yatak Tipi
                         </label>
-                        <select 
+                        <select
                             x-model="bedroom.bed_type"
                             @change="updateCapacity(index)"
                             class="w-full px-4 py-2.5 border-2 border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-black dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
@@ -72,7 +72,7 @@
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             Yatak Sayısı
                         </label>
-                        <input 
+                        <input
                             type="number"
                             x-model.number="bedroom.bed_count"
                             @input="updateCapacity(index)"
@@ -96,21 +96,21 @@
                     <div class="col-span-2">
                         <div class="flex flex-wrap gap-4">
                             <label class="inline-flex items-center gap-2 cursor-pointer">
-                                <input 
+                                <input
                                     type="checkbox"
                                     x-model="bedroom.ensuite_bathroom"
                                     class="w-5 h-5 rounded text-blue-600 focus:ring-2 focus:ring-blue-500">
                                 <span class="text-sm text-gray-700 dark:text-gray-300">🚿 Kendi Banyosu Var</span>
                             </label>
                             <label class="inline-flex items-center gap-2 cursor-pointer">
-                                <input 
+                                <input
                                     type="checkbox"
                                     x-model="bedroom.balcony"
                                     class="w-5 h-5 rounded text-blue-600 focus:ring-2 focus:ring-blue-500">
                                 <span class="text-sm text-gray-700 dark:text-gray-300">🌿 Balkon Var</span>
                             </label>
                             <label class="inline-flex items-center gap-2 cursor-pointer">
-                                <input 
+                                <input
                                     type="checkbox"
                                     x-model="bedroom.air_conditioning"
                                     class="w-5 h-5 rounded text-blue-600 focus:ring-2 focus:ring-blue-500">
@@ -129,7 +129,7 @@
             <h4 class="text-lg font-semibold text-gray-900 dark:text-white">
                 ➕ Ekstra Yatak Alanları (Opsiyonel)
             </h4>
-            <button 
+            <button
                 type="button"
                 @click="addExtraSleeping()"
                 class="px-3 py-1.5 bg-gray-600 text-white rounded-lg text-sm hover:bg-gray-700 transition-colors">
@@ -141,14 +141,14 @@
             <div class="p-4 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 mb-3">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                        <input 
+                        <input
                             type="text"
                             x-model="extra.location"
                             placeholder="Konum (Oturma Odası, Salon, etc.)"
                             class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-black dark:text-white text-sm">
                     </div>
                     <div>
-                        <select 
+                        <select
                             x-model="extra.bed_type"
                             @change="updateExtraCapacity(index)"
                             class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-black dark:text-white text-sm">
@@ -159,7 +159,7 @@
                     </div>
                     <div class="flex items-center gap-3">
                         <span class="px-3 py-2 bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg text-sm font-semibold" x-text="`${extra.capacity} kişi`"></span>
-                        <button 
+                        <button
                             type="button"
                             @click="removeExtraSleeping(index)"
                             class="text-red-600 hover:text-red-700 text-sm">
@@ -190,14 +190,14 @@
     </div>
 
     {{-- Hidden Input (JSON data for Laravel) --}}
-    <input 
-        type="hidden" 
-        name="bedroom_layout" 
+    <input
+        type="hidden"
+        name="bedroom_layout"
         :value="JSON.stringify(getLayoutData())">
-    
-    <input 
-        type="hidden" 
-        name="sleeping_arrangement_notes" 
+
+    <input
+        type="hidden"
+        name="sleeping_arrangement_notes"
         x-model="notes">
 
     {{-- Notes (Opsiyonel) --}}
@@ -205,7 +205,7 @@
         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
             📝 Ek Notlar (Opsiyonel)
         </label>
-        <textarea 
+        <textarea
             x-model="notes"
             rows="2"
             placeholder="Örn: Tüm yataklarda ortopedik yatak, çocuk korkuluğu mevcut..."
@@ -290,7 +290,7 @@ function bedroomLayoutManager(initialData = null) {
 
         updateExtraCapacity(index) {
             const extra = this.extraSleeping[index];
-            
+
             const capacityMap = {
                 'sofa_bed': 1,
                 'single': 1,
@@ -313,4 +313,3 @@ function bedroomLayoutManager(initialData = null) {
 }
 </script>
 @endpush
-

@@ -37,6 +37,14 @@ repos:
         files: (Controller\.php|Request\.php)$
         pass_filenames: false
 
+      # Context7 Order Column Check
+      - id: context7-order-check
+        name: Context7 Order Column Check
+        entry: bash scripts/check-order-column.sh
+        language: system
+        files: (migrations|Models).*\.php$
+        pass_filenames: true
+
   # Frontend Quality
   - repo: local
     hooks:
@@ -60,10 +68,11 @@ repos:
     hooks:
       # Remove trailing whitespace
       - id: trailing-whitespace
-        exclude: \.md$
+        exclude: ^storage/framework/views/|^\.yalihan-bekci/learned/|^yalihan-bekci/learned/|\.md$
 
       # Ensure files end with newline
       - id: end-of-file-fixer
+        exclude: ^storage/framework/views/|^\.yalihan-bekci/learned/|^yalihan-bekci/learned/
 
       # Check for large files
       - id: check-added-large-files
@@ -74,6 +83,7 @@ repos:
 
       # Check JSON syntax
       - id: check-json
+        exclude: ^(.yalihan-bekci|yalihan-bekci)/knowledge/.*\.json$|^(.yalihan-bekci|yalihan-bekci)/learned/.*\.json$
 
       # Prevent commit to main branch
       - id: no-commit-to-branch
@@ -95,3 +105,11 @@ repos:
         entry: bash scripts/check-sql-injection.sh
         language: system
         files: \.php$
+
+  - repo: local
+    hooks:
+      - id: yalihan-bekci-commit-suggester
+        name: Yalıhan Bekçi Commit Suggester
+        entry: bash .yalihan-bekci/tools/git-commit-suggester.sh --suggest --warn
+        language: system
+        pass_filenames: false

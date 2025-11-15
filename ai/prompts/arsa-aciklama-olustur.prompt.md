@@ -18,20 +18,20 @@ Arsa türü emlak ilanları için yatırım odaklı, potansiyel vurgulu açıkla
 
 ### **Zorunlu Parametreler:**
 
--   **title:** string - İlan başlığı
--   **location:** object - Konum bilgileri (il, ilçe, mahalle)
--   **price:** number - Fiyat bilgisi (TRY)
--   **size:** number - Arsa büyüklüğü (m²)
--   **zoning_status:** string - İmar durumu
+- **title:** string - İlan başlığı
+- **location:** object - Konum bilgileri (il, ilçe, mahalle)
+- **price:** number - Fiyat bilgisi (TRY)
+- **size:** number - Arsa büyüklüğü (m²)
+- **zoning_status:** string - İmar durumu
 
 ### **Opsiyonel Parametreler:**
 
--   **tone:** string - Ton (yatirim, gelecek, potansiyel) - default: "yatirim"
--   **target_length:** number - Hedef karakter sayısı (150-250) - default: 200
--   **keywords:** array - Ek anahtar kelimeler
--   **development_rights:** string - Yapı hakkı bilgisi
--   **accessibility:** array - Ulaşım bilgileri
--   **nearby_projects:** array - Yakın projeler
+- **tone:** string - Ton (yatirim, gelecek, potansiyel) - default: "yatirim"
+- **target_length:** number - Hedef karakter sayısı (150-250) - default: 200
+- **keywords:** array - Ek anahtar kelimeler
+- **development_rights:** string - Yapı hakkı bilgisi
+- **accessibility:** array - Ulaşım bilgileri
+- **nearby_projects:** array - Yakın projeler
 
 ---
 
@@ -58,14 +58,14 @@ Arsa türü emlak ilanları için yatırım odaklı, potansiyel vurgulu açıkla
 
 ## 🎯 **Context7 Kuralları**
 
--   ✅ Investment terminology usage
--   ✅ Zoning and development focus
--   ✅ Future potential emphasis
--   ✅ Location accessibility mention
--   ✅ Legal status clarity (imar durumu)
--   ✅ Size and measurement accuracy
--   ✅ Price per m² calculation
--   ✅ Development opportunity highlighting
+- ✅ Investment terminology usage
+- ✅ Zoning and development focus
+- ✅ Future potential emphasis
+- ✅ Location accessibility mention
+- ✅ Legal status clarity (imar durumu)
+- ✅ Size and measurement accuracy
+- ✅ Price per m² calculation
+- ✅ Development opportunity highlighting
 
 ---
 

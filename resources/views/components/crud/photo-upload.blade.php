@@ -17,7 +17,7 @@
     coverPhotoIndex: {{ $coverPhotoIndex }},
     previewUrls: [],
     dragOver: false,
-    
+
     init() {
         this.$watch('files', value => {
             this.previewUrls = [];
@@ -34,10 +34,10 @@
                 reader.readAsDataURL(value[i]);
             }
         });
-        
+
         this.$nextTick(() => this.makeElementsSortable());
     },
-    
+
     makeElementsSortable() {
         if (typeof Sortable !== 'undefined') {
             new Sortable(this.$refs.previewContainer, {
@@ -48,28 +48,28 @@
                     const files = Array.from(this.files);
                     const moved = files.splice(evt.oldIndex, 1)[0];
                     files.splice(evt.newIndex, 0, moved);
-                    
+
                     // FileList nesnesini taklit eden yeni bir DataTransfer nesnesi oluştur
                     const dataTransfer = new DataTransfer();
                     files.forEach(file => dataTransfer.items.add(file));
-                    
+
                     // Input'un files özelliğini güncelle
                     this.$refs.fileInput.files = dataTransfer.files;
                     this.files = dataTransfer.files;
-                    
+
                     // Önizleme URL'lerini de güncelle
                     const urls = Array.from(this.previewUrls);
                     const movedUrl = urls.splice(evt.oldIndex, 1)[0];
                     urls.splice(evt.newIndex, 0, movedUrl);
                     this.previewUrls = urls;
-                    
+
                     // Eğer kapak fotoğrafı taşınan dosya ise, indeksini güncelle
                     if (this.coverPhotoIndex === evt.oldIndex) {
                         this.coverPhotoIndex = evt.newIndex;
                     }
                 }
             });
-            
+
             if (this.existingPhotos.length > 0) {
                 new Sortable(this.$refs.existingContainer, {
                     animation: 150,
@@ -80,7 +80,7 @@
                         const moved = photos.splice(evt.oldIndex, 1)[0];
                         photos.splice(evt.newIndex, 0, moved);
                         this.existingPhotos = photos;
-                        
+
                         // Eğer kapak fotoğrafı taşınan dosya ise, indeksini güncelle
                         if (this.coverPhotoIndex === evt.oldIndex) {
                             this.coverPhotoIndex = evt.newIndex;
@@ -90,21 +90,21 @@
             }
         }
     },
-    
+
     removeFile(index) {
         const dt = new DataTransfer();
         const files = Array.from(this.files);
-        
+
         for (let i = 0; i < files.length; i++) {
             if (i !== index) {
                 dt.items.add(files[i]);
             }
         }
-        
+
         this.$refs.fileInput.files = dt.files;
         this.files = dt.files;
         this.previewUrls.splice(index, 1);
-        
+
         // Kapak fotoğrafı indeksini güncelle
         if (index === this.coverPhotoIndex) {
             this.coverPhotoIndex = 0;
@@ -112,10 +112,10 @@
             this.coverPhotoIndex--;
         }
     },
-    
+
     removeExistingPhoto(index) {
         this.existingPhotos.splice(index, 1);
-        
+
         // Kapak fotoğrafı indeksini güncelle
         if (index === this.coverPhotoIndex) {
             this.coverPhotoIndex = 0;
@@ -123,7 +123,7 @@
             this.coverPhotoIndex--;
         }
     },
-    
+
     formatFileSize(size) {
         if (size < 1024) {
             return size + ' bytes';
@@ -133,7 +133,7 @@
             return (size / (1024 * 1024)).toFixed(2) + ' MB';
         }
     },
-    
+
     setCoverPhoto(index, type = 'new') {
         if (type === 'new') {
             this.coverPhotoIndex = index;
@@ -148,8 +148,8 @@
             <span class="text-red-500">*</span>
         @endif
     </label>
-    
-    <div 
+
+    <div
         x-on:dragover.prevent="dragOver = true"
         x-on:dragleave.prevent="dragOver = false"
         x-on:drop.prevent="dragOver = false; files = $event.dataTransfer.files"
@@ -163,11 +163,11 @@
             <div class="flex text-sm text-gray-600 dark:text-gray-400">
                 <label for="{{ $name }}" class="relative cursor-pointer bg-white dark:bg-gray-800 rounded-lg font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 focus-within:outline-none">
                     <span>Dosya yükle</span>
-                    <input 
-                        id="{{ $name }}" 
-                        name="{{ $name }}{{ $multiple ? '[]' : '' }}" 
-                        type="file" 
-                        class="sr-only" 
+                    <input
+                        id="{{ $name }}"
+                        name="{{ $name }}{{ $multiple ? '[]' : '' }}"
+                        type="file"
+                        class="sr-only"
                         x-ref="fileInput"
                         x-on:change="files = $event.target.files"
                         {{ $multiple ? 'multiple' : '' }}
@@ -180,13 +180,13 @@
             <p class="text-xs text-gray-500 dark:text-gray-400">
                 {{ $multiple ? 'En fazla ' . $maxFiles . ' adet ' : '' }}{{ $maxSize }}MB'a kadar {{ $accept == 'image/*' ? 'PNG, JPG, GIF' : $accept }} dosyalar
             </p>
-            
+
             @if($help)
                 <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{{ $help }}</p>
             @endif
         </div>
     </div>
-    
+
     <!-- Mevcut fotoğraflar -->
     <div x-show="existingPhotos.length > 0" class="mt-4">
         <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Mevcut Fotoğraflar</h4>
@@ -218,7 +218,7 @@
             </template>
         </div>
     </div>
-    
+
     <!-- Yeni yüklenen fotoğraflar önizleme -->
     <div x-show="previewUrls.length > 0" class="mt-4">
         <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Yeni Fotoğraflar</h4>
@@ -252,9 +252,9 @@
             </template>
         </div>
     </div>
-    
+
     <input type="hidden" name="kapak_fotografi" x-model="coverPhotoIndex">
-    
+
     @error($name)
         <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
     @enderror

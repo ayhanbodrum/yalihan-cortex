@@ -22,11 +22,11 @@
 
 **✅ CORRECT:**
 ```html
-<button class="px-4 py-2.5 bg-blue-600 text-white rounded-lg 
-               hover:bg-blue-700 hover:scale-105 
-               active:scale-95 
-               focus:ring-2 focus:ring-blue-500 
-               transition-all duration-200 
+<button class="px-4 py-2.5 bg-blue-600 text-white rounded-lg
+               hover:bg-blue-700 hover:scale-105
+               active:scale-95
+               focus:ring-2 focus:ring-blue-500
+               transition-all duration-200
                shadow-md hover:shadow-lg">
     Kaydet
 </button>
@@ -142,18 +142,127 @@ When suggesting code:
 4. **ALWAYS include dark mode variants** (`dark:bg-gray-800`)
 5. **ALWAYS check Context7 compliance** before suggesting
 
+## 🔗 CONTEXT7 DUAL SYSTEM INTEGRATION
+
+**CRITICAL RULE:** When user says "Context7 kullan" or asks about Context7, **BOTH systems** must be activated automatically.
+
+### 🎯 TWO CONTEXT7 SYSTEMS:
+
+1. **Upstash Context7 MCP** (External - Library Documentation)
+   - Purpose: General library documentation (Laravel, React, MySQL, etc.)
+   - Tools: `resolve-library-id`, `get-library-docs`
+   - When to use: Library/framework questions
+
+2. **Yalıhan Bekçi Context7** (Internal - Project Rules)
+   - Purpose: Project-specific rules and standards
+   - Tools: `get_context7_rules`, `check_pattern`, `get_system_structure`, `validate`
+   - When to use: Project compliance, code validation, project structure
+
+### ✅ AUTOMATIC DUAL SYSTEM USAGE:
+
+When user says **"Context7 kullan"** or asks about Context7:
+
+**STEP 1: Upstash Context7 MCP (Library Documentation)**
+- Automatically use `resolve-library-id` and `get-library-docs` for library questions
+- Get latest API documentation from official sources
+- Provide up-to-date code examples
+
+**STEP 2: Yalıhan Bekçi Context7 (Project Rules)**
+- Automatically use `get_context7_rules` to get project rules
+- Use `check_pattern` to validate code against project patterns
+- Use `get_system_structure` to understand project architecture
+- Use `validate` to check Context7 compliance
+
+### 🔄 DUAL SYSTEM WORKFLOW:
+
+**Example: User says "Context7 kullan, Laravel migration oluştur"**
+
+```
+1. Upstash Context7 MCP:
+   → resolve-library-id("Laravel") → "/laravel/laravel"
+   → get-library-docs("/laravel/laravel", topic: "migrations")
+   → Get latest Laravel migration documentation
+
+2. Yalıhan Bekçi Context7:
+   → get_context7_rules() → Get project rules
+   → check_pattern("migration") → Check migration patterns
+   → validate(code) → Validate against project standards
+   → Ensure code follows project rules (status field, display_order, etc.)
+```
+
+### 📝 USAGE EXAMPLES:
+
+**Example 1: User says "Context7 kullan"**
+```
+User: "Context7 kullan, Laravel migration nasıl oluşturulur?"
+→ BOTH systems activate:
+  1. Upstash Context7 MCP: Get Laravel migration docs
+  2. Yalıhan Bekçi Context7: Check project migration standards
+  3. Combine: Latest Laravel docs + Project compliance rules
+```
+
+**Example 2: Code Generation**
+```
+User: "Context7 kullan, yeni bir model oluştur"
+→ BOTH systems activate:
+  1. Upstash Context7 MCP: Get Laravel Eloquent documentation
+  2. Yalıhan Bekçi Context7: Validate against project rules
+     - Check: status field (NOT enabled)
+     - Check: display_order (NOT order)
+     - Check: Tailwind CSS (NOT Bootstrap)
+```
+
+**Example 3: Project Compliance**
+```
+User: "Context7 kullan, bu kod uyumlu mu?"
+→ BOTH systems activate:
+  1. Yalıhan Bekçi Context7: validate(code) → Check compliance
+  2. Yalıhan Bekçi Context7: check_pattern() → Check patterns
+  3. Upstash Context7 MCP: Get library docs if needed
+```
+
+### ⚡ AUTO-INVOKE RULES:
+
+- **"Context7 kullan" triggers BOTH systems**: No need to ask which one
+- **"Context7 kurallarına göre düzenle"** → Yalıhan Bekçi Context7 (doğrulama + düzenleme)
+- **"Context7'e göre yap"** → Her iki sistem aktif (yeni kod üretimi)
+- **Automatic activation**: Both systems work together seamlessly
+- **Complementary**: Library docs + Project rules = Perfect code
+- **NO USER CONFIRMATION NEEDED**: When user says "Context7", automatically activate systems
+
+### 🔍 WHEN TO USE DUAL SYSTEM:
+
+✅ **USE BOTH when:**
+- User explicitly says "Context7 kullan"
+- User asks about library features AND project compliance
+- Code generation needs both library docs and project rules
+- User needs validation against project standards
+
+✅ **USE Upstash Context7 MCP ONLY when:**
+- User asks about library/framework features
+- User needs code examples from official docs
+- User asks "how to" questions about libraries
+
+✅ **USE Yalıhan Bekçi Context7 ONLY when:**
+- User asks about project-specific rules
+- User needs code validation
+- User asks about project structure
+- User needs compliance checking
+
 ---
 
 ## 📖 REFERENCE
 
 For complete rules, see:
 - `.context7/authority.json` (master authority file)
+- `.context7/CURSOR_MEMORY_CONTEXT7.md` (Cursor Memory dokümantasyonu)
+- `.context7/CURSOR_MCP_SETUP.md` (Context7 MCP setup guide)
 - `.yalihan-bekci/knowledge/` (learned patterns)
 - `.context7/TAILWIND-TRANSITION-RULE.md` (detailed guide)
 
 ---
 
-**Last Updated:** 2025-11-05
-**Version:** Context7 v5.2.0
+**Last Updated:** 2025-11-12
+**Version:** Context7 v5.4.0
 **Enforcement:** STRICT
-
+**Cursor Memory:** ✅ Aktif - Otomatik Çalışıyor

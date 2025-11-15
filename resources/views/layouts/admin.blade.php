@@ -4,8 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <!-- Context7 Location Defaults -->
+    <meta name="location-default-latitude" content="{{ config('location.map.default_latitude') }}">
+    <meta name="location-default-longitude" content="{{ config('location.map.default_longitude') }}">
+    <meta name="location-default-zoom" content="{{ config('location.map.default_zoom') }}">
     <title>@yield('title', 'Yönetim Paneli')</title>
     {{-- Removed: space-y-4.css (file doesn't exist, using Vite build instead) --}}
+    <link rel="stylesheet" href="{{ asset('css/advanced-leaflet.css') }}">
     @stack('styles')
 </head>
 
@@ -34,6 +40,10 @@
             © {{ date('Y') }} Yalıhan Emlak Yönetim Paneli
         </div>
     </footer>
+    @if (config('location.google_maps.enabled') && config('location.google_maps.api_key'))
+        <script src="https://maps.googleapis.com/maps/api/js?key={{ config('location.google_maps.api_key') }}&libraries={{ config('location.google_maps.libraries', 'places') }}" async defer></script>
+    @endif
+    <script src="{{ asset('js/context7-location-adapter.js') }}" defer></script>
     @stack('scripts')
 </body>
 

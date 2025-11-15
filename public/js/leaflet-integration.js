@@ -5,12 +5,19 @@
  */
 
 class LeafletMapManager {
-    constructor(containerId = "map") {
+    constructor(containerId = 'map') {
         this.containerId = containerId;
         this.map = null;
         this.markers = [];
         this.currentLocationMarker = null;
         this.nearbyMarkers = [];
+
+        // Context7: Nominatim rate limiting (min 1.2s between calls) + backoff
+        this.nominatim = {
+            lastCall: 0,
+            minDelay: 1200,
+            maxRetries: 3,
+        };
 
         this.init();
     }
@@ -24,22 +31,48 @@ class LeafletMapManager {
             return;
         }
 
-        // İstanbul merkezli harita
-        this.map = L.map(this.containerId).setView([41.0082, 28.9784], 13);
+        // Context7: Varsayılan merkez/zoom meta etiketlerinden
+        const latMeta = document.querySelector('meta[name="location-default-latitude"]');
+        const lngMeta = document.querySelector('meta[name="location-default-longitude"]');
+        const zoomMeta = document.querySelector('meta[name="location-default-zoom"]');
+        const center =
+            latMeta && lngMeta
+                ? [parseFloat(latMeta.content), parseFloat(lngMeta.content)]
+                : [41.0082, 28.9784];
+        const zoom = zoomMeta ? parseInt(zoomMeta.content) : 13;
+
+        this.map = L.map(this.containerId).setView(center, zoom);
 
         // OpenStreetMap tile layer
-        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-            attribution: "© OpenStreetMap contributors",
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors',
             maxZoom: 19,
         }).addTo(this.map);
 
         // Harita tıklama eventi
-        this.map.on("click", (e) => {
+        this.map.on('click', (e) => {
             this.onMapClick(e.latlng);
         });
 
         // Konum butonu ekle
         this.addLocationControl();
+
+        this.drawAdded = false;
+        const tryAddDraw = () => {
+            if (window.L && window.L.Control && window.L.Control.Draw && this.map && !this.drawAdded) {
+                const drawControl = new window.L.Control.Draw({
+                    draw: { polyline: true, polygon: true, rectangle: true, circle: false, marker: true },
+                    edit: { featureGroup: new window.L.FeatureGroup().addTo(this.map) },
+                });
+                this.map.addControl(drawControl);
+                this.drawAdded = true;
+            }
+        };
+        tryAddDraw();
+        const drawTimer = setInterval(() => {
+            if (this.drawAdded) { clearInterval(drawTimer); return; }
+            tryAddDraw();
+        }, 300);
     }
 
     /**
@@ -54,7 +87,7 @@ class LeafletMapManager {
     /**
      * Marker ekle/güncelle
      */
-    setMarker(lat, lng, title = "Seçilen Konum") {
+    setMarker(lat, lng, title = 'Seçilen Konum') {
         if (this.currentLocationMarker) {
             this.map.removeLayer(this.currentLocationMarker);
         }
@@ -65,7 +98,7 @@ class LeafletMapManager {
         }).addTo(this.map);
 
         // Marker sürüklenme eventi
-        this.currentLocationMarker.on("dragend", (e) => {
+        this.currentLocationMarker.on('dragend', (e) => {
             const position = e.target.getLatLng();
             this.updateLocationInputs(position.lat, position.lng);
             this.reverseGeocode(position.lat, position.lng);
@@ -88,15 +121,15 @@ class LeafletMapManager {
      * Form inputlarını güncelle
      */
     updateLocationInputs(lat, lng) {
-        const latInput = document.getElementById("enlem");
-        const lngInput = document.getElementById("boylam");
+        const latInput = document.getElementById('enlem');
+        const lngInput = document.getElementById('boylam');
 
         if (latInput) latInput.value = lat.toFixed(6);
         if (lngInput) lngInput.value = lng.toFixed(6);
 
         // Context7 event trigger
         if (window.Context7) {
-            window.Context7.trigger("location:updated", { lat, lng });
+            window.Context7.trigger('location:updated', { lat, lng });
         }
     }
 
@@ -105,17 +138,20 @@ class LeafletMapManager {
      */
     async reverseGeocode(lat, lng) {
         try {
-            const response = await fetch(
-                `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1&accept-language=tr`
-            );
+            const response = await fetch('/api/geo/reverse-geocode', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+                body: JSON.stringify({ latitude: lat, longitude: lng }),
+            });
 
-            const data = await response.json();
+            const payload = await response.json();
+            const data = payload.data || {};
 
             if (data && data.address) {
                 this.updateAddressFields(data.address, data.display_name);
             }
         } catch (error) {
-            console.error("Reverse geocoding error:", error);
+            console.error('Reverse geocoding error:', error);
         }
     }
 
@@ -124,7 +160,7 @@ class LeafletMapManager {
      */
     updateAddressFields(address, displayName) {
         // İl
-        const ilSelect = document.getElementById("il_id");
+        const ilSelect = document.getElementById('il_id');
         if (ilSelect && address.state) {
             const ilOption = Array.from(ilSelect.options).find((opt) =>
                 opt.text.toLowerCase().includes(address.state.toLowerCase())
@@ -133,48 +169,72 @@ class LeafletMapManager {
         }
 
         // İlçe
-        const ilceSelect = document.getElementById("ilce_id");
+        const ilceSelect = document.getElementById('ilce_id');
         if (ilceSelect && address.county) {
             // İlçe dropdown'ını güncelle
             this.updateDistrictDropdown(address.county);
         }
 
         // Mahalle
-        const mahalleInput = document.getElementById("mahalle");
+        const mahalleInput = document.getElementById('mahalle');
         if (mahalleInput && address.suburb) {
             mahalleInput.value = address.suburb;
         }
 
         // Tam adres
-        const adresInput = document.getElementById("adres");
+        const adresInput = document.getElementById('adres');
         if (adresInput) {
             adresInput.value = displayName;
         }
 
+        const sokakInput = document.getElementById('sokak');
+        if (sokakInput && address.road) {
+            sokakInput.value = address.road;
+        }
+
+        const caddeInput = document.getElementById('cadde');
+        if (caddeInput && address.road) {
+            caddeInput.value = address.road;
+        }
+
+        const bulvarInput = document.getElementById('bulvar');
+        if (bulvarInput && address.road) {
+            bulvarInput.value = address.road;
+        }
+
+        const binaNoInput = document.getElementById('bina_no');
+        if (binaNoInput && address.house_number) {
+            binaNoInput.value = address.house_number;
+        }
+
+        const daireNoInput = document.getElementById('daire_no');
+        if (daireNoInput && address.apartment) {
+            daireNoInput.value = address.apartment;
+        }
+
         // Toast notification
         if (window.showToast) {
-            window.showToast("success", "Konum bilgileri güncellendi");
+            window.showToast('success', 'Konum bilgileri güncellendi');
         }
     }
 
     /**
      * Nearby places - çevredeki yerler
      */
-    async findNearbyPlaces(lat, lng, radius = 1000, type = "") {
+    async findNearbyPlaces(lat, lng, radius = 1000, type = '') {
         try {
-            let query = `https://nominatim.openstreetmap.org/search?format=json&lat=${lat}&lon=${lng}&zoom=16&addressdetails=1&limit=20&accept-language=tr`;
+            const params = new URLSearchParams({ lat: String(lat), lng: String(lng) });
+            if (type) params.append('type', type);
+            if (radius) params.append('radius', String(radius));
 
-            if (type) {
-                query += `&q=${encodeURIComponent(type)}`;
-            }
-
-            const response = await fetch(query);
-            const places = await response.json();
+            const response = await fetch(`/api/geo/nearby?${params.toString()}`);
+            const payload = await response.json();
+            const places = payload.data || [];
 
             this.displayNearbyPlaces(places);
             return places;
         } catch (error) {
-            console.error("Nearby places error:", error);
+            console.error('Nearby places error:', error);
             return [];
         }
     }
@@ -188,17 +248,14 @@ class LeafletMapManager {
 
         places.forEach((place) => {
             if (place.lat && place.lon) {
-                const marker = L.marker(
-                    [parseFloat(place.lat), parseFloat(place.lon)],
-                    {
-                        icon: this.createNearbyIcon(place.type),
-                    }
-                ).addTo(this.map);
+                const marker = L.marker([parseFloat(place.lat), parseFloat(place.lon)], {
+                    icon: this.createNearbyIcon(place.type),
+                }).addTo(this.map);
 
                 marker.bindPopup(`
                     <div class="p-2">
                         <strong>${place.display_name}</strong><br>
-                        <small>${place.type || "Yer"}</small>
+                        <small>${place.type || 'Yer'}</small>
                     </div>
                 `);
 
@@ -211,27 +268,27 @@ class LeafletMapManager {
      * Özel ikon oluştur
      */
     createNearbyIcon(type) {
-        let color = "#3b82f6";
+        let color = '#3b82f6';
 
         switch (type) {
-            case "hospital":
-                color = "#ef4444";
+            case 'hospital':
+                color = '#ef4444';
                 break;
-            case "school":
-                color = "#10b981";
+            case 'school':
+                color = '#10b981';
                 break;
-            case "shopping":
-                color = "#f59e0b";
+            case 'shopping':
+                color = '#f59e0b';
                 break;
-            case "restaurant":
-                color = "#8b5cf6";
+            case 'restaurant':
+                color = '#8b5cf6';
                 break;
             default:
-                color = "#6b7280";
+                color = '#6b7280';
         }
 
         return L.divIcon({
-            className: "custom-nearby-marker",
+            className: 'custom-nearby-marker',
             html: `<div style="background-color: ${color}; width: 12px; height: 12px; border-radius: 50%; border: 2px solid white;"></div>`,
             iconSize: [16, 16],
             iconAnchor: [8, 8],
@@ -252,10 +309,10 @@ class LeafletMapManager {
      * Konum kontrolü ekle
      */
     addLocationControl() {
-        const locationControl = L.control({ position: "topright" });
+        const locationControl = L.control({ position: 'topright' });
 
         locationControl.onAdd = () => {
-            const div = L.DomUtil.create("div", "leaflet-control leaflet-bar");
+            const div = L.DomUtil.create('div', 'leaflet-control leaflet-bar');
             div.innerHTML = `
                 <a href="#" title="Konumumu Bul" style="background: white; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; text-decoration: none; color: #333;">
                     📍
@@ -284,14 +341,14 @@ class LeafletMapManager {
                     const lng = position.coords.longitude;
 
                     this.map.setView([lat, lng], 16);
-                    this.setMarker(lat, lng, "Mevcut Konumum");
+                    this.setMarker(lat, lng, 'Mevcut Konumum');
                     this.updateLocationInputs(lat, lng);
                     this.reverseGeocode(lat, lng);
                 },
                 (error) => {
-                    console.error("Konum alınamadı:", error);
+                    console.error('Konum alınamadı:', error);
                     if (window.showToast) {
-                        window.showToast("error", "Konum bilgisi alınamadı");
+                        window.showToast('error', 'Konum bilgisi alınamadı');
                     }
                 }
             );
@@ -303,13 +360,14 @@ class LeafletMapManager {
      */
     async searchAddress(query) {
         try {
-            const response = await fetch(
-                `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
-                    query
-                )}&limit=5&accept-language=tr&countrycodes=tr`
-            );
+            const response = await fetch('/api/geo/geocode', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+                body: JSON.stringify({ query, limit: 5 }),
+            });
 
-            const results = await response.json();
+            const payload = await response.json();
+            const results = payload.data || [];
 
             if (results.length > 0) {
                 const result = results[0];
@@ -323,9 +381,29 @@ class LeafletMapManager {
 
             return results;
         } catch (error) {
-            console.error("Address search error:", error);
+            console.error('Address search error:', error);
             return [];
         }
+    }
+
+    /**
+     * Nominatim: rate limited fetch with exponential backoff
+     */
+    async nominatimFetch(url, options = {}, attempt = 0) {
+        const now = Date.now();
+        const wait = Math.max(0, this.nominatim.minDelay - (now - this.nominatim.lastCall));
+        if (wait > 0) {
+            await new Promise((r) => setTimeout(r, wait));
+        }
+        this.nominatim.lastCall = Date.now();
+
+        const resp = await fetch(url, options);
+        if ((resp.status === 429 || resp.status === 503) && attempt < this.nominatim.maxRetries) {
+            const backoff = Math.pow(2, attempt) * 1000;
+            await new Promise((r) => setTimeout(r, backoff));
+            return this.nominatimFetch(url, options, attempt + 1);
+        }
+        return resp;
     }
 
     /**
@@ -333,27 +411,34 @@ class LeafletMapManager {
      */
     async updateDistrictDropdown(countyName) {
         // İlçe API'si Context7 uyumlu
-        const ilId = document.getElementById("il_id")?.value;
+        const ilId = document.getElementById('il_id')?.value;
         if (!ilId) return;
 
         try {
+            // DÜZELTME: Mevcut route yapısına uyumlu endpoint ve esnek yanıt ayrıştırma
             const response = await fetch(
-                `/admin/api/locations/districts/${ilId}`
+                `/api/location/districts?il_id=${encodeURIComponent(ilId)}`
             );
-            const districts = await response.json();
+            const json = await response.json();
+            const districts = Array.isArray(json)
+                ? json
+                : Array.isArray(json?.data)
+                  ? json.data
+                  : [];
 
-            const ilceSelect = document.getElementById("ilce_id");
+            const ilceSelect = document.getElementById('ilce_id');
             if (ilceSelect && districts.length > 0) {
                 ilceSelect.innerHTML = '<option value="">İlçe Seçin</option>';
 
                 districts.forEach((district) => {
-                    const option = document.createElement("option");
+                    const option = document.createElement('option');
                     option.value = district.id;
-                    option.textContent = district.name;
+                    option.textContent = district.name || district.ilce_adi || '';
 
                     // Eşleşen ilçeyi seç
                     if (
-                        district.name
+                        countyName &&
+                        (district.name || district.ilce_adi || '')
                             .toLowerCase()
                             .includes(countyName.toLowerCase())
                     ) {
@@ -364,8 +449,75 @@ class LeafletMapManager {
                 });
             }
         } catch (error) {
-            console.error("District update error:", error);
+            console.error('District update error:', error);
         }
+    }
+
+    parseFreeAddress(text) {
+        if (!text || typeof text !== 'string') return {};
+        const t = text.toLowerCase();
+        const result = {};
+
+        const noMatch = t.match(/\bno\s*[:\-]?\s*(\d{1,5})/i);
+        if (noMatch) result.house_number = noMatch[1];
+
+        const aptMatch = t.match(/\b(daire|ofis)\s*[:\-]?\s*([\w\-]+)/i);
+        if (aptMatch) result.apartment = aptMatch[2];
+
+        const roadMatch = t.match(/\b(sokak|sk\.?|cadde|cd\.?|bulvar|blv\.?)\b([^,\n]*)/i);
+        if (roadMatch) {
+            result.road = roadMatch[2].trim();
+            result.roadType = roadMatch[1];
+        }
+
+        return result;
+    }
+
+    attachFreeAddressListener() {
+        const adresInput = document.getElementById('adres');
+        if (!adresInput) return;
+
+        let timer = null;
+        const handler = () => {
+            const parsed = this.parseFreeAddress(adresInput.value || '');
+
+            if (parsed.house_number) {
+                const binaNoInput = document.getElementById('bina_no');
+                if (binaNoInput) binaNoInput.value = parsed.house_number;
+            }
+            if (parsed.apartment) {
+                const daireNoInput = document.getElementById('daire_no');
+                if (daireNoInput) daireNoInput.value = parsed.apartment;
+            }
+            if (parsed.road) {
+                const roadVal = parsed.road;
+                const type = parsed.roadType ? parsed.roadType.toLowerCase() : '';
+                const sokakInput = document.getElementById('sokak');
+                const caddeInput = document.getElementById('cadde');
+                const bulvarInput = document.getElementById('bulvar');
+                if (type.startsWith('sokak') || type.startsWith('sk')) {
+                    if (sokakInput) sokakInput.value = roadVal;
+                } else if (type.startsWith('cadde') || type.startsWith('cd')) {
+                    if (caddeInput) caddeInput.value = roadVal;
+                } else if (type.startsWith('bulvar') || type.startsWith('blv')) {
+                    if (bulvarInput) bulvarInput.value = roadVal;
+                } else if (sokakInput) {
+                    sokakInput.value = roadVal;
+                }
+            }
+
+            if (window.Context7) {
+                window.Context7.trigger('address:parsed', parsed);
+            }
+        };
+
+        const debounced = () => {
+            if (timer) clearTimeout(timer);
+            timer = setTimeout(handler, 300);
+        };
+
+        adresInput.addEventListener('input', debounced);
+        adresInput.addEventListener('change', handler);
     }
 }
 
@@ -374,10 +526,19 @@ window.LeafletMapManager = LeafletMapManager;
 
 // Global fonksiyonlar (Alpine.js için)
 window.addressSearch = function (query) {
-    if (window.mapManager && query) {
+    if (!query) {
+        console.warn('Empty query');
+        return [];
+    }
+    // Context7 Adapter öncelikli
+    if (window.c7Location && typeof window.c7Location.searchAddress === 'function') {
+        return window.c7Location.searchAddress(query);
+    }
+    if (window.mapManager && typeof window.mapManager.searchAddress === 'function') {
         return window.mapManager.searchAddress(query);
     }
-    console.warn("Map manager not initialized or empty query");
+    console.warn('Map manager not initialized');
+    return [];
 };
 
 window.getCurrentLocation = function () {
@@ -387,22 +548,27 @@ window.getCurrentLocation = function () {
                 const lat = position.coords.latitude;
                 const lng = position.coords.longitude;
 
-                if (window.mapManager) {
+                if (window.c7Location && typeof window.c7Location.setMarker === 'function') {
+                    window.c7Location.setMarker(lat, lng, 'Mevcut Konumum');
+                    if (typeof window.c7Location.reverseGeocode === 'function') {
+                        window.c7Location.reverseGeocode(lat, lng);
+                    }
+                } else if (window.mapManager) {
                     window.mapManager.map.setView([lat, lng], 16);
-                    window.mapManager.setMarker(lat, lng, "Mevcut Konumum");
+                    window.mapManager.setMarker(lat, lng, 'Mevcut Konumum');
                     window.mapManager.updateLocationInputs(lat, lng);
                     window.mapManager.reverseGeocode(lat, lng);
                 }
 
                 // Toast notification
                 if (window.toast) {
-                    window.toast.success("Konum bulundu!");
+                    window.toast.success('Konum bulundu!');
                 }
             },
             function (error) {
-                console.error("Geolocation error:", error);
+                console.error('Geolocation error:', error);
                 if (window.toast) {
-                    window.toast.error("Konum alınamadı: " + error.message);
+                    window.toast.error('Konum alınamadı: ' + error.message);
                 }
             },
             {
@@ -412,39 +578,37 @@ window.getCurrentLocation = function () {
             }
         );
     } else {
-        console.error("Geolocation not supported");
+        console.error('Geolocation not supported');
         if (window.toast) {
-            window.toast.error("Tarayıcınız konum özelliğini desteklemiyor");
+            window.toast.error('Tarayıcınız konum özelliğini desteklemiyor');
         }
     }
 };
 
 // Diğer eksik fonksiyonlar
 window.searchNearby = function (type, radius = 1000) {
-    const lat = document.getElementById("enlem")?.value;
-    const lng = document.getElementById("boylam")?.value;
+    const lat = document.getElementById('enlem')?.value;
+    const lng = document.getElementById('boylam')?.value;
 
     if (lat && lng && window.mapManager) {
-        window.mapManager.findNearbyPlaces(
-            parseFloat(lat),
-            parseFloat(lng),
-            radius,
-            type
-        );
+        window.mapManager.findNearbyPlaces(parseFloat(lat), parseFloat(lng), radius, type);
     }
 };
 
 // DOM ready
-document.addEventListener("DOMContentLoaded", () => {
-    if (document.getElementById("map")) {
-        window.mapManager = new LeafletMapManager("map");
+document.addEventListener('DOMContentLoaded', () => {
+    if (document.getElementById('map')) {
+        window.mapManager = new LeafletMapManager('map');
+        if (window.mapManager && typeof window.mapManager.attachFreeAddressListener === 'function') {
+            window.mapManager.attachFreeAddressListener();
+        }
 
         // Nearby search butonları
-        document.addEventListener("click", (e) => {
-            if (e.target.classList.contains("nearby-search-btn")) {
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('nearby-search-btn')) {
                 const type = e.target.dataset.type;
-                const lat = document.getElementById("enlem")?.value;
-                const lng = document.getElementById("boylam")?.value;
+                const lat = document.getElementById('enlem')?.value;
+                const lng = document.getElementById('boylam')?.value;
 
                 if (lat && lng && window.mapManager) {
                     window.mapManager.findNearbyPlaces(

@@ -27,16 +27,16 @@
                 <span class="text-red-500 font-bold">*</span>
             </label>
             <div class="relative">
-                <select 
-                    name="ana_kategori_id" 
-                    id="ana_kategori" 
+                <select
+                    name="ana_kategori_id"
+                    id="ana_kategori"
                     required
-                    data-context7-field="ana_kategori_id" 
+                    data-context7-field="ana_kategori_id"
                     onchange="loadAltKategoriler(this.value)"
                     class="w-full px-4 py-3.5
-                           border-2 border-gray-300 dark:border-gray-600 
-                           rounded-xl 
-                           bg-white dark:bg-gray-800 
+                           border-2 border-gray-300 dark:border-gray-600
+                           rounded-xl
+                           bg-white dark:bg-gray-800
                            text-gray-900 dark:text-gray-100
                            focus:ring-4 focus:ring-green-500/20 focus:border-green-500 dark:focus:border-green-400
                            transition-all duration-200
@@ -46,7 +46,7 @@
                            appearance-none">
                     <option value="">Kategori Seçin...</option>
                     @foreach ($anaKategoriler as $kategori)
-                        <option value="{{ $kategori->id }}" 
+                        <option value="{{ $kategori->id }}"
                                 data-slug="{{ $kategori->slug }}"
                                 {{ old('ana_kategori_id') == $kategori->id ? 'selected' : '' }}>
                             {{ $kategori->name }}
@@ -79,16 +79,16 @@
                 <span class="text-red-500 font-bold">*</span>
             </label>
             <div class="relative">
-                <select 
-                    name="alt_kategori_id" 
-                    id="alt_kategori" 
-                    required 
-                    data-context7-field="alt_kategori_id" 
+                <select
+                    name="alt_kategori_id"
+                    id="alt_kategori"
+                    required
+                    data-context7-field="alt_kategori_id"
                     onchange="loadYayinTipleri(this.value)"
                     class="w-full px-4 py-3.5
-                           border-2 border-gray-300 dark:border-gray-600 
-                           rounded-xl 
-                           bg-white dark:bg-gray-800 
+                           border-2 border-gray-300 dark:border-gray-600
+                           rounded-xl
+                           bg-white dark:bg-gray-800
                            text-gray-900 dark:text-gray-100
                            focus:ring-4 focus:ring-green-500/20 focus:border-green-500 dark:focus:border-green-400
                            transition-all duration-200
@@ -125,16 +125,16 @@
                 <span class="text-red-500 font-bold">*</span>
             </label>
             <div class="relative">
-                <select 
-                    name="yayin_tipi_id" 
-                    id="yayin_tipi_id" 
-                    required 
-                    data-context7-field="yayin_tipi_id" 
+                <select
+                    name="yayin_tipi_id"
+                    id="yayin_tipi_id"
+                    required
+                    data-context7-field="yayin_tipi_id"
                     onchange="dispatchCategoryChanged(); IlanCreateCategories.loadTypeBasedFields();"
                     class="w-full px-4 py-3.5
-                           border-2 border-gray-300 dark:border-gray-600 
-                           rounded-xl 
-                           bg-white dark:bg-gray-800 
+                           border-2 border-gray-300 dark:border-gray-600
+                           rounded-xl
+                           bg-white dark:bg-gray-800
                            text-gray-900 dark:text-gray-100
                            focus:ring-4 focus:ring-green-500/20 focus:border-green-500 dark:focus:border-green-400
                            transition-all duration-200

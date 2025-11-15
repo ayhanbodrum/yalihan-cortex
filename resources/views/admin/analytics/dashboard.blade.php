@@ -123,12 +123,12 @@
                 </div>
             </div>
 
-            <!-- Context7 Analytics Card -->
+            <!-- Search Analytics Card -->
             <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all p-4">
                 <div class="flex items-center justify-between">
                     <div>
                         <div class="text-xs font-medium text-yellow-600 dark:text-yellow-400 uppercase tracking-wide mb-1">
-                            Context7 Aramalar
+                            Arama Analizi
                         </div>
                         <div class="text-xl font-semibold text-gray-900 dark:text-white" id="space-y-2">
                             {{ number_format($analytics['context7_analytics']['total_searches'] ?? 0) }}
@@ -174,12 +174,12 @@
                 </div>
             </div>
 
-            <!-- Context7 Analytics Section -->
+            <!-- Search Analytics Section -->
             <div class="mb-6">
                 <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all p-4">
                     <h5 class="mb-4 font-semibold text-gray-900 dark:text-white">
                         <i class="fas fa-search mr-2 text-orange-500"></i>
-                        Context7 Performans Dashboard
+                        Arama Performans Paneli
                     </h5>
                     <div>
                         <div class="row">
@@ -505,7 +505,7 @@
 @endsection
 
 @push('styles')
-    
+
 @endpush
 
 @push('scripts')
@@ -732,16 +732,16 @@
                     document.getElementById('cpu-usage').textContent = data.system_health.cpu_usage + '%';
                     document.getElementById('memory-usage').textContent = data.system_health.memory_usage + '%';
 
-                    // Context7 Analytics Updates
+                    // Search analytics updates
                     if (data.context7_analytics) {
-                        updateContext7Metrics(data.context7_analytics);
+                        updateSearchMetrics(data.context7_analytics);
                     }
                 })
                 .catch(error => console.error('Error updating real-time metrics:', error));
         }
 
-        // Update Context7 metrics
-        function updateContext7Metrics(context7Data) {
+        // Update search metrics
+        function updateSearchMetrics(context7Data) {
             // Update search accuracy
             const accuracyPercentage = context7Data.search_accuracy || 0;
             document.getElementById('search-accuracy').style.width = accuracyPercentage + '%';
@@ -773,9 +773,9 @@
                     updateMetrics(data);
                     updateCharts(data);
 
-                    // Update Context7 analytics
+                    // Update search analytics
                     if (data.context7_analytics) {
-                        updateContext7Metrics(data.context7_analytics);
+                        updateSearchMetrics(data.context7_analytics);
                     }
                 })
                 .catch(error => console.error('Error refreshing analytics:', error));

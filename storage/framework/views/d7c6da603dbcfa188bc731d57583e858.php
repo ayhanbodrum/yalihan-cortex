@@ -1,0 +1,291 @@
+
+<div class="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow duration-200 p-5">
+    <!-- Section Header -->
+    <div class="flex items-center gap-3 mb-4 pb-3 border-b border-gray-200 dark:border-gray-700">
+        <div class="flex items-center justify-center w-9 h-9 rounded-lg bg-gradient-to-br from-green-500 to-emerald-600 text-white shadow-md font-semibold text-sm">
+            2
+        </div>
+        <div>
+            <h2 class="text-xl font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+                <svg class="w-5 h-5 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
+                </svg>
+                Kategori Sistemi
+            </h2>
+            <p class="text-xs text-gray-600 dark:text-gray-400 mt-0.5">İlanınızın kategori ve yayın tipini seçin</p>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        
+        <div class="group">
+            <label for="ana_kategori" class="text-sm font-medium text-gray-900 dark:text-white mb-1.5 flex items-center gap-2">
+                <span class="flex items-center justify-center w-5 h-5 rounded-full bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 text-xs font-semibold">
+                    1
+                </span>
+                Ana Kategori
+                <span class="text-red-500 font-semibold">*</span>
+            </label>
+            <div class="relative">
+                <select name="ana_kategori_id"
+                    id="ana_kategori"
+                    required
+                    data-context7-field="ana_kategori_id"
+                    onchange="loadAltKategoriler(this.value); safeDispatchCategoryChanged();"
+                    <?php $__errorArgs = ['ana_kategori_id'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> aria-invalid="true" aria-describedby="ana_kategori_id-error" data-error="true" <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                    class="w-full px-4 py-2.5 text-base
+                           border border-gray-300 dark:border-gray-600
+                           rounded-lg
+                           bg-white dark:bg-gray-800
+                           text-black dark:text-white
+                           focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:focus:border-green-400
+                           transition-all duration-200
+                           hover:border-gray-400 dark:hover:border-gray-500
+                           cursor-pointer
+                           focus:shadow-md
+                           appearance-none">
+                    <option value="">Kategori Seçin...</option>
+                    <?php $__currentLoopData = $anaKategoriler; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $kategori): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <option value="<?php echo e($kategori->id); ?>"
+                                data-slug="<?php echo e($kategori->slug); ?>"
+                                <?php echo e((old('ana_kategori_id', $ilan->ana_kategori_id ?? null) == $kategori->id) ? 'selected' : ''); ?>>
+                            <?php echo e($kategori->name); ?>
+
+                        </option>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                </select>
+                <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                    <svg class="w-5 h-5 text-gray-400 group-focus-within:text-green-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </div>
+            </div>
+            <?php $__errorArgs = ['ana_kategori_id'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                <div id="ana_kategori_id-error" role="alert" aria-live="assertive" class="mt-2 flex items-center gap-2 text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 px-4 py-2.5 rounded-lg">
+                    <svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                    </svg>
+                    <?php echo e($message); ?>
+
+                </div>
+            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+        </div>
+
+        
+        <div class="group" x-data="{ loading: false }">
+            <label for="alt_kategori" class="text-sm font-medium text-gray-900 dark:text-white mb-1.5 flex items-center gap-2">
+                <span class="flex items-center justify-center w-5 h-5 rounded-full bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 text-xs font-semibold">
+                    2
+                </span>
+                Alt Kategori
+                <span class="text-red-500 font-semibold">*</span>
+            </label>
+            <div class="relative">
+                <select name="alt_kategori_id"
+                    id="alt_kategori"
+                    required
+                    data-context7-field="alt_kategori_id"
+                    data-default="<?php echo e(old('alt_kategori_id', $ilan->alt_kategori_id ?? null)); ?>"
+                    onchange="loadYayinTipleri(this.value); safeDispatchCategoryChanged();"
+                    <?php $__errorArgs = ['alt_kategori_id'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> aria-invalid="true" aria-describedby="alt_kategori_id-error" data-error="true" <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                    class="w-full px-4 py-2.5 text-base
+                           border border-gray-300 dark:border-gray-600
+                           rounded-lg
+                           bg-white dark:bg-gray-800
+                           text-black dark:text-white
+                           focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:focus:border-green-400
+                           transition-all duration-200
+                           hover:border-gray-400 dark:hover:border-gray-500
+                           cursor-pointer
+                           focus:shadow-md
+                           disabled:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-60
+                           appearance-none">
+                    <option value="">Önce ana kategori seçin...</option>
+                </select>
+                <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                    <svg class="w-5 h-5 text-gray-400 group-focus-within:text-green-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </div>
+            </div>
+            <?php $__errorArgs = ['alt_kategori_id'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                <div id="alt_kategori_id-error" role="alert" aria-live="assertive" class="mt-2 flex items-center gap-2 text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 px-4 py-2.5 rounded-lg">
+                    <svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                    </svg>
+                    <?php echo e($message); ?>
+
+                </div>
+            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+        </div>
+
+        
+        <div class="group">
+            <label for="yayin_tipi_id" class="text-sm font-medium text-gray-900 dark:text-white mb-1.5 flex items-center gap-2">
+                <span class="flex items-center justify-center w-5 h-5 rounded-full bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 text-xs font-semibold">
+                    3
+                </span>
+                Yayın Tipi
+                <span class="text-red-500 font-semibold">*</span>
+            </label>
+            <div class="relative">
+                <select name="yayin_tipi_id"
+                    id="yayin_tipi_id"
+                    required
+                    data-context7-field="yayin_tipi_id"
+                    data-default="<?php echo e(old('yayin_tipi_id', $ilan->yayin_tipi_id ?? null)); ?>"
+                    onchange="safeDispatchCategoryChanged(); IlanCreateCategories.loadTypeBasedFields();"
+                    <?php $__errorArgs = ['yayin_tipi_id'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> aria-invalid="true" aria-describedby="yayin_tipi_id-error" data-error="true" <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                    class="w-full px-4 py-2.5 text-base
+                           border border-gray-300 dark:border-gray-600
+                           rounded-lg
+                           bg-white dark:bg-gray-800
+                           text-black dark:text-white
+                           focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:focus:border-green-400
+                           transition-all duration-200
+                           hover:border-gray-400 dark:hover:border-gray-500
+                           cursor-pointer
+                           focus:shadow-md
+                           disabled:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-60
+                           appearance-none">
+                    <option value="">Önce alt kategori seçin...</option>
+                </select>
+                <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                    <svg class="w-5 h-5 text-gray-400 group-focus-within:text-green-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </div>
+                <p id="yayin-tip-hint" class="mt-2 text-xs text-orange-600 dark:text-orange-400 hidden">Yayın tipi seçilmedi; bazı kategori alanları gösterilmeyebilir.</p>
+            </div>
+            <?php $__errorArgs = ['yayin_tipi_id'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                <div id="yayin_tipi_id-error" role="alert" aria-live="assertive" class="mt-2 flex items-center gap-2 text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 px-4 py-2.5 rounded-lg">
+                    <svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                    </svg>
+                    <?php echo e($message); ?>
+
+                </div>
+            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+        </div>
+    </div>
+
+    
+    <div class="mt-4 flex items-center justify-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+        <div class="flex items-center gap-2 px-3 py-1.5 bg-gray-100 dark:bg-gray-800 rounded-full">
+            <span class="w-2 h-2 rounded-full bg-green-500" id="ana-kategori-indicator"></span>
+            <span>Ana Kategori</span>
+        </div>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+        </svg>
+        <div class="flex items-center gap-2 px-3 py-1.5 bg-gray-100 dark:bg-gray-800 rounded-full">
+            <span class="w-2 h-2 rounded-full bg-gray-300" id="alt-kategori-indicator"></span>
+            <span>Alt Kategori</span>
+        </div>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+        </svg>
+        <div class="flex items-center gap-2 px-3 py-1.5 bg-gray-100 dark:bg-gray-800 rounded-full">
+            <span class="w-2 h-2 rounded-full bg-gray-300" id="yayin-tipi-indicator"></span>
+            <span>Yayın Tipi</span>
+        </div>
+    </div>
+
+    
+    <?php echo $__env->make('admin.ilanlar.partials.stable._kategori-dinamik-alanlar', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+</div>
+
+
+
+<script>
+console.log('✅ Kategori sistemi - categories.js modülü kullanılıyor');
+window.safeDispatchCategoryChanged = function(){
+  var kategoriSelect = document.getElementById('ana_kategori');
+  var yayinSelect = document.getElementById('yayin_tipi_id');
+  var slug = '';
+  if (kategoriSelect && kategoriSelect.selectedIndex >= 0) {
+    var opt = kategoriSelect.options[kategoriSelect.selectedIndex];
+    slug = (opt && opt.getAttribute('data-slug')) || '';
+  }
+  var yayinId = yayinSelect ? yayinSelect.value : null;
+  var detail = { category: { slug: slug, parent_slug: slug, id: kategoriSelect ? kategoriSelect.value : null }, yayinTipiId: yayinId };
+  var ready = !!document.getElementById('fields-empty-state') || !!document.getElementById('fields-content');
+  if (window.featuresSystem && typeof window.featuresSystem.invalidateAll === 'function') {
+    window.featuresSystem.invalidateAll();
+  }
+  if (ready) { window.dispatchEvent(new CustomEvent('category-changed', { detail: detail })); return; }
+  var t = setInterval(function(){
+    var ok = !!document.getElementById('fields-empty-state') || !!document.getElementById('fields-content');
+    if (ok){ clearInterval(t); window.dispatchEvent(new CustomEvent('category-changed', { detail: detail })); }
+  }, 200);
+};
+
+document.addEventListener('DOMContentLoaded', function(){
+  var tryAutoYayin = function(){
+    var s = document.getElementById('yayin_tipi_id');
+    if (!s) return false;
+    var opts = Array.prototype.filter.call(s.options || [], function(o){ return o.value && o.value !== ''; });
+    if (opts.length === 1) {
+      s.value = opts[0].value;
+      var ev = document.createEvent('HTMLEvents');
+      ev.initEvent('change', true, false);
+      s.dispatchEvent(ev);
+      return true;
+    }
+    return false;
+  };
+  var attempts = 0;
+  var iv = setInterval(function(){
+    attempts++;
+    if (tryAutoYayin() || attempts > 10) { clearInterval(iv); }
+  }, 200);
+
+  var selectEl = document.getElementById('yayin_tipi_id');
+  var hintEl = document.getElementById('yayin-tip-hint');
+  var updateHint = function(){ if (!hintEl || !selectEl) return; hintEl.classList.toggle('hidden', !!selectEl.value); };
+  if (selectEl) { selectEl.addEventListener('change', updateHint); updateHint(); }
+});
+</script>
+<?php /**PATH /Users/macbookpro/Projects/yalihanai /resources/views/admin/ilanlar/components/category-system.blade.php ENDPATH**/ ?>

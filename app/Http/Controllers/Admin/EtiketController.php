@@ -13,7 +13,8 @@ class EtiketController extends AdminController
      */
     public function index(Request $request)
     {
-        $query = Etiket::latest();
+        // ✅ N+1 FIX: Eager loading ekle
+        $query = Etiket::withCount('kisiler')->latest();
 
         // Search functionality
         if ($request->has('search') && $request->search) {

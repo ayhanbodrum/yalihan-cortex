@@ -19,6 +19,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasColumn('feature_categories', 'applies_to')) {
+            return; // Kolon zaten var, migration'ı atla
+        }
+
         Schema::table('feature_categories', function (Blueprint $table) {
             // JSON olarak sakla, birden fazla kategori seçilebilir
             $table->json('applies_to')->nullable()->after('status')

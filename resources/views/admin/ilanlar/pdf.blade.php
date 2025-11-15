@@ -270,7 +270,11 @@
                 <td>{{ $ilan->oda_sayisi ?? 'N/A' }}</td>
                 <td>
                     <span class="status status-{{ strtolower($ilan->status) }}">
-                        {{ ucfirst($ilan->status) }}
+                        @if($ilan->status instanceof \App\Enums\IlanStatus)
+                            {{ $ilan->status->label() }}
+                        @else
+                            {{ ucfirst($ilan->status ?? 'inactive') }}
+                        @endif
                     </span>
                 </td>
                 <td>{{ $ilan->created_at ? $ilan->created_at->format('d.m.Y') : 'N/A' }}</td>

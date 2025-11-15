@@ -12,4 +12,3 @@ if git diff --cached --name-only | grep -q '\.md$'; then
 fi
 
 exit 0
-

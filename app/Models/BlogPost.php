@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Cache;
 
 class BlogPost extends Model
 {
@@ -426,6 +427,21 @@ class BlogPost extends Model
             if ($post->isDirty('content')) {
                 $post->calculateReadingTime();
             }
+        });
+
+        static::created(function ($post) {
+            // ✅ CACHE INVALIDATION: Yeni post eklendiğinde cache'i temizle
+            Cache::forget('blog_posts_stats');
+        });
+
+        static::updated(function ($post) {
+            // ✅ CACHE INVALIDATION: Post güncellendiğinde cache'i temizle
+            Cache::forget('blog_posts_stats');
+        });
+
+        static::deleted(function ($post) {
+            // ✅ CACHE INVALIDATION: Post silindiğinde cache'i temizle
+            Cache::forget('blog_posts_stats');
         });
     }
 }

@@ -17,10 +17,10 @@ return new class extends Migration
             $table->foreignId('kategori_id')->constrained('ilan_kategorileri')->onDelete('cascade');
             $table->string('yayin_tipi'); // 'Satılık', 'Kiralık', 'Günlük Kiralık', 'Devren Satılık'
             $table->string('status')->default('Aktif'); // Aktif, Pasif
-            $table->integer('order')->default(0);
+            $table->integer('display_order')->default(0); // Context7: order → display_order
             $table->timestamps();
             $table->softDeletes();
-            
+
             $table->unique(['kategori_id', 'yayin_tipi']);
             $table->index('status');
         });

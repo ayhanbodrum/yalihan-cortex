@@ -11,14 +11,14 @@
 
 ```yaml
 Dağılım:
-  - PHP: 34 TODO (87%)
-  - JS: 4 TODO (10%)
-  - Blade: 1 TODO (3%)
+    - PHP: 34 TODO (87%)
+    - JS: 4 TODO (10%)
+    - Blade: 1 TODO (3%)
 
 Öncelik Sınıflandırması:
-  🔴 Yüksek: 16 TODO (Model implementasyon)
-  🟡 Orta: 15 TODO (Özellik geliştirme)
-  🟢 Düşük: 8 TODO (Optimizasyon)
+    🔴 Yüksek: 16 TODO (Model implementasyon)
+    🟡 Orta: 15 TODO (Özellik geliştirme)
+    🟢 Düşük: 8 TODO (Optimizasyon)
 ```
 
 ---
@@ -30,26 +30,26 @@ Dağılım:
 **Dosya:** `app/Http/Controllers/Admin/PhotoController.php`
 
 ```yaml
-Problem:
-  Photo Model eksik, DB::table() kullanılıyor
+Problem: Photo Model eksik, DB::table() kullanılıyor
 
 TODO Listesi:
-  1. Line 125: Photo model oluştur (create)
-  2. Line 242: Photo model ile güncelleme
-  3. Line 294: Photo model ile silme
-  4. Line 337: Photo model ile delete action
-  5. Line 341: Photo model ile move action
-  6. Line 345: Photo model ile feature action
-  7. Line 349: Photo model ile unfeature action
-  8. Line 382: Image optimization implementasyonu
-  9. Line 492: Thumbnail oluşturma implementasyonu
-  10. Line 502: Photo views field güncelleme
+    1. Line 125: Photo model oluştur (create)
+    2. Line 242: Photo model ile güncelleme
+    3. Line 294: Photo model ile silme
+    4. Line 337: Photo model ile delete action
+    5. Line 341: Photo model ile move action
+    6. Line 345: Photo model ile feature action
+    7. Line 349: Photo model ile unfeature action
+    8. Line 382: Image optimization implementasyonu
+    9. Line 492: Thumbnail oluşturma implementasyonu
+    10. Line 502: Photo views field güncelleme
 
 Tahmini Süre: 4 saat
 Öncelik: 🔴 YÜKSEK
 ```
 
 **Eylem:**
+
 ```bash
 # 1. Photo Model oluştur
 php artisan make:model Photo -m
@@ -70,16 +70,15 @@ php artisan make:model Photo -m
 **Dosya:** `app/Http/Controllers/Admin/TakvimController.php`
 
 ```yaml
-Problem:
-  Event ve Season modelleri eksik
+Problem: Event ve Season modelleri eksik
 
 TODO Listesi:
-  1. Line 95: Event model oluştur (create)
-  2. Line 216: Event model ile güncelleme
-  3. Line 247: Event model ile silme
-  4. Line 442: Sezon model oluştur (create)
-  5. Line 470: Sezon model ile güncelleme
-  6. Line 491: Sezon model ile silme
+    1. Line 95: Event model oluştur (create)
+    2. Line 216: Event model ile güncelleme
+    3. Line 247: Event model ile silme
+    4. Line 442: Sezon model oluştur (create)
+    5. Line 470: Sezon model ile güncelleme
+    6. Line 491: Sezon model ile silme
 
 Tahmini Süre: 3 saat
 Öncelik: 🔴 YÜKSEK
@@ -87,6 +86,7 @@ Sebep: Rezervasyon sistemi %60 tamamlanmış
 ```
 
 **Eylem:**
+
 ```bash
 # 1. Event Model oluştur
 php artisan make:model Event -m
@@ -111,10 +111,9 @@ php artisan make:model Season -m
 **Dosya:** `app/Services/AI/TalepPortfolyoAIService.php`
 
 ```yaml
-TODO Listesi:
-  1. AI matching algorithm geliştir
-  2. Score hesaplama optimize et
-  3. Auto-notification ekle
+TODO Listesi: 1. AI matching algorithm geliştir
+    2. Score hesaplama optimize et
+    3. Auto-notification ekle
 
 Tahmini Süre: 5 saat
 Öncelik: 🟡 ORTA
@@ -127,10 +126,9 @@ Tahmini Süre: 5 saat
 **Dosya:** `app/Http/Controllers/Admin/PriceController.php`
 
 ```yaml
-TODO Listesi:
-  1. Currency conversion cache ekle
-  2. Price history graph
-  3. Bulk price update
+TODO Listesi: 1. Currency conversion cache ekle
+    2. Price history graph
+    3. Bulk price update
 
 Tahmini Süre: 3 saat
 Öncelik: 🟡 ORTA
@@ -143,10 +141,9 @@ Tahmini Süre: 3 saat
 **Dosya:** `app/Http/Controllers/Admin/MusteriController.php`
 
 ```yaml
-TODO Listesi:
-  1. Customer segmentation
-  2. Activity timeline
-  3. Email integration
+TODO Listesi: 1. Customer segmentation
+    2. Activity timeline
+    3. Email integration
 
 Tahmini Süre: 4 saat
 Öncelik: 🟡 ORTA
@@ -159,10 +156,9 @@ Tahmini Süre: 4 saat
 **Dosya:** `app/Http/Controllers/Admin/DashboardController.php`
 
 ```yaml
-TODO Listesi:
-  1. Real-time metrics
-  2. Advanced charts
-  3. Widget system
+TODO Listesi: 1. Real-time metrics
+    2. Advanced charts
+    3. Widget system
 
 Tahmini Süre: 4 saat
 Öncelik: 🟡 ORTA
@@ -198,11 +194,10 @@ Tahmini Süre: 30 dakika
 **Dosyalar:** `resources/js`, `public/js`
 
 ```yaml
-TODO Listesi:
-  1. Leaflet map clustering
-  2. Advanced search filters
-  3. Image lazy loading
-  4. PWA implementation
+TODO Listesi: 1. Leaflet map clustering
+    2. Advanced search filters
+    3. Image lazy loading
+    4. PWA implementation
 
 Tahmini Süre: 3 saat
 Öncelik: 🟢 DÜŞÜK
@@ -223,24 +218,26 @@ Tahmini Süre: 1 saat
 
 ## 📈 ÖNCELİKLENDİRME MATRİSİ
 
-| Öncelik | TODO Sayısı | Tahmini Süre | İlk Hedef |
-|---------|-------------|--------------|-----------|
-| 🔴 Yüksek | 16 | 7 saat | Photo + Event Model |
-| 🟡 Orta | 15 | 16 saat | AI Matching + Dashboard |
-| 🟢 Düşük | 8 | 4.5 saat | Optimizasyonlar |
-| **TOPLAM** | **39** | **27.5 saat** | |
+| Öncelik    | TODO Sayısı | Tahmini Süre  | İlk Hedef               |
+| ---------- | ----------- | ------------- | ----------------------- |
+| 🔴 Yüksek  | 16          | 7 saat        | Photo + Event Model     |
+| 🟡 Orta    | 15          | 16 saat       | AI Matching + Dashboard |
+| 🟢 Düşük   | 8           | 4.5 saat      | Optimizasyonlar         |
+| **TOPLAM** | **39**      | **27.5 saat** |                         |
 
 ---
 
 ## 🎯 ÖNER İLEN EYLEM PLANI
 
 ### Hafta 1 (7-10 Kasım)
+
 ```yaml
 ✅ Photo Model oluştur + implement (4 saat)
 ✅ Event/Season Model oluştur + implement (3 saat)
 ```
 
 ### Hafta 2 (11-15 Kasım)
+
 ```yaml
 ✅ Dashboard TODO'ları tamamla (4 saat)
 ✅ Price Controller geliştir (3 saat)
@@ -248,6 +245,7 @@ Tahmini Süre: 1 saat
 ```
 
 ### Hafta 3 (16-22 Kasım)
+
 ```yaml
 ✅ Customer features ekle (4 saat)
 ✅ JavaScript optimization (3 saat)
@@ -259,6 +257,7 @@ Tahmini Süre: 1 saat
 ## 📋 HIZLI ERİŞİM - EN KRİTİK TODO'LAR
 
 ### Photo Model (10 TODO)
+
 ```bash
 1. php artisan make:model Photo -m
 2. Migration tanımla
@@ -268,6 +267,7 @@ Tahmini Süre: 1 saat
 ```
 
 ### Event/Season Model (6 TODO)
+
 ```bash
 1. php artisan make:model Event -m
 2. php artisan make:model Season -m
@@ -276,6 +276,7 @@ Tahmini Süre: 1 saat
 ```
 
 ### AI Matching (3 TODO)
+
 ```bash
 1. Semantic search ekle
 2. Score calculation optimize et
@@ -292,10 +293,9 @@ Bugün (4 Kasım): 39 TODO
 
 Azalma: 41 TODO (-51%)
 
-Sebep:
-  ✅ Bazı TODO'lar tamamlandı
-  ✅ Bazı dosyalar arşivlendi
-  ✅ Kod temizliği yapıldı
+Sebep: ✅ Bazı TODO'lar tamamlandı
+    ✅ Bazı dosyalar arşivlendi
+    ✅ Kod temizliği yapıldı
 ```
 
 ---
@@ -310,9 +310,9 @@ Tahmini Süre: 7 saat (ilk hedef)
 Öncelik: Model implementasyonları
 
 Başarı Metriği:
-  - 1 hafta sonra: 25 TODO hedef
-  - 2 hafta sonra: 15 TODO hedef
-  - 3 hafta sonra: <10 TODO hedef
+    - 1 hafta sonra: 25 TODO hedef
+    - 2 hafta sonra: 15 TODO hedef
+    - 3 hafta sonra: <10 TODO hedef
 ```
 
 **TODO'ları sistematik olarak azaltıyoruz! 📉**
@@ -323,4 +323,3 @@ Başarı Metriği:
 **Tarih:** 4 Kasım 2025  
 **Analiz:** Kod içi TODO taraması  
 **Sonraki Review:** 11 Kasım 2025
-

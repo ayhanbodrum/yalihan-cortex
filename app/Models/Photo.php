@@ -12,32 +12,32 @@ class Photo extends Model
     use HasFactory, SoftDeletes;
 
     /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'ilan_fotograflari';
+
+    /**
      * The attributes that are mass assignable.
      */
     protected $fillable = [
         'ilan_id',
-        'path',
-        'thumbnail',
-        'category',
-        'is_featured',
-        'order',
-        'views',
-        'size',
+        'dosya_yolu', // ✅ Context7: Tablodaki gerçek kolon adı
+        'dosya_adi',
+        'dosya_boyutu',
         'mime_type',
-        'width',
-        'height',
+        'kapak_fotografi', // ✅ Context7: Tablodaki gerçek kolon adı
+        'sira', // ✅ Context7: Tablodaki gerçek kolon adı
+        'aciklama',
     ];
 
     /**
      * The attributes that should be cast.
      */
     protected $casts = [
-        'is_featured' => 'boolean',
-        'order' => 'integer',
-        'views' => 'integer',
-        'size' => 'integer',
-        'width' => 'integer',
-        'height' => 'integer',
+        'kapak_fotografi' => 'boolean',
+        'sira' => 'integer',
     ];
 
     /**
@@ -51,9 +51,8 @@ class Photo extends Model
         static::deleting(function ($photo) {
             if ($photo->isForceDeleting()) {
                 // Hard delete - dosyaları sil
-                Storage::delete($photo->path);
-                if ($photo->thumbnail) {
-                    Storage::delete($photo->thumbnail);
+                if ($photo->dosya_yolu) {
+                    Storage::disk('public')->delete($photo->dosya_yolu);
                 }
             }
         });
@@ -72,7 +71,7 @@ class Photo extends Model
      */
     public function scopeFeatured($query)
     {
-        return $query->where('is_featured', true);
+        return $query->where('kapak_fotografi', true);
     }
 
     /**
@@ -80,15 +79,7 @@ class Photo extends Model
      */
     public function scopeOrdered($query)
     {
-        return $query->orderBy('order')->orderBy('created_at');
-    }
-
-    /**
-     * Scope: Kategoriye göre filtrele
-     */
-    public function scopeByCategory($query, $category)
-    {
-        return $query->where('category', $category);
+        return $query->orderBy('sira')->orderBy('created_at');
     }
 
     /**
@@ -96,55 +87,62 @@ class Photo extends Model
      */
     public function getUrlAttribute()
     {
-        return Storage::url($this->path);
+        return $this->dosya_yolu ? Storage::url($this->dosya_yolu) : null;
     }
 
     /**
-     * Accessor: Thumbnail URL'i
+     * Accessor: Thumbnail URL'i (dosya_yolu kullanarak)
      */
     public function getThumbnailUrlAttribute()
     {
-        return $this->thumbnail 
-            ? Storage::url($this->thumbnail) 
-            : $this->url;
+        return $this->url; // Thumbnail için ayrı kolon yok, aynı dosya_yolu kullanılıyor
     }
+
+    /**
+     * Backward compatibility: path attribute
+     */
+    public function getPathAttribute()
+    {
+        return $this->dosya_yolu;
+    }
+
+    /**
+     * Backward compatibility: thumbnail attribute
+     */
+    public function getThumbnailAttribute()
+    {
+        return null; // Thumbnail kolonu yok
+    }
+
+    /**
+     * Backward compatibility: is_featured attribute
+     */
+    public function getIsFeaturedAttribute()
+    {
+        return $this->kapak_fotografi;
+    }
+
+    
 
     /**
      * Accessor: Dosya boyutu (human readable)
      */
     public function getFormattedSizeAttribute()
     {
-        if (!$this->size) {
+        if (!$this->dosya_boyutu) {
+            return null;
+        }
+
+        // dosya_boyutu string olarak saklanıyor, parse et
+        $size = is_numeric($this->dosya_boyutu) ? (int)$this->dosya_boyutu : 0;
+        if ($size === 0) {
             return null;
         }
 
         $units = ['B', 'KB', 'MB', 'GB'];
-        $power = $this->size > 0 ? floor(log($this->size, 1024)) : 0;
-        
-        return number_format($this->size / pow(1024, $power), 2) . ' ' . $units[$power];
-    }
+        $power = $size > 0 ? floor(log($size, 1024)) : 0;
 
-    /**
-     * Accessor: Görüntülenme sayısı (formatted)
-     */
-    public function getFormattedViewsAttribute()
-    {
-        if ($this->views >= 1000000) {
-            return number_format($this->views / 1000000, 1) . 'M';
-        } elseif ($this->views >= 1000) {
-            return number_format($this->views / 1000, 1) . 'K';
-        }
-        
-        return (string) $this->views;
-    }
-
-    /**
-     * Helper: Görüntülenme sayısını artır
-     */
-    public function incrementViews()
-    {
-        $this->increment('views');
-        return $this;
+        return number_format($size / pow(1024, $power), 2) . ' ' . $units[$power];
     }
 
     /**
@@ -152,7 +150,7 @@ class Photo extends Model
      */
     public function isFeatured()
     {
-        return $this->is_featured;
+        return $this->kapak_fotografi;
     }
 
     /**
@@ -163,9 +161,9 @@ class Photo extends Model
         // Önce bu ilanın diğer fotoğraflarını featured'dan çıkar
         static::where('ilan_id', $this->ilan_id)
             ->where('id', '!=', $this->id)
-            ->update(['is_featured' => false]);
+            ->update(['kapak_fotografi' => false]);
 
-        $this->update(['is_featured' => true]);
+        $this->update(['kapak_fotografi' => true]);
         return $this;
     }
 
@@ -174,7 +172,7 @@ class Photo extends Model
      */
     public function unsetAsFeatured()
     {
-        $this->update(['is_featured' => false]);
+        $this->update(['kapak_fotografi' => false]);
         return $this;
     }
 

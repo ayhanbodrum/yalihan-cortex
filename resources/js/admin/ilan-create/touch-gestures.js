@@ -524,7 +524,7 @@ class TouchGestures {
                     font-size: 12px;
                     padding: 6px 10px;
                 }
-                
+
                 .gesture-hint {
                     bottom: 10px;
                     font-size: 11px;

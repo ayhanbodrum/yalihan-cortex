@@ -357,16 +357,16 @@ Context7 compliance: Bu kurala uymalısınız."
 
 ### **Checklist:**
 
--   [ ] 7 core doküman yüklendi
--   [ ] Vector DB oluşturuldu (50-70 chunk)
--   [ ] System prompt ayarlandı
--   [ ] Test soruları doğru yanıtlandı
--   [ ] Context7 kuralları öğrenildi
--   [ ] Türkçe yanıt veriyor
--   [ ] JSON formatında yanıt
--   [ ] Yanıt süresi <3s
--   [ ] Ollama endpoint biliyor (http://51.75.64.121:11434)
--   [ ] Para birimi sembolleri doğru (₺, $, €, £)
+- [ ] 7 core doküman yüklendi
+- [ ] Vector DB oluşturuldu (50-70 chunk)
+- [ ] System prompt ayarlandı
+- [ ] Test soruları doğru yanıtlandı
+- [ ] Context7 kuralları öğrenildi
+- [ ] Türkçe yanıt veriyor
+- [ ] JSON formatında yanıt
+- [ ] Yanıt süresi <3s
+- [ ] Ollama endpoint biliyor (http://51.75.64.121:11434)
+- [ ] Para birimi sembolleri doğru (₺, $, €, £)
 
 ---
 
@@ -435,28 +435,28 @@ Genel sorular: Daha az kesin
 
 ✅ **Bilmesi Gerekenler:**
 
--   Context7 kurallarının %100'ü
--   Tüm database field adları
--   AI provider endpoint'leri (Ollama: http://51.75.64.121:11434)
--   Prompt şablonlarının tamamı
--   Ton profilleri (SEO, Kurumsal, Hızlı Satış, Lüks)
--   API endpoint'leri ve formatları
+- Context7 kurallarının %100'ü
+- Tüm database field adları
+- AI provider endpoint'leri (Ollama: http://51.75.64.121:11434)
+- Prompt şablonlarının tamamı
+- Ton profilleri (SEO, Kurumsal, Hızlı Satış, Lüks)
+- API endpoint'leri ve formatları
 
 ✅ **Yapabilmesi Gerekenler:**
 
--   İlan başlığı üretmek (3 varyant, 60-80 karakter)
--   İlan açıklaması yazmak (200-250 kelime, 3 paragraf)
--   Lokasyon analizi (Skor, Harf, Potansiyel)
--   Fiyat önerisi (3 seviye)
--   CRM müşteri analizi
--   Portal optimizasyonu
+- İlan başlığı üretmek (3 varyant, 60-80 karakter)
+- İlan açıklaması yazmak (200-250 kelime, 3 paragraf)
+- Lokasyon analizi (Skor, Harf, Potansiyel)
+- Fiyat önerisi (3 seviye)
+- CRM müşteri analizi
+- Portal optimizasyonu
 
 ✅ **Yapmaması Gerekenler:**
 
--   Emoji kullanmak
--   Türkçe database field adı kullanmak
--   Otomatik kayıt yapmak
--   Kişisel veri işlemek
+- Emoji kullanmak
+- Türkçe database field adı kullanmak
+- Otomatik kayıt yapmak
+- Kişisel veri işlemek
 
 ---
 

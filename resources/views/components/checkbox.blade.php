@@ -1,9 +1,9 @@
 {{--
     Checkbox Component
-    
+
     @component x-checkbox
     @description Accessible checkbox input with label and error handling
-    
+
     @props
         - name: string (required) - Input name
         - label: string (required) - Checkbox label
@@ -13,7 +13,7 @@
         - error: string (optional) - Error message
         - help: string (optional) - Help text
         - id: string (optional) - Custom ID - default: name
-    
+
     @example
         <x-checkbox
             name="featured"
@@ -21,7 +21,7 @@
             :checked="old('featured', $ilan->featured ?? false)"
             help="Featured listings appear on the homepage"
         />
-    
+
     @accessibility
         - ARIA labels
         - Keyboard navigation
@@ -55,7 +55,7 @@ $hasError = !empty($error);
             value="{{ $value }}"
             {{ $checked ? 'checked' : '' }}
             {{ $disabled ? 'disabled' : '' }}
-            class="w-5 h-5 rounded border-gray-300 dark:border-gray-600 
+            class="w-5 h-5 rounded border-gray-300 dark:border-gray-600
                    text-blue-600 dark:text-blue-500
                    focus:ring-2 focus:ring-blue-500 focus:ring-offset-0
                    disabled:opacity-50 disabled:cursor-not-allowed
@@ -69,8 +69,8 @@ $hasError = !empty($error);
     {{-- Label & Help --}}
     <div class="ml-3">
         @if($label)
-        <label 
-            for="{{ $checkboxId }}" 
+        <label
+            for="{{ $checkboxId }}"
             class="text-sm font-medium text-gray-900 dark:text-white
                    {{ $disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer' }}"
         >
@@ -79,8 +79,8 @@ $hasError = !empty($error);
         @endif
 
         @if($help)
-        <p 
-            id="{{ $checkboxId }}-help" 
+        <p
+            id="{{ $checkboxId }}-help"
             class="mt-1 text-xs text-gray-600 dark:text-gray-400"
         >
             {{ $help }}
@@ -88,8 +88,8 @@ $hasError = !empty($error);
         @endif
 
         @if($hasError)
-        <p 
-            id="{{ $checkboxId }}-error" 
+        <p
+            id="{{ $checkboxId }}-error"
             class="mt-1 text-xs text-red-600 dark:text-red-400"
             role="alert"
         >
@@ -98,4 +98,3 @@ $hasError = !empty($error);
         @endif
     </div>
 </div>
-

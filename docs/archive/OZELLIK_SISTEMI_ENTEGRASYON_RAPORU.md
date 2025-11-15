@@ -8,13 +8,16 @@
 ## 🎯 Yapılan İşlemler
 
 ### 1️⃣ Database Migration
+
 **Dosya:** `database/migrations/2025_10_26_115934_add_applies_to_to_feature_categories_table.php`
 
 **Değişiklikler:**
+
 - `applies_to` kolonu eklendi (nullable string)
 - `display_order` kolonu eklendi (integer, default: 0)
 
 **Kod:**
+
 ```php
 Schema::table('feature_categories', function (Blueprint $table) {
     $table->string('applies_to')->nullable()->after('description')
@@ -26,14 +29,17 @@ Schema::table('feature_categories', function (Blueprint $table) {
 ---
 
 ### 2️⃣ Model Güncellemeleri
+
 **Dosya:** `app/Models/FeatureCategory.php`
 
 **Durum:**
+
 - `applies_to` zaten fillable'da mevcuttu ✅
 - `forPropertyType()` scope metodu mevcuttu ✅
 - `isApplicableTo()` metodu mevcuttu ✅
 
 **Çalışma Mantığı:**
+
 ```php
 // Tüm emlak türleri için özellik kategorileri filtreleme
 FeatureCategory::forPropertyType('arsa')->get();
@@ -45,13 +51,16 @@ FeatureCategory::forPropertyType('arsa')->get();
 ---
 
 ### 3️⃣ Controller Güncellemeleri
+
 **Dosya:** `app/Http/Controllers/Admin/OzellikKategoriController.php`
 
 **Değişiklikler:**
+
 1. **store()** metoduna `applies_to` validation eklendi
 2. **update()** metoduna `applies_to` validation eklendi
 
 **Kod:**
+
 ```php
 $data = $request->validate([
     // ... diğer alanlar
@@ -64,9 +73,11 @@ $data = $request->validate([
 ### 4️⃣ View Güncellemeleri
 
 #### A) Edit Sayfası
+
 **Dosya:** `resources/views/admin/ozellikler/kategoriler/edit.blade.php`
 
 **Eklenen:**
+
 ```html
 <div class="mb-4">
     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -86,15 +97,19 @@ $data = $request->validate([
 ```
 
 #### B) Create Sayfası
+
 **Dosya:** `resources/views/admin/ozellikler/kategoriler/create.blade.php`
 
 **Eklenen:**
+
 - Create sayfasına da aynı dropdown eklendi
 
 #### C) Özellikler Listesi
+
 **Dosya:** `resources/views/admin/ozellikler/kategoriler/ozellikler.blade.php`
 
 **Düzeltmeler:**
+
 ```php
 // ❌ ÖNCE:
 $kategori->ozellikler
@@ -114,13 +129,16 @@ $ozellik->description
 ---
 
 ### 5️⃣ Veri Güncellemesi
+
 **Komut:**
+
 ```sql
-UPDATE feature_categories 
+UPDATE feature_categories
 SET applies_to = 'konut,arsa,yazlik,isyeri';
 ```
 
 **Sonuç:**
+
 - Tüm kategorilere varsayılan değer atandı
 
 ---
@@ -130,53 +148,57 @@ SET applies_to = 'konut,arsa,yazlik,isyeri';
 ### İlan Ekleme Akışı
 
 1. **Kullanıcı İlan Kategorisi Seçer**
-   - Örnek: "Arsa" kategorisi seçilir
+    - Örnek: "Arsa" kategorisi seçilir
 
 2. **API Çağrısı**
-   ```
-   GET /admin/ilanlar/api/features/category/{categoryId}
-   ```
+
+    ```
+    GET /admin/ilanlar/api/features/category/{categoryId}
+    ```
 
 3. **Backend Filtreleme**
-   ```php
-   // Controller: IlanController::getFeaturesByCategory()
-   $featureCategories = FeatureCategory::with(['features' => function($query) use ($category) {
-       $query->where(function($q) use ($category) {
-           $q->whereNull('applies_to')
-             ->orWhere('applies_to', 'all')
-             ->orWhere('applies_to', 'like', "%{$category->slug}%");
-       })
-       ->where('status', true)
-       ->orderBy('order');
-   }])
-   ->whereHas('features', ...)
-   ->where('status', true)
-   ->orderBy('order')
-   ->get();
-   ```
+
+    ```php
+    // Controller: IlanController::getFeaturesByCategory()
+    $featureCategories = FeatureCategory::with(['features' => function($query) use ($category) {
+        $query->where(function($q) use ($category) {
+            $q->whereNull('applies_to')
+              ->orWhere('applies_to', 'all')
+              ->orWhere('applies_to', 'like', "%{$category->slug}%");
+        })
+        ->where('status', true)
+        ->orderBy('order');
+    }])
+    ->whereHas('features', ...)
+    ->where('status', true)
+    ->orderBy('order')
+    ->get();
+    ```
 
 4. **Frontend Gösterimi**
-   - Sadece uygun özellikler gösterilir
-   - Kategoriler gruplandırılır
-   - Feature checkboxes render edilir
+    - Sadece uygun özellikler gösterilir
+    - Kategoriler gruplandırılır
+    - Feature checkboxes render edilir
 
 ---
 
 ## 📊 Emlak Türü Bazında İlişkiler
 
 ### 🏞️ ARSA
+
 ```yaml
-Kategori: "Arsa Bilgileri"
-applies_to: "arsa"
+Kategori: 'Arsa Bilgileri'
+applies_to: 'arsa'
 Özellikler:
-  - Ada No
-  - Parsel No
-  - İmar Durumu
-  - KAKS
-  - TAKS
+    - Ada No
+    - Parsel No
+    - İmar Durumu
+    - KAKS
+    - TAKS
 ```
 
 ### 🏠 KONUT
+
 ```yaml
 Kategori: "Temel Bilgiler", "Oda Düzeni", "Bina Özellikleri"
 applies_to: "konut"
@@ -189,6 +211,7 @@ applies_to: "konut"
 ```
 
 ### 🏖️ YAZLIK
+
 ```yaml
 Kategori: "Konfor Özellikleri", "Dış Mekan Özellikleri"
 applies_to: "yazlik"
@@ -200,13 +223,14 @@ applies_to: "yazlik"
 ```
 
 ### 🏢 İŞYERİ
+
 ```yaml
-Kategori: "İşyeri Özellikleri"
-applies_to: "isyeri"
+Kategori: 'İşyeri Özellikleri'
+applies_to: 'isyeri'
 Özellikler:
-  - Kat Sayısı
-  - Park Yeri
-  - Müşteri Parkı
+    - Kat Sayısı
+    - Park Yeri
+    - Müşteri Parkı
 ```
 
 ---
@@ -244,6 +268,5 @@ Sistem artık mantıklı ilişkiler kurabiliyor!
 
 ---
 
-*Rapor Oluşturulma Tarihi: 26 Ekim 2025*
-*Sistem Durumu: ✅ Çalışıyor*
-
+_Rapor Oluşturulma Tarihi: 26 Ekim 2025_
+_Sistem Durumu: ✅ Çalışıyor_

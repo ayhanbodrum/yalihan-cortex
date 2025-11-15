@@ -21,14 +21,14 @@ class RealTimeNotifications {
         this.userId = this.getUserId();
 
         if (!this.userId) {
-            console.warn("User ID not found, real-time notifications disabled");
+            console.warn('User ID not found, real-time notifications disabled');
             return;
         }
 
         // Check if Pusher app key is available
-        if (!window.PUSHER_APP_KEY || window.PUSHER_APP_KEY === "") {
+        if (!window.PUSHER_APP_KEY || window.PUSHER_APP_KEY === '') {
             console.info(
-                "Pusher app key not configured, real-time notifications disabled. To enable, configure PUSHER_APP_KEY in .env file.",
+                'Pusher app key not configured, real-time notifications disabled. To enable, configure PUSHER_APP_KEY in .env file.'
             );
             return;
         }
@@ -40,17 +40,12 @@ class RealTimeNotifications {
         });
 
         // Subscribe to user's notification channel
-        this.channel = this.pusher.subscribe(
-            `user.${this.userId}.notifications`,
-        );
+        this.channel = this.pusher.subscribe(`user.${this.userId}.notifications`);
 
         this.bindEvents();
         this.isInitialized = true;
 
-        console.log(
-            "Real-time notifications initialized for user:",
-            this.userId,
-        );
+        console.log('Real-time notifications initialized for user:', this.userId);
     }
 
     /**
@@ -60,27 +55,27 @@ class RealTimeNotifications {
         if (!this.channel) return;
 
         // New notification received
-        this.channel.bind("notification.received", (data) => {
+        this.channel.bind('notification.received', (data) => {
             this.handleNewNotification(data);
         });
 
         // Notification marked as read
-        this.channel.bind("notification.read", (data) => {
+        this.channel.bind('notification.read', (data) => {
             this.handleNotificationRead(data);
         });
 
         // All notifications marked as read
-        this.channel.bind("notifications.all_read", (data) => {
+        this.channel.bind('notifications.all_read', (data) => {
             this.handleAllNotificationsRead(data);
         });
 
         // Notification deleted
-        this.channel.bind("notification.deleted", (data) => {
+        this.channel.bind('notification.deleted', (data) => {
             this.handleNotificationDeleted(data);
         });
 
         // Test notification
-        this.channel.bind("notification.test", (data) => {
+        this.channel.bind('notification.test', (data) => {
             this.handleTestNotification(data);
         });
     }
@@ -89,7 +84,7 @@ class RealTimeNotifications {
      * Handle new notification
      */
     handleNewNotification(data) {
-        console.log("New notification received:", data);
+        console.log('New notification received:', data);
 
         // Show browser notification if permission granted
         this.showBrowserNotification(data);
@@ -108,7 +103,7 @@ class RealTimeNotifications {
      * Handle notification marked as read
      */
     handleNotificationRead(data) {
-        console.log("Notification marked as read:", data);
+        console.log('Notification marked as read:', data);
 
         // Update notification count
         this.updateNotificationCount(data.unread_count);
@@ -121,7 +116,7 @@ class RealTimeNotifications {
      * Handle all notifications marked as read
      */
     handleAllNotificationsRead(data) {
-        console.log("All notifications marked as read:", data);
+        console.log('All notifications marked as read:', data);
 
         // Update notification count
         this.updateNotificationCount(data.unread_count);
@@ -134,7 +129,7 @@ class RealTimeNotifications {
      * Handle notification deleted
      */
     handleNotificationDeleted(data) {
-        console.log("Notification deleted:", data);
+        console.log('Notification deleted:', data);
 
         // Update notification count
         this.updateNotificationCount(data.unread_count);
@@ -147,10 +142,10 @@ class RealTimeNotifications {
      * Handle test notification
      */
     handleTestNotification(data) {
-        console.log("Test notification received:", data);
+        console.log('Test notification received:', data);
         this.showToastNotification({
-            type: "success",
-            title: "Test Bildirimi",
+            type: 'success',
+            title: 'Test Bildirimi',
             message: data.message,
         });
     }
@@ -159,20 +154,20 @@ class RealTimeNotifications {
      * Show browser notification
      */
     showBrowserNotification(data) {
-        if (!("Notification" in window)) {
+        if (!('Notification' in window)) {
             return;
         }
 
-        if (Notification.permission === "granted") {
+        if (Notification.permission === 'granted') {
             const notification = new Notification(data.title, {
                 body: data.message,
-                icon: "/favicon.ico",
+                icon: '/favicon.ico',
                 tag: `notification-${data.id}`,
             });
 
             notification.onclick = () => {
                 window.focus();
-                window.location.href = "/admin/notifications";
+                window.location.href = '/admin/notifications';
                 notification.close();
             };
 
@@ -188,22 +183,22 @@ class RealTimeNotifications {
      */
     showToastNotification(data) {
         // Create toast element
-        const toast = document.createElement("div");
+        const toast = document.createElement('div');
         toast.className = `fixed top-4 right-4 z-50 max-w-sm w-full bg-white shadow-lg rounded-lg pointer-events-auto ring-1 ring-black ring-opacity-5 overflow-hidden notification-toast`;
 
         const typeColors = {
-            success: "bg-green-50 border-green-200",
-            warning: "bg-yellow-50 border-yellow-200",
-            error: "bg-red-50 border-red-200",
-            info: "bg-blue-50 border-blue-200",
+            success: 'bg-green-50 border-green-200',
+            warning: 'bg-yellow-50 border-yellow-200',
+            error: 'bg-red-50 border-red-200',
+            info: 'bg-blue-50 border-blue-200',
         };
 
         const typeIcons = {
-            success: "M5 13l4 4L19 7",
+            success: 'M5 13l4 4L19 7',
             warning:
-                "M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.268 18.5c-.77.833.192 2.5 1.732 2.5z",
-            error: "M6 18L18 6M6 6l12 12",
-            info: "M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z",
+                'M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.268 18.5c-.77.833.192 2.5 1.732 2.5z',
+            error: 'M6 18L18 6M6 6l12 12',
+            info: 'M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z',
         };
 
         toast.innerHTML = `
@@ -211,13 +206,13 @@ class RealTimeNotifications {
                 <div class="flex items-start">
                     <div class="flex-shrink-0">
                         <svg class="h-5 w-5 text-${
-                            data.type === "success"
-                                ? "green"
-                                : data.type === "warning"
-                                  ? "yellow"
-                                  : data.type === "error"
-                                    ? "red"
-                                    : "blue"
+                            data.type === 'success'
+                                ? 'green'
+                                : data.type === 'warning'
+                                  ? 'yellow'
+                                  : data.type === 'error'
+                                    ? 'red'
+                                    : 'blue'
                         }-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${
                                 typeIcons[data.type] || typeIcons.info
@@ -225,12 +220,8 @@ class RealTimeNotifications {
                         </svg>
                     </div>
                     <div class="ml-3 w-0 flex-1 pt-0.5">
-                        <p class="text-sm font-medium text-gray-900">${
-                            data.title
-                        }</p>
-                        <p class="mt-1 text-sm text-gray-500">${
-                            data.message
-                        }</p>
+                        <p class="text-sm font-medium text-gray-900">${data.title}</p>
+                        <p class="mt-1 text-sm text-gray-500">${data.message}</p>
                     </div>
                     <div class="ml-4 flex-shrink-0 flex">
                         <button class="bg-white rounded-md inline-flex text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" onclick="this.parentElement.parentElement.parentElement.parentElement.remove()">
@@ -259,10 +250,10 @@ class RealTimeNotifications {
      * Update notification count in header
      */
     updateNotificationCount(count) {
-        const countElement = document.querySelector(".notification-count");
+        const countElement = document.querySelector('.notification-count');
         if (countElement) {
             countElement.textContent = count;
-            countElement.style.display = count > 0 ? "inline" : "none";
+            countElement.style.display = count > 0 ? 'inline' : 'none';
         }
     }
 
@@ -270,32 +261,28 @@ class RealTimeNotifications {
      * Add notification to list (if on notifications page)
      */
     addNotificationToList(data) {
-        if (!window.location.pathname.includes("/notifications")) {
+        if (!window.location.pathname.includes('/notifications')) {
             return;
         }
 
         // This would be implemented based on your specific list structure
-        console.log("Adding notification to list:", data);
+        console.log('Adding notification to list:', data);
     }
 
     /**
      * Update notification in list
      */
     updateNotificationInList(notificationId, updates) {
-        if (!window.location.pathname.includes("/notifications")) {
+        if (!window.location.pathname.includes('/notifications')) {
             return;
         }
 
         const notificationElement = document.querySelector(
-            `[data-notification-id="${notificationId}"]`,
+            `[data-notification-id="${notificationId}"]`
         );
         if (notificationElement) {
             // Update the notification element
-            console.log(
-                "Updating notification in list:",
-                notificationId,
-                updates,
-            );
+            console.log('Updating notification in list:', notificationId, updates);
         }
     }
 
@@ -303,24 +290,24 @@ class RealTimeNotifications {
      * Mark all notifications as read in list
      */
     markAllNotificationsAsRead() {
-        if (!window.location.pathname.includes("/notifications")) {
+        if (!window.location.pathname.includes('/notifications')) {
             return;
         }
 
         // Update all notification elements in the list
-        console.log("Marking all notifications as read in list");
+        console.log('Marking all notifications as read in list');
     }
 
     /**
      * Remove notification from list
      */
     removeNotificationFromList(notificationId) {
-        if (!window.location.pathname.includes("/notifications")) {
+        if (!window.location.pathname.includes('/notifications')) {
             return;
         }
 
         const notificationElement = document.querySelector(
-            `[data-notification-id="${notificationId}"]`,
+            `[data-notification-id="${notificationId}"]`
         );
         if (notificationElement) {
             notificationElement.remove();
@@ -334,7 +321,7 @@ class RealTimeNotifications {
         // Try to get from meta tag
         const metaUserId = document.querySelector('meta[name="user-id"]');
         if (metaUserId) {
-            return metaUserId.getAttribute("content");
+            return metaUserId.getAttribute('content');
         }
 
         // Try to get from global variable
@@ -354,20 +341,20 @@ class RealTimeNotifications {
      * Request notification permission
      */
     requestNotificationPermission() {
-        if (!("Notification" in window)) {
+        if (!('Notification' in window)) {
             return Promise.resolve(false);
         }
 
-        if (Notification.permission === "granted") {
+        if (Notification.permission === 'granted') {
             return Promise.resolve(true);
         }
 
-        if (Notification.permission === "denied") {
+        if (Notification.permission === 'denied') {
             return Promise.resolve(false);
         }
 
         return Notification.requestPermission().then((permission) => {
-            return permission === "granted";
+            return permission === 'granted';
         });
     }
 
@@ -376,32 +363,29 @@ class RealTimeNotifications {
      */
     sendTestNotification() {
         if (!this.isInitialized) {
-            console.warn("Real-time notifications not initialized");
+            console.warn('Real-time notifications not initialized');
             return;
         }
 
-        fetch("/admin/notifications/test", {
-            method: "POST",
+        fetch('/admin/notifications/test', {
+            method: 'POST',
             headers: {
-                "X-CSRF-TOKEN": document
+                'X-CSRF-TOKEN': document
                     .querySelector('meta[name="csrf-token"]')
-                    .getAttribute("content"),
-                "Content-Type": "application/json",
+                    .getAttribute('content'),
+                'Content-Type': 'application/json',
             },
         })
             .then((response) => response.json())
             .then((data) => {
                 if (data.success) {
-                    console.log("Test notification sent");
+                    console.log('Test notification sent');
                 } else {
-                    console.error(
-                        "Failed to send test notification:",
-                        data.message,
-                    );
+                    console.error('Failed to send test notification:', data.message);
                 }
             })
             .catch((error) => {
-                console.error("Error sending test notification:", error);
+                console.error('Error sending test notification:', error);
             });
     }
 
@@ -412,13 +396,13 @@ class RealTimeNotifications {
         if (this.pusher) {
             this.pusher.disconnect();
             this.isInitialized = false;
-            console.log("Real-time notifications disconnected");
+            console.log('Real-time notifications disconnected');
         }
     }
 }
 
 // Initialize when DOM is ready
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener('DOMContentLoaded', function () {
     // Request notification permission
     if (window.realTimeNotifications) {
         window.realTimeNotifications.requestNotificationPermission();
@@ -429,6 +413,6 @@ document.addEventListener("DOMContentLoaded", function () {
 window.realTimeNotifications = new RealTimeNotifications();
 
 // Export for module usage
-if (typeof module !== "undefined" && module.exports) {
+if (typeof module !== 'undefined' && module.exports) {
     module.exports = RealTimeNotifications;
 }

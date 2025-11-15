@@ -34,6 +34,7 @@
                         id="il_id"
                         required
                         data-context7-field="il_id"
+                        @error('il_id') aria-invalid="true" aria-describedby="il_id-error" data-error="true" @enderror
                         class="w-full px-4 py-2.5
                                border-2 border-gray-300 dark:border-gray-600
                                rounded-xl
@@ -47,7 +48,7 @@
                                appearance-none">
                         <option value="">İl Seçin...</option>
                         @foreach ($iller as $il)
-                            <option value="{{ $il->id }}">{{ $il->name ?? $il->il_adi }}</option>
+                            <option value="{{ $il->id }}" {{ (old('il_id', $ilan->il_id ?? null) == $il->id) ? 'selected' : '' }}>{{ $il->name ?? $il->il_adi }}</option>
                         @endforeach
                     </select>
                     <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
@@ -57,7 +58,7 @@
                     </div>
                 </div>
                 @error('il_id')
-                    <div class="mt-2 flex items-center gap-2 text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 px-4 py-2.5 rounded-lg">
+                    <div id="il_id-error" role="alert" aria-live="assertive" class="mt-2 flex items-center gap-2 text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 px-4 py-2.5 rounded-lg">
                         <svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
                         </svg>
@@ -81,6 +82,7 @@
                         required
                         data-context7-field="ilce_id"
                         disabled
+                        @error('ilce_id') aria-invalid="true" aria-describedby="ilce_id-error" data-error="true" @enderror
                         class="w-full px-4 py-2.5
                                border-2 border-gray-300 dark:border-gray-600
                                rounded-xl
@@ -104,7 +106,7 @@
                     </div>
                 </div>
                 @error('ilce_id')
-                    <div class="mt-2 flex items-center gap-2 text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 px-4 py-2.5 rounded-lg">
+                    <div id="ilce_id-error" role="alert" aria-live="assertive" class="mt-2 flex items-center gap-2 text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 px-4 py-2.5 rounded-lg">
                         <svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
                         </svg>
@@ -151,8 +153,8 @@
             </div>
         </div>
 
-            {{-- Detaylı Adres - Enhanced --}}
-        <div class="group">
+        {{-- Detaylı Adres - Enhanced (Basit Mod) --}}
+        <div class="group" id="address-simple-section">
             <label for="adres" class="block text-sm font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
                 <span class="flex items-center justify-center w-6 h-6 rounded-full bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 text-xs font-bold">
                     4
@@ -168,7 +170,7 @@
                 </span>
             </label>
             <div class="relative">
-                <textarea
+                    <textarea
                     name="adres"
                     id="adres"
                     rows="3"
@@ -183,7 +185,7 @@
                            transition-all duration-200
                            hover:border-gray-400 dark:hover:border-gray-500
                            resize-y min-h-[80px]
-                           shadow-sm hover:shadow-md focus:shadow-lg">{{ old('adres') }}</textarea>
+                           shadow-sm hover:shadow-md focus:shadow-lg">{{ old('adres', $ilan->adres ?? '') }}</textarea>
                 <div class="absolute top-3 right-3 text-gray-400 dark:text-gray-500 pointer-events-none">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
@@ -199,21 +201,26 @@
         </div>
 
         {{-- 🆕 PHASE 1: Address Components (Structured Address) --}}
-        <details class="mt-4 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl border-2 border-blue-200 dark:border-blue-800/30 overflow-hidden">
+        <details id="address-advanced-details" style="display:none" class="mt-4 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl border-2 border-blue-200 dark:border-blue-800/30 overflow-hidden">
             <summary class="cursor-pointer px-4 py-2.5 hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-all duration-200 flex items-center justify-between">
                 <div class="flex items-center gap-2">
                     <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
                     </svg>
                     <span class="font-semibold text-gray-900 dark:text-white text-sm">Detaylı Adres Bilgileri</span>
-                    <span class="text-xs bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 px-2 py-0.5 rounded-full">Otomatik</span>
                 </div>
                 <svg class="w-4 h-4 text-gray-500 transition-transform" :class="{'rotate-180': open}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                 </svg>
             </summary>
-            
+
             <div class="p-4 bg-white/50 dark:bg-gray-900/20">
+                <div class="mb-4">
+                    <label for="address-search" class="block text-xs font-semibold text-gray-900 dark:text-white mb-1.5">Adres Arama</label>
+                    <input type="text" id="address-search" placeholder="Örn: Bodrum Neyzen Tevfik Caddesi 45"
+                        class="w-full px-4 py-2.5 text-sm border-2 border-blue-200 dark:border-blue-800 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all" />
+                    <div id="address-search-results" class="mt-2 space-y-2"></div>
+                </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {{-- Sokak --}}
                     <div class="group">
@@ -300,78 +307,20 @@
                 </div>
             </div>
 
-            {{-- Harita Container - Modernized --}}
-            <div class="relative group">
-                <div id="map" class="w-full h-[500px] rounded-2xl border-4 border-white dark:border-gray-700 overflow-hidden shadow-2xl ring-4 ring-green-500/10">
-                    <div class="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800">
-                        <div class="text-center">
-                            <div class="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-white dark:bg-gray-800 shadow-xl mb-4">
-                                <svg class="w-10 h-10 text-green-500 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/>
-                                </svg>
-                            </div>
-                            <p class="text-gray-600 dark:text-gray-400 font-medium">Harita yükleniyor...</p>
-                            <p class="text-sm text-gray-500 dark:text-gray-500 mt-1">OpenStreetMap</p>
-                        </div>
-                    </div>
-                </div>
-
-                {{-- Compact Map Controls (z-[9999] for visibility over ALL leaflet controls) --}}
-                <div class="absolute top-3 right-3 flex flex-col gap-2 pointer-events-auto" style="z-index: 9999 !important;">
-                    <!-- Map Type Selector (Standart/Uydu) - Compact -->
-                    <div class="bg-white dark:bg-gray-800 backdrop-blur-sm rounded-lg shadow-lg border border-gray-300 dark:border-gray-600 p-1" style="position: relative; z-index: 9999 !important;">
-                        <div class="flex gap-0.5">
-                            <button type="button"
-                                    onclick="VanillaLocationManager.setMapType('standard')"
-                                    id="btn-map-standard"
-                                    class="flex items-center justify-center gap-1 px-2.5 py-1.5 rounded-lg transition-all duration-200 text-xs font-semibold bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-md hover:shadow-lg"
-                                    title="Standart Harita">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/>
-                                </svg>
-                                <span class="hidden sm:inline">Standart</span>
-                            </button>
-                            <button type="button"
-                                    onclick="VanillaLocationManager.setMapType('satellite')"
-                                    id="btn-map-satellite"
-                                    class="flex items-center justify-center gap-1 px-2.5 py-1.5 rounded-lg transition-all duration-200 text-xs font-semibold text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
-                                    title="Uydu Görüntüsü">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                </svg>
-                                <span class="hidden sm:inline">Uydu</span>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Zoom Controls - Compact -->
-                    <div class="bg-white dark:bg-gray-800 backdrop-blur-sm rounded-lg shadow-lg border border-gray-300 dark:border-gray-600 p-1 flex flex-col gap-0.5" style="position: relative; z-index: 9999 !important;">
-                        <button type="button" onclick="VanillaLocationManager.zoomIn()"
-                                class="group flex items-center justify-center w-8 h-8 rounded-lg text-gray-900 dark:text-white hover:text-white hover:bg-gradient-to-br hover:from-blue-500 hover:to-blue-600 transition-all duration-200 hover:shadow-md"
-                                title="Yakınlaştır">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
-                            </svg>
-                        </button>
-                        <button type="button" onclick="VanillaLocationManager.zoomOut()"
-                                class="group flex items-center justify-center w-8 h-8 rounded-lg text-gray-900 dark:text-white hover:text-white hover:bg-gradient-to-br hover:from-blue-500 hover:to-blue-600 transition-all duration-200 hover:shadow-md"
-                                title="Uzaklaştır">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 12H6"/>
-                            </svg>
-                        </button>
-                        <div class="h-px bg-gray-200 dark:bg-gray-600 my-0.5"></div>
-                        <button type="button" onclick="VanillaLocationManager.getCurrentLocation()"
-                                class="group flex items-center justify-center w-8 h-8 rounded-lg text-gray-900 dark:text-white hover:text-white hover:bg-gradient-to-br hover:from-green-500 hover:to-emerald-600 transition-all duration-200 hover:shadow-md"
-                                title="Mevcut Konumum">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-            </div>
+            <x-context7.map-picker
+                map-id="map"
+                lat-field="enlem"
+                lng-field="boylam"
+                address-field="adres"
+                :structured-fields="[
+                    'street' => 'sokak',
+                    'avenue' => 'cadde',
+                    'boulevard' => 'bulvar',
+                    'building' => 'bina_no',
+                    'postalCode' => 'posta_kodu',
+                ]"
+                height="500px"
+            />
 
             {{-- Koordinatlar - Enhanced --}}
             <div class="mt-6 grid grid-cols-2 gap-4">
@@ -388,6 +337,7 @@
                         id="enlem"
                         readonly
                         placeholder="37.0344000"
+                        value="{{ old('enlem', $ilan->enlem ?? '') }}"
                         class="w-full px-4 py-2.5
                                bg-white dark:bg-gray-800
                                border-2 border-gray-200 dark:border-gray-700
@@ -410,6 +360,7 @@
                         id="boylam"
                         readonly
                         placeholder="27.4305000"
+                        value="{{ old('boylam', $ilan->boylam ?? '') }}"
                         class="w-full px-4 py-2.5
                                bg-white dark:bg-gray-800
                                border-2 border-gray-200 dark:border-gray-700
@@ -435,10 +386,10 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                     </svg>
                 </summary>
-                
+
                 <div class="p-4 bg-white/50 dark:bg-gray-900/20">
                     <input type="hidden" name="nearby_distances" id="nearby_distances" value="">
-                    
+
                     {{-- Quick Add Buttons --}}
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mb-4">
                         <button type="button" onclick="addDistancePoint('Deniz', '⛱️')"
@@ -492,11 +443,11 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                     </svg>
                 </summary>
-                
+
                 <div class="p-4 bg-white/50 dark:bg-gray-900/20">
                     <input type="hidden" name="boundary_geojson" id="boundary_geojson" value="">
                     <input type="hidden" name="boundary_area" id="boundary_area" value="">
-                    
+
                     {{-- Drawing Tools --}}
                     <div class="flex items-center gap-2 mb-4">
                         <button type="button" onclick="startDrawingBoundary()"
@@ -506,7 +457,7 @@
                             </svg>
                             Sınır Çiz
                         </button>
-                        
+
                         <button type="button" onclick="clearBoundary()"
                             class="flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 text-red-600 dark:text-red-400 border-2 border-red-300 dark:border-red-800 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-all text-sm font-medium">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -576,7 +527,70 @@
         {{-- Yakındaki Yerler section kaldırıldı - Mesafe Ölçüm sistemi yeterli --}}
 
     </div>
+    @push('scripts')
+        <script>
+            (function() {
+                const input = document.getElementById('address-search');
+                const resultsEl = document.getElementById('address-search-results');
+                let t;
+                async function handleSearch(q) {
+                    if (!q || q.length < 3) {
+                        resultsEl.innerHTML = '';
+                        return;
+                    }
+                    const items = await (window.addressSearch ? window.addressSearch(q) : Promise.resolve([]));
+                    const list = Array.isArray(items) ? items.slice(0, 5) : [];
+                    resultsEl.innerHTML = list.map(item => {
+                        const name = item.display_name || item.name || '';
+                        const lat = item.lat || item.latitude;
+                        const lon = item.lon || item.longitude;
+                        return `<button type="button" data-lat="${lat}" data-lon="${lon}" class="w-full text-left px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors text-sm">${name}</button>`;
+                    }).join('');
+                }
+                function pick(e) {
+                    const btn = e.target.closest('button[data-lat][data-lon]');
+                    if (!btn) return;
+                    const lat = parseFloat(btn.dataset.lat);
+                    const lng = parseFloat(btn.dataset.lon);
+                    if (!isNaN(lat) && !isNaN(lng)) {
+                        if (window.mapManager) {
+                            window.mapManager.map.setView([lat, lng], 16);
+                            window.mapManager.setMarker(lat, lng, 'Seçilen Adres');
+                            window.mapManager.updateLocationInputs(lat, lng);
+                            window.mapManager.reverseGeocode(lat, lng);
+                        }
+                    }
+                }
+                if (input && resultsEl) {
+                    input.addEventListener('input', function() {
+                        clearTimeout(t);
+                        const q = this.value;
+                        t = setTimeout(() => handleSearch(q), 300);
+                    });
+                    resultsEl.addEventListener('click', pick);
+                }
+
+                const toggle = document.getElementById('advanced-address-toggle');
+                const simple = document.getElementById('address-simple-section');
+                const advanced = document.getElementById('address-advanced-details');
+                if (toggle && simple && advanced) {
+                    const update = () => {
+                        if (toggle.checked) {
+                            simple.style.display = 'none';
+                            advanced.setAttribute('open', '');
+                        } else {
+                            simple.style.display = '';
+                            advanced.removeAttribute('open');
+                        }
+                    };
+                    toggle.addEventListener('change', update);
+                    update();
+                }
+            })();
+        </script>
+    @endpush
 </div>
+
 
 
 {{-- VanillaLocationManager script moved to create.blade.php (main file) --}}

@@ -1,0 +1,93 @@
+{
+  "timestamp": "2025-11-09T06:30:00Z",
+  "topic": "takim_uyeleri status column missing - CRITICAL FIX",
+  "category": "database",
+  "priority": "CRITICAL",
+  "status": "RESOLVED",
+
+  "problem": {
+    "title": "takim_uyeleri tablosunda status kolonu eksik",
+    "error": "SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'where clause'",
+    "query": "select count(*) as aggregate from `takim_uyeleri` where `status` = active",
+    "impact": "HIGH - Takım yönetimi sayfası çalışmıyor"
+  },
+
+  "root_cause": {
+    "description": "takim_uyeleri tablosunda 'durum' (ENUM) kolonu var ama kod 'status' kolonunu kullanıyor",
+    "table_structure": {
+      "durum": "enum('aktif','pasif','izinli','tatilde')",
+      "status": "MISSING - Kod bu kolonu bekliyor"
+    },
+    "code_references": [
+      "TakimUyesi::where('status', 'active')",
+      "TakimUyesi::where('status', 'Aktif')",
+      "TakimUyesi::scopeAktif() -> where('status', 'active')"
+    ]
+  },
+
+  "solution": {
+    "migration": "2025_11_09_062448_add_status_column_to_takim_uyeleri_table.php",
+    "actions": [
+      "1. status kolonu eklendi (VARCHAR(50), default 'aktif')",
+      "2. durum kolonundan veri kopyalandı",
+      "3. status kolonuna index eklendi",
+      "4. Tüm kod referansları güncellendi: 'active' → 'aktif', 'Aktif' → 'aktif'"
+    ],
+    "files_updated": [
+      "app/Modules/TakimYonetimi/Models/TakimUyesi.php",
+      "app/Modules/TakimYonetimi/Controllers/Admin/TakimController.php",
+      "app/Modules/TakimYonetimi/Services/TelegramBotService.php",
+      "app/Modules/TakimYonetimi/Http/Controllers/TakimController.php"
+    ]
+  },
+
+  "prevention": {
+    "automated_check": {
+      "script": "scripts/context7-database-compliance-check.php",
+      "description": "Tüm tabloları tarar ve kod-şema uyumsuzluklarını tespit eder",
+      "usage": "php scripts/context7-database-compliance-check.php"
+    },
+    "pre_commit_hook": {
+      "script": "scripts/context7-db-check-pre-commit.sh",
+      "description": "Pre-commit hook'a entegre edilebilir",
+      "status": "READY - Manual integration required"
+    },
+    "rules": [
+      "1. Her migration'dan önce: php scripts/context7-database-compliance-check.php çalıştır",
+      "2. Model'de 'status' kullanılıyorsa, tabloda 'status' kolonu olmalı",
+      "3. Context7 standardı: 'durum', 'enabled', 'is_active', 'aktif' YASAK - Sadece 'status' kullan",
+      "4. Migration'da Schema::hasColumn() kontrolü yap",
+      "5. Veri taşıma: Eski kolondan yeni kolona veri kopyala"
+    ]
+  },
+
+  "learned_patterns": {
+    "detection": [
+      "Kod 'status' kolonunu kullanıyor ama tabloda yok → Migration gerekli",
+      "Tablo 'durum' kolonu var ama kod 'status' bekliyor → Migration + kod güncelleme",
+      "QueryException: Column not found → Schema kontrolü yap"
+    ],
+    "fix_workflow": [
+      "1. Tablo yapısını kontrol et: DESCRIBE table_name",
+      "2. Kod referanslarını bul: grep -r 'where.*status' app/",
+      "3. Migration oluştur: php artisan make:migration add_status_column_to_TABLENAME_table",
+      "4. Migration'da: Schema::hasColumn() kontrolü yap",
+      "5. Veri taşıma: Eski kolondan yeni kolona kopyala",
+      "6. Kod güncelle: Tüm referansları yeni kolon adına göre düzelt",
+      "7. Test et: php scripts/context7-database-compliance-check.php"
+    ]
+  },
+
+  "related_issues": [
+    "database-schema-sync-patterns-2025-11-08.json",
+    "Similar issues: kisiler.il_id, ilanlar.goruntulenme_sayisi, features.display_order"
+  ],
+
+  "compliance": {
+    "context7": true,
+    "status_field": "status (VARCHAR) - Context7 compliant",
+    "forbidden_fields": ["durum", "enabled", "is_active", "aktif"],
+    "migration_safe": true
+  }
+}
+

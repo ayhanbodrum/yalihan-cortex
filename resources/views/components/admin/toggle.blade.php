@@ -1,9 +1,9 @@
 {{--
     Toggle/Switch Component
-    
+
     @component x-admin.toggle
     @description Modern toggle switch with label and error handling
-    
+
     @props
         - name: string (required) - Input name
         - label: string (required) - Toggle label
@@ -13,7 +13,7 @@
         - help: string (optional) - Help text
         - id: string (optional) - Custom ID - default: name
         - size: string (optional) - Size variant (sm, md, lg) - default: md
-    
+
     @example
         <x-admin.toggle
             name="notifications"
@@ -21,7 +21,7 @@
             :checked="old('notifications', $user->notifications ?? false)"
             help="Receive email notifications for new listings"
         />
-    
+
     @accessibility
         - ARIA labels
         - Keyboard navigation (Space/Enter)
@@ -66,7 +66,7 @@ $sizes = [
 $sizeClasses = $sizes[$size] ?? $sizes['md'];
 @endphp
 
-<div 
+<div
     x-data="{ enabled: {{ $checked ? 'true' : 'false' }} }"
     class="flex items-start"
 >
@@ -80,7 +80,7 @@ $sizeClasses = $sizes[$size] ?? $sizes['md'];
         :aria-labelledby="'{{ $toggleId }}-label'"
         :aria-describedby="'{{ $help ? $toggleId . '-help' : '' }} {{ $hasError ? $toggleId . '-error' : '' }}'"
         role="switch"
-        class="relative inline-flex {{ $sizeClasses['switch'] }} flex-shrink-0 
+        class="relative inline-flex {{ $sizeClasses['switch'] }} flex-shrink-0
                rounded-full transition-colors duration-200 ease-in-out
                focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-900
                {{ $disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer' }}
@@ -114,7 +114,7 @@ $sizeClasses = $sizes[$size] ?? $sizes['md'];
     {{-- Label & Help --}}
     <div class="ml-3">
         @if($label)
-        <span 
+        <span
             id="{{ $toggleId }}-label"
             class="text-sm font-medium text-gray-900 dark:text-white block
                    {{ $disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer' }}"
@@ -125,8 +125,8 @@ $sizeClasses = $sizes[$size] ?? $sizes['md'];
         @endif
 
         @if($help)
-        <p 
-            id="{{ $toggleId }}-help" 
+        <p
+            id="{{ $toggleId }}-help"
             class="mt-1 text-xs text-gray-600 dark:text-gray-400"
         >
             {{ $help }}
@@ -134,8 +134,8 @@ $sizeClasses = $sizes[$size] ?? $sizes['md'];
         @endif
 
         @if($hasError)
-        <p 
-            id="{{ $toggleId }}-error" 
+        <p
+            id="{{ $toggleId }}-error"
             class="mt-1 text-xs text-red-600 dark:text-red-400"
             role="alert"
         >

@@ -16,13 +16,13 @@
  * @author EmlakPro Team
  */
 
-console.log("⏳ Ultra Loading System v3.0 Loading...");
+console.log('⏳ Ultra Loading System v3.0 Loading...');
 
 class UltraLoading {
     constructor(options = {}) {
         this.options = {
             // Animation types
-            defaultType: "pulse", // pulse, spinner, dots, wave, skeleton, progress
+            defaultType: 'pulse', // pulse, spinner, dots, wave, skeleton, progress
 
             // Timing
             minDuration: 500, // Minimum loading time for UX
@@ -54,14 +54,14 @@ class UltraLoading {
         this.setupGlobalStyles();
         this.setupAccessibility();
 
-        console.log("✨ Ultra Loading System initialized!");
+        console.log('✨ Ultra Loading System initialized!');
     }
 
     setupGlobalStyles() {
-        const styleId = "ultra-loading-styles";
+        const styleId = 'ultra-loading-styles';
         if (document.getElementById(styleId)) return;
 
-        const style = document.createElement("style");
+        const style = document.createElement('style');
         style.id = styleId;
         style.textContent = this.getLoadingStyles();
         document.head.appendChild(style);
@@ -69,12 +69,12 @@ class UltraLoading {
 
     setupAccessibility() {
         // Create screen reader announcement area
-        if (!document.getElementById("loading-announcements")) {
-            const announcer = document.createElement("div");
-            announcer.id = "loading-announcements";
-            announcer.className = "sr-only";
-            announcer.setAttribute("aria-live", "polite");
-            announcer.setAttribute("aria-atomic", "true");
+        if (!document.getElementById('loading-announcements')) {
+            const announcer = document.createElement('div');
+            announcer.id = 'loading-announcements';
+            announcer.className = 'sr-only';
+            announcer.setAttribute('aria-live', 'polite');
+            announcer.setAttribute('aria-atomic', 'true');
             document.body.appendChild(announcer);
         }
     }
@@ -99,7 +99,7 @@ class UltraLoading {
         }
 
         // Announce to screen reader
-        this.announceToScreenReader("Loading...");
+        this.announceToScreenReader('Loading...');
 
         return loadingOptions.id;
     }
@@ -120,7 +120,7 @@ class UltraLoading {
                 this.activeLoaders.delete(id);
 
                 // Trigger completion event
-                this.dispatchEvent("complete", options);
+                this.dispatchEvent('complete', options);
             });
         }, remaining);
     }
@@ -130,16 +130,11 @@ class UltraLoading {
         if (!loader) return;
 
         const { element } = loader;
-        const progressBar = element.querySelector(
-            ".ultra-loading-progress-bar"
-        );
-        const messageEl = element.querySelector(".ultra-loading-message");
+        const progressBar = element.querySelector('.ultra-loading-progress-bar');
+        const messageEl = element.querySelector('.ultra-loading-message');
 
         if (progressBar) {
-            progressBar.style.width = `${Math.min(
-                100,
-                Math.max(0, progress)
-            )}%`;
+            progressBar.style.width = `${Math.min(100, Math.max(0, progress))}%`;
         }
 
         if (message && messageEl) {
@@ -148,7 +143,7 @@ class UltraLoading {
     }
 
     // 🎨 Specific Loading Types
-    showGlobal(message = "Loading...", type = "pulse") {
+    showGlobal(message = 'Loading...', type = 'pulse') {
         if (this.globalLoader) {
             this.hideGlobal();
         }
@@ -172,15 +167,15 @@ class UltraLoading {
         }
     }
 
-    showButton(button, message = "Loading...") {
+    showButton(button, message = 'Loading...') {
         const originalContent = button.innerHTML;
         const originalDisabled = button.disabled;
 
         button.disabled = true;
-        button.classList.add("ultra-loading-button");
+        button.classList.add('ultra-loading-button');
 
         const loaderId = this.show({
-            type: "spinner",
+            type: 'spinner',
             target: button,
             overlay: false,
             message: null,
@@ -203,10 +198,10 @@ class UltraLoading {
 
         const { target, originalContent, originalDisabled } = loader;
 
-        if (target && target.tagName === "BUTTON") {
+        if (target && target.tagName === 'BUTTON') {
             target.innerHTML = originalContent || target.innerHTML;
             target.disabled = originalDisabled || false;
-            target.classList.remove("ultra-loading-button");
+            target.classList.remove('ultra-loading-button');
         }
 
         this.hide(id);
@@ -214,11 +209,8 @@ class UltraLoading {
 
     showSkeleton(target, options = {}) {
         const skeletonOptions = {
-            type: "skeleton",
-            target:
-                typeof target === "string"
-                    ? document.querySelector(target)
-                    : target,
+            type: 'skeleton',
+            target: typeof target === 'string' ? document.querySelector(target) : target,
             overlay: false,
             lines: 3,
             avatar: false,
@@ -228,9 +220,9 @@ class UltraLoading {
         return this.show(skeletonOptions);
     }
 
-    showProgress(message = "Loading...", initialProgress = 0) {
+    showProgress(message = 'Loading...', initialProgress = 0) {
         return this.show({
-            type: "progress",
+            type: 'progress',
             message,
             progress: initialProgress,
             showProgress: true,
@@ -239,10 +231,10 @@ class UltraLoading {
 
     // 🏗️ Loader Creation
     createLoader(options) {
-        const element = document.createElement("div");
+        const element = document.createElement('div');
         element.className = this.getLoaderClasses(options);
-        element.setAttribute("role", "status");
-        element.setAttribute("aria-live", "polite");
+        element.setAttribute('role', 'status');
+        element.setAttribute('aria-live', 'polite');
         element.innerHTML = this.getLoaderHTML(options);
 
         // Add to target
@@ -259,34 +251,30 @@ class UltraLoading {
     }
 
     getLoaderClasses(options) {
-        const classes = [
-            "ultra-loading",
-            `ultra-loading-${options.type}`,
-            "ultra-loading-enter",
-        ];
+        const classes = ['ultra-loading', `ultra-loading-${options.type}`, 'ultra-loading-enter'];
 
-        if (options.overlay) classes.push("ultra-loading-overlay");
-        if (options.blur) classes.push("ultra-loading-blur");
-        if (options.darkMode) classes.push("ultra-loading-dark");
-        if (options.inline) classes.push("ultra-loading-inline");
-        if (options.global) classes.push("ultra-loading-global");
+        if (options.overlay) classes.push('ultra-loading-overlay');
+        if (options.blur) classes.push('ultra-loading-blur');
+        if (options.darkMode) classes.push('ultra-loading-dark');
+        if (options.inline) classes.push('ultra-loading-inline');
+        if (options.global) classes.push('ultra-loading-global');
 
-        return classes.join(" ");
+        return classes.join(' ');
     }
 
     getLoaderHTML(options) {
         switch (options.type) {
-            case "spinner":
+            case 'spinner':
                 return this.getSpinnerHTML(options);
-            case "dots":
+            case 'dots':
                 return this.getDotsHTML(options);
-            case "wave":
+            case 'wave':
                 return this.getWaveHTML(options);
-            case "skeleton":
+            case 'skeleton':
                 return this.getSkeletonHTML(options);
-            case "progress":
+            case 'progress':
                 return this.getProgressHTML(options);
-            case "pulse":
+            case 'pulse':
             default:
                 return this.getPulseHTML(options);
         }
@@ -303,13 +291,9 @@ class UltraLoading {
                 ${
                     options.message
                         ? `<div class="ultra-loading-message">${options.message}</div>`
-                        : ""
+                        : ''
                 }
-                ${
-                    options.cancellable
-                        ? '<button class="ultra-loading-cancel">✕</button>'
-                        : ""
-                }
+                ${options.cancellable ? '<button class="ultra-loading-cancel">✕</button>' : ''}
             </div>
         `;
     }
@@ -330,13 +314,9 @@ class UltraLoading {
                 ${
                     options.message
                         ? `<div class="ultra-loading-message">${options.message}</div>`
-                        : ""
+                        : ''
                 }
-                ${
-                    options.cancellable
-                        ? '<button class="ultra-loading-cancel">✕</button>'
-                        : ""
-                }
+                ${options.cancellable ? '<button class="ultra-loading-cancel">✕</button>' : ''}
             </div>
         `;
     }
@@ -353,13 +333,9 @@ class UltraLoading {
                 ${
                     options.message
                         ? `<div class="ultra-loading-message">${options.message}</div>`
-                        : ""
+                        : ''
                 }
-                ${
-                    options.cancellable
-                        ? '<button class="ultra-loading-cancel">✕</button>'
-                        : ""
-                }
+                ${options.cancellable ? '<button class="ultra-loading-cancel">✕</button>' : ''}
             </div>
         `;
     }
@@ -377,13 +353,9 @@ class UltraLoading {
                 ${
                     options.message
                         ? `<div class="ultra-loading-message">${options.message}</div>`
-                        : ""
+                        : ''
                 }
-                ${
-                    options.cancellable
-                        ? '<button class="ultra-loading-cancel">✕</button>'
-                        : ""
-                }
+                ${options.cancellable ? '<button class="ultra-loading-cancel">✕</button>' : ''}
             </div>
         `;
     }
@@ -395,15 +367,11 @@ class UltraLoading {
                 `<div class="ultra-loading-skeleton-line" style="width: ${
                     Math.random() * 30 + 70
                 }%"></div>`
-        ).join("");
+        ).join('');
 
         return `
             <div class="ultra-loading-skeleton">
-                ${
-                    options.avatar
-                        ? '<div class="ultra-loading-skeleton-avatar"></div>'
-                        : ""
-                }
+                ${options.avatar ? '<div class="ultra-loading-skeleton-avatar"></div>' : ''}
                 <div class="ultra-loading-skeleton-content">
                     ${lines}
                 </div>
@@ -420,20 +388,14 @@ class UltraLoading {
                             options.progress || 0
                         }%"></div>
                     </div>
-                    <div class="ultra-loading-progress-text">${
-                        options.progress || 0
-                    }%</div>
+                    <div class="ultra-loading-progress-text">${options.progress || 0}%</div>
                 </div>
                 ${
                     options.message
                         ? `<div class="ultra-loading-message">${options.message}</div>`
-                        : ""
+                        : ''
                 }
-                ${
-                    options.cancellable
-                        ? '<button class="ultra-loading-cancel">✕</button>'
-                        : ""
-                }
+                ${options.cancellable ? '<button class="ultra-loading-cancel">✕</button>' : ''}
             </div>
         `;
     }
@@ -441,9 +403,9 @@ class UltraLoading {
     // 🎭 Interactions & Animations
     setupLoaderInteractions(element, options) {
         // Cancel button
-        const cancelBtn = element.querySelector(".ultra-loading-cancel");
+        const cancelBtn = element.querySelector('.ultra-loading-cancel');
         if (cancelBtn) {
-            cancelBtn.addEventListener("click", () => {
+            cancelBtn.addEventListener('click', () => {
                 this.cancel(options.id);
             });
         }
@@ -451,33 +413,27 @@ class UltraLoading {
         // Escape key to cancel
         if (options.cancellable) {
             const handleEscape = (e) => {
-                if (e.key === "Escape") {
+                if (e.key === 'Escape') {
                     this.cancel(options.id);
-                    document.removeEventListener("keydown", handleEscape);
+                    document.removeEventListener('keydown', handleEscape);
                 }
             };
-            document.addEventListener("keydown", handleEscape);
+            document.addEventListener('keydown', handleEscape);
         }
     }
 
     animateIn(element, options) {
         requestAnimationFrame(() => {
-            element.classList.add("ultra-loading-enter-active");
+            element.classList.add('ultra-loading-enter-active');
 
             setTimeout(() => {
-                element.classList.remove(
-                    "ultra-loading-enter",
-                    "ultra-loading-enter-active"
-                );
+                element.classList.remove('ultra-loading-enter', 'ultra-loading-enter-active');
             }, 300);
         });
     }
 
     animateOut(element, callback) {
-        element.classList.add(
-            "ultra-loading-exit",
-            "ultra-loading-exit-active"
-        );
+        element.classList.add('ultra-loading-exit', 'ultra-loading-exit-active');
 
         setTimeout(() => {
             callback();
@@ -489,7 +445,7 @@ class UltraLoading {
         const loader = this.activeLoaders.get(id);
         if (!loader) return;
 
-        this.dispatchEvent("cancel", loader.options);
+        this.dispatchEvent('cancel', loader.options);
         this.hide(id);
     }
 
@@ -509,12 +465,12 @@ class UltraLoading {
     announceToScreenReader(message) {
         if (!this.options.announceToScreenReader) return;
 
-        const announcer = document.getElementById("loading-announcements");
+        const announcer = document.getElementById('loading-announcements');
         if (announcer) {
             announcer.textContent = message;
 
             setTimeout(() => {
-                announcer.textContent = "";
+                announcer.textContent = '';
             }, 1000);
         }
     }
@@ -529,9 +485,7 @@ class UltraLoading {
 
     // 🛠️ Utilities
     generateId() {
-        return `loading_${Date.now()}_${Math.random()
-            .toString(36)
-            .substr(2, 9)}`;
+        return `loading_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     }
 
     getLoadingStyles() {
@@ -958,57 +912,53 @@ window.loading = new UltraLoading();
 // Convenience methods
 window.showLoading = (message, type) => window.loading.show({ message, type });
 window.hideLoading = (id) => window.loading.hide(id);
-window.showGlobalLoading = (message, type) =>
-    window.loading.showGlobal(message, type);
+window.showGlobalLoading = (message, type) => window.loading.showGlobal(message, type);
 window.hideGlobalLoading = () => window.loading.hideGlobal();
 
 // Alpine.js integration
 if (window.Alpine) {
-    window.Alpine.magic("loading", () => window.loading);
+    window.Alpine.magic('loading', () => window.loading);
 
     // Alpine directive for automatic loading states
-    window.Alpine.directive(
-        "loading",
-        (el, { expression, modifiers }, { evaluate, cleanup }) => {
-            let loadingId = null;
+    window.Alpine.directive('loading', (el, { expression, modifiers }, { evaluate, cleanup }) => {
+        let loadingId = null;
 
-            const startLoading = () => {
-                if (loadingId) return;
+        const startLoading = () => {
+            if (loadingId) return;
 
-                const options = evaluate(expression) || {};
-                if (modifiers.includes("button")) {
-                    loadingId = window.loading.showButton(el, options.message);
+            const options = evaluate(expression) || {};
+            if (modifiers.includes('button')) {
+                loadingId = window.loading.showButton(el, options.message);
+            } else {
+                loadingId = window.loading.show({
+                    target: el,
+                    overlay: false,
+                    ...options,
+                });
+            }
+        };
+
+        const stopLoading = () => {
+            if (loadingId) {
+                if (modifiers.includes('button')) {
+                    window.loading.hideButton(loadingId);
                 } else {
-                    loadingId = window.loading.show({
-                        target: el,
-                        overlay: false,
-                        ...options,
-                    });
+                    window.loading.hide(loadingId);
                 }
-            };
+                loadingId = null;
+            }
+        };
 
-            const stopLoading = () => {
-                if (loadingId) {
-                    if (modifiers.includes("button")) {
-                        window.loading.hideButton(loadingId);
-                    } else {
-                        window.loading.hide(loadingId);
-                    }
-                    loadingId = null;
-                }
-            };
+        // Listen for Alpine events
+        el.addEventListener('loading:start', startLoading);
+        el.addEventListener('loading:stop', stopLoading);
 
-            // Listen for Alpine events
-            el.addEventListener("loading:start", startLoading);
-            el.addEventListener("loading:stop", stopLoading);
-
-            cleanup(() => {
-                el.removeEventListener("loading:start", startLoading);
-                el.removeEventListener("loading:stop", stopLoading);
-                stopLoading();
-            });
-        }
-    );
+        cleanup(() => {
+            el.removeEventListener('loading:start', startLoading);
+            el.removeEventListener('loading:stop', stopLoading);
+            stopLoading();
+        });
+    });
 }
 
-console.log("⏳ Ultra Loading System ready!");
+console.log('⏳ Ultra Loading System ready!');

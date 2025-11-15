@@ -10,9 +10,9 @@ use App\Models\IlanKategoriYayinTipi;
 
 /**
  * Yazlık Kiralık Ana Kategori Seeder
- * 
+ *
  * Yazlık Kiralık ana kategori, alt kategoriler ve yayın tiplerini oluşturur.
- * 
+ *
  * Yapı:
  * - Ana Kategori: Yazlık Kiralık (seviye=0)
  * - Alt Kategoriler: Villa, Daire, Residence, Müstakil Ev, Bungalov, Studio, Apart (seviye=1)
@@ -41,7 +41,7 @@ class YazlikKiralikAnaKategoriSeeder extends Seeder
                 'slug' => 'yazlik-kiralik',
                 'icon' => '🏖️',
                 'parent_id' => null,
-                'order' => 6, // Diğer kategorilerden sonra
+                'display_order' => 6, // Diğer kategorilerden sonra
                 'status' => Schema::hasColumn('ilan_kategorileri', 'status') ? true : null,
                 'aciklama' => 'Yazlık kiralık konut ve tesisler'
             ]
@@ -51,13 +51,13 @@ class YazlikKiralikAnaKategoriSeeder extends Seeder
         // 2. Alt Kategoriler
         $this->command->info('  📁 Alt kategoriler oluşturuluyor...');
         $altKategoriler = [
-            ['name' => 'Villa', 'slug' => 'yazlik-villa', 'icon' => '🏡', 'order' => 1],
-            ['name' => 'Daire', 'slug' => 'yazlik-daire', 'icon' => '🏢', 'order' => 2],
-            ['name' => 'Residence', 'slug' => 'yazlik-residence', 'icon' => '🏘️', 'order' => 3],
-            ['name' => 'Müstakil Ev', 'slug' => 'yazlik-mustakil-ev', 'icon' => '🏠', 'order' => 4],
-            ['name' => 'Bungalov', 'slug' => 'yazlik-bungalov', 'icon' => '🏕️', 'order' => 5],
-            ['name' => 'Studio', 'slug' => 'yazlik-studio', 'icon' => '🏨', 'order' => 6],
-            ['name' => 'Apart', 'slug' => 'yazlik-apart', 'icon' => '🏬', 'order' => 7],
+            ['name' => 'Villa', 'slug' => 'yazlik-villa', 'icon' => '🏡', 'display_order' => 1],
+            ['name' => 'Daire', 'slug' => 'yazlik-daire', 'icon' => '🏢', 'display_order' => 2],
+            ['name' => 'Residence', 'slug' => 'yazlik-residence', 'icon' => '🏘️', 'display_order' => 3],
+            ['name' => 'Müstakil Ev', 'slug' => 'yazlik-mustakil-ev', 'icon' => '🏠', 'display_order' => 4],
+            ['name' => 'Bungalov', 'slug' => 'yazlik-bungalov', 'icon' => '🏕️', 'display_order' => 5],
+            ['name' => 'Studio', 'slug' => 'yazlik-studio', 'icon' => '🏨', 'display_order' => 6],
+            ['name' => 'Apart', 'slug' => 'yazlik-apart', 'icon' => '🏬', 'display_order' => 7],
         ];
 
         $altKategoriIds = [];
@@ -71,7 +71,7 @@ class YazlikKiralikAnaKategoriSeeder extends Seeder
                 [
                     'slug' => $altKat['slug'],
                     'icon' => $altKat['icon'],
-                    'order' => $altKat['order'],
+                    'display_order' => $altKat['display_order'],
                     'status' => Schema::hasColumn('ilan_kategorileri', 'status') ? true : null,
                     'aciklama' => "Yazlık kiralık {$altKat['name']}"
                 ]
@@ -83,9 +83,9 @@ class YazlikKiralikAnaKategoriSeeder extends Seeder
         // 3. Yayın Tipleri (Ana kategoriye bağlı)
         $this->command->info('  📢 Yayın tipleri oluşturuluyor...');
         $yayinTipleri = [
-            ['tip' => 'Günlük', 'order' => 1],
-            ['tip' => 'Haftalık', 'order' => 2],
-            ['tip' => 'Sezonluk', 'order' => 3],
+            ['tip' => 'Günlük', 'display_order' => 1],
+            ['tip' => 'Haftalık', 'display_order' => 2],
+            ['tip' => 'Sezonluk', 'display_order' => 3],
         ];
 
         $yayinTipiIds = [];
@@ -97,7 +97,7 @@ class YazlikKiralikAnaKategoriSeeder extends Seeder
                 ],
                 [
                     'status' => Schema::hasColumn('ilan_kategori_yayin_tipleri', 'status') ? true : null,
-                    'order' => $yt['order']
+                    'display_order' => $yt['display_order']
                 ]
             );
             $yayinTipiIds[$yt['tip']] = $yayinTipi->id;
@@ -106,7 +106,7 @@ class YazlikKiralikAnaKategoriSeeder extends Seeder
 
         // 4. Alt Kategori ↔ Yayın Tipi İlişkileri (Tüm alt kategoriler için tüm yayın tipleri)
         $this->command->info('  🔗 Alt kategori ↔ Yayın tipi ilişkileri oluşturuluyor...');
-        
+
         if (Schema::hasTable('alt_kategori_yayin_tipi')) {
             $order = 1;
             foreach ($altKategoriIds as $altKatId) {
@@ -118,7 +118,7 @@ class YazlikKiralikAnaKategoriSeeder extends Seeder
                         ],
                         [
                             'enabled' => true,
-                            'order' => $order++,
+                            'display_order' => $order++,
                             'created_at' => now(),
                             'updated_at' => now()
                         ]
@@ -134,4 +134,3 @@ class YazlikKiralikAnaKategoriSeeder extends Seeder
         $this->command->info("   📊 Özet: {$yazlikAna->name} → " . count($altKategoriler) . " alt kategori → " . count($yayinTipleri) . " yayın tipi");
     }
 }
-

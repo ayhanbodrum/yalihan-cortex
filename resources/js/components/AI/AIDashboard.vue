@@ -32,7 +32,7 @@
           </div>
         </div>
       </div>
-      
+
       <div class="col-md-3 mb-3">
         <div class="stat-card">
           <div class="stat-icon bg-success">
@@ -44,7 +44,7 @@
           </div>
         </div>
       </div>
-      
+
       <div class="col-md-3 mb-3">
         <div class="stat-card">
           <div class="stat-icon bg-warning">
@@ -56,7 +56,7 @@
           </div>
         </div>
       </div>
-      
+
       <div class="col-md-3 mb-3">
         <div class="stat-card">
           <div class="stat-icon bg-info">
@@ -214,9 +214,9 @@
           </div>
           <div class="card-body">
             <div v-if="recentActivities.length > 0" class="activity-timeline">
-              <div 
-                v-for="activity in recentActivities" 
-                :key="activity.id" 
+              <div
+                v-for="activity in recentActivities"
+                :key="activity.id"
                 class="activity-item"
               >
                 <div class="activity-icon" :class="getActivityIconClass(activity.type)">
@@ -279,12 +279,12 @@ export default {
       loading: false
     }
   },
-  
+
   mounted() {
     this.loadDashboardData();
     this.checkAIStatus();
   },
-  
+
   methods: {
     async loadDashboardData() {
       this.loading = true;
@@ -295,7 +295,7 @@ export default {
         // this.recentChats = response.data.recent_chats;
         // this.recentPredictions = response.data.recent_predictions;
         // this.recentActivities = response.data.recent_activities;
-        
+
         // Şimdilik mock data
         this.loadMockData();
       } catch (error) {
@@ -304,7 +304,7 @@ export default {
         this.loading = false;
       }
     },
-    
+
     loadMockData() {
       this.stats = {
         total_chats: 42,
@@ -312,7 +312,7 @@ export default {
         descriptions_generated: 25,
         request_analyses: 12
       };
-      
+
       this.recentChats = [
         {
           id: 1,
@@ -325,7 +325,7 @@ export default {
           created_at: new Date(Date.now() - 4 * 60 * 60 * 1000)
         }
       ];
-      
+
       this.recentPredictions = [
         {
           id: 1,
@@ -340,7 +340,7 @@ export default {
           created_at: new Date(Date.now() - 3 * 60 * 60 * 1000)
         }
       ];
-      
+
       this.recentActivities = [
         {
           id: 1,
@@ -365,7 +365,7 @@ export default {
         }
       ];
     },
-    
+
     async checkAIStatus() {
       try {
         const response = await axios.get('/api/ai/status');
@@ -375,7 +375,7 @@ export default {
         console.error('AI status check error:', error);
       }
     },
-    
+
     getStatusText() {
       const texts = {
         'connected': 'AI Aktif',
@@ -384,27 +384,27 @@ export default {
       };
       return texts[this.aiStatus] || 'Bilinmiyor';
     },
-    
+
     openChatWidget() {
       // Chat widget'ını aç
       this.$emit('open-chat-widget');
     },
-    
+
     openPricePrediction() {
       const modal = new bootstrap.Modal(document.getElementById('pricePredictionModal'));
       modal.show();
     },
-    
+
     openDescriptionGenerator() {
       // Description generator modal'ını aç
       this.$emit('open-description-generator');
     },
-    
+
     openRequestAnalysis() {
       // Request analysis modal'ını aç
       this.$emit('open-request-analysis');
     },
-    
+
     onPredictionMade(data) {
       // Yeni tahmin yapıldığında
       this.recentPredictions.unshift({
@@ -413,13 +413,13 @@ export default {
         avg_price: data.result.prediction.avg_price,
         created_at: new Date()
       });
-      
+
       this.stats.price_predictions++;
     },
-    
+
     formatPrice(price) {
       if (!price) return 'Belirtilmemiş';
-      
+
       return new Intl.NumberFormat('tr-TR', {
         style: 'currency',
         currency: 'TRY',
@@ -427,23 +427,23 @@ export default {
         maximumFractionDigits: 0
       }).format(price);
     },
-    
+
     formatTime(timestamp) {
       const now = new Date();
       const time = new Date(timestamp);
       const diffInMinutes = Math.floor((now - time) / (1000 * 60));
-      
+
       if (diffInMinutes < 1) return 'Az önce';
       if (diffInMinutes < 60) return `${diffInMinutes} dakika önce`;
       if (diffInMinutes < 1440) return `${Math.floor(diffInMinutes / 60)} saat önce`;
       return time.toLocaleDateString('tr-TR');
     },
-    
+
     truncateText(text, length) {
       if (text.length <= length) return text;
       return text.substring(0, length) + '...';
     },
-    
+
     getActivityIcon(type) {
       const icons = {
         'chat': 'fas fa-comments',
@@ -453,7 +453,7 @@ export default {
       };
       return icons[type] || 'fas fa-circle';
     },
-    
+
     getActivityIconClass(type) {
       const classes = {
         'chat': 'bg-primary',
@@ -676,22 +676,22 @@ export default {
   .ai-dashboard {
     padding: 15px;
   }
-  
+
   .dashboard-header {
     text-align: center;
   }
-  
+
   .stat-card {
     flex-direction: column;
     text-align: center;
   }
-  
+
   .tool-header {
     flex-direction: column;
     gap: 10px;
     align-items: flex-start;
   }
-  
+
   .activity-item {
     flex-direction: column;
     text-align: center;

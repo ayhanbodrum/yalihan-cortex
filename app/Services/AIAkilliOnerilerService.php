@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Http;
 
 /**
  * AI Akıllı Öneriler Servisi
- * 
+ *
  * Context7: AI destekli akıllı öneriler
  * - Kategori bazlı öneriler
  * - Konum bazlı öneriler
@@ -29,7 +29,7 @@ class AIAkilliOnerilerService
     public function getSmartRecommendations(array $ilanData, string $context = 'create'): array
     {
         $cacheKey = "ai_oneriler_" . md5(serialize($ilanData) . $context);
-        
+
         return Cache::remember($cacheKey, 1800, function () use ($ilanData, $context) {
             return $this->generateSmartRecommendations($ilanData, $context);
         });
@@ -59,7 +59,7 @@ class AIAkilliOnerilerService
     {
         $category = $ilanData['kategori'] ?? '';
         $subCategory = $ilanData['alt_kategori'] ?? '';
-        
+
         $recommendations = [];
 
         // Kategori bazlı öneriler
@@ -103,7 +103,7 @@ class AIAkilliOnerilerService
         $lon = $ilanData['longitude'] ?? null;
         $il = $ilanData['il'] ?? '';
         $ilce = $ilanData['ilce'] ?? '';
-        
+
         $recommendations = [];
 
         if ($lat && $lon) {
@@ -147,7 +147,7 @@ class AIAkilliOnerilerService
         $fiyat = $ilanData['fiyat'] ?? 0;
         $kategori = $ilanData['kategori'] ?? '';
         $il = $ilanData['il'] ?? '';
-        
+
         $recommendations = [];
 
         if ($fiyat > 0) {
@@ -176,7 +176,7 @@ class AIAkilliOnerilerService
         $baslik = $ilanData['baslik'] ?? '';
         $aciklama = $ilanData['aciklama'] ?? '';
         $kategori = $ilanData['kategori'] ?? '';
-        
+
         $recommendations = [];
 
         // Başlık SEO önerileri
@@ -219,7 +219,7 @@ class AIAkilliOnerilerService
     {
         $kategori = $ilanData['kategori'] ?? '';
         $ozellikler = $ilanData['ozellikler'] ?? [];
-        
+
         $recommendations = [];
 
         // Kategori bazlı özellik önerileri
@@ -263,7 +263,7 @@ class AIAkilliOnerilerService
     {
         $aciklama = $ilanData['aciklama'] ?? '';
         $kategori = $ilanData['kategori'] ?? '';
-        
+
         $recommendations = [];
 
         if (empty($aciklama)) {
@@ -292,7 +292,7 @@ class AIAkilliOnerilerService
         try {
             $prompt = $this->buildRecommendationPrompt($ilanData);
             $response = $this->aiService->analyze($ilanData, $prompt);
-            
+
             return [
                 'ai_recommendations' => $response,
                 'confidence' => $this->calculateConfidence($response),
@@ -327,11 +327,11 @@ class AIAkilliOnerilerService
     public function prioritizeRecommendations(array $recommendations): array
     {
         $priorityOrder = ['high', 'medium', 'low'];
-        
+
         usort($recommendations, function ($a, $b) use ($priorityOrder) {
             $aPriority = array_search($a['priority'], $priorityOrder);
             $bPriority = array_search($b['priority'], $priorityOrder);
-            
+
             return $aPriority - $bPriority;
         });
 

@@ -6,8 +6,8 @@
 class FrontendDynamicFeatures {
     constructor(options = {}) {
         this.options = {
-            container: "#ilan-ozellikleri",
-            apiBase: "/admin/api/kategori-ozellik",
+            container: '#ilan-ozellikleri',
+            apiBase: '/admin/api/kategori-ozellik',
             ...options,
         };
 
@@ -16,16 +16,14 @@ class FrontendDynamicFeatures {
     }
 
     init() {
-        console.log("🏠 Frontend dinamik özellik sistemi başlatılıyor...");
+        console.log('🏠 Frontend dinamik özellik sistemi başlatılıyor...');
         this.bindEvents();
     }
 
     bindEvents() {
         // Sayfa yüklendiğinde özellikleri yükle
-        if (document.readyState === "loading") {
-            document.addEventListener("DOMContentLoaded", () =>
-                this.loadFeatures()
-            );
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => this.loadFeatures());
         } else {
             this.loadFeatures();
         }
@@ -39,9 +37,7 @@ class FrontendDynamicFeatures {
         if (!ilanId) return;
 
         try {
-            const response = await fetch(
-                `${this.options.apiBase}/ilan-features?ilan_id=${ilanId}`
-            );
+            const response = await fetch(`${this.options.apiBase}/ilan-features?ilan_id=${ilanId}`);
             const data = await response.json();
 
             if (data.success) {
@@ -49,7 +45,7 @@ class FrontendDynamicFeatures {
                 this.renderFeatures();
             }
         } catch (error) {
-            console.error("Özellikler yüklenirken hata:", error);
+            console.error('Özellikler yüklenirken hata:', error);
         }
     }
 
@@ -59,13 +55,13 @@ class FrontendDynamicFeatures {
     getIlanId() {
         // URL'den ilan ID'sini çıkar
         const urlParams = new URLSearchParams(window.location.search);
-        const ilanId = urlParams.get("ilan_id") || urlParams.get("id");
+        const ilanId = urlParams.get('ilan_id') || urlParams.get('id');
 
         if (ilanId) return ilanId;
 
         // Meta tag'den al
         const metaTag = document.querySelector('meta[name="ilan-id"]');
-        if (metaTag) return metaTag.getAttribute("content");
+        if (metaTag) return metaTag.getAttribute('content');
 
         // Data attribute'dan al
         const container = document.querySelector(this.options.container);
@@ -81,7 +77,7 @@ class FrontendDynamicFeatures {
         const container = document.querySelector(this.options.container);
         if (!container || !this.features.ozellikler) return;
 
-        let html = "";
+        let html = '';
 
         // Kategori bilgisi
         if (this.features.kategori) {
@@ -91,7 +87,7 @@ class FrontendDynamicFeatures {
                         ${
                             this.features.kategori.icon_class
                                 ? `<i class="${this.features.kategori.icon_class} text-2xl mr-3 text-blue-600"></i>`
-                                : ""
+                                : ''
                         }
                         <div>
                             <h3 class="text-lg font-semibold text-gray-800">${
@@ -100,7 +96,7 @@ class FrontendDynamicFeatures {
                             ${
                                 this.features.yayin_tipi
                                     ? `<p class="text-sm text-gray-600">${this.features.yayin_tipi.name}</p>`
-                                    : ""
+                                    : ''
                             }
                         </div>
                     </div>
@@ -109,22 +105,18 @@ class FrontendDynamicFeatures {
         }
 
         // Özellikler
-        Object.entries(this.features.ozellikler).forEach(
-            ([kategori, ozellikler]) => {
-                html += `
+        Object.entries(this.features.ozellikler).forEach(([kategori, ozellikler]) => {
+            html += `
                 <div class="ozellik-kategori mb-6">
                     <h4 class="text-lg font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-200">
                         ${kategori}
                     </h4>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        ${ozellikler
-                            .map((ozellik) => this.renderFeatureCard(ozellik))
-                            .join("")}
+                        ${ozellikler.map((ozellik) => this.renderFeatureCard(ozellik)).join('')}
                     </div>
                 </div>
             `;
-            }
-        );
+        });
 
         container.innerHTML = html;
     }
@@ -133,13 +125,9 @@ class FrontendDynamicFeatures {
      * Tek özellik kartını render et
      */
     renderFeatureCard(ozellik) {
-        const icon = ozellik.icon || "🏷️";
-        const deger = Array.isArray(ozellik.deger)
-            ? ozellik.deger.join(", ")
-            : ozellik.deger;
-        const birim = ozellik.birim
-            ? ` <span class="text-gray-500">(${ozellik.birim})</span>`
-            : "";
+        const icon = ozellik.icon || '🏷️';
+        const deger = Array.isArray(ozellik.deger) ? ozellik.deger.join(', ') : ozellik.deger;
+        const birim = ozellik.birim ? ` <span class="text-gray-500">(${ozellik.birim})</span>` : '';
 
         return `
             <div class="ozellik-kart bg-white p-4 rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
@@ -162,10 +150,8 @@ class FrontendDynamicFeatures {
     async showCategoryFeatures(kategoriId, yayinTipiId = null) {
         try {
             const response = await fetch(
-                `${
-                    this.options.apiBase
-                }/frontend-features?kategori_id=${kategoriId}${
-                    yayinTipiId ? `&yayin_tipi_id=${yayinTipiId}` : ""
+                `${this.options.apiBase}/frontend-features?kategori_id=${kategoriId}${
+                    yayinTipiId ? `&yayin_tipi_id=${yayinTipiId}` : ''
                 }`
             );
             const data = await response.json();
@@ -174,7 +160,7 @@ class FrontendDynamicFeatures {
                 this.renderSearchFeatures(data.data);
             }
         } catch (error) {
-            console.error("Arama özellikleri yüklenirken hata:", error);
+            console.error('Arama özellikleri yüklenirken hata:', error);
         }
     }
 
@@ -182,10 +168,10 @@ class FrontendDynamicFeatures {
      * Arama sayfasında özellikleri render et
      */
     renderSearchFeatures(data) {
-        const container = document.querySelector("#arama-ozellikleri");
+        const container = document.querySelector('#arama-ozellikleri');
         if (!container) return;
 
-        let html = "";
+        let html = '';
 
         // Kategori özellikleri
         if (data.kategori_ozellikleri && data.kategori_ozellikleri.length > 0) {
@@ -197,24 +183,21 @@ class FrontendDynamicFeatures {
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         ${data.kategori_ozellikleri
                             .map((ozellik) => this.renderSearchFeature(ozellik))
-                            .join("")}
+                            .join('')}
                     </div>
                 </div>
             `;
         }
 
         // Yayın tipi özellikleri
-        if (
-            data.yayin_tipi_ozellikleri &&
-            data.yayin_tipi_ozellikleri.length > 0
-        ) {
+        if (data.yayin_tipi_ozellikleri && data.yayin_tipi_ozellikleri.length > 0) {
             html += `
                 <div class="ozellik-grup mb-6">
                     <h4 class="text-lg font-semibold text-gray-800 mb-4">Yayın Tipi Özellikleri</h4>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         ${data.yayin_tipi_ozellikleri
                             .map((ozellik) => this.renderSearchFeature(ozellik))
-                            .join("")}
+                            .join('')}
                     </div>
                 </div>
             `;
@@ -227,10 +210,8 @@ class FrontendDynamicFeatures {
      * Arama sayfasında tek özelliği render et
      */
     renderSearchFeature(ozellik) {
-        const icon = ozellik.icon || "🏷️";
-        const zorunlu = ozellik.zorunlu
-            ? '<span class="text-red-500 ml-1">*</span>'
-            : "";
+        const icon = ozellik.icon || '🏷️';
+        const zorunlu = ozellik.zorunlu ? '<span class="text-red-500 ml-1">*</span>' : '';
 
         return `
             <div class="ozellik-item bg-gray-50 p-3 rounded-lg border border-gray-200">
@@ -243,7 +224,7 @@ class FrontendDynamicFeatures {
                         ${
                             ozellik.aciklama
                                 ? `<p class="text-xs text-gray-500 mt-1">${ozellik.aciklama}</p>`
-                                : ""
+                                : ''
                         }
                     </div>
                 </div>
@@ -256,6 +237,6 @@ class FrontendDynamicFeatures {
 window.frontendDynamicFeatures = new FrontendDynamicFeatures();
 
 // Export for modules
-if (typeof module !== "undefined" && module.exports) {
+if (typeof module !== 'undefined' && module.exports) {
     module.exports = FrontendDynamicFeatures;
 }

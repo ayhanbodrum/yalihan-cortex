@@ -4,7 +4,7 @@
   "category": "error",
   "severity": "critical",
   "status": "resolved",
-  
+
   "error": {
     "code": "SQLSTATE[42S22]",
     "message": "Column not found: 1054 Unknown column 'status' in 'where clause'",
@@ -117,12 +117,7 @@
         "solution": "Schema::hasColumn() kontrolü ZORUNLU",
         "severity": "critical",
         "auto_fix": false,
-        "affected_tables": [
-          "ilan_kategorileri",
-          "ilanlar",
-          "kisiler",
-          "site_apartmanlar"
-        ]
+        "affected_tables": ["ilan_kategorileri", "ilanlar", "kisiler", "site_apartmanlar"]
       }
     },
     "database_fields_rules": {
@@ -230,4 +225,3 @@
     "enforcement": "Context7 YASAKLI KOMUT KURALI - Otomatik kontrol edilmeli"
   }
 }
-

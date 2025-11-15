@@ -20,7 +20,7 @@ class IlanKategoriSeeder extends Seeder
                 'slug' => 'konut',
                 'seviye' => 0,
                 'status' => true,
-                'order' => 1,
+                'display_order' => 1,
                 'icon' => 'home',
                 'description' => 'Daire, villa, müstakil ev gibi konut türleri'
             ],
@@ -29,7 +29,7 @@ class IlanKategoriSeeder extends Seeder
                 'slug' => 'isyeri',
                 'seviye' => 0,
                 'status' => true,
-                'order' => 2,
+                'display_order' => 2,
                 'icon' => 'building',
                 'description' => 'Ofis, dükkan, fabrika gibi ticari alanlar'
             ],
@@ -38,7 +38,7 @@ class IlanKategoriSeeder extends Seeder
                 'slug' => 'arsa',
                 'seviye' => 0,
                 'status' => true,
-                'order' => 3,
+                'display_order' => 3,
                 'icon' => 'map',
                 'description' => 'İmar, tarım, orman arazileri'
             ],
@@ -47,7 +47,7 @@ class IlanKategoriSeeder extends Seeder
                 'slug' => 'yazlik-kiralama',
                 'seviye' => 0,
                 'status' => true,
-                'order' => 4,
+                'display_order' => 4,
                 'icon' => 'sun',
                 'description' => 'Günlük, haftalık, aylık yazlık kiralama'
             ],
@@ -56,7 +56,7 @@ class IlanKategoriSeeder extends Seeder
                 'slug' => 'turistik-tesisler',
                 'seviye' => 0,
                 'status' => true,
-                'order' => 5,
+                'display_order' => 5,
                 'icon' => 'hotel',
                 'description' => 'Otel, pansiyon, tatil köyü gibi tesisler'
             ]
@@ -77,7 +77,7 @@ class IlanKategoriSeeder extends Seeder
                 'parent_id' => $anaKategoriIds['konut'],
                 'seviye' => 1,
                 'status' => true,
-                'order' => 1,
+                'display_order' => 1,
                 'icon' => 'apartment',
                 'description' => 'Apartman dairesi'
             ],
@@ -87,7 +87,7 @@ class IlanKategoriSeeder extends Seeder
                 'parent_id' => $anaKategoriIds['konut'],
                 'seviye' => 1,
                 'status' => true,
-                'order' => 2,
+                'display_order' => 2,
                 'icon' => 'villa',
                 'description' => 'Müstakil villa'
             ],
@@ -97,7 +97,7 @@ class IlanKategoriSeeder extends Seeder
                 'parent_id' => $anaKategoriIds['konut'],
                 'seviye' => 1,
                 'status' => true,
-                'order' => 3,
+                'display_order' => 3,
                 'icon' => 'house',
                 'description' => 'Tek ailelik müstakil ev'
             ],
@@ -107,7 +107,7 @@ class IlanKategoriSeeder extends Seeder
                 'parent_id' => $anaKategoriIds['konut'],
                 'seviye' => 1,
                 'status' => true,
-                'order' => 4,
+                'display_order' => 4,
                 'icon' => 'duplex',
                 'description' => 'İki katlı konut'
             ],
@@ -119,7 +119,7 @@ class IlanKategoriSeeder extends Seeder
                 'parent_id' => $anaKategoriIds['isyeri'],
                 'seviye' => 1,
                 'status' => true,
-                'order' => 1,
+                'display_order' => 1,
                 'icon' => 'office',
                 'description' => 'Büro ve ofis alanları'
             ],
@@ -129,7 +129,7 @@ class IlanKategoriSeeder extends Seeder
                 'parent_id' => $anaKategoriIds['isyeri'],
                 'seviye' => 1,
                 'status' => true,
-                'order' => 2,
+                'display_order' => 2,
                 'icon' => 'shop',
                 'description' => 'Perakende satış dükkanları'
             ],
@@ -139,7 +139,7 @@ class IlanKategoriSeeder extends Seeder
                 'parent_id' => $anaKategoriIds['isyeri'],
                 'seviye' => 1,
                 'status' => true,
-                'order' => 3,
+                'display_order' => 3,
                 'icon' => 'factory',
                 'description' => 'Üretim tesisleri'
             ],
@@ -149,7 +149,7 @@ class IlanKategoriSeeder extends Seeder
                 'parent_id' => $anaKategoriIds['isyeri'],
                 'seviye' => 1,
                 'status' => true,
-                'order' => 4,
+                'display_order' => 4,
                 'icon' => 'warehouse',
                 'description' => 'Depolama alanları'
             ],
@@ -161,7 +161,7 @@ class IlanKategoriSeeder extends Seeder
                 'parent_id' => $anaKategoriIds['arsa'],
                 'seviye' => 1,
                 'status' => true,
-                'order' => 1,
+                'display_order' => 1,
                 'icon' => 'land',
                 'description' => 'İmar planına uygun arsalar'
             ],
@@ -171,7 +171,7 @@ class IlanKategoriSeeder extends Seeder
                 'parent_id' => $anaKategoriIds['arsa'],
                 'seviye' => 1,
                 'status' => true,
-                'order' => 2,
+                'display_order' => 2,
                 'icon' => 'farm',
                 'description' => 'Tarımsal faaliyet için araziler'
             ],
@@ -181,7 +181,7 @@ class IlanKategoriSeeder extends Seeder
                 'parent_id' => $anaKategoriIds['arsa'],
                 'seviye' => 1,
                 'status' => true,
-                'order' => 3,
+                'display_order' => 3,
                 'icon' => 'forest',
                 'description' => 'Ormanlık alanlar'
             ],
@@ -193,7 +193,7 @@ class IlanKategoriSeeder extends Seeder
                 'parent_id' => $anaKategoriIds['yazlik-kiralama'],
                 'seviye' => 1,
                 'status' => true,
-                'order' => 1,
+                'display_order' => 1,
                 'icon' => 'calendar-day',
                 'description' => 'Günlük yazlık kiralama'
             ],
@@ -203,7 +203,7 @@ class IlanKategoriSeeder extends Seeder
                 'parent_id' => $anaKategoriIds['yazlik-kiralama'],
                 'seviye' => 1,
                 'status' => true,
-                'order' => 2,
+                'display_order' => 2,
                 'icon' => 'calendar-week',
                 'description' => 'Haftalık yazlık kiralama'
             ],
@@ -213,7 +213,7 @@ class IlanKategoriSeeder extends Seeder
                 'parent_id' => $anaKategoriIds['yazlik-kiralama'],
                 'seviye' => 1,
                 'status' => true,
-                'order' => 3,
+                'display_order' => 3,
                 'icon' => 'calendar-month',
                 'description' => 'Aylık yazlık kiralama'
             ],
@@ -225,7 +225,7 @@ class IlanKategoriSeeder extends Seeder
                 'parent_id' => $anaKategoriIds['turistik-tesisler'],
                 'seviye' => 1,
                 'status' => true,
-                'order' => 1,
+                'display_order' => 1,
                 'icon' => 'hotel',
                 'description' => 'Otel tesisleri'
             ],
@@ -235,7 +235,7 @@ class IlanKategoriSeeder extends Seeder
                 'parent_id' => $anaKategoriIds['turistik-tesisler'],
                 'seviye' => 1,
                 'status' => true,
-                'order' => 2,
+                'display_order' => 2,
                 'icon' => 'pension',
                 'description' => 'Pansiyon tesisleri'
             ],
@@ -245,7 +245,7 @@ class IlanKategoriSeeder extends Seeder
                 'parent_id' => $anaKategoriIds['turistik-tesisler'],
                 'seviye' => 1,
                 'status' => true,
-                'order' => 3,
+                'display_order' => 3,
                 'icon' => 'resort',
                 'description' => 'Tatil köyü tesisleri'
             ]
@@ -266,7 +266,7 @@ class IlanKategoriSeeder extends Seeder
                 'parent_id' => $altKategoriIds['daire'],
                 'seviye' => 2,
                 'status' => true,
-                'order' => 1,
+                'display_order' => 1,
                 'icon' => 'sale',
                 'description' => 'Satılık daire'
             ],
@@ -276,7 +276,7 @@ class IlanKategoriSeeder extends Seeder
                 'parent_id' => $altKategoriIds['daire'],
                 'seviye' => 2,
                 'status' => true,
-                'order' => 2,
+                'display_order' => 2,
                 'icon' => 'rent',
                 'description' => 'Kiralık daire'
             ],
@@ -288,7 +288,7 @@ class IlanKategoriSeeder extends Seeder
                 'parent_id' => $altKategoriIds['villa'],
                 'seviye' => 2,
                 'status' => true,
-                'order' => 1,
+                'display_order' => 1,
                 'icon' => 'sale',
                 'description' => 'Satılık villa'
             ],
@@ -298,7 +298,7 @@ class IlanKategoriSeeder extends Seeder
                 'parent_id' => $altKategoriIds['villa'],
                 'seviye' => 2,
                 'status' => true,
-                'order' => 2,
+                'display_order' => 2,
                 'icon' => 'rent',
                 'description' => 'Kiralık villa'
             ],
@@ -310,7 +310,7 @@ class IlanKategoriSeeder extends Seeder
                 'parent_id' => $altKategoriIds['mustakil-ev'],
                 'seviye' => 2,
                 'status' => true,
-                'order' => 1,
+                'display_order' => 1,
                 'icon' => 'sale',
                 'description' => 'Satılık müstakil ev'
             ],
@@ -320,7 +320,7 @@ class IlanKategoriSeeder extends Seeder
                 'parent_id' => $altKategoriIds['mustakil-ev'],
                 'seviye' => 2,
                 'status' => true,
-                'order' => 2,
+                'display_order' => 2,
                 'icon' => 'rent',
                 'description' => 'Kiralık müstakil ev'
             ],
@@ -332,7 +332,7 @@ class IlanKategoriSeeder extends Seeder
                 'parent_id' => $altKategoriIds['dubleks'],
                 'seviye' => 2,
                 'status' => true,
-                'order' => 1,
+                'display_order' => 1,
                 'icon' => 'sale',
                 'description' => 'Satılık dubleks'
             ],
@@ -342,7 +342,7 @@ class IlanKategoriSeeder extends Seeder
                 'parent_id' => $altKategoriIds['dubleks'],
                 'seviye' => 2,
                 'status' => true,
-                'order' => 2,
+                'display_order' => 2,
                 'icon' => 'rent',
                 'description' => 'Kiralık dubleks'
             ],
@@ -354,7 +354,7 @@ class IlanKategoriSeeder extends Seeder
                 'parent_id' => $altKategoriIds['ofis'],
                 'seviye' => 2,
                 'status' => true,
-                'order' => 1,
+                'display_order' => 1,
                 'icon' => 'sale',
                 'description' => 'Satılık ofis'
             ],
@@ -364,7 +364,7 @@ class IlanKategoriSeeder extends Seeder
                 'parent_id' => $altKategoriIds['ofis'],
                 'seviye' => 2,
                 'status' => true,
-                'order' => 2,
+                'display_order' => 2,
                 'icon' => 'rent',
                 'description' => 'Kiralık ofis'
             ],
@@ -376,7 +376,7 @@ class IlanKategoriSeeder extends Seeder
                 'parent_id' => $altKategoriIds['dukkan'],
                 'seviye' => 2,
                 'status' => true,
-                'order' => 1,
+                'display_order' => 1,
                 'icon' => 'sale',
                 'description' => 'Satılık dükkan'
             ],
@@ -386,7 +386,7 @@ class IlanKategoriSeeder extends Seeder
                 'parent_id' => $altKategoriIds['dukkan'],
                 'seviye' => 2,
                 'status' => true,
-                'order' => 2,
+                'display_order' => 2,
                 'icon' => 'rent',
                 'description' => 'Kiralık dükkan'
             ],
@@ -398,7 +398,7 @@ class IlanKategoriSeeder extends Seeder
                 'parent_id' => $altKategoriIds['fabrika'],
                 'seviye' => 2,
                 'status' => true,
-                'order' => 1,
+                'display_order' => 1,
                 'icon' => 'sale',
                 'description' => 'Satılık fabrika'
             ],
@@ -408,7 +408,7 @@ class IlanKategoriSeeder extends Seeder
                 'parent_id' => $altKategoriIds['fabrika'],
                 'seviye' => 2,
                 'status' => true,
-                'order' => 2,
+                'display_order' => 2,
                 'icon' => 'rent',
                 'description' => 'Kiralık fabrika'
             ],
@@ -420,7 +420,7 @@ class IlanKategoriSeeder extends Seeder
                 'parent_id' => $altKategoriIds['depo'],
                 'seviye' => 2,
                 'status' => true,
-                'order' => 1,
+                'display_order' => 1,
                 'icon' => 'sale',
                 'description' => 'Satılık depo'
             ],
@@ -430,7 +430,7 @@ class IlanKategoriSeeder extends Seeder
                 'parent_id' => $altKategoriIds['depo'],
                 'seviye' => 2,
                 'status' => true,
-                'order' => 2,
+                'display_order' => 2,
                 'icon' => 'rent',
                 'description' => 'Kiralık depo'
             ],
@@ -442,7 +442,7 @@ class IlanKategoriSeeder extends Seeder
                 'parent_id' => $altKategoriIds['imar-arsalari'],
                 'seviye' => 2,
                 'status' => true,
-                'order' => 1,
+                'display_order' => 1,
                 'icon' => 'sale',
                 'description' => 'Satılık imar arsası'
             ],
@@ -454,7 +454,7 @@ class IlanKategoriSeeder extends Seeder
                 'parent_id' => $altKategoriIds['tarim-arazileri'],
                 'seviye' => 2,
                 'status' => true,
-                'order' => 1,
+                'display_order' => 1,
                 'icon' => 'sale',
                 'description' => 'Satılık tarım arazisi'
             ],
@@ -466,7 +466,7 @@ class IlanKategoriSeeder extends Seeder
                 'parent_id' => $altKategoriIds['orman-arazileri'],
                 'seviye' => 2,
                 'status' => true,
-                'order' => 1,
+                'display_order' => 1,
                 'icon' => 'sale',
                 'description' => 'Satılık orman arazisi'
             ],
@@ -478,7 +478,7 @@ class IlanKategoriSeeder extends Seeder
                 'parent_id' => $altKategoriIds['gunluk-kiralama'],
                 'seviye' => 2,
                 'status' => true,
-                'order' => 1,
+                'display_order' => 1,
                 'icon' => 'calendar-day',
                 'description' => 'Günlük yazlık kiralama'
             ],
@@ -490,7 +490,7 @@ class IlanKategoriSeeder extends Seeder
                 'parent_id' => $altKategoriIds['haftalik-kiralama'],
                 'seviye' => 2,
                 'status' => true,
-                'order' => 1,
+                'display_order' => 1,
                 'icon' => 'calendar-week',
                 'description' => 'Haftalık yazlık kiralama'
             ],
@@ -502,7 +502,7 @@ class IlanKategoriSeeder extends Seeder
                 'parent_id' => $altKategoriIds['aylik-kiralama'],
                 'seviye' => 2,
                 'status' => true,
-                'order' => 1,
+                'display_order' => 1,
                 'icon' => 'calendar-month',
                 'description' => 'Aylık yazlık kiralama'
             ],
@@ -514,7 +514,7 @@ class IlanKategoriSeeder extends Seeder
                 'parent_id' => $altKategoriIds['otel'],
                 'seviye' => 2,
                 'status' => true,
-                'order' => 1,
+                'display_order' => 1,
                 'icon' => 'sale',
                 'description' => 'Satılık otel'
             ],
@@ -524,7 +524,7 @@ class IlanKategoriSeeder extends Seeder
                 'parent_id' => $altKategoriIds['otel'],
                 'seviye' => 2,
                 'status' => true,
-                'order' => 2,
+                'display_order' => 2,
                 'icon' => 'rent',
                 'description' => 'Kiralık otel'
             ],
@@ -536,7 +536,7 @@ class IlanKategoriSeeder extends Seeder
                 'parent_id' => $altKategoriIds['pansiyon'],
                 'seviye' => 2,
                 'status' => true,
-                'order' => 1,
+                'display_order' => 1,
                 'icon' => 'sale',
                 'description' => 'Satılık pansiyon'
             ],
@@ -546,7 +546,7 @@ class IlanKategoriSeeder extends Seeder
                 'parent_id' => $altKategoriIds['pansiyon'],
                 'seviye' => 2,
                 'status' => true,
-                'order' => 2,
+                'display_order' => 2,
                 'icon' => 'rent',
                 'description' => 'Kiralık pansiyon'
             ],
@@ -558,7 +558,7 @@ class IlanKategoriSeeder extends Seeder
                 'parent_id' => $altKategoriIds['tatil-koyu'],
                 'seviye' => 2,
                 'status' => true,
-                'order' => 1,
+                'display_order' => 1,
                 'icon' => 'sale',
                 'description' => 'Satılık tatil köyü'
             ],
@@ -568,7 +568,7 @@ class IlanKategoriSeeder extends Seeder
                 'parent_id' => $altKategoriIds['tatil-koyu'],
                 'seviye' => 2,
                 'status' => true,
-                'order' => 2,
+                'display_order' => 2,
                 'icon' => 'rent',
                 'description' => 'Kiralık tatil köyü'
             ]

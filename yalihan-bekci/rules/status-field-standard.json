@@ -5,9 +5,16 @@
   "severity": "CRITICAL",
   "enabled": true,
   "created_at": "2025-10-24T17:00:00Z",
-  "updated_at": "2025-10-24T17:00:00Z",
+  "updated_at": "2025-11-06T00:00:00Z",
 
-  "description": "Tüm tablolarda status field TINYINT(1) boolean olmalıdır. VARCHAR, ENUM veya Türkçe değerler YASAK.",
+  "description": "Tüm tablolarda status field TINYINT(1) boolean olmalıdır. 'enabled', 'is_active', 'aktif' field isimleri YASAK! SADECE 'status' kullanılmalı. VARCHAR, ENUM veya Türkçe değerler YASAK.",
+
+  "field_naming_standard": {
+    "required": "status",
+    "forbidden": ["enabled", "is_active", "aktif", "durum", "active"],
+    "reason": "Context7 Consistency: Tüm tablolarda aynı field ismi kullanılmalı",
+    "severity": "CRITICAL"
+  },
 
   "context7_compliance": {
     "standard": "Status fields MUST be TINYINT(1)",
@@ -82,6 +89,11 @@
         "pattern": "protected \\$fillable.*status.*(?!.*protected \\$casts.*status.*boolean)",
         "message": "⚠️ Model'de status field var AMA cast eksik! Ekle: 'status' => 'boolean'",
         "severity": "MEDIUM"
+      },
+      {
+        "pattern": "'enabled'|\"enabled\"|'is_active'|\"is_active\"",
+        "message": "❌ Model'de 'enabled' veya 'is_active' field YASAK! SADECE 'status' kullanılmalı",
+        "severity": "CRITICAL"
       }
     ],
 
@@ -281,4 +293,3 @@
     "🎯 GOAL": "100% Context7 compliance - All status fields are boolean"
   }
 }
-

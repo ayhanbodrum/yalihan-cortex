@@ -18,18 +18,18 @@ Daire türü emlak ilanları için SEO optimize, dikkat çekici başlıklar olu�
 
 ### **Zorunlu Parametreler:**
 
--   **room_count:** string - Oda sayısı (örn: "3+1", "2+1")
--   **location:** object - Konum bilgileri
-    -   **ilce:** string - İlçe adı
-    -   **mahalle:** string - Mahalle adı (opsiyonel)
--   **price:** number - Fiyat (TRY)
+- **room_count:** string - Oda sayısı (örn: "3+1", "2+1")
+- **location:** object - Konum bilgileri
+    - **ilce:** string - İlçe adı
+    - **mahalle:** string - Mahalle adı (opsiyonel)
+- **price:** number - Fiyat (TRY)
 
 ### **Opsiyonel Parametreler:**
 
--   **size:** number - Metrekare
--   **special_features:** array - Özel özellikler ["deniz manzarası", "havuzlu", "yeni"]
--   **urgency:** boolean - Acil satış durumu
--   **style:** string - Başlık stili ("classic", "modern", "urgent") - default: "classic"
+- **size:** number - Metrekare
+- **special_features:** array - Özel özellikler ["deniz manzarası", "havuzlu", "yeni"]
+- **urgency:** boolean - Acil satış durumu
+- **style:** string - Başlık stili ("classic", "modern", "urgent") - default: "classic"
 
 ---
 
@@ -55,14 +55,14 @@ Daire türü emlak ilanları için SEO optimize, dikkat çekici başlıklar olu�
 
 ## 🎯 **Context7 Kuralları**
 
--   ✅ Room count başta (3+1, 2+1, 4+1)
--   ✅ "Satılık" keyword mutlaka kullan
--   ✅ Location hierarchy: Mahalle, İlçe (il genelde atlanır)
--   ✅ Price mention (optional but recommended)
--   ✅ Special features highlighting
--   ✅ 60 karakter altında tutmaya çalış
--   ✅ Turkish grammar accuracy
--   ✅ No unnecessary punctuation
+- ✅ Room count başta (3+1, 2+1, 4+1)
+- ✅ "Satılık" keyword mutlaka kullan
+- ✅ Location hierarchy: Mahalle, İlçe (il genelde atlanır)
+- ✅ Price mention (optional but recommended)
+- ✅ Special features highlighting
+- ✅ 60 karakter altında tutmaya çalış
+- ✅ Turkish grammar accuracy
+- ✅ No unnecessary punctuation
 
 ---
 

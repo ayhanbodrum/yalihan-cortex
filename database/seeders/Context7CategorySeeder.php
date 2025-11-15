@@ -50,7 +50,7 @@ class Context7CategorySeeder extends Seeder
                 'icon' => '🏠',
                 'seviye' => 0,
                 'parent_id' => null,
-                'order' => 1,
+                'display_order' => 1,
                 'status' => true,
                 'created_at' => now(),
                 'updated_at' => now(),

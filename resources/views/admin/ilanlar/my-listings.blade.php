@@ -1,30 +1,60 @@
 @extends('admin.layouts.neo')
 
+@php
+    // ✅ Context7: Storage facade - tek seferlik kullanım (duplicate use statement hatası önlendi)
+    use Illuminate\Support\Facades\Storage;
+@endphp
+
 @section('title', 'İlanlarım')
 
 @section('content')
-    <div class="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
+    <div class="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-gray-800">
         <!-- Modern Header -->
-        <div class="bg-white rounded-2xl shadow-lg border border-gray-100 mb-8 p-8">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 mb-8 p-8">
             <div class="flex items-center justify-between">
                 <div>
-                    <h1 class="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                    <h1
+                        class="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                         🏠 İlanlarım
                     </h1>
-                    <p class="mt-3 text-lg text-gray-600">
+                    <p class="mt-3 text-lg text-gray-600 dark:text-gray-300">
                         Tüm ilanlarınızı yönetin ve performanslarını takip edin
                     </p>
                 </div>
                 <div class="flex gap-4">
-                    <button class="inline-flex items-center px-6 py-3 bg-gray-600 text-white font-semibold rounded-lg shadow-md hover:bg-gray-700 hover:scale-105 hover:shadow-lg active:scale-95 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all duration-200" onclick="refreshListings()">
+                    <button
+                        class="inline-flex items-center px-6 py-3 bg-gray-600 text-white font-semibold rounded-lg shadow-md hover:bg-gray-700 hover:scale-105 hover:shadow-lg active:scale-95 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all duration-200"
+                        onclick="refreshListings()">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.001 0 01-15.357-2m15.357 2H15"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.001 0 01-15.357-2m15.357 2H15">
+                            </path>
                         </svg>
                         Yenile
                     </button>
-                    <a href="{{ route('admin.ilanlar.create') }}" class="inline-flex items-center px-6 py-3 bg-orange-600 text-white font-semibold rounded-lg shadow-md hover:bg-orange-700 hover:scale-105 hover:shadow-lg active:scale-95 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:outline-none transition-all duration-200 touch-target-optimized touch-target-optimized">
+                    <a href="{{ route('admin.my-listings.export', ['format' => 'excel']) }}" id="export-excel-btn"
+                        class="inline-flex items-center px-6 py-3 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 hover:scale-105 hover:shadow-lg active:scale-95 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+                        <svg id="export-excel-icon" class="w-5 h-5 mr-2" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                            </path>
+                        </svg>
+                        <svg id="export-excel-spinner" class="hidden animate-spin w-5 h-5 mr-2" fill="none"
+                            viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor"
+                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                            </path>
+                        </svg>
+                        <span id="export-excel-text">Excel İndir</span>
+                    </a>
+                    <a href="{{ route('admin.ilanlar.create') }}"
+                        class="inline-flex items-center px-6 py-3 bg-orange-600 text-white font-semibold rounded-lg shadow-md hover:bg-orange-700 hover:scale-105 hover:shadow-lg active:scale-95 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:outline-none transition-all duration-200 touch-target-optimized touch-target-optimized">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                         </svg>
                         Yeni İlan
                     </a>
@@ -53,11 +83,13 @@
         </div>
 
         <!-- Filters and Search -->
-        <div class="bg-white rounded-2xl shadow-lg border border-gray-100 mb-8 p-6">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 mb-8 p-6">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Durum</label>
-                    <select  id="status-filter" class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500 transition-all duration-200">
+                    <label for="status-filter"
+                        class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Durum</label>
+                    <select id="status-filter" aria-label="Durum filtresi"
+                        class="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-blue-500 focus:ring-blue-500 transition-all duration-200">
                         <option value="">Tümü</option>
                         <option value="active">Aktif</option>
                         <option value="pending">Beklemede</option>
@@ -66,73 +98,99 @@
                     </select>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Kategori</label>
-                    <select  id="category-filter" class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500 transition-all duration-200">
+                    <label for="category-filter"
+                        class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Kategori</label>
+                    <select id="category-filter" aria-label="Kategori filtresi"
+                        class="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-blue-500 focus:ring-blue-500 transition-all duration-200">
                         <option value="">Tümü</option>
-                        @foreach($categories ?? [] as $category)
+                        @foreach ($categories ?? [] as $category)
                             <option value="{{ $category->id }}">{{ $category->name }}</option>
                         @endforeach
                     </select>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Arama</label>
-                    <input type="text" id="search-input" placeholder="İlan ara..."
-                           class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500">
+                    <label for="search-input"
+                        class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Arama</label>
+                    <input type="text" id="search-input" aria-label="İlan ara" placeholder="İlan ara..."
+                        class="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:border-blue-500 focus:ring-blue-500 transition-all duration-200">
                 </div>
                 <div class="flex items-end">
-                    <button onclick="applyFilters()" class="inline-flex items-center px-6 py-3 bg-orange-600 text-white font-semibold rounded-lg shadow-md hover:bg-orange-700 hover:scale-105 hover:shadow-lg active:scale-95 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:outline-none transition-all duration-200 w-full">
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    <button id="filter-button" onclick="applyFilters()"
+                        class="inline-flex items-center justify-center px-6 py-3 bg-orange-600 text-white font-semibold rounded-lg shadow-md hover:bg-orange-700 hover:scale-105 hover:shadow-lg active:scale-95 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:outline-none transition-all duration-200 w-full disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100">
+                        <svg id="filter-spinner" class="hidden animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor"
+                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                            </path>
                         </svg>
-                        Filtrele
+                        <svg id="filter-icon" class="w-4 h-4 mr-2" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                        <span id="filter-text">Filtrele</span>
                     </button>
                 </div>
             </div>
         </div>
 
         <!-- Listings Table -->
-        <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
-            <div class="p-6 border-b border-gray-100">
-                <h2 class="text-xl font-bold text-gray-800 flex items-center">
-                    <svg class="w-6 h-6 mr-3 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+        <div
+            class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden">
+            <div class="p-6 border-b border-gray-100 dark:border-gray-700">
+                <h2 class="text-xl font-bold text-gray-800 dark:text-gray-200 flex items-center">
+                    <svg class="w-6 h-6 mr-3 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4">
+                        </path>
                     </svg>
                     İlan Listesi
                 </h2>
             </div>
 
             <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
+                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                    <thead class="bg-gray-50 dark:bg-gray-700">
                         <tr>
-                            <th class="admin-table-th">İlan</th>
-                            <th class="admin-table-th">Kategori</th>
-                            <th class="admin-table-th">Durum</th>
-                            <th class="admin-table-th">Fiyat</th>
-                            <th class="admin-table-th">Görüntülenme</th>
-                            <th class="admin-table-th">Tarih</th>
-                            <th class="admin-table-th">İşlemler</th>
+                            <th class="admin-table-th dark:text-gray-200">İlan</th>
+                            <th class="admin-table-th dark:text-gray-200">Kategori</th>
+                            <th class="admin-table-th dark:text-gray-200">Durum</th>
+                            <th class="admin-table-th dark:text-gray-200">Fiyat</th>
+                            <th class="admin-table-th dark:text-gray-200">Görüntülenme</th>
+                            <th class="admin-table-th dark:text-gray-200">Tarih</th>
+                            <th class="admin-table-th dark:text-gray-200">İşlemler</th>
                         </tr>
                     </thead>
-                    <tbody class="bg-white divide-y divide-gray-200" id="listings-table-body">
+                    <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700"
+                        id="listings-table-body">
                         @forelse($listings ?? [] as $listing)
-                            <tr class="hover:bg-gray-50 transition-colors duration-200">
+                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200">
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="flex items-center">
                                         <div class="flex-shrink-0 h-12 w-12">
                                             <img class="h-12 w-12 rounded-lg object-cover"
-                                                 src="{{ $listing->featured_image ?? asset('images/default-property.jpg') }}"
-                                                 alt="{{ $listing->title ?? 'İlan' }}">
+                                                src="{{ $listing->fotograflar->first() ? Storage::url($listing->fotograflar->first()->dosya_yolu) : asset('images/default-property.jpg') }}"
+                                                alt="{{ $listing->baslik ?? 'İlan' }}" loading="lazy">
                                         </div>
                                         <div class="ml-4">
-                                            <div class="text-sm font-medium text-gray-900">
-                                                {{ Str::limit($listing->title ?? 'Başlık Yok', 40) }}
+                                            <div class="text-sm font-medium text-gray-900 dark:text-gray-100">
+                                                {{ Str::limit($listing->baslik ?? 'Başlık Yok', 40) }}
+                                                @if(($listing->ilan_turu ?? null) === 'kiralik')
+                                                    <div class="mt-1 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
+                                                        <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7h16M4 12h16M4 17h16"/></svg>
+                                                        Demirbaş: {{ optional($listing->demirbaslar)->count() ?? 0 }}
+                                                    </div>
+                                                @endif
                                             </div>
-                                            <div class="text-sm text-gray-500">
+                                            <div class="text-sm text-gray-500 dark:text-gray-400">
                                                 #{{ $listing->id }}
-                                                @if($listing->dosya_adi)
-                                                    <div class="text-xs text-gray-400 mt-1" title="{{ $listing->dosya_adi }}">
-                                                        {{ Str::limit($listing->dosya_adi, 30) }}
+                                                @if ($listing->referans_no)
+                                                    <div class="text-xs text-gray-400 dark:text-gray-500 mt-1"
+                                                        title="{{ $listing->referans_no }}">
+                                                        Ref: {{ Str::limit($listing->referans_no, 30) }}
                                                     </div>
                                                 @endif
                                             </div>
@@ -141,22 +199,27 @@
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="space-y-1">
-                                        @if($listing->referans_no)
+                                        @if ($listing->referans_no)
                                             <div class="flex items-center gap-2">
-                                                <code class="px-2 py-1 bg-gray-100 text-gray-800 text-xs font-mono rounded">
+                                                <code
+                                                    class="px-2 py-1 bg-gray-100 text-gray-800 text-xs font-mono rounded">
                                                     {{ $listing->referans_no }}
                                                 </code>
-                                                <button onclick="copyToClipboard('{{ $listing->referans_no }}', 'Ref No')" 
-                                                        class="text-gray-400 hover:text-gray-600 transition-colors" 
-                                                        title="Kopyala">
-                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                                <button onclick="copyToClipboard('{{ $listing->referans_no }}', 'Ref No')"
+                                                    class="text-gray-400 hover:text-gray-600 transition-colors"
+                                                    title="Kopyala">
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor"
+                                                        viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2"
+                                                            d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
+                                                        </path>
                                                     </svg>
                                                 </button>
                                             </div>
                                         @else
-                                            <button onclick="generateRef({{ $listing->id }})" 
-                                                    class="text-xs px-2 py-1 bg-blue-100 text-blue-700 rounded hover:bg-blue-200 transition-colors">
+                                            <button onclick="generateRef({{ $listing->id }})"
+                                                class="text-xs px-2 py-1 bg-blue-100 text-blue-700 rounded hover:bg-blue-200 transition-colors">
                                                 Ref Oluştur
                                             </button>
                                         @endif
@@ -164,68 +227,84 @@
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="space-y-1 text-xs">
-                                        @if($listing->sahibinden_id)
+                                        @if ($listing->sahibinden_id)
                                             <div class="flex items-center gap-1">
                                                 <span class="text-gray-600">SH:</span>
                                                 <code class="text-gray-800">{{ $listing->sahibinden_id }}</code>
-                                                <button onclick="copyToClipboard('{{ $listing->sahibinden_id }}', 'Sahibinden ID')" 
-                                                        class="text-gray-400 hover:text-gray-600">
-                                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                                <button
+                                                    onclick="copyToClipboard('{{ $listing->sahibinden_id }}', 'Sahibinden ID')"
+                                                    class="text-gray-400 hover:text-gray-600">
+                                                    <svg class="w-3 h-3" fill="none" stroke="currentColor"
+                                                        viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2"
+                                                            d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
+                                                        </path>
                                                     </svg>
                                                 </button>
                                             </div>
                                         @endif
-                                        @if($listing->emlakjet_id)
+                                        @if ($listing->emlakjet_id)
                                             <div class="flex items-center gap-1">
                                                 <span class="text-gray-600">EJ:</span>
                                                 <code class="text-gray-800">{{ $listing->emlakjet_id }}</code>
-                                                <button onclick="copyToClipboard('{{ $listing->emlakjet_id }}', 'Emlakjet ID')" 
-                                                        class="text-gray-400 hover:text-gray-600">
-                                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                                <button
+                                                    onclick="copyToClipboard('{{ $listing->emlakjet_id }}', 'Emlakjet ID')"
+                                                    class="text-gray-400 hover:text-gray-600">
+                                                    <svg class="w-3 h-3" fill="none" stroke="currentColor"
+                                                        viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2"
+                                                            d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
+                                                        </path>
                                                     </svg>
                                                 </button>
                                             </div>
                                         @endif
-                                        @if($listing->hepsiemlak_id)
+                                        @if ($listing->hepsiemlak_id)
                                             <div class="flex items-center gap-1">
                                                 <span class="text-gray-600">HE:</span>
                                                 <code class="text-gray-800">{{ $listing->hepsiemlak_id }}</code>
-                                                <button onclick="copyToClipboard('{{ $listing->hepsiemlak_id }}', 'Hepsiemlak ID')" 
-                                                        class="text-gray-400 hover:text-gray-600">
-                                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                                <button
+                                                    onclick="copyToClipboard('{{ $listing->hepsiemlak_id }}', 'Hepsiemlak ID')"
+                                                    class="text-gray-400 hover:text-gray-600">
+                                                    <svg class="w-3 h-3" fill="none" stroke="currentColor"
+                                                        viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2"
+                                                            d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
+                                                        </path>
                                                     </svg>
                                                 </button>
                                             </div>
                                         @endif
-                                        @if(!$listing->sahibinden_id && !$listing->emlakjet_id && !$listing->hepsiemlak_id)
+                                        @if (!$listing->sahibinden_id && !$listing->emlakjet_id && !$listing->hepsiemlak_id)
                                             <span class="text-gray-400 text-xs">-</span>
                                         @endif
                                     </div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                                        {{ optional($listing->altKategori)->name ?? optional($listing->anaKategori)->name ?? 'Kategori Yok' }}
+                                    <span
+                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                        {{ optional($listing->altKategori)->name ?? (optional($listing->anaKategori)->name ?? 'Kategori Yok') }}
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    @if(($listing->status ?? 'draft') === 'active')
+                                    @if (($listing->status ?? 'Taslak') === 'Aktif')
                                         <span class="status-badge active">
                                             <svg class="w-2 h-2 mr-1" fill="currentColor" viewBox="0 0 8 8">
                                                 <circle cx="4" cy="4" r="3"></circle>
                                             </svg>
                                             Aktif
                                         </span>
-                                    @elseif(($listing->status ?? 'draft') === 'pending')
+                                    @elseif(($listing->status ?? 'Taslak') === 'Beklemede')
                                         <span class="status-badge pending">
                                             <svg class="w-2 h-2 mr-1" fill="currentColor" viewBox="0 0 8 8">
                                                 <circle cx="4" cy="4" r="3"></circle>
                                             </svg>
                                             Beklemede
                                         </span>
-                                    @elseif(($listing->status ?? 'draft') === 'inactive')
+                                    @elseif(($listing->status ?? 'Taslak') === 'Pasif')
                                         <span class="status-badge draft">
                                             <svg class="w-2 h-2 mr-1" fill="currentColor" viewBox="0 0 8 8">
                                                 <circle cx="4" cy="4" r="3"></circle>
@@ -241,28 +320,35 @@
                                         </span>
                                     @endif
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                    {{ number_format($listing->price ?? 0) }} {{ $listing->currency ?? 'TL' }}
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
+                                    {{ number_format($listing->fiyat ?? 0) }} {{ $listing->para_birimi ?? 'TRY' }}
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                    {{ number_format($listing->views ?? 0) }}
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
+                                    {{ number_format($listing->goruntulenme ?? 0) }}
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                                     {{ $listing->created_at ? $listing->created_at->format('d.m.Y') : 'N/A' }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                     <div class="flex space-x-2">
                                         <a href="{{ route('admin.ilanlar.edit', $listing->id) }}"
-                                           class="text-blue-600 hover:text-blue-900 transition-colors duration-200">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                            class="text-blue-600 hover:text-blue-900 transition-colors duration-200">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
+                                                </path>
                                             </svg>
                                         </a>
                                         <a href="{{ route('admin.ilanlar.show', $listing->id) }}"
-                                           class="text-green-600 hover:text-green-900 transition-colors duration-200">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                            class="text-green-600 hover:text-green-900 transition-colors duration-200">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
+                                                </path>
                                             </svg>
                                         </a>
                                     </div>
@@ -271,9 +357,12 @@
                         @empty
                             <tr>
                                 <td colspan="7" class="px-6 py-12 text-center">
-                                    <div class="text-gray-500">
-                                        <svg class="w-16 h-16 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                                    <div class="text-gray-500 dark:text-gray-400">
+                                        <svg class="w-16 h-16 mx-auto text-gray-300 dark:text-gray-600 mb-4"
+                                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4">
+                                            </path>
                                         </svg>
                                         <p class="text-lg font-medium">Henüz ilan bulunmuyor</p>
                                         <p class="text-sm">İlk ilanınızı oluşturmak için "Yeni İlan" butonuna tıklayın</p>
@@ -287,7 +376,7 @@
         </div>
 
         <!-- Pagination -->
-        @if(isset($listings) && $listings->hasPages())
+        @if (isset($listings) && $listings->hasPages())
             <div class="mt-8">
                 {{ $listings->links() }}
             </div>
@@ -311,7 +400,7 @@
         }
 
         .stat-card {
-            @apply text-center p-6 bg-white rounded-xl shadow-md border border-gray-100 hover:shadow-lg transition-shadow duration-200;
+            @apply text-center p-6 bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-100 dark:border-gray-700 hover:shadow-lg transition-shadow duration-200;
         }
 
         .stat-value {
@@ -319,7 +408,7 @@
         }
 
         .stat-label {
-            @apply text-gray-600 font-medium;
+            @apply text-gray-600 dark:text-gray-400 font-medium;
         }
     </style>
 @endpush
@@ -330,25 +419,41 @@
             location.reload();
         }
 
-        // ✅ AJAX Filter Implementation (No Page Reload)
+        // ✅ AJAX Filter Implementation (No Page Reload) - Context7: Loading state eklendi
         async function applyFilters() {
             const status = document.getElementById('status-filter').value;
             const category = document.getElementById('category-filter').value;
             const search = document.getElementById('search-input').value;
 
+            // ✅ Loading state: Butonu devre dışı bırak ve spinner göster
+            const filterButton = document.getElementById('filter-button');
+            const filterSpinner = document.getElementById('filter-spinner');
+            const filterIcon = document.getElementById('filter-icon');
+            const filterText = document.getElementById('filter-text');
+
+            filterButton.disabled = true;
+            filterSpinner.classList.remove('hidden');
+            filterIcon.classList.add('hidden');
+            filterText.textContent = 'Filtreleniyor...';
+
             try {
                 // Show loading state
                 const tbody = document.getElementById('listings-table-body');
-                tbody.innerHTML = '<tr><td colspan="7" class="px-6 py-12 text-center text-gray-500"><svg class="animate-spin h-8 w-8 mx-auto mb-2" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Loading...</td></tr>';
+                tbody.innerHTML =
+                    '<tr><td colspan="7" class="px-6 py-12 text-center text-gray-500 dark:text-gray-400"><svg class="animate-spin h-8 w-8 mx-auto mb-2 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Yükleniyor...</td></tr>';
 
-                const response = await fetch('{{ route("admin.my-listings.search") }}', {
+                const response = await fetch('{{ route('admin.my-listings.search') }}', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
                         'Accept': 'application/json'
                     },
-                    body: JSON.stringify({ status, category, search })
+                    body: JSON.stringify({
+                        status,
+                        category,
+                        search
+                    })
                 });
 
                 if (!response.ok) {
@@ -368,6 +473,12 @@
                 window.toast?.error('Filtreleme başarısız: ' + error.message);
                 // Fallback to page reload on error
                 location.reload();
+            } finally {
+                // ✅ Loading state: Butonu tekrar aktif et ve spinner gizle
+                filterButton.disabled = false;
+                filterSpinner.classList.add('hidden');
+                filterIcon.classList.remove('hidden');
+                filterText.textContent = 'Filtrele';
             }
         }
 
@@ -379,8 +490,8 @@
                 tbody.innerHTML = `
                     <tr>
                         <td colspan="7" class="px-6 py-12 text-center">
-                            <div class="text-gray-500">
-                                <svg class="w-16 h-16 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <div class="text-gray-500 dark:text-gray-400">
+                                <svg class="w-16 h-16 mx-auto text-gray-300 dark:text-gray-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
                                 </svg>
                                 <p class="text-lg font-medium">İlan bulunamadı</p>
@@ -404,62 +515,72 @@
         function createListingRow(listing) {
             const row = document.createElement('tr');
             row.className = 'hover:bg-gray-50 transition-colors duration-200';
-            
-            // Format price
-            const price = new Intl.NumberFormat('tr-TR').format(listing.price || 0);
-            const views = new Intl.NumberFormat('tr-TR').format(listing.views || 0);
-            
+
+            // Format price - Context7: Doğru field isimleri
+            const price = new Intl.NumberFormat('tr-TR').format(listing.fiyat || 0);
+            const views = new Intl.NumberFormat('tr-TR').format(listing.goruntulenme || 0);
+
             // Category name (with fallback)
             const categoryName = listing.alt_kategori?.name || listing.ana_kategori?.name || 'Kategori Yok';
-            
-            // Status badge
+
+            // Status badge - Context7: Database değerleri (Aktif, Pasif, Beklemede, Taslak)
             let statusHTML = '';
-            if (listing.status === 'active') {
-                statusHTML = `<span class="status-badge active"><svg class="w-2 h-2 mr-1" fill="currentColor" viewBox="0 0 8 8"><circle cx="4" cy="4" r="3"></circle></svg>Aktif</span>`;
-            } else if (listing.status === 'pending') {
-                statusHTML = `<span class="status-badge pending"><svg class="w-2 h-2 mr-1" fill="currentColor" viewBox="0 0 8 8"><circle cx="4" cy="4" r="3"></circle></svg>Beklemede</span>`;
-            } else if (listing.status === 'inactive') {
-                statusHTML = `<span class="status-badge draft"><svg class="w-2 h-2 mr-1" fill="currentColor" viewBox="0 0 8 8"><circle cx="4" cy="4" r="3"></circle></svg>Pasif</span>`;
+            if (listing.status === 'Aktif') {
+                statusHTML =
+                    `<span class="status-badge active"><svg class="w-2 h-2 mr-1" fill="currentColor" viewBox="0 0 8 8"><circle cx="4" cy="4" r="3"></circle></svg>Aktif</span>`;
+            } else if (listing.status === 'Beklemede') {
+                statusHTML =
+                    `<span class="status-badge pending"><svg class="w-2 h-2 mr-1" fill="currentColor" viewBox="0 0 8 8"><circle cx="4" cy="4" r="3"></circle></svg>Beklemede</span>`;
+            } else if (listing.status === 'Pasif') {
+                statusHTML =
+                    `<span class="status-badge draft"><svg class="w-2 h-2 mr-1" fill="currentColor" viewBox="0 0 8 8"><circle cx="4" cy="4" r="3"></circle></svg>Pasif</span>`;
             } else {
-                statusHTML = `<span class="status-badge draft"><svg class="w-2 h-2 mr-1" fill="currentColor" viewBox="0 0 8 8"><circle cx="4" cy="4" r="3"></circle></svg>Taslak</span>`;
+                statusHTML =
+                    `<span class="status-badge draft"><svg class="w-2 h-2 mr-1" fill="currentColor" viewBox="0 0 8 8"><circle cx="4" cy="4" r="3"></circle></svg>Taslak</span>`;
             }
-            
+
             // Format date
             const date = listing.created_at ? new Date(listing.created_at).toLocaleDateString('tr-TR') : 'N/A';
-            
+
+            // Featured image - Context7: İlişki kullanımı
+            const featuredImage = listing.fotograflar?.[0]?.dosya_yolu ?
+                `/storage/${listing.fotograflar[0].dosya_yolu}` :
+                '{{ asset('images/default-property.jpg') }}';
+
             row.innerHTML = `
                 <td class="px-6 py-4 whitespace-nowrap">
                     <div class="flex items-center">
                         <div class="flex-shrink-0 h-12 w-12">
                             <img class="h-12 w-12 rounded-lg object-cover"
-                                 src="${listing.featured_image || '{{ asset("images/default-property.jpg") }}'}"
-                                 alt="${listing.title || 'İlan'}">
+                                 src="${featuredImage}"
+                                 alt="${listing.baslik || 'İlan'}"
+                                 loading="lazy">
                         </div>
                         <div class="ml-4">
-                            <div class="text-sm font-medium text-gray-900">
-                                ${listing.title ? listing.title.substring(0, 40) : 'Başlık Yok'}${listing.title && listing.title.length > 40 ? '...' : ''}
+                            <div class="text-sm font-medium text-gray-900 dark:text-gray-100">
+                                ${listing.baslik ? listing.baslik.substring(0, 40) : 'Başlık Yok'}${listing.baslik && listing.baslik.length > 40 ? '...' : ''}
                             </div>
-                            <div class="text-sm text-gray-500">
+                            <div class="text-sm text-gray-500 dark:text-gray-400">
                                 #${listing.id}
                             </div>
                         </div>
                     </div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200">
                         ${categoryName}
                     </span>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                     ${statusHTML}
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    ${price} ${listing.currency || 'TL'}
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
+                    ${price} ${listing.para_birimi || 'TRY'}
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
                     ${views}
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                     ${date}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
@@ -480,7 +601,7 @@
                     </div>
                 </td>
             `;
-            
+
             return row;
         }
 
@@ -499,6 +620,30 @@
             if (e.key === 'Enter') {
                 applyFilters();
             }
+        });
+
+        // ✅ Export Excel loading state
+        document.getElementById('export-excel-btn')?.addEventListener('click', function(e) {
+            const btn = this;
+            const icon = document.getElementById('export-excel-icon');
+            const spinner = document.getElementById('export-excel-spinner');
+            const text = document.getElementById('export-excel-text');
+
+            // Loading state
+            btn.classList.add('disabled:opacity-50', 'disabled:cursor-not-allowed');
+            btn.style.pointerEvents = 'none';
+            icon.classList.add('hidden');
+            spinner.classList.remove('hidden');
+            text.textContent = 'İndiriliyor...';
+
+            // 10 saniye sonra otomatik olarak geri dön (fallback)
+            setTimeout(() => {
+                btn.classList.remove('disabled:opacity-50', 'disabled:cursor-not-allowed');
+                btn.style.pointerEvents = '';
+                icon.classList.remove('hidden');
+                spinner.classList.add('hidden');
+                text.textContent = 'Excel İndir';
+            }, 10000);
         });
 
         // Kopyalama fonksiyonu
@@ -520,11 +665,13 @@
                         'Content-Type': 'application/json',
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || ''
                     },
-                    body: JSON.stringify({ ilan_id: ilanId })
+                    body: JSON.stringify({
+                        ilan_id: ilanId
+                    })
                 });
 
                 const data = await response.json();
-                
+
                 if (data.success) {
                     window.toast?.success('Ref numarası oluşturuldu');
                     location.reload(); // Sayfayı yenile

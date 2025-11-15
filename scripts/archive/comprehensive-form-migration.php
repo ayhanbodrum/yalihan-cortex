@@ -1,14 +1,14 @@
 <?php
 /**
  * Comprehensive Form Standards Migration
- * 
+ *
  * Tüm admin Blade dosyalarındaki form elemanlarını FormStandards'a göre migrate eder.
  * Alt sayfalar dahil tüm dizinleri tarar.
- * 
+ *
  * Usage:
  * php scripts/comprehensive-form-migration.php --dry-run
  * php scripts/comprehensive-form-migration.php
- * 
+ *
  * @version 2.0.0
  * @since 2025-11-02
  */
@@ -84,7 +84,7 @@ $patterns = [
         'replacement' => 'class="{{ FormStandards::radio() }}"',
         'description' => 'neo-radio → FormStandards::radio()',
     ],
-    
+
     // Padding inconsistencies (within class attributes)
     [
         'type' => 'padding',
@@ -98,7 +98,7 @@ $patterns = [
         'replacement' => 'px-4 py-2.5',
         'description' => 'px-4 py-3 → px-4 py-2.5',
     ],
-    
+
     // Dark background fixes (only for form inputs)
     [
         'type' => 'dark_bg',
@@ -120,17 +120,17 @@ $modifiedFilesDetails = [];
 foreach ($files as $file) {
     if ($file->isFile() && $file->getExtension() === 'php') {
         $stats['total_files']++;
-        
+
         $filepath = $file->getPathname();
         $relativePath = str_replace('resources/views/admin/', '', $filepath);
         $content = file_get_contents($filepath);
         $originalContent = $content;
         $fileReplacements = [];
-        
+
         // Apply each pattern
         foreach ($patterns as $patternData) {
             $matchCount = preg_match_all($patternData['pattern'], $content);
-            
+
             if ($matchCount > 0) {
                 // Special handling for conditional patterns
                 if (isset($patternData['conditional']) && $patternData['conditional']) {
@@ -155,20 +155,20 @@ foreach ($files as $file) {
                 }
             }
         }
-        
+
         $stats['scanned_files']++;
-        
+
         if ($content !== $originalContent) {
             $stats['modified_files']++;
             $totalFileReplacements = array_sum(array_column($fileReplacements, 'count'));
             $stats['total_replacements'] += $totalFileReplacements;
-            
+
             $modifiedFilesDetails[] = [
                 'path' => $relativePath,
                 'replacements' => $fileReplacements,
                 'total' => $totalFileReplacements,
             ];
-            
+
             if (!$isDryRun) {
                 file_put_contents($filepath, $content);
                 echo "✅ {$relativePath} ({$totalFileReplacements} changes)\n";
@@ -217,7 +217,7 @@ if ($isDryRun && $stats['modified_files'] > 0) {
     echo "========================================================\n";
     echo "Files modified: {$stats['modified_files']}\n";
     echo "Total changes: {$stats['total_replacements']}\n\n";
-    
+
     echo "🔍 NEXT STEPS:\n";
     echo "1. Test all modified pages manually\n";
     echo "2. Check dark mode on modified forms\n";
@@ -252,4 +252,3 @@ if (!$isDryRun && $stats['modified_files'] > 0) {
     file_put_contents($reportFile, $reportContent);
     echo "📄 Detailed report saved: {$reportFile}\n\n";
 }
-

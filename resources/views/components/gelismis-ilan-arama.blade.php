@@ -307,4 +307,3 @@ function gelismisIlanArama() {
     @apply px-2 py-1 text-xs;
 }
 </style>
-

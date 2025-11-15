@@ -6,13 +6,14 @@
 
 <div class="search-form {{ $class }}">
     <!-- Main Search Form -->
-    <div class="bg-white rounded-2xl p-6 shadow-2xl">
+    <div class="bg-white dark:bg-gray-900 rounded-2xl p-6 shadow-2xl border border-gray-100 dark:border-gray-800 transition-all duration-300">
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
             <!-- İlan Türü -->
             <div class="space-y-2">
-                <label for="listing_type" class="block text-sm font-medium text-gray-700">İlan Türü</label>
+                <label for="listing_type" class="block text-sm font-medium text-gray-700 dark:text-white">İlan Türü</label>
                 <select id="listing_type" name="listing_type"
-                    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors form-input"
+                    class="w-full p-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-all duration-200"
+                    style="color-scheme: light dark;"
                     aria-label="İlan türü seçiniz">
                     <option value="">Tümü</option>
                     <option value="sale">Satılık</option>
@@ -22,9 +23,10 @@
 
             <!-- Emlak Türü -->
             <div class="space-y-2">
-                <label for="property_type" class="block text-sm font-medium text-gray-700">Emlak Türü</label>
+                <label for="property_type" class="block text-sm font-medium text-gray-700 dark:text-white">Emlak Türü</label>
                 <select id="property_type" name="property_type"
-                    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors form-input"
+                    class="w-full p-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-all duration-200"
+                    style="color-scheme: light dark;"
                     aria-label="Emlak türü seçiniz">
                     <option value="">Tümü</option>
                     <option value="villa">Villa</option>
@@ -36,9 +38,9 @@
 
             <!-- Lokasyon -->
             <div class="space-y-2">
-                <label for="location" class="block text-sm font-medium text-gray-700">Lokasyon</label>
+                <label for="location" class="block text-sm font-medium text-gray-700 dark:text-white">Lokasyon</label>
                 <input type="text" id="location" name="location" placeholder="Şehir, ilçe veya mahalle"
-                    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors form-input"
+                    class="w-full p-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-all duration-200"
                     aria-label="Lokasyon giriniz" autocomplete="address-level2">
             </div>
 
@@ -46,7 +48,7 @@
             <div class="space-y-2">
                 <label class="block text-sm font-medium text-transparent">Ara</label>
                 <button type="submit"
-                    class="w-full bg-orange-600 text-white p-3 rounded-lg hover:bg-orange-700 transition-colors font-semibold flex items-center justify-center gap-2 min-h-[48px] touch-manipulation"
+                    class="w-full bg-blue-600 dark:bg-blue-500 text-white p-3 rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 active:scale-95 transition-all duration-200 font-semibold flex items-center justify-center gap-2 min-h-[48px] touch-manipulation shadow-lg hover:shadow-xl focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
                     onclick="performSearch()" aria-label="Emlak ara">
                     <span class="search-icon">🔍</span>
                     <span class="search-text">Ara</span>
@@ -56,9 +58,9 @@
 
         @if ($showAdvanced)
             <!-- Advanced Search Toggle -->
-            <div class="mt-4 pt-4 border-t border-gray-200">
-                <button class="text-orange-600 hover:text-orange-700 font-medium flex items-center gap-2"
-                    onclick="toggleAdvancedSearch()">
+            <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-800">
+                <button class="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium flex items-center gap-2 transition-colors duration-200"
+                    onclick="toggleAdvancedSearch()" aria-label="Gelişmiş arama">
                     <span>🔧</span>
                     <span>Gelişmiş Arama</span>
                     <span id="advancedToggleIcon">▼</span>
@@ -69,13 +71,14 @@
 
     @if ($showAdvanced)
         <!-- Advanced Search Panel -->
-        <div id="advancedSearchPanel" class="hidden mt-4 bg-white rounded-2xl p-6 shadow-lg">
+        <div id="advancedSearchPanel" class="hidden mt-4 bg-white dark:bg-gray-900 rounded-2xl p-6 shadow-lg border border-gray-100 dark:border-gray-800 transition-all duration-300">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <!-- Yatak Odası -->
                 <div class="space-y-2">
-                    <label class="block text-sm font-medium text-gray-700">Yatak Odası</label>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-white">Yatak Odası</label>
                     <select
-                        class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
+                        class="w-full p-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-all duration-200"
+                        style="color-scheme: light dark;">
                         <option value="">Herhangi</option>
                         <option value="1">1+</option>
                         <option value="2">2+</option>
@@ -87,9 +90,10 @@
 
                 <!-- Banyo -->
                 <div class="space-y-2">
-                    <label class="block text-sm font-medium text-gray-700">Banyo</label>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-white">Banyo</label>
                     <select
-                        class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
+                        class="w-full p-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-all duration-200"
+                        style="color-scheme: light dark;">
                         <option value="">Herhangi</option>
                         <option value="1">1+</option>
                         <option value="2">2+</option>
@@ -100,37 +104,38 @@
 
                 <!-- Min Fiyat -->
                 <div class="space-y-2">
-                    <label class="block text-sm font-medium text-gray-700">Min. Fiyat</label>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-white">Min. Fiyat</label>
                     <input type="number" placeholder="0"
-                        class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
+                        class="w-full p-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-all duration-200">
                 </div>
 
                 <!-- Max Fiyat -->
                 <div class="space-y-2">
-                    <label class="block text-sm font-medium text-gray-700">Max. Fiyat</label>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-white">Max. Fiyat</label>
                     <input type="number" placeholder="Sınırsız"
-                        class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
+                        class="w-full p-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-all duration-200">
                 </div>
 
                 <!-- Min Alan -->
                 <div class="space-y-2">
-                    <label class="block text-sm font-medium text-gray-700">Min. Alan (m²)</label>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-white">Min. Alan (m²)</label>
                     <input type="number" placeholder="0"
-                        class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
+                        class="w-full p-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-all duration-200">
                 </div>
 
                 <!-- Max Alan -->
                 <div class="space-y-2">
-                    <label class="block text-sm font-medium text-gray-700">Max. Alan (m²)</label>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-white">Max. Alan (m²)</label>
                     <input type="number" placeholder="Sınırsız"
-                        class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
+                        class="w-full p-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-all duration-200">
                 </div>
 
                 <!-- Özellikler -->
                 <div class="space-y-2">
-                    <label class="block text-sm font-medium text-gray-700">Özellikler</label>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-white">Özellikler</label>
                     <select
-                        class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
+                        class="w-full p-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-all duration-200"
+                        style="color-scheme: light dark;">
                         <option value="">Seçiniz</option>
                         <option value="pool">Havuz</option>
                         <option value="garden">Bahçe</option>
@@ -141,9 +146,10 @@
 
                 <!-- Tapu Durumu -->
                 <div class="space-y-2">
-                    <label class="block text-sm font-medium text-gray-700">Tapu Durumu</label>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-white">Tapu Durumu</label>
                     <select name="tapu_statusu"
-                        class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
+                        class="w-full p-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-all duration-200"
+                        style="color-scheme: light dark;">
                         <option value="">Herhangi</option>
                         <option>Hisseli Tapu</option>
                         <option>Müstakil Parsel</option>
@@ -161,9 +167,10 @@
 
                 <!-- İmar Durumu -->
                 <div class="space-y-2">
-                    <label class="block text-sm font-medium text-gray-700">İmar Durumu</label>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-white">İmar Durumu</label>
                     <select name="imar_statusu"
-                        class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
+                        class="w-full p-3 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-all duration-200"
+                        style="color-scheme: light dark;">
                         <option value="">Herhangi</option>
                         <option>Konut İmarlı Arsa</option>
                         <option>Ticari İmarlı Arsa</option>
@@ -178,8 +185,8 @@
                 <div class="space-y-2">
                     <label class="block text-sm font-medium text-transparent">Temizle</label>
                     <button
-                        class="w-full bg-gray-500 text-white p-3 rounded-lg hover:bg-gray-600 transition-colors font-medium"
-                        onclick="clearAdvancedSearch()">
+                        class="w-full bg-gray-500 dark:bg-gray-600 text-white p-3 rounded-lg hover:bg-gray-600 dark:hover:bg-gray-700 active:scale-95 transition-all duration-200 font-medium shadow-md hover:shadow-lg focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
+                        onclick="clearAdvancedSearch()" aria-label="Gelişmiş arama filtrelerini temizle">
                         🗑️ Temizle
                     </button>
                 </div>
@@ -191,9 +198,10 @@
         <!-- Sort Section -->
         <div class="mt-4 flex flex-col sm:flex-row gap-4 items-center justify-between">
             <div class="flex items-center gap-2">
-                <span class="text-sm font-medium text-gray-700">Sırala:</span>
+                <span class="text-sm font-medium text-gray-700 dark:text-white">Sırala:</span>
                 <select
-                    class="p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
+                    class="p-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-all duration-200"
+                    style="color-scheme: light dark;">
                     <option value="default">Varsayılan</option>
                     <option value="price_asc">Fiyat (Düşük → Yüksek)</option>
                     <option value="price_desc">Fiyat (Yüksek → Düşük)</option>
@@ -204,15 +212,15 @@
             </div>
 
             <div class="flex items-center gap-2">
-                <span class="text-sm text-gray-600">Görünüm:</span>
+                <span class="text-sm text-gray-600 dark:text-gray-300">Görünüm:</span>
                 <button
-                    class="p-2 border border-gray-300 rounded-lg hover:bg-orange-500 hover:text-white transition-colors"
-                    title="Grid">
+                    class="p-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-700 dark:text-white hover:bg-blue-500 dark:hover:bg-blue-600 hover:text-white dark:hover:text-white active:scale-95 transition-all duration-200"
+                    title="Grid" aria-label="Grid görünümü">
                     ⊞
                 </button>
                 <button
-                    class="p-2 border border-gray-300 rounded-lg hover:bg-orange-500 hover:text-white transition-colors"
-                    title="Liste">
+                    class="p-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-700 dark:text-white hover:bg-blue-500 dark:hover:bg-blue-600 hover:text-white dark:hover:text-white active:scale-95 transition-all duration-200"
+                    title="Liste" aria-label="Liste görünümü">
                     ☰
                 </button>
             </div>

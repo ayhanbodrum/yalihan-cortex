@@ -29,33 +29,49 @@ function showNotification(message, type = 'info') {
     }
 }
 
+function setIndicatorState(indicatorId, isActive) {
+    const el = document.getElementById(indicatorId);
+    if (!el) {
+        return;
+    }
+
+    el.classList.toggle('bg-green-500', Boolean(isActive));
+    el.classList.toggle('bg-gray-300', !isActive);
+}
+
 function loadAltKategoriler(anaKategoriId) {
     if (!anaKategoriId) {
         clearAltKategoriler();
-        return;
+        return Promise.resolve();
     }
 
     showLoading('Alt kategoriler yükleniyor...');
 
     // Context7: /api/categories/sub/{id} endpoint'i routes/api.php'de mevcut
-    fetch(`/api/categories/sub/${anaKategoriId}`, {
+    return fetch(`/api/categories/sub/${anaKategoriId}`, {
         cache: 'no-cache',
         headers: { 'Cache-Control': 'no-cache' },
     })
         .then((response) => response.json())
         .then((data) => {
             hideLoading();
+            // ✅ Context7: ResponseService format kontrolü
             if (data.success) {
-                // API response'da 'subcategories' key'i var
-                populateAltKategoriler(data.subcategories || data.kategoriler || []);
+                // ResponseService format: data.data.subcategories veya data.data
+                const responseData = data.data || data;
+                const subcategories = responseData.subcategories || responseData.kategoriler || [];
+                populateAltKategoriler(subcategories);
+                return Promise.resolve();
             } else {
                 showNotification('Alt kategoriler yüklenemedi', 'error');
+                return Promise.reject(new Error('Alt kategoriler yüklenemedi'));
             }
         })
         .catch((error) => {
             hideLoading();
             console.error('Alt kategori yükleme hatası:', error);
             showNotification('Alt kategoriler yüklenemedi', 'error');
+            return Promise.reject(error);
         });
 }
 
@@ -83,12 +99,41 @@ function populateAltKategoriler(categories) {
         option.textContent = category.name;
         altKategoriSelect.appendChild(option);
     });
+
+    // Auto-select default or single option
+    try {
+        // ✅ FIX: Edit mode için window.ilanData'dan değer al
+        let defaultValue = altKategoriSelect.dataset?.default;
+        if (!defaultValue && window.editMode && window.ilanData?.alt_kategori_id) {
+            defaultValue = String(window.ilanData.alt_kategori_id);
+        }
+
+        let targetValue = null;
+
+        if (
+            defaultValue &&
+            categories.some((category) => String(category.id) === String(defaultValue))
+        ) {
+            targetValue = defaultValue;
+        } else if (!defaultValue && categories.length === 1) {
+            targetValue = String(categories[0].id);
+        }
+
+        if (targetValue && altKategoriSelect.value !== targetValue) {
+            altKategoriSelect.value = targetValue;
+            // Prevent re-triggering with the same default on subsequent loads
+            altKategoriSelect.dataset.default = '';
+            altKategoriSelect.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+    } catch (error) {
+        console.warn('Alt kategori otomatik seçim uygulanamadı:', error);
+    }
 }
 
 function loadYayinTipleri(altKategoriId) {
     if (!altKategoriId) {
         clearYayinTipleri();
-        return;
+        return Promise.resolve();
     }
 
     showLoading('Yayın tipleri yükleniyor...');
@@ -99,28 +144,38 @@ function loadYayinTipleri(altKategoriId) {
         anaKategoriSelect?.options[anaKategoriSelect.selectedIndex]?.dataset?.slug;
 
     // Context7: Alt kategori ID'sine göre filtrelenmiş yayın tiplerini yükle
-    fetch(`/api/categories/publication-types/${altKategoriId}`, {
+    return fetch(`/api/categories/publication-types/${altKategoriId}`, {
         cache: 'no-cache',
         headers: { 'Cache-Control': 'no-cache' },
     })
         .then((response) => response.json())
         .then((data) => {
             hideLoading();
+            // ✅ Context7: ResponseService format kontrolü
             if (data.success) {
-                const types = data.types || data.publication_types || data.yayinTipleri || [];
+                // ResponseService format: data.data.types veya data.data
+                const responseData = data.data || data;
+                const types =
+                    responseData.types ||
+                    responseData.publication_types ||
+                    responseData.yayinTipleri ||
+                    [];
                 console.log('✅ Yayın tipleri yüklendi:', types.length, 'adet', types);
                 populateYayinTipleri(types);
 
                 // ⚠️ Event'i henüz dispatch etme - Kullanıcı yayın tipi seçince dispatch edilecek
                 console.log('⏳ Yayın tipi yüklendi, kullanıcı seçimi bekleniyor...');
+                return Promise.resolve();
             } else {
                 showNotification('Yayın tipleri yüklenemedi', 'error');
+                return Promise.reject(new Error('Yayın tipleri yüklenemedi'));
             }
         })
         .catch((error) => {
             hideLoading();
             console.error('Yayın tipi yükleme hatası:', error);
             showNotification('Yayın tipleri yüklenemedi', 'error');
+            return Promise.reject(error);
         });
 }
 
@@ -156,6 +211,31 @@ function populateYayinTipleri(types) {
     });
 
     console.log(`✅ Total options added: ${types.length}`);
+
+    // Auto-select default or single option
+    try {
+        // ✅ FIX: Edit mode için window.ilanData'dan değer al
+        let defaultValue = yayinTipiSelect.dataset?.default;
+        if (!defaultValue && window.editMode && window.ilanData?.yayin_tipi_id) {
+            defaultValue = String(window.ilanData.yayin_tipi_id);
+        }
+
+        let targetValue = null;
+
+        if (defaultValue && types.some((type) => String(type.id) === String(defaultValue))) {
+            targetValue = defaultValue;
+        } else if (!defaultValue && types.length === 1) {
+            targetValue = String(types[0].id);
+        }
+
+        if (targetValue && yayinTipiSelect.value !== targetValue) {
+            yayinTipiSelect.value = targetValue;
+            yayinTipiSelect.dataset.default = '';
+            yayinTipiSelect.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+    } catch (error) {
+        console.warn('Yayın tipi otomatik seçim uygulanamadı:', error);
+    }
 }
 
 function loadTypeBasedFields() {
@@ -445,6 +525,9 @@ document.addEventListener('DOMContentLoaded', () => {
         anaKategoriSelect.addEventListener('change', function () {
             console.log('🔵 Ana kategori change:', this.value);
             loadAltKategoriler(this.value);
+            setIndicatorState('ana-kategori-indicator', Boolean(this.value));
+            setIndicatorState('alt-kategori-indicator', false);
+            setIndicatorState('yayin-tipi-indicator', false);
 
             // ✅ FIX: Ana kategori seçilince category-changed event dispatch et
             if (this.value) {
@@ -477,6 +560,8 @@ document.addEventListener('DOMContentLoaded', () => {
         altKategoriSelect.addEventListener('change', function () {
             console.log('🔵 Alt kategori change:', this.value);
             loadYayinTipleri(this.value);
+            setIndicatorState('alt-kategori-indicator', Boolean(this.value));
+            setIndicatorState('yayin-tipi-indicator', false);
 
             // ✅ FIX: Alt kategori seçilince category-changed event dispatch et
             if (this.value && anaKategoriSelect?.value) {
@@ -510,6 +595,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (yayinTipiSelect) {
         yayinTipiSelect.addEventListener('change', function () {
             console.log('🔵 Yayın tipi change:', this.value);
+            setIndicatorState('yayin-tipi-indicator', Boolean(this.value));
 
             // ✅ FIX: Yayın tipi seçildiğinde category-changed event'i dispatch et
             const anaKategoriSelect = document.getElementById('ana_kategori');
@@ -549,6 +635,55 @@ document.addEventListener('DOMContentLoaded', () => {
 
     categoryListenersInitialized = true;
     console.log('✅ Category listeners initialization complete');
+
+    // ✅ Edit Mode: Load existing category values
+    if (window.editMode && window.ilanData) {
+        console.log('📝 Edit mode detected, loading existing category values...', window.ilanData);
+
+        const anaKategoriId = window.ilanData.ana_kategori_id;
+        const altKategoriId = window.ilanData.alt_kategori_id;
+        const yayinTipiId = window.ilanData.yayin_tipi_id;
+
+        // Set ana kategori
+        if (anaKategoriId && anaKategoriSelect) {
+            anaKategoriSelect.value = anaKategoriId;
+            setIndicatorState('ana-kategori-indicator', true);
+
+            // Load alt kategoriler and wait for response
+            loadAltKategoriler(anaKategoriId).then(() => {
+                // Set alt kategori after categories are loaded
+                if (altKategoriId && altKategoriSelect) {
+                    // Wait a bit more to ensure options are populated
+                    setTimeout(() => {
+                        if (altKategoriSelect.querySelector(`option[value="${altKategoriId}"]`)) {
+                            altKategoriSelect.value = altKategoriId;
+                            setIndicatorState('alt-kategori-indicator', true);
+
+                            // Load yayın tipleri
+                            loadYayinTipleri(altKategoriId).then(() => {
+                                // Set yayın tipi after types are loaded
+                                if (yayinTipiId && yayinTipiSelect) {
+                                    setTimeout(() => {
+                                        if (
+                                            yayinTipiSelect.querySelector(
+                                                `option[value="${yayinTipiId}"]`
+                                            )
+                                        ) {
+                                            yayinTipiSelect.value = yayinTipiId;
+                                            setIndicatorState('yayin-tipi-indicator', true);
+                                            console.log(
+                                                '✅ All category values loaded in edit mode'
+                                            );
+                                        }
+                                    }, 300);
+                                }
+                            });
+                        }
+                    }, 300);
+                }
+            });
+        }
+    }
 
     // 🆕 Auto-dispatch on preselected values (page restored, back/forward cache vb.)
     try {

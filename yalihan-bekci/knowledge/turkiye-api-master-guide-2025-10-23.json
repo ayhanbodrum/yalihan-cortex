@@ -80,9 +80,7 @@
     "phase_3": {
       "name": "İlan Detay Widget",
       "duration": "1 day",
-      "files": [
-        "resources/views/components/ilan/demographic-info.blade.php"
-      ]
+      "files": ["resources/views/components/ilan/demographic-info.blade.php"]
     },
     "phase_4": {
       "name": "AI Prompt Enhancement",
@@ -303,4 +301,3 @@
     "success_check": "Test with Bodrum: 198,335 nüfus, 100/100 score"
   }
 }
-

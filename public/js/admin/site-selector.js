@@ -9,13 +9,13 @@ class SiteSelector {
             selectorElementId: 'site-selector',
             apiEndpoint: '/admin/api/sites/search',
             createEndpoint: '/admin/api/sites/create',
-            ...options
+            ...options,
         };
 
         this.container = document.getElementById(this.options.selectorElementId);
         this.selectedSite = null;
         this.listeners = {
-            onSelect: []
+            onSelect: [],
         };
 
         if (this.container) {
@@ -185,7 +185,7 @@ class SiteSelector {
                         name: siteName,
                         address: siteAddress,
                         lat: lat,
-                        lng: lng
+                        lng: lng,
                     });
 
                     searchResults.classList.add('hidden');
@@ -203,11 +203,11 @@ class SiteSelector {
                     nameInput.value = searchInput.value;
                 }
 
-        // Modal'ı aç
-        if (createModal) {
-            createModal.classList.remove('hidden');
-            createModal.classList.add('flex');
-        }
+                // Modal'ı aç
+                if (createModal) {
+                    createModal.classList.remove('hidden');
+                    createModal.classList.add('flex');
+                }
             });
         }
 
@@ -250,21 +250,25 @@ class SiteSelector {
         if (!resultsContainer) return;
 
         // Loading durumu göster
-        resultsContainer.innerHTML = '<div class="p-3 text-center text-gray-500 dark:text-gray-400"><i class="fas fa-spinner fa-spin mr-2"></i> Aranıyor...</div>';
+        resultsContainer.innerHTML =
+            '<div class="p-3 text-center text-gray-500 dark:text-gray-400"><i class="fas fa-spinner fa-spin mr-2"></i> Aranıyor...</div>';
         resultsContainer.classList.remove('hidden');
 
         try {
             // API ile arama yap
-            const response = await fetch(`${this.options.apiEndpoint}?q=${encodeURIComponent(query)}`);
+            const response = await fetch(
+                `${this.options.apiEndpoint}?q=${encodeURIComponent(query)}`
+            );
             const data = await response.json();
 
             if (data.success && data.sites && data.sites.length > 0) {
                 // Sonuçları göster
                 resultsContainer.innerHTML = '';
 
-                data.sites.forEach(site => {
+                data.sites.forEach((site) => {
                     const resultItem = document.createElement('div');
-                    resultItem.className = 'site-result-item p-3 hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer border-b border-gray-200 dark:border-gray-700 last:border-b-0';
+                    resultItem.className =
+                        'site-result-item p-3 hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer border-b border-gray-200 dark:border-gray-700 last:border-b-0';
                     resultItem.dataset.id = site.id;
                     resultItem.dataset.name = site.name;
                     resultItem.dataset.address = site.address || '';
@@ -285,7 +289,6 @@ class SiteSelector {
 
                     resultsContainer.appendChild(resultItem);
                 });
-
             } else {
                 // Sonuç yok mesajı
                 resultsContainer.innerHTML = `
@@ -319,7 +322,8 @@ class SiteSelector {
             }
         } catch (error) {
             console.error('Site arama hatası:', error);
-            resultsContainer.innerHTML = '<div class="p-3 text-center text-red-500 dark:text-red-400">Arama sırasında bir hata oluştu</div>';
+            resultsContainer.innerHTML =
+                '<div class="p-3 text-center text-red-500 dark:text-red-400">Arama sırasında bir hata oluştu</div>';
         }
     }
 
@@ -344,14 +348,17 @@ class SiteSelector {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+                    'X-CSRF-TOKEN':
+                        document
+                            .querySelector('meta[name="csrf-token"]')
+                            ?.getAttribute('content') || '',
                 },
                 body: JSON.stringify({
                     name: siteName,
                     address: addressInput.value.trim(),
                     latitude: latInput?.value || null,
-                    longitude: lngInput?.value || null
-                })
+                    longitude: lngInput?.value || null,
+                }),
             });
 
             const data = await response.json();
@@ -363,7 +370,7 @@ class SiteSelector {
                     name: data.site.name,
                     address: data.site.address,
                     lat: data.site.latitude,
-                    lng: data.site.longitude
+                    lng: data.site.longitude,
                 });
 
                 // Formu temizle
@@ -379,7 +386,6 @@ class SiteSelector {
 
                 // Başarılı mesajı göster
                 this.showToast('Site/Apartman başarıyla oluşturuldu', 'success');
-
             } else {
                 // Hata mesajı
                 this.showToast(data.message || 'Site oluşturulurken bir hata oluştu', 'error');
@@ -417,7 +423,7 @@ class SiteSelector {
         this.selectedSite = site;
 
         // Event dinleyicileri çağır
-        this.listeners.onSelect.forEach(callback => callback(site));
+        this.listeners.onSelect.forEach((callback) => callback(site));
     }
 
     clearSelection() {
@@ -443,7 +449,7 @@ class SiteSelector {
         this.selectedSite = null;
 
         // Event dinleyicileri çağır
-        this.listeners.onSelect.forEach(callback => callback(null));
+        this.listeners.onSelect.forEach((callback) => callback(null));
     }
 
     onSiteSelect(callback) {
@@ -457,8 +463,8 @@ class SiteSelector {
         // API ile site detaylarını al ve seç
         if (siteId) {
             fetch(`${this.options.apiEndpoint}/${siteId}`)
-                .then(response => response.json())
-                .then(data => {
+                .then((response) => response.json())
+                .then((data) => {
                     if (data.success && data.site) {
                         this.selectSite(data.site);
 
@@ -469,7 +475,7 @@ class SiteSelector {
                         }
                     }
                 })
-                .catch(error => {
+                .catch((error) => {
                     console.error('Site detayı alınırken hata:', error);
                 });
         }

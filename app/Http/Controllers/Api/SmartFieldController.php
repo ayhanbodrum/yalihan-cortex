@@ -3,12 +3,16 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Services\Response\ResponseService;
+use App\Traits\ValidatesApiRequests;
 use Illuminate\Http\Request;
 use App\Services\SmartFieldGenerationService;
 use App\Services\AIService;
 
 class SmartFieldController extends Controller
 {
+    use ValidatesApiRequests;
+
     protected $smartFieldService;
     protected $aiService;
 
@@ -23,10 +27,14 @@ class SmartFieldController extends Controller
      */
     public function getSmartFields(Request $request)
     {
-        $request->validate([
+        $validated = $this->validateRequestWithResponse($request, [
             'kategori_slug' => 'required|string',
             'yayin_tipi' => 'nullable|string'
         ]);
+
+        if ($validated instanceof \Illuminate\Http\JsonResponse) {
+            return $validated;
+        }
 
         try {
             $smartFields = $this->smartFieldService->getSmartFieldsForCategory(
@@ -34,16 +42,11 @@ class SmartFieldController extends Controller
                 $request->yayin_tipi
             );
 
-            return response()->json([
-                'success' => true,
-                'data' => $smartFields,
-                'message' => 'Akıllı field önerileri başarıyla alındı'
-            ]);
+            return ResponseService::success([
+                'data' => $smartFields
+            ], 'Akıllı field önerileri başarıyla alındı');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Field önerileri alınırken hata oluştu: ' . $e->getMessage()
-            ], 500);
+            return ResponseService::serverError('Field önerileri alınırken hata oluştu.', $e);
         }
     }
 
@@ -52,23 +55,22 @@ class SmartFieldController extends Controller
      */
     public function getCategoryMatrix(Request $request)
     {
-        $request->validate([
+        $validated = $this->validateRequestWithResponse($request, [
             'kategori_slug' => 'required|string'
         ]);
+
+        if ($validated instanceof \Illuminate\Http\JsonResponse) {
+            return $validated;
+        }
 
         try {
             $matrix = $this->smartFieldService->generateCategoryMatrix($request->kategori_slug);
 
-            return response()->json([
-                'success' => true,
-                'data' => $matrix,
-                'message' => 'Kategori matrisi başarıyla oluşturuldu'
-            ]);
+            return ResponseService::success([
+                'data' => $matrix
+            ], 'Kategori matrisi başarıyla oluşturuldu');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Matris oluşturulurken hata oluştu: ' . $e->getMessage()
-            ], 500);
+            return ResponseService::serverError('Matris oluşturulurken hata oluştu.', $e);
         }
     }
 
@@ -77,10 +79,14 @@ class SmartFieldController extends Controller
      */
     public function generateSmartForm(Request $request)
     {
-        $request->validate([
+        $validated = $this->validateRequestWithResponse($request, [
             'kategori_slug' => 'required|string',
             'yayin_tipi' => 'nullable|string'
         ]);
+
+        if ($validated instanceof \Illuminate\Http\JsonResponse) {
+            return $validated;
+        }
 
         try {
             $smartForm = $this->smartFieldService->generateSmartForm(
@@ -88,16 +94,11 @@ class SmartFieldController extends Controller
                 $request->yayin_tipi
             );
 
-            return response()->json([
-                'success' => true,
-                'data' => $smartForm,
-                'message' => 'Akıllı form başarıyla oluşturuldu'
-            ]);
+            return ResponseService::success([
+                'data' => $smartForm
+            ], 'Akıllı form başarıyla oluşturuldu');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Form oluşturulurken hata oluştu: ' . $e->getMessage()
-            ], 500);
+            return ResponseService::serverError('Form oluşturulurken hata oluştu.', $e);
         }
     }
 
@@ -106,10 +107,14 @@ class SmartFieldController extends Controller
      */
     public function analyzeProperty(Request $request)
     {
-        $request->validate([
+        $validated = $this->validateRequestWithResponse($request, [
             'property_data' => 'required|array',
             'context' => 'nullable|array'
         ]);
+
+        if ($validated instanceof \Illuminate\Http\JsonResponse) {
+            return $validated;
+        }
 
         try {
             $analysis = $this->aiService->analyzePropertyFeatures(
@@ -117,16 +122,11 @@ class SmartFieldController extends Controller
                 $request->context ?? []
             );
 
-            return response()->json([
-                'success' => true,
-                'data' => $analysis,
-                'message' => 'Özellik analizi başarıyla tamamlandı'
-            ]);
+            return ResponseService::success([
+                'data' => $analysis
+            ], 'Özellik analizi başarıyla tamamlandı');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Analiz sırasında hata oluştu: ' . $e->getMessage()
-            ], 500);
+            return ResponseService::serverError('Analiz sırasında hata oluştu.', $e);
         }
     }
 
@@ -135,11 +135,15 @@ class SmartFieldController extends Controller
      */
     public function getAISuggestions(Request $request)
     {
-        $request->validate([
+        $validated = $this->validateRequestWithResponse($request, [
             'kategori_slug' => 'required|string',
             'yayin_tipi' => 'nullable|string',
             'context' => 'nullable|array'
         ]);
+
+        if ($validated instanceof \Illuminate\Http\JsonResponse) {
+            return $validated;
+        }
 
         try {
             $suggestions = $this->aiService->suggestFieldsForCategory(
@@ -148,16 +152,11 @@ class SmartFieldController extends Controller
                 $request->context ?? []
             );
 
-            return response()->json([
-                'success' => true,
-                'data' => $suggestions,
-                'message' => 'AI önerileri başarıyla alındı'
-            ]);
+            return ResponseService::success([
+                'data' => $suggestions
+            ], 'AI önerileri başarıyla alındı');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'AI önerileri alınırken hata oluştu: ' . $e->getMessage()
-            ], 500);
+            return ResponseService::serverError('AI önerileri alınırken hata oluştu.', $e);
         }
     }
 }

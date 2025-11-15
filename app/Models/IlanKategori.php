@@ -26,7 +26,7 @@ class IlanKategori extends Model
         'parent_id',
         'seviye',
         'status', // Context7 kuralı: status → status
-        'order',
+        'display_order', // Context7: order → display_order
         'slug',
         'icon',
         'aciklama', // Database column name
@@ -40,7 +40,7 @@ class IlanKategori extends Model
     protected $casts = [
         'status' => 'boolean', // Context7 kuralı: status → status
         'seviye' => 'integer',
-        'order' => 'integer',
+        'display_order' => 'integer', // Context7: order → display_order
     ];
 
     /**
@@ -76,6 +76,22 @@ class IlanKategori extends Model
     }
 
     /**
+     * display_order kullanımı
+     */
+    // public function getOrderAttribute()
+    // {
+    //     return $this->display_order;
+    // }
+
+    /**
+     * display_order kullanımı
+     */
+    // public function setOrderAttribute($value)
+    // {
+    //     $this->attributes['display_order'] = $value;
+    // }
+
+    /**
      * Üst kategoriyi döndüren ilişki (self-referencing)
      */
     public function parent()
@@ -85,31 +101,47 @@ class IlanKategori extends Model
 
     /**
      * Alt kategorileri döndüren ilişki (self-referencing)
+     * ✅ Context7: display_order kullan
      */
     public function children()
     {
-        return $this->hasMany(IlanKategori::class, 'parent_id')->orderBy('order');
+        return $this->hasMany(IlanKategori::class, 'parent_id');
     }
 
     /**
      * Aktif alt kategorileri döndüren ilişki
+     * ✅ Context7: display_order kullan
      */
     public function statusChildren()
     {
         return $this->hasMany(IlanKategori::class, 'parent_id')
-            ->where('status', true) // Context7 kuralı: status → status
-            ->orderBy('order');
+            ->where('status', true); // Context7 kuralı: status → status
     }
 
     /**
-     * Sadece yayın tiplerini döndüren bir ilişki (seviye=2)
+     * Context7: Yayın tipleri ilişkisi (ilan_kategori_yayin_tipleri tablosu)
+     * ✅ Context7: display_order kullan (order değil)
      */
     public function yayinTipleri()
     {
+        return $this->hasMany(IlanKategoriYayinTipi::class, 'kategori_id')
+            ->where('status', true) // Context7: status kullanımı
+            ->orderBy('display_order', 'ASC')
+            ->orderBy('yayin_tipi', 'ASC');
+    }
+
+    /**
+     * Sadece yayın tiplerini döndüren bir ilişki (seviye=2) - DEPRECATED
+     * ✅ Context7: display_order kullan (order değil)
+     * 
+     * ⚠️ DEPRECATED: Artık ilan_kategori_yayin_tipleri tablosu kullanılıyor
+     * Bu ilişki backward compatibility için korunuyor
+     */
+    public function yayinTipleriLegacy()
+    {
         return $this->hasMany(IlanKategori::class, 'parent_id')
             ->where('seviye', 2)
-            ->where('status', true) // Context7 kuralı: status → status
-            ->orderBy('order');
+            ->where('status', true); // Context7 kuralı: status → status
     }
 
     // İlan İlişkileri
@@ -187,15 +219,16 @@ class IlanKategori extends Model
 
     /**
      * Bu kategorinin status ilanları
+     * Context7 FIX: 'active' yerine 'yayinda' kullanılmalı
      */
     public function statusIlanlar()
     {
         if ($this->seviye == 0) {
-            return $this->anaKategoriIlanlar()->where('status', 'active');
+            return $this->anaKategoriIlanlar()->where('status', 'yayinda');
         } elseif ($this->seviye == 1) {
-            return $this->altKategoriIlanlar()->where('status', 'active');
+            return $this->altKategoriIlanlar()->where('status', 'yayinda');
         } else {
-            return $this->yayinTipiIlanlar()->where('status', 'active');
+            return $this->yayinTipiIlanlar()->where('status', 'yayinda');
         }
     }
 
@@ -220,7 +253,7 @@ class IlanKategori extends Model
      */
     public function scopeAnaKategoriler($query)
     {
-        return $query->where('seviye', 0)->orderBy('order');
+        return $query->where('seviye', 0)->orderBy('display_order');
     }
 
     /**
@@ -228,7 +261,30 @@ class IlanKategori extends Model
      */
     public function scopeAltKategoriler($query)
     {
-        return $query->where('seviye', 1)->orderBy('order');
+        return $query->where('seviye', 1)->orderBy('display_order');
+    }
+
+    /**
+     * Aktif alt kategorileri filtreleyen scope (seviye=1 + status=true)
+     * Context7: Status filtresi ile aktif alt kategorileri getirir
+     */
+    public function scopeAktifAltKategoriler($query)
+    {
+        return $query->where('seviye', 1)
+            ->where('status', true) // Context7: status kullanımı
+            ->orderBy('display_order');
+    }
+
+    /**
+     * Belirli bir ana kategoriye ait alt kategorileri filtreleyen scope
+     * Context7: Ana kategori ID'sine göre alt kategorileri getirir
+     */
+    public function scopeAltKategorileriAnaKategoriyeGore($query, $anaKategoriId)
+    {
+        return $query->where('seviye', 1)
+            ->where('parent_id', $anaKategoriId)
+            ->where('status', true) // Context7: status kullanımı
+            ->orderBy('display_order');
     }
 
     /**
@@ -244,7 +300,7 @@ class IlanKategori extends Model
      */
     public function scopeSiralı($query)
     {
-        return $query->orderBy('order');
+        return $query->orderBy('display_order');
     }
 
     /**
@@ -307,7 +363,8 @@ class IlanKategori extends Model
             'parent_id' => 'nullable|exists:ilan_kategorileri,id',
             'seviye' => 'required|integer|in:0,1,2',
             'status' => 'boolean',
-            'order' => 'nullable|integer|min:1',
+            'display_order' => 'nullable|integer|min:1',
+            // REMOVED: 'order' => 'nullable|integer|min:1', // Backward compatibility - REMOVED: Causes Laravel to select 'order' column
             'icon' => 'nullable|string|max:100',
             'aciklama' => 'nullable|string|max:500',
         ];

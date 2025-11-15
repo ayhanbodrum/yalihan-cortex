@@ -10,7 +10,7 @@ class KonutFieldDependencySeeder extends Seeder
 {
     /**
      * Konut kategorisi için alan ilişkileri
-     * 
+     *
      * Run with: php artisan db:seed --class=KonutFieldDependencySeeder
      */
     public function run(): void
@@ -30,7 +30,7 @@ class KonutFieldDependencySeeder extends Seeder
                 'field_icon' => '💰',
                 'enabled' => true,
                 'required' => true,
-                'order' => 1,
+                'display_order' => 1,
                 'searchable' => true,
                 'show_in_card' => true,
             ],
@@ -45,7 +45,7 @@ class KonutFieldDependencySeeder extends Seeder
                 'field_icon' => '🛏️',
                 'enabled' => true,
                 'required' => false,
-                'order' => 2,
+                'display_order' => 2,
                 'searchable' => true,
                 'show_in_card' => true,
             ],
@@ -59,7 +59,7 @@ class KonutFieldDependencySeeder extends Seeder
                 'field_icon' => '🚿',
                 'enabled' => true,
                 'required' => false,
-                'order' => 3,
+                'display_order' => 3,
                 'searchable' => false,
                 'show_in_card' => false,
             ],
@@ -74,7 +74,7 @@ class KonutFieldDependencySeeder extends Seeder
                 'field_icon' => '📐',
                 'enabled' => true,
                 'required' => true,
-                'order' => 4,
+                'display_order' => 4,
                 'searchable' => true,
                 'show_in_card' => true,
             ],
@@ -90,7 +90,7 @@ class KonutFieldDependencySeeder extends Seeder
                 'field_icon' => '🏠',
                 'enabled' => true,
                 'required' => true,
-                'order' => 1,
+                'display_order' => 1,
                 'searchable' => true,
                 'show_in_card' => true,
             ],
@@ -104,7 +104,7 @@ class KonutFieldDependencySeeder extends Seeder
                 'field_icon' => '💰',
                 'enabled' => true,
                 'required' => false,
-                'order' => 2,
+                'display_order' => 2,
                 'searchable' => false,
                 'show_in_card' => false,
             ],
@@ -119,7 +119,7 @@ class KonutFieldDependencySeeder extends Seeder
                 'field_icon' => '🛏️',
                 'enabled' => true,
                 'required' => false,
-                'order' => 3,
+                'display_order' => 3,
                 'searchable' => true,
                 'show_in_card' => true,
             ],
@@ -134,7 +134,7 @@ class KonutFieldDependencySeeder extends Seeder
                 'field_icon' => '📐',
                 'enabled' => true,
                 'required' => true,
-                'order' => 4,
+                'display_order' => 4,
                 'searchable' => true,
                 'show_in_card' => true,
             ],
@@ -145,7 +145,7 @@ class KonutFieldDependencySeeder extends Seeder
             foreach ($fields as $field) {
                 KategoriYayinTipiFieldDependency::create($field);
             }
-            
+
             DB::commit();
             $this->command->info('✅ Konut alan ilişkileri başarıyla eklendi!');
         } catch (\Exception $e) {
@@ -154,4 +154,3 @@ class KonutFieldDependencySeeder extends Seeder
         }
     }
 }
-

@@ -49,81 +49,81 @@ cat config/usta-learned-patterns.json
 cat config/usta-learned-patterns.json
 ```
 
--   Sık karşılaşılan hataları öğrenir
--   Frekans bazlı akıllı öneriler
--   Zamanla daha akıllı olur
+- Sık karşılaşılan hataları öğrenir
+- Frekans bazlı akıllı öneriler
+- Zamanla daha akıllı olur
 
 ### **2. 🔒 Security Deep Scan**
 
--   ✅ XSS vulnerability check
--   ✅ CSRF token validation
--   ✅ SQL injection risk
--   ✅ Sensitive data exposure
+- ✅ XSS vulnerability check
+- ✅ CSRF token validation
+- ✅ SQL injection risk
+- ✅ Sensitive data exposure
 
 ### **3. 📊 SEO Analyzer**
 
--   ✅ Title optimization (30-60 karakter)
--   ✅ Meta description check
--   ✅ H1 tag validation
--   ✅ Image alt texts
--   ✅ OpenGraph tags
--   ✅ SEO score (0-100)
+- ✅ Title optimization (30-60 karakter)
+- ✅ Meta description check
+- ✅ H1 tag validation
+- ✅ Image alt texts
+- ✅ OpenGraph tags
+- ✅ SEO score (0-100)
 
 ### **4. ♿ Accessibility Scanner**
 
--   ✅ WCAG 2.1 compliance
--   ✅ Alt text check
--   ✅ Form labels
--   ✅ Button accessibility
--   ✅ Keyboard navigation
--   ✅ WCAG level scoring (A/AA/AAA)
+- ✅ WCAG 2.1 compliance
+- ✅ Alt text check
+- ✅ Form labels
+- ✅ Button accessibility
+- ✅ Keyboard navigation
+- ✅ WCAG level scoring (A/AA/AAA)
 
 ### **5. 📱 Mobile Responsiveness**
 
--   ✅ 3 device test (Mobile, Tablet, Desktop)
--   ✅ Viewport meta tag
--   ✅ Touch target size (44x44px)
--   ✅ Horizontal scroll check
--   ✅ Mobile-specific CSS
+- ✅ 3 device test (Mobile, Tablet, Desktop)
+- ✅ Viewport meta tag
+- ✅ Touch target size (44x44px)
+- ✅ Horizontal scroll check
+- ✅ Mobile-specific CSS
 
 ### **6. 🌐 API Health Check**
 
--   ✅ Endpoint availability
--   ✅ Response time (<200ms = A)
--   ✅ Status code validation
--   ✅ API performance grading
+- ✅ Endpoint availability
+- ✅ Response time (<200ms = A)
+- ✅ Status code validation
+- ✅ API performance grading
 
 ### **7. 🎨 Code Quality Analyzer**
 
--   ✅ Console errors
--   ✅ JavaScript errors
--   ✅ Inline styles check
--   ✅ Deprecated HTML
--   ✅ Empty elements
--   ✅ Duplicate IDs
--   ✅ DOM size analysis
+- ✅ Console errors
+- ✅ JavaScript errors
+- ✅ Inline styles check
+- ✅ Deprecated HTML
+- ✅ Empty elements
+- ✅ Duplicate IDs
+- ✅ DOM size analysis
 
 ### **8. ⚡ Performance Budget**
 
--   ✅ Load time limit (2000ms)
--   ✅ JS Heap limit (50MB)
--   ✅ DOM size limit (1500 elements)
--   ✅ Budget violation alerts
+- ✅ Load time limit (2000ms)
+- ✅ JS Heap limit (50MB)
+- ✅ DOM size limit (1500 elements)
+- ✅ Budget violation alerts
 
 ### **9. 📡 Network Monitor**
 
--   ✅ Total requests tracking
--   ✅ Slow requests (>1000ms)
--   ✅ Failed requests
--   ✅ Average response time
--   ✅ Resource type analysis
+- ✅ Total requests tracking
+- ✅ Slow requests (>1000ms)
+- ✅ Failed requests
+- ✅ Average response time
+- ✅ Resource type analysis
 
 ### **10. 🔧 Smart Auto-Fix**
 
--   ✅ Undefined variable fixes
--   ✅ Missing table solutions
--   ✅ Missing relationship fixes
--   ✅ Confidence level scoring
+- ✅ Undefined variable fixes
+- ✅ Missing table solutions
+- ✅ Missing relationship fixes
+- ✅ Confidence level scoring
 
 ---
 
@@ -262,10 +262,10 @@ const CONFIG = {
 
 **USTA 4.0:**
 
--   ✅ 10+ kategori test
--   ✅ 50+ sorun tespit
--   ✅ 800+ satır rapor
--   ✅ Self-learning aktif
+- ✅ 10+ kategori test
+- ✅ 50+ sorun tespit
+- ✅ 800+ satır rapor
+- ✅ Self-learning aktif
 
 ### **Rapor Boyutları:**
 
@@ -397,8 +397,8 @@ npm install puppeteer
 ```javascript
 // scripts/usta-web-developer.mjs içinde:
 const CONFIG = {
-    loginEmail: "admin@yalihanemlak.com", // ← Doğru mu?
-    loginPassword: "admin123", // ← Doğru mu?
+    loginEmail: 'admin@yalihanemlak.com', // ← Doğru mu?
+    loginPassword: 'admin123', // ← Doğru mu?
 };
 ```
 
@@ -557,9 +557,9 @@ USTA her hatayla karşılaştığında öğrenir:
 
 ### **Frekans Bazlı Öneriler:**
 
--   **1-2 kez:** Basit öneri
--   **3-5 kez:** Orta öncelikli öneri
--   **5+ kez:** Yüksek öncelikli + otomatik düzeltme öner
+- **1-2 kez:** Basit öneri
+- **3-5 kez:** Orta öncelikli öneri
+- **5+ kez:** Yüksek öncelikli + otomatik düzeltme öner
 
 ---
 
@@ -620,8 +620,8 @@ USTA 4.0 ile artık:
 
 **Sorular?**
 
--   `USTA_4.0_WEB_DEVELOPER_OZET.md` - Detaylı özet
--   `usta-web-developer-raporu.md` - Test raporu
--   `config/usta-learned-patterns.json` - Öğrenilen pattern'ler
+- `USTA_4.0_WEB_DEVELOPER_OZET.md` - Detaylı özet
+- `usta-web-developer-raporu.md` - Test raporu
+- `config/usta-learned-patterns.json` - Öğrenilen pattern'ler
 
 **Test edin, öğrenin, iyileştirin!** 🚀

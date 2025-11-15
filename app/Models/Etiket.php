@@ -17,7 +17,7 @@ class Etiket extends Model
         'color',
         'description',
         'status',
-        'order',
+        'display_order', // Context7: order → display_order (migration: 2025_11_11_103353)
         'type',
         'icon',
         'bg_color',
@@ -28,14 +28,14 @@ class Etiket extends Model
 
     protected $casts = [
         'status' => 'boolean',
-        'order' => 'integer',
+        'display_order' => 'integer', // Context7: order → display_order
         'is_badge' => 'boolean',
     ];
 
     // ✅ Context7: Eski Türkçe kolon isimleri için accessor/mutator
     // Veritabanında: ad, renk, aciklama, sira
     // Context7 Standard: name, color, description, order
-    
+
     protected $appends = [];
 
     // name → ad mapping
@@ -71,16 +71,22 @@ class Etiket extends Model
         $this->attributes['aciklama'] = $value;
     }
 
-    // order → sira mapping
-    public function getOrderAttribute($value)
+    // Context7: display_order accessor/mutator (backward compatibility için sira mapping korunuyor)
+    public function getDisplayOrderAttribute($value)
     {
-        return $this->attributes['sira'] ?? $value;
+        return $this->attributes['display_order'] ?? $this->attributes['sira'] ?? $value;
     }
 
-    public function setOrderAttribute($value)
+    public function setDisplayOrderAttribute($value)
     {
-        $this->attributes['sira'] = $value;
+        $this->attributes['display_order'] = $value;
+        // Backward compatibility: sira'yı da güncelle
+        if (isset($this->attributes['sira'])) {
+            $this->attributes['sira'] = $value;
+        }
     }
+
+    
 
     protected static function boot()
     {
@@ -109,14 +115,14 @@ class Etiket extends Model
 
     public function scopeOrdered($query)
     {
-        return $query->orderBy('order')->orderBy('name');
+        return $query->orderBy('display_order')->orderBy('ad'); // Context7: order → display_order
     }
 
     public function scopeBadges($query)
     {
         return $query->where('is_badge', true)
                      ->where('status', true)
-                     ->orderBy('order');
+                     ->orderBy('display_order'); // Context7: order → display_order
     }
 
     public function scopeType($query, $type)

@@ -1,6 +1,6 @@
 /**
  * Hybrid Search System - React Demo Component
- * 
+ *
  * Context7 Standardı: C7-HYBRID-SEARCH-DEMO-2025-01-30
  * Versiyon: 1.0.0
  * Son Güncelleme: 30 Ocak 2025
@@ -68,7 +68,7 @@ const HybridSearchDemo: React.FC = () => {
     // Handle form submission
     const handleSubmit = useCallback((e: React.FormEvent) => {
         e.preventDefault();
-        
+
         const data = {
             ...formData,
             person: selectedPerson,
@@ -78,7 +78,7 @@ const HybridSearchDemo: React.FC = () => {
             multiConsultants: selectedMultiConsultants,
             multiSites: selectedMultiSites,
         };
-        
+
         console.log('Form submitted:', data);
         alert('Form submitted! Check console for data.');
     }, [formData, selectedPerson, selectedConsultant, selectedSite, selectedMultiPersons, selectedMultiConsultants, selectedMultiSites]);
@@ -169,7 +169,7 @@ const HybridSearchDemo: React.FC = () => {
                 {/* Single Select Examples */}
                 <div className="border-t pt-6">
                     <h2 className="text-xl font-semibold text-gray-900 mb-4">Tekli Seçim Örnekleri</h2>
-                    
+
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -224,7 +224,7 @@ const HybridSearchDemo: React.FC = () => {
                 {/* Multi Select Examples */}
                 <div className="border-t pt-6">
                     <h2 className="text-xl font-semibold text-gray-900 mb-4">Çoklu Seçim Örnekleri</h2>
-                    
+
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -300,7 +300,7 @@ const HybridSearchDemo: React.FC = () => {
                 {/* Advanced Configuration Example */}
                 <div className="border-t pt-6">
                     <h2 className="text-xl font-semibold text-gray-900 mb-4">Gelişmiş Konfigürasyon</h2>
-                    
+
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                             Özelleştirilmiş Kişi Seçimi
@@ -329,7 +329,7 @@ const HybridSearchDemo: React.FC = () => {
                     >
                         Temizle
                     </button>
-                    
+
                     <button
                         type="submit"
                         className="px-6 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"

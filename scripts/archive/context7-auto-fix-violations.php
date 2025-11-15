@@ -3,10 +3,10 @@
 /**
  * Context7 Auto-Fix Violations Script
  * Yalıhan Bekçi: Forbidden pattern'leri otomatik düzeltir
- * 
+ *
  * Yasaklı → Context7 Uyumlu:
  * - durum → status
- * - is_active → enabled  
+ * - is_active → enabled
  * - aktif → active
  * - sehir_id → city_id
  * - sehir → city
@@ -36,7 +36,7 @@ $patterns = [
         'replace' => "->where('city_id',",
         'description' => "Query: sehir_id → city_id"
     ],
-    
+
     // Array key patterns
     [
         'search' => "'durum'",
@@ -48,7 +48,7 @@ $patterns = [
         'replace' => '"status"',
         'description' => "Array key: durum → status (double quote)"
     ],
-    
+
     // Status value patterns (sadece string değerler)
     [
         'search' => "'status' => 'Aktif'",
@@ -76,23 +76,23 @@ $fileChanges = [];
 foreach ($directories as $dir) {
     $path = $basePath . '/' . $dir;
     if (!is_dir($path)) continue;
-    
+
     $files = new RecursiveIteratorIterator(
         new RecursiveDirectoryIterator($path),
         RecursiveIteratorIterator::SELF_FIRST
     );
-    
+
     foreach ($files as $file) {
         if ($file->isDir()) continue;
-        
+
         $ext = $file->getExtension();
         if (!in_array($ext, ['php', 'blade.php'])) continue;
-        
+
         $filepath = $file->getPathname();
         $content = file_get_contents($filepath);
         $originalContent = $content;
         $changes = 0;
-        
+
         foreach ($patterns as $pattern) {
             $count = 0;
             $content = str_replace($pattern['search'], $pattern['replace'], $content, $count);
@@ -101,7 +101,7 @@ foreach ($directories as $dir) {
                 echo "  ✓ {$pattern['description']}: {$count}x\n";
             }
         }
-        
+
         if ($content !== $originalContent) {
             file_put_contents($filepath, $content);
             $totalFiles++;
@@ -126,4 +126,3 @@ foreach ($fileChanges as $change) {
 
 echo "\n🎉 Context7 compliance improved!\n";
 echo "Run: php artisan context7:check to verify\n";
-

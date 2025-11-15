@@ -13,7 +13,7 @@ AdminController base class oluştururken yaşanan 6 kritik hata ve çözümleri.
 
 **Toplam Debugging Süresi:** 41 dakika  
 **Etkilenen Dosya:** 4  
-**Hata Sayısı:** 6  
+**Hata Sayısı:** 6
 
 ---
 
@@ -22,6 +22,7 @@ AdminController base class oluştururken yaşanan 6 kritik hata ve çözümleri.
 ### 1. ❌ BACKSLASH FACADE KULLANIMI
 
 **YASAK:**
+
 ```php
 'etiketler' => \Cache::remember(...),  // ❌
 'users' => \DB::table('users')->get(), // ❌
@@ -29,6 +30,7 @@ AdminController base class oluştururken yaşanan 6 kritik hata ve çözümleri.
 ```
 
 **DOĞRU:**
+
 ```php
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -48,6 +50,7 @@ Log::info('message');                  // ✅
 ### 2. ❌ DATABASE KOLONLARINI VARSAYMA
 
 **YASAK:**
+
 ```php
 // Kod yazmadan önce schema kontrol etmeden:
 Etiket::where('status', true)
@@ -55,6 +58,7 @@ Etiket::where('status', true)
 ```
 
 **DOĞRU:**
+
 ```php
 // Önce schema kontrol et:
 // mysql> DESCRIBE etiketler;
@@ -68,6 +72,7 @@ Etiket::where('status', true)
 ```
 
 **Komut:**
+
 ```bash
 mysql -u root -e "DESCRIBE database.table;"
 ```
@@ -77,6 +82,7 @@ mysql -u root -e "DESCRIBE database.table;"
 ### 3. ❌ MODEL ACCESSOR İLE DATABASE COLUMN KARIŞTIRMA
 
 **YASAK:**
+
 ```php
 // Ulke model'de:
 public function getNameAttribute() { return $this->ulke_adi; }
@@ -86,12 +92,14 @@ Ulke::orderBy('name')->get(); // ❌ 'name' kolonu DB'de YOK!
 ```
 
 **DOĞRU:**
+
 ```php
 // Gerçek kolon adını kullan:
 Ulke::orderBy('ulke_adi')->get(); // ✅ DB'deki gerçek kolon
 ```
 
-**Kural:** 
+**Kural:**
+
 - Model accessor'ı (getXAttribute) **sadece Eloquent model'lerde** çalışır
 - Query builder'da (**orderBy, where, select**) **gerçek kolon** kullanılmalı!
 
@@ -100,22 +108,25 @@ Ulke::orderBy('ulke_adi')->get(); // ✅ DB'deki gerçek kolon
 ### 4. ❌ STATUS TİPİ KARIŞIKLIĞI
 
 **YASAK:**
+
 ```php
 // ulkeler.status VARCHAR(255) 'Aktif'/'Pasif'
 Ulke::where('status', true)->get(); // ❌ YANLIŞ TİP!
 ```
 
 **DOĞRU:**
+
 ```php
 // Migration'u kontrol et:
 // status VARCHAR(255) → String kullan
 Ulke::where('status', 'Aktif')->get(); // ✅
 
-// status TINYINT(1) → Boolean kullan  
+// status TINYINT(1) → Boolean kullan
 Etiket::where('status', true)->get(); // ✅
 ```
 
 **Kontrol:**
+
 ```bash
 DESCRIBE table; # status TINYINT(1) mi VARCHAR(255) mi?
 ```
@@ -125,17 +136,19 @@ DESCRIBE table; # status TINYINT(1) mi VARCHAR(255) mi?
 ### 5. ❌ DUPLICATE METHOD TANIMLA
 
 **YASAK:**
+
 ```php
 class Controller {
     public function analytics() { ... } // Satır 17
-    
+
     // 450 satır sonra...
-    
+
     public function analytics() { ... } // Satır 468 ❌ DUPLICATE!
 }
 ```
 
 **DOĞRU:**
+
 ```php
 // Önce kontrol et:
 grep -n 'public function analytics' AISettingsController.php
@@ -259,14 +272,14 @@ DANGEROUS:
 
 ## 📊 HATALAR VE FIX SÜRELERİ
 
-| Hata | Sebep | Fix Süresi | Önleme |
-|------|-------|------------|---------|
-| Class 'Cache' not found | `\Cache::` kullanımı | 15 dk | Import + no backslash |
-| Column 'type' not found | Pending migration | 5 dk | migrate:status kontrol |
-| Column 'icon' not found | SELECT varsayımı | 3 dk | DESCRIBE table |
-| Column 'name' in ulkeler | Accessor karışıklığı | 5 dk | Gerçek kolon kullan |
-| Column 'name' in yayin | Schema bilmeme | 3 dk | Migration oku |
-| Duplicate analytics() | grep kontrolsüz ekleme | 10 dk | grep önce |
+| Hata                     | Sebep                  | Fix Süresi | Önleme                 |
+| ------------------------ | ---------------------- | ---------- | ---------------------- |
+| Class 'Cache' not found  | `\Cache::` kullanımı   | 15 dk      | Import + no backslash  |
+| Column 'type' not found  | Pending migration      | 5 dk       | migrate:status kontrol |
+| Column 'icon' not found  | SELECT varsayımı       | 3 dk       | DESCRIBE table         |
+| Column 'name' in ulkeler | Accessor karışıklığı   | 5 dk       | Gerçek kolon kullan    |
+| Column 'name' in yayin   | Schema bilmeme         | 3 dk       | Migration oku          |
+| Duplicate analytics()    | grep kontrolsüz ekleme | 10 dk      | grep önce              |
 
 **TOPLAM:** 41 dakika debugging  
 **Önlenebilirdi:** %90 (schema kontrol ile)
@@ -380,4 +393,3 @@ public function getNameAttribute() { ... } ✓
 **Ders Çıkarma:** ✅ Tamamlandı  
 **Kurallar Güncellendi:** ✅ 5 yeni kural eklendi  
 **Status:** LEARNED AND WILL NEVER REPEAT 🎓
-

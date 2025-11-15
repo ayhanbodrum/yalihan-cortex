@@ -212,4 +212,3 @@
         <span class="sr-only">İçerik yükleniyor...</span>
     </div>
 @endif
-

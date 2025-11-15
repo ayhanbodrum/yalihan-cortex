@@ -135,6 +135,14 @@ return [
             'replace_placeholders' => true,
         ],
 
+        'module_changes' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/module_changes.log'),
+            'level' => env('LOG_LEVEL', 'info'),
+            'days' => 30,
+            'replace_placeholders' => true,
+        ],
+
     ],
 
 ];

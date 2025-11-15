@@ -6,14 +6,20 @@
 
 /* Map container enhancements */
 .leaflet-container {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family:
+        'Inter',
+        -apple-system,
+        BlinkMacSystemFont,
+        sans-serif;
 }
 
 /* Search control styling */
 .leaflet-control-search {
     min-width: 320px;
     max-width: 400px;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    box-shadow:
+        0 4px 6px -1px rgba(0, 0, 0, 0.1),
+        0 2px 4px -1px rgba(0, 0, 0, 0.06);
     border: none;
     border-radius: 0.5rem;
 }
@@ -32,7 +38,7 @@
     flex-direction: column;
     border-radius: 4px;
     overflow: hidden;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .map-type-switcher button {
@@ -114,7 +120,7 @@
 /* Custom GPS control */
 .leaflet-control-custom {
     background: white;
-    border: 2px solid rgba(0,0,0,0.2);
+    border: 2px solid rgba(0, 0, 0, 0.2);
     background-clip: padding-box;
 }
 
@@ -130,7 +136,7 @@
     text-align: center;
     line-height: 21px;
     font-size: 16px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     transition: transform 0.2s ease;
 }
 
@@ -145,7 +151,7 @@
     line-height: 26px;
     font-size: 18px;
     border: 2px solid white;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 /* Environment analysis markers */
@@ -154,9 +160,15 @@
 }
 
 @keyframes markerPulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.1); }
-    100% { transform: scale(1); }
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
 }
 
 /* AI Analysis Loading */
@@ -177,14 +189,26 @@
 }
 
 @keyframes aiScan {
-    0% { left: -100%; }
-    100% { left: 100%; }
+    0% {
+        left: -100%;
+    }
+    100% {
+        left: 100%;
+    }
 }
 
 /* Distance input color coding */
-.distance-close { color: #10b981 !important; font-weight: 600; }
-.distance-medium { color: #f59e0b !important; font-weight: 500; }
-.distance-far { color: #ef4444 !important; }
+.distance-close {
+    color: #10b981 !important;
+    font-weight: 600;
+}
+.distance-medium {
+    color: #f59e0b !important;
+    font-weight: 500;
+}
+.distance-far {
+    color: #ef4444 !important;
+}
 
 @keyframes pulse {
     0% {
@@ -201,7 +225,7 @@
 /* Enhanced popup styling */
 .leaflet-popup-content-wrapper {
     border-radius: 8px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
 }
 
 .leaflet-popup-content {
@@ -210,12 +234,12 @@
 }
 
 .leaflet-popup-tip {
-    box-shadow: 0 3px 14px rgba(0,0,0,0.18);
+    box-shadow: 0 3px 14px rgba(0, 0, 0, 0.18);
 }
 
 /* Drawing controls enhancement */
 .leaflet-draw-toolbar {
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     border-radius: 4px;
 }
 
@@ -267,14 +291,14 @@
     color: #3b82f6;
 }
 
-.leaflet-control-layers input[type="radio"],
-.leaflet-control-layers input[type="checkbox"] {
+.leaflet-control-layers input[type='radio'],
+.leaflet-control-layers input[type='checkbox'] {
     margin-right: 8px;
 }
 
 /* Zoom control styling */
 .leaflet-control-zoom {
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     border-radius: 4px;
     border: none;
 }
@@ -312,7 +336,7 @@
     background: rgba(255, 255, 255, 0.9);
     padding: 4px 8px;
     border-radius: 4px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* Search suggestions styling */
@@ -350,7 +374,7 @@
     height: 32px;
     background: white;
     border-radius: 4px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -366,13 +390,17 @@
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 /* Fullscreen control */
 .leaflet-control-fullscreen {
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     border-radius: 4px;
 }
 

@@ -4,7 +4,7 @@
   "category": "architecture",
   "priority": "CRITICAL",
   "status": "ACTIVE",
-  
+
   "declaration": {
     "title": "Tailwind CSS is the MASTER CSS Framework",
     "status": "PRIMARY AND ONLY CSS FRAMEWORK",
@@ -169,4 +169,3 @@
   "commit_message": "📋 CONTEXT7: Tailwind CSS declared as MASTER CSS framework",
   "tags": ["tailwind", "css", "architecture", "context7", "master-framework", "standards"]
 }
-

@@ -14,10 +14,7 @@
         "form_alanlari": {
           "durum": "KONTROL_EDILDI",
           "bulgu": "para_birimi ve status zaten mevcut",
-          "konum": [
-            "price-management.blade.php",
-            "publication-status.blade.php"
-          ]
+          "konum": ["price-management.blade.php", "publication-status.blade.php"]
         },
         "controller_field_name": {
           "durum": "DUZELTILDI",
@@ -69,19 +66,23 @@
               "method": "getAltKategoriler",
               "route": "/admin/ilan-kategorileri/alt-kategoriler?parent_id={id}",
               "controller": "IlanKategoriController",
-              "response": {"success": true, "data": []},
+              "response": { "success": true, "data": [] },
               "test": "10 kategori döndü"
             },
             {
               "method": "getYayinTipleri",
               "route": "/admin/ilan-kategorileri/yayin-tipleri?kategori_id={id}",
               "controller": "IlanKategoriController",
-              "response": {"success": true, "data": []},
+              "response": { "success": true, "data": [] },
               "test": "2 yayın tipi döndü",
               "sorunlar": [
-                {"sorun": "Table name", "eski": "yayin_tipleri", "yeni": "ilan_kategori_yayin_tipleri"},
-                {"sorun": "Column name", "eski": "name", "yeni": "yayin_tipi as name"},
-                {"sorun": "Order column", "eski": "sira", "yeni": "order"}
+                {
+                  "sorun": "Table name",
+                  "eski": "yayin_tipleri",
+                  "yeni": "ilan_kategori_yayin_tipleri"
+                },
+                { "sorun": "Column name", "eski": "name", "yeni": "yayin_tipi as name" },
+                { "sorun": "Order column", "eski": "sira", "yeni": "order" }
               ]
             }
           ]
@@ -96,10 +97,7 @@
           "durum": "EKLENDI",
           "tip": "Vanilla JS inline script",
           "konum": "category-system.blade.php",
-          "fonksiyonlar": [
-            "loadAltKategoriler(anaKategoriId)",
-            "loadYayinTipleri(altKategoriId)"
-          ],
+          "fonksiyonlar": ["loadAltKategoriler(anaKategoriId)", "loadYayinTipleri(altKategoriId)"],
           "ozellikler": [
             "Fetch API",
             "Loading states",
@@ -123,18 +121,23 @@
           "field_count": 16,
           "konum": "type-fields.blade.php",
           "fields": [
-            {"name": "ada_no", "type": "text", "required": true},
-            {"name": "parsel_no", "type": "text", "required": true},
-            {"name": "imar_statusu", "type": "select", "required": true, "options": ["İmarlı", "İmarsız", "Villa İmarlı", "Tarla"]},
-            {"name": "kaks", "type": "number", "step": 0.01},
-            {"name": "taks", "type": "number", "step": 0.01},
-            {"name": "gabari", "type": "number", "step": 0.01},
-            {"name": "alan_m2", "type": "number", "required": true},
-            {"name": "taban_alani", "type": "number"},
-            {"name": "yola_cephe", "type": "number"},
-            {"name": "altyapi_elektrik", "type": "checkbox"},
-            {"name": "altyapi_su", "type": "checkbox"},
-            {"name": "altyapi_dogalgaz", "type": "checkbox"}
+            { "name": "ada_no", "type": "text", "required": true },
+            { "name": "parsel_no", "type": "text", "required": true },
+            {
+              "name": "imar_statusu",
+              "type": "select",
+              "required": true,
+              "options": ["İmarlı", "İmarsız", "Villa İmarlı", "Tarla"]
+            },
+            { "name": "kaks", "type": "number", "step": 0.01 },
+            { "name": "taks", "type": "number", "step": 0.01 },
+            { "name": "gabari", "type": "number", "step": 0.01 },
+            { "name": "alan_m2", "type": "number", "required": true },
+            { "name": "taban_alani", "type": "number" },
+            { "name": "yola_cephe", "type": "number" },
+            { "name": "altyapi_elektrik", "type": "checkbox" },
+            { "name": "altyapi_su", "type": "checkbox" },
+            { "name": "altyapi_dogalgaz", "type": "checkbox" }
           ]
         },
         "yazlik_modulu_ui": {
@@ -210,4 +213,3 @@
     "oncelik": "DÜŞÜK (Kritik işler tamamlandı)"
   }
 }
-

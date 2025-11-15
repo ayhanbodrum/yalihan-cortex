@@ -18,7 +18,7 @@
 ]) }})"
      x-init="loadFeatures()"
      class="feature-modal-selector">
-    
+
     {{-- Modal Trigger Button --}}
     <button type="button"
             @click="openModal()"
@@ -35,7 +35,7 @@
          @keydown.escape.window="closeModal()"
          class="fixed inset-0 z-50 overflow-y-auto"
          style="display: none;">
-        
+
         {{-- Backdrop --}}
         <div class="fixed inset-0 bg-black bg-opacity-50 transition-opacity duration-300"
              :class="isOpen ? 'opacity-100' : 'opacity-0'"></div>
@@ -45,7 +45,7 @@
             <div class="relative inline-block align-bottom bg-white dark:bg-gray-800 rounded-2xl shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl w-full"
                  @click.stop
                  :class="isOpen ? 'scale-100 opacity-100' : 'scale-95 opacity-0'">
-                
+
                 {{-- Modal Header --}}
                 <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700">
                     <div class="flex items-center gap-4">
@@ -91,21 +91,21 @@
                     <div x-show="!loading && !error" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                         <template x-for="feature in features" :key="feature.id">
                             <label class="flex items-center p-4 rounded-lg border-2 cursor-pointer transition-all duration-200 hover:shadow-md"
-                                   :class="isSelected(feature.id) 
-                                       ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20' 
+                                   :class="isSelected(feature.id)
+                                       ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
                                        : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'">
                                 <input type="checkbox"
                                        :value="feature.id"
                                        :checked="isSelected(feature.id)"
                                        @change="toggleFeature(feature.id)"
                                        class="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500 focus:ring-2 transition-all duration-200">
-                                <span class="ml-3 text-sm font-medium text-gray-900 dark:text-white" 
+                                <span class="ml-3 text-sm font-medium text-gray-900 dark:text-white"
                                       x-text="feature.name"></span>
                             </label>
                         </template>
-                        
+
                         {{-- Empty State --}}
-                        <div x-show="features.length === 0 && !loading" 
+                        <div x-show="features.length === 0 && !loading"
                              class="col-span-full text-center py-12 text-gray-500 dark:text-gray-400">
                             <svg class="w-16 h-16 mx-auto mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/>
@@ -138,7 +138,7 @@
     </div>
 
     {{-- Selected Features Display --}}
-    <div x-show="displaySelectedFeatures.length > 0" 
+    <div x-show="displaySelectedFeatures.length > 0"
          class="mt-3 flex flex-wrap gap-2"
          x-cloak>
         <template x-for="feature in displaySelectedFeatures" :key="feature.id">
@@ -168,11 +168,11 @@ function featureModalSelector(config) {
         error: null,
         features: [],
         selectedIds: new Set(config.selectedFeatures.map(f => f.id || f)),
-        
+
         get categoryName() {
             return this.category?.name || 'Özellikler';
         },
-        
+
         get categoryColor() {
             const colors = {
                 'ic-ozellikleri': '#3B82F6',
@@ -184,57 +184,56 @@ function featureModalSelector(config) {
             };
             return colors[this.categorySlug] || '#6366F1';
         },
-        
+
         get selectedCount() {
             return this.selectedIds.size;
         },
-        
+
         get displaySelectedFeatures() {
             return this.features.filter(f => this.selectedIds.has(f.id));
         },
-        
+
         async loadFeatures() {
             if (!this.categorySlug) return;
-            
+
             this.loading = true;
             this.error = null;
-            
+
             try {
-                const response = await fetch(`{{ route('api.features.category.slug', ['categorySlug' => '__SLUG__']) }}`.replace('__SLUG__', this.categorySlug));
-                const data = await response.json();
-                
-                if (data.success) {
-                    this.features = data.features || [];
-                    // Initialize selectedIds from selectedFeatures
-                    if (this.selectedFeatures.length > 0) {
-                        this.selectedIds = new Set(this.selectedFeatures.map(f => f.id || f));
-                    }
-                } else {
-                    this.error = data.message || 'Özellikler yüklenirken bir hata oluştu.';
+                let anaSlug = '';
+                const anaSel = document.getElementById('ana_kategori');
+                if (anaSel && anaSel.value) {
+                    const opt = anaSel.options[anaSel.selectedIndex];
+                    anaSlug = opt?.getAttribute('data-slug') || '';
+                }
+                const yayinTipi = document.getElementById('yayin_tipi_id')?.value || '';
+                const list = await (window.featuresSystem ? window.featuresSystem.loadFeatures(anaSlug, this.categorySlug, yayinTipi) : Promise.resolve([]));
+                this.features = list;
+                if (this.selectedFeatures.length > 0) {
+                    this.selectedIds = new Set(this.selectedFeatures.map(f => f.id || f));
                 }
             } catch (error) {
                 this.error = 'Özellikler yüklenirken bir hata oluştu.';
-                console.error('Feature load error:', error);
             } finally {
                 this.loading = false;
             }
         },
-        
+
         openModal() {
             this.isOpen = true;
             if (this.features.length === 0) {
                 this.loadFeatures();
             }
         },
-        
+
         closeModal() {
             this.isOpen = false;
         },
-        
+
         isSelected(featureId) {
             return this.selectedIds.has(featureId);
         },
-        
+
         toggleFeature(featureId) {
             if (this.selectedIds.has(featureId)) {
                 this.selectedIds.delete(featureId);
@@ -242,24 +241,24 @@ function featureModalSelector(config) {
                 this.selectedIds.add(featureId);
             }
         },
-        
+
         removeFeature(featureId) {
             this.selectedIds.delete(featureId);
             this.saveFeatures();
         },
-        
+
         async saveFeatures() {
             const selectedFeaturesData = Array.from(this.selectedIds).map(id => {
                 const feature = this.features.find(f => f.id === id);
                 return feature ? { id: feature.id, name: feature.name } : { id };
             });
-            
+
             // Dispatch event to parent
             this.$dispatch('features-selected', {
                 categorySlug: this.categorySlug,
                 features: selectedFeaturesData
             });
-            
+
             this.closeModal();
         }
     }
@@ -271,4 +270,3 @@ function featureModalSelector(config) {
     display: none !important;
 }
 </style>
-

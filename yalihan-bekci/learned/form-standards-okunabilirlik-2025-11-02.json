@@ -5,30 +5,19 @@
   "oncelik": "HIGH",
   "kategori": "ui-ux-improvements",
   "etiketler": ["form-standards", "okunabilirlik", "kontrast", "wcag-aaa", "light-mode"],
-  
+
   "problem": {
     "aciklama": "Light mode'da form alanlarındaki yazılar yeterince okunmuyordu",
     "sebep": "bg-gray-50 (#F9FAFB) kullanımı, text-gray-900 ile düşük kontrast oluşturuyordu",
-    "etkilenen_alanlar": [
-      "Input fields",
-      "Select dropdowns",
-      "Textarea elements",
-      "Select options"
-    ]
+    "etkilenen_alanlar": ["Input fields", "Select dropdowns", "Textarea elements", "Select options"]
   },
-  
+
   "cozum": {
     "yapilan_degisiklik": "bg-gray-50 → bg-white geçişi",
     "guncellenen_dosya": "app/Helpers/FormStandards.php",
-    "etkilenen_methodlar": [
-      "input()",
-      "select()",
-      "textarea()",
-      "option()",
-      "optionDisabled()"
-    ]
+    "etkilenen_methodlar": ["input()", "select()", "textarea()", "option()", "optionDisabled()"]
   },
-  
+
   "detayli_degisiklikler": {
     "input_method": {
       "onceki": "bg-gray-50 dark:bg-gray-800 ... placeholder-gray-500 dark:placeholder-gray-400",
@@ -42,9 +31,7 @@
     "select_method": {
       "onceki": "bg-gray-50 dark:bg-gray-800",
       "yeni": "bg-white dark:bg-gray-800",
-      "degisiklikler": [
-        "bg-gray-50 → bg-white"
-      ]
+      "degisiklikler": ["bg-gray-50 → bg-white"]
     },
     "textarea_method": {
       "onceki": "bg-gray-50 dark:bg-gray-800 ... placeholder-gray-500 dark:placeholder-gray-400",
@@ -58,12 +45,10 @@
     "option_method": {
       "onceki": "bg-gray-50 dark:bg-gray-800",
       "yeni": "bg-white dark:bg-gray-800",
-      "degisiklikler": [
-        "bg-gray-50 → bg-white"
-      ]
+      "degisiklikler": ["bg-gray-50 → bg-white"]
     }
   },
-  
+
   "kontrast_oranlari": {
     "light_mode": {
       "onceki": {
@@ -93,7 +78,7 @@
       "not": "Zaten mükemmeldi, değiştirilmedi"
     }
   },
-  
+
   "etkilenen_sayfalar": {
     "otomatik_guncellenen": [
       "/admin/kisiler (FormStandards kullanıyor)",
@@ -108,7 +93,7 @@
       "Diğer FormStandards kullanmayan sayfalar"
     ]
   },
-  
+
   "bugun_ayrica_yapilan": {
     "kisiler_sayfasi_standardizasyonu": {
       "dosya": "resources/views/admin/kisiler/index.blade.php",
@@ -137,7 +122,7 @@
       }
     }
   },
-  
+
   "kritik_ogrenme_noktalari": {
     "1_okunabilirlik_onceligidir": "Kullanıcı 'yazılar okunmuyor' dediğinde HEMEN öncelik ver",
     "2_bg_white_vs_bg_gray_50": "Form alanlarında bg-white kullan, bg-gray-50 değil",
@@ -145,7 +130,7 @@
     "4_placeholder_renkleri": "Light mode: gray-400, Dark mode: gray-500",
     "5_form_standards_kullan": "Manuel CSS yerine her zaman FormStandards helper'larını kullan"
   },
-  
+
   "yeni_standartlar": {
     "form_input_background": {
       "light_mode": "bg-white (değil bg-gray-50)",
@@ -163,7 +148,7 @@
       "degismedi": true
     }
   },
-  
+
   "gelecek_aksiyonlar": {
     "immediate": [
       "✅ /admin/kisiler sayfası %100 standartlara uygun",
@@ -181,7 +166,7 @@
       "⏳ Migration guide güncelle"
     ]
   },
-  
+
   "test_sonuclari": {
     "onceki_durum": {
       "kullanici_sikayet": "Yazılar okunmuyor",
@@ -195,11 +180,10 @@
       "wcag_compliance": "AAA seviyesi"
     }
   },
-  
+
   "komutlar": {
     "css_derleme": "npm run build",
     "cache_temizleme": "php artisan view:clear && php artisan config:clear",
     "test_url": "http://127.0.0.1:8000/admin/kisiler"
   }
 }
-

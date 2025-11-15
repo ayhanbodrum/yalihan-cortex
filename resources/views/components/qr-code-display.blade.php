@@ -16,35 +16,35 @@
 
 @php
     $ilanId = $ilanId ?? $ilan->id ?? null;
-    
+
     if (!$ilanId && !$customUrl) {
         return;
     }
-    
+
     $qrCodeService = app(\App\Services\QRCodeService::class);
-    
+
     // Check if QR code is enabled from settings
     if (!$qrCodeService->isEnabled()) {
         return;
     }
-    
+
     // Check if should show on cards/detail pages
     if ($type === 'listing' && isset($ilan)) {
         $showOnCards = \App\Models\Setting::get('qrcode_show_on_cards', true);
         $showOnDetail = \App\Models\Setting::get('qrcode_show_on_detail', true);
-        
+
         // Component context'e göre kontrol et (detay sayfası mı, kart mı?)
         // Bu kontrol component kullanım yerine göre yapılabilir
     }
-    
+
     $sizeMap = [
         'small' => 200,
         'medium' => 300,
         'large' => 400
     ];
-    
+
     $qrSize = $sizeMap[$size] ?? 300;
-    
+
     try {
         if ($type === 'whatsapp' || $showWhatsApp) {
             $qrData = $qrCodeService->generateForWhatsApp($ilanId);
@@ -59,21 +59,23 @@
 @endphp
 
 @if($qrData)
-<div class="qr-code-display inline-flex flex-col items-center gap-3 p-4 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-xl" 
+<div class="qr-code-display inline-flex flex-col items-center gap-3 p-4 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-xl"
      x-data="{ showDownload: false }">
-    
+
     {{-- QR Code Image --}}
     <div class="qr-code-image relative">
-        <img src="{{ $qrData['url'] }}" 
-             alt="QR Code" 
+        {{-- Context7: Use base64 for reliability, fallback to URL --}}
+        <img src="{{ $qrData['base64'] ?? $qrData['url'] ?? '' }}"
+             alt="QR Code"
+             onerror="this.onerror=null; this.src='{{ $qrData['url'] ?? '' }}';"
              class="w-{{ $size === 'small' ? '48' : ($size === 'large' ? '64' : '56') }} h-{{ $size === 'small' ? '48' : ($size === 'large' ? '64' : '56') }} rounded-lg border-2 border-gray-200 dark:border-gray-700 transition-all duration-200 hover:border-blue-500 dark:hover:border-blue-400">
-        
+
         {{-- Hover overlay --}}
         <div class="absolute inset-0 bg-blue-500 bg-opacity-0 hover:bg-opacity-10 rounded-lg transition-all duration-200 flex items-center justify-center opacity-0 hover:opacity-100">
             <i class="fas fa-qrcode text-blue-600 dark:text-blue-400 text-2xl"></i>
         </div>
     </div>
-    
+
     {{-- Label --}}
     @if($showLabel)
     <div class="text-center">
@@ -89,7 +91,7 @@
         </p>
     </div>
     @endif
-    
+
     {{-- Actions --}}
     @if($showDownload)
     <div class="flex gap-2 mt-2">
@@ -98,7 +100,7 @@
             <i class="fas fa-download"></i>
             <span>İndir</span>
         </button>
-        
+
         <button onclick="copyQRCode('{{ $qrData['base64'] }}')"
                 class="px-3 py-1.5 text-xs font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-all duration-200 hover:scale-105 active:scale-95 flex items-center gap-1.5">
             <i class="fas fa-copy"></i>
@@ -106,9 +108,9 @@
         </button>
     </div>
     @endif
-    
+
     {{-- Download Options (Hidden by default) --}}
-    <div x-show="showDownload" 
+    <div x-show="showDownload"
          x-transition:enter="transition ease-out duration-200"
          x-transition:enter-start="opacity-0 transform scale-95"
          x-transition:enter-end="opacity-100 transform scale-100"
@@ -117,7 +119,7 @@
          x-transition:leave-end="opacity-0 transform scale-95"
          class="w-full mt-2 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600">
         <div class="flex flex-col gap-2">
-            <a href="{{ $qrData['url'] }}" 
+            <a href="{{ $qrData['url'] }}"
                download="{{ $qrData['filename'] }}"
                class="px-3 py-2 text-xs font-medium text-center text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors">
                 <i class="fas fa-download mr-1"></i>
@@ -137,7 +139,7 @@ function copyQRCode(base64) {
         canvas.height = img.height;
         const ctx = canvas.getContext('2d');
         ctx.drawImage(img, 0, 0);
-        
+
         canvas.toBlob(function(blob) {
             const item = new ClipboardItem({ 'image/png': blob });
             navigator.clipboard.write([item]).then(() => {
@@ -164,4 +166,3 @@ function copyQRCode(base64) {
     </p>
 </div>
 @endif
-

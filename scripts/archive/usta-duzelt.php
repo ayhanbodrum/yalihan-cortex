@@ -128,4 +128,3 @@ echo "   2. Screenshot'ları karşılaştır\n";
 echo "   3. Tasarım sorunlarını manuel düzelt\n\n";
 
 echo "✨ USTA düzeltme tamamlandı!\n\n";
-

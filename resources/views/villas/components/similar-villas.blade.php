@@ -11,12 +11,12 @@
     @if($villas && $villas->count() > 0)
         <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             @foreach($villas as $villa)
-            <a href="{{ route('villas.show', $villa->id) }}" 
+            <a href="{{ route('villas.show', $villa->id) }}"
                class="group block bg-gray-50 dark:bg-gray-900 rounded-xl overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
                 {{-- Villa Image --}}
                 <div class="relative aspect-[4/3] overflow-hidden">
                     @if($villa->featuredPhoto)
-                    <img src="{{ $villa->featuredPhoto->getImageUrl() }}" 
+                    <img src="{{ $villa->featuredPhoto->getImageUrl() }}"
                          alt="{{ $villa->baslik }}"
                          class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                          loading="lazy">
@@ -58,14 +58,14 @@
                             <span>{{ $villa->maksimum_misafir }}</span>
                         </div>
                         @endif
-                        
+
                         @if($villa->oda_sayisi)
                         <div class="flex items-center gap-1">
                             <i class="fas fa-bed text-xs"></i>
                             <span>{{ $villa->oda_sayisi }}</span>
                         </div>
                         @endif
-                        
+
                         @if($villa->banyo_sayisi)
                         <div class="flex items-center gap-1">
                             <i class="fas fa-bath text-xs"></i>
@@ -91,7 +91,7 @@
 
         {{-- View All Button --}}
         <div class="text-center mt-8">
-            <a href="{{ route('villas.index') }}" 
+            <a href="{{ route('villas.index') }}"
                class="inline-block px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-semibold hover:from-blue-700 hover:to-purple-700 transition-all shadow-lg hover:shadow-xl">
                 <i class="fas fa-th-large mr-2"></i>
                 Tüm Villaları Gör
@@ -104,4 +104,3 @@
         </div>
     @endif
 </div>
-

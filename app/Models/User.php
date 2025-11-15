@@ -123,7 +123,7 @@ class User extends Authenticatable
         'telegram_username',
         'telegram_chat_id',
         'position',
-        'department',
+        // 'department', // ❌ KALDIRILDI - Artık kullanılmıyor
         'employee_id',
         'hire_date',
         'termination_date',
@@ -131,6 +131,19 @@ class User extends Authenticatable
         'notes',
         'expertise_summary',
         'certificates_info',
+        'lisans_no',
+        'uzmanlik_alani',
+        'deneyim_yili',
+        'uzmanlik_alanlari',
+        'bolge_uzmanliklari',
+        'diller',
+        'calisma_saatleri',
+        'iletisim_tercihleri',
+        'office_phone',
+        'youtube_channel',
+        'tiktok_profile',
+        'is_verified',
+        'status_text',
     ];
 
     /**
@@ -156,6 +169,13 @@ class User extends Authenticatable
         'last_activity_at' => 'datetime',
         'hire_date' => 'date',
         'termination_date' => 'date',
+        'is_verified' => 'boolean',
+        'uzmanlik_alanlari' => 'array',
+        'bolge_uzmanliklari' => 'array',
+        'diller' => 'array',
+        'calisma_saatleri' => 'array',
+        'iletisim_tercihleri' => 'array',
+        'deneyim_yili' => 'integer',
     ];
 
     /**
@@ -194,6 +214,23 @@ class User extends Authenticatable
     public function talepler()
     {
         return $this->hasMany(Talep::class, 'danisman_id');
+    }
+
+    /**
+     * Danışman yorumları (danışman ise)
+     * Context7 Compliance: danisman_yorumlari table
+     */
+    public function danismanYorumlari()
+    {
+        return $this->hasMany(DanismanYorumu::class, 'danisman_id');
+    }
+
+    /**
+     * Onaylanmış danışman yorumları
+     */
+    public function onayliDanismanYorumlari()
+    {
+        return $this->hasMany(DanismanYorumu::class, 'danisman_id')->where('status', 'approved');
     }
 
     /**

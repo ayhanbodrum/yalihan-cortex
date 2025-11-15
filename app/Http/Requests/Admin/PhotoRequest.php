@@ -45,4 +45,3 @@ class PhotoRequest extends FormRequest
         ];
     }
 }
-

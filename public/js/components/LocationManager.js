@@ -14,10 +14,10 @@ class LocationManager {
     constructor(options = {}) {
         this.options = {
             // Container elements
-            provinceSelect: options.provinceSelect || "#il_id",
-            districtSelect: options.districtSelect || "#ilce_id",
-            neighborhoodSelect: options.neighborhoodSelect || "#mahalle_id",
-            mapContainer: options.mapContainer || "#location_map",
+            provinceSelect: options.provinceSelect || '#il_id',
+            districtSelect: options.districtSelect || '#ilce_id',
+            neighborhoodSelect: options.neighborhoodSelect || '#mahalle_id',
+            mapContainer: options.mapContainer || '#location_map',
 
             // Google Maps
             googleMapsKey: options.googleMapsKey || null,
@@ -41,7 +41,7 @@ class LocationManager {
             // Context7 settings
             cacheEnabled: options.cacheEnabled !== false,
             cacheTTL: options.cacheTTL || 300000, // 5 minutes
-            apiBaseUrl: options.apiBaseUrl || "/api/location",
+            apiBaseUrl: options.apiBaseUrl || '/api/location',
 
             ...options,
         };
@@ -80,11 +80,9 @@ class LocationManager {
                 await this.initializeGoogleMaps();
             }
 
-            this.log(
-                "LocationManager initialized successfully (Context7 uyumlu)"
-            );
+            this.log('LocationManager initialized successfully (Context7 uyumlu)');
         } catch (error) {
-            this.logError("LocationManager initialization failed", error);
+            this.logError('LocationManager initialization failed', error);
         }
     }
 
@@ -95,15 +93,13 @@ class LocationManager {
         this.elements = {
             provinceSelect: document.querySelector(this.options.provinceSelect),
             districtSelect: document.querySelector(this.options.districtSelect),
-            neighborhoodSelect: document.querySelector(
-                this.options.neighborhoodSelect
-            ),
+            neighborhoodSelect: document.querySelector(this.options.neighborhoodSelect),
             mapContainer: document.querySelector(this.options.mapContainer),
         };
 
         // Validate required elements
         if (!this.elements.provinceSelect) {
-            throw new Error("Province select element not found");
+            throw new Error('Province select element not found');
         }
     }
 
@@ -112,17 +108,17 @@ class LocationManager {
      */
     bindEvents() {
         // Province change
-        this.elements.provinceSelect?.addEventListener("change", (e) => {
+        this.elements.provinceSelect?.addEventListener('change', (e) => {
             this.handleProvinceChange(e.target.value);
         });
 
         // District change
-        this.elements.districtSelect?.addEventListener("change", (e) => {
+        this.elements.districtSelect?.addEventListener('change', (e) => {
             this.handleDistrictChange(e.target.value);
         });
 
         // Neighborhood change
-        this.elements.neighborhoodSelect?.addEventListener("change", (e) => {
+        this.elements.neighborhoodSelect?.addEventListener('change', (e) => {
             this.handleNeighborhoodChange(e.target.value);
         });
     }
@@ -134,15 +130,11 @@ class LocationManager {
         try {
             this.setLoading(true);
             const provinces = await this.fetchProvinces();
-            this.populateSelect(
-                this.elements.provinceSelect,
-                provinces,
-                "İl Seçin..."
-            );
+            this.populateSelect(this.elements.provinceSelect, provinces, 'İl Seçin...');
             this.log(`${provinces.length} province loaded`);
         } catch (error) {
-            this.logError("Failed to load provinces", error);
-            this.showError("İller yüklenemedi");
+            this.logError('Failed to load provinces', error);
+            this.showError('İller yüklenemedi');
         } finally {
             this.setLoading(false);
         }
@@ -153,7 +145,7 @@ class LocationManager {
      */
     async initializeGoogleMaps() {
         if (!this.elements.mapContainer || !window.google) {
-            this.log("Google Maps not available or container not found");
+            this.log('Google Maps not available or container not found');
             return;
         }
 
@@ -170,13 +162,13 @@ class LocationManager {
             this.geocoder = new google.maps.Geocoder();
 
             // Map click handler
-            this.map.addListener("click", (event) => {
+            this.map.addListener('click', (event) => {
                 this.handleMapClick(event.latLng);
             });
 
-            this.log("Google Maps initialized successfully");
+            this.log('Google Maps initialized successfully');
         } catch (error) {
-            this.logError("Google Maps initialization failed", error);
+            this.logError('Google Maps initialization failed', error);
         }
     }
 
@@ -185,11 +177,8 @@ class LocationManager {
      */
     async handleProvinceChange(provinceId) {
         if (!provinceId) {
-            this.clearSelect(this.elements.districtSelect, "Önce İl Seçin...");
-            this.clearSelect(
-                this.elements.neighborhoodSelect,
-                "Önce İlçe Seçin..."
-            );
+            this.clearSelect(this.elements.districtSelect, 'Önce İl Seçin...');
+            this.clearSelect(this.elements.neighborhoodSelect, 'Önce İlçe Seçin...');
             return;
         }
 
@@ -198,23 +187,14 @@ class LocationManager {
             this.state.selectedProvince = provinceId;
 
             const districts = await this.fetchDistricts(provinceId);
-            this.populateSelect(
-                this.elements.districtSelect,
-                districts,
-                "İlçe Seçin..."
-            );
-            this.clearSelect(
-                this.elements.neighborhoodSelect,
-                "Önce İlçe Seçin..."
-            );
+            this.populateSelect(this.elements.districtSelect, districts, 'İlçe Seçin...');
+            this.clearSelect(this.elements.neighborhoodSelect, 'Önce İlçe Seçin...');
 
             this.triggerLocationChange();
-            this.log(
-                `${districts.length} districts loaded for province ${provinceId}`
-            );
+            this.log(`${districts.length} districts loaded for province ${provinceId}`);
         } catch (error) {
-            this.logError("Failed to load districts", error);
-            this.showError("İlçeler yüklenemedi");
+            this.logError('Failed to load districts', error);
+            this.showError('İlçeler yüklenemedi');
         } finally {
             this.setLoading(false);
         }
@@ -225,10 +205,7 @@ class LocationManager {
      */
     async handleDistrictChange(districtId) {
         if (!districtId) {
-            this.clearSelect(
-                this.elements.neighborhoodSelect,
-                "Önce İlçe Seçin..."
-            );
+            this.clearSelect(this.elements.neighborhoodSelect, 'Önce İlçe Seçin...');
             return;
         }
 
@@ -240,16 +217,14 @@ class LocationManager {
             this.populateSelect(
                 this.elements.neighborhoodSelect,
                 neighborhoods,
-                "Mahalle Seçin..."
+                'Mahalle Seçin...'
             );
 
             this.triggerLocationChange();
-            this.log(
-                `${neighborhoods.length} neighborhoods loaded for district ${districtId}`
-            );
+            this.log(`${neighborhoods.length} neighborhoods loaded for district ${districtId}`);
         } catch (error) {
-            this.logError("Failed to load neighborhoods", error);
-            this.showError("Mahalleler yüklenemedi");
+            this.logError('Failed to load neighborhoods', error);
+            this.showError('Mahalleler yüklenemedi');
         } finally {
             this.setLoading(false);
         }
@@ -285,14 +260,11 @@ class LocationManager {
                 position: latLng,
                 map: this.map,
                 draggable: true,
-                title: "Seçilen Konum",
+                title: 'Seçilen Konum',
             });
 
             // Reverse geocode
-            const address = await this.reverseGeocode(
-                latLng.lat(),
-                latLng.lng()
-            );
+            const address = await this.reverseGeocode(latLng.lat(), latLng.lng());
 
             if (address && this.options.onAddressFound) {
                 this.options.onAddressFound(address);
@@ -306,9 +278,9 @@ class LocationManager {
                 });
             }
 
-            this.log("Map clicked, reverse geocoding completed");
+            this.log('Map clicked, reverse geocoding completed');
         } catch (error) {
-            this.logError("Map click handling failed", error);
+            this.logError('Map click handling failed', error);
         } finally {
             this.setLoading(false);
         }
@@ -319,7 +291,7 @@ class LocationManager {
      */
 
     async fetchProvinces() {
-        const cacheKey = "provinces";
+        const cacheKey = 'provinces';
 
         if (this.options.cacheEnabled && this.state.cache.has(cacheKey)) {
             return this.state.cache.get(cacheKey);
@@ -329,17 +301,14 @@ class LocationManager {
         const result = await response.json();
 
         if (!result.success) {
-            throw new Error(result.message || "Failed to fetch provinces");
+            throw new Error(result.message || 'Failed to fetch provinces');
         }
 
         const data = result.iller || result.data || [];
 
         if (this.options.cacheEnabled) {
             this.state.cache.set(cacheKey, data);
-            setTimeout(
-                () => this.state.cache.delete(cacheKey),
-                this.options.cacheTTL
-            );
+            setTimeout(() => this.state.cache.delete(cacheKey), this.options.cacheTTL);
         }
 
         return data;
@@ -352,23 +321,18 @@ class LocationManager {
             return this.state.cache.get(cacheKey);
         }
 
-        const response = await fetch(
-            `${this.options.apiBaseUrl}/districts/${provinceId}`
-        );
+        const response = await fetch(`${this.options.apiBaseUrl}/districts/${provinceId}`);
         const result = await response.json();
 
         if (!result.success) {
-            throw new Error(result.message || "Failed to fetch districts");
+            throw new Error(result.message || 'Failed to fetch districts');
         }
 
         const data = result.data || [];
 
         if (this.options.cacheEnabled) {
             this.state.cache.set(cacheKey, data);
-            setTimeout(
-                () => this.state.cache.delete(cacheKey),
-                this.options.cacheTTL
-            );
+            setTimeout(() => this.state.cache.delete(cacheKey), this.options.cacheTTL);
         }
 
         return data;
@@ -381,23 +345,18 @@ class LocationManager {
             return this.state.cache.get(cacheKey);
         }
 
-        const response = await fetch(
-            `${this.options.apiBaseUrl}/neighborhoods/${districtId}`
-        );
+        const response = await fetch(`${this.options.apiBaseUrl}/neighborhoods/${districtId}`);
         const result = await response.json();
 
         if (!result.success) {
-            throw new Error(result.message || "Failed to fetch neighborhoods");
+            throw new Error(result.message || 'Failed to fetch neighborhoods');
         }
 
         const data = result.data || [];
 
         if (this.options.cacheEnabled) {
             this.state.cache.set(cacheKey, data);
-            setTimeout(
-                () => this.state.cache.delete(cacheKey),
-                this.options.cacheTTL
-            );
+            setTimeout(() => this.state.cache.delete(cacheKey), this.options.cacheTTL);
         }
 
         return data;
@@ -408,17 +367,15 @@ class LocationManager {
      */
     async geocode(address) {
         if (!this.options.enableGeocoding) {
-            throw new Error("Geocoding is disabled");
+            throw new Error('Geocoding is disabled');
         }
 
         try {
             const response = await fetch(`${this.options.apiBaseUrl}/geocode`, {
-                method: "POST",
+                method: 'POST',
                 headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRF-TOKEN": document.querySelector(
-                        'meta[name="csrf-token"]'
-                    )?.content,
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content,
                 },
                 body: JSON.stringify({ address }),
             });
@@ -426,12 +383,12 @@ class LocationManager {
             const result = await response.json();
 
             if (!result.success) {
-                throw new Error(result.message || "Geocoding failed");
+                throw new Error(result.message || 'Geocoding failed');
             }
 
             return result.data;
         } catch (error) {
-            this.logError("Geocoding failed", error);
+            this.logError('Geocoding failed', error);
             throw error;
         }
     }
@@ -441,33 +398,28 @@ class LocationManager {
      */
     async reverseGeocode(latitude, longitude) {
         if (!this.options.enableReverseGeocoding) {
-            throw new Error("Reverse geocoding is disabled");
+            throw new Error('Reverse geocoding is disabled');
         }
 
         try {
-            const response = await fetch(
-                `${this.options.apiBaseUrl}/reverse-geocode`,
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "X-CSRF-TOKEN": document.querySelector(
-                            'meta[name="csrf-token"]'
-                        )?.content,
-                    },
-                    body: JSON.stringify({ latitude, longitude }),
-                }
-            );
+            const response = await fetch(`${this.options.apiBaseUrl}/reverse-geocode`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content,
+                },
+                body: JSON.stringify({ latitude, longitude }),
+            });
 
             const result = await response.json();
 
             if (!result.success) {
-                throw new Error(result.message || "Reverse geocoding failed");
+                throw new Error(result.message || 'Reverse geocoding failed');
             }
 
             return result.data;
         } catch (error) {
-            this.logError("Reverse geocoding failed", error);
+            this.logError('Reverse geocoding failed', error);
             throw error;
         }
     }
@@ -477,7 +429,7 @@ class LocationManager {
      */
     async findNearby(latitude, longitude, radius = 5) {
         if (!this.options.enableNearbySearch) {
-            throw new Error("Nearby search is disabled");
+            throw new Error('Nearby search is disabled');
         }
 
         try {
@@ -487,12 +439,12 @@ class LocationManager {
             const result = await response.json();
 
             if (!result.success) {
-                throw new Error(result.message || "Nearby search failed");
+                throw new Error(result.message || 'Nearby search failed');
             }
 
             return result.data;
         } catch (error) {
-            this.logError("Nearby search failed", error);
+            this.logError('Nearby search failed', error);
             throw error;
         }
     }
@@ -502,33 +454,28 @@ class LocationManager {
      */
     async validateAddress(addressData) {
         if (!this.options.enableAddressValidation) {
-            throw new Error("Address validation is disabled");
+            throw new Error('Address validation is disabled');
         }
 
         try {
-            const response = await fetch(
-                `${this.options.apiBaseUrl}/validate-address`,
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "X-CSRF-TOKEN": document.querySelector(
-                            'meta[name="csrf-token"]'
-                        )?.content,
-                    },
-                    body: JSON.stringify(addressData),
-                }
-            );
+            const response = await fetch(`${this.options.apiBaseUrl}/validate-address`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content,
+                },
+                body: JSON.stringify(addressData),
+            });
 
             const result = await response.json();
 
             if (!result.success) {
-                throw new Error(result.message || "Address validation failed");
+                throw new Error(result.message || 'Address validation failed');
             }
 
             return result.data;
         } catch (error) {
-            this.logError("Address validation failed", error);
+            this.logError('Address validation failed', error);
             throw error;
         }
     }
@@ -537,23 +484,22 @@ class LocationManager {
      * 🛠️ Utility Methods
      */
 
-    populateSelect(selectElement, data, placeholder = "Seçin...") {
+    populateSelect(selectElement, data, placeholder = 'Seçin...') {
         if (!selectElement) return;
 
         selectElement.innerHTML = `<option value="">${placeholder}</option>`;
 
         data.forEach((item) => {
-            const option = document.createElement("option");
+            const option = document.createElement('option');
             option.value = item.id;
-            option.textContent =
-                item.name || item.il || item.ilce || item.mahalle;
+            option.textContent = item.name || item.il || item.ilce || item.mahalle;
             selectElement.appendChild(option);
         });
 
         selectElement.disabled = false;
     }
 
-    clearSelect(selectElement, placeholder = "Seçin...") {
+    clearSelect(selectElement, placeholder = 'Seçin...') {
         if (!selectElement) return;
 
         selectElement.innerHTML = `<option value="">${placeholder}</option>`;
@@ -564,8 +510,8 @@ class LocationManager {
         this.state.isLoading = isLoading;
 
         // Visual loading indicator
-        document.querySelectorAll(".location-loading").forEach((el) => {
-            el.style.display = isLoading ? "block" : "none";
+        document.querySelectorAll('.location-loading').forEach((el) => {
+            el.style.display = isLoading ? 'block' : 'none';
         });
     }
 
@@ -583,7 +529,7 @@ class LocationManager {
         if (window.toast && window.toast.error) {
             window.toast.error(message);
         } else {
-            console.error("LocationManager Error:", message);
+            console.error('LocationManager Error:', message);
         }
     }
 
@@ -600,16 +546,10 @@ class LocationManager {
      */
     destroy() {
         // Remove event listeners
-        this.elements.provinceSelect?.removeEventListener(
-            "change",
-            this.handleProvinceChange
-        );
-        this.elements.districtSelect?.removeEventListener(
-            "change",
-            this.handleDistrictChange
-        );
+        this.elements.provinceSelect?.removeEventListener('change', this.handleProvinceChange);
+        this.elements.districtSelect?.removeEventListener('change', this.handleDistrictChange);
         this.elements.neighborhoodSelect?.removeEventListener(
-            "change",
+            'change',
             this.handleNeighborhoodChange
         );
 
@@ -626,12 +566,12 @@ class LocationManager {
             this.map = null;
         }
 
-        this.log("LocationManager destroyed");
+        this.log('LocationManager destroyed');
     }
 }
 
 // Export for module systems
-if (typeof module !== "undefined" && module.exports) {
+if (typeof module !== 'undefined' && module.exports) {
     module.exports = LocationManager;
 }
 

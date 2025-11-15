@@ -10,8 +10,8 @@ Route::middleware(['web', 'auth'])->prefix('admin')->name('admin.')->group(funct
     // Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // Locations (EmlakLoc v4.0)
-    Route::resource('locations', LocationController::class);
-    Route::post('locations/{location}/toggle', [LocationController::class, 'toggle'])->name('locations.toggle');
+    // Route::resource('locations', LocationController::class); // Duplicate route - already defined in routes/admin.php
+    // Route::post('locations/{location}/toggle', [LocationController::class, 'toggle'])->name('locations.toggle');
 
     // API Routes for locations
     Route::prefix('api/locations')->name('api.locations.')->group(function () {

@@ -88,7 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // API endpoint'lerini düzelt
     const apiEndpoints = {
-        features: '/api/features/category/',
+        features: '/api/admin/features/category/',
         publicationTypes: '/api/categories/publication-types/',
     };
 
@@ -96,7 +96,20 @@ document.addEventListener('DOMContentLoaded', () => {
     window.loadFeaturesForCategory = function (categoryId) {
         console.log('🔧 Özellik yükleme başlatıldı:', categoryId);
 
-        fetch(`${apiEndpoints.features}${categoryId}`)
+        const baseFeaturesApi = window.featuresSystem?.config?.baseUrl || '/admin/ilanlar/api';
+        const isSlug =
+            typeof categoryId === 'string' && categoryId !== '' && !/^\d+$/.test(categoryId);
+        const endpoint = isSlug
+            ? `${apiEndpoints.features}${encodeURIComponent(categoryId)}`
+            : `${baseFeaturesApi}/features/category/${categoryId}`;
+
+        fetch(endpoint, {
+            credentials: 'same-origin',
+            headers: {
+                Accept: 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+            },
+        })
             .then((response) => {
                 if (!response.ok) {
                     throw new Error(`HTTP ${response.status}: ${response.statusText}`);
@@ -105,8 +118,14 @@ document.addEventListener('DOMContentLoaded', () => {
             })
             .then((data) => {
                 console.log('✅ Özellikler yüklendi:', data);
+                const featuresData =
+                    (Array.isArray(data?.data?.features) && data.data.features) ||
+                    data.features ||
+                    data?.data ||
+                    [];
+
                 // Özellikleri UI'ya yükle
-                updateFeaturesUI(data);
+                updateFeaturesUI({ features: featuresData });
             })
             .catch((error) => {
                 console.error('❌ Özellik yükleme hatası:', error);

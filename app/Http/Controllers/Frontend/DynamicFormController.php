@@ -50,8 +50,8 @@ class DynamicFormController extends Controller
             // Field dependencies'leri getir
             $fields = KategoriYayinTipiFieldDependency::where('kategori_slug', $kategoriSlug)
                 ->where('yayin_tipi', $yayinTipi)
-                ->where('enabled', true)
-                ->orderBy('order')
+                ->where('status', true) // Context7: enabled → status
+                ->orderBy('display_order') // Context7: order → display_order
                 ->get();
 
             if ($fields->isEmpty()) {
@@ -269,7 +269,7 @@ class DynamicFormController extends Controller
             // Required field'ları kontrol et
             $requiredFields = KategoriYayinTipiFieldDependency::where('kategori_slug', $kategoriSlug)
                 ->where('yayin_tipi', $yayinTipi)
-                ->where('enabled', true)
+                ->where('status', true) // Context7: enabled → status
                 ->where('required', true)
                 ->get();
 

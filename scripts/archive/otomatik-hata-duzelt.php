@@ -47,7 +47,7 @@ foreach ($hatalar as $hata) {
     if ($hata['tip'] === 'undefined_variable') {
         $variable = $hata['variable'];
         echo "🔧 Düzeltiliyor: \${$variable} undefined\n";
-        
+
         if ($variable === 'taslak') {
             echo "   → Kişiler için taslak istatistiği ekleniyor...\n";
             $controllerPath = 'app/Http/Controllers/Admin/KisiController.php';
@@ -65,15 +65,15 @@ foreach ($hatalar as $hata) {
                 }
             }
         }
-        
+
         if ($variable === 'status') {
             echo "   → \$status değişkeni controller'lara ekleniyor...\n";
-            
+
             $controllers = [
                 'app/Modules/TakimYonetimi/Http/Controllers/TakimController.php',
                 'app/Modules/TakimYonetimi/Http/Controllers/GorevController.php',
             ];
-            
+
             foreach ($controllers as $controllerPath) {
                 if (file_exists($controllerPath)) {
                     $content = file_get_contents($controllerPath);
@@ -92,11 +92,11 @@ foreach ($hatalar as $hata) {
             }
         }
     }
-    
+
     if ($hata['tip'] === 'missing_table') {
         $table = $hata['table'];
         echo "🔧 Eksik tablo oluşturuluyor: {$table}\n";
-        
+
         echo "   ⚠️  Manuel migration oluşturulmalı\n";
         echo "   → php artisan make:migration create_{$table}_table\n";
     }
@@ -112,4 +112,3 @@ if ($duzeltmeler > 0) {
 }
 
 echo "\n✨ Otomatik hata düzeltici tamamlandı!\n";
-

@@ -22,7 +22,7 @@ class SmartSuggestionsSystem {
     }
 
     init() {
-        console.log("🤖 Smart Suggestions System initialized");
+        console.log('🤖 Smart Suggestions System initialized');
 
         // AI butonlarını dinle
         this.setupAIButtons();
@@ -36,27 +36,25 @@ class SmartSuggestionsSystem {
 
     setupAIButtons() {
         // Başlık AI butonu
-        const titleButton = document.getElementById("ai-title-suggestion");
+        const titleButton = document.getElementById('ai-title-suggestion');
         if (titleButton) {
-            titleButton.addEventListener("click", () => {
+            titleButton.addEventListener('click', () => {
                 this.generateTitleSuggestion();
             });
         }
 
         // Açıklama AI butonu
-        const descriptionButton = document.getElementById(
-            "ai-description-suggestion"
-        );
+        const descriptionButton = document.getElementById('ai-description-suggestion');
         if (descriptionButton) {
-            descriptionButton.addEventListener("click", () => {
+            descriptionButton.addEventListener('click', () => {
                 this.generateDescriptionSuggestion();
             });
         }
 
         // Fiyat AI butonu
-        const priceButton = document.getElementById("ai-price-suggestion");
+        const priceButton = document.getElementById('ai-price-suggestion');
         if (priceButton) {
-            priceButton.addEventListener("click", () => {
+            priceButton.addEventListener('click', () => {
                 this.generatePriceSuggestion();
             });
         }
@@ -64,11 +62,9 @@ class SmartSuggestionsSystem {
 
     setupFormListeners() {
         // Kategori değişikliğini dinle
-        const categorySelect = document.querySelector(
-            'select[name="kategori_id"]'
-        );
+        const categorySelect = document.querySelector('select[name="kategori_id"]');
         if (categorySelect) {
-            categorySelect.addEventListener("change", (e) => {
+            categorySelect.addEventListener('change', (e) => {
                 this.currentCategory = e.target.value;
                 this.cache.clear(); // Category değişince cache'i temizle
             });
@@ -79,13 +75,13 @@ class SmartSuggestionsSystem {
         const ilceSelect = document.querySelector('select[name="ilce_id"]');
 
         if (ilSelect) {
-            ilSelect.addEventListener("change", (e) => {
+            ilSelect.addEventListener('change', (e) => {
                 this.updateLocation();
             });
         }
 
         if (ilceSelect) {
-            ilceSelect.addEventListener("change", (e) => {
+            ilceSelect.addEventListener('change', (e) => {
                 this.updateLocation();
             });
         }
@@ -95,21 +91,21 @@ class SmartSuggestionsSystem {
         // AI Service proxy oluştur
         this.aiService = {
             analyze: async (data, context) => {
-                return await this.makeAIRequest("/api/admin/ai/analyze", {
+                return await this.makeAIRequest('/api/admin/ai/analyze', {
                     data,
                     context,
                 });
             },
 
             suggest: async (context, type) => {
-                return await this.makeAIRequest("/api/admin/ai/suggest", {
+                return await this.makeAIRequest('/api/admin/ai/suggest', {
                     context,
                     type,
                 });
             },
 
             generate: async (prompt, options) => {
-                return await this.makeAIRequest("/api/admin/ai/generate", {
+                return await this.makeAIRequest('/api/admin/ai/generate', {
                     prompt,
                     options,
                 });
@@ -120,12 +116,12 @@ class SmartSuggestionsSystem {
     async makeAIRequest(endpoint, payload) {
         try {
             const response = await fetch(endpoint, {
-                method: "POST",
+                method: 'POST',
                 headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRF-TOKEN": document
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document
                         .querySelector('meta[name="csrf-token"]')
-                        .getAttribute("content"),
+                        .getAttribute('content'),
                 },
                 body: JSON.stringify(payload),
             });
@@ -136,7 +132,7 @@ class SmartSuggestionsSystem {
 
             return await response.json();
         } catch (error) {
-            console.error("AI Request error:", error);
+            console.error('AI Request error:', error);
             return { success: false, error: error.message };
         }
     }
@@ -147,11 +143,11 @@ class SmartSuggestionsSystem {
         const formData = this.collectFormData();
 
         if (!formData.kategori_id) {
-            this.showError("Lütfen önce kategori seçin");
+            this.showError('Lütfen önce kategori seçin');
             return;
         }
 
-        this.setLoadingState("title", true);
+        this.setLoadingState('title', true);
 
         try {
             const cacheKey = `title_${formData.kategori_id}_${formData.il_id}_${formData.metrekare}`;
@@ -175,19 +171,19 @@ class SmartSuggestionsSystem {
                 },
             };
 
-            const result = await this.aiService.suggest(context, "title");
+            const result = await this.aiService.suggest(context, 'title');
 
             if (result.success && result.suggestions) {
                 this.cache.set(cacheKey, result.suggestions);
                 this.applyTitleSuggestion(result.suggestions);
             } else {
-                throw new Error(result.error || "AI title generation failed");
+                throw new Error(result.error || 'AI title generation failed');
             }
         } catch (error) {
-            console.error("Title suggestion error:", error);
-            this.showError("Başlık önerisi alınamadı: " + error.message);
+            console.error('Title suggestion error:', error);
+            this.showError('Başlık önerisi alınamadı: ' + error.message);
         } finally {
-            this.setLoadingState("title", false);
+            this.setLoadingState('title', false);
         }
     }
 
@@ -197,11 +193,11 @@ class SmartSuggestionsSystem {
         const formData = this.collectFormData();
 
         if (!formData.baslik || !formData.kategori_id) {
-            this.showError("Lütfen önce başlık ve kategori girin");
+            this.showError('Lütfen önce başlık ve kategori girin');
             return;
         }
 
-        this.setLoadingState("description", true);
+        this.setLoadingState('description', true);
 
         try {
             const cacheKey = `desc_${formData.kategori_id}_${formData.baslik}_${formData.metrekare}`;
@@ -231,22 +227,20 @@ class SmartSuggestionsSystem {
 
             const result = await this.aiService.generate(
                 `${formData.baslik} için detaylı emlak açıklaması oluştur`,
-                { context, length: "medium", style: "professional" }
+                { context, length: 'medium', style: 'professional' }
             );
 
             if (result.success && result.content) {
                 this.cache.set(cacheKey, result.content);
                 this.applyDescriptionSuggestion(result.content);
             } else {
-                throw new Error(
-                    result.error || "AI description generation failed"
-                );
+                throw new Error(result.error || 'AI description generation failed');
             }
         } catch (error) {
-            console.error("Description suggestion error:", error);
-            this.showError("Açıklama önerisi alınamadı: " + error.message);
+            console.error('Description suggestion error:', error);
+            this.showError('Açıklama önerisi alınamadı: ' + error.message);
         } finally {
-            this.setLoadingState("description", false);
+            this.setLoadingState('description', false);
         }
     }
 
@@ -256,11 +250,11 @@ class SmartSuggestionsSystem {
         const formData = this.collectFormData();
 
         if (!formData.kategori_id || !formData.metrekare) {
-            this.showError("Lütfen kategori ve metrekare bilgisi girin");
+            this.showError('Lütfen kategori ve metrekare bilgisi girin');
             return;
         }
 
-        this.setLoadingState("price", true);
+        this.setLoadingState('price', true);
 
         try {
             const cacheKey = `price_${formData.kategori_id}_${formData.il_id}_${formData.metrekare}`;
@@ -285,20 +279,20 @@ class SmartSuggestionsSystem {
             };
 
             const result = await this.aiService.analyze(context, {
-                type: "price_analysis",
+                type: 'price_analysis',
             });
 
             if (result.success && result.analysis) {
                 this.cache.set(cacheKey, result.analysis);
                 this.applyPriceSuggestion(result.analysis);
             } else {
-                throw new Error(result.error || "AI price analysis failed");
+                throw new Error(result.error || 'AI price analysis failed');
             }
         } catch (error) {
-            console.error("Price suggestion error:", error);
-            this.showError("Fiyat önerisi alınamadı: " + error.message);
+            console.error('Price suggestion error:', error);
+            this.showError('Fiyat önerisi alınamadı: ' + error.message);
         } finally {
-            this.setLoadingState("price", false);
+            this.setLoadingState('price', false);
         }
     }
 
@@ -314,25 +308,21 @@ class SmartSuggestionsSystem {
         );
 
         titleInput.value = bestSuggestion.content || bestSuggestion.title;
-        this.showSuccess("✨ Başlık önerisi uygulandı");
+        this.showSuccess('✨ Başlık önerisi uygulandı');
 
         // Trigger change event
-        titleInput.dispatchEvent(new Event("change", { bubbles: true }));
+        titleInput.dispatchEvent(new Event('change', { bubbles: true }));
     }
 
     applyDescriptionSuggestion(content) {
-        const descriptionTextarea = document.querySelector(
-            'textarea[name="aciklama"]'
-        );
+        const descriptionTextarea = document.querySelector('textarea[name="aciklama"]');
         if (!descriptionTextarea) return;
 
         descriptionTextarea.value = content;
-        this.showSuccess("✨ Açıklama önerisi uygulandı");
+        this.showSuccess('✨ Açıklama önerisi uygulandı');
 
         // Trigger change event
-        descriptionTextarea.dispatchEvent(
-            new Event("change", { bubbles: true })
-        );
+        descriptionTextarea.dispatchEvent(new Event('change', { bubbles: true }));
     }
 
     applyPriceSuggestion(analysis) {
@@ -341,14 +331,10 @@ class SmartSuggestionsSystem {
 
         if (analysis.suggested_price) {
             priceInput.value = analysis.suggested_price;
-            this.showSuccess(
-                `✨ Fiyat önerisi: ${this.formatPrice(
-                    analysis.suggested_price
-                )} TL`
-            );
+            this.showSuccess(`✨ Fiyat önerisi: ${this.formatPrice(analysis.suggested_price)} TL`);
 
             // Trigger change event
-            priceInput.dispatchEvent(new Event("change", { bubbles: true }));
+            priceInput.dispatchEvent(new Event('change', { bubbles: true }));
         }
 
         // Fiyat analizi göster
@@ -358,11 +344,11 @@ class SmartSuggestionsSystem {
     }
 
     collectFormData() {
-        const form = document.querySelector("#stable-create-form");
+        const form = document.querySelector('#stable-create-form');
         const formData = {};
 
         if (form) {
-            const inputs = form.querySelectorAll("input, select, textarea");
+            const inputs = form.querySelectorAll('input, select, textarea');
             inputs.forEach((input) => {
                 if (input.name && input.value) {
                     formData[input.name] = input.value;
@@ -384,7 +370,7 @@ class SmartSuggestionsSystem {
 
         // Lokasyon değişince price cache'ini temizle
         for (const [key] of this.cache) {
-            if (key.startsWith("price_")) {
+            if (key.startsWith('price_')) {
                 this.cache.delete(key);
             }
         }
@@ -396,8 +382,7 @@ class SmartSuggestionsSystem {
 
         if (loading) {
             button.disabled = true;
-            button.innerHTML =
-                '<i class="fas fa-spinner fa-spin mr-2"></i>Oluşturuluyor...';
+            button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Oluşturuluyor...';
             this.isLoading = true;
         } else {
             button.disabled = false;
@@ -413,24 +398,22 @@ class SmartSuggestionsSystem {
             price: '<i class="fas fa-chart-line mr-2"></i>AI Fiyat',
         };
 
-        return (
-            buttonConfigs[type] || '<i class="fas fa-robot mr-2"></i>AI Öneri'
-        );
+        return buttonConfigs[type] || '<i class="fas fa-robot mr-2"></i>AI Öneri';
     }
 
     showSuccess(message) {
         // Success notification
-        this.showNotification(message, "success");
+        this.showNotification(message, 'success');
     }
 
     showError(message) {
         // Error notification
-        this.showNotification(message, "error");
+        this.showNotification(message, 'error');
     }
 
-    showNotification(message, type = "info") {
+    showNotification(message, type = 'info') {
         // Simple notification system
-        const notification = document.createElement("div");
+        const notification = document.createElement('div');
         notification.className = `ai-notification ai-notification-${type}`;
         notification.style.cssText = `
             position: fixed;
@@ -446,9 +429,9 @@ class SmartSuggestionsSystem {
         `;
 
         const colors = {
-            success: "#10B981",
-            error: "#EF4444",
-            info: "#3B82F6",
+            success: '#10B981',
+            error: '#EF4444',
+            info: '#3B82F6',
         };
 
         notification.style.backgroundColor = colors[type] || colors.info;
@@ -463,17 +446,17 @@ class SmartSuggestionsSystem {
 
     showPriceAnalysis(analysis) {
         // Show price analysis in a modal or sidebar
-        console.log("Price Analysis:", analysis);
+        console.log('Price Analysis:', analysis);
     }
 
     formatPrice(price) {
-        return new Intl.NumberFormat("tr-TR").format(price);
+        return new Intl.NumberFormat('tr-TR').format(price);
     }
 
     // Public methods
     refresh() {
         this.cache.clear();
-        console.log("🔄 Smart Suggestions cache cleared");
+        console.log('🔄 Smart Suggestions cache cleared');
     }
 
     getCache() {
@@ -485,8 +468,8 @@ class SmartSuggestionsSystem {
 window.smartSuggestionsSystem = null;
 
 // Auto-initialize
-document.addEventListener("DOMContentLoaded", () => {
-    if (document.getElementById("stable-create-form")) {
+document.addEventListener('DOMContentLoaded', () => {
+    if (document.getElementById('stable-create-form')) {
         window.smartSuggestionsSystem = new SmartSuggestionsSystem();
     }
 });

@@ -1,0 +1,70 @@
+{
+  "title": "TurkiyeAPI Sync Context7 Uyumluluk Düzeltmesi",
+  "date": "2025-11-11",
+  "issue": "Sync işlemi sırasında olmayan kolonlar kullanılıyordu ve zorunlu kolonlar eksikti",
+  "errors": [
+    {
+      "table": "iller",
+      "wrong_column": "il_kodu",
+      "correct_column": "plaka_kodu",
+      "status": "il_kodu kolonu yok, plaka_kodu var ve zorunlu"
+    },
+    {
+      "table": "ilceler",
+      "wrong_column": "ilce_kodu",
+      "correct_column": "yok",
+      "status": "ilce_kodu kolonu tabloda yok"
+    },
+    {
+      "table": "iller",
+      "error": "plaka_kodu doesn't have a default value",
+      "fix": "TurkiyeAPI id değerini plaka_kodu olarak kullan (str_pad ile 2 haneli format)"
+    }
+  ],
+  "fixes": [
+    {
+      "file": "app/Http/Controllers/Admin/AdresYonetimiController.php",
+      "method": "syncFromTurkiyeAPI",
+      "changes": [
+        "İller sync: il_kodu kaldırıldı, plaka_kodu eklendi (TurkiyeAPI id'den)",
+        "İlçeler sync: ilce_kodu kaldırıldı",
+        "Mahalleler sync: Schema::hasColumn() kontrolleri eklendi (mahalle_kodu, posta_kodu, enlem, boylam)"
+      ]
+    },
+    {
+      "file": "app/Models/Il.php",
+      "changes": [
+        "fillable'dan il_kodu kaldırıldı",
+        "plaka_kodu, telefon_kodu, lat, lng eklendi"
+      ]
+    },
+    {
+      "file": "app/Models/Ilce.php",
+      "changes": [
+        "fillable'dan ilce_kodu kaldırıldı",
+        "lat, lng eklendi"
+      ]
+    }
+  ],
+  "context7_compliance": {
+    "database_fields": "English only",
+    "schema_checks": "Schema::hasColumn() kullanılıyor",
+    "error_handling": "Güvenli veri işleme",
+    "logging": "Log::info kullanılıyor",
+    "required_fields": "Zorunlu kolonlar mutlaka doldurulmalı"
+  },
+  "lessons_learned": [
+    "TurkiyeAPI sync işlemlerinde mutlaka Schema::hasColumn() kontrolü yapılmalı",
+    "Model fillable array'leri database schema ile senkronize olmalı",
+    "Olmayan kolonlar kullanılmamalı",
+    "Zorunlu kolonlar mutlaka doldurulmalı (plaka_kodu gibi)",
+    "TurkiyeAPI id değerleri genellikle plaka kodu ile aynı (1-81 arası)",
+    "Plaka kodları 2 haneli string formatında olmalı (01, 02, ..., 81)",
+    "Context7: Database field'ları İngilizce olmalı ve gerçek schema ile uyumlu olmalı"
+  ],
+  "plaka_kodu_mapping": {
+    "source": "TurkiyeAPI id",
+    "format": "str_pad(id, 2, '0', STR_PAD_LEFT)",
+    "example": "id: 1 → plaka_kodu: '01', id: 6 → plaka_kodu: '06', id: 34 → plaka_kodu: '34'"
+  }
+}

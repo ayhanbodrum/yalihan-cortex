@@ -12,23 +12,23 @@ use App\Models\Mahalle;
 
 /**
  * Context7 Master Seeder
- * 
+ *
  * ✅ TEK MASTER SEEDER - Tüm verileri Context7 kurallarına göre yükler.
- * 
+ *
  * Bu seeder, tüm alt seeder'ları yönetir:
  * - CompleteIlanKategoriSeeder (İlan Kategorileri)
  * - FeatureCategorySeeder (Özellik Kategorileri)
  * - ComprehensiveFeatureSeeder (Özellikler)
  * - Roller ve Lokasyon verileri
- * 
+ *
  * Context7 Standardı: C7-MASTER-SEEDER-2025-11-05
  * Versiyon: 5.0.0
- * 
+ *
  * Yasaklı Komutlar (.context7/authority.json):
  * - status kolonu kullanmadan önce Schema::hasColumn() kontrolü
  * - Türkçe alan adları yasak (durum, aktif, is_active)
  * - Context7 field naming standards
- * 
+ *
  * Kullanım:
  *   php artisan db:seed                    → DatabaseSeeder → Context7MasterSeeder
  *   php artisan db:seed --class=Context7MasterSeeder  → Direkt master seeder
@@ -249,4 +249,3 @@ class Context7MasterSeeder extends Seeder
         $this->command->info('   ✓ ' . count($roles) . ' rol oluşturuldu');
     }
 }
-

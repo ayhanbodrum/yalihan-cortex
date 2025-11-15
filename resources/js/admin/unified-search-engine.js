@@ -29,8 +29,8 @@ class UnifiedSearchEngine {
         searchContainer.innerHTML = `
             <div class="search-wrapper">
                 <div class="search-input-container">
-                    <input type="text" 
-                           class="unified-search-input" 
+                    <input type="text"
+                           class="unified-search-input"
                            placeholder="İlan, kategori, kişi veya lokasyon ara..."
                            autocomplete="off"
                            spellcheck="false">
@@ -41,7 +41,7 @@ class UnifiedSearchEngine {
                         <i class="fas fa-times"></i>
                     </div>
                 </div>
-                
+
                 <div class="search-filters">
                     <div class="filter-group">
                         <label class="filter-label">Arama Türü:</label>
@@ -53,7 +53,7 @@ class UnifiedSearchEngine {
                             <button class="filter-btn" data-type="lokasyonlar">Lokasyonlar</button>
                         </div>
                     </div>
-                    
+
                     <div class="filter-group">
                         <label class="filter-label">Filtreler:</label>
                         <select class="search-filter-select" data-filter="status">
@@ -70,12 +70,12 @@ class UnifiedSearchEngine {
                         </select>
                     </div>
                 </div>
-                
+
                 <div class="search-suggestions" style="display: none;">
                     <!-- Auto-complete suggestions will be populated here -->
                 </div>
             </div>
-            
+
             <div class="search-results" style="display: none;">
                 <div class="results-header">
                     <div class="results-count">
@@ -90,7 +90,7 @@ class UnifiedSearchEngine {
                         </button>
                     </div>
                 </div>
-                
+
                 <div class="results-content">
                     <div class="results-tabs">
                         <button class="results-tab active" data-tab="ilanlar">
@@ -106,7 +106,7 @@ class UnifiedSearchEngine {
                             Lokasyonlar <span class="tab-count">0</span>
                         </button>
                     </div>
-                    
+
                     <div class="results-panels">
                         <div class="results-panel active" data-panel="ilanlar">
                             <!-- İlan results -->

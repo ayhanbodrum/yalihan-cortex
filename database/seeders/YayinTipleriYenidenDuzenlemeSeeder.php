@@ -243,4 +243,3 @@ class YayinTipleriYenidenDuzenlemeSeeder extends Seeder
         $this->command->info("   🎯 Özel Kullanım (3): Öğrenci Evi, Ofis Dönüşümlü, Devren");
     }
 }
-

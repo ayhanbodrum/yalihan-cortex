@@ -8,7 +8,7 @@
  */
 
 class AutoSaveManager {
-    constructor(formSelector = "#stable-create-form") {
+    constructor(formSelector = '#stable-create-form') {
         this.form = document.querySelector(formSelector);
         this.saveInterval = 30000; // 30 saniye
         this.lastSaveData = null;
@@ -21,7 +21,7 @@ class AutoSaveManager {
 
     init() {
         if (!this.form) {
-            console.warn("AutoSave: Form bulunamadı");
+            console.warn('AutoSave: Form bulunamadı');
             return;
         }
 
@@ -29,29 +29,25 @@ class AutoSaveManager {
         this.loadDraftData();
         this.startAutoSave();
 
-        console.log("✅ AutoSaveManager initialized");
+        console.log('✅ AutoSaveManager initialized');
     }
 
     setupEventListeners() {
         // Form değişikliklerini izle
-        this.form.addEventListener("input", (e) => this.onFormChange(e));
-        this.form.addEventListener("change", (e) => this.onFormChange(e));
+        this.form.addEventListener('input', (e) => this.onFormChange(e));
+        this.form.addEventListener('change', (e) => this.onFormChange(e));
 
         // Online/offline durumunu izle
-        window.addEventListener("online", () =>
-            this.onOnlineStatusChange(true)
-        );
-        window.addEventListener("offline", () =>
-            this.onOnlineStatusChange(false)
-        );
+        window.addEventListener('online', () => this.onOnlineStatusChange(true));
+        window.addEventListener('offline', () => this.onOnlineStatusChange(false));
 
         // Sayfa kapatılmadan önce uyar
-        window.addEventListener("beforeunload", (e) => this.onBeforeUnload(e));
+        window.addEventListener('beforeunload', (e) => this.onBeforeUnload(e));
 
         // Periyodik kaydetme butonu
-        const saveButton = document.querySelector("#saveDraftBtn");
+        const saveButton = document.querySelector('#saveDraftBtn');
         if (saveButton) {
-            saveButton.addEventListener("click", () => this.saveDraft(true));
+            saveButton.addEventListener('click', () => this.saveDraft(true));
         }
     }
 
@@ -78,7 +74,7 @@ class AutoSaveManager {
         if (this.isDirty) {
             event.preventDefault();
             event.returnValue =
-                "Kaydedilmemiş değişiklikleriniz var. Sayfadan çıkmak istediğinizden emin misiniz?";
+                'Kaydedilmemiş değişiklikleriniz var. Sayfadan çıkmak istediğinizden emin misiniz?';
             return event.returnValue;
         }
     }
@@ -101,7 +97,7 @@ class AutoSaveManager {
 
     async saveDraft(manual = false) {
         if (!this.isOnline && !manual) {
-            console.log("💾 Offline mode: Draft saved locally");
+            console.log('💾 Offline mode: Draft saved locally');
             this.saveToLocalStorage();
             return;
         }
@@ -109,25 +105,20 @@ class AutoSaveManager {
         const formData = this.getFormData();
 
         // Değişiklik yoksa kaydetme
-        if (
-            this.lastSaveData &&
-            JSON.stringify(formData) === JSON.stringify(this.lastSaveData)
-        ) {
+        if (this.lastSaveData && JSON.stringify(formData) === JSON.stringify(this.lastSaveData)) {
             return;
         }
 
         try {
-            this.showSaveIndicator("saving");
+            this.showSaveIndicator('saving');
 
-            const response = await fetch("/admin/ilanlar/save-draft", {
-                method: "POST",
+            const response = await fetch('/admin/ilanlar/save-draft', {
+                method: 'POST',
                 headers: {
-                    "Content-Type": "application/json",
-                    Accept: "application/json",
-                    "X-CSRF-TOKEN": document.querySelector(
-                        'meta[name="csrf-token"]'
-                    )?.content,
-                    "X-Requested-With": "XMLHttpRequest",
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content,
+                    'X-Requested-With': 'XMLHttpRequest',
                 },
                 body: JSON.stringify({
                     draft_data: formData,
@@ -141,29 +132,26 @@ class AutoSaveManager {
                 this.lastSaveData = formData;
                 this.isDirty = false;
 
-                this.showSaveIndicator("saved");
+                this.showSaveIndicator('saved');
                 this.saveToLocalStorage(); // Backup için local'e de kaydet
 
                 if (manual) {
-                    this.showToast("Taslak başarıyla kaydedildi", "success");
+                    this.showToast('Taslak başarıyla kaydedildi', 'success');
                 }
 
-                console.log("💾 Draft saved successfully", result);
+                console.log('💾 Draft saved successfully', result);
             } else {
                 throw new Error(`Save failed: ${response.status}`);
             }
         } catch (error) {
-            console.error("💾 Draft save error:", error);
+            console.error('💾 Draft save error:', error);
 
             // Hata durumunda local storage'a kaydet
             this.saveToLocalStorage();
-            this.showSaveIndicator("error");
+            this.showSaveIndicator('error');
 
             if (manual) {
-                this.showToast(
-                    "Taslak kaydedilemedi, yerel olarak saklandı",
-                    "warning"
-                );
+                this.showToast('Taslak kaydedilemedi, yerel olarak saklandı', 'warning');
             }
         }
     }
@@ -171,15 +159,12 @@ class AutoSaveManager {
     async loadDraftData() {
         try {
             // Önce sunucudan dene
-            const response = await fetch(
-                `/admin/ilanlar/load-draft?key=${this.getDraftKey()}`,
-                {
-                    headers: {
-                        Accept: "application/json",
-                        "X-Requested-With": "XMLHttpRequest",
-                    },
-                }
-            );
+            const response = await fetch(`/admin/ilanlar/load-draft?key=${this.getDraftKey()}`, {
+                headers: {
+                    Accept: 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+            });
 
             if (response.ok) {
                 const result = await response.json();
@@ -193,7 +178,7 @@ class AutoSaveManager {
                 }
             }
         } catch (error) {
-            console.warn("Draft load from server failed:", error);
+            console.warn('Draft load from server failed:', error);
         }
 
         // Sunucudan yüklenemezse local storage'dan dene
@@ -222,7 +207,7 @@ class AutoSaveManager {
         const fileInputs = this.form.querySelectorAll('input[type="file"]');
         fileInputs.forEach((input) => {
             if (input.files.length > 0) {
-                data[input.name + "_info"] = {
+                data[input.name + '_info'] = {
                     count: input.files.length,
                     names: Array.from(input.files).map((f) => f.name),
                 };
@@ -238,26 +223,22 @@ class AutoSaveManager {
 
             if (!field) return;
 
-            if (field.type === "checkbox") {
+            if (field.type === 'checkbox') {
                 if (Array.isArray(value)) {
                     // Multiple checkboxes
-                    const checkboxes = this.form.querySelectorAll(
-                        `[name="${key}"]`
-                    );
+                    const checkboxes = this.form.querySelectorAll(`[name="${key}"]`);
                     checkboxes.forEach((cb) => {
                         cb.checked = value.includes(cb.value);
                     });
                 } else {
-                    field.checked = value === "on" || value === true;
+                    field.checked = value === 'on' || value === true;
                 }
-            } else if (field.type === "radio") {
-                const radio = this.form.querySelector(
-                    `[name="${key}"][value="${value}"]`
-                );
+            } else if (field.type === 'radio') {
+                const radio = this.form.querySelector(`[name="${key}"][value="${value}"]`);
                 if (radio) radio.checked = true;
-            } else if (field.tagName === "SELECT") {
+            } else if (field.tagName === 'SELECT') {
                 field.value = value;
-            } else if (field.type !== "file") {
+            } else if (field.type !== 'file') {
                 field.value = value;
             }
         });
@@ -274,7 +255,7 @@ class AutoSaveManager {
                 })
             );
         } catch (error) {
-            console.error("Local storage save failed:", error);
+            console.error('Local storage save failed:', error);
         }
     }
 
@@ -288,52 +269,48 @@ class AutoSaveManager {
                 // 24 saatten eski taslakları gösterme
                 if (age < 24 * 60 * 60 * 1000) {
                     this.fillForm(parsed.data);
-                    this.showDraftLoadedMessage("local");
+                    this.showDraftLoadedMessage('local');
                 } else {
                     localStorage.removeItem(this.getDraftKey());
                 }
             }
         } catch (error) {
-            console.error("Local storage load failed:", error);
+            console.error('Local storage load failed:', error);
         }
     }
 
     getDraftKey() {
-        const userId = window.auth?.user?.id || "anonymous";
+        const userId = window.auth?.user?.id || 'anonymous';
         return `create_form_draft_${userId}`;
     }
 
     showSaveIndicator(status) {
-        const indicator =
-            document.querySelector("#saveIndicator") ||
-            this.createSaveIndicator();
+        const indicator = document.querySelector('#saveIndicator') || this.createSaveIndicator();
 
-        indicator.className = "save-indicator";
+        indicator.className = 'save-indicator';
         indicator.classList.add(`save-${status}`);
 
         switch (status) {
-            case "saving":
-                indicator.innerHTML =
-                    '<i class="fas fa-spinner fa-spin"></i> Kaydediliyor...';
+            case 'saving':
+                indicator.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Kaydediliyor...';
                 break;
-            case "saved":
-                indicator.innerHTML =
-                    '<i class="fas fa-check text-green-600"></i> Kaydedildi';
-                setTimeout(() => (indicator.style.opacity = "0"), 2000);
+            case 'saved':
+                indicator.innerHTML = '<i class="fas fa-check text-green-600"></i> Kaydedildi';
+                setTimeout(() => (indicator.style.opacity = '0'), 2000);
                 break;
-            case "error":
+            case 'error':
                 indicator.innerHTML =
                     '<i class="fas fa-exclamation-triangle text-red-600"></i> Hata';
                 break;
         }
 
-        indicator.style.opacity = "1";
+        indicator.style.opacity = '1';
     }
 
     createSaveIndicator() {
-        const indicator = document.createElement("div");
-        indicator.id = "saveIndicator";
-        indicator.className = "save-indicator";
+        const indicator = document.createElement('div');
+        indicator.id = 'saveIndicator';
+        indicator.className = 'save-indicator';
         indicator.style.cssText = `
             position: fixed;
             top: 20px;
@@ -352,29 +329,25 @@ class AutoSaveManager {
     }
 
     showUnsavedChanges() {
-        document.title = "● " + document.title.replace("● ", "");
+        document.title = '● ' + document.title.replace('● ', '');
     }
 
-    showDraftLoadedMessage(source = "server") {
+    showDraftLoadedMessage(source = 'server') {
         const message =
-            source === "local"
-                ? "Yerel taslak yüklendi"
-                : "Kaydedilmiş taslak yüklendi";
+            source === 'local' ? 'Yerel taslak yüklendi' : 'Kaydedilmiş taslak yüklendi';
 
-        this.showToast(message, "info");
+        this.showToast(message, 'info');
     }
 
     updateConnectionStatus() {
-        const statusEl = document.querySelector("#connectionStatus");
+        const statusEl = document.querySelector('#connectionStatus');
         if (statusEl) {
-            statusEl.textContent = this.isOnline ? "Çevrimiçi" : "Çevrimdışı";
-            statusEl.className = this.isOnline
-                ? "text-green-600"
-                : "text-orange-600";
+            statusEl.textContent = this.isOnline ? 'Çevrimiçi' : 'Çevrimdışı';
+            statusEl.className = this.isOnline ? 'text-green-600' : 'text-orange-600';
         }
     }
 
-    showToast(message, type = "info") {
+    showToast(message, type = 'info') {
         // Context7 toast sistemi kullan
         if (window.showToast) {
             window.showToast(message, type);
@@ -388,12 +361,12 @@ class AutoSaveManager {
         localStorage.removeItem(this.getDraftKey());
         this.isDirty = false;
         this.lastSaveData = null;
-        document.title = document.title.replace("● ", "");
+        document.title = document.title.replace('● ', '');
     }
 }
 
 // Auto-initialize
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener('DOMContentLoaded', () => {
     new AutoSaveManager();
 });
 

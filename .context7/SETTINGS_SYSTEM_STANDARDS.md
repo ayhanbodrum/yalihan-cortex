@@ -113,19 +113,19 @@ setting_group('general');
 
 ### SiteSetting → Setting
 
-| Eski Kod | Yeni Kod |
-|----------|----------|
-| `SiteSetting::getValue($key, $default)` | `Setting::get($key, $default)` |
+| Eski Kod                                      | Yeni Kod                                                  |
+| --------------------------------------------- | --------------------------------------------------------- |
+| `SiteSetting::getValue($key, $default)`       | `Setting::get($key, $default)`                            |
 | `SiteSetting::setValue($key, $value, $group)` | `Setting::set($key, $value, $group, $type, $description)` |
-| `SiteSetting::getGroup($group)` | `Setting::getByGroup($group)` |
-| `SiteSetting::getPublicSettings()` | `Setting::where('group', 'public')->get()` |
+| `SiteSetting::getGroup($group)`               | `Setting::getByGroup($group)`                             |
+| `SiteSetting::getPublicSettings()`            | `Setting::where('group', 'public')->get()`                |
 
 ### DB::table() → Eloquent
 
-| Eski Kod | Yeni Kod |
-|----------|----------|
-| `DB::table('site_settings')->where('key', $key)->value('value')` | `Setting::get($key)` |
-| `DB::table('site_settings')->updateOrInsert(...)` | `Setting::set($key, $value, $group, $type, $description)` |
+| Eski Kod                                                         | Yeni Kod                                                  |
+| ---------------------------------------------------------------- | --------------------------------------------------------- |
+| `DB::table('site_settings')->where('key', $key)->value('value')` | `Setting::get($key)`                                      |
+| `DB::table('site_settings')->updateOrInsert(...)`                | `Setting::set($key, $value, $group, $type, $description)` |
 
 ---
 
@@ -142,7 +142,7 @@ setting_group('general');
 INSERT INTO settings (key, value, type, description, group, created_at, updated_at)
 SELECT key, value, type, description, COALESCE(group, 'general'), created_at, updated_at
 FROM site_settings
-ON DUPLICATE KEY UPDATE 
+ON DUPLICATE KEY UPDATE
     value = VALUES(value),
     updated_at = VALUES(updated_at);
 ```
@@ -184,6 +184,7 @@ routes/
 - ✅ DB::table() yerine Eloquent kullanılmalı
 
 **Otomatik Kontrol:**
+
 - Pre-commit hook'larında kontrol edilmeli
 - Code review'da kontrol edilmeli
 - Yalıhan Bekçi otomatik kontrol yapmalı
@@ -200,4 +201,3 @@ routes/
 
 **Son Güncelleme:** 5 Kasım 2025  
 **Versiyon:** 1.0.0
-

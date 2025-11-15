@@ -26,7 +26,7 @@ return new class extends Migration
             $table->timestamp('approved_at')->nullable();
             $table->timestamps();
             $table->softDeletes();
-            
+
             $table->index('status');
             $table->index('post_id');
             $table->index('user_id');

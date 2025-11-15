@@ -19,42 +19,42 @@ Bu doküman seti, **Yalıhan Emlak Warp Sistemi**'nin tüm AI özelliklerini, ku
 
 ### **Teknoloji Stack:**
 
--   **Backend:** Laravel 10.x + PHP 8.2+
--   **Frontend:** Blade + Alpine.js + Tailwind CSS
--   **Database:** MySQL 8.0+
--   **AI Stack:** 5 Provider (OpenAI, DeepSeek, Gemini, Claude, Ollama)
--   **Design System:** Neo Design System
--   **Compliance:** Context7 %100
+- **Backend:** Laravel 10.x + PHP 8.2+
+- **Frontend:** Blade + Alpine.js + Tailwind CSS
+- **Database:** MySQL 8.0+
+- **AI Stack:** 5 Provider (OpenAI, DeepSeek, Gemini, Claude, Ollama)
+- **Design System:** Neo Design System
+- **Compliance:** Context7 %100
 
 ### **AI Provider Detayları:**
 
 #### **1. Ollama Local AI (Aktif - Varsayılan)**
 
--   **Endpoint:** http://51.75.64.121:11434
--   **Model:** gemma2:2b (2.6B parametreli, Türkçe destekli)
--   **Kullanım:** İlan başlık/açıklama üretimi, lokasyon analizi, fiyat önerileri
--   **Config:** `config/ai.php` → `ollama_api_url`, `ollama_model`
+- **Endpoint:** http://51.75.64.121:11434
+- **Model:** gemma2:2b (2.6B parametreli, Türkçe destekli)
+- **Kullanım:** İlan başlık/açıklama üretimi, lokasyon analizi, fiyat önerileri
+- **Config:** `config/ai.php` → `ollama_api_url`, `ollama_model`
 
 #### **2. OpenAI GPT-4**
 
--   **Kullanım:** Karmaşık içerik üretimi, çoklu dil çevirisi
--   **Config:** `OPENAI_API_KEY` environment variable
+- **Kullanım:** Karmaşık içerik üretimi, çoklu dil çevirisi
+- **Config:** `OPENAI_API_KEY` environment variable
 
 #### **3. Google Gemini**
 
--   **Kullanım:** Görsel analiz, OCR, nesne tanıma
--   **Model:** gemini-2.5-flash
--   **Config:** `GOOGLE_API_KEY`, `GOOGLE_MODEL`
+- **Kullanım:** Görsel analiz, OCR, nesne tanıma
+- **Model:** gemini-2.5-flash
+- **Config:** `GOOGLE_API_KEY`, `GOOGLE_MODEL`
 
 #### **4. Anthropic Claude**
 
--   **Kullanım:** Kod review, kalite kontrolü
--   **Config:** `ANTHROPIC_API_KEY`
+- **Kullanım:** Kod review, kalite kontrolü
+- **Config:** `ANTHROPIC_API_KEY`
 
 #### **5. DeepSeek AI**
 
--   **Kullanım:** Kod analizi ve optimizasyon
--   **Config:** `DEEPSEEK_API_KEY`
+- **Kullanım:** Kod analizi ve optimizasyon
+- **Config:** `DEEPSEEK_API_KEY`
 
 ---
 
@@ -63,26 +63,22 @@ Bu doküman seti, **Yalıhan Emlak Warp Sistemi**'nin tüm AI özelliklerini, ku
 ### **Ana Modüller:**
 
 1. **İlan Yönetimi (Listings)**
-
     - Tablo: `ilanlar` (100+ alan)
     - Controller: `IlanController`, `SmartIlanController`
     - Routes: `/admin/ilanlar`, `/stable-create`, `/smart-create`
     - AI Features: Başlık, açıklama, fiyat önerisi
 
 2. **CRM Sistemi**
-
     - Tablo: `kisiler` (Kişiler/Müşteriler)
     - AI Features: Müşteri segmentasyonu, talep eşleştirme
     - CRM Skoru: 100 puan skalasında
 
 3. **Kategori Sistemi**
-
     - 3 Seviyeli: Ana Kategori → Alt Kategori → Yayın Tipi
     - Dinamik özellikler: Kategori bazlı
     - AI: Özellik önerileri
 
 4. **Konum Sistemi**
-
     - Hiyerarşi: Ülke → İl → İlçe → Mahalle
     - Google Maps entegrasyonu
     - AI: Lokasyon analizi, POI önerileri
@@ -100,40 +96,40 @@ Bu doküman seti, **Yalıhan Emlak Warp Sistemi**'nin tüm AI özelliklerini, ku
 
 ✅ **İçerik Üretimi:**
 
--   İlan başlığı üretme (3-5 varyant)
--   İlan açıklaması üretme (200-400 kelime)
--   SEO meta tag önerileri
--   Çoklu dil çevirisi (TR, EN, DE, RU, AR)
+- İlan başlığı üretme (3-5 varyant)
+- İlan açıklaması üretme (200-400 kelime)
+- SEO meta tag önerileri
+- Çoklu dil çevirisi (TR, EN, DE, RU, AR)
 
 ✅ **Analiz ve Öneriler:**
 
--   Fiyat önerisi (3 seviye: Pazarlık, Piyasa, Premium)
--   Lokasyon analizi (Skor, Harf Notu, Potansiyel)
--   CRM müşteri profil analizi
--   Portal önerileri
+- Fiyat önerisi (3 seviye: Pazarlık, Piyasa, Premium)
+- Lokasyon analizi (Skor, Harf Notu, Potansiyel)
+- CRM müşteri profil analizi
+- Portal önerileri
 
 ✅ **Görsel İşleme:**
 
--   Fotoğraf kalite analizi
--   OCR (tapu, belge okuma)
--   Nesne tanıma (mobilya, mimari)
+- Fotoğraf kalite analizi
+- OCR (tapu, belge okuma)
+- Nesne tanıma (mobilya, mimari)
 
 ### **AI'nin YAPAMAYACAĞI İşlemler:**
 
 ❌ **Otomatik İşlemler (İnsan Onayı Gerekir):**
 
--   Veritabanına otomatik kayıt
--   Fiyat değiştirme
--   İlanı yayınlama
--   Portal'lara senkronizasyon
--   Müşteri eşleştirme
+- Veritabanına otomatik kayıt
+- Fiyat değiştirme
+- İlanı yayınlama
+- Portal'lara senkronizasyon
+- Müşteri eşleştirme
 
 ❌ **Güvenlik:**
 
--   Şifre, API key, gizli bilgilere erişim
--   Kişisel veri (telefon, email) işleme
--   Sistem dosyalarına erişim
--   Veritabanı yapısını değiştirme
+- Şifre, API key, gizli bilgilere erişim
+- Kişisel veri (telefon, email) işleme
+- Sistem dosyalarına erişim
+- Veritabanı yapısını değiştirme
 
 ---
 
@@ -344,62 +340,62 @@ Her satırda: [Label]: [Fiyat] [Gerekçe]
 
 **Zorunlu Bilgiler:**
 
--   Ada No, Parsel No
--   İmar Durumu (İmarda, İmar Dışında, Tarla, vb.)
--   KAKS, TAKS değerleri
--   Alan (m² / Dönüm)
+- Ada No, Parsel No
+- İmar Durumu (İmarda, İmar Dışında, Tarla, vb.)
+- KAKS, TAKS değerleri
+- Alan (m² / Dönüm)
 
 **AI Önerileri:**
 
--   TKGM entegrasyonu önerisi
--   Yatırım potansiyeli analizi
--   İnşaat alanı hesaplama
--   m² başı fiyat karşılaştırma
+- TKGM entegrasyonu önerisi
+- Yatırım potansiyeli analizi
+- İnşaat alanı hesaplama
+- m² başı fiyat karşılaştırma
 
 ### **Villa:**
 
 **Zorunlu Bilgiler:**
 
--   Oda sayısı, banyo sayısı
--   Arsa m², bina m²
--   Havuz, bahçe durumu
--   Denize uzaklık
+- Oda sayısı, banyo sayısı
+- Arsa m², bina m²
+- Havuz, bahçe durumu
+- Denize uzaklık
 
 **AI Önerileri:**
 
--   Lüks özellikleri vurgula
--   Manzara avantajları
--   Özel hizmetler (havuz bakımı, güvenlik)
+- Lüks özellikleri vurgula
+- Manzara avantajları
+- Özel hizmetler (havuz bakımı, güvenlik)
 
 ### **Daire (Apartment):**
 
 **Zorunlu Bilgiler:**
 
--   Oda sayısı (1+0, 1+1, 2+1, 3+1, vb.)
--   Net m², brüt m²
--   Kat, toplam kat
--   Site özellikleri
+- Oda sayısı (1+0, 1+1, 2+1, 3+1, vb.)
+- Net m², brüt m²
+- Kat, toplam kat
+- Site özellikleri
 
 **AI Önerileri:**
 
--   Site avantajları
--   Komşuluk bilgisi
--   Ulaşım kolaylığı
+- Site avantajları
+- Komşuluk bilgisi
+- Ulaşım kolaylığı
 
 ### **Yazlık (Seasonal Rental):**
 
 **Zorunlu Bilgiler:**
 
--   Minimum konaklama günü
--   Maksimum kişi sayısı
--   Sezon fiyatları (yaz, kış, ara sezon)
--   Dahil hizmetler
+- Minimum konaklama günü
+- Maksimum kişi sayısı
+- Sezon fiyatları (yaz, kış, ara sezon)
+- Dahil hizmetler
 
 **AI Önerileri:**
 
--   Sezonluk özellikler vurgula
--   Aktivite önerileri
--   Yaz/kış avantajları
+- Sezonluk özellikler vurgula
+- Aktivite önerileri
+- Yaz/kış avantajları
 
 ---
 
@@ -418,10 +414,10 @@ Her satırda: [Label]: [Fiyat] [Gerekçe]
 
 ### **Döviz Çevirimi:**
 
--   **Servis:** `CurrencyRateService`
--   **API:** Exchange Rate API
--   **Cache:** 1 saat TTL
--   **Fallback:** Varsayılan kurlar (TRY:1, USD:34.50, EUR:37.20, GBP:43.80)
+- **Servis:** `CurrencyRateService`
+- **API:** Exchange Rate API
+- **Cache:** 1 saat TTL
+- **Fallback:** Varsayılan kurlar (TRY:1, USD:34.50, EUR:37.20, GBP:43.80)
 
 ### **Fiyat Analizi AI Kuralları:**
 
@@ -450,10 +446,10 @@ Türkiye
 
 ### **Google Maps Entegrasyonu:**
 
--   **Geocoding:** Adres → Koordinat
--   **Reverse Geocoding:** Koordinat → Adres
--   **Nearby POI:** 1km içinde (okul, hastane, market, park)
--   **Mesafe Hesaplama:** Haversine formula
+- **Geocoding:** Adres → Koordinat
+- **Reverse Geocoding:** Koordinat → Adres
+- **Nearby POI:** 1km içinde (okul, hastane, market, park)
+- **Mesafe Hesaplama:** Haversine formula
 
 ### **AI Lokasyon Analizi Kriterleri:**
 
@@ -640,13 +636,13 @@ Response: { rates: { TRY: 1, USD: 34.5, EUR: 37.2, GBP: 43.8 }, last_updated: ".
 
 ### **Her AI Yanıt İçin Kontrol Et:**
 
--   [ ] Context7 uyumlu alan adları kullanıldı mı?
--   [ ] Türkçe field adı yok mu? (durum, sehir, aktif)
--   [ ] PII maskeleme yapıldı mı?
--   [ ] Response format doğru mu? (JSON)
--   [ ] Hata yönetimi var mı?
--   [ ] Cache kullanımı uygun mu?
--   [ ] Rate limit aşılmadı mı?
+- [ ] Context7 uyumlu alan adları kullanıldı mı?
+- [ ] Türkçe field adı yok mu? (durum, sehir, aktif)
+- [ ] PII maskeleme yapıldı mı?
+- [ ] Response format doğru mu? (JSON)
+- [ ] Hata yönetimi var mı?
+- [ ] Cache kullanımı uygun mu?
+- [ ] Rate limit aşılmadı mı?
 
 ---
 

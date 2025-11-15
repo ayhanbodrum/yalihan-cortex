@@ -9,12 +9,13 @@
 ## ✅ TAMAMLANAN TODO'LAR
 
 ### Temizlenen TODO'lar (16 adet)
+
 - **PhotoController.php** (10 adet)
-  - Photo model ile kaydetme/güncelleme/silme işlemleri
-  - Thumbnail generation, Image optimization, Views increment
+    - Photo model ile kaydetme/güncelleme/silme işlemleri
+    - Thumbnail generation, Image optimization, Views increment
 - **TakvimController.php** (6 adet)
-  - Event model ile kaydetme/güncelleme/silme
-  - Season model ile kaydetme/güncelleme/silme
+    - Event model ile kaydetme/güncelleme/silme
+    - Season model ile kaydetme/güncelleme/silme
 
 ---
 
@@ -23,9 +24,11 @@
 ### 1. MODEL BEKLEYEN TODO'LAR (6 adet)
 
 #### DashboardController.php (3 adet)
+
 **Konum:** `store()`, `update()`, `destroy()` metodları
 
 **TODO:**
+
 ```php
 // TODO: DashboardWidget model oluşturulduğunda kullanılacak
 // Plan:
@@ -41,9 +44,11 @@
 ---
 
 #### PriceController.php (3 adet)
+
 **Konum:** `store()`, `update()`, `destroy()` metodları
 
 **TODO:**
+
 ```php
 // TODO: PriceRecord model ile kaydetme
 // Plan: PriceRecord model oluşturulduğunda aktif edilecek
@@ -59,9 +64,11 @@
 ### 2. REFACTORING TODO'LAR (1 adet)
 
 #### Ilan.php (1 adet)
+
 **Konum:** `ozellikler()` relationship metodu
 
 **TODO:**
+
 ```php
 // TODO: listing_feature ile ilan_feature tablolarını tekilleştir.
 // Plan: Migration oluştur, listing_feature tablosunu ilan_feature'e merge et, eski tabloyu kaldır
@@ -83,6 +90,7 @@
 **Konum:** `topluAnalizEt()` metodu
 
 **TODO:**
+
 ```php
 // TODO: Implement bulk analysis feature
 // - Create TalepTopluAnalizJob for queue processing
@@ -98,6 +106,7 @@
 **Konum:** `raporOlustur()` metodu
 
 **TODO:**
+
 ```php
 // TODO: Implement report generation
 // - PDF export: Use DomPDF with report template
@@ -114,41 +123,49 @@
 ### 4. DİĞER TODO'LAR (12 adet)
 
 #### 4.1. DanismanController.php
+
 **TODO:** `toplam_talep` count implementasyonu
 **Öncelik:** DÜŞÜK  
 **Tahmini Süre:** 30 dakika
 
 #### 4.2. AdresYonetimiController.php
+
 **TODO:** Ulke filtrelemesi için migration
 **Öncelik:** DÜŞÜK  
 **Tahmini Süre:** 1 saat
 
 #### 4.3. MusteriController.php (3 adet)
+
 **TODO:** Customer model ile kaydetme/güncelleme/soft delete
 **Öncelik:** DÜŞÜK  
 **Not:** Musteri model'i zaten mevcut, Customer model'i opsiyonel
 
 #### 4.4. PhotoController.php
+
 **TODO:** Gerçek optimizasyon işlemi
 **Öncelik:** DÜŞÜK  
 **Not:** OptimizeImage metodu zaten var, gerçek optimizasyon algoritması eklenebilir
 
 #### 4.5. BookingRequestController.php (2 adet)
+
 **TODO:** Database'e kaydetme, Email template ile gönderme
 **Öncelik:** ORTA  
 **Tahmini Süre:** 2-3 saat
 
 #### 4.6. MyListingsController.php
+
 **TODO:** Excel/PDF export implementasyonu
 **Öncelik:** DÜŞÜK  
 **Tahmini Süre:** 2-3 saat
 
 #### 4.7. UserController.php
+
 **TODO:** Role filtering with roles table
 **Öncelik:** DÜŞÜK  
 **Tahmini Süre:** 1 saat
 
 #### 4.8. TalepPortfolyoAIService.php
+
 **TODO:** Gerçek fiyat uygunluk hesaplama
 **Öncelik:** DÜŞÜK  
 **Tahmini Süre:** 2-3 saat
@@ -158,14 +175,17 @@
 ## 📊 ÖNCELİK MATRİSİ
 
 ### YÜKSEK ÖNCELİK
+
 - Yok
 
 ### ORTA ÖNCELİK
+
 1. TalepAnalizController - Toplu analiz özelliği
 2. TalepAnalizController - Rapor oluşturma
 3. BookingRequestController - Database kaydetme, email template
 
 ### DÜŞÜK ÖNCELİK
+
 1. DashboardController - DashboardWidget model
 2. PriceController - PriceRecord model
 3. Ilan.php - Feature tabloları birleştirme
@@ -176,18 +196,22 @@
 ## 🎯 ÖNERİLEN AKSIYON PLANI
 
 ### Faz 1: Orta Öncelikli TODO'lar (1-2 hafta)
+
 1. TalepAnalizController - Toplu analiz özelliği
 2. TalepAnalizController - Rapor oluşturma
 3. BookingRequestController - Database/Email entegrasyonu
 
 ### Faz 2: Model Bekleyen TODO'lar (Opsiyonel)
+
 1. DashboardWidget model oluşturma
 2. PriceRecord model oluşturma (IlanPriceHistory mevcut)
 
 ### Faz 3: Refactoring (Uzun Vadeli)
+
 1. Feature tabloları birleştirme (Dikkatli yapılmalı)
 
 ### Faz 4: Küçük İyileştirmeler
+
 1. Diğer tüm düşük öncelikli TODO'lar
 
 ---
@@ -203,4 +227,3 @@
 
 **Son Güncelleme:** 2025-11-05  
 **Durum:** ✅ Analiz tamamlandı, TODO'lar kategorize edildi
-

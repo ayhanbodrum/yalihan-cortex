@@ -198,29 +198,29 @@ public function generateWithFallback($prompt, $type = 'title')
 
 ### **Backend:**
 
--   [ ] ✅ Ollama server stable (uptime >99%)
--   [ ] ✅ gemma2:2b model güncel
--   [ ] ✅ config/ai.php → `ollama_api_url` set
--   [ ] ✅ Cache configured (Redis)
--   [ ] ✅ Rate limiting active
--   [ ] ✅ Error logging setup
--   [ ] ✅ Fallback mechanism
+- [ ] ✅ Ollama server stable (uptime >99%)
+- [ ] ✅ gemma2:2b model güncel
+- [ ] ✅ config/ai.php → `ollama_api_url` set
+- [ ] ✅ Cache configured (Redis)
+- [ ] ✅ Rate limiting active
+- [ ] ✅ Error logging setup
+- [ ] ✅ Fallback mechanism
 
 ### **AnythingLLM:**
 
--   [ ] ✅ Workspace oluşturuldu
--   [ ] ✅ 7 core doküman embedded
--   [ ] ✅ System prompt ayarlandı
--   [ ] ✅ Vector DB optimized
--   [ ] ✅ 10/10 test passed
+- [ ] ✅ Workspace oluşturuldu
+- [ ] ✅ 7 core doküman embedded
+- [ ] ✅ System prompt ayarlandı
+- [ ] ✅ Vector DB optimized
+- [ ] ✅ 10/10 test passed
 
 ### **Frontend:**
 
--   [ ] ✅ /stable-create sayfası aktif
--   [ ] ✅ AI butonları çalışıyor
--   [ ] ✅ Loading states doğru
--   [ ] ✅ Error handling var
--   [ ] ✅ Toast notifications aktif
+- [ ] ✅ /stable-create sayfası aktif
+- [ ] ✅ AI butonları çalışıyor
+- [ ] ✅ Loading states doğru
+- [ ] ✅ Error handling var
+- [ ] ✅ Toast notifications aktif
 
 ---
 
@@ -259,13 +259,13 @@ Acceptance Rate: >70%
 
 ### **Production Security Checklist:**
 
--   [ ] ✅ API key'ler .env'de
--   [ ] ✅ CSRF protection aktif
--   [ ] ✅ Rate limiting uygulandı
--   [ ] ✅ Input validation var
--   [ ] ✅ PII maskeleme aktif
--   [ ] ✅ Error messages safe (kullanıcıya sistem bilgisi verme)
--   [ ] ✅ CSP headers configured
+- [ ] ✅ API key'ler .env'de
+- [ ] ✅ CSRF protection aktif
+- [ ] ✅ Rate limiting uygulandı
+- [ ] ✅ Input validation var
+- [ ] ✅ PII maskeleme aktif
+- [ ] ✅ Error messages safe (kullanıcıya sistem bilgisi verme)
+- [ ] ✅ CSP headers configured
 
 ### **Monitoring:**
 

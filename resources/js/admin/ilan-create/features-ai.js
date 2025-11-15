@@ -212,7 +212,8 @@ export class FeaturesAI {
             area: document.getElementById('brut_m2')?.value || null,
             net_area: document.getElementById('net_m2')?.value || null,
             location: {
-                city_id: document.getElementById('sehir_id')?.value || null,
+                // Context7: sehir_id → il_id (forbidden pattern)
+                il_id: document.getElementById('il_id')?.value || null,
                 district_id: document.getElementById('ilce_id')?.value || null,
                 neighborhood_id: document.getElementById('mahalle_id')?.value || null,
             },

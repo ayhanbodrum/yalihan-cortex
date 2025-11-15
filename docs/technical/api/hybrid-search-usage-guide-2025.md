@@ -12,14 +12,17 @@
 ## 🎯 **HIZLI BAŞLANGIÇ**
 
 ### **1. Demo Sayfası**
+
 Test etmek için: `http://127.0.0.1:8000/hybrid-search-demo`
 
 ### **2. API Endpoint**
+
 Temel endpoint: `/api/hybrid-search/{type}?q={query}&format={format}`
 
 ### **3. Desteklenen Tipler**
+
 - `kisiler` - Kişi arama
-- `danismanlar` - Danışman arama  
+- `danismanlar` - Danışman arama
 - `sites` - Site/Apartman arama
 
 ---
@@ -27,6 +30,7 @@ Temel endpoint: `/api/hybrid-search/{type}?q={query}&format={format}`
 ## 📊 **VERİ KAYNAKLARI**
 
 ### **Kisiler (Kişiler)**
+
 ```php
 // Tablo: kisiler
 // Model: App\Models\Kisi
@@ -37,7 +41,7 @@ Temel endpoint: `/api/hybrid-search/{type}?q={query}&format={format}`
 {
     "id": 1,
     "ad": "Ahmet",
-    "soyad": "Yılmaz", 
+    "soyad": "Yılmaz",
     "telefon": "0532 123 45 67",
     "email": "ahmet@example.com",
     "status": "Aktif"
@@ -45,6 +49,7 @@ Temel endpoint: `/api/hybrid-search/{type}?q={query}&format={format}`
 ```
 
 ### **Danışmanlar**
+
 ```php
 // Tablo: users
 // Model: App\Models\User
@@ -62,6 +67,7 @@ Temel endpoint: `/api/hybrid-search/{type}?q={query}&format={format}`
 ```
 
 ### **Sites (Site/Apartman)**
+
 ```php
 // Tablo: sites
 // Model: App\Models\Site
@@ -85,6 +91,7 @@ Temel endpoint: `/api/hybrid-search/{type}?q={query}&format={format}`
 ### **1. Select2 Kullanımı (Mevcut Formlar)**
 
 #### **HTML**
+
 ```html
 <select id="kisi_select2" class="form-control">
     <option value="">Kişi seçin...</option>
@@ -92,15 +99,16 @@ Temel endpoint: `/api/hybrid-search/{type}?q={query}&format={format}`
 ```
 
 #### **JavaScript**
+
 ```javascript
-$(document).ready(function() {
+$(document).ready(function () {
     // Hibrit Select2 başlatma
     window.HybridSearchSelect2.initSelect2('#kisi_select2', 'kisiler', {
         placeholder: 'Kişi seçin...',
         allowClear: true,
-        width: '100%'
+        width: '100%',
     });
-    
+
     // Seçim event'i
     $('#kisi_select2').on('select2:select', function (e) {
         var data = e.params.data;
@@ -110,32 +118,29 @@ $(document).ready(function() {
 ```
 
 #### **CSS (Opsiyonel)**
+
 ```html
 <!-- Context7 Select2 teması -->
-<link href="{{ asset('css/context7-select2-theme.css') }}" rel="stylesheet">
+<link href="{{ asset('css/context7-select2-theme.css') }}" rel="stylesheet" />
 ```
 
 ### **2. Context7 Live Search Kullanımı (Yeni Formlar)**
 
 #### **Blade Component**
+
 ```html
-@component('components.context7-live-search', [
-    'id' => 'kisi_search',
-    'searchType' => 'kisiler',
-    'placeholder' => 'Kişi ara...',
-    'maxResults' => 20,
-    'creatable' => false
-])
-@endcomponent
+@component('components.context7-live-search', [ 'id' => 'kisi_search', 'searchType' => 'kisiler',
+'placeholder' => 'Kişi ara...', 'maxResults' => 20, 'creatable' => false ]) @endcomponent
 ```
 
 #### **JavaScript Event Handling**
+
 ```javascript
-document.addEventListener('context7:search:selected', function(event) {
+document.addEventListener('context7:search:selected', function (event) {
     const { instance, result, searchType } = event.detail;
     console.log('Seçilen öğe:', result);
     console.log('Arama tipi:', searchType);
-    
+
     // Form alanlarını doldur
     document.getElementById('selected_person_id').value = result.id;
     document.getElementById('selected_person_name').value = result.display_text;
@@ -145,6 +150,7 @@ document.addEventListener('context7:search:selected', function(event) {
 ### **3. React Select Kullanımı (React Uygulamaları)**
 
 #### **TypeScript Component**
+
 ```tsx
 import React from 'react';
 import HybridSearchReactSelect from '@/components/HybridSearch/ReactSelectSearch';
@@ -177,6 +183,7 @@ export default PersonSelector;
 ### **1. Direct API Calls**
 
 #### **cURL Örneği**
+
 ```bash
 # Kişi arama
 curl -X GET "http://127.0.0.1:8000/api/hybrid-search/kisiler?q=ahmet&format=context7&limit=10"
@@ -189,12 +196,15 @@ curl -X GET "http://127.0.0.1:8000/api/hybrid-search/sites?q=bodrum&format=react
 ```
 
 #### **JavaScript Fetch**
+
 ```javascript
 async function searchPersons(query) {
     try {
-        const response = await fetch(`/api/hybrid-search/kisiler?q=${encodeURIComponent(query)}&format=context7`);
+        const response = await fetch(
+            `/api/hybrid-search/kisiler?q=${encodeURIComponent(query)}&format=context7`
+        );
         const data = await response.json();
-        
+
         if (data.success) {
             return data.data;
         } else {
@@ -207,7 +217,7 @@ async function searchPersons(query) {
 }
 
 // Kullanım
-searchPersons('ahmet').then(results => {
+searchPersons('ahmet').then((results) => {
     console.log('Arama sonuçları:', results);
 });
 ```
@@ -223,7 +233,7 @@ class MyController extends Controller
     {
         $hybridController = new HybridSearchController();
         $response = $hybridController->searchKisiler($request);
-        
+
         return $response;
     }
 }
@@ -280,7 +290,7 @@ const searchInstance = window.context7LiveSearchInstance.addSearchInstance(
     {
         searchType: 'kisiler',
         debounce: 300, // 300ms gecikme
-        maxResults: 20
+        maxResults: 20,
     }
 );
 ```
@@ -293,17 +303,17 @@ const cache = new Map();
 
 async function searchWithCache(query, type) {
     const cacheKey = `${type}:${query}`;
-    
+
     if (cache.has(cacheKey)) {
         return cache.get(cacheKey);
     }
-    
+
     const results = await searchAPI(query, type);
     cache.set(cacheKey, results);
-    
+
     // 5 dakika sonra cache'i temizle
     setTimeout(() => cache.delete(cacheKey), 300000);
-    
+
     return results;
 }
 ```
@@ -313,15 +323,13 @@ async function searchWithCache(query, type) {
 ```javascript
 // Sayfalama ile arama
 async function searchWithPagination(query, page = 1) {
-    const response = await fetch(
-        `/api/hybrid-search/kisiler?q=${query}&page=${page}&limit=20`
-    );
+    const response = await fetch(`/api/hybrid-search/kisiler?q=${query}&page=${page}&limit=20`);
     const data = await response.json();
-    
+
     return {
         results: data.data,
         hasMore: data.pagination?.more || false,
-        totalCount: data.count
+        totalCount: data.count,
     };
 }
 ```
@@ -338,14 +346,14 @@ function validateSearchQuery(query) {
     if (!query || query.length < 2) {
         throw new Error('Arama sorgusu en az 2 karakter olmalı');
     }
-    
+
     if (query.length > 100) {
         throw new Error('Arama sorgusu en fazla 100 karakter olabilir');
     }
-    
+
     // XSS koruması
     const sanitized = query.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
-    
+
     return sanitized;
 }
 ```
@@ -360,15 +368,15 @@ class RateLimiter {
         this.timeWindow = timeWindow;
         this.requests = [];
     }
-    
+
     canMakeRequest() {
         const now = Date.now();
-        this.requests = this.requests.filter(time => now - time < this.timeWindow);
-        
+        this.requests = this.requests.filter((time) => now - time < this.timeWindow);
+
         if (this.requests.length >= this.maxRequests) {
             return false;
         }
-        
+
         this.requests.push(now);
         return true;
     }
@@ -390,7 +398,7 @@ class HybridSearchTest extends TestCase
     public function test_search_kisiler()
     {
         $response = $this->get('/api/hybrid-search/kisiler?q=test&format=context7');
-        
+
         $response->assertStatus(200);
         $response->assertJsonStructure([
             'success',
@@ -414,9 +422,9 @@ class HybridSearchTest extends TestCase
 describe('HybridSearchSelect2', () => {
     test('should initialize Select2', () => {
         document.body.innerHTML = '<select id="test-select"></select>';
-        
+
         window.HybridSearchSelect2.initSelect2('#test-select', 'kisiler');
-        
+
         expect($('#test-select').hasClass('select2-hidden-accessible')).toBe(true);
     });
 });
@@ -433,24 +441,24 @@ describe('HybridSearchSelect2', () => {
 async function safeSearch(query, type) {
     try {
         const response = await fetch(`/api/hybrid-search/${type}?q=${query}`);
-        
+
         if (!response.ok) {
             throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
-        
+
         const data = await response.json();
-        
+
         if (!data.success) {
             throw new Error(data.error || 'Bilinmeyen hata');
         }
-        
+
         return data.data;
     } catch (error) {
         console.error('Arama hatası:', error);
-        
+
         // Kullanıcıya hata mesajı göster
         showErrorMessage('Arama sırasında bir hata oluştu. Lütfen tekrar deneyin.');
-        
+
         return [];
     }
 }
@@ -466,7 +474,7 @@ async function searchWithFallback(query, type) {
         return await searchHybridAPI(query, type);
     } catch (error) {
         console.warn('Hibrit API başarısız, fallback kullanılıyor:', error);
-        
+
         try {
             // Fallback API'yi dene
             return await searchFallbackAPI(query, type);
@@ -501,11 +509,11 @@ if ('ontouchstart' in window) {
     .context7-live-search input {
         font-size: 16px; /* iOS zoom önleme */
     }
-    
+
     .select2-container {
         width: 100% !important;
     }
-    
+
     .context7-search-dropdown {
         max-height: 250px;
     }
@@ -517,18 +525,21 @@ if ('ontouchstart' in window) {
 ## 🔄 **GELECEK GELİŞTİRMELER**
 
 ### **1. React Select Tamamlama**
+
 - [ ] TypeScript interface'leri
 - [ ] Advanced props
 - [ ] Custom styling
 - [ ] Performance optimization
 
 ### **2. Advanced Features**
+
 - [ ] Multi-select support
 - [ ] Custom templates
 - [ ] Advanced filtering
 - [ ] Export functionality
 
 ### **3. Enterprise Features**
+
 - [ ] Analytics dashboard
 - [ ] Usage metrics
 - [ ] A/B testing
@@ -539,11 +550,13 @@ if ('ontouchstart' in window) {
 ## 📚 **REFERANSLAR**
 
 ### **Dokümantasyon**
+
 - [Hibrit Arama Implementation Guide](hybrid-search-system-implementation-complete-2025.md)
 - [Context7 API Documentation](api/context7-api-documentation.md)
 - [Neo Design System](neo-design-schema.md)
 
 ### **Dosyalar**
+
 - `app/Http/Controllers/Api/HybridSearchController.php`
 - `public/js/hybrid-search-select2.js`
 - `public/js/context7-live-search.js`

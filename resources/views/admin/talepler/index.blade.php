@@ -17,7 +17,7 @@
                 </div>
                 <div>
                     <h1 class="text-3xl font-bold text-gray-900 dark:text-white">🤖 AI Destekli Talep Yönetimi</h1>
-                    <p class="text-gray-600 dark:text-gray-400">Context7 Intelligence ile akıllı talep analizi ve eşleştirme</p>
+                    <p class="text-gray-600 dark:text-gray-400">Akıllı talep analizi ve portföy eşleştirme paneli</p>
                 </div>
             </div>
 
@@ -235,7 +235,7 @@
         {{-- Results Section --}}
         @if ($talepler->count() > 0)
             {{-- Modern Cards Grid --}}
-            <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6" data-talepler-grid="true">
                 @foreach ($talepler as $talep)
                     <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm group hover:shadow-lg transition-all duration-300">
                         {{-- Card Header --}}
@@ -266,7 +266,7 @@
                                 {{-- Status Badge --}}
                                 <div class="flex items-center gap-2">
                                     <span
-                                        class="px-2 py-1 text-xs font-semibold rounded-full 
+                                        class="px-2 py-1 text-xs font-semibold rounded-full
                                         @if(strtolower($talep->status ?? 'active') === 'active') bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200
                                         @elseif(strtolower($talep->status ?? 'active') === 'pending') bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200
                                         @elseif(strtolower($talep->status ?? 'active') === 'matched') bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200
@@ -412,6 +412,14 @@
             <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-4">
                 {{ $talepler->appends(request()->query())->links('pagination::tailwind') }}
             </div>
+            <x-admin.meta-info
+                title="Talepler"
+                :meta="['total' => $talepler->total(), 'current_page' => $talepler->currentPage(), 'last_page' => $talepler->lastPage(), 'per_page' => $talepler->perPage()]"
+                :show-per-page="true"
+                :per-page-options="[20,50,100]"
+                listId="talepler"
+                listEndpoint="/api/admin/api/v1/talepler"
+            />
         @else
             {{-- Empty State --}}
             <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-12 text-center">
@@ -741,6 +749,67 @@
                     }
                 }
             }
+        </script>
+        <script>
+        document.addEventListener('DOMContentLoaded', function(){
+            const grid = document.querySelector('[data-talepler-grid="true"]')
+            const paginateBox = document.querySelector('.shadow-sm.p-4')
+            if (!window.ApiAdapter || !grid || !paginateBox) return
+            const statusEl = document.getElementById('meta-status')
+            const totalEl = document.getElementById('meta-total')
+            const pageEl = document.getElementById('meta-page')
+            const metaContainer = document.querySelector('[data-meta="true"]')
+            const perSelect = metaContainer.querySelector('select[data-per-page-select]')
+            let currentPer = 20
+            const urlInit = new URL(window.location.href)
+            const qPer = parseInt(urlInit.searchParams.get('per_page')||'')
+            const storageKey = 'yalihan_admin_per_page'
+            const sPer = parseInt(localStorage.getItem(storageKey)||'')
+            if (qPer) { currentPer = qPer; perSelect.value = String(qPer) }
+            else if (sPer) { currentPer = sPer; perSelect.value = String(sPer) }
+            perSelect.addEventListener('change', function(){ currentPer = parseInt(perSelect.value||'20'); const u = new URL(window.location.href); u.searchParams.set('per_page', String(currentPer)); window.history.replaceState({}, '', u.toString()); loadPage(1) })
+
+            function setLoading(f){ statusEl.setAttribute('aria-busy', f?'true':'false'); statusEl.textContent = f ? 'Yükleniyor…' : '' }
+            function renderCards(items){
+                if (!items || items.length === 0){ grid.innerHTML = '<div class="col-span-3 text-center text-gray-500 dark:text-gray-400 py-12">Kayıt bulunamadı</div>'; return }
+                const cards = items.map(function(it){
+                    const title = it.talep_adi || ('Talep #' + (it.id||''))
+                    const kategori = (it.kategori && it.kategori.name) ? it.kategori.name : ''
+                    return (
+                        '<div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">'
+                        + '<div class="p-6 border-b border-gray-200 dark:border-gray-700">'
+                        + '<div class="flex items-start justify-between">'
+                        + '<div>'
+                        + '<h3 class="font-semibold text-gray-900 dark:text-white">' + title + '</h3>'
+                        + '<p class="text-sm text-gray-500 dark:text-gray-400">#' + (it.id||'') + '</p>'
+                        + '</div>'
+                        + '<span class="px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">' + (it.status||'') + '</span>'
+                        + '</div>'
+                        + '</div>'
+                        + '<div class="p-6">'
+                        + '<div class="text-sm text-gray-600 dark:text-gray-400">' + kategori + '</div>'
+                        + '</div>'
+                        + '</div>'
+                    )
+                }).join('')
+                grid.innerHTML = cards
+            }
+            function updateMeta(meta){
+                if (!meta) return
+                totalEl.textContent = 'Toplam: ' + (meta.total != null ? meta.total : '-')
+                pageEl.innerHTML = '📄 Sayfa: ' + (meta.current_page || 1) + ' / ' + (meta.last_page || 1)
+                if (meta.per_page){ currentPer = parseInt(meta.per_page); perSelect.value = String(meta.per_page); localStorage.setItem(storageKey, String(meta.per_page)) }
+                const links = paginateBox.querySelectorAll('a[href*="page="]')
+                links.forEach(function(a){ const u=new URL(a.href, window.location.origin); const p=parseInt(u.searchParams.get('page')||'1'); a.setAttribute('aria-label','Sayfa ' + p); if (p === meta.current_page) { a.setAttribute('aria-disabled','true') } else { a.removeAttribute('aria-disabled') } })
+            }
+            function loadPage(page){
+                setLoading(true)
+                window.ApiAdapter.get('/talepler', { page: Number(page||1), per_page: currentPer })
+                    .then(function(res){ renderCards(res.data||[]); updateMeta(res.meta||null); setLoading(false) })
+                    .catch(function(err){ setLoading(false); const a=document.createElement('div'); a.setAttribute('role','alert'); a.className='px-6 py-2 text-sm text-red-600'; a.textContent='Hata: '+((err.response&&err.response.message)||err.message||'Bilinmeyen hata'); paginateBox.parentNode.insertBefore(a,paginateBox); setTimeout(function(){ a.remove() }, 4000) })
+            }
+            // Auto-init çalışıyor; ek init gerekmez
+        })
         </script>
     @endpush
 @endsection

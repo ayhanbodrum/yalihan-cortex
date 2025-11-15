@@ -15,7 +15,7 @@
  * @author EmlakPro Team
  */
 
-console.log("🎮 Ultra Interactive Elements v3.0 Loading...");
+console.log('🎮 Ultra Interactive Elements v3.0 Loading...');
 
 class UltraInteractive {
     constructor(options = {}) {
@@ -56,14 +56,14 @@ class UltraInteractive {
         this.setupEventListeners();
         this.detectCapabilities();
 
-        console.log("✨ Ultra Interactive Elements initialized!");
+        console.log('✨ Ultra Interactive Elements initialized!');
     }
 
     setupGlobalStyles() {
-        const styleId = "ultra-interactive-styles";
+        const styleId = 'ultra-interactive-styles';
         if (document.getElementById(styleId)) return;
 
-        const style = document.createElement("style");
+        const style = document.createElement('style');
         style.id = styleId;
         style.textContent = this.getInteractiveStyles();
         document.head.appendChild(style);
@@ -71,32 +71,31 @@ class UltraInteractive {
 
     detectCapabilities() {
         // Check for reduced motion preference
-        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
             this.options.respectReducedMotion = true;
         }
 
         // Check for touch support
-        this.hasTouch =
-            "ontouchstart" in window || navigator.maxTouchPoints > 0;
+        this.hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 
         // Check for 3D transform support
         this.has3DTransforms = this.check3DSupport();
     }
 
     check3DSupport() {
-        const el = document.createElement("div");
+        const el = document.createElement('div');
         const transforms = [
-            "transform",
-            "WebkitTransform",
-            "MozTransform",
-            "msTransform",
-            "OTransform",
+            'transform',
+            'WebkitTransform',
+            'MozTransform',
+            'msTransform',
+            'OTransform',
         ];
 
         for (const transform of transforms) {
             if (el.style[transform] !== undefined) {
-                el.style[transform] = "translate3d(1px,1px,1px)";
-                return el.style[transform].includes("3d");
+                el.style[transform] = 'translate3d(1px,1px,1px)';
+                return el.style[transform].includes('3d');
             }
         }
         return false;
@@ -104,42 +103,29 @@ class UltraInteractive {
 
     setupEventListeners() {
         // Global drag events
-        document.addEventListener(
-            "dragover",
-            this.handleGlobalDragOver.bind(this)
-        );
-        document.addEventListener("drop", this.handleGlobalDrop.bind(this));
+        document.addEventListener('dragover', this.handleGlobalDragOver.bind(this));
+        document.addEventListener('drop', this.handleGlobalDrop.bind(this));
 
         // Touch events for mobile
         if (this.hasTouch) {
-            document.addEventListener(
-                "touchstart",
-                this.handleGlobalTouchStart.bind(this),
-                { passive: false }
-            );
-            document.addEventListener(
-                "touchmove",
-                this.handleGlobalTouchMove.bind(this),
-                { passive: false }
-            );
-            document.addEventListener(
-                "touchend",
-                this.handleGlobalTouchEnd.bind(this)
-            );
+            document.addEventListener('touchstart', this.handleGlobalTouchStart.bind(this), {
+                passive: false,
+            });
+            document.addEventListener('touchmove', this.handleGlobalTouchMove.bind(this), {
+                passive: false,
+            });
+            document.addEventListener('touchend', this.handleGlobalTouchEnd.bind(this));
         }
 
         // Keyboard navigation
         if (this.options.enableKeyboardNav) {
-            document.addEventListener(
-                "keydown",
-                this.handleKeyboardNav.bind(this)
-            );
+            document.addEventListener('keydown', this.handleKeyboardNav.bind(this));
         }
     }
 
     // 🎯 Element Registration
     register(element, options = {}) {
-        if (typeof element === "string") {
+        if (typeof element === 'string') {
             element = document.querySelector(element);
         }
 
@@ -158,7 +144,7 @@ class UltraInteractive {
     }
 
     unregister(element) {
-        if (typeof element === "string") {
+        if (typeof element === 'string') {
             element = document.querySelector(element);
         }
 
@@ -170,7 +156,7 @@ class UltraInteractive {
 
     setupElement(element, options) {
         // Add base classes
-        element.classList.add("ultra-interactive");
+        element.classList.add('ultra-interactive');
 
         if (options.draggable) {
             this.setupDraggable(element, options);
@@ -198,42 +184,28 @@ class UltraInteractive {
 
     // 🖱️ Drag & Drop System
     setupDraggable(element, options) {
-        element.classList.add("ultra-draggable");
+        element.classList.add('ultra-draggable');
         element.draggable = true;
 
-        element.addEventListener("dragstart", (e) =>
-            this.handleDragStart(e, element, options)
-        );
-        element.addEventListener("drag", (e) =>
-            this.handleDrag(e, element, options)
-        );
-        element.addEventListener("dragend", (e) =>
-            this.handleDragEnd(e, element, options)
-        );
+        element.addEventListener('dragstart', (e) => this.handleDragStart(e, element, options));
+        element.addEventListener('drag', (e) => this.handleDrag(e, element, options));
+        element.addEventListener('dragend', (e) => this.handleDragEnd(e, element, options));
 
         // Touch drag support
         if (this.hasTouch) {
-            element.addEventListener("touchstart", (e) =>
+            element.addEventListener('touchstart', (e) =>
                 this.handleTouchDragStart(e, element, options)
             );
         }
     }
 
     setupDroppable(element, options) {
-        element.classList.add("ultra-droppable");
+        element.classList.add('ultra-droppable');
 
-        element.addEventListener("dragenter", (e) =>
-            this.handleDragEnter(e, element, options)
-        );
-        element.addEventListener("dragover", (e) =>
-            this.handleDragOver(e, element, options)
-        );
-        element.addEventListener("dragleave", (e) =>
-            this.handleDragLeave(e, element, options)
-        );
-        element.addEventListener("drop", (e) =>
-            this.handleDrop(e, element, options)
-        );
+        element.addEventListener('dragenter', (e) => this.handleDragEnter(e, element, options));
+        element.addEventListener('dragover', (e) => this.handleDragOver(e, element, options));
+        element.addEventListener('dragleave', (e) => this.handleDragLeave(e, element, options));
+        element.addEventListener('drop', (e) => this.handleDrop(e, element, options));
     }
 
     handleDragStart(e, element, options) {
@@ -247,11 +219,8 @@ class UltraInteractive {
 
         // Set drag data
         if (e.dataTransfer) {
-            e.dataTransfer.effectAllowed = options.dragEffect || "move";
-            e.dataTransfer.setData(
-                "text/plain",
-                JSON.stringify(this.dragState.data)
-            );
+            e.dataTransfer.effectAllowed = options.dragEffect || 'move';
+            e.dataTransfer.setData('text/plain', JSON.stringify(this.dragState.data));
 
             // Custom drag image
             if (options.dragImage) {
@@ -260,7 +229,7 @@ class UltraInteractive {
         }
 
         // Add dragging class
-        element.classList.add("ultra-dragging");
+        element.classList.add('ultra-dragging');
 
         // Create drag ghost
         this.createDragGhost(element, options);
@@ -270,7 +239,7 @@ class UltraInteractive {
             options.onDragStart(e, element, this.dragState);
         }
 
-        this.dispatchEvent("dragstart", {
+        this.dispatchEvent('dragstart', {
             element,
             options,
             dragState: this.dragState,
@@ -291,14 +260,14 @@ class UltraInteractive {
     handleDragEnd(e, element, options) {
         if (!this.dragState) return;
 
-        element.classList.remove("ultra-dragging");
+        element.classList.remove('ultra-dragging');
         this.removeDragGhost();
 
         if (options.onDragEnd) {
             options.onDragEnd(e, element, this.dragState);
         }
 
-        this.dispatchEvent("dragend", {
+        this.dispatchEvent('dragend', {
             element,
             options,
             dragState: this.dragState,
@@ -308,7 +277,7 @@ class UltraInteractive {
 
     handleDragEnter(e, element, options) {
         e.preventDefault();
-        element.classList.add("ultra-drag-over");
+        element.classList.add('ultra-drag-over');
 
         if (options.onDragEnter) {
             options.onDragEnter(e, element);
@@ -326,7 +295,7 @@ class UltraInteractive {
     handleDragLeave(e, element, options) {
         // Only remove if actually leaving the element
         if (!element.contains(e.relatedTarget)) {
-            element.classList.remove("ultra-drag-over");
+            element.classList.remove('ultra-drag-over');
 
             if (options.onDragLeave) {
                 options.onDragLeave(e, element);
@@ -336,18 +305,18 @@ class UltraInteractive {
 
     handleDrop(e, element, options) {
         e.preventDefault();
-        element.classList.remove("ultra-drag-over");
+        element.classList.remove('ultra-drag-over');
 
         try {
-            const data = JSON.parse(e.dataTransfer.getData("text/plain"));
+            const data = JSON.parse(e.dataTransfer.getData('text/plain'));
 
             if (options.onDrop) {
                 options.onDrop(e, element, data);
             }
 
-            this.dispatchEvent("drop", { element, options, data });
+            this.dispatchEvent('drop', { element, options, data });
         } catch (error) {
-            console.warn("Invalid drop data:", error);
+            console.warn('Invalid drop data:', error);
         }
     }
 
@@ -378,12 +347,9 @@ class UltraInteractive {
         const deltaY = touch.clientY - this.touchState.startY;
         const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
 
-        if (
-            !this.touchState.isDragging &&
-            distance > this.options.dragThreshold
-        ) {
+        if (!this.touchState.isDragging && distance > this.options.dragThreshold) {
             this.touchState.isDragging = true;
-            this.touchState.element.classList.add("ultra-touch-dragging");
+            this.touchState.element.classList.add('ultra-touch-dragging');
 
             // Create touch drag visual
             this.createTouchDragVisual(this.touchState.element);
@@ -404,7 +370,7 @@ class UltraInteractive {
         if (!this.touchState) return;
 
         if (this.touchState.isDragging) {
-            this.touchState.element.classList.remove("ultra-touch-dragging");
+            this.touchState.element.classList.remove('ultra-touch-dragging');
             this.removeTouchDragVisual();
 
             // Find drop target
@@ -416,11 +382,7 @@ class UltraInteractive {
             if (dropTarget) {
                 const dropOptions = this.activeElements.get(dropTarget);
                 if (dropOptions && dropOptions.onDrop) {
-                    dropOptions.onDrop(
-                        e,
-                        dropTarget,
-                        this.touchState.options.dragData || {}
-                    );
+                    dropOptions.onDrop(e, dropTarget, this.touchState.options.dragData || {});
                 }
             }
         }
@@ -430,24 +392,17 @@ class UltraInteractive {
 
     // 🎨 Hover Effects
     setupHoverable(element, options) {
-        element.classList.add("ultra-hoverable");
+        element.classList.add('ultra-hoverable');
 
-        element.addEventListener("mouseenter", (e) =>
-            this.handleMouseEnter(e, element, options)
-        );
-        element.addEventListener("mouseleave", (e) =>
-            this.handleMouseLeave(e, element, options)
-        );
-        element.addEventListener("mousemove", (e) =>
-            this.handleMouseMove(e, element, options)
-        );
+        element.addEventListener('mouseenter', (e) => this.handleMouseEnter(e, element, options));
+        element.addEventListener('mouseleave', (e) => this.handleMouseLeave(e, element, options));
+        element.addEventListener('mousemove', (e) => this.handleMouseMove(e, element, options));
     }
 
     handleMouseEnter(e, element, options) {
-        if (this.options.respectReducedMotion && this.prefersReducedMotion())
-            return;
+        if (this.options.respectReducedMotion && this.prefersReducedMotion()) return;
 
-        element.classList.add("ultra-hovered");
+        element.classList.add('ultra-hovered');
 
         // Apply hover transform
         const scale = options.hoverScale || this.options.hoverScale;
@@ -462,11 +417,11 @@ class UltraInteractive {
             options.onHover(e, element);
         }
 
-        this.dispatchEvent("hover", { element, options });
+        this.dispatchEvent('hover', { element, options });
     }
 
     handleMouseLeave(e, element, options) {
-        element.classList.remove("ultra-hovered");
+        element.classList.remove('ultra-hovered');
 
         // Reset transform
         this.applyTransform(element, {
@@ -482,9 +437,8 @@ class UltraInteractive {
     }
 
     handleMouseMove(e, element, options) {
-        if (!element.classList.contains("ultra-hovered")) return;
-        if (this.options.respectReducedMotion && this.prefersReducedMotion())
-            return;
+        if (!element.classList.contains('ultra-hovered')) return;
+        if (this.options.respectReducedMotion && this.prefersReducedMotion()) return;
 
         // 3D tilt effect based on mouse position
         if (options.tiltEffect !== false) {
@@ -508,11 +462,11 @@ class UltraInteractive {
 
     // 👆 Swipe Gestures
     setupSwipeable(element, options) {
-        element.classList.add("ultra-swipeable");
+        element.classList.add('ultra-swipeable');
 
         let swipeState = null;
 
-        element.addEventListener("touchstart", (e) => {
+        element.addEventListener('touchstart', (e) => {
             const touch = e.touches[0];
             swipeState = {
                 startX: touch.clientX,
@@ -521,7 +475,7 @@ class UltraInteractive {
             };
         });
 
-        element.addEventListener("touchmove", (e) => {
+        element.addEventListener('touchmove', (e) => {
             if (!swipeState) return;
 
             const touch = e.touches[0];
@@ -536,7 +490,7 @@ class UltraInteractive {
             }
         });
 
-        element.addEventListener("touchend", (e) => {
+        element.addEventListener('touchend', (e) => {
             if (!swipeState) return;
 
             const touch = e.changedTouches[0];
@@ -545,11 +499,10 @@ class UltraInteractive {
             const deltaTime = Date.now() - swipeState.startTime;
 
             // Reset visual
-            element.style.transform = "";
+            element.style.transform = '';
 
             // Detect swipe
-            const velocity =
-                Math.sqrt(deltaX * deltaX + deltaY * deltaY) / deltaTime;
+            const velocity = Math.sqrt(deltaX * deltaX + deltaY * deltaY) / deltaTime;
 
             if (
                 velocity > 0.5 &&
@@ -559,14 +512,10 @@ class UltraInteractive {
                 const direction = this.getSwipeDirection(deltaX, deltaY);
 
                 if (options.onSwipe) {
-                    options.onSwipe(
-                        direction,
-                        { deltaX, deltaY, velocity },
-                        element
-                    );
+                    options.onSwipe(direction, { deltaX, deltaY, velocity }, element);
                 }
 
-                this.dispatchEvent("swipe", {
+                this.dispatchEvent('swipe', {
                     element,
                     direction,
                     delta: { deltaX, deltaY },
@@ -583,17 +532,17 @@ class UltraInteractive {
         const absDeltaY = Math.abs(deltaY);
 
         if (absDeltaX > absDeltaY) {
-            return deltaX > 0 ? "right" : "left";
+            return deltaX > 0 ? 'right' : 'left';
         } else {
-            return deltaY > 0 ? "down" : "up";
+            return deltaY > 0 ? 'down' : 'up';
         }
     }
 
     // 🖱️ Click Effects
     setupClickable(element, options) {
-        element.classList.add("ultra-clickable");
+        element.classList.add('ultra-clickable');
 
-        element.addEventListener("click", (e) => {
+        element.addEventListener('click', (e) => {
             this.createRippleEffect(e, element, options);
 
             if (options.onClick) {
@@ -602,8 +551,8 @@ class UltraInteractive {
         });
 
         // Keyboard activation
-        element.addEventListener("keydown", (e) => {
-            if (e.key === "Enter" || e.key === " ") {
+        element.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
                 this.createRippleEffect(e, element, options);
 
@@ -615,20 +564,19 @@ class UltraInteractive {
     }
 
     createRippleEffect(e, element, options) {
-        if (this.options.respectReducedMotion && this.prefersReducedMotion())
-            return;
+        if (this.options.respectReducedMotion && this.prefersReducedMotion()) return;
 
-        const ripple = document.createElement("div");
-        ripple.className = "ultra-ripple";
+        const ripple = document.createElement('div');
+        ripple.className = 'ultra-ripple';
 
         const rect = element.getBoundingClientRect();
         const size = Math.max(rect.width, rect.height);
         const x = e.clientX - rect.left - size / 2;
         const y = e.clientY - rect.top - size / 2;
 
-        ripple.style.width = ripple.style.height = size + "px";
-        ripple.style.left = x + "px";
-        ripple.style.top = y + "px";
+        ripple.style.width = ripple.style.height = size + 'px';
+        ripple.style.left = x + 'px';
+        ripple.style.top = y + 'px';
 
         element.appendChild(ripple);
 
@@ -644,35 +592,35 @@ class UltraInteractive {
     applyTransform(element, transforms) {
         const transformString = Object.entries(transforms)
             .map(([key, value]) => {
-                if (key.includes("rotate")) {
+                if (key.includes('rotate')) {
                     return `${key}(${value}deg)`;
-                } else if (key === "scale") {
+                } else if (key === 'scale') {
                     return `scale(${value})`;
                 } else {
                     return `${key}(${value}px)`;
                 }
             })
-            .join(" ");
+            .join(' ');
 
         if (this.options.useTransform3d && this.has3DTransforms) {
-            element.style.transform = transformString + " translateZ(0)";
+            element.style.transform = transformString + ' translateZ(0)';
         } else {
             element.style.transform = transformString;
         }
 
         if (this.options.useWillChange) {
-            element.style.willChange = "transform";
+            element.style.willChange = 'transform';
         }
     }
 
     createDragGhost(element, options) {
         const ghost = element.cloneNode(true);
-        ghost.className = "ultra-drag-ghost";
-        ghost.style.position = "fixed";
-        ghost.style.pointerEvents = "none";
-        ghost.style.zIndex = "10000";
-        ghost.style.opacity = "0.8";
-        ghost.style.transform = "scale(0.9)";
+        ghost.className = 'ultra-drag-ghost';
+        ghost.style.position = 'fixed';
+        ghost.style.pointerEvents = 'none';
+        ghost.style.zIndex = '10000';
+        ghost.style.opacity = '0.8';
+        ghost.style.transform = 'scale(0.9)';
 
         document.body.appendChild(ghost);
         this.dragGhost = ghost;
@@ -680,8 +628,8 @@ class UltraInteractive {
 
     updateDragGhost(x, y) {
         if (this.dragGhost) {
-            this.dragGhost.style.left = x - 20 + "px";
-            this.dragGhost.style.top = y - 20 + "px";
+            this.dragGhost.style.left = x - 20 + 'px';
+            this.dragGhost.style.top = y - 20 + 'px';
         }
     }
 
@@ -694,12 +642,12 @@ class UltraInteractive {
 
     createTouchDragVisual(element) {
         const visual = element.cloneNode(true);
-        visual.className = "ultra-touch-drag-visual";
-        visual.style.position = "fixed";
-        visual.style.pointerEvents = "none";
-        visual.style.zIndex = "10000";
-        visual.style.opacity = "0.7";
-        visual.style.transform = "scale(0.8)";
+        visual.className = 'ultra-touch-drag-visual';
+        visual.style.position = 'fixed';
+        visual.style.pointerEvents = 'none';
+        visual.style.zIndex = '10000';
+        visual.style.opacity = '0.7';
+        visual.style.transform = 'scale(0.8)';
 
         document.body.appendChild(visual);
         this.touchDragVisual = visual;
@@ -707,8 +655,8 @@ class UltraInteractive {
 
     updateTouchDragVisual(x, y) {
         if (this.touchDragVisual) {
-            this.touchDragVisual.style.left = x - 30 + "px";
-            this.touchDragVisual.style.top = y - 30 + "px";
+            this.touchDragVisual.style.left = x - 30 + 'px';
+            this.touchDragVisual.style.top = y - 30 + 'px';
         }
     }
 
@@ -733,37 +681,37 @@ class UltraInteractive {
     }
 
     prefersReducedMotion() {
-        return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     }
 
     setupAccessibility(element, options) {
         if (options.draggable || options.clickable) {
-            if (!element.hasAttribute("tabindex")) {
-                element.setAttribute("tabindex", "0");
+            if (!element.hasAttribute('tabindex')) {
+                element.setAttribute('tabindex', '0');
             }
 
-            if (!element.hasAttribute("role")) {
-                element.setAttribute("role", "button");
+            if (!element.hasAttribute('role')) {
+                element.setAttribute('role', 'button');
             }
         }
 
         if (options.ariaLabel) {
-            element.setAttribute("aria-label", options.ariaLabel);
+            element.setAttribute('aria-label', options.ariaLabel);
         }
     }
 
     cleanupElement(element) {
         element.classList.remove(
-            "ultra-interactive",
-            "ultra-draggable",
-            "ultra-droppable",
-            "ultra-hoverable",
-            "ultra-swipeable",
-            "ultra-clickable"
+            'ultra-interactive',
+            'ultra-draggable',
+            'ultra-droppable',
+            'ultra-hoverable',
+            'ultra-swipeable',
+            'ultra-clickable'
         );
 
-        element.style.transform = "";
-        element.style.willChange = "";
+        element.style.transform = '';
+        element.style.willChange = '';
     }
 
     handleKeyboardNav(e) {
@@ -790,9 +738,7 @@ class UltraInteractive {
     }
 
     generateId() {
-        return `interactive_${Date.now()}_${Math.random()
-            .toString(36)
-            .substr(2, 9)}`;
+        return `interactive_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     }
 
     getInteractiveStyles() {
@@ -926,27 +872,22 @@ window.makeClickable = (element, options) =>
 
 // Alpine.js integration
 if (window.Alpine) {
-    window.Alpine.magic("interactive", () => window.interactive);
+    window.Alpine.magic('interactive', () => window.interactive);
 
     // Alpine directives
-    ["draggable", "droppable", "hoverable", "swipeable", "clickable"].forEach(
-        (type) => {
-            window.Alpine.directive(
-                type,
-                (el, { expression }, { evaluate, cleanup }) => {
-                    const options = evaluate(expression) || {};
-                    const id = window.interactive.register(el, {
-                        [type]: true,
-                        ...options,
-                    });
+    ['draggable', 'droppable', 'hoverable', 'swipeable', 'clickable'].forEach((type) => {
+        window.Alpine.directive(type, (el, { expression }, { evaluate, cleanup }) => {
+            const options = evaluate(expression) || {};
+            const id = window.interactive.register(el, {
+                [type]: true,
+                ...options,
+            });
 
-                    cleanup(() => {
-                        window.interactive.unregister(el);
-                    });
-                }
-            );
-        }
-    );
+            cleanup(() => {
+                window.interactive.unregister(el);
+            });
+        });
+    });
 }
 
-console.log("🎮 Ultra Interactive Elements ready!");
+console.log('🎮 Ultra Interactive Elements ready!');

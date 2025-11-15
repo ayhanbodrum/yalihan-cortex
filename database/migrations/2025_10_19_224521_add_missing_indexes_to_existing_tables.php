@@ -46,8 +46,21 @@ return new class extends Migration
             if (!$this->indexExists('ilan_kategorileri', 'idx_ilan_kategorileri_status')) {
                 $table->index('status', 'idx_ilan_kategorileri_status');
             }
-            if (!$this->indexExists('ilan_kategorileri', 'idx_ilan_kategorileri_order')) {
-                $table->index('order', 'idx_ilan_kategorileri_order');
+            // ✅ CONTEXT7: display_order kolonu migration ile eklenmiş olabilir, kontrol et
+            if (Schema::hasColumn('ilan_kategorileri', 'display_order')) {
+                if (!$this->indexExists('ilan_kategorileri', 'idx_ilan_kategorileri_display_order')) {
+                    try {
+                        $table->index('display_order', 'idx_ilan_kategorileri_display_order'); // Context7: order → display_order
+                    } catch (\Exception $e) {
+                        // Index zaten varsa veya kolon yoksa skip et
+                        if (
+                            strpos($e->getMessage(), 'Duplicate key name') === false &&
+                            strpos($e->getMessage(), "doesn't exist") === false
+                        ) {
+                            throw $e;
+                        }
+                    }
+                }
             }
         });
 
@@ -75,8 +88,21 @@ return new class extends Migration
             if (!$this->indexExists('ozellikler', 'idx_ozellikler_status')) {
                 $table->index('status', 'idx_ozellikler_status');
             }
-            if (!$this->indexExists('ozellikler', 'idx_ozellikler_order')) {
-                $table->index('order', 'idx_ozellikler_order');
+            // ✅ CONTEXT7: display_order kolonu migration ile eklenmiş olabilir, kontrol et
+            if (Schema::hasColumn('ozellikler', 'display_order')) {
+                if (!$this->indexExists('ozellikler', 'idx_ozellikler_display_order')) {
+                    try {
+                        $table->index('display_order', 'idx_ozellikler_display_order'); // Context7: order → display_order
+                    } catch (\Exception $e) {
+                        // Index zaten varsa veya kolon yoksa skip et
+                        if (
+                            strpos($e->getMessage(), 'Duplicate key name') === false &&
+                            strpos($e->getMessage(), "doesn't exist") === false
+                        ) {
+                            throw $e;
+                        }
+                    }
+                }
             }
         });
 

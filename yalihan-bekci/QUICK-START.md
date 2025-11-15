@@ -66,9 +66,9 @@ php artisan schedule:run
 
 **Otomatik görevler:**
 
--   **Her gün 03:00:** Kuralları yeniden öğren
--   **Her 6 saat:** Testleri çalıştır
--   **Her Pazar 02:00:** Context7 compliance check
+- **Her gün 03:00:** Kuralları yeniden öğren
+- **Her 6 saat:** Testleri çalıştır
+- **Her Pazar 02:00:** Context7 compliance check
 
 ---
 
@@ -96,12 +96,10 @@ curl http://localhost:3333/patterns/common
 TestSprite Cursor açıldığında otomatik çalışır:
 
 1. **Kod yazarken:**
-
     - Yasaklı kullanım → Altı kırmızı çizilir
     - Hover → Öneri gösterilir
 
 2. **Kaydettiğinde:**
-
     - Otomatik validate eder
     - Context7 ihlal var mı kontrol eder
 

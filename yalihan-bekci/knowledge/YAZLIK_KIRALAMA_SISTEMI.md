@@ -57,12 +57,14 @@ Yazlık kiralama sistemi, emlak platformunda turizm amaçlı kısa süreli kiral
 **Path:** `app/Models/YazlikFiyatlandirma.php`
 
 **Önemli Metodlar:**
+
 - `calculatePrice($days)` - Gün sayısına göre fiyat hesaplama
 - `scopeActive()` - Aktif fiyatlandırmalar
 - `scopeTarihAraliginda($baslangic, $bitis)` - Tarih aralığı filtreleme
 - `getSezonTipleri()` - Sezon tipleri array
 
 **Sezon Tipleri:**
+
 - `yaz` - Yaz Sezonu
 - `ara_sezon` - Ara Sezon
 - `kis` - Kış Sezonu
@@ -72,12 +74,14 @@ Yazlık kiralama sistemi, emlak platformunda turizm amaçlı kısa süreli kiral
 **Path:** `app/Models/YazlikRezervasyon.php`
 
 **Önemli Metodlar:**
+
 - `scopeCakisan($checkIn, $checkOut, $excludeId)` - Çakışan rezervasyonlar
 - `updateDurum($status, $not)` - Durum güncelleme
 - `iptalEdilebilinirMi()` - İptal edilebilirlik kontrolü
 - `getKonaklumaSuresiAttribute()` - Konaklama süresi (gün)
 
 **Status Enum:**
+
 - `beklemede` - Beklemede
 - `onaylandi` - Onaylandı
 - `iptal` - İptal Edildi
@@ -90,6 +94,7 @@ Yazlık kiralama sistemi, emlak platformunda turizm amaçlı kısa süreli kiral
 **Path:** `app/Http/Controllers/Admin/YazlikKiralamaController.php`
 
 **Ana Metodlar:**
+
 - Yazlık ilan yönetimi (CRUD)
 - Rezervasyon yönetimi
 - Sezon yönetimi
@@ -101,6 +106,7 @@ Yazlık kiralama sistemi, emlak platformunda turizm amaçlı kısa süreli kiral
 **Path:** `app/Http/Controllers/Admin/TakvimController.php`
 
 **Ana Metodlar:**
+
 - Takvim görünümü
 - Rezervasyon takvimi API
 - Tarih bloklama
@@ -164,14 +170,14 @@ resources/views/yazlik-kiralama/
 Yazlık kiralama sistemi özel feature kategorileri kullanır:
 
 1. **Yazlık Özellikleri** (slug: `yazlik-ozellikleri`)
-   - Havuz özellikleri
-   - Denize uzaklık
-   - Minimum konaklama
-   - vb.
+    - Havuz özellikleri
+    - Denize uzaklık
+    - Minimum konaklama
+    - vb.
 
 2. **Yazlık Ekstra Özellikler**
-   - Ekstra tesisler
-   - Aktivite olanakları
+    - Ekstra tesisler
+    - Aktivite olanakları
 
 ## 🚀 SEEDER'LAR
 
@@ -252,4 +258,3 @@ public function yazlikRezervasyonlar()
 4. Route tanımla
 5. View oluştur
 6. API endpoint ekle
-

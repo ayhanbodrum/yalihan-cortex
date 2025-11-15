@@ -312,4 +312,3 @@ class PriceTextService
         return $symbols[$currency] ?? $currency;
     }
 }
-

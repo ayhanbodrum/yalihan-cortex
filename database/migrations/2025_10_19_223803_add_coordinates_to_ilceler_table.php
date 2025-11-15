@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::table('ilceler', function (Blueprint $table) {
             // Status alanı ekle (koordinatlar zaten var: lat, lng)
             $table->enum('status', ['Aktif', 'Pasif'])->default('Aktif')->after('lng')->comment('District status');
-            
+
             // Index'ler ekle
             $table->index(['lat', 'lng'], 'idx_ilceler_coordinates');
             $table->index('status', 'idx_ilceler_status');

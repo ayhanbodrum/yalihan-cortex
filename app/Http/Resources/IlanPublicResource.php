@@ -6,9 +6,9 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
  * İlan Public API Resource
- * 
+ *
  * Context7 Standardı: C7-API-RESOURCE-PUBLIC-2025-11-05
- * 
+ *
  * Mahrem bilgileri gizler, sadece public API'de görüntülenmesi gereken alanları döndürür
  */
 class IlanPublicResource extends JsonResource
@@ -27,11 +27,11 @@ class IlanPublicResource extends JsonResource
             'baslik' => $this->baslik,
             'aciklama' => $this->aciklama,
             'status' => $this->status,
-            
+
             // Fiyat Bilgileri (Public)
             'price' => $this->price,
             'currency' => $this->currency,
-            
+
             // Lokasyon Bilgileri (Public)
             'il' => $this->whenLoaded('il', function () {
                 return [
@@ -52,7 +52,7 @@ class IlanPublicResource extends JsonResource
                 ];
             }),
             'adres' => $this->adres,
-            
+
             // Kategori Bilgileri (Public)
             'kategori' => $this->whenLoaded('kategori', function () {
                 return [
@@ -60,13 +60,13 @@ class IlanPublicResource extends JsonResource
                     'name' => $this->kategori->name,
                 ];
             }),
-            
+
             // Özellikler (Public)
             'metrekare' => $this->metrekare,
             'oda_sayisi' => $this->oda_sayisi,
             'banyo_sayisi' => $this->banyo_sayisi,
             'balkon_sayisi' => $this->balkon_sayisi,
-            
+
             // Fotoğraflar (Public)
             'fotograflar' => $this->whenLoaded('fotograflar', function () {
                 return $this->fotograflar->map(function ($foto) {
@@ -78,11 +78,11 @@ class IlanPublicResource extends JsonResource
                     ];
                 })->sortBy('sira')->values();
             }),
-            
+
             // Tarihler (Public)
             'created_at' => $this->created_at?->toIso8601String(),
             'updated_at' => $this->updated_at?->toIso8601String(),
-            
+
             // MAHREM BİLGİLER GİZLENİR:
             // - referans_no (internal kullanım için)
             // - dosya_adi (sadece internal kullanım)
@@ -95,4 +95,3 @@ class IlanPublicResource extends JsonResource
         ];
     }
 }
-

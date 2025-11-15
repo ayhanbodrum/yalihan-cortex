@@ -405,3 +405,10 @@ export class ValidationManager {
         }
     }
 }
+
+// Global erişim (Vite ile bundle edilse bile window üzerinden kullanılabilsin)
+try {
+    if (typeof window !== 'undefined') {
+        window.ValidationManager = ValidationManager;
+    }
+} catch (e) {}

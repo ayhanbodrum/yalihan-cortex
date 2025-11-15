@@ -55,4 +55,3 @@ class MuglaIlceleriSeeder extends Seeder
         $this->command->info('✅ ' . count($districts) . ' ilçe eklendi (Muğla)');
     }
 }
-

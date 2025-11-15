@@ -20,18 +20,18 @@
                     </div>
                     <input type="text" name="search" value="{{ request('search') }}" placeholder="{{ $searchPlaceholder }}" class="pl-10 w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-800 dark:text-white">
                 </div>
-                
+
                 <div class="flex space-x-2">
                     <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-gray-800 transition-colors duration-200">
                         <i class="fas fa-search mr-2"></i> {{ $searchText }}
                     </button>
-                    
+
                     @if(request()->anyFilled(array_merge(['search'], array_column($filters, 'name'))))
                         <a href="{{ route($route) }}" class="px-4 py-2 bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 dark:focus:ring-offset-gray-800 transition-colors duration-200">
                             <i class="fas fa-times mr-2"></i> {{ $resetText }}
                         </a>
                     @endif
-                    
+
                     @if($advancedFilters && count($filters) > 0)
                         <button type="button" id="toggle-filters" class="px-4 py-2 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 rounded-lg hover:bg-indigo-200 dark:hover:bg-indigo-800/30 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-gray-800 transition-colors duration-200">
                             <i class="fas fa-filter mr-2"></i> Filtreler
@@ -40,7 +40,7 @@
                 </div>
             </div>
         @endif
-        
+
         @if(count($filters) > 0)
             <div id="filters-container" class="{{ $advancedFilters ? 'hidden' : '' }} grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 pt-4 border-t border-gray-200 dark:border-gray-700">
                 @foreach($filters as $filter)
@@ -51,12 +51,12 @@
                         $filterOptions = $filter['options'] ?? [];
                         $filterValue = request($filterName);
                     @endphp
-                    
+
                     <div>
                         <label for="filter_{{ $filterName }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                             {{ $filterLabel }}
                         </label>
-                        
+
                         @if($filterType === 'select')
                             <select id="filter_{{ $filterName }}" name="{{ $filterName }}" class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-800 dark:text-white">
                                 <option value="">Tümü</option>
@@ -93,11 +93,11 @@
         document.addEventListener('DOMContentLoaded', function() {
             const toggleButton = document.getElementById('toggle-filters');
             const filtersContainer = document.getElementById('filters-container');
-            
+
             if (toggleButton && filtersContainer) {
                 toggleButton.addEventListener('click', function() {
                     filtersContainer.classList.toggle('hidden');
-                    
+
                     // İkon değiştirme
                     const icon = toggleButton.querySelector('i');
                     if (icon) {

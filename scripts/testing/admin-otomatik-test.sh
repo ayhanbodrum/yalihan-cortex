@@ -54,4 +54,3 @@ fi
 echo ""
 echo "✨ Test tamamlandı!"
 echo ""
-

@@ -79,8 +79,8 @@
     @if($maxlength)
         <div class="flex justify-end">
             <span class="text-xs text-gray-500 dark:text-gray-400">
-                <span x-data="{ count: {{ strlen(old($name, $value)) }} }" 
-                      x-text="count" 
+                <span x-data="{ count: {{ strlen(old($name, $value)) }} }"
+                      x-text="count"
                       @input="count = $event.target.value.length"></span> / {{ $maxlength }}
             </span>
         </div>

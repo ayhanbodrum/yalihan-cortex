@@ -75,10 +75,10 @@ Authorization: Bearer {token}
 
 **Validation Rules:**
 
--   `property_type`: Required, must be one of: land, yazlik, apartment, house, villa, office, shop
--   `title`: Required, max 255 characters
--   `metrekare`: Optional, numeric, min 1
--   `fiyat`: Optional, numeric, min 0
+- `property_type`: Required, must be one of: land, yazlik, apartment, house, villa, office, shop
+- `title`: Required, max 255 characters
+- `metrekare`: Optional, numeric, min 1
+- `fiyat`: Optional, numeric, min 0
 
 **Example Request:**
 
@@ -106,7 +106,7 @@ curl -X POST /admin/ilanlar/ai-property-type-description \
 
 **URL Parameters:**
 
--   `propertyType`: string (required) - apartment, house, villa, land, yazlik, office, shop
+- `propertyType`: string (required) - apartment, house, villa, land, yazlik, office, shop
 
 **Response Success (200):**
 
@@ -196,19 +196,19 @@ curl -X GET /admin/ilanlar/api/performance
 
 ### **Rate Limiting**
 
--   **Default Limit:** 100 requests per minute per IP
--   **AI Endpoints:** 10 requests per minute per user
--   **Cache Endpoints:** 500 requests per minute per IP
+- **Default Limit:** 100 requests per minute per IP
+- **AI Endpoints:** 10 requests per minute per user
+- **Cache Endpoints:** 500 requests per minute per IP
 
 ### **Error Codes**
 
--   **200:** Success
--   **400:** Bad Request (validation error)
--   **401:** Unauthorized
--   **403:** Forbidden
--   **404:** Not Found
--   **429:** Too Many Requests (rate limit)
--   **500:** Internal Server Error
+- **200:** Success
+- **400:** Bad Request (validation error)
+- **401:** Unauthorized
+- **403:** Forbidden
+- **404:** Not Found
+- **429:** Too Many Requests (rate limit)
+- **500:** Internal Server Error
 
 ---
 
@@ -216,10 +216,10 @@ curl -X GET /admin/ilanlar/api/performance
 
 ### **Performance Metrics**
 
--   **Response Time:** < 2 seconds
--   **Success Rate:** > 95%
--   **Error Rate:** < 5%
--   **Availability:** > 99.9%
+- **Response Time:** < 2 seconds
+- **Success Rate:** > 95%
+- **Error Rate:** < 5%
+- **Availability:** > 99.9%
 
 ### **Monitoring Endpoints**
 
@@ -279,9 +279,9 @@ CONTEXT7_MONITORING=true
 
 ### **Versioning Strategy:**
 
--   **URL Versioning:** `/api/v1/`
--   **Header Versioning:** `API-Version: v1`
--   **Backward Compatibility:** 2 versions supported
+- **URL Versioning:** `/api/v1/`
+- **Header Versioning:** `API-Version: v1`
+- **Backward Compatibility:** 2 versions supported
 
 ---
 
@@ -289,28 +289,28 @@ CONTEXT7_MONITORING=true
 
 ### **API Testing**
 
--   [ ] Property Type AI Description API
--   [ ] Dynamic Form Fields API
--   [ ] AI Property Suggestions API
--   [ ] Error handling
--   [ ] Validation
--   [ ] Rate limiting
--   [ ] Authentication
--   [ ] Performance
+- [ ] Property Type AI Description API
+- [ ] Dynamic Form Fields API
+- [ ] AI Property Suggestions API
+- [ ] Error handling
+- [ ] Validation
+- [ ] Rate limiting
+- [ ] Authentication
+- [ ] Performance
 
 ### **Integration Testing**
 
--   [ ] Frontend integration
--   [ ] Cache integration
--   [ ] Database integration
--   [ ] AI service integration
+- [ ] Frontend integration
+- [ ] Cache integration
+- [ ] Database integration
+- [ ] AI service integration
 
 ### **Performance Testing**
 
--   [ ] Load testing
--   [ ] Stress testing
--   [ ] Endurance testing
--   [ ] Spike testing
+- [ ] Load testing
+- [ ] Stress testing
+- [ ] Endurance testing
+- [ ] Spike testing
 
 ---
 

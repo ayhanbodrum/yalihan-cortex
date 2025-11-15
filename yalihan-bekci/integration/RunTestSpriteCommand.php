@@ -55,12 +55,12 @@ class RunTestSpriteCommand extends Command
         // MCP sunucusunun çalıştığını kontrol et
         if (!$this->testSpriteService->isServerRunning()) {
             $this->warn('TestSprite MCP sunucusu çalışmıyor. Başlatılıyor...');
-            
+
             if (!$this->testSpriteService->startServer()) {
                 $this->error('TestSprite MCP sunucusu başlatılamadı!');
                 return 1;
             }
-            
+
             $this->info('TestSprite MCP sunucusu başlatıldı.');
         }
 
@@ -99,7 +99,7 @@ class RunTestSpriteCommand extends Command
             $this->error($report['message']);
         } else {
             $this->info("Rapor oluşturuldu: {$report['path']}");
-            
+
             // Başarısız testler varsa uyarı göster
             if ($results['summary']['failedTests'] > 0) {
                 $this->warn("Dikkat: {$results['summary']['failedTests']} test başarısız oldu!");

@@ -24,19 +24,19 @@ Responsive: Mobile-first
 **"ADIM ADIM GEÇİŞ" - 3 Aşama:**
 
 1. **PHASE 1: Cleanup** ✅ TAMAMLANDI
-   - Duplicate CSS dosyaları silindi
-   - app.css optimize edildi (1,158 → 217 satır, %81 küçültme)
-   - Build başarılı: 161.49 kB (gzip: 21.47 kB)
+    - Duplicate CSS dosyaları silindi
+    - app.css optimize edildi (1,158 → 217 satır, %81 küçültme)
+    - Build başarılı: 161.49 kB (gzip: 21.47 kB)
 
 2. **PHASE 2: Touch and Convert** 🔄 AKTİF
-   - Yeni sayfalar → Saf Tailwind
-   - Düzeltilen sayfalar → Neo → Tailwind dönüşümü
-   - Çalışan sayfalar → Dokunma!
+    - Yeni sayfalar → Saf Tailwind
+    - Düzeltilen sayfalar → Neo → Tailwind dönüşümü
+    - Çalışan sayfalar → Dokunma!
 
 3. **PHASE 3: Component Library** 📅 6+ ay
-   - Headless UI standartlarında Blade components
-   - 20+ form component
-   - WCAG 2.1 AA accessibility
+    - Headless UI standartlarında Blade components
+    - 20+ form component
+    - WCAG 2.1 AA accessibility
 
 ---
 
@@ -46,24 +46,20 @@ Responsive: Mobile-first
 
 ```html
 <!-- ✅ DOĞRU: Pure Tailwind -->
-<button class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium rounded-lg shadow-lg transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+<button
+    class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium rounded-lg shadow-lg transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+>
     Kaydet
 </button>
 
 <!-- ❌ YASAK: Neo classes (transition period hariç) -->
-<button class="neo-btn neo-btn-primary">
-    Kaydet
-</button>
+<button class="neo-btn neo-btn-primary">Kaydet</button>
 
 <!-- ❌ YASAK: Inline styles -->
-<button style="background: blue; padding: 10px;">
-    Kaydet
-</button>
+<button style="background: blue; padding: 10px;">Kaydet</button>
 
 <!-- ❌ YASAK: !important -->
-<div class="mt-4" style="margin-top: 20px !important;">
-    Content
-</div>
+<div class="mt-4" style="margin-top: 20px !important;">Content</div>
 ```
 
 ---
@@ -78,7 +74,9 @@ Responsive: Mobile-first
 </div>
 
 <!-- Input elements -->
-<input class="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white focus:ring-blue-500 dark:focus:ring-blue-400">
+<input
+    class="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white focus:ring-blue-500 dark:focus:ring-blue-400"
+/>
 
 <!-- Buttons -->
 <button class="bg-blue-600 dark:bg-blue-500 hover:bg-blue-700 dark:hover:bg-blue-600">
@@ -138,6 +136,7 @@ Responsive: Mobile-first
 ```
 
 **Breakpoints:**
+
 - `sm:` 640px (mobiles)
 - `md:` 768px (tablets)
 - `lg:` 1024px (laptops)
@@ -150,7 +149,9 @@ Responsive: Mobile-first
 
 ```html
 <!-- ✅ Focus States -->
-<button class="focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-blue-400 dark:focus:ring-offset-gray-900">
+<button
+    class="focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-blue-400 dark:focus:ring-offset-gray-900"
+>
     Action
 </button>
 
@@ -164,32 +165,28 @@ Responsive: Mobile-first
     <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
         Email Adresi
     </label>
-    <input 
-        id="email" 
-        type="email" 
-        name="email" 
-        required 
-        aria-required="true"
-        class="..."
-    >
+    <input id="email" type="email" name="email" required aria-required="true" class="..." />
 </div>
 
 <!-- ✅ Alt Text for Images -->
-<img 
-    src="/images/villa.jpg" 
-    alt="Deniz manzaralı 3+1 villa, 150m², Antalya" 
+<img
+    src="/images/villa.jpg"
+    alt="Deniz manzaralı 3+1 villa, 150m², Antalya"
     class="w-full h-auto rounded-lg"
->
+/>
 
 <!-- ✅ Skip Links -->
-<a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-blue-600 focus:text-white focus:rounded-lg">
+<a
+    href="#main-content"
+    class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-blue-600 focus:text-white focus:rounded-lg"
+>
     İçeriğe atla
 </a>
 
 <!-- ✅ Keyboard Navigation -->
-<div 
-    tabindex="0" 
-    role="button" 
+<div
+    tabindex="0"
+    role="button"
     @keydown.enter="handleClick"
     @keydown.space="handleClick"
     class="cursor-pointer focus:ring-2 focus:ring-blue-500"
@@ -210,13 +207,13 @@ Responsive: Mobile-first
 
 ```html
 <!-- ✅ Lazy Loading -->
-<img src="/images/large.jpg" loading="lazy" alt="...">
+<img src="/images/large.jpg" loading="lazy" alt="..." />
 
 <!-- ✅ Async Scripts -->
 <script src="/js/analytics.js" async></script>
 
 <!-- ✅ Preload Critical Assets -->
-<link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossorigin />
 
 <!-- ✅ Minimize Re-renders (Alpine.js) -->
 <div x-data="{ count: 0 }" x-cloak>
@@ -230,8 +227,7 @@ Responsive: Mobile-first
 </div>
 
 <!-- ❌ AVOID: Layout shifts -->
-<div class="transition-all"> <!-- width, height, margin değişir → layout shift -->
-</div>
+<div class="transition-all"><!-- width, height, margin değişir → layout shift --></div>
 ```
 
 ---
@@ -242,14 +238,10 @@ Responsive: Mobile-first
 
 ```html
 <!-- ❌ YASAK -->
-<div style="margin-top: 10px; background: blue;">
-    Content
-</div>
+<div style="margin-top: 10px; background: blue;">Content</div>
 
 <!-- ✅ DOĞRU -->
-<div class="mt-2.5 bg-blue-500">
-    Content
-</div>
+<div class="mt-2.5 bg-blue-500">Content</div>
 ```
 
 ---
@@ -310,14 +302,10 @@ p {
 
 ```html
 <!-- ❌ YENİ SAYFALARDA YASAK -->
-<button class="neo-btn neo-btn-primary">
-    Save
-</button>
+<button class="neo-btn neo-btn-primary">Save</button>
 
 <!-- ✅ DOĞRU: Pure Tailwind -->
-<button class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg">
-    Save
-</button>
+<button class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg">Save</button>
 
 <!-- ⚠️  ESKİ SAYFALARDA İZİNLİ (geçici) -->
 <!-- Düzeltildikçe Tailwind'e çevrilecek -->
@@ -331,18 +319,24 @@ p {
 
 ```html
 <!-- Primary Button -->
-<button class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium rounded-lg shadow-lg transition-all duration-200 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-blue-400 dark:focus:ring-offset-gray-900">
+<button
+    class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium rounded-lg shadow-lg transition-all duration-200 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-blue-400 dark:focus:ring-offset-gray-900"
+>
     <svg class="w-5 h-5 mr-2">...</svg>
     Primary Action
 </button>
 
 <!-- Secondary Button -->
-<button class="inline-flex items-center px-4 py-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-white font-medium rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">
+<button
+    class="inline-flex items-center px-4 py-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-white font-medium rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+>
     Secondary
 </button>
 
 <!-- Danger Button -->
-<button class="inline-flex items-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg shadow-md transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
+<button
+    class="inline-flex items-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg shadow-md transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+>
     Delete
 </button>
 ```
@@ -353,22 +347,20 @@ p {
 
 ```html
 <!-- Basic Card -->
-<div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden transition-shadow duration-200 hover:shadow-xl">
+<div
+    class="bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden transition-shadow duration-200 hover:shadow-xl"
+>
     <div class="p-6">
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-            Başlık
-        </h3>
-        <p class="text-gray-600 dark:text-gray-400">
-            İçerik
-        </p>
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Başlık</h3>
+        <p class="text-gray-600 dark:text-gray-400">İçerik</p>
     </div>
 </div>
 
 <!-- Interactive Card -->
-<div class="bg-white dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 cursor-pointer transition-all duration-200 hover:shadow-xl hover:-translate-y-1">
-    <div class="p-6">
-        ...
-    </div>
+<div
+    class="bg-white dark:bg-gray-800 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 cursor-pointer transition-all duration-200 hover:shadow-xl hover:-translate-y-1"
+>
+    <div class="p-6">...</div>
 </div>
 ```
 
@@ -378,23 +370,25 @@ p {
 
 ```html
 <!-- Text Input -->
-<input 
+<input
     type="text"
     class="w-full px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200"
     placeholder="Metin girin..."
->
+/>
 
 <!-- Select -->
-<select class="w-full px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+<select
+    class="w-full px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+>
     <option>Seçenek 1</option>
     <option>Seçenek 2</option>
 </select>
 
 <!-- Checkbox -->
-<input 
+<input
     type="checkbox"
     class="w-4 h-4 text-blue-600 bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-600 rounded focus:ring-2 focus:ring-blue-500"
->
+/>
 ```
 
 ---
@@ -404,26 +398,27 @@ p {
 ### Spacing Scale (Tailwind)
 
 ```yaml
-0:   0px       # space-0
-px:  1px       # space-px
-0.5: 2px       # space-0.5
-1:   4px       # space-1
-1.5: 6px       # space-1.5
-2:   8px       # space-2
-2.5: 10px      # space-2.5
-3:   12px      # space-3
-4:   16px      # space-4
-5:   20px      # space-5
-6:   24px      # space-6
-8:   32px      # space-8
-10:  40px      # space-10
-12:  48px      # space-12
-16:  64px      # space-16
-20:  80px      # space-20
-24:  96px      # space-24
+0: 0px # space-0
+px: 1px # space-px
+0.5: 2px # space-0.5
+1: 4px # space-1
+1.5: 6px # space-1.5
+2: 8px # space-2
+2.5: 10px # space-2.5
+3: 12px # space-3
+4: 16px # space-4
+5: 20px # space-5
+6: 24px # space-6
+8: 32px # space-8
+10: 40px # space-10
+12: 48px # space-12
+16: 64px # space-16
+20: 80px # space-20
+24: 96px # space-24
 ```
 
 **Kullanım:**
+
 - `p-4` → padding: 16px (all sides)
 - `px-6` → padding-left: 24px, padding-right: 24px
 - `mt-8` → margin-top: 32px
@@ -516,22 +511,22 @@ Dark mode: Full support
 
 ```yaml
 1. Template Seç:
-   - resources/views/admin/templates/modern-page.blade.php
-   
+    - resources/views/admin/templates/modern-page.blade.php
+
 2. Pure Tailwind Kullan:
-   - Neo classes YOK
-   - Dark mode ✓
-   - Responsive ✓
-   - Accessibility ✓
+    - Neo classes YOK
+    - Dark mode ✓
+    - Responsive ✓
+    - Accessibility ✓
 
 3. Test:
-   - Browser (Chrome, Firefox)
-   - Mobile (responsive mode)
-   - F12 Console (errors: 0)
-   - Lighthouse (accessibility > 95)
+    - Browser (Chrome, Firefox)
+    - Mobile (responsive mode)
+    - F12 Console (errors: 0)
+    - Lighthouse (accessibility > 95)
 
 4. Commit:
-   - Pre-commit hooks geçmeli
+    - Pre-commit hooks geçmeli
 ```
 
 ---
@@ -540,22 +535,22 @@ Dark mode: Full support
 
 ```yaml
 1. Analiz:
-   - Neo class sayısı (grep)
-   - Layout kompleksitesi
-   
+    - Neo class sayısı (grep)
+    - Layout kompleksitesi
+
 2. Dönüşüm:
-   - neo-btn → Tailwind button
-   - neo-card → Tailwind card
-   - neo-input → Tailwind input
+    - neo-btn → Tailwind button
+    - neo-card → Tailwind card
+    - neo-input → Tailwind input
 
 3. Test:
-   - Visual regression test
-   - Functionality test
-   - Accessibility test
+    - Visual regression test
+    - Functionality test
+    - Accessibility test
 
 4. Document:
-   - Migration raporu yaz
-   - Screenshot ekle
+    - Migration raporu yaz
+    - Screenshot ekle
 ```
 
 ---
@@ -567,8 +562,8 @@ Dark mode: Full support
 - ✅ Inline style check
 - ✅ !important check
 - ✅ Neo class check (yeni sayfalarda)
-- ⚠️  Dark mode check (warning)
-- ⚠️  Responsive check (warning)
+- ⚠️ Dark mode check (warning)
+- ⚠️ Responsive check (warning)
 
 ### Cursor Rules:
 
@@ -586,4 +581,3 @@ Dark mode: Full support
 
 **📅 Son Güncelleme:** 2 Kasım 2025  
 **✅ Status:** ACTIVE - Phase 2 devam ediyor!
-

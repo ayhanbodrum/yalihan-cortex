@@ -7,6 +7,7 @@ use App\Models\Ilan;
 use App\Models\IlanKategori;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -15,7 +16,7 @@ class MyListingsController extends AdminController
 {
     /**
      * Display user's own listings (İlanlarım sayfası)
-     * 
+     *
      * @param Request $request
      * @return \Illuminate\View\View
      */
@@ -23,122 +24,173 @@ class MyListingsController extends AdminController
     {
         // Get current user
         $user = Auth::user();
-        
+
         // If user is not authenticated, redirect to login
         if (!$user) {
             return redirect()->route('login')->with('error', 'Please login first');
         }
-        
+
         // Query user's listings with eager loading
         $query = Ilan::query()
-            ->where('danisman_id', $user->id)
-            ->orderBy('updated_at', 'desc');
-        
-        // Apply filters
+            ->where('danisman_id', $user->id);
+
+        // ✅ REFACTORED: Sort (Filterable trait)
+        $query->sort($request->sort_by, $request->sort_order ?? 'desc', 'updated_at');
+
+        // ✅ REFACTORED: Status filter (Filterable trait + custom mapping)
         if ($request->has('status') && $request->status) {
-            $query->where('status', $request->status);
+            $statusMap = [
+                'active' => 'Aktif',
+                'pending' => 'Beklemede',
+                'inactive' => 'Pasif',
+                'draft' => 'Taslak'
+            ];
+            $statusValue = $statusMap[$request->status] ?? $request->status;
+            $query->where('status', $statusValue);
         }
-        
+
+        // ✅ REFACTORED: Category filter
         if ($request->has('category') && $request->category) {
             $query->where('alt_kategori_id', $request->category);
         }
-        
+
         if ($request->has('search') && $request->search) {
             $search = $request->search;
             $referansService = app(\App\Services\IlanReferansService::class);
-            
+
             // İlanReferansService'in searchQuery metodunu kullan
             $searchQuery = $referansService->searchQuery($search);
-            
+
             // Kullanıcıya ait ilanları filtrele
             $query->whereIn('id', $searchQuery->where('danisman_id', $user->id)->pluck('id'));
         }
-        
-        // Paginate first, then eager load (more efficient)
-        $listings = $query->paginate(20);
-        
-        // Eager load relationships after pagination
-        $listings->load([
-            'altKategori' => function($query) {
-                $query->select('id', 'name', 'icon');
-            },
-            'anaKategori' => function($query) {
-                $query->select('id', 'name');
-            },
-            'il' => function($query) {
-                $query->select('id', 'il_adi');
-            },
-            'ilce' => function($query) {
-                $query->select('id', 'ilce_adi');
-            }
-        ]);
-        
-        // Calculate statistics
+
+        // ✅ N+1 FIX: Select optimization + Eager loading
+        $listings = $query->select([
+            'id',
+            'baslik',
+            'fiyat',
+            'para_birimi',
+            'status',
+            'goruntulenme', // ✅ Context7: goruntulenme_sayisi → goruntulenme (database column name)
+            'alt_kategori_id',
+            'ana_kategori_id',
+            'il_id',
+            'ilce_id',
+            'referans_no',
+            'dosya_adi',
+            'created_at',
+            'updated_at'
+        ])
+            ->with([
+                'altKategori:id,name,icon',
+                'anaKategori:id,name',
+                'il:id,il_adi',
+                'ilce:id,ilce_adi',
+                'fotograflar:id,ilan_id,dosya_yolu,sira' => function ($query) {
+                    $query->orderBy('sira')->limit(1);
+                }
+            ])
+            ->paginate(20);
+
+        // Calculate statistics - Context7: Status değerleri düzeltildi
         $stats = [
             'total_listings' => Ilan::where('danisman_id', $user->id)->count(),
             'active_listings' => Ilan::where('danisman_id', $user->id)
-                                     ->where('status', 'active')
-                                     ->count(),
+                ->where('status', 'Aktif')
+                ->count(),
             'pending_listings' => Ilan::where('danisman_id', $user->id)
-                                      ->where('status', 'pending')
-                                      ->count(),
+                ->where('status', 'Beklemede')
+                ->count(),
             'total_views' => Ilan::where('danisman_id', $user->id)
-                                 ->sum('goruntulenme') ?? 0,
+                ->sum('goruntulenme') ?? 0, // ✅ Context7: goruntulenme_sayisi → goruntulenme (database column name)
         ];
-        
-        // Get categories for filter (subcategories only)
-        $categories = IlanKategori::select('id', 'name', 'icon')
-                                  ->whereNotNull('parent_id')
-                                  ->orderBy('name')
-                                  ->get();
-        
+
+        // ✅ CACHE: Kategoriler dropdown için cache ekle
+        $categories = \Illuminate\Support\Facades\Cache::remember('my_listings_categories_' . $user->id, 3600, function () {
+            return IlanKategori::select('id', 'name', 'icon')
+                ->whereNotNull('parent_id')
+                ->where('status', true)
+                ->orderBy('name')
+                ->get();
+        });
+
         return view('admin.ilanlar.my-listings', compact('listings', 'stats', 'categories'));
     }
-    
+
     /**
      * Search listings via AJAX
-     * 
+     *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function search(Request $request)
     {
         $user = Auth::user();
-        
+
         $query = Ilan::with(['altKategori:id,name', 'il:id,il_adi'])
-                     ->where('danisman_id', $user->id);
-        
+            ->where('danisman_id', $user->id);
+
+        // Context7: Status mapping (active→Aktif, pending→Beklemede, vb.)
         if ($request->has('status')) {
-            $query->where('status', $request->status);
+            $statusMap = [
+                'active' => 'Aktif',
+                'pending' => 'Beklemede',
+                'inactive' => 'Pasif',
+                'draft' => 'Taslak'
+            ];
+            $statusValue = $statusMap[$request->status] ?? $request->status;
+            $query->where('status', $statusValue);
         }
-        
+
         if ($request->has('category')) {
             $query->where('alt_kategori_id', $request->category);
         }
-        
+
         if ($request->has('search') && $request->search) {
             $search = $request->search;
             $referansService = app(\App\Services\IlanReferansService::class);
-            
+
             // İlanReferansService'in searchQuery metodunu kullan
             $searchQuery = $referansService->searchQuery($search);
-            
+
             // Kullanıcıya ait ilanları filtrele
             $query->whereIn('id', $searchQuery->where('danisman_id', $user->id)->pluck('id'));
         }
-        
-        $listings = $query->orderBy('updated_at', 'desc')
-                         ->paginate(20);
-        
+
+        // ✅ N+1 FIX: Select optimization + Eager loading
+        $listings = $query->select([
+            'id',
+            'baslik',
+            'fiyat',
+            'para_birimi',
+            'status',
+            'goruntulenme', // ✅ Context7: goruntulenme_sayisi → goruntulenme (database column name)
+            'alt_kategori_id',
+            'ana_kategori_id',
+            'il_id',
+            'ilce_id',
+            'referans_no',
+            'created_at',
+            'updated_at'
+        ])
+            ->with([
+                'altKategori:id,name',
+                'anaKategori:id,name',
+                'il:id,il_adi'
+            ])
+            ->orderBy('updated_at', 'desc')
+            ->paginate(20);
+
         return response()->json([
             'success' => true,
             'data' => IlanInternalResource::collection($listings)
         ]);
     }
-    
+
     /**
      * Bulk actions (delete, activate, deactivate)
-     * 
+     *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
@@ -149,101 +201,102 @@ class MyListingsController extends AdminController
             'ids' => 'required|array',
             'ids.*' => 'exists:ilanlar,id'
         ]);
-        
+
         $user = Auth::user();
         $action = $request->action;
         $ids = $request->ids;
-        
+
         // Verify all listings belong to current user
         $listings = Ilan::whereIn('id', $ids)
-                       ->where('danisman_id', $user->id)
-                       ->get();
-        
+            ->where('danisman_id', $user->id)
+            ->get();
+
         if ($listings->count() !== count($ids)) {
             return response()->json([
                 'success' => false,
                 'message' => 'Unauthorized: Some listings do not belong to you'
             ], 403);
         }
-        
+
         // Perform action
         switch ($action) {
             case 'delete':
                 Ilan::whereIn('id', $ids)->delete();
                 $message = count($ids) . ' listings deleted successfully';
                 break;
-                
+
             case 'activate':
-                Ilan::whereIn('id', $ids)->update(['status' => 'active']);
+                Ilan::whereIn('id', $ids)->update(['status' => 'Aktif']); // Context7: Database değeri
                 $message = count($ids) . ' listings activated successfully';
                 break;
-                
+
             case 'deactivate':
-                Ilan::whereIn('id', $ids)->update(['status' => 'inactive']);
+                Ilan::whereIn('id', $ids)->update(['status' => 'Pasif']); // Context7: Database değeri
                 $message = count($ids) . ' listings deactivated successfully';
                 break;
-                
+
             case 'draft':
-                Ilan::whereIn('id', $ids)->update(['status' => 'draft']);
+                Ilan::whereIn('id', $ids)->update(['status' => 'Taslak']); // Context7: Database değeri
                 $message = count($ids) . ' listings moved to draft';
                 break;
-                
+
             default:
                 return response()->json([
                     'success' => false,
                     'message' => 'Invalid action'
                 ], 400);
         }
-        
+
         return response()->json([
             'success' => true,
             'message' => $message
         ]);
     }
-    
+
     /**
      * Get statistics via AJAX
-     * 
+     *
      * @return \Illuminate\Http\JsonResponse
      */
     public function getStats()
     {
         $user = Auth::user();
-        
+
+        // Context7: Status değerleri düzeltildi (active→Aktif, vb.)
         $stats = [
             'total_listings' => Ilan::where('danisman_id', $user->id)->count(),
             'active_listings' => Ilan::where('danisman_id', $user->id)
-                                     ->where('status', 'active')
-                                     ->count(),
+                ->where('status', 'Aktif')
+                ->count(),
             'pending_listings' => Ilan::where('danisman_id', $user->id)
-                                      ->where('status', 'pending')
-                                      ->count(),
+                ->where('status', 'Beklemede')
+                ->count(),
             'draft_listings' => Ilan::where('danisman_id', $user->id)
-                                    ->where('status', 'draft')
-                                    ->count(),
+                ->where('status', 'Taslak')
+                ->count(),
             'inactive_listings' => Ilan::where('danisman_id', $user->id)
-                                       ->where('status', 'inactive')
-                                       ->count(),
+                ->where('status', 'Pasif')
+                ->count(),
             'total_views' => Ilan::where('danisman_id', $user->id)
-                                 ->sum('goruntulenme') ?? 0,
+                ->sum('goruntulenme') ?? 0, // ✅ Context7: goruntulenme_sayisi → goruntulenme (database column name)
             'this_month' => Ilan::where('danisman_id', $user->id)
-                                ->whereMonth('created_at', now()->month)
-                                ->count(),
+                ->whereMonth('created_at', now()->month)
+                ->count(),
         ];
-        
+
         return response()->json([
             'success' => true,
             'data' => $stats
         ]);
     }
-    
+
     /**
      * Export listings to Excel/PDF
-     * 
+     *
      * Context7 Standardı: C7-MYLISTINGS-EXPORT-2025-11-05
-     * 
+     *
      * GET /admin/my-listings/export?format=excel|pdf
-     * 
+     *
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\BinaryFileResponse|\Illuminate\Http\Response
      */
@@ -255,11 +308,32 @@ class MyListingsController extends AdminController
 
         $user = Auth::user();
         $format = $request->input('format', 'excel');
-        
-        $listings = Ilan::with(['altKategori:id,name', 'anaKategori:id,name', 'il:id,il_adi', 'ilce:id,ilce_adi'])
-                       ->where('danisman_id', $user->id)
-                       ->orderBy('updated_at', 'desc')
-                       ->get();
+
+        // ✅ N+1 FIX: Select optimization + Eager loading
+        $listings = Ilan::select([
+            'id',
+            'baslik',
+            'fiyat',
+            'para_birimi',
+            'status',
+            'goruntulenme', // ✅ Context7: goruntulenme_sayisi → goruntulenme (database column name)
+            'alt_kategori_id',
+            'ana_kategori_id',
+            'il_id',
+            'ilce_id',
+            'referans_no',
+            'created_at',
+            'updated_at'
+        ])
+            ->with([
+                'altKategori:id,name',
+                'anaKategori:id,name',
+                'il:id,il_adi',
+                'ilce:id,ilce_adi'
+            ])
+            ->where('danisman_id', $user->id)
+            ->orderBy('updated_at', 'desc')
+            ->get();
 
         if ($format === 'pdf') {
             return $this->exportPdf($listings, $user);
@@ -303,8 +377,14 @@ class MyListingsController extends AdminController
 
         return Excel::download(new class($data) implements \Maatwebsite\Excel\Concerns\FromArray {
             protected $data;
-            public function __construct($data) { $this->data = $data; }
-            public function array(): array { return $this->data; }
+            public function __construct($data)
+            {
+                $this->data = $data;
+            }
+            public function array(): array
+            {
+                return $this->data;
+            }
         }, $dosyaAdi);
     }
 
@@ -320,7 +400,7 @@ class MyListingsController extends AdminController
         ];
 
         $pdf = Pdf::loadView('admin.ilanlar.exports.my-listings-pdf', $data);
-        
+
         $dosyaAdi = "Ilanlarim_" . now()->format('Ymd_His') . '.pdf';
 
         return $pdf->download($dosyaAdi);

@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-8"
-     x-data="{ 
+     x-data="{
          activeTab: '{{ $activeTab ?? 'ozellikler' }}',
          setTab(tab) {
              this.activeTab = tab;
@@ -17,9 +17,9 @@
              activeTab = window.location.hash.substring(1);
          }
      ">
-    
+
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
+
         {{-- Header --}}
         <div class="mb-8">
             <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
@@ -56,7 +56,7 @@
 
         {{-- Tab Navigation (PHASE 2.2: Tab-based UI!) --}}
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
-            
+
             {{-- Tab Headers --}}
             <div class="border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
                 <nav class="flex -mb-px">
@@ -94,18 +94,18 @@
 
             {{-- Tab Content --}}
             <div class="p-6">
-                
+
                 {{-- TAB 1: Tüm Özellikler --}}
                 <div x-show="activeTab === 'ozellikler'"
                      x-transition:enter="transition ease-out duration-200"
                      x-transition:enter-start="opacity-0 transform scale-95"
                      x-transition:enter-end="opacity-100 transform scale-100">
-                    
+
                     <div class="flex items-center justify-between mb-6">
                         <h2 class="text-xl font-bold text-gray-900 dark:text-white">
                             📋 Tüm Özellikler
                         </h2>
-                        <a href="{{ route('admin.ozellikler.create') }}" 
+                        <a href="{{ route('admin.ozellikler.create') }}"
                            class="px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg hover:scale-105 transition-all shadow-lg">
                             + Yeni Özellik
                         </a>
@@ -141,13 +141,13 @@
                                                 {{ $ozellik->field_type }}
                                             </td>
                                             <td class="px-6 py-4">
-                                                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full 
-                                                    {{ $ozellik->enabled ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200' }}">
-                                                    {{ $ozellik->enabled ? 'Aktif' : 'Pasif' }}
+                                                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full
+                                                    {{ $ozellik->status ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200' }}">
+                                                    {{ $ozellik->status ? 'Aktif' : 'Pasif' }}
                                                 </span>
                                             </td>
                                             <td class="px-6 py-4 text-right text-sm">
-                                                <a href="{{ route('admin.ozellikler.edit', $ozellik) }}" 
+                                                <a href="{{ route('admin.ozellikler.edit', $ozellik) }}"
                                                    class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300">
                                                     Düzenle
                                                 </a>
@@ -168,12 +168,12 @@
                      x-transition:enter="transition ease-out duration-200"
                      x-transition:enter-start="opacity-0 transform scale-95"
                      x-transition:enter-end="opacity-100 transform scale-100">
-                    
+
                     <div class="flex items-center justify-between mb-6">
                         <h2 class="text-xl font-bold text-gray-900 dark:text-white">
                             🏷️ Özellik Kategorileri
                         </h2>
-                        <a href="{{ route('admin.ozellikler.kategoriler.create') }}" 
+                        <a href="{{ route('admin.ozellikler.kategoriler.create') }}"
                            class="px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold rounded-lg hover:scale-105 transition-all shadow-lg">
                             + Yeni Kategori
                         </a>
@@ -201,7 +201,7 @@
                                         <span class="text-gray-500 dark:text-gray-400">
                                             {{ $kategori->features_count }} özellik
                                         </span>
-                                        <a href="{{ route('admin.ozellikler.kategoriler.show', $kategori) }}" 
+                                        <a href="{{ route('admin.ozellikler.kategoriler.show', $kategori) }}"
                                            class="text-blue-600 hover:text-blue-700 dark:text-blue-400 font-semibold">
                                             Detay →
                                         </a>
@@ -220,7 +220,7 @@
                      x-transition:enter="transition ease-out duration-200"
                      x-transition:enter-start="opacity-0 transform scale-95"
                      x-transition:enter-end="opacity-100 transform scale-100">
-                    
+
                     <div class="flex items-center justify-between mb-6">
                         <div>
                             <h2 class="text-xl font-bold text-gray-900 dark:text-white">
@@ -265,7 +265,7 @@
                                             </p>
                                         </div>
                                         <div class="flex items-center gap-2">
-                                            <a href="{{ route('admin.ozellikler.edit', $ozellik) }}" 
+                                            <a href="{{ route('admin.ozellikler.edit', $ozellik) }}"
                                                class="px-3 py-1.5 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 transition-colors">
                                                 Kategoriye Ata
                                             </a>
@@ -286,4 +286,3 @@
     </div>
 </div>
 @endsection
-

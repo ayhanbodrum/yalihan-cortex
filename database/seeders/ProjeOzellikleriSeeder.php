@@ -9,7 +9,7 @@ use App\Models\Feature;
 
 /**
  * Proje Özellikleri Seeder
- * 
+ *
  * Proje özelliklerini (Proje Tipi, Site Özellikleri, Bina Özellikleri, Konut Özellikleri, İnşaat Teknikleri) oluşturur.
  */
 class ProjeOzellikleriSeeder extends Seeder
@@ -68,7 +68,7 @@ class ProjeOzellikleriSeeder extends Seeder
             'slug' => $slug,
             'description' => "{$name} özellikleri",
             'icon' => '🏗️',
-            'order' => (FeatureCategory::max('order') ?? 0) + 1,
+            'display_order' => (FeatureCategory::max('order') ?? 0) + 1,
         ];
 
         // Context7: applies_to kolonu varsa ekle
@@ -113,7 +113,7 @@ class ProjeOzellikleriSeeder extends Seeder
             'feature_category_id' => $categoryId,
             'name' => $name,
             'slug' => $slug,
-            'order' => $order,
+            'display_order' => $order,
         ];
 
         // Context7: type kolonu varsa ekle (field_type yerine type)
@@ -161,4 +161,3 @@ class ProjeOzellikleriSeeder extends Seeder
         }
     }
 }
-

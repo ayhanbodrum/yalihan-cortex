@@ -460,6 +460,7 @@ Tonlar:
 ### **Örnek 1: Villa Başlığı**
 
 **Input:**
+
 ```yaml
 kategori: Villa
 yayin_tipi: Satılık
@@ -471,6 +472,7 @@ tone: seo
 ```
 
 **Prompt:**
+
 ```
 Sen bir emlak uzmanısın. Aşağıdaki bilgilere göre SEO optimize 3 farklı ilan başlığı oluştur.
 
@@ -491,6 +493,7 @@ Başlıklar:
 ```
 
 **Beklenen Çıktı:**
+
 ```
 Yalıkavak Deniz Manzaralı Satılık Villa - Özel Havuzlu 3.5M ₺
 Bodrum Yalıkavak'ta Satılık Lüks Villa - Denize Sıfır Konumda
@@ -502,6 +505,7 @@ Yalıkavak Premium Lokasyonda Satılık Villa - Havuz ve Deniz Manzarası
 ### **Örnek 2: Arsa Açıklaması**
 
 **Input:**
+
 ```yaml
 kategori: Arsa
 imar_durumu: İmarlı
@@ -513,6 +517,7 @@ fiyat: 5000000
 ```
 
 **Prompt:**
+
 ```
 Profesyonel arsa ilanı açıklaması yaz.
 
@@ -537,16 +542,17 @@ Açıklama:
 ```
 
 **Beklenen Çıktı:**
+
 ```
-Bodrum Gümüşlük bölgesinde, tamamen imar dahilinde 1000 m² arsa. 
-KAKS 1.5 ve TAKS 0.35 değerleri ile toplam 1500 m² inşaat alanı imkanı sunuyor. 
+Bodrum Gümüşlük bölgesinde, tamamen imar dahilinde 1000 m² arsa.
+KAKS 1.5 ve TAKS 0.35 değerleri ile toplam 1500 m² inşaat alanı imkanı sunuyor.
 Modern villa veya butik otel projesi için ideal.
 
-Gümüşlük'ün turistik bölgesinde, denize 800 metre mesafede konumlanmış arsa, 
-bölgenin artan değerine paralel olarak yüksek yatırım potansiyeline sahip. 
+Gümüşlük'ün turistik bölgesinde, denize 800 metre mesafede konumlanmış arsa,
+bölgenin artan değerine paralel olarak yüksek yatırım potansiyeline sahip.
 Elektrik, su, doğalgaz altyapısı mevcut.
 
-5 milyon TL fiyat ile bölge ortalamasına uygun, 2-3 yıllık dönemde %25-30 
+5 milyon TL fiyat ile bölge ortalamasına uygun, 2-3 yıllık dönemde %25-30
 değer artışı potansiyeli bulunuyor. Detaylı bilgi ve imar planı için iletişime geçin.
 ```
 
@@ -590,11 +596,11 @@ Rapor:
 Kullanıcı Düzenlemesi:
   AI Önerisi: "Yalıkavak'ta satılık villa"
   Kullanıcı: "Yalıkavak'ta deniz manzaralı satılık lüks villa"
-  
+
 Öğrenme:
   - "deniz manzaralı" eklenmiş → Vurgula
   - "lüks" eklenmiş → Segment: Premium
-  
+
 Sonraki Önerilerde:
   → Lokasyon + "deniz manzaralı" + kategori + "lüks"
 ```
@@ -620,15 +626,15 @@ Adım adım düşün ve ilan için en iyi başlığı bul.
 Adım 1: Kategori analizi
   - Ne tür bir emlak?
   - Hedef kitle kim?
-  
+
 Adım 2: Lokasyon değeri
   - Premium mi, standart mı?
   - Özel özellik var mı?
-  
+
 Adım 3: Ton seçimi
   - Fiyat segmentine göre
   - SEO mi, Lüks mü?
-  
+
 Adım 4: Başlık oluştur
   - Adım 1-3'ü birleştir
   - 3 varyant üret
@@ -641,4 +647,3 @@ Düşünce Süreci ve Başlıklar:
 ---
 
 **📝 ÖZET:** Bu prompt'ları kopyala-yapıştır ve değişkenleri doldur. AI tutarlı ve kaliteli sonuç üretir.
-

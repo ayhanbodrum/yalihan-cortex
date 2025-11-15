@@ -35,7 +35,10 @@ use App\Helpers\FormStandards;
 ### Method 2: Direct Classes
 
 ```html
-<input type="text" class="w-full px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200 hover:border-blue-400 disabled:bg-gray-100 dark:disabled:bg-gray-700 disabled:cursor-not-allowed" />
+<input
+    type="text"
+    class="w-full px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200 hover:border-blue-400 disabled:bg-gray-100 dark:disabled:bg-gray-700 disabled:cursor-not-allowed"
+/>
 ```
 
 ---
@@ -47,6 +50,7 @@ use App\Helpers\FormStandards;
 **Class:** `FormStandards::input()`
 
 **Features:**
+
 - **Padding:** `px-4 py-2.5`
 - **Background:** `bg-white dark:bg-gray-800`
 - **Border:** `border border-gray-300 dark:border-gray-600`
@@ -58,19 +62,18 @@ use App\Helpers\FormStandards;
 - **Disabled:** `disabled:bg-gray-100 dark:disabled:bg-gray-700 disabled:cursor-not-allowed`
 
 **Example:**
+
 ```html
-<label class="{{ FormStandards::label() }}">
-    Full Name *
-</label>
-<input 
-    type="text" 
-    name="name" 
+<label class="{{ FormStandards::label() }}"> Full Name * </label>
+<input
+    type="text"
+    name="name"
     class="{{ FormStandards::input() }}"
-    placeholder="Enter your name" 
-    required 
+    placeholder="Enter your name"
+    required
 />
 @error('name')
-    <p class="{{ FormStandards::error() }}">{{ $message }}</p>
+<p class="{{ FormStandards::error() }}">{{ $message }}</p>
 @enderror
 ```
 
@@ -81,16 +84,14 @@ use App\Helpers\FormStandards;
 **Class:** `FormStandards::select()`
 
 **Features:**
+
 - Same as input, but with `cursor-pointer`
 - **Recommended:** Add `style="color-scheme: light dark;"` for native dropdown styling
 
 **Example:**
+
 ```html
-<select 
-    name="category" 
-    class="{{ FormStandards::select() }}"
-    style="color-scheme: light dark;"
->
+<select name="category" class="{{ FormStandards::select() }}" style="color-scheme: light dark;">
     <option value="" class="{{ FormStandards::optionDisabled() }}">Seçiniz</option>
     <option value="1" class="{{ FormStandards::option() }}">Kategori 1</option>
     <option value="2" class="{{ FormStandards::option() }}">Kategori 2</option>
@@ -104,13 +105,15 @@ use App\Helpers\FormStandards;
 **Class:** `FormStandards::textarea()`
 
 **Features:**
+
 - Same as input
 - **Additional:** `resize-y` (vertical resize only)
 
 **Example:**
+
 ```html
-<textarea 
-    name="description" 
+<textarea
+    name="description"
     rows="4"
     class="{{ FormStandards::textarea() }}"
     placeholder="Enter description..."
@@ -124,6 +127,7 @@ use App\Helpers\FormStandards;
 **Class:** `FormStandards::checkbox()`
 
 **Features:**
+
 - **Size:** `w-4 h-4`
 - **Color:** `text-blue-600` (checked state)
 - **Background:** `bg-gray-100 dark:bg-gray-700`
@@ -131,13 +135,10 @@ use App\Helpers\FormStandards;
 - **Focus Ring:** `focus:ring-blue-500 dark:focus:ring-blue-600`
 
 **Example:**
+
 ```html
 <label class="flex items-center">
-    <input 
-        type="checkbox" 
-        name="featured"
-        class="{{ FormStandards::checkbox() }}"
-    />
+    <input type="checkbox" name="featured" class="{{ FormStandards::checkbox() }}" />
     <span class="ml-2 {{ FormStandards::label() }}">Öne Çıkan</span>
 </label>
 ```
@@ -149,28 +150,19 @@ use App\Helpers\FormStandards;
 **Class:** `FormStandards::radio()`
 
 **Features:**
+
 - Same as checkbox
 
 **Example:**
+
 ```html
 <div class="flex items-center space-x-4">
     <label class="flex items-center">
-        <input 
-            type="radio" 
-            name="status" 
-            value="1"
-            class="{{ FormStandards::radio() }}"
-            checked
-        />
+        <input type="radio" name="status" value="1" class="{{ FormStandards::radio() }}" checked />
         <span class="ml-2 text-gray-700 dark:text-gray-300">Active</span>
     </label>
     <label class="flex items-center">
-        <input 
-            type="radio" 
-            name="status" 
-            value="0"
-            class="{{ FormStandards::radio() }}"
-        />
+        <input type="radio" name="status" value="0" class="{{ FormStandards::radio() }}" />
         <span class="ml-2 text-gray-700 dark:text-gray-300">Inactive</span>
     </label>
 </div>
@@ -183,6 +175,7 @@ use App\Helpers\FormStandards;
 **Class:** `FormStandards::label()`
 
 **Features:**
+
 - **Display:** `block`
 - **Size:** `text-sm`
 - **Weight:** `font-medium`
@@ -196,6 +189,7 @@ use App\Helpers\FormStandards;
 **Class:** `FormStandards::error()`
 
 **Features:**
+
 - **Color:** `text-red-600 dark:text-red-400`
 - **Size:** `text-sm`
 - **Margin:** `mt-1`
@@ -207,6 +201,7 @@ use App\Helpers\FormStandards;
 **Class:** `FormStandards::help()`
 
 **Features:**
+
 - **Color:** `text-gray-500 dark:text-gray-400`
 - **Size:** `text-xs`
 - **Margin:** `mt-1`
@@ -247,13 +242,13 @@ use App\Helpers\FormStandards;
 
 ## 📊 Color Contrast Table
 
-| Element | Light Mode | Dark Mode | Contrast Ratio |
-|---------|-----------|-----------|----------------|
-| Input Text | #111827 on #FFFFFF | #FFFFFF on #1F2937 | 21:1 ✅ |
-| Placeholder | #6B7280 on #FFFFFF | #9CA3AF on #1F2937 | 4.5:1 ✅ |
-| Label | #374151 on #FFFFFF | #D1D5DB on #111827 | 8:1 ✅ |
-| Error | #DC2626 on #FFFFFF | #F87171 on #111827 | 5:1 ✅ |
-| Help | #6B7280 on #FFFFFF | #9CA3AF on #111827 | 4.5:1 ✅ |
+| Element     | Light Mode         | Dark Mode          | Contrast Ratio |
+| ----------- | ------------------ | ------------------ | -------------- |
+| Input Text  | #111827 on #FFFFFF | #FFFFFF on #1F2937 | 21:1 ✅        |
+| Placeholder | #6B7280 on #FFFFFF | #9CA3AF on #1F2937 | 4.5:1 ✅       |
+| Label       | #374151 on #FFFFFF | #D1D5DB on #111827 | 8:1 ✅         |
+| Error       | #DC2626 on #FFFFFF | #F87171 on #111827 | 5:1 ✅         |
+| Help        | #6B7280 on #FFFFFF | #9CA3AF on #111827 | 4.5:1 ✅       |
 
 ---
 
@@ -323,4 +318,3 @@ Before creating any new form, ensure:
 **Last Review:** 2025-11-02  
 **Next Review:** 2025-12-01  
 **Maintained by:** Yalıhan Bekçi AI System
-

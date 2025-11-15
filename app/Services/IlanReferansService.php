@@ -95,7 +95,7 @@ class IlanReferansService
 
     /**
      * Kısa dosya adı (klasör adı için)
-     * 
+     *
      * Context7 Standardı: Doküman formatına uygun
      * Format: {LOKASYON_KODU}-{YAYINTIPI}{YIL}-{SIRANO}_{Lokasyon}_{Site}_{Kategori}_{MalSahibi}
      * Örnek: YLK-S25-0012_Yalikavak_Sandima_No5_Daire_AKucuk
@@ -107,35 +107,35 @@ class IlanReferansService
     {
         // Lokasyon kodu (ilk 3 harf)
         $lokasyonKodu = mb_strtoupper(mb_substr($this->getLokasyonKodu($ilan), 0, 3), 'UTF-8');
-        
+
         // Yayın tipi kodu (ilk harf)
         $yayinTipi = $this->getYayinTipiKodu($ilan);
         $yayinTipiKodu = substr($yayinTipi, 0, 1); // S, K, G, D
-        
+
         // Yıl (son 2 rakam)
         $yilKodu = substr(date('Y'), -2);
-        
+
         // Sıra numarası (4 haneli)
         $siraNo = $this->getSiraNo($ilan);
         $siraNoKodu = substr($siraNo, -4); // Son 4 hane
-        
+
         // Referans kısmı: YLK-S25-0012
         $refKisim = "{$lokasyonKodu}-{$yayinTipiKodu}{$yilKodu}-{$siraNoKodu}";
-        
+
         // Lokasyon adı (temizlenmiş)
         $lokasyon = $ilan->mahalle?->mahalle_adi ?? $ilan->ilce?->ilce_adi ?? $ilan->il?->il_adi ?? 'Bilinmeyen';
         $lokasyon = $this->turkceKarakterTemizle($lokasyon);
-        
+
         // Site adı (varsa)
         $site = '';
         if ($ilan->site) {
             $site = $this->turkceKarakterTemizle($ilan->site->name);
         }
-        
+
         // Kategori (temizlenmiş)
         $kategori = $this->getKategoriAdi($ilan);
         $kategori = $this->turkceKarakterTemizle($kategori);
-        
+
         // Mal sahibi (varsa, baş harfleri)
         $malSahibi = '';
         if ($ilan->ilanSahibi) {
@@ -146,13 +146,13 @@ class IlanReferansService
                 $malSahibi = mb_strtoupper($malSahibi, 'UTF-8');
             }
         }
-        
+
         // Parçaları birleştir
         $parts = [$refKisim, $lokasyon];
         if ($site) $parts[] = $site;
         $parts[] = $kategori;
         if ($malSahibi) $parts[] = $malSahibi;
-        
+
         return implode('_', array_filter($parts));
     }
 
@@ -216,9 +216,9 @@ class IlanReferansService
     {
         // Mahalle öncelikli, sonra ilçe, sonra il
         $lokasyon = $ilan->mahalle?->mahalle_adi
-                    ?? $ilan->ilce?->ilce_adi
-                    ?? $ilan->il?->il_adi
-                    ?? 'GENEL';
+            ?? $ilan->ilce?->ilce_adi
+            ?? $ilan->il?->il_adi
+            ?? 'GENEL';
 
         // İlk 6 karakteri al ve büyük harfe çevir
         $kod = mb_strtoupper(mb_substr($lokasyon, 0, 6), 'UTF-8');
@@ -377,20 +377,54 @@ class IlanReferansService
         $updated = 0;
         $errors = 0;
 
+        // ✅ PERFORMANCE FIX: Bulk update için hazırlık
+        $updates = [];
+
         foreach ($ilanlar as $ilan) {
             try {
                 $referansNo = $this->generateReferansNo($ilan);
                 $dosyaAdi = $this->generateDosyaAdi($ilan);
 
-                $ilan->update([
+                $updates[$ilan->id] = [
                     'referans_no' => $referansNo,
                     'dosya_adi' => $dosyaAdi
-                ]);
-
-                $updated++;
+                ];
             } catch (\Exception $e) {
                 $errors++;
             }
+        }
+
+        // ✅ PERFORMANCE FIX: Bulk update (CASE WHEN ile)
+        if (!empty($updates)) {
+            $referansCases = [];
+            $dosyaCases = [];
+            $bindings = [];
+            $ids = [];
+
+            foreach ($updates as $id => $data) {
+                $referansCases[] = "WHEN ? THEN ?";
+                $dosyaCases[] = "WHEN ? THEN ?";
+                $bindings[] = $id;
+                $bindings[] = $data['referans_no'];
+                $bindings[] = $id;
+                $bindings[] = $data['dosya_adi'];
+                $ids[] = $id;
+            }
+
+            $idsPlaceholder = implode(',', array_fill(0, count($ids), '?'));
+            $referansCasesSql = implode(' ', $referansCases);
+            $dosyaCasesSql = implode(' ', $dosyaCases);
+
+            \Illuminate\Support\Facades\DB::statement(
+                "UPDATE ilanlar
+                 SET referans_no = CASE id {$referansCasesSql} END,
+                     dosya_adi = CASE id {$dosyaCasesSql} END,
+                     updated_at = NOW()
+                 WHERE id IN ({$idsPlaceholder})",
+                array_merge($bindings, $ids)
+            );
+
+            $updated = count($updates);
         }
 
         return [
@@ -458,30 +492,29 @@ class IlanReferansService
         // Telefon ile arama
         if (preg_match('/^[0-9+\s()-]+$/', $searchTerm)) {
             $cleanPhone = preg_replace('/[^0-9]/', '', $searchTerm);
-            return $query->whereHas('ilanSahibi', function($q) use ($cleanPhone) {
+            return $query->whereHas('ilanSahibi', function ($q) use ($cleanPhone) {
                 $q->where('telefon', 'LIKE', "%{$cleanPhone}%")
-                  ->orWhere('cep_telefonu', 'LIKE', "%{$cleanPhone}%");
+                    ->orWhere('cep_telefonu', 'LIKE', "%{$cleanPhone}%");
             });
         }
 
         // Portal ID ile arama
         if (preg_match('/^\d{8,}$/', $searchTerm)) {
-            return $query->where(function($q) use ($searchTerm) {
+            return $query->where(function ($q) use ($searchTerm) {
                 $q->where('sahibinden_id', $searchTerm)
-                  ->orWhere('emlakjet_id', $searchTerm)
-                  ->orWhere('hepsiemlak_id', $searchTerm)
-                  ->orWhere('zingat_id', $searchTerm);
+                    ->orWhere('emlakjet_id', $searchTerm)
+                    ->orWhere('hepsiemlak_id', $searchTerm)
+                    ->orWhere('zingat_id', $searchTerm);
             });
         }
 
         // Site/Apartman adı ile arama
-        return $query->where(function($q) use ($searchTerm) {
+        return $query->where(function ($q) use ($searchTerm) {
             $q->where('baslik', 'LIKE', "%{$searchTerm}%")
-              ->orWhere('dosya_adi', 'LIKE', "%{$searchTerm}%")
-              ->orWhereHas('site', function($sq) use ($searchTerm) {
-                  $sq->where('name', 'LIKE', "%{$searchTerm}%");
-              });
+                ->orWhere('dosya_adi', 'LIKE', "%{$searchTerm}%")
+                ->orWhereHas('site', function ($sq) use ($searchTerm) {
+                    $sq->where('name', 'LIKE', "%{$searchTerm}%");
+                });
         });
     }
 }
-

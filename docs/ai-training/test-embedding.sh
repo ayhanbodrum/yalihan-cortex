@@ -24,9 +24,9 @@ test_query() {
     local query=$1
     local expected=$2
     local test_name=$3
-    
+
     ((total_tests++))
-    
+
     echo -e "${BLUE}Test $total_tests:${NC} $test_name"
     echo "Soru: $query"
     echo "Beklenen: $expected"

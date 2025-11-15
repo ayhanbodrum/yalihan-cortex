@@ -17,7 +17,7 @@
             </h1>
             <p class="text-gray-600 dark:text-gray-400 mt-2">Hızlı şablon kullanın, grup ekleyin veya manuel oluşturun</p>
         </div>
-        <a href="{{ route('admin.ayarlar.index') }}" 
+        <a href="{{ route('admin.ayarlar.index') }}"
            class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
@@ -30,21 +30,21 @@
     <div class="mb-6">
         <div class="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-2">
             <div class="flex flex-wrap gap-2">
-                <button 
+                <button
                     type="button"
                     @click="activeTab = 'single'"
                     :class="activeTab === 'single' ? 'bg-blue-600 text-white' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'"
                     class="px-4 py-2 rounded-lg font-medium transition-colors duration-200">
                     📝 Tek Ayar
                 </button>
-                <button 
+                <button
                     type="button"
                     @click="activeTab = 'templates'"
                     :class="activeTab === 'templates' ? 'bg-blue-600 text-white' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'"
                     class="px-4 py-2 rounded-lg font-medium transition-colors duration-200">
                     🚀 Hızlı Şablonlar
                 </button>
-                <button 
+                <button
                     type="button"
                     @click="activeTab = 'bulk'"
                     :class="activeTab === 'bulk' ? 'bg-blue-600 text-white' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'"
@@ -72,9 +72,9 @@
                         <label class="block text-sm font-medium text-gray-900 dark:text-white mb-2">
                             Ayar Anahtarı <span class="text-red-500">*</span>
                         </label>
-                        <input 
-                            type="text" 
-                            name="key" 
+                        <input
+                            type="text"
+                            name="key"
                             x-model="form.key"
                             @input="validateKey"
                             required
@@ -91,8 +91,8 @@
                         <label class="block text-sm font-medium text-gray-900 dark:text-white mb-2">
                             Veri Tipi <span class="text-red-500">*</span>
                         </label>
-                        <select 
-                            name="type" 
+                        <select
+                            name="type"
                             x-model="form.type"
                             required
                             class="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 transition-all duration-200">
@@ -110,21 +110,21 @@
                             Grup <span class="text-red-500">*</span>
                         </label>
                         <div class="relative">
-                            <input 
-                                type="text" 
-                                name="group" 
+                            <input
+                                type="text"
+                                name="group"
                                 x-model="form.group"
                                 @focus="showGroupSuggestions = true"
                                 @blur="setTimeout(() => showGroupSuggestions = false, 200)"
                                 required
                                 class="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 transition-all duration-200"
                                 placeholder="general, email, system">
-                            
+
                             {{-- Group Suggestions Dropdown --}}
-                            <div x-show="showGroupSuggestions" 
+                            <div x-show="showGroupSuggestions"
                                  class="absolute z-10 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg max-h-60 overflow-y-auto">
                                 <template x-for="group in filteredGroups" :key="group.value">
-                                    <button 
+                                    <button
                                         type="button"
                                         @click="form.group = group.value; showGroupSuggestions = false"
                                         class="w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200 flex items-center gap-2">
@@ -147,12 +147,12 @@
                         <label class="block text-sm font-medium text-gray-900 dark:text-white mb-2">
                             Değer <span class="text-red-500">*</span>
                         </label>
-                        
+
                         {{-- String/Default --}}
                         <div x-show="form.type === 'string' || form.type === ''">
-                            <input 
+                            <input
                                 type="text"
-                                name="value" 
+                                name="value"
                                 x-model="form.value"
                                 required
                                 class="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 transition-all duration-200"
@@ -161,9 +161,9 @@
 
                         {{-- Integer --}}
                         <div x-show="form.type === 'integer'">
-                            <input 
+                            <input
                                 type="number"
-                                name="value" 
+                                name="value"
                                 x-model="form.value"
                                 required
                                 min="0"
@@ -176,7 +176,7 @@
 
                         {{-- Boolean --}}
                         <div x-show="form.type === 'boolean'">
-                            <select 
+                            <select
                                 name="value"
                                 x-model="form.value"
                                 class="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 transition-all duration-200">
@@ -187,7 +187,7 @@
 
                         {{-- JSON --}}
                         <div x-show="form.type === 'json'">
-                            <textarea 
+                            <textarea
                                 name="value"
                                 x-model="form.value"
                                 @input="validateJson"
@@ -211,7 +211,7 @@
                     {{-- Açıklama --}}
                     <div>
                         <label class="block text-sm font-medium text-gray-900 dark:text-white mb-2">Açıklama</label>
-                        <textarea 
+                        <textarea
                             name="description"
                             x-model="form.description"
                             rows="3"
@@ -255,11 +255,11 @@
 
                 {{-- Action Buttons --}}
                 <div class="flex items-center justify-end gap-3 mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
-                    <a href="{{ route('admin.ayarlar.index') }}" 
+                    <a href="{{ route('admin.ayarlar.index') }}"
                        class="px-6 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200 font-medium">
                         İptal
                     </a>
-                    <button type="submit" 
+                    <button type="submit"
                             class="px-6 py-3 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-md hover:shadow-lg font-medium flex items-center gap-2">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
@@ -276,10 +276,10 @@
         <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
             <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">🚀 Hızlı Şablonlar</h2>
             <p class="text-sm text-gray-600 dark:text-gray-400 mb-6">Yaygın kullanılan ayarları tek tıkla ekleyin</p>
-            
+
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                 @foreach($templates ?? [] as $templateKey => $template)
-                <button 
+                <button
                     type="button"
                     @click="applyTemplate('{{ $templateKey }}')"
                     class="bg-white dark:bg-gray-800 rounded-xl border-2 border-gray-200 dark:border-gray-700 p-6 text-center hover:border-blue-500 dark:hover:border-blue-400 hover:shadow-xl transition-all duration-200 group">
@@ -318,7 +318,7 @@
                                 <p class="text-sm text-orange-100">5 ayar birden ekle</p>
                             </div>
                         </div>
-                        <button 
+                        <button
                             type="button"
                             @click="createBulkGroup('email_smtp')"
                             class="px-6 py-2 bg-white text-orange-600 rounded-lg font-semibold hover:bg-orange-50 transition-colors duration-200 shadow-md">
@@ -363,7 +363,7 @@
                                 <p class="text-sm text-blue-100">4 ayar birden ekle</p>
                             </div>
                         </div>
-                        <button 
+                        <button
                             type="button"
                             @click="createBulkGroup('ai_complete')"
                             class="px-6 py-2 bg-white text-blue-600 rounded-lg font-semibold hover:bg-blue-50 transition-colors duration-200 shadow-md">
@@ -404,7 +404,7 @@
                                 <p class="text-sm text-green-100">4 ayar birden ekle</p>
                             </div>
                         </div>
-                        <button 
+                        <button
                             type="button"
                             @click="createBulkGroup('security_basic')"
                             class="px-6 py-2 bg-white text-green-600 rounded-lg font-semibold hover:bg-green-50 transition-colors duration-200 shadow-md">
@@ -451,7 +451,7 @@ function settingsCreator() {
         },
         keyError: '',
         jsonValid: null,
-        
+
         groups: [
             { value: 'general', icon: '⚙️', description: 'Genel sistem ayarları' },
             { value: 'contact', icon: '📞', description: 'İletişim bilgileri' },
@@ -464,24 +464,24 @@ function settingsCreator() {
             { value: 'security', icon: '🔒', description: 'Güvenlik ayarları' },
             { value: 'performance', icon: '⚡', description: 'Performans ayarları' }
         ],
-        
+
         templates: @json($templates ?? []),
-        
+
         get filteredGroups() {
             if (!this.form.group) return this.groups;
-            return this.groups.filter(g => 
+            return this.groups.filter(g =>
                 g.value.toLowerCase().includes(this.form.group.toLowerCase()) ||
                 g.description.toLowerCase().includes(this.form.group.toLowerCase())
             );
         },
-        
+
         validateKey() {
             const key = this.form.key;
             if (!key) {
                 this.keyError = '';
                 return;
             }
-            
+
             // snake_case validation
             const snakeCaseRegex = /^[a-z][a-z0-9_]*$/;
             if (!snakeCaseRegex.test(key)) {
@@ -490,13 +490,13 @@ function settingsCreator() {
                 this.keyError = '';
             }
         },
-        
+
         validateJson() {
             if (this.form.type !== 'json' || !this.form.value) {
                 this.jsonValid = null;
                 return;
             }
-            
+
             try {
                 JSON.parse(this.form.value);
                 this.jsonValid = true;
@@ -504,7 +504,7 @@ function settingsCreator() {
                 this.jsonValid = false;
             }
         },
-        
+
         applyTemplate(templateKey) {
             const template = this.templates[templateKey];
             if (template) {
@@ -515,20 +515,20 @@ function settingsCreator() {
                     group: template.group,
                     description: template.description
                 };
-                
+
                 // Switch to single tab
                 this.activeTab = 'single';
-                
+
                 // Scroll to form
                 setTimeout(() => {
                     document.querySelector('form').scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }, 100);
-                
+
                 // Show toast
                 this.showToast('success', `✅ ${template.key} şablonu yüklendi!`);
             }
         },
-        
+
         async createBulkGroup(groupKey) {
             const groups = {
                 email_smtp: {
@@ -560,14 +560,14 @@ function settingsCreator() {
                     ]
                 }
             };
-            
+
             const group = groups[groupKey];
             if (!group) return;
-            
+
             if (!confirm(`${group.name} için ${group.settings.length} ayar oluşturulacak. Devam edilsin mi?`)) {
                 return;
             }
-            
+
             try {
                 const response = await fetch('{{ route("admin.ayarlar.bulk-store") }}', {
                     method: 'POST',
@@ -577,9 +577,9 @@ function settingsCreator() {
                     },
                     body: JSON.stringify({ settings: group.settings })
                 });
-                
+
                 const result = await response.json();
-                
+
                 if (result.success) {
                     this.showToast('success', result.message);
                     setTimeout(() => {
@@ -593,7 +593,7 @@ function settingsCreator() {
                 this.showToast('error', 'Ayarlar oluşturulamadı!');
             }
         },
-        
+
         showToast(type, message) {
             if (window.toast) {
                 window.toast(type, message);

@@ -99,14 +99,10 @@
         "Context7 Live Search: Müşteri (required)",
         "Static Select: Danışman (optional)"
       ],
-      "talep_bilgileri": [
-        "Context7 Live Search: Talep (optional)"
-      ]
+      "talep_bilgileri": ["Context7 Live Search: Talep (optional)"]
     },
     "sag_kolon": {
-      "ilan_bilgileri": [
-        "Context7 Live Search: İlan (required)"
-      ],
+      "ilan_bilgileri": ["Context7 Live Search: İlan (required)"],
       "eslesme_detaylari": [
         "Select: Durum (required) - Aktif, Beklemede, İptal, Tamamlandı",
         "Checkbox: Öne Çıkan",
@@ -205,4 +201,3 @@
     "neo-design-system"
   ]
 }
-

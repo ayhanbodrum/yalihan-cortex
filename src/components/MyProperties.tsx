@@ -103,8 +103,8 @@ const MyProperties: React.FC<MyPropertiesProps> = ({
   };
 
   const handlePropertySelect = (property: Property) => {
-    setSelectedProperties(prev => 
-      prev.includes(property.id) 
+    setSelectedProperties(prev =>
+      prev.includes(property.id)
         ? prev.filter(id => id !== property.id)
         : [...prev, property.id]
     );
@@ -351,7 +351,7 @@ const MyProperties: React.FC<MyPropertiesProps> = ({
                 <div className="p-4">
                   <h3 className="font-semibold text-lg mb-2 line-clamp-2">{property.title}</h3>
                   <p className="text-gray-600 text-sm mb-3">{property.location}</p>
-                  
+
                   <div className="text-2xl font-bold text-blue-600 mb-4">
                     {formatPrice(property.price, property.currency)}
                   </div>
@@ -389,16 +389,3 @@ const MyProperties: React.FC<MyPropertiesProps> = ({
 };
 
 export default MyProperties;
-
-
-
-
-
-
-
-
-
-
-
-
-

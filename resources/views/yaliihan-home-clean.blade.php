@@ -4,7 +4,30 @@
 
 @section('content')
     <!-- Hero Section -->
-    <x-yaliihan.hero-section title="🏠 Yalıhan Emlak" subtitle="Bodrum'un en güzel emlakları burada!" :show-search="true" />
+<header class="absolute top-0 inset-x-0 z-30">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+        <a href="{{ route('home') }}" class="flex items-center gap-3">
+            <img src="{{ asset('images/logo.png') }}" alt="Yalıhan Emlak" class="h-10 w-auto dark:hidden">
+            <img src="{{ asset('images/logo.png') }}" alt="Yalıhan Emlak" class="h-10 w-auto hidden dark:block">
+            <span class="text-white text-lg font-semibold tracking-wide drop-shadow-md">Yalıhan Emlak</span>
+        </a>
+        <nav class="hidden md:flex items-center gap-6 text-white font-medium text-sm">
+            <a href="#featured" class="hover:text-amber-300 transition">Öne Çıkanlar</a>
+            <a href="#yazlik" class="hover:text-amber-300 transition">Yazlıklar</a>
+            <a href="#arsa" class="hover:text-amber-300 transition">Arsalar</a>
+            <a href="#golden-visa" class="hover:text-amber-300 transition">Yurtdışı</a>
+            <a href="{{ route('frontend.portfolio.index') }}" class="px-4 py-2 rounded-full bg-amber-500 text-slate-900 font-semibold shadow-md hover:bg-amber-400 transition">Portföy</a>
+        </nav>
+        <button class="md:hidden inline-flex items-center justify-center w-11 h-11 rounded-full bg-white/20 text-white backdrop-blur-sm border border-white/30">
+            <span class="sr-only">Menü</span>
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+        </button>
+    </div>
+</header>
+
+<x-yaliihan.hero-section title="🏠 Yalıhan Emlak" subtitle="Bodrum'un en güzel emlakları burada!" :show-search="true" />
 
     <!-- AI Assistant CTA -->
     <section class="-mt-8 sm:-mt-12 relative z-10">
@@ -55,26 +78,13 @@
                 </a>
             </div>
 
+            @php
+                $properties = $featuredProperties ?? collect();
+            @endphp
+
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-                @forelse($featuredProperties as $property)
-                    <x-yaliihan.property-card
-                        :image="$property['cover_image']"
-                        :title="$property['title']"
-                        :location="$property['location']"
-                        :price="$property['price_display']"
-                        :price-period="$property['price_period']"
-                        :beds="$property['beds']"
-                        :baths="$property['baths']"
-                        :area="$property['area']"
-                        :badge="$property['badge']"
-                        :badge-text="$property['badge_text']"
-                        :gallery="$property['gallery']"
-                        :virtual-tour-url="$property['virtual_tour_url']"
-                        :map-location="$property['map_location']"
-                        :detail-payload="$property['detail_payload']"
-                        :contact-payload="$property['contact_payload']"
-                        :share-url="$property['share_url']"
-                    />
+                @forelse($properties as $property)
+                    <x-yaliihan.property-card :property="$property" />
                 @empty
                     <div class="col-span-full flex flex-col items-center justify-center rounded-3xl border border-dashed border-blue-300 dark:border-blue-700/60 bg-white dark:bg-gray-900 p-10 text-center shadow-sm">
                         <div class="text-4xl mb-4">🏗️</div>
@@ -356,14 +366,14 @@
                 if (!grid) {
                     return;
                 }
-                
+
                 grid.innerHTML = '';
 
                 if (images.length === 0) {
                     placeholder?.classList.remove('hidden');
                     return;
                 }
-                
+
                 placeholder?.classList.add('hidden');
 
                 images.forEach((image) => {
@@ -508,7 +518,7 @@
                 if (!message) {
                     return;
                 }
-                
+
                 const toast = document.createElement('div');
                 const background = type === 'success' ? 'bg-green-500' : type === 'error' ? 'bg-red-500' : 'bg-blue-500';
                 const icon = type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️';

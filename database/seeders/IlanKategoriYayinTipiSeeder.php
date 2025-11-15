@@ -89,7 +89,7 @@ class IlanKategoriYayinTipiSeeder extends Seeder
                     ],
                     [
                         'status' => 'Aktif',
-                        'order' => $index + 1,
+                        'display_order' => $index + 1,
                         // slug column yok - otomatik oluşturulmaz
                     ]
                 );

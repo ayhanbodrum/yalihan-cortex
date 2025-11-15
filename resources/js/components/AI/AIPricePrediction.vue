@@ -243,7 +243,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import AIService from '../../admin/services/AIService.js'
 
 export default {
   name: 'AIPricePrediction',
@@ -316,10 +316,10 @@ export default {
         console.error('Error loading provinces:', error);
       }
     },
-    
+
     async loadDistricts() {
       if (!this.form.il) return;
-      
+
       try {
         const response = await axios.get('/api/address/districts', {
           params: { il: this.form.il }
@@ -329,10 +329,10 @@ export default {
         console.error('Error loading districts:', error);
       }
     },
-    
+
     async loadNeighborhoods() {
       if (!this.form.ilce) return;
-      
+
       try {
         const response = await axios.get('/api/address/neighborhoods', {
           params: { ilce: this.form.ilce }
@@ -351,10 +351,9 @@ export default {
       this.prediction = null;
 
       try {
-        const response = await axios.post('/api/ai/predict-price', this.form);
-
-        if (response.data.success) {
-          this.prediction = response.data.data;
+        const res = await AIService.pricePredict({ features: { ...this.form } }, { rateMs: 250 })
+        if (res && (res.status === true || res.success === true)) {
+          this.prediction = res.data || res
 
           // Analytics event
           this.$emit('prediction-made', {
@@ -362,7 +361,7 @@ export default {
             result: this.prediction
           });
         } else {
-          this.error = response.data.error || 'Fiyat tahmini yapılamadı.';
+          this.error = (res && res.message) || 'Fiyat tahmini yapılamadı.';
         }
       } catch (error) {
         console.error('Price prediction error:', error);

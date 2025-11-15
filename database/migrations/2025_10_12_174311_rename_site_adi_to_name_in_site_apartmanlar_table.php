@@ -8,7 +8,7 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
-     * 
+     *
      * Context7 Compliance: Rename site_adi to name
      */
     public function up(): void

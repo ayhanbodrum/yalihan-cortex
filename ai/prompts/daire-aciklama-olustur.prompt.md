@@ -18,19 +18,19 @@ Daire türü emlak ilanları için SEO uyumlu, satış odaklı açıklamalar olu
 
 ### **Zorunlu Parametreler:**
 
--   **title:** string - İlan başlığı
--   **location:** object - Konum bilgileri (il, ilçe, mahalle)
--   **price:** number - Fiyat bilgisi (TRY)
--   **features:** array - Özellikler listesi (oda sayısı, m², kat, etc.)
+- **title:** string - İlan başlığı
+- **location:** object - Konum bilgileri (il, ilçe, mahalle)
+- **price:** number - Fiyat bilgisi (TRY)
+- **features:** array - Özellikler listesi (oda sayısı, m², kat, etc.)
 
 ### **Opsiyonel Parametreler:**
 
--   **tone:** string - Ton (seo, kurumsal, hizli_satis, luks) - default: "seo"
--   **target_length:** number - Hedef karakter sayısı (150-300) - default: 200
--   **keywords:** array - Ek anahtar kelimeler
--   **building_age:** number - Bina yaşı
--   **floor:** number - Kat bilgisi
--   **heating_type:** string - Isıtma tipi
+- **tone:** string - Ton (seo, kurumsal, hizli_satis, luks) - default: "seo"
+- **target_length:** number - Hedef karakter sayısı (150-300) - default: 200
+- **keywords:** array - Ek anahtar kelimeler
+- **building_age:** number - Bina yaşı
+- **floor:** number - Kat bilgisi
+- **heating_type:** string - Isıtma tipi
 
 ---
 
@@ -57,14 +57,14 @@ Daire türü emlak ilanları için SEO uyumlu, satış odaklı açıklamalar olu
 
 ## 🎯 **Context7 Kuralları**
 
--   ✅ Turkish language optimization
--   ✅ Real estate terminology accuracy
--   ✅ Location-based keyword integration (il, ilçe, mahalle)
--   ✅ Price point positioning and value proposition
--   ✅ Feature highlighting (room count, size, floor)
--   ✅ Call-to-action inclusion
--   ✅ Mobile-friendly formatting
--   ✅ SEO keyword density (2-3%)
+- ✅ Turkish language optimization
+- ✅ Real estate terminology accuracy
+- ✅ Location-based keyword integration (il, ilçe, mahalle)
+- ✅ Price point positioning and value proposition
+- ✅ Feature highlighting (room count, size, floor)
+- ✅ Call-to-action inclusion
+- ✅ Mobile-friendly formatting
+- ✅ SEO keyword density (2-3%)
 
 ---
 

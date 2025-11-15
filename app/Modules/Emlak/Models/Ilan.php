@@ -24,8 +24,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 trigger_error(
     "DEPRECATED: App\\Modules\\Emlak\\Models\\Ilan kullanılıyor. " .
-    "Lütfen App\\Models\\Ilan kullanın. " .
-    "Kaynak: " . debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1)[0]['file'] ?? 'unknown',
+        "Lütfen App\\Models\\Ilan kullanın. " .
+        "Kaynak: " . debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1)[0]['file'] ?? 'unknown',
     E_USER_DEPRECATED
 );
 
@@ -202,7 +202,6 @@ class Ilan extends BaseModel
         // Diğer yeni alanlar
         'ada_no',
         'parsel_no',
-        'is_published',
         'ilan_basligi',
         'ilan_aciklamasi',
         'arsa_detaylari',
@@ -275,8 +274,9 @@ class Ilan extends BaseModel
         'prices' => 'array',
         'is_per_sqm' => 'boolean',
         'arsa_detaylari' => 'array',
-        // 'stage' => IlanStage::class, // Temporarily disabled
-        // İlan Ekleme 2.0 - Stage Management
+        // ✅ NOTE: IlanStage enum kullanımı şu an aktif değil
+        // Gelecekte İlan Ekleme 2.0 - Stage Management için kullanılacak
+        // 'stage' => IlanStage::class,
         'is_draft' => 'boolean',
         'ai_suggestions' => 'array',
         'last_saved_at' => 'datetime',
@@ -582,7 +582,7 @@ class Ilan extends BaseModel
      */
     public function scopePublished($query)
     {
-        return $query->where('is_published', true)->where(function ($q) {
+        return $query->where('status', 'yayinda')->where(function ($q) {
             $q->whereNull('deleted_at');
         });
     }

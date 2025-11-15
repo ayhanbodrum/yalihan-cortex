@@ -12,6 +12,7 @@
 **Açıklama:** Ana ilan tablosu - Tüm emlak ilanları
 
 **Önemli Kolonlar:**
+
 ```yaml
 # Temel Bilgiler
 id: bigint (Primary Key)
@@ -71,6 +72,7 @@ deleted_at: timestamp (soft delete)
 ```
 
 **AI Kullanım Örneği:**
+
 ```
 "Bu ilan için başlık öner" → baslik field'ına yazılacak
 "Açıklama üret" → aciklama field'ına yazılacak
@@ -84,6 +86,7 @@ deleted_at: timestamp (soft delete)
 **Açıklama:** CRM kişi/müşteri tablosu
 
 **Kolonlar:**
+
 ```yaml
 id: bigint
 ad: varchar(255) - Ad
@@ -101,6 +104,7 @@ mahalle_id: bigint → mahalleler.id
 ```
 
 **AI CRM Analizi:**
+
 ```
 CRM Skoru: 0-100 (calculated)
   - İlan sayısı: 30 puan
@@ -116,6 +120,7 @@ CRM Skoru: 0-100 (calculated)
 **Açıklama:** 3 seviyeli kategori sistemi
 
 **Kolonlar:**
+
 ```yaml
 id: bigint
 parent_id: bigint (NULL = ana kategori)
@@ -126,6 +131,7 @@ status: enum('Aktif','Pasif')
 ```
 
 **Hiyerarşi:**
+
 ```
 Konut (parent_id=NULL, seviye=1)
   ├── Villa (parent_id=1, seviye=2)
@@ -141,6 +147,7 @@ Konut (parent_id=NULL, seviye=1)
 ### **4. users (Danışmanlar/Adminler)**
 
 **Kolonlar:**
+
 ```yaml
 id: bigint
 name: varchar(255) - Tam ad
@@ -151,6 +158,7 @@ role: Spatie Permission (danisman, admin, super_admin)
 ```
 
 **Danışman Filtreleme (AI için önemli):**
+
 ```php
 // ✅ DOĞRU
 User::whereHas('roles', function($q) {
@@ -167,6 +175,7 @@ User::role('danisman')  // Static call yasak
 ### **5. iller, ilceler, mahalleler (Locations)**
 
 **iller:**
+
 ```yaml
 id: bigint
 il_adi: varchar(255) - "Muğla"
@@ -175,6 +184,7 @@ status: boolean
 ```
 
 **ilceler:**
+
 ```yaml
 id: bigint
 il_id: bigint → iller.id
@@ -183,6 +193,7 @@ status: boolean
 ```
 
 **mahalleler:**
+
 ```yaml
 id: bigint
 ilce_id: bigint → ilceler.id
@@ -195,6 +206,7 @@ status: boolean
 ### **6. sites (Site/Apartman)**
 
 **Kolonlar:**
+
 ```yaml
 id: bigint
 name: varchar(255) - Site adı
@@ -258,7 +270,7 @@ AND status = 'Aktif';
 
 ```sql
 -- Bir kişinin tüm ilanları ve CRM skoru
-SELECT 
+SELECT
   k.ad, k.soyad,
   COUNT(i.id) as toplam_ilan,
   AVG(i.fiyat) as ortalama_fiyat,
@@ -274,46 +286,49 @@ GROUP BY k.id;
 ## 🎯 AI İÇİN ALAN KULLANIM REHBERİ
 
 ### **Başlık Üretirken Kullan:**
+
 ```yaml
 Zorunlu:
-  - alt_kategori (kategori adı)
-  - yayin_tipi (Satılık/Kiralık)
-  - lokasyon (il + ilce veya il + ilce + mahalle)
-  
+    - alt_kategori (kategori adı)
+    - yayin_tipi (Satılık/Kiralık)
+    - lokasyon (il + ilce veya il + ilce + mahalle)
+
 Opsiyonel:
-  - fiyat (ton'a göre)
-  - oda_sayisi
-  - metrekare
-  - öne çıkan özellik (deniz manzarası, havuzlu)
+    - fiyat (ton'a göre)
+    - oda_sayisi
+    - metrekare
+    - öne çıkan özellik (deniz manzarası, havuzlu)
 ```
 
 ### **Açıklama Üretirken Kullan:**
+
 ```yaml
 Zorunlu:
-  - kategori
-  - lokasyon
-  - fiyat
-  - metrekare
-  
+    - kategori
+    - lokasyon
+    - fiyat
+    - metrekare
+
 Önerilen:
-  - oda_sayisi
-  - kat_bilgisi
-  - site_adi
-  - ozellikler (array)
-  - yakin_yerler (POI)
+    - oda_sayisi
+    - kat_bilgisi
+    - site_adi
+    - ozellikler (array)
+    - yakin_yerler (POI)
 ```
 
 ### **Fiyat Önerirken Kullan:**
+
 ```yaml
 Zorunlu:
-  - fiyat (base price)
-  - metrekare
-  - kategori
-  
+    - fiyat (base price)
+    - metrekare
+    - kategori
+
 Önerilen:
-  - lokasyon (bölge ortalaması için)
-  - bina_yasi
-  - ozellikler
+    - lokasyon (bölge ortalaması için)
+    - bina_yasi
+    - ozellikler
 ```
 
 ---
@@ -321,6 +336,7 @@ Zorunlu:
 ## 🔍 ÖZEL ALAN AÇIKLAMALARI
 
 ### **referans_no (Referans Numarası):**
+
 ```
 Format: YE-{YAYINTIPI}-{LOKASYON}-{KATEGORI}-{SIRANO}
 
@@ -337,33 +353,35 @@ Kurallar:
 ```
 
 ### **portal_sync_status (Portal Senkronizasyon):**
+
 ```json
 {
-  "sahibinden": {
-    "status": "success",
-    "last_sync": "2025-10-11T10:30:00Z",
-    "portal_id": "123456789"
-  },
-  "hepsiemlak": {
-    "status": "pending",
-    "last_sync": null,
-    "error": null
-  }
+    "sahibinden": {
+        "status": "success",
+        "last_sync": "2025-10-11T10:30:00Z",
+        "portal_id": "123456789"
+    },
+    "hepsiemlak": {
+        "status": "pending",
+        "last_sync": null,
+        "error": null
+    }
 }
 ```
 
 ### **portal_pricing (Portal Özel Fiyat):**
+
 ```json
 {
-  "sahibinden": {
-    "price": 3500000,
-    "currency": "TRY",
-    "notes": "Komisyon dahil"
-  },
-  "hepsiemlak": {
-    "price": 3450000,
-    "currency": "TRY"
-  }
+    "sahibinden": {
+        "price": 3500000,
+        "currency": "TRY",
+        "notes": "Komisyon dahil"
+    },
+    "hepsiemlak": {
+        "price": 3450000,
+        "currency": "TRY"
+    }
 }
 ```
 
@@ -376,6 +394,7 @@ Kurallar:
 **Soru:** "Bodrum'da kaç villa var?"
 
 **AI SQL:**
+
 ```sql
 SELECT COUNT(*) FROM ilanlar
 WHERE alt_kategori_id IN (
@@ -391,6 +410,7 @@ AND status = 'Aktif';
 **Soru:** "Yalıkavak'ta villa ortalama fiyatı ne?"
 
 **AI SQL:**
+
 ```sql
 SELECT AVG(fiyat) as ortalama, para_birimi
 FROM ilanlar
@@ -409,6 +429,7 @@ GROUP BY para_birimi;
 ## 🎓 SCHEMA ÖĞRENME NOTLARI
 
 ### **İlişki Mantığı:**
+
 ```
 1. İlan → Kategori: 3 seviyeli hiyerarşi (ana → alt → yayın)
 2. İlan → Lokasyon: 4 seviyeli (ülke → il → ilce → mahalle)
@@ -418,6 +439,7 @@ GROUP BY para_birimi;
 ```
 
 ### **Status Değerleri:**
+
 ```yaml
 # ilanlar.status
 Taslak: Henüz yayınlanmamış
@@ -434,4 +456,3 @@ Beklemede: Potansiyel
 ---
 
 **🗄️ ÖZET:** Bu schema bilgilerini her AI yanıtında kullan. Context7 field adlarına dikkat et!
-

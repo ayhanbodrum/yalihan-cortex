@@ -13,6 +13,7 @@ ERROR: Unknown column 'musteri_tipi' in 'field list'
 ```
 
 **Neden:**
+
 - Tabloda: `kisi_tipi` ✅ (VARCHAR)
 - API'de: `musteri_tipi` ❌ (YANLIŞ!)
 - Model'de: `musteri_tipi` (fillable'da - YANLIŞ!)
@@ -52,15 +53,14 @@ ${
 ```yaml
 KURAL: API SELECT kolonları = Tablodaki gerçek kolon adları!
 
-Kontrol Adımları:
-  1. Migration'ı oku
-  2. Tablo schema'yı kontrol et
-  3. API'de aynı kolon adını kullan
-  4. Model $fillable'ı da düzelt (opsiyonel)
+Kontrol Adımları: 1. Migration'ı oku
+    2. Tablo schema'yı kontrol et
+    3. API'de aynı kolon adını kullan
+    4. Model $fillable'ı da düzelt (opsiyonel)
 
-Tabloda:     kisi_tipi
-API'de:      kisi_tipi  ✅
-Model'de:    kisi_tipi (düzeltilmeli)
+Tabloda: kisi_tipi
+API'de: kisi_tipi  ✅
+Model'de: kisi_tipi (düzeltilmeli)
 Frontend'de: kisi_tipi  ✅
 ```
 
@@ -100,8 +100,8 @@ Schema::create('kisiler', function (Blueprint $table) {
 
 ```javascript
 // Yalıhan Bekçi bu hatayı artık bilecek:
-if (code.includes("->get(['") && code.includes("musteri_tipi")) {
-    alert("❌ HATA: musteri_tipi kolonu yok! kisi_tipi kullan");
+if (code.includes("->get(['") && code.includes('musteri_tipi')) {
+    alert('❌ HATA: musteri_tipi kolonu yok! kisi_tipi kullan');
     suggest("->get(['id', 'ad', 'soyad', 'telefon', 'email', 'kisi_tipi'])");
 }
 ```
@@ -157,4 +157,3 @@ Bundle: +0KB (değişiklik yok) ✅
 **🛡️ Yalıhan Bekçi Öğrendi!**  
 **📚 Knowledge Base Updated!**  
 **🎯 Pattern: Column name mismatch prevention**
-

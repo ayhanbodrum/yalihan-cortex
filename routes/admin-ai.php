@@ -145,6 +145,15 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
             }
         })->name('health');
     });
+
+    // Admin AI Settings (web)
+    Route::prefix('ai-settings')->middleware(['web','auth','admin'])->group(function(){
+        Route::get('/provider-status', [\App\Http\Controllers\Admin\AISettingsController::class, 'providerStatus'])->name('ai-settings.provider-status');
+        Route::post('/test-provider', [\App\Http\Controllers\Admin\AISettingsController::class, 'testProvider'])->name('ai-settings.test-provider');
+        Route::post('/update-locale', [\App\Http\Controllers\Admin\AISettingsController::class, 'updateLocale'])->name('ai-settings.update-locale');
+        Route::post('/update-currency', [\App\Http\Controllers\Admin\AISettingsController::class, 'updateCurrency'])->name('ai-settings.update-currency');
+        Route::get('/', function(){ return view('admin.ai-settings.index'); })->name('ai-settings.index');
+    });
 });
 
 /*

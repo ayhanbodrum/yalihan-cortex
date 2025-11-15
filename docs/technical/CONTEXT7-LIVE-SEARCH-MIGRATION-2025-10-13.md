@@ -12,8 +12,8 @@
 
 Tüm admin sayfalarındaki arama sistemlerini tek bir standart'a geçirmek:
 
--   **Eski:** Form submit (yavaş, sayfa yeniler)
--   **Yeni:** Context7 Live Search (Vanilla JS, canlı, hızlı)
+- **Eski:** Form submit (yavaş, sayfa yeniler)
+- **Yeni:** Context7 Live Search (Vanilla JS, canlı, hızlı)
 
 ---
 
@@ -23,20 +23,20 @@ Tüm admin sayfalarındaki arama sistemlerini tek bir standart'a geçirmek:
 
 **Uygulanan Aramalar:**
 
--   ✅ İlan Sahibi Arama
--   ✅ Danışman Arama
--   ✅ Site/Apartman Arama
+- ✅ İlan Sahibi Arama
+- ✅ Danışman Arama
+- ✅ Site/Apartman Arama
 
 **Dosyalar:**
 
--   `resources/views/admin/ilanlar/components/person-crm.blade.php`
--   `resources/views/admin/ilanlar/components/site-selection.blade.php`
--   `resources/views/admin/ilanlar/create.blade.php`
+- `resources/views/admin/ilanlar/components/person-crm.blade.php`
+- `resources/views/admin/ilanlar/components/site-selection.blade.php`
+- `resources/views/admin/ilanlar/create.blade.php`
 
 **API:**
 
--   `/api/kisiler/search`
--   `/api/sites/search`
+- `/api/kisiler/search`
+- `/api/sites/search`
 
 ---
 
@@ -46,10 +46,7 @@ Tüm admin sayfalarındaki arama sistemlerini tek bir standart'a geçirmek:
 
 ```html
 <!-- ÖNCE (Form Submit): -->
-<x-neo.input
-    label="🚀 Hızlı Arama"
-    placeholder="İlan başlığı, ID, ilan sahibi ara..."
-/>
+<x-neo.input label="🚀 Hızlı Arama" placeholder="İlan başlığı, ID, ilan sahibi ara..." />
 
 <!-- SONRA (Context7 Live Search): -->
 <div class="context7-live-search" data-search-type="ilanlar">
@@ -65,11 +62,11 @@ Tüm admin sayfalarındaki arama sistemlerini tek bir standart'a geçirmek:
 
 **Dosya:**
 
--   `resources/views/admin/ilanlar/index.blade.php`
+- `resources/views/admin/ilanlar/index.blade.php`
 
 **API:**
 
--   `/api/ilanlar/search` (YENİ)
+- `/api/ilanlar/search` (YENİ)
 
 **Gösterim:**
 
@@ -104,11 +101,11 @@ Tüm admin sayfalarındaki arama sistemlerini tek bir standart'a geçirmek:
 
 **Dosya:**
 
--   `resources/views/admin/kisiler/index.blade.php`
+- `resources/views/admin/kisiler/index.blade.php`
 
 **API:**
 
--   `/api/kisiler/search` (ZATEN VAR)
+- `/api/kisiler/search` (ZATEN VAR)
 
 **Gösterim:**
 
@@ -143,11 +140,11 @@ Tüm admin sayfalarındaki arama sistemlerini tek bir standart'a geçirmek:
 
 **Dosya:**
 
--   `resources/views/admin/danisman/index.blade.php`
+- `resources/views/admin/danisman/index.blade.php`
 
 **API:**
 
--   `/api/kisiler/search` (ZATEN VAR - Danışmanlar da kişi tablosundan)
+- `/api/kisiler/search` (ZATEN VAR - Danışmanlar da kişi tablosundan)
 
 ---
 
@@ -185,10 +182,10 @@ public/js/context7-live-search-simple.js
 const subtitle = result.kisi_tipi
     ? `📋 ${result.kisi_tipi}` // Kişi
     : result.daire_sayisi
-    ? `🏢 ${result.daire_sayisi} daire` // Site
-    : result.kategori
-    ? `🏷️ ${result.kategori} - ${result.fiyat}` // İlan
-    : "";
+      ? `🏢 ${result.daire_sayisi} daire` // Site
+      : result.kategori
+        ? `🏷️ ${result.kategori} - ${result.fiyat}` // İlan
+        : '';
 ```
 
 ---
@@ -233,18 +230,18 @@ const subtitle = result.kisi_tipi
 
 ### **Eklenen:**
 
--   `.context7/authority.json` (forbidden_technologies, required_technologies)
--   `.context7/JAVASCRIPT-STANDARDS-2025-10-13.md` (Detaylı açıklama)
--   `yalihan-bekci/knowledge/javascript-vanilla-only-rule.json` (Bekçi bilgi tabanı)
--   `yalihan-bekci/knowledge/kisiler-table-schema-fix.md` (Schema fix)
--   `JAVASCRIPT-STANDART-KURALLARI.md` (Hızlı referans)
--   `docs/technical/CONTEXT7-LIVE-SEARCH-MIGRATION-2025-10-13.md` (Bu dosya)
+- `.context7/authority.json` (forbidden_technologies, required_technologies)
+- `.context7/JAVASCRIPT-STANDARDS-2025-10-13.md` (Detaylı açıklama)
+- `yalihan-bekci/knowledge/javascript-vanilla-only-rule.json` (Bekçi bilgi tabanı)
+- `yalihan-bekci/knowledge/kisiler-table-schema-fix.md` (Schema fix)
+- `JAVASCRIPT-STANDART-KURALLARI.md` (Hızlı referans)
+- `docs/technical/CONTEXT7-LIVE-SEARCH-MIGRATION-2025-10-13.md` (Bu dosya)
 
 ### **MCP Öğrenimi:**
 
--   ✅ Yalıhan Bekçi
--   ✅ Memory MCP (Knowledge Graph)
--   ✅ Context7 MCP
+- ✅ Yalıhan Bekçi
+- ✅ Memory MCP (Knowledge Graph)
+- ✅ Context7 MCP
 
 ---
 
@@ -317,16 +314,16 @@ Route::prefix('kisiler')->group(function () {
 
 ```javascript
 // Bekçi bu pattern'leri engelleyecek:
-if (code.includes("import ReactSelect")) {
-    alert("❌ React-Select YASAK! Context7 Live Search kullan");
+if (code.includes('import ReactSelect')) {
+    alert('❌ React-Select YASAK! Context7 Live Search kullan');
 }
 
-if (code.includes("import Choices")) {
-    alert("❌ Choices.js YASAK! Vanilla JS kullan");
+if (code.includes('import Choices')) {
+    alert('❌ Choices.js YASAK! Vanilla JS kullan');
 }
 
-if (api_select.includes("musteri_tipi")) {
-    alert("❌ musteri_tipi kolonu yok! kisi_tipi kullan");
+if (api_select.includes('musteri_tipi')) {
+    alert('❌ musteri_tipi kolonu yok! kisi_tipi kullan');
 }
 ```
 
@@ -530,20 +527,20 @@ Sonra: %100 (tek standart, Vanilla JS)
 
 ### **Kısa Vade (Bu Hafta):**
 
--   [ ] Eski kütüphaneleri kaldır (6 dosya)
--   [ ] Kalan ana sayfalar (10+ dosya)
+- [ ] Eski kütüphaneleri kaldır (6 dosya)
+- [ ] Kalan ana sayfalar (10+ dosya)
 
 ### **Orta Vade (Bu Ay):**
 
--   [ ] Tüm liste sayfaları (40+ dosya)
--   [ ] Performance optimization
--   [ ] A/B testing
+- [ ] Tüm liste sayfaları (40+ dosya)
+- [ ] Performance optimization
+- [ ] A/B testing
 
 ### **Uzun Vade:**
 
--   [ ] Tüm sistemde tek standart
--   [ ] Context7 %100 compliance
--   [ ] Zero dependency
+- [ ] Tüm sistemde tek standart
+- [ ] Context7 %100 compliance
+- [ ] Zero dependency
 
 ---
 

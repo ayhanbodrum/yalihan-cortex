@@ -215,11 +215,7 @@
       "10. AI İçerik",
       "11. İlan Durumu"
     ],
-    "form_actions": [
-      "Taslak Kaydet",
-      "Önizleme",
-      "Kaydet ve Yayınla"
-    ]
+    "form_actions": ["Taslak Kaydet", "Önizleme", "Kaydet ve Yayınla"]
   },
 
   "oncelik_sirasi": [
@@ -300,4 +296,3 @@
     "tavsiye": "Özellikler (Features) bölümü mutlaka eklenmeli!"
   }
 }
-

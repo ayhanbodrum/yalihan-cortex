@@ -11,4 +11,9 @@ class AISearchController extends Controller
     {
         return response()->json(['message' => 'AI Search endpoint - to be implemented']);
     }
+
+    public function explore()
+    {
+        return view('ai.explore');
+    }
 }

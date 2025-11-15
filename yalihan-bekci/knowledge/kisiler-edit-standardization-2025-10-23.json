@@ -109,10 +109,7 @@
       "before": "Complex component + undefined dependencies",
       "after": "Vanilla JS (loadIlceler, loadMahalleler)",
       "pattern": "window export pattern",
-      "api_endpoints": [
-        "GET /api/ilceler/{id}",
-        "GET /api/mahalleler/{id}"
-      ],
+      "api_endpoints": ["GET /api/ilceler/{id}", "GET /api/mahalleler/{id}"],
       "size": "~2KB (minimal)"
     },
 
@@ -227,4 +224,3 @@
     "auto_fix": "Can auto-detect and suggest fixes"
   }
 }
-

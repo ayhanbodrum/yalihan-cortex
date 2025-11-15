@@ -1,464 +1,437 @@
 {
-    "guide_info": {
-        "name": "Context7 Live Search - Complete Implementation Guide",
-        "created": "2025-10-13",
-        "version": "1.0.0",
-        "status": "PRODUCTION",
-        "authority": ".context7/authority.json",
-        "severity": "CRITICAL"
-    },
+  "guide_info": {
+    "name": "Context7 Live Search - Complete Implementation Guide",
+    "created": "2025-10-13",
+    "version": "1.0.0",
+    "status": "PRODUCTION",
+    "authority": ".context7/authority.json",
+    "severity": "CRITICAL"
+  },
 
-    "migration_summary": {
-        "date": "2025-10-13",
-        "pages_migrated": 4,
-        "search_boxes": 6,
-        "files_changed": 14,
-        "performance_improvement": "85%",
-        "bundle_size": "3KB",
-        "dependencies": 0,
-        "context7_compliance": "100%"
-    },
+  "migration_summary": {
+    "date": "2025-10-13",
+    "pages_migrated": 4,
+    "search_boxes": 6,
+    "files_changed": 14,
+    "performance_improvement": "85%",
+    "bundle_size": "3KB",
+    "dependencies": 0,
+    "context7_compliance": "100%"
+  },
 
-    "implemented_pages": {
-        "stable_create": {
-            "url": "/stable-create",
-            "searches": {
-                "ilan_sahibi": {
-                    "type": "kisiler",
-                    "api": "/api/kisiler/search",
-                    "file": "resources/views/admin/ilanlar/components/person-crm.blade.php",
-                    "display": "Ad Soyad + kisi_tipi"
-                },
-                "danisman": {
-                    "type": "kisiler",
-                    "api": "/api/kisiler/search",
-                    "file": "resources/views/admin/ilanlar/components/person-crm.blade.php",
-                    "display": "Ad Soyad + kisi_tipi"
-                },
-                "site_apartman": {
-                    "type": "sites",
-                    "api": "/api/sites/search",
-                    "file": "resources/views/admin/ilanlar/components/site-selection.blade.php",
-                    "display": "Name + daire_sayisi"
-                }
-            }
+  "implemented_pages": {
+    "stable_create": {
+      "url": "/stable-create",
+      "searches": {
+        "ilan_sahibi": {
+          "type": "kisiler",
+          "api": "/api/kisiler/search",
+          "file": "resources/views/admin/ilanlar/components/person-crm.blade.php",
+          "display": "Ad Soyad + kisi_tipi"
         },
-        "admin_ilanlar": {
-            "url": "/admin/ilanlar",
-            "searches": {
-                "ilan_arama": {
-                    "type": "ilanlar",
-                    "api": "/api/ilanlar/search",
-                    "file": "resources/views/admin/ilanlar/index.blade.php",
-                    "display": "Baslik + kategori + fiyat"
-                }
-            }
+        "danisman": {
+          "type": "kisiler",
+          "api": "/api/kisiler/search",
+          "file": "resources/views/admin/ilanlar/components/person-crm.blade.php",
+          "display": "Ad Soyad + kisi_tipi"
         },
-        "admin_kisiler": {
-            "url": "/admin/kisiler",
-            "searches": {
-                "musteri_arama": {
-                    "type": "kisiler",
-                    "api": "/api/kisiler/search",
-                    "file": "resources/views/admin/kisiler/index.blade.php",
-                    "display": "Ad Soyad + kisi_tipi"
-                }
-            }
-        },
-        "admin_danisman": {
-            "url": "/admin/danisman",
-            "searches": {
-                "danisman_arama": {
-                    "type": "kisiler",
-                    "api": "/api/kisiler/search",
-                    "file": "resources/views/admin/danisman/index.blade.php",
-                    "display": "Ad Soyad + kisi_tipi"
-                }
-            }
+        "site_apartman": {
+          "type": "sites",
+          "api": "/api/sites/search",
+          "file": "resources/views/admin/ilanlar/components/site-selection.blade.php",
+          "display": "Name + daire_sayisi"
         }
+      }
     },
-
-    "core_files": {
-        "javascript": {
-            "file": "public/js/context7-live-search-simple.js",
-            "size": "3KB",
-            "lines": 175,
-            "technology": "Vanilla JavaScript",
-            "dependencies": 0,
-            "features": [
-                "Debounce 300ms",
-                "Min 2 characters",
-                "Max results configurable",
-                "Dynamic subtitle display",
-                "Tailwind CSS",
-                "Auto-initialize",
-                "Keyboard navigation ready"
-            ]
-        },
-        "api_endpoints": {
-            "/api/kisiler/search": {
-                "model": "Kisi",
-                "columns": [
-                    "id",
-                    "ad",
-                    "soyad",
-                    "telefon",
-                    "email",
-                    "kisi_tipi"
-                ],
-                "search_fields": [
-                    "ad",
-                    "soyad",
-                    "telefon",
-                    "CONCAT(ad, soyad)"
-                ],
-                "filter": "status = 'Aktif'",
-                "response_format": {
-                    "id": "integer",
-                    "text": "string (ad + soyad + telefon)",
-                    "kisi_tipi": "string (Müşteri, Alıcı, Satıcı, ...)"
-                },
-                "common_error": "musteri_tipi column not found (use kisi_tipi!)"
-            },
-            "/api/sites/search": {
-                "model": "SiteApartman",
-                "columns": ["id", "name", "adres", "toplam_daire_sayisi"],
-                "search_fields": ["name", "adres"],
-                "response_format": {
-                    "id": "integer",
-                    "text": "string (name + adres)",
-                    "daire_sayisi": "integer"
-                }
-            },
-            "/api/ilanlar/search": {
-                "model": "Ilan",
-                "columns": [
-                    "id",
-                    "baslik",
-                    "referans_no",
-                    "fiyat",
-                    "para_birimi"
-                ],
-                "relationships": ["anaKategori", "altKategori", "il", "ilce"],
-                "search_fields": [
-                    "baslik",
-                    "referans_no",
-                    "ilanSahibi.ad",
-                    "ilanSahibi.soyad"
-                ],
-                "response_format": {
-                    "id": "integer",
-                    "text": "string (baslik + referans_no)",
-                    "kategori": "string",
-                    "fiyat": "string (formatted)"
-                }
-            }
+    "admin_ilanlar": {
+      "url": "/admin/ilanlar",
+      "searches": {
+        "ilan_arama": {
+          "type": "ilanlar",
+          "api": "/api/ilanlar/search",
+          "file": "resources/views/admin/ilanlar/index.blade.php",
+          "display": "Baslik + kategori + fiyat"
         }
+      }
     },
-
-    "blade_template_pattern": {
-        "basic_structure": "<div class='context7-live-search' data-search-type='{type}'>\n  <input type='hidden' name='{type}_id' id='{type}_id'>\n  <input type='text' id='{type}_search' class='neo-input' placeholder='...' autocomplete='off'>\n  <div class='context7-search-results absolute z-50 w-full mt-1 bg-white dark:bg-gray-700 border rounded-lg shadow-lg hidden max-h-60 overflow-y-auto'></div>\n</div>",
-        "script_include": "<script src=\"{{ asset('js/context7-live-search-simple.js') }}\"></script>",
-        "location": "@push('scripts') section",
-        "data_attributes": {
-            "data-search-type": "kisiler|sites|ilanlar",
-            "data-placeholder": "Search placeholder text",
-            "data-max-results": "15-20 (default 20)"
+    "admin_kisiler": {
+      "url": "/admin/kisiler",
+      "searches": {
+        "musteri_arama": {
+          "type": "kisiler",
+          "api": "/api/kisiler/search",
+          "file": "resources/views/admin/kisiler/index.blade.php",
+          "display": "Ad Soyad + kisi_tipi"
         }
+      }
     },
-
-    "critical_fixes": {
-        "musteri_tipi_fix": {
-            "error": "Unknown column 'musteri_tipi'",
-            "reason": "Table has kisi_tipi, not musteri_tipi",
-            "fix": "Use kisi_tipi in API SELECT",
-            "table": "kisiler",
-            "migration": "database/migrations/2025_10_10_073826_create_kisiler_table.php",
-            "corrected_column": "kisi_tipi",
-            "type": "VARCHAR",
-            "default": "Müşteri",
-            "values": ["Müşteri", "Alıcı", "Satıcı", "Kiracı", "Yatırımcı"]
+    "admin_danisman": {
+      "url": "/admin/danisman",
+      "searches": {
+        "danisman_arama": {
+          "type": "kisiler",
+          "api": "/api/kisiler/search",
+          "file": "resources/views/admin/danisman/index.blade.php",
+          "display": "Ad Soyad + kisi_tipi"
         }
-    },
-
-    "yalihan_bekci_rules": {
-        "alert_on_patterns": [
-            "import.*from.*'react-select'",
-            "import.*from.*'choices.js'",
-            "import.*Choices.*from",
-            "npm install react-select",
-            "npm install choices.js",
-            "npm install selectize",
-            "->get\\(\\[.*musteri_tipi.*\\]\\)",
-            "result\\.musteri_tipi"
-        ],
-        "suggest_alternatives": {
-            "react_select": "Use Context7 Live Search (Vanilla JS, 3KB)",
-            "choices_js": "Use Context7 Live Search or standard <select>",
-            "select2": "Use Context7 Live Search (jQuery dependency forbidden)",
-            "musteri_tipi": "Use kisi_tipi (actual table column)"
-        },
-        "auto_check_before": [
-            "API endpoint creation",
-            "Blade template with search",
-            "JavaScript import statements",
-            "npm install commands"
-        ],
-        "prevention": {
-            "heavy_libraries": "Alert if library > 10KB for simple tasks",
-            "column_mismatch": "Check table schema before API SELECT",
-            "duplicate_code": "Suggest reusing context7-live-search-simple.js"
-        }
-    },
-
-    "decision_tree": {
-        "need_search_dropdown": {
-            "data_count_0_to_10": {
-                "solution": "Standard HTML <select> (no JS needed)",
-                "example": "Status dropdown (Aktif/Pasif)",
-                "code": "<select class='neo-input'><option>...</option></select>"
-            },
-            "data_count_10_to_50": {
-                "solution": "Standard HTML <select> with search (optional)",
-                "example": "Category dropdown",
-                "code": "<select class='neo-input'><option>...</option></select>"
-            },
-            "data_count_50_plus": {
-                "solution": "Context7 Live Search (Vanilla JS)",
-                "example": "Person search (100+ people)",
-                "code": "<div class='context7-live-search' data-search-type='kisiler'>",
-                "file": "public/js/context7-live-search-simple.js",
-                "api": "/api/kisiler/search"
-            }
-        },
-        "need_reactive_ui": {
-            "simple_state": "Use Alpine.js (x-data, x-model)",
-            "complex_state": "Use Alpine.js (still enough)",
-            "never_use": "React, Vue (overkill, heavy)"
-        },
-        "need_ajax": {
-            "use": "Fetch API (built-in Vanilla JS)",
-            "never": "jQuery.ajax, axios (unnecessary dependencies)"
-        },
-        "need_validation": {
-            "simple": "HTML5 (required, pattern, type)",
-            "complex": "HTML5 + Vanilla JS custom validation"
-        }
-    },
-
-    "performance_metrics": {
-        "before_migration": {
-            "technology": "Form submit",
-            "response_time": "~2000ms (page reload)",
-            "ux": "Poor (page refresh)",
-            "debounce": false,
-            "live_results": false,
-            "bundle_size": "0KB (no JS)",
-            "consistency": "Low (different code per page)"
-        },
-        "after_migration": {
-            "technology": "Vanilla JS Context7 Live Search",
-            "response_time": "~300ms (API call)",
-            "ux": "Excellent (no page refresh)",
-            "debounce": "300ms",
-            "live_results": true,
-            "bundle_size": "3KB (minimal)",
-            "consistency": "High (single reusable code)",
-            "improvement": "85% faster"
-        },
-        "comparison_with_libraries": {
-            "react_select": {
-                "size": "170KB",
-                "comparison": "Context7 is 98% smaller (3KB vs 170KB)"
-            },
-            "choices_js": {
-                "size": "48KB",
-                "comparison": "Context7 is 94% smaller (3KB vs 48KB)"
-            },
-            "select2": {
-                "size": "65KB",
-                "dependency": "jQuery",
-                "comparison": "Context7 is 95% smaller, 0 dependency"
-            }
-        }
-    },
-
-    "implementation_checklist": {
-        "before_implementation": [
-            "Check table schema (SHOW COLUMNS FROM {table})",
-            "Identify actual column names (NOT assumed names)",
-            "Verify search fields exist in table",
-            "Plan response format (what data to return)"
-        ],
-        "during_implementation": [
-            "Use exact table column names in SELECT",
-            "Add proper error handling",
-            "Include Context7 comments",
-            "Test API endpoint separately first",
-            "Add script include to blade template",
-            "Verify data-search-type attribute"
-        ],
-        "after_implementation": [
-            "Test live search (type 2+ chars)",
-            "Verify debounce works (300ms delay)",
-            "Check dynamic subtitle display",
-            "Ensure no console errors",
-            "Verify selection updates hidden input",
-            "Test on different screen sizes"
-        ]
-    },
-
-    "common_errors_and_fixes": {
-        "column_not_found": {
-            "error": "SQLSTATE[42S22]: Column not found",
-            "common_cause": "Using model $fillable instead of actual table columns",
-            "fix": "Read migration file, use exact column names",
-            "example": "musteri_tipi (wrong) → kisi_tipi (correct)"
-        },
-        "undefined_function": {
-            "error": "Uncaught ReferenceError: function is not defined",
-            "common_cause": "Inline onclick handler but function not in global scope",
-            "fix": "Export to window object: window.functionName = functionName"
-        },
-        "class_not_initialized": {
-            "error": "Context7LiveSearch not working",
-            "common_cause": "Script not included or loaded after DOM",
-            "fix": "Add script to @push('scripts'), use DOMContentLoaded"
-        },
-        "api_returns_empty": {
-            "error": "No results but data exists",
-            "common_cause": "Search fields wrong or filter too strict",
-            "fix": "Check search fields exist, verify status filter"
-        }
-    },
-
-    "context7_compliance_rules": {
-        "api_columns_must_match_table": {
-            "rule": "API SELECT columns MUST exist in actual database table",
-            "check": "Read migration file before writing API",
-            "example_violation": "->get(['musteri_tipi']) when table has kisi_tipi",
-            "example_correct": "->get(['kisi_tipi']) matching table schema"
-        },
-        "use_vanilla_js_only": {
-            "rule": "No libraries > 10KB for simple tasks",
-            "forbidden": ["react-select", "choices.js", "select2", "selectize"],
-            "allowed": ["Vanilla JS", "Alpine.js (already in stack)"],
-            "exception": "None - always use Vanilla JS first"
-        },
-        "single_reusable_code": {
-            "rule": "DRY - Don't Repeat Yourself",
-            "pattern": "One context7-live-search-simple.js for all searches",
-            "anti_pattern": "Different search code for each page",
-            "benefit": "Maintainability +90%, Bundle size minimal"
-        },
-        "dynamic_display": {
-            "rule": "One code handles multiple types (kisiler, sites, ilanlar)",
-            "implementation": "Conditional subtitle based on result properties",
-            "example": "result.kisi_tipi || result.daire_sayisi || result.kategori"
-        }
-    },
-
-    "future_prevention": {
-        "when_adding_new_search": {
-            "step_1": "Check if Context7 Live Search can handle it",
-            "step_2": "Create API endpoint (/api/{type}/search)",
-            "step_3": "Use exact table columns in SELECT",
-            "step_4": "Add data-search-type to blade template",
-            "step_5": "Include context7-live-search-simple.js script",
-            "step_6": "Test thoroughly",
-            "never": "Install new library (react-select, choices.js, etc)"
-        },
-        "when_library_suggested": {
-            "question": "Can Vanilla JS do this?",
-            "answer_99_percent": "YES!",
-            "check": "Bundle size impact (must be < 10KB)",
-            "fallback": "If truly needed, discuss with team first"
-        }
-    },
-
-    "mcp_enforcement": {
-        "yalihan_bekci": {
-            "monitors": [
-                "npm install commands",
-                "import statements in JS files",
-                "API SELECT statements",
-                "Blade template search patterns"
-            ],
-            "alerts": [
-                "Heavy library usage detected",
-                "Column name mismatch (API vs table)",
-                "Duplicate search code",
-                "Bundle size exceeds limit"
-            ],
-            "suggests": [
-                "Use Context7 Live Search instead",
-                "Check table schema for correct columns",
-                "Reuse existing context7-live-search-simple.js",
-                "Keep bundle < 50KB"
-            ]
-        },
-        "memory_mcp": {
-            "remembers": [
-                "Vanilla JS Only Rule",
-                "Context7 Live Search Pattern",
-                "Column name fixes (musteri_tipi → kisi_tipi)",
-                "Successful implementations",
-                "Common errors and solutions"
-            ]
-        },
-        "context7_mcp": {
-            "validates": [
-                "JavaScript standards compliance",
-                "API column names match table schema",
-                "Bundle size within limits",
-                "No forbidden libraries"
-            ],
-            "reports": [
-                "Compliance violations",
-                "Heavy library usage",
-                "Pattern deviations"
-            ]
-        }
-    },
-
-    "training_examples": {
-        "correct_implementation": {
-            "blade": "<div class='context7-live-search' data-search-type='kisiler' data-max-results='20'>\n  <input type='hidden' name='kisi_id' id='kisi_id'>\n  <input type='text' id='kisi_search' class='neo-input' placeholder='Ad, soyad, telefon...' autocomplete='off'>\n  <div class='context7-search-results absolute z-50 w-full mt-1 bg-white dark:bg-gray-700 border rounded-lg shadow-lg hidden max-h-60 overflow-y-auto'></div>\n</div>",
-            "api": "Route::get('/search', function($request) {\n  $kisiler = Kisi::where('status', 'Aktif')\n    ->where('ad', 'like', \"%{$query}%\")\n    ->get(['id', 'ad', 'soyad', 'telefon', 'email', 'kisi_tipi']);\n  return response()->json(['success' => true, 'data' => $kisiler]);\n});",
-            "script": "@push('scripts')\n  <script src=\"{{ asset('js/context7-live-search-simple.js') }}\"></script>\n@endpush"
-        },
-        "incorrect_implementation": {
-            "blade_wrong": "<select id='kisi' name='kisi_id'>\n  @foreach($kisiler as $kisi)\n    <option value='{{ $kisi->id }}'>{{ $kisi->ad }}</option>\n  @endforeach\n</select>\n<!-- Problem: 100+ kişi için dropdown yavaş, kullanıcı deneyimi kötü -->",
-            "library_wrong": "npm install react-select\nimport ReactSelect from 'react-select'\n<!-- Problem: 170KB, React dependency, overkill -->",
-            "column_wrong": "->get(['musteri_tipi'])\n<!-- Problem: Column doesn't exist in table, should be kisi_tipi -->"
-        }
-    },
-
-    "success_criteria": {
-        "technical": {
-            "bundle_size_under_50kb": true,
-            "zero_heavy_dependencies": true,
-            "api_columns_match_table": true,
-            "context7_compliant": true,
-            "vanilla_js_only": true
-        },
-        "performance": {
-            "response_time_under_500ms": true,
-            "debounce_implemented": true,
-            "no_page_reload": true,
-            "live_results": true
-        },
-        "user_experience": {
-            "instant_feedback": true,
-            "no_page_refresh": true,
-            "clear_results_display": true,
-            "keyboard_friendly": true
-        },
-        "maintainability": {
-            "single_reusable_code": true,
-            "well_documented": true,
-            "mcp_learned": true,
-            "future_proof": true
-        }
+      }
     }
+  },
+
+  "core_files": {
+    "javascript": {
+      "file": "public/js/context7-live-search-simple.js",
+      "size": "3KB",
+      "lines": 175,
+      "technology": "Vanilla JavaScript",
+      "dependencies": 0,
+      "features": [
+        "Debounce 300ms",
+        "Min 2 characters",
+        "Max results configurable",
+        "Dynamic subtitle display",
+        "Tailwind CSS",
+        "Auto-initialize",
+        "Keyboard navigation ready"
+      ]
+    },
+    "api_endpoints": {
+      "/api/kisiler/search": {
+        "model": "Kisi",
+        "columns": ["id", "ad", "soyad", "telefon", "email", "kisi_tipi"],
+        "search_fields": ["ad", "soyad", "telefon", "CONCAT(ad, soyad)"],
+        "filter": "status = 'Aktif'",
+        "response_format": {
+          "id": "integer",
+          "text": "string (ad + soyad + telefon)",
+          "kisi_tipi": "string (Müşteri, Alıcı, Satıcı, ...)"
+        },
+        "common_error": "musteri_tipi column not found (use kisi_tipi!)"
+      },
+      "/api/sites/search": {
+        "model": "SiteApartman",
+        "columns": ["id", "name", "adres", "toplam_daire_sayisi"],
+        "search_fields": ["name", "adres"],
+        "response_format": {
+          "id": "integer",
+          "text": "string (name + adres)",
+          "daire_sayisi": "integer"
+        }
+      },
+      "/api/ilanlar/search": {
+        "model": "Ilan",
+        "columns": ["id", "baslik", "referans_no", "fiyat", "para_birimi"],
+        "relationships": ["anaKategori", "altKategori", "il", "ilce"],
+        "search_fields": ["baslik", "referans_no", "ilanSahibi.ad", "ilanSahibi.soyad"],
+        "response_format": {
+          "id": "integer",
+          "text": "string (baslik + referans_no)",
+          "kategori": "string",
+          "fiyat": "string (formatted)"
+        }
+      }
+    }
+  },
+
+  "blade_template_pattern": {
+    "basic_structure": "<div class='context7-live-search' data-search-type='{type}'>\n  <input type='hidden' name='{type}_id' id='{type}_id'>\n  <input type='text' id='{type}_search' class='neo-input' placeholder='...' autocomplete='off'>\n  <div class='context7-search-results absolute z-50 w-full mt-1 bg-white dark:bg-gray-700 border rounded-lg shadow-lg hidden max-h-60 overflow-y-auto'></div>\n</div>",
+    "script_include": "<script src=\"{{ asset('js/context7-live-search-simple.js') }}\"></script>",
+    "location": "@push('scripts') section",
+    "data_attributes": {
+      "data-search-type": "kisiler|sites|ilanlar",
+      "data-placeholder": "Search placeholder text",
+      "data-max-results": "15-20 (default 20)"
+    }
+  },
+
+  "critical_fixes": {
+    "musteri_tipi_fix": {
+      "error": "Unknown column 'musteri_tipi'",
+      "reason": "Table has kisi_tipi, not musteri_tipi",
+      "fix": "Use kisi_tipi in API SELECT",
+      "table": "kisiler",
+      "migration": "database/migrations/2025_10_10_073826_create_kisiler_table.php",
+      "corrected_column": "kisi_tipi",
+      "type": "VARCHAR",
+      "default": "Müşteri",
+      "values": ["Müşteri", "Alıcı", "Satıcı", "Kiracı", "Yatırımcı"]
+    }
+  },
+
+  "yalihan_bekci_rules": {
+    "alert_on_patterns": [
+      "import.*from.*'react-select'",
+      "import.*from.*'choices.js'",
+      "import.*Choices.*from",
+      "npm install react-select",
+      "npm install choices.js",
+      "npm install selectize",
+      "->get\\(\\[.*musteri_tipi.*\\]\\)",
+      "result\\.musteri_tipi"
+    ],
+    "suggest_alternatives": {
+      "react_select": "Use Context7 Live Search (Vanilla JS, 3KB)",
+      "choices_js": "Use Context7 Live Search or standard <select>",
+      "select2": "Use Context7 Live Search (jQuery dependency forbidden)",
+      "musteri_tipi": "Use kisi_tipi (actual table column)"
+    },
+    "auto_check_before": [
+      "API endpoint creation",
+      "Blade template with search",
+      "JavaScript import statements",
+      "npm install commands"
+    ],
+    "prevention": {
+      "heavy_libraries": "Alert if library > 10KB for simple tasks",
+      "column_mismatch": "Check table schema before API SELECT",
+      "duplicate_code": "Suggest reusing context7-live-search-simple.js"
+    }
+  },
+
+  "decision_tree": {
+    "need_search_dropdown": {
+      "data_count_0_to_10": {
+        "solution": "Standard HTML <select> (no JS needed)",
+        "example": "Status dropdown (Aktif/Pasif)",
+        "code": "<select class='neo-input'><option>...</option></select>"
+      },
+      "data_count_10_to_50": {
+        "solution": "Standard HTML <select> with search (optional)",
+        "example": "Category dropdown",
+        "code": "<select class='neo-input'><option>...</option></select>"
+      },
+      "data_count_50_plus": {
+        "solution": "Context7 Live Search (Vanilla JS)",
+        "example": "Person search (100+ people)",
+        "code": "<div class='context7-live-search' data-search-type='kisiler'>",
+        "file": "public/js/context7-live-search-simple.js",
+        "api": "/api/kisiler/search"
+      }
+    },
+    "need_reactive_ui": {
+      "simple_state": "Use Alpine.js (x-data, x-model)",
+      "complex_state": "Use Alpine.js (still enough)",
+      "never_use": "React, Vue (overkill, heavy)"
+    },
+    "need_ajax": {
+      "use": "Fetch API (built-in Vanilla JS)",
+      "never": "jQuery.ajax, axios (unnecessary dependencies)"
+    },
+    "need_validation": {
+      "simple": "HTML5 (required, pattern, type)",
+      "complex": "HTML5 + Vanilla JS custom validation"
+    }
+  },
+
+  "performance_metrics": {
+    "before_migration": {
+      "technology": "Form submit",
+      "response_time": "~2000ms (page reload)",
+      "ux": "Poor (page refresh)",
+      "debounce": false,
+      "live_results": false,
+      "bundle_size": "0KB (no JS)",
+      "consistency": "Low (different code per page)"
+    },
+    "after_migration": {
+      "technology": "Vanilla JS Context7 Live Search",
+      "response_time": "~300ms (API call)",
+      "ux": "Excellent (no page refresh)",
+      "debounce": "300ms",
+      "live_results": true,
+      "bundle_size": "3KB (minimal)",
+      "consistency": "High (single reusable code)",
+      "improvement": "85% faster"
+    },
+    "comparison_with_libraries": {
+      "react_select": {
+        "size": "170KB",
+        "comparison": "Context7 is 98% smaller (3KB vs 170KB)"
+      },
+      "choices_js": {
+        "size": "48KB",
+        "comparison": "Context7 is 94% smaller (3KB vs 48KB)"
+      },
+      "select2": {
+        "size": "65KB",
+        "dependency": "jQuery",
+        "comparison": "Context7 is 95% smaller, 0 dependency"
+      }
+    }
+  },
+
+  "implementation_checklist": {
+    "before_implementation": [
+      "Check table schema (SHOW COLUMNS FROM {table})",
+      "Identify actual column names (NOT assumed names)",
+      "Verify search fields exist in table",
+      "Plan response format (what data to return)"
+    ],
+    "during_implementation": [
+      "Use exact table column names in SELECT",
+      "Add proper error handling",
+      "Include Context7 comments",
+      "Test API endpoint separately first",
+      "Add script include to blade template",
+      "Verify data-search-type attribute"
+    ],
+    "after_implementation": [
+      "Test live search (type 2+ chars)",
+      "Verify debounce works (300ms delay)",
+      "Check dynamic subtitle display",
+      "Ensure no console errors",
+      "Verify selection updates hidden input",
+      "Test on different screen sizes"
+    ]
+  },
+
+  "common_errors_and_fixes": {
+    "column_not_found": {
+      "error": "SQLSTATE[42S22]: Column not found",
+      "common_cause": "Using model $fillable instead of actual table columns",
+      "fix": "Read migration file, use exact column names",
+      "example": "musteri_tipi (wrong) → kisi_tipi (correct)"
+    },
+    "undefined_function": {
+      "error": "Uncaught ReferenceError: function is not defined",
+      "common_cause": "Inline onclick handler but function not in global scope",
+      "fix": "Export to window object: window.functionName = functionName"
+    },
+    "class_not_initialized": {
+      "error": "Context7LiveSearch not working",
+      "common_cause": "Script not included or loaded after DOM",
+      "fix": "Add script to @push('scripts'), use DOMContentLoaded"
+    },
+    "api_returns_empty": {
+      "error": "No results but data exists",
+      "common_cause": "Search fields wrong or filter too strict",
+      "fix": "Check search fields exist, verify status filter"
+    }
+  },
+
+  "context7_compliance_rules": {
+    "api_columns_must_match_table": {
+      "rule": "API SELECT columns MUST exist in actual database table",
+      "check": "Read migration file before writing API",
+      "example_violation": "->get(['musteri_tipi']) when table has kisi_tipi",
+      "example_correct": "->get(['kisi_tipi']) matching table schema"
+    },
+    "use_vanilla_js_only": {
+      "rule": "No libraries > 10KB for simple tasks",
+      "forbidden": ["react-select", "choices.js", "select2", "selectize"],
+      "allowed": ["Vanilla JS", "Alpine.js (already in stack)"],
+      "exception": "None - always use Vanilla JS first"
+    },
+    "single_reusable_code": {
+      "rule": "DRY - Don't Repeat Yourself",
+      "pattern": "One context7-live-search-simple.js for all searches",
+      "anti_pattern": "Different search code for each page",
+      "benefit": "Maintainability +90%, Bundle size minimal"
+    },
+    "dynamic_display": {
+      "rule": "One code handles multiple types (kisiler, sites, ilanlar)",
+      "implementation": "Conditional subtitle based on result properties",
+      "example": "result.kisi_tipi || result.daire_sayisi || result.kategori"
+    }
+  },
+
+  "future_prevention": {
+    "when_adding_new_search": {
+      "step_1": "Check if Context7 Live Search can handle it",
+      "step_2": "Create API endpoint (/api/{type}/search)",
+      "step_3": "Use exact table columns in SELECT",
+      "step_4": "Add data-search-type to blade template",
+      "step_5": "Include context7-live-search-simple.js script",
+      "step_6": "Test thoroughly",
+      "never": "Install new library (react-select, choices.js, etc)"
+    },
+    "when_library_suggested": {
+      "question": "Can Vanilla JS do this?",
+      "answer_99_percent": "YES!",
+      "check": "Bundle size impact (must be < 10KB)",
+      "fallback": "If truly needed, discuss with team first"
+    }
+  },
+
+  "mcp_enforcement": {
+    "yalihan_bekci": {
+      "monitors": [
+        "npm install commands",
+        "import statements in JS files",
+        "API SELECT statements",
+        "Blade template search patterns"
+      ],
+      "alerts": [
+        "Heavy library usage detected",
+        "Column name mismatch (API vs table)",
+        "Duplicate search code",
+        "Bundle size exceeds limit"
+      ],
+      "suggests": [
+        "Use Context7 Live Search instead",
+        "Check table schema for correct columns",
+        "Reuse existing context7-live-search-simple.js",
+        "Keep bundle < 50KB"
+      ]
+    },
+    "memory_mcp": {
+      "remembers": [
+        "Vanilla JS Only Rule",
+        "Context7 Live Search Pattern",
+        "Column name fixes (musteri_tipi → kisi_tipi)",
+        "Successful implementations",
+        "Common errors and solutions"
+      ]
+    },
+    "context7_mcp": {
+      "validates": [
+        "JavaScript standards compliance",
+        "API column names match table schema",
+        "Bundle size within limits",
+        "No forbidden libraries"
+      ],
+      "reports": ["Compliance violations", "Heavy library usage", "Pattern deviations"]
+    }
+  },
+
+  "training_examples": {
+    "correct_implementation": {
+      "blade": "<div class='context7-live-search' data-search-type='kisiler' data-max-results='20'>\n  <input type='hidden' name='kisi_id' id='kisi_id'>\n  <input type='text' id='kisi_search' class='neo-input' placeholder='Ad, soyad, telefon...' autocomplete='off'>\n  <div class='context7-search-results absolute z-50 w-full mt-1 bg-white dark:bg-gray-700 border rounded-lg shadow-lg hidden max-h-60 overflow-y-auto'></div>\n</div>",
+      "api": "Route::get('/search', function($request) {\n  $kisiler = Kisi::where('status', 'Aktif')\n    ->where('ad', 'like', \"%{$query}%\")\n    ->get(['id', 'ad', 'soyad', 'telefon', 'email', 'kisi_tipi']);\n  return response()->json(['success' => true, 'data' => $kisiler]);\n});",
+      "script": "@push('scripts')\n  <script src=\"{{ asset('js/context7-live-search-simple.js') }}\"></script>\n@endpush"
+    },
+    "incorrect_implementation": {
+      "blade_wrong": "<select id='kisi' name='kisi_id'>\n  @foreach($kisiler as $kisi)\n    <option value='{{ $kisi->id }}'>{{ $kisi->ad }}</option>\n  @endforeach\n</select>\n<!-- Problem: 100+ kişi için dropdown yavaş, kullanıcı deneyimi kötü -->",
+      "library_wrong": "npm install react-select\nimport ReactSelect from 'react-select'\n<!-- Problem: 170KB, React dependency, overkill -->",
+      "column_wrong": "->get(['musteri_tipi'])\n<!-- Problem: Column doesn't exist in table, should be kisi_tipi -->"
+    }
+  },
+
+  "success_criteria": {
+    "technical": {
+      "bundle_size_under_50kb": true,
+      "zero_heavy_dependencies": true,
+      "api_columns_match_table": true,
+      "context7_compliant": true,
+      "vanilla_js_only": true
+    },
+    "performance": {
+      "response_time_under_500ms": true,
+      "debounce_implemented": true,
+      "no_page_reload": true,
+      "live_results": true
+    },
+    "user_experience": {
+      "instant_feedback": true,
+      "no_page_refresh": true,
+      "clear_results_display": true,
+      "keyboard_friendly": true
+    },
+    "maintainability": {
+      "single_reusable_code": true,
+      "well_documented": true,
+      "mcp_learned": true,
+      "future_proof": true
+    }
+  }
 }

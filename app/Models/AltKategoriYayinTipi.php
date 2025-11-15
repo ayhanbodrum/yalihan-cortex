@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Alt Kategori - Yayın Tipi Pivot Tablo Modeli
- * 
+ *
  * Context7 Compliant
  */
 class AltKategoriYayinTipi extends Model
@@ -19,13 +19,13 @@ class AltKategoriYayinTipi extends Model
     protected $fillable = [
         'alt_kategori_id',
         'yayin_tipi_id',
-        'enabled',
-        'order',
+        'status', // Context7: enabled → status
+        'display_order', // ✅ Context7: order → display_order
     ];
 
     protected $casts = [
-        'enabled' => 'boolean',
-        'order' => 'integer',
+        'status' => 'boolean', // Context7: enabled → status
+        'display_order' => 'integer', // ✅ Context7: order → display_order
     ];
 
     public $timestamps = true;
@@ -51,6 +51,6 @@ class AltKategoriYayinTipi extends Model
      */
     public function scopeEnabled($query)
     {
-        return $query->where('enabled', true);
+        return $query->where('status', true); // Context7: enabled → status
     }
 }

@@ -26,6 +26,7 @@
 #### **Mevcut Durum:**
 
 **Güçlü Yönler:**
+
 ```php
 ✅ Cache sistemi (5 dakika) - performans optimizasyonu
 ✅ Widget sistemi (CRUD) - genişletilebilir
@@ -35,15 +36,16 @@
 ```
 
 **Kod İncelemesi:**
+
 ```php
 // DashboardController.php
 public function index() {
     $cacheKey = 'admin_dashboard_' . Auth::id();
-    
+
     $dashboardData = Cache::remember($cacheKey, 300, function () {
         return $this->getDashboardData();
     });
-    
+
     // ✅ User-specific cache
     // ✅ 5 dakika TTL
     // ✅ Exception handling
@@ -51,6 +53,7 @@ public function index() {
 ```
 
 **Zayıf Yönler:**
+
 ```
 ❌ DashboardWidget modeli YOK (TODO comment var!)
 ❌ Chart data hesaplaması yok (getEmptyCharts())
@@ -60,6 +63,7 @@ public function index() {
 ```
 
 **Eksik Özellikler:**
+
 ```php
 // TODO: DashboardWidget model oluşturulduğunda kullanılacak
 // DashboardWidget::create($widgetData);
@@ -75,6 +79,7 @@ private function getEmptyCharts() {
 #### **AI Entegrasyon Fırsatları:**
 
 **1. Predictive Analytics Card**
+
 ```javascript
 {
   title: "AI Tahminleri",
@@ -88,6 +93,7 @@ private function getEmptyCharts() {
 ```
 
 **2. Smart Alerts**
+
 ```javascript
 {
   type: "warning",
@@ -98,6 +104,7 @@ private function getEmptyCharts() {
 ```
 
 **3. Performance Insights**
+
 ```javascript
 {
   metric: "Conversion Rate",
@@ -117,6 +124,7 @@ private function getEmptyCharts() {
 #### **Mevcut Durum:**
 
 **Güçlü Yönler:**
+
 ```php
 ✅ Setting modeli mevcut (key-value-type-group-description)
 ✅ Group-based organization (system, email, sms, ai, etc.)
@@ -126,6 +134,7 @@ private function getEmptyCharts() {
 ```
 
 **Zayıf Yönler:**
+
 ```
 ❌ AI ayarları için özel UI yok (genel form)
 ❌ Setting preview yok (değişiklik önizleme)
@@ -134,6 +143,7 @@ private function getEmptyCharts() {
 ```
 
 **Kod Analizi:**
+
 ```php
 // AyarlarController.php - 80 satır, basit CRUD
 public function create() {
@@ -149,7 +159,7 @@ public function store(Request $request) {
         'group' => 'nullable',
         'description' => 'nullable'
     ]);
-    
+
     Setting::create($validated);
     // ❌ Encryption yok, cache invalidation yok
 }
@@ -158,6 +168,7 @@ public function store(Request $request) {
 #### **AI İyileştirme Önerileri:**
 
 **1. Smart Setting Suggestions**
+
 ```php
 // AI ile ayar önerileri
 POST /api/ai/setting-suggestions
@@ -176,12 +187,13 @@ Response:
 ```
 
 **2. Setting Validation with AI**
+
 ```php
 // AI ile ayar doğrulama
 if ($request->group === 'ai') {
     $aiService = app(AIService::class);
     $validation = $aiService->validateSetting($request->key, $request->value);
-    
+
     if (!$validation['valid']) {
         return back()->withErrors(['value' => $validation['error']]);
     }
@@ -197,6 +209,7 @@ if ($request->group === 'ai') {
 #### **Mevcut Durum:**
 
 **Güçlü Yönler:**
+
 ```php
 ✅ Paginate-first pattern (eager loading)
 ✅ Multi-column search
@@ -207,6 +220,7 @@ if ($request->group === 'ai') {
 ```
 
 **Kod İncelemesi:**
+
 ```php
 // IlanController.php - 2039 satır (comprehensive!)
 public function index(Request $request) {
@@ -216,21 +230,21 @@ public function index(Request $request) {
         'ilce:id,ilce_adi',
         'fotograflar' => fn($q) => $q->orderBy('order')->limit(1)
     ]);
-    
+
     // ✅ Eager loading
     // ✅ Only necessary columns
     // ✅ Relationship optimization
-    
+
     if ($request->search) {
         $query->where(function($q) use ($request) {
             $q->where('baslik', 'like', "%{$request->search}%")
               ->orWhere('ref_no', 'like', "%{$request->search}%");
         });
     }
-    
+
     // ✅ Multi-column search
     // ✅ Proper query scoping
-    
+
     return view('admin.ilanlar.index', [
         'ilanlar' => $query->paginate(20)
     ]);
@@ -238,6 +252,7 @@ public function index(Request $request) {
 ```
 
 **Zayıf Yönler:**
+
 ```
 ❌ AI scoring/ranking yok
 ❌ Saved searches yok
@@ -249,11 +264,12 @@ public function index(Request $request) {
 #### **AI Power-Ups:**
 
 **1. AI-Powered Search**
+
 ```javascript
 // Semantic search ile
 Query: "deniz manzaralı lüks villa"
 
-Traditional Search: 
+Traditional Search:
   → Sadece "deniz", "manzara", "lüks", "villa" kelimelerini arar
   → Sınırlı sonuç
 
@@ -265,6 +281,7 @@ AI Semantic Search:
 ```
 
 **2. Smart Filters with AI**
+
 ```php
 // AI ile akıllı filtre önerileri
 GET /api/ai/filter-suggestions?user_id=123
@@ -289,6 +306,7 @@ Response:
 ```
 
 **3. Bulk AI Operations**
+
 ```javascript
 // Toplu AI işlemleri
 {
@@ -321,7 +339,7 @@ class AnythingLLMService {
     // ✅ Embeddings API
     // ✅ Health check
     // ⚠️ Tek provider (AnythingLLM)
-    
+
     public function completions(string $prompt, ...) {
         $response = Http::timeout($this->timeout)
             ->withHeaders(['Authorization' => "Bearer {$this->apiKey}"])
@@ -335,6 +353,7 @@ class AnythingLLMService {
 ```
 
 **Sorunlar:**
+
 - ❌ Tek provider'a bağımlı
 - ❌ Provider switching yok
 - ❌ Fallback mekanizması yok
@@ -353,6 +372,7 @@ class AnythingLLMService {
 #### **3. AI Specialized Services**
 
 **Tespit Edilen Servisler:**
+
 ```
 app/Services/
 ├── AIService.php                    (Ana AI servisi)
@@ -364,15 +384,16 @@ app/Services/
 ```
 
 **Analiz:**
+
 ```php
 // AIAkilliOnerilerService.php
 class AIAkilliOnerilerService {
     protected $aiService; // ✅ Dependency injection
-    
+
     public function __construct(AIService $aiService) {
         $this->aiService = $aiService;
     }
-    
+
     // ✅ İyi mimari: AIService'e delegate ediyor
     public function analyzeData($data, $prompt) {
         return $this->aiService->analyze($data, $prompt);
@@ -387,6 +408,7 @@ class AIAkilliOnerilerService {
 ### **4. Prompt Engineering Sistemi**
 
 **Prompt Şablonları:**
+
 ```
 docs/prompts/
 ├── ilan-aciklama.prompt.md       (İlan açıklaması üretimi)
@@ -398,33 +420,40 @@ docs/prompts/
 **Örnek Prompt Analizi:**
 
 **talep-eslesme.prompt.md** (İlk 100 satır):
+
 ```markdown
 # Talep Eşleştirme - Context7 AI Prompt
 
 ## Görev
+
 Müşteri talebine en uygun ilanları bul ve eşleştir.
 
 ## Girdi
+
 - Talep ID
 - Müşteri tercihleri (lokasyon, bütçe, özellikler)
 - Tüm aktif ilanlar
 
 ## Çıktı
+
 - Top 5 eşleşen ilan
 - Eşleşme skoru (0-100)
 - Eşleşme nedenleri
 
 ## Prompt Şablonu
+
 ...
 ```
 
 **Güçlü Yönler:**
+
 - ✅ Context7 uyumlu (DB şemasını bilir)
 - ✅ Türkçe optimizasyonlu
 - ✅ Structuredoutput (JSON)
 - ✅ Few-shot examples
 
 **Zayıf Yönler:**
+
 - ❌ Prompt versiyonlama yok
 - ❌ A/B testing yok
 - ❌ Performance metrics yok (hangi prompt daha iyi?)
@@ -440,6 +469,7 @@ Müşteri talebine en uygun ilanları bul ve eşleştir.
 **İçerik Kalitesi:** ⭐⭐⭐⭐⭐ (Mükemmel!)
 
 **Kapsam:**
+
 - ✅ 5 AI provider entegrasyonu (Google, OpenAI, Claude, DeepSeek, Ollama)
 - ✅ 5 pratik senaryo (içerik üretimi, müşteri eşleştirme, fiyat güncelleme, görsel kontrol, randevu hatırlatma)
 - ✅ n8n node konfigürasyonları (JSON örnekleri)
@@ -454,6 +484,7 @@ Müşteri talebine en uygun ilanları bul ve eşleştir.
 #### **Senaryo 1: Otomatik İçerik Üretimi**
 
 **MEVCUT SİSTEM (Manuel):**
+
 ```
 Kullanıcı ilan oluşturur
     ↓
@@ -473,6 +504,7 @@ Yayınlar
 ---
 
 **n8n + AI SİSTEMİ (Otomatik):**
+
 ```
 Kullanıcı sadece temel bilgi girer
     ↓
@@ -502,6 +534,7 @@ Multi-platform yayınlama
 **Kalite:** Tutarlı, profesyonel, SEO-optimized
 
 **KAZANÇ:**
+
 - ⏱️ Zaman tasarrufu: **%85** (13 dakika)
 - 📈 Kalite artışı: **+%40** (SEO skor)
 - 💰 Maliyet azalma: **%90** (içerik yazarı $500/ay → AI $50/ay)
@@ -511,6 +544,7 @@ Multi-platform yayınlama
 #### **Senaryo 2: Akıllı Müşteri Eşleştirme**
 
 **MEVCUT SİSTEM:**
+
 ```
 Yeni müşteri kaydedilir
     ↓
@@ -529,6 +563,7 @@ Email/WhatsApp ile gönderir
 ---
 
 **n8n + AI SİSTEMİ:**
+
 ```
 Yeni müşteri kaydedilir
     ↓
@@ -556,6 +591,7 @@ WhatsApp/Email/Telegram
 **Müşteri Memnuniyeti:** Yüksek (anında, kişisel)
 
 **KAZANÇ:**
+
 - ⏱️ Zaman tasarrufu: **%95** (40 dakika → 2 dakika)
 - 🎯 Eşleşme doğruluğu: **+%30**
 - 😊 Müşteri memnuniyeti: **+%45**
@@ -567,6 +603,7 @@ WhatsApp/Email/Telegram
 #### **Workflow 1: AI-Powered İlan Pipeline**
 
 **n8n Canvas:**
+
 ```
 [Webhook Trigger]
     ↓
@@ -587,36 +624,38 @@ WhatsApp/Email/Telegram
 ```
 
 **Kod Örneği (n8n Function Node):**
+
 ```javascript
 // Extract ilan data
 const ilanData = {
-  id: $json.ilan_id,
-  kategori: $json.kategori,
-  il: $json.il,
-  ilce: $json.ilce,
-  m2: $json.net_m2,
-  oda_sayisi: $json.oda_sayisi,
-  gorseller: $json.gorseller
+    id: $json.ilan_id,
+    kategori: $json.kategori,
+    il: $json.il,
+    ilce: $json.ilce,
+    m2: $json.net_m2,
+    oda_sayisi: $json.oda_sayisi,
+    gorseller: $json.gorseller,
 };
 
 // Prepare for next nodes
 return [
-  {
-    json: {
-      ...ilanData,
-      prompt_baslik: `${ilanData.oda_sayisi} oda, ${ilanData.m2}m², ${ilanData.il}/${ilanData.ilce} için çekici başlık`,
-      prompt_aciklama: `${ilanData.kategori} kategorisi için profesyonel açıklama`
-    }
-  }
+    {
+        json: {
+            ...ilanData,
+            prompt_baslik: `${ilanData.oda_sayisi} oda, ${ilanData.m2}m², ${ilanData.il}/${ilanData.ilce} için çekici başlık`,
+            prompt_aciklama: `${ilanData.kategori} kategorisi için profesyonel açıklama`,
+        },
+    },
 ];
 ```
 
 **Laravel API Endpoint:**
+
 ```php
 // routes/api.php
 Route::post('/n8n/ilan-ai-update', function (Request $request) {
     $ilan = Ilan::findOrFail($request->ilan_id);
-    
+
     $ilan->update([
         'baslik' => $request->ai_baslik,
         'aciklama' => $request->ai_aciklama,
@@ -627,10 +666,10 @@ Route::post('/n8n/ilan-ai-update', function (Request $request) {
         'ai_processed' => true,
         'ai_processed_at' => now()
     ]);
-    
+
     // Event dispatch
     event(new IlanAIProcessed($ilan));
-    
+
     return response()->json([
         'success' => true,
         'ilan_id' => $ilan->id,
@@ -644,6 +683,7 @@ Route::post('/n8n/ilan-ai-update', function (Request $request) {
 #### **Workflow 2: Günlük AI Performans Raporu**
 
 **n8n Cron (Her gün 08:00):**
+
 ```
 [Cron Trigger: 0 8 * * *]
     ↓
@@ -659,10 +699,11 @@ Route::post('/n8n/ilan-ai-update', function (Request $request) {
 ```
 
 **Laravel API:**
+
 ```php
 Route::get('/api/ai/daily-stats', function () {
     $today = today();
-    
+
     $stats = [
         'yeni_ilanlar' => Ilan::whereDate('created_at', $today)->count(),
         'ai_processed' => Ilan::where('ai_processed', true)
@@ -680,12 +721,13 @@ Route::get('/api/ai/daily-stats', function () {
             ->where('ai_content_score', '<', 50)
             ->count()
     ];
-    
+
     return response()->json($stats);
 });
 ```
 
 **OpenAI Prompt (n8n):**
+
 ```javascript
 {
   "model": "gpt-4",
@@ -697,13 +739,13 @@ Route::get('/api/ai/daily-stats', function () {
     {
       "role": "user",
       "content": `Bugünkü AI istatistiklerini analiz et ve öneriler sun:
-      
+
       Yeni İlanlar: {{ $json.yeni_ilanlar }}
       AI İşlenmiş: {{ $json.ai_processed }}
       Ort. SEO Skor: {{ $json.ortalama_seo_score }}
       Ort. Görsel Skor: {{ $json.ortalama_image_score }}
       Düşük Performans: {{ $json.needs_attention }} ilan
-      
+
       Lütfen:
       1. Performans özetini Türkçe yaz
       2. Olumlu/olumsuz trendleri belirt
@@ -721,66 +763,66 @@ Route::get('/api/ai/daily-stats', function () {
 
 ### **1. AI Provider Mimarisi**
 
-| Özellik | Mevcut | Önerilen | İyileşme |
-|---------|--------|----------|----------|
-| **Provider Sayısı** | 5 (Google, OpenAI, Claude, DeepSeek, Ollama) | 5 + Groq + Mistral | +%40 seçenek |
-| **Provider Switching** | ✅ Manuel (admin panel) | ✅ Otomatik (cost/latency) | Smart routing |
-| **Fallback Mekanizması** | ❌ Yok | ✅ Cascade (primary → backup) | %99.9 uptime |
-| **Cost Tracking** | ⚠️ Partial (basic) | ✅ Real-time + budgets | Maliyet kontrolü |
-| **Rate Limiting** | ✅ Laravel throttle | ✅ Per-provider limits | API quota koruması |
-| **Caching** | ❌ Yok | ✅ Response caching | Maliyet -%70 |
+| Özellik                  | Mevcut                                       | Önerilen                      | İyileşme           |
+| ------------------------ | -------------------------------------------- | ----------------------------- | ------------------ |
+| **Provider Sayısı**      | 5 (Google, OpenAI, Claude, DeepSeek, Ollama) | 5 + Groq + Mistral            | +%40 seçenek       |
+| **Provider Switching**   | ✅ Manuel (admin panel)                      | ✅ Otomatik (cost/latency)    | Smart routing      |
+| **Fallback Mekanizması** | ❌ Yok                                       | ✅ Cascade (primary → backup) | %99.9 uptime       |
+| **Cost Tracking**        | ⚠️ Partial (basic)                           | ✅ Real-time + budgets        | Maliyet kontrolü   |
+| **Rate Limiting**        | ✅ Laravel throttle                          | ✅ Per-provider limits        | API quota koruması |
+| **Caching**              | ❌ Yok                                       | ✅ Response caching           | Maliyet -%70       |
 
 ---
 
 ### **2. Prompt Engineering**
 
-| Özellik | Mevcut | Önerilen | İyileşme |
-|---------|--------|----------|----------|
-| **Prompt Şablonları** | 4 adet (MD files) | 15+ dinamik şablon | Kapsam genişliği |
-| **Versiyonlama** | ❌ Yok | ✅ Git-based + rollback | Geçmiş takibi |
-| **A/B Testing** | ❌ Yok | ✅ Çoklu varyant test | %30 kalite artışı |
-| **Performance Metrics** | ❌ Yok | ✅ Her prompt için skor | Data-driven iyileştirme |
-| **Context7 Integration** | ✅ DB şema awareness | ✅ Real-time schema sync | Güncel metadata |
-| **Multi-language** | ⚠️ Sadece Türkçe | ✅ TR/EN/RU/AR | Global pazar |
+| Özellik                  | Mevcut               | Önerilen                 | İyileşme                |
+| ------------------------ | -------------------- | ------------------------ | ----------------------- |
+| **Prompt Şablonları**    | 4 adet (MD files)    | 15+ dinamik şablon       | Kapsam genişliği        |
+| **Versiyonlama**         | ❌ Yok               | ✅ Git-based + rollback  | Geçmiş takibi           |
+| **A/B Testing**          | ❌ Yok               | ✅ Çoklu varyant test    | %30 kalite artışı       |
+| **Performance Metrics**  | ❌ Yok               | ✅ Her prompt için skor  | Data-driven iyileştirme |
+| **Context7 Integration** | ✅ DB şema awareness | ✅ Real-time schema sync | Güncel metadata         |
+| **Multi-language**       | ⚠️ Sadece Türkçe     | ✅ TR/EN/RU/AR           | Global pazar            |
 
 ---
 
 ### **3. n8n Entegrasyonu**
 
-| Özellik | Mevcut | Önerilen | Kazanç |
-|---------|--------|----------|--------|
-| **Webhook Support** | ❌ Yok | ✅ Event-driven hooks | Otomatik tetikleme |
-| **Workflow Count** | 0 | 12 hazır workflow | Hızlı başlangıç |
-| **AI Chain** | ❌ Tek provider call | ✅ Multi-AI consensus | +%40 doğruluk |
-| **Error Handling** | ⚠️ Basic | ✅ Retry + fallback | %95 başarı oranı |
-| **Monitoring** | ❌ Yok | ✅ n8n logs + Laravel logs | Full visibility |
-| **Cost per Operation** | N/A | $0.02 (average) | ROI tracking |
+| Özellik                | Mevcut               | Önerilen                   | Kazanç             |
+| ---------------------- | -------------------- | -------------------------- | ------------------ |
+| **Webhook Support**    | ❌ Yok               | ✅ Event-driven hooks      | Otomatik tetikleme |
+| **Workflow Count**     | 0                    | 12 hazır workflow          | Hızlı başlangıç    |
+| **AI Chain**           | ❌ Tek provider call | ✅ Multi-AI consensus      | +%40 doğruluk      |
+| **Error Handling**     | ⚠️ Basic             | ✅ Retry + fallback        | %95 başarı oranı   |
+| **Monitoring**         | ❌ Yok               | ✅ n8n logs + Laravel logs | Full visibility    |
+| **Cost per Operation** | N/A                  | $0.02 (average)            | ROI tracking       |
 
 ---
 
 ### **4. Dashboard AI Features**
 
-| Özellik | Mevcut | Önerilen | Değer |
-|---------|--------|----------|-------|
-| **Predictive Analytics** | ❌ Yok | ✅ ML-based forecasts | Trend öngörüsü |
-| **Smart Alerts** | ❌ Yok | ✅ AI-driven notifications | Proaktif yönetim |
+| Özellik                  | Mevcut         | Önerilen                     | Değer             |
+| ------------------------ | -------------- | ---------------------------- | ----------------- |
+| **Predictive Analytics** | ❌ Yok         | ✅ ML-based forecasts        | Trend öngörüsü    |
+| **Smart Alerts**         | ❌ Yok         | ✅ AI-driven notifications   | Proaktif yönetim  |
 | **Performance Insights** | ⚠️ Basic stats | ✅ AI analysis + suggestions | Aksiyon önerileri |
-| **Real-time Updates** | ❌ 5 dk cache | ✅ WebSocket + cache | Anlık veri |
-| **Custom Widgets** | ⚠️ Model yok | ✅ DashboardWidget model | Kişiselleştirme |
-| **Chart Intelligence** | ❌ Static | ✅ AI-generated insights | İçgörüler |
+| **Real-time Updates**    | ❌ 5 dk cache  | ✅ WebSocket + cache         | Anlık veri        |
+| **Custom Widgets**       | ⚠️ Model yok   | ✅ DashboardWidget model     | Kişiselleştirme   |
+| **Chart Intelligence**   | ❌ Static      | ✅ AI-generated insights     | İçgörüler         |
 
 ---
 
 ### **5. İlan Yönetimi AI**
 
-| Özellik | Mevcut | Önerilen | Artış |
-|---------|--------|----------|-------|
-| **Semantic Search** | ❌ Yok | ✅ Vector embeddings | +%85 doğruluk |
-| **AI Ranking** | ❌ Manuel sıralama | ✅ ML-based scoring | Konversiyon +%40 |
-| **Auto-tagging** | ❌ Yok | ✅ AI tag suggestion | SEO +%35 |
-| **Duplicate Detection** | ❌ Yok | ✅ Similarity analysis | Temiz DB |
-| **Bulk AI Ops** | ❌ Yok | ✅ Paralel işleme | 100 ilan/2dk |
-| **Quality Score** | ❌ Yok | ✅ 0-100 AI score | Kalite kontrolü |
+| Özellik                 | Mevcut             | Önerilen               | Artış            |
+| ----------------------- | ------------------ | ---------------------- | ---------------- |
+| **Semantic Search**     | ❌ Yok             | ✅ Vector embeddings   | +%85 doğruluk    |
+| **AI Ranking**          | ❌ Manuel sıralama | ✅ ML-based scoring    | Konversiyon +%40 |
+| **Auto-tagging**        | ❌ Yok             | ✅ AI tag suggestion   | SEO +%35         |
+| **Duplicate Detection** | ❌ Yok             | ✅ Similarity analysis | Temiz DB         |
+| **Bulk AI Ops**         | ❌ Yok             | ✅ Paralel işleme      | 100 ilan/2dk     |
+| **Quality Score**       | ❌ Yok             | ✅ 0-100 AI score      | Kalite kontrolü  |
 
 ---
 
@@ -789,47 +831,54 @@ Route::get('/api/ai/daily-stats', function () {
 ### **Mevcut Prompt Yapısı**
 
 **Örnek: talep-eslesme.prompt.md**
+
 ```markdown
 # Talep Eşleştirme - Context7 AI Prompt
 
 ## Görev
+
 Müşteri talebine en uygun ilanları bul ve eşleştir.
 
 ## Girdi Formatı
+
 {
-  "talep_id": 123,
-  "musteri": {
-    "adi": "...",
-    "butce": [500000, 1000000],
-    "lokasyon": ["Bodrum", "Yalıkavak"],
-    "tercihler": {...}
-  },
-  "aktif_ilanlar": [...]
+"talep_id": 123,
+"musteri": {
+"adi": "...",
+"butce": [500000, 1000000],
+"lokasyon": ["Bodrum", "Yalıkavak"],
+"tercihler": {...}
+},
+"aktif_ilanlar": [...]
 }
 
 ## Çıktı Formatı
+
 {
-  "eslesme_skoru": 85,
-  "eslesenler": [
-    {
-      "ilan_id": 456,
-      "skor": 92,
-      "nedenler": ["Lokasyon tam uyum", "Bütçe içinde"]
-    }
-  ]
+"eslesme_skoru": 85,
+"eslesenler": [
+{
+"ilan_id": 456,
+"skor": 92,
+"nedenler": ["Lokasyon tam uyum", "Bütçe içinde"]
+}
+]
 }
 
 ## Prompt
+
 Sen profesyonel bir emlak danışmanısın...
 ```
 
 **Güçlü Yönler:**
+
 - ✅ Structured input/output
 - ✅ Context7 DB şema awareness
 - ✅ Türkçe optimizasyon
 - ✅ Clear task definition
 
 **Eksikler:**
+
 - ❌ Prompt versiyonlama yok
 - ❌ Few-shot examples az
 - ❌ Edge case handling eksik
@@ -850,18 +899,18 @@ class PromptManager {
                 ->where('version', $version === 'latest' ? null : $version)
                 ->latest()
                 ->first();
-            
+
             return $prompt->content;
         });
     }
-    
+
     public function testPrompt(string $name, array $testCases) {
         $results = [];
-        
+
         foreach ($testCases as $case) {
             $prompt = $this->getPrompt($name, $case['version']);
             $response = $this->aiService->generate($prompt, $case['input']);
-            
+
             $results[] = [
                 'version' => $case['version'],
                 'input' => $case['input'],
@@ -870,7 +919,7 @@ class PromptManager {
                 'latency' => $response['latency']
             ];
         }
-        
+
         return $this->comparResults($results);
     }
 }
@@ -883,14 +932,14 @@ class PromptManager {
 Route::post('/api/ai/test-prompt-variants', function (Request $request) {
     $promptA = PromptManager::getPrompt('ilan-aciklama', 'v1.0');
     $promptB = PromptManager::getPrompt('ilan-aciklama', 'v2.0-experimental');
-    
+
     $testData = $request->ilan_data;
-    
+
     [$responseA, $responseB] = Promise::all([
         AIService::generate($promptA, $testData),
         AIService::generate($promptB, $testData)
     ])->wait();
-    
+
     return [
         'variant_a' => [
             'output' => $responseA,
@@ -945,6 +994,7 @@ $prompt .= json_encode($newTalep);
 ### **Week 1-2: CRM Suite + AI Abstraction**
 
 **Tasks:**
+
 ```
 ✅ CRM navigation birleştirme
   └─ /admin/crm/* altında unified structure
@@ -961,6 +1011,7 @@ $prompt .= json_encode($newTalep);
 ```
 
 **Deliverables:**
+
 - Unified CRM dashboard
 - AIService v2.0
 - MyListings AI card (beta)
@@ -970,6 +1021,7 @@ $prompt .= json_encode($newTalep);
 ### **Week 3-4: Talep Matching + Telegram AI**
 
 **Tasks:**
+
 ```
 ✅ Talep matching engine
   ├─ Vector embeddings setup
@@ -987,6 +1039,7 @@ $prompt .= json_encode($newTalep);
 ```
 
 **Deliverables:**
+
 - Working matching engine (70% accuracy target)
 - Takım yönetimi complete
 - Telegram AI basic features
@@ -996,6 +1049,7 @@ $prompt .= json_encode($newTalep);
 ### **Month 2: n8n + Analytics + Advanced AI**
 
 **Week 5-6:**
+
 ```
 ✅ n8n Setup
   ├─ Docker deploy
@@ -1009,6 +1063,7 @@ $prompt .= json_encode($newTalep);
 ```
 
 **Week 7-8:**
+
 ```
 ✅ Advanced AI Features
   ├─ Image enhancement
@@ -1026,6 +1081,7 @@ $prompt .= json_encode($newTalep);
 ### **Month 3: Testing + Documentation + Production**
 
 **Week 9-10:**
+
 ```
 ✅ Testing
   ├─ Unit tests (%85 coverage target)
@@ -1039,6 +1095,7 @@ $prompt .= json_encode($newTalep);
 ```
 
 **Week 11-12:**
+
 ```
 ✅ Production Rollout
   ├─ Staging environment testing
@@ -1056,6 +1113,7 @@ $prompt .= json_encode($newTalep);
 ## 📈 ROI PROJECTION
 
 ### **Mevcut Maliyetler (Aylık)**
+
 ```
 İçerik yazarı: $500
 Manuel eşleştirme: $300 (20 saat x $15)
@@ -1064,6 +1122,7 @@ Total: $1,000/ay
 ```
 
 ### **AI + n8n Maliyetleri (Aylık)**
+
 ```
 OpenAI API: $80
 Google Gemini: $30
@@ -1073,12 +1132,14 @@ Total: $185/ay
 ```
 
 ### **Tasarruf**
+
 ```
 $1,000 - $185 = $815/ay
 Yıllık: $9,780
 ```
 
 ### **Ek Kazançlar**
+
 ```
 Konversiyon artışı: +%28 → Aylık $2,500 ekstra gelir
 SEO iyileştirme: +%35 traffic → Aylık $1,200 ekstra
@@ -1088,6 +1149,7 @@ Total ek kazanç: $5,700/ay
 ```
 
 ### **Total ROI**
+
 ```
 Tasarruf: $815
 Ek kazanç: $5,700
@@ -1113,12 +1175,14 @@ Break-even: 2.3 ay
 ### **Hemen Yapılması Gerekenler**
 
 **Week 1 (Critical):**
+
 1. DashboardWidget modeli oluştur
 2. AIService'e response caching ekle
 3. CRM navigation birleştir
 4. n8n Docker setup (1 workflow ile test)
 
 **Week 2 (High Priority):**
+
 1. MyListings AI features (eksik bilgi tespiti)
 2. Prompt versioning sistemi
 3. Talep matching MVP
@@ -1143,4 +1207,3 @@ Break-even: 2.3 ay
 **Hazırlayan:** AI Deep Analysis Engine v3.0  
 **Tarih:** 3 Kasım 2025  
 **Next Review:** 1 hafta sonra (ilk sprint tamamlandıktan sonra)
-

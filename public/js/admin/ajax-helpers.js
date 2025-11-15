@@ -1,11 +1,11 @@
 /**
  * Context7 AJAX Helper Utility
- * 
+ *
  * @description Centralized AJAX operations with CSRF protection
  * @author Yalıhan Emlak - Context7 Team
  * @date 2025-11-04
  * @version 1.0.0
- * 
+ *
  * Yalıhan Bekçi Standards:
  * - Pure vanilla JS (NO jQuery!)
  * - Async/await pattern
@@ -25,7 +25,7 @@ const AjaxHelper = {
 
     /**
      * POST request with CSRF protection
-     * 
+     *
      * @param {string} url - API endpoint
      * @param {object|FormData} data - Request data
      * @param {object} options - Additional options
@@ -35,8 +35,8 @@ const AjaxHelper = {
         try {
             const headers = {
                 'X-CSRF-TOKEN': this.getCSRFToken(),
-                'Accept': 'application/json',
-                ...options.headers
+                Accept: 'application/json',
+                ...options.headers,
             };
 
             // If data is not FormData, send as JSON
@@ -49,7 +49,7 @@ const AjaxHelper = {
                 method: 'POST',
                 headers: headers,
                 body: data,
-                credentials: 'same-origin'
+                credentials: 'same-origin',
             });
 
             const result = await response.json();
@@ -61,22 +61,21 @@ const AjaxHelper = {
             return {
                 success: true,
                 data: result.data || result,
-                message: result.message || 'Success'
+                message: result.message || 'Success',
             };
-
         } catch (error) {
             console.error('AJAX POST Error:', error);
             return {
                 success: false,
                 message: error.message || 'Bir hata oluştu',
-                error: error
+                error: error,
             };
         }
     },
 
     /**
      * GET request
-     * 
+     *
      * @param {string} url - API endpoint
      * @param {object} options - Additional options
      * @returns {Promise<object>} Response data
@@ -84,14 +83,14 @@ const AjaxHelper = {
     async get(url, options = {}) {
         try {
             const headers = {
-                'Accept': 'application/json',
-                ...options.headers
+                Accept: 'application/json',
+                ...options.headers,
             };
 
             const response = await fetch(url, {
                 method: 'GET',
                 headers: headers,
-                credentials: 'same-origin'
+                credentials: 'same-origin',
             });
 
             const result = await response.json();
@@ -103,15 +102,14 @@ const AjaxHelper = {
             return {
                 success: true,
                 data: result.data || result,
-                message: result.message || 'Success'
+                message: result.message || 'Success',
             };
-
         } catch (error) {
             console.error('AJAX GET Error:', error);
             return {
                 success: false,
                 message: error.message || 'Bir hata oluştu',
-                error: error
+                error: error,
             };
         }
     },
@@ -123,16 +121,16 @@ const AjaxHelper = {
         try {
             const headers = {
                 'X-CSRF-TOKEN': this.getCSRFToken(),
-                'Accept': 'application/json',
+                Accept: 'application/json',
                 'Content-Type': 'application/json',
-                ...options.headers
+                ...options.headers,
             };
 
             const response = await fetch(url, {
                 method: 'PUT',
                 headers: headers,
                 body: JSON.stringify(data),
-                credentials: 'same-origin'
+                credentials: 'same-origin',
             });
 
             const result = await response.json();
@@ -144,15 +142,14 @@ const AjaxHelper = {
             return {
                 success: true,
                 data: result.data || result,
-                message: result.message || 'Success'
+                message: result.message || 'Success',
             };
-
         } catch (error) {
             console.error('AJAX PUT Error:', error);
             return {
                 success: false,
                 message: error.message || 'Bir hata oluştu',
-                error: error
+                error: error,
             };
         }
     },
@@ -164,14 +161,14 @@ const AjaxHelper = {
         try {
             const headers = {
                 'X-CSRF-TOKEN': this.getCSRFToken(),
-                'Accept': 'application/json',
-                ...options.headers
+                Accept: 'application/json',
+                ...options.headers,
             };
 
             const response = await fetch(url, {
                 method: 'DELETE',
                 headers: headers,
-                credentials: 'same-origin'
+                credentials: 'same-origin',
             });
 
             const result = await response.json();
@@ -183,18 +180,17 @@ const AjaxHelper = {
             return {
                 success: true,
                 data: result.data || result,
-                message: result.message || 'Success'
+                message: result.message || 'Success',
             };
-
         } catch (error) {
             console.error('AJAX DELETE Error:', error);
             return {
                 success: false,
                 message: error.message || 'Bir hata oluştu',
-                error: error
+                error: error,
             };
         }
-    }
+    },
 };
 
 // Export for module usage
@@ -204,4 +200,3 @@ if (typeof module !== 'undefined' && module.exports) {
 
 // Global availability
 window.AjaxHelper = AjaxHelper;
-

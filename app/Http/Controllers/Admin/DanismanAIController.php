@@ -54,7 +54,6 @@ class DanismanAIController extends AdminController
                 'popularQueries',
                 'aiConfig'
             ));
-
         } catch (\Exception $e) {
             Log::error('DanismanAI index error: ' . $e->getMessage());
 
@@ -111,7 +110,6 @@ class DanismanAIController extends AdminController
                 'analytics',
                 'suggestions'
             ));
-
         } catch (\Exception $e) {
             Log::error('DanismanAI show error: ' . $e->getMessage());
 
@@ -151,7 +149,6 @@ class DanismanAIController extends AdminController
                 'templates',
                 'defaultConfig'
             ));
-
         } catch (\Exception $e) {
             Log::error('DanismanAI create form error: ' . $e->getMessage());
 
@@ -212,7 +209,6 @@ class DanismanAIController extends AdminController
                 'test_result' => $testResult,
                 'redirect' => route('admin.danisman-ai.show', $configId)
             ]);
-
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('DanismanAI store error: ' . $e->getMessage());
@@ -248,7 +244,6 @@ class DanismanAIController extends AdminController
                 'languages',
                 'templates'
             ));
-
         } catch (\Exception $e) {
             Log::error('DanismanAI edit form error: ' . $e->getMessage());
 
@@ -274,7 +269,7 @@ class DanismanAIController extends AdminController
                 'max_context_length' => 'integer|min:1|max:20',
                 'enable_learning' => 'boolean',
                 'auto_suggestions' => 'boolean',
-                'is_active' => 'boolean'
+                'status' => 'boolean' // Context7: is_active → status
             ]);
 
             if ($validator->fails()) {
@@ -317,7 +312,6 @@ class DanismanAIController extends AdminController
                 'message' => 'AI yapılandırması başarıyla güncellendi.',
                 'test_result' => $testResult
             ]);
-
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('DanismanAI update error: ' . $e->getMessage());
@@ -363,7 +357,6 @@ class DanismanAIController extends AdminController
                 'success' => true,
                 'message' => 'AI yapılandırması başarıyla silindi.'
             ]);
-
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('DanismanAI destroy error: ' . $e->getMessage());
@@ -429,7 +422,6 @@ class DanismanAIController extends AdminController
                 'suggestions' => $aiResponse['suggestions'] ?? [],
                 'response_time' => $aiResponse['response_time']
             ]);
-
         } catch (\Exception $e) {
             Log::error('DanismanAI chat error: ' . $e->getMessage());
 
@@ -464,7 +456,6 @@ class DanismanAIController extends AdminController
                 'analytics' => $analytics,
                 'period' => $period
             ]);
-
         } catch (\Exception $e) {
             Log::error('DanismanAI analytics error: ' . $e->getMessage());
 
@@ -515,7 +506,6 @@ class DanismanAIController extends AdminController
                 'type' => $type,
                 'generated_at' => now()->toISOString()
             ]);
-
         } catch (\Exception $e) {
             Log::error('DanismanAI suggest error: ' . $e->getMessage());
 
@@ -569,7 +559,6 @@ class DanismanAIController extends AdminController
                 'period' => $period,
                 'generated_at' => now()->toISOString()
             ]);
-
         } catch (\Exception $e) {
             Log::error('DanismanAI analyze error: ' . $e->getMessage());
 
@@ -601,7 +590,6 @@ class DanismanAIController extends AdminController
                 default:
                     return $this->exportAll($format, $filename);
             }
-
         } catch (\Exception $e) {
             Log::error('DanismanAI export error: ' . $e->getMessage());
 

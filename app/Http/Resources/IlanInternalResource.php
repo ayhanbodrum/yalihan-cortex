@@ -6,9 +6,9 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
  * İlan Internal API Resource
- * 
+ *
  * Context7 Standardı: C7-API-RESOURCE-INTERNAL-2025-11-05
- * 
+ *
  * "İlanlarım" sayfası ve internal kullanım için - tüm bilgileri içerir
  */
 class IlanInternalResource extends JsonResource
@@ -27,11 +27,11 @@ class IlanInternalResource extends JsonResource
             'baslik' => $this->baslik,
             'aciklama' => $this->aciklama,
             'status' => $this->status,
-            
+
             // Referans & Dosyalama Sistemi (INTERNAL)
             'referans_no' => $this->referans_no,
             'dosya_adi' => $this->dosya_adi,
-            
+
             // Portal ID'leri (INTERNAL)
             'portal_numbers' => [
                 'sahibinden_id' => $this->sahibinden_id,
@@ -40,15 +40,15 @@ class IlanInternalResource extends JsonResource
                 'zingat_id' => $this->zingat_id,
                 'hurriyetemlak_id' => $this->hurriyetemlak_id,
             ],
-            
+
             // Portal Sync Durumu (INTERNAL)
             'portal_sync_status' => $this->portal_sync_status,
             'portal_pricing' => $this->portal_pricing,
-            
+
             // Fiyat Bilgileri
             'price' => $this->price,
             'currency' => $this->currency,
-            
+
             // Lokasyon Bilgileri
             'il' => $this->whenLoaded('il', function () {
                 return [
@@ -69,7 +69,7 @@ class IlanInternalResource extends JsonResource
                 ];
             }),
             'adres' => $this->adres,
-            
+
             // Kategori Bilgileri
             'kategori' => $this->whenLoaded('kategori', function () {
                 return [
@@ -77,13 +77,13 @@ class IlanInternalResource extends JsonResource
                     'name' => $this->kategori->name,
                 ];
             }),
-            
+
             // Özellikler
             'metrekare' => $this->metrekare,
             'oda_sayisi' => $this->oda_sayisi,
             'banyo_sayisi' => $this->banyo_sayisi,
             'balkon_sayisi' => $this->balkon_sayisi,
-            
+
             // İlan Sahibi Bilgileri (INTERNAL - sadece ilan sahibi veya danışman)
             'ilan_sahibi' => $this->whenLoaded('ilanSahibi', function () {
                 return [
@@ -96,10 +96,10 @@ class IlanInternalResource extends JsonResource
                     'email' => $this->ilanSahibi->email,
                 ];
             }),
-            
+
             // Danışman Bilgileri (INTERNAL)
             'danisman_id' => $this->danisman_id,
-            
+
             // Fotoğraflar
             'fotograflar' => $this->whenLoaded('fotograflar', function () {
                 return $this->fotograflar->map(function ($foto) {
@@ -113,13 +113,12 @@ class IlanInternalResource extends JsonResource
                     ];
                 })->sortBy('sira')->values();
             }),
-            
+
             // Tarihler
             'created_at' => $this->created_at?->toIso8601String(),
             'updated_at' => $this->updated_at?->toIso8601String(),
         ];
-        
+
         return $data;
     }
 }
-

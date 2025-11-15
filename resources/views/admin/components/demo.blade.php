@@ -12,7 +12,7 @@
     {{-- TABS DEMO --}}
     <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-8 mb-8">
         <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6">📑 Tabs Component</h2>
-        
+
         <div x-data="{ activeTab: 1 }" class="w-full">
             {{-- Tab Navigation --}}
             <div class="flex gap-2 border-b border-gray-200 dark:border-gray-700 mb-6" role="tablist">
@@ -26,7 +26,7 @@
                     </svg>
                     Genel Bilgiler
                 </button>
-                
+
                 <button
                     @click="activeTab = 2"
                     :class="activeTab === 2 ? 'border-blue-600 text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20' : 'border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:border-gray-300 dark:hover:border-gray-600'"
@@ -38,7 +38,7 @@
                     Özellikler
                     <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">5</span>
                 </button>
-                
+
                 <button
                     @click="activeTab = 3"
                     :class="activeTab === 3 ? 'border-blue-600 text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20' : 'border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:border-gray-300 dark:hover:border-gray-600'"
@@ -51,7 +51,7 @@
                     Konum
                 </button>
             </div>
-            
+
             {{-- Tab Content --}}
             <div>
                 <div x-show="activeTab === 1" x-transition class="text-gray-700 dark:text-gray-300">
@@ -61,7 +61,7 @@
                         <p class="text-sm">✨ Tab 1 içeriği - Modern Tailwind tasarım!</p>
                     </div>
                 </div>
-                
+
                 <div x-show="activeTab === 2" x-transition class="text-gray-700 dark:text-gray-300">
                     <h3 class="text-lg font-semibold mb-3">Özellikler</h3>
                     <p>Bu tab'da özellikler listelenir. 5 adet özellik var (badge'de gösteriliyor).</p>
@@ -80,7 +80,7 @@
                         </li>
                     </ul>
                 </div>
-                
+
                 <div x-show="activeTab === 3" x-transition class="text-gray-700 dark:text-gray-300">
                     <h3 class="text-lg font-semibold mb-3">Konum Bilgileri</h3>
                     <p>Bu tab'da konum ve harita bilgileri gösterilir.</p>
@@ -92,9 +92,9 @@
     {{-- ACCORDION DEMO --}}
     <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-8">
         <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6">📂 Accordion Component</h2>
-        
-        <div 
-            x-data="{ 
+
+        <div
+            x-data="{
                 activeItems: null,
                 allowMultiple: false,
                 toggle(id) {
@@ -114,40 +114,40 @@
                     }
                     return this.activeItems === id;
                 }
-            }" 
+            }"
             class="space-y-4">
-            
+
             {{-- Accordion Item 1 --}}
-            <div 
+            <div
                 x-data="{ id: 'item-1', isOpen: false }"
                 class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm overflow-hidden">
-                
+
                 <button
                     @click="$parent.toggle(id)"
                     :aria-expanded="$parent.isOpen(id)"
                     class="w-full flex items-center justify-between px-6 py-4 text-left transition-all duration-200 hover:bg-gray-50 dark:hover:bg-gray-700/50 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500"
                     type="button">
-                    
+
                     <span class="text-sm font-semibold text-gray-900 dark:text-white">
                         🏠 Genel Özellikler
                     </span>
-                    
-                    <svg 
-                        :class="$parent.isOpen(id) ? 'rotate-180' : ''" 
-                        class="w-5 h-5 text-gray-500 dark:text-gray-400 transition-transform duration-200" 
-                        fill="none" 
-                        stroke="currentColor" 
+
+                    <svg
+                        :class="$parent.isOpen(id) ? 'rotate-180' : ''"
+                        class="w-5 h-5 text-gray-500 dark:text-gray-400 transition-transform duration-200"
+                        fill="none"
+                        stroke="currentColor"
                         viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                     </svg>
                 </button>
-                
+
                 <div
                     x-show="$parent.isOpen(id)"
                     x-transition
                     x-cloak
                     class="border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
-                    
+
                     <div class="px-6 py-4 text-sm text-gray-700 dark:text-gray-300">
                         <p>Bu bölümde genel özellikler listelenebilir:</p>
                         <ul class="mt-2 space-y-1">
@@ -158,38 +158,38 @@
                     </div>
                 </div>
             </div>
-            
+
             {{-- Accordion Item 2 --}}
-            <div 
+            <div
                 x-data="{ id: 'item-2', isOpen: false }"
                 class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm overflow-hidden">
-                
+
                 <button
                     @click="$parent.toggle(id)"
                     :aria-expanded="$parent.isOpen(id)"
                     class="w-full flex items-center justify-between px-6 py-4 text-left transition-all duration-200 hover:bg-gray-50 dark:hover:bg-gray-700/50 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500"
                     type="button">
-                    
+
                     <span class="text-sm font-semibold text-gray-900 dark:text-white">
                         ⚙️ Teknik Detaylar
                     </span>
-                    
-                    <svg 
-                        :class="$parent.isOpen(id) ? 'rotate-180' : ''" 
-                        class="w-5 h-5 text-gray-500 dark:text-gray-400 transition-transform duration-200" 
-                        fill="none" 
-                        stroke="currentColor" 
+
+                    <svg
+                        :class="$parent.isOpen(id) ? 'rotate-180' : ''"
+                        class="w-5 h-5 text-gray-500 dark:text-gray-400 transition-transform duration-200"
+                        fill="none"
+                        stroke="currentColor"
                         viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                     </svg>
                 </button>
-                
+
                 <div
                     x-show="$parent.isOpen(id)"
                     x-transition
                     x-cloak
                     class="border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
-                    
+
                     <div class="px-6 py-4 text-sm text-gray-700 dark:text-gray-300">
                         <p>Teknik özellikler ve detaylar bu bölümde gösterilir.</p>
                         <div class="mt-3 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
@@ -198,38 +198,38 @@
                     </div>
                 </div>
             </div>
-            
+
             {{-- Accordion Item 3 --}}
-            <div 
+            <div
                 x-data="{ id: 'item-3', isOpen: false }"
                 class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm overflow-hidden">
-                
+
                 <button
                     @click="$parent.toggle(id)"
                     :aria-expanded="$parent.isOpen(id)"
                     class="w-full flex items-center justify-between px-6 py-4 text-left transition-all duration-200 hover:bg-gray-50 dark:hover:bg-gray-700/50 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500"
                     type="button">
-                    
+
                     <span class="text-sm font-semibold text-gray-900 dark:text-white">
                         📸 Medya Galerisi
                     </span>
-                    
-                    <svg 
-                        :class="$parent.isOpen(id) ? 'rotate-180' : ''" 
-                        class="w-5 h-5 text-gray-500 dark:text-gray-400 transition-transform duration-200" 
-                        fill="none" 
-                        stroke="currentColor" 
+
+                    <svg
+                        :class="$parent.isOpen(id) ? 'rotate-180' : ''"
+                        class="w-5 h-5 text-gray-500 dark:text-gray-400 transition-transform duration-200"
+                        fill="none"
+                        stroke="currentColor"
                         viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                     </svg>
                 </button>
-                
+
                 <div
                     x-show="$parent.isOpen(id)"
                     x-transition
                     x-cloak
                     class="border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
-                    
+
                     <div class="px-6 py-4 text-sm text-gray-700 dark:text-gray-300">
                         <p>Fotoğraflar ve videolar bu bölümde gösterilir.</p>
                     </div>
@@ -241,7 +241,7 @@
     {{-- COMPONENT LIST --}}
     <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-8">
         <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6">📦 Mevcut Component'ler</h2>
-        
+
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <div class="p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800/30 rounded-lg">
                 <h3 class="font-semibold text-green-900 dark:text-green-100">Form Components</h3>
@@ -254,7 +254,7 @@
                     <li>✓ Toggle</li>
                 </ul>
             </div>
-            
+
             <div class="p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800/30 rounded-lg">
                 <h3 class="font-semibold text-blue-900 dark:text-blue-100">UI Components</h3>
                 <ul class="mt-2 text-sm text-blue-800 dark:text-blue-200 space-y-1">
@@ -268,7 +268,7 @@
                     <li>✓ Accordion ⭐ YENİ!</li>
                 </ul>
             </div>
-            
+
             <div class="p-4 bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800/30 rounded-lg">
                 <h3 class="font-semibold text-purple-900 dark:text-purple-100">Utility Components</h3>
                 <ul class="mt-2 text-sm text-purple-800 dark:text-purple-200 space-y-1">
@@ -282,4 +282,3 @@
     </div>
 </div>
 @endsection
-

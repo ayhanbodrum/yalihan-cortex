@@ -2,11 +2,11 @@
 <?php
 /**
  * Dropdown Auto-Fixer - Yalıhan Bekçi
- * 
+ *
  * Purpose: Automatically fix ALL dropdown readability issues
  * Date: 2025-11-01
  * Version: 1.0.0
- * 
+ *
  * Fixes Applied:
  * 1. dark:bg-gray-800 → dark:bg-gray-900
  * 2. dark:text-gray-100 → dark:text-white (in select tags)
@@ -81,7 +81,7 @@ class DropdownFixer
 
         // Find all select tags
         preg_match_all('/<select[^>]*>/is', $content, $matches, PREG_OFFSET_CAPTURE);
-        
+
         if (empty($matches[0])) {
             return; // No select tags in this file
         }
@@ -96,7 +96,7 @@ class DropdownFixer
         foreach ($matches[0] as $match) {
             $selectTag = $match[0];
             $originalTag = $selectTag;
-            
+
             // Fix 1: dark:bg-gray-800 → dark:bg-gray-900
             if (strpos($selectTag, 'dark:bg-gray-800') !== false) {
                 $selectTag = str_replace('dark:bg-gray-800', 'dark:bg-gray-900', $selectTag);
@@ -201,7 +201,7 @@ class DropdownFixer
     private function saveReport()
     {
         $reportPath = $this->basePath . '/yalihan-bekci/reports/dropdown-fix-' . date('Y-m-d-His') . '.json';
-        
+
         $report = [
             'fix_date' => date('Y-m-d H:i:s'),
             'dry_run' => $this->dryRun,
@@ -219,7 +219,7 @@ class DropdownFixer
         ];
 
         file_put_contents($reportPath, json_encode($report, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
-        
+
         echo "💾 Report saved: " . str_replace($this->basePath . '/', '', $reportPath) . "\n";
     }
 }
@@ -232,4 +232,3 @@ $fixer = new DropdownFixer(null, $dryRun);
 $fixer->fix();
 
 echo "\n✅ DONE!\n";
-

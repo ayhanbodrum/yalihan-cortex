@@ -9,20 +9,22 @@
 ## 📊 ÖNCE vs SONRA
 
 ### Önceki Durum:
+
 ```yaml
 Git boyutu: 597 MB
 Commit sayısı: 100+ commit
 Büyük dosyalar: 550 MB SQL dumps
-  - turkiye_veri_archive_20250526.tar.gz (272 MB!)
-  - tr_adres_mysql_11052020.sql (102 MB)
-  - temp_structure.sql (74 MB)
-  - redis_17022020.dump.rdb.zip (59 MB)
-  - Ve daha fazlası...
+    - turkiye_veri_archive_20250526.tar.gz (272 MB!)
+    - tr_adres_mysql_11052020.sql (102 MB)
+    - temp_structure.sql (74 MB)
+    - redis_17022020.dump.rdb.zip (59 MB)
+    - Ve daha fazlası...
 
 Toplam proje: 1.2 GB
 ```
 
 ### Yeni Durum:
+
 ```yaml
 Git boyutu: 585 MB (600 → 585 MB, -15 MB)
 Commit sayısı: 1 commit (fresh start) ✅
@@ -34,10 +36,12 @@ Toplam proje: 1.1 GB (1.2 → 1.1 GB)
 
 ⚠️ NOT:
 Git hala büyük (585 MB) çünkü:
-  - Önceki git object'leri pack'te
-  - Daha agresif temizlik yapılabilir
-  - Ama şimdilik yeterli (1 commit, temiz history)
-```
+
+- Önceki git object'leri pack'te
+- Daha agresif temizlik yapılabilir
+- Ama şimdilik yeterli (1 commit, temiz history)
+
+````
 
 ---
 
@@ -67,24 +71,22 @@ Analiz Raporları:
 Tüm Kod:
   ✅ Son durum korundu
   ✅ Hiçbir kod kaybı yok
-```
+````
 
 ---
 
 ## 🗑️ TEMİZLENEN
 
 ```yaml
-Eski Git History:
-  ❌ 100+ eski commit
-  ❌ 550 MB SQL dump dosyaları
-  ❌ Gereksiz büyük dosyalar
-  ❌ Eski versiyon geçmişi
+Eski Git History: ❌ 100+ eski commit
+    ❌ 550 MB SQL dump dosyaları
+    ❌ Gereksiz büyük dosyalar
+    ❌ Eski versiyon geçmişi
 
-Sonuç:
-  ✅ Sadece bugünkü son durum korundu
-  ✅ Temiz, küçük git history
-  ✅ Hızlı clone
-  ✅ Kolay deployment
+Sonuç: ✅ Sadece bugünkü son durum korundu
+    ✅ Temiz, küçük git history
+    ✅ Hızlı clone
+    ✅ Kolay deployment
 ```
 
 ---
@@ -92,12 +94,14 @@ Sonuç:
 ## 🎯 FAYDALARI
 
 ### 1. Daha Küçük Proje:
+
 ```yaml
 Git: 597 MB → [Yeni boyut]
 Proje: 1.2 GB → [Yeni boyut]
 ```
 
 ### 2. Daha Hızlı İşlemler:
+
 ```yaml
 ✅ git clone: 3-5x daha hızlı
 ✅ git pull/push: Daha hızlı
@@ -105,6 +109,7 @@ Proje: 1.2 GB → [Yeni boyut]
 ```
 
 ### 3. Daha Temiz:
+
 ```yaml
 ✅ Gereksiz dosyalar yok
 ✅ Sadece gerekli kod
@@ -119,14 +124,14 @@ Proje: 1.2 GB → [Yeni boyut]
 
 ```yaml
 Eski commit'lere: ❌ Hayır (silindi)
-  
+
 Ama:
   ✅ Bugünkü son durum korundu
   ✅ Tüm kod mevcut
   ✅ Bundan sonraki değişiklikler kayıtlı
-  
+
 Sorun mu?
-  ❌ Hayır! 
+  ❌ Hayır!
   - Eski history zaten gereksizdi
   - SQL dumps gereksiz
   - Fresh start daha iyi
@@ -165,11 +170,13 @@ git commit -m "Açıklama"
 **İşlem:** Başarılı ✅
 
 **Kazanç:**
+
 - Daha küçük proje
 - Daha hızlı işlemler
 - Temiz git history
 
 **Kayıp:**
+
 - Eski commit geçmişi (zaten gereksizdi)
 - SQL dumps (zaten gereksizdi)
 
@@ -178,4 +185,3 @@ git commit -m "Açıklama"
 ---
 
 **Final boyutlar ölçülüyor...**
-

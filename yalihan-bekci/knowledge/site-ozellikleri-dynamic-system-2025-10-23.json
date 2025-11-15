@@ -184,11 +184,7 @@
 
   "context7_compliance": {
     "field_naming": {
-      "correct": [
-        "status (NOT durum, is_active)",
-        "order (NOT sira)",
-        "type (NOT tip)"
-      ],
+      "correct": ["status (NOT durum, is_active)", "order (NOT sira)", "type (NOT tip)"],
       "validation": "✅ All field names English"
     },
 
@@ -311,12 +307,7 @@
       "trigger": "Hardcoded array/list in Blade template",
       "alert": "This could be dynamic! Create database table?",
       "suggestion": "Migration + Model + Admin panel pattern",
-      "examples": [
-        "Site features (this case) ✅",
-        "Property types",
-        "Amenities",
-        "Tags/Categories"
-      ]
+      "examples": ["Site features (this case) ✅", "Property types", "Amenities", "Tags/Categories"]
     },
 
     "design_feedback": {
@@ -369,4 +360,3 @@
     ]
   }
 }
-

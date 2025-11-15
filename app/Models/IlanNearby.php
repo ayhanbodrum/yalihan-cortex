@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * İlan Nearby Places Model
- * 
+ *
  * Context7: WikiMapia ve TurkiyeAPI entegrasyonu için
  * nearby places verilerini saklar
  */
@@ -38,4 +38,3 @@ class IlanNearby extends Model
         return $this->belongsTo(Ilan::class, 'ilan_id');
     }
 }
-

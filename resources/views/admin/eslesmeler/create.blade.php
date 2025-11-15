@@ -5,7 +5,7 @@
 @section('meta_keywords', 'eşleştirme oluştur, talep ilan eşleştirme, müşteri talep, emlak eşleştirme, ai eşleştirme')
 
 @section('content')
-    <!-- Context7: Eşleşme Form Component -->
+    <!-- Eşleşme form bileşeni -->
     <div class="prose max-w-none p-6" x-data="eslesmeForm()">
 
         <!-- Page Header -->
@@ -36,7 +36,7 @@
                             <h3 class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800-title">👤 Müşteri Bilgileri</h3>
                         </div>
                         <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800-body space-y-4">
-                            <!-- Context7 Live Search: Müşteri -->
+                            <!-- Live Search: Müşteri -->
                             <div class="space-y-2 relative">
                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 required">Müşteri</label>
                                 <div class="context7-live-search"
@@ -79,7 +79,7 @@
                             <h3 class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800-title">🎯 Talep Bilgileri</h3>
                         </div>
                         <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800-body">
-                            <!-- Context7 Live Search: Talep -->
+                            <!-- Live Search: Talep -->
                             <div class="space-y-2 relative">
                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Talep (İsteğe Bağlı)</label>
                                 <div class="context7-live-search"
@@ -111,7 +111,7 @@
                             <h3 class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800-title">🏠 İlan Bilgileri</h3>
                         </div>
                         <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800-body">
-                            <!-- Context7 Live Search: İlan -->
+                            <!-- Live Search: İlan -->
                             <div class="space-y-2 relative">
                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 required">İlan</label>
                                 <div class="context7-live-search"
@@ -226,10 +226,10 @@
 @endsection
 
 @push('scripts')
-    <!-- Context7 Live Search System -->
+    <!-- Live Search System -->
     <script src="{{ asset('js/context7-live-search.js') }}"></script>
 
-    <!-- Context7: Eşleşme Form Logic (Vanilla JS + Alpine.js) -->
+    <!-- Eşleşme form mantığı (Vanilla JS + Alpine.js) -->
     <script>
         function eslesmeForm() {
             return {
@@ -246,8 +246,8 @@
                 },
 
                 init() {
-                    console.log('✅ Eşleşme Create Form initialized (Context7)');
-                    // Context7 Live Search otomatik başlar
+                    console.log('✅ Eşleşme formu hazır');
+                    // Live search bileşenleri otomatik başlar
                 },
 
                 clearKisi() {
@@ -298,9 +298,9 @@
             }
         }
 
-        // Context7: Initialize on DOM ready
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('✅ Eşleşme Create Page loaded (Context7 Vanilla JS)');
+        // Sayfa hazır olduğunda başlat
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('✅ Eşleşme oluşturma sayfası yüklendi');
         });
     </script>
 @endpush

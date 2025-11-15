@@ -9,62 +9,60 @@ class ModernPriceSystem {
     constructor(containerId, options = {}) {
         this.container = document.getElementById(containerId);
         if (!this.container) {
-            console.error(
-                `[ModernPriceSystem] Container with id "${containerId}" not found`
-            );
+            console.error(`[ModernPriceSystem] Container with id "${containerId}" not found`);
             return;
         }
 
         this.options = {
             // API Endpoints
-            apiBase: "/api/admin",
-            currencyRatesEndpoint: "/currency/rates",
-            priceValidationEndpoint: "/prices/validate",
+            apiBase: '/api/admin',
+            currencyRatesEndpoint: '/currency/rates',
+            priceValidationEndpoint: '/prices/validate',
 
             // Supported Currencies
             currencies: {
-                TRY: { symbol: "₺", name: "Türk Lirası", code: "TRY" },
-                USD: { symbol: "$", name: "Amerikan Doları", code: "USD" },
-                EUR: { symbol: "€", name: "Euro", code: "EUR" },
-                GBP: { symbol: "£", name: "İngiliz Sterlini", code: "GBP" },
+                TRY: { symbol: '₺', name: 'Türk Lirası', code: 'TRY' },
+                USD: { symbol: '$', name: 'Amerikan Doları', code: 'USD' },
+                EUR: { symbol: '€', name: 'Euro', code: 'EUR' },
+                GBP: { symbol: '£', name: 'İngiliz Sterlini', code: 'GBP' },
             },
 
             // Price Types
             priceTypes: {
                 satilik: {
-                    name: "Satılık",
-                    icon: "💰",
+                    name: 'Satılık',
+                    icon: '💰',
                     requiresMainPrice: true,
                 },
                 kiralik: {
-                    name: "Kiralık",
-                    icon: "🔑",
+                    name: 'Kiralık',
+                    icon: '🔑',
                     requiresMainPrice: true,
                 },
-                "gunluk-kiralik": {
-                    name: "Günlük Kiralık",
-                    icon: "📅",
+                'gunluk-kiralik': {
+                    name: 'Günlük Kiralık',
+                    icon: '📅',
                     requiresDailyPrice: true,
                 },
-                "sezonluk-kiralik": {
-                    name: "Sezonluk Kiralık",
-                    icon: "🌞",
+                'sezonluk-kiralik': {
+                    name: 'Sezonluk Kiralık',
+                    icon: '🌞',
                     requiresSeasonalPrice: true,
                 },
-                "devren-satilik": {
-                    name: "Devren Satılık",
-                    icon: "🔄",
+                'devren-satilik': {
+                    name: 'Devren Satılık',
+                    icon: '🔄',
                     requiresMainPrice: true,
                 },
-                "devren-kiralik": {
-                    name: "Devren Kiralık",
-                    icon: "🔄",
+                'devren-kiralik': {
+                    name: 'Devren Kiralık',
+                    icon: '🔄',
                     requiresMainPrice: true,
                 },
             },
 
             // Default Settings
-            defaultCurrency: "TRY",
+            defaultCurrency: 'TRY',
             enableAIPrediction: true,
             enableMarketAnalysis: true,
             enablePriceHistory: true,
@@ -124,7 +122,7 @@ class ModernPriceSystem {
         this.bindEvents();
         this.loadExchangeRates();
         this.loadPriceHistory();
-        console.log("[ModernPriceSystem] Initialized successfully");
+        console.log('[ModernPriceSystem] Initialized successfully');
     }
 
     render() {
@@ -244,15 +242,13 @@ class ModernPriceSystem {
                                     .map(
                                         ([code, currency]) => `
                                     <option value="${code}" ${
-                                            code === this.state.mainCurrency
-                                                ? "selected"
-                                                : ""
-                                        }>
+                                        code === this.state.mainCurrency ? 'selected' : ''
+                                    }>
                                         ${currency.symbol} ${currency.name}
                                     </option>
                                 `
                                     )
-                                    .join("")}
+                                    .join('')}
                             </select>
                         </div>
                     </div>
@@ -367,9 +363,7 @@ class ModernPriceSystem {
                             .map(
                                 ([code, currency]) => `
                             <div class="converted-price-item ${
-                                code === this.state.mainCurrency
-                                    ? "opacity-50"
-                                    : ""
+                                code === this.state.mainCurrency ? 'opacity-50' : ''
                             }"
                                  data-currency="${code}">
                                 <div class="text-center p-4 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 rounded-lg">
@@ -384,7 +378,7 @@ class ModernPriceSystem {
                             </div>
                         `
                             )
-                            .join("")}
+                            .join('')}
                     </div>
                 </div>
             </div>
@@ -465,107 +459,78 @@ class ModernPriceSystem {
     cacheElements() {
         this.elements = {
             // Price Inputs
-            mainPriceInput: this.container.querySelector(".main-price-input"),
-            dailyPriceInput: this.container.querySelector(".daily-price-input"),
-            seasonalPriceInput: this.container.querySelector(
-                ".seasonal-price-input"
-            ),
-            startingPriceInput: this.container.querySelector(
-                ".starting-price-input"
-            ),
+            mainPriceInput: this.container.querySelector('.main-price-input'),
+            dailyPriceInput: this.container.querySelector('.daily-price-input'),
+            seasonalPriceInput: this.container.querySelector('.seasonal-price-input'),
+            startingPriceInput: this.container.querySelector('.starting-price-input'),
 
             // Currency
-            currencySelector:
-                this.container.querySelector(".currency-selector"),
-            currencySymbol: this.container.querySelector(".currency-symbol"),
+            currencySelector: this.container.querySelector('.currency-selector'),
+            currencySymbol: this.container.querySelector('.currency-symbol'),
 
             // Square meters
-            squareMetersInput: this.container.querySelector(
-                ".square-meters-input"
-            ),
-            pricePerSqmValue: this.container.querySelector(
-                ".price-per-sqm-value"
-            ),
+            squareMetersInput: this.container.querySelector('.square-meters-input'),
+            pricePerSqmValue: this.container.querySelector('.price-per-sqm-value'),
 
             // Converted prices
-            convertedPricesGrid: this.container.querySelector(
-                ".converted-prices-grid"
-            ),
+            convertedPricesGrid: this.container.querySelector('.converted-prices-grid'),
 
             // Additional price toggles
-            dailyPriceToggle: this.container.querySelector(
-                '[data-enable="daily-price"]'
-            ),
-            seasonalPriceToggle: this.container.querySelector(
-                '[data-enable="seasonal-price"]'
-            ),
-            startingPriceToggle: this.container.querySelector(
-                '[data-enable="starting-price"]'
-            ),
+            dailyPriceToggle: this.container.querySelector('[data-enable="daily-price"]'),
+            seasonalPriceToggle: this.container.querySelector('[data-enable="seasonal-price"]'),
+            startingPriceToggle: this.container.querySelector('[data-enable="starting-price"]'),
 
             // Sections
-            additionalPricesSection: this.container.querySelector(
-                ".additional-prices-section"
-            ),
-            priceAnalysisSection: this.container.querySelector(
-                ".price-analysis-section"
-            ),
-            aiSuggestionsSection: this.container.querySelector(
-                ".ai-suggestions-section"
-            ),
-            priceHistorySection: this.container.querySelector(
-                ".price-history-section"
-            ),
+            additionalPricesSection: this.container.querySelector('.additional-prices-section'),
+            priceAnalysisSection: this.container.querySelector('.price-analysis-section'),
+            aiSuggestionsSection: this.container.querySelector('.ai-suggestions-section'),
+            priceHistorySection: this.container.querySelector('.price-history-section'),
 
             // Status
-            priceStatusIndicator: this.container.querySelector(
-                ".price-status-indicator"
-            ),
-            lastUpdateText: this.container.querySelector(".last-update-text"),
-            priceWords: this.container.querySelector(".price-words"),
+            priceStatusIndicator: this.container.querySelector('.price-status-indicator'),
+            lastUpdateText: this.container.querySelector('.last-update-text'),
+            priceWords: this.container.querySelector('.price-words'),
         };
     }
 
     bindEvents() {
         // Main price input
         if (this.elements.mainPriceInput) {
-            this.elements.mainPriceInput.addEventListener("input", (e) => {
-                this.handlePriceInput(e.target.value, "main");
+            this.elements.mainPriceInput.addEventListener('input', (e) => {
+                this.handlePriceInput(e.target.value, 'main');
             });
-            this.elements.mainPriceInput.addEventListener("blur", () => {
-                this.formatPriceInput("main");
+            this.elements.mainPriceInput.addEventListener('blur', () => {
+                this.formatPriceInput('main');
             });
         }
 
         // Currency selector
         if (this.elements.currencySelector) {
-            this.elements.currencySelector.addEventListener("change", (e) => {
+            this.elements.currencySelector.addEventListener('change', (e) => {
                 this.handleCurrencyChange(e.target.value);
             });
         }
 
         // Square meters input
         if (this.elements.squareMetersInput) {
-            this.elements.squareMetersInput.addEventListener("input", (e) => {
+            this.elements.squareMetersInput.addEventListener('input', (e) => {
                 this.handleSquareMetersChange(parseFloat(e.target.value) || 0);
             });
         }
 
         // Additional price toggles
-        ["daily-price", "seasonal-price", "starting-price"].forEach((type) => {
-            const toggle = this.container.querySelector(
-                `[data-enable="${type}"]`
-            );
+        ['daily-price', 'seasonal-price', 'starting-price'].forEach((type) => {
+            const toggle = this.container.querySelector(`[data-enable="${type}"]`);
             if (toggle) {
-                toggle.addEventListener("change", (e) => {
+                toggle.addEventListener('change', (e) => {
                     this.toggleAdditionalPrice(type, e.target.checked);
                 });
             }
         });
 
         // Action buttons
-        this.container.addEventListener("click", (e) => {
-            const action = e.target.closest("[data-action]")?.dataset.action;
+        this.container.addEventListener('click', (e) => {
+            const action = e.target.closest('[data-action]')?.dataset.action;
             if (action) {
                 this.handleAction(action, e);
             }
@@ -573,21 +538,21 @@ class ModernPriceSystem {
     }
 
     // Price Input Handling
-    handlePriceInput(value, type = "main") {
+    handlePriceInput(value, type = 'main') {
         const numericValue = this.parsePrice(value);
 
         switch (type) {
-            case "main":
+            case 'main':
                 this.state.mainPrice = numericValue;
                 this.updatePriceWords();
                 break;
-            case "daily":
+            case 'daily':
                 this.state.dailyPrice = numericValue;
                 break;
-            case "seasonal":
+            case 'seasonal':
                 this.state.seasonalPrice = numericValue;
                 break;
-            case "starting":
+            case 'starting':
                 this.state.startingPrice = numericValue;
                 break;
         }
@@ -600,23 +565,23 @@ class ModernPriceSystem {
 
     parsePrice(value) {
         // Remove all non-numeric characters except decimal separators
-        const cleaned = value.toString().replace(/[^\d.,]/g, "");
+        const cleaned = value.toString().replace(/[^\d.,]/g, '');
 
         // Handle Turkish decimal separator
-        const normalized = cleaned.replace(",", ".");
+        const normalized = cleaned.replace(',', '.');
 
         const parsed = parseFloat(normalized);
         return isNaN(parsed) ? 0 : parsed;
     }
 
     formatPrice(amount, currency = this.state.mainCurrency) {
-        if (!amount || amount === 0) return "0";
+        if (!amount || amount === 0) return '0';
 
         const currencyConfig = this.options.currencies[currency];
         if (!currencyConfig) return amount.toString();
 
         // Format number with Turkish locale
-        const formatted = new Intl.NumberFormat("tr-TR", {
+        const formatted = new Intl.NumberFormat('tr-TR', {
             minimumFractionDigits: 0,
             maximumFractionDigits: 0,
         }).format(amount);
@@ -624,30 +589,30 @@ class ModernPriceSystem {
         return `${currencyConfig.symbol} ${formatted}`;
     }
 
-    formatPriceInput(type = "main") {
+    formatPriceInput(type = 'main') {
         let value, input;
 
         switch (type) {
-            case "main":
+            case 'main':
                 value = this.state.mainPrice;
                 input = this.elements.mainPriceInput;
                 break;
-            case "daily":
+            case 'daily':
                 value = this.state.dailyPrice;
                 input = this.elements.dailyPriceInput;
                 break;
-            case "seasonal":
+            case 'seasonal':
                 value = this.state.seasonalPrice;
                 input = this.elements.seasonalPriceInput;
                 break;
-            case "starting":
+            case 'starting':
                 value = this.state.startingPrice;
                 input = this.elements.startingPriceInput;
                 break;
         }
 
         if (input && value > 0) {
-            input.value = new Intl.NumberFormat("tr-TR").format(value);
+            input.value = new Intl.NumberFormat('tr-TR').format(value);
         }
     }
 
@@ -689,15 +654,10 @@ class ModernPriceSystem {
                     EUR: 37.2,
                     GBP: 43.8,
                 };
-                console.warn(
-                    "[ModernPriceSystem] Using fallback exchange rates"
-                );
+                console.warn('[ModernPriceSystem] Using fallback exchange rates');
             }
         } catch (error) {
-            console.error(
-                "[ModernPriceSystem] Failed to load exchange rates:",
-                error
-            );
+            console.error('[ModernPriceSystem] Failed to load exchange rates:', error);
             // Use fallback rates
             this.state.exchangeRates = {
                 TRY: 1,
@@ -711,25 +671,21 @@ class ModernPriceSystem {
     }
 
     updateConvertedPrices() {
-        if (
-            !this.state.mainPrice ||
-            Object.keys(this.state.exchangeRates).length === 0
-        ) {
+        if (!this.state.mainPrice || Object.keys(this.state.exchangeRates).length === 0) {
             return;
         }
 
         // Convert main price to TRY first
         const priceInTRY =
-            this.state.mainCurrency === "TRY"
+            this.state.mainCurrency === 'TRY'
                 ? this.state.mainPrice
-                : this.state.mainPrice *
-                  this.state.exchangeRates[this.state.mainCurrency];
+                : this.state.mainPrice * this.state.exchangeRates[this.state.mainCurrency];
 
         // Convert to all currencies
         Object.keys(this.options.currencies).forEach((currency) => {
             if (currency === this.state.mainCurrency) {
                 this.state.convertedPrices[currency] = this.state.mainPrice;
-            } else if (currency === "TRY") {
+            } else if (currency === 'TRY') {
                 this.state.convertedPrices[currency] = priceInTRY;
             } else {
                 this.state.convertedPrices[currency] =
@@ -741,25 +697,18 @@ class ModernPriceSystem {
     }
 
     updateConvertedPricesDisplay() {
-        Object.entries(this.state.convertedPrices).forEach(
-            ([currency, amount]) => {
-                const element = this.container.querySelector(
-                    `[data-currency="${currency}"] .amount`
-                );
-                if (element) {
-                    element.textContent = this.formatConvertedPrice(
-                        amount,
-                        currency
-                    );
-                }
+        Object.entries(this.state.convertedPrices).forEach(([currency, amount]) => {
+            const element = this.container.querySelector(`[data-currency="${currency}"] .amount`);
+            if (element) {
+                element.textContent = this.formatConvertedPrice(amount, currency);
             }
-        );
+        });
     }
 
     formatConvertedPrice(amount, currency) {
-        if (!amount || amount === 0) return "-";
+        if (!amount || amount === 0) return '-';
 
-        return new Intl.NumberFormat("tr-TR", {
+        return new Intl.NumberFormat('tr-TR', {
             minimumFractionDigits: 0,
             maximumFractionDigits: 0,
         }).format(Math.round(amount));
@@ -768,7 +717,7 @@ class ModernPriceSystem {
     updateLastUpdateDisplay() {
         if (this.elements.lastUpdateText && this.state.lastRateUpdate) {
             this.elements.lastUpdateText.textContent = `Son güncelleme: ${this.state.lastRateUpdate.toLocaleTimeString(
-                "tr-TR"
+                'tr-TR'
             )}`;
         }
     }
@@ -782,8 +731,7 @@ class ModernPriceSystem {
 
     updatePricePerSqm() {
         if (this.state.squareMeters > 0 && this.state.mainPrice > 0) {
-            this.state.pricePerSqm =
-                this.state.mainPrice / this.state.squareMeters;
+            this.state.pricePerSqm = this.state.mainPrice / this.state.squareMeters;
 
             if (this.elements.pricePerSqmValue) {
                 this.elements.pricePerSqmValue.textContent = this.formatPrice(
@@ -794,7 +742,7 @@ class ModernPriceSystem {
         } else {
             this.state.pricePerSqm = 0;
             if (this.elements.pricePerSqmValue) {
-                this.elements.pricePerSqmValue.textContent = "-";
+                this.elements.pricePerSqmValue.textContent = '-';
             }
         }
     }
@@ -802,16 +750,14 @@ class ModernPriceSystem {
     // Price Words
     updatePriceWords() {
         if (this.elements.priceWords && this.state.mainPrice > 0) {
-            this.elements.priceWords.textContent = this.numberToWords(
-                this.state.mainPrice
-            );
+            this.elements.priceWords.textContent = this.numberToWords(this.state.mainPrice);
         }
     }
 
     numberToWords(num) {
-        if (num === 0) return "sıfır";
+        if (num === 0) return 'sıfır';
 
-        const units = ["", "bin", "milyon", "milyar"];
+        const units = ['', 'bin', 'milyon', 'milyar'];
         const words = [];
         let unitIndex = 0;
 
@@ -824,28 +770,28 @@ class ModernPriceSystem {
             unitIndex++;
         }
 
-        return words.join(" ").trim();
+        return words.join(' ').trim();
     }
 
     // Additional Prices
     toggleAdditionalPrice(type, enabled) {
         const container = this.container.querySelector(
-            `.${type.replace("-", "-")}-input-container`
+            `.${type.replace('-', '-')}-input-container`
         );
         if (container) {
-            container.style.display = enabled ? "block" : "none";
+            container.style.display = enabled ? 'block' : 'none';
         }
 
         if (!enabled) {
             // Reset the price value
             switch (type) {
-                case "daily-price":
+                case 'daily-price':
                     this.state.dailyPrice = 0;
                     break;
-                case "seasonal-price":
+                case 'seasonal-price':
                     this.state.seasonalPrice = 0;
                     break;
-                case "starting-price":
+                case 'starting-price':
                     this.state.startingPrice = 0;
                     break;
             }
@@ -863,57 +809,54 @@ class ModernPriceSystem {
 
         // Show/hide additional price sections based on price type
         if (typeConfig.requiresDailyPrice) {
-            this.container.querySelector(".daily-price-group").style.display =
-                "block";
+            this.container.querySelector('.daily-price-group').style.display = 'block';
         }
         if (typeConfig.requiresSeasonalPrice) {
-            this.container.querySelector(
-                ".seasonal-price-group"
-            ).style.display = "block";
+            this.container.querySelector('.seasonal-price-group').style.display = 'block';
         }
 
         // Show additional prices section if any additional price is needed
         if (typeConfig.requiresDailyPrice || typeConfig.requiresSeasonalPrice) {
-            this.elements.additionalPricesSection.style.display = "block";
+            this.elements.additionalPricesSection.style.display = 'block';
         }
 
         // Update price type badge
-        const badge = this.container.querySelector(".price-type-badge");
+        const badge = this.container.querySelector('.price-type-badge');
         if (badge) {
             badge.innerHTML = `
                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
                     ${typeConfig.icon} ${typeConfig.name}
                 </span>
             `;
-            badge.style.display = "block";
+            badge.style.display = 'block';
         }
     }
 
     // Actions
     handleAction(action, event) {
         switch (action) {
-            case "calculate-suggestions":
+            case 'calculate-suggestions':
                 this.calculateAISuggestions();
                 break;
-            case "refresh-rates":
+            case 'refresh-rates':
                 this.loadExchangeRates();
                 break;
-            case "reset-prices":
+            case 'reset-prices':
                 this.resetPrices();
                 break;
-            case "save-prices":
+            case 'save-prices':
                 this.savePrices();
                 break;
         }
     }
 
     async calculateAISuggestions() {
-        this.elements.aiSuggestionsSection.style.display = "block";
-        const loadingEl = this.container.querySelector(".suggestions-loading");
-        const listEl = this.container.querySelector(".suggestions-list");
+        this.elements.aiSuggestionsSection.style.display = 'block';
+        const loadingEl = this.container.querySelector('.suggestions-loading');
+        const listEl = this.container.querySelector('.suggestions-list');
 
-        if (loadingEl) loadingEl.style.display = "block";
-        if (listEl) listEl.style.display = "none";
+        if (loadingEl) loadingEl.style.display = 'block';
+        if (listEl) listEl.style.display = 'none';
 
         try {
             // Simulate AI suggestions (in real app, this would be an API call)
@@ -922,13 +865,10 @@ class ModernPriceSystem {
             const suggestions = this.generateMockAISuggestions();
             this.displayAISuggestions(suggestions);
         } catch (error) {
-            console.error(
-                "[ModernPriceSystem] Failed to calculate AI suggestions:",
-                error
-            );
+            console.error('[ModernPriceSystem] Failed to calculate AI suggestions:', error);
         } finally {
-            if (loadingEl) loadingEl.style.display = "none";
-            if (listEl) listEl.style.display = "block";
+            if (loadingEl) loadingEl.style.display = 'none';
+            if (listEl) listEl.style.display = 'block';
         }
     }
 
@@ -936,34 +876,34 @@ class ModernPriceSystem {
         const basePrice = this.state.mainPrice || 1000000;
         return [
             {
-                type: "market-average",
-                title: "Piyasa Ortalaması",
-                description: "Benzer emlakların ortalama fiyatı",
+                type: 'market-average',
+                title: 'Piyasa Ortalaması',
+                description: 'Benzer emlakların ortalama fiyatı',
                 price: Math.round(basePrice * 0.95),
                 confidence: 85,
-                reasoning: "Aynı bölgedeki benzer emlaklar analiz edildi",
+                reasoning: 'Aynı bölgedeki benzer emlaklar analiz edildi',
             },
             {
-                type: "optimistic",
-                title: "İyimser Değerleme",
-                description: "En yüksek satış potansiyeli",
+                type: 'optimistic',
+                title: 'İyimser Değerleme',
+                description: 'En yüksek satış potansiyeli',
                 price: Math.round(basePrice * 1.1),
                 confidence: 70,
-                reasoning: "Premium özellikler ve lokasyon avantajı",
+                reasoning: 'Premium özellikler ve lokasyon avantajı',
             },
             {
-                type: "quick-sale",
-                title: "Hızlı Satış",
-                description: "Kısa sürede satış için",
+                type: 'quick-sale',
+                title: 'Hızlı Satış',
+                description: 'Kısa sürede satış için',
                 price: Math.round(basePrice * 0.85),
                 confidence: 90,
-                reasoning: "Piyasa ortalamasının altında cazip fiyat",
+                reasoning: 'Piyasa ortalamasının altında cazip fiyat',
             },
         ];
     }
 
     displayAISuggestions(suggestions) {
-        const listEl = this.container.querySelector(".suggestions-list");
+        const listEl = this.container.querySelector('.suggestions-list');
         if (!listEl) return;
 
         listEl.innerHTML = suggestions
@@ -981,42 +921,31 @@ class ModernPriceSystem {
                     </div>
                     <div class="text-right">
                         <div class="text-lg font-bold text-green-600">
-                            ${this.formatPrice(
-                                suggestion.price,
-                                this.state.mainCurrency
-                            )}
+                            ${this.formatPrice(suggestion.price, this.state.mainCurrency)}
                         </div>
-                        <div class="text-xs text-gray-500">%${
-                            suggestion.confidence
-                        } güven</div>
+                        <div class="text-xs text-gray-500">%${suggestion.confidence} güven</div>
                     </div>
                 </div>
-                <p class="text-xs text-gray-600 dark:text-gray-400 mb-3">${
-                    suggestion.reasoning
-                }</p>
+                <p class="text-xs text-gray-600 dark:text-gray-400 mb-3">${suggestion.reasoning}</p>
                 <button class="neo-btn neo-btn-sm neo-neo-btn neo-btn-primary"
-                        onclick="modernPriceSystem.applySuggestion(${
-                            suggestion.price
-                        })">
+                        onclick="modernPriceSystem.applySuggestion(${suggestion.price})">
                     Bu Fiyatı Uygula
                 </button>
             </div>
         `
             )
-            .join("");
+            .join('');
     }
 
     applySuggestion(price) {
         this.state.mainPrice = price;
-        this.elements.mainPriceInput.value = new Intl.NumberFormat(
-            "tr-TR"
-        ).format(price);
+        this.elements.mainPriceInput.value = new Intl.NumberFormat('tr-TR').format(price);
         this.updateConvertedPrices();
         this.updatePricePerSqm();
         this.updatePriceWords();
         this.markDirty();
 
-        this.showNotification("Önerilen fiyat uygulandı", "success");
+        this.showNotification('Önerilen fiyat uygulandı', 'success');
     }
 
     // Validation
@@ -1024,7 +953,7 @@ class ModernPriceSystem {
         this.state.errors = [];
 
         if (!this.state.mainPrice || this.state.mainPrice <= 0) {
-            this.state.errors.push("Ana fiyat gereklidir");
+            this.state.errors.push('Ana fiyat gereklidir');
         }
 
         // Currency-specific validations
@@ -1084,16 +1013,12 @@ class ModernPriceSystem {
         this.state.pricePerSqm = 0;
 
         // Reset inputs
-        if (this.elements.mainPriceInput)
-            this.elements.mainPriceInput.value = "";
-        if (this.elements.squareMetersInput)
-            this.elements.squareMetersInput.value = "";
+        if (this.elements.mainPriceInput) this.elements.mainPriceInput.value = '';
+        if (this.elements.squareMetersInput) this.elements.squareMetersInput.value = '';
 
         // Reset additional price toggles
-        ["daily-price", "seasonal-price", "starting-price"].forEach((type) => {
-            const toggle = this.container.querySelector(
-                `[data-enable="${type}"]`
-            );
+        ['daily-price', 'seasonal-price', 'starting-price'].forEach((type) => {
+            const toggle = this.container.querySelector(`[data-enable="${type}"]`);
             if (toggle) toggle.checked = false;
             this.toggleAdditionalPrice(type, false);
         });
@@ -1104,15 +1029,12 @@ class ModernPriceSystem {
         this.validatePrices();
         this.markClean();
 
-        this.showNotification("Fiyatlar sıfırlandı", "info");
+        this.showNotification('Fiyatlar sıfırlandı', 'info');
     }
 
     async savePrices() {
         if (!this.validatePrices()) {
-            this.showNotification(
-                "Lütfen geçerli fiyat bilgileri girin",
-                "error"
-            );
+            this.showNotification('Lütfen geçerli fiyat bilgileri girin', 'error');
             return;
         }
 
@@ -1121,24 +1043,21 @@ class ModernPriceSystem {
 
             // Emit custom event
             this.container.dispatchEvent(
-                new CustomEvent("prices-saved", {
+                new CustomEvent('prices-saved', {
                     detail: priceData,
                 })
             );
 
             // Save to localStorage as backup
-            localStorage.setItem(
-                "price_system_data",
-                JSON.stringify(priceData)
-            );
+            localStorage.setItem('price_system_data', JSON.stringify(priceData));
 
             this.markClean();
-            this.showNotification("Fiyatlar kaydedildi", "success");
+            this.showNotification('Fiyatlar kaydedildi', 'success');
 
-            console.log("[ModernPriceSystem] Prices saved:", priceData);
+            console.log('[ModernPriceSystem] Prices saved:', priceData);
         } catch (error) {
-            console.error("[ModernPriceSystem] Failed to save prices:", error);
-            this.showNotification("Fiyatlar kaydedilemedi", "error");
+            console.error('[ModernPriceSystem] Failed to save prices:', error);
+            this.showNotification('Fiyatlar kaydedilemedi', 'error');
         }
     }
 
@@ -1147,10 +1066,7 @@ class ModernPriceSystem {
             main: {
                 price: this.state.mainPrice,
                 currency: this.state.mainCurrency,
-                formatted: this.formatPrice(
-                    this.state.mainPrice,
-                    this.state.mainCurrency
-                ),
+                formatted: this.formatPrice(this.state.mainPrice, this.state.mainCurrency),
             },
             additional: {
                 daily: this.state.dailyPrice,
@@ -1172,17 +1088,14 @@ class ModernPriceSystem {
 
     loadPriceHistory() {
         // Load from localStorage or API
-        const saved = localStorage.getItem("price_system_data");
+        const saved = localStorage.getItem('price_system_data');
         if (saved) {
             try {
                 const data = JSON.parse(saved);
                 // Restore state from saved data
                 this.restoreFromData(data);
             } catch (error) {
-                console.warn(
-                    "[ModernPriceSystem] Failed to load saved data:",
-                    error
-                );
+                console.warn('[ModernPriceSystem] Failed to load saved data:', error);
             }
         }
     }
@@ -1190,8 +1103,7 @@ class ModernPriceSystem {
     restoreFromData(data) {
         if (data.main) {
             this.state.mainPrice = data.main.price || 0;
-            this.state.mainCurrency =
-                data.main.currency || this.options.defaultCurrency;
+            this.state.mainCurrency = data.main.currency || this.options.defaultCurrency;
         }
 
         if (data.additional) {
@@ -1210,9 +1122,9 @@ class ModernPriceSystem {
 
     updateAllDisplays() {
         if (this.elements.mainPriceInput && this.state.mainPrice > 0) {
-            this.elements.mainPriceInput.value = new Intl.NumberFormat(
-                "tr-TR"
-            ).format(this.state.mainPrice);
+            this.elements.mainPriceInput.value = new Intl.NumberFormat('tr-TR').format(
+                this.state.mainPrice
+            );
         }
 
         if (this.elements.squareMetersInput && this.state.squareMeters > 0) {
@@ -1247,9 +1159,9 @@ class ModernPriceSystem {
     }
 
     // Notifications
-    showNotification(message, type = "info") {
+    showNotification(message, type = 'info') {
         // Create toast notification
-        const toast = document.createElement("div");
+        const toast = document.createElement('div');
         toast.className = `neo-toast neo-toast-${type}`;
         toast.textContent = message;
         document.body.appendChild(toast);
@@ -1280,27 +1192,24 @@ class ModernPriceSystem {
     // Integration with Category Workflow
     static integrateWithCategoryWorkflow(categoryWorkflow, priceSystem) {
         // Listen for workflow completion
-        categoryWorkflow.container.addEventListener(
-            "workflow-complete",
-            (e) => {
-                const { publication_type_id } = e.detail;
+        categoryWorkflow.container.addEventListener('workflow-complete', (e) => {
+            const { publication_type_id } = e.detail;
 
-                // Map publication type to price type
-                const priceTypeMapping = {
-                    1: "satilik",
-                    2: "kiralik",
-                    3: "gunluk-kiralik",
-                    4: "sezonluk-kiralik",
-                    5: "devren-satilik",
-                    6: "devren-kiralik",
-                };
+            // Map publication type to price type
+            const priceTypeMapping = {
+                1: 'satilik',
+                2: 'kiralik',
+                3: 'gunluk-kiralik',
+                4: 'sezonluk-kiralik',
+                5: 'devren-satilik',
+                6: 'devren-kiralik',
+            };
 
-                const priceType = priceTypeMapping[publication_type_id];
-                if (priceType) {
-                    priceSystem.setPriceType(priceType);
-                }
+            const priceType = priceTypeMapping[publication_type_id];
+            if (priceType) {
+                priceSystem.setPriceType(priceType);
             }
-        );
+        });
     }
 }
 
@@ -1404,9 +1313,9 @@ const priceSystemCSS = `
 `;
 
 // Inject CSS
-if (!document.getElementById("modern-price-system-css")) {
-    const style = document.createElement("style");
-    style.id = "modern-price-system-css";
+if (!document.getElementById('modern-price-system-css')) {
+    const style = document.createElement('style');
+    style.id = 'modern-price-system-css';
     style.textContent = priceSystemCSS;
     document.head.appendChild(style);
 }
@@ -1415,6 +1324,6 @@ if (!document.getElementById("modern-price-system-css")) {
 window.ModernPriceSystem = ModernPriceSystem;
 
 // Export for module usage
-if (typeof module !== "undefined" && module.exports) {
+if (typeof module !== 'undefined' && module.exports) {
     module.exports = ModernPriceSystem;
 }

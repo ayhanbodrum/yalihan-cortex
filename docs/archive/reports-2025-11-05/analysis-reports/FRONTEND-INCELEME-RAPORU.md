@@ -8,6 +8,7 @@
 ## 📊 GENEL DURUM
 
 ### Boyut:
+
 ```yaml
 TOPLAM: 1.2 GB (2GB değil!)
 
@@ -29,6 +30,7 @@ Dağılım:
 ## 🏗️ FRONTEND MİMARİSİ
 
 ### Frontend Sayfalar:
+
 ```yaml
 📁 resources/views/frontend/ (4 sayfa)
   - ilanlar/index.blade.php
@@ -98,12 +100,19 @@ SORUN: Frontend ve Admin farklı framework kullanıyor!
 ```
 
 **Örnek (layouts/frontend.blade.php):**
+
 ```html
 <!-- Bootstrap CSS -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+/>
 
 <!-- Font Awesome -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+/>
 
 <!-- ❌ Tailwind YOK! -->
 ```
@@ -123,6 +132,7 @@ Route::get('/', function () {
 ```
 
 **Sorun:**
+
 - Public user ziyaret eder → Admin login'e gider
 - Homepage yok (!)
 - SEO için kötü
@@ -136,7 +146,7 @@ Tespit edilen homepage'ler:
   1. yaliihan-home-clean.blade.php (Neo classes: 6)
   2. modern-listings.blade.php
   3. about.blade.php
-  
+
 Hangisi asıl homepage?
   → Belirsiz! (/ route admin'e gidiyor)
 ```
@@ -146,12 +156,10 @@ Hangisi asıl homepage?
 ### 4. **Frontend JavaScript Minimal** ⚠️
 
 ```yaml
-public/js/frontend/:
-  ✅ dynamic-features.js (1 dosya)
-  
-resources/js/:
-  ❌ Frontend-specific JS yok
-  ✅ Sadece admin/ JS var (29,586 satır)
+public/js/frontend/: ✅ dynamic-features.js (1 dosya)
+
+resources/js/: ❌ Frontend-specific JS yok
+    ✅ Sadece admin/ JS var (29,586 satır)
 
 Sorun: Frontend interactivity minimal
 ```
@@ -179,10 +187,9 @@ Sorun: Frontend interactivity minimal
 ### 1. **Component-Based Architecture** ✅
 
 ```yaml
-components/home/:
-  ✅ 9 reusable component
-  ✅ Modüler yapı
-  ✅ hero, featured-properties, statistics, etc.
+components/home/: ✅ 9 reusable component
+    ✅ Modüler yapı
+    ✅ hero, featured-properties, statistics, etc.
 ```
 
 ### 2. **Villa System (Yazlık)** ✅
@@ -210,7 +217,7 @@ components/home/:
 Frontend Neo Usage:
   - yaliihan-home-clean: 6 kullanım
   - frontend/: 44 kullanım
-  
+
 Admin'e göre %95 daha az!
 Çoğunlukla Bootstrap classes
 ```
@@ -220,6 +227,7 @@ Admin'e göre %95 daha az!
 ## 🎯 FRONTEND ROUTES
 
 ### Public Routes:
+
 ```yaml
 /                    → Admin redirect ❌ (homepage olmalı!)
 /yalihan             → Demo homepage
@@ -243,17 +251,17 @@ Admin'e göre %95 daha az!
 
 ```yaml
 Problem:
-  Admin: Tailwind CSS
-  Frontend: Bootstrap 5
+    Admin: Tailwind CSS
+    Frontend: Bootstrap 5
 
 Sonuç:
-  - 2 farklı framework (bundle size +50%)
-  - Inconsistent design
-  - Maintenance zor
-  
+    - 2 farklı framework (bundle size +50%)
+    - Inconsistent design
+    - Maintenance zor
+
 Çözüm:
-  Seçenek 1: Frontend'i Tailwind'e geç ⭐ ÖNERİLEN
-  Seçenek 2: Separate build (admin.css + frontend.css)
+    Seçenek 1: Frontend'i Tailwind'e geç ⭐ ÖNERİLEN
+    Seçenek 2: Separate build (admin.css + frontend.css)
 ```
 
 ---
@@ -261,11 +269,9 @@ Sonuç:
 ### B. Ana Sayfa Yok 🔴
 
 ```yaml
-Problem:
-  / → Admin redirect (public user için hata!)
-  
-Çözüm:
-  / → Gerçek homepage (hero, featured properties, search)
+Problem: / → Admin redirect (public user için hata!)
+
+Çözüm: / → Gerçek homepage (hero, featured properties, search)
 ```
 
 ---
@@ -275,11 +281,11 @@ Problem:
 ```yaml
 Problem:
   .git/ 617 MB (normal: 50-100 MB)
-  
+
 Sebep:
   - Çok fazla commit
   - Büyük dosya commit edilmiş (binary?)
-  
+
 Çözüm:
   git gc --aggressive --prune=now
   Beklenen: 617 MB → 100-150 MB
@@ -294,9 +300,9 @@ Problem:
   - yaliihan-home-clean.blade.php
   - modern-listings.blade.php
   - about.blade.php
-  
+
 Hangisi asıl homepage?
-  
+
 Çözüm:
   1 tane seç, diğerlerini sil veya repurpose
 ```
@@ -342,13 +348,13 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 
 ```yaml
 Seçenek A: Tailwind'e geç (1-2 hafta)
-  ✅ Consistency (admin = frontend)
-  ✅ Smaller bundle
-  ✅ Better DX
-  
+    ✅ Consistency (admin = frontend)
+    ✅ Smaller bundle
+    ✅ Better DX
+
 Seçenek B: Bootstrap kullan (şimdilik devam)
-  ⚠️ Farklı framework devam eder
-  ⚠️ 2 CSS framework (bundle size +50%)
+    ⚠️ Farklı framework devam eder
+    ⚠️ 2 CSS framework (bundle size +50%)
 ```
 
 **Öneri:** Seçenek B (şimdilik), sonra Seçenek A (PHASE 4)
@@ -377,7 +383,7 @@ SEO:
   Meta tags: ⚠️ Eksik
   JSON-LD: ❌ Yok
   Sitemap: ❌ Yok
-  
+
 Dark Mode:
   Admin: ✅ Var
   Frontend: ❌ Yok
@@ -400,6 +406,7 @@ Neo Classes:
 ### Boyut Azalması:
 
 **Development (1.2 GB):**
+
 ```yaml
 .git/          617 MB
 vendor/        299 MB
@@ -409,6 +416,7 @@ source/        150 MB
 ```
 
 **Production (~400 MB):**
+
 ```yaml
 # Shallow clone kullanırsanız:
 .git/          20 MB   (--depth 1)
@@ -428,6 +436,7 @@ TOPLAM: ~420 MB (1.2 GB → 420 MB, %65 azalma!)
 ### HEMEN ŞİMDİ (10 dakika):
 
 **1. Git History Temizle** 🔴 KRİTİK
+
 ```bash
 git gc --aggressive --prune=now
 
@@ -437,6 +446,7 @@ Beklenen:
 ```
 
 **2. Ana Sayfa Düzelt** 🔴 KRİTİK
+
 ```php
 // routes/web.php
 Route::get('/', function () {
@@ -449,6 +459,7 @@ Route::get('/', function () {
 ### YAKIN GELECEK (1 hafta):
 
 **3. SEO Meta Tags Ekle** ⚠️
+
 ```blade
 {{-- layouts/frontend.blade.php --}}
 <meta name="description" content="...">
@@ -458,6 +469,7 @@ Route::get('/', function () {
 ```
 
 **4. Frontend Dark Mode** ⚠️
+
 ```html
 <!-- Tailwind dark mode ekle -->
 <!-- Ya da Bootstrap dark mode -->
@@ -468,12 +480,13 @@ Route::get('/', function () {
 ### UZUN VADELİ (1-2 ay):
 
 **5. Frontend Framework Birleştir**
+
 ```yaml
 Bootstrap → Tailwind migration
   - Consistency (admin = frontend)
   - Smaller bundle (-200 KB)
   - Better maintainability
-  
+
 Süre: 1-2 hafta
 ```
 
@@ -484,6 +497,7 @@ Süre: 1-2 hafta
 ### Frontend Pages:
 
 **Aktif ve Çalışan:**
+
 ```yaml
 ✅ /yazliklar (Villa listing)
 ✅ /ilanlar (Property listing)
@@ -492,6 +506,7 @@ Süre: 1-2 hafta
 ```
 
 **Duplicate/Belirsiz:**
+
 ```yaml
 ⚠️ yaliihan-property-listing vs modern-listings
 ⚠️ yaliihan-property-detail vs modern-listing-detail
@@ -499,6 +514,7 @@ Süre: 1-2 hafta
 ```
 
 **Route Redirect:**
+
 ```yaml
 ❌ / → Admin dashboard (public için hata!)
 ```
@@ -508,12 +524,13 @@ Süre: 1-2 hafta
 ### CSS & JavaScript:
 
 **CSS:**
+
 ```yaml
 Admin:
   ✅ Tailwind CSS (Vite build)
   ✅ app.css (182 KB)
   ✅ Dark mode support
-  
+
 Frontend:
   ❌ Bootstrap 5.3.0 (CDN ~150 KB)
   ❌ FontAwesome (CDN ~70 KB)
@@ -522,25 +539,24 @@ Frontend:
 Bundle Size:
   Admin: 182 KB (gzip: 23 KB) ✅
   Frontend: ~220 KB (CDN) ⚠️
-  
+
 SORUN: 2 farklı framework!
 ```
 
 **JavaScript:**
+
 ```yaml
-Admin:
-  ✅ Alpine.js (~15 KB)
-  ✅ Vanilla JS (29,586 satır)
-  ✅ Modern ES6+
-  
-Frontend:
-  ⚠️ Bootstrap JS (CDN ~60 KB)
-  ⚠️ Minimal custom JS (1 dosya)
-  ⚠️ Interactivity düşük
+Admin: ✅ Alpine.js (~15 KB)
+    ✅ Vanilla JS (29,586 satır)
+    ✅ Modern ES6+
+
+Frontend: ⚠️ Bootstrap JS (CDN ~60 KB)
+    ⚠️ Minimal custom JS (1 dosya)
+    ⚠️ Interactivity düşük
 
 Bundle Size:
-  Admin: ~200 KB ✅
-  Frontend: ~60 KB ⚠️ (minimal)
+    Admin: ~200 KB ✅
+    Frontend: ~60 KB ⚠️ (minimal)
 ```
 
 ---
@@ -548,6 +564,7 @@ Bundle Size:
 ### SEO & Performance:
 
 **SEO:**
+
 ```yaml
 ❌ Meta description yok
 ❌ Open Graph tags yok
@@ -560,6 +577,7 @@ Google PageSpeed Score: ?
 ```
 
 **Performance:**
+
 ```yaml
 ✅ CDN kullanımı (Bootstrap, FontAwesome)
 ⚠️ Lazy loading yok
@@ -575,12 +593,14 @@ Google PageSpeed Score: ?
 ### Genel Değerlendirme: 6.5/10
 
 **Güçlü Yönler:**
+
 - ✅ Component-based (9 home component)
 - ✅ Villa system çalışıyor
 - ✅ Blog system var
 - ✅ Neo classes minimal (50 kullanım)
 
 **Zayıf Yönler:**
+
 - 🔴 .git çok büyük (617 MB)
 - 🔴 CSS framework karışıklığı (Bootstrap vs Tailwind)
 - 🔴 Ana sayfa redirect (homepage yok!)
@@ -594,6 +614,7 @@ Google PageSpeed Score: ?
 ### BU GECE (10 dakika):
 
 **1. Git History Temizle** ⭐⭐⭐⭐⭐
+
 ```bash
 git gc --aggressive --prune=now
 
@@ -603,6 +624,7 @@ Sonuç:
 ```
 
 **2. Ana Sayfa Düzelt** ⭐⭐⭐⭐
+
 ```php
 Route::get('/', function () {
     return view('yaliihan-home-clean');
@@ -614,10 +636,12 @@ Route::get('/', function () {
 ### YARIN (PHASE 3 devam):
 
 **Component Library (öncelik)**
+
 - Modal, Checkbox, Radio ✅
 - Toggle, Dropdown, File-upload
 
 **Frontend (sonra):**
+
 - SEO meta tags
 - Dark mode (frontend)
 - Performance optimization
@@ -627,6 +651,7 @@ Route::get('/', function () {
 ### UZUN VADELI (PHASE 4):
 
 **Frontend Modernization:**
+
 - Bootstrap → Tailwind migration
 - SEO full implementation
 - Performance optimization
@@ -638,19 +663,19 @@ Route::get('/', function () {
 
 ```yaml
 Development: 1.2 GB
-  .git/          617 MB
-  vendor/        299 MB
-  node_modules/  142 MB
-  storage/       8 MB
-  source/        150 MB
+    .git/          617 MB
+    vendor/        299 MB
+    node_modules/  142 MB
+    storage/       8 MB
+    source/        150 MB
 
 Production (Shallow Clone): ~200 MB ⭐
-  .git/          20 MB   (--depth 1)
-  vendor/        200 MB  (--no-dev)
-  node_modules/  0 MB    (build sonrası rm)
-  build/         50 MB   (compiled)
-  storage/       1 MB    (temiz)
-  source/        150 MB
+    .git/          20 MB   (--depth 1)
+    vendor/        200 MB  (--no-dev)
+    node_modules/  0 MB    (build sonrası rm)
+    build/         50 MB   (compiled)
+    storage/       1 MB    (temiz)
+    source/        150 MB
 
 TASARRUF: 1 GB! (%83 azalma)
 ```
@@ -662,11 +687,13 @@ TASARRUF: 1 GB! (%83 azalma)
 ### 2 Hızlı Fix (10 dakika):
 
 **1. Git History Temizle:**
+
 ```bash
 git gc --aggressive --prune=now
 ```
 
 **2. Ana Sayfa Düzelt:**
+
 ```php
 // routes/web.php değiştir
 Route::get('/', function () {
@@ -675,6 +702,7 @@ Route::get('/', function () {
 ```
 
 **Sonuç:**
+
 - ✅ 600 MB daha küçük repo
 - ✅ Ana sayfa çalışır
 - ✅ Public user happy
@@ -684,4 +712,3 @@ Route::get('/', function () {
 **Yapayım mı bu 2 fix'i? (10dk) 🚀**
 
 İyi geceler! 🌙
-

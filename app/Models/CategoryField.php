@@ -17,7 +17,7 @@ class CategoryField extends Model
         'options',
         'placeholder',
         'validation_rules',
-        'order',
+        'display_order', // Context7: order → display_order
         'status',
     ];
 
@@ -46,9 +46,10 @@ class CategoryField extends Model
 
     /**
      * Scope: Sıraya göre
+     * Context7: display_order kullan
      */
     public function scopeOrdered($query)
     {
-        return $query->orderBy('order', 'asc');
+        return $query->orderBy('display_order', 'asc');
     }
 }

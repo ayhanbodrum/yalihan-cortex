@@ -3,41 +3,39 @@
 
 // Header'daki sayaçları güncelle
 function updateHeaderCounts() {
-    const favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
-    const compareList = JSON.parse(
-        localStorage.getItem("compare-list") || "[]"
-    );
+    const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+    const compareList = JSON.parse(localStorage.getItem('compare-list') || '[]');
 
-    const favoritesCount = document.getElementById("favorites-count");
-    const compareCount = document.getElementById("compare-count");
+    const favoritesCount = document.getElementById('favorites-count');
+    const compareCount = document.getElementById('compare-count');
 
     if (favoritesCount) {
         favoritesCount.textContent = favorites.length;
-        favoritesCount.style.opacity = favorites.length > 0 ? "1" : "0";
+        favoritesCount.style.opacity = favorites.length > 0 ? '1' : '0';
     }
 
     if (compareCount) {
         compareCount.textContent = compareList.length;
-        compareCount.style.opacity = compareList.length > 0 ? "1" : "0";
+        compareCount.style.opacity = compareList.length > 0 ? '1' : '0';
     }
 }
 
 // Favoriler listesini göster
 function showFavorites() {
-    const favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
+    const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
 
     if (favorites.length === 0) {
-        showNotification("Henüz favori ilanınız yok", "info");
+        showNotification('Henüz favori ilanınız yok', 'info');
         return;
     }
 
     // Modal oluştur
-    const modal = createModal("Favorilerim", generateFavoritesHTML(favorites));
+    const modal = createModal('Favorilerim', generateFavoritesHTML(favorites));
     document.body.appendChild(modal);
 
     // Favorilerden kaldırma fonksiyonu
-    modal.addEventListener("click", (e) => {
-        if (e.target.classList.contains("remove-favorite")) {
+    modal.addEventListener('click', (e) => {
+        if (e.target.classList.contains('remove-favorite')) {
             const propertyId = parseInt(e.target.dataset.propertyId);
             removeFavorite(propertyId);
             modal.remove();
@@ -48,25 +46,20 @@ function showFavorites() {
 
 // Karşılaştırma listesini göster
 function showCompareList() {
-    const compareList = JSON.parse(
-        localStorage.getItem("compare-list") || "[]"
-    );
+    const compareList = JSON.parse(localStorage.getItem('compare-list') || '[]');
 
     if (compareList.length === 0) {
-        showNotification("Karşılaştırma listeniz boş", "info");
+        showNotification('Karşılaştırma listeniz boş', 'info');
         return;
     }
 
     // Modal oluştur
-    const modal = createModal(
-        "Karşılaştırma Listesi",
-        generateCompareHTML(compareList)
-    );
+    const modal = createModal('Karşılaştırma Listesi', generateCompareHTML(compareList));
     document.body.appendChild(modal);
 
     // Karşılaştırmadan kaldırma fonksiyonu
-    modal.addEventListener("click", (e) => {
-        if (e.target.classList.contains("remove-compare")) {
+    modal.addEventListener('click', (e) => {
+        if (e.target.classList.contains('remove-compare')) {
             const propertyId = parseInt(e.target.dataset.propertyId);
             removeFromCompare(propertyId);
             modal.remove();
@@ -77,53 +70,49 @@ function showCompareList() {
 
 // Favorilerden kaldır
 function removeFavorite(propertyId) {
-    let favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
+    let favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
     favorites = favorites.filter((id) => id !== propertyId);
-    localStorage.setItem("favorites", JSON.stringify(favorites));
+    localStorage.setItem('favorites', JSON.stringify(favorites));
     updateHeaderCounts();
 
     // Sayfadaki butonları güncelle
-    const btn = document.querySelector(
-        `[data-property-id="${propertyId}"].favorite-btn`
-    );
+    const btn = document.querySelector(`[data-property-id="${propertyId}"].favorite-btn`);
     if (btn) {
-        const icon = btn.querySelector("i");
-        icon.classList.remove("text-red-500");
-        icon.classList.add("text-gray-400");
-        btn.classList.remove("border-red-300", "bg-red-50");
-        btn.classList.add("border-gray-200");
+        const icon = btn.querySelector('i');
+        icon.classList.remove('text-red-500');
+        icon.classList.add('text-gray-400');
+        btn.classList.remove('border-red-300', 'bg-red-50');
+        btn.classList.add('border-gray-200');
     }
 
-    showNotification("Favorilerden çıkarıldı", "info");
+    showNotification('Favorilerden çıkarıldı', 'info');
 }
 
 // Karşılaştırmadan kaldır
 function removeFromCompare(propertyId) {
-    let compareList = JSON.parse(localStorage.getItem("compare-list") || "[]");
+    let compareList = JSON.parse(localStorage.getItem('compare-list') || '[]');
     compareList = compareList.filter((id) => id !== propertyId);
-    localStorage.setItem("compare-list", JSON.stringify(compareList));
+    localStorage.setItem('compare-list', JSON.stringify(compareList));
     updateHeaderCounts();
 
     // Sayfadaki butonları güncelle
-    const btn = document.querySelector(
-        `[data-property-id="${propertyId}"].compare-btn`
-    );
+    const btn = document.querySelector(`[data-property-id="${propertyId}"].compare-btn`);
     if (btn) {
-        const icon = btn.querySelector("i");
-        icon.classList.remove("text-blue-500");
-        icon.classList.add("text-gray-400");
-        btn.classList.remove("border-blue-300", "bg-blue-50");
-        btn.classList.add("border-gray-200");
+        const icon = btn.querySelector('i');
+        icon.classList.remove('text-blue-500');
+        icon.classList.add('text-gray-400');
+        btn.classList.remove('border-blue-300', 'bg-blue-50');
+        btn.classList.add('border-gray-200');
     }
 
-    showNotification("Karşılaştırmadan çıkarıldı", "info");
+    showNotification('Karşılaştırmadan çıkarıldı', 'info');
 }
 
 // Modal oluştur
 function createModal(title, content) {
-    const modal = document.createElement("div");
+    const modal = document.createElement('div');
     modal.className =
-        "fixed inset-0 z-50 overflow-y-auto bg-black bg-opacity-50 flex items-center justify-center p-4";
+        'fixed inset-0 z-50 overflow-y-auto bg-black bg-opacity-50 flex items-center justify-center p-4';
     modal.innerHTML = `
         <div class="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-full overflow-y-auto">
             <div class="flex items-center justify-between p-6 border-b">
@@ -139,7 +128,7 @@ function createModal(title, content) {
     `;
 
     // Dışarı tıklayınca kapat
-    modal.addEventListener("click", (e) => {
+    modal.addEventListener('click', (e) => {
         if (e.target === modal) {
             modal.remove();
         }
@@ -154,8 +143,7 @@ function generateFavoritesHTML(favorites) {
         return '<p class="text-gray-500 text-center py-8">Henüz favori ilanınız yok.</p>';
     }
 
-    let html =
-        '<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">';
+    let html = '<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">';
 
     favorites.forEach((propertyId) => {
         html += `
@@ -175,7 +163,7 @@ function generateFavoritesHTML(favorites) {
         `;
     });
 
-    html += "</div>";
+    html += '</div>';
     return html;
 }
 
@@ -210,7 +198,7 @@ function generateCompareHTML(compareList) {
         `;
     });
 
-    html += "</div>";
+    html += '</div>';
 
     if (compareList.length >= 2) {
         html += `
@@ -228,37 +216,35 @@ function generateCompareHTML(compareList) {
 
 // Karşılaştırmaya başla
 function startComparison() {
-    const compareList = JSON.parse(
-        localStorage.getItem("compare-list") || "[]"
-    );
+    const compareList = JSON.parse(localStorage.getItem('compare-list') || '[]');
     if (compareList.length < 2) {
-        showNotification("En az 2 ilan seçmelisiniz", "warning");
+        showNotification('En az 2 ilan seçmelisiniz', 'warning');
         return;
     }
 
     // Karşılaştırma sayfasına yönlendir
-    const compareUrl = `/karsilastir?ilanlar=${compareList.join(",")}`;
-    window.open(compareUrl, "_blank");
+    const compareUrl = `/karsilastir?ilanlar=${compareList.join(',')}`;
+    window.open(compareUrl, '_blank');
 }
 
 // Bildirim sistemi (global)
-function showNotification(message, type = "info") {
+function showNotification(message, type = 'info') {
     // Notification container oluştur (yoksa)
-    let container = document.getElementById("notification-container");
+    let container = document.getElementById('notification-container');
     if (!container) {
-        container = document.createElement("div");
-        container.id = "notification-container";
-        container.className = "fixed top-4 right-4 z-50 space-y-2";
+        container = document.createElement('div');
+        container.id = 'notification-container';
+        container.className = 'fixed top-4 right-4 z-50 space-y-2';
         document.body.appendChild(container);
     }
 
     // Notification element
-    const notification = document.createElement("div");
+    const notification = document.createElement('div');
     const colors = {
-        success: "bg-green-500",
-        error: "bg-red-500",
-        warning: "bg-yellow-500",
-        info: "bg-blue-500",
+        success: 'bg-green-500',
+        error: 'bg-red-500',
+        warning: 'bg-yellow-500',
+        info: 'bg-blue-500',
     };
 
     notification.className = `${colors[type]} text-white px-4 py-2 rounded-lg shadow-lg transform translate-x-full transition-transform duration-300`;
@@ -268,12 +254,12 @@ function showNotification(message, type = "info") {
 
     // Animasyon
     setTimeout(() => {
-        notification.classList.remove("translate-x-full");
+        notification.classList.remove('translate-x-full');
     }, 100);
 
     // Otomatik kaldırma
     setTimeout(() => {
-        notification.classList.add("translate-x-full");
+        notification.classList.add('translate-x-full');
         setTimeout(() => {
             if (container.contains(notification)) {
                 container.removeChild(notification);
@@ -283,6 +269,6 @@ function showNotification(message, type = "info") {
 }
 
 // Sayfa yüklendiğinde header sayaçlarını güncelle
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener('DOMContentLoaded', function () {
     updateHeaderCounts();
 });

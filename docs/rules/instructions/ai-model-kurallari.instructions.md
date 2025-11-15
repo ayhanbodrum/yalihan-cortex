@@ -1,6 +1,6 @@
 ---
-applyTo: "**/*.php"
-description: "Laravel modellerinde AI kullanımı için temel kurallar ve rehberler."
+applyTo: '**/*.php'
+description: 'Laravel modellerinde AI kullanımı için temel kurallar ve rehberler.'
 ---
 
 # 🤖 AI Model Kuralları ve Rehberler

@@ -13,10 +13,10 @@ return new class extends Migration
     public function up(): void
     {
         // ✅ Context7: Status column VARCHAR "Aktif"/"Pasif" → TINYINT(1) 1/0
-        
+
         // Step 1: Update existing data
         DB::table('ilan_kategori_yayin_tipleri')->update([
-            'status' => DB::raw("CASE 
+            'status' => DB::raw("CASE
                 WHEN status = 'Aktif' THEN 1
                 WHEN status = 'Pasif' THEN 0
                 WHEN status = '1' THEN 1
@@ -26,7 +26,7 @@ return new class extends Migration
                 ELSE 1
             END")
         ]);
-        
+
         // Step 2: Change column type to TINYINT(1)
         Schema::table('ilan_kategori_yayin_tipleri', function (Blueprint $table) {
             $table->boolean('status')->default(true)->change();
@@ -42,10 +42,10 @@ return new class extends Migration
         Schema::table('ilan_kategori_yayin_tipleri', function (Blueprint $table) {
             $table->string('status', 20)->default('Aktif')->change();
         });
-        
+
         // Restore string values
         DB::table('ilan_kategori_yayin_tipleri')->update([
-            'status' => DB::raw("CASE 
+            'status' => DB::raw("CASE
                 WHEN status = 1 THEN 'Aktif'
                 WHEN status = 0 THEN 'Pasif'
                 ELSE 'Aktif'

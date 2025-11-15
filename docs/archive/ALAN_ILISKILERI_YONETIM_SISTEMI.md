@@ -11,6 +11,7 @@
 Alan İlişkileri Yönetim Sistemi, her kategori için hangi form alanlarının hangi yayın tiplerinde görüneceğini belirlemenizi sağlar.
 
 **Örnek:**
+
 - **Yazlık + Satılık** → Sadece Satış Fiyatı, Havuz, Denize Uzaklık
 - **Yazlık + Sezonluk Kiralık** → Günlük/Haftalık/Aylık Fiyatlar, Check-in/out, vb.
 
@@ -19,21 +20,25 @@ Alan İlişkileri Yönetim Sistemi, her kategori için hangi form alanlarının 
 ## 🌐 **ERİŞİM ADRESLERİ**
 
 ### **Ana Sayfa:**
+
 ```
 http://127.0.0.1:8000/admin/property-type-manager
 ```
 
 ### **Kategori Detay:**
+
 ```
 http://127.0.0.1:8000/admin/property-type-manager/{kategori_id}
 ```
 
 ### **Alan İlişkileri Yönetimi:**
+
 ```
 http://127.0.0.1:8000/admin/property-type-manager/{kategori_id}/field-dependencies
 ```
 
 **Örnek (Yazlık):**
+
 ```
 http://127.0.0.1:8000/admin/property-type-manager/4/field-dependencies
 ```
@@ -45,30 +50,25 @@ http://127.0.0.1:8000/admin/property-type-manager/4/field-dependencies
 ### ✅ **Yapabilecekleriniz:**
 
 ```yaml
-Görüntüleme:
-  ✅ Tüm alan ilişkilerini listele
-  ✅ Yayın tipi bazlı gruplama
-  ✅ Aktif/pasif alanları göster
-  ✅ İstatistikler (toplam, aktif, yayın tipi sayısı)
+Görüntüleme: ✅ Tüm alan ilişkilerini listele
+    ✅ Yayın tipi bazlı gruplama
+    ✅ Aktif/pasif alanları göster
+    ✅ İstatistikler (toplam, aktif, yayın tipi sayısı)
 
-Ekleme:
-  ✅ Yeni alan ekle
-  ✅ 7 farklı alan tipi (text, number, boolean, select, textarea, date, price)
-  ✅ İkon ve birim tanımlama
-  ✅ Seçenekler (select tipi için JSON)
-  ✅ 6 checkbox özellik (aktif, zorunlu, aranabilir, kartta göster, AI doldurma, AI öneri)
+Ekleme: ✅ Yeni alan ekle
+    ✅ 7 farklı alan tipi (text, number, boolean, select, textarea, date, price)
+    ✅ İkon ve birim tanımlama
+    ✅ Seçenekler (select tipi için JSON)
+    ✅ 6 checkbox özellik (aktif, zorunlu, aranabilir, kartta göster, AI doldurma, AI öneri)
 
-Düzenleme:
-  ✅ Mevcut alanı düzenle
-  ✅ Tüm özellikleri güncelle
-  ✅ Sıralama değiştir
+Düzenleme: ✅ Mevcut alanı düzenle
+    ✅ Tüm özellikleri güncelle
+    ✅ Sıralama değiştir
 
-Silme:
-  ✅ Alan ilişkisini sil (onay ile)
+Silme: ✅ Alan ilişkisini sil (onay ile)
 
-Toplu İşlemler:
-  ✅ Aktif/Pasif toggle (AJAX ile anında)
-  ✅ Filtreleme (yayın tipi bazlı)
+Toplu İşlemler: ✅ Aktif/Pasif toggle (AJAX ile anında)
+    ✅ Filtreleme (yayın tipi bazlı)
 ```
 
 ---
@@ -100,12 +100,14 @@ Alan Listesi:
 ### **Modal'lar (2):**
 
 **1. Yeni Alan Ekle Modal:**
+
 - 11 input field
 - JSON options (select tipi için)
 - 6 checkbox özellik
 - Kaydet / İptal butonları
 
 **2. Alanı Düzenle Modal:**
+
 - Aynı form yapısı
 - Mevcut değerler dolu
 - Güncelle / İptal butonları
@@ -114,38 +116,40 @@ Alan Listesi:
 
 ## 🔧 **ALAN TİPLERİ**
 
-| Tip | Açıklama | Örnek Kullanım |
-|-----|----------|----------------|
-| **text** | Kısa metin | Ada No, Parsel No |
-| **number** | Sayı | KAKS, TAKS, Oda Sayısı |
-| **boolean** | Evet/Hayır | Havuz, WiFi, Asansör |
-| **select** | Seçim listesi | İmar Durumu, Check-in Saati |
-| **textarea** | Uzun metin | Açıklama, Notlar |
-| **date** | Tarih | Sezon Başlangıç, Bitiş |
-| **price** | Fiyat | Günlük Fiyat, Satış Fiyatı |
+| Tip          | Açıklama      | Örnek Kullanım              |
+| ------------ | ------------- | --------------------------- |
+| **text**     | Kısa metin    | Ada No, Parsel No           |
+| **number**   | Sayı          | KAKS, TAKS, Oda Sayısı      |
+| **boolean**  | Evet/Hayır    | Havuz, WiFi, Asansör        |
+| **select**   | Seçim listesi | İmar Durumu, Check-in Saati |
+| **textarea** | Uzun metin    | Açıklama, Notlar            |
+| **date**     | Tarih         | Sezon Başlangıç, Bitiş      |
+| **price**    | Fiyat         | Günlük Fiyat, Satış Fiyatı  |
 
 ---
 
 ## 📋 **ALAN KATEGORİLERİ**
 
-| Kategori | Icon | Kullanım |
-|----------|------|----------|
-| **fiyat** | 💰 | Fiyat alanları |
-| **ozellik** | ⭐ | Genel özellikler |
-| **dokuman** | 📄 | Döküman bilgileri |
-| **sezonluk** | 🌞 | Sezonluk özellikler |
-| **arsa** | 🗺️ | Arsa özel alanları |
-| **olanaklar** | 🏊 | Tesis ve olanaklar |
+| Kategori      | Icon | Kullanım            |
+| ------------- | ---- | ------------------- |
+| **fiyat**     | 💰   | Fiyat alanları      |
+| **ozellik**   | ⭐   | Genel özellikler    |
+| **dokuman**   | 📄   | Döküman bilgileri   |
+| **sezonluk**  | 🌞   | Sezonluk özellikler |
+| **arsa**      | 🗺️   | Arsa özel alanları  |
+| **olanaklar** | 🏊   | Tesis ve olanaklar  |
 
 ---
 
 ## 🤖 **AI ÖZELLİKLERİ**
 
 ### **AI Auto Fill:**
+
 - Alan otomatik doldurulabilir
 - Örnek: Lokasyona göre fiyat tahmini
 
 ### **AI Suggestion:**
+
 - AI öneri verir
 - Örnek: Benzer ilanlardan değer önerisi
 
@@ -156,6 +160,7 @@ Alan Listesi:
 ### **Tinker Komutları:**
 
 **1. Alan Listesi:**
+
 ```php
 php artisan tinker --execute="
 \$fields = \App\Models\KategoriYayinTipiFieldDependency::where('kategori_slug', 'yazlik')->get();
@@ -164,6 +169,7 @@ echo 'Toplam: ' . \$fields->count() . ' alan';
 ```
 
 **2. Yeni Alan Ekle:**
+
 ```php
 php artisan tinker --execute="
 \App\Models\KategoriYayinTipiFieldDependency::create([
@@ -184,6 +190,7 @@ php artisan tinker --execute="
 ```
 
 **3. Alanı Pasif Yap:**
+
 ```php
 php artisan tinker --execute="
 \$field = \App\Models\KategoriYayinTipiFieldDependency::where('field_slug', 'wifi')->first();
@@ -193,6 +200,7 @@ php artisan tinker --execute="
 ```
 
 **4. Alanı Sil:**
+
 ```php
 php artisan tinker --execute="
 \App\Models\KategoriYayinTipiFieldDependency::where('field_slug', 'wifi')->delete();
@@ -220,14 +228,14 @@ php artisan db:seed --class=KategoriYayinTipiFieldDependencySeeder
 
 ## 🗺️ **ROUTE YAPISI**
 
-| Method | URL | Açıklama |
-|--------|-----|----------|
-| **GET** | `/admin/property-type-manager/{kategoriId}/field-dependencies` | Alan ilişkileri listesi |
-| **POST** | `/admin/property-type-manager/{kategoriId}/field-dependencies` | Yeni alan ekle |
-| **PUT** | `/admin/property-type-manager/{kategoriId}/field-dependencies/{fieldId}` | Alanı güncelle |
-| **DELETE** | `/admin/property-type-manager/{kategoriId}/field-dependencies/{fieldId}` | Alanı sil |
-| **POST** | `/admin/property-type-manager/toggle-field-dependency` | AJAX toggle (aktif/pasif) |
-| **POST** | `/admin/property-type-manager/update-field-order` | Sıralama güncelle |
+| Method     | URL                                                                      | Açıklama                  |
+| ---------- | ------------------------------------------------------------------------ | ------------------------- |
+| **GET**    | `/admin/property-type-manager/{kategoriId}/field-dependencies`           | Alan ilişkileri listesi   |
+| **POST**   | `/admin/property-type-manager/{kategoriId}/field-dependencies`           | Yeni alan ekle            |
+| **PUT**    | `/admin/property-type-manager/{kategoriId}/field-dependencies/{fieldId}` | Alanı güncelle            |
+| **DELETE** | `/admin/property-type-manager/{kategoriId}/field-dependencies/{fieldId}` | Alanı sil                 |
+| **POST**   | `/admin/property-type-manager/toggle-field-dependency`                   | AJAX toggle (aktif/pasif) |
+| **POST**   | `/admin/property-type-manager/update-field-order`                        | Sıralama güncelle         |
 
 ---
 
@@ -270,6 +278,7 @@ http://127.0.0.1:8000/admin/property-type-manager/1/field-dependencies
 ## 🎨 **UI ÖZELLİKLERİ**
 
 ### **Empty State:**
+
 ```
 Hiç alan yoksa:
   📥 İkon
@@ -278,6 +287,7 @@ Hiç alan yoksa:
 ```
 
 ### **Field Row:**
+
 ```
 Her alan için:
   - İkon (emoji)
@@ -293,6 +303,7 @@ Her alan için:
 ```
 
 ### **Filtreleme:**
+
 ```
 Yayın Tipi dropdown:
   - Tüm Yayın Tipleri (hepsini göster)
@@ -307,32 +318,32 @@ Yayın Tipi dropdown:
 
 ```yaml
 ✅ Backend CRUD: 5/5 test başarılı
-  ✅ Alan ekleme
-  ✅ Alan pasif yapma
-  ✅ Alan aktif yapma
-  ✅ Alan güncelleme
-  ✅ Alan silme
+    ✅ Alan ekleme
+    ✅ Alan pasif yapma
+    ✅ Alan aktif yapma
+    ✅ Alan güncelleme
+    ✅ Alan silme
 
 ✅ Routes: 6/6 route çalışıyor
-  ✅ field-dependencies (index)
-  ✅ field-dependencies.store
-  ✅ field-dependencies.update
-  ✅ field-dependencies.destroy
-  ✅ toggle-field-dependency (AJAX)
-  ✅ update-field-order (AJAX)
+    ✅ field-dependencies (index)
+    ✅ field-dependencies.store
+    ✅ field-dependencies.update
+    ✅ field-dependencies.destroy
+    ✅ toggle-field-dependency (AJAX)
+    ✅ update-field-order (AJAX)
 
 ✅ Frontend: Tüm bileşenler hazır
-  ✅ Ana sayfa
-  ✅ Yeni Alan Ekle modal
-  ✅ Alanı Düzenle modal
-  ✅ JavaScript functions
-  ✅ AJAX toggle
-  ✅ Filtreleme
+    ✅ Ana sayfa
+    ✅ Yeni Alan Ekle modal
+    ✅ Alanı Düzenle modal
+    ✅ JavaScript functions
+    ✅ AJAX toggle
+    ✅ Filtreleme
 
 ✅ Linter: 0 hata
-  ✅ Controller
-  ✅ Routes
-  ✅ Views
+    ✅ Controller
+    ✅ Routes
+    ✅ Views
 ```
 
 ---
@@ -340,6 +351,7 @@ Yayın Tipi dropdown:
 ## 📚 **DOSYA YAPISI**
 
 ### **Backend:**
+
 ```
 app/Http/Controllers/Admin/PropertyTypeManagerController.php
   ├── fieldDependenciesIndex()    - Liste
@@ -351,6 +363,7 @@ app/Http/Controllers/Admin/PropertyTypeManagerController.php
 ```
 
 ### **Model:**
+
 ```
 app/Models/KategoriYayinTipiFieldDependency.php
   - Fillable: 18 field
@@ -359,6 +372,7 @@ app/Models/KategoriYayinTipiFieldDependency.php
 ```
 
 ### **Migration:**
+
 ```
 database/migrations/2025_10_25_160239_create_kategori_yayin_tipi_field_dependencies_table.php
   - 18 kolon
@@ -367,6 +381,7 @@ database/migrations/2025_10_25_160239_create_kategori_yayin_tipi_field_dependenc
 ```
 
 ### **Seeder:**
+
 ```
 database/seeders/KategoriYayinTipiFieldDependencySeeder.php (Yazlık)
 database/seeders/KonutFieldDependencySeeder.php (Konut)
@@ -374,6 +389,7 @@ database/seeders/ArsaFieldDependencySeeder.php (Arsa)
 ```
 
 ### **Frontend:**
+
 ```
 resources/views/admin/property-type-manager/
   ├── index.blade.php              - Ana sayfa
@@ -382,6 +398,7 @@ resources/views/admin/property-type-manager/
 ```
 
 ### **Routes:**
+
 ```
 routes/admin.php
   └── property-type-manager group
@@ -395,19 +412,21 @@ routes/admin.php
 ### **Örnek 1: Yazlık için "Jakuzi" alanı ekle**
 
 **UI Üzerinden:**
+
 1. http://127.0.0.1:8000/admin/property-type-manager/4/field-dependencies
 2. "Yeni Alan Ekle"
 3. Form doldur:
-   - Yayın Tipi: `Sezonluk Kiralık`
-   - Alan Adı: `Jakuzi`
-   - Alan Slug: `jakuzi` (otomatik)
-   - Alan Tipi: `boolean`
-   - Kategori: `🏊 Olanaklar`
-   - İkon: `🛁`
+    - Yayın Tipi: `Sezonluk Kiralık`
+    - Alan Adı: `Jakuzi`
+    - Alan Slug: `jakuzi` (otomatik)
+    - Alan Tipi: `boolean`
+    - Kategori: `🏊 Olanaklar`
+    - İkon: `🛁`
 4. Checkbox: Aktif ✅, Kartta Göster ✅
 5. Kaydet
 
 **Tinker Üzerinden:**
+
 ```php
 \App\Models\KategoriYayinTipiFieldDependency::create([
     'kategori_slug' => 'yazlik',
@@ -534,6 +553,7 @@ Linter Errors: 0
 **Alan İlişkileri Yönetim Sistemi kullanıma hazır!** 🚀
 
 **Kullanıcı Akışı:**
+
 1. Property Type Manager → Kategori seç
 2. "Alan İlişkilerini Yönet" butonuna tıkla
 3. Yeni Alan Ekle veya mevcut alanları düzenle
@@ -550,4 +570,3 @@ Linter Errors: 0
 **Tarih:** 29 Ekim 2025  
 **Status:** ✅ PRODUCTION READY  
 **Context7:** %100 Compliant
-

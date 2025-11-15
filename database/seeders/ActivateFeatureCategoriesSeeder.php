@@ -51,7 +51,7 @@ class ActivateFeatureCategoriesSeeder extends Seeder
 
         // ID bazlı ilişkilendirme (slug kolonu olmadığı için)
         $propertyTypes = IlanKategoriYayinTipi::whereIn('id', [1, 2, 3, 4])->get();
-        
+
         $this->command->info("   🔍 " . $propertyTypes->count() . " Property Type bulundu");
 
         foreach ($propertyTypes as $propertyType) {
@@ -83,12 +83,12 @@ class ActivateFeatureCategoriesSeeder extends Seeder
                     [
                         'is_required' => $index < 2, // İlk 2 özellik zorunlu
                         'is_visible' => true,
-                        'order' => $index,
+                        'display_order' => $index,
                         'group_name' => $index < 4 ? 'Genel Bilgiler' : 'Özellikler'
                     ]
                 );
             }
-            
+
             $this->command->info("   ✅ Property Type #{$propertyType->id}: " . $features->count() . " özellik atandı");
         }
     }
@@ -124,4 +124,3 @@ class ActivateFeatureCategoriesSeeder extends Seeder
         );
     }
 }
-

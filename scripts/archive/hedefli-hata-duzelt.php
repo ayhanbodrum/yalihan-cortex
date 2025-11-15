@@ -23,7 +23,7 @@ echo "🔧 TakimController - \$status düzeltiliyor...\n";
 $takimController = 'app/Modules/TakimYonetimi/Http/Controllers/TakimController.php';
 if (file_exists($takimController)) {
     $content = file_get_contents($takimController);
-    
+
     // Eğer view'e gönderilmemişse ekle
     if (str_contains($content, "compact('takimUyeleri', 'istatistikler', 'lokasyonlar', 'status')")) {
         echo "   ✅ Zaten doğru\n";
@@ -44,7 +44,7 @@ echo "\n🔧 KisiController - \$taslak kontrol ediliyor...\n";
 $kisiController = 'app/Http/Controllers/Admin/KisiController.php';
 if (file_exists($kisiController)) {
     $content = file_get_contents($kisiController);
-    
+
     // Compact'te var mı?
     if (!str_contains($content, "'taslak'")) {
         // istatistikler array'ine ekle
@@ -68,7 +68,7 @@ echo "\n🔧 CRMController - Eslesme ilişkisi düzeltiliyor...\n";
 $crmController = 'app/Http/Controllers/Admin/CRMController.php';
 if (file_exists($crmController)) {
     $content = file_get_contents($crmController);
-    
+
     // Use statement kontrolü
     if (!str_contains($content, 'use App\Models\Eslesme;')) {
         $content = str_replace(
@@ -92,10 +92,9 @@ if ($duzeltmeler > 0) {
     exec('php artisan cache:clear');
     exec('php artisan view:clear');
     echo "   ✅ Cache temizlendi\n\n";
-    
+
     echo "📋 Tekrar test et:\n";
     echo "   node scripts/hedefli-sayfa-testi.mjs\n\n";
 }
 
 echo "✨ Hedefli hata düzeltici tamamlandı!\n";
-

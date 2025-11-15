@@ -1,18 +1,18 @@
 {{--
     Modern Accordion Component
     Context7 compliant, Tailwind CSS, Alpine.js
-    
+
     Kullanım:
     <x-admin.accordion>
         <x-admin.accordion-item title="Bölüm 1" :open="true">
             İçerik 1
         </x-admin.accordion-item>
-        
+
         <x-admin.accordion-item title="Bölüm 2">
             İçerik 2
         </x-admin.accordion-item>
     </x-admin.accordion>
-    
+
     @context7-compliant true
     @tailwind-only true
 --}}
@@ -31,8 +31,8 @@
     ];
 @endphp
 
-<div 
-    x-data="{ 
+<div
+    x-data="{
         activeItems: @json($allowMultiple ? [] : null),
         allowMultiple: {{ $allowMultiple ? 'true' : 'false' }},
         toggle(id) {
@@ -54,11 +54,10 @@
             }
             return this.activeItems === id;
         }
-    }" 
+    }"
     class="{{ $spacingClasses[$spacing] ?? $spacingClasses['normal'] }}"
     role="region"
     aria-label="Accordion bölümleri">
-    
+
     {{ $slot }}
 </div>
-

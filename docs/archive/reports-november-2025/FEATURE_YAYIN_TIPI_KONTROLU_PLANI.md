@@ -18,6 +18,7 @@ KSEK (Kullanıcı önemli sorun tespit etti!)
 ## 🔍 MEVCUT DURUM ANALİZİ
 
 ### **Feature Categories Tablosu:**
+
 ```sql
 feature_categories:
 ├─ applies_to: ["konut", "arsa", "yazlik"] ✅ KATEGORİ kontrolü var
@@ -27,6 +28,7 @@ feature_categories:
 **Sonuç:** Şu anda "Arsa Özellikleri" **tüm yayın tiplerinde** gösteriliyor!
 
 **Problem:**
+
 - Konut + Satılık → "Arsa Özellikleri" gösterilmemeli!
 - Konut + Kiralık → "Kira Bilgileri" gösterilmeli, "Satış Bilgileri" değil!
 - Arsa + Satılık → "Arsa Özellikleri" ✅ gösterilmeli
@@ -41,6 +43,7 @@ feature_categories:
 **Kullanılacak Tablo:** `ilan_kategori_ozellik_baglanti`
 
 **Yapı:**
+
 ```sql
 CREATE TABLE ilan_kategori_ozellik_baglanti (
     id BIGINT PRIMARY KEY,
@@ -57,6 +60,7 @@ CREATE TABLE ilan_kategori_ozellik_baglanti (
 ```
 
 **Örnek Data:**
+
 ```sql
 -- Konut + Satılık → Hangi özellik kategorileri?
 (category_id: 1, ozellik_kategori_id: 1, yayin_tipi_id: 1, baglanti_tipi: 'yayin')
@@ -70,6 +74,7 @@ CREATE TABLE ilan_kategori_ozellik_baglanti (
 ```
 
 **Controller Query:**
+
 ```php
 // İlan create formunda feature kategorilerini çek
 public function getFeatureCategoriesForForm($kategoriId, $yayinTipiId)
@@ -85,16 +90,17 @@ public function getFeatureCategoriesForForm($kategoriId, $yayinTipiId)
     }])
     ->orderBy('order')
     ->get();
-    
+
     return $featureCategories;
 }
 ```
 
 ---
 
-### **Strateji B: Feature Categories Tablosuna Alan Ekle** 
+### **Strateji B: Feature Categories Tablosuna Alan Ekle**
 
 **Migration:**
+
 ```php
 Schema::table('feature_categories', function (Blueprint $table) {
     $table->json('applies_to_yayin_tipleri')->nullable()->after('applies_to');
@@ -103,6 +109,7 @@ Schema::table('feature_categories', function (Blueprint $table) {
 ```
 
 **Örnek Data:**
+
 ```sql
 -- Genel Özellikler
 applies_to: ["konut", "arsa", "isyeri"]
@@ -121,6 +128,7 @@ applies_to_yayin_tipleri: ["kiralik", "gunluk-kiralik"]
 ```
 
 **Controller Query:**
+
 ```php
 $featureCategories = FeatureCategory::where('status', true)
     ->where(function($q) use ($kategoriSlug, $yayinTipi) {
@@ -146,12 +154,14 @@ $featureCategories = FeatureCategory::where('status', true)
 **URL:** `/admin/property-type-manager/{kategori}/yayin-tipleri/{yayin_tipi}/features`
 
 **Örnek:**
+
 ```
 /admin/property-type-manager/1/yayin-tipleri/1/features
 → Konut + Satılık → Hangi özellik kategorileri?
 ```
 
 **UI Design:**
+
 ```
 ┌─────────────────────────────────────────────────────────┐
 │ 🏘️ Konut > Satılık > Özellik Kategorileri             │
@@ -175,6 +185,7 @@ $featureCategories = FeatureCategory::where('status', true)
 ```
 
 **Controller:**
+
 ```php
 // app/Http/Controllers/Admin/PropertyTypeFeatureController.php
 
@@ -182,19 +193,19 @@ public function index($kategoriId, $yayinTipiId)
 {
     $kategori = IlanKategori::findOrFail($kategoriId);
     $yayinTipi = IlanKategoriYayinTipi::findOrFail($yayinTipiId);
-    
+
     // Tüm feature kategorileri
     $allFeatureCategories = FeatureCategory::where('status', true)
         ->orderBy('order')
         ->get();
-    
+
     // Bu kategori + yayın tipi için seçili olanlar
     $selectedIds = IlanKategoriOzellikBaglanti::where('category_id', $kategoriId)
         ->where('yayin_tipi_id', $yayinTipiId)
         ->where('baglanti_tipi', 'yayin')
         ->pluck('ozellik_kategori_id')
         ->toArray();
-    
+
     return view('admin.property-type-manager.yayin-tipi-features', compact(
         'kategori', 'yayinTipi', 'allFeatureCategories', 'selectedIds'
     ));
@@ -203,13 +214,13 @@ public function index($kategoriId, $yayinTipiId)
 public function update(Request $request, $kategoriId, $yayinTipiId)
 {
     $selectedIds = $request->input('feature_categories', []);
-    
+
     // Mevcut bağlantıları sil
     IlanKategoriOzellikBaglanti::where('category_id', $kategoriId)
         ->where('yayin_tipi_id', $yayinTipiId)
         ->where('baglanti_tipi', 'yayin')
         ->delete();
-    
+
     // Yeni bağlantıları ekle
     foreach ($selectedIds as $index => $featureCategoryId) {
         IlanKategoriOzellikBaglanti::create([
@@ -221,7 +232,7 @@ public function update(Request $request, $kategoriId, $yayinTipiId)
             'siralama' => $index + 1,
         ]);
     }
-    
+
     return redirect()->back()->with('success', 'Özellik kategorileri güncellendi!');
 }
 ```
@@ -231,6 +242,7 @@ public function update(Request $request, $kategoriId, $yayinTipiId)
 ## 🛠️ IMPLEMENTATION ADIMLAR
 
 ### **Phase 1: Database Check (5 dk)**
+
 ```bash
 # Tabloyu kontrol et
 php artisan tinker
@@ -239,6 +251,7 @@ php artisan tinker
 ```
 
 **Eğer kayıt yoksa:**
+
 - Seeder oluştur
 - Default bağlantıları ekle
 
@@ -247,6 +260,7 @@ php artisan tinker
 ### **Phase 2: Model İlişkileri (15 dk)**
 
 **FeatureCategory.php:**
+
 ```php
 public function baglantilar()
 {
@@ -265,6 +279,7 @@ public function yayinTipleri()
 ```
 
 **IlanKategoriYayinTipi.php:**
+
 ```php
 public function featureCategories()
 {
@@ -282,14 +297,15 @@ public function featureCategories()
 ### **Phase 3: Controller Logic (30 dk)**
 
 **IlanController.php** (create method'unu güncelle):
+
 ```php
 public function create()
 {
     // ... existing code ...
-    
+
     // ✅ YENI: Kategori + Yayın Tipi bazlı feature kategorileri
     $featureCategories = collect();
-    
+
     return view('admin.ilanlar.create', compact(
         // ... existing variables ...
         'featureCategories'  // Boş başlasın, JavaScript ile doldurulacak
@@ -298,25 +314,26 @@ public function create()
 ```
 
 **API Endpoint:**
+
 ```php
 public function getFeatureCategoriesForForm(Request $request)
 {
     $kategoriId = $request->get('kategori_id');
     $yayinTipiSlug = $request->get('yayin_tipi'); // "satilik", "kiralik"
-    
+
     if (!$kategoriId || !$yayinTipiSlug) {
         return response()->json(['success' => false, 'message' => 'Gerekli parametreler eksik']);
     }
-    
+
     // Yayın tipi ID'sini bul
     $yayinTipi = IlanKategoriYayinTipi::where('kategori_id', $kategoriId)
         ->where('yayin_tipi', ucfirst($yayinTipiSlug))
         ->first();
-    
+
     if (!$yayinTipi) {
         return response()->json(['success' => false, 'message' => 'Yayın tipi bulunamadı']);
     }
-    
+
     // Bu kategori + yayın tipi için feature kategorileri
     $featureCategories = FeatureCategory::whereHas('baglantilar', function($q) use ($kategoriId, $yayinTipi) {
         $q->where('category_id', $kategoriId)
@@ -329,7 +346,7 @@ public function getFeatureCategoriesForForm(Request $request)
     ->where('status', true)
     ->orderBy('order')
     ->get();
-    
+
     return response()->json([
         'success' => true,
         'data' => $featureCategories
@@ -344,60 +361,66 @@ public function getFeatureCategoriesForForm(Request $request)
 **resources/views/admin/ilanlar/create.blade.php**
 
 JavaScript ekle:
+
 ```javascript
 // Kategori veya Yayın Tipi değiştiğinde feature kategorilerini yenile
 function updateFeatureCategories() {
     const kategoriId = document.getElementById('kategori_id').value;
     const yayinTipi = document.querySelector('input[name="yayin_tipi"]:checked')?.value;
-    
+
     if (!kategoriId || !yayinTipi) {
         return;
     }
-    
+
     // API'den feature kategorilerini çek
     fetch(`/api/admin/feature-categories?kategori_id=${kategoriId}&yayin_tipi=${yayinTipi}`)
-        .then(res => res.json())
-        .then(data => {
+        .then((res) => res.json())
+        .then((data) => {
             if (data.success) {
                 renderFeatureCategories(data.data);
             }
         })
-        .catch(err => console.error('Feature kategorileri yüklenemedi:', err));
+        .catch((err) => console.error('Feature kategorileri yüklenemedi:', err));
 }
 
 function renderFeatureCategories(categories) {
     const container = document.getElementById('feature-categories-container');
-    
+
     if (categories.length === 0) {
-        container.innerHTML = '<p class="text-gray-500">Bu kategori + yayın tipi için özellik bulunamadı.</p>';
+        container.innerHTML =
+            '<p class="text-gray-500">Bu kategori + yayın tipi için özellik bulunamadı.</p>';
         return;
     }
-    
+
     let html = '';
-    categories.forEach(cat => {
+    categories.forEach((cat) => {
         html += `
             <div class="bg-white dark:bg-gray-800 rounded-lg border p-4 mb-4">
                 <h4 class="text-lg font-semibold mb-3">${cat.name}</h4>
                 <div class="grid grid-cols-2 gap-4">
-                    ${cat.features.map(feat => `
+                    ${cat.features
+                        .map(
+                            (feat) => `
                         <div>
                             <label class="flex items-center">
                                 <input type="checkbox" name="features[${feat.id}]" value="1" class="mr-2">
                                 ${feat.name}
                             </label>
                         </div>
-                    `).join('')}
+                    `
+                        )
+                        .join('')}
                 </div>
             </div>
         `;
     });
-    
+
     container.innerHTML = html;
 }
 
 // Event listeners
 document.getElementById('kategori_id').addEventListener('change', updateFeatureCategories);
-document.querySelectorAll('input[name="yayin_tipi"]').forEach(radio => {
+document.querySelectorAll('input[name="yayin_tipi"]').forEach((radio) => {
     radio.addEventListener('change', updateFeatureCategories);
 });
 ```
@@ -407,13 +430,14 @@ document.querySelectorAll('input[name="yayin_tipi"]').forEach(radio => {
 ### **Phase 5: Admin Panel UI (1 saat)**
 
 **Route:**
+
 ```php
 // routes/admin.php
-Route::get('/property-type-manager/{kategori}/yayin-tipleri/{yayinTipi}/features', 
+Route::get('/property-type-manager/{kategori}/yayin-tipleri/{yayinTipi}/features',
     [PropertyTypeFeatureController::class, 'index'])
     ->name('admin.property-type-manager.yayin-tipi-features.index');
 
-Route::post('/property-type-manager/{kategori}/yayin-tipleri/{yayinTipi}/features', 
+Route::post('/property-type-manager/{kategori}/yayin-tipleri/{yayinTipi}/features',
     [PropertyTypeFeatureController::class, 'update'])
     ->name('admin.property-type-manager.yayin-tipi-features.update');
 ```
@@ -438,15 +462,15 @@ Route::post('/property-type-manager/{kategori}/yayin-tipleri/{yayinTipi}/feature
 
 ## 📊 TIMELINE
 
-| Phase | Görev | Süre | Toplam |
-|-------|-------|------|--------|
-| 1 | Database check | 5 dk | 5 dk |
-| 2 | Model ilişkileri | 15 dk | 20 dk |
-| 3 | Controller logic | 30 dk | 50 dk |
-| 4 | Frontend (ilan form) | 30 dk | 1h 20dk |
-| 5 | Admin panel UI | 1 saat | 2h 20dk |
-| 6 | Seeder (default data) | 30 dk | 2h 50dk |
-| 7 | Testing | 30 dk | **3h 20dk** |
+| Phase | Görev                 | Süre   | Toplam      |
+| ----- | --------------------- | ------ | ----------- |
+| 1     | Database check        | 5 dk   | 5 dk        |
+| 2     | Model ilişkileri      | 15 dk  | 20 dk       |
+| 3     | Controller logic      | 30 dk  | 50 dk       |
+| 4     | Frontend (ilan form)  | 30 dk  | 1h 20dk     |
+| 5     | Admin panel UI        | 1 saat | 2h 20dk     |
+| 6     | Seeder (default data) | 30 dk  | 2h 50dk     |
+| 7     | Testing               | 30 dk  | **3h 20dk** |
 
 **Total:** 3 saat 20 dakika
 
@@ -455,6 +479,7 @@ Route::post('/property-type-manager/{kategori}/yayin-tipleri/{yayinTipi}/feature
 ## 🚀 QUICK START
 
 ### **Hemen Test Et:**
+
 ```bash
 # Database'de tablo var mı?
 php artisan tinker
@@ -466,15 +491,16 @@ php artisan tinker
 ```
 
 ### **Eğer kayıt yoksa, manuel ekle:**
+
 ```sql
-INSERT INTO ilan_kategori_ozellik_baglanti 
+INSERT INTO ilan_kategori_ozellik_baglanti
 (category_id, ozellik_kategori_id, yayin_tipi_id, baglanti_tipi, zorunlu, siralama, created_at, updated_at)
 VALUES
 -- Konut + Satılık
 (1, 1, 1, 'yayin', 0, 1, NOW(), NOW()),  -- Genel Özellikler
 (1, 3, 1, 'yayin', 0, 2, NOW(), NOW()),  -- Fiyat Bilgileri
 
--- Konut + Kiralık  
+-- Konut + Kiralık
 (1, 1, 2, 'yayin', 0, 1, NOW(), NOW()),  -- Genel Özellikler
 (1, 4, 2, 'yayin', 0, 2, NOW(), NOW());  -- Kira Bilgileri
 ```
@@ -484,10 +510,12 @@ VALUES
 ## 📝 NOTLAR
 
 **ÖNEMLİ:** Bu sistem 2-level filtering:
+
 1. **Kategori** (Konut, Arsa) → `applies_to` field
 2. **Yayın Tipi** (Satılık, Kiralık) → `ilan_kategori_ozellik_baglanti` tablo
 
 **Mantık:**
+
 ```
 FeatureCategory gösterilsin mi?
 ├─ 1. applies_to kontrolü (Konut için mi?)
@@ -495,6 +523,7 @@ FeatureCategory gösterilsin mi?
 ```
 
 **Gelecek İyileştirmeler:**
+
 - Drag & drop sıralama
 - Bulk edit (tüm yayın tipleri için aynı anda)
 - Import/Export (Excel)
@@ -505,4 +534,3 @@ FeatureCategory gösterilsin mi?
 **Oluşturulma:** 1 Kasım 2025 - 23:45  
 **Durum:** 📋 PLANLAMA  
 **Öncelik:** 🔥 YÜKSEK
-

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Konut Özellik Hibrit Sıralama Modeli
- * 
+ *
  * Context7 Compliant
  */
 class KonutOzellikHibritSiralama extends Model
@@ -17,12 +17,12 @@ class KonutOzellikHibritSiralama extends Model
     protected $table = 'konut_ozellik_hibrit_siralama';
 
     protected $fillable = [
-        'active',
+        'status', // Context7: aktif → status (migration: 2025_11_11_103353)
         'siralama',
     ];
 
     protected $casts = [
-        'active' => 'boolean',
+        'status' => 'boolean', // Context7: aktif → status
         'siralama' => 'integer',
     ];
 
@@ -30,10 +30,11 @@ class KonutOzellikHibritSiralama extends Model
 
     /**
      * Aktif kayıtlar
+     * Context7: aktif → status
      */
     public function scopeActive($query)
     {
-        return $query->where('active', true);
+        return $query->where('status', true); // Context7: aktif → status
     }
 
     /**

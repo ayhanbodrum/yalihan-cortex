@@ -6,7 +6,7 @@
 console.log('🔧 İlan Create Fixes yüklendi');
 
 // Global error handler
-window.addEventListener('error', function(e) {
+window.addEventListener('error', function (e) {
     console.error('🚨 JavaScript Error:', e.error);
 });
 
@@ -30,7 +30,7 @@ document.addEventListener('alpine:init', () => {
                 ilce: null,
                 mahalle: null,
                 latitude: null,
-                longitude: null
+                longitude: null,
             };
 
             // Analysis results için null check
@@ -41,19 +41,19 @@ document.addEventListener('alpine:init', () => {
                     alisveris: [],
                     ulasim: [],
                     eglence: [],
-                    diger: []
+                    diger: [],
                 },
                 distance_analysis: {
                     walking_distances: {
                         metro: 0,
                         otobus: 0,
-                        market: 0
+                        market: 0,
                     },
                     driving_distances: {
                         havaalani: 0,
                         merkez: 0,
-                        avm: 0
-                    }
+                        avm: 0,
+                    },
                 },
                 value_impact: {
                     cevre_puani: 0,
@@ -61,10 +61,10 @@ document.addEventListener('alpine:init', () => {
                     deger_artis_tahmini: {
                         '1_yil': 0,
                         '3_yil': 0,
-                        '5_yil': 0
-                    }
+                        '5_yil': 0,
+                    },
                 },
-                recommendations: []
+                recommendations: [],
             };
         },
 
@@ -114,33 +114,46 @@ document.addEventListener('alpine:init', () => {
         // Global functions for map and status
         addressSearch(query) {
             console.log('🔍 Adres aranıyor:', query);
-            if (typeof AdvancedLeafletManager !== 'undefined' && AdvancedLeafletManager.map) {
-                AdvancedLeafletManager.searchAddress(query);
+            // Context7 Adapter öncelikli
+            if (window.c7Location && typeof window.c7Location.searchAddress === 'function') {
+                window.c7Location.searchAddress(query);
+            } else if (
+                window.advancedMap &&
+                typeof window.advancedMap.searchAndCenterMap === 'function'
+            ) {
+                window.advancedMap.searchAndCenterMap(query);
+            } else if (window.mapManager && typeof window.mapManager.searchAddress === 'function') {
+                window.mapManager.searchAddress(query);
             } else {
-                console.warn('AdvancedLeafletManager veya harita objesi mevcut değil.');
+                console.warn('Harita hazır değil.');
             }
         },
 
         getStatusText(status) {
             const statusMap = {
-                'Aktif': 'Aktif',
-                'Pasif': 'Pasif',
-                'Beklemede': 'Beklemede',
-                'Reddedildi': 'Reddedildi',
-                'Yayında': 'Yayında',
-                'Taslak': 'Taslak',
-                'Satıldı': 'Satıldı',
-                'Kiralandı': 'Kiralandı',
-                'Arşivlendi': 'Arşivlendi',
+                Aktif: 'Aktif',
+                Pasif: 'Pasif',
+                Beklemede: 'Beklemede',
+                Reddedildi: 'Reddedildi',
+                Yayında: 'Yayında',
+                Taslak: 'Taslak',
+                Satıldı: 'Satıldı',
+                Kiralandı: 'Kiralandı',
+                Arşivlendi: 'Arşivlendi',
             };
             return statusMap[status] || status;
         },
 
         createMarker(lat, lon, title = 'Konum') {
-            if (typeof AdvancedLeafletManager !== 'undefined' && AdvancedLeafletManager.map) {
-                AdvancedLeafletManager.createMarker(lat, lon, title);
+            // Context7 Adapter öncelikli
+            if (window.c7Location && typeof window.c7Location.setMarker === 'function') {
+                window.c7Location.setMarker(lat, lon, title);
+            } else if (window.advancedMap && typeof window.advancedMap.setMarker === 'function') {
+                window.advancedMap.setMarker(lat, lon, title);
+            } else if (window.mapManager && typeof window.mapManager.setMarker === 'function') {
+                window.mapManager.setMarker(lat, lon, title);
             } else {
-                console.warn('AdvancedLeafletManager veya harita objesi mevcut değil.');
+                console.warn('Harita hazır değil.');
             }
         },
 
@@ -180,7 +193,7 @@ document.addEventListener('alpine:init', () => {
                 console.error('Yayın tipi yükleme hatası:', error);
                 return [];
             }
-        }
+        },
     });
 
     // Akıllı Çevre Analizi Store
@@ -197,19 +210,19 @@ document.addEventListener('alpine:init', () => {
                     alisveris: [],
                     ulasim: [],
                     eglence: [],
-                    diger: []
+                    diger: [],
                 },
                 distance_analysis: {
                     walking_distances: {
                         metro: 0,
                         otobus: 0,
-                        market: 0
+                        market: 0,
                     },
                     driving_distances: {
                         havaalani: 0,
                         merkez: 0,
-                        avm: 0
-                    }
+                        avm: 0,
+                    },
                 },
                 value_impact: {
                     cevre_puani: 0,
@@ -217,10 +230,10 @@ document.addEventListener('alpine:init', () => {
                     deger_artis_tahmini: {
                         '1_yil': 0,
                         '3_yil': 0,
-                        '5_yil': 0
-                    }
+                        '5_yil': 0,
+                    },
                 },
-                recommendations: []
+                recommendations: [],
             };
         },
 
@@ -233,13 +246,15 @@ document.addEventListener('alpine:init', () => {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                        'X-CSRF-TOKEN': document
+                            .querySelector('meta[name="csrf-token"]')
+                            .getAttribute('content'),
                     },
                     body: JSON.stringify({
                         latitude: latitude,
                         longitude: longitude,
-                        radius: 1.0
-                    })
+                        radius: 1.0,
+                    }),
                 });
 
                 if (!response.ok) {
@@ -255,35 +270,35 @@ document.addEventListener('alpine:init', () => {
             } finally {
                 this.isLoading = false;
             }
-        }
+        },
     });
 });
 
 // Global functions
-window.validateCategories = function() {
+window.validateCategories = function () {
     console.log('✅ Kategori validasyonu çalışıyor');
     return true;
 };
 
-window.getInvestmentClass = function(potansiyel) {
+window.getInvestmentClass = function (potansiyel) {
     const classMap = {
         'Çok Yüksek': 'text-green-600 bg-green-100',
-        'Yüksek': 'text-green-500 bg-green-50',
-        'Orta': 'text-yellow-600 bg-yellow-100',
-        'Düşük': 'text-orange-600 bg-orange-100',
-        'Çok Düşük': 'text-red-600 bg-red-100'
+        Yüksek: 'text-green-500 bg-green-50',
+        Orta: 'text-yellow-600 bg-yellow-100',
+        Düşük: 'text-orange-600 bg-orange-100',
+        'Çok Düşük': 'text-red-600 bg-red-100',
     };
     return classMap[potansiyel] || 'text-gray-600 bg-gray-100';
 };
 
 // Form validation
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     console.log('🔧 İlan Create Fixes DOM ready');
 
     // Form validation
     const form = document.getElementById('stable-create-form');
     if (form) {
-        form.addEventListener('submit', function(e) {
+        form.addEventListener('submit', function (e) {
             console.log('📝 Form submit edildi');
             // Validation logic buraya eklenebilir
         });

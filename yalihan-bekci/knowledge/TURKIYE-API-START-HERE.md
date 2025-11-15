@@ -9,18 +9,15 @@
 ## 🎯 **NE YAPIYORUZ?**
 
 ```yaml
-Problem:
-  ❌ "Bodrum Yalıkavak'ta villa" → Basit, yetersiz
-  
-Çözüm:
-  ✅ "Ege Bölgesi'nin incisi Muğla'nın (1M nüfus) 
-      198K nüfuslu Bodrum ilçesinde..." → Zengin, profesyonel!
+Problem: ❌ "Bodrum Yalıkavak'ta villa" → Basit, yetersiz
 
-Nasıl:
-  → TurkiyeAPI entegrasyonu
-  → 81 il + 973 ilçe demografik veri
-  → AI içerik zenginleştirme
-  → Dashboard istatistikleri
+Çözüm: ✅ "Ege Bölgesi'nin incisi Muğla'nın (1M nüfus)
+    198K nüfuslu Bodrum ilçesinde..." → Zengin, profesyonel!
+
+Nasıl: → TurkiyeAPI entegrasyonu
+    → 81 il + 973 ilçe demografik veri
+    → AI içerik zenginleştirme
+    → Dashboard istatistikleri
 ```
 
 ---
@@ -61,6 +58,7 @@ GÜN 10: FAZ 6 - Filtreleme
 ```
 
 **Metodlar:**
+
 ```php
 getProvinces()              // 81 il
 getProvince($id)            // Tek il (districts dahil)
@@ -146,28 +144,28 @@ dd($score); // 100 ✅
 
 ```yaml
 Muğla İli:
-  ID: 48
-  Nüfus: 1,066,736
-  Alan: 12,654 km²
-  Yoğunluk: 84 kişi/km²
-  Kıyı İli: ✅
-  Büyükşehir: ✅
-  Bölge: Ege
+    ID: 48
+    Nüfus: 1,066,736
+    Alan: 12,654 km²
+    Yoğunluk: 84 kişi/km²
+    Kıyı İli: ✅
+    Büyükşehir: ✅
+    Bölge: Ege
 
 Bodrum İlçesi:
-  ID: 1197
-  Nüfus: 198,335 (İl'in %18.6'sı!)
-  Alan: 650 km²
-  Yoğunluk: 305 kişi/km² (3.6x yüksek!)
-  Sıralama: #2 (Muğla'nın en büyük 2. ilçesi)
+    ID: 1197
+    Nüfus: 198,335 (İl'in %18.6'sı!)
+    Alan: 650 km²
+    Yoğunluk: 305 kişi/km² (3.6x yüksek!)
+    Sıralama: #2 (Muğla'nın en büyük 2. ilçesi)
 
 Yatırım Skoru:
-  Kıyı İli: +30
-  Büyükşehir: +25
-  1M+ Nüfus: +20
-  198K İlçe: +15
-  Ege Bölgesi: +10
-  TOPLAM: 100/100 ⭐⭐⭐
+    Kıyı İli: +30
+    Büyükşehir: +25
+    1M+ Nüfus: +20
+    198K İlçe: +15
+    Ege Bölgesi: +10
+    TOPLAM: 100/100 ⭐⭐⭐
 ```
 
 ---
@@ -175,9 +173,10 @@ Yatırım Skoru:
 ## 💰 **DEĞ ER KATMA**
 
 ### **Önce:**
+
 ```
-"Bodrum Yalıkavak'ta satılık villa. 
-3+1, 250m², deniz manzaralı. 
+"Bodrum Yalıkavak'ta satılık villa.
+3+1, 250m², deniz manzaralı.
 5,000,000 TL"
 
 Kelime: 18
@@ -185,13 +184,14 @@ SEO: 3 anahtar kelime
 ```
 
 ### **Sonra:**
+
 ```
 "🌊 EGE BÖLGESİ'NİN YATIRIM CENNETİ
 
 📍 Stratejik Lokasyon:
-Türkiye'nin en prestijli turizm merkezi Bodrum'da, 
-198 bin nüfuslu bu canlı ilçe, 650 km² yüzölçümü 
-üzerine yayılan 305 kişi/km² nüfus yoğunluğu ile 
+Türkiye'nin en prestijli turizm merkezi Bodrum'da,
+198 bin nüfuslu bu canlı ilçe, 650 km² yüzölçümü
+üzerine yayılan 305 kişi/km² nüfus yoğunluğu ile
 Muğla'nın en dinamik bölgesidir.
 
 🏙️ Büyükşehir Avantajları:
@@ -201,11 +201,11 @@ Muğla'nın en dinamik bölgesidir.
 - Uluslararası turizm destinasyonu
 
 💎 Yatırım Potansiyeli: 100/100 ⭐⭐⭐
-Bu bölge, Türkiye'nin en yüksek yatırım getirisi 
+Bu bölge, Türkiye'nin en yüksek yatırım getirisi
 potansiyeline sahip bölgelerinden biridir.
 
 🏡 İlan Özellikleri:
-3+1, 250 m², deniz manzaralı, özel havuz, 
+3+1, 250 m², deniz manzaralı, özel havuz,
 24/7 güvenlik, lüks site içi sosyal tesisler.
 
 💰 Fiyat: 5,000,000 TL"
@@ -234,14 +234,14 @@ SEO: 24 anahtar kelime (+800%!)
 
 ```yaml
 Hafta 1:
-  ✅ FAZ 1: Service + Cache
-  → FAZ 2: Location Cascade
+    ✅ FAZ 1: Service + Cache
+    → FAZ 2: Location Cascade
 
 Hafta 2:
-  → FAZ 3: İlan Detay Widget
-  → FAZ 4: AI Enhancement
-  → FAZ 5: Dashboard
-  → FAZ 6: Filtreleme
+    → FAZ 3: İlan Detay Widget
+    → FAZ 4: AI Enhancement
+    → FAZ 5: Dashboard
+    → FAZ 6: Filtreleme
 ```
 
 ---
@@ -256,4 +256,3 @@ Hafta 2:
 ---
 
 **🎯 HAZIR MI?** "Başla" dersen hemen TurkiyeAPIService.php'yi oluşturalım! ⏱️ 4-5 saat
-

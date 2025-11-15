@@ -121,7 +121,7 @@ class AICategoryManager
                 'name' => $category->name,
                 'slug' => $category->slug,
                 'status' => $category->status,
-                'order' => $category->order,
+                'display_order' => $category->display_order ?? $category->order ?? 0, // Context7: order → display_order
                 'features_count' => $category->features()->count(),
                 'ilan_count' => $category->ilanlar()->count(),
                 'parent' => $category->parent ? $category->parent->name : null,

@@ -4,13 +4,13 @@
   "category": "api_analysis",
   "status": "completed",
   "summary": "TurkiyeAPI'de mevcut ve eksik demografik bilgilerin analizi",
-  
+
   "api_info": {
     "base_url": "https://api.turkiyeapi.dev/api/v1",
     "documentation": "https://api.turkiyeapi.dev/docs",
     "service_file": "app/Services/TurkiyeAPIService.php"
   },
-  
+
   "mevcut_demografik_bilgiler": {
     "population": {
       "durum": "✅ VAR",
@@ -31,19 +31,12 @@
     "area": {
       "durum": "✅ VAR",
       "detay": "Alan bilgisi (km²)",
-      "yerler": [
-        "Provinces - area field",
-        "Districts - area field",
-        "Towns - area field"
-      ]
+      "yerler": ["Provinces - area field", "Districts - area field", "Towns - area field"]
     },
     "is_coastal": {
       "durum": "✅ VAR",
       "detay": "Kıyı durumu (true/false)",
-      "yerler": [
-        "Provinces - isCoastal field",
-        "Towns - isCoastal field"
-      ]
+      "yerler": ["Provinces - isCoastal field", "Towns - isCoastal field"]
     },
     "postcode": {
       "durum": "✅ VAR",
@@ -55,7 +48,7 @@
       ]
     }
   },
-  
+
   "eksik_demografik_bilgiler": {
     "age_distribution": {
       "durum": "❌ YOK",
@@ -98,7 +91,7 @@
       "ornek_ihtiyac": "Kira/Sahipli oranı"
     }
   },
-  
+
   "alternatif_kaynaklar": {
     "tuik": {
       "name": "Türkiye İstatistik Kurumu (TÜİK)",
@@ -119,7 +112,7 @@
       "not": "API dokümantasyonu güncel değil, gelecekte eklenebilir"
     }
   },
-  
+
   "mevcut_kullanim": {
     "service_methods": [
       "getProvinces() - population var",
@@ -136,7 +129,7 @@
       "postcode": "Posta kodu gösteriliyor"
     }
   },
-  
+
   "oneriler": {
     "1_tuik_entegrasyonu": {
       "aciklama": "TÜİK verilerini entegre etmek",
@@ -154,18 +147,17 @@
       "fayda": "Hızlı çözüm, özelleştirilebilir"
     }
   },
-  
+
   "sonuc": {
     "ozet": "TurkiyeAPI'de sadece temel nüfus bilgisi var. Detaylı demografik bilgiler (yaş, cinsiyet, eğitim, gelir) yok.",
     "mevcut": "Population (nüfus), area (alan), isCoastal (kıyı), postcode (posta kodu)",
     "eksik": "Yaş dağılımı, cinsiyet dağılımı, eğitim durumu, medeni durum, gelir seviyesi, hane halkı büyüklüğü, istihdam oranı, konut sahipliği",
     "alternatif": "TÜİK verileri kullanılabilir ancak API erişimi sınırlı"
   },
-  
+
   "reference": {
     "api_docs": "https://api.turkiyeapi.dev/docs",
     "service_file": "app/Services/TurkiyeAPIService.php",
     "knowledge_base": ".yalihan-bekci/knowledge/turkiyeapi-demographic-analysis-2025-11-05.json"
   }
 }
-

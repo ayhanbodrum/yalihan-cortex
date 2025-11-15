@@ -17,16 +17,16 @@ return new class extends Migration
             $table->string('slug')->unique();
             $table->text('description')->nullable();
             $table->string('icon')->nullable();
-            $table->integer('order')->default(0);
+            $table->integer('display_order')->default(0); // Context7: order → display_order
             $table->boolean('status')->default(true);
             $table->string('meta_title')->nullable();
             $table->text('meta_description')->nullable();
             $table->string('seo_keywords')->nullable();
             $table->timestamps();
             $table->softDeletes();
-            
+
             // Indexes
-            $table->index(['status', 'order']);
+            $table->index(['status', 'display_order']); // Context7: order → display_order
             $table->index('slug');
         });
     }

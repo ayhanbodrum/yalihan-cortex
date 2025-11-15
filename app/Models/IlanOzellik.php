@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * İlan Özellik Model
- * 
+ *
  * Context7 standartlarına uygun ilan özellik yönetimi
  */
 class IlanOzellik extends Model

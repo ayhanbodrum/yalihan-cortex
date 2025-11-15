@@ -45,9 +45,9 @@ Endpoint: http://51.75.64.121:11434
 
 **Upload Sırasında:**
 
--   Processing bekleyin (~30 saniye/doküman)
--   "✅ Embedded" mesajını görün
--   Toplam ~4 dakika sürer
+- Processing bekleyin (~30 saniye/doküman)
+- "✅ Embedded" mesajını görün
+- Toplam ~4 dakika sürer
 
 ---
 

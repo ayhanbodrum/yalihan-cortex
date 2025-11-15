@@ -89,7 +89,7 @@ function uploadPhotos(files) {
         formData.append(`photos[${index}]`, file);
     });
 
-    fetch('/api/photos/upload', {
+    fetch('/api/admin/photos/upload', {
         method: 'POST',
         body: formData,
         headers: {

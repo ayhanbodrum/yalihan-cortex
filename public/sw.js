@@ -2,63 +2,70 @@
 // PWA özellikleri ve offline capability
 // 🚨 DEVELOPMENT MODE: Minimal caching (2025-10-30)
 
-const CACHE_NAME = "yalihan-bekci-v1.0.1-dev";
-const STATIC_CACHE_NAME = "yalihan-static-v1.0.0";
-const DYNAMIC_CACHE_NAME = "yalihan-dynamic-v1.0.0";
-const API_CACHE_NAME = "yalihan-api-v1.0.0";
+const CACHE_NAME = 'yalihan-bekci-v1.0.1-dev';
+const STATIC_CACHE_NAME = 'yalihan-static-v1.0.0';
+const DYNAMIC_CACHE_NAME = 'yalihan-dynamic-v1.0.0';
+const API_CACHE_NAME = 'yalihan-api-v1.0.0';
 
 // Cache strategies
 const CACHE_STRATEGIES = {
-    static: "cache-first",
-    dynamic: "network-first",
-    api: "network-first",
-    images: "cache-first",
+    static: 'cache-first',
+    dynamic: 'network-first',
+    api: 'network-first',
+    images: 'cache-first',
 };
 
 // Static assets to cache
 const STATIC_ASSETS = [
-    "/",
-    "/css/app.css",
-    "/css/design-tokens.css",
-    "/js/app.js",
-    "/js/admin/ilan-create/state-management.js",
-    "/js/admin/ilan-create/lazy-components.js",
-    "/js/admin/ilan-create/performance-optimizer.js",
-    "/js/admin/ilan-create/skeleton-loader.js",
-    "/js/admin/ilan-create/dark-mode-toggle.js",
-    "/js/admin/ilan-create/touch-gestures.js",
-    "/js/admin/ilan-create/toast-notifications.js",
-    "/js/admin/ilan-create/drag-drop-photos.js",
-    "/js/admin/unified-search-engine.js",
-    "/js/admin/mobile-first-responsive.js",
-    "/js/admin/dashboard-modernization.js",
-    "/js/admin/ilan-create/master-integration.js",
-    "/images/logo.png",
-    "/manifest.json",
-    "/offline.html",
+    '/',
+    '/css/app.css',
+    '/css/design-tokens.css',
+    '/js/app.js',
+    '/js/admin/ilan-create/state-management.js',
+    '/js/admin/ilan-create/lazy-components.js',
+    '/js/admin/ilan-create/performance-optimizer.js',
+    '/js/admin/ilan-create/skeleton-loader.js',
+    '/js/admin/ilan-create/dark-mode-toggle.js',
+    '/js/admin/ilan-create/touch-gestures.js',
+    '/js/admin/ilan-create/toast-notifications.js',
+    '/js/admin/ilan-create/drag-drop-photos.js',
+    '/js/admin/unified-search-engine.js',
+    '/js/admin/mobile-first-responsive.js',
+    '/js/admin/dashboard-modernization.js',
+    '/js/admin/ilan-create/master-integration.js',
+    '/images/logo.png',
+    '/manifest.json',
+    '/offline.html',
 ];
 
 // API endpoints to cache
 const API_ENDPOINTS = [
-    "/api/admin/ilanlar",
-    "/api/admin/kategoriler",
-    "/api/admin/kisiler",
-    "/api/admin/lokasyonlar",
-    "/api/admin/ai/",
-    "/api/admin/ai-assist/",
+    '/api/admin/ilanlar',
+    '/api/admin/kategoriler',
+    '/api/admin/kisiler',
+    '/api/admin/lokasyonlar',
+    '/api/admin/ai/',
+    '/api/admin/ai-assist/',
 ];
 
 // Install event - cache static assets
-self.addEventListener("install", (event) => {
-    console.log("Service Worker: Installing... (DEV MODE - minimal caching)");
+self.addEventListener('install', (event) => {
+    console.log('Service Worker: Installing... (DEV MODE - minimal caching)');
 
-    // 🚨 DEV MODE: Skip static asset caching for development
+    // 🚨 DEV MODE: Yine de offline fallback sayfasını önbelleğe al
+    event.waitUntil(
+        caches
+            .open(STATIC_CACHE_NAME)
+            .then((cache) => cache.addAll(['/offline.html']))
+            .catch(() => {})
+    );
+
     self.skipWaiting();
 });
 
 // Activate event - clean up old caches
-self.addEventListener("activate", (event) => {
-    console.log("Service Worker: Activating...");
+self.addEventListener('activate', (event) => {
+    console.log('Service Worker: Activating...');
 
     event.waitUntil(
         caches
@@ -71,34 +78,31 @@ self.addEventListener("activate", (event) => {
                             cacheName !== DYNAMIC_CACHE_NAME &&
                             cacheName !== API_CACHE_NAME
                         ) {
-                            console.log(
-                                "Service Worker: Deleting old cache",
-                                cacheName
-                            );
+                            console.log('Service Worker: Deleting old cache', cacheName);
                             return caches.delete(cacheName);
                         }
                     })
                 );
             })
             .then(() => {
-                console.log("Service Worker: Activated");
+                console.log('Service Worker: Activated');
                 return self.clients.claim();
             })
     );
 });
 
 // Fetch event - implement caching strategies
-self.addEventListener("fetch", (event) => {
+self.addEventListener('fetch', (event) => {
     const { request } = event;
     const url = new URL(request.url);
 
     // Skip non-GET requests
-    if (request.method !== "GET") {
+    if (request.method !== 'GET') {
         return;
     }
 
     // Skip chrome-extension and other non-http requests
-    if (!url.protocol.startsWith("http")) {
+    if (!url.protocol.startsWith('http')) {
         return;
     }
 
@@ -132,7 +136,7 @@ async function cacheFirstStrategy(request) {
 
         return networkResponse;
     } catch (error) {
-        console.error("Cache First Strategy failed:", error);
+        console.error('Cache First Strategy failed:', error);
         return getOfflineResponse(request);
     }
 }
@@ -149,7 +153,7 @@ async function networkFirstStrategy(request) {
 
         return networkResponse;
     } catch (error) {
-        console.log("Network failed, trying cache:", error);
+        console.log('Network failed, trying cache:', error);
 
         const cachedResponse = await caches.match(request);
 
@@ -181,14 +185,12 @@ async function staleWhileRevalidateStrategy(request) {
 // Helper functions
 function isStaticAsset(request) {
     const url = new URL(request.url);
-    return url.pathname.match(
-        /\.(css|js|png|jpg|jpeg|gif|svg|woff|woff2|ttf|eot)$/
-    );
+    return url.pathname.match(/\.(css|js|png|jpg|jpeg|gif|svg|woff|woff2|ttf|eot)$/);
 }
 
 function isAPIRequest(request) {
     const url = new URL(request.url);
-    return url.pathname.startsWith("/api/");
+    return url.pathname.startsWith('/api/');
 }
 
 function isImageRequest(request) {
@@ -196,54 +198,74 @@ function isImageRequest(request) {
     return url.pathname.match(/\.(png|jpg|jpeg|gif|svg|webp)$/);
 }
 
-function getOfflineResponse(request) {
+async function getOfflineResponse(request) {
     const url = new URL(request.url);
 
-    if (url.pathname.match(/\.(png|jpg|jpeg|gif|svg)$/)) {
+    // Görseller için basit SVG placeholder
+    if (url.pathname.match(/\.(png|jpg|jpeg|gif|svg|webp)$/)) {
         return new Response(
             '<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><rect width="200" height="200" fill="#f3f4f6"/><text x="50%" y="50%" text-anchor="middle" dy=".3em" fill="#9ca3af">Offline</text></svg>',
-            { headers: { "Content-Type": "image/svg+xml" } }
+            { headers: { 'Content-Type': 'image/svg+xml' } }
         );
     }
 
-    if (url.pathname.startsWith("/api/")) {
+    // API istekleri için JSON hata yanıtı
+    if (url.pathname.startsWith('/api/')) {
         return new Response(
             JSON.stringify({
-                error: "Offline",
-                message: "Bu işlem için internet bağlantısı gerekli",
+                error: 'Offline',
+                message: 'Bu işlem için internet bağlantısı gerekli',
                 offline: true,
             }),
             {
                 status: 503,
-                headers: { "Content-Type": "application/json" },
+                headers: { 'Content-Type': 'application/json' },
             }
         );
     }
 
-    return caches.match("/offline.html");
+    // Navigasyon (HTML sayfaları) için offline.html dene; yoksa minimal HTML döndür
+    if (request.mode === 'navigate') {
+        try {
+            const cached = await caches.match('/offline.html');
+            if (cached) return cached;
+        } catch (_) {
+            // yoksay
+        }
+        return new Response(
+            '<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Çevrimdışı</title><style>body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;margin:0;display:flex;min-height:100vh;align-items:center;justify-content:center;background:#f9fafb;color:#111827}</style></head><body><div><h1>Çevrimdışı</h1><p>Bağlantı yok. İnternet geldiğinde tekrar deneyin.</p></div></body></html>',
+            { status: 503, headers: { 'Content-Type': 'text/html; charset=UTF-8' } }
+        );
+    }
+
+    // Diğer istekler için düz metin fallback
+    return new Response('Offline', {
+        status: 503,
+        headers: { 'Content-Type': 'text/plain; charset=UTF-8' },
+    });
 }
 
 // Background Sync for offline actions
-self.addEventListener("sync", (event) => {
-    console.log("Service Worker: Background sync triggered", event.tag);
+self.addEventListener('sync', (event) => {
+    console.log('Service Worker: Background sync triggered', event.tag);
 
-    if (event.tag === "background-sync") {
+    if (event.tag === 'background-sync') {
         event.waitUntil(doBackgroundSync());
     }
 
-    if (event.tag === "form-sync") {
+    if (event.tag === 'form-sync') {
         event.waitUntil(syncOfflineForms());
     }
 });
 
 // Push notifications
-self.addEventListener("push", (event) => {
-    console.log("Service Worker: Push received", event);
+self.addEventListener('push', (event) => {
+    console.log('Service Worker: Push received', event);
 
     const options = {
-        body: event.data ? event.data.text() : "Yeni bildirim",
-        icon: "/images/icon-192x192.png",
-        badge: "/images/badge-72x72.png",
+        body: event.data ? event.data.text() : 'Yeni bildirim',
+        icon: '/images/icon-192x192.png',
+        badge: '/images/badge-72x72.png',
         vibrate: [100, 50, 100],
         data: {
             dateOfArrival: Date.now(),
@@ -251,50 +273,48 @@ self.addEventListener("push", (event) => {
         },
         actions: [
             {
-                action: "explore",
-                title: "Görüntüle",
-                icon: "/images/checkmark.png",
+                action: 'explore',
+                title: 'Görüntüle',
+                icon: '/images/checkmark.png',
             },
             {
-                action: "close",
-                title: "Kapat",
-                icon: "/images/xmark.png",
+                action: 'close',
+                title: 'Kapat',
+                icon: '/images/xmark.png',
             },
         ],
     };
 
-    event.waitUntil(
-        self.registration.showNotification("Yalıhan Bekçi", options)
-    );
+    event.waitUntil(self.registration.showNotification('Yalıhan Bekçi', options));
 });
 
 // Notification click
-self.addEventListener("notificationclick", (event) => {
-    console.log("Service Worker: Notification clicked", event);
+self.addEventListener('notificationclick', (event) => {
+    console.log('Service Worker: Notification clicked', event);
 
     event.notification.close();
 
-    if (event.action === "explore") {
-        event.waitUntil(clients.openWindow("/admin/dashboard"));
+    if (event.action === 'explore') {
+        event.waitUntil(clients.openWindow('/admin/dashboard'));
     }
 });
 
 // Message handling
-self.addEventListener("message", (event) => {
-    console.log("Service Worker: Message received", event.data);
+self.addEventListener('message', (event) => {
+    console.log('Service Worker: Message received', event.data);
 
-    if (event.data && event.data.type === "SKIP_WAITING") {
+    if (event.data && event.data.type === 'SKIP_WAITING') {
         self.skipWaiting();
     }
 
-    if (event.data && event.data.type === "GET_VERSION") {
+    if (event.data && event.data.type === 'GET_VERSION') {
         event.ports[0].postMessage({ version: CACHE_NAME });
     }
 });
 
 // Background sync functions
 async function doBackgroundSync() {
-    console.log("Service Worker: Performing background sync");
+    console.log('Service Worker: Performing background sync');
 
     try {
         // Sync offline data
@@ -304,14 +324,14 @@ async function doBackgroundSync() {
             await syncOfflineItem(item);
         }
 
-        console.log("Service Worker: Background sync completed");
+        console.log('Service Worker: Background sync completed');
     } catch (error) {
-        console.error("Service Worker: Background sync failed", error);
+        console.error('Service Worker: Background sync failed', error);
     }
 }
 
 async function syncOfflineForms() {
-    console.log("Service Worker: Syncing offline forms");
+    console.log('Service Worker: Syncing offline forms');
 
     try {
         const offlineForms = await getOfflineForms();
@@ -320,21 +340,21 @@ async function syncOfflineForms() {
             await syncForm(form);
         }
 
-        console.log("Service Worker: Form sync completed");
+        console.log('Service Worker: Form sync completed');
     } catch (error) {
-        console.error("Service Worker: Form sync failed", error);
+        console.error('Service Worker: Form sync failed', error);
     }
 }
 
 async function getOfflineData() {
     // Get offline data from IndexedDB or localStorage
     return new Promise((resolve) => {
-        const request = indexedDB.open("yalihan-offline", 1);
+        const request = indexedDB.open('yalihan-offline', 1);
 
         request.onsuccess = () => {
             const db = request.result;
-            const transaction = db.transaction(["offlineData"], "readonly");
-            const store = transaction.objectStore("offlineData");
+            const transaction = db.transaction(['offlineData'], 'readonly');
+            const store = transaction.objectStore('offlineData');
             const getAllRequest = store.getAll();
 
             getAllRequest.onsuccess = () => {
@@ -355,12 +375,12 @@ async function getOfflineData() {
 async function getOfflineForms() {
     // Get offline forms from IndexedDB
     return new Promise((resolve) => {
-        const request = indexedDB.open("yalihan-offline", 1);
+        const request = indexedDB.open('yalihan-offline', 1);
 
         request.onsuccess = () => {
             const db = request.result;
-            const transaction = db.transaction(["offlineForms"], "readonly");
-            const store = transaction.objectStore("offlineForms");
+            const transaction = db.transaction(['offlineForms'], 'readonly');
+            const store = transaction.objectStore('offlineForms');
             const getAllRequest = store.getAll();
 
             getAllRequest.onsuccess = () => {
@@ -389,20 +409,20 @@ async function syncOfflineItem(item) {
         if (response.ok) {
             // Remove from offline storage
             await removeOfflineItem(item.id);
-            console.log("Service Worker: Synced offline item", item.id);
+            console.log('Service Worker: Synced offline item', item.id);
         }
     } catch (error) {
-        console.error("Service Worker: Failed to sync offline item", error);
+        console.error('Service Worker: Failed to sync offline item', error);
     }
 }
 
 async function syncForm(form) {
     try {
         const response = await fetch(form.url, {
-            method: "POST",
+            method: 'POST',
             headers: {
-                "Content-Type": "application/json",
-                "X-CSRF-TOKEN": form.csrfToken,
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': form.csrfToken,
             },
             body: JSON.stringify(form.data),
         });
@@ -410,21 +430,21 @@ async function syncForm(form) {
         if (response.ok) {
             // Remove from offline storage
             await removeOfflineForm(form.id);
-            console.log("Service Worker: Synced offline form", form.id);
+            console.log('Service Worker: Synced offline form', form.id);
         }
     } catch (error) {
-        console.error("Service Worker: Failed to sync offline form", error);
+        console.error('Service Worker: Failed to sync offline form', error);
     }
 }
 
 async function removeOfflineItem(id) {
     return new Promise((resolve) => {
-        const request = indexedDB.open("yalihan-offline", 1);
+        const request = indexedDB.open('yalihan-offline', 1);
 
         request.onsuccess = () => {
             const db = request.result;
-            const transaction = db.transaction(["offlineData"], "readwrite");
-            const store = transaction.objectStore("offlineData");
+            const transaction = db.transaction(['offlineData'], 'readwrite');
+            const store = transaction.objectStore('offlineData');
             const deleteRequest = store.delete(id);
 
             deleteRequest.onsuccess = () => resolve();
@@ -437,12 +457,12 @@ async function removeOfflineItem(id) {
 
 async function removeOfflineForm(id) {
     return new Promise((resolve) => {
-        const request = indexedDB.open("yalihan-offline", 1);
+        const request = indexedDB.open('yalihan-offline', 1);
 
         request.onsuccess = () => {
             const db = request.result;
-            const transaction = db.transaction(["offlineForms"], "readwrite");
-            const store = transaction.objectStore("offlineForms");
+            const transaction = db.transaction(['offlineForms'], 'readwrite');
+            const store = transaction.objectStore('offlineForms');
             const deleteRequest = store.delete(id);
 
             deleteRequest.onsuccess = () => resolve();
@@ -456,11 +476,7 @@ async function removeOfflineForm(id) {
 // Cache management utilities
 async function clearOldCaches() {
     const cacheNames = await caches.keys();
-    const currentCaches = [
-        STATIC_CACHE_NAME,
-        DYNAMIC_CACHE_NAME,
-        API_CACHE_NAME,
-    ];
+    const currentCaches = [STATIC_CACHE_NAME, DYNAMIC_CACHE_NAME, API_CACHE_NAME];
 
     return Promise.all(
         cacheNames
@@ -476,31 +492,31 @@ async function updateCache() {
 
 // Initialize IndexedDB for offline storage
 function initializeIndexedDB() {
-    const request = indexedDB.open("yalihan-offline", 1);
+    const request = indexedDB.open('yalihan-offline', 1);
 
     request.onupgradeneeded = (event) => {
         const db = event.target.result;
 
         // Create offline data store
-        if (!db.objectStoreNames.contains("offlineData")) {
-            const offlineDataStore = db.createObjectStore("offlineData", {
-                keyPath: "id",
+        if (!db.objectStoreNames.contains('offlineData')) {
+            const offlineDataStore = db.createObjectStore('offlineData', {
+                keyPath: 'id',
                 autoIncrement: true,
             });
-            offlineDataStore.createIndex("url", "url", { unique: false });
-            offlineDataStore.createIndex("timestamp", "timestamp", {
+            offlineDataStore.createIndex('url', 'url', { unique: false });
+            offlineDataStore.createIndex('timestamp', 'timestamp', {
                 unique: false,
             });
         }
 
         // Create offline forms store
-        if (!db.objectStoreNames.contains("offlineForms")) {
-            const offlineFormsStore = db.createObjectStore("offlineForms", {
-                keyPath: "id",
+        if (!db.objectStoreNames.contains('offlineForms')) {
+            const offlineFormsStore = db.createObjectStore('offlineForms', {
+                keyPath: 'id',
                 autoIncrement: true,
             });
-            offlineFormsStore.createIndex("url", "url", { unique: false });
-            offlineFormsStore.createIndex("timestamp", "timestamp", {
+            offlineFormsStore.createIndex('url', 'url', { unique: false });
+            offlineFormsStore.createIndex('timestamp', 'timestamp', {
                 unique: false,
             });
         }
@@ -510,4 +526,4 @@ function initializeIndexedDB() {
 // Initialize IndexedDB
 initializeIndexedDB();
 
-console.log("Service Worker: Loaded successfully");
+console.log('Service Worker: Loaded successfully');

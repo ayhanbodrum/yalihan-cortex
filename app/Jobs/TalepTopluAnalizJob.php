@@ -14,9 +14,9 @@ use Illuminate\Support\Facades\Log;
 
 /**
  * Talep Toplu Analiz Job
- * 
+ *
  * Context7 Standardı: C7-QUEUE-JOB-2025-11-05
- * 
+ *
  * Birden fazla talebi queue'da analiz eder
  */
 class TalepTopluAnalizJob implements ShouldQueue
@@ -59,7 +59,7 @@ class TalepTopluAnalizJob implements ShouldQueue
         foreach ($this->talepIds as $talepId) {
             try {
                 $talep = Talep::find($talepId);
-                
+
                 if (!$talep) {
                     $failed++;
                     $processed++;
@@ -68,7 +68,7 @@ class TalepTopluAnalizJob implements ShouldQueue
 
                 // Analiz et
                 $sonuc = $analizService->analizEt($talep);
-                
+
                 $results[] = [
                     'talep_id' => $talepId,
                     'status' => 'success',
@@ -93,7 +93,7 @@ class TalepTopluAnalizJob implements ShouldQueue
             }
 
             $processed++;
-            
+
             // Progress güncelle
             $this->updateProgress($processed, $total, $success, $failed);
         }
@@ -150,4 +150,3 @@ class TalepTopluAnalizJob implements ShouldQueue
         ]);
     }
 }
-

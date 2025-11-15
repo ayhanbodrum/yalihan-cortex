@@ -21,5 +21,3 @@ echo "[5/5] Tamamlandı. Özet:"
 echo "- Migration onarımları uygulandı"
 echo "- Veritabanı taze kuruldu ve seed atıldı"
 echo "- Context7 raporu üretildi"
-
-

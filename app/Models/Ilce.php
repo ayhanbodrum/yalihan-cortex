@@ -14,7 +14,8 @@ class Ilce extends Model
     protected $fillable = [
         'il_id',
         'ilce_adi',
-        'ilce_kodu',
+        'lat',
+        'lng',
     ];
 
     /**

@@ -9,6 +9,7 @@
 ## ✅ BAŞARILAR
 
 **Arsa Migration:**
+
 - ✅ 6 field başarıyla eklendi
 - ✅ Eşleşen: 7 → 13 (+6)
 - ✅ Eksik: 55 → 49 (-6)
@@ -20,15 +21,15 @@
 
 ### **Kategori 1: UI ALIAS Fields (Çözüm: Ignore veya Computed)** - 7 Alan
 
-| Field | Açıklama | Önerilen Çözüm |
-|-------|----------|----------------|
-| `satis_fiyati` | `fiyat` ile aynı | **Ignore** (UI alias) |
-| `m2_fiyati` | `fiyat / alan_m2` | **Computed** (hesaplanan) |
-| `kira_bedeli` | `fiyat` ile aynı (kiralık) | **Ignore** (UI alias) |
-| `metrekare` | `brut_m2` ile aynı | **Ignore** (UI alias) |
-| `kat_sayisi` | `toplam_kat` ile aynı | **Ignore** (UI alias) |
-| `aidat` | Zaten var! | **Duplicate** (ignore'dan çıkar) |
-| `esyali` | Zaten var! | **Duplicate** (ignore'dan çıkar) |
+| Field          | Açıklama                   | Önerilen Çözüm                   |
+| -------------- | -------------------------- | -------------------------------- |
+| `satis_fiyati` | `fiyat` ile aynı           | **Ignore** (UI alias)            |
+| `m2_fiyati`    | `fiyat / alan_m2`          | **Computed** (hesaplanan)        |
+| `kira_bedeli`  | `fiyat` ile aynı (kiralık) | **Ignore** (UI alias)            |
+| `metrekare`    | `brut_m2` ile aynı         | **Ignore** (UI alias)            |
+| `kat_sayisi`   | `toplam_kat` ile aynı      | **Ignore** (UI alias)            |
+| `aidat`        | Zaten var!                 | **Duplicate** (ignore'dan çıkar) |
+| `esyali`       | Zaten var!                 | **Duplicate** (ignore'dan çıkar) |
 
 **Aksiyon:** `FieldRegistryService` ignore listesine ekle
 
@@ -36,18 +37,18 @@
 
 ### **Kategori 2: YAZLIK Separate Table Fields** - 10 Alan
 
-| Field | Açıklama | Tablo | Çözüm |
-|-------|----------|-------|-------|
-| `gunluk_fiyat` | Günlük fiyat | `yazlik_fiyatlandirma` | **Ignore** (separate table) |
-| `haftalik_fiyat` | Haftalık fiyat | `yazlik_fiyatlandirma` | **Ignore** (separate table) |
-| `aylik_fiyat` | Aylık fiyat | `yazlik_fiyatlandirma` | **Ignore** (separate table) |
-| `yaz_sezonu_fiyat` | Yaz fiyat | `yazlik_fiyatlandirma` | **Ignore** (separate table) |
-| `ara_sezon_fiyat` | Ara sezon | `yazlik_fiyatlandirma` | **Ignore** (separate table) |
-| `kis_sezonu_fiyat` | Kış fiyat | `yazlik_fiyatlandirma` | **Ignore** (separate table) |
-| `minimum_konaklama` | Min gün | `yazlik_details` | **Ignore** (separate table) |
-| `maksimum_misafir` | Max kişi | `yazlik_details` | **Ignore** (separate table) |
-| `check_in` | Check-in | `yazlik_details` | **Ignore** (separate table) |
-| `check_out` | Check-out | `yazlik_details` | **Ignore** (separate table) |
+| Field               | Açıklama       | Tablo                  | Çözüm                       |
+| ------------------- | -------------- | ---------------------- | --------------------------- |
+| `gunluk_fiyat`      | Günlük fiyat   | `yazlik_fiyatlandirma` | **Ignore** (separate table) |
+| `haftalik_fiyat`    | Haftalık fiyat | `yazlik_fiyatlandirma` | **Ignore** (separate table) |
+| `aylik_fiyat`       | Aylık fiyat    | `yazlik_fiyatlandirma` | **Ignore** (separate table) |
+| `yaz_sezonu_fiyat`  | Yaz fiyat      | `yazlik_fiyatlandirma` | **Ignore** (separate table) |
+| `ara_sezon_fiyat`   | Ara sezon      | `yazlik_fiyatlandirma` | **Ignore** (separate table) |
+| `kis_sezonu_fiyat`  | Kış fiyat      | `yazlik_fiyatlandirma` | **Ignore** (separate table) |
+| `minimum_konaklama` | Min gün        | `yazlik_details`       | **Ignore** (separate table) |
+| `maksimum_misafir`  | Max kişi       | `yazlik_details`       | **Ignore** (separate table) |
+| `check_in`          | Check-in       | `yazlik_details`       | **Ignore** (separate table) |
+| `check_out`         | Check-out      | `yazlik_details`       | **Ignore** (separate table) |
 
 **Aksiyon:** Zaten ignore listesinde (kontrol et)
 
@@ -56,6 +57,7 @@
 ### **Kategori 3: YAZLIK AMENITIES (Features/EAV)** ✅ - 14 Alan
 
 **✅ Seeder ile Features tablosuna eklendi:**
+
 - `wifi`, `klima`, `mutfak_donanimli`
 - `camasir_makinesi`, `bulasik_makinesi`
 - `temizlik_servisi`, `havlu_carsaf_dahil`
@@ -69,12 +71,12 @@
 
 ### **Kategori 4: KONUT Fields (Eklenebilir)** - 4 Alan
 
-| Field | Type | Önerilen Çözüm |
-|-------|------|----------------|
-| `tapu_tipi` | select | **Migration** (direct column) |
-| `krediye_uygun` | boolean | **Migration** (direct column) |
-| `takas` | boolean | **Features** (EAV - nadir) |
-| `depozito` | number | **Features** (EAV - koşula bağlı) |
+| Field           | Type    | Önerilen Çözüm                    |
+| --------------- | ------- | --------------------------------- |
+| `tapu_tipi`     | select  | **Migration** (direct column)     |
+| `krediye_uygun` | boolean | **Migration** (direct column)     |
+| `takas`         | boolean | **Features** (EAV - nadir)        |
+| `depozito`      | number  | **Features** (EAV - koşula bağlı) |
 
 **Aksiyon:** Migration veya Features
 
@@ -82,13 +84,13 @@
 
 ### **Kategori 5: ARSA Kat Karşılığı Özel Fields** - 5 Alan
 
-| Field | Açıklama | Çözüm |
-|-------|----------|-------|
-| `toplam_kat` | Toplam kat adedi | **Ignore** (konut field'ı, arsa'da context farklı) |
-| `daire_buyuklugu` | Daire büyüklüğü | **Features** (EAV - kat karşılığı özel) |
-| `insaat_sartlari` | İnşaat şartları | **Features** (EAV - kat karşılığı özel) |
-| `teslim_suresi` | Teslim süresi | **Features** (EAV - kat karşılığı özel) |
-| `verilecek_kat_sayisi` | Verilecek kat | **Features** (EAV - kat karşılığı özel) |
+| Field                  | Açıklama         | Çözüm                                              |
+| ---------------------- | ---------------- | -------------------------------------------------- |
+| `toplam_kat`           | Toplam kat adedi | **Ignore** (konut field'ı, arsa'da context farklı) |
+| `daire_buyuklugu`      | Daire büyüklüğü  | **Features** (EAV - kat karşılığı özel)            |
+| `insaat_sartlari`      | İnşaat şartları  | **Features** (EAV - kat karşılığı özel)            |
+| `teslim_suresi`        | Teslim süresi    | **Features** (EAV - kat karşılığı özel)            |
+| `verilecek_kat_sayisi` | Verilecek kat    | **Features** (EAV - kat karşılığı özel)            |
 
 **Aksiyon:** Features (EAV) - Kat karşılığı kategorisi
 
@@ -96,12 +98,12 @@
 
 ### **Kategori 6: ARSA Özel Fields** - 4 Alan
 
-| Field | Type | Çözüm |
-|-------|------|-------|
-| `kullanim_amaci` | select | **Features** (EAV - çeşitli) |
-| `arazi_egimi` | select | **Features** (EAV - opsiyonel) |
-| `takas_kabul` | boolean | **Features** (EAV - nadir) |
-| `aciklama` | textarea | **Ignore** (zaten var - core field) |
+| Field            | Type     | Çözüm                               |
+| ---------------- | -------- | ----------------------------------- |
+| `kullanim_amaci` | select   | **Features** (EAV - çeşitli)        |
+| `arazi_egimi`    | select   | **Features** (EAV - opsiyonel)      |
+| `takas_kabul`    | boolean  | **Features** (EAV - nadir)          |
+| `aciklama`       | textarea | **Ignore** (zaten var - core field) |
 
 **Aksiyon:** Features (EAV)
 
@@ -109,13 +111,13 @@
 
 ### **Kategori 7: İŞYERİ Fields** - 5 Alan
 
-| Field | Açıklama | Çözüm |
-|-------|----------|-------|
-| `oda_sayisi` | Oda sayısı (ofis) | **Ignore** (konut field'ı kullanılabilir) |
-| `banyo_sayisi` | Banyo (ofis) | **Ignore** (konut field'ı kullanılabilir) |
-| `otopark` | Otopark | **Features** (EAV - zaten seed edildi) |
-| `asansor` | Asansör | **Features** (EAV - zaten seed edildi) |
-| `aciklama` | Açıklama | **Duplicate** (ignore) |
+| Field          | Açıklama          | Çözüm                                     |
+| -------------- | ----------------- | ----------------------------------------- |
+| `oda_sayisi`   | Oda sayısı (ofis) | **Ignore** (konut field'ı kullanılabilir) |
+| `banyo_sayisi` | Banyo (ofis)      | **Ignore** (konut field'ı kullanılabilir) |
+| `otopark`      | Otopark           | **Features** (EAV - zaten seed edildi)    |
+| `asansor`      | Asansör           | **Features** (EAV - zaten seed edildi)    |
+| `aciklama`     | Açıklama          | **Duplicate** (ignore)                    |
 
 **Aksiyon:** Features kullan veya mevcut field'ları paylaş
 
@@ -155,6 +157,7 @@
 ```
 
 **Beklenen Sonuç:**
+
 - Eksik: 49 → ~4-5 (sadece gerçek eksikler)
 
 ---
@@ -205,6 +208,7 @@ $table->boolean('krediye_uygun')->default(false);
 ## 📈 BEKLENEN SONUÇ
 
 **Tüm İyileştirmeler Sonrası:**
+
 ```
 ✅ Eşleşen: 15
 ⚠️  Eksik (Features/EAV): ~0
@@ -219,6 +223,7 @@ Durum: ✅ BAŞARILI
 ## 🚀 DEPLOYMENT PLANI
 
 ### **Bugün:**
+
 ```bash
 # 1. Ignore listesini güncelle
 # 2. Validation test et
@@ -230,6 +235,7 @@ php artisan migrate
 ```
 
 ### **Yarın:**
+
 ```bash
 # 4. Arsa features seeder
 php artisan make:seeder ArsaKatKarsiligiSeeder
@@ -244,4 +250,3 @@ php artisan fields:validate --report
 **Oluşturan:** Cursor AI + Yalıhan Bekçi  
 **Tarih:** 1 Kasım 2025  
 **Durum:** ✅ Analysis Complete
-

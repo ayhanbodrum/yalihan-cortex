@@ -38,8 +38,26 @@
     "provinces": {
       "endpoint": "GET /v1/provinces",
       "description": "Get all provinces (81)",
-      "filters": ["name", "isCoastal", "isMetropolitan", "region", "minPopulation", "maxPopulation"],
-      "response_fields": ["id", "name", "population", "area", "altitude", "coordinates", "region", "isCoastal", "isMetropolitan", "districts"]
+      "filters": [
+        "name",
+        "isCoastal",
+        "isMetropolitan",
+        "region",
+        "minPopulation",
+        "maxPopulation"
+      ],
+      "response_fields": [
+        "id",
+        "name",
+        "population",
+        "area",
+        "altitude",
+        "coordinates",
+        "region",
+        "isCoastal",
+        "isMetropolitan",
+        "districts"
+      ]
     },
     "province_detail": {
       "endpoint": "GET /v1/provinces/{id}",
@@ -114,9 +132,7 @@
         "Metadata display (population, area, region)",
         "Filter support (coastal, metropolitan)"
       ],
-      "files_to_create": [
-        "app/Http/Controllers/Api/LocationController.php"
-      ],
+      "files_to_create": ["app/Http/Controllers/Api/LocationController.php"],
       "files_to_update": [
         "routes/api.php",
         "resources/views/admin/ilanlar/components/location-map.blade.php",
@@ -147,12 +163,8 @@
         "Google Maps / OpenStreetMap links",
         "İlan detay sayfasına entegre et"
       ],
-      "files_to_create": [
-        "resources/views/components/ilan/location-info.blade.php"
-      ],
-      "files_to_update": [
-        "resources/views/admin/ilanlar/show.blade.php"
-      ],
+      "files_to_create": ["resources/views/components/ilan/location-info.blade.php"],
+      "files_to_update": ["resources/views/admin/ilanlar/show.blade.php"],
       "displayed_metadata": [
         "İl/İlçe adı",
         "Nüfus",
@@ -177,19 +189,11 @@
         "SEO-friendly keyword generation",
         "Bölge bazlı içerik üretimi"
       ],
-      "files_to_update": [
-        "app/Services/AIService.php"
-      ],
+      "files_to_update": ["app/Services/AIService.php"],
       "ai_prompt_enhancement": {
         "before": "Muğla, Bodrum'da satılık villa. Deniz manzaralı...",
         "after": "Ege Bölgesi'nin incisi, Muğla'nın (1 milyon nüfus) dünyaca ünlü Bodrum ilçesinde, kıyı şeridinde satılık villa. Bu büyüleyici bölge, yüzölçümü 13,338 km² ile Türkiye'nin en gözde turizm merkezlerinden biri...",
-        "metadata_used": [
-          "region",
-          "population",
-          "area",
-          "isCoastal",
-          "isMetropolitan"
-        ],
+        "metadata_used": ["region", "population", "area", "isCoastal", "isMetropolitan"],
         "seo_improvement": "+20%"
       }
     },
@@ -408,4 +412,3 @@
     "first_task": "Create TurkiyeAPIService.php with basic methods"
   }
 }
-

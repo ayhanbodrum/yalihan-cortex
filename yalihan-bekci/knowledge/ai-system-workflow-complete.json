@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "last_updated": "2025-10-15T21:45:00Z",
   "description": "AI sistemlerinin koruyucusu ve standardizatörü - Tam çalışma mantığı",
-  
+
   "workflow_steps": {
     "step_1": {
       "name": "Kullanıcı AI İsteği Gönderir",
@@ -15,7 +15,7 @@
       "description": "API endpoint'i request'i yakalar",
       "endpoints": [
         "POST /api/admin/ai/analyze",
-        "POST /api/admin/ai/suggest", 
+        "POST /api/admin/ai/suggest",
         "POST /api/admin/ai/generate"
       ]
     },
@@ -51,7 +51,7 @@
       "description": "AI'ya gönderilecek komut hazırlanır",
       "prompt_types": [
         "category_analysis",
-        "feature_suggestions", 
+        "feature_suggestions",
         "content_generation",
         "price_analysis",
         "seo_optimization"
@@ -91,7 +91,7 @@
       "display": "AI widget with formatted results"
     }
   },
-  
+
   "ai_operation_types": {
     "analyze": {
       "description": "Veri analizi yapar",
@@ -121,7 +121,7 @@
       }
     }
   },
-  
+
   "provider_management": {
     "provider_selection": {
       "method": "getActiveProvider()",
@@ -135,7 +135,7 @@
       "cache_duration": "300 seconds (5 minutes)",
       "keys": [
         "openai_api_key", "openai_model",
-        "google_api_key", "google_model", 
+        "google_api_key", "google_model",
         "claude_api_key", "claude_model",
         "deepseek_api_key", "deepseek_model",
         "ollama_url", "ollama_model"
@@ -151,7 +151,7 @@
       ]
     }
   },
-  
+
   "cache_system": {
     "cache_key_generation": {
       "method": "generateCacheKey($action, $data, $context)",
@@ -171,7 +171,7 @@
       "Reduced server load"
     ]
   },
-  
+
   "logging_system": {
     "log_model": "AiLog",
     "log_fields": {
@@ -188,7 +188,7 @@
       "error": "logError($action, $prompt, $error, $duration)"
     }
   },
-  
+
   "monitoring_analytics": {
     "health_check": {
       "method": "healthCheck()",
@@ -202,7 +202,7 @@
       "method": "getStats()",
       "metrics": [
         "total_requests",
-        "successful_requests", 
+        "successful_requests",
         "failed_requests",
         "average_response_time",
         "most_used_provider",
@@ -219,7 +219,7 @@
       "Cost tracking per provider"
     ]
   },
-  
+
   "ui_widget_system": {
     "widget_component": "resources/views/admin/components/ai-widget.blade.php",
     "widget_usage": {
@@ -246,7 +246,7 @@
       "error": "Analysis failed with error"
     }
   },
-  
+
   "error_handling": {
     "fallback_mechanism": {
       "description": "If primary provider fails, try other providers",
@@ -259,7 +259,7 @@
     },
     "error_types": [
       "API key invalid",
-      "Rate limit exceeded", 
+      "Rate limit exceeded",
       "Network timeout",
       "Provider unavailable",
       "Invalid response format"
@@ -269,7 +269,7 @@
       "fallback_content": "Use cached results if available"
     }
   },
-  
+
   "performance_optimization": {
     "caching_strategy": {
       "cache_duration": "1 hour",
@@ -290,7 +290,7 @@
       "quality_optimization": "Choose best quality provider"
     }
   },
-  
+
   "integration_points": {
     "ozellik_kategorileri": {
       "page": "/admin/ozellikler/kategoriler",
@@ -298,7 +298,7 @@
       "workflow": "analyze() method with category data"
     },
     "ilan_kategorileri": {
-      "page": "/admin/ilan-kategorileri", 
+      "page": "/admin/ilan-kategorileri",
       "ai_features": ["AI kategori analizi", "Optimizasyon önerileri"],
       "workflow": "analyze() method with category optimization context"
     },
@@ -318,7 +318,7 @@
       "workflow": "healthCheck() and provider testing"
     }
   },
-  
+
   "best_practices": {
     "always_use_ai_service": "Her AI işlemi için AIService kullan",
     "cache_results": "AI sonuçlarını cache'le (1 saat)",
@@ -331,12 +331,12 @@
     "provider_switching": "Provider switching kullan (reliability)",
     "cost_tracking": "Maliyet takibi yap (cost optimization)"
   },
-  
+
   "testing_monitoring": {
     "health_check_endpoint": "GET /api/admin/ai/health",
     "test_endpoints": [
       "POST /api/admin/ai/analyze",
-      "POST /api/admin/ai/suggest", 
+      "POST /api/admin/ai/suggest",
       "POST /api/admin/ai/generate"
     ],
     "monitoring_urls": [
@@ -346,7 +346,7 @@
     "performance_metrics": [
       "Response time",
       "Success rate",
-      "Error rate", 
+      "Error rate",
       "Provider usage",
       "Cost per request"
     ]

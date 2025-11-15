@@ -3,15 +3,17 @@
 ## 🗄️ DOĞRU VERİTABANI BİLGİLERİ
 
 ### Aktif Veritabanı
+
 ```yaml
 Tip: MySQL
 Host: 127.0.0.1
 Port: 3306
-Database: yalihanemlak_ultra  # ← DOĞRU VERİTABANI
+Database: yalihanemlak_ultra # ← DOĞRU VERİTABANI
 Kullanıcı: root
 ```
 
 ### ⚠️ YANLIŞ VERİTABANLARI
+
 ```yaml
 yalihanemlak_test: TEST veritabanı (BOŞ - KULLANILMAYACAK!)
 ```
@@ -19,18 +21,20 @@ yalihanemlak_test: TEST veritabanı (BOŞ - KULLANILMAYACAK!)
 ## 📊 VERİTABANI İÇERİĞİ (yalihanemlak_ultra)
 
 ### Tablo İstatistikleri
+
 - **Toplam Tablo:** 50
 - **Kullanıcılar:** 4 kayıt
 - **İlan Kategorileri:** 36 kayıt
-  - Seviye 0 (Ana): 5 kategori
-  - Seviye 1 (Alt): 20 kategori  
-  - Seviye 2 (Yayın Tipi): 11 kategori
+    - Seviye 0 (Ana): 5 kategori
+    - Seviye 1 (Alt): 20 kategori
+    - Seviye 2 (Yayın Tipi): 11 kategori
 - **İlanlar:** 0 kayıt (yeni sistem)
 - **Kişiler:** 3 kayıt
 - **Özellikler:** 46 kayıt
 - **Özellik Kategorileri:** 5 kayıt
 
 ### Ana Kategoriler (Seviye 0)
+
 ```yaml
 1. Konut (ID: 1)
 2. İşyeri (ID: 2)
@@ -42,31 +46,36 @@ yalihanemlak_test: TEST veritabanı (BOŞ - KULLANILMAYACAK!)
 ## 🔧 SORUN GİDERME
 
 ### Eğer Kategoriler Boş Görünüyorsa:
+
 1. `.env` dosyasını kontrol et:
-   ```bash
-   DB_DATABASE=yalihanemlak_ultra  # DOĞRU!
-   DB_DATABASE=yalihanemlak_test   # YANLIŞ!
-   ```
+
+    ```bash
+    DB_DATABASE=yalihanemlak_ultra  # DOĞRU!
+    DB_DATABASE=yalihanemlak_test   # YANLIŞ!
+    ```
 
 2. Cache temizle:
-   ```bash
-   php artisan config:clear
-   php artisan cache:clear
-   ```
+
+    ```bash
+    php artisan config:clear
+    php artisan cache:clear
+    ```
 
 3. Veritabanı bağlantısını doğrula:
-   ```php
-   DB::connection()->getDatabaseName();  // "yalihanemlak_ultra" dönmeli
-   ```
+    ```php
+    DB::connection()->getDatabaseName();  // "yalihanemlak_ultra" dönmeli
+    ```
 
 ## 📋 CONTEXT7 UYUMLULUK
 
 ### Kolon İsimleri
+
 - ✅ `name` (İngilizce - Context7 compliant)
 - ✅ `status` (Boolean - TINYINT(1))
 - ✅ `parent_id`, `seviye`, `order`
 
 ### Eski Türkçe Kolonlar
+
 - ⚠️ `kategori_adi` → Artık kullanılmıyor (name kullan)
 - ⚠️ `aktif` → Artık kullanılmıyor (status kullan)
 - ⚠️ `is_active` → Artık kullanılmıyor (status kullan)
@@ -85,6 +94,6 @@ yalihanemlak_test: TEST veritabanı (BOŞ - KULLANILMAYACAK!)
 **DAIMA** `DB_DATABASE=yalihanemlak_ultra` olmalı!
 
 ---
-*Son güncelleme: 2025-10-30*
-*Yalıhan Bekçi tarafından kaydedildi*
 
+_Son güncelleme: 2025-10-30_
+_Yalıhan Bekçi tarafından kaydedildi_

@@ -176,9 +176,15 @@
                         Cancel
                     </a>
                     <button type="submit"
-                            class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
-                        <i class="fas fa-save mr-2"></i>
-                        Update Redirect
+                            id="ai-redirect-edit-submit-btn"
+                            class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            onsubmit="const btn = document.getElementById('ai-redirect-edit-submit-btn'); const icon = document.getElementById('ai-redirect-edit-submit-icon'); const text = document.getElementById('ai-redirect-edit-submit-text'); const spinner = document.getElementById('ai-redirect-edit-submit-spinner'); if(btn && icon && text && spinner) { btn.disabled = true; icon.classList.add('hidden'); spinner.classList.remove('hidden'); text.textContent = 'Updating...'; }">
+                        <svg id="ai-redirect-edit-submit-icon" class="fas fa-save mr-2"></svg>
+                        <svg id="ai-redirect-edit-submit-spinner" class="hidden w-4 h-4 mr-2 animate-spin" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <span id="ai-redirect-edit-submit-text">Update Redirect</span>
                     </button>
                 </div>
             </form>
@@ -188,18 +194,29 @@
 
 @push('scripts')
 <script>
+// Context7: Improved loading state with proper error handling
 document.getElementById('editForm').addEventListener('submit', function(e) {
-    const submitBtn = this.querySelector('button[type="submit"]');
-    const originalText = submitBtn.innerHTML;
+    const submitBtn = document.getElementById('ai-redirect-edit-submit-btn');
+    const icon = document.getElementById('ai-redirect-edit-submit-icon');
+    const text = document.getElementById('ai-redirect-edit-submit-text');
+    const spinner = document.getElementById('ai-redirect-edit-submit-spinner');
 
-    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Updating...';
-    submitBtn.disabled = true;
+    if (submitBtn && icon && text && spinner) {
+        submitBtn.disabled = true;
+        icon.classList.add('hidden');
+        spinner.classList.remove('hidden');
+        text.textContent = 'Updating...';
+    }
 
-    // Re-enable after 3 seconds as fallback
+    // Re-enable after 10 seconds as fallback (in case of error)
     setTimeout(() => {
-        submitBtn.innerHTML = originalText;
-        submitBtn.disabled = false;
-    }, 3000);
+        if (submitBtn && icon && text && spinner) {
+            submitBtn.disabled = false;
+            icon.classList.remove('hidden');
+            spinner.classList.add('hidden');
+            text.textContent = 'Update Redirect';
+        }
+    }, 10000);
 });
 </script>
 @endpush

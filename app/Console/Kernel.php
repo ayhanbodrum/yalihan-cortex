@@ -16,7 +16,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('exchange:update')
             ->dailyAt('10:00')
             ->appendOutputTo(storage_path('logs/exchange-rates.log'));
-        
+
         // TestSprite otomatik öğrenme - Her gün 03:00'da
         $schedule->command('testsprite:auto-learn')
             ->dailyAt('03:00')
@@ -33,6 +33,11 @@ class Kernel extends ConsoleKernel
             ->sundays()
             ->at('02:00')
             ->appendOutputTo(storage_path('logs/context7-check.log'));
+
+        // Context7 daily compliance check - Her gün 09:00
+        $schedule->exec(base_path('scripts/context7-daily-check.sh'))
+            ->dailyAt('09:00')
+            ->appendOutputTo(storage_path('logs/context7-daily-check.log'));
     }
 
     /**

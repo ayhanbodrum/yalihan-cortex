@@ -9,60 +9,88 @@
         "name": "ilan_ozellikleri",
         "purpose": "İlan özellik değerlerini saklar",
         "columns": [
-          "id", "ilan_id", "ozellik_id", "deger", "aciklama", "status", "created_at", "updated_at"
+          "id",
+          "ilan_id",
+          "ozellik_id",
+          "deger",
+          "aciklama",
+          "status",
+          "created_at",
+          "updated_at"
         ],
         "indexes": [
-          "idx_ilan_ozellikleri_ilan_ozellik", "idx_ilan_ozellikleri_status", "idx_ilan_ozellikleri_created_at"
+          "idx_ilan_ozellikleri_ilan_ozellik",
+          "idx_ilan_ozellikleri_status",
+          "idx_ilan_ozellikleri_created_at"
         ],
-        "constraints": [
-          "unique_ilan_ozellik", "foreign_ilan_id", "foreign_ozellik_id"
-        ]
+        "constraints": ["unique_ilan_ozellik", "foreign_ilan_id", "foreign_ozellik_id"]
       },
       {
         "name": "ilan_resimleri",
         "purpose": "İlan resimlerini saklar",
         "columns": [
-          "id", "ilan_id", "dosya_adi", "dosya_yolu", "dosya_boyutu", "mime_type",
-          "sira_no", "ana_resim", "alt_text", "aciklama", "status", "created_at", "updated_at"
+          "id",
+          "ilan_id",
+          "dosya_adi",
+          "dosya_yolu",
+          "dosya_boyutu",
+          "mime_type",
+          "sira_no",
+          "ana_resim",
+          "alt_text",
+          "aciklama",
+          "status",
+          "created_at",
+          "updated_at"
         ],
         "indexes": [
-          "idx_ilan_resimleri_ilan_id", "idx_ilan_resimleri_ilan_sira",
-          "idx_ilan_resimleri_ana_resim", "idx_ilan_resimleri_status", "idx_ilan_resimleri_created_at"
+          "idx_ilan_resimleri_ilan_id",
+          "idx_ilan_resimleri_ilan_sira",
+          "idx_ilan_resimleri_ana_resim",
+          "idx_ilan_resimleri_status",
+          "idx_ilan_resimleri_created_at"
         ],
-        "constraints": [
-          "unique_ilan_resim_sira", "foreign_ilan_id"
-        ]
+        "constraints": ["unique_ilan_resim_sira", "foreign_ilan_id"]
       }
     ],
     "indexes_added": [
       {
         "table": "ilanlar",
         "indexes": [
-          "idx_ilanlar_mahalle", "idx_ilanlar_fiyat", "idx_ilanlar_updated_at", "idx_ilanlar_fiyat_status"
+          "idx_ilanlar_mahalle",
+          "idx_ilanlar_fiyat",
+          "idx_ilanlar_updated_at",
+          "idx_ilanlar_fiyat_status"
         ]
       },
       {
         "table": "ilan_kategorileri",
         "indexes": [
-          "idx_ilan_kategorileri_parent", "idx_ilan_kategorileri_status", "idx_ilan_kategorileri_order"
+          "idx_ilan_kategorileri_parent",
+          "idx_ilan_kategorileri_status",
+          "idx_ilan_kategorileri_order"
         ]
       },
       {
         "table": "kisiler",
         "indexes": [
-          "idx_kisiler_il", "idx_kisiler_ilce", "idx_kisiler_status", "idx_kisiler_created_at"
+          "idx_kisiler_il",
+          "idx_kisiler_ilce",
+          "idx_kisiler_status",
+          "idx_kisiler_created_at"
         ]
       },
       {
         "table": "ozellikler",
-        "indexes": [
-          "idx_ozellikler_kategori", "idx_ozellikler_status", "idx_ozellikler_order"
-        ]
+        "indexes": ["idx_ozellikler_kategori", "idx_ozellikler_status", "idx_ozellikler_order"]
       },
       {
         "table": "ai_logs",
         "indexes": [
-          "idx_ai_logs_user", "idx_ai_logs_provider", "idx_ai_logs_created_at", "idx_ai_logs_provider_created"
+          "idx_ai_logs_user",
+          "idx_ai_logs_provider",
+          "idx_ai_logs_created_at",
+          "idx_ai_logs_provider_created"
         ]
       }
     ],
@@ -78,7 +106,11 @@
           "POST /admin/api/ilan-ozellik/bulk-update"
         ],
         "features": [
-          "CRUD operations", "Bulk update", "Validation", "Error handling", "Status management"
+          "CRUD operations",
+          "Bulk update",
+          "Validation",
+          "Error handling",
+          "Status management"
         ]
       },
       {
@@ -92,7 +124,11 @@
           "POST /admin/api/ilan-resim/update-order"
         ],
         "features": [
-          "CRUD operations", "Image upload", "Order management", "Main image selection", "File management"
+          "CRUD operations",
+          "Image upload",
+          "Order management",
+          "Main image selection",
+          "File management"
         ]
       }
     ],

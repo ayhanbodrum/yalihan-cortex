@@ -1,120 +1,120 @@
 {
-    "ai": {
-        "provider": "openai",
-        "model": "gpt-4o-mini",
-        "max_tokens": 1500,
-        "temperature": 0.3,
-        "languages": ["tr", "en"],
-        "prompt_library": "./docs/prompts/",
-        "default_prompts": {
-            "ilan_baslik": "ilan-baslik.prompt.md",
-            "ilan_aciklama": "ilan-aciklama.prompt.md",
-            "talep_eslesme": "talep-eslesme.prompt.md",
-            "danisman_raporu": "danisman-raporu.prompt.md"
-        }
-    },
-    "limits": {
-        "ai_generate_per_day_per_user": 25,
-        "ai_response_timeout": 30,
-        "ai_max_retry_attempts": 3,
-        "ai_daily_global_limit": 1000
-    },
-    "outputs": {
-        "save_ai_logs": true,
-        "target_table": "ai_chat_logs",
-        "proposal_directory": "./docs/prompts/",
-        "backup_enabled": true,
-        "backup_retention_days": 30
-    },
-    "security": {
-        "rate_limiting": true,
-        "data_privacy": true,
-        "personal_data_filtering": true,
-        "admin_approval_required": true,
-        "csrf_protection": true
-    },
-    "database": {
-        "connection": "mysql",
-        "host": "127.0.0.1",
-        "port": 3306,
-        "database": "yalihanemlak_db",
-        "charset": "utf8mb4_unicode_ci",
-        "engine": "InnoDB"
-    },
-    "cache": {
-        "enabled": true,
-        "driver": "redis",
-        "ttl": 3600,
-        "prefix": "context7_",
-        "ai_response_cache": true,
-        "schema_cache_ttl": 7200
-    },
-    "monitoring": {
-        "log_level": "info",
-        "performance_tracking": true,
-        "error_tracking": true,
-        "usage_analytics": true,
-        "alert_thresholds": {
-            "response_time_ms": 3000,
-            "error_rate_percent": 5,
-            "daily_usage_limit": 1000
-        }
-    },
-    "workflows": {
-        "ilan_content_generation": {
-            "enabled": true,
-            "auto_approval": false,
-            "max_proposals_per_request": 3,
-            "proposal_expiry_hours": 24
-        },
-        "customer_matching": {
-            "enabled": true,
-            "max_matches_per_request": 10,
-            "scoring_threshold": 0.7,
-            "auto_match": false
-        },
-        "advisor_reports": {
-            "enabled": true,
-            "report_frequency": "weekly",
-            "auto_generate": false,
-            "include_performance_metrics": true
-        }
-    },
-    "integration": {
-        "mcp_server": {
-            "enabled": true,
-            "auto_sync": true,
-            "sync_interval_minutes": 15
-        },
-        "github_actions": {
-            "enabled": true,
-            "workflow_triggers": ["push", "pull_request"],
-            "auto_deploy": false
-        },
-        "admin_panel": {
-            "enabled": true,
-            "settings_page": "/admin/ai-settings",
-            "real_time_updates": true
-        }
-    },
-    "features": {
-        "multi_language": true,
-        "seo_optimization": true,
-        "content_suggestions": true,
-        "smart_matching": true,
-        "performance_analytics": true,
-        "custom_prompts": true
-    },
-    "notifications": {
-        "email_alerts": false,
-        "slack_integration": false,
-        "telegram_bot": false,
-        "webhook_urls": []
-    },
-    "development": {
-        "debug_mode": false,
-        "verbose_logging": false,
-        "test_mode": false,
-        "sandbox_environment": false
+  "ai": {
+    "provider": "openai",
+    "model": "gpt-4o-mini",
+    "max_tokens": 1500,
+    "temperature": 0.3,
+    "languages": ["tr", "en"],
+    "prompt_library": "./docs/prompts/",
+    "default_prompts": {
+      "ilan_baslik": "ilan-baslik.prompt.md",
+      "ilan_aciklama": "ilan-aciklama.prompt.md",
+      "talep_eslesme": "talep-eslesme.prompt.md",
+      "danisman_raporu": "danisman-raporu.prompt.md"
     }
+  },
+  "limits": {
+    "ai_generate_per_day_per_user": 25,
+    "ai_response_timeout": 30,
+    "ai_max_retry_attempts": 3,
+    "ai_daily_global_limit": 1000
+  },
+  "outputs": {
+    "save_ai_logs": true,
+    "target_table": "ai_chat_logs",
+    "proposal_directory": "./docs/prompts/",
+    "backup_enabled": true,
+    "backup_retention_days": 30
+  },
+  "security": {
+    "rate_limiting": true,
+    "data_privacy": true,
+    "personal_data_filtering": true,
+    "admin_approval_required": true,
+    "csrf_protection": true
+  },
+  "database": {
+    "connection": "mysql",
+    "host": "127.0.0.1",
+    "port": 3306,
+    "database": "yalihanemlak_db",
+    "charset": "utf8mb4_unicode_ci",
+    "engine": "InnoDB"
+  },
+  "cache": {
+    "enabled": true,
+    "driver": "redis",
+    "ttl": 3600,
+    "prefix": "context7_",
+    "ai_response_cache": true,
+    "schema_cache_ttl": 7200
+  },
+  "monitoring": {
+    "log_level": "info",
+    "performance_tracking": true,
+    "error_tracking": true,
+    "usage_analytics": true,
+    "alert_thresholds": {
+      "response_time_ms": 3000,
+      "error_rate_percent": 5,
+      "daily_usage_limit": 1000
+    }
+  },
+  "workflows": {
+    "ilan_content_generation": {
+      "enabled": true,
+      "auto_approval": false,
+      "max_proposals_per_request": 3,
+      "proposal_expiry_hours": 24
+    },
+    "customer_matching": {
+      "enabled": true,
+      "max_matches_per_request": 10,
+      "scoring_threshold": 0.7,
+      "auto_match": false
+    },
+    "advisor_reports": {
+      "enabled": true,
+      "report_frequency": "weekly",
+      "auto_generate": false,
+      "include_performance_metrics": true
+    }
+  },
+  "integration": {
+    "mcp_server": {
+      "enabled": true,
+      "auto_sync": true,
+      "sync_interval_minutes": 15
+    },
+    "github_actions": {
+      "enabled": true,
+      "workflow_triggers": ["push", "pull_request"],
+      "auto_deploy": false
+    },
+    "admin_panel": {
+      "enabled": true,
+      "settings_page": "/admin/ai-settings",
+      "real_time_updates": true
+    }
+  },
+  "features": {
+    "multi_language": true,
+    "seo_optimization": true,
+    "content_suggestions": true,
+    "smart_matching": true,
+    "performance_analytics": true,
+    "custom_prompts": true
+  },
+  "notifications": {
+    "email_alerts": false,
+    "slack_integration": false,
+    "telegram_bot": false,
+    "webhook_urls": []
+  },
+  "development": {
+    "debug_mode": false,
+    "verbose_logging": false,
+    "test_mode": false,
+    "sandbox_environment": false
+  }
 }

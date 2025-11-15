@@ -10,7 +10,7 @@ use App\Models\Setting;
 if (!function_exists('setting')) {
     /**
      * Get setting value
-     * 
+     *
      * @param string $key Setting key
      * @param mixed $default Default value
      * @return mixed
@@ -24,7 +24,7 @@ if (!function_exists('setting')) {
 if (!function_exists('setting_set')) {
     /**
      * Set setting value
-     * 
+     *
      * @param string $key Setting key
      * @param mixed $value Setting value
      * @param string $group Setting group
@@ -41,7 +41,7 @@ if (!function_exists('setting_set')) {
 if (!function_exists('setting_group')) {
     /**
      * Get settings by group
-     * 
+     *
      * @param string $group Group name
      * @return \Illuminate\Database\Eloquent\Collection
      */
@@ -54,7 +54,7 @@ if (!function_exists('setting_group')) {
 if (!function_exists('setting_groups')) {
     /**
      * Get all groups with counts
-     * 
+     *
      * @return array
      */
     function setting_groups()
@@ -62,6 +62,3 @@ if (!function_exists('setting_groups')) {
         return Setting::getGroups();
     }
 }
-
-
-

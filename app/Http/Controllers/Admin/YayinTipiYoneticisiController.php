@@ -25,15 +25,15 @@ class YayinTipiYoneticisiController extends Controller
         // Ana kategorileri getir (seviye 1 veya parent_id null)
         $anaKategoriler = IlanKategori::whereNull('parent_id')
             ->orWhere('seviye', 1)
-            ->orderBy('order')
+            ->orderBy('display_order')
             ->orderBy('name')
             ->get();
 
         // Her kategori için yayın tiplerini yükle
         $kategoriler = $anaKategoriler->map(function ($kategori) {
             $yayinTipleri = IlanKategoriYayinTipi::where('kategori_id', $kategori->id)
-                ->orderBy('order')
-                ->orderBy('yayin_tipi')
+                ->orderBy('display_order')
+                ->orderBy('name')
                 ->get();
 
             return [
@@ -61,7 +61,7 @@ class YayinTipiYoneticisiController extends Controller
         $request->validate([
             'kategori_id' => 'required|exists:ilan_kategorileri,id',
             'yayin_tipi' => 'required|string|max:255',
-            'order' => 'nullable|integer|min:0',
+            'display_order' => 'nullable|integer|min:0',
         ]);
 
         // Aynı kategori için aynı yayın tipi var mı kontrol et
@@ -79,10 +79,12 @@ class YayinTipiYoneticisiController extends Controller
         // Context7: Schema kontrolü
         $hasStatusColumn = Schema::hasColumn('ilan_kategori_yayin_tipleri', 'status');
 
+        $displayOrder = $request->display_order ?? $request->order ?? IlanKategoriYayinTipi::where('kategori_id', $request->kategori_id)->max('display_order') + 1;
+
         $data = [
             'kategori_id' => $request->kategori_id,
             'yayin_tipi' => $request->yayin_tipi,
-            'order' => $request->order ?? IlanKategoriYayinTipi::where('kategori_id', $request->kategori_id)->max('order') + 1,
+            'display_order' => $displayOrder,
         ];
 
         if ($hasStatusColumn) {
@@ -97,7 +99,7 @@ class YayinTipiYoneticisiController extends Controller
             'data' => [
                 'id' => $yayinTipi->id,
                 'yayin_tipi' => $yayinTipi->yayin_tipi,
-                'order' => $yayinTipi->order,
+                'display_order' => $yayinTipi->display_order, // Context7: API response'da display_order kullan
                 'status' => $yayinTipi->status ?? true,
             ],
         ]);
@@ -112,7 +114,7 @@ class YayinTipiYoneticisiController extends Controller
 
         $request->validate([
             'yayin_tipi' => 'required|string|max:255',
-            'order' => 'nullable|integer|min:0',
+            'display_order' => 'nullable|integer|min:0',
             'status' => 'nullable|boolean',
         ]);
 
@@ -131,9 +133,11 @@ class YayinTipiYoneticisiController extends Controller
             }
         }
 
+        $displayOrder = $request->display_order ?? $request->order ?? $yayinTipi->display_order;
+
         $data = [
             'yayin_tipi' => $request->yayin_tipi,
-            'order' => $request->order ?? $yayinTipi->order,
+            'display_order' => $displayOrder,
         ];
 
         // Context7: Schema kontrolü
@@ -150,7 +154,7 @@ class YayinTipiYoneticisiController extends Controller
             'data' => [
                 'id' => $yayinTipi->id,
                 'yayin_tipi' => $yayinTipi->yayin_tipi,
-                'order' => $yayinTipi->order,
+                'display_order' => $yayinTipi->display_order, // Context7: API response'da display_order kullan
                 'status' => $yayinTipi->status ?? true,
             ],
         ]);
@@ -219,13 +223,38 @@ class YayinTipiYoneticisiController extends Controller
         $request->validate([
             'items' => 'required|array',
             'items.*.id' => 'required|exists:ilan_kategori_yayin_tipleri,id',
-            'items.*.order' => 'required|integer|min:0',
+            'items.*.display_order' => 'nullable|integer|min:0',
         ]);
 
         DB::transaction(function () use ($request) {
+            // ✅ PERFORMANCE FIX: N+1 query önlendi - Gerçek bulk update kullanıldı
+            $updates = [];
+            $ids = [];
             foreach ($request->items as $item) {
-                IlanKategoriYayinTipi::where('id', $item['id'])
-                    ->update(['order' => $item['order']]);
+                $displayOrder = $item['display_order'] ?? $item['order'] ?? 0;
+                $id = $item['id'];
+                $updates[$id] = $displayOrder;
+                $ids[] = $id;
+            }
+
+            // ✅ PERFORMANCE FIX: CASE WHEN ile gerçek bulk update (N query → 1 query)
+            if (!empty($ids)) {
+                $cases = [];
+                $bindings = [];
+                foreach ($updates as $id => $displayOrder) {
+                    $cases[] = "WHEN ? THEN ?";
+                    $bindings[] = $id;
+                    $bindings[] = $displayOrder;
+                }
+                $idsPlaceholder = implode(',', array_fill(0, count($ids), '?'));
+                $casesSql = implode(' ', $cases);
+
+                DB::statement(
+                    "UPDATE ilan_kategori_yayin_tipleri
+                     SET display_order = CASE id {$casesSql} END
+                     WHERE id IN ({$idsPlaceholder})",
+                    array_merge($bindings, $ids)
+                );
             }
         });
 
@@ -235,4 +264,3 @@ class YayinTipiYoneticisiController extends Controller
         ]);
     }
 }
-

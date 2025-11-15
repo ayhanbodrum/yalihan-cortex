@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Cache;
 
 /**
  * Setting Model - System Configuration Storage
- * 
+ *
  * @property int $id
  * @property string $key
  * @property string|array|null $value
@@ -74,7 +74,7 @@ class Setting extends Model
     /**
      * Get setting value with caching
      * Context7: Cache-aware getter
-     * 
+     *
      * @param string $key Setting key
      * @param mixed $default Default value if not found
      * @return mixed
@@ -90,7 +90,7 @@ class Setting extends Model
     /**
      * Set setting value with auto-detection
      * Context7: Smart setter with type auto-detection
-     * 
+     *
      * @param string $key Setting key
      * @param mixed $value Setting value
      * @param string $group Setting group (default: general)
@@ -102,9 +102,9 @@ class Setting extends Model
     {
         // Auto-detect type if not provided
         if (!$type) {
-            $type = is_bool($value) ? 'boolean' 
-                  : (is_array($value) ? 'json' 
-                  : (is_numeric($value) ? 'integer' 
+            $type = is_bool($value) ? 'boolean'
+                  : (is_array($value) ? 'json'
+                  : (is_numeric($value) ? 'integer'
                   : 'string'));
         }
 
@@ -126,7 +126,7 @@ class Setting extends Model
 
     /**
      * Get all settings by group
-     * 
+     *
      * @param string $group Group name
      * @return \Illuminate\Database\Eloquent\Collection
      */
@@ -139,7 +139,7 @@ class Setting extends Model
 
     /**
      * Get all groups with counts
-     * 
+     *
      * @return array
      */
     public static function getGroups()
@@ -164,7 +164,7 @@ class Setting extends Model
             Cache::forget('setting.' . $key);
         }
         Cache::forget('settings.groups');
-        
+
         $groups = static::distinct()->pluck('group');
         foreach ($groups as $group) {
             Cache::forget('settings.group.' . $group);

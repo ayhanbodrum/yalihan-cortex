@@ -29,8 +29,8 @@
                     <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Yeni Talep Oluştur</h1>
                     <p class="mt-2 text-gray-600 dark:text-gray-400">Müşteri talebi bilgilerini girin ve sisteme kaydedin</p>
                 </div>
-                <a href="{{ route('admin.talepler.index') }}" 
-                   class="inline-flex items-center px-4 py-2.5 
+                <a href="{{ route('admin.talepler.index') }}"
+                   class="inline-flex items-center px-4 py-2.5
                           bg-gray-200 text-gray-700 font-medium
                           rounded-lg shadow-sm
                           hover:bg-gray-300 hover:scale-105 hover:shadow-md
@@ -53,16 +53,16 @@
                 <!-- Sol Kolon - Temel Bilgiler -->
                 <div class="space-y-6">
                     <!-- Temel Bilgiler Card - Tailwind CSS + Transitions -->
-                    <div class="bg-white dark:bg-gray-800 
-                                rounded-xl shadow-lg 
-                                border border-gray-200 dark:border-gray-700 
+                    <div class="bg-white dark:bg-gray-800
+                                rounded-xl shadow-lg
+                                border border-gray-200 dark:border-gray-700
                                 transition-all duration-300 ease-in-out
                                 hover:shadow-xl hover:-translate-y-1">
-                        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 
-                                    bg-gradient-to-r from-blue-50 to-indigo-50 
+                        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700
+                                    bg-gradient-to-r from-blue-50 to-indigo-50
                                     dark:from-gray-800 dark:to-gray-700
                                     rounded-t-xl">
-                            <h2 class="text-xl font-bold text-gray-900 dark:text-white 
+                            <h2 class="text-xl font-bold text-gray-900 dark:text-white
                                        flex items-center">
                                 <svg class="w-6 h-6 mr-3 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
@@ -74,30 +74,30 @@
                         <div class="p-6 space-y-6">
                             <!-- Talep Başlığı -->
                             <div class="mb-6">
-                                <label for="baslik" 
+                                <label for="baslik"
                                        class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2
                                               transition-colors duration-200">
                                     Talep Başlığı
                                     <span class="text-red-500 font-bold ml-1">*</span>
                                 </label>
                                 <input type="text" id="baslik" name="baslik"
-                                       class="w-full px-4 py-2.5 
+                                       class="w-full px-4 py-2.5
                                               border @error('baslik') border-red-500 @else border-gray-300 dark:border-gray-600 @enderror
-                                              rounded-lg 
+                                              rounded-lg
                                               bg-white dark:bg-gray-900
                                               text-gray-900 dark:text-white
                                               placeholder-gray-400 dark:placeholder-gray-500
                                               focus:ring-2 focus:ring-blue-500 focus:border-transparent
                                               transition-all duration-200 ease-in-out
                                               hover:border-blue-400
-                                              disabled:bg-gray-100 dark:disabled:bg-gray-700 
+                                              disabled:bg-gray-100 dark:disabled:bg-gray-700
                                               disabled:cursor-not-allowed"
                                        value="{{ old('baslik') }}"
-                                       placeholder="Örn: 3+1 Daire Aranıyor - Merkez" 
-                                       required 
+                                       placeholder="Örn: 3+1 Daire Aranıyor - Merkez"
+                                       required
                                        x-model="form.baslik">
                                 @error('baslik')
-                                    <div class="mt-2 text-sm text-red-600 dark:text-red-400 
+                                    <div class="mt-2 text-sm text-red-600 dark:text-red-400
                                                 flex items-start gap-1
                                                 animate-shake">
                                         <svg class="w-4 h-4 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
@@ -110,15 +110,15 @@
 
                             <!-- Açıklama -->
                             <div class="mb-6">
-                                <label for="aciklama" 
+                                <label for="aciklama"
                                        class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2
                                               transition-colors duration-200">
                                     Açıklama
                                 </label>
                                 <textarea id="aciklama" name="aciklama"
-                                          class="w-full px-4 py-2.5 
+                                          class="w-full px-4 py-2.5
                                                  border @error('aciklama') border-red-500 @else border-gray-300 dark:border-gray-600 @enderror
-                                                 rounded-lg 
+                                                 rounded-lg
                                                  bg-white dark:bg-gray-900
                                                  text-gray-900 dark:text-white
                                                  placeholder-gray-400 dark:placeholder-gray-500
@@ -126,8 +126,8 @@
                                                  transition-all duration-200 ease-in-out
                                                  hover:border-blue-400
                                                  resize-y"
-                                          rows="4" 
-                                          placeholder="Talep detaylarını açıklayın..." 
+                                          rows="4"
+                                          placeholder="Talep detaylarını açıklayın..."
                                           x-model="form.aciklama">{{ old('aciklama') }}</textarea>
                                 @error('aciklama')
                                     <div class="mt-2 text-sm text-red-600 dark:text-red-400 flex items-start gap-1">
@@ -195,15 +195,15 @@
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                                 <!-- Durum -->
                                 <div>
-                                    <label for="status" 
+                                    <label for="status"
                                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2
                                                   transition-colors duration-200">
                                         Durum <span class="text-red-500 font-bold ml-1">*</span>
                                     </label>
                                     <select id="status" name="status"
-                                            class="w-full px-4 py-2.5 
+                                            class="w-full px-4 py-2.5
                                                    border @error('status') border-red-500 @else border-gray-300 dark:border-gray-600 @enderror
-                                                   rounded-lg 
+                                                   rounded-lg
                                                    bg-white dark:bg-gray-900
                                                    text-gray-900 dark:text-white
                                                    focus:ring-2 focus:ring-blue-500 focus:border-transparent
@@ -235,18 +235,18 @@
                                     <div class="flex items-center h-11">
                                         <input type="hidden" name="one_cikan" value="0">
                                         <input type="checkbox" id="one_cikan" name="one_cikan" value="1"
-                                               class="w-5 h-5 
-                                                      text-orange-600 
-                                                      border-gray-300 dark:border-gray-600 
-                                                      rounded 
+                                               class="w-5 h-5
+                                                      text-orange-600
+                                                      border-gray-300 dark:border-gray-600
+                                                      rounded
                                                       focus:ring-2 focus:ring-orange-500
                                                       transition-all duration-200
                                                       cursor-pointer
                                                       hover:scale-110"
                                                {{ old('one_cikan') ? 'checked' : '' }}
                                                x-model="form.one_cikan">
-                                        <label for="one_cikan" 
-                                               class="ml-3 text-sm text-gray-700 dark:text-gray-300 
+                                        <label for="one_cikan"
+                                               class="ml-3 text-sm text-gray-700 dark:text-gray-300
                                                       cursor-pointer select-none
                                                       hover:text-orange-600 dark:hover:text-orange-400
                                                       transition-colors duration-200">
@@ -262,20 +262,20 @@
                 <!-- Sağ Kolon - Lokasyon ve Kişi Bilgileri -->
                 <div class="space-y-6">
                     <!-- 📍 LOKASYON BİLGİLERİ - Context7 Standart Form Pattern -->
-                    <div class="bg-white dark:bg-gray-800 
-                                rounded-xl shadow-lg 
-                                border-2 border-gray-200 dark:border-gray-600 
+                    <div class="bg-white dark:bg-gray-800
+                                rounded-xl shadow-lg
+                                border-2 border-gray-200 dark:border-gray-600
                                 transition-all duration-300 ease-in-out
                                 hover:shadow-2xl hover:-translate-y-1">
-                        
+
                         <!-- Card Header -->
-                        <div class="px-6 py-4 border-b-2 border-gray-200 dark:border-gray-600 
+                        <div class="px-6 py-4 border-b-2 border-gray-200 dark:border-gray-600
                                     bg-gradient-to-r from-green-50 via-teal-50 to-emerald-50
                                     dark:from-gray-700 dark:via-gray-700 dark:to-gray-700
                                     rounded-t-xl">
                             <div class="flex items-center justify-between">
                                 <h2 class="text-xl font-bold text-gray-900 dark:text-white flex items-center">
-                                    <div class="w-10 h-10 bg-green-500 dark:bg-green-600 rounded-lg flex items-center justify-center mr-3 
+                                    <div class="w-10 h-10 bg-green-500 dark:bg-green-600 rounded-lg flex items-center justify-center mr-3
                                                 shadow-lg transform hover:scale-110 transition-all duration-200">
                                         <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
@@ -289,7 +289,7 @@
                                 </span>
                             </div>
                         </div>
-                        
+
                         <!-- Card Body -->
                         <div class="p-6 bg-gray-50 dark:bg-gray-900 rounded-b-xl">
                             <div class="space-y-6">
@@ -310,7 +310,7 @@
                                         <select id="il_id" name="il_id"
                                                 class="w-full px-4 py-3
                                                        border-2 @error('il_id') border-red-500 dark:border-red-400 @else border-gray-300 dark:border-gray-500 @enderror
-                                                       rounded-lg 
+                                                       rounded-lg
                                                        bg-white dark:bg-gray-900
                                                        text-gray-900 dark:text-white
                                                        font-medium
@@ -357,14 +357,14 @@
                                         <select id="ilce_id" name="ilce_id"
                                                 class="w-full px-4 py-3
                                                        border-2 border-gray-300 dark:border-gray-500
-                                                       rounded-lg 
+                                                       rounded-lg
                                                        bg-white dark:bg-gray-900
                                                        text-gray-900 dark:text-white
                                                        font-medium
                                                        placeholder-gray-400 dark:placeholder-gray-500
                                                        focus:ring-4 focus:ring-green-500/50 focus:border-green-500
                                                        hover:border-green-400 dark:hover:border-green-500
-                                                       disabled:bg-gray-100 dark:disabled:bg-gray-700 
+                                                       disabled:bg-gray-100 dark:disabled:bg-gray-700
                                                        disabled:border-gray-200 dark:disabled:border-gray-600
                                                        disabled:text-gray-400 dark:disabled:text-gray-500
                                                        disabled:cursor-not-allowed
@@ -373,7 +373,7 @@
                                                        shadow-sm hover:shadow-md"
                                                 style="color-scheme: light dark;"
                                                 x-model="form.ilce_id"
-                                                :disabled="!form.il_id" 
+                                                :disabled="!form.il_id"
                                                 @change="loadMahalleler()">
                                             <option value="" class="bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-400 py-2">-- İlçe Seçiniz --</option>
                                             <template x-for="ilce in ilceler" :key="ilce.id">
@@ -420,14 +420,14 @@
                                     <select id="mahalle_id" name="mahalle_id"
                                             class="w-full px-4 py-3
                                                    border-2 border-gray-300 dark:border-gray-500
-                                                   rounded-lg 
+                                                   rounded-lg
                                                    bg-white dark:bg-gray-900
                                                    text-gray-900 dark:text-white
                                                    font-medium
                                                    placeholder-gray-400 dark:placeholder-gray-500
                                                    focus:ring-4 focus:ring-green-500/50 focus:border-green-500
                                                    hover:border-green-400 dark:hover:border-green-500
-                                                   disabled:bg-gray-100 dark:disabled:bg-gray-700 
+                                                   disabled:bg-gray-100 dark:disabled:bg-gray-700
                                                    disabled:border-gray-200 dark:disabled:border-gray-600
                                                    disabled:text-gray-400 dark:disabled:text-gray-500
                                                    disabled:cursor-not-allowed
@@ -435,7 +435,7 @@
                                                    cursor-pointer
                                                    shadow-sm hover:shadow-md"
                                             style="color-scheme: light dark;"
-                                            x-model="form.mahalle_id" 
+                                            x-model="form.mahalle_id"
                                             :disabled="!form.ilce_id">
                                         <option value="" class="bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-400 py-2">-- Mahalle Seçiniz --</option>
                                         <template x-for="mahalle in mahalleler" :key="mahalle.id">
@@ -481,13 +481,13 @@
                     </div>
 
                     <!-- Kişi Bilgileri - Tailwind CSS + Transitions -->
-                    <div class="bg-white dark:bg-gray-800 
-                                rounded-xl shadow-lg 
-                                border border-gray-200 dark:border-gray-700 
+                    <div class="bg-white dark:bg-gray-800
+                                rounded-xl shadow-lg
+                                border border-gray-200 dark:border-gray-700
                                 transition-all duration-300 ease-in-out
                                 hover:shadow-xl hover:-translate-y-1">
-                        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 
-                                    bg-gradient-to-r from-purple-50 to-pink-50 
+                        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700
+                                    bg-gradient-to-r from-purple-50 to-pink-50
                                     dark:from-gray-800 dark:to-gray-700
                                     rounded-t-xl">
                             <h2 class="text-xl font-bold text-gray-900 dark:text-white flex items-center">
@@ -512,10 +512,10 @@
                                 <!-- CRITICAL FIX: relative position for absolute dropdown -->
                                 <div class="context7-live-search relative" data-search-type="kisiler" data-max-results="20">
                                     <input type="hidden" id="kisi_id" name="kisi_id" x-model="form.kisi_id">
-                                    <input type="text" 
+                                    <input type="text"
                                            class="w-full px-4 py-3
                                                   border-2 border-gray-300 dark:border-gray-500
-                                                  rounded-lg 
+                                                  rounded-lg
                                                   bg-white dark:bg-gray-800
                                                   text-gray-900 dark:text-gray-100
                                                   font-medium
@@ -523,15 +523,15 @@
                                                   focus:ring-4 focus:ring-purple-500/50 focus:border-purple-500
                                                   hover:border-purple-400 dark:hover:border-purple-500
                                                   transition-all duration-200 ease-in-out
-                                                  shadow-sm hover:shadow-md" 
-                                           placeholder="🔍 Ad, soyad, telefon ile ara..." 
+                                                  shadow-sm hover:shadow-md"
+                                           placeholder="🔍 Ad, soyad, telefon ile ara..."
                                            autocomplete="off">
                                     <!-- Dropdown Results - Absolute positioned -->
-                                    <div class="context7-search-results 
-                                                absolute z-[9999] w-full mt-1 
-                                                bg-white dark:bg-gray-800 
-                                                border-2 border-purple-300 dark:border-purple-700 
-                                                rounded-lg shadow-2xl 
+                                    <div class="context7-search-results
+                                                absolute z-[9999] w-full mt-1
+                                                bg-white dark:bg-gray-800
+                                                border-2 border-purple-300 dark:border-purple-700
+                                                rounded-lg shadow-2xl
                                                 hidden max-h-96 overflow-y-auto
                                                 animate-fadeIn"></div>
                                 </div>
@@ -547,10 +547,10 @@
                                     <span>Yazmaya başlayın, sonuçlar anlık görünecek</span>
                                 </div>
                             </div>
-                                
+
                                 <!-- Action Buttons -->
                                 <div class="flex gap-2 mt-3">
-                                    <button type="button" 
+                                    <button type="button"
                                             class="inline-flex items-center px-3 py-2 text-sm
                                                    bg-purple-100 text-purple-700 font-medium
                                                    rounded-lg
@@ -565,7 +565,7 @@
                                         </svg>
                                         Yeni Kişi Ekle
                                     </button>
-                                    <button type="button" 
+                                    <button type="button"
                                             class="inline-flex items-center px-3 py-2 text-sm
                                                    border-2 border-gray-300 text-gray-700 font-medium
                                                    rounded-lg
@@ -574,7 +574,7 @@
                                                    focus:ring-2 focus:ring-gray-400
                                                    transition-all duration-200
                                                    dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-800"
-                                            x-show="form.kisi_id" 
+                                            x-show="form.kisi_id"
                                             @click="clearKisi()">
                                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
@@ -582,7 +582,7 @@
                                         Temizle
                                     </button>
                                 </div>
-                                
+
                                 @error('kisi_id')
                                     <div class="mt-2 text-sm text-red-600 dark:text-red-400 flex items-start gap-1">
                                         <svg class="w-4 h-4 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
@@ -594,11 +594,11 @@
                             </div>
 
                             <!-- Yeni Kişi Formu (Collapsible) -->
-                            <div x-show="showNewKisiForm" 
-                                 x-collapse 
-                                 class="mt-6 p-6 
-                                        bg-purple-50 dark:bg-gray-700 
-                                        border-2 border-purple-200 dark:border-purple-800 
+                            <div x-show="showNewKisiForm"
+                                 x-collapse
+                                 class="mt-6 p-6
+                                        bg-purple-50 dark:bg-gray-700
+                                        border-2 border-purple-200 dark:border-purple-800
                                         rounded-xl
                                         transition-all duration-500">
                                 <h4 class="text-lg font-bold text-purple-900 dark:text-purple-200 mb-4 flex items-center">
@@ -615,16 +615,16 @@
                                             Ad
                                         </label>
                                         <input type="text" id="kisi_ad" name="kisi_ad"
-                                               class="w-full px-4 py-2.5 
-                                                      border border-gray-300 dark:border-gray-600 
-                                                      rounded-lg 
+                                               class="w-full px-4 py-2.5
+                                                      border border-gray-300 dark:border-gray-600
+                                                      rounded-lg
                                                       bg-white dark:bg-gray-800
                                                       text-gray-900 dark:text-white
                                                       placeholder-gray-400
                                                       focus:ring-2 focus:ring-purple-500 focus:border-transparent
                                                       transition-all duration-200"
-                                               value="{{ old('kisi_ad') }}" 
-                                               placeholder="Ad" 
+                                               value="{{ old('kisi_ad') }}"
+                                               placeholder="Ad"
                                                x-model="form.kisi_ad">
                                     </div>
 
@@ -633,15 +633,15 @@
                                             Soyad
                                         </label>
                                         <input type="text" id="kisi_soyad" name="kisi_soyad"
-                                               class="w-full px-4 py-2.5 
-                                                      border border-gray-300 dark:border-gray-600 
-                                                      rounded-lg 
+                                               class="w-full px-4 py-2.5
+                                                      border border-gray-300 dark:border-gray-600
+                                                      rounded-lg
                                                       bg-white dark:bg-gray-800
                                                       text-gray-900 dark:text-white
                                                       placeholder-gray-400
                                                       focus:ring-2 focus:ring-purple-500 focus:border-transparent
                                                       transition-all duration-200"
-                                               value="{{ old('kisi_soyad') }}" 
+                                               value="{{ old('kisi_soyad') }}"
                                                placeholder="Soyad"
                                                x-model="form.kisi_soyad">
                                     </div>
@@ -654,15 +654,15 @@
                                             Telefon
                                         </label>
                                         <input type="tel" id="kisi_telefon" name="kisi_telefon"
-                                               class="w-full px-4 py-2.5 
-                                                      border border-gray-300 dark:border-gray-600 
-                                                      rounded-lg 
+                                               class="w-full px-4 py-2.5
+                                                      border border-gray-300 dark:border-gray-600
+                                                      rounded-lg
                                                       bg-white dark:bg-gray-800
                                                       text-gray-900 dark:text-white
                                                       placeholder-gray-400
                                                       focus:ring-2 focus:ring-purple-500 focus:border-transparent
                                                       transition-all duration-200"
-                                               value="{{ old('kisi_telefon') }}" 
+                                               value="{{ old('kisi_telefon') }}"
                                                placeholder="0xxx xxx xx xx"
                                                x-model="form.kisi_telefon">
                                     </div>
@@ -672,15 +672,15 @@
                                             E-posta
                                         </label>
                                         <input type="email" id="kisi_email" name="kisi_email"
-                                               class="w-full px-4 py-2.5 
-                                                      border border-gray-300 dark:border-gray-600 
-                                                      rounded-lg 
+                                               class="w-full px-4 py-2.5
+                                                      border border-gray-300 dark:border-gray-600
+                                                      rounded-lg
                                                       bg-white dark:bg-gray-800
                                                       text-gray-900 dark:text-white
                                                       placeholder-gray-400
                                                       focus:ring-2 focus:ring-purple-500 focus:border-transparent
                                                       transition-all duration-200"
-                                               value="{{ old('kisi_email') }}" 
+                                               value="{{ old('kisi_email') }}"
                                                placeholder="ornek@email.com"
                                                x-model="form.kisi_email">
                                     </div>
@@ -693,9 +693,9 @@
                                     Sorumlu Danışman
                                 </label>
                                 <select id="danisman_id" name="danisman_id"
-                                        class="w-full px-4 py-2.5 
-                                               border border-gray-300 dark:border-gray-600 
-                                               rounded-lg 
+                                        class="w-full px-4 py-2.5
+                                               border border-gray-300 dark:border-gray-600
+                                               rounded-lg
                                                bg-white dark:bg-gray-900
                                                text-gray-900 dark:text-white
                                                focus:ring-2 focus:ring-purple-500 focus:border-transparent
@@ -725,7 +725,7 @@
             <div class="mt-8 space-y-6">
                 <div class="flex items-center justify-between mb-6">
                     <div class="flex items-center gap-3">
-                        <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center 
+                        <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center
                                     shadow-lg transform hover:scale-110 transition-all duration-300">
                             <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
@@ -747,11 +747,11 @@
 
                 <!-- AI Widget Grid - INTEGRATED with parent form -->
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    
+
                     <!-- 1. AI Talep Analizi -->
-                    <div class="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-700 
-                                rounded-xl border-2 border-blue-200 dark:border-blue-800 
-                                shadow-lg hover:shadow-xl 
+                    <div class="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-700
+                                rounded-xl border-2 border-blue-200 dark:border-blue-800
+                                shadow-lg hover:shadow-xl
                                 transform hover:-translate-y-1
                                 transition-all duration-300">
                         <div class="p-6">
@@ -767,9 +767,9 @@
                                         <p class="text-xs text-gray-600 dark:text-gray-400">AI değerlendirme</p>
                                     </div>
                                 </div>
-                                <button @click="analyzeRequest()" 
+                                <button @click="analyzeRequest()"
                                         :disabled="aiLoading.analysis"
-                                        class="px-4 py-2 
+                                        class="px-4 py-2
                                                bg-blue-600 text-white text-sm font-medium
                                                rounded-lg shadow
                                                hover:bg-blue-700 hover:scale-105
@@ -786,12 +786,12 @@
                                     </span>
                                 </button>
                             </div>
-                            <div x-show="aiResults.analysis" 
+                            <div x-show="aiResults.analysis"
                                  x-transition
                                  class="mt-4 p-4 bg-white dark:bg-gray-800 rounded-lg border border-blue-200 dark:border-blue-700">
                                 <div x-html="aiResults.analysis" class="text-sm text-gray-700 dark:text-gray-300 prose prose-sm max-w-none"></div>
                             </div>
-                            <div x-show="!aiResults.analysis && !aiLoading.analysis" 
+                            <div x-show="!aiResults.analysis && !aiLoading.analysis"
                                  class="mt-4 p-4 bg-blue-100 dark:bg-blue-900 rounded-lg text-center">
                                 <p class="text-sm text-blue-800 dark:text-blue-200">Form doldurun, AI analiz etsin! 🎯</p>
                             </div>
@@ -799,9 +799,9 @@
                     </div>
 
                     <!-- 2. AI Fiyat Önerisi -->
-                    <div class="bg-gradient-to-br from-green-50 to-teal-50 dark:from-gray-800 dark:to-gray-700 
-                                rounded-xl border-2 border-green-200 dark:border-green-800 
-                                shadow-lg hover:shadow-xl 
+                    <div class="bg-gradient-to-br from-green-50 to-teal-50 dark:from-gray-800 dark:to-gray-700
+                                rounded-xl border-2 border-green-200 dark:border-green-800
+                                shadow-lg hover:shadow-xl
                                 transform hover:-translate-y-1
                                 transition-all duration-300">
                         <div class="p-6">
@@ -817,9 +817,9 @@
                                         <p class="text-xs text-gray-600 dark:text-gray-400">Pazar analizi</p>
                                     </div>
                                 </div>
-                                <button @click="suggestPrice()" 
+                                <button @click="suggestPrice()"
                                         :disabled="aiLoading.price || !form.il_id"
-                                        class="px-4 py-2 
+                                        class="px-4 py-2
                                                bg-green-600 text-white text-sm font-medium
                                                rounded-lg shadow
                                                hover:bg-green-700 hover:scale-105
@@ -836,12 +836,12 @@
                                     </span>
                                 </button>
                             </div>
-                            <div x-show="aiResults.price" 
+                            <div x-show="aiResults.price"
                                  x-transition
                                  class="mt-4 p-4 bg-white dark:bg-gray-800 rounded-lg border border-green-200 dark:border-green-700">
                                 <div x-html="aiResults.price" class="text-sm text-gray-700 dark:text-gray-300"></div>
                             </div>
-                            <div x-show="!aiResults.price && !aiLoading.price" 
+                            <div x-show="!aiResults.price && !aiLoading.price"
                                  class="mt-4 p-4 bg-green-100 dark:bg-green-900 rounded-lg text-center">
                                 <p class="text-sm text-green-800 dark:text-green-200">Lokasyon seçin, AI fiyat önersin! 💰</p>
                             </div>
@@ -849,9 +849,9 @@
                     </div>
 
                     <!-- 3. AI İlan Eşleştirme -->
-                    <div class="bg-gradient-to-br from-purple-50 to-pink-50 dark:from-gray-800 dark:to-gray-700 
-                                rounded-xl border-2 border-purple-200 dark:border-purple-800 
-                                shadow-lg hover:shadow-xl 
+                    <div class="bg-gradient-to-br from-purple-50 to-pink-50 dark:from-gray-800 dark:to-gray-700
+                                rounded-xl border-2 border-purple-200 dark:border-purple-800
+                                shadow-lg hover:shadow-xl
                                 transform hover:-translate-y-1
                                 transition-all duration-300">
                         <div class="p-6">
@@ -867,9 +867,9 @@
                                         <p class="text-xs text-gray-600 dark:text-gray-400">Uygun ilanlar</p>
                                     </div>
                                 </div>
-                                <button @click="findMatches()" 
+                                <button @click="findMatches()"
                                         :disabled="aiLoading.matches || !form.kategori_id"
-                                        class="px-4 py-2 
+                                        class="px-4 py-2
                                                bg-purple-600 text-white text-sm font-medium
                                                rounded-lg shadow
                                                hover:bg-purple-700 hover:scale-105
@@ -886,11 +886,11 @@
                                     </span>
                                 </button>
                             </div>
-                            <div x-show="aiResults.matches && aiResults.matches.length > 0" 
+                            <div x-show="aiResults.matches && aiResults.matches.length > 0"
                                  x-transition
                                  class="mt-4 space-y-2">
                                 <template x-for="match in aiResults.matches" :key="match.id">
-                                    <div class="p-3 bg-white dark:bg-gray-800 rounded-lg border border-purple-200 dark:border-purple-700 
+                                    <div class="p-3 bg-white dark:bg-gray-800 rounded-lg border border-purple-200 dark:border-purple-700
                                                 hover:shadow-md transition-all duration-200">
                                         <div class="flex items-center justify-between">
                                             <div class="flex-1">
@@ -910,7 +910,7 @@
                                     </div>
                                 </template>
                             </div>
-                            <div x-show="!aiResults.matches || aiResults.matches.length === 0" 
+                            <div x-show="!aiResults.matches || aiResults.matches.length === 0"
                                  x-show="!aiLoading.matches"
                                  class="mt-4 p-4 bg-purple-100 dark:bg-purple-900 rounded-lg text-center">
                                 <p class="text-sm text-purple-800 dark:text-purple-200">Kategori seçin, AI uygun ilanları bulsun! 🏠</p>
@@ -919,9 +919,9 @@
                     </div>
 
                     <!-- 4. AI Akıllı Açıklama -->
-                    <div class="bg-gradient-to-br from-orange-50 to-amber-50 dark:from-gray-800 dark:to-gray-700 
-                                rounded-xl border-2 border-orange-200 dark:border-orange-800 
-                                shadow-lg hover:shadow-xl 
+                    <div class="bg-gradient-to-br from-orange-50 to-amber-50 dark:from-gray-800 dark:to-gray-700
+                                rounded-xl border-2 border-orange-200 dark:border-orange-800
+                                shadow-lg hover:shadow-xl
                                 transform hover:-translate-y-1
                                 transition-all duration-300">
                         <div class="p-6">
@@ -937,9 +937,9 @@
                                         <p class="text-xs text-gray-600 dark:text-gray-400">AI metin oluştur</p>
                                     </div>
                                 </div>
-                                <button @click="generateDescription()" 
+                                <button @click="generateDescription()"
                                         :disabled="aiLoading.description || !form.baslik"
-                                        class="px-4 py-2 
+                                        class="px-4 py-2
                                                bg-orange-600 text-white text-sm font-medium
                                                rounded-lg shadow
                                                hover:bg-orange-700 hover:scale-105
@@ -956,12 +956,12 @@
                                     </span>
                                 </button>
                             </div>
-                            <div x-show="aiResults.description" 
+                            <div x-show="aiResults.description"
                                  x-transition
                                  class="mt-4 p-4 bg-white dark:bg-gray-800 rounded-lg border border-orange-200 dark:border-orange-700">
                                 <p x-text="aiResults.description" class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed"></p>
-                                <button @click="applyDescription()" 
-                                        class="mt-3 px-3 py-1.5 
+                                <button @click="applyDescription()"
+                                        class="mt-3 px-3 py-1.5
                                                bg-orange-600 text-white text-xs font-medium
                                                rounded-md
                                                hover:bg-orange-700 hover:scale-105
@@ -969,7 +969,7 @@
                                     Açıklamaya Uygula ✨
                                 </button>
                             </div>
-                            <div x-show="!aiResults.description && !aiLoading.description" 
+                            <div x-show="!aiResults.description && !aiLoading.description"
                                  class="mt-4 p-4 bg-orange-100 dark:bg-orange-900 rounded-lg text-center">
                                 <p class="text-sm text-orange-800 dark:text-orange-200">Başlık girin, AI açıklama yazsın! ✍️</p>
                             </div>
@@ -981,7 +981,7 @@
 
             <!-- Form Actions - Tailwind CSS + Transitions -->
             <div class="flex items-center justify-end gap-4 py-6">
-                <button type="submit" 
+                <button type="submit"
                         class="inline-flex items-center px-6 py-3
                                bg-orange-600 text-white font-semibold
                                rounded-lg shadow-md
@@ -991,7 +991,7 @@
                                transition-all duration-200 ease-in-out
                                disabled:opacity-50 disabled:cursor-not-allowed
                                dark:bg-orange-500 dark:hover:bg-orange-600"
-                        :disabled="loading" 
+                        :disabled="loading"
                         aria-label="Talebi kaydet">
                     <span x-show="!loading" class="flex items-center">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1008,7 +1008,7 @@
                     </span>
                 </button>
 
-                <button type="button" 
+                <button type="button"
                         class="inline-flex items-center px-6 py-3
                                bg-gray-200 text-gray-700 font-semibold
                                rounded-lg shadow-sm
@@ -1025,7 +1025,7 @@
                     Temizle
                 </button>
 
-                <a href="{{ route('admin.talepler.index') }}" 
+                <a href="{{ route('admin.talepler.index') }}"
                    class="inline-flex items-center px-6 py-3
                           border-2 border-gray-300 text-gray-700 font-semibold
                           rounded-lg
@@ -1054,21 +1054,21 @@
         document.addEventListener('DOMContentLoaded', function() {
             console.log('📋 Talepler Create Page Loaded');
             console.log('🔍 Checking Context7 Live Search...');
-            
+
             setTimeout(() => {
                 const searchContainer = document.querySelector('.context7-live-search');
                 const searchInput = document.querySelector('.context7-live-search input[type="text"]');
-                
+
                 console.log('📦 Search Container:', searchContainer ? 'FOUND ✅' : 'NOT FOUND ❌');
                 console.log('📦 Search Input:', searchInput ? 'FOUND ✅' : 'NOT FOUND ❌');
                 console.log('📦 Context7LiveSearch Instance:', typeof window.Context7LiveSearch !== 'undefined' ? 'LOADED ✅' : 'NOT LOADED ❌');
                 console.log('📦 Active Instance:', window.context7LiveSearchInstance ? 'ACTIVE ✅' : 'INACTIVE ❌');
-                
+
                 if (searchInput) {
                     searchInput.addEventListener('focus', () => {
                         console.log('🔍 Search input FOCUSED - Live search should activate');
                     });
-                    
+
                     searchInput.addEventListener('input', (e) => {
                         console.log('⌨️ User typing:', e.target.value);
                     });
@@ -1210,7 +1210,7 @@
                     matches: false,
                     description: false
                 },
-                
+
                 aiResults: {
                     analysis: '',
                     price: '',
@@ -1249,7 +1249,7 @@
                         });
 
                         const data = await response.json();
-                        
+
                         if (data.success && data.analysis) {
                             this.aiResults.analysis = `
                                 <div class="space-y-3">
@@ -1312,7 +1312,7 @@
                         });
 
                         const data = await response.json();
-                        
+
                         if (data.success && data.price) {
                             this.aiResults.price = `
                                 <div class="space-y-3">
@@ -1367,7 +1367,7 @@
                         });
 
                         const data = await response.json();
-                        
+
                         if (data.success && data.matches) {
                             this.aiResults.matches = data.matches.slice(0, 5).map(match => ({
                                 id: match.id,
@@ -1376,7 +1376,7 @@
                                 price: `${(match.price || 0).toLocaleString('tr-TR')} TL`,
                                 score: match.match_score || 0.85
                             }));
-                            
+
                             if (this.aiResults.matches.length > 0) {
                                 window.toast?.success(`${this.aiResults.matches.length} eşleşme bulundu!`);
                             }
@@ -1415,7 +1415,7 @@
                         });
 
                         const data = await response.json();
-                        
+
                         if (data.success && data.description) {
                             this.aiResults.description = data.description;
                             window.toast?.success('AI açıklama hazır!');

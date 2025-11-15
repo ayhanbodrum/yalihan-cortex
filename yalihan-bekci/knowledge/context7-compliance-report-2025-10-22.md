@@ -61,20 +61,20 @@ Uyumluluk Oranı: %100
 
 ```yaml
 1. Column Existence Check:
-   - Migration'da Schema::hasColumn() kullan
-   - Örnek: if (!Schema::hasColumn('ilanlar', 'ada_no')) { ... }
+    - Migration'da Schema::hasColumn() kullan
+    - Örnek: if (!Schema::hasColumn('ilanlar', 'ada_no')) { ... }
 
 2. $taslak değişken kontrolü:
-   - Controller'da: $taslak = Ilan::where('status', 'Taslak')->count();
+    - Controller'da: $taslak = Ilan::where('status', 'Taslak')->count();
 
 3. $status değişken kontrolü:
-   - View'a gönder: return view('...', ['status' => $status]);
+    - View'a gönder: return view('...', ['status' => $status]);
 
 4. $etiketler değişken kontrolü:
-   - Controller'da tanımla ve view'a gönder
+    - Controller'da tanımla ve view'a gönder
 
 5. $ulkeler değişken kontrolü:
-   - Controller'da: $ulkeler = Ulke::all();
+    - Controller'da: $ulkeler = Ulke::all();
 ```
 
 ---
@@ -237,7 +237,7 @@ class Context7LiveSearch {
         this.maxResults = 20;
         // Debounce 300ms
     }
-    
+
     async search(query) {
         const response = await fetch(
             `/api/${this.searchType}/search?q=${query}&limit=${this.maxResults}`
@@ -251,12 +251,14 @@ class Context7LiveSearch {
 
 ```html
 <!-- ✅ Context7 Standard -->
-<div class="context7-live-search" 
-     data-search-type="kisiler" 
-     data-max-results="20"
-     data-creatable="true">
-    <input type="hidden" name="kisi_id" id="kisi_id">
-    <input type="text" class="neo-input" placeholder="Ad, soyad, telefon...">
+<div
+    class="context7-live-search"
+    data-search-type="kisiler"
+    data-max-results="20"
+    data-creatable="true"
+>
+    <input type="hidden" name="kisi_id" id="kisi_id" />
+    <input type="text" class="neo-input" placeholder="Ad, soyad, telefon..." />
     <div class="context7-search-results ..."></div>
 </div>
 
@@ -267,21 +269,21 @@ class Context7LiveSearch {
 
 ```json
 {
-  "success": true,
-  "count": 3,
-  "data": [
-    {
-      "id": 123,
-      "text": "Ahmet Yılmaz",
-      "kisi_tipi": "Alıcı",
-      "telefon": "0533 XXX XX 02"
+    "success": true,
+    "count": 3,
+    "data": [
+        {
+            "id": 123,
+            "text": "Ahmet Yılmaz",
+            "kisi_tipi": "Alıcı",
+            "telefon": "0533 XXX XX 02"
+        }
+    ],
+    "search_metadata": {
+        "query": "Ahmet",
+        "response_time": 145,
+        "context7_compliant": true
     }
-  ],
-  "search_metadata": {
-    "query": "Ahmet",
-    "response_time": 145,
-    "context7_compliant": true
-  }
 }
 ```
 
@@ -318,7 +320,7 @@ $ilan->is_active = true;     // Field: is_active ❌ (Deprecated!)
 ```blade
 {{-- Her zaman fiyat + para birimi birlikte! --}}
 <div class="text-2xl font-bold">
-    {{ number_format($ilan->fiyat, 0, ',', '.') }} 
+    {{ number_format($ilan->fiyat, 0, ',', '.') }}
     @if($ilan->para_birimi === 'TRY') ₺
     @elseif($ilan->para_birimi === 'USD') $
     @elseif($ilan->para_birimi === 'EUR') €
@@ -331,15 +333,15 @@ $ilan->is_active = true;     // Field: is_active ❌ (Deprecated!)
 
 ```yaml
 ✅ İZİNLİ:
-  - Vanilla JS (0KB)
-  - Alpine.js (15KB - zaten mevcut)
-  - Tailwind CSS
+    - Vanilla JS (0KB)
+    - Alpine.js (15KB - zaten mevcut)
+    - Tailwind CSS
 
 ❌ YASAK:
-  - React-Select (170KB)
-  - Choices.js (48KB)
-  - Select2, Selectize.js
-  - jQuery plugins
+    - React-Select (170KB)
+    - Choices.js (48KB)
+    - Select2, Selectize.js
+    - jQuery plugins
 
 Mevcut Standart: Context7 Live Search (3KB Vanilla JS)
 API Pattern: /api/{type}/search?q=...&limit=20
@@ -397,4 +399,3 @@ resources/views/admin/ilanlar/components/arsa-calculation.blade.php
 **Hazırlayan:** Yalıhan Bekçi AI Guardian System  
 **Tarih:** 22 Ekim 2025 Akşam  
 **Durum:** ✅ BAŞARILI - TÜM MCP'LER ÖĞRENMELİ
-

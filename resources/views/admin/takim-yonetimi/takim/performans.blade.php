@@ -3,8 +3,8 @@
 @section('title', 'Takım Performans Raporu')
 
 @section('content')
-    <div class="content-header mb-8">
-        <div class="container-fluid">
+    <div class="mb-8">
+        <div class="w-full">
             <div class="flex justify-between items-center">
                 <div class="space-y-2">
                     <h1 class="text-3xl font-bold text-gray-800 dark:text-gray-200 flex items-center">
@@ -23,7 +23,9 @@
                     </p>
                 </div>
                 <div class="flex items-center space-x-3">
-                    <button type="button" class="inline-flex items-center px-6 py-3 bg-orange-600 text-white font-semibold rounded-lg shadow-md hover:bg-orange-700 hover:scale-105 hover:shadow-lg active:scale-95 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:outline-none transition-all duration-200 touch-target-optimized touch-target-optimized" onclick="context7Analiz()">
+                    <button type="button"
+                        class="inline-flex items-center px-6 py-3 bg-orange-600 text-white font-semibold rounded-lg shadow-md hover:bg-orange-700 hover:scale-105 hover:shadow-lg active:scale-95 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:outline-none transition-all duration-200 touch-target-optimized touch-target-optimized"
+                        onclick="context7Analiz()">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z">
@@ -31,7 +33,9 @@
                         </svg>
                         Context7 Analiz
                     </button>
-                    <button type="button" class="inline-flex items-center px-6 py-3 bg-orange-600 text-white font-semibold rounded-lg shadow-md hover:bg-orange-700 hover:scale-105 hover:shadow-lg active:scale-95 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:outline-none transition-all duration-200 touch-target-optimized touch-target-optimized" onclick="raporIndir()">
+                    <button type="button"
+                        class="inline-flex items-center px-6 py-3 bg-orange-600 text-white font-semibold rounded-lg shadow-md hover:bg-orange-700 hover:scale-105 hover:shadow-lg active:scale-95 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:outline-none transition-all duration-200 touch-target-optimized touch-target-optimized"
+                        onclick="raporIndir()">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
@@ -39,7 +43,9 @@
                         </svg>
                         Rapor İndir
                     </button>
-                    <button type="button" class="inline-flex items-center px-6 py-3 bg-gray-600 text-white font-semibold rounded-lg shadow-md hover:bg-gray-700 hover:scale-105 hover:shadow-lg active:scale-95 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all duration-200 touch-target-optimized touch-target-optimized" onclick="raporPaylas()">
+                    <button type="button"
+                        class="inline-flex items-center px-6 py-3 bg-gray-600 text-white font-semibold rounded-lg shadow-md hover:bg-gray-700 hover:scale-105 hover:shadow-lg active:scale-95 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all duration-200 touch-target-optimized touch-target-optimized"
+                        onclick="raporPaylas()">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z">
@@ -47,7 +53,8 @@
                         </svg>
                         Paylaş
                     </button>
-                    <a href="{{ route('admin.takim-yonetimi.takim.index') }}" class="inline-flex items-center px-6 py-3 bg-gray-600 text-white font-semibold rounded-lg shadow-md hover:bg-gray-700 hover:scale-105 hover:shadow-lg active:scale-95 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all duration-200 touch-target-optimized touch-target-optimized">
+                    <a href="{{ route('admin.takim-yonetimi.takim.index') }}"
+                        class="inline-flex items-center px-6 py-3 bg-gray-600 text-white font-semibold rounded-lg shadow-md hover:bg-gray-700 hover:scale-105 hover:shadow-lg active:scale-95 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all duration-200 touch-target-optimized touch-target-optimized">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7">
                             </path>
@@ -59,11 +66,12 @@
         </div>
     </div>
 
-    <!-- Context7 AI Önerileri -->
-    <div class="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl border border-indigo-200 shadow-sm mb-8">
+    <div
+        class="bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 rounded-xl border border-indigo-200 dark:border-indigo-700 shadow-sm mb-8">
         <div class="p-6">
-            <h2 class="text-xl font-bold text-indigo-800 mb-6 flex items-center">
-                <svg class="w-6 h-6 mr-3 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <h2 class="text-xl font-bold text-indigo-800 dark:text-indigo-300 mb-6 flex items-center">
+                <svg class="w-6 h-6 mr-3 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor"
+                    viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z">
                     </path>
@@ -92,11 +100,12 @@
         </div>
     </div>
 
-    <!-- Filtreler Bölümü -->
-    <div class="bg-gradient-to-r from-gray-50 to-slate-50 rounded-xl border border-gray-200 shadow-sm mb-8">
+    <div
+        class="bg-gradient-to-r from-gray-50 to-slate-50 dark:from-gray-800 dark:to-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm mb-8">
         <div class="p-6">
-            <h2 class="text-xl font-bold text-gray-800 mb-6 flex items-center">
-                <svg class="w-6 h-6 mr-3 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <h2 class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-6 flex items-center">
+                <svg class="w-6 h-6 mr-3 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor"
+                    viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z">
                     </path>
@@ -106,9 +115,9 @@
             <form method="GET" action="{{ route('admin.takim-yonetimi.takim.performans') }}"
                 class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Tarih Aralığı</label>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Tarih Aralığı</label>
                     <select style="color-scheme: light dark;"
-                        class="w-full w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                        class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                         name="tarih_araligi">
                         <option value="7" {{ request('tarih_araligi') == '7' ? 'selected' : '' }}>Son 7 Gün</option>
                         <option value="30" {{ request('tarih_araligi') == '30' ? 'selected' : '' }}>Son 30 Gün</option>
@@ -120,22 +129,22 @@
                 </div>
                 <div class="custom-date-field"
                     style="display: {{ request('tarih_araligi') == 'custom' ? 'block' : 'none' }}">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Başlangıç</label>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Başlangıç</label>
                     <input type="date"
-                        class="w-full w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-all duration-200 focus:border-transparent"
+                        class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-all duration-200 focus:border-transparent"
                         name="baslangic_tarihi" value="{{ request('baslangic_tarihi') }}">
                 </div>
                 <div class="custom-date-field"
                     style="display: {{ request('tarih_araligi') == 'custom' ? 'block' : 'none' }}">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Bitiş</label>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Bitiş</label>
                     <input type="date"
-                        class="w-full w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-all duration-200 focus:border-transparent"
+                        class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-all duration-200 focus:border-transparent"
                         name="bitis_tarihi" value="{{ request('bitis_tarihi') }}">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Rol</label>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Rol</label>
                     <select style="color-scheme: light dark;"
-                        class="w-full w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                        class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                         name="rol">
                         <option value="">Tüm Roller</option>
                         @foreach (['admin', 'danisman', 'alt_kullanici', 'musteri_temsilcisi'] as $rol)
@@ -146,7 +155,8 @@
                     </select>
                 </div>
                 <div class="flex items-end">
-                    <button type="submit" class="w-full inline-flex items-center px-6 py-3 bg-orange-600 text-white font-semibold rounded-lg shadow-md hover:bg-orange-700 hover:scale-105 hover:shadow-lg active:scale-95 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:outline-none transition-all duration-200 touch-target-optimized touch-target-optimized">
+                    <button type="submit"
+                        class="w-full inline-flex items-center px-6 py-3 bg-orange-600 text-white font-semibold rounded-lg shadow-md hover:bg-orange-700 hover:scale-105 hover:shadow-lg active:scale-95 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:outline-none transition-all duration-200 touch-target-optimized touch-target-optimized">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
@@ -158,7 +168,6 @@
         </div>
     </div>
 
-    <!-- Genel Performans Özeti -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-200 shadow-sm p-6">
             <div class="flex items-center">
@@ -235,7 +244,6 @@
         </div>
     </div>
 
-    <!-- Performans Grafikleri -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
         <div
             class="lg:col-span-2 bg-gradient-to-r from-purple-50 to-violet-50 rounded-xl border border-purple-200 shadow-sm p-6">
@@ -267,8 +275,8 @@
         </div>
     </div>
 
-    <!-- Rol Bazlı Performans -->
-    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-200 shadow-sm mb-8">
+    <div
+        class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl border border-blue-200 dark:border-blue-700 shadow-sm mb-8">
         <div class="p-6">
             <h2 class="text-xl font-bold text-blue-800 mb-6 flex items-center">
                 <svg class="w-6 h-6 mr-3 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -282,19 +290,26 @@
                 <table class="min-w-full divide-y divide-gray-200 performance-table">
                     <thead class="bg-gray-50">
                         <tr>
-                            <th class="admin-table-th">Rol
-                            </th>
-                            <th class="admin-table-th">Üye
-                                Sayısı</th>
-                            <th class="admin-table-th">
+                            <th
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                Rol</th>
+                            <th
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                Üye Sayısı</th>
+                            <th
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                                 Toplam Görev</th>
-                            <th class="admin-table-th">
+                            <th
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                                 Tamamlanan</th>
-                            <th class="admin-table-th">
+                            <th
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                                 Başarı Oranı</th>
-                            <th class="admin-table-th">
+                            <th
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                                 Ortalama Süre</th>
-                            <th class="admin-table-th">
+                            <th
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                                 Performans Skoru</th>
                         </tr>
                     </thead>
@@ -341,7 +356,6 @@
         </div>
     </div>
 
-    <!-- En İyi Performans Gösterenler ve Görev Tipi Analizi -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
         <div class="bg-gradient-to-r from-yellow-50 to-amber-50 rounded-xl border border-yellow-200 shadow-sm p-6">
             <h2 class="text-xl font-bold text-yellow-800 mb-6 flex items-center">
@@ -441,8 +455,8 @@
         </div>
     </div>
 
-    <!-- Detaylı Performans Tablosu -->
-    <div class="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow duration-200">
+    <div
+        class="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow duration-200">
         <div class="p-6">
             <h2 class="text-xl font-bold text-gray-800 mb-6 flex items-center">
                 <svg class="w-6 h-6 mr-3 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -457,23 +471,32 @@
                     <table class="min-w-full divide-y divide-gray-200 performance-table">
                         <thead class="bg-gray-50">
                             <tr>
-                                <th class="admin-table-th">
+                                <th
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                                     Üye</th>
-                                <th class="admin-table-th">
+                                <th
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                                     Rol</th>
-                                <th class="admin-table-th">
+                                <th
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                                     Toplam Görev</th>
-                                <th class="admin-table-th">
+                                <th
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                                     Tamamlanan</th>
-                                <th class="admin-table-th">
+                                <th
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                                     Devam Eden</th>
-                                <th class="admin-table-th">
+                                <th
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                                     Başarı Oranı</th>
-                                <th class="admin-table-th">
+                                <th
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                                     Ortalama Süre</th>
-                                <th class="admin-table-th">
+                                <th
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                                     Performans Skoru</th>
-                                <th class="admin-table-th">
+                                <th
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                                     Trend</th>
                             </tr>
                         </thead>
@@ -581,96 +604,22 @@
     </div>
 @endsection
 
-@push('styles')
-    <style>
-        .inline-flex items-center px-6 py-3 bg-orange-600 text-white font-semibold rounded-lg shadow-md hover:bg-orange-700 hover:scale-105 hover:shadow-lg active:scale-95 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:outline-none transition-all duration-200 {
-            @apply bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-4 py-2 rounded-lg font-medium hover:from-blue-600 hover:to-indigo-700 transition-all duration-200 flex items-center shadow-lg hover:shadow-xl;
-        }
-
-        .inline-flex items-center px-6 py-3 bg-gray-600 text-white font-semibold rounded-lg shadow-md hover:bg-gray-700 hover:scale-105 hover:shadow-lg active:scale-95 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all duration-200 {
-            @apply bg-white text-gray-700 px-4 py-2 rounded-lg font-medium border border-gray-300 hover:bg-gray-50 transition-all duration-200 flex items-center shadow-sm hover:shadow-md;
-        }
-
-        .progress {
-            background-color: #e9ecef;
-        }
-
-        /* Context7 AI Styles */
-        .ai-suggestion {
-            @apply bg-gradient-to-r from-indigo-50 to-purple-50 rounded-lg p-4 border border-indigo-200 mb-3 hover:shadow-md transition-shadow;
-        }
-
-        .ai-suggestion.high-impact {
-            @apply from-red-50 to-pink-50 border-red-200;
-        }
-
-        .ai-suggestion.medium-impact {
-            @apply from-yellow-50 to-amber-50 border-yellow-200;
-        }
-
-        /* Enhanced Chart Styles */
-        .chart-container {
-            @apply bg-gradient-to-r from-purple-50 to-violet-50 rounded-xl border border-purple-200 shadow-sm p-6;
-        }
-
-        /* Performance Card Hover Effects */
-        .performance-card {
-            @apply transform hover:scale-105 transition-transform duration-200;
-        }
-
-        /* Loading Animation for Context7 */
-        .ai-loading {
-            @apply animate-pulse bg-gradient-to-r from-indigo-400 to-purple-400;
-        }
-
-        /* Responsive Table Enhancements */
-        @media (max-width: 768px) {
-            .performance-table {
-                @apply text-sm;
-            }
-
-            .performance-table th,
-            .performance-table td {
-                @apply px-2 py-3;
-            }
-        }
-
-        /* Dark Mode Support */
-        @media (prefers-color-scheme: dark) {
-            .inline-flex items-center px-6 py-3 bg-gray-600 text-white font-semibold rounded-lg shadow-md hover:bg-gray-700 hover:scale-105 hover:shadow-lg active:scale-95 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all duration-200 {
-                @apply bg-gray-800 text-gray-200 border-gray-600 hover:bg-gray-700;
-            }
-
-            .ai-suggestion {
-                @apply from-gray-800 to-gray-700 border-gray-600 text-gray-200;
-            }
-        }
-    </style>
-@endpush
 
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        // Context7 AI Integration
-        let context7 = {
+        const context7 = {
             memory: {},
             suggestions: [],
             analysis: {}
         };
 
-        // Initialize Context7
         function initContext7() {
-            // Load existing memory
             loadContext7Memory();
-
-            // Generate initial analysis
             generateContext7Analysis();
-
-            // Setup real-time suggestions
             setupContext7Suggestions();
         }
 
-        // Load Context7 Memory
         function loadContext7Memory() {
             fetch('/api/context7/memory/performance', {
                     method: 'GET',
@@ -684,12 +633,11 @@
                     context7.memory = data.memory || {};
                     updateContext7UI();
                 })
-                .catch(error => {
-                    console.log('Context7 memory loading skipped:', error);
+                .catch(() => {
+                    // Context7 memory loading skipped
                 });
         }
 
-        // Generate Context7 Analysis
         function generateContext7Analysis() {
             const performanceData = {
                 totalTasks: {{ $genelPerformans['toplam_gorev'] ?? 0 }},
@@ -698,7 +646,6 @@
                 period: '{{ request('tarih_araligi', '30') }}'
             };
 
-            // AI Analysis Logic
             let analysis = '';
             if (performanceData.successRate >= 80) {
                 analysis =
@@ -709,8 +656,6 @@
             } else {
                 analysis =
                     'Takım performansında iyileştirme gerekiyor. Öncelikli olarak görev yönetimi ve kaynak dağılımı gözden geçirilmeli.';
-
-                // Generate specific suggestions
                 context7.suggestions = [
                     'Görev önceliklendirme sistemi geliştirilmeli',
                     'Ekip üyelerine mentorluk programı uygulanmalı',
@@ -722,29 +667,26 @@
             updateContext7Suggestions();
         }
 
-        // Context7 Analysis Button
         function context7Analiz() {
-            // Show loading state
             const btn = event.target.closest('button');
             const originalText = btn.innerHTML;
             btn.innerHTML =
                 '<svg class="w-4 h-4 mr-2 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>Analiz Ediliyor...';
             btn.disabled = true;
 
-            // Perform deep analysis
             setTimeout(() => {
                 generateDeepContext7Analysis();
                 btn.innerHTML = originalText;
                 btn.disabled = false;
 
-                // Show success message
-                toastr.success('Context7 AI analizi tamamlandı!', 'Başarılı');
+                if (window.showToast) {
+                    window.showToast('Context7 AI analizi tamamlandı!', 'success');
+                }
             }, 2000);
         }
 
-        // Deep Context7 Analysis
         function generateDeepContext7Analysis() {
-            const suggestionsContainer = document.getElementById(.ai-suggestions');
+            const suggestionsContainer = document.getElementById('ai-suggestions');
 
             const deepSuggestions = [{
                     type: 'optimization',
@@ -794,30 +736,23 @@
             suggestionsContainer.innerHTML = suggestionsHtml;
         }
 
-        // Update Context7 UI
         function updateContext7UI() {
-            // Update memory indicators
             const memoryCount = Object.keys(context7.memory).length;
             if (memoryCount > 0) {
                 document.getElementById('ai-analysis').textContent += ` (${memoryCount} adet geçmiş analiz kullanılıyor)`;
             }
         }
 
-        // Setup Context7 Suggestions
         function setupContext7Suggestions() {
-            // Real-time suggestions based on user interactions
             document.addEventListener('click', function(e) {
-                if (e.target.matches('[data-w-full h-2 bg-gray-200 rounded-full dark:bg-gray-700]')) {
+                if (e.target.matches('[data-context7-track]')) {
                     trackContext7Interaction(e.target.dataset.context7Track);
                 }
             });
         }
 
-        // Track Context7 Interactions
         function trackContext7Interaction(action) {
             context7.memory[action] = (context7.memory[action] || 0) + 1;
-
-            // Save to server
             fetch('/api/context7/memory/track', {
                 method: 'POST',
                 headers: {
@@ -828,175 +763,186 @@
                     action: action,
                     count: context7.memory[action]
                 })
-            }).catch(error => console.log('Context7 tracking failed:', error));
+            }).catch(() => {
+                // Context7 tracking failed
+            });
         }
 
-        // Görev Trend Chart
-        const trendCtx = document.getElementById('gorevTrendChart').getContext('2d');
-        const trendChart = new Chart(trendCtx, {
-            type: 'line',
-            data: {
-                labels: {!! json_encode($chartData['labels'] ?? []) !!},
-                datasets: [{
-                    label: 'Tamamlanan Görevler',
-                    data: {!! json_encode($chartData['tamamlanan'] ?? []) !!},
-                    borderColor: 'rgb(59, 130, 246)',
-                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                    borderWidth: 3,
-                    fill: true,
-                    tension: 0.4,
-                    pointBackgroundColor: 'rgb(59, 130, 246)',
-                    pointBorderColor: '#fff',
-                    pointBorderWidth: 2,
-                    pointRadius: 6,
-                    pointHoverRadius: 8
-                }, {
-                    label: 'Toplam Görevler',
-                    data: {!! json_encode($chartData['toplam'] ?? []) !!},
-                    borderColor: 'rgb(245, 101, 101)',
-                    backgroundColor: 'rgba(245, 101, 101, 0.1)',
-                    borderWidth: 3,
-                    fill: true,
-                    tension: 0.4,
-                    pointBackgroundColor: 'rgb(245, 101, 101)',
-                    pointBorderColor: '#fff',
-                    pointBorderWidth: 2,
-                    pointRadius: 6,
-                    pointHoverRadius: 8
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                interaction: {
-                    intersect: false,
-                    mode: 'index'
+        function updateContext7Suggestions() {
+            if (context7.suggestions && context7.suggestions.length > 0) {
+                const container = document.getElementById('ai-suggestions');
+                if (container) {
+                    // Suggestions will be updated by generateDeepContext7Analysis
+                }
+            }
+        }
+
+        const trendCtx = document.getElementById('gorevTrendChart')?.getContext('2d');
+        if (trendCtx) {
+            const trendChart = new Chart(trendCtx, {
+                type: 'line',
+                data: {
+                    labels: {!! json_encode($chartData['labels'] ?? []) !!},
+                    datasets: [{
+                        label: 'Tamamlanan Görevler',
+                        data: {!! json_encode($chartData['tamamlanan'] ?? []) !!},
+                        borderColor: 'rgb(59, 130, 246)',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: 'rgb(59, 130, 246)',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointRadius: 6,
+                        pointHoverRadius: 8
+                    }, {
+                        label: 'Toplam Görevler',
+                        data: {!! json_encode($chartData['toplam'] ?? []) !!},
+                        borderColor: 'rgb(245, 101, 101)',
+                        backgroundColor: 'rgba(245, 101, 101, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: 'rgb(245, 101, 101)',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointRadius: 6,
+                        pointHoverRadius: 8
+                    }]
                 },
-                plugins: {
-                    legend: {
-                        position: 'top',
-                        labels: {
-                            usePointStyle: true,
-                            padding: 20,
-                            font: {
-                                size: 12,
-                                weight: '500'
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                usePointStyle: true,
+                                padding: 20,
+                                font: {
+                                    size: 12,
+                                    weight: '500'
+                                }
                             }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            titleColor: '#fff',
+                            bodyColor: '#fff',
+                            borderColor: 'rgba(59, 130, 246, 0.5)',
+                            borderWidth: 1,
+                            cornerRadius: 8,
+                            displayColors: true,
+                            padding: 12
                         }
                     },
-                    tooltip: {
-                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                        titleColor: '#fff',
-                        bodyColor: '#fff',
-                        borderColor: 'rgba(59, 130, 246, 0.5)',
-                        borderWidth: 1,
-                        cornerRadius: 8,
-                        displayColors: true,
-                        padding: 12
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        grid: {
-                            color: 'rgba(0, 0, 0, 0.05)'
-                        },
-                        ticks: {
-                            font: {
-                                size: 11
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            },
+                            ticks: {
+                                font: {
+                                    size: 11
+                                }
                             }
-                        }
-                    },
-                    x: {
-                        grid: {
-                            color: 'rgba(0, 0, 0, 0.05)'
                         },
-                        ticks: {
-                            font: {
-                                size: 11
+                        x: {
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            },
+                            ticks: {
+                                font: {
+                                    size: 11
+                                }
                             }
                         }
                     }
                 }
-            }
-        });
+            });
+        }
 
-        // Görev Durum Chart
-        const statusCtx = document.getElementById('gorevDurumChart').getContext('2d');
-        const statusChart = new Chart(statusCtx, {
-            type: 'doughnut',
-            data: {
-                labels: {!! json_encode($chartData['status_labels'] ?? []) !!},
-                datasets: [{
-                    data: {!! json_encode($chartData['status_data'] ?? []) !!},
-                    backgroundColor: [
-                        'rgb(34, 197, 94)', // Yeşil - Tamamlanan
-                        'rgb(251, 191, 36)', // Sarı - Devam Eden
-                        'rgb(239, 68, 68)', // Kırmızı - İptal
-                        'rgb(156, 163, 175)' // Gri - Bekleyen
-                    ],
-                    borderWidth: 0,
-                    hoverBorderWidth: 2,
-                    hoverBorderColor: '#fff'
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                cutout: '70%',
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: {
-                            padding: 20,
-                            usePointStyle: true,
-                            font: {
-                                size: 12,
-                                weight: '500'
+        const statusCtx = document.getElementById('gorevDurumChart')?.getContext('2d');
+        if (statusCtx) {
+            const statusChart = new Chart(statusCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: {!! json_encode($chartData['status_labels'] ?? []) !!},
+                    datasets: [{
+                        data: {!! json_encode($chartData['status_data'] ?? []) !!},
+                        backgroundColor: [
+                            'rgb(34, 197, 94)', // Yeşil - Tamamlanan
+                            'rgb(251, 191, 36)', // Sarı - Devam Eden
+                            'rgb(239, 68, 68)', // Kırmızı - İptal
+                            'rgb(156, 163, 175)' // Gri - Bekleyen
+                        ],
+                        borderWidth: 0,
+                        hoverBorderWidth: 2,
+                        hoverBorderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '70%',
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                usePointStyle: true,
+                                font: {
+                                    size: 12,
+                                    weight: '500'
+                                }
                             }
-                        }
-                    },
-                    tooltip: {
-                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                        titleColor: '#fff',
-                        bodyColor: '#fff',
-                        cornerRadius: 8,
-                        padding: 12,
-                        callbacks: {
-                            label: function(context) {
-                                const label = context.label || '';
-                                const value = context.parsed;
-                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                                const percentage = Math.round((value / total) * 100);
-                                return `${label}: ${value} (${percentage}%)`;
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            titleColor: '#fff',
+                            bodyColor: '#fff',
+                            cornerRadius: 8,
+                            padding: 12,
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.parsed;
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = Math.round((value / total) * 100);
+                                    return `${label}: ${value} (${percentage}%)`;
+                                }
                             }
                         }
                     }
                 }
-            }
-        });
+            });
+        }
 
-        // Rapor indirme
         function raporIndir() {
-            // Context7 ile gelişmiş rapor
-            toastr.info('Context7 AI ile gelişmiş rapor hazırlanıyor...');
-
+            if (window.showToast) {
+                window.showToast('Context7 AI ile gelişmiş rapor hazırlanıyor...', 'info');
+            }
             setTimeout(() => {
-                // PDF veya Excel rapor indirme işlemi
-                toastr.success('Rapor başarıyla indirildi!', 'Başarılı');
+                if (window.showToast) {
+                    window.showToast('Rapor başarıyla indirildi!', 'success');
+                }
             }, 1500);
         }
 
-        // Rapor paylaşma
         function raporPaylas() {
-            // Email veya link paylaşma işlemi
-            toastr.info('Rapor paylaşma özelliği yakında eklenecek');
+            if (window.showToast) {
+                window.showToast('Rapor paylaşma özelliği yakında eklenecek', 'info');
+            }
         }
 
-        // Tarih aralığı değiştiğinde özel tarih alanlarını göster/gizle
-        document.querySelector('select[name="tarih_araligi"]').addEventListener('change', function() {
+        document.querySelector('select[name="tarih_araligi"]')?.addEventListener('change', function() {
             const customFields = document.querySelectorAll('.custom-date-field');
-
             if (this.value === 'custom') {
                 customFields.forEach(field => field.style.display = 'block');
             } else {
@@ -1004,15 +950,11 @@
             }
         });
 
-        // Sayfa yüklendiğinde tarih alanlarını kontrol et ve Context7'ü başlat
         document.addEventListener('DOMContentLoaded', function() {
             const tarihSelect = document.querySelector('select[name="tarih_araligi"]');
             if (tarihSelect && tarihSelect.value === 'custom') {
-                document.querySelectorAll('.custom-date-field')
-                    .forEach(field => field.style.display = 'block');
+                document.querySelectorAll('.custom-date-field').forEach(field => field.style.display = 'block');
             }
-
-            // Initialize Context7
             initContext7();
         });
     </script>

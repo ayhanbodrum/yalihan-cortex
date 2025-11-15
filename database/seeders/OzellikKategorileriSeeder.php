@@ -34,10 +34,10 @@ class OzellikKategorileriSeeder extends Seeder
         echo "📊 Ana Özellik Kategorileri oluşturuluyor...\n";
 
         $kategoriler = [
-            ['name' => 'Altyapı', 'slug' => 'altyapi', 'icon' => '🏗️', 'order' => 1],
-            ['name' => 'Genel Özellikler', 'slug' => 'genel_ozellikler', 'icon' => '🌳', 'order' => 2],
-            ['name' => 'Manzara', 'slug' => 'manzara', 'icon' => '🏔️', 'order' => 3],
-            ['name' => 'Konum', 'slug' => 'konum', 'icon' => '📍', 'order' => 4],
+            ['name' => 'Altyapı', 'slug' => 'altyapi', 'icon' => '🏗️', 'display_order' => 1],
+            ['name' => 'Genel Özellikler', 'slug' => 'genel_ozellikler', 'icon' => '🌳', 'display_order' => 2],
+            ['name' => 'Manzara', 'slug' => 'manzara', 'icon' => '🏔️', 'display_order' => 3],
+            ['name' => 'Konum', 'slug' => 'konum', 'icon' => '📍', 'display_order' => 4],
         ];
 
         foreach($kategoriler as $kategori) {
@@ -117,7 +117,7 @@ class OzellikKategorileriSeeder extends Seeder
                         'veri_secenekleri' => $ozellik['field_options'],
                         'birim' => $ozellik['field_unit'],
                         'status' => 1,
-                        'order' => $index + 1,
+                        'display_order' => $index + 1,
                         'zorunlu' => 0,
                         'arama_filtresi' => 1,
                         'ilan_kartinda_goster' => 1,

@@ -8,14 +8,14 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
-     * 
+     *
      * Context7: TCMB integration - Exchange rates table
      */
     public function up(): void
     {
         Schema::create('exchange_rates', function (Blueprint $table) {
             $table->id();
-            
+
             // TCMB fields
             $table->string('currency_code', 10)->comment('USD, EUR, GBP, etc.');
             $table->date('rate_date')->comment('Kur tarihi');
@@ -23,7 +23,7 @@ return new class extends Migration
             $table->decimal('buying_rate', 10, 4)->comment('Alış kuru');
             $table->decimal('selling_rate', 10, 4)->comment('Satış kuru');
             $table->string('source', 50)->default('TCMB')->comment('Veri kaynağı');
-            
+
             // Legacy fields (compatibility)
             $table->string('base_currency', 10)->nullable();
             $table->string('currency', 10)->nullable();
@@ -33,9 +33,9 @@ return new class extends Migration
             $table->string('provider', 50)->nullable();
             $table->timestamp('fetched_at')->nullable();
             $table->boolean('status')->default(true);
-            
+
             $table->timestamps();
-            
+
             // Indexes
             $table->index(['currency_code', 'rate_date']);
             $table->index('rate_date');

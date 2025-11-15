@@ -11,27 +11,27 @@
 
 ### **1. AI İlan Geçmişi Analizi**
 
--   **Service:** `app/Services/AI/IlanGecmisAIService.php` ✅
--   **API:** `GET /api/kisiler/{id}/ai-gecmis-analiz` ✅
--   **Response:** 8 analiz tipi + 10+ öneri ✅
+- **Service:** `app/Services/AI/IlanGecmisAIService.php` ✅
+- **API:** `GET /api/kisiler/{id}/ai-gecmis-analiz` ✅
+- **Response:** 8 analiz tipi + 10+ öneri ✅
 
 ### **2. TKGM Parsel Sorgulama**
 
--   **Service:** `app/Services/TKGMService.php` ✅
--   **API:** `POST /api/tkgm/parsel-sorgu` ✅
--   **Response:** Parsel bilgileri + hesaplamalar ✅
+- **Service:** `app/Services/TKGMService.php` ✅
+- **API:** `POST /api/tkgm/parsel-sorgu` ✅
+- **Response:** Parsel bilgileri + hesaplamalar ✅
 
 ### **3. Kategori Dinamik Alanlar**
 
--   **Service:** `app/Services/KategoriOzellikService.php` ✅
--   **Method:** `getOzelliklerByKategori()` ✅
--   **Kategoriler:** 6 kategori tanımı ✅
+- **Service:** `app/Services/KategoriOzellikService.php` ✅
+- **Method:** `getOzelliklerByKategori()` ✅
+- **Kategoriler:** 6 kategori tanımı ✅
 
 ### **4. Anahtar Yönetimi**
 
--   **Migration:** ✅ Çalıştırıldı
--   **Fields:** anahtar_turu, ulasilabilirlik, ek_bilgi ✅
--   **Database:** İlanlar tablosuna eklendi ✅
+- **Migration:** ✅ Çalıştırıldı
+- **Fields:** anahtar_turu, ulasilabilirlik, ek_bilgi ✅
+- **Database:** İlanlar tablosuna eklendi ✅
 
 ---
 
@@ -45,7 +45,7 @@
 
 ```javascript
 // stable-create sayfasına ekle (en başa, Alpine.data içine)
-Alpine.data("kisiGecmisi", () => ({
+Alpine.data('kisiGecmisi', () => ({
     historyLoaded: false,
     history: null,
     loading: false,
@@ -53,9 +53,7 @@ Alpine.data("kisiGecmisi", () => ({
     async loadHistory(kisiId) {
         this.loading = true;
         try {
-            const response = await fetch(
-                `/api/kisiler/${kisiId}/ai-gecmis-analiz`
-            );
+            const response = await fetch(`/api/kisiler/${kisiId}/ai-gecmis-analiz`);
             const data = await response.json();
 
             if (data.success && data.has_history) {
@@ -67,12 +65,12 @@ Alpine.data("kisiGecmisi", () => ({
                     window.toast.info(oneri, 5000);
                 });
 
-                window.toast.success("✅ Geçmiş analizi tamamlandı!");
+                window.toast.success('✅ Geçmiş analizi tamamlandı!');
             } else {
-                window.toast.warning("Bu kişinin önceki ilanı yok");
+                window.toast.warning('Bu kişinin önceki ilanı yok');
             }
         } catch (error) {
-            window.toast.error("Analiz yapılamadı: " + error.message);
+            window.toast.error('Analiz yapılamadı: ' + error.message);
         } finally {
             this.loading = false;
         }
@@ -128,7 +126,7 @@ Alpine.data("kisiGecmisi", () => ({
 
 ```javascript
 // TKGM otomatik sorgulama (Ada/Parsel değiştiğinde)
-Alpine.data("tkgmSorgu", () => ({
+Alpine.data('tkgmSorgu', () => ({
     tkgmData: null,
     loading: false,
     shown: false,
@@ -144,12 +142,11 @@ Alpine.data("tkgmSorgu", () => ({
         this.loading = true;
 
         try {
-            const response = await fetch("/api/tkgm/parsel-sorgu", {
-                method: "POST",
+            const response = await fetch('/api/tkgm/parsel-sorgu', {
+                method: 'POST',
                 headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRF-TOKEN":
-                        document.querySelector('[name="_token"]').value,
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('[name="_token"]').value,
                 },
                 body: JSON.stringify({ ada, parsel, il, ilce }),
             });
@@ -159,13 +156,13 @@ Alpine.data("tkgmSorgu", () => ({
             if (result.success) {
                 this.tkgmData = result;
                 this.shown = true;
-                window.toast.success("✅ TKGM bilgileri bulundu!");
+                window.toast.success('✅ TKGM bilgileri bulundu!');
             } else {
                 this.tkgmData = null;
                 this.shown = false;
             }
         } catch (error) {
-            console.error("TKGM sorgu hatası:", error);
+            console.error('TKGM sorgu hatası:', error);
         } finally {
             this.loading = false;
         }
@@ -179,19 +176,19 @@ Alpine.data("tkgmSorgu", () => ({
 
         // Alanları doldur
         if (data.yuzolcumu) {
-            document.getElementById("alan_m2").value = data.yuzolcumu;
+            document.getElementById('alan_m2').value = data.yuzolcumu;
         }
         if (data.imar_durumu) {
-            document.getElementById("imar_durumu").value = data.imar_durumu;
+            document.getElementById('imar_durumu').value = data.imar_durumu;
         }
         if (data.taks) {
-            document.getElementById("taks").value = data.taks;
+            document.getElementById('taks').value = data.taks;
         }
         if (data.kaks) {
-            document.getElementById("kaks").value = data.kaks;
+            document.getElementById('kaks').value = data.kaks;
         }
         if (data.gabari) {
-            document.getElementById("gabari").value = data.gabari;
+            document.getElementById('gabari').value = data.gabari;
         }
 
         // Önerileri göster
@@ -199,7 +196,7 @@ Alpine.data("tkgmSorgu", () => ({
             window.toast.info(oneri, 4000);
         });
 
-        window.toast.success("✅ TKGM bilgileri uygulandı!");
+        window.toast.success('✅ TKGM bilgileri uygulandı!');
         this.shown = false;
     },
 }));
@@ -325,11 +322,11 @@ Alpine.data("tkgmSorgu", () => ({
 
 **Avantajlar:**
 
--   ✅ Otomatik sorgu (kullanıcı fark etmeden)
--   ✅ Backend'de işlem
--   ✅ Önizleme ile kontrol
--   ✅ Kullanıcı onayı ile doldurma
--   ✅ Daha iyi UX
+- ✅ Otomatik sorgu (kullanıcı fark etmeden)
+- ✅ Backend'de işlem
+- ✅ Önizleme ile kontrol
+- ✅ Kullanıcı onayı ile doldurma
+- ✅ Daha iyi UX
 
 ---
 
@@ -536,33 +533,33 @@ curl -X POST http://127.0.0.1:8000/api/tkgm/parsel-sorgu \
 
 ### **Backend (✅ Tamamlandı)**
 
--   [x] IlanGecmisAIService
--   [x] KategoriOzellikService
--   [x] TKGMService
--   [x] Migration çalıştırıldı
--   [x] API endpoints çalışıyor
+- [x] IlanGecmisAIService
+- [x] KategoriOzellikService
+- [x] TKGMService
+- [x] Migration çalıştırıldı
+- [x] API endpoints çalışıyor
 
 ### **Frontend (🎨 Eklenecek)**
 
--   [ ] AI Geçmiş Analizi component
--   [ ] TKGM Sorgulama button
--   [ ] Kategori dinamik alanlar
--   [ ] Anahtar yönetimi UI
+- [ ] AI Geçmiş Analizi component
+- [ ] TKGM Sorgulama button
+- [ ] Kategori dinamik alanlar
+- [ ] Anahtar yönetimi UI
 
 ### **Test (✅ Backend Hazır)**
 
--   [ ] AI Geçmiş API test
--   [ ] TKGM API test
--   [ ] Kategori alanları test
--   [ ] Form submission test
+- [ ] AI Geçmiş API test
+- [ ] TKGM API test
+- [ ] Kategori alanları test
+- [ ] Form submission test
 
 ---
 
 ## 📖 **İLGİLİ DÖKÜMANLAR**
 
--   `docs/reports/FINAL_SONRAKI_ADIMLAR_OZET_2025-10-11.md` (En detaylı)
--   `docs/reports/AI_YENI_OZELLIKLER_2025-10-11.md` (AI özellikleri)
--   `README-SONRAKI-ADIMLAR.md` (Hızlı özet)
+- `docs/reports/FINAL_SONRAKI_ADIMLAR_OZET_2025-10-11.md` (En detaylı)
+- `docs/reports/AI_YENI_OZELLIKLER_2025-10-11.md` (AI özellikleri)
+- `README-SONRAKI-ADIMLAR.md` (Hızlı özet)
 
 ---
 

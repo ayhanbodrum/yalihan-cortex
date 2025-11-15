@@ -1,11 +1,11 @@
 /**
  * Context7 Bulk Operations Manager
- * 
+ *
  * @description Multi-select and batch operations for tables
  * @author Yalıhan Emlak - Context7 Team
  * @date 2025-11-04
  * @version 1.0.0
- * 
+ *
  * Yalıhan Bekçi Standards:
  * - Pure vanilla JS
  * - Alpine.js compatible
@@ -15,10 +15,10 @@
 
 const BulkOperations = {
     selectedItems: new Set(),
-    
+
     /**
      * Initialize bulk operations for a table
-     * 
+     *
      * @param {string} tableSelector - Table selector
      */
     init(tableSelector = 'table') {
@@ -35,7 +35,7 @@ const BulkOperations = {
 
         // Add individual checkboxes change event
         const checkboxes = table.querySelectorAll('tbody input[type="checkbox"].bulk-select');
-        checkboxes.forEach(checkbox => {
+        checkboxes.forEach((checkbox) => {
             checkbox.addEventListener('change', () => {
                 this.updateSelection();
             });
@@ -48,8 +48,10 @@ const BulkOperations = {
      * Select/deselect all items
      */
     selectAll(checked, tableSelector = 'table') {
-        const checkboxes = document.querySelectorAll(`${tableSelector} tbody input[type="checkbox"].bulk-select`);
-        checkboxes.forEach(checkbox => {
+        const checkboxes = document.querySelectorAll(
+            `${tableSelector} tbody input[type="checkbox"].bulk-select`
+        );
+        checkboxes.forEach((checkbox) => {
             checkbox.checked = checked;
             const id = checkbox.value;
             if (checked) {
@@ -66,8 +68,10 @@ const BulkOperations = {
      */
     updateSelection() {
         this.selectedItems.clear();
-        const checkboxes = document.querySelectorAll('tbody input[type="checkbox"].bulk-select:checked');
-        checkboxes.forEach(checkbox => {
+        const checkboxes = document.querySelectorAll(
+            'tbody input[type="checkbox"].bulk-select:checked'
+        );
+        checkboxes.forEach((checkbox) => {
             this.selectedItems.add(checkbox.value);
         });
         this.updateUI();
@@ -78,7 +82,7 @@ const BulkOperations = {
      */
     updateUI() {
         const count = this.selectedItems.size;
-        
+
         // Update count display
         const countEl = document.getElementById('bulk-selected-count');
         if (countEl) {
@@ -99,7 +103,9 @@ const BulkOperations = {
 
         // Update select all checkbox state
         const headerCheckbox = document.querySelector('thead input[type="checkbox"]');
-        const totalCheckboxes = document.querySelectorAll('tbody input[type="checkbox"].bulk-select').length;
+        const totalCheckboxes = document.querySelectorAll(
+            'tbody input[type="checkbox"].bulk-select'
+        ).length;
         if (headerCheckbox) {
             headerCheckbox.checked = count === totalCheckboxes && count > 0;
             headerCheckbox.indeterminate = count > 0 && count < totalCheckboxes;
@@ -127,7 +133,7 @@ const BulkOperations = {
         try {
             const result = await window.AjaxHelper.post(endpoint, {
                 items: Array.from(this.selectedItems),
-                category_id: categoryId
+                category_id: categoryId,
             });
 
             if (result.success) {
@@ -165,7 +171,7 @@ const BulkOperations = {
         try {
             const result = await window.AjaxHelper.post(endpoint, {
                 items: Array.from(this.selectedItems),
-                enabled: enabled
+                enabled: enabled,
             });
 
             if (result.success) {
@@ -192,10 +198,10 @@ const BulkOperations = {
 
         const confirmed = await window.confirmDialog(
             `${this.selectedItems.size} öğe SİLİNECEK! Bu işlem geri alınamaz. Devam edilsin mi?`,
-            { 
+            {
                 title: 'TOPLU SİLME (Dikkat!)',
                 confirmText: 'Evet, Sil',
-                cancelText: 'İptal'
+                cancelText: 'İptal',
             }
         );
 
@@ -205,7 +211,7 @@ const BulkOperations = {
 
         try {
             const result = await window.AjaxHelper.post(endpoint, {
-                items: Array.from(this.selectedItems)
+                items: Array.from(this.selectedItems),
             });
 
             if (result.success) {
@@ -226,13 +232,12 @@ const BulkOperations = {
      */
     clearSelection() {
         this.selectedItems.clear();
-        document.querySelectorAll('input[type="checkbox"].bulk-select').forEach(cb => {
+        document.querySelectorAll('input[type="checkbox"].bulk-select').forEach((cb) => {
             cb.checked = false;
         });
         this.updateUI();
-    }
+    },
 };
 
 // Global availability
 window.BulkOperations = BulkOperations;
-

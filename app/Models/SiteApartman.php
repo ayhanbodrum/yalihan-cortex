@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Site/Apartman Model
- * 
+ *
  * Context7: Site/Apartman yönetimi için
  * - Site adı, toplam daire sayısı
  * - Portal entegrasyonu
@@ -95,7 +95,7 @@ class SiteApartman extends Model
      */
     public function scopeActive($query)
     {
-        return $query->where('status', 'active');
+        return $query->where('status', 'Aktif'); // Context7: Database değeri
     }
 
     /**
@@ -120,23 +120,23 @@ class SiteApartman extends Model
     public function getFullAddressAttribute()
     {
         $parts = [];
-        
+
         if ($this->adres) {
             $parts[] = $this->adres;
         }
-        
+
         if ($this->mahalle) {
             $parts[] = $this->mahalle->mahalle_adi;
         }
-        
+
         if ($this->ilce) {
             $parts[] = $this->ilce->ilce_adi;
         }
-        
+
         if ($this->il) {
             $parts[] = $this->il->il_adi;
         }
-        
+
         return implode(', ', $parts);
     }
 

@@ -36,49 +36,49 @@ Progress:
 
 ```yaml
 1. Temel Bilgiler:
-   Component: admin.ilanlar.components.basic-info
-   İçerik: Başlık, Açıklama, Metrekare, Oda Sayısı
-   Durum: ✅ Var
+    Component: admin.ilanlar.components.basic-info
+    İçerik: Başlık, Açıklama, Metrekare, Oda Sayısı
+    Durum: ✅ Var
 
 2. Kategori Sistemi:
-   Component: admin.ilanlar.components.category-system
-   İçerik: Ana Kategori, Alt Kategori, Yayın Tipi cascade
-   Durum: ✅ Var
+    Component: admin.ilanlar.components.category-system
+    İçerik: Ana Kategori, Alt Kategori, Yayın Tipi cascade
+    Durum: ✅ Var
 
 3. Kategoriye Özel Alanlar:
-   Component: admin.ilanlar.components.category-specific-fields
-   İçerik: Dinamik alanlar (kategori bazlı)
-   Durum: ✅ Var
+    Component: admin.ilanlar.components.category-specific-fields
+    İçerik: Dinamik alanlar (kategori bazlı)
+    Durum: ✅ Var
 
 4. Fiyat Yönetimi:
-   Component: admin.ilanlar.components.price-management
-   İçerik: Fiyat, Para Birimi, Gelişmiş Fiyat
-   Durum: ✅ Var
+    Component: admin.ilanlar.components.price-management
+    İçerik: Fiyat, Para Birimi, Gelişmiş Fiyat
+    Durum: ✅ Var
 
 5. Lokasyon ve Harita:
-   Component: admin.ilanlar.components.location-map
-   İçerik: İl, İlçe, Mahalle, OpenStreetMap
-   Durum: ✅ Var
+    Component: admin.ilanlar.components.location-map
+    İçerik: İl, İlçe, Mahalle, OpenStreetMap
+    Durum: ✅ Var
 
 6. Kişi ve CRM:
-   Component: admin.ilanlar.partials.stable._kisi-secimi
-   İçerik: İlan Sahibi, İlgili Kişi, Danışman (Context7 Live Search)
-   Durum: ✅ Var
+    Component: admin.ilanlar.partials.stable._kisi-secimi
+    İçerik: İlan Sahibi, İlgili Kişi, Danışman (Context7 Live Search)
+    Durum: ✅ Var
 
 7. Site/Apartman Seçimi:
-   Component: admin.ilanlar.components.site-apartman-selection
-   İçerik: Site/Apartman dropdown, özellikler
-   Durum: ✅ Var
+    Component: admin.ilanlar.components.site-apartman-selection
+    İçerik: Site/Apartman dropdown, özellikler
+    Durum: ✅ Var
 
 8. Fotoğraflar:
-   Component: admin.ilanlar.components.listing-photos
-   İçerik: Fotoğraf yükleme, drag & drop
-   Durum: ✅ Var
+    Component: admin.ilanlar.components.listing-photos
+    İçerik: Fotoğraf yükleme, drag & drop
+    Durum: ✅ Var
 
 9. İlan Durumu ve Öncelik:
-   Component: Inline (create.blade.php içinde)
-   İçerik: Status, Öncelik, Yayın Ayarları (accordion)
-   Durum: ✅ Var
+    Component: Inline (create.blade.php içinde)
+    İçerik: Status, Öncelik, Yayın Ayarları (accordion)
+    Durum: ✅ Var
 
 10. AI İçerik Üretimi:
     Component: admin.ilanlar.components.ai-content
@@ -99,37 +99,37 @@ Progress:
 
 ```yaml
 1. Özellikler (Features):
-   Durum: ❌ YOK (create.blade.php'de yok!)
-   Edit'te var: admin.ilanlar.components.features-dynamic
-   Sorun: Create'te özellik seçimi yapılamıyor!
-   Öneri: Ekle veya edit sayfasına taşı
+    Durum: ❌ YOK (create.blade.php'de yok!)
+    Edit'te var: admin.ilanlar.components.features-dynamic
+    Sorun: Create'te özellik seçimi yapılamıyor!
+    Öneri: Ekle veya edit sayfasına taşı
 
 2. Site Özellikleri:
-   Durum: ⚠️ KISMI (site-apartman-selection içinde var)
-   Sorun: Dinamik site özellikleri (SiteOzellik model)
-   Öneri: Kontrol et, çalışıyor mu?
+    Durum: ⚠️ KISMI (site-apartman-selection içinde var)
+    Sorun: Dinamik site özellikleri (SiteOzellik model)
+    Öneri: Kontrol et, çalışıyor mu?
 
 3. Yayın Ayarları:
-   Durum: ✅ Var (Section 9 - accordion)
-   Sorun: Karmaşık, çok fazla alan
-   Öneri: Basitleştir veya edit'e taşı
+    Durum: ✅ Var (Section 9 - accordion)
+    Sorun: Karmaşık, çok fazla alan
+    Öneri: Basitleştir veya edit'e taşı
 
 4. Arsa Hesaplama:
-   Durum: ❌ YOK (create'te yok)
-   Edit'te var: admin.ilanlar.components.arsa-calculation
-   Sorun: Arsa kategorisi için özel hesaplamalar yok
-   Öneri: Kategoriye özel alanlar içine ekle
+    Durum: ❌ YOK (create'te yok)
+    Edit'te var: admin.ilanlar.components.arsa-calculation
+    Sorun: Arsa kategorisi için özel hesaplamalar yok
+    Öneri: Kategoriye özel alanlar içine ekle
 
 5. Type-Based Fields:
-   Durum: ❌ YOK (create'te yok)
-   Edit'te var: admin.ilanlar.components.type-fields
-   Sorun: Yayın tipine göre özel alanlar yok
-   Öneri: Category-specific-fields ile birleştir
+    Durum: ❌ YOK (create'te yok)
+    Edit'te var: admin.ilanlar.components.type-fields
+    Sorun: Yayın tipine göre özel alanlar yok
+    Öneri: Category-specific-fields ile birleştir
 
 6. Publication Status:
-   Durum: ✅ Var (Section 9 içinde inline)
-   Edit'te: Ayrı component (publication-status)
-   Öneri: Component'e çevir (tutarlılık için)
+    Durum: ✅ Var (Section 9 içinde inline)
+    Edit'te: Ayrı component (publication-status)
+    Öneri: Component'e çevir (tutarlılık için)
 ```
 
 ---
@@ -171,26 +171,26 @@ Progress:
 
 ```yaml
 1. Özellikler (Features) Ekle:
-   Sorun: Create'te özellik seçimi yok!
-   Çözüm: features-dynamic component ekle
-   Konum: Section 3.5 (Category-specific sonrası)
-   
-   Neden: Kullanıcı ilan oluştururken özellik seçmeli
-   Örnek: Balkon, Asansör, Otopark, vb.
+    Sorun: Create'te özellik seçimi yok!
+    Çözüm: features-dynamic component ekle
+    Konum: Section 3.5 (Category-specific sonrası)
+
+    Neden: Kullanıcı ilan oluştururken özellik seçmeli
+    Örnek: Balkon, Asansör, Otopark, vb.
 
 2. Arsa Hesaplama Ekle:
-   Sorun: Arsa kategorisi için özel alanlar yok
-   Çözüm: arsa-calculation component ekle
-   Konum: Section 3.5 (Arsa kategorisi seçildiğinde göster)
-   
-   Neden: Arsa için ada, parsel, imar durumu gerekli
+    Sorun: Arsa kategorisi için özel alanlar yok
+    Çözüm: arsa-calculation component ekle
+    Konum: Section 3.5 (Arsa kategorisi seçildiğinde göster)
+
+    Neden: Arsa için ada, parsel, imar durumu gerekli
 
 3. Type-Based Fields Ekle:
-   Sorun: Yayın tipine göre özel alanlar yok
-   Çözüm: type-fields component ekle veya
-          category-specific-fields'e entegre et
-   
-   Neden: Satılık vs Kiralık için farklı alanlar
+    Sorun: Yayın tipine göre özel alanlar yok
+    Çözüm: type-fields component ekle veya
+        category-specific-fields'e entegre et
+
+    Neden: Satılık vs Kiralık için farklı alanlar
 ```
 
 ---
@@ -206,7 +206,7 @@ Progress:
 5. Progress Bar Dinamikleştir:
    Sorun: Statik width: 8%
    Çözüm: JavaScript ile form completion hesapla
-   
+
    Örnek:
    function updateProgress() {
      const total = 11;
@@ -218,7 +218,7 @@ Progress:
 6. Frontend Validation Ekle:
    Sorun: Sadece backend validation var
    Çözüm: Alpine.js ile inline validation
-   
+
    Örnek:
    x-data="{
      errors: {},
@@ -236,21 +236,21 @@ Progress:
 
 ```yaml
 7. Auto-save (Otomatik Taslak):
-   Öneri: Her 30 saniyede localStorage'a kaydet
-   Fayda: Kullanıcı veri kaybetmez
+    Öneri: Her 30 saniyede localStorage'a kaydet
+    Fayda: Kullanıcı veri kaybetmez
 
 8. Form Temizle Butonu:
-   Öneri: Tüm formu sıfırlama butonu ekle
-   Konum: Form Actions bölümü
+    Öneri: Tüm formu sıfırlama butonu ekle
+    Konum: Form Actions bölümü
 
 9. Kısayol Tuşları:
-   Öneri: Ctrl+S = Taslak Kaydet
-           Ctrl+P = Önizleme
-   Fayda: Hızlı erişim
+    Öneri: Ctrl+S = Taslak Kaydet
+        Ctrl+P = Önizleme
+    Fayda: Hızlı erişim
 
 10. Field Dependencies:
     Öneri: Alan bağımlılıkları göster
-    Örnek: "Metrekare girerseniz m² fiyatı hesaplanır"
+    Örnek: 'Metrekare girerseniz m² fiyatı hesaplanır'
 
 11. Validation Özeti:
     Öneri: Sayfa üstünde tüm hataları göster
@@ -310,18 +310,18 @@ Progress:
 
 ```yaml
 4. Publication Status Component:
-   Yeni dosya: components/publication-status.blade.php
-   Güncelle: create.blade.php (Section 9 → @include)
-   Süre: 30 dakika
+    Yeni dosya: components/publication-status.blade.php
+    Güncelle: create.blade.php (Section 9 → @include)
+    Süre: 30 dakika
 
 5. Progress Bar Dinamikleştir:
-   Dosya: stable-create.js veya inline script
-   Logic: Form completion tracking
-   Süre: 1 saat
+    Dosya: stable-create.js veya inline script
+    Logic: Form completion tracking
+    Süre: 1 saat
 
 6. Frontend Validation:
-   Library: Alpine.js native validation
-   Süre: 2 saat
+    Library: Alpine.js native validation
+    Süre: 2 saat
 ```
 
 ---
@@ -330,13 +330,13 @@ Progress:
 
 ```yaml
 7. Auto-save localStorage:
-   Süre: 3 saat
+    Süre: 3 saat
 
 8. Kısayol Tuşları:
-   Süre: 1 saat
+    Süre: 1 saat
 
 9. Validation Özeti:
-   Süre: 2 saat
+    Süre: 2 saat
 ```
 
 ---
@@ -382,7 +382,7 @@ Neden:
   - Create sırasında anahtar bilgisi gereksiz
   - Anahtar fotoğrafları disabled
   - Anahtar teslim bilgisi sonradan eklenir
-  
+
 Karar: KULLANICI SEÇİMİ
   Option A: Create'te kalsın (sadece durum/sayı)
   Option B: Edit'e taşı (tam özellik)
@@ -399,7 +399,7 @@ Sorun: Çok fazla alan (11 alan!)
   - Başlangıç/Bitiş tarihi → Edit'e taşı
   - Gelişmiş ayarlar → Accordion (mevcut)
   - Sadece Status + Öncelik kalsın (create'te)
-  
+
 Karar: KULLANICI SEÇİMİ
   Option A: Olduğu gibi kalsın
   Option B: Basitleştir (sadece status/priority)
@@ -413,25 +413,24 @@ Karar: KULLANICI SEÇİMİ
 ### **Create Form - İdeal Yapı:**
 
 ```yaml
-Sections (Mantıklı Sıralama):
-  1. Temel Bilgiler (Başlık, Açıklama, m², Oda)
-  2. Kategori Sistemi (Kategori → Alt Kategori → Yayın Tipi)
-  3. Kategoriye Özel Alanlar (Dinamik)
-  3.5. Arsa Hesaplama (Arsa kategorisi için) → EKLE!
-  3.6. Type-Based Fields (Yayın tipine göre) → EKLE!
-  4. Özellikler (Balkon, Asansör, vb.) → EKLE!
-  5. Lokasyon ve Harita (İl, İlçe, Mahalle, Map)
-  6. Fiyat Yönetimi (Fiyat, Para Birimi)
-  7. Site/Apartman Seçimi (Optional)
-  8. Kişi Bilgileri (İlan Sahibi, Danışman)
-  9. Fotoğraflar (Drag & Drop)
-  10. AI İçerik (Başlık/Açıklama üretimi)
-  11. İlan Durumu (Status, Öncelik)
-  
+Sections (Mantıklı Sıralama): 1. Temel Bilgiler (Başlık, Açıklama, m², Oda)
+    2. Kategori Sistemi (Kategori → Alt Kategori → Yayın Tipi)
+    3. Kategoriye Özel Alanlar (Dinamik)
+    3.5. Arsa Hesaplama (Arsa kategorisi için) → EKLE!
+    3.6. Type-Based Fields (Yayın tipine göre) → EKLE!
+    4. Özellikler (Balkon, Asansör, vb.) → EKLE!
+    5. Lokasyon ve Harita (İl, İlçe, Mahalle, Map)
+    6. Fiyat Yönetimi (Fiyat, Para Birimi)
+    7. Site/Apartman Seçimi (Optional)
+    8. Kişi Bilgileri (İlan Sahibi, Danışman)
+    9. Fotoğraflar (Drag & Drop)
+    10. AI İçerik (Başlık/Açıklama üretimi)
+    11. İlan Durumu (Status, Öncelik)
+
 Form Actions:
-  - Taslak Kaydet
-  - Önizleme
-  - Kaydet ve Yayınla
+    - Taslak Kaydet
+    - Önizleme
+    - Kaydet ve Yayınla
 ```
 
 ---
@@ -494,4 +493,3 @@ Form Actions:
 ---
 
 **📌 SONUÇ:** Form genel olarak iyi durumda, ama **Özellikler (Features)** bölümü eksik - bu kritik!
-

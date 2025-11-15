@@ -27,7 +27,7 @@ return new class extends Migration
             $table->text('notlar')->nullable();
             $table->timestamps();
             $table->softDeletes();
-            
+
             $table->index('status');
             $table->index('oncelik');
             $table->index('takim_lideri_id');

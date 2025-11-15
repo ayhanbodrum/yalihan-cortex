@@ -37,7 +37,7 @@ class YazlikDetail extends Model
         'havlu_dahil',
         'klima_var',
         'ozel_notlar',
-        'musteri_notlari',
+        'kisi_notlari', // Context7: musteri_notlari → kisi_notlari (migration: 2025_11_11_103355)
         'indirim_notlari',
         'indirimli_fiyat',
         'anahtar_kimde',

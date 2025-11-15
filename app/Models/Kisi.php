@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Enums\KisiTipi;
 
 /**
  * App\Models\Kisi
@@ -17,7 +18,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string|null $telefon
  * @property string|null $email
  * @property string|null $notlar
- * @property string|null $musteri_tipi
+ * @property \App\Enums\KisiTipi|null $kisi_tipi Context7: Primary field (Enum)
+ * @property string|null $musteri_tipi Deprecated: Use kisi_tipi instead
  * @property string $status
  * @property string|null $kaynak
  * @property int|null $danisman_id
@@ -64,7 +66,8 @@ class Kisi extends Model
 
         // Context7 Standart Alanları
         'status', // Context7 kuralı: status kullanımı
-        'musteri_tipi',
+        'kisi_tipi', // ✅ Context7: PREFERRED field name
+        'musteri_tipi', // ⚠️ DEPRECATED: Backward compatibility only, use kisi_tipi
         'kaynak',
         'danisman_id',
 
@@ -73,6 +76,7 @@ class Kisi extends Model
         'il_id', // Context7 kuralı: il_id kullanımı (il_id yerine)
         'ilce_id',
         'mahalle_id',
+        'adres', // ✅ Context7: Adres detayı (text kolonu)
 
         // CRM Genişletilmiş Alanları
         'tc_kimlik',
@@ -103,11 +107,64 @@ class Kisi extends Model
         'son_aktivite' => 'datetime',
         'toplam_islem_tutari' => 'decimal:2',
         'memnuniyet_skoru' => 'decimal:1',
+        // kisi_tipi cast'i kaldırıldı - accessor/mutator kullanılıyor (Türkçe string → Enum dönüşümü için)
     ];
 
     // ======================================================================
     // ERİŞİMCİLER & DEĞİŞTİRİCİLER (ACCESSORS & MUTATORS)
     // ======================================================================
+
+    /**
+     * kisi_tipi accessor: Veritabanındaki Türkçe string'i Enum'a çevirir
+     */
+    public function getKisiTipiAttribute($value): ?KisiTipi
+    {
+        if (!$value) {
+            return null;
+        }
+
+        // Eğer zaten enum ise, direkt döndür
+        if ($value instanceof KisiTipi) {
+            return $value;
+        }
+
+        // Türkçe string değerleri enum değerlerine çevir
+        $mapping = [
+            'Ev Sahibi' => KisiTipi::EV_SAHIBI,
+            'ev_sahibi' => KisiTipi::EV_SAHIBI,
+            'Alıcı' => KisiTipi::ALICI,
+            'alici' => KisiTipi::ALICI,
+            'Kiracı' => KisiTipi::KIRACI,
+            'kiraci' => KisiTipi::KIRACI,
+            'Satıcı' => KisiTipi::SATICI,
+            'satici' => KisiTipi::SATICI,
+            'Yatırımcı' => KisiTipi::YATIRIMCI,
+            'yatirimci' => KisiTipi::YATIRIMCI,
+            'Aracı' => KisiTipi::ARACI,
+            'araci' => KisiTipi::ARACI,
+            'Danışman' => KisiTipi::DANISMAN,
+            'danisman' => KisiTipi::DANISMAN,
+            'Müşteri' => KisiTipi::ALICI, // Fallback
+        ];
+
+        return $mapping[$value] ?? KisiTipi::tryFrom($value);
+    }
+
+    /**
+     * kisi_tipi mutator: Enum'ı veritabanına kaydedilecek string'e çevirir
+     */
+    public function setKisiTipiAttribute($value): void
+    {
+        if ($value instanceof KisiTipi) {
+            $this->attributes['kisi_tipi'] = $value->value;
+        } elseif (is_string($value)) {
+            // Türkçe string ise enum'a çevirip value'sunu al
+            $enum = $this->getKisiTipiAttribute($value);
+            $this->attributes['kisi_tipi'] = $enum?->value ?? $value;
+        } else {
+            $this->attributes['kisi_tipi'] = $value;
+        }
+    }
 
     public function getTamAdAttribute(): string
     {
@@ -316,17 +373,27 @@ class Kisi extends Model
     /**
      * Danışmana göre filtrele (Context7 uyumlu).
      */
-    public function scopeByDanisman($query, $danismanId)
+    public function scopeByDanisman(\Illuminate\Database\Eloquent\Builder $query, int $danismanId): \Illuminate\Database\Eloquent\Builder
     {
         return $query->where('danisman_id', $danismanId);
     }
 
     /**
      * Müşteri tipine göre filtrele (Context7 uyumlu).
+     * @deprecated Use scopeByKisiTipi instead. This method uses kisi_tipi for backward compatibility.
      */
     public function scopeByMusteriTipi($query, $musteriTipi)
     {
-        return $query->where('musteri_tipi', $musteriTipi);
+        // Context7: musteri_tipi → kisi_tipi migration
+        return $query->where('kisi_tipi', $musteriTipi);
+    }
+
+    /**
+     * Kişi tipine göre filtrele (Context7 standard).
+     */
+    public function scopeByKisiTipi($query, $kisiTipi)
+    {
+        return $query->where('kisi_tipi', $kisiTipi);
     }
 
     // ======================================================================
@@ -372,7 +439,8 @@ class Kisi extends Model
         if ($this->mahalle_id) $score += 10;
 
         // CRM bilgileri (30 puan)
-        if ($this->musteri_tipi) $score += 10;
+        // ✅ Context7: kisi_tipi preferred, musteri_tipi backward compat
+        if ($this->kisi_tipi ?? $this->musteri_tipi) $score += 10;
         if ($this->meslek) $score += 10;
         if ($this->gelir_duzeyi) $score += 10;
 
@@ -395,7 +463,9 @@ class Kisi extends Model
      */
     public function isPotentialCustomer(): bool
     {
-        return in_array($this->musteri_tipi, ['alici', 'kiraci']) &&
+        // ✅ Context7: kisi_tipi preferred, musteri_tipi backward compat
+        $tip = $this->kisi_tipi ?? $this->musteri_tipi;
+        return in_array($tip, ['alici', 'kiraci']) &&
             $this->status === 'Aktif';
     }
 
@@ -404,7 +474,9 @@ class Kisi extends Model
      */
     public function isSeller(): bool
     {
-        return in_array($this->musteri_tipi, ['satici', 'ev_sahibi']) &&
+        // ✅ Context7: kisi_tipi preferred, musteri_tipi backward compat
+        $tip = $this->kisi_tipi ?? $this->musteri_tipi;
+        return in_array($tip, ['satici', 'ev_sahibi']) &&
             $this->status === 'Aktif';
     }
 

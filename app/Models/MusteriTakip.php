@@ -8,7 +8,20 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
- * MusteriTakip Model
+ * MusteriTakip Model - DEPRECATED
+ *
+ * Context7 Compliance: Use KisiTakip instead
+ *
+ * @deprecated Use App\Models\KisiTakip instead (Context7 compliance)
+ * @see App\Models\KisiTakip
+ *
+ * This is an alias for backward compatibility.
+ * New code should use KisiTakip.
+ *
+ * Migration Guide:
+ * 1. Replace: use App\Models\MusteriTakip → use App\Models\KisiTakip
+ * 2. Replace: MusteriTakip::class → KisiTakip::class
+ * 3. Database: RENAME TABLE musteri_takip TO kisi_takip
  *
  * @property int $id
  * @property int $kisi_id
@@ -22,211 +35,18 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property \Carbon\Carbon $updated_at
  * @property \Carbon\Carbon|null $deleted_at
  */
-class MusteriTakip extends Model
+class MusteriTakip extends KisiTakip
 {
     use HasFactory, SoftDeletes;
 
-    protected $table = 'musteri_takip';
-
-    protected $fillable = [
-        'kisi_id',
-        'danisman_id',
-        'takip_tipi',
-        'notlar',
-        'son_takip_tarihi',
-        'sonraki_takip_tarihi',
-        'oncelik',
-    ];
-
-    protected $casts = [
-        'son_takip_tarihi' => 'datetime',
-        'sonraki_takip_tarihi' => 'datetime',
-    ];
+    // ✅ Context7: Inherits everything from KisiTakip
+    // This model now points to 'kisi_takip' table (via parent)
 
     /**
-     * Takip tipi seçenekleri
+     * Override table name to maintain backward compatibility
+     * Until migration is complete
+     *
+     * @var string
      */
-    public static function getTakipTipleri(): array
-    {
-        return [
-            'Aktif' => 'Aktif',
-            'Pasif' => 'Pasif',
-            'Potansiyel' => 'Potansiyel',
-            'Kayıp' => 'Kayıp',
-        ];
-    }
-
-    /**
-     * Öncelik seçenekleri
-     */
-    public static function getOncelikler(): array
-    {
-        return [
-            'Düşük' => 'Düşük',
-            'Normal' => 'Normal',
-            'Yüksek' => 'Yüksek',
-            'Acil' => 'Acil',
-        ];
-    }
-
-    /**
-     * Kisi ile ilişki
-     */
-    public function kisi(): BelongsTo
-    {
-        return $this->belongsTo(Kisi::class, 'kisi_id');
-    }
-
-    /**
-     * Danışman ile ilişki
-     */
-    public function danisman(): BelongsTo
-    {
-        return $this->belongsTo(\App\Models\User::class, 'danisman_id');
-    }
-
-    /**
-     * Takip tipi etiketi
-     */
-    public function getTakipTipiEtiketiAttribute(): string
-    {
-        $renkler = [
-            'Aktif' => 'bg-green-100 text-green-800',
-            'Pasif' => 'bg-gray-100 text-gray-800',
-            'Potansiyel' => 'bg-blue-100 text-blue-800',
-            'Kayıp' => 'bg-red-100 text-red-800',
-        ];
-
-        return $renkler[$this->takip_tipi] ?? 'bg-gray-100 text-gray-800';
-    }
-
-    /**
-     * Öncelik etiketi
-     */
-    public function getOncelikEtiketiAttribute(): string
-    {
-        $renkler = [
-            'Düşük' => 'bg-gray-100 text-gray-800',
-            'Normal' => 'bg-blue-100 text-blue-800',
-            'Yüksek' => 'bg-orange-100 text-orange-800',
-            'Acil' => 'bg-red-100 text-red-800',
-        ];
-
-        return $renkler[$this->oncelik] ?? 'bg-gray-100 text-gray-800';
-    }
-
-    /**
-     * Sonraki takip tarihi geçmiş mi?
-     */
-    public function isTakipGecmis(): bool
-    {
-        return $this->sonraki_takip_tarihi && $this->sonraki_takip_tarihi->isPast();
-    }
-
-    /**
-     * Sonraki takip tarihi bugün mü?
-     */
-    public function isTakipBugun(): bool
-    {
-        return $this->sonraki_takip_tarihi && $this->sonraki_takip_tarihi->isToday();
-    }
-
-    /**
-     * Sonraki takip tarihi yarın mı?
-     */
-    public function isTakipYarin(): bool
-    {
-        return $this->sonraki_takip_tarihi && $this->sonraki_takip_tarihi->isTomorrow();
-    }
-
-    /**
-     * Takip gecikmiş mi?
-     */
-    public function isTakipGecikmis(): bool
-    {
-        return $this->sonraki_takip_tarihi &&
-               $this->sonraki_takip_tarihi->isPast() &&
-               $this->takip_tipi === 'Aktif';
-    }
-
-    /**
-     * Takip acil mi?
-     */
-    public function isAcil(): bool
-    {
-        return $this->oncelik === 'Acil';
-    }
-
-    /**
-     * Takip yüksek öncelikli mi?
-     */
-    public function isYuksekOncelik(): bool
-    {
-        return in_array($this->oncelik, ['Yüksek', 'Acil']);
-    }
-
-    /**
-     * Scope: Belirli takip tipi
-     */
-    public function scopeTakipTipi($query, $tip)
-    {
-        return $query->where('takip_tipi', $tip);
-    }
-
-    /**
-     * Scope: Belirli öncelik
-     */
-    public function scopeOncelik($query, $oncelik)
-    {
-        return $query->where('oncelik', $oncelik);
-    }
-
-    /**
-     * Scope: Gecikmiş takipler
-     */
-    public function scopeGecikmis($query)
-    {
-        return $query->where('sonraki_takip_tarihi', '<', now())
-            ->where('takip_tipi', 'Aktif');
-    }
-
-    /**
-     * Scope: Bugünkü takipler
-     */
-    public function scopeBugun($query)
-    {
-        return $query->whereDate('sonraki_takip_tarihi', today());
-    }
-
-    /**
-     * Scope: Yarınki takipler
-     */
-    public function scopeYarin($query)
-    {
-        return $query->whereDate('sonraki_takip_tarihi', now()->addDay());
-    }
-
-    /**
-     * Scope: Bu haftaki takipler
-     */
-    public function scopeBuHafta($query)
-    {
-        return $query->whereBetween('sonraki_takip_tarihi', [now(), now()->endOfWeek()]);
-    }
-
-    /**
-     * Scope: Acil takipler
-     */
-    public function scopeAcil($query)
-    {
-        return $query->where('oncelik', 'Acil');
-    }
-
-    /**
-     * Scope: Yüksek öncelikli takipler
-     */
-    public function scopeYuksekOncelik($query)
-    {
-        return $query->whereIn('oncelik', ['Yüksek', 'Acil']);
-    }
+    protected $table = 'musteri_takip'; // ⚠️ Will be renamed to kisi_takip
 }

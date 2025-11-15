@@ -15,7 +15,7 @@
                 </h1>
                 <p class="text-lg text-gray-600 mt-2">Yeni müşteri notu oluşturun</p>
             </div>
-            <a href="{{ route('admin.kisi-not.index') }}" 
+            <a href="{{ route('admin.kisi-not.index') }}"
                class="inline-flex items-center px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-all duration-200 font-medium shadow-sm hover:shadow-md">
                 <i class="fas fa-arrow-left mr-2"></i>
                 Geri Dön
@@ -163,12 +163,12 @@
             </div>
 
             <div class="flex justify-end space-x-4">
-                <a href="{{ route('admin.kisi-not.index') }}" 
+                <a href="{{ route('admin.kisi-not.index') }}"
                    class="inline-flex items-center px-6 py-3 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-all duration-200 font-medium shadow-sm hover:shadow-md">
                     <i class="fas fa-times mr-2"></i>
                     İptal
                 </a>
-                <button type="submit" 
+                <button type="submit"
                         class="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all duration-200 font-semibold shadow-md hover:shadow-lg hover:scale-105 active:scale-95">
                     <i class="fas fa-save mr-2"></i>
                     Notu Kaydet

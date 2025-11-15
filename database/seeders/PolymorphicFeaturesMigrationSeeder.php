@@ -59,7 +59,7 @@ class PolymorphicFeaturesMigrationSeeder extends Seeder
                 'type' => $this->mapApplicationArea($kategori->application_area ?? null),
                 'description' => $kategori->description ?? null,
                 'icon' => $kategori->icon ?? null,
-                'order' => $kategori->order ?? 0,
+                'display_order' => $kategori->order ?? 0,
                 'enabled' => $kategori->enabled ?? true,
                 'created_at' => $kategori->created_at ?? now(),
                 'updated_at' => $kategori->updated_at ?? now(),
@@ -104,7 +104,7 @@ class PolymorphicFeaturesMigrationSeeder extends Seeder
                 'is_filterable' => $ozellik->is_filterable ?? true,
                 'is_searchable' => $ozellik->is_searchable ?? false,
                 'enabled' => $ozellik->enabled ?? true,
-                'order' => $ozellik->order ?? 0,
+                'display_order' => $ozellik->order ?? 0,
                 'show_in_listing' => true,
                 'show_in_detail' => true,
                 'show_in_filter' => $ozellik->is_filterable ?? true,
@@ -138,7 +138,7 @@ class PolymorphicFeaturesMigrationSeeder extends Seeder
                 'type' => 'konut',
                 'description' => 'Konut sitelerinin genel özellikleri',
                 'icon' => 'building',
-                'order' => 100,
+                'display_order' => 100,
                 'enabled' => true,
             ]
         );
@@ -154,7 +154,7 @@ class PolymorphicFeaturesMigrationSeeder extends Seeder
                 'is_required' => false,
                 'is_filterable' => true,
                 'enabled' => $ozellik->enabled ?? true,
-                'order' => $ozellik->order ?? 0,
+                'display_order' => $ozellik->order ?? 0,
                 'show_in_listing' => true,
                 'show_in_detail' => true,
                 'show_in_filter' => true,
@@ -181,7 +181,7 @@ class PolymorphicFeaturesMigrationSeeder extends Seeder
                 'type' => 'arsa',
                 'description' => 'Arsaya özel alanlar',
                 'icon' => 'map',
-                'order' => 1,
+                'display_order' => 1,
                 'enabled' => true,
             ]
         );
@@ -201,7 +201,7 @@ class PolymorphicFeaturesMigrationSeeder extends Seeder
                 ['slug' => $feature['slug']],
                 array_merge($feature, [
                     'category_id' => $arsaCategory->id,
-                    'order' => $index,
+                    'display_order' => $index,
                     'enabled' => true,
                 ])
             );
@@ -257,4 +257,3 @@ class PolymorphicFeaturesMigrationSeeder extends Seeder
         );
     }
 }
-

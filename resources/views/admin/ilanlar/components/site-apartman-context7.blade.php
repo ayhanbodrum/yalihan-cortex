@@ -45,7 +45,7 @@
                         Site İçi
                     </span>
                 </label>
-                
+
                 <label class="relative flex items-center justify-center p-4 rounded-xl border-2 cursor-pointer transition-all duration-200
                               has-[:checked]:border-green-500 has-[:checked]:bg-green-50 dark:has-[:checked]:bg-green-900/20
                               has-[:not(:checked)]:border-gray-300 dark:has-[:not(:checked)]:border-gray-600
@@ -63,7 +63,7 @@
                         Apartman
                     </span>
                 </label>
-                
+
                 <label class="relative flex items-center justify-center p-4 rounded-xl border-2 cursor-pointer transition-all duration-200
                               has-[:checked]:border-green-500 has-[:checked]:bg-green-50 dark:has-[:checked]:bg-green-900/20
                               has-[:not(:checked)]:border-gray-300 dark:has-[:not(:checked)]:border-gray-600
@@ -107,9 +107,9 @@
                     <input type="text"
                            id="site_apartman_search"
                            class="w-full px-4 py-2.5
-                                  border-2 border-gray-300 dark:border-gray-600 
-                                  rounded-xl 
-                                  bg-white dark:bg-gray-800 
+                                  border-2 border-gray-300 dark:border-gray-600
+                                  rounded-xl
+                                  bg-white dark:bg-gray-800
                                   text-black dark:text-white
                                   placeholder-gray-400 dark:placeholder-gray-500
                                   focus:ring-4 focus:ring-blue-500 dark:focus:ring-blue-400/20 focus:border-green-500 dark:focus:border-green-400

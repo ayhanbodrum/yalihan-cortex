@@ -8,16 +8,12 @@
 class IlanKategoriManager {
     constructor() {
         // DOM Elementleri
-        this.anaKategoriSelect = document.getElementById("ana_kategori_id");
-        this.altKategoriSelect = document.getElementById("alt_kategori_id");
-        this.yayinTipiSelect = document.getElementById("yayin_tipi_id");
-        this.altKategoriContainer = document.querySelector(
-            ".alt-kategori-container",
-        );
-        this.yayinTipiContainer = document.querySelector(
-            ".yayin-tipi-container",
-        );
-        this.kategoriForm = document.getElementById("kategoriForm");
+        this.anaKategoriSelect = document.getElementById('ana_kategori_id');
+        this.altKategoriSelect = document.getElementById('alt_kategori_id');
+        this.yayinTipiSelect = document.getElementById('yayin_tipi_id');
+        this.altKategoriContainer = document.querySelector('.alt-kategori-container');
+        this.yayinTipiContainer = document.querySelector('.yayin-tipi-container');
+        this.kategoriForm = document.getElementById('kategoriForm');
 
         // Event Listener'ları ekle
         this.setupEventListeners();
@@ -29,23 +25,17 @@ class IlanKategoriManager {
     setupEventListeners() {
         // Ana kategori değiştiğinde
         if (this.anaKategoriSelect) {
-            this.anaKategoriSelect.addEventListener("change", () =>
-                this.onAnaKategoriChange(),
-            );
+            this.anaKategoriSelect.addEventListener('change', () => this.onAnaKategoriChange());
         }
 
         // Alt kategori değiştiğinde
         if (this.altKategoriSelect) {
-            this.altKategoriSelect.addEventListener("change", () =>
-                this.onAltKategoriChange(),
-            );
+            this.altKategoriSelect.addEventListener('change', () => this.onAltKategoriChange());
         }
 
         // Form gönderildiğinde doğrulama yap
         if (this.kategoriForm) {
-            this.kategoriForm.addEventListener("submit", (e) =>
-                this.validateForm(e),
-            );
+            this.kategoriForm.addEventListener('submit', (e) => this.validateForm(e));
         }
     }
 
@@ -96,27 +86,21 @@ class IlanKategoriManager {
         this.hideYayinTipi();
 
         // AJAX isteği yap
-        fetch(
-            `/admin/ilan-kategorileri/alt-kategoriler?ana_kategori_id=${anaKategoriId}`,
-            {
-                method: "GET",
-                headers: {
-                    Accept: "application/json",
-                    "Content-Type": "application/json",
-                    "X-Requested-With": "XMLHttpRequest",
-                },
+        fetch(`/admin/ilan-kategorileri/alt-kategoriler?ana_kategori_id=${anaKategoriId}`, {
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
             },
-        )
+        })
             .then((response) => response.json())
             .then((data) => {
                 this.populateAltKategoriler(data);
                 this.clearLoading(this.altKategoriSelect);
             })
             .catch((error) => {
-                console.error(
-                    "Alt kategoriler yüklenirken hata oluştu:",
-                    error,
-                );
+                console.error('Alt kategoriler yüklenirken hata oluştu:', error);
                 this.clearLoading(this.altKategoriSelect);
             });
     }
@@ -132,24 +116,21 @@ class IlanKategoriManager {
         this.setLoading(this.yayinTipiSelect);
 
         // AJAX isteği yap
-        fetch(
-            `/admin/yayin-tipleri/by-alt-kategori?alt_kategori_id=${altKategoriId}`,
-            {
-                method: "GET",
-                headers: {
-                    Accept: "application/json",
-                    "Content-Type": "application/json",
-                    "X-Requested-With": "XMLHttpRequest",
-                },
+        fetch(`/admin/yayin-tipleri/by-alt-kategori?alt_kategori_id=${altKategoriId}`, {
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
             },
-        )
+        })
             .then((response) => response.json())
             .then((data) => {
                 this.populateYayinTipleri(data);
                 this.clearLoading(this.yayinTipiSelect);
             })
             .catch((error) => {
-                console.error("Yayın tipleri yüklenirken hata oluştu:", error);
+                console.error('Yayın tipleri yüklenirken hata oluştu:', error);
                 this.clearLoading(this.yayinTipiSelect);
             });
     }
@@ -159,22 +140,21 @@ class IlanKategoriManager {
      */
     populateAltKategoriler(data) {
         // Dropdown'ı temizle
-        this.altKategoriSelect.innerHTML =
-            '<option value="">Alt Kategori Seçiniz</option>';
+        this.altKategoriSelect.innerHTML = '<option value="">Alt Kategori Seçiniz</option>';
 
         // Gelen verileri ekle
         if (data && data.length > 0) {
             data.forEach((kategori) => {
-                const option = document.createElement("option");
+                const option = document.createElement('option');
                 option.value = kategori.id;
                 option.textContent = kategori.ad;
                 this.altKategoriSelect.appendChild(option);
             });
         } else {
             // Hiç alt kategori yoksa bilgi mesajı göster
-            const option = document.createElement("option");
+            const option = document.createElement('option');
             option.disabled = true;
-            option.textContent = "Bu kategoride alt kategori bulunmuyor";
+            option.textContent = 'Bu kategoride alt kategori bulunmuyor';
             this.altKategoriSelect.appendChild(option);
         }
     }
@@ -184,22 +164,21 @@ class IlanKategoriManager {
      */
     populateYayinTipleri(data) {
         // Dropdown'ı temizle
-        this.yayinTipiSelect.innerHTML =
-            '<option value="">Yayın Tipi Seçiniz</option>';
+        this.yayinTipiSelect.innerHTML = '<option value="">Yayın Tipi Seçiniz</option>';
 
         // Gelen verileri ekle
         if (data && data.length > 0) {
             data.forEach((yayinTipi) => {
-                const option = document.createElement("option");
+                const option = document.createElement('option');
                 option.value = yayinTipi.id;
                 option.textContent = yayinTipi.name;
                 this.yayinTipiSelect.appendChild(option);
             });
         } else {
             // Hiç yayın tipi yoksa bilgi mesajı göster
-            const option = document.createElement("option");
+            const option = document.createElement('option');
             option.disabled = true;
-            option.textContent = "Bu kategoride yayın tipi bulunmuyor";
+            option.textContent = 'Bu kategoride yayın tipi bulunmuyor';
             this.yayinTipiSelect.appendChild(option);
         }
     }
@@ -209,7 +188,7 @@ class IlanKategoriManager {
      */
     showAltKategori() {
         if (this.altKategoriContainer) {
-            this.altKategoriContainer.style.display = "block";
+            this.altKategoriContainer.style.display = 'block';
         }
     }
 
@@ -218,7 +197,7 @@ class IlanKategoriManager {
      */
     hideAltKategori() {
         if (this.altKategoriContainer) {
-            this.altKategoriContainer.style.display = "none";
+            this.altKategoriContainer.style.display = 'none';
         }
     }
 
@@ -227,7 +206,7 @@ class IlanKategoriManager {
      */
     showYayinTipi() {
         if (this.yayinTipiContainer) {
-            this.yayinTipiContainer.style.display = "block";
+            this.yayinTipiContainer.style.display = 'block';
         }
     }
 
@@ -236,7 +215,7 @@ class IlanKategoriManager {
      */
     hideYayinTipi() {
         if (this.yayinTipiContainer) {
-            this.yayinTipiContainer.style.display = "none";
+            this.yayinTipiContainer.style.display = 'none';
         }
     }
 
@@ -245,10 +224,8 @@ class IlanKategoriManager {
      */
     setLoading(selectElement) {
         selectElement.disabled = true;
-        const originalText =
-            selectElement.querySelector("option:first-child").textContent;
-        selectElement.querySelector("option:first-child").textContent =
-            "Yükleniyor...";
+        const originalText = selectElement.querySelector('option:first-child').textContent;
+        selectElement.querySelector('option:first-child').textContent = 'Yükleniyor...';
 
         // Değişiklik yapmak için orijinal metni saklayalım
         selectElement.dataset.originalText = originalText;
@@ -260,7 +237,7 @@ class IlanKategoriManager {
     clearLoading(selectElement) {
         selectElement.disabled = false;
         if (selectElement.dataset.originalText) {
-            selectElement.querySelector("option:first-child").textContent =
+            selectElement.querySelector('option:first-child').textContent =
                 selectElement.dataset.originalText;
             delete selectElement.dataset.originalText;
         }
@@ -271,28 +248,25 @@ class IlanKategoriManager {
      */
     validateForm(e) {
         let isValid = true;
-        let errorMessage = "";
+        let errorMessage = '';
 
         // Ana kategori kontrolü
         if (!this.anaKategoriSelect.value) {
             isValid = false;
-            errorMessage = "Lütfen bir ana kategori seçin.";
+            errorMessage = 'Lütfen bir ana kategori seçin.';
         }
         // Alt kategori gösteriliyorsa kontrol et
         else if (
-            this.altKategoriContainer.style.display !== "none" &&
+            this.altKategoriContainer.style.display !== 'none' &&
             !this.altKategoriSelect.value
         ) {
             isValid = false;
-            errorMessage = "Lütfen bir alt kategori seçin.";
+            errorMessage = 'Lütfen bir alt kategori seçin.';
         }
         // Yayın tipi gösteriliyorsa kontrol et
-        else if (
-            this.yayinTipiContainer.style.display !== "none" &&
-            !this.yayinTipiSelect.value
-        ) {
+        else if (this.yayinTipiContainer.style.display !== 'none' && !this.yayinTipiSelect.value) {
             isValid = false;
-            errorMessage = "Lütfen bir yayın tipi seçin.";
+            errorMessage = 'Lütfen bir yayın tipi seçin.';
         }
 
         // Geçersizse form gönderimini engelle ve hata mesajı göster
@@ -307,14 +281,12 @@ class IlanKategoriManager {
      */
     showError(message) {
         // Eski hata mesajlarını temizle
-        const existingErrors = document.querySelectorAll(
-            ".ilan-kategori-error",
-        );
+        const existingErrors = document.querySelectorAll('.ilan-kategori-error');
         existingErrors.forEach((error) => error.remove());
 
         // Yeni hata mesajını oluştur
-        const errorDiv = document.createElement("div");
-        errorDiv.className = "text-red-500 mt-2 ilan-kategori-error";
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'text-red-500 mt-2 ilan-kategori-error';
         errorDiv.textContent = message;
 
         // Formu bul ve altına mesajı ekle
@@ -330,6 +302,6 @@ class IlanKategoriManager {
 }
 
 // Sayfa yüklendiğinde işlemleri başlat
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener('DOMContentLoaded', () => {
     new IlanKategoriManager();
 });

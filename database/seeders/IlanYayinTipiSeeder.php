@@ -9,10 +9,10 @@ use Illuminate\Support\Facades\DB;
 
 /**
  * İlan Yayın Tipi Seeder
- * 
+ *
  * Context7 standartlarına uygun yayın tiplerini seed eder.
  * Context7 Standardı: C7-YAYIN-TIPI-SEEDER-2025-11-05
- * 
+ *
  * Yayın Tipleri:
  * - Satılık (Tüm kategoriler için)
  * - Kiralık (Tüm kategoriler için)
@@ -67,7 +67,7 @@ class IlanYayinTipiSeeder extends Seeder
                 $data = [
                     'kategori_id' => $kategoriData['kategori']->id,
                     'yayin_tipi' => $tip,
-                    'order' => $order++,
+                    'display_order' => $order++,
                     'created_at' => now(),
                     'updated_at' => now(),
                 ];
@@ -98,7 +98,7 @@ class IlanYayinTipiSeeder extends Seeder
                 $data = [
                     'kategori_id' => $yazlik->id,
                     'yayin_tipi' => $tip,
-                    'order' => $order++,
+                    'display_order' => $order++,
                     'created_at' => now(),
                     'updated_at' => now(),
                 ];
@@ -119,4 +119,3 @@ class IlanYayinTipiSeeder extends Seeder
         $this->command->info('✅ İlan Yayın Tipi Seeder tamamlandı!');
     }
 }
-

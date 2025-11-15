@@ -194,65 +194,65 @@ grep -r "author:" docs/
 
 Sistem modüllerinin detaylı dokümantasyonu
 
--   ✅ 20 Modül Dokümantasyonu
--   ✅ Auth, Emlaklar, CRM, Dashboard
--   ✅ Arsa, Yazlık Kiralama, İşyeri
+- ✅ 20 Modül Dokümantasyonu
+- ✅ Auth, Emlaklar, CRM, Dashboard
+- ✅ Arsa, Yazlık Kiralama, İşyeri
 
 ### 🔧 [Teknik](technical/)
 
 Teknik dokümantasyon ve rehberler
 
--   ✅ Database Schema
--   ✅ Migration Yönetimi
--   ✅ Performance Optimization
--   ✅ System Architecture
+- ✅ Database Schema
+- ✅ Migration Yönetimi
+- ✅ Performance Optimization
+- ✅ System Architecture
 
 ### 🤖 [AI Entegrasyonu](ai/)
 
 Yapay zeka ve Copilot rehberleri
 
--   ✅ 5 AI Provider Entegrasyonu
--   ✅ Prompt Engineering
--   ✅ AI Training Guides
--   ✅ Model Integration
+- ✅ 5 AI Provider Entegrasyonu
+- ✅ Prompt Engineering
+- ✅ AI Training Guides
+- ✅ Model Integration
 
 ### 🛠️ [API](api/)
 
 API dokümantasyonu ve entegrasyonlar
 
--   ✅ REST API Reference
--   ✅ EmlakLoc Address System
--   ✅ Hybrid Search System
--   ✅ Third-Party Integrations
+- ✅ REST API Reference
+- ✅ EmlakLoc Address System
+- ✅ Hybrid Search System
+- ✅ Third-Party Integrations
 
 ### 💻 [Geliştirme](development/)
 
 Geliştirme süreçleri ve standartlar
 
--   ✅ Kurulum Rehberi
--   ✅ Kod Standartları
--   ✅ Git Workflow
--   ✅ Testing Strategy
+- ✅ Kurulum Rehberi
+- ✅ Kod Standartları
+- ✅ Git Workflow
+- ✅ Testing Strategy
 
 ### 📊 [Raporlar](reports/)
 
 Sistem raporları ve analizler
 
--   ✅ 52+ Durum Raporu
--   ✅ **DATABASE-RELATIONSHIPS-AUDIT-2025-10-14.md** ⭐ YENİ
--   ✅ **BUGUNUN-GOREVI-2025-10-14.md** ⭐ YENİ
--   ✅ Performance Analysis
--   ✅ Security Reports
--   ✅ Context7 Reports
+- ✅ 52+ Durum Raporu
+- ✅ **DATABASE-RELATIONSHIPS-AUDIT-2025-10-14.md** ⭐ YENİ
+- ✅ **BUGUNUN-GOREVI-2025-10-14.md** ⭐ YENİ
+- ✅ Performance Analysis
+- ✅ Security Reports
+- ✅ Context7 Reports
 
 ### 🗺️ [Yol Haritaları](roadmaps/)
 
 Gelecek planları ve roadmap'ler
 
--   ✅ 2025 Product Roadmap
--   ✅ Technical Roadmap
--   ✅ Feature Roadmap
--   ✅ Infrastructure Roadmap
+- ✅ 2025 Product Roadmap
+- ✅ Technical Roadmap
+- ✅ Feature Roadmap
+- ✅ Infrastructure Roadmap
 
 ---
 
@@ -333,11 +333,11 @@ git commit -m "docs: Yeni doküman eklendi"
 
 ### Kalite Kontrol
 
--   [ ] Metadata eksiksiz mi?
--   [ ] Kod örnekleri var mı?
--   [ ] Çapraz referanslar doğru mu?
--   [ ] Tag'ler uygun mu?
--   [ ] Diyagramlar var mı?
+- [ ] Metadata eksiksiz mi?
+- [ ] Kod örnekleri var mı?
+- [ ] Çapraz referanslar doğru mu?
+- [ ] Tag'ler uygun mu?
+- [ ] Diyagramlar var mı?
 
 ---
 
@@ -345,9 +345,9 @@ git commit -m "docs: Yeni doküman eklendi"
 
 ### İletişim
 
--   📧 **Email**: docs@yalihanemlak.com
--   💬 **Slack**: #documentation
--   🐛 **Issues**: [GitHub Issues](https://github.com/yalihanemlak/emlakpro/issues)
+- 📧 **Email**: docs@yalihanemlak.com
+- 💬 **Slack**: #documentation
+- 🐛 **Issues**: [GitHub Issues](https://github.com/yalihanemlak/emlakpro/issues)
 
 ### Sık Sorulan Sorular
 
@@ -369,12 +369,12 @@ A: `archive/old-complex-docs-backup-20251012/` klasöründe güvenli bir şekild
 
 ### v5.1.0 (12 Ocak 2025) - Temizlik ve Sadeleştirme
 
--   ✅ Gereksiz karmaşık dosyalar arşivlendi (6 dosya)
--   ✅ Basit ve pratik yapı oluşturuldu
--   ✅ Kırık linkler düzeltildi
--   ✅ Dokümantasyon %67 azaltıldı (9 → 3 dosya)
--   ✅ Daha hızlı erişim ve navigasyon
--   ✅ Temizlik raporu oluşturuldu
+- ✅ Gereksiz karmaşık dosyalar arşivlendi (6 dosya)
+- ✅ Basit ve pratik yapı oluşturuldu
+- ✅ Kırık linkler düzeltildi
+- ✅ Dokümantasyon %67 azaltıldı (9 → 3 dosya)
+- ✅ Daha hızlı erişim ve navigasyon
+- ✅ Temizlik raporu oluşturuldu
 
 ---
 

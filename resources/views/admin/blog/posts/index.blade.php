@@ -4,80 +4,8 @@
 @section('page-title', 'Blog Yazıları')
 
 @push('styles')
-    <style>
-        /* Modern Dashboard Styles */
-        .btn-modern {
-            @apply inline-flex items-center px-6 py-3 rounded-xl font-semibold transition-all duration-200 transform hover:scale-105 active:scale-95 shadow-lg;
-        }
-
-        .btn-modern-primary {
-            @apply bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 shadow-blue-500/25;
-        }
-
-        .btn-modern-secondary {
-            @apply bg-gradient-to-r from-gray-600 to-gray-700 text-white hover:from-gray-700 hover:to-gray-800 shadow-gray-500/25;
-        }
-
-        .form-field {
-            @apply space-y-2;
-        }
-
-        .admin-label {
-            @apply block text-sm font-medium text-gray-700 mb-1;
-        }
-
-        .admin-input,
-        .admin-input {
-            @apply w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-blue-500 focus:outline-none transition-all duration-200;
-        }
-
-        .admin-input:focus,
-        .admin-input:focus {
-            @apply ring-2 ring-blue-200;
-        }
-
-        /* Table Styles */
-        .min-w-full {
-            @apply w-full;
-        }
-
-        .divide-y> :not([hidden])~ :not([hidden]) {
-            @apply border-t border-gray-200;
-        }
-
-        .bg-gray-50 {
-            @apply bg-gray-50;
-        }
-
-        .hover\:bg-gray-50:hover {
-            @apply bg-gray-50;
-        }
-
-        .transition-colors {
-            @apply transition-colors;
-        }
-
-        .duration-200 {
-            @apply duration-200;
-        }
-
-        /* Pagination Styles */
-        .pagination {
-            @apply flex items-center justify-between;
-        }
-
-        .pagination .page-link {
-            @apply px-4 py-2.5 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-gray-700;
-        }
-
-        .pagination .page-item.active .page-link {
-            @apply bg-blue-600 text-white border-blue-600;
-        }
-
-        .pagination .page-item.disabled .page-link {
-            @apply text-gray-300 cursor-not-allowed;
-        }
-    </style>
+    {{-- ✅ DUPLICATE REMOVED: Common styles moved to resources/css/admin/common-styles.css --}}
+    {{-- Bu sayfada sadece sayfa-spesifik stiller varsa buraya eklenebilir --}}
 @endpush
 
 @section('content')
@@ -90,7 +18,7 @@
                         class="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                         📝 Blog Yazıları
                     </h1>
-                    <p class="mt-3 text-lg text-gray-600">Tüm blog yazılarınızı yönetin</p>
+                    <p class="mt-3 text-lg text-gray-600 dark:text-gray-400">Tüm blog yazılarınızı yönetin</p>
                 </div>
                 <div class="flex items-center space-x-3">
                     <a href="{{ route('admin.blog.posts.create') }}" class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg">
@@ -176,8 +104,8 @@
                         :actionHref="route('admin.blog.posts.create')" actionText="Yeni Yazı Oluştur" />
                 @else
                     <div class="overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200">
-                            <thead class="bg-gray-50">
+                        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                            <thead class="bg-gray-50 dark:bg-gray-900">
                                 <tr>
                                     <th
                                         class="admin-table-th">
@@ -202,9 +130,9 @@
                                         İşlemler</th>
                                 </tr>
                             </thead>
-                            <tbody class="bg-white divide-y divide-gray-200">
+                            <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                                 @foreach ($posts as $post)
-                                    <tr class="hover:bg-gray-50 transition-colors duration-200">
+                                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200">
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             <div class="flex items-center space-x-3">
                                                 @if ($post->featured_image)
@@ -212,8 +140,8 @@
                                                         class="w-12 h-12 object-cover rounded-lg">
                                                 @else
                                                     <div
-                                                        class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
-                                                        <svg class="w-6 h-6 text-gray-400" fill="none"
+                                                        class="w-12 h-12 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center">
+                                                        <svg class="w-6 h-6 text-gray-400 dark:text-gray-500" fill="none"
                                                             stroke="currentColor" viewBox="0 0 24 24">
                                                             <path stroke-linecap="round" stroke-linejoin="round"
                                                                 stroke-width="2"
@@ -223,12 +151,12 @@
                                                     </div>
                                                 @endif
                                                 <div class="min-w-0 flex-1">
-                                                    <h4 class="font-medium text-gray-900 truncate">
+                                                    <h4 class="font-medium text-gray-900 dark:text-white truncate">
                                                         <a href="{{ route('admin.blog.posts.show', $post) }}" class="hover:underline">
                                                             {{ $post->title }}
                                                         </a>
                                                     </h4>
-                                                    <p class="text-sm text-gray-500">
+                                                    <p class="text-sm text-gray-500 dark:text-gray-400">
                                                         {{ Str::limit($post->excerpt, 50) }}</p>
                                                     @if ($post->featured)
                                                         <span
@@ -262,7 +190,7 @@
                                             </a>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
-                                            <div class="flex items-center text-sm text-gray-600">
+                                            <div class="flex items-center text-sm text-gray-600 dark:text-gray-400">
                                                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor"
                                                     viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -276,14 +204,14 @@
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             <div class="text-sm">
-                                                <div class="font-medium text-gray-900">
+                                                <div class="font-medium text-gray-900 dark:text-white">
                                                     {{ $post->user->name }}</div>
-                                                <div class="text-gray-500">{{ $post->user->email }}
+                                                <div class="text-gray-500 dark:text-gray-400">{{ $post->user->email }}
                                                 </div>
                                             </div>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
-                                            <div class="text-sm text-gray-600">
+                                            <div class="text-sm text-gray-600 dark:text-gray-400">
                                                 <div>{{ $post->created_at->format('d.m.Y') }}</div>
                                                 <div>{{ $post->created_at->format('H:i') }}</div>
                                             </div>

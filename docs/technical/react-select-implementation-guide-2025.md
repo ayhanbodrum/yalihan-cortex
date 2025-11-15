@@ -30,13 +30,13 @@ React Select implementasyonu, hibrit arama sisteminin React uygulamaları için 
 
 ### ✅ **Özellikler**
 
--   **Modern React Patterns** - Hooks, functional components
--   **TypeScript Desteği** - Tam tip güvenliği
--   **Async Loading** - Performanslı arama
--   **Accessibility** - WCAG uyumlu
--   **Customizable** - Özelleştirilebilir tasarım
--   **Error Handling** - Kapsamlı hata yönetimi
--   **Testing** - Unit ve integration testleri
+- **Modern React Patterns** - Hooks, functional components
+- **TypeScript Desteği** - Tam tip güvenliği
+- **Async Loading** - Performanslı arama
+- **Accessibility** - WCAG uyumlu
+- **Customizable** - Özelleştirilebilir tasarım
+- **Error Handling** - Kapsamlı hata yönetimi
+- **Testing** - Unit ve integration testleri
 
 ### 🏗️ **Mimari**
 
@@ -100,12 +100,12 @@ npm install --save-dev @testing-library/react @testing-library/jest-dom @testing
 ### **1. Basit Kişi Seçimi**
 
 ```tsx
-import React from "react";
-import { PersonSelector } from "@/components/HybridSearch";
+import React from 'react';
+import { PersonSelector } from '@/components/HybridSearch';
 
 const MyComponent: React.FC = () => {
     const handlePersonSelect = (option: any) => {
-        console.log("Seçilen kişi:", option);
+        console.log('Seçilen kişi:', option);
     };
 
     return (
@@ -121,12 +121,12 @@ const MyComponent: React.FC = () => {
 ### **2. Danışman Seçimi**
 
 ```tsx
-import React from "react";
-import { ConsultantSelector } from "@/components/HybridSearch";
+import React from 'react';
+import { ConsultantSelector } from '@/components/HybridSearch';
 
 const MyComponent: React.FC = () => {
     const handleConsultantSelect = (option: any) => {
-        console.log("Seçilen danışman:", option);
+        console.log('Seçilen danışman:', option);
     };
 
     return (
@@ -142,20 +142,16 @@ const MyComponent: React.FC = () => {
 ### **3. Site/Apartman Seçimi**
 
 ```tsx
-import React from "react";
-import { SiteSelector } from "@/components/HybridSearch";
+import React from 'react';
+import { SiteSelector } from '@/components/HybridSearch';
 
 const MyComponent: React.FC = () => {
     const handleSiteSelect = (option: any) => {
-        console.log("Seçilen site:", option);
+        console.log('Seçilen site:', option);
     };
 
     return (
-        <SiteSelector
-            onSelect={handleSiteSelect}
-            placeholder="Site seçin..."
-            isClearable={true}
-        />
+        <SiteSelector onSelect={handleSiteSelect} placeholder="Site seçin..." isClearable={true} />
     );
 };
 ```
@@ -163,12 +159,12 @@ const MyComponent: React.FC = () => {
 ### **4. Çoklu Seçim**
 
 ```tsx
-import React from "react";
-import { MultiPersonSelector } from "@/components/HybridSearch";
+import React from 'react';
+import { MultiPersonSelector } from '@/components/HybridSearch';
 
 const MyComponent: React.FC = () => {
     const handleMultiPersonSelect = (options: any) => {
-        console.log("Seçilen kişiler:", options);
+        console.log('Seçilen kişiler:', options);
     };
 
     return (
@@ -188,12 +184,12 @@ const MyComponent: React.FC = () => {
 ### **1. Özelleştirilmiş Konfigürasyon**
 
 ```tsx
-import React from "react";
-import { HybridSearchReactSelect } from "@/components/HybridSearch";
+import React from 'react';
+import { HybridSearchReactSelect } from '@/components/HybridSearch';
 
 const MyComponent: React.FC = () => {
     const handleSelect = (option: any) => {
-        console.log("Seçim:", option);
+        console.log('Seçim:', option);
     };
 
     return (
@@ -216,24 +212,23 @@ const MyComponent: React.FC = () => {
 ### **2. Custom Hook Kullanımı**
 
 ```tsx
-import React from "react";
-import { useHybridSearch } from "@/hooks/useHybridSearch";
+import React from 'react';
+import { useHybridSearch } from '@/hooks/useHybridSearch';
 
 const MyComponent: React.FC = () => {
-    const { options, loading, error, search, clear, hasMore, loadMore } =
-        useHybridSearch({
-            searchType: "kisiler",
-            config: {
-                defaultLimit: 20,
-                debounceMs: 300,
-            },
-            onError: (error) => {
-                console.error("Arama hatası:", error);
-            },
-            onSuccess: (options) => {
-                console.log(`Bulunan seçenekler: ${options.length}`);
-            },
-        });
+    const { options, loading, error, search, clear, hasMore, loadMore } = useHybridSearch({
+        searchType: 'kisiler',
+        config: {
+            defaultLimit: 20,
+            debounceMs: 300,
+        },
+        onError: (error) => {
+            console.error('Arama hatası:', error);
+        },
+        onSuccess: (options) => {
+            console.log(`Bulunan seçenekler: ${options.length}`);
+        },
+    });
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         search(e.target.value);
@@ -241,11 +236,7 @@ const MyComponent: React.FC = () => {
 
     return (
         <div>
-            <input
-                type="text"
-                onChange={handleInputChange}
-                placeholder="Kişi ara..."
-            />
+            <input type="text" onChange={handleInputChange} placeholder="Kişi ara..." />
 
             {loading && <div>Aranıyor...</div>}
             {error && <div>Hata: {error}</div>}
@@ -265,12 +256,9 @@ const MyComponent: React.FC = () => {
 ### **3. Error Boundary Entegrasyonu**
 
 ```tsx
-import React from "react";
-import {
-    HybridSearchErrorBoundary,
-    DefaultErrorFallback,
-} from "@/utils/errorHandler";
-import { PersonSelector } from "@/components/HybridSearch";
+import React from 'react';
+import { HybridSearchErrorBoundary, DefaultErrorFallback } from '@/utils/errorHandler';
+import { PersonSelector } from '@/components/HybridSearch';
 
 const MyComponent: React.FC = () => {
     return (
@@ -291,32 +279,28 @@ const MyComponent: React.FC = () => {
 ### **1. Temel Tipler**
 
 ```typescript
-import {
-    HybridSearchOption,
-    SearchType,
-    HybridSearchProps,
-} from "@/types/HybridSearch";
+import { HybridSearchOption, SearchType, HybridSearchProps } from '@/types/HybridSearch';
 
 // Seçim option tipi
 const option: HybridSearchOption = {
     value: 1,
-    label: "Test Kişi (test@example.com)",
+    label: 'Test Kişi (test@example.com)',
     data: {
         id: 1,
-        name: "Test Kişi",
-        email: "test@example.com",
+        name: 'Test Kişi',
+        email: 'test@example.com',
         status: true,
     },
 };
 
 // Arama tipi
-const searchType: SearchType = "kisiler";
+const searchType: SearchType = 'kisiler';
 
 // Component props
 const props: HybridSearchProps = {
-    searchType: "kisiler",
+    searchType: 'kisiler',
     onSelect: (option) => console.log(option),
-    placeholder: "Kişi seçin...",
+    placeholder: 'Kişi seçin...',
     isClearable: true,
 };
 ```
@@ -324,11 +308,11 @@ const props: HybridSearchProps = {
 ### **2. Generic Kullanım**
 
 ```typescript
-import { SearchTypeSpecificProps } from "@/types/HybridSearch";
+import { SearchTypeSpecificProps } from '@/types/HybridSearch';
 
 // Kişi seçimi için özel props
-const personProps: SearchTypeSpecificProps<"kisiler"> = {
-    searchType: "kisiler",
+const personProps: SearchTypeSpecificProps<'kisiler'> = {
+    searchType: 'kisiler',
     onSelect: (option) => {
         // option.data.ad ve option.data.soyad mevcut
         console.log(option.data.ad, option.data.soyad);
@@ -339,11 +323,7 @@ const personProps: SearchTypeSpecificProps<"kisiler"> = {
 ### **3. API Response Tipleri**
 
 ```typescript
-import {
-    HybridSearchResponse,
-    Select2Response,
-    Context7Response,
-} from "@/types/HybridSearch";
+import { HybridSearchResponse, Select2Response, Context7Response } from '@/types/HybridSearch';
 
 // Hibrit API response
 const hybridResponse: HybridSearchResponse = {
@@ -352,18 +332,18 @@ const hybridResponse: HybridSearchResponse = {
     data: [
         {
             value: 1,
-            label: "Test Kişi",
+            label: 'Test Kişi',
             data: {
                 id: 1,
-                name: "Test Kişi",
-                email: "test@example.com",
+                name: 'Test Kişi',
+                email: 'test@example.com',
                 status: true,
             },
         },
     ],
     search_metadata: {
-        query: "test",
-        type: "kisiler",
+        query: 'test',
+        type: 'kisiler',
         context7_compliant: true,
         hybrid_api: true,
     },
@@ -377,7 +357,7 @@ const hybridResponse: HybridSearchResponse = {
 ### **1. Hata Tipleri**
 
 ```typescript
-import { ErrorType, ErrorSeverity } from "@/utils/errorHandler";
+import { ErrorType, ErrorSeverity } from '@/utils/errorHandler';
 
 // Hata tipleri
 const errorTypes = {
@@ -401,48 +381,43 @@ const errorSeverity = {
 ### **2. Hata Yakalama**
 
 ```tsx
-import React from "react";
-import { errorHandler } from "@/utils/errorHandler";
+import React from 'react';
+import { errorHandler } from '@/utils/errorHandler';
 
 const MyComponent: React.FC = () => {
     const handleError = (error: unknown) => {
         const processedError = errorHandler.handleError(error, {
-            component: "MyComponent",
-            action: "search",
+            component: 'MyComponent',
+            action: 'search',
         });
 
-        console.error("İşlenmiş hata:", processedError);
+        console.error('İşlenmiş hata:', processedError);
 
         if (processedError.retryable) {
             // Tekrar deneme mantığı
         }
     };
 
-    return (
-        <PersonSelector
-            onSelect={(option) => console.log(option)}
-            onError={handleError}
-        />
-    );
+    return <PersonSelector onSelect={(option) => console.log(option)} onError={handleError} />;
 };
 ```
 
 ### **3. Hata İstatistikleri**
 
 ```typescript
-import { errorHandler } from "@/utils/errorHandler";
+import { errorHandler } from '@/utils/errorHandler';
 
 // Hata istatistikleri
 const stats = errorHandler.getErrorStats();
-console.log("Hata istatistikleri:", stats);
+console.log('Hata istatistikleri:', stats);
 
 // Belirli tip hatalar
 const networkErrors = errorHandler.getErrorsByType(ErrorType.NETWORK_ERROR);
-console.log("Ağ hataları:", networkErrors);
+console.log('Ağ hataları:', networkErrors);
 
 // Tekrar denemeye uygun hatalar
 const retryableErrors = errorHandler.getRetryableErrors();
-console.log("Tekrar denemeye uygun hatalar:", retryableErrors);
+console.log('Tekrar denemeye uygun hatalar:', retryableErrors);
 ```
 
 ---
@@ -511,19 +486,19 @@ describe("HybridSearchDemo", () => {
 ### **3. Debug Mode**
 
 ```tsx
-import React from "react";
-import { PersonSelector } from "@/components/HybridSearch";
+import React from 'react';
+import { PersonSelector } from '@/components/HybridSearch';
 
 const MyComponent: React.FC = () => {
     return (
         <PersonSelector
-            onSelect={(option) => console.log("Seçim:", option)}
+            onSelect={(option) => console.log('Seçim:', option)}
             // Debug mode aktif
             className="debug-mode"
             // Konsol logları için
             onError={(error) => {
-                if (process.env.NODE_ENV === "development") {
-                    console.error("Debug error:", error);
+                if (process.env.NODE_ENV === 'development') {
+                    console.error('Debug error:', error);
                 }
             }}
         />
@@ -538,20 +513,20 @@ const MyComponent: React.FC = () => {
 ### **1. Memoization**
 
 ```tsx
-import React, { useMemo, useCallback } from "react";
-import { PersonSelector } from "@/components/HybridSearch";
+import React, { useMemo, useCallback } from 'react';
+import { PersonSelector } from '@/components/HybridSearch';
 
 const MyComponent: React.FC = () => {
     // Memoized callback
     const handleSelect = useCallback((option: any) => {
-        console.log("Seçim:", option);
+        console.log('Seçim:', option);
     }, []);
 
     // Memoized props
     const selectorProps = useMemo(
         () => ({
             onSelect: handleSelect,
-            placeholder: "Kişi seçin...",
+            placeholder: 'Kişi seçin...',
             isClearable: true,
             maxResults: 20,
             debounceMs: 300,
@@ -566,10 +541,10 @@ const MyComponent: React.FC = () => {
 ### **2. Lazy Loading**
 
 ```tsx
-import React, { Suspense, lazy } from "react";
+import React, { Suspense, lazy } from 'react';
 
 const PersonSelector = lazy(() =>
-    import("@/components/HybridSearch").then((module) => ({
+    import('@/components/HybridSearch').then((module) => ({
         default: module.PersonSelector,
     }))
 );
@@ -589,9 +564,9 @@ const MyComponent: React.FC = () => {
 ### **3. Virtual Scrolling**
 
 ```tsx
-import React from "react";
-import { FixedSizeList as List } from "react-window";
-import { PersonSelector } from "@/components/HybridSearch";
+import React from 'react';
+import { FixedSizeList as List } from 'react-window';
+import { PersonSelector } from '@/components/HybridSearch';
 
 const MyComponent: React.FC = () => {
     return (
@@ -608,9 +583,7 @@ const MyComponent: React.FC = () => {
                         {...props}
                     >
                         {({ index, style }) => (
-                            <div style={style}>
-                                {React.Children.toArray(children)[index]}
-                            </div>
+                            <div style={style}>{React.Children.toArray(children)[index]}</div>
                         )}
                     </List>
                 ),
@@ -671,12 +644,8 @@ const MyComponent: React.FC = () => {
 ### **1. Form Entegrasyonu**
 
 ```tsx
-import React, { useState } from "react";
-import {
-    PersonSelector,
-    ConsultantSelector,
-    SiteSelector,
-} from "@/components/HybridSearch";
+import React, { useState } from 'react';
+import { PersonSelector, ConsultantSelector, SiteSelector } from '@/components/HybridSearch';
 
 interface FormData {
     person: any;
@@ -705,17 +674,14 @@ const MyForm: React.FC = () => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        console.log("Form data:", formData);
+        console.log('Form data:', formData);
     };
 
     return (
         <form onSubmit={handleSubmit}>
             <div>
                 <label>Kişi:</label>
-                <PersonSelector
-                    onSelect={handlePersonSelect}
-                    placeholder="Kişi seçin..."
-                />
+                <PersonSelector onSelect={handlePersonSelect} placeholder="Kişi seçin..." />
             </div>
 
             <div>
@@ -728,10 +694,7 @@ const MyForm: React.FC = () => {
 
             <div>
                 <label>Site:</label>
-                <SiteSelector
-                    onSelect={handleSiteSelect}
-                    placeholder="Site seçin..."
-                />
+                <SiteSelector onSelect={handleSiteSelect} placeholder="Site seçin..." />
             </div>
 
             <button type="submit">Gönder</button>
@@ -743,8 +706,8 @@ const MyForm: React.FC = () => {
 ### **2. Modal İçinde Kullanım**
 
 ```tsx
-import React, { useState } from "react";
-import { PersonSelector } from "@/components/HybridSearch";
+import React, { useState } from 'react';
+import { PersonSelector } from '@/components/HybridSearch';
 
 const MyModal: React.FC = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -755,7 +718,7 @@ const MyModal: React.FC = () => {
     };
 
     const handleSave = () => {
-        console.log("Seçilen kişi:", selectedPerson);
+        console.log('Seçilen kişi:', selectedPerson);
         setIsOpen(false);
     };
 
@@ -774,9 +737,7 @@ const MyModal: React.FC = () => {
                         />
 
                         <div className="modal-actions">
-                            <button onClick={() => setIsOpen(false)}>
-                                İptal
-                            </button>
+                            <button onClick={() => setIsOpen(false)}>İptal</button>
                             <button onClick={handleSave}>Kaydet</button>
                         </div>
                     </div>
@@ -790,25 +751,23 @@ const MyModal: React.FC = () => {
 ### **3. Custom Styling**
 
 ```tsx
-import React from "react";
-import { PersonSelector } from "@/components/HybridSearch";
+import React from 'react';
+import { PersonSelector } from '@/components/HybridSearch';
 
 const MyComponent: React.FC = () => {
     const customStyles = {
         control: (base: any, state: any) => ({
             ...base,
-            minHeight: "50px",
-            border: state.isFocused ? "2px solid #3b82f6" : "2px solid #e5e7eb",
-            borderRadius: "12px",
-            boxShadow: state.isFocused
-                ? "0 0 0 3px rgba(59, 130, 246, 0.1)"
-                : "none",
+            minHeight: '50px',
+            border: state.isFocused ? '2px solid #3b82f6' : '2px solid #e5e7eb',
+            borderRadius: '12px',
+            boxShadow: state.isFocused ? '0 0 0 3px rgba(59, 130, 246, 0.1)' : 'none',
         }),
         option: (base: any, state: any) => ({
             ...base,
-            backgroundColor: state.isSelected ? "#dbeafe" : "white",
-            color: state.isSelected ? "#1e40af" : "#1f2937",
-            padding: "12px 16px",
+            backgroundColor: state.isSelected ? '#dbeafe' : 'white',
+            color: state.isSelected ? '#1e40af' : '#1f2937',
+            padding: '12px 16px',
         }),
     };
 
@@ -829,24 +788,24 @@ const MyComponent: React.FC = () => {
 
 ### **Phase 1: Production Deployment** (1 hafta)
 
--   [ ] Production build testleri
--   [ ] Performance monitoring
--   [ ] Error tracking entegrasyonu
--   [ ] User acceptance testing
+- [ ] Production build testleri
+- [ ] Performance monitoring
+- [ ] Error tracking entegrasyonu
+- [ ] User acceptance testing
 
 ### **Phase 2: Advanced Features** (2-3 hafta)
 
--   [ ] Virtual scrolling optimizasyonu
--   [ ] Advanced filtering
--   [ ] Custom templates
--   [ ] Analytics integration
+- [ ] Virtual scrolling optimizasyonu
+- [ ] Advanced filtering
+- [ ] Custom templates
+- [ ] Analytics integration
 
 ### **Phase 3: Enterprise Features** (3-4 hafta)
 
--   [ ] Multi-language support
--   [ ] Advanced caching
--   [ ] Real-time updates
--   [ ] Machine learning integration
+- [ ] Multi-language support
+- [ ] Advanced caching
+- [ ] Real-time updates
+- [ ] Machine learning integration
 
 ---
 
@@ -864,10 +823,10 @@ const MyComponent: React.FC = () => {
 
 ## 🔗 İlgili Dokümanlar
 
--   [Hybrid Search System Implementation](../hybrid-search-system-implementation-complete-2025.md)
--   [Context7 Compliance Guide](../context7-compliance-guide-2025.md)
--   [API Documentation](../api-documentation-2025.md)
--   [Testing Guide](../testing-guide-2025.md)
+- [Hybrid Search System Implementation](../hybrid-search-system-implementation-complete-2025.md)
+- [Context7 Compliance Guide](../context7-compliance-guide-2025.md)
+- [API Documentation](../api-documentation-2025.md)
+- [Testing Guide](../testing-guide-2025.md)
 
 ---
 

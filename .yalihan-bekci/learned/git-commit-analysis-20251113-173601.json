@@ -1,0 +1,14 @@
+{
+  "timestamp": "2025-11-13T14:36:01Z",
+  "analysis": {
+    "changed_files": 1397,
+    "staged_files": 4,
+    "groups": [""],
+    "suggestions": ["fix(controllers):","update","logic"],
+    "has_issues": true
+  },
+  "learned_patterns": {
+    "commit_frequency": "optimal",
+    "grouping_strategy": "by_logical_unit"
+  }
+}

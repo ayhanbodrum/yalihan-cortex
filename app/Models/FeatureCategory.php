@@ -18,13 +18,13 @@ class FeatureCategory extends Model
         'type',
         'description',
         'icon',
-        'order',
-        'enabled',
+        'display_order', // Context7: Veritabanında display_order kolonu var
+        'status',
     ];
 
     protected $casts = [
-        'enabled' => 'boolean',
-        'order' => 'integer',
+        'status' => 'boolean',
+        'display_order' => 'integer', // Context7: Veritabanında display_order kolonu var
     ];
 
     /**
@@ -52,30 +52,34 @@ class FeatureCategory extends Model
 
     /**
      * Get only enabled features
-     * Context7: Schema kontrolü ile status/enabled
+     * Context7: ONLY status field (enabled FORBIDDEN)
      */
     public function enabledFeatures()
     {
         $query = $this->features();
+
+        // ✅ Context7: ONLY check status field
+        // ❌ REMOVED: enabled field check (Context7 violation)
         if (Schema::hasColumn('features', 'status')) {
-            return $query->where('status', true)->orderBy('order');
-        } elseif (Schema::hasColumn('features', 'enabled')) {
-            return $query->where('enabled', true)->orderBy('order');
+            return $query->where('status', true)->orderBy('display_order');
         }
-        return $query->orderBy('order');
+
+        return $query->orderBy('display_order');
     }
 
     /**
      * Scope: Only enabled categories
-     * Context7: Schema kontrolü ile status/enabled
+     * Context7: ONLY status field (enabled FORBIDDEN)
      */
     public function scopeEnabled($query)
     {
+        // ✅ Context7: ONLY check status field
+        // ❌ REMOVED: enabled field check (Context7 violation)
         if (Schema::hasColumn('feature_categories', 'status')) {
             return $query->where('status', true);
-        } elseif (Schema::hasColumn('feature_categories', 'enabled')) {
-            return $query->where('enabled', true);
         }
+
+        // If status column doesn't exist, return all (graceful degradation)
         return $query;
     }
 
@@ -92,6 +96,6 @@ class FeatureCategory extends Model
      */
     public function scopeOrdered($query)
     {
-        return $query->orderBy('order')->orderBy('name');
+        return $query->orderBy('display_order')->orderBy('name'); // Context7: display_order kullan
     }
 }

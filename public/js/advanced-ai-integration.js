@@ -12,7 +12,7 @@
 
 class AdvancedAIIntegration {
     constructor() {
-        this.apiBaseUrl = "/api/advanced-ai";
+        this.apiBaseUrl = '/api/advanced-ai';
         this.isGenerating = false;
         this.currentRequest = null;
         this.cache = new Map();
@@ -32,38 +32,36 @@ class AdvancedAIIntegration {
      */
     bindEvents() {
         // AI öneri butonu
-        const aiSuggestBtn = document.getElementById("ai-suggest-btn");
+        const aiSuggestBtn = document.getElementById('ai-suggest-btn');
         if (aiSuggestBtn) {
-            aiSuggestBtn.addEventListener("click", (e) => {
+            aiSuggestBtn.addEventListener('click', (e) => {
                 e.preventDefault();
                 this.generateAdvancedContent();
             });
         }
 
         // Fiyat analizi butonu
-        const priceAnalysisBtn = document.getElementById("price-analysis-btn");
+        const priceAnalysisBtn = document.getElementById('price-analysis-btn');
         if (priceAnalysisBtn) {
-            priceAnalysisBtn.addEventListener("click", (e) => {
+            priceAnalysisBtn.addEventListener('click', (e) => {
                 e.preventDefault();
                 this.generatePriceAnalysis();
             });
         }
 
         // Pazar analizi butonu
-        const marketAnalysisBtn = document.getElementById(
-            "market-analysis-btn"
-        );
+        const marketAnalysisBtn = document.getElementById('market-analysis-btn');
         if (marketAnalysisBtn) {
-            marketAnalysisBtn.addEventListener("click", (e) => {
+            marketAnalysisBtn.addEventListener('click', (e) => {
                 e.preventDefault();
                 this.generateMarketAnalysis();
             });
         }
 
         // SEO anahtar kelimeler butonu
-        const seoKeywordsBtn = document.getElementById("seo-keywords-btn");
+        const seoKeywordsBtn = document.getElementById('seo-keywords-btn');
         if (seoKeywordsBtn) {
-            seoKeywordsBtn.addEventListener("click", (e) => {
+            seoKeywordsBtn.addEventListener('click', (e) => {
                 e.preventDefault();
                 this.generateSEOKeywords();
             });
@@ -78,13 +76,13 @@ class AdvancedAIIntegration {
      */
     async generateAdvancedContent() {
         if (this.isGenerating) {
-            this.showNotification("AI içerik üretimi devam ediyor...", "info");
+            this.showNotification('AI içerik üretimi devam ediyor...', 'info');
             return;
         }
 
         try {
             this.isGenerating = true;
-            this.updateUI("generating");
+            this.updateUI('generating');
 
             const formData = this.collectFormData();
             const aiOptions = this.getAIOptions();
@@ -97,8 +95,8 @@ class AdvancedAIIntegration {
             }
 
             // API çağrısı
-            const response = await this.makeAPICall("/generate-content", {
-                method: "POST",
+            const response = await this.makeAPICall('/generate-content', {
+                method: 'POST',
                 body: JSON.stringify({
                     ...formData,
                     ...aiOptions,
@@ -106,9 +104,7 @@ class AdvancedAIIntegration {
             });
 
             if (!response.success) {
-                throw new Error(
-                    response.message || "AI içerik üretimi başarısız"
-                );
+                throw new Error(response.message || 'AI içerik üretimi başarısız');
             }
 
             // Sonuçları göster
@@ -118,29 +114,29 @@ class AdvancedAIIntegration {
             this.cache.set(cacheKey, response.data);
 
             // Analytics
-            this.trackEvent("ai_content_generated", {
+            this.trackEvent('ai_content_generated', {
                 tone: aiOptions.tone,
                 variant_count: aiOptions.variant_count,
                 success: true,
             });
         } catch (error) {
-            console.error("AI content generation error:", error);
+            console.error('AI content generation error:', error);
             this.showNotification(
-                "AI içerik üretimi sırasında hata oluştu: " + error.message,
-                "error"
+                'AI içerik üretimi sırasında hata oluştu: ' + error.message,
+                'error'
             );
 
             // Fallback içerik göster
             this.showFallbackContent();
 
             // Analytics
-            this.trackEvent("ai_content_generated", {
+            this.trackEvent('ai_content_generated', {
                 success: false,
                 error: error.message,
             });
         } finally {
             this.isGenerating = false;
-            this.updateUI("idle");
+            this.updateUI('idle');
         }
     }
 
@@ -149,27 +145,24 @@ class AdvancedAIIntegration {
      */
     async generatePriceAnalysis() {
         try {
-            this.updateUI("analyzing_price");
+            this.updateUI('analyzing_price');
 
             const formData = this.collectFormData();
-            const response = await this.makeAPICall("/price-analysis", {
-                method: "POST",
+            const response = await this.makeAPICall('/price-analysis', {
+                method: 'POST',
                 body: JSON.stringify(formData),
             });
 
             if (!response.success) {
-                throw new Error(response.message || "Fiyat analizi başarısız");
+                throw new Error(response.message || 'Fiyat analizi başarısız');
             }
 
             this.showPriceAnalysis(response.data);
         } catch (error) {
-            console.error("Price analysis error:", error);
-            this.showNotification(
-                "Fiyat analizi sırasında hata oluştu: " + error.message,
-                "error"
-            );
+            console.error('Price analysis error:', error);
+            this.showNotification('Fiyat analizi sırasında hata oluştu: ' + error.message, 'error');
         } finally {
-            this.updateUI("idle");
+            this.updateUI('idle');
         }
     }
 
@@ -178,27 +171,24 @@ class AdvancedAIIntegration {
      */
     async generateMarketAnalysis() {
         try {
-            this.updateUI("analyzing_market");
+            this.updateUI('analyzing_market');
 
             const formData = this.collectFormData();
-            const response = await this.makeAPICall("/market-analysis", {
-                method: "POST",
+            const response = await this.makeAPICall('/market-analysis', {
+                method: 'POST',
                 body: JSON.stringify(formData),
             });
 
             if (!response.success) {
-                throw new Error(response.message || "Pazar analizi başarısız");
+                throw new Error(response.message || 'Pazar analizi başarısız');
             }
 
             this.showMarketAnalysis(response.data);
         } catch (error) {
-            console.error("Market analysis error:", error);
-            this.showNotification(
-                "Pazar analizi sırasında hata oluştu: " + error.message,
-                "error"
-            );
+            console.error('Market analysis error:', error);
+            this.showNotification('Pazar analizi sırasında hata oluştu: ' + error.message, 'error');
         } finally {
-            this.updateUI("idle");
+            this.updateUI('idle');
         }
     }
 
@@ -207,30 +197,27 @@ class AdvancedAIIntegration {
      */
     async generateSEOKeywords() {
         try {
-            this.updateUI("generating_seo");
+            this.updateUI('generating_seo');
 
             const formData = this.collectFormData();
-            const response = await this.makeAPICall("/seo-keywords", {
-                method: "POST",
+            const response = await this.makeAPICall('/seo-keywords', {
+                method: 'POST',
                 body: JSON.stringify(formData),
             });
 
             if (!response.success) {
-                throw new Error(
-                    response.message || "SEO anahtar kelimeler oluşturulamadı"
-                );
+                throw new Error(response.message || 'SEO anahtar kelimeler oluşturulamadı');
             }
 
             this.showSEOKeywords(response.data);
         } catch (error) {
-            console.error("SEO keywords error:", error);
+            console.error('SEO keywords error:', error);
             this.showNotification(
-                "SEO anahtar kelimeler oluşturulurken hata oluştu: " +
-                    error.message,
-                "error"
+                'SEO anahtar kelimeler oluşturulurken hata oluştu: ' + error.message,
+                'error'
             );
         } finally {
-            this.updateUI("idle");
+            this.updateUI('idle');
         }
     }
 
@@ -239,9 +226,9 @@ class AdvancedAIIntegration {
      */
     collectFormData() {
         try {
-            const form = document.querySelector("form");
+            const form = document.querySelector('form');
             if (!form) {
-                console.warn("Form element not found");
+                console.warn('Form element not found');
                 return this.getDefaultFormData();
             }
 
@@ -261,24 +248,22 @@ class AdvancedAIIntegration {
             }
 
             // Lokasyon bilgilerini hazırla - Context7 Live Search uyumlu
-            const ilSelect = document.getElementById("il_id");
-            const ilceSelect = document.getElementById("ilce_id");
-            const mahalleSelect = document.getElementById("mahalle_id");
+            const ilSelect = document.getElementById('il_id');
+            const ilceSelect = document.getElementById('ilce_id');
+            const mahalleSelect = document.getElementById('mahalle_id');
 
             // Select dropdown için güvenli kontrol
             if (ilSelect && ilSelect.value) {
                 // Select option'dan il adını al
-                const selectedOption = ilSelect.querySelector(
-                    `option[value="${ilSelect.value}"]`
-                );
+                const selectedOption = ilSelect.querySelector(`option[value="${ilSelect.value}"]`);
                 if (selectedOption) {
                     data.il = selectedOption.textContent.trim();
                 }
             }
 
             // Eğer il hala boşsa, default değer ata
-            if (!data.il || data.il.trim() === "") {
-                data.il = "İstanbul";
+            if (!data.il || data.il.trim() === '') {
+                data.il = 'İstanbul';
             }
 
             if (ilceSelect && ilceSelect.value) {
@@ -290,7 +275,7 @@ class AdvancedAIIntegration {
                     data.ilce = selectedOption.textContent.trim();
                 }
             } else {
-                data.ilce = "";
+                data.ilce = '';
             }
 
             if (mahalleSelect && mahalleSelect.value) {
@@ -302,24 +287,19 @@ class AdvancedAIIntegration {
                     data.mahalle = selectedOption.textContent.trim();
                 }
             } else {
-                data.mahalle = "";
+                data.mahalle = '';
             }
 
             // Kategori bilgilerini hazırla - Güvenli kontrol
-            const anaKategoriSelect = document.querySelector(
-                '[name="ana_kategori_id"]'
-            );
-            const altKategoriSelect = document.querySelector(
-                '[name="alt_kategori_id"]'
-            );
+            const anaKategoriSelect = document.querySelector('[name="ana_kategori_id"]');
+            const altKategoriSelect = document.querySelector('[name="alt_kategori_id"]');
 
             if (
                 anaKategoriSelect &&
                 anaKategoriSelect.selectedOptions &&
                 anaKategoriSelect.selectedOptions.length > 0
             ) {
-                data.kategori =
-                    anaKategoriSelect.selectedOptions[0].textContent.trim();
+                data.kategori = anaKategoriSelect.selectedOptions[0].textContent.trim();
             } else if (anaKategoriSelect && anaKategoriSelect.value) {
                 // Fallback: value'dan kategori adını al
                 const option = anaKategoriSelect.querySelector(
@@ -330,12 +310,12 @@ class AdvancedAIIntegration {
                 }
             } else {
                 // Default fallback
-                data.kategori = data.ana_kategori_id || "Emlak";
+                data.kategori = data.ana_kategori_id || 'Emlak';
             }
 
             // Eğer kategori hala boşsa, default değer ata
-            if (!data.kategori || data.kategori.trim() === "") {
-                data.kategori = "Emlak";
+            if (!data.kategori || data.kategori.trim() === '') {
+                data.kategori = 'Emlak';
             }
 
             if (
@@ -343,8 +323,7 @@ class AdvancedAIIntegration {
                 altKategoriSelect.selectedOptions &&
                 altKategoriSelect.selectedOptions.length > 0
             ) {
-                data.alt_kategori =
-                    altKategoriSelect.selectedOptions[0].textContent.trim();
+                data.alt_kategori = altKategoriSelect.selectedOptions[0].textContent.trim();
             } else if (altKategoriSelect && altKategoriSelect.value) {
                 const option = altKategoriSelect.querySelector(
                     `option[value="${altKategoriSelect.value}"]`
@@ -353,12 +332,12 @@ class AdvancedAIIntegration {
                     data.alt_kategori = option.textContent.trim();
                 }
             } else {
-                data.alt_kategori = data.alt_kategori_id || "";
+                data.alt_kategori = data.alt_kategori_id || '';
             }
 
             return data;
         } catch (error) {
-            console.error("Error collecting form data:", error);
+            console.error('Error collecting form data:', error);
             return this.getDefaultFormData();
         }
     }
@@ -368,14 +347,14 @@ class AdvancedAIIntegration {
      */
     getDefaultFormData() {
         return {
-            baslik: "",
-            kategori: "Emlak",
-            il: "İstanbul",
-            ilce: "",
-            mahalle: "",
+            baslik: '',
+            kategori: 'Emlak',
+            il: 'İstanbul',
+            ilce: '',
+            mahalle: '',
             fiyat: 500000,
             metrekare: 100,
-            oda_sayisi: "2+1",
+            oda_sayisi: '2+1',
             banyo_sayisi: 1,
             balkon_var: false,
             asansor_var: false,
@@ -391,13 +370,9 @@ class AdvancedAIIntegration {
     getAIOptions() {
         try {
             return {
-                ai_tone: document.getElementById("ai-tone")?.value || "seo",
-                ai_variant_count:
-                    parseInt(
-                        document.getElementById("ai-variant-count")?.value
-                    ) || 3,
-                ai_ab_test:
-                    document.getElementById("ai-ab-test")?.checked || false,
+                ai_tone: document.getElementById('ai-tone')?.value || 'seo',
+                ai_variant_count: parseInt(document.getElementById('ai-variant-count')?.value) || 3,
+                ai_ab_test: document.getElementById('ai-ab-test')?.checked || false,
                 ai_languages: Array.from(
                     document.querySelectorAll('[name="ai_languages[]"]:checked')
                 ).map((el) => el.value),
@@ -406,12 +381,12 @@ class AdvancedAIIntegration {
                 include_price_analysis: true,
             };
         } catch (error) {
-            console.error("Error getting AI options:", error);
+            console.error('Error getting AI options:', error);
             return {
-                ai_tone: "seo",
+                ai_tone: 'seo',
                 ai_variant_count: 3,
                 ai_ab_test: false,
-                ai_languages: ["TR"],
+                ai_languages: ['TR'],
                 include_market_analysis: true,
                 include_seo_keywords: true,
                 include_price_analysis: true,
@@ -427,15 +402,13 @@ class AdvancedAIIntegration {
 
         const defaultOptions = {
             headers: {
-                "Content-Type": "application/json",
-                "X-Requested-With": "XMLHttpRequest",
-                "X-CSRF-TOKEN":
-                    document
-                        .querySelector('meta[name="csrf-token"]')
-                        ?.getAttribute("content") ||
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN':
+                    document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') ||
                     document.querySelector('input[name="_token"]')?.value,
             },
-            credentials: "same-origin", // CSRF token için
+            credentials: 'same-origin', // CSRF token için
         };
 
         const requestOptions = { ...defaultOptions, ...options };
@@ -467,15 +440,12 @@ class AdvancedAIIntegration {
      */
     showAdvancedResults(data) {
         if (!data.success) {
-            this.showNotification(
-                data.message || "AI içerik üretimi başarısız",
-                "error"
-            );
+            this.showNotification(data.message || 'AI içerik üretimi başarısız', 'error');
             return;
         }
 
         // Modal oluştur veya güncelle
-        let modal = document.getElementById("advanced-ai-results-modal");
+        let modal = document.getElementById('advanced-ai-results-modal');
         if (!modal) {
             modal = this.createResultsModal();
         }
@@ -484,11 +454,11 @@ class AdvancedAIIntegration {
         this.updateResultsModal(modal, data);
 
         // Modal'ı göster
-        modal.classList.remove("hidden");
-        document.body.classList.add("overflow-hidden");
+        modal.classList.remove('hidden');
+        document.body.classList.add('overflow-hidden');
 
         // Analytics
-        this.trackEvent("ai_results_viewed", {
+        this.trackEvent('ai_results_viewed', {
             variant_count: data.variants?.length || 0,
             has_market_analysis: !!data.market_analysis,
             has_price_analysis: !!data.price_analysis,
@@ -500,9 +470,9 @@ class AdvancedAIIntegration {
      * Sonuç modal'ı oluştur
      */
     createResultsModal() {
-        const modal = document.createElement("div");
-        modal.id = "advanced-ai-results-modal";
-        modal.className = "fixed inset-0 bg-black bg-opacity-50 z-50 hidden";
+        const modal = document.createElement('div');
+        modal.id = 'advanced-ai-results-modal';
+        modal.className = 'fixed inset-0 bg-black bg-opacity-50 z-50 hidden';
 
         modal.innerHTML = `
             <div class="flex items-center justify-center min-h-screen p-4">
@@ -533,27 +503,21 @@ class AdvancedAIIntegration {
         document.body.appendChild(modal);
 
         // Event listeners
-        modal
-            .querySelector("#close-ai-results")
-            .addEventListener("click", () => {
-                this.closeResultsModal();
-            });
+        modal.querySelector('#close-ai-results').addEventListener('click', () => {
+            this.closeResultsModal();
+        });
 
-        modal
-            .querySelector("#close-ai-results-btn")
-            .addEventListener("click", () => {
-                this.closeResultsModal();
-            });
+        modal.querySelector('#close-ai-results-btn').addEventListener('click', () => {
+            this.closeResultsModal();
+        });
 
-        modal
-            .querySelector("#regenerate-ai-content")
-            .addEventListener("click", () => {
-                this.regenerateContent();
-            });
+        modal.querySelector('#regenerate-ai-content').addEventListener('click', () => {
+            this.regenerateContent();
+        });
 
         // ESC tuşu ile kapat
-        document.addEventListener("keydown", (e) => {
-            if (e.key === "Escape" && !modal.classList.contains("hidden")) {
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
                 this.closeResultsModal();
             }
         });
@@ -565,9 +529,9 @@ class AdvancedAIIntegration {
      * Sonuç modal'ını güncelle
      */
     updateResultsModal(modal, data) {
-        const content = modal.querySelector("#ai-results-content");
+        const content = modal.querySelector('#ai-results-content');
 
-        let html = "";
+        let html = '';
 
         // Başlık ve açıklama varyantları
         if (data.variants && data.variants.length > 0) {
@@ -602,7 +566,7 @@ class AdvancedAIIntegration {
                 `;
             });
 
-            html += "</div></div>";
+            html += '</div></div>';
         }
 
         // Pazar analizi
@@ -615,19 +579,13 @@ class AdvancedAIIntegration {
                             <div>
                                 <h4 class="font-medium text-gray-800 mb-2">Lokasyon Skoru</h4>
                                 <div class="text-2xl font-bold text-blue-600">
-                                    ${
-                                        data.market_analysis.location_analysis
-                                            ?.score || "N/A"
-                                    }/100
+                                    ${data.market_analysis.location_analysis?.score || 'N/A'}/100
                                 </div>
                             </div>
                             <div>
                                 <h4 class="font-medium text-gray-800 mb-2">Pazar Trendi</h4>
                                 <div class="text-lg font-semibold text-gray-700">
-                                    ${
-                                        data.market_analysis.market_trends
-                                            ?.trend || "Stabil"
-                                    }
+                                    ${data.market_analysis.market_trends?.trend || 'Stabil'}
                                 </div>
                             </div>
                         </div>
@@ -646,7 +604,7 @@ class AdvancedAIIntegration {
                             <div>
                                 <h4 class="font-medium text-gray-800 mb-2">Mevcut Fiyat</h4>
                                 <div class="text-xl font-bold text-gray-700">
-                                    ${new Intl.NumberFormat("tr-TR").format(
+                                    ${new Intl.NumberFormat('tr-TR').format(
                                         data.price_analysis.current_price || 0
                                     )} TL
                                 </div>
@@ -654,7 +612,7 @@ class AdvancedAIIntegration {
                             <div>
                                 <h4 class="font-medium text-gray-800 mb-2">Önerilen Fiyat</h4>
                                 <div class="text-xl font-bold text-green-600">
-                                    ${new Intl.NumberFormat("tr-TR").format(
+                                    ${new Intl.NumberFormat('tr-TR').format(
                                         data.price_analysis.suggested_price || 0
                                     )} TL
                                 </div>
@@ -686,7 +644,7 @@ class AdvancedAIIntegration {
 
                         <div class="space-y-3">
                             ${Object.entries(data.seo_keywords)
-                                .filter(([key]) => key !== "seo_score")
+                                .filter(([key]) => key !== 'seo_score')
                                 .map(
                                     ([category, keywords]) => `
                                 <div>
@@ -700,12 +658,12 @@ class AdvancedAIIntegration {
                                             <span class="px-2 py-1 bg-purple-100 text-purple-800 text-sm rounded">${keyword}</span>
                                         `
                                             )
-                                            .join("")}
+                                            .join('')}
                                     </div>
                                 </div>
                             `
                                 )
-                                .join("")}
+                                .join('')}
                         </div>
                     </div>
                 </div>
@@ -719,7 +677,7 @@ class AdvancedAIIntegration {
      * Varyant kullan
      */
     useVariant(index) {
-        const modal = document.getElementById("advanced-ai-results-modal");
+        const modal = document.getElementById('advanced-ai-results-modal');
         const variants = this.getCurrentVariants();
 
         if (variants && variants[index]) {
@@ -733,13 +691,13 @@ class AdvancedAIIntegration {
             if (aciklamaInput) aciklamaInput.value = variant.description;
 
             // Bildirim göster
-            this.showNotification("İçerik başarıyla uygulandı!", "success");
+            this.showNotification('İçerik başarıyla uygulandı!', 'success');
 
             // Modal'ı kapat
             this.closeResultsModal();
 
             // Analytics
-            this.trackEvent("ai_variant_used", {
+            this.trackEvent('ai_variant_used', {
                 variant_id: variant.id,
                 seo_score: variant.seo_score,
                 tone: variant.tone,
@@ -766,18 +724,18 @@ class AdvancedAIIntegration {
      */
     getCategoryLabel(category) {
         const labels = {
-            location: "Lokasyon",
-            property_type: "Emlak Tipi",
-            features: "Özellikler",
-            long_tail: "Uzun Kuyruk",
-            trending: "Trend",
+            location: 'Lokasyon',
+            property_type: 'Emlak Tipi',
+            features: 'Özellikler',
+            long_tail: 'Uzun Kuyruk',
+            trending: 'Trend',
         };
         return labels[category] || category;
     }
 
     getCurrentVariants() {
         // Modal'dan varyantları al
-        const modal = document.getElementById("advanced-ai-results-modal");
+        const modal = document.getElementById('advanced-ai-results-modal');
         if (modal) {
             // Bu basit implementasyon - gerçekte state management gerekli
             return this.lastGeneratedVariants;
@@ -786,10 +744,10 @@ class AdvancedAIIntegration {
     }
 
     closeResultsModal() {
-        const modal = document.getElementById("advanced-ai-results-modal");
+        const modal = document.getElementById('advanced-ai-results-modal');
         if (modal) {
-            modal.classList.add("hidden");
-            document.body.classList.remove("overflow-hidden");
+            modal.classList.add('hidden');
+            document.body.classList.remove('overflow-hidden');
         }
     }
 
@@ -801,41 +759,41 @@ class AdvancedAIIntegration {
     }
 
     updateUI(state) {
-        const aiBtn = document.getElementById("ai-suggest-btn");
+        const aiBtn = document.getElementById('ai-suggest-btn');
         if (!aiBtn) return;
 
         switch (state) {
-            case "generating":
+            case 'generating':
                 aiBtn.disabled = true;
-                aiBtn.innerHTML = "🤖 AI Üretiyor...";
+                aiBtn.innerHTML = '🤖 AI Üretiyor...';
                 break;
-            case "analyzing_price":
-                aiBtn.innerHTML = "💰 Fiyat Analizi...";
+            case 'analyzing_price':
+                aiBtn.innerHTML = '💰 Fiyat Analizi...';
                 break;
-            case "analyzing_market":
-                aiBtn.innerHTML = "📊 Pazar Analizi...";
+            case 'analyzing_market':
+                aiBtn.innerHTML = '📊 Pazar Analizi...';
                 break;
-            case "generating_seo":
-                aiBtn.innerHTML = "🔍 SEO Üretiyor...";
+            case 'generating_seo':
+                aiBtn.innerHTML = '🔍 SEO Üretiyor...';
                 break;
-            case "idle":
+            case 'idle':
             default:
                 aiBtn.disabled = false;
-                aiBtn.innerHTML = "🤖 AI Öneri Oluştur";
+                aiBtn.innerHTML = '🤖 AI Öneri Oluştur';
                 break;
         }
     }
 
-    showNotification(message, type = "info") {
-        const notification = document.createElement("div");
+    showNotification(message, type = 'info') {
+        const notification = document.createElement('div');
         notification.className = `fixed top-4 right-4 px-6 py-3 rounded-lg shadow-lg z-50 transition-all duration-300 ${
-            type === "success"
-                ? "bg-green-500 text-white"
-                : type === "error"
-                ? "bg-red-500 text-white"
-                : type === "warning"
-                ? "bg-yellow-500 text-white"
-                : "bg-blue-500 text-white"
+            type === 'success'
+                ? 'bg-green-500 text-white'
+                : type === 'error'
+                  ? 'bg-red-500 text-white'
+                  : type === 'warning'
+                    ? 'bg-yellow-500 text-white'
+                    : 'bg-blue-500 text-white'
         }`;
 
         notification.textContent = message;
@@ -843,14 +801,14 @@ class AdvancedAIIntegration {
 
         // Animasyon
         setTimeout(() => {
-            notification.style.transform = "translateX(0)";
-            notification.style.opacity = "1";
+            notification.style.transform = 'translateX(0)';
+            notification.style.opacity = '1';
         }, 100);
 
         // Otomatik kaldır
         setTimeout(() => {
-            notification.style.transform = "translateX(100%)";
-            notification.style.opacity = "0";
+            notification.style.transform = 'translateX(100%)';
+            notification.style.opacity = '0';
             setTimeout(() => {
                 notification.remove();
             }, 300);
@@ -858,19 +816,17 @@ class AdvancedAIIntegration {
     }
 
     showCachedResults(data) {
-        this.showNotification("Önbellekten sonuçlar yüklendi", "info");
+        this.showNotification('Önbellekten sonuçlar yüklendi', 'info');
         this.showAdvancedResults(data);
     }
 
     showFallbackContent() {
-        this.showNotification("Basit içerik önerileri gösteriliyor", "warning");
+        this.showNotification('Basit içerik önerileri gösteriliyor', 'warning');
         // Fallback içerik göster
     }
 
     getCacheKey(formData, aiOptions) {
-        return `ai_content_${btoa(
-            JSON.stringify({ formData, aiOptions })
-        ).substring(0, 32)}`;
+        return `ai_content_${btoa(JSON.stringify({ formData, aiOptions })).substring(0, 32)}`;
     }
 
     initializeCache() {
@@ -884,14 +840,11 @@ class AdvancedAIIntegration {
     }
 
     observeFormChanges() {
-        const form = document.querySelector("form");
+        const form = document.querySelector('form');
         if (form) {
             const observer = new MutationObserver((mutations) => {
                 mutations.forEach((mutation) => {
-                    if (
-                        mutation.type === "attributes" &&
-                        mutation.attributeName === "value"
-                    ) {
+                    if (mutation.type === 'attributes' && mutation.attributeName === 'value') {
                         // Form değişikliklerini izle
                         this.onFormChange();
                     }
@@ -900,7 +853,7 @@ class AdvancedAIIntegration {
 
             observer.observe(form, {
                 attributes: true,
-                attributeFilter: ["value", "checked", "selected"],
+                attributeFilter: ['value', 'checked', 'selected'],
             });
         }
     }
@@ -912,20 +865,14 @@ class AdvancedAIIntegration {
 
     setupPerformanceMonitoring() {
         // Performance monitoring
-        if ("performance" in window) {
-            window.addEventListener("load", () => {
+        if ('performance' in window) {
+            window.addEventListener('load', () => {
                 setTimeout(() => {
-                    const perfData =
-                        performance.getEntriesByType("navigation")[0];
-                    if (
-                        perfData &&
-                        perfData.loadEventEnd - perfData.loadEventStart > 3000
-                    ) {
+                    const perfData = performance.getEntriesByType('navigation')[0];
+                    if (perfData && perfData.loadEventEnd - perfData.loadEventStart > 3000) {
                         console.warn(
-                            "Page load time exceeded 3 seconds:",
-                            perfData.loadEventEnd -
-                                perfData.loadEventStart +
-                                "ms"
+                            'Page load time exceeded 3 seconds:',
+                            perfData.loadEventEnd - perfData.loadEventStart + 'ms'
                         );
                     }
                 }, 0);
@@ -938,7 +885,7 @@ class AdvancedAIIntegration {
 
         // Analytics'e gönder
         if (window.gtag) {
-            window.gtag("event", "api_performance", {
+            window.gtag('event', 'api_performance', {
                 endpoint: endpoint,
                 duration: Math.round(duration),
             });
@@ -950,7 +897,7 @@ class AdvancedAIIntegration {
 
         // Analytics'e gönder
         if (window.gtag) {
-            window.gtag("event", eventName, parameters);
+            window.gtag('event', eventName, parameters);
         }
     }
 }
@@ -959,6 +906,6 @@ class AdvancedAIIntegration {
 window.advancedAI = new AdvancedAIIntegration();
 
 // Export for module usage
-if (typeof module !== "undefined" && module.exports) {
+if (typeof module !== 'undefined' && module.exports) {
     module.exports = AdvancedAIIntegration;
 }

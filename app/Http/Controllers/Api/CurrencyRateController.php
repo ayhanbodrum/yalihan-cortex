@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Services\Price\CurrencyRateService;
+use App\Services\Response\ResponseService;
+use App\Traits\ValidatesApiRequests;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -14,6 +16,8 @@ use Illuminate\Http\Request;
  */
 class CurrencyRateController extends Controller
 {
+    use ValidatesApiRequests;
+
     protected $currencyService;
 
     public function __construct(CurrencyRateService $currencyService)
@@ -31,19 +35,14 @@ class CurrencyRateController extends Controller
         try {
             $rateData = $this->currencyService->getRates();
 
-            return response()->json([
-                'success' => true,
+            return ResponseService::success([
                 'rates' => $rateData['rates'],
                 'last_updated' => $rateData['last_updated'],
                 'source' => $rateData['source'],
                 'base_currency' => $rateData['base_currency']
-            ]);
+            ], 'Döviz kurları başarıyla getirildi');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'error' => 'Döviz kurları yüklenemedi',
-                'message' => $e->getMessage()
-            ], 500);
+            return ResponseService::serverError('Döviz kurları yüklenirken hata oluştu.', $e);
         }
     }
 
@@ -55,11 +54,15 @@ class CurrencyRateController extends Controller
      */
     public function convert(Request $request): JsonResponse
     {
-        $request->validate([
+        $validated = $this->validateRequestWithResponse($request, [
             'amount' => 'required|numeric|min:0',
             'from' => 'required|string|in:TRY,USD,EUR,GBP',
             'to' => 'required|string|in:TRY,USD,EUR,GBP',
         ]);
+
+        if ($validated instanceof JsonResponse) {
+            return $validated;
+        }
 
         try {
             $converted = $this->currencyService->convert(
@@ -68,8 +71,7 @@ class CurrencyRateController extends Controller
                 $request->to
             );
 
-            return response()->json([
-                'success' => true,
+            return ResponseService::success([
                 'original' => [
                     'amount' => $request->amount,
                     'currency' => $request->from,
@@ -81,13 +83,9 @@ class CurrencyRateController extends Controller
                     'formatted' => $this->currencyService->format($converted, $request->to)
                 ],
                 'rate' => $this->currencyService->getRate($request->from, $request->to)
-            ]);
+            ], 'Para birimi dönüşümü başarıyla tamamlandı');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'error' => 'Döviz çevrimi başarısız',
-                'message' => $e->getMessage()
-            ], 500);
+            return ResponseService::serverError('Döviz çevrimi başarısız.', $e);
         }
     }
 
@@ -98,10 +96,9 @@ class CurrencyRateController extends Controller
      */
     public function getSupportedCurrencies(): JsonResponse
     {
-        return response()->json([
-            'success' => true,
+        return ResponseService::success([
             'currencies' => $this->currencyService->getSupportedCurrencies()
-        ]);
+        ], 'Desteklenen para birimleri başarıyla getirildi');
     }
 
     /**
@@ -114,17 +111,11 @@ class CurrencyRateController extends Controller
         try {
             $rates = $this->currencyService->refresh();
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Döviz kurları güncellendi',
+            return ResponseService::success([
                 'rates' => $rates
-            ]);
+            ], 'Döviz kurları güncellendi');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'error' => 'Kurlar yenilenemedi',
-                'message' => $e->getMessage()
-            ], 500);
+            return ResponseService::serverError('Kurlar yenilenirken hata oluştu.', $e);
         }
     }
 }

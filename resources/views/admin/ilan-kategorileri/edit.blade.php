@@ -72,7 +72,7 @@
 
                         <div class="space-y-2">
                             <label for="order" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Sıra</label>
-                            <input type="number" id="order" name="order" class="w-full px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-black dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200" value="{{ old('order', $kategori->order) }}" min="0">
+                            <input type="number" id="order" name="order" class="w-full px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-black dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200" value="{{ old('order', $kategori->display_order) }}" min="0">
                             @error('order')
                                 <div class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</div>
                             @enderror

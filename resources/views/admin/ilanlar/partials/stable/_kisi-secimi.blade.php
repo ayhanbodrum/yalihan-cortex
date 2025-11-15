@@ -30,15 +30,15 @@
                 İlan Sahibi
                 <span class="text-red-500 font-bold">*</span>
             </label>
-            <div class="context7-live-search relative" data-search-type="kisiler" data-placeholder="İsim veya telefon ara..."
+            <div class="context7-live-search relative" data-search-type="kisiler" data-placeholder="İsim veya telefon ara..." data-endpoint="/api/kisiler/search"
                 data-max-results="15" data-creatable="true" data-add-modal-id="add_person_modal"
                 data-add-modal-url="/api/kisiler" data-add-modal-title="Yeni İlan Sahibi Ekle">
                 <input type="hidden" name="ilan_sahibi_id" id="ilan_sahibi_id" value="{{ old('ilan_sahibi_id') }}">
-                <input type="text" id="ilan_sahibi_search"
+                <input type="text" id="ilan_sahibi_search" aria-label="İlan sahibi arama"
                     class="w-full px-4 py-2.5
-                           border-2 border-gray-300 dark:border-gray-600 
-                           rounded-xl 
-                           bg-white dark:bg-gray-800 
+                           border-2 border-gray-300 dark:border-gray-600
+                           rounded-xl
+                           bg-white dark:bg-gray-800
                            text-black dark:text-white
                            placeholder-gray-400 dark:placeholder-gray-500
                            focus:ring-4 focus:ring-purple-500/20 focus:border-purple-500 dark:focus:border-purple-400
@@ -67,14 +67,14 @@
                 İlgili Kişi
                 <span class="ml-auto text-xs text-gray-500 dark:text-gray-400 font-normal">(Opsiyonel)</span>
             </label>
-            <div class="context7-live-search relative" data-search-type="kisiler" data-placeholder="İsim veya telefon ara..."
+            <div class="context7-live-search relative" data-search-type="kisiler" data-placeholder="İsim veya telefon ara..." data-endpoint="/api/kisiler/search"
                 data-max-results="15" data-creatable="true" data-add-modal-id="add_person_modal">
                 <input type="hidden" name="ilgili_kisi_id" id="ilgili_kisi_id" value="{{ old('ilgili_kisi_id') }}">
-                <input type="text" id="ilgili_kisi_search"
+                <input type="text" id="ilgili_kisi_search" aria-label="İlgili kişi arama"
                     class="w-full px-4 py-2.5
-                           border-2 border-gray-300 dark:border-gray-600 
-                           rounded-xl 
-                           bg-white dark:bg-gray-800 
+                           border-2 border-gray-300 dark:border-gray-600
+                           rounded-xl
+                           bg-white dark:bg-gray-800
                            text-black dark:text-white
                            placeholder-gray-400 dark:placeholder-gray-500
                            focus:ring-4 focus:ring-purple-500/20 focus:border-purple-500 dark:focus:border-purple-400
@@ -109,14 +109,14 @@
                     Sistem Kullanıcısı
                 </span>
             </label>
-            <div class="context7-live-search relative" data-search-type="users" data-placeholder="Danışman ara..."
+            <div class="context7-live-search relative" data-search-type="users" data-placeholder="Danışman ara..." data-endpoint="/api/admin/users/search"
                 data-max-results="15" data-creatable="false">
                 <input type="hidden" name="danisman_id" id="danisman_id" value="{{ old('danisman_id') }}" required>
-                <input type="text" id="danisman_search"
+                <input type="text" id="danisman_search" aria-label="Danışman arama"
                     class="w-full px-4 py-2.5
-                           border-2 border-blue-300 dark:border-blue-600 
-                           rounded-xl 
-                           bg-blue-50 dark:bg-blue-900/20 
+                           border-2 border-blue-300 dark:border-blue-600
+                           rounded-xl
+                           bg-blue-50 dark:bg-blue-900/20
                            text-black dark:text-white
                            placeholder-blue-400 dark:placeholder-blue-500
                            focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 dark:focus:border-blue-400
@@ -144,3 +144,6 @@
         </div>
     </div>
 </div>
+                <div class="context7-search-results mt-1 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm"></div>
+                <div class="context7-search-results mt-1 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm"></div>
+                <div class="context7-search-results mt-1 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm"></div>

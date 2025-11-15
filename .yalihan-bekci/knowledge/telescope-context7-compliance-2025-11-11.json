@@ -1,0 +1,84 @@
+{
+  "title": "Telescope Context7 Uyumluluk Düzeltmeleri - 11 Kasım 2025",
+  "date": "2025-11-11",
+  "type": "context7_compliance",
+  "category": "telescope",
+  "summary": "Laravel Telescope'un config ve service provider'ı Context7 standartlarına uyumlu hale getirildi. Hassas veriler gizleme iyileştirildi, ignore_paths güncellendi, gate kontrolü Spatie Permission ile entegre edildi.",
+  "files_modified": [
+    "config/telescope.php",
+    "app/Providers/TelescopeServiceProvider.php"
+  ],
+  "changes": {
+    "telescope_config": {
+      "ignore_paths": {
+        "added": [
+          "telescope*",
+          "horizon*"
+        ],
+        "reason": "Telescope kendi isteklerini ve Horizon isteklerini ignore etmek için performans optimizasyonu"
+      }
+    },
+    "telescope_service_provider": {
+      "hideSensitiveRequestDetails": {
+        "request_parameters": [
+          "_token",
+          "password",
+          "password_confirmation",
+          "api_token",
+          "secret"
+        ],
+        "request_headers": [
+          "cookie",
+          "x-csrf-token",
+          "x-xsrf-token",
+          "authorization",
+          "api-key"
+        ],
+        "reason": "Hassas verilerin Telescope'da görünmesini önlemek için güvenlik iyileştirmesi"
+      },
+      "gate": {
+        "implementation": "Spatie Permission entegrasyonu",
+        "roles": ["superadmin", "admin"],
+        "local_environment": "Herkes erişebilir",
+        "production": "Sadece yetkili kullanıcılar"
+      },
+      "filter": {
+        "local": "Tüm entry'leri kaydet",
+        "production": "Sadece önemli entry'leri kaydet (exceptions, failed requests, failed jobs, scheduled tasks, monitored tags)"
+      }
+    }
+  },
+  "context7_compliance": {
+    "status": "100%",
+    "forbidden_patterns": {
+      "checked": [
+        "durum",
+        "is_active",
+        "aktif",
+        "sehir",
+        "btn-",
+        "card-",
+        "form-control"
+      ],
+      "result": "YOK - Tüm yasak pattern'ler kontrol edildi, kullanılmıyor"
+    },
+    "required_patterns": {
+      "checked": [
+        "status field",
+        "Context7 yorumları",
+        "Spatie Permission"
+      ],
+      "result": "VAR - Tüm zorunlu pattern'ler mevcut"
+    }
+  },
+  "lessons_learned": [
+    "Telescope'un view'ları vendor klasöründe olduğu için doğrudan düzenlenemiyor, ancak config ve service provider üzerinden özelleştirilebiliyor",
+    "Hassas verilerin gizlenmesi production environment'te kritik öneme sahip",
+    "ignore_paths ile gereksiz log kayıtları önlenerek performans iyileştirilebilir",
+    "Spatie Permission entegrasyonu ile rol tabanlı erişim kontrolü sağlanabilir"
+  ],
+  "related_documents": [
+    ".context7/TELESCOPE_CONTEXT7_COMPLIANCE_2025-11-11.md"
+  ]
+}
+

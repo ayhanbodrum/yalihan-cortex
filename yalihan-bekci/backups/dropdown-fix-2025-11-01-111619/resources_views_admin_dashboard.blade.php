@@ -687,16 +687,16 @@
                         });
                         if (analyticsRes.ok) {
                             const analytics = await analyticsRes.json();
-                            
+
                             // MCP count = Active providers
                             const providerCount = Object.keys(analytics.provider_usage || {}).length;
                             this.mcpCount = providerCount;
-                            
+
                             // API stats
                             this.apiOk = analytics.total_requests || 0;
                             this.apiTotal = analytics.total_requests || 0;
                             this.uptime = Math.round(analytics.success_rate || 0);
-                            
+
                             // Compliance (basitleştirilmiş)
                             this.compliance = this.uptime >= 80 ? 'compliant' : 'needs_review';
                             this.codeHealthNote =

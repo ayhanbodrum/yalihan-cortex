@@ -280,28 +280,28 @@ node scripts/usta-test.mjs
 
 **✨ USTA Ne Yapar:**
 
--   🔍 Özel sayfaları test eder (7 sayfa)
--   📸 Full page screenshot alır (before/after)
--   🐛 Teknik hataları tespit eder
--   🎨 Tasarım sorunlarını analiz eder (Neo Design System)
--   🔧 Otomatik düzeltme önerir ve uygular
--   ✅ Context7 compliance check
--   👁️ Görsel mod (headless=false) - Süreci izlersin!
+- 🔍 Özel sayfaları test eder (7 sayfa)
+- 📸 Full page screenshot alır (before/after)
+- 🐛 Teknik hataları tespit eder
+- 🎨 Tasarım sorunlarını analiz eder (Neo Design System)
+- 🔧 Otomatik düzeltme önerir ve uygular
+- ✅ Context7 compliance check
+- 👁️ Görsel mod (headless=false) - Süreci izlersin!
 
 **🎨 Tespit Edilen Tasarım Sorunları:**
 
--   Card yapısı eksik (Neo-card kullanılmamış)
--   Input styling eksik (neo-input yok)
--   Button styling eksik (neo-btn-primary yok)
--   Responsive design eksik (md:, lg: breakpoint yok)
--   Dark mode desteği yok (dark: class yok)
--   Tailwind kullanılmamış
+- Card yapısı eksik (Neo-card kullanılmamış)
+- Input styling eksik (neo-input yok)
+- Button styling eksik (neo-btn-primary yok)
+- Responsive design eksik (md:, lg: breakpoint yok)
+- Dark mode desteği yok (dark: class yok)
+- Tailwind kullanılmamış
 
 **📸 Çıktılar:**
 
--   `usta-test-raporu.md` - Detaylı analiz + tasarım şablonları
--   `screenshots/usta-test/before/` - İlk durum
--   `screenshots/usta-test/after/` - Düzeltme sonrası
+- `usta-test-raporu.md` - Detaylı analiz + tasarım şablonları
+- `screenshots/usta-test/before/` - İlk durum
+- `screenshots/usta-test/after/` - Düzeltme sonrası
 
 ---
 
@@ -323,32 +323,32 @@ node scripts/admin-kapsamli-test.mjs
 
 **✨ Ne Test Ediyor:**
 
--   ✅ Dashboard & Ana Sayfa
--   ✅ CRM (Kişiler, Danışmanlar, Talepler, Takım, Görevler)
--   ✅ İlan Yönetimi (İlanlar, Kategoriler, Özellikler)
--   ✅ Sistem (Kullanıcılar, Ayarlar, Raporlar)
--   ✅ Her sayfa için: Liste, Ekle, Düzenle
--   ✅ Toplam: 42+ sayfa otomatik test
+- ✅ Dashboard & Ana Sayfa
+- ✅ CRM (Kişiler, Danışmanlar, Talepler, Takım, Görevler)
+- ✅ İlan Yönetimi (İlanlar, Kategoriler, Özellikler)
+- ✅ Sistem (Kullanıcılar, Ayarlar, Raporlar)
+- ✅ Her sayfa için: Liste, Ekle, Düzenle
+- ✅ Toplam: 42+ sayfa otomatik test
 
 **🎯 Tespit Edilen Hatalar:**
 
--   `Undefined variable` hataları
--   Eksik tablo migration'ları
--   404 Not Found sayfaları
--   500 Internal Server hatalar
--   Blade syntax hataları
+- `Undefined variable` hataları
+- Eksik tablo migration'ları
+- 404 Not Found sayfaları
+- 500 Internal Server hatalar
+- Blade syntax hataları
 
 **📋 Otomatik Düzeltilen Hatalar:**
 
--   ✅ `$taslak`, `$status`, `$danismanlar`, `$ustKategoriler` değişkenleri
--   ✅ `talepler` tablosu migration
--   ✅ Controller ve view uyumsuzlukları
+- ✅ `$taslak`, `$status`, `$danismanlar`, `$ustKategoriler` değişkenleri
+- ✅ `talepler` tablosu migration
+- ✅ Controller ve view uyumsuzlukları
 
 **Çıktılar:**
 
--   `admin-kapsamli-test-raporu.md` - Detaylı rapor (kategori bazlı)
--   `screenshots/kapsamli-test/error-*.png` - Hatalı sayfa görselleri
--   `screenshots/kapsamli-test/success-*.png` - Başarılı sayfa görselleri
+- `admin-kapsamli-test-raporu.md` - Detaylı rapor (kategori bazlı)
+- `screenshots/kapsamli-test/error-*.png` - Hatalı sayfa görselleri
+- `screenshots/kapsamli-test/success-*.png` - Başarılı sayfa görselleri
 
 ### **Context7 Dokümantasyon Senkronizasyonu**
 
@@ -464,8 +464,8 @@ mv scripts/ultimate-*.php scripts/archive/migration-fixers/
 
 **Sonuç:**
 
--   Aktif scripts: 19 (kullanışlı)
--   Arşiv: 20 (başarıyla tamamlanmış)
+- Aktif scripts: 19 (kullanışlı)
+- Arşiv: 20 (başarıyla tamamlanmış)
 
 ---
 
@@ -509,9 +509,9 @@ node scripts/admin-otomatik-test.mjs || exit 1
 
 ## 📚 İlgili Dökümanlar
 
--   **Admin Test Rehberi:** `ADMIN_CRAWLER_KULLANIM.md`
--   **Context7 Sync Rehberi:** `CONTEXT7_AUTO_SYNC_GUIDE.md`
--   **Ana Dokümantasyon:** `docs/README.md`
+- **Admin Test Rehberi:** `ADMIN_CRAWLER_KULLANIM.md`
+- **Context7 Sync Rehberi:** `CONTEXT7_AUTO_SYNC_GUIDE.md`
+- **Ana Dokümantasyon:** `docs/README.md`
 
 ---
 

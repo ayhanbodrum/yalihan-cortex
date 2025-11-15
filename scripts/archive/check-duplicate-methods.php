@@ -3,7 +3,7 @@
 /**
  * Duplicate Method Checker
  * Yalıhan Bekçi - 2 Kasım 2025
- * 
+ *
  * PHP dosyalarında duplicate method tanımlarını tespit eder.
  */
 
@@ -24,9 +24,9 @@ foreach ($files as $file) {
     if (!file_exists($file)) {
         continue;
     }
-    
+
     $content = file_get_contents($file);
-    
+
     // Public/protected/private method tanımlarını bul
     preg_match_all(
         '/^\s*(public|protected|private)\s+(?:static\s+)?function\s+(\w+)\s*\(/m',
@@ -34,31 +34,31 @@ foreach ($files as $file) {
         $matches,
         PREG_SET_ORDER
     );
-    
+
     if (empty($matches)) {
         continue;
     }
-    
+
     // Method isimlerini say
     $methodCounts = [];
     $methodLines = [];
-    
+
     foreach ($matches as $match) {
         $methodName = $match[2];
-        
+
         if (!isset($methodCounts[$methodName])) {
             $methodCounts[$methodName] = 0;
             $methodLines[$methodName] = [];
         }
-        
+
         $methodCounts[$methodName]++;
-        
+
         // Satır numarasını bul
         $beforeMatch = substr($content, 0, strpos($content, $match[0]));
         $lineNumber = substr_count($beforeMatch, "\n") + 1;
         $methodLines[$methodName][] = $lineNumber;
     }
-    
+
     // Duplicate'leri tespit et
     foreach ($methodCounts as $methodName => $count) {
         if ($count > 1) {
@@ -66,7 +66,7 @@ foreach ($files as $file) {
             echo "   Method: {$methodName}() - {$count} kez tanımlanmış\n";
             echo "   Satırlar: " . implode(', ', $methodLines[$methodName]) . "\n";
             echo "\n";
-            
+
             $hasError = true;
             $totalDuplicates++;
         }
@@ -88,4 +88,3 @@ if ($hasError) {
 
 echo "✅ Duplicate method bulunamadı.\n";
 exit(0);
-

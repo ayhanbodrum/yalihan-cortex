@@ -3,12 +3,13 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Services\Response\ResponseService;
 use Illuminate\Http\Request;
 
 class SearchController extends Controller
 {
     public function index(Request $request)
     {
-        return response()->json(['message' => 'Search endpoint - to be implemented']);
+        return ResponseService::success([], 'Search endpoint - to be implemented');
     }
 }

@@ -6,7 +6,7 @@
   "kategori": "mega-migration-day",
   "toplam_degisiklik": 123,
   "calisme_suresi": "~6 saat",
-  
+
   "ana_konular": {
     "1_form_standardizasyonu": {
       "aciklama": "Tüm form alanlarında okunabilirlik iyileştirmesi",
@@ -29,10 +29,7 @@
     },
     "3_component_updates": {
       "aciklama": "x-admin component'leri güncellendi",
-      "components": [
-        "x-admin.input",
-        "x-admin.textarea"
-      ],
+      "components": ["x-admin.input", "x-admin.textarea"],
       "etki": "Bu component'leri kullanan TÜM sayfalar otomatik düzeldi!",
       "dosya": 2
     },
@@ -52,7 +49,7 @@
       "kritik": "Sayfa tamamen siyah görünüyordu!"
     }
   },
-  
+
   "kritik_ogrenme_noktalari": {
     "1_okunabilirlik_onceliktir": {
       "kural": "Form alanlarında bg-white + text-black kullan",
@@ -70,11 +67,7 @@
     "3_inline_style_yasak": {
       "kural": "Inline style kullanma!",
       "yasak": "style='color-scheme: light dark;'",
-      "sebep": [
-        "Gereksiz (Tailwind dark mode yeterli)",
-        "CSP uyumsuz",
-        "Bakımı zor"
-      ],
+      "sebep": ["Gereksiz (Tailwind dark mode yeterli)", "CSP uyumsuz", "Bakımı zor"],
       "cozum": "Tailwind classes kullan"
     },
     "4_alpinejs_inline_xdata": {
@@ -108,7 +101,7 @@
       "cache": "php artisan optimize:clear"
     }
   },
-  
+
   "yeni_standartlar": {
     "form_input_background": {
       "light_mode": "bg-white",
@@ -142,7 +135,7 @@
       "xcloak_css": "Spesifik selector kullan"
     }
   },
-  
+
   "guncellenen_dosyalar": {
     "ilan_yonetimi": [
       "category-system.blade.php",
@@ -161,21 +154,12 @@
       "index.blade.php",
       "create.blade.php (partial)"
     ],
-    "property_type_manager": [
-      "show.blade.php",
-      "field-dependencies.blade.php",
-      "index.blade.php"
-    ],
-    "ozellikler": [
-      "kategoriler/edit.blade.php"
-    ],
-    "components": [
-      "admin/input.blade.php",
-      "admin/textarea.blade.php"
-    ],
+    "property_type_manager": ["show.blade.php", "field-dependencies.blade.php", "index.blade.php"],
+    "ozellikler": ["kategoriler/edit.blade.php"],
+    "components": ["admin/input.blade.php", "admin/textarea.blade.php"],
     "toplam_dosya": 22
   },
-  
+
   "istatistikler": {
     "typo_duzeltme": 13,
     "bg_white_migration": 38,
@@ -189,7 +173,7 @@
     "linter_errors": 0,
     "wcag_compliance": "AAA"
   },
-  
+
   "okunabilirlik_iyilestirmesi": {
     "light_mode": {
       "onceki": {
@@ -217,7 +201,7 @@
       "not": "Zaten mükemmeldi, sadece placeholder güncellendi"
     }
   },
-  
+
   "alpinejs_cozumleri": {
     "sorun_1_race_condition": {
       "aciklama": "featureManager() fonksiyonu x-data'dan sonra tanımlanıyordu",
@@ -238,14 +222,14 @@
       "kod": "@if($index > 0) x-cloak @endif"
     }
   },
-  
+
   "test_sonuclari": {
     "cache_temizleme": "✅ BAŞARILI (optimize:clear)",
     "vite_build": "✅ BAŞARILI (182.30 kB CSS)",
     "linter_check": "✅ 0 HATA (22 dosya)",
     "manual_test": "⏳ Kullanıcı test ediyor"
   },
-  
+
   "gelecek_aksiyonlar": {
     "yarin": {
       "oncelik_1": "Pre-commit hooks kur (TYPO, bg-gray-50, style= engelleme)",
@@ -258,7 +242,7 @@
       "accessibility_audit": "WCAG 2.1 compliance check"
     }
   },
-  
+
   "komutlar": {
     "typo_tara": "grep -r 'py-2\\.5\\.5' resources/views",
     "bg_gray_50_tara": "grep -r 'bg-gray-50' resources/views/admin",
@@ -268,7 +252,7 @@
     "linter": "php artisan standard:check",
     "fix": "npm run fix"
   },
-  
+
   "critical_patterns": {
     "forbidden": {
       "css": [
@@ -277,10 +261,7 @@
         "text-gray-900 (form alanlarında - optimal değil)",
         "placeholder-gray-500 (light mode'da çok koyu)"
       ],
-      "html": [
-        "style='color-scheme: light dark;' (gereksiz)",
-        "inline styles (Tailwind kullan)"
-      ],
+      "html": ["style='color-scheme: light dark;' (gereksiz)", "inline styles (Tailwind kullan)"],
       "javascript": [
         "@section('scripts') içinde x-data fonksiyonu (race condition)",
         "[x-cloak] { display: none } (çok geniş selector)"
@@ -300,7 +281,7 @@
       ]
     }
   },
-  
+
   "performans": {
     "vite_build": {
       "css_bundle": "182.30 kB (gzip: 23.66 kB)",
@@ -317,4 +298,3 @@
     }
   }
 }
-

@@ -1,0 +1,322 @@
+{
+    "timestamp": "2025-11-11 15:20:59",
+    "unused_classes": [
+        {
+            "class": "ExampleController",
+            "file": "app\/Traits\/ValidatesApiRequests.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "AIServiceProvider",
+            "file": "app\/Providers\/AIServiceProvider.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "AppServiceProvider",
+            "file": "app\/Providers\/AppServiceProvider.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "varsa",
+            "file": "app\/Providers\/AppServiceProvider.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "mevcutsa",
+            "file": "app\/Providers\/AppServiceProvider.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "TelescopeServiceProvider",
+            "file": "app\/Providers\/TelescopeServiceProvider.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "HorizonServiceProvider",
+            "file": "app\/Providers\/HorizonServiceProvider.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "EventServiceProvider",
+            "file": "app\/Providers\/EventServiceProvider.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "Handler",
+            "file": "app\/Exceptions\/Handler.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "TrackUserActivity",
+            "file": "app\/Http\/Middleware\/TrackUserActivity.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "SetLocaleFromSession",
+            "file": "app\/Http\/Middleware\/SetLocaleFromSession.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "Context7AuthMiddleware",
+            "file": "app\/Http\/Middleware\/Context7AuthMiddleware.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "PerformanceOptimizationMiddleware",
+            "file": "app\/Http\/Middleware\/PerformanceOptimizationMiddleware.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "Context7CacheMiddleware",
+            "file": "app\/Http\/Middleware\/Context7CacheMiddleware.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "CheckUserRole",
+            "file": "app\/Http\/Middleware\/CheckUserRole.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "AIRateLimitMiddleware",
+            "file": "app\/Http\/Middleware\/AIRateLimitMiddleware.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "VerifyCsrfToken",
+            "file": "app\/Http\/Middleware\/VerifyCsrfToken.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "RedirectIfAuthenticated",
+            "file": "app\/Http\/Middleware\/RedirectIfAuthenticated.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "TrimStrings",
+            "file": "app\/Http\/Middleware\/TrimStrings.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "Context7ComplianceMiddleware",
+            "file": "app\/Http\/Middleware\/Context7ComplianceMiddleware.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "RoleBasedMenuMiddleware",
+            "file": "app\/Http\/Middleware\/RoleBasedMenuMiddleware.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "RoleMiddleware",
+            "file": "app\/Http\/Middleware\/RoleMiddleware.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "Authenticate",
+            "file": "app\/Http\/Middleware\/Authenticate.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "ValidateFormDataCompleteness",
+            "file": "app\/Http\/Middleware\/ValidateFormDataCompleteness.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "SuperAdminOnly",
+            "file": "app\/Http\/Middleware\/SuperAdminOnly.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "TrustProxies",
+            "file": "app\/Http\/Middleware\/TrustProxies.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "ApiRateLimitMiddleware",
+            "file": "app\/Http\/Middleware\/ApiRateLimitMiddleware.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "ValidateSignature",
+            "file": "app\/Http\/Middleware\/ValidateSignature.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "EnsureFeatureManagePermission",
+            "file": "app\/Http\/Middleware\/EnsureFeatureManagePermission.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "CheckRole",
+            "file": "app\/Http\/Middleware\/CheckRole.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "AdminMiddleware",
+            "file": "app\/Http\/Middleware\/AdminMiddleware.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "SecurityMiddleware",
+            "file": "app\/Http\/Middleware\/SecurityMiddleware.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "PreventRequestsDuringMaintenance",
+            "file": "app\/Http\/Middleware\/PreventRequestsDuringMaintenance.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "EncryptCookies",
+            "file": "app\/Http\/Middleware\/EncryptCookies.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "RateLimitMiddleware",
+            "file": "app\/Http\/Middleware\/RateLimitMiddleware.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "KategoriOzellikApiController",
+            "file": "app\/Http\/Controllers\/Admin\/KategoriOzellikApiController.php",
+            "reason": "Orphaned controller (no route)"
+        },
+        {
+            "class": "AdvancedAIController",
+            "file": "app\/Http\/Controllers\/Api\/AdvancedAIController.php",
+            "reason": "Orphaned controller (no route)"
+        },
+        {
+            "class": "SmartFieldController",
+            "file": "app\/Http\/Controllers\/Api\/SmartFieldController.php",
+            "reason": "Orphaned controller (no route)"
+        },
+        {
+            "class": "AkilliCevreAnaliziController",
+            "file": "app\/Http\/Controllers\/Api\/AkilliCevreAnaliziController.php",
+            "reason": "Orphaned controller (no route)"
+        },
+        {
+            "class": "AIFeatureSuggestionController",
+            "file": "app\/Http\/Controllers\/Api\/AIFeatureSuggestionController.php",
+            "reason": "Orphaned controller (no route)"
+        },
+        {
+            "class": "PropertyFeatureSuggestionController",
+            "file": "app\/Http\/Controllers\/Api\/PropertyFeatureSuggestionController.php",
+            "reason": "Orphaned controller (no route)"
+        },
+        {
+            "class": "ImageAIController",
+            "file": "app\/Http\/Controllers\/Api\/ImageAIController.php",
+            "reason": "Orphaned controller (no route)"
+        },
+        {
+            "class": "ListingSearchController",
+            "file": "app\/Http\/Controllers\/Api\/ListingSearchController.php",
+            "reason": "Orphaned controller (no route)"
+        },
+        {
+            "class": "Kernel",
+            "file": "app\/Console\/Kernel.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "Input",
+            "file": "app\/View\/Components\/Input.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "NeoInput",
+            "file": "app\/View\/Components\/NeoInput.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "EnumRule",
+            "file": "app\/Rules\/EnumRule.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "CurrencyCode",
+            "file": "app\/Rules\/CurrencyCode.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "FetchNearbyForIlanJob",
+            "file": "app\/Jobs\/FetchNearbyForIlanJob.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "TestHorizonJob",
+            "file": "app\/Jobs\/TestHorizonJob.php",
+            "reason": "Not referenced anywhere"
+        }
+    ],
+    "unused_methods": [],
+    "unused_traits": [
+        {
+            "trait": "HasAIUsageTracking",
+            "file": "app\/Traits\/HasAIUsageTracking.php",
+            "reason": "Not used in any class"
+        },
+        {
+            "trait": "SearchableTrait",
+            "file": "app\/Traits\/SearchableTrait.php",
+            "reason": "Not used in any class"
+        },
+        {
+            "trait": "Filterable",
+            "file": "app\/Traits\/Filterable.php",
+            "reason": "Not used in any class"
+        },
+        {
+            "trait": "HasActiveScope",
+            "file": "app\/Traits\/HasActiveScope.php",
+            "reason": "Not used in any class"
+        },
+        {
+            "trait": "public",
+            "file": "app\/Models\/AIEmbedding.php",
+            "reason": "Not used in any class"
+        },
+        {
+            "trait": "kullan",
+            "file": "app\/Http\/Controllers\/VillaController.php",
+            "reason": "Not used in any class"
+        },
+        {
+            "trait": "search",
+            "file": "app\/Http\/Controllers\/Admin\/IlanController.php",
+            "reason": "Not used in any class"
+        },
+        {
+            "trait": "sort",
+            "file": "app\/Http\/Controllers\/VillaController.php",
+            "reason": "Not used in any class"
+        },
+        {
+            "trait": "with",
+            "file": "app\/Http\/Controllers\/Api\/AIController.php",
+            "reason": "Not used in any class"
+        },
+        {
+            "trait": "HasRoles",
+            "file": "app\/Modules\/Auth\/Traits\/HasRoles.php",
+            "reason": "Not used in any class"
+        }
+    ],
+    "unused_interfaces": [],
+    "unused_constants": [],
+    "summary": {
+        "total_classes": 425,
+        "used_classes": 396,
+        "unused_classes": 113,
+        "total_traits": 12,
+        "used_traits": 8,
+        "unused_traits": 10,
+        "total_interfaces": 0,
+        "used_interfaces": 10,
+        "unused_interfaces": 0,
+        "cleanup_opportunity": 123
+    }
+}

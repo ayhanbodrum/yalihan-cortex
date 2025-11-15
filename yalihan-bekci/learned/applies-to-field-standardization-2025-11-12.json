@@ -1,0 +1,176 @@
+{
+  "tarih": "2025-11-12",
+  "olay": "applies_to Field Standardization - Context7 Compliance",
+  "oncelik": "CRITICAL",
+  "kategori": "Database Consistency",
+  "durum": "✅ TAMAMLANDI",
+  
+  "ozet": {
+    "problem": "feature_categories ve features tablolarında applies_to field'ı tutarsız formatta saklanıyordu (JSON array vs string)",
+    "cozum": "Her iki tabloda da string format kullanıldı (Context7 Rule #62-80)",
+    "etki": "API artık düzgün çalışıyor, kategori filtreleme başarılı",
+    "context7_rule": "Database alan adları tutarlı olmalı"
+  },
+
+  "teknik_detaylar": {
+    "onceki_durum": {
+      "feature_categories.applies_to": "[\"arsa\"] (JSON array as text)",
+      "features.applies_to": "arsa (string)",
+      "sorun": "whereJsonContains vs where karışıklığı, API çalışmıyor"
+    },
+    "sonraki_durum": {
+      "feature_categories.applies_to": "arsa (string)",
+      "features.applies_to": "arsa (string)",
+      "cozum": "Basit string comparison, performans artışı"
+    },
+    "duzeltme_metodu": {
+      "yontem": "SQL UPDATE with REPLACE functions",
+      "komut": "UPDATE feature_categories SET applies_to = REPLACE(REPLACE(REPLACE(applies_to, '[', ''), ']', ''), '\"', '') WHERE applies_to IS NOT NULL AND applies_to LIKE '[%'",
+      "dosyalar_degisti": [
+        "app/Http/Controllers/Api/FeatureController.php",
+        "database/seeders/CategorySpecificFeaturesSeeder.php"
+      ]
+    }
+  },
+
+  "context7_kurallari": {
+    "referans": "docs/active/CONTEXT7-RULES-DETAILED.md Line 62-80",
+    "ihlal_edilen_kural": "Database alan adları tutarsızlığı",
+    "uygulanan_standart": "Single data type for same field across tables",
+    "yeni_standart": "applies_to field MUTLAKA string olmalı (JSON array değil)",
+    "neden": [
+      "Basit query - performans",
+      "Tutarlılık - bakım kolaylığı",
+      "Context7 uyumu - tek format"
+    ]
+  },
+
+  "api_degisiklikleri": {
+    "onceki_kod": "whereJsonContains('applies_to', $appliesTo)",
+    "yeni_kod": "where('applies_to', $appliesTo)",
+    "avantajlar": [
+      "Daha hızlı query",
+      "Index kullanabilir",
+      "MySQL JSON function gerektirmez"
+    ]
+  },
+
+  "test_sonuclari": {
+    "api_endpoint": "GET /api/admin/features?applies_to=arsa",
+    "once": {
+      "success": false,
+      "data": [],
+      "message": "Kategori bulunamadı"
+    },
+    "sonra": {
+      "success": true,
+      "total_categories": 2,
+      "total_features": 17,
+      "categories": ["Genel Özellikler", "Arsa Özellikleri"]
+    }
+  },
+
+  "ogrenilenler": {
+    "1_database_tutarliligi": {
+      "kural": "Aynı amaçlı field'lar farklı tablolarda aynı formatta olmalı",
+      "ornek": "applies_to her yerde string VEYA her yerde JSON - karışık olmaz",
+      "kontrol": "Migration yazmadan önce mevcut veriyi kontrol et"
+    },
+    "2_context7_compliance": {
+      "kural": "Tüm database değişiklikleri Context7 kurallarına uygun olmalı",
+      "dokuman": "docs/active/CONTEXT7-RULES-DETAILED.md",
+      "oncelik": "CRITICAL - ihlalde build kırılır"
+    },
+    "3_json_vs_string": {
+      "json_kullan": "Çoklu değer gerekiyorsa (many-to-many relation gibi)",
+      "string_kullan": "Tek değer / enum / kategori slug gibi",
+      "applies_to_icin": "String yeterli çünkü bir özellik bir kategoriye ait"
+    },
+    "4_migration_stratejisi": {
+      "oncelikli": "Mevcut veriyi kontrol et (tinker)",
+      "ikinci": "SQL UPDATE ile düzelt (eğer data varsa)",
+      "ucuncu": "Migration yaz (eğer schema değişikliği gerekiyorsa)",
+      "son": "Seeder'ı güncelle (yeni veri için)"
+    },
+    "5_api_debugging": {
+      "adim1": "Raw SQL test et (tinker)",
+      "adim2": "API endpoint test et (curl)",
+      "adim3": "Response metadata kontrol et",
+      "adim4": "Frontend'e geç"
+    }
+  },
+
+  "gelecek_islemler": {
+    "her_zaman_yap": [
+      "Database field type'ları tutarlı tut",
+      "Context7 dökümanını kontrol et",
+      "Mevcut veriyi migrate etmeyi unutma",
+      "API response'u test et",
+      "Yalıhan Bekçi'ye öğret"
+    ],
+    "hata_onleme": [
+      "Migration yazmadan önce SHOW CREATE TABLE yap",
+      "JSON field kullanmadan önce gerçekten gerekli mi sor",
+      "String comparison her zaman JSON'dan hızlıdır",
+      "Index stratejisini düşün"
+    ]
+  },
+
+  "warp_kurallari": {
+    "kural_adi": "Context7 Database Field Consistency Rule",
+    "aciklama": "Aynı amaçlı database field'ları farklı tablolarda aynı veri tipi ve formatında olmalıdır",
+    "uygulama_alani": "Tüm migration, seeder, model ve API geliştirmeleri",
+    "oncelik": "CRITICAL",
+    "kontrol_noktasi": "Her database değişikliğinden önce",
+    "ornek_senaryolar": [
+      {
+        "senaryo": "Yeni bir filtering field ekliyorum",
+        "soru": "Bu field diğer tablolarda var mı?",
+        "aksiyon": "Varsa aynı formatı kullan, yoksa dokümante et"
+      },
+      {
+        "senaryo": "API çalışmıyor, 'not found' hatası",
+        "soru": "Database ve kod arasında type mismatch var mı?",
+        "aksiyon": "tinker ile veriyi kontrol et, JSON vs string kontrol et"
+      },
+      {
+        "senaryo": "Seeder çalıştırıyorum",
+        "soru": "applies_to, status gibi standard field'lar doğru formatta mı?",
+        "aksiyon": "Context7 standardına göre string kullan"
+      }
+    ]
+  },
+
+  "komutlar": {
+    "veri_kontrolu": "php artisan tinker --execute=\"\\App\\Models\\FeatureCategory::select('applies_to')->limit(5)->get()\"",
+    "veri_duzeltme": "php artisan tinker --execute=\"DB::statement('UPDATE ...')\"",
+    "api_test": "curl -s 'http://localhost:8000/api/admin/features?applies_to=arsa' | jq '.data.metadata'",
+    "migration_test": "php artisan migrate:fresh --path=database/migrations/xxx.php"
+  },
+
+  "iliskili_dosyalar": [
+    "app/Http/Controllers/Api/FeatureController.php (lines 40-47, 79-86)",
+    "database/seeders/CategorySpecificFeaturesSeeder.php (line 53, 249, 459)",
+    "app/Models/FeatureCategory.php",
+    "app/Models/Feature.php",
+    "docs/active/CONTEXT7-RULES-DETAILED.md (lines 62-80)"
+  ],
+
+  "metrics": {
+    "onceki_api_response_time": "N/A (çalışmıyordu)",
+    "sonraki_api_response_time": "~50ms",
+    "performans_artisi": "∞ (0'dan 50ms'ye)",
+    "kod_karmasikligi": "Azaldı (whereJsonContains → where)",
+    "bakim_maliyeti": "Azaldı (tek format)"
+  },
+
+  "tags": [
+    "context7",
+    "database-consistency",
+    "api-fix",
+    "field-standardization",
+    "applies-to",
+    "critical-fix",
+    "yalihan-bekci-learned"
+  ]
+}

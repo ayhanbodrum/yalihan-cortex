@@ -1,0 +1,130 @@
+{
+  "pattern_name": "Frontend Bootstrap & CSS Uyumsuzluk Tespiti",
+  "date": "2025-11-07",
+  "severity": "critical",
+  "category": "css_framework_violation",
+  "description": "Frontend sayfalarında Bootstrap kullanımı ve CSS uyumsuzlukları tespit edildi. Context7 standartlarına göre Bootstrap YASAK, sadece Tailwind CSS kullanılmalı.",
+  "violations": [
+    {
+      "file": "resources/views/layouts/frontend.blade.php",
+      "type": "bootstrap_cdn",
+      "severity": "critical",
+      "details": {
+        "bootstrap_cdn_css": "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css",
+        "bootstrap_cdn_js": "https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js",
+        "bootstrap_classes_count": 50,
+        "affected_pages": [
+          "Tüm @extends('layouts.frontend') kullanan sayfalar"
+        ]
+      },
+      "bootstrap_classes": [
+        "navbar",
+        "navbar-expand-lg",
+        "navbar-light",
+        "navbar-brand",
+        "text-primary",
+        "fw-bold",
+        "navbar-toggler",
+        "collapse",
+        "navbar-collapse",
+        "navbar-nav",
+        "nav-item",
+        "nav-link",
+        "btn",
+        "btn-outline-primary",
+        "container",
+        "row",
+        "col-lg-4",
+        "col-lg-2",
+        "col-md-6",
+        "mb-4",
+        "mb-2",
+        "text-muted",
+        "d-flex",
+        "gap-2",
+        "align-items-center",
+        "me-auto",
+        "me-2",
+        "me-3",
+        "list-unstyled",
+        "hr",
+        "my-4",
+        "mb-0",
+        "text-md-end"
+      ],
+      "solution": {
+        "action": "Bootstrap CDN linklerini kaldır, Tailwind CSS ekle, tüm Bootstrap class'larını Tailwind'e çevir",
+        "priority": "high",
+        "estimated_time": "2-3 saat"
+      }
+    },
+    {
+      "file": "resources/views/frontend/dynamic-form/index.blade.php",
+      "type": "css_selector_misuse",
+      "severity": "critical",
+      "details": {
+        "problem": "Tailwind utility class'ları CSS selector olarak kullanılmış",
+        "affected_lines": "92-488",
+        "lines_count": 400,
+        "example_wrong": ".container mx-auto { max-width: 1200px; }",
+        "example_correct": "<div class=\"container mx-auto\">"
+      },
+      "solution": {
+        "action": "Yanlış CSS selector'ları kaldır, Tailwind utility class'larını HTML'de kullan",
+        "priority": "high",
+        "estimated_time": "1-2 saat"
+      }
+    }
+  ],
+  "clean_files": [
+    "resources/views/frontend/ilanlar/index.blade.php",
+    "resources/views/frontend/ilanlar/show.blade.php",
+    "resources/views/frontend/portfolio/index.blade.php",
+    "resources/views/pages/about.blade.php",
+    "resources/views/pages/advisors.blade.php",
+    "resources/views/pages/contact.blade.php",
+    "resources/views/yaliihan-home-clean.blade.php"
+  ],
+  "detection_patterns": [
+    {
+      "pattern": "bootstrap.*cdn|cdn.*bootstrap",
+      "type": "regex",
+      "description": "Bootstrap CDN linklerini tespit et"
+    },
+    {
+      "pattern": "navbar|btn-|container-fluid|row|col-|form-control|card-|alert-|badge-|table-|d-flex|d-none|d-block|text-primary|text-muted|bg-primary|mb-|mt-|p-|px-|py-|m-|mx-|my-",
+      "type": "class_names",
+      "description": "Bootstrap class'larını tespit et"
+    },
+    {
+      "pattern": "\\.(container|flex|grid|text-|bg-|border-|rounded-|shadow-|hover:|focus:|dark:)",
+      "type": "css_selector",
+      "description": "Tailwind class'larının CSS selector olarak kullanımını tespit et"
+    }
+  ],
+  "prevention_rules": [
+    {
+      "rule": "Frontend layout dosyalarında Bootstrap CDN linkleri kullanılamaz",
+      "enforcement": "pre-commit hook",
+      "action": "Commit'i engelle"
+    },
+    {
+      "rule": "Tailwind utility class'ları CSS selector olarak kullanılamaz",
+      "enforcement": "code_review",
+      "action": "Uyarı ver"
+    },
+    {
+      "rule": "Tüm frontend sayfaları Tailwind CSS kullanmalı",
+      "enforcement": "ci_cd",
+      "action": "Build'i başarısız yap"
+    }
+  ],
+  "related_files": [
+    ".context7/authority.json",
+    ".context7/TAILWIND-TRANSITION-RULE.md",
+    "FRONTEND_BOOTSTRAP_ANALYSIS_2025-11-07.md"
+  ],
+  "learning_date": "2025-11-07",
+  "status": "learned"
+}
+

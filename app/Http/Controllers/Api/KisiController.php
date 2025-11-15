@@ -3,10 +3,13 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Kisi;
 use App\Models\Ilan;
+use App\Models\Kisi;
+use App\Services\Response\ResponseService;
+use App\Traits\ValidatesApiRequests;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Kişi API Controller
@@ -17,6 +20,8 @@ use Illuminate\Http\Request;
  */
 class KisiController extends Controller
 {
+    use ValidatesApiRequests;
+
     /**
      * Kişinin ilan geçmişini getir
      *
@@ -72,33 +77,26 @@ class KisiController extends Controller
                 ];
             });
 
-            return response()->json([
-                'success' => true,
-                'data' => [
-                    'kisi' => [
-                        'id' => $kisi->id,
-                        'tam_ad' => $kisi->tam_ad,
-                        'telefon' => $kisi->telefon,
-                        'email' => $kisi->email,
-                        'musteri_tipi' => $kisi->musteri_tipi,
-                        'crm_score' => $kisi->crm_score
-                    ],
-                    'analysis' => $analysis,
-                    'listings' => $listingDetails
+            return ResponseService::success([
+                'kisi' => [
+                    'id' => $kisi->id,
+                    'tam_ad' => $kisi->tam_ad,
+                    'telefon' => $kisi->telefon,
+                    'email' => $kisi->email,
+                    'kisi_tipi' => $kisi->kisi_tipi ?? $kisi->musteri_tipi ?? null,
+                    'crm_score' => $kisi->crm_score
                 ],
+                'analysis' => $analysis,
+                'listings' => $listingDetails,
                 'context7_compliant' => true
-            ]);
+            ], 'Kişi ilan geçmişi başarıyla getirildi');
         } catch (\Exception $e) {
-            \Log::error('Kişi ilan geçmişi hatası', [
+            Log::error('Kişi ilan geçmişi hatası', [
                 'kisi_id' => $id,
                 'error' => $e->getMessage()
             ]);
 
-            return response()->json([
-                'success' => false,
-                'error' => 'İlan geçmişi yüklenemedi',
-                'message' => $e->getMessage()
-            ], 500);
+            return ResponseService::serverError('İlan geçmişi yüklenemedi', $e);
         }
     }
 
@@ -219,37 +217,73 @@ class KisiController extends Controller
         try {
             $kisi = Kisi::with(['il', 'ilce', 'danisman'])->findOrFail($id);
 
-            return response()->json([
-                'success' => true,
-                'data' => [
-                    'id' => $kisi->id,
-                    'tam_ad' => $kisi->tam_ad,
-                    'telefon' => $kisi->telefon,
-                    'email' => $kisi->email,
-                    'musteri_tipi' => $kisi->musteri_tipi,
-                    'status' => $kisi->status,
-                    'crm_score' => $kisi->crm_score,
-                    'lokasyon' => [
-                        'il' => $kisi->il->il_adi ?? null,
-                        'ilce' => $kisi->ilce->ilce_adi ?? null
-                    ],
-                    'danisman' => [
-                        'id' => $kisi->danisman->id ?? null,
-                        'name' => $kisi->danisman->name ?? null
-                    ],
-                    'istatistikler' => [
-                        'toplam_ilan' => $kisi->ilanlarAsSahibi()->count(),
-                        'aktif_ilan' => $kisi->ilanlarAsSahibi()->where('status', 'Aktif')->count(),
-                        'ortalama_fiyat' => $kisi->ilanlarAsSahibi()->avg('fiyat'),
-                    ]
+            return ResponseService::success([
+                'id' => $kisi->id,
+                'tam_ad' => $kisi->tam_ad,
+                'telefon' => $kisi->telefon,
+                'email' => $kisi->email,
+                'kisi_tipi' => $kisi->kisi_tipi ?? $kisi->musteri_tipi ?? null,
+                'status' => $kisi->status,
+                'crm_score' => $kisi->crm_score,
+                'lokasyon' => [
+                    'il' => $kisi->il->il_adi ?? null,
+                    'ilce' => $kisi->ilce->ilce_adi ?? null
+                ],
+                'danisman' => [
+                    'id' => $kisi->danisman->id ?? null,
+                    'name' => $kisi->danisman->name ?? null
+                ],
+                'istatistikler' => [
+                    'toplam_ilan' => $kisi->ilanlarAsSahibi()->count(),
+                    'aktif_ilan' => $kisi->ilanlarAsSahibi()->where('status', 'Aktif')->count(),
+                    'ortalama_fiyat' => $kisi->ilanlarAsSahibi()->avg('fiyat'),
                 ],
                 'context7_compliant' => true
-            ]);
+            ], 'Kişi profili başarıyla getirildi');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'error' => 'Profil yüklenemedi'
-            ], 500);
+            return ResponseService::serverError('Kişi profili yüklenemedi', $e);
+        }
+    }
+
+    /**
+     * Kişi arama (Context7 Live Search için)
+     *
+     * GET /api/kisiler/search
+     * Context7 & Yalıhan Bekçi: Standart kişi arama endpoint'i
+     */
+    public function search(Request $request): JsonResponse
+    {
+        try {
+            $query = $request->get('q', '');
+            $limit = min($request->get('limit', 20), 50);
+
+            if (empty($query) || strlen($query) < 2) {
+                return ResponseService::success([
+                    'data' => [],
+                    'count' => 0,
+                    'query' => $query,
+                ], 'Arama sorgusu çok kısa (minimum 2 karakter)');
+            }
+
+            // ✅ Context7 & Yalıhan Bekçi: KisiService kullan
+            $results = \App\Modules\Crm\Services\KisiService::search($query, $limit);
+
+            // ✅ Context7: Collection'ı array'e çevir (JavaScript uyumluluğu için)
+            $resultsArray = is_array($results) ? $results : $results->toArray();
+
+            return ResponseService::success([
+                'data' => $resultsArray,
+                'count' => count($resultsArray),
+                'query' => $query,
+                'source' => 'kisiler',
+            ], 'Kişi araması başarıyla tamamlandı');
+        } catch (\Exception $e) {
+            Log::error('Kişi arama hatası', [
+                'query' => $request->get('q'),
+                'error' => $e->getMessage(),
+            ]);
+
+            return ResponseService::serverError('Kişi araması sırasında hata oluştu', $e);
         }
     }
 
@@ -261,49 +295,46 @@ class KisiController extends Controller
     public function store(Request $request): JsonResponse
     {
         try {
-            $validated = $request->validate([
+            $validated = $this->validateRequestWithResponse($request, [
                 'ad' => 'required|string|max:255',
                 'soyad' => 'required|string|max:255',
                 'telefon' => 'required|string|max:50',
                 'email' => 'nullable|email|max:255',
-                'musteri_tipi' => 'required|in:ev_sahibi,satici,alici,kiraci,yatirimci',
+                'kisi_tipi' => 'required|in:Ev Sahibi,Satıcı,Alıcı,Kiracı,Yatırımcı,Müşteri',
                 'status' => 'nullable|in:Aktif,Pasif',
                 'notlar' => 'nullable|string'
             ]);
+
+            if ($validated instanceof JsonResponse) {
+                return $validated;
+            }
 
             $kisi = Kisi::create([
                 'ad' => $validated['ad'],
                 'soyad' => $validated['soyad'],
                 'telefon' => $validated['telefon'],
                 'email' => $validated['email'] ?? null,
-                'musteri_tipi' => $validated['musteri_tipi'],
+                'kisi_tipi' => $validated['kisi_tipi'],
                 'status' => $validated['status'] ?? 'Aktif',
                 'notlar' => $validated['notlar'] ?? null,
                 'danisman_id' => auth()->id()
             ]);
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Kişi başarıyla oluşturuldu',
-                'data' => [
-                    'id' => $kisi->id,
-                    'ad' => $kisi->ad,
-                    'soyad' => $kisi->soyad,
-                    'tam_ad' => $kisi->tam_ad,
-                    'telefon' => $kisi->telefon,
-                    'email' => $kisi->email
-                ]
-            ]);
+            return ResponseService::success([
+                'id' => $kisi->id,
+                'ad' => $kisi->ad,
+                'soyad' => $kisi->soyad,
+                'tam_ad' => $kisi->tam_ad,
+                'telefon' => $kisi->telefon,
+                'email' => $kisi->email
+            ], 'Kişi başarıyla oluşturuldu', 201);
         } catch (\Exception $e) {
-            \Log::error('Kişi oluşturma hatası', [
+            Log::error('Kişi oluşturma hatası', [
                 'error' => $e->getMessage(),
                 'data' => $request->all()
             ]);
 
-            return response()->json([
-                'success' => false,
-                'message' => 'Kişi oluşturulamadı: ' . $e->getMessage()
-            ], 500);
+            return ResponseService::serverError('Kişi oluşturulamadı', $e);
         }
     }
 
@@ -321,25 +352,29 @@ class KisiController extends Controller
             $analiz = $aiService->analyzeKisiHistory($id);
 
             if (!$analiz['success']) {
-                return response()->json($analiz, $analiz['has_history'] === false ? 200 : 404);
+                if (($analiz['has_history'] ?? null) === false) {
+                    return ResponseService::error(
+                        $analiz['message'] ?? 'Kişinin geçmiş kaydı bulunamadı',
+                        200,
+                        ['analysis' => $analiz]
+                    );
+                }
+
+                return ResponseService::notFound($analiz['message'] ?? 'AI geçmiş analizi bulunamadı');
             }
 
-            return response()->json([
-                'success' => true,
-                'data' => $analiz,
+            return ResponseService::success([
+                'analysis' => $analiz,
                 'context7_compliant' => true
-            ]);
+            ], 'AI ilan geçmişi analizi başarıyla tamamlandı');
         } catch (\Exception $e) {
-            \Log::error('AI Geçmiş Analizi hatası', [
+            Log::error('AI Geçmiş Analizi hatası', [
                 'kisi_id' => $id,
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
 
-            return response()->json([
-                'success' => false,
-                'message' => 'Analiz yapılamadı: ' . $e->getMessage()
-            ], 500);
+            return ResponseService::serverError('AI geçmiş analizi sırasında hata oluştu', $e);
         }
     }
 }

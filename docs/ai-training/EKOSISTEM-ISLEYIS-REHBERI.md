@@ -4,10 +4,10 @@
 
 - **Amaç:** Hataları otomatik tespit, öğrenme ve tekrarını önleme; AI ile sürekli gelişen, kendi kendini iyileştiren bir yazılım sistemi kurmak.
 - **Bileşenler:**
-  - **VS Code/Cursor**: Kullanıcı arayüzü, AI entegrasyonu
-  - **MCP Server'lar**: Her biri farklı işlev (Context7, Memory, Laravel, Puppeteer, Filesystem, Git, Ollama...)
-  - **AnythingLLM**: Bilgi tabanı, embedding, prompt yönetimi
-  - **Dokümantasyon**: AI ve geliştirici için referans
+    - **VS Code/Cursor**: Kullanıcı arayüzü, AI entegrasyonu
+    - **MCP Server'lar**: Her biri farklı işlev (Context7, Memory, Laravel, Puppeteer, Filesystem, Git, Ollama...)
+    - **AnythingLLM**: Bilgi tabanı, embedding, prompt yönetimi
+    - **Dokümantasyon**: AI ve geliştirici için referans
 
 ## 2. Veri Akışı ve Otomasyon
 
@@ -40,11 +40,11 @@
 ## 6. Sıkça Sorulanlar
 
 - **Yeni bir hata nasıl öğretilir?**
-  - "eko sisteme öğret" veya "bu hatayı hafızaya kaydet" komutu ile
+    - "eko sisteme öğret" veya "bu hatayı hafızaya kaydet" komutu ile
 - **AI neden bazı hataları otomatik çözüyor?**
-  - Daha önce öğrenilmiş ve çözümü hafızada olduğu için
+    - Daha önce öğrenilmiş ve çözümü hafızada olduğu için
 - **AnythingLLM ne işe yarar?**
-  - Bilgi tabanını, embedding'i ve promptları yönetir; AI'nın daha akıllı olmasını sağlar
+    - Bilgi tabanını, embedding'i ve promptları yönetir; AI'nın daha akıllı olmasını sağlar
 
 ## 7. Geliştirici İçin İpuçları
 

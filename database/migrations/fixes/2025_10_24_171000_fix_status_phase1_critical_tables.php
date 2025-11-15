@@ -195,4 +195,3 @@ return new class extends Migration
         Log::warning('⚠️  PHASE 1 ROLLBACK COMPLETED - Status fields reverted');
     }
 };
-

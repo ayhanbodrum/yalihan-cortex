@@ -8,6 +8,7 @@
 ## 🎯 SORUN
 
 **Önceki Yaklaşım (YANLIŞ):**
+
 ```css
 /* app.css - Global !important override'lar */
 input::placeholder {
@@ -21,6 +22,7 @@ input[type='text'] {
 ```
 
 **Neden Sorun?**
+
 - ❌ Tailwind utility class'ları (`text-black`, `placeholder-gray-600`) çalışmıyor
 - ❌ `!important` ile Tailwind'in cascade'i kırılıyor
 - ❌ Form'larda zaten Tailwind class'ları var ama eziliyor
@@ -31,19 +33,20 @@ input[type='text'] {
 ## ✅ ÇÖZÜM
 
 **Yeni Yaklaşım (DOĞRU):**
+
 ```css
 /* app.css - @layer base (Tailwind cascade!) */
 @layer base {
     input[type='text'],
     input[type='number'],
     textarea {
-        @apply text-black dark:text-white;  /* ✅ Tailwind utility! */
-        @apply font-semibold;               /* ✅ Tailwind utility! */
+        @apply text-black dark:text-white; /* ✅ Tailwind utility! */
+        @apply font-semibold; /* ✅ Tailwind utility! */
     }
 
     input::placeholder,
     textarea::placeholder {
-        @apply text-gray-600 dark:text-gray-500;  /* ✅ Tailwind utility! */
+        @apply text-gray-600 dark:text-gray-500; /* ✅ Tailwind utility! */
         @apply font-semibold;
         opacity: 1;
     }
@@ -51,6 +54,7 @@ input[type='text'] {
 ```
 
 **Avantajlar:**
+
 - ✅ Tailwind'in cascade sistemi çalışıyor
 - ✅ Form'lardaki utility class'lar override edebiliyor
 - ✅ `!important` yok (sadece browser native select için gerekli)
@@ -61,16 +65,19 @@ input[type='text'] {
 ## 📊 DEĞİŞİKLİKLER
 
 ### Kaldırılan:
+
 - ❌ Global `!important` kuralları (input/textarea için)
 - ❌ Hard-coded renk değerleri (#000000, #ffffff)
 - ❌ Tailwind'i ezen override'lar
 
 ### Eklenen:
+
 - ✅ `@layer base` içinde default'lar
 - ✅ `@apply` ile Tailwind utility class'ları
 - ✅ Tailwind cascade'i korunuyor
 
 ### Korunan:
+
 - ✅ Browser native `select/option` için `!important` (gerekli!)
 - ✅ Context7 dropdown readability fix (zaten doğru yaklaşım)
 
@@ -79,19 +86,25 @@ input[type='text'] {
 ## 🎨 NASIL ÇALIŞIYOR?
 
 ### 1. Default Styles (@layer base):
+
 ```css
 @layer base {
-    input { @apply text-black; }  /* Default */
+    input {
+        @apply text-black;
+    } /* Default */
 }
 ```
 
 ### 2. Tailwind Utility Override:
+
 ```html
 <!-- Form'da explicit class varsa, o kullanılır! -->
-<input class="text-blue-600" />  <!-- ✅ Bu kazanır! -->
+<input class="text-blue-600" />
+<!-- ✅ Bu kazanır! -->
 ```
 
 ### 3. Cascade Priority:
+
 ```
 1. @layer base (default)         ← En düşük
 2. Tailwind utility classes       ← Form'da explicit varsa kazanır!
@@ -103,6 +116,7 @@ input[type='text'] {
 ## 🧪 TEST
 
 **Önceki Durum:**
+
 ```html
 <!-- ❌ ÇALIŞMIYORDU -->
 <input class="text-blue-600" />
@@ -110,6 +124,7 @@ input[type='text'] {
 ```
 
 **Yeni Durum:**
+
 ```html
 <!-- ✅ ÇALIŞIYOR! -->
 <input class="text-blue-600" />
@@ -121,14 +136,20 @@ input[type='text'] {
 ## 📝 NOTLAR
 
 ### Browser Native Select:
+
 ```css
 /* ✅ Burada !important GEREKLİ! */
-select { background-color: white !important; }
+select {
+    background-color: white !important;
+}
 ```
+
 **Neden?** Browser native control'ler custom değil, CSS override edemiyor!
 
 ### Tailwind Utility Override:
+
 Artık form'larda explicit class'lar çalışıyor:
+
 ```html
 <input class="text-black dark:text-white font-semibold placeholder-gray-600" />
 ```
@@ -138,12 +159,14 @@ Artık form'larda explicit class'lar çalışıyor:
 ## 🚀 SONUÇ
 
 **Build Başarılı:**
+
 - ✅ app.css → 182.94 kB (gzip: 23.74 kB)
 - ✅ 0 lint errors
 - ✅ Tailwind cascade çalışıyor
 - ✅ Utility class override'lar çalışıyor
 
 **Artık:**
+
 - 🎯 Tailwind yaklaşımına %100 uyumlu
 - 🎯 Form'larda explicit class'lar çalışıyor
 - 🎯 `!important` sadece gerekli yerlerde (browser native)
@@ -152,4 +175,3 @@ Artık form'larda explicit class'lar çalışıyor:
 ---
 
 **Hard refresh yap ve test et!** 🚀
-

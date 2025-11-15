@@ -57,22 +57,22 @@
 
 <div class="property-detail-page {{ $class }}">
     <!-- Property Header -->
-    <div class="bg-white shadow-sm border-b border-gray-200">
+    <div class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
         <div class="container mx-auto px-4 py-6">
             <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
                 <!-- Title & Location -->
                 <div class="flex-1">
-                    <h1 class="text-3xl lg:text-4xl font-bold text-gray-900 mb-2">{{ $title }}</h1>
-                    <div class="flex items-center gap-2 text-gray-600 mb-4">
-                        <span class="text-orange-500">📍</span>
+                    <h1 class="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-2">{{ $title }}</h1>
+                    <div class="flex items-center gap-2 text-gray-600 dark:text-gray-400 mb-4">
+                        <span class="text-blue-500 dark:text-blue-400">📍</span>
                         <span class="text-lg">{{ $location }}</span>
                     </div>
 
                     <!-- Price -->
-                    <div class="text-3xl lg:text-4xl font-bold text-orange-600">
+                    <div class="text-3xl lg:text-4xl font-bold text-blue-600 dark:text-blue-400">
                         {{ $price }}
                         @if ($pricePeriod)
-                            <span class="text-lg text-gray-500 font-normal">{{ $pricePeriod }}</span>
+                            <span class="text-lg text-gray-500 dark:text-gray-400 font-normal">{{ $pricePeriod }}</span>
                         @endif
                     </div>
                 </div>
@@ -80,34 +80,34 @@
                 <!-- Action Buttons -->
                 <div class="flex flex-wrap gap-3">
                     @if ($showVirtualTour)
-                        <button class="btn btn-outline flex items-center gap-2" onclick="openVirtualTour()">
+                        <button class="border-2 border-blue-500 dark:border-blue-400 text-blue-500 dark:text-blue-400 px-4 py-2 rounded-lg hover:bg-blue-500 hover:text-white dark:hover:bg-blue-600 dark:hover:text-white transition-all duration-300 font-semibold flex items-center gap-2" onclick="openVirtualTour()">
                             <span>🔄</span>
                             <span>360° Tur</span>
                         </button>
                     @endif
 
                     @if ($showGallery)
-                        <button class="btn btn-outline flex items-center gap-2" onclick="openGallery()">
+                        <button class="border-2 border-blue-500 dark:border-blue-400 text-blue-500 dark:text-blue-400 px-4 py-2 rounded-lg hover:bg-blue-500 hover:text-white dark:hover:bg-blue-600 dark:hover:text-white transition-all duration-300 font-semibold flex items-center gap-2" onclick="openGallery()">
                             <span>📸</span>
                             <span>Galeri</span>
                         </button>
                     @endif
 
                     @if ($showMap)
-                        <button class="btn btn-outline flex items-center gap-2" onclick="openMap()">
+                        <button class="border-2 border-blue-500 dark:border-blue-400 text-blue-500 dark:text-blue-400 px-4 py-2 rounded-lg hover:bg-blue-500 hover:text-white dark:hover:bg-blue-600 dark:hover:text-white transition-all duration-300 font-semibold flex items-center gap-2" onclick="openMap()">
                             <span>🗺️</span>
                             <span>Harita</span>
                         </button>
                     @endif
 
                     @if ($showShare)
-                        <button class="btn btn-outline flex items-center gap-2" onclick="shareProperty()">
+                        <button class="border-2 border-blue-500 dark:border-blue-400 text-blue-500 dark:text-blue-400 px-4 py-2 rounded-lg hover:bg-blue-500 hover:text-white dark:hover:bg-blue-600 dark:hover:text-white transition-all duration-300 font-semibold flex items-center gap-2" onclick="shareProperty()">
                             <span>📤</span>
                             <span>Paylaş</span>
                         </button>
                     @endif
 
-                    <button class="btn inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg flex items-center gap-2" onclick="toggleFavorite()">
+                    <button class="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 dark:bg-blue-500 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg flex items-center gap-2" onclick="toggleFavorite()">
                         <span id="favoriteIcon">{{ $isFavorite ? '❤️' : '🤍' }}</span>
                         <span>Favori</span>
                     </button>
@@ -133,8 +133,8 @@
                                     class="absolute top-4 left-4 {{ $badgeClass }} px-4 py-2 rounded-full text-sm font-semibold">
                                     {{ $badgeText }}
                                 </div>
-                                <div class="absolute top-4 right-4 bg-white bg-opacity-90 rounded-full p-2">
-                                    <span class="text-sm font-medium">{{ count($propertyImages) }} Fotoğraf</span>
+                                <div class="absolute top-4 right-4 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-full p-2">
+                                    <span class="text-sm font-medium text-gray-900 dark:text-white">{{ count($propertyImages) }} Fotoğraf</span>
                                 </div>
                             </div>
                         </div>
@@ -151,45 +151,45 @@
                 </div>
 
                 <!-- Property Details -->
-                <div class="bg-white rounded-2xl shadow-lg p-6">
-                    <h2 class="text-2xl font-bold text-gray-900 mb-6">Emlak Detayları</h2>
+                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
+                    <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">Emlak Detayları</h2>
 
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
                         <div class="text-center">
                             <div class="text-3xl mb-2">🛏️</div>
-                            <div class="text-sm text-gray-500">Yatak Odası</div>
-                            <div class="text-xl font-semibold text-gray-900">{{ $beds }}</div>
+                            <div class="text-sm text-gray-500 dark:text-gray-400">Yatak Odası</div>
+                            <div class="text-xl font-semibold text-gray-900 dark:text-white">{{ $beds }}</div>
                         </div>
                         <div class="text-center">
                             <div class="text-3xl mb-2">🚿</div>
-                            <div class="text-sm text-gray-500">Banyo</div>
-                            <div class="text-xl font-semibold text-gray-900">{{ $baths }}</div>
+                            <div class="text-sm text-gray-500 dark:text-gray-400">Banyo</div>
+                            <div class="text-xl font-semibold text-gray-900 dark:text-white">{{ $baths }}</div>
                         </div>
                         <div class="text-center">
                             <div class="text-3xl mb-2">📐</div>
-                            <div class="text-sm text-gray-500">Alan (m²)</div>
-                            <div class="text-xl font-semibold text-gray-900">{{ $area }}</div>
+                            <div class="text-sm text-gray-500 dark:text-gray-400">Alan (m²)</div>
+                            <div class="text-xl font-semibold text-gray-900 dark:text-white">{{ $area }}</div>
                         </div>
                         <div class="text-center">
                             <div class="text-3xl mb-2">🏠</div>
-                            <div class="text-sm text-gray-500">Tip</div>
-                            <div class="text-xl font-semibold text-gray-900">Villa</div>
+                            <div class="text-sm text-gray-500 dark:text-gray-400">Tip</div>
+                            <div class="text-xl font-semibold text-gray-900 dark:text-white">Villa</div>
                         </div>
                     </div>
 
                     <!-- Description -->
                     <div class="mb-8">
-                        <h3 class="text-xl font-semibold text-gray-900 mb-4">Açıklama</h3>
-                        <p class="text-gray-600 leading-relaxed">{{ $description }}</p>
+                        <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Açıklama</h3>
+                        <p class="text-gray-600 dark:text-gray-300 leading-relaxed">{{ $description }}</p>
                     </div>
 
                     <!-- Features -->
                     <div>
-                        <h3 class="text-xl font-semibold text-gray-900 mb-4">Özellikler</h3>
+                        <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Özellikler</h3>
                         <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
                             @foreach ($propertyFeatures as $feature)
-                                <div class="flex items-center gap-2 text-gray-600">
-                                    <span class="text-green-500">✓</span>
+                                <div class="flex items-center gap-2 text-gray-600 dark:text-gray-300">
+                                    <span class="text-green-500 dark:text-green-400">✓</span>
                                     <span>{{ $feature }}</span>
                                 </div>
                             @endforeach
@@ -199,8 +199,8 @@
 
                 <!-- Map Section -->
                 @if ($showMap)
-                    <div class="bg-white rounded-2xl shadow-lg p-6">
-                        <h3 class="text-xl font-semibold text-gray-900 mb-4">Konum</h3>
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
+                        <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Konum</h3>
                         <x-yaliihan.map-component :center="[
                             'lat' => $mapCoordinates['lat'] ?? 37.4220656,
                             'lng' => $mapCoordinates['lng'] ?? -122.0840897,
@@ -223,93 +223,126 @@
             <!-- Right Column - Agent & Contact -->
             <div class="space-y-6">
                 <!-- Agent Card -->
-                <div class="bg-white rounded-2xl shadow-lg p-6">
-                    <h3 class="text-xl font-semibold text-gray-900 mb-4">Emlak Danışmanı</h3>
+                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
+                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Emlak Danışmanı</h3>
 
                     <div class="flex items-center gap-4 mb-4">
                         <img src="{{ $propertyAgent['avatar'] }}" alt="{{ $propertyAgent['name'] }}"
                             class="w-16 h-16 rounded-full object-cover">
                         <div>
-                            <h4 class="font-semibold text-gray-900">{{ $propertyAgent['name'] }}</h4>
+                            <h4 class="font-semibold text-gray-900 dark:text-white">{{ $propertyAgent['name'] }}</h4>
                             <div class="flex items-center gap-1 text-yellow-500">
                                 @for ($i = 0; $i < 5; $i++)
                                     <span>{{ $i < floor($propertyAgent['rating']) ? '★' : '☆' }}</span>
                                 @endfor
-                                <span class="text-sm text-gray-500 ml-1">{{ $propertyAgent['rating'] }}</span>
+                                <span class="text-sm text-gray-500 dark:text-gray-400 ml-1">{{ $propertyAgent['rating'] }}</span>
                             </div>
-                            <div class="text-sm text-gray-500">{{ $propertyAgent['properties'] }} İlan</div>
+                            <div class="text-sm text-gray-500 dark:text-gray-400">{{ $propertyAgent['properties'] }} İlan</div>
                         </div>
                     </div>
 
+                    {{-- Social Media Links --}}
+                    @if(isset($propertyAgent['social']) && is_object($propertyAgent['social']))
+                        @php
+                            $hasSocialMedia = !empty($propertyAgent['social']->instagram_profile) ||
+                                             !empty($propertyAgent['social']->linkedin_profile) ||
+                                             !empty($propertyAgent['social']->facebook_profile) ||
+                                             !empty($propertyAgent['social']->twitter_profile) ||
+                                             !empty($propertyAgent['social']->youtube_channel) ||
+                                             !empty($propertyAgent['social']->tiktok_profile) ||
+                                             !empty($propertyAgent['social']->whatsapp_number) ||
+                                             !empty($propertyAgent['social']->telegram_username) ||
+                                             !empty($propertyAgent['social']->website);
+                        @endphp
+                        @if($hasSocialMedia)
+                            <div class="mb-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                                <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Sosyal Medya</p>
+                                <x-frontend.danisman-social-links :danisman="$propertyAgent['social']" size="sm" />
+                            </div>
+                        @endif
+                    @endif
+
                     <div class="space-y-3">
-                        <a href="tel:{{ $propertyAgent['phone'] }}"
-                            class="w-full btn inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg flex items-center justify-center gap-2">
-                            <span>📞</span>
-                            <span>Ara</span>
-                        </a>
-                        <a href="mailto:{{ $propertyAgent['email'] }}"
-                            class="w-full btn btn-outline flex items-center justify-center gap-2">
-                            <span>✉️</span>
-                            <span>E-posta</span>
-                        </a>
-                        <button class="w-full btn btn-outline flex items-center justify-center gap-2">
-                            <span>💬</span>
-                            <span>WhatsApp</span>
-                        </button>
+                        @if(isset($propertyAgent['phone']))
+                            <a href="tel:{{ $propertyAgent['phone'] }}"
+                                class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 dark:bg-blue-500 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg">
+                                <i class="fas fa-phone"></i>
+                                <span>Ara</span>
+                            </a>
+                        @endif
+                        @if(isset($propertyAgent['email']))
+                            <a href="mailto:{{ $propertyAgent['email'] }}"
+                                class="w-full border-2 border-blue-500 dark:border-blue-400 text-blue-500 dark:text-blue-400 py-2.5 px-4 rounded-lg hover:bg-blue-500 hover:text-white dark:hover:bg-blue-600 dark:hover:text-white transition-all duration-300 font-semibold flex items-center justify-center gap-2">
+                                <i class="fas fa-envelope"></i>
+                                <span>E-posta</span>
+                            </a>
+                        @endif
+                        @if(isset($propertyAgent['whatsapp']) || (isset($propertyAgent['social']) && !empty($propertyAgent['social']->whatsapp_number)))
+                            @php
+                                $whatsapp = $propertyAgent['whatsapp'] ?? (isset($propertyAgent['social']) ? $propertyAgent['social']->whatsapp_number : null);
+                                $whatsappUrl = $whatsapp ? 'https://wa.me/' . preg_replace('/[^0-9]/', '', $whatsapp) : '#';
+                            @endphp
+                            <a href="{{ $whatsappUrl }}"
+                               target="_blank"
+                               class="w-full border-2 border-green-500 dark:border-green-400 text-green-500 dark:text-green-400 py-2.5 px-4 rounded-lg hover:bg-green-500 hover:text-white dark:hover:bg-green-600 dark:hover:text-white transition-all duration-300 font-semibold flex items-center justify-center gap-2">
+                                <i class="fab fa-whatsapp"></i>
+                                <span>WhatsApp</span>
+                            </a>
+                        @endif
                     </div>
                 </div>
 
                 <!-- Contact Form -->
-                <div class="bg-white rounded-2xl shadow-lg p-6">
-                    <h3 class="text-xl font-semibold text-gray-900 mb-4">İletişim Formu</h3>
+                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
+                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">İletişim Formu</h3>
 
                     <form class="space-y-4">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Ad Soyad</label>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Ad Soyad</label>
                             <input type="text"
-                                class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                                class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-all duration-200"
                                 placeholder="Adınız ve soyadınız">
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">E-posta</label>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">E-posta</label>
                             <input type="email"
-                                class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                                class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-all duration-200"
                                 placeholder="E-posta adresiniz">
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Telefon</label>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Telefon</label>
                             <input type="tel"
-                                class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                                class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-all duration-200"
                                 placeholder="Telefon numaranız">
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Mesaj</label>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Mesaj</label>
                             <textarea rows="4"
-                                class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                                class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-all duration-200"
                                 placeholder="Mesajınızı yazın..."></textarea>
                         </div>
 
-                        <button type="submit" class="w-full btn inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg">
+                        <button type="submit" class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 dark:bg-blue-500 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg font-semibold">
                             Mesaj Gönder
                         </button>
                     </form>
                 </div>
 
                 <!-- Similar Properties -->
-                <div class="bg-white rounded-2xl shadow-lg p-6">
-                    <h3 class="text-xl font-semibold text-gray-900 mb-4">Benzer İlanlar</h3>
+                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
+                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Benzer İlanlar</h3>
 
                     <div class="space-y-4">
                         <div class="flex gap-3">
                             <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=100&h=100&fit=crop"
                                 alt="Similar Property" class="w-20 h-20 rounded-lg object-cover">
                             <div class="flex-1">
-                                <h4 class="font-semibold text-gray-900 text-sm">Lüks Daire - Gümbet</h4>
-                                <p class="text-gray-500 text-sm">Gümbet, Bodrum</p>
-                                <p class="text-orange-600 font-semibold">₺15,000/ay</p>
+                                <h4 class="font-semibold text-gray-900 dark:text-white text-sm">Lüks Daire - Gümbet</h4>
+                                <p class="text-gray-500 dark:text-gray-400 text-sm">Gümbet, Bodrum</p>
+                                <p class="text-blue-600 dark:text-blue-400 font-semibold">₺15,000/ay</p>
                             </div>
                         </div>
 
@@ -317,9 +350,9 @@
                             <img src="https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=100&h=100&fit=crop"
                                 alt="Similar Property" class="w-20 h-20 rounded-lg object-cover">
                             <div class="flex-1">
-                                <h4 class="font-semibold text-gray-900 text-sm">Deniz Manzaralı Villa</h4>
-                                <p class="text-gray-500 text-sm">Bitez, Bodrum</p>
-                                <p class="text-orange-600 font-semibold">₺12,500,000</p>
+                                <h4 class="font-semibold text-gray-900 dark:text-white text-sm">Deniz Manzaralı Villa</h4>
+                                <p class="text-gray-500 dark:text-gray-400 text-sm">Bitez, Bodrum</p>
+                                <p class="text-blue-600 dark:text-blue-400 font-semibold">₺12,500,000</p>
                             </div>
                         </div>
                     </div>
@@ -391,24 +424,16 @@
         background-color: #f8fafc;
     }
 
+    .dark .property-detail-page {
+        background-color: #111827;
+    }
+
     .property-gallery img {
         transition: all 0.3s ease;
     }
 
     .property-gallery img:hover {
         transform: scale(1.02);
-    }
-
-    .btn {
-        @apply px-4 py-2 rounded-lg font-medium transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2;
-    }
-
-    .inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg {
-        @apply bg-orange-500 text-white hover:bg-orange-600 focus:ring-orange-500;
-    }
-
-    .btn-outline {
-        @apply border border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white focus:ring-orange-500;
     }
 
     /* Responsive adjustments */

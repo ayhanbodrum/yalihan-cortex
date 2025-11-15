@@ -36,7 +36,7 @@ class FeatureCategorySeeder extends Seeder
             'name' => 'Genel Özellikler',
             'description' => 'Tüm ilan tipleri için ortak özellikler',
             'icon' => 'fas fa-list',
-            'order' => 1,
+            'display_order' => 1,
         ];
 
         // Context7: status kolonu varsa ekle
@@ -71,7 +71,7 @@ class FeatureCategorySeeder extends Seeder
             'name' => 'Arsa Özellikleri',
             'description' => 'Arsa ilanları için özel özellikler',
             'icon' => 'fas fa-map',
-            'order' => 2,
+            'display_order' => 2,
         ];
 
         if ($hasStatusColumn) {
@@ -110,7 +110,7 @@ class FeatureCategorySeeder extends Seeder
             'name' => 'Konut Özellikleri',
             'description' => 'Konut ilanları için özel özellikler',
             'icon' => 'fas fa-home',
-            'order' => 3,
+            'display_order' => 3,
         ];
 
         if ($hasStatusColumn) {
@@ -149,7 +149,7 @@ class FeatureCategorySeeder extends Seeder
             'name' => 'Ticari Özellikler',
             'description' => 'İşyeri ilanları için özel özellikler',
             'icon' => 'fas fa-briefcase',
-            'order' => 4,
+            'display_order' => 4,
         ];
 
         if ($hasStatusColumn) {
@@ -183,7 +183,7 @@ class FeatureCategorySeeder extends Seeder
             'name' => 'Yazlık Özellikleri',
             'description' => 'Yazlık kiralama için özel özellikler',
             'icon' => 'fas fa-umbrella-beach',
-            'order' => 5,
+            'display_order' => 5,
         ];
 
         if ($hasStatusColumn) {
@@ -245,7 +245,7 @@ class FeatureCategorySeeder extends Seeder
                 'is_required' => false,
                 'is_filterable' => true,
                     'is_searchable' => false,
-                    'order' => $index + 1,
+                    'display_order' => $index + 1,
             ];
 
             // Context7: status kolonu varsa ekle

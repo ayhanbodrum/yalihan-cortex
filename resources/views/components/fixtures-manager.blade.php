@@ -13,7 +13,7 @@
     'ilanId' => $ilanId,
 ]) }})"
      class="fixtures-manager">
-    
+
     {{-- Header --}}
     <div class="flex items-center justify-between mb-4">
         <div>
@@ -46,9 +46,9 @@
                 </button>
             </div>
         </template>
-        
+
         {{-- Empty State --}}
-        <div x-show="fixtures.length === 0" 
+        <div x-show="fixtures.length === 0"
              class="text-center py-8 text-gray-500 dark:text-gray-400">
             <svg class="w-16 h-16 mx-auto mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
@@ -64,7 +64,7 @@
          @keydown.escape.window="closeModal()"
          class="fixed inset-0 z-50 overflow-y-auto"
          style="display: none;">
-        
+
         {{-- Backdrop --}}
         <div class="fixed inset-0 bg-black bg-opacity-50 transition-opacity duration-300"></div>
 
@@ -72,7 +72,7 @@
         <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:p-0">
             <div class="relative inline-block align-bottom bg-white dark:bg-gray-800 rounded-2xl shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg w-full"
                  @click.stop>
-                
+
                 {{-- Modal Header --}}
                 <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700">
                     <div class="flex items-center gap-4">
@@ -100,7 +100,7 @@
                     <div class="space-y-4">
                         {{-- Demirbaş Adı --}}
                         <div>
-                            <label for="fixture-name" 
+                            <label for="fixture-name"
                                    class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                 Demirbaş Adı <span class="text-red-500">*</span>
                             </label>
@@ -109,14 +109,14 @@
                                    x-model="newFixture.name"
                                    placeholder="Örn: Buzdolabı, Çamaşır Makinesi..."
                                    class="w-full px-4 py-2 border-2 border-yellow-400 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 transition-all duration-200">
-                            <p x-show="errors.name" 
+                            <p x-show="errors.name"
                                x-text="errors.name"
                                class="mt-1 text-sm text-red-600 dark:text-red-400"></p>
                         </div>
 
                         {{-- Marka --}}
                         <div>
-                            <label for="fixture-brand" 
+                            <label for="fixture-brand"
                                    class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                 Markası
                             </label>
@@ -151,11 +151,11 @@
 
     {{-- Hidden Inputs for Form Submission --}}
     <template x-for="(fixture, index) in fixtures" :key="index">
-        <input type="hidden" 
-               :name="`fixtures[${index}][name]`" 
+        <input type="hidden"
+               :name="`fixtures[${index}][name]`"
                :value="fixture.name">
-        <input type="hidden" 
-               :name="`fixtures[${index}][brand]`" 
+        <input type="hidden"
+               :name="`fixtures[${index}][brand]`"
                :value="fixture.brand || ''">
     </template>
 </div>
@@ -171,19 +171,19 @@ function fixturesManager(config) {
             brand: ''
         },
         errors: {},
-        
+
         openModal() {
             this.isModalOpen = true;
             this.newFixture = { name: '', brand: '' };
             this.errors = {};
         },
-        
+
         closeModal() {
             this.isModalOpen = false;
             this.newFixture = { name: '', brand: '' };
             this.errors = {};
         },
-        
+
         addFixture() {
             // Validation
             this.errors = {};
@@ -191,25 +191,25 @@ function fixturesManager(config) {
                 this.errors.name = 'Demirbaş adı gereklidir';
                 return;
             }
-            
+
             // Add fixture
             this.fixtures.push({
                 name: this.newFixture.name.trim(),
                 brand: this.newFixture.brand.trim() || null
             });
-            
+
             // Dispatch event
             this.$dispatch('fixtures-updated', {
                 fixtures: this.fixtures
             });
-            
+
             this.closeModal();
         },
-        
+
         removeFixture(index) {
             if (confirm('Bu demirbaşı silmek istediğinize emin misiniz?')) {
                 this.fixtures.splice(index, 1);
-                
+
                 // Dispatch event
                 this.$dispatch('fixtures-updated', {
                     fixtures: this.fixtures
@@ -225,4 +225,3 @@ function fixturesManager(config) {
     display: none !important;
 }
 </style>
-

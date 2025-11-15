@@ -6,11 +6,11 @@
  * standardına ve EmlakPro projesi global kurallarına uygun olarak yazılmıştır.
  */
 
-(function() {
+(function () {
     'use strict';
 
     // DOM yüklendiğinde çalışacak kod
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         setupCsrfToken();
         initSelect2();
         setupLocationSelectors();
@@ -31,11 +31,7 @@
     function setupCsrfToken() {
         let token = document.head.querySelector('meta[name="csrf-token"]');
         if (token) {
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': token.content
-                }
-            });
+            window.__csrfToken = token.content;
         }
     }
 
@@ -44,110 +40,112 @@
      */
     function initSelect2() {
         // Temel select2 konfigürasyonu
-        $('.select2-basic').select2({
+        if (typeof $.fn !== 'undefined' && $.fn.select2) {
+        window.$('.select2-basic').select2({
             theme: 'classic',
             language: 'tr',
             width: '100%',
             placeholder: 'Seçiniz...',
-            allowClear: true
+            allowClear: true,
         });
 
         // Danışman seçimi için özel select2
-        $('#danisman_id').select2({
+        window.$('#danisman_id').select2({
             theme: 'classic',
             language: 'tr',
             width: '100%',
             placeholder: 'Danışman Seçin',
-            allowClear: true
+            allowClear: true,
         });
 
         // Proje seçimi için özel select2
-        $('#proje_id').select2({
+        window.$('#proje_id').select2({
             theme: 'classic',
             language: 'tr',
             width: '100%',
             placeholder: 'Proje Seçin',
-            allowClear: true
+            allowClear: true,
         });
+        }
     }
 
     /**
      * İl, İlçe, Mahalle seçicilerini ayarla
      */
     function setupLocationSelectors() {
-        const ilSelect = $('#il_select');
-        const ilceSelect = $('#ilce_select');
-        const mahalleSelect = $('#mahalle_select');
+        const ilSelect = document.getElementById('il_select');
+        const ilceSelect = document.getElementById('ilce_select');
+        const mahalleSelect = document.getElementById('mahalle_select');
 
         // İl değişiminde ilçeleri getir
-        ilSelect.on('change', function() {
-            const selectedIl = $(this).val();
-            ilceSelect.prop('disabled', true).empty().append('<option value="">-- İlçe Seçin --</option>');
-            mahalleSelect.prop('disabled', true).empty().append('<option value="">-- Önce ilçe seçin --</option>');
-            
+        ilSelect && ilSelect.addEventListener('change', function () {
+            const selectedIl = ilSelect.value;
+            ilceSelect.innerHTML = '<option value="">-- İlçe Seçin --</option>';
+            ilceSelect.disabled = true;
+            mahalleSelect.innerHTML = '<option value="">-- Önce ilçe seçin --</option>';
+            mahalleSelect.disabled = true;
+
             if (selectedIl) {
-                $.ajax({
-                    url: '/api/location/ilceler',
-                    type: 'GET',
-                    data: { il: selectedIl },
-                    dataType: 'json',
-                    success: function(response) {
+                const params = new URLSearchParams({ il: selectedIl });
+                const headers = {};
+                if (window.__csrfToken) headers['X-CSRF-TOKEN'] = window.__csrfToken;
+                fetch(`/api/location/ilceler?${params.toString()}`, { method: 'GET', headers })
+                    .then((res) => res.json())
+                    .then(function (response) {
                         if (response.data && response.data.length > 0) {
-                            const selectedIlceId = ilceSelect.data('selected');
-                            
-                            $.each(response.data, function(index, ilce) {
-                                const selected = (selectedIlceId && selectedIlceId == ilce.id) ? 'selected' : '';
-                                ilceSelect.append(`<option value="${ilce.ilce_adi}" ${selected}>${ilce.ilce_adi}</option>`);
+                            const selectedIlceId = ilceSelect.dataset.selected;
+                            response.data.forEach(function (ilce) {
+                                const opt = new Option(ilce.ilce_adi, ilce.ilce_adi);
+                                if (selectedIlceId && String(selectedIlceId) == String(ilce.id)) {
+                                    opt.selected = true;
+                                }
+                                ilceSelect.append(opt);
                             });
-                            
-                            ilceSelect.prop('disabled', false).trigger('change');
+                            ilceSelect.disabled = false;
+                            triggerChanged(ilceSelect)
                         }
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('İlçe verileri alınırken hata oluştu:', error);
-                    }
-                });
+                    })
+                    .catch(function (err) {
+                        console.error('İlçe verileri alınırken hata oluştu:', err);
+                    });
             }
         });
 
         // İlçe değişiminde mahalleleri getir
-        ilceSelect.on('change', function() {
-            const selectedIlce = $(this).val();
-            const selectedIl = ilSelect.val();
-            mahalleSelect.prop('disabled', true).empty().append('<option value="">-- Mahalle Seçin --</option>');
-            
+        ilceSelect && ilceSelect.addEventListener('change', function () {
+            const selectedIlce = ilceSelect.value;
+            const selectedIl = ilSelect ? ilSelect.value : '';
+            mahalleSelect.innerHTML = '<option value="">-- Mahalle Seçin --</option>';
+            mahalleSelect.disabled = true;
+
             if (selectedIl && selectedIlce) {
-                $.ajax({
-                    url: '/api/location/mahalleler',
-                    type: 'GET',
-                    data: { 
-                        il: selectedIl,
-                        ilce: selectedIlce 
-                    },
-                    dataType: 'json',
-                    success: function(response) {
+                const params = new URLSearchParams({ il: selectedIl, ilce: selectedIlce });
+                const headers = {};
+                if (window.__csrfToken) headers['X-CSRF-TOKEN'] = window.__csrfToken;
+                fetch(`/api/location/mahalleler?${params.toString()}`, { method: 'GET', headers })
+                    .then((res) => res.json())
+                    .then(function (response) {
                         if (response.data && response.data.length > 0) {
-                            const selectedMahalleId = mahalleSelect.data('selected');
-                            
-                            $.each(response.data, function(index, mahalle) {
-                                const selected = (selectedMahalleId && selectedMahalleId == mahalle.id) ? 'selected' : '';
-                                mahalleSelect.append(`<option value="${mahalle.mahalle_adi}" ${selected}>${mahalle.mahalle_adi}</option>`);
+                            const selectedMahalleId = mahalleSelect.dataset.selected;
+                            response.data.forEach(function (mahalle) {
+                                const opt = new Option(mahalle.mahalle_adi, mahalle.mahalle_adi);
+                                if (selectedMahalleId && String(selectedMahalleId) == String(mahalle.id)) {
+                                    opt.selected = true;
+                                }
+                                mahalleSelect.append(opt);
                             });
-                            
-                            mahalleSelect.prop('disabled', false);
+                            mahalleSelect.disabled = false;
+                            triggerChanged(mahalleSelect)
                         }
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('Mahalle verileri alınırken hata oluştu:', error);
-                    }
-                });
+                    })
+                    .catch(function (err) {
+                        console.error('Mahalle verileri alınırken hata oluştu:', err);
+                    });
             }
         });
 
         // Sayfa yüklendiğinde, eğer il seçili ise ilçeleri yükle
-        if (ilSelect.val()) {
-            ilSelect.trigger('change');
-        }
+        if (ilSelect && ilSelect.value) { triggerChanged(ilSelect) }
     }
 
     /**
@@ -156,24 +154,24 @@
     function setupFiyatFormatting() {
         const fiyatDisplay = document.getElementById('fiyat_display');
         const fiyatInput = document.getElementById('fiyat');
-        
+
         if (fiyatDisplay && fiyatInput) {
             // Ekranda formatlanmış gösterimi
-            fiyatDisplay.addEventListener('input', function(e) {
+            fiyatDisplay.addEventListener('input', function (e) {
                 // Sadece sayıları al
                 let value = this.value.replace(/[^\d]/g, '');
-                
+
                 // Boş değilse, formatla
                 if (value) {
                     // Binlik ayraç ile formatla
                     value = parseInt(value, 10).toLocaleString('tr-TR');
                     this.value = value;
                 }
-                
+
                 // Gerçek değeri hidden input'a aktar
                 fiyatInput.value = this.value.replace(/[^\d]/g, '');
             });
-            
+
             // Başlangıçta formatla
             if (fiyatDisplay.value) {
                 const numValue = parseInt(fiyatDisplay.value.replace(/[^\d]/g, ''), 10);
@@ -191,82 +189,86 @@
         const fileInput = document.getElementById('fotograflar');
         const dropzone = document.getElementById('dropzone');
         const previewGrid = document.getElementById('preview-grid');
-        
+
         if (fileInput && dropzone) {
             // Sürükle-bırak olayları
-            dropzone.addEventListener('dragover', function(e) {
+            dropzone.addEventListener('dragover', function (e) {
                 e.preventDefault();
                 this.classList.add('border-indigo-500');
             });
-            
-            dropzone.addEventListener('dragleave', function() {
+
+            dropzone.addEventListener('dragleave', function () {
                 this.classList.remove('border-indigo-500');
             });
-            
-            dropzone.addEventListener('drop', function(e) {
+
+            dropzone.addEventListener('drop', function (e) {
                 e.preventDefault();
                 this.classList.remove('border-indigo-500');
-                
+
                 if (e.dataTransfer.files.length) {
                     fileInput.files = e.dataTransfer.files;
                     handleFileSelect(e.dataTransfer.files);
                 }
             });
-            
+
             // Dosya seçme olayı
-            fileInput.addEventListener('change', function(e) {
+            fileInput.addEventListener('change', function (e) {
                 // Önizleme alanını temizle
                 if (previewGrid) {
                     previewGrid.innerHTML = '';
                 }
-                
+
                 handleFileSelect(this.files);
             });
-            
+
             // "Dosya Seç" butonuna tıklama
-            dropzone.addEventListener('click', function() {
+            dropzone.addEventListener('click', function () {
                 fileInput.click();
             });
         }
-        
+
         // Kapak fotoğrafı seçme (düzenleme sayfasında)
         setupCoverPhotoSelection();
     }
-    
+
     /**
      * Dosya seçimi işleme
      */
     function handleFileSelect(files) {
         const previewGrid = document.getElementById('preview-grid');
-        
+
         if (!previewGrid || !files.length) return;
-        
+
         // Dosya boyutu kontrolü
         const maxFileSize = 5 * 1024 * 1024; // 5MB
         const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
-        
+
         for (let i = 0; i < files.length; i++) {
             const file = files[i];
-            
+
             // Dosya tipi kontrolü
             if (!allowedTypes.includes(file.type)) {
-                alert(`"${file.name}" desteklenmeyen bir dosya formatıdır. Lütfen JPG veya PNG dosyaları yükleyin.`);
+                alert(
+                    `"${file.name}" desteklenmeyen bir dosya formatıdır. Lütfen JPG veya PNG dosyaları yükleyin.`
+                );
                 continue;
             }
-            
+
             // Dosya boyutu kontrolü
             if (file.size > maxFileSize) {
-                alert(`"${file.name}" dosyası çok büyük (${Math.round(file.size / 1024 / 1024)}MB). Maksimum dosya boyutu 5MB'dir.`);
+                alert(
+                    `"${file.name}" dosyası çok büyük (${Math.round(file.size / 1024 / 1024)}MB). Maksimum dosya boyutu 5MB'dir.`
+                );
                 continue;
             }
-            
+
             // Dosya önizleme
             const reader = new FileReader();
-            
-            reader.onload = function(e) {
+
+            reader.onload = function (e) {
                 const previewItem = document.createElement('div');
                 previewItem.className = 'photo-upload__preview-item';
-                
+
                 previewItem.innerHTML = `
                     <img src="${e.target.result}" alt="Önizleme">
                     <div class="photo-upload__actions">
@@ -282,10 +284,10 @@
                         </button>
                     </div>
                 `;
-                
+
                 previewGrid.appendChild(previewItem);
             };
-            
+
             reader.readAsDataURL(file);
         }
     }
@@ -295,32 +297,39 @@
      */
     function setupCoverPhotoSelection() {
         // Mevcut kapak fotoğrafı radyo butonları
-        $(document).on('change', 'input[name="kapak_fotografi"]', function() {
-            $('.photo-cover-badge').hide();
-            const selectedId = $(this).val();
-            $(`#photo-${selectedId} .photo-cover-badge`).show();
+        document.addEventListener('change', function (e) {
+            const target = e.target;
+            if (target && target.matches('input[name="kapak_fotografi"]')) {
+                document.querySelectorAll('.photo-cover-badge').forEach((el) => el.classList.add('hidden'));
+                const selectedId = target.value;
+                const badge = document.querySelector(`#photo-${selectedId} .photo-cover-badge`);
+                badge && badge.classList.remove('hidden');
+            }
         });
-        
+
         // Mevcut fotoğraf silme işlemi
-        $(document).on('click', '.photo-delete-btn', function() {
-            const photoId = $(this).data('photo-id');
-            const photoItem = $(`#photo-${photoId}`);
-            
+        document.addEventListener('click', function (e) {
+            const btn = e.target.closest('.photo-delete-btn');
+            if (!btn) return;
+            const photoId = btn.getAttribute('data-photo-id');
+            const photoItem = document.querySelector(`#photo-${photoId}`);
+
             if (confirm('Bu fotoğrafı silmek istediğinize emin misiniz?')) {
                 // Silme işareti ekle
-                photoItem.addClass('opacity-50');
-                
+                photoItem && photoItem.classList.add('opacity-50');
+
                 // Hidden input ekle
                 const input = document.createElement('input');
                 input.type = 'hidden';
                 input.name = 'sil_fotograflar[]';
                 input.value = photoId;
                 document.querySelector('form').appendChild(input);
-                
+
                 // Eğer kapak fotoğrafı ise, silme işaretini kaldır
-                if ($(`#kapak_${photoId}`).is(':checked')) {
-                    $(`#kapak_${photoId}`).prop('checked', false);
-                    $('.photo-cover-badge').hide();
+                const kapak = document.getElementById(`kapak_${photoId}`);
+                if (kapak && kapak.checked) {
+                    kapak.checked = false;
+                    document.querySelectorAll('.photo-cover-badge').forEach((el) => el.classList.add('hidden'));
                 }
             }
         });
@@ -331,115 +340,117 @@
      */
     function initMap() {
         // Map loading göster
-        $('#map-loading').removeClass('hidden').addClass('flex');
+        const mapLoading = document.getElementById('map-loading');
+        mapLoading && mapLoading.classList.remove('hidden');
+        mapLoading && mapLoading.classList.add('flex');
 
         // Mevcut koordinatları al
         const latitudeInput = document.getElementById('latitude');
         const longitudeInput = document.getElementById('longitude');
-        
+
         if (!latitudeInput || !longitudeInput) return;
-        
+
         const latitude = parseFloat(latitudeInput.value) || 38.4237;
         const longitude = parseFloat(longitudeInput.value) || 27.1428;
-        
+
         // Harita oluştur
         const map = L.map('map', {
             center: [latitude, longitude],
             zoom: 12,
-            scrollWheelZoom: false
+            scrollWheelZoom: false,
         });
-        
+
         // OSM katmanı ekle
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            attribution:
+                '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
         }).addTo(map);
-        
+
         // Marker ekle
         const marker = L.marker([latitude, longitude], {
-            draggable: true
+            draggable: true,
         }).addTo(map);
-        
+
         // Marker sürükleme olayları
-        marker.on('dragend', function(e) {
+        marker.on('dragend', function (e) {
             const position = marker.getLatLng();
             latitudeInput.value = position.lat.toFixed(6);
             longitudeInput.value = position.lng.toFixed(6);
-            
+
             // Haritayı yeni konuma merkezle
             map.panTo(position);
         });
-        
+
         // Map loading gizle
-        $('#map-loading').removeClass('flex').addClass('hidden');
-        
+        mapLoading && mapLoading.classList.remove('flex');
+        mapLoading && mapLoading.classList.add('hidden');
+
         // Adres arama butonu
-        $('#map-search-btn').on('click', function() {
-            searchAddress();
-        });
-        
+        const searchBtn = document.getElementById('map-search-btn');
+        searchBtn && searchBtn.addEventListener('click', function () { searchAddress(); });
+
         // Enter tuşu ile arama
-        $('#map-search-input').on('keypress', function(e) {
-            if (e.which === 13) { // Enter tuşu
-                e.preventDefault();
-                searchAddress();
-            }
+        const searchInput = document.getElementById('map-search-input');
+        searchInput && searchInput.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') { e.preventDefault(); searchAddress(); }
         });
-        
+
         // Harita sıfırlama butonu
-        $('#map-reset-btn').on('click', function() {
+        const resetBtn = document.getElementById('map-reset-btn');
+        resetBtn && resetBtn.addEventListener('click', function () {
             // Türkiye'nin merkezi
             const defaultLat = 38.4237;
             const defaultLng = 27.1428;
-            
+
             // Konum bilgilerini güncelle
             latitudeInput.value = defaultLat;
             longitudeInput.value = defaultLng;
-            
+
             // Marker ve haritayı güncelle
             marker.setLatLng([defaultLat, defaultLng]);
             map.setView([defaultLat, defaultLng], 6);
         });
-        
+
         // Adres arama fonksiyonu
         function searchAddress() {
-            const searchValue = $('#map-search-input').val();
-            
+            const searchValue = document.getElementById('map-search-input')?.value;
+
             if (!searchValue) return;
-            
+
             // Loading göster
-            $('#map-loading').removeClass('hidden').addClass('flex');
-            
+            mapLoading && mapLoading.classList.remove('hidden');
+            mapLoading && mapLoading.classList.add('flex');
+
             // Nominatim API ile adres ara
-            $.ajax({
-                url: `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchValue)}`,
-                type: 'GET',
-                dataType: 'json',
-                success: function(data) {
+            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchValue)}`)
+                .then((res) => res.json())
+                .then(function (data) {
                     if (data && data.length > 0) {
                         const location = data[0];
                         const lat = parseFloat(location.lat);
                         const lng = parseFloat(location.lon);
-                        
+
                         // Konum bilgilerini güncelle
                         latitudeInput.value = lat.toFixed(6);
                         longitudeInput.value = lng.toFixed(6);
-                        
+
                         // Marker ve haritayı güncelle
                         marker.setLatLng([lat, lng]);
                         map.setView([lat, lng], 14);
                     } else {
                         alert('Aranan adres bulunamadı.');
                     }
-                    
+
                     // Loading gizle
-                    $('#map-loading').removeClass('flex').addClass('hidden');
-                },
-                error: function() {
+                    mapLoading && mapLoading.classList.remove('flex');
+                    mapLoading && mapLoading.classList.add('hidden');
+                })
+                .catch(function () {
                     alert('Adres arama sırasında bir hata oluştu.');
                     // Loading gizle
-                    $('#map-loading').removeClass('flex').addClass('hidden');
-                }
-            });
+                    mapLoading && mapLoading.classList.remove('flex');
+                    mapLoading && mapLoading.classList.add('hidden');
+                });
         }
     }
 
@@ -447,9 +458,11 @@
      * Form doğrulama işlemleri
      */
     function setupFormValidation() {
-        $('form').on('submit', function(e) {
+        document.addEventListener('submit', function (e) {
+            const form = e.target;
+            if (!(form instanceof HTMLFormElement)) return;
             let hasError = false;
-            
+
             // Zorunlu alanların doğrulaması
             const requiredFields = [
                 { id: 'baslik', name: 'Başlık' },
@@ -458,44 +471,50 @@
                 { id: 'il_select', name: 'İl' },
                 { id: 'ilce_select', name: 'İlçe' },
                 { id: 'mahalle_select', name: 'Mahalle' },
-                { id: 'aciklama', name: 'Açıklama' }
+                { id: 'aciklama', name: 'Açıklama' },
             ];
-            
+
             // Hata mesajlarını gizle
-            $('.validation-error').addClass('hidden');
-            
+            document.querySelectorAll('.validation-error').forEach((el) => el.classList.add('hidden'));
+
             // Tüm zorunlu alanları kontrol et
-            requiredFields.forEach(function(field) {
+            requiredFields.forEach(function (field) {
                 const input = document.getElementById(field.id);
                 if (!input || !input.value.trim()) {
-                    $(`#${field.id}_error`).removeClass('hidden');
+                    const errEl = document.getElementById(`${field.id}_error`);
+                    errEl && errEl.classList.remove('hidden');
                     hasError = true;
                 }
             });
-            
+
             // Fiyat kontrolü
             const fiyatInput = document.getElementById('fiyat');
             if (fiyatInput && (!fiyatInput.value || parseInt(fiyatInput.value) <= 0)) {
-                $('#fiyat_error').removeClass('hidden');
+                const fErr = document.getElementById('fiyat_error');
+                fErr && fErr.classList.remove('hidden');
                 hasError = true;
             }
-            
+
             // Hata varsa formu gönderme
             if (hasError) {
                 e.preventDefault();
-                
+
                 // Sayfayı ilk hataya kaydır
-                const firstError = $('.validation-error:not(.hidden)').first();
-                if (firstError.length) {
-                    $('html, body').animate({
-                        scrollTop: firstError.offset().top - 100
-                    }, 500);
+                const firstError = document.querySelector('.validation-error:not(.hidden)');
+                if (firstError) {
+                    try {
+                        const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                        firstError.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' });
+                    } catch {
+                        firstError.scrollIntoView();
+                    }
                 }
-                
+
                 return false;
             }
-            
+
             return true;
         });
     }
+    function triggerChanged(el) { if (!el) return; if (typeof $.fn !== 'undefined' && $.fn.select2) { window.$(el).trigger('change.select2') } else { el.dispatchEvent(new Event('change')) } }
 })();

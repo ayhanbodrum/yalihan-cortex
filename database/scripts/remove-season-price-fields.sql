@@ -17,7 +17,7 @@
 
 UPDATE kategori_yayin_tipi_field_dependencies
 SET enabled = false
-WHERE kategori_slug = 'yazlik' 
+WHERE kategori_slug = 'yazlik'
 AND field_slug IN (
     'yaz_sezonu_fiyat',
     'kis_sezonu_fiyat',
@@ -28,18 +28,18 @@ AND field_slug IN (
 -- DOĞRULAMA: AKTİF FİYATLANDIRMA ALANLARI
 -- ═══════════════════════════════════════════════════
 
-SELECT 
+SELECT
     field_slug,
     field_name,
     enabled,
     `order`,
-    CASE 
-        WHEN field_slug IN ('yaz_sezonu_fiyat', 'kis_sezonu_fiyat', 'ara_sezon_fiyat') 
+    CASE
+        WHEN field_slug IN ('yaz_sezonu_fiyat', 'kis_sezonu_fiyat', 'ara_sezon_fiyat')
         THEN '⚠️ DEPRECATED (Season Manager kullan!)'
         ELSE '✅ Aktif'
     END as status
 FROM kategori_yayin_tipi_field_dependencies
-WHERE kategori_slug = 'yazlik' 
+WHERE kategori_slug = 'yazlik'
 AND field_category = 'fiyatlandirma'
 ORDER BY `order`;
 
@@ -72,4 +72,3 @@ ORDER BY `order`;
 -- 3. Yaz/kış/ara sezon tanımla
 -- 4. Her sezon için tarih aralığı + fiyat
 -- 5. Otomatik fiyat hesaplama!
-

@@ -11,7 +11,7 @@ class MenuService
     {
         return [];
     }
-    
+
     public function generateMenu($userRole = null)
     {
         return [
@@ -19,7 +19,7 @@ class MenuService
             'users' => ['name' => 'Kullanıcılar', 'route' => 'admin.kullanicilar.index'],
         ];
     }
-    
+
     /**
      * Get menu items for specific role
      * Context7 compliant implementation - safe routes only
@@ -35,7 +35,7 @@ class MenuService
                 'active' => true
             ]
         ];
-        
+
         switch ($role) {
             case 'superadmin':
                 return array_merge($baseMenu, [
@@ -47,7 +47,7 @@ class MenuService
                     ]
                     // Removed non-existing routes to prevent errors
                 ]);
-                
+
             case 'admin':
                 return array_merge($baseMenu, [
                     [
@@ -57,17 +57,17 @@ class MenuService
                         'active' => true
                     ]
                 ]);
-                
+
             case 'danisman':
                 return array_merge($baseMenu, [
                     [
                         'name' => 'Kullanıcılar',
                         'route' => 'admin.kullanicilar.index',
-                        'icon' => 'fas fa-users', 
+                        'icon' => 'fas fa-users',
                         'active' => true
                     ]
                 ]);
-                
+
             case 'user':
             default:
                 return $baseMenu;

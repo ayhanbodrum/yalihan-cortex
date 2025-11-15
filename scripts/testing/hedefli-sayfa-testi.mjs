@@ -315,4 +315,3 @@ main().catch((error) => {
     console.error("💥 Kritik hata:", error);
     process.exit(1);
 });
-

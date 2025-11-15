@@ -24,7 +24,7 @@ class AICategoryController extends AdminController
     {
         $categories = IlanKategori::whereNull('parent_id')
             ->with(['children', 'features'])
-            ->orderBy('order')
+            ->orderBy('display_order')
             ->get();
 
         // Debug: Kategorileri kontrol et
@@ -40,7 +40,7 @@ class AICategoryController extends AdminController
     {
         $categories = IlanKategori::whereNull('parent_id')
             ->with(['children', 'features'])
-            ->orderBy('order')
+            ->orderBy('display_order')
             ->get();
 
         return view('admin.ai-category.test', compact('categories'));

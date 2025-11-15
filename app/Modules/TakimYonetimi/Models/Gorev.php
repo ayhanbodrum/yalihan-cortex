@@ -21,7 +21,7 @@ class Gorev extends Model
         'oncelik',
         'status',
         'tip',
-        'deadline',
+        'bitis_tarihi',
         'tahmini_sure',
         'admin_id',
         'danisman_id',
@@ -32,7 +32,7 @@ class Gorev extends Model
     ];
 
     protected $casts = [
-        'deadline' => 'datetime',
+        'bitis_tarihi' => 'datetime',
         'tahmini_sure' => 'integer',
         'tags' => 'array',
         'metadata' => 'array',
@@ -115,13 +115,13 @@ class Gorev extends Model
 
     public function scopeDeadlineYaklasan($query, $gun = 1)
     {
-        return $query->where('deadline', '<=', now()->addDays($gun))
+        return $query->where('bitis_tarihi', '<=', now()->addDays($gun))
             ->where('status', '!=', 'tamamlandi');
     }
 
     public function scopeGeciken($query)
     {
-        return $query->where('deadline', '<', now())
+        return $query->where('bitis_tarihi', '<', now())
             ->where('status', '!=', 'tamamlandi');
     }
 
@@ -215,5 +215,17 @@ class Gorev extends Model
     public function atanabilirMi(): bool
     {
         return $this->status === 'bekliyor' && ! $this->danisman_id;
+    }
+
+    protected function deadline(): \Illuminate\Database\Eloquent\Casts\Attribute
+    {
+        return \Illuminate\Database\Eloquent\Casts\Attribute::make(
+            get: function ($value, array $attributes) {
+                return isset($attributes['bitis_tarihi']) ? \Illuminate\Support\Carbon::parse($attributes['bitis_tarihi']) : null;
+            },
+            set: function ($value) {
+                return ['bitis_tarihi' => $value];
+            }
+        );
     }
 }

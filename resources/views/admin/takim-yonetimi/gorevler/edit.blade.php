@@ -233,7 +233,7 @@
                             <select style="color-scheme: light dark;" class="admin-input @error('danisman_id') border-red-300 @enderror transition-all duration-200" id="danisman_id"
                                 name="danisman_id">
                                 <option value="">Danışman seçin...</option>
-                                @foreach ($danismanlar as $danisman)
+                                @foreach ($danismanlar ?? [] as $danisman)
                                     <option value="{{ $danisman->id }}"
                                         {{ old('danisman_id', $gorev->danisman_id) == $danisman->id ? 'selected' : '' }}>
                                         {{ $danisman->name ?? ($danisman->ad ?? 'Danışman') }}

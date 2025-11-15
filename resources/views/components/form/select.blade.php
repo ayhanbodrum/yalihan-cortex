@@ -44,8 +44,8 @@
             @endif
 
             @foreach($options as $optionValue => $optionLabel)
-                <option 
-                    value="{{ $optionValue }}" 
+                <option
+                    value="{{ $optionValue }}"
                     {{ old($name, $value) == $optionValue ? 'selected' : '' }}
                     class="bg-white dark:bg-gray-800 text-black dark:text-white"
                 >
@@ -90,7 +90,7 @@ select option:focus {
         background-color: #1F2937;
         color: #FFFFFF;
     }
-    
+
     select option:hover,
     select option:focus {
         background-color: #3B82F6 !important;

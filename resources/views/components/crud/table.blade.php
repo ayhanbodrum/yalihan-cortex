@@ -21,7 +21,7 @@
                         {{ $column['label'] }}
                     </th>
                 @endforeach
-                
+
                 @if($actions)
                     <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                         İşlemler
@@ -45,7 +45,7 @@
                             @endif
                         </td>
                     @endforeach
-                    
+
                     @if($actions)
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                             <div class="flex justify-end space-x-2">
@@ -57,7 +57,7 @@
                                         </svg>
                                     </a>
                                 @endif
-                                
+
                                 @if($editRoute)
                                     <a href="{{ route($editRoute, [is_array($item) ? $item[$idField] : $item->{$idField}]) }}" class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300" title="Düzenle">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -65,7 +65,7 @@
                                         </svg>
                                     </a>
                                 @endif
-                                
+
                                 @if($deleteRoute)
                                     <form method="POST" action="{{ route($deleteRoute, [is_array($item) ? $item[$idField] : $item->{$idField}]) }}" class="inline" onsubmit="return confirm('Bu kaydı silmek istediğinizden emin misiniz?');">
                                         @csrf

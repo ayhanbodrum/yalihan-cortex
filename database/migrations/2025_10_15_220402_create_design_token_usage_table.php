@@ -17,7 +17,7 @@ return new class extends Migration
             $table->decimal("compliance_score", 3, 2);
             $table->timestamp("analyzed_at");
             $table->timestamps();
-            
+
             $table->index(["page_name", "analyzed_at"]);
         });
     }

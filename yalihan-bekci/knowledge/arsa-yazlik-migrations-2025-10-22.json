@@ -5,7 +5,7 @@
   "category": "database_migrations",
   "priority": "HIGH",
   "context7_compliance": "100%",
-  
+
   "summary": {
     "title": "Arsa ve Yazlık Modülleri Database Migrations Tamamlandı",
     "description": "Model'de tanımlı olan 30 field için migrations oluşturuldu ve çalıştırıldı. 2 yeni tablo (yazlik_fiyatlandirma, yazlik_rezervasyonlar) eklendi.",
@@ -14,7 +14,7 @@
     "total_fields_added": 30,
     "new_tables": 2
   },
-  
+
   "migrations": {
     "arsa_fields": {
       "file": "2025_10_22_072529_add_arsa_fields_to_ilanlar_table.php",
@@ -109,10 +109,7 @@
           "comment": "Doğalgaz altyapısı"
         }
       ],
-      "indexes": [
-        "idx_ilanlar_ada_parsel (ada_no, parsel_no)",
-        "idx_ilanlar_imar_statusu"
-      ],
+      "indexes": ["idx_ilanlar_ada_parsel (ada_no, parsel_no)", "idx_ilanlar_imar_statusu"],
       "related_systems": [
         "PropertyValuationService.php (Arsa değerleme)",
         "ArsaCalculationController.php (KAKS/TAKS hesaplama)",
@@ -120,7 +117,7 @@
         "TKGM entegrasyonu"
       ]
     },
-    
+
     "yazlik_fields": {
       "file": "2025_10_22_072548_add_yazlik_fields_to_ilanlar_table.php",
       "status": "MIGRATED",
@@ -207,12 +204,9 @@
           "comment": "Havuz derinliği (m)"
         }
       ],
-      "indexes": [
-        "idx_ilanlar_min_konaklama",
-        "idx_ilanlar_sezon (sezon_baslangic, sezon_bitis)"
-      ]
+      "indexes": ["idx_ilanlar_min_konaklama", "idx_ilanlar_sezon (sezon_baslangic, sezon_bitis)"]
     },
-    
+
     "yazlik_fiyatlandirma_table": {
       "file": "2025_10_22_072600_create_yazlik_fiyatlandirma_table.php",
       "status": "MIGRATED",
@@ -232,7 +226,7 @@
       "scopes": ["active()", "tarihAraliginda()"],
       "methods": ["calculatePrice(days)"]
     },
-    
+
     "yazlik_rezervasyonlar_table": {
       "file": "2025_10_22_072601_create_yazlik_rezervasyonlar_table.php",
       "status": "MIGRATED",
@@ -254,7 +248,7 @@
       "methods": ["updateDurum()", "iptalEdilebilinirMi()"]
     }
   },
-  
+
   "context7_compliance": {
     "status": "100%",
     "analysis": "İLAN_EKLEME_EKSIKLER_VE_SORUNLAR.md analiz edildi",
@@ -267,7 +261,7 @@
       "Lokasyon: il_id (NOT sehir_id) ✅"
     ]
   },
-  
+
   "price_system_analysis": {
     "status": "EXCELLENT",
     "compliance": "100%",
@@ -300,7 +294,7 @@
       "example": "{{ number_format($fiyat, 0, ',', '.') }} {{ $currency }}"
     }
   },
-  
+
   "live_search_system": {
     "status": "ALREADY_IMPLEMENTED",
     "standard": "Context7 Live Search (Vanilla JS 3KB)",
@@ -322,13 +316,9 @@
     "html_pattern": "<div class=\"context7-live-search\" data-search-type=\"kisiler\" data-max-results=\"20\">",
     "context7": "✅ Vanilla JS ONLY - Heavy libraries YASAK"
   },
-  
+
   "file_cleanup": {
-    "deleted_files": [
-      "routes/admin.php.broken",
-      "routes/web.php.test",
-      "routes/admin.php.new"
-    ],
+    "deleted_files": ["routes/admin.php.broken", "routes/web.php.test", "routes/admin.php.new"],
     "duplicate_check": {
       "tool": "Yalıhan Bekçi MCP md_duplicate_detector",
       "result": {
@@ -345,7 +335,7 @@
       }
     }
   },
-  
+
   "file_rename": {
     "old": "İLAN_EKLEME_EKSIKLER_VE_SORUNLAR.md",
     "new": "ILAN_FORM_DURUMU.md",
@@ -359,7 +349,7 @@
       "Yazlık modülü durumu: %0 → %100"
     ]
   },
-  
+
   "lessons_learned": {
     "model_database_sync": {
       "problem": "Ilan model'de 200+ field tanımlı ama database'de sadece 38 field vardı",
@@ -367,7 +357,7 @@
       "rule": "ALWAYS check: Model fillable vs Database columns sync",
       "tools": "grep, migration:status, Schema::hasColumn()"
     },
-    
+
     "context7_field_naming": {
       "correct": [
         "status (NOT durum, is_active, aktif)",
@@ -382,7 +372,7 @@
         "example_wrong": "$ilan->durum = 'aktif' ❌ (Field name Türkçe - İHLAL!)"
       }
     },
-    
+
     "multi_currency_best_practice": {
       "database": "para_birimi field (NOT currency)",
       "values": "TRY, USD, EUR, GBP (ISO codes)",
@@ -390,7 +380,7 @@
       "components": "4 blade component hazır ve kullanılabilir",
       "format": "{{ number_format($price, 0, ',', '.') }} {{ $currency_symbol }}"
     },
-    
+
     "vacation_rental_system": {
       "tables": 3,
       "detail": "ilanlar (14 field) + yazlik_fiyatlandirma + yazlik_rezervasyonlar",
@@ -399,7 +389,7 @@
       "scopes": "active(), gelecek(), mevcut(), gecmis(), cakisan()"
     }
   },
-  
+
   "next_steps": {
     "frontend_ui": [
       "Arsa form component oluştur (ada/parsel, imar, KAKS/TAKS)",
@@ -415,7 +405,7 @@
       "Rezervasyon sistemi test et"
     ]
   },
-  
+
   "statistics": {
     "total_time": "~10 minutes",
     "migrations_created": 4,
@@ -427,7 +417,7 @@
     "context7_violations": 0,
     "success_rate": "100%"
   },
-  
+
   "important_files": {
     "migrations": [
       "database/migrations/2025_10_22_072529_add_arsa_fields_to_ilanlar_table.php",
@@ -456,7 +446,7 @@
       "docs/analysis/yazlik-kiralama-ozellik-analizi.md"
     ]
   },
-  
+
   "context7_rules_applied": {
     "field_naming": "✅ All English (status, enabled, para_birimi, il_id)",
     "value_naming": "✅ Turkish values OK ($ilan->status = 'Aktif')",
@@ -467,7 +457,7 @@
     "comments": "✅ English comments in migrations",
     "backward_compatibility": "✅ Legacy fields kept (ada_parsel, havuz_var, yola_cephesi)"
   },
-  
+
   "ai_guardian_notes": {
     "memory": "Arsa ve Yazlık modülleri artık database'de tamamen hazır",
     "frontend": "UI component'leri eklenecek - arsa-calculation.blade.php örnek alınabilir",
@@ -476,4 +466,3 @@
     "dynamic_form": "Alpine.js ile kategori değiştiğinde ilgili field'ları göster/gizle"
   }
 }
-

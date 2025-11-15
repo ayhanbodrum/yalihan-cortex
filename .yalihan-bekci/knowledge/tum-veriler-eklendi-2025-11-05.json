@@ -4,7 +4,7 @@
   "category": "data_setup",
   "priority": "HIGH",
   "status": "COMPLETED",
-  
+
   "seed_sonuclari": {
     "1_turkiye_illeri": {
       "durum": "✅ MEVCUT",
@@ -113,7 +113,7 @@
       }
     }
   },
-  
+
   "toplam_veriler": {
     "kategoriler": {
       "ana": 5,
@@ -126,18 +126,18 @@
     "ozellikler": "~471",
     "ozellik_iliskilendirmeleri": 222
   },
-  
+
   "context7_compliance": {
     "status": "✅ COMPLIANT",
     "note": "Tüm seed'ler Schema::hasColumn() kontrolleri ile Context7 standartlarına uygun"
   },
-  
+
   "notlar": {
     "comprehensive_feature_seeder": "Eski schema kullanıyor (ad kolonu), güncellenmeli veya kaldırılmalı",
     "ilan_takvim_sezonlar": "Tablo yok, gerekirse migration oluşturulmalı",
     "master_seeder": "Tüm seed'ler başarıyla entegre edildi, tek komutla çalıştırılabilir"
   },
-  
+
   "dosyalar": {
     "master_seeder": "database/seeders/Context7MasterSeeder.php",
     "seed_dosyalari": [
@@ -154,4 +154,3 @@
     ]
   }
 }
-

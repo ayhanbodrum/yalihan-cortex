@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Str;
 use App\Traits\HasActiveScope;
+use Illuminate\Support\Facades\Cache;
 
 class BlogTag extends Model
 {
@@ -82,5 +83,26 @@ class BlogTag extends Model
     public function setSlugAttribute($value)
     {
         $this->attributes['slug'] = Str::slug($value ?: $this->name);
+    }
+
+    // Boot method for model events
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::created(function ($tag) {
+            // ✅ CACHE INVALIDATION: Yeni etiket eklendiğinde cache'i temizle
+            Cache::forget('blog_tags_stats');
+        });
+
+        static::updated(function ($tag) {
+            // ✅ CACHE INVALIDATION: Etiket güncellendiğinde cache'i temizle
+            Cache::forget('blog_tags_stats');
+        });
+
+        static::deleted(function ($tag) {
+            // ✅ CACHE INVALIDATION: Etiket silindiğinde cache'i temizle
+            Cache::forget('blog_tags_stats');
+        });
     }
 }

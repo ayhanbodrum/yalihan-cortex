@@ -9,9 +9,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Booking Request Model
- * 
+ *
  * Context7 Standardı: C7-BOOKING-REQUEST-2025-11-05
- * 
+ *
  * Public API'den gelen rezervasyon taleplerini yönetir
  */
 class BookingRequest extends Model

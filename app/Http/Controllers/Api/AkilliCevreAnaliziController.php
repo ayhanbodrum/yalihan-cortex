@@ -5,11 +5,16 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Services\AkilliCevreAnaliziService;
 use App\Services\AIAkilliOnerilerService;
+use App\Services\Response\ResponseService;
+use App\Traits\ValidatesApiRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Http;
 
 class AkilliCevreAnaliziController extends Controller
 {
+    use ValidatesApiRequests;
     protected $cevreAnaliziService;
     protected $aiOnerilerService;
 
@@ -26,18 +31,15 @@ class AkilliCevreAnaliziController extends Controller
      */
     public function analyzeEnvironment(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        // ✅ REFACTORED: Using ValidatesApiRequests trait
+        $validated = $this->validateRequestWithResponse($request, [
             'latitude' => 'required|numeric|between:-90,90',
             'longitude' => 'required|numeric|between:-180,180',
             'property_type' => 'required|string|in:arsa,yazlik,villa_daire,isyeri'
         ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Validation Error.',
-                'errors' => $validator->errors()
-            ], 400);
+        if ($validated instanceof \Illuminate\Http\JsonResponse) {
+            return $validated;
         }
 
         try {
@@ -51,18 +53,13 @@ class AkilliCevreAnaliziController extends Controller
                 $propertyType
             );
 
-            return response()->json([
-                'success' => true,
-                'data' => $analysis
-            ]);
+            // ✅ REFACTORED: Using ResponseService
+            return ResponseService::success($analysis, 'Çevre analizi başarıyla tamamlandı');
         } catch (\Exception $e) {
-            \Log::error('Çevre analizi hatası: ' . $e->getMessage());
+            Log::error('Çevre analizi hatası: ' . $e->getMessage());
 
-            return response()->json([
-                'success' => false,
-                'message' => 'Çevre analizi sırasında hata oluştu.',
-                'error' => $e->getMessage()
-            ], 500);
+            // ✅ REFACTORED: Using ResponseService
+            return ResponseService::serverError('Çevre analizi sırasında hata oluştu', $e);
         }
     }
 
@@ -71,17 +68,14 @@ class AkilliCevreAnaliziController extends Controller
      */
     public function getSmartRecommendations(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        // ✅ REFACTORED: Using ValidatesApiRequests trait
+        $validated = $this->validateRequestWithResponse($request, [
             'ilan_data' => 'required|array',
             'context' => 'sometimes|string|in:create,edit,view'
         ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Validation Error.',
-                'errors' => $validator->errors()
-            ], 400);
+        if ($validated instanceof \Illuminate\Http\JsonResponse) {
+            return $validated;
         }
 
         try {
@@ -90,18 +84,13 @@ class AkilliCevreAnaliziController extends Controller
 
             $recommendations = $this->aiOnerilerService->getSmartRecommendations($ilanData, $context);
 
-            return response()->json([
-                'success' => true,
-                'data' => $recommendations
-            ]);
+            // ✅ REFACTORED: Using ResponseService
+            return ResponseService::success($recommendations, 'AI öneriler başarıyla alındı');
         } catch (\Exception $e) {
-            \Log::error('AI öneriler hatası: ' . $e->getMessage());
+            Log::error('AI öneriler hatası: ' . $e->getMessage());
 
-            return response()->json([
-                'success' => false,
-                'message' => 'AI öneriler alınırken hata oluştu.',
-                'error' => $e->getMessage()
-            ], 500);
+            // ✅ REFACTORED: Using ResponseService
+            return ResponseService::serverError('AI öneriler alınırken hata oluştu', $e);
         }
     }
 
@@ -110,7 +99,8 @@ class AkilliCevreAnaliziController extends Controller
      */
     public function calculateDistance(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        // ✅ REFACTORED: Using ValidatesApiRequests trait
+        $validated = $this->validateRequestWithResponse($request, [
             'from_lat' => 'required|numeric|between:-90,90',
             'from_lon' => 'required|numeric|between:-180,180',
             'to_lat' => 'required|numeric|between:-90,90',
@@ -118,12 +108,8 @@ class AkilliCevreAnaliziController extends Controller
             'mode' => 'sometimes|string|in:walking,driving,public_transport'
         ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Validation Error.',
-                'errors' => $validator->errors()
-            ], 400);
+        if ($validated instanceof \Illuminate\Http\JsonResponse) {
+            return $validated;
         }
 
         try {
@@ -134,26 +120,25 @@ class AkilliCevreAnaliziController extends Controller
             $mode = $request->input('mode', 'walking');
 
             $distance = $this->calculateDistanceBetweenPoints(
-                $fromLat, $fromLon, $toLat, $toLon, $mode
+                $fromLat,
+                $fromLon,
+                $toLat,
+                $toLon,
+                $mode
             );
 
-            return response()->json([
-                'success' => true,
-                'data' => [
-                    'distance' => $distance,
-                    'mode' => $mode,
-                    'from' => ['lat' => $fromLat, 'lon' => $fromLon],
-                    'to' => ['lat' => $toLat, 'lon' => $toLon]
-                ]
-            ]);
+            // ✅ REFACTORED: Using ResponseService
+            return ResponseService::success([
+                'distance' => $distance,
+                'mode' => $mode,
+                'from' => ['lat' => $fromLat, 'lon' => $fromLon],
+                'to' => ['lat' => $toLat, 'lon' => $toLon]
+            ], 'Mesafe başarıyla hesaplandı');
         } catch (\Exception $e) {
-            \Log::error('Mesafe hesaplama hatası: ' . $e->getMessage());
+            Log::error('Mesafe hesaplama hatası: ' . $e->getMessage());
 
-            return response()->json([
-                'success' => false,
-                'message' => 'Mesafe hesaplama sırasında hata oluştu.',
-                'error' => $e->getMessage()
-            ], 500);
+            // ✅ REFACTORED: Using ResponseService
+            return ResponseService::serverError('Mesafe hesaplama sırasında hata oluştu', $e);
         }
     }
 
@@ -162,19 +147,16 @@ class AkilliCevreAnaliziController extends Controller
      */
     public function searchPOI(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        // ✅ REFACTORED: Using ValidatesApiRequests trait
+        $validated = $this->validateRequestWithResponse($request, [
             'latitude' => 'required|numeric|between:-90,90',
             'longitude' => 'required|numeric|between:-180,180',
             'query' => 'required|string|max:255',
             'radius' => 'sometimes|integer|min:100|max:5000'
         ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Validation Error.',
-                'errors' => $validator->errors()
-            ], 400);
+        if ($validated instanceof \Illuminate\Http\JsonResponse) {
+            return $validated;
         }
 
         try {
@@ -185,18 +167,13 @@ class AkilliCevreAnaliziController extends Controller
 
             $pois = $this->searchNearbyPOI($latitude, $longitude, $query, $radius);
 
-            return response()->json([
-                'success' => true,
-                'data' => $pois
-            ]);
+            // ✅ REFACTORED: Using ResponseService
+            return ResponseService::success($pois, 'POI arama başarıyla tamamlandı');
         } catch (\Exception $e) {
-            \Log::error('POI arama hatası: ' . $e->getMessage());
+            Log::error('POI arama hatası: ' . $e->getMessage());
 
-            return response()->json([
-                'success' => false,
-                'message' => 'POI arama sırasında hata oluştu.',
-                'error' => $e->getMessage()
-            ], 500);
+            // ✅ REFACTORED: Using ResponseService
+            return ResponseService::serverError('POI arama sırasında hata oluştu', $e);
         }
     }
 
@@ -219,8 +196,8 @@ class AkilliCevreAnaliziController extends Controller
         $deltaLon = deg2rad($toLon - $fromLon);
 
         $a = sin($deltaLat / 2) * sin($deltaLat / 2) +
-             cos($lat1) * cos($lat2) *
-             sin($deltaLon / 2) * sin($deltaLon / 2);
+            cos($lat1) * cos($lat2) *
+            sin($deltaLon / 2) * sin($deltaLon / 2);
         $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
 
         $distance = $earthRadius * $c; // Metre cinsinden
@@ -257,7 +234,7 @@ class AkilliCevreAnaliziController extends Controller
     {
         // Nominatim API ile POI arama
         try {
-            $response = \Http::timeout(30)->get('https://nominatim.openstreetmap.org/search', [
+            $response = Http::timeout(30)->get('https://nominatim.openstreetmap.org/search', [
                 'q' => $query,
                 'format' => 'json',
                 'limit' => 10,
@@ -270,7 +247,7 @@ class AkilliCevreAnaliziController extends Controller
                 return $this->formatPOIResults($data, $latitude, $longitude);
             }
         } catch (\Exception $e) {
-            \Log::error('POI arama API hatası: ' . $e->getMessage());
+            Log::error('POI arama API hatası: ' . $e->getMessage());
         }
 
         return [];
@@ -306,8 +283,10 @@ class AkilliCevreAnaliziController extends Controller
                 'longitude' => floatval($item['lon']),
                 'type' => $item['type'] ?? 'unknown',
                 'distance' => $this->calculateDistanceBetweenPoints(
-                    $latitude, $longitude,
-                    floatval($item['lat']), floatval($item['lon']),
+                    $latitude,
+                    $longitude,
+                    floatval($item['lat']),
+                    floatval($item['lon']),
                     'walking'
                 )['distance']
             ];

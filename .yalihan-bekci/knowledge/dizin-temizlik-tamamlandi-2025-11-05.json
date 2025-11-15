@@ -4,7 +4,7 @@
   "category": "maintenance",
   "priority": "HIGH",
   "status": "COMPLETED",
-  
+
   "temizlik_sonucu": {
     "baslangic": {
       "root_md_dosya_sayisi": 63,
@@ -22,7 +22,7 @@
       "toplam": 49
     }
   },
-  
+
   "yapilan_islemler": {
     "archive_eski_raporlar": {
       "hedef": "docs/archive/reports-2025-11-05/old-reports/",
@@ -96,7 +96,7 @@
       "status": "✅ TAMAMLANDI"
     }
   },
-  
+
   "korunan_dosyalar": {
     "aktif_rehberler": [
       "README.md",
@@ -111,11 +111,7 @@
       "COMPONENT-LIBRARY-GUIDE.md",
       "COMPONENT-USAGE-EXAMPLES.md"
     ],
-    "aktif_planlar": [
-      "SIRADA-YAPMAK-LISTE.md",
-      "SIRADAKI-3-ADIM.md",
-      "ILAN_YONETIMI_ANALIZ.md"
-    ],
+    "aktif_planlar": ["SIRADA-YAPMAK-LISTE.md", "SIRADAKI-3-ADIM.md", "ILAN_YONETIMI_ANALIZ.md"],
     "guncel_raporlar": [
       "TURKIYEAPI-WIKIMAPIA-ENTEGRASYON-2025-11-05.md",
       "WIKIMAPIA-FULL-AUDIT-2025-11-05.md",
@@ -124,7 +120,7 @@
     ],
     "toplam": 17
   },
-  
+
   "archive_yapisi": {
     "docs/archive/reports-2025-11-05/": {
       "old-reports/": "9 dosya - Eski günlük raporlar",
@@ -132,22 +128,18 @@
       "analysis-reports/": "28 dosya - Eski analiz raporları"
     }
   },
-  
+
   "kazanim": {
     "root_dizin_temizligi": "63 → 17 dosya (%73 azalma)",
     "organizasyon": "Eski raporlar archive'de",
     "duplicate_temizligi": "3 duplicate dosya silindi",
     "erisilebilirlik": "Önemli dosyalar root'ta kolay erişilebilir"
   },
-  
+
   "context7_compliance": {
     "status": "✅ COMPLIANT",
     "note": "Temizlik işlemi Context7 standartlarına uygun"
   },
-  
-  "related_files": [
-    "docs/archive/reports-2025-11-05/",
-    "DIZIN-TEMIZLIK-PLANI-2025-11-05.md"
-  ]
-}
 
+  "related_files": ["docs/archive/reports-2025-11-05/", "DIZIN-TEMIZLIK-PLANI-2025-11-05.md"]
+}

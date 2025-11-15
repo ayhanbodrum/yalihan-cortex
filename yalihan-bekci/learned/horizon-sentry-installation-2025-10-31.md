@@ -12,18 +12,18 @@
 
 ```yaml
 laravel/horizon:
-  Version: v5.38.0
-  Purpose: Queue monitoring & management
-  Cost: FREE (open-source)
-  Dashboard: /horizon
-  Status: ✅ Running
+    Version: v5.38.0
+    Purpose: Queue monitoring & management
+    Cost: FREE (open-source)
+    Dashboard: /horizon
+    Status: ✅ Running
 
 sentry/sentry-laravel:
-  Version: v4.18.0
-  Purpose: Error tracking & monitoring
-  Cost: FREE (5K errors/month)
-  Dashboard: https://sentry.io
-  Status: ✅ Installed (DSN needed)
+    Version: v4.18.0
+    Purpose: Error tracking & monitoring
+    Cost: FREE (5K errors/month)
+    Dashboard: https://sentry.io
+    Status: ✅ Installed (DSN needed)
 ```
 
 ---
@@ -33,13 +33,14 @@ sentry/sentry-laravel:
 ### **1. Laravel Horizon (Queue Monitoring)**
 
 **Real-world Example:**
+
 ```
 User uploads 50 photos:
   Without Horizon:
     ❌ User waits 5 minutes (timeout risk)
     ❌ No visibility into progress
     ❌ If fails, no idea why
-    
+
   With Horizon:
     ✅ Photos queue in background (1 second)
     ✅ User continues working
@@ -48,6 +49,7 @@ User uploads 50 photos:
 ```
 
 **Use Cases in Emlak Project:**
+
 - Photo processing (resize, watermark, optimize)
 - AI content generation (GPT-4 calls)
 - Email notifications (bulk send)
@@ -60,6 +62,7 @@ User uploads 50 photos:
 ### **2. Sentry (Error Tracking)**
 
 **Real-world Example:**
+
 ```
 User reports: "İlan kaydedemedim"
 
@@ -67,7 +70,7 @@ Without Sentry:
   😟 "Ne hatası aldınız?" (phone call)
   😟 "Hangi tarayıcı? Hangi sayfa?"
   😟 Log dosyalarını manual grep (1 hour)
-  
+
 With Sentry:
   😊 Email: "Production error!" (instant)
   😊 Dashboard shows:
@@ -80,6 +83,7 @@ With Sentry:
 ```
 
 **Use Cases in Emlak Project:**
+
 - Database connection errors
 - Photo upload failures
 - AI API errors
@@ -105,8 +109,9 @@ System Tools (dropdown menu)
 ```
 
 **Features:**
+
 - Conditional rendering (@if config checks)
-- External links (target="_blank")
+- External links (target="\_blank")
 - Visual badges (FREE/DEV)
 - System version display
 
@@ -148,9 +153,9 @@ Vite Dev Server: ✅ Running (HMR active)
 Horizon Worker: ✅ Running (background)
 
 Next:
-  - Configure Sentry DSN
-  - Test both services
-  - Monitor production
+    - Configure Sentry DSN
+    - Test both services
+    - Monitor production
 ```
 
 ---
@@ -160,14 +165,13 @@ Next:
 ### **Pattern: Free Monitoring Stack**
 
 ```yaml
-Question: "How to monitor production Laravel app?"
+Question: 'How to monitor production Laravel app?'
 
-Solution:
-  1. Queue Monitoring → Laravel Horizon (FREE)
-  2. Error Tracking → Sentry (FREE 5K/month)
-  3. Dev Debugging → Telescope (FREE, dev only)
-  4. Deployment → GitHub Actions (FREE 2K min/month)
-  5. CDN/Security → Cloudflare (FREE)
+Solution: 1. Queue Monitoring → Laravel Horizon (FREE)
+    2. Error Tracking → Sentry (FREE 5K/month)
+    3. Dev Debugging → Telescope (FREE, dev only)
+    4. Deployment → GitHub Actions (FREE 2K min/month)
+    5. CDN/Security → Cloudflare (FREE)
 
 Total Cost: $0/month
 Value: Professional monitoring
@@ -194,16 +198,15 @@ Only upgrade if limits reached:
 
 ```yaml
 Installation:
-  Packages installed: 2/2 ✅
-  Config published: 2/2 ✅
-  Services running: 1/2 (Horizon ✅, Sentry needs DSN)
-  Dashboard links: 3/3 ✅
+    Packages installed: 2/2 ✅
+    Config published: 2/2 ✅
+    Services running: 1/2 (Horizon ✅, Sentry needs DSN)
+    Dashboard links: 3/3 ✅
 
-Next Actions:
-  1. Configure Sentry DSN (5 min)
-  2. Test both services (5 min)
-  3. Monitor for 24 hours
-  4. Document patterns
+Next Actions: 1. Configure Sentry DSN (5 min)
+    2. Test both services (5 min)
+    3. Monitor for 24 hours
+    4. Document patterns
 ```
 
 ---
@@ -211,11 +214,10 @@ Next Actions:
 ## 🏆 FREE TOOLS ACHIEVEMENT
 
 ```yaml
-Completed (Today):
-  ✅ Laravel Horizon (Queue monitoring)
-  ✅ Sentry (Error tracking)
-  ✅ Dashboard links (Sidebar)
-  ✅ Documentation (Setup guide)
+Completed (Today): ✅ Laravel Horizon (Queue monitoring)
+    ✅ Sentry (Error tracking)
+    ✅ Dashboard links (Sidebar)
+    ✅ Documentation (Setup guide)
 
 Cost: $0 💰
 Value: Professional monitoring 📊
@@ -224,4 +226,3 @@ ROI: Immediate 🚀
 ```
 
 **Free tier FTW! 🎉**
-

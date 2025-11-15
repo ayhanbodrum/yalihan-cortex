@@ -10,6 +10,7 @@
 TKGM (Tapu Kadastro Genel Müdürlüğü) Parsel Sorgulama Sistemi, Türkiye'deki resmi kadastro bilgilerini sorgulayan ve emlak değerlendirmesi yapan kapsamlı bir uygulamadır.
 
 ### 🎯 Ana Özellikler
+
 - **Resmi TKGM API Entegrasyonu**: Tapu kadastro verilerine doğrudan erişim
 - **Gerçek Zamanlı Parsel Sorgulama**: Ada/parsel bazında anlık sorgulama
 - **Toplu Sorgulama**: 50'ye kadar parsel aynı anda sorgulanabilir
@@ -21,17 +22,19 @@ TKGM (Tapu Kadastro Genel Müdürlüğü) Parsel Sorgulama Sistemi, Türkiye'dek
 ## 🏗️ Teknik Mimari
 
 ### Backend Yapısı
+
 ```
 /app/Http/Controllers/Admin/TKGMParselController.php
 ├── index()              # Ana sayfa gösterimi
 ├── query()              # Tek parsel sorgulama
-├── bulkQuery()          # Toplu parsel sorgulama  
+├── bulkQuery()          # Toplu parsel sorgulama
 ├── history()            # Sorgulama geçmişi
 ├── stats()              # İstatistikler
 └── saveRecentQuery()    # Cache yönetimi
 ```
 
 ### Frontend Yapısı
+
 ```
 /resources/views/admin/tkgm-parsel/index.blade.php
 ├── tkgmParselApp()      # Alpine.js ana komponenti
@@ -42,6 +45,7 @@ TKGM (Tapu Kadastro Genel Müdürlüğü) Parsel Sorgulama Sistemi, Türkiye'dek
 ```
 
 ### Route Yapısı
+
 ```php
 // Web Routes (/admin/tkgm-parsel/*)
 Route::get('/', 'index')->name('admin.tkgm-parsel.index');
@@ -56,6 +60,7 @@ Route::get('/stats', 'stats')->name('api.tkgm-parsel.stats');
 ## 🔧 Teknik Detaylar
 
 ### TKGMService Entegrasyonu
+
 ```php
 // TKGMService kullanımı
 protected $tkgmService;
@@ -75,6 +80,7 @@ $result = $this->tkgmService->parselSorgula(
 ```
 
 ### Cache Yönetimi
+
 ```php
 // Son 10 sorguyu cache'te tut
 $recentQueries = Cache::get('tkgm_recent_queries_' . $userId, []);
@@ -84,6 +90,7 @@ $allQueries = Cache::get('tkgm_all_queries_' . $userId, []);
 ```
 
 ### Rate Limiting
+
 ```php
 // API endpoint'lerinde throttling
 Route::middleware(['throttle:20,1'])->group(function () {
@@ -99,6 +106,7 @@ if (count($queries) > 1) {
 ## 🎨 Kullanıcı Arayüzü
 
 ### Ana Özellikler
+
 - **Neo Design System**: Consistent UI/UX
 - **Alpine.js Reactivity**: Gerçek zamanlı form validasyonu
 - **Modal Sistemler**: Toplu sorgulama ve geçmiş görüntüleme
@@ -106,6 +114,7 @@ if (count($queries) > 1) {
 - **Progress Indicators**: Sorgulama durumu gösterimleri
 
 ### Form Validasyonu
+
 ```javascript
 // Frontend validasyon
 const validator = Validator.make($request->all(), [
@@ -120,6 +129,7 @@ const validator = Validator.make($request->all(), [
 ## 📊 Veri Akışı
 
 ### Tek Sorgulama Akışı
+
 1. **Form Girişi**: Kullanıcı ada/parsel/il/ilçe bilgilerini girer
 2. **Frontend Validasyon**: Alpine.js ile anlık validasyon
 3. **API Çağrısı**: `/admin/api/tkgm-parsel/query` endpoint'ine POST
@@ -130,6 +140,7 @@ const validator = Validator.make($request->all(), [
 8. **UI Update**: Alpine.js ile arayüz güncellenir
 
 ### Toplu Sorgulama Akışı
+
 1. **CSV/Text Input**: Kullanıcı metin alanına parsel listesi girer
 2. **Text Parsing**: Her satır parse edilerek query array'i oluşturulur
 3. **Batch Processing**: Her parsel için sıralı sorgulama
@@ -140,6 +151,7 @@ const validator = Validator.make($request->all(), [
 ## 🔗 Sistem Entegrasyonları
 
 ### Arsa Hesaplama Sistemi
+
 ```javascript
 goToArsaCalculation() {
     if (this.result && this.result.success && this.result.data) {
@@ -156,6 +168,7 @@ goToArsaCalculation() {
 ```
 
 ### ArsaCalculationController Bağlantısı
+
 - TKGM sorgu sonuçları doğrudan arsa hesaplama sistemine aktarılır
 - Parsel alanı, konum bilgileri otomatik doldurulur
 - KAKS/TAKS hesaplamaları için gerekli veriler hazırlanır
@@ -163,6 +176,7 @@ goToArsaCalculation() {
 ## 📈 İstatistik ve Analiz
 
 ### Kullanıcı İstatistikleri
+
 ```php
 $stats = [
     'total_queries' => count($allQueries),
@@ -174,6 +188,7 @@ $stats = [
 ```
 
 ### Başarı Oranı Hesaplama
+
 ```php
 private function calculateSuccessRate($queries)
 {
@@ -192,6 +207,7 @@ private function calculateSuccessRate($queries)
 ## 🛡️ Güvenlik ve Error Handling
 
 ### Authentication & Authorization
+
 ```php
 // Web middleware with authentication
 Route::middleware(['web', 'auth'])->group(function () {
@@ -200,21 +216,22 @@ Route::middleware(['web', 'auth'])->group(function () {
 ```
 
 ### Error Handling
+
 ```php
 try {
     $result = $this->tkgmService->parselSorgula(/*...*/);
-    
+
     if ($result['success']) {
         $this->saveRecentQuery($request->all(), $result);
     }
-    
+
     Log::info('TKGM parsel sorgulaması', [/*...*/]);
-    
+
     return response()->json($result);
-    
+
 } catch (\Exception $e) {
     Log::error('TKGM parsel sorgulama hatası', [/*...*/]);
-    
+
     return response()->json([
         'success' => false,
         'message' => 'Parsel sorgulaması sırasında bir hata oluştu',
@@ -224,14 +241,16 @@ try {
 ```
 
 ### Throttling Stratejisi
+
 - **Web Route**: 20 request/minute per user
-- **API Route**: 20 request/minute per user  
+- **API Route**: 20 request/minute per user
 - **Bulk Query**: 0.5 saniye delay between queries
 - **Cache TTL**: Recent queries 1 hour, all queries 24 hours
 
 ## 🚀 Deployment ve Konfigürasyon
 
 ### Environment Variables
+
 ```env
 TKGM_API_KEY=your_tkgm_api_key
 TKGM_API_URL=https://api.tkgm.gov.tr
@@ -240,29 +259,33 @@ CACHE_DRIVER=redis
 ```
 
 ### Cache Configuration
+
 ```php
 // Recent queries cache (1 hour)
 Cache::put('tkgm_recent_queries_' . $userId, $recentQueries, 3600);
 
-// All queries cache (24 hours)  
+// All queries cache (24 hours)
 Cache::put('tkgm_all_queries_' . $userId, $allQueries, 86400);
 ```
 
 ## 📱 Kullanım Senaryoları
 
 ### 1. Tekil Parsel Sorgulama
+
 - Emlak danışmanı müşteri için parsel bilgisi araştırır
 - Ada/parsel/il/ilçe bilgileri ile hızlı sorgulama
 - Sonuç ekranında parsel detayları görüntülenir
 - Arsa hesaplama için direkt geçiş imkanı
 
 ### 2. Toplu Parsel Sorgulama
+
 - Yatırım şirketi 20-30 parsel için topluca bilgi toplar
 - CSV formatında parsel listesi yüklenir
 - Batch processing ile sıralı sorgulama
 - Excel raporu olarak sonuçları indirir
 
 ### 3. Geçmiş Analizi
+
 - Kullanıcı geçmiş sorgulama geçmişini inceler
 - Başarı oranları ve trend analizleri
 - Tekrar sorgulama imkanı
@@ -271,12 +294,14 @@ Cache::put('tkgm_all_queries_' . $userId, $allQueries, 86400);
 ## 🔮 Gelecek Geliştirmeler
 
 ### Yakın Hedefler
+
 - **Excel Export**: Toplu sorgu sonuçlarını Excel'e aktarma
-- **Map Integration**: Parsel konumlarını harita üzerinde gösterme  
+- **Map Integration**: Parsel konumlarını harita üzerinde gösterme
 - **Advanced Filtering**: Geçmiş sorgularda gelişmiş filtreleme
 - **Notification System**: Sorgulama sonuçları için bildirimler
 
 ### Uzun Vadeli Hedefler
+
 - **AI Integration**: Parsel değer tahmini algoritmaları
 - **Mobile App**: Mobil uygulama geliştirme
 - **API Documentation**: Swagger/OpenAPI dokümantasyonu
@@ -285,13 +310,15 @@ Cache::put('tkgm_all_queries_' . $userId, $allQueries, 86400);
 ## 📞 API Endpoint Dökümantasyonu
 
 ### POST /admin/api/tkgm-parsel/query
+
 **Açıklama**: Tek parsel sorgulama endpoint'i
 
 **Request Body**:
+
 ```json
 {
     "ada": "123",
-    "parsel": "45", 
+    "parsel": "45",
     "il": "İstanbul",
     "ilce": "Kadıköy",
     "mahalle": "Fenerbahçe"
@@ -299,13 +326,14 @@ Cache::put('tkgm_all_queries_' . $userId, $allQueries, 86400);
 ```
 
 **Response**:
+
 ```json
 {
     "success": true,
     "data": {
         "ada": "123",
         "parsel": "45",
-        "il": "İstanbul", 
+        "il": "İstanbul",
         "ilce": "Kadıköy",
         "mahalle": "Fenerbahçe",
         "alan": "1250",
@@ -318,29 +346,32 @@ Cache::put('tkgm_all_queries_' . $userId, $allQueries, 86400);
 ```
 
 ### POST /admin/api/tkgm-parsel/bulk-query
+
 **Açıklama**: Toplu parsel sorgulama endpoint'i
 
 **Request Body**:
+
 ```json
 {
     "queries": [
         {
             "ada": "123",
             "parsel": "45",
-            "il": "İstanbul", 
+            "il": "İstanbul",
             "ilce": "Kadıköy"
         },
         {
             "ada": "456",
             "parsel": "78",
             "il": "Ankara",
-            "ilce": "Çankaya"  
+            "ilce": "Çankaya"
         }
     ]
 }
 ```
 
 **Response**:
+
 ```json
 {
     "success": true,
@@ -364,6 +395,7 @@ Cache::put('tkgm_all_queries_' . $userId, $allQueries, 86400);
 ## 🔍 Context7 Uyumluluk
 
 ### Standart Uyum
+
 - **C7-TKGM-PARSEL-2025-10-17**: TKGM parsel sorgulama standardı
 - **Neo Design System**: UI/UX consistency
 - **Laravel Validation**: Backend validation standards
@@ -371,9 +403,10 @@ Cache::put('tkgm_all_queries_' . $userId, $allQueries, 86400);
 - **Cache Strategy**: Performance optimization standards
 
 ### Kod Kalitesi
+
 - **PSR-4 Autoloading**: Modern PHP standards
 - **Type Hinting**: Strict type declarations
-- **Error Handling**: Comprehensive exception management  
+- **Error Handling**: Comprehensive exception management
 - **Logging**: Structured application logging
 - **Testing Ready**: Unit test compatible structure
 

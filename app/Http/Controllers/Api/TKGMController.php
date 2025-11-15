@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Services\Response\ResponseService;
+use App\Traits\ValidatesApiRequests;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use App\Services\TKGMService;
@@ -15,6 +17,7 @@ use App\Services\TKGMService;
  */
 class TKGMController extends Controller
 {
+    use ValidatesApiRequests;
     protected $tkgmService;
 
     public function __construct(TKGMService $tkgmService)
@@ -29,12 +32,17 @@ class TKGMController extends Controller
      */
     public function parselSorgula(Request $request): JsonResponse
     {
-        $validated = $request->validate([
+        // ✅ REFACTORED: Using ValidatesApiRequests trait
+        $validated = $this->validateRequestWithResponse($request, [
             'ada' => 'required|string|max:20',
             'parsel' => 'required|string|max:20',
             'il' => 'required|string|max:100',
             'ilce' => 'required|string|max:100'
         ]);
+
+        if ($validated instanceof JsonResponse) {
+            return $validated;
+        }
 
         $result = $this->tkgmService->parselSorgula(
             $validated['ada'],
@@ -43,7 +51,12 @@ class TKGMController extends Controller
             $validated['ilce']
         );
 
-        return response()->json($result);
+        // ✅ REFACTORED: Using ResponseService
+        if (isset($result['success']) && $result['success']) {
+            return ResponseService::success($result['parsel_bilgileri'] ?? $result, 'Parsel sorgulama başarıyla tamamlandı');
+        }
+
+        return ResponseService::error($result['message'] ?? 'Parsel sorgulama başarısız', 400);
     }
 
     /**
@@ -53,12 +66,17 @@ class TKGMController extends Controller
      */
     public function yatirimAnalizi(Request $request): JsonResponse
     {
-        $validated = $request->validate([
+        // ✅ REFACTORED: Using ValidatesApiRequests trait
+        $validated = $this->validateRequestWithResponse($request, [
             'ada' => 'required|string',
             'parsel' => 'required|string',
             'il' => 'required|string',
             'ilce' => 'required|string'
         ]);
+
+        if ($validated instanceof JsonResponse) {
+            return $validated;
+        }
 
         // Önce parsel bilgilerini al
         $parselSonuc = $this->tkgmService->parselSorgula(
@@ -69,20 +87,18 @@ class TKGMController extends Controller
         );
 
         if (!$parselSonuc['success']) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Parsel bilgileri alınamadı'
-            ], 400);
+            // ✅ REFACTORED: Using ResponseService
+            return ResponseService::error('Parsel bilgileri alınamadı', 400);
         }
 
         // Yatırım analizi yap
         $analiz = $this->tkgmService->yatirimAnalizi($parselSonuc['parsel_bilgileri']);
 
-        return response()->json([
-            'success' => true,
+        // ✅ REFACTORED: Using ResponseService
+        return ResponseService::success([
             'parsel_bilgileri' => $parselSonuc['parsel_bilgileri'],
             'yatirim_analizi' => $analiz
-        ]);
+        ], 'Yatırım analizi başarıyla tamamlandı');
     }
 
     /**
@@ -93,7 +109,13 @@ class TKGMController extends Controller
     public function healthCheck(): JsonResponse
     {
         $health = $this->tkgmService->healthCheck();
-        return response()->json($health);
+
+        // ✅ REFACTORED: Using ResponseService
+        if (isset($health['status']) && $health['status'] === 'ok') {
+            return ResponseService::success($health, 'TKGM servisi sağlıklı');
+        }
+
+        return ResponseService::error('TKGM servisi sağlıksız', 503);
     }
 
     /**
@@ -110,9 +132,7 @@ class TKGMController extends Controller
             $request->get('ilce')
         );
 
-        return response()->json([
-            'success' => true,
-            'message' => 'TKGM cache temizlendi'
-        ]);
+        // ✅ REFACTORED: Using ResponseService
+        return ResponseService::success(null, 'TKGM cache temizlendi');
     }
 }

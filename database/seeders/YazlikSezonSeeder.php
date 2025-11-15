@@ -8,10 +8,10 @@ use Illuminate\Support\Facades\DB;
 
 /**
  * Yazlık Sezon Seeder
- * 
+ *
  * Context7 standartlarına uygun yazlık sezon tanımlarını seed eder.
  * Context7 Standardı: C7-YAZLIK-SEASON-SEEDER-2025-11-05
- * 
+ *
  * Sezonlar:
  * - Yaz Sezonu (Yüksek): Haziran-Ağustos
  * - Ara Sezon (Orta): Nisan-Mayıs, Eylül-Ekim
@@ -91,4 +91,3 @@ class YazlikSezonSeeder extends Seeder
         $this->command->info('✅ Yazlık Sezon Seeder tamamlandı!');
     }
 }
-

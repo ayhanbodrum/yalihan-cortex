@@ -5,145 +5,132 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Services\TCMBCurrencyService;
 use App\Models\ExchangeRate;
+use App\Services\Response\ResponseService;
+use App\Traits\ValidatesApiRequests;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 
 /**
  * Exchange Rate API Controller
- * 
+ *
  * Context7: Real-time currency rates for international listings
  */
 class ExchangeRateController extends Controller
 {
+    use ValidatesApiRequests;
+
     protected TCMBCurrencyService $currencyService;
-    
+
     public function __construct(TCMBCurrencyService $currencyService)
     {
         $this->currencyService = $currencyService;
     }
-    
+
     /**
      * Get today's exchange rates
-     * 
+     *
      * GET /api/exchange-rates
      */
     public function index(): JsonResponse
     {
         try {
             $rates = $this->currencyService->getTodayRates();
-            
-            return response()->json([
-                'success' => true,
+
+            return ResponseService::success([
                 'data' => $rates,
                 'count' => count($rates),
                 'source' => 'TCMB',
                 'updated_at' => now()->toDateTimeString()
-            ]);
+            ], 'Döviz kurları başarıyla getirildi');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to fetch exchange rates',
-                'error' => config('app.debug') ? $e->getMessage() : null
-            ], 500);
+            return ResponseService::serverError('Döviz kurları yüklenirken hata oluştu.', $e);
         }
     }
-    
+
     /**
      * Get specific currency rate
-     * 
+     *
      * GET /api/exchange-rates/{code}
      */
     public function show(string $code): JsonResponse
     {
         try {
             $rate = $this->currencyService->getRate($code);
-            
+
             if (!$rate) {
-                return response()->json([
-                    'success' => false,
-                    'message' => "Currency {$code} not found"
-                ], 404);
+                return ResponseService::notFound("Para birimi {$code} bulunamadı");
             }
-            
+
             $rates = $this->currencyService->getTodayRates();
-            
-            return response()->json([
-                'success' => true,
+
+            return ResponseService::success([
                 'data' => $rates[$code] ?? null,
                 'rate' => $rate,
                 'symbol' => $this->currencyService->getCurrencySymbol($code)
-            ]);
+            ], "Para birimi {$code} başarıyla getirildi");
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to fetch currency rate',
-                'error' => config('app.debug') ? $e->getMessage() : null
-            ], 500);
+            return ResponseService::serverError('Para birimi kuru yüklenirken hata oluştu.', $e);
         }
     }
-    
+
     /**
      * Convert amount between currencies
-     * 
+     *
      * POST /api/exchange-rates/convert
      */
     public function convert(Request $request): JsonResponse
     {
-        $validated = $request->validate([
+        $validated = $this->validateRequestWithResponse($request, [
             'amount' => 'required|numeric|min:0',
             'from' => 'required|string|size:3',
             'to' => 'required|string|size:3'
         ]);
-        
+
+        if ($validated instanceof JsonResponse) {
+            return $validated;
+        }
+
         try {
             $amount = $validated['amount'];
             $from = strtoupper($validated['from']);
             $to = strtoupper($validated['to']);
-            
+
             // Convert to TRY first
-            $tryAmount = $from === 'TRY' 
-                ? $amount 
+            $tryAmount = $from === 'TRY'
+                ? $amount
                 : $this->currencyService->convertToTRY($amount, $from);
-            
+
             // Then convert to target currency
-            $result = $to === 'TRY' 
-                ? $tryAmount 
+            $result = $to === 'TRY'
+                ? $tryAmount
                 : $this->currencyService->convertFromTRY($tryAmount, $to);
-            
-            return response()->json([
-                'success' => true,
-                'data' => [
-                    'amount' => $amount,
-                    'from' => $from,
-                    'to' => $to,
-                    'result' => round($result, 2),
-                    'rate' => $from === 'TRY' ? null : $this->currencyService->getRate($from),
-                    'formatted' => $this->currencyService->getCurrencySymbol($to) . ' ' . number_format($result, 2)
-                ]
-            ]);
+
+            return ResponseService::success([
+                'amount' => $amount,
+                'from' => $from,
+                'to' => $to,
+                'result' => round($result, 2),
+                'rate' => $from === 'TRY' ? null : $this->currencyService->getRate($from),
+                'formatted' => $this->currencyService->getCurrencySymbol($to) . ' ' . number_format($result, 2)
+            ], 'Para birimi dönüşümü başarıyla tamamlandı');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to convert currency',
-                'error' => config('app.debug') ? $e->getMessage() : null
-            ], 500);
+            return ResponseService::serverError('Para birimi dönüşümü sırasında hata oluştu.', $e);
         }
     }
-    
+
     /**
      * Get currency history
-     * 
+     *
      * GET /api/exchange-rates/{code}/history
      */
     public function history(string $code, Request $request): JsonResponse
     {
         $days = $request->get('days', 30);
-        
+
         try {
             $history = $this->currencyService->getRateHistory($code, $days);
-            
-            return response()->json([
-                'success' => true,
+
+            return ResponseService::success([
                 'data' => $history->map(function ($rate) {
                     return [
                         'date' => $rate->rate_date->format('Y-m-d'),
@@ -154,27 +141,22 @@ class ExchangeRateController extends Controller
                 }),
                 'currency' => $code,
                 'days' => $days
-            ]);
+            ], 'Döviz kuru geçmişi başarıyla getirildi');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to fetch rate history',
-                'error' => config('app.debug') ? $e->getMessage() : null
-            ], 500);
+            return ResponseService::serverError('Döviz kuru geçmişi yüklenirken hata oluştu.', $e);
         }
     }
-    
+
     /**
      * Get supported currencies
-     * 
+     *
      * GET /api/exchange-rates/supported
      */
     public function supported(): JsonResponse
     {
         $currencies = $this->currencyService->getSupportedCurrencies();
-        
-        return response()->json([
-            'success' => true,
+
+        return ResponseService::success([
             'data' => collect($currencies)->map(function ($code) {
                 return [
                     'code' => $code,
@@ -182,36 +164,30 @@ class ExchangeRateController extends Controller
                     'name' => $this->getCurrencyName($code)
                 ];
             })
-        ]);
+        ], 'Desteklenen para birimleri başarıyla getirildi');
     }
-    
+
     /**
      * Force update rates (admin only)
-     * 
+     *
      * POST /api/exchange-rates/update
      */
     public function update(): JsonResponse
     {
         try {
             $updated = $this->currencyService->updateRates();
-            
-            return response()->json([
-                'success' => true,
-                'message' => "Successfully updated {$updated} exchange rates",
+
+            return ResponseService::success([
                 'updated_count' => $updated
-            ]);
+            ], "{$updated} döviz kuru başarıyla güncellendi");
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to update exchange rates',
-                'error' => config('app.debug') ? $e->getMessage() : null
-            ], 500);
+            return ResponseService::serverError('Döviz kurları güncellenirken hata oluştu.', $e);
         }
     }
-    
+
     /**
      * Get currency name
-     * 
+     *
      * @param string $code
      * @return string
      */
@@ -230,6 +206,3 @@ class ExchangeRateController extends Controller
         };
     }
 }
-
-
-

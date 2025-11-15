@@ -1,4 +1,4 @@
-@extends('admin.layouts.unified')
+@extends('admin.layouts.neo')
 
 @section('title', 'İlan Yönetimi')
 

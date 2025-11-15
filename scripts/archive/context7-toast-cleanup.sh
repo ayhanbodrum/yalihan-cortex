@@ -71,4 +71,3 @@ echo "💡 Not: Layout'da zaten merkezi toast var:"
 echo "   resources/views/admin/layouts/neo.blade.php"
 echo "   → <x-admin.neo-toast />"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-

@@ -1,6 +1,6 @@
 /**
  * Hybrid Search System - React Select Component
- * 
+ *
  * Context7 Standardı: C7-HYBRID-SEARCH-COMPONENT-2025-01-30
  * Versiyon: 1.0.0
  * Son Güncelleme: 30 Ocak 2025
@@ -8,9 +8,9 @@
  */
 
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import Select, { 
-    SingleValue, 
-    MultiValue, 
+import Select, {
+    SingleValue,
+    MultiValue,
     ActionMeta,
     StylesConfig,
     CSSObjectWithLabel,
@@ -48,7 +48,7 @@ const NoOptionsMessage: React.FC<NoOptionsMessageProps<HybridSearchOption, false
             </div>
         );
     }
-    
+
     return (
         <div className="p-3 text-center text-gray-500">
             {NO_OPTIONS_MESSAGES.NO_RESULTS}
@@ -97,10 +97,10 @@ const customStyles: StylesConfig<HybridSearchOption, false> = {
     }),
     option: (base: CSSObjectWithLabel, state) => ({
         ...base,
-        backgroundColor: state.isSelected 
-            ? '#dbeafe' 
-            : state.isFocused 
-            ? '#f3f4f6' 
+        backgroundColor: state.isSelected
+            ? '#dbeafe'
+            : state.isFocused
+            ? '#f3f4f6'
             : 'white',
         color: state.isSelected ? '#1e40af' : '#1f2937',
         padding: '8px 12px',
@@ -169,7 +169,7 @@ const HybridSearchReactSelect: React.FC<HybridSearchProps> = ({
 }) => {
     const [selectedOption, setSelectedOption] = useState<HybridSearchOption | null>(null);
     const [inputValue, setInputValue] = useState('');
-    
+
     const {
         options,
         loading,
@@ -203,7 +203,7 @@ const HybridSearchReactSelect: React.FC<HybridSearchProps> = ({
     // Handle input change with debounced search
     const handleInputChange = useCallback((newValue: string, actionMeta: ActionMeta<HybridSearchOption>) => {
         setInputValue(newValue);
-        
+
         if (newValue.length >= 2) {
             search(newValue);
         } else if (newValue.length === 0) {
@@ -218,7 +218,7 @@ const HybridSearchReactSelect: React.FC<HybridSearchProps> = ({
     ) => {
         setSelectedOption(newValue);
         onSelect(newValue);
-        
+
         if (actionMeta.action === 'clear') {
             setInputValue('');
             clearSearch();
@@ -317,9 +317,9 @@ const HybridSearchReactSelect: React.FC<HybridSearchProps> = ({
                 aria-label={`${searchType} seçimi`}
                 aria-describedby={error ? `${searchType}-error` : undefined}
             />
-            
+
             {error && (
-                <div 
+                <div
                     id={`${searchType}-error`}
                     className="mt-1 text-sm text-red-600"
                     role="alert"
@@ -328,7 +328,7 @@ const HybridSearchReactSelect: React.FC<HybridSearchProps> = ({
                     {errorMessage || error}
                 </div>
             )}
-            
+
             {/* Debug info in development */}
             {process.env.NODE_ENV === 'development' && (
                 <div className="mt-2 text-xs text-gray-400">

@@ -12,28 +12,28 @@
 Aşağıdaki dosyalar `docs/archive/old-complex-docs-backup-20251012/` klasörüne taşındı:
 
 1. **MASTER-DOCUMENTATION-SYSTEM.md** (1,373 satır)
-   - Sebep: Aşırı karmaşık, 10 katmanlı mimari gereksiz detay
-   - Durum: ❌ Gereksiz
+    - Sebep: Aşırı karmaşık, 10 katmanlı mimari gereksiz detay
+    - Durum: ❌ Gereksiz
 
 2. **METRICS-DASHBOARD.md** (Çok uzun)
-   - Sebep: Gereksiz metrik detayları, dashboard bilgileri
-   - Durum: ❌ Gereksiz
+    - Sebep: Gereksiz metrik detayları, dashboard bilgileri
+    - Durum: ❌ Gereksiz
 
 3. **NAVIGATION-MAP.md** (Çok uzun)
-   - Sebep: Karmaşık navigasyon haritası, gereksiz detay
-   - Durum: ❌ Gereksiz
+    - Sebep: Karmaşık navigasyon haritası, gereksiz detay
+    - Durum: ❌ Gereksiz
 
 4. **README-COMPLEX-SYSTEM.md** (553 satır)
-   - Sebep: Duplicate README, karmaşık sistem açıklaması
-   - Durum: ❌ Duplicate
+    - Sebep: Duplicate README, karmaşık sistem açıklaması
+    - Durum: ❌ Duplicate
 
 5. **README-detailed.md** (360+ satır)
-   - Sebep: Duplicate README, detaylı açıklama
-   - Durum: ❌ Duplicate
+    - Sebep: Duplicate README, detaylı açıklama
+    - Durum: ❌ Duplicate
 
 6. **SEARCH-INDEX.md** (Çok uzun)
-   - Sebep: Aşırı uzun arama indeksi, gereksiz
-   - Durum: ❌ Gereksiz
+    - Sebep: Aşırı uzun arama indeksi, gereksiz
+    - Durum: ❌ Gereksiz
 
 ---
 
@@ -42,35 +42,38 @@ Aşağıdaki dosyalar `docs/archive/old-complex-docs-backup-20251012/` klasörü
 ### 📄 Ana Seviye Dosyalar
 
 1. **index.md** ✅
-   - Ana giriş noktası
-   - Temiz ve organize
-   - Tüm kategorilere link veriyor
+    - Ana giriş noktası
+    - Temiz ve organize
+    - Tüm kategorilere link veriyor
 
 2. **README.md** ✅
-   - Basit GitHub README
-   - 13 satır, özlü
-   - Reorganizasyon notu içeriyor
+    - Basit GitHub README
+    - 13 satır, özlü
+    - Reorganizasyon notu içeriyor
 
 3. **migration-auto-fixer.md** ✅
-   - Özel araç dokümantasyonu
-   - Migration syntax fixer rehberi
-   - Kullanışlı ve gerekli
+    - Özel araç dokümantasyonu
+    - Migration syntax fixer rehberi
+    - Kullanışlı ve gerekli
 
 ---
 
 ## 📊 İstatistikler
 
 ### Öncesi
+
 - **Toplam MD Dosyası:** 9 adet
 - **Toplam Satır:** ~4,000+ satır
 - **Karmaşıklık:** ⭐⭐⭐⭐⭐ (5/5 - Çok Karmaşık)
 
 ### Sonrası
+
 - **Toplam MD Dosyası:** 3 adet
 - **Toplam Satır:** ~100 satır
 - **Karmaşıklık:** ⭐ (1/5 - Basit ve Anlaşılır)
 
 ### Kazanımlar
+
 - 🎯 **%67 dosya azalması** (9 → 3)
 - 📉 **%97 satır azalması** (~4,000 → ~100)
 - ✨ **%80 karmaşıklık azalması**
@@ -82,6 +85,7 @@ Aşağıdaki dosyalar `docs/archive/old-complex-docs-backup-20251012/` klasörü
 ## 📁 Klasör Yapısı
 
 ### Yeni Yapı
+
 ```
 docs/
 ├── index.md                    ✅ Ana giriş
@@ -112,6 +116,7 @@ docs/
 ✅ **Başarılı Temizlik**
 
 Docs klasörü artık:
+
 - ✨ Daha temiz ve organize
 - 🚀 Daha hızlı erişilebilir
 - 📖 Daha kolay anlaşılır

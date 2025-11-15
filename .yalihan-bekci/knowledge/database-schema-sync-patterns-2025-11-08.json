@@ -1,0 +1,401 @@
+{
+  "timestamp": "2025-11-08T00:00:00Z",
+  "topic": "Database Schema Synchronization Patterns - Migration & Code Mismatch Prevention",
+  "category": "database",
+  "priority": "CRITICAL",
+  "status": "ACTIVE",
+
+  "problem_summary": {
+    "title": "Migration ve Veritabanı Şeması Uyumsuzlukları",
+    "description": "Kod ve veritabanı şeması arasında uyumsuzluklar nedeniyle QueryException hataları yaşandı",
+    "impact": "HIGH - Uygulama çalışmıyor, sayfalar yüklenmiyor",
+    "frequency": "Multiple occurrences in single session"
+  },
+
+  "root_causes": {
+    "1_migration_execution_issues": {
+      "title": "Migration Çalıştırma Sorunları",
+      "description": "Migration'lar çalıştırılmış ama tablo yapıları kodun beklediğiyle uyuşmuyor",
+      "indicators": [
+        "Migration dosyaları var ama tabloda kolon yok",
+        "Schema::hasTable() kontrolleri migration'ları atlatıyor",
+        "Migration'lar rollback edilmiş ama sonraki migration'lar bunu bilmiyor"
+      ],
+      "examples": [
+        {
+          "table": "ilan_kategori_yayin_tipleri",
+          "expected": "kategori_id",
+          "actual": "alt_kategori_id var ama kategori_id yok",
+          "migration": "2025_10_10_174808_create_ilan_kategori_yayin_tipleri_table.php"
+        },
+        {
+          "table": "ilanlar",
+          "expected": "baslik, il_id, goruntulenme",
+          "actual": "ilan_basligi, sehir_id, goruntulenme_sayisi",
+          "issue": "Kolon adları farklı"
+        }
+      ]
+    },
+
+    "2_code_database_mismatch": {
+      "title": "Kod ve Veritabanı Şeması Uyumsuzluğu",
+      "description": "Context7 standardizasyonu sırasında kod güncellendi ama veritabanı güncellenmedi",
+      "indicators": [
+        "Model'de fillable'da kolon var ama tabloda yok",
+        "Controller'da select() içinde kolon var ama tabloda yok",
+        "Migration'da kolon tanımlı ama tablo yapısı farklı"
+      ],
+      "common_patterns": [
+        {
+          "pattern": "Status column missing",
+          "tables_affected": ["kisiler", "users", "ilan_kategorileri", "feature_categories"],
+          "reason": "Context7: status field REQUIRED, enabled FORBIDDEN",
+          "fix": "Add status TINYINT(1) column"
+        },
+        {
+          "pattern": "Column name mismatch",
+          "examples": [
+            "baslik vs ilan_basligi",
+            "il_id vs sehir_id",
+            "goruntulenme vs goruntulenme_sayisi",
+            "yayin_tipi vs name"
+          ],
+          "reason": "Legacy column names vs Context7 standard names",
+          "fix": "Use alias in queries or add missing columns"
+        },
+        {
+          "pattern": "SoftDeletes missing deleted_at",
+          "tables_affected": ["feature_categories"],
+          "reason": "Model uses SoftDeletes trait but table missing deleted_at",
+          "fix": "Add deleted_at TIMESTAMP NULL column"
+        },
+        {
+          "pattern": "Pivot table missing value column",
+          "tables_affected": ["ilan_feature"],
+          "reason": "Model uses withPivot('value') but table missing value column",
+          "fix": "Add value VARCHAR(255) NULL to pivot table"
+        }
+      ]
+    },
+
+    "3_migration_guards": {
+      "title": "Migration Guard Mekanizmaları",
+      "description": "Schema::hasTable() ve Schema::hasColumn() kontrolleri migration'ların atlanmasına neden oluyor",
+      "statistics": {
+        "migrations_with_guards": 30,
+        "hasColumn_checks": 127,
+        "hasTable_checks": "Multiple",
+        "risk": "HIGH - Migrations can be skipped silently"
+      },
+      "problematic_pattern": {
+        "code": "if (Schema::hasTable('table_name')) { return; }",
+        "issue": "Migration atlanıyor, tablo farklı yapıda oluşuyor",
+        "solution": "Use Schema::hasColumn() for specific columns instead"
+      }
+    },
+
+    "4_context7_migration": {
+      "title": "Context7 Standardizasyon Süreci",
+      "description": "Kod güncellendi ama veritabanı şeması güncellenmedi",
+      "changes": [
+        {
+          "from": "enabled",
+          "to": "status",
+          "tables": ["features", "feature_categories", "alt_kategori_yayin_tipi"],
+          "status": "COMPLETED"
+        },
+        {
+          "from": "musteri",
+          "to": "kisi",
+          "tables": ["kisiler"],
+          "status": "IN_PROGRESS - musteri_tipi still exists for backward compatibility"
+        },
+        {
+          "from": "sehir_id",
+          "to": "il_id",
+          "tables": ["ilanlar"],
+          "status": "COMPLETED"
+        },
+        {
+          "from": "ilan_basligi",
+          "to": "baslik",
+          "tables": ["ilanlar"],
+          "status": "PARTIAL - Using alias in queries"
+        }
+      ]
+    }
+  },
+
+  "learned_patterns": {
+    "detection_patterns": {
+      "1_query_exception": {
+        "error_type": "QueryException",
+        "sqlstate": "42S22",
+        "message_pattern": "Unknown column '{column}' in '{clause}'",
+        "action": "Check table structure, add missing column or fix query"
+      },
+      "2_table_not_found": {
+        "error_type": "QueryException",
+        "sqlstate": "42S02",
+        "message_pattern": "Table '{database}.{table}' doesn't exist",
+        "action": "Run migration to create table"
+      },
+      "3_pivot_value_missing": {
+        "error_type": "QueryException",
+        "message_pattern": "Unknown column '{pivot_table}.value'",
+        "action": "Add value column to pivot table"
+      },
+      "4_softdeletes_missing": {
+        "error_type": "QueryException",
+        "message_pattern": "Unknown column '{table}.deleted_at'",
+        "action": "Add deleted_at column for SoftDeletes trait"
+      }
+    },
+
+    "prevention_patterns": {
+      "1_migration_validation": {
+        "rule": "ALWAYS verify table structure after migration",
+        "check": "DESCRIBE table_name;",
+        "compare": "Migration definition vs actual table structure",
+        "action": "If mismatch, create fix migration"
+      },
+      "2_model_table_sync": {
+        "rule": "Model fillable MUST match table columns",
+        "check": "Compare Model::$fillable with DESCRIBE table",
+        "action": "Update fillable or add missing columns"
+      },
+      "3_controller_query_validation": {
+        "rule": "Controller select() MUST use existing columns",
+        "check": "Verify all columns in select() exist in table",
+        "action": "Add missing columns or use aliases"
+      },
+      "4_context7_compliance_check": {
+        "rule": "ALL tables MUST have status column (not enabled)",
+        "check": "SELECT TABLE_NAME FROM information_schema.COLUMNS WHERE COLUMN_NAME = 'enabled'",
+        "action": "Remove enabled, add status if missing"
+      }
+    },
+
+    "fix_patterns": {
+      "1_add_missing_column": {
+        "pattern": "ALTER TABLE {table} ADD COLUMN {column} {type} {constraints};",
+        "example": "ALTER TABLE kisiler ADD COLUMN status TINYINT(1) NOT NULL DEFAULT 1;",
+        "context7_compliant": true
+      },
+      "2_add_index": {
+        "pattern": "ALTER TABLE {table} ADD INDEX idx_{column} ({column});",
+        "example": "ALTER TABLE kisiler ADD INDEX idx_status (status);",
+        "context7_compliant": true
+      },
+      "3_add_foreign_key": {
+        "pattern": "ALTER TABLE {table} ADD FOREIGN KEY ({column}) REFERENCES {ref_table}({ref_column});",
+        "example": "ALTER TABLE ilan_kategori_yayin_tipleri ADD FOREIGN KEY (kategori_id) REFERENCES ilan_kategorileri(id);",
+        "context7_compliant": true
+      },
+      "4_use_alias": {
+        "pattern": "SELECT {actual_column} AS {expected_column} FROM {table}",
+        "example": "SELECT goruntulenme_sayisi AS goruntulenme FROM ilanlar",
+        "context7_compliant": true,
+        "note": "Temporary solution, should migrate column name eventually"
+      }
+    }
+  },
+
+  "yalihan_bekci_rules": {
+    "new_rules": [
+      {
+        "rule": "ALWAYS check table structure before suggesting code changes",
+        "reason": "Prevent QueryException errors",
+        "severity": "CRITICAL",
+        "action": "Run DESCRIBE table_name before code suggestions"
+      },
+      {
+        "rule": "ALWAYS verify migration execution status",
+        "reason": "Migrations might be skipped due to guards",
+        "severity": "HIGH",
+        "action": "Check php artisan migrate:status before assuming table structure"
+      },
+      {
+        "rule": "ALWAYS add status column when table missing it",
+        "reason": "Context7: status REQUIRED, enabled FORBIDDEN",
+        "severity": "CRITICAL",
+        "action": "Add status TINYINT(1) NOT NULL DEFAULT 1"
+      },
+      {
+        "rule": "ALWAYS add deleted_at when Model uses SoftDeletes",
+        "reason": "SoftDeletes trait requires deleted_at column",
+        "severity": "HIGH",
+        "action": "Add deleted_at TIMESTAMP NULL"
+      },
+      {
+        "rule": "ALWAYS add value column to pivot tables when withPivot('value') used",
+        "reason": "Pivot value storage requires value column",
+        "severity": "HIGH",
+        "action": "Add value VARCHAR(255) NULL to pivot table"
+      },
+      {
+        "rule": "NEVER suggest code that uses non-existent columns",
+        "reason": "Prevent QueryException errors",
+        "severity": "CRITICAL",
+        "action": "Verify column existence before suggesting"
+      },
+      {
+        "rule": "ALWAYS use Context7 compliant column names",
+        "reason": "Context7 standards enforcement",
+        "severity": "CRITICAL",
+        "forbidden": ["enabled", "musteri_tipi", "sehir_id", "ilan_basligi"],
+        "required": ["status", "kisi_tipi", "il_id", "baslik"]
+      }
+    ],
+
+    "detection_commands": {
+      "check_table_structure": "DESCRIBE {table_name};",
+      "check_migration_status": "php artisan migrate:status",
+      "check_missing_columns": "SELECT TABLE_NAME, COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = '{database}' AND COLUMN_NAME = '{column}';",
+      "check_enabled_columns": "SELECT TABLE_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = '{database}' AND COLUMN_NAME = 'enabled';",
+      "verify_model_fillable": "Compare Model::$fillable with DESCRIBE table output"
+    },
+
+    "fix_workflow": {
+      "step_1": "Identify missing column from error message",
+      "step_2": "Check table structure: DESCRIBE table_name",
+      "step_3": "Check migration files for column definition",
+      "step_4": "Add missing column: ALTER TABLE ... ADD COLUMN ...",
+      "step_5": "Add index if needed: ALTER TABLE ... ADD INDEX ...",
+      "step_6": "Add foreign key if needed: ALTER TABLE ... ADD FOREIGN KEY ...",
+      "step_7": "Clear cache: php artisan config:clear && php artisan cache:clear",
+      "step_8": "Verify fix: Test the page/endpoint"
+    }
+  },
+
+  "context7_compliance": {
+    "authority_file": ".context7/authority.json",
+    "section": "database_fields",
+    "standards": {
+      "status_field": {
+        "required": true,
+        "type": "TINYINT(1)",
+        "default": 1,
+        "forbidden_alternatives": ["enabled", "is_active", "aktif", "durum"]
+      },
+      "naming_conventions": {
+        "location": {
+          "required": "il_id, ilce_id, mahalle_id",
+          "forbidden": ["sehir_id", "sehir", "city"]
+        },
+        "person": {
+          "required": "kisi_tipi",
+          "forbidden": ["musteri_tipi", "customer_type"]
+        },
+        "listing": {
+          "required": "baslik",
+          "forbidden": ["ilan_basligi", "title"]
+        }
+      },
+      "softdeletes": {
+        "required_column": "deleted_at",
+        "type": "TIMESTAMP NULL",
+        "when": "Model uses SoftDeletes trait"
+      },
+      "pivot_tables": {
+        "value_column": {
+          "required": true,
+          "type": "VARCHAR(255) NULL",
+          "when": "Model uses withPivot('value')"
+        }
+      }
+    }
+  },
+
+  "examples": {
+    "fixed_issues": [
+      {
+        "table": "ilan_kategori_yayin_tipleri",
+        "issue": "kategori_id column missing",
+        "fix": "ALTER TABLE ilan_kategori_yayin_tipleri ADD COLUMN kategori_id BIGINT UNSIGNED NULL;",
+        "status": "FIXED"
+      },
+      {
+        "table": "kisiler",
+        "issue": "status column missing",
+        "fix": "ALTER TABLE kisiler ADD COLUMN status TINYINT(1) NOT NULL DEFAULT 1;",
+        "status": "FIXED"
+      },
+      {
+        "table": "users",
+        "issue": "status column missing",
+        "fix": "ALTER TABLE users ADD COLUMN status TINYINT(1) NOT NULL DEFAULT 1;",
+        "status": "FIXED"
+      },
+      {
+        "table": "feature_categories",
+        "issue": "deleted_at column missing",
+        "fix": "ALTER TABLE feature_categories ADD COLUMN deleted_at TIMESTAMP NULL;",
+        "status": "FIXED"
+      },
+      {
+        "table": "ilan_feature",
+        "issue": "value column missing",
+        "fix": "ALTER TABLE ilan_feature ADD COLUMN value VARCHAR(255) NULL;",
+        "status": "FIXED"
+      },
+      {
+        "table": "takim_uyeleri",
+        "issue": "status column missing - kod 'status' bekliyor ama tabloda 'durum' var",
+        "fix": "Migration: 2025_11_09_062448_add_status_column_to_takim_uyeleri_table.php - durum → status migration",
+        "status": "FIXED",
+        "date": "2025-11-09"
+      }
+    ]
+  },
+
+  "prevention_tools": {
+    "automated_checker": {
+      "script": "scripts/context7-database-compliance-check.php",
+      "description": "Tüm tabloları tarar ve kod-şema uyumsuzluklarını tespit eder",
+      "usage": "php scripts/context7-database-compliance-check.php",
+      "status": "ACTIVE"
+    },
+    "pre_commit_hook": {
+      "script": "scripts/context7-db-check-pre-commit.sh",
+      "description": "Pre-commit hook'a entegre edilebilir",
+      "status": "READY"
+    }
+  },
+
+  "prevention_checklist": {
+    "before_code_suggestion": [
+      "✅ Check table structure (DESCRIBE table_name)",
+      "✅ Verify column existence",
+      "✅ Check Context7 compliance",
+      "✅ Verify Model fillable matches table",
+      "✅ Check migration status"
+    ],
+    "before_migration_suggestion": [
+      "✅ Check if table exists",
+      "✅ Check if column exists",
+      "✅ Use Schema::hasColumn() not Schema::hasTable()",
+      "✅ Don't skip migration if column missing",
+      "✅ Add proper indexes and foreign keys"
+    ],
+    "after_fix": [
+      "✅ Verify column added successfully",
+      "✅ Clear Laravel cache",
+      "✅ Test the endpoint/page",
+      "✅ Check Context7 compliance",
+      "✅ Document the fix"
+    ]
+  },
+
+  "related_files": [
+    ".context7/authority.json",
+    ".context7/PERMANENT_STANDARDS.md",
+    "database/migrations/",
+    "app/Models/",
+    "app/Http/Controllers/"
+  ],
+
+  "commit_message": "📚 YALIHAN-BEKCI: Database schema sync patterns learned",
+  "tags": ["database", "migration", "schema", "context7", "yalihan-bekci", "prevention"]
+}
+

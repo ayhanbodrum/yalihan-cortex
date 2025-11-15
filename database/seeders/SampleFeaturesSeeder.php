@@ -43,7 +43,7 @@ class SampleFeaturesSeeder extends Seeder
                 'type' => 'konut',
                 'description' => 'Konutlara özel alanlar (daire, villa, vb.)',
                 'icon' => '🏠',
-                'order' => 10,
+                'display_order' => 10,
                 'enabled' => true,
             ]
         );
@@ -56,14 +56,14 @@ class SampleFeaturesSeeder extends Seeder
             ['name' => 'Net m²', 'slug' => 'net-m2', 'field_type' => 'number', 'field_icon' => '📐', 'field_unit' => 'm²', 'group' => 'Genel Bilgiler'],
             ['name' => 'Kat', 'slug' => 'kat', 'field_type' => 'select', 'field_icon' => '🏢', 'field_options' => ['Bodrum', 'Zemin', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10+'], 'group' => 'Genel Bilgiler'],
             ['name' => 'Bina Yaşı', 'slug' => 'bina-yasi', 'field_type' => 'number', 'field_icon' => '📅', 'field_unit' => 'yıl', 'group' => 'Genel Bilgiler'],
-            
+
             // Bina Özellikleri
             ['name' => 'Kat Sayısı', 'slug' => 'kat-sayisi', 'field_type' => 'number', 'field_icon' => '🏛️', 'field_unit' => 'kat', 'group' => 'Bina Özellikleri'],
             ['name' => 'Isıtma Tipi', 'slug' => 'isitma-tipi', 'field_type' => 'select', 'field_icon' => '🔥', 'field_options' => ['Doğalgaz', 'Kombi', 'Merkezi', 'Klima', 'Soba', 'Kat Kaloriferi'], 'group' => 'Bina Özellikleri'],
             ['name' => 'Balkon', 'slug' => 'balkon', 'field_type' => 'checkbox', 'field_icon' => '🌿', 'group' => 'Bina Özellikleri'],
             ['name' => 'Asansör', 'slug' => 'asansor', 'field_type' => 'checkbox', 'field_icon' => '🛗', 'group' => 'Bina Özellikleri'],
             ['name' => 'Otopark', 'slug' => 'otopark', 'field_type' => 'checkbox', 'field_icon' => '🅿️', 'group' => 'Bina Özellikleri'],
-            
+
             // Güvenlik
             ['name' => 'Güvenlik', 'slug' => 'guvenlik', 'field_type' => 'checkbox', 'field_icon' => '🔒', 'group' => 'Güvenlik'],
             ['name' => 'Kamera Sistemi', 'slug' => 'kamera-sistemi', 'field_type' => 'checkbox', 'field_icon' => '📹', 'group' => 'Güvenlik'],
@@ -86,7 +86,7 @@ class SampleFeaturesSeeder extends Seeder
                 'type' => 'ticari',
                 'description' => 'İşyerlerine özel alanlar (dükkan, ofis, fabrika)',
                 'icon' => '🏢',
-                'order' => 20,
+                'display_order' => 20,
                 'enabled' => true,
             ]
         );
@@ -97,13 +97,13 @@ class SampleFeaturesSeeder extends Seeder
             ['name' => 'Kat', 'slug' => 'isyeri-kat', 'field_type' => 'select', 'field_icon' => '🏢', 'field_options' => ['Bodrum', 'Zemin', '1', '2', '3', '4', '5+'], 'group' => 'Genel Bilgiler'],
             ['name' => 'Cephe Sayısı', 'slug' => 'cephe-sayisi', 'field_type' => 'number', 'field_icon' => '🏛️', 'field_unit' => 'adet', 'group' => 'Genel Bilgiler'],
             ['name' => 'Ön Cephe', 'slug' => 'on-cephe', 'field_type' => 'checkbox', 'field_icon' => '🏪', 'group' => 'Genel Bilgiler'],
-            
+
             // Teknik Özellikler
             ['name' => 'Tavan Yüksekliği', 'slug' => 'tavan-yuksekligi', 'field_type' => 'number', 'field_icon' => '📐', 'field_unit' => 'm', 'group' => 'Teknik Özellikler'],
             ['name' => 'Elektrik Gücü', 'slug' => 'elektrik-gucu', 'field_type' => 'number', 'field_icon' => '⚡', 'field_unit' => 'kW', 'group' => 'Teknik Özellikler'],
             ['name' => 'Jeneratör', 'slug' => 'jenerator', 'field_type' => 'checkbox', 'field_icon' => '🔌', 'group' => 'Teknik Özellikler'],
             ['name' => 'Klima', 'slug' => 'klima', 'field_type' => 'checkbox', 'field_icon' => '❄️', 'group' => 'Teknik Özellikler'],
-            
+
             // İmkanlar
             ['name' => 'Otopark', 'slug' => 'isyeri-otopark', 'field_type' => 'checkbox', 'field_icon' => '🅿️', 'group' => 'İmkanlar'],
             ['name' => 'Asansör', 'slug' => 'isyeri-asansor', 'field_type' => 'checkbox', 'field_icon' => '🛗', 'group' => 'İmkanlar'],
@@ -121,7 +121,7 @@ class SampleFeaturesSeeder extends Seeder
         $this->command->info('🏗️ Arsa özellikleri güncelleniyor...');
 
         $category = FeatureCategory::where('slug', 'arsa-ozellikleri')->first();
-        
+
         if (!$category) {
             $this->command->warn('   ⚠️ Arsa kategorisi bulunamadı, oluşturuluyor...');
             $category = FeatureCategory::create([
@@ -129,7 +129,7 @@ class SampleFeaturesSeeder extends Seeder
                 'type' => 'arsa',
                 'description' => 'Arsaya özel alanlar',
                 'icon' => '🏗️',
-                'order' => 30,
+                'display_order' => 30,
                 'enabled' => true,
             ]);
         }
@@ -145,7 +145,7 @@ class SampleFeaturesSeeder extends Seeder
                 ['slug' => $featureData['slug']],
                 array_merge($featureData, [
                     'category_id' => $category->id,
-                    'order' => 100 + $index,
+                    'display_order' => 100 + $index,
                     'enabled' => true,
                 ])
             );
@@ -165,7 +165,7 @@ class SampleFeaturesSeeder extends Seeder
                 'type' => 'yazlik',
                 'description' => 'Yazlıklara özel alanlar',
                 'icon' => '🏖️',
-                'order' => 40,
+                'display_order' => 40,
                 'enabled' => true,
             ]
         );
@@ -175,7 +175,7 @@ class SampleFeaturesSeeder extends Seeder
             ['name' => 'Oda Sayısı', 'slug' => 'yazlik-oda-sayisi', 'field_type' => 'select', 'field_icon' => '🛏️', 'field_options' => ['1+0', '1+1', '2+1', '3+1', '4+1', '5+1'], 'group' => 'Temel Bilgiler'],
             ['name' => 'Yatak Kapasitesi', 'slug' => 'yatak-kapasitesi', 'field_type' => 'number', 'field_icon' => '🛌', 'field_unit' => 'kişi', 'group' => 'Temel Bilgiler'],
             ['name' => 'Alan', 'slug' => 'yazlik-alan', 'field_type' => 'number', 'field_icon' => '📏', 'field_unit' => 'm²', 'group' => 'Temel Bilgiler'],
-            
+
             // Amenities
             ['name' => 'Havuz', 'slug' => 'havuz', 'field_type' => 'checkbox', 'field_icon' => '🏊', 'group' => 'Amenities', 'is_filterable' => true],
             ['name' => 'Jakuzi', 'slug' => 'jakuzi', 'field_type' => 'checkbox', 'field_icon' => '🛁', 'group' => 'Amenities'],
@@ -207,7 +207,7 @@ class SampleFeaturesSeeder extends Seeder
                 ['slug' => $featureData['slug']],
                 array_merge($featureData, [
                     'category_id' => $category->id,
-                    'order' => $index,
+                    'display_order' => $index,
                     'enabled' => true,
                     'is_filterable' => $featureData['is_filterable'] ?? true,
                     'is_searchable' => false,
@@ -245,4 +245,3 @@ class SampleFeaturesSeeder extends Seeder
         );
     }
 }
-

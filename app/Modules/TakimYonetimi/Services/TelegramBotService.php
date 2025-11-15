@@ -423,7 +423,7 @@ class TelegramBotService
             return;
         }
 
-        $toplamUye = TakimUyesi::where('status', 'active')->count();
+        $toplamUye = TakimUyesi::where('status', 'aktif')->count();
         $statusGorev = Gorev::whereIn('status', ['bekliyor', 'devam_ediyor'])->count();
         $tamamlananGorev = Gorev::where('status', 'tamamlandi')->count();
         $gecikenGorev = Gorev::where('deadline', '<', now())->whereIn('status', ['bekliyor', 'devam_ediyor'])->count();

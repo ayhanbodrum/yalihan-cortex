@@ -22,10 +22,12 @@ php artisan make:model Photo -m
 ```
 
 **Oluşturulan Dosyalar:**
+
 - `app/Models/Photo.php`
 - `database/migrations/2025_11_03_093414_create_photos_table.php`
 
 **Migration Yapısı:**
+
 ```php
 Schema::create('photos', function (Blueprint $table) {
     $table->id();
@@ -42,7 +44,7 @@ Schema::create('photos', function (Blueprint $table) {
     $table->integer('height')->nullable(); // Yükseklik
     $table->timestamps();
     $table->softDeletes();
-    
+
     // Index'ler
     $table->index('ilan_id');
     $table->index('is_featured');
@@ -53,6 +55,7 @@ Schema::create('photos', function (Blueprint $table) {
 ```
 
 **Neden Bu Alanlar?**
+
 - `ilan_id`: Hangi ilana ait? (Foreign key)
 - `path` & `thumbnail`: Orijinal ve küçük resim
 - `category`: Kategori bazlı filtreleme (cephe, ic_mekan, vs)
@@ -70,6 +73,7 @@ Schema::create('photos', function (Blueprint $table) {
 **app/Models/Photo.php (180 satır):**
 
 #### A. Fillable & Casts
+
 ```php
 protected $fillable = [
     'ilan_id', 'path', 'thumbnail', 'category',
@@ -88,10 +92,11 @@ protected $casts = [
 ```
 
 #### B. Auto File Deletion (boot method)
+
 ```php
 protected static function boot() {
     parent::boot();
-    
+
     static::deleting(function ($photo) {
         if ($photo->isForceDeleting()) {
             // Hard delete - dosyaları da sil
@@ -107,6 +112,7 @@ protected static function boot() {
 **Faydası:** Model silinince dosyalar da otomatik silinir!
 
 #### C. Relationships
+
 ```php
 public function ilan() {
     return $this->belongsTo(Ilan::class);
@@ -114,6 +120,7 @@ public function ilan() {
 ```
 
 #### D. Scopes (Query Helpers)
+
 ```php
 // Öne çıkan fotoğraflar
 public function scopeFeatured($query) {
@@ -132,6 +139,7 @@ public function scopeByCategory($query, $category) {
 ```
 
 **Kullanım:**
+
 ```php
 Photo::featured()->get(); // Sadece featured'lar
 Photo::ordered()->get(); // Sıralı
@@ -139,6 +147,7 @@ Photo::byCategory('cephe')->get(); // Cephe fotoğrafları
 ```
 
 #### E. Accessors (Automatic Properties)
+
 ```php
 // Otomatik URL
 public function getUrlAttribute() {
@@ -147,18 +156,18 @@ public function getUrlAttribute() {
 
 // Thumbnail URL
 public function getThumbnailUrlAttribute() {
-    return $this->thumbnail 
-        ? Storage::url($this->thumbnail) 
+    return $this->thumbnail
+        ? Storage::url($this->thumbnail)
         : $this->url;
 }
 
 // Formatlı dosya boyutu
 public function getFormattedSizeAttribute() {
     if (!$this->size) return null;
-    
+
     $units = ['B', 'KB', 'MB', 'GB'];
     $power = $this->size > 0 ? floor(log($this->size, 1024)) : 0;
-    
+
     return number_format($this->size / pow(1024, $power), 2) . ' ' . $units[$power];
 }
 
@@ -169,12 +178,13 @@ public function getFormattedViewsAttribute() {
     } elseif ($this->views >= 1000) {
         return number_format($this->views / 1000, 1) . 'K';
     }
-    
+
     return (string) $this->views;
 }
 ```
 
 **Kullanım:**
+
 ```php
 $photo = Photo::find(1);
 echo $photo->url; // /storage/photos/ilan/photo.jpg (otomatik!)
@@ -184,6 +194,7 @@ echo $photo->formatted_views; // 1.2K
 ```
 
 #### F. Helper Methods
+
 ```php
 // Görüntülenme artır
 public function incrementViews() {
@@ -202,7 +213,7 @@ public function setAsFeatured() {
     static::where('ilan_id', $this->ilan_id)
         ->where('id', '!=', $this->id)
         ->update(['is_featured' => false]);
-    
+
     $this->update(['is_featured' => true]);
     return $this;
 }
@@ -239,6 +250,7 @@ public function featuredPhoto()
 ```
 
 **Kullanım:**
+
 ```php
 $ilan = Ilan::find(1);
 $photos = $ilan->photos; // Tüm fotoğraflar (sıralı)
@@ -252,6 +264,7 @@ $featured = $ilan->featuredPhoto; // Kapak fotoğrafı
 **app/Http/Controllers/Admin/PhotoController.php**
 
 #### TODO #1: store() - Photo::create()
+
 ```php
 // ÖNCESİ:
 // TODO: Photo model oluşturulduğunda kullanılacak
@@ -273,6 +286,7 @@ $photoModel = Photo::create([
 ```
 
 #### TODO #2: update() - Photo::update()
+
 ```php
 // ÖNCESİ:
 // TODO: Photo model ile güncelleme
@@ -287,6 +301,7 @@ $photo->update([
 ```
 
 #### TODO #3: destroy() - Photo::delete()
+
 ```php
 // ÖNCESİ:
 // TODO: Photo model ile silme
@@ -307,6 +322,7 @@ $photoModel->delete();
 ```
 
 #### TODO #4-7: bulkAction() - Toplu İşlemler
+
 ```php
 // ÖNCESİ:
 // TODO: Photo::findOrFail($photoId)->delete();
@@ -324,12 +340,12 @@ switch ($action) {
             $processedCount++;
         }
         break;
-        
+
     case 'move':
         Photo::where('id', $photoId)->update(['category' => $request->target_category]);
         $processedCount++;
         break;
-        
+
     case 'feature':
         $photo = Photo::find($photoId);
         if ($photo) {
@@ -337,7 +353,7 @@ switch ($action) {
             $processedCount++;
         }
         break;
-        
+
     case 'unfeature':
         Photo::where('id', $photoId)->update(['is_featured' => false]);
         $processedCount++;
@@ -346,6 +362,7 @@ switch ($action) {
 ```
 
 #### TODO #8: optimizeImage() - Image Optimization
+
 ```php
 // ÖNCESİ:
 // TODO: Gerçek optimizasyon işlemi
@@ -355,7 +372,7 @@ private function optimizeImage($path)
 {
     try {
         $image = Image::make(Storage::disk('public')->path($path));
-        
+
         // Max width: 1920px (responsive için yeterli)
         if ($image->width() > 1920) {
             $image->resize(1920, null, function ($constraint) {
@@ -363,12 +380,12 @@ private function optimizeImage($path)
                 $constraint->upsize(); // Küçük resimleri büyütme
             });
         }
-        
+
         // Optimize (JPEG, 85% quality)
         $image->encode('jpg', 85);
-        
+
         Storage::disk('public')->put($path, (string) $image);
-        
+
         return $image->filesize();
     } catch (\Exception $e) {
         \Log::error('Image optimization error: ' . $e->getMessage());
@@ -378,11 +395,13 @@ private function optimizeImage($path)
 ```
 
 **Faydası:**
+
 - Max 1920px (web için yeterli)
 - 85% quality (gözle fark edilmez, %50 küçük dosya)
 - JPEG'e dönüştür (en optimize format)
 
 #### TODO #9: generateThumbnail() - Thumbnail Generation
+
 ```php
 // ÖNCESİ:
 // TODO: Gerçek thumbnail oluşturma implementasyonu
@@ -392,19 +411,19 @@ private function generateThumbnail($originalPath)
 {
     try {
         $thumbnailPath = 'thumbnails/' . basename($originalPath);
-        
+
         $image = Image::make(Storage::disk('public')->path($originalPath));
-        
+
         // Thumbnail (300x300, crop ve fit)
         $image->fit(300, 300, function ($constraint) {
             $constraint->upsize();
         });
-        
+
         // Optimize (JPEG, 80% quality)
         $image->encode('jpg', 80);
-        
+
         Storage::disk('public')->put($thumbnailPath, (string) $image);
-        
+
         return $thumbnailPath;
     } catch (\Exception $e) {
         \Log::error('Thumbnail generation error: ' . $e->getMessage());
@@ -414,11 +433,13 @@ private function generateThumbnail($originalPath)
 ```
 
 **Faydası:**
+
 - 300x300 thumbnail (galeri görünüm için ideal)
 - Crop + fit (kare olur)
 - 80% quality (thumbnail için yeterli)
 
 #### TODO #10: incrementPhotoViews() - View Tracking
+
 ```php
 // ÖNCESİ:
 // TODO: Photo model ile views field güncelleme
@@ -449,6 +470,7 @@ composer require intervention/image
 **Dependencies:** intervention/gif 4.2.2
 
 **Özellikler:**
+
 - Image resize
 - Image crop
 - Image optimization
@@ -461,6 +483,7 @@ composer require intervention/image
 ## 📊 SONUÇLAR
 
 ### Öncesi (TODO'lar):
+
 ```php
 ❌ DB::table('photos')->insert($data);
 ❌ DB::table('photos')->where('id', $id)->update($data);
@@ -474,6 +497,7 @@ composer require intervention/image
 ```
 
 ### Sonrası:
+
 ```php
 ✅ Photo::create($data);
 ✅ $photo->update($data);
@@ -494,6 +518,7 @@ composer require intervention/image
 ## 🎯 KULLANIM ÖRNEKLERİ
 
 ### Photo Oluştur
+
 ```php
 $photo = Photo::create([
     'ilan_id' => 1,
@@ -505,6 +530,7 @@ $photo = Photo::create([
 ```
 
 ### İlan Fotoğrafları
+
 ```php
 $ilan = Ilan::find(1);
 
@@ -519,12 +545,14 @@ $cepheFotolari = $ilan->photos()->byCategory('cephe')->get();
 ```
 
 ### Featured Yap
+
 ```php
 $photo = Photo::find(1);
 $photo->setAsFeatured(); // Diğerleri otomatik unfeatured olur
 ```
 
 ### View Artır
+
 ```php
 $photo = Photo::find(1);
 $photo->incrementViews();
@@ -537,6 +565,7 @@ echo $photo->formatted_views; // "1.5K"
 ```
 
 ### Toplu İşlem
+
 ```php
 // Toplu silme
 POST /admin/photos/bulk-action
@@ -559,6 +588,7 @@ POST /admin/photos/bulk-action
 ## 🧠 ÖĞRENİLEN TEKN İKLER
 
 ### 1. Eloquent Model Best Practices
+
 ```php
 // Fillable - Mass assignment protection
 protected $fillable = [...];
@@ -578,6 +608,7 @@ protected static function boot() {
 ```
 
 ### 2. Eloquent Relationships
+
 ```php
 // One-to-Many
 public function photos() {
@@ -591,6 +622,7 @@ public function featuredPhoto() {
 ```
 
 ### 3. Query Scopes
+
 ```php
 // Local scope
 public function scopeFeatured($query) {
@@ -602,6 +634,7 @@ Photo::featured()->get();
 ```
 
 ### 4. Accessors
+
 ```php
 // Accessor (otomatik property)
 public function getUrlAttribute() {
@@ -613,6 +646,7 @@ $photo->url; // Otomatik çağrılır!
 ```
 
 ### 5. Image Processing
+
 ```php
 // Resize
 $image->resize(1920, null, function ($constraint) {
@@ -632,6 +666,7 @@ $image->encode('jpg', 85);
 ## 📋 STANDARTLAR
 
 ### Database Design
+
 ```yaml
 ✅ Foreign keys (ilan_id → ilanlar)
 ✅ Index'ler (performans)
@@ -642,6 +677,7 @@ $image->encode('jpg', 85);
 ```
 
 ### Code Standards
+
 ```yaml
 ✅ Eloquent ORM (no raw SQL)
 ✅ Type hints (: HasMany, : BelongsTo)
@@ -652,6 +688,7 @@ $image->encode('jpg', 85);
 ```
 
 ### Image Standards
+
 ```yaml
 ✅ Max width: 1920px (web)
 ✅ Quality: 85% (orijinal), 80% (thumbnail)
@@ -665,6 +702,7 @@ $image->encode('jpg', 85);
 ## 🚨 DİKKAT EDİLMESİ GEREKENLER
 
 ### 1. Storage Disk
+
 ```php
 // Public disk kullanıldı (config/filesystems.php)
 Storage::disk('public')->put($path, $file);
@@ -674,6 +712,7 @@ php artisan storage:link
 ```
 
 ### 2. Image Library
+
 ```php
 // Intervention Image v3 kullanıldı
 use Intervention\Image\Facades\Image;
@@ -683,6 +722,7 @@ use Intervention\Image\Facades\Image;
 ```
 
 ### 3. Soft Delete
+
 ```php
 // Soft delete aktif
 use SoftDeletes;
@@ -692,6 +732,7 @@ $photo->forceDelete(); // Dosyalar da silinir (boot method)
 ```
 
 ### 4. Featured Photo Logic
+
 ```php
 // Bir ilana sadece 1 featured photo
 $photo->setAsFeatured();
@@ -739,6 +780,7 @@ Commit: 6bd1b1da
 ## 🔮 GELECEK GELİŞTİRMELER
 
 ### Kısa Vadeli:
+
 ```yaml
 1. Photo upload UI oluştur
 2. Galeri component oluştur
@@ -748,6 +790,7 @@ Commit: 6bd1b1da
 ```
 
 ### Orta Vadeli:
+
 ```yaml
 1. AI-powered tagging
 2. Face detection
@@ -762,4 +805,3 @@ Commit: 6bd1b1da
 **Tarih:** 4 Kasım 2025  
 **Durum:** ✅ PRODUCTION READY  
 **TODO Azalması:** 39 → 29 (-10)
-

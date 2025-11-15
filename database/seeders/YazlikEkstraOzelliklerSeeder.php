@@ -26,7 +26,7 @@ class YazlikEkstraOzelliklerSeeder extends Seeder
                 'slug' => 'lisans-belgeler',
                 'aciklama' => 'T.C. Kültür ve Turizm Bakanlığı belgesi ve diğer resmi lisanslar',
                 'icon' => 'certificate',
-                'order' => 26,
+                'display_order' => 26,
                 'status' => 'Aktif',
             ]
         );
@@ -42,7 +42,7 @@ class YazlikEkstraOzelliklerSeeder extends Seeder
                 'arama_filtresi' => true,
                 'ilan_kartinda_goster' => true,
                 'aciklama' => 'T.C. Kültür ve Turizm Bakanlığı İşletme Belgesi (Format: 07-1776)',
-                'order' => 1,
+                'display_order' => 1,
             ],
             [
                 'name' => 'Turizm Belgeli',
@@ -53,7 +53,7 @@ class YazlikEkstraOzelliklerSeeder extends Seeder
                 'arama_filtresi' => true,
                 'ilan_kartinda_goster' => true,
                 'aciklama' => 'T.C. Kültür ve Turizm Bakanlığı belgeli tesis',
-                'order' => 2,
+                'display_order' => 2,
             ],
             [
                 'name' => 'Airbnb Süper Ev Sahibi',
@@ -64,7 +64,7 @@ class YazlikEkstraOzelliklerSeeder extends Seeder
                 'arama_filtresi' => true,
                 'ilan_kartinda_goster' => true,
                 'aciklama' => 'Airbnb Superhost statüsü',
-                'order' => 3,
+                'display_order' => 3,
             ],
         ];
 
@@ -84,7 +84,7 @@ class YazlikEkstraOzelliklerSeeder extends Seeder
                 'slug' => 'premium-lokasyon',
                 'aciklama' => 'Denize sıfır, özel plaj, korunaklı koy gibi özel lokasyon özellikleri',
                 'icon' => 'location-dot',
-                'order' => 27,
+                'display_order' => 27,
                 'status' => 'Aktif',
             ]
         );
@@ -99,7 +99,7 @@ class YazlikEkstraOzelliklerSeeder extends Seeder
                 'arama_filtresi' => true,
                 'ilan_kartinda_goster' => true,
                 'aciklama' => 'Denize doğrudan erişim (0-10m)',
-                'order' => 1,
+                'display_order' => 1,
             ],
             [
                 'name' => 'Özel Plajlı',
@@ -110,7 +110,7 @@ class YazlikEkstraOzelliklerSeeder extends Seeder
                 'arama_filtresi' => true,
                 'ilan_kartinda_goster' => true,
                 'aciklama' => 'Özel plaj kullanım hakkı',
-                'order' => 2,
+                'display_order' => 2,
             ],
             [
                 'name' => 'Korunaklı Koy',
@@ -121,7 +121,7 @@ class YazlikEkstraOzelliklerSeeder extends Seeder
                 'arama_filtresi' => true,
                 'ilan_kartinda_goster' => true,
                 'aciklama' => 'Korunaklı/sakin koy içinde',
-                'order' => 3,
+                'display_order' => 3,
             ],
             [
                 'name' => 'Doğa İçinde',
@@ -132,7 +132,7 @@ class YazlikEkstraOzelliklerSeeder extends Seeder
                 'arama_filtresi' => true,
                 'ilan_kartinda_goster' => true,
                 'aciklama' => 'Doğa içinde/orman kenarı/sessiz lokasyon',
-                'order' => 4,
+                'display_order' => 4,
             ],
             [
                 'name' => 'Marina Yakını',
@@ -143,7 +143,7 @@ class YazlikEkstraOzelliklerSeeder extends Seeder
                 'arama_filtresi' => true,
                 'ilan_kartinda_goster' => false,
                 'aciklama' => 'Marina/yat limanı yakınında',
-                'order' => 5,
+                'display_order' => 5,
             ],
         ];
 
@@ -163,7 +163,7 @@ class YazlikEkstraOzelliklerSeeder extends Seeder
                 'slug' => 'site-ici-ozellikler',
                 'aciklama' => 'Sitede bulunan ortak kullanım alanları ve hizmetler',
                 'icon' => 'building',
-                'order' => 28,
+                'display_order' => 28,
                 'status' => 'Aktif',
             ]
         );
@@ -178,7 +178,7 @@ class YazlikEkstraOzelliklerSeeder extends Seeder
                 'arama_filtresi' => true,
                 'ilan_kartinda_goster' => true,
                 'aciklama' => 'Sitede ortak kullanımlı havuz',
-                'order' => 1,
+                'display_order' => 1,
             ],
             [
                 'name' => 'Fitness Center',
@@ -189,7 +189,7 @@ class YazlikEkstraOzelliklerSeeder extends Seeder
                 'arama_filtresi' => true,
                 'ilan_kartinda_goster' => false,
                 'aciklama' => 'Site içi fitness salonu',
-                'order' => 2,
+                'display_order' => 2,
             ],
             [
                 'name' => 'Spor Alanları',
@@ -201,7 +201,7 @@ class YazlikEkstraOzelliklerSeeder extends Seeder
                 'arama_filtresi' => false,
                 'ilan_kartinda_goster' => false,
                 'aciklama' => 'Site içi spor tesisleri',
-                'order' => 3,
+                'display_order' => 3,
             ],
             [
                 'name' => 'Restoran/Kafe',
@@ -212,7 +212,7 @@ class YazlikEkstraOzelliklerSeeder extends Seeder
                 'arama_filtresi' => false,
                 'ilan_kartinda_goster' => false,
                 'aciklama' => 'Site içi restoran veya kafe',
-                'order' => 4,
+                'display_order' => 4,
             ],
             [
                 'name' => 'Market/Bakkal',
@@ -223,7 +223,7 @@ class YazlikEkstraOzelliklerSeeder extends Seeder
                 'arama_filtresi' => false,
                 'ilan_kartinda_goster' => false,
                 'aciklama' => 'Site içi market veya bakkal',
-                'order' => 5,
+                'display_order' => 5,
             ],
         ];
 
@@ -243,7 +243,7 @@ class YazlikEkstraOzelliklerSeeder extends Seeder
                 'slug' => 'hedef-kitle',
                 'aciklama' => 'Tesettürlü, aileler, çocuklu, engelli gibi özel kitle özellikleri',
                 'icon' => 'users',
-                'order' => 29,
+                'display_order' => 29,
                 'status' => 'Aktif',
             ]
         );
@@ -258,7 +258,7 @@ class YazlikEkstraOzelliklerSeeder extends Seeder
                 'arama_filtresi' => true,
                 'ilan_kartinda_goster' => true,
                 'aciklama' => 'Yüksek duvar/çit, korunaklı havuz, mahremiyete uygun',
-                'order' => 1,
+                'display_order' => 1,
             ],
             [
                 'name' => 'Çocuk Dostu',
@@ -269,7 +269,7 @@ class YazlikEkstraOzelliklerSeeder extends Seeder
                 'arama_filtresi' => true,
                 'ilan_kartinda_goster' => true,
                 'aciklama' => 'Çocuk havuzu, oyun alanı, güvenli ortam',
-                'order' => 2,
+                'display_order' => 2,
             ],
             [
                 'name' => 'Engelli Erişimi',
@@ -280,7 +280,7 @@ class YazlikEkstraOzelliklerSeeder extends Seeder
                 'arama_filtresi' => true,
                 'ilan_kartinda_goster' => false,
                 'aciklama' => 'Tekerlekli sandalye erişimi, rampa, geniş koridor',
-                'order' => 3,
+                'display_order' => 3,
             ],
             [
                 'name' => 'Yaşlı Dostu',
@@ -291,7 +291,7 @@ class YazlikEkstraOzelliklerSeeder extends Seeder
                 'arama_filtresi' => true,
                 'ilan_kartinda_goster' => false,
                 'aciklama' => 'Tek kat, asansör, güvenli ortam',
-                'order' => 4,
+                'display_order' => 4,
             ],
         ];
 
@@ -311,7 +311,7 @@ class YazlikEkstraOzelliklerSeeder extends Seeder
                 'slug' => 'fiyata-dahil',
                 'aciklama' => 'Kiralama fiyatına dahil olan hizmetler',
                 'icon' => 'check-circle',
-                'order' => 30,
+                'display_order' => 30,
                 'status' => 'Aktif',
             ]
         );
@@ -326,7 +326,7 @@ class YazlikEkstraOzelliklerSeeder extends Seeder
                 'arama_filtresi' => false,
                 'ilan_kartinda_goster' => true,
                 'aciklama' => 'Yatak çarşafı ve havlu fiyata dahil',
-                'order' => 1,
+                'display_order' => 1,
             ],
             [
                 'name' => 'Elektrik/Su Dahil',
@@ -338,7 +338,7 @@ class YazlikEkstraOzelliklerSeeder extends Seeder
                 'arama_filtresi' => false,
                 'ilan_kartinda_goster' => false,
                 'aciklama' => 'Elektrik ve su faturası durumu',
-                'order' => 2,
+                'display_order' => 2,
             ],
             [
                 'name' => 'Klima Kullanımı',
@@ -350,7 +350,7 @@ class YazlikEkstraOzelliklerSeeder extends Seeder
                 'arama_filtresi' => false,
                 'ilan_kartinda_goster' => false,
                 'aciklama' => 'Klima kullanım limiti',
-                'order' => 3,
+                'display_order' => 3,
             ],
             [
                 'name' => 'Havuz Bakımı',
@@ -362,7 +362,7 @@ class YazlikEkstraOzelliklerSeeder extends Seeder
                 'arama_filtresi' => false,
                 'ilan_kartinda_goster' => false,
                 'aciklama' => 'Havuz temizlik/bakım sıklığı',
-                'order' => 4,
+                'display_order' => 4,
             ],
             [
                 'name' => 'Bahçe Bakımı',
@@ -374,7 +374,7 @@ class YazlikEkstraOzelliklerSeeder extends Seeder
                 'arama_filtresi' => false,
                 'ilan_kartinda_goster' => false,
                 'aciklama' => 'Bahçe/peyzaj bakım hizmeti',
-                'order' => 5,
+                'display_order' => 5,
             ],
         ];
 
@@ -394,7 +394,7 @@ class YazlikEkstraOzelliklerSeeder extends Seeder
                 'slug' => 'ekstra-hizmetler',
                 'aciklama' => 'Ek ücret karşılığı sunulan hizmetler',
                 'icon' => 'plus-circle',
-                'order' => 31,
+                'display_order' => 31,
                 'status' => 'Aktif',
             ]
         );
@@ -410,7 +410,7 @@ class YazlikEkstraOzelliklerSeeder extends Seeder
                 'arama_filtresi' => false,
                 'ilan_kartinda_goster' => false,
                 'aciklama' => 'Havaalanı transfer hizmeti',
-                'order' => 1,
+                'display_order' => 1,
             ],
             [
                 'name' => 'Günlük Temizlik',
@@ -422,7 +422,7 @@ class YazlikEkstraOzelliklerSeeder extends Seeder
                 'arama_filtresi' => false,
                 'ilan_kartinda_goster' => false,
                 'aciklama' => 'Günlük temizlik hizmeti',
-                'order' => 2,
+                'display_order' => 2,
             ],
             [
                 'name' => 'Yemek Servisi',
@@ -434,7 +434,7 @@ class YazlikEkstraOzelliklerSeeder extends Seeder
                 'arama_filtresi' => false,
                 'ilan_kartinda_goster' => false,
                 'aciklama' => 'Yemek hizmeti seçenekleri',
-                'order' => 3,
+                'display_order' => 3,
             ],
             [
                 'name' => 'Çamaşır Yıkama',
@@ -446,7 +446,7 @@ class YazlikEkstraOzelliklerSeeder extends Seeder
                 'arama_filtresi' => false,
                 'ilan_kartinda_goster' => false,
                 'aciklama' => 'Çamaşır yıkama hizmeti',
-                'order' => 4,
+                'display_order' => 4,
             ],
             [
                 'name' => 'Bebek Ekipmanı',
@@ -458,7 +458,7 @@ class YazlikEkstraOzelliklerSeeder extends Seeder
                 'arama_filtresi' => false,
                 'ilan_kartinda_goster' => false,
                 'aciklama' => 'Bebek ekipmanları (ücretsiz/ücretli)',
-                'order' => 5,
+                'display_order' => 5,
             ],
         ];
 
@@ -488,4 +488,3 @@ class YazlikEkstraOzelliklerSeeder extends Seeder
         $this->command->info("   📜 Turizm Belgeli");
     }
 }
-

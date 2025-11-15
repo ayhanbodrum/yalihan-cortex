@@ -13,21 +13,18 @@
 ```javascript
 // Bekçi bu pattern'leri görünce UYAR:
 
-if (
-    code.includes("import") &&
-    code.match(/react-select|choices\.js|selectize|select2/i)
-) {
-    alert("❌ YASAK KÜTÜPHANE TESPİT EDİLDİ!");
-    alert("Bu kütüphane Context7 kurallarına aykırı:");
-    alert("  - React-Select: 170KB (ÇOK AĞIR!)");
-    alert("  - Choices.js: 48KB (AĞIR!)");
-    alert("  - Select2: jQuery dependency (ESKİ!)");
-    alert("  - Selectize: jQuery dependency (ESKİ!)");
-    alert("");
-    alert("✅ ÖNERİ: Context7 Live Search kullan (3KB, Vanilla JS)");
-    alert("📍 Dosya: public/js/context7-live-search-simple.js");
+if (code.includes('import') && code.match(/react-select|choices\.js|selectize|select2/i)) {
+    alert('❌ YASAK KÜTÜPHANE TESPİT EDİLDİ!');
+    alert('Bu kütüphane Context7 kurallarına aykırı:');
+    alert('  - React-Select: 170KB (ÇOK AĞIR!)');
+    alert('  - Choices.js: 48KB (AĞIR!)');
+    alert('  - Select2: jQuery dependency (ESKİ!)');
+    alert('  - Selectize: jQuery dependency (ESKİ!)');
+    alert('');
+    alert('✅ ÖNERİ: Context7 Live Search kullan (3KB, Vanilla JS)');
+    alert('📍 Dosya: public/js/context7-live-search-simple.js');
 
-    return "BLOCKED";
+    return 'BLOCKED';
 }
 ```
 
@@ -172,7 +169,6 @@ echo "✅ Bundle size: ${CONTEXT7_SIZE} bytes (< 5KB) ✅"
 ### **Öğrenen MCP'ler:**
 
 1. **Yalıhan Bekçi:**
-
     - ✅ Vanilla JS Only Rule
     - ✅ Heavy library detection
     - ✅ Column mismatch detection
@@ -180,7 +176,6 @@ echo "✅ Bundle size: ${CONTEXT7_SIZE} bytes (< 5KB) ✅"
     - ✅ Auto-suggest Context7 Live Search
 
 2. **Memory MCP:**
-
     - ✅ Vanilla JS Only Rule entity
     - ✅ Context7 Live Search Pattern entity
     - ✅ Kisiler Table Schema entity
@@ -199,13 +194,13 @@ echo "✅ Bundle size: ${CONTEXT7_SIZE} bytes (< 5KB) ✅"
 
 ### **Sonraki Deployment'ta Kontrol Et:**
 
--   [ ] context7-live-search-simple.js deployed (public/js/)
--   [ ] API endpoints active (/api/kisiler, /api/sites, /api/ilanlar)
--   [ ] All 4 pages include script
--   [ ] No console errors
--   [ ] Bundle size < 50KB
--   [ ] Performance < 500ms
--   [ ] Context7 compliance 100%
+- [ ] context7-live-search-simple.js deployed (public/js/)
+- [ ] API endpoints active (/api/kisiler, /api/sites, /api/ilanlar)
+- [ ] All 4 pages include script
+- [ ] No console errors
+- [ ] Bundle size < 50KB
+- [ ] Performance < 500ms
+- [ ] Context7 compliance 100%
 
 ---
 

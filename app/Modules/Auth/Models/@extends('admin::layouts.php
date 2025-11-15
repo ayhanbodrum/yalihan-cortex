@@ -142,12 +142,12 @@
         // Verileri PHP'den al
         const ilanVerileri = JSON.parse('@json($gunlukIlanSayisi)');
         const kisiVerileri = JSON.parse('@json($gunlukKisiSayisi)');
-        
+
         // Etiketleri ve veri değerlerini ayrıştır
         const labels = ilanVerileri.map(item => item.tarih);
         const ilanSayilari = ilanVerileri.map(item => item.sayi);
         const kisiSayilari = kisiVerileri.map(item => item.sayi);
-        
+
         // Grafik oluştur
         const ctx = document.getElementById('activity-chart').getContext('2d');
         new Chart(ctx, {

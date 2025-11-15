@@ -1,286 +1,281 @@
 {
-    "title": "Duplicate Control System - Yalıhan Bekçi Learning",
-    "version": "1.0.0",
-    "date": "2025-10-12",
-    "status": "active",
-    "description": "AI Settings sayfasında yaşanan çift katman sorunundan öğrenilen duplicate kontrol sistemi",
+  "title": "Duplicate Control System - Yalıhan Bekçi Learning",
+  "version": "1.0.0",
+  "date": "2025-10-12",
+  "status": "active",
+  "description": "AI Settings sayfasında yaşanan çift katman sorunundan öğrenilen duplicate kontrol sistemi",
 
-    "problem_analysis": {
-        "issue": "AI Settings sayfasında çift katman (duplicate) görünüm",
-        "root_cause": "AnythingLLM hem sabit configuration hem de provider seçim kartlarında mevcuttu",
-        "impact": "Kullanıcı deneyimi karışıklığı, gereksiz kod tekrarı",
-        "files_affected": ["resources/views/admin/ai-settings/index.blade.php"]
+  "problem_analysis": {
+    "issue": "AI Settings sayfasında çift katman (duplicate) görünüm",
+    "root_cause": "AnythingLLM hem sabit configuration hem de provider seçim kartlarında mevcuttu",
+    "impact": "Kullanıcı deneyimi karışıklığı, gereksiz kod tekrarı",
+    "files_affected": ["resources/views/admin/ai-settings/index.blade.php"]
+  },
+
+  "detection_patterns": {
+    "visual_duplicates": {
+      "description": "Görsel olarak aynı elementlerin tekrarı",
+      "examples": [
+        "Aynı provider kartının 2 kez görünmesi",
+        "Benzer header'ların tekrarı",
+        "Aynı input group'ların farklı yerlerde bulunması"
+      ],
+      "detection_methods": [
+        "CSS class benzerlikleri",
+        "HTML structure analizi",
+        "Text content karşılaştırması"
+      ]
     },
 
-    "detection_patterns": {
-        "visual_duplicates": {
-            "description": "Görsel olarak aynı elementlerin tekrarı",
-            "examples": [
-                "Aynı provider kartının 2 kez görünmesi",
-                "Benzer header'ların tekrarı",
-                "Aynı input group'ların farklı yerlerde bulunması"
-            ],
-            "detection_methods": [
-                "CSS class benzerlikleri",
-                "HTML structure analizi",
-                "Text content karşılaştırması"
-            ]
-        },
-
-        "functional_duplicates": {
-            "description": "Aynı fonksiyonaliteyi sağlayan farklı implementasyonlar",
-            "examples": [
-                "Provider seçim sisteminin 2 farklı yerde bulunması",
-                "Aynı form'un farklı route'larda tekrarlanması",
-                "Benzer JavaScript fonksiyonlarının tekrarı"
-            ],
-            "detection_methods": [
-                "Route analizi",
-                "JavaScript function mapping",
-                "Form action URL karşılaştırması"
-            ]
-        },
-
-        "code_duplicates": {
-            "description": "Kod seviyesinde tekrarlar",
-            "examples": [
-                "Aynı foreach loop'ların tekrarı",
-                "Benzer HTML blokların kopyalanması",
-                "CSS class'ların duplicate kullanımı"
-            ],
-            "detection_methods": [
-                "Code similarity analysis",
-                "Template inheritance kontrolü",
-                "CSS class usage tracking"
-            ]
-        }
+    "functional_duplicates": {
+      "description": "Aynı fonksiyonaliteyi sağlayan farklı implementasyonlar",
+      "examples": [
+        "Provider seçim sisteminin 2 farklı yerde bulunması",
+        "Aynı form'un farklı route'larda tekrarlanması",
+        "Benzer JavaScript fonksiyonlarının tekrarı"
+      ],
+      "detection_methods": [
+        "Route analizi",
+        "JavaScript function mapping",
+        "Form action URL karşılaştırması"
+      ]
     },
 
-    "prevention_rules": {
-        "template_rules": [
-            {
-                "rule": "Single Source of Truth",
-                "description": "Her UI component için tek kaynak kullan",
-                "example": "Provider kartları için tek foreach loop",
-                "enforcement": "Template inheritance ve component system kullan"
-            },
-            {
-                "rule": "Unique Identifiers",
-                "description": "Tüm elementler için unique ID'ler kullan",
-                "example": "id='provider_google' yerine id='ai_provider_google'",
-                "enforcement": "ID naming convention kontrolü"
-            },
-            {
-                "rule": "Component Reusability",
-                "description": "Tekrar kullanılabilir component'ler oluştur",
-                "example": "ProviderCard component'i oluştur",
-                "enforcement": "Blade component system kullan"
-            }
-        ],
-
-        "css_rules": [
-            {
-                "rule": "No Duplicate Classes",
-                "description": "Aynı CSS class'ını farklı yerlerde tanımlama",
-                "example": ".provider-card sadece bir yerde tanımlı olmalı",
-                "enforcement": "CSS class mapping kontrolü"
-            },
-            {
-                "rule": "Consistent Naming",
-                "description": "Tutarlı CSS naming convention kullan",
-                "example": "ai-provider-card, ai-status-badge",
-                "enforcement": "CSS naming convention validation"
-            }
-        ],
-
-        "javascript_rules": [
-            {
-                "rule": "Function Uniqueness",
-                "description": "Aynı fonksiyonu farklı yerlerde tanımlama",
-                "example": "testProvider() fonksiyonu tek yerde olmalı",
-                "enforcement": "JavaScript function mapping"
-            },
-            {
-                "rule": "Event Handler Deduplication",
-                "description": "Aynı event handler'ı birden fazla kez bind etme",
-                "example": "click event'leri kontrol et",
-                "enforcement": "Event listener tracking"
-            }
-        ]
-    },
-
-    "detection_algorithms": {
-        "html_similarity": {
-            "description": "HTML structure benzerlik analizi",
-            "algorithm": "Levenshtein distance for HTML structures",
-            "threshold": 0.85,
-            "implementation": "DOM tree comparison"
-        },
-
-        "css_class_analysis": {
-            "description": "CSS class kullanım analizi",
-            "algorithm": "Class frequency analysis",
-            "threshold": "> 1 usage for same element type",
-            "implementation": "CSS parser + usage tracker"
-        },
-
-        "text_content_similarity": {
-            "description": "Text content benzerlik kontrolü",
-            "algorithm": "Cosine similarity for text blocks",
-            "threshold": 0.9,
-            "implementation": "Text preprocessing + similarity calculation"
-        }
-    },
-
-    "automated_checks": {
-        "pre_commit_hooks": [
-            {
-                "name": "duplicate-html-check",
-                "command": "php artisan context7:check-duplicates",
-                "description": "HTML duplicate kontrolü",
-                "files": ["*.blade.php"]
-            },
-            {
-                "name": "duplicate-css-check",
-                "command": "php artisan context7:check-css-duplicates",
-                "description": "CSS class duplicate kontrolü",
-                "files": ["*.css"]
-            },
-            {
-                "name": "duplicate-js-check",
-                "command": "php artisan context7:check-js-duplicates",
-                "description": "JavaScript function duplicate kontrolü",
-                "files": ["*.js"]
-            }
-        ],
-
-        "ci_cd_integration": {
-            "stage": "pre-deployment",
-            "checks": [
-                "Template duplicate analysis",
-                "CSS class usage audit",
-                "JavaScript function mapping",
-                "Route duplication check"
-            ]
-        }
-    },
-
-    "learning_patterns": {
-        "ai_settings_case": {
-            "problem": "AnythingLLM hem sabit config hem provider seçim kartında",
-            "solution": "Tek provider seçim sistemi kullan",
-            "lesson": "UI component'leri için Single Source of Truth prensibi",
-            "prevention": "Template inheritance ve component system kullan"
-        },
-
-        "common_scenarios": [
-            {
-                "scenario": "Dropdown menus",
-                "problem": "Aynı dropdown'un farklı sayfalarda tekrarı",
-                "solution": "Shared dropdown component oluştur",
-                "prevention": "Component library kullan"
-            },
-            {
-                "scenario": "Form layouts",
-                "problem": "Benzer form yapılarının tekrarı",
-                "solution": "Form template component'leri",
-                "prevention": "Template inheritance system"
-            },
-            {
-                "scenario": "Status badges",
-                "problem": "Aynı badge component'inin farklı yerlerde tanımlanması",
-                "solution": "Shared badge component",
-                "prevention": "Component registry system"
-            }
-        ]
-    },
-
-    "monitoring_system": {
-        "real_time_checks": {
-            "description": "Geliştirme sırasında real-time duplicate kontrolü",
-            "tools": [
-                "VS Code extension for duplicate detection",
-                "Browser extension for UI duplicate analysis",
-                "Laravel artisan command for template analysis"
-            ]
-        },
-
-        "periodic_audits": {
-            "frequency": "Weekly",
-            "scope": [
-                "All blade templates",
-                "CSS files",
-                "JavaScript files",
-                "Route definitions"
-            ],
-            "reports": [
-                "Duplicate percentage",
-                "Most common duplicate patterns",
-                "Improvement suggestions"
-            ]
-        }
-    },
-
-    "context7_integration": {
-        "rules_addition": {
-            "duplicate_prevention": [
-                "Her UI component için tek kaynak kullan",
-                "CSS class'ları için unique naming convention",
-                "JavaScript fonksiyonları için namespace kullan",
-                "Template inheritance system'i zorunlu"
-            ]
-        },
-
-        "validation_rules": {
-            "html_structure": "Duplicate HTML structure kontrolü",
-            "css_classes": "CSS class uniqueness validation",
-            "js_functions": "JavaScript function deduplication",
-            "template_inheritance": "Template inheritance compliance"
-        }
-    },
-
-    "success_metrics": {
-        "duplicate_reduction": {
-            "target": "< 5% duplicate content",
-            "current": "AI Settings: 100% duplicate-free",
-            "measurement": "Automated duplicate detection"
-        },
-
-        "development_speed": {
-            "target": "No duplicate-related delays",
-            "measurement": "Time spent on duplicate fixes"
-        },
-
-        "code_quality": {
-            "target": "Higher maintainability",
-            "measurement": "Component reusability ratio"
-        }
-    },
-
-    "future_improvements": {
-        "ai_powered_detection": {
-            "description": "AI ile duplicate pattern detection",
-            "implementation": "Machine learning model for code similarity",
-            "timeline": "Q1 2025"
-        },
-
-        "visual_duplicate_detection": {
-            "description": "Görsel duplicate detection",
-            "implementation": "Screenshot comparison + AI analysis",
-            "timeline": "Q2 2025"
-        },
-
-        "automated_refactoring": {
-            "description": "Otomatik duplicate removal",
-            "implementation": "AI-powered code refactoring",
-            "timeline": "Q3 2025"
-        }
-    },
-
-    "documentation": {
-        "developer_guide": "docs/duplicate-prevention-guide.md",
-        "best_practices": "docs/duplicate-prevention-best-practices.md",
-        "case_studies": "docs/duplicate-prevention-case-studies.md",
-        "tools_guide": "docs/duplicate-detection-tools.md"
+    "code_duplicates": {
+      "description": "Kod seviyesinde tekrarlar",
+      "examples": [
+        "Aynı foreach loop'ların tekrarı",
+        "Benzer HTML blokların kopyalanması",
+        "CSS class'ların duplicate kullanımı"
+      ],
+      "detection_methods": [
+        "Code similarity analysis",
+        "Template inheritance kontrolü",
+        "CSS class usage tracking"
+      ]
     }
+  },
+
+  "prevention_rules": {
+    "template_rules": [
+      {
+        "rule": "Single Source of Truth",
+        "description": "Her UI component için tek kaynak kullan",
+        "example": "Provider kartları için tek foreach loop",
+        "enforcement": "Template inheritance ve component system kullan"
+      },
+      {
+        "rule": "Unique Identifiers",
+        "description": "Tüm elementler için unique ID'ler kullan",
+        "example": "id='provider_google' yerine id='ai_provider_google'",
+        "enforcement": "ID naming convention kontrolü"
+      },
+      {
+        "rule": "Component Reusability",
+        "description": "Tekrar kullanılabilir component'ler oluştur",
+        "example": "ProviderCard component'i oluştur",
+        "enforcement": "Blade component system kullan"
+      }
+    ],
+
+    "css_rules": [
+      {
+        "rule": "No Duplicate Classes",
+        "description": "Aynı CSS class'ını farklı yerlerde tanımlama",
+        "example": ".provider-card sadece bir yerde tanımlı olmalı",
+        "enforcement": "CSS class mapping kontrolü"
+      },
+      {
+        "rule": "Consistent Naming",
+        "description": "Tutarlı CSS naming convention kullan",
+        "example": "ai-provider-card, ai-status-badge",
+        "enforcement": "CSS naming convention validation"
+      }
+    ],
+
+    "javascript_rules": [
+      {
+        "rule": "Function Uniqueness",
+        "description": "Aynı fonksiyonu farklı yerlerde tanımlama",
+        "example": "testProvider() fonksiyonu tek yerde olmalı",
+        "enforcement": "JavaScript function mapping"
+      },
+      {
+        "rule": "Event Handler Deduplication",
+        "description": "Aynı event handler'ı birden fazla kez bind etme",
+        "example": "click event'leri kontrol et",
+        "enforcement": "Event listener tracking"
+      }
+    ]
+  },
+
+  "detection_algorithms": {
+    "html_similarity": {
+      "description": "HTML structure benzerlik analizi",
+      "algorithm": "Levenshtein distance for HTML structures",
+      "threshold": 0.85,
+      "implementation": "DOM tree comparison"
+    },
+
+    "css_class_analysis": {
+      "description": "CSS class kullanım analizi",
+      "algorithm": "Class frequency analysis",
+      "threshold": "> 1 usage for same element type",
+      "implementation": "CSS parser + usage tracker"
+    },
+
+    "text_content_similarity": {
+      "description": "Text content benzerlik kontrolü",
+      "algorithm": "Cosine similarity for text blocks",
+      "threshold": 0.9,
+      "implementation": "Text preprocessing + similarity calculation"
+    }
+  },
+
+  "automated_checks": {
+    "pre_commit_hooks": [
+      {
+        "name": "duplicate-html-check",
+        "command": "php artisan context7:check-duplicates",
+        "description": "HTML duplicate kontrolü",
+        "files": ["*.blade.php"]
+      },
+      {
+        "name": "duplicate-css-check",
+        "command": "php artisan context7:check-css-duplicates",
+        "description": "CSS class duplicate kontrolü",
+        "files": ["*.css"]
+      },
+      {
+        "name": "duplicate-js-check",
+        "command": "php artisan context7:check-js-duplicates",
+        "description": "JavaScript function duplicate kontrolü",
+        "files": ["*.js"]
+      }
+    ],
+
+    "ci_cd_integration": {
+      "stage": "pre-deployment",
+      "checks": [
+        "Template duplicate analysis",
+        "CSS class usage audit",
+        "JavaScript function mapping",
+        "Route duplication check"
+      ]
+    }
+  },
+
+  "learning_patterns": {
+    "ai_settings_case": {
+      "problem": "AnythingLLM hem sabit config hem provider seçim kartında",
+      "solution": "Tek provider seçim sistemi kullan",
+      "lesson": "UI component'leri için Single Source of Truth prensibi",
+      "prevention": "Template inheritance ve component system kullan"
+    },
+
+    "common_scenarios": [
+      {
+        "scenario": "Dropdown menus",
+        "problem": "Aynı dropdown'un farklı sayfalarda tekrarı",
+        "solution": "Shared dropdown component oluştur",
+        "prevention": "Component library kullan"
+      },
+      {
+        "scenario": "Form layouts",
+        "problem": "Benzer form yapılarının tekrarı",
+        "solution": "Form template component'leri",
+        "prevention": "Template inheritance system"
+      },
+      {
+        "scenario": "Status badges",
+        "problem": "Aynı badge component'inin farklı yerlerde tanımlanması",
+        "solution": "Shared badge component",
+        "prevention": "Component registry system"
+      }
+    ]
+  },
+
+  "monitoring_system": {
+    "real_time_checks": {
+      "description": "Geliştirme sırasında real-time duplicate kontrolü",
+      "tools": [
+        "VS Code extension for duplicate detection",
+        "Browser extension for UI duplicate analysis",
+        "Laravel artisan command for template analysis"
+      ]
+    },
+
+    "periodic_audits": {
+      "frequency": "Weekly",
+      "scope": ["All blade templates", "CSS files", "JavaScript files", "Route definitions"],
+      "reports": [
+        "Duplicate percentage",
+        "Most common duplicate patterns",
+        "Improvement suggestions"
+      ]
+    }
+  },
+
+  "context7_integration": {
+    "rules_addition": {
+      "duplicate_prevention": [
+        "Her UI component için tek kaynak kullan",
+        "CSS class'ları için unique naming convention",
+        "JavaScript fonksiyonları için namespace kullan",
+        "Template inheritance system'i zorunlu"
+      ]
+    },
+
+    "validation_rules": {
+      "html_structure": "Duplicate HTML structure kontrolü",
+      "css_classes": "CSS class uniqueness validation",
+      "js_functions": "JavaScript function deduplication",
+      "template_inheritance": "Template inheritance compliance"
+    }
+  },
+
+  "success_metrics": {
+    "duplicate_reduction": {
+      "target": "< 5% duplicate content",
+      "current": "AI Settings: 100% duplicate-free",
+      "measurement": "Automated duplicate detection"
+    },
+
+    "development_speed": {
+      "target": "No duplicate-related delays",
+      "measurement": "Time spent on duplicate fixes"
+    },
+
+    "code_quality": {
+      "target": "Higher maintainability",
+      "measurement": "Component reusability ratio"
+    }
+  },
+
+  "future_improvements": {
+    "ai_powered_detection": {
+      "description": "AI ile duplicate pattern detection",
+      "implementation": "Machine learning model for code similarity",
+      "timeline": "Q1 2025"
+    },
+
+    "visual_duplicate_detection": {
+      "description": "Görsel duplicate detection",
+      "implementation": "Screenshot comparison + AI analysis",
+      "timeline": "Q2 2025"
+    },
+
+    "automated_refactoring": {
+      "description": "Otomatik duplicate removal",
+      "implementation": "AI-powered code refactoring",
+      "timeline": "Q3 2025"
+    }
+  },
+
+  "documentation": {
+    "developer_guide": "docs/duplicate-prevention-guide.md",
+    "best_practices": "docs/duplicate-prevention-best-practices.md",
+    "case_studies": "docs/duplicate-prevention-case-studies.md",
+    "tools_guide": "docs/duplicate-detection-tools.md"
+  }
 }

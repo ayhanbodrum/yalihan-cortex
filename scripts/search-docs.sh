@@ -110,4 +110,3 @@ echo -e "${PURPLE}━━━━━━━━━━━━━━━━━━━━�
 echo -e "${GREEN}✅ Arama tamamlandı!${NC}"
 echo -e "${PURPLE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 echo ""
-

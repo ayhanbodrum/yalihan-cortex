@@ -4,12 +4,15 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Services\AI\ImageBasedAIDescriptionService;
+use App\Services\Response\ResponseService;
+use App\Traits\ValidatesApiRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 
 class ImageAIController extends Controller
 {
+    use ValidatesApiRequests;
     protected $imageAIService;
 
     public function __construct(ImageBasedAIDescriptionService $imageAIService)
@@ -22,7 +25,8 @@ class ImageAIController extends Controller
      */
     public function analyzeImage(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        // ✅ REFACTORED: Using ValidatesApiRequests trait
+        $validated = $this->validateRequestWithResponse($request, [
             'image' => 'required|file|image|max:10240', // 10MB max
             'options' => 'sometimes|array',
             'options.detail' => 'sometimes|string|in:low,high,auto',
@@ -32,12 +36,8 @@ class ImageAIController extends Controller
             'options.include_style' => 'sometimes|boolean',
         ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Validation failed',
-                'errors' => $validator->errors()
-            ], 422);
+        if ($validated instanceof \Illuminate\Http\JsonResponse) {
+            return $validated;
         }
 
         try {
@@ -54,25 +54,18 @@ class ImageAIController extends Controller
             Storage::disk('public')->delete($imagePath);
 
             if (!$analysis['success']) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'AI analizi başarısız',
-                    'error' => $analysis['error']
-                ], 500);
+                // ✅ REFACTORED: Using ResponseService
+                return ResponseService::error('AI analizi başarısız', 500, [], null, $analysis['error'] ?? 'Unknown error');
             }
 
-            return response()->json([
-                'success' => true,
+            // ✅ REFACTORED: Using ResponseService
+            return ResponseService::success([
                 'data' => $analysis['analysis'],
                 'raw_analysis' => $analysis['raw_analysis'] ?? null
-            ]);
-
+            ], 'Resim analizi başarıyla tamamlandı');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Resim analizi sırasında hata oluştu',
-                'error' => $e->getMessage()
-            ], 500);
+            // ✅ REFACTORED: Using ResponseService
+            return ResponseService::serverError('Resim analizi sırasında hata oluştu', $e);
         }
     }
 
@@ -81,16 +74,13 @@ class ImageAIController extends Controller
      */
     public function generateTags(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        // ✅ REFACTORED: Using ValidatesApiRequests trait
+        $validated = $this->validateRequestWithResponse($request, [
             'image' => 'required|file|image|max:10240',
         ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Validation failed',
-                'errors' => $validator->errors()
-            ], 422);
+        if ($validated instanceof \Illuminate\Http\JsonResponse) {
+            return $validated;
         }
 
         try {
@@ -101,20 +91,14 @@ class ImageAIController extends Controller
 
             Storage::disk('public')->delete($imagePath);
 
-            return response()->json([
-                'success' => true,
-                'data' => [
-                    'tags' => $tags,
-                    'tag_count' => count($tags)
-                ]
-            ]);
-
+            // ✅ REFACTORED: Using ResponseService
+            return ResponseService::success([
+                'tags' => $tags,
+                'tag_count' => count($tags)
+            ], 'Etiketleme başarıyla tamamlandı');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Etiketleme sırasında hata oluştu',
-                'error' => $e->getMessage()
-            ], 500);
+            // ✅ REFACTORED: Using ResponseService
+            return ResponseService::serverError('Etiketleme sırasında hata oluştu', $e);
         }
     }
 
@@ -123,16 +107,13 @@ class ImageAIController extends Controller
      */
     public function analyzeQuality(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        // ✅ REFACTORED: Using ValidatesApiRequests trait
+        $validated = $this->validateRequestWithResponse($request, [
             'image' => 'required|file|image|max:10240',
         ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Validation failed',
-                'errors' => $validator->errors()
-            ], 422);
+        if ($validated instanceof \Illuminate\Http\JsonResponse) {
+            return $validated;
         }
 
         try {
@@ -144,24 +125,15 @@ class ImageAIController extends Controller
             Storage::disk('public')->delete($imagePath);
 
             if (!$quality['success']) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Kalite analizi başarısız',
-                    'error' => $quality['error']
-                ], 500);
+                // ✅ REFACTORED: Using ResponseService
+                return ResponseService::error('Kalite analizi başarısız', 500, [], null, $quality['error'] ?? 'Unknown error');
             }
 
-            return response()->json([
-                'success' => true,
-                'data' => $quality
-            ]);
-
+            // ✅ REFACTORED: Using ResponseService
+            return ResponseService::success($quality, 'Kalite analizi başarıyla tamamlandı');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Kalite analizi sırasında hata oluştu',
-                'error' => $e->getMessage()
-            ], 500);
+            // ✅ REFACTORED: Using ResponseService
+            return ResponseService::serverError('Kalite analizi sırasında hata oluştu', $e);
         }
     }
 
@@ -170,18 +142,15 @@ class ImageAIController extends Controller
      */
     public function analyzeBatch(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        // ✅ REFACTORED: Using ValidatesApiRequests trait
+        $validated = $this->validateRequestWithResponse($request, [
             'images' => 'required|array|min:1|max:5',
             'images.*' => 'required|file|image|max:10240',
             'options' => 'sometimes|array',
         ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Validation failed',
-                'errors' => $validator->errors()
-            ], 422);
+        if ($validated instanceof \Illuminate\Http\JsonResponse) {
+            return $validated;
         }
 
         try {
@@ -202,20 +171,14 @@ class ImageAIController extends Controller
                 Storage::disk('public')->delete($imagePath);
             }
 
-            return response()->json([
-                'success' => true,
-                'data' => [
-                    'results' => $results,
-                    'total_images' => count($images)
-                ]
-            ]);
-
+            // ✅ REFACTORED: Using ResponseService
+            return ResponseService::success([
+                'results' => $results,
+                'total_images' => count($images)
+            ], 'Toplu resim analizi başarıyla tamamlandı');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Toplu analiz sırasında hata oluştu',
-                'error' => $e->getMessage()
-            ], 500);
+            // ✅ REFACTORED: Using ResponseService
+            return ResponseService::serverError('Toplu analiz sırasında hata oluştu', $e);
         }
     }
 }

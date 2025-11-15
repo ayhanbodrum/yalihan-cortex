@@ -4,12 +4,16 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Services\AIService;
+use App\Services\Response\ResponseService;
+use App\Traits\ValidatesApiRequests;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Validator;
 
 class AIController extends Controller
 {
+    use ValidatesApiRequests;
+
     protected $aiService;
 
     public function __construct(AIService $aiService)
@@ -19,19 +23,16 @@ class AIController extends Controller
 
     public function analyze(Request $request)
     {
-        // FLEXIBLE VALIDATION: Support both old and new formats
-        $validator = Validator::make($request->all(), [
+        // ✅ REFACTORED: Using ValidatesApiRequests trait
+        $validated = $this->validateRequestWithResponse($request, [
             'action' => 'sometimes|string',  // Made optional
             'data' => 'sometimes|array',     // Made optional
             'context' => 'sometimes|array'
         ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Validation failed',
-                'errors' => $validator->errors()
-            ], 422);
+        // If validation fails, response already sent
+        if ($validated instanceof \Illuminate\Http\JsonResponse) {
+            return $validated;
         }
 
         try {
@@ -42,25 +43,21 @@ class AIController extends Controller
             // Simple rule-based analysis (no AI service needed)
             $analysis = $this->simpleAnalysis($data, $context);
 
-            return response()->json([
-                'success' => true,
+            // ✅ REFACTORED: Using ResponseService
+            return ResponseService::success([
                 'analysis' => $analysis,
                 'metadata' => [
                     'cached' => false,
                     'provider' => 'Context7 Rule-Based',
                     'action' => $action
                 ]
-            ]);
-
+            ], 'AI analysis completed successfully');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'AI analysis failed',
-                'error' => $e->getMessage()
-            ], 500);
+            // ✅ REFACTORED: Using ResponseService
+            return ResponseService::serverError('AI analysis failed', $e);
         }
     }
-    
+
     /**
      * Simple rule-based analysis (fallback when AI not configured)
      */
@@ -69,7 +66,7 @@ class AIController extends Controller
         $baslik = $data['baslik'] ?? '';
         $tip = $data['tip'] ?? '';
         $kategoriId = $data['kategori_id'] ?? null;
-        
+
         // Priority logic
         $priority = 'Orta';
         if (stripos($baslik, 'acil') !== false || stripos($baslik, 'urgent') !== false) {
@@ -77,20 +74,20 @@ class AIController extends Controller
         } elseif (stripos($baslik, 'önemli') !== false) {
             $priority = 'Yüksek';
         }
-        
+
         // Estimated time logic
         $estimatedTime = '2-3 gün';
         if ($priority === 'Yüksek') {
             $estimatedTime = '24 saat';
         }
-        
+
         // Category determination
         $category = 'Genel Talep';
         if ($kategoriId) {
             $kategori = \App\Models\IlanKategori::find($kategoriId);
             $category = $kategori->name ?? 'Genel Talep';
         }
-        
+
         // Suggestion
         $suggestion = 'Detaylı lokasyon ve bütçe bilgisi ekleyerek arama sonuçlarınızı iyileştirebilirsiniz.';
         if ($tip === 'Satılık') {
@@ -98,7 +95,7 @@ class AIController extends Controller
         } elseif ($tip === 'Kiralık') {
             $suggestion = 'Kiralık talepte aidat ve depozito beklentilerinizi belirtmeniz önerilir.';
         }
-        
+
         return [
             'category' => $category,
             'priority' => $priority,
@@ -109,17 +106,14 @@ class AIController extends Controller
 
     public function suggest(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        // ✅ REFACTORED: Using ValidatesApiRequests trait
+        $validated = $this->validateRequestWithResponse($request, [
             'context' => 'required|array',
             'type' => 'sometimes|string|in:category,feature,content,general'
         ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Validation failed',
-                'errors' => $validator->errors()
-            ], 422);
+        if ($validated instanceof \Illuminate\Http\JsonResponse) {
+            return $validated;
         }
 
         try {
@@ -128,30 +122,24 @@ class AIController extends Controller
 
             $result = $this->aiService->suggest($context, $type);
 
-            return response()->json($result);
-
+            // ✅ REFACTORED: Using ResponseService
+            return ResponseService::success($result, 'AI suggestion completed successfully');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'AI suggestion failed',
-                'error' => $e->getMessage()
-            ], 500);
+            // ✅ REFACTORED: Using ResponseService
+            return ResponseService::serverError('AI suggestion failed', $e);
         }
     }
 
     public function generate(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        // ✅ REFACTORED: Using ValidatesApiRequests trait
+        $validated = $this->validateRequestWithResponse($request, [
             'prompt' => 'required|string',
             'options' => 'sometimes|array'
         ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Validation failed',
-                'errors' => $validator->errors()
-            ], 422);
+        if ($validated instanceof \Illuminate\Http\JsonResponse) {
+            return $validated;
         }
 
         try {
@@ -160,14 +148,11 @@ class AIController extends Controller
 
             $result = $this->aiService->generate($prompt, $options);
 
-            return response()->json($result);
-
+            // ✅ REFACTORED: Using ResponseService
+            return ResponseService::success($result, 'AI generation completed successfully');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'AI generation failed',
-                'error' => $e->getMessage()
-            ], 500);
+            // ✅ REFACTORED: Using ResponseService
+            return ResponseService::serverError('AI generation failed', $e);
         }
     }
 
@@ -176,17 +161,11 @@ class AIController extends Controller
         try {
             $health = $this->aiService->healthCheck();
 
-            return response()->json([
-                'success' => true,
-                'data' => $health
-            ]);
-
+            // ✅ REFACTORED: Using ResponseService
+            return ResponseService::success($health, 'AI service health check completed');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Health check failed',
-                'error' => $e->getMessage()
-            ], 500);
+            // ✅ REFACTORED: Using ResponseService
+            return ResponseService::serverError('Health check failed', $e);
         }
     }
 
@@ -195,50 +174,37 @@ class AIController extends Controller
         try {
             $providers = $this->aiService->getAvailableProviders();
 
-            return response()->json([
-                'success' => true,
-                'data' => $providers
-            ]);
-
+            // ✅ REFACTORED: Using ResponseService
+            return ResponseService::success($providers, 'AI providers retrieved successfully');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to get providers',
-                'error' => $e->getMessage()
-            ], 500);
+            // ✅ REFACTORED: Using ResponseService
+            return ResponseService::serverError('Failed to get providers', $e);
         }
     }
 
     public function switchProvider(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        // ✅ REFACTORED: Using ValidatesApiRequests trait
+        $validated = $this->validateRequestWithResponse($request, [
             'provider' => 'required|string'
         ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Validation failed',
-                'errors' => $validator->errors()
-            ], 422);
+        if ($validated instanceof \Illuminate\Http\JsonResponse) {
+            return $validated;
         }
 
         try {
             $provider = $request->input('provider');
             $this->aiService->switchProvider($provider);
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Provider switched successfully',
-                'data' => ['provider' => $provider]
-            ]);
-
+            // ✅ REFACTORED: Using ResponseService
+            return ResponseService::success(
+                ['provider' => $provider],
+                'Provider switched successfully'
+            );
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to switch provider',
-                'error' => $e->getMessage()
-            ], 500);
+            // ✅ REFACTORED: Using ResponseService
+            return ResponseService::serverError('Failed to switch provider', $e);
         }
     }
 
@@ -259,35 +225,26 @@ class AIController extends Controller
                 'requests_this_month' => \App\Models\AiLog::whereMonth('created_at', now()->month)->count(),
             ];
 
-            return response()->json([
-                'success' => true,
-                'data' => $stats
-            ]);
-
+            // ✅ REFACTORED: Using ResponseService
+            return ResponseService::success($stats, 'AI statistics retrieved successfully');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to get stats',
-                'error' => $e->getMessage()
-            ], 500);
+            // ✅ REFACTORED: Using ResponseService
+            return ResponseService::serverError('Failed to get stats', $e);
         }
     }
 
     public function getLogs(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        // ✅ REFACTORED: Using ValidatesApiRequests trait
+        $validated = $this->validateRequestWithResponse($request, [
             'limit' => 'sometimes|integer|min:1|max:100',
             'status' => 'sometimes|string|in:success,error',
             'provider' => 'sometimes|string',
             'action' => 'sometimes|string'
         ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Validation failed',
-                'errors' => $validator->errors()
-            ], 422);
+        if ($validated instanceof \Illuminate\Http\JsonResponse) {
+            return $validated;
         }
 
         try {
@@ -309,17 +266,11 @@ class AIController extends Controller
                 ->limit($request->input('limit', 50))
                 ->get();
 
-            return response()->json([
-                'success' => true,
-                'data' => $logs
-            ]);
-
+            // ✅ REFACTORED: Using ResponseService
+            return ResponseService::success($logs, 'AI logs retrieved successfully');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to get logs',
-                'error' => $e->getMessage()
-            ], 500);
+            // ✅ REFACTORED: Using ResponseService
+            return ResponseService::serverError('Failed to get logs', $e);
         }
     }
 
@@ -328,38 +279,59 @@ class AIController extends Controller
      */
     public function suggestTitle(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'category' => 'required|string',
-            'location' => 'required|string',
-            'property_type' => 'required|string',
-            'features' => 'sometimes|array'
-        ]);
+        // ✅ REFACTORED: Using ValidatesApiRequests trait with flexible validation
+        try {
+            $validated = $this->validateRequestFlexible($request, [
+                'category' => 'sometimes|string',
+                'location' => 'sometimes|string',
+                'property_type' => 'sometimes|string',
+                'features' => 'sometimes|array',
+            ], [
+                'category' => ['kategori'],
+                'location' => ['lokasyon'],
+                'property_type' => ['tip'],
+                'features' => ['ozellikler'],
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return ResponseService::validationError($e->errors(), 'Validation failed');
+        }
 
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Validation failed',
-                'errors' => $validator->errors()
-            ], 422);
+        // Normalize input data
+        $category = $validated['category'] ?? 'Gayrimenkul';
+        $location = $validated['location'] ??
+            ($request->input('il') ? ($request->input('il') . ' ' . ($request->input('ilce') ?? '') . ' ' . ($request->input('mahalle') ?? '')) : '');
+        $propertyType = $validated['property_type'] ?? 'Genel';
+        $features = $validated['features'] ?? [];
+
+        // If no essential data provided, return helpful error
+        if (empty($category) && empty($location) && empty($propertyType)) {
+            return ResponseService::error(
+                'En az bir alan (kategori, lokasyon veya tip) gereklidir',
+                422,
+                ['data' => 'Yetersiz veri']
+            );
         }
 
         try {
-            $prompt = $this->buildTitlePrompt($request->all());
-            $result = $this->aiService->suggest($request->all(), 'title');
+            // Use normalized data for prompt building
+            $normalizedData = [
+                'category' => $category,
+                'location' => $location,
+                'property_type' => $propertyType,
+                'features' => $features
+            ];
 
-            return response()->json([
-                'success' => true,
-                'data' => [
-                    'suggestions' => $this->parseTitleSuggestions($result),
-                    'prompt' => $prompt
-                ]
-            ]);
+            $prompt = $this->buildTitlePrompt($normalizedData);
+            $result = $this->aiService->suggest($normalizedData, 'title');
+
+            // ✅ REFACTORED: Using ResponseService
+            return ResponseService::success([
+                'suggestions' => $this->parseTitleSuggestions($result),
+                'prompt' => $prompt
+            ], 'AI başlık önerileri başarıyla oluşturuldu');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'AI başlık önerisi alınamadı',
-                'error' => $e->getMessage()
-            ], 500);
+            // ✅ REFACTORED: Using ResponseService
+            return ResponseService::serverError('AI başlık önerisi alınamadı', $e);
         }
     }
 
@@ -369,7 +341,8 @@ class AIController extends Controller
      */
     public function generateDescriptionOld(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        // ✅ REFACTORED: Using ValidatesApiRequests trait
+        $validated = $this->validateRequestWithResponse($request, [
             'category' => 'required|string',
             'location' => 'required|string',
             'property_type' => 'required|string',
@@ -377,31 +350,22 @@ class AIController extends Controller
             'price' => 'sometimes|numeric'
         ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Validation failed',
-                'errors' => $validator->errors()
-            ], 422);
+        if ($validated instanceof \Illuminate\Http\JsonResponse) {
+            return $validated;
         }
 
         try {
             $prompt = $this->buildDescriptionPrompt($request->all());
             $result = $this->aiService->generate($prompt, ['max_tokens' => 500]);
 
-            return response()->json([
-                'success' => true,
-                'data' => [
-                    'description' => $result,
-                    'prompt' => $prompt
-                ]
-            ]);
+            // ✅ REFACTORED: Using ResponseService
+            return ResponseService::success([
+                'description' => $result,
+                'prompt' => $prompt
+            ], 'AI açıklama başarıyla oluşturuldu (deprecated method)');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'AI açıklama üretilemedi',
-                'error' => $e->getMessage()
-            ], 500);
+            // ✅ REFACTORED: Using ResponseService
+            return ResponseService::serverError('AI açıklama üretilemedi', $e);
         }
     }
 
@@ -411,7 +375,8 @@ class AIController extends Controller
      */
     public function suggestPriceOld(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        // ✅ REFACTORED: Using ValidatesApiRequests trait
+        $validated = $this->validateRequestWithResponse($request, [
             'category' => 'required|string',
             'location' => 'required|string',
             'property_type' => 'required|string',
@@ -419,31 +384,22 @@ class AIController extends Controller
             'size' => 'sometimes|numeric'
         ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Validation failed',
-                'errors' => $validator->errors()
-            ], 422);
+        if ($validated instanceof \Illuminate\Http\JsonResponse) {
+            return $validated;
         }
 
         try {
             $prompt = $this->buildPricePrompt($request->all());
             $result = $this->aiService->analyze($request->all(), ['type' => 'price']);
 
-            return response()->json([
-                'success' => true,
-                'data' => [
-                    'price_suggestion' => $this->parsePriceSuggestion($result),
-                    'prompt' => $prompt
-                ]
-            ]);
+            // ✅ REFACTORED: Using ResponseService
+            return ResponseService::success([
+                'price_suggestion' => $this->parsePriceSuggestion($result),
+                'prompt' => $prompt
+            ], 'AI fiyat önerisi başarıyla oluşturuldu (deprecated method)');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'AI fiyat önerisi alınamadı',
-                'error' => $e->getMessage()
-            ], 500);
+            // ✅ REFACTORED: Using ResponseService
+            return ResponseService::serverError('AI fiyat önerisi alınamadı', $e);
         }
     }
 
@@ -454,49 +410,44 @@ class AIController extends Controller
     {
         try {
             $health = $this->aiService->healthCheck();
-            return response()->json([
-                'success' => true,
-                'data' => $health
-            ]);
+            // ✅ REFACTORED: Using ResponseService
+            return ResponseService::success($health, 'AI service health check completed');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'AI health check failed',
-                'error' => $e->getMessage()
-            ], 500);
+            // ✅ REFACTORED: Using ResponseService
+            return ResponseService::serverError('AI health check failed', $e);
         }
     }
 
     private function buildTitlePrompt($data)
     {
         return "Emlak ilanı için başlık önerileri oluştur:\n" .
-               "Kategori: {$data['category']}\n" .
-               "Konum: {$data['location']}\n" .
-               "Mülk Tipi: {$data['property_type']}\n" .
-               "Özellikler: " . implode(', ', $data['features'] ?? []) . "\n" .
-               "3 farklı başlık önerisi ver.";
+            "Kategori: {$data['category']}\n" .
+            "Konum: {$data['location']}\n" .
+            "Mülk Tipi: {$data['property_type']}\n" .
+            "Özellikler: " . implode(', ', $data['features'] ?? []) . "\n" .
+            "3 farklı başlık önerisi ver.";
     }
 
     private function buildDescriptionPrompt($data)
     {
         return "Emlak ilanı için açıklama yaz:\n" .
-               "Kategori: {$data['category']}\n" .
-               "Konum: {$data['location']}\n" .
-               "Mülk Tipi: {$data['property_type']}\n" .
-               "Özellikler: " . implode(', ', $data['features'] ?? []) . "\n" .
-               "Fiyat: " . ($data['price'] ?? 'Belirtilmemiş') . "\n" .
-               "Profesyonel ve çekici bir açıklama yaz.";
+            "Kategori: {$data['category']}\n" .
+            "Konum: {$data['location']}\n" .
+            "Mülk Tipi: {$data['property_type']}\n" .
+            "Özellikler: " . implode(', ', $data['features'] ?? []) . "\n" .
+            "Fiyat: " . ($data['price'] ?? 'Belirtilmemiş') . "\n" .
+            "Profesyonel ve çekici bir açıklama yaz.";
     }
 
     private function buildPricePrompt($data)
     {
         return "Emlak ilanı için fiyat analizi yap:\n" .
-               "Kategori: {$data['category']}\n" .
-               "Konum: {$data['location']}\n" .
-               "Mülk Tipi: {$data['property_type']}\n" .
-               "Büyüklük: " . ($data['size'] ?? 'Belirtilmemiş') . " m²\n" .
-               "Özellikler: " . implode(', ', $data['features'] ?? []) . "\n" .
-               "Piyasa analizi yaparak fiyat önerisi ver.";
+            "Kategori: {$data['category']}\n" .
+            "Konum: {$data['location']}\n" .
+            "Mülk Tipi: {$data['property_type']}\n" .
+            "Büyüklük: " . ($data['size'] ?? 'Belirtilmemiş') . " m²\n" .
+            "Özellikler: " . implode(', ', $data['features'] ?? []) . "\n" .
+            "Piyasa analizi yaparak fiyat önerisi ver.";
     }
 
     private function parseTitleSuggestions($result)
@@ -558,24 +509,22 @@ class AIController extends Controller
                 ->first();
 
             if (!$stats || $stats->count == 0) {
-                // Varsayılan değerler
-                return response()->json([
-                    'success' => true,
+                // ✅ REFACTORED: Using ResponseService - Varsayılan değerler
+                return ResponseService::success([
                     'price' => [
                         'min' => 500000,
                         'avg' => 1000000,
                         'max' => 2000000
                     ],
-                    'message' => 'Benzer ilan bulunamadı, genel pazar verileri gösteriliyor',
                     'metadata' => [
                         'source' => 'default',
                         'count' => 0
                     ]
-                ]);
+                ], 'Benzer ilan bulunamadı, genel pazar verileri gösteriliyor');
             }
 
-            return response()->json([
-                'success' => true,
+            // ✅ REFACTORED: Using ResponseService
+            return ResponseService::success([
                 'price' => [
                     'min' => round($stats->min, -3), // Round to thousands
                     'avg' => round($stats->avg, -3),
@@ -586,14 +535,10 @@ class AIController extends Controller
                     'count' => $stats->count,
                     'provider' => 'Context7 Market Analysis'
                 ]
-            ]);
-
+            ], 'Fiyat önerisi başarıyla oluşturuldu');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Fiyat önerisi alınamadı',
-                'error' => $e->getMessage()
-            ], 500);
+            // ✅ REFACTORED: Using ResponseService
+            return ResponseService::serverError('Fiyat önerisi alınamadı', $e);
         }
     }
 
@@ -617,20 +562,20 @@ class AIController extends Controller
                 ->when($ilId, fn($q) => $q->where('il_id', $ilId))
                 ->when($ilceId, fn($q) => $q->where('ilce_id', $ilceId))
                 ->when($mahalleId, fn($q) => $q->where('mahalle_id', $mahalleId))
-                ->where('status', 'active')
+                ->where('status', 'Aktif') // Context7: Database değeri
                 ->limit(5)
                 ->get()
                 ->map(function ($ilan) use ($mahalleId, $ilceId, $ilId) {
                     // Basit scoring algoritması
                     $score = 0.5; // Base score
-                    
+
                     if ($ilan->mahalle_id == $mahalleId) $score += 0.3;
                     elseif ($ilan->ilce_id == $ilceId) $score += 0.2;
                     elseif ($ilan->il_id == $ilId) $score += 0.1;
-                    
+
                     if ($ilan->goruntulenme > 100) $score += 0.1;
                     if ($ilan->created_at && $ilan->created_at->diffInDays() < 7) $score += 0.1;
-                    
+
                     return [
                         'id' => $ilan->id,
                         'baslik' => $ilan->baslik,
@@ -641,22 +586,18 @@ class AIController extends Controller
                     ];
                 });
 
-            return response()->json([
-                'success' => true,
+            // ✅ REFACTORED: Using ResponseService
+            return ResponseService::success([
                 'matches' => $ilanlar,
                 'count' => $ilanlar->count(),
                 'metadata' => [
                     'algorithm' => 'Context7 Smart Matching v1.0',
                     'provider' => 'Database + AI Scoring'
                 ]
-            ]);
-
+            ], 'İlan eşleştirmesi başarıyla tamamlandı');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Eşleştirme başarısız',
-                'error' => $e->getMessage()
-            ], 500);
+            // ✅ REFACTORED: Using ResponseService
+            return ResponseService::serverError('Eşleştirme başarısız', $e);
         }
     }
 
@@ -673,17 +614,17 @@ class AIController extends Controller
             $kategoriId = $request->input('kategori_id');
             $ilId = $request->input('il_id');
             $ilceId = $request->input('ilce_id');
-            
+
             // Get kategori name
             $kategori = $kategoriId ? \App\Models\IlanKategori::find($kategoriId) : null;
             $kategoriAdi = $kategori->name ?? 'Emlak';
-            
+
             // Get location names
             $il = $ilId ? \App\Models\Il::find($ilId) : null;
             $ilce = $ilceId ? \App\Models\Ilce::find($ilceId) : null;
             $ilAdi = $il->name ?? '';
             $ilceAdi = $ilce->name ?? '';
-            
+
             // Try AI service first
             $description = null;
             try {
@@ -694,7 +635,7 @@ Kategori: {$kategoriAdi}
 Tip: {$tip}
 Lokasyon: {$ilAdi} {$ilceAdi}
 
-Görev: Müşteri odaklı, profesyonel, 2-3 cümlelik talep açıklaması oluştur. 
+Görev: Müşteri odaklı, profesyonel, 2-3 cümlelik talep açıklaması oluştur.
 Açıklama net olmalı ve müşterinin ne aradığını açıkça belirtmeli.
 
 Sadece açıklamayı döndür, başlık veya ek bilgi ekleme.";
@@ -709,46 +650,44 @@ Sadece açıklamayı döndür, başlık veya ek bilgi ekleme.";
                 // AI failed, use fallback
                 $description = null;
             }
-            
+
             // Fallback: Rule-based description generation
             if (!$description) {
                 $description = $this->generateDescriptionFallback($baslik, $tip, $kategoriAdi, $ilAdi, $ilceAdi);
             }
-            
+
             // Clean up the result
             $description = strip_tags($description);
             $description = trim($description);
 
-            return response()->json([
-                'success' => true,
+            // ✅ REFACTORED: Using ResponseService
+            return ResponseService::success([
                 'description' => $description,
                 'metadata' => [
                     'provider' => $description ? 'Context7 Rule-Based' : 'Fallback',
                     'duration' => 0,
                     'tokens' => 0
                 ]
-            ]);
-
+            ], 'AI açıklama başarıyla oluşturuldu');
         } catch (\Exception $e) {
-            // Ultimate fallback
-            return response()->json([
-                'success' => true,
+            // ✅ REFACTORED: Using ResponseService - Ultimate fallback
+            return ResponseService::success([
                 'description' => 'Profesyonel bir emlak talebi. Detaylar için lütfen bizi arayın.',
                 'metadata' => [
                     'provider' => 'Emergency Fallback',
                     'error' => $e->getMessage()
                 ]
-            ]);
+            ], 'Açıklama oluşturuldu (fallback)');
         }
     }
-    
+
     /**
      * Fallback description generator (rule-based, no AI)
      */
     private function generateDescriptionFallback($baslik, $tip, $kategori, $il, $ilce)
     {
         $parts = [];
-        
+
         // Opening
         if ($tip === 'Satılık') {
             $parts[] = "Satılık {$kategori} arayışındayız.";
@@ -759,17 +698,17 @@ Sadece açıklamayı döndür, başlık veya ek bilgi ekleme.";
         } else {
             $parts[] = "{$kategori} arayışımız var.";
         }
-        
+
         // Location
         if ($il && $ilce) {
             $parts[] = "Lokasyon olarak {$il}, {$ilce} bölgesini tercih ediyoruz.";
         } elseif ($il) {
             $parts[] = "{$il} ilinde araştırma yapıyoruz.";
         }
-        
+
         // Closing
         $parts[] = "İlginize teşekkür ederiz, detaylı bilgi için iletişime geçebilirsiniz.";
-        
+
         return implode(' ', $parts);
     }
 }

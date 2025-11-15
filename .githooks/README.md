@@ -9,15 +9,18 @@
 ## 🔧 KURULU HOOK'LAR
 
 ### **pre-commit - Field Sync Validation**
+
 **Dosya:** `.git/hooks/pre-commit`  
 **Durum:** ✅ Aktif
 
 **Ne Yapar:**
+
 - Her commit öncesi `php artisan fields:validate` çalıştırır
 - Tutarsızlık varsa uyarı verir
 - Kullanıcıya commit'e devam edip etmeme seçeneği sunar
 
 **Kullanım:**
+
 ```bash
 # Normal commit
 git add .
@@ -29,6 +32,7 @@ git commit -m "message"
 ```
 
 **Geçici Devre Dışı Bırakma:**
+
 ```bash
 # Hook'u atla (önerilmez)
 git commit --no-verify -m "message"
@@ -39,6 +43,7 @@ git commit --no-verify -m "message"
 ## 📋 HOOK KURULUM KOMUTLARI
 
 ### **Manuel Kurulum:**
+
 ```bash
 # Hook dosyasını kopyala
 cp .githooks/pre-commit .git/hooks/pre-commit
@@ -51,6 +56,7 @@ chmod +x .git/hooks/pre-commit
 ```
 
 ### **Otomatik Kurulum (Tüm team için):**
+
 ```bash
 # Git hooks dizinini ayarla
 git config core.hooksPath .githooks
@@ -110,6 +116,7 @@ echo "🔍 Field Sync Validation çalıştırılıyor..."
 ## 🚀 DİĞER KULLANIŞLI HOOK'LAR
 
 ### **pre-push - Linter ve Tests**
+
 ```bash
 #!/bin/bash
 echo "🧪 Tests çalıştırılıyor..."
@@ -123,6 +130,7 @@ fi
 ```
 
 ### **commit-msg - Conventional Commits**
+
 ```bash
 #!/bin/bash
 commit_msg=$(cat "$1")
@@ -151,4 +159,3 @@ fi
 
 **Son Güncelleme:** 1 Kasım 2025  
 **Durum:** ✅ Aktif, Production Ready
-

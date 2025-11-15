@@ -40,7 +40,7 @@ echo ""
 for file in "${files[@]}"; do
     ((total++))
     filepath="docs/ai-training/$file"
-    
+
     if [ -f "$filepath" ]; then
         ((found++))
         size=$(wc -c < "$filepath" | tr -d ' ')

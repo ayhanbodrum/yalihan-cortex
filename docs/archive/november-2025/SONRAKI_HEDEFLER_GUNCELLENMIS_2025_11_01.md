@@ -10,6 +10,7 @@
 ## ✅ BUGÜN TAMAMLANANLAR (1 Kasım 2025)
 
 ### **Sabah - İlan Yönetimi 10 Hata Düzeltmesi:**
+
 - ✅ Özellik Kategorileri JSON bug (500 → 200 OK)
 - ✅ FeatureCategory model cast
 - ✅ İlanlar sort functionality
@@ -20,6 +21,7 @@
 - ✅ Özellik Kategorileri: applies_to kolonu
 
 ### **Akşam - Field Strategy System (3 saat):**
+
 - ✅ Field Sync Validation system (command + service)
 - ✅ Arsa extended fields migration (6 alan)
 - ✅ Konut critical fields migration (2 alan)
@@ -29,6 +31,7 @@
 - ✅ Ignore list improved (77 false positive → 0)
 
 ### **Yalıhan Bekçi Milestone:**
+
 - ✅ Dropdown fix (%100 compliance - 626 fix)
 
 ---
@@ -36,29 +39,33 @@
 ## 🔥 TIER 1: HEMEN YAPILACAKLAR (2 Saat)
 
 ### **1. İlan Create/Edit Form - Features Component** ⏱️ 1.5 saat
+
 **Öncelik:** 🔥 HIGH  
 **Durum:** NOT STARTED
 
 **Ne Yapılacak:**
+
 - Yazlık amenities gösterimi (16 feature)
 - Checkbox/select component
 - Form submission'da features kaydetme
 - İlan detay sayfasında features gösterimi
 
 **Dosyalar:**
+
 ```yaml
 Create:
-  - resources/views/admin/ilanlar/partials/yazlik-features.blade.php
-  - resources/js/modules/features-manager.js (optional)
+    - resources/views/admin/ilanlar/partials/yazlik-features.blade.php
+    - resources/js/modules/features-manager.js (optional)
 
 Update:
-  - resources/views/admin/ilanlar/create.blade.php (import partial)
-  - resources/views/admin/ilanlar/edit.blade.php (import partial)
-  - app/Http/Controllers/Admin/IlanController.php (features save logic)
-  - resources/views/admin/ilanlar/show.blade.php (features display)
+    - resources/views/admin/ilanlar/create.blade.php (import partial)
+    - resources/views/admin/ilanlar/edit.blade.php (import partial)
+    - app/Http/Controllers/Admin/IlanController.php (features save logic)
+    - resources/views/admin/ilanlar/show.blade.php (features display)
 ```
 
 **Beklenen Sonuç:**
+
 - ✅ Yazlık ilan oluştururken amenities seçilebilir
 - ✅ Features database'e kaydedilir (ilan_feature pivot)
 - ✅ İlan detayında features görünür
@@ -66,6 +73,7 @@ Update:
 ---
 
 ### **2. Field Dependencies Güncelleme (Admin Panel)** ⏱️ 30 dakika
+
 **Öncelik:** 🔥 HIGH  
 **Durum:** NOT STARTED
 
@@ -73,6 +81,7 @@ Update:
 8 yeni field'ı Field Dependencies'e ekle:
 
 **Arsa (6):**
+
 - Cephe Sayısı (cephe_sayisi) - select
 - İfraz Durumu (ifraz_durumu) - select
 - Tapu Durumu (tapu_durumu) - select
@@ -81,15 +90,18 @@ Update:
 - Kat Karşılığı (kat_karsiligi) - boolean
 
 **Konut (2):**
+
 - Tapu Tipi (tapu_tipi) - select
 - Krediye Uygun (krediye_uygun) - boolean
 
 **Admin Panel:**
+
 ```
 http://127.0.0.1:8000/admin/property-type-manager/3/field-dependencies
 ```
 
 **Beklenen Sonuç:**
+
 - ✅ php artisan fields:validate → Eksik: 49 → ~20
 
 ---
@@ -97,10 +109,12 @@ http://127.0.0.1:8000/admin/property-type-manager/3/field-dependencies
 ## ⚡ TIER 2: BU HAFTA YAPILACAKLAR (8 Saat)
 
 ### **3. Bulk Actions UI (İlanlar + My-Listings)** ⏱️ 2 saat
+
 **Öncelik:** ⚡ MEDIUM  
 **Durum:** NOT STARTED
 
 **Features:**
+
 - Checkbox (every row + "Select All")
 - Bulk action dropdown (Delete, Activate, Deactivate, Draft)
 - Confirm modal
@@ -108,6 +122,7 @@ http://127.0.0.1:8000/admin/property-type-manager/3/field-dependencies
 - Loading state + progress indicator
 
 **Controller:**
+
 ```php
 // IlanController.php
 public function bulkAction(Request $request)
@@ -116,7 +131,7 @@ public function bulkAction(Request $request)
         'ids' => 'required|array',
         'action' => 'required|in:delete,activate,deactivate,draft',
     ]);
-    
+
     switch ($validated['action']) {
         case 'delete':
             Ilan::whereIn('id', $validated['ids'])->delete();
@@ -126,12 +141,13 @@ public function bulkAction(Request $request)
             break;
         // ...
     }
-    
+
     return response()->json(['success' => true]);
 }
 ```
 
 **Beklenen Sonuç:**
+
 - ✅ Çoklu ilan seçimi
 - ✅ Toplu status değiştirme
 - ✅ Toplu silme (confirm ile)
@@ -139,33 +155,36 @@ public function bulkAction(Request $request)
 ---
 
 ### **4. Inline Status Toggle** ⏱️ 2 saat
+
 **Öncelik:** ⚡ MEDIUM  
 **Durum:** NOT STARTED
 
 **Features:**
+
 - Click status badge → dropdown açılır
 - Status seçenekleri (Active, Pending, Draft, Inactive)
 - AJAX update (no page reload)
 - Instant visual feedback (badge rengi değişir)
 
 **Implementation:**
+
 ```javascript
 function createStatusToggle(ilanId, currentStatus) {
     return {
         open: false,
         currentStatus: currentStatus,
-        
+
         async changeStatus(newStatus) {
             try {
                 const response = await fetch(`/admin/ilanlar/${ilanId}/status`, {
                     method: 'PATCH',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': csrf
+                        'X-CSRF-TOKEN': csrf,
                     },
-                    body: JSON.stringify({ status: newStatus })
+                    body: JSON.stringify({ status: newStatus }),
                 });
-                
+
                 if (response.ok) {
                     this.currentStatus = newStatus;
                     window.toast.success('Status updated');
@@ -174,22 +193,25 @@ function createStatusToggle(ilanId, currentStatus) {
                 window.toast.error('Failed to update status');
             }
             this.open = false;
-        }
-    }
+        },
+    };
 }
 ```
 
 **Beklenen Sonuç:**
+
 - ✅ Hızlı status değiştirme (edit sayfasına gitmeden)
 - ✅ Instant feedback
 
 ---
 
 ### **5. Draft Auto-save (Create Form)** ⏱️ 3 saat
+
 **Öncelik:** ⚡ MEDIUM  
 **Durum:** NOT STARTED
 
 **Features:**
+
 - localStorage backup (every 30s)
 - "Unsaved changes" warning on browser close
 - "Restore Draft" button on page load
@@ -197,32 +219,36 @@ function createStatusToggle(ilanId, currentStatus) {
 - Progress indicator (form completion %)
 
 **Implementation:**
+
 ```javascript
 const DraftManager = {
     interval: null,
-    
+
     init() {
         this.loadDraft();
         this.startAutoSave();
         this.preventDataLoss();
     },
-    
+
     startAutoSave() {
         this.interval = setInterval(() => {
             this.saveDraft();
         }, 30000); // 30 seconds
     },
-    
+
     saveDraft() {
         const formData = new FormData(document.getElementById('ilan-create-form'));
         const data = Object.fromEntries(formData);
-        
-        localStorage.setItem('ilan_draft', JSON.stringify({
-            data: data,
-            timestamp: Date.now()
-        }));
+
+        localStorage.setItem(
+            'ilan_draft',
+            JSON.stringify({
+                data: data,
+                timestamp: Date.now(),
+            })
+        );
     },
-    
+
     loadDraft() {
         const draft = localStorage.getItem('ilan_draft');
         if (draft) {
@@ -230,7 +256,7 @@ const DraftManager = {
             showRestoreButton();
         }
     },
-    
+
     preventDataLoss() {
         window.addEventListener('beforeunload', (e) => {
             if (this.hasUnsavedChanges()) {
@@ -238,33 +264,37 @@ const DraftManager = {
                 e.returnValue = 'Kaydedilmemiş değişiklikler var!';
             }
         });
-    }
+    },
 };
 ```
 
 **Beklenen Sonuç:**
+
 - ✅ Data loss önlenir
 - ✅ Kullanıcı kaldığı yerden devam edebilir
 
 ---
 
 ### **6. Real-time Stats Update** ⏱️ 1 saat
+
 **Öncelik:** 📊 LOW  
 **Durum:** NOT STARTED
 
 **Features:**
+
 - Auto-refresh every 30 seconds
 - Smooth number animations (countUp.js)
 - Loading indicator
 - No full page reload
 
 **Implementation:**
+
 ```javascript
 setInterval(async () => {
     try {
         const response = await fetch('/admin/ilanlar/stats');
         const stats = await response.json();
-        
+
         // Animate stats
         animateNumber('total-count', stats.total);
         animateNumber('active-count', stats.active);
@@ -276,6 +306,7 @@ setInterval(async () => {
 ```
 
 **Beklenen Sonuç:**
+
 - ✅ Live statistics
 - ✅ Smooth animations
 
@@ -284,6 +315,7 @@ setInterval(async () => {
 ## 📊 TIER 3: GELECEK HAFTA (16 Saat)
 
 ### **7. Multi-step Form Wizard (Create)** ⏱️ 8 saat
+
 - Step 1: Temel Bilgiler
 - Step 2: Konum
 - Step 3: Fiyat & Özellikler
@@ -291,17 +323,20 @@ setInterval(async () => {
 - Step 5: Önizleme & Yayınla
 
 ### **8. Advanced Search/Filters** ⏱️ 4 saat
+
 - Multi-select filters
 - Price range slider
 - Map-based search
 - Saved searches
 
 ### **9. İlan Duplicate Feature** ⏱️ 2 saat
+
 - Copy existing listing
 - Auto-fill form
 - Modify & save as new
 
 ### **10. İlan Analytics Dashboard** ⏱️ 2 saat
+
 - Görüntülenme grafiği
 - Favori eklenme sayısı
 - Lead conversion rate
@@ -312,6 +347,7 @@ setInterval(async () => {
 ## 🎯 ÖNERİLEN AKSIYON PLANI
 
 ### **BUGÜN (Akşam - 2 saat):**
+
 ```yaml
 Priority 1: Features Component (1.5 saat) 🔥
   ├─ Yazlık amenities form component
@@ -325,27 +361,29 @@ Priority 2: Field Dependencies Update (30 dakika) 🔥
 ```
 
 ### **YARIN (6 saat):**
+
 ```yaml
 Priority 3: Bulk Actions (2 saat) ⚡
-  ├─ Checkbox sistemi
-  ├─ Bulk action dropdown
-  ├─ Controller endpoint
-  └─ AJAX implementation
+    ├─ Checkbox sistemi
+    ├─ Bulk action dropdown
+    ├─ Controller endpoint
+    └─ AJAX implementation
 
 Priority 4: Inline Status Toggle (2 saat) ⚡
-  ├─ Clickable status badges
-  ├─ Dropdown menu
-  ├─ AJAX update
-  └─ Instant feedback
+    ├─ Clickable status badges
+    ├─ Dropdown menu
+    ├─ AJAX update
+    └─ Instant feedback
 
 Priority 5: Draft Auto-save (2 saat) ⚡
-  ├─ localStorage implementation
-  ├─ Auto-save interval
-  ├─ Restore functionality
-  └─ Data loss prevention
+    ├─ localStorage implementation
+    ├─ Auto-save interval
+    ├─ Restore functionality
+    └─ Data loss prevention
 ```
 
 ### **BU HAFTA (8 saat):**
+
 ```yaml
 Priority 6: Real-time Stats (1 saat) 📊
 Priority 7: Advanced Features (7 saat) 🚀
@@ -356,26 +394,29 @@ Priority 7: Advanced Features (7 saat) 🚀
 ## 📊 BEKLENEN METRIKLER
 
 ### **Bugün Sonrası (2 saat):**
-| Metrik | Önce | Sonra | İyileşme |
-|--------|------|-------|----------|
-| Field Coverage | 85% | 95% | ✅ +10% |
-| Features System | 0% | 100% | ✅ NEW |
-| Field Validation | Manual | Automated | ✅ %100 |
-| Documentation | Good | Excellent | ✅ +7 files |
+
+| Metrik           | Önce   | Sonra     | İyileşme    |
+| ---------------- | ------ | --------- | ----------- |
+| Field Coverage   | 85%    | 95%       | ✅ +10%     |
+| Features System  | 0%     | 100%      | ✅ NEW      |
+| Field Validation | Manual | Automated | ✅ %100     |
+| Documentation    | Good   | Excellent | ✅ +7 files |
 
 ### **Yarın Sonrası (6 saat):**
-| Metrik | Önce | Sonra | İyileşme |
-|--------|------|-------|----------|
-| Bulk Operations | None | Full | ✅ NEW |
-| Quick Status Change | None | Inline | ✅ NEW |
-| Data Loss Prevention | None | Auto-save | ✅ NEW |
-| UX Score | 85/100 | 95/100 | ✅ +10 |
+
+| Metrik               | Önce   | Sonra     | İyileşme |
+| -------------------- | ------ | --------- | -------- |
+| Bulk Operations      | None   | Full      | ✅ NEW   |
+| Quick Status Change  | None   | Inline    | ✅ NEW   |
+| Data Loss Prevention | None   | Auto-save | ✅ NEW   |
+| UX Score             | 85/100 | 95/100    | ✅ +10   |
 
 ### **Bu Hafta Sonrası (8 saat):**
-| Metrik | Önce | Sonra | İyileşme |
-|--------|------|-------|----------|
-| Live Stats | None | Real-time | ✅ NEW |
-| Overall Score | 90/100 | 98/100 | ✅ +8 |
+
+| Metrik        | Önce   | Sonra     | İyileşme |
+| ------------- | ------ | --------- | -------- |
+| Live Stats    | None   | Real-time | ✅ NEW   |
+| Overall Score | 90/100 | 98/100    | ✅ +8    |
 
 ---
 
@@ -416,8 +457,8 @@ Priority 7: Advanced Features (7 saat) 🚀
                         @if($feature->type === 'boolean')
                             {{-- Boolean (Checkbox) --}}
                             <label class="flex items-center p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-all duration-200 cursor-pointer">
-                                <input type="checkbox" 
-                                       name="features[{{ $feature->id }}]" 
+                                <input type="checkbox"
+                                       name="features[{{ $feature->id }}]"
                                        value="1"
                                        {{ in_array($feature->id, $selectedFeatures) ? 'checked' : '' }}
                                        class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
@@ -432,13 +473,13 @@ Priority 7: Advanced Features (7 saat) 🚀
                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                     {{ $feature->name }}
                                 </label>
-                                <select style="color-scheme: light dark;" 
-                                        name="features[{{ $feature->id }}]" 
+                                <select style="color-scheme: light dark;"
+                                        name="features[{{ $feature->id }}]"
                                         class="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 transition-all duration-200">
                                     <option value="">Seçin...</option>
                                     @php
-                                        $options = is_string($feature->options) 
-                                            ? json_decode($feature->options, true) 
+                                        $options = is_string($feature->options)
+                                            ? json_decode($feature->options, true)
                                             : $feature->options;
                                     @endphp
                                     @if(is_array($options))
@@ -458,7 +499,7 @@ Priority 7: Advanced Features (7 saat) 🚀
                                         <span class="text-gray-500">({{ $feature->unit }})</span>
                                     @endif
                                 </label>
-                                <input type="number" 
+                                <input type="number"
                                        name="features[{{ $feature->id }}]"
                                        placeholder="{{ $feature->name }}"
                                        class="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 transition-all duration-200">
@@ -486,6 +527,7 @@ Priority 7: Advanced Features (7 saat) 🚀
 **Dosya:** `app/Http/Controllers/Admin/IlanController.php`
 
 **store() methoduna ekle:**
+
 ```php
 // Features kaydetme
 if ($request->has('features')) {
@@ -501,11 +543,12 @@ if ($request->has('features')) {
 ```
 
 **update() methoduna ekle:**
+
 ```php
 // Features güncelleme
 if ($request->has('features')) {
     $ilan->features()->detach(); // Önce tümünü sil
-    
+
     foreach ($request->features as $featureId => $value) {
         if ($value && $value !== '') {
             $ilan->features()->attach($featureId, [
@@ -561,6 +604,7 @@ if ($request->has('features')) {
 ## 📋 IMPLEMENTATION CHECKLIST
 
 ### **Bugün (2 saat):**
+
 ```bash
 [ ] 1. Yazlık features component oluştur (30 dk)
 [ ] 2. Create/Edit form'a ekle (20 dk)
@@ -572,6 +616,7 @@ if ($request->has('features')) {
 ```
 
 ### **Yarın (6 saat):**
+
 ```bash
 [ ] 8. Bulk actions UI + backend (2 saat)
 [ ] 9. Inline status toggle (2 saat)
@@ -583,6 +628,7 @@ if ($request->has('features')) {
 ## ✅ SUCCESS CRITERIA
 
 **Bugün Sonunda:**
+
 ```yaml
 ✅ Yazlık ilan oluştururken amenities seçilebiliyor
 ✅ Features database'e kaydediliyor
@@ -594,6 +640,7 @@ if ($request->has('features')) {
 ```
 
 **Yarın Sonunda:**
+
 ```yaml
 ✅ Toplu ilan işlemleri çalışıyor
 ✅ Hızlı status değiştirme aktif
@@ -611,7 +658,6 @@ if ($request->has('features')) {
 2️⃣ **Field Dependencies Update** (30 dk) - Admin Panel 8 field 🔥  
 3️⃣ **Bulk Actions** (2 saat) - Toplu işlemler ⚡  
 4️⃣ **Inline Status Toggle** (2 saat) - Hızlı status ⚡  
-5️⃣ **Draft Auto-save** (2 saat) - Data loss prevention ⚡  
+5️⃣ **Draft Auto-save** (2 saat) - Data loss prevention ⚡
 
 **Numarayı söyle veya "1 ve 2 beraber" de, hemen başlayalım!** 🚀
-

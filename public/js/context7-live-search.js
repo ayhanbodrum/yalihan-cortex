@@ -10,14 +10,14 @@
  */
 
 // Prevent multiple class declarations
-if (typeof window.Context7LiveSearch === "undefined") {
+if (typeof window.Context7LiveSearch === 'undefined') {
     window.Context7LiveSearch = class Context7LiveSearch {
         constructor(options = {}) {
             this.defaultOptions = {
                 debounceDelay: 300,
                 minQueryLength: 2,
                 maxResults: 20,
-                apiBaseUrl: "/api/live-search",
+                apiBaseUrl: '/api/live-search',
                 animationDuration: 200,
                 showSearchHints: true,
                 enableKeyboardNavigation: true,
@@ -38,7 +38,7 @@ if (typeof window.Context7LiveSearch === "undefined") {
         initializeSystem() {
             this.setupGlobalEventListeners();
             this.initializeSearchComponents();
-            console.log("🔍 Context7 Live Search System initialized");
+            console.log('🔍 Context7 Live Search System initialized');
         }
 
         /**
@@ -46,15 +46,15 @@ if (typeof window.Context7LiveSearch === "undefined") {
          */
         setupGlobalEventListeners() {
             // ESC tuşu ile dropdown'ları kapat
-            document.addEventListener("keydown", (e) => {
-                if (e.key === "Escape") {
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
                     this.hideAllDropdowns();
                 }
             });
 
             // Sayfa dışına tıklama ile dropdown'ları kapat
-            document.addEventListener("click", (e) => {
-                if (!e.target.closest(".context7-live-search")) {
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.context7-live-search')) {
                     this.hideAllDropdowns();
                 }
             });
@@ -65,32 +65,24 @@ if (typeof window.Context7LiveSearch === "undefined") {
          */
         initializeSearchComponents() {
             // Kişi arama bileşenleri
-            document
-                .querySelectorAll('[data-context7-search="kisiler"]')
-                .forEach((element) => {
-                    this.initializeSearchInstance(element, "kisiler");
-                });
+            document.querySelectorAll('[data-context7-search="kisiler"]').forEach((element) => {
+                this.initializeSearchInstance(element, 'kisiler');
+            });
 
             // Danışman arama bileşenleri
-            document
-                .querySelectorAll('[data-context7-search="danismanlar"]')
-                .forEach((element) => {
-                    this.initializeSearchInstance(element, "danismanlar");
-                });
+            document.querySelectorAll('[data-context7-search="danismanlar"]').forEach((element) => {
+                this.initializeSearchInstance(element, 'danismanlar');
+            });
 
             // Site arama bileşenleri
-            document
-                .querySelectorAll('[data-context7-search="sites"]')
-                .forEach((element) => {
-                    this.initializeSearchInstance(element, "sites");
-                });
+            document.querySelectorAll('[data-context7-search="sites"]').forEach((element) => {
+                this.initializeSearchInstance(element, 'sites');
+            });
 
             // Birleşik arama bileşenleri
-            document
-                .querySelectorAll('[data-context7-search="unified"]')
-                .forEach((element) => {
-                    this.initializeSearchInstance(element, "unified");
-                });
+            document.querySelectorAll('[data-context7-search="unified"]').forEach((element) => {
+                this.initializeSearchInstance(element, 'unified');
+            });
         }
 
         /**
@@ -103,7 +95,7 @@ if (typeof window.Context7LiveSearch === "undefined") {
                 element: element,
                 searchType: searchType,
                 isLoading: false,
-                currentQuery: "",
+                currentQuery: '',
                 currentResults: [],
                 selectedIndex: -1,
                 dropdown: null,
@@ -126,25 +118,22 @@ if (typeof window.Context7LiveSearch === "undefined") {
             const input = instance.element;
 
             // Input event'leri
-            input.addEventListener("input", (e) => {
+            input.addEventListener('input', (e) => {
                 this.handleInput(instance, e.target.value);
             });
 
-            input.addEventListener("keydown", (e) => {
+            input.addEventListener('keydown', (e) => {
                 this.handleKeyDown(instance, e);
             });
 
-            input.addEventListener("focus", () => {
+            input.addEventListener('focus', () => {
                 this.showDropdown(instance);
             });
 
-            input.addEventListener("blur", (e) => {
+            input.addEventListener('blur', (e) => {
                 // Dropdown'a tıklama kontrolü için gecikme
                 setTimeout(() => {
-                    if (
-                        !e.relatedTarget ||
-                        !e.relatedTarget.closest(".context7-search-dropdown")
-                    ) {
+                    if (!e.relatedTarget || !e.relatedTarget.closest('.context7-search-dropdown')) {
                         this.hideDropdown(instance);
                     }
                 }, 150);
@@ -191,29 +180,26 @@ if (typeof window.Context7LiveSearch === "undefined") {
             try {
                 const apiUrl = this.buildApiUrl(instance);
                 const response = await fetch(apiUrl, {
-                    method: "GET",
+                    method: 'GET',
                     headers: {
-                        "X-Requested-With": "XMLHttpRequest",
-                        Accept: "application/json",
-                        "Content-Type": "application/json",
+                        'X-Requested-With': 'XMLHttpRequest',
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
                     },
                 });
 
                 const data = await response.json();
 
                 if (data.success) {
-                    instance.currentResults = this.processResults(
-                        data,
-                        instance
-                    );
+                    instance.currentResults = this.processResults(data, instance);
                     this.renderResults(instance);
                     this.showDropdown(instance);
                 } else {
-                    console.error("Context7 Live Search Error:", data.error);
+                    console.error('Context7 Live Search Error:', data.error);
                     this.hideDropdown(instance);
                 }
             } catch (error) {
-                console.error("Context7 Live Search Request Failed:", error);
+                console.error('Context7 Live Search Request Failed:', error);
                 this.hideDropdown(instance);
             } finally {
                 instance.isLoading = false;
@@ -226,22 +212,20 @@ if (typeof window.Context7LiveSearch === "undefined") {
          */
         buildApiUrl(instance) {
             // Hibrit API kullan (Select2, Context7, React Select uyumlu)
-            const baseUrl = "/api/hybrid-search";
+            const baseUrl = '/api/hybrid-search';
             const params = new URLSearchParams({
                 q: instance.currentQuery,
                 limit: instance.config.maxResults || this.options.maxResults,
-                format: "context7",
+                format: 'context7',
             });
 
             // Context7 uyumlu ek parametreler
             if (instance.config.filters) {
-                Object.entries(instance.config.filters).forEach(
-                    ([key, value]) => {
-                        if (value !== null && value !== undefined) {
-                            params.append(key, value);
-                        }
+                Object.entries(instance.config.filters).forEach(([key, value]) => {
+                    if (value !== null && value !== undefined) {
+                        params.append(key, value);
                     }
-                );
+                });
             }
 
             return `${baseUrl}/${instance.searchType}?${params.toString()}`;
@@ -251,7 +235,7 @@ if (typeof window.Context7LiveSearch === "undefined") {
          * Sonuçları işle
          */
         processResults(data, instance) {
-            if (instance.searchType === "unified") {
+            if (instance.searchType === 'unified') {
                 return this.processUnifiedResults(data.results);
             } else {
                 return data.data || [];
@@ -284,11 +268,11 @@ if (typeof window.Context7LiveSearch === "undefined") {
          */
         getDisplayText(item, type) {
             switch (type) {
-                case "kisiler":
+                case 'kisiler':
                     return item.display_text || item.tam_ad;
-                case "danismanlar":
+                case 'danismanlar':
                     return item.display_text || item.name;
-                case "sites":
+                case 'sites':
                     return item.display_text || item.name;
                 default:
                     return item.display_text || item.name || item.tam_ad;
@@ -300,8 +284,7 @@ if (typeof window.Context7LiveSearch === "undefined") {
          */
         renderResults(instance) {
             const dropdown = instance.dropdown;
-            const resultsContainer =
-                dropdown.querySelector(".results-container");
+            const resultsContainer = dropdown.querySelector('.results-container');
 
             if (!resultsContainer) return;
 
@@ -314,10 +297,10 @@ if (typeof window.Context7LiveSearch === "undefined") {
                 .map((result, index) => {
                     return this.createResultItemHTML(result, index, instance);
                 })
-                .join("");
+                .join('');
 
             // Site arama için "Yeni Site Ekle" butonu ekle
-            if (instance.searchType === "sites") {
+            if (instance.searchType === 'sites') {
                 html += this.createAddSiteButtonHTML();
             }
 
@@ -329,21 +312,21 @@ if (typeof window.Context7LiveSearch === "undefined") {
          */
         createResultItemHTML(result, index, instance) {
             const isSelected = index === instance.selectedIndex;
-            const selectedClass = isSelected ? "selected" : "";
+            const selectedClass = isSelected ? 'selected' : '';
 
-            let resultTypeBadge = "";
-            if (instance.searchType === "unified" && result.resultType) {
+            let resultTypeBadge = '';
+            if (instance.searchType === 'unified' && result.resultType) {
                 const typeLabels = {
-                    kisiler: "👤 Kişi",
-                    danismanlar: "👨‍💼 Danışman",
-                    sites: "🏢 Site",
+                    kisiler: '👤 Kişi',
+                    danismanlar: '👨‍💼 Danışman',
+                    sites: '🏢 Site',
                 };
                 resultTypeBadge = `<span class="result-type-badge">${
                     typeLabels[result.resultType] || result.resultType
                 }</span>`;
             }
 
-            let searchHint = "";
+            let searchHint = '';
             if (this.options.showSearchHints && result.search_hint) {
                 searchHint = `<div class="search-hint">${result.search_hint}</div>`;
             }
@@ -373,7 +356,7 @@ if (typeof window.Context7LiveSearch === "undefined") {
          * Sonuç bulunamadı HTML'i oluştur
          */
         createNoResultsHTML(instance) {
-            if (instance.searchType === "sites") {
+            if (instance.searchType === 'sites') {
                 return `
                 <div class="no-results">
                     <div class="no-results-icon">🏢</div>
@@ -417,8 +400,8 @@ if (typeof window.Context7LiveSearch === "undefined") {
          * Dropdown oluştur
          */
         createDropdown(instance) {
-            const dropdown = document.createElement("div");
-            dropdown.className = "context7-search-dropdown";
+            const dropdown = document.createElement('div');
+            dropdown.className = 'context7-search-dropdown';
             dropdown.innerHTML = `
             <div class="dropdown-header">
                 <span class="search-type-label">${this.getSearchTypeLabel(
@@ -437,7 +420,7 @@ if (typeof window.Context7LiveSearch === "undefined") {
         `;
 
             // Dropdown'ı context7-live-search container'ının içine yerleştir
-            const container = instance.element.closest(".context7-live-search");
+            const container = instance.element.closest('.context7-live-search');
             if (container) {
                 container.appendChild(dropdown);
             } else {
@@ -446,11 +429,11 @@ if (typeof window.Context7LiveSearch === "undefined") {
             instance.dropdown = dropdown;
 
             // Dropdown event listener'ları
-            dropdown.addEventListener("click", (e) => {
-                const resultItem = e.target.closest(".result-item");
+            dropdown.addEventListener('click', (e) => {
+                const resultItem = e.target.closest('.result-item');
                 if (resultItem) {
                     // "Yeni Site Ekle" butonu kontrolü
-                    if (resultItem.dataset.action === "add-site") {
+                    if (resultItem.dataset.action === 'add-site') {
                         e.preventDefault();
                         this.showAddSiteModal(element);
                         return;
@@ -461,19 +444,17 @@ if (typeof window.Context7LiveSearch === "undefined") {
                 }
 
                 // "Yeni Site Ekle" butonu kontrolü (no-results içinde)
-                const addBtn = e.target.closest(".add-new-btn");
-                if (addBtn && addBtn.dataset.action === "add-site") {
+                const addBtn = e.target.closest('.add-new-btn');
+                if (addBtn && addBtn.dataset.action === 'add-site') {
                     e.preventDefault();
                     this.showAddSiteModal(container);
                 }
             });
 
             // Hidden input oluştur
-            const hiddenInput = document.createElement("input");
-            hiddenInput.type = "hidden";
-            hiddenInput.name =
-                instance.config.hiddenInputName ||
-                instance.element.name + "_id";
+            const hiddenInput = document.createElement('input');
+            hiddenInput.type = 'hidden';
+            hiddenInput.name = instance.config.hiddenInputName || instance.element.name + '_id';
             instance.element.parentNode.appendChild(hiddenInput);
             instance.hiddenInput = hiddenInput;
         }
@@ -483,12 +464,12 @@ if (typeof window.Context7LiveSearch === "undefined") {
          */
         getSearchTypeLabel(searchType) {
             const labels = {
-                kisiler: "👤 Kişi Arama",
-                danismanlar: "👨‍💼 Danışman Arama",
-                sites: "🏢 Site/Apartman Arama",
-                unified: "🔍 Birleşik Arama",
+                kisiler: '👤 Kişi Arama',
+                danismanlar: '👨‍💼 Danışman Arama',
+                sites: '🏢 Site/Apartman Arama',
+                unified: '🔍 Birleşik Arama',
             };
-            return labels[searchType] || "Arama";
+            return labels[searchType] || 'Arama';
         }
 
         /**
@@ -498,21 +479,21 @@ if (typeof window.Context7LiveSearch === "undefined") {
             if (!this.options.enableKeyboardNavigation) return;
 
             switch (event.key) {
-                case "ArrowDown":
+                case 'ArrowDown':
                     event.preventDefault();
                     this.navigateResults(instance, 1);
                     break;
-                case "ArrowUp":
+                case 'ArrowUp':
                     event.preventDefault();
                     this.navigateResults(instance, -1);
                     break;
-                case "Enter":
+                case 'Enter':
                     event.preventDefault();
                     if (instance.selectedIndex >= 0) {
                         this.selectResult(instance, instance.selectedIndex);
                     }
                     break;
-                case "Escape":
+                case 'Escape':
                     this.hideDropdown(instance);
                     break;
             }
@@ -538,13 +519,10 @@ if (typeof window.Context7LiveSearch === "undefined") {
          * Seçimi güncelle
          */
         updateSelection(instance) {
-            const items = instance.dropdown.querySelectorAll(".result-item");
+            const items = instance.dropdown.querySelectorAll('.result-item');
 
             items.forEach((item, index) => {
-                item.classList.toggle(
-                    "selected",
-                    index === instance.selectedIndex
-                );
+                item.classList.toggle('selected', index === instance.selectedIndex);
             });
         }
 
@@ -556,10 +534,7 @@ if (typeof window.Context7LiveSearch === "undefined") {
             if (!result) return;
 
             // Input değerini güncelle
-            instance.element.value = this.getDisplayText(
-                result,
-                result.resultType
-            );
+            instance.element.value = this.getDisplayText(result, result.resultType);
 
             // Hidden input değerini güncelle
             if (instance.hiddenInput) {
@@ -580,7 +555,7 @@ if (typeof window.Context7LiveSearch === "undefined") {
          * Seçim event'i tetikle
          */
         triggerSelectionEvent(instance, result) {
-            const event = new CustomEvent("context7:search:selected", {
+            const event = new CustomEvent('context7:search:selected', {
                 detail: {
                     instance: instance,
                     result: result,
@@ -595,10 +570,9 @@ if (typeof window.Context7LiveSearch === "undefined") {
          * Dropdown'ı göster
          */
         showDropdown(instance) {
-            if (!instance.dropdown || instance.currentResults.length === 0)
-                return;
+            if (!instance.dropdown || instance.currentResults.length === 0) return;
 
-            instance.dropdown.classList.add("active");
+            instance.dropdown.classList.add('active');
 
             // Dropdown pozisyonunu ayarla
             this.positionDropdown(instance);
@@ -609,7 +583,7 @@ if (typeof window.Context7LiveSearch === "undefined") {
          */
         hideDropdown(instance) {
             if (instance.dropdown) {
-                instance.dropdown.classList.remove("active");
+                instance.dropdown.classList.remove('active');
             }
             instance.selectedIndex = -1;
         }
@@ -629,7 +603,7 @@ if (typeof window.Context7LiveSearch === "undefined") {
         positionDropdown(instance) {
             const input = instance.element;
             const dropdown = instance.dropdown;
-            const container = instance.element.closest(".context7-live-search");
+            const container = instance.element.closest('.context7-live-search');
 
             if (!container) return;
 
@@ -639,11 +613,11 @@ if (typeof window.Context7LiveSearch === "undefined") {
             const dropdownHeight = 300; // Tahmini yükseklik
 
             // Dropdown'ı container'a göre konumlandır
-            dropdown.style.position = "absolute";
-            dropdown.style.top = "100%"; // Container'ın altında
-            dropdown.style.left = "0";
-            dropdown.style.right = "0";
-            dropdown.style.width = "100%";
+            dropdown.style.position = 'absolute';
+            dropdown.style.top = '100%'; // Container'ın altında
+            dropdown.style.left = '0';
+            dropdown.style.right = '0';
+            dropdown.style.width = '100%';
 
             // Viewport sınırlarını kontrol et
             const spaceBelow = viewportHeight - inputRect.bottom;
@@ -651,8 +625,8 @@ if (typeof window.Context7LiveSearch === "undefined") {
 
             if (spaceBelow < dropdownHeight && spaceAbove > dropdownHeight) {
                 // Dropdown'ı yukarıda göster
-                dropdown.style.top = "auto";
-                dropdown.style.bottom = "100%";
+                dropdown.style.top = 'auto';
+                dropdown.style.bottom = '100%';
             }
         }
 
@@ -663,11 +637,11 @@ if (typeof window.Context7LiveSearch === "undefined") {
             const input = instance.element;
 
             if (isLoading) {
-                input.classList.add("loading");
-                input.setAttribute("data-loading", "true");
+                input.classList.add('loading');
+                input.setAttribute('data-loading', 'true');
             } else {
-                input.classList.remove("loading");
-                input.removeAttribute("data-loading");
+                input.classList.remove('loading');
+                input.removeAttribute('data-loading');
             }
         }
 
@@ -675,7 +649,7 @@ if (typeof window.Context7LiveSearch === "undefined") {
          * Instance ID oluştur
          */
         generateInstanceId() {
-            return "context7-search-" + Math.random().toString(36).substr(2, 9);
+            return 'context7-search-' + Math.random().toString(36).substr(2, 9);
         }
 
         /**
@@ -686,8 +660,8 @@ if (typeof window.Context7LiveSearch === "undefined") {
 
             // Data attribute'leri oku
             Object.keys(element.dataset).forEach((key) => {
-                if (key.startsWith("context7")) {
-                    const configKey = key.replace("context7", "").toLowerCase();
+                if (key.startsWith('context7')) {
+                    const configKey = key.replace('context7', '').toLowerCase();
                     config[configKey] = element.dataset[key];
                 }
             });
@@ -699,13 +673,11 @@ if (typeof window.Context7LiveSearch === "undefined") {
          * Yeni arama instance'ı ekle
          */
         addSearchInstance(element, searchType, config = {}) {
-            element.setAttribute("data-context7-search", searchType);
+            element.setAttribute('data-context7-search', searchType);
 
             // Config'i data attribute'lara yaz
             Object.entries(config).forEach(([key, value]) => {
-                element.dataset[
-                    `context7${key.charAt(0).toUpperCase() + key.slice(1)}`
-                ] = value;
+                element.dataset[`context7${key.charAt(0).toUpperCase() + key.slice(1)}`] = value;
             });
 
             return this.initializeSearchInstance(element, searchType);
@@ -802,35 +774,31 @@ if (typeof window.Context7LiveSearch === "undefined") {
         `;
 
             // Modal'ı DOM'a ekle
-            document.body.insertAdjacentHTML("beforeend", modalHTML);
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
 
             // Modal event listener'ları
-            const modal = document.getElementById("addSiteModal");
-            const closeBtn = modal.querySelector(".context7-modal-close");
-            const overlay = modal.querySelector(".context7-modal-overlay");
+            const modal = document.getElementById('addSiteModal');
+            const closeBtn = modal.querySelector('.context7-modal-close');
+            const overlay = modal.querySelector('.context7-modal-overlay');
 
-            closeBtn.addEventListener("click", () => modal.remove());
-            overlay.addEventListener("click", () => modal.remove());
+            closeBtn.addEventListener('click', () => modal.remove());
+            overlay.addEventListener('click', () => modal.remove());
 
             // İlleri yükle
             this.loadIller();
 
             // İl değişikliği
-            document
-                .getElementById("siteIl")
-                .addEventListener("change", (e) => {
-                    this.loadIlceler(e.target.value);
-                });
+            document.getElementById('siteIl').addEventListener('change', (e) => {
+                this.loadIlceler(e.target.value);
+            });
 
             // İlçe değişikliği
-            document
-                .getElementById("siteIlce")
-                .addEventListener("change", (e) => {
-                    this.loadMahalleler(e.target.value);
-                });
+            document.getElementById('siteIlce').addEventListener('change', (e) => {
+                this.loadMahalleler(e.target.value);
+            });
 
             // Modal'ı göster
-            modal.style.display = "flex";
+            modal.style.display = 'flex';
         }
 
         /**
@@ -838,20 +806,20 @@ if (typeof window.Context7LiveSearch === "undefined") {
          */
         async loadIller() {
             try {
-                const response = await fetch("/api/location/provinces");
+                const response = await fetch('/api/location/provinces');
                 const data = await response.json();
 
-                const select = document.getElementById("siteIl");
+                const select = document.getElementById('siteIl');
                 select.innerHTML = '<option value="">İl Seçin</option>';
 
                 data.forEach((il) => {
-                    const option = document.createElement("option");
+                    const option = document.createElement('option');
                     option.value = il.id;
                     option.textContent = il.name;
                     select.appendChild(option);
                 });
             } catch (error) {
-                console.error("İller yüklenirken hata:", error);
+                console.error('İller yüklenirken hata:', error);
             }
         }
 
@@ -860,28 +828,26 @@ if (typeof window.Context7LiveSearch === "undefined") {
          */
         async loadIlceler(ilId) {
             if (!ilId) {
-                document.getElementById("siteIlce").innerHTML =
+                document.getElementById('siteIlce').innerHTML =
                     '<option value="">İlçe Seçin</option>';
                 return;
             }
 
             try {
-                const response = await fetch(
-                    `/api/location/districts-by-province/${ilId}`
-                );
+                const response = await fetch(`/api/location/districts-by-province/${ilId}`);
                 const data = await response.json();
 
-                const select = document.getElementById("siteIlce");
+                const select = document.getElementById('siteIlce');
                 select.innerHTML = '<option value="">İlçe Seçin</option>';
 
                 data.forEach((ilce) => {
-                    const option = document.createElement("option");
+                    const option = document.createElement('option');
                     option.value = ilce.id;
                     option.textContent = ilce.name;
                     select.appendChild(option);
                 });
             } catch (error) {
-                console.error("İlçeler yüklenirken hata:", error);
+                console.error('İlçeler yüklenirken hata:', error);
             }
         }
 
@@ -890,28 +856,26 @@ if (typeof window.Context7LiveSearch === "undefined") {
          */
         async loadMahalleler(ilceId) {
             if (!ilceId) {
-                document.getElementById("siteMahalle").innerHTML =
+                document.getElementById('siteMahalle').innerHTML =
                     '<option value="">Mahalle Seçin</option>';
                 return;
             }
 
             try {
-                const response = await fetch(
-                    `/api/location/neighborhoods-by-district/${ilceId}`
-                );
+                const response = await fetch(`/api/location/neighborhoods-by-district/${ilceId}`);
                 const data = await response.json();
 
-                const select = document.getElementById("siteMahalle");
+                const select = document.getElementById('siteMahalle');
                 select.innerHTML = '<option value="">Mahalle Seçin</option>';
 
                 data.forEach((mahalle) => {
-                    const option = document.createElement("option");
+                    const option = document.createElement('option');
                     option.value = mahalle.id;
                     option.textContent = mahalle.name;
                     select.appendChild(option);
                 });
             } catch (error) {
-                console.error("Mahalleler yüklenirken hata:", error);
+                console.error('Mahalleler yüklenirken hata:', error);
             }
         }
 
@@ -920,27 +884,27 @@ if (typeof window.Context7LiveSearch === "undefined") {
          * PHASE 2.1: AJAX + Toast modernization
          */
         async createSite() {
-            const form = document.getElementById("addSiteForm");
+            const form = document.getElementById('addSiteForm');
             const formData = new FormData(form);
             const data = Object.fromEntries(formData.entries());
 
             // Boş değerleri temizle
             Object.keys(data).forEach((key) => {
-                if (data[key] === "") {
+                if (data[key] === '') {
                     delete data[key];
                 }
             });
 
             // Validation
             if (!data.name || !data.il_id || !data.ilce_id) {
-                window.toast?.error('Lütfen zorunlu alanları doldurun') || 
+                window.toast?.error('Lütfen zorunlu alanları doldurun') ||
                     this.showNotification('Lütfen zorunlu alanları doldurun', 'error');
                 return;
             }
 
             try {
                 // PHASE 2.1: AjaxHelper kullan (eğer varsa)
-                const result = window.AjaxHelper 
+                const result = window.AjaxHelper
                     ? await window.AjaxHelper.post('/api/admin/sites/create', data)
                     : await this.legacyAjaxPost('/api/sites/create', data);
 
@@ -949,11 +913,11 @@ if (typeof window.Context7LiveSearch === "undefined") {
                     if (window.toast) {
                         window.toast.success('Site başarıyla eklendi!');
                     } else {
-                        this.showNotification("Site başarıyla eklendi!", "success");
+                        this.showNotification('Site başarıyla eklendi!', 'success');
                     }
 
                     // Modal'ı kapat
-                    document.getElementById("addSiteModal")?.remove();
+                    document.getElementById('addSiteModal')?.remove();
 
                     // Arama alanını güncelle
                     this.updateSearchWithNewSite(result.data);
@@ -965,13 +929,13 @@ if (typeof window.Context7LiveSearch === "undefined") {
                         }, 100);
                     }
                 } else {
-                    window.toast?.error(result.message) || 
-                        this.showNotification("Site eklenirken hata: " + result.message, "error");
+                    window.toast?.error(result.message) ||
+                        this.showNotification('Site eklenirken hata: ' + result.message, 'error');
                 }
             } catch (error) {
-                console.error("Site oluşturma hatası:", error);
+                console.error('Site oluşturma hatası:', error);
                 window.toast?.error('Site eklenirken hata oluştu') ||
-                    this.showNotification("Site eklenirken hata oluştu", "error");
+                    this.showNotification('Site eklenirken hata oluştu', 'error');
             }
         }
 
@@ -980,10 +944,12 @@ if (typeof window.Context7LiveSearch === "undefined") {
          */
         async legacyAjaxPost(url, data) {
             const response = await fetch(url, {
-                method: "POST",
+                method: 'POST',
                 headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]')?.getAttribute("content"),
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document
+                        .querySelector('meta[name="csrf-token"]')
+                        ?.getAttribute('content'),
                 },
                 body: JSON.stringify(data),
             });
@@ -996,7 +962,7 @@ if (typeof window.Context7LiveSearch === "undefined") {
         updateSearchWithNewSite(siteData) {
             // Tüm arama instance'larını bul ve güncelle
             this.activeInstances.forEach((instance, instanceId) => {
-                if (instance.searchType === "sites") {
+                if (instance.searchType === 'sites') {
                     // Input değerini güncelle
                     instance.element.value = siteData.display;
 
@@ -1017,8 +983,8 @@ if (typeof window.Context7LiveSearch === "undefined") {
         /**
          * Bildirim göster
          */
-        showNotification(message, type = "info") {
-            const notification = document.createElement("div");
+        showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
             notification.className = `context7-notification context7-notification-${type}`;
             notification.innerHTML = `
             <div class="notification-content">
@@ -1035,11 +1001,9 @@ if (typeof window.Context7LiveSearch === "undefined") {
             }, 5000);
 
             // Manuel kapatma
-            notification
-                .querySelector(".notification-close")
-                .addEventListener("click", () => {
-                    notification.remove();
-                });
+            notification.querySelector('.notification-close').addEventListener('click', () => {
+                notification.remove();
+            });
         }
     };
 
@@ -1048,11 +1012,11 @@ if (typeof window.Context7LiveSearch === "undefined") {
 }
 
 // Otomatik başlatma
-document.addEventListener("DOMContentLoaded", () => {
-    console.log("🔍 Context7 Live Search System ready");
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('🔍 Context7 Live Search System ready');
 });
 
 // Export for module systems
-if (typeof module !== "undefined" && module.exports) {
+if (typeof module !== 'undefined' && module.exports) {
     module.exports = window.Context7LiveSearch;
 }

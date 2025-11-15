@@ -3,19 +3,19 @@
  * docs/ klasöründeki hata raporlarını tarar ve kuralları çıkarır
  */
 
-const fs = require("fs");
-const path = require("path");
+const fs = require('fs');
+const path = require('path');
 
 class ErrorLearner {
     constructor() {
         this.projectRoot = process.env.PROJECT_ROOT || process.cwd();
-        this.errorsPath = path.join(__dirname, "learned-errors.json");
+        this.errorsPath = path.join(__dirname, 'learned-errors.json');
         this.errors = this.loadErrors();
     }
 
     loadErrors() {
         if (fs.existsSync(this.errorsPath)) {
-            return JSON.parse(fs.readFileSync(this.errorsPath, "utf8"));
+            return JSON.parse(fs.readFileSync(this.errorsPath, 'utf8'));
         }
 
         return {
@@ -39,13 +39,13 @@ class ErrorLearner {
      * Tüm hata raporlarını tara
      */
     scanAllReports() {
-        console.error("🔍 Hata raporları taranıyor...");
+        console.error('🔍 Hata raporları taranıyor...');
 
         const reportPaths = [
-            "docs/admin/admin-detayli-test-raporu.md",
-            "docs/admin/admin-kapsamli-test-raporu.md",
-            "docs/context7/reports/context7-violations-log.md",
-            "docs/reports/KRITIK_HATALAR_VE_ONLEMLER.md",
+            'docs/admin/admin-detayli-test-raporu.md',
+            'docs/admin/admin-kapsamli-test-raporu.md',
+            'docs/context7/reports/context7-violations-log.md',
+            'docs/reports/KRITIK_HATALAR_VE_ONLEMLER.md',
         ];
 
         let totalLearned = 0;
@@ -70,7 +70,7 @@ class ErrorLearner {
      * Tek raporu tara
      */
     scanReport(filePath) {
-        const content = fs.readFileSync(filePath, "utf8");
+        const content = fs.readFileSync(filePath, 'utf8');
         const fileName = path.basename(filePath);
         let learned = 0;
 
@@ -89,11 +89,7 @@ class ErrorLearner {
                 };
             }
             this.errors.undefined_variables[varName].occurrences++;
-            if (
-                !this.errors.undefined_variables[varName].sources.includes(
-                    fileName
-                )
-            ) {
+            if (!this.errors.undefined_variables[varName].sources.includes(fileName)) {
                 this.errors.undefined_variables[varName].sources.push(fileName);
             }
             learned++;
@@ -110,11 +106,7 @@ class ErrorLearner {
                     sources: [],
                 };
             }
-            if (
-                !this.errors.missing_tables[tableName].sources.includes(
-                    fileName
-                )
-            ) {
+            if (!this.errors.missing_tables[tableName].sources.includes(fileName)) {
                 this.errors.missing_tables[tableName].sources.push(fileName);
             }
             learned++;
@@ -125,8 +117,7 @@ class ErrorLearner {
             this.errors.alpine_undefined = {};
         }
 
-        const alpineRegex =
-            /Alpine Expression Error:\s+(\w+)\s+is not defined/g;
+        const alpineRegex = /Alpine Expression Error:\s+(\w+)\s+is not defined/g;
         while ((match = alpineRegex.exec(content)) !== null) {
             const funcName = match[1];
             if (!this.errors.alpine_undefined[funcName]) {
@@ -139,11 +130,7 @@ class ErrorLearner {
                 };
             }
             this.errors.alpine_undefined[funcName].occurrences++;
-            if (
-                !this.errors.alpine_undefined[funcName].sources.includes(
-                    fileName
-                )
-            ) {
+            if (!this.errors.alpine_undefined[funcName].sources.includes(fileName)) {
                 this.errors.alpine_undefined[funcName].sources.push(fileName);
             }
             learned++;
@@ -155,18 +142,16 @@ class ErrorLearner {
         }
 
         // Eğer çok sayıda Alpine undefined varsa, @vite eksik olabilir
-        const alpineErrorCount = (
-            content.match(/Alpine Expression Error/g) || []
-        ).length;
+        const alpineErrorCount = (content.match(/Alpine Expression Error/g) || []).length;
         if (alpineErrorCount > 5) {
             const vitePattern = {
-                pattern: "Multiple Alpine undefined errors (10+)",
+                pattern: 'Multiple Alpine undefined errors (10+)',
                 probable_cause: "@vite direktifi blade'de eksik",
                 solution:
                     "Blade'de @push('scripts') içine @vite(['resources/js/admin/file.js']) ekle",
                 detection_count: alpineErrorCount,
                 source: fileName,
-                severity: "critical",
+                severity: 'critical',
             };
 
             this.errors.vite_directive_missing[fileName] = vitePattern;
@@ -179,15 +164,14 @@ class ErrorLearner {
         }
 
         if (
-            content.includes("Eski modül yükleniyor") ||
-            content.includes("Hard refresh yeterli değil")
+            content.includes('Eski modül yükleniyor') ||
+            content.includes('Hard refresh yeterli değil')
         ) {
-            this.errors.vite_cache_issue["cache_clear_needed"] = {
-                pattern: "Vite cache eski modül yüklüyor",
-                solution: "rm -rf node_modules/.vite && vite restart",
+            this.errors.vite_cache_issue['cache_clear_needed'] = {
+                pattern: 'Vite cache eski modül yüklüyor',
+                solution: 'rm -rf node_modules/.vite && vite restart',
                 occurrences:
-                    (this.errors.vite_cache_issue["cache_clear_needed"]
-                        ?.occurrences || 0) + 1,
+                    (this.errors.vite_cache_issue['cache_clear_needed']?.occurrences || 0) + 1,
                 sources: [fileName],
             };
             learned++;
@@ -203,16 +187,14 @@ class ErrorLearner {
         const allErrors = [];
 
         // Tanımsız değişkenler
-        Object.entries(this.errors.undefined_variables).forEach(
-            ([key, error]) => {
-                allErrors.push({
-                    type: "undefined_variable",
-                    name: error.variable,
-                    count: error.occurrences,
-                    solution: error.solution,
-                });
-            }
-        );
+        Object.entries(this.errors.undefined_variables).forEach(([key, error]) => {
+            allErrors.push({
+                type: 'undefined_variable',
+                name: error.variable,
+                count: error.occurrences,
+                solution: error.solution,
+            });
+        });
 
         // Sıklığa göre sırala
         allErrors.sort((a, b) => b.count - a.count);
@@ -226,23 +208,14 @@ class ErrorLearner {
     generateReport() {
         return {
             summary: {
-                undefined_variables: Object.keys(
-                    this.errors.undefined_variables
-                ).length,
+                undefined_variables: Object.keys(this.errors.undefined_variables).length,
                 missing_tables: Object.keys(this.errors.missing_tables).length,
-                context7_violations: Object.keys(
-                    this.errors.context7_violations
-                ).length,
+                context7_violations: Object.keys(this.errors.context7_violations).length,
                 common_errors: Object.keys(this.errors.common_errors).length,
-                alpine_undefined: Object.keys(this.errors.alpine_undefined)
-                    .length,
-                vite_directive_missing: Object.keys(
-                    this.errors.vite_directive_missing
-                ).length,
-                vite_cache_issue: Object.keys(this.errors.vite_cache_issue)
-                    .length,
-                tailwind_errors: Object.keys(this.errors.tailwind_errors)
-                    .length,
+                alpine_undefined: Object.keys(this.errors.alpine_undefined).length,
+                vite_directive_missing: Object.keys(this.errors.vite_directive_missing).length,
+                vite_cache_issue: Object.keys(this.errors.vite_cache_issue).length,
+                tailwind_errors: Object.keys(this.errors.tailwind_errors).length,
                 lastScan: this.errors.lastScan,
             },
             most_common: this.getMostCommonErrors(10),
@@ -258,8 +231,7 @@ class ErrorLearner {
             this.errors[errorType] = {};
         }
 
-        const key =
-            errorData.name || errorData.pattern || Date.now().toString();
+        const key = errorData.name || errorData.pattern || Date.now().toString();
         this.errors[errorType][key] = {
             ...errorData,
             learnedAt: new Date().toISOString(),

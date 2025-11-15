@@ -1,0 +1,41 @@
+{
+  "title": "Loading States Pattern",
+  "date": "2025-11-07",
+  "category": "ux",
+  "severity": "medium",
+  "description": "Form submit işlemlerinde kullanıcıya loading feedback vermek için loading state pattern'i.",
+  "pattern": {
+    "problem": "Form submit edildiğinde kullanıcı ne olduğunu bilmiyor, çift submit yapabiliyor",
+    "example_bad": "<button type=\"submit\">Kaydet</button> // Loading state yok",
+    "example_good": "<button type=\"submit\" id=\"submit-btn\" onsubmit=\"loadingState()\">\n  <span id=\"submit-text\">Kaydet</span>\n  <svg id=\"submit-spinner\" class=\"hidden animate-spin\">...</svg>\n</button>"
+  },
+  "implementation": {
+    "html": {
+      "button_structure": "id=\"submit-btn\", id=\"submit-icon\", id=\"submit-text\", id=\"submit-spinner\"",
+      "spinner_class": "hidden w-5 h-5 mr-2 animate-spin",
+      "disabled_state": "disabled:opacity-50 disabled:cursor-not-allowed"
+    },
+    "javascript": {
+      "vanilla_js": "onsubmit=\"const btn = document.getElementById('submit-btn'); btn.disabled = true; icon.classList.add('hidden'); spinner.classList.remove('hidden'); text.textContent = 'Kaydediliyor...';\"",
+      "alpine_js": ":disabled=\"loading\", x-show=\"loading\", @submit=\"loading = true\""
+    },
+    "tailwind_classes": "animate-spin, disabled:opacity-50, disabled:cursor-not-allowed, disabled:hover:scale-100"
+  },
+  "fixed_pages": [
+    "İlan Create: Submit button loading state",
+    "Talep Create: Submit button loading state",
+    "Users Create: Submit button loading state",
+    "Etiket Create: Submit button loading state",
+    "Danışman Create: Submit button loading state",
+    "Özellik Create: Loading state iyileştirildi",
+    "Özellik Kategori Create: Submit button loading state"
+  ],
+  "requirements": [
+    "Tailwind CSS animate-spin kullan",
+    "Disabled state ekle (çift submit önleme)",
+    "Text değişimi (Kaydet → Kaydediliyor...)",
+    "Icon değişimi (check → spinner)",
+    "Validation hatalarında loading state geri al"
+  ]
+}
+

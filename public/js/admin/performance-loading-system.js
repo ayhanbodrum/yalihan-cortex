@@ -11,8 +11,8 @@ class PerformanceLoadingSystem {
             // Skeleton Configuration
             enableSkeletons: true,
             skeletonAnimationDuration: 1500,
-            skeletonBaseColor: "#f3f4f6",
-            skeletonHighlightColor: "#e5e7eb",
+            skeletonBaseColor: '#f3f4f6',
+            skeletonHighlightColor: '#e5e7eb',
 
             // Lazy Loading
             enableLazyLoading: true,
@@ -21,7 +21,7 @@ class PerformanceLoadingSystem {
 
             // Progressive Loading
             enableProgressiveLoading: true,
-            progressiveLoadingSteps: ["critical", "important", "normal", "low"],
+            progressiveLoadingSteps: ['critical', 'important', 'normal', 'low'],
 
             // Performance Optimization
             enableBundleOptimization: true,
@@ -30,7 +30,7 @@ class PerformanceLoadingSystem {
 
             // Animation Settings
             transitionDuration: 300,
-            easeFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
+            easeFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
 
             ...options,
         };
@@ -60,11 +60,11 @@ class PerformanceLoadingSystem {
         this.setupSmoothTransitions();
         this.monitorPerformance();
 
-        console.log("[PerformanceLoadingSystem] Initialized successfully");
+        console.log('[PerformanceLoadingSystem] Initialized successfully');
     }
 
     injectCSS() {
-        if (document.getElementById("performance-loading-css")) return;
+        if (document.getElementById('performance-loading-css')) return;
 
         const css = `
             /* Skeleton Loading Animations */
@@ -282,8 +282,8 @@ class PerformanceLoadingSystem {
             }
         `;
 
-        const style = document.createElement("style");
-        style.id = "performance-loading-css";
+        const style = document.createElement('style');
+        style.id = 'performance-loading-css';
         style.textContent = css;
         document.head.appendChild(style);
     }
@@ -311,26 +311,26 @@ class PerformanceLoadingSystem {
     }
 
     observeLazyElements() {
-        const lazyElements = document.querySelectorAll("[data-lazy]");
+        const lazyElements = document.querySelectorAll('[data-lazy]');
         lazyElements.forEach((element) => {
             this.state.intersectionObserver.observe(element);
-            element.classList.add("neo-lazy-loading");
+            element.classList.add('neo-lazy-loading');
         });
     }
 
     loadLazyElement(element) {
         setTimeout(() => {
             const lazySrc = element.dataset.lazy;
-            const lazyType = element.dataset.lazyType || "image";
+            const lazyType = element.dataset.lazyType || 'image';
 
             switch (lazyType) {
-                case "image":
+                case 'image':
                     this.loadLazyImage(element, lazySrc);
                     break;
-                case "content":
+                case 'content':
                     this.loadLazyContent(element, lazySrc);
                     break;
-                case "component":
+                case 'component':
                     this.loadLazyComponent(element, lazySrc);
                     break;
                 default:
@@ -343,17 +343,13 @@ class PerformanceLoadingSystem {
         const img = new Image();
         img.onload = () => {
             element.src = src;
-            element.classList.remove("neo-lazy-loading");
-            element.classList.add(
-                "neo-lazy-loaded",
-                "neo-optimized-image",
-                "loaded"
-            );
+            element.classList.remove('neo-lazy-loading');
+            element.classList.add('neo-lazy-loaded', 'neo-optimized-image', 'loaded');
             this.state.performanceMetrics.resourcesLoaded++;
         };
         img.onerror = () => {
-            element.classList.remove("neo-lazy-loading");
-            element.classList.add("neo-image-error");
+            element.classList.remove('neo-lazy-loading');
+            element.classList.add('neo-image-error');
         };
         img.src = src;
     }
@@ -363,14 +359,13 @@ class PerformanceLoadingSystem {
             .then((response) => response.text())
             .then((html) => {
                 element.innerHTML = html;
-                element.classList.remove("neo-lazy-loading");
-                element.classList.add("neo-lazy-loaded");
+                element.classList.remove('neo-lazy-loading');
+                element.classList.add('neo-lazy-loaded');
                 this.setupProgressiveLoading(element);
             })
             .catch((error) => {
-                console.error("Lazy content loading failed:", error);
-                element.innerHTML =
-                    '<p class="text-red-500">İçerik yüklenemedi</p>';
+                console.error('Lazy content loading failed:', error);
+                element.innerHTML = '<p class="text-red-500">İçerik yüklenemedi</p>';
             });
     }
 
@@ -380,11 +375,11 @@ class PerformanceLoadingSystem {
             .then((module) => {
                 const Component = module.default;
                 new Component(element);
-                element.classList.remove("neo-lazy-loading");
-                element.classList.add("neo-lazy-loaded");
+                element.classList.remove('neo-lazy-loading');
+                element.classList.add('neo-lazy-loaded');
             })
             .catch((error) => {
-                console.error("Component loading failed:", error);
+                console.error('Component loading failed:', error);
             });
     }
 
@@ -392,16 +387,14 @@ class PerformanceLoadingSystem {
         if (!this.options.enableProgressiveLoading) return;
 
         this.options.progressiveLoadingSteps.forEach((priority, index) => {
-            const elements = container.querySelectorAll(
-                `[data-priority="${priority}"]`
-            );
+            const elements = container.querySelectorAll(`[data-priority="${priority}"]`);
 
             elements.forEach((element) => {
-                element.classList.add("neo-progressive-load");
+                element.classList.add('neo-progressive-load');
 
                 setTimeout(() => {
-                    element.classList.remove("neo-progressive-load");
-                    element.classList.add("neo-progressive-loaded");
+                    element.classList.remove('neo-progressive-load');
+                    element.classList.add('neo-progressive-loaded');
                 }, index * 150); // Staggered loading
             });
         });
@@ -410,15 +403,15 @@ class PerformanceLoadingSystem {
     setupImageOptimization() {
         if (!this.options.imageOptimization) return;
 
-        const images = document.querySelectorAll("img:not([data-lazy])");
+        const images = document.querySelectorAll('img:not([data-lazy])');
         images.forEach((img) => {
-            img.classList.add("neo-optimized-image");
+            img.classList.add('neo-optimized-image');
 
             if (img.complete) {
-                img.classList.add("loaded");
+                img.classList.add('loaded');
             } else {
-                img.addEventListener("load", () => {
-                    img.classList.add("loaded");
+                img.addEventListener('load', () => {
+                    img.classList.add('loaded');
                     this.state.performanceMetrics.resourcesLoaded++;
                 });
             }
@@ -432,44 +425,40 @@ class PerformanceLoadingSystem {
         );
 
         interactiveElements.forEach((element) => {
-            if (!element.classList.contains("neo-smooth-transition")) {
-                element.classList.add("neo-smooth-transition");
+            if (!element.classList.contains('neo-smooth-transition')) {
+                element.classList.add('neo-smooth-transition');
             }
         });
     }
 
     monitorPerformance() {
         // Performance observer for monitoring
-        if ("PerformanceObserver" in window) {
+        if ('PerformanceObserver' in window) {
             const observer = new PerformanceObserver((list) => {
                 list.getEntries().forEach((entry) => {
-                    if (entry.entryType === "navigation") {
+                    if (entry.entryType === 'navigation') {
                         this.state.performanceMetrics.loadTime =
                             entry.loadEventEnd - entry.loadEventStart;
                     }
-                    if (
-                        entry.entryType === "paint" &&
-                        entry.name === "first-contentful-paint"
-                    ) {
-                        this.state.performanceMetrics.renderTime =
-                            entry.startTime;
+                    if (entry.entryType === 'paint' && entry.name === 'first-contentful-paint') {
+                        this.state.performanceMetrics.renderTime = entry.startTime;
                     }
                 });
             });
 
-            observer.observe({ entryTypes: ["navigation", "paint"] });
+            observer.observe({ entryTypes: ['navigation', 'paint'] });
         }
 
         // Monitor resource loading
-        window.addEventListener("load", () => {
+        window.addEventListener('load', () => {
             this.state.performanceMetrics.totalResources =
-                document.querySelectorAll("img, link, script").length;
-            console.log("[Performance Metrics]", this.state.performanceMetrics);
+                document.querySelectorAll('img, link, script').length;
+            console.log('[Performance Metrics]', this.state.performanceMetrics);
         });
     }
 
     // Skeleton Loading Methods
-    showSkeleton(element, type = "default") {
+    showSkeleton(element, type = 'default') {
         if (!this.options.enableSkeletons) return;
 
         const skeletons = {
@@ -483,12 +472,12 @@ class PerformanceLoadingSystem {
 
         const skeletonHTML = skeletons[type] || skeletons.default;
         element.innerHTML = skeletonHTML;
-        element.classList.add("neo-skeleton-container");
+        element.classList.add('neo-skeleton-container');
     }
 
     hideSkeleton(element) {
-        element.classList.remove("neo-skeleton-container");
-        const skeletons = element.querySelectorAll(".neo-skeleton");
+        element.classList.remove('neo-skeleton-container');
+        const skeletons = element.querySelectorAll('.neo-skeleton');
         skeletons.forEach((skeleton) => skeleton.remove());
     }
 
@@ -534,7 +523,7 @@ class PerformanceLoadingSystem {
                     </div>
                 `
                     )
-                    .join("")}
+                    .join('')}
             </div>
         `;
     }
@@ -554,7 +543,7 @@ class PerformanceLoadingSystem {
                     </div>
                 `
                     )
-                    .join("")}
+                    .join('')}
             </div>
         `;
     }
@@ -596,7 +585,7 @@ class PerformanceLoadingSystem {
                         <div class="neo-skeleton h-24 rounded-lg"></div>
                     `
                         )
-                        .join("")}
+                        .join('')}
                 </div>
 
                 <!-- Charts -->
@@ -612,9 +601,9 @@ class PerformanceLoadingSystem {
     }
 
     // Loading Overlay Methods
-    showLoading(element, message = "Yükleniyor...") {
-        const overlay = document.createElement("div");
-        overlay.className = "neo-loading-overlay";
+    showLoading(element, message = 'Yükleniyor...') {
+        const overlay = document.createElement('div');
+        overlay.className = 'neo-loading-overlay';
         overlay.innerHTML = `
             <div class="text-center">
                 <div class="neo-loading-spinner mx-auto mb-4"></div>
@@ -622,16 +611,16 @@ class PerformanceLoadingSystem {
             </div>
         `;
 
-        element.style.position = element.style.position || "relative";
+        element.style.position = element.style.position || 'relative';
         element.appendChild(overlay);
 
         return overlay;
     }
 
     hideLoading(element) {
-        const overlay = element.querySelector(".neo-loading-overlay");
+        const overlay = element.querySelector('.neo-loading-overlay');
         if (overlay) {
-            overlay.style.opacity = "0";
+            overlay.style.opacity = '0';
             setTimeout(() => overlay.remove(), this.options.transitionDuration);
         }
     }
@@ -645,22 +634,19 @@ class PerformanceLoadingSystem {
         `;
 
         container.innerHTML = progressHTML;
-        return container.querySelector(".neo-progress-bar");
+        return container.querySelector('.neo-progress-bar');
     }
 
     updateProgress(progressBar, percentage) {
         if (progressBar) {
-            progressBar.style.width = `${Math.min(
-                100,
-                Math.max(0, percentage)
-            )}%`;
+            progressBar.style.width = `${Math.min(100, Math.max(0, percentage))}%`;
         }
     }
 
     // Bundle Optimization Methods
     async loadScriptAsync(src) {
         return new Promise((resolve, reject) => {
-            const script = document.createElement("script");
+            const script = document.createElement('script');
             script.src = src;
             script.async = true;
             script.onload = resolve;
@@ -671,8 +657,8 @@ class PerformanceLoadingSystem {
 
     async loadStyleAsync(href) {
         return new Promise((resolve, reject) => {
-            const link = document.createElement("link");
-            link.rel = "stylesheet";
+            const link = document.createElement('link');
+            link.rel = 'stylesheet';
             link.href = href;
             link.onload = resolve;
             link.onerror = reject;
@@ -680,15 +666,15 @@ class PerformanceLoadingSystem {
         });
     }
 
-    prefetchResource(url, type = "script") {
+    prefetchResource(url, type = 'script') {
         if (!this.options.prefetchingEnabled) return;
 
-        const link = document.createElement("link");
-        link.rel = "prefetch";
+        const link = document.createElement('link');
+        link.rel = 'prefetch';
         link.href = url;
-        if (type === "script") link.as = "script";
-        if (type === "style") link.as = "style";
-        if (type === "image") link.as = "image";
+        if (type === 'script') link.as = 'script';
+        if (type === 'style') link.as = 'style';
+        if (type === 'image') link.as = 'image';
         document.head.appendChild(link);
     }
 
@@ -749,7 +735,7 @@ class PerformanceLoadingSystem {
             this.state.intersectionObserver.disconnect();
         }
 
-        const style = document.getElementById("performance-loading-css");
+        const style = document.getElementById('performance-loading-css');
         if (style) {
             style.remove();
         }
@@ -760,23 +746,21 @@ class PerformanceLoadingSystem {
 window.PerformanceLoadingSystem = PerformanceLoadingSystem;
 
 // Auto-initialize
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener('DOMContentLoaded', function () {
     if (!window.performanceLoader) {
         window.performanceLoader = new PerformanceLoadingSystem();
 
         // Add utility methods to window for easy access
         window.showSkeleton = (element, type) =>
             window.performanceLoader.showSkeleton(element, type);
-        window.hideSkeleton = (element) =>
-            window.performanceLoader.hideSkeleton(element);
+        window.hideSkeleton = (element) => window.performanceLoader.hideSkeleton(element);
         window.showLoading = (element, message) =>
             window.performanceLoader.showLoading(element, message);
-        window.hideLoading = (element) =>
-            window.performanceLoader.hideLoading(element);
+        window.hideLoading = (element) => window.performanceLoader.hideLoading(element);
     }
 });
 
 // Export for module usage
-if (typeof module !== "undefined" && module.exports) {
+if (typeof module !== 'undefined' && module.exports) {
     module.exports = PerformanceLoadingSystem;
 }

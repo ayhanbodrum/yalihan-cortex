@@ -34,7 +34,12 @@
         "api_controllers": 5
       },
       "replacements": {
-        "from": ["where('status', 'Aktif')", "where('status', 'aktif')", "where('status', 'Pasif')", "where('status', 'pasif')"],
+        "from": [
+          "where('status', 'Aktif')",
+          "where('status', 'aktif')",
+          "where('status', 'Pasif')",
+          "where('status', 'pasif')"
+        ],
         "to": ["where('status', true)", "where('status', false)"]
       },
       "status": "SUCCESS"
@@ -173,11 +178,7 @@
     },
     "phase_3": {
       "timeline": "Week 3 (2025-11-07)",
-      "tables": [
-        "ai_logs",
-        "takim_uyeleri",
-        "ulkeler"
-      ],
+      "tables": ["ai_logs", "takim_uyeleri", "ulkeler"],
       "total_tables": 3,
       "status": "PLANNED"
     }
@@ -213,4 +214,3 @@
     "PHASE 2 hazır: Migration ve script hazır, 1 hafta sonra çalıştırılabilir"
   ]
 }
-

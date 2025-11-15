@@ -20,14 +20,14 @@
 
 ### **1. AI PROVIDER MİMARİSİ**
 
-| Özellik | ❌ Mevcut | ✅ Önerilen | 💡 Nasıl Yapılır | ⏱️ Süre |
-|---------|----------|-------------|------------------|---------|
-| **Provider Switching** | Manuel (admin panel) | Otomatik (cost/latency based) | Smart routing service oluştur | 4 saat |
-| **Fallback Mechanism** | ❌ Yok | ✅ Cascade (primary → backup) | Try-catch chain implementasyonu | 3 saat |
-| **Response Caching** | ❌ Yok | ✅ Redis-based (1 saat TTL) | Cache::remember() wrapper | 2 saat |
-| **Cost Tracking** | ⚠️ Basic log | ✅ Real-time + budgets + alerts | Cost calculator service | 6 saat |
-| **Rate Limiting** | Laravel throttle | Per-provider API quota | Middleware + provider limits | 3 saat |
-| **Health Monitoring** | ⚠️ Test endpoint | ✅ Automated health checks | Cron job + webhook alerts | 4 saat |
+| Özellik                | ❌ Mevcut            | ✅ Önerilen                     | 💡 Nasıl Yapılır                | ⏱️ Süre |
+| ---------------------- | -------------------- | ------------------------------- | ------------------------------- | ------- |
+| **Provider Switching** | Manuel (admin panel) | Otomatik (cost/latency based)   | Smart routing service oluştur   | 4 saat  |
+| **Fallback Mechanism** | ❌ Yok               | ✅ Cascade (primary → backup)   | Try-catch chain implementasyonu | 3 saat  |
+| **Response Caching**   | ❌ Yok               | ✅ Redis-based (1 saat TTL)     | Cache::remember() wrapper       | 2 saat  |
+| **Cost Tracking**      | ⚠️ Basic log         | ✅ Real-time + budgets + alerts | Cost calculator service         | 6 saat  |
+| **Rate Limiting**      | Laravel throttle     | Per-provider API quota          | Middleware + provider limits    | 3 saat  |
+| **Health Monitoring**  | ⚠️ Test endpoint     | ✅ Automated health checks      | Cron job + webhook alerts       | 4 saat  |
 
 **Total Implementation Time: 22 saat (~3 gün)**
 
@@ -36,6 +36,7 @@
 #### **PRATIK İMPLEMENTASYON: Provider Fallback**
 
 **Mevcut Kod:**
+
 ```php
 // app/Services/AIService.php (Satır 300-320)
 protected function callProvider($action, $prompt, $options)
@@ -55,6 +56,7 @@ protected function callProvider($action, $prompt, $options)
 **Sorun:** Provider fail olursa exception atılıyor, işlem duryor.
 
 **Önerilen Kod:**
+
 ```php
 // app/Services/AIService.php
 protected function callProviderWithFallback($action, $prompt, $options)
@@ -65,7 +67,7 @@ protected function callProviderWithFallback($action, $prompt, $options)
     foreach ($providers as $provider) {
         try {
             Log::info("Trying provider: {$provider}");
-            
+
             $startTime = microtime(true);
             $response = $this->callProvider($provider, $action, $prompt, $options);
             $duration = microtime(true) - $startTime;
@@ -84,11 +86,11 @@ protected function callProviderWithFallback($action, $prompt, $options)
         } catch (\Exception $e) {
             $lastError = $e;
             Log::warning("Provider {$provider} failed: " . $e->getMessage());
-            
+
             // Mark provider as problematic
             Cache::put("ai_provider_{$provider}_failure", true, 300);
             Cache::increment("ai_provider_{$provider}_failure_count");
-            
+
             continue; // Try next provider
         }
     }
@@ -101,13 +103,13 @@ protected function getFallbackChain()
 {
     // Öncelik: Success rate + response time
     $providers = ['openai', 'deepseek', 'google', 'claude', 'ollama'];
-    
+
     return collect($providers)
         ->sortByDesc(function($provider) {
-            $successRate = Cache::get("ai_provider_{$provider}_success_count", 0) / 
+            $successRate = Cache::get("ai_provider_{$provider}_success_count", 0) /
                           max(1, Cache::get("ai_provider_{$provider}_total_count", 1));
             $avgResponseTime = Cache::get("ai_provider_{$provider}_avg_response_time", 1000);
-            
+
             // Skor: %70 success rate + %30 speed
             return ($successRate * 0.7) + ((1000 / $avgResponseTime) * 0.3);
         })
@@ -117,6 +119,7 @@ protected function getFallbackChain()
 ```
 
 **Kazanç:**
+
 - ✅ %99.9 uptime (5 provider fallback)
 - ✅ Otomatik provider quality ranking
 - ✅ Kullanıcı kesintisiz hizmet alır
@@ -126,6 +129,7 @@ protected function getFallbackChain()
 #### **PRATIK İMPLEMENTASYON: Response Caching**
 
 **Mevcut Kod:**
+
 ```php
 // Her AI request API'ye gidiyor
 public function generate($prompt, $options = [])
@@ -138,6 +142,7 @@ public function generate($prompt, $options = [])
 **Sorun:** Aynı prompt için tekrar tekrar API maliyeti.
 
 **Önerilen Kod:**
+
 ```php
 // app/Services/AIService.php
 public function generate($prompt, $options = [])
@@ -148,7 +153,7 @@ public function generate($prompt, $options = [])
 
     return Cache::remember($cacheKey, $cacheTTL, function () use ($prompt, $options) {
         $response = $this->makeRequest('generate', $prompt, $options);
-        
+
         Log::info('AI Response cached', [
             'prompt_length' => strlen($prompt),
             'cache_key' => $cacheKey,
@@ -174,6 +179,7 @@ $response2 = $aiService->generate('2+1 daire için başlık öner', [
 ```
 
 **Kazanç:**
+
 - 💰 Maliyet: -%70 (tekrar eden prompt'lar)
 - ⚡ Response time: ~2000ms → ~5ms
 - 📊 API quota tasarrufu
@@ -183,6 +189,7 @@ $response2 = $aiService->generate('2+1 daire için başlık öner', [
 #### **PRATIK İMPLEMENTASYON: Cost Tracking**
 
 **Mevcut Kod:**
+
 ```php
 // app/Services/AIService.php
 protected function logRequest($action, $prompt, $response, $duration)
@@ -203,6 +210,7 @@ protected function logRequest($action, $prompt, $response, $duration)
 **Sorun:** Logs var ama maliyet tracking yok, budget kontrolü yok.
 
 **Önerilen Kod:**
+
 ```php
 // app/Services/AI/CostCalculator.php
 class CostCalculator
@@ -231,10 +239,10 @@ class CostCalculator
     public function calculate($provider, $model, $inputTokens, $outputTokens)
     {
         $pricing = $this->pricing[$provider][$model] ?? $this->pricing[$provider]['default'];
-        
+
         $inputCost = ($inputTokens / 1000) * $pricing['input'];
         $outputCost = ($outputTokens / 1000) * $pricing['output'];
-        
+
         return [
             'input_tokens' => $inputTokens,
             'output_tokens' => $outputTokens,
@@ -318,6 +326,7 @@ protected function checkBudgetAlert($cost)
 ```
 
 **Migration:**
+
 ```php
 // database/migrations/2025_11_03_add_cost_tracking_to_ai_logs.php
 public function up()
@@ -333,6 +342,7 @@ public function up()
 ```
 
 **Kullanım:**
+
 ```php
 // routes/api.php
 Route::get('/admin/ai/cost-report', function () {
@@ -359,6 +369,7 @@ Route::get('/admin/ai/cost-report', function () {
 ```
 
 **Kazanç:**
+
 - 💰 Budget kontrolü (overflow önleme)
 - 📊 Provider maliyet karşılaştırma
 - 🔔 Otomatik alerts (%80 eşiği)
@@ -368,14 +379,14 @@ Route::get('/admin/ai/cost-report', function () {
 
 ### **2. DASHBOARD ÖZELLİKLERİ**
 
-| Özellik | ❌ Mevcut | ✅ Önerilen | 💡 Nasıl Yapılır | ⏱️ Süre |
-|---------|----------|-------------|------------------|---------|
-| **Predictive Analytics** | ❌ Yok | ✅ ML-based forecasts | Time series analysis | 16 saat |
-| **Smart Alerts** | ❌ Yok | ✅ AI-driven notifications | Event listeners + AI | 8 saat |
-| **Real-time Updates** | ⚠️ 5 dk cache | ✅ WebSocket + cache | Laravel Echo + Pusher | 12 saat |
-| **Custom Widgets** | ❌ Model yok | ✅ DashboardWidget CRUD | Model + migration | 6 saat |
-| **Chart Intelligence** | ⚠️ Static | ✅ AI insights overlay | Chart.js + GPT-4 | 10 saat |
-| **Performance Metrics** | ⚠️ Basic stats | ✅ KPI dashboard | Calculated metrics | 8 saat |
+| Özellik                  | ❌ Mevcut      | ✅ Önerilen                | 💡 Nasıl Yapılır      | ⏱️ Süre |
+| ------------------------ | -------------- | -------------------------- | --------------------- | ------- |
+| **Predictive Analytics** | ❌ Yok         | ✅ ML-based forecasts      | Time series analysis  | 16 saat |
+| **Smart Alerts**         | ❌ Yok         | ✅ AI-driven notifications | Event listeners + AI  | 8 saat  |
+| **Real-time Updates**    | ⚠️ 5 dk cache  | ✅ WebSocket + cache       | Laravel Echo + Pusher | 12 saat |
+| **Custom Widgets**       | ❌ Model yok   | ✅ DashboardWidget CRUD    | Model + migration     | 6 saat  |
+| **Chart Intelligence**   | ⚠️ Static      | ✅ AI insights overlay     | Chart.js + GPT-4      | 10 saat |
+| **Performance Metrics**  | ⚠️ Basic stats | ✅ KPI dashboard           | Calculated metrics    | 8 saat  |
 
 **Total Implementation Time: 60 saat (~7.5 gün)**
 
@@ -384,6 +395,7 @@ Route::get('/admin/ai/cost-report', function () {
 #### **PRATIK İMPLEMENTASYON: Custom Widgets**
 
 **Mevcut Durum:**
+
 ```php
 // app/Http/Controllers/Admin/DashboardController.php
 public function create() {
@@ -394,6 +406,7 @@ public function create() {
 ```
 
 **Adım 1: Model ve Migration**
+
 ```bash
 php artisan make:model DashboardWidget -m
 ```
@@ -421,6 +434,7 @@ public function up()
 ```
 
 **Adım 2: Model**
+
 ```php
 // app/Models/DashboardWidget.php
 namespace App\Models;
@@ -478,6 +492,7 @@ class DashboardWidget extends Model
 ```
 
 **Adım 3: Controller Güncelleme**
+
 ```php
 // app/Http/Controllers/Admin/DashboardController.php
 public function store(Request $request)
@@ -528,11 +543,12 @@ public function index()
 ```
 
 **Adım 4: Blade View (Drag & Drop)**
+
 ```blade
 {{-- resources/views/admin/dashboard/index.blade.php --}}
 <div x-data="dashboardManager()" class="grid grid-cols-12 gap-4">
     @foreach($widgets as $item)
-        <div 
+        <div
             class="col-span-{{ $item['widget']->width }} row-span-{{ $item['widget']->height }}"
             draggable="true"
             @dragstart="dragStart($event, {{ $item['widget']->id }})"
@@ -553,11 +569,11 @@ public function index()
 function dashboardManager() {
     return {
         draggedWidget: null,
-        
+
         dragStart(event, widgetId) {
             this.draggedWidget = widgetId;
         },
-        
+
         drop(event, targetWidgetId) {
             // Swap positions
             fetch('/admin/dashboard/widgets/swap', {
@@ -578,6 +594,7 @@ function dashboardManager() {
 ```
 
 **Kazanç:**
+
 - ✅ Kullanıcı kişiselleştirmesi
 - ✅ Drag & drop widget yerleştirme
 - ✅ Widget library (tekrar kullanılabilir)
@@ -627,7 +644,7 @@ class PredictiveAnalytics
         for ($i = 0; $i < $days; $i++) {
             $dayIndex = $startDay + $i;
             $predictedCount = max(0, round($slope * $dayIndex + $intercept));
-            
+
             $forecast[] = [
                 'date' => now()->addDays($i + 1)->format('Y-m-d'),
                 'predicted_count' => $predictedCount,
@@ -671,7 +688,7 @@ class PredictiveAnalytics
         // R² (coefficient of determination) hesapla
         $y = $data->pluck('count')->toArray();
         $yMean = collect($y)->average();
-        
+
         $ssTotal = 0;
         $ssResidual = 0;
 
@@ -682,7 +699,7 @@ class PredictiveAnalytics
         }
 
         $r2 = 1 - ($ssResidual / $ssTotal);
-        
+
         return round($r2 * 100, 1); // Confidence %
     }
 
@@ -692,10 +709,10 @@ class PredictiveAnalytics
     public function aiEnhancedForecast($days = 7)
     {
         $basicForecast = $this->forecastIlanlar($days);
-        
+
         // AI'ya sor: Trend analizi ve faktörler
         $aiService = app(\App\Services\AIService::class);
-        
+
         $prompt = "
 Emlak platformu veri analizi:
 
@@ -750,6 +767,7 @@ JSON formatında döndür:
 ```
 
 **API Endpoint:**
+
 ```php
 // routes/api.php
 Route::get('/admin/analytics/forecast-ilanlar', function () {
@@ -759,11 +777,12 @@ Route::get('/admin/analytics/forecast-ilanlar', function () {
 ```
 
 **Dashboard Widget:**
+
 ```blade
 {{-- resources/views/components/dashboard/forecast-widget.blade.php --}}
 <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6" x-data="forecastWidget()">
     <h3 class="text-lg font-semibold mb-4">📈 7 Günlük İlan Tahmini</h3>
-    
+
     <div x-show="loading" class="text-center py-8">
         <div class="spinner"></div>
         <p class="text-sm text-gray-500 mt-2">AI analiz yapıyor...</p>
@@ -811,7 +830,7 @@ function forecastWidget() {
 
         renderChart() {
             const ctx = document.getElementById('forecastChart').getContext('2d');
-            
+
             const historical = this.forecast.basic_forecast.historical.map(d => d.count);
             const predicted = this.forecast.ai_analysis.adjusted_forecast.map(d => d.count);
 
@@ -846,6 +865,7 @@ function forecastWidget() {
 ```
 
 **Kazanç:**
+
 - 📊 Veri-driven karar alma
 - 🔮 7 gün ileri tahmin (%75+ doğruluk)
 - 💡 AI-powered insights
@@ -855,14 +875,14 @@ function forecastWidget() {
 
 ### **3. İLAN YÖNETİMİ AI**
 
-| Özellik | ❌ Mevcut | ✅ Önerilen | 💡 Nasıl Yapılır | ⏱️ Süre |
-|---------|----------|-------------|------------------|---------|
-| **Semantic Search** | ❌ LIKE query | ✅ Vector embeddings | OpenAI embeddings API | 20 saat |
-| **AI Ranking** | ⚠️ created_at DESC | ✅ ML-based scoring | Quality score algorithm | 12 saat |
-| **Auto-tagging** | ❌ Manuel | ✅ AI tag extraction | GPT-4 + keyword analysis | 8 saat |
-| **Duplicate Detection** | ❌ Yok | ✅ Similarity analysis | Levenshtein + embeddings | 10 saat |
-| **Bulk AI Operations** | ❌ Tek tek | ✅ Paralel batch processing | Laravel Queues | 6 saat |
-| **Quality Score** | ❌ Yok | ✅ 0-100 AI evaluation | Multi-factor scoring | 10 saat |
+| Özellik                 | ❌ Mevcut          | ✅ Önerilen                 | 💡 Nasıl Yapılır         | ⏱️ Süre |
+| ----------------------- | ------------------ | --------------------------- | ------------------------ | ------- |
+| **Semantic Search**     | ❌ LIKE query      | ✅ Vector embeddings        | OpenAI embeddings API    | 20 saat |
+| **AI Ranking**          | ⚠️ created_at DESC | ✅ ML-based scoring         | Quality score algorithm  | 12 saat |
+| **Auto-tagging**        | ❌ Manuel          | ✅ AI tag extraction        | GPT-4 + keyword analysis | 8 saat  |
+| **Duplicate Detection** | ❌ Yok             | ✅ Similarity analysis      | Levenshtein + embeddings | 10 saat |
+| **Bulk AI Operations**  | ❌ Tek tek         | ✅ Paralel batch processing | Laravel Queues           | 6 saat  |
+| **Quality Score**       | ❌ Yok             | ✅ 0-100 AI evaluation      | Multi-factor scoring     | 10 saat |
 
 **Total Implementation Time: 66 saat (~8 gün)**
 
@@ -871,6 +891,7 @@ function forecastWidget() {
 #### **PRATIK İMPLEMENTASYON: Semantic Search**
 
 **Mevcut Kod:**
+
 ```php
 // app/Http/Controllers/Admin/IlanController.php
 if ($request->search) {
@@ -886,6 +907,7 @@ if ($request->search) {
 **Önerilen Sistem:**
 
 **Adım 1: Embedding Generation Service**
+
 ```php
 // app/Services/AI/EmbeddingService.php
 namespace App\Services\AI;
@@ -961,6 +983,7 @@ class EmbeddingService
 ```
 
 **Adım 2: Migration (Embedding storage)**
+
 ```php
 // database/migrations/2025_11_03_add_embeddings_to_ilanlar.php
 public function up()
@@ -977,6 +1000,7 @@ public function up()
 ```
 
 **Adım 3: Generate Embeddings (Command)**
+
 ```bash
 php artisan make:command GenerateIlanEmbeddings
 ```
@@ -1011,7 +1035,7 @@ class GenerateIlanEmbeddings extends Command
             try {
                 // Başlık + açıklama birleştir
                 $text = $ilan->baslik . ' ' . ($ilan->aciklama ?? '');
-                
+
                 // Embedding oluştur
                 $embedding = $embeddingService->generateEmbedding($text);
 
@@ -1036,6 +1060,7 @@ class GenerateIlanEmbeddings extends Command
 ```
 
 **Adım 4: Semantic Search Implementation**
+
 ```php
 // app/Services/Search/SemanticSearchService.php
 namespace App\Services\Search;
@@ -1066,7 +1091,7 @@ class SemanticSearchService
         // 3. Similarity skorlarını hesapla
         $scoredIlanlar = $ilanlar->map(function ($ilan) use ($queryEmbedding) {
             $ilanEmbedding = json_decode($ilan->title_embedding, true);
-            
+
             $similarity = $this->embeddingService->cosineSimilarity(
                 $queryEmbedding,
                 $ilanEmbedding
@@ -1118,6 +1143,7 @@ class SemanticSearchService
 ```
 
 **Adım 5: Controller Integration**
+
 ```php
 // app/Http/Controllers/Admin/IlanController.php
 public function index(Request $request)
@@ -1125,7 +1151,7 @@ public function index(Request $request)
     // Semantic search enabled mi?
     if ($request->search && config('ai.semantic_search_enabled')) {
         $semanticSearch = app(\App\Services\Search\SemanticSearchService::class);
-        
+
         $results = $semanticSearch->hybridSearch([
             'search' => $request->search,
             'il_id' => $request->il_id,
@@ -1138,7 +1164,7 @@ public function index(Request $request)
         $page = $request->get('page', 1);
         $perPage = 20;
         $offset = ($page - 1) * $perPage;
-        
+
         $items = $results->slice($offset, $perPage)->pluck('ilan');
         $total = $results->count();
 
@@ -1173,15 +1199,16 @@ public function index(Request $request)
 ```
 
 **Adım 6: View Update (Similarity badge)**
+
 ```blade
 {{-- resources/views/admin/ilanlar/index.blade.php --}}
 @foreach($ilanlar as $ilan)
     <tr>
         <td>{{ $ilan->baslik }}</td>
-        
+
         @if(isset($similarityScores[$ilan->id]))
             <td>
-                <span class="px-2 py-1 text-xs rounded-full 
+                <span class="px-2 py-1 text-xs rounded-full
                     @if($similarityScores[$ilan->id] >= 80) bg-green-100 text-green-800
                     @elseif($similarityScores[$ilan->id] >= 60) bg-yellow-100 text-yellow-800
                     @else bg-gray-100 text-gray-800
@@ -1190,13 +1217,14 @@ public function index(Request $request)
                 </span>
             </td>
         @endif
-        
+
         <td>{{ number_format($ilan->fiyat) }} TL</td>
     </tr>
 @endforeach
 ```
 
 **Kazanç:**
+
 - 🔍 Semantic understanding ("deniz manzaralı" → "boğaz görünümlü" bulur)
 - 📈 Arama doğruluğu: +%85
 - 💰 Maliyet: ~$0.00002/search (OpenAI) veya $0 (Ollama)
@@ -1208,14 +1236,14 @@ public function index(Request $request)
 
 ### **Week 1: 3 Özellik, 22 Saat**
 
-| # | Özellik | İmplementasyon | Süre | ROI |
-|---|---------|----------------|------|-----|
-| 1 | **Response Caching** | AIService'e Cache wrapper | 2 saat | -%70 maliyet |
-| 2 | **Provider Fallback** | Try-catch chain + smart routing | 4 saat | %99.9 uptime |
-| 3 | **Cost Tracking** | Migration + CostCalculator service | 6 saat | Budget control |
-| 4 | **DashboardWidget Model** | Model + migration + CRUD | 6 saat | Customization |
-| 5 | **Bulk AI Cache Clear** | Artisan command | 1 saat | Admin tool |
-| 6 | **AI Budget Alerts** | Event + Telegram notification | 3 saat | Proactive monitoring |
+| #   | Özellik                   | İmplementasyon                     | Süre   | ROI                  |
+| --- | ------------------------- | ---------------------------------- | ------ | -------------------- |
+| 1   | **Response Caching**      | AIService'e Cache wrapper          | 2 saat | -%70 maliyet         |
+| 2   | **Provider Fallback**     | Try-catch chain + smart routing    | 4 saat | %99.9 uptime         |
+| 3   | **Cost Tracking**         | Migration + CostCalculator service | 6 saat | Budget control       |
+| 4   | **DashboardWidget Model** | Model + migration + CRUD           | 6 saat | Customization        |
+| 5   | **Bulk AI Cache Clear**   | Artisan command                    | 1 saat | Admin tool           |
+| 6   | **AI Budget Alerts**      | Event + Telegram notification      | 3 saat | Proactive monitoring |
 
 **Total: 22 saat - Tamamı production-ready!**
 
@@ -1223,12 +1251,12 @@ public function index(Request $request)
 
 ### **Week 2: AI Features, 28 Saat**
 
-| # | Özellik | İmplementasyon | Süre | Değer |
-|---|---------|----------------|------|-------|
-| 1 | **Semantic Search (Ollama)** | EmbeddingService + command | 12 saat | +%85 doğruluk |
-| 2 | **Auto-tagging** | GPT-4 keyword extraction | 4 saat | SEO boost |
-| 3 | **Quality Score** | Multi-factor algorithm | 6 saat | Kalite kontrolü |
-| 4 | **Predictive Analytics** | Linear regression + AI | 6 saat | Forecasting |
+| #   | Özellik                      | İmplementasyon             | Süre    | Değer           |
+| --- | ---------------------------- | -------------------------- | ------- | --------------- |
+| 1   | **Semantic Search (Ollama)** | EmbeddingService + command | 12 saat | +%85 doğruluk   |
+| 2   | **Auto-tagging**             | GPT-4 keyword extraction   | 4 saat  | SEO boost       |
+| 3   | **Quality Score**            | Multi-factor algorithm     | 6 saat  | Kalite kontrolü |
+| 4   | **Predictive Analytics**     | Linear regression + AI     | 6 saat  | Forecasting     |
 
 **Total: 28 saat - AI-powered features!**
 
@@ -1243,7 +1271,7 @@ public function index(Request $request)
 - AIService.php'ye Cache::remember() wrapper ekle
 - Test: Aynı prompt 2 kez → 1 API call
 
-# Adım 2: Fallback Mechanism  
+# Adım 2: Fallback Mechanism
 - getFallbackChain() method
 - callProviderWithFallback() wrapper
 - Test: OpenAI'ı kapat → DeepSeek devralır mı?
@@ -1321,18 +1349,21 @@ php artisan make:service Analytics/PredictiveAnalytics
 ## ✅ BAŞARI KRİTERLERİ
 
 ### **Hafta 1 Sonunda:**
+
 - [ ] AI response cache hit rate: >%60
 - [ ] Provider fallback: 0 downtime
 - [ ] Cost tracking: Tüm requests logged
 - [ ] DashboardWidget: 5+ widget type
 
 ### **Hafta 2 Sonunda:**
+
 - [ ] Semantic search: %80+ accuracy
 - [ ] Predictive analytics: %70+ confidence
 - [ ] Auto-tagging: 10+ tags/ilan
 - [ ] Quality score: 100% ilan coverage
 
 ### **Hafta 3 Sonunda:**
+
 - [ ] n8n: 3 workflow deployed
 - [ ] Talep matching: %85+ accuracy
 - [ ] Telegram AI: Auto-reply working
@@ -1378,16 +1409,17 @@ LOW IMPACT, HIGH EFFORT (AVOID FOR NOW)
 
 ## 💰 ROI SUMMARY
 
-| Özellik | Maliyet | Tasarruf/Kazanç | ROI | Break-even |
-|---------|---------|-----------------|-----|------------|
-| Response Caching | $0 (2h dev) | $50/ay | ∞ | Hemen |
-| Provider Fallback | $0 (4h dev) | $200/ay (downtime önleme) | ∞ | Hemen |
-| Cost Tracking | $0 (6h dev) | $100/ay (budget control) | ∞ | Hemen |
-| Semantic Search | $20/ay | $300/ay (konversiyon) | %1400 | 1 hafta |
-| Talep Matching | $30/ay | $500/ay (otomasyon) | %1566 | 1 hafta |
-| n8n Workflows | $50/ay | $800/ay (insan gücü) | %1500 | 2 hafta |
+| Özellik           | Maliyet     | Tasarruf/Kazanç           | ROI   | Break-even |
+| ----------------- | ----------- | ------------------------- | ----- | ---------- |
+| Response Caching  | $0 (2h dev) | $50/ay                    | ∞     | Hemen      |
+| Provider Fallback | $0 (4h dev) | $200/ay (downtime önleme) | ∞     | Hemen      |
+| Cost Tracking     | $0 (6h dev) | $100/ay (budget control)  | ∞     | Hemen      |
+| Semantic Search   | $20/ay      | $300/ay (konversiyon)     | %1400 | 1 hafta    |
+| Talep Matching    | $30/ay      | $500/ay (otomasyon)       | %1566 | 1 hafta    |
+| n8n Workflows     | $50/ay      | $800/ay (insan gücü)      | %1500 | 2 hafta    |
 
 **TOTAL MONTHLY:**
+
 - Investment: $100/ay (AI maliyetleri)
 - Return: $1,950/ay (tasarruf + kazanç)
 - **NET ROI: %1,850**
@@ -1398,4 +1430,3 @@ LOW IMPACT, HIGH EFFORT (AVOID FOR NOW)
 **Son Güncelleme:** 3 Kasım 2025  
 **Versiyon:** 1.0  
 **Next Review:** Her hafta sprint sonrası
-

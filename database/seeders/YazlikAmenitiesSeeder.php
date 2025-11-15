@@ -8,10 +8,10 @@ use Illuminate\Database\Seeder;
 
 /**
  * Yazlık Amenities Seeder
- * 
+ *
  * Context7 Compliance: %100
  * Yalıhan Bekçi: ✅ Uyumlu
- * 
+ *
  * Yazlık için 24 amenity feature'ı oluşturur
  */
 class YazlikAmenitiesSeeder extends Seeder
@@ -28,7 +28,7 @@ class YazlikAmenitiesSeeder extends Seeder
                 'name' => 'Yazlık Amenities',
                 'applies_to' => ['yazlik'],
                 'status' => true,
-                'order' => 10,
+                'display_order' => 10,
                 'description' => 'Yazlık için amenity özellikleri (WiFi, Klima, Havuz, vs.)',
             ]
         );
@@ -42,7 +42,7 @@ class YazlikAmenitiesSeeder extends Seeder
                 'type' => 'boolean',
                 'description' => 'Ücretsiz WiFi internet bağlantısı',
                 'is_filterable' => true,
-                'order' => 1,
+                'display_order' => 1,
             ],
             [
                 'name' => 'Klima',
@@ -51,7 +51,7 @@ class YazlikAmenitiesSeeder extends Seeder
                 'options' => json_encode(['Yok', 'Split', 'VRV', 'Merkezi']),
                 'description' => 'Klima tipi',
                 'is_filterable' => true,
-                'order' => 2,
+                'display_order' => 2,
             ],
             [
                 'name' => 'Mutfak (Tam Donanımlı)',
@@ -59,7 +59,7 @@ class YazlikAmenitiesSeeder extends Seeder
                 'type' => 'boolean',
                 'description' => 'Tam donanımlı mutfak (buzdolabı, fırın, ocak, vb.)',
                 'is_filterable' => true,
-                'order' => 3,
+                'display_order' => 3,
             ],
             [
                 'name' => 'Çamaşır Makinesi',
@@ -67,7 +67,7 @@ class YazlikAmenitiesSeeder extends Seeder
                 'type' => 'boolean',
                 'description' => 'Çamaşır makinesi mevcut',
                 'is_filterable' => true,
-                'order' => 4,
+                'display_order' => 4,
             ],
             [
                 'name' => 'Bulaşık Makinesi',
@@ -75,7 +75,7 @@ class YazlikAmenitiesSeeder extends Seeder
                 'type' => 'boolean',
                 'description' => 'Bulaşık makinesi mevcut',
                 'is_filterable' => true,
-                'order' => 5,
+                'display_order' => 5,
             ],
             [
                 'name' => 'Temizlik Servisi',
@@ -84,7 +84,7 @@ class YazlikAmenitiesSeeder extends Seeder
                 'options' => json_encode(['Günlük', 'Haftalık', 'Check-out', 'Yok']),
                 'description' => 'Temizlik hizmeti sıklığı',
                 'is_filterable' => true,
-                'order' => 6,
+                'display_order' => 6,
             ],
             [
                 'name' => 'Havlu & Çarşaf Dahil',
@@ -92,7 +92,7 @@ class YazlikAmenitiesSeeder extends Seeder
                 'type' => 'boolean',
                 'description' => 'Havlu ve çarşaf seti dahil',
                 'is_filterable' => true,
-                'order' => 7,
+                'display_order' => 7,
             ],
             [
                 'name' => 'TV & Uydu',
@@ -100,7 +100,7 @@ class YazlikAmenitiesSeeder extends Seeder
                 'type' => 'boolean',
                 'description' => 'TV ve uydu yayını mevcut',
                 'is_filterable' => false,
-                'order' => 8,
+                'display_order' => 8,
             ],
 
             // Manzara ve Konum (order: 11-15)
@@ -111,7 +111,7 @@ class YazlikAmenitiesSeeder extends Seeder
                 'options' => json_encode(['Panoramik', 'Kısmi', 'Yok']),
                 'description' => 'Deniz manzarası tipi',
                 'is_filterable' => true,
-                'order' => 11,
+                'display_order' => 11,
             ],
             [
                 'name' => 'Denize Uzaklık',
@@ -121,7 +121,7 @@ class YazlikAmenitiesSeeder extends Seeder
                 'description' => 'Denize yürüme mesafesi',
                 'is_filterable' => true,
                 'is_searchable' => true,
-                'order' => 12,
+                'display_order' => 12,
             ],
             [
                 'name' => 'Dağ Manzarası',
@@ -129,7 +129,7 @@ class YazlikAmenitiesSeeder extends Seeder
                 'type' => 'boolean',
                 'description' => 'Dağ manzarası mevcut',
                 'is_filterable' => true,
-                'order' => 13,
+                'display_order' => 13,
             ],
 
             // Dış Mekan (order: 21-30)
@@ -140,7 +140,7 @@ class YazlikAmenitiesSeeder extends Seeder
                 'options' => json_encode(['Bahçe', 'Teras', 'Balkon', 'Yok']),
                 'description' => 'Açık hava alanı tipi',
                 'is_filterable' => true,
-                'order' => 21,
+                'display_order' => 21,
             ],
             [
                 'name' => 'Barbekü / Mangal',
@@ -148,7 +148,7 @@ class YazlikAmenitiesSeeder extends Seeder
                 'type' => 'boolean',
                 'description' => 'Barbekü veya mangal alanı',
                 'is_filterable' => true,
-                'order' => 22,
+                'display_order' => 22,
             ],
             [
                 'name' => 'Özel Havuz',
@@ -156,7 +156,7 @@ class YazlikAmenitiesSeeder extends Seeder
                 'type' => 'boolean',
                 'description' => 'Özel havuz (paylaşımsız)',
                 'is_filterable' => true,
-                'order' => 23,
+                'display_order' => 23,
             ],
             [
                 'name' => 'Çocuk Havuzu',
@@ -164,7 +164,7 @@ class YazlikAmenitiesSeeder extends Seeder
                 'type' => 'boolean',
                 'description' => 'Çocuk havuzu mevcut',
                 'is_filterable' => true,
-                'order' => 24,
+                'display_order' => 24,
             ],
             [
                 'name' => 'Jakuzi',
@@ -172,7 +172,7 @@ class YazlikAmenitiesSeeder extends Seeder
                 'type' => 'boolean',
                 'description' => 'Jakuzi mevcut',
                 'is_filterable' => true,
-                'order' => 25,
+                'display_order' => 25,
             ],
 
             // Güvenlik & Ekstralar (order: 31-40)
@@ -183,7 +183,7 @@ class YazlikAmenitiesSeeder extends Seeder
                 'options' => json_encode(['24 Saat', 'Kamera', 'Yok']),
                 'description' => 'Güvenlik sistemi tipi',
                 'is_filterable' => true,
-                'order' => 31,
+                'display_order' => 31,
             ],
             [
                 'name' => 'Kapalı Site',
@@ -191,7 +191,7 @@ class YazlikAmenitiesSeeder extends Seeder
                 'type' => 'boolean',
                 'description' => 'Kapalı site içinde',
                 'is_filterable' => true,
-                'order' => 32,
+                'display_order' => 32,
             ],
             [
                 'name' => 'Otopark',
@@ -200,7 +200,7 @@ class YazlikAmenitiesSeeder extends Seeder
                 'options' => json_encode(['Kapalı', 'Açık', 'Yok']),
                 'description' => 'Otopark tipi',
                 'is_filterable' => true,
-                'order' => 33,
+                'display_order' => 33,
             ],
             [
                 'name' => 'Asansör',
@@ -208,7 +208,7 @@ class YazlikAmenitiesSeeder extends Seeder
                 'type' => 'boolean',
                 'description' => 'Asansör mevcut',
                 'is_filterable' => false,
-                'order' => 34,
+                'display_order' => 34,
             ],
             [
                 'name' => 'Engelli Erişimi',
@@ -216,7 +216,7 @@ class YazlikAmenitiesSeeder extends Seeder
                 'type' => 'boolean',
                 'description' => 'Engelli dostu erişim',
                 'is_filterable' => true,
-                'order' => 35,
+                'display_order' => 35,
             ],
             [
                 'name' => 'Evcil Hayvan',
@@ -224,7 +224,7 @@ class YazlikAmenitiesSeeder extends Seeder
                 'type' => 'boolean',
                 'description' => 'Evcil hayvan kabul edilir',
                 'is_filterable' => true,
-                'order' => 36,
+                'display_order' => 36,
             ],
         ];
 
@@ -243,4 +243,3 @@ class YazlikAmenitiesSeeder extends Seeder
         $this->command->info('✅ Yazlık Amenities (24 adet) başarıyla oluşturuldu!');
     }
 }
-

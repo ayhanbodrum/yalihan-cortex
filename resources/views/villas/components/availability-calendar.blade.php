@@ -13,12 +13,12 @@
 
     {{-- Month Navigation --}}
     <div class="flex items-center justify-between">
-        <button @click="previousMonth()" 
+        <button @click="previousMonth()"
                 class="px-3 py-2 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors text-sm">
             ◀
         </button>
         <div class="font-semibold text-gray-900 dark:text-white text-sm" x-text="currentMonthName"></div>
-        <button @click="nextMonth()" 
+        <button @click="nextMonth()"
                 class="px-3 py-2 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors text-sm">
             ▶
         </button>
@@ -78,12 +78,12 @@ function availabilityCalendar(bookedDates) {
         get calendarDays() {
             const year = this.currentMonth.getFullYear();
             const month = this.currentMonth.getMonth();
-            
+
             const firstDay = new Date(year, month, 1);
             const lastDay = new Date(year, month + 1, 0);
-            
+
             const startDay = firstDay.getDay() === 0 ? 6 : firstDay.getDay() - 1;
-            
+
             const days = [];
             const today = new Date();
             today.setHours(0, 0, 0, 0);
@@ -113,7 +113,7 @@ function availabilityCalendar(bookedDates) {
         createDayObject(date, isCurrentMonth, today) {
             const dateStr = date.toISOString().split('T')[0];
             date.setHours(0, 0, 0, 0);
-            
+
             const isBooked = this.bookedDates.includes(dateStr);
             const isPast = date < today;
             const isToday = date.getTime() === today.getTime();
@@ -141,4 +141,3 @@ function availabilityCalendar(bookedDates) {
 }
 </script>
 @endpush
-

@@ -2,7 +2,7 @@
 
 /**
  * Yarım Kalmış Kod Analizi Scripti
- * 
+ *
  * Bulur:
  * - TODO/FIXME/HACK yorumları
  * - Boş metodlar (stub)
@@ -45,7 +45,7 @@ foreach ($files as $file) {
     if ($file->isFile() && $file->getExtension() === 'php') {
         $content = file_get_contents($file->getPathname());
         $relativePath = str_replace($basePath, '', $file->getPathname());
-        
+
         foreach ($patterns as $key => $pattern) {
             if (preg_match_all($pattern['pattern'], $content, $matches, PREG_OFFSET_CAPTURE)) {
                 foreach ($matches[0] as $match) {
@@ -109,4 +109,3 @@ file_put_contents(
 );
 
 echo "✅ Analiz tamamlandı. Rapor: .yalihan-bekci/reports/incomplete-code-analysis-" . date('Y-m-d') . ".json\n";
-

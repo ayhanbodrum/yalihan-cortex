@@ -4,7 +4,7 @@
   "date": "2025-11-01",
   "category": "code_quality",
   "description": "Eski kod, gereksiz tekrar, mantık hataları tespiti ve önleme kuralları",
-  
+
   "critical_rules": {
     "duplicate_detection": {
       "priority": "CRITICAL",
@@ -19,7 +19,7 @@
       "action": "WARN ve Consolidation öner",
       "example": "AIController::suggestPrice() 2 kez tanımlanmış → Yeni olanı tut, eski olanı @deprecated yap veya sil"
     },
-    
+
     "obsolete_code_detection": {
       "priority": "HIGH",
       "description": "Eski, kullanılmayan, deprecated kodları tespit et",
@@ -37,7 +37,7 @@
         "deprecated_features": "@deprecated tag ekle, 1 sürüm sonra SİL"
       }
     },
-    
+
     "heavy_code_detection": {
       "priority": "HIGH",
       "description": "Gereksiz ağırlık yapan, optimize edilmesi gereken kodlar",
@@ -56,7 +56,7 @@
         "max_execution_time": "5 seconds"
       }
     },
-    
+
     "logic_consistency_check": {
       "priority": "CRITICAL",
       "description": "Mantık tutarsızlıkları, çelişen kurallar",
@@ -76,7 +76,7 @@
       }
     }
   },
-  
+
   "response_guidelines": {
     "negative_response_forbidden": {
       "rule": "Kullanıcıya 'olmaz', 'yapamayız', 'imkansız' yanıtı VERİLMEZ",
@@ -86,7 +86,7 @@
         "good": "Bu özellik şu şekilde eklenebilir: 1) X modülü güncellenir, 2) Y API entegrasyonu yapılır, 3) Z testi eklenir. Tahmini süre: 2 gün"
       }
     },
-    
+
     "solution_oriented": {
       "rule": "Her soruna çözüm odaklı yaklaş",
       "steps": [
@@ -97,7 +97,7 @@
         "5. Öneriyi implement et"
       ]
     },
-    
+
     "proactive_prevention": {
       "rule": "Hata gerçekleşmeden önce engelle",
       "actions": [
@@ -108,7 +108,7 @@
       ]
     }
   },
-  
+
   "project_maturity_rules": {
     "description": "Proje sona yaklaşırken uygulanacak kurallar",
     "phase": "FINALIZATION",
@@ -152,7 +152,7 @@
       }
     ]
   },
-  
+
   "automated_checks": {
     "enabled": true,
     "frequency": "On every commit",
@@ -176,7 +176,7 @@
       }
     ]
   },
-  
+
   "real_examples_from_today": {
     "duplicate_method": {
       "file": "app/Http/Controllers/Api/AIController.php",
@@ -200,7 +200,7 @@
       "lesson": "Laravel route matching: Yukarıdan aşağı, ilk eşleşeni kullanır. Özel route'lar DAIMA generic route'lardan ÖNCE!"
     }
   },
-  
+
   "enforcement": {
     "pre_commit_hook": true,
     "ci_cd_integration": true,
@@ -212,4 +212,3 @@
     ]
   }
 }
-

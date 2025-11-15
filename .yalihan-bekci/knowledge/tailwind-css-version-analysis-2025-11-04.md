@@ -9,6 +9,7 @@
 ## 📊 MEVCUT PROJE
 
 ### Kullanılan Versiyon:
+
 ```json
 // package.json
 "tailwindcss": "^3.4.18"
@@ -25,6 +26,7 @@
 **Ana Yenilikler:**
 
 ### 1. **Performance Improvements**
+
 ```yaml
 ✅ 10x daha hızlı build
 ✅ Yeni Rust-based engine
@@ -33,6 +35,7 @@
 ```
 
 ### 2. **New CSS Syntax**
+
 ```css
 /* v3 (Mevcut): */
 @tailwind base;
@@ -40,10 +43,11 @@
 @tailwind utilities;
 
 /* v4 (Yeni): */
-@import "tailwindcss";
+@import 'tailwindcss';
 ```
 
 ### 3. **Native CSS Variables**
+
 ```css
 /* v4: */
 --color-primary: theme(colors.blue.500);
@@ -53,6 +57,7 @@
 ```
 
 ### 4. **Simplified Config**
+
 ```javascript
 // v3 (Mevcut):
 module.exports = {
@@ -65,36 +70,38 @@ module.exports = {
 ```
 
 ### 5. **Built-in Container Queries**
+
 ```html
 <!-- v4: -->
 <div class="@container">
-  <div class="@lg:grid @lg:grid-cols-2">
-    <!-- Container query support! -->
-  </div>
+    <div class="@lg:grid @lg:grid-cols-2">
+        <!-- Container query support! -->
+    </div>
 </div>
 ```
 
 ### 6. **Zero-Config Approach**
+
 ```yaml
 v4'te:
-  - tailwind.config.js opsiyonel
-  - Otomatik content detection
-  - Daha az configuration
+    - tailwind.config.js opsiyonel
+    - Otomatik content detection
+    - Daha az configuration
 ```
 
 ---
 
 ## ⚠️ v3 vs v4 FARKLARI
 
-| Özellik | v3 (Mevcut) | v4 (Yeni) |
-|---------|-------------|-----------|
-| **Stability** | ✅ Stable | ⚠️ Beta/Alpha |
-| **Build Speed** | Normal | 10x daha hızlı |
-| **Config** | tailwind.config.js | Opsiyonel |
-| **CSS Syntax** | @tailwind | @import |
-| **Container Queries** | Plugin | Built-in |
-| **Bundle Size** | Normal | Daha küçük |
-| **Breaking Changes** | - | ✅ Var |
+| Özellik               | v3 (Mevcut)        | v4 (Yeni)      |
+| --------------------- | ------------------ | -------------- |
+| **Stability**         | ✅ Stable          | ⚠️ Beta/Alpha  |
+| **Build Speed**       | Normal             | 10x daha hızlı |
+| **Config**            | tailwind.config.js | Opsiyonel      |
+| **CSS Syntax**        | @tailwind          | @import        |
+| **Container Queries** | Plugin             | Built-in       |
+| **Bundle Size**       | Normal             | Daha küçük     |
+| **Breaking Changes**  | -                  | ✅ Var         |
 
 ---
 
@@ -103,6 +110,7 @@ v4'te:
 ### SEÇENEK A: v3'te Kal (ÖNERİLEN!) ⭐
 
 **Neden?**
+
 ```yaml
 ✅ Stable (production-ready)
 ✅ Breaking change yok
@@ -121,6 +129,7 @@ Tavsiye:
 ### SEÇENEK B: v4'e Geç (RİSKLİ!) ❌
 
 **Neden Hayır?**
+
 ```yaml
 ❌ Beta/Alpha (stable değil)
 ❌ Breaking changes var
@@ -140,20 +149,19 @@ Tavsiye:
 ### ŞİMDİ: Tailwind CSS v3.x ✅
 
 ```yaml
-Sebep:
-  ✅ Stable ve güvenilir
-  ✅ Tüm özellikler yeterli
-  ✅ Plugin desteği tam
-  ✅ Production ready
+Sebep: ✅ Stable ve güvenilir
+    ✅ Tüm özellikler yeterli
+    ✅ Plugin desteği tam
+    ✅ Production ready
 
 Kullanım:
-  - Component Library → v3
-  - Admin Panel → v3
-  - Frontend Migration → v3
-  
+    - Component Library → v3
+    - Admin Panel → v3
+    - Frontend Migration → v3
+
 Hedef:
-  - 4 hafta → %100 Tailwind v3
-  - v4 stable olunca upgrade (2026?)
+    - 4 hafta → %100 Tailwind v3
+    - v4 stable olunca upgrade (2026?)
 ```
 
 ---
@@ -161,18 +169,16 @@ Hedef:
 ### GELECEKTE: v4 Upgrade (6-12 Ay Sonra)
 
 ```yaml
-Ne zaman:
-  ✅ v4 stable release
-  ✅ Plugin'ler uyumlu
-  ✅ Documentation tam
-  ✅ Community adoption yüksek
+Ne zaman: ✅ v4 stable release
+    ✅ Plugin'ler uyumlu
+    ✅ Documentation tam
+    ✅ Community adoption yüksek
 
-Nasıl:
-  1. Test environment'ta dene
-  2. Breaking changes kontrol et
-  3. Migration guide oku
-  4. Kademeli upgrade
-  5. Production'a al
+Nasıl: 1. Test environment'ta dene
+    2. Breaking changes kontrol et
+    3. Migration guide oku
+    4. Kademeli upgrade
+    5. Production'a al
 ```
 
 ---
@@ -180,6 +186,7 @@ Nasıl:
 ## 📋 ADMIN PANELİ DURUM
 
 ### Mevcut (Hybrid):
+
 ```yaml
 Neo Classes: 951 kullanım (131 dosya)
 Pure Tailwind: 11,998 kullanım (313 dosya)
@@ -187,9 +194,9 @@ Pure Tailwind: 11,998 kullanım (313 dosya)
 Oran: %92.6 Tailwind, %7.4 Neo
 
 Strateji: Kademeli Geçiş
-  - Yeni sayfa → Pure Tailwind
-  - Düzeltilen sayfa → Neo → Tailwind
-  - Çalışan sayfa → Dokunma (sonra migrate)
+    - Yeni sayfa → Pure Tailwind
+    - Düzeltilen sayfa → Neo → Tailwind
+    - Çalışan sayfa → Dokunma (sonra migrate)
 ```
 
 **Durum:** PHASE 3.1 (UI Consistency) devam ediyor
@@ -207,6 +214,7 @@ Strateji: Kademeli Geçiş
 ---
 
 **Web Search Sonucu (2025-11-04):**
+
 - Tailwind CSS v4.1 beta/alpha var
 - JIT compiler varsayılan (v3'te de var)
 - Daha geniş renk paleti
@@ -214,10 +222,10 @@ Strateji: Kademeli Geçiş
 - 2xl screen size (v3'te de var)
 
 **Değerlendirme:**
+
 - v3.4.18 zaten çok güncel (latest stable)
 - v4 yenilikleri çoğu v3'te de var (JIT, dark mode)
 - v4'ün büyük avantajı: 10x hızlı build (Rust engine)
 - Ama beta/alpha, production için risk
 
 **KARAR:** v3.4.18'de kal (şimdilik)! ✅
-

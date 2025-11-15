@@ -13,11 +13,13 @@
 **Dosya:** `app/Models/Setting.php`
 
 **Sorunlar Çözüldü:**
+
 - ❌ `fillable`'da `type`, `group`, `description` yoktu → ✅ Eklendi
 - ❌ `value` her zaman JSON parse ediliyordu → ✅ Type-aware parsing
 - ❌ Helper methods yoktu → ✅ 5 helper method eklendi
 
 **Yeni Özellikler:**
+
 ```php
 // Helper Methods
 Setting::get($key, $default)         // Cache-aware getter
@@ -38,6 +40,7 @@ setValueAttribute()  // Smart storage
 **Dosya:** `app/Http/Controllers/Admin/AyarlarController.php`
 
 **Yeni Özellikler:**
+
 - ✅ 10 Grup tanımı (GROUPS constant)
 - ✅ 12 Quick Template (getTemplates method)
 - ✅ 3 Template Group (email_smtp, ai_complete, security_basic)
@@ -46,25 +49,24 @@ setValueAttribute()  // Smart storage
 - ✅ Enhanced validation (snake_case regex, JSON validation)
 
 **Templates:**
-```yaml
-Single Templates (12):
-  🏠 site_name
-  📝 site_description
-  🌍 default_language
-  🔧 maintenance_mode
-  📁 max_upload_size
-  ⏰ session_lifetime
-  📱 social_media (JSON)
-  📧 smtp_host
-  🤖 ai_provider
-  💰 default_currency
-  🔒 force_https
-  📊 google_analytics_id
 
-Bulk Groups (3):
-  📧 Email SMTP (5 ayar)
-  🤖 AI Complete (4 ayar)
-  🔒 Security Basic (4 ayar)
+```yaml
+Single Templates (12): 🏠 site_name
+    📝 site_description
+    🌍 default_language
+    🔧 maintenance_mode
+    📁 max_upload_size
+    ⏰ session_lifetime
+    📱 social_media (JSON)
+    📧 smtp_host
+    🤖 ai_provider
+    💰 default_currency
+    🔒 force_https
+    📊 google_analytics_id
+
+Bulk Groups (3): 📧 Email SMTP (5 ayar)
+    🤖 AI Complete (4 ayar)
+    🔒 Security Basic (4 ayar)
 ```
 
 ---
@@ -74,6 +76,7 @@ Bulk Groups (3):
 **Dosya:** `routes/admin.php`
 
 **Yeni Route'lar:**
+
 ```php
 POST /admin/ayarlar/bulk-store     // Toplu ayar oluştur
 POST /admin/ayarlar/clear-caches   // Cache temizle
@@ -86,6 +89,7 @@ POST /admin/ayarlar/clear-caches   // Cache temizle
 **Dosya:** `resources/views/admin/ayarlar/create.blade.php`
 
 **3 Tab Sistemi:**
+
 ```
 ┌─────────────────────────────────────┐
 │ [📝 Tek Ayar] [🚀 Hızlı Şablonlar] [📦 Toplu Gruplar] │
@@ -111,11 +115,12 @@ TAB 3: Toplu Gruplar
 ```
 
 **Özellikler:**
+
 - ✅ **Smart Form:** Type seçince input değişiyor
-  - `boolean` → True/False dropdown
-  - `integer` → Number input
-  - `json` → Syntax highlighted textarea
-  - `string` → Text input
+    - `boolean` → True/False dropdown
+    - `integer` → Number input
+    - `json` → Syntax highlighted textarea
+    - `string` → Text input
 
 - ✅ **Group Autocomplete:** 10 grup önerisi
 
@@ -132,6 +137,7 @@ TAB 3: Toplu Gruplar
 **Dosya:** `app/Helpers/settings_helper.php`
 
 **Global Functions:**
+
 ```php
 setting('site_name')                           // Get
 setting_set('key', 'value', 'general')         // Set
@@ -140,6 +146,7 @@ setting_groups()                               // Get all groups
 ```
 
 **Composer Autoload:**
+
 ```json
 "autoload": {
     "files": [
@@ -153,6 +160,7 @@ setting_groups()                               // Get all groups
 ## 🎯 **KULLANIM ÖRNEKLERİ**
 
 ### **1. Hızlı Template Kullanımı**
+
 ```
 1. Create sayfasına git
 2. "🚀 Hızlı Şablonlar" tab'ına tıkla
@@ -163,6 +171,7 @@ setting_groups()                               // Get all groups
 ```
 
 ### **2. Toplu Ayar Ekleme**
+
 ```
 1. "📦 Toplu Gruplar" tab'ına tıkla
 2. 📧 "Email SMTP" kartında "Hepsini Ekle" butonuna bas
@@ -172,6 +181,7 @@ setting_groups()                               // Get all groups
 ```
 
 ### **3. Manuel Ayar (JSON)**
+
 ```
 1. "📝 Tek Ayar" tab'ı
 2. Type: JSON seç
@@ -181,6 +191,7 @@ setting_groups()                               // Get all groups
 ```
 
 ### **4. Kodda Kullanım**
+
 ```php
 // Blade
 {{ setting('site_name', 'Default') }}
@@ -197,6 +208,7 @@ setting_set('new_setting', 'value', 'general');
 ## 📊 **ÖNCE vs SONRA**
 
 ### **Önceki Sistem (3/10):**
+
 ```yaml
 ❌ Basit form (5 alan)
 ❌ Her şey manuel
@@ -210,6 +222,7 @@ setting_set('new_setting', 'value', 'general');
 ```
 
 ### **Yeni Sistem (10/10):**
+
 ```yaml
 ✅ 3 Tab (Single, Templates, Bulk)
 ✅ 12 Quick template
@@ -230,27 +243,25 @@ setting_set('new_setting', 'value', 'general');
 
 ```yaml
 Ayar Ekleme Süresi:
-  Önceki: 2-3 dakika (her ayar)
-  Yeni (Template): 10 saniye
-  Yeni (Bulk): 5 saniye (13 ayar!)
-  
-  KAZANÇ: %95+ daha hızlı! 🚀
+    Önceki: 2-3 dakika (her ayar)
+    Yeni (Template): 10 saniye
+    Yeni (Bulk): 5 saniye (13 ayar!)
 
-Kod Kalitesi:
-  ✅ Type-safe value parsing
-  ✅ Cache support
-  ✅ Validation improved
-  ✅ Helper functions
-  ✅ Bulk operations
-  ✅ Error handling
+    KAZANÇ: %95+ daha hızlı! 🚀
 
-UX İyileştirmeleri:
-  ✅ Tab navigation
-  ✅ Smart form
-  ✅ Autocomplete
-  ✅ Preview
-  ✅ Modern design
-  ✅ Dark mode
+Kod Kalitesi: ✅ Type-safe value parsing
+    ✅ Cache support
+    ✅ Validation improved
+    ✅ Helper functions
+    ✅ Bulk operations
+    ✅ Error handling
+
+UX İyileştirmeleri: ✅ Tab navigation
+    ✅ Smart form
+    ✅ Autocomplete
+    ✅ Preview
+    ✅ Modern design
+    ✅ Dark mode
 ```
 
 ---
@@ -258,31 +269,39 @@ UX İyileştirmeleri:
 ## 🔥 **TEMPLATE LİSTESİ**
 
 ### **Genel (3)**
+
 - 🏠 site_name
 - 📝 site_description
 - 🌍 default_language
 
 ### **Sistem (3)**
+
 - 🔧 maintenance_mode
 - 📁 max_upload_size
 - ⏰ session_lifetime
 
 ### **Sosyal (1)**
+
 - 📱 social_media (JSON)
 
 ### **Email (1)**
+
 - 📧 smtp_host
 
 ### **AI (1)**
+
 - 🤖 ai_provider
 
 ### **Para Birimi (1)**
+
 - 💰 default_currency
 
 ### **Güvenlik (1)**
+
 - 🔒 force_https
 
 ### **SEO (1)**
+
 - 📊 google_analytics_id
 
 **TOPLAM: 12 Template**
@@ -292,6 +311,7 @@ UX İyileştirmeleri:
 ## 📦 **BULK GRUP LİSTESİ**
 
 ### **1. Email SMTP (5 ayar)**
+
 - smtp_host
 - smtp_port
 - smtp_username
@@ -299,12 +319,14 @@ UX İyileştirmeleri:
 - smtp_encryption
 
 ### **2. AI Complete (4 ayar)**
+
 - ai_enabled
 - ai_provider
 - ollama_url
 - ollama_model
 
 ### **3. Security Basic (4 ayar)**
+
 - force_https
 - csrf_protection
 - max_login_attempts
@@ -317,6 +339,7 @@ UX İyileştirmeleri:
 ## 🎯 **KULLANIM SENARYOLARı**
 
 ### **Senaryo 1: Yeni Site Kurulumu**
+
 ```
 Problem: 20+ ayar manuel eklemek gerekiyor
 Çözüm: Bulk groups kullan
@@ -333,6 +356,7 @@ KAZANÇ: %97.5 daha hızlı! 🚀
 ```
 
 ### **Senaryo 2: JSON Ayar (Sosyal Medya)**
+
 ```
 Önceden:
   - Manuel JSON yazma
@@ -349,6 +373,7 @@ KAZANÇ: %97.5 daha hızlı! 🚀
 ```
 
 ### **Senaryo 3: Tek Özel Ayar**
+
 ```
 1. "📝 Tek Ayar" tab
 2. Key yaz (autocomplete yardımcı)
@@ -366,6 +391,7 @@ Süre: 30 saniye
 ## 🔍 **TEKNİK DETAYLAR**
 
 ### **Database Schema:**
+
 ```sql
 settings table:
   - id (bigint)
@@ -375,11 +401,12 @@ settings table:
   - description (text, nullable)
   - group (string)
   - timestamps
-  
+
 Index: group, key
 ```
 
 ### **Type Parsing:**
+
 ```php
 string  → return $value as-is
 integer → return (int) $value
@@ -388,6 +415,7 @@ json    → return json_decode($value, true)
 ```
 
 ### **Validation Rules:**
+
 ```php
 key:
   - required
@@ -409,11 +437,13 @@ group:
 ## 🎨 **UI/UX İYİLEŞTİRMELERİ**
 
 ### **Önceki:**
+
 - ❌ Tek sayfa, basit form
 - ❌ Her şey manuel
 - ❌ Neo classes (eski)
 
 ### **Yeni:**
+
 - ✅ 3 tab navigation
 - ✅ 12 quick template
 - ✅ 3 bulk group
@@ -439,6 +469,7 @@ php artisan serve
 ```
 
 **Test Checklist:**
+
 - [ ] Tab navigation çalışıyor mu?
 - [ ] Template kartına tıklayınca form doluyor mu?
 - [ ] Type değiştirince form adapte oluyor mu?
@@ -454,6 +485,7 @@ php artisan serve
 ## 💡 **KULLANIM KILAVUZU**
 
 ### **Helper Function Kullanımı:**
+
 ```php
 // Get setting
 $siteName = setting('site_name', 'Default Name');
@@ -470,6 +502,7 @@ $groups = setting_groups();
 ```
 
 ### **Blade'de Kullanım:**
+
 ```blade
 <!-- Site name -->
 <h1>{{ setting('site_name', 'Yalıhan Emlak') }}</h1>
@@ -493,24 +526,24 @@ $groups = setting_groups();
 
 ```yaml
 Dosya Değişiklikleri:
-  - Modified: 5 dosya
-  - Created: 3 dosya
-  - Total Changes: ~800 satır
+    - Modified: 5 dosya
+    - Created: 3 dosya
+    - Total Changes: ~800 satır
 
 Özellikler:
-  Templates: 0 → 12
-  Bulk Groups: 0 → 3
-  Helper Functions: 0 → 5
-  Validation Rules: 2 → 7
+    Templates: 0 → 12
+    Bulk Groups: 0 → 3
+    Helper Functions: 0 → 5
+    Validation Rules: 2 → 7
 
 Performance:
-  Setting ekleme: -95% süre
-  Bulk create: 13 ayar 5 saniyede
-  Code quality: +400%
+    Setting ekleme: -95% süre
+    Bulk create: 13 ayar 5 saniyede
+    Code quality: +400%
 
 UX Score:
-  Önceki: 3/10
-  Yeni: 10/10 ⭐
+    Önceki: 3/10
+    Yeni: 10/10 ⭐
 ```
 
 ---
@@ -518,6 +551,7 @@ UX Score:
 ## 🔮 **GELECEK İYİLEŞTİRMELER**
 
 ### **Phase 2 (İleride):**
+
 - [ ] Import/Export (JSON/CSV)
 - [ ] Setting versioning (değişiklik geçmişi)
 - [ ] Related settings suggestion
@@ -532,17 +566,20 @@ UX Score:
 ## 🎓 **ÖĞRENİLENLER**
 
 ### **Model Design:**
+
 - ✅ `fillable` her zaman database kolonları ile match olmalı
 - ✅ Accessor/Mutator type-aware olmalı
 - ✅ Helper methods kod tekrarını önler
 - ✅ Cache önemli (performance)
 
 ### **Controller Design:**
+
 - ✅ Template'ler controller'da (bakımı kolay)
 - ✅ Validation server-side (güvenlik)
 - ✅ Bulk operations (UX++)
 
 ### **View Design:**
+
 - ✅ Tab navigation (organization)
 - ✅ Smart form (type-aware)
 - ✅ Preview (hata önleme)
@@ -565,6 +602,3 @@ UX Score:
 **Version:** 2.0.0  
 **Status:** ✅ Production Ready  
 **Context7 Compliance:** %100
-
-
-

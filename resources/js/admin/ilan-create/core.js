@@ -42,6 +42,16 @@ function initializeValidation() {
         });
     });
 
+    // ValidationManager entegrasyonu
+    try {
+        if (window.ValidationManager) {
+            window.__ilanVM = new window.ValidationManager();
+            console.log('ValidationManager aktif: ilan create formu');
+        }
+    } catch (e) {
+        console.warn('ValidationManager yüklenemedi', e);
+    }
+
     // Price validation
     const priceInputs = document.querySelectorAll(
         'input[name="fiyat"], input[name="baslangic_fiyati"], input[name="gunluk_fiyat"]'
@@ -71,6 +81,36 @@ function validateForm() {
     // Location validation
     if (!validateLocation()) {
         isValid = false;
+    }
+
+    // ValidationManager ile kurallı doğrulama
+    const form = document.getElementById('ilan-create-form');
+    if (form && window.__ilanVM) {
+        const data = {};
+        const fields = form.querySelectorAll('input, select, textarea');
+        fields.forEach((el) => {
+            const name = el.name || el.id;
+            if (!name) return;
+            let val = el.value;
+            if (el.type === 'checkbox') {
+                val = el.checked;
+            }
+            data[name] = val;
+        });
+
+        const result = window.__ilanVM.validateFields(data);
+        // Hataları göster
+        // Önce mevcut hataları temizle
+        document.querySelectorAll('.field-error').forEach((el) => el.remove());
+        if (!result.isValid) {
+            isValid = false;
+            Object.entries(result.errors).forEach(([field, message]) => {
+                const input = form.querySelector(`[name="${field}"]`);
+                if (input) {
+                    showFieldError(input, message);
+                }
+            });
+        }
     }
 
     return isValid;

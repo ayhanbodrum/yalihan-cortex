@@ -4,57 +4,59 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\SiteApartman;
+use App\Services\Response\ResponseService;
+use App\Traits\ValidatesApiRequests;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 
 class SiteApartmanController extends Controller
 {
+    use ValidatesApiRequests;
     /**
      * Site/Apartman arama
      */
     public function search(Request $request): JsonResponse
     {
-        $request->validate([
+        $validated = $this->validateRequestWithResponse($request, [
             'q' => 'required|string|min:2',
             'type' => 'nullable|string|in:site,apartman'
         ]);
 
+        if ($validated instanceof JsonResponse) {
+            return $validated;
+        }
+
         try {
             $query = SiteApartman::query();
-            
+
             // Tip filtresi
             if ($request->type) {
                 $query->where('tip', $request->type);
             }
-            
+
             // Arama
             $query->where(function($q) use ($request) {
                 $q->where('name', 'LIKE', '%' . $request->q . '%')
                   ->orWhere('adres', 'LIKE', '%' . $request->q . '%');
             });
-            
+
             $results = $query->limit(10)->get([
                 'id', 'name', 'adres', 'toplam_daire_sayisi', 'tip'
             ]);
-            
+
             // Context7 Live Search compatibility: add 'text' field
             $results->each(function ($item) {
                 $item->text = $item->name;
                 $item->daire_sayisi = $item->toplam_daire_sayisi;
             });
 
-            return response()->json([
-                'success' => true,
-                'data' => $results, // Changed from 'results' to 'data'
+            return ResponseService::success([
+                'data' => $results,
                 'count' => $results->count()
-            ]);
+            ], 'Site/Apartman araması başarıyla tamamlandı');
 
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Arama sırasında hata oluştu',
-                'error' => $e->getMessage()
-            ], 500);
+            return ResponseService::serverError('Arama sırasında hata oluştu.', $e);
         }
     }
 
@@ -65,18 +67,13 @@ class SiteApartmanController extends Controller
     {
         try {
             $site = SiteApartman::findOrFail($id);
-            
-            return response()->json([
-                'success' => true,
+
+            return ResponseService::success([
                 'site' => $site
-            ]);
+            ], 'Site/Apartman detayları başarıyla getirildi');
 
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Site bulunamadı',
-                'error' => $e->getMessage()
-            ], 404);
+            return ResponseService::notFound('Site bulunamadı');
         }
     }
 }

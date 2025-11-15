@@ -20,7 +20,7 @@ class IlanEtiketSeeder extends Seeder
                 'badge_text' => 'Fırsat',
                 'is_badge' => true,
                 'status' => true,
-                'order' => 1,
+                'display_order' => 1,
             ],
             [
                 'name' => 'İndirim',
@@ -32,7 +32,7 @@ class IlanEtiketSeeder extends Seeder
                 'badge_text' => 'İndirim',
                 'is_badge' => true,
                 'status' => true,
-                'order' => 2,
+                'display_order' => 2,
             ],
             [
                 'name' => 'Özel Fiyat',
@@ -44,7 +44,7 @@ class IlanEtiketSeeder extends Seeder
                 'badge_text' => 'Özel',
                 'is_badge' => true,
                 'status' => true,
-                'order' => 3,
+                'display_order' => 3,
             ],
             [
                 'name' => 'Denize Sıfır',
@@ -55,7 +55,7 @@ class IlanEtiketSeeder extends Seeder
                 'bg_color' => '#E6F2FF',
                 'is_badge' => false,
                 'status' => true,
-                'order' => 10,
+                'display_order' => 10,
             ],
             [
                 'name' => 'Deniz Manzaralı',
@@ -66,7 +66,7 @@ class IlanEtiketSeeder extends Seeder
                 'bg_color' => '#E6F2FF',
                 'is_badge' => false,
                 'status' => true,
-                'order' => 11,
+                'display_order' => 11,
             ],
             [
                 'name' => 'Golden Visa',
@@ -77,7 +77,7 @@ class IlanEtiketSeeder extends Seeder
                 'bg_color' => '#FFF9E6',
                 'is_badge' => true,
                 'status' => true,
-                'order' => 20,
+                'display_order' => 20,
                 'target_url' => '/golden-visa',
             ],
             [
@@ -89,7 +89,7 @@ class IlanEtiketSeeder extends Seeder
                 'bg_color' => '#F5E6D3',
                 'is_badge' => true,
                 'status' => true,
-                'order' => 21,
+                'display_order' => 21,
                 'target_url' => '/vatandaslik',
             ],
             [
@@ -101,7 +101,7 @@ class IlanEtiketSeeder extends Seeder
                 'bg_color' => '#E8F3FF',
                 'is_badge' => true,
                 'status' => true,
-                'order' => 22,
+                'display_order' => 22,
             ],
             [
                 'name' => 'Müstakil',
@@ -112,7 +112,7 @@ class IlanEtiketSeeder extends Seeder
                 'bg_color' => '#F7FAFC',
                 'is_badge' => false,
                 'status' => true,
-                'order' => 30,
+                'display_order' => 30,
             ],
             [
                 'name' => 'Özel Plajlı',
@@ -123,7 +123,7 @@ class IlanEtiketSeeder extends Seeder
                 'bg_color' => '#D1FAE5',
                 'is_badge' => false,
                 'status' => true,
-                'order' => 31,
+                'display_order' => 31,
             ],
             [
                 'name' => 'Havuzlu',
@@ -134,7 +134,7 @@ class IlanEtiketSeeder extends Seeder
                 'bg_color' => '#E0F2FE',
                 'is_badge' => false,
                 'status' => true,
-                'order' => 32,
+                'display_order' => 32,
             ],
             [
                 'name' => 'Spa & Wellness',
@@ -145,7 +145,7 @@ class IlanEtiketSeeder extends Seeder
                 'bg_color' => '#EDE9FE',
                 'is_badge' => false,
                 'status' => true,
-                'order' => 33,
+                'display_order' => 33,
             ],
         ];
 

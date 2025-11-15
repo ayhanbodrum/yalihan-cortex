@@ -13,9 +13,11 @@ class TalepServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        // TEMPORARILY DISABLED - TalepController does not exist
+        // ✅ NOTE: Talep modülü route'ları TalepAnaliz modülüne taşındı
+        // TalepController artık TalepAnaliz modülünde kullanılıyor
+        // Bu route'lar gelecekte TalepAnaliz modülüne entegre edilebilir
         /*
-        // Route tanımları
+        // Route tanımları (TalepAnaliz modülünde kullanılıyor)
         $this->loadRoutesFrom(__DIR__ . '/routes/web.php');
         $this->loadRoutesFrom(__DIR__ . '/routes/api.php');
 
@@ -24,19 +26,14 @@ class TalepServiceProvider extends ServiceProvider
 
         // Migration tanımları
         $this->loadMigrationsFrom(__DIR__ . '/Database/Migrations');
-
-        // Seeder tanımları
-        // Laravel doesn't have a built-in loadSeedersFrom method
-        // Instead, seeders are typically registered in DatabaseSeeder.php
-        // or run manually via artisan db:seed command
         */
 
         // Çeviri tanımları
-        $this->loadTranslationsFrom(__DIR__.'/Lang', 'talep');
+        $this->loadTranslationsFrom(__DIR__ . '/Lang', 'talep');
 
         // Config dosyalarının yayınlanması
         $this->publishes([
-            __DIR__.'/Config' => config_path('talep'),
+            __DIR__ . '/Config' => config_path('talep'),
         ], 'talep-config');
     }
 
@@ -57,7 +54,7 @@ class TalepServiceProvider extends ServiceProvider
 
         // Config dosyalarının birleştirilmesi
         $this->mergeConfigFrom(
-            __DIR__.'/Config/talep.php',
+            __DIR__ . '/Config/talep.php',
             'talep'
         );
     }

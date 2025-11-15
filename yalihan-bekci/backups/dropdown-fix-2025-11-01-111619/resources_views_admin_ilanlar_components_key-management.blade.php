@@ -32,7 +32,7 @@
                 <label for="anahtar_sayisi" class="neo-label">
                     <span class="neo-label-text">Anahtar Sayısı</span>
                 </label>
-                <input type="number" name="anahtar_sayisi" id="anahtar_sayisi" 
+                <input type="number" name="anahtar_sayisi" id="anahtar_sayisi"
                     value="{{ old('anahtar_sayisi', 1) }}" min="0" max="20"
                     class="neo-input" placeholder="Kaç adet anahtar?">
                 <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">

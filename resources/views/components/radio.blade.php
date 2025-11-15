@@ -1,9 +1,9 @@
 {{--
     Radio Button Component
-    
+
     @component x-radio
     @description Accessible radio input with label and error handling
-    
+
     @props
         - name: string (required) - Input name (same for all radios in group)
         - label: string (required) - Radio label
@@ -13,7 +13,7 @@
         - error: string (optional) - Error message (only show on last radio)
         - help: string (optional) - Help text
         - id: string (optional) - Custom ID - default: name-value
-    
+
     @example
         <x-radio
             name="status"
@@ -27,7 +27,7 @@
             value="pending"
             :checked="old('status', $ilan->status) === 'pending'"
         />
-    
+
     @accessibility
         - ARIA labels
         - Keyboard navigation
@@ -61,7 +61,7 @@ $hasError = !empty($error);
             value="{{ $value }}"
             {{ $checked ? 'checked' : '' }}
             {{ $disabled ? 'disabled' : '' }}
-            class="w-4 h-4 border-gray-300 dark:border-gray-600 
+            class="w-4 h-4 border-gray-300 dark:border-gray-600
                    text-blue-600 dark:text-blue-500
                    focus:ring-2 focus:ring-blue-500 focus:ring-offset-0
                    disabled:opacity-50 disabled:cursor-not-allowed
@@ -75,8 +75,8 @@ $hasError = !empty($error);
     {{-- Label & Help --}}
     <div class="ml-3">
         @if($label)
-        <label 
-            for="{{ $radioId }}" 
+        <label
+            for="{{ $radioId }}"
             class="text-sm font-medium text-gray-900 dark:text-white
                    {{ $disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer' }}"
         >
@@ -85,8 +85,8 @@ $hasError = !empty($error);
         @endif
 
         @if($help)
-        <p 
-            id="{{ $radioId }}-help" 
+        <p
+            id="{{ $radioId }}-help"
             class="mt-1 text-xs text-gray-600 dark:text-gray-400"
         >
             {{ $help }}
@@ -94,8 +94,8 @@ $hasError = !empty($error);
         @endif
 
         @if($hasError)
-        <p 
-            id="{{ $radioId }}-error" 
+        <p
+            id="{{ $radioId }}-error"
             class="mt-1 text-xs text-red-600 dark:text-red-400"
             role="alert"
         >
@@ -104,4 +104,3 @@ $hasError = !empty($error);
         @endif
     </div>
 </div>
-

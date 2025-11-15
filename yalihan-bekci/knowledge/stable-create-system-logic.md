@@ -5,6 +5,7 @@
 `stable-create` sayfası, **Yalıhan Emlak** sisteminin en karmaşık ve kritik sayfası. Bu sayfa üzerinden gayrimenkul ilanları oluşturuluyor.
 
 ### 🎯 Temel Prensip
+
 **"Tek sayfa, modüler yapı, Context7 uyumlu"**
 
 ---
@@ -80,26 +81,30 @@ window.featuresManager = function() { ... }
 
 ```html
 <!-- ✅ DOĞRU: Tutarlı Stil -->
-<select class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+<select
+    class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+>
     <option value="">Seçin...</option>
 </select>
 
 <!-- ❌ YANLIŞ: Farklı component kullanma -->
-<x-form.select>  <!-- NEO component kullanma! -->
-<neo-select>     <!-- NEO component kullanma! -->
+<x-form.select>
+    <!-- NEO component kullanma! -->
+    <neo-select> <!-- NEO component kullanma! --></neo-select></x-form.select
+>
 ```
 
 ### 📏 INPUT ALANLARI
 
 ```html
 <!-- ✅ Başlık: Büyük ve vurgulu -->
-<input type="text" class="w-full px-4 py-4 text-lg ...">
+<input type="text" class="w-full px-4 py-4 text-lg ..." />
 
 <!-- ✅ Normal alanlar: Standart boyut -->
-<input type="text" class="w-full px-4 py-3 ...">
+<input type="text" class="w-full px-4 py-3 ..." />
 
 <!-- ✅ Küçük alanlar: Kompakt -->
-<input type="text" class="w-full px-3 py-2 text-sm ...">
+<input type="text" class="w-full px-3 py-2 text-sm ..." />
 ```
 
 ---
@@ -120,8 +125,8 @@ Ana Kategori (Konut)
 // 1. Ana kategori seçilince
 function loadAltKategoriler(anaKategoriId) {
     fetch(`/api/categories/sub/${anaKategoriId}`)
-        .then(response => response.json())
-        .then(data => {
+        .then((response) => response.json())
+        .then((data) => {
             populateAltKategoriler(data.subcategories); // ✅ API key: 'subcategories'
         });
 }
@@ -129,8 +134,8 @@ function loadAltKategoriler(anaKategoriId) {
 // 2. Alt kategori seçilince
 function loadYayinTipleri(altKategoriId) {
     fetch(`/api/categories/publication-types/${altKategoriId}`)
-        .then(response => response.json())
-        .then(data => {
+        .then((response) => response.json())
+        .then((data) => {
             populateYayinTipleri(data.types); // ✅ API key: 'types'
         });
 }
@@ -143,7 +148,8 @@ window.loadYayinTipleri = loadYayinTipleri;
 ### 🚨 HATA: `loadAltKategoriler is not defined`
 
 **Sebep:** Fonksiyon window'a export edilmemiş  
-**Çözüm:** 
+**Çözüm:**
+
 ```javascript
 window.loadAltKategoriler = loadAltKategoriler;
 ```
@@ -184,7 +190,7 @@ onPriceChange() {
 
     // 2. Tüm para birimlerini güncelle
     this.updateAllPrices();
-    
+
     // 3. Yazıyla göster
     this.priceInWords = numberToWords(this.mainPrice);
 }
@@ -194,8 +200,9 @@ onPriceChange() {
 
 **Sebep:** `type="text"` ve `step` eksik  
 **Çözüm:**
+
 ```html
-<input type="number" step="0.01" x-model.number="mainPrice">
+<input type="number" step="0.01" x-model.number="mainPrice" />
 ```
 
 ---
@@ -207,8 +214,8 @@ onPriceChange() {
 ```javascript
 function initializeMap() {
     // ✅ CONTEXT7: Güvenli kontrol
-    if (typeof google === "undefined" || !google.maps || !google.maps.MapTypeId) {
-        console.warn("⚠️ Google Maps API not loaded yet, will retry...");
+    if (typeof google === 'undefined' || !google.maps || !google.maps.MapTypeId) {
+        console.warn('⚠️ Google Maps API not loaded yet, will retry...');
         setTimeout(initializeMap, 1000); // ✅ 1 saniye sonra tekrar dene
         return;
     }
@@ -220,7 +227,7 @@ function initializeMap() {
         mapTypeId: google.maps.MapTypeId.ROADMAP, // ✅ Artık güvenli
     };
 
-    map = new google.maps.Map(document.getElementById("map"), mapOptions);
+    map = new google.maps.Map(document.getElementById('map'), mapOptions);
 }
 ```
 
@@ -237,7 +244,7 @@ function initializeMap() {
 
 ```html
 <!-- ❌ Live search - API endpoint yok, karmaşık -->
-<input type="text" @input="searchPersons($event.target.value)">
+<input type="text" @input="searchPersons($event.target.value)" />
 ```
 
 ### Yeni Sistem (Çalışıyor ✅)
@@ -247,16 +254,14 @@ function initializeMap() {
 <select name="ilan_sahibi_id" required>
     <option value="">Kişi Seçin...</option>
     @foreach($kisiler as $kisi)
-        <option value="{{ $kisi->id }}">
-            {{ $kisi->ad }} {{ $kisi->soyad }} - {{ $kisi->telefon }}
-        </option>
+    <option value="{{ $kisi->id }}">
+        {{ $kisi->ad }} {{ $kisi->soyad }} - {{ $kisi->telefon }}
+    </option>
     @endforeach
 </select>
 
 <!-- ✅ Yeni kişi ekleme linki -->
-<a href="{{ route('admin.kisiler.create') }}" target="_blank">
-    ➕ Yeni kişi ekle
-</a>
+<a href="{{ route('admin.kisiler.create') }}" target="_blank"> ➕ Yeni kişi ekle </a>
 ```
 
 ### 🚨 HATA: `An invalid form control with name='person_ad_soyad' is not focusable`
@@ -278,11 +283,11 @@ function initializeMap() {
 ### Alpine.js Component
 
 ```javascript
-window.featuresManager = function() {
+window.featuresManager = function () {
     return {
         newFeature: '',
         customFeatures: [],
-        
+
         // ✅ Ana fonksiyon
         addFeature() {
             if (!this.newFeature || this.newFeature.trim() === '') {
@@ -291,24 +296,24 @@ window.featuresManager = function() {
             }
             this.customFeatures.push({
                 id: Date.now(),
-                name: this.newFeature
+                name: this.newFeature,
             });
             this.newFeature = '';
             window.toast?.success('Özellik eklendi');
         },
-        
+
         // ✅ Alias: Alpine'dan çağrılır
         addCustomFeature() {
             this.addFeature();
         },
-        
+
         // ✅ Silme fonksiyonu
         removeCustomFeature(index) {
             if (index >= 0 && index < this.customFeatures.length) {
                 this.customFeatures.splice(index, 1);
                 window.toast?.info('Özellik silindi');
             }
-        }
+        },
     };
 };
 ```
@@ -319,7 +324,7 @@ window.featuresManager = function() {
 <div x-data="featuresManager()">
     <!-- ✅ Ekleme -->
     <button type="button" @click="addCustomFeature()">Ekle</button>
-    
+
     <!-- ✅ Listeleme -->
     <template x-for="(feature, index) in customFeatures" :key="index">
         <div>
@@ -362,15 +367,15 @@ async function generateAITitle() {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
         },
         body: JSON.stringify({
             kategori: 'konut',
             tip: 'villa',
-            lokasyon: 'Bodrum Yalıkavak'
-        })
+            lokasyon: 'Bodrum Yalıkavak',
+        }),
     });
-    
+
     const data = await response.json();
     document.getElementById('baslik').value = data.suggestion;
 }
@@ -395,7 +400,7 @@ async function generateAITitle() {
 ```php
 // ❌ KULLANMA!
 'durum'           → 'status'
-'aktif'           → 'active'  
+'aktif'           → 'active'
 'is_active'       → 'enabled'
 'sehir'           → 'city'
 'musteriler'      → 'kisiler'
@@ -416,7 +421,7 @@ $validated = $request->validate([
     'ilce_id' => 'required|exists:ilceler,id',
     'ilan_sahibi_id' => 'required|exists:kisiler,id',
     'fiyat' => 'required|numeric|min:0',
-    
+
     // ✅ Nullable alanlar
     'site_id' => 'nullable', // ✅ CONTEXT7: sites tablosu yoksa optional
     'mahalle_id' => 'nullable|exists:mahalleler,id',
@@ -436,6 +441,7 @@ $validated = $request->validate([
 ```
 
 **Çözüm Adımları:**
+
 1. Fonksiyonun tanımlı olduğunu kontrol et
 2. `window.functionName = functionName` ile export et
 3. Vite build yap: `npx vite build`
@@ -448,6 +454,7 @@ $validated = $request->validate([
 ```
 
 **Çözüm Adımları:**
+
 1. Hidden form içindeki `required` alanları bul
 2. `required` attribute'unu kaldır VEYA
 3. Formu tamamen `display: none` yap
@@ -459,6 +466,7 @@ $validated = $request->validate([
 ```
 
 **Çözüm Adımları:**
+
 1. Controller'da validation rule'u bul
 2. `required|exists:sites,id` → `nullable` olarak değiştir
 3. Form'da field'ı optional yap
@@ -470,6 +478,7 @@ $validated = $request->validate([
 ```
 
 **Çözüm Adımları:**
+
 1. API yüklenme kontrolü ekle
 2. Retry mekanizması ekle
 3. Güvenli başlatma kodu kullan (yukarıda)
@@ -478,16 +487,14 @@ $validated = $request->validate([
 
 ```javascript
 // ❌ HATALI
-fetch('/api/categories/sub/1')
-    .then(data => {
-        populateAltKategoriler(data.kategoriler); // ❌ Key yanlış!
-    });
+fetch('/api/categories/sub/1').then((data) => {
+    populateAltKategoriler(data.kategoriler); // ❌ Key yanlış!
+});
 
 // ✅ DOĞRU
-fetch('/api/categories/sub/1')
-    .then(data => {
-        populateAltKategoriler(data.subcategories || data.kategoriler || []); // ✅ Fallback
-    });
+fetch('/api/categories/sub/1').then((data) => {
+    populateAltKategoriler(data.subcategories || data.kategoriler || []); // ✅ Fallback
+});
 ```
 
 ---
@@ -503,13 +510,11 @@ export default defineConfig({
         rollupOptions: {
             output: {
                 manualChunks: {
-                    'stable-create': [
-                        'resources/js/admin/stable-create.js'
-                    ]
-                }
-            }
-        }
-    }
+                    'stable-create': ['resources/js/admin/stable-create.js'],
+                },
+            },
+        },
+    },
 });
 ```
 
@@ -520,10 +525,10 @@ export default defineConfig({
 document.addEventListener('DOMContentLoaded', () => {
     // 1. Önce temel işlevler
     initializeCore();
-    
+
     // 2. Sonra harita (ağır)
     setTimeout(() => initializeMap(), 500);
-    
+
     // 3. En son AI (çok ağır)
     setTimeout(() => initializeAI(), 1000);
 });
@@ -624,4 +629,3 @@ curl http://localhost:8000/stable-create
 **Yazar:** AI Assistant (Claude Sonnet 4.5)  
 **Hedef:** Yalıhan Bekçi AI Learning System  
 **Context7 Compliance:** ✅ %98.82
-

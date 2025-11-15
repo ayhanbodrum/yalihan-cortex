@@ -1,0 +1,40 @@
+{
+  "pattern": "order → display_order in Controllers",
+  "description": "Controller'larda database operations için 'order' kolonu YASAK, 'display_order' ZORUNLU",
+  "severity": "critical",
+  "date": "2025-11-09",
+  "examples": {
+    "wrong": [
+      "->update(['order' => $value])",
+      "->create(['order' => $value])",
+      "$model->order = $value",
+      "->max('order')"
+    ],
+    "correct": [
+      "->update(['display_order' => $value])",
+      "->create(['display_order' => $value])",
+      "$model->display_order = $value",
+      "->max('display_order')"
+    ]
+  },
+  "backward_compatibility": {
+    "note": "Model'de accessor var: getOrderAttribute() → display_order",
+    "acceptable": [
+      "'order' => $model->order  // Accessor kullanılıyor (response data)",
+      "'order' => 'nullable|integer'  // Validation (backward compat)"
+    ],
+    "forbidden": [
+      "->update(['order' => $value])  // Database operation",
+      "->create(['order' => $value])  // Database operation",
+      "$model->order = $value  // Direct assignment (accessor yoksa)"
+    ]
+  },
+  "affected_files": [
+    "app/Http/Controllers/Admin/PropertyTypeManagerController.php",
+    "app/Http/Controllers/Admin/OzellikKategoriController.php",
+    "app/Http/Controllers/Api/BulkOperationsController.php"
+  ],
+  "fixed_date": "2025-11-09",
+  "status": "fixed"
+}
+

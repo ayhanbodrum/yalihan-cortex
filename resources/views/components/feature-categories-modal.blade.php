@@ -14,7 +14,7 @@
 ]) }})"
      x-init="loadCategories()"
      class="feature-categories-modal">
-    
+
     {{-- Feature Categories Sections --}}
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {{-- İç Özellikleri --}}
@@ -31,7 +31,7 @@
                         <p class="text-xs text-gray-600 dark:text-gray-400">ADSL, Asansör, Balkon...</p>
                     </div>
                 </div>
-                <x-feature-modal-selector 
+                <x-feature-modal-selector
                     category-slug="ic-ozellikleri"
                     :selected-features="collect($selectedFeatures)->where('categorySlug', 'ic-ozellikleri')->values()->all()"
                     :ilan-id="$ilanId"
@@ -60,7 +60,7 @@
                         <p class="text-xs text-gray-600 dark:text-gray-400">Bahçe, Otopark, Güvenlik...</p>
                     </div>
                 </div>
-                <x-feature-modal-selector 
+                <x-feature-modal-selector
                     category-slug="dis-ozellikleri"
                     :selected-features="collect($selectedFeatures)->where('categorySlug', 'dis-ozellikleri')->values()->all()"
                     :ilan-id="$ilanId"
@@ -90,7 +90,7 @@
                         <p class="text-xs text-gray-600 dark:text-gray-400">Çevre, Sosyal alanlar...</p>
                     </div>
                 </div>
-                <x-feature-modal-selector 
+                <x-feature-modal-selector
                     category-slug="muhit"
                     :selected-features="collect($selectedFeatures)->where('categorySlug', 'muhit')->values()->all()"
                     :ilan-id="$ilanId"
@@ -119,7 +119,7 @@
                         <p class="text-xs text-gray-600 dark:text-gray-400">Metro, Otobüs, İstasyon...</p>
                     </div>
                 </div>
-                <x-feature-modal-selector 
+                <x-feature-modal-selector
                     category-slug="ulasim"
                     :selected-features="collect($selectedFeatures)->where('categorySlug', 'ulasim')->values()->all()"
                     :ilan-id="$ilanId"
@@ -148,7 +148,7 @@
                         <p class="text-xs text-gray-600 dark:text-gray-400">Kuzey, Güney, Doğu, Batı...</p>
                     </div>
                 </div>
-                <x-feature-modal-selector 
+                <x-feature-modal-selector
                     category-slug="cephe"
                     :selected-features="collect($selectedFeatures)->where('categorySlug', 'cephe')->values()->all()"
                     :ilan-id="$ilanId"
@@ -177,7 +177,7 @@
                         <p class="text-xs text-gray-600 dark:text-gray-400">Deniz, Dağ, Boğaz, Park...</p>
                     </div>
                 </div>
-                <x-feature-modal-selector 
+                <x-feature-modal-selector
                     category-slug="manzara"
                     :selected-features="collect($selectedFeatures)->where('categorySlug', 'manzara')->values()->all()"
                     :ilan-id="$ilanId"
@@ -193,18 +193,21 @@
         </div>
     </div>
 
-    {{-- Demirbaşlar --}}
-    <div class="mt-6">
-        <x-fixtures-manager :fixtures="[]" :ilan-id="$ilanId" />
-    </div>
+    {{-- Demirbaşlar (sadece kiralık ve ilanId mevcutsa) --}}
+    @php($ilan = $ilanId ? \App\Models\Ilan::find($ilanId) : null)
+    @if($ilan && ($ilan->ilan_turu ?? null) === 'kiralik')
+        <div class="mt-6">
+            <x-fixtures-manager :fixtures="[]" :ilan-id="$ilanId" />
+        </div>
+    @endif
 
     {{-- Hidden Inputs for Form Submission --}}
     <template x-for="(feature, index) in allSelectedFeatures" :key="index">
-        <input type="hidden" 
-               :name="`features[${index}][id]`" 
+        <input type="hidden"
+               :name="`features[${index}][id]`"
                :value="feature.id">
-        <input type="hidden" 
-               :name="`features[${index}][category_slug]`" 
+        <input type="hidden"
+               :name="`features[${index}][category_slug]`"
                :value="feature.categorySlug">
     </template>
 </div>
@@ -216,12 +219,12 @@ function featureCategoriesModal(config) {
         selectedFeatures: config.selectedFeatures || [],
         allSelectedFeatures: [],
         categories: [],
-        
+
         init() {
             // Initialize selected features by category
             this.allSelectedFeatures = this.selectedFeatures || [];
         },
-        
+
         async loadCategories() {
             try {
                 const response = await fetch('/api/admin/features/categories');
@@ -233,24 +236,24 @@ function featureCategoriesModal(config) {
                 console.error('Categories load error:', error);
             }
         },
-        
+
         getSelectedByCategory(categorySlug) {
             return this.allSelectedFeatures.filter(f => f.categorySlug === categorySlug);
         },
-        
+
         handleFeaturesSelected(detail) {
             // Remove old features for this category
             this.allSelectedFeatures = this.allSelectedFeatures.filter(
                 f => f.categorySlug !== detail.categorySlug
             );
-            
+
             // Add new features
             const newFeatures = detail.features.map(f => ({
                 ...f,
                 categorySlug: detail.categorySlug
             }));
             this.allSelectedFeatures = [...this.allSelectedFeatures, ...newFeatures];
-            
+
             // Dispatch event
             this.$dispatch('all-features-updated', {
                 features: this.allSelectedFeatures
@@ -259,4 +262,3 @@ function featureCategoriesModal(config) {
     }
 }
 </script>
-

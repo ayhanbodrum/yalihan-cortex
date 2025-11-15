@@ -1,7 +1,7 @@
 <?php
 /**
  * WikiMapia API Direct Test
- * 
+ *
  * Test both API keys and see real responses
  * URL: http://127.0.0.1:8000/wikimapia-test.php
  */
@@ -81,7 +81,7 @@ $latMax = $lat + $radius;
                 echo "</div>";
 
                 // Check if test data
-                if (isset($places[0]['description']) && 
+                if (isset($places[0]['description']) &&
                     str_contains(strtolower($places[0]['description']), 'deneme')) {
                     echo "<div class='warning'>⚠️ WARNING: This looks like TEST DATA (contains 'deneme')</div>";
                 }
@@ -101,7 +101,7 @@ $latMax = $lat + $radius;
         if (!empty($places) && isset($places[0]['id'])) {
             $placeId = $places[0]['id'];
             echo "<h3>📍 Test 2: place.getbyid (ID: {$placeId})</h3>";
-            
+
             $url = "https://api.wikimapia.org/?function=place.getbyid"
                  . "&id={$placeId}"
                  . "&key={$apiKey}"
@@ -116,7 +116,7 @@ $latMax = $lat + $radius;
             curl_close($ch);
 
             $data = json_decode($response, true);
-            
+
             echo "<details><summary>📄 Place Details (click to expand)</summary>";
             echo "<pre>" . json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) . "</pre>";
             echo "</details>";
@@ -135,14 +135,14 @@ $latMax = $lat + $radius;
             <li><strong>Test Location:</strong> Bodrum (<?= $lat ?>, <?= $lon ?>)</li>
             <li><strong>Search Radius:</strong> <?= $radius * 111 ?>km (~<?= round($radius * 111, 1) ?>km)</li>
         </ul>
-        
+
         <h3>🔧 Next Steps:</h3>
         <ul>
             <li>✅ If you see "Found X places" with real titles → Key is working!</li>
             <li>⚠️ If you see "deneme" in descriptions → Key NOT verified, test data only</li>
             <li>❌ If HTTP error → API key invalid or blocked</li>
         </ul>
-        
+
         <h3>🔑 To Verify Keys:</h3>
         <ol>
             <li>Go to: <a href="https://wikimapia.org/api/#my-keys" target="_blank" style="color: #00ffff;">https://wikimapia.org/api/#my-keys</a></li>
@@ -159,4 +159,3 @@ $latMax = $lat + $radius;
     </p>
 </body>
 </html>
-

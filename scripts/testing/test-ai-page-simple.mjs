@@ -38,37 +38,37 @@ async function main() {
         args: ['--no-sandbox', '--disable-setuid-sandbox'],
         defaultViewport: { width: 1920, height: 1080 }
     });
-    
+
     try {
         const page = await browser.newPage();
-        
+
         console.log('🌐 Navigating to AI Settings...');
-        await page.goto(AI_SETTINGS_URL, { 
+        await page.goto(AI_SETTINGS_URL, {
             waitUntil: 'domcontentloaded',
-            timeout: 10000 
+            timeout: 10000
         });
-        
+
         await new Promise(resolve => setTimeout(resolve, 2000)); // Wait for page to settle
-        
+
         const title = await page.title();
         console.log(`📌 Page Title: ${title}`);
-        
+
         // Take screenshot
         const screenshotPath = join(SCREENSHOT_DIR, `ai-settings-${Date.now()}.png`);
-        await page.screenshot({ 
+        await page.screenshot({
             path: screenshotPath,
-            fullPage: true 
+            fullPage: true
         });
-        
+
         console.log('');
         console.log('✅ Screenshot saved!');
         console.log(`📸 Location: ${screenshotPath}`);
         console.log('');
-        
+
         // Check what's on the page
         const url = page.url();
         console.log(`🔗 Current URL: ${url}`);
-        
+
         if (url.includes('/login')) {
             console.log('');
             console.log('⚠️  REDIRECTED TO LOGIN');
@@ -86,30 +86,30 @@ async function main() {
             console.log('');
         } else {
             console.log('✅ Page loaded! Analyzing...');
-            
+
             // Try to find elements
             const providers = await page.$$('[data-provider]');
             console.log(`  📦 Provider test buttons: ${providers.length}`);
-            
+
             const cards = await page.$$('.neo-card, [class*="card"], [class*="bg-white"], [class*="rounded"]');
             console.log(`  🎴 Card elements: ${cards.length}`);
-            
+
             const buttons = await page.$$('button');
             console.log(`  🔘 Total buttons: ${buttons.length}`);
-            
+
             const inputs = await page.$$('input[type="text"], input[type="url"], input[type="password"]');
             console.log(`  📝 Input fields: ${inputs.length}`);
         }
-        
+
         console.log('');
         console.log('🎯 Manual verification recommended!');
         console.log('   Open screenshot to see actual page state.');
-        
+
         // Keep browser open for 5 seconds
         console.log('');
         console.log('⏳ Browser will close in 5 seconds...');
         await new Promise(resolve => setTimeout(resolve, 5000));
-        
+
     } catch (error) {
         console.error('❌ ERROR:', error.message);
     } finally {
@@ -120,4 +120,3 @@ async function main() {
 }
 
 main().catch(console.error);
-

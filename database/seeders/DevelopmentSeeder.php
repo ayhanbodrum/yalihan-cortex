@@ -63,7 +63,7 @@ class DevelopmentSeeder extends Seeder
             $this->command->line("  ✓ {$categoryData['name']}");
         }
 
-        $this->command->info("📂 {$index + 1} FeatureCategory oluşturuldu.");
+        $this->command->info('📂 '.count($categories).' FeatureCategory oluşturuldu.');
     }
 
     /**

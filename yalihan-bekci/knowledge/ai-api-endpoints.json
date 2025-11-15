@@ -184,14 +184,7 @@
         "para_birimi",
         "ai_*"
       ],
-      "forbidden": [
-        "durum",
-        "is_active",
-        "aktif",
-        "sehir",
-        "sehir_id",
-        "currency"
-      ]
+      "forbidden": ["durum", "is_active", "aktif", "sehir", "sehir_id", "currency"]
     }
   },
   "logging": {
@@ -203,4 +196,3 @@
     }
   }
 }
-

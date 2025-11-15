@@ -28,14 +28,7 @@
         {
           "name": "yazlik_doluluk_durumlari",
           "purpose": "Günlük doluluk takibi",
-          "fields": [
-            "id",
-            "ilan_id",
-            "tarih",
-            "durum",
-            "not",
-            "timestamps"
-          ]
+          "fields": ["id", "ilan_id", "tarih", "durum", "not", "timestamps"]
         },
         {
           "name": "yazlik_details",
@@ -77,15 +70,8 @@
     "services": {
       "CalendarSyncService": {
         "purpose": "Platform senkronizasyon işlemlerini yönetir",
-        "methods": [
-          "syncCalendar",
-          "pushToExternalPlatform"
-        ],
-        "platforms": [
-          "airbnb",
-          "booking_com",
-          "google_calendar"
-        ]
+        "methods": ["syncCalendar", "pushToExternalPlatform"],
+        "platforms": ["airbnb", "booking_com", "google_calendar"]
       }
     },
     "api": {
@@ -153,12 +139,8 @@
         "app/Models/YazlikDolulukDurumu.php",
         "app/Models/YazlikDetail.php"
       ],
-      "controllers": [
-        "app/Http/Controllers/Admin/CalendarSyncController.php"
-      ],
-      "services": [
-        "app/Services/CalendarSyncService.php"
-      ],
+      "controllers": ["app/Http/Controllers/Admin/CalendarSyncController.php"],
+      "services": ["app/Services/CalendarSyncService.php"],
       "documentation": [
         "TAKVIM_API_DOKUMANTASYONU.md",
         "YAZLIK_DETAIL_TABLE_RAPORU.md",

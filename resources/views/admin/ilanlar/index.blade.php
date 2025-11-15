@@ -160,19 +160,27 @@
         </div>
 
         <div class="p-6" x-data="bulkActionsManager()">
+            <x-admin.meta-info
+                title="İlanlar"
+                :meta="['total' => $ilanlar->total(), 'current_page' => $ilanlar->currentPage(), 'last_page' => $ilanlar->lastPage(), 'per_page' => $ilanlar->perPage()]"
+                :show-per-page="true"
+                :per-page-options="[20,50,100]"
+                listId="ilanlar"
+                listEndpoint="/api/admin/api/v1/ilanlar"
+            />
             @if($ilanlar->count() > 0)
                 {{-- Bulk Actions Toolbar --}}
-                <div x-show="selectedIds.length > 0" 
+                <div x-show="selectedIds.length > 0"
                      x-transition
                      class="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 px-6 py-4 flex items-center justify-between mb-4 rounded-lg">
-                    
+
                     <div class="flex items-center text-sm font-medium text-blue-800 dark:text-blue-300">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         </svg>
                         <span x-text="`${selectedIds.length} ilan seçildi`"></span>
                     </div>
-                    
+
                     <div class="flex items-center gap-3">
                         {{-- Activate Button --}}
                         <button type="button"
@@ -185,7 +193,7 @@
                             <span x-show="!processing">Aktif Yap</span>
                             <span x-show="processing">İşleniyor...</span>
                         </button>
-                        
+
                         {{-- Deactivate Button --}}
                         <button type="button"
                                 @click="bulkAction('deactivate')"
@@ -196,7 +204,7 @@
                             </svg>
                             Pasif Yap
                         </button>
-                        
+
                         {{-- Delete Button --}}
                         <button type="button"
                                 @click="confirmBulkDelete()"
@@ -207,7 +215,7 @@
                             </svg>
                             Sil
                         </button>
-                        
+
                         {{-- Clear Selection --}}
                         <button type="button"
                                 @click="clearSelection()"
@@ -222,8 +230,8 @@
                         <thead>
                             <tr>
                                 <th class="admin-table-th w-12">
-                                    <input type="checkbox" 
-                                           id="select-all" 
+                                    <input type="checkbox"
+                                           id="select-all"
                                            class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                                            x-model="selectAll"
                                            @change="toggleSelectAll()">
@@ -231,7 +239,6 @@
                                 <th class="admin-table-th">İlan</th>
                                 <th class="admin-table-th">Tür & Kategori</th>
                                 <th class="admin-table-th">Fiyat</th>
-                                <th class="admin-table-th">İlan Sahibi</th>
                                 <th class="admin-table-th">Danışman</th>
                                 <th class="admin-table-th">Status</th>
                                 <th class="admin-table-th">Güncellenme</th>
@@ -243,7 +250,7 @@
                             <tr>
                                 {{-- Checkbox Column --}}
                                 <td class="px-6 py-4">
-                                    <input type="checkbox" 
+                                    <input type="checkbox"
                                            class="row-checkbox rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                                            value="{{ $ilan->id }}"
                                            x-model="selectedIds"
@@ -316,23 +323,6 @@
                                     @endif
                                 </td>
                                 <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">
-                                    @if($ilan->ilanSahibi)
-                                        <div class="flex items-center">
-                                            <div class="flex-shrink-0 h-8 w-8 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center">
-                                                <span class="text-xs font-semibold text-blue-600 dark:text-blue-400">
-                                                    {{ substr($ilan->ilanSahibi->ad, 0, 1) }}{{ substr($ilan->ilanSahibi->soyad, 0, 1) }}
-                                                </span>
-                                            </div>
-                                            <div class="ml-2">
-                                                <div class="text-sm font-medium">{{ $ilan->ilanSahibi->ad }} {{ $ilan->ilanSahibi->soyad }}</div>
-                                                <div class="text-xs text-gray-500 dark:text-gray-400">{{ $ilan->ilanSahibi->telefon }}</div>
-                                            </div>
-                                        </div>
-                                    @else
-                                        <span class="text-gray-400">-</span>
-                                    @endif
-                                </td>
-                                <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">
                                     @if($ilan->userDanisman)
                                         <div class="flex items-center">
                                             <div class="flex-shrink-0 h-8 w-8 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center">
@@ -351,10 +341,10 @@
                                 </td>
                                 <td class="px-6 py-4">
                                     {{-- Inline Status Toggle --}}
-                                    <div x-data="statusToggle({{ $ilan->id }}, '{{ $ilan->status ?? 'Taslak' }}')" 
+                                    <div x-data="statusToggle({{ $ilan->id }}, '{{ $ilan->status ?? 'Taslak' }}')"
                                          @click.outside="open = false"
                                          class="relative inline-block">
-                                        
+
                                         {{-- Clickable Badge --}}
                                         <button @click="open = !open"
                                                 type="button"
@@ -362,18 +352,18 @@
                                                 class="px-3 py-1 text-xs font-semibold rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 transition-all duration-200 cursor-pointer disabled:opacity-50"
                                                 :class="getStatusClasses()">
                                             <span x-text="currentStatus"></span>
-                                            <svg class="w-3 h-3 ml-1 inline transition-transform duration-200" 
+                                            <svg class="w-3 h-3 ml-1 inline transition-transform duration-200"
                                                  :class="{'rotate-180': open}"
                                                  fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                                             </svg>
                                         </button>
-                                        
+
                                         {{-- Dropdown Menu --}}
                                         <div x-show="open"
                                              x-transition
                                              class="absolute z-50 mt-2 w-48 rounded-lg shadow-lg bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 py-1">
-                                            
+
                                             <button @click="changeStatus('Aktif')"
                                                     type="button"
                                                     class="w-full text-left px-4 py-2 text-sm hover:bg-green-50 dark:hover:bg-green-900/20 flex items-center transition-colors"
@@ -381,7 +371,7 @@
                                                 <span class="w-2 h-2 rounded-full bg-green-500 mr-3"></span>
                                                 <span class="text-green-700 dark:text-green-300 font-medium">Aktif</span>
                                             </button>
-                                            
+
                                             <button @click="changeStatus('Beklemede')"
                                                     type="button"
                                                     class="w-full text-left px-4 py-2 text-sm hover:bg-yellow-50 dark:hover:bg-yellow-900/20 flex items-center transition-colors"
@@ -389,7 +379,7 @@
                                                 <span class="w-2 h-2 rounded-full bg-yellow-500 mr-3"></span>
                                                 <span class="text-yellow-700 dark:text-yellow-300 font-medium">Beklemede</span>
                                             </button>
-                                            
+
                                             <button @click="changeStatus('Taslak')"
                                                     type="button"
                                                     class="w-full text-left px-4 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center transition-colors"
@@ -397,7 +387,7 @@
                                                 <span class="w-2 h-2 rounded-full bg-gray-500 mr-3"></span>
                                                 <span class="text-gray-900 dark:text-white font-medium">Taslak</span>
                                             </button>
-                                            
+
                                             <button @click="changeStatus('Pasif')"
                                                     type="button"
                                                     class="w-full text-left px-4 py-2 text-sm hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center transition-colors"
@@ -469,51 +459,51 @@ function bulkActionsManager() {
         selectedIds: [],
         selectAll: false,
         processing: false,
-        
+
         toggleSelectAll() {
             const checkboxes = document.querySelectorAll('.row-checkbox');
-            
+
             if (this.selectAll) {
                 this.selectedIds = Array.from(checkboxes).map(cb => parseInt(cb.value));
             } else {
                 this.selectedIds = [];
             }
-            
+
             checkboxes.forEach(cb => cb.checked = this.selectAll);
         },
-        
+
         updateSelectAll() {
             const checkboxes = document.querySelectorAll('.row-checkbox');
             const checkedCount = this.selectedIds.length;
-            
+
             this.selectAll = checkedCount === checkboxes.length && checkboxes.length > 0;
         },
-        
+
         clearSelection() {
             this.selectedIds = [];
             this.selectAll = false;
             document.querySelectorAll('.row-checkbox').forEach(cb => cb.checked = false);
         },
-        
+
         confirmBulkDelete() {
             if (this.selectedIds.length === 0) {
                 window.toast.error('Lütfen en az bir ilan seçin');
                 return;
             }
-            
+
             if (confirm(`${this.selectedIds.length} ilanı silmek istediğinize emin misiniz? Bu işlem geri alınamaz.`)) {
                 this.bulkAction('delete');
             }
         },
-        
+
         async bulkAction(action) {
             if (this.selectedIds.length === 0) {
                 window.toast.error('Lütfen en az bir ilan seçin');
                 return;
             }
-            
+
             this.processing = true;
-            
+
             try {
                 const response = await fetch('{{ route("admin.ilanlar.bulk-action") }}', {
                     method: 'POST',
@@ -526,12 +516,12 @@ function bulkActionsManager() {
                         action: action,
                     }),
                 });
-                
+
                 const data = await response.json();
-                
+
                 if (data.success) {
                     window.toast.success(data.message || 'İşlem başarılı');
-                    
+
                     // Reload page after 1 second
                     setTimeout(() => {
                         window.location.reload();
@@ -539,7 +529,7 @@ function bulkActionsManager() {
                 } else {
                     throw new Error(data.message || 'İşlem başarısız');
                 }
-                
+
             } catch (error) {
                 console.error('Bulk action error:', error);
                 window.toast.error(error.message || 'Toplu işlem başarısız oldu');
@@ -557,15 +547,15 @@ function statusToggle(ilanId, initialStatus) {
         open: false,
         currentStatus: initialStatus,
         updating: false,
-        
+
         async changeStatus(newStatus) {
             if (newStatus === this.currentStatus) {
                 this.open = false;
                 return;
             }
-            
+
             this.updating = true;
-            
+
             try {
                 const response = await fetch(`/admin/ilanlar/${ilanId}/status`, {
                     method: 'PATCH',
@@ -575,16 +565,16 @@ function statusToggle(ilanId, initialStatus) {
                     },
                     body: JSON.stringify({ status: newStatus }),
                 });
-                
+
                 const data = await response.json();
-                
+
                 if (data.success) {
                     this.currentStatus = newStatus;
                     window.toast.success(`Status "${newStatus}" olarak güncellendi`);
                 } else {
                     throw new Error(data.message || 'Güncelleme başarısız');
                 }
-                
+
             } catch (error) {
                 console.error('Status update error:', error);
                 window.toast.error(error.message || 'Status güncellenemedi');
@@ -593,7 +583,7 @@ function statusToggle(ilanId, initialStatus) {
                 this.open = false;
             }
         },
-        
+
         getStatusClasses() {
             const classes = {
                 'Aktif': 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300 hover:bg-green-200 dark:hover:bg-green-800/50 focus:ring-blue-500 dark:focus:ring-blue-400',
@@ -605,6 +595,63 @@ function statusToggle(ilanId, initialStatus) {
         }
     }
 }
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  const paginate = document.querySelector('.mt-6')
+  const tbody = document.querySelector('table tbody')
+  if (!window.ApiAdapter || !paginate || !tbody) return
+  const statusEl = document.getElementById('meta-status')
+  const totalEl = document.getElementById('meta-total')
+  const pageEl = document.getElementById('meta-page')
+  const section = document.querySelector('[data-meta="true"]')
+  const perSelect = section.querySelector('select[data-per-page-select]')
+  let currentPer = 20
+  const urlInit = new URL(window.location.href)
+  const qPer = parseInt(urlInit.searchParams.get('per_page')||'')
+  const storageKey = 'yalihan_admin_per_page'
+  const sPer = parseInt(localStorage.getItem(storageKey)||'')
+  if (qPer) { currentPer = qPer; perSelect.value = String(qPer) }
+  else if (sPer) { currentPer = sPer; perSelect.value = String(sPer) }
+  perSelect.addEventListener('change', function(){ currentPer = parseInt(perSelect.value||'20'); const u = new URL(window.location.href); u.searchParams.set('per_page', String(currentPer)); window.history.replaceState({}, '', u.toString()); loadPage(1) })
+
+  function setLoading(f){ statusEl.setAttribute('aria-busy', f?'true':'false'); statusEl.textContent = f ? 'Yükleniyor…' : '' }
+  function renderRows(items){
+    if (!items || items.length === 0){ tbody.innerHTML = '<tr><td colspan="8" class="px-6 py-12 text-center text-gray-500 dark:text-gray-400">Kayıt bulunamadı</td></tr>'; return }
+    const rows = items.map(function(it){
+      const title = it.title || ('İlan #' + (it.id||''))
+      const price = (it.fiyat != null ? it.fiyat : '') + ' ' + (it.para_birimi || '')
+      return (
+        '<tr>'
+        + '<td class="px-6 py-4"><input type="checkbox"></td>'
+        + '<td class="px-6 py-4"><div class="text-sm font-medium">' + title + '</div><div class="text-sm text-gray-500">#' + (it.id||'') + '</div></td>'
+        + '<td class="px-6 py-4">' + '' + '</td>'
+        + '<td class="px-6 py-4">' + price + '</td>'
+        + '<td class="px-6 py-4">' + '' + '</td>'
+        + '<td class="px-6 py-4">' + '' + '</td>'
+        + '<td class="px-6 py-4">' + '' + '</td>'
+        + '<td class="px-6 py-4"><a href="/admin/ilanlar/'+(it.id||'')+'" class="text-blue-600">Detay</a></td>'
+        + '</tr>'
+      )
+    }).join('')
+    tbody.innerHTML = rows
+  }
+  function updateMeta(meta){
+    if (!meta) return
+    totalEl.textContent = 'Toplam: ' + (meta.total != null ? meta.total : '-')
+    pageEl.innerHTML = '📄 Sayfa: ' + (meta.current_page || 1) + ' / ' + (meta.last_page || 1)
+    if (meta.per_page){ currentPer = parseInt(meta.per_page); perSelect.value = String(meta.per_page); localStorage.setItem(storageKey, String(meta.per_page)) }
+    const links = paginate.querySelectorAll('a[href*="page="]')
+    links.forEach(function(a){ const u=new URL(a.href, window.location.origin); const p=parseInt(u.searchParams.get('page')||'1'); a.setAttribute('aria-label','Sayfa ' + p); if (p === meta.current_page) { a.setAttribute('aria-disabled','true') } else { a.removeAttribute('aria-disabled') } })
+  }
+  function loadPage(page){
+    setLoading(true)
+    window.ApiAdapter.get('/ilanlar', { page: Number(page||1), per_page: currentPer })
+      .then(function(res){ renderRows(res.data||[]); updateMeta(res.meta||null); setLoading(false) })
+      .catch(function(err){ setLoading(false); const a=document.createElement('div'); a.setAttribute('role','alert'); a.className='px-6 py-2 text-sm text-red-600'; a.textContent='Hata: '+((err.response&&err.response.message)||err.message||'Bilinmeyen hata'); paginate.parentNode.insertBefore(a,paginate); setTimeout(function(){ a.remove() }, 4000) })
+  }
+  // Auto-init çalışıyor; ek init gerekmez
+})
 </script>
 @endpush
 

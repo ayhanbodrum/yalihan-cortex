@@ -34,9 +34,20 @@ class IlanSearchController extends AdminController
      */
     public function index(Request $request)
     {
-        $ilanlar = Ilan::with(['kategori', 'il', 'ilce', 'site', 'ilanSahibi'])
-            ->latest()
-            ->paginate(15);
+        // ✅ N+1 FIX: Eager loading with select optimization
+        $ilanlar = Ilan::select([
+            'id', 'baslik', 'referans_no', 'kategori_id', 'il_id', 'ilce_id',
+            'site_id', 'ilan_sahibi_id', 'fiyat', 'status', 'created_at', 'updated_at'
+        ])
+        ->with([
+            'kategori:id,name,slug',
+            'il:id,il_adi',
+            'ilce:id,ilce_adi',
+            'site:id,name',
+            'ilanSahibi:id,ad,soyad,telefon,email'
+        ])
+        ->latest()
+        ->paginate(15);
 
         if ($request->expectsJson()) {
             // Admin endpoint - Internal resource kullan
@@ -239,7 +250,7 @@ class IlanSearchController extends AdminController
         }
 
         $ilan->load(['kategori', 'il', 'ilce', 'site', 'ilanSahibi', 'fotograflar']);
-        
+
         return response()->json([
             'success' => true,
             'data' => new IlanInternalResource($ilan)
@@ -317,7 +328,7 @@ class IlanSearchController extends AdminController
         }
 
         $ilan->load(['fotograflar']);
-        
+
         return response()->json([
             'success' => true,
             'data' => new IlanInternalResource($ilan)
@@ -400,4 +411,3 @@ class IlanSearchController extends AdminController
         return implode(', ', $parts) ?: 'Belirtilmemiş';
     }
 }
-

@@ -1,6 +1,7 @@
 # 🧹 Code Cleanup Tool - Kullanım Kılavuzu
 
 ## 📋 İçindekiler
+
 - [Giriş](#giriş)
 - [Kurulum](#kurulum)
 - [Modlar](#modlar)
@@ -14,6 +15,7 @@
 **Code Cleanup Tool**, Yalıhan Emlak projesinde kod taraması, değiştirme ve temizlik işlemlerini otomatikleştiren güçlü bir bash script'idir.
 
 ### ✨ Özellikler:
+
 - 🔍 **Pattern Arama**: Kod tabanında güçlü arama
 - 🔄 **Toplu Değiştirme**: Güvenli find & replace
 - 🗑️ **Otomatik Cleanup**: Kullanılmayan/boş dosyaları tespit
@@ -45,6 +47,7 @@ Kod tabanında pattern arar ve detaylı rapor sunar.
 ```
 
 **Örnekler:**
+
 ```bash
 # Tüm projede arama
 ./scripts/code-cleanup-tool.sh search 'stable-create'
@@ -57,6 +60,7 @@ Kod tabanında pattern arar ve detaylı rapor sunar.
 ```
 
 **Çıktı:**
+
 ```
 📊 Sonuç Özeti:
   Blade Files:      14 matches
@@ -95,12 +99,14 @@ Pattern'leri güvenli bir şekilde değiştirir.
 ```
 
 **Güvenlik Özellikleri:**
+
 - ✅ Dry-run varsayılan
 - ✅ Onay sorar (`y/N`)
 - ✅ Otomatik backup yapar (`storage/backups/`)
 - ✅ Etkilenen dosya sayısını gösterir
 
 **Backup Konumu:**
+
 ```
 storage/backups/code-cleanup-YYYYMMDD_HHMMSS/
 ```
@@ -116,6 +122,7 @@ Kullanılmayan view dosyalarını tespit eder.
 ```
 
 **Örnekler:**
+
 ```bash
 # İlan modülünde kullanılmayan dosyaları bul
 ./scripts/code-cleanup-tool.sh find-unused resources/views/admin/ilanlar
@@ -125,12 +132,14 @@ Kullanılmayan view dosyalarını tespit eder.
 ```
 
 **Nasıl Çalışır:**
+
 1. Tüm `.blade.php` dosyalarını tarar
 2. CRUD dosyalarını atlar (`index`, `create`, `edit`, `show`)
 3. Her dosya için projede kullanım arar
 4. Hiç referans yoksa "kullanılmıyor" işaretler
 
 **Çıktı:**
+
 ```
 ❌ Kullanılmıyor: resources/views/admin/ilanlar/valuation.blade.php
 ❌ Kullanılmıyor: resources/views/admin/ilanlar/aktarim.blade.php
@@ -149,6 +158,7 @@ Benzer isimli duplicate dosyaları tespit eder.
 ```
 
 **Aranacak Pattern'ler:**
+
 - `*-v2.js`
 - `*-clean.js`
 - `*-fixed.js`
@@ -159,10 +169,11 @@ Benzer isimli duplicate dosyaları tespit eder.
 - `*-backup.blade.php`
 
 **Çıktı:**
+
 ```
 Pattern: *-v2.js
   /path/to/live-search-v2.js
-  
+
 Pattern: *-fixed.js
   /path/to/ilan-form-alpine-fixed.js
 
@@ -180,6 +191,7 @@ Pattern: *-fixed.js
 ```
 
 **Örnekler:**
+
 ```bash
 # 1. Önce dry-run ile test et
 ./scripts/code-cleanup-tool.sh cleanup-empty --dry-run
@@ -189,11 +201,13 @@ Pattern: *-fixed.js
 ```
 
 **Güvenlik:**
+
 - ✅ Dry-run varsayılan
 - ✅ Silmeden önce onay sorar
 - ✅ Node_modules ve vendor dahil tarar (dikkatli kullanın!)
 
 **Çıktı:**
+
 ```
 📋 Boş Dosyalar: 28
   resources/views/frontend/danismanlar/index.blade.php
@@ -214,12 +228,14 @@ Proje hakkında detaylı istatistikler üretir.
 ```
 
 **Raporlar:**
+
 - 📊 Dosya sayıları (Blade, PHP, JS, CSS)
 - 📈 En büyük dosyalar (Top 10)
 - 📉 Boş dosya tespiti
 - 💾 Dosya boyutları
 
 **Çıktı:**
+
 ```
 GENEL İSTATİSTİKLER
   Blade Dosyaları:     366
@@ -350,67 +366,74 @@ rm resources/views/layouts/navigation.blade.php
 ### ✅ DO (Yapın)
 
 1. **Her Zaman Önce Dry-Run:**
-   ```bash
-   # ✅ İyi
-   ./scripts/code-cleanup-tool.sh replace 'old' 'new' --dry-run
-   ./scripts/code-cleanup-tool.sh replace 'old' 'new' --execute
-   
-   # ❌ Kötü (direkt execute)
-   ./scripts/code-cleanup-tool.sh replace 'old' 'new' --execute
-   ```
+
+    ```bash
+    # ✅ İyi
+    ./scripts/code-cleanup-tool.sh replace 'old' 'new' --dry-run
+    ./scripts/code-cleanup-tool.sh replace 'old' 'new' --execute
+
+    # ❌ Kötü (direkt execute)
+    ./scripts/code-cleanup-tool.sh replace 'old' 'new' --execute
+    ```
 
 2. **Git Commit Öncesi Test:**
-   ```bash
-   ./scripts/code-cleanup-tool.sh analyze
-   ./scripts/code-cleanup-tool.sh find-duplicates
-   git add .
-   git commit -m "Cleanup: ..."
-   ```
+
+    ```bash
+    ./scripts/code-cleanup-tool.sh analyze
+    ./scripts/code-cleanup-tool.sh find-duplicates
+    git add .
+    git commit -m "Cleanup: ..."
+    ```
 
 3. **Belirli Klasörlerde Çalış:**
-   ```bash
-   # ✅ İyi (hedefli)
-   ./scripts/code-cleanup-tool.sh search 'pattern' resources/views/admin
-   
-   # ❌ Dikkatli (tüm proje, vendor dahil)
-   ./scripts/code-cleanup-tool.sh search 'pattern'
-   ```
+
+    ```bash
+    # ✅ İyi (hedefli)
+    ./scripts/code-cleanup-tool.sh search 'pattern' resources/views/admin
+
+    # ❌ Dikkatli (tüm proje, vendor dahil)
+    ./scripts/code-cleanup-tool.sh search 'pattern'
+    ```
 
 4. **Backup'ları Kontrol Et:**
-   ```bash
-   ls -la storage/backups/
-   ```
+    ```bash
+    ls -la storage/backups/
+    ```
 
 ---
 
 ### ❌ DON'T (Yapmayın)
 
 1. **Node_modules/Vendor'ı Değiştirmeyin:**
-   ```bash
-   # ❌ Tehlikeli
-   ./scripts/code-cleanup-tool.sh replace 'something' 'new' --execute node_modules
-   ```
+
+    ```bash
+    # ❌ Tehlikeli
+    ./scripts/code-cleanup-tool.sh replace 'something' 'new' --execute node_modules
+    ```
 
 2. **Dry-Run Olmadan Execute:**
-   ```bash
-   # ❌ Tehlikeli
-   ./scripts/code-cleanup-tool.sh replace 'critical' 'new' --execute
-   ```
+
+    ```bash
+    # ❌ Tehlikeli
+    ./scripts/code-cleanup-tool.sh replace 'critical' 'new' --execute
+    ```
 
 3. **Toplu Cleanup (Vendor dahil):**
-   ```bash
-   # ❌ Tehlikeli
-   ./scripts/code-cleanup-tool.sh cleanup-empty --execute
-   
-   # ✅ Güvenli (manuel silme)
-   rm specific/project/file.blade.php
-   ```
+
+    ```bash
+    # ❌ Tehlikeli
+    ./scripts/code-cleanup-tool.sh cleanup-empty --execute
+
+    # ✅ Güvenli (manuel silme)
+    rm specific/project/file.blade.php
+    ```
 
 ---
 
 ## 📊 Rapor Örnekleri
 
 ### Search Raporu
+
 ```
 🔍 Arama Pattern: stable-create
 📁 Hedef: /Users/macbookpro/Projects/yalihanemlakwarp
@@ -426,6 +449,7 @@ rm resources/views/layouts/navigation.blade.php
 ```
 
 ### Replace Raporu (Dry-Run)
+
 ```
 🔄 Değiştirme İşlemi
   Eski Pattern: stable-create
@@ -444,6 +468,7 @@ resources/js/admin/stable-create.js
 ```
 
 ### Analyze Raporu
+
 ```
 📊 Kod Analizi
 
@@ -475,6 +500,7 @@ resources/js/admin/stable-create.js
 ## 🚀 Gelişmiş Kullanım
 
 ### Custom Pattern Search
+
 Script'i düzenleyerek custom pattern'ler ekleyebilirsiniz:
 
 ```bash
@@ -491,6 +517,7 @@ patterns=(
 ```
 
 ### Otomatik Raporlama (Cron)
+
 ```bash
 # Her hafta pazartesi 09:00'da analiz
 0 9 * * 1 /path/to/yalihanemlakwarp/scripts/code-cleanup-tool.sh analyze > /path/to/reports/weekly-$(date +\%Y\%m\%d).txt
@@ -510,17 +537,20 @@ patterns=(
 ## 🆘 Sorun Giderme
 
 ### "Permission Denied" Hatası
+
 ```bash
 chmod +x scripts/code-cleanup-tool.sh
 ```
 
 ### Script Bulunamıyor
+
 ```bash
 # Tam path kullan
 /Users/macbookpro/Projects/yalihanemlakwarp/scripts/code-cleanup-tool.sh help
 ```
 
 ### Backup Restore
+
 ```bash
 # Backup'tan geri yükle
 cp -r storage/backups/code-cleanup-20251024_090000/* ./
@@ -539,6 +569,7 @@ cp -r storage/backups/code-cleanup-20251024_090000/* ./
 ## ✅ Özet
 
 **Code Cleanup Tool** ile:
+
 - 🔍 Hızlı kod araması
 - 🔄 Güvenli toplu değiştirme
 - 🗑️ Otomatik cleanup
@@ -546,6 +577,7 @@ cp -r storage/backups/code-cleanup-20251024_090000/* ./
 - 💾 Otomatik backup
 
 **Temel Komutlar:**
+
 ```bash
 ./scripts/code-cleanup-tool.sh search 'pattern'
 ./scripts/code-cleanup-tool.sh replace 'old' 'new' --dry-run
@@ -561,4 +593,3 @@ cp -r storage/backups/code-cleanup-20251024_090000/* ./
 **Version:** 1.0.0  
 **Last Updated:** 2025-10-24  
 **Author:** Yalıhan Emlak Dev Team
-

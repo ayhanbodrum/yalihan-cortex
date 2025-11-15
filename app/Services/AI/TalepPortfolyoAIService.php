@@ -111,11 +111,16 @@ class TalepPortfolyoAIService
         ];
 
         // Context7: Talep detay analizi
+        // Örnek bir ilan alarak uygunluk skorlarını hesapla (eğer varsa)
+        $ornekIlan = $this->uygunIlanlariFiltrele($talep)->first();
+        $fiyatUygunlugu = $ornekIlan ? $this->fiyatUygunluguHesapla($ornekIlan, $talep) : 'belirtilmemiş';
+        $ozellikUygunlugu = $ornekIlan ? $this->ozellikUygunluguHesapla($ornekIlan, $talep) : 'standart';
+
         $talepDetay = [
             'genel_uygunluk_skoru' => $this->genelUygunlukSkoru($talep),
-            'fiyat_uygunlugu' => 'uygun', // TODO: Gerçek hesaplama
+            'fiyat_uygunlugu' => $fiyatUygunlugu, // ✅ Gerçek hesaplama
             'lokasyon_uygunlugu' => $talep->il_id ? 'belirtilmiş' : 'belirtilmemiş',
-            'ozellik_uygunlugu' => 'standart', // TODO: Gerçek hesaplama
+            'ozellik_uygunlugu' => $ozellikUygunlugu, // ✅ Gerçek hesaplama
         ];
 
         return [
@@ -258,8 +263,113 @@ class TalepPortfolyoAIService
      */
     private function talepTipiUyumuSkoru(Ilan $ilan, Talep $talep): float
     {
-        // TODO: Gerçek kategori eşleştirmesi implement edilecek
-        return 1.0;
+        // ✅ Kategori eşleştirmesi
+        if (isset($talep->kategori_id) && $talep->kategori_id && $ilan->kategori_id == $talep->kategori_id) {
+            return 2.0; // Tam kategori eşleşmesi
+        }
+
+        // Kategori adı eşleştirmesi (fallback)
+        if (isset($talep->kategori) && $talep->kategori && isset($ilan->kategori) && $ilan->kategori) {
+            if (strtolower($talep->kategori) === strtolower($ilan->kategori)) {
+                return 2.0; // Tam kategori adı eşleşmesi
+            }
+        }
+
+        // Alt kategori kontrolü (eğer varsa)
+        if (isset($talep->alt_kategori_id) && $talep->alt_kategori_id && isset($ilan->alt_kategori_id) && $ilan->alt_kategori_id == $talep->alt_kategori_id) {
+            return 1.5; // Alt kategori eşleşmesi
+        }
+
+        return 0.0; // Eşleşme yok
+    }
+
+    /**
+     * Fiyat uygunluğunu hesapla (string döndürür)
+     */
+    private function fiyatUygunluguHesapla(Ilan $ilan, Talep $talep): string
+    {
+        if (!$talep->min_fiyat && !$talep->max_fiyat) {
+            return 'belirtilmemiş';
+        }
+
+        $ilanFiyat = $ilan->fiyat ?? 0;
+
+        if ($talep->min_fiyat && $talep->max_fiyat) {
+            if ($ilanFiyat >= $talep->min_fiyat && $ilanFiyat <= $talep->max_fiyat) {
+                return 'uygun';
+            } elseif ($ilanFiyat < $talep->min_fiyat) {
+                $fark = (($talep->min_fiyat - $ilanFiyat) / $talep->min_fiyat) * 100;
+                if ($fark <= 10) {
+                    return 'uygun';
+                } elseif ($fark <= 20) {
+                    return 'kısmen_uygun';
+                } else {
+                    return 'uygun_değil';
+                }
+            } else {
+                $fark = (($ilanFiyat - $talep->max_fiyat) / $talep->max_fiyat) * 100;
+                if ($fark <= 10) {
+                    return 'uygun';
+                } elseif ($fark <= 20) {
+                    return 'kısmen_uygun';
+                } else {
+                    return 'uygun_değil';
+                }
+            }
+        } elseif ($talep->min_fiyat && $ilanFiyat >= $talep->min_fiyat) {
+            return 'uygun';
+        } elseif ($talep->max_fiyat && $ilanFiyat <= $talep->max_fiyat) {
+            return 'uygun';
+        }
+
+        return 'uygun_değil';
+    }
+
+    /**
+     * Özellik uygunluğunu hesapla (string döndürür)
+     */
+    private function ozellikUygunluguHesapla(Ilan $ilan, Talep $talep): string
+    {
+        // Talep'te özel özellikler varsa kontrol et
+        if (empty($talep->ozel_ozellikler)) {
+            return 'standart';
+        }
+
+        // İlan'ın özelliklerini al (eğer ilişki varsa)
+        $ilanOzellikleri = [];
+        if (method_exists($ilan, 'ozellikler') && $ilan->relationLoaded('ozellikler')) {
+            $ilanOzellikleri = $ilan->ozellikler->pluck('name')->toArray();
+        }
+
+        // Talep özelliklerini parse et (JSON veya string olabilir)
+        $talepOzellikleri = [];
+        if (is_string($talep->ozel_ozellikler)) {
+            $talepOzellikleri = json_decode($talep->ozel_ozellikler, true) ?? [];
+        } elseif (is_array($talep->ozel_ozellikler)) {
+            $talepOzellikleri = $talep->ozel_ozellikler;
+        }
+
+        if (empty($talepOzellikleri) || empty($ilanOzellikleri)) {
+            return 'standart';
+        }
+
+        // Eşleşen özellik sayısını hesapla
+        $eslesenOzellikler = array_intersect(
+            array_map('strtolower', $talepOzellikleri),
+            array_map('strtolower', $ilanOzellikleri)
+        );
+
+        $eslesmeOrani = count($eslesenOzellikler) / count($talepOzellikleri);
+
+        if ($eslesmeOrani >= 0.8) {
+            return 'yüksek';
+        } elseif ($eslesmeOrani >= 0.5) {
+            return 'orta';
+        } elseif ($eslesmeOrani > 0) {
+            return 'düşük';
+        }
+
+        return 'standart';
     }
 
     /**
@@ -379,4 +489,3 @@ class TalepPortfolyoAIService
         ];
     }
 }
-

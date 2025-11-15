@@ -43,8 +43,8 @@ class Context7ImarDurumuSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ];
-            if (Schema::hasColumn('features', 'order')) {
-                $insert['order'] = 9;
+            if (Schema::hasColumn('features', 'display_order')) {
+                $insert['display_order'] = 9;
             }
             if (Schema::hasColumn('features', 'slug')) {
                 $insert['slug'] = Str::slug('İmar Durumu');

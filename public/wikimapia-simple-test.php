@@ -1,7 +1,7 @@
 <?php
 /**
  * WikiMapia API Simple JSON Test
- * 
+ *
  * Quick test to see raw API responses
  * URL: http://127.0.0.1:8000/wikimapia-simple-test.php
  */
@@ -69,12 +69,12 @@ if ($httpCode == 200 && isset($data['found'])) {
     echo "<hr>";
     echo "<h2>📊 Analysis</h2>";
     echo "<p><strong>Found:</strong> {$data['found']} places</p>";
-    
+
     if (!empty($data['places'])) {
         $firstPlace = $data['places'][0];
         echo "<p><strong>First Place Title:</strong> {$firstPlace['title']}</p>";
         echo "<p><strong>First Place Description:</strong> " . substr($firstPlace['description'] ?? 'N/A', 0, 100) . "...</p>";
-        
+
         // Check if test data
         if (stripos($firstPlace['description'] ?? '', 'deneme') !== false) {
             echo "<p style='color:orange;font-weight:bold;'>⚠️ WARNING: This looks like TEST DATA!</p>";
@@ -88,4 +88,3 @@ if ($httpCode == 200 && isset($data['found'])) {
 echo "<hr>";
 echo "<p><a href='/wikimapia-test.php'>→ Kapsamlı Test İçin Tıkla</a> (Her iki key + detaylı analiz)</p>";
 ?>
-

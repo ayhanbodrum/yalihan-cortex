@@ -1,0 +1,119 @@
+{
+  "title": "Route Naming Standard - Çift Prefix Yasağı",
+  "date": "2025-11-07",
+  "category": "route_naming",
+  "severity": "CRITICAL",
+  "status": "active",
+  "auto_fix": false,
+  
+  "rule": {
+    "id": "CONTEXT7-ROUTE-NAMING-001",
+    "name": "Double Prefix Forbidden - Route Naming Standard",
+    "description": "Nested route groups'da parent prefix'i tekrar etme YASAK! Çift prefix oluşur ve route bulunamaz hatası verir.",
+    "enforcement": "automatic",
+    "blocking": true
+  },
+
+  "problem": {
+    "error": "Route [admin.crm.dashboard] not defined",
+    "root_cause": "Çift prefix: admin.admin.crm.dashboard oluşuyordu",
+    "location": "routes/admin.php line 771",
+    "date": "2025-11-07"
+  },
+
+  "forbidden_pattern": {
+    "pattern": "->name('admin.admin.|->name('parent.parent.",
+    "example_wrong": "Route::prefix('admin')->name('admin.')->group(function () {\n    Route::prefix('crm')->name('admin.crm.')->group(function () {\n        // Sonuç: admin.admin.crm.* ❌\n    });\n});",
+    "example_correct": "Route::prefix('admin')->name('admin.')->group(function () {\n    Route::prefix('crm')->name('crm.')->group(function () {\n        // Sonuç: admin.crm.* ✅\n    });\n});",
+    "severity": "CRITICAL"
+  },
+
+  "required_pattern": {
+    "rule": "Nested groups should NOT repeat parent prefix",
+    "pattern": "Parent: name('parent.') → Child: name('child.') → Result: parent.child.*",
+    "examples": [
+      {
+        "context": "Admin routes",
+        "code": "Route::prefix('admin')->name('admin.')->group(function () {\n    Route::prefix('crm')->name('crm.')->group(function () {\n        Route::get('/', ...)->name('dashboard');\n        // Sonuç: admin.crm.dashboard ✅\n    });\n});"
+      },
+      {
+        "context": "API routes",
+        "code": "Route::prefix('api')->name('api.')->group(function () {\n    Route::prefix('admin')->name('admin.')->group(function () {\n        Route::get('/users', ...)->name('users.index');\n        // Sonuç: api.admin.users.index ✅\n    });\n});"
+      }
+    ]
+  },
+
+  "view_usage": {
+    "required": true,
+    "pattern": "@if (Route::has('route.name'))",
+    "example": "@if (Route::has('admin.crm.dashboard'))\n    <a href=\"{{ route('admin.crm.dashboard') }}\">\n@endif",
+    "reason": "Route yoksa hata oluşur, kontrol zorunlu",
+    "severity": "HIGH"
+  },
+
+  "enforcement": {
+    "pre_commit_hook": {
+      "location": ".git/hooks/pre-commit",
+      "section": "5️⃣.7",
+      "check": "grep for ->name('admin.admin.|->name('[a-z]*\\.[a-z]*\\.[a-z]*\\.",
+      "action": "BLOCK commit if found",
+      "status": "active"
+    },
+    "ci_cd_pipeline": {
+      "location": ".github/workflows/context7-compliance.yml",
+      "check": "grep for ->name('admin\\.admin\\.",
+      "action": "FAIL build if found",
+      "status": "active"
+    },
+    "documentation": {
+      "location": ".context7/ROUTE_NAMING_STANDARD.md",
+      "status": "complete"
+    }
+  },
+
+  "verification": {
+    "commands": [
+      {
+        "command": "grep -r \"->name('admin\\.admin\\.\" routes/",
+        "expected": "0 matches",
+        "current": "0 matches ✅"
+      },
+      {
+        "command": "php artisan route:list --name=admin.crm",
+        "expected": "admin.crm.* routes listed",
+        "current": "✅ Working"
+      }
+    ],
+    "compliance_level": "100%",
+    "last_check": "2025-11-07"
+  },
+
+  "lessons_learned": [
+    "Çift prefix hatası route bulunamaz hatasına yol açıyor",
+    "Nested groups'da parent prefix'i tekrar etmemek gerekiyor",
+    "View'larda Route::has() kontrolü zorunlu",
+    "Pre-commit hook ile otomatik kontrol edilmeli"
+  ],
+
+  "prevention": {
+    "pre_commit_hook": "✅ ACTIVE - Blocks double prefix",
+    "ci_cd_pipeline": "✅ ACTIVE - Fails build on violation",
+    "documentation": "✅ COMPLETE - Standard documented",
+    "template": "⏳ PENDING - Route template to be created"
+  },
+
+  "related_documents": [
+    ".context7/ROUTE_NAMING_STANDARD.md",
+    ".context7/PERMANENT_STANDARDS.md",
+    "yalihan-bekci/reports/route-error-root-cause-analysis-2025-11-07.md"
+  ],
+
+  "yalihan_bekci_notes": [
+    "✅ Route naming standardı eklendi - Çift prefix YASAK",
+    "✅ Pre-commit hook kontrolü aktif",
+    "✅ CI/CD validation aktif",
+    "✅ View'da Route::has() kontrolü öneriliyor",
+    "📊 Compliance: %100 (double prefix: 0)"
+  ]
+}
+

@@ -8,20 +8,20 @@ use Illuminate\Support\Facades\Log;
 
 /**
  * TurkiyeAPI Service
- * 
+ *
  * Türkiye'nin idari bölümleri (İl, İlçe, Mahalle, Belde, Köy)
  * API: https://api.turkiyeapi.dev/docs
- * 
+ *
  * Context7: Enhanced location data with towns (beldeler) and villages (köyler)
  */
 class TurkiyeAPIService
 {
     protected string $baseUrl = 'https://api.turkiyeapi.dev/api/v1';
     protected int $cacheTtl = 86400; // 24 saat
-    
+
     /**
      * Get all provinces (İller)
-     * 
+     *
      * @return array
      */
     public function getProvinces()
@@ -29,12 +29,12 @@ class TurkiyeAPIService
         return Cache::remember('turkiyeapi.provinces', $this->cacheTtl, function () {
             try {
                 $response = Http::get("{$this->baseUrl}/provinces");
-                
+
                 if ($response->successful()) {
                     $data = $response->json();
                     return $data['data'] ?? [];
                 }
-                
+
                 Log::warning('TurkiyeAPI provinces error', ['status' => $response->status()]);
                 return [];
             } catch (\Exception $e) {
@@ -43,10 +43,10 @@ class TurkiyeAPIService
             }
         });
     }
-    
+
     /**
      * Get districts by province (İlçeler)
-     * 
+     *
      * @param int $provinceId Province ID
      * @return array
      */
@@ -57,12 +57,12 @@ class TurkiyeAPIService
                 $response = Http::get("{$this->baseUrl}/districts", [
                     'provinceId' => $provinceId
                 ]);
-                
+
                 if ($response->successful()) {
                     $data = $response->json();
                     return $data['data'] ?? [];
                 }
-                
+
                 return [];
             } catch (\Exception $e) {
                 Log::error('TurkiyeAPI districts exception', ['error' => $e->getMessage()]);
@@ -70,10 +70,10 @@ class TurkiyeAPIService
             }
         });
     }
-    
+
     /**
      * Get neighborhoods by district (Mahalleler)
-     * 
+     *
      * @param int $districtId District ID
      * @return array
      */
@@ -84,12 +84,12 @@ class TurkiyeAPIService
                 $response = Http::get("{$this->baseUrl}/neighborhoods", [
                     'districtId' => $districtId
                 ]);
-                
+
                 if ($response->successful()) {
                     $data = $response->json();
                     return $data['data'] ?? [];
                 }
-                
+
                 return [];
             } catch (\Exception $e) {
                 Log::error('TurkiyeAPI neighborhoods exception', ['error' => $e->getMessage()]);
@@ -97,10 +97,10 @@ class TurkiyeAPIService
             }
         });
     }
-    
+
     /**
      * Get towns by district (Beldeler) - TATİL BÖLGELERİ!
-     * 
+     *
      * @param int $districtId District ID
      * @return array
      */
@@ -111,12 +111,12 @@ class TurkiyeAPIService
                 $response = Http::get("{$this->baseUrl}/towns", [
                     'districtId' => $districtId
                 ]);
-                
+
                 if ($response->successful()) {
                     $data = $response->json();
                     return $data['data'] ?? [];
                 }
-                
+
                 return [];
             } catch (\Exception $e) {
                 Log::error('TurkiyeAPI towns exception', ['error' => $e->getMessage()]);
@@ -124,10 +124,10 @@ class TurkiyeAPIService
             }
         });
     }
-    
+
     /**
      * Get villages by district (Köyler) - KIRSAL EMLAK!
-     * 
+     *
      * @param int $districtId District ID
      * @param int $limit Limit results
      * @return array
@@ -141,12 +141,12 @@ class TurkiyeAPIService
                     'limit' => $limit,
                     'offset' => 0
                 ]);
-                
+
                 if ($response->successful()) {
                     $data = $response->json();
                     return $data['data'] ?? [];
                 }
-                
+
                 return [];
             } catch (\Exception $e) {
                 Log::error('TurkiyeAPI villages exception', ['error' => $e->getMessage()]);
@@ -154,11 +154,11 @@ class TurkiyeAPIService
             }
         });
     }
-    
+
     /**
      * Get all location types for a district (Unified)
      * Mahalle + Belde + Köy birlikte
-     * 
+     *
      * @param int $districtId District ID
      * @return array
      */
@@ -170,7 +170,7 @@ class TurkiyeAPIService
                 'towns' => [],
                 'villages' => []
             ];
-            
+
             try {
                 // Mahalleler
                 $neighborhoods = $this->getNeighborhoods($districtId);
@@ -185,7 +185,7 @@ class TurkiyeAPIService
                         'postcode' => $n['postcode'] ?? null,
                     ];
                 }
-                
+
                 // Beldeler (TATİL BÖLGELERİ!)
                 $towns = $this->getTowns($districtId);
                 foreach ($towns as $t) {
@@ -201,7 +201,7 @@ class TurkiyeAPIService
                         'area' => $t['area'] ?? null,
                     ];
                 }
-                
+
                 // Köyler (KIRSAL EMLAK!)
                 $villages = $this->getVillages($districtId, 50); // İlk 50 köy
                 foreach ($villages as $v) {
@@ -215,7 +215,7 @@ class TurkiyeAPIService
                         'postcode' => $v['postcode'] ?? null,
                     ];
                 }
-                
+
                 return $locations;
             } catch (\Exception $e) {
                 Log::error('TurkiyeAPI getAllLocations exception', ['error' => $e->getMessage()]);
@@ -223,10 +223,10 @@ class TurkiyeAPIService
             }
         });
     }
-    
+
     /**
      * Search locations by query
-     * 
+     *
      * @param string $query Search term
      * @param string $type Location type filter (mahalle, belde, koy, all)
      * @return array
@@ -234,10 +234,10 @@ class TurkiyeAPIService
     public function searchLocations($query, $type = 'all')
     {
         $cacheKey = "turkiyeapi.search.{$query}.{$type}";
-        
+
         return Cache::remember($cacheKey, 3600, function () use ($query, $type) {
             $results = [];
-            
+
             try {
                 // API'de search endpoint yoksa, tüm verilerde ara
                 // Provinces
@@ -255,7 +255,7 @@ class TurkiyeAPIService
                         }
                     }
                 }
-                
+
                 return $results;
             } catch (\Exception $e) {
                 Log::error('TurkiyeAPI search exception', ['error' => $e->getMessage()]);
@@ -263,10 +263,10 @@ class TurkiyeAPIService
             }
         });
     }
-    
+
     /**
      * Get location details with WikiMapia enhancement
-     * 
+     *
      * @param string $type Location type
      * @param int $id Location ID
      * @return array|null
@@ -274,7 +274,7 @@ class TurkiyeAPIService
     public function getLocationDetails($type, $id)
     {
         $cacheKey = "turkiyeapi.location.{$type}.{$id}";
-        
+
         return Cache::remember($cacheKey, $this->cacheTtl, function () use ($type, $id) {
             try {
                 $endpoint = match($type) {
@@ -285,16 +285,16 @@ class TurkiyeAPIService
                     'village' => 'villages',
                     default => null
                 };
-                
+
                 if (!$endpoint) return null;
-                
+
                 $response = Http::get("{$this->baseUrl}/{$endpoint}/{$id}");
-                
+
                 if ($response->successful()) {
                     $data = $response->json();
                     return $data['data'] ?? null;
                 }
-                
+
                 return null;
             } catch (\Exception $e) {
                 Log::error('TurkiyeAPI location details exception', ['error' => $e->getMessage()]);
@@ -302,7 +302,7 @@ class TurkiyeAPIService
             }
         });
     }
-    
+
     /**
      * Clear all TurkiyeAPI caches
      */
@@ -311,6 +311,3 @@ class TurkiyeAPIService
         Cache::tags(['turkiyeapi'])->flush();
     }
 }
-
-
-

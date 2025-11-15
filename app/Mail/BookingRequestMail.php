@@ -10,9 +10,9 @@ use Illuminate\Queue\SerializesModels;
 
 /**
  * Booking Request Mail
- * 
+ *
  * Context7 Standardı: C7-BOOKING-MAIL-2025-11-05
- * 
+ *
  * Rezervasyon talebi için email gönderir
  */
 class BookingRequestMail extends Mailable

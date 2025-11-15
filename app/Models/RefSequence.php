@@ -6,9 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Ref Sequence Model
- * 
+ *
  * Context7 Standardı: C7-REF-SEQUENCE-MODEL-2025-11-05
- * 
+ *
  * Benzersiz referans numarası üretimi için sequence yönetimi
  */
 class RefSequence extends Model
@@ -33,7 +33,7 @@ class RefSequence extends Model
 
     /**
      * Sequence key oluştur
-     * 
+     *
      * @param string $yayinTipi
      * @param string $lokasyonKodu
      * @param string $kategoriKodu
@@ -47,7 +47,7 @@ class RefSequence extends Model
         ?int $year = null
     ): string {
         $year = $year ?? date('Y');
-        
+
         return sprintf(
             '%s-%s-%s-%d',
             $yayinTipi,
@@ -59,7 +59,7 @@ class RefSequence extends Model
 
     /**
      * Sonraki sequence numarasını al (thread-safe)
-     * 
+     *
      * @param string $sequenceKey
      * @return int
      */
@@ -95,7 +95,7 @@ class RefSequence extends Model
 
     /**
      * Sequence'ı sıfırla (yıl bazlı)
-     * 
+     *
      * @param int $year
      * @return int
      */
@@ -105,4 +105,3 @@ class RefSequence extends Model
             ->update(['last_sequence' => 0]);
     }
 }
-

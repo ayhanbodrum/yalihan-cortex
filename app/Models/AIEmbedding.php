@@ -7,10 +7,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Str;
+use App\Traits\HasAIUsageTracking;
 
 class AIEmbedding extends Model
 {
-    use HasFactory;
+    use HasFactory, HasAIUsageTracking;
 
     protected $table = 'ai_embeddings';
 
@@ -51,14 +52,11 @@ class AIEmbedding extends Model
     }
 
     // Scopes
+    // ✅ REFACTORED: scopeByLanguage, scopeRecentlyUsed, scopePopular, incrementUsage moved to HasAIUsageTracking trait
+
     public function scopeByModel($query, $modelName)
     {
         return $query->where('model_name', $modelName);
-    }
-
-    public function scopeByLanguage($query, $language)
-    {
-        return $query->where('language', $language);
     }
 
     public function scopeByField($query, $fieldName)
@@ -69,16 +67,6 @@ class AIEmbedding extends Model
     public function scopeByType($query, $type)
     {
         return $query->where('embeddable_type', $type);
-    }
-
-    public function scopeRecentlyUsed($query, $days = 30)
-    {
-        return $query->where('last_used_at', '>=', Carbon::now()->subDays($days));
-    }
-
-    public function scopePopular($query, $minUsage = 10)
-    {
-        return $query->where('usage_count', '>=', $minUsage);
     }
 
     public function scopeHighSimilarity($query, $threshold = 0.8)
@@ -138,16 +126,12 @@ class AIEmbedding extends Model
         } elseif ($daysSinceLastUse <= 30) {
             return 'Bu ay kullanıldı';
         } else {
-            return $daysSinceLastUse.' gün önce kullanıldı';
+            return $daysSinceLastUse . ' gün önce kullanıldı';
         }
     }
 
     // Methods
-    public function incrementUsage()
-    {
-        $this->increment('usage_count');
-        $this->update(['last_used_at' => Carbon::now()]);
-    }
+    // ✅ REFACTORED: incrementUsage moved to HasAIUsageTracking trait
 
     public function updateEmbedding(array $embedding, $modelName = null)
     {
@@ -254,7 +238,7 @@ class AIEmbedding extends Model
         // This would typically involve generating an embedding for the content first
         // For now, we'll do a simple text search as fallback
         $query = static::query()
-            ->where('content', 'LIKE', '%'.$content.'%');
+            ->where('content', 'LIKE', '%' . $content . '%');
 
         if ($type) {
             $query->byType($type);
@@ -311,20 +295,22 @@ class AIEmbedding extends Model
             }
 
             $embeddings = static::where('embeddable_type', $type)->get();
-            
+
             if ($embeddings->isEmpty()) {
                 continue;
             }
 
-            // ✅ OPTIMIZED: N+1 query önlendi - Tüm embeddable_id'leri tek query'de kontrol et
+            // ✅ PERFORMANCE FIX: N+1 query önlendi - Tüm embeddable_id'leri tek query'de kontrol et
             $embeddableIds = $embeddings->pluck('embeddable_id')->toArray();
             $existingIds = $type::whereIn('id', $embeddableIds)->pluck('id')->toArray();
-            
-            foreach ($embeddings as $embedding) {
-                if (! in_array($embedding->embeddable_id, $existingIds)) {
-                    $embedding->delete();
-                    $orphaned++;
-                }
+
+            // ✅ PERFORMANCE FIX: Bulk delete kullan (N query → 1 query)
+            $orphanedIds = array_diff($embeddableIds, $existingIds);
+            if (!empty($orphanedIds)) {
+                $deletedCount = static::where('embeddable_type', $type)
+                    ->whereIn('embeddable_id', $orphanedIds)
+                    ->delete();
+                $orphaned += $deletedCount;
             }
         }
 

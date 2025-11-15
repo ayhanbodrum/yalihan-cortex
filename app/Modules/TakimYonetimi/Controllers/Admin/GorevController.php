@@ -22,7 +22,10 @@ class GorevController extends Controller
             'tamamlanan' => Gorev::where('status', 'tamamlandi')->count(),
         ];
 
-        return view('admin.takim-yonetimi.gorevler.index', compact('gorevler', 'danismanlar', 'istatistikler'));
+        // ✅ Context7: View için gerekli değişkenler
+        $status = request('status'); // Filter için
+
+        return view('admin.takim-yonetimi.gorevler.index', compact('gorevler', 'danismanlar', 'istatistikler', 'status'));
     }
 
     public function create()

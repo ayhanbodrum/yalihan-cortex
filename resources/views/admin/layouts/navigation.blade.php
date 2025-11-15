@@ -52,9 +52,8 @@
                         <a href="{{ route('admin.ilanlar.create') }}"
                             class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Yeni İlan</a>
                         <a href="{{ route('admin.ilan-kategorileri.index') }}"
-                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" title="Konut, Arsa, İşyeri gibi ana emlak kategorileri">İlan Kategorileri</a>
-                        <a href="{{ route('admin.property-type-manager.index') }}"
-                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-b-md" title="Satılık, Kiralık gibi yayın tipleri">Yayın Tipi Yöneticisi</a>
+                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-b-md" title="Konut, Arsa, İşyeri gibi ana emlak kategorileri">İlan Kategorileri</a>
+                        {{-- Yayın Tipi Yöneticisi sidebar menüsünde mevcut (duplicate önlendi - Context7 Compliance 2025-11-11) --}}
                     </div>
                 </div>
 

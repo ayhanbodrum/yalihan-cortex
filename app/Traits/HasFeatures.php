@@ -75,8 +75,11 @@ trait HasFeatures
      */
     public function assignFeatures(array $featureIds, array $config = [])
     {
+        // ✅ PERFORMANCE FIX: N+1 query önlendi - Tüm feature'ları tek query'de al
+        $features = Feature::whereIn('id', $featureIds)->get()->keyBy('id');
+
         foreach ($featureIds as $featureId) {
-            $feature = Feature::find($featureId);
+            $feature = $features->get($featureId);
             if ($feature) {
                 $this->assignFeature($feature, $config);
             }
@@ -101,13 +104,23 @@ trait HasFeatures
             ->whereNotIn('feature_id', $featureIds)
             ->delete();
 
-        // ✅ OPTIMIZED: N+1 query önlendi - Tüm feature'ları tek query'de al
+        // ✅ PERFORMANCE FIX: N+1 query önlendi - Tüm feature'ları tek query'de al
         $features = Feature::whereIn('id', $featureIds)->get()->keyBy('id');
-        
+
+        // ✅ PERFORMANCE FIX: N+1 query önlendi - Tüm mevcut assignment'ları tek query'de al
+        $assignableType = get_class($this);
+        $assignableId = $this->id;
+        $existingAssignments = FeatureAssignment::where('assignable_type', $assignableType)
+            ->where('assignable_id', $assignableId)
+            ->whereIn('feature_id', $featureIds)
+            ->pluck('feature_id')
+            ->toArray();
+
         // Add new assignments
         foreach ($featureIds as $featureId) {
             $feature = $features->get($featureId);
-            if ($feature && !$feature->isAssignedTo($this)) {
+            // ✅ OPTIMIZED: Mevcut assignment kontrolü için database query yerine array kontrolü kullan
+            if ($feature && !in_array($featureId, $existingAssignments)) {
                 $this->assignFeature($feature);
             }
         }
@@ -178,4 +191,3 @@ trait HasFeatures
             ->exists();
     }
 }
-

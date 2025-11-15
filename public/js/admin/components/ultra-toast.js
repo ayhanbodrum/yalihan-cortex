@@ -17,13 +17,13 @@
  * @author EmlakPro Team
  */
 
-console.log("🍞 Ultra Toast System v3.0 Loading...");
+console.log('🍞 Ultra Toast System v3.0 Loading...');
 
 class UltraToast {
     constructor(options = {}) {
         this.options = {
             // Default settings
-            position: "top-right", // top-left, top-right, bottom-left, bottom-right, top-center, bottom-center
+            position: 'top-right', // top-left, top-right, bottom-left, bottom-right, top-center, bottom-center
             duration: 4000,
             maxToasts: 5,
             enableSounds: true,
@@ -35,7 +35,7 @@ class UltraToast {
             rtl: false,
 
             // Theme
-            theme: "modern", // modern, minimal, glassmorphism
+            theme: 'modern', // modern, minimal, glassmorphism
 
             // Accessibility
             announceToScreenReader: true,
@@ -57,20 +57,20 @@ class UltraToast {
         this.setupGlobalStyles();
         this.setupAccessibility();
 
-        console.log("✨ Ultra Toast System initialized!");
+        console.log('✨ Ultra Toast System initialized!');
     }
 
     createContainer() {
         // Remove existing container
-        const existing = document.querySelector(".ultra-toast-container");
+        const existing = document.querySelector('.ultra-toast-container');
         if (existing) existing.remove();
 
         // Create new container
-        this.container = document.createElement("div");
+        this.container = document.createElement('div');
         this.container.className = `ultra-toast-container ultra-toast-${this.options.position}`;
-        this.container.setAttribute("role", "region");
-        this.container.setAttribute("aria-label", "Notifications");
-        this.container.setAttribute("aria-live", "polite");
+        this.container.setAttribute('role', 'region');
+        this.container.setAttribute('aria-label', 'Notifications');
+        this.container.setAttribute('aria-live', 'polite');
 
         document.body.appendChild(this.container);
     }
@@ -79,19 +79,18 @@ class UltraToast {
         if (!this.options.enableSounds) return;
 
         try {
-            this.soundContext = new (window.AudioContext ||
-                window.webkitAudioContext)();
+            this.soundContext = new (window.AudioContext || window.webkitAudioContext)();
         } catch (e) {
-            console.warn("Audio context not supported");
+            console.warn('Audio context not supported');
             this.options.enableSounds = false;
         }
     }
 
     setupGlobalStyles() {
-        const styleId = "ultra-toast-styles";
+        const styleId = 'ultra-toast-styles';
         if (document.getElementById(styleId)) return;
 
-        const style = document.createElement("style");
+        const style = document.createElement('style');
         style.id = styleId;
         style.textContent = this.getToastStyles();
         document.head.appendChild(style);
@@ -99,40 +98,40 @@ class UltraToast {
 
     setupAccessibility() {
         // Create screen reader announcement area
-        if (!document.getElementById("toast-announcements")) {
-            const announcer = document.createElement("div");
-            announcer.id = "toast-announcements";
-            announcer.className = "sr-only";
-            announcer.setAttribute("aria-live", "polite");
-            announcer.setAttribute("aria-atomic", "true");
+        if (!document.getElementById('toast-announcements')) {
+            const announcer = document.createElement('div');
+            announcer.id = 'toast-announcements';
+            announcer.className = 'sr-only';
+            announcer.setAttribute('aria-live', 'polite');
+            announcer.setAttribute('aria-atomic', 'true');
             document.body.appendChild(announcer);
         }
     }
 
     // 🎨 Toast Creation Methods
     success(message, options = {}) {
-        return this.show(message, { type: "success", ...options });
+        return this.show(message, { type: 'success', ...options });
     }
 
     error(message, options = {}) {
         return this.show(message, {
-            type: "error",
+            type: 'error',
             duration: 6000,
             ...options,
         });
     }
 
     warning(message, options = {}) {
-        return this.show(message, { type: "warning", ...options });
+        return this.show(message, { type: 'warning', ...options });
     }
 
     info(message, options = {}) {
-        return this.show(message, { type: "info", ...options });
+        return this.show(message, { type: 'info', ...options });
     }
 
     loading(message, options = {}) {
         return this.show(message, {
-            type: "loading",
+            type: 'loading',
             duration: 0, // Persist until manually closed
             showProgress: false,
             ...options,
@@ -140,7 +139,7 @@ class UltraToast {
     }
 
     custom(message, options = {}) {
-        return this.show(message, { type: "custom", ...options });
+        return this.show(message, { type: 'custom', ...options });
     }
 
     // 🚀 Main Show Method
@@ -164,10 +163,10 @@ class UltraToast {
     }
 
     createToast(options) {
-        const toast = document.createElement("div");
+        const toast = document.createElement('div');
         toast.className = this.getToastClasses(options);
-        toast.setAttribute("role", "alert");
-        toast.setAttribute("data-toast-id", options.id);
+        toast.setAttribute('role', 'alert');
+        toast.setAttribute('data-toast-id', options.id);
 
         toast.innerHTML = this.getToastHTML(options);
 
@@ -193,24 +192,24 @@ class UltraToast {
         this.announceToScreenReader(options.message);
 
         // Trigger custom event
-        this.dispatchToastEvent("show", options);
+        this.dispatchToastEvent('show', options);
     }
 
     getToastClasses(options) {
         const classes = [
-            "ultra-toast",
+            'ultra-toast',
             `ultra-toast-${options.type}`,
             `ultra-toast-theme-${options.theme}`,
-            "ultra-toast-enter",
+            'ultra-toast-enter',
         ];
 
-        if (options.icon) classes.push("ultra-toast-with-icon");
-        if (options.actions) classes.push("ultra-toast-with-actions");
+        if (options.icon) classes.push('ultra-toast-with-icon');
+        if (options.actions) classes.push('ultra-toast-with-actions');
         if (options.showProgress !== false && options.duration > 0) {
-            classes.push("ultra-toast-with-progress");
+            classes.push('ultra-toast-with-progress');
         }
 
-        return classes.join(" ");
+        return classes.join(' ');
     }
 
     getToastHTML(options) {
@@ -227,7 +226,7 @@ class UltraToast {
                     ${
                         options.description
                             ? `<div class="ultra-toast-description">${options.description}</div>`
-                            : ""
+                            : ''
                     }
                     ${actions}
                 </div>
@@ -243,39 +242,39 @@ class UltraToast {
         }
 
         const icons = {
-            success: "✅",
-            error: "❌",
-            warning: "⚠️",
-            info: "ℹ️",
-            loading: "⏳",
+            success: '✅',
+            error: '❌',
+            warning: '⚠️',
+            info: 'ℹ️',
+            loading: '⏳',
         };
 
-        const icon = icons[type] || "📢";
+        const icon = icons[type] || '📢';
         return `<div class="ultra-toast-icon">${icon}</div>`;
     }
 
     getToastActions(actions) {
-        if (!actions || !Array.isArray(actions)) return "";
+        if (!actions || !Array.isArray(actions)) return '';
 
         const actionButtons = actions
             .map((action) => {
                 return `
                 <button
-                    class="ultra-toast-action ${action.style || "primary"}"
+                    class="ultra-toast-action ${action.style || 'primary'}"
                     data-action="${action.key}"
-                    ${action.disabled ? "disabled" : ""}
+                    ${action.disabled ? 'disabled' : ''}
                 >
                     ${action.label}
                 </button>
             `;
             })
-            .join("");
+            .join('');
 
         return `<div class="ultra-toast-actions">${actionButtons}</div>`;
     }
 
     getToastProgress(options) {
-        if (options.showProgress === false || options.duration <= 0) return "";
+        if (options.showProgress === false || options.duration <= 0) return '';
 
         return `
             <div class="ultra-toast-progress">
@@ -297,24 +296,22 @@ class UltraToast {
     // 🎭 Interactions & Animations
     setupToastInteractions(toast, options) {
         // Close button
-        const closeBtn = toast.querySelector(".ultra-toast-close");
-        closeBtn?.addEventListener("click", () => this.close(options.id));
+        const closeBtn = toast.querySelector('.ultra-toast-close');
+        closeBtn?.addEventListener('click', () => this.close(options.id));
 
         // Click to close
         if (options.closeOnClick !== false) {
-            toast.addEventListener("click", (e) => {
-                if (
-                    !e.target.closest(".ultra-toast-action, .ultra-toast-close")
-                ) {
+            toast.addEventListener('click', (e) => {
+                if (!e.target.closest('.ultra-toast-action, .ultra-toast-close')) {
                     this.close(options.id);
                 }
             });
         }
 
         // Action buttons
-        const actionBtns = toast.querySelectorAll(".ultra-toast-action");
+        const actionBtns = toast.querySelectorAll('.ultra-toast-action');
         actionBtns.forEach((btn) => {
-            btn.addEventListener("click", (e) => {
+            btn.addEventListener('click', (e) => {
                 const actionKey = e.target.dataset.action;
                 this.handleAction(options.id, actionKey, options);
             });
@@ -324,22 +321,18 @@ class UltraToast {
         if (options.pauseOnHover !== false && options.duration > 0) {
             let pauseTimeout;
 
-            toast.addEventListener("mouseenter", () => {
-                const progressBar = toast.querySelector(
-                    ".ultra-toast-progress-bar"
-                );
+            toast.addEventListener('mouseenter', () => {
+                const progressBar = toast.querySelector('.ultra-toast-progress-bar');
                 if (progressBar) {
-                    progressBar.style.animationPlayState = "paused";
+                    progressBar.style.animationPlayState = 'paused';
                 }
                 clearTimeout(pauseTimeout);
             });
 
-            toast.addEventListener("mouseleave", () => {
-                const progressBar = toast.querySelector(
-                    ".ultra-toast-progress-bar"
-                );
+            toast.addEventListener('mouseleave', () => {
+                const progressBar = toast.querySelector('.ultra-toast-progress-bar');
                 if (progressBar) {
-                    progressBar.style.animationPlayState = "running";
+                    progressBar.style.animationPlayState = 'running';
                 }
             });
         }
@@ -353,13 +346,13 @@ class UltraToast {
         let currentX = 0;
         let isDragging = false;
 
-        toast.addEventListener("touchstart", (e) => {
+        toast.addEventListener('touchstart', (e) => {
             startX = e.touches[0].clientX;
             isDragging = true;
-            toast.style.transition = "none";
+            toast.style.transition = 'none';
         });
 
-        toast.addEventListener("touchmove", (e) => {
+        toast.addEventListener('touchmove', (e) => {
             if (!isDragging) return;
 
             currentX = e.touches[0].clientX;
@@ -369,7 +362,7 @@ class UltraToast {
             toast.style.opacity = Math.max(0.3, 1 - Math.abs(deltaX) / 200);
         });
 
-        toast.addEventListener("touchend", () => {
+        toast.addEventListener('touchend', () => {
             if (!isDragging) return;
 
             const deltaX = currentX - startX;
@@ -378,27 +371,24 @@ class UltraToast {
             if (Math.abs(deltaX) > 100) {
                 this.close(options.id);
             } else {
-                toast.style.transition = "all 0.3s ease";
-                toast.style.transform = "translateX(0)";
-                toast.style.opacity = "1";
+                toast.style.transition = 'all 0.3s ease';
+                toast.style.transform = 'translateX(0)';
+                toast.style.opacity = '1';
             }
         });
     }
 
     animateToastIn(toast, options) {
         if (!options.enableAnimations) {
-            toast.classList.remove("ultra-toast-enter");
+            toast.classList.remove('ultra-toast-enter');
             return;
         }
 
         requestAnimationFrame(() => {
-            toast.classList.add("ultra-toast-enter-active");
+            toast.classList.add('ultra-toast-enter-active');
 
             setTimeout(() => {
-                toast.classList.remove(
-                    "ultra-toast-enter",
-                    "ultra-toast-enter-active"
-                );
+                toast.classList.remove('ultra-toast-enter', 'ultra-toast-enter-active');
             }, 300);
         });
     }
@@ -409,7 +399,7 @@ class UltraToast {
             return;
         }
 
-        toast.classList.add("ultra-toast-exit", "ultra-toast-exit-active");
+        toast.classList.add('ultra-toast-exit', 'ultra-toast-exit-active');
 
         setTimeout(() => {
             callback();
@@ -454,17 +444,11 @@ class UltraToast {
                 oscillator.connect(gainNode);
                 gainNode.connect(this.soundContext.destination);
 
-                oscillator.frequency.setValueAtTime(
-                    freq,
-                    this.soundContext.currentTime
-                );
-                oscillator.type = "sine";
+                oscillator.frequency.setValueAtTime(freq, this.soundContext.currentTime);
+                oscillator.type = 'sine';
 
                 gainNode.gain.setValueAtTime(0, this.soundContext.currentTime);
-                gainNode.gain.linearRampToValueAtTime(
-                    volume,
-                    this.soundContext.currentTime + 0.01
-                );
+                gainNode.gain.linearRampToValueAtTime(volume, this.soundContext.currentTime + 0.01);
                 gainNode.gain.exponentialRampToValueAtTime(
                     0.01,
                     this.soundContext.currentTime + duration
@@ -476,7 +460,7 @@ class UltraToast {
                 return oscillator;
             });
         } catch (e) {
-            console.warn("Could not play sound:", e);
+            console.warn('Could not play sound:', e);
         }
     }
 
@@ -501,7 +485,7 @@ class UltraToast {
             this.processQueue();
 
             // Trigger event
-            this.dispatchToastEvent("close", options);
+            this.dispatchToastEvent('close', options);
         });
     }
 
@@ -521,7 +505,7 @@ class UltraToast {
         };
 
         // Update content
-        const messageEl = element.querySelector(".ultra-toast-message");
+        const messageEl = element.querySelector('.ultra-toast-message');
         if (messageEl) {
             messageEl.textContent = newMessage;
         }
@@ -535,14 +519,11 @@ class UltraToast {
         toastData.options = updatedOptions;
 
         // Trigger event
-        this.dispatchToastEvent("update", updatedOptions);
+        this.dispatchToastEvent('update', updatedOptions);
     }
 
     processQueue() {
-        if (
-            this.queue.length === 0 ||
-            this.toasts.size >= this.options.maxToasts
-        ) {
+        if (this.queue.length === 0 || this.toasts.size >= this.options.maxToasts) {
             return;
         }
 
@@ -565,20 +546,20 @@ class UltraToast {
         }
 
         // Trigger event
-        this.dispatchToastEvent("action", { ...options, actionKey });
+        this.dispatchToastEvent('action', { ...options, actionKey });
     }
 
     // 📢 Accessibility
     announceToScreenReader(message) {
         if (!this.options.announceToScreenReader) return;
 
-        const announcer = document.getElementById("toast-announcements");
+        const announcer = document.getElementById('toast-announcements');
         if (announcer) {
             announcer.textContent = message;
 
             // Clear after announcement
             setTimeout(() => {
-                announcer.textContent = "";
+                announcer.textContent = '';
             }, 1000);
         }
     }
@@ -829,7 +810,7 @@ window.UltraToast = UltraToast;
 window.toast = new UltraToast();
 
 // Convenience methods
-window.showToast = (message, type = "info", options = {}) => {
+window.showToast = (message, type = 'info', options = {}) => {
     return window.toast[type]
         ? window.toast[type](message, options)
         : window.toast.show(message, { type, ...options });
@@ -837,7 +818,7 @@ window.showToast = (message, type = "info", options = {}) => {
 
 // Alpine.js integration
 if (window.Alpine) {
-    window.Alpine.magic("toast", () => window.toast);
+    window.Alpine.magic('toast', () => window.toast);
 }
 
-console.log("🍞 Ultra Toast System ready!");
+console.log('🍞 Ultra Toast System ready!');

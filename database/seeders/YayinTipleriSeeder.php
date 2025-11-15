@@ -15,27 +15,26 @@ class YayinTipleriSeeder extends Seeder
         // Yayın Tipleri (Kategori Bazlı) - Context7 uyumlu
         $yayinTipleri = [
             // Konut Kategorisi (ID: 1)
-            ['kategori_id' => 1, 'yayin_tipi' => 'Satılık', 'status' => 'Aktif', 'order' => 1],
-            ['kategori_id' => 1, 'yayin_tipi' => 'Kiralık', 'status' => 'Aktif', 'order' => 2],
-            ['kategori_id' => 1, 'yayin_tipi' => 'Devren Satılık', 'status' => 'Aktif', 'order' => 3],
-            ['kategori_id' => 1, 'yayin_tipi' => 'Günlük Kiralık', 'status' => 'Aktif', 'order' => 4],
+            ['kategori_id' => 1, 'yayin_tipi' => 'Satılık', 'status' => 'Aktif', 'display_order' => 1],
+            ['kategori_id' => 1, 'yayin_tipi' => 'Kiralık', 'status' => 'Aktif', 'display_order' => 2],
+            ['kategori_id' => 1, 'yayin_tipi' => 'Devren Satılık', 'status' => 'Aktif', 'display_order' => 3],
+            ['kategori_id' => 1, 'yayin_tipi' => 'Günlük Kiralık', 'status' => 'Aktif', 'display_order' => 4],
 
             // İşyeri Kategorisi (ID: 2)
-            ['kategori_id' => 2, 'yayin_tipi' => 'Satılık', 'status' => 'Aktif', 'order' => 1],
-            ['kategori_id' => 2, 'yayin_tipi' => 'Kiralık', 'status' => 'Aktif', 'order' => 2],
-            ['kategori_id' => 2, 'yayin_tipi' => 'Devren Satılık', 'status' => 'Aktif', 'order' => 3],
-            ['kategori_id' => 2, 'yayin_tipi' => 'Devren Kiralık', 'status' => 'Aktif', 'order' => 4],
+            ['kategori_id' => 2, 'yayin_tipi' => 'Satılık', 'status' => 'Aktif', 'display_order' => 1],
+            ['kategori_id' => 2, 'yayin_tipi' => 'Kiralık', 'status' => 'Aktif', 'display_order' => 2],
+            ['kategori_id' => 2, 'yayin_tipi' => 'Devren Satılık', 'status' => 'Aktif', 'display_order' => 3],
+            ['kategori_id' => 2, 'yayin_tipi' => 'Devren Kiralık', 'status' => 'Aktif', 'display_order' => 4],
 
             // Arsa Kategorisi (ID: 3)
-            ['kategori_id' => 3, 'yayin_tipi' => 'Satılık', 'status' => 'Aktif', 'order' => 1],
-            ['kategori_id' => 3, 'yayin_tipi' => 'Kiralık', 'status' => 'Aktif', 'order' => 2],
+            ['kategori_id' => 3, 'yayin_tipi' => 'Satılık', 'status' => 'Aktif', 'display_order' => 1],
+            ['kategori_id' => 3, 'yayin_tipi' => 'Kiralık', 'status' => 'Aktif', 'display_order' => 2],
 
             // Bina Kategorisi (ID: 4)
-            ['kategori_id' => 4, 'yayin_tipi' => 'Satılık', 'status' => 'Aktif', 'order' => 1],
-            ['kategori_id' => 4, 'yayin_tipi' => 'Kiralık', 'status' => 'Aktif', 'order' => 2],
+            ['kategori_id' => 4, 'yayin_tipi' => 'Satılık', 'status' => 'Aktif', 'display_order' => 1],
+            ['kategori_id' => 4, 'yayin_tipi' => 'Kiralık', 'status' => 'Aktif', 'display_order' => 2],
         ];
 
         DB::table('ilan_kategori_yayin_tipleri')->insert($yayinTipleri);
     }
 }
-

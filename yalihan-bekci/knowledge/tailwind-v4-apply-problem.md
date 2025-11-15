@@ -46,14 +46,14 @@ npm install tailwindcss@^3.4 @tailwindcss/postcss@^3.4 autoprefixer
 
 **Avantaj:**
 
--   ✅ Hızlı (5 dakika)
--   ✅ Hiç kod değiştirmeden düzelir
--   ✅ 138 @apply çalışmaya devam eder
+- ✅ Hızlı (5 dakika)
+- ✅ Hiç kod değiştirmeden düzelir
+- ✅ 138 @apply çalışmaya devam eder
 
 **Dezavantaj:**
 
--   ⚠️ Eski versiyon (v3)
--   ⚠️ Yeni özellikler yok
+- ⚠️ Eski versiyon (v3)
+- ⚠️ Yeni özellikler yok
 
 ---
 
@@ -80,15 +80,15 @@ npm install tailwindcss@^3.4 @tailwindcss/postcss@^3.4 autoprefixer
 
 **Avantaj:**
 
--   ✅ Tailwind v4 uyumlu
--   ✅ Yeni özellikler kullanılabilir
--   ✅ Daha performanslı (CSS native)
+- ✅ Tailwind v4 uyumlu
+- ✅ Yeni özellikler kullanılabilir
+- ✅ Daha performanslı (CSS native)
 
 **Dezavantaj:**
 
--   ⚠️ 138 @apply için ~500 satır değişiklik
--   ⚠️ 1-2 saat iş
--   ⚠️ Dikkatli yapılması gerekir
+- ⚠️ 138 @apply için ~500 satır değişiklik
+- ⚠️ 1-2 saat iş
+- ⚠️ Dikkatli yapılması gerekir
 
 ---
 

@@ -13,22 +13,22 @@ class TakimController extends Controller
     {
         $status = $request->get('status');
         $query = TakimUyesi::with('user')->orderBy('performans_skoru', 'desc');
-        
+
         if ($status) {
             $query->where('status', $status);
         }
-        
+
         $takimUyeleri = $query->paginate(20);
-        
+
         $istatistikler = [
             'toplam' => TakimUyesi::count(),
-            'aktif' => TakimUyesi::where('status', 'Aktif')->count(),
-            'pasif' => TakimUyesi::where('status', 'Pasif')->count(),
+            'aktif' => TakimUyesi::where('status', 'aktif')->count(),
+            'pasif' => TakimUyesi::where('status', 'pasif')->count(),
             'ortalama_performans' => TakimUyesi::avg('performans_skoru'),
         ];
-        
+
         $lokasyonlar = TakimUyesi::select('lokasyon')->distinct()->whereNotNull('lokasyon')->pluck('lokasyon');
-        
+
         return view('admin.takim-yonetimi.takim.index', compact('takimUyeleri', 'istatistikler', 'lokasyonlar', 'status'));
     }
 
@@ -38,8 +38,7 @@ class TakimController extends Controller
             ->orderBy('performans_skoru', 'desc')
             ->take(10)
             ->get();
-        
+
         return view('admin.takim-yonetimi.takim.performans', compact('topPerformers'));
     }
 }
-

@@ -3,14 +3,14 @@
 @section('title', 'Blog Yorumları Yönetimi')
 
 @section('content')
-    <div class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+    <div class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <!-- Header -->
             <div class="mb-8">
                 <h1 class="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                     Blog Yorumları Yönetimi
                 </h1>
-                <p class="mt-2 text-gray-600 text-lg">Tüm blog yorumlarını görüntüleyin ve yönetin</p>
+                <p class="mt-2 text-gray-600 dark:text-gray-400 text-lg">Tüm blog yorumlarını görüntüleyin ve yönetin</p>
             </div>
 
             <!-- Stats Cards -->
@@ -25,7 +25,7 @@
                             </svg>
                         </div>
                         <div class="ml-4">
-                            <p class="text-sm font-medium text-gray-600">Toplam Yorum</p>
+                            <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Toplam Yorum</p>
                             @php
                                 $totalComments = ($stats['approved'] ?? 0) + ($stats['pending'] ?? 0) + ($stats['rejected'] ?? 0) + ($stats['spam'] ?? 0);
                             @endphp
@@ -43,7 +43,7 @@
                             </svg>
                         </div>
                         <div class="ml-4">
-                            <p class="text-sm font-medium text-gray-600">Onaylanan</p>
+                            <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Onaylanan</p>
                             <p class="stat-card-value">{{ $stats['approved'] ?? 0 }}</p>
                         </div>
                     </div>
@@ -58,7 +58,7 @@
                             </svg>
                         </div>
                         <div class="ml-4">
-                            <p class="text-sm font-medium text-gray-600">Bekleyen</p>
+                            <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Bekleyen</p>
                             <p class="stat-card-value">{{ $stats['pending'] ?? 0 }}</p>
                         </div>
                     </div>
@@ -74,7 +74,7 @@
                             </svg>
                         </div>
                         <div class="ml-4">
-                            <p class="text-sm font-medium text-gray-600">Reddedilen</p>
+                            <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Reddedilen</p>
                             <p class="stat-card-value">{{ $stats['rejected'] ?? 0 }}</p>
                         </div>
                     </div>
@@ -82,7 +82,7 @@
             </div>
 
             <!-- Filters and Actions -->
-            <div class="bg-white rounded-2xl shadow-lg p-6 mb-8">
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 mb-8">
                 <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
                     <div class="flex flex-col sm:flex-row gap-4">
                         <div class="form-field">
@@ -107,8 +107,8 @@
                     </div>
 
                     <div class="flex gap-3">
-                        <button type="button" 
-                                class="inline-flex items-center px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-all duration-200 font-medium shadow-sm hover:shadow-md" 
+                        <button type="button"
+                                class="inline-flex items-center px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-all duration-200 font-medium shadow-sm hover:shadow-md"
                                 onclick="applyFilters()">
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -117,8 +117,8 @@
                             </svg>
                             Filtrele
                         </button>
-                        <button type="button" 
-                                class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg active:scale-95" 
+                        <button type="button"
+                                class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg active:scale-95"
                                 onclick="refreshComments()">
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -132,14 +132,14 @@
             </div>
 
             <!-- Comments Table -->
-            <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
-                <div class="px-6 py-4 border-b border-gray-100">
-                    <h3 class="text-lg font-semibold text-gray-900">Yorum Listesi</h3>
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden">
+                <div class="px-6 py-4 border-b border-gray-100 dark:border-gray-700">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Yorum Listesi</h3>
                 </div>
 
                 <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
+                    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                        <thead class="bg-gray-50 dark:bg-gray-900">
                             <tr>
                                 <th class="admin-table-th">
                                     Yazar
@@ -161,9 +161,9 @@
                                 </th>
                             </tr>
                         </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
+                        <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                             @forelse($comments as $comment)
-                                <tr class="hover:bg-gray-50 transition-colors duration-150">
+                                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-150">
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="flex items-center">
                                             <div class="flex-shrink-0 h-10 w-10">
@@ -173,19 +173,19 @@
                                                 </div>
                                             </div>
                                             <div class="ml-4">
-                                                <div class="text-sm font-medium text-gray-900">{{ $comment->author_name }}
+                                                <div class="text-sm font-medium text-gray-900 dark:text-white">{{ $comment->author_name }}
                                                 </div>
-                                                <div class="text-sm text-gray-500">{{ $comment->author_email }}</div>
+                                                <div class="text-sm text-gray-500 dark:text-gray-400">{{ $comment->author_email }}</div>
                                             </div>
                                         </div>
                                     </td>
                                     <td class="px-6 py-4">
-                                        <div class="text-sm text-gray-900 max-w-xs truncate">
+                                        <div class="text-sm text-gray-900 dark:text-white max-w-xs truncate">
                                             {{ Str::limit($comment->content, 100) }}
                                         </div>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="text-sm text-gray-900">{{ Str::limit($comment->post->title, 50) }}
+                                        <div class="text-sm text-gray-900 dark:text-white">{{ Str::limit($comment->post->title, 50) }}
                                         </div>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
@@ -221,7 +221,7 @@
                                             </span>
                                         @endif
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                                         {{ $comment->created_at->format('d.m.Y H:i') }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
@@ -276,16 +276,16 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="6" class="px-6 py-12 text-center text-gray-500">
+                                    <td colspan="6" class="px-6 py-12 text-center text-gray-500 dark:text-gray-400">
                                         <div class="flex flex-col items-center">
-                                            <svg class="w-12 h-12 text-gray-300 mb-4" fill="none"
+                                            <svg class="w-12 h-12 text-gray-300 dark:text-gray-600 mb-4" fill="none"
                                                 stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                     d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z">
                                                 </path>
                                             </svg>
-                                            <p class="text-lg font-medium">Henüz yorum bulunmuyor</p>
-                                            <p class="text-sm">Blog yazılarınız için yorumlar geldiğinde burada görünecek
+                                            <p class="text-lg font-medium dark:text-white">Henüz yorum bulunmuyor</p>
+                                            <p class="text-sm dark:text-gray-400">Blog yazılarınız için yorumlar geldiğinde burada görünecek
                                             </p>
                                         </div>
                                     </td>
@@ -296,7 +296,7 @@
                 </div>
 
                 @if ($comments->hasPages())
-                    <div class="px-6 py-4 border-t border-gray-100">
+                    <div class="px-6 py-4 border-t border-gray-100 dark:border-gray-700">
                         <div class="pagination">
                             {{ $comments->links() }}
                         </div>
@@ -307,23 +307,23 @@
     </div>
 
     <!-- Reject Comment Modal -->
-    <div id="rejectModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
-        <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-2xl bg-white">
+    <div id="rejectModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 dark:bg-gray-900 dark:bg-opacity-75 overflow-y-auto h-full w-full hidden z-50">
+        <div class="relative top-20 mx-auto p-5 border border-gray-200 dark:border-gray-700 w-96 shadow-lg rounded-2xl bg-white dark:bg-gray-800">
             <div class="mt-3">
-                <h3 class="text-lg font-medium text-gray-900 mb-4">Yorumu Reddet</h3>
+                <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Yorumu Reddet</h3>
                 <div class="form-field">
                     <label for="reject_reason" class="admin-label">Red Nedeni</label>
                     <textarea id="reject_reason" class="admin-input" rows="3"
                         placeholder="Yorumu neden reddettiğinizi belirtin..."></textarea>
                 </div>
                 <div class="flex justify-end space-x-3 mt-6">
-                    <button type="button" 
-                            class="inline-flex items-center px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-all duration-200 font-medium shadow-sm hover:shadow-md" 
+                    <button type="button"
+                            class="inline-flex items-center px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-all duration-200 font-medium shadow-sm hover:shadow-md"
                             onclick="closeRejectModal()">
                         İptal
                     </button>
-                    <button type="button" 
-                            class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg active:scale-95" 
+                    <button type="button"
+                            class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg active:scale-95"
                             onclick="confirmReject()">
                         Reddet
                     </button>
@@ -333,23 +333,23 @@
     </div>
 
     <!-- Spam Modal -->
-    <div id="spamModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
-        <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-2xl bg-white">
+    <div id="spamModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 dark:bg-gray-900 dark:bg-opacity-75 overflow-y-auto h-full w-full hidden z-50">
+        <div class="relative top-20 mx-auto p-5 border border-gray-200 dark:border-gray-700 w-96 shadow-lg rounded-2xl bg-white dark:bg-gray-800">
             <div class="mt-3">
-                <h3 class="text-lg font-medium text-gray-900 mb-4">Spam Olarak İşaretle</h3>
+                <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Spam Olarak İşaretle</h3>
                 <div class="form-field">
                     <label for="spam_reason" class="admin-label">Spam Nedeni</label>
                     <textarea id="spam_reason" class="admin-input" rows="3"
                         placeholder="Bu yorumun neden spam olduğunu belirtin..."></textarea>
                 </div>
                 <div class="flex justify-end space-x-3 mt-6">
-                    <button type="button" 
-                            class="inline-flex items-center px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-all duration-200 font-medium shadow-sm hover:shadow-md" 
+                    <button type="button"
+                            class="inline-flex items-center px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-all duration-200 font-medium shadow-sm hover:shadow-md"
                             onclick="closeSpamModal()">
                         İptal
                     </button>
-                    <button type="button" 
-                            class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg active:scale-95" 
+                    <button type="button"
+                            class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg active:scale-95"
                             onclick="confirmSpam()">
                         Spam Olarak İşaretle
                     </button>
@@ -360,59 +360,8 @@
 @endsection
 
 @push('styles')
-    <style>
-        /* Modern Dashboard Styles */
-        .btn-modern {
-            @apply inline-flex items-center px-6 py-3 rounded-xl font-semibold transition-all duration-200 transform hover:scale-105 active:scale-95 shadow-lg;
-        }
-
-        .btn-modern-primary {
-            @apply bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 shadow-blue-500/25;
-        }
-
-        .btn-modern-secondary {
-            @apply bg-gradient-to-r from-gray-600 to-gray-700 text-white hover:from-gray-700 hover:to-gray-800 shadow-gray-500/25;
-        }
-
-        .form-field {
-            @apply space-y-2;
-        }
-
-        .admin-label {
-            @apply block text-sm font-medium text-gray-700 mb-1;
-        }
-
-        .admin-input,
-        .admin-input {
-            @apply w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-blue-500 focus:outline-none transition-all duration-200;
-        }
-
-        .admin-input:focus,
-        .admin-input:focus {
-            @apply ring-2 ring-blue-200;
-        }
-
-        .stat-card {
-            @apply bg-white rounded-2xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300;
-        }
-
-        /* Pagination Styles */
-        .pagination {
-            @apply flex items-center justify-between;
-        }
-
-        .pagination .page-link {
-            @apply px-4 py-2.5 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-gray-700;
-        }
-
-        .pagination .page-item.active .page-link {
-            @apply bg-blue-600 text-white border-blue-600;
-        }
-
-        .pagination .page-item.disabled .page-link {
-            @apply text-gray-300 cursor-not-allowed;
-        }
-    </style>
+    {{-- ✅ DUPLICATE REMOVED: Common styles moved to resources/css/admin/common-styles.css --}}
+    {{-- Bu sayfada sadece sayfa-spesifik stiller varsa buraya eklenebilir --}}
 @endpush
 
 @push('scripts')

@@ -5,7 +5,7 @@
   "severity": "HIGH",
   "title": "AdminController Oluşturma ve Database Schema Hatalarından Dersler",
   "summary": "AdminController base class oluşturulurken yapılan 5 kritik hata ve çözümleri",
-  
+
   "forbidden_patterns": [
     {
       "pattern": "\\Cache::",
@@ -67,7 +67,7 @@
       "why": "Olmayan kolonlar SELECT edilmesin"
     },
     {
-      "check": "Facade Import Kontrolü", 
+      "check": "Facade Import Kontrolü",
       "pattern": "use Illuminate\\Support\\Facades\\Cache;",
       "when": "Cache, DB, Log, Auth kullanırken",
       "why": "\\Facade:: kullanımı import'u bypass eder"
@@ -185,7 +185,7 @@
   "total_errors": 6,
   "total_fix_time": "41 minutes",
   "files_modified": 4,
-  
+
   "success_metrics": {
     "improvements_completed": "7/8 (87.5%)",
     "performance_gain": "Load -40%, Memory -60%, Queries -90%",
@@ -244,7 +244,7 @@
       "enforcement": "Pre-commit hook: SELECT içinde olmayan kolon kontrolü"
     },
     {
-      "rule_id": "YB-PHP-002", 
+      "rule_id": "YB-PHP-002",
       "title": "Backslash Facade Kullanımı Yasak",
       "description": "\\Cache::, \\DB::, \\Log:: gibi kullanımlar yasaktır",
       "severity": "HIGH",
@@ -382,7 +382,7 @@
     "total_debugging": "41 minutes",
     "debugging_breakdown": {
       "cache_import": "15 min",
-      "duplicate_method": "10 min", 
+      "duplicate_method": "10 min",
       "database_columns": "16 min"
     },
     "lesson": "Debugging süresi implementation'ın %19'u - Schema kontrolü ile %90 azaltılabilirdi"
@@ -424,4 +424,3 @@
     "4. Laravel IDE Helper kur"
   ]
 }
-

@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Log;
 
 /**
  * OpenStreetMap Nominatim Service
- * 
+ *
  * FREE alternative to WikiMapia and Google Places
  * Rate limit: 1 request/second
  * Coverage: Worldwide, good Turkey support
@@ -37,7 +37,7 @@ class NominatimService
     {
         $cacheKey = "nominatim.search.{$query}.{$lat}.{$lon}.{$limit}";
 
-        return $this->cacheEnabled 
+        return $this->cacheEnabled
             ? Cache::remember($cacheKey, $this->cacheTtl, fn() => $this->performSearch($query, $lat, $lon, $limit))
             : $this->performSearch($query, $lat, $lon, $limit);
     }
@@ -125,16 +125,16 @@ class NominatimService
                     'display_name' => $data['display_name'] ?? 'N/A',
                     'type' => $data['type'] ?? 'N/A'
                 ]);
-                
+
                 // Format single result as array
                 $formatted = $this->formatResults([$data]);
-                
+
                 // If reverse geocode found nothing useful, try area search
                 if (empty($formatted['places'])) {
                     Log::info('Reverse geocode empty, trying area search');
                     return $this->searchAreaPlaces($lat, $lon, $radius);
                 }
-                
+
                 return $formatted;
             }
 
@@ -263,7 +263,7 @@ class NominatimService
         ];
 
         // Building, place, settlement varsa ACCEPT!
-        return in_array($type, $residentialTypes) || 
+        return in_array($type, $residentialTypes) ||
                in_array($class, $residentialClasses) ||
                str_contains($type, 'apartment') ||
                str_contains($type, 'site') ||
@@ -374,4 +374,3 @@ class NominatimService
         return "{$lonMin},{$latMax},{$lonMax},{$latMin}";
     }
 }
-

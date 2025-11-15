@@ -11,6 +11,8 @@
  * const result = await AIService.testProvider('openai', 'sk-xxx', 'gpt-4');
  */
 
+import AIOrchestrator from './AIOrchestrator.js'
+
 export class AIService {
     /**
      * Test AI Provider
@@ -327,7 +329,29 @@ export class AIService {
             };
         }
     }
+    static registerProvider(name, config) { AIOrchestrator.register(name, config) }
+    static useProvider(name) { return AIOrchestrator.use(name) }
+    static async chat(payload, options = {}) { return await AIOrchestrator.chat(payload, options) }
+    static async pricePredict(payload, options = {}) { return await AIOrchestrator.pricePredict(payload, options) }
+    static async suggestFeatures(payload, options = {}) { return await AIOrchestrator.suggestFeatures(payload, options) }
+    static async updateLocale(locale) {
+        const response = await fetch('/admin/ai-settings/update-locale', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': this.getCsrfToken() },
+            body: JSON.stringify({ locale }),
+        })
+        const data = await response.json()
+        return this.formatResponse(data)
+    }
+    static async updateCurrency(currency) {
+        const response = await fetch('/admin/ai-settings/update-currency', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': this.getCsrfToken() },
+            body: JSON.stringify({ currency }),
+        })
+        const data = await response.json()
+        return this.formatResponse(data)
+    }
 }
 
-// Default export
 export default AIService;

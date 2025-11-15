@@ -53,18 +53,18 @@ class OzellikKategori extends Model
         'kullanim_sayisi',
         'son_kullanim_tarih',
         'parent_id', // Context7: parent relationship
-        'order', // Context7: Database column is 'order', not 'sira'
+        'display_order', // Context7: order → display_order
         'status', // Context7 kuralı: status → status
         'slug',
     ];
 
     /**
      * Tip dönüşümleri
-     * Context7: Database column 'order', not 'sira'
+     * Context7: display_order kolonu kullanılır
      */
     protected $casts = [
         'status' => 'boolean', // Context7 kuralı: status → status
-        'order' => 'integer', // Context7: Database column is 'order'
+        'display_order' => 'integer', // Context7: order → display_order
         'zorunlu' => 'boolean',
         'arama_filtresi' => 'boolean',
         'ilan_kartinda_goster' => 'boolean',
@@ -87,9 +87,9 @@ class OzellikKategori extends Model
             if (empty($kategori->slug)) {
                 $kategori->slug = Str::slug($kategori->name);
             }
-            // Context7: Database column is 'order', not 'sira'
-            if (is_null($kategori->order)) {
-                $kategori->order = (int) (static::max('order') + 1);
+            // Context7: display_order varsayılan değer atama
+            if (is_null($kategori->display_order)) {
+                $kategori->display_order = (int) (static::max('display_order') + 1);
             }
         });
 
@@ -185,11 +185,10 @@ class OzellikKategori extends Model
 
     /**
      * Sıralı kategoriler
-     * Context7: Database column is 'order'
      */
     public function scopeSiralı($query)
     {
-        return $query->orderBy('order');
+        return $query->orderBy('display_order');
     }
 
     /**
@@ -251,12 +250,14 @@ class OzellikKategori extends Model
 
         return $renkler[$this->veri_tipi] ?? '#6B7280';
     }
+
+    
 }
 
 if (! function_exists('cachedOzellikKategorileri')) {
     function cachedOzellikKategorileri()
     {
-        // Context7: Database column is 'order', not 'sira'
-        return Cache::remember('ozellik_kategorileri_full', 300, fn() => OzellikKategori::withCount('ozellikler')->orderBy('order')->get());
+        // Context7: Database column is 'display_order'
+        return Cache::remember('ozellik_kategorileri_full', 300, fn() => OzellikKategori::withCount('ozellikler')->orderBy('display_order')->get());
     }
 }

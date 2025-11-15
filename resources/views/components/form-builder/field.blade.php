@@ -152,7 +152,7 @@
                             step="0.000001"
                             class="mt-1 block w-full py-3 px-4 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 rounded-lg shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 text-sm dark:text-white transition-colors">
                     </div>
-                    <button type="button" @click="getCurrentLocation()" class="mt-2 w-full btn btn-outline btn-sm">
+                    <button type="button" @click="getCurrentLocation()" class="mt-2 w-full px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 active:scale-95 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500">
                         <i class="fas fa-crosshairs mr-2"></i>Mevcut Konumu Al
                     </button>
                 </div>
@@ -196,7 +196,7 @@
                             </div>
                         </template>
                     </div>
-                    <button @click="fields.push({key: '', value: ''})" type="button" class="mt-3 btn btn-outline btn-sm">
+                    <button @click="fields.push({key: '', value: ''})" type="button" class="mt-3 px-4 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 active:scale-95 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-green-500">
                         <i class="fas fa-plus mr-2"></i>Alan Ekle
                     </button>
                 </div>

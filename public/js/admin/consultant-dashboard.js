@@ -6,9 +6,8 @@
 
 class ConsultantDashboard {
     constructor(options = {}) {
-        this.container = options.container || "#consultant-dashboard";
-        this.apiEndpoint =
-            options.apiEndpoint || "/api/admin/consultants/dashboard";
+        this.container = options.container || '#consultant-dashboard';
+        this.apiEndpoint = options.apiEndpoint || '/api/admin/consultants/dashboard';
         this.consultantId = options.consultantId || null;
         this.refreshInterval = options.refreshInterval || 300000; // 5 minutes
 
@@ -585,9 +584,9 @@ class ConsultantDashboard {
             </style>
         `;
 
-        if (!document.querySelector("#neo-consultant-dashboard-styles")) {
-            const styleElement = document.createElement("div");
-            styleElement.id = "neo-consultant-dashboard-styles";
+        if (!document.querySelector('#neo-consultant-dashboard-styles')) {
+            const styleElement = document.createElement('div');
+            styleElement.id = 'neo-consultant-dashboard-styles';
             styleElement.innerHTML = styles;
             document.head.appendChild(styleElement);
         }
@@ -598,14 +597,12 @@ class ConsultantDashboard {
             this.showLoading();
 
             const response = await fetch(
-                `${this.apiEndpoint}${
-                    this.consultantId ? `/${this.consultantId}` : ""
-                }`,
+                `${this.apiEndpoint}${this.consultantId ? `/${this.consultantId}` : ''}`,
                 {
-                    method: "GET",
+                    method: 'GET',
                     headers: {
-                        Accept: "application/json",
-                        "X-Requested-With": "XMLHttpRequest",
+                        Accept: 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
                     },
                 }
             );
@@ -617,13 +614,11 @@ class ConsultantDashboard {
                 this.initializeCharts(data.data.charts);
                 this.updateActivity(data.data.activities);
             } else {
-                this.showError(
-                    data.message || "Dashboard verileri yüklenemedi"
-                );
+                this.showError(data.message || 'Dashboard verileri yüklenemedi');
             }
         } catch (error) {
-            console.error("Dashboard load error:", error);
-            this.showError("Bağlantı hatası oluştu");
+            console.error('Dashboard load error:', error);
+            this.showError('Bağlantı hatası oluştu');
         } finally {
             this.hideLoading();
         }
@@ -632,28 +627,24 @@ class ConsultantDashboard {
     updateDashboard(data) {
         // Update consultant info
         if (data.consultant) {
-            document.getElementById("consultant-name").textContent =
-                data.consultant.name;
-            document.getElementById("consultant-title").textContent =
-                data.consultant.title;
+            document.getElementById('consultant-name').textContent = data.consultant.name;
+            document.getElementById('consultant-title').textContent = data.consultant.title;
         }
 
         // Update KPI values
         const kpis = data.kpis || {};
-        document.getElementById("total-listings").textContent =
-            kpis.total_listings || 0;
-        document.getElementById("active-listings").textContent =
-            kpis.active_listings || 0;
-        document.getElementById("total-clients").textContent =
-            kpis.total_clients || 0;
-        document.getElementById("total-commission").textContent =
-            this.formatCurrency(kpis.total_commission || 0);
+        document.getElementById('total-listings').textContent = kpis.total_listings || 0;
+        document.getElementById('active-listings').textContent = kpis.active_listings || 0;
+        document.getElementById('total-clients').textContent = kpis.total_clients || 0;
+        document.getElementById('total-commission').textContent = this.formatCurrency(
+            kpis.total_commission || 0
+        );
 
         // Update changes
-        this.updateKpiChange("listings-change", kpis.listings_change);
-        this.updateKpiChange("active-change", kpis.active_change);
-        this.updateKpiChange("clients-change", kpis.clients_change);
-        this.updateKpiChange("commission-change", kpis.commission_change);
+        this.updateKpiChange('listings-change', kpis.listings_change);
+        this.updateKpiChange('active-change', kpis.active_change);
+        this.updateKpiChange('clients-change', kpis.clients_change);
+        this.updateKpiChange('commission-change', kpis.commission_change);
     }
 
     updateKpiChange(elementId, change) {
@@ -661,10 +652,8 @@ class ConsultantDashboard {
         if (!element || change === undefined) return;
 
         const isPositive = change >= 0;
-        element.textContent = `${isPositive ? "+" : ""}${change}%`;
-        element.className = `neo-kpi-change ${
-            isPositive ? "positive" : "negative"
-        }`;
+        element.textContent = `${isPositive ? '+' : ''}${change}%`;
+        element.className = `neo-kpi-change ${isPositive ? 'positive' : 'negative'}`;
     }
 
     initializeCharts(chartData) {
@@ -676,7 +665,7 @@ class ConsultantDashboard {
     }
 
     createListingsChart(data) {
-        const ctx = document.getElementById("listings-chart");
+        const ctx = document.getElementById('listings-chart');
         if (!ctx || !data) return;
 
         if (this.charts.listings) {
@@ -684,23 +673,23 @@ class ConsultantDashboard {
         }
 
         this.charts.listings = new Chart(ctx, {
-            type: "line",
+            type: 'line',
             data: {
                 labels: data.labels || [],
                 datasets: [
                     {
-                        label: "Yeni İlanlar",
+                        label: 'Yeni İlanlar',
                         data: data.new_listings || [],
-                        borderColor: "#3b82f6",
-                        backgroundColor: "rgba(59, 130, 246, 0.1)",
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
                         tension: 0.4,
                         fill: true,
                     },
                     {
-                        label: "Aktif İlanlar",
+                        label: 'Aktif İlanlar',
                         data: data.active_listings || [],
-                        borderColor: "#10b981",
-                        backgroundColor: "rgba(16, 185, 129, 0.1)",
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
                         tension: 0.4,
                         fill: true,
                     },
@@ -711,7 +700,7 @@ class ConsultantDashboard {
                 maintainAspectRatio: false,
                 plugins: {
                     legend: {
-                        position: "bottom",
+                        position: 'bottom',
                     },
                 },
                 scales: {
@@ -724,7 +713,7 @@ class ConsultantDashboard {
     }
 
     createCommissionChart(data) {
-        const ctx = document.getElementById("commission-chart");
+        const ctx = document.getElementById('commission-chart');
         if (!ctx || !data) return;
 
         if (this.charts.commission) {
@@ -732,19 +721,13 @@ class ConsultantDashboard {
         }
 
         this.charts.commission = new Chart(ctx, {
-            type: "doughnut",
+            type: 'doughnut',
             data: {
                 labels: data.labels || [],
                 datasets: [
                     {
                         data: data.values || [],
-                        backgroundColor: [
-                            "#3b82f6",
-                            "#10b981",
-                            "#f59e0b",
-                            "#ef4444",
-                            "#8b5cf6",
-                        ],
+                        backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'],
                     },
                 ],
             },
@@ -764,7 +747,7 @@ class ConsultantDashboard {
     }
 
     updateCommissionLegend(data) {
-        const legend = document.getElementById("commission-legend");
+        const legend = document.getElementById('commission-legend');
         if (!legend || !data.labels) return;
 
         legend.innerHTML = data.labels
@@ -772,22 +755,18 @@ class ConsultantDashboard {
                 (label, index) => `
             <div class="neo-legend-item">
                 <div class="neo-legend-color" style="background: ${
-                    ["#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6"][
-                        index
-                    ]
+                    ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'][index]
                 }"></div>
                 <span class="neo-legend-label">${label}</span>
-                <span class="neo-legend-value">${this.formatCurrency(
-                    data.values[index]
-                )}</span>
+                <span class="neo-legend-value">${this.formatCurrency(data.values[index])}</span>
             </div>
         `
             )
-            .join("");
+            .join('');
     }
 
     updateActivity(activities) {
-        const activityList = document.getElementById("activity-list");
+        const activityList = document.getElementById('activity-list');
         if (!activityList || !activities) return;
 
         activityList.innerHTML = activities
@@ -799,14 +778,12 @@ class ConsultantDashboard {
                 </div>
                 <div class="neo-activity-content">
                     <p class="neo-activity-title">${activity.title}</p>
-                    <p class="neo-activity-time">${this.formatTime(
-                        activity.created_at
-                    )}</p>
+                    <p class="neo-activity-time">${this.formatTime(activity.created_at)}</p>
                 </div>
             </div>
         `
             )
-            .join("");
+            .join('');
     }
 
     getActivityIcon(type) {
@@ -825,37 +802,29 @@ class ConsultantDashboard {
 
     bindEvents() {
         // Refresh button
-        document
-            .getElementById("refresh-dashboard")
-            ?.addEventListener("click", () => {
-                this.loadDashboardData();
-            });
+        document.getElementById('refresh-dashboard')?.addEventListener('click', () => {
+            this.loadDashboardData();
+        });
 
         // Export report
-        document
-            .getElementById("export-report")
-            ?.addEventListener("click", () => {
-                this.exportReport();
-            });
+        document.getElementById('export-report')?.addEventListener('click', () => {
+            this.exportReport();
+        });
 
         // Quick actions
-        document
-            .getElementById("add-listing")
-            ?.addEventListener("click", () => {
-                window.location.href = "/admin/ilanlar/create";
-            });
+        document.getElementById('add-listing')?.addEventListener('click', () => {
+            window.location.href = '/admin/ilanlar/create';
+        });
 
-        document.getElementById("add-client")?.addEventListener("click", () => {
+        document.getElementById('add-client')?.addEventListener('click', () => {
             // Open client modal or navigate to client page
-            console.log("Add client clicked");
+            console.log('Add client clicked');
         });
 
         // Period selectors
-        document
-            .getElementById("listings-period")
-            ?.addEventListener("change", (e) => {
-                this.updateListingsChart(e.target.value);
-            });
+        document.getElementById('listings-period')?.addEventListener('change', (e) => {
+            this.updateListingsChart(e.target.value);
+        });
     }
 
     startAutoRefresh() {
@@ -872,32 +841,30 @@ class ConsultantDashboard {
     }
 
     showLoading() {
-        document.getElementById("dashboard-loading").style.display = "flex";
+        document.getElementById('dashboard-loading').style.display = 'flex';
     }
 
     hideLoading() {
-        document.getElementById("dashboard-loading").style.display = "none";
+        document.getElementById('dashboard-loading').style.display = 'none';
     }
 
     formatCurrency(amount) {
-        return new Intl.NumberFormat("tr-TR", {
-            style: "currency",
-            currency: "TRY",
+        return new Intl.NumberFormat('tr-TR', {
+            style: 'currency',
+            currency: 'TRY',
         }).format(amount);
     }
 
     formatTime(timestamp) {
-        return new Intl.RelativeTimeFormat("tr", { numeric: "auto" }).format(
-            Math.floor(
-                (new Date(timestamp) - new Date()) / (1000 * 60 * 60 * 24)
-            ),
-            "day"
+        return new Intl.RelativeTimeFormat('tr', { numeric: 'auto' }).format(
+            Math.floor((new Date(timestamp) - new Date()) / (1000 * 60 * 60 * 24)),
+            'day'
         );
     }
 
     exportReport() {
         // Implement report export functionality
-        console.log("Exporting dashboard report...");
+        console.log('Exporting dashboard report...');
     }
 
     destroy() {
@@ -911,21 +878,21 @@ class ConsultantDashboard {
         // Clean up DOM
         const container = document.querySelector(this.container);
         if (container) {
-            container.innerHTML = "";
+            container.innerHTML = '';
         }
     }
 }
 
 // Auto-initialize
-document.addEventListener("DOMContentLoaded", function () {
-    if (document.querySelector("#consultant-dashboard")) {
+document.addEventListener('DOMContentLoaded', function () {
+    if (document.querySelector('#consultant-dashboard')) {
         window.consultantDashboard = new ConsultantDashboard({
-            container: "#consultant-dashboard",
+            container: '#consultant-dashboard',
         });
     }
 });
 
 // Export for module usage
-if (typeof module !== "undefined" && module.exports) {
+if (typeof module !== 'undefined' && module.exports) {
     module.exports = ConsultantDashboard;
 }

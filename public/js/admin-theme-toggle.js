@@ -5,7 +5,7 @@
 
 class AdminThemeToggle {
     constructor() {
-        this.theme = localStorage.getItem("admin-theme") || "light";
+        this.theme = localStorage.getItem('admin-theme') || 'light';
         this.init();
     }
 
@@ -15,48 +15,40 @@ class AdminThemeToggle {
         this.bindEvents();
 
         // Auto detect user preference if no saved theme
-        if (!localStorage.getItem("admin-theme")) {
+        if (!localStorage.getItem('admin-theme')) {
             this.detectSystemTheme();
         }
     }
 
     applyTheme() {
-        document.documentElement.setAttribute("data-theme", this.theme);
-        document.body.classList.toggle("dark-mode", this.theme === "dark");
+        document.documentElement.setAttribute('data-theme', this.theme);
+        document.body.classList.toggle('dark-mode', this.theme === 'dark');
     }
 
     detectSystemTheme() {
-        if (
-            window.matchMedia &&
-            window.matchMedia("(prefers-color-scheme: dark)").matches
-        ) {
-            this.theme = "dark";
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            this.theme = 'dark';
             this.applyTheme();
-            localStorage.setItem("admin-theme", this.theme);
+            localStorage.setItem('admin-theme', this.theme);
         }
     }
 
     createToggleButton() {
         // Remove existing toggle if present
-        const existingToggle = document.querySelector(".theme-toggle");
+        const existingToggle = document.querySelector('.theme-toggle');
         if (existingToggle) {
             existingToggle.remove();
         }
 
         // Create toggle button
-        const toggle = document.createElement("button");
-        toggle.className = "theme-toggle";
-        toggle.setAttribute("aria-label", "Toggle dark mode");
-        toggle.setAttribute(
-            "title",
-            `Switch to ${this.theme === "light" ? "dark" : "light"} mode`,
-        );
+        const toggle = document.createElement('button');
+        toggle.className = 'theme-toggle';
+        toggle.setAttribute('aria-label', 'Toggle dark mode');
+        toggle.setAttribute('title', `Switch to ${this.theme === 'light' ? 'dark' : 'light'} mode`);
 
         // Add icon based on current theme
         toggle.innerHTML =
-            this.theme === "light"
-                ? '<i class="fas fa-moon"></i>'
-                : '<i class="fas fa-sun"></i>';
+            this.theme === 'light' ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
 
         // Add to body
         document.body.appendChild(toggle);
@@ -64,15 +56,15 @@ class AdminThemeToggle {
 
     bindEvents() {
         // Toggle button click
-        document.addEventListener("click", (e) => {
-            if (e.target.closest(".theme-toggle")) {
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('.theme-toggle')) {
                 this.toggleTheme();
             }
         });
 
         // Keyboard shortcut (Ctrl/Cmd + Shift + D)
-        document.addEventListener("keydown", (e) => {
-            if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === "D") {
+        document.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'D') {
                 e.preventDefault();
                 this.toggleTheme();
             }
@@ -80,64 +72,62 @@ class AdminThemeToggle {
 
         // Listen for system theme changes
         if (window.matchMedia) {
-            window
-                .matchMedia("(prefers-color-scheme: dark)")
-                .addEventListener("change", (e) => {
-                    if (!localStorage.getItem("admin-theme-manual")) {
-                        this.theme = e.matches ? "dark" : "light";
-                        this.applyTheme();
-                        this.updateToggleButton();
-                        localStorage.setItem("admin-theme", this.theme);
-                    }
-                });
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+                if (!localStorage.getItem('admin-theme-manual')) {
+                    this.theme = e.matches ? 'dark' : 'light';
+                    this.applyTheme();
+                    this.updateToggleButton();
+                    localStorage.setItem('admin-theme', this.theme);
+                }
+            });
         }
     }
 
     toggleTheme() {
-        this.theme = this.theme === "light" ? "dark" : "light";
+        this.theme = this.theme === 'light' ? 'dark' : 'light';
         this.applyTheme();
         this.updateToggleButton();
-        localStorage.setItem("admin-theme", this.theme);
-        localStorage.setItem("admin-theme-manual", "true"); // User manually changed theme
+        localStorage.setItem('admin-theme', this.theme);
+        localStorage.setItem('admin-theme-manual', 'true'); // User manually changed theme
 
         // Trigger animation
         this.animateToggle();
 
         // Dispatch custom event
         window.dispatchEvent(
-            new CustomEvent("themeChanged", {
+            new CustomEvent('themeChanged', {
                 detail: { theme: this.theme },
-            }),
+            })
         );
     }
 
     updateToggleButton() {
-        const toggle = document.querySelector(".theme-toggle");
+        const toggle = document.querySelector('.theme-toggle');
         if (toggle) {
             toggle.innerHTML =
-                this.theme === "light"
+                this.theme === 'light'
                     ? '<i class="fas fa-moon"></i>'
                     : '<i class="fas fa-sun"></i>';
             toggle.setAttribute(
-                "title",
-                `Switch to ${this.theme === "light" ? "dark" : "light"} mode`,
+                'title',
+                `Switch to ${this.theme === 'light' ? 'dark' : 'light'} mode`
             );
         }
     }
 
     animateToggle() {
-        const toggle = document.querySelector(".theme-toggle");
+        const toggle = document.querySelector('.theme-toggle');
         if (toggle) {
-            toggle.style.transform = "rotate(360deg) scale(1.2)";
+            toggle.style.transform = 'rotate(360deg) scale(1.2)';
             setTimeout(() => {
-                toggle.style.transform = "rotate(0deg) scale(1)";
+                toggle.style.transform = 'rotate(0deg) scale(1)';
             }, 300);
         }
 
         // Add page transition effect
-        document.body.style.transition = "background-color 0.3s ease-in-out";
+        document.body.style.transition = 'background-color 0.3s ease-in-out';
         setTimeout(() => {
-            document.body.style.transition = "";
+            document.body.style.transition = '';
         }, 300);
     }
 
@@ -148,23 +138,23 @@ class AdminThemeToggle {
 
     // Public method to set theme programmatically
     setTheme(newTheme) {
-        if (newTheme === "light" || newTheme === "dark") {
+        if (newTheme === 'light' || newTheme === 'dark') {
             this.theme = newTheme;
             this.applyTheme();
             this.updateToggleButton();
-            localStorage.setItem("admin-theme", this.theme);
+            localStorage.setItem('admin-theme', this.theme);
         }
     }
 }
 
 // Auto-initialize when DOM is loaded
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener('DOMContentLoaded', () => {
     window.adminThemeToggle = new AdminThemeToggle();
 });
 
 // Also initialize immediately if DOM is already loaded
-if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", () => {
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
         if (!window.adminThemeToggle) {
             window.adminThemeToggle = new AdminThemeToggle();
         }
@@ -176,6 +166,6 @@ if (document.readyState === "loading") {
 }
 
 // Export for use in modules
-if (typeof module !== "undefined" && module.exports) {
+if (typeof module !== 'undefined' && module.exports) {
     module.exports = AdminThemeToggle;
 }

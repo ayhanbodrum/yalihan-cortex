@@ -3,12 +3,13 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Services\Response\ResponseService;
 use Illuminate\Http\Request;
 
 class TalepController extends Controller
 {
     public function index(Request $request)
     {
-        return response()->json(['message' => 'Talep endpoint - to be implemented']);
+        return ResponseService::success([], 'Talep endpoint - to be implemented');
     }
 }

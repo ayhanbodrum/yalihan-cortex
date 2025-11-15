@@ -244,7 +244,7 @@ class Context7SmartIlanCreate {
         const html = danismanlar
             .map(
                 (danisman) => `
-                <div class="p-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-b-0" 
+                <div class="p-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-b-0"
                      onclick="selectDanisman(${danisman.id}, '${danisman.tam_ad || danisman.name}', '${danisman.telefon || danisman.email}')">
                     <div class="font-medium text-gray-800">${danisman.tam_ad || danisman.name}</div>
                     <div class="text-sm text-gray-500">${danisman.telefon || danisman.email}</div>
@@ -270,7 +270,7 @@ class Context7SmartIlanCreate {
         const html = fallbackDanismanlar
             .map(
                 (danisman) => `
-                <div class="p-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-b-0" 
+                <div class="p-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-b-0"
                      onclick="selectDanisman(${danisman.id}, '${danisman.name}', '${danisman.email}')">
                     <div class="font-medium text-gray-800">${danisman.name}</div>
                     <div class="text-sm text-gray-500">${danisman.email}</div>

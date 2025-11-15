@@ -28,29 +28,30 @@ Kaynak: tailwindcss.com/blog (3 Nisan 2025)
 
 ```yaml
 Web Search Sonucu:
-  ✅ Full builds: 5x daha hızlı
-  ✅ Incremental builds: 100x daha hızlı! 🤯
-  
+    ✅ Full builds: 5x daha hızlı
+    ✅ Incremental builds: 100x daha hızlı! 🤯
+
 Önceki (v3):
-  - JavaScript-based compiler
-  - Full build: ~1000ms
-  - Incremental: ~100ms
-  
+    - JavaScript-based compiler
+    - Full build: ~1000ms
+    - Incremental: ~100ms
+
 Yeni (v4.1):
-  - Rust-based "Oxide" engine
-  - Full build: ~200ms (5x hızlı)
-  - Incremental: ~1ms (100x hızlı!)
+    - Rust-based "Oxide" engine
+    - Full build: ~200ms (5x hızlı)
+    - Incremental: ~1ms (100x hızlı!)
 ```
 
 **Gerçek Dünya Örneği:**
+
 ```yaml
 Sizin Proje (1000+ component):
-  v3: npm run dev → 3-5 saniye bekle
-  v4: npm run dev → 0.5 saniye! ⚡
-  
+    v3: npm run dev → 3-5 saniye bekle
+    v4: npm run dev → 0.5 saniye! ⚡
+
 Watch mode değişiklik:
-  v3: ~100ms yenileme
-  v4: ~1ms yenileme (hemen!) 🚀
+    v3: ~100ms yenileme
+    v4: ~1ms yenileme (hemen!) 🚀
 ```
 
 ---
@@ -62,22 +63,19 @@ Watch mode değişiklik:
 ```html
 <!-- v3: Custom CSS gerekiyordu -->
 <style>
-  .text-shadow {
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
-  }
+    .text-shadow {
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    }
 </style>
 
 <!-- v4.1: Built-in! -->
-<h1 class="text-shadow-lg text-shadow-blue-500/50">
-  Başlık
-</h1>
+<h1 class="text-shadow-lg text-shadow-blue-500/50">Başlık</h1>
 
-<p class="text-shadow-sm">
-  Alt başlık
-</p>
+<p class="text-shadow-sm">Alt başlık</p>
 ```
 
 **Sınıflar:**
+
 ```yaml
 text-shadow-sm: 1px gölge
 text-shadow: Normal gölge
@@ -109,6 +107,7 @@ text-shadow-{color}: Renk kontrolü
 ```
 
 **Kullanım Alanları:**
+
 - Image fade effects
 - Gradient masks
 - Creative shapes
@@ -136,11 +135,12 @@ text-shadow-{color}: Renk kontrolü
 ```
 
 **Örnek:**
+
 ```css
 /* v4.1: Wide Gamut Colors */
 @theme {
-  --color-vibrant-red: oklch(60% 0.25 25);
-  --color-deep-blue: oklch(40% 0.2 270);
+    --color-vibrant-red: oklch(60% 0.25 25);
+    --color-deep-blue: oklch(40% 0.2 270);
 }
 
 /* Daha canlı, doğal renkler! */
@@ -154,35 +154,36 @@ text-shadow-{color}: Renk kontrolü
 
 ```css
 /* v4.1: tailwind.css */
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @theme {
-  /* Colors */
-  --color-primary: #3b82f6;
-  --color-secondary: #8b5cf6;
-  
-  /* Spacing */
-  --spacing-tight: 0.5rem;
-  --spacing-loose: 2rem;
-  
-  /* Typography */
-  --font-display: "Cal Sans", sans-serif;
-  --font-body: "Inter", sans-serif;
+    /* Colors */
+    --color-primary: #3b82f6;
+    --color-secondary: #8b5cf6;
+
+    /* Spacing */
+    --spacing-tight: 0.5rem;
+    --spacing-loose: 2rem;
+
+    /* Typography */
+    --font-display: 'Cal Sans', sans-serif;
+    --font-body: 'Inter', sans-serif;
 }
 
 /* tailwind.config.js artık opsiyonel! */
 ```
 
 **v3'te:**
+
 ```javascript
 // tailwind.config.js ZORUNLU'ydu
 module.exports = {
-  theme: {
-    extend: {
-      colors: { primary: '#3b82f6' }
-    }
-  }
-}
+    theme: {
+        extend: {
+            colors: { primary: '#3b82f6' },
+        },
+    },
+};
 ```
 
 ---
@@ -191,13 +192,11 @@ module.exports = {
 
 ```javascript
 // v4.1: Daha iyi Vite entegrasyonu
-import tailwindcss from '@tailwindcss/vite'
+import tailwindcss from '@tailwindcss/vite';
 
 export default {
-  plugins: [
-    tailwindcss()
-  ]
-}
+    plugins: [tailwindcss()],
+};
 
 // HMR (Hot Module Replacement) çok hızlı!
 // ~1ms refresh 🚀
@@ -207,19 +206,19 @@ export default {
 
 ## 📊 v3.4.18 vs v4.1 KARŞILAŞTIRMA
 
-| Özellik | v3.4.18 (Sizde) | v4.1 (Yeni) | Fark |
-|---------|-----------------|-------------|------|
-| **Full Build** | ~1000ms | ~200ms | 🔥 5x hızlı |
-| **Incremental** | ~100ms | ~1ms | 🔥 100x hızlı! |
-| **Text Shadows** | Custom CSS | Built-in | 🆕 Native |
-| **Masks** | Custom CSS | Built-in | 🆕 Native |
-| **Container Queries** | Plugin | Built-in | 🆕 Native |
-| **Wide Gamut Colors** | ❌ Yok | ✅ oklch() | 🆕 Yeni |
-| **Cascade Layers** | Manuel | @layer | 🆕 Native |
-| **Config** | JS zorunlu | CSS opsiyonel | 🆕 Basit |
-| **Bundle Size** | 10-50 KB | 8-40 KB | 🆕 %20 küçük |
-| **Stability** | ✅ Stable | ✅ Stable | Aynı! |
-| **Production** | ✅ Ready | ✅ Ready | Aynı! |
+| Özellik               | v3.4.18 (Sizde) | v4.1 (Yeni)   | Fark           |
+| --------------------- | --------------- | ------------- | -------------- |
+| **Full Build**        | ~1000ms         | ~200ms        | 🔥 5x hızlı    |
+| **Incremental**       | ~100ms          | ~1ms          | 🔥 100x hızlı! |
+| **Text Shadows**      | Custom CSS      | Built-in      | 🆕 Native      |
+| **Masks**             | Custom CSS      | Built-in      | 🆕 Native      |
+| **Container Queries** | Plugin          | Built-in      | 🆕 Native      |
+| **Wide Gamut Colors** | ❌ Yok          | ✅ oklch()    | 🆕 Yeni        |
+| **Cascade Layers**    | Manuel          | @layer        | 🆕 Native      |
+| **Config**            | JS zorunlu      | CSS opsiyonel | 🆕 Basit       |
+| **Bundle Size**       | 10-50 KB        | 8-40 KB       | 🆕 %20 küçük   |
+| **Stability**         | ✅ Stable       | ✅ Stable     | Aynı!          |
+| **Production**        | ✅ Ready        | ✅ Ready      | Aynı!          |
 
 ---
 
@@ -230,13 +229,13 @@ export default {
 ```yaml
 Full Builds: 5x daha hızlı
   Önce: 1000ms → Sonra: 200ms
-  
+
 Incremental Builds: 100x daha hızlı!
   Önce: 100ms → Sonra: 1ms
-  
+
 Watch Mode: Anında!
   Dev mode değişiklikleri instant
-  
+
 Sizin Proje için:
   - npm run dev → 80% daha hızlı
   - HMR → Neredeyse instant
@@ -246,38 +245,32 @@ Sizin Proje için:
 ### 🎨 Yeni Özellikler
 
 ```yaml
-Text Shadows:
-  ✅ text-shadow-sm/md/lg/xl
-  ✅ text-shadow-{color}
-  ✅ Artık custom CSS gerektirmez
-  
-Masks:
-  ✅ mask-linear/radial
-  ✅ mask-{direction}
-  ✅ Creative effects kolay
-  
-Wide Gamut Colors:
-  ✅ oklch() color space
-  ✅ Daha canlı renkler
-  ✅ P3 display support
-  
-Container Queries:
-  ✅ @container native
-  ✅ Plugin gerektirmez
-  ✅ Component-based responsive
+Text Shadows: ✅ text-shadow-sm/md/lg/xl
+    ✅ text-shadow-{color}
+    ✅ Artık custom CSS gerektirmez
+
+Masks: ✅ mask-linear/radial
+    ✅ mask-{direction}
+    ✅ Creative effects kolay
+
+Wide Gamut Colors: ✅ oklch() color space
+    ✅ Daha canlı renkler
+    ✅ P3 display support
+
+Container Queries: ✅ @container native
+    ✅ Plugin gerektirmez
+    ✅ Component-based responsive
 ```
 
 ### 📦 Modern CSS
 
 ```yaml
-Cascade Layers:
-  ✅ @layer organizasyonu
-  ✅ Better CSS structure
-  
-CSS-First Config:
-  ✅ @theme directive
-  ✅ @import "tailwindcss"
-  ✅ tailwind.config.js opsiyonel
+Cascade Layers: ✅ @layer organizasyonu
+    ✅ Better CSS structure
+
+CSS-First Config: ✅ @theme directive
+    ✅ @import "tailwindcss"
+    ✅ tailwind.config.js opsiyonel
 ```
 
 ---
@@ -287,6 +280,7 @@ CSS-First Config:
 ### SEÇENEK A: v3.4.18'de Kal (Güvenli) ⭐⭐⭐
 
 **Artılar:**
+
 ```yaml
 ✅ Zaten çalışıyor
 ✅ Tüm temel özellikler var
@@ -296,6 +290,7 @@ CSS-First Config:
 ```
 
 **Eksiler:**
+
 ```yaml
 ❌ Yavaş build (v4'e göre)
 ❌ Text shadows yok (custom CSS gerek)
@@ -308,6 +303,7 @@ CSS-First Config:
 ### SEÇENEK B: v4.1'e Geç (Modern) ⭐⭐⭐⭐⭐
 
 **Artılar:**
+
 ```yaml
 ✅ 5x daha hızlı build!
 ✅ 100x daha hızlı HMR! 🔥
@@ -321,6 +317,7 @@ CSS-First Config:
 ```
 
 **Eksiler:**
+
 ```yaml
 ⚠️ Migration gerekli
 ⚠️ Config syntax değişti
@@ -337,16 +334,14 @@ CSS-First Config:
 **v3.4.18'de kal!** ✅
 
 ```yaml
-Sebep:
-  ✅ Proje büyük (migration riskli)
-  ✅ Component Library development devam ediyor
-  ✅ Frontend migration başlamadı
-  ✅ v3 yeterli (şimdilik)
+Sebep: ✅ Proje büyük (migration riskli)
+    ✅ Component Library development devam ediyor
+    ✅ Frontend migration başlamadı
+    ✅ v3 yeterli (şimdilik)
 
-Odak:
-  1. Component Library bitir (1-2 hafta)
-  2. Frontend Tailwind migration (2-3 hafta)
-  3. Admin Neo → Tailwind (devam)
+Odak: 1. Component Library bitir (1-2 hafta)
+    2. Frontend Tailwind migration (2-3 hafta)
+    3. Admin Neo → Tailwind (devam)
 ```
 
 ---
@@ -356,41 +351,40 @@ Odak:
 **v4.1'e upgrade et!** 🎯
 
 ```yaml
-Ne zaman:
-  ✅ Component Library %100
-  ✅ Frontend migration %100
-  ✅ Admin Neo → Tailwind %100
-  ✅ Stabil dönem (Ocak 2026?)
+Ne zaman: ✅ Component Library %100
+    ✅ Frontend migration %100
+    ✅ Admin Neo → Tailwind %100
+    ✅ Stabil dönem (Ocak 2026?)
 
-Neden o zaman:
-  ✅ Tüm sayfalar Tailwind (temiz)
-  ✅ Migration tek seferde
-  ✅ Test için zaman var
-  ✅ 100x hızlı HMR fayda 🚀
+Neden o zaman: ✅ Tüm sayfalar Tailwind (temiz)
+    ✅ Migration tek seferde
+    ✅ Test için zaman var
+    ✅ 100x hızlı HMR fayda 🚀
 ```
 
 **Migration Planı:**
+
 ```yaml
 Hafta 1: Test Environment
-  - v4.1 kur (test)
-  - Component'leri test et
-  - Breaking changes kontrol et
-  
+    - v4.1 kur (test)
+    - Component'leri test et
+    - Breaking changes kontrol et
+
 Hafta 2: Migration
-  - Config migration (@theme)
-  - Plugin'leri test et
-  - Text shadows ekle (güzel olur)
-  - Masks ekle (gerekirse)
-  
+    - Config migration (@theme)
+    - Plugin'leri test et
+    - Text shadows ekle (güzel olur)
+    - Masks ekle (gerekirse)
+
 Hafta 3: Testing
-  - Tüm sayfaları test et
-  - Build performans ölç
-  - Production build test
-  
+    - Tüm sayfaları test et
+    - Build performans ölç
+    - Production build test
+
 Hafta 4: Production
-  - Kademeli deploy
-  - Monitor et
-  - Rollback planı hazır
+    - Kademeli deploy
+    - Monitor et
+    - Rollback planı hazır
 ```
 
 ---
@@ -398,22 +392,24 @@ Hafta 4: Production
 ## 🎯 SONUÇ
 
 **ŞİMDİ (Kasım 2025):**
+
 ```yaml
 v3.4.18 ✅
-  - Devam et
-  - Component Library bitir
-  - Frontend migration yap
-  - Zero risk
+- Devam et
+- Component Library bitir
+- Frontend migration yap
+- Zero risk
 ```
 
 **SONRA (Ocak 2026):**
+
 ```yaml
 v4.1 Upgrade 🚀
-  - 100x hızlı HMR!
-  - Text shadows
-  - Masks
-  - Modern CSS
-  - Migration planla
+- 100x hızlı HMR!
+- Text shadows
+- Masks
+- Modern CSS
+- Migration planla
 ```
 
 ---
@@ -424,6 +420,6 @@ v4.1 Upgrade 🚀
 🔥 100x daha hızlı incremental builds  
 🎨 Text shadows + Masks + Wide gamut colors  
 ⏳ Şimdi değil, 1-2 ay sonra upgrade et  
-🎯 Önce mevcut migration'ları bitir  
+🎯 Önce mevcut migration'ları bitir
 
 **İyi geceler! 🌙🚀**

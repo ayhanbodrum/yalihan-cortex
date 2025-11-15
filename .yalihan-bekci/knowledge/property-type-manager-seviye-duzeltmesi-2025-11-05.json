@@ -4,7 +4,7 @@
   "category": "bug_fix",
   "priority": "HIGH",
   "status": "COMPLETED",
-  
+
   "problem": {
     "description": "Property Type Manager sayfasında veri görünmüyordu",
     "root_cause": "Controller seviye=0 arıyordu ama seeder seviye=1 oluşturuyordu",
@@ -15,7 +15,7 @@
       "seviye_2": 33
     }
   },
-  
+
   "cozum": {
     "yapilan_degisiklikler": {
       "CompleteIlanKategoriSeeder.php": {
@@ -31,22 +31,20 @@
     },
     "dogrulama": "php artisan db:seed --class=CompleteIlanKategoriSeeder çalıştırıldı"
   },
-  
+
   "context7_compliance": {
     "status": "✅ COMPLIANT",
     "note": "Schema::hasColumn kontrolü korundu, status field Context7 standartlarına uygun"
   },
-  
+
   "dosyalar": {
-    "degistirilen": [
-      "database/seeders/CompleteIlanKategoriSeeder.php"
-    ],
+    "degistirilen": ["database/seeders/CompleteIlanKategoriSeeder.php"],
     "ilgili": [
       "app/Http/Controllers/Admin/PropertyTypeManagerController.php",
       "resources/views/admin/property-type-manager/index.blade.php"
     ]
   },
-  
+
   "notlar": {
     "seviye_sistemi": {
       "seviye_0": "Ana kategoriler (Konut, Arsa, İşyeri, Turistik Tesis, Projeler)",
@@ -57,4 +55,3 @@
     "controller_show": "PropertyTypeManagerController::show() seviye=1 alt kategorileri arıyor"
   }
 }
-

@@ -22,7 +22,8 @@
         </div>
 
         {{-- Form --}}
-        <form action="{{ route('admin.danisman.store') }}" method="POST" class="space-y-6">
+        <form action="{{ route('admin.danisman.store') }}" method="POST" class="space-y-6"
+              onsubmit="const btn = document.getElementById('danisman-submit-btn'); const icon = document.getElementById('danisman-submit-icon'); const text = document.getElementById('danisman-submit-text'); const spinner = document.getElementById('danisman-submit-spinner'); if(btn && icon && text && spinner) { btn.disabled = true; icon.classList.add('hidden'); spinner.classList.remove('hidden'); text.textContent = 'Kaydediliyor...'; }">
             @csrf
 
             {{-- Temel Bilgiler --}}
@@ -33,18 +34,51 @@
                 </h2>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {{-- Ad Soyad --}}
-                    <div class="md:col-span-2">
-                        <label for="name" class="block text-sm font-medium text-gray-900 dark:text-white mb-2">
-                            Ad Soyad *
+                    {{-- Ad --}}
+                    <div>
+                        <label for="ad" class="block text-sm font-medium text-gray-900 dark:text-white mb-2">
+                            Ad *
                         </label>
-                        <input type="text" name="name" id="name" value="{{ old('name') }}" required
-                            class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white @error('name') border-red-500 @enderror"
-                            placeholder="Danışman adı soyadı">
+                        @php
+                            $adValue = old('ad', '');
+                            if (empty($adValue) && old('name')) {
+                                $nameParts = explode(' ', old('name', ''), 2);
+                                $adValue = $nameParts[0] ?? '';
+                            }
+                        @endphp
+                        <input type="text" name="ad" id="ad" value="{{ $adValue }}" required
+                            class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white @error('ad') border-red-500 @enderror @error('name') border-red-500 @enderror"
+                            placeholder="Ad">
+                        @error('ad')
+                            <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                        @enderror
                         @error('name')
                             <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                         @enderror
                     </div>
+
+                    {{-- Soyad --}}
+                    <div>
+                        <label for="soyad" class="block text-sm font-medium text-gray-900 dark:text-white mb-2">
+                            Soyad *
+                        </label>
+                        @php
+                            $soyadValue = old('soyad', '');
+                            if (empty($soyadValue) && old('name')) {
+                                $nameParts = explode(' ', old('name', ''), 2);
+                                $soyadValue = $nameParts[1] ?? '';
+                            }
+                        @endphp
+                        <input type="text" name="soyad" id="soyad" value="{{ $soyadValue }}" required
+                            class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white @error('soyad') border-red-500 @enderror @error('name') border-red-500 @enderror"
+                            placeholder="Soyad">
+                        @error('soyad')
+                            <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    {{-- Hidden name field (for backward compatibility) - Ad ve Soyad birleştiriliyor --}}
+                    <input type="hidden" name="name" id="name" value="">
 
                     {{-- Email --}}
                     <div>
@@ -61,13 +95,13 @@
 
                     {{-- Telefon --}}
                     <div>
-                        <label for="telefon" class="block text-sm font-medium text-gray-900 dark:text-white mb-2">
-                            Telefon *
+                        <label for="phone_number" class="block text-sm font-medium text-gray-900 dark:text-white mb-2">
+                            Telefon
                         </label>
-                        <input type="text" name="telefon" id="telefon" value="{{ old('telefon') }}" required
-                            class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white @error('telefon') border-red-500 @enderror"
+                        <input type="text" name="phone_number" id="phone_number" value="{{ old('phone_number') }}"
+                            class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white @error('phone_number') border-red-500 @enderror"
                             placeholder="0532 123 45 67">
-                        @error('telefon')
+                        @error('phone_number')
                             <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                         @enderror
                     </div>
@@ -115,42 +149,73 @@
                             placeholder="Gayrimenkul lisans numarası">
                     </div>
 
-                    {{-- Komisyon Oranı --}}
-                    <div>
-                        <label for="komisyon_orani" class="block text-sm font-medium text-gray-900 dark:text-white mb-2">
-                            Komisyon Oranı (%)
+                    {{-- Uzmanlık Alanları (Çoklu Seçim) --}}
+                    <div class="md:col-span-2">
+                        <label for="uzmanlik_alanlari" class="block text-sm font-medium text-gray-900 dark:text-white mb-2">
+                            Uzmanlık Alanları (Çoklu Seçim)
                         </label>
-                        <input type="number" name="komisyon_orani" id="komisyon_orani" value="{{ old('komisyon_orani', 2.5) }}"
-                            min="0" max="100" step="0.1"
-                            class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white"
-                            placeholder="2.5">
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-3 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg border border-gray-200 dark:border-gray-600">
+                            @php
+                                // ✅ Sadece izin verilen 5 uzmanlık alanı
+                                $uzmanlikAlanlari = ['Konut', 'Arsa', 'İşyeri', 'Yazlık', 'Turistik Tesis'];
+                                $oldValues = old('uzmanlik_alanlari', []);
+                            @endphp
+                            @foreach($uzmanlikAlanlari as $alan)
+                                <label class="flex items-center p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer transition-colors duration-200">
+                                    <input type="checkbox"
+                                           name="uzmanlik_alanlari[]"
+                                           value="{{ $alan }}"
+                                           {{ in_array($alan, $oldValues) ? 'checked' : '' }}
+                                           class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600 transition-all duration-200">
+                                    <span class="ml-2 text-sm text-gray-900 dark:text-white">{{ $alan }}</span>
+                                </label>
+                            @endforeach
+                        </div>
+                        <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">Birden fazla uzmanlık alanı seçebilirsiniz</p>
                     </div>
 
-                    {{-- Uzmanlık Alanı --}}
+                    {{-- Ofis Adresi --}}
                     <div class="md:col-span-2">
-                        <label for="uzmanlik_alani" class="block text-sm font-medium text-gray-900 dark:text-white mb-2">
-                            Uzmanlık Alanı
+                        <label for="office_address" class="block text-sm font-medium text-gray-900 dark:text-white mb-2">
+                            Ofis Adresi
                         </label>
-                        <select style="color-scheme: light dark;" name="uzmanlik_alani" id="uzmanlik_alani"
+                        <textarea name="office_address" id="office_address" rows="3"
+                            class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white"
+                            placeholder="Ofis adresi...">{{ old('office_address') }}</textarea>
+                    </div>
+
+                    {{-- Deneyim Yılı --}}
+                    <div>
+                        <label for="deneyim_yili" class="block text-sm font-medium text-gray-900 dark:text-white mb-2">
+                            Deneyim Yılı
+                        </label>
+                        <input type="number" name="deneyim_yili" id="deneyim_yili" value="{{ old('deneyim_yili', 0) }}" min="0" max="50"
+                            class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white"
+                            placeholder="0">
+                    </div>
+
+                    {{-- Ünvan --}}
+                    <div>
+                        <label for="title" class="block text-sm font-medium text-gray-900 dark:text-white mb-2">
+                            Ünvan
+                        </label>
+                        <input type="text" name="title" id="title" value="{{ old('title', 'Danışman') }}"
+                            class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white"
+                            placeholder="Emlak Danışmanı">
+                    </div>
+
+                    {{-- Pozisyon --}}
+                    <div>
+                        <label for="position" class="block text-sm font-medium text-gray-900 dark:text-white mb-2">
+                            Pozisyon
+                        </label>
+                        <select style="color-scheme: light dark;" name="position" id="position"
                             class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white transition-all duration-200">
                             <option value="">Seçiniz...</option>
-                            <option value="Konut" {{ old('uzmanlik_alani') == 'Konut' ? 'selected' : '' }}>Konut</option>
-                            <option value="Arsa" {{ old('uzmanlik_alani') == 'Arsa' ? 'selected' : '' }}>Arsa</option>
-                            <option value="İşyeri" {{ old('uzmanlik_alani') == 'İşyeri' ? 'selected' : '' }}>İşyeri</option>
-                            <option value="Yazlık" {{ old('uzmanlik_alani') == 'Yazlık' ? 'selected' : '' }}>Yazlık</option>
-                            <option value="Turistik Tesis" {{ old('uzmanlik_alani') == 'Turistik Tesis' ? 'selected' : '' }}>Turistik Tesis</option>
-                            <option value="Genel" {{ old('uzmanlik_alani') == 'Genel' ? 'selected' : '' }}>Genel</option>
+                            @foreach(config('danisman.positions', []) as $key => $label)
+                                <option value="{{ $key }}" {{ old('position') == $key ? 'selected' : '' }}>{{ $label }}</option>
+                            @endforeach
                         </select>
-                    </div>
-
-                    {{-- Adres --}}
-                    <div class="md:col-span-2">
-                        <label for="adres" class="block text-sm font-medium text-gray-900 dark:text-white mb-2">
-                            Adres
-                        </label>
-                        <textarea name="adres" id="adres" rows="3"
-                            class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white"
-                            placeholder="Ofis adresi...">{{ old('adres') }}</textarea>
                     </div>
                 </div>
             </div>
@@ -170,20 +235,54 @@
                         </label>
                         <select style="color-scheme: light dark;" name="status" id="status" required
                             class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white transition-all duration-200">
-                            <option value="1" {{ old('status', 1) == 1 ? 'selected' : '' }}>Aktif</option>
-                            <option value="0" {{ old('status') == 0 ? 'selected' : '' }}>Pasif</option>
+                            @foreach(config('danisman.status_options', []) as $key => $label)
+                                <option value="{{ $key }}" {{ old('status', 'aktif') == $key ? 'selected' : '' }}>{{ $label }}</option>
+                            @endforeach
                         </select>
                     </div>
                 </div>
             </div>
+
+            {{-- JavaScript: Ad ve Soyad'ı birleştir --}}
+            @push('scripts')
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const adInput = document.getElementById('ad');
+                    const soyadInput = document.getElementById('soyad');
+                    const nameInput = document.getElementById('name');
+
+                    function updateName() {
+                        const ad = adInput.value.trim();
+                        const soyad = soyadInput.value.trim();
+                        nameInput.value = (ad + ' ' + soyad).trim();
+                    }
+
+                    if (adInput && soyadInput && nameInput) {
+                        adInput.addEventListener('input', updateName);
+                        soyadInput.addEventListener('input', updateName);
+                        // İlk yüklemede de güncelle
+                        updateName();
+                    }
+                });
+            </script>
+            @endpush
 
             {{-- Form Aksiyonları --}}
             <div class="flex items-center justify-end space-x-4 bg-gray-50 dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 p-6">
                 <a href="{{ route('admin.danisman.index') }}" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 bg-white text-gray-700 rounded-lg hover:bg-gray-50 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-gray-500 transition-all duration-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700 touch-target-optimized touch-target-optimized">
                     İptal
                 </a>
-                <button type="submit" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg touch-target-optimized touch-target-optimized">
-                    💾 Danışman Oluştur
+                <button type="submit"
+                        id="danisman-submit-btn"
+                        class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 touch-target-optimized touch-target-optimized">
+                    <svg id="danisman-submit-icon" class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                    <span id="danisman-submit-text">💾 Danışman Oluştur</span>
+                    <svg id="danisman-submit-spinner" class="hidden w-5 h-5 mr-2 animate-spin" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
                 </button>
             </div>
         </form>
@@ -195,16 +294,15 @@
             document.querySelector('form').addEventListener('submit', function(e) {
                 const password = document.getElementById('password').value;
                 const passwordConfirm = document.getElementById('password_confirmation').value;
-                
+
                 if (password !== passwordConfirm) {
                     e.preventDefault();
                     alert('Şifreler eşleşmiyor!');
                     return false;
                 }
-                
+
                 return true;
             });
         </script>
     @endpush
 @endsection
-

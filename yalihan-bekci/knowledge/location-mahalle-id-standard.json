@@ -99,9 +99,7 @@
       "resources/views/admin/ilanlar/components/location-map.blade.php",
       "resources/views/admin/kisiler/edit.blade.php (mahalle YOK - by design)"
     ],
-    "javascript_modules": [
-      "resources/js/admin/ilan-create/location.js"
-    ],
+    "javascript_modules": ["resources/js/admin/ilan-create/location.js"],
     "migrations": [
       "database/migrations/2025_10_10_073304_create_ilanlar_table.php",
       "database/migrations/2025_10_16_220234_create_sites_table.php",
@@ -118,4 +116,3 @@
   "verification_date": "2025-10-31",
   "verified_by": "Context7 AI Assistant"
 }
-

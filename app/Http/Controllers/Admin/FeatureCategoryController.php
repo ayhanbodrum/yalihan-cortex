@@ -13,7 +13,9 @@ class FeatureCategoryController extends AdminController
      */
     public function index(Request $request)
     {
-        $categories = FeatureCategory::with('features')
+        // ✅ N+1 FIX: Eager loading with select optimization
+        $categories = FeatureCategory::select(['id', 'name', 'slug', 'description', 'icon', 'display_order', 'status', 'created_at', 'updated_at'])
+            ->with(['features:id,name,feature_category_id,status'])
             ->orderBy('display_order')
             ->paginate(15);
 
@@ -21,7 +23,8 @@ class FeatureCategoryController extends AdminController
             return response()->json($categories);
         }
 
-        return view('admin.feature-categories.index', compact('categories'));
+        // ✅ Context7: View adı düzeltildi (admin.feature-categories → admin.ozellikler.kategoriler)
+        return view('admin.ozellikler.kategoriler.index', compact('categories'));
     }
 
     /**
@@ -29,7 +32,8 @@ class FeatureCategoryController extends AdminController
      */
     public function create()
     {
-        return view('admin.feature-categories.create');
+        // ✅ Context7: View adı düzeltildi (admin.feature-categories → admin.ozellikler.kategoriler)
+        return view('admin.ozellikler.kategoriler.create');
     }
 
     /**
@@ -42,8 +46,8 @@ class FeatureCategoryController extends AdminController
             'slug' => 'nullable|string|max:255|unique:feature_categories,slug',
             'description' => 'nullable|string',
             'icon' => 'nullable|string|max:100',
-            'order' => 'nullable|integer|min:0',
-            'status' => 'required|in:active,inactive',
+            'display_order' => 'nullable|integer|min:0', // ✅ Context7: order → display_order
+            'status' => 'required|boolean', // ✅ Context7: boolean status (active/inactive değil!)
             'applies_to' => 'nullable|string',
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string|max:500',
@@ -73,7 +77,7 @@ class FeatureCategoryController extends AdminController
         }
 
         return redirect()
-            ->route('admin.feature-categories.index')
+            ->route('admin.ozellikler.kategoriler.index')
             ->with('success', 'Feature category created successfully');
     }
 
@@ -88,7 +92,8 @@ class FeatureCategoryController extends AdminController
             return response()->json($featureCategory);
         }
 
-        return view('admin.feature-categories.show', compact('featureCategory'));
+        // ✅ Context7: View adı düzeltildi (admin.feature-categories → admin.ozellikler.kategoriler)
+        return view('admin.ozellikler.kategoriler.show', compact('featureCategory'));
     }
 
     /**
@@ -96,7 +101,8 @@ class FeatureCategoryController extends AdminController
      */
     public function edit(FeatureCategory $featureCategory)
     {
-        return view('admin.feature-categories.edit', compact('featureCategory'));
+        // ✅ Context7: View adı düzeltildi (admin.feature-categories → admin.ozellikler.kategoriler)
+        return view('admin.ozellikler.kategoriler.edit', compact('featureCategory'));
     }
 
     /**
@@ -109,8 +115,8 @@ class FeatureCategoryController extends AdminController
             'slug' => 'nullable|string|max:255|unique:feature_categories,slug,' . $featureCategory->id,
             'description' => 'nullable|string',
             'icon' => 'nullable|string|max:100',
-            'order' => 'nullable|integer|min:0',
-            'status' => 'required|in:active,inactive',
+            'display_order' => 'nullable|integer|min:0', // ✅ Context7: order → display_order
+            'status' => 'required|boolean', // ✅ Context7: boolean status (active/inactive değil!)
             'applies_to' => 'nullable|string',
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string|max:500',
@@ -135,7 +141,7 @@ class FeatureCategoryController extends AdminController
         }
 
         return redirect()
-            ->route('admin.feature-categories.index')
+            ->route('admin.ozellikler.kategoriler.index')
             ->with('success', 'Feature category updated successfully');
     }
 
@@ -144,8 +150,11 @@ class FeatureCategoryController extends AdminController
      */
     public function destroy(FeatureCategory $featureCategory)
     {
+        // ✅ PERFORMANCE FIX: N+1 query önlendi - withCount() kullan
+        $featureCategory->loadCount('features');
+
         // Check if category has features
-        if ($featureCategory->features()->count() > 0) {
+        if ($featureCategory->features_count > 0) {
             if (request()->expectsJson()) {
                 return response()->json([
                     'success' => false,
@@ -154,7 +163,7 @@ class FeatureCategoryController extends AdminController
             }
 
             return redirect()
-                ->route('admin.feature-categories.index')
+                ->route('admin.ozellikler.kategoriler.index')
                 ->with('error', 'Cannot delete category with existing features');
         }
 
@@ -168,7 +177,7 @@ class FeatureCategoryController extends AdminController
         }
 
         return redirect()
-            ->route('admin.feature-categories.index')
+            ->route('admin.ozellikler.kategoriler.index')
             ->with('success', 'Feature category deleted successfully');
     }
 }

@@ -5,7 +5,7 @@
 @section('content')
 <div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
+
         {{-- Header --}}
         <div class="flex items-center justify-between mb-8">
             <div>
@@ -16,8 +16,8 @@
                     Yazlık kiralama rezervasyonlarını yönetin
                 </p>
             </div>
-            
-            <a href="{{ route('admin.yazlik-kiralama.index') }}" 
+
+            <a href="{{ route('admin.yazlik-kiralama.index') }}"
                class="inline-flex items-center gap-2 px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-all">
                 ← Geri Dön
             </a>
@@ -25,12 +25,12 @@
 
         {{-- Filters --}}
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-6"
-             x-data="{ 
+             x-data="{
                  showFilters: false,
                  status: '{{ request('status') }}',
                  dateRange: '{{ request('date_range') }}'
              }">
-            
+
             {{-- Filter Toggle --}}
             <div class="flex items-center justify-between mb-4">
                 <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
@@ -43,20 +43,20 @@
             </div>
 
             {{-- Filter Form --}}
-            <form method="GET" 
+            <form method="GET"
                   action="{{ route('admin.yazlik-kiralama.bookings', $id ?? null) }}"
                   x-show="showFilters"
                   x-transition:enter="transition ease-out duration-200"
                   x-transition:enter-start="opacity-0 transform scale-95"
                   x-transition:enter-end="opacity-100 transform scale-100"
                   class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                
+
                 {{-- Status Filter --}}
                 <div>
                     <label for="status" class="block text-sm font-bold text-gray-900 dark:text-white mb-2">
                         Durum
                     </label>
-                    <select name="status" 
+                    <select name="status"
                             id="status"
                             x-model="status"
                             class="w-full px-4 py-2 bg-white dark:bg-gray-900 border-2 border-gray-300 dark:border-gray-600 rounded-lg text-black dark:text-white font-semibold focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors">
@@ -73,8 +73,8 @@
                     <label for="date_range" class="block text-sm font-bold text-gray-900 dark:text-white mb-2">
                         Tarih Aralığı
                     </label>
-                    <input type="text" 
-                           name="date_range" 
+                    <input type="text"
+                           name="date_range"
                            id="date_range"
                            x-model="dateRange"
                            placeholder="2025-01-01 - 2025-12-31"
@@ -93,7 +93,7 @@
 
         {{-- Bookings List --}}
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
-            
+
             @if($bookings->isEmpty())
                 {{-- Empty State --}}
                 <div class="text-center py-16">
@@ -137,7 +137,7 @@
                         <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
                             @foreach($bookings as $booking)
                                 <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
-                                    x-data="{ 
+                                    x-data="{
                                         bookingId: {{ $booking->id }},
                                         status: '{{ $booking->status }}',
                                         updating: false
@@ -220,4 +220,3 @@
     </div>
 </div>
 @endsection
-

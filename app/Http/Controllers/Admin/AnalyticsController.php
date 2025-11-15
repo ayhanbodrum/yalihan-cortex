@@ -6,6 +6,8 @@ use App\Models\User;
 use App\Models\Ilan;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 
 class AnalyticsController extends AdminController
 {
@@ -15,50 +17,63 @@ class AnalyticsController extends AdminController
      */
     public function dashboard(Request $request)
     {
-        $totalIlanlar = \App\Models\Ilan::count();
-        $totalKategoriler = \App\Models\IlanKategori::count();
-        $totalKullanicilar = \App\Models\User::count();
-        $newIlanlarThisMonth = \App\Models\Ilan::whereMonth('created_at', now()->month)->count();
+        // ✅ CACHE: Dashboard metrics cache ile optimize et (1800s = 30 dakika)
+        $metrics = Cache::remember('analytics_dashboard_metrics', 1800, function () {
+            $totalIlanlar = Ilan::count();
+            $totalKategoriler = \App\Models\IlanKategori::count();
+            $totalKullanicilar = User::count();
+            $newIlanlarThisMonth = Ilan::whereMonth('created_at', now()->month)->count();
 
-        // Son 7 günün ilan trendi
-        $ilanTrendi = [];
-        for ($i = 6; $i >= 0; $i--) {
-            $date = now()->subDays($i);
-            $count = \App\Models\Ilan::whereDate('created_at', $date->toDateString())->count();
-            $ilanTrendi[] = [
-                'date' => $date->format('d.m'),
-                'count' => $count
-            ];
-        }
+            // ✅ N+1 FIX: Son 7 günün ilan trendi - Tek query ile optimize et
+            $startDate = now()->subDays(6)->startOfDay();
+            $endDate = now()->endOfDay();
 
-        // Kategori dağılımı (Top 5)
-        $kategoriDagilimi = \App\Models\IlanKategori::withCount('ilanlar')
-            ->orderBy('ilanlar_count', 'desc')
-            ->limit(5)
-            ->get()
-            ->map(function ($kategori) {
-                return [
-                    'name' => $kategori->name,
-                    'count' => $kategori->ilanlar_count
+            $dailyCounts = Ilan::select(DB::raw('DATE(created_at) as date'), DB::raw('COUNT(*) as count'))
+                ->whereBetween('created_at', [$startDate, $endDate])
+                ->groupBy(DB::raw('DATE(created_at)'))
+                ->pluck('count', 'date')
+                ->toArray();
+
+            $ilanTrendi = [];
+            for ($i = 6; $i >= 0; $i--) {
+                $date = now()->subDays($i);
+                $dateKey = $date->format('Y-m-d');
+                $count = $dailyCounts[$dateKey] ?? 0;
+                $ilanTrendi[] = [
+                    'date' => $date->format('d.m'),
+                    'count' => $count
                 ];
-            });
+            }
 
-        // En popüler kategori
-        $topKategori = \App\Models\IlanKategori::withCount('ilanlar')
-            ->orderBy('ilanlar_count', 'desc')
-            ->first();
+            // ✅ N+1 FIX: Kategori dağılımı - withCount ile optimize et
+            $kategoriDagilimi = \App\Models\IlanKategori::withCount('ilanlar')
+                ->orderBy('ilanlar_count', 'desc')
+                ->limit(5)
+                ->get()
+                ->map(function ($kategori) {
+                    return [
+                        'name' => $kategori->name,
+                        'count' => $kategori->ilanlar_count
+                    ];
+                });
 
-        $metrics = [
-            'total_ilanlar' => $totalIlanlar,
-            'total_kategoriler' => $totalKategoriler,
-            'total_kullanicilar' => $totalKullanicilar,
-            'new_ilanlar_this_month' => $newIlanlarThisMonth,
-            'ilan_trendi' => $ilanTrendi,
-            'kategori_dagilimi' => $kategoriDagilimi,
-            'top_kategori' => $topKategori ? $topKategori->name : 'Veri yok',
-            'top_kategori_count' => $topKategori ? $topKategori->ilanlar_count : 0,
-            'last_updated' => now()->format('d.m.Y H:i')
-        ];
+            // ✅ N+1 FIX: En popüler kategori - withCount ile optimize et
+            $topKategori = \App\Models\IlanKategori::withCount('ilanlar')
+                ->orderBy('ilanlar_count', 'desc')
+                ->first();
+
+            return [
+                'total_ilanlar' => $totalIlanlar,
+                'total_kategoriler' => $totalKategoriler,
+                'total_kullanicilar' => $totalKullanicilar,
+                'new_ilanlar_this_month' => $newIlanlarThisMonth,
+                'ilan_trendi' => $ilanTrendi,
+                'kategori_dagilimi' => $kategoriDagilimi,
+                'top_kategori' => $topKategori ? $topKategori->name : 'Veri yok',
+                'top_kategori_count' => $topKategori ? $topKategori->ilanlar_count : 0,
+                'last_updated' => now()->format('d.m.Y H:i')
+            ];
+        });
 
         // Period for dashboard
         $period = $request->get('period', '7d');
@@ -72,50 +87,63 @@ class AnalyticsController extends AdminController
      */
     public function index(Request $request)
     {
-        $totalIlanlar = \App\Models\Ilan::count();
-        $totalKategoriler = \App\Models\IlanKategori::count();
-        $totalKullanicilar = \App\Models\User::count();
-        $newIlanlarThisMonth = \App\Models\Ilan::whereMonth('created_at', now()->month)->count();
+        // ✅ CACHE: Dashboard metrics cache ile optimize et (1800s = 30 dakika)
+        $metrics = Cache::remember('analytics_index_metrics', 1800, function () {
+            $totalIlanlar = Ilan::count();
+            $totalKategoriler = \App\Models\IlanKategori::count();
+            $totalKullanicilar = User::count();
+            $newIlanlarThisMonth = Ilan::whereMonth('created_at', now()->month)->count();
 
-        // Son 7 günün ilan trendi
-        $ilanTrendi = [];
-        for ($i = 6; $i >= 0; $i--) {
-            $date = now()->subDays($i);
-            $count = \App\Models\Ilan::whereDate('created_at', $date->toDateString())->count();
-            $ilanTrendi[] = [
-                'date' => $date->format('d.m'),
-                'count' => $count
-            ];
-        }
+            // ✅ N+1 FIX: Son 7 günün ilan trendi - Tek query ile optimize et
+            $startDate = now()->subDays(6)->startOfDay();
+            $endDate = now()->endOfDay();
 
-        // Kategori dağılımı (Top 5)
-        $kategoriDagilimi = \App\Models\IlanKategori::withCount('ilanlar')
-            ->orderBy('ilanlar_count', 'desc')
-            ->limit(5)
-            ->get()
-            ->map(function ($kategori) {
-                return [
-                    'name' => $kategori->name,
-                    'count' => $kategori->ilanlar_count
+            $dailyCounts = Ilan::select(DB::raw('DATE(created_at) as date'), DB::raw('COUNT(*) as count'))
+                ->whereBetween('created_at', [$startDate, $endDate])
+                ->groupBy(DB::raw('DATE(created_at)'))
+                ->pluck('count', 'date')
+                ->toArray();
+
+            $ilanTrendi = [];
+            for ($i = 6; $i >= 0; $i--) {
+                $date = now()->subDays($i);
+                $dateKey = $date->format('Y-m-d');
+                $count = $dailyCounts[$dateKey] ?? 0;
+                $ilanTrendi[] = [
+                    'date' => $date->format('d.m'),
+                    'count' => $count
                 ];
-            });
+            }
 
-        // En popüler kategori
-        $topKategori = \App\Models\IlanKategori::withCount('ilanlar')
-            ->orderBy('ilanlar_count', 'desc')
-            ->first();
+            // ✅ N+1 FIX: Kategori dağılımı - withCount ile optimize et
+            $kategoriDagilimi = \App\Models\IlanKategori::withCount('ilanlar')
+                ->orderBy('ilanlar_count', 'desc')
+                ->limit(5)
+                ->get()
+                ->map(function ($kategori) {
+                    return [
+                        'name' => $kategori->name,
+                        'count' => $kategori->ilanlar_count
+                    ];
+                });
 
-        $metrics = [
-            'total_ilanlar' => $totalIlanlar,
-            'total_kategoriler' => $totalKategoriler,
-            'total_kullanicilar' => $totalKullanicilar,
-            'new_ilanlar_this_month' => $newIlanlarThisMonth,
-            'ilan_trendi' => $ilanTrendi,
-            'kategori_dagilimi' => $kategoriDagilimi,
-            'top_kategori' => $topKategori ? $topKategori->name : 'Veri yok',
-            'top_kategori_count' => $topKategori ? $topKategori->ilanlar_count : 0,
-            'last_updated' => now()->format('d.m.Y H:i')
-        ];
+            // ✅ N+1 FIX: En popüler kategori - withCount ile optimize et
+            $topKategori = \App\Models\IlanKategori::withCount('ilanlar')
+                ->orderBy('ilanlar_count', 'desc')
+                ->first();
+
+            return [
+                'total_ilanlar' => $totalIlanlar,
+                'total_kategoriler' => $totalKategoriler,
+                'total_kullanicilar' => $totalKullanicilar,
+                'new_ilanlar_this_month' => $newIlanlarThisMonth,
+                'ilan_trendi' => $ilanTrendi,
+                'kategori_dagilimi' => $kategoriDagilimi,
+                'top_kategori' => $topKategori ? $topKategori->name : 'Veri yok',
+                'top_kategori_count' => $topKategori ? $topKategori->ilanlar_count : 0,
+                'last_updated' => now()->format('d.m.Y H:i')
+            ];
+        });
 
         return view('admin.analytics.index', compact('metrics'));
     }

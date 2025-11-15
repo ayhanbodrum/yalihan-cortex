@@ -10,10 +10,10 @@
 
 ### **Problem:**
 
--   AI Settings sayfasında **çift katman** (duplicate) görünüm
--   AnythingLLM provider kartı hem sabit configuration hem de provider seçim kartlarında mevcuttu
--   Kullanıcı deneyimi karışıklığı
--   Kod kalitesi düşüşü
+- AI Settings sayfasında **çift katman** (duplicate) görünüm
+- AnythingLLM provider kartı hem sabit configuration hem de provider seçim kartlarında mevcuttu
+- Kullanıcı deneyimi karışıklığı
+- Kod kalitesi düşüşü
 
 ### **Root Cause Analizi:**
 
@@ -35,10 +35,10 @@
 
 ### **Sonuç:**
 
--   ✅ %100 duplicate-free AI Settings sayfası
--   ✅ 2 saat development time tasarrufu
--   ✅ İyileştirilmiş kod kalitesi
--   ✅ Daha iyi kullanıcı deneyimi
+- ✅ %100 duplicate-free AI Settings sayfası
+- ✅ 2 saat development time tasarrufu
+- ✅ İyileştirilmiş kod kalitesi
+- ✅ Daha iyi kullanıcı deneyimi
 
 ---
 
@@ -77,21 +77,21 @@ Confidence: 0.85
 
 ### **Template Level:**
 
--   Template inheritance zorunluluğu
--   Component reusability enforcement
--   Unique ID validation
+- Template inheritance zorunluluğu
+- Component reusability enforcement
+- Unique ID validation
 
 ### **CSS Level:**
 
--   Class uniqueness enforcement
--   Consistent naming convention
--   Component scoping
+- Class uniqueness enforcement
+- Consistent naming convention
+- Component scoping
 
 ### **JavaScript Level:**
 
--   Function namespacing
--   Module system usage
--   Event handler deduplication
+- Function namespacing
+- Module system usage
+- Event handler deduplication
 
 ---
 
@@ -99,21 +99,21 @@ Confidence: 0.85
 
 ### **HTML Structure Similarity:**
 
--   **Algorithm:** Levenshtein distance for HTML structures
--   **Threshold:** 0.85
--   **Implementation:** DOM tree comparison
+- **Algorithm:** Levenshtein distance for HTML structures
+- **Threshold:** 0.85
+- **Implementation:** DOM tree comparison
 
 ### **CSS Class Analysis:**
 
--   **Algorithm:** Class frequency analysis
--   **Threshold:** > 1 usage for same element type
--   **Implementation:** CSS parser + usage tracker
+- **Algorithm:** Class frequency analysis
+- **Threshold:** > 1 usage for same element type
+- **Implementation:** CSS parser + usage tracker
 
 ### **Text Content Similarity:**
 
--   **Algorithm:** Cosine similarity for text blocks
--   **Threshold:** 0.9
--   **Implementation:** Text preprocessing + similarity calculation
+- **Algorithm:** Cosine similarity for text blocks
+- **Threshold:** 0.9
+- **Implementation:** Text preprocessing + similarity calculation
 
 ---
 
@@ -134,17 +134,17 @@ npm run check-js-duplicates
 
 ### **Continuous Monitoring:**
 
--   File watcher (chokidar)
--   Real-time duplicate detection
--   VS Code extension integration
--   Automated notification system
+- File watcher (chokidar)
+- Real-time duplicate detection
+- VS Code extension integration
+- Automated notification system
 
 ### **Periodic Audits:**
 
--   Weekly comprehensive scans
--   Duplicate percentage reports
--   Pattern analysis
--   Improvement suggestions
+- Weekly comprehensive scans
+- Duplicate percentage reports
+- Pattern analysis
+- Improvement suggestions
 
 ---
 
@@ -152,21 +152,21 @@ npm run check-js-duplicates
 
 ### **Prevention Effectiveness:**
 
--   **Target:** > 90% duplicate reduction
--   **Current:** AI Settings 100% duplicate-free
--   **Measurement:** Weekly duplicate scan results
+- **Target:** > 90% duplicate reduction
+- **Current:** AI Settings 100% duplicate-free
+- **Measurement:** Weekly duplicate scan results
 
 ### **Detection Accuracy:**
 
--   **Target:** < 5% false positive/negative rate
--   **Current:** AI Settings case 100% accurate
--   **Measurement:** Manual verification of detected duplicates
+- **Target:** < 5% false positive/negative rate
+- **Current:** AI Settings case 100% accurate
+- **Measurement:** Manual verification of detected duplicates
 
 ### **Development Impact:**
 
--   **Target:** No duplicate-related delays
--   **Current:** 2 hours saved on AI Settings
--   **Measurement:** Time spent on duplicate fixes
+- **Target:** No duplicate-related delays
+- **Current:** 2 hours saved on AI Settings
+- **Measurement:** Time spent on duplicate fixes
 
 ---
 
@@ -180,10 +180,10 @@ npm run check-js-duplicates
 
 ### **Validation Enhancements:**
 
--   Template duplicate detection
--   CSS class uniqueness enforcement
--   JavaScript function deduplication
--   Visual element similarity analysis
+- Template duplicate detection
+- CSS class uniqueness enforcement
+- JavaScript function deduplication
+- Visual element similarity analysis
 
 ---
 
@@ -199,10 +199,10 @@ npm run check-js-duplicates
 
 ### **Future Capabilities:**
 
--   AI-powered duplicate detection
--   Visual similarity analysis
--   Automated refactoring suggestions
--   Predictive duplicate prevention
+- AI-powered duplicate detection
+- Visual similarity analysis
+- Automated refactoring suggestions
+- Predictive duplicate prevention
 
 ---
 
@@ -220,21 +220,21 @@ npm run check-js-duplicates
 
 ### **Immediate (1-2 weeks):**
 
--   Basic duplicate detection implementation
--   Pre-commit hook setup
--   Context7 rule updates
+- Basic duplicate detection implementation
+- Pre-commit hook setup
+- Context7 rule updates
 
 ### **Short-term (1-3 months):**
 
--   AI-powered duplicate detection
--   Visual similarity analysis
--   Automated refactoring suggestions
+- AI-powered duplicate detection
+- Visual similarity analysis
+- Automated refactoring suggestions
 
 ### **Long-term (3-6 months):**
 
--   Predictive duplicate prevention
--   Full ecosystem integration
--   Self-improving system
+- Predictive duplicate prevention
+- Full ecosystem integration
+- Self-improving system
 
 ---
 

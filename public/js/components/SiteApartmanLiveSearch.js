@@ -5,7 +5,7 @@
 function siteApartmanLiveSearch() {
     return {
         // State
-        query: "",
+        query: '',
         results: [],
         selectedSite: null,
         loading: false,
@@ -19,12 +19,12 @@ function siteApartmanLiveSearch() {
 
         // Lifecycle
         init() {
-            this.$watch("query", (value) => {
+            this.$watch('query', (value) => {
                 this.handleQueryChange(value);
             });
 
             // Click outside to close results
-            document.addEventListener("click", (e) => {
+            document.addEventListener('click', (e) => {
                 if (!this.$el.contains(e.target)) {
                     this.showResults = false;
                 }
@@ -58,8 +58,8 @@ function siteApartmanLiveSearch() {
                     )}&limit=${this.maxResults}`,
                     {
                         headers: {
-                            Accept: "application/json",
-                            "X-Requested-With": "XMLHttpRequest",
+                            Accept: 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest',
                         },
                     }
                 );
@@ -70,12 +70,12 @@ function siteApartmanLiveSearch() {
                     this.results = data.data || [];
                     this.showResults = this.results.length > 0;
                 } else {
-                    console.error("Site search error:", data.message);
+                    console.error('Site search error:', data.message);
                     this.results = [];
                     this.showResults = false;
                 }
             } catch (error) {
-                console.error("Site search fetch error:", error);
+                console.error('Site search fetch error:', error);
                 this.results = [];
                 this.showResults = false;
             } finally {
@@ -89,7 +89,7 @@ function siteApartmanLiveSearch() {
             this.showResults = false;
 
             // Emit custom event for parent components
-            this.$dispatch("site-selected", { site: site });
+            this.$dispatch('site-selected', { site: site });
 
             // Update form fields if they exist
             this.updateFormFields(site);
@@ -97,9 +97,7 @@ function siteApartmanLiveSearch() {
 
         updateFormFields(site) {
             // Update site name field
-            const siteNameField = document.querySelector(
-                'input[name="site_adi"]'
-            );
+            const siteNameField = document.querySelector('input[name="site_adi"]');
             if (siteNameField) {
                 siteNameField.value = site.name;
             }
@@ -111,17 +109,13 @@ function siteApartmanLiveSearch() {
             }
 
             // Update address field if available
-            const addressField = document.querySelector(
-                'input[name="site_adresi"]'
-            );
+            const addressField = document.querySelector('input[name="site_adresi"]');
             if (addressField && site.adres) {
                 addressField.value = site.adres;
             }
 
             // Update apartment count field
-            const daireCountField = document.querySelector(
-                'input[name="toplam_daire_sayisi"]'
-            );
+            const daireCountField = document.querySelector('input[name="toplam_daire_sayisi"]');
             if (daireCountField && site.daire_sayisi) {
                 daireCountField.value = site.daire_sayisi;
             }
@@ -129,7 +123,7 @@ function siteApartmanLiveSearch() {
 
         clearSelection() {
             this.selectedSite = null;
-            this.query = "";
+            this.query = '';
             this.results = [];
             this.showResults = false;
 
@@ -137,22 +131,15 @@ function siteApartmanLiveSearch() {
             this.clearFormFields();
 
             // Emit clear event
-            this.$dispatch("site-cleared");
+            this.$dispatch('site-cleared');
         },
 
         clearFormFields() {
-            const fields = [
-                "site_adi",
-                "site_id",
-                "site_adresi",
-                "toplam_daire_sayisi",
-            ];
+            const fields = ['site_adi', 'site_id', 'site_adresi', 'toplam_daire_sayisi'];
             fields.forEach((fieldName) => {
-                const field = document.querySelector(
-                    `input[name="${fieldName}"]`
-                );
+                const field = document.querySelector(`input[name="${fieldName}"]`);
                 if (field) {
-                    field.value = "";
+                    field.value = '';
                 }
             });
         },
@@ -160,7 +147,7 @@ function siteApartmanLiveSearch() {
         highlightMatch(text, query) {
             if (!query || !text) return text;
 
-            const regex = new RegExp(`(${query})`, "gi");
+            const regex = new RegExp(`(${query})`, 'gi');
             return text.replace(
                 regex,
                 '<mark class="bg-yellow-200 text-yellow-900 px-1 rounded">$1</mark>'
@@ -182,37 +169,29 @@ function siteApartmanLiveSearch() {
         handleKeydown(event) {
             if (!this.showResults || this.results.length === 0) return;
 
-            const activeIndex = this.results.findIndex(
-                (result) => result.active
-            );
+            const activeIndex = this.results.findIndex((result) => result.active);
 
             switch (event.key) {
-                case "ArrowDown":
+                case 'ArrowDown':
                     event.preventDefault();
-                    this.setActiveResult(
-                        (activeIndex + 1) % this.results.length
-                    );
+                    this.setActiveResult((activeIndex + 1) % this.results.length);
                     break;
 
-                case "ArrowUp":
+                case 'ArrowUp':
                     event.preventDefault();
                     const newIndex = activeIndex - 1;
-                    this.setActiveResult(
-                        newIndex < 0 ? this.results.length - 1 : newIndex
-                    );
+                    this.setActiveResult(newIndex < 0 ? this.results.length - 1 : newIndex);
                     break;
 
-                case "Enter":
+                case 'Enter':
                     event.preventDefault();
-                    const activeResult = this.results.find(
-                        (result) => result.active
-                    );
+                    const activeResult = this.results.find((result) => result.active);
                     if (activeResult) {
                         this.selectSite(activeResult);
                     }
                     break;
 
-                case "Escape":
+                case 'Escape':
                     this.showResults = false;
                     break;
             }
@@ -238,18 +217,17 @@ function siteApartmanLiveSearch() {
         },
 
         getStatusClass() {
-            if (this.loading) return "border-blue-300";
-            if (this.selectedSite) return "border-green-300";
-            if (this.query && !this.hasResults()) return "border-red-300";
-            return "border-gray-300";
+            if (this.loading) return 'border-blue-300';
+            if (this.selectedSite) return 'border-green-300';
+            if (this.query && !this.hasResults()) return 'border-red-300';
+            return 'border-gray-300';
         },
 
         getStatusIcon() {
-            if (this.loading) return "fas fa-spinner fa-spin";
-            if (this.selectedSite) return "fas fa-check text-green-500";
-            if (this.query && !this.hasResults())
-                return "fas fa-exclamation-triangle text-red-500";
-            return "fas fa-building text-gray-400";
+            if (this.loading) return 'fas fa-spinner fa-spin';
+            if (this.selectedSite) return 'fas fa-check text-green-500';
+            if (this.query && !this.hasResults()) return 'fas fa-exclamation-triangle text-red-500';
+            return 'fas fa-building text-gray-400';
         },
     };
 }

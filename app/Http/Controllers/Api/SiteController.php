@@ -7,8 +7,9 @@ use App\Models\SiteApartman;
 use App\Models\Il;
 use App\Models\Ilce;
 use App\Models\Mahalle;
+use App\Services\Response\ResponseService;
+use App\Traits\ValidatesApiRequests;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
 
 /**
@@ -18,25 +19,22 @@ use Illuminate\Support\Facades\Log;
  */
 class SiteController extends Controller
 {
+    use ValidatesApiRequests;
     /**
      * Site/Apartman Live Search
      * GET /admin/api/sites/search
      */
     public function search(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        $validated = $this->validateRequestWithResponse($request, [
             'q' => 'required|string|min:2|max:100',
             'il_id' => 'nullable|exists:iller,id',
             'ilce_id' => 'nullable|exists:ilceler,id',
             'limit' => 'nullable|integer|min:1|max:50'
         ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Arama parametreleri geçersiz',
-                'errors' => $validator->errors()
-            ], 422);
+        if ($validated instanceof \Illuminate\Http\JsonResponse) {
+            return $validated;
         }
 
         try {
@@ -78,13 +76,11 @@ class SiteController extends Controller
                 ];
             });
 
-            return response()->json([
-                'success' => true,
+            return ResponseService::success([
                 'data' => $formattedSites,
                 'count' => $formattedSites->count(),
                 'query' => $query
-            ]);
-
+            ], 'Site araması başarıyla tamamlandı');
         } catch (\Exception $e) {
             Log::error('Site arama hatası', [
                 'error' => $e->getMessage(),
@@ -92,10 +88,7 @@ class SiteController extends Controller
                 'filters' => $request->only(['il_id', 'ilce_id'])
             ]);
 
-            return response()->json([
-                'success' => false,
-                'message' => 'Arama sırasında bir hata oluştu'
-            ], 500);
+            return ResponseService::serverError('Arama sırasında hata oluştu.', $e);
         }
     }
 
@@ -105,7 +98,7 @@ class SiteController extends Controller
      */
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        $validated = $this->validateRequestWithResponse($request, [
             'name' => 'required|string|max:255',
             'il_id' => 'required|exists:iller,id',
             'ilce_id' => 'required|exists:ilceler,id',
@@ -114,12 +107,8 @@ class SiteController extends Controller
             'adres' => 'nullable|string|max:500'
         ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Site oluşturma bilgileri eksik veya hatalı',
-                'errors' => $validator->errors()
-            ], 422);
+        if ($validated instanceof \Illuminate\Http\JsonResponse) {
+            return $validated;
         }
 
         try {
@@ -130,15 +119,13 @@ class SiteController extends Controller
                 ->first();
 
             if ($existingSite) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Bu isimde bir site/apartman zaten mevcut',
+                return ResponseService::error('Bu isimde bir site/apartman zaten mevcut', 409, [
                     'existing_site' => [
                         'id' => $existingSite->id,
                         'name' => $existingSite->name,
                         'display_text' => $this->buildDisplayText($existingSite)
                     ]
-                ], 409);
+                ], 'DUPLICATE_SITE');
             }
 
             $site = SiteApartman::create([
@@ -161,29 +148,21 @@ class SiteController extends Controller
                 'user_id' => auth()->id()
             ]);
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Site/apartman başarıyla oluşturuldu',
-                'data' => [
-                    'id' => $site->id,
-                    'name' => $site->name,
-                    'blok_adi' => $site->blok_adi,
-                    'adres' => $site->adres,
-                    'full_address' => $this->buildFullAddress($site),
-                    'display_text' => $this->buildDisplayText($site)
-                ]
-            ], 201);
-
+            return ResponseService::success([
+                'id' => $site->id,
+                'name' => $site->name,
+                'blok_adi' => $site->blok_adi,
+                'adres' => $site->adres,
+                'full_address' => $this->buildFullAddress($site),
+                'display_text' => $this->buildDisplayText($site)
+            ], 'Site/apartman başarıyla oluşturuldu', 201);
         } catch (\Exception $e) {
             Log::error('Site oluşturma hatası', [
                 'error' => $e->getMessage(),
                 'request_data' => $request->all()
             ]);
 
-            return response()->json([
-                'success' => false,
-                'message' => 'Site oluşturma sırasında bir hata oluştu'
-            ], 500);
+            return ResponseService::serverError('Site oluşturma sırasında hata oluştu.', $e);
         }
     }
 
@@ -197,8 +176,7 @@ class SiteController extends Controller
             $site = SiteApartman::with(['il:id,name', 'ilce:id,name', 'mahalle:id,name'])
                 ->findOrFail($id);
 
-            return response()->json([
-                'success' => true,
+            return ResponseService::success([
                 'data' => [
                     'id' => $site->id,
                     'name' => $site->name,
@@ -211,13 +189,9 @@ class SiteController extends Controller
                     'status' => $site->status,
                     'display_text' => $this->buildDisplayText($site)
                 ]
-            ]);
-
+            ], 'Site detayları başarıyla getirildi');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Site bulunamadı'
-            ], 404);
+            return ResponseService::notFound('Site bulunamadı');
         }
     }
 
@@ -261,8 +235,7 @@ class SiteController extends Controller
                 ];
             });
 
-            return response()->json([
-                'success' => true,
+            return ResponseService::success([
                 'data' => $formattedSites,
                 'pagination' => [
                     'current_page' => $sites->currentPage(),
@@ -270,18 +243,14 @@ class SiteController extends Controller
                     'per_page' => $sites->perPage(),
                     'total' => $sites->total()
                 ]
-            ]);
-
+            ], 'Site listesi başarıyla getirildi');
         } catch (\Exception $e) {
             Log::error('Site listeleme hatası', [
                 'error' => $e->getMessage(),
                 'filters' => $request->all()
             ]);
 
-            return response()->json([
-                'success' => false,
-                'message' => 'Site listesi alınırken hata oluştu'
-            ], 500);
+            return ResponseService::serverError('Site listesi alınırken hata oluştu.', $e);
         }
     }
 

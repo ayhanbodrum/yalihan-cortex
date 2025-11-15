@@ -39,26 +39,29 @@ export default [
             'no-var': 'error',
             'prefer-const': 'error',
             'prefer-arrow-callback': 'warn',
-            
+
             // Eşitlik
-            'eqeqeq': ['error', 'always'],
-            
+            eqeqeq: ['error', 'always'],
+
             // Best Practices
-            'no-unused-vars': ['error', { 
-                argsIgnorePattern: '^_',
-                varsIgnorePattern: '^_'
-            }],
+            'no-unused-vars': [
+                'error',
+                {
+                    argsIgnorePattern: '^_',
+                    varsIgnorePattern: '^_',
+                },
+            ],
             'no-undef': 'error',
             'no-redeclare': 'error',
-            
+
             // Kod Stili
-            'semi': ['error', 'always'],
-            'quotes': ['error', 'single', { avoidEscape: true }],
-            'indent': ['error', 4],
+            semi: ['error', 'always'],
+            quotes: ['error', 'single', { avoidEscape: true }],
+            indent: ['error', 4],
             'comma-dangle': ['error', 'always-multiline'],
             'no-trailing-spaces': 'error',
             'eol-last': ['error', 'always'],
-            
+
             // Modern JavaScript
             'no-prototype-builtins': 'off',
             'require-await': 'warn',
@@ -76,4 +79,3 @@ export default [
         ],
     },
 ];
-

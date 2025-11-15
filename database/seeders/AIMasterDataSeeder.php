@@ -27,19 +27,19 @@ class AIMasterDataSeeder extends Seeder
             ['key' => 'ai_default_variant_count', 'value' => '3', 'type' => 'integer', 'group' => 'ai', 'description' => 'Varsayılan varyant sayısı'],
             ['key' => 'ai_default_ab_test', 'value' => 'false', 'type' => 'boolean', 'group' => 'ai', 'description' => 'A/B test aktif mi'],
             ['key' => 'ai_default_languages', 'value' => 'tr,en', 'type' => 'string', 'group' => 'ai', 'description' => 'Desteklenen diller'],
-            
+
             // AI Performance Settings
             ['key' => 'ai_max_tokens', 'value' => '2000', 'type' => 'integer', 'group' => 'ai', 'description' => 'Maksimum token sayısı'],
             ['key' => 'ai_temperature', 'value' => '0.7', 'type' => 'string', 'group' => 'ai', 'description' => 'AI yaratıcılık seviyesi'],
             ['key' => 'ai_timeout', 'value' => '30', 'type' => 'integer', 'group' => 'ai', 'description' => 'AI istek timeout süresi'],
             ['key' => 'ai_retry_attempts', 'value' => '3', 'type' => 'integer', 'group' => 'ai', 'description' => 'AI istek yeniden deneme sayısı'],
-            
+
             // AI Feature Flags
             ['key' => 'ai_auto_suggestions', 'value' => 'true', 'type' => 'boolean', 'group' => 'ai', 'description' => 'Otomatik öneriler aktif mi'],
             ['key' => 'ai_content_generation', 'value' => 'true', 'type' => 'boolean', 'group' => 'ai', 'description' => 'İçerik üretimi aktif mi'],
             ['key' => 'ai_analysis_enabled', 'value' => 'true', 'type' => 'boolean', 'group' => 'ai', 'description' => 'AI analiz aktif mi'],
             ['key' => 'ai_training_enabled', 'value' => 'true', 'type' => 'boolean', 'group' => 'ai', 'description' => 'AI eğitim aktif mi'],
-            
+
             // AI Monitoring
             ['key' => 'ai_log_enabled', 'value' => 'true', 'type' => 'boolean', 'group' => 'ai', 'description' => 'AI log aktif mi'],
             ['key' => 'ai_analytics_enabled', 'value' => 'true', 'type' => 'boolean', 'group' => 'ai', 'description' => 'AI analitik aktif mi'],
@@ -61,19 +61,19 @@ class AIMasterDataSeeder extends Seeder
             ['key' => 'openai_api_key', 'value' => '', 'type' => 'string', 'group' => 'ai_providers', 'description' => 'OpenAI API Key'],
             ['key' => 'openai_model', 'value' => 'gpt-3.5-turbo', 'type' => 'string', 'group' => 'ai_providers', 'description' => 'OpenAI Model'],
             ['key' => 'openai_organization', 'value' => '', 'type' => 'string', 'group' => 'ai_providers', 'description' => 'OpenAI Organization ID'],
-            
+
             // Google Gemini Settings
             ['key' => 'google_api_key', 'value' => '', 'type' => 'string', 'group' => 'ai_providers', 'description' => 'Google Gemini API Key'],
             ['key' => 'google_model', 'value' => 'gemini-pro', 'type' => 'string', 'group' => 'ai_providers', 'description' => 'Google Gemini Model'],
-            
+
             // Claude Settings
             ['key' => 'claude_api_key', 'value' => '', 'type' => 'string', 'group' => 'ai_providers', 'description' => 'Claude API Key'],
             ['key' => 'claude_model', 'value' => 'claude-3-sonnet-20240229', 'type' => 'string', 'group' => 'ai_providers', 'description' => 'Claude Model'],
-            
+
             // DeepSeek Settings
             ['key' => 'deepseek_api_key', 'value' => '', 'type' => 'string', 'group' => 'ai_providers', 'description' => 'DeepSeek API Key'],
             ['key' => 'deepseek_model', 'value' => 'deepseek-chat', 'type' => 'string', 'group' => 'ai_providers', 'description' => 'DeepSeek Model'],
-            
+
             // Ollama Settings
             ['key' => 'ollama_url', 'value' => 'http://localhost:11434', 'type' => 'string', 'group' => 'ai_providers', 'description' => 'Ollama URL'],
             ['key' => 'ollama_model', 'value' => 'llama2', 'type' => 'string', 'group' => 'ai_providers', 'description' => 'Ollama Model'],
@@ -175,7 +175,7 @@ class AIMasterDataSeeder extends Seeder
                 'group' => 'ai_prompts',
                 'description' => 'SEO optimizasyonu için AI prompt'
             ],
-            
+
             // Market Analysis Prompts
             [
                 'key' => 'ai_prompt_market_trends',
@@ -191,7 +191,7 @@ class AIMasterDataSeeder extends Seeder
                 'group' => 'ai_prompts',
                 'description' => 'Lokasyon analizi için AI prompt'
             ],
-            
+
             // User Experience Prompts
             [
                 'key' => 'ai_prompt_user_behavior',

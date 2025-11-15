@@ -6,29 +6,35 @@ use App\Models\Feature;
 use App\Models\FeatureCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Cache;
 
 class OzellikController extends AdminController
 {
     public function index(Request $request)
     {
         // PHASE 2.2: Tab-based UI - Collect all data
-        
+
         // Tab 1: Tüm Özellikler
         // Context7: feature_category_id kullanılmalı (category_id yok)
-        $query = Feature::with('category')->orderBy('order')->orderBy('name');
+        $query = Feature::with('category')->orderBy('display_order')->orderBy('name');
         if ($request->has('category_id') && $request->category_id) {
             $query->where('feature_category_id', $request->category_id);
         }
-        if ($request->has('enabled') && $request->enabled !== '') {
-            $query->where('enabled', $request->enabled == '1' ? true : false);
+        // ✅ Context7 FIX: enabled → status
+        if ($request->has('status') && $request->status !== '') {
+            $query->where('status', $request->status == '1' ? true : false);
+        }
+        // Backward compatibility: accept 'enabled' but map to 'status'
+        if ($request->has('enabled') && $request->enabled !== '' && !$request->has('status')) {
+            $query->where('status', $request->enabled == '1' ? true : false);
         }
         $ozellikler = $query->paginate(20, ['*'], 'ozellikler_page');
 
         // Tab 2: Kategoriler
-        $kategoriQuery = FeatureCategory::withCount('features')->orderBy('order')->orderBy('name');
+        $kategoriQuery = FeatureCategory::withCount('features')->orderBy('display_order')->orderBy('name');
         if ($request->filled('kategori_search')) {
             $q = $request->get('kategori_search');
-            $kategoriQuery->where(function($sub) use ($q) {
+            $kategoriQuery->where(function ($sub) use ($q) {
                 $sub->where('name', 'like', "%{$q}%")
                     ->orWhere('slug', 'like', "%{$q}%");
             });
@@ -42,26 +48,30 @@ class OzellikController extends AdminController
             ->paginate(20, ['*'], 'kategorisiz_page');
 
         // İstatistikler
-        // Context7: Schema kontrolü ile enabled/status ve feature_category_id
-        $enabledColumn = Schema::hasColumn('features', 'status') ? 'status' : 'enabled';
+        // ✅ Context7 FIX: ONLY status column (enabled FORBIDDEN)
         $istatistikler = [
             'toplam' => Feature::count(),
-            'aktif' => Feature::where($enabledColumn, true)->count(),
-            'pasif' => Feature::where($enabledColumn, false)->count(),
+            'aktif' => Feature::where('status', true)->count(),
+            'pasif' => Feature::where('status', false)->count(),
             'kategorisiz' => Feature::whereNull('feature_category_id')->count(),
             'kategori_sayisi' => FeatureCategory::count(),
         ];
 
-        $kategoriler = FeatureCategory::orderBy('name')->get();
+        // ✅ CACHE: Kategoriler dropdown için cache ekle
+        $kategoriler = Cache::remember('feature_category_list', 3600, function () {
+            return FeatureCategory::select(['id', 'name', 'slug'])
+                ->orderBy('name')
+                ->get();
+        });
 
         // Active tab (default: ozellikler)
         $activeTab = $request->get('tab', 'ozellikler');
 
         return view('admin.ozellikler.index', compact(
-            'ozellikler', 
-            'kategoriListesi', 
-            'kategorisizOzellikler', 
-            'istatistikler', 
+            'ozellikler',
+            'kategoriListesi',
+            'kategorisizOzellikler',
+            'istatistikler',
             'kategoriler',
             'activeTab'
         ));
@@ -69,7 +79,12 @@ class OzellikController extends AdminController
 
     public function create()
     {
-        $kategoriler = FeatureCategory::orderBy('name')->get();
+        // ✅ CACHE: Kategoriler dropdown için cache ekle
+        $kategoriler = Cache::remember('feature_category_list', 3600, function () {
+            return FeatureCategory::select(['id', 'name', 'slug'])
+                ->orderBy('name')
+                ->get();
+        });
         return view('admin.ozellikler.create', compact('kategoriler'));
     }
 
@@ -77,20 +92,29 @@ class OzellikController extends AdminController
     {
         // ✅ POLYMORPHIC: Updated field names
         // Context7: feature_category_id kullanılmalı (category_id yok)
+        // ✅ Context7 FIX: enabled → status
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'feature_category_id' => 'nullable|exists:feature_categories,id',
             'field_type' => 'required|in:text,number,boolean,select,checkbox,radio,textarea',
-            'enabled' => 'required|boolean',
-            'order' => 'nullable|integer',
+            'status' => 'required|boolean', // Context7: enabled → status
+            'display_order' => 'nullable|integer', // Context7: order → display_order
         ]);
-        
+
         // Request'ten category_id gelirse feature_category_id'ye map et
         if ($request->has('category_id') && !$request->has('feature_category_id')) {
             $validated['feature_category_id'] = $request->category_id;
         }
 
+        // Backward compatibility: enabled → status mapping
+        if ($request->has('enabled') && !$request->has('status')) {
+            $validated['status'] = $request->boolean('enabled');
+        }
+
         Feature::create($validated);
+
+        // ✅ CACHE: Kategori listesi cache'ini temizle
+        Cache::forget('feature_category_list');
 
         return redirect()->route('admin.ozellikler.index')
             ->with('success', 'Özellik başarıyla oluşturuldu.');
@@ -99,7 +123,12 @@ class OzellikController extends AdminController
     public function edit($id)
     {
         $ozellik = Feature::findOrFail($id);
-        $kategoriler = FeatureCategory::orderBy('name')->get();
+        // ✅ CACHE: Kategoriler dropdown için cache ekle
+        $kategoriler = Cache::remember('feature_category_list', 3600, function () {
+            return FeatureCategory::select(['id', 'name', 'slug'])
+                ->orderBy('name')
+                ->get();
+        });
 
         return view('admin.ozellikler.edit', compact('ozellik', 'kategoriler'));
     }
@@ -108,17 +137,59 @@ class OzellikController extends AdminController
     {
         $ozellik = Feature::findOrFail($id);
 
-        // ✅ POLYMORPHIC: Updated field names
+        // ✅ Context7: Legacy alanları doğrulama öncesinde normalize et
+        if (!$request->filled('type') && $request->filled('field_type')) {
+            $request->merge(['type' => $request->input('field_type')]);
+        }
+
+        if (!$request->filled('feature_category_id') && $request->filled('category_id')) {
+            $request->merge(['feature_category_id' => $request->input('category_id')]);
+        }
+
+        // ✅ Context7 FIX: enabled → status, order → display_order
         // Context7: feature_category_id kullanılmalı (category_id yok)
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'feature_category_id' => 'nullable|exists:feature_categories,id',
-            'field_type' => 'required|in:text,number,boolean,select,checkbox,radio,textarea',
-            'enabled' => 'required|boolean',
-            'order' => 'nullable|integer',
+            'type' => 'required|in:text,number,boolean,select,checkbox,radio,textarea',
+            'status' => 'required|boolean', // Context7: enabled → status
+            'display_order' => 'nullable|integer', // ✅ Context7: order → display_order
+            'is_required' => 'nullable|boolean',
+            'description' => 'nullable|string|max:1000',
+            'unit' => 'nullable|string|max:50',
+            'options' => 'nullable|array',
+            'field_options' => 'nullable|array',
+            'field_type' => 'nullable|in:text,number,boolean,select,checkbox,radio,textarea',
         ]);
 
+        // Context7: display_order tek kaynak olarak kullanılır
+
+        // ✅ Context7: Backward compatibility - zorunlu → is_required mapping
+        if ($request->has('zorunlu') && !$request->has('is_required')) {
+            $validated['is_required'] = $request->boolean('zorunlu');
+        }
+
+        // ✅ Context7: Backward compatibility - aciklama → description mapping
+        if ($request->has('aciklama') && !$request->has('description')) {
+            $validated['description'] = $request->input('aciklama');
+        }
+
+        // ✅ Context7: field_options → options mapping (if needed)
+        if ($request->has('field_options')) {
+            $validated['options'] = $request->input('field_options');
+            unset($validated['field_options']);
+        }
+
+        // ✅ Context7: Legacy field_type → type (tek kaynak)
+        if (isset($validated['field_type']) && empty($validated['type'])) {
+            $validated['type'] = $validated['field_type'];
+        }
+        unset($validated['field_type']);
+
         $ozellik->update($validated);
+
+        // ✅ CACHE: Kategori listesi cache'ini temizle
+        Cache::forget('feature_category_list');
 
         return redirect()->route('admin.ozellikler.edit', $ozellik->id)
             ->with('success', $ozellik->name . ' başarıyla güncellendi! ✅');
@@ -150,14 +221,14 @@ class OzellikController extends AdminController
 
         switch ($action) {
             case 'activate':
-                // ✅ POLYMORPHIC: enabled field
-                Feature::whereIn('id', $ids)->update(['enabled' => true]);
+                // ✅ Context7: enabled → status
+                Feature::whereIn('id', $ids)->update(['status' => true]);
                 $message = "{$count} özellik başarıyla aktif edildi! ✅";
                 break;
 
             case 'deactivate':
-                // ✅ POLYMORPHIC: enabled field
-                Feature::whereIn('id', $ids)->update(['enabled' => false]);
+                // ✅ Context7: enabled → status
+                Feature::whereIn('id', $ids)->update(['status' => false]);
                 $message = "{$count} özellik başarıyla pasif edildi! ⏸️";
                 break;
 

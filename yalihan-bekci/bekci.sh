@@ -73,4 +73,3 @@ case "$1" in
     echo "  sistem   - Sistem yapısını göster"
     ;;
 esac
-

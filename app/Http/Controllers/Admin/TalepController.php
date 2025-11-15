@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Models\Ulke;
 use App\Models\Talep;
+use Illuminate\Support\Facades\Cache;
 
 class TalepController extends AdminController
 {
@@ -29,7 +30,7 @@ class TalepController extends AdminController
         ])
         ->latest()
         ->paginate(20);
-        
+
         // ✅ OPTIMIZED: İstatistikleri tek query'de hesapla
         $istatistikler = [
             'toplam' => \App\Models\Talep::count(),
@@ -40,16 +41,20 @@ class TalepController extends AdminController
         // Context7: Tüm benzersiz statusları al
         $statuslar = \App\Models\Talep::select('status')->distinct()->pluck('status');
 
-        // ✅ OPTIMIZED: Select optimization
-        $kategoriler = \App\Models\IlanKategori::whereNull('parent_id')
-            ->select(['id', 'name', 'slug'])
-            ->orderBy('name')
-            ->get();
+        // ✅ CACHE: Kategoriler dropdown için cache ekle
+        $kategoriler = Cache::remember('talep_kategori_list', 3600, function () {
+            return \App\Models\IlanKategori::whereNull('parent_id')
+                ->select(['id', 'name', 'slug'])
+                ->orderBy('name')
+                ->get();
+        });
 
-        // ✅ OPTIMIZED: Select optimization
-        $ulkeler = Ulke::select(['id', 'ulke_adi', 'ulke_kodu'])
-            ->orderBy('ulke_adi')
-            ->get();
+        // ✅ CACHE: Ülkeler dropdown için cache ekle
+        $ulkeler = Cache::remember('ulke_list', 7200, function () {
+            return Ulke::select(['id', 'ulke_adi', 'ulke_kodu'])
+                ->orderBy('ulke_adi')
+                ->get();
+        });
 
         // 🆕 USTA Auto-Fix: Talep Tipleri eklendi
         $talepTipleri = ['Satılık', 'Kiralık', 'Günlük Kiralık', 'Devren', 'Konut', 'Arsa', 'İşyeri'];
@@ -65,25 +70,36 @@ class TalepController extends AdminController
      */
     public function create()
     {
-        // Context7: Kategoriler (Ana kategoriler)
-        $kategoriler = \App\Models\IlanKategori::whereNull('parent_id')
-            ->where('status', 'Aktif')
-            ->orderBy('order')
-            ->get();
+        // ✅ CACHE: İller dropdown için cache ekle
+        $iller = Cache::remember('il_list', 7200, function () {
+            return \App\Models\Il::select(['id', 'il_adi'])
+                ->orderBy('il_adi')
+                ->get();
+        });
 
-        // Context7: İller
-        $iller = \App\Models\Il::orderBy('il_adi')->get();
+        // ✅ CACHE: Kategoriler dropdown için cache ekle
+        $kategoriler = Cache::remember('talep_kategori_list', 3600, function () {
+            return \App\Models\IlanKategori::whereNull('parent_id')
+                ->where('status', true)
+                ->select(['id', 'name', 'slug'])
+                ->orderBy('display_order')
+                ->get();
+        });
 
-        // Context7: Danışmanlar
+        // Context7: Danışmanlar (cache eklenebilir ama sık değişebilir)
         $danismanlar = \App\Models\User::whereHas('roles', function ($q) {
             $q->where('name', 'danisman');
-        })->get();
-        
+        })->select(['id', 'name', 'email'])->get();
+
         // ✅ Status options (needed by _form.blade.php)
         $statuslar = ['active', 'pending', 'cancelled', 'completed'];
-        
-        // ✅ Ülkeler (needed by _form.blade.php if used)
-        $ulkeler = Ulke::orderBy('ulke_adi')->get();
+
+        // ✅ CACHE: Ülkeler dropdown için cache ekle
+        $ulkeler = Cache::remember('ulke_list', 7200, function () {
+            return Ulke::select(['id', 'ulke_adi', 'ulke_kodu'])
+                ->orderBy('ulke_adi')
+                ->get();
+        });
 
         return $this->render('admin.talepler.create', compact('kategoriler', 'iller', 'danismanlar', 'statuslar', 'ulkeler'));
     }
@@ -169,6 +185,17 @@ class TalepController extends AdminController
      */
     public function show(Talep $talep)
     {
+        // ✅ N+1 FIX: Eager loading ekle
+        $talep->load([
+            'kisi:id,ad,soyad,telefon,email,status',
+            'danisman:id,name,email',
+            'kategori:id,name,slug',
+            'altKategori:id,name,slug',
+            'il:id,il_adi',
+            'ilce:id,ilce_adi',
+            'mahalle:id,mahalle_adi',
+        ]);
+
         return $this->render('admin.talepler.show', ['talep' => $talep]);
     }
 
@@ -181,22 +208,40 @@ class TalepController extends AdminController
      */
     public function edit(Talep $talep)
     {
-        // Context7: Kişiler
-        $kisiler = \App\Models\Kisi::orderBy('ad')->get();
-        
-        // Context7: Kategoriler (Ana kategoriler)
-        $kategoriler = \App\Models\IlanKategori::whereNull('parent_id')
-            ->where('status', 'Aktif')
-            ->orderBy('order')
+        // ✅ N+1 FIX: Eager loading ekle
+        $talep->load([
+            'kisi:id,ad,soyad,telefon,email',
+            'danisman:id,name,email',
+            'kategori:id,name',
+            'altKategori:id,name',
+            'il:id,il_adi',
+            'ilce:id,ilce_adi',
+            'mahalle:id,mahalle_adi',
+        ]);
+
+        // Context7: Kişiler (select optimization)
+        $kisiler = \App\Models\Kisi::select(['id', 'ad', 'soyad', 'telefon'])
+            ->orderBy('ad')
             ->get();
 
-        // Context7: İller
-        $iller = \App\Models\Il::orderBy('il_adi')->get();
+        // Context7: Kategoriler (Ana kategoriler) - select optimization
+        $kategoriler = \App\Models\IlanKategori::whereNull('parent_id')
+            ->where('status', true) // Context7: status kullanımı
+            ->select(['id', 'name', 'slug'])
+            ->orderBy('display_order')
+            ->get();
 
-        // Context7: Danışmanlar
+        // Context7: İller - select optimization
+        $iller = \App\Models\Il::select(['id', 'il_adi'])
+            ->orderBy('il_adi')
+            ->get();
+
+        // Context7: Danışmanlar - select optimization
         $danismanlar = \App\Models\User::whereHas('roles', function ($q) {
             $q->where('name', 'danisman');
-        })->get();
+        })
+        ->select(['id', 'name', 'email'])
+        ->get();
 
         // Context7: Emlak Tipleri
         $emlakTipleri = ['Daire', 'Villa', 'Arsa', 'İşyeri', 'Yazlık'];
@@ -207,8 +252,10 @@ class TalepController extends AdminController
         // Context7: Statuslar
         $statuslar = ['active', 'pending', 'closed', 'cancelled'];
 
-        // Context7: Ülkeler
-        $ulkeler = \App\Models\Ulke::orderBy('ulke_adi')->get();
+        // Context7: Ülkeler - select optimization
+        $ulkeler = \App\Models\Ulke::select(['id', 'ulke_adi', 'ulke_kodu'])
+            ->orderBy('ulke_adi')
+            ->get();
 
         return $this->render('admin.talepler.edit', compact('talep', 'kisiler', 'kategoriler', 'iller', 'danismanlar', 'emlakTipleri', 'talepTipleri', 'statuslar', 'ulkeler'));
     }
@@ -237,6 +284,9 @@ class TalepController extends AdminController
     public function destroy(Talep $talep)
     {
         try {
+            // ✅ N+1 FIX: Eager loading ekle (kisi bilgisi için)
+            $talep->load('kisi:id,ad,soyad');
+
             // Talep bilgilerini al
             $talepBilgi = $talep->kisi ? ($talep->kisi->ad . ' ' . $talep->kisi->soyad) : 'Talep #' . $talep->id;
             $talep->delete();

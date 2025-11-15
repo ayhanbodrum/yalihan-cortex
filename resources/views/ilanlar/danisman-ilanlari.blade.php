@@ -16,29 +16,65 @@
         </nav>
 
         <!-- Danışman Bilgileri -->
-        <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
-            <div class="flex items-center gap-4">
-                <div class="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center">
-                    @if ($danisman->avatar)
-                        <img src="{{ asset('storage/' . $danisman->avatar) }}" alt="{{ $danisman->name }}"
-                            class="w-16 h-16 rounded-full object-cover">
-                    @else
-                        <i class="fas fa-user text-primary-600 text-2xl"></i>
-                    @endif
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 p-6 mb-8">
+            <div class="flex flex-col md:flex-row items-start md:items-center gap-4">
+                <div class="flex items-center gap-4 flex-1">
+                    <div class="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center flex-shrink-0">
+                        @php
+                            $avatarUrl = $danisman->profile_photo_path
+                                ? asset('storage/' . $danisman->profile_photo_path)
+                                : ($danisman->avatar ? asset('storage/' . $danisman->avatar) : null);
+                        @endphp
+                        @if ($avatarUrl)
+                            <img src="{{ $avatarUrl }}" alt="{{ $danisman->name }}"
+                                class="w-16 h-16 rounded-full object-cover border-2 border-white">
+                        @else
+                            <i class="fas fa-user text-white text-2xl"></i>
+                        @endif
+                    </div>
+                    <div class="flex-1">
+                        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ $danisman->name }}</h1>
+                        <p class="text-gray-600 dark:text-gray-400">{{ $danisman->title ?? 'Emlak Danışmanı' }}</p>
+                        @if ($danisman->phone_number ?? $danisman->telefon)
+                            <p class="text-gray-600 dark:text-gray-400 mt-1">
+                                <i class="fas fa-phone mr-1"></i>
+                                <a href="tel:{{ $danisman->phone_number ?? $danisman->telefon }}" class="text-blue-600 dark:text-blue-400 hover:underline">
+                                    {{ $danisman->phone_number ?? $danisman->telefon }}
+                                </a>
+                            </p>
+                        @endif
+                        @if ($danisman->email)
+                            <p class="text-gray-600 dark:text-gray-400 mt-1">
+                                <i class="fas fa-envelope mr-1"></i>
+                                <a href="mailto:{{ $danisman->email }}" class="text-blue-600 dark:text-blue-400 hover:underline">
+                                    {{ $danisman->email }}
+                                </a>
+                            </p>
+                        @endif
+
+                        {{-- Social Media Links --}}
+                        @php
+                            $hasSocialMedia = !empty($danisman->instagram_profile) ||
+                                             !empty($danisman->linkedin_profile) ||
+                                             !empty($danisman->facebook_profile) ||
+                                             !empty($danisman->twitter_profile) ||
+                                             !empty($danisman->youtube_channel) ||
+                                             !empty($danisman->tiktok_profile) ||
+                                             !empty($danisman->whatsapp_number) ||
+                                             !empty($danisman->telegram_username) ||
+                                             !empty($danisman->website);
+                        @endphp
+                        @if($hasSocialMedia)
+                            <div class="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
+                                <p class="text-xs font-medium text-gray-600 dark:text-gray-400 mb-2">Sosyal Medya</p>
+                                <x-frontend.danisman-social-links :danisman="$danisman" size="sm" />
+                            </div>
+                        @endif
+                    </div>
                 </div>
-                <div>
-                    <h1 class="text-2xl font-bold text-gray-900">{{ $danisman->name }}</h1>
-                    <p class="text-gray-600">Emlak Danışmanı</p>
-                    @if ($danisman->telefon)
-                        <p class="text-gray-600"><i class="fas fa-phone mr-1"></i> {{ $danisman->telefon }}</p>
-                    @endif
-                    @if ($danisman->email)
-                        <p class="text-gray-600"><i class="fas fa-envelope mr-1"></i> {{ $danisman->email }}</p>
-                    @endif
-                </div>
-                <div class="ml-auto text-right">
-                    <div class="text-2xl font-bold text-primary-600">{{ $ilanlar->total() }}</div>
-                    <div class="text-sm text-gray-500">Aktif İlan</div>
+                <div class="md:ml-auto text-center md:text-right">
+                    <div class="text-2xl font-bold text-blue-600 dark:text-blue-400">{{ $ilanlar->total() }}</div>
+                    <div class="text-sm text-gray-500 dark:text-gray-400">Aktif İlan</div>
                 </div>
             </div>
         </div>

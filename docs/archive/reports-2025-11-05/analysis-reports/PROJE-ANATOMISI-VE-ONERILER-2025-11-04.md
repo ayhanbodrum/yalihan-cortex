@@ -54,10 +54,10 @@ YALIHAN EMLAK
 │   └─ Ollama (Local)
 │
 └── 🔌 EXTERNAL INTEGRATIONS
-    ├─ TKGM Parsel API
-    ├─ Airbnb Booking
-    ├─ Google Calendar
-    └─ Nominatim (Geocoding)
+├─ TKGM Parsel API
+├─ Airbnb Booking
+├─ Google Calendar
+└─ Nominatim (Geocoding)
 ```
 
 ---
@@ -72,7 +72,7 @@ yalihanemlakwarp/
 │   ├── Services/ (30 service)
 │   ├── Helpers/ (5 helper)
 │   ├── Traits/ (8 trait)
-│   ├── Modules/ (14 modül) ⚠️ KARIŞIKmodules  
+│   ├── Modules/ (14 modül) ⚠️ KARIŞIKmodules
 │   └── Console/Commands/ (15 command)
 │
 ├── database/
@@ -109,18 +109,18 @@ yalihanemlakwarp/
 
 ### 🎯 ANA MODÜLLER (Production)
 
-| # | Modül | Dosya | Controller | Model | Durum | Kullanım |
-|---|-------|-------|------------|-------|-------|----------|
-| 1 | **İlan Yönetimi** | 25 | IlanController | Ilan | ✅ %100 | 🔥🔥🔥 Yüksek |
-| 2 | **Kişiler (CRM)** | 10 | KisiController | Kisi | ✅ %100 | 🔥🔥 Orta |
-| 3 | **Property Type Manager** | 8 | PropertyTypeManagerController | IlanKategori | ✅ %100 | 🔥🔥 Orta |
-| 4 | **Yazlık Kiralama** | 12 | YazlikKiralamaController | Ilan (yazlik) | ✅ %95 | 🔥 Düşük |
-| 5 | **Talep Yönetimi** | 8 | TalepController | Talep | ✅ %90 | 🔥 Düşük |
-| 6 | **AI Sistem** | 15 | AI/*Controller | AiLog | ✅ %100 | 🔥🔥 Orta |
-| 7 | **Kullanıcılar** | 5 | UserController | User | ✅ %100 | 🔥 Düşük |
-| 8 | **Danışmanlar** | 5 | DanismanController | User | ✅ %90 | 🔥 Düşük |
-| 9 | **Özellik Yönetimi** | 8 | FeatureController | Feature | ✅ %100 | 🔥🔥 Orta |
-| 10 | **Takvim/Rezervasyon** | 4 | TakvimController | - | ⚠️ %60 | 🟡 Geliştirilmeli |
+| #   | Modül                     | Dosya | Controller                    | Model         | Durum   | Kullanım          |
+| --- | ------------------------- | ----- | ----------------------------- | ------------- | ------- | ----------------- |
+| 1   | **İlan Yönetimi**         | 25    | IlanController                | Ilan          | ✅ %100 | 🔥🔥🔥 Yüksek     |
+| 2   | **Kişiler (CRM)**         | 10    | KisiController                | Kisi          | ✅ %100 | 🔥🔥 Orta         |
+| 3   | **Property Type Manager** | 8     | PropertyTypeManagerController | IlanKategori  | ✅ %100 | 🔥🔥 Orta         |
+| 4   | **Yazlık Kiralama**       | 12    | YazlikKiralamaController      | Ilan (yazlik) | ✅ %95  | 🔥 Düşük          |
+| 5   | **Talep Yönetimi**        | 8     | TalepController               | Talep         | ✅ %90  | 🔥 Düşük          |
+| 6   | **AI Sistem**             | 15    | AI/\*Controller               | AiLog         | ✅ %100 | 🔥🔥 Orta         |
+| 7   | **Kullanıcılar**          | 5     | UserController                | User          | ✅ %100 | 🔥 Düşük          |
+| 8   | **Danışmanlar**           | 5     | DanismanController            | User          | ✅ %90  | 🔥 Düşük          |
+| 9   | **Özellik Yönetimi**      | 8     | FeatureController             | Feature       | ✅ %100 | 🔥🔥 Orta         |
+| 10  | **Takvim/Rezervasyon**    | 4     | TakvimController              | -             | ⚠️ %60  | 🟡 Geliştirilmeli |
 
 ---
 
@@ -128,20 +128,20 @@ yalihanemlakwarp/
 
 ```yaml
 Problem:
-  - app/Http/Controllers/Admin/ (60 controller) ✅ Aktif
-  - app/Modules/* (14 modül) ⚠️ KARISIK
-  - resources/views/admin/ ✅ Aktif
-  - resources/views/modules/ ⚠️ KULLANILMIYOR?
+    - app/Http/Controllers/Admin/ (60 controller) ✅ Aktif
+    - app/Modules/* (14 modül) ⚠️ KARISIK
+    - resources/views/admin/ ✅ Aktif
+    - resources/views/modules/ ⚠️ KULLANILMIYOR?
 
-Sonuç:
-  İKİ FARKLI MİMARİ KULLANILIYOR!
-  1. Standard Laravel (Controllers + Views)
-  2. Modular Laravel (Modules/)
-  
-  Bu KARISIKLIK yapıyor!
+Sonuç: İKİ FARKLI MİMARİ KULLANILIYOR!
+    1. Standard Laravel (Controllers + Views)
+    2. Modular Laravel (Modules/)
+
+    Bu KARISIKLIK yapıyor!
 ```
 
 **Öneriler:**
+
 - ✅ Standard Laravel'i koru (zaten %80 kullanılıyor)
 - ⚠️ app/Modules/ dizinini kontrol et
 - ❌ Kullanılmayan modülleri sil veya arşivle
@@ -158,12 +158,12 @@ graph TD
     B -->|Admin| C[Admin Panel]
     B -->|Danışman| D[Danışman Panel]
     B -->|User| E[Frontend]
-    
+
     C --> F[İlan Yönetimi]
     C --> G[Kişi/CRM]
     C --> H[Raporlar]
     C --> I[Ayarlar]
-    
+
     F --> J[Kategori Seç]
     J --> K[Property Type Manager]
     K --> L[Alan İlişkileri]
@@ -181,7 +181,7 @@ Step 1: Kategori Seçimi
   - Ana Kategori (Konut, Arsa, Yazlık, İşyeri)
   - Alt Kategori (Villa, Daire, Ofis, etc.)
   - Yayın Tipi (Satılık, Kiralık, Günlük, Sezonluk)
-  
+
   Controller: IlanController@create
   View: admin/ilanlar/create.blade.php
   JS: ilan-create.js (categories.js, properties.js)
@@ -189,7 +189,7 @@ Step 1: Kategori Seçimi
 Step 2: Temel Bilgiler
   - Başlık (AI ile üretilebilir)
   - Açıklama (AI ile üretilebilir)
-  
+
   Component: components/basic-info.blade.php
   AI Service: AIService::generateDescription()
 
@@ -199,7 +199,7 @@ Step 3: Lokasyon
   - Adres (Reverse geocoding)
   - Mesafe ölçümü (Haversine)
   - Sınır çizimi (Polygon)
-  
+
   Component: components/location-map.blade.php
   JS: VanillaLocationManager (1059 satır)
 
@@ -207,7 +207,7 @@ Step 4: Dinamik Özellikler (Field Dependencies)
   - Property Type Manager'dan çekiliyor
   - Kategori × Yayın Tipi → Field listesi
   - Required/Optional kontrolü
-  
+
   Component: components/field-dependencies-dynamic.blade.php
   Controller: PropertyTypeManagerController@fieldDependenciesIndex
 
@@ -215,7 +215,7 @@ Step 5: Fiyat Yönetimi
   - Ana fiyat (TL, USD, EUR, GBP)
   - Başlangıç fiyatı (opsiyonel)
   - AI fiyat analizi
-  
+
   Component: components/price-management.blade.php
   JS: PriceManager (Alpine.js)
 
@@ -224,19 +224,19 @@ Step 6: Kişi Bilgileri
   - İlgili Kişi
   - Danışman
   - Context7 Live Search
-  
+
   Component: partials/_kisi-secimi.blade.php
 
 Step 7: Özel Alanlar (Kategori Bazlı)
   Konut:
     - Site/Apartman bilgileri
     - Anahtar yönetimi
-  
+
   Arsa:
     - Ada/Parsel
     - İmar durumu
     - KAKS/TAKS
-  
+
   Yazlık:
     - Amenities (EAV)
     - Fiyatlandırma
@@ -246,14 +246,14 @@ Step 8: Fotoğraflar
   - Drag & drop upload
   - Sıralama
   - AI image analysis
-  
+
   Component: components/listing-photos.blade.php
 
 Step 9: Yayınla
   - Status (Draft, Active, Inactive)
   - Öncelik seviyesi
   - Auto-save (draft)
-  
+
   Component: components/publication-status.blade.php
   Save: IlanController@store
 ```
@@ -330,29 +330,28 @@ Sınır Çizimi:
 
 ```yaml
 Seviye 0 (Ana Kategori):
-  - Konut
-  - Arsa
-  - Yazlık
-  - İşyeri
+    - Konut
+    - Arsa
+    - Yazlık
+    - İşyeri
 
-Seviye 1 (Alt Kategori):
-  Konut →
+Seviye 1 (Alt Kategori): Konut →
     - Villa
     - Daire
     - Residence
     - Müstakil Ev
-  
-  Arsa →
+
+    Arsa →
     - İmarlı Arsa
     - Tarla
     - Bağ/Bahçe
 
 Seviye 2 (Yayın Tipi):
-  - Satılık
-  - Kiralık
-  - Devren Satılık
-  - Günlük Kiralık
-  - Sezonluk Kiralık
+    - Satılık
+    - Kiralık
+    - Devren Satılık
+    - Günlük Kiralık
+    - Sezonluk Kiralık
 ```
 
 ---
@@ -360,6 +359,7 @@ Seviye 2 (Yayın Tipi):
 ### 🔗 İLİŞKİSEL MANTIK
 
 #### Ana İlişkiler:
+
 ```php
 Ilan Model:
   ├─ belongsTo: AnaKategori (seviye=0)
@@ -389,49 +389,49 @@ Feature:
 
 ```yaml
 ARSA:
-  Strateji: direct_columns
-  Neden: 22 field, sık kullanılıyor, indexlenmeli
-  Alanlar:
-    - ada_no, parsel_no
-    - imar_statusu, kaks, taks, gabari
-    - cephe_sayisi, ifraz_durumu, tapu_durumu
-    - yol_durumu, elektrik, su, dogalgaz
-  Performans: ⚡⚡⚡ Çok Hızlı
+    Strateji: direct_columns
+    Neden: 22 field, sık kullanılıyor, indexlenmeli
+    Alanlar:
+        - ada_no, parsel_no
+        - imar_statusu, kaks, taks, gabari
+        - cephe_sayisi, ifraz_durumu, tapu_durumu
+        - yol_durumu, elektrik, su, dogalgaz
+    Performans: ⚡⚡⚡ Çok Hızlı
 
 KONUT:
-  Strateji: direct_columns
-  Neden: 12 standart field, hızlı erişim
-  Alanlar:
-    - oda_sayisi, salon_sayisi, banyo_sayisi
-    - kat, toplam_kat, brut_alan, net_alan
-    - isitma_tipi, esyali, kullanim_durumu
-  Performans: ⚡⚡⚡ Çok Hızlı
+    Strateji: direct_columns
+    Neden: 12 standart field, hızlı erişim
+    Alanlar:
+        - oda_sayisi, salon_sayisi, banyo_sayisi
+        - kat, toplam_kat, brut_alan, net_alan
+        - isitma_tipi, esyali, kullanim_durumu
+    Performans: ⚡⚡⚡ Çok Hızlı
 
 YAZLIK:
-  Strateji: separate_tables + EAV
-  Neden: Kompleks logic, sezonluk fiyatlar, amenities
-  Tablolar:
-    - yazlik_fiyatlandirma (3 sezon × 3 fiyat = 9 kayıt)
-    - yazlik_rezervasyonlar (check-in/out, misafir)
-    - feature_values (polymorphic - amenities)
-  Performans: ⚡⚡ Orta (join gerekli)
+    Strateji: separate_tables + EAV
+    Neden: Kompleks logic, sezonluk fiyatlar, amenities
+    Tablolar:
+        - yazlik_fiyatlandirma (3 sezon × 3 fiyat = 9 kayıt)
+        - yazlik_rezervasyonlar (check-in/out, misafir)
+        - feature_values (polymorphic - amenities)
+    Performans: ⚡⚡ Orta (join gerekli)
 
 İŞYERİ:
-  Strateji: direct_columns_monitored
-  Neden: 6 field, growth izleniyor
-  Alanlar:
-    - isyeri_tipi, calisma_sekli
-    - personel_sayisi, otopark_kapasitesi
-  Performans: ⚡⚡⚡ Hızlı
+    Strateji: direct_columns_monitored
+    Neden: 6 field, growth izleniyor
+    Alanlar:
+        - isyeri_tipi, calisma_sekli
+        - personel_sayisi, otopark_kapasitesi
+    Performans: ⚡⚡⚡ Hızlı
 
 CUSTOM/NADİR:
-  Strateji: features (EAV)
-  Neden: Nadir kullanılan, opsiyonel alanlar
-  Örnekler:
-    - Deniz Manzaralı (boolean)
-    - Havuz Tipi (select)
-    - Sauna Var mı? (boolean)
-  Performans: ⚡ Yavaş (join + pivot)
+    Strateji: features (EAV)
+    Neden: Nadir kullanılan, opsiyonel alanlar
+    Örnekler:
+        - Deniz Manzaralı (boolean)
+        - Havuz Tipi (select)
+        - Sauna Var mı? (boolean)
+    Performans: ⚡ Yavaş (join + pivot)
 ```
 
 ---
@@ -440,20 +440,20 @@ CUSTOM/NADİR:
 
 ### 🔴 KRİTİK - Tamamlanması Gereken (80 TODO tespit edildi!)
 
-| # | Bölüm | Dosya | TODO Sayısı | Öncelik | Tahmini Süre |
-|---|-------|-------|-------------|---------|--------------|
-| 1 | **Takvim/Rezervasyon** | TakvimController | 8 | 🔴 Yüksek | 4 saat |
-| 2 | **Airbnb Entegrasyonu** | CalendarSyncController | 5 | 🔴 Yüksek | 6 saat |
-| 3 | **AI Image Analysis** | ImageBasedAIDescriptionService | 4 | 🟡 Orta | 3 saat |
-| 4 | **Talep-Portföy AI Match** | TalepPortfolyoAIService | 6 | 🟡 Orta | 5 saat |
-| 5 | **Telegram Bot** | TelegramBotService | 3 | 🟢 Düşük | 2 saat |
-| 6 | **TKGM Parsel Auto** | TKGMParselController | 4 | 🟡 Orta | 3 saat |
-| 7 | **Performance Monitor** | SystemMonitorController | 3 | 🟢 Düşük | 2 saat |
-| 8 | **Advanced AI Dashboard** | AdvancedAIController | 5 | 🟡 Orta | 4 saat |
-| 9 | **Wiki
+| #   | Bölüm                      | Dosya                          | TODO Sayısı | Öncelik   | Tahmini Süre |
+| --- | -------------------------- | ------------------------------ | ----------- | --------- | ------------ |
+| 1   | **Takvim/Rezervasyon**     | TakvimController               | 8           | 🔴 Yüksek | 4 saat       |
+| 2   | **Airbnb Entegrasyonu**    | CalendarSyncController         | 5           | 🔴 Yüksek | 6 saat       |
+| 3   | **AI Image Analysis**      | ImageBasedAIDescriptionService | 4           | 🟡 Orta   | 3 saat       |
+| 4   | **Talep-Portföy AI Match** | TalepPortfolyoAIService        | 6           | 🟡 Orta   | 5 saat       |
+| 5   | **Telegram Bot**           | TelegramBotService             | 3           | 🟢 Düşük  | 2 saat       |
+| 6   | **TKGM Parsel Auto**       | TKGMParselController           | 4           | 🟡 Orta   | 3 saat       |
+| 7   | **Performance Monitor**    | SystemMonitorController        | 3           | 🟢 Düşük  | 2 saat       |
+| 8   | **Advanced AI Dashboard**  | AdvancedAIController           | 5           | 🟡 Orta   | 4 saat       |
+| 9   | \*\*Wiki                   |
 
 mapia Search** | WikimapiaSearchController | 2 | 🟢 Düşük | 1 saat |
-| 10 | **Flexible Storage** | FlexibleStorageManager | 3 | 🟢 Düşük | 2 saat |
+| 10 | **Flexible Storage\*\* | FlexibleStorageManager | 3 | 🟢 Düşük | 2 saat |
 
 **TOPLAM:** 43 TODO, ~32 saat çalışma
 
@@ -462,6 +462,7 @@ mapia Search** | WikimapiaSearchController | 2 | 🟢 Düşük | 1 saat |
 ### ⚠️ DETAYLI TODO ANALİZİ
 
 #### 1. Takvim/Rezervasyon Sistemi (TakvimController)
+
 ```php
 // TODO #1: Sezon bazlı fiyatlandırma API
 // Durum: Backend hazır, frontend eksik
@@ -481,6 +482,7 @@ mapia Search** | WikimapiaSearchController | 2 | 🟢 Düşük | 1 saat |
 ```
 
 #### 2. AI Image Analysis (ImageBasedAIDescriptionService)
+
 ```php
 // TODO #1: Gemini Vision API entegrasyonu
 // Durum: Placeholder kod var
@@ -496,6 +498,7 @@ mapia Search** | WikimapiaSearchController | 2 | 🟢 Düşük | 1 saat |
 ```
 
 #### 3. Talep-Portföy AI Matching (TalepPortfolyoAIService)
+
 ```php
 // TODO #1: AI matching algorithm
 // Durum: Basit version var, geliştirilmeli
@@ -514,13 +517,13 @@ mapia Search** | WikimapiaSearchController | 2 | 🟢 Düşük | 1 saat |
 
 ### 🟡 ORTA ÖNCELİK - Geliştirilmeli
 
-| Bölüm | Durum | Eksik Özellikler |
-|-------|-------|------------------|
-| **Blog Sistemi** | %70 | SEO optimization, multi-language |
-| **Analytics** | %80 | Real-time dashboard, advanced metrics |
-| **Raporlama** | %75 | PDF export, scheduled reports |
-| **Takım Yönetimi** | %85 | Performance KPI, gamification |
-| **Etiket Sistemi** | %90 | Auto-tagging, AI suggestions |
+| Bölüm              | Durum | Eksik Özellikler                      |
+| ------------------ | ----- | ------------------------------------- |
+| **Blog Sistemi**   | %70   | SEO optimization, multi-language      |
+| **Analytics**      | %80   | Real-time dashboard, advanced metrics |
+| **Raporlama**      | %75   | PDF export, scheduled reports         |
+| **Takım Yönetimi** | %85   | Performance KPI, gamification         |
+| **Etiket Sistemi** | %90   | Auto-tagging, AI suggestions          |
 
 ---
 
@@ -529,6 +532,7 @@ mapia Search** | WikimapiaSearchController | 2 | 🟢 Düşük | 1 saat |
 ### 🗑️ SİLİNEBİLİR SAYFALAR (25 Tespit Edildi)
 
 #### A. Test/Demo Sayfaları (8):
+
 ```
 ❌ resources/views/admin/test-minimal.blade.php
 ❌ resources/views/admin/ai-core-test/index.blade.php
@@ -545,6 +549,7 @@ mapia Search** | WikimapiaSearchController | 2 | 🟢 Düşük | 1 saat |
 ---
 
 #### B. Deprecated/Eski Sistemler (7):
+
 ```
 ❌ resources/views/admin/konut-hibrit-siralama/ (eski sistem)
 ❌ resources/views/admin/site-ozellikleri/ (SiteOzellik modeli silindi)
@@ -560,6 +565,7 @@ mapia Search** | WikimapiaSearchController | 2 | 🟢 Düşük | 1 saat |
 ---
 
 #### C. Duplicate Sayfalar (5):
+
 ```
 ⚠️ resources/views/admin/smart-calculator/index.blade.php
 ⚠️ resources/views/admin/smart-calculator.blade.php
@@ -580,17 +586,18 @@ mapia Search** | WikimapiaSearchController | 2 | 🟢 Düşük | 1 saat |
 ---
 
 #### D. Kullanılmayan Modül Sayfaları (10+):
+
 ```
 ⚠️ app/Modules/Crm/Views/* (3 dosya)
 ⚠️ app/Modules/Emlak/Views/* (6 dosya)
 ⚠️ app/Modules/Auth/Views/* (4 dosya)
-   
+
    → resources/views/admin/* zaten var!
    → Modül sistemi kullanılmıyor, standart Laravel kullanılıyor
    → DUPLİKE PROBLEM!
 ```
 
-**Eylem:** app/Modules/*/Views/ dizinlerini sil veya arşivle
+**Eylem:** app/Modules/\*/Views/ dizinlerini sil veya arşivle
 
 ---
 
@@ -625,47 +632,47 @@ rm -rf app/Modules/*/Resources/views/
 ### 🔴 ACİL ÖNCELİK (1 Hafta)
 
 #### 1. Modül Karışıklığını Çöz
+
 ```yaml
 Sorun:
-  - app/Modules/* (14 modül) KULLANILMIYOR
-  - resources/views/modules/ KULLANILMIYOR
-  - Duplicate views var (app/Modules/*/Views/)
+    - app/Modules/* (14 modül) KULLANILMIYOR
+    - resources/views/modules/ KULLANILMIYOR
+    - Duplicate views var (app/Modules/*/Views/)
 
 Çözüm:
-  Seçenek A (Önerilen):
-    ✅ Modülleri tamamen sil
-    ✅ Standard Laravel mimarisine geç
-    ✅ resources/views/admin/* kullan
-    ✅ app/Http/Controllers/Admin/* kullan
-  
-  Seçenek B:
-    ⚠️ Modüler mimariyi tam uygula
-    ⚠️ Tüm controller'ları modüllere taşı
-    ⚠️ %100 consistency sağla
+    Seçenek A (Önerilen): ✅ Modülleri tamamen sil
+        ✅ Standard Laravel mimarisine geç
+        ✅ resources/views/admin/* kullan
+        ✅ app/Http/Controllers/Admin/* kullan
+
+    Seçenek B: ⚠️ Modüler mimariyi tam uygula
+        ⚠️ Tüm controller'ları modüllere taşı
+        ⚠️ %100 consistency sağla
 
 Tavsiye: SEÇENEK A (daha basit, zaten %80 standard)
 Süre: 3-4 saat
 ```
 
 #### 2. Takvim/Rezervasyon Tamamla
+
 ```yaml
 Eksikler:
-  - Sezon fiyatlandırma frontend
-  - Rezervasyon çakışma kontrolü
-  - Auto email notifications
-  - iCal export
+    - Sezon fiyatlandırma frontend
+    - Rezervasyon çakışma kontrolü
+    - Auto email notifications
+    - iCal export
 
 Süre: 6-8 saat
 Öncelik: 🔴 Yüksek (Yazlık için kritik)
 ```
 
 #### 3. Gereksiz Dosyaları Temizle
+
 ```yaml
-Eylem:
-  ✅ testsprite_tests/ sil (12 dosya)
-  ✅ Duplicate location-selector'ları birleştir (3 → 1)
-  ✅ Duplicate smart-calculator'ları birleştir (2 → 1)
-  ✅ app/Modules/*/Views/ sil (duplicate)
+Eylem: ✅ testsprite_tests/ sil (12 dosya)
+    ✅ Duplicate location-selector'ları birleştir (3 → 1)
+    ✅ Duplicate smart-calculator'ları birleştir (2 → 1)
+    ✅ app/Modules/*/Views/ sil (duplicate)
 
 Sonuç: -50+ dosya, daha temiz proje
 Süre: 2 saat
@@ -676,37 +683,36 @@ Süre: 2 saat
 ### 🟡 ORTA ÖNCELİK (2-3 Hafta)
 
 #### 4. Component Library Oluştur
-```yaml
-Hedef:
-  FormStandards → Blade Components'e dönüştür
-  
-Oluşturulacaklar:
-  <x-form.input />
-  <x-form.select />
-  <x-form.textarea />
-  <x-form.checkbox />
-  <x-form.radio />
-  <x-form.toggle />
-  <x-form.file />
-  <x-form.price />
-  <x-form.location />
 
-Fayda:
-  ✅ Daha temiz Blade kodu
-  ✅ Otomatik validation
-  ✅ Tutarlı UI
-  ✅ Kolay bakım
+```yaml
+Hedef: FormStandards → Blade Components'e dönüştür
+
+Oluşturulacaklar: <x-form.input />
+    <x-form.select />
+    <x-form.textarea />
+    <x-form.checkbox />
+    <x-form.radio />
+    <x-form.toggle />
+    <x-form.file />
+    <x-form.price />
+    <x-form.location />
+
+Fayda: ✅ Daha temiz Blade kodu
+    ✅ Otomatik validation
+    ✅ Tutarlı UI
+    ✅ Kolay bakım
 
 Süre: 8-10 saat
 ```
 
 #### 5. AI Özellikleri Genişlet
+
 ```yaml
 Tamamlanacaklar:
-  - AI Image Analysis (Gemini Vision)
-  - Talep-Portföy Smart Matching
-  - Otomatik SEO optimization
-  - Multi-language content generation
+    - AI Image Analysis (Gemini Vision)
+    - Talep-Portföy Smart Matching
+    - Otomatik SEO optimization
+    - Multi-language content generation
 
 Süre: 12-15 saat
 ```
@@ -716,6 +722,7 @@ Süre: 12-15 saat
 ### 🟢 DÜŞÜK ÖNCELİK (1-2 Ay)
 
 #### 6. Performance Optimization
+
 ```yaml
   - Query optimization (N+1 problemleri)
   - Asset optimization (code splitting)
@@ -726,6 +733,7 @@ Süre: 10 saat
 ```
 
 #### 7. Testing & Documentation
+
 ```yaml
   - Unit tests (%50 → %80)
   - Integration tests
@@ -779,6 +787,7 @@ Süre: 15 saat
 ### HAFTA 1 (4-10 Kasım)
 
 #### Pazartesi-Salı:
+
 ```
 ✅ Modül karışıklığını çöz
 ✅ app/Modules/* dizinini değerlendir
@@ -787,6 +796,7 @@ Süre: 15 saat
 ```
 
 #### Çarşamba-Perşembe:
+
 ```
 ✅ Takvim/Rezervasyon tamamla
 ✅ Frontend UI oluştur
@@ -795,6 +805,7 @@ Süre: 15 saat
 ```
 
 #### Cuma:
+
 ```
 ✅ Gereksiz dosyaları sil
 ✅ Component'leri birleştir
@@ -819,13 +830,13 @@ Süre: 15 saat
 
 ### 🚀 15 Dakikalık İşler
 
-| # | İş | Fayda | Süre |
-|---|----|----- |------|
-| 1 | testsprite_tests/ sil | Temiz proje | 1 dk |
-| 2 | Duplicate location-selector birleştir | -2 dosya | 10 dk |
-| 3 | Duplicate smart-calculator birleştir | -1 dosya | 10 dk |
-| 4 | test-minimal.blade.php sil | Temizlik | 1 dk |
-| 5 | offline.blade.php sil | Temizlik | 1 dk |
+| #   | İş                                    | Fayda       | Süre  |
+| --- | ------------------------------------- | ----------- | ----- |
+| 1   | testsprite_tests/ sil                 | Temiz proje | 1 dk  |
+| 2   | Duplicate location-selector birleştir | -2 dosya    | 10 dk |
+| 3   | Duplicate smart-calculator birleştir  | -1 dosya    | 10 dk |
+| 4   | test-minimal.blade.php sil            | Temizlik    | 1 dk  |
+| 5   | offline.blade.php sil                 | Temizlik    | 1 dk  |
 
 **Toplam:** 23 dakika, -17 dosya, daha temiz proje ✅
 
@@ -834,6 +845,7 @@ Süre: 15 saat
 ## 🎯 SON ÖNER İLER
 
 ### 1️⃣ MODÜL MİMARİSİNİ STANDARTLAŞTIR
+
 ```
 ✅ Standard Laravel kullan (zaten %80)
 ❌ app/Modules/* sil veya arşivle
@@ -841,6 +853,7 @@ Süre: 15 saat
 ```
 
 ### 2️⃣ TAKVIM SİSTEMİNİ TAMAMLA
+
 ```
 ✅ Yazlık kiralama için kritik
 ✅ Rezervasyon yönetimi
@@ -848,6 +861,7 @@ Süre: 15 saat
 ```
 
 ### 3️⃣ GEREKSİZ DOSYALARI TEMİZLE
+
 ```
 ✅ testsprite_tests/ → Sil
 ✅ Duplicate component'ler → Birleştir
@@ -856,6 +870,7 @@ Süre: 15 saat
 ```
 
 ### 4️⃣ COMPONENT LIBRARY OLUŞTUR
+
 ```
 ✅ FormStandards → Blade components
 ✅ Tüm projede kullan
@@ -863,6 +878,7 @@ Süre: 15 saat
 ```
 
 ### 5️⃣ AI SİSTEMİNİ GENİŞLET
+
 ```
 ✅ Image analysis tamamla
 ✅ Smart matching iyileştir
@@ -893,6 +909,7 @@ GENEL SKOR: 7.9/10 ⭐⭐⭐⭐
 ### ✅ GÜÇLÜ BİR PROJE!
 
 **Pozitifler:**
+
 - ✅ Modern teknoloji stack
 - ✅ Context7 %100 uyumlu
 - ✅ Form standardizasyonu tamamlandı
@@ -901,6 +918,7 @@ GENEL SKOR: 7.9/10 ⭐⭐⭐⭐
 - ✅ WCAG AAA compliance
 
 **İyileştirilecekler:**
+
 - ⚠️ Modül mimarisi standardize edilmeli
 - ⚠️ Takvim sistemi tamamlanmalı
 - ⚠️ Test coverage artırılmalı
@@ -913,18 +931,15 @@ GENEL SKOR: 7.9/10 ⭐⭐⭐⭐
 ## 🚀 İLK ADIM (YARIN)
 
 ```yaml
-Sabah (2 saat):
-  1. testsprite_tests/ sil
-  2. Duplicate component'leri birleştir
-  3. app/Modules/ değerlendir
-  
-Öğle (3 saat):
-  4. Takvim sistemi frontend
-  5. Rezervasyon UI
-  
-Akşam (2 saat):
-  6. Test yaz
-  7. Dokümantasyon güncelle
+Sabah (2 saat): 1. testsprite_tests/ sil
+    2. Duplicate component'leri birleştir
+    3. app/Modules/ değerlendir
+
+Öğle (3 saat): 4. Takvim sistemi frontend
+    5. Rezervasyon UI
+
+Akşam (2 saat): 6. Test yaz
+    7. Dokümantasyon güncelle
 ```
 
 **Hedef:** 1 haftada mimari temizliği + takvim tamamlama
@@ -935,4 +950,3 @@ Akşam (2 saat):
 **Tarih:** 4 Kasım 2025, 01:45  
 **Analiz Süresi:** 45 dakika  
 **Durum:** ✅ KAPSAMLI ANALİZ TAMAMLANDI
-

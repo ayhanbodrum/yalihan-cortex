@@ -4,7 +4,7 @@
   "category": "documentation_cleanup",
   "priority": "HIGH",
   "status": "IN_PROGRESS",
-  
+
   "files_reviewed": [
     "COMPONENT-USAGE-EXAMPLES.md",
     "ILAN_YONETIMI_ANALIZ.md",
@@ -15,7 +15,7 @@
     "PHASE3-PROGRESS-2025-11-05.md",
     "CLI_GUIDE.md"
   ],
-  
+
   "context7_compliance_issues": {
     "neo_class_references": {
       "status": "FOUND_IN_OTHER_FILES",
@@ -45,7 +45,7 @@
       "note": "Backward compatibility dokümanlarda bahsedilebilir ama 'deprecated' olarak işaretlenmeli"
     }
   },
-  
+
   "documentation_standards": {
     "context7_compliance": {
       "rule": "Tüm dokümanlar Context7 standartlarına uygun olmalı",
@@ -67,14 +67,14 @@
       ]
     }
   },
-  
+
   "fixes_applied": {
     "COMPONENT-USAGE-EXAMPLES.md": [
       "Fixed: 'Aktif' → 'Etkin' (3 instances)",
       "Status: ✅ COMPLIANT"
     ]
   },
-  
+
   "pending_fixes": {
     "ILAN_YONETIMI_ANALIZ.md": {
       "status": "REVIEWED",
@@ -90,7 +90,7 @@
       "note": "Migration progress dokümanı, Neo referansları historical context için OK"
     }
   },
-  
+
   "context7_authority_reference": {
     "master_css_framework": "Tailwind CSS",
     "forbidden_patterns": [
@@ -106,7 +106,7 @@
       "Schema::hasColumn() checks"
     ]
   },
-  
+
   "recommendations": {
     "documentation_updates": [
       {
@@ -141,7 +141,7 @@
       ]
     }
   },
-  
+
   "related_files": [
     ".context7/authority.json",
     ".context7/TAILWIND-TRANSITION-RULE.md",
@@ -155,4 +155,3 @@
     "CLI_GUIDE.md"
   ]
 }
-

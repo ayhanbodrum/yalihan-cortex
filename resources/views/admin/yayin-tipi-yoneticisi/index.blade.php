@@ -14,7 +14,7 @@
                 <p class="text-gray-600 dark:text-gray-400">Tek sayfada kategori, yayın tipi ve ilişki yönetimi</p>
             </div>
             <div class="flex items-center gap-3">
-                <a href="{{ route('admin.ilan-kategorileri.index') }}" 
+                <a href="{{ route('admin.ilan-kategorileri.index') }}"
                    class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 transition-all duration-200">
                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
@@ -76,7 +76,7 @@
                             <p class="text-sm text-gray-500 dark:text-gray-400">{{ $item['yayin_tipi_count'] }} yayın tipi</p>
                         </div>
                     </div>
-                    <button @click="openAddModal({{ $item['kategori']->id }})" 
+                    <button @click="openAddModal({{ $item['kategori']->id }})"
                             class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200">
                         <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
@@ -91,7 +91,7 @@
                 @if($item['yayin_tipleri']->count() > 0)
                 <div class="space-y-2">
                     @foreach($item['yayin_tipleri'] as $yayinTipi)
-                    <div class="group flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors" 
+                    <div class="group flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                          x-data="{ editing: false, yayinTipi: '{{ addslashes($yayinTipi->yayin_tipi) }}', order: {{ $yayinTipi->order }} }">
                         <div class="flex items-center gap-3 flex-1">
                             <!-- Sıralama -->
@@ -104,9 +104,9 @@
                             <!-- Yayın Tipi Adı -->
                             <div class="flex-1">
                                 <span x-show="!editing" class="text-sm font-medium text-gray-900 dark:text-white">{{ $yayinTipi->yayin_tipi }}</span>
-                                <input x-show="editing" 
+                                <input x-show="editing"
                                        x-model="yayinTipi"
-                                       type="text" 
+                                       type="text"
                                        class="w-full px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                        @keyup.enter="updateYayinTipi({{ $yayinTipi->id }}, yayinTipi, order)"
                                        @keyup.escape="editing = false; yayinTipi = '{{ addslashes($yayinTipi->yayin_tipi) }}'">
@@ -122,19 +122,19 @@
 
                         <!-- İşlem Butonları -->
                         <div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <button @click="editing = !editing" 
+                            <button @click="editing = !editing"
                                     class="p-1.5 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                                 </svg>
                             </button>
-                            <button @click="toggleStatus({{ $yayinTipi->id }})" 
+                            <button @click="toggleStatus({{ $yayinTipi->id }})"
                                     class="p-1.5 text-gray-600 dark:text-gray-400 hover:text-yellow-600 dark:hover:text-yellow-400 transition-colors">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                                 </svg>
                             </button>
-                            <button @click="deleteYayinTipi({{ $yayinTipi->id }})" 
+                            <button @click="deleteYayinTipi({{ $yayinTipi->id }})"
                                     class="p-1.5 text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 transition-colors">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
@@ -150,7 +150,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                     </svg>
                     <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">Henüz yayın tipi eklenmemiş</p>
-                    <button @click="openAddModal({{ $item['kategori']->id }})" 
+                    <button @click="openAddModal({{ $item['kategori']->id }})"
                             class="mt-3 inline-flex items-center px-3 py-1.5 text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300">
                         <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
@@ -165,7 +165,7 @@
     </div>
 
     <!-- Yayın Tipi Ekleme Modal -->
-    <div x-show="showAddModal" 
+    <div x-show="showAddModal"
          x-cloak
          class="fixed inset-0 z-50 overflow-y-auto"
          @keydown.escape.window="showAddModal = false">
@@ -177,19 +177,19 @@
                     <div class="space-y-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Yayın Tipi Adı</label>
-                            <input type="text" 
+                            <input type="text"
                                    x-model="newYayinTipi.yayin_tipi"
                                    required
                                    class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                         </div>
                     </div>
                     <div class="flex items-center justify-end gap-3 mt-6">
-                        <button type="button" 
+                        <button type="button"
                                 @click="showAddModal = false"
                                 class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600 transition-colors">
                             İptal
                         </button>
-                        <button type="submit" 
+                        <button type="submit"
                                 class="px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200">
                             Ekle
                         </button>
@@ -330,4 +330,3 @@ function yayinTipiYoneticisi() {
 </script>
 @endpush
 @endsection
-

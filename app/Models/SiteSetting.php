@@ -8,14 +8,14 @@ use Illuminate\Support\Facades\Cache;
 /**
  * @deprecated This model is deprecated. Use Setting model instead.
  * SiteSetting has been merged into Setting model for Context7 compliance.
- * 
+ *
  * Migration guide:
  * - Replace SiteSetting::getValue() with Setting::get()
  * - Replace SiteSetting::setValue() with Setting::set()
  * - Replace SiteSetting::getGroup() with Setting::getByGroup()
- * 
+ *
  * All data should be migrated from site_settings table to settings table.
- * 
+ *
  * @see \App\Models\Setting
  */
 class SiteSetting extends Model

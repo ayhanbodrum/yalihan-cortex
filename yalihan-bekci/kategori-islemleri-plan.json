@@ -4,42 +4,68 @@
     "mevcut_kategoriler": {
       "konut": {
         "ozellikler": [
-          "Oda sayısı", "Banyo sayısı", "Metrekare", "Kat", "Isıtma", "Asansör",
-          "Balkon", "Bahçe", "Otopark", "Güvenlik", "Site içinde", "Denize sıfır"
+          "Oda sayısı",
+          "Banyo sayısı",
+          "Metrekare",
+          "Kat",
+          "Isıtma",
+          "Asansör",
+          "Balkon",
+          "Bahçe",
+          "Otopark",
+          "Güvenlik",
+          "Site içinde",
+          "Denize sıfır"
         ],
-        "ai_destekli": [
-          "Fiyat tahmini", "Özellik önerileri", "Benzer ilanlar", "Değerleme"
-        ],
+        "ai_destekli": ["Fiyat tahmini", "Özellik önerileri", "Benzer ilanlar", "Değerleme"],
         "hibrit_siralama": "Önem sırasına göre sıralama"
       },
       "arsa": {
         "ozellikler": [
-          "Ada", "Parsel", "İmar durumu", "KAKS", "TAKS", "Gabari",
-          "Elektrik", "Su", "Yol", "Kanalizasyon", "Doğalgaz"
+          "Ada",
+          "Parsel",
+          "İmar durumu",
+          "KAKS",
+          "TAKS",
+          "Gabari",
+          "Elektrik",
+          "Su",
+          "Yol",
+          "Kanalizasyon",
+          "Doğalgaz"
         ],
-        "ai_destekli": [
-          "Değerleme", "İmar analizi", "Yatırım potansiyeli", "Fiyat tahmini"
-        ],
+        "ai_destekli": ["Değerleme", "İmar analizi", "Yatırım potansiyeli", "Fiyat tahmini"],
         "hibrit_siralama": "Kullanım sıklığına göre"
       },
       "yazlik": {
         "ozellikler": [
-          "Günlük fiyat", "Minimum konaklama", "Havuz", "Sezon",
-          "Denize mesafe", "Plaj", "Bahçe", "Barbekü", "WiFi"
+          "Günlük fiyat",
+          "Minimum konaklama",
+          "Havuz",
+          "Sezon",
+          "Denize mesafe",
+          "Plaj",
+          "Bahçe",
+          "Barbekü",
+          "WiFi"
         ],
-        "ai_destekli": [
-          "Fiyat optimizasyonu", "Sezon analizi", "Rezervasyon önerileri"
-        ],
+        "ai_destekli": ["Fiyat optimizasyonu", "Sezon analizi", "Rezervasyon önerileri"],
         "hibrit_siralama": "Sezon bazlı önem"
       },
       "isyeri": {
         "ozellikler": [
-          "Metrekare", "Kat", "Otopark", "Asansör", "Lokasyon",
-          "Cephe", "Giriş", "Güvenlik", "Klima", "Internet"
+          "Metrekare",
+          "Kat",
+          "Otopark",
+          "Asansör",
+          "Lokasyon",
+          "Cephe",
+          "Giriş",
+          "Güvenlik",
+          "Klima",
+          "Internet"
         ],
-        "ai_destekli": [
-          "Kira analizi", "Lokasyon değerlendirmesi", "Yatırım önerileri"
-        ],
+        "ai_destekli": ["Kira analizi", "Lokasyon değerlendirmesi", "Yatırım önerileri"],
         "hibrit_siralama": "Lokasyon önemine göre"
       }
     },

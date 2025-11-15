@@ -1,9 +1,9 @@
 {{--
     Modal Component
-    
+
     @component x-admin.modal
     @description Full-featured modal with Alpine.js, keyboard support, and animations
-    
+
     @props
         - open: bool (optional) - Initial open state - default: false
         - title: string (optional) - Modal title
@@ -13,21 +13,21 @@
         - scrollable: bool (optional) - Enable body scroll - default: false
         - closeOnBackdrop: bool (optional) - Close on backdrop click - default: true
         - closeOnEsc: bool (optional) - Close on ESC key - default: true
-    
+
     @slots
         - default: Modal content
         - footer: Modal footer (optional)
-    
+
     @example
         <x-admin.modal title="Edit User" size="lg" bind="showModal">
             <p>Modal content here...</p>
-            
+
             <x-slot:footer>
                 <button @click="showModal = false">Cancel</button>
                 <button>Save</button>
             </x-slot:footer>
         </x-admin.modal>
-    
+
     @features
         - Keyboard support (ESC to close)
         - Focus trap
@@ -55,7 +55,7 @@
     $modalVar = $isBound ? $bind : 'open';
 @endphp
 
-<div 
+<div
     @if(!$isBound) x-data="{ open: {{ $open ? 'true' : 'false' }} }" @endif
     @if($isBound) x-show="{{ $bind }}" @else x-show="open" @endif
     @if($closeOnEsc) @keydown.escape.window="@if($isBound){{ $bind }} = false @else open = false @endif" @endif
@@ -66,7 +66,7 @@
     aria-modal="true"
 >
     {{-- Backdrop --}}
-    <div 
+    <div
         x-show="@if($isBound){{ $bind }}@else open @endif"
         x-transition:enter="transition ease-out duration-300"
         x-transition:enter-start="opacity-0"
@@ -75,7 +75,7 @@
         x-transition:leave-start="opacity-100"
         x-transition:leave-end="opacity-0"
         class="fixed inset-0 bg-black/50 backdrop-blur-sm"
-        @if($closeOnBackdrop) 
+        @if($closeOnBackdrop)
             @click="@if($isBound){{ $bind }} = false @else open = false @endif"
         @endif
         aria-hidden="true"
@@ -84,7 +84,7 @@
     {{-- Modal Container --}}
     <div class="flex min-h-screen items-{{ $position === 'top' ? 'start' : 'center' }} justify-center {{ $position === 'top' ? 'pt-20' : 'p-4' }}">
         {{-- Modal Content --}}
-        <div 
+        <div
             x-show="@if($isBound){{ $bind }}@else open @endif"
             x-transition:enter="transition ease-out duration-300 transform"
             x-transition:enter-start="opacity-0 scale-95 translate-y-4"
@@ -108,11 +108,11 @@
                 <h3 id="modal-title" class="text-lg font-semibold text-gray-900 dark:text-white">
                     {{ $title }}
                 </h3>
-                <button 
+                <button
                     type="button"
                     @click="@if($isBound){{ $bind }} = false @else open = false @endif"
-                    class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 
-                           transition-colors duration-200 p-1 rounded-lg 
+                    class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200
+                           transition-colors duration-200 p-1 rounded-lg
                            hover:bg-gray-100 dark:hover:bg-gray-800
                            focus:outline-none focus:ring-2 focus:ring-blue-500"
                     aria-label="Close modal"

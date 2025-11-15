@@ -5,7 +5,7 @@
   "priority": "critical",
   "category": "design-system",
   "status": "active",
-  
+
   "summary": {
     "title": "Tailwind CSS Migration - Neo Design → Modern Tailwind",
     "description": "Complete migration from legacy Neo Design framework to modern Tailwind CSS v3.4.18 with enhanced UX, dark mode support, and Context7 compliance",
@@ -66,16 +66,61 @@
           "satellite": "Esri World Imagery"
         },
         "nearby_places_categories": [
-          {"id": 1, "name": "Ulaşım", "icon": "🚇", "tags": ["station", "subway", "bus_stop", "tram_stop"]},
-          {"id": 2, "name": "Marketler", "icon": "🛒", "tags": ["supermarket", "convenience"]},
-          {"id": 3, "name": "Sağlık Kurumları", "icon": "🏥", "tags": ["hospital", "clinic", "pharmacy"]},
-          {"id": 4, "name": "Eğitim Kurumları", "icon": "🏫", "tags": ["school", "university", "kindergarten"]},
-          {"id": 5, "name": "Kafeler/Restoranlar", "icon": "☕", "tags": ["cafe", "restaurant", "bar", "pub", "fast_food"]},
-          {"id": 6, "name": "Alışveriş Merkezleri", "icon": "🛍️", "tags": ["mall", "department_store"]},
-          {"id": 7, "name": "Eğlence Yerleri", "icon": "🎭", "tags": ["cinema", "theatre", "nightclub"]},
-          {"id": 8, "name": "Dini Merkezler", "icon": "🕌", "tags": ["place_of_worship", "mosque", "church", "synagogue"]},
-          {"id": 9, "name": "Spor Tesisleri", "icon": "⚽", "tags": ["sports_centre", "stadium", "swimming_pool"]},
-          {"id": 10, "name": "Kültürel Aktiviteler", "icon": "🎨", "tags": ["museum", "art_gallery", "library"]}
+          {
+            "id": 1,
+            "name": "Ulaşım",
+            "icon": "🚇",
+            "tags": ["station", "subway", "bus_stop", "tram_stop"]
+          },
+          { "id": 2, "name": "Marketler", "icon": "🛒", "tags": ["supermarket", "convenience"] },
+          {
+            "id": 3,
+            "name": "Sağlık Kurumları",
+            "icon": "🏥",
+            "tags": ["hospital", "clinic", "pharmacy"]
+          },
+          {
+            "id": 4,
+            "name": "Eğitim Kurumları",
+            "icon": "🏫",
+            "tags": ["school", "university", "kindergarten"]
+          },
+          {
+            "id": 5,
+            "name": "Kafeler/Restoranlar",
+            "icon": "☕",
+            "tags": ["cafe", "restaurant", "bar", "pub", "fast_food"]
+          },
+          {
+            "id": 6,
+            "name": "Alışveriş Merkezleri",
+            "icon": "🛍️",
+            "tags": ["mall", "department_store"]
+          },
+          {
+            "id": 7,
+            "name": "Eğlence Yerleri",
+            "icon": "🎭",
+            "tags": ["cinema", "theatre", "nightclub"]
+          },
+          {
+            "id": 8,
+            "name": "Dini Merkezler",
+            "icon": "🕌",
+            "tags": ["place_of_worship", "mosque", "church", "synagogue"]
+          },
+          {
+            "id": 9,
+            "name": "Spor Tesisleri",
+            "icon": "⚽",
+            "tags": ["sports_centre", "stadium", "swimming_pool"]
+          },
+          {
+            "id": 10,
+            "name": "Kültürel Aktiviteler",
+            "icon": "🎨",
+            "tags": ["museum", "art_gallery", "library"]
+          }
         ],
         "alpine_js_function": "locationManager()",
         "overpass_api": "Used for POI search",
@@ -115,9 +160,9 @@
           "Purple gradient theme"
         ],
         "person_types": [
-          {"id": 1, "name": "İlan Sahibi", "field": "ilan_sahibi_id", "required": true},
-          {"id": 2, "name": "İlgili Kişi", "field": "ilgili_kisi_id", "required": false},
-          {"id": 3, "name": "Danışman", "field": "danisman_id", "required": true}
+          { "id": 1, "name": "İlan Sahibi", "field": "ilan_sahibi_id", "required": true },
+          { "id": 2, "name": "İlgili Kişi", "field": "ilgili_kisi_id", "required": false },
+          { "id": 3, "name": "Danışman", "field": "danisman_id", "required": true }
         ],
         "live_search": {
           "debounce": "300ms",
@@ -274,16 +319,16 @@
 
   "testing": {
     "browsers": {
-      "chrome": {"version": "120+", "status": "Perfect"},
-      "firefox": {"version": "121+", "status": "Perfect"},
-      "safari": {"version": "17+", "status": "Perfect"},
-      "edge": {"version": "120+", "status": "Perfect"}
+      "chrome": { "version": "120+", "status": "Perfect" },
+      "firefox": { "version": "121+", "status": "Perfect" },
+      "safari": { "version": "17+", "status": "Perfect" },
+      "edge": { "version": "120+", "status": "Perfect" }
     },
     "devices": {
-      "iphone_14_pro": {"viewport": "393x852", "status": "Responsive"},
-      "ipad_pro": {"viewport": "1024x1366", "status": "Responsive"},
-      "desktop_fhd": {"viewport": "1920x1080", "status": "Perfect"},
-      "desktop_4k": {"viewport": "3840x2160", "status": "Perfect"}
+      "iphone_14_pro": { "viewport": "393x852", "status": "Responsive" },
+      "ipad_pro": { "viewport": "1024x1366", "status": "Responsive" },
+      "desktop_fhd": { "viewport": "1920x1080", "status": "Perfect" },
+      "desktop_4k": { "viewport": "3840x2160", "status": "Perfect" }
     },
     "functionality": [
       "Form submission works",
@@ -340,4 +385,3 @@
     "numbered_badge": "w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white font-bold text-lg shadow-lg shadow-blue-500/50"
   }
 }
-

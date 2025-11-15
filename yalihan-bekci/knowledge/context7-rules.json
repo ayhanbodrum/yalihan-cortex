@@ -3,81 +3,61 @@
     "durum": {
       "value": "durum",
       "reason": "status kullan",
-      "sources": [
-        "02-CONTEXT7-RULES-SIMPLIFIED.md"
-      ],
+      "sources": ["02-CONTEXT7-RULES-SIMPLIFIED.md"],
       "severity": "critical"
     },
     "is_active": {
       "value": "is_active",
       "reason": "status kullan",
-      "sources": [
-        "02-CONTEXT7-RULES-SIMPLIFIED.md"
-      ],
+      "sources": ["02-CONTEXT7-RULES-SIMPLIFIED.md"],
       "severity": "critical"
     },
     "aktif": {
       "value": "aktif",
       "reason": "active kullan",
-      "sources": [
-        "02-CONTEXT7-RULES-SIMPLIFIED.md"
-      ],
+      "sources": ["02-CONTEXT7-RULES-SIMPLIFIED.md"],
       "severity": "critical"
     },
     "sehir": {
       "value": "sehir",
       "reason": "il kullan",
-      "sources": [
-        "02-CONTEXT7-RULES-SIMPLIFIED.md"
-      ],
+      "sources": ["02-CONTEXT7-RULES-SIMPLIFIED.md"],
       "severity": "critical"
     },
     "sehir_id": {
       "value": "sehir_id",
       "reason": "il_id kullan",
-      "sources": [
-        "02-CONTEXT7-RULES-SIMPLIFIED.md"
-      ],
+      "sources": ["02-CONTEXT7-RULES-SIMPLIFIED.md"],
       "severity": "critical"
     },
     "ad_soyad": {
       "value": "ad_soyad",
       "reason": "tam_ad accessor kullan",
-      "sources": [
-        "02-CONTEXT7-RULES-SIMPLIFIED.md"
-      ],
+      "sources": ["02-CONTEXT7-RULES-SIMPLIFIED.md"],
       "severity": "critical"
     },
     "full_name": {
       "value": "full_name",
       "reason": "name kullan",
-      "sources": [
-        "02-CONTEXT7-RULES-SIMPLIFIED.md"
-      ],
+      "sources": ["02-CONTEXT7-RULES-SIMPLIFIED.md"],
       "severity": "critical"
     },
     "btn-": {
       "value": "btn-",
       "reason": "neo-btn kullan (Neo Design)",
-      "sources": [
-        "02-CONTEXT7-RULES-SIMPLIFIED.md"
-      ],
+      "sources": ["02-CONTEXT7-RULES-SIMPLIFIED.md"],
       "severity": "critical"
     },
     "card-": {
       "value": "card-",
       "reason": "neo-card kullan (Neo Design)",
-      "sources": [
-        "02-CONTEXT7-RULES-SIMPLIFIED.md"
-      ],
+      "sources": ["02-CONTEXT7-RULES-SIMPLIFIED.md"],
       "severity": "critical"
     },
     "form-control": {
       "value": "form-control",
       "reason": "neo-input kullan",
-      "sources": [
-        "02-CONTEXT7-RULES-SIMPLIFIED.md"
-      ],
+      "sources": ["02-CONTEXT7-RULES-SIMPLIFIED.md"],
       "severity": "critical"
     }
   },
@@ -85,35 +65,25 @@
     "Değişken kontrolü: $taslak": {
       "value": "Değişken kontrolü: $taslak",
       "reason": "Controller'da $taslak tanımlanmalı",
-      "sources": [
-        "admin/admin-detayli-test-raporu.md",
-        "admin/admin-kapsamli-test-raporu.md"
-      ],
+      "sources": ["admin/admin-detayli-test-raporu.md", "admin/admin-kapsamli-test-raporu.md"],
       "severity": "warning"
     },
     "Değişken kontrolü: $status": {
       "value": "Değişken kontrolü: $status",
       "reason": "Controller'da $status tanımlanmalı",
-      "sources": [
-        "admin/admin-detayli-test-raporu.md",
-        "admin/admin-kapsamli-test-raporu.md"
-      ],
+      "sources": ["admin/admin-detayli-test-raporu.md", "admin/admin-kapsamli-test-raporu.md"],
       "severity": "warning"
     },
     "Değişken kontrolü: $etiketler": {
       "value": "Değişken kontrolü: $etiketler",
       "reason": "Controller'da $etiketler tanımlanmalı",
-      "sources": [
-        "admin/admin-kapsamli-test-raporu.md"
-      ],
+      "sources": ["admin/admin-kapsamli-test-raporu.md"],
       "severity": "warning"
     },
     "Değişken kontrolü: $ulkeler": {
       "value": "Değişken kontrolü: $ulkeler",
       "reason": "Controller'da $ulkeler tanımlanmalı",
-      "sources": [
-        "admin/admin-kapsamli-test-raporu.md"
-      ],
+      "sources": ["admin/admin-kapsamli-test-raporu.md"],
       "severity": "warning"
     }
   },
@@ -143,5 +113,5 @@
       "source": "02-CONTEXT7-RULES-SIMPLIFIED.md"
     }
   ],
-  "lastLoaded": "2025-11-05T06:46:15.704Z"
+  "lastLoaded": "2025-11-14T05:39:48.840Z"
 }

@@ -15,11 +15,10 @@ Geçici Raporlar: 34
 Tarih İçeren: 18
 En Büyük: README.md (32KB)
 
-Sorun:
-  ❌ Çok fazla MD dosyası (karışıklık)
-  ❌ Duplicate içerik (aynı konu 3-4 dosya)
-  ❌ Eski/tamamlanmış raporlar (artık gereksiz)
-  ❌ Navigation zorlaşıyor
+Sorun: ❌ Çok fazla MD dosyası (karışıklık)
+    ❌ Duplicate içerik (aynı konu 3-4 dosya)
+    ❌ Eski/tamamlanmış raporlar (artık gereksiz)
+    ❌ Navigation zorlaşıyor
 ```
 
 ---
@@ -29,6 +28,7 @@ Sorun:
 ### **1. SİLİNECEK DOSYALAR (~35 dosya)**
 
 #### **A) Tamamlanmış Fix Raporları (8 dosya)**
+
 ```bash
 # Artık gereksiz (sorun çözülmüş)
 rm CRITICAL_FIXES_IMMEDIATE.md
@@ -42,6 +42,7 @@ rm BACKEND_VALIDATION_TAMAMLAMA.md
 ```
 
 #### **B) Günlük/Geçici Raporlar (10 dosya)**
+
 ```bash
 # Tek seferlik, artık eski
 rm GUNLUK_OZET_2025_10_27.md
@@ -57,6 +58,7 @@ rm IMMEDIATE_FIXES_PLAN.md
 ```
 
 #### **C) Tek Seferlik Analiz Raporları (8 dosya)**
+
 ```bash
 # Analiz tamamlandı, artık gereksiz
 rm 8_SAYFA_DERIN_ANALIZ_RAPORU.md
@@ -70,6 +72,7 @@ rm SYSTEM_ARCHITECTURE_AND_FIXES.md
 ```
 
 #### **D) Setup Guide'lar (Tamamlandı) (5 dosya)**
+
 ```bash
 # Telescope/Horizon kuruldu, artık gereksiz
 rm TELESCOPE_SETUP_COMPLETE.md
@@ -80,6 +83,7 @@ rm HARD_REFRESH_INSTRUCTIONS.md
 ```
 
 #### **E) Test/Plan Dosyaları (4 dosya)**
+
 ```bash
 # Eski planlar, artık geçersiz
 rm TEST_PLANI.md
@@ -95,6 +99,7 @@ rm HIZLI_COZUM_REHBERI.md
 ### **2. BİRLEŞTİRİLECEK DOSYALAR**
 
 #### **A) Harita Sistemi (3 → 1)**
+
 ```bash
 # Hedef: docs/features/HARITA_SISTEMI.md
 mkdir -p docs/features
@@ -111,6 +116,7 @@ docs/features/HARITA_SISTEMI.md (tek, kapsamlı)
 ```
 
 #### **B) Tailwind Migration (3 → 1)**
+
 ```bash
 # Hedef: docs/technical/TAILWIND_MIGRATION.md
 
@@ -124,6 +130,7 @@ docs/technical/TAILWIND_MIGRATION.md
 ```
 
 #### **C) Property Type Manager (4 → 1)**
+
 ```bash
 # Hedef: docs/features/PROPERTY_TYPE_MANAGER.md
 
@@ -138,6 +145,7 @@ docs/features/PROPERTY_TYPE_MANAGER.md
 ```
 
 #### **D) Free Tools Setup (4 → 1)**
+
 ```bash
 # Hedef: docs/deployment/FREE_TOOLS_SETUP.md
 
@@ -152,6 +160,7 @@ docs/deployment/FREE_TOOLS_SETUP.md
 ```
 
 #### **E) Yazlık Sistemi (5 → 1)**
+
 ```bash
 # Hedef: docs/features/YAZLIK_KIRALAMA.md
 
@@ -201,25 +210,24 @@ mkdir -p docs/archive       # Eski raporlar (silinmeyecekler)
 
 ```yaml
 ÖNCE:
-  📁 Root: 77 MD dosyası
-  📂 Toplam: 266 MD dosyası
-  💾 Boyut: ~1.5MB
-  🤯 Karışıklık: Çok yüksek
+    📁 Root: 77 MD dosyası
+    📂 Toplam: 266 MD dosyası
+    💾 Boyut: ~1.5MB
+    🤯 Karışıklık: Çok yüksek
 
 SONRA:
-  📁 Root: ~10 MD dosyası (kritik)
-  📂 docs/features: 5 MD (konsolide)
-  📂 docs/technical: 3 MD (konsolide)
-  📂 docs/deployment: 2 MD (konsolide)
-  📂 docs/archive: ~25 MD (referans)
-  💾 Boyut: ~800KB
-  🎯 Karışıklık: Minimal
+    📁 Root: ~10 MD dosyası (kritik)
+    📂 docs/features: 5 MD (konsolide)
+    📂 docs/technical: 3 MD (konsolide)
+    📂 docs/deployment: 2 MD (konsolide)
+    📂 docs/archive: ~25 MD (referans)
+    💾 Boyut: ~800KB
+    🎯 Karışıklık: Minimal
 
-TASARRUF:
-  ✅ 35 dosya silinecek
-  ✅ 19 dosya birleştirilecek (→ 5 dosya)
-  ✅ ~700KB disk tasarrufu
-  ✅ %85 daha organize
+TASARRUF: ✅ 35 dosya silinecek
+    ✅ 19 dosya birleştirilecek (→ 5 dosya)
+    ✅ ~700KB disk tasarrufu
+    ✅ %85 daha organize
 ```
 
 ---
@@ -227,6 +235,7 @@ TASARRUF:
 ## 🚀 **HEMEN BAŞLAYALIM MI?**
 
 **Plan:**
+
 ```yaml
 1. Klasörleri oluştur (1 dakika)
 2. Kritik dosyaları koru

@@ -10,16 +10,16 @@
 
 ### Kullanım Analizi:
 
-| Dosya | Boyut | Route Var | Kullanılıyor | Durum |
-|-------|-------|-----------|--------------|-------|
-| login.blade.php | 12 KB | ✅ Evet | ✅ Aktif | KORU |
-| yaliihan-home-clean.blade.php | 19 KB | ✅ Evet (/yalihan) | ✅ Demo | KORU |
-| yaliihan-property-listing.blade.php | 254 B | ✅ Evet | ⚠️ Wrapper | KORU |
-| yaliihan-property-detail.blade.php | 1.7 KB | ✅ Evet | ⚠️ Wrapper | KORU |
-| yaliihan-contact.blade.php | 204 B | ✅ Evet | ⚠️ Wrapper | KORU |
-| modern-listings.blade.php | 32 KB | ❌ Yok | ❌ Kullanılmıyor | SİL! |
-| modern-listing-detail.blade.php | 34 KB | ❌ Yok | ❌ Kullanılmıyor | SİL! |
-| about.blade.php | 16 KB | ❌ Yok | ❌ Duplicate | SİL! |
+| Dosya                               | Boyut  | Route Var          | Kullanılıyor     | Durum |
+| ----------------------------------- | ------ | ------------------ | ---------------- | ----- |
+| login.blade.php                     | 12 KB  | ✅ Evet            | ✅ Aktif         | KORU  |
+| yaliihan-home-clean.blade.php       | 19 KB  | ✅ Evet (/yalihan) | ✅ Demo          | KORU  |
+| yaliihan-property-listing.blade.php | 254 B  | ✅ Evet            | ⚠️ Wrapper       | KORU  |
+| yaliihan-property-detail.blade.php  | 1.7 KB | ✅ Evet            | ⚠️ Wrapper       | KORU  |
+| yaliihan-contact.blade.php          | 204 B  | ✅ Evet            | ⚠️ Wrapper       | KORU  |
+| modern-listings.blade.php           | 32 KB  | ❌ Yok             | ❌ Kullanılmıyor | SİL!  |
+| modern-listing-detail.blade.php     | 34 KB  | ❌ Yok             | ❌ Kullanılmıyor | SİL!  |
+| about.blade.php                     | 16 KB  | ❌ Yok             | ❌ Duplicate     | SİL!  |
 
 **Sonuç:** 3 dosya silinebilir (82 KB)
 
@@ -28,32 +28,35 @@
 ## 🗑️ SİLİNEBİLİR DOSYALAR
 
 ### 1. modern-listings.blade.php (32 KB) ❌
+
 ```yaml
 Sebep:
-  - Route yok
-  - Controller kullanımı yok
-  - Duplicate (yaliihan-property-listing var)
-  
+    - Route yok
+    - Controller kullanımı yok
+    - Duplicate (yaliihan-property-listing var)
+
 Karar: SİL!
 ```
 
 ### 2. modern-listing-detail.blade.php (34 KB) ❌
+
 ```yaml
 Sebep:
-  - Route yok
-  - Controller kullanımı yok
-  - Duplicate (yaliihan-property-detail var)
-  
+    - Route yok
+    - Controller kullanımı yok
+    - Duplicate (yaliihan-property-detail var)
+
 Karar: SİL!
 ```
 
 ### 3. about.blade.php (16 KB - root) ❌
+
 ```yaml
 Sebep:
-  - Route yok
-  - Duplicate (pages/about.blade.php var)
-  - İki versiyon var!
-  
+    - Route yok
+    - Duplicate (pages/about.blade.php var)
+    - İki versiyon var!
+
 Karar: SİL! (pages/about.blade.php'yi kullan)
 ```
 
@@ -64,6 +67,7 @@ Karar: SİL! (pages/about.blade.php'yi kullan)
 ## 📁 FRONTEND DİZİN YAPISI
 
 ### Mevcut:
+
 ```yaml
 resources/views/
 ├── frontend/ (4 dosya)
@@ -85,10 +89,10 @@ resources/views/
 ├── blog/ (7 dosya) ✅
 │
 └── ROOT (8 dosya) ⚠️ KARISIK
-    ├── login.blade.php ✅ KORU
-    ├── yaliihan-*.blade.php (4 dosya) ✅ KORU
-    ├── modern-*.blade.php (2 dosya) ❌ SİL
-    └── about.blade.php ❌ SİL (duplicate)
+├── login.blade.php ✅ KORU
+├── yaliihan-*.blade.php (4 dosya) ✅ KORU
+├── modern-*.blade.php (2 dosya) ❌ SİL
+└── about.blade.php ❌ SİL (duplicate)
 ```
 
 **Sorun:** Root level karışık, organize edilmeli!
@@ -100,34 +104,36 @@ resources/views/
 ### Public CSS Dosyaları:
 
 **KULLANILIYOR:**
+
 ```yaml
 ✅ advanced-leaflet.css (12 KB)
    Kullanım: admin/layouts/neo.blade.php
-   
+
 ✅ context7-live-search.css (16 KB)
    Kullanım: 3 dosyada (neo.blade, components)
-   
+
 ✅ admin/neo-toast.css (8 KB)
    Kullanım: admin/layouts/neo.blade.php
-   
+
 ✅ admin/neo-skeleton.css (8 KB)
    Kullanım: admin/layouts/neo.blade.php
 ```
 
 **EKSIK (Kullanılıyor ama dosya yok!):**
+
 ```yaml
 ❌ professional-design-system.css
    Kullanım: ilanlar/index.blade.php
    Dosya: YOK!
-   
+
 ❌ quick-search.css
    Kullanım: vendor/admin-theme/layouts/app.blade.php
    Dosya: YOK!
-   
+
 ❌ dynamic-form-fields.css
    Kullanım: vendor/admin-theme/layouts/app.blade.php
    Dosya: YOK!
-   
+
 ❌ form-standards.css
    Kullanım: vendor/admin-theme/layouts/app.blade.php
    Dosya: YOK!
@@ -144,7 +150,7 @@ resources/views/
 ```yaml
 1. resources/views/about.blade.php (16 KB - root)
    Route: ❌ Yok
-   
+
 2. resources/views/pages/about.blade.php (4 KB)
    Route: ? Kontrol edilmeli
 
@@ -203,17 +209,17 @@ SONUÇ: Daha organize yapı
 
 ```yaml
 Silinecek:
-  - modern-listings.blade.php (32 KB)
-  - modern-listing-detail.blade.php (34 KB)
-  - about.blade.php (16 KB)
-  
+    - modern-listings.blade.php (32 KB)
+    - modern-listing-detail.blade.php (34 KB)
+    - about.blade.php (16 KB)
+
 Düzeltilecek:
-  - 4 broken CSS link
+    - 4 broken CSS link
 
 TOPLAM:
-  - 3 dosya, 82 KB temizlik
-  - 4 broken link düzeltme
-  - Daha temiz proje
+    - 3 dosya, 82 KB temizlik
+    - 4 broken link düzeltme
+    - Daha temiz proje
 ```
 
 ---
@@ -221,13 +227,12 @@ TOPLAM:
 ## 💡 ÖNERİ
 
 **HEMEN ŞİMDİ (2 dakika):**
+
 1. 3 duplicate dosyayı sil
 2. 4 broken link'i düzelt
 
-**SONRA (yarın):**
-3. Root level'ı organize et
+**SONRA (yarın):** 3. Root level'ı organize et
 
 ---
 
 **Başlayayım mı?** (2 dakika!) 🚀
-

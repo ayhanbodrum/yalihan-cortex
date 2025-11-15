@@ -101,7 +101,12 @@
         "generatePreview(file)",
         "showGallery(photos)"
       ],
-      "coverage": ["İlan Create/Edit", "Kişi Fotoğrafları", "Site Fotoğrafları", "Belge Yüklemeleri"],
+      "coverage": [
+        "İlan Create/Edit",
+        "Kişi Fotoğrafları",
+        "Site Fotoğrafları",
+        "Belge Yüklemeleri"
+      ],
       "estimated_reduction": "300+ lines of duplicate code"
     },
     {
@@ -189,12 +194,7 @@
       "log(...args)",
       "error(...args)"
     ],
-    "required_properties": [
-      "options",
-      "cache",
-      "state",
-      "listeners"
-    ],
+    "required_properties": ["options", "cache", "state", "listeners"],
     "file_structure": {
       "header": "/** Context7 System documentation */",
       "class_definition": "class Context7XxxSystem { ... }",
@@ -218,17 +218,8 @@
       "Category System (🔥 NEXT)",
       "Feature System"
     ],
-    "phase_2_short_term": [
-      "Person System",
-      "AI System",
-      "Media System"
-    ],
-    "phase_3_long_term": [
-      "Site System",
-      "Price System",
-      "Validation System",
-      "Notification System"
-    ]
+    "phase_2_short_term": ["Person System", "AI System", "Media System"],
+    "phase_3_long_term": ["Site System", "Price System", "Validation System", "Notification System"]
   },
 
   "yalihan_bekci_actions": {
@@ -242,11 +233,7 @@
       "Check Context7 compliance",
       "Add to knowledge base"
     ],
-    "on_system_usage": [
-      "Track usage patterns",
-      "Optimize based on metrics",
-      "Suggest improvements"
-    ]
+    "on_system_usage": ["Track usage patterns", "Optimize based on metrics", "Suggest improvements"]
   },
 
   "metrics_to_track": {
@@ -262,4 +249,3 @@
   "current_progress": "1/10 (10%)",
   "next_action": "Implement Category System"
 }
-

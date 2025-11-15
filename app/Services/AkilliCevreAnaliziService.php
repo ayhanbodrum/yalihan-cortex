@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Cache;
 
 /**
  * Akıllı Yakın Çevre Analizi Servisi
- * 
+ *
  * Context7: Açık kaynaklı POI tespiti ve analiz
  * - OpenStreetMap Overpass API
  * - Nominatim API
@@ -22,7 +22,7 @@ class AkilliCevreAnaliziService
     public function analyzeNearbyEnvironment(float $latitude, float $longitude, string $propertyType = 'arsa'): array
     {
         $cacheKey = "cevre_analiz_{$latitude}_{$longitude}_{$propertyType}";
-        
+
         return Cache::remember($cacheKey, 3600, function () use ($latitude, $longitude, $propertyType) {
             return $this->performEnvironmentAnalysis($latitude, $longitude, $propertyType);
         });
@@ -49,10 +49,10 @@ class AkilliCevreAnaliziService
     private function getPOIAnalysis(float $latitude, float $longitude, string $propertyType): array
     {
         $pois = [];
-        
+
         // Overpass API ile POI sorgusu
         $overpassQuery = $this->buildOverpassQuery($latitude, $longitude, $propertyType);
-        
+
         try {
             $response = Http::timeout(30)->post('https://overpass-api.de/api/interpreter', [
                 'data' => $overpassQuery
@@ -75,7 +75,7 @@ class AkilliCevreAnaliziService
     private function buildOverpassQuery(float $latitude, float $longitude, string $propertyType): string
     {
         $radius = $this->getRadiusForPropertyType($propertyType);
-        
+
         return "
         [out:json][timeout:25];
         (
@@ -184,7 +184,7 @@ class AkilliCevreAnaliziService
     {
         // Nominatim API ile yürüme mesafesi hesaplama
         $distances = [];
-        
+
         // Önemli noktalar için yürüme mesafesi
         $importantPOIs = [
             'metro' => 'Metro İstasyonu',
@@ -208,7 +208,7 @@ class AkilliCevreAnaliziService
     {
         // OSRM API ile araç mesafesi hesaplama
         $distances = [];
-        
+
         $importantDestinations = [
             'havaalani' => 'Havaalanı',
             'merkez' => 'Şehir Merkezi',
@@ -254,7 +254,7 @@ class AkilliCevreAnaliziService
     private function calculateEnvironmentScore(float $latitude, float $longitude, string $propertyType): int
     {
         $score = 0;
-        
+
         // POI'lerin ağırlıklı puanlaması
         $poiWeights = [
             'egitim' => 20,
@@ -265,7 +265,7 @@ class AkilliCevreAnaliziService
         ];
 
         $pois = $this->getPOIAnalysis($latitude, $longitude, $propertyType);
-        
+
         foreach ($pois as $category => $items) {
             $score += count($items) * ($poiWeights[$category] ?? 0);
         }
@@ -279,7 +279,7 @@ class AkilliCevreAnaliziService
     private function calculateInvestmentPotential(float $latitude, float $longitude, string $propertyType): string
     {
         $score = $this->calculateEnvironmentScore($latitude, $longitude, $propertyType);
-        
+
         if ($score >= 80) return 'Çok Yüksek';
         if ($score >= 60) return 'Yüksek';
         if ($score >= 40) return 'Orta';
@@ -293,7 +293,7 @@ class AkilliCevreAnaliziService
     private function calculateValueIncreaseEstimate(float $latitude, float $longitude, string $propertyType): array
     {
         $score = $this->calculateEnvironmentScore($latitude, $longitude, $propertyType);
-        
+
         return [
             '1_yil' => $this->calculateYearlyIncrease($score, 1),
             '3_yil' => $this->calculateYearlyIncrease($score, 3),
@@ -316,18 +316,18 @@ class AkilliCevreAnaliziService
     private function identifyRiskFactors(float $latitude, float $longitude, string $propertyType): array
     {
         $risks = [];
-        
+
         // Çevre analizi sonuçlarına göre risk faktörleri
         $pois = $this->getPOIAnalysis($latitude, $longitude, $propertyType);
-        
+
         if (empty($pois['egitim'])) {
             $risks[] = 'Eğitim kurumları uzak';
         }
-        
+
         if (empty($pois['saglik'])) {
             $risks[] = 'Sağlık kurumları uzak';
         }
-        
+
         if (empty($pois['ulasim'])) {
             $risks[] = 'Toplu taşıma erişimi sınırlı';
         }
@@ -342,15 +342,15 @@ class AkilliCevreAnaliziService
     {
         $recommendations = [];
         $score = $this->calculateEnvironmentScore($latitude, $longitude, $propertyType);
-        
+
         if ($score < 40) {
             $recommendations[] = 'Bu bölge için alternatif konumlar değerlendirin';
         }
-        
+
         if ($score >= 60) {
             $recommendations[] = 'Bu konum yatırım için uygun görünüyor';
         }
-        
+
         if ($score >= 80) {
             $recommendations[] = 'Bu konum çok değerli, hızlı karar verin';
         }

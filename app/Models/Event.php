@@ -162,7 +162,7 @@ class Event extends Model
             'status' => 'confirmed',
             'confirmed_at' => now(),
         ]);
-        
+
         return $this;
     }
 
@@ -176,7 +176,7 @@ class Event extends Model
             'cancelled_at' => now(),
             'cancellation_reason' => $reason,
         ]);
-        
+
         return $this;
     }
 

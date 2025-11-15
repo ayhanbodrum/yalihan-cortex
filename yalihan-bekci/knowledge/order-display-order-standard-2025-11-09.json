@@ -1,0 +1,93 @@
+{
+  "rule_name": "order_column_standard",
+  "version": "1.0.0",
+  "date": "2025-11-09",
+  "status": "ACTIVE",
+  "severity": "CRITICAL",
+  "description": "Context7 Standard: order kolonu YASAK, display_order ZORUNLU",
+  "forbidden_patterns": {
+    "database_column": {
+      "pattern": "order",
+      "replacement": "display_order",
+      "reason": "Context7 standardı: order kolonu yasak, display_order kullanılmalı",
+      "examples": [
+        {
+          "wrong": "$table->integer('order')->default(0);",
+          "correct": "$table->integer('display_order')->default(0);"
+        },
+        {
+          "wrong": "->orderBy('order')",
+          "correct": "->orderBy('display_order')"
+        },
+        {
+          "wrong": "'order' => $value",
+          "correct": "'display_order' => $value"
+        }
+      ]
+    },
+    "model_usage": {
+      "pattern": "orderBy('order')",
+      "replacement": "orderBy('display_order')",
+      "reason": "Veritabanında order kolonu yok, display_order var"
+    },
+    "controller_usage": {
+      "pattern": "orderBy('order')",
+      "replacement": "orderBy('display_order')",
+      "reason": "API ve Controller'larda display_order kullanılmalı"
+    }
+  },
+  "allowed_patterns": {
+    "backward_compatibility": {
+      "pattern": "getOrderAttribute() / setOrderAttribute()",
+      "reason": "Backward compatibility için accessor/mutator kullanılabilir",
+      "example": "public function getOrderAttribute() { return $this->display_order; }"
+    }
+  },
+  "affected_tables": [
+    "ilan_kategorileri",
+    "ilan_kategori_yayin_tipleri",
+    "ozellik_kategorileri",
+    "features",
+    "feature_categories",
+    "ilan_etiketler"
+  ],
+  "migration_standard": {
+    "rule": "Tüm migration'larda order → display_order kullanılmalı",
+    "example": "2025_10_27_085026_create_ilan_etiketler_table.php → display_order ✅"
+  },
+  "enforcement": {
+    "pre_commit": "BLOCKS commits with order column",
+    "ci_cd": "FAILS builds with order column",
+    "model_template": "Auto-generates display_order only",
+    "migration_template": "Auto-generates display_order only"
+  },
+  "references": [
+    ".context7/MIGRATION_COMPLIANCE_REPORT.md",
+    ".context7/MIGRATION_ORDER_VIOLATIONS.md",
+    ".context7/ORDER_USAGE_ANALYSIS.md"
+  ],
+  "fixes_applied": {
+    "date": "2025-11-09",
+    "migration": "2025_11_09_070721_rename_order_to_display_order_in_tables.php",
+    "models_updated": [
+      "IlanKategori",
+      "IlanKategoriYayinTipi",
+      "OzellikKategori"
+    ],
+    "controllers_updated": [
+      "PropertyTypeManagerController",
+      "YayinTipiYoneticisiController",
+      "AdminController",
+      "AICategoryController",
+      "TalepController",
+      "OzellikController",
+      "OzellikKategoriController",
+      "YazlikKiralamaController",
+      "CategoriesController",
+      "CategoryController",
+      "DynamicFormController"
+    ],
+    "backward_compatibility": "Accessor/Mutator eklendi: getOrderAttribute() / setOrderAttribute()"
+  }
+}
+

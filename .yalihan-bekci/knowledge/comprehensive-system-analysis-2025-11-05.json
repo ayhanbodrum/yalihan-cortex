@@ -4,7 +4,7 @@
   "category": "architecture",
   "priority": "CRITICAL",
   "status": "ANALYSIS",
-  
+
   "analysis_scope": {
     "pages_analyzed": [
       "/admin/ozellikler/kategoriler/5",
@@ -343,11 +343,7 @@
   "ai_support_analysis": {
     "current_usage": {
       "ai_service": "app/Services/AIService.php",
-      "ai_endpoints": [
-        "/api/admin/ai/analyze",
-        "/api/admin/ai/suggest",
-        "/api/admin/ai/generate"
-      ],
+      "ai_endpoints": ["/api/admin/ai/analyze", "/api/admin/ai/suggest", "/api/admin/ai/generate"],
       "status": "ACTIVE"
     },
     "recommendations": {
@@ -475,4 +471,3 @@
     ]
   }
 }
-

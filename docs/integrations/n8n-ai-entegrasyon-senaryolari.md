@@ -3,6 +3,7 @@
 ## 📋 Sisteminizde Mevcut AI Altyapısı
 
 ### **🧠 5 AI Provider Aktif:**
+
 1. **DeepSeek AI** - Kod analizi ve optimizasyon
 2. **OpenAI GPT-4** - İlan oluşturma ve içerik üretimi
 3. **Google Gemini** - Görsel analiz ve OCR
@@ -10,6 +11,7 @@
 5. **Ollama** - Offline AI işlemler (deepseek-r1:8b)
 
 ### **🎯 Mevcut AI Özellikleri:**
+
 - ✅ İlan açıklama oluşturma (6 farklı prompt şablonu)
 - ✅ SEO optimizasyonu
 - ✅ Fiyat tahmini (%91 doğruluk)
@@ -88,6 +90,7 @@
 ### **1. Otomatik İçerik Üretimi**
 
 **n8n Workflow:**
+
 ```
 Yeni İlan (Laravel)
     ↓
@@ -110,18 +113,19 @@ Laravel API
 ```
 
 **Laravel Tarafı:**
+
 ```php
 // routes/api.php
 Route::post('/n8n/ilan-ai-content', function (Request $request) {
     $ilan = Ilan::findOrFail($request->ilan_id);
-    
+
     $ilan->update([
         'aciklama' => $request->ai_aciklama,
         'seo_tags' => json_encode($request->tags),
         'ai_content_score' => $request->content_score,
         'meta_description' => $request->meta_description,
     ]);
-    
+
     return response()->json(['success' => true]);
 });
 ```
@@ -131,6 +135,7 @@ Route::post('/n8n/ilan-ai-content', function (Request $request) {
 ### **2. Akıllı Müşteri Eşleştirme**
 
 **n8n Workflow:**
+
 ```
 Yeni Kişi Kaydedilir (Laravel)
     ↓
@@ -160,6 +165,7 @@ Email / WhatsApp / Telegram
 ### **3. Otomatik Fiyat Güncelleme**
 
 **n8n Cron Workflow (Her gün 09:00):**
+
 ```
 Cron Trigger
     ↓
@@ -187,6 +193,7 @@ Telegram / Email
 ### **4. Görsel Kalite Kontrolü**
 
 **n8n Workflow:**
+
 ```
 İlan Görseli Yüklenir
     ↓
@@ -214,6 +221,7 @@ Ollama (Local AI)
 ### **5. Akıllı Randevu Hatırlatma**
 
 **n8n Workflow:**
+
 ```
 Randevu Oluşturulur (Laravel)
     ↓
@@ -352,6 +360,7 @@ Body:
 ### **Workflow 1: AI-Powered İlan Pipeline**
 
 **Kurulum:**
+
 1. n8n'de "+" → "Webhook" node ekle
 2. "OpenAI" node ekle → İlan açıklaması oluştur
 3. "Google Gemini" HTTP node → Görselleri analiz et
@@ -359,6 +368,7 @@ Body:
 5. "Telegram" node → Admin'e bildir
 
 **Laravel Tarafı:**
+
 ```php
 // App\Services\N8nService.php
 public function triggerAIContentGeneration(Ilan $ilan)
@@ -381,6 +391,7 @@ public function triggerAIContentGeneration(Ilan $ilan)
 ### **Workflow 2: Günlük AI Raporu**
 
 **n8n Cron (Her gün 08:00):**
+
 ```
 1. Cron Trigger
 2. HTTP Request → Laravel API
@@ -392,6 +403,7 @@ public function triggerAIContentGeneration(Ilan $ilan)
 ```
 
 **Laravel API:**
+
 ```php
 // routes/api.php
 Route::get('/ai/daily-report', function () {
@@ -404,7 +416,7 @@ Route::get('/ai/daily-report', function () {
             'ort_gorsel_skoru' => Ilan::avg('ai_image_score'),
         ],
     ];
-    
+
     return response()->json($report);
 });
 ```
@@ -478,16 +490,19 @@ Email / Slack
 ## 📊 AI + n8n ROI Hesaplama
 
 ### **Zaman Tasarrufu:**
+
 - Manuel ilan açıklaması: 15 dk/ilan
 - AI + n8n ile: 2 dk/ilan
 - **Tasarruf: %87 (13 dakika/ilan)**
 
 ### **Kalite Artışı:**
+
 - SEO skorları: +35%
 - Görüntülenme: +45%
 - Lead dönüşümü: +28%
 
 ### **Maliyet Azaltma:**
+
 - İçerik yazarı maliyeti: ~$500/ay
 - AI maliyeti: ~$50/ay
 - **Tasarruf: %90**
@@ -497,6 +512,7 @@ Email / Slack
 ## 🔒 Güvenlik ve Best Practices
 
 ### **1. API Key Yönetimi**
+
 ```env
 # .env
 OPENAI_API_KEY=sk-...
@@ -507,6 +523,7 @@ N8N_WEBHOOK_TOKEN=your-secret-token
 ```
 
 ### **2. Rate Limiting**
+
 ```php
 // Laravel API
 Route::middleware('throttle:ai:10,1')->group(function () {
@@ -515,17 +532,18 @@ Route::middleware('throttle:ai:10,1')->group(function () {
 ```
 
 ### **3. Cost Monitoring**
+
 ```javascript
 // n8n Function Node
 const cost = {
-  'gpt-4': 0.03 / 1000 * tokens,
-  'gemini': 0.00025 / 1000 * tokens,
-  'claude': 0.015 / 1000 * tokens,
+    'gpt-4': (0.03 / 1000) * tokens,
+    gemini: (0.00025 / 1000) * tokens,
+    claude: (0.015 / 1000) * tokens,
 };
 
 // Günlük limit kontrolü
 if (dailyCost > 100) {
-  return { error: 'Daily limit exceeded' };
+    return { error: 'Daily limit exceeded' };
 }
 ```
 
@@ -544,4 +562,3 @@ if (dailyCost > 100) {
 **Hazırlayan:** Yalıhan Emlak AI Takımı  
 **Son Güncelleme:** 10 Ekim 2025  
 **Context7 Uyumlu:** ✅
-

@@ -148,4 +148,3 @@ IlanKategoriYayinTipi::find(1)->featureAssignments
 ---
 
 **Yalıhan Bekçi Ready ✅**
-

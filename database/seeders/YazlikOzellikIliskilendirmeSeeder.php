@@ -13,7 +13,7 @@ use App\Models\FeatureAssignment;
 
 /**
  * Yazlık Kategori Özellik İlişkilendirme Seeder
- * 
+ *
  * Yazlık kategorisi ve Kiralık yayın tipi için tüm özellikleri ilişkilendirir.
  */
 class YazlikOzellikIliskilendirmeSeeder extends Seeder
@@ -30,7 +30,7 @@ class YazlikOzellikIliskilendirmeSeeder extends Seeder
 
         // Yazlık kategori ve yayın tipini bul
         $yazlik = IlanKategori::where('name', 'Yazlık')->where('seviye', 1)->first();
-        
+
         if (!$yazlik) {
             $this->command->warn('⚠️ Yazlık kategorisi bulunamadı!');
             return;
@@ -38,7 +38,7 @@ class YazlikOzellikIliskilendirmeSeeder extends Seeder
 
         // Yazlık'ın parent'ı (Konut - ID: 1)
         $konutKategoriId = $yazlik->parent_id;
-        
+
         // Kiralık yayın tipini bul
         $kiralik = IlanKategoriYayinTipi::where('kategori_id', $konutKategoriId)
             ->where('yayin_tipi', 'Kiralık')
@@ -69,14 +69,14 @@ class YazlikOzellikIliskilendirmeSeeder extends Seeder
             ->with(['features' => function($q) {
                 $hasStatusColumn = Schema::hasColumn('features', 'status');
                 $hasEnabledColumn = Schema::hasColumn('features', 'enabled');
-                
+
                 if ($hasStatusColumn) {
                     $q->where('status', true);
                 } elseif ($hasEnabledColumn) {
                     $q->where('enabled', true);
                 }
-                
-                $q->orderBy('order');
+
+                $q->orderBy('display_order');
             }])
             ->get();
 
@@ -85,7 +85,7 @@ class YazlikOzellikIliskilendirmeSeeder extends Seeder
 
         foreach ($yazlikKategorileri as $kategori) {
             $this->command->info("  📋 {$kategori->name} kategorisi işleniyor...");
-            
+
             foreach ($kategori->features as $feature) {
                 // Özelliği yayın tipine ata (polymorphic relationship)
                 try {
@@ -98,7 +98,7 @@ class YazlikOzellikIliskilendirmeSeeder extends Seeder
                         [
                             'is_required' => false,
                             'is_visible' => true,
-                            'order' => $order,
+                            'display_order' => $order,
                             'group_name' => $kategori->name,
                         ]
                     );
@@ -108,11 +108,10 @@ class YazlikOzellikIliskilendirmeSeeder extends Seeder
                     $this->command->warn("    ⚠️ {$feature->name} atanamadı: " . $e->getMessage());
                 }
             }
-            
+
             $this->command->info("    ✓ {$kategori->name}: {$kategori->features->count()} özellik atandı");
         }
 
         $this->command->info("✅ Toplam {$toplamAtanan} özellik yazlık kiralama yayın tipine atandı!");
     }
 }
-

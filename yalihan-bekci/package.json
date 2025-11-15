@@ -1,6 +1,6 @@
 {
-    "name": "testsprite-mcp",
-    "version": "1.0.0",
-    "type": "commonjs",
-    "description": "TestSprite MCP - Context7 Auto-Learning Test System"
+  "name": "testsprite-mcp",
+  "version": "1.0.0",
+  "type": "commonjs",
+  "description": "TestSprite MCP - Context7 Auto-Learning Test System"
 }

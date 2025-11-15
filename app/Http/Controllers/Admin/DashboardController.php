@@ -33,7 +33,7 @@ class DashboardController extends AdminController
         } catch (\Exception $e) {
             // ✅ STANDARDIZED: Using LogService
             LogService::error('Dashboard error', [], $e);
-            
+
             return view('admin.dashboard.index', [
                 'quickStats' => $this->getEmptyStats(),
                 'recentIlanlar' => [],
@@ -223,7 +223,7 @@ class DashboardController extends AdminController
 
             // ✅ DashboardWidget model kullanımı
             $widget = DashboardWidget::forUser(Auth::id())->findOrFail($id);
-            
+
             $widget->update([
                 'name' => $validated['name'],
                 'type' => $validated['type'],
@@ -365,20 +365,25 @@ class DashboardController extends AdminController
             'ilce:id,ilce_adi',
             'kategori:id,name'
         ])
-        ->select(['id', 'baslik', 'ilan_basligi', 'fiyat', 'para_birimi', 'status', 
+        ->select(['id', 'baslik', 'ilan_basligi', 'fiyat', 'para_birimi', 'status',
                   'ilan_sahibi_id', 'il_id', 'ilce_id', 'kategori_id', 'created_at'])
         ->latest('created_at')
         ->limit(5)
         ->get();
-        $recentUsers = \App\Models\User::latest('created_at')->limit(5)->get();
-        
+
+        // ✅ EAGER LOADING: User relationships
+        $recentUsers = \App\Models\User::with(['roles:id,name'])
+            ->latest('created_at')
+            ->limit(5)
+            ->get();
+
         return [
             'quickStats' => [
                 'total_ilanlar' => \App\Models\Ilan::count(),
-                'active_ilanlar' => \App\Models\Ilan::where('status', 'Aktif')->count(),
+                'active_ilanlar' => \App\Models\Ilan::where('status', true)->count(),
                 'total_kullanicilar' => \App\Models\User::count(),
-                'total_danismanlar' => \App\Models\User::whereHas('roles', function($q) { 
-                    $q->where('name', 'danisman'); 
+                'total_danismanlar' => \App\Models\User::whereHas('roles', function($q) {
+                    $q->where('name', 'danisman');
                 })->count(),
                 'system_status' => [
                     'database' => 'online',
@@ -476,9 +481,9 @@ class DashboardController extends AdminController
     private function getRecentActivities()
     {
         $activities = [];
-        
+
         // Son eklenen ilanlar
-        // ✅ EAGER LOADING: Prevent N+1 queries
+        // ✅ PERFORMANCE FIX: N+1 query önlendi - Eager loading eklendi
         $recentIlanlar = \App\Models\Ilan::with([
             'danisman:id,name',
             'ilanSahibi:id,ad,soyad'
@@ -487,7 +492,7 @@ class DashboardController extends AdminController
         ->latest('created_at')
         ->limit(3)
         ->get();
-        
+
         foreach ($recentIlanlar as $ilan) {
             $activities[] = [
                 'id' => $ilan->id,
@@ -497,12 +502,12 @@ class DashboardController extends AdminController
                 'user' => $ilan->danisman->name ?? 'System'
             ];
         }
-        
+
         // Son eklenen kişiler
         $recentKisiler = \App\Models\Kisi::latest('created_at')
             ->limit(2)
             ->get();
-        
+
         foreach ($recentKisiler as $kisi) {
             $activities[] = [
                 'id' => $kisi->id,
@@ -512,7 +517,7 @@ class DashboardController extends AdminController
                 'user' => 'Admin'
             ];
         }
-        
+
         return collect($activities)->sortByDesc('id')->take(5)->values()->all();
     }
 
@@ -524,13 +529,13 @@ class DashboardController extends AdminController
     private function calculateConversionRate()
     {
         $totalTalepler = \App\Models\Talep::count();
-        
+
         if ($totalTalepler === 0) {
             return 0;
         }
-        
+
         $eslesenTalepler = \App\Models\Eslesme::distinct('talep_id')->count('talep_id');
-        
+
         return round(($eslesenTalepler / $totalTalepler) * 100, 1);
     }
 
@@ -544,7 +549,7 @@ class DashboardController extends AdminController
         // Son 6 ay için aylık ilan istatistikleri
         $monthlyData = [];
         $monthlyLabels = [];
-        
+
         for ($i = 5; $i >= 0; $i--) {
             $date = now()->subMonths($i);
             $monthlyLabels[] = $date->locale('tr')->translatedFormat('F');
@@ -552,14 +557,14 @@ class DashboardController extends AdminController
                 ->whereMonth('created_at', $date->month)
                 ->count();
         }
-        
+
         // Kategori bazlı ilan dağılımı
         $categories = \App\Models\IlanKategori::withCount('ilanlar')
             ->having('ilanlar_count', '>', 0)
             ->orderByDesc('ilanlar_count')
             ->limit(6)
             ->get();
-        
+
         return [
             'monthly_sales' => [
                 'labels' => $monthlyLabels,

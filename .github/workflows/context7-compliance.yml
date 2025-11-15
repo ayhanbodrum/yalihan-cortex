@@ -1,51 +1,45 @@
 name: Context7 Compliance Check
 
 on:
-  push:
-    branches: [ main, develop ]
   pull_request:
+    branches: [ main, develop ]
+  push:
     branches: [ main, develop ]
 
 jobs:
-  context7-compliance:
+  context7-check:
+    name: Context7 Compliance Check
     runs-on: ubuntu-latest
-    
+
     steps:
-    - uses: actions/checkout@v3
-    
-    - name: Setup PHP
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: 8.1
-        extensions: mbstring, xml, ctype, iconv, intl, pdo_sqlite
-    
-    - name: Install dependencies
-      run: composer install --prefer-dist --no-progress
-      
-    - name: Run Context7 Compliance Check
-      run: |
-        echo "🚀 Running Context7 compliance check..."
-        php scripts/context7_final_compliance_checker.php
-        
-    - name: Context7 Compliance Gate
-      run: |
-        VIOLATIONS=$(php scripts/context7_final_compliance_checker.php | grep "Toplam ihlal:" | sed "s/.*: //")
-        echo "Current violations: $VIOLATIONS"
-        if [ "$VIOLATIONS" -gt 142 ]; then
-          echo "❌ Context7 compliance check failed! Too many violations: $VIOLATIONS"
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: mbstring, xml, bcmath, pdo, pdo_mysql
+
+      - name: Install dependencies
+        run: |
+          composer install --no-interaction --prefer-dist --optimize-autoloader
+
+      - name: Context7 Compliance Check
+        run: |
+          chmod +x scripts/context7-full-scan.sh
+          ./scripts/context7-full-scan.sh --report .context7/ci-compliance-report.md
+
+      - name: Upload compliance report
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: context7-compliance-report
+          path: .context7/ci-compliance-report.md
+
+      - name: Fail if violations found
+        if: failure()
+        run: |
+          echo "❌ Context7 compliance check failed!"
+          echo "Please fix the violations before merging."
           exit 1
-        else
-          echo "✅ Context7 compliance check passed!"
-        fi
-        
-    - name: Generate Compliance Report
-      if: always()
-      run: |
-        php scripts/context7-progress-monitor.php > context7-report.txt
-        
-    - name: Upload Compliance Report
-      if: always()
-      uses: actions/upload-artifact@v3
-      with:
-        name: context7-compliance-report
-        path: context7-report.txt

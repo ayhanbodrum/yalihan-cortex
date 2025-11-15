@@ -19,9 +19,9 @@ class YazlikRezervasyon extends Model
 
     protected $fillable = [
         'ilan_id',
-        'musteri_adi',
-        'musteri_telefon',
-        'musteri_email',
+        'kisi_adi', // Context7: musteri_adi → kisi_adi (migration: 2025_11_11_103355)
+        'kisi_telefon', // Context7: musteri_telefon → kisi_telefon (migration: 2025_11_11_103355)
+        'kisi_email', // Context7: musteri_email → kisi_email (migration: 2025_11_11_103355)
         'check_in',
         'check_out',
         'misafir_sayisi',

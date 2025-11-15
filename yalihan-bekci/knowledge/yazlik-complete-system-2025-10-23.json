@@ -52,7 +52,13 @@
       {
         "name": "Premium Lokasyon",
         "features": 5,
-        "examples": ["Denize Sıfır", "Özel Plajlı", "Korunaklı Koy", "Doğa İçinde", "Marina Yakını"],
+        "examples": [
+          "Denize Sıfır",
+          "Özel Plajlı",
+          "Korunaklı Koy",
+          "Doğa İçinde",
+          "Marina Yakını"
+        ],
         "importance": "HIGH",
         "search_priority": "CRITICAL"
       },
@@ -216,12 +222,7 @@
   },
 
   "pricing_system": {
-    "fields_in_database": [
-      "gunluk_fiyat",
-      "haftalik_fiyat",
-      "aylik_fiyat",
-      "sezonluk_fiyat"
-    ],
+    "fields_in_database": ["gunluk_fiyat", "haftalik_fiyat", "aylik_fiyat", "sezonluk_fiyat"],
     "features_for_extras": [
       "Temizlik Ücreti",
       "Depozito",
@@ -234,12 +235,7 @@
       "Klima Kullanımı",
       "Havuz/Bahçe Bakımı"
     ],
-    "extra_services": [
-      "Havaalanı Transferi",
-      "Günlük Temizlik",
-      "Yemek Servisi",
-      "Çamaşır Yıkama"
-    ],
+    "extra_services": ["Havaalanı Transferi", "Günlük Temizlik", "Yemek Servisi", "Çamaşır Yıkama"],
     "logic": {
       "base_price": "gunluk_fiyat (field)",
       "extra_fees": "Features ile yönetilir",
@@ -314,11 +310,7 @@
       "feature": "Turizm İşletme Belgesi",
       "format": "07-1776 (İl Kodu - Sıra No)",
       "validation": "^[0-9]{2}-[0-9]{4}$",
-      "examples": [
-        "07-1776 (Antalya)",
-        "48-2344 (Muğla)",
-        "06-5678 (Ankara)"
-      ],
+      "examples": ["07-1776 (Antalya)", "48-2344 (Muğla)", "06-5678 (Ankara)"],
       "benefit": "Yasal güvence, güvenilirlik, resmi işletme"
     },
     "premium_location": {
@@ -351,7 +343,12 @@
       }
     },
     "pricing_transparency": {
-      "fiyata_dahil": ["Çarşaf/Havlu", "Elektrik/Su (seçimli)", "Klima (limitle)", "Havuz/Bahçe Bakımı"],
+      "fiyata_dahil": [
+        "Çarşaf/Havlu",
+        "Elektrik/Su (seçimli)",
+        "Klima (limitle)",
+        "Havuz/Bahçe Bakımı"
+      ],
       "ekstra_ucretli": ["Transfer", "Günlük Temizlik", "Yemek", "Çamaşır", "Bebek Ekipmanı"],
       "benefit": "Airbnb transparency standard, no hidden fees"
     }
@@ -422,4 +419,3 @@
     "arsa-yazlik-migrations-2025-10-22.json"
   ]
 }
-

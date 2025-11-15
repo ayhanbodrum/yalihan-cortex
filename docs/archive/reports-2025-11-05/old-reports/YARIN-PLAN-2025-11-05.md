@@ -21,6 +21,7 @@
 **Hedef:** İlk Neo → Tailwind migration (pattern oluştur)
 
 **Adımlar:**
+
 ```bash
 # 1. Neo class audit (15dk)
 grep -r "neo-btn\|neo-card\|neo-input" resources/views/admin/ --include="*.blade.php" -c | sort -t: -k2 -n -r | head -10
@@ -46,6 +47,7 @@ grep -r "neo-btn\|neo-card\|neo-input" resources/views/admin/ --include="*.blade
 **Fayda:** HIGH (pattern netleşir)
 
 **Neden bu önerilebilir:**
+
 - Hızlı sonuç (2 saat)
 - Pattern oluşur (diğer sayfalar için template)
 - Momentum devam eder
@@ -58,6 +60,7 @@ grep -r "neo-btn\|neo-card\|neo-input" resources/views/admin/ --include="*.blade
 **Hedef:** Eksik Blade components oluştur
 
 **Yapılacak Components:**
+
 ```
 1. Modal component (30dk)
    - Reusable modal wrapper
@@ -94,6 +97,7 @@ grep -r "neo-btn\|neo-card\|neo-input" resources/views/admin/ --include="*.blade
 **Fayda:** VERY HIGH (component library complete)
 
 **Neden bu seçilebilir:**
+
 - Component library tamamlanır
 - Reusability maksimum
 - Future development hızlanır
@@ -106,6 +110,7 @@ grep -r "neo-btn\|neo-card\|neo-input" resources/views/admin/ --include="*.blade
 **Hedef:** JS dosyalarını organize et, maintainability arttır
 
 **Adımlar:**
+
 ```bash
 # 1. Klasör yapısı oluştur (10dk)
 mkdir -p resources/js/admin/components
@@ -133,6 +138,7 @@ mkdir -p resources/js/admin/services
 **Fayda:** MEDIUM-HIGH (maintainability)
 
 **Neden bu seçilebilir:**
+
 - Code organization
 - Maintainability
 - Future scalability
@@ -143,6 +149,7 @@ mkdir -p resources/js/admin/services
 ## 💡 BENİM ÖNERİM: SEÇENEK A
 
 **Neden?**
+
 1. **Hızlı sonuç** (2 saat)
 2. **Pattern oluşur** (diğer sayfalar için template)
 3. **Görsel sonuç** (before/after screenshots)
@@ -150,6 +157,7 @@ mkdir -p resources/js/admin/services
 5. **Motivasyon** (tangible progress)
 
 **Akış:**
+
 ```
 09:00-09:15: Sabah kahvesi + kod review
 09:15-09:30: Neo class audit (sayfa tespiti)
@@ -165,11 +173,11 @@ SONUÇ: İlk sayfa migrate edilmiş, pattern netleşmiş!
 
 ## 📊 SEÇENEK KARŞILAŞTIRMASI
 
-| Seçenek | Süre | Zorluk | Fayda | Görsel Sonuç | Pattern |
-|---------|------|--------|-------|--------------|---------|
-| **A: UI Consistency** | 2h | ORTA | HIGH | ✅ Var | ✅ Oluşur |
-| B: Component Library | 3h | ZOR | V.HIGH | ❌ Yok | ⚠️ Var |
-| C: JS Organization | 2h | ORTA | MEDIUM | ❌ Yok | ✅ Oluşur |
+| Seçenek               | Süre | Zorluk | Fayda  | Görsel Sonuç | Pattern   |
+| --------------------- | ---- | ------ | ------ | ------------ | --------- |
+| **A: UI Consistency** | 2h   | ORTA   | HIGH   | ✅ Var       | ✅ Oluşur |
+| B: Component Library  | 3h   | ZOR    | V.HIGH | ❌ Yok       | ⚠️ Var    |
+| C: JS Organization    | 2h   | ORTA   | MEDIUM | ❌ Yok       | ✅ Oluşur |
 
 **Önerilen:** SEÇENEK A ⭐
 
@@ -178,6 +186,7 @@ SONUÇ: İlk sayfa migrate edilmiş, pattern netleşmiş!
 ## 🚀 YARIN'IN QUICK START REHBERİ
 
 ### 1. Sabah Hazırlığı (15dk)
+
 ```bash
 # Git pull (eğer başka PC'den çalışıyorsan)
 git pull origin main
@@ -193,6 +202,7 @@ cat BUGUN-TAMAMLANAN-2025-11-04-FINAL.md
 ```
 
 ### 2. Kod Review (15dk)
+
 ```bash
 # Bugün ne yaptık?
 git log --oneline -11
@@ -206,6 +216,7 @@ php artisan standard:check
 ```
 
 ### 3. Plan Seç ve Başla! (2-3 saat)
+
 ```
 Seçenek A → UI Consistency
 Seçenek B → Component Library
@@ -217,18 +228,21 @@ Seçenek C → JS Organization
 ## 📚 REFERANS DOSYALAR (Yarın kullanılacak)
 
 **Active Documents:**
+
 - `IYILESTIRME-ROADMAP-2025-11-04.md` (ana plan)
 - `SIRADAKI-3-ADIM.md` (öncelik sırası)
 - `PHASE-1-COMPLETE-REPORT.md` (tamamlananlar)
 - `PHASE-2-AJAX-MIGRATION-PLAN.md` (AJAX pattern)
 
 **Yalıhan Bekçi Knowledge:**
+
 - `.yalihan-bekci/knowledge/yalihan-bekci-standards-checklist.md`
 - `.yalihan-bekci/knowledge/css-architecture-standards.md`
 - `.yalihan-bekci/knowledge/phase-1-critical-fixes-2025-11-04.json`
 - `.yalihan-bekci/knowledge/phase-2-ux-improvements-2025-11-04.json`
 
 **Archived (Referans için):**
+
 - `docs/archive/2025-11-04-completed/` (12 dosya)
 
 ---
@@ -236,6 +250,7 @@ Seçenek C → JS Organization
 ## 💬 YARIN İÇİN NOTLAR
 
 ### ✅ Yapılması Gerekenler:
+
 - [ ] Browser'da manuel test (bugün yaptıklarını)
 - [ ] Seçenek A/B/C'den birini seç
 - [ ] PHASE 3'e başla
@@ -243,6 +258,7 @@ Seçenek C → JS Organization
 - [ ] Yalıhan Bekçi'ye öğret
 
 ### ⚠️ Dikkat Edilmesi Gerekenler:
+
 - Neo → Tailwind migration dikkatli yapılmalı
 - Before/after screenshot al
 - Context7 compliance kontrol et
@@ -254,12 +270,13 @@ Seçenek C → JS Organization
 ## 🎯 HEDEF: PHASE 3'Ü 1-2 HAFTADA TAMAMLA!
 
 **PHASE 3 Breakdown:**
+
 ```
 Week 1 (5-11 Kasım):
   - 5-7 sayfa Neo → Tailwind migration
   - Pattern document
   - Component library başlangıç
-  
+
 Week 2 (12-18 Kasım):
   - Component library tamamla
   - JavaScript organization
@@ -267,6 +284,7 @@ Week 2 (12-18 Kasım):
 ```
 
 **Eğer hızlı gidersek:**
+
 - PHASE 3 10-12 günde bitebilir
 - PHASE 4'e başlayabiliriz (optimization)
 
@@ -285,4 +303,3 @@ Week 2 (12-18 Kasım):
 **İyi geceler! Yarın görüşmek üzere!** 🌙
 
 **Server çalışıyor:** http://127.0.0.1:8000
-

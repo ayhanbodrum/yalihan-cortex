@@ -1,0 +1,14 @@
+{
+  "date": "2025-11-14 00:00:00",
+  "status": "completed",
+  "summary": {
+    "total": 795,
+    "critical": 559,
+    "high": 236
+  },
+  "notes": [
+    "This report reflects the latest Context7/Bekçi compliance scan results",
+    "Migration files flagged due to rename text: order → display_order",
+    "Controllers updated to remove 'order' validation keys and use Tailwind in UI components"
+  ]
+}

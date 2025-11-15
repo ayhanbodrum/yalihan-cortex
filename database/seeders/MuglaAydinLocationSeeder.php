@@ -10,10 +10,10 @@ use App\Models\Mahalle;
 
 /**
  * Muğla-Aydın Lokasyon Seeder
- * 
+ *
  * Context7 standartlarına uygun Muğla ve Aydın bölgesi lokasyon verilerini seed eder.
  * Context7 Standardı: C7-LOCATION-SEEDER-2025-11-05
- * 
+ *
  * Kapsam:
  * - Muğla: 13 ilçe + popüler mahalleler (Bodrum, Marmaris, Fethiye, vb.)
  * - Aydın: 17 ilçe + popüler mahalleler (Didim, Kuşadası, Söke, vb.)
@@ -37,12 +37,12 @@ class MuglaAydinLocationSeeder extends Seeder
         // 1. Muğla İli
         $this->command->info('🏛️ 1. Muğla ili kontrol ediliyor...');
         $mugla = Il::where('plaka_kodu', '48')->first();
-        
+
         if (!$mugla) {
             $this->command->warn('   ⚠️ Muğla ili bulunamadı! Önce TurkiyeIlleriSeeder çalıştırın.');
             return;
         }
-        
+
         $this->command->info("   ✓ Muğla ili bulundu (ID: {$mugla->id})");
 
         // 2. Muğla İlçeleri
@@ -78,12 +78,12 @@ class MuglaAydinLocationSeeder extends Seeder
         // 4. Aydın İli
         $this->command->info('🏛️ 4. Aydın ili kontrol ediliyor...');
         $aydin = Il::where('plaka_kodu', '09')->first();
-        
+
         if (!$aydin) {
             $this->command->warn('   ⚠️ Aydın ili bulunamadı! Önce TurkiyeIlleriSeeder çalıştırın.');
             return;
         }
-        
+
         $this->command->info("   ✓ Aydın ili bulundu (ID: {$aydin->id})");
 
         // 5. Aydın İlçeleri
@@ -288,4 +288,3 @@ class MuglaAydinLocationSeeder extends Seeder
         return $count;
     }
 }
-

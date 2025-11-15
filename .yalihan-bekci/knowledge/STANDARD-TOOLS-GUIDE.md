@@ -10,6 +10,7 @@
 ## 🎯 STANDART SİSTEMLERE GEÇİŞ
 
 ### **Amaç:**
+
 Dizin işlemleri ve dosya güncellemeleri için **standart Cursor toolları** kullanmak.
 
 ---
@@ -19,19 +20,20 @@ Dizin işlemleri ve dosya güncellemeleri için **standart Cursor toolları** ku
 ### **Standart Cursor Tools:**
 
 #### **1. Dosya Okuma** ✅
+
 ```yaml
 Tool: read_file
 Usage:
-  - Dosya içeriğini okumak için
-  - Offset ve limit ile kısmi okuma
-  - Image dosyalarını okuma
+    - Dosya içeriğini okumak için
+    - Offset ve limit ile kısmi okuma
+    - Image dosyalarını okuma
 
-Example:
-  read_file(target_file="/path/to/file.php")
-  read_file(target_file="app/Models/Talep.php", offset=1, limit=50)
+Example: read_file(target_file="/path/to/file.php")
+    read_file(target_file="app/Models/Talep.php", offset=1, limit=50)
 ```
 
 #### **2. Dosya Yazma / Düzenleme** ✅
+
 ```yaml
 Tool: search_replace (PREFERRED for existing files)
 Usage:
@@ -53,17 +55,18 @@ Usage:
 ```
 
 #### **3. Dosya Silme** ✅
+
 ```yaml
 Tool: delete_file
 Usage:
-  - Dosya silmek için
-  - Güvenli (gracefully fails)
+    - Dosya silmek için
+    - Güvenli (gracefully fails)
 
-Example:
-  delete_file(target_file="public/css/neo-unified.css")
+Example: delete_file(target_file="public/css/neo-unified.css")
 ```
 
 #### **4. Dosya/Dizin Listeleme** ✅
+
 ```yaml
 Tool: list_dir
 Usage:
@@ -89,6 +92,7 @@ Example:
 ```
 
 #### **5. Kod Arama** ✅
+
 ```yaml
 Tool: grep
 Usage:
@@ -120,6 +124,7 @@ Example:
 ## 🚫 KULLANILMAYACAK TOOLS
 
 ### **Desktop Commander (MCP_DOCKER) - KULLANMA!**
+
 ```yaml
 ❌ mcp_MCP_DOCKER_read_file
 ❌ mcp_MCP_DOCKER_write_file
@@ -141,48 +146,40 @@ Neden Kullanma:
 ## ✅ BEST PRACTICES
 
 ### **1. Dosya Okuma Stratejisi:**
+
 ```yaml
-Small files (<500 lines):
-  → read_file (full content)
+Small files (<500 lines): → read_file (full content)
 
-Large files (>500 lines):
-  → read_file with offset/limit
-  → grep for specific sections
-  → codebase_search for semantic search
+Large files (>500 lines): → read_file with offset/limit
+    → grep for specific sections
+    → codebase_search for semantic search
 
-Binary files (images, PDFs):
-  → read_file (auto-detects)
+Binary files (images, PDFs): → read_file (auto-detects)
 ```
 
 ### **2. Dosya Düzenleme Stratejisi:**
+
 ```yaml
-Single change:
-  → search_replace (PREFERRED)
+Single change: → search_replace (PREFERRED)
 
-Multiple changes in same file:
-  → Multiple search_replace calls
-  → Each change should be atomic
+Multiple changes in same file: → Multiple search_replace calls
+    → Each change should be atomic
 
-New file:
-  → write
+New file: → write
 
-Global rename:
-  → search_replace with replace_all=true
+Global rename: → search_replace with replace_all=true
 ```
 
 ### **3. Arama Stratejisi:**
+
 ```yaml
-Exact text match:
-  → grep (fast, efficient)
+Exact text match: → grep (fast, efficient)
 
-Pattern matching:
-  → grep with regex
+Pattern matching: → grep with regex
 
-Semantic search:
-  → codebase_search (AI-powered)
+Semantic search: → codebase_search (AI-powered)
 
-File name search:
-  → glob_file_search
+File name search: → glob_file_search
 ```
 
 ---
@@ -190,50 +187,43 @@ File name search:
 ## 📋 WORKFLOW EXAMPLES
 
 ### **Example 1: Controller Fix**
+
 ```yaml
-1. Find file:
-   glob_file_search(glob_pattern="TalepController.php")
+1. Find file: glob_file_search(glob_pattern="TalepController.php")
 
-2. Read file:
-   read_file(target_file="app/Http/Controllers/Admin/TalepController.php")
+2. Read file: read_file(target_file="app/Http/Controllers/Admin/TalepController.php")
 
-3. Make change:
-   search_replace(
-     file_path="app/Http/Controllers/Admin/TalepController.php",
-     old_string="public function show($talep)",
-     new_string="public function show(Talep $talep)"
-   )
+3. Make change: search_replace(
+    file_path="app/Http/Controllers/Admin/TalepController.php",
+    old_string="public function show($talep)",
+    new_string="public function show(Talep $talep)"
+    )
 
-4. Verify:
-   grep(pattern="public function show", path="app/Http/Controllers/Admin/TalepController.php")
+4. Verify: grep(pattern="public function show", path="app/Http/Controllers/Admin/TalepController.php")
 ```
 
 ### **Example 2: CSS Migration**
+
 ```yaml
-1. Find usage:
-   grep(pattern="neo-btn", path="resources/views/admin", type="php")
+1. Find usage: grep(pattern="neo-btn", path="resources/views/admin", type="php")
 
-2. Read affected files:
-   read_file(target_file="resources/views/admin/talepler/index.blade.php")
+2. Read affected files: read_file(target_file="resources/views/admin/talepler/index.blade.php")
 
-3. Convert Neo → Tailwind:
-   search_replace(
-     file_path="resources/views/admin/talepler/index.blade.php",
-     old_string='class="neo-btn neo-btn-primary"',
-     new_string='class="inline-flex items-center px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg shadow-md transition-all"'
-   )
+3. Convert Neo → Tailwind: search_replace(
+    file_path="resources/views/admin/talepler/index.blade.php",
+    old_string='class="neo-btn neo-btn-primary"',
+    new_string='class="inline-flex items-center px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg shadow-md transition-all"'
+    )
 ```
 
 ### **Example 3: Cleanup Duplicates**
+
 ```yaml
-1. Find duplicates:
-   glob_file_search(glob_pattern="*duplicate*.css")
+1. Find duplicates: glob_file_search(glob_pattern="*duplicate*.css")
 
-2. Review:
-   read_file(target_file="public/css/duplicate.css")
+2. Review: read_file(target_file="public/css/duplicate.css")
 
-3. Delete:
-   delete_file(target_file="public/css/duplicate.css")
+3. Delete: delete_file(target_file="public/css/duplicate.css")
 ```
 
 ---
@@ -241,6 +231,7 @@ File name search:
 ## 🎯 CONTEXT7 COMPLIANCE
 
 ### **Forbidden Operations:**
+
 ```yaml
 ❌ Using Desktop Commander tools
 ❌ Manual file system operations via terminal
@@ -249,6 +240,7 @@ File name search:
 ```
 
 ### **Required Operations:**
+
 ```yaml
 ✅ Always use standard Cursor tools
 ✅ Validate Context7 compliance before changes
@@ -261,38 +253,38 @@ File name search:
 ## 📊 TOOL COMPARISON
 
 ### **Performance:**
+
 ```yaml
 File Operations:
-  Standard Tools: ⚡⚡⚡ (Fast)
-  Desktop Commander: ⚡ (Slow)
+    Standard Tools: ⚡⚡⚡ (Fast)
+    Desktop Commander: ⚡ (Slow)
 
 Reliability:
-  Standard Tools: ✅✅✅ (High)
-  Desktop Commander: ✅✅ (Medium)
+    Standard Tools: ✅✅✅ (High)
+    Desktop Commander: ✅✅ (Medium)
 
 Ease of Use:
-  Standard Tools: ⭐⭐⭐ (Simple)
-  Desktop Commander: ⭐⭐ (Complex)
+    Standard Tools: ⭐⭐⭐ (Simple)
+    Desktop Commander: ⭐⭐ (Complex)
 
 Context7 Compliance:
-  Standard Tools: ✅ (Native)
-  Desktop Commander: ⚠️ (Manual validation)
+    Standard Tools: ✅ (Native)
+    Desktop Commander: ⚠️ (Manual validation)
 ```
 
 ### **Use Cases:**
-```yaml
-Standard Tools - Use for:
-  ✅ All file read/write operations
-  ✅ Code search and navigation
-  ✅ File management (create, delete, move)
-  ✅ Project-wide changes
-  ✅ 95% of all operations
 
-Desktop Commander - Use for:
-  ⚠️ Terminal commands (php artisan, npm)
-  ⚠️ Process management
-  ⚠️ Data analysis (CSV, JSON)
-  ⚠️ Only when standard tools can't do it
+```yaml
+Standard Tools - Use for: ✅ All file read/write operations
+    ✅ Code search and navigation
+    ✅ File management (create, delete, move)
+    ✅ Project-wide changes
+    ✅ 95% of all operations
+
+Desktop Commander - Use for: ⚠️ Terminal commands (php artisan, npm)
+    ⚠️ Process management
+    ⚠️ Data analysis (CSV, JSON)
+    ⚠️ Only when standard tools can't do it
 ```
 
 ---
@@ -328,6 +320,7 @@ NEW (Standard):
 ## 📚 DOCUMENTATION
 
 ### **References:**
+
 - Cursor Standard Tools: Built-in documentation
 - Context7 Standards: `.context7/authority.json`
 - Migration Strategy: `css-migration-strategy.md`
@@ -338,6 +331,7 @@ NEW (Standard):
 ## ✅ CHECKLIST
 
 ### **Before Any File Operation:**
+
 - [ ] Use standard Cursor tools (not Desktop Commander)
 - [ ] Validate Context7 compliance
 - [ ] Test after changes
@@ -345,6 +339,7 @@ NEW (Standard):
 - [ ] Update Yalıhan Bekçi knowledge
 
 ### **Common Operations:**
+
 - [ ] Read file → `read_file`
 - [ ] Edit file → `search_replace`
 - [ ] New file → `write`
@@ -358,4 +353,3 @@ NEW (Standard):
 **Last Updated:** 2025-10-30  
 **Status:** ACTIVE ✅  
 **Standard Tools:** ENFORCED ✅
-

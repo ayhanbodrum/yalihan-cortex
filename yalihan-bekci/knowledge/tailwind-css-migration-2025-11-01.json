@@ -21,11 +21,7 @@
       "neo-badge",
       "neo-*"
     ],
-    "bootstrap_classes": [
-      "btn-",
-      "card-",
-      "form-control"
-    ]
+    "bootstrap_classes": ["btn-", "card-", "form-control"]
   },
   "mandatory_requirements": {
     "transitions": {
@@ -90,4 +86,3 @@
     "benefit": "Cleaner code, better performance, modern UX"
   }
 }
-

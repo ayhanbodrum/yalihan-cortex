@@ -4,17 +4,28 @@ namespace App\Modules\Crm\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Modules\Crm\Models\Aktivite;
-use App\Modules\Crm\Models\Musteri;
+use App\Modules\Crm\Models\Kisi; // ✅ Context7: Musteri → Kisi
+use App\Modules\Crm\Models\Musteri; // Backward compat alias
 use App\Modules\Crm\Models\Randevu;
 use App\Modules\Emlak\Models\Ilan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * MusteriController - DEPRECATED
+ *
+ * Context7: Use KisiController instead
+ * This controller is kept for backward compatibility only
+ *
+ * @deprecated Use App\Http\Controllers\Admin\KisiController instead
+ * @see App\Http\Controllers\Admin\KisiController
+ */
 class MusteriController extends Controller
 {
     /**
-     * Müşteri listesini görüntüle
+     * Kişi listesini görüntüle
+     * Context7: Musteri → Kisi terminology
      */
     public function index(Request $request)
     {
@@ -23,7 +34,8 @@ class MusteriController extends Controller
             abort(403, 'Bu işlem için yetkiniz bulunmamaktadır.');
         }
 
-        $query = Musteri::query();
+        // ✅ Context7: Musteri → Kisi
+        $query = Kisi::query();
 
         // Arama
         if ($request->has('q') && ! empty($request->q)) {
@@ -72,30 +84,46 @@ class MusteriController extends Controller
         }
 
         // İl ve İlçe Listelerini Hazırla
-        $iller = Musteri::select('il')->distinct()->whereNotNull('il')->orderBy('il')->pluck('il');
+        // ✅ Context7: Musteri → Kisi
+        $iller = Kisi::select('il_id')
+            ->with('il:id,il_adi')
+            ->distinct()
+            ->whereNotNull('il_id')
+            ->get()
+            ->pluck('il.il_adi', 'il_id');
+
         $ilceler = [];
 
         if ($request->has('il') && ! empty($request->il)) {
-            $ilceler = Musteri::where('il', $request->il)
-                ->select('ilce')
+            $ilceler = Kisi::where('il_id', $request->il)
+                ->with('ilce:id,ilce_adi')
+                ->select('ilce_id')
                 ->distinct()
-                ->whereNotNull('ilce')
-                ->orderBy('ilce')
-                ->pluck('ilce');
+                ->whereNotNull('ilce_id')
+                ->get()
+                ->pluck('ilce.ilce_adi', 'ilce_id');
         }
 
         // Pagination
-        $musteriler = $query->paginate(15)->appends($request->all());
+        // ✅ Context7: $musteriler → $kisiler
+        $kisiler = $query->paginate(15)->appends($request->all());
+        $musteriler = $kisiler; // Backward compat
 
         // İstatistikler
+        // ✅ Context7: Musteri → Kisi
         $stats = [
-            'total' => Musteri::count(),
-            'active' => Musteri::where('status', 'Aktif')->count(),
-            'pasif' => Musteri::where('status', 'Pasif')->count(),
-            'potansiyel' => Musteri::where('status', 'Potansiyel')->count(),
+            'total' => Kisi::count(),
+            'active' => Kisi::where('status', true)->count(),
+            'pasif' => Kisi::where('status', false)->count(),
+            'potansiyel' => Kisi::where('kisi_tipi', 'Potansiyel')->count(),
         ];
 
-        return view('crm::musteriler.index', compact('musteriler', 'iller', 'ilceler', 'stats'));
+        // ✅ Context7: Try Context7 view first, fallback to legacy
+        if (view()->exists('admin.kisiler.index')) {
+            return view('admin.kisiler.index', compact('kisiler', 'iller', 'ilceler', 'stats'));
+        }
+
+        return view('crm::musteriler.index', compact('musteriler', 'kisiler', 'iller', 'ilceler', 'stats'));
     }
 
     /**
@@ -144,18 +172,23 @@ class MusteriController extends Controller
             'linkedin_profile' => 'nullable|string|max:255',
         ]);
 
-        // Müşteri oluşturma
-        $musteri = new Musteri;
-        $musteri->fill($validated);
-        $musteri->user_id = Auth::id(); // Müşteriyi ekleyen danışman
-        $musteri->save();
+        // ✅ Context7: Musteri → Kisi
+        $kisi = new Kisi;
+        $kisi->fill($validated);
+        $kisi->user_id = Auth::id(); // Kişiyi ekleyen danışman
+        $kisi->danisman_id = Auth::id(); // Context7: danisman_id standardı
+        $kisi->save();
 
-        return redirect()->route('admin.musteriler.show', $musteri->id)
-            ->with('success', 'Müşteri başarıyla oluşturuldu.');
+        // Backward compat
+        $musteri = $kisi;
+
+        return redirect()->route('admin.kisiler.show', $kisi->id)
+            ->with('success', 'Kişi başarıyla oluşturuldu.');
     }
 
     /**
-     * Müşteri detaylarını göster
+     * Kişi detaylarını göster
+     * Context7: Musteri → Kisi terminology
      */
     public function show($id)
     {
@@ -164,11 +197,13 @@ class MusteriController extends Controller
             abort(403, 'Bu işlem için yetkiniz bulunmamaktadır.');
         }
 
-        $musteri = Musteri::with(['danisman', 'talepler', 'ilgilenilenIlanlar', 'randevular'])->findOrFail($id);
+        // ✅ Context7: Musteri → Kisi
+        $kisi = Kisi::with(['danisman', 'talepler', 'ilgilenilenIlanlar', 'randevular'])->findOrFail($id);
+        $musteri = $kisi; // Backward compat
 
-        // Sadece kendi müşterilerini görebilir (admin ve superadmin hariç)
-        if (! Auth::user()->hasAnyRole(['admin', 'superadmin']) && $musteri->user_id != Auth::id()) {
-            abort(403, 'Bu müşteriyi görüntüleme yetkiniz bulunmamaktadır.');
+        // Sadece kendi kişilerini görebilir (admin ve superadmin hariç)
+        if (! Auth::user()->hasAnyRole(['admin', 'superadmin']) && $kisi->danisman_id != Auth::id()) {
+            abort(403, 'Bu kişiyi görüntüleme yetkiniz bulunmamaktadır.');
         }
 
         // Son aktiviteler

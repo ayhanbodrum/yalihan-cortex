@@ -2,10 +2,10 @@
 <?php
 /**
  * 🔍 FORM ELEMENT SCANNER
- * 
+ *
  * Tüm .blade.php dosyalarındaki form elemanlarını tarar
  * Blade component'e dönüştürülebilir olanları tespit eder
- * 
+ *
  * Context7 Compliance: ✅
  * Yalıhan Bekçi: Form Analysis Tool
  */
@@ -37,31 +37,31 @@ foreach ($iterator as $file) {
     if ($file->getExtension() !== 'php') {
         continue;
     }
-    
+
     $stats['total_files']++;
     $filepath = $file->getPathname();
     $relativePath = str_replace(__DIR__ . '/../', '', $filepath);
     $content = file_get_contents($filepath);
-    
+
     // Count existing Blade components
     $componentCount = preg_match_all('/<x-form\.(input|select|textarea)/', $content, $componentMatches);
     if ($componentCount > 0) {
         $stats['already_components'] += $componentCount;
     }
-    
+
     // Count raw HTML inputs (not inside <x-form.* components)
     $inputCount = preg_match_all('/<input(?![^>]*type="hidden")/', $content, $inputMatches);
     $selectCount = preg_match_all('/<select/', $content, $selectMatches);
     $textareaCount = preg_match_all('/<textarea/', $content, $textareaMatches);
-    
+
     $totalElements = $inputCount + $selectCount + $textareaCount;
-    
+
     if ($totalElements > 0) {
         $stats['files_with_forms']++;
         $stats['total_inputs'] += $inputCount;
         $stats['total_selects'] += $selectCount;
         $stats['total_textareas'] += $textareaCount;
-        
+
         // Check if convertible (has class attribute and name)
         $convertibleInputs = preg_match_all(
             '/<input[^>]*class="[^"]*"[^>]*name="[^"]*"[^>]*>/',
@@ -78,10 +78,10 @@ foreach ($iterator as $file) {
             $content,
             $convMatches
         );
-        
+
         $convertible = $convertibleInputs + $convertibleSelects + $convertibleTextareas;
         $stats['convertible'] += $convertible;
-        
+
         $details[] = [
             'file' => $relativePath,
             'inputs' => $inputCount,
@@ -166,4 +166,3 @@ echo "   - /admin/ilan-kategorileri/1/edit\n";
 echo "   - /admin/property-type-manager/1\n\n";
 
 echo "═══════════════════════════════════════════════════════════════\n\n";
-

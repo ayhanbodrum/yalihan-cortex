@@ -1,0 +1,271 @@
+{
+    "timestamp": "2025-11-11 16:00:14",
+    "unused_classes": [
+        {
+            "class": "Context7ComplianceMiddleware",
+            "file": "app\/Http\/Middleware\/Context7ComplianceMiddleware.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "CheckRole",
+            "file": "app\/Http\/Middleware\/CheckRole.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "IlanResimController",
+            "file": "app\/Http\/Controllers\/Api\/Admin\/IlanResimController.php",
+            "reason": "Orphaned controller (no route)"
+        },
+        {
+            "class": "IlanOzellikController",
+            "file": "app\/Http\/Controllers\/Api\/Admin\/IlanOzellikController.php",
+            "reason": "Orphaned controller (no route)"
+        },
+        {
+            "class": "PersonSearchController",
+            "file": "app\/Http\/Controllers\/Api\/Admin\/PersonSearchController.php",
+            "reason": "Orphaned controller (no route)"
+        },
+        {
+            "class": "Input",
+            "file": "app\/View\/Components\/Input.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "NeoInput",
+            "file": "app\/View\/Components\/NeoInput.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "EnumRule",
+            "file": "app\/Rules\/EnumRule.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "CurrencyCode",
+            "file": "app\/Rules\/CurrencyCode.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "FetchNearbyForIlanJob",
+            "file": "app\/Jobs\/FetchNearbyForIlanJob.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "TestHorizonJob",
+            "file": "app\/Jobs\/TestHorizonJob.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "RealTimeEvent",
+            "file": "app\/Events\/RealTimeEvent.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "ArsaModuluServiceProvider",
+            "file": "app\/Modules\/ArsaModulu\/ArsaModuluServiceProvider.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "AuthSeeder",
+            "file": "app\/Modules\/Auth\/Database\/Seeders\/AuthSeeder.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "EmlakSeeder",
+            "file": "app\/Modules\/Emlak\/Database\/Seeders\/EmlakSeeder.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "ProjeService",
+            "file": "app\/Modules\/Emlak\/Services\/ProjeService.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "FeatureService",
+            "file": "app\/Modules\/Emlak\/Services\/FeatureService.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "CrmSeeder",
+            "file": "app\/Modules\/Crm\/Database\/Seeders\/CrmSeeder.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "AdminSeeder",
+            "file": "app\/Modules\/Admin\/Database\/Seeders\/AdminSeeder.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "AnalitikService",
+            "file": "app\/Modules\/Analitik\/Services\/AnalitikService.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "FinansalIslemService",
+            "file": "app\/Modules\/Finans\/Services\/FinansalIslemService.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "FinansServiceProvider",
+            "file": "app\/Modules\/Finans\/FinansServiceProvider.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "TalepSeeder",
+            "file": "app\/Modules\/Talep\/Database\/Seeders\/TalepSeeder.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "TalepService",
+            "file": "app\/Modules\/Talep\/Services\/TalepService.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "GorevPolicy",
+            "file": "app\/Modules\/TakimYonetimi\/Policies\/GorevPolicy.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "TakimPolicy",
+            "file": "app\/Modules\/TakimYonetimi\/Policies\/TakimPolicy.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "GorevYonetimService",
+            "file": "app\/Modules\/TakimYonetimi\/Services\/GorevYonetimService.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "Context7AIService",
+            "file": "app\/Modules\/TakimYonetimi\/Services\/Context7AIService.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "CRMSatisServiceProvider",
+            "file": "app\/Modules\/CRMSatis\/CRMSatisServiceProvider.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "SatisService",
+            "file": "app\/Modules\/CRMSatis\/Services\/SatisService.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "SendTaskUpdatedNotification",
+            "file": "app\/Listeners\/Telegram\/SendTaskUpdatedNotification.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "ViewDataValidator",
+            "file": "app\/Helpers\/ViewDataValidator.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "LocationHelper",
+            "file": "app\/Helpers\/LocationHelper.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "ErrorHandlerService",
+            "file": "app\/Services\/Response\/ErrorHandlerService.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "AdminPushNotificationService",
+            "file": "app\/Services\/Integration\/EmlakProYalihanIntegrationService.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "EmlakProYalihanIntegrationService",
+            "file": "app\/Services\/Integration\/EmlakProYalihanIntegrationService.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "PropertyValuationService",
+            "file": "app\/Services\/PropertyValuationService.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "KategoriAIService",
+            "file": "app\/Services\/AI\/KategoriAIService.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "KategoriOzellikService",
+            "file": "app\/Services\/KategoriOzellikService.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "LogHelper",
+            "file": "app\/Services\/Logging\/LogHelper.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "AnalyzePagesComplete",
+            "file": "app\/Console\/Commands\/AnalyzePagesComplete.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "StandardCheck",
+            "file": "app\/Console\/Commands\/StandardCheck.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "TestSpriteAutoLearn",
+            "file": "app\/Console\/Commands\/TestSpriteAutoLearn.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "YalihanBekciEnforce",
+            "file": "app\/Console\/Commands\/YalihanBekciEnforce.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "Context7ReportCommand",
+            "file": "app\/Console\/Commands\/Context7ReportCommand.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "UpdateExchangeRates",
+            "file": "app\/Console\/Commands\/UpdateExchangeRates.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "ComponentMake",
+            "file": "app\/Console\/Commands\/ComponentMake.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "MakeMigrationContext7",
+            "file": "app\/Console\/Commands\/MakeMigrationContext7.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "TestTKGMCommand",
+            "file": "app\/Console\/Commands\/TestTKGMCommand.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "ValidateFieldSync",
+            "file": "app\/Console\/Commands\/ValidateFieldSync.php",
+            "reason": "Not referenced anywhere"
+        }
+    ],
+    "unused_methods": [],
+    "unused_traits": [],
+    "unused_interfaces": [],
+    "unused_constants": [],
+    "summary": {
+        "total_classes": 406,
+        "used_classes": 1217,
+        "unused_classes": 55,
+        "total_traits": 7,
+        "used_traits": 342,
+        "unused_traits": 0,
+        "total_interfaces": 0,
+        "used_interfaces": 11,
+        "unused_interfaces": 0,
+        "cleanup_opportunity": 55
+    }
+}

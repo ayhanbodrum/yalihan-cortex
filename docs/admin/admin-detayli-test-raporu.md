@@ -2,17 +2,17 @@
 
 **Test Zamanı:** 10.10.2025 20:28:06  
 **Toplam Kategori:** 2  
-**Toplam Sayfa:** 13  
+**Toplam Sayfa:** 13
 
 ---
 
 ## 📊 Genel Özet
 
-| Metrik | Değer |
-|--------|-------|
-| **Toplam Test** | 13 |
-| **Başarılı** | 6 ✅ |
-| **Hatalı** | 7 ❌ |
+| Metrik           | Değer  |
+| ---------------- | ------ |
+| **Toplam Test**  | 13     |
+| **Başarılı**     | 6 ✅   |
+| **Hatalı**       | 7 ❌   |
 | **Başarı Oranı** | 46.15% |
 
 ---
@@ -29,8 +29,9 @@
 #### Detaylar:
 
 ❌ **Kişiler Liste** (/admin/kisiler)
-  - **Hata:** Tanımsız değişken: $taslak
-  - **Screenshot:** ./screenshots/detayli-test/CRM-error-1760117265979.png
+
+- **Hata:** Tanımsız değişken: $taslak
+- **Screenshot:** ./screenshots/detayli-test/CRM-error-1760117265979.png
 
 ✅ **Kişi Ekle** (/admin/kisiler/create)
 
@@ -39,16 +40,19 @@
 ✅ **Danışman Ekle** (/admin/danisman/create)
 
 ❌ **Talepler Liste** (/admin/talepler)
-  - **Hata:** Tablo eksik: talepler
-  - **Screenshot:** ./screenshots/detayli-test/CRM-error-1760117272266.png
+
+- **Hata:** Tablo eksik: talepler
+- **Screenshot:** ./screenshots/detayli-test/CRM-error-1760117272266.png
 
 ❌ **Takım Liste** (/admin/takim-yonetimi/takim)
-  - **Hata:** Tanımsız değişken: $status
-  - **Screenshot:** ./screenshots/detayli-test/CRM-error-1760117273989.png
+
+- **Hata:** Tanımsız değişken: $status
+- **Screenshot:** ./screenshots/detayli-test/CRM-error-1760117273989.png
 
 ❌ **Görevler** (/admin/takim-yonetimi/gorevler)
-  - **Hata:** Tanımsız değişken: $status
-  - **Screenshot:** ./screenshots/detayli-test/CRM-error-1760117275747.png
+
+- **Hata:** Tanımsız değişken: $status
+- **Screenshot:** ./screenshots/detayli-test/CRM-error-1760117275747.png
 
 ---
 
@@ -64,20 +68,23 @@
 ✅ **İlanlar Liste** (/admin/ilanlar)
 
 ❌ **İlan Ekle** (/admin/ilanlar/create)
-  - **Hata:** Unknown
-  - **Screenshot:** ./screenshots/detayli-test/İlan-Yönetimi-error-1760117279051.png
+
+- **Hata:** Unknown
+- **Screenshot:** ./screenshots/detayli-test/İlan-Yönetimi-error-1760117279051.png
 
 ❌ **İlan Kategorileri** (/admin/ilan-kategorileri)
-  - **Hata:** Unknown
-  - **Screenshot:** ./screenshots/detayli-test/İlan-Yönetimi-error-1760117280771.png
+
+- **Hata:** Unknown
+- **Screenshot:** ./screenshots/detayli-test/İlan-Yönetimi-error-1760117280771.png
 
 ✅ **Özellikler** (/admin/ozellikler)
 
 ✅ **Özellik Kategorileri** (/admin/ozellikler/kategoriler)
 
 ❌ **Stable Create (İlan Ekleme)** (/stable-create)
-  - **Hata:** Unknown
-  - **Screenshot:** ./screenshots/detayli-test/İlan-Yönetimi-error-1760117285703.png
+
+- **Hata:** Unknown
+- **Screenshot:** ./screenshots/detayli-test/İlan-Yönetimi-error-1760117285703.png
 
 ---
 
@@ -103,6 +110,7 @@ Controller'da değişkeni tanımla veya view'a gönder
 - **Screenshot:** ./screenshots/detayli-test/CRM-error-1760117272266.png
 
 **Çözüm:**
+
 ```bash
 php artisan make:migration create_talepler_table
 # Migration'ı doldur ve çalıştır

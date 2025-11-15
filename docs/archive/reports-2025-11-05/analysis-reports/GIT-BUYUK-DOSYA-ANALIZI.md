@@ -13,8 +13,8 @@ Beklenen: 600 MB → 300 MB (-300 MB)
 Gerçekleşen: 600 MB → 597 MB (-3 MB)
 
 Sebep: Git history'de BÜYÜK DOSYALAR var!
-  → Commit edilmiş, sonra silinmiş
-  → Ama git history'de hala duruyor
+    → Commit edilmiş, sonra silinmiş
+    → Ama git history'de hala duruyor
 ```
 
 ---
@@ -24,6 +24,7 @@ Sebep: Git history'de BÜYÜK DOSYALAR var!
 Analiz yapılıyor...
 
 **Muhtemel Sebepler:**
+
 1. Binary dosyalar commit edilmiş (images, PDFs)
 2. node_modules/ veya vendor/ yanlışlıkla commit edilmiş
 3. Database dump dosyaları
@@ -83,6 +84,7 @@ git lfs track "*.zip"
 **Bekliyorum:** Büyük dosya analizi tamamlansın
 
 **Sonra:**
+
 1. Büyük dosyaları göreceğiz
 2. Hangi dosyalar gereksiz belirleyeceğiz
 3. Git history'den sileceğiz
@@ -91,4 +93,3 @@ git lfs track "*.zip"
 ---
 
 **Analiz devam ediyor...**
-

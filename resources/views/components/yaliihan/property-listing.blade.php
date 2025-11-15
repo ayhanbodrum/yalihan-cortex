@@ -119,24 +119,24 @@
 
 <div class="property-listing-page {{ $class }}">
     <!-- Header Section -->
-    <div class="bg-white shadow-sm border-b border-gray-200">
+    <div class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
         <div class="container mx-auto px-4 py-6">
             <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
                 <div>
-                    <h1 class="text-3xl font-bold text-gray-900 mb-2">Emlak İlanları</h1>
-                    <p class="text-gray-600">{{ count($propertyList) }} ilan bulundu</p>
+                    <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">Emlak İlanları</h1>
+                    <p class="text-gray-600 dark:text-gray-400">{{ count($propertyList) }} ilan bulundu</p>
                 </div>
 
                 @if ($showViewToggle)
                     <div class="flex items-center gap-2">
-                        <span class="text-sm text-gray-600">Görünüm:</span>
+                        <span class="text-sm text-gray-600 dark:text-gray-400">Görünüm:</span>
                         <button id="gridView"
-                            class="p-2 rounded-lg {{ $viewMode === 'grid' ? 'bg-orange-500 text-white' : 'bg-gray-200 text-gray-600' }}"
+                            class="p-2 rounded-lg {{ $viewMode === 'grid' ? 'bg-blue-500 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300' }} transition-colors duration-200"
                             onclick="changeView('grid')">
                             ⊞
                         </button>
                         <button id="listView"
-                            class="p-2 rounded-lg {{ $viewMode === 'list' ? 'bg-orange-500 text-white' : 'bg-gray-200 text-gray-600' }}"
+                            class="p-2 rounded-lg {{ $viewMode === 'list' ? 'bg-blue-500 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300' }} transition-colors duration-200"
                             onclick="changeView('list')">
                             ☰
                         </button>
@@ -151,73 +151,73 @@
             <!-- Filters Sidebar -->
             @if ($showFilters)
                 <div class="lg:col-span-1">
-                    <div class="bg-white rounded-2xl shadow-lg p-6 sticky top-8">
-                        <h3 class="text-xl font-semibold text-gray-900 mb-6">Filtreler</h3>
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 sticky top-8 border border-gray-200 dark:border-gray-700">
+                        <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-6">Filtreler</h3>
 
                         <!-- Search Form -->
                         <x-yaliihan.search-form :show-advanced="true" :show-sort="false" class="mb-6" />
 
                         <!-- Price Range -->
                         <div class="mb-6">
-                            <h4 class="font-semibold text-gray-900 mb-3">Fiyat Aralığı</h4>
+                            <h4 class="font-semibold text-gray-900 dark:text-white mb-3">Fiyat Aralığı</h4>
                             <div class="space-y-2">
                                 <input type="number" placeholder="Min. Fiyat"
-                                    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
+                                    class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-all duration-200">
                                 <input type="number" placeholder="Max. Fiyat"
-                                    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
+                                    class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-all duration-200">
                             </div>
                         </div>
 
                         <!-- Property Type -->
                         <div class="mb-6">
-                            <h4 class="font-semibold text-gray-900 mb-3">Emlak Türü</h4>
+                            <h4 class="font-semibold text-gray-900 dark:text-white mb-3">Emlak Türü</h4>
                             <div class="space-y-2">
                                 <label class="flex items-center">
                                     <input type="checkbox"
-                                        class="rounded border-gray-300 text-orange-500 focus:ring-orange-500">
-                                    <span class="ml-2 text-gray-700">Villa</span>
+                                        class="rounded border-gray-300 dark:border-gray-600 text-blue-500 dark:text-blue-400 focus:ring-blue-500 dark:focus:ring-blue-400">
+                                    <span class="ml-2 text-gray-700 dark:text-gray-300">Villa</span>
                                 </label>
                                 <label class="flex items-center">
                                     <input type="checkbox"
-                                        class="rounded border-gray-300 text-orange-500 focus:ring-orange-500">
-                                    <span class="ml-2 text-gray-700">Daire</span>
+                                        class="rounded border-gray-300 dark:border-gray-600 text-blue-500 dark:text-blue-400 focus:ring-blue-500 dark:focus:ring-blue-400">
+                                    <span class="ml-2 text-gray-700 dark:text-gray-300">Daire</span>
                                 </label>
                                 <label class="flex items-center">
                                     <input type="checkbox"
-                                        class="rounded border-gray-300 text-orange-500 focus:ring-orange-500">
-                                    <span class="ml-2 text-gray-700">Arsa</span>
+                                        class="rounded border-gray-300 dark:border-gray-600 text-blue-500 dark:text-blue-400 focus:ring-blue-500 dark:focus:ring-blue-400">
+                                    <span class="ml-2 text-gray-700 dark:text-gray-300">Arsa</span>
                                 </label>
                             </div>
                         </div>
 
                         <!-- Features -->
                         <div class="mb-6">
-                            <h4 class="font-semibold text-gray-900 mb-3">Özellikler</h4>
+                            <h4 class="font-semibold text-gray-900 dark:text-white mb-3">Özellikler</h4>
                             <div class="space-y-2">
                                 <label class="flex items-center">
                                     <input type="checkbox"
-                                        class="rounded border-gray-300 text-orange-500 focus:ring-orange-500">
-                                    <span class="ml-2 text-gray-700">Havuz</span>
+                                        class="rounded border-gray-300 dark:border-gray-600 text-blue-500 dark:text-blue-400 focus:ring-blue-500 dark:focus:ring-blue-400">
+                                    <span class="ml-2 text-gray-700 dark:text-gray-300">Havuz</span>
                                 </label>
                                 <label class="flex items-center">
                                     <input type="checkbox"
-                                        class="rounded border-gray-300 text-orange-500 focus:ring-orange-500">
-                                    <span class="ml-2 text-gray-700">Bahçe</span>
+                                        class="rounded border-gray-300 dark:border-gray-600 text-blue-500 dark:text-blue-400 focus:ring-blue-500 dark:focus:ring-blue-400">
+                                    <span class="ml-2 text-gray-700 dark:text-gray-300">Bahçe</span>
                                 </label>
                                 <label class="flex items-center">
                                     <input type="checkbox"
-                                        class="rounded border-gray-300 text-orange-500 focus:ring-orange-500">
-                                    <span class="ml-2 text-gray-700">Garaj</span>
+                                        class="rounded border-gray-300 dark:border-gray-600 text-blue-500 dark:text-blue-400 focus:ring-blue-500 dark:focus:ring-blue-400">
+                                    <span class="ml-2 text-gray-700 dark:text-gray-300">Garaj</span>
                                 </label>
                                 <label class="flex items-center">
                                     <input type="checkbox"
-                                        class="rounded border-gray-300 text-orange-500 focus:ring-orange-500">
-                                    <span class="ml-2 text-gray-700">Deniz Manzarası</span>
+                                        class="rounded border-gray-300 dark:border-gray-600 text-blue-500 dark:text-blue-400 focus:ring-blue-500 dark:focus:ring-blue-400">
+                                    <span class="ml-2 text-gray-700 dark:text-gray-300">Deniz Manzarası</span>
                                 </label>
                             </div>
                         </div>
 
-                        <button class="w-full btn inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg" onclick="applyFilters()">
+                        <button class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 dark:bg-blue-500 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg font-semibold" onclick="applyFilters()">
                             Filtreleri Uygula
                         </button>
                     </div>
@@ -228,12 +228,12 @@
             <div class="{{ $showFilters ? 'lg:col-span-3' : 'lg:col-span-4' }}">
                 <!-- Sort Bar -->
                 @if ($showSort)
-                    <div class="bg-white rounded-2xl shadow-lg p-4 mb-6">
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-4 mb-6 border border-gray-200 dark:border-gray-700">
                         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                             <div class="flex items-center gap-2">
-                                <span class="text-sm font-medium text-gray-700">Sırala:</span>
+                                <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Sırala:</span>
                                 <select
-                                    class="p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
+                                    class="p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 transition-all duration-200">
                                     <option value="default">Varsayılan</option>
                                     <option value="price_asc">Fiyat (Düşük → Yüksek)</option>
                                     <option value="price_desc">Fiyat (Yüksek → Düşük)</option>
@@ -244,7 +244,7 @@
                                 </select>
                             </div>
 
-                            <div class="text-sm text-gray-600">
+                            <div class="text-sm text-gray-600 dark:text-gray-400">
                                 {{ count($propertyList) }} ilan gösteriliyor
                             </div>
                         </div>
@@ -263,7 +263,7 @@
                         @else
                             <!-- List View -->
                             <div
-                                class="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
+                                class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow border border-gray-200 dark:border-gray-700">
                                 <div class="flex flex-col md:flex-row">
                                     <!-- Image -->
                                     <div class="md:w-80 h-64 md:h-auto">
@@ -277,65 +277,65 @@
                                             <div class="flex-1">
                                                 <div class="flex items-center gap-2 mb-2">
                                                     <span
-                                                        class="px-3 py-1 rounded-full text-sm font-semibold {{ $property['badge'] === 'sale' ? 'bg-green-500 text-white' : ($property['badge'] === 'rent' ? 'bg-blue-500 text-white' : 'bg-yellow-500 text-white') }}">
+                                                        class="px-3 py-1 rounded-full text-sm font-semibold {{ $property['badge'] === 'sale' ? 'bg-green-500 text-white' : ($property['badge'] === 'rent' ? 'bg-blue-500 text-white' : 'bg-purple-500 text-white') }}">
                                                         {{ $property['badgeText'] }}
                                                     </span>
-                                                    <span class="text-sm text-gray-500">{{ $property['date'] }}</span>
+                                                    <span class="text-sm text-gray-500 dark:text-gray-400">{{ $property['date'] }}</span>
                                                 </div>
 
-                                                <h3 class="text-xl font-semibold text-gray-900 mb-2">
+                                                <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">
                                                     {{ $property['title'] }}</h3>
-                                                <p class="text-gray-600 mb-4">📍 {{ $property['location'] }}</p>
+                                                <p class="text-gray-600 dark:text-gray-300 mb-4">📍 {{ $property['location'] }}</p>
 
                                                 <div class="grid grid-cols-3 gap-4 mb-4">
                                                     <div class="text-center">
                                                         <div class="text-2xl mb-1">🛏️</div>
-                                                        <div class="text-sm text-gray-500">Yatak</div>
-                                                        <div class="font-semibold">{{ $property['beds'] }}</div>
+                                                        <div class="text-sm text-gray-500 dark:text-gray-400">Yatak</div>
+                                                        <div class="font-semibold text-gray-900 dark:text-white">{{ $property['beds'] }}</div>
                                                     </div>
                                                     <div class="text-center">
                                                         <div class="text-2xl mb-1">🚿</div>
-                                                        <div class="text-sm text-gray-500">Banyo</div>
-                                                        <div class="font-semibold">{{ $property['baths'] }}</div>
+                                                        <div class="text-sm text-gray-500 dark:text-gray-400">Banyo</div>
+                                                        <div class="font-semibold text-gray-900 dark:text-white">{{ $property['baths'] }}</div>
                                                     </div>
                                                     <div class="text-center">
                                                         <div class="text-2xl mb-1">📐</div>
-                                                        <div class="text-sm text-gray-500">m²</div>
-                                                        <div class="font-semibold">{{ $property['area'] }}</div>
+                                                        <div class="text-sm text-gray-500 dark:text-gray-400">m²</div>
+                                                        <div class="font-semibold text-gray-900 dark:text-white">{{ $property['area'] }}</div>
                                                     </div>
                                                 </div>
 
                                                 <div class="flex flex-wrap gap-2 mb-4">
                                                     @foreach ($property['features'] as $feature)
                                                         <span
-                                                            class="px-2 py-1 bg-gray-100 text-gray-700 text-sm rounded">{{ $feature }}</span>
+                                                            class="px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm rounded">{{ $feature }}</span>
                                                     @endforeach
                                                 </div>
 
-                                                <div class="text-sm text-gray-500">
+                                                <div class="text-sm text-gray-500 dark:text-gray-400">
                                                     Danışman: {{ $property['agent'] }}
                                                 </div>
                                             </div>
 
                                             <div class="flex flex-col items-end gap-4">
                                                 <div class="text-right">
-                                                    <div class="text-2xl font-bold text-orange-600">
+                                                    <div class="text-2xl font-bold text-blue-600 dark:text-blue-400">
                                                         {{ $property['price'] }}
                                                         @if ($property['pricePeriod'])
                                                             <span
-                                                                class="text-lg text-gray-500 font-normal">{{ $property['pricePeriod'] }}</span>
+                                                                class="text-lg text-gray-500 dark:text-gray-400 font-normal">{{ $property['pricePeriod'] }}</span>
                                                         @endif
                                                     </div>
                                                 </div>
 
                                                 <div class="flex gap-2">
                                                     <button
-                                                        class="p-2 border border-orange-500 text-orange-500 rounded-lg hover:bg-orange-500 hover:text-white transition-colors"
+                                                        class="p-2 border border-blue-500 dark:border-blue-400 text-blue-500 dark:text-blue-400 rounded-lg hover:bg-blue-500 hover:text-white dark:hover:bg-blue-600 dark:hover:text-white transition-colors"
                                                         onclick="toggleFavorite({{ $property['id'] }})">
                                                         {{ $property['isFavorite'] ? '❤️' : '🤍' }}
                                                     </button>
                                                     <button
-                                                        class="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors">
+                                                        class="px-4 py-2 bg-blue-500 dark:bg-blue-600 text-white rounded-lg hover:bg-blue-600 dark:hover:bg-blue-700 transition-colors">
                                                         Detay
                                                     </button>
                                                 </div>
@@ -353,16 +353,16 @@
                     <div class="mt-8 flex justify-center">
                         <nav class="flex items-center gap-2">
                             <button
-                                class="px-4 py-2.5 border border-gray-300 rounded-lg hover:bg-orange-500 hover:text-white transition-colors">
+                                class="px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-blue-500 hover:text-white dark:hover:bg-blue-600 dark:hover:text-white transition-colors">
                                 ← Önceki
                             </button>
-                            <button class="px-4 py-2.5 bg-orange-500 text-white rounded-lg">1</button>
+                            <button class="px-4 py-2.5 bg-blue-500 dark:bg-blue-600 text-white rounded-lg">1</button>
                             <button
-                                class="px-4 py-2.5 border border-gray-300 rounded-lg hover:bg-orange-500 hover:text-white transition-colors">2</button>
+                                class="px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-blue-500 hover:text-white dark:hover:bg-blue-600 dark:hover:text-white transition-colors">2</button>
                             <button
-                                class="px-4 py-2.5 border border-gray-300 rounded-lg hover:bg-orange-500 hover:text-white transition-colors">3</button>
+                                class="px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-blue-500 hover:text-white dark:hover:bg-blue-600 dark:hover:text-white transition-colors">3</button>
                             <button
-                                class="px-4 py-2.5 border border-gray-300 rounded-lg hover:bg-orange-500 hover:text-white transition-colors">
+                                class="px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-blue-500 hover:text-white dark:hover:bg-blue-600 dark:hover:text-white transition-colors">
                                 Sonraki →
                             </button>
                         </nav>
@@ -382,12 +382,12 @@
 
         if (mode === 'grid') {
             container.className = 'grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6';
-            gridBtn.className = 'p-2 rounded-lg bg-orange-500 text-white';
-            listBtn.className = 'p-2 rounded-lg bg-gray-200 text-gray-600';
+            gridBtn.className = 'p-2 rounded-lg bg-blue-500 text-white transition-colors duration-200';
+            listBtn.className = 'p-2 rounded-lg bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300 transition-colors duration-200';
         } else {
             container.className = 'space-y-6';
-            listBtn.className = 'p-2 rounded-lg bg-orange-500 text-white';
-            gridBtn.className = 'p-2 rounded-lg bg-gray-200 text-gray-600';
+            listBtn.className = 'p-2 rounded-lg bg-blue-500 text-white transition-colors duration-200';
+            gridBtn.className = 'p-2 rounded-lg bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300 transition-colors duration-200';
         }
 
         // Store preference
@@ -437,12 +437,8 @@
         background-color: #f8fafc;
     }
 
-    .btn {
-        @apply px-4 py-2 rounded-lg font-medium transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2;
-    }
-
-    .inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg {
-        @apply bg-orange-500 text-white hover:bg-orange-600 focus:ring-orange-500;
+    .dark .property-listing-page {
+        background-color: #111827;
     }
 
     /* Responsive adjustments */

@@ -113,8 +113,8 @@
             <tr>
                 <td>Lokasyon</td>
                 <td>
-                    {{ $talep->il?->il_adi ?? '' }} / 
-                    {{ $talep->ilce?->ilce_adi ?? '' }} / 
+                    {{ $talep->il?->il_adi ?? '' }} /
+                    {{ $talep->ilce?->ilce_adi ?? '' }} /
                     {{ $talep->mahalle?->mahalle_adi ?? '' }}
                 </td>
             </tr>
@@ -190,7 +190,7 @@
                         @endif
                     </td>
                     <td>
-                        {{ $ilan->il?->il_adi ?? '' }} / 
+                        {{ $ilan->il?->il_adi ?? '' }} /
                         {{ $ilan->ilce?->ilce_adi ?? '' }}
                     </td>
                     <td>{{ $ilan->metrekare ?? '-' }} m²</td>
@@ -215,4 +215,3 @@
     </div>
 </body>
 </html>
-

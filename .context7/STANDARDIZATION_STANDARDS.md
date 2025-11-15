@@ -18,12 +18,14 @@ Bu doküman, tüm kod standardizasyonu işlemlerini tanımlar. Cache, Error Hand
 ### 1. ✅ CACHE STANDARDIZATION
 
 #### Standart Service
+
 - **Service:** `App\Services\Cache\CacheService`
 - **Helper:** `App\Services\Cache\CacheHelper`
 
 #### Kullanım Kuralları
 
 **❌ YASAK:**
+
 ```php
 Cache::remember('key', 3600, function() {});
 Cache::get('key');
@@ -32,6 +34,7 @@ Cache::forget('key');
 ```
 
 **✅ ZORUNLU:**
+
 ```php
 use App\Services\Cache\CacheHelper;
 
@@ -52,13 +55,13 @@ CacheHelper::get('namespace', 'key');
 
 #### TTL Presets
 
-| Preset | Süre | Kullanım Alanı |
-|--------|------|----------------|
-| `very_short` | 60 saniye | Geçici veriler, test |
-| `short` | 5 dakika | Hızlı değişen veriler |
-| `medium` | 1 saat | Normal cache verileri |
-| `long` | 24 saat | Günlük güncellenen veriler |
-| `very_long` | 7 gün | Nadiren değişen veriler |
+| Preset       | Süre      | Kullanım Alanı             |
+| ------------ | --------- | -------------------------- |
+| `very_short` | 60 saniye | Geçici veriler, test       |
+| `short`      | 5 dakika  | Hızlı değişen veriler      |
+| `medium`     | 1 saat    | Normal cache verileri      |
+| `long`       | 24 saat   | Günlük güncellenen veriler |
+| `very_long`  | 7 gün     | Nadiren değişen veriler    |
 
 #### Key Format Standardı
 
@@ -67,6 +70,7 @@ emlak_pro:{namespace}:{key}:{params}
 ```
 
 **Örnekler:**
+
 - `emlak_pro:currency:tcmb_rates_today`
 - `emlak_pro:ai:provider_config`
 - `emlak_pro:ilan:stats:user_123`
@@ -76,12 +80,14 @@ emlak_pro:{namespace}:{key}:{params}
 ### 2. ✅ ERROR HANDLING STANDARDIZATION
 
 #### Standart Service
+
 - **Service:** `App\Services\Response\ResponseService`
 - **Handler:** `App\Services\Response\ErrorHandlerService`
 
 #### Kullanım Kuralları
 
 **❌ YASAK:**
+
 ```php
 return response()->json([
     'success' => false,
@@ -92,6 +98,7 @@ return redirect()->back()->with('error', 'Hata oluştu');
 ```
 
 **✅ ZORUNLU:**
+
 ```php
 use App\Services\Response\ResponseService;
 
@@ -116,6 +123,7 @@ try {
 #### Response Formatları
 
 **API Success:**
+
 ```json
 {
     "success": true,
@@ -126,6 +134,7 @@ try {
 ```
 
 **API Error:**
+
 ```json
 {
     "success": false,
@@ -154,12 +163,14 @@ ResponseService::error('Hata mesajı', 400, [
 ### 3. ✅ LOGGING STANDARDIZATION
 
 #### Standart Service
+
 - **Service:** `App\Services\Logging\LogService`
 - **Helper:** `App\Services\Logging\LogHelper`
 
 #### Kullanım Kuralları
 
 **❌ YASAK:**
+
 ```php
 Log::info('Mesaj');
 Log::error('Hata: ' . $e->getMessage());
@@ -167,6 +178,7 @@ Log::warning('Uyarı', ['data' => $data]);
 ```
 
 **✅ ZORUNLU:**
+
 ```php
 use App\Services\Logging\LogService;
 
@@ -187,17 +199,18 @@ LogService::action('create', 'ilan', $ilanId, ['fiyat' => 1000000]);
 
 #### Log Levels
 
-| Level | Kullanım | Otomatik Context |
-|-------|----------|------------------|
-| `debug` | Development only | ✅ |
-| `info` | Normal operations | ✅ |
-| `warning` | Potansiyel sorunlar | ✅ |
-| `error` | Hatalar | ✅ |
-| `critical` | Kritik hatalar | ✅ |
+| Level      | Kullanım            | Otomatik Context |
+| ---------- | ------------------- | ---------------- |
+| `debug`    | Development only    | ✅               |
+| `info`     | Normal operations   | ✅               |
+| `warning`  | Potansiyel sorunlar | ✅               |
+| `error`    | Hatalar             | ✅               |
+| `critical` | Kritik hatalar      | ✅               |
 
 #### Automatic Context
 
 Tüm log kayıtlarına otomatik olarak eklenir:
+
 - `timestamp` - ISO 8601 format
 - `url` - Request URL
 - `method` - HTTP method
@@ -206,14 +219,14 @@ Tüm log kayıtlarına otomatik olarak eklenir:
 
 #### Log Channels
 
-| Channel | Kullanım |
-|---------|----------|
-| `stack` | Default (tüm loglar) |
-| `api` | API request/response logs |
-| `database` | Database operations |
-| `auth` | Authentication events |
-| `payment` | Payment transactions |
-| `ai` | AI operations |
+| Channel    | Kullanım                  |
+| ---------- | ------------------------- |
+| `stack`    | Default (tüm loglar)      |
+| `api`      | API request/response logs |
+| `database` | Database operations       |
+| `auth`     | Authentication events     |
+| `payment`  | Payment transactions      |
+| `ai`       | AI operations             |
 
 ---
 
@@ -285,6 +298,7 @@ LogService::error('Hata oluştu', ['data' => $data], $exception);
 ## 📊 MIGRATION CHECKLIST
 
 ### Cache Standardization
+
 - [ ] `Cache::remember` → `CacheHelper::remember`
 - [ ] `Cache::get` → `CacheHelper::get`
 - [ ] `Cache::put` → `CacheHelper::put`
@@ -293,12 +307,14 @@ LogService::error('Hata oluştu', ['data' => $data], $exception);
 - [ ] TTL preset kullanımı
 
 ### Error Handling Standardization
+
 - [ ] `response()->json()` → `ResponseService::success/error`
 - [ ] `redirect()->back()->with('error')` → `ResponseService::backError`
 - [ ] Exception handler'ları güncelle
 - [ ] Automatic logging kontrolü
 
 ### Logging Standardization
+
 - [ ] `Log::info` → `LogService::info`
 - [ ] `Log::error` → `LogService::error`
 - [ ] `Log::warning` → `LogService::warning`
@@ -310,18 +326,21 @@ LogService::error('Hata oluştu', ['data' => $data], $exception);
 ## 🎯 BEST PRACTICES
 
 ### 1. Cache
+
 - ✅ Namespace kullanımı zorunlu
 - ✅ TTL preset kullan (sabit değer değil)
 - ✅ Parametreli key'ler için params array kullan
 - ✅ Cache invalidation stratejisi belirle
 
 ### 2. Error Handling
+
 - ✅ Automatic logging kullan
 - ✅ Structured error responses
 - ✅ Exception type handling
 - ✅ User-friendly error messages
 
 ### 3. Logging
+
 - ✅ Context bilgisi ekle
 - ✅ Specialized methods kullan (api, database, auth, ai)
 - ✅ Sensitive data loglamaktan kaçın
@@ -332,6 +351,7 @@ LogService::error('Hata oluştu', ['data' => $data], $exception);
 ## 📚 REFERENCE
 
 ### Service Dosyaları
+
 - `app/Services/Cache/CacheService.php`
 - `app/Services/Cache/CacheHelper.php`
 - `app/Services/Response/ResponseService.php`
@@ -340,9 +360,11 @@ LogService::error('Hata oluştu', ['data' => $data], $exception);
 - `app/Services/Logging/LogHelper.php`
 
 ### Authority File
+
 - `.context7/authority.json` - `standardization_standards_2025_11_05`
 
 ### Knowledge Base
+
 - `.yalihan-bekci/knowledge/standardization-standards-2025-11-05.json`
 
 ---
@@ -359,4 +381,3 @@ Tüm yeni kodlar bu standartlara uygun olmalıdır. Mevcut kodlar migration sür
 ---
 
 **Context7 Standardization Standards v1.0.0**
-

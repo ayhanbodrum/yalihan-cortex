@@ -8,12 +8,27 @@
     "database_tables": {
       "yazlik_fiyatlandirma": {
         "purpose": "Sezonluk fiyatlandırma yönetimi",
-        "key_fields": ["ilan_id", "sezon_tipi", "gunluk_fiyat", "haftalik_fiyat", "aylik_fiyat", "minimum_konaklama", "maksimum_konaklama"],
+        "key_fields": [
+          "ilan_id",
+          "sezon_tipi",
+          "gunluk_fiyat",
+          "haftalik_fiyat",
+          "aylik_fiyat",
+          "minimum_konaklama",
+          "maksimum_konaklama"
+        ],
         "seasons": ["yaz", "ara_sezon", "kis"]
       },
       "yazlik_rezervasyonlar": {
         "purpose": "Rezervasyon yönetimi",
-        "key_fields": ["ilan_id", "check_in", "check_out", "musteri_adi", "musteri_telefon", "toplam_fiyat"],
+        "key_fields": [
+          "ilan_id",
+          "check_in",
+          "check_out",
+          "musteri_adi",
+          "musteri_telefon",
+          "toplam_fiyat"
+        ],
         "statuses": ["beklemede", "onaylandi", "iptal", "tamamlandi"]
       }
     },

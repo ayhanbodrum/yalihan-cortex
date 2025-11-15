@@ -9,6 +9,7 @@
 ## 🎓 ÖĞRENİLEN TUTARSIZLIKLAR
 
 ### **1️⃣ Layout Uyumsuzluğu**
+
 ```yaml
 Problem: @extends('layouts.admin')
 Çözüm: @extends('admin.layouts.neo')
@@ -17,17 +18,19 @@ Durum: ✅ DÜZELTİLDİ
 ```
 
 ### **2️⃣ CDN Bağımlılığı**
+
 ```yaml
 Problem: Font Awesome + Leaflet CDN
 Çözüm: Local packages + Vite bundling
-Dosyalar: 
-  - resources/css/leaflet.css (oluşturuldu)
-  - package.json (leaflet eklendi)
-  - vite.config.js (zaten vardı)
+Dosyalar:
+    - resources/css/leaflet.css (oluşturuldu)
+    - package.json (leaflet eklendi)
+    - vite.config.js (zaten vardı)
 Durum: ✅ DÜZELTİLDİ
 ```
 
 ### **3️⃣ Route Karmaşası**
+
 ```yaml
 Problem: 3 farklı URL aynı sayfaya yönlendiriyor
 Çözüm: Gereksiz redirect'ler comment'lendi
@@ -43,24 +46,24 @@ Durum: ✅ DÜZELTİLDİ
 
 ```json
 {
-  "admin_layout_consistency": {
-    "pattern": "@extends\\('layouts\\.admin'\\)",
-    "fix": "@extends('admin.layouts.neo')",
-    "severity": "CRITICAL",
-    "auto_fix": true
-  },
-  "cdn_dependency_detection": {
-    "pattern": "https://cdnjs\\.cloudflare\\.com|https://unpkg\\.com",
-    "fix": "@vite(['resources/css/...'])",
-    "severity": "HIGH",
-    "auto_fix": false
-  },
-  "route_redirect_detection": {
-    "pattern": "Route::get.*redirect.*route\\('admin\\.",
-    "fix": "Direct route definition",
-    "severity": "MEDIUM",
-    "auto_fix": false
-  }
+    "admin_layout_consistency": {
+        "pattern": "@extends\\('layouts\\.admin'\\)",
+        "fix": "@extends('admin.layouts.neo')",
+        "severity": "CRITICAL",
+        "auto_fix": true
+    },
+    "cdn_dependency_detection": {
+        "pattern": "https://cdnjs\\.cloudflare\\.com|https://unpkg\\.com",
+        "fix": "@vite(['resources/css/...'])",
+        "severity": "HIGH",
+        "auto_fix": false
+    },
+    "route_redirect_detection": {
+        "pattern": "Route::get.*redirect.*route\\('admin\\.",
+        "fix": "Direct route definition",
+        "severity": "MEDIUM",
+        "auto_fix": false
+    }
 }
 ```
 
@@ -80,6 +83,7 @@ Bekçi Artık Şunları Tespit Edebilir:
 ## 📊 DÜZELTME SONUÇLARI
 
 ### **Önceki Durum:**
+
 ```yaml
 Layout: ❌ layouts.admin (yanlış)
 CDN: ❌ Font Awesome + Leaflet CDN
@@ -88,6 +92,7 @@ Context7: 60% uyumlu
 ```
 
 ### **Sonraki Durum:**
+
 ```yaml
 Layout: ✅ admin.layouts.neo (doğru)
 CDN: ✅ Local packages + Vite
@@ -115,20 +120,20 @@ npm run build
 ### **Artık Bekçi Şunları Yapacak:**
 
 1. **Otomatik Tespit:**
-   - Admin sayfalarında `@extends('layouts.admin')` görürse
-   - "❌ Yanlış layout! `admin.layouts.neo` kullan" uyarısı
+    - Admin sayfalarında `@extends('layouts.admin')` görürse
+    - "❌ Yanlış layout! `admin.layouts.neo` kullan" uyarısı
 
 2. **CDN Uyarısı:**
-   - CDN link görürse
-   - "❌ CDN bağımlılığı! Local package'a geç" önerisi
+    - CDN link görürse
+    - "❌ CDN bağımlılığı! Local package'a geç" önerisi
 
 3. **Route Temizliği:**
-   - Gereksiz redirect görürse
-   - "⚠️ Route karmaşası! Direkt route kullan" önerisi
+    - Gereksiz redirect görürse
+    - "⚠️ Route karmaşası! Direkt route kullan" önerisi
 
 4. **Otomatik Düzeltme:**
-   - Layout hatalarını otomatik düzeltebilir
-   - CDN → Vite dönüşümü önerebilir
+    - Layout hatalarını otomatik düzeltebilir
+    - CDN → Vite dönüşümü önerebilir
 
 ---
 

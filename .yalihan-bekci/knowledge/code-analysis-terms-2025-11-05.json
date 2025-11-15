@@ -4,7 +4,7 @@
   "category": "code-quality",
   "priority": "HIGH",
   "status": "ACTIVE",
-  
+
   "code_analysis_terms": {
     "1_lint_control": {
       "name": "Lint Kontrolü",
@@ -25,7 +25,7 @@
       "tools": ["PHPStan", "PHP CS Fixer", "Laravel Pint", "IDE Linter"],
       "when_to_use": "Her kod değişikliğinden sonra, commit öncesi"
     },
-    
+
     "2_dead_code_analysis": {
       "name": "Dead Code Analysis",
       "turkish_name": "Kullanılmayan Kod Analizi",
@@ -40,7 +40,7 @@
       "tools": ["PHPStan (level 5+)", "Psalm", "PHP Dead Code Detector"],
       "when_to_use": "Kod temizliği, refactoring öncesi, büyük değişikliklerden sonra"
     },
-    
+
     "3_orphaned_code": {
       "name": "Orphaned Code",
       "turkish_name": "Yetim Kod",
@@ -54,7 +54,7 @@
       "tools": ["Custom Script", "PHPStan", "Static Analysis"],
       "when_to_use": "Kod temizliği, modül kaldırma, büyük refactoring"
     },
-    
+
     "4_incomplete_implementation": {
       "name": "Incomplete Implementation",
       "turkish_name": "Yarım Kalmış Kod",
@@ -69,7 +69,7 @@
       "tools": ["Custom Script", "Grep", "Code Review"],
       "when_to_use": "Sprint planlama, kod review, refactoring öncesi"
     },
-    
+
     "5_disabled_code": {
       "name": "Disabled Code",
       "turkish_name": "Devre Dışı Kod",
@@ -83,7 +83,7 @@
       "tools": ["Custom Script", "Grep", "Code Review"],
       "when_to_use": "Kod temizliği, feature removal, tech debt temizliği"
     },
-    
+
     "6_code_coverage": {
       "name": "Code Coverage",
       "turkish_name": "Kod Kapsamı",
@@ -97,7 +97,7 @@
       "tools": ["PHPUnit Coverage", "Xdebug", "Pest Coverage"],
       "when_to_use": "Test yazımı, test stratejisi, quality assurance"
     },
-    
+
     "7_dependency_analysis": {
       "name": "Dependency Analysis",
       "turkish_name": "Bağımlılık Analizi",
@@ -112,7 +112,7 @@
       "tools": ["Composer", "PHPStan", "PHP Depend"],
       "when_to_use": "Dependency cleanup, package management, performance optimization"
     },
-    
+
     "8_security_analysis": {
       "name": "Security Analysis",
       "turkish_name": "Güvenlik Analizi",
@@ -127,7 +127,7 @@
       "tools": ["PHPStan (security rules)", "Larastan", "Custom Security Scanner"],
       "when_to_use": "Security audit, pre-deployment, security review"
     },
-    
+
     "9_performance_analysis": {
       "name": "Performance Analysis",
       "turkish_name": "Performans Analizi",
@@ -142,7 +142,7 @@
       "tools": ["Laravel Debugbar", "Telescope", "Blackfire", "Xdebug Profiler"],
       "when_to_use": "Performance optimization, scalability planning, bottleneck identification"
     },
-    
+
     "10_code_duplication": {
       "name": "Code Duplication",
       "turkish_name": "Kod Tekrarı",
@@ -157,7 +157,7 @@
       "when_to_use": "Code refactoring, maintainability improvement, DRY principle"
     }
   },
-  
+
   "comprehensive_code_check": {
     "name": "Kapsamlı Kod Kontrolü",
     "turkish_name": "Kod Kontrolü",
@@ -189,7 +189,7 @@
       "actionable_items": "Yapılabilir maddeler listesi"
     }
   },
-  
+
   "additional_tools": {
     "static_analysis": {
       "phpstan": {
@@ -234,17 +234,10 @@
       }
     }
   },
-  
+
   "recommended_workflow": {
-    "daily": [
-      "Lint Kontrolü (IDE otomatik)",
-      "Quick Dead Code Check (kullanılmayan import'lar)"
-    ],
-    "weekly": [
-      "TODO/FIXME Review",
-      "Disabled Code Check",
-      "Code Duplication Check"
-    ],
+    "daily": ["Lint Kontrolü (IDE otomatik)", "Quick Dead Code Check (kullanılmayan import'lar)"],
+    "weekly": ["TODO/FIXME Review", "Disabled Code Check", "Code Duplication Check"],
     "before_deployment": [
       "Full Lint Control",
       "Security Analysis",
@@ -258,7 +251,7 @@
       "Code Duplication"
     ]
   },
-  
+
   "yalihan_bekci_commands": {
     "code_check": {
       "command": "kod kontrolü yapalım",
@@ -277,12 +270,7 @@
     "quick_check": {
       "command": "hızlı kod kontrolü",
       "description": "Hızlı kod kontrolü - sadece kritik kontroller",
-      "actions": [
-        "Lint kontrolü",
-        "TODO/FIXME check",
-        "Security critical issues"
-      ]
+      "actions": ["Lint kontrolü", "TODO/FIXME check", "Security critical issues"]
     }
   }
 }
-

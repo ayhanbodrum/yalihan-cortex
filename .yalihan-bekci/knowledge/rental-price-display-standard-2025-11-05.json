@@ -38,10 +38,7 @@
       },
       "listing-card.blade.php": {
         "file": "resources/views/components/listing-card.blade.php",
-        "changes": [
-          "Kiralama türüne göre fiyat formatı eklendi",
-          "Dark mode desteği eklendi"
-        ]
+        "changes": ["Kiralama türüne göre fiyat formatı eklendi", "Dark mode desteği eklendi"]
       },
       "admin-ilanlar-show.blade.php": {
         "file": "resources/views/admin/ilanlar/show.blade.php",
@@ -142,4 +139,3 @@
     "Responsive Design Standards"
   ]
 }
-

@@ -9,14 +9,14 @@
 
 ```yaml
 TELESCOPE (Development - Local):
-  Use: Kod yazarken, test ederken
-  Dashboard: http://localhost:8000/telescope
-  Sees: EVERYTHING (requests, queries, exceptions, logs)
-  
+    Use: Kod yazarken, test ederken
+    Dashboard: http://localhost:8000/telescope
+    Sees: EVERYTHING (requests, queries, exceptions, logs)
+
 SENTRY (Production - Live):
-  Use: Canlı sitede
-  Dashboard: https://sentry.io
-  Sees: ONLY errors (exceptions, failed requests)
+    Use: Canlı sitede
+    Dashboard: https://sentry.io
+    Sees: ONLY errors (exceptions, failed requests)
 ```
 
 ---
@@ -47,6 +47,7 @@ ADIM 4: Hataya Tıkla
 ```
 
 **Örnek:**
+
 ```
 Exception: ModelNotFoundException
 Message: "No query results for model [Ilan]"
@@ -79,7 +80,7 @@ ADIM 3: Kırmızı (500) Olan'a Tıkla
     - Duration: 2.3s
     - Exception: "Undefined variable $kategori_id"
     - User: admin@yalihanemlak.com
-    
+
   Tabs:
     ✅ Request → POST data gör
     ✅ Response → Error message
@@ -89,9 +90,9 @@ ADIM 3: Kırmızı (500) Olan'a Tıkla
 ADIM 4: Stack Trace'e Bak
   IlanController.php:245
     $ilan->kategori_name = $kategori->name;
-    
+
   Problem: $kategori null!
-  
+
 ADIM 5: Fix
   if ($kategori) {
       $ilan->kategori_name = $kategori->name;
@@ -124,10 +125,10 @@ ADIM 4: Optimize Et
     foreach($ilanlar as $ilan) {
         $ilan->fotograflar; // 100 extra queries!
     }
-    
+
   After:
     $ilanlar = Ilan::with('fotograflar')->get(); // 1 query!
-    
+
   Result: 850ms → 45ms! ✅
 ```
 
@@ -161,7 +162,7 @@ ADIM 4: Tıkla ve İncele
       "limit": "60 requests/minute"
     }
     Time: 30 minutes ago
-    
+
   Fix: Cache ekle veya rate limit artır
 ```
 
@@ -174,7 +175,7 @@ ADIM 4: Tıkla ve İncele
 ```yaml
 ADIM 1: Production'da Hata Oluşur
   User: Form submit → ERROR!
-  
+
 ADIM 2: Sentry Yakalar (0.5 saniye)
   Exception: QueryException
   Message: "Unknown column 'durum'"
@@ -192,7 +193,7 @@ ADIM 3: Size Email Gelir (30 saniye)
 
 ADIM 4: Dashboard'da İncele
   https://sentry.io → Issues
-  
+
   Detaylar:
     - Full stack trace
     - User context
@@ -219,7 +220,7 @@ ADIM 2: Issues Listesi
     - Unresolved (çözülmemiş)
     - Assigned to me
     - High priority
-    
+
   Sıralama:
     - Most impacted users (en çok etkilenen)
     - Most frequent (en sık olan)
@@ -261,7 +262,7 @@ TELESCOPE (Development):
   3. POST /admin/ilanlar/store → 422
   4. Tıkla → Validation errors gör
   5. Fix → Test → Works!
-  
+
   Time: 2 dakika
   Environment: Local
 
@@ -272,10 +273,10 @@ SENTRY (Production):
   4. Dashboard'da incele
   5. Local'de reproduce et
   6. Fix → Deploy
-  
+
   Time: 10 dakika
   Environment: Production
-  
+
   Value: Kullanıcı şikayet etmeden sen düzelttin!
 ```
 
@@ -374,7 +375,7 @@ Daily Check:
 2. Telescope → Requests:
    POST /admin/ilanlar/store → 500
 3. Tıkla → Queries tab:
-   🚨 INSERT INTO ilanlar (durum, ...) 
+   🚨 INSERT INTO ilanlar (durum, ...)
    ❌ Unknown column 'durum'
 4. Fix: durum → status (Context7!)
 5. Test → Works! ✅
@@ -480,6 +481,7 @@ php artisan test
 ### **1. Form Validation Errors**
 
 #### **Telescope:**
+
 ```
 Requests → POST request bul
 → Status: 422
@@ -487,6 +489,7 @@ Requests → POST request bul
 ```
 
 #### **Fix:**
+
 ```php
 // Controller validation rule'larını düzelt
 'kategori_id' => 'required|exists:ilan_kategorileri,id',
@@ -497,6 +500,7 @@ Requests → POST request bul
 ### **2. Database Errors**
 
 #### **Telescope:**
+
 ```
 Exceptions → QueryException
 → Stack trace → Hangi query
@@ -504,6 +508,7 @@ Exceptions → QueryException
 ```
 
 #### **Fix:**
+
 ```php
 // Table/column name düzelt
 // Index ekle (yavaşsa)
@@ -515,6 +520,7 @@ Exceptions → QueryException
 ### **3. API Integration Errors**
 
 #### **Telescope:**
+
 ```
 Logs → Filter by 'error'
 → "API call failed" bulJSON Response
@@ -522,6 +528,7 @@ Logs → Filter by 'error'
 ```
 
 #### **Fix:**
+
 ```php
 // Rate limiting ekle
 // Cache ekle
@@ -533,6 +540,7 @@ Logs → Filter by 'error'
 ### **4. Performance Issues (Yavaş Sayfa)**
 
 #### **Telescope:**
+
 ```
 Requests → Slow request bul (>1s)
 → Queries tab → Kaç query?
@@ -540,6 +548,7 @@ Requests → Slow request bul (>1s)
 ```
 
 #### **Fix:**
+
 ```php
 // Eager loading
 $ilanlar = Ilan::with(['fotograflar', 'kategori', 'il'])->get();
@@ -603,7 +612,7 @@ High Priority (Hemen fix!):
   ❌ Critical feature broken
   ❌ Data loss risk
   ❌ Security issue
-  
+
   Example: "Payment processing failed" (15 users)
   → FIX IMMEDIATELY!
 
@@ -611,7 +620,7 @@ Medium Priority (Bugün içinde):
   ⚠️ 10-50 users affected
   ⚠️ Feature degraded
   ⚠️ Workaround exists
-  
+
   Example: "Search not working" (25 users)
   → Fix today
 
@@ -619,7 +628,7 @@ Low Priority (Bu hafta):
   ℹ️ 1-10 users affected
   ℹ️ Edge case
   ℹ️ Minor UI issue
-  
+
   Example: "Mobile menu animation" (3 users)
   → Backlog
 ```
@@ -682,14 +691,13 @@ Low Priority (Bu hafta):
 
 ```yaml
 Haftalık Check:
-  □ Exception count: Azalıyor mu?
-  □ Slow queries: Optimize edildi mi?
-  □ Failed jobs: Tekrarlayan pattern var mı?
+    □ Exception count: Azalıyor mu?
+    □ Slow queries: Optimize edildi mi?
+    □ Failed jobs: Tekrarlayan pattern var mı?
 
-Monthly Review:
-  □ Top 10 exceptions → Preventive fix
-  □ Slowest queries → Index optimization
-  □ Most failed jobs → Improve reliability
+Monthly Review: □ Top 10 exceptions → Preventive fix
+    □ Slowest queries → Index optimization
+    □ Most failed jobs → Improve reliability
 ```
 
 ---
@@ -698,20 +706,20 @@ Monthly Review:
 
 ```yaml
 Haftalık Report:
-  - Total issues: 47
-  - Resolved: 42 ✅
-  - Open: 5 ⚠️
-  - Users affected: 156
-  - Average resolution time: 12 minutes
+    - Total issues: 47
+    - Resolved: 42 ✅
+    - Open: 5 ⚠️
+    - Users affected: 156
+    - Average resolution time: 12 minutes
 
 Monthly Trends:
-  📉 Errors decreasing: ✅ Good!
-  📈 Errors increasing: ⚠️ Problem!
-  
-  Actions:
-    - Identify patterns
-    - Preventive measures
-    - Code quality improvement
+    📉 Errors decreasing: ✅ Good!
+    📈 Errors increasing: ⚠️ Problem!
+
+    Actions:
+        - Identify patterns
+        - Preventive measures
+        - Code quality improvement
 ```
 
 ---
@@ -722,24 +730,22 @@ Monthly Trends:
 
 ```yaml
 Local Development:
-  Tool: Telescope
-  URL: http://localhost:8000/telescope
-  
-  Tabs:
-    Exceptions → Hatalar
-    Requests → 500 errors
-    Queries → Yavaş query'ler
-    Logs → Error logs
-    Jobs → Failed jobs
+    Tool: Telescope
+    URL: http://localhost:8000/telescope
+
+    Tabs: Exceptions → Hatalar
+        Requests → 500 errors
+        Queries → Yavaş query'ler
+        Logs → Error logs
+        Jobs → Failed jobs
 
 Production:
-  Tool: Sentry
-  URL: https://sentry.io
-  
-  Alerts:
-    Email → Anında (30s)
-    Slack → Real-time
-    Dashboard → 24/7 monitoring
+    Tool: Sentry
+    URL: https://sentry.io
+
+    Alerts: Email → Anında (30s)
+        Slack → Real-time
+        Dashboard → 24/7 monitoring
 ```
 
 ---
@@ -793,25 +799,24 @@ Improvement: 18x faster! ✅
 
 ```yaml
 Hata Kontrolü 2 Tool:
-  
-  Development:
-    Tool: Telescope
-    URL: http://localhost:8000/telescope
-    Use: Her şeyi izle
-    Tabs: Exceptions, Requests, Queries, Logs
-    
-  Production:
-    Tool: Sentry
-    URL: https://sentry.io
-    Use: Sadece error'lar
-    Alerts: Email, Slack
-    
+    Development:
+        Tool: Telescope
+        URL: http://localhost:8000/telescope
+        Use: Her şeyi izle
+        Tabs: Exceptions, Requests, Queries, Logs
+
+    Production:
+        Tool: Sentry
+        URL: https://sentry.io
+        Use: Sadece error'lar
+        Alerts: Email, Slack
+
 Daily Routine:
-  09:00: Telescope exceptions check
-  09:05: Sentry dashboard check
-  09:10: Horizon failed jobs check
-  
-  Total: 10 dakika/gün ✅
+    09:00: Telescope exceptions check
+    09:05: Sentry dashboard check
+    09:10: Horizon failed jobs check
+
+    Total: 10 dakika/gün ✅
 ```
 
 ---
@@ -824,4 +829,3 @@ Sidebar → Requests → İlan sayfasını aç → Request'i gör!
 ```
 
 Ne görüyorsun? 📊✨
-

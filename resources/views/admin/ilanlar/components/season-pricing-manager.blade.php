@@ -2,10 +2,10 @@
 {{-- Pure Tailwind + Alpine.js --}}
 {{-- Yalıhan Bekçi kurallarına %100 uyumlu --}}
 
-<div x-data="seasonPricingManager({{ json_encode($ilan->id ?? null) }})" 
+<div x-data="seasonPricingManager({{ json_encode($ilan->id ?? null) }})"
      x-init="init()"
      class="bg-white dark:bg-gray-800 rounded-xl border-2 border-gray-200 dark:border-gray-700 p-6">
-    
+
     {{-- Header --}}
     <div class="flex items-center justify-between mb-6">
         <div>
@@ -16,7 +16,7 @@
                 Yaz, kış ve ara sezon için farklı fiyatlar belirleyin
             </p>
         </div>
-        <button 
+        <button
             type="button"
             @click="addSeason()"
             class="px-4 py-2 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg font-semibold hover:from-green-700 hover:to-emerald-700 transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105">
@@ -39,7 +39,7 @@
                             </p>
                         </div>
                     </div>
-                    <button 
+                    <button
                         type="button"
                         @click="removeSeason(index)"
                         class="text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 font-semibold text-sm">
@@ -53,7 +53,7 @@
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             Sezon Tipi
                         </label>
-                        <select 
+                        <select
                             x-model="season.season_type"
                             class="w-full px-4 py-2.5 border-2 border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-black dark:text-white focus:ring-2 focus:ring-blue-500">
                             <option value="yaz">☀️ Yaz Sezonu (Yüksek Sezon)</option>
@@ -67,7 +67,7 @@
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             Başlangıç Tarihi *
                         </label>
-                        <input 
+                        <input
                             type="date"
                             x-model="season.start_date"
                             class="w-full px-4 py-2.5 border-2 border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-black dark:text-white focus:ring-2 focus:ring-blue-500">
@@ -77,7 +77,7 @@
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             Bitiş Tarihi *
                         </label>
-                        <input 
+                        <input
                             type="date"
                             x-model="season.end_date"
                             class="w-full px-4 py-2.5 border-2 border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-black dark:text-white focus:ring-2 focus:ring-blue-500">
@@ -88,7 +88,7 @@
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             Durum
                         </label>
-                        <select 
+                        <select
                             x-model="season.is_active"
                             class="w-full px-4 py-2.5 border-2 border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-black dark:text-white focus:ring-2 focus:ring-blue-500">
                             <option :value="1">✅ Aktif</option>
@@ -101,7 +101,7 @@
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             💰 Günlük Fiyat (₺)
                         </label>
-                        <input 
+                        <input
                             type="number"
                             x-model.number="season.daily_price"
                             step="0.01"
@@ -114,7 +114,7 @@
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             💰 Haftalık Fiyat (₺)
                         </label>
-                        <input 
+                        <input
                             type="number"
                             x-model.number="season.weekly_price"
                             step="0.01"
@@ -127,7 +127,7 @@
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             💰 Aylık Fiyat (₺)
                         </label>
-                        <input 
+                        <input
                             type="number"
                             x-model.number="season.monthly_price"
                             step="0.01"
@@ -141,7 +141,7 @@
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             📅 Min. Konaklama (gece)
                         </label>
-                        <input 
+                        <input
                             type="number"
                             x-model.number="season.minimum_stay"
                             min="1"
@@ -154,7 +154,7 @@
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             📅 Max. Konaklama (gece)
                         </label>
-                        <input 
+                        <input
                             type="number"
                             x-model.number="season.maximum_stay"
                             min="1"
@@ -194,9 +194,9 @@
     </div>
 
     {{-- Hidden Input (JSON data for Laravel) --}}
-    <input 
-        type="hidden" 
-        name="seasons_data" 
+    <input
+        type="hidden"
+        name="seasons_data"
         :value="JSON.stringify(seasons)">
 </div>
 
@@ -249,7 +249,7 @@ function seasonPricingManager(ilanId = null) {
 
         async removeSeason(index) {
             const season = this.seasons[index];
-            
+
             // Delete from server if exists
             if (this.ilanId && season.id) {
                 try {
@@ -297,15 +297,15 @@ function seasonPricingManager(ilanId = null) {
 
         formatDate(dateStr) {
             if (!dateStr) return '-';
-            return new Date(dateStr).toLocaleDateString('tr-TR', { 
-                day: 'numeric', 
+            return new Date(dateStr).toLocaleDateString('tr-TR', {
+                day: 'numeric',
                 month: 'short'
             });
         },
 
         formatPrice(price) {
-            return new Intl.NumberFormat('tr-TR', { 
-                style: 'currency', 
+            return new Intl.NumberFormat('tr-TR', {
+                style: 'currency',
                 currency: 'TRY',
                 minimumFractionDigits: 0
             }).format(price);
@@ -314,4 +314,3 @@ function seasonPricingManager(ilanId = null) {
 }
 </script>
 @endpush
-

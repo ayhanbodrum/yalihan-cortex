@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "last_updated": "2025-10-15T21:35:00Z",
   "description": "AI sistemlerinin koruyucusu ve standardizatörü",
-  
+
   "core_components": {
     "ai_service": {
       "file": "app/Services/AIService.php",
@@ -29,25 +29,15 @@
     "ai_widget": {
       "file": "resources/views/admin/components/ai-widget.blade.php",
       "description": "Standard AI UI component",
-      "features": [
-        "Loading states",
-        "Error handling",
-        "Progress indicators",
-        "Result formatting"
-      ]
+      "features": ["Loading states", "Error handling", "Progress indicators", "Result formatting"]
     },
     "ai_master_data": {
       "file": "database/seeders/AIMasterDataSeeder.php",
       "description": "AI configuration and prompts",
-      "includes": [
-        "Provider settings",
-        "API keys",
-        "Training data",
-        "AI prompts"
-      ]
+      "includes": ["Provider settings", "API keys", "Training data", "AI prompts"]
     }
   },
-  
+
   "ai_providers": {
     "openai": {
       "models": ["gpt-3.5-turbo", "gpt-4"],
@@ -75,7 +65,7 @@
       "authentication": "None (local)"
     }
   },
-  
+
   "usage_patterns": {
     "ai_analysis": {
       "code": "$aiService = new AIService();\n$result = $aiService->analyze($data, $context);",
@@ -94,19 +84,11 @@
       "use_case": "AI widget'ları sayfalarda kullanım"
     }
   },
-  
+
   "monitoring": {
     "ai_logs": {
       "model": "app/Models/AiLog.php",
-      "fields": [
-        "action",
-        "provider",
-        "prompt",
-        "response",
-        "duration",
-        "status",
-        "user_id"
-      ]
+      "fields": ["action", "provider", "prompt", "response", "duration", "status", "user_id"]
     },
     "performance_metrics": [
       "total_requests",
@@ -115,14 +97,9 @@
       "most_used_provider",
       "error_rate"
     ],
-    "cost_tracking": [
-      "tokens_used",
-      "api_calls",
-      "cost_per_request",
-      "monthly_cost"
-    ]
+    "cost_tracking": ["tokens_used", "api_calls", "cost_per_request", "monthly_cost"]
   },
-  
+
   "best_practices": {
     "always_use_ai_service": "Her AI işlemi için AIService kullan",
     "cache_results": "AI sonuçlarını cache'le",
@@ -133,7 +110,7 @@
     "secure_api_keys": "API key'leri güvenli sakla",
     "rate_limiting": "Rate limiting uygula"
   },
-  
+
   "configuration": {
     "provider_settings": {
       "table": "settings",
@@ -149,16 +126,10 @@
     "ai_settings": {
       "table": "settings",
       "group": "ai",
-      "keys": [
-        "ai_provider",
-        "ai_default_tone",
-        "ai_max_tokens",
-        "ai_temperature",
-        "ai_timeout"
-      ]
+      "keys": ["ai_provider", "ai_default_tone", "ai_max_tokens", "ai_temperature", "ai_timeout"]
     }
   },
-  
+
   "ai_prompts": {
     "category_analysis": "Bu emlak kategorilerini analiz et ve optimizasyon önerileri sun",
     "feature_suggestions": "Bu emlak özelliklerini incele ve eksik özellikler için öneriler sun",
@@ -166,14 +137,14 @@
     "price_analysis": "Bu emlak için piyasa analizi yaparak uygun fiyat önerisi sun",
     "seo_optimization": "Bu emlak ilanını SEO açısından optimize et"
   },
-  
+
   "error_handling": {
     "fallback_providers": "Bir provider başarısız olursa diğerine geç",
     "retry_mechanism": "Başarısız istekleri yeniden dene",
     "error_logging": "Tüm hataları detaylı logla",
     "user_friendly_messages": "Kullanıcı dostu hata mesajları göster"
   },
-  
+
   "integration_points": {
     "ozellik_kategorileri": {
       "page": "/admin/ozellikler/kategoriler",
@@ -196,20 +167,13 @@
       "ai_features": ["Provider yönetimi", "API key yönetimi", "Test fonksiyonları"]
     }
   },
-  
+
   "testing": {
     "health_check": "GET /api/admin/ai/health",
-    "test_endpoints": [
-      "/api/admin/ai/analyze",
-      "/api/admin/ai/suggest",
-      "/api/admin/ai/generate"
-    ],
-    "monitoring_urls": [
-      "/api/admin/ai/stats",
-      "/api/admin/ai/logs"
-    ]
+    "test_endpoints": ["/api/admin/ai/analyze", "/api/admin/ai/suggest", "/api/admin/ai/generate"],
+    "monitoring_urls": ["/api/admin/ai/stats", "/api/admin/ai/logs"]
   },
-  
+
   "documentation": {
     "master_guide": "docs/context7/YALIHAN_BEKCI_SYSTEM_GUIDE.md",
     "ai_standards": "docs/context7/AI_STANDARDS_MASTER_GUIDE.md",

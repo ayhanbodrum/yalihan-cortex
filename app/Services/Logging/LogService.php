@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 
 /**
  * Standardized Logging Service
- * 
+ *
  * Context7 Logging Standardization
  * Provides consistent logging format with context
  */
@@ -35,7 +35,7 @@ class LogService
 
     /**
      * Log info message with context
-     * 
+     *
      * @param string $message
      * @param array $context
      * @param string|null $channel
@@ -48,7 +48,7 @@ class LogService
 
     /**
      * Log error message with context
-     * 
+     *
      * @param string $message
      * @param array $context
      * @param \Throwable|null $exception
@@ -75,7 +75,7 @@ class LogService
 
     /**
      * Log warning message with context
-     * 
+     *
      * @param string $message
      * @param array $context
      * @param string|null $channel
@@ -88,7 +88,7 @@ class LogService
 
     /**
      * Log debug message with context
-     * 
+     *
      * @param string $message
      * @param array $context
      * @param string|null $channel
@@ -105,7 +105,7 @@ class LogService
 
     /**
      * Log critical message with context
-     * 
+     *
      * @param string $message
      * @param array $context
      * @param \Throwable|null $exception
@@ -132,7 +132,7 @@ class LogService
 
     /**
      * Log API request
-     * 
+     *
      * @param string $endpoint
      * @param array $requestData
      * @param array|null $responseData
@@ -166,7 +166,7 @@ class LogService
 
     /**
      * Log database operation
-     * 
+     *
      * @param string $operation
      * @param string $table
      * @param array $data
@@ -198,7 +198,7 @@ class LogService
 
     /**
      * Log authentication event
-     * 
+     *
      * @param string $event
      * @param int|null $userId
      * @param array $context
@@ -216,7 +216,7 @@ class LogService
 
     /**
      * Log AI operation
-     * 
+     *
      * @param string $operation
      * @param string $provider
      * @param array $context
@@ -242,7 +242,7 @@ class LogService
 
     /**
      * Core logging method
-     * 
+     *
      * @param string $level
      * @param string $message
      * @param array $context
@@ -272,7 +272,7 @@ class LogService
 
     /**
      * Create structured log entry
-     * 
+     *
      * @param string $action
      * @param string $resource
      * @param mixed $resourceId
@@ -300,4 +300,3 @@ class LogService
         self::log($level, $message, $context);
     }
 }
-

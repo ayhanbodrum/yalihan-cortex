@@ -35,7 +35,10 @@
       "id": "forbidden_patterns_cleanup",
       "title": "Context7 yasak pattern temizliği",
       "patterns": ["durum", "is_active", "aktif", "sehir"],
-      "tooling": ["scripts/context7-forbidden-scan.php", ".context7/api.php get-migration-suggestions"]
+      "tooling": [
+        "scripts/context7-forbidden-scan.php",
+        ".context7/api.php get-migration-suggestions"
+      ]
     },
     {
       "id": "link_health_ci_blocking",

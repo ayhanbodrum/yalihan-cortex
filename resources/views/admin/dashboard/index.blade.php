@@ -143,10 +143,10 @@
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">{{ Str::limit($ilan->baslik, 30) }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">{{ number_format($ilan->fiyat) }} {{ $ilan->para_birimi }}</td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                    @if($ilan->status == 'Aktif') bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
+                                    @if($ilan->status === true || $ilan->status === 'Aktif' || $ilan->status === 1) bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200
                                     @else bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400 @endif">
-                                    {{ $ilan->status }}
+                                    {{ is_bool($ilan->status) ? ($ilan->status ? 'Aktif' : 'Pasif') : $ilan->status }}
                                 </span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{{ optional($ilan->created_at)->format('d.m.Y') }}</td>
@@ -186,7 +186,7 @@
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">{{ $user->name }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{{ $user->email }}</td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
                                     @if($user->status) bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200
                                     @else bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400 @endif">
                                     {{ $user->status ? 'Aktif' : 'Pasif' }}
@@ -218,10 +218,10 @@
                 <div class="px-4 py-5 bg-gray-50 dark:bg-gray-900 rounded-lg">
                     <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate capitalize">{{ $service }}</dt>
                     <dd class="mt-1 flex items-center">
-                        <span class="flex items-center text-sm font-semibold 
+                        <span class="flex items-center text-sm font-semibold
                             @if($status == 'online') text-green-600 dark:text-green-400
                             @else text-red-600 dark:text-red-400 @endif">
-                            <span class="w-2 h-2 rounded-full mr-2 
+                            <span class="w-2 h-2 rounded-full mr-2
                                 @if($status == 'online') bg-green-500
                                 @else bg-red-500 @endif"></span>
                             {{ $status == 'online' ? 'Online' : 'Offline' }}

@@ -16,8 +16,8 @@ Minimum Karakter: 2
 API Endpoint: /api/site-apartman/search
 Method: GET
 Parameters:
-  - q: Arama terimi
-  - type: site/apartman (optional)
+    - q: Arama terimi
+    - type: site/apartman (optional)
 
 Frontend Framework: Alpine.js
 Search Function: searchSites()
@@ -32,15 +32,14 @@ Debounce: 300ms
 Component: site-apartman-selection.blade.php
 Alpine.js Function: siteApartmanSelection()
 
-State Management:
-  ✅ searchQuery (arama terimi)
-  ✅ searchResults (sonuçlar)
-  ✅ selectedSite (seçilen site)
-  ✅ selectedSiteId (seçilen ID)
-  ✅ showSuggestions (dropdown göster/gizle)
-  ✅ konumTipi (site/apartman/müstakil)
-  ✅ siteOzellikleri (site özellikleri)
-  ✅ loadingOzellikleri (yükleniyor durumu)
+State Management: ✅ searchQuery (arama terimi)
+    ✅ searchResults (sonuçlar)
+    ✅ selectedSite (seçilen site)
+    ✅ selectedSiteId (seçilen ID)
+    ✅ showSuggestions (dropdown göster/gizle)
+    ✅ konumTipi (site/apartman/müstakil)
+    ✅ siteOzellikleri (site özellikleri)
+    ✅ loadingOzellikleri (yükleniyor durumu)
 ```
 
 ---
@@ -70,22 +69,22 @@ public function search(Request $request)
 {
     $searchTerm = $request->input('q') ?? $request->input('search_term');
     $type = $request->input('type');
-    
+
     $query = SiteApartman::query();
-    
+
     if ($searchTerm) {
         $query->where(function($q) use ($searchTerm) {
             $q->where('name', 'like', "%{$searchTerm}%")
               ->orWhere('adres', 'like', "%{$searchTerm}%");
         });
     }
-    
+
     if ($type) {
         $query->where('tip', $type);
     }
-    
+
     $sites = $query->limit(10)->get();
-    
+
     // Context7: Dual format response
     return response()->json([
         'data' => $sites,
@@ -114,7 +113,7 @@ async searchSites() {
         const response = await fetch(
             `/api/site-apartman/search?q=${encodeURIComponent(this.searchQuery)}&type=${this.konumTipi}`
         );
-        
+
         if (response.ok) {
             const data = await response.json();
             this.searchResults = data.results || []; // Dual format
@@ -127,6 +126,7 @@ async searchSites() {
 ```
 
 **Özellikler:**
+
 - ✅ Async/await
 - ✅ Error handling
 - ✅ Minimum karakter kontrolü
@@ -139,16 +139,19 @@ async searchSites() {
 ### **2. Input Field:**
 
 ```html
-<input type="text"
+<input
+    type="text"
     x-model="searchQuery"
     @input.debounce.300ms="searchSites()"
     @focus="showSuggestions = true"
     @blur="setTimeout(() => showSuggestions = false, 200)"
     class="neo-input w-full"
-    :placeholder="konumTipi === 'site' ? 'Site adı yazın...' : 'Apartman adı yazın...'">
+    :placeholder="konumTipi === 'site' ? 'Site adı yazın...' : 'Apartman adı yazın...'"
+/>
 ```
 
 **Özellikler:**
+
 - ✅ Debounce 300ms
 - ✅ Focus/blur handling
 - ✅ Dynamic placeholder
@@ -159,8 +162,10 @@ async searchSites() {
 ### **3. Dropdown Sonuçlar:**
 
 ```html
-<div x-show="showSuggestions && searchResults.length > 0"
-    class="absolute z-10 w-full mt-1 bg-white dark:bg-gray-800 border rounded-md shadow-lg max-h-60 overflow-y-auto">
+<div
+    x-show="showSuggestions && searchResults.length > 0"
+    class="absolute z-10 w-full mt-1 bg-white dark:bg-gray-800 border rounded-md shadow-lg max-h-60 overflow-y-auto"
+>
     <template x-for="site in searchResults" :key="site.id">
         <div @click="selectSite(site)" class="px-4 py-2 hover:bg-gray-100 cursor-pointer">
             <div class="font-medium" x-text="site.name"></div>
@@ -174,6 +179,7 @@ async searchSites() {
 ```
 
 **Özellikler:**
+
 - ✅ Conditional display
 - ✅ Max height + scroll
 - ✅ Dark mode support
@@ -195,6 +201,7 @@ selectSite(site) {
 ```
 
 **Özellikler:**
+
 - ✅ Site objesini sakla
 - ✅ ID'yi ayır
 - ✅ Input'u güncelle
@@ -211,14 +218,13 @@ selectSite(site) {
             <div class="font-medium" x-text="selectedSite?.name || ''"></div>
             <div class="text-sm" x-text="selectedSite?.adres || ''"></div>
         </div>
-        <button type="button" @click="clearSelection()" class="text-red-500">
-            ✕
-        </button>
+        <button type="button" @click="clearSelection()" class="text-red-500">✕</button>
     </div>
 </div>
 ```
 
 **Özellikler:**
+
 - ✅ Null-safe access (selectedSite?.name)
 - ✅ Temizleme butonu
 - ✅ Blue highlight
@@ -249,18 +255,18 @@ selectSite(site) {
 
 ```json
 {
-  "data": [
-    {
-      "id": 1,
-      "name": "Yalıkavak Marina",
-      "adres": "Yalıkavak, Bodrum",
-      "toplam_daire_sayisi": 50,
-      "tip": "site"
-    }
-  ],
-  "results": [
-    // Same as data (dual format)
-  ]
+    "data": [
+        {
+            "id": 1,
+            "name": "Yalıkavak Marina",
+            "adres": "Yalıkavak, Bodrum",
+            "toplam_daire_sayisi": 50,
+            "tip": "site"
+        }
+    ],
+    "results": [
+        // Same as data (dual format)
+    ]
 }
 ```
 
@@ -305,12 +311,12 @@ selectSite(site) {
 ```javascript
 async loadSiteOzellikleri() {
     this.loadingOzellikleri = true;
-    
+
     try {
         const response = await fetch('/admin/site-ozellikleri/active', {
             headers: { 'Accept': 'application/json' }
         });
-        
+
         if (response.ok) {
             const data = await response.json();
             this.siteOzellikleri = data.data || [];
@@ -334,10 +340,12 @@ async loadSiteOzellikleri() {
 <div x-show="siteOzellikleri.length > 0" class="grid grid-cols-2 md:grid-cols-3 gap-3">
     <template x-for="ozellik in siteOzellikleri" :key="ozellik.id">
         <label class="flex items-center space-x-2 p-2 rounded hover:bg-gray-50 cursor-pointer">
-            <input type="checkbox" 
-                   :name="'site_ozellikleri[' + ozellik.id + ']'"
-                   :value="ozellik.id"
-                   class="rounded text-green-600">
+            <input
+                type="checkbox"
+                :name="'site_ozellikleri[' + ozellik.id + ']'"
+                :value="ozellik.id"
+                class="rounded text-green-600"
+            />
             <span class="text-sm" x-text="ozellik.name"></span>
         </label>
     </template>
@@ -405,8 +413,8 @@ Sorun 4: YOK
 ### **Test 2: Type Filtering:**
 
 ```yaml
-1. Konum Tipi değiştir: "Apartman"
-2. Input'a yaz: "test"
+1. Konum Tipi değiştir: 'Apartman'
+2. Input'a yaz: 'test'
 3. Kontrol: API çağrısında type=apartman var mı?
 4. Kontrol: Sadece apartmanlar mı geliyor?
 ```
@@ -464,26 +472,26 @@ Error Handling: ✅ VAR
 
 ```yaml
 1. Loading Indicator Ekle (Opsiyonel):
-   Durum: loadingOzellikleri var ama görünmüyor
-   Öneri: Input'un sağına spinner ekle
-   Kod: <i x-show="searching" class="fas fa-spinner fa-spin"></i>
-   Süre: 5 dakika
+    Durum: loadingOzellikleri var ama görünmüyor
+    Öneri: Input'un sağına spinner ekle
+    Kod: <i x-show="searching" class="fas fa-spinner fa-spin"></i>
+    Süre: 5 dakika
 
 2. "Sonuç Bulunamadı" Mesajı (Opsiyonel):
-   Durum: Boş sonuç için mesaj yok
-   Öneri: Dropdown'da göster
-   Kod: <div x-show="searchQuery.length >= 2 && searchResults.length === 0">
-   Süre: 5 dakika
+    Durum: Boş sonuç için mesaj yok
+    Öneri: Dropdown'da göster
+    Kod: <div x-show="searchQuery.length >= 2 && searchResults.length === 0">
+    Süre: 5 dakika
 
 3. Keyboard Navigation (İleri Seviye):
-   Durum: Yok (mouse only)
-   Öneri: Arrow up/down, Enter tuşları
-   Süre: 1 saat
+    Durum: Yok (mouse only)
+    Öneri: Arrow up/down, Enter tuşları
+    Süre: 1 saat
 
 4. Yeni Site Ekle Butonu (Nice-to-have):
-   Durum: Yok
-   Öneri: Dropdown altına "➕ Yeni Site Ekle" butonu
-   Süre: 30 dakika
+    Durum: Yok
+    Öneri: Dropdown altına "➕ Yeni Site Ekle" butonu
+    Süre: 30 dakika
 ```
 
 ---
@@ -493,16 +501,15 @@ Error Handling: ✅ VAR
 ```yaml
 Durum: ✅ TAMAMEN ÇALIŞIR DURUMDA
 
-Özellikler:
-  ✅ Live Search (debounce 300ms)
-  ✅ API Endpoint (/api/site-apartman/search)
-  ✅ Dual Format Response (data + results)
-  ✅ Type Filtering (site/apartman)
-  ✅ Dinamik Site Özellikleri
-  ✅ Context7 Uyumlu
-  ✅ Dark Mode Desteği
-  ✅ Error Handling
-  ✅ Null-safe Access
+Özellikler: ✅ Live Search (debounce 300ms)
+    ✅ API Endpoint (/api/site-apartman/search)
+    ✅ Dual Format Response (data + results)
+    ✅ Type Filtering (site/apartman)
+    ✅ Dinamik Site Özellikleri
+    ✅ Context7 Uyumlu
+    ✅ Dark Mode Desteği
+    ✅ Error Handling
+    ✅ Null-safe Access
 
 Sorunlar: ❌ YOK
 
@@ -514,4 +521,3 @@ Sonuç: 🎉 TEST BAŞARILI!
 ---
 
 **📝 Not:** Bu component daha önce düzeltilmişti (2025-10-23). API endpoint ve dual format response sistemi kurulmuştu. Şu an tamamen çalışır durumda!
-

@@ -173,12 +173,12 @@ class Satis extends BaseModel
     public function updateOdemeDurumu(string $odemeDurumu, float $odenenTutar = null): bool
     {
         $data = ['odeme_durumu' => $odemeDurumu];
-        
+
         if ($odenenTutar !== null) {
             $data['odenen_tutar'] = $odenenTutar;
             $data['kalan_tutar'] = $this->satis_fiyati - $odenenTutar;
         }
-        
+
         return $this->update($data);
     }
 

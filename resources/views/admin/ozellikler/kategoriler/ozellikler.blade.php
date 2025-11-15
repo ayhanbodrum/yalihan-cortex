@@ -182,8 +182,8 @@
                                         </span>
                                     </td>
                                     <td class="px-4 py-2.5 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $ozellik->enabled ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300' : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300' }}">
-                                            {{ $ozellik->enabled ? 'Aktif' : 'Pasif' }}
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $ozellik->status ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300' : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300' }}">
+                                            {{ $ozellik->status ? 'Aktif' : 'Pasif' }}
                                         </span>
                                     </td>
                                     <td

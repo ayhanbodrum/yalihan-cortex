@@ -140,7 +140,7 @@ class PhotoController extends AdminController
                     'width' => $width,
                     'height' => $height,
                     'is_featured' => false,
-                    'order' => $index,
+                    'sira' => $index, // Context7: Database'de 'sira' kolonu var
                 ]);
 
                 $uploadedPhotos[] = [
@@ -275,14 +275,14 @@ class PhotoController extends AdminController
             $photo->update([
                 'category' => $validated['category'],
                 'is_featured' => $validated['is_featured'] ?? false,
-                'order' => $request->order ?? $photo->order,
+                'sira' => $request->display_order ?? $request->order ?? $photo->sira, // Context7: display_order preferred
             ]);
 
             $photoData = [
                 'id' => $photo->id,
                 'category' => $photo->category,
                 'is_featured' => $photo->is_featured,
-                'order' => $photo->order,
+                'display_order' => $photo->sira, // Context7: API response'da display_order kullan
                 'url' => $photo->url,
                 'thumbnail_url' => $photo->thumbnail_url,
                 'size' => $photo->size,
@@ -346,7 +346,7 @@ class PhotoController extends AdminController
 
             // Photo model ile silme
             $photoModel = Photo::findOrFail($id);
-            
+
             // Dosyaları sil
             if ($photoModel->path) {
                 Storage::disk('public')->delete($photoModel->path);
@@ -354,7 +354,7 @@ class PhotoController extends AdminController
             if ($photoModel->thumbnail) {
                 Storage::disk('public')->delete($photoModel->thumbnail);
             }
-            
+
             // Model'i sil (soft delete)
             $photoModel->delete();
 
@@ -395,42 +395,50 @@ class PhotoController extends AdminController
             $photoIds = $validated['photo_ids'];
             $processedCount = 0;
 
-            foreach ($photoIds as $photoId) {
-                switch ($action) {
-                    case 'delete':
-                        // Photo model ile delete
-                        $photo = Photo::find($photoId);
-                        if ($photo) {
-                            Storage::disk('public')->delete($photo->path);
-                            if ($photo->thumbnail) {
-                                Storage::disk('public')->delete($photo->thumbnail);
-                            }
-                            $photo->delete();
-                            $processedCount++;
+            switch ($action) {
+                case 'delete':
+                    // ✅ PERFORMANCE FIX: N+1 query önlendi - Bulk query + bulk delete
+                    $photos = Photo::whereIn('id', $photoIds)->get();
+
+                    // Storage dosyalarını toplu sil
+                    $pathsToDelete = [];
+                    foreach ($photos as $photo) {
+                        if ($photo->path) {
+                            $pathsToDelete[] = $photo->path;
                         }
-                        break;
-                        
-                    case 'move':
-                        // Photo model ile category update
-                        Photo::where('id', $photoId)->update(['category' => $validated['target_category'] ?? null]);
-                        $processedCount++;
-                        break;
-                        
-                    case 'feature':
-                        // Photo model ile featured update
-                        $photo = Photo::find($photoId);
-                        if ($photo) {
-                            $photo->setAsFeatured();
-                            $processedCount++;
+                        if ($photo->thumbnail) {
+                            $pathsToDelete[] = $photo->thumbnail;
                         }
-                        break;
-                        
-                    case 'unfeature':
-                        // Photo model ile unfeatured update
-                        Photo::where('id', $photoId)->update(['is_featured' => false]);
-                        $processedCount++;
-                        break;
-                }
+                    }
+
+                    if (!empty($pathsToDelete)) {
+                        Storage::disk('public')->delete($pathsToDelete);
+                    }
+
+                    // Bulk delete
+                    $processedCount = Photo::whereIn('id', $photoIds)->delete();
+                    break;
+
+                case 'move':
+                    // ✅ PERFORMANCE FIX: N+1 query önlendi - Bulk update
+                    $processedCount = Photo::whereIn('id', $photoIds)
+                        ->update(['category' => $validated['target_category'] ?? null]);
+                    break;
+
+                case 'feature':
+                    // ✅ PERFORMANCE FIX: N+1 query önlendi - Bulk update
+                    $photos = Photo::whereIn('id', $photoIds)->get();
+                    foreach ($photos as $photo) {
+                        $photo->setAsFeatured();
+                    }
+                    $processedCount = count($photos);
+                    break;
+
+                case 'unfeature':
+                    // ✅ PERFORMANCE FIX: N+1 query önlendi - Bulk update
+                    $processedCount = Photo::whereIn('id', $photoIds)
+                        ->update(['is_featured' => false]);
+                    break;
             }
 
             return response()->json([
@@ -523,7 +531,9 @@ class PhotoController extends AdminController
         }
 
         if (!empty($search)) {
-            $allPhotos = array_filter($allPhotos, fn($photo) =>
+            $allPhotos = array_filter(
+                $allPhotos,
+                fn($photo) =>
                 str_contains(strtolower($photo['title']), strtolower($search))
             );
         }
@@ -602,19 +612,19 @@ class PhotoController extends AdminController
     {
         try {
             $thumbnailPath = 'thumbnails/' . basename($originalPath);
-            
+
             $image = Image::make(Storage::disk('public')->path($originalPath));
-            
+
             // Thumbnail (300x300)
             $image->fit(300, 300, function ($constraint) {
                 $constraint->upsize();
             });
-            
+
             // Optimize (JPEG, 80% quality)
             $image->encode('jpg', 80);
-            
+
             Storage::disk('public')->put($thumbnailPath, (string) $image);
-            
+
             return $thumbnailPath;
         } catch (\Exception $e) {
             \Log::error('Thumbnail generation error: ' . $e->getMessage());
@@ -632,7 +642,7 @@ class PhotoController extends AdminController
     {
         try {
             $image = Image::make(Storage::disk('public')->path($path));
-            
+
             // Max width: 1920px
             if ($image->width() > 1920) {
                 $image->resize(1920, null, function ($constraint) {
@@ -640,12 +650,12 @@ class PhotoController extends AdminController
                     $constraint->upsize();
                 });
             }
-            
+
             // Optimize (JPEG, 85% quality)
             $image->encode('jpg', 85);
-            
+
             Storage::disk('public')->put($path, (string) $image);
-            
+
             return $image->filesize();
         } catch (\Exception $e) {
             \Log::error('Image optimization error: ' . $e->getMessage());

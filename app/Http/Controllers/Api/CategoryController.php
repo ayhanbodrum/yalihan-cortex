@@ -3,15 +3,19 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Services\Response\ResponseService;
+use App\Traits\ValidatesApiRequests;
 use Illuminate\Http\Request;
-use App\Models\IlanKategoriYayinTipi;
 use Illuminate\Support\Facades\Log;
 
 class CategoryController extends Controller
 {
+    use ValidatesApiRequests;
+
     public function index(Request $request)
     {
-        return response()->json(['message' => 'Category endpoint - to be implemented']);
+        // ✅ REFACTORED: Using ResponseService
+        return ResponseService::success(null, 'Category endpoint - to be implemented');
     }
 
     public function getSubcategories($parentId)
@@ -24,7 +28,7 @@ class CategoryController extends Controller
             $subCategories = \App\Models\IlanKategori::where('parent_id', $parentId)
                 ->where('seviye', 1)
                 ->where('status', 1)
-                ->orderBy('order')
+                ->orderBy('display_order')
                 ->orderBy('name')
                 ->get(['id', 'name', 'slug', 'icon']);
 
@@ -34,8 +38,8 @@ class CategoryController extends Controller
                 'categories' => $subCategories->pluck('name')->toArray()
             ]);
 
-            return response()->json([
-                'success' => true,
+            // ✅ REFACTORED: Using ResponseService
+            return ResponseService::success([
                 'subcategories' => $subCategories->map(function ($cat) {
                     return [
                         'id' => $cat->id,
@@ -45,19 +49,15 @@ class CategoryController extends Controller
                     ];
                 }),
                 'count' => $subCategories->count()
-            ]);
-
+            ], 'Alt kategoriler başarıyla yüklendi');
         } catch (\Exception $e) {
             Log::error('Subcategories loading error', [
                 'parent_id' => $parentId,
                 'error' => $e->getMessage()
             ]);
 
-            return response()->json([
-                'success' => false,
-                'message' => 'Alt kategoriler yüklenemedi',
-                'error' => $e->getMessage()
-            ], 500);
+            // ✅ REFACTORED: Using ResponseService
+            return ResponseService::serverError('Alt kategoriler yüklenemedi', $e);
         }
     }
 
@@ -74,10 +74,8 @@ class CategoryController extends Controller
             $category = \App\Models\IlanKategori::find($categoryId);
 
             if (!$category) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Kategori bulunamadı'
-                ], 404);
+                // ✅ REFACTORED: Using ResponseService
+                return ResponseService::notFound('Kategori bulunamadı');
             }
 
             $parentId = $category->parent_id ?? $categoryId;
@@ -85,7 +83,7 @@ class CategoryController extends Controller
             $yayinTipleri = \App\Models\IlanKategori::where('parent_id', $parentId)
                 ->where('seviye', 2)
                 ->where('status', 1)
-                ->orderBy('order')
+                ->orderBy('display_order')
                 ->orderBy('name')
                 ->get(['id', 'name', 'slug']);
 
@@ -96,16 +94,16 @@ class CategoryController extends Controller
             ]);
 
             if ($yayinTipleri->isEmpty()) {
-                return response()->json([
-                    'success' => true,
+                // ✅ REFACTORED: Using ResponseService
+                return ResponseService::success([
                     'types' => [],
                     'count' => 0,
                     'message' => 'Bu kategori için yayın tipi bulunamadı'
-                ]);
+                ], 'Bu kategori için yayın tipi bulunamadı');
             }
 
-            return response()->json([
-                'success' => true,
+            // ✅ REFACTORED: Using ResponseService
+            return ResponseService::success([
                 'types' => $yayinTipleri->map(function ($type) {
                     return [
                         'id' => $type->id,
@@ -115,19 +113,15 @@ class CategoryController extends Controller
                 }),
                 'count' => $yayinTipleri->count(),
                 'message' => 'Yayın tipleri yüklendi'
-            ]);
-
+            ], 'Yayın tipleri yüklendi');
         } catch (\Exception $e) {
             Log::error('Publication types loading error', [
                 'category_id' => $categoryId,
                 'error' => $e->getMessage()
             ]);
 
-            return response()->json([
-                'success' => false,
-                'message' => 'Yayın tipleri yüklenirken hata oluştu',
-                'error' => $e->getMessage()
-            ], 500);
+            // ✅ REFACTORED: Using ResponseService
+            return ResponseService::serverError('Yayın tipleri yüklenirken hata oluştu', $e);
         }
     }
 }

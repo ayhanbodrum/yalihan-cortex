@@ -25,6 +25,7 @@ Total JS: ~10,000 lines (modular)
 ## 📁 **DOSYA YAPISI**
 
 ### **1. Main Entry Point**
+
 ```javascript
 // resources/js/admin/ilan-create.js (86 lines)
 import './ilan-create/core.js';
@@ -148,13 +149,13 @@ let marker;
 
 function initializeMap() {
     map = L.map('map').setView([37.8651, 32.4891], 6); // Turkey center
-    
+
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors'
+        attribution: '© OpenStreetMap contributors',
     }).addTo(map);
-    
+
     // Click to set marker
-    map.on('click', function(e) {
+    map.on('click', function (e) {
         setMarker(e.latlng);
     });
 }
@@ -174,15 +175,15 @@ function initializeMap() {
 async function generateAIContent(type, data) {
     try {
         showLoading('AI içerik üretiliyor...');
-        
+
         const response = await fetch('/api/admin/ai/generate', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ type, data })
+            body: JSON.stringify({ type, data }),
         });
-        
+
         const result = await response.json();
-        
+
         if (result.success) {
             fillContent(result.data);
             showSuccess('AI içerik başarıyla oluşturuldu!');
@@ -222,12 +223,12 @@ dropZone.addEventListener('drop', (e) => {
 async function uploadPhoto(file) {
     const formData = new FormData();
     formData.append('photo', file);
-    
+
     const response = await fetch('/api/admin/ilanlar/upload-photo', {
         method: 'POST',
-        body: formData
+        body: formData,
     });
-    
+
     return response.json();
 }
 ```
@@ -256,7 +257,7 @@ document.addEventListener('alpine:init', () => {
         para_birimi: 'TRY',
         status: 'active',
         selectedSite: null,
-        selectedPerson: null
+        selectedPerson: null,
     });
 });
 ```
@@ -266,14 +267,15 @@ document.addEventListener('alpine:init', () => {
 ```html
 <!-- Form container -->
 <form x-data="{ selectedSite: null, selectedPerson: null }">
-
-<!-- Kişi Bilgileri -->
-<div x-data="{ selectedPerson: null }">
-    <!-- Alpine reactive UI -->
-</div>
+    <!-- Kişi Bilgileri -->
+    <div x-data="{ selectedPerson: null }">
+        <!-- Alpine reactive UI -->
+    </div>
+</form>
 ```
 
 **Alpine.js Features Used:**
+
 - `x-data` → Component state
 - `x-show` → Conditional rendering
 - `x-on:click` → Event handling
@@ -294,7 +296,7 @@ class Context7LiveSearch {
         this.maxResults = 20;
         this.debounceTimer = null;
     }
-    
+
     handleSearch(query) {
         // Debounce 300ms
         clearTimeout(this.debounceTimer);
@@ -302,7 +304,7 @@ class Context7LiveSearch {
             this.search(query);
         }, 300);
     }
-    
+
     async search(query) {
         const response = await fetch(
             `/api/${this.searchType}/search?q=${encodeURIComponent(query)}`
@@ -330,7 +332,7 @@ class Context7LiveSearch {
 ```javascript
 // ilan-create/lazy-components.js
 const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
+    entries.forEach((entry) => {
         if (entry.isIntersecting) {
             loadComponent(entry.target);
             observer.unobserve(entry.target);
@@ -339,7 +341,7 @@ const observer = new IntersectionObserver((entries) => {
 });
 
 // Observe components
-document.querySelectorAll('.lazy-component').forEach(el => {
+document.querySelectorAll('.lazy-component').forEach((el) => {
     observer.observe(el);
 });
 ```
@@ -392,16 +394,17 @@ export default {
             },
             output: {
                 manualChunks: {
-                    'vendor': ['alpinejs'],
-                    'leaflet': ['leaflet']
-                }
-            }
-        }
-    }
-}
+                    vendor: ['alpinejs'],
+                    leaflet: ['leaflet'],
+                },
+            },
+        },
+    },
+};
 ```
 
 **Build Output:**
+
 ```yaml
 Generated Chunks:
   - app.js:           ~45 KB
@@ -419,6 +422,7 @@ Total: ~138 KB (gzipped: ~35 KB)
 ### **Context7 Rules (CRITICAL)**
 
 ✅ **Vanilla JS ONLY**
+
 ```javascript
 // ✅ ALLOWED
 fetch(), addEventListener(), querySelector()
@@ -428,16 +432,18 @@ React, Vue, jQuery, React-Select (170KB!), Choices.js (48KB)
 ```
 
 ✅ **Modular ES6**
+
 ```javascript
 // ✅ GOOD
 import { module } from './module.js';
 export function doSomething() {}
 
 // ❌ BAD (legacy)
-<script src="legacy.js"></script>
+<script src="legacy.js"></script>;
 ```
 
 ✅ **Bundle Size Limit**
+
 ```yaml
 Target: < 50 KB gzipped per page
 Current: ~35 KB gzipped ✅ PASS
@@ -449,20 +455,20 @@ Current: ~35 KB gzipped ✅ PASS
 
 ### **Allowed Libraries**
 
-| Library | Size | Purpose | Status |
-|---------|------|---------|--------|
-| Alpine.js | 15 KB | Reactive UI | ✅ Approved |
-| Leaflet.js | 40 KB | Maps | ✅ Approved |
-| Context7 Live Search | 3 KB | Search | ✅ Approved |
+| Library              | Size  | Purpose     | Status      |
+| -------------------- | ----- | ----------- | ----------- |
+| Alpine.js            | 15 KB | Reactive UI | ✅ Approved |
+| Leaflet.js           | 40 KB | Maps        | ✅ Approved |
+| Context7 Live Search | 3 KB  | Search      | ✅ Approved |
 
 ### **Forbidden Libraries**
 
-| Library | Size | Why Forbidden? |
-|---------|------|----------------|
+| Library      | Size   | Why Forbidden?                            |
+| ------------ | ------ | ----------------------------------------- |
 | React-Select | 170 KB | TOO HEAVY! Use Context7 Live Search (3KB) |
-| Choices.js | 48 KB | TOO HEAVY! Use native select |
-| jQuery | 87 KB | Legacy, not needed |
-| Select2 | 65 KB | jQuery dependency |
+| Choices.js   | 48 KB  | TOO HEAVY! Use native select              |
+| jQuery       | 87 KB  | Legacy, not needed                        |
+| Select2      | 65 KB  | jQuery dependency                         |
 
 ---
 
@@ -484,54 +490,54 @@ Current: ~35 KB gzipped ✅ PASS
 
 ```yaml
 core.js:
-  - Form validation
-  - Auto-save (30s)
-  - Submit handling
+    - Form validation
+    - Auto-save (30s)
+    - Submit handling
 
 categories.js:
-  - 3-level cascade
-  - Dynamic API calls
-  - Loading states
+    - 3-level cascade
+    - Dynamic API calls
+    - Loading states
 
 location.js:
-  - Map initialization
-  - Marker placement
-  - Geocoding
+    - Map initialization
+    - Marker placement
+    - Geocoding
 
 ai.js:
-  - AI content generation
-  - Multi-provider support
-  - Caching
+    - AI content generation
+    - Multi-provider support
+    - Caching
 
 photos.js:
-  - Drag & drop
-  - Upload handling
-  - Preview generation
+    - Drag & drop
+    - Upload handling
+    - Preview generation
 
 price.js:
-  - Price calculation
-  - Currency conversion
-  - Validation
+    - Price calculation
+    - Currency conversion
+    - Validation
 
 fields.js:
-  - Dynamic field loading
-  - Field dependency
-  - Conditional display
+    - Dynamic field loading
+    - Field dependency
+    - Conditional display
 
 crm.js:
-  - Kişi search
-  - Contact management
-  - Integration
+    - Kişi search
+    - Contact management
+    - Integration
 
 publication.js:
-  - Status management
-  - Publication workflow
-  - Preview
+    - Status management
+    - Publication workflow
+    - Preview
 
 key-manager.js:
-  - Key tracking
-  - Photo upload
-  - Location
+    - Key tracking
+    - Photo upload
+    - Location
 ```
 
 ---
@@ -557,9 +563,9 @@ key-manager.js:
 Total Lines: 10,003 lines
 Modules: 22 JavaScript files
 Bundle Size:
-  Raw: ~138 KB
-  Gzipped: ~35 KB ✅ Excellent!
-  
+    Raw: ~138 KB
+    Gzipped: ~35 KB ✅ Excellent!
+
 Load Time: < 500ms
 First Interaction: < 800ms
 
@@ -573,6 +579,7 @@ Heavy Libraries: 0 ❌ FORBIDDEN
 ## 🚨 **CRITICAL RULES (Yalıhan Bekçi)**
 
 ### **DO ✅**
+
 - Use Vanilla JS
 - Use Alpine.js for reactive UI
 - Use Context7 Live Search (3KB)
@@ -582,6 +589,7 @@ Heavy Libraries: 0 ❌ FORBIDDEN
 - Use ES6 modules
 
 ### **DON'T ❌**
+
 - DON'T use React-Select (170KB)
 - DON'T use jQuery (87KB)
 - DON'T use Choices.js (48KB)
@@ -594,6 +602,7 @@ Heavy Libraries: 0 ❌ FORBIDDEN
 ## 🎓 **YALIHAN BEKÇİ ÖĞRENME**
 
 **Pattern Detected:**
+
 ```
 Vanilla JS + Alpine.js = Hybrid Approach
 Modular ES6 = Maintainability
@@ -602,6 +611,7 @@ Bundle < 50KB = Performance Target
 ```
 
 **Rule Learned:**
+
 > İlan Create sayfası tamamen Vanilla JS + Alpine.js ile yazılmış.
 > Heavy libraries (React-Select, jQuery) YASAK.
 > Context7 Live Search 3KB ile React-Select'in 170KB'sini replace etti.
@@ -610,4 +620,3 @@ Bundle < 50KB = Performance Target
 ---
 
 **JavaScript sistemi modern, performanslı ve Context7 uyumlu! 🚀✨**
-

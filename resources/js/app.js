@@ -1,4 +1,5 @@
 import Alpine from 'alpinejs';
+import FeatureSuggest from './components/AI/FeatureSuggest.js'
 import collapse from '@alpinejs/collapse';
 
 Alpine.plugin(collapse);
@@ -6,19 +7,56 @@ Alpine.plugin(collapse);
 window.Alpine = Alpine;
 
 // Alpine'i başlatmadan önce tüm modüllerin yüklenmesini bekle
+// ✅ Context7: Alpine.js başlatma - DOM element kontrolü ile güvenli başlatma
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
         // Modüller yüklenmesi için kısa bir bekleme
         setTimeout(() => {
-            Alpine.start();
-            console.log('✅ Alpine started after modules loaded');
+            try {
+                // ✅ Context7: Alpine başlatmadan önce DOM'un hazır olduğundan emin ol
+                if (document.body && typeof Alpine !== 'undefined') {
+                    Alpine.start();
+                    console.log('✅ Alpine started after modules loaded');
+                    try { FeatureSuggest.init() } catch {}
+                } else {
+                    console.warn('⚠️ Alpine start delayed - DOM or Alpine not ready');
+                    // Retry after a short delay
+                    setTimeout(() => {
+                        if (document.body && typeof Alpine !== 'undefined') {
+                            Alpine.start();
+                            console.log('✅ Alpine started after retry');
+                            try { FeatureSuggest.init() } catch {}
+                        }
+                    }, 200);
+                }
+            } catch (error) {
+                console.error('❌ Alpine start error:', error);
+            }
         }, 100);
     });
 } else {
     // Sayfa zaten yüklenmiş
     setTimeout(() => {
-        Alpine.start();
-        console.log('✅ Alpine started after modules loaded');
+        try {
+            // ✅ Context7: Alpine başlatmadan önce DOM'un hazır olduğundan emin ol
+            if (document.body && typeof Alpine !== 'undefined') {
+                Alpine.start();
+                console.log('✅ Alpine started after modules loaded');
+                try { FeatureSuggest.init() } catch {}
+            } else {
+                console.warn('⚠️ Alpine start delayed - DOM or Alpine not ready');
+                // Retry after a short delay
+                setTimeout(() => {
+                    if (document.body && typeof Alpine !== 'undefined') {
+                        Alpine.start();
+                        console.log('✅ Alpine started after retry');
+                        try { FeatureSuggest.init() } catch {}
+                    }
+                }, 200);
+            }
+        } catch (error) {
+            console.error('❌ Alpine start error:', error);
+        }
     }, 100);
 }
 

@@ -13,7 +13,7 @@ use App\Models\FeatureAssignment;
 
 /**
  * Proje Kategori Özellik İlişkilendirme Seeder
- * 
+ *
  * Projeler kategorisi ve Satılık yayın tipi için tüm proje özelliklerini ilişkilendirir.
  */
 class ProjeOzellikIliskilendirmeSeeder extends Seeder
@@ -30,7 +30,7 @@ class ProjeOzellikIliskilendirmeSeeder extends Seeder
 
         // Projeler kategori ve yayın tipini bul
         $projeler = IlanKategori::find(5); // Projeler
-        
+
         if (!$projeler) {
             $this->command->warn('⚠️ Projeler kategorisi bulunamadı!');
             return;
@@ -60,14 +60,14 @@ class ProjeOzellikIliskilendirmeSeeder extends Seeder
             ->with(['features' => function($q) {
                 $hasStatusColumn = Schema::hasColumn('features', 'status');
                 $hasEnabledColumn = Schema::hasColumn('features', 'enabled');
-                
+
                 if ($hasStatusColumn) {
                     $q->where('status', true);
                 } elseif ($hasEnabledColumn) {
                     $q->where('enabled', true);
                 }
-                
-                $q->orderBy('order');
+
+                $q->orderBy('display_order');
             }])
             ->get();
 
@@ -76,7 +76,7 @@ class ProjeOzellikIliskilendirmeSeeder extends Seeder
 
         foreach ($projeKategorileri as $kategori) {
             $this->command->info("  📋 {$kategori->name} kategorisi işleniyor...");
-            
+
             foreach ($kategori->features as $feature) {
                 // Özelliği yayın tipine ata (polymorphic relationship)
                 try {
@@ -89,7 +89,7 @@ class ProjeOzellikIliskilendirmeSeeder extends Seeder
                         [
                             'is_required' => false,
                             'is_visible' => true,
-                            'order' => $order,
+                            'display_order' => $order,
                             'group_name' => $kategori->name,
                         ]
                     );
@@ -99,11 +99,10 @@ class ProjeOzellikIliskilendirmeSeeder extends Seeder
                     $this->command->warn("    ⚠️ {$feature->name} atanamadı: " . $e->getMessage());
                 }
             }
-            
+
             $this->command->info("    ✓ {$kategori->name}: {$kategori->features->count()} özellik atandı");
         }
 
         $this->command->info("✅ Toplam {$toplamAtanan} özellik projeler satılık yayın tipine atandı!");
     }
 }
-

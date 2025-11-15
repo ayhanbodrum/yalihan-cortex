@@ -9,19 +9,17 @@ class ModernCategoryWorkflow {
     constructor(containerId, options = {}) {
         this.container = document.getElementById(containerId);
         if (!this.container) {
-            console.error(
-                `[ModernCategoryWorkflow] Container with id "${containerId}" not found`
-            );
+            console.error(`[ModernCategoryWorkflow] Container with id "${containerId}" not found`);
             return;
         }
 
         this.options = {
             // API Endpoints
-            apiBase: "/api/admin",
-            sitesEndpoint: "/sites/search",
-            categoriesEndpoint: "/categories",
-            subcategoriesEndpoint: "/categories/subcategories",
-            publicationTypesEndpoint: "/categories/publication-types",
+            apiBase: '/api/admin',
+            sitesEndpoint: '/sites/search',
+            categoriesEndpoint: '/categories',
+            subcategoriesEndpoint: '/categories/subcategories',
+            publicationTypesEndpoint: '/categories/publication-types',
 
             // UI Options
             enableAnimations: true,
@@ -60,18 +58,14 @@ class ModernCategoryWorkflow {
         this.render();
         this.bindEvents();
         this.loadInitialData();
-        console.log("[ModernCategoryWorkflow] Initialized successfully");
+        console.log('[ModernCategoryWorkflow] Initialized successfully');
     }
 
     render() {
         this.container.innerHTML = `
             <div class="modern-category-workflow neo-card">
                 <!-- Progress Steps -->
-                ${
-                    this.options.showProgressSteps
-                        ? this.renderProgressSteps()
-                        : ""
-                }
+                ${this.options.showProgressSteps ? this.renderProgressSteps() : ''}
 
                 <!-- Main Content -->
                 <div class="workflow-content space-y-8">
@@ -117,11 +111,9 @@ class ModernCategoryWorkflow {
             <div class="workflow-progress mb-8">
                 <div class="progress-container neo-glass-effect p-6 rounded-xl">
                     <div class="progress-steps flex items-center justify-between">
-                        <div class="step ${
-                            this.state.currentStep >= 1 ? "active" : ""
-                        } ${
-            this.state.selectedSite ? "completed" : ""
-        }" data-step="1">
+                        <div class="step ${this.state.currentStep >= 1 ? 'active' : ''} ${
+                            this.state.selectedSite ? 'completed' : ''
+                        }" data-step="1">
                             <div class="step-icon">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-4m-5 0H3m2 0h3M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
@@ -134,14 +126,12 @@ class ModernCategoryWorkflow {
                         </div>
 
                         <div class="step-connector ${
-                            this.state.currentStep >= 2 ? "active" : ""
+                            this.state.currentStep >= 2 ? 'active' : ''
                         }"></div>
 
-                        <div class="step ${
-                            this.state.currentStep >= 2 ? "active" : ""
-                        } ${
-            this.state.selectedCategory ? "completed" : ""
-        }" data-step="2">
+                        <div class="step ${this.state.currentStep >= 2 ? 'active' : ''} ${
+                            this.state.selectedCategory ? 'completed' : ''
+                        }" data-step="2">
                             <div class="step-icon">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
@@ -154,14 +144,12 @@ class ModernCategoryWorkflow {
                         </div>
 
                         <div class="step-connector ${
-                            this.state.currentStep >= 3 ? "active" : ""
+                            this.state.currentStep >= 3 ? 'active' : ''
                         }"></div>
 
-                        <div class="step ${
-                            this.state.currentStep >= 3 ? "active" : ""
-                        } ${
-            this.state.selectedSubcategory ? "completed" : ""
-        }" data-step="3">
+                        <div class="step ${this.state.currentStep >= 3 ? 'active' : ''} ${
+                            this.state.selectedSubcategory ? 'completed' : ''
+                        }" data-step="3">
                             <div class="step-icon">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
@@ -174,14 +162,12 @@ class ModernCategoryWorkflow {
                         </div>
 
                         <div class="step-connector ${
-                            this.state.currentStep >= 4 ? "active" : ""
+                            this.state.currentStep >= 4 ? 'active' : ''
                         }"></div>
 
-                        <div class="step ${
-                            this.state.currentStep >= 4 ? "active" : ""
-                        } ${
-            this.state.selectedPublicationType ? "completed" : ""
-        }" data-step="4">
+                        <div class="step ${this.state.currentStep >= 4 ? 'active' : ''} ${
+                            this.state.selectedPublicationType ? 'completed' : ''
+                        }" data-step="4">
                             <div class="step-icon">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/>
@@ -201,7 +187,7 @@ class ModernCategoryWorkflow {
     renderSiteSelection() {
         return `
             <div class="workflow-step-container ${
-                this.state.currentStep < 1 ? "disabled" : ""
+                this.state.currentStep < 1 ? 'disabled' : ''
             }" data-step="site">
                 <div class="step-header mb-4">
                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
@@ -210,7 +196,7 @@ class ModernCategoryWorkflow {
                         ${
                             this.state.selectedSite
                                 ? '<svg class="w-5 h-5 ml-2 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>'
-                                : ""
+                                : ''
                         }
                     </h3>
                     <p class="text-sm text-gray-500 dark:text-gray-400">İlanınızın bulunduğu site veya apartmanı seçin</p>
@@ -282,7 +268,7 @@ class ModernCategoryWorkflow {
     renderCategorySelection() {
         return `
             <div class="workflow-step-container ${
-                this.state.currentStep < 2 ? "disabled" : ""
+                this.state.currentStep < 2 ? 'disabled' : ''
             }" data-step="category">
                 <div class="step-header mb-4">
                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
@@ -291,7 +277,7 @@ class ModernCategoryWorkflow {
                         ${
                             this.state.selectedCategory
                                 ? '<svg class="w-5 h-5 ml-2 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>'
-                                : ""
+                                : ''
                         }
                     </h3>
                     <p class="text-sm text-gray-500 dark:text-gray-400">Emlak türünü belirleyin</p>
@@ -309,7 +295,7 @@ class ModernCategoryWorkflow {
     renderSubcategorySelection() {
         return `
             <div class="workflow-step-container ${
-                this.state.currentStep < 3 ? "disabled" : ""
+                this.state.currentStep < 3 ? 'disabled' : ''
             }" data-step="subcategory">
                 <div class="step-header mb-4">
                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
@@ -318,7 +304,7 @@ class ModernCategoryWorkflow {
                         ${
                             this.state.selectedSubcategory
                                 ? '<svg class="w-5 h-5 ml-2 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>'
-                                : ""
+                                : ''
                         }
                     </h3>
                     <p class="text-sm text-gray-500 dark:text-gray-400">Emlak detay türünü seçin</p>
@@ -336,7 +322,7 @@ class ModernCategoryWorkflow {
     renderPublicationTypeSelection() {
         return `
             <div class="workflow-step-container ${
-                this.state.currentStep < 4 ? "disabled" : ""
+                this.state.currentStep < 4 ? 'disabled' : ''
             }" data-step="publication">
                 <div class="step-header mb-4">
                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center">
@@ -345,7 +331,7 @@ class ModernCategoryWorkflow {
                         ${
                             this.state.selectedPublicationType
                                 ? '<svg class="w-5 h-5 ml-2 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>'
-                                : ""
+                                : ''
                         }
                     </h3>
                     <p class="text-sm text-gray-500 dark:text-gray-400">İlan tipini belirleyin</p>
@@ -361,7 +347,7 @@ class ModernCategoryWorkflow {
     }
 
     renderSmartSuggestions() {
-        if (!this.options.enableSmartSuggestions) return "";
+        if (!this.options.enableSmartSuggestions) return '';
 
         return `
             <div class="smart-suggestions-container" style="display: none;">
@@ -385,25 +371,15 @@ class ModernCategoryWorkflow {
     cacheElements() {
         // Search inputs
         this.elements = {
-            siteSearchInput: this.container.querySelector(".site-search-input"),
-            siteResults: this.container.querySelector(".site-results"),
-            selectedSite: this.container.querySelector(".selected-site"),
-            categoriesGrid: this.container.querySelector(".categories-grid"),
-            subcategoriesGrid: this.container.querySelector(
-                ".subcategories-grid"
-            ),
-            publicationTypesGrid: this.container.querySelector(
-                ".publication-types-grid"
-            ),
-            smartSuggestions: this.container.querySelector(
-                ".smart-suggestions-container"
-            ),
-            continueBtn: this.container.querySelector(
-                '[data-action="continue"]'
-            ),
-            saveDraftBtn: this.container.querySelector(
-                '[data-action="save-draft"]'
-            ),
+            siteSearchInput: this.container.querySelector('.site-search-input'),
+            siteResults: this.container.querySelector('.site-results'),
+            selectedSite: this.container.querySelector('.selected-site'),
+            categoriesGrid: this.container.querySelector('.categories-grid'),
+            subcategoriesGrid: this.container.querySelector('.subcategories-grid'),
+            publicationTypesGrid: this.container.querySelector('.publication-types-grid'),
+            smartSuggestions: this.container.querySelector('.smart-suggestions-container'),
+            continueBtn: this.container.querySelector('[data-action="continue"]'),
+            saveDraftBtn: this.container.querySelector('[data-action="save-draft"]'),
             resetBtn: this.container.querySelector('[data-action="reset"]'),
         };
     }
@@ -412,34 +388,32 @@ class ModernCategoryWorkflow {
         // Site search
         if (this.elements.siteSearchInput) {
             this.elements.siteSearchInput.addEventListener(
-                "input",
+                'input',
                 this.debounce((e) => this.handleSiteSearch(e.target.value), 300)
             );
         }
 
         // Button actions
-        this.container.addEventListener("click", (e) => {
-            const action = e.target.closest("[data-action]")?.dataset.action;
+        this.container.addEventListener('click', (e) => {
+            const action = e.target.closest('[data-action]')?.dataset.action;
             if (action) {
                 this.handleAction(action, e);
             }
 
             // Category selections
-            const categoryCard = e.target.closest("[data-category]");
+            const categoryCard = e.target.closest('[data-category]');
             if (categoryCard) {
                 this.selectCategory(categoryCard.dataset.category);
             }
 
-            const subcategoryCard = e.target.closest("[data-subcategory]");
+            const subcategoryCard = e.target.closest('[data-subcategory]');
             if (subcategoryCard) {
                 this.selectSubcategory(subcategoryCard.dataset.subcategory);
             }
 
-            const publicationCard = e.target.closest("[data-publication-type]");
+            const publicationCard = e.target.closest('[data-publication-type]');
             if (publicationCard) {
-                this.selectPublicationType(
-                    publicationCard.dataset.publicationType
-                );
+                this.selectPublicationType(publicationCard.dataset.publicationType);
             }
         });
     }
@@ -450,17 +424,14 @@ class ModernCategoryWorkflow {
             await this.loadCategories();
             this.state.isLoading = false;
         } catch (error) {
-            console.error(
-                "[ModernCategoryWorkflow] Failed to load initial data:",
-                error
-            );
+            console.error('[ModernCategoryWorkflow] Failed to load initial data:', error);
             this.state.isLoading = false;
         }
     }
 
     async handleSiteSearch(query) {
         if (query.length < 2) {
-            this.elements.siteResults.style.display = "none";
+            this.elements.siteResults.style.display = 'none';
             return;
         }
 
@@ -474,18 +445,13 @@ class ModernCategoryWorkflow {
 
             this.displaySiteResults(data.data || []);
         } catch (error) {
-            console.error(
-                "[ModernCategoryWorkflow] Site search failed:",
-                error
-            );
+            console.error('[ModernCategoryWorkflow] Site search failed:', error);
         }
     }
 
     displaySiteResults(sites) {
-        const resultsList =
-            this.elements.siteResults.querySelector(".results-list");
-        const resultsCount =
-            this.elements.siteResults.querySelector(".results-count");
+        const resultsList = this.elements.siteResults.querySelector('.results-list');
+        const resultsCount = this.elements.siteResults.querySelector('.results-count');
 
         if (sites.length === 0) {
             resultsList.innerHTML = `
@@ -527,15 +493,15 @@ class ModernCategoryWorkflow {
                 </div>
             `
                 )
-                .join("");
+                .join('');
         }
 
         resultsCount.textContent = `(${sites.length} sonuç)`;
-        this.elements.siteResults.style.display = "block";
+        this.elements.siteResults.style.display = 'block';
 
         // Bind site selection events
-        resultsList.querySelectorAll(".site-result-item").forEach((item) => {
-            item.addEventListener("click", () => {
+        resultsList.querySelectorAll('.site-result-item').forEach((item) => {
+            item.addEventListener('click', () => {
                 const siteId = item.dataset.siteId;
                 const siteData = sites.find((s) => s.id == siteId);
                 this.selectSite(siteData);
@@ -547,18 +513,16 @@ class ModernCategoryWorkflow {
         this.state.selectedSite = siteData;
 
         // Update UI
-        const siteNameEl =
-            this.elements.selectedSite.querySelector(".site-name");
-        const siteAddressEl =
-            this.elements.selectedSite.querySelector(".site-address");
+        const siteNameEl = this.elements.selectedSite.querySelector('.site-name');
+        const siteAddressEl = this.elements.selectedSite.querySelector('.site-address');
 
         if (siteNameEl) siteNameEl.textContent = siteData.name;
         if (siteAddressEl) siteAddressEl.textContent = siteData.address;
 
         // Show selected site, hide results
-        this.elements.selectedSite.style.display = "block";
-        this.elements.siteResults.style.display = "none";
-        this.elements.siteSearchInput.value = "";
+        this.elements.selectedSite.style.display = 'block';
+        this.elements.siteResults.style.display = 'none';
+        this.elements.siteSearchInput.value = '';
 
         // Advance to next step
         this.advanceToStep(2);
@@ -576,10 +540,7 @@ class ModernCategoryWorkflow {
             this.cache.categories = data.data || [];
             this.displayCategories();
         } catch (error) {
-            console.error(
-                "[ModernCategoryWorkflow] Failed to load categories:",
-                error
-            );
+            console.error('[ModernCategoryWorkflow] Failed to load categories:', error);
         }
     }
 
@@ -589,8 +550,8 @@ class ModernCategoryWorkflow {
                 (category) => `
             <div class="category-card neo-glass-effect p-4 rounded-lg cursor-pointer hover:shadow-lg transition-all ${
                 this.state.selectedCategory?.id === category.id
-                    ? "ring-2 ring-blue-500 bg-blue-50 dark:bg-blue-900/20"
-                    : ""
+                    ? 'ring-2 ring-blue-500 bg-blue-50 dark:bg-blue-900/20'
+                    : ''
             }"
                  data-category="${category.id}">
                 <div class="category-icon text-2xl mb-2">${this.getCategoryIcon(
@@ -600,7 +561,7 @@ class ModernCategoryWorkflow {
                     category.name
                 }</div>
                 <div class="category-description text-sm text-gray-500 dark:text-gray-400">${
-                    category.description || ""
+                    category.description || ''
                 }</div>
                 <div class="category-stats text-xs text-gray-400 mt-2">
                     ${category.subcategories_count || 0} alt kategori
@@ -608,20 +569,20 @@ class ModernCategoryWorkflow {
             </div>
         `
             )
-            .join("");
+            .join('');
 
         this.elements.categoriesGrid.innerHTML = categoriesHTML;
     }
 
     getCategoryIcon(slug) {
         const icons = {
-            konut: "🏠",
-            isyeri: "🏢",
-            arsa: "🌍",
-            yazlik: "🏖️",
-            turistik: "🏨",
+            konut: '🏠',
+            isyeri: '🏢',
+            arsa: '🌍',
+            yazlik: '🏖️',
+            turistik: '🏨',
         };
-        return icons[slug] || "🏗️";
+        return icons[slug] || '🏗️';
     }
 
     async selectCategory(categoryId) {
@@ -650,10 +611,7 @@ class ModernCategoryWorkflow {
             this.cache.subcategories[categoryId] = data.data || [];
             this.displaySubcategories(categoryId);
         } catch (error) {
-            console.error(
-                "[ModernCategoryWorkflow] Failed to load subcategories:",
-                error
-            );
+            console.error('[ModernCategoryWorkflow] Failed to load subcategories:', error);
         }
     }
 
@@ -665,20 +623,20 @@ class ModernCategoryWorkflow {
                 (subcategory) => `
             <div class="subcategory-card neo-glass-effect p-3 rounded-lg cursor-pointer hover:shadow-md transition-all ${
                 this.state.selectedSubcategory?.id === subcategory.id
-                    ? "ring-2 ring-blue-500 bg-blue-50 dark:bg-blue-900/20"
-                    : ""
+                    ? 'ring-2 ring-blue-500 bg-blue-50 dark:bg-blue-900/20'
+                    : ''
             }"
                  data-subcategory="${subcategory.id}">
                 <div class="subcategory-name font-medium text-gray-900 dark:text-white">${
                     subcategory.name
                 }</div>
                 <div class="subcategory-description text-sm text-gray-500 dark:text-gray-400 mt-1">${
-                    subcategory.description || ""
+                    subcategory.description || ''
                 }</div>
             </div>
         `
             )
-            .join("");
+            .join('');
 
         this.elements.subcategoriesGrid.innerHTML = subcategoriesHTML;
     }
@@ -712,24 +670,20 @@ class ModernCategoryWorkflow {
             this.cache.publicationTypes[subcategoryId] = data.data || [];
             this.displayPublicationTypes(subcategoryId);
         } catch (error) {
-            console.error(
-                "[ModernCategoryWorkflow] Failed to load publication types:",
-                error
-            );
+            console.error('[ModernCategoryWorkflow] Failed to load publication types:', error);
         }
     }
 
     displayPublicationTypes(subcategoryId) {
-        const publicationTypes =
-            this.cache.publicationTypes[subcategoryId] || [];
+        const publicationTypes = this.cache.publicationTypes[subcategoryId] || [];
 
         const publicationTypesHTML = publicationTypes
             .map(
                 (type) => `
             <div class="publication-type-card neo-glass-effect p-4 rounded-lg cursor-pointer hover:shadow-md transition-all text-center ${
                 this.state.selectedPublicationType?.id === type.id
-                    ? "ring-2 ring-blue-500 bg-blue-50 dark:bg-blue-900/20"
-                    : ""
+                    ? 'ring-2 ring-blue-500 bg-blue-50 dark:bg-blue-900/20'
+                    : ''
             }"
                  data-publication-type="${type.id}">
                 <div class="publication-icon text-2xl mb-2">${this.getPublicationIcon(
@@ -739,26 +693,26 @@ class ModernCategoryWorkflow {
                     type.name
                 }</div>
                 <div class="publication-description text-xs text-gray-500 dark:text-gray-400 mt-1">${
-                    type.description || ""
+                    type.description || ''
                 }</div>
             </div>
         `
             )
-            .join("");
+            .join('');
 
         this.elements.publicationTypesGrid.innerHTML = publicationTypesHTML;
     }
 
     getPublicationIcon(slug) {
         const icons = {
-            satilik: "💰",
-            kiralik: "🔑",
-            "gunluk-kiralik": "📅",
-            "sezonluk-kiralik": "🌞",
-            "devren-satilik": "🔄",
-            "devren-kiralik": "🔄",
+            satilik: '💰',
+            kiralik: '🔑',
+            'gunluk-kiralik': '📅',
+            'sezonluk-kiralik': '🌞',
+            'devren-satilik': '🔄',
+            'devren-kiralik': '🔄',
         };
-        return icons[slug] || "📋";
+        return icons[slug] || '📋';
     }
 
     selectPublicationType(typeId) {
@@ -784,23 +738,21 @@ class ModernCategoryWorkflow {
         this.state.currentStep = Math.max(this.state.currentStep, stepNumber);
 
         // Enable step containers
-        const stepContainers = this.container.querySelectorAll(
-            ".workflow-step-container"
-        );
+        const stepContainers = this.container.querySelectorAll('.workflow-step-container');
         stepContainers.forEach((container, index) => {
             if (index < stepNumber) {
-                container.classList.remove("disabled");
+                container.classList.remove('disabled');
             }
         });
     }
 
     updateProgressSteps() {
-        const steps = this.container.querySelectorAll(".step");
+        const steps = this.container.querySelectorAll('.step');
         steps.forEach((step, index) => {
             const stepNumber = index + 1;
 
             if (stepNumber <= this.state.currentStep) {
-                step.classList.add("active");
+                step.classList.add('active');
             }
 
             // Mark as completed based on selections
@@ -810,15 +762,15 @@ class ModernCategoryWorkflow {
                 (stepNumber === 3 && this.state.selectedSubcategory) ||
                 (stepNumber === 4 && this.state.selectedPublicationType)
             ) {
-                step.classList.add("completed");
+                step.classList.add('completed');
             }
         });
 
         // Update connectors
-        const connectors = this.container.querySelectorAll(".step-connector");
+        const connectors = this.container.querySelectorAll('.step-connector');
         connectors.forEach((connector, index) => {
             if (index + 1 < this.state.currentStep) {
-                connector.classList.add("active");
+                connector.classList.add('active');
             }
         });
     }
@@ -833,7 +785,7 @@ class ModernCategoryWorkflow {
         this.elements.continueBtn.disabled = !isValid;
 
         if (isValid) {
-            this.elements.saveDraftBtn.style.display = "inline-flex";
+            this.elements.saveDraftBtn.style.display = 'inline-flex';
         }
 
         return isValid;
@@ -841,16 +793,16 @@ class ModernCategoryWorkflow {
 
     handleAction(action, event) {
         switch (action) {
-            case "reset":
+            case 'reset':
                 this.resetWorkflow();
                 break;
-            case "save-draft":
+            case 'save-draft':
                 this.saveDraft();
                 break;
-            case "continue":
+            case 'continue':
                 this.continueWorkflow();
                 break;
-            case "add-new-site":
+            case 'add-new-site':
                 this.showAddSiteModal();
                 break;
         }
@@ -868,10 +820,10 @@ class ModernCategoryWorkflow {
         };
 
         // Reset UI
-        this.elements.selectedSite.style.display = "none";
-        this.elements.siteResults.style.display = "none";
-        this.elements.siteSearchInput.value = "";
-        this.elements.saveDraftBtn.style.display = "none";
+        this.elements.selectedSite.style.display = 'none';
+        this.elements.siteResults.style.display = 'none';
+        this.elements.siteSearchInput.value = '';
+        this.elements.saveDraftBtn.style.display = 'none';
 
         this.updateProgressSteps();
         this.validateForm();
@@ -887,13 +839,10 @@ class ModernCategoryWorkflow {
             timestamp: new Date().toISOString(),
         };
 
-        localStorage.setItem(
-            "category_workflow_draft",
-            JSON.stringify(draftData)
-        );
+        localStorage.setItem('category_workflow_draft', JSON.stringify(draftData));
 
         // Show success message
-        this.showNotification("Taslak kaydedildi", "success");
+        this.showNotification('Taslak kaydedildi', 'success');
     }
 
     continueWorkflow() {
@@ -906,26 +855,23 @@ class ModernCategoryWorkflow {
 
         // Emit custom event
         this.container.dispatchEvent(
-            new CustomEvent("workflow-complete", {
+            new CustomEvent('workflow-complete', {
                 detail: workflowData,
             })
         );
 
-        console.log(
-            "[ModernCategoryWorkflow] Workflow completed:",
-            workflowData
-        );
+        console.log('[ModernCategoryWorkflow] Workflow completed:', workflowData);
     }
 
     showSmartSuggestions() {
         // AI-powered suggestions based on selections
         // This would integrate with your AI system
-        this.elements.smartSuggestions.style.display = "block";
+        this.elements.smartSuggestions.style.display = 'block';
     }
 
-    showNotification(message, type = "info") {
+    showNotification(message, type = 'info') {
         // Simple toast notification
-        const toast = document.createElement("div");
+        const toast = document.createElement('div');
         toast.className = `neo-toast neo-toast-${type}`;
         toast.textContent = message;
         document.body.appendChild(toast);
@@ -956,7 +902,7 @@ class ModernCategoryWorkflow {
     }
 
     loadDraft() {
-        const draft = localStorage.getItem("category_workflow_draft");
+        const draft = localStorage.getItem('category_workflow_draft');
         if (draft) {
             const draftData = JSON.parse(draft);
             // Restore selections
@@ -1061,9 +1007,9 @@ const workflowCSS = `
 `;
 
 // Inject CSS
-if (!document.getElementById("modern-category-workflow-css")) {
-    const style = document.createElement("style");
-    style.id = "modern-category-workflow-css";
+if (!document.getElementById('modern-category-workflow-css')) {
+    const style = document.createElement('style');
+    style.id = 'modern-category-workflow-css';
     style.textContent = workflowCSS;
     document.head.appendChild(style);
 }
@@ -1072,6 +1018,6 @@ if (!document.getElementById("modern-category-workflow-css")) {
 window.ModernCategoryWorkflow = ModernCategoryWorkflow;
 
 // Export for module usage
-if (typeof module !== "undefined" && module.exports) {
+if (typeof module !== 'undefined' && module.exports) {
     module.exports = ModernCategoryWorkflow;
 }

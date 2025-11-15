@@ -5,9 +5,9 @@
   "context7_version": "v3.5.1",
   "seviye": "critical",
   "durum": "completed",
-  
+
   "ozet": "İlan create sayfası harita sistemi tamamen yenilendi: OpenStreetMap, Çift Yönlü Sync, Address Components, Distance Calculator, Boundary Drawing, Silent Update Pattern, Console Log Optimization, UI Cleanup",
-  
+
   "yapilan_degisiklikler": {
     "1_harita_altyapisi": {
       "onceki": "Google Maps (CDN, ücretli)",
@@ -15,18 +15,12 @@
       "detay": {
         "leaflet_version": "1.9.4",
         "leaflet_draw": "npm package (local, CSP compliant)",
-        "tile_layers": [
-          "OpenStreetMap (standart)",
-          "Esri World Imagery (uydu)"
-        ],
+        "tile_layers": ["OpenStreetMap (standart)", "Esri World Imagery (uydu)"],
         "geocoding_api": "Nominatim (OpenStreetMap)",
-        "dosyalar": [
-          "resources/js/leaflet-loader.js",
-          "resources/js/leaflet-draw-loader.js"
-        ]
+        "dosyalar": ["resources/js/leaflet-loader.js", "resources/js/leaflet-draw-loader.js"]
       }
     },
-    
+
     "2_cift_yonlu_sync": {
       "onceki": "Tek yön: Dropdown → Harita zoom",
       "sonraki": "Çift yön: Dropdown ⇄ Harita (full sync)",
@@ -55,7 +49,7 @@
         ]
       }
     },
-    
+
     "3_address_components": {
       "yeni_fieldlar": [
         "sokak (string, nullable)",
@@ -74,12 +68,10 @@
       },
       "ui": "resources/views/admin/ilanlar/components/location-map.blade.php (Detaylı Adres Bilgileri)"
     },
-    
+
     "4_distance_calculator": {
       "ozellik": "Haversine formula ile mesafe ölçümü",
-      "fieldlar": [
-        "nearby_distances (JSON, nullable)"
-      ],
+      "fieldlar": ["nearby_distances (JSON, nullable)"],
       "calisma_mantiği": [
         "Kullanıcı 'Deniz' butonuna tıklar",
         "measuringFor = { name: 'Deniz', icon: '⛱️' }",
@@ -88,12 +80,7 @@
         "Marker + çizgi eklenir",
         "JSON array'e kaydedilir"
       ],
-      "ui_buttons": [
-        "⛱️ Deniz",
-        "🏫 Okul",
-        "🛒 Market",
-        "🏥 Hastane"
-      ],
+      "ui_buttons": ["⛱️ Deniz", "🏫 Okul", "🛒 Market", "🏥 Hastane"],
       "json_format": {
         "example": [
           {
@@ -108,13 +95,10 @@
         ]
       }
     },
-    
+
     "5_boundary_drawing": {
       "library": "Leaflet.draw (npm)",
-      "fieldlar": [
-        "boundary_geojson (JSON, nullable)",
-        "boundary_area (decimal 12,2, nullable)"
-      ],
+      "fieldlar": ["boundary_geojson (JSON, nullable)", "boundary_area (decimal 12,2, nullable)"],
       "ozellikler": [
         "Polygon çizimi (haritada)",
         "Alan hesaplama (m² ve dönüm)",
@@ -128,7 +112,7 @@
         "css_override": "leaflet-draw-loader.js'de background-image path override"
       }
     },
-    
+
     "6_ui_optimization": {
       "harita_kontrolleri": {
         "onceki": "Standart/Uydu: px-4 py-2.5, Zoom: 40x40px",
@@ -145,7 +129,7 @@
       },
       "responsive": "Mobilde text gizli (hidden sm:inline), sadece icon görünür"
     },
-    
+
     "7_console_log_optimization": {
       "debug_mode_pattern": {
         "implementation": "const DEBUG_MODE = {{ config('app.debug') ? 'true' : 'false' }};",
@@ -160,7 +144,7 @@
       "temizlenen_loglar": 19,
       "korunan_loglar": "console.error, console.warn (her zaman görünür)"
     },
-    
+
     "8_duplicate_code_cleanup": {
       "kaldirilan": [
         {
@@ -181,7 +165,7 @@
         "toplam": "1686 satır (2741'den)"
       }
     },
-    
+
     "9_gps_error_handling": {
       "error_codes": {
         "1": "Konum izni reddedildi",
@@ -196,7 +180,7 @@
       }
     }
   },
-  
+
   "database_changes": {
     "tablo": "ilanlar",
     "yeni_kolonlar": [
@@ -212,7 +196,7 @@
     ],
     "migration_dosya": "database/migrations/2025_10_31_175103_add_address_components_to_ilanlar_table.php"
   },
-  
+
   "controller_updates": {
     "dosya": "app/Http/Controllers/Admin/IlanController.php",
     "eklenen_validation": [
@@ -227,12 +211,12 @@
       "boundary_area => nullable|numeric|min:0"
     ]
   },
-  
+
   "model_updates": {
     "dosya": "app/Models/Ilan.php",
     "fillable": "9 yeni field eklendi"
   },
-  
+
   "context7_compliance": {
     "mahalle_id_standardı": "SADECE mahalle_id kullanılır, semt_id YASAK",
     "api_endpoints": [
@@ -243,7 +227,7 @@
     "javascript": "Vanilla JS ONLY, no heavy libraries",
     "css": "Tailwind utility classes + Neo Design System"
   },
-  
+
   "performans_metrikleri": {
     "bundle_size": {
       "ilan-create.js": "67.77 kB (17.82 kB gzipped)",
@@ -255,7 +239,7 @@
     "harita_alani_artisi": "+7000px² (+22%)",
     "ui_kompaktlik": "Butonlar 22% daha küçük"
   },
-  
+
   "kullanici_deneyimi": {
     "yeni_ozellikler": [
       "✅ Haritada tıklayınca tüm bilgiler otomatik doluyor (adres + dropdown'lar)",
@@ -277,7 +261,7 @@
       "❌ UI karmaşık (çok büyük butonlar) → ✅ Kompakt tasarım"
     ]
   },
-  
+
   "ogrenim_noktalari": {
     "silent_update_pattern": {
       "ne_zaman_kullan": "Çift yönlü sync'de loop önlemek için",
@@ -293,7 +277,7 @@
         "Cascade dropdown → Parent update (sonsuz loop önle)"
       ]
     },
-    
+
     "debug_mode_pattern": {
       "ne_zaman_kullan": "Console log'ları production'da gizlemek için",
       "implementation": [
@@ -303,7 +287,7 @@
       ],
       "kural": "console.error ve console.warn'ı dokunma (her zaman görünmeli)"
     },
-    
+
     "duplicate_removal_strategy": {
       "adimlar": [
         "1. Duplicate kod'u tespit et (grep ile)",
@@ -319,7 +303,7 @@
       ]
     }
   },
-  
+
   "api_endpoints": {
     "/api/location/provinces": {
       "method": "GET",
@@ -357,7 +341,7 @@
       "kullanim": "İl/İlçe/Mahalle adından koordinat almak (geocoding)"
     }
   },
-  
+
   "dosya_degisiklikleri": {
     "created": [
       "resources/js/leaflet-draw-loader.js",
@@ -372,11 +356,9 @@
       "app/Http/Controllers/Admin/IlanController.php (9 yeni field validation)",
       "app/Models/Ilan.php (fillable güncelleme)"
     ],
-    "backup": [
-      "resources/views/admin/ilanlar/components/location-map-OLD-BACKUP.blade.php"
-    ]
+    "backup": ["resources/views/admin/ilanlar/components/location-map-OLD-BACKUP.blade.php"]
   },
-  
+
   "context7_kurallari": {
     "javascript": "Vanilla JS ONLY (React-Select 270KB, Choices.js 48KB YASAK)",
     "bundle_size": "< 50KB gzipped per page",
@@ -385,7 +367,7 @@
     "css": "Tailwind utility + neo-* classes",
     "dependencies": "Local npm packages (NOT CDN) for CSP compliance"
   },
-  
+
   "test_sonuclari": {
     "tum_ozellikler": "Çalışıyor ✅",
     "loop_problemi": "Çözüldü (Silent Update Pattern) ✅",
@@ -393,7 +375,7 @@
     "ui_kompaktlik": "22% daha küçük butonlar ✅",
     "duplicate_cleanup": "1055 satır kaldırıldı ✅"
   },
-  
+
   "onemli_notlar": [
     "🔐 Silent Update Pattern: Çift yönlü sync'de MUTLAKA kullanılmalı",
     "🎯 DEBUG_MODE: Production'da console temiz olmalı",
@@ -404,7 +386,7 @@
     "⚡ Z-index: Leaflet kontrollerinden yüksek olmalı (9999)",
     "🎨 Kompakt UI: Mobil uyumluluk için kritik"
   ],
-  
+
   "gelecek_gelistirmeler": [
     "Overpass API entegrasyonu (gerçek POI verisi)",
     "Multi-polygon desteği (birden fazla sınır)",
@@ -414,4 +396,3 @@
     "Route planning (A → B)"
   ]
 }
-

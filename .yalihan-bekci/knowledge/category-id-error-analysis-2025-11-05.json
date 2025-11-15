@@ -4,14 +4,12 @@
   "category": "database",
   "priority": "CRITICAL",
   "status": "FIXED",
-  
+
   "error": {
     "message": "Column not found: 1054 Unknown column 'category_id' in 'where clause'",
     "location": "app/Http/Controllers/Admin/OzellikController.php:39",
     "query": "SELECT count(*) AS aggregate FROM `features` WHERE `category_id` IS NULL",
-    "affected_files": [
-      "app/Http/Controllers/Admin/OzellikController.php"
-    ]
+    "affected_files": ["app/Http/Controllers/Admin/OzellikController.php"]
   },
 
   "root_causes": {
@@ -212,4 +210,3 @@
   "commit_message": "🔧 FIX: category_id → feature_category_id - Context7 compliance",
   "tags": ["database", "migration", "context7", "bug-fix", "field-naming"]
 }
-

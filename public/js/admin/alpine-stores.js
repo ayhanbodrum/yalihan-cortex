@@ -8,7 +8,6 @@
  */
 
 document.addEventListener('alpine:init', () => {
-
     /**
      * Toast Store
      * Merkezi toast yönetimi
@@ -29,7 +28,7 @@ document.addEventListener('alpine:init', () => {
                 dismissible: options.dismissible !== false,
                 icon: options.icon || this.getDefaultIcon(type),
                 action: options.action || null,
-                visible: true
+                visible: true,
             };
 
             // Max toast kontrolü
@@ -50,17 +49,17 @@ document.addEventListener('alpine:init', () => {
         },
 
         remove(id) {
-            const index = this.toasts.findIndex(t => t.id === id);
+            const index = this.toasts.findIndex((t) => t.id === id);
             if (index > -1) {
                 this.toasts[index].visible = false;
                 setTimeout(() => {
-                    this.toasts = this.toasts.filter(t => t.id !== id);
+                    this.toasts = this.toasts.filter((t) => t.id !== id);
                 }, 300);
             }
         },
 
         clearAll() {
-            this.toasts.forEach(toast => {
+            this.toasts.forEach((toast) => {
                 toast.visible = false;
             });
             setTimeout(() => {
@@ -89,10 +88,10 @@ document.addEventListener('alpine:init', () => {
                 success: 'check-circle',
                 error: 'alert-circle',
                 warning: 'alert-triangle',
-                info: 'info'
+                info: 'info',
             };
             return icons[type] || icons.info;
-        }
+        },
     });
 
     /**
@@ -105,7 +104,7 @@ document.addEventListener('alpine:init', () => {
         filters: {
             search: '',
             seviye: '',
-            status: ''
+            status: '',
         },
 
         setEditMode(id, value) {
@@ -131,7 +130,7 @@ document.addEventListener('alpine:init', () => {
         },
 
         deselectItem(id) {
-            this.selectedItems = this.selectedItems.filter(item => item !== id);
+            this.selectedItems = this.selectedItems.filter((item) => item !== id);
         },
 
         toggleItem(id) {
@@ -170,9 +169,9 @@ document.addEventListener('alpine:init', () => {
             this.filters = {
                 search: '',
                 seviye: '',
-                status: ''
+                status: '',
             };
-        }
+        },
     });
 
     /**
@@ -185,13 +184,13 @@ document.addEventListener('alpine:init', () => {
             search: '',
             status: '',
             oncelik: '',
-            danisman_id: ''
+            danisman_id: '',
         },
         stats: {
             bekleyen: 0,
             devam_eden: 0,
             tamamlanan: 0,
-            toplam: 0
+            toplam: 0,
         },
 
         selectTask(id) {
@@ -201,7 +200,7 @@ document.addEventListener('alpine:init', () => {
         },
 
         deselectTask(id) {
-            this.selectedTasks = this.selectedTasks.filter(task => task !== id);
+            this.selectedTasks = this.selectedTasks.filter((task) => task !== id);
         },
 
         toggleTask(id) {
@@ -234,7 +233,7 @@ document.addEventListener('alpine:init', () => {
 
         updateStats(stats) {
             this.stats = { ...this.stats, ...stats };
-        }
+        },
     });
 
     /**
@@ -281,7 +280,7 @@ document.addEventListener('alpine:init', () => {
 
         toggleSort() {
             this.sortOrder = this.sortOrder === 'asc' ? 'desc' : 'asc';
-        }
+        },
     });
 
     /**
@@ -304,10 +303,10 @@ document.addEventListener('alpine:init', () => {
         },
 
         stopAll() {
-            Object.keys(this.states).forEach(key => {
+            Object.keys(this.states).forEach((key) => {
                 this.states[key] = false;
             });
-        }
+        },
     });
 
     /**
@@ -327,14 +326,16 @@ document.addEventListener('alpine:init', () => {
                 }
 
                 // Event dispatch
-                window.dispatchEvent(new CustomEvent('modal-opened', {
-                    detail: { modalId, data }
-                }));
+                window.dispatchEvent(
+                    new CustomEvent('modal-opened', {
+                        detail: { modalId, data },
+                    })
+                );
             }
         },
 
         close(modalId) {
-            this.openModals = this.openModals.filter(id => id !== modalId);
+            this.openModals = this.openModals.filter((id) => id !== modalId);
 
             // Body scroll'u aç
             if (this.openModals.length === 0) {
@@ -342,9 +343,11 @@ document.addEventListener('alpine:init', () => {
             }
 
             // Event dispatch
-            window.dispatchEvent(new CustomEvent('modal-closed', {
-                detail: { modalId }
-            }));
+            window.dispatchEvent(
+                new CustomEvent('modal-closed', {
+                    detail: { modalId },
+                })
+            );
         },
 
         closeAll() {
@@ -359,7 +362,7 @@ document.addEventListener('alpine:init', () => {
 
         get hasOpenModal() {
             return this.openModals.length > 0;
-        }
+        },
     });
 
     /**
@@ -410,7 +413,7 @@ document.addEventListener('alpine:init', () => {
 
         isSubmitting(formId) {
             return this.submitting[formId] || false;
-        }
+        },
     });
 });
 
@@ -418,7 +421,7 @@ document.addEventListener('alpine:init', () => {
  * Global Toast Helper Functions
  * Alpine dışından kullanım için
  */
-window.showToast = function(message, type = 'info', options = {}) {
+window.showToast = function (message, type = 'info', options = {}) {
     if (window.toast) {
         return window.toast.show(message, type, options);
     } else if (window.Alpine) {
@@ -426,19 +429,18 @@ window.showToast = function(message, type = 'info', options = {}) {
     }
 };
 
-window.toastSuccess = function(message, options = {}) {
+window.toastSuccess = function (message, options = {}) {
     return window.showToast(message, 'success', options);
 };
 
-window.toastError = function(message, options = {}) {
+window.toastError = function (message, options = {}) {
     return window.showToast(message, 'error', options);
 };
 
-window.toastWarning = function(message, options = {}) {
+window.toastWarning = function (message, options = {}) {
     return window.showToast(message, 'warning', options);
 };
 
-window.toastInfo = function(message, options = {}) {
+window.toastInfo = function (message, options = {}) {
     return window.showToast(message, 'info', options);
 };
-

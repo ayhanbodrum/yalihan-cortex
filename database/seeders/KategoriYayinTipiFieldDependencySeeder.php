@@ -221,11 +221,11 @@ class KategoriYayinTipiFieldDependencySeeder extends Seeder
             'field_options' => $fieldOptions,
             'field_unit' => $fieldUnit,
             'field_icon' => $icon,
-            'enabled' => 1,
+            'status' => 1, // ✅ Context7: enabled → status
             'required' => $required ? 1 : 0,
             'searchable' => $searchable ? 1 : 0,
             'show_in_card' => $showInCard ? 1 : 0,
-            'order' => $order,
+            'display_order' => $order,
             'ai_suggestion' => $aiSuggestion ? 1 : 0,
             'ai_auto_fill' => $aiSuggestion ? 1 : 0, // AI suggestion varsa auto-fill da aktif
             'ai_prompt_key' => $aiSuggestion ? "{$kategoriSlug}-{$fieldSlug}-suggest" : null,
@@ -280,4 +280,3 @@ class KategoriYayinTipiFieldDependencySeeder extends Seeder
         Log::info("🏢 İşyeri kategorisi için " . count($fields) . " field dependency oluşturuldu");
     }
 }
-

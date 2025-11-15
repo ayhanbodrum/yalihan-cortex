@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * Exchange Rate Model
- * 
+ *
  * TCMB (Türkiye Cumhuriyet Merkez Bankası) döviz kurları
  * Context7: Real-time currency rates with history
  */
@@ -45,10 +45,10 @@ class ExchangeRate extends Model
         'status' => 'boolean',
         'fetched_at' => 'datetime',
     ];
-    
+
     /**
      * Get latest rate for a currency
-     * 
+     *
      * @param string $currencyCode
      * @return float|null
      */
@@ -57,13 +57,13 @@ class ExchangeRate extends Model
         $rate = static::where('currency_code', $currencyCode)
             ->latest('rate_date')
             ->first();
-        
+
         return $rate ? $rate->selling_rate : null;
     }
-    
+
     /**
      * Get today's rate
-     * 
+     *
      * @param string $currencyCode
      * @return static|null
      */
@@ -73,7 +73,7 @@ class ExchangeRate extends Model
             ->whereDate('rate_date', today())
             ->first();
     }
-    
+
     /**
      * Scope: Latest rates
      */
@@ -81,7 +81,7 @@ class ExchangeRate extends Model
     {
         return $query->whereDate('rate_date', today());
     }
-    
+
     /**
      * Scope: By currency
      */

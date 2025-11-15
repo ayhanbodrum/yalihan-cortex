@@ -56,4 +56,14 @@ class IlanFotografi extends Model
     {
         return $this->belongsTo(Ilan::class, 'ilan_id');
     }
+
+    /**
+     * Accessor: Fotoğraf URL'i
+     */
+    public function getUrlAttribute()
+    {
+        return $this->dosya_yolu ? \Illuminate\Support\Facades\Storage::url($this->dosya_yolu) : null;
+    }
+
+
 }

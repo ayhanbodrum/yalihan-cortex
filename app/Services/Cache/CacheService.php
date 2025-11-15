@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Config;
 
 /**
  * Standardized Cache Service
- * 
+ *
  * Context7 Cache Standardization
  * Provides consistent cache key formatting, TTL management, and invalidation strategies
  */
@@ -53,10 +53,10 @@ class CacheService
 
     /**
      * Generate standardized cache key
-     * 
+     *
      * Format: {prefix}:{namespace}:{key}:{params?}
      * Example: emlak_pro:ilan:stats:active
-     * 
+     *
      * @param string $namespace Cache namespace (e.g., 'ilan', 'category', 'ai')
      * @param string $key Cache key
      * @param array $params Optional parameters for key uniqueness
@@ -80,7 +80,7 @@ class CacheService
 
     /**
      * Get value from cache
-     * 
+     *
      * @param string $key Cache key
      * @param mixed $default Default value if not found
      * @return mixed
@@ -110,7 +110,7 @@ class CacheService
 
     /**
      * Store value in cache
-     * 
+     *
      * @param string $key Cache key
      * @param mixed $value Value to cache
      * @param int|string|null $ttl TTL in seconds or preset name (e.g., 'short', 'medium')
@@ -124,7 +124,7 @@ class CacheService
 
     /**
      * Remember value in cache (get or compute)
-     * 
+     *
      * @param string $key Cache key
      * @param int|string|null $ttl TTL in seconds or preset name
      * @param callable $callback Callback to compute value if not cached
@@ -138,7 +138,7 @@ class CacheService
 
     /**
      * Check if key exists in cache
-     * 
+     *
      * @param string $key Cache key
      * @return bool
      */
@@ -149,7 +149,7 @@ class CacheService
 
     /**
      * Remove value from cache
-     * 
+     *
      * @param string $key Cache key
      * @return bool
      */
@@ -160,7 +160,7 @@ class CacheService
 
     /**
      * Invalidate cache by namespace
-     * 
+     *
      * @param string $namespace Namespace to invalidate
      * @param array $params Optional parameters to match specific keys
      * @return int Number of keys invalidated
@@ -175,7 +175,7 @@ class CacheService
 
     /**
      * Invalidate cache by tag
-     * 
+     *
      * @param string $tag Tag name
      * @return int Number of keys invalidated
      */
@@ -198,7 +198,7 @@ class CacheService
 
     /**
      * Invalidate related caches when model changes
-     * 
+     *
      * @param string $modelName Model name (e.g., 'Ilan', 'Category')
      * @param int|null $modelId Optional model ID for specific invalidation
      * @return void
@@ -231,7 +231,7 @@ class CacheService
 
     /**
      * Get TTL value (resolve preset names to seconds)
-     * 
+     *
      * @param int|string $ttl TTL in seconds or preset name
      * @return int TTL in seconds
      */
@@ -250,7 +250,7 @@ class CacheService
 
     /**
      * Get tag for namespace
-     * 
+     *
      * @param string $namespace Namespace
      * @return string Tag name
      */
@@ -261,7 +261,7 @@ class CacheService
 
     /**
      * Clear all cache
-     * 
+     *
      * @return bool
      */
     public function flush(): bool
@@ -271,7 +271,7 @@ class CacheService
 
     /**
      * Get cache statistics
-     * 
+     *
      * @return array
      */
     public function getStats(): array
@@ -285,4 +285,3 @@ class CacheService
         ];
     }
 }
-

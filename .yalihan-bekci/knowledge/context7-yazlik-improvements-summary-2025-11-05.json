@@ -4,7 +4,7 @@
   "category": "system_improvement",
   "priority": "HIGH",
   "status": "COMPLETED",
-  
+
   "improvements_made": {
     "model_relationships": {
       "status": "COMPLETED",
@@ -15,10 +15,7 @@
             "yazlikRezervasyonlar() - hasMany(YazlikRezervasyon::class)",
             "yazlikFiyatlandirma() - hasMany(YazlikFiyatlandirma::class)"
           ],
-          "imports": [
-            "use App\Models\YazlikRezervasyon;",
-            "use App\Models\YazlikFiyatlandirma;"
-          ]
+          "imports": ["use App\Models\YazlikRezervasyon;", "use App\Models\YazlikFiyatlandirma;"]
         }
       ]
     },
@@ -90,9 +87,7 @@
       ".yalihan-bekci/knowledge/yazlik-kiralama-eloquent-improvements-2025-11-05.json",
       ".yalihan-bekci/knowledge/context7-yazlik-improvements-summary-2025-11-05.json"
     ],
-    "context7": [
-      ".context7/authority.json - yazlik_kiralama_system_2025_11_05 eklendi"
-    ]
+    "context7": [".context7/authority.json - yazlik_kiralama_system_2025_11_05 eklendi"]
   },
 
   "testing_recommendations": [
@@ -116,4 +111,3 @@
     }
   ]
 }
-

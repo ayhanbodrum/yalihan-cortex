@@ -4,73 +4,8 @@
 @section('page-title', 'Blog Kategorileri')
 
 @push('styles')
-    <style>
-        /* Modern Dashboard Styles */
-        .btn-modern {
-            @apply inline-flex items-center px-6 py-3 rounded-xl font-semibold transition-all duration-200 transform hover:scale-105 active:scale-95 shadow-lg;
-        }
-
-        .btn-modern-primary {
-            @apply bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 shadow-blue-500/25;
-        }
-
-        .btn-modern-secondary {
-            @apply bg-gradient-to-r from-gray-600 to-gray-700 text-white hover:from-gray-700 hover:to-gray-800 shadow-gray-500/25;
-        }
-
-        .form-field {
-            @apply space-y-2;
-        }
-
-        .admin-label {
-            @apply block text-sm font-medium text-gray-700 mb-1;
-        }
-
-        .admin-label-required::after {
-            content: " *";
-            @apply text-red-500;
-        }
-
-        .admin-input,
-        .admin-input {
-            @apply w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-blue-500 focus:outline-none transition-all duration-200;
-        }
-
-        .admin-input:focus,
-        .admin-input:focus {
-            @apply ring-2 ring-blue-200;
-        }
-
-        .admin-input-error {
-            @apply border-red-500 focus:border-red-500 focus:ring-red-200;
-        }
-
-        .form-error-message {
-            /* normalized */
-            @apply text-xs text-red-600 mt-1 font-medium;
-        }
-
-        .admin-checkbox {
-            @apply h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500;
-        }
-
-        /* Pagination Styles */
-        .pagination {
-            @apply flex items-center justify-between;
-        }
-
-        .pagination .page-link {
-            @apply px-4 py-2.5 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-gray-700;
-        }
-
-        .pagination .page-item.active .page-link {
-            @apply bg-blue-600 text-white border-blue-600;
-        }
-
-        .pagination .page-item.disabled .page-link {
-            @apply text-gray-300 cursor-not-allowed;
-        }
-    </style>
+    {{-- ✅ DUPLICATE REMOVED: Common styles moved to resources/css/admin/common-styles.css --}}
+    {{-- Bu sayfada sadece sayfa-spesifik stiller varsa buraya eklenebilir --}}
 @endpush
 
 @section('content')
@@ -83,7 +18,7 @@
                         class="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                         📁 Blog Kategorileri
                     </h1>
-                    <p class="mt-3 text-lg text-gray-600">Blog yazılarınızı organize etmek için kategoriler oluşturun</p>
+                    <p class="mt-3 text-lg text-gray-600 dark:text-gray-400">Blog yazılarınızı organize etmek için kategoriler oluşturun</p>
                 </div>
                 <div class="flex items-center space-x-3">
                     <a href="{{ route('admin.blog.categories.create') }}" class="inline-flex items-center px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg active:scale-95 touch-target-optimized touch-target-optimized">
@@ -119,7 +54,7 @@
                         <div class="space-y-4">
                             @foreach ($categories as $category)
                                 <div
-                                    class="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors duration-200">
+                                    class="flex items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200">
                                     <div class="flex items-center space-x-4">
                                         <div class="w-10 h-10 rounded-lg flex items-center justify-center text-white"
                                             style="background-color: {{ $category->color ?? '#6366f1' }}">
@@ -132,16 +67,16 @@
                                             </svg>
                                         </div>
                                         <div>
-                                            <h4 class="font-medium text-gray-900">
+                                            <h4 class="font-medium text-gray-900 dark:text-white">
                                                 <a href="{{ route('admin.blog.categories.edit', $category) }}" class="hover:underline">
                                                     {{ $category->name }}
                                                 </a>
                                             </h4>
-                                            <p class="text-sm text-gray-500">
+                                            <p class="text-sm text-gray-500 dark:text-gray-400">
                                                 {{ $category->description ?? 'Açıklama yok' }}
                                             </p>
                                             <div class="flex items-center space-x-4 mt-1">
-                                                <span class="text-xs text-gray-500">
+                                                <span class="text-xs text-gray-500 dark:text-gray-400">
                                                     {{ $category->posts_count }} yazı
                                                 </span>
                                                 <x-neo.status-badge :value="$item->status ? 'Aktif' : 'Pasif'" />
@@ -234,7 +169,7 @@
             <!-- Quick Create Form -->
             <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden">
                 <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-800">
-                    <h3 class="text-xl font-bold text-gray-800 flex items-center">
+                    <h3 class="text-xl font-bold text-gray-800 dark:text-white flex items-center">
                         <svg class="w-6 h-6 mr-3 text-blue-600" fill="none" stroke="currentColor"
                             viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -327,7 +262,7 @@
         @if (!$categories->isEmpty())
             <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm mt-8 overflow-hidden">
                 <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-800">
-                    <h3 class="text-xl font-bold text-gray-800 flex items-center">
+                    <h3 class="text-xl font-bold text-gray-800 dark:text-white flex items-center">
                         <svg class="w-6 h-6 mr-3 text-blue-600" fill="none" stroke="currentColor"
                             viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -340,24 +275,24 @@
                 <div class="p-6">
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                         <div class="text-center">
-                            <div class="stat-card-value text-blue-600">{{ $categories->count() }}</div>
-                            <div class="text-sm text-gray-500">Toplam Kategori</div>
+                            <div class="stat-card-value text-blue-600 dark:text-blue-400">{{ $categories->count() }}</div>
+                            <div class="text-sm text-gray-500 dark:text-gray-400">Toplam Kategori</div>
                         </div>
                         <div class="text-center">
-                            <div class="stat-card-value text-green-600">
+                            <div class="stat-card-value text-green-600 dark:text-green-400">
                                 {{ $categories->where('status', true)->count() }}</div>
-                            <div class="text-sm text-gray-500">Aktif Kategori</div>
+                            <div class="text-sm text-gray-500 dark:text-gray-400">Aktif Kategori</div>
                         </div>
                         <div class="text-center">
-                            <div class="text-2xl font-bold text-yellow-600">
+                            <div class="text-2xl font-bold text-yellow-600 dark:text-yellow-400">
                                 {{ $categories->sum('posts_count') }}</div>
-                            <div class="text-sm text-gray-500">Toplam Yazı</div>
+                            <div class="text-sm text-gray-500 dark:text-gray-400">Toplam Yazı</div>
                         </div>
                         <div class="text-center">
-                            <div class="stat-card-value text-purple-600">
+                            <div class="stat-card-value text-purple-600 dark:text-purple-400">
                                 {{ $categories->where('posts_count', '>', 0)->count() }}
                             </div>
-                            <div class="text-sm text-gray-500">Yazı İçeren Kategori</div>
+                            <div class="text-sm text-gray-500 dark:text-gray-400">Yazı İçeren Kategori</div>
                         </div>
                     </div>
                 </div>

@@ -15,7 +15,7 @@ return new class extends Migration
             // Villa/Daire Eksik Alanları (2 field)
             $table->string('isinma_tipi')->nullable()->comment('Doğalgaz, Kombi, Klima, Soba, Merkezi, Yerden Isıtma');
             $table->json('site_ozellikleri')->nullable()->comment('Güvenlik, Otopark, Havuz, Spor, Sauna, Oyun Alanı, Asansör');
-            
+
             // İşyeri Alanları (6 field)
             $table->string('isyeri_tipi')->nullable()->comment('Ofis, Mağaza, Dükkan, Depo, Fabrika, Atölye, Showroom');
             $table->text('kira_bilgisi')->nullable()->comment('Kira bilgileri');
@@ -34,14 +34,14 @@ return new class extends Migration
         Schema::table('ilanlar', function (Blueprint $table) {
             // Villa/Daire alanları
             $table->dropColumn(['isinma_tipi', 'site_ozellikleri']);
-            
+
             // İşyeri alanları
             $table->dropColumn([
-                'isyeri_tipi', 
-                'kira_bilgisi', 
-                'ciro_bilgisi', 
-                'ruhsat_durumu', 
-                'personel_kapasitesi', 
+                'isyeri_tipi',
+                'kira_bilgisi',
+                'ciro_bilgisi',
+                'ruhsat_durumu',
+                'personel_kapasitesi',
                 'isyeri_cephesi'
             ]);
         });

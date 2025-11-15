@@ -10,7 +10,7 @@
             <h1 class="text-3xl font-bold text-gray-900 dark:text-white">AI Analytics Dashboard</h1>
             <p class="mt-2 text-gray-600 dark:text-gray-400">AI provider kullanımı ve performans metrikleri</p>
         </div>
-        <a href="{{ route('admin.ai-settings.index') }}" 
+        <a href="{{ route('admin.ai-settings.index') }}"
            class="inline-flex items-center px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors">
             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
@@ -85,7 +85,7 @@
     {{-- Provider Usage --}}
     <div class="bg-white dark:bg-gray-900 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
         <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6">Provider Kullanım İstatistikleri</h2>
-        
+
         <div class="space-y-4">
             @foreach(($analytics['provider_usage'] ?? []) as $provider => $data)
             <div>
@@ -96,7 +96,7 @@
                     </div>
                     <span class="text-sm font-semibold text-gray-900 dark:text-white">{{ number_format($data['percentage'] ?? 0, 1) }}%</span>
                 </div>
-                
+
                 {{-- Progress Bar --}}
                 <div class="w-full bg-gray-200 dark:bg-gray-800 rounded-full h-3 overflow-hidden">
                     <div class="bg-gradient-to-r from-blue-500 to-purple-600 h-3 rounded-full transition-all duration-500"
@@ -126,7 +126,7 @@
     {{-- Recent Activity --}}
     <div class="bg-white dark:bg-gray-900 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
         <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6">Son AI İstekleri</h2>
-        
+
         <div class="overflow-x-auto">
             <table class="w-full">
                 <thead>
@@ -185,4 +185,3 @@ setInterval(() => {
 </script>
 @endpush
 @endsection
-

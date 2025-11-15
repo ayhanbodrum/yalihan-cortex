@@ -1,4 +1,11 @@
 {{-- Section 8: Anahtar Yönetimi (Basit - CREATE için) --}}
+@php
+    // Context7: Arsa kategorisi için Anahtar Bilgileri gösterilmez
+    $anaKategoriSlug = $ilan->anaKategori->slug ?? '';
+    $isArsa = ($anaKategoriSlug === 'arsa' || str_contains(strtolower($anaKategoriSlug ?? ''), 'arsa'));
+@endphp
+
+@if(!$isArsa)
 <div class="bg-gray-50 dark:bg-gray-800 rounded-xl shadow-lg p-6">
     <h2 class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-6 flex items-center">
         <span class="flex items-center justify-center w-10 h-10 bg-gradient-to-r from-amber-500 to-amber-600 text-white rounded-full font-bold mr-3 shadow-lg">8</span>
@@ -32,7 +39,7 @@
                 <label for="anahtar_sayisi" class="block text-sm font-medium text-gray-900 dark:text-white mb-2">
                     <span class="block text-sm font-medium text-gray-900 dark:text-white mb-2-text">Anahtar Sayısı</span>
                 </label>
-                <input type="number" name="anahtar_sayisi" id="anahtar_sayisi" 
+                <input type="number" name="anahtar_sayisi" id="anahtar_sayisi"
                     value="{{ old('anahtar_sayisi', 1) }}" min="0" max="20"
                     class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-all duration-200" placeholder="Kaç adet anahtar?">
                 <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
@@ -56,9 +63,4 @@
 
     </div>
 </div>
-
-{{-- Context7 Note:
-    - CREATE: Minimal (sadece anahtar_durumu + anahtar_sayisi)
-    - EDIT: Full (+ teslim bilgileri + fotoğraflar)
-    - This keeps CREATE form simple and focused
---}}
+@endif

@@ -204,8 +204,8 @@ class Sozlesme extends BaseModel
      */
     public function gecerliMi(): bool
     {
-        return $this->status === 'imzalandi' && 
-               $this->gecerlilik_tarihi && 
+        return $this->status === 'imzalandi' &&
+               $this->gecerlilik_tarihi &&
                $this->gecerlilik_tarihi->isFuture();
     }
 
@@ -214,7 +214,7 @@ class Sozlesme extends BaseModel
      */
     public function suresiDolmusMu(): bool
     {
-        return $this->gecerlilik_tarihi && 
+        return $this->gecerlilik_tarihi &&
                $this->gecerlilik_tarihi->isPast();
     }
 
@@ -223,7 +223,7 @@ class Sozlesme extends BaseModel
      */
     public function onaylanabilirMi(): bool
     {
-        return $this->status === 'taslak' && 
+        return $this->status === 'taslak' &&
                !empty($this->sozlesme_metni);
     }
 

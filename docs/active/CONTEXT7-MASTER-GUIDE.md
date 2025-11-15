@@ -2,7 +2,7 @@
 
 **Version:** 2.0 (Consolidated)  
 **Tarih:** 24 Ekim 2025  
-**Durum:** ✅ %98.82 Compliance  
+**Durum:** ✅ %98.82 Compliance
 
 ---
 
@@ -52,43 +52,43 @@ Kalan İhlal: 7 adet
 
 ```yaml
 ❌ YASAK:
-  - durum → ✅ status
-  - aktif → ✅ active / enabled
-  - sehir → ✅ il
-  - sehir_id → ✅ il_id
-  - is_active → ✅ status (boolean)
+    - durum → ✅ status
+    - aktif → ✅ active / enabled
+    - sehir → ✅ il
+    - sehir_id → ✅ il_id
+    - is_active → ✅ status (boolean)
 
 ❌ YASAK (Turkish column names):
-  - musteri → ✅ kisi
-  - subtleVibrantToast → ✅ Context7 Toast
-  - layouts.app → ✅ Context7 Layout
+    - musteri → ✅ kisi
+    - subtleVibrantToast → ✅ Context7 Toast
+    - layouts.app → ✅ Context7 Layout
 ```
 
 #### **CSS Classes:**
 
 ```yaml
 ❌ YASAK (Bootstrap):
-  - btn-primary → ✅ neo-btn neo-btn--primary
-  - card-body → ✅ neo-card__body
-  - form-control → ✅ neo-input
+    - btn-primary → ✅ neo-btn neo-btn--primary
+    - card-body → ✅ neo-card__body
+    - form-control → ✅ neo-input
 
 ✅ ZORUNLU (Neo Design):
-  - neo-* prefix (ZORUNLU)
-  - BEM naming (block__element--modifier)
+    - neo-* prefix (ZORUNLU)
+    - BEM naming (block__element--modifier)
 ```
 
 #### **JavaScript:**
 
 ```yaml
 ❌ YASAK:
-  - jQuery (Heavy library)
-  - React-Select (Heavy library)
-  - subtleVibrantToast()
+    - jQuery (Heavy library)
+    - React-Select (Heavy library)
+    - subtleVibrantToast()
 
 ✅ ZORUNLU:
-  - Vanilla JS ONLY
-  - Alpine.js (lightweight, OK)
-  - Context7 Toast
+    - Vanilla JS ONLY
+    - Alpine.js (lightweight, OK)
+    - Context7 Toast
 ```
 
 ---
@@ -126,9 +126,9 @@ Default: 1
 Comment: '0=inactive, 1=active'
 
 ❌ ASLA:
-  - VARCHAR('Aktif', 'Pasif')
-  - ENUM('Aktif', 'Pasif')
-  - is_active (field adı)
+    - VARCHAR('Aktif', 'Pasif')
+    - ENUM('Aktif', 'Pasif')
+    - is_active (field adı)
 ```
 
 ### **Model Casting:**
@@ -162,26 +162,33 @@ class Ilan extends Model
 
 ```css
 /* ✅ DOĞRU */
-.neo-btn { }
-.neo-card { }
-.neo-input { }
-.neo-form-group { }
+.neo-btn {
+}
+.neo-card {
+}
+.neo-input {
+}
+.neo-form-group {
+}
 
 /* ❌ YANLIŞ */
-.btn { }
-.card { }
-.form-control { }
+.btn {
+}
+.card {
+}
+.form-control {
+}
 ```
 
 ### **Color Palette:**
 
 ```css
 :root {
-    --neo-primary: #f97316;    /* Orange */
-    --neo-success: #10b981;    /* Green */
-    --neo-warning: #f59e0b;    /* Yellow */
-    --neo-danger: #ef4444;     /* Red */
-    --neo-info: #06b6d4;       /* Cyan */
+    --neo-primary: #f97316; /* Orange */
+    --neo-success: #10b981; /* Green */
+    --neo-warning: #f59e0b; /* Yellow */
+    --neo-danger: #ef4444; /* Red */
+    --neo-info: #06b6d4; /* Cyan */
 }
 ```
 
@@ -224,7 +231,7 @@ class AIService
 {
     /**
      * Context7-compliant AI service
-     * 
+     *
      * Providers:
      * - Ollama (default, local)
      * - OpenAI (GPT-4)
@@ -281,15 +288,15 @@ GET /api/admin/ai/stats
 {{-- ✅ Context7 Form Structure --}}
 <form id="context7-form" class="neo-form" x-data="formHandler()">
     <div class="neo-form-grid">
-        
+
         {{-- Form Group --}}
         <div class="neo-form-group">
             <label for="field" class="neo-label neo-label--required">
                 Field Adı
             </label>
-            <input 
-                type="text" 
-                id="field" 
+            <input
+                type="text"
+                id="field"
                 name="field"
                 class="neo-input"
                 x-model="form.field"
@@ -322,12 +329,12 @@ GET /api/admin/ai/stats
 
 ```yaml
 ✅ ZORUNLU:
-  - Label (her input için)
-  - Loading state (submit için)
-  - Error handling
-  - Success feedback (toast)
-  - Accessibility (aria-*, role)
-  - Responsive (mobile-first)
+    - Label (her input için)
+    - Loading state (submit için)
+    - Error handling
+    - Success feedback (toast)
+    - Accessibility (aria-*, role)
+    - Responsive (mobile-first)
 ```
 
 ---
@@ -363,11 +370,11 @@ return new class extends Migration
     {
         // Step 1: Convert to VARCHAR
         DB::statement('ALTER TABLE table_name MODIFY COLUMN status VARCHAR(50) NULL');
-        
+
         // Step 2: Normalize data
         DB::statement("UPDATE table_name SET status = '1' WHERE status IN ('Aktif', 'aktif', 'active', '1', 1)");
         DB::statement("UPDATE table_name SET status = '0' WHERE status IN ('Pasif', 'pasif', 'inactive', '0', 0)");
-        
+
         // Step 3: Convert to TINYINT(1)
         DB::statement('ALTER TABLE table_name MODIFY COLUMN status TINYINT(1) NOT NULL DEFAULT 1 COMMENT "0=inactive, 1=active"');
     }
@@ -451,7 +458,7 @@ document.getElementById('btn').addEventListener('click', () => {
 });
 
 // ❌ YANLIŞ (jQuery)
-$('#btn').click(function() {
+$('#btn').click(function () {
     subtleVibrantToast('success', 'Başarılı!');
 });
 ```
@@ -572,12 +579,12 @@ Remaining:
 **📚 Bu dosya, tüm Context7 dokümantasyonunu tek bir referans olarak birleştirir.**
 
 **Kaynak Dosyalar:** (48 dosya konsolide edildi)
+
 - context7-rules.md (105 KB)
 - AI-MASTER-REFERENCE-2025-10-12.md (23 KB)
 - NEO-DESIGN-SYSTEM-MASTER-REFERENCE.md (18 KB)
 - STATUS_FIELD_CRISIS_ANALYSIS.md (16 KB)
-- + 44 diğer dosya
+-   - 44 diğer dosya
 
 **Version:** 2.0 (Consolidated)  
 **Last Update:** 24 Ekim 2025
-

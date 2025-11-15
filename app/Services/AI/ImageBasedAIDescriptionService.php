@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Storage;
 
 /**
  * 🖼️ AI Resim Analizi Servisi
- * 
+ *
  * Gelişmiş AI özellikleri:
  * - Resim analizi ve açıklama üretimi
  * - Otomatik etiketleme
@@ -48,7 +48,7 @@ class ImageBasedAIDescriptionService
 
             // Resmi base64'e çevir
             $imageBase64 = $this->encodeImageToBase64($imagePath);
-            
+
             if (!$imageBase64) {
                 throw new \Exception('Resim yüklenemedi');
             }
@@ -121,7 +121,7 @@ class ImageBasedAIDescriptionService
             }
 
             $tags = [];
-            
+
             // Obje etiketleri
             if (isset($analysis['objects'])) {
                 $tags = array_merge($tags, $analysis['objects']);
@@ -246,7 +246,7 @@ class ImageBasedAIDescriptionService
         try {
             // JSON parse etmeye çalış
             $decoded = json_decode($analysis, true);
-            
+
             if (json_last_error() === JSON_ERROR_NONE) {
                 return [
                     'success' => true,
@@ -277,7 +277,7 @@ class ImageBasedAIDescriptionService
     private function parseTextAnalysis(string $analysis): array
     {
         $result = [];
-        
+
         // Basit regex ile bilgileri çıkar
         if (preg_match('/kalite[:\s]*(\d+)/i', $analysis, $matches)) {
             $result['quality_score'] = (int)$matches[1];

@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', function() {
             setTimeout(() => alert.remove(), 500);
         });
     }, 5000);
-    
+
     // 10 saniye sonra info mesajlarını otomatik kapat
     setTimeout(function() {
         const infoAlerts = document.querySelectorAll('.alert-info');

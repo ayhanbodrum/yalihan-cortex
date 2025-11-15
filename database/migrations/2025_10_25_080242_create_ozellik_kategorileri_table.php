@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('ozellik_kategorileri')) {
+            return; // Tablo zaten var, migration'ı atla
+        }
+
         Schema::create('ozellik_kategorileri', function (Blueprint $table) {
             $table->id();
             $table->string('kategori_adi', 100)->unique(); // Altyapı, Genel Özellikler, Manzara, Konum

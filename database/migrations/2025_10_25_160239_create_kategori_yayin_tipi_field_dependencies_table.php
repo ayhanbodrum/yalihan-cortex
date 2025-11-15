@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('kategori_yayin_tipi_field_dependencies')) {
+            return; // Tablo zaten var, migration'ı atla
+        }
+
         Schema::create('kategori_yayin_tipi_field_dependencies', function (Blueprint $table) {
             $table->id();
 
@@ -32,7 +36,7 @@ return new class extends Migration
             // Behavior
             $table->boolean('enabled')->default(true)->comment('Field aktif mi?');
             $table->boolean('required')->default(false)->comment('Field zorunlu mu?');
-            $table->integer('order')->default(0)->comment('Sıralama');
+            $table->integer('display_order')->default(0)->comment('Sıralama'); // Context7: order → display_order
 
             // AI Features
             $table->boolean('ai_auto_fill')->default(false)->comment('AI otomatik doldurma');

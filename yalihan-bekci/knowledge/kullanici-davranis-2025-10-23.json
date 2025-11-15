@@ -229,7 +229,11 @@
     },
 
     "form_completion": {
-      "track": ["Hangi alanlar sık boş?", "Zorunlu alanlar atlanıyor mu?", "Validasyon çalışıyor mu?"],
+      "track": [
+        "Hangi alanlar sık boş?",
+        "Zorunlu alanlar atlanıyor mu?",
+        "Validasyon çalışıyor mu?"
+      ],
       "action": "Form completion artırma",
       "threshold": "Completion rate < 70% → Zorunlu alan artır"
     },
@@ -308,4 +312,3 @@
   "auto_learning": true,
   "intervention_enabled": true
 }
-

@@ -92,25 +92,54 @@
                         </div>
 
                         {{-- Bottom Section --}}
-                        <div class="flex items-center justify-between pt-4 border-t border-gray-100">
-                            {{-- Agent Info --}}
-                            <div class="flex items-center">
-                                <img src="{{ $ilan->danisman->avatar ?? asset('images/default-avatar.png') }}"
-                                    alt="{{ $ilan->danisman->name ?? 'Danışman' }}"
-                                    class="w-10 h-10 rounded-full object-cover mr-3">
-                                <div>
-                                    <p class="font-medium text-gray-800">
-                                        {{ $ilan->danisman->name ?? 'Emlak Danışmanı' }}</p>
-                                    <p class="text-sm text-gray-500">Emlak Danışmanı</p>
+                        <div class="pt-4 border-t border-gray-100">
+                            <div class="flex items-center justify-between mb-3">
+                                {{-- Agent Info --}}
+                                <div class="flex items-center">
+                                    @php
+                                        $danisman = $ilan->danisman ?? null;
+                                        $avatarUrl = $danisman && $danisman->profile_photo_path
+                                            ? asset('storage/' . $danisman->profile_photo_path)
+                                            : asset('images/default-avatar.png');
+                                    @endphp
+                                    <img src="{{ $avatarUrl }}"
+                                        alt="{{ $danisman->name ?? 'Danışman' }}"
+                                        class="w-10 h-10 rounded-full object-cover mr-3">
+                                    <div>
+                                        <p class="font-medium text-gray-800 dark:text-gray-200">
+                                            {{ $danisman->name ?? 'Emlak Danışmanı' }}</p>
+                                        <p class="text-sm text-gray-500 dark:text-gray-400">Emlak Danışmanı</p>
+                                    </div>
                                 </div>
+
+                                {{-- View Details Button --}}
+                                <a href="{{ route('ilanlar.show', $ilan->id) }}"
+                                    class="inline-flex items-center justify-center px-4 py-2 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-xl font-medium hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors">
+                                    Detaylar
+                                    <i class="fas fa-arrow-right ml-2"></i>
+                                </a>
                             </div>
 
-                            {{-- View Details Button --}}
-                            <a href="{{ route('ilanlar.show', $ilan->id) }}"
-                                class="inline-flex items-center justify-center px-4 py-2 bg-blue-50 text-blue-600 rounded-xl font-medium hover:bg-blue-100 transition-colors">
-                                Detaylar
-                                <i class="fas fa-arrow-right ml-2"></i>
-                            </a>
+                            {{-- Social Media Links --}}
+                            @if($danisman)
+                                @php
+                                    $hasSocialMedia = !empty($danisman->instagram_profile) ||
+                                                     !empty($danisman->linkedin_profile) ||
+                                                     !empty($danisman->facebook_profile) ||
+                                                     !empty($danisman->twitter_profile) ||
+                                                     !empty($danisman->youtube_channel) ||
+                                                     !empty($danisman->tiktok_profile) ||
+                                                     !empty($danisman->whatsapp_number) ||
+                                                     !empty($danisman->telegram_username) ||
+                                                     !empty($danisman->website);
+                                @endphp
+                                @if($hasSocialMedia)
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-xs text-gray-500 dark:text-gray-400 mr-1">Takip Et:</span>
+                                        <x-frontend.danisman-social-links :danisman="$danisman" size="xs" variant="outline" />
+                                    </div>
+                                @endif
+                            @endif
                         </div>
                     </div>
                 </div>

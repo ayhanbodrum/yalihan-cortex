@@ -8,9 +8,9 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
-     * 
+     *
      * Feature Assignments - Polymorphic İlişkiler
-     * 
+     *
      * Bu tablo, feature'ların hangi modellere (yayın tipleri, kategoriler vb.) atandığını saklar.
      */
     public function up(): void
@@ -19,20 +19,20 @@ return new class extends Migration
             Schema::create('feature_assignments', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId('feature_id')->constrained('features')->cascadeOnDelete();
-                
+
                 // Polymorphic relationship
                 $table->morphs('assignable'); // assignable_type, assignable_id
-                
+
                 // Assignment Configuration
                 $table->text('value')->nullable(); // Actual value if set
                 $table->boolean('is_required')->default(false); // Override feature's is_required
                 $table->boolean('is_visible')->default(true);
-                $table->integer('order')->default(0);
-                
+                $table->integer('display_order')->default(0); // Context7: order → display_order
+
                 // Conditional Logic
                 $table->json('conditional_logic')->nullable(); // Show if X field = Y
                 $table->string('group_name', 100)->nullable(); // Group fields together
-                
+
                 $table->timestamps();
 
                 // Indexes (morphs() already creates index for assignable_type, assignable_id)
@@ -50,4 +50,3 @@ return new class extends Migration
         Schema::dropIfExists('feature_assignments');
     }
 };
-

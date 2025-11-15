@@ -1,24 +1,24 @@
 {{--
     Modal Component
-    
+
     @component x-modal
     @description Reusable modal wrapper with Alpine.js and Tailwind CSS
-    
+
     @props
         - id: string (required) - Unique modal identifier
         - title: string (required) - Modal title
         - size: string (optional) - Modal size (sm, md, lg, xl, full) - default: md
         - closeable: bool (optional) - Show close button - default: true
         - show: bool (optional) - Initial visibility - default: false
-    
+
     @slots
         - default: Modal body content
         - footer: Modal footer content (optional)
-    
+
     @example
         <x-modal id="deleteModal" title="Confirm Delete" size="md">
             <p>Are you sure you want to delete this item?</p>
-            
+
             <x-slot name="footer">
                 <button @click="show = false" class="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg">
                     Cancel
@@ -28,7 +28,7 @@
                 </button>
             </x-slot>
         </x-modal>
-    
+
     @accessibility
         - ARIA labels
         - Keyboard navigation (ESC to close)
@@ -58,7 +58,7 @@ $modalSize = $sizeClasses[$size] ?? $sizeClasses['md'];
 @endphp
 
 <div
-    x-data="{ 
+    x-data="{
         show: {{ $show ? 'true' : 'false' }},
         closeModal() {
             this.show = false;
@@ -104,8 +104,8 @@ $modalSize = $sizeClasses[$size] ?? $sizeClasses['md'];
         >
             {{-- Header --}}
             <div class="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 px-6 py-4">
-                <h3 
-                    id="modal-title-{{ $id }}" 
+                <h3
+                    id="modal-title-{{ $id }}"
                     class="text-lg font-semibold text-gray-900 dark:text-white"
                 >
                     {{ $title }}
@@ -153,4 +153,3 @@ $modalSize = $sizeClasses[$size] ?? $sizeClasses['md'];
     };
 </script>
 @endonce
-

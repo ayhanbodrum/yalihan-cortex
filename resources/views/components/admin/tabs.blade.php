@@ -1,7 +1,7 @@
 {{--
     Modern Tabs Component
     Context7 compliant, Tailwind CSS, Alpine.js
-    
+
     Kullanım:
     <x-admin.tabs>
         <x-slot name="tab1">
@@ -11,13 +11,13 @@
             </x-slot>
             <p>Tab 1 içeriği</p>
         </x-slot>
-        
+
         <x-slot name="tab2">
             <x-slot name="label">Detaylar</x-slot>
             <p>Tab 2 içeriği</p>
         </x-slot>
     </x-admin.tabs>
-    
+
     @context7-compliant true
     @tailwind-only true
 --}}
@@ -32,14 +32,14 @@
     // Tab slot'larını topla
     $tabs = [];
     $tabIndex = 1;
-    
+
     foreach ($attributes->getAttributes() as $key => $value) {
         if (str_starts_with($key, 'tab')) {
             $tabs[$tabIndex] = $value ?? '';
             $tabIndex++;
         }
     }
-    
+
     // Variant styles
     $variantClasses = [
         'default' => [
@@ -61,7 +61,7 @@
             'inactive' => 'border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:border-gray-300 dark:hover:border-gray-600'
         ]
     ];
-    
+
     $styles = $variantClasses[$variant] ?? $variantClasses['default'];
 @endphp
 
@@ -77,17 +77,17 @@
                 :aria-selected="activeTab === {{ $index }}"
                 :id="'tab-{{ $index }}'"
                 :aria-controls="'panel-{{ $index }}'">
-                
+
                 {{-- Tab Icon (opsiyonel) --}}
                 @if(isset(${"tab{$index}Icon"}))
                     <span class="mr-2">
                         {{ ${"tab{$index}Icon"} }}
                     </span>
                 @endif
-                
+
                 {{-- Tab Label --}}
                 {{ ${"tab{$index}Label"} ?? "Tab {$index}" }}
-                
+
                 {{-- Badge (opsiyonel) --}}
                 @if(isset(${"tab{$index}Badge"}))
                     <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
@@ -97,7 +97,7 @@
             </button>
         @endforeach
     </div>
-    
+
     {{-- Tab Content --}}
     <div class="mt-6">
         @foreach($tabs as $index => $content)
@@ -112,10 +112,9 @@
                 role="tabpanel"
                 :id="'panel-{{ $index }}'"
                 :aria-labelledby="'tab-{{ $index }}'">
-                
+
                 {{ ${"tab{$index}"} }}
             </div>
         @endforeach
     </div>
 </div>
-

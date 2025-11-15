@@ -47,6 +47,7 @@ Duygu: 😊 Mutlu
 **URL:** `/admin/ilan-kategorileri`
 
 **Adımlar:**
+
 1. ✅ "Yeni Kategori" butonuna tıkla
 2. ✅ Kategori adı gir (örn: "Müstakil Ev")
 3. ✅ Seviye seç (Ana/Alt/Yayın Tipi)
@@ -63,6 +64,7 @@ Duygu: 😊 Mutlu
 **URL:** `/admin/ozellikler`
 
 **Adımlar:**
+
 1. ✅ "Yeni Özellik" butonuna tıkla
 2. ✅ Özellik adı gir (örn: "Asansör")
 3. ✅ Kategori seç (İç Özellikler)
@@ -79,12 +81,13 @@ Duygu: 😊 Mutlu
 **URL:** `/admin/ilanlar/create`
 
 **Adımlar:**
+
 1. ✅ Kategori seç (yukarıda eklediğin kategoriler)
 2. ✅ Özellikleri işaretle (yukarıda eklediğin özellikler)
 3. ✅ Fiyat, metrekare, oda sayısı gir
 4. 🤖 **AI KULLAN:**
-   - "Başlık Oluştur" → 3 öneri gelir, seç
-   - "Açıklama Oluştur" → Profesyonel açıklama üretilir
+    - "Başlık Oluştur" → 3 öneri gelir, seç
+    - "Açıklama Oluştur" → Profesyonel açıklama üretilir
 5. ✅ Kaydet
 
 **Süre:** 3-5 dakika (AI ile) vs 15 dakika (manuel) ⚡  
@@ -95,19 +98,25 @@ Duygu: 😊 Mutlu
 ## ❓ **SIKÇA SORULANLAR**
 
 ### **S: AI nerede?**
+
 **C:** Sadece İlan Create sayfasında! Başlık ve açıklama üretimi için.
 
 ### **S: Kategori eklerken AI öneri almak istiyorum?**
+
 **C:** Gerek yok! "Villa", "Daire" gibi net isimler için AI gereksiz. Direkt yaz!
 
 ### **S: Özellik eklerken AI kullanılır mı?**
+
 **C:** Hayır! "Asansör", "Havuz" gibi basit isimler. AI ne önerecek? 😄
 
 ### **S: Eski AI butonları nerede?**
+
 **C:** Kaldırıldı! %80'i çalışmıyordu, kafanızı karıştırıyordu.
 
 ### **S: Neden basitleştirildi?**
-**C:** 
+
+**C:**
+
 - ✅ Daha hızlı (30 saniye vs 2 dakika)
 - ✅ Daha basit (3 adım vs 7 adım)
 - ✅ %100 başarı (%40'tan yüksek)
@@ -184,11 +193,13 @@ ESKİ SİSTEM: 15 dakika ❌
 ## 💡 **İPUÇLARI**
 
 ### **✅ Yapın:**
+
 - CRUD sayfalarında hızlı çalışın (30 saniye hedef)
 - İlan create'de AI'yı kullanın (zaman kazanın)
 - Basit düşünün (Excel'e satır ekler gibi)
 
 ### **❌ Yapmayın:**
+
 - CRUD sayfalarında AI aramayın
 - Karmaşık düşünmeyin
 - Eski sistemi beklemeyin
@@ -210,4 +221,3 @@ ESKİ SİSTEM: 15 dakika ❌
 **Hazırlayan:** Yalıhan Bekçi AI  
 **Güncelleme:** 23 Ekim 2025  
 **Durum:** ✅ Aktif
-

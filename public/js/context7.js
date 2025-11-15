@@ -5,7 +5,7 @@
 
 class Context7 {
     constructor() {
-        this.version = "1.0.0";
+        this.version = '1.0.0';
         this.initialized = false;
         this.components = new Map();
         this.events = new Map();
@@ -19,19 +19,17 @@ class Context7 {
     init() {
         if (this.initialized) return;
 
-        console.log("Context7 Framework v" + this.version + " initializing...");
+        console.log('Context7 Framework v' + this.version + ' initializing...');
 
         // Initialize components when DOM is ready
-        if (document.readyState === "loading") {
-            document.addEventListener("DOMContentLoaded", () =>
-                this.initializeComponents(),
-            );
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => this.initializeComponents());
         } else {
             this.initializeComponents();
         }
 
         this.initialized = true;
-        console.log("Context7 Framework initialized successfully");
+        console.log('Context7 Framework initialized successfully');
     }
 
     /**
@@ -53,31 +51,22 @@ class Context7 {
      * Initialize dropdown components
      */
     initDropdowns() {
-        const dropdowns = document.querySelectorAll("[data-context7-dropdown]");
+        const dropdowns = document.querySelectorAll('[data-context7-dropdown]');
 
         dropdowns.forEach((dropdown) => {
-            const toggle = dropdown.querySelector(
-                ".context7-dropdown-toggle, .context7-user-btn",
-            );
-            const menu = dropdown.querySelector(".context7-dropdown-menu");
+            const toggle = dropdown.querySelector('.context7-dropdown-toggle, .context7-user-btn');
+            const menu = dropdown.querySelector('.context7-dropdown-menu');
 
             if (toggle && menu) {
-                const dropdownInstance = new Context7Dropdown(
-                    dropdown,
-                    toggle,
-                    menu,
-                );
+                const dropdownInstance = new Context7Dropdown(dropdown, toggle, menu);
                 this.components.set(dropdown, dropdownInstance);
             }
         });
 
         // Close dropdowns when clicking outside
-        document.addEventListener("click", (e) => {
+        document.addEventListener('click', (e) => {
             this.components.forEach((component, element) => {
-                if (
-                    component instanceof Context7Dropdown &&
-                    !element.contains(e.target)
-                ) {
+                if (component instanceof Context7Dropdown && !element.contains(e.target)) {
                     component.close();
                 }
             });
@@ -88,9 +77,7 @@ class Context7 {
      * Initialize mobile menu
      */
     initMobileMenu() {
-        const toggle = document.querySelector(
-            '[data-context7-mobile="toggle"]',
-        );
+        const toggle = document.querySelector('[data-context7-mobile="toggle"]');
         const menu = document.querySelector('[data-context7-mobile="menu"]');
 
         if (toggle && menu) {
@@ -104,7 +91,7 @@ class Context7 {
      */
     initNotifications() {
         this.notifications = new Context7Notifications();
-        this.components.set("notifications", this.notifications);
+        this.components.set('notifications', this.notifications);
     }
 
     /**
@@ -113,7 +100,7 @@ class Context7 {
     initPerformanceMonitoring() {
         if (this.shouldMonitorPerformance()) {
             this.performance = new Context7Performance();
-            this.components.set("performance", this.performance);
+            this.components.set('performance', this.performance);
         }
     }
 
@@ -121,7 +108,7 @@ class Context7 {
      * Initialize form validation
      */
     initFormValidation() {
-        const forms = document.querySelectorAll("form[data-context7-form]");
+        const forms = document.querySelectorAll('form[data-context7-form]');
 
         forms.forEach((form) => {
             const validator = new Context7FormValidator(form);
@@ -133,7 +120,7 @@ class Context7 {
      * Initialize tooltips
      */
     initTooltips() {
-        const tooltips = document.querySelectorAll("[data-context7-tooltip]");
+        const tooltips = document.querySelectorAll('[data-context7-tooltip]');
 
         tooltips.forEach((tooltip) => {
             const tooltipInstance = new Context7Tooltip(tooltip);
@@ -145,7 +132,7 @@ class Context7 {
      * Initialize modals
      */
     initModals() {
-        const modals = document.querySelectorAll("[data-context7-modal]");
+        const modals = document.querySelectorAll('[data-context7-modal]');
 
         modals.forEach((modal) => {
             const modalInstance = new Context7Modal(modal);
@@ -157,7 +144,7 @@ class Context7 {
      * Initialize tabs
      */
     initTabs() {
-        const tabs = document.querySelectorAll("[data-context7-tabs]");
+        const tabs = document.querySelectorAll('[data-context7-tabs]');
 
         tabs.forEach((tab) => {
             const tabInstance = new Context7Tabs(tab);
@@ -169,9 +156,7 @@ class Context7 {
      * Initialize accordions
      */
     initAccordions() {
-        const accordions = document.querySelectorAll(
-            "[data-context7-accordion]",
-        );
+        const accordions = document.querySelectorAll('[data-context7-accordion]');
 
         accordions.forEach((accordion) => {
             const accordionInstance = new Context7Accordion(accordion);
@@ -183,13 +168,13 @@ class Context7 {
      * Check if performance monitoring should be enabled
      */
     shouldMonitorPerformance() {
-        return document.querySelector("[data-context7-metrics]") !== null;
+        return document.querySelector('[data-context7-metrics]') !== null;
     }
 
     /**
      * Show notification
      */
-    showNotification(message, type = "info", duration = 5000) {
+    showNotification(message, type = 'info', duration = 5000) {
         if (this.notifications) {
             this.notifications.show(message, type, duration);
         }
@@ -245,7 +230,7 @@ class Context7Dropdown {
     }
 
     init() {
-        this.toggle.addEventListener("click", (e) => {
+        this.toggle.addEventListener('click', (e) => {
             e.preventDefault();
             e.stopPropagation();
             this.toggleDropdown();
@@ -261,19 +246,19 @@ class Context7Dropdown {
     }
 
     open() {
-        this.menu.classList.remove("hidden");
+        this.menu.classList.remove('hidden');
         this.isOpen = true;
-        this.element.setAttribute("data-context7-dropdown-open", "true");
+        this.element.setAttribute('data-context7-dropdown-open', 'true');
     }
 
     close() {
-        this.menu.classList.add("hidden");
+        this.menu.classList.add('hidden');
         this.isOpen = false;
-        this.element.removeAttribute("data-context7-dropdown-open");
+        this.element.removeAttribute('data-context7-dropdown-open');
     }
 
     destroy() {
-        this.toggle.removeEventListener("click", this.toggleDropdown);
+        this.toggle.removeEventListener('click', this.toggleDropdown);
     }
 }
 
@@ -290,7 +275,7 @@ class Context7MobileMenu {
     }
 
     init() {
-        this.toggle.addEventListener("click", () => {
+        this.toggle.addEventListener('click', () => {
             this.toggleMenu();
         });
     }
@@ -304,17 +289,17 @@ class Context7MobileMenu {
     }
 
     open() {
-        this.menu.classList.remove("hidden");
+        this.menu.classList.remove('hidden');
         this.isOpen = true;
     }
 
     close() {
-        this.menu.classList.add("hidden");
+        this.menu.classList.add('hidden');
         this.isOpen = false;
     }
 
     destroy() {
-        this.toggle.removeEventListener("click", this.toggleMenu);
+        this.toggle.removeEventListener('click', this.toggleMenu);
     }
 }
 
@@ -330,14 +315,13 @@ class Context7Notifications {
     }
 
     createContainer() {
-        const container = document.createElement("div");
-        container.className =
-            "context7-notifications fixed top-4 right-4 z-50 space-y-2";
-        container.setAttribute("data-context7-notifications", "container");
+        const container = document.createElement('div');
+        container.className = 'context7-notifications fixed top-4 right-4 z-50 space-y-2';
+        container.setAttribute('data-context7-notifications', 'container');
         return container;
     }
 
-    show(message, type = "info", duration = 5000) {
+    show(message, type = 'info', duration = 5000) {
         const id = Date.now().toString();
         const notification = this.createNotification(id, message, type);
 
@@ -346,7 +330,7 @@ class Context7Notifications {
 
         // Animate in
         setTimeout(() => {
-            notification.classList.add("context7-animate-fade-in");
+            notification.classList.add('context7-animate-fade-in');
         }, 10);
 
         // Auto remove
@@ -360,9 +344,9 @@ class Context7Notifications {
     }
 
     createNotification(id, message, type) {
-        const notification = document.createElement("div");
+        const notification = document.createElement('div');
         notification.className = `context7-notification context7-alert context7-alert-${type} max-w-sm w-full shadow-lg rounded-lg pointer-events-auto overflow-hidden`;
-        notification.setAttribute("data-context7-notification", id);
+        notification.setAttribute('data-context7-notification', id);
 
         notification.innerHTML = `
             <div class="p-4">
@@ -386,10 +370,8 @@ class Context7Notifications {
         `;
 
         // Close button functionality
-        const closeBtn = notification.querySelector(
-            ".context7-notification-close",
-        );
-        closeBtn.addEventListener("click", () => this.remove(id));
+        const closeBtn = notification.querySelector('.context7-notification-close');
+        closeBtn.addEventListener('click', () => this.remove(id));
 
         return notification;
     }
@@ -410,8 +392,8 @@ class Context7Notifications {
     remove(id) {
         const notification = this.notifications.get(id);
         if (notification) {
-            notification.style.opacity = "0";
-            notification.style.transform = "translateX(100%)";
+            notification.style.opacity = '0';
+            notification.style.transform = 'translateX(100%)';
 
             setTimeout(() => {
                 if (notification.parentNode) {
@@ -439,7 +421,7 @@ class Context7Performance {
             loadTime: 0,
             memoryUsage: 0,
             queryCount: 0,
-            cacheStatus: "unknown",
+            cacheStatus: 'unknown',
         };
 
         this.init();
@@ -455,8 +437,8 @@ class Context7Performance {
     }
 
     measureLoadTime() {
-        if (typeof performance !== "undefined") {
-            window.addEventListener("load", () => {
+        if (typeof performance !== 'undefined') {
+            window.addEventListener('load', () => {
                 this.metrics.loadTime = performance.now();
                 this.updateLoadTimeDisplay();
             });
@@ -464,7 +446,7 @@ class Context7Performance {
     }
 
     startMemoryMonitoring() {
-        if (typeof performance !== "undefined" && performance.memory) {
+        if (typeof performance !== 'undefined' && performance.memory) {
             setInterval(() => {
                 this.metrics.memoryUsage = performance.memory.usedJSHeapSize;
                 this.updateMemoryDisplay();
@@ -480,32 +462,30 @@ class Context7Performance {
     }
 
     updateLoadTimeDisplay() {
-        const element = document.querySelector(".context7-load-time");
+        const element = document.querySelector('.context7-load-time');
         if (element && this.metrics.loadTime) {
-            element.textContent =
-                (this.metrics.loadTime / 1000).toFixed(3) + "s";
+            element.textContent = (this.metrics.loadTime / 1000).toFixed(3) + 's';
         }
     }
 
     updateMemoryDisplay() {
-        const element = document.querySelector(".context7-memory");
+        const element = document.querySelector('.context7-memory');
         if (element && this.metrics.memoryUsage) {
-            element.textContent =
-                (this.metrics.memoryUsage / 1024 / 1024).toFixed(2) + "MB";
+            element.textContent = (this.metrics.memoryUsage / 1024 / 1024).toFixed(2) + 'MB';
         }
     }
 
     updateQueryDisplay() {
         // This would typically be populated by server-side data
-        const element = document.querySelector(".context7-queries");
+        const element = document.querySelector('.context7-queries');
         if (element) {
             // Placeholder - would need server integration
-            element.textContent = "N/A";
+            element.textContent = 'N/A';
         }
     }
 
     updateCacheDisplay() {
-        const element = document.querySelector(".context7-cache-status");
+        const element = document.querySelector('.context7-cache-status');
         if (element) {
             // Placeholder - would need server integration
             element.innerHTML = '<span class="text-green-600">Redis</span>';
@@ -591,6 +571,6 @@ class Context7Accordion {
 window.Context7 = new Context7();
 
 // Export for module systems
-if (typeof module !== "undefined" && module.exports) {
+if (typeof module !== 'undefined' && module.exports) {
     module.exports = Context7;
 }

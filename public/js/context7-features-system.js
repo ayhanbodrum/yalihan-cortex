@@ -18,7 +18,7 @@ class Context7FeaturesSystem {
             timeout: 10000,
             retryAttempts: 2,
             debug: false,
-            ...config
+            ...config,
         };
 
         this.cache = new Map();
@@ -57,15 +57,27 @@ class Context7FeaturesSystem {
         try {
             this.log(`🔧 Özellik yükleme başlatıldı: ${categoryId}`);
 
-            const url = `${this.config.baseUrl}/features/category/${categoryId}`;
-            const response = await this.fetchWithTimeout(url);
+            const isSlug =
+                typeof categoryId === 'string' && categoryId !== '' && !/^\d+$/.test(categoryId);
+            const url = isSlug
+                ? `/api/admin/features/category/${encodeURIComponent(categoryId)}`
+                : `${this.config.baseUrl}/features/category/${categoryId}`;
+
+            const response = await this.fetchWithTimeout(url, {
+                credentials: 'same-origin',
+            });
 
             if (!response.ok) {
                 throw new Error(`HTTP ${response.status}: ${response.statusText}`);
             }
 
             const data = await response.json();
-            const features = data.data || data.featureCategories || [];
+            const features =
+                (Array.isArray(data?.data?.features) && data.data.features) ||
+                (Array.isArray(data?.features) && data.features) ||
+                (Array.isArray(data?.data) && data.data) ||
+                data.featureCategories ||
+                [];
 
             // Cache'e kaydet
             this.cache.set(cacheKey, features);
@@ -165,10 +177,10 @@ class Context7FeaturesSystem {
                 ...options,
                 signal: controller.signal,
                 headers: {
-                    'Accept': 'application/json',
+                    Accept: 'application/json',
                     'X-Requested-With': 'XMLHttpRequest',
-                    ...options.headers
-                }
+                    ...options.headers,
+                },
             });
             return response;
         } finally {
@@ -216,21 +228,40 @@ window.Context7FeaturesSystem = Context7FeaturesSystem;
 // Auto-initialize
 if (!window.featuresSystem) {
     window.featuresSystem = new Context7FeaturesSystem({
-        debug: true // Development mode
+        debug: true, // Development mode
     });
     console.log('✅ Context7 Features System ready');
 }
 
 // Alpine.js helper (backward compatibility)
-window.loadFeaturesForCategory = function(categoryId) {
+window.loadFeaturesForCategory = function (categoryId) {
     return window.featuresSystem.loadFeaturesForCategory(categoryId);
 };
 
-window.loadPublicationTypes = function(categoryId) {
+window.loadPublicationTypes = function (categoryId) {
     return window.featuresSystem.loadPublicationTypes(categoryId);
 };
 
-window.loadSubcategories = function(parentId) {
+window.loadSubcategories = function (parentId) {
     return window.featuresSystem.loadSubcategories(parentId);
 };
+    async loadFeatures(appliesTo, categorySlug = null, yayinTipiId = null) {
+        const key = `unified_${appliesTo || ''}_${categorySlug || ''}_${yayinTipiId || ''}`;
+        if (this.cache.has(key)) return this.cache.get(key);
+        const url = new URL('/api/admin/features', window.location.origin);
+        if (appliesTo) url.searchParams.set('applies_to', appliesTo);
+        if (categorySlug) url.searchParams.set('category', categorySlug);
+        if (yayinTipiId) url.searchParams.set('yayin_tipi', yayinTipiId);
+        const response = await this.fetchWithTimeout(url.toString(), { credentials: 'same-origin' });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const data = await response.json();
+        const list = (Array.isArray(data?.data) && data.data) || (Array.isArray(data?.data?.data) && data.data.data) || [];
+        this.cache.set(key, list);
+        return list;
+    }
 
+    invalidateAll() {
+        if (this.cache && typeof this.cache.clear === 'function') {
+            this.cache.clear();
+        }
+    }

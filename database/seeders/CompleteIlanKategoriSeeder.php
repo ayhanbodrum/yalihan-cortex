@@ -16,21 +16,21 @@ class CompleteIlanKategoriSeeder extends Seeder
     public function run(): void
     {
         $this->command->info('📂 Context7: İlan Kategorileri seed ediliyor...');
-        
+
         // Context7: status kolonu kontrolü (yasaklı komut kuralı)
         $hasStatusColumn = Schema::hasColumn('ilan_kategorileri', 'status');
-        
+
         if (!$hasStatusColumn) {
             $this->command->warn('⚠️ status kolonu yok! Varsayılan değer kullanılacak.');
         }
 
         // ✅ Ana Kategoriler (Emlak Yönetimi)
         $anaKategoriler = [
-            ['name' => 'Konut', 'slug' => 'konut', 'order' => 1],
-            ['name' => 'Arsa', 'slug' => 'arsa', 'order' => 2],
-            ['name' => 'İşyeri', 'slug' => 'isyeri', 'order' => 3],
-            ['name' => 'Turistik Tesis', 'slug' => 'turistik-tesis', 'order' => 4],
-            ['name' => 'Projeler', 'slug' => 'projeler', 'order' => 5],
+            ['name' => 'Konut', 'slug' => 'konut', 'display_order' => 1],
+            ['name' => 'Arsa', 'slug' => 'arsa', 'display_order' => 2],
+            ['name' => 'İşyeri', 'slug' => 'isyeri', 'display_order' => 3],
+            ['name' => 'Turistik Tesis', 'slug' => 'turistik-tesis', 'display_order' => 4],
+            ['name' => 'Projeler', 'slug' => 'projeler', 'display_order' => 5],
         ];
 
         foreach ($anaKategoriler as $kategoriData) {
@@ -38,7 +38,7 @@ class CompleteIlanKategoriSeeder extends Seeder
                 'name' => $kategoriData['name'],
                 'parent_id' => null,
                 'seviye' => 0, // Ana kategori (seviye 0)
-                'order' => $kategoriData['order'],
+                'display_order' => $kategoriData['display_order'],
             ];
 
             // Context7: status kolonu varsa ekle (Schema::hasColumn kontrolü)

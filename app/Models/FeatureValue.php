@@ -135,16 +135,95 @@ class FeatureValue extends Model
      */
     public static function bulkSetForModel($model, array $values)
     {
-        // ✅ OPTIMIZED: N+1 query önlendi - Tüm feature'ları tek query'de al
+        // ✅ PERFORMANCE FIX: N+1 query önlendi - Tüm feature'ları tek query'de al
         $featureSlugs = array_keys($values);
         $features = Feature::whereIn('slug', $featureSlugs)->get()->keyBy('slug');
-        
+
+        $valuableType = get_class($model);
+        $valuableId = $model->id;
+
+        // ✅ PERFORMANCE FIX: Bulk insert/update için hazırlık
+        $toInsert = [];
+        $toUpdate = [];
+
+        // Mevcut kayıtları tek query'de al
+        $existingValues = static::where('valuable_type', $valuableType)
+            ->where('valuable_id', $valuableId)
+            ->whereIn('feature_id', $features->pluck('id')->toArray())
+            ->get()
+            ->keyBy('feature_id');
+
         foreach ($values as $featureSlug => $value) {
             $feature = $features->get($featureSlug);
-            if ($feature) {
-                static::setForModel($model, $feature, $value);
+            if (!$feature) {
+                continue;
             }
+
+            $valueString = is_array($value) ? json_encode($value) : $value;
+            $valueType = match (true) {
+                is_int($value) => 'integer',
+                is_float($value) => 'float',
+                is_bool($value) => 'boolean',
+                is_array($value) => 'json',
+                default => 'string',
+            };
+
+            $existing = $existingValues->get($feature->id);
+            if ($existing) {
+                // Update için hazırla
+                $toUpdate[] = [
+                    'id' => $existing->id,
+                    'value' => $valueString,
+                    'value_type' => $valueType,
+                ];
+            } else {
+                // Insert için hazırla
+                $toInsert[] = [
+                    'feature_id' => $feature->id,
+                    'valuable_type' => $valuableType,
+                    'valuable_id' => $valuableId,
+                    'value' => $valueString,
+                    'value_type' => $valueType,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ];
+            }
+        }
+
+        // ✅ PERFORMANCE FIX: Bulk insert
+        if (!empty($toInsert)) {
+            static::insert($toInsert);
+        }
+
+        // ✅ PERFORMANCE FIX: Bulk update (CASE WHEN ile)
+        if (!empty($toUpdate)) {
+            $valueCases = [];
+            $valueTypeCases = [];
+            $bindings = [];
+            $ids = [];
+
+            foreach ($toUpdate as $update) {
+                $valueCases[] = "WHEN ? THEN ?";
+                $valueTypeCases[] = "WHEN ? THEN ?";
+                $bindings[] = $update['id'];
+                $bindings[] = $update['value'];
+                $bindings[] = $update['id'];
+                $bindings[] = $update['value_type'];
+                $ids[] = $update['id'];
+            }
+
+            $idsPlaceholder = implode(',', array_fill(0, count($ids), '?'));
+            $valueCasesSql = implode(' ', $valueCases);
+            $valueTypeCasesSql = implode(' ', $valueTypeCases);
+
+            \Illuminate\Support\Facades\DB::statement(
+                "UPDATE feature_values
+                 SET value = CASE id {$valueCasesSql} END,
+                     value_type = CASE id {$valueTypeCasesSql} END,
+                     updated_at = NOW()
+                 WHERE id IN ({$idsPlaceholder})",
+                array_merge($bindings, $ids)
+            );
         }
     }
 }
-

@@ -27,15 +27,19 @@ class OzellikKategoriController extends AdminController
         // Context7: Schema kontrolü (status vs enabled)
         if ($request->filled('status')) {
             $status = (bool) $request->input('status');
+            // ✅ Context7: ONLY status field (enabled FORBIDDEN)
             if (Schema::hasColumn('feature_categories', 'status')) {
                 $query->where('status', $status);
-            } elseif (Schema::hasColumn('feature_categories', 'enabled')) {
-                $query->where('enabled', $status);
             }
+            // ❌ REMOVED: enabled field fallback (Context7 violation)
         }
-        
-        $kategoriler = $query->withCount('features')->orderBy('order')->orderBy('name')->paginate(20)->withQueryString();
-        return view('admin.ozellikler.kategoriler.index', compact('kategoriler'));
+
+        $kategoriler = $query->withCount('features')->orderBy('display_order')->orderBy('name')->paginate(20)->withQueryString();
+
+        // ✅ Context7: View için gerekli değişkenler
+        $status = $request->get('status'); // Filter için
+
+        return view('admin.ozellikler.kategoriler.index', compact('kategoriler', 'status'));
     }
 
     public function create()
@@ -51,15 +55,15 @@ class OzellikKategoriController extends AdminController
             'description' => ['nullable', 'string'],
             'icon' => ['nullable', 'string', 'max:64'],
             'applies_to' => ['nullable', 'string'],
-            'enabled' => ['required', 'boolean'],
-            'order' => ['nullable', 'integer'],
+            'status' => ['required', 'boolean'],
+            'display_order' => ['nullable', 'integer'], // ✅ Context7: order → display_order
         ]);
 
         if (empty($data['slug'])) {
             $data['slug'] = Str::slug($data['name']);
         }
-        if (!array_key_exists('order', $data) || is_null($data['order'])) {
-            $data['order'] = (int) (FeatureCategory::max('order') + 1);
+        if (!array_key_exists('display_order', $data) || is_null($data['display_order'])) {
+            $data['display_order'] = (int) (FeatureCategory::max('display_order') + 1);
         }
 
         FeatureCategory::create($data);
@@ -99,8 +103,8 @@ class OzellikKategoriController extends AdminController
             'uyumlu_kategoriler' => ['nullable', 'array'],
             'validasyon_kurallari' => ['nullable', 'array'],
             'varsayilan_deger' => ['nullable'],
-            'enabled' => ['required', 'boolean'],
-            'order' => ['nullable', 'integer'],
+            'status' => ['required', 'boolean'],
+            'display_order' => ['nullable', 'integer'], // Context7: order → display_order
             'meta_title' => ['nullable', 'string', 'max:255'],
             'meta_description' => ['nullable', 'string'],
         ]);
@@ -148,13 +152,39 @@ class OzellikKategoriController extends AdminController
     public function reorder(Request $request)
     {
         $data = $request->validate([
-            'order' => ['required', 'array'],
-            'order.*.id' => ['required', 'integer', 'exists:feature_categories,id'],
-            'order.*.order' => ['required', 'integer'],
+            'items' => ['required', 'array'],
+            'items.*.id' => ['required', 'integer', 'exists:feature_categories,id'],
+            'items.*.display_order' => ['required', 'integer'],
         ]);
+        // ✅ PERFORMANCE FIX: N+1 query önlendi - Gerçek bulk update kullanıldı
         DB::transaction(function () use ($data) {
-            foreach ($data['order'] as $item) {
-                FeatureCategory::where('id', $item['id'])->update(['order' => $item['order']]);
+            $updates = [];
+            $ids = [];
+            foreach ($data['items'] as $item) {
+                $displayOrder = $item['display_order'] ?? 0;
+                $id = $item['id'];
+                $updates[$id] = $displayOrder;
+                $ids[] = $id;
+            }
+
+            // ✅ PERFORMANCE FIX: CASE WHEN ile gerçek bulk update (N query → 1 query)
+            if (!empty($ids)) {
+                $cases = [];
+                $bindings = [];
+                foreach ($updates as $id => $displayOrder) {
+                    $cases[] = "WHEN ? THEN ?";
+                    $bindings[] = $id;
+                    $bindings[] = $displayOrder;
+                }
+                $idsPlaceholder = implode(',', array_fill(0, count($ids), '?'));
+                $casesSql = implode(' ', $cases);
+
+                DB::statement(
+                    "UPDATE feature_categories
+                     SET display_order = CASE id {$casesSql} END
+                     WHERE id IN ({$idsPlaceholder})",
+                    array_merge($bindings, $ids)
+                );
             }
         });
         return response()->json(['success' => true]);
@@ -173,7 +203,7 @@ class OzellikKategoriController extends AdminController
     public function ozellikler(int $id)
     {
         $kategori = FeatureCategory::with('features')->findOrFail($id);
-        $ozellikler = $kategori->features()->orderBy('order')->orderBy('name')->paginate(20);
+        $ozellikler = $kategori->features()->orderBy('display_order')->orderBy('name')->paginate(20);
         return view('admin.ozellikler.kategoriler.ozellikler', compact('kategori', 'ozellikler'));
     }
 
@@ -183,7 +213,7 @@ class OzellikKategoriController extends AdminController
         $data = $request->validate([
             'name' => ['sometimes', 'string', 'max:255'],
             'status' => ['sometimes', 'boolean'],
-            'order' => ['sometimes', 'integer'],
+            'display_order' => ['sometimes', 'integer'], // Context7: order → display_order
         ]);
         $kategori->update($data);
         return response()->json(['success' => true]);
@@ -195,7 +225,7 @@ class OzellikKategoriController extends AdminController
         $yeni = $kategori->replicate();
         $yeni->name = $kategori->name . ' Kopya';
         $yeni->slug = null;
-        $yeni->order = (int) (OzellikKategori::max('order') + 1);
+        $yeni->display_order = (int) (OzellikKategori::max('display_order') + 1);
         $yeni->save();
         return response()->json(['success' => true, 'id' => $yeni->id]);
     }

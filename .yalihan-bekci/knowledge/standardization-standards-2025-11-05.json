@@ -1,259 +1,252 @@
 {
-    "knowledge_type": "standardization_standards",
-    "version": "1.0.0",
-    "created_at": "2025-11-05T12:00:00Z",
-    "last_updated": "2025-11-05T12:00:00Z",
+  "knowledge_type": "standardization_standards",
+  "version": "1.0.0",
+  "created_at": "2025-11-05T12:00:00Z",
+  "last_updated": "2025-11-05T12:00:00Z",
+  "status": "ACTIVE",
+  "enforcement": "STRICT",
+
+  "summary": {
+    "title": "Context7 Code Standardization Standards",
+    "description": "Cache, Error Handling ve Logging için standart pattern'ler ve best practice'ler",
+    "scope": "All PHP code in the project",
+    "priority": "CRITICAL"
+  },
+
+  "cache_standardization": {
+    "service": "App\\Services\\Cache\\CacheService",
+    "helper": "App\\Services\\Cache\\CacheHelper",
+
+    "forbidden": [
+      "Cache::remember('key', 3600, function() {})",
+      "Cache::get('key')",
+      "Cache::put('key', $value, 3600)",
+      "Cache::forget('key')"
+    ],
+
+    "required": {
+      "pattern": "CacheHelper::remember|CacheHelper::get|CacheHelper::put|CacheHelper::forget",
+      "key_format": "emlak_pro:{namespace}:{key}:{params}",
+      "ttl_presets": {
+        "very_short": 60,
+        "short": 300,
+        "medium": 3600,
+        "long": 86400,
+        "very_long": 604800
+      }
+    },
+
+    "examples": {
+      "correct": {
+        "code": "CacheHelper::remember('currency', 'tcmb_rates_today', 'medium', function() { return $data; })",
+        "explanation": "Namespace, key, TTL preset ve callback kullanımı"
+      },
+      "incorrect": {
+        "code": "Cache::remember('tcmb.rates.today', 3600, function() { return $data; })",
+        "reason": "Standart olmayan key formatı ve TTL değeri"
+      }
+    },
+
+    "migration_examples": [
+      {
+        "before": "Cache::remember('user_stats', 1800, fn() => User::count())",
+        "after": "CacheHelper::remember('user', 'stats', 'short', fn() => User::count())"
+      },
+      {
+        "before": "Cache::forget('tcmb.rates.today')",
+        "after": "CacheHelper::forget('currency', 'tcmb_rates_today')"
+      }
+    ]
+  },
+
+  "error_handling_standardization": {
+    "service": "App\\Services\\Response\\ResponseService",
+    "handler": "App\\Services\\Response\\ErrorHandlerService",
+
+    "forbidden": [
+      "response()->json(['success' => false, 'message' => '...'])",
+      "redirect()->back()->with('error', '...')",
+      "abort(500, 'Error message')"
+    ],
+
+    "required": {
+      "pattern": "ResponseService::success|ResponseService::error|ResponseService::serverError|ResponseService::backError",
+      "automatic_logging": true,
+      "structured_responses": true
+    },
+
+    "response_formats": {
+      "api_success": {
+        "success": true,
+        "message": "string",
+        "data": "mixed",
+        "timestamp": "ISO 8601"
+      },
+      "api_error": {
+        "success": false,
+        "message": "string",
+        "errors": "array",
+        "code": "string",
+        "timestamp": "ISO 8601"
+      }
+    },
+
+    "examples": {
+      "correct": {
+        "api": "ResponseService::serverError('Hata mesajı', $exception)",
+        "web": "ResponseService::backError('Hata mesajı: ' . $e->getMessage())"
+      },
+      "incorrect": {
+        "code": "return response()->json(['error' => 'Hata'], 500)",
+        "reason": "Standart response formatı kullanılmıyor ve otomatik logging yok"
+      }
+    },
+
+    "migration_examples": [
+      {
+        "before": "return response()->json(['success' => false, 'message' => 'Error'], 500)",
+        "after": "return ResponseService::error('Error', 500)"
+      },
+      {
+        "before": "return redirect()->back()->with('error', 'Error message')",
+        "after": "return ResponseService::backError('Error message')"
+      }
+    ]
+  },
+
+  "logging_standardization": {
+    "service": "App\\Services\\Logging\\LogService",
+    "helper": "App\\Services\\Logging\\LogHelper",
+
+    "forbidden": [
+      "Log::info('Message')",
+      "Log::error('Error: ' . $e->getMessage())",
+      "Log::warning('Warning', ['data' => $data])",
+      "logger('Message')"
+    ],
+
+    "required": {
+      "pattern": "LogService::info|LogService::error|LogService::warning|LogService::debug|LogService::api|LogService::database|LogService::auth|LogService::ai",
+      "automatic_context": true,
+      "structured_logging": true
+    },
+
+    "log_levels": {
+      "debug": "Development only",
+      "info": "Normal operations",
+      "warning": "Potential issues",
+      "error": "Errors",
+      "critical": "Critical errors"
+    },
+
+    "log_channels": {
+      "stack": "Default (all logs)",
+      "api": "API request/response logs",
+      "database": "Database operations",
+      "auth": "Authentication events",
+      "payment": "Payment transactions",
+      "ai": "AI operations"
+    },
+
+    "automatic_context": ["timestamp", "url", "method", "user_id", "ip"],
+
+    "specialized_methods": {
+      "api": "LogService::api('/endpoint', $requestData, $responseData, $duration)",
+      "database": "LogService::database('operation', 'table', $data, $affectedRows)",
+      "auth": "LogService::auth('event', $userId, $context)",
+      "ai": "LogService::ai('operation', 'provider', $context, $duration)",
+      "action": "LogService::action('action', 'resource', $resourceId, $context)"
+    },
+
+    "examples": {
+      "correct": {
+        "basic": "LogService::error('Hata oluştu', ['context' => '...'], $exception)",
+        "api": "LogService::api('/api/ilanlar', $requestData, $responseData, $duration)",
+        "database": "LogService::database('create', 'ilanlar', $data, 1)",
+        "action": "LogService::action('create', 'ilan', $ilanId, ['fiyat' => 1000000])"
+      },
+      "incorrect": {
+        "code": "Log::error('Hata: ' . $e->getMessage())",
+        "reason": "Context bilgisi yok ve structured logging kullanılmıyor"
+      }
+    },
+
+    "migration_examples": [
+      {
+        "before": "Log::error('Error: ' . $e->getMessage())",
+        "after": "LogService::error('Error', [], $e)"
+      },
+      {
+        "before": "Log::info('User logged in', ['user_id' => $userId])",
+        "after": "LogService::auth('login', $userId, ['ip' => $ip])"
+      }
+    ]
+  },
+
+  "migration_pattern": {
+    "step_1": "Import ekle: use App\\Services\\Cache\\CacheHelper; use App\\Services\\Response\\ResponseService; use App\\Services\\Logging\\LogService;",
+    "step_2": "Cache migration: Cache::remember → CacheHelper::remember",
+    "step_3": "Error handling migration: response()->json() → ResponseService::success/error",
+    "step_4": "Logging migration: Log::* → LogService::*"
+  },
+
+  "migration_status": {
+    "total_files": 18,
+    "migrated_files": 18,
+    "total_usage": 150,
+    "migrated_usage": 150,
+    "migrated_services": [
+      "PropertyValuationService",
+      "TCMBCurrencyService",
+      "AIService",
+      "IlanController",
+      "DashboardController",
+      "PriceController",
+      "KisiController",
+      "IlanKategoriController",
+      "ListingSearchController"
+    ],
+    "last_migration": "2025-11-05T12:00:00Z"
+  },
+
+  "best_practices": {
+    "cache": [
+      "Namespace kullanımı zorunlu",
+      "TTL preset kullan (sabit değer değil)",
+      "Parametreli key'ler için params array kullan",
+      "Cache invalidation stratejisi belirle"
+    ],
+    "error_handling": [
+      "Automatic logging kullan",
+      "Structured error responses",
+      "Exception type handling",
+      "User-friendly error messages"
+    ],
+    "logging": [
+      "Context bilgisi ekle",
+      "Specialized methods kullan (api, database, auth, ai)",
+      "Sensitive data loglamaktan kaçın",
+      "Log levels doğru kullan"
+    ]
+  },
+
+  "reference_files": {
+    "documentation": ".context7/STANDARDIZATION_STANDARDS.md",
+    "authority": ".context7/authority.json",
+    "services": [
+      "app/Services/Cache/CacheService.php",
+      "app/Services/Cache/CacheHelper.php",
+      "app/Services/Response/ResponseService.php",
+      "app/Services/Response/ErrorHandlerService.php",
+      "app/Services/Logging/LogService.php",
+      "app/Services/Logging/LogHelper.php"
+    ]
+  },
+
+  "compliance": {
     "status": "ACTIVE",
     "enforcement": "STRICT",
-    
-    "summary": {
-        "title": "Context7 Code Standardization Standards",
-        "description": "Cache, Error Handling ve Logging için standart pattern'ler ve best practice'ler",
-        "scope": "All PHP code in the project",
-        "priority": "CRITICAL"
-    },
-    
-    "cache_standardization": {
-        "service": "App\\Services\\Cache\\CacheService",
-        "helper": "App\\Services\\Cache\\CacheHelper",
-        
-        "forbidden": [
-            "Cache::remember('key', 3600, function() {})",
-            "Cache::get('key')",
-            "Cache::put('key', $value, 3600)",
-            "Cache::forget('key')"
-        ],
-        
-        "required": {
-            "pattern": "CacheHelper::remember|CacheHelper::get|CacheHelper::put|CacheHelper::forget",
-            "key_format": "emlak_pro:{namespace}:{key}:{params}",
-            "ttl_presets": {
-                "very_short": 60,
-                "short": 300,
-                "medium": 3600,
-                "long": 86400,
-                "very_long": 604800
-            }
-        },
-        
-        "examples": {
-            "correct": {
-                "code": "CacheHelper::remember('currency', 'tcmb_rates_today', 'medium', function() { return $data; })",
-                "explanation": "Namespace, key, TTL preset ve callback kullanımı"
-            },
-            "incorrect": {
-                "code": "Cache::remember('tcmb.rates.today', 3600, function() { return $data; })",
-                "reason": "Standart olmayan key formatı ve TTL değeri"
-            }
-        },
-        
-        "migration_examples": [
-            {
-                "before": "Cache::remember('user_stats', 1800, fn() => User::count())",
-                "after": "CacheHelper::remember('user', 'stats', 'short', fn() => User::count())"
-            },
-            {
-                "before": "Cache::forget('tcmb.rates.today')",
-                "after": "CacheHelper::forget('currency', 'tcmb_rates_today')"
-            }
-        ]
-    },
-    
-    "error_handling_standardization": {
-        "service": "App\\Services\\Response\\ResponseService",
-        "handler": "App\\Services\\Response\\ErrorHandlerService",
-        
-        "forbidden": [
-            "response()->json(['success' => false, 'message' => '...'])",
-            "redirect()->back()->with('error', '...')",
-            "abort(500, 'Error message')"
-        ],
-        
-        "required": {
-            "pattern": "ResponseService::success|ResponseService::error|ResponseService::serverError|ResponseService::backError",
-            "automatic_logging": true,
-            "structured_responses": true
-        },
-        
-        "response_formats": {
-            "api_success": {
-                "success": true,
-                "message": "string",
-                "data": "mixed",
-                "timestamp": "ISO 8601"
-            },
-            "api_error": {
-                "success": false,
-                "message": "string",
-                "errors": "array",
-                "code": "string",
-                "timestamp": "ISO 8601"
-            }
-        },
-        
-        "examples": {
-            "correct": {
-                "api": "ResponseService::serverError('Hata mesajı', $exception)",
-                "web": "ResponseService::backError('Hata mesajı: ' . $e->getMessage())"
-            },
-            "incorrect": {
-                "code": "return response()->json(['error' => 'Hata'], 500)",
-                "reason": "Standart response formatı kullanılmıyor ve otomatik logging yok"
-            }
-        },
-        
-        "migration_examples": [
-            {
-                "before": "return response()->json(['success' => false, 'message' => 'Error'], 500)",
-                "after": "return ResponseService::error('Error', 500)"
-            },
-            {
-                "before": "return redirect()->back()->with('error', 'Error message')",
-                "after": "return ResponseService::backError('Error message')"
-            }
-        ]
-    },
-    
-    "logging_standardization": {
-        "service": "App\\Services\\Logging\\LogService",
-        "helper": "App\\Services\\Logging\\LogHelper",
-        
-        "forbidden": [
-            "Log::info('Message')",
-            "Log::error('Error: ' . $e->getMessage())",
-            "Log::warning('Warning', ['data' => $data])",
-            "logger('Message')"
-        ],
-        
-        "required": {
-            "pattern": "LogService::info|LogService::error|LogService::warning|LogService::debug|LogService::api|LogService::database|LogService::auth|LogService::ai",
-            "automatic_context": true,
-            "structured_logging": true
-        },
-        
-        "log_levels": {
-            "debug": "Development only",
-            "info": "Normal operations",
-            "warning": "Potential issues",
-            "error": "Errors",
-            "critical": "Critical errors"
-        },
-        
-        "log_channels": {
-            "stack": "Default (all logs)",
-            "api": "API request/response logs",
-            "database": "Database operations",
-            "auth": "Authentication events",
-            "payment": "Payment transactions",
-            "ai": "AI operations"
-        },
-        
-        "automatic_context": [
-            "timestamp",
-            "url",
-            "method",
-            "user_id",
-            "ip"
-        ],
-        
-        "specialized_methods": {
-            "api": "LogService::api('/endpoint', $requestData, $responseData, $duration)",
-            "database": "LogService::database('operation', 'table', $data, $affectedRows)",
-            "auth": "LogService::auth('event', $userId, $context)",
-            "ai": "LogService::ai('operation', 'provider', $context, $duration)",
-            "action": "LogService::action('action', 'resource', $resourceId, $context)"
-        },
-        
-        "examples": {
-            "correct": {
-                "basic": "LogService::error('Hata oluştu', ['context' => '...'], $exception)",
-                "api": "LogService::api('/api/ilanlar', $requestData, $responseData, $duration)",
-                "database": "LogService::database('create', 'ilanlar', $data, 1)",
-                "action": "LogService::action('create', 'ilan', $ilanId, ['fiyat' => 1000000])"
-            },
-            "incorrect": {
-                "code": "Log::error('Hata: ' . $e->getMessage())",
-                "reason": "Context bilgisi yok ve structured logging kullanılmıyor"
-            }
-        },
-        
-        "migration_examples": [
-            {
-                "before": "Log::error('Error: ' . $e->getMessage())",
-                "after": "LogService::error('Error', [], $e)"
-            },
-            {
-                "before": "Log::info('User logged in', ['user_id' => $userId])",
-                "after": "LogService::auth('login', $userId, ['ip' => $ip])"
-            }
-        ]
-    },
-    
-    "migration_pattern": {
-        "step_1": "Import ekle: use App\\Services\\Cache\\CacheHelper; use App\\Services\\Response\\ResponseService; use App\\Services\\Logging\\LogService;",
-        "step_2": "Cache migration: Cache::remember → CacheHelper::remember",
-        "step_3": "Error handling migration: response()->json() → ResponseService::success/error",
-        "step_4": "Logging migration: Log::* → LogService::*"
-    },
-    
-    "migration_status": {
-        "total_files": 18,
-        "migrated_files": 18,
-        "total_usage": 150,
-        "migrated_usage": 150,
-        "migrated_services": [
-            "PropertyValuationService",
-            "TCMBCurrencyService",
-            "AIService",
-            "IlanController",
-            "DashboardController",
-            "PriceController",
-            "KisiController",
-            "IlanKategoriController",
-            "ListingSearchController"
-        ],
-        "last_migration": "2025-11-05T12:00:00Z"
-    },
-    
-    "best_practices": {
-        "cache": [
-            "Namespace kullanımı zorunlu",
-            "TTL preset kullan (sabit değer değil)",
-            "Parametreli key'ler için params array kullan",
-            "Cache invalidation stratejisi belirle"
-        ],
-        "error_handling": [
-            "Automatic logging kullan",
-            "Structured error responses",
-            "Exception type handling",
-            "User-friendly error messages"
-        ],
-        "logging": [
-            "Context bilgisi ekle",
-            "Specialized methods kullan (api, database, auth, ai)",
-            "Sensitive data loglamaktan kaçın",
-            "Log levels doğru kullan"
-        ]
-    },
-    
-    "reference_files": {
-        "documentation": ".context7/STANDARDIZATION_STANDARDS.md",
-        "authority": ".context7/authority.json",
-        "services": [
-            "app/Services/Cache/CacheService.php",
-            "app/Services/Cache/CacheHelper.php",
-            "app/Services/Response/ResponseService.php",
-            "app/Services/Response/ErrorHandlerService.php",
-            "app/Services/Logging/LogService.php",
-            "app/Services/Logging/LogHelper.php"
-        ]
-    },
-    
-    "compliance": {
-        "status": "ACTIVE",
-        "enforcement": "STRICT",
-        "last_updated": "2025-11-05T12:00:00Z",
-        "version": "1.0.0"
-    }
+    "last_updated": "2025-11-05T12:00:00Z",
+    "version": "1.0.0"
+  }
 }
-

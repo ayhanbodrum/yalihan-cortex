@@ -123,7 +123,8 @@
         </div>
 
         <!-- 🔍 Filtreler -->
-        <div class="bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow duration-200 p-6 mb-8">
+        <div
+            class="bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow duration-200 p-6 mb-8">
             <h2 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
                 <svg class="w-5 h-5 mr-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -134,23 +135,27 @@
 
             <form method="GET" action="{{ route('admin.takim-yonetimi.gorevler.index') }}"
                 class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
-                <div class="form-field">
-                    <input type="text" class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-all duration-200" name="search" placeholder="Görev ara..."
-                        value="{{ request('search') }}">
+                <div>
+                    <input type="text"
+                        class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-all duration-200"
+                        name="search" placeholder="Görev ara..." value="{{ request('search') }}">
                 </div>
-                <div class="form-field">
-                    <select style="color-scheme: light dark;" class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 transition-all duration-200" name="status">
+                <div>
+                    <select style="color-scheme: light dark;"
+                        class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 transition-all duration-200"
+                        name="status">
                         <option value="">Tüm Durumlar</option>
                         @foreach (['bekliyor', 'devam_ediyor', 'tamamlandi', 'iptal', 'beklemede'] as $statusOption)
-                            <option value="{{ $statusOption }}"
-                                {{ request('status') == $statusOption ? 'selected' : '' }}>
+                            <option value="{{ $statusOption }}" {{ request('status') == $statusOption ? 'selected' : '' }}>
                                 {{ ucfirst(str_replace('_', ' ', $statusOption)) }}
                             </option>
                         @endforeach
                     </select>
                 </div>
-                <div class="form-field">
-                    <select style="color-scheme: light dark;" class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 transition-all duration-200" name="oncelik">
+                <div>
+                    <select style="color-scheme: light dark;"
+                        class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 transition-all duration-200"
+                        name="oncelik">
                         <option value="">Tüm Öncelikler</option>
                         @foreach (['acil', 'yuksek', 'normal', 'dusuk'] as $oncelik)
                             <option value="{{ $oncelik }}" {{ request('oncelik') == $oncelik ? 'selected' : '' }}>
@@ -159,8 +164,10 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="form-field">
-                    <select style="color-scheme: light dark;" class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 transition-all duration-200" name="tip">
+                <div>
+                    <select style="color-scheme: light dark;"
+                        class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 transition-all duration-200"
+                        name="tip">
                         <option value="">Tüm Tipler</option>
                         @foreach (['musteri_takibi', 'ilan_hazirlama', 'musteri_ziyareti', 'dokuman_hazirlama', 'diger'] as $tip)
                             <option value="{{ $tip }}" {{ request('tip') == $tip ? 'selected' : '' }}>
@@ -169,10 +176,12 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="form-field">
-                    <select style="color-scheme: light dark;" class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 transition-all duration-200" name="danisman_id">
+                <div>
+                    <select style="color-scheme: light dark;"
+                        class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 transition-all duration-200"
+                        name="danisman_id">
                         <option value="">Tüm Danışmanlar</option>
-                        @foreach ($danismanlar as $danisman)
+                        @foreach ($danismanlar ?? [] as $danisman)
                             <option value="{{ $danisman->id }}"
                                 {{ request('danisman_id') == $danisman->id ? 'selected' : '' }}>
                                 {{ $danisman->name ?? ($danisman->ad ?? 'Danışman') }}
@@ -180,8 +189,9 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="form-field">
-                    <button type="submit" class="inline-flex items-center px-6 py-3 bg-orange-600 text-white font-semibold rounded-lg shadow-md hover:bg-orange-700 hover:scale-105 hover:shadow-lg active:scale-95 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:outline-none transition-all duration-200 w-full touch-target-optimized touch-target-optimized">
+                <div>
+                    <button type="submit"
+                        class="inline-flex items-center px-6 py-3 bg-orange-600 text-white font-semibold rounded-lg shadow-md hover:bg-orange-700 hover:scale-105 hover:shadow-lg active:scale-95 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:outline-none transition-all duration-200 w-full touch-target-optimized touch-target-optimized">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -193,12 +203,15 @@
         </div>
 
         <!-- Görev Listesi -->
-        <div class="bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow duration-200">
+        <div
+            class="bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow duration-200">
             <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-800">
                 <div class="flex justify-between items-center">
                     <h2 class="text-xl font-bold text-gray-800">Görevler ({{ $gorevler->total() }})</h2>
                     <div class="flex items-center space-x-3">
-                        <button type="button" class="inline-flex items-center px-6 py-3 bg-gray-600 text-white font-semibold rounded-lg shadow-md hover:bg-gray-700 hover:scale-105 hover:shadow-lg active:scale-95 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all duration-200 touch-target-optimized touch-target-optimized" onclick="topluGorevAta()">
+                        <button type="button"
+                            class="inline-flex items-center px-6 py-3 bg-gray-600 text-white font-semibold rounded-lg shadow-md hover:bg-gray-700 hover:scale-105 hover:shadow-lg active:scale-95 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all duration-200 touch-target-optimized touch-target-optimized"
+                            onclick="topluGorevAta()">
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -212,7 +225,20 @@
             <div class="overflow-x-auto" x-data="{ contentLoaded: true }" x-init="setTimeout(() => contentLoaded = true, 100)">
                 <!-- Skeleton Loading State -->
                 <div x-show="!contentLoaded" x-transition>
-                    <x-admin.animate-pulse bg-gray-200 dark:bg-gray-700 rounded type="table" rows="5" />
+                    {{-- ✅ Context7: Tailwind CSS animate-pulse kullanımı (component yerine) --}}
+                    <div class="bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse">
+                        <div class="space-y-3 p-4">
+                            @for ($i = 0; $i < 5; $i++)
+                                <div class="flex items-center gap-4">
+                                    <div class="w-12 h-12 bg-gray-300 dark:bg-gray-600 rounded-full"></div>
+                                    <div class="flex-1 space-y-2">
+                                        <div class="h-4 bg-gray-300 dark:bg-gray-600 rounded w-3/4"></div>
+                                        <div class="h-3 bg-gray-300 dark:bg-gray-600 rounded w-1/2"></div>
+                                    </div>
+                                </div>
+                            @endfor
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Actual Content -->
@@ -220,25 +246,34 @@
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gray-50 dark:bg-gray-800/50">
                             <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                                    <input type="checkbox" class="w-4 h-4 text-orange-600 bg-gray-50 dark:bg-gray-800 border-gray-300 dark:border-gray-600 rounded focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-colors duration-200" id="select-all">
+                                <th
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                    <input type="checkbox"
+                                        class="w-4 h-4 text-orange-600 bg-gray-50 dark:bg-gray-800 border-gray-300 dark:border-gray-600 rounded focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-colors duration-200"
+                                        id="select-all">
                                 </th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                <th
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                                     Görev
                                 </th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                <th
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                                     Danışman
                                 </th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                <th
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                                     Durum
                                 </th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                <th
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                                     Öncelik
                                 </th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                <th
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                                     Tarih
                                 </th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                <th
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                                     İşlemler
                                 </th>
                             </tr>
@@ -247,7 +282,8 @@
                             @forelse ($gorevler as $gorev)
                                 <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors duration-150">
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        <input type="checkbox" class="w-4 h-4 text-orange-600 bg-gray-50 dark:bg-gray-800 border-gray-300 dark:border-gray-600 rounded focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-colors duration-200 gorev-checkbox"
+                                        <input type="checkbox"
+                                            class="w-4 h-4 text-orange-600 bg-gray-50 dark:bg-gray-800 border-gray-300 dark:border-gray-600 rounded focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-colors duration-200 gorev-checkbox"
                                             value="{{ $gorev->id }}">
                                     </td>
                                     <td class="px-6 py-4">
@@ -378,11 +414,14 @@
                 const selectedGorevler = Array.from(document.querySelectorAll('.gorev-checkbox:checked')).map(cb => cb.value);
 
                 if (selectedGorevler.length === 0) {
-                    alert('Lütfen en az bir görev seçin');
+                    if (window.showToast) {
+                        window.showToast('Lütfen en az bir görev seçin', 'warning');
+                    } else {
+                        alert('Lütfen en az bir görev seçin');
+                    }
                     return;
                 }
 
-                // Danışman seçim modalı açılabilir
                 const danismanId = prompt('Danışman ID girin:');
                 if (!danismanId) return;
 
@@ -400,15 +439,26 @@
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
-                            alert('Görevler başarıyla atandı!');
-                            location.reload();
+                            if (window.showToast) {
+                                window.showToast(data.message || 'Görevler başarıyla atandı!', 'success');
+                            } else {
+                                alert('Görevler başarıyla atandı!');
+                            }
+                            setTimeout(() => location.reload(), 1000);
                         } else {
-                            alert('Hata: ' + data.message);
+                            if (window.showToast) {
+                                window.showToast(data.message || 'Hata oluştu', 'error');
+                            } else {
+                                alert('Hata: ' + data.message);
+                            }
                         }
                     })
                     .catch(error => {
-                        console.error('Error:', error);
-                        alert('Bir hata oluştu');
+                        if (window.showToast) {
+                            window.showToast('Bir hata oluştu', 'error');
+                        } else {
+                            alert('Bir hata oluştu');
+                        }
                     });
             }
         </script>

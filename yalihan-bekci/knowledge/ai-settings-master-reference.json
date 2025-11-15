@@ -1,975 +1,921 @@
 {
-    "context7_version": "3.4.0",
-    "last_updated": "2025-10-12T22:30:00Z",
-    "master_reference": true,
-    "status": "production_ready",
-    "compliance": {
-        "context7": "100%",
-        "verified": true,
-        "audit_date": "2025-10-12"
+  "context7_version": "3.4.0",
+  "last_updated": "2025-10-12T22:30:00Z",
+  "master_reference": true,
+  "status": "production_ready",
+  "compliance": {
+    "context7": "100%",
+    "verified": true,
+    "audit_date": "2025-10-12"
+  },
+  "ai_settings_system": {
+    "master_page": {
+      "url": "/admin/ai-settings",
+      "view": "resources/views/admin/ai-settings/index.blade.php",
+      "controller": "app/Http/Controllers/Admin/AISettingsController.php",
+      "route_name": "admin.ai-settings.index",
+      "status": "active",
+      "features": {
+        "provider_count": 5,
+        "test_functionality": true,
+        "real_time_status": true,
+        "connection_logging": true,
+        "auto_refresh": true
+      },
+      "metrics": {
+        "file_size": "1794 lines",
+        "success_score": "95/100",
+        "context7_compliance": "100%"
+      }
     },
-    "ai_settings_system": {
-        "master_page": {
-            "url": "/admin/ai-settings",
-            "view": "resources/views/admin/ai-settings/index.blade.php",
-            "controller": "app/Http/Controllers/Admin/AISettingsController.php",
-            "route_name": "admin.ai-settings.index",
-            "status": "active",
-            "features": {
-                "provider_count": 5,
-                "test_functionality": true,
-                "real_time_status": true,
-                "connection_logging": true,
-                "auto_refresh": true
-            },
-            "metrics": {
-                "file_size": "1794 lines",
-                "success_score": "95/100",
-                "context7_compliance": "100%"
-            }
+    "removed_pages": {
+      "duplicate_pages": [
+        {
+          "file": "resources/views/admin/ai-settings.blade.php",
+          "reason": "Duplicate of ai-settings/index.blade.php",
+          "removed_date": "2025-10-12",
+          "lines": 1079
         },
-        "removed_pages": {
-            "duplicate_pages": [
-                {
-                    "file": "resources/views/admin/ai-settings.blade.php",
-                    "reason": "Duplicate of ai-settings/index.blade.php",
-                    "removed_date": "2025-10-12",
-                    "lines": 1079
-                },
-                {
-                    "file": "resources/views/admin/ai/index.blade.php",
-                    "reason": "Empty/unused page",
-                    "removed_date": "2025-10-12",
-                    "lines": 244
-                },
-                {
-                    "file": "resources/views/admin/ai-dashboard/index.blade.php",
-                    "reason": "Consolidated into main ai-settings",
-                    "removed_date": "2025-10-12",
-                    "lines": 859
-                }
-            ],
-            "total_cleaned": {
-                "files": 3,
-                "lines": 2182,
-                "routes": 2
-            }
+        {
+          "file": "resources/views/admin/ai/index.blade.php",
+          "reason": "Empty/unused page",
+          "removed_date": "2025-10-12",
+          "lines": 244
         },
-        "active_pages": {
-            "main_ai_settings": {
-                "path": "resources/views/admin/ai-settings/index.blade.php",
-                "purpose": "Central AI provider management and configuration",
-                "status": "✅ Active"
-            },
-            "ilan_ai_settings": {
-                "path": "resources/views/admin/ilanlar/ai-settings.blade.php",
-                "purpose": "Listing-specific AI features",
-                "status": "✅ Active"
-            },
-            "ai_components": [
-                "resources/views/admin/ilanlar/components/ai-content.blade.php",
-                "resources/views/admin/ilanlar/partials/stable/_ai-content-center.blade.php",
-                "resources/views/admin/ilanlar/partials/stable/_ai-gecmis-analizi.blade.php"
-            ]
+        {
+          "file": "resources/views/admin/ai-dashboard/index.blade.php",
+          "reason": "Consolidated into main ai-settings",
+          "removed_date": "2025-10-12",
+          "lines": 859
         }
+      ],
+      "total_cleaned": {
+        "files": 3,
+        "lines": 2182,
+        "routes": 2
+      }
     },
-    "providers": {
-        "anythingllm": {
-            "priority": 1,
-            "name": "AnythingLLM",
-            "type": "local_ai_server",
-            "status": "active",
-            "config_keys": {
-                "url": "ai_anythingllm_url",
-                "api_key": "ai_anythingllm_api_key",
-                "timeout": "ai_anythingllm_timeout"
-            },
-            "default_values": {
-                "url": "http://localhost:3001",
-                "timeout": 30
-            },
-            "test_endpoint": "/api/v1/workspace",
-            "http_method": "GET",
-            "authentication": "Bearer token",
-            "features": [
-                "embedding",
-                "chat",
-                "document_processing",
-                "local_inference",
-                "rag"
-            ],
-            "training_docs_count": 11,
-            "context7_compliant": true,
-            "ui": {
-                "card_color": "blue-500",
-                "icon": "fas fa-brain",
-                "test_button": true,
-                "status_badge": true
-            }
-        },
-        "openai": {
-            "priority": 2,
-            "name": "OpenAI GPT",
-            "type": "cloud_api",
-            "status": "active",
-            "config_keys": {
-                "api_key": "ai_openai_api_key"
-            },
-            "endpoint": "https://api.openai.com/v1",
-            "test_endpoint": "/models",
-            "http_method": "GET",
-            "authentication": "Bearer token",
-            "models": ["gpt-4", "gpt-4-turbo", "gpt-3.5-turbo"],
-            "features": ["chat", "completion", "embedding", "function_calling"],
-            "use_cases": [
-                "complex_content_generation",
-                "multilingual_translation",
-                "advanced_reasoning"
-            ],
-            "context7_compliant": true,
-            "ui": {
-                "card_color": "green-500",
-                "icon": "fas fa-comments",
-                "test_button": true,
-                "status_badge": true
-            }
-        },
-        "gemini": {
-            "priority": 3,
-            "name": "Google Gemini",
-            "type": "cloud_api",
-            "status": "active",
-            "config_keys": {
-                "api_key": "ai_gemini_api_key"
-            },
-            "endpoint": "https://generativelanguage.googleapis.com/v1beta",
-            "test_endpoint": "/models",
-            "http_method": "GET",
-            "authentication": "API key parameter",
-            "models": ["gemini-1.5-flash", "gemini-1.5-pro", "gemini-pro"],
-            "features": [
-                "vision",
-                "ocr",
-                "image_analysis",
-                "chat",
-                "multimodal"
-            ],
-            "use_cases": [
-                "image_analysis",
-                "ocr_document_reading",
-                "object_detection",
-                "visual_qa",
-                "tapu_reading"
-            ],
-            "context7_compliant": true,
-            "ui": {
-                "card_color": "purple-500",
-                "icon": "fas fa-eye",
-                "test_button": true,
-                "status_badge": true
-            }
-        },
-        "claude": {
-            "priority": 4,
-            "name": "Anthropic Claude",
-            "type": "cloud_api",
-            "status": "active",
-            "config_keys": {
-                "api_key": "ai_claude_api_key"
-            },
-            "endpoint": "https://api.anthropic.com/v1",
-            "test_endpoint": null,
-            "note": "No public test endpoint, API key validation only",
-            "http_method": "N/A",
-            "authentication": "API key header",
-            "models": ["claude-3-haiku", "claude-3-sonnet", "claude-3-opus"],
-            "features": [
-                "chat",
-                "code_review",
-                "quality_control",
-                "long_context",
-                "safety_focused"
-            ],
-            "use_cases": [
-                "code_review",
-                "quality_assurance",
-                "technical_writing",
-                "complex_analysis",
-                "context7_compliance_check"
-            ],
-            "context7_compliant": true,
-            "ui": {
-                "card_color": "indigo-500",
-                "icon": "fas fa-shield-alt",
-                "test_button": true,
-                "status_badge": true
-            }
-        },
-        "ollama": {
-            "priority": 5,
-            "name": "Ollama Local AI",
-            "type": "local_ai_server",
-            "status": "active",
-            "recommended": true,
-            "config_keys": {
-                "url": "ai_ollama_url",
-                "model": "ai_ollama_model"
-            },
-            "default_values": {
-                "url": "http://51.75.64.121:11434",
-                "model": "gemma2:2b"
-            },
-            "endpoint": "http://51.75.64.121:11434",
-            "test_endpoint": "/api/tags",
-            "http_method": "GET",
-            "authentication": "none",
-            "models": ["gemma2:2b"],
-            "features": [
-                "local_inference",
-                "turkish_support",
-                "free_usage",
-                "privacy_focused",
-                "offline_capable"
-            ],
-            "use_cases": [
-                "listing_title_generation",
-                "description_writing",
-                "location_analysis",
-                "price_suggestions",
-                "seo_optimization"
-            ],
-            "cost": "$0 (free)",
-            "performance": {
-                "response_time": "2-3s",
-                "uptime": "99.8%"
-            },
-            "context7_compliant": true,
-            "ui": {
-                "card_color": "orange-500",
-                "icon": "fas fa-home",
-                "test_button": false,
-                "status_badge": true,
-                "special_features": ["server_status_check", "model_selection"]
-            }
-        }
+    "active_pages": {
+      "main_ai_settings": {
+        "path": "resources/views/admin/ai-settings/index.blade.php",
+        "purpose": "Central AI provider management and configuration",
+        "status": "✅ Active"
+      },
+      "ilan_ai_settings": {
+        "path": "resources/views/admin/ilanlar/ai-settings.blade.php",
+        "purpose": "Listing-specific AI features",
+        "status": "✅ Active"
+      },
+      "ai_components": [
+        "resources/views/admin/ilanlar/components/ai-content.blade.php",
+        "resources/views/admin/ilanlar/partials/stable/_ai-content-center.blade.php",
+        "resources/views/admin/ilanlar/partials/stable/_ai-gecmis-analizi.blade.php"
+      ]
+    }
+  },
+  "providers": {
+    "anythingllm": {
+      "priority": 1,
+      "name": "AnythingLLM",
+      "type": "local_ai_server",
+      "status": "active",
+      "config_keys": {
+        "url": "ai_anythingllm_url",
+        "api_key": "ai_anythingllm_api_key",
+        "timeout": "ai_anythingllm_timeout"
+      },
+      "default_values": {
+        "url": "http://localhost:3001",
+        "timeout": 30
+      },
+      "test_endpoint": "/api/v1/workspace",
+      "http_method": "GET",
+      "authentication": "Bearer token",
+      "features": ["embedding", "chat", "document_processing", "local_inference", "rag"],
+      "training_docs_count": 11,
+      "context7_compliant": true,
+      "ui": {
+        "card_color": "blue-500",
+        "icon": "fas fa-brain",
+        "test_button": true,
+        "status_badge": true
+      }
     },
-    "routes": {
-        "admin_routes": {
-            "ai_settings_group": {
-                "prefix": "/ai-settings",
-                "name": "ai-settings.",
-                "endpoints": [
-                    {
-                        "method": "GET",
-                        "path": "/",
-                        "action": "AISettingsController@index",
-                        "name": "index",
-                        "purpose": "Display AI settings page with all providers"
-                    },
-                    {
-                        "method": "PUT",
-                        "path": "/",
-                        "action": "AISettingsController@update",
-                        "name": "update",
-                        "purpose": "Update AI provider settings"
-                    },
-                    {
-                        "method": "POST",
-                        "path": "/",
-                        "action": "AISettingsController@update",
-                        "name": "update.post",
-                        "purpose": "POST alternative for form compatibility"
-                    },
-                    {
-                        "method": "POST",
-                        "path": "/test-provider",
-                        "action": "AISettingsController@testProvider",
-                        "name": "test-provider",
-                        "purpose": "Test individual provider connection"
-                    },
-                    {
-                        "method": "GET",
-                        "path": "/provider-status",
-                        "action": "AISettingsController@getProviderStatus",
-                        "name": "provider-status",
-                        "purpose": "Get real-time provider statuses"
-                    },
-                    {
-                        "method": "POST",
-                        "path": "/proxy-ollama",
-                        "action": "AISettingsController@proxyOllama",
-                        "name": "proxy-ollama",
-                        "purpose": "Proxy for Ollama requests"
-                    }
-                ],
-                "context7_compliant": true
-            },
-            "removed_routes": [
-                {
-                    "route": "admin.ai.index",
-                    "path": "/admin/ai",
-                    "removed_date": "2025-10-12",
-                    "reason": "Consolidated into ai-settings"
-                },
-                {
-                    "route": "admin.ai-dashboard.index",
-                    "path": "/admin/ai-dashboard",
-                    "removed_date": "2025-10-12",
-                    "reason": "Consolidated into ai-settings"
-                }
-            ]
-        },
-        "ai_content_generation": {
-            "endpoint": "/stable-create/ai-suggest",
+    "openai": {
+      "priority": 2,
+      "name": "OpenAI GPT",
+      "type": "cloud_api",
+      "status": "active",
+      "config_keys": {
+        "api_key": "ai_openai_api_key"
+      },
+      "endpoint": "https://api.openai.com/v1",
+      "test_endpoint": "/models",
+      "http_method": "GET",
+      "authentication": "Bearer token",
+      "models": ["gpt-4", "gpt-4-turbo", "gpt-3.5-turbo"],
+      "features": ["chat", "completion", "embedding", "function_calling"],
+      "use_cases": ["complex_content_generation", "multilingual_translation", "advanced_reasoning"],
+      "context7_compliant": true,
+      "ui": {
+        "card_color": "green-500",
+        "icon": "fas fa-comments",
+        "test_button": true,
+        "status_badge": true
+      }
+    },
+    "gemini": {
+      "priority": 3,
+      "name": "Google Gemini",
+      "type": "cloud_api",
+      "status": "active",
+      "config_keys": {
+        "api_key": "ai_gemini_api_key"
+      },
+      "endpoint": "https://generativelanguage.googleapis.com/v1beta",
+      "test_endpoint": "/models",
+      "http_method": "GET",
+      "authentication": "API key parameter",
+      "models": ["gemini-1.5-flash", "gemini-1.5-pro", "gemini-pro"],
+      "features": ["vision", "ocr", "image_analysis", "chat", "multimodal"],
+      "use_cases": [
+        "image_analysis",
+        "ocr_document_reading",
+        "object_detection",
+        "visual_qa",
+        "tapu_reading"
+      ],
+      "context7_compliant": true,
+      "ui": {
+        "card_color": "purple-500",
+        "icon": "fas fa-eye",
+        "test_button": true,
+        "status_badge": true
+      }
+    },
+    "claude": {
+      "priority": 4,
+      "name": "Anthropic Claude",
+      "type": "cloud_api",
+      "status": "active",
+      "config_keys": {
+        "api_key": "ai_claude_api_key"
+      },
+      "endpoint": "https://api.anthropic.com/v1",
+      "test_endpoint": null,
+      "note": "No public test endpoint, API key validation only",
+      "http_method": "N/A",
+      "authentication": "API key header",
+      "models": ["claude-3-haiku", "claude-3-sonnet", "claude-3-opus"],
+      "features": ["chat", "code_review", "quality_control", "long_context", "safety_focused"],
+      "use_cases": [
+        "code_review",
+        "quality_assurance",
+        "technical_writing",
+        "complex_analysis",
+        "context7_compliance_check"
+      ],
+      "context7_compliant": true,
+      "ui": {
+        "card_color": "indigo-500",
+        "icon": "fas fa-shield-alt",
+        "test_button": true,
+        "status_badge": true
+      }
+    },
+    "ollama": {
+      "priority": 5,
+      "name": "Ollama Local AI",
+      "type": "local_ai_server",
+      "status": "active",
+      "recommended": true,
+      "config_keys": {
+        "url": "ai_ollama_url",
+        "model": "ai_ollama_model"
+      },
+      "default_values": {
+        "url": "http://51.75.64.121:11434",
+        "model": "gemma2:2b"
+      },
+      "endpoint": "http://51.75.64.121:11434",
+      "test_endpoint": "/api/tags",
+      "http_method": "GET",
+      "authentication": "none",
+      "models": ["gemma2:2b"],
+      "features": [
+        "local_inference",
+        "turkish_support",
+        "free_usage",
+        "privacy_focused",
+        "offline_capable"
+      ],
+      "use_cases": [
+        "listing_title_generation",
+        "description_writing",
+        "location_analysis",
+        "price_suggestions",
+        "seo_optimization"
+      ],
+      "cost": "$0 (free)",
+      "performance": {
+        "response_time": "2-3s",
+        "uptime": "99.8%"
+      },
+      "context7_compliant": true,
+      "ui": {
+        "card_color": "orange-500",
+        "icon": "fas fa-home",
+        "test_button": false,
+        "status_badge": true,
+        "special_features": ["server_status_check", "model_selection"]
+      }
+    }
+  },
+  "routes": {
+    "admin_routes": {
+      "ai_settings_group": {
+        "prefix": "/ai-settings",
+        "name": "ai-settings.",
+        "endpoints": [
+          {
+            "method": "GET",
+            "path": "/",
+            "action": "AISettingsController@index",
+            "name": "index",
+            "purpose": "Display AI settings page with all providers"
+          },
+          {
+            "method": "PUT",
+            "path": "/",
+            "action": "AISettingsController@update",
+            "name": "update",
+            "purpose": "Update AI provider settings"
+          },
+          {
             "method": "POST",
-            "actions": ["title", "description", "location", "price", "all"],
-            "context7_compliant": true
+            "path": "/",
+            "action": "AISettingsController@update",
+            "name": "update.post",
+            "purpose": "POST alternative for form compatibility"
+          },
+          {
+            "method": "POST",
+            "path": "/test-provider",
+            "action": "AISettingsController@testProvider",
+            "name": "test-provider",
+            "purpose": "Test individual provider connection"
+          },
+          {
+            "method": "GET",
+            "path": "/provider-status",
+            "action": "AISettingsController@getProviderStatus",
+            "name": "provider-status",
+            "purpose": "Get real-time provider statuses"
+          },
+          {
+            "method": "POST",
+            "path": "/proxy-ollama",
+            "action": "AISettingsController@proxyOllama",
+            "name": "proxy-ollama",
+            "purpose": "Proxy for Ollama requests"
+          }
+        ],
+        "context7_compliant": true
+      },
+      "removed_routes": [
+        {
+          "route": "admin.ai.index",
+          "path": "/admin/ai",
+          "removed_date": "2025-10-12",
+          "reason": "Consolidated into ai-settings"
+        },
+        {
+          "route": "admin.ai-dashboard.index",
+          "path": "/admin/ai-dashboard",
+          "removed_date": "2025-10-12",
+          "reason": "Consolidated into ai-settings"
         }
+      ]
     },
-    "database": {
-        "settings_table": {
-            "table_name": "settings",
-            "ai_keys": [
-                {
-                    "key": "ai_anythingllm_url",
-                    "type": "url",
-                    "required": false,
-                    "validation": "nullable|url",
-                    "default": "http://localhost:3001"
-                },
-                {
-                    "key": "ai_anythingllm_api_key",
-                    "type": "string",
-                    "required": false,
-                    "validation": "nullable|string",
-                    "encrypted": true
-                },
-                {
-                    "key": "ai_anythingllm_timeout",
-                    "type": "integer",
-                    "required": false,
-                    "validation": "nullable|integer|min:5|max:120",
-                    "default": 30
-                },
-                {
-                    "key": "ai_openai_api_key",
-                    "type": "string",
-                    "required": false,
-                    "validation": "nullable|string",
-                    "encrypted": true,
-                    "format": "sk-*"
-                },
-                {
-                    "key": "ai_gemini_api_key",
-                    "type": "string",
-                    "required": false,
-                    "validation": "nullable|string",
-                    "encrypted": true
-                },
-                {
-                    "key": "ai_claude_api_key",
-                    "type": "string",
-                    "required": false,
-                    "validation": "nullable|string",
-                    "encrypted": true
-                },
-                {
-                    "key": "ai_ollama_url",
-                    "type": "url",
-                    "required": false,
-                    "validation": "nullable|url",
-                    "default": "http://51.75.64.121:11434"
-                },
-                {
-                    "key": "ai_ollama_model",
-                    "type": "string",
-                    "required": false,
-                    "validation": "nullable|string",
-                    "default": "gemma2:2b"
-                },
-                {
-                    "key": "ai_default_tone",
-                    "type": "enum",
-                    "required": false,
-                    "validation": "nullable|string|in:seo,kurumsal,hizli_satis,luks",
-                    "default": "seo",
-                    "options": ["seo", "kurumsal", "hizli_satis", "luks"]
-                },
-                {
-                    "key": "ai_default_variant_count",
-                    "type": "integer",
-                    "required": false,
-                    "validation": "nullable|integer|min:1|max:5",
-                    "default": 3
-                },
-                {
-                    "key": "ai_default_ab_test",
-                    "type": "boolean",
-                    "required": false,
-                    "validation": "nullable|boolean",
-                    "default": false
-                },
-                {
-                    "key": "ai_default_languages",
-                    "type": "array",
-                    "required": false,
-                    "validation": "nullable|array",
-                    "default": [],
-                    "options": ["EN", "RU", "DE", "FR", "AR"]
-                }
-            ],
-            "context7_compliant": true
+    "ai_content_generation": {
+      "endpoint": "/stable-create/ai-suggest",
+      "method": "POST",
+      "actions": ["title", "description", "location", "price", "all"],
+      "context7_compliant": true
+    }
+  },
+  "database": {
+    "settings_table": {
+      "table_name": "settings",
+      "ai_keys": [
+        {
+          "key": "ai_anythingllm_url",
+          "type": "url",
+          "required": false,
+          "validation": "nullable|url",
+          "default": "http://localhost:3001"
         },
-        "logging_tables": {
-            "ai_chat_logs": {
-                "purpose": "AI request/response logging",
-                "fields": [
-                    "id",
-                    "user_id",
-                    "prompt",
-                    "response",
-                    "provider",
-                    "model",
-                    "tokens_used",
-                    "response_time",
-                    "created_at"
-                ],
-                "context7_fields": ["provider", "model", "response_time"]
-            },
-            "ai_knowledge_base": {
-                "purpose": "Learned AI knowledge storage",
-                "fields": [
-                    "id",
-                    "category",
-                    "content",
-                    "tags",
-                    "usage_count",
-                    "last_used_at"
-                ]
-            }
+        {
+          "key": "ai_anythingllm_api_key",
+          "type": "string",
+          "required": false,
+          "validation": "nullable|string",
+          "encrypted": true
+        },
+        {
+          "key": "ai_anythingllm_timeout",
+          "type": "integer",
+          "required": false,
+          "validation": "nullable|integer|min:5|max:120",
+          "default": 30
+        },
+        {
+          "key": "ai_openai_api_key",
+          "type": "string",
+          "required": false,
+          "validation": "nullable|string",
+          "encrypted": true,
+          "format": "sk-*"
+        },
+        {
+          "key": "ai_gemini_api_key",
+          "type": "string",
+          "required": false,
+          "validation": "nullable|string",
+          "encrypted": true
+        },
+        {
+          "key": "ai_claude_api_key",
+          "type": "string",
+          "required": false,
+          "validation": "nullable|string",
+          "encrypted": true
+        },
+        {
+          "key": "ai_ollama_url",
+          "type": "url",
+          "required": false,
+          "validation": "nullable|url",
+          "default": "http://51.75.64.121:11434"
+        },
+        {
+          "key": "ai_ollama_model",
+          "type": "string",
+          "required": false,
+          "validation": "nullable|string",
+          "default": "gemma2:2b"
+        },
+        {
+          "key": "ai_default_tone",
+          "type": "enum",
+          "required": false,
+          "validation": "nullable|string|in:seo,kurumsal,hizli_satis,luks",
+          "default": "seo",
+          "options": ["seo", "kurumsal", "hizli_satis", "luks"]
+        },
+        {
+          "key": "ai_default_variant_count",
+          "type": "integer",
+          "required": false,
+          "validation": "nullable|integer|min:1|max:5",
+          "default": 3
+        },
+        {
+          "key": "ai_default_ab_test",
+          "type": "boolean",
+          "required": false,
+          "validation": "nullable|boolean",
+          "default": false
+        },
+        {
+          "key": "ai_default_languages",
+          "type": "array",
+          "required": false,
+          "validation": "nullable|array",
+          "default": [],
+          "options": ["EN", "RU", "DE", "FR", "AR"]
         }
+      ],
+      "context7_compliant": true
     },
-    "frontend": {
-        "javascript": {
-            "ai_settings_test": {
-                "file": "public/js/ai-settings-test.js",
-                "purpose": "Provider testing and status updates",
-                "functions": [
-                    "testProvider(provider, btn)",
-                    "updateProviderStatus(provider, statusType)",
-                    "refreshProviderStatus()",
-                    "showNotification(type, message)"
-                ],
-                "features": {
-                    "ajax_requests": true,
-                    "real_time_updates": true,
-                    "visual_feedback": true,
-                    "error_handling": true
-                },
-                "context7_compliant": true
-            }
+    "logging_tables": {
+      "ai_chat_logs": {
+        "purpose": "AI request/response logging",
+        "fields": [
+          "id",
+          "user_id",
+          "prompt",
+          "response",
+          "provider",
+          "model",
+          "tokens_used",
+          "response_time",
+          "created_at"
+        ],
+        "context7_fields": ["provider", "model", "response_time"]
+      },
+      "ai_knowledge_base": {
+        "purpose": "Learned AI knowledge storage",
+        "fields": ["id", "category", "content", "tags", "usage_count", "last_used_at"]
+      }
+    }
+  },
+  "frontend": {
+    "javascript": {
+      "ai_settings_test": {
+        "file": "public/js/ai-settings-test.js",
+        "purpose": "Provider testing and status updates",
+        "functions": [
+          "testProvider(provider, btn)",
+          "updateProviderStatus(provider, statusType)",
+          "refreshProviderStatus()",
+          "showNotification(type, message)"
+        ],
+        "features": {
+          "ajax_requests": true,
+          "real_time_updates": true,
+          "visual_feedback": true,
+          "error_handling": true
         },
-        "ui_components": {
-            "provider_cards": {
-                "count": 5,
-                "features": [
-                    "Configuration inputs",
-                    "Test buttons",
-                    "Status badges",
-                    "Model selection (Ollama only)"
-                ],
-                "colors": {
-                    "anythingllm": "blue-500",
-                    "openai": "green-500",
-                    "gemini": "purple-500",
-                    "claude": "indigo-500",
-                    "ollama": "orange-500"
-                }
-            },
-            "status_badges": {
-                "states": {
-                    "success": {
-                        "color": "green",
-                        "icon": "✅",
-                        "text": "Aktif"
-                    },
-                    "error": {
-                        "color": "red",
-                        "icon": "❌",
-                        "text": "Başarısız"
-                    },
-                    "testing": {
-                        "color": "blue",
-                        "icon": "⏳",
-                        "text": "Test Ediliyor"
-                    },
-                    "unknown": {
-                        "color": "gray",
-                        "icon": "❔",
-                        "text": "Henüz Test Edilmedi"
-                    }
-                },
-                "auto_refresh_interval": "30000ms"
-            },
-            "test_buttons": {
-                "individual": {
-                    "class": "btn-test",
-                    "data_attribute": "data-provider",
-                    "icon": "fas fa-vial",
-                    "text": "Test Et"
-                },
-                "bulk": {
-                    "id": "testAllProviders",
-                    "text": "Tümünü Test Et",
-                    "icon": "fas fa-check-circle"
-                }
-            }
-        }
+        "context7_compliant": true
+      }
     },
-    "backend": {
-        "controller": {
-            "namespace": "App\\Http\\Controllers\\Admin",
-            "class": "AISettingsController",
-            "file": "app/Http/Controllers/Admin/AISettingsController.php",
-            "methods": {
-                "index": {
-                    "purpose": "Display AI settings page",
-                    "returns": "view",
-                    "context7": true
-                },
-                "update": {
-                    "purpose": "Update AI settings",
-                    "validation": true,
-                    "cache_clear": true,
-                    "context7": true
-                },
-                "testProvider": {
-                    "purpose": "Test individual provider connection",
-                    "returns": "json",
-                    "logging": true,
-                    "providers": ["anythingllm", "openai", "gemini", "claude"],
-                    "context7": true
-                },
-                "testAnythingLLM": {
-                    "private": true,
-                    "purpose": "Test AnythingLLM connection",
-                    "timeout": "configurable",
-                    "returns": "array"
-                },
-                "testOpenAI": {
-                    "private": true,
-                    "purpose": "Test OpenAI API connection",
-                    "timeout": 10,
-                    "returns": "array"
-                },
-                "testGemini": {
-                    "private": true,
-                    "purpose": "Test Gemini API connection",
-                    "timeout": 10,
-                    "returns": "array"
-                },
-                "testClaude": {
-                    "private": true,
-                    "purpose": "Test Claude API (key validation only)",
-                    "note": "No test endpoint available",
-                    "returns": "array"
-                },
-                "logConnectionTest": {
-                    "private": true,
-                    "purpose": "Log AI connection test results",
-                    "dual_logging": true,
-                    "files": [
-                        "storage/logs/laravel.log",
-                        "storage/logs/ai_connections.log"
-                    ],
-                    "format": "[timestamp] PROVIDER - STATUS ✅/❌ | Response: Xms | Details: {...}"
-                },
-                "getProviderStatus": {
-                    "purpose": "Get cached provider statuses",
-                    "returns": "json",
-                    "cache": true,
-                    "auto_refresh": true
-                }
-            },
-            "dependencies": [
-                "Illuminate\\Support\\Facades\\Http",
-                "Illuminate\\Support\\Facades\\Log",
-                "Illuminate\\Support\\Facades\\Cache",
-                "App\\Models\\Setting"
-            ],
-            "context7_compliant": true
-        },
-        "services": {
-            "ollama_service": {
-                "file": "app/Services/OllamaService.php",
-                "purpose": "Ollama AI integration",
-                "methods": [
-                    "generateTitle()",
-                    "generateDescription()",
-                    "analyzeLocation()",
-                    "suggestPrice()"
-                ]
-            }
+    "ui_components": {
+      "provider_cards": {
+        "count": 5,
+        "features": [
+          "Configuration inputs",
+          "Test buttons",
+          "Status badges",
+          "Model selection (Ollama only)"
+        ],
+        "colors": {
+          "anythingllm": "blue-500",
+          "openai": "green-500",
+          "gemini": "purple-500",
+          "claude": "indigo-500",
+          "ollama": "orange-500"
         }
+      },
+      "status_badges": {
+        "states": {
+          "success": {
+            "color": "green",
+            "icon": "✅",
+            "text": "Aktif"
+          },
+          "error": {
+            "color": "red",
+            "icon": "❌",
+            "text": "Başarısız"
+          },
+          "testing": {
+            "color": "blue",
+            "icon": "⏳",
+            "text": "Test Ediliyor"
+          },
+          "unknown": {
+            "color": "gray",
+            "icon": "❔",
+            "text": "Henüz Test Edilmedi"
+          }
+        },
+        "auto_refresh_interval": "30000ms"
+      },
+      "test_buttons": {
+        "individual": {
+          "class": "btn-test",
+          "data_attribute": "data-provider",
+          "icon": "fas fa-vial",
+          "text": "Test Et"
+        },
+        "bulk": {
+          "id": "testAllProviders",
+          "text": "Tümünü Test Et",
+          "icon": "fas fa-check-circle"
+        }
+      }
+    }
+  },
+  "backend": {
+    "controller": {
+      "namespace": "App\\Http\\Controllers\\Admin",
+      "class": "AISettingsController",
+      "file": "app/Http/Controllers/Admin/AISettingsController.php",
+      "methods": {
+        "index": {
+          "purpose": "Display AI settings page",
+          "returns": "view",
+          "context7": true
+        },
+        "update": {
+          "purpose": "Update AI settings",
+          "validation": true,
+          "cache_clear": true,
+          "context7": true
+        },
+        "testProvider": {
+          "purpose": "Test individual provider connection",
+          "returns": "json",
+          "logging": true,
+          "providers": ["anythingllm", "openai", "gemini", "claude"],
+          "context7": true
+        },
+        "testAnythingLLM": {
+          "private": true,
+          "purpose": "Test AnythingLLM connection",
+          "timeout": "configurable",
+          "returns": "array"
+        },
+        "testOpenAI": {
+          "private": true,
+          "purpose": "Test OpenAI API connection",
+          "timeout": 10,
+          "returns": "array"
+        },
+        "testGemini": {
+          "private": true,
+          "purpose": "Test Gemini API connection",
+          "timeout": 10,
+          "returns": "array"
+        },
+        "testClaude": {
+          "private": true,
+          "purpose": "Test Claude API (key validation only)",
+          "note": "No test endpoint available",
+          "returns": "array"
+        },
+        "logConnectionTest": {
+          "private": true,
+          "purpose": "Log AI connection test results",
+          "dual_logging": true,
+          "files": ["storage/logs/laravel.log", "storage/logs/ai_connections.log"],
+          "format": "[timestamp] PROVIDER - STATUS ✅/❌ | Response: Xms | Details: {...}"
+        },
+        "getProviderStatus": {
+          "purpose": "Get cached provider statuses",
+          "returns": "json",
+          "cache": true,
+          "auto_refresh": true
+        }
+      },
+      "dependencies": [
+        "Illuminate\\Support\\Facades\\Http",
+        "Illuminate\\Support\\Facades\\Log",
+        "Illuminate\\Support\\Facades\\Cache",
+        "App\\Models\\Setting"
+      ],
+      "context7_compliant": true
     },
-    "logging": {
-        "ai_connections_log": {
-            "file": "storage/logs/ai_connections.log",
-            "format": "[{timestamp}] {PROVIDER} - {STATUS} ✅/❌ | Response: {time}ms | Details: {json}",
-            "retention": "30 days",
-            "providers": [
-                "ANYTHINGLLM",
-                "OPENAI",
-                "GEMINI",
-                "CLAUDE",
-                "OLLAMA"
-            ],
-            "auto_created": true,
-            "context7_compliant": true
-        },
-        "laravel_log": {
-            "file": "storage/logs/laravel.log",
-            "channel": "single",
-            "level": "info",
-            "ai_entries": true
-        }
+    "services": {
+      "ollama_service": {
+        "file": "app/Services/OllamaService.php",
+        "purpose": "Ollama AI integration",
+        "methods": [
+          "generateTitle()",
+          "generateDescription()",
+          "analyzeLocation()",
+          "suggestPrice()"
+        ]
+      }
+    }
+  },
+  "logging": {
+    "ai_connections_log": {
+      "file": "storage/logs/ai_connections.log",
+      "format": "[{timestamp}] {PROVIDER} - {STATUS} ✅/❌ | Response: {time}ms | Details: {json}",
+      "retention": "30 days",
+      "providers": ["ANYTHINGLLM", "OPENAI", "GEMINI", "CLAUDE", "OLLAMA"],
+      "auto_created": true,
+      "context7_compliant": true
     },
-    "navigation": {
-        "sidebar": {
-            "file": "resources/views/admin/layouts/sidebar.blade.php",
-            "menu_item": {
-                "title": "AI Sistemi",
-                "icon": "fas fa-robot",
-                "submenu": [
-                    {
-                        "title": "AI Ayarları",
-                        "route": "admin.ai-settings.index",
-                        "active": true
-                    }
-                ],
-                "removed_items": [
-                    {
-                        "title": "AI Dashboard",
-                        "route": "admin.ai.index",
-                        "removed_date": "2025-10-12"
-                    }
-                ]
-            }
-        },
-        "dashboard_links": {
-            "file": "resources/views/admin/dashboard.blade.php",
-            "ai_button": {
-                "text": "AI Ayarları",
-                "route": "admin.ai-settings.index",
-                "icon": "fas fa-robot",
-                "color": "neo-btn-primary"
-            },
-            "updated_from": {
-                "old_text": "AI Dashboard",
-                "old_route": "admin.ai-dashboard.index",
-                "updated_date": "2025-10-12"
-            }
-        }
+    "laravel_log": {
+      "file": "storage/logs/laravel.log",
+      "channel": "single",
+      "level": "info",
+      "ai_entries": true
+    }
+  },
+  "navigation": {
+    "sidebar": {
+      "file": "resources/views/admin/layouts/sidebar.blade.php",
+      "menu_item": {
+        "title": "AI Sistemi",
+        "icon": "fas fa-robot",
+        "submenu": [
+          {
+            "title": "AI Ayarları",
+            "route": "admin.ai-settings.index",
+            "active": true
+          }
+        ],
+        "removed_items": [
+          {
+            "title": "AI Dashboard",
+            "route": "admin.ai.index",
+            "removed_date": "2025-10-12"
+          }
+        ]
+      }
     },
-    "context7_rules": {
-        "field_naming": {
-            "prefix": "ai_",
-            "pattern": "ai_*",
-            "examples": [
-                "ai_anythingllm_url",
-                "ai_openai_api_key",
-                "ai_gemini_api_key",
-                "ai_claude_api_key",
-                "ai_ollama_url",
-                "ai_ollama_model",
-                "ai_default_tone"
-            ],
-            "forbidden_patterns": [
-                "openai_key",
-                "gemini_token",
-                "ai_durum",
-                "ai_aktif"
-            ]
+    "dashboard_links": {
+      "file": "resources/views/admin/dashboard.blade.php",
+      "ai_button": {
+        "text": "AI Ayarları",
+        "route": "admin.ai-settings.index",
+        "icon": "fas fa-robot",
+        "color": "neo-btn-primary"
+      },
+      "updated_from": {
+        "old_text": "AI Dashboard",
+        "old_route": "admin.ai-dashboard.index",
+        "updated_date": "2025-10-12"
+      }
+    }
+  },
+  "context7_rules": {
+    "field_naming": {
+      "prefix": "ai_",
+      "pattern": "ai_*",
+      "examples": [
+        "ai_anythingllm_url",
+        "ai_openai_api_key",
+        "ai_gemini_api_key",
+        "ai_claude_api_key",
+        "ai_ollama_url",
+        "ai_ollama_model",
+        "ai_default_tone"
+      ],
+      "forbidden_patterns": ["openai_key", "gemini_token", "ai_durum", "ai_aktif"]
+    },
+    "api_response_format": {
+      "required_fields": ["success", "data"],
+      "recommended_fields": ["metadata", "context7_compliant"],
+      "example": {
+        "success": true,
+        "data": {
+          "variants": ["Title 1", "Title 2", "Title 3"]
         },
-        "api_response_format": {
-            "required_fields": ["success", "data"],
-            "recommended_fields": ["metadata", "context7_compliant"],
-            "example": {
-                "success": true,
-                "data": {
-                    "variants": ["Title 1", "Title 2", "Title 3"]
-                },
-                "metadata": {
-                    "model": "gemma2:2b",
-                    "response_time": 2150,
-                    "confidence_score": 0.91
-                },
-                "context7_compliant": true
-            }
+        "metadata": {
+          "model": "gemma2:2b",
+          "response_time": 2150,
+          "confidence_score": 0.91
         },
-        "ui_components": {
-            "buttons": {
-                "prefix": "neo-btn",
-                "variants": ["neo-btn-primary", "neo-btn-secondary"],
-                "custom_classes": ["btn-test"]
-            },
-            "cards": {
-                "prefix": "neo-card",
-                "variations": ["neo-card", "neo-card-hover"]
-            },
-            "badges": {
-                "colors": [
-                    "bg-green-100 text-green-800",
-                    "bg-red-100 text-red-800",
-                    "bg-blue-100 text-blue-800",
-                    "bg-gray-100 text-gray-600"
-                ]
-            }
-        },
-        "validation": {
-            "url_fields": ["ai_anythingllm_url", "ai_ollama_url"],
-            "api_key_fields": [
-                "ai_anythingllm_api_key",
-                "ai_openai_api_key",
-                "ai_gemini_api_key",
-                "ai_claude_api_key"
-            ],
-            "integer_fields": [
-                "ai_anythingllm_timeout",
-                "ai_default_variant_count"
-            ]
-        }
+        "context7_compliant": true
+      }
+    },
+    "ui_components": {
+      "buttons": {
+        "prefix": "neo-btn",
+        "variants": ["neo-btn-primary", "neo-btn-secondary"],
+        "custom_classes": ["btn-test"]
+      },
+      "cards": {
+        "prefix": "neo-card",
+        "variations": ["neo-card", "neo-card-hover"]
+      },
+      "badges": {
+        "colors": [
+          "bg-green-100 text-green-800",
+          "bg-red-100 text-red-800",
+          "bg-blue-100 text-blue-800",
+          "bg-gray-100 text-gray-600"
+        ]
+      }
+    },
+    "validation": {
+      "url_fields": ["ai_anythingllm_url", "ai_ollama_url"],
+      "api_key_fields": [
+        "ai_anythingllm_api_key",
+        "ai_openai_api_key",
+        "ai_gemini_api_key",
+        "ai_claude_api_key"
+      ],
+      "integer_fields": ["ai_anythingllm_timeout", "ai_default_variant_count"]
+    }
+  },
+  "performance": {
+    "caching": {
+      "driver": "redis",
+      "prefix": "ai_",
+      "ttl": {
+        "title": 3600,
+        "description": 3600,
+        "location": 86400,
+        "provider_status": 300
+      }
+    },
+    "targets": {
+      "response_time": {
+        "title_generation": "<2s",
+        "description_generation": "<3s",
+        "location_analysis": "<2s",
+        "price_suggestion": "<1s",
+        "provider_test": "<10s"
+      },
+      "success_rate": ">95%",
+      "uptime": ">99%",
+      "cache_hit_rate": ">70%"
+    },
+    "rate_limiting": {
+      "ai_endpoints": "10 requests/minute/user",
+      "test_endpoints": "5 requests/minute/user",
+      "status_endpoints": "20 requests/minute/user"
+    }
+  },
+  "security": {
+    "csrf_protection": {
+      "enabled": true,
+      "meta_tag": "<meta name='csrf-token' content='{{ csrf_token() }}'>",
+      "required_for": ["POST", "PUT", "DELETE"]
+    },
+    "api_key_storage": {
+      "table": "settings",
+      "encryption": "recommended",
+      "validation": "required for each provider"
+    },
+    "rate_limiting": {
+      "enabled": true,
+      "middleware": "throttle:ai",
+      "limits": {
+        "default": "10,1",
+        "test": "5,1"
+      }
+    },
+    "pii_protection": {
+      "masking": true,
+      "fields": ["telefon", "email", "detayli_adres"]
+    },
+    "auto_save": {
+      "enabled": false,
+      "reason": "Human approval required for AI suggestions"
+    }
+  },
+  "documentation": {
+    "master_references": [
+      "README.md",
+      "docs/ai-training/00-ANYTHINGLLM-MASTER-TRAINING.md",
+      "docs/ai-training/01-AI-FEATURES-GUIDE.md",
+      "docs/ai-training/02-CONTEXT7-RULES-SIMPLIFIED.md",
+      "docs/context7/reports/ai-sistem-gelisme-2025-10-12.md",
+      "yalihan-bekci/knowledge/ai-settings-master-reference.json"
+    ],
+    "training_docs": {
+      "core": [
+        "docs/ai-training/00-ANYTHINGLLM-MASTER-TRAINING.md",
+        "docs/ai-training/01-AI-FEATURES-GUIDE.md",
+        "docs/ai-training/02-CONTEXT7-RULES-SIMPLIFIED.md",
+        "docs/ai-training/03-DATABASE-SCHEMA-FOR-AI.md",
+        "docs/ai-training/04-PROMPT-TEMPLATES.md",
+        "docs/ai-training/05-USE-CASES-AND-SCENARIOS.md",
+        "docs/ai-training/06-API-REFERENCE.md"
+      ],
+      "advanced": [
+        "docs/ai-training/07-EMBEDDING-GUIDE.md",
+        "docs/ai-training/08-TRAINING-CHECKLIST.md",
+        "docs/ai-training/09-OLLAMA-INTEGRATION.md",
+        "docs/ai-training/10-REAL-WORLD-EXAMPLES.md"
+      ],
+      "guides": [
+        "docs/ai-training/QUICK-START.md",
+        "docs/ai-training/KULLANIMA-HAZIR.md",
+        "docs/ai-training/DEPLOYMENT-GUIDE.md",
+        "docs/ai-training/HIZLI-REFERANS.md"
+      ],
+      "total": 19
+    },
+    "context7_reports": [
+      "docs/context7/reports/ai-sistem-gelisme-2025-10-12.md",
+      "docs/context7/AI-SISTEM-OZET-2025-10-12.md"
+    ],
+    "api_docs": ["docs/api/context7-api-documentation.md"]
+  },
+  "standards": {
+    "naming_conventions": {
+      "config_keys": "ai_*",
+      "route_names": "admin.ai-settings.*",
+      "view_paths": "admin.ai-settings.*",
+      "js_functions": "camelCase",
+      "css_classes": "kebab-case"
+    },
+    "code_quality": {
+      "phpstan_level": "5",
+      "context7_compliance": "100%",
+      "documentation": "Complete",
+      "testing": "Manual + Automated"
+    },
+    "best_practices": {
+      "single_responsibility": true,
+      "dry_principle": true,
+      "solid_principles": true,
+      "context7_first": true
+    }
+  },
+  "deployment": {
+    "requirements": {
+      "php": ">=8.2",
+      "laravel": ">=10.x",
+      "nodejs": ">=18.x",
+      "npm": ">=9.x"
+    },
+    "dependencies": {
+      "composer": ["guzzlehttp/guzzle", "predis/predis"],
+      "npm": []
+    },
+    "checklist": {
+      "pre_deployment": [
+        "✅ All routes tested",
+        "✅ All providers configured",
+        "✅ Cache cleared",
+        "✅ Views compiled",
+        "✅ Assets built"
+      ],
+      "post_deployment": [
+        "✅ Provider tests run",
+        "✅ Logs verified",
+        "✅ Performance checked",
+        "✅ Security audit passed"
+      ]
+    }
+  },
+  "monitoring": {
+    "health_checks": {
+      "provider_availability": {
+        "interval": "5 minutes",
+        "timeout": "10s",
+        "alert_on_failure": true
+      },
+      "performance_metrics": {
+        "response_time": true,
+        "success_rate": true,
+        "error_rate": true
+      }
+    },
+    "alerts": {
+      "provider_down": {
+        "threshold": "3 consecutive failures",
+        "action": "Admin notification"
+      },
+      "slow_response": {
+        "threshold": ">10s",
+        "action": "Log warning"
+      }
+    }
+  },
+  "maintenance": {
+    "cache_clearing": {
+      "commands": [
+        "php artisan cache:clear",
+        "php artisan view:clear",
+        "php artisan config:clear",
+        "php artisan route:clear"
+      ],
+      "when": ["After settings update", "After code changes", "Before testing"]
+    },
+    "log_rotation": {
+      "ai_connections_log": {
+        "retention": "30 days",
+        "compression": true
+      }
+    }
+  },
+  "future_enhancements": {
+    "planned_features": [
+      "DeepSeek AI integration",
+      "Advanced analytics dashboard",
+      "Cost tracking per provider",
+      "Usage statistics",
+      "A/B testing framework",
+      "Multi-language support expansion"
+    ],
+    "research": ["Local LLM alternatives", "Fine-tuning gemma2:2b", "Custom embeddings"]
+  },
+  "success_metrics": {
+    "implementation": {
+      "pages_cleaned": 3,
+      "lines_removed": 2182,
+      "routes_consolidated": 2,
+      "references_updated": 3
+    },
+    "quality": {
+      "context7_compliance": "100%",
+      "code_coverage": "95%",
+      "documentation": "Complete",
+      "test_coverage": "Manual testing complete"
     },
     "performance": {
-        "caching": {
-            "driver": "redis",
-            "prefix": "ai_",
-            "ttl": {
-                "title": 3600,
-                "description": 3600,
-                "location": 86400,
-                "provider_status": 300
-            }
-        },
-        "targets": {
-            "response_time": {
-                "title_generation": "<2s",
-                "description_generation": "<3s",
-                "location_analysis": "<2s",
-                "price_suggestion": "<1s",
-                "provider_test": "<10s"
-            },
-            "success_rate": ">95%",
-            "uptime": ">99%",
-            "cache_hit_rate": ">70%"
-        },
-        "rate_limiting": {
-            "ai_endpoints": "10 requests/minute/user",
-            "test_endpoints": "5 requests/minute/user",
-            "status_endpoints": "20 requests/minute/user"
-        }
-    },
-    "security": {
-        "csrf_protection": {
-            "enabled": true,
-            "meta_tag": "<meta name='csrf-token' content='{{ csrf_token() }}'>",
-            "required_for": ["POST", "PUT", "DELETE"]
-        },
-        "api_key_storage": {
-            "table": "settings",
-            "encryption": "recommended",
-            "validation": "required for each provider"
-        },
-        "rate_limiting": {
-            "enabled": true,
-            "middleware": "throttle:ai",
-            "limits": {
-                "default": "10,1",
-                "test": "5,1"
-            }
-        },
-        "pii_protection": {
-            "masking": true,
-            "fields": ["telefon", "email", "detayli_adres"]
-        },
-        "auto_save": {
-            "enabled": false,
-            "reason": "Human approval required for AI suggestions"
-        }
-    },
-    "documentation": {
-        "master_references": [
-            "README.md",
-            "docs/ai-training/00-ANYTHINGLLM-MASTER-TRAINING.md",
-            "docs/ai-training/01-AI-FEATURES-GUIDE.md",
-            "docs/ai-training/02-CONTEXT7-RULES-SIMPLIFIED.md",
-            "docs/context7/reports/ai-sistem-gelisme-2025-10-12.md",
-            "yalihan-bekci/knowledge/ai-settings-master-reference.json"
-        ],
-        "training_docs": {
-            "core": [
-                "docs/ai-training/00-ANYTHINGLLM-MASTER-TRAINING.md",
-                "docs/ai-training/01-AI-FEATURES-GUIDE.md",
-                "docs/ai-training/02-CONTEXT7-RULES-SIMPLIFIED.md",
-                "docs/ai-training/03-DATABASE-SCHEMA-FOR-AI.md",
-                "docs/ai-training/04-PROMPT-TEMPLATES.md",
-                "docs/ai-training/05-USE-CASES-AND-SCENARIOS.md",
-                "docs/ai-training/06-API-REFERENCE.md"
-            ],
-            "advanced": [
-                "docs/ai-training/07-EMBEDDING-GUIDE.md",
-                "docs/ai-training/08-TRAINING-CHECKLIST.md",
-                "docs/ai-training/09-OLLAMA-INTEGRATION.md",
-                "docs/ai-training/10-REAL-WORLD-EXAMPLES.md"
-            ],
-            "guides": [
-                "docs/ai-training/QUICK-START.md",
-                "docs/ai-training/KULLANIMA-HAZIR.md",
-                "docs/ai-training/DEPLOYMENT-GUIDE.md",
-                "docs/ai-training/HIZLI-REFERANS.md"
-            ],
-            "total": 19
-        },
-        "context7_reports": [
-            "docs/context7/reports/ai-sistem-gelisme-2025-10-12.md",
-            "docs/context7/AI-SISTEM-OZET-2025-10-12.md"
-        ],
-        "api_docs": ["docs/api/context7-api-documentation.md"]
-    },
-    "standards": {
-        "naming_conventions": {
-            "config_keys": "ai_*",
-            "route_names": "admin.ai-settings.*",
-            "view_paths": "admin.ai-settings.*",
-            "js_functions": "camelCase",
-            "css_classes": "kebab-case"
-        },
-        "code_quality": {
-            "phpstan_level": "5",
-            "context7_compliance": "100%",
-            "documentation": "Complete",
-            "testing": "Manual + Automated"
-        },
-        "best_practices": {
-            "single_responsibility": true,
-            "dry_principle": true,
-            "solid_principles": true,
-            "context7_first": true
-        }
-    },
-    "deployment": {
-        "requirements": {
-            "php": ">=8.2",
-            "laravel": ">=10.x",
-            "nodejs": ">=18.x",
-            "npm": ">=9.x"
-        },
-        "dependencies": {
-            "composer": ["guzzlehttp/guzzle", "predis/predis"],
-            "npm": []
-        },
-        "checklist": {
-            "pre_deployment": [
-                "✅ All routes tested",
-                "✅ All providers configured",
-                "✅ Cache cleared",
-                "✅ Views compiled",
-                "✅ Assets built"
-            ],
-            "post_deployment": [
-                "✅ Provider tests run",
-                "✅ Logs verified",
-                "✅ Performance checked",
-                "✅ Security audit passed"
-            ]
-        }
-    },
-    "monitoring": {
-        "health_checks": {
-            "provider_availability": {
-                "interval": "5 minutes",
-                "timeout": "10s",
-                "alert_on_failure": true
-            },
-            "performance_metrics": {
-                "response_time": true,
-                "success_rate": true,
-                "error_rate": true
-            }
-        },
-        "alerts": {
-            "provider_down": {
-                "threshold": "3 consecutive failures",
-                "action": "Admin notification"
-            },
-            "slow_response": {
-                "threshold": ">10s",
-                "action": "Log warning"
-            }
-        }
-    },
-    "maintenance": {
-        "cache_clearing": {
-            "commands": [
-                "php artisan cache:clear",
-                "php artisan view:clear",
-                "php artisan config:clear",
-                "php artisan route:clear"
-            ],
-            "when": [
-                "After settings update",
-                "After code changes",
-                "Before testing"
-            ]
-        },
-        "log_rotation": {
-            "ai_connections_log": {
-                "retention": "30 days",
-                "compression": true
-            }
-        }
-    },
-    "future_enhancements": {
-        "planned_features": [
-            "DeepSeek AI integration",
-            "Advanced analytics dashboard",
-            "Cost tracking per provider",
-            "Usage statistics",
-            "A/B testing framework",
-            "Multi-language support expansion"
-        ],
-        "research": [
-            "Local LLM alternatives",
-            "Fine-tuning gemma2:2b",
-            "Custom embeddings"
-        ]
-    },
-    "success_metrics": {
-        "implementation": {
-            "pages_cleaned": 3,
-            "lines_removed": 2182,
-            "routes_consolidated": 2,
-            "references_updated": 3
-        },
-        "quality": {
-            "context7_compliance": "100%",
-            "code_coverage": "95%",
-            "documentation": "Complete",
-            "test_coverage": "Manual testing complete"
-        },
-        "performance": {
-            "page_load": "<2s",
-            "api_response": "<3s",
-            "cache_hit_rate": "Expected >70%"
-        }
-    },
-    "master_status": {
-        "is_master_reference": true,
-        "authority_level": "primary",
-        "scope": "ai_settings_system",
-        "last_audit": "2025-10-12T22:30:00Z",
-        "next_review": "2025-11-12",
-        "maintained_by": "Context7 AI Team",
-        "context7_version": "3.4.0"
+      "page_load": "<2s",
+      "api_response": "<3s",
+      "cache_hit_rate": "Expected >70%"
     }
+  },
+  "master_status": {
+    "is_master_reference": true,
+    "authority_level": "primary",
+    "scope": "ai_settings_system",
+    "last_audit": "2025-10-12T22:30:00Z",
+    "next_review": "2025-11-12",
+    "maintained_by": "Context7 AI Team",
+    "context7_version": "3.4.0"
+  }
 }

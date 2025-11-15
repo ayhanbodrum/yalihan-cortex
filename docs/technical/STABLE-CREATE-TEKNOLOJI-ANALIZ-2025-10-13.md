@@ -379,14 +379,14 @@ Etki: Power user desteği
 
     ```javascript
     if (!config.google_maps_key) {
-        showWarning("Google Maps API key missing");
+        showWarning('Google Maps API key missing');
         // Use static map or disable feature
     }
     ```
 
 3. **AI Health Check** (20 dk)
     ```javascript
-    fetch("/api/ai/health")
+    fetch('/api/ai/health')
         .then((res) => res.json())
         .then((data) => showAvailableProviders(data));
     ```

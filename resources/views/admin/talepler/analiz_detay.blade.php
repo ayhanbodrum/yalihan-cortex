@@ -33,13 +33,13 @@
                 </div>
             </div>
 
-            <div class="col-md-8">
-                <div class="card">
-                    <div class="card-header">
-                        <h5>AI Eşleşme Analizi</h5>
+            <div class="w-full md:w-2/3 px-4">
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
+                    <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                        <h5 class="text-gray-900 dark:text-white font-semibold">AI Eşleşme Analizi</h5>
                     </div>
-                    <div class="card-body">
-                        <div class="row">
+                    <div class="p-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                             @forelse($potansiyelEslesmeler as $eslesme)
                                 @php
                                     $eslesmeClass = '';
@@ -51,31 +51,27 @@
                                         $eslesmeClass = 'ai-match-low';
                                     }
                                 @endphp
-                                <div class="col-md-6 mb-3">
-                                    <div class="card {{ $eslesmeClass }}">
-                                        <div class="card-body">
+                                <div>
+                                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow border border-gray-200 dark:border-gray-700 {{ $eslesmeClass }}">
+                                        <div class="p-4">
                                             <h6>{{ $eslesme['emlak']->baslik }}</h6>
-                                            <div class="progress mb-2">
-                                                <div class="progress-bar" role="progressbar"
-                                                    style="width: {{ $eslesme['eslesme_yuzdesi'] }}%"
-                                                    aria-valuenow="{{ $eslesme['eslesme_yuzdesi'] }}" aria-valuemin="0"
-                                                    aria-valuemax="100">
-                                                    {{ number_format($eslesme['eslesme_yuzdesi']) }}%
-                                                </div>
+                                            <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700 mb-2">
+                                                <div class="bg-blue-600 h-2.5 rounded-full" style="width: {{ $eslesme['eslesme_yuzdesi'] }}%"></div>
                                             </div>
+                                            <div class="text-sm text-gray-700 dark:text-gray-300 mb-2">{{ number_format($eslesme['eslesme_yuzdesi']) }}%</div>
                                             <p><strong>Fiyat:</strong> {{ number_format($eslesme['emlak']->fiyat) }} TL</p>
                                             <p><strong>Konum:</strong> {{ $eslesme['emlak']->il }} /
                                                 {{ $eslesme['emlak']->ilce }}</p>
                                             <p><strong>Özellikler:</strong> {{ $eslesme['emlak']->oda_sayisi }} Oda,
                                                 {{ $eslesme['emlak']->metraj }} m²</p>
                                             <a href="{{ route('admin.emlaklar.show', $eslesme['emlak']->id) }}"
-                                                class="btn btn-sm inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg touch-target-optimized touch-target-optimized">Detaylar</a>
+                                                class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 bg-blue-600 text-white hover:bg-blue-700 hover:scale-105 active:scale-95 focus:ring-blue-500 shadow-md hover:shadow-lg">Detaylar</a>
                                         </div>
                                     </div>
                                 </div>
                             @empty
                                 <div class="col-12">
-                                    <div class="alert alert-warning">
+                                    <div class="px-4 py-3 rounded-lg bg-yellow-50 border border-yellow-200 text-yellow-800 dark:bg-yellow-900/30 dark:border-yellow-800 dark:text-yellow-200">
                                         Bu talep için uygun eşleşme bulunamadı.
                                     </div>
                                 </div>

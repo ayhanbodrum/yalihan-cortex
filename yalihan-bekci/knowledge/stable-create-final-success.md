@@ -9,6 +9,7 @@
 ## 📊 ÇÖZÜLEN SORUNLAR (4 KRİTİK):
 
 ### **1. Vite Manifest Hatası:**
+
 ```yaml
 Hata: Unable to locate file in Vite manifest: stable-create.js
 Sebep: Vite dev server kapanmış
@@ -17,6 +18,7 @@ Durum: ✅ ÇÖZÜLDİ
 ```
 
 ### **2. Tailwind CSS v4 @apply Hatası:**
+
 ```yaml
 Hata: Cannot apply unknown utility class `gap-3`
 Sebep: Tailwind v4 @apply'ı utility class'larla desteklemiyor
@@ -26,25 +28,26 @@ Durum: ✅ ÇÖZÜLDİ
 ```
 
 ### **3. Alpine.js Undefined Hatası (50+ hata):**
+
 ```yaml
 Hatalar:
-  - kategoriDinamikAlanlar is not defined
-  - modernPortalSelector is not defined
-  - advancedPriceManager is not defined
-  - photoManager is not defined
-  - ve 40+ daha...
+    - kategoriDinamikAlanlar is not defined
+    - modernPortalSelector is not defined
+    - advancedPriceManager is not defined
+    - photoManager is not defined
+    - ve 40+ daha...
 
 Sebep: Alpine component'leri window object'e export edilmemiş
 
-Çözüm:
-  ✅ 7 yeni modül oluşturuldu
-  ✅ 4 mevcut modül güncellendi
-  ✅ Tüm fonksiyonlar window object'e eklendi
+Çözüm: ✅ 7 yeni modül oluşturuldu
+    ✅ 4 mevcut modül güncellendi
+    ✅ Tüm fonksiyonlar window object'e eklendi
 
 Durum: ✅ ÇÖZÜLDİ
 ```
 
 ### **4. CSP İhlali:**
+
 ```yaml
 Hata: Refused to load stylesheet from unpkg.com
 Sebep: CSP header'da unpkg.com yok
@@ -58,39 +61,40 @@ Durum: ✅ ÇÖZÜLDİ
 
 ```yaml
 1. resources/js/admin/stable-create/portals.js
-   → modernPortalSelector()
-   → 6 portal yönetimi
+→ modernPortalSelector()
+→ 6 portal yönetimi
 
 2. resources/js/admin/stable-create/price.js
-   → advancedPriceManager()
-   → Fiyat hesaplama, döviz, AI
+→ advancedPriceManager()
+→ Fiyat hesaplama, döviz, AI
 
 3. resources/js/admin/stable-create/fields.js
-   → typeBasedFieldsManager()
-   → featuresManager()
-   → Dinamik alan + özellik yönetimi
+→ typeBasedFieldsManager()
+→ featuresManager()
+→ Dinamik alan + özellik yönetimi
 
 4. resources/js/admin/stable-create/crm.js
-   → personCrmManager()
-   → Kişi seçimi, CRM skor
+→ personCrmManager()
+→ Kişi seçimi, CRM skor
 
 5. resources/js/admin/stable-create/publication.js
-   → publicationManager()
-   → Yayın durumu, görünürlük
+→ publicationManager()
+→ Yayın durumu, görünürlük
 
 6. resources/js/admin/stable-create/key-manager.js
-   → keyManager()
-   → SEO anahtar kelime
+→ keyManager()
+→ SEO anahtar kelime
 
 7. resources/js/admin/stable-create.js
-   → Tüm modülleri import eder [GÜNCELLENDİ]
+→ Tüm modülleri import eder [GÜNCELLENDİ]
 ```
 
 ---
 
 ## 🔄 GÜNCELLENENresources/js/admin/stable-create/portals.js
-   → modernPortalSelector()
-   → 6 portal yönetimi
+
+→ modernPortalSelector()
+→ 6 portal yönetimi
 
 2. resources/js/admin/stable-create/price.js
    → advancedPriceManager()
@@ -115,7 +119,8 @@ Durum: ✅ ÇÖZÜLDİ
 
 7. resources/js/admin/stable-create.js
    → Tüm modülleri import eder [GÜNCELLENDİ]
-```
+
+````
 
 ---
 
@@ -133,7 +138,7 @@ Durum: ✅ ÇÖZÜLDİ
 
 4. resources/js/admin/stable-create/photos.js
    + window.photoManager = function() {...}
-```
+````
 
 ---
 

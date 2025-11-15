@@ -3,7 +3,13 @@
   "konu": "Property Type Manager - Yeni 3-Seviye Sistem",
   "durum": "tamamlandı",
   "oncelik": "yuksek",
-  "etiketler": ["property-type-manager", "kategori-sistemi", "feature-system", "migration", "context7"],
+  "etiketler": [
+    "property-type-manager",
+    "kategori-sistemi",
+    "feature-system",
+    "migration",
+    "context7"
+  ],
 
   "ozet": {
     "ne_yapildi": "Property Type Manager eski 2-seviye sistemden yeni 3-seviye sisteme geçirildi. Feature Categories'e applies_to field eklendi ve 5 kategori + 46 özellik otomatik oluşturuldu.",
@@ -45,9 +51,7 @@
       "database/migrations/2025_10_27_101837_create_yazlik_details_table.php",
       "database/migrations/2025_10_27_140207_add_applies_to_to_feature_categories_table.php"
     ],
-    "seeders": [
-      "database/seeders/FeatureCategorySeeder.php"
-    ]
+    "seeders": ["database/seeders/FeatureCategorySeeder.php"]
   },
 
   "database_degisiklikleri": {
@@ -238,4 +242,3 @@
     "migration_dosyalari": "database/migrations/2025_10_27_*.php"
   }
 }
-

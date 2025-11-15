@@ -23,11 +23,13 @@ Sebep: Her dosya kendi API endpoint'ini kullanıyor
 **Dosya:** `public/js/context7-features-system.js`
 
 **Ne Korur:**
+
 - ✅ Özellikler API endpoint'i: `/admin/ilanlar/api/features/category/{id}`
 - ✅ Alt kategoriler API: `/admin/ilanlar/api/categories/{id}/subcategories`
 - ✅ Yayın tipleri API: `/admin/ilanlar/api/categories/publication-types/{id}`
 
 **Özellikler:**
+
 ```javascript
 ✅ Cache sistemi (tekrar yükleme önleme)
 ✅ Duplicate request önleme
@@ -38,18 +40,20 @@ Sebep: Her dosya kendi API endpoint'ini kullanıyor
 ```
 
 **Kullanım:**
+
 ```javascript
 // Eski yöntem (❌ ARTIK KULLANMA)
-fetch('/api/features/category/' + id) // YANLIŞ URL!
+fetch('/api/features/category/' + id); // YANLIŞ URL!
 
 // Yeni yöntem (✅ İZOLASYON SİSTEMİ)
-window.featuresSystem.loadFeaturesForCategory(id)
+window.featuresSystem.loadFeaturesForCategory(id);
 
 // Alpine.js (backward compatible)
-window.loadFeaturesForCategory(id)
+window.loadFeaturesForCategory(id);
 ```
 
 **Koruma Garantisi:**
+
 ```
 ❌ Biri /api/features/ yazarsa → Çalışmaz, sistem doğru URL kullanır
 ✅ Merkezi değişiklik → Tüm sayfalarda otomatik güncellenir
@@ -62,17 +66,19 @@ window.loadFeaturesForCategory(id)
 **Dosya:** `public/js/context7-location-system.js` (Zaten var)
 
 **Ne Korur:**
+
 - ✅ İller API: `/admin/adres-yonetimi/iller`
 - ✅ İlçeler API: `/admin/adres-yonetimi/ilceler/{il_id}`
 - ✅ Mahalleler API: `/admin/adres-yonetimi/mahalleler/{ilce_id}`
 
 **Kullanım:**
+
 ```javascript
 // ❌ YANLIŞ (Tekrar bozulur)
-fetch('/api/ilceler/' + ilId)
+fetch('/api/ilceler/' + ilId);
 
 // ✅ DOĞRU (İzolasyon sistemi)
-window.locationSystem.loadIlceler(ilId)
+window.locationSystem.loadIlceler(ilId);
 ```
 
 **Güncelleme:** `location-map.blade.php` artık bu sistemi kullanıyor ✅
@@ -87,14 +93,15 @@ window.locationSystem.loadIlceler(ilId)
 
 ```yaml
 ✅ DOĞRU:
-  - Metrekare: category-specific-fields.blade.php (TEK YER)
-  - Oda Sayısı: category-specific-fields.blade.php (TEK YER)
+    - Metrekare: category-specific-fields.blade.php (TEK YER)
+    - Oda Sayısı: category-specific-fields.blade.php (TEK YER)
 
 ❌ YANLIŞ:
-  - Metrekare: basic-info.blade.php + category-specific-fields.blade.php (TEKRAR!)
+    - Metrekare: basic-info.blade.php + category-specific-fields.blade.php (TEKRAR!)
 ```
 
 **Blade Component Guard:**
+
 ```blade
 {{-- Context7: Field Duplication Guard --}}
 {{-- ⚠️ Bu alan başka bir component'te de var mı kontrol et! --}}
@@ -102,6 +109,7 @@ window.locationSystem.loadIlceler(ilId)
 ```
 
 **Kontrol Komutu:**
+
 ```bash
 # Metrekare nerede kullanılıyor?
 grep -r "Metrekare" resources/views/admin/ilanlar/components/
@@ -125,6 +133,7 @@ window.featuresSystem.loadFeaturesForCategory(id);
 ```
 
 **Neden?**
+
 - Merkezi değişiklik → Her yerde otomatik güncellenir
 - URL yanlış yazılırsa → Sistem doğrusunu kullanır
 - Cache → Gereksiz API çağrısı önlenir
@@ -149,6 +158,7 @@ window.locationSystem.loadIlceler(ilId);
 ### **Component Duplication Koruma**
 
 **Pre-commit Hook (Gelecek):**
+
 ```bash
 #!/bin/bash
 # Check for field duplication
@@ -171,17 +181,14 @@ done
 ### **Yeni İlan Formu Oluştururken:**
 
 ```yaml
-1. Özellikler yüklemek için:
-   ✅ window.featuresSystem.loadFeaturesForCategory(id)
-   ❌ fetch('/api/features/...')
+1. Özellikler yüklemek için: ✅ window.featuresSystem.loadFeaturesForCategory(id)
+    ❌ fetch('/api/features/...')
 
-2. İl/İlçe/Mahalle için:
-   ✅ window.locationSystem.loadIlceler(ilId)
-   ❌ fetch('/api/ilceler/...')
+2. İl/İlçe/Mahalle için: ✅ window.locationSystem.loadIlceler(ilId)
+    ❌ fetch('/api/ilceler/...')
 
-3. Form field eklerken:
-   ✅ Önce grep ile ara (başka yerde var mı?)
-   ❌ Direkt ekle (tekrar olabilir!)
+3. Form field eklerken: ✅ Önce grep ile ara (başka yerde var mı?)
+    ❌ Direkt ekle (tekrar olabilir!)
 ```
 
 ---
@@ -192,23 +199,23 @@ done
 
 ```json
 {
-  "forbidden_patterns": [
-    {
-      "pattern": "fetch('/api/features/'",
-      "message": "❌ İzolasyon ihlali! window.featuresSystem.loadFeaturesForCategory() kullan",
-      "severity": "CRITICAL"
-    },
-    {
-      "pattern": "fetch('/api/ilceler/'",
-      "message": "❌ İzolasyon ihlali! window.locationSystem.loadIlceler() kullan",
-      "severity": "CRITICAL"
-    },
-    {
-      "pattern": "name=\"metrekare\".*name=\"metrekare\"",
-      "message": "❌ Field duplication! Her alan tek yerde olmalı (Context7)",
-      "severity": "HIGH"
-    }
-  ]
+    "forbidden_patterns": [
+        {
+            "pattern": "fetch('/api/features/'",
+            "message": "❌ İzolasyon ihlali! window.featuresSystem.loadFeaturesForCategory() kullan",
+            "severity": "CRITICAL"
+        },
+        {
+            "pattern": "fetch('/api/ilceler/'",
+            "message": "❌ İzolasyon ihlali! window.locationSystem.loadIlceler() kullan",
+            "severity": "CRITICAL"
+        },
+        {
+            "pattern": "name=\"metrekare\".*name=\"metrekare\"",
+            "message": "❌ Field duplication! Her alan tek yerde olmalı (Context7)",
+            "severity": "HIGH"
+        }
+    ]
 }
 ```
 
@@ -317,6 +324,7 @@ Adım 4: Diğer formlar
 ## 📈 **ETKİ ANALİZİ**
 
 ### **Öncesi:**
+
 ```
 ❌ Her dosya kendi API çağrısı
 ❌ 5 farklı URL pattern
@@ -325,6 +333,7 @@ Adım 4: Diğer formlar
 ```
 
 ### **Sonrası:**
+
 ```
 ✅ Merkezi izolasyon sistemi
 ✅ 1 standart URL pattern
@@ -360,4 +369,3 @@ Adım 4: Diğer formlar
 **Son Güncelleme:** 24 Ekim 2025  
 **Context7 Uyumluluk:** 100%  
 **Koruma Seviyesi:** ⭐⭐⭐⭐⭐
-

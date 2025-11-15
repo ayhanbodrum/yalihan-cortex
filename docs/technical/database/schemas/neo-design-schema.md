@@ -3,18 +3,21 @@
 Bu şema; butonlar, formlar, kartlar, tablolar ve yardımcı sınıflar için Neo kurallarını ve varyantlarını özetler. Amaç: tasarım tutarlılığı ve hızlı uygulama.
 
 ### Genel İlkeler
+
 - **Sınıf önekleri**: `neo-` (ör. `neo-btn`, `neo-input`, `neo-card`)
 - **Responsive**: `sm:`, `md:`, `lg:`, `xl:`
 - **Dark mode**: `dark:` ön ekleri ile zorunlu destek
 - **Yasak**: `btn-*`, `card-*`, `form-*`, Bootstrap grid, jQuery
 
 ### Butonlar (`neo-btn-*`)
+
 - Varyantlar: `neo-btn-primary`, `neo-btn-secondary`, `neo-btn-success`, `neo-btn-warning`, `neo-btn-danger`, `neo-btn-info`, `neo-btn-ghost`
 - Boyutlar: `neo-btn-xs`, `neo-btn-sm`, `neo-btn-md`, `neo-btn-lg`
 - Durumlar: `disabled`, `loading` (`aria-busy="true"` veya içte spinner)
 - İkonlu kullanım: SVG ikon solda, `.mr-2` ile aralık
 
 Örnek:
+
 ```blade
 <button class="neo-btn-primary neo-btn-md">
     <svg class="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none"><path/></svg>
@@ -23,12 +26,14 @@ Bu şema; butonlar, formlar, kartlar, tablolar ve yardımcı sınıflar için Ne
 ```
 
 ### Form Alanları
+
 - Etiket: `neo-label`
 - Girdi: `neo-input` (text, email, password, tel, file, textarea, select)
 - Grup: `neo-form-group`
 - Yardım/uyarı: `text-xs text-gray-500`, hata: `text-red-600 dark:text-red-400`
 
 Örnek:
+
 ```blade
 <div class="neo-form-group">
   <label for="email" class="neo-label">E-posta</label>
@@ -39,11 +44,13 @@ Bu şema; butonlar, formlar, kartlar, tablolar ve yardımcı sınıflar için Ne
 ```
 
 ### Kartlar (`neo-card`)
+
 - İç boşluk: tipik `p-4|p-6|p-8`
 - Başlık: semantik `h2`/`h3` + ikon
 - Bölüm başlığı çizgisi: `border-b border-gray-200 dark:border-gray-800`
 
 Örnek:
+
 ```blade
 <div class="neo-card p-6">
   <h2 class="text-xl font-bold flex items-center">
@@ -54,11 +61,13 @@ Bu şema; butonlar, formlar, kartlar, tablolar ve yardımcı sınıflar için Ne
 ```
 
 ### Tablolar
+
 - Kapsayıcı: `neo-table-responsive`
 - Tablo: `neo-table`
 - Hücreler: `neo-table-th`, `neo-table-td`, satır: `neo-table-row`
 
 Örnek:
+
 ```blade
 <div class="neo-table-responsive">
   <table class="neo-table">
@@ -79,39 +88,47 @@ Bu şema; butonlar, formlar, kartlar, tablolar ve yardımcı sınıflar için Ne
 ```
 
 ### Rozetler (`x-neo.status-badge`)
+
 - Kategori: `status`, `type`, `role` vb.
 - Değer: metin
 
 Örnek:
+
 ```blade
 <x-neo.status-badge :value="$user->status ? 'Aktif' : 'Pasif'" />
 ```
 
 ### Grid ve Düzen
+
 - Standart grid: `grid grid-cols-1 md:grid-cols-2 gap-6`
 - Listeler: `space-y-4`, yatay gruplar: `flex space-x-2`
 - Kart dizilimleri: `grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6`
 
 ### Responsive Kuralları
+
 - Küçük → büyük yaklaşım (mobile-first)
 - Örnek: `w-full sm:w-auto`, `hidden md:flex`, `text-sm md:text-base`
 
 ### Dark Mode Kuralları
+
 - Metin: `dark:text-gray-100|300`
 - Arka plan: `dark:bg-gray-900|800|700`
 - Kenarlık: `dark:border-gray-700|800`
 
 ### Erişilebilirlik
+
 - İkonlu butonlarda `aria-label`
 - İnteraktif öğelerde `:focus` görsel geri bildirim (ring)
 - `aria-busy` yükleme durumlarında
 
 ### Yasaklar ve Uyum
+
 - Yasak sınıflar: `btn-*`, `card-*`, `form-*`, `row`, `col-*`
 - jQuery ve Bootstrap kullanımı yasak
 - Tüm görünümler `dark:` ve responsive ön eklerini makul seviyede içermeli
 
 ### Örnek Form Bölümü (Tam Blok)
+
 ```blade
 <div class="neo-card p-6">
   <h2 class="text-xl font-bold mb-6">Kullanıcı Bilgileri</h2>
@@ -133,10 +150,10 @@ Bu şema; butonlar, formlar, kartlar, tablolar ve yardımcı sınıflar için Ne
 ```
 
 ### Dosya ve Varlıklar
+
 - CSS: `public/css/admin/neo-components.css` (layout’a dahil edilmelidir)
 - Blade component’ler: `<x-neo.*>` isimlendirmesiyle `resources/views/components/` altında
 
 ### Doğrulama
+
 - Script: `./scripts/context7-design-consistency.sh` ile legacy sınıflar, responsive ve dark mode kullanımları kontrol edilir.
-
-

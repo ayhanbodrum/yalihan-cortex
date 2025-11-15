@@ -96,6 +96,7 @@ TL: KULLANMA → TRY
 ```
 
 ### **Fiyat Gösterimi:**
+
 ```
 Türkçe Format: "2.500.000 ₺"
 İngilizce Format: "2,500,000 TRY"
@@ -209,16 +210,16 @@ table-striped
 
 ```json
 {
-  "success": true,
-  "data": {
-    // Ana veri
-  },
-  "metadata": {
-    "model": "gemma2:2b",
-    "response_time": 2500,
-    "confidence_score": 0.92
-  },
-  "context7_compliant": true
+    "success": true,
+    "data": {
+        // Ana veri
+    },
+    "metadata": {
+        "model": "gemma2:2b",
+        "response_time": 2500,
+        "confidence_score": 0.92
+    },
+    "context7_compliant": true
 }
 ```
 
@@ -226,10 +227,10 @@ table-striped
 
 ```json
 {
-  "success": false,
-  "error": "Hata mesajı",
-  "fallback": "Alternatif öneri",
-  "context7_compliant": true
+    "success": false,
+    "error": "Hata mesajı",
+    "fallback": "Alternatif öneri",
+    "context7_compliant": true
 }
 ```
 
@@ -238,17 +239,20 @@ table-striped
 ## 🎯 AI GÖREV ÖNCELİKLERİ
 
 ### **Yüksek Öncelik:**
+
 1. Context7 kurallarına %100 uyum
 2. Türkçe gramer doğruluğu
 3. SEO optimizasyonu
 4. Hız (<3 saniye)
 
 ### **Orta Öncelik:**
+
 5. Yaratıcılık ve çeşitlilik
 6. Detaylı açıklamalar
 7. Çoklu varyant üretimi
 
 ### **Düşük Öncelik:**
+
 8. Emoji kullanımı (YASAK, sadece icon'lar)
 9. Aşırı yaratıcı başlıklar (SEO öncelikli)
 
@@ -259,27 +263,32 @@ table-striped
 ### **Asla Yapma:**
 
 ❌ **Database alanlarında Türkçe isim kullan**
+
 ```
 durum, aktif, sehir, bolge → YASAK
 ```
 
 ❌ **Otomatik kayıt yap**
+
 ```
 AI sadece öneri üretir, kayıt insan onayı gerektirir
 ```
 
 ❌ **Kişisel veri işle**
+
 ```
 Telefon, email, adres → Sadece maskelenmiş gösterilir
 ```
 
 ❌ **Bootstrap class kullan**
+
 ```
 btn-primary, card-body → YASAK
 neo-btn, neo-card → ZORUNLU
 ```
 
 ❌ **Emoji kullan** (başlık/açıklamada)
+
 ```
 🏠 🌊 ⭐ → YASAK (UI'de icon kullan)
 ```
@@ -292,18 +301,18 @@ neo-btn, neo-card → ZORUNLU
 
 ```json
 {
-  "success": true,
-  "variants": [
-    "Yalıkavak Deniz Manzaralı Satılık Villa - 5+2 Havuzlu",
-    "Bodrum Yalıkavak'ta Satılık Lüks Villa - Özel Havuz",
-    "Yalıkavak Premium Lokasyonda Satılık Villa"
-  ],
-  "metadata": {
-    "tone": "seo",
-    "avg_length": 67,
-    "seo_score": 88,
-    "context7_compliant": true
-  }
+    "success": true,
+    "variants": [
+        "Yalıkavak Deniz Manzaralı Satılık Villa - 5+2 Havuzlu",
+        "Bodrum Yalıkavak'ta Satılık Lüks Villa - Özel Havuz",
+        "Yalıkavak Premium Lokasyonda Satılık Villa"
+    ],
+    "metadata": {
+        "tone": "seo",
+        "avg_length": 67,
+        "seo_score": 88,
+        "context7_compliant": true
+    }
 }
 ```
 
@@ -311,12 +320,12 @@ neo-btn, neo-card → ZORUNLU
 
 ```json
 {
-  "variants": [
-    "🏠 Süper Villa!! KAÇIRMA 🌊",  // ❌ Emoji yasak
-    "şehirde villa",  // ❌ Küçük harf, eksik bilgi
-    "Villa satılık durum aktif"  // ❌ Anlamsız
-  ],
-  "context7_compliant": false  // ❌ Uyumsuz
+    "variants": [
+        "🏠 Süper Villa!! KAÇIRMA 🌊", // ❌ Emoji yasak
+        "şehirde villa", // ❌ Küçük harf, eksik bilgi
+        "Villa satılık durum aktif" // ❌ Anlamsız
+    ],
+    "context7_compliant": false // ❌ Uyumsuz
 }
 ```
 
@@ -347,4 +356,3 @@ C: Ollama timeout (30s) veya error durumunda.
 ---
 
 **🎯 ÖZET:** Context7 = İngilizce field adları + Neo Design + Türkçe içerik + Cache + Fallback
-

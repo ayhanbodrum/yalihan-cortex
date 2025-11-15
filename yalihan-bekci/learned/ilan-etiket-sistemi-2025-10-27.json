@@ -11,10 +11,7 @@
     "database/seeders/IlanEtiketSeeder.php",
     "ILAN_ETIKET_SISTEMI.md"
   ],
-  "files_modified": [
-    "app/Models/Etiket.php",
-    "app/Models/Ilan.php"
-  ],
+  "files_modified": ["app/Models/Etiket.php", "app/Models/Ilan.php"],
   "database_changes": {
     "etiketler_table": {
       "added_fields": [
@@ -114,10 +111,7 @@
     "Hazır renk paleti şemaları",
     "Çoklu dil desteği"
   ],
-  "related_documents": [
-    "ILAN_ETIKET_SISTEMI.md",
-    "YAPILAN_ISLER_2025_10_26.md"
-  ],
+  "related_documents": ["ILAN_ETIKET_SISTEMI.md", "YAPILAN_ISLER_2025_10_26.md"],
   "testing_commands": [
     "php artisan migrate",
     "php artisan db:seed --class=IlanEtiketSeeder",

@@ -9,20 +9,20 @@
 ## 🚨 KRİTİK EKSİK: YATAK ODASI DETAYLARI
 
 ### Problem:
-```yaml
-TatildeKirala/Airbnb'de VAR:
-  ✅ "Nerede Uyuyacaksınız" bölümü
-  ✅ Her odanın yatak tipi detayı
-  ✅ Yatak sayısı ve tipi (çift, tek, ranza, çekyat)
-  ✅ Oda başına kapasite
 
-Bizde YOK:
-  ❌ Yatak odası detay tablosu
-  ❌ Yatak tipi bilgisi
-  ❌ Oda başına yatak dağılımı
+```yaml
+TatildeKirala/Airbnb'de VAR: ✅ "Nerede Uyuyacaksınız" bölümü
+    ✅ Her odanın yatak tipi detayı
+    ✅ Yatak sayısı ve tipi (çift, tek, ranza, çekyat)
+    ✅ Oda başına kapasite
+
+Bizde YOK: ❌ Yatak odası detay tablosu
+    ❌ Yatak tipi bilgisi
+    ❌ Oda başına yatak dağılımı
 ```
 
 ### Örnek (EtsTur Villa):
+
 ```
 6 Kişilik - 3 Oda - 3 Yatak
 
@@ -36,6 +36,7 @@ Yatak Düzeni:
 ### Çözüm Önerisi:
 
 **Yöntem 1: Yeni Tablo (bedroom_details)**
+
 ```php
 Schema::create('bedroom_details', function (Blueprint $table) {
     $table->id();
@@ -54,13 +55,14 @@ Schema::create('bedroom_details', function (Blueprint $table) {
     $table->integer('capacity'); // Bu odada kaç kişi uyur
     $table->text('notes')->nullable(); // Notlar
     $table->timestamps();
-    
+
     // Index
     $table->index('ilan_id');
 });
 ```
 
 **Yöntem 2: JSON Field (daha basit)**
+
 ```php
 // ilanlar tablosuna ekle:
 $table->json('bedroom_layout')->nullable();
@@ -87,47 +89,47 @@ $table->json('bedroom_layout')->nullable();
 
 ### 🔴 YÜK SEK ÖNCELİK (Mutlaka Ekle)
 
-| # | Özellik | Mevcut | EtsTur'da | TatildeKirala'da | Çözüm |
-|---|---------|--------|-----------|------------------|-------|
-| 1 | **Yatak Odası Detayları** | ❌ YOK | ✅ VAR | ✅ VAR | Migration: bedroom_layout (JSON) |
-| 2 | **Sauna** | ❌ YOK | ✅ VAR | ✅ VAR | Feature ekle |
-| 3 | **Hamam (Türk Hamamı)** | ❌ YOK | ✅ VAR | ✅ VAR | Feature ekle |
-| 4 | **Çocuk Oyun Alanı** | ❌ YOK | ✅ VAR | ✅ VAR | Feature ekle |
-| 5 | **Şezlong** | ❌ YOK | ✅ VAR | ✅ VAR | Feature ekle |
-| 6 | **Buzdolabı** | ❌ YOK | ✅ Implied | ✅ Implied | Feature ekle |
-| 7 | **Kahve Makinesi** | ❌ YOK | ✅ VAR | ✅ VAR | Feature ekle |
-| 8 | **Su Isıtıcı** | ❌ YOK | ✅ VAR | ✅ VAR | Feature ekle |
-| 9 | **Doğa Manzaralı** | ⚠️ "Doğa İçinde" | ✅ VAR | ✅ VAR | Feature ekle (ayrı) |
-| 10 | **Saç Kurutma Makinesi** | ❌ YOK | ✅ VAR | ✅ VAR | Feature ekle |
+| #   | Özellik                   | Mevcut           | EtsTur'da  | TatildeKirala'da | Çözüm                            |
+| --- | ------------------------- | ---------------- | ---------- | ---------------- | -------------------------------- |
+| 1   | **Yatak Odası Detayları** | ❌ YOK           | ✅ VAR     | ✅ VAR           | Migration: bedroom_layout (JSON) |
+| 2   | **Sauna**                 | ❌ YOK           | ✅ VAR     | ✅ VAR           | Feature ekle                     |
+| 3   | **Hamam (Türk Hamamı)**   | ❌ YOK           | ✅ VAR     | ✅ VAR           | Feature ekle                     |
+| 4   | **Çocuk Oyun Alanı**      | ❌ YOK           | ✅ VAR     | ✅ VAR           | Feature ekle                     |
+| 5   | **Şezlong**               | ❌ YOK           | ✅ VAR     | ✅ VAR           | Feature ekle                     |
+| 6   | **Buzdolabı**             | ❌ YOK           | ✅ Implied | ✅ Implied       | Feature ekle                     |
+| 7   | **Kahve Makinesi**        | ❌ YOK           | ✅ VAR     | ✅ VAR           | Feature ekle                     |
+| 8   | **Su Isıtıcı**            | ❌ YOK           | ✅ VAR     | ✅ VAR           | Feature ekle                     |
+| 9   | **Doğa Manzaralı**        | ⚠️ "Doğa İçinde" | ✅ VAR     | ✅ VAR           | Feature ekle (ayrı)              |
+| 10  | **Saç Kurutma Makinesi**  | ❌ YOK           | ✅ VAR     | ✅ VAR           | Feature ekle                     |
 
 ### 🟡 ORTA ÖNCELİK (İyi Olur)
 
-| # | Özellik | Durum | Çözüm |
-|---|---------|-------|-------|
-| 11 | Bahçe Masası | ❌ YOK | Feature ekle |
-| 12 | Fırsat İlanı (Badge) | ❌ YOK | UI badge, ilanlar.is_featured |
-| 13 | Çocuk Ekipmanları (mama sandalyesi, etc.) | ❌ YOK | Feature ekle |
-| 14 | Oyun Konsolu | ❌ YOK | Feature ekle |
-| 15 | Netflix/Streaming | ❌ YOK | Feature ekle |
+| #   | Özellik                                   | Durum  | Çözüm                         |
+| --- | ----------------------------------------- | ------ | ----------------------------- |
+| 11  | Bahçe Masası                              | ❌ YOK | Feature ekle                  |
+| 12  | Fırsat İlanı (Badge)                      | ❌ YOK | UI badge, ilanlar.is_featured |
+| 13  | Çocuk Ekipmanları (mama sandalyesi, etc.) | ❌ YOK | Feature ekle                  |
+| 14  | Oyun Konsolu                              | ❌ YOK | Feature ekle                  |
+| 15  | Netflix/Streaming                         | ❌ YOK | Feature ekle                  |
 
 ### ✅ MEVCUT OLANLAR (OK)
 
-| # | Özellik | Durum |
-|---|---------|-------|
-| ✅ | Jakuzi | VAR (Property Type Manager) |
-| ✅ | Çocuk Havuzu | VAR (YazlikAmenitiesSeeder) |
-| ✅ | TV & Uydu | VAR (YazlikAmenitiesSeeder) |
-| ✅ | Özel Havuz | VAR |
-| ✅ | WiFi/İnternet | VAR |
-| ✅ | Otopark | VAR |
-| ✅ | Klima | VAR |
-| ✅ | Bahçe | VAR |
-| ✅ | Bulaşık Makinesi | VAR |
-| ✅ | Çamaşır Makinesi | VAR |
-| ✅ | Deniz Manzarası | VAR |
-| ✅ | Denize Uzaklık | VAR |
-| ✅ | Oda Sayısı | VAR |
-| ✅ | Yatak Kapasitesi | VAR (ama detay yok!) |
+| #   | Özellik          | Durum                       |
+| --- | ---------------- | --------------------------- |
+| ✅  | Jakuzi           | VAR (Property Type Manager) |
+| ✅  | Çocuk Havuzu     | VAR (YazlikAmenitiesSeeder) |
+| ✅  | TV & Uydu        | VAR (YazlikAmenitiesSeeder) |
+| ✅  | Özel Havuz       | VAR                         |
+| ✅  | WiFi/İnternet    | VAR                         |
+| ✅  | Otopark          | VAR                         |
+| ✅  | Klima            | VAR                         |
+| ✅  | Bahçe            | VAR                         |
+| ✅  | Bulaşık Makinesi | VAR                         |
+| ✅  | Çamaşır Makinesi | VAR                         |
+| ✅  | Deniz Manzarası  | VAR                         |
+| ✅  | Denize Uzaklık   | VAR                         |
+| ✅  | Oda Sayısı       | VAR                         |
+| ✅  | Yatak Kapasitesi | VAR (ama detay yok!)        |
 
 ---
 
@@ -144,50 +146,51 @@ Schema::table('ilanlar', function (Blueprint $table) {
 ```
 
 **Örnek Data:**
+
 ```json
 {
-  "bedrooms": [
-    {
-      "room_number": 1,
-      "room_name": "Ana Yatak Odası",
-      "bed_type": "double",
-      "bed_count": 1,
-      "bed_size": "160x200",
-      "capacity": 2,
-      "ensuite_bathroom": true,
-      "balcony": true
-    },
-    {
-      "room_number": 2,
-      "room_name": "Misafir Odası",
-      "bed_type": "single",
-      "bed_count": 2,
-      "bed_size": "90x200",
-      "capacity": 2,
-      "ensuite_bathroom": false,
-      "balcony": false
-    },
-    {
-      "room_number": 3,
-      "room_name": "Çocuk Odası",
-      "bed_type": "bunk",
-      "bed_count": 1,
-      "capacity": 2,
-      "ensuite_bathroom": false,
-      "balcony": false
-    }
-  ],
-  "extra_sleeping": [
-    {
-      "location": "Oturma Odası",
-      "bed_type": "sofa_bed",
-      "bed_count": 1,
-      "capacity": 1
-    }
-  ],
-  "total_capacity": 7,
-  "total_bedrooms": 3,
-  "total_bathrooms": 2
+    "bedrooms": [
+        {
+            "room_number": 1,
+            "room_name": "Ana Yatak Odası",
+            "bed_type": "double",
+            "bed_count": 1,
+            "bed_size": "160x200",
+            "capacity": 2,
+            "ensuite_bathroom": true,
+            "balcony": true
+        },
+        {
+            "room_number": 2,
+            "room_name": "Misafir Odası",
+            "bed_type": "single",
+            "bed_count": 2,
+            "bed_size": "90x200",
+            "capacity": 2,
+            "ensuite_bathroom": false,
+            "balcony": false
+        },
+        {
+            "room_number": 3,
+            "room_name": "Çocuk Odası",
+            "bed_type": "bunk",
+            "bed_count": 1,
+            "capacity": 2,
+            "ensuite_bathroom": false,
+            "balcony": false
+        }
+    ],
+    "extra_sleeping": [
+        {
+            "location": "Oturma Odası",
+            "bed_type": "sofa_bed",
+            "bed_count": 1,
+            "capacity": 1
+        }
+    ],
+    "total_capacity": 7,
+    "total_bedrooms": 3,
+    "total_bathrooms": 2
 }
 ```
 
@@ -204,20 +207,20 @@ $missingAmenities = [
     ['name' => 'Hamam (Türk Hamamı)', 'icon' => '🛁', 'category' => 'wellness'],
     ['name' => 'Spa', 'icon' => '💆', 'category' => 'wellness'],
     ['name' => 'Masaj Odası', 'icon' => '💆‍♀️', 'category' => 'wellness'],
-    
+
     // Çocuk Özellikleri
     ['name' => 'Çocuk Oyun Alanı', 'icon' => '🎪', 'category' => 'cocuk'],
     ['name' => 'Çocuk Parkı', 'icon' => '🛝', 'category' => 'cocuk'],
     ['name' => 'Bebek Yatağı', 'icon' => '🍼', 'category' => 'cocuk'],
     ['name' => 'Mama Sandalyesi', 'icon' => '🪑', 'category' => 'cocuk'],
     ['name' => 'Çocuk Güvenlik Kapısı', 'icon' => '🚪', 'category' => 'cocuk'],
-    
+
     // Dış Mekan
     ['name' => 'Şezlong', 'icon' => '🏖️', 'category' => 'dis_mekan'],
     ['name' => 'Bahçe Masası', 'icon' => '🪑', 'category' => 'dis_mekan'],
     ['name' => 'Bahçe Şemsiyesi', 'icon' => '⛱️', 'category' => 'dis_mekan'],
     ['name' => 'Dış Aydınlatma', 'icon' => '💡', 'category' => 'dis_mekan'],
-    
+
     // Mutfak Ekipmanları
     ['name' => 'Buzdolabı', 'icon' => '🧊', 'category' => 'mutfak'],
     ['name' => 'Kahve Makinesi', 'icon' => '☕', 'category' => 'mutfak'],
@@ -226,24 +229,24 @@ $missingAmenities = [
     ['name' => 'Çay Makinesi', 'icon' => '🍵', 'category' => 'mutfak'],
     ['name' => 'Tost Makinesi', 'icon' => '🍞', 'category' => 'mutfak'],
     ['name' => 'Blender', 'icon' => '🥤', 'category' => 'mutfak'],
-    
+
     // Banyo Ekipmanları
     ['name' => 'Saç Kurutma Makinesi', 'icon' => '💨', 'category' => 'banyo'],
     ['name' => 'Havlu Seti', 'icon' => '🧺', 'category' => 'banyo'],
     ['name' => 'Banyo Malzemeleri', 'icon' => '🧴', 'category' => 'banyo'],
-    
+
     // Eğlence
     ['name' => 'Oyun Konsolu', 'icon' => '🎮', 'category' => 'eglence'],
     ['name' => 'Netflix/Streaming', 'icon' => '📺', 'category' => 'eglence'],
     ['name' => 'Bluetooth Hoparlör', 'icon' => '🔊', 'category' => 'eglence'],
     ['name' => 'Kitaplık', 'icon' => '📚', 'category' => 'eglence'],
     ['name' => 'Board Games', 'icon' => '🎲', 'category' => 'eglence'],
-    
+
     // Manzara (Ayrı Features)
     ['name' => 'Doğa Manzaralı', 'icon' => '🌲', 'category' => 'manzara'],
     ['name' => 'Dağ Manzaralı', 'icon' => '⛰️', 'category' => 'manzara'],
     ['name' => 'Göl Manzaralı', 'icon' => '🏞️', 'category' => 'manzara'],
-    
+
     // Konum Vurguları (TatildeKirala tarzı)
     ['name' => 'Sakin Konumda', 'icon' => '🤫', 'category' => 'konum'],
     ['name' => 'Huzurlu Çevrede', 'icon' => '🕊️', 'category' => 'konum'],
@@ -278,8 +281,9 @@ bedroom_layout (nullable)
 ```
 
 **Örnek Form (Alpine.js):**
+
 ```javascript
-<div x-data="{ 
+<div x-data="{
   bedrooms: [
     {room: 1, name: '', bed_type: 'double', count: 1, capacity: 2}
   ]
@@ -296,7 +300,7 @@ bedroom_layout (nullable)
       <input type="number" x-model="bedroom.count" min="1" max="5">
     </div>
   </template>
-  
+
   <button @click="bedrooms.push({room: bedrooms.length+1, bed_type: 'double', count: 1})">
     + Oda Ekle
   </button>
@@ -320,6 +324,7 @@ php artisan db:seed --class=YazlikMissingAmenitiesSeeder
 ```
 
 **Kategoriler:**
+
 - Wellness: Sauna, Hamam, Spa
 - Çocuk: Oyun alanı, Bebek yatağı, Mama sandalyesi
 - Dış Mekan: Şezlong, Bahçe masası, Şemsiye
@@ -335,34 +340,34 @@ php artisan db:seed --class=YazlikMissingAmenitiesSeeder
 
 ### EtsTur Villa #42838 Özellikleri
 
-| Özellik | Bizde Var mı? | Nasıl Ekleriz? |
-|---------|--------------|----------------|
-| 6 Kişilik | ✅ Yatak Kapasitesi | OK |
-| 3 Oda | ✅ Oda Sayısı | OK |
-| 3 Yatak | ❌ Detay yok | bedroom_layout JSON |
-| Sauna | ❌ YOK | Feature ekle |
-| Hamam | ❌ YOK | Feature ekle |
-| Jakuzi | ✅ VAR | OK |
-| Çocuk Havuzu | ✅ VAR | OK |
-| Çocuk Oyun Alanı | ❌ YOK | Feature ekle |
-| Özel Havuz | ✅ VAR | OK |
-| WiFi | ✅ VAR | OK |
-| Otopark | ✅ VAR | OK |
-| Klima | ✅ VAR | OK |
-| Bahçe | ✅ VAR | OK |
-| Bahçe Masası | ❌ YOK | Feature ekle |
-| Şezlong | ❌ YOK | Feature ekle |
-| Buzdolabı | ❌ YOK | Feature ekle |
-| Bulaşık Makinesi | ✅ VAR | OK |
-| Su Isıtıcı | ❌ YOK | Feature ekle |
-| Kahve Makinesi | ❌ YOK | Feature ekle |
-| TV | ✅ VAR | OK |
-| Çamaşır Makinesi | ✅ VAR | OK |
-| Saç Kurutma | ❌ YOK | Feature ekle |
-| Doğa Manzaralı | ⚠️ Partial | Feature ekle |
-| Sakin Konumda | ❌ YOK | Feature ekle (vurgu) |
-| Sessiz | ❌ YOK | Feature ekle (vurgu) |
-| Lüks | ❌ Badge yok | UI feature |
+| Özellik          | Bizde Var mı?       | Nasıl Ekleriz?       |
+| ---------------- | ------------------- | -------------------- |
+| 6 Kişilik        | ✅ Yatak Kapasitesi | OK                   |
+| 3 Oda            | ✅ Oda Sayısı       | OK                   |
+| 3 Yatak          | ❌ Detay yok        | bedroom_layout JSON  |
+| Sauna            | ❌ YOK              | Feature ekle         |
+| Hamam            | ❌ YOK              | Feature ekle         |
+| Jakuzi           | ✅ VAR              | OK                   |
+| Çocuk Havuzu     | ✅ VAR              | OK                   |
+| Çocuk Oyun Alanı | ❌ YOK              | Feature ekle         |
+| Özel Havuz       | ✅ VAR              | OK                   |
+| WiFi             | ✅ VAR              | OK                   |
+| Otopark          | ✅ VAR              | OK                   |
+| Klima            | ✅ VAR              | OK                   |
+| Bahçe            | ✅ VAR              | OK                   |
+| Bahçe Masası     | ❌ YOK              | Feature ekle         |
+| Şezlong          | ❌ YOK              | Feature ekle         |
+| Buzdolabı        | ❌ YOK              | Feature ekle         |
+| Bulaşık Makinesi | ✅ VAR              | OK                   |
+| Su Isıtıcı       | ❌ YOK              | Feature ekle         |
+| Kahve Makinesi   | ❌ YOK              | Feature ekle         |
+| TV               | ✅ VAR              | OK                   |
+| Çamaşır Makinesi | ✅ VAR              | OK                   |
+| Saç Kurutma      | ❌ YOK              | Feature ekle         |
+| Doğa Manzaralı   | ⚠️ Partial          | Feature ekle         |
+| Sakin Konumda    | ❌ YOK              | Feature ekle (vurgu) |
+| Sessiz           | ❌ YOK              | Feature ekle (vurgu) |
+| Lüks             | ❌ Badge yok        | UI feature           |
 
 **Skor:** 13/25 (%52) - İyi ama eksiğimiz var!
 
@@ -390,6 +395,7 @@ php artisan make:seeder YazlikMissingAmenitiesSeeder
 ```
 
 10 KRİTİK özellik ekle:
+
 1. Sauna
 2. Hamam
 3. Çocuk Oyun Alanı
@@ -408,17 +414,18 @@ php artisan make:seeder YazlikMissingAmenitiesSeeder
 ### İlan Detay Sayfasında Ekle:
 
 **1. "Nerede Uyuyacaksınız" Bölümü**
+
 ```blade
 <div class="bedroom-section">
     <h3>🛏️ Nerede Uyuyacaksınız</h3>
-    
+
     @foreach($ilan->bedroom_layout['bedrooms'] ?? [] as $bedroom)
     <div class="bedroom-card">
         <div class="bedroom-icon">🛏️</div>
         <div>
             <h4>{{ $bedroom['room_name'] ?? $bedroom['room_number'] . '. Yatak Odası' }}</h4>
             <p>
-                {{ $bedroom['bed_count'] }} 
+                {{ $bedroom['bed_count'] }}
                 {{ $bedroom['bed_type'] == 'double' ? 'Çift Kişilik Yatak' : '' }}
                 {{ $bedroom['bed_type'] == 'single' ? 'Tek Kişilik Yatak' : '' }}
                 {{ $bedroom['bed_type'] == 'bunk' ? 'Ranza' : '' }}
@@ -427,7 +434,7 @@ php artisan make:seeder YazlikMissingAmenitiesSeeder
         </div>
     </div>
     @endforeach
-    
+
     <div class="total-capacity">
         Toplam {{ $ilan->bedroom_layout['total_capacity'] ?? $ilan->yatak_kapasitesi }} kişi uyuyabilir
     </div>
@@ -435,6 +442,7 @@ php artisan make:seeder YazlikMissingAmenitiesSeeder
 ```
 
 **2. Amenities Grid (Kategorili)**
+
 ```blade
 <div class="amenities-grid">
     <!-- Wellness -->
@@ -444,7 +452,7 @@ php artisan make:seeder YazlikMissingAmenitiesSeeder
         @if($ilan->hasFeature('Hamam')) <span>✅ Türk Hamamı</span> @endif
         @if($ilan->hasFeature('Jakuzi')) <span>✅ Jakuzi</span> @endif
     </div>
-    
+
     <!-- Çocuk -->
     <div class="amenity-category">
         <h4>👶 Çocuk Dostu</h4>
@@ -452,7 +460,7 @@ php artisan make:seeder YazlikMissingAmenitiesSeeder
         @if($ilan->hasFeature('Çocuk Oyun Alanı')) <span>✅ Oyun Alanı</span> @endif
         @if($ilan->hasFeature('Bebek Yatağı')) <span>✅ Bebek Yatağı</span> @endif
     </div>
-    
+
     <!-- Mutfak -->
     <div class="amenity-category">
         <h4>🍳 Mutfak</h4>
@@ -466,6 +474,7 @@ php artisan make:seeder YazlikMissingAmenitiesSeeder
 ## 💡 ÖNERİ: HEMEN BAŞLAYALIM!
 
 **Şimdi yaparsak:**
+
 ```yaml
 1. bedroom_layout migration (15 dk)
 2. YazlikMissingAmenitiesSeeder (30 dk)
@@ -477,4 +486,3 @@ SONUÇ: Rakiplerle %90+ eşit özellik seti!
 ```
 
 **Başlayalım mı?** 🚀
-

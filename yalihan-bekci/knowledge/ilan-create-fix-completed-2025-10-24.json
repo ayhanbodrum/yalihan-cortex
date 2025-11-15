@@ -90,21 +90,12 @@
         "❌ Özellikler (features-dynamic)",
         "❌ Arsa Hesaplama (arsa-calculation)"
       ],
-      "edit_te_vardi": [
-        "✅ Özellikler (features-dynamic)",
-        "✅ Arsa Hesaplama (arsa-calculation)"
-      ],
+      "edit_te_vardi": ["✅ Özellikler (features-dynamic)", "✅ Arsa Hesaplama (arsa-calculation)"],
       "tutarsizlik": "YÜKSEK"
     },
     "sonrasi": {
-      "create_te_var": [
-        "✅ Özellikler (features-dynamic)",
-        "✅ Arsa Hesaplama (arsa-calculation)"
-      ],
-      "edit_te_var": [
-        "✅ Özellikler (features-dynamic)",
-        "✅ Arsa Hesaplama (arsa-calculation)"
-      ],
+      "create_te_var": ["✅ Özellikler (features-dynamic)", "✅ Arsa Hesaplama (arsa-calculation)"],
+      "edit_te_var": ["✅ Özellikler (features-dynamic)", "✅ Arsa Hesaplama (arsa-calculation)"],
       "tutarsizlik": "YOK"
     }
   },
@@ -156,9 +147,7 @@
   },
 
   "dosya_degisiklikleri": {
-    "guncellenen_dosyalar": [
-      "resources/views/admin/ilanlar/create.blade.php"
-    ],
+    "guncellenen_dosyalar": ["resources/views/admin/ilanlar/create.blade.php"],
     "eklenen_satirlar": 12,
     "silinen_satirlar": 0,
     "net_degisiklik": "+12 satır"
@@ -215,11 +204,7 @@
       "Progress bar dinamikleştir (opsiyonel)",
       "Frontend validation ekle (opsiyonel)"
     ],
-    "orta_vade": [
-      "Auto-save localStorage",
-      "Kısayol tuşları (Ctrl+S, Ctrl+P)",
-      "Validation özeti"
-    ]
+    "orta_vade": ["Auto-save localStorage", "Kısayol tuşları (Ctrl+S, Ctrl+P)", "Validation özeti"]
   },
 
   "created_documentation": [
@@ -229,4 +214,3 @@
     "ilan-create-fix-completed-2025-10-24.json"
   ]
 }
-

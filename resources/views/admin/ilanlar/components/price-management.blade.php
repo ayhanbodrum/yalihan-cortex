@@ -28,34 +28,35 @@
                     <span class="text-red-500 font-bold">*</span>
                 </label>
                 <div class="relative">
-                    <input 
-                        type="text" 
-                        name="fiyat" 
-                        id="fiyat" 
+                    <input
+                        type="text"
+                        name="fiyat"
+                        id="fiyat"
                         x-model="mainPriceInput"
-                        @input="onPriceInputChange()" 
-                        @blur="onPriceBlur()" 
+                        @input="onPriceInputChange()"
+                        @blur="onPriceBlur()"
                         required
+                        @error('fiyat') aria-invalid="true" aria-describedby="fiyat-error" data-error="true" @enderror
                         placeholder="450000 veya 450-"
                         class="w-full px-5 py-4 pr-32
-                               border-2 border-gray-300 dark:border-gray-600 
-                               rounded-xl 
-                               bg-white dark:bg-gray-800 
+                               border-2 border-gray-300 dark:border-gray-600
+                               rounded-xl
+                               bg-white dark:bg-gray-800
                                text-black dark:text-white text-lg font-semibold
                                placeholder-gray-400 dark:placeholder-gray-500
                                focus:ring-4 focus:ring-yellow-500/20 focus:border-yellow-500 dark:focus:border-yellow-400
                                transition-all duration-200
                                hover:border-gray-400 dark:hover:border-gray-500
-                               shadow-sm hover:shadow-md focus:shadow-lg">
+                               shadow-sm hover:shadow-md focus:shadow-lg data-[error=true]:border-red-500 data-[error=true]:focus:ring-red-500">
                     <div class="absolute inset-y-0 right-0 flex items-center pr-4">
-                        <select x-model="mainCurrency" 
-                            @change="onCurrencyChange()" 
-                            name="para_birimi" 
+                        <select x-model="mainCurrency"
+                            @change="onCurrencyChange()"
+                            name="para_birimi"
                             required
-                            class="px-4 py-2.5 
+                            class="px-4 py-2.5
                                    border-0 border-l-2 border-gray-200 dark:border-gray-600
-                                   bg-white dark:bg-gray-800 
-                                   text-black dark:text-white 
+                                   bg-white dark:bg-gray-800
+                                   text-black dark:text-white
                                    font-semibold text-sm rounded-r-lg
                                    focus:outline-none focus:ring-2 focus:ring-yellow-500/50
                                    cursor-pointer transition-all duration-200">
@@ -66,7 +67,24 @@
                         </select>
                     </div>
                 </div>
-                
+
+                @error('fiyat')
+                    <div id="fiyat-error" role="alert" aria-live="assertive" class="mt-2 flex items-center gap-2 text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 px-4 py-2 rounded-lg">
+                        <svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                        </svg>
+                        {{ $message }}
+                    </div>
+                @enderror
+                @error('para_birimi')
+                    <div id="para-birimi-error" role="alert" aria-live="assertive" class="mt-2 flex items-center gap-2 text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 px-4 py-2 rounded-lg">
+                        <svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                        </svg>
+                        {{ $message }}
+                    </div>
+                @enderror
+
                 <!-- Price Display - Enhanced -->
                 <div class="mt-4 space-y-3">
                     <div class="flex items-center gap-2 p-3 bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 rounded-xl border border-yellow-200 dark:border-yellow-800/30">
@@ -186,9 +204,9 @@
                         <input type="text" x-model="startingPriceFormatted" @input="formatStartingPrice()"
                             name="baslangic_fiyati"
                             class="w-full px-4 py-2.5
-                                   border-2 border-gray-300 dark:border-gray-600 
-                                   rounded-xl 
-                                   bg-white dark:bg-gray-800 
+                                   border-2 border-gray-300 dark:border-gray-600
+                                   rounded-xl
+                                   bg-white dark:bg-gray-800
                                    text-black dark:text-white
                                    placeholder-gray-400 dark:placeholder-gray-500
                                    focus:ring-4 focus:ring-blue-500 dark:focus:ring-blue-400/20 focus:border-green-500 dark:focus:border-green-400

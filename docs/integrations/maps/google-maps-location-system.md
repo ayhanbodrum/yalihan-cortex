@@ -10,21 +10,21 @@ Bu sistem, [Flynax Location Finder](https://www.flynax.com/plugins/location-find
 
 ### ✅ Temel Özellikler
 
--   **🗺️ Google Maps Entegrasyonu** - Gerçek harita ile konum seçimi
--   **📍 Marker Drag & Drop** - Marker'ı sürükleyerek hassas konum
--   **🔍 Google Places API** - Adres arama ve otomatik doldurma
--   **🌍 IP Based Location** - Kullanıcının konumunu otomatik tespit
--   **🔄 Real-time Sync** - Harita ↔ Form alanları senkronizasyonu
--   **📍 Coordinates Storage** - Lat/Lng koordinatları kaydetme
--   **📮 Address Components** - Ülke, şehir, ilçe otomatik ayrıştırma
+- **🗺️ Google Maps Entegrasyonu** - Gerçek harita ile konum seçimi
+- **📍 Marker Drag & Drop** - Marker'ı sürükleyerek hassas konum
+- **🔍 Google Places API** - Adres arama ve otomatik doldurma
+- **🌍 IP Based Location** - Kullanıcının konumunu otomatik tespit
+- **🔄 Real-time Sync** - Harita ↔ Form alanları senkronizasyonu
+- **📍 Coordinates Storage** - Lat/Lng koordinatları kaydetme
+- **📮 Address Components** - Ülke, şehir, ilçe otomatik ayrıştırma
 
 ### ✅ Gelişmiş Özellikler
 
--   **🎯 Autocomplete Search** - Google Places autocomplete
--   **📍 Double Click to Place** - Haritaya çift tıklayarak konum
--   **🔍 Address Search** - Tam adres arama
--   **🌍 Current Location** - Mevcut konum butonu
--   **📊 Real-time Preview** - Anlık konum bilgisi gösterimi
+- **🎯 Autocomplete Search** - Google Places autocomplete
+- **📍 Double Click to Place** - Haritaya çift tıklayarak konum
+- **🔍 Address Search** - Tam adres arama
+- **🌍 Current Location** - Mevcut konum butonu
+- **📊 Real-time Preview** - Anlık konum bilgisi gösterimi
 
 ## 🏗️ Sistem Mimarisi
 
@@ -67,9 +67,9 @@ GOOGLE_MAPS_API_KEY=your-google-maps-api-key-here
 
 ### 2. Gerekli Google APIs
 
--   **Maps JavaScript API** - Harita görüntüleme
--   **Places API** - Adres arama ve autocomplete
--   **Geocoding API** - Koordinat ↔ Adres dönüşümü
+- **Maps JavaScript API** - Harita görüntüleme
+- **Places API** - Adres arama ve autocomplete
+- **Geocoding API** - Koordinat ↔ Adres dönüşümü
 
 ### 3. Form Wizard Entegrasyonu
 
@@ -132,45 +132,45 @@ updateLocationInfo(place);
 
 ### Neo Design System Uyumluluğu
 
--   **neo-card** - Ana konteyner
--   **neo-input** - Adres arama kutusu
--   **neo-btn** - Aksiyon butonları
--   **neo-alert** - Konum bilgi gösterimi
+- **neo-card** - Ana konteyner
+- **neo-input** - Adres arama kutusu
+- **neo-btn** - Aksiyon butonları
+- **neo-alert** - Konum bilgi gösterimi
 
 ### Responsive Design
 
--   **Mobile First** - Mobil öncelikli tasarım
--   **Touch Friendly** - Dokunmatik uyumlu
--   **Keyboard Navigation** - Klavye navigasyonu
+- **Mobile First** - Mobil öncelikli tasarım
+- **Touch Friendly** - Dokunmatik uyumlu
+- **Keyboard Navigation** - Klavye navigasyonu
 
 ## 🔒 Güvenlik
 
 ### API Key Güvenliği
 
--   **Environment Variables** - API key .env dosyasında
--   **Domain Restrictions** - Google Console'da domain kısıtlaması
--   **API Quotas** - Günlük kullanım limitleri
+- **Environment Variables** - API key .env dosyasında
+- **Domain Restrictions** - Google Console'da domain kısıtlaması
+- **API Quotas** - Günlük kullanım limitleri
 
 ### Data Validation
 
--   **Server-side Validation** - Backend doğrulama
--   **Input Sanitization** - Girdi temizleme
--   **XSS Protection** - Cross-site scripting koruması
+- **Server-side Validation** - Backend doğrulama
+- **Input Sanitization** - Girdi temizleme
+- **XSS Protection** - Cross-site scripting koruması
 
 ## 📈 Performance
 
 ### Optimizasyonlar
 
--   **Lazy Loading** - Harita gerektiğinde yüklenir
--   **Debounced Search** - Arama optimizasyonu
--   **Cached Results** - Sonuç önbellekleme
--   **Minified Assets** - Sıkıştırılmış dosyalar
+- **Lazy Loading** - Harita gerektiğinde yüklenir
+- **Debounced Search** - Arama optimizasyonu
+- **Cached Results** - Sonuç önbellekleme
+- **Minified Assets** - Sıkıştırılmış dosyalar
 
 ### Monitoring
 
--   **API Usage Tracking** - Google API kullanım takibi
--   **Error Logging** - Hata kayıtları
--   **Performance Metrics** - Performans metrikleri
+- **API Usage Tracking** - Google API kullanım takibi
+- **Error Logging** - Hata kayıtları
+- **Performance Metrics** - Performans metrikleri
 
 ## 🐛 Troubleshooting
 
@@ -194,7 +194,7 @@ echo $GOOGLE_MAPS_API_KEY
 
 ```javascript
 // Çözüm: Event listener kontrolü
-marker.addListener("dragend", function () {
+marker.addListener('dragend', function () {
     updateLocationFromMarker();
 });
 ```
@@ -229,23 +229,23 @@ ALTER TABLE ilanlar ADD COLUMN place_id VARCHAR(255) NULL;
 
 ## 📚 Referanslar
 
--   [Google Maps JavaScript API](https://developers.google.com/maps/documentation/javascript)
--   [Google Places API](https://developers.google.com/maps/documentation/places/web-service)
--   [Flynax Location Finder](https://www.flynax.com/plugins/location-finder.html)
--   [Context7 Rules](docs/context7-rules.md)
--   [Neo Design System](docs/neo-design-system.md)
+- [Google Maps JavaScript API](https://developers.google.com/maps/documentation/javascript)
+- [Google Places API](https://developers.google.com/maps/documentation/places/web-service)
+- [Flynax Location Finder](https://www.flynax.com/plugins/location-finder.html)
+- [Context7 Rules](docs/context7-rules.md)
+- [Neo Design System](docs/neo-design-system.md)
 
 ## 📝 Changelog
 
 ### v1.0.0 (2024-09-30)
 
--   ✅ Google Maps entegrasyonu eklendi
--   ✅ Marker drag & drop özelliği
--   ✅ Google Places API entegrasyonu
--   ✅ Real-time form sync
--   ✅ Neo Design System uyumluluğu
--   ✅ Responsive design
--   ✅ IP-based location detection
+- ✅ Google Maps entegrasyonu eklendi
+- ✅ Marker drag & drop özelliği
+- ✅ Google Places API entegrasyonu
+- ✅ Real-time form sync
+- ✅ Neo Design System uyumluluğu
+- ✅ Responsive design
+- ✅ IP-based location detection
 
 ---
 

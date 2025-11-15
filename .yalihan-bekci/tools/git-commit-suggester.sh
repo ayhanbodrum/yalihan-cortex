@@ -346,4 +346,3 @@ EOF
 
 # Çalıştır
 main
-

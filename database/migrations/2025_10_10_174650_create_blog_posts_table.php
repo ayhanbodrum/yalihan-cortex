@@ -28,7 +28,7 @@ return new class extends Migration
             $table->text('meta_description')->nullable();
             $table->timestamps();
             $table->softDeletes();
-            
+
             $table->index('status');
             $table->index('category_id');
             $table->index('author_id');

@@ -18,17 +18,17 @@ Villa türü emlak ilanları için lüks ve prestij vurgulu başlıklar oluştur
 
 ### **Zorunlu Parametreler:**
 
--   **room_count:** string - Oda sayısı (örn: "5+2", "4+1")
--   **location:** object - Konum bilgileri
-    -   **ilce:** string - İlçe adı
-    -   **mahalle:** string - Mahalle/bölge adı
--   **price:** number - Fiyat (TRY)
+- **room_count:** string - Oda sayısı (örn: "5+2", "4+1")
+- **location:** object - Konum bilgileri
+    - **ilce:** string - İlçe adı
+    - **mahalle:** string - Mahalle/bölge adı
+- **price:** number - Fiyat (TRY)
 
 ### **Opsiyonel Parametreler:**
 
--   **land_size:** number - Arsa büyüklüğü (m²)
--   **luxury_features:** array - Lüks özellikler ["havuzlu", "deniz manzaralı", "müstakil"]
--   **style:** string - Başlık stili ("luxury", "investment", "exclusive") - default: "luxury"
+- **land_size:** number - Arsa büyüklüğü (m²)
+- **luxury_features:** array - Lüks özellikler ["havuzlu", "deniz manzaralı", "müstakil"]
+- **style:** string - Başlık stili ("luxury", "investment", "exclusive") - default: "luxury"
 
 ---
 
@@ -54,14 +54,14 @@ Villa türü emlak ilanları için lüks ve prestij vurgulu başlıklar oluştur
 
 ## 🎯 **Context7 Kuralları**
 
--   ✅ "Villa" kelimesi prominently featured
--   ✅ "Satılık" keyword inclusion
--   ✅ Luxury descriptors ("Lüks", "Eşsiz", "Özel")
--   ✅ Premium location emphasis
--   ✅ High-value features highlighting
--   ✅ Prestige terminology usage
--   ✅ 65 karakter altında idealdir
--   ✅ Investment appeal when appropriate
+- ✅ "Villa" kelimesi prominently featured
+- ✅ "Satılık" keyword inclusion
+- ✅ Luxury descriptors ("Lüks", "Eşsiz", "Özel")
+- ✅ Premium location emphasis
+- ✅ High-value features highlighting
+- ✅ Prestige terminology usage
+- ✅ 65 karakter altında idealdir
+- ✅ Investment appeal when appropriate
 
 ---
 
@@ -87,10 +87,10 @@ Villa türü emlak ilanları için lüks ve prestij vurgulu başlıklar oluştur
 
 ## 📋 **Lüks Sıfatlar**
 
--   Lüks, Eşsiz, Özel, Prestijli
--   Muhteşem, Harika, Benzersiz
--   Premium, Elite, Exclusive
--   Rüya gibi, Büyüleyici
+- Lüks, Eşsiz, Özel, Prestijli
+- Muhteşem, Harika, Benzersiz
+- Premium, Elite, Exclusive
+- Rüya gibi, Büyüleyici
 
 ---
 

@@ -18,20 +18,20 @@ Villa türü emlak ilanları için lüks ve prestij odaklı, SEO uyumlu açıkla
 
 ### **Zorunlu Parametreler:**
 
--   **title:** string - İlan başlığı
--   **location:** object - Konum bilgileri (il, ilçe, mahalle/bölge)
--   **price:** number - Fiyat bilgisi (TRY)
--   **features:** array - Özellikler listesi (oda sayısı, m², arsa, havuz, etc.)
+- **title:** string - İlan başlığı
+- **location:** object - Konum bilgileri (il, ilçe, mahalle/bölge)
+- **price:** number - Fiyat bilgisi (TRY)
+- **features:** array - Özellikler listesi (oda sayısı, m², arsa, havuz, etc.)
 
 ### **Opsiyonel Parametreler:**
 
--   **tone:** string - Ton (luks, kurumsal, prestij, yatirim) - default: "luks"
--   **target_length:** number - Hedef karakter sayısı (200-400) - default: 300
--   **keywords:** array - Ek anahtar kelimeler
--   **land_size:** number - Arsa büyüklüğü (m²)
--   **pool:** boolean - Havuz var/yok
--   **sea_view:** boolean - Deniz manzarası var/yok
--   **garden:** boolean - Bahçe var/yok
+- **tone:** string - Ton (luks, kurumsal, prestij, yatirim) - default: "luks"
+- **target_length:** number - Hedef karakter sayısı (200-400) - default: 300
+- **keywords:** array - Ek anahtar kelimeler
+- **land_size:** number - Arsa büyüklüğü (m²)
+- **pool:** boolean - Havuz var/yok
+- **sea_view:** boolean - Deniz manzarası var/yok
+- **garden:** boolean - Bahçe var/yok
 
 ---
 
@@ -59,14 +59,14 @@ Villa türü emlak ilanları için lüks ve prestij odaklı, SEO uyumlu açıkla
 
 ## 🎯 **Context7 Kuralları**
 
--   ✅ Luxury real estate terminology
--   ✅ Premium location emphasis
--   ✅ High-value feature highlighting
--   ✅ Investment potential mention
--   ✅ Lifestyle and prestige appeal
--   ✅ Exclusive opportunity positioning
--   ✅ Professional tone maintenance
--   ✅ Multi-variant generation for A/B testing
+- ✅ Luxury real estate terminology
+- ✅ Premium location emphasis
+- ✅ High-value feature highlighting
+- ✅ Investment potential mention
+- ✅ Lifestyle and prestige appeal
+- ✅ Exclusive opportunity positioning
+- ✅ Professional tone maintenance
+- ✅ Multi-variant generation for A/B testing
 
 ---
 
@@ -81,13 +81,7 @@ Villa türü emlak ilanları için lüks ve prestij odaklı, SEO uyumlu açıkla
         "mahalle": "Yalıkavak"
     },
     "price": 15000000,
-    "features": [
-        "5+2",
-        "400 m²",
-        "1000 m² arsa",
-        "özel havuz",
-        "deniz manzarası"
-    ],
+    "features": ["5+2", "400 m²", "1000 m² arsa", "özel havuz", "deniz manzarası"],
     "tone": "luks",
     "target_length": 350,
     "land_size": 1000,

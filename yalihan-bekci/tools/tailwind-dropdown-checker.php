@@ -3,7 +3,7 @@
 /**
  * Tailwind Dropdown Readability Checker
  * Yalıhan Bekçi - Automated Quality Assurance Tool
- * 
+ *
  * Purpose: Scan all Blade files for dropdown readability issues
  * Date: 2025-11-01
  * Version: 1.0.0
@@ -221,7 +221,7 @@ class TailwindDropdownChecker
     private function saveReport()
     {
         $reportPath = $this->basePath . '/yalihan-bekci/reports/tailwind-dropdown-scan-' . date('Y-m-d-His') . '.json';
-        
+
         $report = [
             'scan_date' => date('Y-m-d H:i:s'),
             'scanned_files' => $this->scannedFiles,
@@ -233,7 +233,7 @@ class TailwindDropdownChecker
         ];
 
         file_put_contents($reportPath, json_encode($report, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
-        
+
         echo "💾 Report saved: " . str_replace($this->basePath . '/', '', $reportPath) . "\n";
     }
 }
@@ -241,4 +241,3 @@ class TailwindDropdownChecker
 // Run the checker
 $checker = new TailwindDropdownChecker();
 $checker->scan();
-

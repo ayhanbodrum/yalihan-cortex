@@ -82,42 +82,42 @@
     <div class="content">
         <div class="section">
             <div class="section-title">📋 Rezervasyon Bilgileri</div>
-            
+
             <div class="info-row">
                 <span class="info-label">Rezervasyon No:</span>
                 <span class="info-value">{{ $booking['booking_reference'] ?? 'BK-' . now()->format('Ymd') }}</span>
             </div>
-            
+
             <div class="info-row">
                 <span class="info-label">Villa:</span>
                 <span class="info-value">{{ $booking['villa_title'] ?? $villa->baslik ?? 'Bilinmiyor' }}</span>
             </div>
-            
+
             <div class="info-row">
                 <span class="info-label">Lokasyon:</span>
                 <span class="info-value">{{ $booking['villa_location'] ?? 'Bilinmiyor' }}</span>
             </div>
-            
+
             <div class="info-row">
                 <span class="info-label">Giriş Tarihi:</span>
                 <span class="info-value">{{ \Carbon\Carbon::parse($booking['check_in'])->format('d.m.Y') }}</span>
             </div>
-            
+
             <div class="info-row">
                 <span class="info-label">Çıkış Tarihi:</span>
                 <span class="info-value">{{ \Carbon\Carbon::parse($booking['check_out'])->format('d.m.Y') }}</span>
             </div>
-            
+
             <div class="info-row">
                 <span class="info-label">Gece Sayısı:</span>
                 <span class="info-value">{{ $booking['nights'] ?? 1 }} gece</span>
             </div>
-            
+
             <div class="info-row">
                 <span class="info-label">Misafir Sayısı:</span>
                 <span class="info-value">{{ $booking['guests'] ?? 1 }} kişi</span>
             </div>
-            
+
             <div class="info-row">
                 <span class="info-label">Toplam Fiyat:</span>
                 <span class="info-value">{{ number_format($booking['total_price'] ?? 0, 2) }} TL</span>
@@ -126,22 +126,22 @@
 
         <div class="section">
             <div class="section-title">👤 Misafir Bilgileri</div>
-            
+
             <div class="info-row">
                 <span class="info-label">Ad Soyad:</span>
                 <span class="info-value">{{ $booking['guest_name'] ?? 'Bilinmiyor' }}</span>
             </div>
-            
+
             <div class="info-row">
                 <span class="info-label">Telefon:</span>
                 <span class="info-value">{{ $booking['guest_phone'] ?? 'Belirtilmemiş' }}</span>
             </div>
-            
+
             <div class="info-row">
                 <span class="info-label">Email:</span>
                 <span class="info-value">{{ $booking['guest_email'] ?? 'Belirtilmemiş' }}</span>
             </div>
-            
+
             @if(!empty($booking['guest_message']))
             <div class="info-row">
                 <span class="info-label">Mesaj:</span>
@@ -165,4 +165,3 @@
     </div>
 </body>
 </html>
-

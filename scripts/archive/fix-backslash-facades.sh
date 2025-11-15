@@ -22,9 +22,9 @@ for FILE in $FILES; do
            grep -q '\\Log::' "$FILE" || \
            grep -q '\\Auth::' "$FILE" || \
            grep -q '\\View::' "$FILE"; then
-            
+
             echo "📝 Düzeltiliyor: $FILE"
-            
+
             # macOS'ta sed -i '' kullanılır, Linux'ta sed -i
             if [[ "$OSTYPE" == "darwin"* ]]; then
                 sed -i '' 's/\\Cache::/Cache::/g' "$FILE"
@@ -39,18 +39,18 @@ for FILE in $FILES; do
                 sed -i 's/\\Auth::/Auth::/g' "$FILE"
                 sed -i 's/\\View::/View::/g' "$FILE"
             fi
-            
+
             # use statements kontrolü
             NEEDS_CACHE=$(grep -c 'Cache::' "$FILE")
             HAS_CACHE=$(grep -c '^use.*Facades.*Cache' "$FILE")
-            
+
             if [ "$NEEDS_CACHE" -gt 0 ] && [ "$HAS_CACHE" -eq 0 ]; then
                 echo "⚠️  WARNING: $FILE - Cache kullanıyor ama 'use' statement yok!"
                 echo "   'use Illuminate\\Support\\Facades\\Cache;' eklemelisin!"
             fi
-            
+
             FIXED_COUNT=$((FIXED_COUNT + 1))
-            
+
             # Düzeltilen dosyayı stage'e ekle
             git add "$FILE"
         fi
@@ -64,4 +64,3 @@ else
 fi
 
 exit 0
-

@@ -114,4 +114,4 @@ export function IlanTemelBilgiler({ formData, setFormData }: IlanTemelBilgilerPr
             </Card>
         </div>
     );
-} 
+}

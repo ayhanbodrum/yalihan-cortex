@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Cache;
 
 class BlogCategory extends Model
 {
@@ -17,7 +18,7 @@ class BlogCategory extends Model
         'description',
         'color',
         'icon',
-        'sort_order',
+        'display_order', // Context7: order → display_order (migration: 2025_11_11_103353)
         'status',
         'meta',
     ];
@@ -25,7 +26,7 @@ class BlogCategory extends Model
     protected $casts = [
         'status' => 'boolean',
         'meta' => 'array',
-        'sort_order' => 'integer',
+        'display_order' => 'integer', // Context7: order → display_order
     ];
 
     // Auto-generate slug when name is set
@@ -56,7 +57,7 @@ class BlogCategory extends Model
 
     public function scopeOrdered($query)
     {
-        return $query->orderBy('sort_order')->orderBy('name');
+        return $query->orderBy('display_order')->orderBy('name'); // Context7: order → display_order
     }
 
     // Accessors
@@ -79,5 +80,26 @@ class BlogCategory extends Model
     public function setSlugAttribute($value)
     {
         $this->attributes['slug'] = Str::slug($value ?: $this->name);
+    }
+
+    // Boot method for model events
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::created(function ($category) {
+            // ✅ CACHE INVALIDATION: Yeni kategori eklendiğinde cache'i temizle
+            Cache::forget('blog_categories_stats');
+        });
+
+        static::updated(function ($category) {
+            // ✅ CACHE INVALIDATION: Kategori güncellendiğinde cache'i temizle
+            Cache::forget('blog_categories_stats');
+        });
+
+        static::deleted(function ($category) {
+            // ✅ CACHE INVALIDATION: Kategori silindiğinde cache'i temizle
+            Cache::forget('blog_categories_stats');
+        });
     }
 }

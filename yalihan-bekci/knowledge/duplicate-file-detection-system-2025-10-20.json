@@ -4,7 +4,7 @@
   "date": "2025-10-20",
   "author": "AI Assistant",
   "purpose": "Yalıhan Bekçi'ye duplicate dosya tespiti ve temizlik stratejilerini öğretmek",
-  
+
   "duplicate_patterns": {
     "report_duplicates": {
       "description": "Aynı konuda birden fazla rapor dosyası",
@@ -28,36 +28,31 @@
       ],
       "detection_rules": [
         "Aynı tarihli raporlar",
-        "Benzer içerikli raporlar", 
+        "Benzer içerikli raporlar",
         "FINAL vs normal versiyonlar",
         "COMPLETED vs in-progress raporlar"
       ]
     },
-    
+
     "recommendation_duplicates": {
       "description": "Aynı konuda birden fazla öneri dosyası",
       "examples": [
         {
           "pattern": "*RECOMMENDATIONS*.md",
-          "duplicates_found": [
-            "CLEANUP_RECOMMENDATIONS.md",
-            "DEEP_CLEANUP_RECOMMENDATIONS.md"
-          ],
+          "duplicates_found": ["CLEANUP_RECOMMENDATIONS.md", "DEEP_CLEANUP_RECOMMENDATIONS.md"],
           "keep": "DEEP_CLEANUP_RECOMMENDATIONS.md",
           "reason": "Daha detaylı ve kapsamlı",
           "delete": ["CLEANUP_RECOMMENDATIONS.md"]
         }
       ]
     },
-    
+
     "learning_duplicates": {
       "description": "Aynı konuda birden fazla öğrenme dosyası",
       "examples": [
         {
           "pattern": "*OGRENME*.md",
-          "duplicates_found": [
-            "YALIHAN-BEKCI-OGRENME-RAPORU.md"
-          ],
+          "duplicates_found": ["YALIHAN-BEKCI-OGRENME-RAPORU.md"],
           "keep": "YALIHAN-BEKCI-OGRENME-RAPORU.md",
           "reason": "Tek ve kapsamlı öğrenme raporu",
           "delete": []
@@ -65,25 +60,21 @@
       ]
     }
   },
-  
+
   "cleanup_strategies": {
     "priority_1": {
       "name": "Backup Temizliği",
       "description": "Gereksiz backup dosyalarını sil",
       "risk_level": 0,
       "impact": "high",
-      "examples": [
-        ".context7/backups/",
-        ".cursor/backups/", 
-        "yalihan-bekci/archive/"
-      ],
+      "examples": [".context7/backups/", ".cursor/backups/", "yalihan-bekci/archive/"],
       "commands": [
         "rm -rf .context7/backups/",
         "rm -rf .cursor/backups/",
         "rm -rf yalihan-bekci/archive/"
       ]
     },
-    
+
     "priority_2": {
       "name": "Duplicate Raporlar",
       "description": "Aynı konuda birden fazla rapor sil",
@@ -91,12 +82,12 @@
       "impact": "medium",
       "rules": [
         "FINAL versiyonu koru",
-        "COMPLETED versiyonu koru", 
+        "COMPLETED versiyonu koru",
         "En güncel tarihi koru",
         "En kapsamlı içeriği koru"
       ]
     },
-    
+
     "priority_3": {
       "name": "Duplicate README'ler",
       "description": "Alt klasörlerdeki gereksiz README'ler",
@@ -109,7 +100,7 @@
       ]
     }
   },
-  
+
   "file_importance_matrix": {
     "critical": {
       "description": "Asla silinmemeli",
@@ -121,7 +112,7 @@
         "TKGM-PARSEL-TAMAMLANMA-RAPORU.md"
       ]
     },
-    
+
     "important": {
       "description": "Dikkatli silinmeli",
       "files": [
@@ -130,41 +121,36 @@
         "DEEP_CLEANUP_RECOMMENDATIONS.md"
       ]
     },
-    
+
     "safe_to_delete": {
       "description": "Güvenle silinebilir",
       "files": [
         "SISTEM-IYILESTIRMELERI-RAPORU-2025-10-19.md",
-        "CLEANUP_COMPLETED_REPORT.md", 
+        "CLEANUP_COMPLETED_REPORT.md",
         "DEEP_CLEANUP_COMPLETED_REPORT.md",
         "CLEANUP_RECOMMENDATIONS.md"
       ]
     }
   },
-  
+
   "detection_algorithms": {
     "content_similarity": {
       "description": "İçerik benzerliği tespiti",
       "threshold": 0.8,
-      "methods": [
-        "Title similarity",
-        "Content overlap",
-        "Date proximity",
-        "File size comparison"
-      ]
+      "methods": ["Title similarity", "Content overlap", "Date proximity", "File size comparison"]
     },
-    
+
     "naming_patterns": {
       "description": "İsimlendirme pattern'leri",
       "patterns": [
         "*RAPORU*.md",
-        "*REPORT*.md", 
+        "*REPORT*.md",
         "*RECOMMENDATIONS*.md",
         "*CLEANUP*.md",
         "*COMPLETED*.md"
       ]
     },
-    
+
     "date_analysis": {
       "description": "Tarih analizi",
       "rules": [
@@ -174,7 +160,7 @@
       ]
     }
   },
-  
+
   "cleanup_commands": {
     "safe_cleanup": [
       "rm -rf .context7/backups/",
@@ -185,29 +171,25 @@
       "rm DEEP_CLEANUP_COMPLETED_REPORT.md",
       "rm CLEANUP_RECOMMENDATIONS.md"
     ],
-    
-    "verification": [
-      "find . -name '*.md' | wc -l",
-      "du -sh .",
-      "git status"
-    ]
+
+    "verification": ["find . -name '*.md' | wc -l", "du -sh .", "git status"]
   },
-  
+
   "learning_outcomes": {
     "duplicate_detection": [
       "İçerik benzerliği tespiti",
-      "İsimlendirme pattern analizi", 
+      "İsimlendirme pattern analizi",
       "Tarih yakınlığı kontrolü",
       "Dosya boyutu karşılaştırması"
     ],
-    
+
     "cleanup_prioritization": [
       "Risk seviyesi değerlendirmesi",
       "Etki analizi",
       "Güvenli silme stratejileri",
       "Geri alma planları"
     ],
-    
+
     "file_importance": [
       "Kritik dosya tespiti",
       "Önemli dosya koruma",
@@ -215,7 +197,7 @@
       "Backup stratejileri"
     ]
   },
-  
+
   "success_metrics": {
     "before_cleanup": {
       "md_files": 224,
@@ -224,20 +206,20 @@
       "duplicate_reports": 24,
       "duplicate_readmes": 30
     },
-    
+
     "after_cleanup": {
       "md_files": 208,
       "total_lines": 74186,
-      "backup_size": "0MB", 
+      "backup_size": "0MB",
       "duplicate_reports": 19,
       "duplicate_readmes": 25,
       "space_saved": "1.332MB",
       "files_removed": 16
     },
-    
+
     "improvements": {
       "file_reduction": "7%",
-      "line_reduction": "5%", 
+      "line_reduction": "5%",
       "space_saved": "1.332MB",
       "confusion_reduction": "25%"
     }

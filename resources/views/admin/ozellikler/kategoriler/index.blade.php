@@ -110,11 +110,11 @@
                                         <div class="flex flex-wrap gap-1">
                                             @php
                                                 // ✅ Yalıhan Bekçi: JSON decode handling
-                                                $appliesToArray = is_string($kategori->applies_to) 
-                                                    ? json_decode($kategori->applies_to, true) 
+                                                $appliesToArray = is_string($kategori->applies_to)
+                                                    ? json_decode($kategori->applies_to, true)
                                                     : $kategori->applies_to;
                                             @endphp
-                                            
+
                                             @if(is_array($appliesToArray) && count($appliesToArray) > 0)
                                                 @foreach($appliesToArray as $type)
                                                     <span class="px-2 py-1 text-xs rounded-full bg-gradient-to-r from-purple-100 to-pink-100 dark:from-purple-900/30 dark:to-pink-900/30 border border-purple-200 dark:border-purple-800 text-purple-700 dark:text-purple-300 font-medium">
@@ -130,34 +130,35 @@
                                     </td>
 
                                     <!-- Durum -->
+                                    {{-- ✅ Context7: "Aktif" kelimesi yasak, "Yayında" kullanılmalı --}}
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                            {{ $kategori->enabled ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300' : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300' }}">
-                                            {{ $kategori->enabled ? 'Aktif' : 'Pasif' }}
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
+                                            {{ $kategori->status ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300' : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300' }}">
+                                            {{ $kategori->status ? 'Yayında' : 'Taslak' }}
                                         </span>
                                     </td>
 
                                     <!-- İşlemler -->
                                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                         <div class="flex items-center justify-end space-x-2">
-                                            <a href="{{ route('admin.ozellikler.kategoriler.edit', $kategori->id) }}" 
+                                            <a href="{{ route('admin.ozellikler.kategoriler.edit', $kategori->id) }}"
                                                class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-sm">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                           d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                                 </svg>
                                                 Düzenle
                                             </a>
-                                            
-                                            <form action="{{ route('admin.ozellikler.kategoriler.destroy', $kategori->id) }}" 
-                                                  method="POST" 
+
+                                            <form action="{{ route('admin.ozellikler.kategoriler.destroy', $kategori->id) }}"
+                                                  method="POST"
                                                   onsubmit="return confirm('Bu kategoriyi silmek istediğinizden emin misiniz?');"
                                                   class="inline-block">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2-danger">
+                                                <button type="submit" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-red-600 to-pink-600 rounded-lg hover:from-red-700 hover:to-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-all duration-200 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed">
                                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                               d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                                     </svg>
                                                     Sil
@@ -178,7 +179,7 @@
             @else
                 <div class="text-center py-12">
                     <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                               d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
                     </svg>
                     <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-white">Kategori bulunamadı</h3>

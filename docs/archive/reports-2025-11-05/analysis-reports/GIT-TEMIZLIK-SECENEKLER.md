@@ -21,12 +21,14 @@ Sorun: Çok büyük!
 ### SEÇENEK A: Güvenli Temizlik (ÖNERİLEN) ⭐
 
 **Ne yapar:**
+
 - Erişilemeyen commit'leri siler
 - Ana commit geçmişi KORUNUR
 - Geri dönebilirsiniz
 - Boyut: 600 MB → 300-400 MB
 
 **Nasıl:**
+
 ```bash
 # 1. Reflog temizle (erişilemeyen commit'ler)
 git reflog expire --expire=now --all
@@ -46,12 +48,14 @@ RİSK: Düşük (ana geçmiş korunur)
 ### SEÇENEK B: Orta Risk Temizlik
 
 **Ne yapar:**
+
 - Son 30 commit dışındakiler silinir
 - Eski geçmiş kaybolur
 - Geri dönme kısıtlı
 - Boyut: 600 MB → 50-100 MB
 
 **Nasıl:**
+
 ```bash
 # 1. Yeni branch oluştur (son 30 commit)
 git checkout --orphan temp-branch
@@ -76,12 +80,14 @@ RİSK: Orta (eski geçmiş kaybolur)
 ### SEÇENEK C: Tam Sıfırlama (TEHLİKELİ!) ❌
 
 **Ne yapar:**
+
 - TÜM commit geçmişi silinir
 - Sadece şimdiki kod kalır
 - GERİ DÖNEMEZSINIZ!
 - Boyut: 600 MB → 5-10 MB
 
 **Nasıl:**
+
 ```bash
 # 1. .git klasörünü sil
 rm -rf .git
@@ -106,6 +112,7 @@ RİSK: Yüksek! (TÜM geçmiş kaybolur)
 ### SEÇENEK A: Güvenli Temizlik ⭐⭐⭐⭐⭐
 
 **Neden?**
+
 ```yaml
 ✅ Güvenli (ana geçmiş korunur)
 ✅ Geri dönebilirsiniz
@@ -115,6 +122,7 @@ RİSK: Yüksek! (TÜM geçmiş kaybolur)
 ```
 
 **Yapılacak:**
+
 ```bash
 git reflog expire --expire=now --all
 git gc --aggressive --prune=now
@@ -122,6 +130,7 @@ git repack -Ad
 ```
 
 **Beklenen:**
+
 - 600 MB → 300-400 MB
 - ~200-300 MB azalma
 - Commit geçmişi korunur
@@ -133,6 +142,7 @@ git repack -Ad
 ### SEÇENEK B ve C'yi YAPMAYIN! (Şimdilik)
 
 **Neden?**
+
 ```yaml
 ❌ Commit geçmişi kaybolur
 ❌ Geri dönemezsiniz
@@ -142,6 +152,7 @@ git repack -Ad
 ```
 
 **Ne zaman yapılır:**
+
 ```yaml
 ✅ Proje production'a alınınca
 ✅ Clean start istiyorsanız
@@ -171,17 +182,16 @@ du -sh .git
 
 ## 📊 SONUÇ KARŞILAŞTIRMA
 
-| | Öncesi | Seçenek A | Seçenek B | Seçenek C |
-|---|---|---|---|---|
-| **Boyut** | 600 MB | 300-400 MB | 50-100 MB | 5-10 MB |
-| **Geçmiş** | Tam | Tam | 30 commit | 1 commit |
-| **Risk** | - | Düşük | Orta | Yüksek |
-| **Geri Dön** | ✅ | ✅ | ⚠️ Kısıtlı | ❌ Hayır |
-| **Süre** | - | 5 dk | 10 dk | 5 dk |
+|              | Öncesi | Seçenek A  | Seçenek B  | Seçenek C |
+| ------------ | ------ | ---------- | ---------- | --------- |
+| **Boyut**    | 600 MB | 300-400 MB | 50-100 MB  | 5-10 MB   |
+| **Geçmiş**   | Tam    | Tam        | 30 commit  | 1 commit  |
+| **Risk**     | -      | Düşük      | Orta       | Yüksek    |
+| **Geri Dön** | ✅     | ✅         | ⚠️ Kısıtlı | ❌ Hayır  |
+| **Süre**     | -      | 5 dk       | 10 dk      | 5 dk      |
 
 ---
 
 **Tavsiyem: SEÇENEK A (Güvenli temizlik!)** ⭐
 
 Yapalım mı? 🚀
-

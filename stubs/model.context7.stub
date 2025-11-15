@@ -1,0 +1,85 @@
+<?php
+
+namespace {{ namespace }};
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+/**
+ * {{ class }}
+ * 
+ * Context7 Compliant Model - PERMANENT STANDARD
+ * 
+ * ⚠️ CRITICAL RULES (NO EXCEPTIONS):
+ * - NEVER use 'enabled' field → ALWAYS use 'status'
+ * - NEVER use 'musteri' terminology → ALWAYS use 'kisi'
+ * - NEVER use Neo Design classes → ALWAYS use Tailwind CSS
+ * 
+ * @property int $id
+ * @property bool $status  // Context7: NEVER use 'enabled'! PERMANENT STANDARD
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ */
+class {{ class }} extends Model
+{
+    use HasFactory, SoftDeletes;
+
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = '{{ table }}';
+
+    /**
+     * The attributes that are mass assignable.
+     * 
+     * ⚠️ CONTEXT7 PERMANENT STANDARD:
+     * - ALWAYS use 'status', NEVER use 'enabled', 'is_active', 'aktif'
+     * - This is a PERMANENT STANDARD - NO EXCEPTIONS
+     * - Pre-commit hook will BLOCK commits with 'enabled'
+     * 
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'status',  // Context7: MANDATORY - NEVER use 'enabled'! PERMANENT STANDARD
+        // Add your fields here
+    ];
+
+    /**
+     * The attributes that should be cast.
+     * 
+     * ⚠️ CONTEXT7 PERMANENT STANDARD:
+     * - 'status' MUST be cast to boolean
+     * - NEVER cast 'enabled' → This will be BLOCKED by pre-commit hook
+     * 
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'status' => 'boolean',  // Context7: MANDATORY - NEVER use 'enabled'! PERMANENT STANDARD
+        // Add your casts here
+    ];
+
+    /**
+     * Scope: Active records
+     * 
+     * ⚠️ CONTEXT7 PERMANENT STANDARD:
+     * - Use 'status' field ONLY
+     * - NEVER use where('enabled', true) → This will be BLOCKED
+     */
+    public function scopeActive($query)
+    {
+        return $query->where('status', true);  // Context7: NEVER where('enabled', true)! PERMANENT STANDARD
+    }
+
+    /**
+     * Scope: Inactive records
+     */
+    public function scopeInactive($query)
+    {
+        return $query->where('status', false);
+    }
+}
+

@@ -7,9 +7,9 @@ use App\Models\Setting;
 
 /**
  * AI Provider Settings Seeder
- * 
+ *
  * Context7 Standardı: C7-AI-PROVIDER-SEEDER-2025-11-05
- * 
+ *
  * AI provider ayarlarını veritabanına ekler.
  * - Provider seçimi (OpenAI, Gemini, Claude, DeepSeek, Ollama)
  * - API key'leri (boş başlangıç, kullanıcı dolduracak)
@@ -155,7 +155,7 @@ class AIProviderSettingsSeeder extends Seeder
 
         foreach ($settings as $setting) {
             $existing = Setting::where('key', $setting['key'])->first();
-            
+
             if ($existing) {
                 $existing->update($setting);
                 $updated++;
@@ -173,4 +173,3 @@ class AIProviderSettingsSeeder extends Seeder
         $this->command->info('✅ AI Provider ayarları tamamlandı!');
     }
 }
-

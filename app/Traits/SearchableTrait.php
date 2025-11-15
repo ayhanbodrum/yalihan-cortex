@@ -30,9 +30,19 @@ trait SearchableTrait
             $fields = ['name', 'title', 'description'];
         }
 
-        return $query->where(function (Builder $q) use ($search, $fields) {
+        // ✅ PERFORMANCE FIX: Schema builder'ı cache'le - hasColumn() her seferinde çağrılmasın
+        $schema = $this->getConnection()->getSchemaBuilder();
+        $tableName = $this->getTable();
+        $validFields = [];
+
+        return $query->where(function (Builder $q) use ($search, $fields, $schema, $tableName, &$validFields) {
             foreach ($fields as $field) {
-                if ($this->getConnection()->getSchemaBuilder()->hasColumn($this->getTable(), $field)) {
+                // Column kontrolü cache'le (aynı request içinde tekrar kullanılabilir)
+                if (!isset($validFields[$field])) {
+                    $validFields[$field] = $schema->hasColumn($tableName, $field);
+                }
+
+                if ($validFields[$field]) {
                     $q->orWhere($field, 'LIKE', "%{$search}%");
                 }
             }

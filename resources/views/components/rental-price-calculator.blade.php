@@ -46,8 +46,8 @@
             <label class="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
                 Giriş Tarihi (Check-in)
             </label>
-            <input type="date" 
-                   x-model="checkInDate" 
+            <input type="date"
+                   x-model="checkInDate"
                    @change="calculatePrice()"
                    :min="today"
                    class="w-full px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 dark:focus:border-blue-400 transition-all duration-200">
@@ -56,8 +56,8 @@
             <label class="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
                 Çıkış Tarihi (Check-out)
             </label>
-            <input type="date" 
-                   x-model="checkOutDate" 
+            <input type="date"
+                   x-model="checkOutDate"
                    @change="calculatePrice()"
                    :min="checkInDate || today"
                    class="w-full px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 dark:focus:border-blue-400 transition-all duration-200">
@@ -81,7 +81,7 @@
                     </div>
                 </div>
             </div>
-            
+
             {{-- Fiyat Detayları --}}
             <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
                 <div class="text-sm text-gray-600 dark:text-gray-400 mb-2">Fiyat Detayları:</div>
@@ -119,7 +119,7 @@
                 </div>
             </div>
             @endif
-            
+
             @if($monthlyPrice > 0)
             <div class="p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
                 <div class="text-xs text-gray-600 dark:text-gray-400">Aylık</div>
@@ -148,31 +148,31 @@ function rentalPriceCalculator(config) {
         checkOutDate: '',
         calculatedPrice: 0,
         nights: 0,
-        
+
         get today() {
             return new Date().toISOString().split('T')[0];
         },
-        
+
         calculatePrice() {
             if (!this.checkInDate || !this.checkOutDate) {
                 this.calculatedPrice = 0;
                 this.nights = 0;
                 return;
             }
-            
+
             const checkIn = new Date(this.checkInDate);
             const checkOut = new Date(this.checkOutDate);
-            
+
             if (checkOut <= checkIn) {
                 this.calculatedPrice = 0;
                 this.nights = 0;
                 return;
             }
-            
+
             const diffTime = checkOut - checkIn;
             const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
             this.nights = diffDays;
-            
+
             // Hesaplama mantığı: Önce aylık, sonra haftalık, sonra günlük
             if (diffDays >= 30 && this.monthlyPrice > 0) {
                 const months = Math.floor(diffDays / 30);
@@ -186,7 +186,7 @@ function rentalPriceCalculator(config) {
                 this.calculatedPrice = diffDays * this.dailyPrice;
             }
         },
-        
+
         formatPrice(price) {
             return new Intl.NumberFormat('tr-TR', {
                 style: 'currency',
@@ -198,4 +198,3 @@ function rentalPriceCalculator(config) {
     }
 }
 </script>
-

@@ -5,7 +5,7 @@
   "oncelik": "HIGH",
   "kategori": "bug-fix-and-standards",
   "etiketler": ["typo-fix", "bg-white-migration", "okunabilirlik", "style-cleanup"],
-  
+
   "kritik_bug": {
     "aciklama": "Tailwind CSS'de olmayan bir class kullanılıyordu",
     "hata": "py-2.5.5",
@@ -21,7 +21,7 @@
       "site-apartman-context7.blade.php (1 kullanım)"
     ]
   },
-  
+
   "yapilan_degisiklikler": {
     "1_typo_duzeltme": {
       "eski": "py-2.5.5",
@@ -35,10 +35,7 @@
       "yeni": "bg-white dark:bg-gray-800",
       "sebep": "Okunabilirlik iyileştirmesi (17.5:1 → 21:1 kontrast)",
       "etkilenen_dosya": 2,
-      "component": [
-        "category-system.blade.php (3 select)",
-        "location-map.blade.php (3 select)"
-      ]
+      "component": ["category-system.blade.php (3 select)", "location-map.blade.php (3 select)"]
     },
     "3_style_cleanup": {
       "kaldirilan": "style='color-scheme: light dark;'",
@@ -55,7 +52,7 @@
       ]
     }
   },
-  
+
   "guncellenen_dosyalar": {
     "resources/views/admin/ilanlar/components/category-system.blade.php": {
       "satir_sayisi": 197,
@@ -77,32 +74,24 @@
     },
     "resources/views/admin/ilanlar/partials/stable/_kisi-secimi.blade.php": {
       "satir_sayisi": "~180",
-      "degisiklikler": [
-        "✅ 3x py-2.5.5 → py-2.5"
-      ],
+      "degisiklikler": ["✅ 3x py-2.5.5 → py-2.5"],
       "alan": "Kişi Seçimi dropdowns"
     },
     "resources/views/admin/ilanlar/create.blade.php": {
       "satir_sayisi": "~2000",
-      "degisiklikler": [
-        "✅ 2x py-2.5.5 → py-2.5"
-      ],
+      "degisiklikler": ["✅ 2x py-2.5.5 → py-2.5"],
       "alan": "Ana ilan oluşturma sayfası"
     },
     "resources/views/admin/ilanlar/components/price-management.blade.php": {
-      "degisiklikler": [
-        "✅ 1x py-2.5.5 → py-2.5"
-      ],
+      "degisiklikler": ["✅ 1x py-2.5.5 → py-2.5"],
       "alan": "Fiyat yönetimi"
     },
     "resources/views/admin/ilanlar/components/site-apartman-context7.blade.php": {
-      "degisiklikler": [
-        "✅ 1x py-2.5.5 → py-2.5"
-      ],
+      "degisiklikler": ["✅ 1x py-2.5.5 → py-2.5"],
       "alan": "Site/Apartman alanları"
     }
   },
-  
+
   "okunabilirlik_iyilestirmesi": {
     "light_mode": {
       "onceki": {
@@ -128,7 +117,7 @@
       "not": "Zaten mükemmeldi"
     }
   },
-  
+
   "inline_style_temizligi": {
     "problem": "style='color-scheme: light dark;' gereksiz ve standart dışı",
     "cozum": "Kaldırıldı - Tailwind dark mode yeterli",
@@ -139,14 +128,14 @@
       "Bakımı kolay"
     ]
   },
-  
+
   "test_sonuclari": {
     "cache_temizleme": "✅ BAŞARILI (php artisan view:clear + config:clear)",
     "linter_check": "✅ 0 HATA (6 dosya kontrol edildi)",
     "browser_render": "⏳ Manuel test gerekli (kullanıcı test edecek)",
     "visual_check": "⏳ Manuel test gerekli (okunabilirlik)"
   },
-  
+
   "kritik_ogrenme_noktalari": {
     "1_typo_detection": "TYPO'lar (py-2.5.5 gibi) kritik bug'lardır - hemen düzelt!",
     "2_replace_all_usage": "Aynı TYPO birden fazla yerde varsa replace_all: true kullan",
@@ -154,7 +143,7 @@
     "4_inline_style_avoid": "Inline style kullanma - Tailwind classes yeterli",
     "5_dark_mode_consistency": "Dark mode desteği için Tailwind classes kullan"
   },
-  
+
   "yeni_standartlar": {
     "form_select_background": {
       "light_mode": "bg-white",
@@ -171,7 +160,7 @@
       "inline_styles": "KULLANMA - Tailwind classes kullan"
     }
   },
-  
+
   "migration_workflow": {
     "step_1": "Grep ile TYPO'ları tespit et (py-2.5.5 arama)",
     "step_2": "Replace_all ile toplu düzelt",
@@ -181,7 +170,7 @@
     "step_6": "Linter kontrol et",
     "step_7": "Manuel test yap"
   },
-  
+
   "gelecek_aksiyonlar": {
     "immediate": [
       "✅ TYPO'lar düzeltildi",
@@ -200,21 +189,21 @@
       "TYPO detection pre-commit hook ekle"
     ]
   },
-  
+
   "performans_etkisi": {
     "css_bundle": "Değişmedi (aynı Tailwind classes)",
     "render_performance": "İyileşti (geçersiz py-2.5.5 class kaldırıldı)",
     "browser_console": "Artık CSS uyarısı yok",
     "accessibility": "İyileşti (21:1 kontrast)"
   },
-  
+
   "komutlar": {
     "typo_tespit": "grep -r 'py-2\\.5\\.5' resources/views/admin/ilanlar",
     "cache_temizle": "php artisan view:clear && php artisan config:clear",
     "linter_check": "No linter errors found (6 dosya)",
     "test_url": "http://127.0.0.1:8000/admin/ilanlar/create"
   },
-  
+
   "istatistikler": {
     "toplam_dosya": 6,
     "typo_duzeltme": 13,
@@ -224,4 +213,3 @@
     "toplam_satir_degisikligi": "~50 satır"
   }
 }
-

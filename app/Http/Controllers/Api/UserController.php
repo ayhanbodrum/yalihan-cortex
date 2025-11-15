@@ -4,12 +4,16 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Services\Response\ResponseService;
+use App\Traits\ValidatesApiRequests;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
+    use ValidatesApiRequests;
+
     /**
      * Search users (specifically for danisman role)
      * Context7: C7-USER-SEARCH-2025-10-30
@@ -21,19 +25,27 @@ class UserController extends Controller
             $limit = min($request->get('limit', 20), 50);
             $role = $request->get('role', 'danisman'); // Default: danisman
 
-            $usersQuery = User::query()
-                ->select(['id', 'name', 'email', 'status', 'created_at'])
-                ->where('status', 1); // Active users
+            // ✅ Context7 & Yalıhan Bekçi: Danışman sorgusu standartı
+            // 1. Spatie Permission: whereHas('roles') kullan (roles plural, role singular YASAK)
+            // 2. Status kontrolü: where('status', 1) - Sadece aktif danışmanlar
+            // 3. Select optimization: select(['id', 'name', 'email'])
+            // 4. Eager loading: with('roles:id,name') - N+1 query önleme
+            $usersQuery = User::with('roles:id,name')
+                ->select(['id', 'name', 'email', 'status'])
+                ->where('status', 1); // ✅ Context7: Sadece aktif kullanıcılar
 
-            // Role filter (if roles table exists)
-            // For now, we'll use a simple name/email search
-            // TODO: Implement proper role filtering with roles table
+            // ✅ Role filter (Spatie Permission)
+            if (!empty($role)) {
+                $usersQuery->whereHas('roles', function ($q) use ($role) {
+                    $q->where('name', $role);
+                });
+            }
 
             // Search filter
             if (!empty($query)) {
                 $usersQuery->where(function ($q) use ($query) {
                     $q->where('name', 'LIKE', "%{$query}%")
-                      ->orWhere('email', 'LIKE', "%{$query}%");
+                        ->orWhere('email', 'LIKE', "%{$query}%");
                 });
             }
 
@@ -42,28 +54,31 @@ class UserController extends Controller
 
             $users = $usersQuery->limit($limit)->get();
 
-            // Add formatted display text (Context7 Live Search compatibility)
-            $users->each(function ($user) {
-                $user->text = $user->name; // For dropdown display
-                $user->kisi_tipi = 'Sistem Danışmanı'; // For compatibility with kişiler
-            });
+            // ✅ Context7: Response formatı standartlaştırıldı
+            $formattedUsers = $users->map(function ($user) {
+                return [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'text' => $user->name . ($user->email ? ' - ' . $user->email : ''), // Context7 Live Search için
+                    'kisi_tipi' => 'Sistem Danışmanı', // For compatibility with kişiler
+                ];
+            })
+            ->values() // ✅ Collection index'lerini sıfırla (array uyumluluğu)
+            ->toArray(); // ✅ Context7: Array döndür (JavaScript uyumluluğu için)
 
-            return response()->json([
-                'success' => true,
-                'data' => $users,
-                'count' => $users->count(),
+            // ✅ REFACTORED: Using ResponseService
+            return ResponseService::success([
+                'data' => $formattedUsers,
+                'count' => count($formattedUsers),
                 'query' => $query,
                 'source' => 'users' // To differentiate from kisiler
-            ]);
-
+            ], 'Danışman araması başarıyla tamamlandı');
         } catch (\Exception $e) {
             Log::error('User search error: ' . $e->getMessage());
 
-            return response()->json([
-                'success' => false,
-                'message' => 'Danışman araması sırasında hata oluştu',
-                'error' => config('app.debug') ? $e->getMessage() : null
-            ], 500);
+            // ✅ REFACTORED: Using ResponseService
+            return ResponseService::serverError('Danışman araması sırasında hata oluştu', $e);
         }
     }
 
@@ -82,20 +97,16 @@ class UserController extends Controller
                 $user->text = $user->name;
             });
 
-            return response()->json([
-                'success' => true,
+            // ✅ REFACTORED: Using ResponseService
+            return ResponseService::success([
                 'data' => $danismanlar,
                 'count' => $danismanlar->count()
-            ]);
-
+            ], 'Danışmanlar listesi başarıyla alındı');
         } catch (\Exception $e) {
             Log::error('Danismanlar list error: ' . $e->getMessage());
 
-            return response()->json([
-                'success' => false,
-                'message' => 'Danışmanlar listesi alınamadı'
-            ], 500);
+            // ✅ REFACTORED: Using ResponseService
+            return ResponseService::serverError('Danışmanlar listesi alınamadı', $e);
         }
     }
 }
-

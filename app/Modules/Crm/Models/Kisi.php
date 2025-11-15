@@ -66,8 +66,7 @@ class Kisi extends Model
         'soyad',
         'email',
         'telefon',
-        'adres',
-        'adres_detay', // Context7: Adres detayı eklendi (2025-11-01)
+        'adres', // ✅ Context7: Adres kolonu (text) - adres_detay YOK
         'notlar', // migration'daki 'notlar' text alanı için
         'etiketler', // migration'daki 'etiketler' json alanı için
         'kaynak',
@@ -174,6 +173,23 @@ class Kisi extends Model
     public function notlar()
     {
         return $this->hasMany(KisiNot::class, 'kisi_id');
+    }
+
+    /**
+     * Etiketler ilişkisi (many-to-many)
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function etiketler()
+    {
+        return $this->belongsToMany(
+            Etiket::class,
+            'etiket_kisi',
+            'kisi_id',
+            'etiket_id'
+        )
+        ->withPivot('user_id')
+        ->withTimestamps();
     }
 
     /**

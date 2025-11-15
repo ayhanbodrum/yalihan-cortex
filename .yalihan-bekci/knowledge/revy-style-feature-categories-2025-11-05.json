@@ -5,7 +5,7 @@
   "type": "seeder",
   "status": "completed",
   "summary": "Revy.com.tr tarzı modal tabanlı özellik seçim sistemi için 6 kategori ve 100+ özellik oluşturuldu.",
-  
+
   "categories": {
     "ic_ozellikleri": {
       "name": "İç Özellikleri",
@@ -14,14 +14,41 @@
       "order": 10,
       "features_count": 34,
       "features": [
-        "ADSL", "Ahşap Doğrama", "Akıllı Ev", "Alarm (Hırsız)", "Alarm (Yangın)",
-        "Alüminyum Doğrama", "Amerikan Kapı", "Amerikan Mutfak", "Ankastre Mutfak",
-        "Asansör", "Balkon", "Barbekü", "Beyaz Eşya", "Boyalı", "Bulaşık Makinesi",
-        "Buzdolabı", "Çamaşır Kurutma Makinesi", "Çamaşır Makinesi", "Çamaşır Odası",
-        "Çelik Kapı", "Duşakabin", "Duvar Kağıdı", "Ebeveyn Banyosu", "Fırın",
-        "Fiber İnternet", "Fransız Balkon", "Giyinme Odası", "Gömme Dolap",
-        "Görüntülü Diafon", "Hilton Banyo", "Halı Kaplama", "Hazır Mutfak",
-        "Intercom Sistemi", "Isıcam", "Jakuzi"
+        "ADSL",
+        "Ahşap Doğrama",
+        "Akıllı Ev",
+        "Alarm (Hırsız)",
+        "Alarm (Yangın)",
+        "Alüminyum Doğrama",
+        "Amerikan Kapı",
+        "Amerikan Mutfak",
+        "Ankastre Mutfak",
+        "Asansör",
+        "Balkon",
+        "Barbekü",
+        "Beyaz Eşya",
+        "Boyalı",
+        "Bulaşık Makinesi",
+        "Buzdolabı",
+        "Çamaşır Kurutma Makinesi",
+        "Çamaşır Makinesi",
+        "Çamaşır Odası",
+        "Çelik Kapı",
+        "Duşakabin",
+        "Duvar Kağıdı",
+        "Ebeveyn Banyosu",
+        "Fırın",
+        "Fiber İnternet",
+        "Fransız Balkon",
+        "Giyinme Odası",
+        "Gömme Dolap",
+        "Görüntülü Diafon",
+        "Hilton Banyo",
+        "Halı Kaplama",
+        "Hazır Mutfak",
+        "Intercom Sistemi",
+        "Isıcam",
+        "Jakuzi"
       ]
     },
     "dis_ozellikleri": {
@@ -31,9 +58,19 @@
       "order": 20,
       "features_count": 13,
       "features": [
-        "Bahçe", "Otopark", "Kapalı Otopark", "Açık Otopark", "Güvenlik",
-        "Güvenlik Sistemi", "Kamera Güvenliği", "Bahçe Aydınlatması", "Site İçi",
-        "Ortak Havuz", "Ortak Bahçe", "Teras", "Balkon"
+        "Bahçe",
+        "Otopark",
+        "Kapalı Otopark",
+        "Açık Otopark",
+        "Güvenlik",
+        "Güvenlik Sistemi",
+        "Kamera Güvenliği",
+        "Bahçe Aydınlatması",
+        "Site İçi",
+        "Ortak Havuz",
+        "Ortak Bahçe",
+        "Teras",
+        "Balkon"
       ]
     },
     "muhit": {
@@ -43,8 +80,16 @@
       "order": 30,
       "features_count": 10,
       "features": [
-        "Okul", "Hastane", "Market", "AVM", "Park", "Spor Salonu",
-        "Sahil", "Plaj", "Restoran", "Kafe"
+        "Okul",
+        "Hastane",
+        "Market",
+        "AVM",
+        "Park",
+        "Spor Salonu",
+        "Sahil",
+        "Plaj",
+        "Restoran",
+        "Kafe"
       ]
     },
     "ulasim": {
@@ -54,8 +99,14 @@
       "order": 40,
       "features_count": 8,
       "features": [
-        "Metro", "Otobüs", "Tramvay", "İstasyon", "Havalimanı",
-        "Otogar", "Ana Cadde", "Sahil Yolu"
+        "Metro",
+        "Otobüs",
+        "Tramvay",
+        "İstasyon",
+        "Havalimanı",
+        "Otogar",
+        "Ana Cadde",
+        "Sahil Yolu"
       ]
     },
     "cephe": {
@@ -65,8 +116,16 @@
       "order": 50,
       "features_count": 10,
       "features": [
-        "Kuzey", "Güney", "Doğu", "Batı", "Güneydoğu",
-        "Güneybatı", "Kuzeydoğu", "Kuzeybatı", "Yola Cepheli", "Cadde Cepheli"
+        "Kuzey",
+        "Güney",
+        "Doğu",
+        "Batı",
+        "Güneydoğu",
+        "Güneybatı",
+        "Kuzeydoğu",
+        "Kuzeybatı",
+        "Yola Cepheli",
+        "Cadde Cepheli"
       ]
     },
     "manzara": {
@@ -76,28 +135,38 @@
       "order": 60,
       "features_count": 12,
       "features": [
-        "Boğaz", "Cadde", "Dağ", "Deniz", "Doğa", "Göl",
-        "Havuz", "Nehir", "Park", "Şehir", "Vadi", "Yeşil Alan"
+        "Boğaz",
+        "Cadde",
+        "Dağ",
+        "Deniz",
+        "Doğa",
+        "Göl",
+        "Havuz",
+        "Nehir",
+        "Park",
+        "Şehir",
+        "Vadi",
+        "Yeşil Alan"
       ]
     }
   },
-  
+
   "seeder_file": "database/seeders/RevyStyleFeatureCategoriesSeeder.php",
   "master_seeder_integration": "Context7MasterSeeder.php (8b. adım)",
-  
+
   "total_statistics": {
     "categories": 6,
     "features": 87,
     "average_features_per_category": 14.5
   },
-  
+
   "component_integration": {
     "feature_modal_selector": "resources/views/components/feature-modal-selector.blade.php",
     "feature_categories_modal": "resources/views/components/feature-categories-modal.blade.php",
     "api_endpoint": "/api/admin/features/category/{categorySlug}",
     "controller": "App\\Http\\Controllers\\Api\\FeatureController"
   },
-  
+
   "context7_compliance": {
     "status": "✅ COMPLIANT",
     "schema_checks": [
@@ -109,17 +178,16 @@
     "field_naming": "English slugs, Turkish names",
     "no_forbidden_patterns": true
   },
-  
+
   "usage": {
     "seeder_command": "php artisan db:seed --class=RevyStyleFeatureCategoriesSeeder",
     "master_seeder": "php artisan db:seed (automatically includes)",
     "component_usage": "<x-feature-categories-modal :ilan-id=\"null\" :selected-features=\"[]\" />"
   },
-  
+
   "reference": {
     "inspiration": "Revy.com.tr modal tabanlı özellik seçim sistemi",
     "knowledge_base": ".yalihan-bekci/knowledge/revy-style-feature-categories-2025-11-05.json",
     "authority_file": ".context7/authority.json"
   }
 }
-

@@ -3,49 +3,50 @@
 ## 📊 Parsel Sorgu Sonucu Analizi
 
 ### **TKGM Parsel Bilgileri (Ada: 126, Parsel: 7)**
+
 ```json
 {
-  "features": [
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [27.27891, 37.0954],
-            [27.27882, 37.09543],
-            [27.2787, 37.09544],
-            [27.27868, 37.09545],
-            [27.27854, 37.09524],
-            [27.27856, 37.09523],
-            [27.27878, 37.0952],
-            [27.27892, 37.09516],
-            [27.27897, 37.09518],
-            [27.27903, 37.09537],
-            [27.27891, 37.0954]
-          ]
-        ]
-      },
-      "properties": {
-        "ParselNo": "7",
-        "Alan": "900,01",
-        "Mevkii": "Kavak",
-        "Nitelik": "Arsa",
-        "Ada": "126",
-        "Il": "Muğla",
-        "Ilce": "Bodrum",
-        "Pafta": "",
-        "Mahalle": "Geriş"
-      }
+    "features": [
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Polygon",
+                "coordinates": [
+                    [
+                        [27.27891, 37.0954],
+                        [27.27882, 37.09543],
+                        [27.2787, 37.09544],
+                        [27.27868, 37.09545],
+                        [27.27854, 37.09524],
+                        [27.27856, 37.09523],
+                        [27.27878, 37.0952],
+                        [27.27892, 37.09516],
+                        [27.27897, 37.09518],
+                        [27.27903, 37.09537],
+                        [27.27891, 37.0954]
+                    ]
+                ]
+            },
+            "properties": {
+                "ParselNo": "7",
+                "Alan": "900,01",
+                "Mevkii": "Kavak",
+                "Nitelik": "Arsa",
+                "Ada": "126",
+                "Il": "Muğla",
+                "Ilce": "Bodrum",
+                "Pafta": "",
+                "Mahalle": "Geriş"
+            }
+        }
+    ],
+    "type": "FeatureCollection",
+    "crs": {
+        "type": "name",
+        "properties": {
+            "name": "EPSG:4326"
+        }
     }
-  ],
-  "type": "FeatureCollection",
-  "crs": {
-    "type": "name",
-    "properties": {
-      "name": "EPSG:4326"
-    }
-  }
 }
 ```
 
@@ -54,6 +55,7 @@
 ### 1. **TKGM Service Enhancement**
 
 #### **Enhanced TKGM Service**
+
 ```php
 <?php
 
@@ -66,7 +68,7 @@ use Illuminate\Support\Facades\Storage;
 class TKGMService
 {
     private $baseUrl = 'https://parselsorgu.tkgm.gov.tr/';
-    
+
     public function searchParcel($ada, $parsel)
     {
         try {
@@ -80,31 +82,31 @@ class TKGMService
                     'ada' => $ada,
                     'parsel' => $parsel
                 ]);
-            
+
             if ($response->successful()) {
                 $data = $response->json();
                 return $this->processGeoJSONData($data);
             }
-            
+
             throw new Exception('TKGM API hatası: ' . $response->status());
-            
+
         } catch (Exception $e) {
             Log::error('TKGM Parsel Sorgu Hatası: ' . $e->getMessage());
             return null;
         }
     }
-    
+
     private function processGeoJSONData($geoJsonData)
     {
         $feature = $geoJsonData['features'][0] ?? null;
-        
+
         if (!$feature) {
             return null;
         }
-        
+
         $properties = $feature['properties'];
         $geometry = $feature['geometry'];
-        
+
         return [
             'ada' => $properties['Ada'] ?? null,
             'parsel' => $properties['ParselNo'] ?? null,
@@ -124,43 +126,43 @@ class TKGMService
             'raw_data' => $geoJsonData
         ];
     }
-    
+
     private function calculatePolygonCenter($coordinates)
     {
         $latSum = 0;
         $lngSum = 0;
         $count = count($coordinates);
-        
+
         foreach ($coordinates as $coord) {
             $lngSum += $coord[0];
             $latSum += $coord[1];
         }
-        
+
         return [
             'lat' => $latSum / $count,
             'lng' => $lngSum / $count
         ];
     }
-    
+
     public function generateParcelJson($ada, $parsel)
     {
         $parcelData = $this->searchParcel($ada, $parsel);
-        
+
         if (!$parcelData) {
             return null;
         }
-        
+
         $filename = "tkgm-parsel-sorgu-sonuc-{$ada}-ada-{$parsel}-parsel.json";
         $filepath = storage_path('app/parcel-data/' . $filename);
-        
+
         // Dizin oluştur
         if (!file_exists(dirname($filepath))) {
             mkdir(dirname($filepath), 0755, true);
         }
-        
+
         // JSON dosyası oluştur
         file_put_contents($filepath, json_encode($parcelData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
-        
+
         return [
             'filename' => $filename,
             'filepath' => $filepath,
@@ -169,7 +171,7 @@ class TKGMService
             'map_url' => $this->generateMapUrl($parcelData)
         ];
     }
-    
+
     private function generateMapUrl($parcelData)
     {
         $center = $parcelData['geometry']['center'];
@@ -181,6 +183,7 @@ class TKGMService
 ### 2. **Database Schema for Parcel Data**
 
 #### **Parcel Data Migration**
+
 ```php
 <?php
 
@@ -211,13 +214,13 @@ class CreateParcelDataTable extends Migration
             $table->string('json_file')->nullable();
             $table->json('raw_data');
             $table->timestamps();
-            
+
             $table->index(['ada', 'parsel']);
             $table->index(['il', 'ilce']);
             $table->index(['center_lat', 'center_lng']);
         });
     }
-    
+
     public function down()
     {
         Schema::dropIfExists('parcel_data');
@@ -228,6 +231,7 @@ class CreateParcelDataTable extends Migration
 ### 3. **Enhanced Controller**
 
 #### **Parcel Controller with Database Storage**
+
 ```php
 <?php
 
@@ -241,19 +245,19 @@ use Illuminate\Support\Facades\Validator;
 class ParcelController extends Controller
 {
     private $tkgmService;
-    
+
     public function __construct(TKGMService $tkgmService)
     {
         $this->tkgmService = $tkgmService;
     }
-    
+
     public function searchParcel(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'ada' => 'required|integer|min:1',
             'parsel' => 'required|integer|min:1'
         ]);
-        
+
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
@@ -261,15 +265,15 @@ class ParcelController extends Controller
                 'errors' => $validator->errors()
             ], 422);
         }
-        
+
         $ada = $request->ada;
         $parsel = $request->parsel;
-        
+
         // Önce veritabanında kontrol et
         $existingParcel = ParcelData::where('ada', $ada)
             ->where('parsel', $parsel)
             ->first();
-        
+
         if ($existingParcel) {
             return response()->json([
                 'success' => true,
@@ -278,17 +282,17 @@ class ParcelController extends Controller
                 'source' => 'database'
             ]);
         }
-        
+
         // TKGM'den yeni veri çek
         $result = $this->tkgmService->generateParcelJson($ada, $parsel);
-        
+
         if (!$result) {
             return response()->json([
                 'success' => false,
                 'message' => 'Parsel bilgileri alınamadı'
             ], 500);
         }
-        
+
         // Veritabanına kaydet
         $parcelData = ParcelData::create([
             'ada' => $result['data']['ada'],
@@ -308,7 +312,7 @@ class ParcelController extends Controller
             'json_file' => $result['filename'],
             'raw_data' => $result['data']['raw_data']
         ]);
-        
+
         return response()->json([
             'success' => true,
             'message' => 'Parsel bilgileri başarıyla alındı ve kaydedildi',
@@ -319,31 +323,31 @@ class ParcelController extends Controller
             'source' => 'tkgm'
         ]);
     }
-    
+
     public function getParcelHistory($ada, $parsel)
     {
         $parcels = ParcelData::where('ada', $ada)
             ->where('parsel', $parsel)
             ->orderBy('created_at', 'desc')
             ->get();
-        
+
         return response()->json([
             'success' => true,
             'data' => $parcels
         ]);
     }
-    
+
     public function downloadParcelJson($filename)
     {
         $filepath = storage_path('app/parcel-data/' . $filename);
-        
+
         if (!file_exists($filepath)) {
             return response()->json([
                 'success' => false,
                 'message' => 'Dosya bulunamadı'
             ], 404);
         }
-        
+
         return response()->download($filepath);
     }
 }
@@ -352,48 +356,49 @@ class ParcelController extends Controller
 ### 4. **Frontend Integration**
 
 #### **Enhanced Parcel Search Component**
+
 ```javascript
 class EnhancedParcelSearchComponent {
     constructor() {
         this.setupEventListeners();
         this.initializeMap();
     }
-    
+
     setupEventListeners() {
         document.getElementById('parcel-search-form').addEventListener('submit', (e) => {
             e.preventDefault();
             this.searchParcel();
         });
-        
+
         // Auto-complete for ada/parsel
         document.getElementById('ada-input').addEventListener('input', (e) => {
             this.suggestAda(e.target.value);
         });
     }
-    
+
     async searchParcel() {
         const ada = document.getElementById('ada-input').value;
         const parsel = document.getElementById('parsel-input').value;
-        
+
         if (!ada || !parsel) {
             this.showError('Ada ve parsel numarası gerekli');
             return;
         }
-        
+
         this.showLoading();
-        
+
         try {
             const response = await fetch('/api/parcel/search', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
                 },
-                body: JSON.stringify({ ada, parsel })
+                body: JSON.stringify({ ada, parsel }),
             });
-            
+
             const result = await response.json();
-            
+
             if (result.success) {
                 this.displayParcelData(result.data);
                 this.showMap(result.data);
@@ -402,14 +407,13 @@ class EnhancedParcelSearchComponent {
             } else {
                 this.showError(result.message);
             }
-            
         } catch (error) {
             this.showError('Parsel sorgu hatası: ' + error.message);
         } finally {
             this.hideLoading();
         }
     }
-    
+
     displayParcelData(data) {
         const container = document.getElementById('parcel-results');
         container.innerHTML = `
@@ -456,7 +460,7 @@ class EnhancedParcelSearchComponent {
             </div>
         `;
     }
-    
+
     showMap(data) {
         const mapContainer = document.getElementById('parcel-map');
         mapContainer.innerHTML = `
@@ -470,38 +474,36 @@ class EnhancedParcelSearchComponent {
                 </div>
             </div>
         `;
-        
+
         // Initialize map with parcel coordinates
         this.initializeParcelMap(data);
     }
-    
+
     initializeParcelMap(data) {
         const map = L.map('map').setView([data.center_lat, data.center_lng], 18);
-        
+
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap contributors'
+            attribution: '© OpenStreetMap contributors',
         }).addTo(map);
-        
+
         // Add parcel polygon
-        const coordinates = data.coordinates[0].map(coord => [coord[1], coord[0]]);
+        const coordinates = data.coordinates[0].map((coord) => [coord[1], coord[0]]);
         const polygon = L.polygon(coordinates, {
             color: 'red',
             fillColor: 'yellow',
-            fillOpacity: 0.3
+            fillOpacity: 0.3,
         }).addTo(map);
-        
+
         // Add center marker
-        L.marker([data.center_lat, data.center_lng])
-            .addTo(map)
-            .bindPopup(`
+        L.marker([data.center_lat, data.center_lng]).addTo(map).bindPopup(`
                 <b>Ada: ${data.ada}, Parsel: ${data.parsel}</b><br>
                 Alan: ${data.alan} m²<br>
                 Nitelik: ${data.nitelik}
             `);
-        
+
         map.fitBounds(polygon.getBounds());
     }
-    
+
     showDownloadOptions(result) {
         const container = document.getElementById('download-section');
         container.innerHTML = `
@@ -521,24 +523,28 @@ class EnhancedParcelSearchComponent {
             </div>
         `;
     }
-    
+
     async showHistory(ada, parsel) {
         try {
             const response = await fetch(`/api/parcel/history/${ada}/${parsel}`);
             const result = await response.json();
-            
+
             if (result.success && result.data.length > 0) {
                 const container = document.getElementById('parcel-history');
                 container.innerHTML = `
                     <div class="history-info">
                         <h4>Sorgu Geçmişi</h4>
                         <div class="history-list">
-                            ${result.data.map(item => `
+                            ${result.data
+                                .map(
+                                    (item) => `
                                 <div class="history-item">
                                     <span class="date">${new Date(item.created_at).toLocaleString('tr-TR')}</span>
                                     <span class="source">${item.source || 'TKGM'}</span>
                                 </div>
-                            `).join('')}
+                            `
+                                )
+                                .join('')}
                         </div>
                     </div>
                 `;
@@ -553,6 +559,7 @@ class EnhancedParcelSearchComponent {
 ### 5. **API Routes**
 
 #### **Enhanced Route Definitions**
+
 ```php
 // routes/api.php
 Route::prefix('api')->group(function () {
@@ -560,7 +567,7 @@ Route::prefix('api')->group(function () {
     Route::post('/parcel/search', [ParcelController::class, 'searchParcel']);
     Route::get('/parcel/history/{ada}/{parsel}', [ParcelController::class, 'getParcelHistory']);
     Route::get('/parcel/download/{filename}', [ParcelController::class, 'downloadParcelJson']);
-    
+
     // Parcel Analytics
     Route::get('/parcel/analytics', [ParcelController::class, 'getAnalytics']);
     Route::get('/parcel/statistics', [ParcelController::class, 'getStatistics']);
@@ -570,24 +577,28 @@ Route::prefix('api')->group(function () {
 ## 🎯 Enterprise Features
 
 ### 1. **Advanced Analytics**
+
 - **Parcel search statistics**
 - **Geographic distribution**
 - **Usage patterns**
 - **Performance metrics**
 
 ### 2. **Integration Capabilities**
+
 - **Google Maps integration**
 - **OpenStreetMap support**
 - **GIS system integration**
 - **CAD software export**
 
 ### 3. **Data Management**
+
 - **Automated data updates**
 - **Data validation**
 - **Backup and recovery**
 - **Data archiving**
 
 ### 4. **Security & Compliance**
+
 - **API rate limiting**
 - **Data encryption**
 - **Audit logging**
@@ -596,12 +607,14 @@ Route::prefix('api')->group(function () {
 ## 📊 Success Metrics
 
 ### Technical Metrics
+
 - **API Response Time**: <500ms
 - **Data Accuracy**: 99%+
 - **Cache Hit Rate**: 90%+
 - **Uptime**: 99.9%
 
 ### Business Metrics
+
 - **User Adoption**: 80%+
 - **Search Success Rate**: 95%+
 - **Feature Usage**: 70%+

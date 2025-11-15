@@ -1,0 +1,42 @@
+{
+  "title": "Cache Optimization Pattern",
+  "date": "2025-11-07",
+  "category": "performance",
+  "severity": "medium",
+  "description": "Dropdown listeleri ve statik veriler için cache kullanımı. Database yükünü azaltır ve sayfa yükleme hızını artırır.",
+  "pattern": {
+    "problem": "Her sayfa yüklemesinde dropdown verileri için database query",
+    "example_bad": "$kategoriler = Category::orderBy('name')->get(); // Her sayfa yüklemesinde query",
+    "example_good": "$kategoriler = Cache::remember('category_list', 3600, function() {\n  return Category::select(['id', 'name'])->orderBy('name')->get();\n});"
+  },
+  "implementation": {
+    "cache_keys": {
+      "categories": "feature_category_list, talep_kategori_list, ilan_kategori_ana_list",
+      "locations": "il_list, ulke_list",
+      "ttl": "3600s (1 saat) - dropdown'lar, 7200s (2 saat) - statik veriler"
+    },
+    "select_optimization": "Sadece gerekli kolonları çek: select(['id', 'name', 'slug'])",
+    "cache_invalidation": "Model event'leri ile otomatik veya manuel Cache::forget()"
+  },
+  "fixed_controllers": [
+    "TalepController: kategoriler, ulkeler (3600s, 7200s)",
+    "TalepController create: iller, kategoriler",
+    "IlanKategoriController create: anaKategoriler (3600s)",
+    "OzellikController: kategoriler (3 metod, 3600s)"
+  ],
+  "cache_invalidation": [
+    "OzellikController store: Cache::forget('feature_category_list')",
+    "OzellikController update: Cache::forget('feature_category_list')"
+  ],
+  "impact": {
+    "before": "Her sayfa yüklemesinde dropdown query, database yükü yüksek",
+    "after": "Cache hit durumunda 0 query, %80-90 database yükü azalması"
+  },
+  "best_practices": [
+    "Dropdown'lar için 3600s cache",
+    "Statik veriler için 7200s cache",
+    "Select optimization ile sadece gerekli kolonlar",
+    "Cache invalidation: Model event'leri veya manuel temizleme"
+  ]
+}
+

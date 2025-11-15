@@ -55,10 +55,7 @@
       "Route::get('/{type}/{id}/edit', ...)",
       "Route::get('/{type}/{id}', ...)"
     ],
-    "example_wrong": [
-      "Route::get('/{type}/{id}', ...)",
-      "Route::get('/ilceler/{ilId}', ...)"
-    ]
+    "example_wrong": ["Route::get('/{type}/{id}', ...)", "Route::get('/ilceler/{ilId}', ...)"]
   },
 
   "yalihan_bekci_auto_check": {
@@ -130,4 +127,3 @@
   "applied_to": "routes/admin.php",
   "next_action": "Add pre-commit hook for route order checking"
 }
-

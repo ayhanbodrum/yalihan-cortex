@@ -20,13 +20,13 @@ return new class extends Migration
             $table->boolean('is_required')->default(false);
             $table->boolean('is_filterable')->default(true);
             $table->boolean('is_searchable')->default(true);
-            $table->integer('order')->default(0);
+            $table->integer('display_order')->default(0); // Context7: order → display_order
             $table->boolean('status')->default(true);
             $table->timestamps();
             $table->softDeletes();
-            
+
             $table->foreign('feature_category_id')->references('id')->on('feature_categories')->onDelete('set null');
-            $table->index(['status', 'order']);
+            $table->index(['status', 'display_order']); // Context7: order → display_order
             $table->index(['feature_category_id', 'status']);
             $table->index('slug');
         });

@@ -21,17 +21,17 @@ return new class extends Migration
             $table->json('veri_secenekleri')->nullable();
             $table->string('birim')->nullable();
             $table->string('status')->default('Aktif');
-            $table->integer('order')->default(0);
+            $table->integer('display_order')->default(0); // Context7: order → display_order
             $table->boolean('zorunlu')->default(false);
             $table->boolean('arama_filtresi')->default(false);
             $table->boolean('ilan_kartinda_goster')->default(false);
             $table->text('aciklama')->nullable();
             $table->timestamps();
             $table->softDeletes();
-            
+
             $table->index('status');
             $table->index('kategori_id');
-            $table->index('order');
+            $table->index('display_order'); // Context7: order → display_order
         });
     }
 

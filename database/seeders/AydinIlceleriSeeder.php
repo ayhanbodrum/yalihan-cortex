@@ -53,4 +53,3 @@ class AydinIlceleriSeeder extends Seeder
         $this->command->info('✅ ' . count($districts) . ' ilçe eklendi (Aydın)');
     }
 }
-

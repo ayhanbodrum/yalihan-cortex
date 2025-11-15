@@ -1,0 +1,26 @@
+# Dead Code Analysis Report - 2025-11-13 14:02:38
+
+## 📊 Özet
+
+| Kategori | Toplam | Kullanılan | Kullanılmayan |
+|----------|--------|------------|---------------|
+| Class'lar | 359 | 1168 | 4 |
+| Trait'ler | 7 | 318 | 0 |
+| Interface'ler | 0 | 8 | 0 |
+
+**Temizlik Fırsatı:** 4 dosya
+
+## 🗑️ Kullanılmayan Class'lar (İlk 50)
+
+- **CleanDuplicateLocations** (`app/Console/Commands/CleanDuplicateLocations.php`)
+  - Sebep: Not referenced anywhere
+
+- **SyncMissingNeighborhoods** (`app/Console/Commands/SyncMissingNeighborhoods.php`)
+  - Sebep: Not referenced anywhere
+
+- **ClearAddressData** (`app/Console/Commands/ClearAddressData.php`)
+  - Sebep: Not referenced anywhere
+
+- **CleanupSeviye2Categories** (`app/Console/Commands/CleanupSeviye2Categories.php`)
+  - Sebep: Not referenced anywhere
+

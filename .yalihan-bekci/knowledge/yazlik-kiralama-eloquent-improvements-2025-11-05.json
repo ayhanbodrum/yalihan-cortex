@@ -4,7 +4,7 @@
   "category": "code_improvement",
   "priority": "HIGH",
   "status": "COMPLETED",
-  
+
   "changes_made": {
     "model_relationships": {
       "file": "app/Models/Ilan.php",
@@ -24,10 +24,7 @@
           "context7_note": "Context7 standardına uygun ilişki tanımı"
         }
       ],
-      "imports_added": [
-        "use App\Models\YazlikRezervasyon;",
-        "use App\Models\YazlikFiyatlandirma;"
-      ]
+      "imports_added": ["use App\Models\YazlikRezervasyon;", "use App\Models\YazlikFiyatlandirma;"]
     },
     "controller_improvements": {
       "file": "app/Http/Controllers/Admin/YazlikKiralamaController.php",
@@ -68,10 +65,7 @@
           "benefit": "Eloquent relationship, gerçek veri hesaplama (mock data yerine)"
         }
       ],
-      "imports_added": [
-        "use App\Models\FeatureCategory;",
-        "use App\Models\YazlikRezervasyon;"
-      ]
+      "imports_added": ["use App\Models\FeatureCategory;", "use App\Models\YazlikRezervasyon;"]
     }
   },
 
@@ -141,4 +135,3 @@
     "Performance testleri (N+1 query kontrolü)"
   ]
 }
-

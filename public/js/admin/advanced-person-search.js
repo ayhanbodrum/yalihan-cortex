@@ -5,12 +5,12 @@
  */
 
 class AdvancedPersonSearch {
-    constructor(containerId = "person-search-container") {
+    constructor(containerId = 'person-search-container') {
         this.containerId = containerId;
         this.persons = [];
         this.filteredPersons = [];
         this.selectedPerson = null;
-        this.searchTerm = "";
+        this.searchTerm = '';
         this.isLoading = false;
         this.debounceTimer = null;
         this.maxResults = 20;
@@ -23,16 +23,13 @@ class AdvancedPersonSearch {
         this.createHTML();
         this.bindEvents();
         this.loadPersons();
-        console.log("✅ Advanced Person Search initialized");
+        console.log('✅ Advanced Person Search initialized');
     }
 
     createHTML() {
         const container = document.getElementById(this.containerId);
         if (!container) {
-            console.error(
-                "Person search container not found:",
-                this.containerId
-            );
+            console.error('Person search container not found:', this.containerId);
             return;
         }
 
@@ -109,38 +106,34 @@ class AdvancedPersonSearch {
     }
 
     bindEvents() {
-        const searchInput = document.getElementById("person-search-input");
-        const clearButton = document.getElementById("clear-search");
-        const removeButton = document.getElementById("remove-selected-person");
-        const addNewButton = document.getElementById("add-new-person");
+        const searchInput = document.getElementById('person-search-input');
+        const clearButton = document.getElementById('clear-search');
+        const removeButton = document.getElementById('remove-selected-person');
+        const addNewButton = document.getElementById('add-new-person');
 
         if (searchInput) {
             // Search input events
-            searchInput.addEventListener("input", (e) => this.onSearchInput(e));
-            searchInput.addEventListener("focus", (e) => this.onSearchFocus(e));
-            searchInput.addEventListener("blur", (e) => this.onSearchBlur(e));
-            searchInput.addEventListener("keydown", (e) =>
-                this.onSearchKeydown(e)
-            );
+            searchInput.addEventListener('input', (e) => this.onSearchInput(e));
+            searchInput.addEventListener('focus', (e) => this.onSearchFocus(e));
+            searchInput.addEventListener('blur', (e) => this.onSearchBlur(e));
+            searchInput.addEventListener('keydown', (e) => this.onSearchKeydown(e));
         }
 
         if (clearButton) {
-            clearButton.addEventListener("click", () => this.clearSearch());
+            clearButton.addEventListener('click', () => this.clearSearch());
         }
 
         if (removeButton) {
-            removeButton.addEventListener("click", () => this.clearSelection());
+            removeButton.addEventListener('click', () => this.clearSelection());
         }
 
         if (addNewButton) {
-            addNewButton.addEventListener("click", () =>
-                this.openAddPersonModal()
-            );
+            addNewButton.addEventListener('click', () => this.openAddPersonModal());
         }
 
         // Close dropdown when clicking outside
-        document.addEventListener("click", (e) => {
-            if (!e.target.closest(".advanced-person-search")) {
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.advanced-person-search')) {
                 this.hideResults();
             }
         });
@@ -149,13 +142,13 @@ class AdvancedPersonSearch {
     async loadPersons() {
         try {
             this.setLoading(true);
-            const response = await fetch("/api/admin/persons/search", {
-                method: "GET",
+            const response = await fetch('/api/admin/persons/search', {
+                method: 'GET',
                 headers: {
-                    Accept: "application/json",
-                    "X-CSRF-TOKEN": document
+                    Accept: 'application/json',
+                    'X-CSRF-TOKEN': document
                         .querySelector('meta[name="csrf-token"]')
-                        ?.getAttribute("content"),
+                        ?.getAttribute('content'),
                 },
             });
 
@@ -164,11 +157,11 @@ class AdvancedPersonSearch {
                 this.persons = data.data || data.persons || [];
                 this.updateSearchStatus(`${this.persons.length} kişi yüklendi`);
             } else {
-                throw new Error("Kişiler yüklenemedi");
+                throw new Error('Kişiler yüklenemedi');
             }
         } catch (error) {
-            console.error("Load persons error:", error);
-            this.updateSearchStatus("Kişiler yüklenirken hata oluştu");
+            console.error('Load persons error:', error);
+            this.updateSearchStatus('Kişiler yüklenirken hata oluştu');
         } finally {
             this.setLoading(false);
         }
@@ -179,9 +172,9 @@ class AdvancedPersonSearch {
         this.searchTerm = value;
 
         // Show/hide clear button
-        const clearButton = document.getElementById("clear-search");
+        const clearButton = document.getElementById('clear-search');
         if (clearButton) {
-            clearButton.classList.toggle("hidden", value.length === 0);
+            clearButton.classList.toggle('hidden', value.length === 0);
         }
 
         // Debounced search
@@ -200,19 +193,19 @@ class AdvancedPersonSearch {
     onSearchBlur(e) {
         // Delay hiding to allow clicking on results
         setTimeout(() => {
-            if (!document.querySelector(".advanced-person-search:hover")) {
+            if (!document.querySelector('.advanced-person-search:hover')) {
                 this.hideResults();
             }
         }, 150);
     }
 
     onSearchKeydown(e) {
-        const resultsContainer = document.getElementById("search-results");
-        const items = resultsContainer?.querySelectorAll(".search-result-item");
+        const resultsContainer = document.getElementById('search-results');
+        const items = resultsContainer?.querySelectorAll('.search-result-item');
 
         if (!items || items.length === 0) return;
 
-        const currentActive = resultsContainer.querySelector(".result-active");
+        const currentActive = resultsContainer.querySelector('.result-active');
         let currentIndex = -1;
 
         if (currentActive) {
@@ -220,19 +213,19 @@ class AdvancedPersonSearch {
         }
 
         switch (e.key) {
-            case "ArrowDown":
+            case 'ArrowDown':
                 e.preventDefault();
                 const nextIndex = Math.min(currentIndex + 1, items.length - 1);
                 this.setActiveResult(items, nextIndex);
                 break;
 
-            case "ArrowUp":
+            case 'ArrowUp':
                 e.preventDefault();
                 const prevIndex = Math.max(currentIndex - 1, 0);
                 this.setActiveResult(items, prevIndex);
                 break;
 
-            case "Enter":
+            case 'Enter':
                 e.preventDefault();
                 if (currentActive) {
                     const personId = currentActive.dataset.personId;
@@ -240,7 +233,7 @@ class AdvancedPersonSearch {
                 }
                 break;
 
-            case "Escape":
+            case 'Escape':
                 this.hideResults();
                 break;
         }
@@ -248,19 +241,19 @@ class AdvancedPersonSearch {
 
     setActiveResult(items, index) {
         items.forEach((item, i) => {
-            item.classList.toggle("result-active", i === index);
+            item.classList.toggle('result-active', i === index);
         });
     }
 
     async performSearch(term) {
         if (term.length < this.minSearchLength) {
             this.hideResults();
-            this.updateSearchStatus("En az 2 karakter girin");
+            this.updateSearchStatus('En az 2 karakter girin');
             return;
         }
 
         this.setLoading(true);
-        this.updateSearchStatus("Aranıyor...");
+        this.updateSearchStatus('Aranıyor...');
 
         try {
             // Client-side filtering for better performance
@@ -272,28 +265,24 @@ class AdvancedPersonSearch {
                         person.soyad?.toLowerCase().includes(searchStr) ||
                         person.telefon?.includes(searchStr) ||
                         person.email?.toLowerCase().includes(searchStr) ||
-                        `${person.ad} ${person.soyad}`
-                            .toLowerCase()
-                            .includes(searchStr)
+                        `${person.ad} ${person.soyad}`.toLowerCase().includes(searchStr)
                     );
                 })
                 .slice(0, this.maxResults);
 
             this.renderResults();
             this.showResults();
-            this.updateSearchStatus(
-                `${this.filteredPersons.length} kişi bulundu`
-            );
+            this.updateSearchStatus(`${this.filteredPersons.length} kişi bulundu`);
         } catch (error) {
-            console.error("Search error:", error);
-            this.updateSearchStatus("Arama hatası");
+            console.error('Search error:', error);
+            this.updateSearchStatus('Arama hatası');
         } finally {
             this.setLoading(false);
         }
     }
 
     renderResults() {
-        const resultsContainer = document.getElementById("search-results");
+        const resultsContainer = document.getElementById('search-results');
         if (!resultsContainer) return;
 
         if (this.filteredPersons.length === 0) {
@@ -326,16 +315,14 @@ class AdvancedPersonSearch {
                             ${person.ad} ${person.soyad}
                         </div>
                         <div class="text-sm text-gray-600 dark:text-gray-400">
-                            ${person.telefon || "Telefon yok"} • ${
-                    person.email || "Email yok"
-                }
+                            ${person.telefon || 'Telefon yok'} • ${person.email || 'Email yok'}
                         </div>
                         ${
                             person.sehir
                                 ? `<div class="text-xs text-gray-500">${
                                       person.sehir
-                                  }, ${person.ulke || "Türkiye"}</div>`
-                                : ""
+                                  }, ${person.ulke || 'Türkiye'}</div>`
+                                : ''
                         }
                     </div>
                     <div class="text-gray-400">
@@ -345,7 +332,7 @@ class AdvancedPersonSearch {
             </div>
         `
             )
-            .join("");
+            .join('');
     }
 
     selectPerson(personId) {
@@ -355,46 +342,36 @@ class AdvancedPersonSearch {
         this.selectedPerson = person;
 
         // Update hidden inputs
-        document.getElementById("selected_person_id").value = person.id;
-        document.getElementById("selected_person_data").value =
-            JSON.stringify(person);
+        document.getElementById('selected_person_id').value = person.id;
+        document.getElementById('selected_person_data').value = JSON.stringify(person);
 
         // Clear search input
-        document.getElementById("person-search-input").value = "";
-        this.searchTerm = "";
+        document.getElementById('person-search-input').value = '';
+        this.searchTerm = '';
 
         // Show selected person
         this.showSelectedPerson();
         this.hideResults();
-        this.updateSearchStatus("Kişi seçildi");
+        this.updateSearchStatus('Kişi seçildi');
 
         // Trigger change event for form validation
         this.triggerChangeEvent();
 
-        console.log("Person selected:", person);
+        console.log('Person selected:', person);
     }
 
     showSelectedPerson() {
-        const displayContainer = document.getElementById(
-            "selected-person-display"
-        );
-        const nameElement = document.getElementById("selected-person-name");
-        const contactElement = document.getElementById(
-            "selected-person-contact"
-        );
+        const displayContainer = document.getElementById('selected-person-display');
+        const nameElement = document.getElementById('selected-person-name');
+        const contactElement = document.getElementById('selected-person-contact');
 
-        if (
-            displayContainer &&
-            nameElement &&
-            contactElement &&
-            this.selectedPerson
-        ) {
+        if (displayContainer && nameElement && contactElement && this.selectedPerson) {
             nameElement.textContent = `${this.selectedPerson.ad} ${this.selectedPerson.soyad}`;
             contactElement.textContent = `${
-                this.selectedPerson.telefon || "Telefon yok"
-            } • ${this.selectedPerson.email || "Email yok"}`;
+                this.selectedPerson.telefon || 'Telefon yok'
+            } • ${this.selectedPerson.email || 'Email yok'}`;
 
-            displayContainer.classList.remove("hidden");
+            displayContainer.classList.remove('hidden');
         }
     }
 
@@ -402,58 +379,56 @@ class AdvancedPersonSearch {
         this.selectedPerson = null;
 
         // Clear hidden inputs
-        document.getElementById("selected_person_id").value = "";
-        document.getElementById("selected_person_data").value = "";
+        document.getElementById('selected_person_id').value = '';
+        document.getElementById('selected_person_data').value = '';
 
         // Hide selected person display
-        document
-            .getElementById("selected-person-display")
-            .classList.add("hidden");
+        document.getElementById('selected-person-display').classList.add('hidden');
 
-        this.updateSearchStatus("Kişi seçimi temizlendi");
+        this.updateSearchStatus('Kişi seçimi temizlendi');
         this.triggerChangeEvent();
     }
 
     clearSearch() {
-        document.getElementById("person-search-input").value = "";
-        this.searchTerm = "";
+        document.getElementById('person-search-input').value = '';
+        this.searchTerm = '';
         this.hideResults();
-        document.getElementById("clear-search").classList.add("hidden");
-        this.updateSearchStatus("Arama temizlendi");
+        document.getElementById('clear-search').classList.add('hidden');
+        this.updateSearchStatus('Arama temizlendi');
     }
 
     showResults() {
-        document.getElementById("search-results").classList.remove("hidden");
+        document.getElementById('search-results').classList.remove('hidden');
     }
 
     hideResults() {
-        document.getElementById("search-results").classList.add("hidden");
+        document.getElementById('search-results').classList.add('hidden');
     }
 
     setLoading(loading) {
         this.isLoading = loading;
-        const loadingIcon = document.getElementById("search-loading");
+        const loadingIcon = document.getElementById('search-loading');
         if (loadingIcon) {
-            loadingIcon.classList.toggle("hidden", !loading);
+            loadingIcon.classList.toggle('hidden', !loading);
         }
     }
 
     updateSearchStatus(message) {
-        const statusElement = document.getElementById("search-status");
+        const statusElement = document.getElementById('search-status');
         if (statusElement) {
             statusElement.textContent = message;
         }
     }
 
     getPersonInitials(person) {
-        const first = person.ad?.charAt(0)?.toUpperCase() || "";
-        const last = person.soyad?.charAt(0)?.toUpperCase() || "";
-        return first + last || "KS";
+        const first = person.ad?.charAt(0)?.toUpperCase() || '';
+        const last = person.soyad?.charAt(0)?.toUpperCase() || '';
+        return first + last || 'KS';
     }
 
     triggerChangeEvent() {
-        const event = new Event("change", { bubbles: true });
-        document.getElementById("selected_person_id").dispatchEvent(event);
+        const event = new Event('change', { bubbles: true });
+        document.getElementById('selected_person_id').dispatchEvent(event);
     }
 
     openAddPersonModal() {
@@ -463,12 +438,12 @@ class AdvancedPersonSearch {
         }
 
         // Show modal
-        const modal = document.getElementById("add-person-modal");
+        const modal = document.getElementById('add-person-modal');
         if (modal) {
-            modal.classList.remove("hidden");
+            modal.classList.remove('hidden');
         }
 
-        console.log("Add person modal opened");
+        console.log('Add person modal opened');
     }
 
     // Public API
@@ -488,9 +463,9 @@ class AdvancedPersonSearch {
 // Initialize when DOM is ready
 let advancedPersonSearch;
 
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener('DOMContentLoaded', function () {
     // Initialize if container exists
-    if (document.getElementById("person-search-container")) {
+    if (document.getElementById('person-search-container')) {
         advancedPersonSearch = new AdvancedPersonSearch();
     }
 });

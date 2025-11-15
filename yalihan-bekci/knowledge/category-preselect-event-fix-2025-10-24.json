@@ -16,9 +16,7 @@
     "approach": "DOMContentLoaded event'inde mevcut seçimleri kontrol et ve ilgili fonksiyonları çağır",
     "implementation": "category-system.blade.php dosyasının sonuna DOMContentLoaded listener ekle",
     "code_pattern": "document.addEventListener('DOMContentLoaded', function() { if (select.value) loadFunction(select.value); });",
-    "files_modified": [
-      "resources/views/admin/ilanlar/components/category-system.blade.php"
-    ]
+    "files_modified": ["resources/views/admin/ilanlar/components/category-system.blade.php"]
   },
   "technical_details": {
     "html_pattern": "old('ana_kategori_id') ile selected state korunuyor",
@@ -57,4 +55,3 @@
     "dom_ready": "document.addEventListener('DOMContentLoaded')"
   }
 }
-

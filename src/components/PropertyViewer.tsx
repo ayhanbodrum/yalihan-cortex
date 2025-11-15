@@ -321,15 +321,3 @@ const PropertyViewer: React.FC<PropertyViewerProps> = ({
 };
 
 export default PropertyViewer;
-
-
-
-
-
-
-
-
-
-
-
-

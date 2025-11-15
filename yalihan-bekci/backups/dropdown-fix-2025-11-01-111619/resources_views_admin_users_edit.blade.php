@@ -28,12 +28,12 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="neo-form-group">
                     <label for="name" class="neo-label">İsim *</label>
-                    <input 
-                        type="text" 
-                        id="name" 
-                        name="name" 
-                        value="{{ old('name', $user->name) }}" 
-                        class="neo-input @error('name') border-red-500 @enderror" 
+                    <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        value="{{ old('name', $user->name) }}"
+                        class="neo-input @error('name') border-red-500 @enderror"
                         required
                     >
                     @error('name')
@@ -43,12 +43,12 @@
 
                 <div class="neo-form-group">
                     <label for="email" class="neo-label">E-posta *</label>
-                    <input 
-                        type="email" 
-                        id="email" 
-                        name="email" 
-                        value="{{ old('email', $user->email) }}" 
-                        class="neo-input @error('email') border-red-500 @enderror" 
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        value="{{ old('email', $user->email) }}"
+                        class="neo-input @error('email') border-red-500 @enderror"
                         required
                     >
                     @error('email')
@@ -61,10 +61,10 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="neo-form-group">
                     <label for="password" class="neo-label">Yeni Şifre</label>
-                    <input 
-                        type="password" 
-                        id="password" 
-                        name="password" 
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
                         class="neo-input @error('password') border-red-500 @enderror"
                     >
                     <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Boş bırakırsanız şifre değişmez</p>
@@ -75,10 +75,10 @@
 
                 <div class="neo-form-group">
                     <label for="password_confirmation" class="neo-label">Şifre Tekrarı</label>
-                    <input 
-                        type="password" 
-                        id="password_confirmation" 
-                        name="password_confirmation" 
+                    <input
+                        type="password"
+                        id="password_confirmation"
+                        name="password_confirmation"
                         class="neo-input"
                     >
                 </div>
@@ -88,10 +88,10 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="neo-form-group">
                     <label for="role_id" class="neo-label">Rol *</label>
-                    <select 
-                        id="role_id" 
-                        name="role_id" 
-                        class="neo-select @error('role_id') border-red-500 @enderror" 
+                    <select
+                        id="role_id"
+                        name="role_id"
+                        class="neo-select @error('role_id') border-red-500 @enderror"
                         required
                     >
                         <option value="">Rol Seçiniz</option>
@@ -118,12 +118,12 @@
                 <div class="neo-form-group">
                     <label for="status" class="neo-label">Durum</label>
                     <label class="inline-flex items-center gap-3 cursor-pointer">
-                        <input 
-                            type="checkbox" 
-                            id="status" 
-                            name="status" 
-                            value="1" 
-                            class="neo-switch" 
+                        <input
+                            type="checkbox"
+                            id="status"
+                            name="status"
+                            value="1"
+                            class="neo-switch"
                             {{ old('status', $user->status) ? 'checked' : '' }}
                         >
                         <span class="text-sm text-gray-700 dark:text-gray-300">Kullanıcı Aktif</span>

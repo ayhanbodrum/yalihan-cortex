@@ -21,18 +21,13 @@ class EnhancedMediaUploadSystem {
         this.uploadedFiles = [];
         this.maxFiles = 20;
         this.maxFileSize = 10 * 1024 * 1024; // 10MB
-        this.allowedTypes = [
-            "image/jpeg",
-            "image/jpg",
-            "image/png",
-            "image/webp",
-        ];
+        this.allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
 
         this.init();
     }
 
     init() {
-        console.log("🚀 Enhanced Media Upload System initialized");
+        console.log('🚀 Enhanced Media Upload System initialized');
 
         this.createUploadInterface();
         this.attachEventListeners();
@@ -42,16 +37,13 @@ class EnhancedMediaUploadSystem {
      * Upload interface oluştur
      */
     createUploadInterface() {
-        const mediaContainer = document.querySelector(
-            "#content-media .create-card"
-        );
+        const mediaContainer = document.querySelector('#content-media .create-card');
         if (!mediaContainer) return;
 
         // Mevcut basit input'u gizle
-        const existingInput =
-            mediaContainer.querySelector('input[type="file"]');
+        const existingInput = mediaContainer.querySelector('input[type="file"]');
         if (existingInput) {
-            existingInput.style.display = "none";
+            existingInput.style.display = 'none';
         }
 
         // Enhanced upload interface oluştur
@@ -108,21 +100,16 @@ class EnhancedMediaUploadSystem {
         `;
 
         // Mevcut fotoğraf input'unun yerine yeni interface'i ekle
-        const existingLabel = mediaContainer.querySelector("label");
-        if (
-            existingLabel &&
-            existingLabel.textContent.includes("Fotoğraflar")
-        ) {
+        const existingLabel = mediaContainer.querySelector('label');
+        if (existingLabel && existingLabel.textContent.includes('Fotoğraflar')) {
             const parentDiv = existingLabel.parentElement;
             parentDiv.innerHTML = uploadHTML;
         }
 
         // DOM referanslarını al
-        this.uploadContainer = document.getElementById("enhanced-upload-area");
-        this.fileInput = document.getElementById("enhanced-file-input");
-        this.previewContainer = document.getElementById(
-            "image-preview-container"
-        );
+        this.uploadContainer = document.getElementById('enhanced-upload-area');
+        this.fileInput = document.getElementById('enhanced-file-input');
+        this.previewContainer = document.getElementById('image-preview-container');
     }
 
     /**
@@ -132,36 +119,24 @@ class EnhancedMediaUploadSystem {
         if (!this.uploadContainer || !this.fileInput) return;
 
         // Drag & Drop events
-        this.uploadContainer.addEventListener(
-            "dragover",
-            this.handleDragOver.bind(this)
-        );
-        this.uploadContainer.addEventListener(
-            "dragleave",
-            this.handleDragLeave.bind(this)
-        );
-        this.uploadContainer.addEventListener(
-            "drop",
-            this.handleDrop.bind(this)
-        );
+        this.uploadContainer.addEventListener('dragover', this.handleDragOver.bind(this));
+        this.uploadContainer.addEventListener('dragleave', this.handleDragLeave.bind(this));
+        this.uploadContainer.addEventListener('drop', this.handleDrop.bind(this));
 
         // Click to select files
-        this.uploadContainer.addEventListener("click", () => {
+        this.uploadContainer.addEventListener('click', () => {
             this.fileInput.click();
         });
 
         // File input change
-        this.fileInput.addEventListener("change", (e) => {
+        this.fileInput.addEventListener('change', (e) => {
             this.handleFiles(e.target.files);
         });
 
         // Clear all button
-        const clearButton = document.getElementById("clear-all-images");
+        const clearButton = document.getElementById('clear-all-images');
         if (clearButton) {
-            clearButton.addEventListener(
-                "click",
-                this.clearAllImages.bind(this)
-            );
+            clearButton.addEventListener('click', this.clearAllImages.bind(this));
         }
     }
 
@@ -171,8 +146,8 @@ class EnhancedMediaUploadSystem {
     handleDragOver(e) {
         e.preventDefault();
         e.stopPropagation();
-        this.uploadContainer.classList.add("border-blue-500", "bg-blue-100");
-        this.uploadContainer.classList.remove("border-gray-300", "bg-gray-50");
+        this.uploadContainer.classList.add('border-blue-500', 'bg-blue-100');
+        this.uploadContainer.classList.remove('border-gray-300', 'bg-gray-50');
     }
 
     /**
@@ -181,8 +156,8 @@ class EnhancedMediaUploadSystem {
     handleDragLeave(e) {
         e.preventDefault();
         e.stopPropagation();
-        this.uploadContainer.classList.remove("border-blue-500", "bg-blue-100");
-        this.uploadContainer.classList.add("border-gray-300", "bg-gray-50");
+        this.uploadContainer.classList.remove('border-blue-500', 'bg-blue-100');
+        this.uploadContainer.classList.add('border-gray-300', 'bg-gray-50');
     }
 
     /**
@@ -191,8 +166,8 @@ class EnhancedMediaUploadSystem {
     handleDrop(e) {
         e.preventDefault();
         e.stopPropagation();
-        this.uploadContainer.classList.remove("border-blue-500", "bg-blue-100");
-        this.uploadContainer.classList.add("border-gray-300", "bg-gray-50");
+        this.uploadContainer.classList.remove('border-blue-500', 'bg-blue-100');
+        this.uploadContainer.classList.add('border-gray-300', 'bg-gray-50');
 
         const files = e.dataTransfer.files;
         this.handleFiles(files);
@@ -206,17 +181,14 @@ class EnhancedMediaUploadSystem {
         const validFiles = fileArray.filter((file) => this.validateFile(file));
 
         if (validFiles.length === 0) {
-            this.showToast("Geçerli dosya bulunamadı!", "error");
+            this.showToast('Geçerli dosya bulunamadı!', 'error');
             return;
         }
 
         // Maksimum dosya sayısı kontrolü
         const totalFiles = this.uploadedFiles.length + validFiles.length;
         if (totalFiles > this.maxFiles) {
-            this.showToast(
-                `Maksimum ${this.maxFiles} fotoğraf yükleyebilirsiniz!`,
-                "error"
-            );
+            this.showToast(`Maksimum ${this.maxFiles} fotoğraf yükleyebilirsiniz!`, 'error');
             return;
         }
 
@@ -226,10 +198,7 @@ class EnhancedMediaUploadSystem {
         });
 
         this.updateFileInput();
-        this.showToast(
-            `${validFiles.length} fotoğraf başarıyla eklendi!`,
-            "success"
-        );
+        this.showToast(`${validFiles.length} fotoğraf başarıyla eklendi!`, 'success');
     }
 
     /**
@@ -238,19 +207,13 @@ class EnhancedMediaUploadSystem {
     validateFile(file) {
         // Dosya tipi kontrolü
         if (!this.allowedTypes.includes(file.type)) {
-            this.showToast(
-                `${file.name}: Desteklenmeyen dosya formatı!`,
-                "error"
-            );
+            this.showToast(`${file.name}: Desteklenmeyen dosya formatı!`, 'error');
             return false;
         }
 
         // Dosya boyutu kontrolü
         if (file.size > this.maxFileSize) {
-            this.showToast(
-                `${file.name}: Dosya boyutu çok büyük (max 10MB)!`,
-                "error"
-            );
+            this.showToast(`${file.name}: Dosya boyutu çok büyük (max 10MB)!`, 'error');
             return false;
         }
 
@@ -262,11 +225,7 @@ class EnhancedMediaUploadSystem {
      */
     processFile(file) {
         const reader = new FileReader();
-        const fileId =
-            "file_" +
-            Date.now() +
-            "_" +
-            Math.random().toString(36).substr(2, 9);
+        const fileId = 'file_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
 
         reader.onload = (e) => {
             const fileData = {
@@ -293,9 +252,9 @@ class EnhancedMediaUploadSystem {
         if (!this.previewContainer) return;
 
         // Preview container'ı göster
-        this.previewContainer.classList.remove("hidden");
+        this.previewContainer.classList.remove('hidden');
 
-        const previewsGrid = document.getElementById("image-previews");
+        const previewsGrid = document.getElementById('image-previews');
         if (!previewsGrid) return;
 
         const thumbnailHTML = `
@@ -326,14 +285,12 @@ class EnhancedMediaUploadSystem {
                     <p class="text-xs text-gray-600 truncate" title="${
                         fileData.name
                     }">${fileData.name}</p>
-                    <p class="text-xs text-gray-400">${this.formatFileSize(
-                        fileData.size
-                    )}</p>
+                    <p class="text-xs text-gray-400">${this.formatFileSize(fileData.size)}</p>
                 </div>
             </div>
         `;
 
-        previewsGrid.insertAdjacentHTML("beforeend", thumbnailHTML);
+        previewsGrid.insertAdjacentHTML('beforeend', thumbnailHTML);
     }
 
     /**
@@ -341,9 +298,7 @@ class EnhancedMediaUploadSystem {
      */
     removeFile(fileId) {
         // Array'den dosyayı kaldır
-        this.uploadedFiles = this.uploadedFiles.filter(
-            (file) => file.id !== fileId
-        );
+        this.uploadedFiles = this.uploadedFiles.filter((file) => file.id !== fileId);
 
         // DOM'dan thumbnail'ı kaldır
         const thumbnail = document.getElementById(`thumb_${fileId}`);
@@ -353,11 +308,11 @@ class EnhancedMediaUploadSystem {
 
         this.updateCounters();
         this.updateFileInput();
-        this.showToast("Fotoğraf kaldırıldı", "info");
+        this.showToast('Fotoğraf kaldırıldı', 'info');
 
         // Preview container'ı gizle eğer dosya yoksa
         if (this.uploadedFiles.length === 0) {
-            this.previewContainer.classList.add("hidden");
+            this.previewContainer.classList.add('hidden');
         }
     }
 
@@ -367,20 +322,18 @@ class EnhancedMediaUploadSystem {
     clearAllImages() {
         if (this.uploadedFiles.length === 0) return;
 
-        if (
-            confirm("Tüm fotoğrafları kaldırmak istediğinizden emin misiniz?")
-        ) {
+        if (confirm('Tüm fotoğrafları kaldırmak istediğinizden emin misiniz?')) {
             this.uploadedFiles = [];
 
-            const previewsGrid = document.getElementById("image-previews");
+            const previewsGrid = document.getElementById('image-previews');
             if (previewsGrid) {
-                previewsGrid.innerHTML = "";
+                previewsGrid.innerHTML = '';
             }
 
-            this.previewContainer.classList.add("hidden");
+            this.previewContainer.classList.add('hidden');
             this.updateCounters();
             this.updateFileInput();
-            this.showToast("Tüm fotoğraflar kaldırıldı", "info");
+            this.showToast('Tüm fotoğraflar kaldırıldı', 'info');
         }
     }
 
@@ -400,19 +353,17 @@ class EnhancedMediaUploadSystem {
                         <i class="fas fa-times"></i>
                     </button>
                     <img src="${fileData.preview}" alt="${
-            fileData.name
-        }" class="max-w-full max-h-full object-contain rounded-lg">
+                        fileData.name
+                    }" class="max-w-full max-h-full object-contain rounded-lg">
                     <div class="absolute bottom-2 left-2 bg-black bg-opacity-75 text-white px-3 py-2 rounded">
                         <p class="text-sm">${fileData.name}</p>
-                        <p class="text-xs opacity-75">${this.formatFileSize(
-                            fileData.size
-                        )}</p>
+                        <p class="text-xs opacity-75">${this.formatFileSize(fileData.size)}</p>
                     </div>
                 </div>
             </div>
         `;
 
-        document.body.insertAdjacentHTML("beforeend", modalHTML);
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
     }
 
     /**
@@ -433,7 +384,7 @@ class EnhancedMediaUploadSystem {
      * Sayaçları güncelle
      */
     updateCounters() {
-        const countElement = document.getElementById("selected-count");
+        const countElement = document.getElementById('selected-count');
         if (countElement) {
             countElement.textContent = this.uploadedFiles.length;
         }
@@ -443,18 +394,18 @@ class EnhancedMediaUploadSystem {
      * Dosya boyutunu formatla
      */
     formatFileSize(bytes) {
-        if (bytes === 0) return "0 Bytes";
+        if (bytes === 0) return '0 Bytes';
         const k = 1024;
-        const sizes = ["Bytes", "KB", "MB", "GB"];
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
         const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
     }
 
     /**
      * Toast notification göster
      */
-    showToast(message, type = "info") {
-        if (typeof window.showToast === "function") {
+    showToast(message, type = 'info') {
+        if (typeof window.showToast === 'function') {
             window.showToast(type, message);
         } else {
             console.log(`[${type.toUpperCase()}] ${message}`);
@@ -465,16 +416,16 @@ class EnhancedMediaUploadSystem {
      * Progress bar göster/gizle
      */
     showProgress() {
-        const progressElement = document.getElementById("upload-progress");
+        const progressElement = document.getElementById('upload-progress');
         if (progressElement) {
-            progressElement.classList.remove("hidden");
+            progressElement.classList.remove('hidden');
         }
     }
 
     hideProgress() {
-        const progressElement = document.getElementById("upload-progress");
+        const progressElement = document.getElementById('upload-progress');
         if (progressElement) {
-            progressElement.classList.add("hidden");
+            progressElement.classList.add('hidden');
         }
     }
 
@@ -489,10 +440,7 @@ class EnhancedMediaUploadSystem {
      * Upload stats
      */
     getStats() {
-        const totalSize = this.uploadedFiles.reduce(
-            (sum, file) => sum + file.size,
-            0
-        );
+        const totalSize = this.uploadedFiles.reduce((sum, file) => sum + file.size, 0);
 
         return {
             totalFiles: this.uploadedFiles.length,
@@ -507,8 +455,8 @@ class EnhancedMediaUploadSystem {
 window.EnhancedMediaUploadSystem = EnhancedMediaUploadSystem;
 
 // Auto-initialize on DOM ready
-document.addEventListener("DOMContentLoaded", function () {
-    if (document.querySelector("#content-media")) {
+document.addEventListener('DOMContentLoaded', function () {
+    if (document.querySelector('#content-media')) {
         window.enhancedMediaUpload = new EnhancedMediaUploadSystem();
     }
 });

@@ -6,14 +6,14 @@
 
 class OwnerPortal {
     constructor(options = {}) {
-        this.container = options.container || "#owner-portal";
-        this.apiEndpoint = options.apiEndpoint || "/api/owner/dashboard";
+        this.container = options.container || '#owner-portal';
+        this.apiEndpoint = options.apiEndpoint || '/api/owner/dashboard';
         this.ownerId = options.ownerId || null;
         this.refreshInterval = options.refreshInterval || 60000; // 1 minute
 
         this.refreshTimer = null;
         this.notifications = [];
-        this.currentView = "dashboard";
+        this.currentView = 'dashboard';
 
         this.init();
     }
@@ -751,9 +751,9 @@ class OwnerPortal {
             </style>
         `;
 
-        if (!document.querySelector("#neo-owner-portal-styles")) {
-            const styleElement = document.createElement("div");
-            styleElement.id = "neo-owner-portal-styles";
+        if (!document.querySelector('#neo-owner-portal-styles')) {
+            const styleElement = document.createElement('div');
+            styleElement.id = 'neo-owner-portal-styles';
             styleElement.innerHTML = styles;
             document.head.appendChild(styleElement);
         }
@@ -764,12 +764,12 @@ class OwnerPortal {
             this.showLoading();
 
             const response = await fetch(
-                `${this.apiEndpoint}${this.ownerId ? `/${this.ownerId}` : ""}`,
+                `${this.apiEndpoint}${this.ownerId ? `/${this.ownerId}` : ''}`,
                 {
-                    method: "GET",
+                    method: 'GET',
                     headers: {
-                        Accept: "application/json",
-                        "X-Requested-With": "XMLHttpRequest",
+                        Accept: 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
                     },
                 }
             );
@@ -781,11 +781,11 @@ class OwnerPortal {
                 this.updateActivity(data.data.activities);
                 this.updateNotifications(data.data.notifications);
             } else {
-                this.showError(data.message || "Portal verileri yüklenemedi");
+                this.showError(data.message || 'Portal verileri yüklenemedi');
             }
         } catch (error) {
-            console.error("Portal load error:", error);
-            this.showError("Bağlantı hatası oluştu");
+            console.error('Portal load error:', error);
+            this.showError('Bağlantı hatası oluştu');
         } finally {
             this.hideLoading();
         }
@@ -794,26 +794,20 @@ class OwnerPortal {
     updateDashboard(data) {
         // Update owner info
         if (data.owner) {
-            document.getElementById("owner-name").textContent = data.owner.name;
+            document.getElementById('owner-name').textContent = data.owner.name;
         }
 
         // Update overview cards
         const overview = data.overview || {};
-        document.getElementById("total-listings").textContent =
-            overview.total_listings || 0;
-        document.getElementById("active-listings").textContent =
-            overview.active_listings || 0;
-        document.getElementById("total-views").textContent =
-            overview.total_views || 0;
-        document.getElementById("total-inquiries").textContent =
-            overview.total_inquiries || 0;
-        document.getElementById("views-change").textContent = `+${
-            overview.views_change || 0
-        }%`;
+        document.getElementById('total-listings').textContent = overview.total_listings || 0;
+        document.getElementById('active-listings').textContent = overview.active_listings || 0;
+        document.getElementById('total-views').textContent = overview.total_views || 0;
+        document.getElementById('total-inquiries').textContent = overview.total_inquiries || 0;
+        document.getElementById('views-change').textContent = `+${overview.views_change || 0}%`;
     }
 
     updateActivity(activities) {
-        const activityFeed = document.getElementById("activity-feed");
+        const activityFeed = document.getElementById('activity-feed');
         if (!activityFeed || !activities) return;
 
         activityFeed.innerHTML = activities
@@ -825,65 +819,57 @@ class OwnerPortal {
                 </div>
                 <div class="neo-activity-content">
                     <p class="neo-activity-title">${activity.title}</p>
-                    <p class="neo-activity-time">${this.formatTime(
-                        activity.created_at
-                    )}</p>
+                    <p class="neo-activity-time">${this.formatTime(activity.created_at)}</p>
                 </div>
             </div>
         `
             )
-            .join("");
+            .join('');
     }
 
     bindEvents() {
         // Navigation tabs
-        document.querySelectorAll(".neo-nav-tab").forEach((tab) => {
-            tab.addEventListener("click", (e) => {
+        document.querySelectorAll('.neo-nav-tab').forEach((tab) => {
+            tab.addEventListener('click', (e) => {
                 const view = e.target.dataset.view;
                 this.switchView(view);
             });
         });
 
         // Notifications
-        document
-            .getElementById("notifications-btn")
-            ?.addEventListener("click", () => {
-                this.toggleNotifications();
-            });
+        document.getElementById('notifications-btn')?.addEventListener('click', () => {
+            this.toggleNotifications();
+        });
 
-        document
-            .getElementById("close-notifications")
-            ?.addEventListener("click", () => {
-                this.closeNotifications();
-            });
+        document.getElementById('close-notifications')?.addEventListener('click', () => {
+            this.closeNotifications();
+        });
 
         // Refresh activity
-        document
-            .getElementById("refresh-activity")
-            ?.addEventListener("click", () => {
-                this.loadPortalData();
-            });
+        document.getElementById('refresh-activity')?.addEventListener('click', () => {
+            this.loadPortalData();
+        });
     }
 
     switchView(viewName) {
         // Update active tab
-        document.querySelectorAll(".neo-nav-tab").forEach((tab) => {
-            tab.classList.toggle("active", tab.dataset.view === viewName);
+        document.querySelectorAll('.neo-nav-tab').forEach((tab) => {
+            tab.classList.toggle('active', tab.dataset.view === viewName);
         });
 
         // Update active view
-        document.querySelectorAll(".neo-view").forEach((view) => {
-            view.classList.toggle("active", view.id === `${viewName}-view`);
+        document.querySelectorAll('.neo-view').forEach((view) => {
+            view.classList.toggle('active', view.id === `${viewName}-view`);
         });
 
         this.currentView = viewName;
 
         // Load view-specific data
-        if (viewName === "listings") {
+        if (viewName === 'listings') {
             this.loadListings();
-        } else if (viewName === "inquiries") {
+        } else if (viewName === 'inquiries') {
             this.loadInquiries();
-        } else if (viewName === "appointments") {
+        } else if (viewName === 'appointments') {
             this.loadAppointments();
         }
     }
@@ -903,25 +889,22 @@ class OwnerPortal {
     }
 
     formatTime(timestamp) {
-        return new Intl.RelativeTimeFormat("tr", { numeric: "auto" }).format(
-            Math.floor(
-                (new Date(timestamp) - new Date()) / (1000 * 60 * 60 * 24)
-            ),
-            "day"
+        return new Intl.RelativeTimeFormat('tr', { numeric: 'auto' }).format(
+            Math.floor((new Date(timestamp) - new Date()) / (1000 * 60 * 60 * 24)),
+            'day'
         );
     }
 
     showLoading() {
-        document.getElementById("loading-skeleton").style.display = "block";
-        document.querySelectorAll(".neo-view").forEach((view) => {
-            view.style.display = "none";
+        document.getElementById('loading-skeleton').style.display = 'block';
+        document.querySelectorAll('.neo-view').forEach((view) => {
+            view.style.display = 'none';
         });
     }
 
     hideLoading() {
-        document.getElementById("loading-skeleton").style.display = "none";
-        document.getElementById(`${this.currentView}-view`).style.display =
-            "block";
+        document.getElementById('loading-skeleton').style.display = 'none';
+        document.getElementById(`${this.currentView}-view`).style.display = 'block';
     }
 
     startAutoRefresh() {
@@ -941,21 +924,19 @@ class OwnerPortal {
     }
 
     updateNotificationBadge() {
-        const badge = document.getElementById("notification-count");
+        const badge = document.getElementById('notification-count');
         const unreadCount = this.notifications.filter((n) => !n.read).length;
         badge.textContent = unreadCount;
-        badge.style.display = unreadCount > 0 ? "block" : "none";
+        badge.style.display = unreadCount > 0 ? 'block' : 'none';
     }
 
     toggleNotifications() {
-        const panel = document.getElementById("notifications-panel");
-        panel.classList.toggle("active");
+        const panel = document.getElementById('notifications-panel');
+        panel.classList.toggle('active');
     }
 
     closeNotifications() {
-        document
-            .getElementById("notifications-panel")
-            .classList.remove("active");
+        document.getElementById('notifications-panel').classList.remove('active');
     }
 
     destroy() {
@@ -965,21 +946,21 @@ class OwnerPortal {
 
         const container = document.querySelector(this.container);
         if (container) {
-            container.innerHTML = "";
+            container.innerHTML = '';
         }
     }
 }
 
 // Auto-initialize
-document.addEventListener("DOMContentLoaded", function () {
-    if (document.querySelector("#owner-portal")) {
+document.addEventListener('DOMContentLoaded', function () {
+    if (document.querySelector('#owner-portal')) {
         window.ownerPortal = new OwnerPortal({
-            container: "#owner-portal",
+            container: '#owner-portal',
         });
     }
 });
 
 // Export for module usage
-if (typeof module !== "undefined" && module.exports) {
+if (typeof module !== 'undefined' && module.exports) {
     module.exports = OwnerPortal;
 }

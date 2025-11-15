@@ -18,7 +18,7 @@ class FeatureAssignment extends Model
         'value',
         'is_required',
         'is_visible',
-        'order',
+        'display_order', // Context7: order → display_order
         'conditional_logic',
         'group_name',
     ];
@@ -26,7 +26,7 @@ class FeatureAssignment extends Model
     protected $casts = [
         'is_required' => 'boolean',
         'is_visible' => 'boolean',
-        'order' => 'integer',
+        'display_order' => 'integer', // Context7: order → display_order
         'conditional_logic' => 'array',
     ];
 
@@ -67,7 +67,7 @@ class FeatureAssignment extends Model
      */
     public function scopeOrdered($query)
     {
-        return $query->orderBy('order')->orderBy('id');
+        return $query->orderBy('display_order')->orderBy('id'); // Context7: order → display_order
     }
 
     /**
@@ -152,4 +152,3 @@ class FeatureAssignment extends Model
         return true;
     }
 }
-

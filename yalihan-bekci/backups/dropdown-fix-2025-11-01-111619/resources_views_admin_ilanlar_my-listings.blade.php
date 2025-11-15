@@ -333,14 +333,14 @@
         function createListingRow(listing) {
             const row = document.createElement('tr');
             row.className = 'hover:bg-gray-50 transition-colors duration-200';
-            
+
             // Format price
             const price = new Intl.NumberFormat('tr-TR').format(listing.price || 0);
             const views = new Intl.NumberFormat('tr-TR').format(listing.views || 0);
-            
+
             // Category name (with fallback)
             const categoryName = listing.alt_kategori?.name || listing.ana_kategori?.name || 'Kategori Yok';
-            
+
             // Status badge
             let statusHTML = '';
             if (listing.status === 'active') {
@@ -352,10 +352,10 @@
             } else {
                 statusHTML = `<span class="status-badge draft"><svg class="w-2 h-2 mr-1" fill="currentColor" viewBox="0 0 8 8"><circle cx="4" cy="4" r="3"></circle></svg>Taslak</span>`;
             }
-            
+
             // Format date
             const date = listing.created_at ? new Date(listing.created_at).toLocaleDateString('tr-TR') : 'N/A';
-            
+
             row.innerHTML = `
                 <td class="px-6 py-4 whitespace-nowrap">
                     <div class="flex items-center">
@@ -409,7 +409,7 @@
                     </div>
                 </td>
             `;
-            
+
             return row;
         }
 

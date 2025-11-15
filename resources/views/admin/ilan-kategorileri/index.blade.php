@@ -99,8 +99,8 @@
                     </div>
                     <select style="color-scheme: light dark;" id="seviye" name="seviye" class="px-4 py-2.5 text-sm bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-all duration-200 cursor-pointer hover:border-blue-400" x-model="filters.seviye" @change="applyFilters()">
                         <option value="">Tüm Seviyeler</option>
-                        <option value="1">Ana Kategori</option>
-                        <option value="2">Alt Kategori</option>
+                        <option value="ana">Ana Kategori</option>
+                        <option value="alt">Alt Kategori</option>
                     </select>
                     <select style="color-scheme: light dark;" id="status" name="status" class="px-4 py-2.5 text-sm bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-all duration-200 cursor-pointer hover:border-blue-400" x-model="filters.status" @change="applyFilters()">
                         <option value="">Tüm Durumlar</option>

@@ -10,19 +10,19 @@ use App\Services\Logging\LogService;
 
 /**
  * TCMB (Türkiye Cumhuriyet Merkez Bankası) Currency Service
- * 
+ *
  * Otomatik günlük döviz kuru çekme ve güncelleme
- * 
+ *
  * Context7: Real-time currency rates for international listings
  */
 class TCMBCurrencyService
 {
     protected string $tcmbUrl = 'https://www.tcmb.gov.tr/kurlar/today.xml';
     protected array $supportedCurrencies = ['USD', 'EUR', 'GBP', 'CHF', 'CAD', 'AUD', 'JPY'];
-    
+
     /**
      * Get today's exchange rates from TCMB
-     * 
+     *
      * @return array|null
      */
     public function getTodayRates()
@@ -36,25 +36,25 @@ class TCMBCurrencyService
             try {
                 // TCMB XML endpoint
                 $response = Http::timeout(10)->get($this->tcmbUrl);
-                
+
                 if (!$response->successful()) {
                     // ✅ STANDARDIZED: Using LogService
                     LogService::warning('TCMB API error', ['status' => $response->status()]);
                     return $this->getFallbackRates();
                 }
-                
+
                 // Parse XML
                 $xml = simplexml_load_string($response->body());
                 if (!$xml) {
                     return $this->getFallbackRates();
                 }
-                
+
                 $rates = [];
                 $date = (string) $xml['Date'] ?? now()->format('d.m.Y');
-                
+
                 foreach ($xml->Currency as $currency) {
                     $code = (string) $currency['CurrencyCode'];
-                    
+
                     if (in_array($code, $this->supportedCurrencies)) {
                         $rates[$code] = [
                             'code' => $code,
@@ -68,7 +68,7 @@ class TCMBCurrencyService
                         ];
                     }
                 }
-                
+
                 return $rates;
             } catch (\Exception $e) {
                 // ✅ STANDARDIZED: Using LogService
@@ -77,24 +77,24 @@ class TCMBCurrencyService
             }
         });
     }
-    
+
     /**
      * Update exchange rates in database
-     * 
+     *
      * @return int Number of rates updated
      */
     public function updateRates()
     {
         $rates = $this->getTodayRates();
-        
+
         if (!$rates) {
             // ✅ STANDARDIZED: Using LogService
             LogService::warning('TCMB rates empty, skipping update');
             return 0;
         }
-        
+
         $updated = 0;
-        
+
         foreach ($rates as $code => $rate) {
             try {
                 ExchangeRate::updateOrCreate(
@@ -110,28 +110,28 @@ class TCMBCurrencyService
                         'updated_at' => now()
                     ]
                 );
-                
+
                 $updated++;
             } catch (\Exception $e) {
                 // ✅ STANDARDIZED: Using LogService
                 LogService::error("Failed to update rate for {$code}", ['code' => $code], $e);
             }
         }
-        
+
         // Clear cache
         // ✅ STANDARDIZED: Using CacheHelper
         CacheHelper::forget('currency', 'tcmb_rates_today');
         CacheHelper::forget('currency', 'exchange_rates_latest');
-        
+
         // ✅ STANDARDIZED: Using LogService
         LogService::info("TCMB rates updated", ['count' => $updated]);
-        
+
         return $updated;
     }
-    
+
     /**
      * Get exchange rate for a currency
-     * 
+     *
      * @param string $currencyCode Currency code (USD, EUR, etc.)
      * @param string $type Rate type (buying, selling, average)
      * @return float|null
@@ -139,11 +139,11 @@ class TCMBCurrencyService
     public function getRate($currencyCode, $type = 'selling')
     {
         $rates = $this->getTodayRates();
-        
+
         if (!isset($rates[$currencyCode])) {
             return null;
         }
-        
+
         return match($type) {
             'buying' => $rates[$currencyCode]['forex_buying'],
             'selling' => $rates[$currencyCode]['forex_selling'],
@@ -151,10 +151,10 @@ class TCMBCurrencyService
             default => $rates[$currencyCode]['forex_selling']
         };
     }
-    
+
     /**
      * Convert amount to TRY
-     * 
+     *
      * @param float $amount Amount
      * @param string $fromCurrency From currency code
      * @return float Amount in TRY
@@ -164,21 +164,21 @@ class TCMBCurrencyService
         if ($fromCurrency === 'TRY') {
             return $amount;
         }
-        
+
         $rate = $this->getRate($fromCurrency, 'selling');
-        
+
         if (!$rate) {
             // ✅ STANDARDIZED: Using LogService
             LogService::warning("No rate found for {$fromCurrency}", ['currency' => $fromCurrency]);
             return $amount; // Return original if rate not found
         }
-        
+
         return $amount * $rate;
     }
-    
+
     /**
      * Convert amount from TRY to other currency
-     * 
+     *
      * @param float $amount Amount in TRY
      * @param string $toCurrency To currency code
      * @return float Converted amount
@@ -188,19 +188,19 @@ class TCMBCurrencyService
         if ($toCurrency === 'TRY') {
             return $amount;
         }
-        
+
         $rate = $this->getRate($toCurrency, 'buying');
-        
+
         if (!$rate) {
             return $amount;
         }
-        
+
         return $amount / $rate;
     }
-    
+
     /**
      * Get rate history for a currency
-     * 
+     *
      * @param string $currencyCode Currency code
      * @param int $days Number of days
      * @return \Illuminate\Database\Eloquent\Collection
@@ -212,21 +212,21 @@ class TCMBCurrencyService
             ->orderBy('rate_date', 'desc')
             ->get();
     }
-    
+
     /**
      * Get fallback rates (last known rates from database)
-     * 
+     *
      * @return array
      */
     private function getFallbackRates()
     {
         $fallback = [];
-        
+
         foreach ($this->supportedCurrencies as $code) {
             $latest = ExchangeRate::where('currency_code', $code)
                 ->latest('rate_date')
                 ->first();
-            
+
             if ($latest) {
                 $fallback[$code] = [
                     'code' => $code,
@@ -237,23 +237,23 @@ class TCMBCurrencyService
                 ];
             }
         }
-        
+
         return $fallback;
     }
-    
+
     /**
      * Get all supported currencies
-     * 
+     *
      * @return array
      */
     public function getSupportedCurrencies()
     {
         return $this->supportedCurrencies;
     }
-    
+
     /**
      * Get currency symbol
-     * 
+     *
      * @param string $code Currency code
      * @return string
      */
@@ -272,6 +272,3 @@ class TCMBCurrencyService
         };
     }
 }
-
-
-

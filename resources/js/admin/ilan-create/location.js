@@ -6,17 +6,7 @@ console.log('📍 OpenStreetMap location system loaded (Context7 uyumlu)');
 
 // OpenStreetMap global variables
 let leafletMap = null;
-const currentMarker = null;
 let searchHistory = JSON.parse(localStorage.getItem('addressSearchHistory') || '[]');
-
-// Leaflet Map Configuration
-const LEAFLET_CONFIG = {
-    DEFAULT_ZOOM: 12,
-    DETAIL_ZOOM: 16,
-    CITY_ZOOM: 10,
-    COUNTRY_ZOOM: 6,
-    DEFAULT_CENTER: [39.9334, 32.8597], // Ankara coordinates
-};
 
 // Helper functions (Context7 uyumlu)
 function showLoading(message) {
@@ -37,29 +27,7 @@ function showNotification(message, type = 'info') {
     }
 }
 
-// Initialize enhanced LocationManager (opsiyonel)
-function initializeLocationManager() {
-    // Context7: LocationManager opsiyonel, şu an basic map kullanılıyor
-    console.log('📍 Basic location system aktif (LocationManager disabled)');
-    return;
-}
-
-// Update form values based on location selection
-function updateFormValues(location) {
-    const ilSelect = document.getElementById('il_id');
-    const ilceSelect = document.getElementById('ilce_id');
-    const mahalleSelect = document.getElementById('mahalle_id'); // Context7: mahalle_id (database column)
-
-    if (location.province && ilSelect) {
-        ilSelect.value = location.province;
-    }
-    if (location.district && ilceSelect) {
-        ilceSelect.value = location.district;
-    }
-    if (location.neighborhood && mahalleSelect) {
-        mahalleSelect.value = location.neighborhood;
-    }
-}
+// Context7: Dead code removed - LocationManager ve updateFormValues kullanılmıyor
 
 // Update coordinate fields
 function updateCoordinateFields(latitude, longitude) {
@@ -80,11 +48,7 @@ function fillAddressFromGeocoding(addressData) {
     }
 }
 
-// Legacy system fallback
-function initializeLegacySystem() {
-    console.log('🔄 Falling back to legacy location system');
-    // Keep existing functionality as fallback
-}
+// Context7: Dead code removed - initializeLegacySystem kullanılmıyor
 
 function loadIlceler(ilId) {
     // Context7: LocationManager opsiyonel, basic implementation kullanılıyor
@@ -96,84 +60,73 @@ function loadIlceler(ilId) {
     // Legacy fallback
     if (!ilId) {
         clearIlceler();
-        return;
+        return Promise.resolve();
     }
 
     showLoading('İlçeler yükleniyor...');
 
-    // ✅ Context7: Doğru API endpoint kullanımı
-    fetch(`/api/location/districts/${ilId}`)
+    // ✅ Context7: Sadece veritabanından veri çek (TurkiyeAPI kullanma)
+    return fetch(`/api/location/districts/${ilId}`)
         .then((response) => response.json())
         .then((result) => {
             hideLoading();
-            // ✅ Context7: Yeni API response format'ı
-            if (result.success && result.data && result.data.length > 0) {
-                populateIlceler(result.data);
+            // ✅ Context7: API response format'ı (direkt array - adres-yonetimi ile uyumlu)
+            const districts = Array.isArray(result.data) ? result.data : [];
+            if (result.success && districts.length > 0) {
+                populateIlceler(districts);
 
-                // 🗺️ V2.0: İl seçildiğinde haritayı o ile odakla (optional, geocoder varsa)
+                // 🗺️ V2.0: İl seçildiğinde haritayı o ile odakla (Leaflet)
                 try {
-                    if (
-                        typeof focusMapOnProvince === 'function' &&
-                        typeof geocoder !== 'undefined'
-                    ) {
+                    if (typeof focusMapOnProvince === 'function') {
                         focusMapOnProvince(ilId);
                     }
                 } catch (e) {
-                    console.log('📍 Map focus skipped (geocoder not available)');
+                    console.log('📍 Map focus skipped:', e);
                 }
+                return Promise.resolve();
             } else {
-                showNotification('İlçeler yüklenemedi', 'error');
+                // Context7: DB'de ilçe yoksa boş liste göster
+                console.log("⚠️ DB'de ilçe bulunamadı");
+                populateIlceler([]);
+                showNotification('Bu il için ilçe bulunamadı', 'info');
+                return Promise.resolve();
             }
         })
         .catch((error) => {
             hideLoading();
             console.error('İlçe yükleme hatası:', error);
             showNotification('İlçeler yüklenemedi', 'error');
+            return Promise.reject(error);
         });
 }
 
-// 🗺️ V2.0: İl bazlı harita odaklama (optional - geocoder required)
+// Context7: TurkiyeAPI kullanımı kaldırıldı - Sadece veritabanından veri çekiliyor
+
+// 🗺️ V2.0: İl bazlı harita odaklama (Leaflet uyumlu)
 function focusMapOnProvince(ilId) {
-    // ✅ Guard: geocoder ve map tanımlı değilse çalışma
-    if (typeof geocoder === 'undefined' || typeof map === 'undefined' || !map || !geocoder) {
-        console.log('📍 focusMapOnProvince skipped (geocoder not available)');
+    // ✅ Guard: Leaflet map tanımlı değilse çalışma
+    if (!leafletMap) {
+        console.log('📍 focusMapOnProvince skipped (Leaflet map not initialized)');
         return;
     }
 
-    // İl isimlerini ID'ye göre al (örnek mapping)
-    const provinceNames = {
-        48: 'Muğla, Turkey',
-        34: 'İstanbul, Turkey',
-        '06': 'Ankara, Turkey',
-        35: 'İzmir, Turkey',
-        '07': 'Antalya, Turkey',
-        // Daha fazla il eklenebilir
+    // Context7: İl koordinatları (Türkiye illeri için)
+    const provinceCoords = {
+        48: [37.2153, 28.3636], // Muğla
+        34: [41.0082, 28.9784], // İstanbul
+        6: [39.9334, 32.8597], // Ankara
+        35: [38.4237, 27.1428], // İzmir
+        7: [36.8969, 30.7133], // Antalya
     };
 
-    const provinceName = provinceNames[ilId];
-    if (provinceName && geocoder) {
+    const coords = provinceCoords[ilId];
+    if (coords) {
         try {
-            geocoder.geocode({ address: provinceName }, (results, status) => {
-                if (status === 'OK' && results[0]) {
-                    const location = results[0].geometry.location;
-                    map.setCenter(location);
-                    map.setZoom(MAP_CONFIG.CITY_ZOOM);
-
-                    // Geçici bir marker göster
-                    showTemporaryMarker(location, `📍 ${provinceName}`, 3000);
-
-                    showNotification(`${provinceName} odaklandı`, 'success');
-                } else {
-                    console.warn('Geocoding failed:', status);
-                    showNotification('Konum odaklanamadı', 'warning');
-                }
-            });
+            leafletMap.setView(coords, 10); // Zoom level 10 (şehir görünümü)
+            showNotification('Harita il seçimine göre odaklandı', 'success');
         } catch (error) {
-            console.warn('Geocoding service error:', error);
-            showNotification('Adres arama servisi kullanılamıyor', 'warning');
+            console.warn('Map focus error:', error);
         }
-    } else if (!geocoder) {
-        showNotification('Adres arama servisi kullanılamıyor', 'warning');
     }
 }
 
@@ -205,13 +158,24 @@ function populateIlceler(districts) {
     // ✅ Context7: API response formatına uygun field mapping
     districts.forEach((district) => {
         const option = document.createElement('option');
-        option.value = district.id;
-        option.textContent = district.ilce || district.name; // API field: ilce (tablo adı: ilceler)
+        option.value = district.id || ''; // TurkiyeAPI'den gelenler id: null olabilir
+        const ilceName = district.ilce || district.name || district.ilce_adi;
+        option.textContent = ilceName + (district._from_turkiyeapi ? ' (TurkiyeAPI)' : '');
         ilceSelect.appendChild(option);
     });
 
     // ✅ İlçe dropdown'ını aktif et
     ilceSelect.disabled = false;
+
+    // ✅ FIX: Edit mode için otomatik seçim
+    if (window.editMode && window.ilanData?.ilce_id) {
+        const ilceId = String(window.ilanData.ilce_id);
+        if (ilceSelect.querySelector(`option[value="${ilceId}"]`)) {
+            ilceSelect.value = ilceId;
+            // İlçe seçildi, mahalleleri yükle
+            loadMahalleler(ilceId);
+        }
+    }
 
     console.log('✅ İlçeler populate edildi:', districts.length, 'adet');
 }
@@ -219,29 +183,42 @@ function populateIlceler(districts) {
 function loadMahalleler(ilceId) {
     if (!ilceId) {
         clearMahalleler();
-        return;
+        return Promise.resolve();
     }
+
+    // İl ID'sini al (mahalle çekmek için gerekli)
+    const ilSelect = document.getElementById('il_id');
+    const ilId = ilSelect ? ilSelect.value : null;
 
     showLoading('Mahalleler yükleniyor...');
 
-    // ✅ Context7: Doğru API endpoint kullanımı
-    fetch(`/api/location/neighborhoods/${ilceId}`)
+    // ✅ Context7: Sadece veritabanından veri çek (TurkiyeAPI kullanma)
+    return fetch(`/api/location/neighborhoods/${ilceId}`)
         .then((response) => response.json())
         .then((result) => {
             hideLoading();
-            // ✅ Context7: Yeni API response format'ı
-            if (result.success && result.data && result.data.length > 0) {
-                populateMahalleler(result.data);
+            // ✅ Context7: API response format'ı (direkt array - adres-yonetimi ile uyumlu)
+            const neighborhoods = Array.isArray(result.data) ? result.data : [];
+            if (result.success && neighborhoods.length > 0) {
+                populateMahalleler(neighborhoods);
+                return Promise.resolve();
             } else {
-                showNotification('Mahalleler yüklenemedi', 'error');
+                // Context7: DB'de mahalle yoksa boş liste göster
+                console.log("⚠️ DB'de mahalle bulunamadı");
+                populateMahalleler([]);
+                showNotification('Bu ilçe için mahalle bulunamadı', 'info');
+                return Promise.resolve();
             }
         })
         .catch((error) => {
             hideLoading();
             console.error('Mahalle yükleme hatası:', error);
             showNotification('Mahalleler yüklenemedi', 'error');
+            return Promise.reject(error);
         });
 }
+
+// Context7: TurkiyeAPI kullanımı kaldırıldı - Sadece veritabanından veri çekiliyor
 
 function clearMahalleler() {
     const mahalleSelect = document.getElementById('mahalle_id'); // Context7: mahalle_id
@@ -264,63 +241,27 @@ function populateMahalleler(neighborhoods) {
     // ✅ Context7: API response formatına uygun field mapping
     neighborhoods.forEach((neighborhood) => {
         const option = document.createElement('option');
-        option.value = neighborhood.id;
-        option.textContent = neighborhood.mahalle || neighborhood.name; // API field: mahalle (tablo adı: mahalleler)
+        option.value = neighborhood.id || ''; // TurkiyeAPI'den gelenler id: null olabilir
+        const mahalleName = neighborhood.mahalle || neighborhood.name || neighborhood.mahalle_adi;
+        option.textContent = mahalleName + (neighborhood._from_turkiyeapi ? ' (TurkiyeAPI)' : '');
         mahalleSelect.appendChild(option);
     });
 
     // ✅ Mahalle dropdown'ını aktif et
     mahalleSelect.disabled = false;
+
+    // ✅ FIX: Edit mode için otomatik seçim
+    if (window.editMode && window.ilanData?.mahalle_id) {
+        const mahalleId = String(window.ilanData.mahalle_id);
+        if (mahalleSelect.querySelector(`option[value="${mahalleId}"]`)) {
+            mahalleSelect.value = mahalleId;
+        }
+    }
+
+    console.log('✅ Mahalleler populate edildi:', neighborhoods.length, 'adet');
 }
 
 function getCurrentLocation() {
-    // Context7: Basic geolocation (LocationManager opsiyonel)
-    if (false && locationManager) {
-        // Disabled for now
-        showLoading('Gelişmiş konum sistemi ile konumunuz belirleniyor...');
-
-        navigator.geolocation.getCurrentPosition(
-            async (position) => {
-                const lat = position.coords.latitude;
-                const lng = position.coords.longitude;
-
-                // Update coordinate fields
-                updateCoordinateFields(lat, lng);
-
-                // Use LocationManager's reverse geocoding
-                try {
-                    const address = await locationManager.reverseGeocode(lat, lng);
-                    if (address) {
-                        fillAddressFromGeocoding(address);
-                        showNotification('Konum başarıyla belirlendi', 'success');
-                    }
-                } catch (error) {
-                    console.error('Reverse geocoding failed:', error);
-                    showNotification('Konum belirlendi ancak adres çözümlenemedi', 'warning');
-                }
-
-                hideLoading();
-            },
-            (error) => {
-                hideLoading();
-                let message = 'Konum alınamadı';
-                switch (error.code) {
-                    case error.PERMISSION_DENIED:
-                        message = 'Konum izni reddedildi';
-                        break;
-                    case error.POSITION_UNAVAILABLE:
-                        message = 'Konum bilgisi mevcut değil';
-                        break;
-                    case error.TIMEOUT:
-                        message = 'Konum alma işlemi zaman aşımına uğradı';
-                        break;
-                }
-                showNotification(message, 'error');
-            }
-        );
-        return;
-    }
-
     // 🔧 Modern Geolocation with Permissions Policy Check
     if (!navigator.geolocation) {
         showNotification('Tarayıcınız konum servislerini desteklemiyor', 'error');
@@ -884,10 +825,10 @@ window.advancedLocationManager = function () {
 document.addEventListener('DOMContentLoaded', () => {
     console.log('📍 Location system initializing...');
 
-    // Context7: Basic location system kullanılıyor (LocationManager disabled)
-    initializeLocationManager();
+    // Context7: VanillaLocationManager global olarak yükleniyor (leaflet-loader.js'den)
+    // initializeLocationManager() çağrısı kaldırıldı - VanillaLocationManager otomatik init ediliyor
 
-    console.log('✅ Location system ready (waiting for Google Maps API)');
+    console.log('✅ Location system ready (VanillaLocationManager will auto-initialize)');
 
     // Legacy event listeners (as fallback)
     const ilSelect = document.getElementById('il_id');
@@ -966,6 +907,51 @@ document.addEventListener('DOMContentLoaded', () => {
 
     console.log('✅ Vanilla JS location event listeners registered');
 
+    // ✅ Edit Mode: Load existing location values
+    if (window.editMode && window.ilanData) {
+        console.log('📝 Edit mode detected, loading existing location values...', window.ilanData);
+
+        const ilId = window.ilanData.il_id;
+        const ilceId = window.ilanData.ilce_id;
+        const mahalleId = window.ilanData.mahalle_id;
+
+        // Set il if exists
+        if (ilId && ilSelect) {
+            ilSelect.value = ilId;
+
+            // Load ilçeler and wait for response
+            loadIlceler(ilId).then(() => {
+                // Set ilçe after districts are loaded
+                if (ilceId && ilceSelect) {
+                    setTimeout(() => {
+                        if (ilceSelect.querySelector(`option[value="${ilceId}"]`)) {
+                            ilceSelect.value = ilceId;
+
+                            // Load mahalleler
+                            loadMahalleler(ilceId).then(() => {
+                                // Set mahalle after neighborhoods are loaded
+                                if (mahalleId && mahalleSelect) {
+                                    setTimeout(() => {
+                                        if (
+                                            mahalleSelect.querySelector(
+                                                `option[value="${mahalleId}"]`
+                                            )
+                                        ) {
+                                            mahalleSelect.value = mahalleId;
+                                            console.log(
+                                                '✅ All location values loaded in edit mode'
+                                            );
+                                        }
+                                    }, 300);
+                                }
+                            });
+                        }
+                    }, 300);
+                }
+            });
+        }
+    }
+
     // Initialize map when Google Maps API is loaded
     if (typeof google !== 'undefined') {
         initializeMap();
@@ -1010,10 +996,11 @@ function initializeMapControls() {
     const controlDiv = document.createElement('div');
     controlDiv.style.margin = '10px';
 
-    // Türkiye'ye odaklanma butonu
+    // Türkiye'ye odaklanma butonu (Context7: Tailwind CSS)
     const turkeyButton = document.createElement('button');
     turkeyButton.innerHTML = '🇹🇷 Türkiye';
-    turkeyButton.className = 'neo-btn neo-btn-sm bg-blue-500 text-white';
+    turkeyButton.className =
+        'px-3 py-1.5 bg-blue-500 text-white text-sm font-medium rounded-lg hover:bg-blue-600 transition-colors duration-200';
     turkeyButton.onclick = centerOnTurkey;
     controlDiv.appendChild(turkeyButton);
 
@@ -1400,50 +1387,8 @@ window.IlanCreateLocation = {
     validateLocation,
     advancedLocationManager: window.advancedLocationManager,
 
-    // Enhanced features
-    locationManager: () => locationManager,
-    initializeLocationManager,
-
-    // 🗺️ V2.0 New Advanced Features
-    toggleMapType,
-    zoomIn,
-    zoomOut,
-    centerOnTurkey,
-    shareLocation,
+    // 🗺️ V2.0 Leaflet Features
     focusMapOnProvince,
-    searchNearbyPlaces,
-    clearNearbyMarkers,
-    showSearchHistory,
-    parseAddressComponents,
-
-    // Enhanced API methods via LocationManager
-    geocodeAddress: async (address) => {
-        if (locationManager) {
-            return await locationManager.geocode(address);
-        }
-        throw new Error('LocationManager not initialized');
-    },
-
-    reverseGeocodeCoords: async (lat, lng) => {
-        if (locationManager) {
-            return await locationManager.reverseGeocode(lat, lng);
-        }
-        throw new Error('LocationManager not initialized');
-    },
-
-    findNearbyLocations: async (lat, lng, radius = 5) => {
-        if (locationManager) {
-            return await locationManager.findNearby(lat, lng, radius);
-        }
-        throw new Error('LocationManager not initialized');
-    },
-
-    validateAddressData: async (addressData) => {
-        if (locationManager) {
-            return await locationManager.validateAddress(addressData);
-        }
-        throw new Error('LocationManager not initialized');
-    },
 };
 
 // API Status Indicator Helper

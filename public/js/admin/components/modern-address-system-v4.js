@@ -26,7 +26,7 @@
  * - Toast notifications
  */
 
-console.log("🗺️🤖 EmlakLoc v4.1.0 - Form Wizard Integration yüklenyor...");
+console.log('🗺️🤖 EmlakLoc v4.1.0 - Form Wizard Integration yüklenyor...');
 
 /**
  * EmlakLoc v4.1.0 - Form Wizard Enhanced Location System
@@ -49,7 +49,7 @@ console.log("🗺️🤖 EmlakLoc v4.1.0 - Form Wizard Integration yüklenyor...
 window.EmlakLoc = class EmlakLoc {
     constructor(options = {}) {
         this.options = {
-            mapContainerId: "property_map",
+            mapContainerId: 'property_map',
             defaultCoordinates: {
                 latitude: 39.9208,
                 longitude: 32.8541,
@@ -114,7 +114,7 @@ window.EmlakLoc = class EmlakLoc {
     }
 
     async init() {
-        console.log("🗺️🤖 EmlakLoc v4.0 başlatılıyor...");
+        console.log('🗺️🤖 EmlakLoc v4.0 başlatılıyor...');
 
         // Harita stillerini enjekte et
         this.injectMapStyles();
@@ -130,8 +130,8 @@ window.EmlakLoc = class EmlakLoc {
         }
 
         // DOM hazır olduğunda haritayı başlat
-        if (document.readyState === "loading") {
-            document.addEventListener("DOMContentLoaded", () => {
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
                 this.initializeMap();
             });
         } else {
@@ -140,27 +140,27 @@ window.EmlakLoc = class EmlakLoc {
     }
 
     async initializeAIComponents() {
-        console.log("🤖 AI bileşenleri yükleniyor...");
+        console.log('🤖 AI bileşenleri yükleniyor...');
 
         try {
             // AI Arama Motoru - Gelişmiş Türkçe NLP
             if (this.options.enableAI) {
                 this.aiSearch = new AISearchEngine({
-                    language: "tr",
+                    language: 'tr',
                     enablePredictive: this.options.enablePredictiveAnalytics,
-                    providers: ["deepseek", "openai", "gemini", "claude"],
+                    providers: ['deepseek', 'openai', 'gemini', 'claude'],
                 });
-                console.log("✅ Gelişmiş AI Arama Motoru hazır");
+                console.log('✅ Gelişmiş AI Arama Motoru hazır');
             }
 
             // Sesli Arama - Gelişmiş Speech Recognition
             if (this.options.enableVoice) {
                 this.voiceSearch = new VoiceSearchEngine({
-                    language: "tr-TR",
+                    language: 'tr-TR',
                     continuous: false,
                     enableNLP: true,
                 });
-                console.log("✅ Gelişmiş Sesli Arama hazır");
+                console.log('✅ Gelişmiş Sesli Arama hazır');
             }
 
             // Gelişmiş Görsel Tanıma - Computer Vision
@@ -170,110 +170,98 @@ window.EmlakLoc = class EmlakLoc {
                     enableObjectDetection: true,
                     enableSceneRecognition: true,
                 });
-                console.log("✅ Gelişmiş Görsel Tanıma hazır");
+                console.log('✅ Gelişmiş Görsel Tanıma hazır');
             }
 
             // Google Places API
-            if (
-                this.options.enableGooglePlaces &&
-                this.options.googlePlacesApiKey
-            ) {
+            if (this.options.enableGooglePlaces && this.options.googlePlacesApiKey) {
                 this.googlePlaces = new GooglePlacesIntegration({
                     apiKey: this.options.googlePlacesApiKey,
                 });
-                console.log("✅ Google Places API hazır");
+                console.log('✅ Google Places API hazır');
             }
 
             // Sosyal Medya Paylaşımı
             if (this.options.enableSocialSharing) {
                 this.socialSharing = new SocialMediaSharing();
-                console.log("✅ Sosyal Medya Paylaşımı hazır");
+                console.log('✅ Sosyal Medya Paylaşımı hazır');
             }
 
             // QR Kod Üreteci
             if (this.options.enableQRCode) {
                 this.qrCodeGenerator = new QRCodeGenerator();
-                console.log("✅ QR Kod Üreteci hazır");
+                console.log('✅ QR Kod Üreteci hazır');
             }
 
             // PWA Yönetici
             if (this.options.enablePWA) {
                 this.pwaManager = new PWAManager();
-                console.log("✅ PWA Yönetici hazır");
+                console.log('✅ PWA Yönetici hazır');
             }
 
             // Gesture Controller
             if (this.options.enableGestures) {
                 this.gestureController = new GestureController();
-                console.log("✅ Gesture Controller hazır");
+                console.log('✅ Gesture Controller hazır');
             }
 
             // Push Notification Manager
             if (this.options.enablePushNotifications) {
                 this.pushNotificationManager = new PushNotificationManager();
-                console.log("✅ Push Notification Manager hazır");
+                console.log('✅ Push Notification Manager hazır');
             }
 
             // Predictive Analytics
             if (this.options.enablePredictiveAnalytics) {
                 this.predictiveAnalytics = new PredictiveAnalytics();
-                console.log("✅ Predictive Analytics hazır");
+                console.log('✅ Predictive Analytics hazır');
             }
         } catch (error) {
-            console.error("❌ AI bileşenleri yüklenirken hata:", error);
+            console.error('❌ AI bileşenleri yüklenirken hata:', error);
         }
     }
 
     injectMapStyles() {
-        if (!document.getElementById("leaflet-styles")) {
-            const link = document.createElement("link");
-            link.id = "leaflet-styles";
-            link.rel = "stylesheet";
-            link.href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";
+        if (!document.getElementById('leaflet-styles')) {
+            const link = document.createElement('link');
+            link.id = 'leaflet-styles';
+            link.rel = 'stylesheet';
+            link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
             document.head.appendChild(link);
         }
 
         // Three.js için stiller (3D harita)
-        if (this.options.enable3D && !document.getElementById("three-styles")) {
-            const threeLink = document.createElement("link");
-            threeLink.id = "three-styles";
-            threeLink.rel = "stylesheet";
-            threeLink.href =
-                "https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.css";
+        if (this.options.enable3D && !document.getElementById('three-styles')) {
+            const threeLink = document.createElement('link');
+            threeLink.id = 'three-styles';
+            threeLink.rel = 'stylesheet';
+            threeLink.href = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.css';
             document.head.appendChild(threeLink);
         }
     }
 
     initializeMap() {
-        console.log("🗺️ Harita başlatılıyor...");
+        console.log('🗺️ Harita başlatılıyor...');
 
-        const mapContainer = document.getElementById(
-            this.options.mapContainerId,
-        );
+        const mapContainer = document.getElementById(this.options.mapContainerId);
         if (!mapContainer) {
-            console.error(
-                "❌ Harita konteyneri bulunamadı:",
-                this.options.mapContainerId,
-            );
+            console.error('❌ Harita konteyneri bulunamadı:', this.options.mapContainerId);
             return;
         }
 
         // Harita zaten başlatılmışsa, yeni başlatma
         if (this.map && this.map._loaded) {
-            console.log("✅ Harita zaten başlatılmış ve yüklü");
+            console.log('✅ Harita zaten başlatılmış ve yüklü');
             return;
         }
 
         try {
             // Harita konteynerini temizle
-            mapContainer.innerHTML = "";
+            mapContainer.innerHTML = '';
 
             // Performans optimizasyonu için harita ayarları
             const mapOptions = {
-                center: [
-                    this.defaultCoordinates.latitude,
-                    this.defaultCoordinates.longitude,
-                ],
+                center: [this.defaultCoordinates.latitude, this.defaultCoordinates.longitude],
                 zoom: 12,
                 zoomControl: true,
                 scrollWheelZoom: true,
@@ -306,53 +294,53 @@ window.EmlakLoc = class EmlakLoc {
             // Gelişmiş özellikleri başlat
             this.initializeAdvancedFeatures();
 
-            console.log("✅ Harita başarıyla başlatıldı");
+            console.log('✅ Harita başarıyla başlatıldı');
         } catch (error) {
-            console.error("❌ Harita başlatılırken hata:", error);
-            this.showToast("Harita yüklenirken bir hata oluştu", "error");
+            console.error('❌ Harita başlatılırken hata:', error);
+            this.showToast('Harita yüklenirken bir hata oluştu', 'error');
         }
     }
 
     addDefaultLayer() {
         // OpenStreetMap varsayılan katman
-        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-            attribution: "© OpenStreetMap contributors",
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors',
             maxZoom: 19,
         }).addTo(this.map);
     }
 
     setupMapEvents() {
         // Harita tıklama olayı
-        this.map.on("click", (e) => {
+        this.map.on('click', (e) => {
             this.handleMapClick(e);
         });
 
         // Harita yükleme olayı
-        this.map.on("load", () => {
-            console.log("🗺️ Harita tamamen yüklendi");
-            this.showToast("Harita hazır", "success");
+        this.map.on('load', () => {
+            console.log('🗺️ Harita tamamen yüklendi');
+            this.showToast('Harita hazır', 'success');
         });
 
         // Zoom değişikliği
-        this.map.on("zoomend", () => {
+        this.map.on('zoomend', () => {
             const zoom = this.map.getZoom();
-            console.log("🔍 Zoom seviyesi:", zoom);
+            console.log('🔍 Zoom seviyesi:', zoom);
         });
     }
 
     setupCustomMarkers() {
         // Özel marker ikonları tanımla
         this.markerIcons = {
-            default: this.createCustomIcon("📍", "#3B82F6"),
-            selected: this.createCustomIcon("🎯", "#EF4444"),
-            property: this.createCustomIcon("🏠", "#10B981"),
-            land: this.createCustomIcon("🌱", "#F59E0B"),
-            commercial: this.createCustomIcon("🏢", "#8B5CF6"),
-            rental: this.createCustomIcon("🔑", "#06B6D4"),
-            sale: this.createCustomIcon("💰", "#84CC16"),
-            ai: this.createCustomIcon("🤖", "#6366F1"),
-            voice: this.createCustomIcon("🎤", "#EC4899"),
-            image: this.createCustomIcon("📷", "#F97316"),
+            default: this.createCustomIcon('📍', '#3B82F6'),
+            selected: this.createCustomIcon('🎯', '#EF4444'),
+            property: this.createCustomIcon('🏠', '#10B981'),
+            land: this.createCustomIcon('🌱', '#F59E0B'),
+            commercial: this.createCustomIcon('🏢', '#8B5CF6'),
+            rental: this.createCustomIcon('🔑', '#06B6D4'),
+            sale: this.createCustomIcon('💰', '#84CC16'),
+            ai: this.createCustomIcon('🤖', '#6366F1'),
+            voice: this.createCustomIcon('🎤', '#EC4899'),
+            image: this.createCustomIcon('📷', '#F97316'),
         };
     }
 
@@ -371,7 +359,7 @@ window.EmlakLoc = class EmlakLoc {
                 box-shadow: 0 2px 8px rgba(0,0,0,0.3);
                 color: white;
             ">${emoji}</div>`,
-            className: "custom-marker",
+            className: 'custom-marker',
             iconSize: [40, 40],
             iconAnchor: [20, 40],
             popupAnchor: [0, -40],
@@ -399,12 +387,12 @@ window.EmlakLoc = class EmlakLoc {
 
     async aiSearchAddress(query) {
         if (!this.aiSearch) {
-            console.warn("AI Arama motoru aktif değil");
+            console.warn('AI Arama motoru aktif değil');
             return this.fallbackSearch(query);
         }
 
         try {
-            console.log("🤖 AI ile arama yapılıyor:", query);
+            console.log('🤖 AI ile arama yapılıyor:', query);
 
             const results = await this.aiSearch.search(query);
 
@@ -413,67 +401,66 @@ window.EmlakLoc = class EmlakLoc {
 
             return results;
         } catch (error) {
-            console.error("AI arama hatası:", error);
+            console.error('AI arama hatası:', error);
             return this.fallbackSearch(query);
         }
     }
 
     async voiceSearchAddress() {
         if (!this.voiceSearch) {
-            console.warn("Sesli arama aktif değil");
+            console.warn('Sesli arama aktif değil');
             return;
         }
 
         try {
-            console.log("🎤 Sesli arama başlatılıyor...");
+            console.log('🎤 Sesli arama başlatılıyor...');
 
             const transcript = await this.voiceSearch.startListening();
 
             if (transcript) {
-                console.log("🎤 Tanınan metin:", transcript);
-                this.showToast(`"${transcript}" aranıyor...`, "info");
+                console.log('🎤 Tanınan metin:', transcript);
+                this.showToast(`"${transcript}" aranıyor...`, 'info');
 
                 // AI ile arama yap
                 return await this.aiSearchAddress(transcript);
             }
         } catch (error) {
-            console.error("Sesli arama hatası:", error);
-            this.showToast("Sesli arama başarısız", "error");
+            console.error('Sesli arama hatası:', error);
+            this.showToast('Sesli arama başarısız', 'error');
         }
     }
 
     async recognizeLocationFromImage(imageFile) {
         if (!this.imageRecognition) {
-            console.warn("Görsel tanıma aktif değil");
+            console.warn('Görsel tanıma aktif değil');
             return;
         }
 
         try {
-            console.log("📷 Görsel konum tanıma başlatılıyor...");
+            console.log('📷 Görsel konum tanıma başlatılıyor...');
 
-            const locationData =
-                await this.imageRecognition.analyzeImage(imageFile);
+            const locationData = await this.imageRecognition.analyzeImage(imageFile);
 
             if (locationData) {
-                console.log("📍 Konum tespit edildi:", locationData);
+                console.log('📍 Konum tespit edildi:', locationData);
 
                 // Haritada konumu göster
-                this.addMarker(locationData.lat, locationData.lng, "image");
+                this.addMarker(locationData.lat, locationData.lng, 'image');
                 this.map.setView([locationData.lat, locationData.lng], 15);
 
-                this.showToast("Konum görselden tespit edildi", "success");
+                this.showToast('Konum görselden tespit edildi', 'success');
                 return locationData;
             }
         } catch (error) {
-            console.error("Görsel tanıma hatası:", error);
-            this.showToast("Görsel konum tanıma başarısız", "error");
+            console.error('Görsel tanıma hatası:', error);
+            this.showToast('Görsel konum tanıma başarısız', 'error');
         }
     }
 
     // ============ 3D HARİTA ============
 
     initialize3DMap() {
-        console.log("🎮 3D Harita başlatılıyor...");
+        console.log('🎮 3D Harita başlatılıyor...');
 
         // Three.js entegrasyonu için temel kurulum
         this.threeDRenderer = {
@@ -483,15 +470,15 @@ window.EmlakLoc = class EmlakLoc {
             enabled: false,
 
             enable: () => {
-                console.log("🎮 3D mod aktif");
+                console.log('🎮 3D mod aktif');
                 this.threeDRenderer.enabled = true;
-                this.showToast("3D Harita Modu Aktif", "info");
+                this.showToast('3D Harita Modu Aktif', 'info');
             },
 
             disable: () => {
-                console.log("🗺️ 2D mod aktif");
+                console.log('🗺️ 2D mod aktif');
                 this.threeDRenderer.enabled = false;
-                this.showToast("2D Harita Modu Aktif", "info");
+                this.showToast('2D Harita Modu Aktif', 'info');
             },
         };
     }
@@ -499,22 +486,22 @@ window.EmlakLoc = class EmlakLoc {
     // ============ AR KATMANI ============
 
     initializeAROverlay() {
-        console.log("📱 AR Katmanı başlatılıyor...");
+        console.log('📱 AR Katmanı başlatılıyor...');
 
         this.arOverlay = {
             enabled: false,
             pointsOfInterest: [],
 
             enable: () => {
-                console.log("📱 AR katmanı aktif");
+                console.log('📱 AR katmanı aktif');
                 this.arOverlay.enabled = true;
-                this.showToast("AR Modu Aktif", "info");
+                this.showToast('AR Modu Aktif', 'info');
             },
 
             disable: () => {
-                console.log("📱 AR katmanı devre dışı");
+                console.log('📱 AR katmanı devre dışı');
                 this.arOverlay.enabled = false;
-                this.showToast("AR Modu Devre Dışı", "info");
+                this.showToast('AR Modu Devre Dışı', 'info');
             },
         };
     }
@@ -522,29 +509,29 @@ window.EmlakLoc = class EmlakLoc {
     // ============ OFFLINE DESTEK ============
 
     initializeOfflineSupport() {
-        console.log("💾 Offline destek başlatılıyor...");
+        console.log('💾 Offline destek başlatılıyor...');
 
         this.offlineManager = {
             enabled: false,
             cachedTiles: new Map(),
 
             enable: () => {
-                console.log("💾 Offline mod aktif");
+                console.log('💾 Offline mod aktif');
                 this.offlineManager.enabled = true;
-                this.showToast("Offline Mod Aktif", "info");
+                this.showToast('Offline Mod Aktif', 'info');
             },
 
             disable: () => {
-                console.log("🌐 Online mod aktif");
+                console.log('🌐 Online mod aktif');
                 this.offlineManager.enabled = false;
-                this.showToast("Online Mod Aktif", "info");
+                this.showToast('Online Mod Aktif', 'info');
             },
         };
     }
 
     // ============ ÇOKLU MARKER ============
 
-    addMarker(lat, lng, type = "default", options = {}) {
+    addMarker(lat, lng, type = 'default', options = {}) {
         const icon = this.markerIcons[type] || this.markerIcons.default;
 
         const marker = L.marker([lat, lng], {
@@ -558,9 +545,9 @@ window.EmlakLoc = class EmlakLoc {
         marker.bindPopup(popupContent);
 
         // Sürükleme olayı
-        marker.on("dragend", (e) => {
+        marker.on('dragend', (e) => {
             const newPos = e.target.getLatLng();
-            console.log("📍 Marker taşındı:", newPos);
+            console.log('📍 Marker taşındı:', newPos);
             this.updateFormFields(newPos.lat, newPos.lng);
         });
 
@@ -574,20 +561,20 @@ window.EmlakLoc = class EmlakLoc {
 
     createMarkerPopup(lat, lng, type) {
         const typeLabels = {
-            default: "Konum",
-            property: "Emlak",
-            land: "Arsa",
-            commercial: "Ticari",
-            rental: "Kiralık",
-            sale: "Satılık",
-            ai: "AI Önerisi",
-            voice: "Sesli Arama",
-            image: "Görsel Tanıma",
+            default: 'Konum',
+            property: 'Emlak',
+            land: 'Arsa',
+            commercial: 'Ticari',
+            rental: 'Kiralık',
+            sale: 'Satılık',
+            ai: 'AI Önerisi',
+            voice: 'Sesli Arama',
+            image: 'Görsel Tanıma',
         };
 
         return `
             <div class="marker-popup">
-                <h4>${typeLabels[type] || "Konum"}</h4>
+                <h4>${typeLabels[type] || 'Konum'}</h4>
                 <p>Koordinatlar: ${lat.toFixed(6)}, ${lng.toFixed(6)}</p>
                 <button onclick="window.emlakLoc.confirmLocation()" class="btn btn-sm neo-btn neo-btn-primary">
                     Bu Konumu Seç
@@ -625,7 +612,7 @@ window.EmlakLoc = class EmlakLoc {
                         font-size: 12px;
                         font-weight: bold;
                     ">${radius}m</div>`,
-                    className: "distance-label",
+                    className: 'distance-label',
                     iconAnchor: [0, 0],
                 }),
             });
@@ -634,12 +621,12 @@ window.EmlakLoc = class EmlakLoc {
             this.distanceCircles.push(label);
         });
 
-        console.log("📏 Mesafe çemberleri eklendi:", radii);
+        console.log('📏 Mesafe çemberleri eklendi:', radii);
     }
 
     getCircleColor(index) {
-        const colors = ["#EF4444", "#F59E0B", "#10B981"];
-        return colors[index] || "#6B7280";
+        const colors = ['#EF4444', '#F59E0B', '#10B981'];
+        return colors[index] || '#6B7280';
     }
 
     clearDistanceCircles() {
@@ -653,7 +640,7 @@ window.EmlakLoc = class EmlakLoc {
 
     handleMapClick(e) {
         const { lat, lng } = e.latlng;
-        console.log("🖱️ Haritaya tıklandı:", lat, lng);
+        console.log('🖱️ Haritaya tıklandı:', lat, lng);
 
         // Önceki marker'ı kaldır
         if (this.marker) {
@@ -661,7 +648,7 @@ window.EmlakLoc = class EmlakLoc {
         }
 
         // Yeni marker ekle
-        this.marker = this.addMarker(lat, lng, "selected");
+        this.marker = this.addMarker(lat, lng, 'selected');
 
         // Form alanlarını güncelle
         this.updateFormFields(lat, lng);
@@ -674,55 +661,53 @@ window.EmlakLoc = class EmlakLoc {
 
     updateFormFields(lat, lng) {
         // Koordinat alanlarını güncelle
-        const latInput = document.getElementById("latitude");
-        const lngInput = document.getElementById("longitude");
+        const latInput = document.getElementById('latitude');
+        const lngInput = document.getElementById('longitude');
 
         if (latInput) latInput.value = lat.toFixed(8);
         if (lngInput) lngInput.value = lng.toFixed(8);
 
-        console.log("📝 Form alanları güncellendi:", lat, lng);
+        console.log('📝 Form alanları güncellendi:', lat, lng);
     }
 
     // ============ REVERSE GEOCODING ============
 
     async findLocationFromCoordinates(lat, lng) {
         try {
-            console.log("🔍 Reverse geocoding yapılıyor...", lat, lng);
+            console.log('🔍 Reverse geocoding yapılıyor...', lat, lng);
 
-            const response = await fetch(
-                `/api/address/reverse-geocode?lat=${lat}&lng=${lng}`,
-            );
+            const response = await fetch(`/api/address/reverse-geocode?lat=${lat}&lng=${lng}`);
             const data = await response.json();
 
-            if (data.status === "success") {
-                console.log("📍 Adres bulundu:", data.data);
+            if (data.status === 'success') {
+                console.log('📍 Adres bulundu:', data.data);
                 this.updateLocationDropdowns(data.data);
-                this.showToast("Adres otomatik dolduruldu", "success");
+                this.showToast('Adres otomatik dolduruldu', 'success');
             } else {
-                console.warn("Adres bulunamadı");
-                this.showToast("Adres bulunamadı", "warning");
+                console.warn('Adres bulunamadı');
+                this.showToast('Adres bulunamadı', 'warning');
             }
         } catch (error) {
-            console.error("Reverse geocoding hatası:", error);
-            this.showToast("Adres arama hatası", "error");
+            console.error('Reverse geocoding hatası:', error);
+            this.showToast('Adres arama hatası', 'error');
         }
     }
 
     updateLocationDropdowns(locationData) {
         // İl dropdown'unu güncelle
-        const provinceSelect = document.getElementById("region_id");
+        const provinceSelect = document.getElementById('region_id');
         if (provinceSelect && locationData.province_id) {
             provinceSelect.value = locationData.province_id;
         }
 
         // İlçe dropdown'unu güncelle
-        const districtSelect = document.getElementById("ilce_id");
+        const districtSelect = document.getElementById('ilce_id');
         if (districtSelect && locationData.district_id) {
             districtSelect.value = locationData.district_id;
         }
 
         // Mahalle dropdown'unu güncelle
-        const neighborhoodSelect = document.getElementById("mahalle_id");
+        const neighborhoodSelect = document.getElementById('mahalle_id');
         if (neighborhoodSelect && locationData.neighborhood_id) {
             neighborhoodSelect.value = locationData.neighborhood_id;
         }
@@ -730,12 +715,12 @@ window.EmlakLoc = class EmlakLoc {
 
     // ============ UI HELPERS ============
 
-    showToast(message, type = "info") {
+    showToast(message, type = 'info') {
         // Toast notification sistemi
         console.log(`🔔 ${type.toUpperCase()}: ${message}`);
 
         // Basit toast implementation
-        const toast = document.createElement("div");
+        const toast = document.createElement('div');
         toast.className = `toast toast-${type}`;
         toast.innerHTML = `
             <div class="toast-content">
@@ -745,35 +730,35 @@ window.EmlakLoc = class EmlakLoc {
 
         // Toast stilleri
         Object.assign(toast.style, {
-            position: "fixed",
-            top: "20px",
-            right: "20px",
+            position: 'fixed',
+            top: '20px',
+            right: '20px',
             background: this.getToastColor(type),
-            color: "white",
-            padding: "12px 20px",
-            borderRadius: "8px",
-            boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
-            zIndex: "10000",
-            fontSize: "14px",
-            fontWeight: "500",
-            maxWidth: "300px",
-            opacity: "0",
-            transform: "translateY(-20px)",
-            transition: "all 0.3s ease",
+            color: 'white',
+            padding: '12px 20px',
+            borderRadius: '8px',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+            zIndex: '10000',
+            fontSize: '14px',
+            fontWeight: '500',
+            maxWidth: '300px',
+            opacity: '0',
+            transform: 'translateY(-20px)',
+            transition: 'all 0.3s ease',
         });
 
         document.body.appendChild(toast);
 
         // Animasyon
         setTimeout(() => {
-            toast.style.opacity = "1";
-            toast.style.transform = "translateY(0)";
+            toast.style.opacity = '1';
+            toast.style.transform = 'translateY(0)';
         }, 100);
 
         // Otomatik kaldır
         setTimeout(() => {
-            toast.style.opacity = "0";
-            toast.style.transform = "translateY(-20px)";
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateY(-20px)';
             setTimeout(() => {
                 if (toast.parentNode) {
                     toast.parentNode.removeChild(toast);
@@ -784,10 +769,10 @@ window.EmlakLoc = class EmlakLoc {
 
     getToastColor(type) {
         const colors = {
-            success: "#10B981",
-            error: "#EF4444",
-            warning: "#F59E0B",
-            info: "#3B82F6",
+            success: '#10B981',
+            error: '#EF4444',
+            warning: '#F59E0B',
+            info: '#3B82F6',
         };
         return colors[type] || colors.info;
     }
@@ -797,8 +782,8 @@ window.EmlakLoc = class EmlakLoc {
     confirmLocation() {
         if (this.marker) {
             const pos = this.marker.getLatLng();
-            console.log("✅ Konum onaylandı:", pos.lat, pos.lng);
-            this.showToast("Konum onaylandı", "success");
+            console.log('✅ Konum onaylandı:', pos.lat, pos.lng);
+            this.showToast('Konum onaylandı', 'success');
 
             // Form alanlarını güncelle
             this.updateFormFields(pos.lat, pos.lng);
@@ -809,8 +794,8 @@ window.EmlakLoc = class EmlakLoc {
         if (this.marker) {
             this.map.removeLayer(this.marker);
             this.marker = null;
-            console.log("🗑️ Marker kaldırıldı");
-            this.showToast("Konum kaldırıldı", "info");
+            console.log('🗑️ Marker kaldırıldı');
+            this.showToast('Konum kaldırıldı', 'info');
         }
     }
 
@@ -818,7 +803,7 @@ window.EmlakLoc = class EmlakLoc {
 
     displayAISearchResults(results) {
         if (!results || results.length === 0) {
-            this.showToast("Arama sonucu bulunamadı", "warning");
+            this.showToast('Arama sonucu bulunamadı', 'warning');
             return;
         }
 
@@ -828,39 +813,34 @@ window.EmlakLoc = class EmlakLoc {
                 const marker = this.addMarker(
                     result.coordinates.lat,
                     result.coordinates.lng,
-                    "ai",
-                    { title: result.title },
+                    'ai',
+                    { title: result.title }
                 );
 
                 // İlk sonucu odakla
                 if (index === 0) {
-                    this.map.setView(
-                        [result.coordinates.lat, result.coordinates.lng],
-                        15,
-                    );
+                    this.map.setView([result.coordinates.lat, result.coordinates.lng], 15);
                 }
             }
         });
 
-        this.showToast(`${results.length} adet sonuç bulundu`, "success");
+        this.showToast(`${results.length} adet sonuç bulundu`, 'success');
     }
 
     // ============ FALLBACK ARAMA ============
 
     async fallbackSearch(query) {
-        console.log("🔄 Fallback arama kullanılıyor:", query);
+        console.log('🔄 Fallback arama kullanılıyor:', query);
 
         try {
-            const response = await fetch(
-                `/api/address/search?q=${encodeURIComponent(query)}`,
-            );
+            const response = await fetch(`/api/address/search?q=${encodeURIComponent(query)}`);
             const data = await response.json();
 
-            if (data.status === "success" && data.data.length > 0) {
+            if (data.status === 'success' && data.data.length > 0) {
                 return data.data;
             }
         } catch (error) {
-            console.error("Fallback arama hatası:", error);
+            console.error('Fallback arama hatası:', error);
         }
 
         return [];
@@ -871,14 +851,9 @@ window.EmlakLoc = class EmlakLoc {
 
 class AISearchEngine {
     constructor(options = {}) {
-        this.providers = options.providers || [
-            "deepseek",
-            "openai",
-            "gemini",
-            "claude",
-        ];
-        this.currentProvider = options.currentProvider || "deepseek";
-        this.language = options.language || "tr";
+        this.providers = options.providers || ['deepseek', 'openai', 'gemini', 'claude'];
+        this.currentProvider = options.currentProvider || 'deepseek';
+        this.language = options.language || 'tr';
         this.enablePredictive = options.enablePredictive || false;
         this.searchHistory = [];
         this.userPreferences = {};
@@ -899,10 +874,10 @@ class AISearchEngine {
                 });
             }
 
-            const response = await fetch("/api/ai/address/analyze", {
-                method: "POST",
+            const response = await fetch('/api/ai/address/analyze', {
+                method: 'POST',
                 headers: {
-                    "Content-Type": "application/json",
+                    'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
                     query: processedQuery,
@@ -914,13 +889,13 @@ class AISearchEngine {
 
             const data = await response.json();
 
-            if (data.status === "success") {
+            if (data.status === 'success') {
                 return data.data;
             }
 
-            throw new Error(data.message || "AI arama hatası");
+            throw new Error(data.message || 'AI arama hatası');
         } catch (error) {
-            console.error("AI arama hatası:", error);
+            console.error('AI arama hatası:', error);
             throw error;
         }
     }
@@ -928,19 +903,19 @@ class AISearchEngine {
     async processTurkishNLP(query) {
         // Türkçe'ye özel NLP işleme
         const turkishRules = {
-            nerede: "location",
-            "nerede var": "find",
-            yakın: "near",
-            yakında: "nearby",
-            bul: "find",
-            ara: "search",
-            git: "go to",
-            göster: "show",
+            nerede: 'location',
+            'nerede var': 'find',
+            yakın: 'near',
+            yakında: 'nearby',
+            bul: 'find',
+            ara: 'search',
+            git: 'go to',
+            göster: 'show',
         };
 
         let processed = query.toLowerCase();
         for (const [key, value] of Object.entries(turkishRules)) {
-            processed = processed.replace(new RegExp(key, "g"), value);
+            processed = processed.replace(new RegExp(key, 'g'), value);
         }
 
         return processed;
@@ -949,11 +924,7 @@ class AISearchEngine {
     async getPredictions(query) {
         // Kullanıcı arama geçmişine göre tahminler
         const similarSearches = this.searchHistory
-            .filter((item) =>
-                item.query
-                    .toLowerCase()
-                    .includes(query.toLowerCase().slice(0, 3)),
-            )
+            .filter((item) => item.query.toLowerCase().includes(query.toLowerCase().slice(0, 3)))
             .slice(0, 5);
 
         return similarSearches.map((item) => item.query);
@@ -964,7 +935,7 @@ class VoiceSearchEngine {
     constructor(options = {}) {
         this.recognition = null;
         this.isListening = false;
-        this.language = options.language || "tr-TR";
+        this.language = options.language || 'tr-TR';
         this.continuous = options.continuous || false;
         this.enableNLP = options.enableNLP || true;
         this.transcriptHistory = [];
@@ -972,12 +943,8 @@ class VoiceSearchEngine {
     }
 
     initSpeechRecognition() {
-        if (
-            "webkitSpeechRecognition" in window ||
-            "SpeechRecognition" in window
-        ) {
-            const SpeechRecognition =
-                window.SpeechRecognition || window.webkitSpeechRecognition;
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             this.recognition = new SpeechRecognition();
 
             this.recognition.continuous = this.continuous;
@@ -988,7 +955,7 @@ class VoiceSearchEngine {
             // Gelişmiş ayarlar
             if (this.recognition.grammars) {
                 const grammar =
-                    "#JSGF V1.0; grammar locations; public <location> = (Bodrum | İstanbul | Ankara | İzmir | Antalya | Marmaris | Fethiye | Kaş | Kalkan | Göcek);";
+                    '#JSGF V1.0; grammar locations; public <location> = (Bodrum | İstanbul | Ankara | İzmir | Antalya | Marmaris | Fethiye | Kaş | Kalkan | Göcek);';
                 const speechRecognitionList = new webkitSpeechGrammarList();
                 speechRecognitionList.addFromString(grammar, 1);
                 this.recognition.grammars = speechRecognitionList;
@@ -999,7 +966,7 @@ class VoiceSearchEngine {
     async startListening() {
         return new Promise((resolve, reject) => {
             if (!this.recognition) {
-                reject(new Error("Speech recognition not supported"));
+                reject(new Error('Speech recognition not supported'));
                 return;
             }
 
@@ -1008,9 +975,7 @@ class VoiceSearchEngine {
                 const confidence = event.results[0][0].confidence;
 
                 console.log(
-                    `🎤 Tanınan metin: "${transcript}" (Güven: ${(
-                        confidence * 100
-                    ).toFixed(1)}%)`,
+                    `🎤 Tanınan metin: "${transcript}" (Güven: ${(confidence * 100).toFixed(1)}%)`
                 );
 
                 // NLP işleme
@@ -1029,18 +994,18 @@ class VoiceSearchEngine {
             };
 
             this.recognition.onerror = (event) => {
-                console.error("🎤 Speech recognition error:", event.error);
-                reject(new Error("Speech recognition error: " + event.error));
+                console.error('🎤 Speech recognition error:', event.error);
+                reject(new Error('Speech recognition error: ' + event.error));
             };
 
             this.recognition.onend = () => {
                 this.isListening = false;
-                console.log("🎤 Ses tanıma durduruldu");
+                console.log('🎤 Ses tanıma durduruldu');
             };
 
             this.recognition.onstart = () => {
                 this.isListening = true;
-                console.log("🎤 Ses tanıma başlatıldı");
+                console.log('🎤 Ses tanıma başlatıldı');
             };
 
             this.isListening = true;
@@ -1051,21 +1016,21 @@ class VoiceSearchEngine {
     processVoiceNLP(transcript) {
         // Türkçe ses komutları işleme
         const voiceCommands = {
-            bul: "find",
-            ara: "search",
-            git: "go to",
-            göster: "show",
-            yakın: "near",
-            yakında: "nearby",
-            nerede: "where is",
-            "nasıl giderim": "how to get to",
-            adres: "address",
-            konum: "location",
+            bul: 'find',
+            ara: 'search',
+            git: 'go to',
+            göster: 'show',
+            yakın: 'near',
+            yakında: 'nearby',
+            nerede: 'where is',
+            'nasıl giderim': 'how to get to',
+            adres: 'address',
+            konum: 'location',
         };
 
         let processed = transcript.toLowerCase();
         for (const [key, value] of Object.entries(voiceCommands)) {
-            processed = processed.replace(new RegExp(key, "g"), value);
+            processed = processed.replace(new RegExp(key, 'g'), value);
         }
 
         return processed;
@@ -1084,43 +1049,43 @@ class VoiceSearchEngine {
 
 class ImageRecognitionEngine {
     constructor(options = {}) {
-        this.apiEndpoint = "/api/ai/image-recognition";
+        this.apiEndpoint = '/api/ai/image-recognition';
         this.enableOCR = options.enableOCR || true;
         this.enableObjectDetection = options.enableObjectDetection || true;
         this.enableSceneRecognition = options.enableSceneRecognition || true;
         this.maxFileSize = options.maxFileSize || 10 * 1024 * 1024; // 10MB
-        this.supportedFormats = ["image/jpeg", "image/png", "image/webp"];
+        this.supportedFormats = ['image/jpeg', 'image/png', 'image/webp'];
     }
 
     async analyzeImage(imageFile) {
         // Dosya kontrolü
         if (!this.validateImageFile(imageFile)) {
-            throw new Error("Geçersiz dosya formatı veya boyutu");
+            throw new Error('Geçersiz dosya formatı veya boyutu');
         }
 
         const formData = new FormData();
-        formData.append("image", imageFile);
-        formData.append("enableOCR", this.enableOCR);
-        formData.append("enableObjectDetection", this.enableObjectDetection);
-        formData.append("enableSceneRecognition", this.enableSceneRecognition);
+        formData.append('image', imageFile);
+        formData.append('enableOCR', this.enableOCR);
+        formData.append('enableObjectDetection', this.enableObjectDetection);
+        formData.append('enableSceneRecognition', this.enableSceneRecognition);
 
         try {
-            console.log("📷 Görsel analiz ediliyor...");
+            console.log('📷 Görsel analiz ediliyor...');
             const response = await fetch(this.apiEndpoint, {
-                method: "POST",
+                method: 'POST',
                 body: formData,
             });
 
             const data = await response.json();
 
-            if (data.status === "success") {
-                console.log("📍 Görsel analiz tamamlandı:", data.data);
+            if (data.status === 'success') {
+                console.log('📍 Görsel analiz tamamlandı:', data.data);
                 return this.processRecognitionResults(data.data);
             }
 
-            throw new Error(data.message || "Image recognition failed");
+            throw new Error(data.message || 'Image recognition failed');
         } catch (error) {
-            console.error("Image recognition error:", error);
+            console.error('Image recognition error:', error);
             throw error;
         }
     }
@@ -1130,13 +1095,13 @@ class ImageRecognitionEngine {
 
         // Dosya tipi kontrolü
         if (!this.supportedFormats.includes(file.type)) {
-            console.error("❌ Desteklenmeyen dosya formatı:", file.type);
+            console.error('❌ Desteklenmeyen dosya formatı:', file.type);
             return false;
         }
 
         // Dosya boyutu kontrolü
         if (file.size > this.maxFileSize) {
-            console.error("❌ Dosya boyutu çok büyük:", file.size);
+            console.error('❌ Dosya boyutu çok büyük:', file.size);
             return false;
         }
 
@@ -1226,7 +1191,7 @@ class GooglePlacesIntegration {
 
     initGooglePlaces() {
         if (!this.apiKey) {
-            console.warn("⚠️ Google Places API key gerekli");
+            console.warn('⚠️ Google Places API key gerekli');
             return;
         }
 
@@ -1240,18 +1205,18 @@ class GooglePlacesIntegration {
 
     loadGoogleMapsAPI() {
         if (document.querySelector('script[src*="maps.googleapis.com"]')) {
-            console.log("✅ Google Maps API zaten yüklü");
+            console.log('✅ Google Maps API zaten yüklü');
             this.initializeServices();
             return;
         }
 
-        const script = document.createElement("script");
+        const script = document.createElement('script');
         script.src = `https://maps.googleapis.com/maps/api/js?key=${this.apiKey}&libraries=places&callback=initGooglePlacesCallback`;
         script.async = true;
         script.defer = true;
 
         window.initGooglePlacesCallback = () => {
-            console.log("✅ Google Maps API yüklendi");
+            console.log('✅ Google Maps API yüklendi');
             this.initializeServices();
         };
 
@@ -1261,83 +1226,69 @@ class GooglePlacesIntegration {
     initializeServices() {
         if (window.google && window.google.maps && window.google.maps.places) {
             this.placesService = new google.maps.places.PlacesService(
-                document.createElement("div"),
+                document.createElement('div')
             );
-            this.autocompleteService =
-                new google.maps.places.AutocompleteService();
+            this.autocompleteService = new google.maps.places.AutocompleteService();
             this.loaded = true;
-            console.log("✅ Google Places servisleri hazır");
+            console.log('✅ Google Places servisleri hazır');
         }
     }
 
     async searchPlaces(query, location = null, radius = 5000) {
         if (!this.loaded || !this.autocompleteService) {
-            throw new Error("Google Places API hazır değil");
+            throw new Error('Google Places API hazır değil');
         }
 
         return new Promise((resolve, reject) => {
             const request = {
                 input: query,
-                types: ["establishment", "geocode"],
-                componentRestrictions: { country: "tr" },
+                types: ['establishment', 'geocode'],
+                componentRestrictions: { country: 'tr' },
             };
 
             if (location) {
-                request.location = new google.maps.LatLng(
-                    location.lat,
-                    location.lng,
-                );
+                request.location = new google.maps.LatLng(location.lat, location.lng);
                 request.radius = radius;
             }
 
-            this.autocompleteService.getPlacePredictions(
-                request,
-                (predictions, status) => {
-                    if (
-                        status === google.maps.places.PlacesServiceStatus.OK &&
-                        predictions
-                    ) {
-                        resolve(
-                            predictions.map((prediction) => ({
-                                id: prediction.place_id,
-                                description: prediction.description,
-                                types: prediction.types,
-                                structured_formatting:
-                                    prediction.structured_formatting,
-                            })),
-                        );
-                    } else {
-                        reject(new Error("Places arama hatası: " + status));
-                    }
-                },
-            );
+            this.autocompleteService.getPlacePredictions(request, (predictions, status) => {
+                if (status === google.maps.places.PlacesServiceStatus.OK && predictions) {
+                    resolve(
+                        predictions.map((prediction) => ({
+                            id: prediction.place_id,
+                            description: prediction.description,
+                            types: prediction.types,
+                            structured_formatting: prediction.structured_formatting,
+                        }))
+                    );
+                } else {
+                    reject(new Error('Places arama hatası: ' + status));
+                }
+            });
         });
     }
 
     async getPlaceDetails(placeId) {
         if (!this.loaded || !this.placesService) {
-            throw new Error("Google Places API hazır değil");
+            throw new Error('Google Places API hazır değil');
         }
 
         return new Promise((resolve, reject) => {
             const request = {
                 placeId: placeId,
                 fields: [
-                    "name",
-                    "formatted_address",
-                    "geometry",
-                    "types",
-                    "photos",
-                    "rating",
-                    "reviews",
+                    'name',
+                    'formatted_address',
+                    'geometry',
+                    'types',
+                    'photos',
+                    'rating',
+                    'reviews',
                 ],
             };
 
             this.placesService.getDetails(request, (place, status) => {
-                if (
-                    status === google.maps.places.PlacesServiceStatus.OK &&
-                    place
-                ) {
+                if (status === google.maps.places.PlacesServiceStatus.OK && place) {
                     resolve({
                         name: place.name,
                         address: place.formatted_address,
@@ -1347,15 +1298,13 @@ class GooglePlacesIntegration {
                         },
                         types: place.types,
                         photos: place.photos
-                            ? place.photos.map((photo) =>
-                                  photo.getUrl({ maxWidth: 400 }),
-                              )
+                            ? place.photos.map((photo) => photo.getUrl({ maxWidth: 400 }))
                             : [],
                         rating: place.rating,
                         reviews: place.reviews,
                     });
                 } else {
-                    reject(new Error("Place detay hatası: " + status));
+                    reject(new Error('Place detay hatası: ' + status));
                 }
             });
         });
@@ -1385,32 +1334,30 @@ class SocialMediaSharing {
     shareToWhatsApp(locationData) {
         const text = `📍 ${locationData.name}\n📍 ${locationData.address}\n📍 Koordinatlar: ${locationData.lat}, ${locationData.lng}`;
         const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
-        window.open(url, "_blank");
+        window.open(url, '_blank');
     }
 
     shareToTelegram(locationData) {
         const text = `📍 ${locationData.name}\n📍 ${locationData.address}\n📍 Koordinatlar: ${locationData.lat}, ${locationData.lng}`;
         const url = `https://t.me/share/url?url=${encodeURIComponent(
-            window.location.href,
+            window.location.href
         )}&text=${encodeURIComponent(text)}`;
-        window.open(url, "_blank");
+        window.open(url, '_blank');
     }
 
     shareToTwitter(locationData) {
         const text = `📍 ${locationData.name} - ${locationData.address} #EmlakLoc`;
         const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
-            text,
+            text
         )}&url=${encodeURIComponent(window.location.href)}`;
-        window.open(url, "_blank");
+        window.open(url, '_blank');
     }
 
     shareToFacebook(locationData) {
         const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
-            window.location.href,
-        )}&quote=${encodeURIComponent(
-            `📍 ${locationData.name} - ${locationData.address}`,
-        )}`;
-        window.open(url, "_blank");
+            window.location.href
+        )}&quote=${encodeURIComponent(`📍 ${locationData.name} - ${locationData.address}`)}`;
+        window.open(url, '_blank');
     }
 
     generateShareableLink(locationData) {
@@ -1437,8 +1384,8 @@ class QRCodeGenerator {
         const defaultOptions = {
             width: 256,
             height: 256,
-            colorDark: "#000000",
-            colorLight: "#FFFFFF",
+            colorDark: '#000000',
+            colorLight: '#FFFFFF',
             correctLevel: QRCode.CorrectLevel.H,
         };
 
@@ -1447,7 +1394,7 @@ class QRCodeGenerator {
         return new Promise((resolve, reject) => {
             try {
                 // QRCode kütüphanesini kontrol et
-                if (typeof QRCode === "undefined") {
+                if (typeof QRCode === 'undefined') {
                     this.loadQRCodeLibrary().then(() => {
                         this.createQRCode(data, finalOptions, resolve, reject);
                     });
@@ -1463,8 +1410,8 @@ class QRCodeGenerator {
     createQRCode(data, options, resolve, reject) {
         try {
             // Container oluştur
-            this.container = document.createElement("div");
-            this.container.id = "qrcode-container";
+            this.container = document.createElement('div');
+            this.container.id = 'qrcode-container';
 
             // QR kod oluştur
             this.qrCode = new QRCode(this.container, {
@@ -1478,15 +1425,15 @@ class QRCodeGenerator {
 
             // Canvas'ı al
             setTimeout(() => {
-                const canvas = this.container.querySelector("canvas");
+                const canvas = this.container.querySelector('canvas');
                 if (canvas) {
                     resolve({
                         canvas: canvas,
-                        dataUrl: canvas.toDataURL("image/png"),
+                        dataUrl: canvas.toDataURL('image/png'),
                         container: this.container,
                     });
                 } else {
-                    reject(new Error("QR kod oluşturulamadı"));
+                    reject(new Error('QR kod oluşturulamadı'));
                 }
             }, 100);
         } catch (error) {
@@ -1501,25 +1448,24 @@ class QRCodeGenerator {
                 return;
             }
 
-            const script = document.createElement("script");
-            script.src =
-                "https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js";
+            const script = document.createElement('script');
+            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js';
             script.onload = resolve;
             script.onerror = reject;
             document.head.appendChild(script);
         });
     }
 
-    downloadQRCode(filename = "location-qr.png") {
+    downloadQRCode(filename = 'location-qr.png') {
         if (!this.qrCode) {
-            throw new Error("QR kod henüz oluşturulmadı");
+            throw new Error('QR kod henüz oluşturulmadı');
         }
 
-        const canvas = this.container.querySelector("canvas");
+        const canvas = this.container.querySelector('canvas');
         if (canvas) {
-            const link = document.createElement("a");
+            const link = document.createElement('a');
             link.download = filename;
-            link.href = canvas.toDataURL("image/png");
+            link.href = canvas.toDataURL('image/png');
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
@@ -1528,7 +1474,7 @@ class QRCodeGenerator {
 
     generateLocationQR(locationData) {
         const data = JSON.stringify({
-            type: "location",
+            type: 'location',
             name: locationData.name,
             address: locationData.address,
             lat: locationData.lat,
@@ -1551,49 +1497,47 @@ class PWAManager {
 
     init() {
         // PWA olaylarını dinle
-        window.addEventListener("beforeinstallprompt", (e) => {
-            console.log("📱 PWA yükleme prompt yakalandı");
+        window.addEventListener('beforeinstallprompt', (e) => {
+            console.log('📱 PWA yükleme prompt yakalandı');
             e.preventDefault();
             this.deferredPrompt = e;
             this.showInstallButton();
         });
 
-        window.addEventListener("appinstalled", () => {
-            console.log("📱 PWA başarıyla yüklendi");
+        window.addEventListener('appinstalled', () => {
+            console.log('📱 PWA başarıyla yüklendi');
             this.isInstalled = true;
             this.hideInstallButton();
         });
 
         // Service Worker kontrolü
-        if ("serviceWorker" in navigator) {
+        if ('serviceWorker' in navigator) {
             this.registerServiceWorker();
         }
 
         // Çevrimdışı/online status kontrolü
-        window.addEventListener("online", () => this.handleOnline());
-        window.addEventListener("offline", () => this.handleOffline());
+        window.addEventListener('online', () => this.handleOnline());
+        window.addEventListener('offline', () => this.handleOffline());
     }
 
     async registerServiceWorker() {
         try {
-            const registration =
-                await navigator.serviceWorker.register("/sw.js");
-            console.log("✅ Service Worker kayıt edildi:", registration);
+            const registration = await navigator.serviceWorker.register('/sw.js');
+            console.log('✅ Service Worker kayıt edildi:', registration);
         } catch (error) {
-            console.error("❌ Service Worker kayıt hatası:", error);
+            console.error('❌ Service Worker kayıt hatası:', error);
         }
     }
 
     showInstallButton() {
         // Yükleme butonu göster
-        const installButton = document.createElement("button");
-        installButton.id = "pwa-install-btn";
-        installButton.innerHTML = "📱 Uygulamayı Yükle";
-        installButton.className = "btn neo-btn neo-btn-primary position-fixed";
-        installButton.style.cssText =
-            "bottom: 20px; right: 20px; z-index: 1000;";
+        const installButton = document.createElement('button');
+        installButton.id = 'pwa-install-btn';
+        installButton.innerHTML = '📱 Uygulamayı Yükle';
+        installButton.className = 'btn neo-btn neo-btn-primary position-fixed';
+        installButton.style.cssText = 'bottom: 20px; right: 20px; z-index: 1000;';
 
-        installButton.addEventListener("click", () => {
+        installButton.addEventListener('click', () => {
             this.installPWA();
         });
 
@@ -1601,7 +1545,7 @@ class PWAManager {
     }
 
     hideInstallButton() {
-        const installButton = document.getElementById("pwa-install-btn");
+        const installButton = document.getElementById('pwa-install-btn');
         if (installButton) {
             installButton.remove();
         }
@@ -1618,13 +1562,13 @@ class PWAManager {
     }
 
     handleOnline() {
-        console.log("🌐 Çevrimiçi mod");
-        this.showToast("Çevrimiçi mod aktif", "success");
+        console.log('🌐 Çevrimiçi mod');
+        this.showToast('Çevrimiçi mod aktif', 'success');
     }
 
     handleOffline() {
-        console.log("📴 Çevrimdışı mod");
-        this.showToast("Çevrimdışı mod aktif", "warning");
+        console.log('📴 Çevrimdışı mod');
+        this.showToast('Çevrimdışı mod aktif', 'warning');
     }
 
     showToast(message, type) {
@@ -1637,12 +1581,12 @@ class PWAManager {
     }
 
     async cacheMapData(lat, lng, zoom) {
-        if ("caches" in window) {
-            const cache = await caches.open("map-cache-v1");
+        if ('caches' in window) {
+            const cache = await caches.open('map-cache-v1');
             const tileUrls = this.generateTileUrls(lat, lng, zoom);
 
             await cache.addAll(tileUrls);
-            console.log("✅ Harita verileri önbelleğe alındı");
+            console.log('✅ Harita verileri önbelleğe alındı');
         }
     }
 
@@ -1651,22 +1595,19 @@ class PWAManager {
         const urls = [];
         for (let x = -1; x <= 1; x++) {
             for (let y = -1; y <= 1; y++) {
-                const tileX =
-                    Math.floor(((lng + 180) / 360) * Math.pow(2, zoom)) + x;
+                const tileX = Math.floor(((lng + 180) / 360) * Math.pow(2, zoom)) + x;
                 const tileY =
                     Math.floor(
                         ((1 -
                             Math.log(
                                 Math.tan((lat * Math.PI) / 180) +
-                                    1 / Math.cos((lat * Math.PI) / 180),
+                                    1 / Math.cos((lat * Math.PI) / 180)
                             ) /
                                 Math.PI) /
                             2) *
-                            Math.pow(2, zoom),
+                            Math.pow(2, zoom)
                     ) + y;
-                urls.push(
-                    `https://tile.openstreetmap.org/${zoom}/${tileX}/${tileY}.png`,
-                );
+                urls.push(`https://tile.openstreetmap.org/${zoom}/${tileX}/${tileY}.png`);
             }
         }
         return urls;
@@ -1690,11 +1631,11 @@ class GestureController {
         if (!this.map) return;
 
         // Dokunmat olaylarını dinle
-        this.map.on("touchstart", (e) => this.handleTouchStart(e));
-        this.map.on("touchend", (e) => this.handleTouchEnd(e));
-        this.map.on("touchmove", (e) => this.handleTouchMove(e));
+        this.map.on('touchstart', (e) => this.handleTouchStart(e));
+        this.map.on('touchend', (e) => this.handleTouchEnd(e));
+        this.map.on('touchmove', (e) => this.handleTouchMove(e));
 
-        console.log("👆 Gesture Controller aktif");
+        console.log('👆 Gesture Controller aktif');
         this.enabled = true;
     }
 
@@ -1774,22 +1715,22 @@ class GestureController {
     }
 
     handleSwipeLeft() {
-        console.log("👆 Swipe Left - Sonraki konum");
+        console.log('👆 Swipe Left - Sonraki konum');
         // Sonraki konum göstergesi
     }
 
     handleSwipeRight() {
-        console.log("👆 Swipe Right - Önceki konum");
+        console.log('👆 Swipe Right - Önceki konum');
         // Önceki konum göstergesi
     }
 
     handleSwipeUp() {
-        console.log("👆 Swipe Up - Yakınlaştırma");
+        console.log('👆 Swipe Up - Yakınlaştırma');
         this.map.zoomIn();
     }
 
     handleSwipeDown() {
-        console.log("👆 Swipe Down - Uzaklaştırma");
+        console.log('👆 Swipe Down - Uzaklaştırma');
         this.map.zoomOut();
     }
 
@@ -1817,26 +1758,25 @@ class PushNotificationManager {
     }
 
     async init() {
-        if ("serviceWorker" in navigator && "PushManager" in window) {
+        if ('serviceWorker' in navigator && 'PushManager' in window) {
             try {
                 this.swRegistration = await navigator.serviceWorker.ready;
-                console.log("✅ Push Notification Manager hazır");
+                console.log('✅ Push Notification Manager hazır');
 
                 // Mevcut subscription kontrolü
-                const subscription =
-                    await this.swRegistration.pushManager.getSubscription();
+                const subscription = await this.swRegistration.pushManager.getSubscription();
                 this.isSubscribed = !!subscription;
 
                 if (this.isSubscribed) {
-                    console.log("✅ Push notification aktif");
+                    console.log('✅ Push notification aktif');
                 } else {
-                    console.log("⚠️ Push notification pasif");
+                    console.log('⚠️ Push notification pasif');
                 }
             } catch (error) {
-                console.error("❌ Push Notification Manager hatası:", error);
+                console.error('❌ Push Notification Manager hatası:', error);
             }
         } else {
-            console.warn("⚠️ Push notification desteklenmiyor");
+            console.warn('⚠️ Push notification desteklenmiyor');
         }
     }
 
@@ -1844,15 +1784,12 @@ class PushNotificationManager {
         if (!this.swRegistration) return false;
 
         try {
-            const subscription =
-                await this.swRegistration.pushManager.subscribe({
-                    userVisibleOnly: true,
-                    applicationServerKey: this.urlBase64ToUint8Array(
-                        this.vapidPublicKey,
-                    ),
-                });
+            const subscription = await this.swRegistration.pushManager.subscribe({
+                userVisibleOnly: true,
+                applicationServerKey: this.urlBase64ToUint8Array(this.vapidPublicKey),
+            });
 
-            console.log("✅ Push notification subscription başarılı");
+            console.log('✅ Push notification subscription başarılı');
             this.isSubscribed = true;
 
             // Server'a subscription gönder
@@ -1860,7 +1797,7 @@ class PushNotificationManager {
 
             return true;
         } catch (error) {
-            console.error("❌ Push notification subscription hatası:", error);
+            console.error('❌ Push notification subscription hatası:', error);
             return false;
         }
     }
@@ -1869,49 +1806,46 @@ class PushNotificationManager {
         if (!this.swRegistration) return false;
 
         try {
-            const subscription =
-                await this.swRegistration.pushManager.getSubscription();
+            const subscription = await this.swRegistration.pushManager.getSubscription();
             if (subscription) {
                 await subscription.unsubscribe();
-                console.log("✅ Push notification subscription iptal edildi");
+                console.log('✅ Push notification subscription iptal edildi');
                 this.isSubscribed = false;
                 return true;
             }
         } catch (error) {
-            console.error("❌ Push notification unsubscribe hatası:", error);
+            console.error('❌ Push notification unsubscribe hatası:', error);
         }
         return false;
     }
 
     async sendSubscriptionToServer(subscription) {
-        const response = await fetch("/api/push/subscribe", {
-            method: "POST",
+        const response = await fetch('/api/push/subscribe', {
+            method: 'POST',
             headers: {
-                "Content-Type": "application/json",
+                'Content-Type': 'application/json',
             },
             body: JSON.stringify({
                 endpoint: subscription.endpoint,
                 keys: {
-                    p256dh: this.arrayBufferToBase64(
-                        subscription.getKey("p256dh"),
-                    ),
-                    auth: this.arrayBufferToBase64(subscription.getKey("auth")),
+                    p256dh: this.arrayBufferToBase64(subscription.getKey('p256dh')),
+                    auth: this.arrayBufferToBase64(subscription.getKey('auth')),
                 },
             }),
         });
 
         if (!response.ok) {
-            throw new Error("Subscription server hatası");
+            throw new Error('Subscription server hatası');
         }
     }
 
-    sendNotification(title, body, icon = "/favicon.ico") {
+    sendNotification(title, body, icon = '/favicon.ico') {
         if (!this.swRegistration) return;
 
         const options = {
             body: body,
             icon: icon,
-            badge: "/favicon.ico",
+            badge: '/favicon.ico',
             vibrate: [200, 100, 200],
             data: {
                 dateOfArrival: Date.now(),
@@ -1919,14 +1853,14 @@ class PushNotificationManager {
             },
             actions: [
                 {
-                    action: "explore",
-                    title: "İncele",
-                    icon: "/images/checkmark.png",
+                    action: 'explore',
+                    title: 'İncele',
+                    icon: '/images/checkmark.png',
                 },
                 {
-                    action: "close",
-                    title: "Kapat",
-                    icon: "/images/xmark.png",
+                    action: 'close',
+                    title: 'Kapat',
+                    icon: '/images/xmark.png',
                 },
             ],
         };
@@ -1935,16 +1869,14 @@ class PushNotificationManager {
     }
 
     sendLocationNotification(locationData) {
-        const title = "📍 Konum Güncellemesi";
+        const title = '📍 Konum Güncellemesi';
         const body = `${locationData.name} konumunda yeni bilgiler mevcut`;
         this.sendNotification(title, body);
     }
 
     urlBase64ToUint8Array(base64String) {
-        const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
-        const base64 = (base64String + padding)
-            .replace(/-/g, "+")
-            .replace(/_/g, "/");
+        const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
+        const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
 
         const rawData = window.atob(base64);
         const outputArray = new Uint8Array(rawData.length);
@@ -1956,7 +1888,7 @@ class PushNotificationManager {
     }
 
     arrayBufferToBase64(buffer) {
-        let binary = "";
+        let binary = '';
         const bytes = new Uint8Array(buffer);
         for (let i = 0; i < bytes.byteLength; i++) {
             binary += String.fromCharCode(bytes[i]);
@@ -1965,7 +1897,7 @@ class PushNotificationManager {
     }
 
     isSupported() {
-        return "serviceWorker" in navigator && "PushManager" in window;
+        return 'serviceWorker' in navigator && 'PushManager' in window;
     }
 
     getSubscriptionStatus() {
@@ -1986,7 +1918,7 @@ class PredictiveAnalytics {
     init() {
         // Local storage'dan geçmiş verileri yükle
         this.loadFromStorage();
-        console.log("🔮 Predictive Analytics aktif");
+        console.log('🔮 Predictive Analytics aktif');
     }
 
     trackUserAction(action, data) {
@@ -2012,7 +1944,7 @@ class PredictiveAnalytics {
     analyzePatterns() {
         // Arama desenlerini analiz et
         const recentSearches = this.userHistory
-            .filter((item) => item.action === "search")
+            .filter((item) => item.action === 'search')
             .slice(-50);
 
         // Konum tercihlerini analiz et
@@ -2033,10 +1965,7 @@ class PredictiveAnalytics {
         searches.forEach((search) => {
             const query = search.data.query;
             if (query) {
-                this.searchPatterns.set(
-                    query,
-                    (this.searchPatterns.get(query) || 0) + 1,
-                );
+                this.searchPatterns.set(query, (this.searchPatterns.get(query) || 0) + 1);
             }
         });
 
@@ -2058,7 +1987,7 @@ class PredictiveAnalytics {
                 predictions.push({
                     query: searchQuery,
                     score: count,
-                    type: "history",
+                    type: 'history',
                 });
             }
         }
@@ -2069,7 +1998,7 @@ class PredictiveAnalytics {
                 predictions.push({
                     query: location,
                     score: count,
-                    type: "location",
+                    type: 'location',
                 });
             }
         }
@@ -2092,13 +2021,13 @@ class PredictiveAnalytics {
     predictUserIntent(query) {
         // Kullanıcı niyetini tahmin et
         const intents = {
-            search: ["bul", "ara", "nerede", "nası", "hangi"],
-            navigation: ["git", "göster", "aç", "bak"],
-            information: ["nedir", "nasıl", "ne zaman", "kaç"],
+            search: ['bul', 'ara', 'nerede', 'nası', 'hangi'],
+            navigation: ['git', 'göster', 'aç', 'bak'],
+            information: ['nedir', 'nasıl', 'ne zaman', 'kaç'],
         };
 
         const queryLower = query.toLowerCase();
-        let bestIntent = "search";
+        let bestIntent = 'search';
         let bestScore = 0;
 
         Object.entries(intents).forEach(([intent, keywords]) => {
@@ -2114,31 +2043,29 @@ class PredictiveAnalytics {
 
         return {
             intent: bestIntent,
-            confidence:
-                bestScore /
-                Math.max(...Object.values(intents).map((k) => k.length)),
+            confidence: bestScore / Math.max(...Object.values(intents).map((k) => k.length)),
         };
     }
 
     saveToStorage() {
         try {
             localStorage.setItem(
-                "emlakloc_analytics",
+                'emlakloc_analytics',
                 JSON.stringify({
                     userHistory: this.userHistory.slice(-500), // Son 500 kayıt
                     searchPatterns: Array.from(this.searchPatterns.entries()),
                     locationTrends: Array.from(this.locationTrends.entries()),
                     lastUpdated: Date.now(),
-                }),
+                })
             );
         } catch (error) {
-            console.warn("Analytics verisi kaydedilemedi:", error);
+            console.warn('Analytics verisi kaydedilemedi:', error);
         }
     }
 
     loadFromStorage() {
         try {
-            const data = localStorage.getItem("emlakloc_analytics");
+            const data = localStorage.getItem('emlakloc_analytics');
             if (data) {
                 const parsed = JSON.parse(data);
 
@@ -2146,10 +2073,10 @@ class PredictiveAnalytics {
                 this.searchPatterns = new Map(parsed.searchPatterns || []);
                 this.locationTrends = new Map(parsed.locationTrends || []);
 
-                console.log("📊 Analytics verisi yüklendi");
+                console.log('📊 Analytics verisi yüklendi');
             }
         } catch (error) {
-            console.warn("Analytics verisi yüklenemedi:", error);
+            console.warn('Analytics verisi yüklenemedi:', error);
         }
     }
 
@@ -2157,8 +2084,8 @@ class PredictiveAnalytics {
         this.userHistory = [];
         this.searchPatterns.clear();
         this.locationTrends.clear();
-        localStorage.removeItem("emlakloc_analytics");
-        console.log("🗑️ Analytics verisi temizlendi");
+        localStorage.removeItem('emlakloc_analytics');
+        console.log('🗑️ Analytics verisi temizlendi');
     }
 
     getAnalyticsSummary() {
@@ -2194,12 +2121,12 @@ class TrafficLayer {
                 this.trafficLayer = new google.maps.TrafficLayer();
                 this.trafficLayer.setMap(this.map);
                 this.enabled = true;
-                console.log("🚗 Trafik katmanı aktif");
+                console.log('🚗 Trafik katmanı aktif');
             } else {
-                console.warn("⚠️ Google Maps API gerekli");
+                console.warn('⚠️ Google Maps API gerekli');
             }
         } catch (error) {
-            console.error("❌ Trafik katmanı hatası:", error);
+            console.error('❌ Trafik katmanı hatası:', error);
         }
     }
 
@@ -2208,7 +2135,7 @@ class TrafficLayer {
 
         this.trafficLayer.setMap(null);
         this.enabled = false;
-        console.log("🚗 Trafik katmanı devre dışı");
+        console.log('🚗 Trafik katmanı devre dışı');
     }
 
     isEnabled() {
@@ -2220,12 +2147,7 @@ class TrafficLayer {
         // Bu gerçek bir API çağrısı gerektirir
         // Şimdilik mock veri döndürüyoruz
         return {
-            level:
-                Math.random() > 0.7
-                    ? "heavy"
-                    : Math.random() > 0.4
-                      ? "moderate"
-                      : "light",
+            level: Math.random() > 0.7 ? 'heavy' : Math.random() > 0.4 ? 'moderate' : 'light',
             speed: Math.floor(Math.random() * 60) + 20, // 20-80 km/h
             incidents: Math.floor(Math.random() * 3),
         };
@@ -2234,7 +2156,7 @@ class TrafficLayer {
     // ============ EMLAK-SPESİFİK ÖZELLİKLER ============
 
     async initializePropertyFeatures() {
-        console.log("🏠 Emlak-spesifik özellikler başlatılıyor...");
+        console.log('🏠 Emlak-spesifik özellikler başlatılıyor...');
 
         this.nearbyServices = new NearbyServicesAnalyzer();
         this.transportationScore = new TransportationScoreCalculator();
@@ -2243,7 +2165,7 @@ class TrafficLayer {
         this.propertyInsights = new PropertyInsightsGenerator();
         this.locationScore = new LocationScoreCalculator();
 
-        console.log("✅ Emlak-spesifik özellikler hazır!");
+        console.log('✅ Emlak-spesifik özellikler hazır!');
     }
 
     /**
@@ -2251,7 +2173,7 @@ class TrafficLayer {
      */
     async analyzePropertyLocation(lat, lng) {
         if (!lat || !lng) {
-            console.warn("Koordinat bilgisi eksik");
+            console.warn('Koordinat bilgisi eksik');
             return null;
         }
 
@@ -2260,22 +2182,10 @@ class TrafficLayer {
                 coordinates: { lat, lng },
                 timestamp: new Date().toISOString(),
                 nearbyServices: await this.nearbyServices.analyze(lat, lng),
-                transportationScore: await this.transportationScore.calculate(
-                    lat,
-                    lng,
-                ),
-                environmentAnalysis: await this.environmentAnalysis.analyze(
-                    lat,
-                    lng,
-                ),
-                investmentAnalysis: await this.investmentAnalysis.analyze(
-                    lat,
-                    lng,
-                ),
-                propertyInsights: await this.propertyInsights.generate(
-                    lat,
-                    lng,
-                ),
+                transportationScore: await this.transportationScore.calculate(lat, lng),
+                environmentAnalysis: await this.environmentAnalysis.analyze(lat, lng),
+                investmentAnalysis: await this.investmentAnalysis.analyze(lat, lng),
+                propertyInsights: await this.propertyInsights.generate(lat, lng),
                 locationScore: await this.locationScore.calculate(lat, lng),
             };
 
@@ -2284,7 +2194,7 @@ class TrafficLayer {
 
             return analysis;
         } catch (error) {
-            console.error("Emlak analizi hatası:", error);
+            console.error('Emlak analizi hatası:', error);
             return null;
         }
     }
@@ -2333,25 +2243,25 @@ class TrafficLayer {
 
     getServiceIcon(type) {
         const icons = {
-            school: "🏫",
-            hospital: "🏥",
-            shopping: "🛍️",
-            restaurant: "🍽️",
-            bank: "🏦",
-            pharmacy: "💊",
-            gas_station: "⛽",
-            park: "🌳",
+            school: '🏫',
+            hospital: '🏥',
+            shopping: '🛍️',
+            restaurant: '🍽️',
+            bank: '🏦',
+            pharmacy: '💊',
+            gas_station: '⛽',
+            park: '🌳',
         };
 
         return L.divIcon({
-            html: `<div class="service-marker">${icons[type] || "📍"}</div>`,
-            className: "service-marker-container",
+            html: `<div class="service-marker">${icons[type] || '📍'}</div>`,
+            className: 'service-marker-container',
             iconSize: [30, 30],
         });
     }
 
     showTransportationScore(score) {
-        const scoreElement = document.getElementById("transportation-score");
+        const scoreElement = document.getElementById('transportation-score');
         if (scoreElement) {
             scoreElement.innerHTML = `
                 <div class="score-card">
@@ -2368,7 +2278,7 @@ class TrafficLayer {
     }
 
     showEnvironmentAnalysis(analysis) {
-        const envElement = document.getElementById("environment-analysis");
+        const envElement = document.getElementById('environment-analysis');
         if (envElement) {
             envElement.innerHTML = `
                 <div class="environment-card">
@@ -2393,7 +2303,7 @@ class TrafficLayer {
     }
 
     showInvestmentAnalysis(analysis) {
-        const invElement = document.getElementById("investment-analysis");
+        const invElement = document.getElementById('investment-analysis');
         if (invElement) {
             invElement.innerHTML = `
                 <div class="investment-card">
@@ -2426,14 +2336,14 @@ class TrafficLayer {
 class NearbyServicesAnalyzer {
     constructor() {
         this.serviceTypes = [
-            "school",
-            "hospital",
-            "shopping",
-            "restaurant",
-            "bank",
-            "pharmacy",
-            "gas_station",
-            "park",
+            'school',
+            'hospital',
+            'shopping',
+            'restaurant',
+            'bank',
+            'pharmacy',
+            'gas_station',
+            'park',
         ];
     }
 
@@ -2442,17 +2352,13 @@ class NearbyServicesAnalyzer {
             const services = [];
 
             for (const type of this.serviceTypes) {
-                const nearbyServices = await this.findNearbyServices(
-                    lat,
-                    lng,
-                    type,
-                );
+                const nearbyServices = await this.findNearbyServices(lat, lng, type);
                 services.push(...nearbyServices);
             }
 
             return services.sort((a, b) => a.distance - b.distance);
         } catch (error) {
-            console.error("Yakındaki hizmetler analizi hatası:", error);
+            console.error('Yakındaki hizmetler analizi hatası:', error);
             return [];
         }
     }
@@ -2466,20 +2372,20 @@ class NearbyServicesAnalyzer {
     getMockServices(lat, lng, type) {
         const services = {
             school: [
-                { name: "Bodrum İlkokulu", distance: 200, rating: 4.2 },
-                { name: "Bodrum Ortaokulu", distance: 450, rating: 4.0 },
+                { name: 'Bodrum İlkokulu', distance: 200, rating: 4.2 },
+                { name: 'Bodrum Ortaokulu', distance: 450, rating: 4.0 },
             ],
             hospital: [
-                { name: "Bodrum Devlet Hastanesi", distance: 800, rating: 4.5 },
-                { name: "Bodrum Özel Hastane", distance: 1200, rating: 4.8 },
+                { name: 'Bodrum Devlet Hastanesi', distance: 800, rating: 4.5 },
+                { name: 'Bodrum Özel Hastane', distance: 1200, rating: 4.8 },
             ],
             shopping: [
-                { name: "Bodrum AVM", distance: 300, rating: 4.3 },
-                { name: "Migros", distance: 150, rating: 4.1 },
+                { name: 'Bodrum AVM', distance: 300, rating: 4.3 },
+                { name: 'Migros', distance: 150, rating: 4.1 },
             ],
             restaurant: [
-                { name: "Deniz Restoran", distance: 100, rating: 4.6 },
-                { name: "Bodrum Balıkçısı", distance: 250, rating: 4.4 },
+                { name: 'Deniz Restoran', distance: 100, rating: 4.6 },
+                { name: 'Bodrum Balıkçısı', distance: 250, rating: 4.4 },
             ],
         };
 
@@ -2498,19 +2404,11 @@ class NearbyServicesAnalyzer {
 class TransportationScoreCalculator {
     async calculate(lat, lng) {
         try {
-            const publicTransport = await this.calculatePublicTransportScore(
-                lat,
-                lng,
-            );
-            const highwayAccess = await this.calculateHighwayAccessScore(
-                lat,
-                lng,
-            );
+            const publicTransport = await this.calculatePublicTransportScore(lat, lng);
+            const highwayAccess = await this.calculateHighwayAccessScore(lat, lng);
             const parking = await this.calculateParkingScore(lat, lng);
 
-            const overall = Math.round(
-                (publicTransport + highwayAccess + parking) / 3,
-            );
+            const overall = Math.round((publicTransport + highwayAccess + parking) / 3);
 
             return {
                 overall,
@@ -2520,14 +2418,11 @@ class TransportationScoreCalculator {
                 details: {
                     busStops: await this.findBusStops(lat, lng),
                     metroStations: await this.findMetroStations(lat, lng),
-                    highwayDistance: await this.calculateHighwayDistance(
-                        lat,
-                        lng,
-                    ),
+                    highwayDistance: await this.calculateHighwayDistance(lat, lng),
                 },
             };
         } catch (error) {
-            console.error("Ulaşım puanı hesaplama hatası:", error);
+            console.error('Ulaşım puanı hesaplama hatası:', error);
             return {
                 overall: 0,
                 publicTransport: 0,
@@ -2567,8 +2462,8 @@ class TransportationScoreCalculator {
     async findBusStops(lat, lng) {
         // Mock veri
         return [
-            { name: "Bodrum Merkez", distance: 200 },
-            { name: "Bodrum Otogar", distance: 800 },
+            { name: 'Bodrum Merkez', distance: 200 },
+            { name: 'Bodrum Otogar', distance: 800 },
         ];
     }
 
@@ -2597,16 +2492,14 @@ class EnvironmentAnalyzer {
                 airQuality,
                 noise,
                 greenSpace,
-                overall: Math.round(
-                    (airQuality.score + noise.score + greenSpace.score) / 3,
-                ),
+                overall: Math.round((airQuality.score + noise.score + greenSpace.score) / 3),
             };
         } catch (error) {
-            console.error("Çevre analizi hatası:", error);
+            console.error('Çevre analizi hatası:', error);
             return {
-                airQuality: { score: 0, level: "unknown" },
-                noise: { score: 0, level: "unknown" },
-                greenSpace: { score: 0, level: "unknown" },
+                airQuality: { score: 0, level: 'unknown' },
+                noise: { score: 0, level: 'unknown' },
+                greenSpace: { score: 0, level: 'unknown' },
                 overall: 0,
             };
         }
@@ -2617,7 +2510,7 @@ class EnvironmentAnalyzer {
         const score = Math.floor(Math.random() * 40) + 60; // 60-100 arası
         return {
             score,
-            level: score > 80 ? "excellent" : score > 60 ? "good" : "moderate",
+            level: score > 80 ? 'excellent' : score > 60 ? 'good' : 'moderate',
             pm25: Math.floor(Math.random() * 20) + 10,
             pm10: Math.floor(Math.random() * 30) + 15,
             o3: Math.floor(Math.random() * 50) + 20,
@@ -2629,7 +2522,7 @@ class EnvironmentAnalyzer {
         const score = Math.floor(Math.random() * 30) + 70; // 70-100 arası
         return {
             score,
-            level: score > 85 ? "quiet" : score > 70 ? "moderate" : "noisy",
+            level: score > 85 ? 'quiet' : score > 70 ? 'moderate' : 'noisy',
             db: Math.floor(Math.random() * 20) + 45, // 45-65 dB arası
         };
     }
@@ -2639,7 +2532,7 @@ class EnvironmentAnalyzer {
         const score = Math.floor(Math.random() * 25) + 75; // 75-100 arası
         return {
             score,
-            level: score > 90 ? "excellent" : score > 75 ? "good" : "moderate",
+            level: score > 90 ? 'excellent' : score > 75 ? 'good' : 'moderate',
             parks: Math.floor(Math.random() * 3) + 2, // 2-4 park
             trees: Math.floor(Math.random() * 50) + 100, // 100-150 ağaç
         };
@@ -2660,19 +2553,15 @@ class InvestmentAnalyzer {
                 potential,
                 valueIncrease,
                 risk,
-                recommendation: this.generateRecommendation(
-                    potential,
-                    valueIncrease,
-                    risk,
-                ),
+                recommendation: this.generateRecommendation(potential, valueIncrease, risk),
             };
         } catch (error) {
-            console.error("Yatırım analizi hatası:", error);
+            console.error('Yatırım analizi hatası:', error);
             return {
-                potential: { score: 0, level: "unknown" },
+                potential: { score: 0, level: 'unknown' },
                 valueIncrease: 0,
-                risk: { score: 0, level: "unknown" },
-                recommendation: "Veri yetersiz",
+                risk: { score: 0, level: 'unknown' },
+                recommendation: 'Veri yetersiz',
             };
         }
     }
@@ -2682,11 +2571,11 @@ class InvestmentAnalyzer {
         const score = Math.floor(Math.random() * 35) + 65; // 65-100 arası
         return {
             score,
-            level: score > 85 ? "excellent" : score > 70 ? "good" : "moderate",
+            level: score > 85 ? 'excellent' : score > 70 ? 'good' : 'moderate',
             factors: {
-                location: score > 80 ? "Prime" : "Good",
-                development: score > 75 ? "High" : "Medium",
-                demand: score > 70 ? "High" : "Medium",
+                location: score > 80 ? 'Prime' : 'Good',
+                development: score > 75 ? 'High' : 'Medium',
+                demand: score > 70 ? 'High' : 'Medium',
             },
         };
     }
@@ -2701,26 +2590,22 @@ class InvestmentAnalyzer {
         const score = Math.floor(Math.random() * 20) + 20; // 20-40 arası (düşük risk)
         return {
             score,
-            level: score < 30 ? "low" : score < 40 ? "medium" : "high",
+            level: score < 30 ? 'low' : score < 40 ? 'medium' : 'high',
             factors: {
-                market: "Stable",
-                location: "Safe",
-                economic: "Growing",
+                market: 'Stable',
+                location: 'Safe',
+                economic: 'Growing',
             },
         };
     }
 
     generateRecommendation(potential, valueIncrease, risk) {
         if (potential.score > 80 && valueIncrease > 8 && risk.score < 30) {
-            return "Yüksek yatırım potansiyeli - Önerilir";
-        } else if (
-            potential.score > 70 &&
-            valueIncrease > 6 &&
-            risk.score < 40
-        ) {
-            return "Orta yatırım potansiyeli - Dikkatli değerlendirin";
+            return 'Yüksek yatırım potansiyeli - Önerilir';
+        } else if (potential.score > 70 && valueIncrease > 6 && risk.score < 40) {
+            return 'Orta yatırım potansiyeli - Dikkatli değerlendirin';
         } else {
-            return "Düşük yatırım potansiyeli - Riskli";
+            return 'Düşük yatırım potansiyeli - Riskli';
         }
     }
 }
@@ -2735,26 +2620,23 @@ class PropertyInsightsGenerator {
                 marketTrend: await this.analyzeMarketTrend(lat, lng),
                 pricePrediction: await this.predictPriceTrend(lat, lng),
                 bestTimeToSell: await this.calculateBestSellTime(lat, lng),
-                neighborhoodGrowth: await this.analyzeNeighborhoodGrowth(
-                    lat,
-                    lng,
-                ),
+                neighborhoodGrowth: await this.analyzeNeighborhoodGrowth(lat, lng),
             };
 
             return insights;
         } catch (error) {
-            console.error("Emlak öngörüleri hatası:", error);
+            console.error('Emlak öngörüleri hatası:', error);
             return null;
         }
     }
 
     async analyzeMarketTrend(lat, lng) {
         // Mock analiz
-        const trends = ["Yükseliş", "Düşüş", "Sabit"];
+        const trends = ['Yükseliş', 'Düşüş', 'Sabit'];
         return {
             current: trends[Math.floor(Math.random() * trends.length)],
             confidence: Math.floor(Math.random() * 30) + 70, // 70-100 arası
-            factors: ["Turizm sektörü", "Altyapı gelişmeleri", "Nüfus artışı"],
+            factors: ['Turizm sektörü', 'Altyapı gelişmeleri', 'Nüfus artışı'],
         };
     }
 
@@ -2769,17 +2651,10 @@ class PropertyInsightsGenerator {
 
     async calculateBestSellTime(lat, lng) {
         // Mock hesaplama
-        const months = [
-            "Mart",
-            "Nisan",
-            "Mayıs",
-            "Haziran",
-            "Temmuz",
-            "Ağustos",
-        ];
+        const months = ['Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos'];
         return {
             bestMonth: months[Math.floor(Math.random() * months.length)],
-            reason: "Turizm sezonu ve yaz aylarında talep artışı",
+            reason: 'Turizm sezonu ve yaz aylarında talep artışı',
             confidence: Math.floor(Math.random() * 20) + 80, // 80-100 arası
         };
     }
@@ -2789,11 +2664,7 @@ class PropertyInsightsGenerator {
         return {
             populationGrowth: Math.floor(Math.random() * 5) + 2, // %2-7 artış
             newDevelopments: Math.floor(Math.random() * 3) + 1, // 1-3 yeni proje
-            infrastructure: [
-                "Yeni okul",
-                "Hastane genişletme",
-                "Yol iyileştirme",
-            ],
+            infrastructure: ['Yeni okul', 'Hastane genişletme', 'Yol iyileştirme'],
         };
     }
 }
@@ -2812,11 +2683,7 @@ class LocationScoreCalculator {
             };
 
             const overall = Math.round(
-                (scores.accessibility +
-                    scores.amenities +
-                    scores.safety +
-                    scores.investment) /
-                    4,
+                (scores.accessibility + scores.amenities + scores.safety + scores.investment) / 4
             );
 
             return {
@@ -2825,8 +2692,8 @@ class LocationScoreCalculator {
                 grade: this.getGrade(overall),
             };
         } catch (error) {
-            console.error("Lokasyon puanı hesaplama hatası:", error);
-            return { overall: 0, grade: "F" };
+            console.error('Lokasyon puanı hesaplama hatası:', error);
+            return { overall: 0, grade: 'F' };
         }
     }
 
@@ -2851,38 +2718,35 @@ class LocationScoreCalculator {
     }
 
     getGrade(score) {
-        if (score >= 95) return "A+";
-        if (score >= 90) return "A";
-        if (score >= 85) return "A-";
-        if (score >= 80) return "B+";
-        if (score >= 75) return "B";
-        if (score >= 70) return "B-";
-        if (score >= 65) return "C+";
-        if (score >= 60) return "C";
-        if (score >= 55) return "C-";
-        if (score >= 50) return "D";
-        return "F";
+        if (score >= 95) return 'A+';
+        if (score >= 90) return 'A';
+        if (score >= 85) return 'A-';
+        if (score >= 80) return 'B+';
+        if (score >= 75) return 'B';
+        if (score >= 70) return 'B-';
+        if (score >= 65) return 'C+';
+        if (score >= 60) return 'C';
+        if (score >= 55) return 'C-';
+        if (score >= 50) return 'D';
+        return 'F';
     }
 }
 
 // ============ AUTO-INITIALIZE ============
 
 // Auto-initialize if not already done
-if (typeof window !== "undefined" && !window.EmlakLoc) {
+if (typeof window !== 'undefined' && !window.EmlakLoc) {
     window.EmlakLoc = EmlakLoc;
 }
 
 // Global helper functions
-if (typeof window !== "undefined") {
+if (typeof window !== 'undefined') {
     window.selectAddressResult = function (element) {
-        if (
-            window.emlakLoc &&
-            typeof window.emlakLoc.selectAddressResult === "function"
-        ) {
+        if (window.emlakLoc && typeof window.emlakLoc.selectAddressResult === 'function') {
             window.emlakLoc.selectAddressResult(element);
         } else {
             console.warn(
-                "emlakLoc.selectAddressResult mevcut değil; sonuç doğrudan koordinatlarla işlenecek",
+                'emlakLoc.selectAddressResult mevcut değil; sonuç doğrudan koordinatlarla işlenecek'
             );
             // Basit fallback: dataset'ten koordinatları al ve haritayı güncelle
             const lat = parseFloat(element?.dataset?.lat || 0);
@@ -2898,7 +2762,7 @@ if (typeof window !== "undefined") {
 window.emlakLoc = {
     // Form Wizard Step 3 Integration
     initializeFormWizardStep3() {
-        console.log("🏡 Form Wizard Step 3 - EmlakLoc v4.1.0 initializing...");
+        console.log('🏡 Form Wizard Step 3 - EmlakLoc v4.1.0 initializing...');
 
         // Initialize map
         this.initializeMap();
@@ -2912,35 +2776,35 @@ window.emlakLoc = {
 
     // AI Search Function
     async aiSearch(query) {
-        console.log("🤖 AI Search:", query);
+        console.log('🤖 AI Search:', query);
         // Implementation here
     },
 
     // Voice Search Function
     startVoiceSearch() {
-        console.log("🎤 Starting voice search...");
+        console.log('🎤 Starting voice search...');
         // Implementation here
     },
 
     // Image Analysis Function
     analyzeLocationImage(file) {
-        console.log("📷 Analyzing location image:", file);
+        console.log('📷 Analyzing location image:', file);
         // Implementation here
     },
 
     // Load districts based on province
     loadIlceler(ilId) {
-        console.log("🏘️ Loading districts for province:", ilId);
-        console.log("🔍 DEBUG: loadIlceler function called with ilId:", ilId);
+        console.log('🏘️ Loading districts for province:', ilId);
+        console.log('🔍 DEBUG: loadIlceler function called with ilId:', ilId);
 
-        const ilceSelect = document.getElementById("ilce_id");
-        const mahalleSelect = document.getElementById("mahalle_id");
+        const ilceSelect = document.getElementById('ilce_id');
+        const mahalleSelect = document.getElementById('mahalle_id');
 
-        console.log("🔍 DEBUG: ilceSelect found:", !!ilceSelect);
-        console.log("🔍 DEBUG: mahalleSelect found:", !!mahalleSelect);
+        console.log('🔍 DEBUG: ilceSelect found:', !!ilceSelect);
+        console.log('🔍 DEBUG: mahalleSelect found:', !!mahalleSelect);
 
         if (!ilceSelect) {
-            console.error("❌ İlçe select elementi bulunamadı!");
+            console.error('❌ İlçe select elementi bulunamadı!');
             return;
         }
 
@@ -2955,7 +2819,7 @@ window.emlakLoc = {
         }
 
         if (!ilId) {
-            console.warn("İl ID boş");
+            console.warn('İl ID boş');
             return;
         }
 
@@ -2964,52 +2828,37 @@ window.emlakLoc = {
 
         // Make API call
         console.log(
-            "🔍 DEBUG: Starting API call to /api/address/districts with province_id:",
-            ilId,
+            '🔍 DEBUG: Starting API call to /api/address/districts with province_id:',
+            ilId
         );
 
         fetch(`/api/address/districts?province_id=${ilId}`, {
-            method: "GET",
+            method: 'GET',
             headers: {
-                Accept: "application/json",
-                "X-Requested-With": "XMLHttpRequest",
+                Accept: 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
             },
         })
             .then((response) => {
-                console.log(
-                    "🔍 DEBUG: API response status:",
-                    response.status,
-                    response.ok,
-                );
+                console.log('🔍 DEBUG: API response status:', response.status, response.ok);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 return response.json();
             })
             .then((data) => {
-                console.log("🔍 DEBUG: API response data:", data);
-                console.log("İlçeler API yanıtı:", data);
+                console.log('🔍 DEBUG: API response data:', data);
+                console.log('İlçeler API yanıtı:', data);
 
                 // Clear loading
                 ilceSelect.innerHTML = '<option value="">İlçe seçin</option>';
 
-                if (
-                    data.success &&
-                    data.districts &&
-                    data.districts.length > 0
-                ) {
-                    console.log(
-                        "🔍 DEBUG: Processing",
-                        data.districts.length,
-                        "districts",
-                    );
+                if (data.success && data.districts && data.districts.length > 0) {
+                    console.log('🔍 DEBUG: Processing', data.districts.length, 'districts');
 
                     data.districts.forEach((district, index) => {
-                        console.log(
-                            `🔍 DEBUG: Adding district ${index + 1}:`,
-                            district,
-                        );
-                        const option = document.createElement("option");
+                        console.log(`🔍 DEBUG: Adding district ${index + 1}:`, district);
+                        const option = document.createElement('option');
                         option.value = district.id;
                         option.textContent = district.name || district.ilce_adi;
                         ilceSelect.appendChild(option);
@@ -3018,23 +2867,20 @@ window.emlakLoc = {
                     ilceSelect.disabled = false;
                     console.log(`✅ ${data.districts.length} ilçe yüklendi`);
                     console.log(
-                        "🔍 DEBUG: ilceSelect options after population:",
-                        ilceSelect.options.length,
+                        '🔍 DEBUG: ilceSelect options after population:',
+                        ilceSelect.options.length
                     );
 
                     // Force DOM update
-                    ilceSelect.dispatchEvent(
-                        new Event("change", { bubbles: true }),
-                    );
+                    ilceSelect.dispatchEvent(new Event('change', { bubbles: true }));
                 } else {
-                    console.log("🔍 DEBUG: No districts found or API error");
-                    ilceSelect.innerHTML =
-                        '<option value="">Bu ile ait ilçe bulunamadı</option>';
-                    console.warn("İlçe bulunamadı veya API hatası");
+                    console.log('🔍 DEBUG: No districts found or API error');
+                    ilceSelect.innerHTML = '<option value="">Bu ile ait ilçe bulunamadı</option>';
+                    console.warn('İlçe bulunamadı veya API hatası');
                 }
             })
             .catch((error) => {
-                console.error("İlçe yükleme hatası:", error);
+                console.error('İlçe yükleme hatası:', error);
                 ilceSelect.innerHTML = '<option value="">Hata oluştu</option>';
                 ilceSelect.disabled = true;
             });
@@ -3042,12 +2888,12 @@ window.emlakLoc = {
 
     // Load neighborhoods based on district
     loadMahalleler(ilceId) {
-        console.log("🏠 Loading neighborhoods for district:", ilceId);
+        console.log('🏠 Loading neighborhoods for district:', ilceId);
 
-        const mahalleSelect = document.getElementById("mahalle_id");
+        const mahalleSelect = document.getElementById('mahalle_id');
 
         if (!mahalleSelect) {
-            console.warn("Mahalle select elementi bulunamadı");
+            console.warn('Mahalle select elementi bulunamadı');
             return;
         }
 
@@ -3056,7 +2902,7 @@ window.emlakLoc = {
         mahalleSelect.disabled = true;
 
         if (!ilceId) {
-            console.warn("İlçe ID boş");
+            console.warn('İlçe ID boş');
             return;
         }
 
@@ -3065,10 +2911,10 @@ window.emlakLoc = {
 
         // Make API call
         fetch(`/api/address/neighborhoods?district_id=${ilceId}`, {
-            method: "GET",
+            method: 'GET',
             headers: {
-                Accept: "application/json",
-                "X-Requested-With": "XMLHttpRequest",
+                Accept: 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
             },
         })
             .then((response) => {
@@ -3078,59 +2924,50 @@ window.emlakLoc = {
                 return response.json();
             })
             .then((data) => {
-                console.log("Mahalleler API yanıtı:", data);
+                console.log('Mahalleler API yanıtı:', data);
 
                 // Clear loading
-                mahalleSelect.innerHTML =
-                    '<option value="">Mahalle seçin (isteğe bağlı)</option>';
+                mahalleSelect.innerHTML = '<option value="">Mahalle seçin (isteğe bağlı)</option>';
 
-                if (
-                    data.success &&
-                    data.neighborhoods &&
-                    data.neighborhoods.length > 0
-                ) {
+                if (data.success && data.neighborhoods && data.neighborhoods.length > 0) {
                     data.neighborhoods.forEach((neighborhood) => {
-                        const option = document.createElement("option");
+                        const option = document.createElement('option');
                         option.value = neighborhood.id;
-                        option.textContent =
-                            neighborhood.name || neighborhood.mahalle_adi;
+                        option.textContent = neighborhood.name || neighborhood.mahalle_adi;
                         mahalleSelect.appendChild(option);
                     });
 
                     mahalleSelect.disabled = false;
-                    console.log(
-                        `✅ ${data.neighborhoods.length} mahalle yüklendi`,
-                    );
+                    console.log(`✅ ${data.neighborhoods.length} mahalle yüklendi`);
                 } else {
                     mahalleSelect.innerHTML =
                         '<option value="">Bu ilçeye ait mahalle bulunamadı</option>';
-                    console.warn("Mahalle bulunamadı veya API hatası");
+                    console.warn('Mahalle bulunamadı veya API hatası');
                     mahalleSelect.disabled = false; // Mahalle optional olduğu için disabled bırakma
                 }
             })
             .catch((error) => {
-                console.error("Mahalle yükleme hatası:", error);
-                mahalleSelect.innerHTML =
-                    '<option value="">Hata oluştu</option>';
+                console.error('Mahalle yükleme hatası:', error);
+                mahalleSelect.innerHTML = '<option value="">Hata oluştu</option>';
                 mahalleSelect.disabled = false; // Mahalle optional olduğu için disabled bırakma
             });
     },
 
     // Update coordinates from mahalle selection
     updateCoordinatesFromMahalle(mahalleId) {
-        console.log("📍 Updating coordinates from mahalle:", mahalleId);
+        console.log('📍 Updating coordinates from mahalle:', mahalleId);
 
         if (!mahalleId) {
-            console.warn("Mahalle ID boş");
+            console.warn('Mahalle ID boş');
             return;
         }
 
         // Make API call to get coordinates
         fetch(`/api/address/coordinates?mahalle_id=${mahalleId}`, {
-            method: "GET",
+            method: 'GET',
             headers: {
-                Accept: "application/json",
-                "X-Requested-With": "XMLHttpRequest",
+                Accept: 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
             },
         })
             .then((response) => {
@@ -3140,99 +2977,90 @@ window.emlakLoc = {
                 return response.json();
             })
             .then((data) => {
-                console.log("Koordinat API yanıtı:", data);
+                console.log('Koordinat API yanıtı:', data);
 
                 if (data.success && data.data) {
                     const { latitude, longitude } = data.data;
 
                     // Update coordinate inputs if they exist
-                    const latInput = document.getElementById("latitude");
-                    const lngInput = document.getElementById("longitude");
+                    const latInput = document.getElementById('latitude');
+                    const lngInput = document.getElementById('longitude');
 
                     if (latInput) latInput.value = latitude;
                     if (lngInput) lngInput.value = longitude;
 
                     // Update map if it exists and is initialized
-                    if (
-                        window.mapInstance &&
-                        typeof window.updateMap === "function"
-                    ) {
+                    if (window.mapInstance && typeof window.updateMap === 'function') {
                         window.updateMap(latitude, longitude);
                     }
 
-                    console.log(
-                        `✅ Koordinatlar güncellendi: ${latitude}, ${longitude}`,
-                    );
+                    console.log(`✅ Koordinatlar güncellendi: ${latitude}, ${longitude}`);
                 } else {
-                    console.warn("Koordinat bilgisi alınamadı");
+                    console.warn('Koordinat bilgisi alınamadı');
                 }
             })
             .catch((error) => {
-                console.error("Koordinat yükleme hatası:", error);
+                console.error('Koordinat yükleme hatası:', error);
             });
     },
 
     // 3D View Toggle
     toggle3DView() {
-        console.log("🌍 Toggling 3D view...");
+        console.log('🌍 Toggling 3D view...');
         // Implementation here
     },
 
     // AR Mode Toggle
     toggleARMode() {
-        console.log("🥽 Toggling AR mode...");
+        console.log('🥽 Toggling AR mode...');
         // Implementation here
     },
 
     // Share Location
     shareLocation() {
-        console.log("📤 Sharing location...");
+        console.log('📤 Sharing location...');
         // Implementation here
     },
 
     // Initialize Map
     initializeMap() {
-        console.log("🗺️ Initializing advanced map system...");
+        console.log('🗺️ Initializing advanced map system...');
         // Remove loading overlay after initialization
         setTimeout(() => {
-            const loading = document.getElementById("map-loading");
-            if (loading) loading.style.display = "none";
+            const loading = document.getElementById('map-loading');
+            if (loading) loading.style.display = 'none';
         }, 2000);
     },
 
     // Setup cascade dropdowns
     setupCascadeDropdowns() {
-        console.log("🔗 Setting up cascade dropdowns...");
+        console.log('🔗 Setting up cascade dropdowns...');
 
         // Find all possible il/il selectors
-        const ilSelect =
-            document.getElementById("il_id") ||
-            document.getElementById("il_id");
-        const ilceSelect = document.getElementById("ilce_id");
-        const mahalleSelect = document.getElementById("mahalle_id");
+        const ilSelect = document.getElementById('il_id') || document.getElementById('il_id');
+        const ilceSelect = document.getElementById('ilce_id');
+        const mahalleSelect = document.getElementById('mahalle_id');
 
         if (!ilSelect) {
-            console.warn("İl/Şehir select elementi bulunamadı");
+            console.warn('İl/Şehir select elementi bulunamadı');
             return;
         }
 
         // İl değiştiğinde ilçeleri yükle
-        ilSelect.addEventListener("change", (e) => {
+        ilSelect.addEventListener('change', (e) => {
             const ilId = e.target.value;
-            console.log("İl değişti:", ilId);
+            console.log('İl değişti:', ilId);
 
             if (ilId) {
                 this.loadIlceler(ilId);
             } else {
                 // İl seçimi kaldırıldıysa ilçe ve mahalleleri temizle
                 if (ilceSelect) {
-                    ilceSelect.innerHTML =
-                        '<option value="">Önce il seç</option>';
+                    ilceSelect.innerHTML = '<option value="">Önce il seç</option>';
                     ilceSelect.disabled = true;
                 }
                 if (mahalleSelect) {
-                    mahalleSelect.innerHTML =
-                        '<option value="">Önce ilçe seç</option>';
+                    mahalleSelect.innerHTML = '<option value="">Önce ilçe seç</option>';
                     mahalleSelect.disabled = true;
                 }
             }
@@ -3240,17 +3068,16 @@ window.emlakLoc = {
 
         // İlçe değiştiğinde mahalleleri yükle
         if (ilceSelect) {
-            ilceSelect.addEventListener("change", (e) => {
+            ilceSelect.addEventListener('change', (e) => {
                 const ilceId = e.target.value;
-                console.log("İlçe değişti:", ilceId);
+                console.log('İlçe değişti:', ilceId);
 
                 if (ilceId) {
                     this.loadMahalleler(ilceId);
                 } else {
                     // İlçe seçimi kaldırıldıysa mahalleleri temizle
                     if (mahalleSelect) {
-                        mahalleSelect.innerHTML =
-                            '<option value="">Önce ilçe seç</option>';
+                        mahalleSelect.innerHTML = '<option value="">Önce ilçe seç</option>';
                         mahalleSelect.disabled = true;
                     }
                 }
@@ -3259,9 +3086,9 @@ window.emlakLoc = {
 
         // Mahalle değiştiğinde koordinatları güncelle
         if (mahalleSelect) {
-            mahalleSelect.addEventListener("change", (e) => {
+            mahalleSelect.addEventListener('change', (e) => {
                 const mahalleId = e.target.value;
-                console.log("Mahalle değişti:", mahalleId);
+                console.log('Mahalle değişti:', mahalleId);
 
                 if (mahalleId) {
                     this.updateCoordinatesFromMahalle(mahalleId);
@@ -3269,56 +3096,44 @@ window.emlakLoc = {
             });
         }
 
-        console.log("✅ Cascade dropdowns kuruldu");
+        console.log('✅ Cascade dropdowns kuruldu');
     },
 
     // Initialize AI features
     initializeAIFeatures() {
-        console.log("🤖 Initializing AI features...");
+        console.log('🤖 Initializing AI features...');
         // Show nearby analysis when location is selected
         setTimeout(() => {
-            const nearbyAnalysis = document.getElementById("nearby-analysis");
+            const nearbyAnalysis = document.getElementById('nearby-analysis');
             if (nearbyAnalysis) {
-                nearbyAnalysis.style.display = "block";
+                nearbyAnalysis.style.display = 'block';
             }
         }, 3000);
     },
 };
 
 console.log(
-    "\u2705 EmlakLoc v4.1.0 - Form Wizard Integration ba\u015far\u0131yla y\u00fckklendi! \ud83d\ude80",
+    '\u2705 EmlakLoc v4.1.0 - Form Wizard Integration ba\u015far\u0131yla y\u00fckklendi! \ud83d\ude80'
 );
 
 // Auto-initialize when DOM is ready
-document.addEventListener("DOMContentLoaded", function () {
-    console.log("\ud83c\udfe1 EmlakLoc v4.1.0 DOM ready, initializing...");
+document.addEventListener('DOMContentLoaded', function () {
+    console.log('\ud83c\udfe1 EmlakLoc v4.1.0 DOM ready, initializing...');
 
     // Check if we're on the form wizard page
-    const formWizardContainer = document.querySelector(
-        ".form-wizard-container, .step-4, #step-4",
-    );
-    const locationInputs = document.querySelector(
-        "#il_id, #il_id, #ilce_id, #mahalle_id",
-    );
+    const formWizardContainer = document.querySelector('.form-wizard-container, .step-4, #step-4');
+    const locationInputs = document.querySelector('#il_id, #il_id, #ilce_id, #mahalle_id');
 
     if (formWizardContainer || locationInputs) {
-        console.log(
-            "\ud83d\udd0d Form wizard detected, setting up EmlakLoc integration...",
-        );
+        console.log('\ud83d\udd0d Form wizard detected, setting up EmlakLoc integration...');
 
         // Initialize Form Wizard Step 3 (location step)
-        if (
-            window.emlakLoc &&
-            typeof window.emlakLoc.initializeFormWizardStep3 === "function"
-        ) {
+        if (window.emlakLoc && typeof window.emlakLoc.initializeFormWizardStep3 === 'function') {
             window.emlakLoc.initializeFormWizardStep3();
         }
 
         // Setup cascade dropdowns
-        if (
-            window.emlakLoc &&
-            typeof window.emlakLoc.setupCascadeDropdowns === "function"
-        ) {
+        if (window.emlakLoc && typeof window.emlakLoc.setupCascadeDropdowns === 'function') {
             window.emlakLoc.setupCascadeDropdowns();
         }
     }

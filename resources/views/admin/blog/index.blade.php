@@ -273,26 +273,6 @@
 @endsection
 
 @push('styles')
-    <style>
-        /* Modern Dashboard Styles */
-        .btn-modern {
-            @apply inline-flex items-center px-6 py-3 rounded-xl font-semibold transition-all duration-200 transform hover:scale-105 active:scale-95 shadow-lg;
-        }
-
-        .btn-modern-primary {
-            @apply bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 shadow-blue-500/25;
-        }
-
-        .btn-modern-secondary {
-            @apply bg-gradient-to-r from-gray-600 to-gray-700 text-white hover:from-gray-700 hover:to-gray-800 shadow-gray-500/25;
-        }
-
-        .btn-sm {
-            @apply px-4 py-2 text-sm;
-        }
-
-        .stat-card {
-            @apply bg-white rounded-xl shadow-md border border-gray-100 p-6 hover:shadow-lg transition-shadow duration-200;
-        }
-    </style>
+    {{-- ✅ DUPLICATE REMOVED: Common styles moved to resources/css/admin/common-styles.css --}}
+    {{-- Bu sayfada sadece sayfa-spesifik stiller varsa buraya eklenebilir --}}
 @endpush

@@ -127,10 +127,10 @@ Response:
 
 **Açıklama:**
 
--   `temperature: 0.7` → Dengeli yaratıcılık
--   `top_k: 40` → En iyi 40 token'dan seç
--   `top_p: 0.9` → %90 probability mass
--   `num_predict: 80` → Max 80 token (başlık için yeterli)
+- `temperature: 0.7` → Dengeli yaratıcılık
+- `top_k: 40` → En iyi 40 token'dan seç
+- `top_p: 0.9` → %90 probability mass
+- `num_predict: 80` → Max 80 token (başlık için yeterli)
 
 ### **İlan Açıklaması Üretimi:**
 
@@ -146,8 +146,8 @@ Response:
 
 **Açıklama:**
 
--   `temperature: 0.8` → Daha yaratıcı
--   `num_predict: 400` → 200-250 kelime için yeterli
+- `temperature: 0.8` → Daha yaratıcı
+- `num_predict: 400` → 200-250 kelime için yeterli
 
 ### **Analiz ve Skorlama:**
 
@@ -163,8 +163,8 @@ Response:
 
 **Açıklama:**
 
--   `temperature: 0.3` → Daha deterministik, tutarlı
--   Analiz için düşük temperature optimal
+- `temperature: 0.3` → Daha deterministik, tutarlı
+- Analiz için düşük temperature optimal
 
 ---
 
@@ -336,9 +336,7 @@ function fallbackDescription(data) {
     return `${
         data.lokasyon
     } bölgesinde ${data.yayin_tipi.toLowerCase()} ${data.kategori.toLowerCase()}. 
-          ${data.metrekare} m² kullanım alanı. Fiyat: ${data.fiyat} ${
-        data.para_birimi
-    }.`;
+          ${data.metrekare} m² kullanım alanı. Fiyat: ${data.fiyat} ${data.para_birimi}.`;
 }
 ```
 
@@ -397,16 +395,16 @@ Query: "status yasak mı"
 
 ### **Final Production Checklist:**
 
--   [ ] Ollama server stable (uptime >99%)
--   [ ] gemma2:2b model güncel
--   [ ] AnythingLLM workspace hazır
--   [ ] Tüm dokümanlar embedded
--   [ ] System prompt optimize
--   [ ] 10 test sorusu PASSED
--   [ ] Performance <3s
--   [ ] Error handling test edildi
--   [ ] Fallback test edildi
--   [ ] User training yapıldı
+- [ ] Ollama server stable (uptime >99%)
+- [ ] gemma2:2b model güncel
+- [ ] AnythingLLM workspace hazır
+- [ ] Tüm dokümanlar embedded
+- [ ] System prompt optimize
+- [ ] 10 test sorusu PASSED
+- [ ] Performance <3s
+- [ ] Error handling test edildi
+- [ ] Fallback test edildi
+- [ ] User training yapıldı
 
 ---
 

@@ -3,7 +3,7 @@
 @section('title', 'AI Monitoring Dashboard')
 
 @section('content')
-    <div class="container mx-auto mx-auto p-6" x-data="monitorUI()" x-init="init()">
+    <div class="container mx-auto p-6" x-data="monitorUI()" x-init="init()">
         <!-- Header -->
         <div class="flex items-center justify-between mb-4">
             <div class="flex items-center gap-3">
@@ -14,7 +14,7 @@
                 <div class="flex items-center gap-2">
                     <span class="text-sm">Genel Durum:</span>
                     <span :class="overallBadgeClass()"
-                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium rounded-lg px-2 py-1 text-xs transition-all duration-300">
+                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium transition-all duration-300">
                         <span x-show="overall?.level === 'green'">🟢 İyi</span>
                         <span x-show="overall?.level === 'yellow'">🟡 Uyarı</span>
                         <span x-show="overall?.level === 'red'">🔴 Kritik</span>
@@ -23,23 +23,31 @@
                 </div>
                 <div class="hidden md:flex items-center gap-2">
                     <label class="text-xs flex items-center gap-1">
-                        <input type="checkbox" x-model="autoRefresh" class="w-5 h-5 text-blue-600 bg-gray-50 dark:bg-gray-800 border-gray-300 dark:border-gray-600 rounded focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-all duration-200 cursor-pointer h-3.5 w-3.5" />
+                        <input type="checkbox" x-model="autoRefresh"
+                            class="w-4 h-4 text-blue-600 bg-gray-50 dark:bg-gray-800 border-gray-300 dark:border-gray-600 rounded focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-all duration-200 cursor-pointer"
+                            aria-label="Otomatik yenilemeyi aç/kapat" />
                         Otomatik
                     </label>
-                    <select style="color-scheme: light dark;" x-model.number="refreshInterval" class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 h-7 text-xs transition-all duration-200">
+                    <select style="color-scheme: light dark;" x-model.number="refreshInterval"
+                        class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 h-7 text-xs transition-all duration-200">
                         <option :value="15000">15s</option>
                         <option :value="30000">30s</option>
                         <option :value="60000">60s</option>
                     </select>
                     <span class="text-xs text-gray-500" x-show="lastUpdated" x-text="'Son: ' + lastUpdated"></span>
                 </div>
-                <button @click="refreshAll()" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg text-xs touch-target-optimized touch-target-optimized">Yenile</button>
+                <button @click="refreshAll()"
+                    class="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 shadow-md hover:shadow-lg text-xs dark:bg-blue-700 dark:hover:bg-blue-800"
+                    aria-label="Tüm verileri yenile">
+                    Yenile
+                </button>
             </div>
         </div>
 
         <!-- Overview + Mini Usage Chart -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-            <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800 p-4 lg:col-span-2">
+            <div
+                class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800 p-4 lg:col-span-2">
                 <div class="grid grid-cols-4 gap-4">
                     <div
                         class="bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg p-3 transition-all duration-300 hover:shadow-md">
@@ -92,10 +100,15 @@
                     </div>
                 </div>
             </div>
-            <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800 p-4">
+            <div
+                class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800 p-4">
                 <div class="flex items-center justify-between mb-2">
                     <h2 class="font-semibold">MCP Kullanım Mini-Chart</h2>
-                    <button @click="refreshMcp()" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 bg-white text-gray-700 rounded-lg hover:bg-gray-50 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-gray-500 transition-all duration-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700 text-xs touch-target-optimized touch-target-optimized">Yenile</button>
+                    <button @click="refreshMcp()"
+                        class="inline-flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 bg-white text-gray-700 rounded-lg hover:bg-gray-50 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-all duration-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700 text-xs"
+                        aria-label="MCP kullanımını yenile">
+                        Yenile
+                    </button>
                 </div>
                 <div class="space-y-2" x-show="overall?.mcp_usage">
                     <template x-for="[key, count] in sortedUsage()" :key="key">
@@ -119,10 +132,15 @@
         <!-- MCP + API -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- MCP Table -->
-            <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800 p-4">
+            <div
+                class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800 p-4">
                 <div class="flex items-center justify-between mb-2">
                     <h2 class="font-semibold">MCP Server Durumu</h2>
-                    <button @click="refreshMcp()" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 bg-white text-gray-700 rounded-lg hover:bg-gray-50 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-gray-500 transition-all duration-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700 text-xs touch-target-optimized touch-target-optimized">Yenile</button>
+                    <button @click="refreshMcp()"
+                        class="inline-flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 bg-white text-gray-700 rounded-lg hover:bg-gray-50 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-all duration-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700 text-xs"
+                        aria-label="MCP kullanımını yenile">
+                        Yenile
+                    </button>
                 </div>
                 <div class="overflow-x-auto">
                     <!-- Skeleton Loader -->
@@ -162,15 +180,19 @@
             </div>
 
             <!-- API Health -->
-            <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800 p-4">
+            <div
+                class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800 p-4">
                 <div class="flex items-center justify-between mb-2">
                     <h2 class="font-semibold">API Health Check</h2>
-                    <button @click="refreshApis()" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 bg-white text-gray-700 rounded-lg hover:bg-gray-50 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-gray-500 transition-all duration-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700 text-xs touch-target-optimized touch-target-optimized">Yenile</button>
+                    <button @click="refreshApis()"
+                        class="inline-flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 bg-white text-gray-700 rounded-lg hover:bg-gray-50 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-all duration-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700 text-xs"
+                        aria-label="API durumunu yenile">
+                        Yenile
+                    </button>
                 </div>
                 <ul class="space-y-2">
                     <template x-for="(status, name) in apis" :key="name">
-                        <li
-                            class="flex items-center justify-between text-sm bg-gray-50 rounded-lg px-2 py-1">
+                        <li class="flex items-center justify-between text-sm bg-gray-50 rounded-lg px-2 py-1">
                             <span class="font-mono" x-text="name"></span>
                             <div class="flex items-center gap-2">
                                 <span :class="statusBadgeClass(status?.status)"
@@ -193,7 +215,8 @@
         <!-- Ekosistem Analizi -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
             <!-- Context7 Uyumluluk Durumu -->
-            <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800 p-4">
+            <div
+                class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800 p-4">
                 <div class="flex items-center justify-between mb-2">
                     <h2 class="font-semibold flex items-center gap-2">
                         <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
@@ -203,18 +226,23 @@
                         </svg>
                         Context7 Uyumluluk
                     </h2>
-                    <button @click="refreshCodeHealth()" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 bg-white text-gray-700 rounded-lg hover:bg-gray-50 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-gray-500 transition-all duration-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700 text-xs touch-target-optimized touch-target-optimized">Kontrol Et</button>
+                    <button @click="refreshCodeHealth()"
+                        class="inline-flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 bg-white text-gray-700 rounded-lg hover:bg-gray-50 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-all duration-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700 text-xs"
+                        aria-label="Kod sağlığını kontrol et">
+                        Kontrol Et
+                    </button>
                 </div>
                 <div class="space-y-3">
                     <div class="flex items-center justify-between">
                         <span class="text-sm">Uyumluluk:</span>
-                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium px-2 py-1" :class="complianceBadgeClass()">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                            :class="complianceBadgeClass()">
                             @{{ codeHealth?.compliance_status === 'compliant' ? 'Uyumlu' : 'Uyumsuz' }}
                         </span>
                     </div>
                     <div class="flex items-center justify-between">
                         <span class="text-sm">Sağlık Skoru:</span>
-                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium px-2 py-1"
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
                             :class="codeHealthBadgeClass()">@{{ codeHealth?.health_score ?? 0 }}%</span>
                     </div>
 
@@ -249,8 +277,7 @@
                     </div>
 
                     <!-- Aksiyon Gerekli Uyarısı -->
-                    <div x-show="codeHealth?.action_required"
-                        class="bg-red-50 border border-red-200 rounded-lg p-2 mt-3">
+                    <div x-show="codeHealth?.action_required" class="bg-red-50 border border-red-200 rounded-lg p-2 mt-3">
                         <div class="flex items-center gap-2">
                             <svg class="w-3.5 h-3.5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd"
@@ -264,7 +291,8 @@
             </div>
 
             <!-- Duplike Dosyalar -->
-            <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800 p-4">
+            <div
+                class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800 p-4">
                 <div class="flex items-center justify-between mb-2">
                     <h2 class="font-semibold flex items-center gap-2">
                         <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
@@ -274,7 +302,11 @@
                         </svg>
                         Duplike Dosyalar
                     </h2>
-                    <button @click="refreshDuplicates()" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 bg-white text-gray-700 rounded-lg hover:bg-gray-50 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-gray-500 transition-all duration-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700 text-xs touch-target-optimized touch-target-optimized">Yenile</button>
+                    <button @click="refreshDuplicates()"
+                        class="inline-flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 bg-white text-gray-700 rounded-lg hover:bg-gray-50 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-all duration-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700 text-xs"
+                        aria-label="Duplike dosyaları yenile">
+                        Yenile
+                    </button>
                 </div>
                 <div class="space-y-2 max-h-48 overflow-y-auto">
                     <template x-for="dup in duplicateFiles" :key="dup.name">
@@ -289,7 +321,8 @@
             </div>
 
             <!-- Çakışan Rotalar -->
-            <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800 p-4">
+            <div
+                class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800 p-4">
                 <div class="flex items-center justify-between mb-2">
                     <h2 class="font-semibold flex items-center gap-2">
                         <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
@@ -299,7 +332,11 @@
                         </svg>
                         Rota Çakışmaları
                     </h2>
-                    <button @click="refreshConflicts()" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 bg-white text-gray-700 rounded-lg hover:bg-gray-50 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-gray-500 transition-all duration-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700 text-xs touch-target-optimized touch-target-optimized">Yenile</button>
+                    <button @click="refreshConflicts()"
+                        class="inline-flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 bg-white text-gray-700 rounded-lg hover:bg-gray-50 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-all duration-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700 text-xs"
+                        aria-label="Rota çakışmalarını yenile">
+                        Yenile
+                    </button>
                 </div>
                 <div class="space-y-2 max-h-48 overflow-y-auto">
                     <template x-for="conflict in conflictingRoutes" :key="conflict.uri_methods">
@@ -313,7 +350,8 @@
             </div>
 
             <!-- Sayfa Sağlığı -->
-            <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800 p-4 lg:col-span-3">
+            <div
+                class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800 p-4 lg:col-span-3">
                 <div class="flex items-center justify-between mb-2">
                     <h2 class="font-semibold flex items-center gap-2">
                         <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
@@ -323,7 +361,11 @@
                         </svg>
                         Sayfa Sağlığı
                     </h2>
-                    <button @click="refreshPagesHealth()" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 bg-white text-gray-700 rounded-lg hover:bg-gray-50 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-gray-500 transition-all duration-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700 text-xs touch-target-optimized touch-target-optimized">Yenile</button>
+                    <button @click="refreshPagesHealth()"
+                        class="inline-flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 bg-white text-gray-700 rounded-lg hover:bg-gray-50 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-all duration-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700 text-xs"
+                        aria-label="Sayfa sağlığını yenile">
+                        Yenile
+                    </button>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 w-full text-xs">
@@ -341,8 +383,8 @@
                             <template x-for="row in pagesHealth" :key="row.url">
                                 <tr>
                                     <td class="font-semibold">@{{ row.name }}</td>
-                                    <td class="font-mono text-[11px] max-w-[360px] truncate"
-                                        :title="row.url">@{{ row.url }}</td>
+                                    <td class="font-mono text-[11px] max-w-[360px] truncate" :title="row.url">
+                                        @{{ row.url }}</td>
                                     <td><span :class="statusBadgeClass(row.status)">@{{ row.status }}</span></td>
                                     <td>@{{ row.http_code ?? '—' }}</td>
                                     <td>@{{ row.latency_ms ?? '—' }}ms</td>
@@ -371,12 +413,15 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
             <!-- Context7 Öğretim ve Öneri Paneli -->
             <div x-show="codeHealth?.action_required || codeHealth?.suggestions?.length > 0" class="mt-6">
-                <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800 p-6">
+                <div
+                    class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800 p-6">
                     <div class="flex items-center justify-between mb-4">
                         <h2 class="font-bold text-lg flex items-center gap-2">
                             🎓 Context7 Öğretim ve Öneriler
                         </h2>
-                        <button @click="runContext7Fix()" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg text-sm touch-target-optimized touch-target-optimized">
+                        <button @click="runContext7Fix()"
+                            class="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 shadow-md hover:shadow-lg text-sm dark:bg-blue-700 dark:hover:bg-blue-800"
+                            aria-label="Context7 otomatik düzeltmeyi çalıştır">
                             🔧 Otomatik Düzelt
                         </button>
                     </div>
@@ -445,14 +490,14 @@
                     <div x-show="codeHealth?.suggestions?.length > 0" class="space-y-2">
                         <h3 class="font-semibold text-gray-800 mb-2">💡 Akıllı Öneriler:</h3>
                         <template x-for="(suggestion, index) in (codeHealth?.suggestions || [])" :key="index">
-                            <div
-                                class="flex items-start gap-3 bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+                            <div class="flex items-start gap-3 bg-yellow-50 border border-yellow-200 rounded-lg p-3">
                                 <span class="text-yellow-600 font-bold text-sm">@{{ index + 1 }}.</span>
                                 <div class="flex-1">
                                     <p class="text-sm text-yellow-800">@{{ suggestion }}</p>
                                 </div>
                                 <button @click="applySuggestion(index)"
-                                    class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2-outline inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2-sm text-xs touch-target-optimized touch-target-optimized">
+                                    class="inline-flex items-center justify-center gap-2 px-3 py-1.5 bg-yellow-100 text-yellow-800 rounded-lg hover:bg-yellow-200 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 transition-all duration-200 text-xs dark:bg-yellow-900 dark:text-yellow-200 dark:hover:bg-yellow-800"
+                                    :aria-label="'Öneri ' + (index + 1) + ' uygula'">
                                     Uygula
                                 </button>
                             </div>
@@ -463,23 +508,33 @@
 
             <!-- Logs -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-                <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800 p-4">
+                <div
+                    class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800 p-4">
                     <div class="flex items-center justify-between mb-2">
                         <h2 class="font-semibold">Self-Healing Log (Son 10)</h2>
                         <div class="flex items-center gap-2">
                             <input x-model.trim="filterText" type="text" placeholder="Filtrele..."
-                                class="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200 h-8 text-xs" maxlength="60"
-                                pattern="[a-zA-ZğüşıöçĞÜŞİÖÇ0-9\s\-_]+"
+                                class="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200 h-8 text-xs"
+                                maxlength="60" pattern="[a-zA-ZğüşıöçĞÜŞİÖÇ0-9\s\-_]+"
                                 title="Sadece harf, rakam ve temel karakterler kullanın" />
-                            <button @click="refreshSelf()" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 bg-white text-gray-700 rounded-lg hover:bg-gray-50 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-gray-500 transition-all duration-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700 text-xs touch-target-optimized touch-target-optimized">Yenile</button>
+                            <button @click="refreshSelf()"
+                                class="inline-flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 bg-white text-gray-700 rounded-lg hover:bg-gray-50 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-all duration-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700 text-xs"
+                                aria-label="Self-healing loglarını yenile">
+                                Yenile
+                            </button>
                         </div>
                     </div>
                     <pre class="bg-gray-50 p-2 rounded-lg text-xs overflow-x-auto h-56"><template x-for="(line, idx) in filteredSelfHealing()" :key="idx">@{{ line + '\n' }}</template></pre>
                 </div>
-                <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800 p-4">
+                <div
+                    class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800 p-4">
                     <div class="flex items-center justify-between mb-2">
                         <h2 class="font-semibold">Son 10 Hata</h2>
-                        <button @click="refreshErrors()" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 bg-white text-gray-700 rounded-lg hover:bg-gray-50 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-gray-500 transition-all duration-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700 text-xs touch-target-optimized touch-target-optimized">Yenile</button>
+                        <button @click="refreshErrors()"
+                            class="inline-flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 bg-white text-gray-700 rounded-lg hover:bg-gray-50 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-all duration-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700 text-xs"
+                            aria-label="Hata loglarını yenile">
+                            Yenile
+                        </button>
                     </div>
                     <pre class="bg-gray-50 p-2 rounded-lg text-xs overflow-x-auto h-56"><template x-for="(line, idx) in recentErrors" :key="idx">@{{ line + '\n' }}</template></pre>
                 </div>
@@ -531,8 +586,10 @@
                     },
                     statusBadgeClass(st) {
                         const s = (st || '').toUpperCase();
-                        if (s === 'OK') return 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium rounded-lg px-2 py-0.5 bg-green-200';
-                        if (s === 'ERROR') return 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium rounded-lg px-2 py-0.5 bg-yellow-200';
+                        if (s === 'OK')
+                            return 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium rounded-lg px-2 py-0.5 bg-green-200';
+                        if (s === 'ERROR')
+                            return 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium rounded-lg px-2 py-0.5 bg-yellow-200';
                         return 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium rounded-lg px-2 py-0.5 bg-red-200';
                     },
                     usageWidth(count) {
@@ -827,7 +884,6 @@
                                 return 'text-gray-700';
                             default:
                                 return 'text-gray-600';
-                        }
                     }
                 }
             }

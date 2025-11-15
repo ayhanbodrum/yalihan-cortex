@@ -8,4 +8,3 @@ export YALIHAN_PROJECT_ROOT
 
 # Ana tool'u çalıştır
 exec "$YALIHAN_PROJECT_ROOT/scripts/code-cleanup-tool.sh" "$@"
-

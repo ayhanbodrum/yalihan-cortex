@@ -1,0 +1,43 @@
+{
+    "timestamp": "2025-11-13 14:02:37",
+    "mcp_enabled": false,
+    "mcp_results": [],
+    "unused_classes": [
+        {
+            "class": "CleanDuplicateLocations",
+            "file": "app\/Console\/Commands\/CleanDuplicateLocations.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "SyncMissingNeighborhoods",
+            "file": "app\/Console\/Commands\/SyncMissingNeighborhoods.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "ClearAddressData",
+            "file": "app\/Console\/Commands\/ClearAddressData.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "CleanupSeviye2Categories",
+            "file": "app\/Console\/Commands\/CleanupSeviye2Categories.php",
+            "reason": "Not referenced anywhere"
+        }
+    ],
+    "unused_methods": [],
+    "unused_traits": [],
+    "unused_interfaces": [],
+    "unused_constants": [],
+    "summary": {
+        "total_classes": 359,
+        "used_classes": 1168,
+        "unused_classes": 4,
+        "total_traits": 7,
+        "used_traits": 318,
+        "unused_traits": 0,
+        "total_interfaces": 0,
+        "used_interfaces": 8,
+        "unused_interfaces": 0,
+        "cleanup_opportunity": 4
+    }
+}

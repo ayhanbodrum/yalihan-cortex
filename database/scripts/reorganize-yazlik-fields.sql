@@ -9,7 +9,7 @@
 -- 1️⃣ FİYATLANDIRMA (11 alan)
 UPDATE kategori_yayin_tipi_field_dependencies
 SET field_category = 'fiyatlandirma'
-WHERE kategori_slug = 'yazlik' 
+WHERE kategori_slug = 'yazlik'
 AND field_slug IN (
     'gunluk_fiyat',
     'haftalik_fiyat',
@@ -28,7 +28,7 @@ AND field_slug IN (
 -- 2️⃣ FİZİKSEL ÖZELLİKLER (6 alan)
 UPDATE kategori_yayin_tipi_field_dependencies
 SET field_category = 'fiziksel_ozellikler'
-WHERE kategori_slug = 'yazlik' 
+WHERE kategori_slug = 'yazlik'
 AND field_slug IN (
     'oda_sayisi',
     'banyo_sayisi',
@@ -42,7 +42,7 @@ AND field_slug IN (
 -- 3️⃣ DONANIM & TESİSAT (6 alan)
 UPDATE kategori_yayin_tipi_field_dependencies
 SET field_category = 'donanim_tesisat'
-WHERE kategori_slug = 'yazlik' 
+WHERE kategori_slug = 'yazlik'
 AND field_slug IN (
     'klima',
     'wifi',
@@ -56,7 +56,7 @@ AND field_slug IN (
 -- 4️⃣ DIŞ MEKAN & OLANAKLAR (6 alan)
 UPDATE kategori_yayin_tipi_field_dependencies
 SET field_category = 'dismekan_olanaklar'
-WHERE kategori_slug = 'yazlik' 
+WHERE kategori_slug = 'yazlik'
 AND field_slug IN (
     'havuz',
     'bahce_teras',
@@ -69,7 +69,7 @@ AND field_slug IN (
 -- 5️⃣ YATAK ODASI & KONFOR (3 alan)
 UPDATE kategori_yayin_tipi_field_dependencies
 SET field_category = 'yatak_odasi_konfor'
-WHERE kategori_slug = 'yazlik' 
+WHERE kategori_slug = 'yazlik'
 AND field_slug IN (
     'jakuzi',
     'havlu_carsaf_dahil',
@@ -80,7 +80,7 @@ AND field_slug IN (
 -- 6️⃣ EK HİZMETLER (3 alan)
 UPDATE kategori_yayin_tipi_field_dependencies
 SET field_category = 'ek_hizmetler'
-WHERE kategori_slug = 'yazlik' 
+WHERE kategori_slug = 'yazlik'
 AND field_slug IN (
     'temizlik_servisi',
     'pet_friendly',
@@ -179,7 +179,7 @@ WHERE kategori_slug = 'yazlik' AND field_category = 'ek_hizmetler';
 -- ═══════════════════════════════════════════════════
 
 -- Kategori dağılımı kontrol
-SELECT 
+SELECT
     field_category,
     COUNT(*) as toplam_alan,
     COUNT(DISTINCT field_slug) as benzersiz_alan
@@ -192,4 +192,3 @@ ORDER BY field_category;
 SELECT MAX(`order`) as max_order
 FROM kategori_yayin_tipi_field_dependencies
 WHERE kategori_slug = 'yazlik';
-

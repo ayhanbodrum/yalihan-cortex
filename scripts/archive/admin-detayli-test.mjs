@@ -46,7 +46,7 @@ async function createScreenshotDir() {
 
 async function login(page) {
     console.log('🔐 Admin girişi yapılıyor...\n');
-    
+
     await page.goto(CONFIG.baseUrl + '/login', { waitUntil: 'networkidle2' });
     await page.type('input[name="email"]', CONFIG.loginEmail);
     await page.type('input[name="password"]', CONFIG.loginPassword);
@@ -54,14 +54,14 @@ async function login(page) {
         page.waitForNavigation({ waitUntil: 'networkidle2' }),
         page.click('button[type="submit"]'),
     ]);
-    
+
     console.log('   ✅ Giriş başarılı!\n');
 }
 
 async function testPage(browser, url, linkText, category) {
     const page = await browser.newPage();
     page.setDefaultTimeout(CONFIG.timeout);
-    
+
     const testResult = {
         url,
         linkText,
@@ -72,15 +72,15 @@ async function testPage(browser, url, linkText, category) {
         screenshot: null,
         timestamp: new Date().toISOString(),
     };
-    
+
     try {
         const response = await page.goto(CONFIG.baseUrl + url, {
             waitUntil: 'networkidle2',
             timeout: CONFIG.timeout,
         });
-        
+
         testResult.httpStatus = response.status();
-        
+
         const hasError = await page.evaluate(() => {
             const errorKeywords = [
                 'Exception',
@@ -92,19 +92,19 @@ async function testPage(browser, url, linkText, category) {
                 'Call to undefined',
                 'doesn\'t exist',
             ];
-            
+
             const bodyText = document.body.innerText;
             return errorKeywords.some(keyword => bodyText.includes(keyword));
         });
-        
+
         if (hasError) {
             testResult.status = 'error';
-            
+
             const errorDetails = await page.evaluate(() => {
                 const errorTitle = document.querySelector('title')?.textContent || '';
                 const errorBody = document.querySelector('.exception-message, .error-message')?.textContent || '';
                 const bodyText = document.body.innerText;
-                
+
                 let errorType = 'Unknown';
                 if (bodyText.includes('SQLSTATE[42S02]')) {
                     const match = bodyText.match(/Table '.*?\.(\w+)'/);
@@ -116,43 +116,43 @@ async function testPage(browser, url, linkText, category) {
                     const match = bodyText.match(/Call to undefined (\w+) (.*)/);
                     errorType = `Tanımsız ${match ? match[1] : 'method/function'}`;
                 }
-                
+
                 return { title: errorTitle, body: errorBody.substring(0, 300), type: errorType };
             });
-            
+
             testResult.error = errorDetails;
-            
+
             const screenshotPath = `${CONFIG.screenshotsDir}/${category.replace(/\s/g, '-')}-error-${Date.now()}.png`;
             await page.screenshot({ path: screenshotPath, fullPage: true });
             testResult.screenshot = screenshotPath;
-            
+
             console.log(`   ❌ HATA: ${errorDetails.type}`);
             console.log(`   📸 Screenshot: ${screenshotPath}`);
-            
+
             results.errorCount++;
             results.errors.push(testResult);
         } else {
             testResult.status = 'success';
-            
+
             const screenshotPath = `${CONFIG.screenshotsDir}/${category.replace(/\s/g, '-')}-success-${Date.now()}.png`;
             await page.screenshot({ path: screenshotPath, fullPage: false });
             testResult.screenshot = screenshotPath;
-            
+
             console.log(`   ✅ Başarılı (HTTP ${testResult.httpStatus})`);
-            
+
             results.successCount++;
         }
-        
+
     } catch (error) {
         testResult.status = 'failed';
         testResult.error = { title: error.message, type: 'Connection Error' };
-        
+
         console.log(`   💥 Bağlantı hatası: ${error.message}`);
-        
+
         results.errorCount++;
         results.errors.push(testResult);
     }
-    
+
     await page.close();
     return testResult;
 }
@@ -160,9 +160,9 @@ async function testPage(browser, url, linkText, category) {
 async function generateDetailedReport() {
     let report = `# 🧪 Admin Panel Detaylı Test Raporu
 
-**Test Zamanı:** ${new Date().toLocaleString('tr-TR')}  
-**Toplam Kategori:** ${Object.keys(TEST_PAGES).length}  
-**Toplam Sayfa:** ${results.totalTests}  
+**Test Zamanı:** ${new Date().toLocaleString('tr-TR')}
+**Toplam Kategori:** ${Object.keys(TEST_PAGES).length}
+**Toplam Sayfa:** ${results.totalTests}
 
 ---
 
@@ -185,13 +185,13 @@ async function generateDetailedReport() {
         const categoryTests = pages.length;
         const categorySuccess = pages.filter(p => p.status === 'success').length;
         const categoryErrors = pages.filter(p => p.status === 'error').length;
-        
+
         report += `### ${category}\n\n`;
         report += `- **Toplam:** ${categoryTests}\n`;
         report += `- **Başarılı:** ${categorySuccess} ✅\n`;
         report += `- **Hatalı:** ${categoryErrors} ❌\n`;
         report += `- **Oran:** ${((categorySuccess / categoryTests) * 100).toFixed(2)}%\n\n`;
-        
+
         report += `#### Detaylar:\n\n`;
         pages.forEach(p => {
             const icon = p.status === 'success' ? '✅' : '❌';
@@ -202,20 +202,20 @@ async function generateDetailedReport() {
             }
             report += `\n`;
         });
-        
+
         report += `---\n\n`;
     }
 
     if (results.errors.length > 0) {
         report += `## ❌ Hata Detayları ve Çözümler\n\n`;
-        
+
         results.errors.forEach((err, idx) => {
             report += `### ${idx + 1}. ${err.linkText} (${err.url})\n\n`;
             report += `- **Kategori:** ${err.category}\n`;
             report += `- **Hata Tipi:** ${err.error.type}\n`;
             report += `- **HTTP Status:** ${err.httpStatus || 'N/A'}\n`;
             report += `- **Screenshot:** ${err.screenshot}\n\n`;
-            
+
             if (err.error.type.includes('Tablo eksik')) {
                 const tableName = err.error.type.split(': ')[1];
                 report += `**Çözüm:**\n`;
@@ -228,7 +228,7 @@ async function generateDetailedReport() {
                 report += `**Çözüm:**\n`;
                 report += `Controller'da değişkeni tanımla veya view'a gönder\n\n`;
             }
-            
+
             report += `---\n\n`;
         });
     }
@@ -247,54 +247,54 @@ async function generateDetailedReport() {
 async function main() {
     console.log('\n🔍 Admin Panel Detaylı Test Başlatılıyor...\n');
     console.log('═══════════════════════════════════════════════════\n');
-    
+
     await createScreenshotDir();
-    
+
     const browser = await puppeteer.launch({
         headless: CONFIG.headless,
         args: ['--no-sandbox', '--disable-setuid-sandbox'],
     });
-    
+
     const page = await browser.newPage();
     await page.setViewport({ width: 1920, height: 1080 });
-    
+
     await login(page);
     await page.close();
-    
+
     for (const [category, pages] of Object.entries(TEST_PAGES)) {
         console.log(`\n📦 ${category} Kategorisi Test Ediliyor...\n`);
         console.log('─────────────────────────────────────────────────\n');
-        
+
         results.byCategory[category] = [];
-        
+
         for (const pageInfo of pages) {
             results.totalTests++;
             console.log(`📄 ${pageInfo.text}`);
-            
+
             const result = await testPage(browser, pageInfo.url, pageInfo.text, category);
             results.byCategory[category].push(result);
-            
+
             await new Promise(resolve => setTimeout(resolve, 500));
         }
     }
-    
+
     await browser.close();
-    
+
     console.log('\n═══════════════════════════════════════════════════');
     console.log('📊 TEST TAMAMLANDI!\n');
-    
+
     for (const [category, pages] of Object.entries(results.byCategory)) {
         const success = pages.filter(p => p.status === 'success').length;
         const total = pages.length;
         console.log(`${category}: ${success}/${total} başarılı`);
     }
-    
+
     console.log(`\nGenel: ${results.successCount}/${results.totalTests} başarılı (${((results.successCount / results.totalTests) * 100).toFixed(2)}%)\n`);
-    
+
     await generateDetailedReport();
-    
+
     console.log('✨ Test tamamlandı!\n');
-    
+
     process.exit(results.errorCount > 0 ? 1 : 0);
 }
 
@@ -302,4 +302,3 @@ main().catch(error => {
     console.error('💥 Kritik hata:', error);
     process.exit(1);
 });
-

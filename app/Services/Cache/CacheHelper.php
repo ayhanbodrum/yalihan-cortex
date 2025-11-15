@@ -4,14 +4,14 @@ namespace App\Services\Cache;
 
 /**
  * Cache Helper Functions
- * 
+ *
  * Provides convenient helper functions for common cache operations
  */
 class CacheHelper
 {
     /**
      * Get cache service instance
-     * 
+     *
      * @return CacheService
      */
     public static function cache(): CacheService
@@ -21,7 +21,7 @@ class CacheHelper
 
     /**
      * Quick cache key generation
-     * 
+     *
      * @param string $namespace
      * @param string $key
      * @param array $params
@@ -34,7 +34,7 @@ class CacheHelper
 
     /**
      * Quick cache remember
-     * 
+     *
      * @param string $namespace
      * @param string $key
      * @param int|string $ttl
@@ -50,7 +50,7 @@ class CacheHelper
 
     /**
      * Quick cache get
-     * 
+     *
      * @param string $namespace
      * @param string $key
      * @param mixed $default
@@ -65,7 +65,7 @@ class CacheHelper
 
     /**
      * Quick cache put
-     * 
+     *
      * @param string $namespace
      * @param string $key
      * @param mixed $value
@@ -81,7 +81,7 @@ class CacheHelper
 
     /**
      * Quick cache forget
-     * 
+     *
      * @param string $namespace
      * @param string $key
      * @param array $params
@@ -95,7 +95,7 @@ class CacheHelper
 
     /**
      * Invalidate namespace
-     * 
+     *
      * @param string $namespace
      * @param array $params
      * @return int
@@ -107,7 +107,7 @@ class CacheHelper
 
     /**
      * Invalidate model cache
-     * 
+     *
      * @param string $modelName
      * @param int|null $modelId
      * @return void
@@ -117,4 +117,3 @@ class CacheHelper
         static::cache()->invalidateModel($modelName, $modelId);
     }
 }
-

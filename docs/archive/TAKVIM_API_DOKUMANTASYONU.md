@@ -32,6 +32,7 @@ Bu API, yazlık ilanları için takvim senkronizasyon işlemlerini yönetir:
 Bir ilanın tüm senkronizasyon ayarlarını getirir.
 
 **Response:**
+
 ```json
 {
     "success": true,
@@ -61,6 +62,7 @@ Bir ilanın tüm senkronizasyon ayarlarını getirir.
 Yeni bir senkronizasyon ayarı oluşturur.
 
 **Request Body:**
+
 ```json
 {
     "platform": "airbnb",
@@ -70,11 +72,13 @@ Yeni bir senkronizasyon ayarı oluşturur.
 ```
 
 **Validation:**
+
 - `platform`: required|in:airbnb,booking_com,google_calendar
 - `external_listing_id`: required|string
 - `sync_enabled`: boolean
 
 **Response:**
+
 ```json
 {
     "success": true,
@@ -99,6 +103,7 @@ Yeni bir senkronizasyon ayarı oluşturur.
 Manuel olarak senkronizasyonu tetikler.
 
 **Request Body:**
+
 ```json
 {
     "platform": "airbnb"
@@ -106,9 +111,11 @@ Manuel olarak senkronizasyonu tetikler.
 ```
 
 **Validation:**
+
 - `platform`: required|in:airbnb,booking_com,google_calendar
 
 **Response:**
+
 ```json
 {
     "success": true,
@@ -128,6 +135,7 @@ Manuel olarak senkronizasyonu tetikler.
 İlanın 90 günlük takvim/doluluk bilgilerini getirir.
 
 **Response:**
+
 ```json
 {
     "success": true,
@@ -155,6 +163,7 @@ Manuel olarak senkronizasyonu tetikler.
 ```
 
 **Status Değerleri:**
+
 - `available`: Müsait
 - `reserved`: Rezerve
 - `blocked`: Engellenmiş
@@ -169,6 +178,7 @@ Manuel olarak senkronizasyonu tetikler.
 Belirtilen tarihleri engeller (bloke eder).
 
 **Request Body:**
+
 ```json
 {
     "dates": ["2025-11-15", "2025-11-16", "2025-11-17"],
@@ -177,11 +187,13 @@ Belirtilen tarihleri engeller (bloke eder).
 ```
 
 **Validation:**
+
 - `dates`: required|array
 - `dates.*`: required|date
 - `reason`: nullable|string
 
 **Response:**
+
 ```json
 {
     "success": true,
@@ -207,6 +219,7 @@ Belirtilen tarihleri engeller (bloke eder).
 Senkronizasyon ayarlarını günceller.
 
 **Request Body:**
+
 ```json
 {
     "external_listing_id": "airbnb-99999",
@@ -215,10 +228,12 @@ Senkronizasyon ayarlarını günceller.
 ```
 
 **Validation:**
+
 - `external_listing_id`: string
 - `sync_enabled`: boolean
 
 **Response:**
+
 ```json
 {
     "success": true,
@@ -243,6 +258,7 @@ Senkronizasyon ayarlarını günceller.
 Senkronizasyon ayarını siler.
 
 **Response:**
+
 ```json
 {
     "success": true,
@@ -262,12 +278,12 @@ async function getSyncs(ilanId) {
     const response = await fetch(`/api/admin/calendars/${ilanId}/syncs`, {
         method: 'GET',
         headers: {
-            'Accept': 'application/json',
-            'X-Requested-With': 'XMLHttpRequest'
+            Accept: 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
         },
-        credentials: 'same-origin'
+        credentials: 'same-origin',
     });
-    
+
     return await response.json();
 }
 
@@ -277,18 +293,18 @@ async function createSync(ilanId, platform, listingId) {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'Accept': 'application/json',
+            Accept: 'application/json',
             'X-Requested-With': 'XMLHttpRequest',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
         },
         credentials: 'same-origin',
         body: JSON.stringify({
             platform: platform,
             external_listing_id: listingId,
-            sync_enabled: true
-        })
+            sync_enabled: true,
+        }),
     });
-    
+
     return await response.json();
 }
 
@@ -298,16 +314,16 @@ async function manualSync(ilanId, platform) {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'Accept': 'application/json',
+            Accept: 'application/json',
             'X-Requested-With': 'XMLHttpRequest',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
         },
         credentials: 'same-origin',
         body: JSON.stringify({
-            platform: platform
-        })
+            platform: platform,
+        }),
     });
-    
+
     return await response.json();
 }
 
@@ -317,17 +333,17 @@ async function blockDates(ilanId, dates, reason) {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'Accept': 'application/json',
+            Accept: 'application/json',
             'X-Requested-With': 'XMLHttpRequest',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
         },
         credentials: 'same-origin',
         body: JSON.stringify({
             dates: dates,
-            reason: reason
-        })
+            reason: reason,
+        }),
     });
-    
+
     return await response.json();
 }
 ```
@@ -339,6 +355,7 @@ async function blockDates(ilanId, dates, reason) {
 Tüm endpoint'ler `web` ve `auth` middleware'leri ile korunur.
 
 **Gereksinim:**
+
 - Kullanıcı giriş yapmış olmalı
 - Session cookie geçerli olmalı
 
@@ -347,6 +364,7 @@ Tüm endpoint'ler `web` ve `auth` middleware'leri ile korunur.
 ## 📊 Hata Yönetimi
 
 ### 422 Validation Error
+
 ```json
 {
     "success": false,
@@ -357,6 +375,7 @@ Tüm endpoint'ler `web` ve `auth` middleware'leri ile korunur.
 ```
 
 ### 404 Not Found
+
 ```json
 {
     "success": false,
@@ -365,6 +384,7 @@ Tüm endpoint'ler `web` ve `auth` middleware'leri ile korunur.
 ```
 
 ### 500 Server Error
+
 ```json
 {
     "success": false,

@@ -53,7 +53,6 @@ class IlanBulkService
                 case 'activate':
                     $affected = Ilan::whereIn('id', $ids)->update([
                         'status' => 'active',
-                        'is_published' => true,
                         'updated_at' => now()
                     ]);
                     $message = $affected . ' ilan aktif yapıldı.';
@@ -62,8 +61,6 @@ class IlanBulkService
                 case 'deactivate':
                     $affected = Ilan::whereIn('id', $ids)->update([
                         'status' => 'inactive',
-                        'is_published' => false,
-                        'updated_at' => now()
                     ]);
                     $message = $affected . ' ilan pasif yapıldı.';
                     break;
@@ -94,12 +91,11 @@ class IlanBulkService
                             'message' => 'Etiket seçilmedi.'
                         ];
                     }
-                    foreach ($ids as $ilanId) {
-                        $ilan = Ilan::find($ilanId);
-                        if ($ilan) {
-                            $ilan->etiketler()->syncWithoutDetaching([$value]);
-                            $affected++;
-                        }
+                    // ✅ PERFORMANCE FIX: N+1 query önlendi - Bulk attach kullanıldı
+                    $ilanlar = Ilan::whereIn('id', $ids)->get();
+                    foreach ($ilanlar as $ilan) {
+                        $ilan->etiketler()->syncWithoutDetaching([$value]);
+                        $affected++;
                     }
                     $message = $affected . ' ilana etiket eklendi.';
                     break;
@@ -111,12 +107,11 @@ class IlanBulkService
                             'message' => 'Etiket seçilmedi.'
                         ];
                     }
-                    foreach ($ids as $ilanId) {
-                        $ilan = Ilan::find($ilanId);
-                        if ($ilan) {
-                            $ilan->etiketler()->detach([$value]);
-                            $affected++;
-                        }
+                    // ✅ PERFORMANCE FIX: N+1 query önlendi - Bulk detach kullanıldı
+                    $ilanlar = Ilan::whereIn('id', $ids)->get();
+                    foreach ($ilanlar as $ilan) {
+                        $ilan->etiketler()->detach([$value]);
+                        $affected++;
                     }
                     $message = $affected . ' ilandan etiket kaldırıldı.';
                     break;
@@ -144,5 +139,3 @@ class IlanBulkService
         }
     }
 }
-
-

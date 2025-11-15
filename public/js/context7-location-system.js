@@ -17,7 +17,7 @@ class Context7LocationSystem {
             cacheTimeout: options.cacheTimeout || 300000, // 5 dakika
             debug: options.debug || false,
             autoInit: options.autoInit !== false,
-            ...options
+            ...options,
         };
 
         // Cache storage
@@ -26,7 +26,7 @@ class Context7LocationSystem {
             iller: null,
             ilceler: null,
             mahalleler: null,
-            timestamp: {}
+            timestamp: {},
         };
 
         // State
@@ -34,7 +34,7 @@ class Context7LocationSystem {
             selectedUlke: null,
             selectedIl: null,
             selectedIlce: null,
-            selectedMahalle: null
+            selectedMahalle: null,
         };
 
         // Event listeners
@@ -42,7 +42,7 @@ class Context7LocationSystem {
             ulkeChange: [],
             ilChange: [],
             ilceChange: [],
-            mahalleChange: []
+            mahalleChange: [],
         };
 
         if (this.options.autoInit) {
@@ -71,7 +71,7 @@ class Context7LocationSystem {
             this.loadUlkeler(),
             this.loadIller(),
             this.loadAllIlceler(),
-            this.loadAllMahalleler()
+            this.loadAllMahalleler(),
         ]);
 
         this.log('✅ All location data preloaded');
@@ -81,7 +81,11 @@ class Context7LocationSystem {
      * Load countries (Ülkeler)
      */
     async loadUlkeler() {
-        return this.fetchWithCache('ulkeler', '/admin/adres-yonetimi/ulkeler', data => data.ulkeler);
+        return this.fetchWithCache(
+            'ulkeler',
+            '/admin/adres-yonetimi/ulkeler',
+            (data) => data.ulkeler
+        );
     }
 
     /**
@@ -93,14 +97,14 @@ class Context7LocationSystem {
             ? `/admin/adres-yonetimi/iller/${ulkeId}`
             : '/admin/adres-yonetimi/iller';
 
-        return this.fetchWithCache('iller', endpoint, data => data.iller);
+        return this.fetchWithCache('iller', endpoint, (data) => data.iller);
     }
 
     /**
      * Load all districts (Tüm İlçeler)
      */
     async loadAllIlceler() {
-        return this.fetchWithCache('ilceler', '/api/ilceler', data => data.data || data.ilceler);
+        return this.fetchWithCache('ilceler', '/api/ilceler', (data) => data.data || data.ilceler);
     }
 
     /**
@@ -113,14 +117,22 @@ class Context7LocationSystem {
         }
 
         const cacheKey = `ilceler_${ilId}`;
-        return this.fetchWithCache(cacheKey, `/api/ilceler/${ilId}`, data => data.data || data.ilceler);
+        return this.fetchWithCache(
+            cacheKey,
+            `/api/ilceler/${ilId}`,
+            (data) => data.data || data.ilceler
+        );
     }
 
     /**
      * Load all neighborhoods (Tüm Mahalleler)
      */
     async loadAllMahalleler() {
-        return this.fetchWithCache('mahalleler', '/api/mahalleler', data => data.data || data.mahalleler);
+        return this.fetchWithCache(
+            'mahalleler',
+            '/api/mahalleler',
+            (data) => data.data || data.mahalleler
+        );
     }
 
     /**
@@ -133,7 +145,11 @@ class Context7LocationSystem {
         }
 
         const cacheKey = `mahalleler_${ilceId}`;
-        return this.fetchWithCache(cacheKey, `/api/mahalleler/${ilceId}`, data => data.data || data.mahalleler);
+        return this.fetchWithCache(
+            cacheKey,
+            `/api/mahalleler/${ilceId}`,
+            (data) => data.data || data.mahalleler
+        );
     }
 
     /**
@@ -166,7 +182,6 @@ class Context7LocationSystem {
 
             this.log(`✅ Loaded ${extracted?.length || 0} items for ${key}`);
             return extracted;
-
         } catch (error) {
             this.error(`Error loading ${key}:`, error);
             this.showToast(`${key} yüklenemedi`, 'error');
@@ -201,7 +216,7 @@ class Context7LocationSystem {
                 iller: null,
                 ilceler: null,
                 mahalleler: null,
-                timestamp: {}
+                timestamp: {},
             };
             this.log('🗑️ All cache cleared');
         }
@@ -278,7 +293,7 @@ class Context7LocationSystem {
      */
     off(event, callback) {
         if (!this.listeners[event]) return;
-        this.listeners[event] = this.listeners[event].filter(cb => cb !== callback);
+        this.listeners[event] = this.listeners[event].filter((cb) => cb !== callback);
     }
 
     /**
@@ -287,7 +302,7 @@ class Context7LocationSystem {
      */
     emit(event, data) {
         if (!this.listeners[event]) return;
-        this.listeners[event].forEach(callback => callback(data));
+        this.listeners[event].forEach((callback) => callback(data));
     }
 
     /**
@@ -305,7 +320,7 @@ class Context7LocationSystem {
             selectedUlke: null,
             selectedIl: null,
             selectedIlce: null,
-            selectedMahalle: null
+            selectedMahalle: null,
         };
         this.log('🔄 State reset');
     }
@@ -319,7 +334,7 @@ class Context7LocationSystem {
             textField = 'name',
             placeholder = 'Seçiniz...',
             includeEmpty = true,
-            emptyValue = ''
+            emptyValue = '',
         } = config;
 
         if (typeof selectElement === 'string') {
@@ -343,7 +358,7 @@ class Context7LocationSystem {
         }
 
         // Add items
-        items.forEach(item => {
+        items.forEach((item) => {
             const option = document.createElement('option');
             option.value = item[valueField];
             option.textContent = item[textField];
@@ -357,18 +372,12 @@ class Context7LocationSystem {
      * Setup cascade dropdowns (Helper function)
      */
     setupCascadeDropdowns(config) {
-        const {
-            ulkeSelect,
-            ilSelect,
-            ilceSelect,
-            mahalleSelect
-        } = config;
+        const { ulkeSelect, ilSelect, ilceSelect, mahalleSelect } = config;
 
         // Ülke change
         if (ulkeSelect) {
-            const ulkeEl = typeof ulkeSelect === 'string'
-                ? document.querySelector(ulkeSelect)
-                : ulkeSelect;
+            const ulkeEl =
+                typeof ulkeSelect === 'string' ? document.querySelector(ulkeSelect) : ulkeSelect;
 
             ulkeEl?.addEventListener('change', async (e) => {
                 const ulkeId = e.target.value;
@@ -377,21 +386,23 @@ class Context7LocationSystem {
                 if (ilSelect) {
                     this.populateDropdown(ilSelect, iller, {
                         textField: 'il_adi',
-                        placeholder: 'İl seçiniz...'
+                        placeholder: 'İl seçiniz...',
                     });
                 }
 
                 // Reset child dropdowns
-                if (ilceSelect) this.populateDropdown(ilceSelect, [], { placeholder: 'Önce il seçiniz...' });
-                if (mahalleSelect) this.populateDropdown(mahalleSelect, [], { placeholder: 'Önce ilçe seçiniz...' });
+                if (ilceSelect)
+                    this.populateDropdown(ilceSelect, [], { placeholder: 'Önce il seçiniz...' });
+                if (mahalleSelect)
+                    this.populateDropdown(mahalleSelect, [], {
+                        placeholder: 'Önce ilçe seçiniz...',
+                    });
             });
         }
 
         // İl change
         if (ilSelect) {
-            const ilEl = typeof ilSelect === 'string'
-                ? document.querySelector(ilSelect)
-                : ilSelect;
+            const ilEl = typeof ilSelect === 'string' ? document.querySelector(ilSelect) : ilSelect;
 
             ilEl?.addEventListener('change', async (e) => {
                 const ilId = e.target.value;
@@ -400,20 +411,22 @@ class Context7LocationSystem {
                 if (ilceSelect) {
                     this.populateDropdown(ilceSelect, ilceler, {
                         textField: 'ilce_adi',
-                        placeholder: 'İlçe seçiniz...'
+                        placeholder: 'İlçe seçiniz...',
                     });
                 }
 
                 // Reset child dropdown
-                if (mahalleSelect) this.populateDropdown(mahalleSelect, [], { placeholder: 'Önce ilçe seçiniz...' });
+                if (mahalleSelect)
+                    this.populateDropdown(mahalleSelect, [], {
+                        placeholder: 'Önce ilçe seçiniz...',
+                    });
             });
         }
 
         // İlçe change
         if (ilceSelect) {
-            const ilceEl = typeof ilceSelect === 'string'
-                ? document.querySelector(ilceSelect)
-                : ilceSelect;
+            const ilceEl =
+                typeof ilceSelect === 'string' ? document.querySelector(ilceSelect) : ilceSelect;
 
             ilceEl?.addEventListener('change', async (e) => {
                 const ilceId = e.target.value;
@@ -422,7 +435,7 @@ class Context7LocationSystem {
                 if (mahalleSelect) {
                     this.populateDropdown(mahalleSelect, mahalleler, {
                         textField: 'mahalle_adi',
-                        placeholder: 'Mahalle seçiniz...'
+                        placeholder: 'Mahalle seçiniz...',
                     });
                 }
             });
@@ -472,9 +485,8 @@ if (!window.locationSystem) {
     window.locationSystem = new Context7LocationSystem({
         debug: true,
         enableCache: true,
-        autoInit: false // Manuel init için false
+        autoInit: false, // Manuel init için false
     });
 }
 
 console.log('✅ Context7 Location System loaded (v1.0.0)');
-

@@ -10,7 +10,7 @@ use App\Services\Logging\LogService;
 
 /**
  * QR Code Service
- * 
+ *
  * Context7: QR code generation for listings
  * - İlan detay sayfası QR kodu
  * - İlan kartları QR kodu
@@ -52,7 +52,7 @@ class QRCodeService
 
     /**
      * Generate QR code for a listing
-     * 
+     *
      * @param int $ilanId Listing ID
      * @param array $options QR code options
      * @return array QR code data (path, url, base64)
@@ -63,9 +63,9 @@ class QRCodeService
         if (!$this->isEnabled()) {
             throw new \Exception('QR kod özelliği devre dışı bırakılmış');
         }
-        
+
         $cacheKey = "qrcode.listing.{$ilanId}." . md5(json_encode($options));
-        
+
         return CacheHelper::remember(
             'qrcode',
             "listing_{$ilanId}",
@@ -73,31 +73,40 @@ class QRCodeService
             function () use ($ilanId, $options) {
                 try {
                     $url = route('ilanlar.show', $ilanId);
-                    
+
                     $size = $options['size'] ?? $this->getDefaultSize();
-                    $format = $options['format'] ?? 'png';
+                    $format = $options['format'] ?? 'svg'; // SVG doesn't require imagick
                     $foreground = $options['foreground'] ?? $this->defaultColors['foreground'];
                     $background = $options['background'] ?? $this->defaultColors['background'];
-                    
+
                     // Generate QR code
-                    $qrCode = QrCode::format($format)
-                        ->size($size)
-                        ->color($foreground[0], $foreground[1], $foreground[2])
-                        ->backgroundColor($background[0], $background[1], $background[2])
-                        ->margin(1)
-                        ->errorCorrection('H') // High error correction
-                        ->generate($url);
-                    
+                    // SVG format doesn't support color/backgroundColor parameters
+                    if ($format === 'svg') {
+                        $qrCode = QrCode::format($format)
+                            ->size($size)
+                            ->margin(1)
+                            ->errorCorrection('H')
+                            ->generate($url);
+                    } else {
+                        $qrCode = QrCode::format($format)
+                            ->size($size)
+                            ->color($foreground[0], $foreground[1], $foreground[2])
+                            ->backgroundColor($background[0], $background[1], $background[2])
+                            ->margin(1)
+                            ->errorCorrection('H')
+                            ->generate($url);
+                    }
+
                     // Save to storage
                     $filename = "listing-{$ilanId}-" . time() . ".{$format}";
                     $path = "{$this->storagePath}/{$filename}";
-                    
+
                     Storage::put($path, $qrCode);
-                    
+
                     return [
                         'path' => $path,
                         'url' => Storage::url($path),
-                        'base64' => 'data:image/' . $format . ';base64,' . base64_encode($qrCode),
+                        'base64' => 'data:image/' . ($format === 'svg' ? 'svg+xml' : $format) . ';base64,' . base64_encode($qrCode),
                         'filename' => $filename,
                         'size' => $size,
                         'format' => $format
@@ -113,7 +122,7 @@ class QRCodeService
 
     /**
      * Generate QR code for WhatsApp sharing
-     * 
+     *
      * @param int $ilanId Listing ID
      * @param string|null $phoneNumber WhatsApp number
      * @return array
@@ -124,7 +133,7 @@ class QRCodeService
         $url = route('ilanlar.show', $ilanId);
         $message = urlencode("Merhaba, {$ilanId} numaralı ilan hakkında bilgi almak istiyorum.");
         $whatsappUrl = "https://wa.me/{$phoneNumber}?text={$message}";
-        
+
         return $this->generateForUrl($whatsappUrl, [
             'size' => 250,
             'filename_prefix' => "whatsapp-{$ilanId}"
@@ -133,7 +142,7 @@ class QRCodeService
 
     /**
      * Generate QR code for any URL
-     * 
+     *
      * @param string $url URL to encode
      * @param array $options Options
      * @return array
@@ -142,24 +151,24 @@ class QRCodeService
     {
         try {
             $size = $options['size'] ?? $this->defaultSize;
-            $format = $options['format'] ?? 'png';
+            $format = $options['format'] ?? 'svg'; // SVG doesn't require imagick
             $filename = $options['filename_prefix'] ?? 'qrcode';
-            
+
             $qrCode = QrCode::format($format)
                 ->size($size)
                 ->margin(1)
                 ->errorCorrection('H')
                 ->generate($url);
-            
+
             $filename = "{$filename}-" . time() . ".{$format}";
             $path = "{$this->storagePath}/{$filename}";
-            
+
             Storage::put($path, $qrCode);
-            
+
             return [
                 'path' => $path,
                 'url' => Storage::url($path),
-                'base64' => 'data:image/' . $format . ';base64,' . base64_encode($qrCode),
+                'base64' => 'data:image/' . ($format === 'svg' ? 'svg+xml' : $format) . ';base64,' . base64_encode($qrCode),
                 'filename' => $filename
             ];
         } catch (\Exception $e) {
@@ -170,7 +179,7 @@ class QRCodeService
 
     /**
      * Get QR code data (with cache)
-     * 
+     *
      * @param int $ilanId Listing ID
      * @return array|null
      */
@@ -186,7 +195,7 @@ class QRCodeService
 
     /**
      * Delete QR code for a listing
-     * 
+     *
      * @param int $ilanId Listing ID
      * @return bool
      */
@@ -195,15 +204,15 @@ class QRCodeService
         try {
             $files = Storage::files($this->storagePath);
             $pattern = "listing-{$ilanId}-";
-            
+
             foreach ($files as $file) {
                 if (str_contains($file, $pattern)) {
                     Storage::delete($file);
                 }
             }
-            
+
             CacheHelper::forget('qrcode', "listing_{$ilanId}");
-            
+
             return true;
         } catch (\Exception $e) {
             LogService::error('QR code deletion failed', ['ilan_id' => $ilanId], $e);
@@ -213,7 +222,7 @@ class QRCodeService
 
     /**
      * Get QR code statistics
-     * 
+     *
      * @return array
      */
     public function getStatistics(): array
@@ -221,11 +230,11 @@ class QRCodeService
         try {
             $files = Storage::files($this->storagePath);
             $totalSize = 0;
-            
+
             foreach ($files as $file) {
                 $totalSize += Storage::size($file);
             }
-            
+
             return [
                 'total_files' => count($files),
                 'total_size' => $totalSize,
@@ -242,4 +251,3 @@ class QRCodeService
         }
     }
 }
-

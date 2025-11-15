@@ -3,7 +3,7 @@
 @section('title', 'Eşleştirme Yönetimi')
 
 @section('content')
-    <!-- Context7 AI Önerileri Banner -->
+    <!-- AI önerileri bannerı -->
     <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800 mb-6 p-6 bg-gradient-to-r from-green-50 to-blue-50 border border-green-200">
         <div class="flex items-center justify-between">
             <div class="flex items-center">
@@ -14,17 +14,20 @@
                 </div>
                 <div>
                     <h3 class="text-lg font-bold text-green-800">🤖 AI Eşleştirme Analizi</h3>
-                    <p class="text-sm text-green-600">Context7 Intelligence ile akıllı eşleştirme ve öneriler</p>
+                    <p class="text-sm text-green-600">Akıllı eşleştirme ve öneriler</p>
                 </div>
-            </div>
-            <div class="flex items-center gap-2">
-                <span class="px-3 py-1 bg-green-100 text-green-800 text-xs font-medium rounded-full">✓ Context7 Uyumlu</span>
-                <span class="px-3 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-full">AI Aktif</span>
+                <div class="flex items-center gap-3">
+                    <a href="{{ route('admin.talep-portfolyo.index') }}"
+                        class="inline-flex items-center gap-2 px-4 py-2 bg-white text-green-600 font-medium rounded-lg shadow-sm hover:shadow transition-all duration-200">
+                        <i class="fas fa-brain"></i>
+                        AI Portföy Önerileri
+                    </a>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Context7 Header -->
+    <!-- Sayfa başlığı -->
     <div class="content-header mb-8">
         <h1 class="text-3xl font-bold text-gray-900 mb-2 flex items-center">
             <div

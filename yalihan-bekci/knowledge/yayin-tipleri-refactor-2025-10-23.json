@@ -4,7 +4,7 @@
   "category": "ui_improvement",
   "priority": "HIGH",
   "context7_compliance": "100%",
-  
+
   "summary": {
     "title": "Yayın Tipleri Sayfası Yenilendi - Kategori Gruplama + Detaylı Görünüm",
     "description": "Yayın tipleri artık Ana Kategori + Alt Kategori ile birlikte görüntüleniyor. Gruplama sistemi eklendi, açıklamalar güncellendi.",
@@ -12,7 +12,7 @@
     "user_request": "Yayın tipi listesinde kategori bilgileri görünsün (Satılık Satılık Satılık yerine Satılık → Arsa/Daire/Villa)",
     "bekci_response": "Grouped display + Ana/Alt kategori kolonları + 21 tip açıklamalı"
   },
-  
+
   "problem_analysis": {
     "before": {
       "display": "Flat list: Satılık, Satılık, Satılık, Satılık... (160 row)",
@@ -26,7 +26,7 @@
       "usability": "Excellent, clear, easy to understand"
     }
   },
-  
+
   "implementation": {
     "controller_changes": {
       "file": "app/Http/Controllers/Admin/YayinTipiController.php",
@@ -60,7 +60,7 @@
       "purpose": "Tüm yayın tiplerine açıklama, icon, popülerlik ekleme"
     }
   },
-  
+
   "new_display_format": {
     "group_header": {
       "elements": [
@@ -81,7 +81,7 @@
       "sorting": "Ana kategoriye göre sıralı"
     }
   },
-  
+
   "example_display": {
     "satillik_group": {
       "header": "💰 Satılık (Popüler) - Mülkiyeti devredilecek gayrimenkul. Tapu devri ile satış.",
@@ -98,15 +98,11 @@
     "gunluk_kiralik_group": {
       "header": "📅 Günlük Kiralık (Popüler) - Kısa süreli kiralık (1-29 gün). Yazlık için.",
       "count": "3 kategori",
-      "categories": [
-        "Konut → Apart",
-        "Konut → Villa",
-        "Konut → Yazlık"
-      ],
+      "categories": ["Konut → Apart", "Konut → Villa", "Konut → Yazlık"],
       "yazlik_special": true
     }
   },
-  
+
   "statistics_updated": {
     "cards": [
       {
@@ -135,7 +131,7 @@
       }
     ]
   },
-  
+
   "context7_compliance": {
     "eager_loading": "✅ with(['kategori.parent']) for performance",
     "grouping": "✅ groupBy('yayin_tipi') for clarity",
@@ -143,7 +139,7 @@
     "display": "✅ Ana/Alt kategori separate columns",
     "no_violations": true
   },
-  
+
   "yalihan_bekci_learning": {
     "pattern": "PUBLICATION_TYPE_GROUPED_DISPLAY",
     "key_insight": "1 yayın tipi (Satılık) = N kategori → Grouped display with subtable",
@@ -161,10 +157,9 @@
       "No drag&drop: Too complex for this use case"
     ]
   },
-  
+
   "related_knowledge": [
     "yazlik-complete-system-2025-10-23.json",
     "category-system-restructure-2025-10-23.json"
   ]
 }
-

@@ -116,6 +116,7 @@ Filtering:
 **Risk:** Düşük
 
 **Çözüm:**
+
 ```bash
 # 1. Eski model'i sil
 rm app/Modules/Emlak/Models/Ilan.php
@@ -133,6 +134,7 @@ rm app/Modules/Emlak/Models/Ilan.php
 **Risk:** Orta
 
 **Çözüm:**
+
 ```sql
 -- Eski field'ları kaldır
 ALTER TABLE ilanlar DROP COLUMN kategori_id;
@@ -151,6 +153,7 @@ ALTER TABLE ilanlar DROP COLUMN yayinlama_tipi;
 **Risk:** Orta
 
 **Çözüm:**
+
 ```sql
 CREATE TABLE yazlik_details (
     ilan_id (FK),
@@ -203,19 +206,19 @@ yazlik_doluluk_durumlari:
 ### Önerilen Yaklaşım
 
 1. **Önce Temizlik (1 hafta)**
-   - Model duplikasyonunu çöz
-   - Field standardizasyonu
-   - Migration'ları tamamla
+    - Model duplikasyonunu çöz
+    - Field standardizasyonu
+    - Migration'ları tamamla
 
 2. **Sonra Geliştirme (2 hafta)**
-   - Yazlık detay tablosu
-   - Doluluk durumu sistemi
-   - Takvim entegrasyon placeholder'ı
+    - Yazlık detay tablosu
+    - Doluluk durumu sistemi
+    - Takvim entegrasyon placeholder'ı
 
 3. **Entegrasyonlar (2 hafta)**
-   - Airbnb sync
-   - Booking.com sync
-   - Google Calendar sync
+    - Airbnb sync
+    - Booking.com sync
+    - Google Calendar sync
 
 ### Tahmini Süre: 5 Hafta
 

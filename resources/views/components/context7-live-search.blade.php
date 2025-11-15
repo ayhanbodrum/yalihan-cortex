@@ -30,7 +30,7 @@
     $filters = $filters ?? [];
     $maxResults = $maxResults ?? 20;
     $required = $required ?? false;
-    $class = $class ?? 'form-control';
+    $class = $class ?? 'w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 dark:bg-gray-800 dark:border-gray-700 dark:text-white';
     $id = $id ?? 'context7-search-' . uniqid();
     $hiddenInputName = $hiddenInputName ?? $name . '_id';
     $showSearchHints = $showSearchHints ?? true;
@@ -65,7 +65,7 @@ $placeholders = [
 
     {{-- Yardım Metni --}}
     @if ($showSearchHints)
-        <small id="{{ $id }}-help" class="form-text text-muted">
+        <small id="{{ $id }}-help" class="text-gray-500 dark:text-gray-400 text-sm">
             <strong>Context7 Live Search:</strong>
             @switch($searchType)
                 @case('kisiler')
@@ -93,11 +93,9 @@ $placeholders = [
     @endif
 
     {{-- Loading Indicator --}}
-    <div class="context7-loading-indicator" style="display: none;">
-        <div class="spinner-border spinner-border-sm text-primary" role="status">
-            <span class="sr-only">Aranıyor...</span>
-        </div>
-        <span class="ml-2">Aranıyor...</span>
+    <div class="context7-loading-indicator hidden items-center">
+        <span class="inline-block w-4 h-4 border-2 border-gray-300 border-t-blue-600 rounded-full animate-spin" aria-hidden="true"></span>
+        <span class="ml-2 text-gray-600 dark:text-gray-300">Aranıyor...</span>
     </div>
 
     {{-- Context7 Status Indicator --}}
@@ -190,11 +188,11 @@ $placeholders = [
 
                                 // Context7 uyumlu hata mesajı
                                 const errorMessage = document.createElement('div');
-                                errorMessage.className = 'alert alert-danger mt-2';
+                                errorMessage.className = 'mt-2 px-4 py-2 rounded-lg bg-red-50 text-red-700 border border-red-200 dark:bg-red-900/30 dark:text-red-200 dark:border-red-800 transition-all duration-200';
                                 errorMessage.innerHTML = `
-                        <strong>Context7 Validation Error:</strong>
-                        Lütfen {{ $placeholder }} alanından bir seçim yapın.
-                    `;
+                                    <strong>Context7 Validation Error:</strong>
+                                    Lütfen {{ $placeholder }} alanından bir seçim yapın.
+                                `;
 
                                 searchInput.parentNode.appendChild(errorMessage);
 

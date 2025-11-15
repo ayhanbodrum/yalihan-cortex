@@ -15,20 +15,12 @@
   "logic_analysis": {
     "wrong_placement": {
       "section": "Gelişmiş Fiyat Yönetimi (Section 5)",
-      "fields": [
-        "Metrekare (m²)",
-        "Oda Sayısı"
-      ],
+      "fields": ["Metrekare (m²)", "Oda Sayısı"],
       "why_wrong": "Bu alanlar fiyat bilgisi değil, ilanın fiziksel özellikleridir"
     },
     "correct_placement": {
       "section": "Temel Bilgiler (Section 1)",
-      "fields": [
-        "İlan Başlığı",
-        "İlan Açıklaması",
-        "Metrekare (m²)",
-        "Oda Sayısı"
-      ],
+      "fields": ["İlan Başlığı", "İlan Açıklaması", "Metrekare (m²)", "Oda Sayısı"],
       "why_correct": "Metrekare ve Oda Sayısı ilanın temel fiziksel özellikleridir, kullanıcı ilk etapta bunları girer"
     }
   },
@@ -50,15 +42,7 @@
           "type": "select",
           "name": "oda_sayisi",
           "label": "Oda Sayısı",
-          "options": [
-            "1+0 (Stüdyo)",
-            "1+1",
-            "2+1",
-            "3+1",
-            "4+1",
-            "5+1",
-            "6+1 ve üzeri"
-          ]
+          "options": ["1+0 (Stüdyo)", "1+1", "2+1", "3+1", "4+1", "5+1", "6+1 ve üzeri"]
         }
       }
     },
@@ -82,12 +66,7 @@
   "new_form_structure": {
     "section_1_temel_bilgiler": {
       "title": "📋 Temel Bilgiler",
-      "fields": [
-        "İlan Başlığı *",
-        "İlan Açıklaması",
-        "Metrekare (m²)",
-        "Oda Sayısı"
-      ],
+      "fields": ["İlan Başlığı *", "İlan Açıklaması", "Metrekare (m²)", "Oda Sayısı"],
       "logic": "Kullanıcı önce ilanın temel fiziksel özelliklerini girer"
     },
     "section_5_fiyat_yonetimi": {
@@ -210,4 +189,3 @@
   "zero_errors_status": "✅ 0 HATA - Mantıklı Form Sıralaması",
   "completion_time": "2025-10-23T22:55:00Z"
 }
-

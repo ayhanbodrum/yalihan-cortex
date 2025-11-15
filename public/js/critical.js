@@ -6,24 +6,24 @@
 // Global toast system
 window.toast = {
     success: function (message) {
-        this.show(message, "success");
+        this.show(message, 'success');
     },
 
     error: function (message) {
-        this.show(message, "error");
+        this.show(message, 'error');
     },
 
     info: function (message) {
-        this.show(message, "info");
+        this.show(message, 'info');
     },
 
-    show: function (message, type = "info") {
+    show: function (message, type = 'info') {
         // Remove existing toasts
-        const existingToasts = document.querySelectorAll(".toast");
+        const existingToasts = document.querySelectorAll('.toast');
         existingToasts.forEach((toast) => toast.remove());
 
         // Create new toast
-        const toast = document.createElement("div");
+        const toast = document.createElement('div');
         toast.className = `toast ${type}`;
         toast.textContent = message;
 
@@ -31,11 +31,11 @@ window.toast = {
         document.body.appendChild(toast);
 
         // Show toast
-        setTimeout(() => toast.classList.add("show"), 10);
+        setTimeout(() => toast.classList.add('show'), 10);
 
         // Auto remove after 5 seconds
         setTimeout(() => {
-            toast.classList.remove("show");
+            toast.classList.remove('show');
             setTimeout(() => toast.remove(), 300);
         }, 5000);
     },
@@ -45,13 +45,13 @@ window.toast = {
 window.loading = {
     show: function (element) {
         if (element) {
-            element.classList.add("loading");
+            element.classList.add('loading');
         }
     },
 
     hide: function (element) {
         if (element) {
-            element.classList.remove("loading");
+            element.classList.remove('loading');
         }
     },
 };
@@ -65,29 +65,29 @@ window.providerStatus = {
         let icon, bgClass, textClass, statusText;
 
         switch (status) {
-            case "success":
-                icon = "fa-check-circle";
-                bgClass = "bg-green-100 dark:bg-green-900";
-                textClass = "text-green-700 dark:text-green-300";
+            case 'success':
+                icon = 'fa-check-circle';
+                bgClass = 'bg-green-100 dark:bg-green-900';
+                textClass = 'text-green-700 dark:text-green-300';
                 statusText = `✅ Aktif (${responseTime}ms)`;
                 break;
-            case "error":
-                icon = "fa-times-circle";
-                bgClass = "bg-red-100 dark:bg-red-900";
-                textClass = "text-red-700 dark:text-red-300";
-                statusText = "❌ Hata";
+            case 'error':
+                icon = 'fa-times-circle';
+                bgClass = 'bg-red-100 dark:bg-red-900';
+                textClass = 'text-red-700 dark:text-red-300';
+                statusText = '❌ Hata';
                 break;
-            case "testing":
-                icon = "fa-spinner fa-spin";
-                bgClass = "bg-blue-100 dark:bg-blue-900";
-                textClass = "text-blue-700 dark:text-blue-300";
-                statusText = "🔄 Test ediliyor...";
+            case 'testing':
+                icon = 'fa-spinner fa-spin';
+                bgClass = 'bg-blue-100 dark:bg-blue-900';
+                textClass = 'text-blue-700 dark:text-blue-300';
+                statusText = '🔄 Test ediliyor...';
                 break;
             default:
-                icon = "fa-circle";
-                bgClass = "bg-gray-100 dark:bg-gray-700";
-                textClass = "text-gray-600 dark:text-gray-400";
-                statusText = "Henüz Test Edilmedi";
+                icon = 'fa-circle';
+                bgClass = 'bg-gray-100 dark:bg-gray-700';
+                textClass = 'text-gray-600 dark:text-gray-400';
+                statusText = 'Henüz Test Edilmedi';
         }
 
         badge.className = `px-3 py-1 text-xs font-medium ${bgClass} ${textClass} rounded-full flex items-center gap-1`;
@@ -98,15 +98,15 @@ window.providerStatus = {
 
 // CSRF token helper
 window.csrfToken = function () {
-    return document.querySelector('meta[name="csrf-token"]')?.content || "";
+    return document.querySelector('meta[name="csrf-token"]')?.content || '';
 };
 
 // Fetch helper with CSRF
 window.fetchWithCSRF = function (url, options = {}) {
     const defaultOptions = {
         headers: {
-            "X-CSRF-TOKEN": window.csrfToken(),
-            "Content-Type": "application/json",
+            'X-CSRF-TOKEN': window.csrfToken(),
+            'Content-Type': 'application/json',
             ...options.headers,
         },
     };
@@ -115,23 +115,18 @@ window.fetchWithCSRF = function (url, options = {}) {
 };
 
 // Initialize on DOM ready
-document.addEventListener("DOMContentLoaded", function () {
-    console.log("✅ Critical JS loaded - AI Settings ready");
+document.addEventListener('DOMContentLoaded', function () {
+    console.log('✅ Critical JS loaded - AI Settings ready');
 
     // Initialize provider statuses
-    const providers = ["google", "openai", "anthropic", "deepseek", "ollama"];
+    const providers = ['google', 'openai', 'anthropic', 'deepseek', 'ollama'];
     providers.forEach((provider) => {
-        window.providerStatus.update(
-            provider,
-            "unknown",
-            "Henüz test edilmedi",
-            0
-        );
+        window.providerStatus.update(provider, 'unknown', 'Henüz test edilmedi', 0);
     });
 });
 
 // Export for global access
-if (typeof module !== "undefined" && module.exports) {
+if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
         toast: window.toast,
         loading: window.loading,

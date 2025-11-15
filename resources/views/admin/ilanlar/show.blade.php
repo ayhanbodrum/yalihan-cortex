@@ -29,7 +29,7 @@
                             <i class="fas fa-qrcode mr-2"></i>
                             QR Kod
                         </button>
-                        <div x-show="showQR" 
+                        <div x-show="showQR"
                              @click.away="showQR = false"
                              x-transition:enter="transition ease-out duration-200"
                              x-transition:enter-start="opacity-0 transform scale-95"
@@ -144,6 +144,42 @@
                             @endif
                         </div>
                     </div>
+
+                    @if(($ilan->ilan_turu ?? null) === 'kiralik' && $ilan->demirbaslar && $ilan->demirbaslar->count() > 0)
+                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+                        <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center">
+                            <i class="fas fa-boxes text-orange-600 mr-3"></i>
+                            Demirbaşlar
+                        </h2>
+                        <div class="space-y-6">
+                            @php $grouped = $ilan->demirbaslar->groupBy('kategori_id'); @endphp
+                            @foreach($grouped as $kategoriId => $items)
+                                @php $kategori = \App\Models\DemirbasKategori::find($kategoriId); @endphp
+                                <div>
+                                    <h3 class="text-sm font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-3 flex items-center">
+                                        <i class="fas fa-cube text-orange-600 mr-2"></i>
+                                        {{ $kategori->name ?? 'Genel' }}
+                                    </h3>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                        @foreach($items as $d)
+                                            <div class="flex items-center justify-between p-3 rounded-lg bg-orange-50 dark:bg-orange-900/20">
+                                                <div class="flex items-center gap-3">
+                                                    <span class="text-sm font-semibold text-gray-900 dark:text-white">{{ $d->name }}</span>
+                                                    @if($d->pivot->brand)
+                                                        <span class="text-xs text-gray-500">{{ $d->pivot->brand }}</span>
+                                                    @endif
+                                                </div>
+                                                <div class="text-sm font-semibold text-orange-700 dark:text-orange-400">
+                                                    {{ $d->pivot->quantity ?? 1 }}
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                    @endif
 
                     <!-- İlan Features (Dinamik Özellikler) -->
                     @if($ilan->ozellikler && $ilan->ozellikler->count() > 0)
@@ -378,8 +414,12 @@
                                 <span class="text-gray-600 dark:text-gray-400">Status:</span>
                                 <span
                                     class="px-3 py-1 rounded-full text-sm font-medium
-                                {{ $ilan->status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }}">
-                                    {{ ucfirst($ilan->status ?? 'inactive') }}
+                                {{ ($ilan->status instanceof \App\Enums\IlanStatus && $ilan->status->value === 'yayinda') || $ilan->status === 'yayinda' || $ilan->status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }}">
+                                    @if($ilan->status instanceof \App\Enums\IlanStatus)
+                                        {{ $ilan->status->label() }}
+                                    @else
+                                        {{ ucfirst($ilan->status ?? 'inactive') }}
+                                    @endif
                                 </span>
                             </div>
                             <div class="flex justify-between">
@@ -418,7 +458,7 @@
                 </div>
             </div>
         </div>
-        
+
         {{-- Listing Navigation --}}
         <div class="mt-8">
             <x-listing-navigation :ilan="$ilan" :mode="'default'" :showSimilar="true" :similarLimit="4" />

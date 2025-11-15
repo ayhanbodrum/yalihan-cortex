@@ -377,12 +377,12 @@ class SkeletonLoader {
                     flex-direction: column;
                     gap: 8px;
                 }
-                
+
                 .skeleton-cell {
                     margin: 0;
                     width: 100%;
                 }
-                
+
                 .skeleton-ai-actions {
                     grid-template-columns: 1fr;
                 }

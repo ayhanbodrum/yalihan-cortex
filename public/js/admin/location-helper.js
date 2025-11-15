@@ -2,102 +2,116 @@
  * EmlakPro - İl-İlçe-Mahalle Seçici JavaScript
  * Bu dosya, il, ilçe ve mahalle seçimi için standart bir arayüz sağlar.
  * Tüm sayfalarda aynı form elemanlarını kullanarak tutarlı bir kullanıcı deneyimi sunar.
- * 
+ *
  * Sürüm: 2.0 - Tüm sayfalarda standart seçim için optimize edilmiştir
  * Son Güncelleme: 22 Mayıs 2025
  */
 
-$(document).ready(function() {
+document.addEventListener('DOMContentLoaded', function () {
     console.log('EmlakPro LocationHelper 2.0 yükleniyor...');
-    
+
     // CSRF token ayarla
     let token = document.head.querySelector('meta[name="csrf-token"]');
-    
+
     if (token) {
         console.log('CSRF token bulundu:', token.content.substring(0, 10) + '...');
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': token.content
-            }
-        });
+        window.__csrfToken = token.content;
     } else {
         console.error('CSRF token bulunamadı! Sayfa yenilenecek...');
         // 2 saniye sonra sayfayı yenile
-        setTimeout(function() {
+        setTimeout(function () {
             window.location.reload(true);
         }, 2000);
     }
-    
+
     // Select2 kütüphanesini başlat
     initializeSelect2();
-    
+
     // İl değiştiğinde
-    $(document).on('change', '#il_select', function() {
-        const il = $(this).val();
-        const ilceSelect = $('#ilce_select');
-        const mahalleSelect = $('#mahalle_select');
-        
-        // İlçe ve mahalle seçimlerini sıfırla
-        resetSelect(ilceSelect);
-        resetSelect(mahalleSelect);
-        
-        if (il) {
-            // İlçeleri getir
-            getIlceler(il, ilceSelect);
-        }
-    });
-    
+    const ilSelectEl = document.getElementById('il_select');
+    const ilceSelectEl = document.getElementById('ilce_select');
+    const mahalleSelectEl = document.getElementById('mahalle_select');
+
+    if (ilSelectEl) {
+        ilSelectEl.addEventListener('change', function () {
+            const il = ilSelectEl.value;
+            const ilceSelect = ilceSelectEl;
+            const mahalleSelect = mahalleSelectEl;
+
+            // İlçe ve mahalle seçimlerini sıfırla
+            resetSelect(ilceSelect);
+            resetSelect(mahalleSelect);
+
+            if (il) {
+                // İlçeleri getir
+                getIlceler(il, ilceSelect);
+            }
+        });
+    }
+
     // İlçe değiştiğinde
-    $(document).on('change', '#ilce_select', function() {
-        const il = $('#il_select').val();
-        const ilce = $(this).val();
-        const mahalleSelect = $('#mahalle_select');
-        
-        // Mahalle seçimini sıfırla
-        resetSelect(mahalleSelect);
-        
-        if (il && ilce) {
-            // Mahalleleri getir
-            getMahalleler(il, ilce, mahalleSelect);
-        }
-    });
-    
+    if (ilceSelectEl) {
+        ilceSelectEl.addEventListener('change', function () {
+            const il = ilSelectEl ? ilSelectEl.value : '';
+            const ilce = ilceSelectEl.value;
+            const mahalleSelect = mahalleSelectEl;
+
+            // Mahalle seçimini sıfırla
+            resetSelect(mahalleSelect);
+
+            if (il && ilce) {
+                // Mahalleleri getir
+                getMahalleler(il, ilce, mahalleSelect);
+            }
+        });
+    }
+
     // Form gönderilmeden önce validasyon
-    $(document).on('submit', 'form', function() {
+    document.addEventListener('submit', function (e) {
+        const form = e.target;
+        if (!(form instanceof HTMLFormElement)) return;
         // Gerekli alanların kontrol edilmesi
-        const ilSelect = $('#il_select');
-        const ilceSelect = $('#ilce_select');
-        const mahalleSelect = $('#mahalle_select');
-        
+        const ilSelect = document.getElementById('il_select');
+        const ilceSelect = document.getElementById('ilce_select');
+        const mahalleSelect = document.getElementById('mahalle_select');
+
         let isValid = true;
-        
+
         // İl kontrolü
-        if (ilSelect.length > 0 && ilSelect.prop('required') && !ilSelect.val()) {
-            $('#il_error').removeClass('hidden');
+        if (ilSelect && ilSelect.required && !ilSelect.value) {
+            const err = document.getElementById('il_error');
+            if (err) err.classList.remove('hidden');
             isValid = false;
         } else {
-            $('#il_error').addClass('hidden');
+            const err = document.getElementById('il_error');
+            if (err) err.classList.add('hidden');
         }
-        
+
         // İlçe kontrolü
-        if (ilceSelect.length > 0 && ilceSelect.prop('required') && !ilceSelect.val()) {
-            $('#ilce_error').removeClass('hidden');
+        if (ilceSelect && ilceSelect.required && !ilceSelect.value) {
+            const err = document.getElementById('ilce_error');
+            if (err) err.classList.remove('hidden');
             isValid = false;
         } else {
-            $('#ilce_error').addClass('hidden');
+            const err = document.getElementById('ilce_error');
+            if (err) err.classList.add('hidden');
         }
-        
+
         // Mahalle kontrolü
-        if (mahalleSelect.length > 0 && mahalleSelect.prop('required') && !mahalleSelect.val()) {
-            $('#mahalle_error').removeClass('hidden');
+        if (mahalleSelect && mahalleSelect.required && !mahalleSelect.value) {
+            const err = document.getElementById('mahalle_error');
+            if (err) err.classList.remove('hidden');
             isValid = false;
         } else {
-            $('#mahalle_error').addClass('hidden');
+            const err = document.getElementById('mahalle_error');
+            if (err) err.classList.add('hidden');
         }
-        
-        return isValid;
+
+        if (!isValid) {
+            e.preventDefault();
+        }
     });
-    
+
     // Sayfa yüklendiğinde seçili değerleri ayarla
     setSelectedValues();
 });
@@ -107,19 +121,20 @@ $(document).ready(function() {
  */
 function initializeSelect2() {
     // Select2 kütüphanesi yüklü mü kontrol et
-    if (typeof $.fn.select2 !== 'undefined') {
-        $('.select2-basic').select2({
+    if (typeof $.fn !== 'undefined' && $.fn.select2) {
+        var els = document.querySelectorAll('.select2-basic')
+        els.forEach(function (el) { window.$(el).select2({
             placeholder: 'Seçiniz...',
             allowClear: true,
             language: {
-                noResults: function() {
-                    return "Sonuç bulunamadı";
+                noResults: function () {
+                    return 'Sonuç bulunamadı';
                 },
-                searching: function() {
-                    return "Aranıyor...";
-                }
-            }
-        });
+                searching: function () {
+                    return 'Aranıyor...';
+                },
+            },
+        }) })
         console.log('Select2 inicializasyonu tamamlandı');
     } else {
         console.warn('Select2 kütüphanesi yüklü değil!');
@@ -131,15 +146,12 @@ function initializeSelect2() {
  * @param {jQuery} select - Sıfırlanacak select elementi
  */
 function resetSelect(select) {
-    select.empty().append('<option value="">-- Seçiniz --</option>');
-    select.prop('disabled', true);
-    
+    if (!select) return;
+    select.innerHTML = '<option value="">-- Seçiniz --</option>';
+    select.disabled = true;
+
     // Select2 varsa güncelle
-    if (typeof $.fn.select2 !== 'undefined') {
-        select.trigger('change.select2');
-    } else {
-        select.trigger('change');
-    }
+    triggerChanged(select)
 }
 
 /**
@@ -148,43 +160,32 @@ function resetSelect(select) {
  * @param {jQuery} ilceSelect - İlçe select elementi
  */
 function getIlceler(il, ilceSelect) {
-    $.ajax({
-        url: route('admin.get-ilceler'),
-        type: 'GET',
-        data: { il: il },
-        dataType: 'json',
-        beforeSend: function() {
-            ilceSelect.prop('disabled', true);
-            console.log(`İl için ilçeler getiriliyor: ${il}`);
-        },
-        success: function(data) {
-            ilceSelect.empty().append('<option value="">-- İlçe Seçin --</option>');
-            
+    if (!ilceSelect) return;
+    ilceSelect.disabled = true;
+    console.log(`İl için ilçeler getiriliyor: ${il}`);
+    const url = route('admin.get-ilceler') + `?il=${encodeURIComponent(il)}`;
+    const headers = {};
+    if (window.__csrfToken) headers['X-CSRF-TOKEN'] = window.__csrfToken;
+    fetch(url, { method: 'GET', headers })
+        .then((res) => res.json())
+        .then((data) => {
+            ilceSelect.innerHTML = '<option value="">-- İlçe Seçin --</option>';
             if (data && data.length > 0) {
-                $.each(data, function(index, ilce) {
+                for (const ilce of data) {
                     ilceSelect.append(new Option(ilce.ilce_adi, ilce.ilce_adi));
-                });
-                ilceSelect.prop('disabled', false);
-                
-                // Eğer data-selected değeri varsa seç
-                const selectedIlce = ilceSelect.data('selected');
+                }
+                ilceSelect.disabled = false;
+
+                const selectedIlce = ilceSelect.dataset.selected;
                 if (selectedIlce) {
-                    ilceSelect.val(selectedIlce);
-                    
-                    // Select2 varsa güncelle
-                    if (typeof $.fn.select2 !== 'undefined') {
-                        ilceSelect.trigger('change.select2');
-                    } else {
-                        ilceSelect.trigger('change');
-                    }
+                    ilceSelect.value = selectedIlce;
+                    triggerChanged(ilceSelect)
                 }
             }
-        },
-        error: function(xhr, status, error) {
-            console.error('İlçe getirme hatası:', error);
-            console.log(xhr.responseText);
-        }
-    });
+        })
+        .catch((err) => {
+            console.error('İlçe getirme hatası:', err);
+        });
 }
 
 /**
@@ -194,60 +195,53 @@ function getIlceler(il, ilceSelect) {
  * @param {jQuery} mahalleSelect - Mahalle select elementi
  */
 function getMahalleler(il, ilce, mahalleSelect) {
-    $.ajax({
-        url: route('admin.get-mahalleler'),
-        type: 'GET',
-        data: { il: il, ilce: ilce },
-        dataType: 'json',
-        beforeSend: function() {
-            mahalleSelect.prop('disabled', true);
-            console.log(`İl: ${il}, İlçe: ${ilce} için mahalleler getiriliyor`);
-        },
-        success: function(data) {
-            mahalleSelect.empty().append('<option value="">-- Mahalle Seçin --</option>');
-            
+    if (!mahalleSelect) return;
+    mahalleSelect.disabled = true;
+    console.log(`İl: ${il}, İlçe: ${ilce} için mahalleler getiriliyor`);
+    const params = new URLSearchParams({ il, ilce });
+    const url = route('admin.get-mahalleler') + `?${params.toString()}`;
+    const headers = {};
+    if (window.__csrfToken) headers['X-CSRF-TOKEN'] = window.__csrfToken;
+    fetch(url, { method: 'GET', headers })
+        .then((res) => res.json())
+        .then((data) => {
+            mahalleSelect.innerHTML = '<option value="">-- Mahalle Seçin --</option>';
             if (data && data.length > 0) {
-                $.each(data, function(index, mahalle) {
+                for (const mahalle of data) {
                     mahalleSelect.append(new Option(mahalle.mahalle_adi, mahalle.mahalle_adi));
-                });
-                mahalleSelect.prop('disabled', false);
-                
-                // Eğer data-selected değeri varsa seç
-                const selectedMahalle = mahalleSelect.data('selected');
+                }
+                mahalleSelect.disabled = false;
+
+                const selectedMahalle = mahalleSelect.dataset.selected;
                 if (selectedMahalle) {
-                    mahalleSelect.val(selectedMahalle);
-                    
-                    // Select2 varsa güncelle
-                    if (typeof $.fn.select2 !== 'undefined') {
-                        mahalleSelect.trigger('change.select2');
-                    } else {
-                        mahalleSelect.trigger('change');
-                    }
+                    mahalleSelect.value = selectedMahalle;
+                    triggerChanged(mahalleSelect)
                 }
             }
-        },
-        error: function(xhr, status, error) {
-            console.error('Mahalle getirme hatası:', error);
-            console.log(xhr.responseText);
-        }
-    });
+        })
+        .catch((err) => {
+            console.error('Mahalle getirme hatası:', err);
+        });
 }
 
 /**
  * Sayfa yüklendiğinde seçili değerleri ayarlama
  */
 function setSelectedValues() {
-    const ilSelect = $('#il_select');
-    const selectedIl = ilSelect.data('selected');
-    
+    const ilSelect = document.getElementById('il_select');
+    if (!ilSelect) return;
+    const selectedIl = ilSelect.dataset.selected;
     if (selectedIl) {
-        ilSelect.val(selectedIl);
-        
-        // Select2 varsa güncelle
-        if (typeof $.fn.select2 !== 'undefined') {
-            ilSelect.trigger('change.select2');
-        } else {
-            ilSelect.trigger('change');
-        }
+        ilSelect.value = selectedIl;
+        triggerChanged(ilSelect)
+    }
+}
+
+function triggerChanged(el) {
+    if (!el) return
+    if (typeof $.fn !== 'undefined' && $.fn.select2) {
+        window.$(el).trigger('change.select2')
+    } else {
+        el.dispatchEvent(new Event('change'))
     }
 }

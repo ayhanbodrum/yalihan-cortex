@@ -3,7 +3,7 @@
   "date": "2025-11-01",
   "category": "context7-compliance",
   "severity": "HIGH",
-  
+
   "summary": {
     "scope": ["CRM", "Notifications", "Takım Yönetimi"],
     "before": 151,
@@ -12,7 +12,7 @@
     "success_rate": "79%",
     "files_affected": 14
   },
-  
+
   "replacements": {
     "buttons": {
       "neo-btn neo-btn-primary": "inline-flex items-center px-6 py-3 bg-orange-600 text-white font-semibold rounded-lg shadow-md hover:bg-orange-700 hover:scale-105 hover:shadow-lg active:scale-95 focus:ring-2 focus:ring-orange-500 focus:outline-none transition-all duration-200",
@@ -47,13 +47,10 @@
       "neo-page-header": ""
     }
   },
-  
+
   "alpine_js_check": {
     "status": "PASSED",
-    "checked_files": [
-      "crm/index.blade.php",
-      "notifications/index.blade.php"
-    ],
+    "checked_files": ["crm/index.blade.php", "notifications/index.blade.php"],
     "issues_found": 0,
     "notes": [
       "crmAI() function returns object with 'loading' inside ✅",
@@ -61,7 +58,7 @@
       "No 'aiLoading is not defined' risk ✅"
     ]
   },
-  
+
   "remaining_issues": {
     "count": 31,
     "types": [
@@ -74,16 +71,11 @@
     "impact": "Functional (works fine, just not 100% clean)",
     "recommendation": "Clean in next major template refactor"
   },
-  
+
   "context7_compliance": {
     "before": "98.82%",
     "estimated_after": "99.5%",
-    "forbidden_patterns_removed": [
-      "neo-btn",
-      "neo-card",
-      "neo-input",
-      "neo-form-group"
-    ],
+    "forbidden_patterns_removed": ["neo-btn", "neo-card", "neo-input", "neo-form-group"],
     "tailwind_features_added": [
       "transition-all duration-200",
       "hover:scale-105",
@@ -92,7 +84,7 @@
       "active:scale-95"
     ]
   },
-  
+
   "files_modified": [
     "resources/views/admin/crm/dashboard.blade.php",
     "resources/views/admin/crm/index.blade.php",
@@ -109,7 +101,7 @@
     "resources/views/admin/takim-yonetimi/takim/edit.blade.php",
     "resources/views/admin/takim-yonetimi/takim/performans.blade.php"
   ],
-  
+
   "lessons_learned": [
     "SED is effective for bulk replacements (79% success)",
     "Complex class combinations need manual cleanup",
@@ -117,7 +109,7 @@
     "Automated tools save massive time vs manual editing",
     "Context7 Tailwind standard is now enforced"
   ],
-  
+
   "yalihan_bekci_rules": {
     "auto_check": [
       "Scan for neo-btn, neo-card, neo-input in new files",
@@ -130,15 +122,14 @@
       "Code review: Check transition-all duration-200"
     ]
   },
-  
+
   "next_actions": [
     "Test all modified pages in browser",
     "Update .context7/authority.json",
     "Create Yalıhan Bekçi auto-check rule",
     "Document in Context7 Memory System"
   ],
-  
+
   "status": "COMPLETED",
   "compliance": "CONTEXT7_STANDARD"
 }
-

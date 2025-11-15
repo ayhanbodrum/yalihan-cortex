@@ -8,12 +8,12 @@
 
 ## 📊 ÖZET
 
-| API | Durum | Süre | Öncelik | ROI |
-|-----|-------|------|---------|-----|
-| **TurkiyeAPI** | Yeni | 2.5h | YÜKSEK | ⭐⭐⭐⭐⭐ |
-| **WikiMapia** | İyileştirme | 5h | ORTA | ⭐⭐⭐⭐ |
-| **TCMB Kur API** | Yeni | 4.5h | YÜKSEK | ⭐⭐⭐⭐⭐ |
-| **Etiket-İlan** | Yeni | 2h | ORTA | ⭐⭐⭐ |
+| API              | Durum       | Süre | Öncelik | ROI        |
+| ---------------- | ----------- | ---- | ------- | ---------- |
+| **TurkiyeAPI**   | Yeni        | 2.5h | YÜKSEK  | ⭐⭐⭐⭐⭐ |
+| **WikiMapia**    | İyileştirme | 5h   | ORTA    | ⭐⭐⭐⭐   |
+| **TCMB Kur API** | Yeni        | 4.5h | YÜKSEK  | ⭐⭐⭐⭐⭐ |
+| **Etiket-İlan**  | Yeni        | 2h   | ORTA    | ⭐⭐⭐     |
 
 **Toplam:** 14 saat (3 iş günü)
 
@@ -30,35 +30,31 @@ Tip: REST API (JSON)
 Lisans: Open Source
 Maliyet: Ücretsiz ✅
 
-Endpoints:
-  GET /v1/provinces (İller + filtreleme)
-  GET /v1/provinces/:id
-  GET /v1/districts (İlçeler)
-  GET /v1/districts/:id
-  GET /v1/neighborhoods (Mahalleler)
-  GET /v1/neighborhoods/:id
-  GET /v1/villages (Köyler) 🆕
-  GET /v1/villages/:id 🆕
-  GET /v1/towns (Beldeler) 🆕 CRITICAL!
-  GET /v1/towns/:id 🆕
+Endpoints: GET /v1/provinces (İller + filtreleme)
+    GET /v1/provinces/:id
+    GET /v1/districts (İlçeler)
+    GET /v1/districts/:id
+    GET /v1/neighborhoods (Mahalleler)
+    GET /v1/neighborhoods/:id
+    GET /v1/villages (Köyler) 🆕
+    GET /v1/villages/:id 🆕
+    GET /v1/towns (Beldeler) 🆕 CRITICAL!
+    GET /v1/towns/:id 🆕
 ```
 
 ### Neden Kritik?
 
 ```yaml
-Problem:
-  Bodrum Gümüşlük = BELDE (town)
-  Bodrum Yalıkavak = BELDE
-  
-Mevcut sistemde:
-  ❌ Mahalle olarak yok
-  ❌ İlçe değil
-  ❌ Bulunamıyor!
+Problem: Bodrum Gümüşlük = BELDE (town)
+    Bodrum Yalıkavak = BELDE
 
-TurkiyeAPI ile:
-  ✅ GET /v1/towns?name=Gümüşlük&province=Muğla
-  ✅ Bulunur!
-  ✅ Nüfus, koordinat, posta kodu gelir
+Mevcut sistemde: ❌ Mahalle olarak yok
+    ❌ İlçe değil
+    ❌ Bulunamıyor!
+
+TurkiyeAPI ile: ✅ GET /v1/towns?name=Gümüşlük&province=Muğla
+    ✅ Bulunur!
+    ✅ Nüfus, koordinat, posta kodu gelir
 
 Fayda: Tatil bölgeleri için ZORUNLU! 🏖️
 ```
@@ -81,7 +77,7 @@ class TurkiyeAPIService
     protected $baseUrl = 'https://api.turkiyeapi.dev/v1';
     protected $timeout = 10;
     protected $cacheTtl = 86400; // 24 saat
-    
+
     public function getProvinces(array $filters = [])
     {
         $cacheKey = 'turkiyeapi.provinces.' . md5(json_encode($filters));
@@ -91,23 +87,23 @@ class TurkiyeAPIService
             return $response->successful() ? $response->json() : null;
         });
     }
-    
+
     public function getDistricts(array $filters = []) { ... }
     public function getNeighborhoods(array $filters = []) { ... }
-    
+
     // 🆕 Yeni metodlar
     public function getVillages(array $filters = []) { ... }
     public function getTowns(array $filters = []) { ... }
-    
+
     // 🆕 Helper metodlar
     public function getCoastalProvinces() {
         return $this->getProvinces(['isCoastal' => true]);
     }
-    
+
     public function getMetropolitanProvinces() {
         return $this->getProvinces(['isMetropolitan' => true]);
     }
-    
+
     public function searchLocation($name, $type = 'all') {
         // İl, ilçe, mahalle, köy, belde'de ara
     }
@@ -175,18 +171,18 @@ public function getTowns(Request $request)
             </option>
         @endforeach
     </optgroup>
-    
+
     <optgroup label="🌾 Köyler">
         <template x-for="village in villages">
-            <option :value="'village_' + village.id" 
+            <option :value="'village_' + village.id"
                     x-text="`${village.name} (${village.population} kişi)`">
             </option>
         </template>
     </optgroup>
-    
+
     <optgroup label="🏖️ Beldeler (Tatil Bölgeleri)">
         <template x-for="town in towns">
-            <option :value="'town_' + town.id" 
+            <option :value="'town_' + town.id"
                     x-text="`${town.name} (${town.population} kişi)`">
             </option>
         </template>
@@ -201,12 +197,12 @@ loadLocationOptions(districtId) {
     fetch(`/api/location/neighborhoods/${districtId}`)
         .then(r => r.json())
         .then(data => this.neighborhoods = data);
-    
+
     // Köyler (TurkiyeAPI) 🆕
     fetch(`/api/turkiye/villages?districtId=${districtId}`)
         .then(r => r.json())
         .then(data => this.villages = data.data);
-    
+
     // Beldeler (TurkiyeAPI) 🆕 CRITICAL!
     fetch(`/api/turkiye/towns?districtId=${districtId}`)
         .then(r => r.json())
@@ -250,18 +246,16 @@ Service: WikimapiaService ✅
 View: wikimapia-search/index.blade.php ✅
 API Functions: 7 adet ✅
 
-Güçlü Yönler:
-  ✅ Site/apartman arama
-  ✅ Leaflet harita
-  ✅ Cache (1 saat)
-  ✅ Dark mode
-  ✅ Toast notifications
-  ✅ Custom searchResidentialComplexes()
+Güçlü Yönler: ✅ Site/apartman arama
+    ✅ Leaflet harita
+    ✅ Cache (1 saat)
+    ✅ Dark mode
+    ✅ Toast notifications
+    ✅ Custom searchResidentialComplexes()
 
-Zayıf Yönler:
-  ⚠️ Neo classes (Tailwind gerekli)
-  ❌ Place detay modal yok
-  ❌ İlan-Place ilişki yok
+Zayıf Yönler: ⚠️ Neo classes (Tailwind gerekli)
+    ❌ Place detay modal yok
+    ❌ İlan-Place ilişki yok
 ```
 
 ### İyileştirme Planı (5 saat)
@@ -278,9 +272,9 @@ Zayıf Yönler:
 </button>
 
 <!-- Sonra (Tailwind): -->
-<button class="px-6 py-3 bg-gradient-to-br from-blue-600 to-purple-600 
-               text-white font-semibold rounded-lg shadow-lg 
-               hover:shadow-xl hover:scale-105 
+<button class="px-6 py-3 bg-gradient-to-br from-blue-600 to-purple-600
+               text-white font-semibold rounded-lg shadow-lg
+               hover:shadow-xl hover:scale-105
                active:scale-95 transition-all duration-200
                focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
     <svg class="w-5 h-5 inline mr-2">...</svg>
@@ -295,24 +289,24 @@ Zayıf Yönler:
 <x-modal id="placeDetailModal" size="xl">
     <div x-data="placeDetail">
         <h2 x-text="place.title" class="text-2xl font-bold"></h2>
-        
+
         <!-- Fotoğraf Galeri -->
         <div class="grid grid-cols-3 gap-2" x-show="place.photos">
             <template x-for="photo in place.photos">
                 <img :src="photo.thumb_url" class="rounded-lg">
             </template>
         </div>
-        
+
         <!-- Açıklama -->
         <p x-text="place.description"></p>
-        
+
         <!-- Koordinatlar -->
         <div class="mt-4">
             <span>📍 {{ place.location.lat }}, {{ place.location.lon }}</span>
         </div>
-        
+
         <!-- İlana Ekle Butonu -->
-        <button @click="addToIlan(place)" 
+        <button @click="addToIlan(place)"
                 class="mt-4 px-6 py-3 bg-green-600 text-white rounded-lg">
             ✅ İlana Ekle
         </button>
@@ -338,7 +332,7 @@ public function wikimapiaPlace()
 }
 
 // İlan create sayfasında
-<button @click="searchWikimapiaPlace()" 
+<button @click="searchWikimapiaPlace()"
         class="px-4 py-2 bg-blue-600 text-white rounded-lg">
     🗺️ Site/Apartman Bul
 </button>
@@ -359,16 +353,16 @@ async function onCoordinateChange(lat, lng) {
     // WikiMapia'dan otomatik site bul
     const places = await fetch('/admin/wikimapia-search/nearby', {
         method: 'POST',
-        body: JSON.stringify({ lat, lon: lng, radius: 0.01 })
-    }).then(r => r.json());
-    
+        body: JSON.stringify({ lat, lon: lng, radius: 0.01 }),
+    }).then((r) => r.json());
+
     if (places.data && places.data.length > 0) {
         const nearest = places.data[0];
-        
+
         // Otomatik doldur
         document.getElementById('site_apartman_adi').value = nearest.title;
         document.getElementById('wikimapia_place_id').value = nearest.id;
-        
+
         // Kullanıcıya göster
         toast.success(`✅ Site bulundu: ${nearest.title}`);
     }
@@ -388,8 +382,8 @@ Maliyet: Ücretsiz ✅
 Güncelleme: Günlük (hafta içi 15:30)
 
 Alternatif:
-  - ECB API: https://data.ecb.europa.eu/api
-  - exchangerate-api.com: https://api.exchangerate-api.com
+    - ECB API: https://data.ecb.europa.eu/api
+    - exchangerate-api.com: https://api.exchangerate-api.com
 ```
 
 ### Entegrasyon Adımları (4.5 saat)
@@ -409,27 +403,27 @@ use Illuminate\Support\Facades\Log;
 class TCMBService
 {
     protected $baseUrl = 'https://www.tcmb.gov.tr/kurlar';
-    
+
     /**
      * Güncel kurları çek
      */
     public function getExchangeRates()
     {
         $cacheKey = 'tcmb.rates.' . now()->format('Y-m-d');
-        
+
         return Cache::remember($cacheKey, 86400, function () {
             try {
                 $url = "{$this->baseUrl}/today.xml";
                 $response = Http::timeout(10)->get($url);
-                
+
                 if (!$response->successful()) {
                     Log::error('TCMB API failed', ['status' => $response->status()]);
                     return $this->getFallbackRates();
                 }
-                
+
                 $xml = simplexml_load_string($response->body());
                 $rates = [];
-                
+
                 foreach ($xml->Currency as $currency) {
                     $code = (string) $currency['CurrencyCode'];
                     $rates[$code] = [
@@ -441,17 +435,17 @@ class TCMBService
                         'banknote_selling' => (float) $currency->BanknoteSelling,
                     ];
                 }
-                
+
                 Log::info('TCMB kurları çekildi', ['count' => count($rates)]);
                 return $rates;
-                
+
             } catch (\Exception $e) {
                 Log::error('TCMB API exception', ['error' => $e->getMessage()]);
                 return $this->getFallbackRates();
             }
         });
     }
-    
+
     /**
      * Belirli para biriminin kurubu
      */
@@ -460,7 +454,7 @@ class TCMBService
         $rates = $this->getExchangeRates();
         return $rates[$currencyCode] ?? null;
     }
-    
+
     /**
      * TRY'ye çevir
      */
@@ -469,15 +463,15 @@ class TCMBService
         if ($fromCurrency === 'TRY') {
             return $amount;
         }
-        
+
         $rate = $this->getRate($fromCurrency);
         if (!$rate) {
             return null;
         }
-        
+
         return $amount * $rate['forex_selling'];
     }
-    
+
     /**
      * Fallback kurlar (API çalışmazsa)
      */
@@ -508,24 +502,24 @@ class UpdateExchangeRates extends Command
 {
     protected $signature = 'exchange:update';
     protected $description = 'TCMB\'den kurları çek ve ilanları güncelle';
-    
+
     public function handle(TCMBService $tcmb)
     {
         $this->info('🔄 Kurlar güncelleniyor...');
-        
+
         // 1. Kurları çek
         $rates = $tcmb->getExchangeRates();
-        
+
         // 2. Yurt dışı ilanları güncelle
         $ilanlar = Ilan::whereNotNull('para_birimi_orijinal')
             ->where('para_birimi_orijinal', '!=', 'TRY')
             ->get();
-        
+
         $updated = 0;
         foreach ($ilanlar as $ilan) {
             $currency = $ilan->para_birimi_orijinal;
             $rate = $rates[$currency] ?? null;
-            
+
             if ($rate) {
                 $ilan->fiyat_try_cached = $ilan->fiyat_orijinal * $rate['forex_selling'];
                 $ilan->kur_orani = $rate['forex_selling'];
@@ -534,7 +528,7 @@ class UpdateExchangeRates extends Command
                 $updated++;
             }
         }
-        
+
         $this->info("✅ {$updated} ilan güncellendi!");
     }
 }
@@ -561,7 +555,7 @@ Schema::create('kur_gecmisi', function (Blueprint $table) {
     $table->date('tarih');
     $table->string('kaynak')->default('TCMB'); // TCMB, ECB
     $table->timestamps();
-    
+
     $table->unique(['para_birimi', 'tarih']);
     $table->index('tarih');
 });
@@ -589,7 +583,7 @@ KurGecmisi::create([
 {{-- Admin Dashboard Widget --}}
 <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
     <h3 class="text-lg font-bold mb-4">💱 Güncel Kurlar (TCMB)</h3>
-    
+
     <div class="space-y-3" x-data="exchangeRates">
         <template x-for="rate in rates">
             <div class="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
@@ -604,7 +598,7 @@ KurGecmisi::create([
             </div>
         </template>
     </div>
-    
+
     <p class="text-xs text-gray-500 mt-4">
         Son güncelleme: <span x-text="lastUpdate"></span>
     </p>
@@ -615,7 +609,7 @@ document.addEventListener('alpine:init', () => {
     Alpine.data('exchangeRates', () => ({
         rates: [],
         lastUpdate: '',
-        
+
         async init() {
             const response = await fetch('/api/exchange-rates');
             const data = await response.json();
@@ -642,7 +636,7 @@ Schema::create('ilan_etiket', function (Blueprint $table) {
     $table->foreignId('ilan_id')->constrained('ilanlar')->onDelete('cascade');
     $table->foreignId('etiket_id')->constrained('etiketler')->onDelete('cascade');
     $table->timestamps();
-    
+
     $table->unique(['ilan_id', 'etiket_id']);
 });
 
@@ -687,18 +681,18 @@ public function ilanlar()
 {{-- İlan create/edit --}}
 <div class="mb-4">
     <label class="block text-sm font-bold mb-2">🏷️ Etiketler</label>
-    
+
     <div class="flex flex-wrap gap-2">
         @foreach($etiketler as $etiket)
             <label class="inline-flex items-center cursor-pointer">
-                <input type="checkbox" 
-                       name="etiketler[]" 
+                <input type="checkbox"
+                       name="etiketler[]"
                        value="{{ $etiket->id }}"
                        {{ in_array($etiket->id, old('etiketler', $ilan->etiketler->pluck('id')->toArray())) ? 'checked' : '' }}
                        class="sr-only peer">
                 <span class="px-4 py-2 rounded-lg border-2 transition-all
-                             peer-checked:bg-{{ $etiket->color }}-600 
-                             peer-checked:text-white 
+                             peer-checked:bg-{{ $etiket->color }}-600
+                             peer-checked:text-white
                              peer-checked:border-{{ $etiket->color }}-600
                              border-gray-300 text-gray-700
                              hover:border-{{ $etiket->color }}-400">
@@ -733,26 +727,21 @@ public function ilanlar()
 ### Hafta 1: API Entegrasyonları (3 gün)
 
 ```yaml
-Pazartesi (5 Kasım):
-  ✅ Component Library (Modal, Checkbox, Radio) - 3h
-  → Zaten tamamlandı!
+Pazartesi (5 Kasım): ✅ Component Library (Modal, Checkbox, Radio) - 3h
+    → Zaten tamamlandı!
 
-Salı (6 Kasım):
-  🆕 TurkiyeAPI Service - 2.5h
-  🆕 Test + Documentation - 30dk
+Salı (6 Kasım): 🆕 TurkiyeAPI Service - 2.5h
+    🆕 Test + Documentation - 30dk
 
-Çarşamba (7 Kasım):
-  🆕 TCMB Kur API - 4.5h
-  🆕 Kur widget + Test - 1h
+Çarşamba (7 Kasım): 🆕 TCMB Kur API - 4.5h
+    🆕 Kur widget + Test - 1h
 
-Perşembe (8 Kasım):
-  🆕 WikiMapia İyileştirmeleri - 5h
-  🆕 Etiket-İlan Entegrasyonu - 2h
+Perşembe (8 Kasım): 🆕 WikiMapia İyileştirmeleri - 5h
+    🆕 Etiket-İlan Entegrasyonu - 2h
 
-Cuma (9 Kasım):
-  ✅ Testing (all APIs)
-  ✅ Documentation
-  ✅ Yalıhan Bekçi'ye öğret
+Cuma (9 Kasım): ✅ Testing (all APIs)
+    ✅ Documentation
+    ✅ Yalıhan Bekçi'ye öğret
 ```
 
 **Toplam:** 14 saat (3 iş günü)
@@ -769,12 +758,12 @@ Component Library kalan + UI Migration
 
 ## 🎯 FAYDA ANALİZİ
 
-| Entegrasyon | Süre | Fayda | ROI |
-|-------------|------|-------|-----|
-| **TurkiyeAPI** | 2.5h | Tatil bölgeleri ✅ | ⭐⭐⭐⭐⭐ |
-| **TCMB Kur** | 4.5h | Otomatik güncel kur ✅ | ⭐⭐⭐⭐⭐ |
-| **WikiMapia++** | 5h | Site adı otomatik ✅ | ⭐⭐⭐⭐ |
-| **Etiket-İlan** | 2h | Badge/filtreleme ✅ | ⭐⭐⭐ |
+| Entegrasyon     | Süre | Fayda                  | ROI        |
+| --------------- | ---- | ---------------------- | ---------- |
+| **TurkiyeAPI**  | 2.5h | Tatil bölgeleri ✅     | ⭐⭐⭐⭐⭐ |
+| **TCMB Kur**    | 4.5h | Otomatik güncel kur ✅ | ⭐⭐⭐⭐⭐ |
+| **WikiMapia++** | 5h   | Site adı otomatik ✅   | ⭐⭐⭐⭐   |
+| **Etiket-İlan** | 2h   | Badge/filtreleme ✅    | ⭐⭐⭐     |
 
 **Toplam:** 14h → Büyük kazanç! 🚀
 
@@ -783,6 +772,7 @@ Component Library kalan + UI Migration
 ## 📋 CHECKLIST
 
 ### TurkiyeAPI:
+
 - [ ] TurkiyeAPIService.php oluştur
 - [ ] config/services.php → turkiyeapi
 - [ ] LocationController entegrasyon
@@ -791,6 +781,7 @@ Component Library kalan + UI Migration
 - [ ] Yalıhan Bekçi'ye öğret
 
 ### TCMB Kur API:
+
 - [ ] TCMBService.php oluştur
 - [ ] UpdateExchangeRates command
 - [ ] Kernel.php → schedule
@@ -800,6 +791,7 @@ Component Library kalan + UI Migration
 - [ ] Test + fallback
 
 ### WikiMapia:
+
 - [ ] Tailwind migration
 - [ ] Place detay modal
 - [ ] ilan.wikimapia_place_id field
@@ -807,6 +799,7 @@ Component Library kalan + UI Migration
 - [ ] İlan-Place link
 
 ### Etiket-İlan:
+
 - [ ] ilan_etiket pivot migration
 - [ ] Ilan::etiketler() ilişki
 - [ ] Admin UI (checkbox)
@@ -816,4 +809,3 @@ Component Library kalan + UI Migration
 ---
 
 **HEYECANLI! Yarın başlıyoruz! 🚀**
-

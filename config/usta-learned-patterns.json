@@ -68,9 +68,7 @@
       "frequency": 1,
       "firstSeen": "2025-10-10T19:38:00.000Z",
       "lastSeen": "2025-10-10T19:38:00.000Z",
-      "examples": [
-        "ulkeler.name → ulkeler.ulke_adi"
-      ],
+      "examples": ["ulkeler.name → ulkeler.ulke_adi"],
       "autoFix": "Replace with Context7 compliant field name",
       "priority": "Critical"
     },

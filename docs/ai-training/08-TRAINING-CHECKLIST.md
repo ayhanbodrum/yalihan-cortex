@@ -9,11 +9,11 @@
 
 ### **Gereksinimler:**
 
--   [ ] AnythingLLM kurulu ve çalışıyor (http://localhost:3001)
--   [ ] Ollama server çalışıyor (http://51.75.64.121:11434)
--   [ ] gemma2:2b modeli indirilmiş
--   [ ] Tüm eğitim dokümanları hazır (8 dosya)
--   [ ] System prompt metni hazır
+- [ ] AnythingLLM kurulu ve çalışıyor (http://localhost:3001)
+- [ ] Ollama server çalışıyor (http://51.75.64.121:11434)
+- [ ] gemma2:2b modeli indirilmiş
+- [ ] Tüm eğitim dokümanları hazır (8 dosya)
+- [ ] System prompt metni hazır
 
 ---
 
@@ -21,60 +21,53 @@
 
 ### **Core Dokümanlar (Zorunlu):**
 
--   [ ] **00-ANYTHINGLLM-MASTER-TRAINING.md**
+- [ ] **00-ANYTHINGLLM-MASTER-TRAINING.md**
+    - [ ] Ollama endpoint doğru (http://51.75.64.121:11434)
+    - [ ] 5 AI provider listelenmiş
+    - [ ] Sistem mimarisi açıklanmış
+    - [ ] Güvenlik kuralları var
 
-    -   [ ] Ollama endpoint doğru (http://51.75.64.121:11434)
-    -   [ ] 5 AI provider listelenmiş
-    -   [ ] Sistem mimarisi açıklanmış
-    -   [ ] Güvenlik kuralları var
+- [ ] **01-AI-FEATURES-GUIDE.md**
+    - [ ] Başlık/açıklama/lokasyon/fiyat özellikleri
+    - [ ] 4 ton profili (SEO, Kurumsal, Hızlı Satış, Lüks)
+    - [ ] Cache stratejileri
+    - [ ] Performans metrikleri
 
--   [ ] **01-AI-FEATURES-GUIDE.md**
+- [ ] **02-CONTEXT7-RULES-SIMPLIFIED.md** ⭐ **KRİTİK**
+    - [ ] Zorunlu alan adları (status, il_id, para_birimi)
+    - [ ] Yasaklar listesi (durum, sehir, aktif)
+    - [ ] Neo Design System kuralları
+    - [ ] Lokasyon hiyerarşisi
 
-    -   [ ] Başlık/açıklama/lokasyon/fiyat özellikleri
-    -   [ ] 4 ton profili (SEO, Kurumsal, Hızlı Satış, Lüks)
-    -   [ ] Cache stratejileri
-    -   [ ] Performans metrikleri
+- [ ] **03-DATABASE-SCHEMA-FOR-AI.md**
+    - [ ] İlanlar tablosu (100+ alan)
+    - [ ] Kişiler tablosu
+    - [ ] Kategoriler tablosu
+    - [ ] İlişki şemaları
 
--   [ ] **02-CONTEXT7-RULES-SIMPLIFIED.md** ⭐ **KRİTİK**
+- [ ] **04-PROMPT-TEMPLATES.md**
+    - [ ] Başlık prompt'ları (4 template)
+    - [ ] Açıklama prompt'ları (3 template)
+    - [ ] Lokasyon analizi prompt'ı
+    - [ ] Fiyat analizi prompt'ı
 
-    -   [ ] Zorunlu alan adları (status, il_id, para_birimi)
-    -   [ ] Yasaklar listesi (durum, sehir, aktif)
-    -   [ ] Neo Design System kuralları
-    -   [ ] Lokasyon hiyerarşisi
+- [ ] **05-USE-CASES-AND-SCENARIOS.md**
+    - [ ] 8 gerçek senaryo
+    - [ ] Örnek dialog'lar
+    - [ ] Edge case'ler
+    - [ ] Performans örnekleri
 
--   [ ] **03-DATABASE-SCHEMA-FOR-AI.md**
+- [ ] **06-API-REFERENCE.md**
+    - [ ] 6 ana endpoint
+    - [ ] Request/Response örnekleri
+    - [ ] Error handling
+    - [ ] Rate limiting bilgisi
 
-    -   [ ] İlanlar tablosu (100+ alan)
-    -   [ ] Kişiler tablosu
-    -   [ ] Kategoriler tablosu
-    -   [ ] İlişki şemaları
-
--   [ ] **04-PROMPT-TEMPLATES.md**
-
-    -   [ ] Başlık prompt'ları (4 template)
-    -   [ ] Açıklama prompt'ları (3 template)
-    -   [ ] Lokasyon analizi prompt'ı
-    -   [ ] Fiyat analizi prompt'ı
-
--   [ ] **05-USE-CASES-AND-SCENARIOS.md**
-
-    -   [ ] 8 gerçek senaryo
-    -   [ ] Örnek dialog'lar
-    -   [ ] Edge case'ler
-    -   [ ] Performans örnekleri
-
--   [ ] **06-API-REFERENCE.md**
-
-    -   [ ] 6 ana endpoint
-    -   [ ] Request/Response örnekleri
-    -   [ ] Error handling
-    -   [ ] Rate limiting bilgisi
-
--   [ ] **07-EMBEDDING-GUIDE.md**
-    -   [ ] Kurulum adımları
-    -   [ ] Test senaryoları
-    -   [ ] Troubleshooting
-    -   [ ] Başarı kriterleri
+- [ ] **07-EMBEDDING-GUIDE.md**
+    - [ ] Kurulum adımları
+    - [ ] Test senaryoları
+    - [ ] Troubleshooting
+    - [ ] Başarı kriterleri
 
 ---
 
@@ -229,10 +222,10 @@ Context7 field: para_birimi (currency YASAK)"
 
 ### **Vector DB Metrikleri:**
 
--   [ ] **Chunk Count:** 60-70 arası ✅
--   [ ] **Total Size:** 2-3 MB ✅
--   [ ] **Embedding Time:** <5 dakika ✅
--   [ ] **Index Status:** Completed ✅
+- [ ] **Chunk Count:** 60-70 arası ✅
+- [ ] **Total Size:** 2-3 MB ✅
+- [ ] **Embedding Time:** <5 dakika ✅
+- [ ] **Index Status:** Completed ✅
 
 ### **Retrieval Kalitesi:**
 
@@ -258,10 +251,10 @@ Source: 03-DATABASE-SCHEMA-FOR-AI.md
 
 ### **Yanıt Hızı:**
 
--   [ ] Basit soru (<1s): "Merhaba"
--   [ ] Orta soru (<2s): "Başlık öner"
--   [ ] Karmaşık (<3s): "Açıklama yaz"
--   [ ] Analiz (<4s): "CRM analizi"
+- [ ] Basit soru (<1s): "Merhaba"
+- [ ] Orta soru (<2s): "Başlık öner"
+- [ ] Karmaşık (<3s): "Açıklama yaz"
+- [ ] Analiz (<4s): "CRM analizi"
 
 ### **Relevance Score:**
 
@@ -282,33 +275,33 @@ Query: "Başlık prompt"
 
 ### **Embedding:**
 
--   [ ] 7 core doküman uploaded
--   [ ] Processing tamamlandı (her biri ✅)
--   [ ] Chunk'lar oluşturuldu (60-70)
--   [ ] Vector DB indexed
+- [ ] 7 core doküman uploaded
+- [ ] Processing tamamlandı (her biri ✅)
+- [ ] Chunk'lar oluşturuldu (60-70)
+- [ ] Vector DB indexed
 
 ### **Configuration:**
 
--   [ ] Workspace oluşturuldu
--   [ ] Ollama provider seçildi
--   [ ] gemma2:2b model seçildi
--   [ ] System prompt ayarlandı
--   [ ] Vector DB optimize edildi
+- [ ] Workspace oluşturuldu
+- [ ] Ollama provider seçildi
+- [ ] gemma2:2b model seçildi
+- [ ] System prompt ayarlandı
+- [ ] Vector DB optimize edildi
 
 ### **Testing:**
 
--   [ ] 5 temel test PASSED (5/5)
--   [ ] Context7 compliance ✅
--   [ ] Türkçe yanıt ✅
--   [ ] JSON format ✅
--   [ ] Yanıt hızı <3s ✅
+- [ ] 5 temel test PASSED (5/5)
+- [ ] Context7 compliance ✅
+- [ ] Türkçe yanıt ✅
+- [ ] JSON format ✅
+- [ ] Yanıt hızı <3s ✅
 
 ### **Quality:**
 
--   [ ] Relevance score >0.75
--   [ ] Chunk quality >0.85
--   [ ] Response accuracy >90%
--   [ ] User satisfaction >4.5/5
+- [ ] Relevance score >0.75
+- [ ] Chunk quality >0.85
+- [ ] Response accuracy >90%
+- [ ] User satisfaction >4.5/5
 
 ---
 
@@ -346,17 +339,17 @@ Ollama Integration: ✅ Active
 
 ### **Haftalık Kontrol:**
 
--   [ ] AI kullanım sayısı (hedef: >50/hafta)
--   [ ] Yanıt doğruluğu (hedef: >90%)
--   [ ] User feedback (hedef: >4.5/5)
--   [ ] Error rate (hedef: <5%)
+- [ ] AI kullanım sayısı (hedef: >50/hafta)
+- [ ] Yanıt doğruluğu (hedef: >90%)
+- [ ] User feedback (hedef: >4.5/5)
+- [ ] Error rate (hedef: <5%)
 
 ### **Aylık Güncelleme:**
 
--   [ ] Yeni özellikler dokümana eklendi mi?
--   [ ] Prompt'lar optimize edildi mi?
--   [ ] Context7 kuralları güncellendi mi?
--   [ ] Performance iyileştirildi mi?
+- [ ] Yeni özellikler dokümana eklendi mi?
+- [ ] Prompt'lar optimize edildi mi?
+- [ ] Context7 kuralları güncellendi mi?
+- [ ] Performance iyileştirildi mi?
 
 ---
 

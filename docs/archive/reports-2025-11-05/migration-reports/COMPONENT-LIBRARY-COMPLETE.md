@@ -12,6 +12,7 @@
 Modern, reusable Blade components built with Tailwind CSS & Alpine.js for Yalıhan Emlak Warp.
 
 ### **Statistics:**
+
 ```yaml
 Total Components: 12
 Framework: Tailwind CSS 100%
@@ -31,13 +32,13 @@ Accessibility: WCAG 2.1 AA Compliant
 
 ```blade
 {{-- Basic Modal --}}
-<x-admin.modal 
-    title="Edit User" 
-    size="lg" 
+<x-admin.modal
+    title="Edit User"
+    size="lg"
     bind="showModal"
 >
     <p>Modal content here</p>
-    
+
     <x-slot:footer>
         <button @click="showModal = false">Cancel</button>
         <button>Save</button>
@@ -46,6 +47,7 @@ Accessibility: WCAG 2.1 AA Compliant
 ```
 
 **Props:**
+
 - `title` (string) - Modal title
 - `size` (string) - sm, md, lg, xl, 2xl (default: lg)
 - `bind` (string) - Alpine.js variable name
@@ -53,6 +55,7 @@ Accessibility: WCAG 2.1 AA Compliant
 - `closable` (bool) - Show close button (default: true)
 
 **Features:**
+
 - ✅ Keyboard support (ESC to close)
 - ✅ Click outside to close
 - ✅ Backdrop blur effect
@@ -77,6 +80,7 @@ Accessibility: WCAG 2.1 AA Compliant
 ```
 
 **Props:**
+
 - `name` (string, required) - Input name
 - `label` (string, required) - Checkbox label
 - `value` (string) - Checkbox value (default: 1)
@@ -86,6 +90,7 @@ Accessibility: WCAG 2.1 AA Compliant
 - `help` (string) - Help text
 
 **Features:**
+
 - ✅ Accessible (ARIA labels)
 - ✅ Keyboard navigation
 - ✅ Error states
@@ -109,6 +114,7 @@ Accessibility: WCAG 2.1 AA Compliant
 ```
 
 **Props:**
+
 - `name` (string, required) - Input name (same for all radios in group)
 - `label` (string, required) - Radio label
 - `value` (string, required) - Radio value
@@ -135,6 +141,7 @@ Accessibility: WCAG 2.1 AA Compliant
 ```
 
 **Props:**
+
 - `name` (string, required) - Input name
 - `label` (string, required) - Toggle label
 - `checked` (bool) - Checked state (default: false)
@@ -144,6 +151,7 @@ Accessibility: WCAG 2.1 AA Compliant
 - `size` (string) - sm, md, lg (default: md)
 
 **Features:**
+
 - ✅ Smooth animations
 - ✅ Keyboard support (Space/Enter)
 - ✅ 3 size variants
@@ -177,6 +185,7 @@ Accessibility: WCAG 2.1 AA Compliant
 ```
 
 **Props:**
+
 - `name` (string, required) - Input name
 - `label` (string) - Label text
 - `accept` (string) - Accepted file types
@@ -186,6 +195,7 @@ Accessibility: WCAG 2.1 AA Compliant
 - `help` (string) - Help text
 
 **Features:**
+
 - ✅ Drag & drop support
 - ✅ File preview (images)
 - ✅ File size validation
@@ -211,12 +221,14 @@ Accessibility: WCAG 2.1 AA Compliant
 ```
 
 **Props:**
+
 - `type` (string) - success, info, warning, error (default: info)
 - `dismissible` (bool) - Can be dismissed (default: false)
 - `icon` (bool) - Show icon (default: true)
 - `title` (string) - Alert title
 
 **Features:**
+
 - ✅ 4 alert types with icons
 - ✅ Dismissible alerts
 - ✅ Smooth animations
@@ -236,9 +248,11 @@ Accessibility: WCAG 2.1 AA Compliant
 ```
 
 **Props:**
+
 - `color` (string) - indigo, green, red, yellow, gray (default: indigo)
 
 **Features:**
+
 - ✅ 5 color variants
 - ✅ Dark mode support
 - ✅ Small, compact design
@@ -255,18 +269,20 @@ Accessibility: WCAG 2.1 AA Compliant
     <x-slot:trigger>
         <button>Actions ▼</button>
     </x-slot:trigger>
-    
+
     <a href="#">Edit</a>
     <a href="#">Delete</a>
 </x-admin.dropdown>
 ```
 
 **Props:**
+
 - `align` (string) - left, right, center (default: right)
 - `width` (string) - Tailwind width class (default: w-48)
 - `contentClasses` (string) - Custom content classes
 
 **Features:**
+
 - ✅ Click outside to close
 - ✅ ESC key to close
 - ✅ Smooth animations
@@ -289,7 +305,7 @@ Accessibility: WCAG 2.1 AA Compliant
             <button @click="activeTab = 3">Pricing</button>
         </nav>
     </div>
-    
+
     <div x-show="activeTab === 1" x-transition>
         Content 1
     </div>
@@ -303,6 +319,7 @@ Accessibility: WCAG 2.1 AA Compliant
 ```
 
 **Features:**
+
 - ✅ 3 variants (default, pills, underline)
 - ✅ Smooth transitions
 - ✅ Icon support
@@ -331,11 +348,13 @@ Accessibility: WCAG 2.1 AA Compliant
 ```
 
 **Props:**
+
 - `allowMultiple` (bool) - Allow multiple open items (default: false)
 - `bordered` (bool) - Show borders (default: true)
 - `spacing` (string) - compact, normal, relaxed (default: normal)
 
 **Features:**
+
 - ✅ Single/multiple mode
 - ✅ Smooth animations
 - ✅ Icon rotation
@@ -390,6 +409,7 @@ Visit the demo page to see all components in action with interactive examples!
 ## 📋 **USAGE BEST PRACTICES**
 
 ### **1. Always Use Components**
+
 ```blade
 {{-- ❌ Bad --}}
 <input type="checkbox" name="featured" value="1">
@@ -399,6 +419,7 @@ Visit the demo page to see all components in action with interactive examples!
 ```
 
 ### **2. Pass Old Values**
+
 ```blade
 <x-checkbox
     name="featured"
@@ -407,6 +428,7 @@ Visit the demo page to see all components in action with interactive examples!
 ```
 
 ### **3. Include Help Text**
+
 ```blade
 <x-admin.toggle
     name="notifications"
@@ -416,6 +438,7 @@ Visit the demo page to see all components in action with interactive examples!
 ```
 
 ### **4. Handle Errors**
+
 ```blade
 <x-checkbox
     name="featured"
@@ -484,6 +507,7 @@ All components support dark mode out of the box:
 ## 🚀 **PERFORMANCE**
 
 ### **Bundle Size:**
+
 ```yaml
 Tailwind CSS: JIT (optimal)
 Alpine.js: ~15KB gzipped
@@ -492,6 +516,7 @@ Total: < 20KB per page
 ```
 
 ### **Best Practices:**
+
 - ✅ Server-side rendering (Blade)
 - ✅ No JavaScript for static components
 - ✅ Alpine.js only when needed
@@ -550,6 +575,7 @@ Before using components in production:
 ## 🎯 **NEXT STEPS**
 
 ### **Completed:** ✅
+
 - [x] Modal component (keyboard, animations)
 - [x] Checkbox component (accessible)
 - [x] Radio component (accessible)
@@ -566,6 +592,7 @@ Before using components in production:
 - [x] Documentation (this file)
 
 ### **Future Enhancements:**
+
 - [ ] Textarea component (auto-resize)
 - [ ] Date Picker component
 - [ ] Color Picker component
@@ -586,4 +613,3 @@ Before using components in production:
 
 **Built with ❤️ by Yalıhan Bekçi AI System**  
 **Version:** 2.0 • **Date:** 5 Kasım 2025 • **Status:** ✅ COMPLETE
-

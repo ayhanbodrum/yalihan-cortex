@@ -9,9 +9,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Dashboard Widget Model
- * 
+ *
  * Context7 Standardı: C7-DASHBOARD-WIDGET-2025-11-05
- * 
+ *
  * Kullanıcıların dashboard'larına ekleyebileceği widget'ları yönetir
  */
 class DashboardWidget extends Model
@@ -30,18 +30,18 @@ class DashboardWidget extends Model
         'height',
         'settings',
         'user_id',
-        'is_active',
-        'order',
+        'status', // Context7: is_active → status
+        'display_order', // Context7: order → display_order
     ];
 
     protected $casts = [
         'settings' => 'array',
-        'is_active' => 'boolean',
+        'status' => 'boolean', // Context7: is_active → status
         'position_x' => 'integer',
         'position_y' => 'integer',
         'width' => 'integer',
         'height' => 'integer',
-        'order' => 'integer',
+        'display_order' => 'integer', // Context7: order → display_order
     ];
 
     /**
@@ -57,7 +57,7 @@ class DashboardWidget extends Model
      */
     public function scopeActive($query)
     {
-        return $query->where('is_active', true);
+        return $query->where('status', true); // Context7: is_active → status
     }
 
     /**
@@ -73,7 +73,7 @@ class DashboardWidget extends Model
      */
     public function scopeOrdered($query)
     {
-        return $query->orderBy('order')->orderBy('position_y')->orderBy('position_x');
+        return $query->orderBy('display_order')->orderBy('position_y')->orderBy('position_x'); // Context7: order → display_order
     }
 
     /**
@@ -81,7 +81,7 @@ class DashboardWidget extends Model
      */
     public function getData()
     {
-        return match($this->type) {
+        return match ($this->type) {
             'stat' => $this->getStatData(),
             'chart' => $this->getChartData(),
             'table' => $this->getTableData(),
@@ -95,7 +95,7 @@ class DashboardWidget extends Model
      */
     protected function getStatData()
     {
-        return match($this->data_source) {
+        return match ($this->data_source) {
             'ilanlar' => [
                 'total' => \App\Models\Ilan::count(),
                 'active' => \App\Models\Ilan::where('status', 'Aktif')->count(),

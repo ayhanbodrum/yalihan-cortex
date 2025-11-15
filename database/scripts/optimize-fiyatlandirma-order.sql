@@ -14,20 +14,20 @@ SET `order` = CASE field_slug
     WHEN 'depozito' THEN 3              -- Finansal güvenlik
     WHEN 'check_in' THEN 4              -- Lojistik: Giriş saati
     WHEN 'check_out' THEN 5             -- Lojistik: Çıkış saati
-    
+
     -- 💰 İNDİRİMLİ FİYATLAR (6-8) - Opsiyonel ama önemli
     WHEN 'haftalik_fiyat' THEN 6        -- 7+ gece indirimi
     WHEN 'aylik_fiyat' THEN 7           -- 30+ gün indirimi
-    
+
     -- 📅 SEZONLUK FİYATLAR (10-12) - DEPRECATED! Season Pricing Manager kullan!
     WHEN 'yaz_sezonu_fiyat' THEN 10     -- ⚠️ Season Pricing Manager'da olmalı!
     WHEN 'kis_sezonu_fiyat' THEN 11     -- ⚠️ Season Pricing Manager'da olmalı!
     WHEN 'ara_sezon_fiyat' THEN 12      -- ⚠️ Season Pricing Manager'da olmalı!
-    
+
     -- 💵 UZUN DÖNEM KİRALAMA (13-15)
     WHEN 'kira_bedeli' THEN 13          -- Aylık/yıllık kiralama
     WHEN 'satis_fiyati' THEN 14         -- Satış (eğer satılık ise)
-    
+
     ELSE `order`
 END
 WHERE kategori_slug = 'yazlik' AND field_category = 'fiyatlandirma';
@@ -62,5 +62,5 @@ WHERE kategori_slug = 'yazlik' AND field_category = 'fiyatlandirma';
 -- UYGULAMA (Opsiyonel - Sezon fiyatlarını gizle):
 -- UPDATE kategori_yayin_tipi_field_dependencies
 -- SET enabled = false
--- WHERE kategori_slug = 'yazlik' 
+-- WHERE kategori_slug = 'yazlik'
 -- AND field_slug IN ('yaz_sezonu_fiyat', 'kis_sezonu_fiyat', 'ara_sezon_fiyat');

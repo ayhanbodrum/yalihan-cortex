@@ -46,5 +46,3 @@ class IlanExportService
         return $query;
     }
 }
-
-

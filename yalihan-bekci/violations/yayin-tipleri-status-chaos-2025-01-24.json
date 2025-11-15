@@ -60,11 +60,7 @@
   "impact": {
     "severity": "critical",
     "description": "Form ÇALIŞMIYOR! Kategori dropdown ve input field'lar boş. Alpine.js initialization hatası.",
-    "affected_features": [
-      "Yayın Tipi Create Form",
-      "Kategori Selection",
-      "Form Submission"
-    ],
+    "affected_features": ["Yayın Tipi Create Form", "Kategori Selection", "Form Submission"],
     "user_experience": "Kullanıcı yeni yayın tipi ekleyemiyor, form alanları çalışmıyor"
   },
   "root_cause": {
@@ -124,9 +120,7 @@
       }
     ]
   },
-  "related_violations": [
-    "VIO-2025-01-24-001"
-  ],
+  "related_violations": ["VIO-2025-01-24-001"],
   "fixed": true,
   "fix_date": "2025-01-24T17:30:00Z",
   "fix_summary": {
@@ -140,4 +134,3 @@
   },
   "notes": "Bu violation Context7 v3.5.0 standardını ciddi şekilde ihlal ediyordu. Aynı sorun ilan_kategorileri'nde de vardı ve düzeltilmişti. Bu da tamamen düzeltildi ve test edildi."
 }
-

@@ -1,0 +1,293 @@
+#!/bin/bash
+
+# Context7 Compliance Scanner
+# Tüm projeyi tarar ve Context7 kurallarına aykırı pattern'leri bulur
+# Kullanım: ./scripts/context7-compliance-scanner.sh [--fix] [--report]
+
+set -e
+
+# Renkler
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+# Seçenekler
+FIX_MODE=false
+REPORT_MODE=false
+OUTPUT_FILE=""
+
+# Parametreleri parse et
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --fix)
+            FIX_MODE=true
+            shift
+            ;;
+        --report)
+            REPORT_MODE=true
+            OUTPUT_FILE="${2:-.context7/compliance-report-$(date +%Y%m%d-%H%M%S).md}"
+            shift 2
+            ;;
+        *)
+            echo "Kullanım: $0 [--fix] [--report [dosya]]"
+            exit 1
+            ;;
+    esac
+done
+
+# İstatistikler
+TOTAL_VIOLATIONS=0
+CRITICAL_VIOLATIONS=0
+HIGH_VIOLATIONS=0
+MEDIUM_VIOLATIONS=0
+LOW_VIOLATIONS=0
+
+# Rapor başlat
+if [ "$REPORT_MODE" = true ]; then
+    mkdir -p "$(dirname "$OUTPUT_FILE")"
+    {
+        echo "# Context7 Compliance Report"
+        echo ""
+        echo "**Tarih:** $(date '+%Y-%m-%d %H:%M:%S')"
+        echo "**Durum:** ⚠️ TARAMA TAMAMLANDI"
+        echo ""
+        echo "---"
+        echo ""
+    } > "$OUTPUT_FILE"
+fi
+
+# Log fonksiyonu
+log_violation() {
+    local severity=$1
+    local file=$2
+    local line=$3
+    local pattern=$4
+    local message=$5
+    
+    TOTAL_VIOLATIONS=$((TOTAL_VIOLATIONS + 1))
+    
+    case $severity in
+        critical)
+            CRITICAL_VIOLATIONS=$((CRITICAL_VIOLATIONS + 1))
+            echo -e "${RED}❌ CRITICAL${NC}: $file:$line - $pattern"
+            echo -e "   ${RED}→${NC} $message"
+            ;;
+        high)
+            HIGH_VIOLATIONS=$((HIGH_VIOLATIONS + 1))
+            echo -e "${YELLOW}⚠️  HIGH${NC}: $file:$line - $pattern"
+            echo -e "   ${YELLOW}→${NC} $message"
+            ;;
+        medium)
+            MEDIUM_VIOLATIONS=$((MEDIUM_VIOLATIONS + 1))
+            echo -e "${BLUE}ℹ️  MEDIUM${NC}: $file:$line - $pattern"
+            ;;
+        low)
+            LOW_VIOLATIONS=$((LOW_VIOLATIONS + 1))
+            echo -e "${GREEN}ℹ️  LOW${NC}: $file:$line - $pattern"
+            ;;
+    esac
+    
+    if [ "$REPORT_MODE" = true ]; then
+        {
+            echo "### $severity: $file:$line"
+            echo ""
+            echo "**Pattern:** \`$pattern\`"
+            echo "**Mesaj:** $message"
+            echo ""
+        } >> "$OUTPUT_FILE"
+    fi
+}
+
+# 1. Database Field Violations
+echo -e "${BLUE}🔍 Database Field Violations Kontrol Ediliyor...${NC}"
+echo ""
+
+# order → display_order
+while IFS= read -r line; do
+    file=$(echo "$line" | cut -d: -f1)
+    line_num=$(echo "$line" | cut -d: -f2)
+    content=$(echo "$line" | cut -d: -f3-)
+    
+    if echo "$content" | grep -qE "'order'|"order"|order\s*=>"; then
+        if ! echo "$content" | grep -q "display_order"; then
+            log_violation "critical" "$file" "$line_num" "'order'" "order → display_order kullanılmalı"
+        fi
+    fi
+done < <(grep -rnE "'order'|"order"|order\s*=>" --include="*.php" --include="*.blade.php" app/ database/ resources/ 2>/dev/null | grep -v "display_order" | grep -v "\$order" | grep -v "//" | grep -v "orderBy" | head -50)
+
+# durum → status
+while IFS= read -r line; do
+    file=$(echo "$line" | cut -d: -f1)
+    line_num=$(echo "$line" | cut -d: -f2)
+    log_violation "critical" "$file" "$line_num" "'durum'" "durum → status kullanılmalı"
+done < <(grep -rnE "'durum'|"durum"" --include="*.php" --include="*.blade.php" app/ database/ resources/ 2>/dev/null | grep -v "status" | head -20)
+
+# aktif → status
+while IFS= read -r line; do
+    file=$(echo "$line" | cut -d: -f1)
+    line_num=$(echo "$line" | cut -d: -f2)
+    log_violation "critical" "$file" "$line_num" "'aktif'" "aktif → status kullanılmalı"
+done < <(grep -rnE "'aktif'|"aktif"" --include="*.php" --include="*.blade.php" app/ database/ resources/ 2>/dev/null | grep -v "status" | head -20)
+
+# is_active → status
+while IFS= read -r line; do
+    file=$(echo "$line" | cut -d: -f1)
+    line_num=$(echo "$line" | cut -d: -f2)
+    log_violation "high" "$file" "$line_num" "is_active" "is_active → status kullanılmalı"
+done < <(grep -rnE "is_active" --include="*.php" --include="*.blade.php" app/ database/ resources/ 2>/dev/null | grep -v "status" | head -20)
+
+# enabled → status (sadece status field olarak)
+while IFS= read -r line; do
+    file=$(echo "$line" | cut -d: -f1)
+    line_num=$(echo "$line" | cut -d: -f2)
+    content=$(echo "$line" | cut -d: -f3-)
+    
+    # enabled field olarak kullanılıyorsa (fillable, casts, where, etc.)
+    if echo "$content" | grep -qE "fillable.*enabled|casts.*enabled|where.*enabled|->enabled"; then
+        log_violation "critical" "$file" "$line_num" "enabled" "enabled → status kullanılmalı (status field olarak)"
+    fi
+done < <(grep -rnE "enabled" --include="*.php" app/Models/ database/migrations/ 2>/dev/null | grep -v "weekend_pricing_enabled\|sync_enabled\|feature.*enabled" | head -20)
+
+# sehir → il
+while IFS= read -r line; do
+    file=$(echo "$line" | cut -d: -f1)
+    line_num=$(echo "$line" | cut -d: -f2)
+    log_violation "critical" "$file" "$line_num" "sehir" "sehir → il kullanılmalı"
+done < <(grep -rnE "'sehir'|"sehir"|sehir_id" --include="*.php" --include="*.blade.php" app/ database/ resources/ 2>/dev/null | grep -v "il_id" | head -20)
+
+# musteri → kisi
+while IFS= read -r line; do
+    file=$(echo "$line" | cut -d: -f1)
+    line_num=$(echo "$line" | cut -d: -f2)
+    log_violation "critical" "$file" "$line_num" "musteri" "musteri → kisi kullanılmalı"
+done < <(grep -rnE "'musteri'|"musteri"|musteri_id" --include="*.php" --include="*.blade.php" app/ database/ resources/ 2>/dev/null | grep -v "kisi" | head -20)
+
+echo ""
+
+# 2. CSS Class Violations
+echo -e "${BLUE}🔍 CSS Class Violations Kontrol Ediliyor...${NC}"
+echo ""
+
+# neo-* classes
+while IFS= read -r line; do
+    file=$(echo "$line" | cut -d: -f1)
+    line_num=$(echo "$line" | cut -d: -f2)
+    log_violation "critical" "$file" "$line_num" "neo-*" "Neo Design System yasak - Tailwind CSS kullanılmalı"
+done < <(grep -rnE "neo-[a-z-]+" --include="*.blade.php" --include="*.php" resources/ app/ 2>/dev/null | head -30)
+
+# Bootstrap classes
+while IFS= read -r line; do
+    file=$(echo "$line" | cut -d: -f1)
+    line_num=$(echo "$line" | cut -d: -f2)
+    log_violation "high" "$file" "$line_num" "btn-*|card-*|form-control" "Bootstrap yasak - Tailwind CSS kullanılmalı"
+done < <(grep -rnE "btn-|card-|form-control" --include="*.blade.php" resources/ 2>/dev/null | head -20)
+
+echo ""
+
+# 3. JavaScript Violations
+echo -e "${BLUE}🔍 JavaScript Violations Kontrol Ediliyor...${NC}"
+echo ""
+
+# jQuery
+while IFS= read -r line; do
+    file=$(echo "$line" | cut -d: -f1)
+    line_num=$(echo "$line" | cut -d: -f2)
+    log_violation "critical" "$file" "$line_num" "jQuery" "jQuery yasak - Vanilla JS kullanılmalı"
+done < <(grep -rnE "\$\(|jQuery|\.ajax\(|\.get\(|\.post\(" --include="*.js" --include="*.blade.php" resources/ public/ 2>/dev/null | grep -v "node_modules" | head -20)
+
+# subtleVibrantToast
+while IFS= read -r line; do
+    file=$(echo "$line" | cut -d: -f1)
+    line_num=$(echo "$line" | cut -d: -f2)
+    log_violation "critical" "$file" "$line_num" "subtleVibrantToast" "subtleVibrantToast yasak - window.toast kullanılmalı"
+done < <(grep -rnE "subtleVibrantToast" --include="*.js" --include="*.blade.php" resources/ public/ 2>/dev/null | head -10)
+
+echo ""
+
+# 4. Layout Violations
+echo -e "${BLUE}🔍 Layout Violations Kontrol Ediliyor...${NC}"
+echo ""
+
+# layouts.app
+while IFS= read -r line; do
+    file=$(echo "$line" | cut -d: -f1)
+    line_num=$(echo "$line" | cut -d: -f2)
+    log_violation "critical" "$file" "$line_num" "layouts.app" "layouts.app yasak - admin.layouts.neo kullanılmalı"
+done < <(grep -rnE "@extends\('layouts\.app'\)" --include="*.blade.php" resources/ 2>/dev/null | head -10)
+
+echo ""
+
+# 5. Route Violations
+echo -e "${BLUE}🔍 Route Violations Kontrol Ediliyor...${NC}"
+echo ""
+
+# crm.* routes
+while IFS= read -r line; do
+    file=$(echo "$line" | cut -d: -f1)
+    line_num=$(echo "$line" | cut -d: -f2)
+    log_violation "critical" "$file" "$line_num" "route('crm." "crm.* routes yasak - admin.* kullanılmalı"
+done < <(grep -rnE "route\('crm\." --include="*.php" --include="*.blade.php" app/ resources/ 2>/dev/null | head -20)
+
+echo ""
+
+# 6. Migration Compliance
+echo -e "${BLUE}🔍 Migration Compliance Kontrol Ediliyor...${NC}"
+echo ""
+
+# Migration'larda order kolonu
+while IFS= read -r line; do
+    file=$(echo "$line" | cut -d: -f1)
+    line_num=$(echo "$line" | cut -d: -f2)
+    content=$(echo "$line" | cut -d: -f3-)
+    
+    if echo "$content" | grep -qE "\$table->.*\('order'\)"; then
+        if ! echo "$content" | grep -q "display_order"; then
+            log_violation "critical" "$file" "$line_num" "\$table->.*('order')" "Migration'da order → display_order kullanılmalı"
+        fi
+    fi
+done < <(grep -rnE "\$table->.*\('order'\)" database/migrations/ 2>/dev/null | head -20)
+
+echo ""
+
+# Özet
+echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+echo -e "${BLUE}📊 TARAMA ÖZETİ${NC}"
+echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+echo ""
+echo -e "Toplam İhlal: ${RED}$TOTAL_VIOLATIONS${NC}"
+echo -e "  ${RED}❌ Critical:${NC} $CRITICAL_VIOLATIONS"
+echo -e "  ${YELLOW}⚠️  High:${NC} $HIGH_VIOLATIONS"
+echo -e "  ${BLUE}ℹ️  Medium:${NC} $MEDIUM_VIOLATIONS"
+echo -e "  ${GREEN}ℹ️  Low:${NC} $LOW_VIOLATIONS"
+echo ""
+
+if [ "$REPORT_MODE" = true ]; then
+    {
+        echo "## 📊 Özet"
+        echo ""
+        echo "- **Toplam İhlal:** $TOTAL_VIOLATIONS"
+        echo "- **Critical:** $CRITICAL_VIOLATIONS"
+        echo "- **High:** $HIGH_VIOLATIONS"
+        echo "- **Medium:** $MEDIUM_VIOLATIONS"
+        echo "- **Low:** $LOW_VIOLATIONS"
+        echo ""
+        echo "---"
+        echo ""
+        echo "**Rapor Oluşturulma Tarihi:** $(date '+%Y-%m-%d %H:%M:%S')"
+    } >> "$OUTPUT_FILE"
+    echo -e "${GREEN}✅ Rapor oluşturuldu: $OUTPUT_FILE${NC}"
+fi
+
+if [ $TOTAL_VIOLATIONS -eq 0 ]; then
+    echo -e "${GREEN}✅ Harika! Hiç ihlal bulunamadı.${NC}"
+    exit 0
+else
+    echo -e "${YELLOW}⚠️  $TOTAL_VIOLATIONS ihlal bulundu.${NC}"
+    if [ "$FIX_MODE" = false ]; then
+        echo -e "${BLUE}💡 Otomatik düzeltme için: $0 --fix${NC}"
+    fi
+    exit 1
+fi
+

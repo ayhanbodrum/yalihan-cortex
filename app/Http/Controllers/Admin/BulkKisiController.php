@@ -65,15 +65,26 @@ class BulkKisiController extends AdminController
             $created = [];
             $errors = [];
 
+            // ✅ PERFORMANCE FIX: N+1 query önlendi - Tüm email ve TC'leri tek query'de kontrol et
+            $emails = array_filter(array_column($request->kisiler, 'email'));
+            $tcKimlikler = array_filter(array_column($request->kisiler, 'tc_kimlik'));
+
+            $existingByEmail = Kisi::whereIn('email', $emails)
+                ->pluck('email', 'id')
+                ->toArray();
+            $existingByTc = Kisi::whereIn('tc_kimlik', $tcKimlikler)
+                ->pluck('tc_kimlik', 'id')
+                ->toArray();
+
             foreach ($request->kisiler as $index => $kisiData) {
                 try {
-                    // Check for duplicates before creating
+                    // ✅ PERFORMANCE FIX: Array kontrolü kullan (database query yerine)
                     $existingKisi = null;
-                    if (!empty($kisiData['email'])) {
-                        $existingKisi = Kisi::where('email', $kisiData['email'])->first();
+                    if (!empty($kisiData['email']) && in_array($kisiData['email'], $existingByEmail)) {
+                        $existingKisi = Kisi::find(array_search($kisiData['email'], $existingByEmail));
                     }
-                    if (!$existingKisi && !empty($kisiData['tc_kimlik'])) {
-                        $existingKisi = Kisi::where('tc_kimlik', $kisiData['tc_kimlik'])->first();
+                    if (!$existingKisi && !empty($kisiData['tc_kimlik']) && in_array($kisiData['tc_kimlik'], $existingByTc)) {
+                        $existingKisi = Kisi::find(array_search($kisiData['tc_kimlik'], $existingByTc));
                     }
 
                     if ($existingKisi) {
@@ -96,7 +107,6 @@ class BulkKisiController extends AdminController
                     ]);
 
                     $created[] = $kisi;
-
                 } catch (\Exception $e) {
                     $errors[] = [
                         'index' => $index,
@@ -122,7 +132,6 @@ class BulkKisiController extends AdminController
                     'errors' => $errors
                 ]
             ]);
-
         } catch (\Exception $e) {
             DB::rollback();
 
@@ -171,7 +180,7 @@ class BulkKisiController extends AdminController
             DB::beginTransaction();
 
             $updatedCount = Kisi::whereIn('id', $request->kisi_ids)
-                ->update(array_filter($request->updates, function($value) {
+                ->update(array_filter($request->updates, function ($value) {
                     return $value !== null;
                 }));
 
@@ -189,7 +198,6 @@ class BulkKisiController extends AdminController
                 'message' => $updatedCount . ' kişi başarıyla güncellendi.',
                 'updated_count' => $updatedCount
             ]);
-
         } catch (\Exception $e) {
             DB::rollback();
 
@@ -246,7 +254,6 @@ class BulkKisiController extends AdminController
                 'message' => $deletedCount . ' kişi başarıyla silindi.',
                 'deleted_count' => $deletedCount
             ]);
-
         } catch (\Exception $e) {
             DB::rollback();
 
@@ -305,7 +312,7 @@ class BulkKisiController extends AdminController
                 case 'csv':
                     $filename = 'kisiler_export_' . date('Y-m-d_H-i-s') . '.csv';
 
-                    return response()->streamDownload(function() use ($kisiler) {
+                    return response()->streamDownload(function () use ($kisiler) {
                         $file = fopen('php://output', 'w');
 
                         // CSV header
@@ -338,7 +345,6 @@ class BulkKisiController extends AdminController
                         'message' => 'Desteklenmeyen format'
                     ], 400);
             }
-
         } catch (\Exception $e) {
             Log::error('Bulk kisi export failed', [
                 'error' => $e->getMessage(),
@@ -436,7 +442,6 @@ class BulkKisiController extends AdminController
                     ]);
 
                     $created[] = $kisi;
-
                 } catch (\Exception $e) {
                     $errors[] = [
                         'row' => $index + 1,
@@ -463,7 +468,6 @@ class BulkKisiController extends AdminController
                     'errors' => $errors
                 ]
             ]);
-
         } catch (\Exception $e) {
             DB::rollback();
 

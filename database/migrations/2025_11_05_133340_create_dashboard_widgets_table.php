@@ -23,14 +23,14 @@ return new class extends Migration
             $table->json('settings')->nullable(); // Ekstra ayarlar (JSON)
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->boolean('is_active')->default(true);
-            $table->integer('order')->default(0);
+            $table->integer('display_order')->default(0); // Context7: order → display_order
             $table->timestamps();
             $table->softDeletes();
 
             // Indexes
             $table->index('user_id');
             $table->index(['user_id', 'is_active']);
-            $table->index('order');
+            $table->index('display_order'); // Context7: order → display_order
         });
     }
 

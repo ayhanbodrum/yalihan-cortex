@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use App\Models\Il;
 use App\Models\Ilce;
 use App\Models\Mahalle;
 use App\Models\Ilan;
-use App\Http\Controllers\Controller;
+use App\Services\Response\ResponseService;
+use App\Traits\ValidatesApiRequests;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -14,13 +17,19 @@ use App\Services\Logging\LogService;
 
 class ListingSearchController extends Controller
 {
+    use ValidatesApiRequests;
+
     public function search(Request $request)
     {
-        $request->validate([
+        $validated = $this->validateRequestWithResponse($request, [
             'q' => 'required|string|min:1',
             'type' => 'nullable|in:owner,phone,site,advisor,all',
             'limit' => 'nullable|integer|min:1|max:50',
         ]);
+
+        if ($validated instanceof JsonResponse) {
+            return $validated;
+        }
 
         $q = trim($request->input('q'));
         $type = $request->input('type', 'all');
@@ -51,7 +60,7 @@ class ListingSearchController extends Controller
                 if ($type === 'owner') {
                     $w->whereHas('ilanSahibi', function ($q2) use ($q) {
                         $q2->where('ad', 'like', "%{$q}%")
-                           ->orWhere('soyad', 'like', "%{$q}%");
+                            ->orWhere('soyad', 'like', "%{$q}%");
                     });
                 } elseif ($type === 'phone') {
                     $digits = preg_replace('/\D+/', '', $q);
@@ -64,21 +73,21 @@ class ListingSearchController extends Controller
                 } elseif ($type === 'advisor') {
                     $w->whereHas('danisman', function ($q2) use ($q) {
                         $q2->where('name', 'like', "%{$q}%")
-                           ->orWhere('email', 'like', "%{$q}%");
+                            ->orWhere('email', 'like', "%{$q}%");
                     });
                 } else { // all
                     $digits = preg_replace('/\D+/', '', $q);
                     $w->where(function ($q2) use ($q, $digits) {
                         $q2->whereHas('ilanSahibi', function ($q3) use ($q, $digits) {
                             $q3->where('ad', 'like', "%{$q}%")
-                               ->orWhere('soyad', 'like', "%{$q}%")
-                               ->orWhere('telefon', 'like', "%{$digits}%");
+                                ->orWhere('soyad', 'like', "%{$q}%")
+                                ->orWhere('telefon', 'like', "%{$digits}%");
                         })
-                        ->orWhere('s.name', 'like', "%{$q}%")
-                        ->orWhereHas('danisman', function ($q3) use ($q) {
-                            $q3->where('name', 'like', "%{$q}%")
-                               ->orWhere('email', 'like', "%{$q}%");
-                        });
+                            ->orWhere('s.name', 'like', "%{$q}%")
+                            ->orWhereHas('danisman', function ($q3) use ($q) {
+                                $q3->where('name', 'like', "%{$q}%")
+                                    ->orWhere('email', 'like', "%{$q}%");
+                            });
                     });
                 }
             });
@@ -106,11 +115,10 @@ class ListingSearchController extends Controller
                 ];
             });
 
-            return response()->json([
-                'success' => true,
+            return ResponseService::success([
                 'count' => $formattedResults->count(),
                 'data' => $formattedResults,
-            ]);
+            ], 'İlan araması başarıyla tamamlandı');
         } catch (\Throwable $e) {
             // ✅ STANDARDIZED: Using LogService
             LogService::api('/api/search', [], null, null);
@@ -118,10 +126,7 @@ class ListingSearchController extends Controller
                 'q' => $q,
                 'type' => $type,
             ]);
-            return response()->json([
-                'success' => false,
-                'message' => 'İlan arama sırasında hata oluştu.'
-            ], 500);
+            return ResponseService::serverError('İlan arama sırasında hata oluştu.', $e);
         }
     }
 
@@ -134,16 +139,12 @@ class ListingSearchController extends Controller
                 ->orderBy('il_adi')
                 ->get();
 
-            return response()->json([
-                'success' => true,
+            return ResponseService::success([
                 'data' => $provinces
-            ]);
+            ], 'İller başarıyla getirildi');
         } catch (\Throwable $e) {
             Log::error('ListingSearchController@getProvinces error: ' . $e->getMessage());
-            return response()->json([
-                'success' => false,
-                'message' => 'İller yüklenirken hata oluştu.'
-            ], 500);
+            return ResponseService::serverError('İller yüklenirken hata oluştu.', $e);
         }
     }
 
@@ -155,20 +156,16 @@ class ListingSearchController extends Controller
                 ->orderBy('ilce_adi')
                 ->get();
 
-            return response()->json([
-                'success' => true,
+            return ResponseService::success([
                 'data' => $districts
-            ]);
+            ], 'İlçeler başarıyla getirildi');
         } catch (\Throwable $e) {
             // ✅ STANDARDIZED: Using LogService
             LogService::api('/api/districts', [], null, null);
             LogService::error('ListingSearchController@getDistricts error', [
                 'province_id' => $provinceId
             ]);
-            return response()->json([
-                'success' => false,
-                'message' => 'İlçeler yüklenirken hata oluştu.'
-            ], 500);
+            return ResponseService::serverError('İlçeler yüklenirken hata oluştu.', $e);
         }
     }
 
@@ -180,22 +177,16 @@ class ListingSearchController extends Controller
                 ->orderBy('mahalle_adi')
                 ->get();
 
-            return response()->json([
-                'success' => true,
+            return ResponseService::success([
                 'data' => $neighborhoods
-            ]);
+            ], 'Mahalleler başarıyla getirildi');
         } catch (\Throwable $e) {
             // ✅ STANDARDIZED: Using LogService
             LogService::api('/api/neighborhoods', [], null, null);
             LogService::error('ListingSearchController@getNeighborhoods error', [
                 'district_id' => $districtId
             ]);
-            return response()->json([
-                'success' => false,
-                'message' => 'Mahalleler yüklenirken hata oluştu.'
-            ], 500);
+            return ResponseService::serverError('Mahalleler yüklenirken hata oluştu.', $e);
         }
     }
 }
-
-

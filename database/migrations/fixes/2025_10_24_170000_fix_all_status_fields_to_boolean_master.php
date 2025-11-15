@@ -191,4 +191,3 @@ return new class extends Migration
         Log::warning('⚠️  ROLLBACK COMPLETED - Status fields reverted to old format');
     }
 };
-

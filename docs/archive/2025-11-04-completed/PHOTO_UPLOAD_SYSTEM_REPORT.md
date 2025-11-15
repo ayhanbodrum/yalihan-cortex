@@ -5,6 +5,7 @@
 ## ✅ YALIHAN BEKÇİ KURALLARINA %100 UYUMLU
 
 ### Yasak Kullanılmadı:
+
 - ❌ Dropzone.js (heavy library)
 - ❌ jQuery
 - ❌ Neo classes (btn-, card-, form-control)
@@ -12,9 +13,10 @@
 - ❌ Inline styles
 
 ### Zorunlu Kullanıldı:
+
 - ✅ Pure Tailwind CSS
 - ✅ Alpine.js (vanilla JS)
-- ✅ Dark mode (dark:* classes)
+- ✅ Dark mode (dark:\* classes)
 - ✅ Context7 field naming
 - ✅ Modern UI patterns
 
@@ -23,9 +25,11 @@
 ## 📁 Oluşturulan Dosyalar
 
 ### 1. Component (Blade)
+
 **File:** `resources/views/admin/ilanlar/components/photo-upload-manager.blade.php`
 
 **Özellikler:**
+
 - Drag & drop area
 - Multiple file selection
 - File validation (10 MB, jpg/png/webp)
@@ -38,6 +42,7 @@
 - Dark mode support
 
 **Alpine.js Features:**
+
 - Reactive photo array
 - Drag & drop events
 - File reader API
@@ -45,9 +50,11 @@
 - Optimistic UI updates
 
 ### 2. API Controller
+
 **File:** `app/Http/Controllers/Api/PhotoController.php`
 
 **Endpoints:**
+
 ```php
 POST   /api/admin/photos/upload          → Upload single photo
 GET    /api/admin/ilanlar/{id}/photos    → Get all photos
@@ -57,6 +64,7 @@ POST   /api/admin/ilanlar/{id}/photos/reorder → Bulk reorder
 ```
 
 **Features:**
+
 - Image intervention (thumbnail 400x300)
 - Storage management (public disk)
 - Dimension tracking
@@ -64,11 +72,13 @@ POST   /api/admin/ilanlar/{id}/photos/reorder → Bulk reorder
 - Context7 compliant responses
 
 ### 3. Routes
+
 **File:** `routes/api.php`
 
 Added 5 photo management routes to `admin` prefix.
 
 ### 4. Integration
+
 **File:** `resources/views/admin/ilanlar/create.blade.php`
 
 Photo upload component eklendi (Section 4.7).
@@ -78,27 +88,29 @@ Photo upload component eklendi (Section 4.7).
 ## 🎯 Kullanım Senaryoları
 
 ### Admin: İlan Oluştur/Düzenle
+
 1. **Upload:**
-   - Drag & drop fotoğrafları
-   - VEYA tıklayarak seç (multiple)
-   - Otomatik upload başlar
-   - Progress bar gösterilir
+    - Drag & drop fotoğrafları
+    - VEYA tıklayarak seç (multiple)
+    - Otomatik upload başlar
+    - Progress bar gösterilir
 
 2. **Featured:**
-   - İlk yüklenen otomatik vitrin
-   - "⭐ Vitrin Yap" butonu ile değiştir
-   - Sarı border ile gösterilir
+    - İlk yüklenen otomatik vitrin
+    - "⭐ Vitrin Yap" butonu ile değiştir
+    - Sarı border ile gösterilir
 
 3. **Reorder:**
-   - Fotoğrafları drag-drop ile sırala
-   - Sıralama otomatik kaydedilir
+    - Fotoğrafları drag-drop ile sırala
+    - Sıralama otomatik kaydedilir
 
 4. **Delete:**
-   - 🗑️ butonu ile sil
-   - Confirmation popup
-   - Storage'dan da silinir
+    - 🗑️ butonu ile sil
+    - Confirmation popup
+    - Storage'dan da silinir
 
 ### Public: İlan Detay
+
 - Featured photo hero olarak gösterilir
 - Galeri order sırasına göre
 - Thumbnail kullanımı (performans)
@@ -108,6 +120,7 @@ Photo upload component eklendi (Section 4.7).
 ## 📊 Teknik Detaylar
 
 ### Database Schema
+
 ```sql
 photos:
   - id (bigint, PK)
@@ -125,6 +138,7 @@ photos:
 ```
 
 ### File Structure
+
 ```
 storage/app/public/
 └── ilanlar/
@@ -136,6 +150,7 @@ storage/app/public/
 ```
 
 ### Validation Rules
+
 - File types: jpg, jpeg, png, webp
 - Max size: 10 MB
 - Multiple upload: ✅
@@ -146,19 +161,19 @@ storage/app/public/
 ## 🚀 Sonraki Adımlar (İsteğe Bağlı)
 
 1. **Edit Mode Improvement:**
-   - Existing photos loading (✅ zaten var)
-   - Drag to reorder existing (✅ zaten var)
+    - Existing photos loading (✅ zaten var)
+    - Drag to reorder existing (✅ zaten var)
 
 2. **Advanced Features:**
-   - Category selection (genel, dis_cekim, ic_cekim, etc.)
-   - Watermark ekleme
-   - Batch delete
-   - ZIP upload
+    - Category selection (genel, dis_cekim, ic_cekim, etc.)
+    - Watermark ekleme
+    - Batch delete
+    - ZIP upload
 
 3. **Public Gallery:**
-   - Lightbox modal
-   - Full-screen slider
-   - Zoom functionality
+    - Lightbox modal
+    - Full-screen slider
+    - Zoom functionality
 
 ---
 
@@ -166,21 +181,21 @@ storage/app/public/
 
 ```yaml
 Field Naming: %100 uyumlu
-  - is_featured ✅ (boolean flag, OK)
-  - order ✅ (integer)
-  - path, thumbnail, category ✅
-  
+    - is_featured ✅ (boolean flag, OK)
+    - order ✅ (integer)
+    - path, thumbnail, category ✅
+
 CSS Classes: %100 uyumlu
-  - Pure Tailwind
-  - dark:* variants
-  - NO Neo classes
-  - NO Bootstrap
-  
+    - Pure Tailwind
+    - dark:* variants
+    - NO Neo classes
+    - NO Bootstrap
+
 JavaScript: %100 uyumlu
-  - Alpine.js
-  - Vanilla JS
-  - NO jQuery
-  - NO heavy libraries
+    - Alpine.js
+    - Vanilla JS
+    - NO jQuery
+    - NO heavy libraries
 ```
 
 ---

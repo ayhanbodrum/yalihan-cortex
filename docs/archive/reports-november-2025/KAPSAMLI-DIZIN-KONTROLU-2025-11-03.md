@@ -9,17 +9,20 @@
 ## 📊 İLK TARAMA SONUÇLARI
 
 ### 📁 Kök Dizin
+
 ```
 MD/TXT Dosyaları: 61 adet
 ```
 
 **Kategori Dağılımı:**
+
 - ✅ Aktif raporlar: ~15 (bugün/dün oluşturulan)
 - ⚠️ Eski raporlar: ~30 (Ekim 2025 - arşivlenebilir)
 - 📝 Rehberler: ~10 (KOMUTLAR_REHBERI.md, etc.)
 - 🗑️ Geçici: ~6 (FAZ1_TAMAMLANDI.txt, etc.)
 
 **Öneriler:**
+
 1. Eski raporları `docs/archive/` taşı
 2. Geçici TXT dosyalarını sil
 3. Ana dizinde sadece README + aktif dökümanlar kalsın
@@ -29,6 +32,7 @@ MD/TXT Dosyaları: 61 adet
 ### 📁 resources/views Dizini
 
 #### 🔴 KRİTİK: bg-gray-50 Kullanımı
+
 ```
 Toplam: 607 kullanım
 Dosya: 108 dosya
@@ -36,17 +40,17 @@ Dosya: 108 dosya
 
 **Kategori Analizi:**
 
-| Kategori | Dosya | Kullanım | Durum |
-|----------|-------|----------|-------|
-| **İlan Yönetimi** | 15 | ~60 | ✅ Düzeltildi (bugün) |
-| **Property Type Manager** | 3 | ~20 | ✅ Düzeltildi (bugün) |
-| **Özellikler** | 5 | ~15 | ⚠️ 1 düzeltildi, 4 kaldı |
-| **Kullanıcılar/Danışmanlar** | 8 | ~80 | ❌ Henüz dokunulmadı |
-| **CRM/Eşleşmeler** | 6 | ~50 | ❌ Henüz dokunulmadı |
-| **Takvim/Yazlık** | 4 | ~30 | ❌ Henüz dokunulmadı |
-| **Blog/Analytics** | 8 | ~60 | ❌ Henüz dokunulmadı |
-| **Components** | 20 | ~150 | ⚠️ 2 düzeltildi, 18 kaldı |
-| **Diğer** | 32 | ~142 | ❌ Henüz dokunulmadı |
+| Kategori                     | Dosya | Kullanım | Durum                     |
+| ---------------------------- | ----- | -------- | ------------------------- |
+| **İlan Yönetimi**            | 15    | ~60      | ✅ Düzeltildi (bugün)     |
+| **Property Type Manager**    | 3     | ~20      | ✅ Düzeltildi (bugün)     |
+| **Özellikler**               | 5     | ~15      | ⚠️ 1 düzeltildi, 4 kaldı  |
+| **Kullanıcılar/Danışmanlar** | 8     | ~80      | ❌ Henüz dokunulmadı      |
+| **CRM/Eşleşmeler**           | 6     | ~50      | ❌ Henüz dokunulmadı      |
+| **Takvim/Yazlık**            | 4     | ~30      | ❌ Henüz dokunulmadı      |
+| **Blog/Analytics**           | 8     | ~60      | ❌ Henüz dokunulmadı      |
+| **Components**               | 20    | ~150     | ⚠️ 2 düzeltildi, 18 kaldı |
+| **Diğer**                    | 32    | ~142     | ❌ Henüz dokunulmadı      |
 
 **NOT:** Tüm bg-gray-50 kullanımları **form alanı değil**!  
 Çoğu **container/card background** (sorun değil).
@@ -54,12 +58,14 @@ Dosya: 108 dosya
 ---
 
 #### 🟡 ORTA: text-gray-900 Kullanımı
+
 ```
 Toplam: 1157 kullanım
 Dosya: 132 dosya
 ```
 
 **Kategori:**
+
 - Container başlıklar: ~800 (sorun değil)
 - Form alanları: ~120 (düzeltildi)
 - Label'lar: ~150 (sorun değil)
@@ -71,14 +77,14 @@ Dosya: 132 dosya
 
 ### 📁 resources/views/components Dizini
 
-| Component | Durum | Kullanım | Öncelik |
-|-----------|-------|----------|---------|
-| admin/input.blade.php | ✅ Düzeltildi | TÜM proje | - |
-| admin/textarea.blade.php | ✅ Düzeltildi | TÜM proje | - |
-| admin/modal.blade.php | ❌ Kontrol edilmedi | Orta | 🟡 |
-| form/*.blade.php | ❌ Kontrol edilmedi | Düşük | 🟢 |
-| crud/*.blade.php | ❌ Kontrol edilmedi | Düşük | 🟢 |
-| context7/*.blade.php | ❌ Kontrol edilmedi | Orta | 🟡 |
+| Component                | Durum               | Kullanım  | Öncelik |
+| ------------------------ | ------------------- | --------- | ------- |
+| admin/input.blade.php    | ✅ Düzeltildi       | TÜM proje | -       |
+| admin/textarea.blade.php | ✅ Düzeltildi       | TÜM proje | -       |
+| admin/modal.blade.php    | ❌ Kontrol edilmedi | Orta      | 🟡      |
+| form/\*.blade.php        | ❌ Kontrol edilmedi | Düşük     | 🟢      |
+| crud/\*.blade.php        | ❌ Kontrol edilmedi | Düşük     | 🟢      |
+| context7/\*.blade.php    | ❌ Kontrol edilmedi | Orta      | 🟡      |
 
 ---
 
@@ -93,6 +99,7 @@ Toplam: 129 dosya
 ```
 
 **Sorunlu Alanlar:**
+
 - ⚠️ public/css/admin/backup-2024-12-27/ → Eski backup'lar
 - ⚠️ public/vendor/leaflet-draw/ → Kullanılıyor mu?
 - ✅ public/build/ → Vite production build (dokunma!)
@@ -110,6 +117,7 @@ Toplam: 94 dosya
 ```
 
 **Kullanılmayan Olabilir:**
+
 - context7-auto-fix-violations.php
 - migrate-neo-forms.php
 - convert-to-blade-components.php
@@ -130,6 +138,7 @@ Toplam: 339 dosya!
 ```
 
 **Çok büyük!** Organize edilmeli:
+
 - ✅ learned/ → Öğrenme dosyaları (iyi)
 - ✅ knowledge/ → Bilgi tabanı (iyi)
 - ⚠️ backups/ → Çok büyük (temizlenebilir)
@@ -142,6 +151,7 @@ Toplam: 339 dosya!
 ### 🔴 YÜKSEK ÖNCELİK (Yarın)
 
 #### 1. Kök Dizin Temizliği
+
 ```bash
 Taşınacaklar (docs/archive/):
 - DERIN_ANALIZ_RAPORU_2025_11_01.md
@@ -167,6 +177,7 @@ Kalacaklar:
 ```
 
 #### 2. Kalan Admin Sayfaları (Form Düzeltme)
+
 ```
 Öncelik Sırası:
 1. ilanlar/edit.blade.php (sık kullanılıyor)
@@ -182,6 +193,7 @@ Kalacaklar:
 ### 🟡 ORTA ÖNCELİK (Bu Hafta)
 
 #### 3. Components Standardizasyonu
+
 ```
 Kontrol edilecek:
 - components/form/*.blade.php
@@ -190,6 +202,7 @@ Kontrol edilecek:
 ```
 
 #### 4. Public Dizini Temizliği
+
 ```
 - public/css/admin/backup-2024-12-27/ sil
 - Kullanılmayan JS dosyalarını tespit et
@@ -201,6 +214,7 @@ Kontrol edilecek:
 ### 🟢 DÜŞÜK ÖNCELİK (Ay İçinde)
 
 #### 5. yalihan-bekci Arşivleme
+
 ```
 - backups/ dizinini temizle (eski backup'lar)
 - Duplicate tool'ları birleştir
@@ -208,6 +222,7 @@ Kontrol edilecek:
 ```
 
 #### 6. Scripts Temizliği
+
 ```
 - Kullanılmayan PHP script'leri sil
 - Duplicate shell script'leri birleştir
@@ -218,21 +233,22 @@ Kontrol edilecek:
 
 ## 📈 TARAMA İSTATİSTİKLERİ
 
-| Dizin | Toplam Dosya | Sorunlu | Düzeltildi | Kalan |
-|-------|--------------|---------|------------|-------|
-| **views** | ~430 | 108 | 22 | 86 |
-| **components** | ~40 | 20 | 2 | 18 |
-| **public** | 129 | ~15 | 0 | 15 |
-| **scripts** | 94 | ~10 | 0 | 10 |
-| **docs** | 111 | ~30 | 0 | 30 |
-| **kök (MD)** | 61 | ~30 | 0 | 30 |
-| **yalihan-bekci** | 339 | ~50 | 0 | 50 |
+| Dizin             | Toplam Dosya | Sorunlu | Düzeltildi | Kalan |
+| ----------------- | ------------ | ------- | ---------- | ----- |
+| **views**         | ~430         | 108     | 22         | 86    |
+| **components**    | ~40          | 20      | 2          | 18    |
+| **public**        | 129          | ~15     | 0          | 15    |
+| **scripts**       | 94           | ~10     | 0          | 10    |
+| **docs**          | 111          | ~30     | 0          | 30    |
+| **kök (MD)**      | 61           | ~30     | 0          | 30    |
+| **yalihan-bekci** | 339          | ~50     | 0          | 50    |
 
 ---
 
 ## 🎯 ÖNERİLEN WORKFLOW
 
 ### Faz 1: Kritik Dosyalar (Yarın)
+
 ```
 1. Kök dizin temizliği (30 dk)
 2. ilanlar/edit + show (45 dk)
@@ -242,6 +258,7 @@ Toplam: ~2 saat
 ```
 
 ### Faz 2: Component'ler (2-3 Gün)
+
 ```
 1. components/form/* standardize et
 2. components/context7/* kontrol et
@@ -249,6 +266,7 @@ Toplam: ~2 saat
 ```
 
 ### Faz 3: Arşivleme (1 Hafta)
+
 ```
 1. docs/ organize et
 2. public/ temizle
@@ -269,4 +287,3 @@ Toplam: ~2 saat
 **E)** **"yarın"** → Bugünü tamamla, yarın devam et 🌙
 
 Ne diyorsunuz? 🚀
-

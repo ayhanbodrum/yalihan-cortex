@@ -375,9 +375,9 @@ Version B → Daha kaliteli lead (Lüks segment)
 
 Önerim:
 
--   Geniş kitle için: Version A
--   Premium segment için: Version B
--   Her ikisini de test edin, verilere göre karar verin
+- Geniş kitle için: Version A
+- Premium segment için: Version B
+- Her ikisini de test edin, verilere göre karar verin
 
 A/B test için traffic'i %50-%50 ayırın.
 Hangi versiyonu tercih edersiniz?

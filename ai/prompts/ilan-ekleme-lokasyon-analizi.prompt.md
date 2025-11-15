@@ -1,9 +1,11 @@
 # İlan Ekleme - Lokasyon Analizi Prompt
 
 ## 🎯 Amaç
+
 İlan ekleme sayfasında AI ile lokasyon analizi üretimi için kullanılacak prompt.
 
 ## 📋 Giriş Parametreleri
+
 - `il`: İl adı
 - `ilce`: İlçe adı
 - `mahalle`: Mahalle adı
@@ -14,47 +16,46 @@
 - `longitude`: Boylam (opsiyonel)
 
 ## 🎨 Çıktı Formatı
+
 ```json
 {
-  "success": true,
-  "data": {
-    "lokasyon_skoru": 85,
-    "harf_notu": "A-",
-    "potansiyel": "Yüksek",
-    "analiz": {
-      "ulasim": {
-        "skor": 90,
-        "aciklama": "Merkezi konum, toplu taşıma erişimi mükemmel"
-      },
-      "cevre": {
-        "skor": 80,
-        "aciklama": "Yeşil alanlar ve sosyal tesisler yakın"
-      },
-      "yatirim": {
-        "skor": 85,
-        "aciklama": "Gelişen bölge, yatırım potansiyeli yüksek"
-      },
-      "guvenlik": {
-        "skor": 75,
-        "aciklama": "Güvenli mahalle, düşük suç oranı"
-      }
-    },
-    "avantajlar": [
-      "Merkezi konum",
-      "Toplu taşıma erişimi",
-      "Yeşil alanlar yakın",
-      "Gelişen bölge"
-    ],
-    "dezavantajlar": [
-      "Trafik yoğunluğu",
-      "Gürültü seviyesi"
-    ],
-    "oneri": "Bu lokasyon yatırım için uygun, kiralama potansiyeli yüksek"
-  }
+    "success": true,
+    "data": {
+        "lokasyon_skoru": 85,
+        "harf_notu": "A-",
+        "potansiyel": "Yüksek",
+        "analiz": {
+            "ulasim": {
+                "skor": 90,
+                "aciklama": "Merkezi konum, toplu taşıma erişimi mükemmel"
+            },
+            "cevre": {
+                "skor": 80,
+                "aciklama": "Yeşil alanlar ve sosyal tesisler yakın"
+            },
+            "yatirim": {
+                "skor": 85,
+                "aciklama": "Gelişen bölge, yatırım potansiyeli yüksek"
+            },
+            "guvenlik": {
+                "skor": 75,
+                "aciklama": "Güvenli mahalle, düşük suç oranı"
+            }
+        },
+        "avantajlar": [
+            "Merkezi konum",
+            "Toplu taşıma erişimi",
+            "Yeşil alanlar yakın",
+            "Gelişen bölge"
+        ],
+        "dezavantajlar": ["Trafik yoğunluğu", "Gürültü seviyesi"],
+        "oneri": "Bu lokasyon yatırım için uygun, kiralama potansiyeli yüksek"
+    }
 }
 ```
 
 ## 📝 Prompt Template
+
 ```
 Sen bir emlak lokasyon analiz uzmanısın. Aşağıdaki bilgilere göre lokasyon analizi yap:
 
@@ -82,6 +83,7 @@ KRİTERLER:
 ```
 
 ## 🔄 Kullanım Senaryoları
+
 1. **Merkezi Konum**: Yüksek skor, A notu
 2. **Gelişen Bölge**: Orta-yüksek skor, B+ notu
 3. **Uzak Lokasyon**: Düşük skor, C notu
@@ -89,11 +91,13 @@ KRİTERLER:
 5. **İş Merkezi**: Yüksek skor, A notu
 
 ## ⚡ Performans Hedefleri
+
 - **Response Time**: < 3 saniye
 - **Success Rate**: > 90%
 - **Fallback**: Yerel veri tabanı kullan
 
 ## 🛡️ Güvenlik
+
 - PII maskeleme
 - Rate limiting
 - Input validation

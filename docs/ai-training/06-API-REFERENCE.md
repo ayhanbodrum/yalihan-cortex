@@ -348,13 +348,12 @@ alt_kategori_name: string
 
 ```javascript
 // Frontend'de
-fetch("/stable-create/ai-suggest", {
-    method: "POST",
+fetch('/stable-create/ai-suggest', {
+    method: 'POST',
     headers: {
-        "Content-Type": "application/json",
-        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]')
-            .content,
-        "X-Requested-With": "XMLHttpRequest",
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+        'X-Requested-With': 'XMLHttpRequest',
     },
     body: JSON.stringify(data),
 });
@@ -568,7 +567,7 @@ X-Model: gemma2:2b
 
 **🆕 Yeni Özellikler (v3.4.0):**
 
--   AI İlan Geçmişi Analizi
--   TKGM Parsel Sorgulama
--   Kategori Özel Alanlar
--   Yatırım Potansiyeli Analizi
+- AI İlan Geçmişi Analizi
+- TKGM Parsel Sorgulama
+- Kategori Özel Alanlar
+- Yatırım Potansiyeli Analizi

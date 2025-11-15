@@ -5,9 +5,9 @@
   "oncelik": "CRITICAL",
   "kategori": "system-architecture",
   "etiketler": ["polymorphic", "features", "migration", "cleanup", "site-ozellikleri"],
-  
+
   "ozet": "Eski Site Özellikleri sisteminden yeni Polymorphic Features System'e tamamen geçildi. Eski controller ve view'lar kaldırıldı, redirect sistemi eklendi.",
-  
+
   "yapilan_islemler": {
     "1_site_ozellikleri_kaldirma": {
       "aciklama": "Eski Site Özellikleri sistemi tamamen kaldırıldı",
@@ -18,7 +18,7 @@
       "sebep": "Polymorphic Features System ile tamamen replace edildi",
       "etki": "Site özellikleri artık yeni sistemde FeatureCategory ve Feature modelleri ile yönetiliyor"
     },
-    
+
     "2_redirect_sistemi": {
       "aciklama": "Eski URL'lerden yeni sisteme otomatik yönlendirme",
       "dosya": "routes/admin.php",
@@ -26,7 +26,7 @@
       "amac": "Geriye dönük uyumluluk, eski linklerin çalışması",
       "hedef": "/admin/ozellikler/kategoriler (Polymorphic Feature Categories)"
     },
-    
+
     "3_sayfa_analizi": {
       "aciklama": "Tüm admin sayfaları analiz edildi ve durumları belirlendi",
       "kontrol_edilen_sayfalar": {
@@ -82,15 +82,12 @@
           "durum": "AKTIF - ÇALIŞIYOR ✅",
           "aciklama": "Property Type Manager Ana Sayfa",
           "controller": "PropertyTypeManagerController@index",
-          "ozellikler": [
-            "Property type listesi ve yönetimi",
-            "Polymorphic sistem entegrasyonu"
-          ]
+          "ozellikler": ["Property type listesi ve yönetimi", "Polymorphic sistem entegrasyonu"]
         }
       }
     }
   },
-  
+
   "polymorphic_system_architecture": {
     "database_tables": {
       "feature_categories": {
@@ -101,14 +98,31 @@
       "features": {
         "aciklama": "Gerçek özellikler (Oda Sayısı, Havuz, Asansör, etc.)",
         "onemli_fields": ["category_id", "name", "slug", "field_type", "field_options", "enabled"],
-        "field_types": ["text", "number", "boolean", "select", "checkbox", "radio", "textarea", "date", "price"],
+        "field_types": [
+          "text",
+          "number",
+          "boolean",
+          "select",
+          "checkbox",
+          "radio",
+          "textarea",
+          "date",
+          "price"
+        ],
         "iliskiler": ["belongsTo category", "hasMany assignments", "hasMany values"]
       },
       "feature_assignments": {
         "aciklama": "Özellik atamaları - Hangi PropertyType'a hangi özellik atanmış",
         "polymorphic": true,
         "morphs": "assignable (PropertyType, IlanKategori, etc.)",
-        "onemli_fields": ["feature_id", "assignable_type", "assignable_id", "is_required", "is_visible", "order"]
+        "onemli_fields": [
+          "feature_id",
+          "assignable_type",
+          "assignable_id",
+          "is_required",
+          "is_visible",
+          "order"
+        ]
       },
       "feature_values": {
         "aciklama": "Gerçek değerler - İlanlar için özellik değerleri",
@@ -117,7 +131,7 @@
         "onemli_fields": ["feature_id", "valuable_type", "valuable_id", "value", "value_type"]
       }
     },
-    
+
     "models": {
       "FeatureCategory": {
         "dosya": "app/Models/FeatureCategory.php",
@@ -141,7 +155,7 @@
         "ozellik": "Otomatik type casting (string, integer, float, boolean, json)"
       }
     },
-    
+
     "trait": {
       "HasFeatures": {
         "dosya": "app/Traits/HasFeatures.php",
@@ -162,7 +176,7 @@
         ]
       }
     },
-    
+
     "controllers": {
       "PropertyTypeManagerController": {
         "dosya": "app/Http/Controllers/Admin/PropertyTypeManagerController.php",
@@ -193,7 +207,7 @@
         ]
       }
     },
-    
+
     "routes": {
       "polymorphic_feature_routes": [
         "POST /property-type/{propertyTypeId}/assign-feature",
@@ -202,11 +216,9 @@
         "POST /toggle-feature-assignment",
         "PUT /feature-assignment/{assignmentId}"
       ],
-      "redirect_routes": [
-        "GET /site-ozellikleri → /admin/ozellikler/kategoriler"
-      ]
+      "redirect_routes": ["GET /site-ozellikleri → /admin/ozellikler/kategoriler"]
     },
-    
+
     "seeders": {
       "PolymorphicFeaturesMigrationSeeder": {
         "dosya": "database/seeders/PolymorphicFeaturesMigrationSeeder.php",
@@ -230,7 +242,7 @@
       }
     }
   },
-  
+
   "migration_flow": {
     "1_database": "Migration çalıştırıldı: 2025_11_02_000001_create_polymorphic_features_system.php",
     "2_seeding": "Seeder çalıştırıldı: PolymorphicFeaturesMigrationSeeder + SampleFeaturesSeeder",
@@ -242,7 +254,7 @@
     "8_cleanup": "Eski sistem dosyaları kaldırıldı (SiteOzellikController, site-ozellikleri views)",
     "9_testing": "Tüm sayfalar kontrol edildi ve çalıştığı doğrulandı"
   },
-  
+
   "kritik_noktalar": {
     "1": "Eski 'Site Özellikleri' sistemi TAMAMEN kaldırıldı",
     "2": "Yeni sistemde TÜM özellikler (Site, Arsa, Konut, İşyeri, Yazlık) aynı tablolarda",
@@ -251,14 +263,14 @@
     "5": "Tüm admin sayfaları aktif ve çalışıyor, hiçbiri gereksiz değil",
     "6": "Redirect sistemi ile eski URL'ler yeni sisteme yönlendiriliyor"
   },
-  
+
   "context7_compliance": {
     "database_fields": "100% English (category_id, enabled, field_type, etc.)",
     "blade_translations": "100% Türkçe (kullanıcı arayüzü)",
     "model_naming": "Context7 uyumlu (FeatureCategory, Feature, FeatureAssignment)",
     "status": "✅ FULL COMPLIANCE"
   },
-  
+
   "dosya_yapisi": {
     "models": [
       "app/Models/FeatureCategory.php",
@@ -266,17 +278,13 @@
       "app/Models/FeatureAssignment.php",
       "app/Models/FeatureValue.php"
     ],
-    "traits": [
-      "app/Traits/HasFeatures.php"
-    ],
+    "traits": ["app/Traits/HasFeatures.php"],
     "controllers": [
       "app/Http/Controllers/Admin/PropertyTypeManagerController.php (UPDATED)",
       "app/Http/Controllers/Admin/OzellikController.php (UPDATED)",
       "app/Http/Controllers/Admin/OzellikKategoriController.php (UPDATED)"
     ],
-    "migrations": [
-      "database/migrations/2025_11_02_000001_create_polymorphic_features_system.php"
-    ],
+    "migrations": ["database/migrations/2025_11_02_000001_create_polymorphic_features_system.php"],
     "seeders": [
       "database/seeders/PolymorphicFeaturesMigrationSeeder.php",
       "database/seeders/SampleFeaturesSeeder.php"
@@ -291,7 +299,7 @@
       "resources/views/admin/site-ozellikleri/ ❌"
     ]
   },
-  
+
   "test_endpoints": {
     "feature_categories": "GET /admin/ozellikler/kategoriler",
     "category_edit": "GET /admin/ozellikler/kategoriler/{id}/edit",
@@ -302,7 +310,7 @@
     "calendar": "GET /admin/yazlik-kiralama/takvim",
     "old_site_features_redirect": "GET /admin/site-ozellikleri (→ redirects to /admin/ozellikler/kategoriler)"
   },
-  
+
   "gelecek_adimlar": {
     "1": "Özellik değerlerini ilanlara atama sistemini test et",
     "2": "AI integration ile otomatik özellik doldurma (ai_auto_fill)",
@@ -310,7 +318,7 @@
     "4": "Frontend'de özellik kartlarında gösterim (show_in_card)",
     "5": "Conditional logic implementasyonu (conditional_logic field)"
   },
-  
+
   "onemli_komutlar": {
     "migration": "php artisan migrate",
     "seeding": "php artisan db:seed --class=PolymorphicFeaturesMigrationSeeder",
@@ -319,4 +327,3 @@
     "test": "php artisan serve --port=8000"
   }
 }
-

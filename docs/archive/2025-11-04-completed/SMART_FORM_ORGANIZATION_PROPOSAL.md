@@ -3,6 +3,7 @@
 ## 📊 MEVCUT DURUM ANALİZİ
 
 ### Field Category Dağılımı:
+
 ```
 general:   88 alan (çok kalabalık! ❌)
 ozellik:   12 alan
@@ -14,6 +15,7 @@ TOPLAM:   124 alan
 ```
 
 ### ⚠️ SORUNLAR:
+
 1. **"general" çok kalabalık** - 88 alan tek kategoride!
 2. **Sıralama mantığı net değil** - Karışık görünüyor
 3. **Alan tekrarları var** - Farklı kategorilerde aynı alanlar
@@ -27,6 +29,7 @@ TOPLAM:   124 alan
 ### 1️⃣ FIELD CATEGORY YENİDEN ORGANIZE
 
 #### ❌ ESKİ (Karışık):
+
 ```
 general:   88 alan  → çok kalabalık!
 ozellik:   12 alan
@@ -36,6 +39,7 @@ fiyat:      3 alan
 ```
 
 #### ✅ YENİ (Akıllı Gruplama):
+
 ```
 📊 GRUP 1: FİYATLANDIRMA (10 alan)
    - Günlük Fiyat
@@ -141,6 +145,7 @@ fiyat:      3 alan
 ## 2️⃣ PRIORITY-BASED ORDERING
 
 ### Gösterim Sırası:
+
 ```
 1. 📊 FİYATLANDIRMA (en öncelikli!)
 2. 🏠 KAPASİTE & ODALAR
@@ -153,6 +158,7 @@ fiyat:      3 alan
 ```
 
 **Mantık:**
+
 - Kullanıcı önce fiyat bilgilerini girer (en önemli!)
 - Sonra kapasite ve odaları belirtir
 - Rezervasyon koşulları
@@ -164,6 +170,7 @@ fiyat:      3 alan
 ## 3️⃣ VISUAL ORGANIZATION
 
 ### Renk Kodları:
+
 ```css
 📊 FİYATLANDIRMA      → Green (from-green-50 to-emerald-50)
 🏠 KAPASİTE           → Blue (from-blue-50 to-cyan-50)
@@ -176,6 +183,7 @@ fiyat:      3 alan
 ```
 
 ### Accordion Pattern:
+
 ```html
 <div class="accordion-item">
     <button @click="toggle('pricing')">
@@ -193,6 +201,7 @@ fiyat:      3 alan
 ## 4️⃣ AI-POWERED AUTO-FILL
 
 ### Akıllı Hesaplamalar:
+
 ```javascript
 // Haftalık fiyat (günlük × 6.5)
 haftalik_fiyat = gunluk_fiyat × 6.5
@@ -211,6 +220,7 @@ kis_sezonu_fiyat = gunluk_fiyat × 0.6
 ```
 
 ### Standart Değerler:
+
 ```javascript
 check_in: '15:00'        // Industry standard
 check_out: '11:00'       // Industry standard
@@ -224,42 +234,45 @@ temizlik_ucreti: 500     // Fixed
 ## 5️⃣ QUICK FILL TEMPLATES
 
 ### Premium Villa:
+
 ```json
 {
-  "gunluk_fiyat": 5000,
-  "haftalik_fiyat": 32500,
-  "yaz_sezonu_fiyat": 7000,
-  "minimum_konaklama": 7,
-  "maksimum_misafir": 8,
-  "havuz": true,
-  "jakuzi": true,
-  "denize_uzaklik": 0.5,
-  "check_in": "15:00",
-  "check_out": "11:00"
+    "gunluk_fiyat": 5000,
+    "haftalik_fiyat": 32500,
+    "yaz_sezonu_fiyat": 7000,
+    "minimum_konaklama": 7,
+    "maksimum_misafir": 8,
+    "havuz": true,
+    "jakuzi": true,
+    "denize_uzaklik": 0.5,
+    "check_in": "15:00",
+    "check_out": "11:00"
 }
 ```
 
 ### Budget Villa:
+
 ```json
 {
-  "gunluk_fiyat": 1500,
-  "haftalik_fiyat": 9750,
-  "yaz_sezonu_fiyat": 2000,
-  "minimum_konaklama": 3,
-  "maksimum_misafir": 4,
-  "havuz": false,
-  "denize_uzaklik": 2
+    "gunluk_fiyat": 1500,
+    "haftalik_fiyat": 9750,
+    "yaz_sezonu_fiyat": 2000,
+    "minimum_konaklama": 3,
+    "maksimum_misafir": 4,
+    "havuz": false,
+    "denize_uzaklik": 2
 }
 ```
 
 ### Seaside Villa:
+
 ```json
 {
-  "gunluk_fiyat": 4000,
-  "denize_uzaklik": 0,
-  "deniz_manzarasi": "Evet",
-  "havuz": true,
-  "check_in": "15:00"
+    "gunluk_fiyat": 4000,
+    "denize_uzaklik": 0,
+    "deniz_manzarasi": "Evet",
+    "havuz": true,
+    "check_in": "15:00"
 }
 ```
 
@@ -268,16 +281,19 @@ temizlik_ucreti: 500     // Fixed
 ## 6️⃣ PROGRESSIVE DISCLOSURE
 
 ### Step 1: Zorunlu Alanlar (accordion açık)
+
 - Günlük Fiyat ⭐
 - Maksimum Misafir ⭐
 - Check-in/out ⭐
 
 ### Step 2: Önerilen Alanlar (accordion kapalı)
+
 - Sezon Fiyatları
 - Havuz, Jakuzi
 - Denize Uzaklık
 
 ### Step 3: Opsiyonel Alanlar (accordion kapalı)
+
 - Ekstra hizmetler
 - Diğer özellikler
 
@@ -286,21 +302,25 @@ temizlik_ucreti: 500     // Fixed
 ## 7️⃣ IMPLEMENTATION PLAN
 
 ### Phase 1: Smart Grouping (1 saat)
+
 - Field category'leri yeniden grupla
 - Renk kodları ekle
 - Visual separation
 
 ### Phase 2: AI Auto-Fill (1 saat)
+
 - Price calculations
 - Smart defaults
 - Template system
 
 ### Phase 3: Accordion UI (30 dk)
+
 - Progressive disclosure
 - Collapsible sections
 - Progress indicators
 
 ### Phase 4: Quick Templates (30 dk)
+
 - Premium/Budget/Seaside templates
 - One-click fill
 - Custom templates
@@ -310,6 +330,7 @@ temizlik_ucreti: 500     // Fixed
 ## 📈 EXPECTED RESULTS
 
 ### Önce:
+
 ```
 ❌ 124 alan hepsi görünür
 ❌ Scroll hell (çok kaydırma)
@@ -319,6 +340,7 @@ temizlik_ucreti: 500     // Fixed
 ```
 
 ### Sonra:
+
 ```
 ✅ 8 grup, accordion pattern
 ✅ Sadece zorunlular açık
@@ -346,6 +368,7 @@ temizlik_ucreti: 500     // Fixed
 ## 💡 BONUS ÖZELLİKLER
 
 ### 1. Form Progress Bar:
+
 ```
 📊 Fiyatlandırma: ████████░░ 8/10
 🏠 Kapasite:      ██████░░░░ 6/8
@@ -354,24 +377,26 @@ temizlik_ucreti: 500     // Fixed
 ```
 
 ### 2. Smart Validation:
+
 ```javascript
 if (yaz_sezonu_fiyat < gunluk_fiyat) {
-    warning: "Yaz sezonu fiyatı günlükten düşük!"
+    warning: 'Yaz sezonu fiyatı günlükten düşük!';
 }
 
 if (check_out <= check_in) {
-    error: "Check-out check-in'den sonra olmalı!"
+    error: "Check-out check-in'den sonra olmalı!";
 }
 ```
 
 ### 3. Field Dependencies:
+
 ```javascript
 if (havuz === true) {
-    show: ["Havuz Büyüklüğü", "Havuz Tipi", "Havuz Isıtma"]
+    show: ['Havuz Büyüklüğü', 'Havuz Tipi', 'Havuz Isıtma'];
 }
 
 if (pet_friendly === true) {
-    show: ["Pet Deposu", "Pet Kuralları"]
+    show: ['Pet Deposu', 'Pet Kuralları'];
 }
 ```
 
@@ -380,15 +405,18 @@ if (pet_friendly === true) {
 ## 🚀 IMPLEMENTATION
 
 **Dosyalar:**
+
 1. `smart-field-organizer.blade.php` ✅ (oluşturuldu)
 2. `field-dependencies-dynamic.blade.php` (update gerekli)
 3. `create.blade.php` (entegre edilecek)
 
 **API:**
+
 - Mevcut field dependencies API kullanılacak
 - Ek AI suggestion endpoint (opsiyonel)
 
 **Süre:**
+
 - 3 saat (tüm implementation)
 - Anında UX iyileşmesi
 
@@ -396,17 +424,16 @@ if (pet_friendly === true) {
 
 ## 📊 COMPARISON
 
-| Özellik | Önce | Sonra |
-|---------|------|-------|
-| Form doldurma süresi | 15-20 dk | 3-5 dk |
-| Görünür alan sayısı | 124 | 20-30 |
-| Scroll miktarı | Çok | Az |
-| Hata oranı | Yüksek | Düşük |
-| Kullanıcı memnuniyeti | %60 | %95 |
+| Özellik               | Önce     | Sonra  |
+| --------------------- | -------- | ------ |
+| Form doldurma süresi  | 15-20 dk | 3-5 dk |
+| Görünür alan sayısı   | 124      | 20-30  |
+| Scroll miktarı        | Çok      | Az     |
+| Hata oranı            | Yüksek   | Düşük  |
+| Kullanıcı memnuniyeti | %60      | %95    |
 
 ---
 
 **Tarih:** 2025-11-03  
 **Öncelik:** HIGH  
 **Etki:** GAME CHANGER! 🚀
-

@@ -6,7 +6,7 @@
   "priority": "HIGH",
   "category": "standards",
   "description": "Tüm admin paneli için global form element standartları oluşturuldu. WCAG AAA, Context7, ve dark mode desteği içerir.",
-  
+
   "components": {
     "helper_class": {
       "file": "app/Helpers/FormStandards.php",
@@ -36,7 +36,7 @@
       "purpose": "Automated script to migrate old patterns to new standards"
     }
   },
-  
+
   "standards": {
     "padding": "px-4 py-2.5",
     "border_radius": "rounded-lg",
@@ -48,7 +48,7 @@
     "error_color": "text-red-600 dark:text-red-400",
     "help_color": "text-gray-500 dark:text-gray-400"
   },
-  
+
   "forbidden_patterns": [
     {
       "pattern": "neo-input",
@@ -86,7 +86,7 @@
       "replacement": "px-4 py-2.5"
     }
   ],
-  
+
   "usage_examples": {
     "input_field": {
       "blade": "<input type=\"text\" class=\"{{ FormStandards::input() }}\" />",
@@ -104,7 +104,7 @@
       "blade": "<label class=\"{{ FormStandards::label() }}\">Name *</label>\n<input class=\"{{ FormStandards::input() }}\" required />\n@error('name')\n  <p class=\"{{ FormStandards::error() }}\">{{ $message }}</p>\n@enderror"
     }
   },
-  
+
   "wcag_compliance": {
     "standard": "WCAG AAA",
     "contrast_ratios": {
@@ -118,7 +118,7 @@
       "error_dark": "5:1 (#F87171 on #111827)"
     }
   },
-  
+
   "migration_checklist": [
     "Import FormStandards helper in Blade: use App\\Helpers\\FormStandards;",
     "Replace neo-* classes with FormStandards methods",
@@ -131,7 +131,7 @@
     "Run pre-commit hooks",
     "Document any custom styling requirements"
   ],
-  
+
   "affected_pages": [
     "resources/views/admin/kisiler/**",
     "resources/views/admin/danisman/**",
@@ -141,7 +141,7 @@
     "resources/views/admin/ilan-kategorileri/**",
     "resources/views/admin/property-type-manager/**"
   ],
-  
+
   "context7_integration": {
     "compliant": true,
     "standards_followed": [
@@ -152,7 +152,7 @@
       "Rounded corners (Context7 design language)"
     ]
   },
-  
+
   "next_actions": [
     {
       "action": "Update all CRM forms to use FormStandards",
@@ -185,7 +185,7 @@
       "estimated_effort": "4 hours"
     }
   ],
-  
+
   "lessons_learned": [
     "Global standards prevent inconsistencies across large codebases",
     "PHP helper classes are more maintainable than Blade components for simple utility functions",
@@ -197,4 +197,3 @@
     "Blue focus rings provide better brand consistency than indigo/purple"
   ]
 }
-

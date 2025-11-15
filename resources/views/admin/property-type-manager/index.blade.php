@@ -15,7 +15,7 @@
                 </p>
             </div>
             <div class="flex items-center gap-3">
-                <a href="{{ route('admin.ilan-kategorileri.index') }}" 
+                <a href="{{ route('admin.ilan-kategorileri.index') }}"
                    class="inline-flex items-center px-4 py-2 bg-gray-600 text-white font-semibold rounded-lg shadow-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 dark:bg-gray-800 dark:hover:bg-gray-600">
                     <i class="fas fa-list mr-2"></i>
                     Tüm Kategoriler
@@ -27,7 +27,7 @@
     <!-- Kategori Kartları -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         @foreach($kategoriler as $kategori)
-        <a href="{{ route('admin.property-type-manager.show', $kategori->id) }}"
+        <a href="{{ route('admin.property_types.show', $kategori->id) }}"
            class="group bg-gray-50 dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 p-6 border-l-4 border-blue-500 hover:border-blue-600 transform hover:-translate-y-1">
 
             <!-- Kategori İkonu ve İsim -->
@@ -41,9 +41,36 @@
                     </h3>
                     <p class="text-sm text-gray-500 dark:text-gray-400">
                         {{ $kategori->children->count() }} Alt Kategori
+                        @if($kategori->yayinTipleri && $kategori->yayinTipleri->count() > 0)
+                            • {{ $kategori->yayinTipleri->count() }} Yayın Tipi
+                        @endif
                     </p>
                 </div>
             </div>
+
+            <!-- Yayın Tipleri Preview -->
+            @if($kategori->yayinTipleri && $kategori->yayinTipleri->count() > 0)
+            <div class="mb-3 pt-3 border-t border-gray-200 dark:border-gray-700">
+                <div class="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wider">
+                    Yayın Tipleri
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    @foreach($kategori->yayinTipleri->take(3) as $yayinTipi)
+                        <span class="text-xs px-2.5 py-1 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/30 dark:to-emerald-900/30 border border-green-200 dark:border-green-800 rounded-full text-green-700 dark:text-green-300 font-medium flex items-center gap-1">
+                            @if($yayinTipi->icon)
+                                <span>{{ $yayinTipi->icon }}</span>
+                            @endif
+                            <span>{{ $yayinTipi->yayin_tipi }}</span>
+                        </span>
+                    @endforeach
+                    @if($kategori->yayinTipleri->count() > 3)
+                        <span class="text-xs px-2.5 py-1 bg-gray-100 dark:bg-gray-800 rounded-full text-gray-600 dark:text-gray-400 font-medium">
+                            +{{ $kategori->yayinTipleri->count() - 3 }} daha
+                        </span>
+                    @endif
+                </div>
+            </div>
+            @endif
 
             <!-- Alt Kategoriler Preview -->
             <div class="flex flex-wrap gap-2 mb-4 min-h-[32px]">
@@ -71,6 +98,12 @@
                         <i class="fas fa-layer-group text-blue-500"></i>
                         {{ $kategori->children->count() }}
                     </span>
+                    @if($kategori->yayinTipleri && $kategori->yayinTipleri->count() > 0)
+                    <span class="flex items-center gap-1">
+                        <i class="fas fa-tags text-green-500"></i>
+                        {{ $kategori->yayinTipleri->count() }}
+                    </span>
+                    @endif
                 </div>
                 <span class="text-sm text-blue-600 dark:text-blue-400 font-semibold group-hover:text-blue-700 dark:group-hover:text-blue-300 flex items-center gap-2">
                     Yönet

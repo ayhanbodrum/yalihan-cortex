@@ -31,4 +31,3 @@ volumes:
 networks:
   yalihanemlak_network:
     driver: bridge
-

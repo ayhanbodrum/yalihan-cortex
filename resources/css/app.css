@@ -1,3 +1,6 @@
+/* Admin Common Styles - Must be imported first */
+@import './admin/common-styles.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

@@ -22,7 +22,7 @@ class FeatureController extends AdminController
 
             // Feature categories tablosundan verileri al
             $categories = \App\Models\FeatureCategory::with(['features'])->get();
-            
+
             $analysisData = [
                 'total_categories' => $categories->count(),
                 'optimized_categories' => $categories->where('status', true)->count(),
@@ -73,7 +73,7 @@ class FeatureController extends AdminController
         try {
             // Feature categories tablosundan verileri al
             $categories = \App\Models\FeatureCategory::with(['features'])->get();
-            
+
             return response()->json([
                 'success' => true,
                 'message' => 'Kategori verileri AI\'ya başarıyla beslendi',

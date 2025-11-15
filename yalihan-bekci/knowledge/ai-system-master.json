@@ -13,18 +13,10 @@
       "name": "AnythingLLM",
       "type": "local_ai_server",
       "enabled": true,
-      "config_keys": [
-        "ai_anythingllm_url",
-        "ai_anythingllm_api_key"
-      ],
+      "config_keys": ["ai_anythingllm_url", "ai_anythingllm_api_key"],
       "endpoint": "http://localhost:3001",
       "test_endpoint": "/api/v1/workspace",
-      "features": [
-        "embedding",
-        "chat",
-        "document_processing",
-        "local_inference"
-      ],
+      "features": ["embedding", "chat", "document_processing", "local_inference"],
       "training_docs": [
         "docs/ai-training/00-ANYTHINGLLM-MASTER-TRAINING.md",
         "docs/ai-training/01-AI-FEATURES-GUIDE.md",
@@ -44,83 +36,36 @@
       "name": "OpenAI GPT",
       "type": "cloud_api",
       "enabled": true,
-      "config_keys": [
-        "ai_openai_api_key"
-      ],
+      "config_keys": ["ai_openai_api_key"],
       "endpoint": "https://api.openai.com/v1",
       "test_endpoint": "/models",
-      "models": [
-        "gpt-4",
-        "gpt-4-turbo",
-        "gpt-3.5-turbo"
-      ],
-      "features": [
-        "chat",
-        "completion",
-        "embedding",
-        "function_calling"
-      ],
-      "use_cases": [
-        "complex_content_generation",
-        "multilingual_translation",
-        "advanced_reasoning"
-      ],
+      "models": ["gpt-4", "gpt-4-turbo", "gpt-3.5-turbo"],
+      "features": ["chat", "completion", "embedding", "function_calling"],
+      "use_cases": ["complex_content_generation", "multilingual_translation", "advanced_reasoning"],
       "context7_compliant": true
     },
     "gemini": {
       "name": "Google Gemini",
       "type": "cloud_api",
       "enabled": true,
-      "config_keys": [
-        "ai_gemini_api_key"
-      ],
+      "config_keys": ["ai_gemini_api_key"],
       "endpoint": "https://generativelanguage.googleapis.com/v1beta",
       "test_endpoint": "/models",
-      "models": [
-        "gemini-2.5-flash",
-        "gemini-pro"
-      ],
-      "features": [
-        "vision",
-        "ocr",
-        "image_analysis",
-        "chat",
-        "multimodal"
-      ],
-      "use_cases": [
-        "image_analysis",
-        "ocr_document_reading",
-        "object_detection",
-        "visual_qa"
-      ],
+      "models": ["gemini-2.5-flash", "gemini-pro"],
+      "features": ["vision", "ocr", "image_analysis", "chat", "multimodal"],
+      "use_cases": ["image_analysis", "ocr_document_reading", "object_detection", "visual_qa"],
       "context7_compliant": true
     },
     "claude": {
       "name": "Anthropic Claude",
       "type": "cloud_api",
       "enabled": true,
-      "config_keys": [
-        "ai_claude_api_key"
-      ],
+      "config_keys": ["ai_claude_api_key"],
       "endpoint": "https://api.anthropic.com/v1",
       "test_endpoint": null,
-      "models": [
-        "claude-3",
-        "claude-3-opus",
-        "claude-3-sonnet"
-      ],
-      "features": [
-        "chat",
-        "code_review",
-        "quality_control",
-        "long_context"
-      ],
-      "use_cases": [
-        "code_review",
-        "quality_assurance",
-        "technical_writing",
-        "complex_analysis"
-      ],
+      "models": ["claude-3", "claude-3-opus", "claude-3-sonnet"],
+      "features": ["chat", "code_review", "quality_control", "long_context"],
+      "use_cases": ["code_review", "quality_assurance", "technical_writing", "complex_analysis"],
       "context7_compliant": true,
       "note": "No public test endpoint available, API key validation only"
     },
@@ -128,21 +73,11 @@
       "name": "Ollama Local AI",
       "type": "local_ai_server",
       "enabled": true,
-      "config_keys": [
-        "ai_ollama_url",
-        "ai_ollama_model"
-      ],
+      "config_keys": ["ai_ollama_url", "ai_ollama_model"],
       "endpoint": "http://51.75.64.121:11434",
       "test_endpoint": "/api/tags",
-      "models": [
-        "gemma2:2b"
-      ],
-      "features": [
-        "local_inference",
-        "turkish_support",
-        "free_usage",
-        "privacy_focused"
-      ],
+      "models": ["gemma2:2b"],
+      "features": ["local_inference", "turkish_support", "free_usage", "privacy_focused"],
       "use_cases": [
         "listing_title_generation",
         "description_writing",
@@ -192,14 +127,7 @@
       "purpose": "AI request/response logging"
     },
     "ai_knowledge_base": {
-      "fields": [
-        "id",
-        "category",
-        "content",
-        "tags",
-        "usage_count",
-        "last_used_at"
-      ],
+      "fields": ["id", "category", "content", "tags", "usage_count", "last_used_at"],
       "purpose": "Learned AI knowledge storage"
     },
     "ai_embeddings": {
@@ -230,24 +158,14 @@
       "title_generation": {
         "variants": 3,
         "length": "60-80 characters",
-        "tones": [
-          "seo",
-          "kurumsal",
-          "hizli_satis",
-          "luks"
-        ],
+        "tones": ["seo", "kurumsal", "hizli_satis", "luks"],
         "response_time": "<2s",
         "cache_ttl": 3600
       },
       "description_generation": {
         "word_count": "200-250",
         "paragraphs": 3,
-        "tones": [
-          "seo",
-          "kurumsal",
-          "hizli_satis",
-          "luks"
-        ],
+        "tones": ["seo", "kurumsal", "hizli_satis", "luks"],
         "response_time": "<3s",
         "cache_ttl": 3600
       }
@@ -256,21 +174,13 @@
       "location_analysis": {
         "score_range": "0-100",
         "grade": "A-D",
-        "potential": [
-          "Yüksek",
-          "Orta",
-          "Düşük"
-        ],
+        "potential": ["Yüksek", "Orta", "Düşük"],
         "response_time": "<2s",
         "cache_ttl": 86400
       },
       "price_suggestion": {
         "levels": 3,
-        "types": [
-          "Pazarlık (-10%)",
-          "Piyasa (+5%)",
-          "Premium (+15%)"
-        ],
+        "types": ["Pazarlık (-10%)", "Piyasa (+5%)", "Premium (+15%)"],
         "response_time": "<1s"
       }
     },
@@ -300,26 +210,11 @@
         "para_birimi",
         "ai_*"
       ],
-      "forbidden": [
-        "durum",
-        "is_active",
-        "aktif",
-        "sehir",
-        "sehir_id",
-        "currency"
-      ]
+      "forbidden": ["durum", "is_active", "aktif", "sehir", "sehir_id", "currency"]
     },
     "api_response_format": {
-      "required_fields": [
-        "success",
-        "data",
-        "metadata"
-      ],
-      "optional_fields": [
-        "error",
-        "fallback",
-        "context7_compliant"
-      ],
+      "required_fields": ["success", "data", "metadata"],
+      "optional_fields": ["error", "fallback", "context7_compliant"],
       "example": {
         "success": true,
         "data": {},
@@ -414,4 +309,3 @@
     ]
   }
 }
-

@@ -6,6 +6,14 @@ echo ""
 # Lint-staged çalıştır (değişen dosyaları kontrol et)
 npx lint-staged
 
+# jQuery taraması
+echo ""
+echo "🔎 jQuery taraması..."
+npm run scan:jquery || {
+    echo "❌ jQuery kullanımı bulundu! Lütfen modernize edin (fetch/AbortController)."
+    exit 1
+}
+
 # Context7 compliance kontrolü
 echo ""
 echo "📋 Context7 kontrolü..."

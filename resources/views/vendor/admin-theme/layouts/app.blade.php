@@ -1138,12 +1138,7 @@
         // CSRF Token setup for AJAX
         window.Laravel = {!! json_encode(['csrfToken' => csrf_token()]) !!};
 
-        // Global AJAX setup
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
+        
 
         // Güvenli global değişkenler - hataları önlemek için
         window.featureList = window.featureList || function() {
@@ -1255,6 +1250,7 @@
     @stack('scripts')
     @yield('scripts')
 
+    <script src="{{ asset('js/admin/csrf-handler.js') }}"></script>
     <!-- Quick Search JavaScript -->
     <script src="{{ asset('js/admin/quick-search.js') }}"></script>
 

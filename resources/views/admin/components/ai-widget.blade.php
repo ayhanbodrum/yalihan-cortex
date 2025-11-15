@@ -1,5 +1,5 @@
 {{-- AI Widget Component --}}
-<div class="ai-widget bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden" 
+<div class="ai-widget bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden"
      x-data="aiWidget({
         action: '{{ $action ?? 'analyze' }}',
         endpoint: '{{ $endpoint ?? '' }}',
@@ -7,9 +7,9 @@
         icon: '{{ $icon ?? 'fas fa-brain' }}',
         data: @js($data ?? []),
         context: @js($context ?? [])
-     })" 
+     })"
      x-init="init()">
-    
+
     {{-- AI Widget Header --}}
     <div class="ai-widget-header bg-gradient-to-r from-blue-50 to-indigo-50 px-6 py-4 border-b border-gray-200">
         <div class="flex items-center justify-between">
@@ -24,7 +24,7 @@
             </div>
             <div class="flex items-center space-x-2">
                 <div class="ai-status-indicator flex items-center space-x-2">
-                    <div class="w-2 h-2 rounded-full" 
+                    <div class="w-2 h-2 rounded-full"
                          :class="{
                              'bg-green-500': status === 'success',
                              'bg-yellow-500': status === 'loading',
@@ -33,9 +33,9 @@
                          }"></div>
                     <span class="text-xs font-medium text-gray-600" x-text="statusText"></span>
                 </div>
-                <button @click="toggleExpanded()" 
+                <button @click="toggleExpanded()"
                         class="ai-toggle-btn p-2 text-gray-400 hover:text-gray-600 transition-colors touch-target-optimized touch-target-optimized">
-                    <i class="fas fa-chevron-down transform transition-transform" 
+                    <i class="fas fa-chevron-down transform transition-transform"
                        :class="{ 'rotate-180': expanded }"></i>
                 </button>
             </div>
@@ -51,7 +51,7 @@
                 <p class="text-gray-600" x-text="loadingMessage"></p>
                 <div class="ai-progress mt-4" x-show="progress > 0">
                     <div class="w-full bg-gray-200 rounded-full h-2">
-                        <div class="bg-blue-600 h-2 rounded-full transition-all duration-300" 
+                        <div class="bg-blue-600 h-2 rounded-full transition-all duration-300"
                              :style="`width: ${progress}%`"></div>
                     </div>
                     <p class="text-xs text-gray-500 mt-2" x-text="`${progress}% tamamlandı`"></p>
@@ -139,7 +139,7 @@ function aiWidget(config = {}) {
         icon: config.icon || 'fas fa-brain',
         data: config.data || {},
         context: config.context || {},
-        
+
         // State
         status: 'idle', // idle, loading, success, error
         expanded: true,
@@ -149,7 +149,7 @@ function aiWidget(config = {}) {
         loadingMessage: 'AI analiz ediliyor...',
         metadata: {},
         lastUpdate: '',
-        
+
         // Computed
         get statusText() {
             const texts = {
@@ -160,7 +160,7 @@ function aiWidget(config = {}) {
             };
             return texts[this.status] || 'Bilinmiyor';
         },
-        
+
         // Methods
         init() {
             this.lastUpdate = new Date().toLocaleString('tr-TR');
@@ -168,31 +168,31 @@ function aiWidget(config = {}) {
                 this.startAnalysis();
             }
         },
-        
+
         async startAnalysis() {
             this.status = 'loading';
             this.progress = 0;
             this.loadingMessage = 'AI analiz ediliyor...';
-            
+
             // Simulate progress
             const progressInterval = setInterval(() => {
                 if (this.progress < 90) {
                     this.progress += Math.random() * 20;
                 }
             }, 200);
-            
+
             try {
                 const response = await this.makeRequest();
                 this.progress = 100;
                 clearInterval(progressInterval);
-                
+
                 setTimeout(() => {
                     this.status = 'success';
                     this.result = this.formatResult(response.data);
                     this.metadata = response.metadata || {};
                     this.lastUpdate = new Date().toLocaleString('tr-TR');
                 }, 500);
-                
+
             } catch (error) {
                 clearInterval(progressInterval);
                 this.status = 'error';
@@ -200,10 +200,10 @@ function aiWidget(config = {}) {
                 this.lastUpdate = new Date().toLocaleString('tr-TR');
             }
         },
-        
+
         async makeRequest() {
             const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-            
+
             const response = await fetch(this.endpoint || '/api/admin/ai/analyze', {
                 method: 'POST',
                 headers: {
@@ -217,58 +217,58 @@ function aiWidget(config = {}) {
                     context: this.context
                 })
             });
-            
+
             if (!response.ok) {
                 const errorData = await response.json();
                 throw new Error(errorData.message || `HTTP ${response.status}`);
             }
-            
+
             return await response.json();
         },
-        
+
         formatResult(data) {
             if (typeof data === 'string') {
                 return data;
             }
-            
+
             if (Array.isArray(data)) {
-                return '<ul class="space-y-2">' + 
+                return '<ul class="space-y-2">' +
                        data.map(item => `<li class="flex items-start space-x-2">
                            <i class="fas fa-check text-green-500 mt-1"></i>
                            <span>${item}</span>
-                       </li>`).join('') + 
+                       </li>`).join('') +
                        '</ul>';
             }
-            
+
             return JSON.stringify(data, null, 2);
         },
-        
+
         async regenerate() {
             await this.startAnalysis();
         },
-        
+
         async retry() {
             await this.startAnalysis();
         },
-        
+
         copyResult() {
             navigator.clipboard.writeText(this.result.replace(/<[^>]*>/g, ''));
             this.showToast('Sonuç kopyalandı', 'success');
         },
-        
+
         refresh() {
             this.startAnalysis();
         },
-        
+
         toggleExpanded() {
             this.expanded = !this.expanded;
         },
-        
+
         settings() {
             // Open AI settings modal
             window.dispatchEvent(new CustomEvent('open-ai-settings'));
         },
-        
+
         reportError() {
             // Open error report modal
             window.dispatchEvent(new CustomEvent('report-ai-error', {
@@ -279,7 +279,7 @@ function aiWidget(config = {}) {
                 }
             }));
         },
-        
+
         showToast(message, type = 'info') {
             // Show toast notification
             window.dispatchEvent(new CustomEvent('show-toast', {

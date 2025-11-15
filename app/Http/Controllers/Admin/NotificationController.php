@@ -105,4 +105,126 @@ class NotificationController extends AdminController
             'data' => []
         ]);
     }
+
+    /**
+     * Show the form for creating a new notification
+     *
+     * @return \Illuminate\View\View
+     */
+    public function create()
+    {
+        return view('admin.notifications.create');
+    }
+
+    /**
+     * Store a newly created notification
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'message' => 'required|string',
+            'type' => 'nullable|in:success,warning,error,info',
+            'priority' => 'nullable|in:urgent,high,normal,low',
+            'user_id' => 'nullable|exists:users,id',
+            'role' => 'nullable|string',
+        ]);
+
+        $notification = \App\Models\Notification::create([
+            'title' => $validated['title'],
+            'message' => $validated['message'],
+            'type' => $validated['type'] ?? 'info',
+            'priority' => $validated['priority'] ?? 'normal',
+            'user_id' => $validated['user_id'] ?? auth()->id(),
+            'role' => $validated['role'] ?? null,
+            'status' => 'pending',
+        ]);
+
+        return redirect()->route('admin.notifications.index')
+            ->with('success', 'Bildirim başarıyla oluşturuldu');
+    }
+
+    /**
+     * Display the specified notification
+     *
+     * @param \App\Models\Notification $notification
+     * @return \Illuminate\View\View
+     */
+    public function show(\App\Models\Notification $notification)
+    {
+        return view('admin.notifications.show', compact('notification'));
+    }
+
+    /**
+     * Remove the specified notification
+     *
+     * @param \App\Models\Notification $notification
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
+     */
+    public function destroy(\App\Models\Notification $notification)
+    {
+        $notification->delete();
+
+        if (request()->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Bildirim başarıyla silindi'
+            ]);
+        }
+
+        return redirect()->route('admin.notifications.index')
+            ->with('success', 'Bildirim başarıyla silindi');
+    }
+
+    /**
+     * Mark notification as read
+     *
+     * @param \App\Models\Notification $notification
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function markAsRead(\App\Models\Notification $notification)
+    {
+        $notification->markAsRead();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Bildirim okundu olarak işaretlendi'
+        ]);
+    }
+
+    /**
+     * Mark notification as unread
+     *
+     * @param \App\Models\Notification $notification
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function markAsUnread(\App\Models\Notification $notification)
+    {
+        $notification->markAsUnread();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Bildirim okunmadı olarak işaretlendi'
+        ]);
+    }
+
+    /**
+     * Mark all notifications as read
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function markAllAsRead()
+    {
+        \App\Models\Notification::whereNull('read_at')
+            ->where('user_id', auth()->id())
+            ->update(['read_at' => now()]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Tüm bildirimler okundu olarak işaretlendi'
+        ]);
+    }
 }

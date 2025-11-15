@@ -20,42 +20,42 @@ class YazlikMissingAmenitiesSeeder extends Seeder
         // Kategorileri bul veya oluştur
         $wellnessCategory = FeatureCategory::firstOrCreate(
             ['name' => 'Wellness & Spa'],
-            ['description' => 'Wellness ve spa özellikleri', 'order' => 40]
+            ['description' => 'Wellness ve spa özellikleri', 'display_order' => 40]
         );
 
         $cocukCategory = FeatureCategory::firstOrCreate(
             ['name' => 'Çocuk Dostu'],
-            ['description' => 'Çocuk dostu özellikler', 'order' => 50]
+            ['description' => 'Çocuk dostu özellikler', 'display_order' => 50]
         );
 
         $disMekanCategory = FeatureCategory::firstOrCreate(
             ['name' => 'Dış Mekan'],
-            ['description' => 'Dış mekan özellikleri', 'order' => 60]
+            ['description' => 'Dış mekan özellikleri', 'display_order' => 60]
         );
 
         $mutfakCategory = FeatureCategory::firstOrCreate(
             ['name' => 'Mutfak Ekipmanları'],
-            ['description' => 'Mutfak ekipmanları', 'order' => 70]
+            ['description' => 'Mutfak ekipmanları', 'display_order' => 70]
         );
 
         $banyoCategory = FeatureCategory::firstOrCreate(
             ['name' => 'Banyo'],
-            ['description' => 'Banyo ekipmanları', 'order' => 80]
+            ['description' => 'Banyo ekipmanları', 'display_order' => 80]
         );
 
         $eglenceCategory = FeatureCategory::firstOrCreate(
             ['name' => 'Eğlence'],
-            ['description' => 'Eğlence özellikleri', 'order' => 90]
+            ['description' => 'Eğlence özellikleri', 'display_order' => 90]
         );
 
         $manzaraCategory = FeatureCategory::firstOrCreate(
             ['name' => 'Manzara'],
-            ['description' => 'Manzara özellikleri', 'order' => 100]
+            ['description' => 'Manzara özellikleri', 'display_order' => 100]
         );
 
         $konumCategory = FeatureCategory::firstOrCreate(
             ['name' => 'Konum Özellikleri'],
-            ['description' => 'Konum vurguları', 'order' => 110]
+            ['description' => 'Konum vurguları', 'display_order' => 110]
         );
 
         // 1. WELLNESS & SPA
@@ -74,7 +74,7 @@ class YazlikMissingAmenitiesSeeder extends Seeder
                     'field_icon' => $feature['icon'],
                     'description' => $feature['description'],
                     'field_type' => 'boolean',
-                    'order' => $index + 1,
+                    'display_order' => $index + 1,
                 ]
             );
         }
@@ -98,7 +98,7 @@ class YazlikMissingAmenitiesSeeder extends Seeder
                     'field_icon' => $feature['icon'],
                     'field_type' => 'boolean',
                     'description' => $feature['description'],
-                    'order' => $index + 1,
+                    'display_order' => $index + 1,
                 ]
             );
         }
@@ -121,7 +121,7 @@ class YazlikMissingAmenitiesSeeder extends Seeder
                     'field_icon' => $feature['icon'],
                     'field_type' => 'boolean',
                     'description' => $feature['description'],
-                    'order' => $index + 1,
+                    'display_order' => $index + 1,
                 ]
             );
         }
@@ -148,7 +148,7 @@ class YazlikMissingAmenitiesSeeder extends Seeder
                     'field_icon' => $feature['icon'],
                     'field_type' => 'boolean',
                     'description' => $feature['description'],
-                    'order' => $index + 1,
+                    'display_order' => $index + 1,
                 ]
             );
         }
@@ -170,7 +170,7 @@ class YazlikMissingAmenitiesSeeder extends Seeder
                     'field_icon' => $feature['icon'],
                     'field_type' => 'boolean',
                     'description' => $feature['description'],
-                    'order' => $index + 1,
+                    'display_order' => $index + 1,
                 ]
             );
         }
@@ -194,7 +194,7 @@ class YazlikMissingAmenitiesSeeder extends Seeder
                     'field_icon' => $feature['icon'],
                     'field_type' => 'boolean',
                     'description' => $feature['description'],
-                    'order' => $index + 1,
+                    'display_order' => $index + 1,
                 ]
             );
         }
@@ -217,7 +217,7 @@ class YazlikMissingAmenitiesSeeder extends Seeder
                     'field_icon' => $feature['icon'],
                     'field_type' => 'boolean',
                     'description' => $feature['description'],
-                    'order' => $index + 1,
+                    'display_order' => $index + 1,
                 ]
             );
         }
@@ -242,7 +242,7 @@ class YazlikMissingAmenitiesSeeder extends Seeder
                     'field_icon' => $feature['icon'],
                     'field_type' => 'boolean',
                     'description' => $feature['description'],
-                    'order' => $index + 1,
+                    'display_order' => $index + 1,
                 ]
             );
         }

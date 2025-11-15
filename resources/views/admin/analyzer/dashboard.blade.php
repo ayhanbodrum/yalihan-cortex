@@ -497,7 +497,7 @@
                          </div>
                          🏠 Emlak Yönetimi Analizi
                      </h3>
-                     
+
                      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
                          <!-- Emlak Özet Kartları -->
                          <div class="bg-gradient-to-r from-green-50 to-blue-50 p-6 rounded-xl border border-green-200">

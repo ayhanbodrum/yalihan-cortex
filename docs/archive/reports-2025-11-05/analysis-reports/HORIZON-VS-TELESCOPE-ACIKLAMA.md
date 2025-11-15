@@ -23,6 +23,7 @@ Horizon: QUEUE MONITORING tool (background job'ları izler)
 ### 1️⃣ Laravel Telescope (Debugging Tool)
 
 **Ne yapar:**
+
 ```yaml
 ✅ HTTP Requests izler (tüm route'lar)
 ✅ Exceptions/Errors yakalar
@@ -38,12 +39,14 @@ Horizon: QUEUE MONITORING tool (background job'ları izler)
 **URL:** `http://127.0.0.1:8000/telescope`
 
 **Ne zaman kullan:**
+
 - 🐛 Bug debugging
 - 🔍 Slow query tespiti
 - 📊 Request analizi
 - ❌ Error tracking
 
 **Örnek:**
+
 ```
 User clicked button → HTTP POST /api/ilanlar/store
 Telescope shows:
@@ -58,6 +61,7 @@ Telescope shows:
 ### 2️⃣ Laravel Horizon (Queue Monitor)
 
 **Ne yapar:**
+
 ```yaml
 ✅ Background job'ları izler (queue workers)
 ✅ Job throughput (saniyede kaç job)
@@ -71,12 +75,14 @@ Telescope shows:
 **URL:** `http://127.0.0.1:8000/horizon` (monitoring)
 
 **Ne zaman kullan:**
+
 - 📧 Email/SMS queue'ları
 - 🖼️ Image processing (resize, compress)
 - 📊 Report generation (background)
 - 🔄 API sync operations
 
 **Örnek:**
+
 ```
 Email queued → Job added to queue
 Horizon shows:
@@ -93,6 +99,7 @@ Horizon shows:
 ### Muhtemel Sebepler:
 
 **1. Horizon kurulu değil:**
+
 ```bash
 # Kontrol:
 composer show | grep horizon
@@ -104,6 +111,7 @@ php artisan migrate
 ```
 
 **2. Horizon worker çalışmıyor:**
+
 ```bash
 # Horizon worker başlatılmalı:
 php artisan horizon
@@ -113,12 +121,14 @@ php artisan horizon &
 ```
 
 **3. Queue driver Redis değil:**
+
 ```env
 # .env dosyasında:
 QUEUE_CONNECTION=redis  # (database yerine)
 ```
 
 **4. Route publish edilmemiş:**
+
 ```bash
 php artisan horizon:publish
 ```
@@ -128,6 +138,7 @@ php artisan horizon:publish
 ## 🔧 HORIZON NASIL ÇALIŞTIRILIR?
 
 ### Adım 1: Kurulum Kontrol
+
 ```bash
 # 1. Horizon kurulu mu?
 composer show laravel/horizon
@@ -141,6 +152,7 @@ redis-cli ping
 ```
 
 ### Adım 2: Horizon Worker Başlat
+
 ```bash
 # Development:
 php artisan horizon
@@ -150,6 +162,7 @@ php artisan horizon
 ```
 
 ### Adım 3: Test Et
+
 ```bash
 # Queue'ya job ekle:
 php artisan tinker
@@ -164,6 +177,7 @@ php artisan tinker
 ## 🎯 HANGİSİNİ KULLAN?
 
 ### Telescope Kullan (Debugging):
+
 ```yaml
 ✅ "Neden bu hata oluyor?"
 ✅ "Hangi query'ler çalışıyor?"
@@ -173,6 +187,7 @@ php artisan tinker
 ```
 
 ### Horizon Kullan (Queue Monitoring):
+
 ```yaml
 ✅ "Email gönderildi mi?"
 ✅ "Job'lar işleniyor mu?"
@@ -185,24 +200,25 @@ php artisan tinker
 
 ## 📊 KARŞILAŞTIRMA TABLOSU
 
-| Özellik | Telescope | Horizon |
-|---------|-----------|---------|
-| **Amaç** | Request debugging | Queue monitoring |
-| **İzler** | HTTP requests, queries, errors | Background jobs, workers |
-| **Gerçek Zamanlı** | ✅ Evet | ✅ Evet |
-| **Failed Jobs** | ❌ Hayır | ✅ Evet |
-| **Query Analizi** | ✅ Evet | ❌ Hayır |
-| **Exception Tracking** | ✅ Evet | ❌ Hayır |
-| **Worker Metrics** | ❌ Hayır | ✅ Evet |
-| **Kurulum Gerekli** | ✅ Kurulu (çoğu proje) | ⚠️ Opsiyonel |
-| **Redis Gerekli** | ❌ Hayır | ✅ Evet |
-| **Background Process** | ❌ Hayır | ✅ Evet (worker) |
+| Özellik                | Telescope                      | Horizon                  |
+| ---------------------- | ------------------------------ | ------------------------ |
+| **Amaç**               | Request debugging              | Queue monitoring         |
+| **İzler**              | HTTP requests, queries, errors | Background jobs, workers |
+| **Gerçek Zamanlı**     | ✅ Evet                        | ✅ Evet                  |
+| **Failed Jobs**        | ❌ Hayır                       | ✅ Evet                  |
+| **Query Analizi**      | ✅ Evet                        | ❌ Hayır                 |
+| **Exception Tracking** | ✅ Evet                        | ❌ Hayır                 |
+| **Worker Metrics**     | ❌ Hayır                       | ✅ Evet                  |
+| **Kurulum Gerekli**    | ✅ Kurulu (çoğu proje)         | ⚠️ Opsiyonel             |
+| **Redis Gerekli**      | ❌ Hayır                       | ✅ Evet                  |
+| **Background Process** | ❌ Hayır                       | ✅ Evet (worker)         |
 
 ---
 
 ## 🚀 SİZİN PROJE İÇİN
 
 ### Mevcut Durum:
+
 ```yaml
 Telescope: ✅ ÇALIŞIYOR
   URL: http://127.0.0.1:8000/telescope
@@ -216,20 +232,22 @@ Horizon: ❌ ÇALIŞMIYOR (muhtemelen kurulu değil)
 ### Öneriler:
 
 **1. Horizon Gerekli mi?**
+
 ```yaml
 EVET, eğer:
-  - Email/SMS queue kullanıyorsanız
-  - Background job'larınız varsa
-  - Image processing yapıyorsanız
-  - Report generation (background)
+    - Email/SMS queue kullanıyorsanız
+    - Background job'larınız varsa
+    - Image processing yapıyorsanız
+    - Report generation (background)
 
 HAYIR, eğer:
-  - Sadece sync operations
-  - Queue kullanmıyorsanız
-  - Küçük/basit proje
+    - Sadece sync operations
+    - Queue kullanmıyorsanız
+    - Küçük/basit proje
 ```
 
 **2. Kurulum (Gerekliyse):**
+
 ```bash
 # 1. Horizon kur
 composer require laravel/horizon
@@ -246,13 +264,12 @@ php artisan horizon
 ```
 
 **3. Sadece Telescope Kullan (Şimdilik):**
-```yaml
-Eğer queue kullanmıyorsanız:
-  ✅ Telescope yeterli (debugging)
-  ❌ Horizon'a gerek yok
 
-Gelecekte queue eklerseniz:
-  ✅ O zaman Horizon kur
+```yaml
+Eğer queue kullanmıyorsanız: ✅ Telescope yeterli (debugging)
+    ❌ Horizon'a gerek yok
+
+Gelecekte queue eklerseniz: ✅ O zaman Horizon kur
 ```
 
 ---
@@ -263,15 +280,16 @@ Gelecekte queue eklerseniz:
 
 ```yaml
 Telescope = Request Debugger
-  "Bu request neden hata verdi?"
-  
+"Bu request neden hata verdi?"
+
 Horizon = Queue Monitor
-  "Bu email gönderildi mi?"
+"Bu email gönderildi mi?"
 
 İKİSİ DE GEREKLİ (farklı amaçlar için)
 ```
 
 **Sizin için:**
+
 - ✅ Telescope kullanmaya devam edin (çalışıyor)
 - ⚠️ Horizon'a ihtiyacınız var mı kontrol edin
 - ✅ Queue kullanıyorsanız → Horizon kur
@@ -280,4 +298,3 @@ Horizon = Queue Monitor
 ---
 
 **Özet:** Telescope yeterli (şimdilik), Horizon'a ihtiyaç olursa kurarız! 🚀
-

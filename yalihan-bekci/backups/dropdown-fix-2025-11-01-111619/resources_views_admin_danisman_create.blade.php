@@ -195,16 +195,15 @@
             document.querySelector('form').addEventListener('submit', function(e) {
                 const password = document.getElementById('password').value;
                 const passwordConfirm = document.getElementById('password_confirmation').value;
-                
+
                 if (password !== passwordConfirm) {
                     e.preventDefault();
                     alert('Şifreler eşleşmiyor!');
                     return false;
                 }
-                
+
                 return true;
             });
         </script>
     @endpush
 @endsection
-

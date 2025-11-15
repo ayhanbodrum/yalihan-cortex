@@ -33,11 +33,11 @@
       "feature_categories": 5
     },
     "main_categories": [
-      {"id": 1, "name": "Konut", "level": 0},
-      {"id": 2, "name": "İşyeri", "level": 0},
-      {"id": 3, "name": "Arsa", "level": 0},
-      {"id": 4, "name": "Yazlık Kiralama", "level": 0},
-      {"id": 5, "name": "Turistik Tesisler", "level": 0}
+      { "id": 1, "name": "Konut", "level": 0 },
+      { "id": 2, "name": "İşyeri", "level": 0 },
+      { "id": 3, "name": "Arsa", "level": 0 },
+      { "id": 4, "name": "Yazlık Kiralama", "level": 0 },
+      { "id": 5, "name": "Turistik Tesisler", "level": 0 }
     ],
     "context7_compliance": {
       "status": "FULLY_COMPLIANT",
@@ -70,4 +70,3 @@
     "last_verified": "2025-10-30T13:45:00Z"
   }
 }
-

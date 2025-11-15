@@ -6,13 +6,14 @@ use App\Http\Controllers\Controller;
 use App\Models\Ilan;
 use App\Services\ListingNavigationService;
 use App\Services\AIService;
-use Illuminate\Http\Request;
 use App\Services\Response\ResponseService;
 use App\Services\Logging\LogService;
+use App\Traits\ValidatesApiRequests;
+use Illuminate\Http\Request;
 
 /**
  * Listing Navigation API Controller
- * 
+ *
  * Context7: Listing navigation API endpoints
  * - Get previous/next listings
  * - Get similar listings
@@ -20,6 +21,8 @@ use App\Services\Logging\LogService;
  */
 class ListingNavigationController extends Controller
 {
+    use ValidatesApiRequests;
+
     protected ListingNavigationService $navigationService;
     protected AIService $aiService;
 
@@ -31,25 +34,38 @@ class ListingNavigationController extends Controller
 
     /**
      * Get navigation for a listing
-     * 
+     *
      * @param Request $request
      * @param int $ilanId
      * @return \Illuminate\Http\JsonResponse
      */
     public function getNavigation(Request $request, int $ilanId)
     {
+        // ✅ REFACTORED: Using ValidatesApiRequests trait (optional validation)
+        $validated = $this->validateRequestFlexible($request, [
+            'mode' => 'sometimes|in:default,category,location',
+            'kategori_id' => 'sometimes|exists:ilan_kategorileri,id',
+            'status' => 'sometimes|string',
+            'il_id' => 'sometimes|exists:iller,id',
+            'ilce_id' => 'sometimes|exists:ilceler,id'
+        ]);
+
+        if ($validated instanceof \Illuminate\Http\JsonResponse) {
+            return $validated;
+        }
+
         try {
             $ilan = Ilan::findOrFail($ilanId);
-            
+
             $mode = $request->input('mode', 'default'); // default, category, location
             $filters = $request->only(['kategori_id', 'status', 'il_id', 'ilce_id']);
-            
-            $navigation = match($mode) {
+
+            $navigation = match ($mode) {
                 'category' => $this->navigationService->getByCategory($ilan),
                 'location' => $this->navigationService->getByLocation($ilan),
                 default => $this->navigationService->getNavigation($ilan, $filters)
             };
-            
+
             return ResponseService::success([
                 'navigation' => [
                     'previous' => $navigation['previous'] ? [
@@ -78,21 +94,30 @@ class ListingNavigationController extends Controller
 
     /**
      * Get similar listings
-     * 
+     *
      * @param Request $request
      * @param int $ilanId
      * @return \Illuminate\Http\JsonResponse
      */
     public function getSimilar(Request $request, int $ilanId)
     {
+        // ✅ REFACTORED: Using ValidatesApiRequests trait (optional validation)
+        $validated = $this->validateRequestFlexible($request, [
+            'limit' => 'sometimes|integer|min:1|max:20'
+        ]);
+
+        if ($validated instanceof \Illuminate\Http\JsonResponse) {
+            return $validated;
+        }
+
         try {
             $ilan = Ilan::findOrFail($ilanId);
             $limit = $request->input('limit', 4);
-            
+
             $similar = $this->navigationService->getSimilar($ilan, $limit);
-            
+
             return ResponseService::success([
-                'similar' => $similar->map(function($similarIlan) {
+                'similar' => $similar->map(function ($similarIlan) {
                     return [
                         'id' => $similarIlan->id,
                         'baslik' => $similarIlan->baslik,
@@ -111,16 +136,17 @@ class ListingNavigationController extends Controller
 
     /**
      * Get AI-powered navigation suggestions
-     * 
+     *
      * @param Request $request
      * @param int $ilanId
      * @return \Illuminate\Http\JsonResponse
      */
     public function getAISuggestions(Request $request, int $ilanId)
     {
+        // ✅ REFACTORED: Using ValidatesApiRequests trait (no validation needed, but consistent pattern)
         try {
             $ilan = Ilan::with(['kategori', 'il', 'ilce'])->findOrFail($ilanId);
-            
+
             // AI service ile navigasyon önerileri
             $context = [
                 'ilan' => [
@@ -132,9 +158,9 @@ class ListingNavigationController extends Controller
                 ],
                 'type' => 'navigation_suggestions'
             ];
-            
+
             $suggestions = $this->aiService->suggest($context, 'navigation');
-            
+
             return ResponseService::success([
                 'suggestions' => $suggestions,
                 'navigation_tips' => [
@@ -150,4 +176,3 @@ class ListingNavigationController extends Controller
         }
     }
 }
-

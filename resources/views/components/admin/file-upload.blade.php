@@ -1,9 +1,9 @@
 {{--
     File Upload Component
-    
+
     @component x-admin.file-upload
     @description Drag & drop file upload with preview, validation, and progress
-    
+
     @props
         - name: string (required) - Input name
         - label: string (optional) - Upload label
@@ -15,7 +15,7 @@
         - error: string (optional) - Error message
         - help: string (optional) - Help text
         - required: bool (optional) - Required field - default: false
-    
+
     @example
         <x-admin.file-upload
             name="photos[]"
@@ -26,7 +26,7 @@
             :maxFiles="10"
             help="Upload up to 10 photos (max 5MB each)"
         />
-    
+
     @features
         - Drag & drop support
         - Image preview
@@ -57,23 +57,23 @@ $uploadId = 'file-upload-' . str_replace(['[', ']'], '', $name);
 $hasError = !empty($error);
 @endphp
 
-<div 
+<div
     x-data="{
         files: [],
         isDragging: false,
         maxSize: {{ $maxSize }},
         maxFiles: {{ $maxFiles }},
         multiple: {{ $multiple ? 'true' : 'false' }},
-        
+
         addFiles(newFiles) {
             const fileArray = Array.from(newFiles);
-            
+
             // Check max files
             if (this.multiple && (this.files.length + fileArray.length) > this.maxFiles) {
                 window.toast('warning', `En fazla ${this.maxFiles} dosya yükleyebilirsiniz`);
                 return;
             }
-            
+
             // Process each file
             fileArray.forEach(file => {
                 // Check file size
@@ -81,7 +81,7 @@ $hasError = !empty($error);
                     window.toast('error', `${file.name} çok büyük (max ${this.maxSize}MB)`);
                     return;
                 }
-                
+
                 // Add file
                 const fileObj = {
                     file: file,
@@ -90,7 +90,7 @@ $hasError = !empty($error);
                     preview: null,
                     progress: 0
                 };
-                
+
                 // Generate preview for images
                 if (file.type.startsWith('image/') && {{ $preview ? 'true' : 'false' }}) {
                     const reader = new FileReader();
@@ -99,7 +99,7 @@ $hasError = !empty($error);
                     };
                     reader.readAsDataURL(file);
                 }
-                
+
                 if (this.multiple) {
                     this.files.push(fileObj);
                 } else {
@@ -107,11 +107,11 @@ $hasError = !empty($error);
                 }
             });
         },
-        
+
         removeFile(index) {
             this.files.splice(index, 1);
         },
-        
+
         formatSize(bytes) {
             if (bytes === 0) return '0 Bytes';
             const k = 1024;
@@ -119,13 +119,13 @@ $hasError = !empty($error);
             const i = Math.floor(Math.log(bytes) / Math.log(k));
             return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
         },
-        
+
         handleDrop(e) {
             this.isDragging = false;
             const files = e.dataTransfer.files;
             this.addFiles(files);
         },
-        
+
         handleFileSelect(e) {
             const files = e.target.files;
             this.addFiles(files);
@@ -135,8 +135,8 @@ $hasError = !empty($error);
 >
     {{-- Label --}}
     @if($label)
-    <label 
-        for="{{ $uploadId }}" 
+    <label
+        for="{{ $uploadId }}"
         class="block text-sm font-medium text-gray-900 dark:text-white mb-2"
     >
         {{ $label }}
@@ -151,16 +151,16 @@ $hasError = !empty($error);
         @dragover.prevent="isDragging = true"
         @dragleave.prevent="isDragging = false"
         @drop.prevent="handleDrop"
-        :class="{ 
+        :class="{
             'border-blue-500 bg-blue-50 dark:bg-blue-900/20': isDragging,
             'border-red-500': {{ $hasError ? 'true' : 'false' }}
         }"
-        class="relative border-2 border-dashed border-gray-300 dark:border-gray-600 
+        class="relative border-2 border-dashed border-gray-300 dark:border-gray-600
                rounded-xl p-8 text-center transition-all duration-200
                hover:border-gray-400 dark:hover:border-gray-500"
     >
-        <input 
-            type="file" 
+        <input
+            type="file"
             id="{{ $uploadId }}"
             name="{{ $name }}"
             accept="{{ $accept }}"
@@ -173,15 +173,15 @@ $hasError = !empty($error);
         {{-- Upload Icon & Text --}}
         <div class="pointer-events-none">
             <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                       d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
             </svg>
-            
+
             <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
                 <span class="font-semibold text-blue-600 dark:text-blue-400">Dosya seçin</span>
                 veya sürükleyip bırakın
             </p>
-            
+
             @if($help)
             <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
                 {{ $help }}
@@ -203,17 +203,17 @@ $hasError = !empty($error);
             <div class="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
                 {{-- Preview --}}
                 <template x-if="fileObj.preview">
-                    <img 
-                        :src="fileObj.preview" 
+                    <img
+                        :src="fileObj.preview"
                         :alt="fileObj.name"
                         class="w-12 h-12 object-cover rounded-lg"
                     />
                 </template>
-                
+
                 <template x-if="!fileObj.preview">
                     <div class="w-12 h-12 flex items-center justify-center bg-gray-200 dark:bg-gray-700 rounded-lg">
                         <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                   d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
                         </svg>
                     </div>
@@ -226,10 +226,10 @@ $hasError = !empty($error);
                 </div>
 
                 {{-- Remove Button --}}
-                <button 
+                <button
                     type="button"
                     @click="removeFile(index)"
-                    class="text-red-500 hover:text-red-700 dark:hover:text-red-400 
+                    class="text-red-500 hover:text-red-700 dark:hover:text-red-400
                            transition-colors duration-200 p-2 rounded-lg
                            hover:bg-red-50 dark:hover:bg-red-900/20"
                     title="Dosyayı kaldır"
@@ -250,6 +250,3 @@ $hasError = !empty($error);
         </template>
     </div>
 </div>
-
-
-

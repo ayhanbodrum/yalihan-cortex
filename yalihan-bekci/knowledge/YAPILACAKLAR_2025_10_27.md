@@ -8,6 +8,7 @@
 ## ✅ TAMAMLANAN İŞLER
 
 ### 1. 📅 Takvim Entegrasyon Sistemi (TAMAMLANDI - 27 Ekim)
+
 - ✅ 2 migration oluşturuldu
 - ✅ 2 model oluşturuldu
 - ✅ CalendarSyncService servisi eklendi
@@ -16,6 +17,7 @@
 - ✅ MCP sistemine öğretildi
 
 ### 2. 🏗️ İlan Modülleri Analizi (TAMAMLANDI - 27 Ekim)
+
 - ✅ Detaylı sistem analiz raporu
 - ✅ Tutarlılık sorunları tespit edildi
 - ✅ Özet rapor oluşturuldu
@@ -30,6 +32,7 @@
 **Durum:** ⚠️ Riskli (20 dosya etkileniyor)
 
 **Sorun:**
+
 - İki farklı Ilan modeli var: `app/Models/Ilan.php` ve `app/Modules/Emlak/Models/Ilan.php`
 - 20 dosya eski model'i kullanıyor
 - Modeller farklı namespace ve yapıda
@@ -37,12 +40,14 @@
 **Çözüm Seçenekleri:**
 
 #### Seçenek A: Eski Model'i Koru (ÖNERİLEN)
+
 - ✅ Risk düşük
 - ✅ 20 dosyada değişiklik yapmaya gerek yok
 - ⚠️ İki model birlikte kalır
 - 📝 Not: Sadece dokümantasyon güncelle
 
 #### Seçenek B: Tümü Yeni Model'e Geçir
+
 - ❌ Risk yüksek (20 dosya değişecek)
 - ❌ Test gereksinimi yüksek
 - ⏱️ Süre: 4-6 saat
@@ -58,6 +63,7 @@
 
 **Sorun:**
 Model'de hem yeni hem legacy field'lar var:
+
 ```php
 ✅ 'ana_kategori_id' (yeni)
 ✅ 'alt_kategori_id' (yeni)
@@ -66,6 +72,7 @@ Model'de hem yeni hem legacy field'lar var:
 ```
 
 **Çözüm:**
+
 ```sql
 -- 1. Legacy field'ları kaldır (migration)
 ALTER TABLE ilanlar DROP COLUMN kategori_id IF EXISTS;
@@ -89,6 +96,7 @@ ALTER TABLE ilanlar DROP COLUMN yayinlama_tipi;
 
 **Sorun:**
 Yazlık özel alanlar ana `ilanlar` tablosunda karışıyor:
+
 ```php
 // Şu an ana tabloda:
 'havuz', 'havuz_var', 'sezon_baslangic', 'sezon_bitis',
@@ -96,6 +104,7 @@ Yazlık özel alanlar ana `ilanlar` tablosunda karışıyor:
 ```
 
 **Çözüm:**
+
 ```sql
 CREATE TABLE yazlik_details (
     id BIGINT PRIMARY KEY,
@@ -120,6 +129,7 @@ CREATE TABLE yazlik_details (
 **Durum:** 🆕 Yeni Görev
 
 **Yapılacaklar:**
+
 ```php
 // Controller oluştur
 php artisan make:controller Admin/CalendarSyncController
@@ -140,6 +150,7 @@ POST /api/admin/doluluk/{ilan}/block
 **Durum:** 🆕 Yeni Görev
 
 **Yapılacaklar:**
+
 - Doluluk oranı hesaplama
 - Aylık/Sezonluk raporlar
 - Rezervasyon istatistikleri
@@ -161,17 +172,20 @@ POST /api/admin/doluluk/{ilan}/block
 ## 📝 NOTLAR
 
 ### Model Duplikasyonu Hakkında
+
 - Eski model 20 dosya tarafından kullanılıyor
 - Değişiklik riskli ve zaman alıcı
 - Şu an için iki model birlikte çalışıyor
 - İleride tek model'e geçiş için migration planı yapılabilir
 
 ### Kategori Standardizasyonu
+
 - Legacy field'lar deprecated olarak işaretlendi
 - Geçiş için migration hazırlanmalı
 - Seed veriler güncellenmeli
 
 ### Yazlık Detay Tablosu
+
 - Normal ilan vs Yazlık ayrımı net değil
 - Ayrı tablo ile yapı netleşir
 - Veri taşıma script'i gerekecek

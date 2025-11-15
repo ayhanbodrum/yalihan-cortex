@@ -10,7 +10,7 @@ use Illuminate\Support\Str;
 
 /**
  * Revy.com.tr Tarzı Özellik Kategorileri Seeder
- * 
+ *
  * Modal tabanlı özellik seçim sistemi için kategoriler:
  * - İç Özellikleri (İç Mekan)
  * - Dış Özellikleri (Dış Mekan)
@@ -18,7 +18,7 @@ use Illuminate\Support\Str;
  * - Ulaşım (Transportation)
  * - Cephe (Facade/Frontage)
  * - Manzara (View/Scenery)
- * 
+ *
  * Context7 Standardı: C7-REVY-FEATURE-CATEGORIES-2025-11-05
  * Versiyon: 1.0.0
  */
@@ -44,8 +44,8 @@ class RevyStyleFeatureCategoriesSeeder extends Seeder
             'slug' => 'ic-ozellikleri',
             'description' => 'İç mekan özellikleri (ADSL, Asansör, Balkon, vb.)',
             'icon' => 'fas fa-home',
-            'type' => 'interior',
-            'order' => 10,
+            // ✅ Context7: 'type' field'ı migration'da yok, kaldırıldı
+            'display_order' => 10,
         ];
 
         if ($hasStatusColumn) {
@@ -107,8 +107,8 @@ class RevyStyleFeatureCategoriesSeeder extends Seeder
             'slug' => 'dis-ozellikleri',
             'description' => 'Dış mekan özellikleri (Bahçe, Otopark, Güvenlik, vb.)',
             'icon' => 'fas fa-tree',
-            'type' => 'exterior',
-            'order' => 20,
+            // ✅ Context7: 'type' field'ı migration'da yok, kaldırıldı
+            'display_order' => 20,
         ];
 
         if ($hasStatusColumn) {
@@ -148,8 +148,8 @@ class RevyStyleFeatureCategoriesSeeder extends Seeder
             'slug' => 'muhit',
             'description' => 'Çevre ve sosyal alanlar',
             'icon' => 'fas fa-map-marker-alt',
-            'type' => 'neighborhood',
-            'order' => 30,
+            // ✅ Context7: 'type' field'ı migration'da yok, kaldırıldı
+            'display_order' => 30,
         ];
 
         if ($hasStatusColumn) {
@@ -186,8 +186,8 @@ class RevyStyleFeatureCategoriesSeeder extends Seeder
             'slug' => 'ulasim',
             'description' => 'Ulaşım imkanları ve yakınlık',
             'icon' => 'fas fa-bus',
-            'type' => 'transportation',
-            'order' => 40,
+            // ✅ Context7: 'type' field'ı migration'da yok, kaldırıldı
+            'display_order' => 40,
         ];
 
         if ($hasStatusColumn) {
@@ -222,8 +222,8 @@ class RevyStyleFeatureCategoriesSeeder extends Seeder
             'slug' => 'cephe',
             'description' => 'Bina cephesi ve yön bilgisi',
             'icon' => 'fas fa-compass',
-            'type' => 'facade',
-            'order' => 50,
+            // ✅ Context7: 'type' field'ı migration'da yok, kaldırıldı
+            'display_order' => 50,
         ];
 
         if ($hasStatusColumn) {
@@ -260,8 +260,8 @@ class RevyStyleFeatureCategoriesSeeder extends Seeder
             'slug' => 'manzara',
             'description' => 'Manzara ve görünüm',
             'icon' => 'fas fa-mountain',
-            'type' => 'view',
-            'order' => 60,
+            // ✅ Context7: 'type' field'ı migration'da yok, kaldırıldı
+            'display_order' => 60,
         ];
 
         if ($hasStatusColumn) {
@@ -308,7 +308,7 @@ class RevyStyleFeatureCategoriesSeeder extends Seeder
             'manzara'
         ])->count();
 
-        $revyFeatures = Feature::whereHas('category', function($query) {
+        $revyFeatures = Feature::whereHas('category', function ($query) {
             $query->whereIn('slug', [
                 'ic-ozellikleri',
                 'dis-ozellikleri',
@@ -342,7 +342,7 @@ class RevyStyleFeatureCategoriesSeeder extends Seeder
                 'is_required' => false,
                 'is_filterable' => true,
                 'is_searchable' => true,
-                'order' => $index + 1,
+                'display_order' => $index + 1,
             ];
 
             // Context7: status/enabled kolonu varsa ekle
@@ -362,4 +362,3 @@ class RevyStyleFeatureCategoriesSeeder extends Seeder
         $this->command->info("   └─ {$count} özellik eklendi");
     }
 }
-

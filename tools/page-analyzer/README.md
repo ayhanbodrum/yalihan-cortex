@@ -5,24 +5,28 @@ Bu tool, Laravel admin sayfalarını otomatik olarak analiz eder ve raporlar sun
 ## 🎯 Özellikler
 
 ### 1. **Static Code Analysis**
+
 - Controller boşluk analizi
-- Route coverage analizi  
+- Route coverage analizi
 - View consistency kontrolü
 - Context7 compliance check
 
 ### 2. **UI/UX Analysis**
+
 - Design system tutarlılığı
 - Component kullanım analizi
 - Accessibility audit
 - Performance metrics
 
 ### 3. **Database Schema Analysis**
+
 - Migration consistency
 - Relationship validation
 - Index optimization önerileri
 - N+1 query detection
 
 ### 4. **Real-time Monitoring**
+
 - Page load times
 - User interaction tracking
 - Error rate monitoring
@@ -44,6 +48,7 @@ php artisan analyze:report --format=html
 ## 📈 Çıktı Örnekleri
 
 ### Analiz Raporu
+
 ```
 📊 EmlakPro Page Analysis Report
 ===============================

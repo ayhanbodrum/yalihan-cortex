@@ -10,40 +10,40 @@ Sistem 5 ana segment'ten oluşur:
 
 ### 1. Portföy Bilgi Formu (portfolio_info)
 
--   **Amaç**: Temel emlak bilgilerini toplama
--   **İçerik**: Başlık, fiyat, m2, ada, pafta, fotoğraflar
--   **Zorunlu Alanlar**: baslik, fiyat, para_birimi, emlak_turu, ilan_turu, brut_metrekare
+- **Amaç**: Temel emlak bilgilerini toplama
+- **İçerik**: Başlık, fiyat, m2, ada, pafta, fotoğraflar
+- **Zorunlu Alanlar**: baslik, fiyat, para_birimi, emlak_turu, ilan_turu, brut_metrekare
 
 ### 2. Dökümanlar ve Notlar (documents_notes)
 
--   **Amaç**: Yasal belgeler ve iç notlar
--   **İçerik**: Tapu, planlar, iç notlar, ek belgeler
--   **Opsiyonel**: Tüm alanlar opsiyonel
+- **Amaç**: Yasal belgeler ve iç notlar
+- **İçerik**: Tapu, planlar, iç notlar, ek belgeler
+- **Opsiyonel**: Tüm alanlar opsiyonel
 
 ### 3. Portal İlan Bilgileri (portal_listing)
 
--   **Amaç**: Dış portallara yayın hazırlığı
--   **İçerik**: Portal özel açıklamalar, senkronizasyon ayarları
--   **Portallar**: Sahibinden.com, Hepsi Emlak, Emlakjet, 101 Evler
+- **Amaç**: Dış portallara yayın hazırlığı
+- **İçerik**: Portal özel açıklamalar, senkronizasyon ayarları
+- **Portallar**: Sahibinden.com, Hepsi Emlak, Emlakjet, 101 Evler
 
 ### 4. Uygun Alıcılar (suitable_buyers)
 
--   **Amaç**: Müşteri eşleştirme
--   **İçerik**: Potansiyel alıcılar, talep eşleştirmeleri
--   **Kriterler**: Fiyat aralığı, konum tercihi, emlak türü
+- **Amaç**: Müşteri eşleştirme
+- **İçerik**: Potansiyel alıcılar, talep eşleştirmeleri
+- **Kriterler**: Fiyat aralığı, konum tercihi, emlak türü
 
 ### 5. İşlem Kapama (transaction_closure)
 
--   **Amaç**: Satış/kiralama tamamlama
--   **İçerik**: Sözleşme, ödeme, arşivleme
--   **Türler**: Satıldı, Kiralandı, İptal Edildi
+- **Amaç**: Satış/kiralama tamamlama
+- **İçerik**: Sözleşme, ödeme, arşivleme
+- **Türler**: Satıldı, Kiralandı, İptal Edildi
 
 ## Context7 Uyumluluk Kuralları
 
--   Database alanları İngilizce olmalı
--   Türkçe alan isimleri YASAK (durum, aktif, sehir, musteriler)
--   Model ilişkileri Context7 naming convention'ına uygun
--   Blade template'ler Context7 pattern'lerini kullanmalı
+- Database alanları İngilizce olmalı
+- Türkçe alan isimleri YASAK (durum, aktif, sehir, musteriler)
+- Model ilişkileri Context7 naming convention'ına uygun
+- Blade template'ler Context7 pattern'lerini kullanmalı
 
 ## Segment Açıklama Oluşturma Kuralları
 
@@ -94,9 +94,9 @@ dokümanlarını bu segment'te yönetin."
 
 ### Mevcut İlan Düzenleme
 
--   Herhangi bir segment'e doğrudan erişim
--   Önceki segment'ler tamamlanmış olmalı
--   Progress bar ile ilerleme takibi
+- Herhangi bir segment'e doğrudan erişim
+- Önceki segment'ler tamamlanmış olmalı
+- Progress bar ile ilerleme takibi
 
 ## Teknik Detaylar
 
@@ -109,27 +109,27 @@ dokümanlarını bu segment'te yönetin."
 
 ### Controller Metodları
 
--   `show()` - Segment görüntüleme
--   `store()` - Segment verilerini kaydetme
--   `calculateProgress()` - İlerleme hesaplama
--   `isSegmentCompleted()` - Segment tamamlanma kontrolü
+- `show()` - Segment görüntüleme
+- `store()` - Segment verilerini kaydetme
+- `calculateProgress()` - İlerleme hesaplama
+- `isSegmentCompleted()` - Segment tamamlanma kontrolü
 
 ### Validation Kuralları
 
 Her segment için özel validation kuralları:
 
--   Portföy Bilgi: Zorunlu alanlar
--   Dökümanlar: Dosya formatları
--   Portal: Portal özel kurallar
--   Alıcılar: Müşteri ID'leri
--   İşlem: Tarih ve fiyat formatları
+- Portföy Bilgi: Zorunlu alanlar
+- Dökümanlar: Dosya formatları
+- Portal: Portal özel kurallar
+- Alıcılar: Müşteri ID'leri
+- İşlem: Tarih ve fiyat formatları
 
 ## AI Entegrasyonu
 
--   Mevcut AI Settings Controller ile entegre
--   Google Gemini, OpenAI, Claude desteği
--   Segment bazlı AI önerileri
--   Otomatik açıklama oluşturma
+- Mevcut AI Settings Controller ile entegre
+- Google Gemini, OpenAI, Claude desteği
+- Segment bazlı AI önerileri
+- Otomatik açıklama oluşturma
 
 ## Örnek Kullanım
 

@@ -37,14 +37,12 @@ $iller = Il::get(['id', 'il_adi']);
 
 ```javascript
 // ❌ YASAK
-fetch("/api/endpoint");
+fetch('/api/endpoint');
 
 // ✅ DOĞRU
-fetch("/api/endpoint", {
+fetch('/api/endpoint', {
     headers: {
-        "X-CSRF-TOKEN": document
-            .querySelector('meta[name="csrf-token"]')
-            .getAttribute("content"),
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
     },
 });
 ```
@@ -87,13 +85,11 @@ $ulkeler = Ulke::orderBy('ulke_adi')->get(['id', 'ulke_adi']);
 ```javascript
 // Tüm AJAX istekleri için
 fetch(url, {
-    method: "GET",
+    method: 'GET',
     headers: {
-        "X-CSRF-TOKEN": document
-            .querySelector('meta[name="csrf-token"]')
-            .getAttribute("content"),
-        Accept: "application/json",
-        "Content-Type": "application/json",
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
     },
 });
 ```
@@ -167,18 +163,14 @@ GET /admin/adres-yonetimi/mahalleler/{ilceId} // Mahalle listesi
 // İl yükleme
 fetch(`/admin/adres-yonetimi/iller/${ulkeId}`, {
     headers: {
-        "X-CSRF-TOKEN": document
-            .querySelector('meta[name="csrf-token"]')
-            .getAttribute("content"),
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
     },
 });
 
 // İlçe yükleme
 fetch(`/admin/adres-yonetimi/ilceler/${ilId}`, {
     headers: {
-        "X-CSRF-TOKEN": document
-            .querySelector('meta[name="csrf-token"]')
-            .getAttribute("content"),
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
     },
 });
 ```
@@ -231,11 +223,11 @@ ulkeSelect.value; // Hata riski
 
 ### **Otomatik Kontroller:**
 
--   ✅ Database alanları kontrolü
--   ✅ Model ilişkileri kontrolü
--   ✅ API endpoint CSRF kontrolü
--   ✅ Blade template fallback kontrolü
--   ✅ Neo Design System kontrolü
+- ✅ Database alanları kontrolü
+- ✅ Model ilişkileri kontrolü
+- ✅ API endpoint CSRF kontrolü
+- ✅ Blade template fallback kontrolü
+- ✅ Neo Design System kontrolü
 
 ---
 
@@ -251,10 +243,10 @@ ulkeSelect.value; // Hata riski
 
 ### **Faydalar:**
 
--   🚀 **Performans:** Tutarlı veri çekme
--   🔒 **Güvenlik:** CSRF token koruması
--   🎨 **Tasarım:** Neo Design System standardı
--   🛡️ **Hata Önleme:** Fallback değerler
--   🔧 **Bakım:** Otomatik kontrol sistemi
+- 🚀 **Performans:** Tutarlı veri çekme
+- 🔒 **Güvenlik:** CSRF token koruması
+- 🎨 **Tasarım:** Neo Design System standardı
+- 🛡️ **Hata Önleme:** Fallback değerler
+- 🔧 **Bakım:** Otomatik kontrol sistemi
 
 **Bu standartlar Context7 sisteminin temelidir ve tüm geliştirmelerde uygulanmalıdır.**

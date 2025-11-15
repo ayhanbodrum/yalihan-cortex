@@ -17,7 +17,7 @@ class ModernFormWizard {
             currentStep: 1,
             autoSave: true,
             autoSaveInterval: 30000, // 30 seconds
-            validationMode: "real-time", // 'real-time' | 'on-submit'
+            validationMode: 'real-time', // 'real-time' | 'on-submit'
             animationDuration: 300,
             ...options,
         };
@@ -46,7 +46,7 @@ class ModernFormWizard {
         this.setupAutoSave();
         this.render();
 
-        console.log("🚀 Modern Form Wizard initialized");
+        console.log('🚀 Modern Form Wizard initialized');
     }
 
     /**
@@ -54,7 +54,7 @@ class ModernFormWizard {
      */
     setupEventListeners() {
         // Navigation buttons
-        document.addEventListener("click", (e) => {
+        document.addEventListener('click', (e) => {
             if (e.target.matches('[data-wizard-action="next"]')) {
                 e.preventDefault();
                 this.nextStep();
@@ -70,23 +70,23 @@ class ModernFormWizard {
         });
 
         // Real-time validation
-        document.addEventListener("input", (e) => {
-            if (e.target.matches("[data-wizard-field]")) {
+        document.addEventListener('input', (e) => {
+            if (e.target.matches('[data-wizard-field]')) {
                 this.validateField(e.target);
             }
         });
 
         // Step navigation
-        document.addEventListener("click", (e) => {
-            if (e.target.matches("[data-wizard-step]")) {
+        document.addEventListener('click', (e) => {
+            if (e.target.matches('[data-wizard-step]')) {
                 const step = parseInt(e.target.dataset.wizardStep);
                 this.goToStep(step);
             }
         });
 
         // Auto-save on form changes
-        document.addEventListener("change", (e) => {
-            if (e.target.matches("[data-wizard-field]")) {
+        document.addEventListener('change', (e) => {
+            if (e.target.matches('[data-wizard-field]')) {
                 this.updateFormData();
                 this.scheduleAutoSave();
             }
@@ -98,39 +98,39 @@ class ModernFormWizard {
      */
     setupValidators() {
         // Required field validator
-        this.validators.set("required", (value, field) => {
-            if (!value || value.toString().trim() === "") {
-                return `${field.dataset.label || "Bu alan"} zorunludur`;
+        this.validators.set('required', (value, field) => {
+            if (!value || value.toString().trim() === '') {
+                return `${field.dataset.label || 'Bu alan'} zorunludur`;
             }
             return null;
         });
 
         // Email validator
-        this.validators.set("email", (value, field) => {
+        this.validators.set('email', (value, field) => {
             if (value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-                return "Geçerli bir e-posta adresi giriniz";
+                return 'Geçerli bir e-posta adresi giriniz';
             }
             return null;
         });
 
         // Phone validator
-        this.validators.set("phone", (value, field) => {
+        this.validators.set('phone', (value, field) => {
             if (value && !/^[\+]?[0-9\s\-\(\)]{10,}$/.test(value)) {
-                return "Geçerli bir telefon numarası giriniz";
+                return 'Geçerli bir telefon numarası giriniz';
             }
             return null;
         });
 
         // Number validator
-        this.validators.set("number", (value, field) => {
+        this.validators.set('number', (value, field) => {
             if (value && isNaN(parseFloat(value))) {
-                return "Geçerli bir sayı giriniz";
+                return 'Geçerli bir sayı giriniz';
             }
             return null;
         });
 
         // Min length validator
-        this.validators.set("minLength", (value, field) => {
+        this.validators.set('minLength', (value, field) => {
             const minLength = parseInt(field.dataset.minLength) || 0;
             if (value && value.length < minLength) {
                 return `En az ${minLength} karakter olmalıdır`;
@@ -139,16 +139,16 @@ class ModernFormWizard {
         });
 
         // Custom validators
-        this.validators.set("price", (value, field) => {
+        this.validators.set('price', (value, field) => {
             if (value && (isNaN(parseFloat(value)) || parseFloat(value) <= 0)) {
-                return "Geçerli bir fiyat giriniz";
+                return 'Geçerli bir fiyat giriniz';
             }
             return null;
         });
 
-        this.validators.set("area", (value, field) => {
+        this.validators.set('area', (value, field) => {
             if (value && (isNaN(parseFloat(value)) || parseFloat(value) <= 0)) {
-                return "Geçerli bir alan giriniz";
+                return 'Geçerli bir alan giriniz';
             }
             return null;
         });
@@ -171,7 +171,7 @@ class ModernFormWizard {
     async validateField(field) {
         const fieldName = field.name || field.id;
         const value = this.getFieldValue(field);
-        const validationRules = field.dataset.validation?.split(" ") || [];
+        const validationRules = field.dataset.validation?.split(' ') || [];
 
         // Clear existing errors
         this.state.errors.delete(fieldName);
@@ -191,7 +191,7 @@ class ModernFormWizard {
         }
 
         // Server-side validation for specific fields
-        if (["ilan_basligi", "fiyat", "alan_m2"].includes(fieldName)) {
+        if (['ilan_basligi', 'fiyat', 'alan_m2'].includes(fieldName)) {
             const isValid = await this.validateFieldOnServer(fieldName, value);
             if (!isValid) {
                 return false;
@@ -207,13 +207,13 @@ class ModernFormWizard {
      */
     async validateFieldOnServer(fieldName, value) {
         try {
-            const response = await fetch("/admin/validate-field", {
-                method: "POST",
+            const response = await fetch('/admin/validate-field', {
+                method: 'POST',
                 headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRF-TOKEN": document
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document
                         .querySelector('meta[name="csrf-token"]')
-                        ?.getAttribute("content"),
+                        ?.getAttribute('content'),
                 },
                 body: JSON.stringify({
                     field: fieldName,
@@ -229,7 +229,7 @@ class ModernFormWizard {
             }
             return true;
         } catch (error) {
-            console.warn("Server validation error:", error);
+            console.warn('Server validation error:', error);
             return true; // Allow client-side validation to proceed
         }
     }
@@ -264,7 +264,7 @@ class ModernFormWizard {
             this.state.completedSteps.add(this.config.currentStep - 1);
             this.updateFormData();
             this.render();
-            this.showStepTransition("next");
+            this.showStepTransition('next');
         } else {
             this.showValidationErrors();
         }
@@ -278,7 +278,7 @@ class ModernFormWizard {
             this.config.currentStep--;
             this.updateFormData();
             this.render();
-            this.showStepTransition("prev");
+            this.showStepTransition('prev');
         }
     }
 
@@ -286,17 +286,14 @@ class ModernFormWizard {
      * Navigate to specific step
      */
     async goToStep(stepNumber) {
-        if (
-            stepNumber < this.config.currentStep ||
-            this.state.completedSteps.has(stepNumber - 1)
-        ) {
+        if (stepNumber < this.config.currentStep || this.state.completedSteps.has(stepNumber - 1)) {
             this.config.currentStep = stepNumber;
             this.updateFormData();
             this.render();
         } else {
             this.showNotification(
-                "Bu adıma geçmek için önceki adımları tamamlamalısınız",
-                "warning"
+                'Bu adıma geçmek için önceki adımları tamamlamalısınız',
+                'warning'
             );
         }
     }
@@ -305,7 +302,7 @@ class ModernFormWizard {
      * Update form data from DOM
      */
     updateFormData() {
-        const fields = document.querySelectorAll("[data-wizard-field]");
+        const fields = document.querySelectorAll('[data-wizard-field]');
 
         fields.forEach((field) => {
             const fieldName = field.name || field.id;
@@ -319,11 +316,11 @@ class ModernFormWizard {
      */
     getFieldValue(field) {
         switch (field.type) {
-            case "checkbox":
+            case 'checkbox':
                 return field.checked;
-            case "radio":
+            case 'radio':
                 return field.checked ? field.value : null;
-            case "file":
+            case 'file':
                 return field.files;
             default:
                 return field.value;
@@ -345,15 +342,11 @@ class ModernFormWizard {
      * Render progress bar
      */
     renderProgressBar() {
-        const progressBar = document.getElementById("wizard-progress-bar");
-        const progressPercent = document.getElementById(
-            "wizard-progress-percent"
-        );
+        const progressBar = document.getElementById('wizard-progress-bar');
+        const progressPercent = document.getElementById('wizard-progress-percent');
 
         if (progressBar) {
-            const percent = Math.round(
-                (this.config.currentStep / this.config.totalSteps) * 100
-            );
+            const percent = Math.round((this.config.currentStep / this.config.totalSteps) * 100);
             progressBar.style.width = `${percent}%`;
 
             if (progressPercent) {
@@ -369,14 +362,14 @@ class ModernFormWizard {
         for (let i = 1; i <= this.config.totalSteps; i++) {
             const indicator = document.getElementById(`wizard-step-${i}`);
             if (indicator) {
-                indicator.classList.remove("completed", "current", "pending");
+                indicator.classList.remove('completed', 'current', 'pending');
 
                 if (i < this.config.currentStep) {
-                    indicator.classList.add("completed");
+                    indicator.classList.add('completed');
                 } else if (i === this.config.currentStep) {
-                    indicator.classList.add("current");
+                    indicator.classList.add('current');
                 } else {
-                    indicator.classList.add("pending");
+                    indicator.classList.add('pending');
                 }
             }
         }
@@ -390,7 +383,7 @@ class ModernFormWizard {
         for (let i = 1; i <= this.config.totalSteps; i++) {
             const step = document.getElementById(`wizard-step-content-${i}`);
             if (step) {
-                step.style.display = "none";
+                step.style.display = 'none';
             }
         }
 
@@ -399,11 +392,11 @@ class ModernFormWizard {
             `wizard-step-content-${this.config.currentStep}`
         );
         if (currentStep) {
-            currentStep.style.display = "block";
+            currentStep.style.display = 'block';
             this.animateStepIn(currentStep);
 
             // Dispatch step changed event
-            const event = new CustomEvent("wizard-step-changed", {
+            const event = new CustomEvent('wizard-step-changed', {
                 detail: { step: this.config.currentStep },
             });
             document.dispatchEvent(event);
@@ -414,22 +407,21 @@ class ModernFormWizard {
      * Render navigation buttons
      */
     renderNavigation() {
-        const prevBtn = document.getElementById("wizard-prev-btn");
-        const nextBtn = document.getElementById("wizard-next-btn");
-        const submitBtn = document.getElementById("wizard-submit-btn");
+        const prevBtn = document.getElementById('wizard-prev-btn');
+        const nextBtn = document.getElementById('wizard-next-btn');
+        const submitBtn = document.getElementById('wizard-submit-btn');
 
         if (prevBtn) {
-            prevBtn.style.display =
-                this.config.currentStep > 1 ? "inline-flex" : "none";
+            prevBtn.style.display = this.config.currentStep > 1 ? 'inline-flex' : 'none';
         }
 
         if (nextBtn && submitBtn) {
             if (this.config.currentStep === this.config.totalSteps) {
-                nextBtn.style.display = "none";
-                submitBtn.style.display = "inline-flex";
+                nextBtn.style.display = 'none';
+                submitBtn.style.display = 'inline-flex';
             } else {
-                nextBtn.style.display = "inline-flex";
-                submitBtn.style.display = "none";
+                nextBtn.style.display = 'inline-flex';
+                submitBtn.style.display = 'none';
             }
         }
     }
@@ -438,7 +430,7 @@ class ModernFormWizard {
      * Render form summary
      */
     renderFormSummary() {
-        const summaryContainer = document.getElementById("wizard-summary");
+        const summaryContainer = document.getElementById('wizard-summary');
         if (!summaryContainer) return;
 
         const summary = this.generateFormSummary();
@@ -457,16 +449,12 @@ class ModernFormWizard {
                 <div class="space-y-2">
                     <div class="flex justify-between">
                         <span class="text-gray-600">İlan Başlığı:</span>
-                        <span class="font-medium">${
-                            data.ilan_basligi || "-"
-                        }</span>
+                        <span class="font-medium">${data.ilan_basligi || '-'}</span>
                     </div>
                     <div class="flex justify-between">
                         <span class="text-gray-600">Fiyat:</span>
                         <span class="font-medium">${
-                            data.fiyat
-                                ? `${data.fiyat} ${data.para_birimi || "TRY"}`
-                                : "-"
+                            data.fiyat ? `${data.fiyat} ${data.para_birimi || 'TRY'}` : '-'
                         }</span>
                     </div>
                     <div class="flex justify-between">
@@ -486,34 +474,34 @@ class ModernFormWizard {
      * Get category text for summary
      */
     getCategoryText() {
-        const anaKategori = document.getElementById("ana_kategori_id");
-        const altKategori = document.getElementById("alt_kategori_id");
-        const yayinTipi = document.getElementById("yayin_tipi_id");
+        const anaKategori = document.getElementById('ana_kategori_id');
+        const altKategori = document.getElementById('alt_kategori_id');
+        const yayinTipi = document.getElementById('yayin_tipi_id');
 
         if (anaKategori && altKategori && yayinTipi) {
-            const anaText = anaKategori.selectedOptions[0]?.textContent || "";
-            const altText = altKategori.selectedOptions[0]?.textContent || "";
-            const yayinText = yayinTipi.selectedOptions[0]?.textContent || "";
+            const anaText = anaKategori.selectedOptions[0]?.textContent || '';
+            const altText = altKategori.selectedOptions[0]?.textContent || '';
+            const yayinText = yayinTipi.selectedOptions[0]?.textContent || '';
 
             if (anaText && altText && yayinText) {
                 return `${anaText} > ${altText} > ${yayinText}`;
             }
         }
-        return "-";
+        return '-';
     }
 
     /**
      * Get location text for summary
      */
     getLocationText() {
-        const il = document.getElementById("il_id");
-        const ilce = document.getElementById("ilce_id");
-        const mahalle = document.getElementById("mahalle_id");
+        const il = document.getElementById('il_id');
+        const ilce = document.getElementById('ilce_id');
+        const mahalle = document.getElementById('mahalle_id');
 
         if (il && ilce) {
-            const ilText = il.selectedOptions[0]?.textContent || "";
-            const ilceText = ilce.selectedOptions[0]?.textContent || "";
-            const mahalleText = mahalle?.selectedOptions[0]?.textContent || "";
+            const ilText = il.selectedOptions[0]?.textContent || '';
+            const ilceText = ilce.selectedOptions[0]?.textContent || '';
+            const mahalleText = mahalle?.selectedOptions[0]?.textContent || '';
 
             if (ilText && ilceText) {
                 return mahalleText
@@ -521,7 +509,7 @@ class ModernFormWizard {
                     : `${ilText} / ${ilceText}`;
             }
         }
-        return "-";
+        return '-';
     }
 
     /**
@@ -530,35 +518,32 @@ class ModernFormWizard {
     showFieldError(field, message) {
         this.clearFieldError(field);
 
-        const errorElement = document.createElement("div");
-        errorElement.className = "field-error text-red-600 text-sm mt-1";
+        const errorElement = document.createElement('div');
+        errorElement.className = 'field-error text-red-600 text-sm mt-1';
         errorElement.textContent = message;
 
         field.parentNode.appendChild(errorElement);
-        field.classList.add("border-red-500", "focus:border-red-500");
+        field.classList.add('border-red-500', 'focus:border-red-500');
     }
 
     /**
      * Clear field error
      */
     clearFieldError(field) {
-        const existingError = field.parentNode.querySelector(".field-error");
+        const existingError = field.parentNode.querySelector('.field-error');
         if (existingError) {
             existingError.remove();
         }
-        field.classList.remove("border-red-500", "focus:border-red-500");
+        field.classList.remove('border-red-500', 'focus:border-red-500');
     }
 
     /**
      * Show field success
      */
     showFieldSuccess(field) {
-        field.classList.add("border-green-500", "focus:border-green-500");
+        field.classList.add('border-green-500', 'focus:border-green-500');
         setTimeout(() => {
-            field.classList.remove(
-                "border-green-500",
-                "focus:border-green-500"
-            );
+            field.classList.remove('border-green-500', 'focus:border-green-500');
         }, 2000);
     }
 
@@ -568,7 +553,7 @@ class ModernFormWizard {
     showValidationErrors() {
         const errorMessages = Array.from(this.state.errors.values());
         if (errorMessages.length > 0) {
-            this.showNotification(errorMessages.join("<br>"), "error");
+            this.showNotification(errorMessages.join('<br>'), 'error');
         }
     }
 
@@ -581,12 +566,12 @@ class ModernFormWizard {
         );
         if (currentStep) {
             currentStep.style.transform =
-                direction === "next" ? "translateX(100%)" : "translateX(-100%)";
-            currentStep.style.opacity = "0";
+                direction === 'next' ? 'translateX(100%)' : 'translateX(-100%)';
+            currentStep.style.opacity = '0';
 
             setTimeout(() => {
-                currentStep.style.transform = "translateX(0)";
-                currentStep.style.opacity = "1";
+                currentStep.style.transform = 'translateX(0)';
+                currentStep.style.opacity = '1';
             }, this.config.animationDuration);
         }
     }
@@ -595,28 +580,28 @@ class ModernFormWizard {
      * Animate step in
      */
     animateStepIn(step) {
-        step.style.transform = "translateY(20px)";
-        step.style.opacity = "0";
+        step.style.transform = 'translateY(20px)';
+        step.style.opacity = '0';
 
         setTimeout(() => {
-            step.style.transform = "translateY(0)";
-            step.style.opacity = "1";
+            step.style.transform = 'translateY(0)';
+            step.style.opacity = '1';
         }, 50);
     }
 
     /**
      * Show notification
      */
-    showNotification(message, type = "info") {
-        const notification = document.createElement("div");
+    showNotification(message, type = 'info') {
+        const notification = document.createElement('div');
         notification.className = `fixed top-4 right-4 p-4 rounded-lg shadow-lg z-50 ${
-            type === "error"
-                ? "bg-red-500 text-white"
-                : type === "warning"
-                ? "bg-yellow-500 text-white"
-                : type === "success"
-                ? "bg-green-500 text-white"
-                : "bg-blue-500 text-white"
+            type === 'error'
+                ? 'bg-red-500 text-white'
+                : type === 'warning'
+                  ? 'bg-yellow-500 text-white'
+                  : type === 'success'
+                    ? 'bg-green-500 text-white'
+                    : 'bg-blue-500 text-white'
         }`;
         notification.innerHTML = message;
 
@@ -637,13 +622,13 @@ class ModernFormWizard {
         const formData = Object.fromEntries(this.state.formData);
 
         try {
-            const response = await fetch("/admin/ilanlar/auto-save", {
-                method: "POST",
+            const response = await fetch('/admin/ilanlar/auto-save', {
+                method: 'POST',
                 headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRF-TOKEN": document
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document
                         .querySelector('meta[name="csrf-token"]')
-                        ?.getAttribute("content"),
+                        ?.getAttribute('content'),
                 },
                 body: JSON.stringify(formData),
             });
@@ -653,7 +638,7 @@ class ModernFormWizard {
                 this.showAutoSaveIndicator();
             }
         } catch (error) {
-            console.warn("Auto-save failed:", error);
+            console.warn('Auto-save failed:', error);
         }
     }
 
@@ -674,13 +659,13 @@ class ModernFormWizard {
      * Show auto-save indicator
      */
     showAutoSaveIndicator() {
-        const indicator = document.getElementById("auto-save-indicator");
+        const indicator = document.getElementById('auto-save-indicator');
         if (indicator) {
             indicator.textContent = `Otomatik kaydedildi: ${this.state.lastSaved.toLocaleTimeString()}`;
-            indicator.classList.add("text-green-600");
+            indicator.classList.add('text-green-600');
 
             setTimeout(() => {
-                indicator.classList.remove("text-green-600");
+                indicator.classList.remove('text-green-600');
             }, 3000);
         }
     }
@@ -703,7 +688,7 @@ class ModernFormWizard {
         }
 
         // Submit form
-        const form = document.getElementById("ilanForm");
+        const form = document.getElementById('ilanForm');
         if (form) {
             form.submit();
         }
@@ -725,11 +710,11 @@ class ModernFormWizard {
         }
 
         // Remove event listeners
-        document.removeEventListener("click", this.handleClick);
-        document.removeEventListener("input", this.handleInput);
-        document.removeEventListener("change", this.handleChange);
+        document.removeEventListener('click', this.handleClick);
+        document.removeEventListener('input', this.handleInput);
+        document.removeEventListener('change', this.handleChange);
 
-        console.log("🧹 Modern Form Wizard destroyed");
+        console.log('🧹 Modern Form Wizard destroyed');
     }
 }
 
@@ -737,13 +722,13 @@ class ModernFormWizard {
 window.ModernFormWizard = ModernFormWizard;
 
 // Auto-initialize if data-wizard attribute is present
-document.addEventListener("DOMContentLoaded", () => {
-    const wizardElement = document.querySelector("[data-wizard]");
+document.addEventListener('DOMContentLoaded', () => {
+    const wizardElement = document.querySelector('[data-wizard]');
     if (wizardElement) {
         window.formWizard = new ModernFormWizard({
             totalSteps: parseInt(wizardElement.dataset.totalSteps) || 7,
-            autoSave: wizardElement.dataset.autoSave !== "false",
-            validationMode: wizardElement.dataset.validationMode || "real-time",
+            autoSave: wizardElement.dataset.autoSave !== 'false',
+            validationMode: wizardElement.dataset.validationMode || 'real-time',
         });
     }
 });

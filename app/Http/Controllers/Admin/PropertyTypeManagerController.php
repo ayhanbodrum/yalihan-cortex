@@ -27,6 +27,9 @@ class PropertyTypeManagerController extends AdminController
      */
     public function index()
     {
+        // Migration çalıştırıldı: order → display_order rename edildi
+        // Artık sadece display_order kullan (değişken kullanmadan doğrudan yazıyoruz)
+
         $query = IlanKategori::where('seviye', 0);
 
         // Context7: Schema kontrolü ile status kolonu
@@ -34,43 +37,84 @@ class PropertyTypeManagerController extends AdminController
             $query->where('status', true); // ✅ Sadece aktif ana kategoriler
         }
 
-        $kategoriler = $query->with(['children' => function($q) {
-                $q->where('seviye', 1);
-                // Context7: Schema kontrolü ile status kolonu
-                if (Schema::hasColumn('ilan_kategorileri', 'status')) {
-                    $q->where('status', true); // ✅ Sadece aktif alt kategoriler
+        // DEBUG: SQL sorgusunu logla
+        if (config('app.debug')) {
+            \Illuminate\Support\Facades\Log::info('PropertyTypeManager Index SQL', [
+                'before_select' => $query->toSql(),
+                'bindings' => $query->getBindings()
+            ]);
+        }
+
+        $kategoriler = $query->with(['children' => function ($q) {
+            $q->where('seviye', 1);
+            if (Schema::hasColumn('ilan_kategorileri', 'status')) {
+                $q->where('status', true);
+            }
+            if (Schema::hasColumn('ilan_kategorileri', 'display_order')) {
+                $q->select(['id', 'name', 'slug', 'parent_id', 'seviye', 'status', 'display_order'])
+                    ->orderByRaw('COALESCE(display_order, 999999) ASC')
+                    ->orderBy('name', 'ASC');
+            } else {
+                $q->select(['id', 'name', 'slug', 'parent_id', 'seviye', 'status'])
+                    ->orderBy('name', 'ASC');
+            }
+        }])
+            // ✅ Context7: Yayın tiplerini de yükle
+            ->with(['yayinTipleri' => function ($q) {
+                $q->where('status', true);
+                if (Schema::hasColumn('ilan_kategori_yayin_tipleri', 'display_order')) {
+                    $q->orderBy('display_order', 'ASC');
                 }
-                $q->orderByRaw('COALESCE(`order`, 999999) ASC') // ✅ Order null değerleri sona
-                    ->orderBy('name', 'ASC'); // ✅ İkincil sıralama
+                $q->orderBy('yayin_tipi', 'ASC');
             }])
-            ->orderByRaw('COALESCE(`order`, 999999) ASC') // ✅ Order null değerleri sona
-            ->orderBy('name', 'ASC') // ✅ İkincil sıralama
-            ->get();
+            // ✅ N+1 FIX: Select optimization - display_order doğrudan kullanılıyor
+            ->select(Schema::hasColumn('ilan_kategorileri', 'display_order')
+                ? ['id', 'name', 'slug', 'seviye', 'status', 'display_order']
+                : ['id', 'name', 'slug', 'seviye', 'status'])
+            ->when(Schema::hasColumn('ilan_kategorileri', 'display_order'), function ($q) {
+                $q->orderByRaw('COALESCE(display_order, 999999) ASC');
+            })
+            ->orderBy('name', 'ASC');
+
+        // DEBUG: Final SQL sorgusunu logla
+        if (config('app.debug')) {
+            \Illuminate\Support\Facades\Log::info('PropertyTypeManager Index Final SQL', [
+                'sql' => $kategoriler->toSql(),
+                'bindings' => $kategoriler->getBindings()
+            ]);
+        }
+
+        $kategoriler = $kategoriler->get();
+
+        // ✅ Context7: Tüm kategoriler için eksik yayın tiplerini otomatik ekle
+        foreach ($kategoriler as $kategori) {
+            $this->ensureDefaultYayinTipleri($kategori->id);
+        }
 
         // Debug log - Geliştirme modunda çalışır
         if (config('app.debug')) {
             Log::info('PropertyTypeManager Index: Ana kategoriler sorgulandı', [
                 'bulunan_kategori_sayisi' => $kategoriler->count(),
-                'kategoriler' => $kategoriler->map(function($k) {
+                'kategoriler' => $kategoriler->map(function ($k) {
                     return [
                         'id' => $k->id,
                         'name' => $k->name,
                         'status' => $k->status,
                         'alt_kategori_sayisi' => $k->children->count(),
-                        'alt_kategoriler' => $k->children->map(function($alt) {
+                        'alt_kategoriler' => $k->children->map(function ($alt) {
                             return ['id' => $alt->id, 'name' => $alt->name, 'status' => $alt->status];
                         })->toArray()
                     ];
                 })->toArray(),
                 // Tüm alt kategorileri de kontrol et (debug için)
-                'tum_alt_kategoriler' => (function() {
+                'tum_alt_kategoriler' => (function () {
                     $query = IlanKategori::where('seviye', 1);
                     if (Schema::hasColumn('ilan_kategorileri', 'status')) {
                         $query->where('status', true);
                     }
                     return $query->select(['id', 'name', 'parent_id', 'seviye', 'status'])->get();
                 })()
-                    ->map(function($alt) {
+                    ->map(function ($alt) {
                         return ['id' => $alt->id, 'name' => $alt->name, 'parent_id' => $alt->parent_id, 'seviye' => $alt->seviye, 'status' => $alt->status];
                     })->toArray()
             ]);
@@ -102,7 +146,7 @@ class PropertyTypeManagerController extends AdminController
             if ($kategori->parent_id) {
                 $anaKategori = IlanKategori::find($kategori->parent_id);
                 if ($anaKategori && $anaKategori->seviye === 0) {
-                    return redirect()->route('admin.property-type-manager.show', $anaKategori->id)
+                    return redirect()->route('admin.property_types.show', $anaKategori->id)
                         ->with('info', 'Ana kategori sayfasına yönlendirildiniz.');
                 }
             }
@@ -112,20 +156,32 @@ class PropertyTypeManagerController extends AdminController
         // ✅ Status filtresi eklendi (opsiyonel - varsayılan: sadece aktif kategoriler)
         $altKategorilerQuery = IlanKategori::where('parent_id', $kategoriId)
             ->where('seviye', 1);
-        // Context7: Schema kontrolü ile status kolonu
+        // Migration çalıştırıldı: order → display_order rename edildi
+        // Artık sadece display_order kullan (değişken kullanmadan doğrudan yazıyoruz)
+
         if (Schema::hasColumn('ilan_kategorileri', 'status')) {
             $altKategorilerQuery->where('status', true); // ✅ Plan: Status filtresi eklendi (aktif kategoriler)
         }
-        $altKategoriler = $altKategorilerQuery->with(['children' => function($query) {
-                $query->where('seviye', 2);
-                // Context7: Schema kontrolü ile status kolonu
-                if (Schema::hasColumn('ilan_kategorileri', 'status')) {
-                    $query->where('status', true); // ✅ Alt kategori çocukları için de status filtresi
-                }
-                $query->orderByRaw('COALESCE(`order`, 999999) ASC');
-            }])
-            ->orderByRaw('COALESCE(`order`, 999999) ASC') // ✅ Plan: Order null değerleri sona alındı
-            ->orderBy('name', 'ASC') // ✅ Plan: İkincil sıralama eklendi
+        $altKategoriler = $altKategorilerQuery->with(['children' => function ($query) {
+            $query->where('seviye', 2);
+            if (Schema::hasColumn('ilan_kategorileri', 'status')) {
+                $query->where('status', true);
+            }
+            if (Schema::hasColumn('ilan_kategorileri', 'display_order')) {
+                $query->select(['id', 'name', 'slug', 'parent_id', 'seviye', 'status', 'display_order'])
+                    ->orderByRaw('COALESCE(display_order, 999999) ASC');
+            } else {
+                $query->select(['id', 'name', 'slug', 'parent_id', 'seviye', 'status'])
+                    ->orderBy('name', 'ASC');
+            }
+        }])
+            ->select(Schema::hasColumn('ilan_kategorileri', 'display_order')
+                ? ['id', 'name', 'slug', 'parent_id', 'seviye', 'status', 'display_order']
+                : ['id', 'name', 'slug', 'parent_id', 'seviye', 'status'])
+            ->when(Schema::hasColumn('ilan_kategorileri', 'display_order'), function ($q) {
+                $q->orderByRaw('COALESCE(display_order, 999999) ASC');
+            })
+            ->orderBy('name', 'ASC')
             ->get();
 
         // ✅ Tüm kategoriler için tutarlı: Yanlış eklenen yayın tiplerini tespit et
@@ -138,6 +194,8 @@ class PropertyTypeManagerController extends AdminController
             $yanlisEklenenYayinTipleriQuery->where('status', true); // ✅ Aktif olanları kontrol et
         }
         $yanlisEklenenYayinTipleri = $yanlisEklenenYayinTipleriQuery
+            // ✅ N+1 FIX: Select optimization
+            ->select(['id', 'name', 'slug', 'parent_id', 'seviye', 'status'])
             ->whereIn('name', ['Satılık', 'Kiralık', 'Kat Karşılığı', 'Günlük', 'Haftalık', 'Aylık'])
             ->whereNotIn('name', ['Günlük Kiralama', 'Haftalık Kiralama', 'Aylık Kiralama']) // ✅ Geçerli alt kategorileri hariç tut
             ->get();
@@ -148,14 +206,14 @@ class PropertyTypeManagerController extends AdminController
                 'kategori_id' => $kategoriId,
                 'kategori_name' => $kategori->name,
                 'bulunan_alt_kategori_sayisi' => $altKategoriler->count(),
-                'alt_kategoriler' => $altKategoriler->map(function($k) {
+                'alt_kategoriler' => $altKategoriler->map(function ($k) {
                     return [
                         'id' => $k->id,
                         'name' => $k->name,
                         'parent_id' => $k->parent_id,
                         'seviye' => $k->seviye,
                         'status' => $k->status,
-                        'order' => $k->order
+                        'display_order' => $k->display_order
                     ];
                 })->toArray()
             ]);
@@ -174,7 +232,7 @@ class PropertyTypeManagerController extends AdminController
 
             if ($yanlisEklenenYayinTipleri->isNotEmpty()) {
                 Log::warning('PropertyTypeManager: Yanlış eklenen yayın tipleri tespit edildi', [
-                    'yanlis_kayitlar' => $yanlisEklenenYayinTipleri->map(function($k) {
+                    'yanlis_kayitlar' => $yanlisEklenenYayinTipleri->map(function ($k) {
                         return [
                             'id' => $k->id,
                             'name' => $k->name,
@@ -190,10 +248,25 @@ class PropertyTypeManagerController extends AdminController
         // Yayın tipleri artık ana kategoriye bağlı (seviye=2 DEPRECATED!)
         // ✅ Tüm kategoriler için tutarlı: Ana kategori ID'si kullanılır
         $this->ensureDefaultYayinTipleri((int)$kategoriId);
-        $allYayinTipleri = IlanKategoriYayinTipi::where('kategori_id', $kategoriId)
-            ->where('status', true) // ✅ Status boolean - tüm kategoriler için tutarlı
-            ->orderByRaw('COALESCE(`order`, 999999) ASC') // ✅ Order null değerleri sona
-            ->orderBy('yayin_tipi', 'ASC') // ✅ İkincil sıralama
+
+        // Migration çalıştırıldı: order → display_order rename edildi
+        // Artık sadece display_order kullan
+        $yayinTipiOrderColumn = 'display_order';
+
+        // ✅ Context7: Arsa kategorisi için "Yazlık Kiralık" filtrelenmeli
+        $allYayinTipleriQuery = IlanKategoriYayinTipi::where('kategori_id', $kategoriId)
+            ->where('status', true); // ✅ Status boolean - tüm kategoriler için tutarlı
+
+        // ✅ Context7: Arsa kategorisi için "Yazlık Kiralık" yayın tipini filtrele
+        if ($kategori->slug === 'arsa') {
+            $allYayinTipleriQuery->where('yayin_tipi', '!=', 'Yazlık Kiralık');
+        }
+
+        $allYayinTipleri = $allYayinTipleriQuery
+            ->when(Schema::hasColumn('ilan_kategori_yayin_tipleri', 'display_order'), function ($q) {
+                $q->orderByRaw('COALESCE(display_order, 999999) ASC');
+            })
+            ->orderBy('yayin_tipi', 'ASC')
             ->get();
 
         // Debug log - Yayın tipleri sorgulandı
@@ -201,8 +274,8 @@ class PropertyTypeManagerController extends AdminController
             Log::info('PropertyTypeManager: Yayın tipleri sorgulandı', [
                 'kategori_id' => $kategoriId,
                 'bulunan_yayin_tipi_sayisi' => $allYayinTipleri->count(),
-                'yayin_tipleri' => $allYayinTipleri->map(function($yt) {
-                    return ['id' => $yt->id, 'yayin_tipi' => $yt->yayin_tipi, 'status' => $yt->status, 'order' => $yt->order];
+                'yayin_tipleri' => $allYayinTipleri->map(function ($yt) {
+                    return ['id' => $yt->id, 'yayin_tipi' => $yt->yayin_tipi, 'status' => $yt->status, 'display_order' => $yt->display_order]; // ✅ Context7: order → display_order
                 })->toArray()
             ]);
         }
@@ -213,18 +286,20 @@ class PropertyTypeManagerController extends AdminController
         if (Schema::hasTable('alt_kategori_yayin_tipi')) {
             try {
                 $altKategoriIds = $altKategoriler->pluck('id')->toArray();
-                
-                // ✅ FIX: Farklı değişken adı kullan (allYayinTipleri ile çakışmasın)
+
+                // ✅ Context7 FIX: enabled → status
+                // ✅ N+1 FIX: Select optimization
                 $altKategoriYayinTipleriRaw = AltKategoriYayinTipi::whereIn('alt_kategori_id', $altKategoriIds)
-                    ->where('enabled', 1)
+                    ->where('status', true) // Context7: enabled → status
+                    ->select(['id', 'alt_kategori_id', 'yayin_tipi_id', 'status'])
                     ->get()
                     ->groupBy('alt_kategori_id')
                     ->map(function ($items) {
                         return $items->pluck('yayin_tipi_id');
                     });
-                
+
                 // Her alt kategori için yayın tiplerini ata
-                foreach($altKategoriler as $altKat) {
+                foreach ($altKategoriler as $altKat) {
                     $altKategoriYayinTipleri[$altKat->id] = $altKategoriYayinTipleriRaw->get($altKat->id, collect([]));
                 }
             } catch (\Exception $e) {
@@ -232,13 +307,13 @@ class PropertyTypeManagerController extends AdminController
                 Log::warning('alt_kategori_yayin_tipi tablosu sorgulanamadı', [
                     'error' => $e->getMessage(),
                 ]);
-                foreach($altKategoriler as $altKat) {
+                foreach ($altKategoriler as $altKat) {
                     $altKategoriYayinTipleri[$altKat->id] = collect([]);
                 }
             }
         } else {
             // Tablo yoksa tüm alt kategoriler için boş array
-            foreach($altKategoriler as $altKat) {
+            foreach ($altKategoriler as $altKat) {
                 $altKategoriYayinTipleri[$altKat->id] = collect([]);
             }
         }
@@ -249,8 +324,8 @@ class PropertyTypeManagerController extends AdminController
         try {
             $fieldDependenciesRaw = KategoriYayinTipiFieldDependency::where('kategori_slug', $kategori->slug)->get();
 
-            // Grupla: field_slug => [yayin_tipi => enabled]
-            foreach($fieldDependenciesRaw as $dep) {
+            // Grupla: field_slug => [yayin_tipi => status] (Context7: enabled → status)
+            foreach ($fieldDependenciesRaw as $dep) {
                 $fieldDependencies[$dep->field_slug] = [
                     'field_name' => $dep->field_name,
                     'field_type' => $dep->field_type,
@@ -265,19 +340,23 @@ class PropertyTypeManagerController extends AdminController
                 ->pluck('yayin_tipi')
                 ->unique()
                 ->toArray();
-            
+
             $yayinTipiSlugToId = [];
             if (!empty($yayinTipiSlugs)) {
+                // ✅ N+1 FIX: Select optimization
                 $yayinTipiSlugToId = IlanKategori::whereIn('slug', $yayinTipiSlugs)
                     ->where('seviye', 2)
+                    ->select(['id', 'slug'])
                     ->pluck('id', 'slug')
                     ->toArray();
-                
+
                 // Slug'da bulunamazsa yayin_tipi field'ına göre ara
                 $missingSlugs = array_diff($yayinTipiSlugs, array_keys($yayinTipiSlugToId));
                 if (!empty($missingSlugs)) {
+                    // ✅ N+1 FIX: Select optimization
                     $additionalYayinTipleri = IlanKategori::whereIn('yayin_tipi', $missingSlugs)
                         ->where('seviye', 2)
+                        ->select(['id', 'yayin_tipi'])
                         ->pluck('id', 'yayin_tipi')
                         ->toArray();
                     $yayinTipiSlugToId = array_merge($yayinTipiSlugToId, $additionalYayinTipleri);
@@ -285,8 +364,8 @@ class PropertyTypeManagerController extends AdminController
             }
 
             // Her field için yayın tipi durumları
-            foreach($fieldDependenciesRaw as $dep) {
-                if(isset($fieldDependencies[$dep->field_slug])) {
+            foreach ($fieldDependenciesRaw as $dep) {
+                if (isset($fieldDependencies[$dep->field_slug])) {
                     // Yayın tipi değeri: ID veya slug olabilir; her iki durumu da destekle
                     if (is_numeric($dep->yayin_tipi)) {
                         $yayinTipiId = (int)$dep->yayin_tipi;
@@ -294,8 +373,9 @@ class PropertyTypeManagerController extends AdminController
                         $yayinTipiId = $yayinTipiSlugToId[$dep->yayin_tipi] ?? null;
                     }
 
-                    if($yayinTipiId) {
-                        $fieldDependencies[$dep->field_slug]['yayin_tipleri'][$yayinTipiId] = $dep->enabled;
+                    if ($yayinTipiId) {
+                        // ✅ Context7: enabled → status (backward compat: dep->enabled fallback)
+                        $fieldDependencies[$dep->field_slug]['yayin_tipleri'][$yayinTipiId] = $dep->status ?? $dep->enabled ?? false;
                     }
                 }
             }
@@ -304,9 +384,43 @@ class PropertyTypeManagerController extends AdminController
             // Tablo yoksa boş array ile devam et
         }
 
-        // Features
-        $features = Feature::with('category')->get();
-        $featureCategories = FeatureCategory::with('features')->get();
+        // ✅ Context7: Features - Kategori bazlı filtreleme
+        $featuresQuery = Feature::with('category')->enabled();
+        $featureCategoriesQuery = FeatureCategory::with(['features' => function ($q) {
+            $q->enabled();
+        }]);
+
+        // ✅ Context7: Kategori bazlı feature filtreleme (fieldDependenciesIndex ile aynı mantık)
+        $kategoriSlug = $kategori->slug;
+        if ($kategoriSlug === 'arsa') {
+            // Arsa için sadece "Arsa Özellikleri" ve "Genel Özellikler" kategorilerini göster
+            $featureCategoriesQuery->whereIn('name', ['Arsa Özellikleri', 'Genel Özellikler']);
+            $featuresQuery->whereHas('category', function ($q) {
+                $q->whereIn('name', ['Arsa Özellikleri', 'Genel Özellikler']);
+            });
+        } elseif ($kategoriSlug === 'konut') {
+            // Konut için "Konut Özellikleri" ve "Genel Özellikler" göster
+            $featureCategoriesQuery->whereIn('name', ['Konut Özellikleri', 'Genel Özellikler']);
+            $featuresQuery->whereHas('category', function ($q) {
+                $q->whereIn('name', ['Konut Özellikleri', 'Genel Özellikler']);
+            });
+        } elseif ($kategoriSlug === 'yazlik') {
+            // Yazlık için "Yazlık Özellikleri" ve "Genel Özellikler" göster
+            $featureCategoriesQuery->whereIn('name', ['Yazlık Özellikleri', 'Genel Özellikler']);
+            $featuresQuery->whereHas('category', function ($q) {
+                $q->whereIn('name', ['Yazlık Özellikleri', 'Genel Özellikler']);
+            });
+        } elseif ($kategoriSlug === 'isyeri') {
+            // İşyeri için "Ticari Özellikler" ve "Genel Özellikler" göster
+            $featureCategoriesQuery->whereIn('name', ['Ticari Özellikler', 'Genel Özellikler']);
+            $featuresQuery->whereHas('category', function ($q) {
+                $q->whereIn('name', ['Ticari Özellikler', 'Genel Özellikler']);
+            });
+        }
+        // Diğer kategoriler için tüm feature'ları göster
+
+        $features = $featuresQuery->get();
+        $featureCategories = $featureCategoriesQuery->get();
 
         return view('admin.property-type-manager.show', compact(
             'kategori',
@@ -320,58 +434,169 @@ class PropertyTypeManagerController extends AdminController
         ));
     }
 
+    /**
+     * Context7: Tüm kategoriler için eksik yayın tiplerini otomatik ekle
+     *
+     * Bu metod tüm ana kategoriler için standart yayın tiplerini kontrol eder
+     * ve eksik olanları ekler.
+     *
+     * Context7 Uyumluluk:
+     * - ✅ status field kullanımı (aktif/is_active YASAK)
+     * - ✅ display_order kullanımı (order YASAK)
+     * - ✅ yayin_tipi field kullanımı (name YASAK)
+     */
+    public function ensureAllYayinTipleri()
+    {
+        try {
+            $anaKategoriler = IlanKategori::where('seviye', 0)
+                ->where('status', true)
+                ->get(['id', 'name']);
+
+            $eklenenSayisi = 0;
+            $guncellenenSayisi = 0;
+            $kategoriler = [];
+
+            foreach ($anaKategoriler as $kategori) {
+                $oncekiSayi = IlanKategoriYayinTipi::where('kategori_id', $kategori->id)->count();
+
+                $this->ensureDefaultYayinTipleri($kategori->id);
+
+                $sonrakiSayi = IlanKategoriYayinTipi::where('kategori_id', $kategori->id)->count();
+
+                if ($sonrakiSayi > $oncekiSayi) {
+                    $eklenenSayisi += ($sonrakiSayi - $oncekiSayi);
+                } else {
+                    $guncellenenSayisi += $sonrakiSayi;
+                }
+
+                $kategoriler[] = [
+                    'id' => $kategori->id,
+                    'name' => $kategori->name,
+                    'yayin_tipi_sayisi' => $sonrakiSayi
+                ];
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Tüm kategoriler için yayın tipleri kontrol edildi ve eksikler eklendi',
+                'data' => [
+                    'toplam_kategori' => $anaKategoriler->count(),
+                    'eklenen_yayin_tipi' => $eklenenSayisi,
+                    'guncellenen_yayin_tipi' => $guncellenenSayisi,
+                    'kategoriler' => $kategoriler
+                ]
+            ]);
+        } catch (\Exception $e) {
+            Log::error('ensureAllYayinTipleri failed', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Hata oluştu: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Context7: Tüm kategoriler için standart yayın tiplerini oluştur/güncelle
+     *
+     * Yayın Tipleri:
+     * - Satılık (display_order: 1)
+     * - Kiralık (display_order: 2)
+     * - Yazlık Kiralık (display_order: 3) - Konut için özellikle önemli
+     *
+     * Context7 Uyumluluk:
+     * - ✅ status field kullanımı (aktif/is_active YASAK)
+     * - ✅ display_order kullanımı (order YASAK)
+     * - ✅ yayin_tipi field kullanımı (name YASAK)
+     */
     private function ensureDefaultYayinTipleri(int $kategoriId): void
     {
         try {
-            $existingCount = IlanKategoriYayinTipi::where('kategori_id', $kategoriId)->count();
+            // ✅ Context7: Kategori bazlı yayın tipleri
+            $kategori = IlanKategori::find($kategoriId);
+            $kategoriSlug = $kategori ? $kategori->slug : null;
+
+            // Standart yayın tipleri (tüm kategoriler için)
+            $defaults = [
+                ['yayin_tipi' => 'Satılık', 'display_order' => 1, 'icon' => '💰'],
+                ['yayin_tipi' => 'Kiralık', 'display_order' => 2, 'icon' => '🔑'],
+            ];
+
+            // ✅ Context7: Arsa kategorisi için "Yazlık Kiralık" EKLEME
+            // Yazlık Kiralık sadece Konut ve Yazlık kategorileri için geçerli
+            if ($kategoriSlug !== 'arsa') {
+                $defaults[] = ['yayin_tipi' => 'Yazlık Kiralık', 'display_order' => 3, 'icon' => '🏖️'];
+            }
 
             // Debug log - Geliştirme modunda çalışır
             if (config('app.debug')) {
                 $existingRecords = IlanKategoriYayinTipi::where('kategori_id', $kategoriId)->get();
                 Log::info('PropertyTypeManager: ensureDefaultYayinTipleri kontrolü', [
                     'kategori_id' => $kategoriId,
-                    'mevcut_kayit_sayisi' => $existingCount,
-                    'mevcut_kayitlar' => $existingRecords->map(function($r) {
-                        return ['id' => $r->id, 'yayin_tipi' => $r->yayin_tipi, 'status' => $r->status];
+                    'mevcut_kayit_sayisi' => $existingRecords->count(),
+                    'mevcut_kayitlar' => $existingRecords->map(function ($r) {
+                        return ['id' => $r->id, 'yayin_tipi' => $r->yayin_tipi, 'status' => $r->status, 'display_order' => $r->display_order];
                     })->toArray()
                 ]);
             }
 
-            if ($existingCount > 0) {
-                return;
-            }
+            // ✅ PERFORMANCE FIX: N+1 query önlendi - Tüm kayıtları tek query'de al
+            $existingRecords = IlanKategoriYayinTipi::withTrashed()
+                ->where('kategori_id', $kategoriId)
+                ->whereIn('yayin_tipi', array_column($defaults, 'yayin_tipi'))
+                ->get()
+                ->keyBy('yayin_tipi');
 
-            $defaults = ['Satılık', 'Kiralık'];
-            $order = 1;
-            foreach ($defaults as $name) {
-                $record = IlanKategoriYayinTipi::withTrashed()
-                    ->where('kategori_id', $kategoriId)
-                    ->where('yayin_tipi', $name)
-                    ->first();
+            foreach ($defaults as $default) {
+                $yayinTipi = $default['yayin_tipi'];
+                $displayOrder = $default['display_order'];
+                $icon = $default['icon'] ?? null;
+
+                $record = $existingRecords->get($yayinTipi);
 
                 if ($record) {
-                    if ($record->trashed()) {
-                        $record->restore();
+                    // ✅ Context7: Sadece aktif kayıtları güncelle
+                    // Soft-deleted kayıtları restore etme (kullanıcı silmişse tekrar oluşturma)
+                    if (!$record->trashed()) {
+                        // Aktif kayıt varsa sadece güncelle
+                        $record->update([
+                            'status' => true,
+                            'display_order' => $displayOrder,
+                            'icon' => $icon,
+                        ]);
                     }
-                    $record->update(['status' => true, 'order' => $order]);
+                    // Soft-deleted kayıt varsa hiçbir şey yapma (kullanıcı silmişse tekrar oluşturma)
                 } else {
+                    // Yeni kayıt oluştur (sadece hiç kayıt yoksa)
                     IlanKategoriYayinTipi::create([
                         'kategori_id' => $kategoriId,
-                        'yayin_tipi' => $name,
-                        'status' => true,
-                        'order' => $order,
+                        'yayin_tipi' => $yayinTipi,
+                        'status' => true, // ✅ Context7: status field
+                        'display_order' => $displayOrder, // ✅ Context7: display_order field
+                        'icon' => $icon,
                     ]);
                 }
-                $order++;
             }
 
-            // Debug log - Yayın tipleri oluşturuldu
+            // Debug log - Yayın tipleri oluşturuldu/güncellendi
             if (config('app.debug')) {
-                $createdRecords = IlanKategoriYayinTipi::where('kategori_id', $kategoriId)->get();
-                Log::info('PropertyTypeManager: Yayın tipleri oluşturuldu', [
+                $createdRecords = IlanKategoriYayinTipi::where('kategori_id', $kategoriId)
+                    ->orderBy('display_order')
+                    ->get();
+                Log::info('PropertyTypeManager: Yayın tipleri oluşturuldu/güncellendi', [
                     'kategori_id' => $kategoriId,
-                    'olusturulan_kayitlar' => $createdRecords->map(function($r) {
-                        return ['id' => $r->id, 'yayin_tipi' => $r->yayin_tipi, 'status' => $r->status];
+                    'olusturulan_kayit_sayisi' => $createdRecords->count(),
+                    'olusturulan_kayitlar' => $createdRecords->map(function ($r) {
+                        return [
+                            'id' => $r->id,
+                            'yayin_tipi' => $r->yayin_tipi,
+                            'status' => $r->status,
+                            'display_order' => $r->display_order,
+                            'icon' => $r->icon,
+                        ];
                     })->toArray()
                 ]);
             }
@@ -394,19 +619,19 @@ class PropertyTypeManagerController extends AdminController
             $validated = $request->validate([
                 'alt_kategori_id' => 'required|integer|exists:ilan_kategorileri,id',
                 'yayin_tipi_id' => 'required|integer|exists:ilan_kategori_yayin_tipleri,id',
-                'enabled' => 'required|boolean'
+                'status' => 'required|boolean' // Context7: enabled → status
             ]);
 
             $altKategoriId = $validated['alt_kategori_id'];
             $yayinTipiId = $validated['yayin_tipi_id'];
-            $enabled = $validated['enabled'];
+            $status = $validated['status']; // Context7: enabled → status
 
             // Debug log
             Log::info('toggleYayinTipi called', [
                 'kategori_id' => $kategoriId,
                 'alt_kategori_id' => $altKategoriId,
                 'yayin_tipi_id' => $yayinTipiId,
-                'enabled' => $enabled
+                'status' => $status // Context7: enabled → status
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
             Log::error('toggleYayinTipi validation failed', [
@@ -427,30 +652,34 @@ class PropertyTypeManagerController extends AdminController
 
         $altKategoriId = $request->alt_kategori_id;
         $yayinTipiId = $request->yayin_tipi_id;
-        $enabled = $request->enabled;
+        $status = $request->status ?? $request->enabled ?? true; // Context7: enabled → status (backward compat)
 
-        if ($enabled) {
-            // İlişkiyi ekle veya güncelle
-            AltKategoriYayinTipi::updateOrCreate(
-                [
-                    'alt_kategori_id' => $altKategoriId,
-                    'yayin_tipi_id' => $yayinTipiId
-                ],
-                [
-                    'enabled' => true,
-                    'order' => 0,
-                    'created_at' => now(),
-                    'updated_at' => now()
-                ]
-            );
+        if ($status) {
+            // ✅ Context7: İlişkiyi ekle veya güncelle (tablo kontrolü ile)
+            if (Schema::hasTable('alt_kategori_yayin_tipi')) {
+                AltKategoriYayinTipi::updateOrCreate(
+                    [
+                        'alt_kategori_id' => $altKategoriId,
+                        'yayin_tipi_id' => $yayinTipiId
+                    ],
+                    [
+                        'status' => true, // Context7: enabled → status
+                        'display_order' => 0,
+                        'created_at' => now(),
+                        'updated_at' => now()
+                    ]
+                );
+            }
         } else {
-            // İlişkiyi kaldır veya disabled yap
-            AltKategoriYayinTipi::where('alt_kategori_id', $altKategoriId)
-                ->where('yayin_tipi_id', $yayinTipiId)
-                ->update([
-                    'enabled' => false,
-                    'updated_at' => now()
-                ]);
+            // ✅ Context7: İlişkiyi devre dışı bırak (status = false) (tablo kontrolü ile)
+            if (Schema::hasTable('alt_kategori_yayin_tipi')) {
+                AltKategoriYayinTipi::where('alt_kategori_id', $altKategoriId)
+                    ->where('yayin_tipi_id', $yayinTipiId)
+                    ->update([
+                        'status' => false, // Context7: enabled → status
+                        'updated_at' => now()
+                    ]);
+            }
         }
 
         return response()->json([
@@ -459,28 +688,39 @@ class PropertyTypeManagerController extends AdminController
             'data' => [
                 'alt_kategori_id' => $altKategoriId,
                 'yayin_tipi_id' => $yayinTipiId,
-                'enabled' => $enabled
+                'status' => $status // Context7: enabled → status
             ]
         ]);
     }
 
     /**
-     * Yeni yayın tipi oluştur (kategori bazlı)
+     * Context7: Yeni yayın tipi oluştur (kategori bazlı)
+     *
+     * Context7 Uyumluluk:
+     * - ✅ status field kullanımı (aktif/is_active YASAK)
+     * - ✅ display_order kullanımı (order YASAK)
+     * - ✅ yayin_tipi field kullanımı (name YASAK - request'te 'name' kabul edilir ama DB'de 'yayin_tipi' kullanılır)
      */
     public function createYayinTipi(Request $request, $kategoriId)
     {
-        $request->validate([
-            'name' => 'required|string|max:100'
+        // Context7: Backward compatibility - 'name' parametresini kabul et ama 'yayin_tipi' olarak kaydet
+        $validated = $request->validate([
+            'name' => 'required_without:yayin_tipi|string|max:100', // Backward compat
+            'yayin_tipi' => 'required_without:name|string|max:255', // Context7: yayin_tipi field
+            'display_order' => 'nullable|integer|min:0',
+            'icon' => 'nullable|string|max:10',
+            'status' => 'nullable|boolean',
         ]);
 
         $kategori = IlanKategori::findOrFail($kategoriId);
 
-        $name = trim($request->name);
+        // Context7: 'name' veya 'yayin_tipi' parametresini kullan
+        $yayinTipiAdi = trim($validated['yayin_tipi'] ?? $validated['name']);
 
         // Zaten varsa (soft-deleted dahil) tekrar oluşturma; geri getir/güncelle
-        $existing = \App\Models\IlanKategoriYayinTipi::withTrashed()
+        $existing = IlanKategoriYayinTipi::withTrashed()
             ->where('kategori_id', $kategori->id)
-            ->where('yayin_tipi', $name)
+            ->where('yayin_tipi', $yayinTipiAdi)
             ->first();
 
         if ($existing) {
@@ -488,7 +728,9 @@ class PropertyTypeManagerController extends AdminController
                 $existing->restore();
             }
             $existing->update([
-                'status' => true,
+                'status' => $validated['status'] ?? true, // ✅ Context7: status field
+                'display_order' => $validated['display_order'] ?? $existing->display_order, // ✅ Context7: display_order field
+                'icon' => $validated['icon'] ?? $existing->icon,
             ]);
 
             return response()->json([
@@ -496,29 +738,36 @@ class PropertyTypeManagerController extends AdminController
                 'message' => 'Yayın tipi zaten mevcut; etkinleştirildi',
                 'data' => [
                     'id' => $existing->id,
-                    'name' => $existing->yayin_tipi,
-                    'order' => $existing->order ?? 0
+                    'yayin_tipi' => $existing->yayin_tipi, // ✅ Context7: yayin_tipi field
+                    'display_order' => $existing->display_order // ✅ Context7: display_order field
                 ]
             ]);
         }
 
-        // Sıra belirle
-        $nextOrder = (int) (\App\Models\IlanKategoriYayinTipi::where('kategori_id', $kategoriId)->max('order') ?? 0) + 1;
+        // Context7: Sıra belirle - display_order kullan
+        $nextOrder = $validated['display_order'] ?? ((int) (IlanKategoriYayinTipi::where('kategori_id', $kategoriId)->max('display_order') ?? 0) + 1);
 
-        $tip = \App\Models\IlanKategoriYayinTipi::create([
+        $tip = IlanKategoriYayinTipi::create([
             'kategori_id' => $kategori->id,
-            'yayin_tipi' => $name,
-            'status' => true,
-            'order' => $nextOrder,
+            'yayin_tipi' => $yayinTipiAdi, // ✅ Context7: yayin_tipi field
+            'status' => $validated['status'] ?? true, // ✅ Context7: status field
+            'display_order' => $nextOrder, // ✅ Context7: display_order field
+            'icon' => $validated['icon'] ?? null,
+        ]);
+
+        Log::info('Yayın tipi oluşturuldu', [
+            'kategori_id' => $kategoriId,
+            'yayin_tipi_id' => $tip->id,
+            'yayin_tipi' => $tip->yayin_tipi
         ]);
 
         return response()->json([
             'success' => true,
-            'message' => 'Yayın tipi oluşturuldu',
+            'message' => 'Yayın tipi başarıyla oluşturuldu',
             'data' => [
                 'id' => $tip->id,
-                'name' => $tip->yayin_tipi,
-                'order' => $tip->order
+                'yayin_tipi' => $tip->yayin_tipi, // ✅ Context7: yayin_tipi field
+                'display_order' => $tip->display_order // ✅ Context7: display_order field
             ]
         ]);
     }
@@ -548,26 +797,37 @@ class PropertyTypeManagerController extends AdminController
                 ], 422);
             }
 
-            // Alt kategori ilişkilerini kaldır
-            AltKategoriYayinTipi::where('yayin_tipi_id', $yayinTipiId)
-                ->delete();
+            // ✅ Context7: Alt kategori yayın tipi ilişkilerini kaldır (tablo kontrolü ile)
+            if (Schema::hasTable('alt_kategori_yayin_tipi')) {
+                AltKategoriYayinTipi::where('yayin_tipi_id', $yayinTipiId)
+                    ->delete();
+            }
 
-            // Feature assignment ilişkilerini kaldır
+            // ✅ Context7: Feature assignment ilişkilerini kaldır (tablo kontrolü ile)
             if (Schema::hasTable('feature_assignments')) {
                 FeatureAssignment::where('assignable_type', IlanKategoriYayinTipi::class)
                     ->where('assignable_id', $yayinTipiId)
                     ->delete();
             }
 
-            // Yayın tipini soft delete yap
-            $yayinTipi->delete();
+            // ✅ Context7: Yayın tipini kalıcı olarak sil (force delete)
+            // Not: ensureDefaultYayinTipleri soft-deleted kayıtları restore ediyor,
+            // bu yüzden kalıcı silme yapıyoruz
+            $yayinTipiAdi = $yayinTipi->yayin_tipi;
+            $yayinTipi->forceDelete();
+
+            Log::info('Yayın tipi kalıcı olarak silindi', [
+                'yayin_tipi_id' => $yayinTipiId,
+                'kategori_id' => $kategoriId,
+                'yayin_tipi' => $yayinTipiAdi
+            ]);
 
             return response()->json([
                 'success' => true,
                 'message' => 'Yayın tipi başarıyla silindi',
                 'data' => [
                     'id' => $yayinTipiId,
-                    'name' => $yayinTipi->yayin_tipi
+                    'name' => $yayinTipiAdi
                 ]
             ]);
         } catch (\Exception $e) {
@@ -626,9 +886,11 @@ class PropertyTypeManagerController extends AdminController
                 ], 422);
             }
 
-            // Alt kategori yayın tipi ilişkilerini kaldır
-            AltKategoriYayinTipi::where('alt_kategori_id', $altKategoriId)
-                ->delete();
+            // ✅ Context7: Alt kategori yayın tipi ilişkilerini kaldır (tablo kontrolü ile)
+            if (Schema::hasTable('alt_kategori_yayin_tipi')) {
+                AltKategoriYayinTipi::where('alt_kategori_id', $altKategoriId)
+                    ->delete();
+            }
 
             // Alt kategoriyi soft delete yap
             $altKategori->delete();
@@ -666,28 +928,33 @@ class PropertyTypeManagerController extends AdminController
         // Yayın tipleri (Property Types)
         $yayinTipleri = IlanKategoriYayinTipi::where('kategori_id', $kategoriId)
             ->where('status', 1)
-            ->orderBy('order')
+            ->orderBy('display_order')
             ->get();
 
         // ✅ POLYMORPHIC: Her yayın tipi için feature assignments
         $fieldDependencies = [];
 
+        // Önce tüm yayın tipleri için boş collection'lar oluştur
+        foreach ($yayinTipleri as $yayinTipi) {
+            $fieldDependencies[$yayinTipi->slug ?? $yayinTipi->yayin_tipi] = collect([]);
+        }
+
         // Context7: Tablo kontrolü ile güvenli sorgulama
         // ✅ OPTIMIZED: N+1 query önlendi - Tüm feature assignments'ları eager load ile al
-        if (Schema::hasTable('feature_assignments') && method_exists($yayinTipleri->first(), 'featureAssignments')) {
+        if (Schema::hasTable('feature_assignments') && $yayinTipleri->isNotEmpty() && method_exists($yayinTipleri->first(), 'featureAssignments')) {
             $yayinTipiIds = $yayinTipleri->pluck('id')->toArray();
-            
+
             // Tüm yayın tipleri için feature assignments'ları tek query'de al
             $allAssignments = \App\Models\FeatureAssignment::whereIn('assignable_id', $yayinTipiIds)
                 ->where('assignable_type', get_class($yayinTipleri->first()))
-                ->with(['feature' => function($q) {
+                ->with(['feature' => function ($q) {
                     $q->with('category');
                 }])
                 ->visible()
                 ->ordered()
                 ->get()
                 ->groupBy('assignable_id');
-            
+
             foreach ($yayinTipleri as $yayinTipi) {
                 try {
                     $assignments = $allAssignments->get($yayinTipi->id, collect([]));
@@ -705,19 +972,129 @@ class PropertyTypeManagerController extends AdminController
                     $fieldDependencies[$yayinTipi->slug ?? $yayinTipi->yayin_tipi] = collect([]);
                 }
             }
-        } else {
-            // Tablo yoksa veya method yoksa boş array
-            foreach ($yayinTipleri as $yayinTipi) {
-                $fieldDependencies[$yayinTipi->slug ?? $yayinTipi->yayin_tipi] = collect([]);
+        }
+
+        // ✅ Context7: Eski sistem desteği - kategori_yayin_tipi_field_dependencies tablosundan veri çek
+        // Eğer polymorphic sistem boşsa, eski sistemden veri çek
+        $hasPolymorphicData = false;
+        foreach ($fieldDependencies as $assignments) {
+            if ($assignments->count() > 0) {
+                $hasPolymorphicData = true;
+                break;
             }
         }
 
-        // Tüm mevcut features (assignment için)
-        $availableFeatures = Feature::with('category')
+        if (!$hasPolymorphicData && Schema::hasTable('kategori_yayin_tipi_field_dependencies')) {
+            try {
+                $legacyFieldDeps = KategoriYayinTipiFieldDependency::where('kategori_slug', $kategori->slug)
+                    ->where('status', true)
+                    ->get();
+
+                // Yayın tipi ID'lerini slug/yayin_tipi ile eşleştir
+                $yayinTipiMap = [];
+                foreach ($yayinTipleri as $yt) {
+                    $yayinTipiMap[$yt->id] = $yt->slug ?? $yt->yayin_tipi;
+                    $yayinTipiMap[$yt->yayin_tipi] = $yt->slug ?? $yt->yayin_tipi;
+                }
+
+                // Legacy field dependencies'i polymorphic format'a dönüştür
+                foreach ($legacyFieldDeps as $dep) {
+                    $yayinTipiKey = null;
+
+                    // Yayın tipi ID veya slug/yayin_tipi ile eşleştir
+                    if (is_numeric($dep->yayin_tipi)) {
+                        $yayinTipiKey = $yayinTipiMap[$dep->yayin_tipi] ?? null;
+                    } else {
+                        $yayinTipiKey = $dep->yayin_tipi;
+                    }
+
+                    if ($yayinTipiKey && isset($fieldDependencies[$yayinTipiKey])) {
+                        // Feature'ı bul, yoksa field dependency'den oluştur
+                        $feature = Feature::where('slug', $dep->field_slug)->first();
+
+                        if (!$feature) {
+                            // Feature yoksa, field dependency'den mock feature oluştur
+                            $feature = new \stdClass();
+                            $feature->id = $dep->id;
+                            $feature->name = $dep->field_name;
+                            $feature->slug = $dep->field_slug;
+                            $feature->field_type = $dep->field_type ?? 'text';
+                            $feature->field_icon = $dep->field_icon ?? '📋';
+
+                            // ✅ Context7: AI capabilities için default değerler (hasAiCapabilities() method'u için)
+                            $feature->ai_auto_fill = false;
+                            $feature->ai_suggestion = false;
+                            $feature->ai_calculation = false;
+
+                            // Field category'den feature category oluştur
+                            $featureCategory = null;
+                            if ($dep->field_category) {
+                                $featureCategory = FeatureCategory::where('name', $dep->field_category)->first();
+                                if (!$featureCategory) {
+                                    // Mock category oluştur
+                                    $featureCategory = new \stdClass();
+                                    $featureCategory->name = $dep->field_category;
+                                }
+                            }
+                            $feature->category = $featureCategory;
+                        }
+
+                        // Polymorphic assignment oluştur (geçici olarak)
+                        $assignment = new \stdClass();
+                        $assignment->id = $dep->id;
+                        $assignment->feature = $feature;
+                        $assignment->is_visible = $dep->status ?? true;
+                        $assignment->is_required = $dep->required ?? false;
+                        $assignment->group_name = $dep->field_category ?? null;
+
+                        $fieldDependencies[$yayinTipiKey]->push($assignment);
+                    }
+                }
+
+                Log::info('Legacy field dependencies loaded', [
+                    'kategori_slug' => $kategori->slug,
+                    'legacy_count' => $legacyFieldDeps->count()
+                ]);
+            } catch (\Exception $e) {
+                Log::warning('Legacy field dependencies yüklenemedi', [
+                    'error' => $e->getMessage()
+                ]);
+            }
+        }
+
+        // ✅ Context7: Kategori bazlı feature filtreleme
+        // Arsa kategorisi için sadece "Arsa Özellikleri" ve "Genel Özellikler" göster
+        $availableFeaturesQuery = Feature::with('category')
             ->enabled()
-            ->ordered()
-            ->get()
-            ->groupBy(function($feature) {
+            ->ordered();
+
+        // ✅ Context7: Kategori bazlı filtreleme
+        $kategoriSlug = $kategori->slug;
+        if ($kategoriSlug === 'arsa') {
+            // Arsa için sadece "Arsa Özellikleri" ve "Genel Özellikler" kategorilerini göster
+            $availableFeaturesQuery->whereHas('category', function ($q) {
+                $q->whereIn('name', ['Arsa Özellikleri', 'Genel Özellikler']);
+            });
+        } elseif ($kategoriSlug === 'konut') {
+            // Konut için "Konut Özellikleri" ve "Genel Özellikler" göster
+            $availableFeaturesQuery->whereHas('category', function ($q) {
+                $q->whereIn('name', ['Konut Özellikleri', 'Genel Özellikler']);
+            });
+        } elseif ($kategoriSlug === 'yazlik') {
+            // Yazlık için "Yazlık Özellikleri" ve "Genel Özellikler" göster
+            $availableFeaturesQuery->whereHas('category', function ($q) {
+                $q->whereIn('name', ['Yazlık Özellikleri', 'Genel Özellikler']);
+            });
+        } elseif ($kategoriSlug === 'isyeri') {
+            // İşyeri için "Ticari Özellikler" ve "Genel Özellikler" göster
+            $availableFeaturesQuery->whereHas('category', function ($q) {
+                $q->whereIn('name', ['Ticari Özellikler', 'Genel Özellikler']);
+            });
+        }
+        // Diğer kategoriler için tüm feature'ları göster
+
+        $availableFeatures = $availableFeaturesQuery->get()
+            ->groupBy(function ($feature) {
                 return $feature->category?->name ?? 'Genel';
             });
 
@@ -746,9 +1123,9 @@ class PropertyTypeManagerController extends AdminController
             'field_options' => 'nullable|json',
             'field_unit' => 'nullable|string|max:20',
             'field_icon' => 'nullable|string|max:10',
-            'enabled' => 'boolean',
+            'status' => 'boolean', // Context7: enabled → status
             'required' => 'boolean',
-            'order' => 'nullable|integer|min:0',
+            'display_order' => 'nullable|integer|min:0', // ✅ Context7: order → display_order
             'ai_auto_fill' => 'boolean',
             'ai_suggestion' => 'boolean',
             'searchable' => 'boolean',
@@ -756,7 +1133,8 @@ class PropertyTypeManagerController extends AdminController
         ]);
 
         $validated['kategori_slug'] = $kategori->slug;
-        $validated['enabled'] = $request->boolean('enabled', true);
+        // Context7: Backward compatibility - accept 'enabled' but use 'status'
+        $validated['status'] = $request->boolean('status', $request->boolean('enabled', true));
         $validated['required'] = $request->boolean('required', false);
         $validated['ai_auto_fill'] = $request->boolean('ai_auto_fill', false);
         $validated['ai_suggestion'] = $request->boolean('ai_suggestion', false);
@@ -815,9 +1193,9 @@ class PropertyTypeManagerController extends AdminController
             'field_options' => 'nullable|json',
             'field_unit' => 'nullable|string|max:20',
             'field_icon' => 'nullable|string|max:10',
-            'enabled' => 'boolean',
+            'status' => 'boolean', // Context7: enabled → status
             'required' => 'boolean',
-            'order' => 'nullable|integer|min:0',
+            'display_order' => 'nullable|integer|min:0', // ✅ Context7: order → display_order
             'ai_auto_fill' => 'boolean',
             'ai_suggestion' => 'boolean',
             'searchable' => 'boolean',
@@ -825,7 +1203,8 @@ class PropertyTypeManagerController extends AdminController
         ]);
 
         // Boolean fields - explicit conversion
-        $validated['enabled'] = $request->boolean('enabled', $field->enabled);
+        // Context7: Backward compatibility - accept 'enabled' but use 'status'
+        $validated['status'] = $request->boolean('status', $request->boolean('enabled', $field->status ?? true));
         $validated['required'] = $request->boolean('required', $field->required);
         $validated['ai_auto_fill'] = $request->boolean('ai_auto_fill', $field->ai_auto_fill ?? false);
         $validated['ai_suggestion'] = $request->boolean('ai_suggestion', $field->ai_suggestion ?? false);
@@ -868,7 +1247,8 @@ class PropertyTypeManagerController extends AdminController
     {
         // İki mod: 1) field_id ile güncelle 2) yoksa upsert ile oluştur ve güncelle
         $request->validate([
-            'enabled' => 'required|boolean',
+            'status' => 'required_without:enabled|boolean', // Context7: enabled → status
+            'enabled' => 'required_without:status|boolean', // Backward compatibility
             'field_id' => 'nullable|integer',
             'kategori_slug' => 'required_without:field_id|string',
             // yayin_tipi_id veya yayin_tipi (slug) ikilisinden en az biri
@@ -882,7 +1262,8 @@ class PropertyTypeManagerController extends AdminController
 
         DB::beginTransaction();
         try {
-            $enabled = $request->enabled ? 1 : 0; // Explicit integer conversion
+            // Context7: Backward compatibility - accept 'enabled' but use 'status'
+            $status = $request->has('status') ? ($request->status ? 1 : 0) : ($request->enabled ? 1 : 0);
             $fieldId = $request->input('field_id');
 
             if (empty($fieldId)) {
@@ -892,8 +1273,8 @@ class PropertyTypeManagerController extends AdminController
                     'field_name' => $request->input('field_name', 'Field'),
                     'field_type' => $request->input('field_type', 'text'),
                     'field_category' => $request->input('field_category', 'general'),
-                    'enabled' => $enabled,
-                    'order' => 0,
+                    'status' => $status, // Context7: enabled → status
+                    'display_order' => 0, // ✅ Context7: order → display_order
                     'created_at' => now(),
                     'updated_at' => now(),
                 ];
@@ -905,7 +1286,7 @@ class PropertyTypeManagerController extends AdminController
 
                 if ($existing) {
                     $fieldId = $existing->id;
-                    $existing->update(['enabled' => $enabled, 'updated_at' => now()]);
+                    $existing->update(['status' => $status, 'updated_at' => now()]); // Context7: enabled → status
                 } else {
                     $field = KategoriYayinTipiFieldDependency::create(array_merge([
                         'kategori_slug' => $request->kategori_slug,
@@ -919,7 +1300,7 @@ class PropertyTypeManagerController extends AdminController
                 // Doğrudan güncelle
                 $field = KategoriYayinTipiFieldDependency::find($fieldId);
                 if ($field) {
-                    $field->update(['enabled' => $enabled, 'updated_at' => now()]);
+                    $field->update(['status' => $status, 'updated_at' => now()]); // Context7: enabled → status
                     $updated = 1;
                 } else {
                     $updated = 0;
@@ -933,7 +1314,7 @@ class PropertyTypeManagerController extends AdminController
 
             Log::info('✅ Field dependency toggled/upserted', [
                 'field_id' => $fieldId,
-                'enabled' => $enabled,
+                'status' => $status,
                 'kategori_slug' => $request->input('kategori_slug'),
                 'yayin_tipi' => $request->input('yayin_tipi'),
                 'field_slug' => $request->input('field_slug'),
@@ -941,10 +1322,10 @@ class PropertyTypeManagerController extends AdminController
 
             return response()->json([
                 'success' => true,
-                'message' => $enabled ? 'Alan aktif edildi' : 'Alan pasif edildi',
+                'message' => $status ? 'Alan aktif edildi' : 'Alan pasif edildi',
                 'data' => [
                     'field_id' => $fieldId,
-                    'enabled' => $enabled
+                    'status' => $status
                 ]
             ]);
         } catch (\Exception $e) {
@@ -968,14 +1349,40 @@ class PropertyTypeManagerController extends AdminController
         $request->validate([
             'fields' => 'required|array',
             'fields.*.id' => 'required|exists:kategori_yayin_tipi_field_dependencies,id',
-            'fields.*.order' => 'required|integer|min:0'
+            'fields.*.order' => 'required|integer|min:0', // Backward compat
+            'fields.*.display_order' => 'nullable|integer|min:0'
         ]);
 
         DB::beginTransaction();
         try {
+            // ✅ PERFORMANCE FIX: N+1 query önlendi - Gerçek bulk update kullanıldı
+            $updates = [];
+            $ids = [];
             foreach ($request->fields as $fieldData) {
-                KategoriYayinTipiFieldDependency::where('id', $fieldData['id'])
-                    ->update(['order' => $fieldData['order']]);
+                $displayOrder = $fieldData['display_order'] ?? $fieldData['order'] ?? 0;
+                $id = $fieldData['id'];
+                $updates[$id] = $displayOrder;
+                $ids[] = $id;
+            }
+
+            // ✅ PERFORMANCE FIX: CASE WHEN ile gerçek bulk update (N query → 1 query)
+            if (!empty($ids)) {
+                $cases = [];
+                $bindings = [];
+                foreach ($updates as $id => $displayOrder) {
+                    $cases[] = "WHEN ? THEN ?";
+                    $bindings[] = $id;
+                    $bindings[] = $displayOrder;
+                }
+                $idsPlaceholder = implode(',', array_fill(0, count($ids), '?'));
+                $casesSql = implode(' ', $cases);
+
+                DB::statement(
+                    "UPDATE kategori_yayin_tipi_field_dependencies
+                     SET display_order = CASE id {$casesSql} END
+                     WHERE id IN ({$idsPlaceholder})",
+                    array_merge($bindings, $ids)
+                );
             }
 
             DB::commit();
@@ -994,16 +1401,21 @@ class PropertyTypeManagerController extends AdminController
 
     /**
      * Feature toggle
+     * ✅ Context7: enabled → status (backward compatibility)
      */
     public function toggleFeature(Request $request)
     {
         $request->validate([
             'feature_id' => 'required|exists:features,id',
-            'enabled' => 'required|boolean'
+            'status' => 'required_without:enabled|boolean', // ✅ Context7: status field
+            'enabled' => 'required_without:status|boolean' // Backward compatibility
         ]);
 
+        // ✅ Context7: Backward compatibility - accept 'enabled' but use 'status'
+        $status = $request->has('status') ? $request->boolean('status') : $request->boolean('enabled');
+
         Feature::where('id', $request->feature_id)
-            ->update(['status' => $request->enabled]);
+            ->update(['status' => $status]);
 
         return response()->json(['success' => true]);
     }
@@ -1023,87 +1435,119 @@ class PropertyTypeManagerController extends AdminController
                 'field_dependencies.*.kategori_slug' => 'required_with:field_dependencies',
                 'field_dependencies.*.yayin_tipi' => 'required_with:field_dependencies',
                 'field_dependencies.*.field_slug' => 'required_with:field_dependencies',
-                'field_dependencies.*.enabled' => 'required_with:field_dependencies|boolean',
+                'field_dependencies.*.status' => 'required_without:field_dependencies.*.enabled|boolean', // ✅ Context7: status field
+                'field_dependencies.*.enabled' => 'required_without:field_dependencies.*.status|boolean', // Backward compatibility
                 'features' => 'nullable|array',
                 'features.*.id' => 'required_with:features|exists:features,id',
-                'features.*.enabled' => 'required_with:features|boolean'
+                'features.*.status' => 'required_without:features.*.enabled|boolean', // ✅ Context7: status field
+                'features.*.enabled' => 'required_without:features.*.status|boolean' // Backward compatibility
             ]);
 
-            DB::transaction(function() use ($request, $kategoriId) {
-            // Yayın tipleri
-            if ($request->has('yayin_tipleri')) {
-                foreach ($request->yayin_tipleri as $data) {
-                    // Status is boolean in database - convert to boolean
-                    $status = $data['status'];
-                    if (is_string($status)) {
-                        $status = $status === 'Aktif' ? true : false;
-                    } elseif (is_int($status)) {
-                        $status = $status === 1;
-                    } elseif (!is_bool($status)) {
-                        $status = (bool) $status;
-                    }
-
-                    // Check for existing record including soft-deleted ones
-                    $existing = IlanKategoriYayinTipi::withTrashed()
-                        ->where('kategori_id', $data['kategori_id'])
-                        ->where('yayin_tipi', $data['yayin_tipi'])
-                        ->first();
-
-                    if ($existing) {
-                        // Restore if soft-deleted
-                        if ($existing->trashed()) {
-                            $existing->restore();
+            DB::transaction(function () use ($request, $kategoriId) {
+                // Yayın tipleri
+                if ($request->has('yayin_tipleri')) {
+                    foreach ($request->yayin_tipleri as $data) {
+                        // Status is boolean in database - convert to boolean
+                        $status = $data['status'];
+                        if (is_string($status)) {
+                            $status = $status === 'Aktif' ? true : false;
+                        } elseif (is_int($status)) {
+                            $status = $status === 1;
+                        } elseif (!is_bool($status)) {
+                            $status = (bool) $status;
                         }
-                        // Update existing record
-                        $existing->update([
-                            'status' => $status,
-                            'order' => $data['order'] ?? 1
-                        ]);
-                    } else {
-                        // Create new record
-                        IlanKategoriYayinTipi::create([
-                            'kategori_id' => $data['kategori_id'],
-                            'yayin_tipi' => $data['yayin_tipi'],
-                            'status' => $status,
-                            'order' => $data['order'] ?? 1
-                        ]);
+
+                        // Check for existing record including soft-deleted ones
+                        $existing = IlanKategoriYayinTipi::withTrashed()
+                            ->where('kategori_id', $data['kategori_id'])
+                            ->where('yayin_tipi', $data['yayin_tipi'])
+                            ->first();
+
+                        if ($existing) {
+                            // Restore if soft-deleted
+                            if ($existing->trashed()) {
+                                $existing->restore();
+                            }
+                            // Update existing record
+                            $displayOrder = $data['display_order'] ?? $data['order'] ?? 1;
+                            $existing->update([
+                                'status' => $status,
+                                'display_order' => $displayOrder
+                            ]);
+                        } else {
+                            // Create new record
+                            $displayOrder = $data['display_order'] ?? $data['order'] ?? 1;
+                            IlanKategoriYayinTipi::create([
+                                'kategori_id' => $data['kategori_id'],
+                                'yayin_tipi' => $data['yayin_tipi'],
+                                'status' => $status,
+                                'display_order' => $displayOrder
+                            ]);
+                        }
                     }
                 }
-            }
 
-            // Field dependencies
-            if ($request->has('field_dependencies')) {
-                foreach ($request->field_dependencies as $data) {
-                    KategoriYayinTipiFieldDependency::updateOrCreate(
-                        [
-                            'kategori_slug' => $data['kategori_slug'],
-                            'yayin_tipi' => $data['yayin_tipi'],
-                            'field_slug' => $data['field_slug']
-                        ],
-                        [
-                            'enabled' => $data['enabled'],
-                            'field_name' => $data['field_name'] ?? 'Field',
-                            'field_type' => $data['field_type'] ?? 'text',
-                            'field_category' => $data['field_category'] ?? 'general'
-                        ]
-                    );
+                // Field dependencies
+                if ($request->has('field_dependencies')) {
+                    foreach ($request->field_dependencies as $data) {
+                        // ✅ Context7: Backward compatibility - accept 'enabled' but use 'status'
+                        $status = $data['status'] ?? $data['enabled'] ?? true;
+
+                        KategoriYayinTipiFieldDependency::updateOrCreate(
+                            [
+                                'kategori_slug' => $data['kategori_slug'],
+                                'yayin_tipi' => $data['yayin_tipi'],
+                                'field_slug' => $data['field_slug']
+                            ],
+                            [
+                                'status' => $status, // ✅ Context7: enabled → status
+                                'field_name' => $data['field_name'] ?? 'Field',
+                                'field_type' => $data['field_type'] ?? 'text',
+                                'field_category' => $data['field_category'] ?? 'general'
+                            ]
+                        );
+                    }
                 }
-            }
 
-            // Features
-            if ($request->has('features')) {
-                foreach ($request->features as $data) {
-                    Feature::where('id', $data['id'])
-                        ->update(['status' => $data['enabled']]);
+                // Features
+                if ($request->has('features')) {
+                    // ✅ PERFORMANCE FIX: N+1 query önlendi - Gerçek bulk update kullanıldı
+                    // ✅ Context7: Backward compatibility - accept 'enabled' but use 'status'
+                    $featureUpdates = [];
+                    $featureIds = [];
+                    foreach ($request->features as $data) {
+                        $id = $data['id'];
+                        $status = $data['status'] ?? $data['enabled'] ?? true; // ✅ Context7: enabled → status
+                        $featureUpdates[$id] = $status;
+                        $featureIds[] = $id;
+                    }
+
+                    // ✅ PERFORMANCE FIX: CASE WHEN ile gerçek bulk update (N query → 1 query)
+                    if (!empty($featureIds)) {
+                        $cases = [];
+                        $bindings = [];
+                        foreach ($featureUpdates as $id => $status) {
+                            $cases[] = "WHEN ? THEN ?";
+                            $bindings[] = $id;
+                            $bindings[] = $status ? 1 : 0;
+                        }
+                        $idsPlaceholder = implode(',', array_fill(0, count($featureIds), '?'));
+                        $casesSql = implode(' ', $cases);
+
+                        DB::statement(
+                            "UPDATE features
+                             SET status = CASE id {$casesSql} END
+                             WHERE id IN ({$idsPlaceholder})",
+                            array_merge($bindings, $featureIds)
+                        );
+                    }
                 }
-            }
-        });
+            });
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Tüm değişiklikler kaydedildi'
-        ]);
-
+            return response()->json([
+                'success' => true,
+                'message' => 'Tüm değişiklikler kaydedildi'
+            ]);
         } catch (\Exception $e) {
             Log::error('Bulk save error: ' . $e->getMessage());
             return response()->json([
@@ -1128,7 +1572,7 @@ class PropertyTypeManagerController extends AdminController
             'feature_id' => 'required|exists:features,id',
             'is_required' => 'nullable|boolean',
             'is_visible' => 'nullable|boolean',
-            'order' => 'nullable|integer|min:0',
+            'display_order' => 'nullable|integer|min:0', // ✅ Context7: order → display_order
             'group_name' => 'nullable|string|max:100',
         ]);
 
@@ -1139,7 +1583,7 @@ class PropertyTypeManagerController extends AdminController
             $assignment = $propertyType->assignFeature($feature, [
                 'is_required' => $request->boolean('is_required', false),
                 'is_visible' => $request->boolean('is_visible', true),
-                'order' => $request->input('order', 0),
+                'display_order' => $request->input('display_order', 0), // ✅ Context7: order → display_order
                 'group_name' => $request->input('group_name'),
             ]);
 
@@ -1302,7 +1746,7 @@ class PropertyTypeManagerController extends AdminController
         $request->validate([
             'is_required' => 'nullable|boolean',
             'is_visible' => 'nullable|boolean',
-            'order' => 'nullable|integer|min:0',
+            'display_order' => 'nullable|integer|min:0', // ✅ Context7: order → display_order
             'group_name' => 'nullable|string|max:100',
         ]);
 
@@ -1312,19 +1756,19 @@ class PropertyTypeManagerController extends AdminController
             $assignment->update($request->only([
                 'is_required',
                 'is_visible',
-                'order',
+                'display_order', // ✅ Context7: order → display_order
                 'group_name'
             ]));
 
             Log::info('Feature assignment updated', [
                 'assignment_id' => $assignmentId,
-                'updates' => $request->only(['is_required', 'is_visible', 'order', 'group_name'])
+                'updates' => $request->only(['is_required', 'is_visible', 'display_order', 'group_name']) // ✅ Context7: order → display_order
             ]);
 
             return response()->json([
                 'success' => true,
                 'message' => 'Özellik ayarları güncellendi',
-                'data' => $assignment->only(['id', 'is_required', 'is_visible', 'order', 'group_name'])
+                'data' => $assignment->only(['id', 'is_required', 'is_visible', 'display_order', 'group_name']) // ✅ Context7: order → display_order
             ]);
         } catch (\Exception $e) {
             Log::error('Feature assignment update failed', [

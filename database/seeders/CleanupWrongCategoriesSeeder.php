@@ -90,4 +90,3 @@ class CleanupWrongCategoriesSeeder extends Seeder
         $this->command->info("\n   ⚠️  Seviye=2 kayıtlar varsa bunlar HATA! (Yayın tipleri buraya ait değil)");
     }
 }
-

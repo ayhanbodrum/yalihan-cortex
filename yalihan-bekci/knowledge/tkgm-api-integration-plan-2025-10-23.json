@@ -197,11 +197,7 @@
         "count": "int (işlem sayısı)",
         "created_at": "timestamp"
       },
-      "indexes": [
-        "il_id, year",
-        "ilce_id, year",
-        "lat, lon (spatial index)"
-      ]
+      "indexes": ["il_id, year", "ilce_id, year", "lat, lon (spatial index)"]
     }
   },
 
@@ -313,12 +309,7 @@
       "combined": {
         "final_score": 98,
         "rating": "⭐⭐⭐ Ultra Yüksek Potansiyel",
-        "badges": [
-          "🌊 Kıyı İli",
-          "🏙️ Büyükşehir",
-          "🔥 Hotspot Bölge",
-          "📈 %32 Büyüme"
-        ]
+        "badges": ["🌊 Kıyı İli", "🏙️ Büyükşehir", "🔥 Hotspot Bölge", "📈 %32 Büyüme"]
       }
     }
   },
@@ -329,4 +320,3 @@
     "timeline": "After 2 weeks (TurkiyeAPI complete)"
   }
 }
-

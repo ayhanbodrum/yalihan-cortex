@@ -12,7 +12,7 @@
         'bunk' => ['icon' => '🏢', 'label' => 'Ranza'],
         'sofa_bed' => ['icon' => '🛋️', 'label' => 'Çekyat/Kanepe'],
     ];
-    
+
     $totalCapacity = 0;
     foreach ($bedrooms as $bedroom) {
         foreach ($bedroom['beds'] ?? [] as $bed) {
@@ -151,4 +151,3 @@
         </div>
     @endif
 </div>
-

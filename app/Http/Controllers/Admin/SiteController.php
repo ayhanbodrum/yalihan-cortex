@@ -39,24 +39,28 @@ class SiteController extends AdminController
                 $query->where('tip', $type);
             }
 
-            $sites = $query->where('site_adi', 'LIKE', "%{$searchTerm}%")
+            $sites = $query->where('name', 'LIKE', "%{$searchTerm}%") // Context7: name kullan (NOT site_adi)
                 ->orWhere('adres', 'LIKE', "%{$searchTerm}%")
-                ->orWhere('sehir', 'LIKE', "%{$searchTerm}%")
-                ->orWhere('ilce', 'LIKE', "%{$searchTerm}%")
+                ->orWhereHas('il', function($q) use ($searchTerm) {
+                    $q->where('il_adi', 'LIKE', "%{$searchTerm}%"); // Context7: sehir → il
+                })
+                ->orWhereHas('ilce', function($q) use ($searchTerm) {
+                    $q->where('ilce_adi', 'LIKE', "%{$searchTerm}%");
+                })
+                ->with(['il', 'ilce', 'mahalle']) // Eager load ilişkiler
                 ->limit($request->get('limit', 10))
                 ->get()
                 ->map(function ($site) {
                     return [
                         'id' => $site->id,
-                        'text' => $site->site_adi . ' - ' . $site->adres . ', ' . $site->sehir,
-                        'name' => $site->site_adi,
+                        'text' => $site->name . ' - ' . $site->adres . ($site->il ? ', ' . $site->il->il_adi : ''),
+                        'name' => $site->name,
                         'adres' => $site->adres,
-                        'sehir' => $site->sehir,
-                        'ilce' => $site->ilce,
-                        'mahalle' => $site->mahalle,
-                        'posta_kodu' => $site->posta_kodu,
-                        'toplam_daire_sayisi' => $site->daire_sayisi ?? 0, // Context7: Frontend expects this key
-                        'daire_sayisi' => $site->daire_sayisi ?? 0 // Keep old key for compatibility
+                        'il' => $site->il ? $site->il->il_adi : null, // Context7: sehir → il
+                        'ilce' => $site->ilce ? $site->ilce->ilce_adi : null,
+                        'mahalle' => $site->mahalle ? $site->mahalle->mahalle_adi : null,
+                        'toplam_daire_sayisi' => $site->toplam_daire_sayisi ?? 0, // Context7: Frontend expects this key
+                        'daire_sayisi' => $site->toplam_daire_sayisi ?? 0 // Keep old key for compatibility
                     ];
                 });
 

@@ -35,6 +35,14 @@ class DatabaseSeeder extends Seeder
             Context7MasterSeeder::class,
         ]);
 
+        if (app()->environment(['local', 'development', 'testing'])) {
+            $this->command->info('🌱 Portfolio demo verileri yükleniyor...');
+            $this->call(PortfolioDemoSeeder::class);
+
+            $this->command->info('🏖️ Bodrum demo verileri yükleniyor...');
+            $this->call(BodrumDemoSeeder::class);
+        }
+
         $this->command->newLine();
         $this->command->info('🎉 Database Seeder başarıyla tamamlandı!');
         $this->command->info('📊 Tüm veriler Context7 standartlarına uygun olarak yüklendi');

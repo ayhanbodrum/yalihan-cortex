@@ -9,49 +9,49 @@ window.SeasonalCalendar = {
     config: {
         seasons: {
             yaz: {
-                label: "Yaz Sezonu",
-                icon: "☀️",
+                label: 'Yaz Sezonu',
+                icon: '☀️',
                 months: [6, 7, 8], // Haziran, Temmuz, Ağustos
-                color: "#f59e0b",
+                color: '#f59e0b',
                 multiplier: 1.5,
             },
             ilkbahar: {
-                label: "İlkbahar",
-                icon: "🌸",
+                label: 'İlkbahar',
+                icon: '🌸',
                 months: [3, 4, 5], // Mart, Nisan, Mayıs
-                color: "#10b981",
+                color: '#10b981',
                 multiplier: 1.2,
             },
             sonbahar: {
-                label: "Sonbahar",
-                icon: "🍂",
+                label: 'Sonbahar',
+                icon: '🍂',
                 months: [9, 10, 11], // Eylül, Ekim, Kasım
-                color: "#f97316",
+                color: '#f97316',
                 multiplier: 1.0,
             },
             kis: {
-                label: "Kış",
-                icon: "❄️",
+                label: 'Kış',
+                icon: '❄️',
                 months: [12, 1, 2], // Aralık, Ocak, Şubat
-                color: "#3b82f6",
+                color: '#3b82f6',
                 multiplier: 0.8,
             },
         },
         monthNames: [
-            "Ocak",
-            "Şubat",
-            "Mart",
-            "Nisan",
-            "Mayıs",
-            "Haziran",
-            "Temmuz",
-            "Ağustos",
-            "Eylül",
-            "Ekim",
-            "Kasım",
-            "Aralık",
+            'Ocak',
+            'Şubat',
+            'Mart',
+            'Nisan',
+            'Mayıs',
+            'Haziran',
+            'Temmuz',
+            'Ağustos',
+            'Eylül',
+            'Ekim',
+            'Kasım',
+            'Aralık',
         ],
-        dayNames: ["Pz", "Pt", "Sa", "Ça", "Pe", "Cu", "Ct"],
+        dayNames: ['Pz', 'Pt', 'Sa', 'Ça', 'Pe', 'Cu', 'Ct'],
     },
 
     // Rezervasyon durumları
@@ -63,26 +63,26 @@ window.SeasonalCalendar = {
     init: function () {
         this.setupEventListeners();
         this.loadReservationData();
-        console.log("SeasonalCalendar initialized");
+        console.log('SeasonalCalendar initialized');
     },
 
     // Event listeners
     setupEventListeners: function () {
-        document.addEventListener("click", (e) => {
+        document.addEventListener('click', (e) => {
             // Takvim hücre tıklamaları
-            if (e.target.classList.contains("calendar-day")) {
+            if (e.target.classList.contains('calendar-day')) {
                 this.handleDayClick(e.target);
             }
 
             // Sezon butonları
-            if (e.target.classList.contains("season-btn")) {
+            if (e.target.classList.contains('season-btn')) {
                 this.selectSeason(e.target.dataset.season);
             }
         });
 
         // Fiyat değişikliklerini dinle
-        document.addEventListener("input", (e) => {
-            if (e.target.classList.contains("season-price")) {
+        document.addEventListener('input', (e) => {
+            if (e.target.classList.contains('season-price')) {
                 this.updateSeasonalPricing();
             }
         });
@@ -106,14 +106,14 @@ window.SeasonalCalendar = {
                         <h3 class="text-lg font-semibold">📅 ${year} Sezonluk Kiralama Takvimi</h3>
                         <div class="flex space-x-2">
                             <button onclick="SeasonalCalendar.renderCalendar('${containerId}', ${
-            year - 1
-        })"
+                                year - 1
+                            })"
                                     class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">
                                 <i class="fas fa-chevron-left"></i>
                             </button>
                             <button onclick="SeasonalCalendar.renderCalendar('${containerId}', ${
-            year + 1
-        })"
+                                year + 1
+                            })"
                                     class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">
                                 <i class="fas fa-chevron-right"></i>
                             </button>
@@ -162,14 +162,14 @@ window.SeasonalCalendar = {
                 </button>
             `;
             })
-            .join("");
+            .join('');
     },
 
     // Ayları oluştur
     generateMonthsHTML: function (year) {
         return Array.from({ length: 12 }, (_, monthIndex) => {
             return this.generateMonthHTML(year, monthIndex);
-        }).join("");
+        }).join('');
     },
 
     // Tek ay HTML'i oluştur
@@ -182,9 +182,7 @@ window.SeasonalCalendar = {
         let html = `
             <div class="month-container border rounded-lg p-3">
                 <div class="month-header text-center mb-2">
-                    <h4 class="font-semibold" style="color: ${
-                        this.config.seasons[season].color
-                    }">
+                    <h4 class="font-semibold" style="color: ${this.config.seasons[season].color}">
                         ${this.config.seasons[season].icon} ${monthName}
                     </h4>
                 </div>
@@ -195,21 +193,21 @@ window.SeasonalCalendar = {
                             (day) =>
                                 `<div class="day-name text-center font-medium text-gray-500 p-1">${day}</div>`
                         )
-                        .join("")}
+                        .join('')}
 
-                    ${Array.from(
-                        { length: firstDay },
-                        () => '<div class="empty-day"></div>'
-                    ).join("")}
+                    ${Array.from({ length: firstDay }, () => '<div class="empty-day"></div>').join(
+                        ''
+                    )}
 
                     ${Array.from({ length: daysInMonth }, (_, dayIndex) => {
                         const day = dayIndex + 1;
-                        const dateKey = `${year}-${String(
-                            monthIndex + 1
-                        ).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+                        const dateKey = `${year}-${String(monthIndex + 1).padStart(
+                            2,
+                            '0'
+                        )}-${String(day).padStart(2, '0')}`;
                         const status = this.getDayStatus(dateKey);
                         return this.generateDayHTML(day, dateKey, status);
-                    }).join("")}
+                    }).join('')}
                 </div>
             </div>
         `;
@@ -220,10 +218,10 @@ window.SeasonalCalendar = {
     // Gün HTML'i oluştur
     generateDayHTML: function (day, dateKey, status) {
         const statusClasses = {
-            available: "bg-green-100 hover:bg-green-200 text-green-800",
-            reserved: "bg-red-100 text-red-800 cursor-not-allowed",
-            blocked: "bg-gray-100 text-gray-500 cursor-not-allowed",
-            special: "bg-blue-100 hover:bg-blue-200 text-blue-800",
+            available: 'bg-green-100 hover:bg-green-200 text-green-800',
+            reserved: 'bg-red-100 text-red-800 cursor-not-allowed',
+            blocked: 'bg-gray-100 text-gray-500 cursor-not-allowed',
+            special: 'bg-blue-100 hover:bg-blue-200 text-blue-800',
         };
 
         return `
@@ -261,7 +259,7 @@ window.SeasonalCalendar = {
                             </div>
                         `;
                         })
-                        .join("")}
+                        .join('')}
                 </div>
 
                 <div class="mt-4 p-3 bg-blue-50 rounded">
@@ -284,15 +282,15 @@ window.SeasonalCalendar = {
                 return seasonKey;
             }
         }
-        return "sonbahar"; // varsayılan
+        return 'sonbahar'; // varsayılan
     },
 
     // Günün durumunu getir
     getDayStatus: function (dateKey) {
-        if (this.blockedDates.includes(dateKey)) return "blocked";
-        if (this.reservations[dateKey]) return "reserved";
-        if (this.specialPrices[dateKey]) return "special";
-        return "available";
+        if (this.blockedDates.includes(dateKey)) return 'blocked';
+        if (this.reservations[dateKey]) return 'reserved';
+        if (this.specialPrices[dateKey]) return 'special';
+        return 'available';
     },
 
     // Gün tıklama işlemi
@@ -300,22 +298,19 @@ window.SeasonalCalendar = {
         const dateKey = dayElement.dataset.date;
         const currentStatus = this.getDayStatus(dateKey);
 
-        if (currentStatus === "reserved") {
+        if (currentStatus === 'reserved') {
             this.showReservationDetails(dateKey);
-        } else if (
-            currentStatus === "available" ||
-            currentStatus === "special"
-        ) {
+        } else if (currentStatus === 'available' || currentStatus === 'special') {
             this.showDateOptions(dateKey, dayElement);
         }
     },
 
     // Tarih seçeneklerini göster
     showDateOptions: function (dateKey, element) {
-        const popup = document.createElement("div");
+        const popup = document.createElement('div');
         popup.className =
-            "date-options-popup absolute bg-white border rounded-lg shadow-lg p-3 z-50";
-        popup.style.minWidth = "200px";
+            'date-options-popup absolute bg-white border rounded-lg shadow-lg p-3 z-50';
+        popup.style.minWidth = '200px';
 
         popup.innerHTML = `
             <div class="mb-2 font-medium">${dateKey}</div>
@@ -337,17 +332,17 @@ window.SeasonalCalendar = {
 
         // Popup pozisyonunu ayarla
         const rect = element.getBoundingClientRect();
-        popup.style.top = rect.bottom + window.scrollY + "px";
-        popup.style.left = rect.left + "px";
+        popup.style.top = rect.bottom + window.scrollY + 'px';
+        popup.style.left = rect.left + 'px';
 
         document.body.appendChild(popup);
 
         // Dışarı tıklanınca kapat
         setTimeout(() => {
-            document.addEventListener("click", function closePopup(e) {
+            document.addEventListener('click', function closePopup(e) {
                 if (!popup.contains(e.target)) {
                     popup.remove();
-                    document.removeEventListener("click", closePopup);
+                    document.removeEventListener('click', closePopup);
                 }
             });
         }, 100);
@@ -364,7 +359,7 @@ window.SeasonalCalendar = {
 
     // Özel fiyat belirle
     setSpecialPrice: function (dateKey) {
-        const price = prompt("Bu tarih için özel fiyat (₺):");
+        const price = prompt('Bu tarih için özel fiyat (₺):');
         if (price && !isNaN(price)) {
             this.specialPrices[dateKey] = parseFloat(price);
             this.saveData();
@@ -374,7 +369,7 @@ window.SeasonalCalendar = {
 
     // Rezervasyon ekle
     addReservation: function (dateKey) {
-        const guestName = prompt("Misafir adı:");
+        const guestName = prompt('Misafir adı:');
         if (guestName) {
             this.reservations[dateKey] = {
                 guest: guestName,
@@ -392,7 +387,7 @@ window.SeasonalCalendar = {
 
         const basePrice = parseFloat(basePriceInput.value) || 0;
 
-        document.querySelectorAll(".season-price").forEach((input) => {
+        document.querySelectorAll('.season-price').forEach((input) => {
             const season = input.dataset.season;
             const multiplier = this.config.seasons[season].multiplier;
 
@@ -404,7 +399,7 @@ window.SeasonalCalendar = {
 
     // Takvimi yenile
     refreshCalendar: function () {
-        const container = document.querySelector(".seasonal-calendar");
+        const container = document.querySelector('.seasonal-calendar');
         if (container) {
             const year = new Date().getFullYear(); // veya mevcut yıl
             container.outerHTML = this.generateCalendarHTML(year);
@@ -419,12 +414,12 @@ window.SeasonalCalendar = {
             specialPrices: this.specialPrices,
         };
 
-        localStorage.setItem("seasonalCalendar_data", JSON.stringify(data));
+        localStorage.setItem('seasonalCalendar_data', JSON.stringify(data));
     },
 
     // Verileri yükle
     loadReservationData: function () {
-        const savedData = localStorage.getItem("seasonalCalendar_data");
+        const savedData = localStorage.getItem('seasonalCalendar_data');
         if (savedData) {
             try {
                 const data = JSON.parse(savedData);
@@ -432,7 +427,7 @@ window.SeasonalCalendar = {
                 this.blockedDates = data.blockedDates || [];
                 this.specialPrices = data.specialPrices || {};
             } catch (e) {
-                console.warn("Calendar data could not be loaded:", e);
+                console.warn('Calendar data could not be loaded:', e);
             }
         }
     },
@@ -457,7 +452,7 @@ window.SeasonalCalendar = {
 };
 
 // DOM yüklendiğinde initialize et
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener('DOMContentLoaded', function () {
     window.SeasonalCalendar.init();
 });
 

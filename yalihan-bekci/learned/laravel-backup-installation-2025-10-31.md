@@ -10,21 +10,20 @@
 
 ```yaml
 Laravel Backup:
-  Package: spatie/laravel-backup v9.3.5 ✅
-  Status: Installed & Tested
-  
+    Package: spatie/laravel-backup v9.3.5 ✅
+    Status: Installed & Tested
+
 Google Drive Adapter:
-  Package: masbug/flysystem-google-drive-ext v2.4.1 ✅
-  Status: Installed (credentials needed)
-  
+    Package: masbug/flysystem-google-drive-ext v2.4.1 ✅
+    Status: Installed (credentials needed)
+
 Dependencies:
-  google/apiclient: v2.18.4 ✅
-  google/auth: v1.48.1 ✅
-  
-Config Files:
-  ✅ config/backup.php (published)
-  ✅ config/filesystems.php (google disk added)
-  ✅ AppServiceProvider.php (Storage extend registered)
+    google/apiclient: v2.18.4 ✅
+    google/auth: v1.48.1 ✅
+
+Config Files: ✅ config/backup.php (published)
+    ✅ config/filesystems.php (google disk added)
+    ✅ AppServiceProvider.php (Storage extend registered)
 ```
 
 ---
@@ -34,18 +33,17 @@ Config Files:
 ### **Laravel Backup = Disaster Recovery System**
 
 **Simple Explanation:**
-```yaml
-Problem:
-  😱 Server crash
-  😱 Database silindi
-  😱 Hacker saldırısı
-  😱 Yanlışlıkla DROP TABLE
 
-Solution (Laravel Backup):
-  😊 Her gece otomatik backup
-  😊 Google Drive'a yüklenir
-  😊 30 gün saklanır
-  😊 php artisan backup:restore → 5 dakikada geri yükle
+```yaml
+Problem: 😱 Server crash
+    😱 Database silindi
+    😱 Hacker saldırısı
+    😱 Yanlışlıkla DROP TABLE
+
+Solution (Laravel Backup): 😊 Her gece otomatik backup
+    😊 Google Drive'a yüklenir
+    😊 30 gün saklanır
+    😊 php artisan backup:restore → 5 dakikada geri yükle
 
 Result: 0 VERİ KAYBI! ✅
 ```
@@ -55,6 +53,7 @@ Result: 0 VERİ KAYBI! ✅
 ## 📦 **BACKUP İÇERİĞİ**
 
 ### **Database Backup:**
+
 ```sql
 yalihanemlak_ultra:
   - ilanlar (10,000+ kayıt)
@@ -67,6 +66,7 @@ Size: ~35 KB (small database) to 50+ MB (large)
 ```
 
 ### **File Backup:**
+
 ```bash
 storage/app/public/
   ├── ilanlar/fotograflar/  # 50,000+ photos
@@ -93,7 +93,7 @@ Output:
   ✅ Zipping 1 files...
   ✅ Created zip: 35.38 KB
   ✅ Copied to local disk
-  
+
 Location: storage/app/YalihanEmlak/
 Filename: yalihan-emlak-[timestamp].zip
 Size: 35.38 KB
@@ -111,12 +111,12 @@ protected function schedule(Schedule $schedule)
 {
     // Clean old backups (01:00)
     $schedule->command('backup:clean')->daily()->at('01:00');
-    
+
     // Database backup (03:00 - every day)
     $schedule->command('backup:run --only-db')
         ->daily()
         ->at('03:00');
-    
+
     // Full backup (04:00 - every Sunday)
     $schedule->command('backup:run')
         ->weekly()
@@ -126,6 +126,7 @@ protected function schedule(Schedule $schedule)
 ```
 
 **Retention:**
+
 - Daily database backups: 30 days
 - Weekly full backups: 8 weeks
 - Total Google Drive usage: ~5-6 GB ✅ (15GB limit)
@@ -137,21 +138,19 @@ protected function schedule(Schedule $schedule)
 ### **Why Google Drive?**
 
 ```yaml
-Pros:
-  ✅ 15GB FREE storage
-  ✅ External storage (disaster recovery)
-  ✅ Web interface (browse backups)
-  ✅ Download anytime
-  ✅ No cost
-  
-Cons:
-  ⚠️ One-time setup (5 minutes)
-  ⚠️ Google API credentials needed
+Pros: ✅ 15GB FREE storage
+    ✅ External storage (disaster recovery)
+    ✅ Web interface (browse backups)
+    ✅ Download anytime
+    ✅ No cost
+
+Cons: ⚠️ One-time setup (5 minutes)
+    ⚠️ Google API credentials needed
 
 Alternative:
-  - Local storage: FREE but risky (server crash = backup lost)
-  - Amazon S3: $5/month (50GB)
-  - Dropbox: FREE but only 2GB
+    - Local storage: FREE but risky (server crash = backup lost)
+    - Amazon S3: $5/month (50GB)
+    - Dropbox: FREE but only 2GB
 ```
 
 ---
@@ -234,16 +233,16 @@ Value: Professional monitoring + data protection
 
 ```yaml
 GitHub Actions (CI/CD):
-  - Automated testing
-  - Auto deployment
-  - FREE 2000 min/month
-  - Setup: 15 minutes
-  
+    - Automated testing
+    - Auto deployment
+    - FREE 2000 min/month
+    - Setup: 15 minutes
+
 Cloudflare (CDN + Security):
-  - Performance boost
-  - DDoS protection
-  - FREE
-  - Setup: 15 minutes
+    - Performance boost
+    - DDoS protection
+    - FREE
+    - Setup: 15 minutes
 ```
 
 ---
@@ -258,14 +257,14 @@ Local Backup (Basic):
   ✅ FREE
   ⚠️ Risky (server crash = lost)
   Use: Development/testing
-  
+
 Google Drive (Recommended):
   ✅ External storage
   ✅ 15GB FREE
   ✅ Disaster recovery
   ⚠️ Initial setup (5 minutes)
   Use: Production
-  
+
 Amazon S3 (Enterprise):
   ✅ Unlimited storage
   ✅ High reliability
@@ -274,6 +273,7 @@ Amazon S3 (Enterprise):
 ```
 
 **Pattern Learned:**
+
 > Start with local backup (test), then add Google Drive (production)
 > Database-only backups daily (small), full backups weekly (large)
 > 30-day retention = 1.5-6 GB storage needed (Google 15GB sufficient)
@@ -296,4 +296,3 @@ Time: 10 minutes ⚡
 ```
 
 **Backup sistem hazır! Google Drive credentials eklenince tam aktif!** 🚀
-

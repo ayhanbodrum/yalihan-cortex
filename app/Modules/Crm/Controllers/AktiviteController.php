@@ -88,11 +88,11 @@ class AktiviteController extends Controller
         $this->aktiviteService->createAktivite($validatedData);
 
         if ($request->get('return_to_kisi')) {
-            return redirect()->route('crm.kisiler.show', $validatedData['kisi_id'])
+            return redirect()->route('admin.kisiler.show', $validatedData['kisi_id']) // Context7: crm.* → admin.*
                 ->with('success', 'Aktivite başarıyla oluşturuldu.');
         }
 
-        return redirect()->route('crm.aktiviteler.index')
+        return redirect()->route('admin.aktiviteler.index') // Context7: crm.* → admin.*
             ->with('success', 'Aktivite başarıyla oluşturuldu.');
     }
 
@@ -141,7 +141,7 @@ class AktiviteController extends Controller
 
         $this->aktiviteService->updateAktivite($aktivite, $validatedData);
 
-        return redirect()->route('crm.aktiviteler.index')->with('success', 'Aktivite başarıyla güncellendi.');
+        return redirect()->route('admin.aktiviteler.index')->with('success', 'Aktivite başarıyla güncellendi.'); // Context7: crm.* → admin.*
     }
 
     /**
@@ -152,7 +152,7 @@ class AktiviteController extends Controller
         $this->authorize('delete', $aktivite); // Policy ile yetkilendirme
         $this->aktiviteService->deleteAktivite($aktivite);
 
-        return redirect()->route('crm.aktiviteler.index')->with('success', 'Aktivite başarıyla silindi.');
+        return redirect()->route('admin.aktiviteler.index')->with('success', 'Aktivite başarıyla silindi.'); // Context7: crm.* → admin.*
     }
 
     /**

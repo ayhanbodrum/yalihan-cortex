@@ -127,61 +127,68 @@ Eğer her şey doğru yapılandırıldıysa, TestSprite MCP sunucusu başlayacak
 Eğer TestSprite MCP sunucusu başlatılamazsa:
 
 1. Node.js'in doğru şekilde kurulu olduğunu kontrol edin:
-   ```bash
-   node --version
-   ```
+
+    ```bash
+    node --version
+    ```
 
 2. `.env` dosyasındaki `TESTSPRITE_NODE_PATH` değişkeninin doğru olduğunu kontrol edin:
-   ```bash
-   which node
-   ```
+
+    ```bash
+    which node
+    ```
 
 3. TestSprite sunucu dizininde bağımlılıkların kurulu olduğunu kontrol edin:
-   ```bash
-   cd testsprite/server
-   npm list
-   ```
+    ```bash
+    cd testsprite/server
+    npm list
+    ```
 
 ### Testler Çalışmıyor
 
 Eğer testler çalışmıyorsa:
 
 1. Laravel log dosyalarını kontrol edin:
-   ```bash
-   tail -f storage/logs/laravel.log
-   ```
+
+    ```bash
+    tail -f storage/logs/laravel.log
+    ```
 
 2. TestSprite MCP sunucusunun log dosyalarını kontrol edin:
-   ```bash
-   cat testsprite/server/logs/server.log
-   ```
+
+    ```bash
+    cat testsprite/server/logs/server.log
+    ```
 
 3. Yapılandırma dosyasının doğru olduğunu kontrol edin:
-   ```bash
-   php artisan config:show testsprite
-   ```
+    ```bash
+    php artisan config:show testsprite
+    ```
 
 ## Güncelleme
 
 TestSprite MCP'yi güncellemek için:
 
 1. Eski dosyaları yedekleyin:
-   ```bash
-   mv testsprite testsprite.bak
-   ```
+
+    ```bash
+    mv testsprite testsprite.bak
+    ```
 
 2. Yeni dosyaları kopyalayın:
-   ```bash
-   cp -r /path/to/new/testsprite testsprite
-   ```
+
+    ```bash
+    cp -r /path/to/new/testsprite testsprite
+    ```
 
 3. Node.js bağımlılıklarını güncelleyin:
-   ```bash
-   cd testsprite/server
-   npm install
-   ```
+
+    ```bash
+    cd testsprite/server
+    npm install
+    ```
 
 4. Yapılandırma dosyasını yeniden yayınlayın:
-   ```bash
-   php artisan vendor:publish --provider="App\Providers\TestSpriteServiceProvider" --tag="config" --force
-   ```
+    ```bash
+    php artisan vendor:publish --provider="App\Providers\TestSpriteServiceProvider" --tag="config" --force
+    ```

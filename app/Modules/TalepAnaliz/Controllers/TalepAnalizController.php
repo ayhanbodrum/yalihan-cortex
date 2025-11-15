@@ -38,12 +38,12 @@ class TalepAnalizController extends Controller
 
     /**
      * Toplu talep analizi
-     * 
+     *
      * Context7 Standardı: C7-TALEP-TOPLU-ANALIZ-2025-11-05
-     * 
+     *
      * Birden fazla talebi queue'da analiz eder
      * Progress tracking ile ilerleme takibi yapar
-     * 
+     *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
      */
@@ -77,9 +77,9 @@ class TalepAnalizController extends Controller
 
     /**
      * Analiz progress'ini getir
-     * 
+     *
      * GET /admin/talepler/analiz/progress/{jobId}
-     * 
+     *
      * @param string $jobId
      * @return \Illuminate\Http\JsonResponse
      */
@@ -104,9 +104,9 @@ class TalepAnalizController extends Controller
 
     /**
      * Analiz sonuçlarını getir
-     * 
+     *
      * GET /admin/talepler/analiz/results/{jobId}
-     * 
+     *
      * @param string $jobId
      * @return \Illuminate\Http\JsonResponse
      */
@@ -134,12 +134,12 @@ class TalepAnalizController extends Controller
 
     /**
      * Talep analiz raporu oluştur
-     * 
+     *
      * Context7 Standardı: C7-TALEP-RAPOR-2025-11-05
-     * 
+     *
      * PDF ve Excel rapor oluşturur
      * TalepRaporController'a yönlendirir
-     * 
+     *
      * @param Request $request
      * @param int $id
      * @return \Illuminate\Http\Response

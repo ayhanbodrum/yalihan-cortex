@@ -608,6 +608,15 @@
                         </x-admin.table>
                     </div>
 
+                    <x-admin.meta-info
+                        title="Kişiler"
+                        :meta="['total' => $kisiler->total(), 'current_page' => $kisiler->currentPage(), 'last_page' => $kisiler->lastPage(), 'per_page' => $kisiler->perPage()]"
+                        :show-per-page="true"
+                        :per-page-options="[20,50,100]"
+                        listId="kisiler"
+                        listEndpoint="/api/admin/api/v1/kisiler"
+                    />
+
                     @if ($kisiler->hasPages())
                         <div class="mt-6">
                             {{ $kisiler->links() }}
@@ -663,17 +672,20 @@
                 }
 
                 .admin-label {
-                    @apply block text-sm font-medium text-gray-700 mb-1;
+                    @apply block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1;
                 }
 
                 .admin-input {
-                    @apply w-full px-4 py-2.5 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none transition-all duration-200 placeholder-gray-400;
+                    @apply w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg
+                           bg-white dark:bg-gray-800 text-gray-900 dark:text-white
+                           placeholder-gray-500 dark:placeholder-gray-400
+                           focus:border-blue-500 dark:focus:border-blue-400
+                           focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400
+                           focus:outline-none transition-all duration-200;
                 }
 
                 /* Context7 Button Standartları - Unified */
-                .{
-                    @apply inline-flex items-center px-6 py-2.5 font-semibold rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 transition-all duration-200 transform hover:scale-105 active:scale-95;
-                }
+                /* Button styles moved to common-styles.css */
 
                 /* Hover Efektleri */
                 .admin-input:hover {
@@ -682,7 +694,7 @@
 
                 /* Focus Efektleri */
                 .admin-input:focus {
-                    @apply ring-2 ring-blue-200;
+                    @apply ring-2 ring-blue-200 dark:ring-blue-800;
                 }
             </style>
         @endpush
@@ -947,5 +959,85 @@
                         // You can add auto-refresh functionality here if needed
                     }, 30000);
                 });
+            </script>
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    const paginateContainer = document.querySelector('.mt-6')
+                    const tableBody = document.querySelector('table tbody')
+                    if (!window.ApiAdapter || !paginateContainer || !tableBody) return
+                    const statusEl = document.getElementById('meta-status')
+                    const totalEl = document.getElementById('meta-total')
+                    const pageEl = document.getElementById('meta-page')
+                    const metaContainer = document.querySelector('[data-meta="true"]')
+                    const perSelect = metaContainer.querySelector('select[data-per-page-select]')
+                    let currentPer = 20
+                    const urlInit = new URL(window.location.href)
+                    const qPer = parseInt(urlInit.searchParams.get('per_page')||'')
+                    const storageKey = 'yalihan_admin_per_page'
+                    const sPer = parseInt(localStorage.getItem(storageKey)||'')
+                    if (qPer) { currentPer = qPer; perSelect.value = String(qPer) }
+                    else if (sPer) { currentPer = sPer; perSelect.value = String(sPer) }
+                    perSelect.addEventListener('change', function(){ currentPer = parseInt(perSelect.value||'20'); const u = new URL(window.location.href); u.searchParams.set('per_page', String(currentPer)); window.history.replaceState({}, '', u.toString()); loadPage(1) })
+
+                    function setLoading(flag){
+                        statusEl.setAttribute('aria-busy', flag ? 'true' : 'false')
+                        statusEl.textContent = flag ? 'Yükleniyor…' : ''
+                    }
+
+                    function renderRows(items){
+                        if (!items || items.length === 0){
+                            tableBody.innerHTML = '<tr><td colspan="8" class="px-6 py-12 text-center text-gray-500 dark:text-gray-400">Kayıt bulunamadı</td></tr>'
+                            return
+                        }
+                        const rows = items.map(function(it){
+                            const name = [it.ad || '', it.soyad || ''].join(' ').trim()
+                            const phone = it.telefon || ''
+                            return (
+                                '<tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">'
+                                + '<td class="px-6 py-4"><input type="checkbox"></td>'
+                                + '<td class="px-6 py-4">' + name + '</td>'
+                                + '<td class="px-6 py-4">' + phone + '</td>'
+                                + '<td class="px-6 py-4">' + '' + '</td>'
+                                + '<td class="px-6 py-4">' + '' + '</td>'
+                                + '<td class="px-6 py-4">' + '' + '</td>'
+                                + '<td class="px-6 py-4">' + '' + '</td>'
+                                + '<td class="px-6 py-4 text-right">' + '<a href="/admin/kisiler/'+ (it.id||'') +'" class="text-blue-600">Detay</a>' + '</td>'
+                                + '</tr>'
+                            )
+                        }).join('')
+                        tableBody.innerHTML = rows
+                    }
+
+                    function updateMeta(meta){
+                        if (!meta) return
+                        totalEl.textContent = 'Toplam: ' + (meta.total != null ? meta.total : '-')
+                        pageEl.innerHTML = '📄 Sayfa: ' + (meta.current_page || 1) + ' / ' + (meta.last_page || 1)
+                        if (meta.per_page){ currentPer = parseInt(meta.per_page); perSelect.value = String(meta.per_page); localStorage.setItem(storageKey, String(meta.per_page)) }
+                        const links = paginateContainer.querySelectorAll('a[href*="page="]')
+                        links.forEach(function(a){
+                            const u = new URL(a.href, window.location.origin)
+                            const p = parseInt(u.searchParams.get('page')||'1')
+                            a.setAttribute('aria-label','Sayfa ' + p)
+                            if (p === meta.current_page) { a.setAttribute('aria-disabled','true') } else { a.removeAttribute('aria-disabled') }
+                        })
+                    }
+
+                    function loadPage(page){
+                        setLoading(true)
+                        window.ApiAdapter.get('/kisiler', { page: Number(page||1), per_page: currentPer })
+                            .then(function(res){ renderRows(res.data || []); updateMeta(res.meta || null); setLoading(false) })
+                            .catch(function(err){
+                                setLoading(false)
+                                const alert = document.createElement('div')
+                                alert.setAttribute('role','alert')
+                                alert.className = 'px-6 py-2 text-sm text-red-600'
+                                alert.textContent = 'Hata: ' + ((err.response && err.response.message) || err.message || 'Bilinmeyen hata')
+                                paginateContainer.parentNode.insertBefore(alert, paginateContainer)
+                                setTimeout(function(){ alert.remove() }, 4000)
+                            })
+                    }
+
+                    // Auto-init çalışıyor; ek init gerekmez
+                })
             </script>
         @endpush

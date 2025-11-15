@@ -73,9 +73,28 @@
 
             <!-- Danışman -->
             @if ($showDansman && $ilan->danisman)
-                <div class="flex items-center">
-                    <i class="fas fa-user text-gray-400 mr-2"></i>
-                    <span>{{ $ilan->danisman->ad }} {{ $ilan->danisman->soyad }}</span>
+                <div class="space-y-2">
+                    <div class="flex items-center">
+                        <i class="fas fa-user text-gray-400 mr-2"></i>
+                        <span>{{ $ilan->danisman->name ?? ($ilan->danisman->ad ?? '') . ' ' . ($ilan->danisman->soyad ?? '') }}</span>
+                    </div>
+                    @php
+                        $danisman = $ilan->danisman;
+                        $hasSocialMedia = !empty($danisman->instagram_profile) ||
+                                         !empty($danisman->linkedin_profile) ||
+                                         !empty($danisman->facebook_profile) ||
+                                         !empty($danisman->twitter_profile) ||
+                                         !empty($danisman->youtube_channel) ||
+                                         !empty($danisman->tiktok_profile) ||
+                                         !empty($danisman->whatsapp_number) ||
+                                         !empty($danisman->telegram_username) ||
+                                         !empty($danisman->website);
+                    @endphp
+                    @if($hasSocialMedia)
+                        <div class="ml-6">
+                            <x-frontend.danisman-social-links :danisman="$danisman" size="xs" variant="outline" />
+                        </div>
+                    @endif
                 </div>
             @endif
 
@@ -148,7 +167,7 @@
                         title="QR Kod">
                     <i class="fas fa-qrcode"></i>
                 </button>
-                <div x-show="showQR" 
+                <div x-show="showQR"
                      @click.away="showQR = false"
                      x-transition:enter="transition ease-out duration-200"
                      x-transition:enter-start="opacity-0 transform scale-95"

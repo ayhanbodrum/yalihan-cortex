@@ -310,8 +310,8 @@
                     Özellikler
                 </a>
 
-                <a href="{{ route('admin.property-type-manager.index') }}"
-                    class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors dark:text-gray-300 dark:hover:text-gray-100 dark:hover:bg-gray-800 c7-tip {{ request()->routeIs('admin.property-type-manager.*') ? 'active' : '' }}"
+                <a href="{{ route('admin.property_types.index') }}"
+                    class="flex items-center gap-3 px-3 py-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors dark:text-gray-300 dark:hover:text-gray-100 dark:hover:bg-gray-800 c7-tip {{ request()->routeIs('admin.property_types.*') ? 'active' : '' }}"
                     :data-tip="open ? '' : 'Yayın Tipi Yöneticisi'" :title="open ? '' : 'Yayın Tipi Yöneticisi'">
                     <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

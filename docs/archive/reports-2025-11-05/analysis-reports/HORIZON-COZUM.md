@@ -23,7 +23,7 @@ Worker Çalışıyor: ❌ Hayır (başlatılmamış)
 Horizon'un çalışması için:
   1. Laravel server çalışmalı ✅ (php artisan serve)
   2. Horizon worker çalışmalı ❌ (php artisan horizon)
-  
+
 Şu anda sadece 1 var, 2 eksik!
 ```
 
@@ -32,12 +32,14 @@ Horizon'un çalışması için:
 ## 🚀 ÇÖZÜM (Hemen Şimdi)
 
 ### Terminal 1 (Zaten çalışıyor):
+
 ```bash
 php artisan serve
 # Server: http://127.0.0.1:8000
 ```
 
 ### Terminal 2 (YENİ - Horizon worker):
+
 ```bash
 cd /Users/macbookpro/Projects/yalihanemlakwarp
 php artisan horizon
@@ -48,6 +50,7 @@ php artisan horizon
 ```
 
 ### Kontrol:
+
 ```bash
 # Artık çalışmalı:
 open http://127.0.0.1:8000/horizon
@@ -58,6 +61,7 @@ open http://127.0.0.1:8000/horizon
 ## 📊 HORIZON vs TELESCOPE
 
 ### Telescope (Zaten çalışıyor):
+
 ```yaml
 URL: http://127.0.0.1:8000/telescope
 Ne yapar: Request debugging, error tracking
@@ -65,6 +69,7 @@ Worker gerekli: ❌ Hayır (otomatik çalışır)
 ```
 
 ### Horizon (Çalışmıyor):
+
 ```yaml
 URL: http://127.0.0.1:8000/horizon
 Ne yapar: Queue monitoring, background jobs
@@ -78,6 +83,7 @@ Worker gerekli: ✅ EVET (manuel başlatılmalı!)
 ## 🎯 KALICI ÇÖZÜM (Opsiyonel)
 
 ### Development için:
+
 ```bash
 # Her proje açılışında:
 Terminal 1: php artisan serve
@@ -85,6 +91,7 @@ Terminal 2: php artisan horizon
 ```
 
 ### VS Code Tasks (Otomatik):
+
 ```json
 // .vscode/tasks.json
 {
@@ -107,6 +114,7 @@ Terminal 2: php artisan horizon
 ```
 
 ### Tmux/Screen (Advanced):
+
 ```bash
 # Tek komutla her şeyi başlat:
 tmux new-session -d -s yalihan 'php artisan serve'
@@ -119,6 +127,7 @@ tmux attach-session -t yalihan
 ## ⚠️ ÖZEL NOTLAR
 
 ### 1. Redis Gerekli:
+
 ```bash
 # Eğer Redis yoksa:
 brew install redis         # macOS
@@ -130,12 +139,14 @@ redis-cli ping
 ```
 
 ### 2. Queue Connection:
+
 ```env
 # .env dosyasında:
 QUEUE_CONNECTION=redis  # (database değil!)
 ```
 
 ### 3. Horizon Kullanımı:
+
 ```yaml
 Gerekli mi?
   ✅ Email/SMS queue varsa
@@ -155,6 +166,7 @@ Sizin projede:
 ## 🎊 SONUÇ
 
 **Hızlı Çözüm:**
+
 ```bash
 # Yeni terminal aç:
 cd /Users/macbookpro/Projects/yalihanemlakwarp
@@ -165,14 +177,15 @@ http://127.0.0.1:8000/horizon
 ```
 
 **Kalıcı Çözüm:**
+
 - VS Code tasks ekle (otomatik başlat)
 - Ya da tmux/screen kullan
 
 **İhtiyaç Kontrolü:**
+
 - Queue kullanıyorsanız → Çalıştırın
 - Queue kullanmıyorsanız → Gerek yok
 
 ---
 
 **Detaylı Açıklama:** `HORIZON-VS-TELESCOPE-ACIKLAMA.md`
-

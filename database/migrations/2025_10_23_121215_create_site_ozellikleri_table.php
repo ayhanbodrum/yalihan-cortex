@@ -17,14 +17,14 @@ return new class extends Migration
             $table->string('slug', 100)->unique()->comment('URL-friendly slug');
             $table->string('type', 50)->default('amenity')->comment('Özellik tipi: amenity, security, facility');
             $table->text('description')->nullable()->comment('Özellik açıklaması');
-            $table->integer('order')->default(0)->comment('Sıralama');
+            $table->integer('display_order')->default(0)->comment('Sıralama'); // Context7: order → display_order
             $table->boolean('status')->default(true)->comment('Context7: Aktif/Pasif');
             $table->timestamps();
-            
+
             // Indexes
             $table->index('type', 'idx_site_ozellikleri_type');
             $table->index('status', 'idx_site_ozellikleri_status');
-            $table->index('order', 'idx_site_ozellikleri_order');
+            $table->index('display_order', 'idx_site_ozellikleri_display_order'); // Context7: order → display_order
         });
     }
 

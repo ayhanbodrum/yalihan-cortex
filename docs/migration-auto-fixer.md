@@ -18,9 +18,9 @@ php scripts/migration-syntax-auto-fixer.php
 
 ### Yöntem 3: VS Code Task
 
--   VS Code'da `Ctrl+Shift+P` (Windows/Linux) veya `Cmd+Shift+P` (Mac)
--   "Tasks: Run Task" yazın
--   "Migration: Auto Fix Syntax" seçin
+- VS Code'da `Ctrl+Shift+P` (Windows/Linux) veya `Cmd+Shift+P` (Mac)
+- "Tasks: Run Task" yazın
+- "Migration: Auto Fix Syntax" seçin
 
 ## Ne Yapar?
 
@@ -35,8 +35,8 @@ php scripts/migration-syntax-auto-fixer.php
 
 Script çalıştıktan sonra otomatik olarak:
 
--   Context7 uyumluluk kontrolü yapar (`php artisan context7:check`)
--   Migration syntax kontrolü yapar (`php artisan migrate --pretend`)
+- Context7 uyumluluk kontrolü yapar (`php artisan context7:check`)
+- Migration syntax kontrolü yapar (`php artisan migrate --pretend`)
 
 ## Örnek Çıktı
 
@@ -55,6 +55,6 @@ Script çalıştıktan sonra otomatik olarak:
 
 ## Güvenlik
 
--   Orijinal dosyalar üzerine yazılır (backup önerilir)
--   Sadece syntax hatalarını düzeltir, mantık değişikliği yapmaz
--   Dry-run özelliği için PHP script'i değiştirilebilir
+- Orijinal dosyalar üzerine yazılır (backup önerilir)
+- Sadece syntax hatalarını düzeltir, mantık değişikliği yapmaz
+- Dry-run özelliği için PHP script'i değiştirilebilir

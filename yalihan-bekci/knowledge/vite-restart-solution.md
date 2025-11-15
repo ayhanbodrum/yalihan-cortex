@@ -17,8 +17,9 @@ Unable to locate file in Vite manifest: resources/js/admin/stable-create.js
 Vite dev server kapanmış veya restart edilmemiş.
 
 Yeni modüller eklendiğinde Vite server yeniden başlatılmalı:
+
 - ✅ 6 yeni modül eklendi (portals, price, fields, crm, publication, key-manager)
-- ✅ 4 modül güncellendi (categories, location, ai, photos)  
+- ✅ 4 modül güncellendi (categories, location, ai, photos)
 - ❌ Vite restart edilmedi → Manifest güncel değil
 
 ---
@@ -44,7 +45,7 @@ npx vite --host 0.0.0.0 --port 5175 &
 # Process kontrolü
 ps aux | grep vite | grep -v grep
 
-# Port kontrolü  
+# Port kontrolü
 curl -I http://localhost:5175/@vite/client
 
 # Sayfa kontrolü
@@ -57,19 +58,17 @@ curl -s http://localhost:8000/stable-create | grep "Vite manifest"
 ## 📚 YALİHAN BEKÇİ ÖĞRENDİ:
 
 ```yaml
-Vite Restart Gereken Durumlar:
-  1. Yeni JS modülü eklenmesi
-  2. vite.config.js değişikliği
-  3. Tailwind config değişikliği
-  4. Build hatası sonrası
+Vite Restart Gereken Durumlar: 1. Yeni JS modülü eklenmesi
+    2. vite.config.js değişikliği
+    3. Tailwind config değişikliği
+    4. Build hatası sonrası
 
 Komut:
-  Kill: ps aux | grep vite | awk '{print $2}' | xargs kill -9
-  Start: npx vite --host 0.0.0.0 --port 5175 &
-  
-Kontrol:
-  ps aux | grep vite
-  curl http://localhost:5175/@vite/client
+    Kill: ps aux | grep vite | awk '{print $2}' | xargs kill -9
+    Start: npx vite --host 0.0.0.0 --port 5175 &
+
+Kontrol: ps aux | grep vite
+    curl http://localhost:5175/@vite/client
 ```
 
 ---

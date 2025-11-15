@@ -16,7 +16,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // Field-level validation
     Route::post('/validate-field', [ValidationController::class, 'validateField'])
         ->name('validate.field');
-        
+
     // Step-level validation for form wizard
     Route::post('/validate-step', [ValidationController::class, 'validateStep'])
         ->name('validate.step');

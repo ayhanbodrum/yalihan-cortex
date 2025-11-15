@@ -15,13 +15,13 @@ return new class extends Migration
             $table->text('aciklama')->nullable();
             $table->unsignedBigInteger('parent_id')->nullable();
             $table->string('icon')->nullable();
-            $table->integer('order')->default(0);
+            $table->integer('display_order')->default(0); // Context7: order → display_order
             $table->string('status')->default('Aktif');
             $table->timestamps();
             $table->softDeletes();
 
             $table->index(['parent_id', 'status']);
-            $table->index('order');
+            $table->index('display_order'); // Context7: order → display_order
         });
     }
 

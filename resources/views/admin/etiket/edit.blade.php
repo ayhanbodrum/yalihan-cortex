@@ -14,7 +14,7 @@
                 </h1>
                 <p class="text-lg text-gray-600 mt-2">Update etiket information</p>
             </div>
-            <a href="{{ route('admin.etiket.index') }}" 
+            <a href="{{ route('admin.etiket.index') }}"
                class="inline-flex items-center px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg border border-gray-700 hover:border-gray-600 transition-all duration-200 font-medium shadow-sm hover:shadow-md">
                 <i class="fas fa-arrow-left mr-2"></i>
                 Back to Etiketler

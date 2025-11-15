@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * İlan Resim Model
- * 
+ *
  * Context7 standartlarına uygun ilan resim yönetimi
  */
 class IlanResim extends Model
@@ -95,11 +95,11 @@ class IlanResim extends Model
 
         $bytes = (int) $this->dosya_boyutu;
         $units = ['B', 'KB', 'MB', 'GB'];
-        
+
         for ($i = 0; $bytes > 1024 && $i < count($units) - 1; $i++) {
             $bytes /= 1024;
         }
-        
+
         return round($bytes, 2) . ' ' . $units[$i];
     }
 }

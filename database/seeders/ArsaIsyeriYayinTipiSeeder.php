@@ -9,7 +9,7 @@ use App\Models\IlanKategoriYayinTipi;
 
 /**
  * Arsa, İşyeri, Yazlık ve Projeler Kategorileri için Mantıklı Yayın Tipi İlişkileri
- * 
+ *
  * Bu seeder, alt kategorilere mantıklı yayın tipleri atar.
  */
 class ArsaIsyeriYayinTipiSeeder extends Seeder
@@ -20,7 +20,7 @@ class ArsaIsyeriYayinTipiSeeder extends Seeder
 
         // ARSA KATEGORİSİ (ID: 2)
         $this->seedArsaKategorisi();
-        
+
         // İŞYERİ KATEGORİSİ (ID: 3) - Sadece Satılık
         $this->seedIsyeriKategorisi();
 
@@ -36,9 +36,9 @@ class ArsaIsyeriYayinTipiSeeder extends Seeder
     private function seedArsaKategorisi(): void
     {
         $this->command->info('  📍 Arsa kategorisi işleniyor...');
-        
+
         $kategoriId = 2; // Arsa
-        
+
         // Yayın tipleri oluştur/güncelle
         $satilik = $this->getOrCreateYayinTipi($kategoriId, 'Satılık', 1);
         $ticari = $this->getOrCreateYayinTipi($kategoriId, 'Ticari', 3);
@@ -69,9 +69,9 @@ class ArsaIsyeriYayinTipiSeeder extends Seeder
     private function seedIsyeriKategorisi(): void
     {
         $this->command->info('  🏢 İşyeri kategorisi işleniyor...');
-        
+
         $kategoriId = 3; // İşyeri
-        
+
         // Yayın tipleri oluştur/güncelle - SADECE SATILIK
         $satilik = $this->getOrCreateYayinTipi($kategoriId, 'Satılık', 1);
 
@@ -90,10 +90,10 @@ class ArsaIsyeriYayinTipiSeeder extends Seeder
     private function seedYazlikKategorisi(): void
     {
         $this->command->info('  🏖️ Yazlık kategorisi işleniyor...');
-        
+
         // Yazlık alt kategori olarak bul
         $yazlik = IlanKategori::where('name', 'Yazlık')->where('seviye', 1)->first();
-        
+
         if (!$yazlik) {
             $this->command->warn('    ⚠️ Yazlık kategorisi bulunamadı');
             return;
@@ -101,7 +101,7 @@ class ArsaIsyeriYayinTipiSeeder extends Seeder
 
         // Yazlık'ın parent'ı (Konut - ID: 1)
         $konutKategoriId = $yazlik->parent_id;
-        
+
         // Kiralık yayın tipini oluştur/güncelle
         $kiralik = $this->getOrCreateYayinTipi($konutKategoriId, 'Kiralık', 2);
 
@@ -113,9 +113,9 @@ class ArsaIsyeriYayinTipiSeeder extends Seeder
     private function seedProjelerKategorisi(): void
     {
         $this->command->info('  🏗️ Projeler kategorisi işleniyor...');
-        
+
         $kategoriId = 5; // Projeler
-        
+
         // Yayın tipleri oluştur/güncelle - SADECE SATILIK
         $satilik = $this->getOrCreateYayinTipi($kategoriId, 'Satılık', 1);
 
@@ -140,7 +140,7 @@ class ArsaIsyeriYayinTipiSeeder extends Seeder
             ],
             [
                 'status' => true,
-                'order' => $order
+                'display_order' => $order
             ]
         );
     }
@@ -154,11 +154,10 @@ class ArsaIsyeriYayinTipiSeeder extends Seeder
             ],
             [
                 'enabled' => true,
-                'order' => $order,
+                'display_order' => $order,
                 'created_at' => now(),
                 'updated_at' => now()
             ]
         );
     }
 }
-

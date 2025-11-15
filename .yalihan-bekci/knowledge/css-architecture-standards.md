@@ -33,6 +33,7 @@
 ```
 
 **Avantajlar:**
+
 - Tailwind cascade çalışıyor
 - Form'larda explicit class'lar override edebiliyor
 - Dark mode desteği kolay
@@ -44,13 +45,14 @@
 
 ```html
 <!-- ✅ DOĞRU: Explicit utility class'lar -->
-<input 
-    type="text" 
+<input
+    type="text"
     class="text-black dark:text-white font-semibold placeholder-gray-600 dark:placeholder-gray-500"
 />
 ```
 
 **Avantajlar:**
+
 - Tailwind yaklaşımına %100 uyumlu
 - Override kolay
 - Dark mode inline
@@ -75,6 +77,7 @@ select option {
 ```
 
 **Neden `!important`?**
+
 - Browser native rendering
 - CSS ile override edilemiyor
 - Bu durum normal ve gerekli
@@ -88,15 +91,16 @@ select option {
 ```css
 /* ❌ YANLIŞ: Global !important */
 input::placeholder {
-    color: #4b5563 !important;  /* Tailwind'i eziyor! */
+    color: #4b5563 !important; /* Tailwind'i eziyor! */
 }
 
 input[type='text'] {
-    color: #000000 !important;  /* Tailwind'i eziyor! */
+    color: #000000 !important; /* Tailwind'i eziyor! */
 }
 ```
 
 **Neden Yanlış?**
+
 - Tailwind utility class'ları çalışmıyor
 - Form'larda explicit class'lar ignore ediliyor
 - Tailwind cascade kırılıyor
@@ -109,16 +113,18 @@ input[type='text'] {
 ```css
 /* ❌ YANLIŞ: Hard-coded renkler */
 input {
-    color: #000000;  /* Tailwind utility yerine! */
+    color: #000000; /* Tailwind utility yerine! */
 }
 ```
 
 **Neden Yanlış?**
+
 - Dark mode zorlaşıyor
 - Maintainability düşük
 - Tailwind yaklaşımına ters
 
 **Doğrusu:**
+
 ```css
 /* ✅ DOĞRU: Tailwind utility */
 input {
@@ -143,14 +149,18 @@ input {
 ```css
 /* @layer base - default */
 @layer base {
-    input { @apply text-black; }  /* Default siyah */
+    input {
+        @apply text-black;
+    } /* Default siyah */
 }
 ```
 
 ```html
 <!-- HTML - explicit class -->
-<input class="text-blue-600" />  <!-- ✅ Mavi kazanır! -->
-<input />                        <!-- ✅ Siyah (default) -->
+<input class="text-blue-600" />
+<!-- ✅ Mavi kazanır! -->
+<input />
+<!-- ✅ Siyah (default) -->
 ```
 
 ---
@@ -161,18 +171,16 @@ input {
 
 ```html
 <!-- Test: Tailwind utility çalışıyor mu? -->
-<input 
-    type="text" 
-    class="text-blue-600 placeholder-red-500"
-    placeholder="Test"
-/>
+<input type="text" class="text-blue-600 placeholder-red-500" placeholder="Test" />
 ```
 
 **Beklenen Sonuç:**
+
 - Input text: Mavi
 - Placeholder: Kırmızı
 
 **Eğer çalışmıyorsa:**
+
 - app.css'de global `!important` var mı? → Kaldır!
 - `@layer base` kullanılıyor mu? → Kullan!
 - `@apply` ile Tailwind utility kullanılıyor mu? → Kullan!
@@ -191,11 +199,15 @@ grep -r '!important' resources/css/ | grep -v select
 
 ```css
 /* ÖNCESI */
-input { color: #000000 !important; }
+input {
+    color: #000000 !important;
+}
 
 /* SONRASI */
 @layer base {
-    input { @apply text-black; }
+    input {
+        @apply text-black;
+    }
 }
 ```
 
@@ -218,6 +230,7 @@ npm run build
 ## 📋 CHECKLIST
 
 **Yeni CSS Eklerken:**
+
 - [ ] `!important` kullanmıyorum (select hariç)
 - [ ] `@layer base` içinde `@apply` kullanıyorum
 - [ ] Hard-coded renkler yerine Tailwind utility
@@ -225,6 +238,7 @@ npm run build
 - [ ] Tailwind utility'leri test ettim
 
 **Code Review:**
+
 - [ ] Global `!important` yok (select hariç)
 - [ ] `@layer base` içinde default'lar
 - [ ] `@apply` ile Tailwind utility'leri
@@ -236,9 +250,15 @@ npm run build
 
 ```css
 /* ❌ YASAKLI */
-input { color: #000000 !important; }
-textarea::placeholder { color: #4b5563 !important; }
-.custom-input { background: white !important; }
+input {
+    color: #000000 !important;
+}
+textarea::placeholder {
+    color: #4b5563 !important;
+}
+.custom-input {
+    background: white !important;
+}
 ```
 
 ## ✅ REQUIRED PATTERNS
@@ -246,12 +266,18 @@ textarea::placeholder { color: #4b5563 !important; }
 ```css
 /* ✅ ZORUNLU */
 @layer base {
-    input { @apply text-black dark:text-white; }
-    textarea::placeholder { @apply text-gray-600 dark:text-gray-500; }
+    input {
+        @apply text-black dark:text-white;
+    }
+    textarea::placeholder {
+        @apply text-gray-600 dark:text-gray-500;
+    }
 }
 
 /* ✅ EXCEPTION: Browser native */
-select { background-color: white !important; }
+select {
+    background-color: white !important;
+}
 ```
 
 ---
@@ -275,4 +301,3 @@ select { background-color: white !important; }
 ---
 
 **Bu standartlar ZORUNLU ve tüm yeni CSS'lerde uygulanmalıdır!**
-

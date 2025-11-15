@@ -32,11 +32,7 @@
   "impact": {
     "severity": "critical",
     "description": "Query where('status', true) sadece 1 kayıt döndürüyor",
-    "affected_features": [
-      "Ana kategori listesi",
-      "Alt kategori cascade",
-      "Kategori filtreleme"
-    ],
+    "affected_features": ["Ana kategori listesi", "Alt kategori cascade", "Kategori filtreleme"],
     "user_experience": "Kullanıcılar sadece 'Projeler' kategorisini görebiliyor, diğer 4 ana kategori görünmüyor"
   },
   "temporary_fix": {
@@ -93,4 +89,3 @@
   "fix_date": null,
   "notes": "Bu violation Context7 compliance'ı ciddi şekilde ihlal ediyor. Öncelikli olarak düzeltilmeli."
 }
-

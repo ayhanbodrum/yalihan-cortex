@@ -33,13 +33,7 @@
         "price_change": "Fiyat değişimi (tutar ve yüzde)"
       },
       "time_range_filter": {
-        "options": [
-          "Son 7 Gün",
-          "Son 30 Gün",
-          "Son 3 Ay",
-          "Son 1 Yıl",
-          "Tüm Zamanlar"
-        ],
+        "options": ["Son 7 Gün", "Son 30 Gün", "Son 3 Ay", "Son 1 Yıl", "Tüm Zamanlar"],
         "implementation": "API endpoint with range parameter"
       },
       "price_history_table": {
@@ -139,10 +133,7 @@
     "Detaylı istatistikler",
     "Kullanıcı dostu arayüz"
   ],
-  "related_components": [
-    "price-display.blade.php",
-    "rental-price-calculator.blade.php"
-  ],
+  "related_components": ["price-display.blade.php", "rental-price-calculator.blade.php"],
   "context7_compliance": {
     "dark_mode": true,
     "responsive": true,
@@ -150,4 +141,3 @@
     "alpine_js": true
   }
 }
-

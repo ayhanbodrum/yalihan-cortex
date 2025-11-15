@@ -12,13 +12,13 @@ class Context7AuthService
         // Basic permission check
         return true; // Simplified for now
     }
-    
+
     public function checkAccess($user, $route)
     {
         // Basic access check
         return true; // Simplified for now
     }
-    
+
     public function updateLastActivity($userId)
     {
         // Update user activity - Context7 compliant using 'status' field

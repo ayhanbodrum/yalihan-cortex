@@ -2,9 +2,11 @@
 
 use Illuminate\Support\Facades\Route;
 
+// ✅ NOTE: Talep modülü route'ları TalepAnaliz modülüne taşındı
+// TalepController artık TalepAnaliz modülünde kullanılıyor
+// Bu route'lar gelecekte TalepAnaliz modülüne entegre edilebilir
 // use App\Modules\Talep\Controllers\TalepController;
 
-// Routes are disabled - TalepController implementation needed
 // Route::prefix('api/talepler')->name('api.talepler.')->group(function () {
 //     Route::get('/', [TalepController::class, 'apiIndex'])->name('index');
 //     Route::post('/', [TalepController::class, 'apiStore'])->name('store');

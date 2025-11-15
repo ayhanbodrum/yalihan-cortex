@@ -1,0 +1,91 @@
+{
+  "title": "Kişi Ekleme Sayfası kisi_tipi Hatası Düzeltmesi - 11 Kasım 2025",
+  "date": "2025-11-11",
+  "type": "bug_fix",
+  "category": "kisiler",
+  "summary": "Kişi ekleme sayfasında kisi_tipi field'ının NOT NULL constraint hatası düzeltildi. Field zorunlu hale getirildi ve default değer fallback eklendi.",
+  "error": {
+    "type": "SQLSTATE[23000]: Integrity constraint violation",
+    "message": "Column 'kisi_tipi' cannot be null",
+    "location": "admin/kisiler/create",
+    "cause": "Form'da kisi_tipi nullable olarak tanımlıydı ama veritabanında NOT NULL constraint var"
+  },
+  "files_modified": [
+    "app/Http/Controllers/Admin/KisiController.php",
+    "resources/views/admin/kisiler/create.blade.php",
+    "app/Modules/Crm/Services/KisiService.php"
+  ],
+  "changes": {
+    "controller": {
+      "validation": {
+        "before": "kisi_tipi => 'nullable|string|in:...'",
+        "after": "kisi_tipi => 'required|string|in:...'",
+        "reason": "Veritabanı NOT NULL constraint ile uyumlu hale getirmek"
+      }
+    },
+    "form": {
+      "field": {
+        "name": "kisi_tipi",
+        "required": true,
+        "label": "Kişi Tipi *",
+        "options": [
+          "Müşteri",
+          "Potansiyel",
+          "Ev Sahibi",
+          "Alıcı",
+          "Kiracı",
+          "Satıcı",
+          "Yatırımcı",
+          "Tedarikçi"
+        ]
+      }
+    },
+    "service": {
+      "createKisi": {
+        "default_value": "Müşteri",
+        "fallback_logic": "Eğer kisi_tipi boş ise default olarak 'Müşteri' atanır",
+        "logging": "Default değer atandığında warning log kaydedilir"
+      }
+    },
+    "field_name_fix": {
+      "adres": {
+        "before": "name=\"adres\"",
+        "after": "name=\"adres_detay\"",
+        "reason": "Context7 standardı: adres → adres_detay (database column name)"
+      }
+    }
+  },
+  "context7_compliance": {
+    "field_naming": {
+      "kisi_tipi": "✅ Kullanılıyor (musteri_tipi YASAK)",
+      "adres_detay": "✅ Kullanılıyor (adres YASAK)",
+      "status": "✅ Kullanılıyor (aktif/durum YASAK)"
+    },
+    "validation": {
+      "required_fields": ["ad", "soyad", "status", "kisi_tipi"],
+      "nullable_fields": ["telefon", "email", "tc_kimlik", "danisman_id", "il_id", "ilce_id", "mahalle_id", "adres_detay", "notlar"]
+    },
+    "css_framework": {
+      "framework": "Tailwind CSS",
+      "forbidden": ["neo-*", "btn-*", "card-*", "form-control"],
+      "status": "✅ Uyumlu"
+    }
+  },
+  "lessons_learned": [
+    "Veritabanı constraint'leri ile form validation'ları senkronize tutulmalı",
+    "Required field'lar için hem controller validation hem de form required attribute kullanılmalı",
+    "Service layer'da default değer fallback eklemek güvenlik için önemli",
+    "Context7 field naming standardına uygun olarak adres → adres_detay değişikliği yapıldı"
+  ],
+  "prevention": {
+    "migration_check": "Migration'larda nullable/required kontrolü yapılmalı",
+    "validation_sync": "Controller validation'ları veritabanı constraint'leri ile senkronize tutulmalı",
+    "form_validation": "Form'da required attribute ve controller'da validation birlikte kullanılmalı",
+    "service_fallback": "Service layer'da kritik field'lar için default değer fallback eklenmeli"
+  },
+  "related_documents": [
+    ".context7/authority.json",
+    ".context7/FORM_DESIGN_STANDARDS.md"
+  ]
+}
+

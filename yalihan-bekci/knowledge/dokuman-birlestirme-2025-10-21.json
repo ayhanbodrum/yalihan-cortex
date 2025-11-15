@@ -120,11 +120,7 @@
     "ilan_ekleme_sistemi": {
       "durum": "in_progress",
       "tamamlanma": "30%",
-      "aktif_gorevler": [
-        "Kategori kaskadı",
-        "Dinamik özellik yükleme",
-        "AI entegrasyonu"
-      ],
+      "aktif_gorevler": ["Kategori kaskadı", "Dinamik özellik yükleme", "AI entegrasyonu"],
       "bekleyen_gorevler": [
         "Arsa modülü",
         "Yazlık modülü",
@@ -175,4 +171,3 @@
   "timestamp": "2025-10-21T12:00:00.000Z",
   "version": "v3.2.0"
 }
-

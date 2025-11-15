@@ -92,11 +92,11 @@ KOORDİNAT: 37.1176, 27.2669
 
 ## Çıktı Kontrol Listesi
 
--   [ ] JSON formatı doğru mu?
--   [ ] Skorlar 0-100 arasında mı?
--   [ ] Türkçe karakterler düzgün mü?
--   [ ] Öneriler spesifik mi?
--   [ ] Hedef kitle net tanımlanmış mı?
+- [ ] JSON formatı doğru mu?
+- [ ] Skorlar 0-100 arasında mı?
+- [ ] Türkçe karakterler düzgün mü?
+- [ ] Öneriler spesifik mi?
+- [ ] Hedef kitle net tanımlanmış mı?
 
 ## Versiyon: 1.0
 

@@ -55,7 +55,7 @@
                     </div>
                     <div class="ml-4">
                         <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Toplam Üye</p>
-                        <p class="stat-card-value dark:text-gray-100">
+                        <p class="text-2xl font-bold text-gray-900 dark:text-white">
                             {{ $istatistikler['toplam_uye'] ?? 0 }}</p>
                     </div>
                 </div>
@@ -73,7 +73,7 @@
                     </div>
                     <div class="ml-4">
                         <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Aktif Üye</p>
-                        <p class="stat-card-value dark:text-gray-100">
+                        <p class="text-2xl font-bold text-gray-900 dark:text-white">
                             {{ $istatistikler['status_uye'] ?? 0 }}</p>
                     </div>
                 </div>
@@ -132,56 +132,58 @@
         <form method="GET" action="{{ route('admin.takim-yonetimi.takim.index') }}"
             class="grid grid-cols-1 md:grid-cols-5 gap-4">
             <div class="space-y-2 relative">
-                <input type="text" 
-                       class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200" 
-                       name="search" 
-                       placeholder="Üye ara..."
-                       value="{{ request('search') }}">
+                <input type="text"
+                    class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                    name="search" placeholder="Üye ara..." value="{{ request('search') }}">
             </div>
             <div class="space-y-2 relative">
-                <select style="color-scheme: light dark;" 
-                        class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200" 
-                        name="rol">
-                    <option value="" class="bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-400">Tüm Roller</option>
+                <select style="color-scheme: light dark;"
+                    class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                    name="rol">
+                    <option value="" class="bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-400">Tüm Roller
+                    </option>
                     @foreach (['admin', 'danisman', 'alt_kullanici', 'musteri_temsilcisi'] as $rol)
-                        <option value="{{ $rol }}" 
-                                class="bg-white dark:bg-gray-900 text-gray-900 dark:text-white" 
-                                {{ request('rol') == $rol ? 'selected' : '' }}>
+                        <option value="{{ $rol }}"
+                            class="bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
+                            {{ request('rol') == $rol ? 'selected' : '' }}>
                             {{ ucfirst(str_replace('_', ' ', $rol)) }}
                         </option>
                     @endforeach
                 </select>
             </div>
             <div class="space-y-2 relative">
-                <select style="color-scheme: light dark;" 
-                        class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200" 
-                        name="status">
-                    <option value="" class="bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-400">Tüm Durumlar</option>
+                <select style="color-scheme: light dark;"
+                    class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                    name="status">
+                    <option value="" class="bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-400">Tüm
+                        Durumlar</option>
                     @foreach (['active', 'pasif', 'izinli', 'tatilde'] as $statusOption)
-                        <option value="{{ $statusOption }}" 
-                                class="bg-white dark:bg-gray-900 text-gray-900 dark:text-white" 
-                                {{ request('status') == $statusOption ? 'selected' : '' }}>
+                        <option value="{{ $statusOption }}"
+                            class="bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
+                            {{ request('status') == $statusOption ? 'selected' : '' }}>
                             {{ ucfirst($statusOption) }}
                         </option>
                     @endforeach
                 </select>
             </div>
             <div class="space-y-2 relative">
-                <select style="color-scheme: light dark;" 
-                        class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200" 
-                        name="lokasyon">
-                    <option value="" class="bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-400">Tüm Lokasyonlar</option>
+                <select style="color-scheme: light dark;"
+                    class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                    name="lokasyon">
+                    <option value="" class="bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-400">Tüm
+                        Lokasyonlar</option>
                     @foreach ($lokasyonlar ?? [] as $lokasyon)
-                        <option value="{{ $lokasyon }}" 
-                                class="bg-white dark:bg-gray-900 text-gray-900 dark:text-white" 
-                                {{ request('lokasyon') == $lokasyon ? 'selected' : '' }}>
+                        <option value="{{ $lokasyon }}"
+                            class="bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
+                            {{ request('lokasyon') == $lokasyon ? 'selected' : '' }}>
                             {{ $lokasyon }}
                         </option>
                     @endforeach
                 </select>
             </div>
             <div class="space-y-2 relative">
-                <button type="submit" class="inline-flex items-center px-6 py-3 bg-orange-600 text-white font-semibold rounded-lg shadow-md hover:bg-orange-700 hover:scale-105 hover:shadow-lg active:scale-95 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:outline-none transition-all duration-200 w-full touch-target-optimized touch-target-optimized">
+                <button type="submit"
+                    class="inline-flex items-center px-6 py-3 bg-orange-600 text-white font-semibold rounded-lg shadow-md hover:bg-orange-700 hover:scale-105 hover:shadow-lg active:scale-95 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:outline-none transition-all duration-200 w-full touch-target-optimized touch-target-optimized">
                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -193,19 +195,24 @@
     </div>
 
     <!-- 📋 Takım Üyeleri Listesi -->
-    <div class="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow duration-200">
+    <div
+        class="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow duration-200">
         <div class="p-6 border-b border-gray-200">
             <div class="flex justify-between items-center">
                 <h2 class="text-xl font-bold text-gray-800">Takım Üyeleri ({{ $takimUyeleri->count() }})</h2>
                 <div class="flex items-center space-x-3">
-                    <button type="button" class="inline-flex items-center px-6 py-3 bg-gray-600 text-white font-semibold rounded-lg shadow-md hover:bg-gray-700 hover:scale-105 hover:shadow-lg active:scale-95 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all duration-200 touch-target-optimized touch-target-optimized" onclick="selectAll()">
+                    <button type="button"
+                        class="inline-flex items-center px-6 py-3 bg-gray-600 text-white font-semibold rounded-lg shadow-md hover:bg-gray-700 hover:scale-105 hover:shadow-lg active:scale-95 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all duration-200 touch-target-optimized touch-target-optimized"
+                        onclick="selectAll()">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                         Tümünü Seç
                     </button>
-                    <button type="button" class="inline-flex items-center px-6 py-3 bg-gray-600 text-white font-semibold rounded-lg shadow-md hover:bg-gray-700 hover:scale-105 hover:shadow-lg active:scale-95 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all duration-200 touch-target-optimized touch-target-optimized" onclick="clearSelection()">
+                    <button type="button"
+                        class="inline-flex items-center px-6 py-3 bg-gray-600 text-white font-semibold rounded-lg shadow-md hover:bg-gray-700 hover:scale-105 hover:shadow-lg active:scale-95 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all duration-200 touch-target-optimized touch-target-optimized"
+                        onclick="clearSelection()">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M6 18L18 6M6 6l12 12" />
@@ -233,23 +240,32 @@
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
-                            <th class="admin-table-th">
-                                <input type="checkbox" id="selectAllCheckbox" class="form-checkbox"
+                            <th
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                <input type="checkbox" id="selectAllCheckbox"
+                                    class="w-4 h-4 text-orange-600 bg-gray-50 dark:bg-gray-800 border-gray-300 dark:border-gray-600 rounded focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-colors duration-200"
                                     onchange="toggleSelectAll()">
                             </th>
-                            <th class="admin-table-th">Üye
-                            </th>
-                            <th class="admin-table-th">Rol
-                            </th>
-                            <th class="admin-table-th">
+                            <th
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                Üye</th>
+                            <th
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                Rol</th>
+                            <th
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                                 Durum</th>
-                            <th class="admin-table-th">
+                            <th
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                                 Lokasyon</th>
-                            <th class="admin-table-th">
+                            <th
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                                 Performans</th>
-                            <th class="admin-table-th">Son
-                                Aktivite</th>
-                            <th class="admin-table-th">
+                            <th
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                Son Aktivite</th>
+                            <th
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                                 İşlemler</th>
                         </tr>
                     </thead>
@@ -257,7 +273,8 @@
                         @foreach ($takimUyeleri as $uye)
                             <tr class="hover:bg-gray-50">
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <input type="checkbox" class="item-checkbox form-checkbox"
+                                    <input type="checkbox"
+                                        class="item-checkbox w-4 h-4 text-orange-600 bg-gray-50 dark:bg-gray-800 border-gray-300 dark:border-gray-600 rounded focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition-colors duration-200"
                                         value="{{ $uye->id }}">
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
@@ -365,7 +382,9 @@
                     <h3 class="mt-2 text-sm font-medium text-gray-900">Henüz takım üyesi bulunmuyor</h3>
                     <p class="mt-1 text-sm text-gray-500">İlk takım üyesini ekleyerek başlayın</p>
                     <div class="mt-6">
-                        <button type="button" class="inline-flex items-center px-6 py-3 bg-orange-600 text-white font-semibold rounded-lg shadow-md hover:bg-orange-700 hover:scale-105 hover:shadow-lg active:scale-95 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:outline-none transition-all duration-200 touch-target-optimized touch-target-optimized" onclick="uyeEkleModal()">
+                        <button type="button"
+                            class="inline-flex items-center px-6 py-3 bg-orange-600 text-white font-semibold rounded-lg shadow-md hover:bg-orange-700 hover:scale-105 hover:shadow-lg active:scale-95 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:outline-none transition-all duration-200 touch-target-optimized touch-target-optimized"
+                            onclick="uyeEkleModal()">
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -386,9 +405,12 @@
                 <form id="uyeEkleForm" method="POST" action="{{ route('admin.takim-yonetimi.takim.uye-ekle') }}">
                     @csrf
                     <div class="space-y-4">
-                        <div class="form-field">
-                            <label class="admin-label">Kullanıcı</label>
-                            <select style="color-scheme: light dark;" name="user_id" class="admin-input transition-all duration-200" required>
+                        <div>
+                            <label
+                                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Kullanıcı</label>
+                            <select style="color-scheme: light dark;" name="user_id"
+                                class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200"
+                                required>
                                 <option value="">Kullanıcı Seçin</option>
                                 @foreach ($kullanicilar ?? [] as $kullanici)
                                     <option value="{{ $kullanici->id }}">{{ $kullanici->name }}
@@ -397,9 +419,11 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="form-field">
-                            <label class="admin-label">Rol</label>
-                            <select style="color-scheme: light dark;" name="rol" class="admin-input transition-all duration-200" required>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Rol</label>
+                            <select style="color-scheme: light dark;" name="rol"
+                                class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200"
+                                required>
                                 <option value="">Rol Seçin</option>
                                 <option value="admin">Admin</option>
                                 <option value="danisman">Danışman</option>
@@ -407,13 +431,17 @@
                                 <option value="musteri_temsilcisi">Müşteri Temsilcisi</option>
                             </select>
                         </div>
-                        <div class="form-field">
-                            <label class="admin-label">Lokasyon</label>
-                            <input type="text" name="lokasyon" class="admin-input" placeholder="Lokasyon">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Lokasyon</label>
+                            <input type="text" name="lokasyon"
+                                class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200"
+                                placeholder="Lokasyon">
                         </div>
-                        <div class="form-field">
-                            <label class="admin-label">Durum</label>
-                            <select style="color-scheme: light dark;" name="status" class="admin-input transition-all duration-200" required>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Durum</label>
+                            <select style="color-scheme: light dark;" name="status"
+                                class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200"
+                                required>
                                 <option value="active">Aktif</option>
                                 <option value="pasif">Pasif</option>
                                 <option value="izinli">İzinli</option>
@@ -422,8 +450,12 @@
                         </div>
                     </div>
                     <div class="flex justify-end space-x-3 mt-6">
-                        <button type="button" class="inline-flex items-center px-6 py-3 bg-gray-600 text-white font-semibold rounded-lg shadow-md hover:bg-gray-700 hover:scale-105 hover:shadow-lg active:scale-95 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all duration-200 touch-target-optimized touch-target-optimized" onclick="closeUyeEkleModal()">İptal</button>
-                        <button type="submit" class="inline-flex items-center px-6 py-3 bg-orange-600 text-white font-semibold rounded-lg shadow-md hover:bg-orange-700 hover:scale-105 hover:shadow-lg active:scale-95 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:outline-none transition-all duration-200 touch-target-optimized touch-target-optimized">Üye Ekle</button>
+                        <button type="button"
+                            class="inline-flex items-center px-6 py-3 bg-gray-600 text-white font-semibold rounded-lg shadow-md hover:bg-gray-700 hover:scale-105 hover:shadow-lg active:scale-95 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all duration-200 touch-target-optimized touch-target-optimized"
+                            onclick="closeUyeEkleModal()">İptal</button>
+                        <button type="submit"
+                            class="inline-flex items-center px-6 py-3 bg-orange-600 text-white font-semibold rounded-lg shadow-md hover:bg-orange-700 hover:scale-105 hover:shadow-lg active:scale-95 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:outline-none transition-all duration-200 touch-target-optimized touch-target-optimized">Üye
+                            Ekle</button>
                     </div>
                 </form>
             </div>
@@ -468,31 +500,52 @@
 
         // Üye çıkarma
         function uyeCikar(uyeId) {
-            if (confirm('Bu üyeyi takımdan çıkarmak istediğinizden emin misiniz?')) {
-                fetch('{{ route('admin.takim-yonetimi.takim.uye-cikar') }}', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                        },
-                        body: JSON.stringify({
-                            takim_uye_id: uyeId
-                        })
+            if (window.showToast && window.showConfirm) {
+                window.showConfirm('Bu üyeyi takımdan çıkarmak istediğinizden emin misiniz?', () => {
+                    performUyeCikar(uyeId);
+                });
+            } else {
+                if (confirm('Bu üyeyi takımdan çıkarmak istediğinizden emin misiniz?')) {
+                    performUyeCikar(uyeId);
+                }
+            }
+        }
+
+        function performUyeCikar(uyeId) {
+            fetch('{{ route('admin.takim-yonetimi.takim.uye-cikar') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify({
+                        takim_uye_id: uyeId
                     })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        if (window.showToast) {
+                            window.showToast(data.message || 'Üye başarıyla çıkarıldı!', 'success');
+                        } else {
                             alert('Üye başarıyla çıkarıldı!');
-                            location.reload();
+                        }
+                        setTimeout(() => location.reload(), 1000);
+                    } else {
+                        if (window.showToast) {
+                            window.showToast(data.message || 'Hata oluştu', 'error');
                         } else {
                             alert('Hata: ' + data.message);
                         }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
+                    }
+                })
+                .catch(error => {
+                    if (window.showToast) {
+                        window.showToast('Bir hata oluştu', 'error');
+                    } else {
                         alert('Bir hata oluştu');
-                    });
-            }
+                    }
+                });
         }
 
         // Form submit
@@ -512,15 +565,26 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        alert('Üye başarıyla eklendi!');
-                        location.reload();
+                        if (window.showToast) {
+                            window.showToast(data.message || 'Üye başarıyla eklendi!', 'success');
+                        } else {
+                            alert('Üye başarıyla eklendi!');
+                        }
+                        setTimeout(() => location.reload(), 1000);
                     } else {
-                        alert('Hata: ' + data.message);
+                        if (window.showToast) {
+                            window.showToast(data.message || 'Hata oluştu', 'error');
+                        } else {
+                            alert('Hata: ' + data.message);
+                        }
                     }
                 })
                 .catch(error => {
-                    console.error('Error:', error);
-                    alert('Bir hata oluştu');
+                    if (window.showToast) {
+                        window.showToast('Bir hata oluştu', 'error');
+                    } else {
+                        alert('Bir hata oluştu');
+                    }
                 });
         });
     </script>

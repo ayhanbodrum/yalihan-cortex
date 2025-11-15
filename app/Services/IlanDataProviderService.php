@@ -99,7 +99,7 @@ class IlanDataProviderService
     {
         return IlanKategori::where('parent_id', $anaKategoriId)
             ->where('seviye', 1)
-            ->orderBy('order')
+            ->orderBy('display_order')
             ->orderBy('name')
             ->get(['id', 'name', 'icon', 'description']);
     }
@@ -115,7 +115,7 @@ class IlanDataProviderService
         return IlanKategori::where('parent_id', $altKategoriId)
             ->where('seviye', 2)
             ->where('status', true)
-            ->orderBy('order')
+            ->orderBy('display_order')
             ->orderBy('name')
             ->get(['id', 'name', 'icon', 'description']);
     }
@@ -304,4 +304,3 @@ class IlanDataProviderService
         }, 120);
     }
 }
-

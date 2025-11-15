@@ -8,11 +8,11 @@
 
 ## 📊 YENİ MODÜLLER ÖZET
 
-| Modül | Durum | Frontend | Backend | Database | API | Rating |
-|-------|-------|----------|---------|----------|-----|--------|
-| **WikiMapia Search** | ✅ %95 | ✅ | ✅ | ❌ | ✅ | 9.5/10 |
-| **Yurt Dışı Gayrimenkul** | ✅ %90 | ⚠️ | ✅ | ✅ | ✅ | 9/10 |
-| **Etiket Sistemi** | ✅ %85 | ⚠️ | ✅ | ✅ | ✅ | 8.5/10 |
+| Modül                     | Durum  | Frontend | Backend | Database | API | Rating |
+| ------------------------- | ------ | -------- | ------- | -------- | --- | ------ |
+| **WikiMapia Search**      | ✅ %95 | ✅       | ✅      | ❌       | ✅  | 9.5/10 |
+| **Yurt Dışı Gayrimenkul** | ✅ %90 | ⚠️       | ✅      | ✅       | ✅  | 9/10   |
+| **Etiket Sistemi**        | ✅ %85 | ⚠️       | ✅      | ✅       | ✅  | 8.5/10 |
 
 ---
 
@@ -35,23 +35,22 @@ URL: http://127.0.0.1:8000/admin/wikimapia-search
 ```yaml
 API Dokumentasyonu: https://wikimapia.org/api/
 
-API Functions (7 adet):
-  ✅ place.getbyid - Place bilgisi ID ile
-  ✅ place.getbyarea - Bounding box ile arama
-  ✅ place.getnearest - En yakın place'ler
-  ✅ place.search - İsim ile arama
-  ✅ category.getall - Tüm kategoriler
-  ✅ street.getbyid - Sokak bilgisi
-  ✅ searchResidentialComplexes - Site/apartman arama (özel)
+API Functions (7 adet): ✅ place.getbyid - Place bilgisi ID ile
+    ✅ place.getbyarea - Bounding box ile arama
+    ✅ place.getnearest - En yakın place'ler
+    ✅ place.search - İsim ile arama
+    ✅ category.getall - Tüm kategoriler
+    ✅ street.getbyid - Sokak bilgisi
+    ✅ searchResidentialComplexes - Site/apartman arama (özel)
 
 Config (services.php):
-  base_url: "https://api.wikimapia.org/"
-  api_key: env('WIKIMAPIA_API_KEY')
-  timeout: 15
-  cache_enabled: true
-  cache_ttl: 3600 (1 saat)
-  language: "tr"
-  format: "json"
+    base_url: 'https://api.wikimapia.org/'
+    api_key: env('WIKIMAPIA_API_KEY')
+    timeout: 15
+    cache_enabled: true
+    cache_ttl: 3600 (1 saat)
+    language: 'tr'
+    format: 'json'
 ```
 
 ### 🎯 WikiMapia Service Metodları
@@ -104,25 +103,24 @@ getStreetById($id)
 ```yaml
 View: admin/wikimapia-search/index.blade.php
 
-Özellikler:
-  ✅ Leaflet harita entegrasyonu
-  ✅ Haritaya tıklayarak konum seçimi
-  ✅ Site/apartman adı arama
-  ✅ Koordinat input (lat, lon)
-  ✅ Yarıçap slider (0.01-1 km)
-  ✅ "Site/Apartman Ara" butonu
-  ✅ "Yakındakileri Göster" butonu
-  ✅ Sonuç listesi (kart görünümü)
-  ✅ Loading overlay
-  ✅ Toast notifications (success, error)
-  ✅ Dark mode support
+Özellikler: ✅ Leaflet harita entegrasyonu
+    ✅ Haritaya tıklayarak konum seçimi
+    ✅ Site/apartman adı arama
+    ✅ Koordinat input (lat, lon)
+    ✅ Yarıçap slider (0.01-1 km)
+    ✅ "Site/Apartman Ara" butonu
+    ✅ "Yakındakileri Göster" butonu
+    ✅ Sonuç listesi (kart görünümü)
+    ✅ Loading overlay
+    ✅ Toast notifications (success, error)
+    ✅ Dark mode support
 
 JavaScript:
-  - Vanilla JS (jQuery YOK!)
-  - AJAX search
-  - Leaflet Map
-  - CSRF token handling
-  - Error handling
+    - Vanilla JS (jQuery YOK!)
+    - AJAX search
+    - Leaflet Map
+    - CSRF token handling
+    - Error handling
 ```
 
 ### 🔗 API Endpoints
@@ -134,13 +132,13 @@ GET  /admin/wikimapia-search → Ana sayfa
 # API Routes
 POST /admin/wikimapia-search/search → Site/apartman ara
   Request: { query, lat, lon, radius }
-  
+
 POST /admin/wikimapia-search/search-places → Genel place arama
   Request: { query, lat, lon }
-  
+
 POST /admin/wikimapia-search/nearby → Yakındaki place'ler
   Request: { lat, lon, radius }
-  
+
 GET  /admin/wikimapia-search/place/{id} → Place detayları
   Response: { place_info, location, photos, comments }
 ```
@@ -170,27 +168,23 @@ GET  /admin/wikimapia-search/place/{id} → Place detayları
 ### ⚠️ Eksikler & İyileştirmeler
 
 ```yaml
-UI/UX:
-  ⚠️ Neo classes var (Tailwind migration gerekli)
-  ⚠️ Mobile responsive iyileştirilebilir
-  ❌ Place detay modal'ı yok (sadece API var)
-  ❌ Fotoğraf galeri eksik
+UI/UX: ⚠️ Neo classes var (Tailwind migration gerekli)
+    ⚠️ Mobile responsive iyileştirilebilir
+    ❌ Place detay modal'ı yok (sadece API var)
+    ❌ Fotoğraf galeri eksik
 
-Database:
-  ❌ Arama geçmişi kaydedilmiyor
-  ❌ Favori place'ler yok
-  ❌ Place cache veritabanında değil (sadece Laravel cache)
+Database: ❌ Arama geçmişi kaydedilmiyor
+    ❌ Favori place'ler yok
+    ❌ Place cache veritabanında değil (sadece Laravel cache)
 
-Features:
-  ❌ İlan ile place ilişkilendirme yok
-  ❌ Otomatik site/apartman tespit yok (ilan oluştururken)
-  ❌ Bulk import yok (çevredeki tüm site'leri database'e aktar)
-  ❌ Kategori filtreleme eksik
+Features: ❌ İlan ile place ilişkilendirme yok
+    ❌ Otomatik site/apartman tespit yok (ilan oluştururken)
+    ❌ Bulk import yok (çevredeki tüm site'leri database'e aktar)
+    ❌ Kategori filtreleme eksik
 
-Performance:
-  ⚠️ API rate limiting manuel (usleep 500ms)
-  ⚠️ Cache temizleme fonksiyonu yok
-  ❌ Background job queue yok
+Performance: ⚠️ API rate limiting manuel (usleep 500ms)
+    ⚠️ Cache temizleme fonksiyonu yok
+    ❌ Background job queue yok
 ```
 
 ---
@@ -200,23 +194,20 @@ Performance:
 ### ✅ Mevcut Özellikler
 
 ```yaml
-Database:
-  ✅ ilanlar.ulke_id (Foreign key → ulke tablosu)
-  ✅ ilanlar.para_birimi (USD, EUR, GBP, TRY, vb.)
-  ✅ ilanlar.fiyat_orijinal (Orijinal fiyat)
-  ✅ ilanlar.para_birimi_orijinal (Orijinal para birimi)
-  ✅ ilanlar.fiyat_try_cached (TRY'ye çevrilmiş)
-  ✅ ilanlar.kur_orani (Kullanılan kur)
-  ✅ ilanlar.kur_tarihi (Kurun tarihi)
+Database: ✅ ilanlar.ulke_id (Foreign key → ulke tablosu)
+    ✅ ilanlar.para_birimi (USD, EUR, GBP, TRY, vb.)
+    ✅ ilanlar.fiyat_orijinal (Orijinal fiyat)
+    ✅ ilanlar.para_birimi_orijinal (Orijinal para birimi)
+    ✅ ilanlar.fiyat_try_cached (TRY'ye çevrilmiş)
+    ✅ ilanlar.kur_orani (Kullanılan kur)
+    ✅ ilanlar.kur_tarihi (Kurun tarihi)
 
-Models:
-  ✅ app/Models/Ulke.php (Ülke modeli)
-  ✅ app/Models/Il.php (İl modeli - ulke_id ile bağlı)
-  ✅ app/Models/Ilan.php (ulke_id, para_birimi fields)
+Models: ✅ app/Models/Ulke.php (Ülke modeli)
+    ✅ app/Models/Il.php (İl modeli - ulke_id ile bağlı)
+    ✅ app/Models/Ilan.php (ulke_id, para_birimi fields)
 
-Location API:
-  ✅ GET /api/location/countries → Ülke listesi
-  ✅ GET /api/location/cities/{countryId} → İl listesi (ülkeye göre)
+Location API: ✅ GET /api/location/countries → Ülke listesi
+    ✅ GET /api/location/cities/{countryId} → İl listesi (ülkeye göre)
 ```
 
 ### 💱 Çoklu Para Birimi Sistemi
@@ -239,12 +230,12 @@ protected $fillable = [
 1. İlan oluşturulur: $5,000 USD
    fiyat_orijinal: 5000
    para_birimi_orijinal: USD
-   
+
 2. Kur çevrilir: 1 USD = 34 TRY
    fiyat_try_cached: 170,000
    kur_orani: 34
    kur_tarihi: 2025-11-04
-   
+
 3. Görüntüleme:
    - Yurt içi kullanıcı: ₺170,000 görür
    - Yurt dışı kullanıcı: $5,000 görür
@@ -254,24 +245,24 @@ protected $fillable = [
 
 ```yaml
 Veritabanı:
-  ulke (Countries):
-    - id
-    - ulke_adi (country name)
-    - ulke_kodu (ISO code: TR, US, GB)
-    - para_birimi (TRY, USD, EUR)
-    - telefon_kodu (+90, +1, +44)
-    
-  iller (Cities/States):
-    - id
-    - ulke_id → ulke.id
-    - il_adi (city/state name)
-    - plaka_kodu (plate code)
-    
-  ilanlar (Listings):
-    - ulke_id → ulke.id
-    - il_id → iller.id (ülkeye göre filtrelenir)
-    - para_birimi
-    - fiyat
+    ulke (Countries):
+        - id
+        - ulke_adi (country name)
+        - ulke_kodu (ISO code: TR, US, GB)
+        - para_birimi (TRY, USD, EUR)
+        - telefon_kodu (+90, +1, +44)
+
+    iller (Cities/States):
+        - id
+        - ulke_id → ulke.id
+        - il_adi (city/state name)
+        - plaka_kodu (plate code)
+
+    ilanlar (Listings):
+        - ulke_id → ulke.id
+        - il_id → iller.id (ülkeye göre filtrelenir)
+        - para_birimi
+        - fiyat
 ```
 
 ### 🔧 Frontend Entegrasyonu
@@ -282,20 +273,18 @@ LocationSelector = {
     // Ülke seç
     onCountryChange(ulkeId) {
         // İlleri yükle (ülkeye göre)
-        fetch(`/api/location/cities/${ulkeId}`)
-            .then(cities => updateCityDropdown(cities));
-        
+        fetch(`/api/location/cities/${ulkeId}`).then((cities) => updateCityDropdown(cities));
+
         // Para birimini otomatik güncelle
-        const country = countries.find(c => c.id === ulkeId);
+        const country = countries.find((c) => c.id === ulkeId);
         updateCurrency(country.para_birimi);
     },
-    
+
     // Para birimi değişince
     onCurrencyChange(paraBirimi) {
         // Kur oranını çek
-        fetch(`/api/exchange-rate/${paraBirimi}/TRY`)
-            .then(rate => updatePriceDisplay(rate));
-    }
+        fetch(`/api/exchange-rate/${paraBirimi}/TRY`).then((rate) => updatePriceDisplay(rate));
+    },
 };
 ```
 
@@ -303,47 +292,43 @@ LocationSelector = {
 
 ```yaml
 1. Yurt Dışı İlan Ekleme:
-   - Ülke: İngiltere seçilir
-   - Şehir: Londra seçilir
-   - Para birimi: Otomatik GBP olur
-   - Fiyat: £500,000 girilir
-   - Sistem: TRY'ye çevirir (₺23,000,000)
+    - Ülke: İngiltere seçilir
+    - Şehir: Londra seçilir
+    - Para birimi: Otomatik GBP olur
+    - Fiyat: £500,000 girilir
+    - Sistem: TRY'ye çevirir (₺23,000,000)
 
 2. Çoklu Para Birimi Görüntüleme:
-   - İlan: $1,000,000 (orijinal)
-   - Türkiye kullanıcısı: ₺34,000,000 görür
-   - Yabancı kullanıcı: $1,000,000 görür
-   - Kur güncellemesi: Günlük otomatik
+    - İlan: $1,000,000 (orijinal)
+    - Türkiye kullanıcısı: ₺34,000,000 görür
+    - Yabancı kullanıcı: $1,000,000 görür
+    - Kur güncellemesi: Günlük otomatik
 
 3. Kur Değişimi:
-   - 1 hafta önce: $1 = 33 TRY
-   - Bugün: $1 = 34 TRY
-   - İlan fiyatı: $100,000
-   - Önce: ₺3,300,000
-   - Sonra: ₺3,400,000 (otomatik güncellenir)
+    - 1 hafta önce: $1 = 33 TRY
+    - Bugün: $1 = 34 TRY
+    - İlan fiyatı: $100,000
+    - Önce: ₺3,300,000
+    - Sonra: ₺3,400,000 (otomatik güncellenir)
 ```
 
 ### ⚠️ Eksikler & İyileştirmeler
 
 ```yaml
-Features:
-  ❌ Otomatik kur güncelleme (TCMB/ECB API) yok
-  ❌ Kur geçmişi grafiği yok
-  ❌ Çoklu para birimi karşılaştırma yok
-  ❌ Fiyat değişim bildirimi yok
+Features: ❌ Otomatik kur güncelleme (TCMB/ECB API) yok
+    ❌ Kur geçmişi grafiği yok
+    ❌ Çoklu para birimi karşılaştırma yok
+    ❌ Fiyat değişim bildirimi yok
 
-UI:
-  ⚠️ Para birimi seçici basic
-  ❌ Kur hesaplayıcı widget'ı yok
-  ❌ Fiyat trend grafiği yok
+UI: ⚠️ Para birimi seçici basic
+    ❌ Kur hesaplayıcı widget'ı yok
+    ❌ Fiyat trend grafiği yok
 
-Database:
-  ⚠️ Kur geçmişi tablosu yok
-  ❌ Fiyat değişim log'u yok
+Database: ⚠️ Kur geçmişi tablosu yok
+    ❌ Fiyat değişim log'u yok
 
-API:
-  ❌ Exchange rate API entegrasyonu yok (manuel kur girişi)
-  ❌ Webhook yok (kur değişince bildir)
+API: ❌ Exchange rate API entegrasyonu yok (manuel kur girişi)
+    ❌ Webhook yok (kur değişince bildir)
 ```
 
 ---
@@ -353,24 +338,20 @@ API:
 ### ✅ Mevcut Özellikler
 
 ```yaml
-Models:
-  ✅ app/Models/Etiket.php (Ana model)
-  ✅ app/Modules/Crm/Models/Etiket.php (CRM model)
-  ✅ app/Models/BlogTag.php (Blog etiketleri)
-  ✅ app/Models/KisiEtiket.php (Kişi-etiket pivot)
+Models: ✅ app/Models/Etiket.php (Ana model)
+    ✅ app/Modules/Crm/Models/Etiket.php (CRM model)
+    ✅ app/Models/BlogTag.php (Blog etiketleri)
+    ✅ app/Models/KisiEtiket.php (Kişi-etiket pivot)
 
-Controllers:
-  ✅ app/Http/Controllers/Admin/EtiketController.php
-  ✅ app/Modules/Crm/Controllers/EtiketController.php
-  ✅ app/Modules/Crm/Controllers/EtiketApiController.php
+Controllers: ✅ app/Http/Controllers/Admin/EtiketController.php
+    ✅ app/Modules/Crm/Controllers/EtiketController.php
+    ✅ app/Modules/Crm/Controllers/EtiketApiController.php
 
-Services:
-  ✅ app/Modules/Crm/Services/EtiketService.php
+Services: ✅ app/Modules/Crm/Services/EtiketService.php
 
-Database:
-  ✅ etiketler tablosu
-  ✅ etiket_kisi pivot tablosu (many-to-many)
-  ✅ blog_post_tags pivot tablosu
+Database: ✅ etiketler tablosu
+    ✅ etiket_kisi pivot tablosu (many-to-many)
+    ✅ blog_post_tags pivot tablosu
 ```
 
 ### 🏷️ Etiket Veritabanı
@@ -394,7 +375,7 @@ CREATE TABLE etiketler (
     created_at TIMESTAMP,
     updated_at TIMESTAMP,
     deleted_at TIMESTAMP,     -- Soft delete
-    
+
     INDEX (status, order),
     INDEX (slug)
 );
@@ -415,7 +396,7 @@ CREATE TABLE etiket_kisi (
 // app/Models/Etiket.php
 class Etiket extends Model {
     use SoftDeletes;
-    
+
     protected $fillable = [
         'name',          // Etiket adı
         'slug',          // URL slug (auto-generate)
@@ -430,13 +411,13 @@ class Etiket extends Model {
         'is_badge',      // Badge flag
         'target_url',    // Link
     ];
-    
+
     protected $casts = [
         'status' => 'boolean',
         'order' => 'integer',
         'is_badge' => 'boolean',
     ];
-    
+
     // Auto-generate slug
     public function setNameAttribute($value) {
         $this->attributes['name'] = $value;
@@ -454,9 +435,9 @@ class Etiket extends Model {
 class Kisi extends Model {
     public function etiketler() {
         return $this->belongsToMany(
-            Etiket::class, 
-            'etiket_kisi', 
-            'kisi_id', 
+            Etiket::class,
+            'etiket_kisi',
+            'kisi_id',
             'etiket_id'
         )->withTimestamps();
     }
@@ -466,7 +447,7 @@ class Kisi extends Model {
 class BlogPost extends Model {
     public function tags() {
         return $this->belongsToMany(
-            BlogTag::class, 
+            BlogTag::class,
             'blog_post_tags'
         );
     }
@@ -501,7 +482,7 @@ class EtiketService {
     deleteEtiket(Etiket $etiket): bool
     getEtiketById(int $id): ?Etiket
     getAllEtiketler()
-    
+
     // İlişki Yönetimi
     attachEtiketToKisi(Kisi $kisi, Etiket $etiket): void
     detachEtiketFromKisi(Kisi $kisi, Etiket $etiket): void
@@ -533,27 +514,23 @@ class EtiketService {
 ### ⚠️ Eksikler & İyileştirmeler
 
 ```yaml
-Features:
-  ❌ İlan etiketleme yok (sadece CRM & Blog'da var)
-  ❌ Otomatik etiket önerisi yok (AI-based)
-  ❌ Etiket bazlı istatistikler yok
-  ❌ Popüler etiketler widget'ı yok
+Features: ❌ İlan etiketleme yok (sadece CRM & Blog'da var)
+    ❌ Otomatik etiket önerisi yok (AI-based)
+    ❌ Etiket bazlı istatistikler yok
+    ❌ Popüler etiketler widget'ı yok
 
-UI:
-  ⚠️ Etiket yönetim sayfası basic
-  ❌ Drag & drop sıralama yok
-  ❌ Bulk etiketleme yok
-  ❌ Etiket renk paleti yok
+UI: ⚠️ Etiket yönetim sayfası basic
+    ❌ Drag & drop sıralama yok
+    ❌ Bulk etiketleme yok
+    ❌ Etiket renk paleti yok
 
-Database:
-  ⚠️ Etiket kullanım sayısı (usage_count) BlogTag'de var, Etiket'te yok
-  ❌ Etiket geçmişi yok (kim ne zaman ekledi/çıkardı)
-  ❌ Etiket kombinasyonları yok (frequently used together)
+Database: ⚠️ Etiket kullanım sayısı (usage_count) BlogTag'de var, Etiket'te yok
+    ❌ Etiket geçmişi yok (kim ne zaman ekledi/çıkardı)
+    ❌ Etiket kombinasyonları yok (frequently used together)
 
-API:
-  ⚠️ CRM API var, genel Etiket API eksik
-  ❌ REST API endpoints eksik (CRUD)
-  ❌ Bulk operations API yok
+API: ⚠️ CRM API var, genel Etiket API eksik
+    ❌ REST API endpoints eksik (CRUD)
+    ❌ Bulk operations API yok
 ```
 
 ---
@@ -564,38 +541,38 @@ API:
 
 ```yaml
 1. WikiMapia - UI Modernizasyonu:
-   - Neo → Tailwind migration ✅
-   - Place detay modal ekle
-   - İlan ile place ilişkilendirme
+    - Neo → Tailwind migration ✅
+    - Place detay modal ekle
+    - İlan ile place ilişkilendirme
 
 2. Yurt Dışı - Kur API Entegrasyonu:
-   - TCMB API (Türk Lirası kurları)
-   - ECB API (Euro kurları)
-   - Otomatik günlük güncelleme
+    - TCMB API (Türk Lirası kurları)
+    - ECB API (Euro kurları)
+    - Otomatik günlük güncelleme
 
 3. Etiket - İlan Etiketleme:
-   - İlan modeline etiket ilişkisi ekle
-   - İlan listesinde etiket filtresi
-   - Badge görünümü
+    - İlan modeline etiket ilişkisi ekle
+    - İlan listesinde etiket filtresi
+    - Badge görünümü
 ```
 
 ### ⚡ ORTA ÖNCELİK (2-4 Hafta)
 
 ```yaml
 4. WikiMapia - Database Integration:
-   - Places tablosu oluştur
-   - Arama geçmişi kaydet
-   - Favori places
+    - Places tablosu oluştur
+    - Arama geçmişi kaydet
+    - Favori places
 
 5. Yurt Dışı - Fiyat Yönetimi:
-   - Kur geçmişi tablosu
-   - Fiyat değişim log'u
-   - Fiyat trend grafiği
+    - Kur geçmişi tablosu
+    - Fiyat değişim log'u
+    - Fiyat trend grafiği
 
 6. Etiket - AI & Analytics:
-   - Otomatik etiket önerisi
-   - Popüler etiketler
-   - Etiket kombinasyonları
+    - Otomatik etiket önerisi
+    - Popüler etiketler
+    - Etiket kombinasyonları
 ```
 
 ---
@@ -630,11 +607,10 @@ Genel Rating: 9/10 ⭐⭐⭐⭐⭐⭐⭐⭐⭐
 
 **Projeniz MUAZZAM! 🚀**
 
-8 özel modül, hepsi entegre, çalışıyor! 
+8 özel modül, hepsi entegre, çalışıyor!
 
 **En İyi Modül:** WikiMapia Search (%95) 🏆  
 **En Güçlü Özellik:** Çoklu Para Birimi Sistemi 💱  
 **En Kullanışlı:** Etiket Sistemi 🏷️
 
 **Sonraki Adım:** WikiMapia UI modernizasyonu + Yurt dışı kur API! 🎯
-

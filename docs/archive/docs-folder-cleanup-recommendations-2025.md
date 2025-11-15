@@ -17,27 +17,27 @@
 
 #### **TKGM Entegrasyonu Grubu**
 
--   `tkgm-parsel-entegrasyonu-implementation.md`
--   `tkgm-php-class-entegrasyonu-2025.md`
--   `live-search-tkgm-entegrasyonu-2025.md`
+- `tkgm-parsel-entegrasyonu-implementation.md`
+- `tkgm-php-class-entegrasyonu-2025.md`
+- `live-search-tkgm-entegrasyonu-2025.md`
 
 **Öneri**: `docs/integrations/tkgm/` klasörü oluştur ve birleştir.
 
 #### **Roadmap Grubu**
 
--   `next-steps-roadmap-2025.md`
--   `ilan-sistemi-roadmap-2025.md`
--   `enterprise-ilan-sistemi-roadmap-2025.md`
--   `context7-roadmap-2025.md`
+- `next-steps-roadmap-2025.md`
+- `ilan-sistemi-roadmap-2025.md`
+- `enterprise-ilan-sistemi-roadmap-2025.md`
+- `context7-roadmap-2025.md`
 
 **Öneri**: `docs/roadmaps/` klasörü oluştur ve organize et.
 
 #### **Schema Grubu**
 
--   `users-schema.md`
--   `ilanlar-schema.md`
--   `kisiler-schema.md`
--   `neo-design-schema.md`
+- `users-schema.md`
+- `ilanlar-schema.md`
+- `kisiler-schema.md`
+- `neo-design-schema.md`
 
 **Öneri**: `docs/database/schemas/` klasörü oluştur.
 
@@ -116,29 +116,29 @@ mv live-search-tkgm-entegrasyonu-2025.md integrations/tkgm/
 
 #### **A. Roadmap Konsolidasyonu**
 
--   Tüm roadmap'leri `docs/roadmaps/2025/` altında topla
--   Ana roadmap'i güncelle ve diğerlerini referans olarak işaretle
--   Eski roadmap'leri archive'e taşı
+- Tüm roadmap'leri `docs/roadmaps/2025/` altında topla
+- Ana roadmap'i güncelle ve diğerlerini referans olarak işaretle
+- Eski roadmap'leri archive'e taşı
 
 #### **B. Schema Dokümantasyonları**
 
--   Tüm schema dosyalarını `docs/technical/database/schemas/` altında topla
--   Standart format oluştur
--   Cross-reference'ları güncelle
+- Tüm schema dosyalarını `docs/technical/database/schemas/` altında topla
+- Standart format oluştur
+- Cross-reference'ları güncelle
 
 ### **3. Uzun Vadeli (1 Ay)**
 
 #### **A. Archive Sistemi**
 
--   2024 ve önceki dokümantasyonları archive'e taşı
--   Legacy dokümantasyonları işaretle
--   Eski versiyonları temizle
+- 2024 ve önceki dokümantasyonları archive'e taşı
+- Legacy dokümantasyonları işaretle
+- Eski versiyonları temizle
 
 #### **B. Otomatik Dokümantasyon**
 
--   Context7 sistemi ile otomatik güncelleme
--   Cross-reference validation
--   Dead link detection
+- Context7 sistemi ile otomatik güncelleme
+- Cross-reference validation
+- Dead link detection
 
 ## 📋 Temizlik Komutları
 
@@ -186,51 +186,51 @@ sed -i 's|docs/ilan-sistemi-roadmap-2025.md|docs/roadmaps/2025/ilan-sistemi-road
 
 ### **Öncesi**
 
--   **Toplam Dosya**: 54+
--   **Karmaşık Dosya**: 6 dosya (1000+ satır)
--   **Benzer İçerik**: 12 dosya
--   **Organizasyon Skoru**: 3/10
+- **Toplam Dosya**: 54+
+- **Karmaşık Dosya**: 6 dosya (1000+ satır)
+- **Benzer İçerik**: 12 dosya
+- **Organizasyon Skoru**: 3/10
 
 ### **Sonrası Hedef**
 
--   **Toplam Dosya**: 60+ (daha iyi organize)
--   **Karmaşık Dosya**: 0 dosya (hepsi bölündü)
--   **Benzer İçerik**: 0 dosya (birleştirildi)
--   **Organizasyon Skoru**: 9/10
+- **Toplam Dosya**: 60+ (daha iyi organize)
+- **Karmaşık Dosya**: 0 dosya (hepsi bölündü)
+- **Benzer İçerik**: 0 dosya (birleştirildi)
+- **Organizasyon Skoru**: 9/10
 
 ## 🚀 Uygulama Planı
 
 ### **Hafta 1: Acil Temizlik**
 
--   [ ] Context7 rules bölünmesi
--   [ ] TKGM entegrasyonları birleştirme
--   [ ] README güncellemeleri
+- [ ] Context7 rules bölünmesi
+- [ ] TKGM entegrasyonları birleştirme
+- [ ] README güncellemeleri
 
 ### **Hafta 2: Orta Öncelik**
 
--   [ ] Roadmap konsolidasyonu
--   [ ] Schema dokümantasyonları
--   [ ] Cross-reference güncellemeleri
+- [ ] Roadmap konsolidasyonu
+- [ ] Schema dokümantasyonları
+- [ ] Cross-reference güncellemeleri
 
 ### **Hafta 3-4: Uzun Vadeli**
 
--   [ ] Archive sistemi
--   [ ] Otomatik dokümantasyon
--   [ ] Final validation
+- [ ] Archive sistemi
+- [ ] Otomatik dokümantasyon
+- [ ] Final validation
 
 ## 📊 Beklenen Faydalar
 
 ### **Geliştirici Deneyimi**
 
--   ⚡ **%60 daha hızlı** dokümantasyon bulma
--   🎯 **%80 daha az** karmaşıklık
--   📚 **%90 daha iyi** organizasyon
+- ⚡ **%60 daha hızlı** dokümantasyon bulma
+- 🎯 **%80 daha az** karmaşıklık
+- 📚 **%90 daha iyi** organizasyon
 
 ### **Bakım Kolaylığı**
 
--   🔄 **Otomatik güncelleme** sistemi
--   🧹 **Temiz klasör yapısı**
--   📋 **Standardize edilmiş format**
+- 🔄 **Otomatik güncelleme** sistemi
+- 🧹 **Temiz klasör yapısı**
+- 📋 **Standardize edilmiş format**
 
 ---
 

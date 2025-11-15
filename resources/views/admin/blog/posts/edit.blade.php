@@ -4,67 +4,16 @@
 @section('page-title', 'Blog Yazısı Düzenle')
 
 @push('styles')
-    <!-- Select2 removed - 2025-10-21 - Using native multiselect -->
+    {{-- ✅ DUPLICATE REMOVED: Common styles moved to resources/css/admin/common-styles.css --}}
     <style>
-        /* Native multiselect styling */
+        /* Sayfa-spesifik: Native multiselect styling */
         select[multiple] {
-            @apply border-gray-300 rounded-lg p-2;
+            @apply border-gray-300 dark:border-gray-600 rounded-lg p-2
+                   bg-white dark:bg-gray-800 text-gray-900 dark:text-white;
         }
 
         select[multiple]:focus {
-            @apply border-orange-500 ring-1 ring-orange-500;
-        }
-
-        /* Modern Dashboard Styles */
-        .btn-modern {
-            @apply inline-flex items-center px-6 py-2.5 rounded-xl font-semibold transition-all duration-200 transform hover:scale-105 active:scale-95 shadow-lg;
-        }
-
-        .btn-modern-primary {
-            @apply bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 shadow-blue-500/25;
-        }
-
-        .btn-modern-secondary {
-            @apply bg-gradient-to-r from-gray-600 to-gray-700 text-white hover:from-gray-700 hover:to-gray-800 shadow-gray-500/25;
-        }
-
-        .form-field {
-            @apply space-y-2;
-        }
-
-        .admin-label {
-            @apply block text-sm font-medium text-gray-700 mb-1;
-        }
-
-        .admin-label-required::after {
-            content: " *";
-            @apply text-red-500;
-        }
-
-        .admin-input,
-        .admin-input {
-            @apply w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:border-blue-500 focus:ring-blue-500 focus:outline-none transition-all duration-200;
-        }
-
-        .admin-input:focus,
-        .admin-input:focus {
-            @apply ring-2 ring-blue-200;
-        }
-
-        .admin-input-error {
-            @apply border-red-500 focus:border-red-500 focus:ring-red-200;
-        }
-
-        .form-error {
-            @apply text-sm text-red-600 mt-1;
-        }
-
-        .form-help {
-            @apply text-sm text-gray-500 mt-1;
-        }
-
-        .admin-checkbox {
-            @apply h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500;
+            @apply border-orange-500 dark:border-orange-400 ring-1 ring-orange-500 dark:ring-orange-400;
         }
     </style>
 @endpush

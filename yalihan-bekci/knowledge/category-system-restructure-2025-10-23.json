@@ -60,7 +60,19 @@
         "count": 43,
         "examples": {
           "Konut": ["Villa", "Daire", "Yazlık", "Residence", "Müstakil Ev", "Apart"],
-          "Arsa": ["İmarlı Arsa", "Tarla", "Zeytinlik", "Bağ", "Bahçe", "Çiftlik", "Turistik Arsa", "Sanayi Arsası", "Ticari Arsa", "Karma Alan", "Mesire Alanı"],
+          "Arsa": [
+            "İmarlı Arsa",
+            "Tarla",
+            "Zeytinlik",
+            "Bağ",
+            "Bahçe",
+            "Çiftlik",
+            "Turistik Arsa",
+            "Sanayi Arsası",
+            "Ticari Arsa",
+            "Karma Alan",
+            "Mesire Alanı"
+          ],
           "İşyeri": ["Ofis", "Dükkan", "Restaurant/Cafe", "Fabrika", "Depo"],
           "Turistik Tesis": ["Otel", "Pansiyon", "Apart Otel", "Butik Otel", "Tatil Köyü"],
           "Projeler": ["Konut Projesi", "Villa Projesi", "Residence Projesi", "Ticari Proje"]
@@ -72,10 +84,26 @@
       "publication_types_separate": {
         "count": 21,
         "types": [
-          "Satılık", "Kiralık", "Günlük Kiralık", "Sezonluk Kiralık", "Devren",
-          "Kat Karşılığı", "Yatırımlık", "Acil Satılık", "İhaleli Satış", "Trampalı",
-          "Krediye Uygun", "Lüks Segment", "İnşaat Halinde", "Sıfır/Yeni", "Öğrenci Evi",
-          "Sahibinden", "Ofis Dönüşümlü", "Sosyal Konut", "Ön Satış", "Resmi Kurum"
+          "Satılık",
+          "Kiralık",
+          "Günlük Kiralık",
+          "Sezonluk Kiralık",
+          "Devren",
+          "Kat Karşılığı",
+          "Yatırımlık",
+          "Acil Satılık",
+          "İhaleli Satış",
+          "Trampalı",
+          "Krediye Uygun",
+          "Lüks Segment",
+          "İnşaat Halinde",
+          "Sıfır/Yeni",
+          "Öğrenci Evi",
+          "Sahibinden",
+          "Ofis Dönüşümlü",
+          "Sosyal Konut",
+          "Ön Satış",
+          "Resmi Kurum"
         ],
         "table": "ilan_kategori_yayin_tipleri",
         "relationship": "Many-to-Many with categories",
@@ -88,7 +116,13 @@
         {
           "name": "İmarlı Arsa",
           "description": "İmar planında yapılaşmaya uygun arsa",
-          "imar_types": ["Konut İmarlı", "Villa İmarlı", "Ticari İmarlı", "Turizm İmarlı", "Sanayi İmarlı"],
+          "imar_types": [
+            "Konut İmarlı",
+            "Villa İmarlı",
+            "Ticari İmarlı",
+            "Turizm İmarlı",
+            "Sanayi İmarlı"
+          ],
           "note": "İmar detayı imar_statusu field'ında"
         },
         {
@@ -212,9 +246,14 @@
     "deleted_wrong_records": {
       "action": "Deleted wrong publication types from ilan_kategorileri",
       "records": [
-        {"id": 6, "name": "Satılık", "parent_id": 1, "reason": "Yayın tipi, kategori değil"},
-        {"id": 7, "name": "Kiralık", "parent_id": 1, "reason": "Yayın tipi, kategori değil"},
-        {"id": 8, "name": "Günlük Kiralık", "parent_id": 1, "reason": "Yayın tipi, kategori değil"}
+        { "id": 6, "name": "Satılık", "parent_id": 1, "reason": "Yayın tipi, kategori değil" },
+        { "id": 7, "name": "Kiralık", "parent_id": 1, "reason": "Yayın tipi, kategori değil" },
+        {
+          "id": 8,
+          "name": "Günlük Kiralık",
+          "parent_id": 1,
+          "reason": "Yayın tipi, kategori değil"
+        }
       ],
       "count": 3
     },
@@ -266,7 +305,14 @@
         "order": "Display order"
       },
       "example_mappings": {
-        "Villa": ["Satılık", "Kiralık", "Günlük Kiralık", "Sezonluk Kiralık", "Yatırımlık", "Lüks Segment"],
+        "Villa": [
+          "Satılık",
+          "Kiralık",
+          "Günlük Kiralık",
+          "Sezonluk Kiralık",
+          "Yatırımlık",
+          "Lüks Segment"
+        ],
         "İmarlı Arsa": ["Satılık", "Kiralık", "Kat Karşılığı", "Yatırımlık", "İhaleli Satış"],
         "Dükkan": ["Satılık", "Kiralık", "Devren", "Yatırımlık", "Sahibinden"]
       },
@@ -292,7 +338,13 @@
       {
         "name": "İmarlı Arsa",
         "purpose": "Yapılaşmaya uygun",
-        "imar_field_values": ["Konut İmarlı", "Villa İmarlı", "Ticari İmarlı", "Turizm İmarlı", "Sanayi İmarlı"],
+        "imar_field_values": [
+          "Konut İmarlı",
+          "Villa İmarlı",
+          "Ticari İmarlı",
+          "Turizm İmarlı",
+          "Sanayi İmarlı"
+        ],
         "key_features": ["ada_no", "parsel_no", "kaks", "taks", "gabari"],
         "publication_types": ["Satılık", "Kiralık", "Kat Karşılığı", "Yatırımlık"]
       },
@@ -464,9 +516,7 @@
       "app/Models/IlanKategori.php (updated scopes)",
       "app/Models/IlanKategoriYayinTipi.php (publication types)"
     ],
-    "migrations": [
-      "✅ No new migrations needed (tables already exist)"
-    ]
+    "migrations": ["✅ No new migrations needed (tables already exist)"]
   },
 
   "bekci_learning": {
@@ -530,4 +580,3 @@
     "key_message": "Hierarchical data architecture: Categories ≠ Publication Types. Use 2-level hierarchy + separate Many-to-Many table. Attributes (like imar durumu) = fields, NOT categories."
   }
 }
-

@@ -1,8 +1,8 @@
-{{-- 
+{{--
     Yazlık Amenities Component
     Context7: %100
     Yalıhan Bekçi: ✅ Uyumlu
-    
+
     Kullanım: İlan create/edit formlarında yazlık amenities gösterimi
 --}}
 
@@ -25,8 +25,8 @@
                 </div>
             </div>
             <button type="button" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
-                <svg class="w-6 h-6 transform transition-transform duration-200" 
-                     :class="{'rotate-180': !expanded}" 
+                <svg class="w-6 h-6 transform transition-transform duration-200"
+                     :class="{'rotate-180': !expanded}"
                      fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                 </svg>
@@ -60,15 +60,15 @@
                             <span class="w-1 h-6 bg-gradient-to-b from-blue-500 to-purple-600 rounded-full mr-3"></span>
                             {{ $groupName }}
                         </h4>
-                        
+
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                             @foreach($features as $feature)
                                 <div class="feature-item">
                                     @if($feature->type === 'boolean')
                                         {{-- Boolean (Checkbox) --}}
                                         <label class="flex items-center p-4 border-2 border-gray-200 dark:border-gray-700 rounded-lg hover:border-blue-300 dark:hover:border-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-200 cursor-pointer group">
-                                            <input type="checkbox" 
-                                                   name="features[{{ $feature->id }}]" 
+                                            <input type="checkbox"
+                                                   name="features[{{ $feature->id }}]"
                                                    value="1"
                                                    {{ in_array($feature->id, $selectedFeatures) ? 'checked' : '' }}
                                                    class="rounded border-gray-300 text-blue-600 focus:ring-blue-500 focus:ring-2">
@@ -93,12 +93,12 @@
                                                     <span class="text-xs text-gray-500 block mt-1">{{ $feature->description }}</span>
                                                 @endif
                                             </label>
-                                            <select                                                     name="features[{{ $feature->id }}]" 
+                                            <select                                                     name="features[{{ $feature->id }}]"
                                                     class="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200">
                                                 <option value="">Seçin...</option>
                                                 @php
-                                                    $options = is_string($feature->options) 
-                                                        ? json_decode($feature->options, true) 
+                                                    $options = is_string($feature->options)
+                                                        ? json_decode($feature->options, true)
                                                         : $feature->options;
                                                     $currentValue = $featureValues[$feature->id] ?? '';
                                                 @endphp
@@ -124,7 +124,7 @@
                                                     <span class="text-xs text-gray-500 block mt-1">{{ $feature->description }}</span>
                                                 @endif
                                             </label>
-                                            <input type="number" 
+                                            <input type="number"
                                                    name="features[{{ $feature->id }}]"
                                                    value="{{ $featureValues[$feature->id] ?? '' }}"
                                                    placeholder="{{ $feature->name }}"
@@ -175,7 +175,7 @@
 // Feature selection counter
 document.addEventListener('DOMContentLoaded', () => {
     const featureCheckboxes = document.querySelectorAll('input[name^="features["][type="checkbox"]');
-    
+
     featureCheckboxes.forEach(checkbox => {
         checkbox.addEventListener('change', () => {
             const selectedCount = document.querySelectorAll('input[name^="features["][type="checkbox"]:checked').length;
@@ -185,4 +185,3 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 @endpush
-

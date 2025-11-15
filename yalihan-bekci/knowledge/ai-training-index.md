@@ -11,59 +11,59 @@
 ### **Core Training (AnythingLLM'e Embed Edilecek)**
 
 1. **00-ANYTHINGLLM-MASTER-TRAINING.md**
-   - Sistem kimliği ve genel bakış
-   - AI provider detayları (Ollama, OpenAI, Gemini, Claude)
-   - Mimari yapı
-   - Güvenlik kuralları
-   - Location: `docs/ai-training/`
+    - Sistem kimliği ve genel bakış
+    - AI provider detayları (Ollama, OpenAI, Gemini, Claude)
+    - Mimari yapı
+    - Güvenlik kuralları
+    - Location: `docs/ai-training/`
 
 2. **01-AI-FEATURES-GUIDE.md**
-   - Başlık/açıklama/lokasyon/fiyat özellikleri
-   - 4 ton profili (SEO, Kurumsal, Hızlı Satış, Lüks)
-   - Cache stratejileri
-   - RAG (Retrieval-Augmented Generation)
+    - Başlık/açıklama/lokasyon/fiyat özellikleri
+    - 4 ton profili (SEO, Kurumsal, Hızlı Satış, Lüks)
+    - Cache stratejileri
+    - RAG (Retrieval-Augmented Generation)
 
 3. **02-CONTEXT7-RULES-SIMPLIFIED.md** ⭐ **KRİTİK**
-   - Zorunlu alan adları
-   - Yasaklar listesi
-   - Neo Design System kuralları
-   - Lokasyon hiyerarşisi
+    - Zorunlu alan adları
+    - Yasaklar listesi
+    - Neo Design System kuralları
+    - Lokasyon hiyerarşisi
 
 4. **03-DATABASE-SCHEMA-FOR-AI.md**
-   - 6 ana tablo yapısı
-   - İlişkiler ve foreign key'ler
-   - Örnek SQL sorguları
-   - Field açıklamaları
+    - 6 ana tablo yapısı
+    - İlişkiler ve foreign key'ler
+    - Örnek SQL sorguları
+    - Field açıklamaları
 
 5. **04-PROMPT-TEMPLATES.md**
-   - 15+ prompt şablonu
-   - Kategori özel prompt'lar
-   - Ton bazlı varyantlar
-   - System prompt
+    - 15+ prompt şablonu
+    - Kategori özel prompt'lar
+    - Ton bazlı varyantlar
+    - System prompt
 
 6. **05-USE-CASES-AND-SCENARIOS.md**
-   - 8 gerçek kullanım senaryosu
-   - Dialog örnekleri
-   - Edge case çözümleri
-   - Performans örnekleri
+    - 8 gerçek kullanım senaryosu
+    - Dialog örnekleri
+    - Edge case çözümleri
+    - Performans örnekleri
 
 7. **06-API-REFERENCE.md**
-   - AI endpoint'leri
-   - Request/Response formatları
-   - Error handling
-   - Authentication
+    - AI endpoint'leri
+    - Request/Response formatları
+    - Error handling
+    - Authentication
 
 8. **07-EMBEDDING-GUIDE.md**
-   - AnythingLLM kurulum adımları
-   - System prompt (kopyala-yapıştır)
-   - Test senaryoları
-   - Başarı kontrol listesi
+    - AnythingLLM kurulum adımları
+    - System prompt (kopyala-yapıştır)
+    - Test senaryoları
+    - Başarı kontrol listesi
 
 9. **08-TRAINING-CHECKLIST.md**
-   - Kurulum öncesi gereksinimler
-   - Upload adımları
-   - Test senaryoları
-   - Final checklist
+    - Kurulum öncesi gereksinimler
+    - Upload adımları
+    - Test senaryoları
+    - Final checklist
 
 10. **09-OLLAMA-INTEGRATION.md**
     - Ollama server detayları
@@ -82,28 +82,31 @@
 ## 🎯 Context7 AI Standartları
 
 ### **Field Naming Rules**
+
 ```json
 {
-  "correct": ["status", "active", "enabled", "il_id", "ai_*"],
-  "forbidden": ["durum", "is_active", "aktif", "sehir", "sehir_id"]
+    "correct": ["status", "active", "enabled", "il_id", "ai_*"],
+    "forbidden": ["durum", "is_active", "aktif", "sehir", "sehir_id"]
 }
 ```
 
 ### **API Response Format**
+
 ```json
 {
-  "success": true,
-  "data": {},
-  "metadata": {
-    "model": "gemma2:2b",
-    "response_time": 2150,
-    "confidence_score": 0.91
-  },
-  "context7_compliant": true
+    "success": true,
+    "data": {},
+    "metadata": {
+        "model": "gemma2:2b",
+        "response_time": 2150,
+        "confidence_score": 0.91
+    },
+    "context7_compliant": true
 }
 ```
 
 ### **AI Provider Config Keys**
+
 ```
 ai_anythingllm_url
 ai_anythingllm_api_key
@@ -119,30 +122,35 @@ ai_ollama_model
 ## 🤖 AI Provider Details
 
 ### **AnythingLLM (Local AI Server)**
+
 - **Endpoint:** http://localhost:3001
 - **Features:** Embedding, Chat, Document Processing
 - **Type:** Local
 - **Status:** ✅ Active
 
 ### **OpenAI GPT (Cloud API)**
+
 - **Endpoint:** https://api.openai.com/v1
 - **Models:** gpt-4, gpt-4-turbo, gpt-3.5-turbo
 - **Features:** Chat, Completion, Embedding
 - **Use Cases:** Complex content, multilingual
 
 ### **Google Gemini (Cloud API)**
+
 - **Endpoint:** https://generativelanguage.googleapis.com/v1beta
 - **Models:** gemini-2.5-flash, gemini-pro
 - **Features:** Vision, OCR, Image Analysis, Chat
 - **Use Cases:** Image analysis, OCR, Visual QA
 
 ### **Anthropic Claude (Cloud API)**
+
 - **Endpoint:** https://api.anthropic.com/v1
 - **Models:** claude-3, claude-3-opus, claude-3-sonnet
 - **Features:** Code Review, Quality Control, Long Context
 - **Use Cases:** Code review, QA, Technical writing
 
 ### **Ollama (Local AI Server)**
+
 - **Endpoint:** http://51.75.64.121:11434
 - **Model:** gemma2:2b
 - **Features:** Local Inference, Turkish Support, Free
@@ -159,6 +167,7 @@ ai_ollama_model
 **View:** `resources/views/admin/ai-settings/index.blade.php`
 
 ### **Features**
+
 - ✅ Provider configuration (5 providers)
 - ✅ Test buttons for each provider
 - ✅ Real-time status badges (Green ✅ / Red ❌)
@@ -171,6 +180,7 @@ ai_ollama_model
 ## 📊 AI System Architecture
 
 ### **Backend Services**
+
 ```
 app/Services/
 ├── OllamaService.php (Local AI - gemma2:2b)
@@ -182,6 +192,7 @@ app/Services/
 ```
 
 ### **Database Tables**
+
 ```
 ai_chat_logs → AI request/response logging
 ai_knowledge_base → Learned knowledge storage
@@ -190,6 +201,7 @@ settings → AI provider config (key-value)
 ```
 
 ### **Frontend Assets**
+
 ```
 public/js/ai-settings-test.js → Provider testing logic
 resources/views/admin/ai-settings/index.blade.php → Settings UI
@@ -200,12 +212,14 @@ resources/views/admin/ai-settings/index.blade.php → Settings UI
 ## 🔍 Yalıhan Bekçi Integration
 
 ### **Knowledge Files**
+
 - ✅ `ai-system-master.json` → Main AI system info
 - ✅ `ai-api-endpoints.json` → All AI endpoints
 - ✅ `ai-training-index.md` → Training docs index
 - ✅ `context7-llms-config.json` → Updated with AI providers
 
 ### **MCP Server Access**
+
 ```bash
 # AI sistem bilgilerini sorgula
 curl http://localhost:3100/ai-system-info
@@ -222,6 +236,7 @@ curl http://localhost:3100/context7-ai-rules
 ## 🎯 AI Usage Patterns
 
 ### **Title Generation**
+
 ```javascript
 POST /stable-create/ai-suggest
 {
@@ -234,6 +249,7 @@ POST /stable-create/ai-suggest
 ```
 
 ### **Provider Testing**
+
 ```javascript
 POST /admin/ai-settings/test-provider
 {
@@ -254,7 +270,7 @@ Response:
 
 ## ✅ Context7 Compliance Checklist
 
-- ✅ All AI field names use English (ai_*, status, active)
+- ✅ All AI field names use English (ai\_\*, status, active)
 - ✅ No Turkish field names (durum, aktif, sehir) ❌
 - ✅ API responses follow standard format
 - ✅ Logging includes timestamp, provider, status
@@ -269,4 +285,3 @@ Response:
 **Status:** ✅ Knowledge Base Updated  
 **Date:** 2025-10-12  
 **Context7:** 100% Compliant
-

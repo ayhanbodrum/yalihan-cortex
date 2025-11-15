@@ -9,7 +9,7 @@ on:
 jobs:
   laravel-tests:
     runs-on: ubuntu-latest
-    
+
     services:
       mysql:
         image: mysql:8.0
@@ -80,4 +80,3 @@ jobs:
             chmod +x .githooks/pre-commit
             ./.githooks/pre-commit || echo "⚠️ Context7 violations detected"
           fi
-

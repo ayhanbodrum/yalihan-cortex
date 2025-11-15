@@ -7,6 +7,8 @@ use App\Models\Talep;
 use App\Models\Eslesme;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Schema;
 
 class CRMController extends AdminController
 {
@@ -19,60 +21,87 @@ class CRMController extends AdminController
      */
     public function index(Request $request)
     {
-        // ✅ OPTIMIZED: İstatistikleri cache ile optimize et (opsiyonel)
-        $stats = [
-            'toplam_kisi' => Kisi::count(),
-            'active_kisi' => Kisi::where('status', 'Aktif')->count(),
-            'toplam_talep' => Talep::count(),
-            'active_talep' => Talep::where('status', 'Aktif')->count(),
-            'toplam_eslesme' => Eslesme::count(),
-            'basarili_eslesme' => Eslesme::where('status', 'Başarılı')->count(),
-        ];
+        // ✅ CACHE: İstatistikleri cache ile optimize et (1800s = 30 dakika)
+        $stats = Cache::remember('crm_dashboard_stats', 1800, function () {
+            return [
+                'toplam_kisi' => Kisi::count(),
+                'active_kisi' => Kisi::where('status', 'Aktif')->count(),
+                'toplam_talep' => Talep::count(),
+                'active_talep' => Talep::where('status', 'Aktif')->count(),
+                'toplam_eslesme' => Eslesme::count(),
+                'basarili_eslesme' => Eslesme::where('status', 'Başarılı')->count(),
+            ];
+        });
 
-        // ✅ OPTIMIZED: N+1 query önlendi - Tüm mükerrer email'leri tek query'de al
-        $mukerrerEmails = Kisi::select('email')
-            ->whereNotNull('email')
-            ->groupBy('email')
-            ->havingRaw('COUNT(*) > 1')
-            ->pluck('email');
-        
-        // ✅ EAGER LOADING: Tüm mükerrer kişileri tek query'de yükle
-        $mukerrerKisiler = Kisi::whereIn('email', $mukerrerEmails)
-            ->select(['id', 'ad', 'soyad', 'telefon', 'email'])
-            ->get()
-            ->groupBy('email')
-            ->map(function($kisiler, $email) {
-                return [
-                    'email' => $email,
-                    'sayi' => $kisiler->count(),
-                    'kisiler' => $kisiler->map(function($kisi) {
-                        return [
-                            'id' => $kisi->id,
-                            'ad' => $kisi->ad,
-                            'soyad' => $kisi->soyad,
-                            'telefon' => $kisi->telefon
-                        ];
-                    })->values()
-                ];
-            })
-            ->values();
+        // ✅ CACHE: Mükerrer email analizi cache ile optimize et (3600s = 1 saat)
+        $mukerrerKisiler = Cache::remember('crm_mukerrer_kisiler', 3600, function () {
+            // ✅ OPTIMIZED: N+1 query önlendi - Tüm mükerrer email'leri tek query'de al
+            $mukerrerEmails = Kisi::select('email')
+                ->whereNotNull('email')
+                ->groupBy('email')
+                ->havingRaw('COUNT(*) > 1')
+                ->pluck('email');
 
-        $aiOnerileri = [
-            'mukerrer_kisiler' => $mukerrerKisiler,
-            'eksik_bilgiler' => Kisi::where(function($query) {
-                $query->whereNull('email')
-                      ->orWhereNull('telefon')
-                      ->orWhereNull('ad')
-                      ->orWhereNull('soyad');
-            })->count(),
-            'eslesmeyen_talepler' => Talep::whereDoesntHave('eslesmeler')->count(),
-            'yuksek_skorlu_eslesmeler' => Eslesme::where('skor', '>=', 8)->count(),
-        ];
-        
-        // ✅ OPTIMIZED: Select optimization
-        $etiketler = \App\Models\Etiket::select(['id', 'name', 'color', 'status'])
-            ->orderBy('name')
-            ->get();
+            // ✅ EAGER LOADING: Tüm mükerrer kişileri tek query'de yükle
+            return Kisi::whereIn('email', $mukerrerEmails)
+                ->select(['id', 'ad', 'soyad', 'telefon', 'email'])
+                ->get()
+                ->groupBy('email')
+                ->map(function($kisiler, $email) {
+                    return [
+                        'email' => $email,
+                        'sayi' => $kisiler->count(),
+                        'kisiler' => $kisiler->map(function($kisi) {
+                            return [
+                                'id' => $kisi->id,
+                                'ad' => $kisi->ad,
+                                'soyad' => $kisi->soyad,
+                                'telefon' => $kisi->telefon
+                            ];
+                        })->values()
+                    ];
+                })
+                ->values();
+        });
+
+        // ✅ CACHE: AI önerileri cache ile optimize et (1800s = 30 dakika)
+        $aiOnerileri = Cache::remember('crm_ai_onerileri', 1800, function () {
+            // Check if skor column exists before querying
+            $hasSkorColumn = Schema::hasColumn('eslesmeler', 'skor');
+
+            // Safely get high score matches count with fallback
+            $yuksekSkorluEslesmeler = 0;
+            if ($hasSkorColumn) {
+                try {
+                    $yuksekSkorluEslesmeler = Eslesme::where('skor', '>=', 8)->count();
+                } catch (\Exception $e) {
+                    // Column might not exist yet, return 0
+                    $yuksekSkorluEslesmeler = 0;
+                }
+            }
+
+            return [
+                'mukerrer_kisiler' => [], // Yukarıda cache'lenmiş olarak alınacak
+                'eksik_bilgiler' => Kisi::where(function($query) {
+                    $query->whereNull('email')
+                          ->orWhereNull('telefon')
+                          ->orWhereNull('ad')
+                          ->orWhereNull('soyad');
+                })->count(),
+                'eslesmeyen_talepler' => Talep::whereDoesntHave('eslesmeler')->count(),
+                'yuksek_skorlu_eslesmeler' => $yuksekSkorluEslesmeler,
+            ];
+        });
+
+        // Mükerrer kişileri ekle
+        $aiOnerileri['mukerrer_kisiler'] = $mukerrerKisiler;
+
+        // ✅ CACHE: Etiketler cache ile optimize et (7200s = 2 saat)
+        $etiketler = Cache::remember('crm_etiketler', 7200, function () {
+            return \App\Models\Etiket::select(['id', 'name', 'color', 'status'])
+                ->orderBy('name')
+                ->get();
+        });
 
         return view('admin.crm.index', compact('stats', 'aiOnerileri', 'etiketler'));
     }
@@ -97,7 +126,7 @@ class CRMController extends AdminController
                 ->groupBy('email')
                 ->havingRaw('COUNT(*) > 1')
                 ->pluck('email');
-            
+
             // ✅ EAGER LOADING: Tüm duplicate kayıtları tek query'de yükle
             $duplicateRecords = Kisi::whereIn('email', $duplicateEmails)
                 ->select(['id', 'ad', 'soyad', 'telefon', 'email', 'created_at'])
@@ -119,7 +148,7 @@ class CRMController extends AdminController
                     ];
                 })
                 ->values();
-            
+
             $analysis['duplicates'] = $duplicateRecords;
         }
 
@@ -134,10 +163,26 @@ class CRMController extends AdminController
         }
 
         if ($type === 'all' || $type === 'matching') {
+            // Check if skor column exists before querying
+            $hasSkorColumn = Schema::hasColumn('eslesmeler', 'skor');
+
+            // Safely get match counts with fallback
+            $lowScoreMatches = 0;
+            $highScoreMatches = 0;
+
+            if ($hasSkorColumn) {
+                try {
+                    $lowScoreMatches = Eslesme::where('skor', '<', 5)->count();
+                    $highScoreMatches = Eslesme::where('skor', '>=', 8)->count();
+                } catch (\Exception $e) {
+                    // Column might not exist yet, use defaults (0)
+                }
+            }
+
             $analysis['matching_issues'] = [
                 'unmatched_requests' => Talep::whereDoesntHave('eslesmeler')->count(),
-                'low_score_matches' => Eslesme::where('skor', '<', 5)->count(),
-                'high_score_matches' => Eslesme::where('skor', '>=', 8)->count(),
+                'low_score_matches' => $lowScoreMatches,
+                'high_score_matches' => $highScoreMatches,
             ];
         }
 
@@ -167,6 +212,11 @@ class CRMController extends AdminController
         $duplicates = Kisi::where('email', $email)->where('id', '!=', $keepId);
         $deletedCount = $duplicates->count();
         $duplicates->delete();
+
+        // ✅ CACHE INVALIDATION: İlgili cache'leri temizle
+        Cache::forget('crm_dashboard_stats');
+        Cache::forget('crm_mukerrer_kisiler');
+        Cache::forget('crm_ai_onerileri');
 
         return response()->json([
             'success' => true,

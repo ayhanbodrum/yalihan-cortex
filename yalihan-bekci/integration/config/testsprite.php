@@ -12,7 +12,7 @@ return [
 
     'server_url' => env('TESTSPRITE_SERVER_URL', 'http://localhost:3333'),
     'node_path' => env('TESTSPRITE_NODE_PATH', 'node'),
-    
+
     /*
     |--------------------------------------------------------------------------
     | Otomatik Düzeltme
@@ -22,9 +22,9 @@ return [
     | olarak düzeltip düzeltmeyeceğini belirler.
     |
     */
-    
+
     'auto_correct' => env('TESTSPRITE_AUTO_CORRECT', false),
-    
+
     /*
     |--------------------------------------------------------------------------
     | Bildirim Ayarları
@@ -34,7 +34,7 @@ return [
     | göndereceğini belirler.
     |
     */
-    
+
     'notifications' => [
         'enabled' => env('TESTSPRITE_NOTIFICATIONS_ENABLED', true),
         'channels' => [
@@ -49,7 +49,7 @@ return [
             ],
         ],
     ],
-    
+
     /*
     |--------------------------------------------------------------------------
     | Test Kuralları
@@ -58,7 +58,7 @@ return [
     | Bu ayarlar, TestSprite MCP'nin hangi kuralları uygulayacağını belirler.
     |
     */
-    
+
     'rules' => [
         'migrations' => [
             'enforce_module_structure' => true,
@@ -81,7 +81,7 @@ return [
             'enforce_encryption' => true,
         ],
     ],
-    
+
     /*
     |--------------------------------------------------------------------------
     | Rapor Ayarları
@@ -91,12 +91,12 @@ return [
     | belirler.
     |
     */
-    
+
     'reports' => [
         'path' => storage_path('app/testsprite/reports'),
         'keep_days' => 30, // Raporların kaç gün saklanacağı
     ],
-    
+
     /*
     |--------------------------------------------------------------------------
     | Zamanlama Ayarları
@@ -106,7 +106,7 @@ return [
     | belirler.
     |
     */
-    
+
     'schedule' => [
         'daily_at' => '03:00', // Her gün saat 03:00'da çalıştır
         'run_on_pre_commit' => true, // Pre-commit hook'ta çalıştır

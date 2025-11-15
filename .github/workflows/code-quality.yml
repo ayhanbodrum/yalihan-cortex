@@ -9,7 +9,7 @@ on:
 jobs:
   code-quality:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -52,4 +52,3 @@ jobs:
       - name: Security Check
         run: |
           composer audit || echo "⚠️ Security vulnerabilities found"
-

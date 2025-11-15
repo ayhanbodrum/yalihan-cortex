@@ -4,7 +4,7 @@
   "category": "architecture",
   "priority": "CRITICAL",
   "status": "COMPLETED",
-  
+
   "problem": {
     "title": "Global !important kuralları Tailwind'i eziyor",
     "description": "app.css'de global !important kuralları tüm Tailwind utility class'larını override ediyordu",
@@ -260,4 +260,3 @@
   "commit_message": "🎨 TAILWIND MIGRATION: Remove global !important, use @layer base",
   "tags": ["tailwind", "css", "architecture", "migration", "best-practices", "cascade"]
 }
-

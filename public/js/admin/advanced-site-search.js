@@ -6,14 +6,14 @@
 
 class AdvancedSiteSearch {
     constructor(options = {}) {
-        this.container = options.container || "#site-search-container";
-        this.apiEndpoint = options.apiEndpoint || "/api/admin/sites/search";
+        this.container = options.container || '#site-search-container';
+        this.apiEndpoint = options.apiEndpoint || '/api/admin/sites/search';
         this.debounceDelay = options.debounceDelay || 300;
         this.minQueryLength = options.minQueryLength || 2;
         this.maxResults = options.maxResults || 20;
 
         this.searchTimeout = null;
-        this.currentQuery = "";
+        this.currentQuery = '';
         this.selectedSite = null;
         this.isLoading = false;
 
@@ -430,41 +430,35 @@ class AdvancedSiteSearch {
             </style>
         `;
 
-        if (!document.querySelector("#neo-site-search-styles")) {
-            const styleElement = document.createElement("div");
-            styleElement.id = "neo-site-search-styles";
+        if (!document.querySelector('#neo-site-search-styles')) {
+            const styleElement = document.createElement('div');
+            styleElement.id = 'neo-site-search-styles';
             styleElement.innerHTML = styles;
             document.head.appendChild(styleElement);
         }
     }
 
     bindEvents() {
-        const searchInput = document.getElementById("site-search-input");
-        const addSiteBtn = document.getElementById("add-new-site-btn");
-        const filterTabs = document.querySelectorAll(".neo-filter-tab");
+        const searchInput = document.getElementById('site-search-input');
+        const addSiteBtn = document.getElementById('add-new-site-btn');
+        const filterTabs = document.querySelectorAll('.neo-filter-tab');
 
         // Search input events
-        searchInput?.addEventListener("input", (e) =>
-            this.handleSearch(e.target.value)
-        );
-        searchInput?.addEventListener("focus", () => this.showResults());
-        searchInput?.addEventListener("keydown", (e) =>
-            this.handleKeyNavigation(e)
-        );
+        searchInput?.addEventListener('input', (e) => this.handleSearch(e.target.value));
+        searchInput?.addEventListener('focus', () => this.showResults());
+        searchInput?.addEventListener('keydown', (e) => this.handleKeyNavigation(e));
 
         // Add site button
-        addSiteBtn?.addEventListener("click", () => this.showAddSiteModal());
+        addSiteBtn?.addEventListener('click', () => this.showAddSiteModal());
 
         // Filter tabs
         filterTabs.forEach((tab) => {
-            tab.addEventListener("click", (e) =>
-                this.handleFilterChange(e.target.dataset.filter)
-            );
+            tab.addEventListener('click', (e) => this.handleFilterChange(e.target.dataset.filter));
         });
 
         // Close dropdown when clicking outside
-        document.addEventListener("click", (e) => {
-            if (!e.target.closest(".neo-advanced-site-search")) {
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.neo-advanced-site-search')) {
                 this.hideResults();
             }
         });
@@ -494,14 +488,12 @@ class AdvancedSiteSearch {
             this.isLoading = true;
 
             const response = await fetch(
-                `${this.apiEndpoint}?q=${encodeURIComponent(query)}&limit=${
-                    this.maxResults
-                }`,
+                `${this.apiEndpoint}?q=${encodeURIComponent(query)}&limit=${this.maxResults}`,
                 {
-                    method: "GET",
+                    method: 'GET',
                     headers: {
-                        Accept: "application/json",
-                        "X-Requested-With": "XMLHttpRequest",
+                        Accept: 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
                     },
                 }
             );
@@ -511,11 +503,11 @@ class AdvancedSiteSearch {
             if (data.success) {
                 this.displayResults(data.data, data.count);
             } else {
-                this.showError(data.message || "Arama sırasında hata oluştu");
+                this.showError(data.message || 'Arama sırasında hata oluştu');
             }
         } catch (error) {
-            console.error("Site search error:", error);
-            this.showError("Bağlantı hatası oluştu");
+            console.error('Site search error:', error);
+            this.showError('Bağlantı hatası oluştu');
         } finally {
             this.isLoading = false;
             this.hideLoading();
@@ -523,26 +515,24 @@ class AdvancedSiteSearch {
     }
 
     displayResults(sites, count) {
-        const resultsList = document.getElementById("results-list");
-        const resultsCount = document.getElementById("results-count");
-        const noResults = document.getElementById("no-results");
+        const resultsList = document.getElementById('results-list');
+        const resultsCount = document.getElementById('results-count');
+        const noResults = document.getElementById('no-results');
 
         // Update count
         resultsCount.textContent = `${count} sonuç`;
 
         if (sites.length === 0) {
-            resultsList.style.display = "none";
-            noResults.style.display = "block";
+            resultsList.style.display = 'none';
+            noResults.style.display = 'block';
         } else {
-            resultsList.style.display = "block";
-            noResults.style.display = "none";
+            resultsList.style.display = 'block';
+            noResults.style.display = 'none';
 
             resultsList.innerHTML = sites
                 .map(
                     (site, index) => `
-                <div class="neo-site-result" data-site-id="${
-                    site.id
-                }" data-index="${index}">
+                <div class="neo-site-result" data-site-id="${site.id}" data-index="${index}">
                     <div class="neo-site-avatar">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                             <path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-2" stroke="currentColor" stroke-width="2"/>
@@ -554,32 +544,22 @@ class AdvancedSiteSearch {
                             this.currentQuery
                         )}</h4>
                         <p class="neo-site-details">
-                            <span class="neo-site-badge">${
-                                site.tip || "Site"
-                            }</span>
-                            ${site.adres ? `• ${site.adres}` : ""}
-                            ${
-                                site.daire_sayisi
-                                    ? `• ${site.daire_sayisi} daire`
-                                    : ""
-                            }
+                            <span class="neo-site-badge">${site.tip || 'Site'}</span>
+                            ${site.adres ? `• ${site.adres}` : ''}
+                            ${site.daire_sayisi ? `• ${site.daire_sayisi} daire` : ''}
                         </p>
                     </div>
                 </div>
             `
                 )
-                .join("");
+                .join('');
 
             // Bind click events to results
-            resultsList
-                .querySelectorAll(".neo-site-result")
-                .forEach((result) => {
-                    result.addEventListener("click", () =>
-                        this.selectSite(
-                            JSON.parse(result.dataset.siteData || "{}")
-                        )
-                    );
-                });
+            resultsList.querySelectorAll('.neo-site-result').forEach((result) => {
+                result.addEventListener('click', () =>
+                    this.selectSite(JSON.parse(result.dataset.siteData || '{}'))
+                );
+            });
         }
 
         this.showResults();
@@ -587,7 +567,7 @@ class AdvancedSiteSearch {
 
     highlightMatch(text, query) {
         if (!query) return text;
-        const regex = new RegExp(`(${query})`, "gi");
+        const regex = new RegExp(`(${query})`, 'gi');
         return text.replace(
             regex,
             '<mark style="background: #fef08a; padding: 0.125rem 0.25rem; border-radius: 0.25rem;">$1</mark>'
@@ -605,59 +585,56 @@ class AdvancedSiteSearch {
     }
 
     displaySelectedSite() {
-        const selectedSiteDiv = document.getElementById("selected-site");
-        const siteInfo = selectedSiteDiv.querySelector(".neo-site-info");
+        const selectedSiteDiv = document.getElementById('selected-site');
+        const siteInfo = selectedSiteDiv.querySelector('.neo-site-info');
 
         if (this.selectedSite && siteInfo) {
-            siteInfo.querySelector(".neo-site-name").textContent =
-                this.selectedSite.ad;
-            siteInfo.querySelector(".neo-site-details").textContent = [
+            siteInfo.querySelector('.neo-site-name').textContent = this.selectedSite.ad;
+            siteInfo.querySelector('.neo-site-details').textContent = [
                 this.selectedSite.tip,
                 this.selectedSite.adres,
-                this.selectedSite.daire_sayisi
-                    ? `${this.selectedSite.daire_sayisi} daire`
-                    : "",
+                this.selectedSite.daire_sayisi ? `${this.selectedSite.daire_sayisi} daire` : '',
             ]
                 .filter(Boolean)
-                .join(" • ");
+                .join(' • ');
 
-            selectedSiteDiv.style.display = "block";
+            selectedSiteDiv.style.display = 'block';
         }
     }
 
     clearSelection() {
         this.selectedSite = null;
-        document.getElementById("selected-site").style.display = "none";
+        document.getElementById('selected-site').style.display = 'none';
         this.triggerSiteCleared();
     }
 
     showResults() {
-        document.getElementById("site-search-results").style.display = "block";
+        document.getElementById('site-search-results').style.display = 'block';
     }
 
     hideResults() {
-        document.getElementById("site-search-results").style.display = "none";
+        document.getElementById('site-search-results').style.display = 'none';
     }
 
     showLoading() {
-        document.getElementById("site-search-loading").style.display = "block";
-        const input = document.getElementById("site-search-input");
-        input?.classList.add("loading");
+        document.getElementById('site-search-loading').style.display = 'block';
+        const input = document.getElementById('site-search-input');
+        input?.classList.add('loading');
     }
 
     hideLoading() {
-        document.getElementById("site-search-loading").style.display = "none";
-        const input = document.getElementById("site-search-input");
-        input?.classList.remove("loading");
+        document.getElementById('site-search-loading').style.display = 'none';
+        const input = document.getElementById('site-search-input');
+        input?.classList.remove('loading');
     }
 
     clearSearchInput() {
-        document.getElementById("site-search-input").value = "";
+        document.getElementById('site-search-input').value = '';
     }
 
     showAddSiteModal() {
         // This would trigger the existing site modal
-        console.log("Opening add site modal...");
+        console.log('Opening add site modal...');
         // Integration with existing modal system
         if (window.openSiteModal) {
             window.openSiteModal();
@@ -666,7 +643,7 @@ class AdvancedSiteSearch {
 
     triggerSiteSelected(site) {
         // Dispatch custom event for integration
-        const event = new CustomEvent("siteSelected", {
+        const event = new CustomEvent('siteSelected', {
             detail: { site },
         });
         document.dispatchEvent(event);
@@ -679,40 +656,38 @@ class AdvancedSiteSearch {
     }
 
     triggerSiteCleared() {
-        const event = new CustomEvent("siteCleared");
+        const event = new CustomEvent('siteCleared');
         document.dispatchEvent(event);
 
         const hiddenInput = document.querySelector('input[name="site_id"]');
         if (hiddenInput) {
-            hiddenInput.value = "";
+            hiddenInput.value = '';
         }
     }
 
     handleKeyNavigation(e) {
-        const results = document.querySelectorAll(".neo-site-result");
-        const activeResult = document.querySelector(".neo-site-result.active");
-        let activeIndex = activeResult
-            ? parseInt(activeResult.dataset.index)
-            : -1;
+        const results = document.querySelectorAll('.neo-site-result');
+        const activeResult = document.querySelector('.neo-site-result.active');
+        let activeIndex = activeResult ? parseInt(activeResult.dataset.index) : -1;
 
         switch (e.key) {
-            case "ArrowDown":
+            case 'ArrowDown':
                 e.preventDefault();
                 activeIndex = Math.min(activeIndex + 1, results.length - 1);
                 this.updateActiveResult(results, activeIndex);
                 break;
-            case "ArrowUp":
+            case 'ArrowUp':
                 e.preventDefault();
                 activeIndex = Math.max(activeIndex - 1, 0);
                 this.updateActiveResult(results, activeIndex);
                 break;
-            case "Enter":
+            case 'Enter':
                 e.preventDefault();
                 if (activeResult) {
                     activeResult.click();
                 }
                 break;
-            case "Escape":
+            case 'Escape':
                 e.preventDefault();
                 this.hideResults();
                 break;
@@ -721,14 +696,14 @@ class AdvancedSiteSearch {
 
     updateActiveResult(results, activeIndex) {
         results.forEach((result, index) => {
-            result.classList.toggle("active", index === activeIndex);
+            result.classList.toggle('active', index === activeIndex);
         });
     }
 
     handleFilterChange(filter) {
         // Update active tab
-        document.querySelectorAll(".neo-filter-tab").forEach((tab) => {
-            tab.classList.toggle("active", tab.dataset.filter === filter);
+        document.querySelectorAll('.neo-filter-tab').forEach((tab) => {
+            tab.classList.toggle('active', tab.dataset.filter === filter);
         });
 
         // Re-perform search with filter
@@ -739,15 +714,15 @@ class AdvancedSiteSearch {
 
     initializeAnimations() {
         // Initialize any additional animations or interactions
-        const input = document.getElementById("site-search-input");
+        const input = document.getElementById('site-search-input');
 
         // Smooth focus animations
-        input?.addEventListener("focus", () => {
-            input.parentElement.style.transform = "scale(1.02)";
+        input?.addEventListener('focus', () => {
+            input.parentElement.style.transform = 'scale(1.02)';
         });
 
-        input?.addEventListener("blur", () => {
-            input.parentElement.style.transform = "scale(1)";
+        input?.addEventListener('blur', () => {
+            input.parentElement.style.transform = 'scale(1)';
         });
     }
 
@@ -774,29 +749,29 @@ class AdvancedSiteSearch {
         // Remove event listeners and clean up
         const container = document.querySelector(this.container);
         if (container) {
-            container.innerHTML = "";
+            container.innerHTML = '';
         }
     }
 }
 
 // Auto-initialize when DOM is ready
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener('DOMContentLoaded', function () {
     // Initialize site search if container exists
-    if (document.querySelector("#site-search-container")) {
+    if (document.querySelector('#site-search-container')) {
         window.advancedSiteSearch = new AdvancedSiteSearch({
-            container: "#site-search-container",
-            apiEndpoint: "/api/admin/sites/search",
+            container: '#site-search-container',
+            apiEndpoint: '/api/admin/sites/search',
         });
 
         // Listen for site selection events
-        document.addEventListener("siteSelected", function (e) {
-            console.log("Site selected:", e.detail.site);
+        document.addEventListener('siteSelected', function (e) {
+            console.log('Site selected:', e.detail.site);
             // Additional integration logic here
         });
     }
 });
 
 // Export for use in other modules
-if (typeof module !== "undefined" && module.exports) {
+if (typeof module !== 'undefined' && module.exports) {
     module.exports = AdvancedSiteSearch;
 }

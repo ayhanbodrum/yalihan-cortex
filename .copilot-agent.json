@@ -1,17 +1,17 @@
 {
-    "name": "Laravel Blade Refactor Agent",
-    "description": "EmlakPro admin paneli için Laravel Blade, PHP ve JavaScript dosyalarını refactor eder, yaygın hataları düzeltir.",
-    "instructions": [
-      "Blade içindeki @if, @foreach gibi yapıları doğru kullan.",
-      "Blade içinde JavaScript kodlarında @json($variable) kullan, json_encode yerine.",
-      "Syntax hatalarına sebep olan `@` dekoratörlerini JavaScript içinde kullanma.",
-      "Tailwind CSS sınıflarını anlamlı bloklara ayır.",
-      "Ternary yerine `??` operatörünü tercih et.",
-      "Arrow function (`() => {}`) kullanımı mümkünse tercih et.",
-      "Chart.js grafiklerinde ID ve veri yapılarının doğru olduğuna emin ol.",
-      "Hatalı Blade-JavaScript entegrasyonlarını tespit edip düzelt."
-    ],
-    "languages": ["blade", "php", "javascript"],
-    "fileTypes": [".blade.php"],
-    "priority": "high"
-  }
+  "name": "Laravel Blade Refactor Agent",
+  "description": "EmlakPro admin paneli için Laravel Blade, PHP ve JavaScript dosyalarını refactor eder, yaygın hataları düzeltir.",
+  "instructions": [
+    "Blade içindeki @if, @foreach gibi yapıları doğru kullan.",
+    "Blade içinde JavaScript kodlarında @json($variable) kullan, json_encode yerine.",
+    "Syntax hatalarına sebep olan `@` dekoratörlerini JavaScript içinde kullanma.",
+    "Tailwind CSS sınıflarını anlamlı bloklara ayır.",
+    "Ternary yerine `??` operatörünü tercih et.",
+    "Arrow function (`() => {}`) kullanımı mümkünse tercih et.",
+    "Chart.js grafiklerinde ID ve veri yapılarının doğru olduğuna emin ol.",
+    "Hatalı Blade-JavaScript entegrasyonlarını tespit edip düzelt."
+  ],
+  "languages": ["blade", "php", "javascript"],
+  "fileTypes": [".blade.php"],
+  "priority": "high"
+}

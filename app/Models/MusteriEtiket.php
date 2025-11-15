@@ -6,45 +6,34 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class MusteriEtiket extends Model
+/**
+ * MusteriEtiket Model - DEPRECATED
+ *
+ * Context7 Compliance: Use KisiEtiket instead
+ *
+ * @deprecated Use App\Models\KisiEtiket instead (Context7 compliance)
+ * @see App\Models\KisiEtiket
+ *
+ * This is an alias for backward compatibility.
+ * New code should use KisiEtiket.
+ *
+ * Migration Guide:
+ * 1. Replace: use App\Models\MusteriEtiket → use App\Models\KisiEtiket
+ * 2. Replace: MusteriEtiket::class → KisiEtiket::class
+ * 3. Database: RENAME TABLE musteri_etiketler TO kisi_etiketler (if not already renamed)
+ */
+class MusteriEtiket extends KisiEtiket
 {
     use HasFactory;
 
-    protected $table = 'musteri_etiketler';
-
-    protected $fillable = [
-        'ad',
-        'renk',
-        'aciklama',
-        'status',
-    ];
-
-    protected $casts = [
-        'status' => 'boolean',
-    ];
+    // ✅ Context7: Inherits everything from KisiEtiket
+    // This model now points to etiketler table (via parent)
 
     /**
-     * Bu etiketi kullanan müşteriler
+     * Override table name to maintain backward compatibility
+     * Until migration is complete
+     *
+     * @var string
      */
-    public function kisiler(): BelongsToMany
-    {
-        return $this->belongsToMany(Kisi::class, 'kisi_etiket', 'etiket_id', 'kisi_id')
-            ->withTimestamps();
-    }
-
-    /**
-     * Aktif etiketler
-     */
-    public function scopeActive($query)
-    {
-        return $query->where('status', true);
-    }
-
-    /**
-     * Pasif etiketler
-     */
-    public function scopePasif($query)
-    {
-        return $query->where('status', false);
-    }
+    protected $table = 'musteri_etiketler'; // ⚠️ Deprecated table, use 'etiketler' (KisiEtiket)
 }

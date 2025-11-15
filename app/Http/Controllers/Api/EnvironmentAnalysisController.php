@@ -4,8 +4,11 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Services\AIService;
+use App\Services\Response\ResponseService;
+use App\Traits\ValidatesApiRequests;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Log;
 
 /**
  * 🎯 Akıllı Yakın Çevre Analizi Controller
@@ -13,6 +16,8 @@ use Illuminate\Http\JsonResponse;
  */
 class EnvironmentAnalysisController extends Controller
 {
+    use ValidatesApiRequests;
+
     protected $aiService;
 
     public function __construct(AIService $aiService)
@@ -26,11 +31,15 @@ class EnvironmentAnalysisController extends Controller
      */
     public function analyze(Request $request): JsonResponse
     {
-        $request->validate([
+        $validated = $this->validateRequestWithResponse($request, [
             'lat' => 'required|numeric|between:-90,90',
             'lng' => 'required|numeric|between:-180,180',
             'radius' => 'nullable|integer|min:500|max:5000',
         ]);
+
+        if ($validated instanceof JsonResponse) {
+            return $validated;
+        }
 
         $lat = $request->get('lat');
         $lng = $request->get('lng');
@@ -43,27 +52,19 @@ class EnvironmentAnalysisController extends Controller
             // Generate AI insights
             $insights = $this->generateAIInsights($analysis, $lat, $lng);
 
-            return response()->json([
-                'success' => true,
-                'data' => [
-                    'location' => [
-                        'lat' => $lat,
-                        'lng' => $lng,
-                        'radius' => $radius
-                    ],
-                    'categories' => $analysis,
-                    'insights' => $insights,
-                    'scores' => $this->calculateLocationScores($analysis),
-                    'recommendations' => $this->generateRecommendations($analysis)
-                ]
-            ]);
-
+            return ResponseService::success([
+                'location' => [
+                    'lat' => $lat,
+                    'lng' => $lng,
+                    'radius' => $radius
+                ],
+                'categories' => $analysis,
+                'insights' => $insights,
+                'scores' => $this->calculateLocationScores($analysis),
+                'recommendations' => $this->generateRecommendations($analysis)
+            ], 'Çevre analizi başarıyla tamamlandı');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Çevre analizi yapılırken hata oluştu',
-                'error' => config('app.debug') ? $e->getMessage() : null
-            ], 500);
+            return ResponseService::serverError('Çevre analizi yapılırken hata oluştu.', $e);
         }
     }
 
@@ -73,22 +74,28 @@ class EnvironmentAnalysisController extends Controller
      */
     public function analyzeCategory(Request $request, string $category): JsonResponse
     {
-        $request->validate([
+        $validated = $this->validateRequestWithResponse($request, [
             'lat' => 'required|numeric|between:-90,90',
             'lng' => 'required|numeric|between:-180,180',
             'radius' => 'nullable|integer|min:500|max:5000',
         ]);
 
+        if ($validated instanceof JsonResponse) {
+            return $validated;
+        }
+
         $validCategories = [
-            'transportation', 'healthcare', 'education',
-            'shopping', 'recreation', 'coastal', 'dining'
+            'transportation',
+            'healthcare',
+            'education',
+            'shopping',
+            'recreation',
+            'coastal',
+            'dining'
         ];
 
         if (!in_array($category, $validCategories)) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Geçersiz kategori'
-            ], 400);
+            return ResponseService::error('Geçersiz kategori', 400);
         }
 
         $lat = $request->get('lat');
@@ -99,22 +106,14 @@ class EnvironmentAnalysisController extends Controller
             $places = $this->searchPlacesByCategory($lat, $lng, $category, $radius);
             $analysis = $this->analyzeCategoryImpact($places, $category);
 
-            return response()->json([
-                'success' => true,
-                'data' => [
-                    'category' => $category,
-                    'places' => $places,
-                    'analysis' => $analysis,
-                    'count' => count($places)
-                ]
-            ]);
-
+            return ResponseService::success([
+                'category' => $category,
+                'places' => $places,
+                'analysis' => $analysis,
+                'count' => count($places)
+            ], "{$category} analizi başarıyla tamamlandı");
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => "'{$category}' analizi yapılırken hata oluştu",
-                'error' => config('app.debug') ? $e->getMessage() : null
-            ], 500);
+            return ResponseService::serverError("'{$category}' analizi yapılırken hata oluştu.", $e);
         }
     }
 
@@ -124,13 +123,17 @@ class EnvironmentAnalysisController extends Controller
      */
     public function predictLocationValue(Request $request): JsonResponse
     {
-        $request->validate([
+        $validated = $this->validateRequestWithResponse($request, [
             'lat' => 'required|numeric',
             'lng' => 'required|numeric',
             'property_type' => 'required|string|in:apartment,villa,office,land,commercial',
             'size' => 'nullable|numeric|min:1',
             'features' => 'nullable|array'
         ]);
+
+        if ($validated instanceof JsonResponse) {
+            return $validated;
+        }
 
         try {
             // Environment analysis for value prediction
@@ -155,22 +158,14 @@ class EnvironmentAnalysisController extends Controller
                 ]
             ]);
 
-            return response()->json([
-                'success' => true,
-                'data' => [
-                    'environmental_analysis' => $environmental,
-                    'value_prediction' => $prediction,
-                    'factors' => $this->getValueFactors($environmental),
-                    'investment_score' => $this->calculateInvestmentScore($environmental)
-                ]
-            ]);
-
+            return ResponseService::success([
+                'environmental_analysis' => $environmental,
+                'value_prediction' => $prediction,
+                'factors' => $this->getValueFactors($environmental),
+                'investment_score' => $this->calculateInvestmentScore($environmental)
+            ], 'Değer tahmini başarıyla tamamlandı');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Değer tahmini yapılırken hata oluştu',
-                'error' => config('app.debug') ? $e->getMessage() : null
-            ], 500);
+            return ResponseService::serverError('Değer tahmini yapılırken hata oluştu.', $e);
         }
     }
 
@@ -181,28 +176,55 @@ class EnvironmentAnalysisController extends Controller
     {
         $categories = [
             'transportation' => [
-                'subway_station', 'bus_station', 'public_transport',
-                'taxi_stand', 'ferry_terminal'
+                'subway_station',
+                'bus_station',
+                'public_transport',
+                'taxi_stand',
+                'ferry_terminal'
             ],
             'healthcare' => [
-                'hospital', 'clinic', 'pharmacy', 'dentist', 'veterinary'
+                'hospital',
+                'clinic',
+                'pharmacy',
+                'dentist',
+                'veterinary'
             ],
             'education' => [
-                'school', 'university', 'kindergarten', 'college', 'library'
+                'school',
+                'university',
+                'kindergarten',
+                'college',
+                'library'
             ],
             'shopping' => [
-                'supermarket', 'shopping_centre', 'marketplace',
-                'convenience', 'department_store'
+                'supermarket',
+                'shopping_centre',
+                'marketplace',
+                'convenience',
+                'department_store'
             ],
             'recreation' => [
-                'park', 'playground', 'sports_centre', 'swimming_pool',
-                'fitness_centre', 'cinema', 'theatre'
+                'park',
+                'playground',
+                'sports_centre',
+                'swimming_pool',
+                'fitness_centre',
+                'cinema',
+                'theatre'
             ],
             'coastal' => [
-                'beach', 'marina', 'pier', 'harbour', 'waterfront'
+                'beach',
+                'marina',
+                'pier',
+                'harbour',
+                'waterfront'
             ],
             'dining' => [
-                'restaurant', 'cafe', 'fast_food', 'bar', 'pub'
+                'restaurant',
+                'cafe',
+                'fast_food',
+                'bar',
+                'pub'
             ]
         ];
 
@@ -266,9 +288,8 @@ class EnvironmentAnalysisController extends Controller
             }, array_filter($data['elements'], function ($element) {
                 return isset($element['lat']) || isset($element['center']['lat']);
             }));
-
         } catch (\Exception $e) {
-            \Log::warning("Overpass API query failed for {$amenity}: " . $e->getMessage());
+            Log::warning("Overpass API query failed for {$amenity}: " . $e->getMessage());
             return [];
         }
     }
@@ -282,8 +303,10 @@ class EnvironmentAnalysisController extends Controller
 
         $distances = array_map(function ($place) use ($lat, $lng) {
             return $this->calculateDistance(
-                $lat, $lng,
-                $place['lat'], $place['lng']
+                $lat,
+                $lng,
+                $place['lat'],
+                $place['lng']
             );
         }, $places);
 
@@ -300,11 +323,11 @@ class EnvironmentAnalysisController extends Controller
         $dLat = deg2rad($lat2 - $lat1);
         $dLng = deg2rad($lng2 - $lng1);
 
-        $a = sin($dLat/2) * sin($dLat/2) +
-             cos(deg2rad($lat1)) * cos(deg2rad($lat2)) *
-             sin($dLng/2) * sin($dLng/2);
+        $a = sin($dLat / 2) * sin($dLat / 2) +
+            cos(deg2rad($lat1)) * cos(deg2rad($lat2)) *
+            sin($dLng / 2) * sin($dLng / 2);
 
-        $c = 2 * atan2(sqrt($a), sqrt(1-$a));
+        $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
 
         return $earth_radius * $c;
     }
@@ -343,7 +366,6 @@ Analiz Sonuçları: " . json_encode($analysis, JSON_UNESCAPED_UNICODE);
                 'weaknesses' => $insights['weaknesses'] ?? [],
                 'recommendations' => $insights['recommendations'] ?? []
             ];
-
         } catch (\Exception $e) {
             return [
                 'summary' => 'AI analizi yapılamadı',

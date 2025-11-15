@@ -15,7 +15,7 @@ return new class extends Migration
             // Yatak odası detayları (TatildeKirala/Airbnb "Nerede Uyuyacaksınız" özelliği)
             $table->json('bedroom_layout')->nullable();
             $table->text('sleeping_arrangement_notes')->nullable();
-            
+
             // Örnek bedroom_layout structure:
             // {
             //   "bedrooms": [

@@ -15,12 +15,12 @@
                 <p class="text-lg text-gray-600 mt-2">Manage system labels and tags</p>
             </div>
             <div class="flex gap-3">
-                <a href="{{ route('admin.etiket.create') }}" 
+                <a href="{{ route('admin.etiket.create') }}"
                    class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all duration-200 font-medium shadow-md hover:shadow-lg hover:scale-105 active:scale-95">
                     <i class="fas fa-plus mr-2"></i>
                     New Etiket
                 </a>
-                <a href="{{ route('admin.etiket.export') }}" 
+                <a href="{{ route('admin.etiket.export') }}"
                    class="inline-flex items-center px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-all duration-200 font-medium shadow-sm hover:shadow-md">
                     <i class="fas fa-download mr-2"></i>
                     Export
@@ -55,7 +55,7 @@
                         <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>Active</option>
                         <option value="inactive" {{ request('status') == 'inactive' ? 'selected' : '' }}>Inactive</option>
                     </select>
-                    <button type="submit" 
+                    <button type="submit"
                             class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all duration-200 font-medium shadow-md hover:shadow-lg col-span-1 md:col-span-1">
                         <i class="fas fa-search mr-2"></i>
                         Filter
@@ -73,8 +73,8 @@
                         <option value="deactivate">Deactivate</option>
                         <option value="delete">Delete</option>
                     </select>
-                    <button type="submit" 
-                            class="inline-flex items-center px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg transition-all duration-200 font-medium shadow-md hover:shadow-lg" 
+                    <button type="submit"
+                            class="inline-flex items-center px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg transition-all duration-200 font-medium shadow-md hover:shadow-lg"
                             onclick="return confirmBulkAction()">
                         <i class="fas fa-check mr-2"></i>
                         Apply
@@ -170,7 +170,7 @@
                                         <i class="fas fa-tags text-gray-400 text-4xl mb-4"></i>
                                         <p class="text-lg font-medium text-gray-900 mb-2">No etiketler found</p>
                                         <p class="text-gray-500 mb-4">Create your first etiket to get started</p>
-                                        <a href="{{ route('admin.etiket.create') }}" 
+                                        <a href="{{ route('admin.etiket.create') }}"
                                            class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all duration-200 font-medium shadow-md hover:shadow-lg">
                                             <i class="fas fa-plus mr-2"></i>
                                             Create Etiket

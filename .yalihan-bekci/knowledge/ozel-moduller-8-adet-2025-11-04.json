@@ -5,7 +5,7 @@
   "summary": "Projede 8 özel modül bulundu: TKGM, Arsa, Location API, YKM, Google Maps, WikiMapia, Yurt Dışı, Etiket",
   "importance": "CRITICAL",
   "status": "DOCUMENTED",
-  
+
   "modules": {
     "1_tkgm_tapu_kadastro": {
       "name": "TKGM Tapu Kadastro Sistemi",
@@ -47,7 +47,7 @@
         "Harita entegrasyonu (zayıf)"
       ]
     },
-    
+
     "2_arsa_hesaplama": {
       "name": "Arsa Hesaplama Sistemi",
       "completion": "75%",
@@ -78,11 +78,11 @@
         "dunum_to_m2": "alan_dunum * 1000"
       },
       "imar_limits": {
-        "konut": {"max_kaks": 1.5, "max_taks": 0.3},
-        "ticari": {"max_kaks": 2.5, "max_taks": 0.5},
-        "sanayi": {"max_kaks": 1.2, "max_taks": 0.4},
-        "tarla": {"max_kaks": 0.0, "max_taks": 0.0},
-        "bahce": {"max_kaks": 0.15, "max_taks": 0.1}
+        "konut": { "max_kaks": 1.5, "max_taks": 0.3 },
+        "ticari": { "max_kaks": 2.5, "max_taks": 0.5 },
+        "sanayi": { "max_kaks": 1.2, "max_taks": 0.4 },
+        "tarla": { "max_kaks": 0.0, "max_taks": 0.0 },
+        "bahce": { "max_kaks": 0.15, "max_taks": 0.1 }
       },
       "eksikler": [
         "Standalone admin sayfası yok (/admin/arsa/calculator)",
@@ -92,7 +92,7 @@
         "Database models kullanılmıyor"
       ]
     },
-    
+
     "3_turkiye_location_api": {
       "name": "Türkiye Location API Sistemi",
       "completion": "85%",
@@ -132,7 +132,7 @@
         "Nüfus bilgisi yok"
       ]
     },
-    
+
     "4_ykm_koordinat": {
       "name": "YKM (Yükseklik Kotu Müdürlüğü) Koordinat Sistemi",
       "completion": "70%",
@@ -161,7 +161,7 @@
         "KML/GeoJSON import/export yok"
       ]
     },
-    
+
     "5_google_maps": {
       "name": "Google Maps Entegrasyonu",
       "completion": "80%",
@@ -188,7 +188,7 @@
         "Cost optimization gerekli"
       ]
     },
-    
+
     "6_wikimapia_search": {
       "name": "WikiMapia Site/Apartman Search",
       "completion": "95%",
@@ -239,7 +239,7 @@
         "Bulk import yok"
       ]
     },
-    
+
     "7_yurtdisi_gayrimenkul": {
       "name": "Yurt Dışı Gayrimenkul & Çoklu Para Birimi",
       "completion": "90%",
@@ -254,10 +254,7 @@
         "ilanlar.kur_tarihi"
       ],
       "models": ["Ulke", "Il", "Ilan"],
-      "api_endpoints": [
-        "GET /api/location/countries",
-        "GET /api/location/cities/{countryId}"
-      ],
+      "api_endpoints": ["GET /api/location/countries", "GET /api/location/cities/{countryId}"],
       "features": [
         "Çoklu para birimi desteği",
         "Otomatik TRY çevirimi",
@@ -284,7 +281,7 @@
         "Kur hesaplayıcı widget yok"
       ]
     },
-    
+
     "8_etiket_sistemi": {
       "name": "Etiket (Tag/Label) Sistemi",
       "completion": "85%",
@@ -310,10 +307,7 @@
           ],
           "soft_delete": true
         },
-        "pivot_tables": [
-          "etiket_kisi (CRM)",
-          "blog_post_tags (Blog)"
-        ]
+        "pivot_tables": ["etiket_kisi (CRM)", "blog_post_tags (Blog)"]
       },
       "features": [
         "Many-to-many ilişkiler",
@@ -348,7 +342,7 @@
       ]
     }
   },
-  
+
   "statistics": {
     "total_modules": 8,
     "average_completion": "83.75%",
@@ -358,13 +352,17 @@
     "api_completion": "90%",
     "overall_rating": "9/10"
   },
-  
+
   "priority_improvements": {
     "high_priority": [
       {
         "task": "WikiMapia UI Modernizasyonu",
         "timeline": "1-2 hafta",
-        "actions": ["Neo → Tailwind migration", "Place detay modal", "İlan ile place ilişkilendirme"]
+        "actions": [
+          "Neo → Tailwind migration",
+          "Place detay modal",
+          "İlan ile place ilişkilendirme"
+        ]
       },
       {
         "task": "Yurt Dışı Kur API",
@@ -374,7 +372,11 @@
       {
         "task": "Etiket - İlan Entegrasyonu",
         "timeline": "1 hafta",
-        "actions": ["İlan modeline etiket ilişkisi", "İlan listesinde etiket filtresi", "Badge görünümü"]
+        "actions": [
+          "İlan modeline etiket ilişkisi",
+          "İlan listesinde etiket filtresi",
+          "Badge görünümü"
+        ]
       },
       {
         "task": "TKGM Frontend Modernize",
@@ -401,7 +403,7 @@
       "Mobile app entegrasyonu"
     ]
   },
-  
+
   "lessons_learned": {
     "backend_strength": {
       "lesson": "Backend altyapısı çok güçlü (%95)",
@@ -450,7 +452,7 @@
       ]
     }
   },
-  
+
   "yalihan_bekci_rules": {
     "wikimapia": {
       "url": "/admin/wikimapia-search",
@@ -484,27 +486,26 @@
       "features": ["Geocoding", "Reverse geocoding", "Nearby search"]
     }
   },
-  
+
   "best_module": {
     "name": "WikiMapia Search",
     "rating": "9.5/10",
     "completion": "95%",
     "reason": "Tam entegre, UI var, API güçlü, cache var, dark mode var"
   },
-  
+
   "most_innovative": {
     "name": "Çoklu Para Birimi Sistemi",
     "reason": "Orijinal fiyat korunuyor, otomatik TRY çevirimi, kur oranı saklama"
   },
-  
+
   "most_useful": {
     "name": "Etiket Sistemi",
     "reason": "CRM & Blog'da kullanılıyor, many-to-many, flexible"
   },
-  
+
   "documentation": [
     "OZEL-MODULLER-DURUM-RAPORU-2025-11-04.md (İlk 5 modül)",
     "OZEL-MODULLER-EK-RAPOR-2025-11-04.md (Son 3 modül)"
   ]
 }
-

@@ -1,9 +1,9 @@
 <template>
   <div class="ai-chat-widget" :class="{ 'expanded': isExpanded }">
     <!-- Chat Toggle Button -->
-    <button 
-      v-if="!isExpanded" 
-      @click="toggleChat" 
+    <button
+      v-if="!isExpanded"
+      @click="toggleChat"
       class="chat-toggle-btn"
       :disabled="loading"
     >
@@ -26,15 +26,15 @@
       </div>
 
       <!-- Messages -->
-      <div class="chat-messages" ref="messagesContainer">
+<div class="chat-messages" ref="messagesContainer" role="log" aria-live="polite" aria-relevant="additions text">
         <div v-if="messages.length === 0" class="welcome-message">
           <div class="welcome-content">
             <i class="fas fa-robot text-primary mb-2"></i>
             <h5>Merhaba! 👋</h5>
             <p>Ben Emlak Pro AI asistanınızım. Size nasıl yardımcı olabilirim?</p>
             <div class="quick-actions">
-              <button 
-                v-for="action in quickActions" 
+              <button
+                v-for="action in quickActions"
                 :key="action.id"
                 @click="sendQuickMessage(action.message)"
                 class="quick-action-btn"
@@ -46,10 +46,10 @@
           </div>
         </div>
 
-        <div 
-          v-for="message in messages" 
-          :key="message.id" 
-          class="message" 
+        <div
+          v-for="message in messages"
+          :key="message.id"
+          class="message"
           :class="message.type"
         >
           <div class="message-content">
@@ -72,8 +72,8 @@
       <!-- Input -->
       <div class="chat-input">
         <div class="input-group">
-          <input 
-            v-model="currentMessage" 
+          <input
+            v-model="currentMessage"
             @keypress.enter="sendMessage"
             @input="handleTyping"
             placeholder="Mesajınızı yazın..."
@@ -81,8 +81,8 @@
             :disabled="loading"
             maxlength="1000"
           >
-          <button 
-            @click="sendMessage" 
+          <button
+            @click="sendMessage"
             class="btn neo-btn neo-btn-primary"
             :disabled="loading || !currentMessage.trim()"
           >
@@ -103,7 +103,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import AIService from '../../admin/services/AIService.js'
 
 export default {
   name: 'AIChatWidget',
@@ -156,41 +156,37 @@ export default {
         });
       }
     },
-    
+
     async sendMessage() {
       if (!this.currentMessage.trim() || this.loading) return;
-      
+
       const userMessage = {
         id: Date.now(),
         type: 'user',
         text: this.currentMessage.trim(),
         timestamp: new Date()
       };
-      
+
       this.messages.push(userMessage);
       const messageText = this.currentMessage;
       this.currentMessage = '';
       this.loading = true;
-      
+
       this.$nextTick(() => {
         this.scrollToBottom();
       });
-      
+
       try {
-        const response = await axios.post('/api/ai/chat', {
-          message: messageText,
-          context: this.getContext()
-        });
-        
-        if (response.data.success) {
+        const res = await AIService.chat({ session_id: 'default', user_msg: messageText, context: this.getContext() }, { rateMs: 250 })
+        if (res && (res.status === true || res.success === true)) {
           const aiMessage = {
             id: Date.now() + 1,
             type: 'ai',
-            text: response.data.message,
+            text: (res.data && (res.data.message || res.data.answer || res.message)) || res.message || 'Yanıt oluşturuldu',
             timestamp: new Date(),
-            provider: response.data.provider
+            provider: res.provider || 'backend'
           };
-          
+
           this.messages.push(aiMessage);
           this.connectionStatus = 'connected';
         } else {
@@ -199,7 +195,7 @@ export default {
       } catch (error) {
         console.error('AI Chat Error:', error);
         this.connectionStatus = 'error';
-        
+
         if (error.response?.status === 429) {
           this.addErrorMessage('Çok fazla istek gönderdiniz. Lütfen biraz bekleyip tekrar deneyin.');
         } else if (error.response?.status === 401) {
@@ -214,12 +210,12 @@ export default {
         });
       }
     },
-    
+
     sendQuickMessage(message) {
       this.currentMessage = message;
       this.sendMessage();
     },
-    
+
     addErrorMessage(text) {
       const errorMessage = {
         id: Date.now(),
@@ -229,7 +225,7 @@ export default {
       };
       this.messages.push(errorMessage);
     },
-    
+
     getContext() {
       // Sayfa bağlamını topla
       const context = {
@@ -237,20 +233,20 @@ export default {
         user_agent: navigator.userAgent,
         timestamp: new Date().toISOString()
       };
-      
+
       // Eğer emlak detay sayfasındaysak, emlak bilgilerini ekle
       if (window.currentProperty) {
         context.property = window.currentProperty;
       }
-      
+
       // Eğer müşteri sayfasındaysak, müşteri bilgilerini ekle
       if (window.currentCustomer) {
         context.customer = window.currentCustomer;
       }
-      
+
       return context;
     },
-    
+
     formatMessage(text) {
       // Markdown benzeri formatlamalar
       return text
@@ -259,25 +255,25 @@ export default {
         .replace(/\n/g, '<br>')
         .replace(/`(.*?)`/g, '<code>$1</code>');
     },
-    
+
     formatTime(timestamp) {
       return new Date(timestamp).toLocaleTimeString('tr-TR', {
         hour: '2-digit',
         minute: '2-digit'
       });
     },
-    
+
     scrollToBottom() {
       const container = this.$refs.messagesContainer;
       if (container) {
         container.scrollTop = container.scrollHeight;
       }
     },
-    
+
     handleTyping() {
       // Typing indicator için gelecekte kullanılabilir
     },
-    
+
     loadChatHistory() {
       // LocalStorage'dan chat geçmişini yükle
       const saved = localStorage.getItem('ai_chat_history');
@@ -294,7 +290,7 @@ export default {
         }
       }
     },
-    
+
     saveChatHistory() {
       // Chat geçmişini kaydet (KVKK uyumlu olarak)
       try {
@@ -305,7 +301,7 @@ export default {
       }
     }
   },
-  
+
   watch: {
     messages: {
       handler() {
@@ -612,7 +608,7 @@ export default {
     bottom: 80px;
     right: 20px;
   }
-  
+
   .chat-toggle-btn {
     width: 50px;
     height: 50px;

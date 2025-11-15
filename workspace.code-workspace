@@ -2,8 +2,8 @@
     "folders": [
         {
             "path": ".",
-            "name": "EmlakPro - Yalıhan Emlak Yönetim Sistemi"
-        }
+            "name": "EmlakPro - Yalıhan Emlak Yönetim Sistemi",
+        },
     ],
     "settings": {
         // ==========================================
@@ -11,7 +11,7 @@
         // ==========================================
         "editor.formatOnSave": true,
         "editor.codeActionsOnSave": {
-            "source.fixAll": "explicit"
+            "source.fixAll": "explicit",
         },
         "files.autoSave": "afterDelay",
         "editor.tabSize": 4,
@@ -28,7 +28,7 @@
         "editor.quickSuggestions": {
             "other": true,
             "comments": false,
-            "strings": true
+            "strings": true,
         },
 
         // ==========================================
@@ -39,15 +39,21 @@
         "context7.memoryManagement": true,
         "context7.documentationSync": true,
         "context7.ruleSync": true,
-        "context7.rulesPath": ".cursor/rules",
-        "context7.docsPath": "docs",
-        "context7.memoryPath": ".cursor/memory",
+        "context7.rulesPath": "${workspaceFolder}/.cursor/rules",
+        "context7.docsPath": "${workspaceFolder}/docs",
+        "context7.memoryPath": "${workspaceFolder}/.cursor/memory",
         "context7.autoSync": true,
         "context7.backupEnabled": true,
         "context7.contextAware": true,
         "context7.smartSuggestions": true,
         "context7.codeAnalysis": true,
         "context7.performanceTracking": true,
+        "context7.authorityFile": "${workspaceFolder}/.context7/authority.json",
+        "context7.documentationPath": "${workspaceFolder}/.context7",
+        "context7.standardsPath": "${workspaceFolder}/.context7/PERMANENT_STANDARDS.md",
+        "context7.enforcement": "STRICT",
+        "context7.version": "5.4.0",
+        "context7.complianceCheck": true,
 
         // ==========================================
         // 📝 DOKÜMANTASYON AYARLARI
@@ -68,18 +74,22 @@
         "php.validate.enable": true,
         "php.suggest.basic": true,
         "php.validate.run": "onType",
-        "php.executablePath": "/Applications/MAMP/bin/php/php8.3.8/bin/php",
-        "php.debug.executablePath": "/Applications/MAMP/bin/php/php8.3.8/bin/php",
+        "php.executablePath": "/opt/homebrew/bin/php",
+        "php.debug.executablePath": "/opt/homebrew/bin/php",
+        "php.validate.executablePath": "/opt/homebrew/bin/php",
+        "laravel-extra-intellisense.php.executablePath": "/opt/homebrew/bin/php",
+        "laravel-extra-intellisense.php.path": "/opt/homebrew/bin/php",
+        "laravel-extra-intellisense.php.command": "/opt/homebrew/bin/php",
+        "laravel-extra-intellisense.environment": {
+            "PATH": "/opt/homebrew/bin:/opt/homebrew/sbin:${env:PATH}"
+        },
 
         // JavaScript/TypeScript
         "typescript.validate.enable": false,
         "javascript.validate.enable": true,
         "typescript.preferences.includePackageJsonAutoImports": "off",
         "typescript.suggest.enabled": false,
-        "typescript.preferences.exclude": [
-            "mcp-server/**/*",
-            "**/mcp-server/**"
-        ],
+        "typescript.preferences.exclude": ["mcp-server/**/*", "**/mcp-server/**"],
 
         // Blade Template
         "blade.format.enable": true,
@@ -90,42 +100,42 @@
         "[blade]": {
             "editor.tabSize": 4,
             "editor.insertSpaces": true,
-            "editor.defaultFormatter": "shufo.vscode-blade-formatter"
+            "editor.defaultFormatter": "shufo.vscode-blade-formatter",
         },
         "[php]": {
             "editor.tabSize": 4,
-            "editor.insertSpaces": true
+            "editor.insertSpaces": true,
         },
         "[javascript]": {
             "editor.tabSize": 2,
             "editor.insertSpaces": true,
-            "editor.defaultFormatter": "esbenp.prettier-vscode"
+            "editor.defaultFormatter": "esbenp.prettier-vscode",
         },
         "[vue]": {
             "editor.tabSize": 2,
-            "editor.defaultFormatter": "esbenp.prettier-vscode"
+            "editor.defaultFormatter": "esbenp.prettier-vscode",
         },
         "[css]": {
             "editor.tabSize": 2,
-            "editor.defaultFormatter": "esbenp.prettier-vscode"
+            "editor.defaultFormatter": "esbenp.prettier-vscode",
         },
         "[scss]": {
             "editor.tabSize": 2,
-            "editor.defaultFormatter": "esbenp.prettier-vscode"
+            "editor.defaultFormatter": "esbenp.prettier-vscode",
         },
         "[json]": {
             "editor.tabSize": 2,
-            "editor.defaultFormatter": "esbenp.prettier-vscode"
+            "editor.defaultFormatter": "esbenp.prettier-vscode",
         },
         "[jsonc]": {
             "editor.tabSize": 2,
-            "editor.defaultFormatter": "esbenp.prettier-vscode"
+            "editor.defaultFormatter": "esbenp.prettier-vscode",
         },
         "[markdown]": {
             "editor.wordWrap": "bounded",
             "editor.wordWrapColumn": 120,
             "editor.rulers": [120],
-            "editor.defaultFormatter": "esbenp.prettier-vscode"
+            "editor.defaultFormatter": "esbenp.prettier-vscode",
         },
 
         // Prettier Genel Ayarları
@@ -149,7 +159,7 @@
             ".copilot-context.md": "markdown",
             "mcp-server/*.js": "javascript",
             "*.mdc": "markdown",
-            "*.neon": "yaml"
+            "*.neon": "yaml",
         },
 
         // Dosya Organizasyonu
@@ -165,7 +175,7 @@
             "README.md": "CHANGELOG.md, LICENSE, .gitignore, .copilot-context.md, API_TOKEN_SETUP.md",
             "*.mdc": "${capture}.md, ${capture}.txt",
             "phpunit.xml": "phpunit.xml.dist",
-            "vite.config.js": "postcss.config.js, tailwind.config.js"
+            "vite.config.js": "postcss.config.js, tailwind.config.js",
         },
 
         // ==========================================
@@ -179,19 +189,19 @@
             "**/bootstrap/cache": true,
             "**/public/storage": true,
             "**/.git": true,
-            "**/tests/coverage": true
+            "**/tests/coverage": true,
         },
         "files.exclude": {
             "**/storage/logs": true,
             "**/bootstrap/cache": true,
             "**/.DS_Store": true,
-            "**/Thumbs.db": true
+            "**/Thumbs.db": true,
         },
         "files.watcherExclude": {
             "**/vendor/**": true,
             "**/node_modules/**": true,
             "**/storage/**": true,
-            "**/.git/**": true
+            "**/.git/**": true,
         },
 
         // ==========================================
@@ -202,6 +212,17 @@
         "terminal.integrated.scrollback": 10000,
         "terminal.integrated.enablePersistentSessions": true,
         "terminal.integrated.shellIntegration.enabled": true,
+        "terminal.integrated.env.osx": {
+            "PATH": "/opt/homebrew/bin:/opt/homebrew/sbin:${env:PATH}",
+        },
+        "terminal.integrated.inheritEnv": true,
+        "terminal.integrated.automationProfile.osx": {
+            "path": "/bin/zsh",
+            "args": ["-l"],
+            "env": {
+                "PATH": "/opt/homebrew/bin:/opt/homebrew/sbin:${env:PATH}",
+            },
+        },
 
         // ==========================================
         // 🎨 EMMET VE HTML AYARLARI
@@ -209,19 +230,14 @@
         "emmet.includeLanguages": {
             "blade": "html",
             "vue": "html",
-            "javascript": "javascriptreact"
+            "javascript": "javascriptreact",
         },
         "emmet.triggerExpansionOnTab": true,
 
         // ==========================================
         // 🔧 LINTING VE KALİTE KONTROLÜ
         // ==========================================
-        "eslint.validate": [
-            "javascript",
-            "javascriptreact",
-            "typescript",
-            "vue"
-        ],
+        "eslint.validate": ["javascript", "javascriptreact", "typescript", "vue"],
         "eslint.workingDirectories": ["."],
         "css.validate": true,
         "scss.validate": true,
@@ -241,15 +257,7 @@
         // 🎯 TODO TREE AYARLARI
         // ==========================================
         "todo-tree.tree.showScanModeButton": false,
-        "todo-tree.general.tags": [
-            "BUG",
-            "HACK",
-            "FIXME",
-            "TODO",
-            "XXX",
-            "[ ]",
-            "[x]"
-        ],
+        "todo-tree.general.tags": ["BUG", "HACK", "FIXME", "TODO", "XXX", "[ ]", "[x]"],
         "todo-tree.regex.regex": "(//|#|<!--|;|/\\*|^|^\\s*(-|\\d+.))\\s*($TAGS)",
 
         // ==========================================
@@ -269,7 +277,7 @@
         "workbench.panel.defaultLocation": "bottom",
         "workbench.statusBar.visible": true,
         "workbench.editorAssociations": {
-            "*.md": "vscode.markdown.preview.editor"
+            "*.md": "vscode.markdown.preview.editor",
         },
 
         // ==========================================
@@ -283,7 +291,88 @@
         // 📦 EXTENSIONS AYARLARI
         // ==========================================
         "extensions.ignoreRecommendations": false,
-        "git.ignoreLimitWarning": true
+        "git.ignoreLimitWarning": true,
+
+        // ==========================================
+        // 🤖 YALIHAN BEKÇİ & MCP SERVERS
+        // ==========================================
+        "yalihanBekci.enabled": true,
+        "yalihanBekci.projectRoot": "${workspaceFolder}",
+        "yalihanBekci.autoLearn": true,
+        "yalihanBekci.knowledgePath": "${workspaceFolder}/yalihan-bekci/knowledge",
+        "yalihanBekci.reportsPath": "${workspaceFolder}/yalihan-bekci/reports",
+        "yalihanBekci.rulesPath": "${workspaceFolder}/.cursor/rules",
+        "yalihanBekci.mcpServerPath": "${workspaceFolder}/yalihan-bekci/server/mcp-server.js",
+
+        // MCP Server Configuration
+        "mcp.servers": {
+            "yalihan-bekci": {
+                "command": "node",
+                "args": ["${workspaceFolder}/yalihan-bekci/server/mcp-server.js"],
+                "env": {
+                    "PROJECT_ROOT": "${workspaceFolder}",
+                    "AUTO_LEARN": "true",
+                },
+            },
+            "context7": {
+                "command": "docker",
+                "args": ["run", "-i", "--rm", "mcp/context7"],
+                "env": {
+                    "CTX7_API_KEY": "${env:CTX7_API_KEY}"
+                }
+            },
+            "memory": {
+                "command": "docker",
+                "args": [
+                    "run",
+                    "-i",
+                    "--rm",
+                    "-v",
+                    "${workspaceFolder}:/local-directory",
+                    "mcp/memory",
+                ],
+            },
+            "database": {
+                "command": "docker",
+                "args": [
+                    "run",
+                    "-i",
+                    "--rm",
+                    "--network",
+                    "host",
+                    "-e",
+                    "DB_HOST=127.0.0.1",
+                    "-e",
+                    "DB_PORT=3306",
+                    "-e",
+                    "DB_USER=root",
+                    "-e",
+                    "DB_PASSWORD=",
+                    "-e",
+                    "DB_NAME=yalihanemlak_ultra",
+                    "mcp/database",
+                ],
+            },
+            "laravel": {
+                "command": "node",
+                "args": ["${workspaceFolder}/mcp-servers/laravel-mcp.js"],
+                "env": {
+                    "PROJECT_ROOT": "${workspaceFolder}",
+                },
+            },
+        },
+
+        // ==========================================
+        // 📋 CURSOR RULES & CONTEXT7 STANDARDS
+        // ==========================================
+        "cursor.rules.enabled": true,
+        "cursor.rules.path": "${workspaceFolder}/.cursor/rules",
+        "cursor.rules.additionalPaths": [
+            "${workspaceFolder}/.cursor/rules/context7-rules.md",
+            "${workspaceFolder}/.cursor/rules/context7.mdc",
+            "${workspaceFolder}/.cursor/rules/mandatory-workflow-checks.mdc",
+            "${workspaceFolder}/.cursor/rules/yalihan-bekci-strict-rules.mdc",
+        ],
     },
 
     // ==========================================
@@ -348,8 +437,8 @@
             // AI & Copilot
             "github.copilot",
             "github.copilot-chat",
-            "upstash.context7-mcp"
-        ]
+            "upstash.context7-mcp",
+        ],
     },
 
     // ==========================================
@@ -367,9 +456,9 @@
                     "echo": true,
                     "reveal": "always",
                     "focus": false,
-                    "panel": "shared"
+                    "panel": "shared",
                 },
-                "problemMatcher": []
+                "problemMatcher": [],
             },
             {
                 "label": "🌐 Start Laravel Server",
@@ -380,9 +469,9 @@
                     "echo": true,
                     "reveal": "always",
                     "focus": false,
-                    "panel": "shared"
+                    "panel": "shared",
                 },
-                "problemMatcher": []
+                "problemMatcher": [],
             },
             {
                 "label": "🤖 Start MCP Server",
@@ -393,9 +482,9 @@
                     "echo": true,
                     "reveal": "always",
                     "focus": false,
-                    "panel": "shared"
+                    "panel": "shared",
                 },
-                "problemMatcher": []
+                "problemMatcher": [],
             },
             {
                 "label": "💾 Backup Database",
@@ -406,8 +495,8 @@
                     "echo": true,
                     "reveal": "always",
                     "focus": false,
-                    "panel": "shared"
-                }
+                    "panel": "shared",
+                },
             },
             {
                 "label": "🧹 Laravel: Clear Cache",
@@ -418,8 +507,8 @@
                     "echo": true,
                     "reveal": "always",
                     "focus": false,
-                    "panel": "shared"
-                }
+                    "panel": "shared",
+                },
             },
             {
                 "label": "🗄️ Laravel: Run Migrations",
@@ -430,8 +519,8 @@
                     "echo": true,
                     "reveal": "always",
                     "focus": false,
-                    "panel": "shared"
-                }
+                    "panel": "shared",
+                },
             },
             {
                 "label": "🧪 Test MCP Server",
@@ -442,8 +531,8 @@
                     "echo": true,
                     "reveal": "always",
                     "focus": false,
-                    "panel": "shared"
-                }
+                    "panel": "shared",
+                },
             },
             {
                 "label": "📚 Context7: Update Rules",
@@ -454,8 +543,8 @@
                     "echo": true,
                     "reveal": "always",
                     "focus": false,
-                    "panel": "shared"
-                }
+                    "panel": "shared",
+                },
             },
             {
                 "label": "🧠 Context7: Sync Memory",
@@ -466,8 +555,8 @@
                     "echo": true,
                     "reveal": "always",
                     "focus": false,
-                    "panel": "shared"
-                }
+                    "panel": "shared",
+                },
             },
             {
                 "label": "💾 Context7: Backup Memory",
@@ -478,8 +567,8 @@
                     "echo": true,
                     "reveal": "always",
                     "focus": false,
-                    "panel": "shared"
-                }
+                    "panel": "shared",
+                },
             },
             {
                 "label": "🔧 Composer Install",
@@ -490,8 +579,8 @@
                     "echo": true,
                     "reveal": "always",
                     "focus": false,
-                    "panel": "shared"
-                }
+                    "panel": "shared",
+                },
             },
             {
                 "label": "📦 NPM Install",
@@ -502,8 +591,8 @@
                     "echo": true,
                     "reveal": "always",
                     "focus": false,
-                    "panel": "shared"
-                }
+                    "panel": "shared",
+                },
             },
             {
                 "label": "🏗️ Build Assets",
@@ -514,8 +603,8 @@
                     "echo": true,
                     "reveal": "always",
                     "focus": false,
-                    "panel": "shared"
-                }
+                    "panel": "shared",
+                },
             },
             {
                 "label": "🧪 Run Tests",
@@ -526,10 +615,10 @@
                     "echo": true,
                     "reveal": "always",
                     "focus": false,
-                    "panel": "shared"
-                }
-            }
-        ]
+                    "panel": "shared",
+                },
+            },
+        ],
     },
 
     // ==========================================
@@ -549,8 +638,8 @@
                 "runtimeArgs": ["-dxdebug.start_with_request=yes"],
                 "env": {
                     "XDEBUG_MODE": "debug,develop",
-                    "XDEBUG_CONFIG": "client_port=9003"
-                }
+                    "XDEBUG_CONFIG": "client_port=9003",
+                },
             },
             {
                 "name": "Listen for Xdebug",
@@ -558,8 +647,8 @@
                 "request": "launch",
                 "port": 9003,
                 "pathMappings": {
-                    "/app": "${workspaceFolder}"
-                }
+                    "/app": "${workspaceFolder}",
+                },
             },
             {
                 "name": "Launch Chrome",
@@ -568,9 +657,9 @@
                 "url": "http://localhost:8000",
                 "webRoot": "${workspaceFolder}/public",
                 "sourceMapPathOverrides": {
-                    "/app/*": "${workspaceFolder}/*"
-                }
-            }
-        ]
-    }
+                    "/app/*": "${workspaceFolder}/*",
+                },
+            },
+        ],
+    },
 }

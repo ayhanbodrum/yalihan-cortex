@@ -48,7 +48,7 @@
                     <ul class="list-disc list-inside text-sm text-yellow-800 dark:text-yellow-200 mb-3 space-y-1">
                         @foreach($yanlisEklenenYayinTipleri as $yanlis)
                         <li>
-                            <strong>{{ $yanlis->name }}</strong> 
+                            <strong>{{ $yanlis->name }}</strong>
                             (ID: {{ $yanlis->id }}, Seviye: {{ $yanlis->seviye }})
                         </li>
                         @endforeach
@@ -57,7 +57,7 @@
                         Bu kayıtları silip yukarıdaki <strong>"Yayın Tipi Ekle"</strong> butonunu kullanarak doğru şekilde ekleyin.
                     </p>
                     <div class="flex gap-2">
-                        <a href="{{ route('admin.ilan-kategorileri.index') }}?search={{ urlencode($yanlisEklenenYayinTipleri->first()->name) }}" 
+                        <a href="{{ route('admin.ilan-kategorileri.index') }}?search={{ urlencode($yanlisEklenenYayinTipleri->first()->name) }}"
                            class="text-xs text-yellow-700 dark:text-yellow-300 hover:underline">
                             <i class="fas fa-edit mr-1"></i> Bu Kayıtları Düzenle
                         </a>
@@ -80,7 +80,7 @@
                         <p class="text-sm text-blue-800 dark:text-blue-200 mb-3">
                             Alt kategori oluşturduktan sonra yayın tipi eşleştirmelerini burada yönetebilirsiniz.
                         </p>
-                        
+
                         <!-- Debug Bilgisi (Sadece geliştirme modunda) -->
                         @if(config('app.debug'))
                         <div class="mt-3 p-3 bg-gray-100 dark:bg-gray-900 rounded text-xs font-mono">
@@ -94,22 +94,22 @@
                                 <div>Seviye: <span class="font-bold">{{ $kategori->seviye }}</span></div>
                             </div>
                             <div class="mt-2 pt-2 border-t border-gray-300 dark:border-gray-700">
-                                <a href="{{ route('admin.ilan-kategorileri.create') }}?parent_id={{ $kategori->id }}&seviye=1" 
+                                <a href="{{ route('admin.ilan-kategorileri.create') }}?parent_id={{ $kategori->id }}&seviye=1"
                                    class="text-blue-600 dark:text-blue-400 hover:underline">
                                     ➕ Alt Kategori Oluştur
                                 </a>
                             </div>
                         </div>
                         @endif
-                        
+
                         <!-- Hızlı Erişim -->
                         <div class="mt-3 flex gap-2">
-                            <a href="{{ route('admin.ilan-kategorileri.index') }}" 
+                            <a href="{{ route('admin.ilan-kategorileri.index') }}"
                                class="text-xs text-blue-600 dark:text-blue-400 hover:underline">
                                 <i class="fas fa-list mr-1"></i> Tüm Kategorileri Görüntüle
                             </a>
                             <span class="text-blue-300 dark:text-blue-700">|</span>
-                            <a href="{{ route('admin.ilan-kategorileri.create') }}?parent_id={{ $kategori->id }}&seviye=1" 
+                            <a href="{{ route('admin.ilan-kategorileri.create') }}?parent_id={{ $kategori->id }}&seviye=1"
                                class="text-xs text-blue-600 dark:text-blue-400 hover:underline">
                                 <i class="fas fa-plus mr-1"></i> Yeni Alt Kategori Ekle
                             </a>
@@ -394,7 +394,7 @@ console.log('✅ PropertyTypeManager scripts loaded! v5.0 (Optimized)');
 const PropertyTypeManager = {
     csrfToken: null,
     debounceTimers: {},
-    
+
     // CSRF token'ı initialize et
     init() {
         this.csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
@@ -406,13 +406,13 @@ const PropertyTypeManager = {
         }
         return this;
     },
-    
+
     // Generic AJAX request handler
     async request(url, data = {}, method = 'POST') {
         if (!this.csrfToken) {
             throw new Error('CSRF token not initialized');
         }
-        
+
         const response = await fetch(url, {
             method,
             headers: {
@@ -422,7 +422,7 @@ const PropertyTypeManager = {
             },
             body: JSON.stringify(data)
         });
-        
+
         // Content-Type validation
         const contentType = response.headers.get('content-type');
         if (!contentType?.includes('application/json')) {
@@ -430,21 +430,21 @@ const PropertyTypeManager = {
             console.error('❌ Non-JSON response:', text.substring(0, 500));
             throw new Error('Server returned HTML instead of JSON');
         }
-        
+
         if (!response.ok) {
             const errorData = await response.json();
             throw new Error(errorData.message || `HTTP ${response.status}`);
         }
-        
+
         return response.json();
     },
-    
+
     // Debounce helper
     debounce(key, callback, delay = 300) {
         clearTimeout(this.debounceTimers[key]);
         this.debounceTimers[key] = setTimeout(callback, delay);
     },
-    
+
     // Toast notifications
     showSuccess(message) {
         if (window.toast?.success) {
@@ -458,7 +458,7 @@ const PropertyTypeManager = {
             }
         }
     },
-    
+
     showError(message) {
         if (window.toast?.error) {
             window.toast.error(message);
@@ -471,7 +471,7 @@ const PropertyTypeManager = {
             }
         }
     },
-    
+
     // Loading overlay
     showLoading(show = true) {
         const overlay = document.getElementById('loadingOverlay');
@@ -491,11 +491,11 @@ async function toggleYayinTipiRelation(checkbox) {
     const { altKategoriId, yayinTipiId, yayinTipiName } = checkbox.dataset;
     const enabled = checkbox.checked;
     const label = checkbox.closest('label');
-    
+
     // Loading state
     checkbox.disabled = true;
     label?.classList.add('opacity-50', 'cursor-wait');
-    
+
     try {
         const data = await PropertyTypeManager.request(
             '{{ route("admin.property-type-manager.toggle-yayin-tipi", $kategori->id) }}',
@@ -505,19 +505,19 @@ async function toggleYayinTipiRelation(checkbox) {
                 enabled: enabled
             }
         );
-        
+
         if (data.success) {
             // Visual feedback - Optimized class toggle
             const classes = {
                 active: ['bg-green-50', 'dark:bg-green-900/20', 'border-green-300', 'dark:border-green-700'],
                 inactive: ['bg-gray-50', 'dark:bg-gray-700', 'border-gray-300', 'dark:border-gray-600']
             };
-            
+
             if (label) {
                 label.classList.remove(...(enabled ? classes.inactive : classes.active));
                 label.classList.add(...(enabled ? classes.active : classes.inactive));
             }
-            
+
             PropertyTypeManager.showSuccess(`${yayinTipiName} ${enabled ? 'etkinleştirildi' : 'devre dışı bırakıldı'}`);
             console.log('✅ Yayın tipi ilişkisi güncellendi:', data);
         }
@@ -537,10 +537,10 @@ async function toggleFieldDependency(checkbox) {
     const { fieldId, fieldSlug, fieldName, fieldType, fieldCategory, yayinTipiId, yayinTipiSlug } = checkbox.dataset;
     const enabled = checkbox.checked;
     const upsertMode = !fieldId;
-    
+
     // Loading state
     checkbox.disabled = true;
-    
+
     try {
         const payload = upsertMode ? {
             kategori_slug: '{{ $kategori->slug }}',
@@ -555,18 +555,18 @@ async function toggleFieldDependency(checkbox) {
             field_id: parseInt(fieldId),
             enabled: enabled
         };
-        
+
         const data = await PropertyTypeManager.request(
             '{{ route("admin.property-type-manager.toggle-field-dependency") }}',
             payload
         );
-        
+
         if (data.success) {
             // Upsert mode: field_id'yi DOM'a kaydet
             if (upsertMode && data.data?.field_id) {
                 checkbox.setAttribute('data-field-id', data.data.field_id);
             }
-            
+
             PropertyTypeManager.showSuccess('Alan ilişkisi güncellendi');
             console.log('✅ Field dependency güncellendi:', data);
         }
@@ -601,21 +601,21 @@ function closeAddYayinTipiModal() {
 // Yeni Yayın Tipi Ekle
 async function addYayinTipi(e) {
     e.preventDefault();
-    
+
     const name = document.getElementById('modalYayinTipi')?.value?.trim();
     if (!name) {
         PropertyTypeManager.showError('Yayın tipi adı gerekli');
         return;
     }
-    
+
     PropertyTypeManager.showLoading(true);
-    
+
     try {
         const data = await PropertyTypeManager.request(
             "{{ route('admin.property-type-manager.create-yayin-tipi', $kategori->id) }}",
             { name }
         );
-        
+
         if (data.success) {
             PropertyTypeManager.showSuccess('Yayın tipi eklendi! Sayfa yenileniyor...');
             setTimeout(() => location.reload(), 1000);
@@ -633,7 +633,7 @@ document.addEventListener('DOMContentLoaded', function() {
         modal.addEventListener('click', (e) => {
             if (e.target === modal) closeAddYayinTipiModal();
         });
-        
+
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
                 closeAddYayinTipiModal();
@@ -651,14 +651,14 @@ function toggleAllYayinTipleri(checked) {
     PropertyTypeManager.debounce('bulkToggle', () => {
         const checkboxes = document.querySelectorAll('.yayin-tipi-toggle');
         const count = Array.from(checkboxes).filter(cb => cb.checked !== checked).length;
-        
+
         if (count === 0) {
             PropertyTypeManager.showSuccess('Tüm değerler zaten bu durumda');
             return;
         }
-        
+
         PropertyTypeManager.showLoading(true);
-        
+
         let completed = 0;
         checkboxes.forEach(cb => {
             if (cb.checked !== checked) {
@@ -678,7 +678,7 @@ function toggleAllYayinTipleri(checked) {
 // Toplu Kaydetme (Bulk Save)
 async function saveChanges() {
     PropertyTypeManager.showLoading(true);
-    
+
     try {
         // Tüm değişiklikleri topla
         const changes = {
@@ -686,7 +686,7 @@ async function saveChanges() {
             field_dependencies: [],
             features: []
         };
-        
+
         // Yayın tipleri
         document.querySelectorAll('[data-alt-kategori-id][data-yayin-tipi]').forEach(cb => {
             if (cb.checked !== (cb.dataset.active === 'true')) {
@@ -697,7 +697,7 @@ async function saveChanges() {
                 });
             }
         });
-        
+
         // Alan ilişkileri
         document.querySelectorAll('[data-field-slug][data-yayin-tipi]').forEach(cb => {
             changes.field_dependencies.push({
@@ -710,7 +710,7 @@ async function saveChanges() {
                 enabled: cb.checked
             });
         });
-        
+
         // Özellikler
         document.querySelectorAll('[data-feature-id]').forEach(cb => {
             changes.features.push({
@@ -718,22 +718,22 @@ async function saveChanges() {
                 enabled: cb.checked
             });
         });
-        
-        const totalChanges = changes.yayin_tipleri.length + 
-                           changes.field_dependencies.length + 
+
+        const totalChanges = changes.yayin_tipleri.length +
+                           changes.field_dependencies.length +
                            changes.features.length;
-        
+
         if (totalChanges === 0) {
             PropertyTypeManager.showLoading(false);
             PropertyTypeManager.showSuccess('Değişiklik yok');
             return;
         }
-        
+
         const data = await PropertyTypeManager.request(
             '{{ route("admin.property-type-manager.bulk-save", $kategori->id) }}',
             changes
         );
-        
+
         if (data.success) {
             PropertyTypeManager.showSuccess(`${totalChanges} değişiklik kaydedildi! Sayfa yenileniyor...`);
             setTimeout(() => location.reload(), 2000);

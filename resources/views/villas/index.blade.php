@@ -7,7 +7,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-gray-50 dark:bg-gray-900">
-    
+
     {{-- Header / Navigation --}}
     <nav class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -49,11 +49,11 @@
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             📍 Lokasyon
                         </label>
-                        <input 
-                            type="text" 
-                            name="location" 
+                        <input
+                            type="text"
+                            name="location"
                             value="{{ request('location') }}"
-                            placeholder="Bodrum, Kaş, Fethiye..." 
+                            placeholder="Bodrum, Kaş, Fethiye..."
                             class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-black dark:text-white focus:ring-2 focus:ring-blue-500">
                     </div>
 
@@ -62,9 +62,9 @@
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             📅 Giriş
                         </label>
-                        <input 
-                            type="date" 
-                            name="check_in" 
+                        <input
+                            type="date"
+                            name="check_in"
                             value="{{ request('check_in') }}"
                             min="{{ date('Y-m-d') }}"
                             class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-black dark:text-white focus:ring-2 focus:ring-blue-500">
@@ -75,9 +75,9 @@
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             📅 Çıkış
                         </label>
-                        <input 
-                            type="date" 
-                            name="check_out" 
+                        <input
+                            type="date"
+                            name="check_out"
                             value="{{ request('check_out') }}"
                             min="{{ date('Y-m-d', strtotime('+1 day')) }}"
                             class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-black dark:text-white focus:ring-2 focus:ring-blue-500">
@@ -88,7 +88,7 @@
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             👥 Kişi Sayısı
                         </label>
-                        <select 
+                        <select
                             name="guests"
                             class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-black dark:text-white focus:ring-2 focus:ring-blue-500">
                             <option value="">Seçiniz</option>
@@ -103,7 +103,7 @@
 
                 {{-- Advanced Filters Toggle --}}
                 <div x-data="{ showFilters: false }" class="mt-4">
-                    <button 
+                    <button
                         type="button"
                         @click="showFilters = !showFilters"
                         class="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium">
@@ -119,18 +119,18 @@
                                     💰 Fiyat Aralığı (Günlük)
                                 </label>
                                 <div class="flex gap-4">
-                                    <input 
-                                        type="number" 
-                                        name="min_price" 
+                                    <input
+                                        type="number"
+                                        name="min_price"
                                         value="{{ request('min_price') }}"
-                                        placeholder="Min" 
+                                        placeholder="Min"
                                         class="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-black dark:text-white">
                                     <span class="text-gray-500 dark:text-gray-400 py-2">-</span>
-                                    <input 
-                                        type="number" 
-                                        name="max_price" 
+                                    <input
+                                        type="number"
+                                        name="max_price"
                                         value="{{ request('max_price') }}"
-                                        placeholder="Max" 
+                                        placeholder="Max"
                                         class="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-black dark:text-white">
                                 </div>
                             </div>
@@ -140,7 +140,7 @@
                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                     🔄 Sıralama
                                 </label>
-                                <select 
+                                <select
                                     name="sort"
                                     class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-black dark:text-white">
                                     <option value="popular" {{ request('sort') == 'popular' ? 'selected' : '' }}>Popüler</option>
@@ -159,9 +159,9 @@
                             <div class="flex flex-wrap gap-2">
                                 @foreach($popularAmenities as $amenity)
                                     <label class="inline-flex items-center gap-2 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-full cursor-pointer hover:bg-blue-50 dark:hover:bg-gray-700 transition-colors">
-                                        <input 
-                                            type="checkbox" 
-                                            name="amenities[]" 
+                                        <input
+                                            type="checkbox"
+                                            name="amenities[]"
                                             value="{{ $amenity['slug'] }}"
                                             {{ in_array($amenity['slug'], request('amenities', [])) ? 'checked' : '' }}
                                             class="rounded text-blue-600 focus:ring-blue-500">
@@ -177,13 +177,13 @@
 
                 {{-- Search Button --}}
                 <div class="mt-6 flex gap-3">
-                    <button 
+                    <button
                         type="submit"
                         class="flex-1 px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-semibold hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl">
                         🔍 Villa Ara
                     </button>
                     @if(request()->hasAny(['location', 'check_in', 'check_out', 'guests', 'min_price', 'max_price', 'amenities']))
-                        <a 
+                        <a
                             href="{{ route('villas.index') }}"
                             class="px-6 py-4 border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-xl font-semibold hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
                             ✖️ Temizle
@@ -196,7 +196,7 @@
 
     {{-- Results Section --}}
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        
+
         {{-- Results Info --}}
         <div class="flex items-center justify-between mb-6">
             <div>
@@ -226,19 +226,19 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             @forelse($villas as $villa)
                 {{-- Villa Card (TatildeKirala Tarzı) --}}
-                <a href="{{ route('villas.show', $villa->id) }}" 
+                <a href="{{ route('villas.show', $villa->id) }}"
                    class="group bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden hover:-translate-y-1">
-                    
+
                     {{-- Photo --}}
                     <div class="relative aspect-[4/3] overflow-hidden bg-gray-200 dark:bg-gray-700">
                         @if($villa->featuredPhoto)
-                            <img 
-                                src="{{ $villa->featuredPhoto->thumbnail_url }}" 
+                            <img
+                                src="{{ $villa->featuredPhoto->thumbnail_url }}"
                                 alt="{{ $villa->baslik }}"
                                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
                         @elseif($villa->fotograflar->first())
-                            <img 
-                                src="/storage/{{ $villa->fotograflar->first()->dosya_yolu }}" 
+                            <img
+                                src="/storage/{{ $villa->fotograflar->first()->dosya_yolu }}"
                                 alt="{{ $villa->baslik }}"
                                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
                         @else
@@ -330,7 +330,7 @@
                     <p class="text-gray-600 dark:text-gray-400 mb-6">
                         Arama kriterlerinizi değiştirip tekrar deneyin
                     </p>
-                    <a 
+                    <a
                         href="{{ route('villas.index') }}"
                         class="inline-block px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
                         Tüm Villaları Görüntüle
@@ -393,4 +393,3 @@
     <script src="//unpkg.com/alpinejs" defer></script>
 </body>
 </html>
-

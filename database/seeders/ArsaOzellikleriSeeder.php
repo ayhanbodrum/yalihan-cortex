@@ -17,14 +17,14 @@ class ArsaOzellikleriSeeder extends Seeder
         $this->command->info("🏞️ Arsa özellikleri oluşturuluyor...\n");
 
         // ✅ Arsa Özellik Kategorileri (4 ana grup)
-        // NOT: Table'da 'order' column var, model'de 'sira' kullanılıyor
+        // NOT: Table'da 'display_order' column var, model'de 'sira' kullanılıyor
         $arsaKategorileri = [
             [
                 'name' => 'İmar ve Yapılaşma',
                 'slug' => 'imar-yapilasma',
                 'aciklama' => 'İmar durumu, yapılaşma katsayıları ve imar planı özellikleri',
                 'icon' => 'building-circle-check',
-                'order' => 10,
+                'display_order' => 10,
                 'status' => 'Aktif',
             ],
             [
@@ -32,7 +32,7 @@ class ArsaOzellikleriSeeder extends Seeder
                 'slug' => 'parsel-bilgileri',
                 'aciklama' => 'Ada, parsel, tapu ve sınır bilgileri',
                 'icon' => 'map-location-dot',
-                'order' => 11,
+                'display_order' => 11,
                 'status' => 'Aktif',
             ],
             [
@@ -40,7 +40,7 @@ class ArsaOzellikleriSeeder extends Seeder
                 'slug' => 'altyapi-tesisat',
                 'aciklama' => 'Elektrik, su, doğalgaz ve diğer altyapı özellikleri',
                 'icon' => 'plug',
-                'order' => 12,
+                'display_order' => 12,
                 'status' => 'Aktif',
             ],
             [
@@ -48,7 +48,7 @@ class ArsaOzellikleriSeeder extends Seeder
                 'slug' => 'tarimsal-ozellikler',
                 'aciklama' => 'Sulama, ürün tipi, ağaç sayısı ve tarımsal kullanım özellikleri',
                 'icon' => 'seedling',
-                'order' => 13,
+                'display_order' => 13,
                 'status' => 'Aktif',
             ],
         ];
@@ -76,7 +76,7 @@ class ArsaOzellikleriSeeder extends Seeder
                     'arama_filtresi' => true,
                     'ilan_kartinda_goster' => true,
                     'aciklama' => 'Arsanın imar planındaki durumu',
-                    'order' => 1,
+                    'display_order' => 1,
                 ],
                 [
                     'name' => 'KAKS',
@@ -88,7 +88,7 @@ class ArsaOzellikleriSeeder extends Seeder
                     'arama_filtresi' => false,
                     'ilan_kartinda_goster' => true,
                     'aciklama' => 'Kat Alanı Kat Sayısı (Floor Area Ratio)',
-                    'order' => 2,
+                    'display_order' => 2,
                 ],
                 [
                     'name' => 'TAKS',
@@ -100,7 +100,7 @@ class ArsaOzellikleriSeeder extends Seeder
                     'arama_filtresi' => false,
                     'ilan_kartinda_goster' => true,
                     'aciklama' => 'Taban Alanı Kat Sayısı (Building Coverage Ratio)',
-                    'order' => 3,
+                    'display_order' => 3,
                 ],
                 [
                     'name' => 'Gabari',
@@ -112,7 +112,7 @@ class ArsaOzellikleriSeeder extends Seeder
                     'arama_filtresi' => false,
                     'ilan_kartinda_goster' => false,
                     'aciklama' => 'Maksimum bina yüksekliği (m)',
-                    'order' => 4,
+                    'display_order' => 4,
                 ],
                 [
                     'name' => 'İmar Planı',
@@ -123,7 +123,7 @@ class ArsaOzellikleriSeeder extends Seeder
                     'arama_filtresi' => false,
                     'ilan_kartinda_goster' => false,
                     'aciklama' => 'İmar planı belgesi mevcut mu?',
-                    'order' => 5,
+                    'display_order' => 5,
                 ],
             ];
 
@@ -150,7 +150,7 @@ class ArsaOzellikleriSeeder extends Seeder
                     'arama_filtresi' => true,
                     'ilan_kartinda_goster' => false,
                     'aciklama' => 'Tapuda kayıtlı ada numarası',
-                    'order' => 1,
+                    'display_order' => 1,
                 ],
                 [
                     'name' => 'Parsel No',
@@ -161,7 +161,7 @@ class ArsaOzellikleriSeeder extends Seeder
                     'arama_filtresi' => true,
                     'ilan_kartinda_goster' => false,
                     'aciklama' => 'Tapuda kayıtlı parsel numarası',
-                    'order' => 2,
+                    'display_order' => 2,
                 ],
                 [
                     'name' => 'Tapu Durumu',
@@ -173,7 +173,7 @@ class ArsaOzellikleriSeeder extends Seeder
                     'arama_filtresi' => true,
                     'ilan_kartinda_goster' => true,
                     'aciklama' => 'Tapunun hukuki durumu',
-                    'order' => 3,
+                    'display_order' => 3,
                 ],
                 [
                     'name' => 'Yola Cephe',
@@ -184,7 +184,7 @@ class ArsaOzellikleriSeeder extends Seeder
                     'arama_filtresi' => true,
                     'ilan_kartinda_goster' => true,
                     'aciklama' => 'Arsanın yola cephesi var mı?',
-                    'order' => 4,
+                    'display_order' => 4,
                 ],
                 [
                     'name' => 'Cephe Mesafesi',
@@ -196,7 +196,7 @@ class ArsaOzellikleriSeeder extends Seeder
                     'arama_filtresi' => false,
                     'ilan_kartinda_goster' => false,
                     'aciklama' => 'Yola cephe mesafesi (m)',
-                    'order' => 5,
+                    'display_order' => 5,
                 ],
                 [
                     'name' => 'Köşe Parsel',
@@ -207,7 +207,7 @@ class ArsaOzellikleriSeeder extends Seeder
                     'arama_filtresi' => true,
                     'ilan_kartinda_goster' => true,
                     'aciklama' => 'Köşe parselde mi?',
-                    'order' => 6,
+                    'display_order' => 6,
                 ],
             ];
 
@@ -234,7 +234,7 @@ class ArsaOzellikleriSeeder extends Seeder
                     'arama_filtresi' => true,
                     'ilan_kartinda_goster' => true,
                     'aciklama' => 'Elektrik altyapısı mevcut',
-                    'order' => 1,
+                    'display_order' => 1,
                 ],
                 [
                     'name' => 'Su',
@@ -245,7 +245,7 @@ class ArsaOzellikleriSeeder extends Seeder
                     'arama_filtresi' => true,
                     'ilan_kartinda_goster' => true,
                     'aciklama' => 'Su altyapısı mevcut',
-                    'order' => 2,
+                    'display_order' => 2,
                 ],
                 [
                     'name' => 'Doğalgaz',
@@ -256,7 +256,7 @@ class ArsaOzellikleriSeeder extends Seeder
                     'arama_filtresi' => true,
                     'ilan_kartinda_goster' => false,
                     'aciklama' => 'Doğalgaz altyapısı mevcut',
-                    'order' => 3,
+                    'display_order' => 3,
                 ],
                 [
                     'name' => 'Kanalizasyon',
@@ -267,7 +267,7 @@ class ArsaOzellikleriSeeder extends Seeder
                     'arama_filtresi' => false,
                     'ilan_kartinda_goster' => false,
                     'aciklama' => 'Kanalizasyon sistemi mevcut',
-                    'order' => 4,
+                    'display_order' => 4,
                 ],
                 [
                     'name' => 'Telefon Hattı',
@@ -278,7 +278,7 @@ class ArsaOzellikleriSeeder extends Seeder
                     'arama_filtresi' => false,
                     'ilan_kartinda_goster' => false,
                     'aciklama' => 'Telefon hattı altyapısı mevcut',
-                    'order' => 5,
+                    'display_order' => 5,
                 ],
                 [
                     'name' => 'Fiber İnternet',
@@ -289,7 +289,7 @@ class ArsaOzellikleriSeeder extends Seeder
                     'arama_filtresi' => false,
                     'ilan_kartinda_goster' => false,
                     'aciklama' => 'Fiber internet altyapısı mevcut',
-                    'order' => 6,
+                    'display_order' => 6,
                 ],
             ];
 
@@ -317,7 +317,7 @@ class ArsaOzellikleriSeeder extends Seeder
                     'arama_filtresi' => true,
                     'ilan_kartinda_goster' => true,
                     'aciklama' => 'Sulama sistemi tipi',
-                    'order' => 1,
+                    'display_order' => 1,
                 ],
                 [
                     'name' => 'Zeytin Ağacı Sayısı',
@@ -329,7 +329,7 @@ class ArsaOzellikleriSeeder extends Seeder
                     'arama_filtresi' => false,
                     'ilan_kartinda_goster' => true,
                     'aciklama' => 'Zeytinlikte bulunan ağaç sayısı',
-                    'order' => 2,
+                    'display_order' => 2,
                 ],
                 [
                     'name' => 'Ağaç Yaşı',
@@ -341,7 +341,7 @@ class ArsaOzellikleriSeeder extends Seeder
                     'arama_filtresi' => false,
                     'ilan_kartinda_goster' => false,
                     'aciklama' => 'Ağaçların ortalama yaşı',
-                    'order' => 3,
+                    'display_order' => 3,
                 ],
                 [
                     'name' => 'Toprak Tipi',
@@ -353,7 +353,7 @@ class ArsaOzellikleriSeeder extends Seeder
                     'arama_filtresi' => false,
                     'ilan_kartinda_goster' => false,
                     'aciklama' => 'Toprak yapısı ve özellikleri',
-                    'order' => 4,
+                    'display_order' => 4,
                 ],
                 [
                     'name' => 'Ürün Tipi',
@@ -365,7 +365,7 @@ class ArsaOzellikleriSeeder extends Seeder
                     'arama_filtresi' => true,
                     'ilan_kartinda_goster' => true,
                     'aciklama' => 'Yetiştirilen ürün türü',
-                    'order' => 5,
+                    'display_order' => 5,
                 ],
                 [
                     'name' => 'Yıllık Verim',
@@ -377,7 +377,7 @@ class ArsaOzellikleriSeeder extends Seeder
                     'arama_filtresi' => false,
                     'ilan_kartinda_goster' => false,
                     'aciklama' => 'Yıllık ortalama ürün verimi (ton)',
-                    'order' => 6,
+                    'display_order' => 6,
                 ],
                 [
                     'name' => 'Sera',
@@ -388,7 +388,7 @@ class ArsaOzellikleriSeeder extends Seeder
                     'arama_filtresi' => true,
                     'ilan_kartinda_goster' => true,
                     'aciklama' => 'Sera mevcut mu?',
-                    'order' => 7,
+                    'display_order' => 7,
                 ],
                 [
                     'name' => 'Ahır',
@@ -399,7 +399,7 @@ class ArsaOzellikleriSeeder extends Seeder
                     'arama_filtresi' => true,
                     'ilan_kartinda_goster' => true,
                     'aciklama' => 'Hayvan ahırı mevcut mu?',
-                    'order' => 8,
+                    'display_order' => 8,
                 ],
                 [
                     'name' => 'Ağıl',
@@ -410,7 +410,7 @@ class ArsaOzellikleriSeeder extends Seeder
                     'arama_filtresi' => true,
                     'ilan_kartinda_goster' => true,
                     'aciklama' => 'Küçükbaş hayvan ağılı mevcut mu?',
-                    'order' => 9,
+                    'display_order' => 9,
                 ],
                 [
                     'name' => 'Su Kuyusu',
@@ -421,7 +421,7 @@ class ArsaOzellikleriSeeder extends Seeder
                     'arama_filtresi' => true,
                     'ilan_kartinda_goster' => true,
                     'aciklama' => 'Yeraltı su kuyusu mevcut mu?',
-                    'order' => 10,
+                    'display_order' => 10,
                 ],
             ];
 
@@ -443,4 +443,3 @@ class ArsaOzellikleriSeeder extends Seeder
         $this->command->info("   🎯 Tarımsal: 10");
     }
 }
-

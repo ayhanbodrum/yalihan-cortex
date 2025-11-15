@@ -9,10 +9,17 @@ class KisiService
 {
     /**
      * Yeni bir kişi oluşturur.
+     * ✅ Context7: kisi_tipi required field kontrolü eklendi
      */
     public function createKisi(array $data): Kisi
     {
         Log::info('Yeni kişi oluşturuluyor.', $data);
+
+        // ✅ Context7: kisi_tipi default değer ataması (eğer null ise)
+        if (empty($data['kisi_tipi'])) {
+            $data['kisi_tipi'] = 'Müşteri'; // Default değer
+            Log::warning('kisi_tipi boş, default değer atandı: Müşteri', $data);
+        }
 
         return Kisi::create($data);
     }
@@ -87,19 +94,44 @@ class KisiService
 
     /**
      * Kişi arama - API için optimize edilmiş
+     * Context7 & Yalıhan Bekçi: Standart kişi arama metodu
      *
+     * @param string $searchTerm
+     * @param int $limit
      * @return \Illuminate\Database\Eloquent\Collection
      */
     public static function search(string $searchTerm, int $limit = 10)
     {
-        return Kisi::where(function ($query) use ($searchTerm) {
-            $query->whereRaw("CONCAT(ad, ' ', soyad) LIKE ?", ["%{$searchTerm}%"])
-                ->orWhere('telefon', 'like', "%{$searchTerm}%")
-                ->orWhere('email', 'like', "%{$searchTerm}%");
-        })
-            ->orderBy('created_at', 'desc')
+        // ✅ Context7 & Yalıhan Bekçi: Standart kişi sorgusu
+        // 1. Status kontrolü: Sadece aktif kişiler (status = 'Aktif')
+        // 2. Select optimization: Sadece gerekli kolonlar
+        // 3. Sıralama: İsim sırasına göre (orderBy tam_ad)
+        return Kisi::select(['id', 'ad', 'soyad', 'telefon', 'email', 'kisi_tipi', 'status'])
+            ->where('status', 'Aktif') // ✅ Context7: Sadece aktif kişiler
+            ->where(function ($query) use ($searchTerm) {
+                $query->whereRaw("CONCAT(ad, ' ', soyad) LIKE ?", ["%{$searchTerm}%"])
+                    ->orWhere('telefon', 'like', "%{$searchTerm}%")
+                    ->orWhere('email', 'like', "%{$searchTerm}%");
+            })
+            ->orderByRaw("CONCAT(ad, ' ', soyad)") // ✅ İsim sırasına göre
             ->limit($limit)
-            ->get();
+            ->get()
+            ->map(function ($kisi) {
+                // ✅ Context7: Response formatı standartlaştırıldı
+                $tamAd = trim($kisi->ad . ' ' . $kisi->soyad);
+                return [
+                    'id' => $kisi->id,
+                    'ad' => $kisi->ad,
+                    'soyad' => $kisi->soyad,
+                    'tam_ad' => $tamAd,
+                    'telefon' => $kisi->telefon,
+                    'email' => $kisi->email,
+                    'kisi_tipi' => $kisi->kisi_tipi ?? null,
+                    'text' => $tamAd . ($kisi->telefon ? ' - ' . $kisi->telefon : ''), // Context7 Live Search için
+                ];
+            })
+            ->values() // ✅ Collection index'lerini sıfırla (array uyumluluğu)
+            ->toArray(); // ✅ Context7: Array döndür (JavaScript uyumluluğu için)
     }
 
     /**
@@ -149,12 +181,13 @@ class KisiService
             $score += 5;
         }
 
-        // Müşteri tipi
-        if ($kisi->musteri_tipi === 'ev_sahibi') {
+        // Kişi tipi (Context7: kisi_tipi preferred)
+        $kisiTipi = $kisi->kisi_tipi ?? $kisi->musteri_tipi ?? null;
+        if ($kisiTipi === 'Ev Sahibi' || $kisiTipi === 'ev_sahibi') {
             $score += 15;
-        } elseif ($kisi->musteri_tipi === 'satici') {
+        } elseif ($kisiTipi === 'Satıcı' || $kisiTipi === 'satici') {
             $score += 10;
-        } elseif ($kisi->musteri_tipi === 'alici') {
+        } elseif ($kisiTipi === 'Alıcı' || $kisiTipi === 'alici') {
             $score += 5;
         }
 
@@ -182,7 +215,7 @@ class KisiService
         }
 
         $kisi->update([
-            'musteri_tipi' => 'ev_sahibi',
+            'kisi_tipi' => 'Ev Sahibi',
             'status' => 'Aktif',
         ]);
 

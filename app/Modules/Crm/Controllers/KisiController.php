@@ -111,7 +111,7 @@ class KisiController extends Controller
             $this->etiketService->syncEtiketlerForKisi($kisi, $request->input('etiketler'));
         }
 
-        return redirect()->route('crm.kisiler.index') // Rota adı crm.kisiler.index olmalı
+        return redirect()->route('admin.kisiler.index') // Context7: crm.* → admin.*
             ->with('success', 'Kişi başarıyla eklendi.');
     }
 
@@ -224,7 +224,7 @@ class KisiController extends Controller
             $this->etiketService->syncEtiketlerForKisi($kisi, []); // Seçim yoksa tüm etiketleri kaldır
         }
 
-        return redirect()->route('crm.kisiler.index') // Rota adı crm.kisiler.index olmalı
+        return redirect()->route('admin.kisiler.index') // Context7: crm.* → admin.*
             ->with('success', 'Kişi başarıyla güncellendi.');
     }
 
@@ -245,7 +245,7 @@ class KisiController extends Controller
 
         $this->kisiService->deleteKisi($kisi);
 
-        return redirect()->route('crm.kisiler.index') // Rota adı crm.kisiler.index olmalı
+        return redirect()->route('admin.kisiler.index') // Context7: crm.* → admin.*
             ->with('success', 'Kişi başarıyla silindi.');
     }
 }

@@ -1,392 +1,392 @@
 {
-    "fix_date": "2025-11-01 11:15:50",
-    "dry_run": true,
-    "files_fixed": 94,
-    "total_fixes": 626,
-    "backup_location": "\/Users\/macbookpro\/Projects\/yalihanemlakwarp\/yalihan-bekci\/backups\/dropdown-fix-2025-11-01-111550",
-    "fixed_files": [
-        {
-            "file": "resources\/views\/admin\/konut-hibrit-siralama\/index.blade.php",
-            "fixes": 6
-        },
-        {
-            "file": "resources\/views\/admin\/settings\/index.blade.php",
-            "fixes": 6
-        },
-        {
-            "file": "resources\/views\/admin\/feature-categories\/index.blade.php",
-            "fixes": 2
-        },
-        {
-            "file": "resources\/views\/admin\/feature-categories\/edit.blade.php",
-            "fixes": 2
-        },
-        {
-            "file": "resources\/views\/admin\/feature-categories\/create.blade.php",
-            "fixes": 2
-        },
-        {
-            "file": "resources\/views\/admin\/takvim\/index.blade.php",
-            "fixes": 2
-        },
-        {
-            "file": "resources\/views\/admin\/takvim\/sezonlar.blade.php",
-            "fixes": 4
-        },
-        {
-            "file": "resources\/views\/admin\/ai-category\/index.blade.php",
-            "fixes": 3
-        },
-        {
-            "file": "resources\/views\/admin\/ai-settings\/index.blade.php",
-            "fixes": 21
-        },
-        {
-            "file": "resources\/views\/admin\/site-ozellikleri\/index.blade.php",
-            "fixes": 3
-        },
-        {
-            "file": "resources\/views\/admin\/kullanicilar\/edit.blade.php",
-            "fixes": 6
-        },
-        {
-            "file": "resources\/views\/admin\/ilan-kategorileri\/index.blade.php",
-            "fixes": 4
-        },
-        {
-            "file": "resources\/views\/admin\/ilan-kategorileri\/edit.blade.php",
-            "fixes": 6
-        },
-        {
-            "file": "resources\/views\/admin\/ilan-kategorileri\/create.blade.php",
-            "fixes": 6
-        },
-        {
-            "file": "resources\/views\/admin\/ilan-kategorileri\/partials\/advanced-filters.blade.php",
-            "fixes": 10
-        },
-        {
-            "file": "resources\/views\/admin\/talep-portfolyo\/index.blade.php",
-            "fixes": 16
-        },
-        {
-            "file": "resources\/views\/admin\/talep-portfolyo\/show.blade.php",
-            "fixes": 4
-        },
-        {
-            "file": "resources\/views\/admin\/smart-calculator.blade.php",
-            "fixes": 4
-        },
-        {
-            "file": "resources\/views\/admin\/yazlik-kiralama\/index.blade.php",
-            "fixes": 12
-        },
-        {
-            "file": "resources\/views\/admin\/crm\/customers\/index.blade.php",
-            "fixes": 6
-        },
-        {
-            "file": "resources\/views\/admin\/page-analyzer\/edit.blade.php",
-            "fixes": 2
-        },
-        {
-            "file": "resources\/views\/admin\/page-analyzer\/dashboard.blade.php",
-            "fixes": 4
-        },
-        {
-            "file": "resources\/views\/admin\/page-analyzer\/create.blade.php",
-            "fixes": 2
-        },
-        {
-            "file": "resources\/views\/admin\/ayarlar\/edit.blade.php",
-            "fixes": 3
-        },
-        {
-            "file": "resources\/views\/admin\/smart-calculator\/index.blade.php",
-            "fixes": 4
-        },
-        {
-            "file": "resources\/views\/admin\/blog\/comments\/index.blade.php",
-            "fixes": 4
-        },
-        {
-            "file": "resources\/views\/admin\/blog\/analytics.blade.php",
-            "fixes": 2
-        },
-        {
-            "file": "resources\/views\/admin\/blog\/posts\/index.blade.php",
-            "fixes": 6
-        },
-        {
-            "file": "resources\/views\/admin\/blog\/posts\/edit.blade.php",
-            "fixes": 12
-        },
-        {
-            "file": "resources\/views\/admin\/dashboard.blade.php",
-            "fixes": 2
-        },
-        {
-            "file": "resources\/views\/admin\/ai-core-test\/index.blade.php",
-            "fixes": 6
-        },
-        {
-            "file": "resources\/views\/admin\/eslesmeler\/index.blade.php",
-            "fixes": 12
-        },
-        {
-            "file": "resources\/views\/admin\/eslesmeler\/create.blade.php",
-            "fixes": 6
-        },
-        {
-            "file": "resources\/views\/admin\/ai-redirect\/edit.blade.php",
-            "fixes": 4
-        },
-        {
-            "file": "resources\/views\/admin\/ai-redirect\/create.blade.php",
-            "fixes": 2
-        },
-        {
-            "file": "resources\/views\/admin\/property-type-manager\/field-dependencies.blade.php",
-            "fixes": 19
-        },
-        {
-            "file": "resources\/views\/admin\/property-type-manager\/show.blade.php",
-            "fixes": 2
-        },
-        {
-            "file": "resources\/views\/admin\/kisiler\/index.blade.php",
-            "fixes": 12
-        },
-        {
-            "file": "resources\/views\/admin\/kisiler\/edit.blade.php",
-            "fixes": 21
-        },
-        {
-            "file": "resources\/views\/admin\/kisiler\/create.blade.php",
-            "fixes": 18
-        },
-        {
-            "file": "resources\/views\/admin\/users\/index.blade.php",
-            "fixes": 2
-        },
-        {
-            "file": "resources\/views\/admin\/users\/edit.blade.php",
-            "fixes": 3
-        },
-        {
-            "file": "resources\/views\/admin\/users\/create.blade.php",
-            "fixes": 3
-        },
-        {
-            "file": "resources\/views\/admin\/address\/index.blade.php",
-            "fixes": 4
-        },
-        {
-            "file": "resources\/views\/admin\/address\/create.blade.php",
-            "fixes": 8
-        },
-        {
-            "file": "resources\/views\/admin\/toast-demo\/index.blade.php",
-            "fixes": 24
-        },
-        {
-            "file": "resources\/views\/admin\/ilanlar\/index.blade.php",
-            "fixes": 9
-        },
-        {
-            "file": "resources\/views\/admin\/ilanlar\/test-categories.blade.php",
-            "fixes": 9
-        },
-        {
-            "file": "resources\/views\/admin\/ilanlar\/my-listings.blade.php",
-            "fixes": 4
-        },
-        {
-            "file": "resources\/views\/admin\/ilanlar\/modals\/_site-ekle.blade.php",
-            "fixes": 12
-        },
-        {
-            "file": "resources\/views\/admin\/ilanlar\/modals\/_kisi-ekle.blade.php",
-            "fixes": 6
-        },
-        {
-            "file": "resources\/views\/admin\/ilanlar\/components\/key-management.blade.php",
-            "fixes": 3
-        },
-        {
-            "file": "resources\/views\/admin\/ilanlar\/components\/category-system.blade.php",
-            "fixes": 9
-        },
-        {
-            "file": "resources\/views\/admin\/ilanlar\/components\/category-specific-fields.blade.php",
-            "fixes": 3
-        },
-        {
-            "file": "resources\/views\/admin\/ilanlar\/components\/publication-status.blade.php",
-            "fixes": 3
-        },
-        {
-            "file": "resources\/views\/admin\/ilanlar\/components\/location-map.blade.php",
-            "fixes": 9
-        },
-        {
-            "file": "resources\/views\/admin\/ilanlar\/components\/price-management.blade.php",
-            "fixes": 3
-        },
-        {
-            "file": "resources\/views\/admin\/ilanlar\/create.blade.php",
-            "fixes": 6
-        },
-        {
-            "file": "resources\/views\/admin\/ilanlar\/partials\/stable\/_kategori-dinamik-alanlar.blade.php",
-            "fixes": 2
-        },
-        {
-            "file": "resources\/views\/admin\/danisman\/index.blade.php",
-            "fixes": 9
-        },
-        {
-            "file": "resources\/views\/admin\/danisman\/create.blade.php",
-            "fixes": 6
-        },
-        {
-            "file": "resources\/views\/admin\/talepler\/index.blade.php",
-            "fixes": 15
-        },
-        {
-            "file": "resources\/views\/admin\/talepler\/create.blade.php",
-            "fixes": 2
-        },
-        {
-            "file": "resources\/views\/admin\/talepler\/partials\/_form.blade.php",
-            "fixes": 10
-        },
-        {
-            "file": "resources\/views\/admin\/adres-yonetimi\/index.blade.php",
-            "fixes": 13
-        },
-        {
-            "file": "resources\/views\/admin\/etiket\/index.blade.php",
-            "fixes": 6
-        },
-        {
-            "file": "resources\/views\/admin\/etiket\/edit.blade.php",
-            "fixes": 2
-        },
-        {
-            "file": "resources\/views\/admin\/etiket\/create.blade.php",
-            "fixes": 2
-        },
-        {
-            "file": "resources\/views\/admin\/kisi-not\/index.blade.php",
-            "fixes": 6
-        },
-        {
-            "file": "resources\/views\/admin\/kisi-not\/edit.blade.php",
-            "fixes": 12
-        },
-        {
-            "file": "resources\/views\/admin\/kisi-not\/create.blade.php",
-            "fixes": 12
-        },
-        {
-            "file": "resources\/views\/admin\/ozellikler\/index.blade.php",
-            "fixes": 6
-        },
-        {
-            "file": "resources\/views\/admin\/ozellikler\/kategoriler\/edit.blade.php",
-            "fixes": 3
-        },
-        {
-            "file": "resources\/views\/admin\/ozellikler\/kategoriler\/create.blade.php",
-            "fixes": 3
-        },
-        {
-            "file": "resources\/views\/admin\/ozellikler\/edit.blade.php",
-            "fixes": 2
-        },
-        {
-            "file": "resources\/views\/admin\/ozellikler\/create.blade.php",
-            "fixes": 6
-        },
-        {
-            "file": "resources\/views\/admin\/eslesme\/index.blade.php",
-            "fixes": 3
-        },
-        {
-            "file": "resources\/views\/admin\/ai-monitor\/index.blade.php",
-            "fixes": 3
-        },
-        {
-            "file": "resources\/views\/admin\/bulk-kisi\/index.blade.php",
-            "fixes": 6
-        },
-        {
-            "file": "resources\/views\/admin\/notifications\/index.blade.php",
-            "fixes": 9
-        },
-        {
-            "file": "resources\/views\/admin\/takim-yonetimi\/gorevler\/index.blade.php",
-            "fixes": 12
-        },
-        {
-            "file": "resources\/views\/admin\/takim-yonetimi\/gorevler\/edit.blade.php",
-            "fixes": 10
-        },
-        {
-            "file": "resources\/views\/admin\/takim-yonetimi\/takim\/index.blade.php",
-            "fixes": 12
-        },
-        {
-            "file": "resources\/views\/admin\/takim-yonetimi\/takim\/edit.blade.php",
-            "fixes": 4
-        },
-        {
-            "file": "resources\/views\/admin\/takim-yonetimi\/takim\/takim-performans.blade.php",
-            "fixes": 6
-        },
-        {
-            "file": "resources\/views\/admin\/takim-yonetimi\/takim\/performans.blade.php",
-            "fixes": 6
-        },
-        {
-            "file": "resources\/views\/admin\/takim-yonetimi\/takim\/show.blade.php",
-            "fixes": 4
-        },
-        {
-            "file": "resources\/views\/admin\/analytics\/edit.blade.php",
-            "fixes": 4
-        },
-        {
-            "file": "resources\/views\/admin\/analytics\/dashboard.blade.php",
-            "fixes": 9
-        },
-        {
-            "file": "resources\/views\/admin\/analytics\/create.blade.php",
-            "fixes": 4
-        },
-        {
-            "file": "resources\/views\/admin\/danisman-ai\/prompt-interface.blade.php",
-            "fixes": 2
-        },
-        {
-            "file": "resources\/views\/admin\/reports\/index.blade.php",
-            "fixes": 9
-        },
-        {
-            "file": "resources\/views\/admin\/reports\/musteriler.blade.php",
-            "fixes": 9
-        },
-        {
-            "file": "resources\/views\/admin\/reports\/ilanlar.blade.php",
-            "fixes": 9
-        }
-    ],
-    "fixes_applied": {
-        "dark_bg_gray_800_to_900": "Applied",
-        "dark_text_gray_100_to_white": "Applied",
-        "color_scheme_property_added": "Applied",
-        "neo_classes_replaced": "Applied",
-        "transition_classes_added": "Applied"
+  "fix_date": "2025-11-01 11:15:50",
+  "dry_run": true,
+  "files_fixed": 94,
+  "total_fixes": 626,
+  "backup_location": "\/Users\/macbookpro\/Projects\/yalihanemlakwarp\/yalihan-bekci\/backups\/dropdown-fix-2025-11-01-111550",
+  "fixed_files": [
+    {
+      "file": "resources\/views\/admin\/konut-hibrit-siralama\/index.blade.php",
+      "fixes": 6
+    },
+    {
+      "file": "resources\/views\/admin\/settings\/index.blade.php",
+      "fixes": 6
+    },
+    {
+      "file": "resources\/views\/admin\/feature-categories\/index.blade.php",
+      "fixes": 2
+    },
+    {
+      "file": "resources\/views\/admin\/feature-categories\/edit.blade.php",
+      "fixes": 2
+    },
+    {
+      "file": "resources\/views\/admin\/feature-categories\/create.blade.php",
+      "fixes": 2
+    },
+    {
+      "file": "resources\/views\/admin\/takvim\/index.blade.php",
+      "fixes": 2
+    },
+    {
+      "file": "resources\/views\/admin\/takvim\/sezonlar.blade.php",
+      "fixes": 4
+    },
+    {
+      "file": "resources\/views\/admin\/ai-category\/index.blade.php",
+      "fixes": 3
+    },
+    {
+      "file": "resources\/views\/admin\/ai-settings\/index.blade.php",
+      "fixes": 21
+    },
+    {
+      "file": "resources\/views\/admin\/site-ozellikleri\/index.blade.php",
+      "fixes": 3
+    },
+    {
+      "file": "resources\/views\/admin\/kullanicilar\/edit.blade.php",
+      "fixes": 6
+    },
+    {
+      "file": "resources\/views\/admin\/ilan-kategorileri\/index.blade.php",
+      "fixes": 4
+    },
+    {
+      "file": "resources\/views\/admin\/ilan-kategorileri\/edit.blade.php",
+      "fixes": 6
+    },
+    {
+      "file": "resources\/views\/admin\/ilan-kategorileri\/create.blade.php",
+      "fixes": 6
+    },
+    {
+      "file": "resources\/views\/admin\/ilan-kategorileri\/partials\/advanced-filters.blade.php",
+      "fixes": 10
+    },
+    {
+      "file": "resources\/views\/admin\/talep-portfolyo\/index.blade.php",
+      "fixes": 16
+    },
+    {
+      "file": "resources\/views\/admin\/talep-portfolyo\/show.blade.php",
+      "fixes": 4
+    },
+    {
+      "file": "resources\/views\/admin\/smart-calculator.blade.php",
+      "fixes": 4
+    },
+    {
+      "file": "resources\/views\/admin\/yazlik-kiralama\/index.blade.php",
+      "fixes": 12
+    },
+    {
+      "file": "resources\/views\/admin\/crm\/customers\/index.blade.php",
+      "fixes": 6
+    },
+    {
+      "file": "resources\/views\/admin\/page-analyzer\/edit.blade.php",
+      "fixes": 2
+    },
+    {
+      "file": "resources\/views\/admin\/page-analyzer\/dashboard.blade.php",
+      "fixes": 4
+    },
+    {
+      "file": "resources\/views\/admin\/page-analyzer\/create.blade.php",
+      "fixes": 2
+    },
+    {
+      "file": "resources\/views\/admin\/ayarlar\/edit.blade.php",
+      "fixes": 3
+    },
+    {
+      "file": "resources\/views\/admin\/smart-calculator\/index.blade.php",
+      "fixes": 4
+    },
+    {
+      "file": "resources\/views\/admin\/blog\/comments\/index.blade.php",
+      "fixes": 4
+    },
+    {
+      "file": "resources\/views\/admin\/blog\/analytics.blade.php",
+      "fixes": 2
+    },
+    {
+      "file": "resources\/views\/admin\/blog\/posts\/index.blade.php",
+      "fixes": 6
+    },
+    {
+      "file": "resources\/views\/admin\/blog\/posts\/edit.blade.php",
+      "fixes": 12
+    },
+    {
+      "file": "resources\/views\/admin\/dashboard.blade.php",
+      "fixes": 2
+    },
+    {
+      "file": "resources\/views\/admin\/ai-core-test\/index.blade.php",
+      "fixes": 6
+    },
+    {
+      "file": "resources\/views\/admin\/eslesmeler\/index.blade.php",
+      "fixes": 12
+    },
+    {
+      "file": "resources\/views\/admin\/eslesmeler\/create.blade.php",
+      "fixes": 6
+    },
+    {
+      "file": "resources\/views\/admin\/ai-redirect\/edit.blade.php",
+      "fixes": 4
+    },
+    {
+      "file": "resources\/views\/admin\/ai-redirect\/create.blade.php",
+      "fixes": 2
+    },
+    {
+      "file": "resources\/views\/admin\/property-type-manager\/field-dependencies.blade.php",
+      "fixes": 19
+    },
+    {
+      "file": "resources\/views\/admin\/property-type-manager\/show.blade.php",
+      "fixes": 2
+    },
+    {
+      "file": "resources\/views\/admin\/kisiler\/index.blade.php",
+      "fixes": 12
+    },
+    {
+      "file": "resources\/views\/admin\/kisiler\/edit.blade.php",
+      "fixes": 21
+    },
+    {
+      "file": "resources\/views\/admin\/kisiler\/create.blade.php",
+      "fixes": 18
+    },
+    {
+      "file": "resources\/views\/admin\/users\/index.blade.php",
+      "fixes": 2
+    },
+    {
+      "file": "resources\/views\/admin\/users\/edit.blade.php",
+      "fixes": 3
+    },
+    {
+      "file": "resources\/views\/admin\/users\/create.blade.php",
+      "fixes": 3
+    },
+    {
+      "file": "resources\/views\/admin\/address\/index.blade.php",
+      "fixes": 4
+    },
+    {
+      "file": "resources\/views\/admin\/address\/create.blade.php",
+      "fixes": 8
+    },
+    {
+      "file": "resources\/views\/admin\/toast-demo\/index.blade.php",
+      "fixes": 24
+    },
+    {
+      "file": "resources\/views\/admin\/ilanlar\/index.blade.php",
+      "fixes": 9
+    },
+    {
+      "file": "resources\/views\/admin\/ilanlar\/test-categories.blade.php",
+      "fixes": 9
+    },
+    {
+      "file": "resources\/views\/admin\/ilanlar\/my-listings.blade.php",
+      "fixes": 4
+    },
+    {
+      "file": "resources\/views\/admin\/ilanlar\/modals\/_site-ekle.blade.php",
+      "fixes": 12
+    },
+    {
+      "file": "resources\/views\/admin\/ilanlar\/modals\/_kisi-ekle.blade.php",
+      "fixes": 6
+    },
+    {
+      "file": "resources\/views\/admin\/ilanlar\/components\/key-management.blade.php",
+      "fixes": 3
+    },
+    {
+      "file": "resources\/views\/admin\/ilanlar\/components\/category-system.blade.php",
+      "fixes": 9
+    },
+    {
+      "file": "resources\/views\/admin\/ilanlar\/components\/category-specific-fields.blade.php",
+      "fixes": 3
+    },
+    {
+      "file": "resources\/views\/admin\/ilanlar\/components\/publication-status.blade.php",
+      "fixes": 3
+    },
+    {
+      "file": "resources\/views\/admin\/ilanlar\/components\/location-map.blade.php",
+      "fixes": 9
+    },
+    {
+      "file": "resources\/views\/admin\/ilanlar\/components\/price-management.blade.php",
+      "fixes": 3
+    },
+    {
+      "file": "resources\/views\/admin\/ilanlar\/create.blade.php",
+      "fixes": 6
+    },
+    {
+      "file": "resources\/views\/admin\/ilanlar\/partials\/stable\/_kategori-dinamik-alanlar.blade.php",
+      "fixes": 2
+    },
+    {
+      "file": "resources\/views\/admin\/danisman\/index.blade.php",
+      "fixes": 9
+    },
+    {
+      "file": "resources\/views\/admin\/danisman\/create.blade.php",
+      "fixes": 6
+    },
+    {
+      "file": "resources\/views\/admin\/talepler\/index.blade.php",
+      "fixes": 15
+    },
+    {
+      "file": "resources\/views\/admin\/talepler\/create.blade.php",
+      "fixes": 2
+    },
+    {
+      "file": "resources\/views\/admin\/talepler\/partials\/_form.blade.php",
+      "fixes": 10
+    },
+    {
+      "file": "resources\/views\/admin\/adres-yonetimi\/index.blade.php",
+      "fixes": 13
+    },
+    {
+      "file": "resources\/views\/admin\/etiket\/index.blade.php",
+      "fixes": 6
+    },
+    {
+      "file": "resources\/views\/admin\/etiket\/edit.blade.php",
+      "fixes": 2
+    },
+    {
+      "file": "resources\/views\/admin\/etiket\/create.blade.php",
+      "fixes": 2
+    },
+    {
+      "file": "resources\/views\/admin\/kisi-not\/index.blade.php",
+      "fixes": 6
+    },
+    {
+      "file": "resources\/views\/admin\/kisi-not\/edit.blade.php",
+      "fixes": 12
+    },
+    {
+      "file": "resources\/views\/admin\/kisi-not\/create.blade.php",
+      "fixes": 12
+    },
+    {
+      "file": "resources\/views\/admin\/ozellikler\/index.blade.php",
+      "fixes": 6
+    },
+    {
+      "file": "resources\/views\/admin\/ozellikler\/kategoriler\/edit.blade.php",
+      "fixes": 3
+    },
+    {
+      "file": "resources\/views\/admin\/ozellikler\/kategoriler\/create.blade.php",
+      "fixes": 3
+    },
+    {
+      "file": "resources\/views\/admin\/ozellikler\/edit.blade.php",
+      "fixes": 2
+    },
+    {
+      "file": "resources\/views\/admin\/ozellikler\/create.blade.php",
+      "fixes": 6
+    },
+    {
+      "file": "resources\/views\/admin\/eslesme\/index.blade.php",
+      "fixes": 3
+    },
+    {
+      "file": "resources\/views\/admin\/ai-monitor\/index.blade.php",
+      "fixes": 3
+    },
+    {
+      "file": "resources\/views\/admin\/bulk-kisi\/index.blade.php",
+      "fixes": 6
+    },
+    {
+      "file": "resources\/views\/admin\/notifications\/index.blade.php",
+      "fixes": 9
+    },
+    {
+      "file": "resources\/views\/admin\/takim-yonetimi\/gorevler\/index.blade.php",
+      "fixes": 12
+    },
+    {
+      "file": "resources\/views\/admin\/takim-yonetimi\/gorevler\/edit.blade.php",
+      "fixes": 10
+    },
+    {
+      "file": "resources\/views\/admin\/takim-yonetimi\/takim\/index.blade.php",
+      "fixes": 12
+    },
+    {
+      "file": "resources\/views\/admin\/takim-yonetimi\/takim\/edit.blade.php",
+      "fixes": 4
+    },
+    {
+      "file": "resources\/views\/admin\/takim-yonetimi\/takim\/takim-performans.blade.php",
+      "fixes": 6
+    },
+    {
+      "file": "resources\/views\/admin\/takim-yonetimi\/takim\/performans.blade.php",
+      "fixes": 6
+    },
+    {
+      "file": "resources\/views\/admin\/takim-yonetimi\/takim\/show.blade.php",
+      "fixes": 4
+    },
+    {
+      "file": "resources\/views\/admin\/analytics\/edit.blade.php",
+      "fixes": 4
+    },
+    {
+      "file": "resources\/views\/admin\/analytics\/dashboard.blade.php",
+      "fixes": 9
+    },
+    {
+      "file": "resources\/views\/admin\/analytics\/create.blade.php",
+      "fixes": 4
+    },
+    {
+      "file": "resources\/views\/admin\/danisman-ai\/prompt-interface.blade.php",
+      "fixes": 2
+    },
+    {
+      "file": "resources\/views\/admin\/reports\/index.blade.php",
+      "fixes": 9
+    },
+    {
+      "file": "resources\/views\/admin\/reports\/musteriler.blade.php",
+      "fixes": 9
+    },
+    {
+      "file": "resources\/views\/admin\/reports\/ilanlar.blade.php",
+      "fixes": 9
     }
+  ],
+  "fixes_applied": {
+    "dark_bg_gray_800_to_900": "Applied",
+    "dark_text_gray_100_to_white": "Applied",
+    "color_scheme_property_added": "Applied",
+    "neo_classes_replaced": "Applied",
+    "transition_classes_added": "Applied"
+  }
 }

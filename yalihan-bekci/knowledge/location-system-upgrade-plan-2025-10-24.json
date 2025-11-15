@@ -65,10 +65,7 @@
 
     "feature_3": {
       "name": "Combined Score",
-      "methods": [
-        "getCombinedScore(ilId, ilceId)",
-        "getInvestmentRating(score)"
-      ],
+      "methods": ["getCombinedScore(ilId, ilceId)", "getInvestmentRating(score)"],
       "calculation": "TurkiyeAPI (60%) + TKGM (40%)"
     }
   },
@@ -76,27 +73,13 @@
   "implementation_approach": {
     "option_a": {
       "name": "Extend Context7LocationSystem",
-      "pros": [
-        "Single class",
-        "Unified API",
-        "Easy to use"
-      ],
-      "cons": [
-        "Class becomes large",
-        "Mixed responsibilities"
-      ]
+      "pros": ["Single class", "Unified API", "Easy to use"],
+      "cons": ["Class becomes large", "Mixed responsibilities"]
     },
     "option_b": {
       "name": "Create Context7DemographicSystem (separate)",
-      "pros": [
-        "Separation of concerns",
-        "Smaller classes",
-        "Can be used independently"
-      ],
-      "cons": [
-        "Two classes to manage",
-        "More complex integration"
-      ],
+      "pros": ["Separation of concerns", "Smaller classes", "Can be used independently"],
+      "cons": ["Two classes to manage", "More complex integration"],
       "recommended": true
     }
   },
@@ -244,4 +227,3 @@
     "logging": "Same pattern with [Context7 Demographic] prefix"
   }
 }
-

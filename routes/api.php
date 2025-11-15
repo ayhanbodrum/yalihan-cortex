@@ -12,6 +12,8 @@ use App\Http\Controllers\Api\SeasonController;
 use App\Http\Controllers\Api\BookingRequestController;
 use App\Http\Controllers\Api\BulkOperationsController;
 use App\Http\Controllers\Api\ExchangeRateController;
+use App\Http\Controllers\Api\Frontend\PropertyFeedController;
+use App\Http\Controllers\Api\GeoProxyController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,11 +30,14 @@ Route::get('/health', function () {
     ]);
 });
 
-// Feature API Routes (Modal Selector)
-Route::prefix('admin/features')->middleware(['web', 'auth'])->group(function () {
-    Route::get('/category/{categorySlug}', [\App\Http\Controllers\Api\FeatureController::class, 'getByCategory'])->name('api.features.category.slug');
-    Route::get('/categories', [\App\Http\Controllers\Api\FeatureController::class, 'getCategories'])->name('api.features.categories');
+// Geo Proxy (Context7) - Nominatim/Overpass via server with cache
+Route::prefix('geo')->group(function () {
+    Route::post('/geocode', [GeoProxyController::class, 'geocode']);
+    Route::post('/reverse-geocode', [GeoProxyController::class, 'reverseGeocode']);
+    Route::get('/nearby', [GeoProxyController::class, 'nearby']);
 });
+
+// Feature API Routes (Modal Selector) - MOVED TO web.php (Blade template'lerinden çağrılıyor, CSRF token gerekiyor)
 
 // QR Code API Routes
 Route::prefix('qrcode')->middleware(['web'])->group(function () {
@@ -49,6 +54,13 @@ Route::prefix('navigation')->middleware(['web'])->group(function () {
     Route::get('/ai-suggestions/{ilanId}', [\App\Http\Controllers\Api\ListingNavigationController::class, 'getAISuggestions'])->name('api.navigation.ai-suggestions');
 });
 
+// Frontend Property Feed API
+Route::prefix('frontend/properties')->name('api.frontend.properties.')->group(function () {
+    Route::get('/', [PropertyFeedController::class, 'index'])->name('index');
+    Route::get('/featured', [PropertyFeedController::class, 'featured'])->name('featured');
+    Route::get('/{propertyId}', [PropertyFeedController::class, 'show'])->name('show');
+});
+
 // PHASE 2.3: Bulk Operations API (Context7 Compliant)
 Route::prefix('admin/bulk')->middleware(['web', 'auth'])->group(function () {
     Route::post('/assign-category', [BulkOperationsController::class, 'assignCategory'])->name('api.bulk.assign-category');
@@ -57,70 +69,10 @@ Route::prefix('admin/bulk')->middleware(['web', 'auth'])->group(function () {
     Route::post('/reorder', [BulkOperationsController::class, 'reorder'])->name('api.bulk.reorder');
 });
 
-// ✅ Category API - Publication Types (Yayın Tipleri)
-Route::get('/categories/publication-types/{kategoriId}', function ($kategoriId) {
-    // ✅ FIX: Alt kategori ID ise, pivot tablodan filtrelenmiş yayın tiplerini getir
-    $kategori = \App\Models\IlanKategori::find($kategoriId);
-
-    if (!$kategori) {
-        return response()->json(['success' => false, 'message' => 'Kategori bulunamadı'], 404);
-    }
-
-    // Ana kategori mi, alt kategori mi?
-    $anaKategoriId = $kategori->parent_id ?: $kategoriId;
-
-    // Eğer alt kategori ise, pivot tablodan filtrelenmiş yayın tiplerini getir
-    if ($kategori->parent_id) {
-        // Alt kategori - pivot tablodan çek
-        $yayinTipleriIds = \Illuminate\Support\Facades\DB::table('alt_kategori_yayin_tipi')
-            ->where('alt_kategori_id', $kategoriId)
-            ->where('enabled', 1)
-            ->pluck('yayin_tipi_id');
-
-        $raw = \Illuminate\Support\Facades\DB::table('ilan_kategori_yayin_tipleri')
-            ->whereIn('id', $yayinTipleriIds)
-            ->where('status', 1)
-            ->orderBy('order')
-            ->get(['id', 'yayin_tipi', 'kategori_id', 'order']);
-    } else {
-        // Ana kategori - tüm yayın tiplerini getir
-        $raw = \Illuminate\Support\Facades\DB::table('ilan_kategori_yayin_tipleri')
-            ->where('kategori_id', $anaKategoriId)
-            ->where('status', 1)
-            ->orderBy('order')
-            ->get(['id', 'yayin_tipi', 'kategori_id', 'order']);
-    }
-
-    $yayinTipleri = collect($raw)->map(function($item) {
-        return [
-            'id' => $item->id,
-            'name' => $item->yayin_tipi ?? 'Untitled',
-            'kategori_id' => $item->kategori_id,
-            'order' => $item->order ?? 0
-        ];
-    });
-
-    return response()->json([
-        'success' => true,
-        'types' => $yayinTipleri,
-        'publication_types' => $yayinTipleri,
-        'yayinTipleri' => $yayinTipleri
-    ]);
-});
-
-// ✅ Category API - Subcategories
-Route::get('/categories/sub/{anaKategoriId}', function ($anaKategoriId) {
-    $altKategoriler = \App\Models\IlanKategori::where('parent_id', $anaKategoriId)
-        ->where('status', true)
-        ->orderBy('name')
-        ->get(['id', 'name', 'parent_id']);
-
-    return response()->json([
-        'success' => true,
-        'subcategories' => $altKategoriler,
-        'kategoriler' => $altKategoriler
-    ]);
-});
+// ✅ Category API - DEPRECATED: Closure routes kaldırıldı, CategoriesController kullanılmalı
+// Alt kategori ve yayın tipi endpoint'leri artık CategoriesController'da:
+// - /api/categories/sub/{parentId} → CategoriesController::getSubcategories()
+// - /api/categories/publication-types/{categoryId} → CategoriesController::getPublicationTypes()
 
 // Location API (Context7 Standard - İzolasyon Sistemi)
 Route::get('/ilceler', function () {
@@ -225,15 +177,18 @@ Route::prefix('admin/ai-assist')->group(function () {
 // AI Analysis API (CSRF exempt)
 Route::post('/admin/ilan-kategorileri/ai-analysis', [\App\Http\Controllers\Admin\IlanKategoriController::class, 'aiAnalysis']);
 
-// Feature API (CSRF exempt)
-Route::prefix('admin/features')->group(function () {
-    Route::get('/category/{categoryId}', [\App\Http\Controllers\Api\FeatureController::class, 'getFeaturesByCategory']);
-    Route::get('/categories', [\App\Http\Controllers\Api\FeatureController::class, 'getAllFeatureCategories']);
-    Route::get('/suggest', [\App\Http\Controllers\Api\FeatureController::class, 'suggestFeatures']);
-});
+// Feature API (CSRF exempt) - REMOVED: Duplicate routes, using routes/api.php:33 instead
+// Route::prefix('admin/features')->group(function () {
+//     Route::get('/category/{categoryId}', [\App\Http\Controllers\Api\FeatureController::class, 'getFeaturesByCategory']);
+//     Route::get('/categories', [\App\Http\Controllers\Api\FeatureController::class, 'getCategories']);
+//     Route::get('/suggest', [\App\Http\Controllers\Api\FeatureController::class, 'suggestFeatures']);
+// });
 
 // Kişi CRM API (Context7 uyumlu)
 Route::prefix('kisiler')->group(function () {
+    // ✅ Context7 & Yalıhan Bekçi: Live Search endpoint'i
+    Route::get('/search', [\App\Http\Controllers\Api\KisiController::class, 'search'])->name('api.kisiler.search');
+
     // İlan geçmişi ve analizi
     Route::get('/{id}/ilan-gecmisi', [\App\Http\Controllers\Api\KisiController::class, 'getIlanGecmisi']);
 
@@ -416,7 +371,7 @@ Route::prefix('categories')->group(function () {
             // ✅ Yayın tiplerini parent'tan çek
             $publicationTypes = \App\Models\IlanKategoriYayinTipi::where('kategori_id', $targetKategoriId)
                 ->where('status', 1) // ✅ Status artık TINYINT(1) - migration uygulandı
-                ->orderBy('order')
+                ->orderBy('display_order') // Context7: order → display_order
                 ->orderBy('yayin_tipi')
                 ->get();
 
@@ -469,10 +424,10 @@ Route::prefix('kisiler')->group(function () {
 
             // Context7: Tabloda 'kisi_tipi' var (NOT musteri_tipi!)
             $kisilerQuery = \App\Models\Kisi::where(function ($q) {
-                    $q->where('status', 'Aktif')
-                      ->orWhere('status', '1')
-                      ->orWhere('status', 1);
-                });
+                $q->where('status', 'Aktif')
+                    ->orWhere('status', '1')
+                    ->orWhere('status', 1);
+            });
 
             // Eğer filter_type varsa (örn: Danışman) ve veritabanında yoksa, tüm kişileri göster
             if ($filterType && $filterType !== '') {
@@ -494,13 +449,16 @@ Route::prefix('kisiler')->group(function () {
             return response()->json([
                 'success' => true,
                 'data' => $kisiler->map(function ($kisi) {
+                    /** @var \App\Models\Kisi $kisi */
                     return [
                         'id' => $kisi->id,
                         'text' => $kisi->ad . ' ' . $kisi->soyad . ' - ' . $kisi->telefon,
                         'ad' => $kisi->ad,
                         'soyad' => $kisi->soyad,
                         'telefon' => $kisi->telefon,
-                        'kisi_tipi' => $kisi->kisi_tipi, // ✅ Context7: Tablodaki gerçek kolon adı
+                        'kisi_tipi' => $kisi->kisi_tipi instanceof \App\Enums\KisiTipi
+                            ? $kisi->kisi_tipi->label()
+                            : ($kisi->kisi_tipi ?? null), // Enum'dan label'a çevir veya direkt string kullan
                     ];
                 }),
                 'count' => $kisiler->count(),
@@ -601,13 +559,13 @@ Route::prefix('categories')->group(function () {
             $subcategories = \App\Models\IlanKategori::where('parent_id', $parentId)
                 ->where('seviye', 1)
                 ->where('status', true)
-                ->orderBy('order')
+                ->orderBy('display_order') // Context7: order → display_order
                 ->orderBy('name')
                 ->get(['id', 'name', 'slug', 'icon']);
 
             return response()->json([
                 'success' => true,
-                'subcategories' => $subcategories->map(function($cat) {
+                'subcategories' => $subcategories->map(function ($cat) {
                     return [
                         'id' => $cat->id,
                         'name' => $cat->name,
@@ -689,13 +647,9 @@ Route::prefix('categories')->group(function () {
 
 // Locations API (Context7 uyumlu)
 Route::prefix('location')->group(function () {
-    Route::get('/districts/{id}', function ($id) {
-        return app('App\Http\Controllers\Api\ListingSearchController')->getDistricts($id);
-    });
-
-    Route::get('/neighborhoods/{id}', function ($id) {
-        return app('App\Http\Controllers\Api\ListingSearchController')->getNeighborhoods($id);
-    });
+    // ✅ Context7: LocationController kullan (doğru format: name field)
+    Route::get('/districts/{id}', [\App\Http\Controllers\Api\LocationController::class, 'getDistrictsByProvince']);
+    Route::get('/neighborhoods/{id}', [\App\Http\Controllers\Api\LocationController::class, 'getNeighborhoodsByDistrict']);
 
     // İller endpoint'i (JavaScript'ten çağrılıyor)
     Route::get('/iller', function () {
@@ -739,10 +693,22 @@ Route::prefix('features')->group(function () {
         ->name('api.features.category');
 });
 
-// Categories API Routes
+// ✅ Context7: Categories API Routes (Standardized)
 Route::prefix('categories')->group(function () {
+    // ✅ Alt kategorileri getir (Ana kategori ID'sine göre)
+    Route::get('/sub/{parentId}', [\App\Http\Controllers\Api\CategoriesController::class, 'getSubcategories'])
+        ->name('api.categories.subcategories');
+
+    // ✅ Yayın tiplerini getir (Alt kategori ID'sine göre - ilan_kategori_yayin_tipleri tablosundan)
     Route::get('/publication-types/{categoryId}', [\App\Http\Controllers\Api\CategoriesController::class, 'getPublicationTypes'])
         ->name('api.categories.publication-types');
+});
+
+// ✅ Context7: Demirbaşlar API Routes (Hiyerarşik Yapı)
+Route::prefix('demirbas')->group(function () {
+    // ✅ Demirbaş kategorilerini getir (Kategori ve yayın tipi filtreleme ile)
+    Route::get('/categories', [\App\Http\Controllers\Api\DemirbasController::class, 'getCategories'])
+        ->name('api.demirbas.categories');
 });
 
 // Geocoding API Routes (CORS proxy)
@@ -889,7 +855,7 @@ Route::prefix('admin/api/arsa')->middleware(['web', 'auth'])->name('api.arsa.')-
 });
 
 // Location API Routes (Context7 Standard)
-require __DIR__.'/api-location.php';
+require __DIR__ . '/api-location.php';
 
 // Exchange Rates API (TCMB Integration - Context7 Compliant)
 Route::prefix('exchange-rates')->group(function () {

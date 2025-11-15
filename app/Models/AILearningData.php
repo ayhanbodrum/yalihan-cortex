@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * AI Learning Data Modeli
- * 
+ *
  * AI öğrenme verilerini saklar
  * Context7 Compliant
  */

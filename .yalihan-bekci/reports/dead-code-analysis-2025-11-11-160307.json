@@ -1,0 +1,146 @@
+{
+    "timestamp": "2025-11-11 16:03:07",
+    "unused_classes": [
+        {
+            "class": "AnalitikService",
+            "file": "app\/Modules\/Analitik\/Services\/AnalitikService.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "TalepSeeder",
+            "file": "app\/Modules\/Talep\/Database\/Seeders\/TalepSeeder.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "TalepService",
+            "file": "app\/Modules\/Talep\/Services\/TalepService.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "GorevYonetimService",
+            "file": "app\/Modules\/TakimYonetimi\/Services\/GorevYonetimService.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "Context7AIService",
+            "file": "app\/Modules\/TakimYonetimi\/Services\/Context7AIService.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "AdminPushNotificationService",
+            "file": "app\/Services\/AdminPushNotificationService.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "PropertyValuationService",
+            "file": "app\/Services\/PropertyValuationService.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "AICategorySuggestionService",
+            "file": "app\/Services\/AICategorySuggestionService.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "KategoriAIService",
+            "file": "app\/Services\/AI\/KategoriAIService.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "KategoriOzellikService",
+            "file": "app\/Services\/KategoriOzellikService.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "AnalyzePagesComplete",
+            "file": "app\/Console\/Commands\/AnalyzePagesComplete.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "StandardCheck",
+            "file": "app\/Console\/Commands\/StandardCheck.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "TestSpriteAutoLearn",
+            "file": "app\/Console\/Commands\/TestSpriteAutoLearn.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "YalihanBekciEnforce",
+            "file": "app\/Console\/Commands\/YalihanBekciEnforce.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "Context7ReportCommand",
+            "file": "app\/Console\/Commands\/Context7ReportCommand.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "UpdateExchangeRates",
+            "file": "app\/Console\/Commands\/UpdateExchangeRates.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "ComponentMake",
+            "file": "app\/Console\/Commands\/ComponentMake.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "MakeMigrationContext7",
+            "file": "app\/Console\/Commands\/MakeMigrationContext7.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "TestTKGMCommand",
+            "file": "app\/Console\/Commands\/TestTKGMCommand.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "ValidateFieldSync",
+            "file": "app\/Console\/Commands\/ValidateFieldSync.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "Context7CheckCommand",
+            "file": "app\/Console\/Commands\/Context7CheckCommand.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "Context7FixCommand",
+            "file": "app\/Console\/Commands\/Context7FixCommand.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "BootstrapToNeoMigration",
+            "file": "app\/Console\/Commands\/BootstrapToNeoMigration.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "Context7Check",
+            "file": "app\/Console\/Commands\/Context7Check.php",
+            "reason": "Not referenced anywhere"
+        },
+        {
+            "class": "YalihanBekciMonitor",
+            "file": "app\/Console\/Commands\/YalihanBekciMonitor.php",
+            "reason": "Not referenced anywhere"
+        }
+    ],
+    "unused_methods": [],
+    "unused_traits": [],
+    "unused_interfaces": [],
+    "unused_constants": [],
+    "summary": {
+        "total_classes": 375,
+        "used_classes": 1170,
+        "unused_classes": 25,
+        "total_traits": 7,
+        "used_traits": 319,
+        "unused_traits": 0,
+        "total_interfaces": 0,
+        "used_interfaces": 8,
+        "unused_interfaces": 0,
+        "cleanup_opportunity": 25
+    }
+}

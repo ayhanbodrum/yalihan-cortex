@@ -9,7 +9,7 @@ use App\Models\IlanKategoriYayinTipi;
 
 /**
  * Konut ve Yazlık Kategorileri için Yayın Tipi İlişkileri
- * 
+ *
  * Konut alt kategorilerine Satılık ve Kiralık ekler.
  * Yazlık alt kategorisine Kiralık ekler.
  */
@@ -31,9 +31,9 @@ class KonutYazlikYayinTipiSeeder extends Seeder
     private function seedKonutKategorisi(): void
     {
         $this->command->info('  🏠 Konut kategorisi işleniyor...');
-        
+
         $kategoriId = 1; // Konut
-        
+
         // Yayın tipleri oluştur/güncelle
         $satilik = $this->getOrCreateYayinTipi($kategoriId, 'Satılık', 1);
         $kiralik = $this->getOrCreateYayinTipi($kategoriId, 'Kiralık', 2);
@@ -55,10 +55,10 @@ class KonutYazlikYayinTipiSeeder extends Seeder
     private function seedYazlikKategorisi(): void
     {
         $this->command->info('  🏖️ Yazlık kategorisi kontrol ediliyor...');
-        
+
         // Yazlık alt kategori olarak bul
         $yazlik = IlanKategori::where('name', 'Yazlık')->where('seviye', 1)->first();
-        
+
         if (!$yazlik) {
             $this->command->warn('    ⚠️ Yazlık kategorisi bulunamadı');
             return;
@@ -66,7 +66,7 @@ class KonutYazlikYayinTipiSeeder extends Seeder
 
         // Yazlık'ın parent'ı (Konut - ID: 1)
         $konutKategoriId = $yazlik->parent_id;
-        
+
         // Kiralık yayın tipini kontrol et
         $kiralik = $this->getOrCreateYayinTipi($konutKategoriId, 'Kiralık', 2);
 
@@ -93,7 +93,7 @@ class KonutYazlikYayinTipiSeeder extends Seeder
             ],
             [
                 'status' => true,
-                'order' => $order
+                'display_order' => $order
             ]
         );
     }
@@ -107,11 +107,10 @@ class KonutYazlikYayinTipiSeeder extends Seeder
             ],
             [
                 'enabled' => true,
-                'order' => $order,
+                'display_order' => $order,
                 'created_at' => now(),
                 'updated_at' => now()
             ]
         );
     }
 }
-

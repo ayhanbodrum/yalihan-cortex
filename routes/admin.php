@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\CRMController;
 use App\Http\Controllers\Admin\IlanSegmentController;
 use App\Http\Controllers\Admin\KonutHibritSiralamaController;
 use App\Http\Controllers\Admin\MatrixManagementController;
+use App\Http\Controllers\Admin\KisiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,16 +19,13 @@ use App\Http\Controllers\Admin\MatrixManagementController;
 Route::middleware(['web'])->prefix('admin')->name('admin.')->group(function () {
     // Main dashboard route - Context7: Controller kullanımı (kod tekrarı önlendi)
     Route::get('/dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
+    // Context7: admin.dashboard.index alias (birçok view'da kullanılıyor)
+    Route::get('/dashboard/index', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard.index');
 
     // Dashboard aliases for backward compatibility
     Route::get('/', function () {
         return redirect()->route('admin.dashboard');
     })->name('index');
-
-    // Additional alias: admin.dashboard.index (many views use this)
-    Route::get('/dashboard-legacy', function () {
-        return redirect()->route('admin.dashboard');
-    })->name('dashboard.index');
 
     // Component Library Demo
     Route::get('/components-demo', function () {
@@ -74,15 +72,9 @@ Route::middleware(['web'])->prefix('admin')->name('admin.')->group(function () {
         Route::get('/{id}/tipler', [\App\Http\Controllers\Admin\FeatureController::class, 'getYayinTipleri'])->name('tipler');
     });
 
-    // Yayın Tipi Yöneticisi (Tek Sayfa Yönetim)
-    Route::prefix('/yayin-tipi-yoneticisi')->name('yayin-tipi-yoneticisi.')->group(function () {
-        Route::get('/', [\App\Http\Controllers\Admin\YayinTipiYoneticisiController::class, 'index'])->name('index');
-        Route::post('/', [\App\Http\Controllers\Admin\YayinTipiYoneticisiController::class, 'store'])->name('store');
-        Route::put('/{id}', [\App\Http\Controllers\Admin\YayinTipiYoneticisiController::class, 'update'])->name('update');
-        Route::delete('/{id}', [\App\Http\Controllers\Admin\YayinTipiYoneticisiController::class, 'destroy'])->name('destroy');
-        Route::post('/{id}/toggle-status', [\App\Http\Controllers\Admin\YayinTipiYoneticisiController::class, 'toggleStatus'])->name('toggle-status');
-        Route::post('/update-order', [\App\Http\Controllers\Admin\YayinTipiYoneticisiController::class, 'updateOrder'])->name('update-order');
-    });
+    // ✅ Yayın Tipi Yöneticisi artık PropertyTypeManagerController kullanıyor
+    // Eski route kaldırıldı: /yayin-tipi-yoneticisi → /property-type-manager
+    // Context7 Compliance: Tek route kullanımı (2025-11-11)
 
     // Yalihan Bekçi Monitoring Dashboard
     Route::prefix('/yalihan-bekci')->name('yalihan-bekci.')->group(function () {
@@ -193,6 +185,7 @@ Route::middleware(['web'])->prefix('admin')->name('admin.')->group(function () {
     })->name('customers.redirect');
 
     // "Müşteriler" Turkish aliases → Kişiler CRUD
+    // Context7: GET istekleri için redirect kullanılabilir, POST/PUT/DELETE için route forwarding yapılmalı
     Route::get('/musteriler', function () {
         return redirect()->route('admin.kisiler.index');
     })->name('musteriler.index');
@@ -205,15 +198,11 @@ Route::middleware(['web'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/musteriler/{id}/edit', function ($id) {
         return redirect()->route('admin.kisiler.edit', ['kisi' => $id]);
     })->whereNumber('id')->name('musteriler.edit');
-    Route::post('/musteriler', function () {
-        return redirect()->route('admin.kisiler.store');
-    })->name('musteriler.store');
-    Route::put('/musteriler/{id}', function ($id) {
-        return redirect()->route('admin.kisiler.update', ['kisi' => $id]);
-    })->whereNumber('id')->name('musteriler.update');
-    Route::delete('/musteriler/{id}', function ($id) {
-        return redirect()->route('admin.kisiler.destroy', ['kisi' => $id]);
-    })->whereNumber('id')->name('musteriler.destroy');
+    
+    // Context7: POST/PUT/DELETE için route forwarding (redirect yerine)
+    Route::post('/musteriler', [KisiController::class, 'store'])->name('musteriler.store');
+    Route::put('/musteriler/{id}', [KisiController::class, 'update'])->whereNumber('id')->name('musteriler.update');
+    Route::delete('/musteriler/{id}', [KisiController::class, 'destroy'])->whereNumber('id')->name('musteriler.destroy');
 
     // Sales (Satışlar) redirects
     Route::get('/satislar/create', function () {
@@ -233,7 +222,7 @@ Route::middleware(['web'])->prefix('admin')->name('admin.')->group(function () {
     // İlan Yönetimi
     // Context7 Smart İlan System Routes
     Route::resource('/ilanlar', \App\Http\Controllers\Admin\IlanController::class)->parameters(['ilanlar' => 'ilan']);
-    
+
     // Bulk Actions (Context7: Toplu işlemler)
     Route::post('/ilanlar/bulk-action', [\App\Http\Controllers\Admin\IlanController::class, 'bulkAction'])
         ->name('ilanlar.bulk-action');
@@ -254,6 +243,10 @@ Route::middleware(['web'])->prefix('admin')->name('admin.')->group(function () {
             ]
         ]);
     })->name('ilanlar.draft');
+
+    Route::prefix('/changelog')->name('changelog.')->group(function () {
+        Route::post('/', [\App\Http\Controllers\Admin\ChangelogController::class, 'store'])->name('store');
+    });
 
     // Test route
     Route::get('/test-simple', function () {
@@ -408,7 +401,8 @@ Route::middleware(['web'])->prefix('admin')->name('admin.')->group(function () {
         // Resource routes
         Route::get('/', [\App\Http\Controllers\Admin\IlanKategoriController::class, 'index'])->name('index');
         Route::post('/', [\App\Http\Controllers\Admin\IlanKategoriController::class, 'store'])->name('store');
-        Route::get('/{kategori}', [\App\Http\Controllers\Admin\IlanKategoriController::class, 'show'])->name('show');
+        Route::get('/{kategori}', [\App\Http\Controllers\Admin\IlanKategoriController::class, 'show'])->whereNumber('kategori')->name('show');
+        Route::get('/slug/{slug}', [\App\Http\Controllers\Admin\IlanKategoriController::class, 'show'])->name('show.slug');
         Route::get('/{kategori}/edit', [\App\Http\Controllers\Admin\IlanKategoriController::class, 'edit'])->name('edit');
         Route::put('/{kategori}', [\App\Http\Controllers\Admin\IlanKategoriController::class, 'update'])->name('update');
         Route::delete('/{kategori}', [\App\Http\Controllers\Admin\IlanKategoriController::class, 'destroy'])->name('destroy');
@@ -442,60 +436,63 @@ Route::middleware(['web'])->prefix('admin')->name('admin.')->group(function () {
 
 
 
-// AI Core System Test Routes
-Route::prefix('ai-core-test')->name('ai-core-test.')->group(function () {
-    Route::get('/', [\App\Http\Controllers\Admin\AICoreTestController::class, 'index'])->name('index');
-    Route::post('/test-ai', [\App\Http\Controllers\Admin\AICoreTestController::class, 'testAI'])->name('test-ai');
-    Route::post('/teach-ai', [\App\Http\Controllers\Admin\AICoreTestController::class, 'teachAI'])->name('teach-ai');
-    Route::post('/test-storage', [\App\Http\Controllers\Admin\AICoreTestController::class, 'testStorage'])->name('test-storage');
-    Route::get('/system-status', [\App\Http\Controllers\Admin\AICoreTestController::class, 'getSystemStatus'])->name('system-status');
-});
+    // AI Core System Test Routes
+    Route::prefix('ai-core-test')->name('ai-core-test.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\AICoreTestController::class, 'index'])->name('index');
+        Route::post('/test-ai', [\App\Http\Controllers\Admin\AICoreTestController::class, 'testAI'])->name('test-ai');
+        Route::post('/teach-ai', [\App\Http\Controllers\Admin\AICoreTestController::class, 'teachAI'])->name('teach-ai');
+        Route::post('/test-storage', [\App\Http\Controllers\Admin\AICoreTestController::class, 'testStorage'])->name('test-storage');
+        Route::get('/system-status', [\App\Http\Controllers\Admin\AICoreTestController::class, 'getSystemStatus'])->name('system-status');
+    });
 
-// AI Destekli Kategori Yönetimi Routes
-Route::prefix('ai-category')->name('ai-category.')->group(function () {
-    Route::get('/', [\App\Http\Controllers\Admin\AICategoryController::class, 'index'])->name('index');
-    Route::get('/test', [\App\Http\Controllers\Admin\AICategoryController::class, 'test'])->name('test');
-    Route::post('/analyze', [\App\Http\Controllers\Admin\AICategoryController::class, 'analyzeCategory'])->name('analyze');
-    Route::post('/suggestions', [\App\Http\Controllers\Admin\AICategoryController::class, 'getCategorySuggestions'])->name('suggestions');
-    Route::post('/hibrit-siralama', [\App\Http\Controllers\Admin\AICategoryController::class, 'generateHibritSiralama'])->name('hibrit-siralama');
-    Route::post('/smart-form', [\App\Http\Controllers\Admin\AICategoryController::class, 'generateSmartForm'])->name('smart-form');
-    Route::post('/matrix', [\App\Http\Controllers\Admin\AICategoryController::class, 'manageMatrix'])->name('matrix');
-    Route::post('/teach', [\App\Http\Controllers\Admin\AICategoryController::class, 'teachAICategory'])->name('teach');
-    Route::get('/analyze-all', [\App\Http\Controllers\Admin\AICategoryController::class, 'analyzeAllCategories'])->name('analyze-all');
-    Route::post('/update-ai-success', [\App\Http\Controllers\Admin\AICategoryController::class, 'updateAISuccess'])->name('update-ai-success');
-});
+    // AI Destekli Kategori Yönetimi Routes
+    Route::prefix('ai-category')->name('ai-category.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\AICategoryController::class, 'index'])->name('index');
+        Route::get('/test', [\App\Http\Controllers\Admin\AICategoryController::class, 'test'])->name('test');
+        Route::post('/analyze', [\App\Http\Controllers\Admin\AICategoryController::class, 'analyzeCategory'])->name('analyze');
+        Route::post('/suggestions', [\App\Http\Controllers\Admin\AICategoryController::class, 'getCategorySuggestions'])->name('suggestions');
+        Route::post('/hibrit-siralama', [\App\Http\Controllers\Admin\AICategoryController::class, 'generateHibritSiralama'])->name('hibrit-siralama');
+        Route::post('/smart-form', [\App\Http\Controllers\Admin\AICategoryController::class, 'generateSmartForm'])->name('smart-form');
+        Route::post('/matrix', [\App\Http\Controllers\Admin\AICategoryController::class, 'manageMatrix'])->name('matrix');
+        Route::post('/teach', [\App\Http\Controllers\Admin\AICategoryController::class, 'teachAICategory'])->name('teach');
+        Route::get('/analyze-all', [\App\Http\Controllers\Admin\AICategoryController::class, 'analyzeAllCategories'])->name('analyze-all');
+        Route::post('/update-ai-success', [\App\Http\Controllers\Admin\AICategoryController::class, 'updateAISuccess'])->name('update-ai-success');
+    });
 
     // 🎯 Property Type Manager (Tek Sayfada Kategori, Yayın Tipi ve İlişki Yönetimi)
-    Route::prefix('/property-type-manager')->name('property-type-manager.')->group(function () {
+    Route::prefix('/property-type-manager')->name('property_types.')->group(function () {
         Route::get('/', [\App\Http\Controllers\Admin\PropertyTypeManagerController::class, 'index'])->name('index');
         Route::get('/{kategoriId}', [\App\Http\Controllers\Admin\PropertyTypeManagerController::class, 'show'])->name('show');
 
         // AJAX Toggle Endpoints
-        Route::post('/{kategoriId}/toggle-yayin-tipi', [\App\Http\Controllers\Admin\PropertyTypeManagerController::class, 'toggleYayinTipi'])->name('toggle-yayin-tipi');
-        Route::post('/{kategoriId}/bulk-save', [\App\Http\Controllers\Admin\PropertyTypeManagerController::class, 'bulkSave'])->name('bulk-save');
-        Route::post('/{kategoriId}/create-yayin-tipi', [\App\Http\Controllers\Admin\PropertyTypeManagerController::class, 'createYayinTipi'])->name('create-yayin-tipi');
-        Route::delete('/{kategoriId}/yayin-tipi/{yayinTipiId}', [\App\Http\Controllers\Admin\PropertyTypeManagerController::class, 'destroyYayinTipi'])->name('destroy-yayin-tipi');
-        Route::delete('/{kategoriId}/alt-kategori/{altKategoriId}', [\App\Http\Controllers\Admin\PropertyTypeManagerController::class, 'destroyAltKategori'])->name('destroy-alt-kategori');
+        Route::post('/{kategoriId}/toggle-yayin-tipi', [\App\Http\Controllers\Admin\PropertyTypeManagerController::class, 'toggleYayinTipi'])->name('toggle_yayin_tipi');
+        Route::post('/{kategoriId}/bulk-save', [\App\Http\Controllers\Admin\PropertyTypeManagerController::class, 'bulkSave'])->name('bulk_save');
+        // Context7 Fix: Duplicate route name removed (line 491 has same endpoint)
+        Route::delete('/{kategoriId}/yayin-tipi/{yayinTipiId}', [\App\Http\Controllers\Admin\PropertyTypeManagerController::class, 'destroyYayinTipi'])->name('destroy_yayin_tipi');
+        Route::delete('/{kategoriId}/alt-kategori/{altKategoriId}', [\App\Http\Controllers\Admin\PropertyTypeManagerController::class, 'destroyAltKategori'])->name('destroy_alt_kategori');
 
         // 🔗 Field Dependencies Management (Yeni - Alan İlişkileri Yönetimi)
-        Route::get('/{kategoriId}/field-dependencies', [\App\Http\Controllers\Admin\PropertyTypeManagerController::class, 'fieldDependenciesIndex'])->name('field-dependencies');
-        Route::post('/{kategoriId}/field-dependencies', [\App\Http\Controllers\Admin\PropertyTypeManagerController::class, 'storeFieldDependency'])->name('field-dependencies.store');
-        Route::put('/{kategoriId}/field-dependencies/{fieldId}', [\App\Http\Controllers\Admin\PropertyTypeManagerController::class, 'updateFieldDependency'])->name('field-dependencies.update');
-        Route::delete('/{kategoriId}/field-dependencies/{fieldId}', [\App\Http\Controllers\Admin\PropertyTypeManagerController::class, 'destroyFieldDependency'])->name('field-dependencies.destroy');
+        Route::get('/{kategoriId}/field-dependencies', [\App\Http\Controllers\Admin\PropertyTypeManagerController::class, 'fieldDependenciesIndex'])->name('field_dependencies');
+        Route::post('/{kategoriId}/field-dependencies', [\App\Http\Controllers\Admin\PropertyTypeManagerController::class, 'storeFieldDependency'])->name('field_dependencies.store');
+        Route::put('/{kategoriId}/field-dependencies/{fieldId}', [\App\Http\Controllers\Admin\PropertyTypeManagerController::class, 'updateFieldDependency'])->name('field_dependencies.update');
+        Route::delete('/{kategoriId}/field-dependencies/{fieldId}', [\App\Http\Controllers\Admin\PropertyTypeManagerController::class, 'destroyFieldDependency'])->name('field_dependencies.destroy');
 
         // AJAX Endpoints
-        Route::post('/toggle-field-dependency', [\App\Http\Controllers\Admin\PropertyTypeManagerController::class, 'toggleFieldDependency'])->name('toggle-field-dependency');
-        Route::post('/update-field-order', [\App\Http\Controllers\Admin\PropertyTypeManagerController::class, 'updateFieldOrder'])->name('update-field-order');
-        Route::post('/toggle-feature', [\App\Http\Controllers\Admin\PropertyTypeManagerController::class, 'toggleFeature'])->name('toggle-feature');
+        Route::post('/toggle-field-dependency', [\App\Http\Controllers\Admin\PropertyTypeManagerController::class, 'toggleFieldDependency'])->name('toggle_field_dependency');
+        Route::post('/update-field-order', [\App\Http\Controllers\Admin\PropertyTypeManagerController::class, 'updateFieldOrder'])->name('update_field_order');
+        Route::post('/toggle-feature', [\App\Http\Controllers\Admin\PropertyTypeManagerController::class, 'toggleFeature'])->name('toggle_feature');
         // 🆕 Yayın tipi oluşturma
-        Route::post('/{kategoriId}/yayin-tipi', [\App\Http\Controllers\Admin\PropertyTypeManagerController::class, 'createYayinTipi'])->name('create-yayin-tipi');
-        
+        Route::post('/{kategoriId}/yayin-tipi', [\App\Http\Controllers\Admin\PropertyTypeManagerController::class, 'createYayinTipi'])->name('create_yayin_tipi');
+
+        // ✅ Context7: Tüm kategoriler için eksik yayın tiplerini otomatik ekle
+        Route::post('/ensure-all-yayin-tipleri', [\App\Http\Controllers\Admin\PropertyTypeManagerController::class, 'ensureAllYayinTipleri'])->name('ensure_all_yayin_tipleri');
+
         // 🎯 POLYMORPHIC FEATURE ASSIGNMENT ENDPOINTS
-        Route::post('/property-type/{propertyTypeId}/assign-feature', [\App\Http\Controllers\Admin\PropertyTypeManagerController::class, 'assignFeature'])->name('assign-feature');
-        Route::delete('/property-type/{propertyTypeId}/unassign-feature', [\App\Http\Controllers\Admin\PropertyTypeManagerController::class, 'unassignFeature'])->name('unassign-feature');
-        Route::post('/property-type/{propertyTypeId}/sync-features', [\App\Http\Controllers\Admin\PropertyTypeManagerController::class, 'syncFeatures'])->name('sync-features');
-        Route::post('/toggle-feature-assignment', [\App\Http\Controllers\Admin\PropertyTypeManagerController::class, 'toggleFeatureAssignment'])->name('toggle-feature-assignment');
-        Route::put('/feature-assignment/{assignmentId}', [\App\Http\Controllers\Admin\PropertyTypeManagerController::class, 'updateFeatureAssignment'])->name('update-feature-assignment');
+        Route::post('/property-type/{propertyTypeId}/assign-feature', [\App\Http\Controllers\Admin\PropertyTypeManagerController::class, 'assignFeature'])->name('assign_feature');
+        Route::delete('/property-type/{propertyTypeId}/unassign-feature', [\App\Http\Controllers\Admin\PropertyTypeManagerController::class, 'unassignFeature'])->name('unassign_feature');
+        Route::post('/property-type/{propertyTypeId}/sync-features', [\App\Http\Controllers\Admin\PropertyTypeManagerController::class, 'syncFeatures'])->name('sync_features');
+        Route::post('/toggle-feature-assignment', [\App\Http\Controllers\Admin\PropertyTypeManagerController::class, 'toggleFeatureAssignment'])->name('toggle_feature_assignment');
+        Route::put('/feature-assignment/{assignmentId}', [\App\Http\Controllers\Admin\PropertyTypeManagerController::class, 'updateFeatureAssignment'])->name('update_feature_assignment');
     });
 
     // Kişi Yönetimi (Context7 Uyumlu)
@@ -531,6 +528,10 @@ Route::prefix('ai-category')->name('ai-category.')->group(function () {
         Route::get('/place/{id}', [\App\Http\Controllers\Admin\WikimapiaSearchController::class, 'getPlaceDetails'])->name('place-details');
         Route::post('/save-site', [\App\Http\Controllers\Admin\WikimapiaSearchController::class, 'saveSite'])->name('save-site');
         Route::get('/saved-sites', [\App\Http\Controllers\Admin\WikimapiaSearchController::class, 'getSavedSites'])->name('saved-sites');
+
+        // ✅ Context7: TurkiyeAPI entegrasyonu route'ları (harita sistemi için)
+        Route::get('/location-data', [\App\Http\Controllers\Admin\WikimapiaSearchController::class, 'getLocationData'])->name('location-data');
+        Route::post('/location-from-coordinates', [\App\Http\Controllers\Admin\WikimapiaSearchController::class, 'getLocationFromCoordinates'])->name('location-from-coordinates');
     });
 
     // Danışman Yönetimi (Standardize edildi - users tablosu kullanılıyor)
@@ -614,25 +615,27 @@ Route::prefix('ai-category')->name('ai-category.')->group(function () {
             Route::get('/create', [\App\Http\Controllers\Admin\OzellikKategoriController::class, 'create'])->name('create');
             Route::post('/', [\App\Http\Controllers\Admin\OzellikKategoriController::class, 'store'])->name('store');
             Route::get('/kategorisiz-ozellikler', [\App\Http\Controllers\Admin\OzellikKategoriController::class, 'kategorisizOzellikler'])->name('kategorisiz');
-            Route::patch('/{kategori}/toggle-status', [\App\Http\Controllers\Admin\OzellikKategoriController::class, 'toggleStatus'])
-                ->middleware('throttle:60,1')
-                ->name('toggle');
             Route::post('/reorder', [\App\Http\Controllers\Admin\OzellikKategoriController::class, 'reorder'])
                 ->middleware('throttle:30,1')
                 ->name('reorder');
             Route::get('/slug/check', [\App\Http\Controllers\Admin\OzellikKategoriController::class, 'checkSlug'])->name('slug.check');
-            Route::get('/{id}', [\App\Http\Controllers\Admin\OzellikKategoriController::class, 'show'])->whereNumber('id')->name('show');
-            Route::get('/{id}/edit', [\App\Http\Controllers\Admin\OzellikKategoriController::class, 'edit'])->whereNumber('id')->name('edit');
-            Route::put('/{id}', [\App\Http\Controllers\Admin\OzellikKategoriController::class, 'update'])->whereNumber('id')->name('update');
-            Route::delete('/{id}', [\App\Http\Controllers\Admin\OzellikKategoriController::class, 'destroy'])->whereNumber('id')->name('destroy');
-            Route::get('/{id}/ozellikler', [\App\Http\Controllers\Admin\OzellikKategoriController::class, 'ozellikler'])->whereNumber('id')->name('ozellikler');
-
-            // Yeni eklenen metodlar
-            Route::patch('/{id}/quick-update', [\App\Http\Controllers\Admin\OzellikKategoriController::class, 'quickUpdate'])->whereNumber('id')->name('quick-update');
-            Route::post('/{id}/duplicate', [\App\Http\Controllers\Admin\OzellikKategoriController::class, 'duplicate'])->whereNumber('id')->name('duplicate');
             Route::post('/bulk-toggle-status', [\App\Http\Controllers\Admin\OzellikKategoriController::class, 'bulkToggleStatus'])->name('bulk-toggle-status');
             Route::post('/bulk-delete', [\App\Http\Controllers\Admin\OzellikKategoriController::class, 'bulkDelete'])->name('bulk-delete');
             Route::get('/stats', [\App\Http\Controllers\Admin\OzellikKategoriController::class, 'stats'])->name('stats');
+
+            // ✅ FIX: Specific routes BEFORE wildcard routes
+            Route::get('/{id}/ozellikler', [\App\Http\Controllers\Admin\OzellikKategoriController::class, 'ozellikler'])->whereNumber('id')->name('ozellikler');
+            Route::get('/{id}/edit', [\App\Http\Controllers\Admin\OzellikKategoriController::class, 'edit'])->whereNumber('id')->name('edit');
+            Route::patch('/{id}/quick-update', [\App\Http\Controllers\Admin\OzellikKategoriController::class, 'quickUpdate'])->whereNumber('id')->name('quick-update');
+            Route::post('/{id}/duplicate', [\App\Http\Controllers\Admin\OzellikKategoriController::class, 'duplicate'])->whereNumber('id')->name('duplicate');
+            Route::patch('/{kategori}/toggle-status', [\App\Http\Controllers\Admin\OzellikKategoriController::class, 'toggleStatus'])
+                ->middleware('throttle:60,1')
+                ->name('toggle');
+
+            // ✅ FIX: Wildcard routes LAST
+            Route::get('/{id}', [\App\Http\Controllers\Admin\OzellikKategoriController::class, 'show'])->whereNumber('id')->name('show');
+            Route::put('/{id}', [\App\Http\Controllers\Admin\OzellikKategoriController::class, 'update'])->whereNumber('id')->name('update');
+            Route::delete('/{id}', [\App\Http\Controllers\Admin\OzellikKategoriController::class, 'destroy'])->whereNumber('id')->name('destroy');
         });
 
         // Özellikler (Features) - ozellikler tablosu için
@@ -675,7 +678,11 @@ Route::prefix('ai-category')->name('ai-category.')->group(function () {
         Route::get('/', function () {
             return view('admin.reports.index');
         })->name('index');
-        Route::get('/musteriler', [\App\Http\Controllers\Admin\ReportingController::class, 'musteriReports'])->name('musteriler');
+        // Context7: musteri → kisi (with backward compat alias)
+        Route::get('/kisiler', [\App\Http\Controllers\Admin\ReportingController::class, 'musteriReports'])->name('kisiler');
+        Route::get('/musteriler', function () {
+            return redirect()->route('admin.reports.kisiler');
+        })->name('musteriler'); // Backward compatibility alias
         Route::get('/performance', [\App\Http\Controllers\Admin\ReportingController::class, 'performanceReports'])->name('performance');
         Route::post('/export/excel', [\App\Http\Controllers\Admin\ReportingController::class, 'exportExcel'])->name('export.excel');
         Route::post('/export/pdf', [\App\Http\Controllers\Admin\ReportingController::class, 'exportPdf'])->name('export.pdf');
@@ -694,7 +701,7 @@ Route::prefix('ai-category')->name('ai-category.')->group(function () {
         Route::put('/{ayar}', [\App\Http\Controllers\Admin\AyarlarController::class, 'update'])->name('update');
         Route::delete('/{ayar}', [\App\Http\Controllers\Admin\AyarlarController::class, 'destroy'])->name('destroy');
     });
-    
+
     // ✅ REMOVED: Duplicate route - Use admin.ayarlar.bulk-update instead
     // Route::post('/settings/update', [\App\Http\Controllers\Admin\AyarlarController::class, 'bulkUpdate'])->name('settings.update');
 
@@ -763,9 +770,11 @@ Route::prefix('ai-category')->name('ai-category.')->group(function () {
     });
 
     // CRM Routes
+    // Context7 Compliance: Moved to admin.crm.* namespace (was crm.* - deprecated)
     Route::prefix('crm')->name('crm.')->group(function () {
+        // CRM Dashboard - Context7: admin.crm.dashboard route name
         Route::get('/', [CRMController::class, 'index'])->name('dashboard');
-        Route::get('/dashboard', [CRMController::class, 'index'])->name('index');
+        // Note: /dashboard path removed - use /admin/crm/ instead
         Route::get('/customers', [CRMController::class, 'customers'])->name('customers.index');
         Route::get('/customers/create', [CRMController::class, 'create'])->name('customers.create');
         Route::post('/customers', [CRMController::class, 'store'])->name('customers.store');
@@ -795,12 +804,12 @@ Route::prefix('ai-category')->name('ai-category.')->group(function () {
     // ⚠️ CRITICAL: Özel route'lar generic route'ların ÖNÜNDE olmalı!
     Route::prefix('talep-portfolyo')->name('talep-portfolyo.')->group(function () {
         Route::get('/', [App\Http\Controllers\Admin\TalepPortfolyoController::class, 'index'])->name('index');
-        
+
         // 🎯 Özel Route'lar (ÖNCE)
         Route::get('/ai-status', [App\Http\Controllers\Admin\TalepPortfolyoController::class, 'aiStatus'])->name('ai-status');
         Route::post('/toplu-analiz', [App\Http\Controllers\Admin\TalepPortfolyoController::class, 'topluAnaliz'])->name('toplu-analiz');
         Route::post('/cache-temizle', [App\Http\Controllers\Admin\TalepPortfolyoController::class, 'cacheTemizle'])->name('cache-temizle');
-        
+
         // 🔀 Generic Route'lar (SONRA) - {talep} her şeyi yakalar!
         Route::get('/{talep}', [App\Http\Controllers\Admin\TalepPortfolyoController::class, 'show'])->name('show');
         Route::post('/{talep}/analiz', [App\Http\Controllers\Admin\TalepPortfolyoController::class, 'analizEt'])->name('analiz');
@@ -837,8 +846,16 @@ Route::prefix('ai-category')->name('ai-category.')->group(function () {
     });
 
     // Danışman Özel Route'ları
-    Route::prefix('musterilerim')->name('musterilerim.')->group(function () {
+    // Context7: musteri → kisi terminology
+    Route::prefix('kisilerim')->name('kisilerim.')->group(function () {
         Route::get('/', [\App\Http\Controllers\Admin\KisiController::class, 'musterilerim'])->name('index');
+    });
+
+    // Backward compatibility alias
+    Route::prefix('musterilerim')->name('musterilerim.')->group(function () {
+        Route::get('/', function () {
+            return redirect()->route('admin.kisilerim.index');
+        })->name('index');
     });
 
     Route::prefix('ilanlarim')->name('ilanlarim.')->group(function () {
@@ -878,6 +895,12 @@ Route::prefix('ai-category')->name('ai-category.')->group(function () {
         Route::get('/mahalleler', [\App\Http\Controllers\Admin\AdresYonetimiController::class, 'getMahalleler'])->name('mahalleler');
         Route::get('/mahalleler/{ilceId}', [\App\Http\Controllers\Admin\AdresYonetimiController::class, 'getMahallelerByIlce'])->name('mahalleler.by-ilce');
 
+        // ✅ Context7: TurkiyeAPI entegrasyonu route'ları
+        Route::post('/sync-from-turkiyeapi', [\App\Http\Controllers\Admin\AdresYonetimiController::class, 'syncFromTurkiyeAPI'])->name('sync-from-turkiyeapi');
+        Route::post('/fetch-from-turkiyeapi', [\App\Http\Controllers\Admin\AdresYonetimiController::class, 'fetchFromTurkiyeAPI'])->name('fetch-from-turkiyeapi');
+        Route::get('/ilceler/{ilId}/turkiyeapi', [\App\Http\Controllers\Admin\AdresYonetimiController::class, 'getIlcelerByIlFromTurkiyeAPI'])->name('ilceler.by-il.turkiyeapi');
+        Route::get('/all-location-types/{ilceId}/turkiyeapi', [\App\Http\Controllers\Admin\AdresYonetimiController::class, 'getAllLocationTypesFromTurkiyeAPI'])->name('all-location-types.turkiyeapi');
+
         // Generic routes LAST (catch-all)
         Route::get('/create/{type}', [\App\Http\Controllers\Admin\AdresYonetimiController::class, 'create'])->name('create');
         Route::get('/{type}/{id}/edit', [\App\Http\Controllers\Admin\AdresYonetimiController::class, 'edit'])->name('edit');
@@ -885,6 +908,9 @@ Route::prefix('ai-category')->name('ai-category.')->group(function () {
         Route::post('/{type}', [\App\Http\Controllers\Admin\AdresYonetimiController::class, 'store'])->name('store');
         Route::put('/{type}/{id}', [\App\Http\Controllers\Admin\AdresYonetimiController::class, 'update'])->name('update');
         Route::delete('/{type}/{id}', [\App\Http\Controllers\Admin\AdresYonetimiController::class, 'destroy'])->name('destroy');
+
+        // Bulk actions
+        Route::post('/bulk-delete', [\App\Http\Controllers\Admin\AdresYonetimiController::class, 'bulkDelete'])->name('bulk-delete');
     });
 
     // ✅ REMOVED: SettingsController placeholder - Use admin.ayarlar instead
@@ -939,13 +965,13 @@ Route::prefix('admin/bulk-kisi')->name('admin.bulk-kisi.')->middleware(['web'])-
 
 // Yazlik Kiralama Management Routes
 Route::prefix('admin/yazlik-kiralama')->name('admin.yazlik-kiralama.')->middleware(['web'])->group(function () {
-    
+
     // ⚠️ CRITICAL: Specific routes BEFORE dynamic {id} routes!
-    
+
     // Bookings Management (MUST be first!)
     Route::get('/bookings/{id?}', [\App\Http\Controllers\Admin\YazlikKiralamaController::class, 'bookings'])->name('bookings');
     Route::put('/bookings/{id}/status', [\App\Http\Controllers\Admin\YazlikKiralamaController::class, 'updateBookingStatus'])->name('bookings.update-status');
-    
+
     // Takvim - Calendar View (MUST be second!)
     Route::prefix('takvim')->name('takvim.')->group(function () {
         Route::get('/', [\App\Http\Controllers\Admin\TakvimController::class, 'index'])->name('index');
@@ -954,7 +980,7 @@ Route::prefix('admin/yazlik-kiralama')->name('admin.yazlik-kiralama.')->middlewa
         Route::put('/sezon/{id}', [\App\Http\Controllers\Admin\TakvimController::class, 'updateSezon'])->name('sezon.update');
         Route::delete('/sezon/{id}', [\App\Http\Controllers\Admin\TakvimController::class, 'destroySezon'])->name('sezon.destroy');
     });
-    
+
     // Resource routes (LAST - {id} catches everything else!)
     Route::get('/', [\App\Http\Controllers\Admin\YazlikKiralamaController::class, 'index'])->name('index');
     Route::get('/create', [\App\Http\Controllers\Admin\YazlikKiralamaController::class, 'create'])->name('create');

@@ -53,11 +53,11 @@ return new class extends Migration
             // ═══════════════════════════════════════════════════════════
             // ⚙️ BEHAVIOR SETTINGS
             // ═══════════════════════════════════════════════════════════
-            $table->tinyInteger('enabled')->default(1)->comment('0=disabled, 1=enabled (Context7 boolean)');
+            $table->tinyInteger('status')->default(1)->comment('0=disabled, 1=enabled (Context7: enabled → status)');
             $table->tinyInteger('required')->default(0)->comment('0=optional, 1=required (Context7 boolean)');
             $table->tinyInteger('searchable')->default(0)->comment('0=not searchable, 1=searchable');
             $table->tinyInteger('show_in_card')->default(0)->comment('0=hide in card, 1=show in card');
-            $table->integer('order')->default(0)->comment('Sıralama');
+            $table->integer('display_order')->default(0)->comment('Sıralama'); // Context7: order → display_order
 
             // ═══════════════════════════════════════════════════════════
             // 🤖 AI INTEGRATION
@@ -88,9 +88,9 @@ return new class extends Migration
             );
             $table->index(['kategori_slug', 'yayin_tipi'], 'idx_kategori_yayin');
             $table->index('field_slug', 'idx_field_slug');
-            $table->index('enabled', 'idx_enabled');
+            $table->index('status', 'idx_status'); // Context7: enabled → status
             $table->index('ai_suggestion', 'idx_ai_suggestion');
-            $table->index(['field_category', 'order'], 'idx_category_order');
+            $table->index(['field_category', 'display_order'], 'idx_category_display_order'); // Context7: order → display_order
         });
     }
 
@@ -102,4 +102,3 @@ return new class extends Migration
         Schema::dropIfExists('kategori_yayin_tipi_field_dependencies');
     }
 };
-

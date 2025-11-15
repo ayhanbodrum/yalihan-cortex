@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * AI Core System Modeli
- * 
+ *
  * AI sistem yapılandırmaları ve öğrenilen prompt'ları saklar
  * Context7 Compliant
  */
@@ -23,25 +23,24 @@ class AICoreSystem extends Model
         'prompt_template',
         'success_rate',
         'usage_count',
-        'is_active',
-        'enabled',
+        'status', // Context7: is_active → status (migration: 2025_11_11_103355)
     ];
 
     protected $casts = [
         'success_rate' => 'decimal:4',
         'usage_count' => 'integer',
-        'is_active' => 'boolean',
-        'enabled' => 'boolean',
+        'status' => 'boolean', // Context7: is_active → status
     ];
 
     public $timestamps = true;
 
     /**
      * Aktif kayıtlar
+     * Context7: is_active → status
      */
     public function scopeActive($query)
     {
-        return $query->where('enabled', true)->where('is_active', true);
+        return $query->where('status', true); // Context7: is_active → status
     }
 
     /**

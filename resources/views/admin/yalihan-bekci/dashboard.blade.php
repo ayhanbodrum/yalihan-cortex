@@ -368,4 +368,3 @@ async function autoFix() {
 // setInterval(refreshData, 60000);
 </script>
 @endpush
-

@@ -94,17 +94,17 @@
                     </p>
                 </div>
                 <div class="flex items-center space-x-2">
-                    <a href="{{ route('admin.talepler.index') }}" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 bg-white text-gray-700 rounded-lg hover:bg-gray-50 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-gray-500 transition-all duration-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700 touch-target-optimized touch-target-optimized">
+                    <a href="{{ route('admin.talepler.index') }}" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 hover:scale-105 active:scale-95 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700">
                         <i class="fas fa-arrow-left mr-2"></i>Taleplere Dön
                     </a>
-                    <a href="{{ route('admin.talepler.edit', $talep->id) }}" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2-warning touch-target-optimized touch-target-optimized">
+                    <a href="{{ route('admin.talepler.edit', $talep->id) }}" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-yellow-500 text-white hover:bg-yellow-600 active:scale-95 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-yellow-500">
                         <i class="fas fa-edit mr-2"></i>Düzenle
                     </a>
                     <form action="{{ route('admin.talepler.destroy', $talep->id) }}" method="POST"
                         onsubmit="return confirm('Bu talebi silmek istediğinizden emin misiniz?');">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2-danger touch-target-optimized touch-target-optimized">
+                        <button type="submit" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-red-600 text-white hover:bg-red-700 active:scale-95 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-red-500">
                             <i class="fas fa-trash-alt mr-2"></i>Sil
                         </button>
                     </form>
@@ -135,12 +135,11 @@
                     <dd>{{ $talep->kullanici->name ?? 'Atanmamış' }}</dd>
 
                     <dt>Talep Tipi</dt>
-                    <dd><span
-                            class="badge badge-{{ $talep->talep_tipi === 'Alım' ? 'success' : ($talep->talep_tipi === 'Kiralama' ? 'info' : 'primary') }}">{{ $talep->talep_tipi }}</span>
+                    <dd><span class="px-2.5 py-0.5 rounded-full text-sm font-medium {{ $talep->talep_tipi === 'Alım' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-200' : ($talep->talep_tipi === 'Kiralama' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-200' : 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-200') }}">{{ $talep->talep_tipi }}</span>
                     </dd>
 
                     <dt>Durum</dt>
-                    <dd><span class="badge badge-light">{{ ucfirst($talep->status) }}</span></dd>
+                    <dd><span class="px-2.5 py-0.5 rounded-full text-sm font-medium bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-200">{{ ucfirst($talep->status) }}</span></dd>
 
                     <dt>Kategori</dt>
                     <dd>{{ $talep->kategori->name ?? 'Belirtilmemiş' }}</dd>
@@ -208,7 +207,7 @@
         </div>
 
         <div class="mt-8 text-center">
-            <a href="{{ route('admin.talepler.eslesen', ['talep' => $talep->id]) }}" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg btn-lg touch-target-optimized touch-target-optimized">
+            <a href="{{ route('admin.talepler.eslesen', ['talep' => $talep->id]) }}" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 bg-blue-600 text-white hover:bg-blue-700 hover:scale-105 active:scale-95 focus:ring-blue-500 shadow-md hover:shadow-lg">
                 <i class="fas fa-search-location mr-2"></i>
                 Bu Talebe Uygun İlanları Bul
             </a>

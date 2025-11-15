@@ -4,34 +4,42 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\IlanKategoriYayinTipi;
 use App\Http\Controllers\Controller;
+use App\Services\Response\ResponseService;
+use App\Traits\ValidatesApiRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class CategoriesController extends Controller
 {
+    use ValidatesApiRequests;
+
+    /**
+     * Alt kategorileri getir (Ana kategori ID'sine göre)
+     * ✅ Context7: seviye=1 ve status=true olan kategorileri getirir
+     */
     public function getSubcategories($parentId)
     {
         try {
-            Log::info('Getting subcategories (YENİ SİSTEM)', [
+            Log::info('Getting subcategories (Context7)', [
                 'parent_id' => $parentId
             ]);
 
             $subCategories = \App\Models\IlanKategori::where('parent_id', $parentId)
-                ->where('seviye', 1)
-                ->where('status', 1)
-                ->orderBy('order')
+                ->where('seviye', 1) // ✅ Context7: Alt kategoriler seviye=1
+                ->where('status', true) // ✅ Context7: boolean status
+                ->orderBy('display_order') // ✅ Context7: display_order kullan
                 ->orderBy('name')
                 ->get(['id', 'name', 'slug', 'icon']);
 
-            Log::info('Subcategories result (YENİ SİSTEM)', [
+            Log::info('Subcategories result (Context7)', [
                 'parent_id' => $parentId,
                 'count' => $subCategories->count(),
                 'categories' => $subCategories->pluck('name')->toArray()
             ]);
 
-            return response()->json([
-                'success' => true,
+            // ✅ REFACTORED: Using ResponseService - ResponseService format'ına uygun
+            return ResponseService::success([
                 'subcategories' => $subCategories->map(function ($cat) {
                     return [
                         'id' => $cat->id,
@@ -41,80 +49,109 @@ class CategoriesController extends Controller
                     ];
                 }),
                 'count' => $subCategories->count()
-            ]);
-
+            ], 'Alt kategoriler başarıyla yüklendi');
         } catch (\Exception $e) {
             Log::error('Subcategories loading error', [
                 'parent_id' => $parentId,
                 'error' => $e->getMessage()
             ]);
 
-            return response()->json([
-                'success' => false,
-                'message' => 'Alt kategoriler yüklenemedi',
-                'error' => $e->getMessage()
-            ], 500);
+            // ✅ REFACTORED: Using ResponseService
+            return ResponseService::serverError('Alt kategoriler yüklenemedi', $e);
         }
     }
 
     /**
      * Kategori yayın tipleri - ilan_kategori_yayin_tipleri tablosundan al
      * Context7 uyumlu: seed edilmiş data kullanır
+     *
+     * ✅ Context7: Alt kategori ID'si geldiğinde, ana kategori ID'sini bulup yayın tiplerini getirir
+     * ✅ Context7: ilan_kategori_yayin_tipleri tablosu kullanılır (seviye=2 değil!)
      */
     public function getPublicationTypes($categoryId)
     {
         try {
-            Log::info('Getting publication types (YENİ SİSTEM)', [
+            Log::info('Getting publication types (Context7)', [
                 'category_id' => $categoryId
             ]);
 
             $category = \App\Models\IlanKategori::find($categoryId);
 
             if (!$category) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Kategori bulunamadı'
-                ], 404);
+                // ✅ REFACTORED: Using ResponseService
+                return ResponseService::notFound('Kategori bulunamadı');
             }
 
-            // Ana kategori ID'sini bul
-            $parentId = $category->parent_id ?: $categoryId;
+            // ✅ Context7: Ana kategori ID'sini bul (alt kategori ise parent_id, değilse kendisi)
+            $anaKategoriId = $category->parent_id ?: $categoryId;
 
-            // ilan_kategori_yayin_tipleri tablosundan getir
-            $yayinTipleri = IlanKategoriYayinTipi::where('kategori_id', $parentId)
-                ->where('status', 'Aktif')
-                ->orderBy('order')
+            // ✅ Context7: Alt kategori için pivot tablo kontrolü (alt_kategori_yayin_tipi)
+            $yayinTipleriIds = null;
+            if ($category->parent_id) {
+                // Alt kategori - pivot tablodan filtrelenmiş yayın tiplerini al
+                try {
+                    if (\Illuminate\Support\Facades\Schema::hasColumn('alt_kategori_yayin_tipi', 'alt_kategori_id')) {
+                        $yayinTipleriIds = \Illuminate\Support\Facades\DB::table('alt_kategori_yayin_tipi')
+                            ->where('alt_kategori_id', $categoryId)
+                            ->where(function ($query) {
+                                if (\Illuminate\Support\Facades\Schema::hasColumn('alt_kategori_yayin_tipi', 'status')) {
+                                    $query->where('status', true);
+                                }
+                            })
+                            ->pluck('yayin_tipi_id')
+                            ->toArray();
+                    }
+                } catch (\Exception $e) {
+                    Log::warning('Pivot tablo sorgusu başarısız, ana kategori yayın tipleri kullanılıyor', [
+                        'error' => $e->getMessage(),
+                        'category_id' => $categoryId
+                    ]);
+                }
+            }
+
+            // ✅ Context7: ilan_kategori_yayin_tipleri tablosundan getir
+            $query = IlanKategoriYayinTipi::where('kategori_id', $anaKategoriId)
+                ->where('status', true); // Context7: boolean status
+
+            // Eğer pivot tabloda filtrelenmiş ID'ler varsa, onları kullan
+            if ($yayinTipleriIds && !empty($yayinTipleriIds)) {
+                $query->whereIn('id', $yayinTipleriIds);
+            }
+
+            $yayinTipleri = $query
+                ->orderBy('display_order')
                 ->orderBy('yayin_tipi')
-                ->get(['id', 'yayin_tipi', 'kategori_id', 'order']);
+                ->get(['id', 'yayin_tipi', 'kategori_id', 'display_order']);
 
-            Log::info('Publication types result (YENİ SİSTEM)', [
-                'parent_id' => $parentId,
+            Log::info('Publication types result (Context7)', [
+                'ana_kategori_id' => $anaKategoriId,
+                'alt_kategori_id' => $category->parent_id ? $categoryId : null,
+                'pivot_filtered' => !empty($yayinTipleriIds),
                 'count' => $yayinTipleri->count(),
                 'types' => $yayinTipleri->pluck('yayin_tipi')->toArray()
             ]);
 
             if ($yayinTipleri->isEmpty()) {
-                return response()->json([
-                    'success' => true,
+                // ✅ REFACTORED: Using ResponseService
+                return ResponseService::success([
                     'types' => [],
                     'count' => 0,
                     'message' => 'Bu kategori için yayın tipi bulunamadı'
-                ]);
+                ], 'Bu kategori için yayın tipi bulunamadı');
             }
 
-            return response()->json([
-                'success' => true,
+            // ✅ REFACTORED: Using ResponseService - ResponseService format'ına uygun
+            return ResponseService::success([
                 'types' => $yayinTipleri->map(function ($type) {
                     return [
                         'id' => $type->id,
-                        'name' => $type->yayin_tipi, // Context7: 'yayin_tipi' kolonundan
+                        'name' => $type->yayin_tipi, // ✅ Context7: 'yayin_tipi' kolonundan (name değil)
                         'slug' => \Illuminate\Support\Str::slug($type->yayin_tipi)
                     ];
                 }),
                 'count' => $yayinTipleri->count(),
                 'message' => 'Yayın tipleri yüklendi'
-            ]);
-
+            ], 'Yayın tipleri yüklendi');
         } catch (\Exception $e) {
             Log::error('Publication types loading error', [
                 'category_id' => $categoryId,
@@ -122,11 +159,8 @@ class CategoriesController extends Controller
                 'trace' => $e->getTraceAsString()
             ]);
 
-            return response()->json([
-                'success' => false,
-                'message' => 'Yayın tipleri yüklenirken hata oluştu',
-                'error' => $e->getMessage()
-            ], 500);
+            // ✅ REFACTORED: Using ResponseService
+            return ResponseService::serverError('Yayın tipleri yüklenirken hata oluştu', $e);
         }
     }
 

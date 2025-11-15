@@ -31,11 +31,25 @@ return [
     | Harita ve coğrafi konumların merkezi ve yakınlık değerleri
     |
     */
-    'map' => [
+'map' => [
         'default_latitude' => 37.0346, // Bodrum merkez enlem
         'default_longitude' => 27.4309, // Bodrum merkez boylam
         'default_zoom' => 12, // Bodrum için daha yakın zoom seviyesi
         'search_radius' => 5, // Yakındaki yerler için varsayılan arama yarıçapı (km)
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Google Maps Ayarları (Opsiyonel)
+    |--------------------------------------------------------------------------
+    |
+    | Google Maps kullanımını feature-flag ile kontrol edin.
+    | API anahtarınızı alan adı kısıtlamasıyla güvenli şekilde kullanın.
+    */
+    'google_maps' => [
+        'enabled' => env('GOOGLE_MAPS_ENABLED', false),
+        'api_key' => env('GOOGLE_MAPS_API_KEY'),
+        'libraries' => env('GOOGLE_MAPS_LIBRARIES', 'places'),
     ],
 
     /*

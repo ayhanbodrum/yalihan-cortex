@@ -47,7 +47,7 @@ case "${1:-}" in
   scan-ilan)
     echo "Scanning for ilan_kategori_id occurrences..."
     grep -RIn --line-number --color=never "\\bilan_kategori_id\\b" app/ resources/ public/js || true
-    echo "Note: occurrences in database/migrations or seeders shown below for MANUAL review:" 
+    echo "Note: occurrences in database/migrations or seeders shown below for MANUAL review:"
     grep -RIn --line-number --color=never "\\bilan_kategori_id\\b" database || true
     ;;
   fix-ilan)

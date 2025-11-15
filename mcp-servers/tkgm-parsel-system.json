@@ -1,270 +1,260 @@
 {
-    "tkgm_parsel_system": {
-        "version": "1.0.0",
-        "context7_standard": "C7-TKGM-PARSEL-2025-10-17",
-        "description": "TKGM (Tapu Kadastro Genel Müdürlüğü) Parsel Sorgulama Sistemi - Resmi kadastro API entegrasyonu",
-        "implementation_date": "2025-10-17",
-        "status": "active",
+  "tkgm_parsel_system": {
+    "version": "1.0.0",
+    "context7_standard": "C7-TKGM-PARSEL-2025-10-17",
+    "description": "TKGM (Tapu Kadastro Genel Müdürlüğü) Parsel Sorgulama Sistemi - Resmi kadastro API entegrasyonu",
+    "implementation_date": "2025-10-17",
+    "status": "active",
 
-        "components": {
-            "controller": {
-                "path": "app/Http/Controllers/Admin/TKGMParselController.php",
-                "methods": [
-                    "index() - Ana sayfa gösterimi",
-                    "query() - Tek parsel sorgulama API",
-                    "bulkQuery() - Toplu parsel sorgulama API",
-                    "history() - Sorgulama geçmişi API",
-                    "stats() - İstatistikler API",
-                    "saveRecentQuery() - Cache yönetimi"
-                ],
-                "validation": {
-                    "ada": "required|string|max:20",
-                    "parsel": "required|string|max:20",
-                    "il": "required|string|max:50",
-                    "ilce": "required|string|max:50",
-                    "mahalle": "nullable|string|max:100"
-                }
-            },
-
-            "view": {
-                "path": "resources/views/admin/tkgm-parsel/index.blade.php",
-                "framework": "Alpine.js",
-                "design_system": "Neo Design System",
-                "features": [
-                    "tkgmParselApp() - Ana Alpine.js komponenti",
-                    "queryParcel() - Tek sorgulama fonksiyonu",
-                    "processBulkQuery() - Toplu sorgulama",
-                    "loadHistory() - Geçmiş yükleme",
-                    "goToArsaCalculation() - Arsa hesaplama entegrasyonu",
-                    "Modal sistemler - Toplu sorgulama ve geçmiş",
-                    "Real-time validation - Form validasyonu",
-                    "Progress indicators - Sorgulama durumu"
-                ]
-            },
-
-            "routes": {
-                "web": "/admin/tkgm-parsel",
-                "api": "/admin/api/tkgm-parsel/*",
-                "endpoints": [
-                    "GET /admin/tkgm-parsel - Ana sayfa",
-                    "POST /admin/api/tkgm-parsel/query - Tek sorgulama",
-                    "POST /admin/api/tkgm-parsel/bulk-query - Toplu sorgulama",
-                    "GET /admin/api/tkgm-parsel/history - Geçmiş",
-                    "GET /admin/api/tkgm-parsel/stats - İstatistikler"
-                ]
-            }
-        },
-
-        "integration": {
-            "tkgm_service": {
-                "class": "App\\Services\\TKGMService",
-                "method": "parselSorgula(ada, parsel, il, ilce)",
-                "api_url": "Official TKGM Government API",
-                "timeout": "30 seconds",
-                "rate_limit": "20 requests/minute"
-            },
-
-            "arsa_calculation": {
-                "controller": "App\\Http\\Controllers\\Admin\\ArsaCalculationController",
-                "integration_point": "goToArsaCalculation() JavaScript method",
-                "data_transfer": [
-                    "ada - Ada numarası",
-                    "parsel - Parsel numarası",
-                    "il - İl bilgisi",
-                    "ilce - İlçe bilgisi",
-                    "alan - Parsel alanı (m²)"
-                ],
-                "url_pattern": "/admin/ilanlar/arsa-calculation?ada={ada}&parsel={parsel}&il={il}&ilce={ilce}&alan={alan}"
-            },
-
-            "cache_strategy": {
-                "recent_queries": {
-                    "key_pattern": "tkgm_recent_queries_{user_id}",
-                    "ttl": "1 hour (3600 seconds)",
-                    "limit": "10 queries per user"
-                },
-                "all_queries": {
-                    "key_pattern": "tkgm_all_queries_{user_id}",
-                    "ttl": "24 hours (86400 seconds)",
-                    "limit": "100 queries per user"
-                }
-            }
-        },
-
-        "security": {
-            "authentication": "required - Laravel auth middleware",
-            "authorization": "Admin panel access required",
-            "throttling": {
-                "web_routes": "20 requests/minute per user",
-                "api_routes": "20 requests/minute per user",
-                "bulk_queries": "0.5 second delay between requests"
-            },
-            "validation": "Server-side validation + Frontend Alpine.js validation",
-            "error_handling": "Comprehensive try-catch with logging"
-        },
-
-        "features": {
-            "single_query": {
-                "description": "Tek parsel için TKGM sorgulama",
-                "input_fields": ["ada", "parsel", "il", "ilce", "mahalle?"],
-                "output_data": [
-                    "alan",
-                    "nitelik",
-                    "malik_bilgi",
-                    "location_data"
-                ],
-                "response_time": "2-5 seconds average"
-            },
-
-            "bulk_query": {
-                "description": "Toplu parsel sorgulama (max 50)",
-                "input_format": "CSV/Text format: ada,parsel,il,ilce,mahalle",
-                "processing": "Sequential with 0.5s delay between queries",
-                "output": "Summary report with success/failure counts"
-            },
-
-            "history_tracking": {
-                "description": "Kullanıcı bazında sorgulama geçmişi",
-                "storage": "Redis cache",
-                "data_points": [
-                    "query_params",
-                    "success_status",
-                    "timestamp",
-                    "response_time"
-                ]
-            },
-
-            "statistics": {
-                "metrics": [
-                    "total_queries - Toplam sorgulama sayısı",
-                    "success_rate - Başarı oranı (%)",
-                    "recent_queries - Son 24 saat sorgulamaları",
-                    "most_queried_locations - En çok sorgulanan bölgeler",
-                    "daily_stats - Günlük sorgulama istatistikleri"
-                ]
-            }
-        },
-
-        "api_documentation": {
-            "query_endpoint": {
-                "method": "POST",
-                "url": "/admin/api/tkgm-parsel/query",
-                "request_body": {
-                    "ada": "string|required|max:20",
-                    "parsel": "string|required|max:20",
-                    "il": "string|required|max:50",
-                    "ilce": "string|required|max:50",
-                    "mahalle": "string|nullable|max:100"
-                },
-                "response_success": {
-                    "success": true,
-                    "data": {
-                        "ada": "123",
-                        "parsel": "45",
-                        "il": "İstanbul",
-                        "ilce": "Kadıköy",
-                        "alan": "1250",
-                        "nitelik": "Konut",
-                        "malik_bilgi": "Owner information"
-                    },
-                    "message": "Parsel bilgileri başarıyla bulundu",
-                    "response_time": "2.3s"
-                },
-                "response_error": {
-                    "success": false,
-                    "message": "Error description",
-                    "error_code": "QUERY_ERROR"
-                }
-            },
-
-            "bulk_query_endpoint": {
-                "method": "POST",
-                "url": "/admin/api/tkgm-parsel/bulk-query",
-                "request_body": {
-                    "queries": [
-                        {
-                            "ada": "123",
-                            "parsel": "45",
-                            "il": "İstanbul",
-                            "ilce": "Kadıköy"
-                        }
-                    ]
-                },
-                "response": {
-                    "success": true,
-                    "message": "Toplu sorgulama tamamlandı. 2 başarılı, 0 başarısız.",
-                    "summary": {
-                        "total": 2,
-                        "success": 2,
-                        "failure": 0
-                    },
-                    "results": "Array of individual query results"
-                }
-            }
-        },
-
-        "future_development": {
-            "near_term": [
-                "Excel export functionality for bulk query results",
-                "Map integration for parcel location display",
-                "Advanced filtering in query history",
-                "Notification system for query results"
-            ],
-            "long_term": [
-                "AI integration for parcel value prediction",
-                "Mobile application development",
-                "Swagger/OpenAPI documentation",
-                "Multi-tenant system architecture"
-            ]
-        },
-
-        "context7_compliance": {
-            "standards": [
-                "C7-TKGM-PARSEL-2025-10-17 - TKGM parsel sorgulama standardı",
-                "Neo Design System - UI/UX consistency",
-                "Laravel Validation - Backend validation standards",
-                "Alpine.js Pattern - Frontend reactivity standards",
-                "Cache Strategy - Performance optimization standards"
-            ],
-            "code_quality": [
-                "PSR-4 Autoloading - Modern PHP standards",
-                "Type Hinting - Strict type declarations",
-                "Error Handling - Comprehensive exception management",
-                "Logging - Structured application logging",
-                "Testing Ready - Unit test compatible structure"
-            ]
-        },
-
-        "learning_notes": {
-            "for_yalihan_bekci": [
-                "TKGM Sistemi resmi devlet API'si ile entegre çalışır",
-                "Rate limiting önemlidir - API kotalarına dikkat et",
-                "Cache stratejisi performans için kritiktir",
-                "Error handling kullanıcı deneyimi için şarttır",
-                "Arsa hesaplama entegrasyonu sistemi daha değerli yapar",
-                "Context7 standartları kod kalitesi ve sürdürülebilirlik sağlar"
-            ],
-            "unique_features": [
-                "Türk emlak sektörünün ihtiyaçlarına özel geliştirilmiş",
-                "Resmi kadastro verileri ile entegre çalışan nadir sistemlerden biri",
-                "KAKS/TAKS hesaplama ve yatırım analizi entegrasyonu",
-                "Gerçek zamanlı parsel sorgulama ve toplu işlem desteği"
-            ]
-        },
-
-        "deployment": {
-            "environment_variables": [
-                "TKGM_API_KEY - TKGM API anahtarı",
-                "TKGM_API_URL - TKGM API base URL",
-                "TKGM_TIMEOUT - API timeout (default: 30s)",
-                "CACHE_DRIVER - Cache driver (recommended: redis)"
-            ],
-            "dependencies": [
-                "TKGMService - Core TKGM integration service",
-                "Cache facade - Laravel cache system",
-                "Alpine.js - Frontend reactivity framework",
-                "Neo Design System - UI component library"
-            ]
+    "components": {
+      "controller": {
+        "path": "app/Http/Controllers/Admin/TKGMParselController.php",
+        "methods": [
+          "index() - Ana sayfa gösterimi",
+          "query() - Tek parsel sorgulama API",
+          "bulkQuery() - Toplu parsel sorgulama API",
+          "history() - Sorgulama geçmişi API",
+          "stats() - İstatistikler API",
+          "saveRecentQuery() - Cache yönetimi"
+        ],
+        "validation": {
+          "ada": "required|string|max:20",
+          "parsel": "required|string|max:20",
+          "il": "required|string|max:50",
+          "ilce": "required|string|max:50",
+          "mahalle": "nullable|string|max:100"
         }
+      },
+
+      "view": {
+        "path": "resources/views/admin/tkgm-parsel/index.blade.php",
+        "framework": "Alpine.js",
+        "design_system": "Neo Design System",
+        "features": [
+          "tkgmParselApp() - Ana Alpine.js komponenti",
+          "queryParcel() - Tek sorgulama fonksiyonu",
+          "processBulkQuery() - Toplu sorgulama",
+          "loadHistory() - Geçmiş yükleme",
+          "goToArsaCalculation() - Arsa hesaplama entegrasyonu",
+          "Modal sistemler - Toplu sorgulama ve geçmiş",
+          "Real-time validation - Form validasyonu",
+          "Progress indicators - Sorgulama durumu"
+        ]
+      },
+
+      "routes": {
+        "web": "/admin/tkgm-parsel",
+        "api": "/admin/api/tkgm-parsel/*",
+        "endpoints": [
+          "GET /admin/tkgm-parsel - Ana sayfa",
+          "POST /admin/api/tkgm-parsel/query - Tek sorgulama",
+          "POST /admin/api/tkgm-parsel/bulk-query - Toplu sorgulama",
+          "GET /admin/api/tkgm-parsel/history - Geçmiş",
+          "GET /admin/api/tkgm-parsel/stats - İstatistikler"
+        ]
+      }
+    },
+
+    "integration": {
+      "tkgm_service": {
+        "class": "App\\Services\\TKGMService",
+        "method": "parselSorgula(ada, parsel, il, ilce)",
+        "api_url": "Official TKGM Government API",
+        "timeout": "30 seconds",
+        "rate_limit": "20 requests/minute"
+      },
+
+      "arsa_calculation": {
+        "controller": "App\\Http\\Controllers\\Admin\\ArsaCalculationController",
+        "integration_point": "goToArsaCalculation() JavaScript method",
+        "data_transfer": [
+          "ada - Ada numarası",
+          "parsel - Parsel numarası",
+          "il - İl bilgisi",
+          "ilce - İlçe bilgisi",
+          "alan - Parsel alanı (m²)"
+        ],
+        "url_pattern": "/admin/ilanlar/arsa-calculation?ada={ada}&parsel={parsel}&il={il}&ilce={ilce}&alan={alan}"
+      },
+
+      "cache_strategy": {
+        "recent_queries": {
+          "key_pattern": "tkgm_recent_queries_{user_id}",
+          "ttl": "1 hour (3600 seconds)",
+          "limit": "10 queries per user"
+        },
+        "all_queries": {
+          "key_pattern": "tkgm_all_queries_{user_id}",
+          "ttl": "24 hours (86400 seconds)",
+          "limit": "100 queries per user"
+        }
+      }
+    },
+
+    "security": {
+      "authentication": "required - Laravel auth middleware",
+      "authorization": "Admin panel access required",
+      "throttling": {
+        "web_routes": "20 requests/minute per user",
+        "api_routes": "20 requests/minute per user",
+        "bulk_queries": "0.5 second delay between requests"
+      },
+      "validation": "Server-side validation + Frontend Alpine.js validation",
+      "error_handling": "Comprehensive try-catch with logging"
+    },
+
+    "features": {
+      "single_query": {
+        "description": "Tek parsel için TKGM sorgulama",
+        "input_fields": ["ada", "parsel", "il", "ilce", "mahalle?"],
+        "output_data": ["alan", "nitelik", "malik_bilgi", "location_data"],
+        "response_time": "2-5 seconds average"
+      },
+
+      "bulk_query": {
+        "description": "Toplu parsel sorgulama (max 50)",
+        "input_format": "CSV/Text format: ada,parsel,il,ilce,mahalle",
+        "processing": "Sequential with 0.5s delay between queries",
+        "output": "Summary report with success/failure counts"
+      },
+
+      "history_tracking": {
+        "description": "Kullanıcı bazında sorgulama geçmişi",
+        "storage": "Redis cache",
+        "data_points": ["query_params", "success_status", "timestamp", "response_time"]
+      },
+
+      "statistics": {
+        "metrics": [
+          "total_queries - Toplam sorgulama sayısı",
+          "success_rate - Başarı oranı (%)",
+          "recent_queries - Son 24 saat sorgulamaları",
+          "most_queried_locations - En çok sorgulanan bölgeler",
+          "daily_stats - Günlük sorgulama istatistikleri"
+        ]
+      }
+    },
+
+    "api_documentation": {
+      "query_endpoint": {
+        "method": "POST",
+        "url": "/admin/api/tkgm-parsel/query",
+        "request_body": {
+          "ada": "string|required|max:20",
+          "parsel": "string|required|max:20",
+          "il": "string|required|max:50",
+          "ilce": "string|required|max:50",
+          "mahalle": "string|nullable|max:100"
+        },
+        "response_success": {
+          "success": true,
+          "data": {
+            "ada": "123",
+            "parsel": "45",
+            "il": "İstanbul",
+            "ilce": "Kadıköy",
+            "alan": "1250",
+            "nitelik": "Konut",
+            "malik_bilgi": "Owner information"
+          },
+          "message": "Parsel bilgileri başarıyla bulundu",
+          "response_time": "2.3s"
+        },
+        "response_error": {
+          "success": false,
+          "message": "Error description",
+          "error_code": "QUERY_ERROR"
+        }
+      },
+
+      "bulk_query_endpoint": {
+        "method": "POST",
+        "url": "/admin/api/tkgm-parsel/bulk-query",
+        "request_body": {
+          "queries": [
+            {
+              "ada": "123",
+              "parsel": "45",
+              "il": "İstanbul",
+              "ilce": "Kadıköy"
+            }
+          ]
+        },
+        "response": {
+          "success": true,
+          "message": "Toplu sorgulama tamamlandı. 2 başarılı, 0 başarısız.",
+          "summary": {
+            "total": 2,
+            "success": 2,
+            "failure": 0
+          },
+          "results": "Array of individual query results"
+        }
+      }
+    },
+
+    "future_development": {
+      "near_term": [
+        "Excel export functionality for bulk query results",
+        "Map integration for parcel location display",
+        "Advanced filtering in query history",
+        "Notification system for query results"
+      ],
+      "long_term": [
+        "AI integration for parcel value prediction",
+        "Mobile application development",
+        "Swagger/OpenAPI documentation",
+        "Multi-tenant system architecture"
+      ]
+    },
+
+    "context7_compliance": {
+      "standards": [
+        "C7-TKGM-PARSEL-2025-10-17 - TKGM parsel sorgulama standardı",
+        "Neo Design System - UI/UX consistency",
+        "Laravel Validation - Backend validation standards",
+        "Alpine.js Pattern - Frontend reactivity standards",
+        "Cache Strategy - Performance optimization standards"
+      ],
+      "code_quality": [
+        "PSR-4 Autoloading - Modern PHP standards",
+        "Type Hinting - Strict type declarations",
+        "Error Handling - Comprehensive exception management",
+        "Logging - Structured application logging",
+        "Testing Ready - Unit test compatible structure"
+      ]
+    },
+
+    "learning_notes": {
+      "for_yalihan_bekci": [
+        "TKGM Sistemi resmi devlet API'si ile entegre çalışır",
+        "Rate limiting önemlidir - API kotalarına dikkat et",
+        "Cache stratejisi performans için kritiktir",
+        "Error handling kullanıcı deneyimi için şarttır",
+        "Arsa hesaplama entegrasyonu sistemi daha değerli yapar",
+        "Context7 standartları kod kalitesi ve sürdürülebilirlik sağlar"
+      ],
+      "unique_features": [
+        "Türk emlak sektörünün ihtiyaçlarına özel geliştirilmiş",
+        "Resmi kadastro verileri ile entegre çalışan nadir sistemlerden biri",
+        "KAKS/TAKS hesaplama ve yatırım analizi entegrasyonu",
+        "Gerçek zamanlı parsel sorgulama ve toplu işlem desteği"
+      ]
+    },
+
+    "deployment": {
+      "environment_variables": [
+        "TKGM_API_KEY - TKGM API anahtarı",
+        "TKGM_API_URL - TKGM API base URL",
+        "TKGM_TIMEOUT - API timeout (default: 30s)",
+        "CACHE_DRIVER - Cache driver (recommended: redis)"
+      ],
+      "dependencies": [
+        "TKGMService - Core TKGM integration service",
+        "Cache facade - Laravel cache system",
+        "Alpine.js - Frontend reactivity framework",
+        "Neo Design System - UI component library"
+      ]
     }
+  }
 }

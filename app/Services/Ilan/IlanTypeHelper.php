@@ -62,12 +62,17 @@ class IlanTypeHelper
 
     public function getTypeSummary(Ilan $ilan): array
     {
+        // Context7: Handle IlanStatus enum properly
+        $statusValue = $ilan->status instanceof \App\Enums\IlanStatus
+            ? $ilan->status->label()
+            : ucfirst($ilan->status ?? 'Bilinmiyor');
+
         return [
             'type' => optional($ilan->kategori)->ad ?? 'Kategorisiz',
             'price' => number_format($ilan->fiyat) . ' ' . $ilan->para_birimi,
             'area' => ($ilan->net_metrekare ? $ilan->net_metrekare . ' m²' : 'Belirtilmemiş'),
             'category' => optional($ilan->kategori)->ad ?? 'Yok',
-            'status' => ucfirst($ilan->status),
+            'status' => $statusValue,
             'special' => $this->getSpecialBadge($ilan)
         ];
     }
@@ -88,7 +93,9 @@ class IlanTypeHelper
                 ],
                 'status' => [
                     'label' => 'Durum',
-                    'value' => $ilan->status,
+                    'value' => $ilan->status instanceof \App\Enums\IlanStatus
+                        ? $ilan->status->label()
+                        : ($ilan->status ?? 'Bilinmiyor'),
                     'type' => 'status'
                 ],
                 'ilan_tarihi' => [
@@ -104,11 +111,16 @@ class IlanTypeHelper
 
     public function getSpecialBadge(Ilan $ilan): ?string
     {
-        if ($ilan->is_published && $ilan->enabled) {
+        // Context7: Handle IlanStatus enum properly
+        $statusValue = $ilan->status instanceof \App\Enums\IlanStatus
+            ? $ilan->status->value
+            : ($ilan->status ?? '');
+
+        if ($statusValue === 'yayinda' || $statusValue === 'Aktif' || $statusValue === \App\Enums\IlanStatus::YAYINDA->value) {
             return 'Yayında';
         }
 
-        if ($ilan->status === 'Aktif') {
+        if ($statusValue === 'Aktif') {
             return 'Hazır';
         }
 
@@ -119,4 +131,3 @@ class IlanTypeHelper
         return null;
     }
 }
-

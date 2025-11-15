@@ -177,7 +177,7 @@ class SmartFieldGenerationService
 
             // Tüm özellik kategorilerini al
             $ozellikKategorileri = OzellikKategori::where('status', true)
-                ->orderBy('order')
+                ->orderBy('display_order')
                 ->get();
 
             foreach ($ozellikKategorileri as $kategori) {

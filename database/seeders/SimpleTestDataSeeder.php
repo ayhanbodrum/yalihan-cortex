@@ -59,24 +59,24 @@ class SimpleTestDataSeeder extends Seeder
                 'soyad' => 'Yılmaz',
                 'email' => 'ahmet@example.com',
                 'telefon' => '+905551234567',
-                'musteri_tipi' => 'ev_sahibi',
-                'status' => 'status',
+                'kisi_tipi' => 'ev_sahibi',
+                'status' => 'Aktif',
             ],
             [
                 'ad' => 'Ayşe',
                 'soyad' => 'Kara',
                 'email' => 'ayse@example.com',
                 'telefon' => '+905551234568',
-                'musteri_tipi' => 'alici',
-                'status' => 'status',
+                'kisi_tipi' => 'alici',
+                'status' => 'Aktif',
             ],
             [
                 'ad' => 'Mehmet',
                 'soyad' => 'Demir',
                 'email' => 'mehmet@example.com',
                 'telefon' => '+905551234569',
-                'musteri_tipi' => 'yatirimci',
-                'status' => 'status',
+                'kisi_tipi' => 'yatirimci',
+                'status' => 'Aktif',
             ]
         ];
 
@@ -117,8 +117,7 @@ class SimpleTestDataSeeder extends Seeder
                 'is_draft' => false,
                 'completion_percentage' => 100,
                 'last_saved_at' => now(),
-                'is_published' => 1,
-                'enabled' => 1,
+                
                 'ana_kategori_id' => $category->id,
                 'yayin_tipi_id' => 1, // Satılık
                 'danisman_id' => 1,
@@ -140,8 +139,7 @@ class SimpleTestDataSeeder extends Seeder
                 'is_draft' => false,
                 'completion_percentage' => 100,
                 'last_saved_at' => now(),
-                'is_published' => 1,
-                'enabled' => 1,
+                
                 'ana_kategori_id' => $category->id,
                 'yayin_tipi_id' => 2, // Kiralık
                 'danisman_id' => 1,

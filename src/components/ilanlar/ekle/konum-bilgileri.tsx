@@ -218,4 +218,4 @@ export function KonumBilgileri({ formData, setFormData }: KonumBilgileriProps) {
             </Card>
         </div>
     );
-} 
+}

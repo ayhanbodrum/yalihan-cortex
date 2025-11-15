@@ -6,7 +6,7 @@
   "total_commits": 20,
   "context7_compliance": "100%",
   "yalihan_bekci_compliance": "100%",
-  
+
   "summary": {
     "completed_priorities": 5,
     "bonus_steps": 3,
@@ -21,9 +21,7 @@
     "priority_1": {
       "name": "Bedroom Layout Component",
       "commit": "8e929444",
-      "files": [
-        "resources/views/admin/ilanlar/components/bedroom-layout-manager.blade.php"
-      ],
+      "files": ["resources/views/admin/ilanlar/components/bedroom-layout-manager.blade.php"],
       "features": [
         "Dinamik yatak odası ekleme/silme",
         "6 yatak tipi (double, single, queen, king, bunk, sofa_bed)",
@@ -177,10 +175,7 @@
       "name": "Photo Model Fix",
       "commit": "882cf098",
       "files": ["app/Models/Photo.php"],
-      "methods_added": [
-        "getImageUrl()",
-        "getThumbnailImageUrl()"
-      ],
+      "methods_added": ["getImageUrl()", "getThumbnailImageUrl()"],
       "purpose": "Blade view compatibility"
     },
 
@@ -309,11 +304,7 @@
   "season_price_cleanup": {
     "commit": "f22e7227",
     "action": "Deprecated season price fields",
-    "removed_fields": [
-      "yaz_sezonu_fiyat",
-      "kis_sezonu_fiyat",
-      "ara_sezon_fiyat"
-    ],
+    "removed_fields": ["yaz_sezonu_fiyat", "kis_sezonu_fiyat", "ara_sezon_fiyat"],
     "reason": "Season Pricing Manager component (Section 4.9) replaces these",
     "result": {
       "before": "12 fields (3 deprecated)",
@@ -392,7 +383,14 @@
     "reorganize_yazlik_fields": {
       "file": "database/scripts/reorganize-yazlik-fields.sql",
       "action": "Recategorized 88 general fields into 6 logical categories",
-      "categories": ["fiyatlandirma", "fiziksel_ozellikler", "donanim_tesisat", "dismekan_olanaklar", "yatak_odasi_konfor", "ek_hizmetler"],
+      "categories": [
+        "fiyatlandirma",
+        "fiziksel_ozellikler",
+        "donanim_tesisat",
+        "dismekan_olanaklar",
+        "yatak_odasi_konfor",
+        "ek_hizmetler"
+      ],
       "field_order_updated": true
     },
     "optimize_fiyatlandirma_order": {
@@ -412,7 +410,12 @@
     "collapsible_categories": {
       "implementation": "Alpine.js x-data with collapsed state",
       "default_open": ["fiyatlandirma", "fiziksel_ozellikler"],
-      "default_collapsed": ["donanim_tesisat", "dismekan_olanaklar", "yatak_odasi_konfor", "ek_hizmetler"],
+      "default_collapsed": [
+        "donanim_tesisat",
+        "dismekan_olanaklar",
+        "yatak_odasi_konfor",
+        "ek_hizmetler"
+      ],
       "features": ["Click to toggle", "Chevron animation", "Progress bar", "Field counter"]
     },
     "color_coding": {
@@ -510,4 +513,3 @@
     "overall_success_rate": "100%"
   }
 }
-

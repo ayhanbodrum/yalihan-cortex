@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Event;
 use App\Models\Ilan;
+use App\Services\Response\ResponseService;
+use App\Traits\ValidatesApiRequests;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
@@ -15,6 +17,8 @@ use Carbon\Carbon;
  */
 class EventController extends Controller
 {
+    use ValidatesApiRequests;
+
     /**
      * Get events for ilan
      * GET /api/admin/ilanlar/{id}/events
@@ -39,10 +43,8 @@ class EventController extends Controller
                 'notes' => $event->notes,
             ]);
 
-        return response()->json([
-            'success' => true,
-            'events' => $events
-        ]);
+        // ✅ REFACTORED: Using ResponseService
+        return ResponseService::success(['events' => $events], 'Etkinlikler başarıyla getirildi');
     }
 
     /**
@@ -51,7 +53,8 @@ class EventController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        // ✅ REFACTORED: Using ValidatesApiRequests trait
+        $validated = $this->validateRequestWithResponse($request, [
             'ilan_id' => 'required|exists:ilanlar,id',
             'event_type' => 'required|in:booking,blocked',
             'check_in' => 'required|date',
@@ -64,6 +67,10 @@ class EventController extends Controller
             'status' => 'nullable|in:pending,confirmed,cancelled',
             'notes' => 'nullable|string',
         ]);
+
+        if ($validated instanceof \Illuminate\Http\JsonResponse) {
+            return $validated;
+        }
 
         // Calculate nights
         $checkIn = Carbon::parse($request->check_in);
@@ -86,11 +93,8 @@ class EventController extends Controller
             'notes' => $request->notes,
         ]);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Rezervasyon oluşturuldu',
-            'event' => $event
-        ], 201);
+        // ✅ REFACTORED: Using ResponseService
+        return ResponseService::success(['event' => $event], 'Rezervasyon oluşturuldu', 201);
     }
 
     /**
@@ -101,7 +105,8 @@ class EventController extends Controller
     {
         $event = Event::findOrFail($id);
 
-        $request->validate([
+        // ✅ REFACTORED: Using ValidatesApiRequests trait
+        $validated = $this->validateRequestWithResponse($request, [
             'event_type' => 'nullable|in:booking,blocked',
             'check_in' => 'nullable|date',
             'check_out' => 'nullable|date|after:check_in',
@@ -113,6 +118,10 @@ class EventController extends Controller
             'status' => 'nullable|in:pending,confirmed,cancelled',
             'notes' => 'nullable|string',
         ]);
+
+        if ($validated instanceof \Illuminate\Http\JsonResponse) {
+            return $validated;
+        }
 
         // Recalculate nights if dates changed
         if ($request->has('check_in') || $request->has('check_out')) {
@@ -128,11 +137,8 @@ class EventController extends Controller
 
         $event->update($request->all());
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Rezervasyon güncellendi',
-            'event' => $event
-        ]);
+        // ✅ REFACTORED: Using ResponseService
+        return ResponseService::success(['event' => $event], 'Rezervasyon güncellendi');
     }
 
     /**
@@ -144,10 +150,8 @@ class EventController extends Controller
         $event = Event::findOrFail($id);
         $event->delete();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Rezervasyon silindi'
-        ]);
+        // ✅ REFACTORED: Using ResponseService
+        return ResponseService::success(null, 'Rezervasyon silindi');
     }
 
     /**
@@ -156,29 +160,33 @@ class EventController extends Controller
      */
     public function checkAvailability(Request $request)
     {
-        $request->validate([
+        // ✅ REFACTORED: Using ValidatesApiRequests trait
+        $validated = $this->validateRequestWithResponse($request, [
             'ilan_id' => 'required|exists:ilanlar,id',
             'check_in' => 'required|date',
             'check_out' => 'required|date|after:check_in',
         ]);
 
+        if ($validated instanceof \Illuminate\Http\JsonResponse) {
+            return $validated;
+        }
+
         $conflicts = Event::where('ilan_id', $request->ilan_id)
             ->where('status', '!=', 'cancelled')
-            ->where(function($q) use ($request) {
+            ->where(function ($q) use ($request) {
                 $q->whereBetween('check_in', [$request->check_in, $request->check_out])
-                  ->orWhereBetween('check_out', [$request->check_in, $request->check_out])
-                  ->orWhere(function($q) use ($request) {
-                      $q->where('check_in', '<=', $request->check_in)
-                        ->where('check_out', '>=', $request->check_out);
-                  });
+                    ->orWhereBetween('check_out', [$request->check_in, $request->check_out])
+                    ->orWhere(function ($q) use ($request) {
+                        $q->where('check_in', '<=', $request->check_in)
+                            ->where('check_out', '>=', $request->check_out);
+                    });
             })
             ->exists();
 
-        return response()->json([
-            'success' => true,
+        // ✅ REFACTORED: Using ResponseService
+        return ResponseService::success([
             'available' => !$conflicts,
             'message' => $conflicts ? 'Bu tarihler rezerve edilmiş' : 'Tarihler müsait'
-        ]);
+        ], $conflicts ? 'Bu tarihler rezerve edilmiş' : 'Tarihler müsait');
     }
 }
-

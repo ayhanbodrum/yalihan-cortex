@@ -15,7 +15,7 @@ return new class extends Migration
             // Koordinat bilgileri (WikiMapia entegrasyonu için)
             $table->decimal('latitude', 10, 6)->nullable()->after('mahalle_id')->comment('Enlem (WikiMapia)');
             $table->decimal('longitude', 10, 6)->nullable()->after('latitude')->comment('Boylam (WikiMapia)');
-            
+
             // Index ekle (hızlı arama için)
             $table->index(['latitude', 'longitude']);
         });

@@ -11,9 +11,10 @@ return [
     |
     */
 
-    'api' => [
+'api' => [
         'url' => env('CONTEXT7_API_URL', 'https://context7.com/api/v1'),
-        'key' => env('CONTEXT7_API_KEY', 'ctx7sk-85fd9334-5f91-472c-8d4a-c087fd3f9d7d'),
+        // Defaultsız: .env zorunlu, repoda gizli anahtar tutulmaz
+        'key' => env('CONTEXT7_API_KEY'),
         'timeout' => env('CONTEXT7_API_TIMEOUT', 30),
         'retry_attempts' => env('CONTEXT7_API_RETRY_ATTEMPTS', 3),
     ],

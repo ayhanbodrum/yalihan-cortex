@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Services\Response\ResponseService;
+use App\Traits\ValidatesApiRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Models\Ilan;
@@ -17,6 +19,7 @@ use App\Models\FeatureCategory;
  */
 class AIFeatureSuggestionController extends Controller
 {
+    use ValidatesApiRequests;
     /**
      * Suggest Feature Values
      * Kategori ve mevcut bilgilere göre özellikleri öner
@@ -26,31 +29,31 @@ class AIFeatureSuggestionController extends Controller
      */
     public function suggestFeatureValues(Request $request)
     {
-        try {
-            $validated = $request->validate([
-                'category_id' => 'nullable|integer',
-                'sub_category_id' => 'nullable|integer',
-                'area' => 'nullable|numeric',
-                'location' => 'nullable|array',
-                'price' => 'nullable|numeric'
-            ]);
+        $validated = $this->validateRequestWithResponse($request, [
+            'category_id' => 'nullable|integer',
+            'sub_category_id' => 'nullable|integer',
+            'area' => 'nullable|numeric',
+            'location' => 'nullable|array',
+            'price' => 'nullable|numeric'
+        ]);
 
+        if ($validated instanceof \Illuminate\Http\JsonResponse) {
+            return $validated;
+        }
+
+        try {
             // İlan veritabanından benzer ilanları bul
             $similarListings = $this->findSimilarListings($validated);
 
             // AI mantığı burada (şimdilik basit mantık)
             $suggestions = $this->generateSuggestions($validated, $similarListings);
 
-            return response()->json([
-                'success' => true,
-                'message' => 'AI önerileri başarıyla oluşturuldu',
-                'data' => [
-                    'suggestions' => $suggestions,
-                    'suggested_count' => count($suggestions),
-                    'confidence' => rand(75, 95), // AI confidence score
-                    'based_on' => count($similarListings) . ' benzer ilan'
-                ]
-            ]);
+            return ResponseService::success([
+                'suggestions' => $suggestions,
+                'suggested_count' => count($suggestions),
+                'confidence' => rand(75, 95), // AI confidence score
+                'based_on' => count($similarListings) . ' benzer ilan'
+            ], 'AI önerileri başarıyla oluşturuldu');
 
         } catch (\Exception $e) {
             Log::error('AI Feature Suggestion Error:', [
@@ -58,10 +61,7 @@ class AIFeatureSuggestionController extends Controller
                 'trace' => $e->getTraceAsString()
             ]);
 
-            return response()->json([
-                'success' => false,
-                'message' => 'AI önerisi oluşturulurken hata oluştu: ' . $e->getMessage()
-            ], 500);
+            return ResponseService::serverError('AI önerisi oluşturulurken hata oluştu.', $e);
         }
     }
 
@@ -74,33 +74,32 @@ class AIFeatureSuggestionController extends Controller
      */
     public function suggestSingleFeature(Request $request)
     {
-        try {
-            $validated = $request->validate([
-                'feature' => 'required|string',
-                'context' => 'nullable|array'
-            ]);
+        $validated = $this->validateRequestWithResponse($request, [
+            'feature' => 'required|string',
+            'context' => 'nullable|array'
+        ]);
 
+        if ($validated instanceof \Illuminate\Http\JsonResponse) {
+            return $validated;
+        }
+
+        try {
             $featureName = $validated['feature'];
             $context = $validated['context'] ?? [];
 
             // Feature'a göre öneri üret
             $suggestion = $this->generateSingleFeatureSuggestion($featureName, $context);
 
-            return response()->json([
-                'success' => true,
-                'message' => "$featureName için öneri oluşturuldu",
+            return ResponseService::success([
                 'data' => $suggestion
-            ]);
+            ], "$featureName için öneri oluşturuldu");
 
         } catch (\Exception $e) {
             Log::error('Single Feature Suggestion Error:', [
                 'message' => $e->getMessage()
             ]);
 
-            return response()->json([
-                'success' => false,
-                'message' => 'Öneri oluşturulurken hata oluştu'
-            ], 500);
+            return ResponseService::serverError('Öneri oluşturulurken hata oluştu.', $e);
         }
     }
 
@@ -113,32 +112,31 @@ class AIFeatureSuggestionController extends Controller
      */
     public function analyzePropertyType(Request $request)
     {
-        try {
-            $validated = $request->validate([
-                'category_id' => 'nullable|integer',
-                'area' => 'nullable|numeric',
-                'location' => 'nullable|array',
-                'price' => 'nullable|numeric'
-            ]);
+        $validated = $this->validateRequestWithResponse($request, [
+            'category_id' => 'nullable|integer',
+            'area' => 'nullable|numeric',
+            'location' => 'nullable|array',
+            'price' => 'nullable|numeric'
+        ]);
 
+        if ($validated instanceof \Illuminate\Http\JsonResponse) {
+            return $validated;
+        }
+
+        try {
             // Analiz yap
             $analysis = $this->performPropertyAnalysis($validated);
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Mülk analizi tamamlandı',
+            return ResponseService::success([
                 'data' => $analysis
-            ]);
+            ], 'Mülk analizi tamamlandı');
 
         } catch (\Exception $e) {
             Log::error('Property Analysis Error:', [
                 'message' => $e->getMessage()
             ]);
 
-            return response()->json([
-                'success' => false,
-                'message' => 'Analiz sırasında hata oluştu'
-            ], 500);
+            return ResponseService::serverError('Analiz sırasında hata oluştu.', $e);
         }
     }
 
@@ -151,34 +149,28 @@ class AIFeatureSuggestionController extends Controller
      */
     public function getSmartDefaults(Request $request)
     {
+        $validated = $this->validateRequestWithResponse($request, [
+            'category_id' => 'required|integer'
+        ]);
+
+        if ($validated instanceof \Illuminate\Http\JsonResponse) {
+            return $validated;
+        }
+
         try {
-            $categoryId = $request->get('category_id');
-
-            if (!$categoryId) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Kategori ID gerekli'
-                ], 400);
-            }
-
             // Kategori bazlı varsayılanlar
-            $defaults = $this->getDefaultsByCategory($categoryId, $request->all());
+            $defaults = $this->getDefaultsByCategory($validated['category_id'], $request->all());
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Akıllı varsayılanlar alındı',
+            return ResponseService::success([
                 'data' => $defaults
-            ]);
+            ], 'Akıllı varsayılanlar alındı');
 
         } catch (\Exception $e) {
             Log::error('Smart Defaults Error:', [
                 'message' => $e->getMessage()
             ]);
 
-            return response()->json([
-                'success' => false,
-                'message' => 'Varsayılanlar alınırken hata oluştu'
-            ], 500);
+            return ResponseService::serverError('Varsayılanlar alınırken hata oluştu.', $e);
         }
     }
 
@@ -333,4 +325,3 @@ class AIFeatureSuggestionController extends Controller
         return $defaults;
     }
 }
-

@@ -3,7 +3,7 @@
 @section('title', 'Takvim - Rezervasyon Yönetimi')
 
 @section('content')
-<div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-8" 
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-8"
      x-data="{
          currentMonth: {{ $currentMonth ?? date('n') }},
          currentYear: {{ $currentYear ?? date('Y') }},
@@ -11,9 +11,9 @@
          selectedEvent: null,
          showEventModal: false
      }">
-    
+
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
+
         {{-- Header --}}
         <div class="flex items-center justify-between mb-8">
             <div>
@@ -24,13 +24,13 @@
                     Yazlık kiralama rezervasyonlarını takvim görünümünde yönetin
                 </p>
             </div>
-            
+
             <div class="flex items-center gap-3">
-                <a href="{{ route('admin.yazlik-kiralama.bookings') }}" 
+                <a href="{{ route('admin.yazlik-kiralama.bookings') }}"
                    class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
                     📋 Liste Görünümü
                 </a>
-                <a href="{{ route('admin.yazlik-kiralama.index') }}" 
+                <a href="{{ route('admin.yazlik-kiralama.index') }}"
                    class="inline-flex items-center gap-2 px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-all">
                     ← Geri Dön
                 </a>
@@ -82,7 +82,7 @@
                             class="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">
                         ← Önceki
                     </button>
-                    
+
                     <div class="text-center px-4">
                         <p class="text-lg font-bold text-gray-900 dark:text-white">
                             <span x-text="['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'][currentMonth - 1]"></span>
@@ -90,7 +90,7 @@
                         </p>
                         <p class="text-xs text-gray-500 dark:text-gray-400">Ay/Yıl</p>
                     </div>
-                    
+
                     <button @click="currentMonth++; if(currentMonth > 12) { currentMonth = 1; currentYear++; }"
                             class="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">
                         Sonraki →
@@ -125,7 +125,7 @@
 
         {{-- Calendar View --}}
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
-            
+
             {{-- Month View --}}
             <div x-show="viewMode === 'month'" class="p-6">
                 {{-- Calendar Grid --}}
@@ -144,7 +144,7 @@
                             <div class="text-sm font-semibold text-gray-900 dark:text-white mb-1">
                                 {{ $i <= 30 ? $i : ($i - 30) }}
                             </div>
-                            
+
                             {{-- Events on this day (Mock) --}}
                             @if($i % 5 === 0)
                                 <div class="space-y-1">
@@ -153,7 +153,7 @@
                                     </div>
                                 </div>
                             @endif
-                            
+
                             @if($i % 7 === 0)
                                 <div class="space-y-1 mt-1">
                                     <div class="text-xs bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 px-2 py-1 rounded truncate">
@@ -216,7 +216,7 @@
                                     </p>
                                 </div>
                             </div>
-                            
+
                             <button @click="alert('Etkinlik detayı: {{ $event['title'] }}')"
                                     class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
                                 Detay
@@ -235,4 +235,3 @@
     </div>
 </div>
 @endsection
-

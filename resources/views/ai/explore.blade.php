@@ -1,4 +1,217 @@
-@extends('admin.layouts.unified')
+@extends('layouts.frontend')
+
+@section('title', 'AI Portföy Keşfi - Yalıhan Emlak')
+
+@section('content')
+    <div class="bg-gray-50 dark:bg-gray-900 min-h-screen">
+        {{-- Hero Section --}}
+        <div class="relative overflow-hidden bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 dark:from-blue-700 dark:via-indigo-700 dark:to-purple-700">
+            <div class="absolute inset-0 bg-black/10"></div>
+            <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-28">
+                <div class="flex flex-col lg:flex-row items-center gap-10">
+                    <div class="flex-1 text-center lg:text-left">
+                        <span class="inline-flex items-center px-4 py-1.5 text-sm font-semibold text-white bg-white/10 backdrop-blur rounded-full mb-5">
+                            <i class="fas fa-robot mr-2"></i>Yapay Zeka Destekli Analiz
+                        </span>
+                        <h1 class="text-4xl sm:text-5xl font-bold text-white mb-6">
+                            AI Portföy Keşfi ile yeni yatırım fırsatlarını keşfedin
+                        </h1>
+                        <p class="text-lg sm:text-xl text-white/90 mb-8 max-w-2xl">
+                            Yalıhan Emlak yapay zeka motoru, taleplerinizi ve hedeflerinizi analiz ederek size özel gayrimenkul portföyleri oluşturur. Farklı senaryoları deneyimleyin, yatırımlarınızı optimize edin.
+                        </p>
+                        <div class="flex flex-col sm:flex-row gap-4">
+                            <a href="#explore"
+                               class="inline-flex items-center justify-center px-6 py-3 bg-white text-blue-700 font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-200 hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-blue-300">
+                                <i class="fas fa-compass mr-2"></i>Keşfetmeye Başla
+                            </a>
+                            <a href="#how-it-works"
+                               class="inline-flex items-center justify-center px-6 py-3 border border-white/70 text-white font-semibold rounded-lg hover:bg-white/10 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white/40">
+                                Nasıl Çalışır?
+                            </a>
+                        </div>
+                    </div>
+                    <div class="flex-1">
+                        <div class="bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 shadow-2xl p-6 sm:p-8">
+                            <h2 class="text-xl font-semibold text-white mb-4">Hızlı Analiz Parametreleri</h2>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div class="bg-white/10 rounded-2xl p-4">
+                                    <p class="text-sm text-white/80 mb-1">Bütçe Aralığı</p>
+                                    <p class="text-lg font-semibold text-white">3.000.000 ₺ - 12.000.000 ₺</p>
+                                </div>
+                                <div class="bg-white/10 rounded-2xl p-4">
+                                    <p class="text-sm text-white/80 mb-1">Tercih Edilen Lokasyon</p>
+                                    <p class="text-lg font-semibold text-white">İstanbul, İzmir, Muğla</p>
+                                </div>
+                                <div class="bg-white/10 rounded-2xl p-4">
+                                    <p class="text-sm text-white/80 mb-1">Yatırım Amacı</p>
+                                    <p class="text-lg font-semibold text-white">Uzun Vadeli Kiralama</p>
+                                </div>
+                                <div class="bg-white/10 rounded-2xl p-4">
+                                    <p class="text-sm text-white/80 mb-1">Risk Profili</p>
+                                    <p class="text-lg font-semibold text-white">Dengeli</p>
+                                </div>
+                            </div>
+                            <div class="mt-6 text-sm text-white/70">
+                                <i class="fas fa-info-circle mr-2"></i>Parametreleri değiştirerek yapay zekanın yeni kombinasyonlar önermesini sağlayabilirsiniz.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- How it works --}}
+        <section id="how-it-works" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-900 dark:text-white">Süreç Nasıl İşliyor?</h2>
+                <p class="text-lg text-gray-600 dark:text-gray-400 mt-3 max-w-2xl mx-auto">
+                    AI Portföy Keşfi sistemi; talebinizi anlamak, alternatifleri değerlendirmek ve en uygun portföyü önermek için 3 adımlı bir süreç izler.
+                </p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl p-8 shadow-sm hover:shadow-lg transition-all duration-200">
+                    <span class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300 font-semibold mb-5">1</span>
+                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-3">Talebi Anla</h3>
+                    <p class="text-gray-600 dark:text-gray-400">
+                        Yatırım hedeflerinizi, bütçe aralıklarınızı ve tercih ettiğiniz lokasyonları sisteme tanımlayın. Yapay zeka motoru talebinizi ayrıntılı olarak analiz eder.
+                    </p>
+                </div>
+                <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl p-8 shadow-sm hover:shadow-lg transition-all duration-200">
+                    <span class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300 font-semibold mb-5">2</span>
+                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-3">Alternatifleri Skorla</h3>
+                    <p class="text-gray-600 dark:text-gray-400">
+                        Sistem; portföy havuzundaki ilanları risk, getiri, likidite ve büyüme potansiyeli gibi metriklere göre skorlayarak en uygun eşleşmeleri belirler.
+                    </p>
+                </div>
+                <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl p-8 shadow-sm hover:shadow-lg transition-all duration-200">
+                    <span class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300 font-semibold mb-5">3</span>
+                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-3">Portföyü Karşılaştır</h3>
+                    <p class="text-gray-600 dark:text-gray-400">
+                        Seçilen portföyleri yan yana karşılaştırın, danışmanlarımızdan canlı destek alın ve yatırım planınızı optimize edin.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        {{-- Explore Section --}}
+        <section id="explore" class="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+                <div class="flex flex-col lg:flex-row gap-8 items-start">
+                    <div class="lg:w-1/3 space-y-6">
+                        <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Senaryonu Oluştur</h2>
+                        <p class="text-gray-600 dark:text-gray-400">
+                            Farklı yatırım senaryolarını simüle ederek, yapay zekanın önerdiği portföyleri canlı olarak takip edebilirsiniz. Filtreleri güncelledikçe önerileriniz gerçek zamanlı yenilenir.
+                        </p>
+                        <ul class="space-y-3 text-gray-700 dark:text-gray-300">
+                            <li class="flex items-start gap-3">
+                                <span class="mt-1 text-blue-500"><i class="fas fa-check-circle"></i></span>
+                                <span>Bütçe, lokasyon, yatırım türü ve risk profili gibi parametreleri düzenleyin.</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="mt-1 text-blue-500"><i class="fas fa-check-circle"></i></span>
+                                <span>AI motoru ile eşleşen portföyler için tahmini getiri ve risk skorlarını inceleyin.</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="mt-1 text-blue-500"><i class="fas fa-check-circle"></i></span>
+                                <span>Danışmanlarımızla paylaşarak kişiselleştirilmiş yatırım stratejisi oluşturun.</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="lg:flex-1 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-sm p-6">
+                        <form action="#" method="GET" class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                            <div>
+                                <label for="budget-min" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Minimum Bütçe</label>
+                                <input type="number" id="budget-min" name="budget_min" min="0"
+                                       class="w-full px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-200"
+                                       placeholder="2.000.000">
+                            </div>
+                            <div>
+                                <label for="budget-max" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Maksimum Bütçe</label>
+                                <input type="number" id="budget-max" name="budget_max" min="0"
+                                       class="w-full px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-200"
+                                       placeholder="15.000.000">
+                            </div>
+                            <div>
+                                <label for="city" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Tercih Edilen Şehir</label>
+                                <select id="city" name="city" style="color-scheme: light dark;"
+                                        class="w-full px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-200">
+                                    <option value="">Tüm Şehirler</option>
+                                    <option value="istanbul">İstanbul</option>
+                                    <option value="izmir">İzmir</option>
+                                    <option value="antalya">Antalya</option>
+                                    <option value="muğla">Muğla</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="scenario" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Yatırım Senaryosu</label>
+                                <select id="scenario" name="scenario" style="color-scheme: light dark;"
+                                        class="w-full px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-200">
+                                    <option value="premium">Premium Konut Portföyü</option>
+                                    <option value="kiralama">Kiralama Getirisi Odaklı</option>
+                                    <option value="degerlenme">Değerlenme Potansiyelli</option>
+                                    <option value="karma">Karma Portföy</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="risk" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Risk Seviyesi</label>
+                                <select id="risk" name="risk" style="color-scheme: light dark;"
+                                        class="w-full px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-200">
+                                    <option value="dusuk">Düşük</option>
+                                    <option value="orta">Orta</option>
+                                    <option value="yuksek">Yüksek</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="timeline" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Zaman Ufku</label>
+                                <select id="timeline" name="timeline" style="color-scheme: light dark;"
+                                        class="w-full px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-200">
+                                    <option value="kisa">Kısa Vadeli (0-3 yıl)</option>
+                                    <option value="orta">Orta Vadeli (3-7 yıl)</option>
+                                    <option value="uzun">Uzun Vadeli (7+ yıl)</option>
+                                </select>
+                            </div>
+                            <div class="md:col-span-2">
+                                <label for="notes" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Notlar & Beklentiler</label>
+                                <textarea id="notes" name="notes" rows="3"
+                                          class="w-full px-4 py-2.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-200"
+                                          placeholder="Örn: Deniz manzaralı premium projeler, kiralama gelirine odaklı, yerli müşterilere uygun olsun."></textarea>
+                            </div>
+                            <div class="md:col-span-2 flex flex-col sm:flex-row gap-3">
+                                <button type="submit"
+                                        class="inline-flex items-center justify-center w-full sm:w-auto px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                                    <i class="fas fa-magic mr-2"></i>AI Analizi Başlat
+                                </button>
+                                <button type="button"
+                                        class="inline-flex items-center justify-center w-full sm:w-auto px-6 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 font-semibold rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                                    <i class="fas fa-undo mr-2"></i>Parametreleri Sıfırla
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        {{-- Call to Action --}}
+        <section class="bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-700 dark:to-indigo-700">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+                    <div>
+                        <h2 class="text-3xl font-bold text-white mb-3">Danışmanlarımızdan destek alın</h2>
+                        <p class="text-white/90 text-lg">
+                            AI önerilerini gerçek dünyadaki portföylerle eşleştirmek için uzman gayrimenkul danışmanlarımızla iletişime geçin. Stratejinizi birlikte şekillendirelim.
+                        </p>
+                    </div>
+                    <a href="{{ route('frontend.danismanlar.index') }}"
+                       class="inline-flex items-center justify-center px-6 py-3 bg-white text-blue-700 font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white">
+                        <i class="fas fa-user-tie mr-2"></i>Danışmanları Gör
+                    </a>
+                </div>
+            </div>
+        </section>
+    </div>
+@endsection
+@extends('layouts.frontend')
 
 @section('content')
     <div class="px-4 py-6">

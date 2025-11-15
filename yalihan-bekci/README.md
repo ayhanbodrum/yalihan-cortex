@@ -1,139 +1,76 @@
-# TestSprite MCP
+# 📁 Yalıhan Bekçi Knowledge Base
 
-TestSprite MCP, Laravel projelerinde migration ve seeder dosyalarının senkronizasyonunu ve kod standartlarına uygunluğunu test eden bir MCP (Memory, Context, Processing) sistemidir.
+**Amaç:** Context7 standartlarını koruyan AI bekçi sisteminin öğrenilmiş kurallarını, analizlerini ve güncel raporlarını merkezi bir klasörde tutmak.
 
-## Özellikler
+**Son Güncelleme:** 7 Kasım 2025  
+**Sorumlu:** Context7 AI Takımı
 
-- Migration ve seeder dosyalarının modül yapısına uygunluğunu kontrol eder
-- Semantic versioning kurallarına uygunluğu denetler
-- Kod standartlarını (PSR-12, Vue Composition API, Blade strict mode) kontrol eder
-- Güvenlik politikalarını (env dosyaları, API keyler, şifreleme) denetler
-- CSS çakışmalarını tespit eder
-- Değişiklikleri changelog ile kaydeder
-- Otomatik düzeltme önerileri sunar
+---
 
-## Kullanım
+## 🧭 Dizin Yapısı
 
-### Komut Satırı Arayüzü
+- `analysis/` → Güncel teknik incelemeler ve aktif optimizasyon notları
+- `knowledge/` → Referans niteliğindeki kalıcı rehberler (Tailwind, Context7 vb.)
+- `reports/` → Son durum raporları ve özetler (tamamlanan işler kısa süre tutulur)
+    - `reports/archive/2025-11/` → Kasım 2025’e ait arşivlenmiş raporlar (otomatik tasnif)
+    - `reports/archive/2025-10/` → Ekim 2025’e ait arşivlenmiş raporlar
+    - `reports/archive/2024-12/` → Aralık 2024’e ait arşivlenmiş raporlar
+- `recommendations/` → Açık aksiyonlar ve yol haritası önerileri
+- `rules/` → Harita, Tailwind, Context7 gibi standart dokümanları
+- `milestones/` → Önemli teslimatlar ve kilometre taşı dökümanları
+- `learned/` → Bekçi sisteminin son öğrenme kayıtları (gerekirse arşivlenir)
+- `tools/`, `collectors/` → MCP scriptleri ve otomasyon araçları
 
-TestSprite MCP'yi komut satırından çalıştırmak için:
+Eski veya tamamlanmış belgeler `archive/` klasörlerine taşınır. Uzun süreli saklama gerekmeyen günlük raporlar (örn. günlük özetler) düzenli olarak silinir.
 
-```bash
-php artisan testsprite:run
-```
+---
 
-#### Parametreler
+## 🔑 Kilit Dokümanlar
 
-- `--type`: Test türü (all, migrations, seeders)
-- `--report`: Rapor türü (summary, detailed, changelog)
+| Dosya                                          | Açıklama                                  | Durum    |
+| ---------------------------------------------- | ----------------------------------------- | -------- |
+| `SYSTEM-UPDATE-2025-11-02.md`                  | Bekçi sisteminin son durum özeti          | Güncel   |
+| `CSS_CLEANUP_SUMMARY.md`                       | Tailwind geçişi sonrası CSS temizliği     | Referans |
+| `LIGHT-MODE-DESIGN-SYSTEM.md`                  | Light/Dark mode tasarım standardı         | Referans |
+| `HARITA-ARACLARI-V2-OZET-2025-11-05.md`        | Harita sistemi v2 çalışmaları             | Güncel   |
+| `POLYMORPHIC-SYSTEM-QUICK-REF.md`              | Polymorphic özellik sistemi hızlı rehberi | Referans |
+| `knowledge/css-system-standards-2025-11-02.md` | Tailwind + Context7 CSS kuralları         | Referans |
 
-Örnek:
+Tüm dokümanların kapsayıcı listesi için `knowledge/INDEX.md` dosyasını kullanın.
 
-```bash
-# Sadece migration testlerini çalıştır
-php artisan testsprite:run --type=migrations
+---
 
-# Detaylı rapor oluştur
-php artisan testsprite:run --report=detailed
+## 🔄 Bakım Politikası
 
-# Sadece seeder testlerini çalıştır ve changelog raporu oluştur
-php artisan testsprite:run --type=seeders --report=changelog
-```
+1. `README.md` ve `knowledge/INDEX.md` ayda en az bir kez ya da büyük değişikliklerden hemen sonra güncellenmelidir.
+2. Yeni rapor eklenirken
+    - README’de “Kilit Dokümanlar” tablosuna eklenip eklenmeyeceği değerlendirilir.
+    - Index dosyasında ilgili kategori altına kayıt açılır.
+3. Eski raporlar (30 günden eski ve tamamlanmış işler) `archive/` dizinine taşınır veya kaldırılır.
+4. Tailwind/Context7 kuralları değiştiğinde `rules/` ve `knowledge/` altındaki rehberler eş zamanlı güncellenir.
+5. MCP scriptleri (`tools/`, `collectors/`) değiştirildiğinde README’ye kısa not düşülür.
 
-### Raporlar
+**Hatırlatma:** README ve INDEX dosyalarının güncel tutulması projenin bakım standartlarının bir parçasıdır. Değişiklik yapıldığında commit mesajlarına “yalihan-bekci docs update” benzeri açıklayıcı bir ifade ekleyin.
 
-TestSprite MCP üç farklı rapor türü sunar:
+---
 
-1. **Summary**: Genel test sonuçlarını içeren özet rapor
-2. **Detailed**: Tüm test sonuçlarını ve hata detaylarını içeren kapsamlı rapor
-3. **Changelog**: Son çalıştırmadan bu yana yapılan değişiklikleri içeren rapor
-
-Raporlar `storage/app/testsprite/reports` dizininde saklanır.
-
-### Otomatik Düzeltme
-
-TestSprite MCP, tespit ettiği basit hataları otomatik olarak düzeltebilir. Bu özelliği etkinleştirmek için:
-
-```php
-// config/testsprite.php
-'auto_correct' => true,
-```
-
-veya `.env` dosyasında:
-
-```
-TESTSPRITE_AUTO_CORRECT=true
-```
-
-### Zamanlama
-
-TestSprite MCP testlerini otomatik olarak çalıştırmak için Laravel'in zamanlayıcısını kullanabilirsiniz:
-
-```php
-// app/Console/Kernel.php
-protected function schedule(Schedule $schedule)
-{
-    $schedule->command('testsprite:run')->dailyAt('03:00');
-}
-```
-
-## Örnek Kullanım Senaryoları
-
-### Senaryo 1: Migration Dosyalarının Kontrolü
-
-Yeni bir migration dosyası oluşturduğunuzda, TestSprite MCP şunları kontrol eder:
-
-- Dosya doğru modül dizininde mi?
-- Semantic versioning kurallarına uygun mu?
-- PSR-12 kod standartlarına uygun mu?
+## 📌 Hızlı Komutlar
 
 ```bash
-php artisan testsprite:run --type=migrations
+# Önemli rehberleri görüntüle
+cat yalihan-bekci/CSS_CLEANUP_SUMMARY.md
+cat yalihan-bekci/LIGHT-MODE-DESIGN-SYSTEM.md
+
+# Güncel raporları listele
+ls -1 yalihan-bekci/reports | head
+
+# Arşivlenmiş raporları görüntüle
+ls -1 yalihan-bekci/reports/archive/2025-11
+
+# Bilgi index'ini incele
+cat yalihan-bekci/knowledge/INDEX.md
 ```
 
-### Senaryo 2: Seeder Senkronizasyonu
+---
 
-Seeder dosyalarının migration'larla senkronize olup olmadığını kontrol etmek için:
-
-```bash
-php artisan testsprite:run --type=seeders
-```
-
-### Senaryo 3: Kod Kalitesi Kontrolü
-
-Tüm testleri çalıştırarak kod kalitesini kontrol etmek için:
-
-```bash
-php artisan testsprite:run --report=detailed
-```
-
-### Senaryo 4: Pre-commit Hook Entegrasyonu
-
-Git pre-commit hook'una TestSprite MCP testlerini ekleyerek, commit öncesi kontrol yapabilirsiniz:
-
-```bash
-#!/bin/sh
-# .git/hooks/pre-commit
-
-echo "TestSprite MCP testleri çalıştırılıyor..."
-php artisan testsprite:run
-if [ $? -ne 0 ]; then
-    echo "TestSprite MCP testleri başarısız oldu!"
-    exit 1
-fi
-```
-
-## Hata Kodları ve Çözümleri
-
-TestSprite MCP, tespit ettiği hataları aşağıdaki kodlarla raporlar:
-
-- `M001`: Migration dosyası yanlış dizinde
-- `M002`: Semantic versioning hatası
-- `M003`: PSR-12 kod stili hatası
-- `S001`: Seeder dosyası yanlış dizinde
-- `S002`: afterLastBatch metodu eksik
-- `S003`: Seeder bağımlılık hatası
-- `C001`: CSS çakışması tespit edildi
-- `SEC001`: Güvenlik politikası ihlali
-
-Her hata kodu için önerilen çözümler raporda detaylı olarak açıklanır.
+**Soru / öneri:** MCP dokümantasyon sorumlusu ile iletişime geçin veya `recommendations/` klasöründe yeni bir kayıt oluşturun.

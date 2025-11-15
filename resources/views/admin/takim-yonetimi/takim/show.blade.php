@@ -657,7 +657,7 @@
 @endsection
 
 @push('styles')
-    
+
 @endpush
 
 @push('scripts')
@@ -702,38 +702,63 @@
             });
         }
 
+        // ✅ CONTEXT7: Vanilla JS - Bootstrap modal event'leri kaldırıldı
         function enhanceModal() {
             const modal = document.getElementById('uyeDuzenleModal');
             if (modal) {
-                modal.addEventListener('shown.bs.modal', function() {
-                    console.log('Context7: Üye düzenleme modal açıldı');
-                    // Focus yönetimi
-                    const firstInput = modal.querySelector('input, select');
-                    if (firstInput) {
-                        firstInput.focus();
-                    }
+                // Focus yönetimi - Modal açıldığında
+                const observer = new MutationObserver((mutations) => {
+                    mutations.forEach((mutation) => {
+                        if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                            const isVisible = !modal.classList.contains('hidden');
+                            if (isVisible) {
+                                const firstInput = modal.querySelector('input, select');
+                                if (firstInput) {
+                                    firstInput.focus();
+                                }
+                            } else {
+                                // Form reset
+                                const form = document.getElementById('uyeDuzenleForm');
+                                if (form) {
+                                    form.reset();
+                                }
+                            }
+                        }
+                    });
                 });
 
-                modal.addEventListener('hidden.bs.modal', function() {
-                    console.log('Context7: Üye düzenleme modal kapatıldı');
-                    // Form reset
-                    const form = document.getElementById('uyeDuzenleForm');
-                    if (form) {
-                        form.reset();
-                    }
+                observer.observe(modal, {
+                    attributes: true,
+                    attributeFilter: ['class']
                 });
             }
         }
 
+        // ✅ CONTEXT7: Vanilla JS - jQuery kaldırıldı
         // Üye düzenleme modal'ını aç
         function uyeDuzenle() {
             console.log('Context7: Üye düzenleme modal açılıyor');
-            $('#uyeDuzenleModal').modal('show');
+            const modal = document.getElementById('uyeDuzenleModal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                // Focus yönetimi
+                const firstInput = modal.querySelector('input, select');
+                if (firstInput) {
+                    firstInput.focus();
+                }
+            }
         }
 
+        // ✅ CONTEXT7: Vanilla JS - jQuery kaldırıldı
         // Üye düzenleme formunu gönder
         function uyeDuzenleGonder() {
             const form = document.getElementById('uyeDuzenleForm');
+            if (!form) {
+                console.error('Form bulunamadı');
+                return;
+            }
+
             const formData = new FormData(form);
 
             // Uzmanlık alanlarını array'e çevir
@@ -743,95 +768,113 @@
             }
 
             // Loading state
-            const submitBtn = document.querySelector('#uyeDuzenleModal .inline-flex items-center px-6 py-3 bg-orange-600 text-white font-semibold rounded-lg shadow-md hover:bg-orange-700 hover:scale-105 hover:shadow-lg active:scale-95 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:outline-none transition-all duration-200');
+            const submitBtn = form.querySelector('button[type="submit"]');
+            if (!submitBtn) {
+                console.error('Submit button bulunamadı');
+                return;
+            }
+
             const originalText = submitBtn.innerHTML;
             submitBtn.innerHTML = `
-        <svg class="w-4 h-4 animate-spin mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-        </svg>
-        Güncelleniyor...
-    `;
+                <svg class="w-4 h-4 animate-spin mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                </svg>
+                Güncelleniyor...
+            `;
             submitBtn.disabled = true;
 
-            $.ajax({
-                url: `/admin/takim-yonetimi/takim/{{ $takimUyesi->id }}/guncelle`,
+            // ✅ CONTEXT7: Vanilla JS Fetch API
+            fetch(`/admin/takim-yonetimi/takim/{{ $takimUyesi->id }}/guncelle`, {
                 method: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false,
+                body: formData,
                 headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                },
-                success: function(response) {
-                    console.log('Context7: Üye güncelleme başarılı', response);
-                    if (response.success) {
-                        toastr.success(response.message);
-                        $('#uyeDuzenleModal').modal('hide');
-                        setTimeout(() => {
-                            window.location.reload();
-                        }, 1000);
-                    } else {
-                        toastr.error(response.message);
-                    }
-                },
-                error: function(xhr) {
-                    console.error('Context7: Üye güncelleme hatası', xhr);
-                    const response = xhr.responseJSON;
-                    toastr.error(response?.message || 'Üye güncellenirken hata oluştu');
-                },
-                complete: function() {
-                    // Reset loading state
-                    submitBtn.innerHTML = originalText;
-                    submitBtn.disabled = false;
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'X-Requested-With': 'XMLHttpRequest'
                 }
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Context7: Üye güncelleme başarılı', data);
+                if (data.success) {
+                    window.showToast?.(data.message, 'success') || alert(data.message);
+                    // Modal'ı kapat
+                    const modal = document.getElementById('uyeDuzenleModal');
+                    if (modal) {
+                        modal.classList.add('hidden');
+                        modal.classList.remove('flex');
+                    }
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1000);
+                } else {
+                    window.showToast?.(data.message, 'error') || alert(data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Context7: Üye güncelleme hatası', error);
+                window.showToast?.('Üye güncellenirken hata oluştu', 'error') || alert('Hata oluştu');
+            })
+            .finally(() => {
+                // Reset loading state
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
             });
         }
 
+        // ✅ CONTEXT7: Vanilla JS - jQuery kaldırıldı
         // Üyeyi takımdan çıkar
         function uyeCikar() {
             console.log('Context7: Üye çıkarma işlemi başlatıldı');
 
             if (confirm('Bu üyeyi takımdan çıkarmak istediğinizden emin misiniz? Bu işlem geri alınamaz.')) {
                 // Loading state
-                const cikarBtn = document.querySelector('.inline-flex items-center px-6 py-3 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 hover:scale-105 active:scale-95 transition-all duration-200');
+                const cikarBtn = event?.target?.closest('button') || document.querySelector('button[onclick*="uyeCikar"]');
+                if (!cikarBtn) {
+                    console.error('Çıkar butonu bulunamadı');
+                    return;
+                }
+
                 const originalText = cikarBtn.innerHTML;
                 cikarBtn.innerHTML = `
-            <svg class="w-4 h-4 animate-spin mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-            </svg>
-            Çıkarılıyor...
-        `;
+                    <svg class="w-4 h-4 animate-spin mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                    </svg>
+                    Çıkarılıyor...
+                `;
                 cikarBtn.disabled = true;
 
-                $.ajax({
-                    url: `/admin/takim-yonetimi/takim/uye-cikar`,
+                // ✅ CONTEXT7: Vanilla JS Fetch API
+                fetch('/admin/takim-yonetimi/takim/uye-cikar', {
                     method: 'POST',
-                    data: {
-                        takim_uye_id: {{ $takimUyesi->id }},
-                        _token: '{{ csrf_token() }}'
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                        'X-Requested-With': 'XMLHttpRequest'
                     },
-                    success: function(response) {
-                        console.log('Context7: Üye çıkarma başarılı', response);
-                        if (response.success) {
-                            toastr.success(response.message);
-                            setTimeout(() => {
-                                window.location.href =
-                                    '{{ route('admin.takim-yonetimi.takim.index') }}';
-                            }, 1000);
-                        } else {
-                            toastr.error(response.message);
-                        }
-                    },
-                    error: function(xhr) {
-                        console.error('Context7: Üye çıkarma hatası', xhr);
-                        const response = xhr.responseJSON;
-                        toastr.error(response?.message || 'Üye çıkarılırken hata oluştu');
-                    },
-                    complete: function() {
-                        // Reset loading state
-                        cikarBtn.innerHTML = originalText;
-                        cikarBtn.disabled = false;
+                    body: JSON.stringify({
+                        takim_uye_id: {{ $takimUyesi->id }}
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Context7: Üye çıkarma başarılı', data);
+                    if (data.success) {
+                        window.showToast?.(data.message, 'success') || alert(data.message);
+                        setTimeout(() => {
+                            window.location.href = '{{ route('admin.takim-yonetimi.takim.index') }}';
+                        }, 1000);
+                    } else {
+                        window.showToast?.(data.message, 'error') || alert(data.message);
                     }
+                })
+                .catch(error => {
+                    console.error('Context7: Üye çıkarma hatası', error);
+                    window.showToast?.('Üye çıkarılırken hata oluştu', 'error') || alert('Hata oluştu');
+                })
+                .finally(() => {
+                    // Reset loading state
+                    cikarBtn.innerHTML = originalText;
+                    cikarBtn.disabled = false;
                 });
             }
         }

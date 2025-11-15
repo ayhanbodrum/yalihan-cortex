@@ -41,16 +41,16 @@ class TestSpriteService
     {
         try {
             $response = Http::post("{$this->serverUrl}/run-tests", $options);
-            
+
             if ($response->successful()) {
                 return $response->json();
             }
-            
+
             Log::error('TestSprite MCP sunucusu hata döndürdü', [
                 'status' => $response->status(),
                 'body' => $response->body()
             ]);
-            
+
             return [
                 'error' => true,
                 'message' => 'TestSprite MCP sunucusu hata döndürdü: ' . $response->status()
@@ -59,7 +59,7 @@ class TestSpriteService
             Log::error('TestSprite MCP sunucusuna bağlanırken hata oluştu', [
                 'exception' => $e->getMessage()
             ]);
-            
+
             return [
                 'error' => true,
                 'message' => 'TestSprite MCP sunucusuna bağlanırken hata oluştu: ' . $e->getMessage()
@@ -79,11 +79,11 @@ class TestSpriteService
             $response = Http::get("{$this->serverUrl}/knowledge", [
                 'q' => $query
             ]);
-            
+
             if ($response->successful()) {
                 return $response->json();
             }
-            
+
             return [
                 'error' => true,
                 'message' => 'Arama yapılırken hata oluştu: ' . $response->status()
@@ -108,11 +108,11 @@ class TestSpriteService
             $response = Http::get("{$this->serverUrl}/reports", [
                 'type' => $type
             ]);
-            
+
             if ($response->successful()) {
                 return $response->json();
             }
-            
+
             return [
                 'error' => true,
                 'message' => 'Rapor oluşturulurken hata oluştu: ' . $response->status()
@@ -149,21 +149,21 @@ class TestSpriteService
     {
         $nodePath = $this->config['node_path'] ?? 'node';
         $serverPath = base_path('testsprite/server/index.js');
-        
+
         if (!file_exists($serverPath)) {
             Log::error('TestSprite MCP sunucu dosyası bulunamadı', [
                 'path' => $serverPath
             ]);
             return false;
         }
-        
+
         try {
             $command = "{$nodePath} {$serverPath} > " . storage_path('logs/testsprite.log') . " 2>&1 &";
             exec($command);
-            
+
             // Sunucunun başlaması için biraz bekle
             sleep(2);
-            
+
             return $this->isServerRunning();
         } catch (Exception $e) {
             Log::error('TestSprite MCP sunucusu başlatılırken hata oluştu', [

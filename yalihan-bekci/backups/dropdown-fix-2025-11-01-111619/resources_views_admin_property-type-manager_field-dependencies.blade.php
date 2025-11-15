@@ -202,7 +202,7 @@
                                 $isEnabled = (bool)($field->enabled ?? false);
                                 $enabledValue = $isEnabled ? '1' : '0';
                             @endphp
-                            <label class="relative inline-flex items-center cursor-pointer" 
+                            <label class="relative inline-flex items-center cursor-pointer"
                                    title="Enabled: {{ $enabledValue }} (Field ID: {{ $field->id }})">
                                 <input type="checkbox"
                                        class="sr-only peer field-toggle"
@@ -463,7 +463,7 @@
                 <div class="flex items-start gap-2">
                     <i class="fas fa-info-circle text-yellow-600 dark:text-yellow-400 mt-0.5"></i>
                     <div class="text-sm text-yellow-800 dark:text-yellow-200">
-                        <strong>Not:</strong> Yayın Tipi, Alan Slug ve Kategori alanları kimlik bilgisidir ve değiştirilemez. 
+                        <strong>Not:</strong> Yayın Tipi, Alan Slug ve Kategori alanları kimlik bilgisidir ve değiştirilemez.
                         Bu alanları değiştirmek isterseniz yeni bir alan oluşturup eskisini silebilirsiniz.
                     </div>
                 </div>
@@ -717,11 +717,11 @@ function toggleField(checkbox) {
         console.error('❌ toggleField: checkbox parameter is missing!');
         return;
     }
-    
+
     const fieldId = checkbox.dataset?.fieldId || checkbox.getAttribute('data-field-id');
     const enabled = checkbox.checked;
     const oldValue = checkbox.dataset?.enabled || checkbox.getAttribute('data-enabled');
-    
+
     console.log('🔵 Toggle clicked:', {
         fieldId: fieldId,
         fieldName: checkbox.dataset?.fieldName || checkbox.getAttribute('data-field-name'),
@@ -762,14 +762,14 @@ function toggleField(checkbox) {
     })
     .then(data => {
         console.log('✅ Toggle response:', data);
-        
+
         if (data.success) {
             // ✅ Başarılı: UI zaten güncellendi, sadece toast göster
             window.toast?.success(data.message || 'Güncelleme başarılı');
-            
+
             // Update checkbox data attribute
             checkbox.dataset.enabled = data.data?.enabled?.toString() || (enabled ? '1' : '0');
-            
+
             // Update label tooltip
             const label = checkbox.closest('label');
             if (label) {
@@ -950,4 +950,3 @@ document.getElementById('filterYayinTipi')?.addEventListener('change', function(
 });
 </script>
 @endpush
-

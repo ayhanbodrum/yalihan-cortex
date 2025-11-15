@@ -4,7 +4,7 @@
   "date": "2025-10-20",
   "author": "AI Assistant",
   "purpose": "Yalıhan Bekçi'ye modül ilişkileri ve entegrasyon stratejilerini öğretmek",
-  
+
   "current_modules": {
     "active": [
       {
@@ -75,7 +75,7 @@
       }
     ]
   },
-  
+
   "module_relationships": {
     "core_flow": {
       "description": "Ana modül akışı",
@@ -87,7 +87,7 @@
         "Analitik (Analytics & Reporting)"
       ]
     },
-    
+
     "detailed_relationships": {
       "Emlak_Crm": {
         "description": "Emlak ve CRM modülleri arası ilişkiler",
@@ -114,7 +114,7 @@
           }
         ]
       },
-      
+
       "TakimYonetimi_Others": {
         "description": "Takım Yönetimi modülü diğer modüllerle ilişkileri",
         "relationships": [
@@ -139,7 +139,7 @@
           }
         ]
       },
-      
+
       "Finans_Integration": {
         "description": "Finans modülü entegrasyonu",
         "relationships": [
@@ -177,7 +177,7 @@
       }
     }
   },
-  
+
   "integration_patterns": {
     "service_layer": {
       "description": "Service layer pattern kullanımı",
@@ -207,7 +207,7 @@
         }
       ]
     },
-    
+
     "pivot_tables": {
       "description": "Many-to-many ilişkiler için pivot tablolar",
       "tables": [
@@ -218,7 +218,15 @@
         },
         {
           "name": "ilan_talep_eslesmeler",
-          "columns": ["ilan_id", "talep_id", "skor", "notlar", "status", "created_at", "updated_at"],
+          "columns": [
+            "ilan_id",
+            "talep_id",
+            "skor",
+            "notlar",
+            "status",
+            "created_at",
+            "updated_at"
+          ],
           "purpose": "İlan-talep eşleştirmesi"
         },
         {
@@ -228,7 +236,7 @@
         }
       ]
     },
-    
+
     "polymorphic_relationships": {
       "description": "Polymorphic ilişkiler",
       "examples": [
@@ -241,7 +249,7 @@
       ]
     }
   },
-  
+
   "implementation_strategies": {
     "phase_1": {
       "name": "Mevcut İlişkileri Düzeltme",
@@ -254,7 +262,7 @@
         "Database migration'ları hazırla"
       ]
     },
-    
+
     "phase_2": {
       "name": "Eksik Modülleri Oluşturma",
       "duration": "2-3 hafta",
@@ -266,7 +274,7 @@
         "Entegrasyon testleri"
       ]
     },
-    
+
     "phase_3": {
       "name": "Entegrasyon ve Optimizasyon",
       "duration": "1-2 hafta",
@@ -279,7 +287,7 @@
       ]
     }
   },
-  
+
   "best_practices": {
     "model_relationships": [
       "Her modül kendi namespace'inde olmalı",
@@ -287,14 +295,14 @@
       "Pivot tablolar açık isimlendirme kullanmalı",
       "Polymorphic ilişkiler tutarlı olmalı"
     ],
-    
+
     "service_layer": [
       "Her modül kendi service'lerine sahip olmalı",
       "Business logic service'lerde olmalı",
       "Database transaction'lar service'lerde olmalı",
       "Cross-module işlemler service'lerde olmalı"
     ],
-    
+
     "database_design": [
       "Foreign key constraint'ler tanımlanmalı",
       "Index'ler performans için eklenmeli",
@@ -302,7 +310,7 @@
       "Soft delete'ler tutarlı kullanılmalı"
     ]
   },
-  
+
   "common_issues": {
     "duplicate_models": {
       "description": "Aynı model birden fazla modülde tanımlanması",
@@ -310,13 +318,9 @@
         "Talep modeli hem Talep hem Crm modülünde",
         "IlanTalepEslesme modeli hem Talep hem Crm modülünde"
       ],
-      "solutions": [
-        "Tek bir modülde tanımla",
-        "Diğer modülden import et",
-        "Namespace'leri düzelt"
-      ]
+      "solutions": ["Tek bir modülde tanımla", "Diğer modülden import et", "Namespace'leri düzelt"]
     },
-    
+
     "missing_relationships": {
       "description": "Modüller arası ilişkilerin eksik olması",
       "examples": [
@@ -330,14 +334,10 @@
         "Migration'ları hazırla"
       ]
     },
-    
+
     "service_layer_missing": {
       "description": "Service layer'ların eksik olması",
-      "examples": [
-        "IlanService eksik",
-        "FeatureService eksik",
-        "ProjeService eksik"
-      ],
+      "examples": ["IlanService eksik", "FeatureService eksik", "ProjeService eksik"],
       "solutions": [
         "Service class'ları oluştur",
         "Business logic'i service'lere taşı",
@@ -345,7 +345,7 @@
       ]
     }
   },
-  
+
   "success_metrics": {
     "technical": {
       "code_duplication": "-80%",
@@ -353,7 +353,7 @@
       "performance": "+50%",
       "security_score": "+95%"
     },
-    
+
     "business": {
       "user_satisfaction": "+40%",
       "process_efficiency": "+60%",
@@ -361,7 +361,7 @@
       "report_generation": "+80%"
     }
   },
-  
+
   "learning_outcomes": {
     "module_understanding": [
       "Modül yapısını anlama",
@@ -369,14 +369,14 @@
       "Service layer pattern",
       "Cross-module ilişkiler"
     ],
-    
+
     "integration_strategies": [
       "Pivot table tasarımı",
       "Polymorphic relationships",
       "Service layer entegrasyonu",
       "API endpoint tasarımı"
     ],
-    
+
     "problem_solving": [
       "Duplicate model çözümü",
       "Missing relationship tespiti",

@@ -20,6 +20,7 @@
 ```
 
 **Zorunlu Tailwind Patterns:**
+
 - ✅ Dark mode: `dark:bg-gray-800`, `dark:text-white`
 - ✅ Focus states: `focus:ring-2 focus:ring-blue-500`
 - ✅ Transitions: `transition-all duration-200`
@@ -33,15 +34,15 @@
 ### Input Fields
 
 ```blade
-<input type="text" 
-       class="w-full px-4 py-2 
-              bg-white dark:bg-gray-900 
-              border-2 border-gray-300 dark:border-gray-600 
-              rounded-lg 
-              text-black dark:text-white 
-              font-semibold 
-              placeholder-gray-600 dark:placeholder-gray-500 
-              focus:ring-2 focus:ring-blue-500 focus:border-transparent 
+<input type="text"
+       class="w-full px-4 py-2
+              bg-white dark:bg-gray-900
+              border-2 border-gray-300 dark:border-gray-600
+              rounded-lg
+              text-black dark:text-white
+              font-semibold
+              placeholder-gray-600 dark:placeholder-gray-500
+              focus:ring-2 focus:ring-blue-500 focus:border-transparent
               transition-colors">
 ```
 
@@ -57,22 +58,22 @@
 
 ```blade
 <!-- Primary -->
-<button class="px-6 py-3 
-               bg-gradient-to-r from-blue-600 to-purple-600 
-               text-white font-semibold 
-               rounded-lg 
-               hover:scale-105 active:scale-95 
-               focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 
+<button class="px-6 py-3
+               bg-gradient-to-r from-blue-600 to-purple-600
+               text-white font-semibold
+               rounded-lg
+               hover:scale-105 active:scale-95
+               focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
                transition-all shadow-lg">
     💾 Kaydet
 </button>
 
 <!-- Secondary -->
-<button class="px-6 py-3 
-               bg-gray-200 dark:bg-gray-700 
-               text-gray-700 dark:text-gray-300 
-               font-semibold rounded-lg 
-               hover:bg-gray-300 dark:hover:bg-gray-600 
+<button class="px-6 py-3
+               bg-gray-200 dark:bg-gray-700
+               text-gray-700 dark:text-gray-300
+               font-semibold rounded-lg
+               hover:bg-gray-300 dark:hover:bg-gray-600
                transition-all">
     İptal
 </button>
@@ -85,21 +86,21 @@
 ### ✅ Alpine.js (NO jQuery!)
 
 ```blade
-<div x-data="{ 
+<div x-data="{
     status: 'pending',
-    showModal: false 
+    showModal: false
 }">
     <!-- Reactive state -->
     <button @click="showModal = true">Aç</button>
-    
+
     <!-- Conditional rendering -->
-    <div x-show="showModal" 
+    <div x-show="showModal"
          x-transition:enter="transition ease-out duration-200"
          x-transition:enter-start="opacity-0 transform scale-95"
          x-transition:enter-end="opacity-100 transform scale-100">
         Modal içeriği
     </div>
-    
+
     <!-- Dynamic class -->
     <span :class="status === 'confirmed' ? 'text-green-600' : 'text-yellow-600'">
         Status
@@ -108,6 +109,7 @@
 ```
 
 **Alpine.js Directives:**
+
 - ✅ `x-data`: Reactive state
 - ✅ `x-show`: Conditional rendering
 - ✅ `x-if`: Conditional DOM
@@ -158,6 +160,7 @@ DB::table('yazlik_bookings')
 ```
 
 **Component Usage Pattern:**
+
 1. Component'i `admin.ilanlar.components.*` altında oluştur
 2. `@include` ile farklı modüllerde kullan
 3. Props ile data pass et: `['ilan' => $ilan]`
@@ -170,14 +173,15 @@ DB::table('yazlik_bookings')
 
 ```blade
 <!-- ✅ Her element dark mode desteklemeli -->
-<div class="bg-white dark:bg-gray-800 
-            text-gray-900 dark:text-white 
+<div class="bg-white dark:bg-gray-800
+            text-gray-900 dark:text-white
             border-gray-200 dark:border-gray-700">
     <!-- Content -->
 </div>
 ```
 
 **Dark Mode Classes:**
+
 - Background: `dark:bg-gray-800`, `dark:bg-gray-900`
 - Text: `dark:text-white`, `dark:text-gray-300`
 - Borders: `dark:border-gray-700`, `dark:border-gray-600`
@@ -193,7 +197,7 @@ DB::table('yazlik_bookings')
 <div class="px-4           <!-- Mobile: 1rem -->
             sm:px-6        <!-- Tablet: 1.5rem -->
             lg:px-8        <!-- Desktop: 2rem -->
-            grid 
+            grid
             grid-cols-1    <!-- Mobile: 1 column -->
             md:grid-cols-2 <!-- Tablet: 2 columns -->
             lg:grid-cols-3 <!-- Desktop: 3 columns -->
@@ -203,6 +207,7 @@ DB::table('yazlik_bookings')
 ```
 
 **Breakpoints:**
+
 - `sm:` 640px (Tablet)
 - `md:` 768px (Small Desktop)
 - `lg:` 1024px (Desktop)
@@ -329,4 +334,3 @@ input { color: #000 !important; }
 ---
 
 **Bu standartlar ZORUNLU ve tüm yeni kodlarda uygulanmalıdır!**
-

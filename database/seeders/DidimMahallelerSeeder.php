@@ -26,14 +26,14 @@ class DidimMahallelerSeeder extends Seeder
             ['ilce_id' => $didim->id, 'mahalle_adi' => 'Fevzipaşa'],
             ['ilce_id' => $didim->id, 'mahalle_adi' => 'Yeni'],
             ['ilce_id' => $didim->id, 'mahalle_adi' => 'Çamlık'],
-            
+
             // Sahil Mahalleleri (Turizm Bölgeleri)
             ['ilce_id' => $didim->id, 'mahalle_adi' => 'Altınkum'],
             ['ilce_id' => $didim->id, 'mahalle_adi' => 'Akbük'],
             ['ilce_id' => $didim->id, 'mahalle_adi' => 'Sarımsaklı'],
             ['ilce_id' => $didim->id, 'mahalle_adi' => 'Mavişehir'],
             ['ilce_id' => $didim->id, 'mahalle_adi' => 'Yeşilköy'],
-            
+
             // Kırsal Mahalleler
             ['ilce_id' => $didim->id, 'mahalle_adi' => 'Akköy'],
             ['ilce_id' => $didim->id, 'mahalle_adi' => 'Balat'],
@@ -62,4 +62,3 @@ class DidimMahallelerSeeder extends Seeder
         $this->command->info('✅ ' . count($mahalleler) . ' mahalle eklendi (Didim)');
     }
 }
-

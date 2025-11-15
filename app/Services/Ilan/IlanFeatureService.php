@@ -33,7 +33,7 @@ class IlanFeatureService
                 });
             }
 
-            $query->orderBy('order');
+            $query->orderBy('display_order');
         }])
         ->whereHas('features', function($query) use ($category, $yayinTipi) {
             $query->where('status', true)
@@ -58,7 +58,7 @@ class IlanFeatureService
             }
         })
         ->where('status', true)
-        ->orderBy('order')
+        ->orderBy('display_order')
         ->get();
 
         $transformed = $featureCategories->map(function($cat) {
@@ -92,4 +92,3 @@ class IlanFeatureService
         ];
     }
 }
-

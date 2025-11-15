@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Services\AdvancedAIPropertyGenerator;
+use App\Services\Response\ResponseService;
+use App\Traits\ValidatesApiRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
@@ -17,6 +19,7 @@ use Illuminate\Support\Facades\Cache;
  */
 class AdvancedAIController extends Controller
 {
+    use ValidatesApiRequests;
     private AdvancedAIPropertyGenerator $aiGenerator;
 
     public function __construct(AdvancedAIPropertyGenerator $aiGenerator)
@@ -57,12 +60,37 @@ class AdvancedAIController extends Controller
             'include_price_analysis' => 'nullable|boolean',
         ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'errors' => $validator->errors(),
-                'message' => 'Geçersiz veri formatı'
-            ], 422);
+        // ✅ REFACTORED: Using ValidatesApiRequests trait
+        $validated = $this->validateRequestWithResponse($request, [
+            'baslik' => 'nullable|string|max:255',
+            'kategori' => 'required|string|max:100',
+            'alt_kategori' => 'nullable|string|max:100',
+            'lokasyon' => 'nullable|string',
+            'il' => 'nullable|string',
+            'ilce' => 'nullable|string',
+            'mahalle' => 'nullable|string',
+            'fiyat' => 'nullable|numeric|min:0',
+            'metrekare' => 'nullable|numeric|min:0',
+            'ozellikler' => 'nullable|array',
+            'ozellikler.*' => 'string|max:100',
+            'oda_sayisi' => 'nullable|string',
+            'banyo_sayisi' => 'nullable|integer|min:0',
+            'balkon_var' => 'nullable|boolean',
+            'asansor_var' => 'nullable|boolean',
+            'kat_no' => 'nullable|integer|min:0',
+            'toplam_kat' => 'nullable|integer|min:0',
+            'ai_tone' => 'nullable|string|in:seo,kurumsal,hizli_satis,luks',
+            'ai_variant_count' => 'nullable|integer|min:1|max:10',
+            'ai_ab_test' => 'nullable|boolean',
+            'ai_languages' => 'nullable|array',
+            'ai_languages.*' => 'string|in:TR,EN,RU,DE',
+            'include_market_analysis' => 'nullable|boolean',
+            'include_seo_keywords' => 'nullable|boolean',
+            'include_price_analysis' => 'nullable|boolean',
+        ]);
+
+        if ($validated instanceof \Illuminate\Http\JsonResponse) {
+            return $validated;
         }
 
         try {
@@ -100,12 +128,12 @@ class AdvancedAIController extends Controller
             // AI içerik üret
             $result = $this->aiGenerator->generateAdvancedContent($propertyData, $aiOptions);
 
-            return response()->json([
-                'success' => true,
+            // ✅ REFACTORED: Using ResponseService
+            return ResponseService::success([
                 'data' => $result,
                 'generated_at' => now()->toISOString(),
                 'processing_time' => microtime(true) - LARAVEL_START
-            ]);
+            ], 'AI içerik başarıyla üretildi');
         } catch (\Exception $e) {
             Log::error('Advanced AI content generation failed', [
                 'error' => $e->getMessage(),
@@ -113,11 +141,8 @@ class AdvancedAIController extends Controller
                 'trace' => $e->getTraceAsString()
             ]);
 
-            return response()->json([
-                'success' => false,
-                'message' => 'AI içerik üretimi sırasında hata oluştu',
-                'error' => config('app.debug') ? $e->getMessage() : 'Lütfen daha sonra tekrar deneyin'
-            ], 500);
+            // ✅ REFACTORED: Using ResponseService
+            return ResponseService::serverError('AI içerik üretimi sırasında hata oluştu', $e);
         }
     }
 
@@ -126,7 +151,8 @@ class AdvancedAIController extends Controller
      */
     public function generateMarketAnalysis(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        // ✅ REFACTORED: Using ValidatesApiRequests trait
+        $validated = $this->validateRequestWithResponse($request, [
             'il' => 'required|string',
             'ilce' => 'nullable|string',
             'mahalle' => 'nullable|string',
@@ -136,11 +162,8 @@ class AdvancedAIController extends Controller
             'ozellikler' => 'nullable|array',
         ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'errors' => $validator->errors()
-            ], 422);
+        if ($validated instanceof \Illuminate\Http\JsonResponse) {
+            return $validated;
         }
 
         try {
@@ -156,22 +179,19 @@ class AdvancedAIController extends Controller
 
             $analysis = $this->aiGenerator->generateMarketAnalysis($propertyData);
 
-            return response()->json([
-                'success' => true,
+            // ✅ REFACTORED: Using ResponseService
+            return ResponseService::success([
                 'data' => $analysis,
                 'generated_at' => now()->toISOString()
-            ]);
+            ], 'Pazar analizi başarıyla oluşturuldu');
         } catch (\Exception $e) {
             Log::error('Market analysis generation failed', [
                 'error' => $e->getMessage(),
                 'request_data' => $request->all()
             ]);
 
-            return response()->json([
-                'success' => false,
-                'message' => 'Pazar analizi oluşturulamadı',
-                'error' => config('app.debug') ? $e->getMessage() : 'Lütfen daha sonra tekrar deneyin'
-            ], 500);
+            // ✅ REFACTORED: Using ResponseService
+            return ResponseService::serverError('Pazar analizi oluşturulamadı', $e);
         }
     }
 
@@ -180,7 +200,8 @@ class AdvancedAIController extends Controller
      */
     public function generatePriceAnalysis(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        // ✅ REFACTORED: Using ValidatesApiRequests trait
+        $validated = $this->validateRequestWithResponse($request, [
             'il' => 'required|string',
             'ilce' => 'nullable|string',
             'mahalle' => 'nullable|string',
@@ -190,11 +211,8 @@ class AdvancedAIController extends Controller
             'ozellikler' => 'nullable|array',
         ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'errors' => $validator->errors()
-            ], 422);
+        if ($validated instanceof \Illuminate\Http\JsonResponse) {
+            return $validated;
         }
 
         try {
@@ -210,22 +228,19 @@ class AdvancedAIController extends Controller
 
             $analysis = $this->aiGenerator->generatePriceAnalysis($propertyData);
 
-            return response()->json([
-                'success' => true,
+            // ✅ REFACTORED: Using ResponseService
+            return ResponseService::success([
                 'data' => $analysis,
                 'generated_at' => now()->toISOString()
-            ]);
+            ], 'Fiyat analizi başarıyla oluşturuldu');
         } catch (\Exception $e) {
             Log::error('Price analysis generation failed', [
                 'error' => $e->getMessage(),
                 'request_data' => $request->all()
             ]);
 
-            return response()->json([
-                'success' => false,
-                'message' => 'Fiyat analizi oluşturulamadı',
-                'error' => config('app.debug') ? $e->getMessage() : 'Lütfen daha sonra tekrar deneyin'
-            ], 500);
+            // ✅ REFACTORED: Using ResponseService
+            return ResponseService::serverError('Fiyat analizi oluşturulamadı', $e);
         }
     }
 
@@ -234,7 +249,8 @@ class AdvancedAIController extends Controller
      */
     public function generateSEOKeywords(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        // ✅ REFACTORED: Using ValidatesApiRequests trait
+        $validated = $this->validateRequestWithResponse($request, [
             'il' => 'required|string',
             'ilce' => 'nullable|string',
             'mahalle' => 'nullable|string',
@@ -242,11 +258,8 @@ class AdvancedAIController extends Controller
             'ozellikler' => 'nullable|array',
         ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'errors' => $validator->errors()
-            ], 422);
+        if ($validated instanceof \Illuminate\Http\JsonResponse) {
+            return $validated;
         }
 
         try {
@@ -260,22 +273,19 @@ class AdvancedAIController extends Controller
 
             $keywords = $this->aiGenerator->generateSEOKeywords($propertyData);
 
-            return response()->json([
-                'success' => true,
+            // ✅ REFACTORED: Using ResponseService
+            return ResponseService::success([
                 'data' => $keywords,
                 'generated_at' => now()->toISOString()
-            ]);
+            ], 'SEO anahtar kelimeler başarıyla oluşturuldu');
         } catch (\Exception $e) {
             Log::error('SEO keywords generation failed', [
                 'error' => $e->getMessage(),
                 'request_data' => $request->all()
             ]);
 
-            return response()->json([
-                'success' => false,
-                'message' => 'SEO anahtar kelimeler oluşturulamadı',
-                'error' => config('app.debug') ? $e->getMessage() : 'Lütfen daha sonra tekrar deneyin'
-            ], 500);
+            // ✅ REFACTORED: Using ResponseService
+            return ResponseService::serverError('SEO anahtar kelimeler oluşturulamadı', $e);
         }
     }
 
@@ -298,20 +308,15 @@ class AdvancedAIController extends Controller
                 'timestamp' => now()->toISOString()
             ];
 
-            return response()->json([
-                'success' => true,
-                'data' => $health_status
-            ]);
+            // ✅ REFACTORED: Using ResponseService
+            return ResponseService::success($health_status, 'Sistem sağlık kontrolü başarıyla tamamlandı');
         } catch (\Exception $e) {
             Log::error('System health check failed', [
                 'error' => $e->getMessage()
             ]);
 
-            return response()->json([
-                'success' => false,
-                'message' => 'Sistem sağlık kontrolü yapılamadı',
-                'error' => config('app.debug') ? $e->getMessage() : 'Lütfen daha sonra tekrar deneyin'
-            ], 500);
+            // ✅ REFACTORED: Using ResponseService
+            return ResponseService::serverError('Sistem sağlık kontrolü yapılamadı', $e);
         }
     }
 

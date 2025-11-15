@@ -30,42 +30,42 @@ class VillaController extends Controller
             abort(404, 'Yazlık kiralama kategorisi bulunamadı');
         }
 
+        // ✅ REFACTORED: Filterable trait kullanımı - Code duplication azaltıldı
         // Base query
         $query = Ilan::with(['photos', 'featuredPhoto', 'il', 'ilce', 'mahalle', 'seasons'])
             ->where('ana_kategori_id', $yazlikKategori->id)
             ->where('status', 'Aktif');
 
-        // Filters
+        // ✅ REFACTORED: Location filter (relation search - özel durum)
         if ($request->filled('location')) {
             $location = $request->get('location');
-            $query->where(function($q) use ($location) {
+            $query->where(function ($q) use ($location) {
                 $q->whereHas('il', fn($q) => $q->where('name', 'LIKE', "%{$location}%"))
-                  ->orWhereHas('ilce', fn($q) => $q->where('name', 'LIKE', "%{$location}%"))
-                  ->orWhereHas('mahalle', fn($q) => $q->where('name', 'LIKE', "%{$location}%"));
+                    ->orWhereHas('ilce', fn($q) => $q->where('name', 'LIKE', "%{$location}%"))
+                    ->orWhereHas('mahalle', fn($q) => $q->where('name', 'LIKE', "%{$location}%"));
             });
         }
 
-        // Guest count filter
+        // Guest count filter (özel durum - maksimum_misafir field'ı)
         if ($request->filled('guests')) {
             $guests = (int) $request->get('guests');
             $query->where('maksimum_misafir', '>=', $guests);
         }
 
-        // Price range filter
-        if ($request->filled('min_price')) {
-            $query->where('gunluk_fiyat', '>=', $request->get('min_price'));
-        }
-        if ($request->filled('max_price')) {
-            $query->where('gunluk_fiyat', '<=', $request->get('max_price'));
-        }
+        // ✅ REFACTORED: Price range filter (Filterable trait)
+        $query->priceRange(
+            $request->filled('min_price') ? (float) $request->get('min_price') : null,
+            $request->filled('max_price') ? (float) $request->get('max_price') : null,
+            'gunluk_fiyat'
+        );
 
         // Date availability filter
         if ($request->filled('check_in') && $request->filled('check_out')) {
             $checkIn = $request->get('check_in');
             $checkOut = $request->get('check_out');
-            
+
             // Müsait villaları filtrele (çakışma olmayanlar)
-            $query->whereDoesntHave('events', function($q) use ($checkIn, $checkOut) {
+            $query->whereDoesntHave('events', function ($q) use ($checkIn, $checkOut) {
                 $q->active()->betweenDates($checkIn, $checkOut);
             });
         }
@@ -78,34 +78,33 @@ class VillaController extends Controller
             }
         }
 
-        // Sorting
+        // ✅ REFACTORED: Sort functionality (Filterable trait + custom mapping)
         $sortBy = $request->get('sort', 'popular');
-        switch ($sortBy) {
-            case 'price_low':
-                $query->orderBy('gunluk_fiyat', 'asc');
-                break;
-            case 'price_high':
-                $query->orderBy('gunluk_fiyat', 'desc');
-                break;
-            case 'newest':
-                $query->orderBy('created_at', 'desc');
-                break;
-            case 'popular':
-            default:
-                $query->orderBy('view_count', 'desc');
-                break;
+        $sortMap = [
+            'price_low' => ['gunluk_fiyat', 'asc'],
+            'price_high' => ['gunluk_fiyat', 'desc'],
+            'newest' => ['created_at', 'desc'],
+            'popular' => ['view_count', 'desc'],
+        ];
+
+        if (isset($sortMap[$sortBy])) {
+            [$sortColumn, $sortOrder] = $sortMap[$sortBy];
+            $query->orderBy($sortColumn, $sortOrder);
+        } else {
+            // ✅ REFACTORED: Filterable trait sort kullanımı (fallback)
+            $query->sort($request->sort_by, $request->sort_order ?? 'desc', 'view_count');
         }
 
         // Paginate
         $villas = $query->paginate(24);
 
         // Locations for filter (popular cities with villas)
-        $locations = Il::whereIn('id', function($query) use ($yazlikKategori) {
+        $locations = Il::whereIn('id', function ($query) use ($yazlikKategori) {
             $query->select('il_id')
-                  ->from('ilanlar')
-                  ->where('ana_kategori_id', $yazlikKategori->id)
-                  ->where('status', 'Aktif')
-                  ->distinct();
+                ->from('ilanlar')
+                ->where('ana_kategori_id', $yazlikKategori->id)
+                ->where('status', 'Aktif')
+                ->distinct();
         })->orderBy('il_adi')->get();
 
         // Popular amenities for filter
@@ -127,17 +126,17 @@ class VillaController extends Controller
     public function show($id)
     {
         $villa = Ilan::with([
-            'photos', 
-            'featuredPhoto', 
-            'il', 
-            'ilce', 
+            'photos',
+            'featuredPhoto',
+            'il',
+            'ilce',
             'mahalle',
             'features',
             'seasons' => fn($q) => $q->active(),
             'events' => fn($q) => $q->active()
         ])
-        ->where('status', 'Aktif') // Context7 compliant!
-        ->findOrFail($id);
+            ->where('status', 'Aktif') // Context7 compliant!
+            ->findOrFail($id);
 
         // View count artır
         $villa->increment('view_count');
@@ -296,10 +295,10 @@ class VillaController extends Controller
 
         return Ilan::where('ana_kategori_id', $kategoriId)
             ->where('status', 'Aktif') // Context7 compliant!
-            ->whereDoesntHave('events', function($q) use ($today) {
+            ->whereDoesntHave('events', function ($q) use ($today) {
                 $q->active()
-                  ->where('check_in', '<=', $today)
-                  ->where('check_out', '>', $today);
+                    ->where('check_in', '<=', $today)
+                    ->where('check_out', '>', $today);
             })
             ->count();
     }

@@ -59,8 +59,8 @@ class FeatureCategory extends Model
      * @var array
      */
     protected $casts = [
-        'active' => 'boolean',
-        'order' => 'integer',
+        'status' => 'boolean',
+        'display_order' => 'integer',
     ];
 
     /**

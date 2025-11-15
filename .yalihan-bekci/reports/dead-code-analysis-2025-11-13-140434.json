@@ -1,0 +1,22 @@
+{
+    "timestamp": "2025-11-13 14:04:34",
+    "mcp_enabled": false,
+    "mcp_results": [],
+    "unused_classes": [],
+    "unused_methods": [],
+    "unused_traits": [],
+    "unused_interfaces": [],
+    "unused_constants": [],
+    "summary": {
+        "total_classes": 355,
+        "used_classes": 1166,
+        "unused_classes": 0,
+        "total_traits": 7,
+        "used_traits": 317,
+        "unused_traits": 0,
+        "total_interfaces": 0,
+        "used_interfaces": 8,
+        "unused_interfaces": 0,
+        "cleanup_opportunity": 0
+    }
+}

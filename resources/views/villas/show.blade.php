@@ -177,7 +177,7 @@
                                 <div class="text-sm text-gray-600 dark:text-gray-400 mt-1">{{ $villa->maksimum_misafir }} Kişi</div>
                             </div>
                             @endif
-                            
+
                             @if($villa->oda_sayisi)
                             <div class="text-center">
                                 <div class="text-2xl font-bold text-purple-600 dark:text-purple-400">
@@ -186,7 +186,7 @@
                                 <div class="text-sm text-gray-600 dark:text-gray-400 mt-1">{{ $villa->oda_sayisi }} Oda</div>
                             </div>
                             @endif
-                            
+
                             @if($villa->banyo_sayisi)
                             <div class="text-center">
                                 <div class="text-2xl font-bold text-green-600 dark:text-green-400">
@@ -195,7 +195,7 @@
                                 <div class="text-sm text-gray-600 dark:text-gray-400 mt-1">{{ $villa->banyo_sayisi }} Banyo</div>
                             </div>
                             @endif
-                            
+
                             @if($villa->brut_metrekare)
                             <div class="text-center">
                                 <div class="text-2xl font-bold text-orange-600 dark:text-orange-400">
@@ -300,14 +300,14 @@
                         <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">QR Kod</h3>
                         <x-qr-code-display :ilan="$villa" :size="'medium'" :showLabel="true" :showDownload="true" />
                     </div>
-                    
+
                     {{-- Navigation --}}
                     <div>
                         <x-listing-navigation :ilan="$villa" :mode="'default'" :showSimilar="false" />
                     </div>
                 </div>
             </div>
-            
+
             {{-- Similar Villas --}}
             @if($similarVillas && $similarVillas->count() > 0)
             <div class="mt-16">

@@ -14,25 +14,25 @@
     if (!$ilan) {
         return;
     }
-    
+
     $navigationService = app(\App\Services\ListingNavigationService::class);
-    
+
     // Check if navigation is enabled from settings
     if (!$navigationService->isEnabled()) {
         return;
     }
-    
+
     $navigation = match($mode) {
         'category' => $navigationService->getByCategory($ilan),
         'location' => $navigationService->getByLocation($ilan),
         default => $navigationService->getNavigation($ilan)
     };
-    
+
     $previous = $navigation['previous'] ?? null;
     $next = $navigation['next'] ?? null;
     $currentIndex = $navigation['current_index'] ?? null;
     $total = $navigation['total'] ?? 0;
-    
+
     $similar = $showSimilar ? $navigationService->getSimilar($ilan, $similarLimit) : collect([]);
 @endphp
 
@@ -50,7 +50,7 @@
         </span>
         @endif
     </div>
-    
+
     {{-- Previous/Next Navigation --}}
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
         {{-- Previous Listing --}}
@@ -85,7 +85,7 @@
             </div>
         </div>
         @endif
-        
+
         {{-- Next Listing --}}
         @if($next)
         <a href="{{ route('ilanlar.show', $next->id) }}"
@@ -119,7 +119,7 @@
         </div>
         @endif
     </div>
-    
+
     {{-- Similar Listings --}}
     @if($showSimilar && $similar->isNotEmpty())
     <div class="border-t border-gray-200 dark:border-gray-700 pt-6 mt-6">
@@ -132,7 +132,7 @@
             <a href="{{ route('ilanlar.show', $similarIlan->id) }}"
                class="group block p-3 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600 hover:border-blue-500 dark:hover:border-blue-400 hover:shadow-md transition-all duration-200">
                 @if($similarIlan->kapak_fotografi_url)
-                <img src="{{ $similarIlan->kapak_fotografi_url }}" 
+                <img src="{{ $similarIlan->kapak_fotografi_url }}"
                      alt="{{ $similarIlan->baslik }}"
                      class="w-full h-32 object-cover rounded-lg mb-2 group-hover:scale-105 transition-transform duration-200">
                 @endif
@@ -151,4 +151,3 @@
     @endif
 </div>
 @endif
-

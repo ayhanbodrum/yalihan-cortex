@@ -22,12 +22,12 @@
 
 1️⃣  DOSYALARI KONTROL ET (30 saniye)
     $ ./docs/ai-training/anythingllm-upload.sh
-    
+
     Beklenen: ✅ TÜM DOSYALAR HAZIR!
 
 2️⃣  QUICK START OKU (2 dakika)
     $ cat docs/ai-training/QUICK-START.md
-    
+
     Veya:
     $ open docs/ai-training/QUICK-START.md
 
@@ -69,7 +69,7 @@
 ✅ İlan Başlığı Üretmek
    → 3 varyant, 60-80 karakter, SEO optimize
 
-✅ İlan Açıklaması Yazmak  
+✅ İlan Açıklaması Yazmak
    → 200-250 kelime, 3 paragraf, profesyonel
 
 ✅ Lokasyon Analizi

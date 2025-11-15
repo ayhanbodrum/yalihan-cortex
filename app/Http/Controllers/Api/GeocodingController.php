@@ -3,23 +3,31 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Services\Response\ResponseService;
+use App\Traits\ValidatesApiRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class GeocodingController extends Controller
 {
+    use ValidatesApiRequests;
     /**
      * Nominatim geocoding proxy (CORS sorunu çözümü)
      */
     public function search(Request $request)
     {
-        $request->validate([
+        $validated = $this->validateRequestWithResponse($request, [
             'q' => 'required|string|min:3|max:255'
         ]);
 
+        if ($validated instanceof \Illuminate\Http\JsonResponse) {
+            return $validated;
+        }
+
         try {
             $query = $request->input('q');
-            
+
             // Nominatim API'ye proxy isteği
             $response = Http::timeout(10)
                 ->withHeaders([
@@ -35,29 +43,19 @@ class GeocodingController extends Controller
 
             if ($response->successful()) {
                 $data = $response->json();
-                
-                return response()->json([
-                    'success' => true,
+
+                return ResponseService::success([
                     'results' => $data,
                     'query' => $query,
                     'count' => count($data)
-                ]);
+                ], 'Adres araması başarıyla tamamlandı');
             } else {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Geocoding servisi yanıt vermiyor',
-                    'error' => 'HTTP ' . $response->status()
-                ], 500);
+                return ResponseService::serverError('Geocoding servisi yanıt vermiyor');
             }
-            
+
         } catch (\Exception $e) {
-            \Log::error('Geocoding hatası: ' . $e->getMessage());
-            
-            return response()->json([
-                'success' => false,
-                'message' => 'Adres arama başarısız',
-                'error' => $e->getMessage()
-            ], 500);
+            Log::error('Geocoding hatası: ' . $e->getMessage());
+            return ResponseService::serverError('Adres arama başarısız.', $e);
         }
     }
 
@@ -66,15 +64,19 @@ class GeocodingController extends Controller
      */
     public function reverse(Request $request)
     {
-        $request->validate([
+        $validated = $this->validateRequestWithResponse($request, [
             'lat' => 'required|numeric|between:-90,90',
             'lon' => 'required|numeric|between:-180,180'
         ]);
 
+        if ($validated instanceof \Illuminate\Http\JsonResponse) {
+            return $validated;
+        }
+
         try {
             $lat = $request->input('lat');
             $lon = $request->input('lon');
-            
+
             $response = Http::timeout(10)
                 ->withHeaders([
                     'User-Agent' => 'YalihanEmlak/1.0 (Real Estate Management System)'
@@ -88,28 +90,18 @@ class GeocodingController extends Controller
 
             if ($response->successful()) {
                 $data = $response->json();
-                
-                return response()->json([
-                    'success' => true,
+
+                return ResponseService::success([
                     'result' => $data,
                     'coordinates' => ['lat' => $lat, 'lon' => $lon]
-                ]);
+                ], 'Reverse geocoding başarıyla tamamlandı');
             } else {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Reverse geocoding başarısız',
-                    'error' => 'HTTP ' . $response->status()
-                ], 500);
+                return ResponseService::serverError('Reverse geocoding başarısız');
             }
-            
+
         } catch (\Exception $e) {
-            \Log::error('Reverse geocoding hatası: ' . $e->getMessage());
-            
-            return response()->json([
-                'success' => false,
-                'message' => 'Koordinat arama başarısız',
-                'error' => $e->getMessage()
-            ], 500);
+            Log::error('Reverse geocoding hatası: ' . $e->getMessage());
+            return ResponseService::serverError('Koordinat arama başarısız.', $e);
         }
     }
 }
