@@ -221,7 +221,9 @@ API çalışmıyor ve "not found" hatası alıyorsan:
 
 ## 📚 Referanslar
 
-- **Context7 Rules:** `docs/active/CONTEXT7-RULES-DETAILED.md` (Line 70-94)
+- **Master Project Prompt:** `.warp/rules/master-project-prompt.md` (Ana referans)
+- **Context7 Authority:** `.context7/authority.json` (TEK YETKİLİ KAYNAK)
+- **Forbidden Patterns:** `.context7/FORBIDDEN_PATTERNS.md`
 - **Yalıhan Bekçi:** `yalihan-bekci/learned/applies-to-field-standardization-2025-11-12.json`
 - **API Controller:** `app/Http/Controllers/Api/FeatureController.php` (Lines 40-47)
 

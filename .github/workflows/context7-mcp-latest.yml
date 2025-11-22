@@ -1,0 +1,27 @@
+name: context7-mcp-latest
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+jobs:
+  compliance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install MCP
+        run: npm i -g @upstash/context7-mcp@latest
+      - name: Launch MCP check
+        run: context7-mcp --transport stdio || npx -y @upstash/context7-mcp@latest
+      - name: PHP setup
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+      - name: Composer install
+        run: composer install --no-interaction --prefer-dist
+      - name: Migrate dry run
+        run: php artisan migrate --pretend --no-interaction
+      - name: Tests
+        run: php artisan test

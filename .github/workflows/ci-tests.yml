@@ -20,3 +20,16 @@ jobs:
         run: npm install
       - name: Run unit tests
         run: npm test -s
+      - name: Run A11Y checks
+        run: npx vitest run --environment jsdom resources/js/__tests__/a11y.test.js -s
+      - name: Run MCP latest (if secret present)
+        env:
+          CONTEXT7_API_KEY: ${{ secrets.CONTEXT7_API_KEY }}
+        run: |
+          if [ -n "$CONTEXT7_API_KEY" ]; then
+            npm run mcp:latest || true
+          else
+            echo "CONTEXT7_API_KEY missing, skipping MCP"
+          fi
+      - name: Owner Private Audit Summary
+        run: php artisan report:owner-private-audit || true

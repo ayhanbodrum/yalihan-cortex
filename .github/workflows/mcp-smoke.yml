@@ -1,0 +1,38 @@
+name: MCP Smoke Test
+
+on:
+  workflow_dispatch:
+    inputs:
+      smoke_url:
+        description: "Target URL for smoke test"
+        required: false
+        default: "https://example.com"
+  push:
+    branches: [ main ]
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install
+        run: npm ci
+
+      - name: Run Smoke Test
+        env:
+          SMOKE_URL: ${{ github.event.inputs.smoke_url || secrets.SMOKE_URL || 'https://example.com' }}
+          SMOKE_OUT: /tmp/mcp-smoke.png
+        run: npm run mcp:puppeteer-smoke
+
+      - name: Upload Screenshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: mcp-smoke-screenshot
+          path: /tmp/mcp-smoke.png
