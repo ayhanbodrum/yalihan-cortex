@@ -32,6 +32,9 @@ use App\Services\Cache\CacheHelper;
 use App\Services\Response\ResponseService;
 use App\Services\Logging\LogService;
 use Illuminate\Support\Facades\Log;
+use App\Services\IlanReferansService;
+use App\Services\CategoryFieldValidator;
+use App\Http\Controllers\Admin\AI\IlanAIController as AIController;
 
 class IlanController extends AdminController
 {
@@ -61,10 +64,52 @@ class IlanController extends AdminController
             });
         }
 
+        // Üst sekmeler (tabs): active, expired, passive, office, drafts, deleted
+        // ✅ Context7: Status field string değerler kullanıyor ('Aktif', 'Pasif', 'Taslak', 'Beklemede')
+        $tab = $request->get('tab');
+        $expiryDays = 60;
+        $activeStatuses = ['Aktif']; // ✅ Context7: Sadece 'Aktif' kullan (yayinda kaldırıldı)
+        $draftStatuses = ['Taslak']; // ✅ Context7: Sadece 'Taslak' kullan (draft kaldırıldı)
+
+        // Count'lar
+        $tabCounts = [
+            'active'   => Ilan::whereIn('status', $activeStatuses)->count(),
+            'expired'  => Ilan::whereIn('status', $activeStatuses)->where('updated_at', '<=', now()->subDays($expiryDays))->count(),
+            'passive'  => Ilan::where('status', 'Pasif')->count(), // ✅ Context7: Sadece 'Pasif' kullan (inactive kaldırıldı)
+            'office'   => Auth::check() ? Ilan::where('danisman_id', Auth::id())->count() : 0,
+            'drafts'   => Ilan::whereIn('status', $draftStatuses)->count(),
+            'deleted'  => Ilan::onlyTrashed()->count(),
+        ];
+
+        if ($tab === 'active') {
+            $query->whereIn('status', $activeStatuses);
+        } elseif ($tab === 'expired') {
+            $query->whereIn('status', $activeStatuses)->where('updated_at', '<=', now()->subDays($expiryDays));
+        } elseif ($tab === 'passive') {
+            $query->where('status', 'Pasif'); // ✅ Context7: Sadece 'Pasif' kullan
+        } elseif ($tab === 'office' && Auth::check()) {
+            $query->where('danisman_id', Auth::id());
+        } elseif ($tab === 'drafts') {
+            $query->whereIn('status', $draftStatuses);
+        } elseif ($tab === 'deleted') {
+            // Silinenler: onlyTrashed query
+            $query = Ilan::onlyTrashed();
+        }
+
         // ✅ REFACTORED: Filterable trait kullanımı - Code duplication azaltıldı
-        // Status filter
+        // Status filter (Ilan modelinde status string, doğrudan where kullan)
         if ($request->filled('status')) {
-            $query->byStatus($request->status);
+            // ✅ Context7: Ilan modelinde status string, doğrudan where kullan
+            $statusValue = $request->status;
+            // Mapping: Frontend'den gelen değerleri database değerlerine çevir
+            $statusMap = [
+                'active' => 'Aktif',
+                'inactive' => 'Pasif',
+                'draft' => 'Taslak',
+                'pending' => 'Beklemede',
+            ];
+            $statusValue = $statusMap[$statusValue] ?? $statusValue;
+            $query->where('status', $statusValue);
         }
 
         // Category filter (Context7 uyumlu)
@@ -155,10 +200,11 @@ class IlanController extends AdminController
         $query->select([
             'id',
             'baslik',
+            'aciklama',
+            'anahtar_notlari',
             'fiyat',
             'para_birimi',
             'status',
-            'kategori_id',
             'ana_kategori_id',
             'alt_kategori_id',
             'yayin_tipi_id',
@@ -185,7 +231,25 @@ class IlanController extends AdminController
             'anaKategori:id,name',
             'altKategori:id,name',
             'yayinTipi:id,name', // Template'de kullanılıyor
+            'fotograflar:id,ilan_id,dosya_yolu,kapak_fotografi,sira',
+            'site:id,name',
         ]);
+
+        // 🔎 Arama: başlık/açıklama + ilan sahibi adı + site/apartman adı
+        $search = trim((string) $request->get('search'));
+        if ($search !== '') {
+            $query->where(function ($q) use ($search) {
+                $like = '%' . $search . '%';
+                $q->where('baslik', 'like', $like)
+                    ->orWhere('aciklama', 'like', $like)
+                    ->orWhereHas('ilanSahibi', function ($qq) use ($like) {
+                        $qq->where('ad', 'like', $like)->orWhere('soyad', 'like', $like);
+                    })
+                    ->orWhereHas('site', function ($qq) use ($like) {
+                        $qq->where('name', 'like', $like);
+                    });
+            });
+        }
 
         // Paginate FIRST (efficient: only loads needed rows)
         // ✅ Eager loading already applied with with() above
@@ -223,7 +287,7 @@ class IlanController extends AdminController
         $status = $request->get('status'); // Filter için
         $taslak = $request->get('taslak'); // Filter için
 
-        return view('admin.ilanlar.index', compact('ilanlar', 'stats', 'kategoriler', 'iller', 'status', 'taslak'));
+        return view('admin.ilanlar.index', compact('ilanlar', 'stats', 'kategoriler', 'iller', 'status', 'taslak', 'tab', 'tabCounts'));
     }
 
     /**
@@ -283,7 +347,7 @@ class IlanController extends AdminController
         $iller = Il::orderBy('il_adi')->select(['id', 'il_adi'])->get();
 
         // ✅ FIX: Eksik değişkenler eklendi (Yalıhan Bekçi error fix)
-        $status = ['Taslak', 'Aktif', 'Pasif', 'Beklemede'];
+        $statusOptions = \App\Enums\IlanStatus::options();
         $taslak = false; // Create modunda default: false
         $etiketler = \App\Models\Etiket::where('status', true)
             ->select(['id', 'name', 'color'])
@@ -310,7 +374,7 @@ class IlanController extends AdminController
             'ilceler',
             'mahalleler',
             'autoSaveData',
-            'status',
+            'statusOptions',
             'taslak',
             'etiketler',
             'ulkeler'
@@ -359,7 +423,22 @@ class IlanController extends AdminController
             DB::beginTransaction();
 
             // Context7: 3-level category system validation
-            $validator = Validator::make($request->all(), [
+            $statusValues = \App\Enums\IlanStatus::values();
+
+            // ✅ Context7: Get category slug for dynamic validation
+            $kategoriSlug = null;
+            $yayinTipiSlug = null;
+            if ($request->ana_kategori_id) {
+                $anaKategori = IlanKategori::find($request->ana_kategori_id);
+                $kategoriSlug = $anaKategori ? strtolower($anaKategori->slug ?? '') : null;
+            }
+            if ($request->yayin_tipi_id) {
+                $yayinTipi = \App\Models\IlanKategoriYayinTipi::find($request->yayin_tipi_id);
+                $yayinTipiSlug = $yayinTipi ? strtolower($yayinTipi->slug ?? '') : null;
+            }
+
+            // ✅ Context7: Get base validation rules
+            $baseRules = [
                 'baslik' => 'required|string|max:255',
                 'aciklama' => 'nullable|string',
                 'fiyat' => 'required|numeric|min:0',
@@ -376,7 +455,8 @@ class IlanController extends AdminController
                 'il_id' => 'nullable|exists:iller,id',
                 'ilce_id' => 'nullable|exists:ilceler,id',
                 'mahalle_id' => 'nullable|exists:mahalleler,id',
-                'status' => 'required|string|in:Taslak,Aktif,Pasif,Beklemede',
+                'status' => 'required|string|in:' . implode(',', $statusValues),
+                'crm_only' => 'nullable|boolean',
 
                 // 🆕 PHASE 1: Address Components
                 'sokak' => 'nullable|string|max:255',
@@ -448,7 +528,14 @@ class IlanController extends AdminController
                 'manzara' => 'nullable|string|max:100',
                 'ev_tipi' => 'nullable|string|max:50',
                 'ev_konsepti' => 'nullable|string|max:100',
-            ]);
+            ];
+
+            // ✅ Context7: Add category-specific validation rules
+            $categoryValidator = new CategoryFieldValidator();
+            $categoryRules = $categoryValidator->getRules($kategoriSlug, $yayinTipiSlug);
+            $allRules = array_merge($baseRules, $categoryRules);
+
+            $validator = Validator::make($request->all(), $allRules, $categoryValidator->getMessages());
 
             if ($validator->fails()) {
                 return redirect()->back()
@@ -493,6 +580,7 @@ class IlanController extends AdminController
 
                 // Context7: Map 'status' (form field) to 'status' (database column - legacy)
                 'status' => $request->status,
+                'crm_only' => $request->boolean('crm_only', false),
                 'slug' => Str::slug($request->baslik),
                 // ✅ Context7: Koordinatlar (enlem/boylam form field'larından)
                 'latitude' => $request->enlem ? (float) $request->enlem : ($request->latitude ? (float) $request->latitude : null),
@@ -522,6 +610,14 @@ class IlanController extends AdminController
                 'currency' => $request->para_birimi,
                 'changed_by' => Auth::id(),
                 'change_reason' => 'İlk ilan oluşturma',
+            ]);
+
+            $refService = app(IlanReferansService::class);
+            $referansNo = $refService->generateReferansNo($ilan);
+            $dosyaAdi = $refService->generateDosyaAdi($ilan);
+            $ilan->update([
+                'referans_no' => $referansNo,
+                'dosya_adi' => $dosyaAdi,
             ]);
 
             // ✅ Context7 Features Handling: EAV pattern for amenities
@@ -685,6 +781,68 @@ class IlanController extends AdminController
         ));
     }
 
+    public function ownerPrivate(\Illuminate\Http\Request $request, Ilan $ilan)
+    {
+        $request->validate([
+            'owner_private_desired_price_min' => 'nullable|numeric|min:0',
+            'owner_private_desired_price_max' => 'nullable|numeric|min:0',
+            'owner_private_notes' => 'nullable|string|max:2000'
+        ]);
+        if (\Illuminate\Support\Facades\Gate::denies('view-private-listing-data', $ilan)) {
+            abort(403);
+        }
+        $before = $ilan->owner_private_data;
+        $ilan->owner_private_data = [
+            'desired_price_min' => $request->input('owner_private_desired_price_min'),
+            'desired_price_max' => $request->input('owner_private_desired_price_max'),
+            'notes' => $request->input('owner_private_notes')
+        ];
+        $ilan->save();
+        \App\Models\IlanPrivateAudit::create([
+            'ilan_id' => $ilan->id,
+            'user_id' => auth()->id() ?? 0,
+            'changes' => [
+                'before' => $before,
+                'after' => $ilan->owner_private_data,
+            ]
+        ]);
+        if ($request->expectsJson()) {
+            return response()->json(['success' => true]);
+        }
+        return redirect()->back()->with('success', 'Mahrem bilgiler güncellendi');
+    }
+
+    public function updatePortalIds(\Illuminate\Http\Request $request, Ilan $ilan)
+    {
+        if (\Illuminate\Support\Facades\Gate::denies('edit-ilanlar')) {
+            abort(403);
+        }
+        $request->validate([
+            'sahibinden_id' => 'nullable|regex:/^[0-9-]{6,}$/',
+            'emlakjet_id' => 'nullable|string|max:100',
+            'hepsiemlak_id' => 'nullable|string|max:100',
+            'zingat_id' => 'nullable|string|max:100',
+            'hurriyetemlak_id' => 'nullable|string|max:100',
+        ]);
+        $data = $request->only(['sahibinden_id', 'emlakjet_id', 'hepsiemlak_id', 'zingat_id', 'hurriyetemlak_id']);
+        foreach ($data as $k => $v) {
+            if (is_string($v)) $data[$k] = trim($v);
+        }
+        $normalizer = new \App\Services\Portal\PortalIdNormalizer();
+        foreach (['sahibinden_id', 'emlakjet_id', 'hepsiemlak_id', 'zingat_id', 'hurriyetemlak_id'] as $key) {
+            if (isset($data[$key]) && $data[$key] !== null && $data[$key] !== '') {
+                $portal = str_replace('_id', '', $key);
+                $data[$key] = $normalizer->normalizeProviderId($portal, $data[$key]);
+            }
+        }
+        $ilan->fill($data);
+        $ilan->save();
+        if ($request->expectsJson()) {
+            return response()->json(['success' => true]);
+        }
+        return redirect()->back()->with('success', 'Portal ID’ler güncellendi');
+    }
+
     /**
      * Show the form for editing the specified resource.
      * Context7: İlan düzenleme formu
@@ -814,7 +972,7 @@ class IlanController extends AdminController
                 'il_id' => 'nullable|exists:iller,id',
                 'ilce_id' => 'nullable|exists:ilceler,id',
                 'mahalle_id' => 'nullable|exists:mahalleler,id',
-                'status' => 'required|string|in:Taslak,Aktif,Pasif,Beklemede',
+                'status' => 'required|string|in:Taslak,Aktif,Pasif,Beklemede', // ✅ FIX: İlan tablosu için string (çoklu durumlar var)
 
                 // Yazlık Kiralama Validation Rules
                 'min_konaklama' => 'nullable|integer|min:1|max:365',
@@ -1148,11 +1306,14 @@ class IlanController extends AdminController
         $ilanlar = $query->paginate(20);
 
         if ($request->ajax()) {
+            // Context7: Responsive - Return both table and card views
             return response()->json([
                 'success' => true,
                 'html' => view('admin.ilanlar.partials.listings-grid', compact('ilanlar'))->render(),
+                'cards_html' => view('admin.ilanlar.partials.listings-cards', compact('ilanlar'))->render(),
                 // ✅ FIX: links() metodu LengthAwarePaginator'da mevcut, type hint eklendi
-                'pagination' => (string) $ilanlar->links()
+                'pagination' => (string) $ilanlar->links(),
+                'total' => $ilanlar->total()
             ]);
         }
 
@@ -1355,39 +1516,52 @@ class IlanController extends AdminController
      */
     public function generateAiTitle(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'kategori' => 'required|string',
-            'lokasyon' => 'nullable|string',
-            'fiyat' => 'nullable|numeric',
-            'ozellikler' => 'nullable|string'
-        ]);
+        try {
+            // ✅ Context7: Gerçek AI entegrasyonu - IlanAIController kullan
+            $aiController = app(AIController::class);
 
-        if ($validator->fails()) {
+            // Request'i IlanAIController formatına çevir
+            // Frontend context objesi gönderiyor: { context: { kategori, il, ... } }
+            $context = $request->input('context', []);
+            $aiRequest = new Request([
+                'kategori' => $this->getCategoryName($context['kategori'] ?? $request->input('kategori', 'Gayrimenkul')),
+                'il' => $this->getLocationName($context['il'] ?? $request->input('il')),
+                'ilce' => $this->getLocationName($context['ilce'] ?? $request->input('ilce')),
+                'mahalle' => $this->getLocationName($context['mahalle'] ?? $request->input('mahalle')),
+                'fiyat' => $context['fiyat'] ?? $request->input('fiyat'),
+                'para_birimi' => $context['paraBirimi'] ?? $context['para_birimi'] ?? $request->input('para_birimi', 'TRY'),
+                'yayin_tipi' => $context['yayinTipi'] ?? $context['yayin_tipi'] ?? $request->input('yayin_tipi', 'Satılık'),
+                'ai_tone' => $request->input('ai_tone', 'seo')
+            ]);
+
+            $response = $aiController->suggest(new Request([
+                'action' => 'title',
+                ...$aiRequest->all()
+            ]));
+
+            $data = json_decode($response->getContent(), true);
+
+            // Frontend formatına uyarla
+            // IlanAIController variants döndürüyor: ['Başlık 1', 'Başlık 2', ...]
+            $variants = $data['variants'] ?? [];
+            $title = !empty($variants) ? $variants[0] : 'Başlık üretilemedi';
+
+            return response()->json([
+                'success' => $data['success'] ?? true,
+                'title' => $title,
+                'alternatives' => array_slice($variants, 0, 3),
+                'data' => [
+                    'title' => $title
+                ]
+            ]);
+        } catch (\Exception $e) {
+            Log::error('AI Title Generation Error: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
-                'errors' => $validator->errors()
-            ], 422);
+                'message' => 'AI başlık üretimi başarısız: ' . $e->getMessage(),
+                'title' => 'Başlık üretilemedi'
+            ], 500);
         }
-
-        // Mock AI title generation
-        $titles = [
-            "Mükemmel {$request->kategori} - {$request->lokasyon}",
-            "Sıfır {$request->kategori} Satılık - {$request->lokasyon}",
-            "Lüks {$request->kategori} - Mükemmel Konumda",
-            "Yatırım Fırsatı {$request->kategori} - {$request->lokasyon}",
-            "Acil Satılık {$request->kategori} - Uygun Fiyat"
-        ];
-
-        $generatedTitle = $titles[array_rand($titles)];
-
-        $shuffledTitles = $titles;
-        shuffle($shuffledTitles);
-
-        return response()->json([
-            'success' => true,
-            'title' => $generatedTitle,
-            'alternatives' => array_slice($shuffledTitles, 0, 3)
-        ]);
     }
 
     /**
@@ -1399,36 +1573,48 @@ class IlanController extends AdminController
      */
     public function generateAiDescription(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'baslik' => 'required|string',
-            'kategori' => 'required|string',
-            'lokasyon' => 'nullable|string',
-            'fiyat' => 'nullable|numeric',
-            'ozellikler' => 'nullable|array'
-        ]);
+        try {
+            // ✅ Context7: Gerçek AI entegrasyonu - IlanAIController kullan
+            $aiController = app(AIController::class);
 
-        if ($validator->fails()) {
+            // Request'i IlanAIController formatına çevir
+            // Frontend context objesi gönderiyor: { context: { kategori, il, ... } }
+            $context = $request->input('context', []);
+            $aiRequest = new Request([
+                'kategori' => $this->getCategoryName($context['kategori'] ?? $request->input('kategori', 'Gayrimenkul')),
+                'il' => $this->getLocationName($context['il'] ?? $request->input('il')),
+                'ilce' => $this->getLocationName($context['ilce'] ?? $request->input('ilce')),
+                'mahalle' => $this->getLocationName($context['mahalle'] ?? $request->input('mahalle')),
+                'fiyat' => $context['fiyat'] ?? $request->input('fiyat'),
+                'para_birimi' => $context['paraBirimi'] ?? $context['para_birimi'] ?? $request->input('para_birimi', 'TRY'),
+                'metrekare' => $context['metrekare'] ?? $request->input('metrekare'),
+                'oda_sayisi' => $context['odaSayisi'] ?? $context['oda_sayisi'] ?? $request->input('oda_sayisi'),
+                'ai_tone' => $request->input('ai_tone', 'seo')
+            ]);
+
+            $response = $aiController->suggest(new Request([
+                'action' => 'description',
+                ...$aiRequest->all()
+            ]));
+
+            $data = json_decode($response->getContent(), true);
+
+            // Frontend formatına uyarla
+            return response()->json([
+                'success' => $data['success'] ?? true,
+                'description' => $data['description'] ?? 'Açıklama üretilemedi',
+                'data' => [
+                    'description' => $data['description'] ?? 'Açıklama üretilemedi'
+                ]
+            ]);
+        } catch (\Exception $e) {
+            Log::error('AI Description Generation Error: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
-                'errors' => $validator->errors()
-            ], 422);
+                'message' => 'AI açıklama üretimi başarısız: ' . $e->getMessage(),
+                'description' => 'Açıklama üretilemedi'
+            ], 500);
         }
-
-        // Mock AI description generation
-        $description = "Bu mükemmel {$request->kategori}, {$request->lokasyon} bölgesinde yer almaktadır. ";
-        $description .= "Modern mimarisi ve kaliteli malzemelerle inşa edilmiş bu emlak, hayalinizdeki yaşam konforunu sunmaktadır. ";
-
-        if ($request->ozellikler && is_array($request->ozellikler)) {
-            $description .= "Başlıca özellikleri arasında " . implode(', ', $request->ozellikler) . " bulunmaktadır. ";
-        }
-
-        $description .= "Ulaşım açısından son derece avantajlı olan bu emlak, sosyal tesislere yakın konumuyla dikkat çekmektedir. ";
-        $description .= "Yatırım değeri yüksek olan bu fırsatı kaçırmayın!";
-
-        return response()->json([
-            'success' => true,
-            'description' => $description
-        ]);
     }
 
     /**
@@ -1495,28 +1681,124 @@ class IlanController extends AdminController
      */
     public function getAIPropertySuggestions(Request $request)
     {
-        $suggestions = [
-            'fiyat_optimizasyonu' => [
-                'onerilen_fiyat' => $request->fiyat ? $request->fiyat * 1.1 : 500000,
-                'pazar_analizi' => 'Benzer özellikler taşıyan emlaklar %10 daha yüksek fiyattan satılmaktadır.',
-                'rekabet_statusu' => 'Orta seviye rekabet'
-            ],
-            'pazarlama_onerileri' => [
-                'en_iyi_saatler' => '09:00-12:00 ve 14:00-18:00',
-                'hedef_kitle' => 'Genç çiftler ve aileler',
-                'vurgulanacak_ozellikler' => ['Konum avantajı', 'Ulaşım kolaylığı', 'Modern dizayn']
-            ],
-            'seo_onerileri' => [
-                'anahtar_kelimeler' => ['satılık daire', 'merkezi konum', 'yatırım fırsatı'],
-                'baslik_optimizasyonu' => 'Başlığınıza konum ve öne çıkan özellikleri ekleyin',
-                'aciklama_uzunlugu' => 'Optimum açıklama uzunluğu 150-200 kelimedir'
-            ]
-        ];
+        try {
+            // ✅ Context7: Gerçek AI entegrasyonu - IlanAIController kullan
+            $aiController = app(AIController::class);
 
-        return response()->json([
-            'success' => true,
-            'suggestions' => $suggestions
-        ]);
+            // Request'i IlanAIController formatına çevir
+            // Frontend context objesi gönderiyor: { context: { kategori, il, ... } }
+            $context = $request->input('context', []);
+            $aiRequest = new Request([
+                'kategori' => $this->getCategoryName($context['kategori'] ?? $request->input('kategori', 'Gayrimenkul')),
+                'il' => $this->getLocationName($context['il'] ?? $request->input('il')),
+                'ilce' => $this->getLocationName($context['ilce'] ?? $request->input('ilce')),
+                'mahalle' => $this->getLocationName($context['mahalle'] ?? $request->input('mahalle')),
+                'fiyat' => $context['fiyat'] ?? $request->input('fiyat'),
+                'metrekare' => $context['metrekare'] ?? $request->input('metrekare')
+            ]);
+
+            $response = $aiController->suggest(new Request([
+                'action' => 'price',
+                ...$aiRequest->all()
+            ]));
+
+            $data = json_decode($response->getContent(), true);
+
+            // Frontend formatına uyarla
+            // suggestPrice bir array döndürüyor: [['label' => '...', 'value' => ...], ...]
+            $suggestions = $data['suggestions'] ?? [];
+
+            // Frontend'in beklediği format: { suggestions: [...] }
+            return response()->json([
+                'success' => $data['success'] ?? true,
+                'suggestions' => $suggestions,
+                'data' => [
+                    'suggestions' => $suggestions
+                ]
+            ]);
+        } catch (\Exception $e) {
+            Log::error('AI Property Suggestions Error: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'AI önerileri alınamadı: ' . $e->getMessage(),
+                'suggestions' => []
+            ], 500);
+        }
+    }
+
+    /**
+     * Optimize price with AI
+     * Context7: AI destekli fiyat optimizasyonu
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function optimizePriceWithAi(Request $request)
+    {
+        try {
+            // ✅ Context7: Gerçek AI entegrasyonu - IlanAIController kullan
+            $aiController = app(AIController::class);
+
+            // Request'i IlanAIController formatına çevir
+            // Frontend context objesi gönderiyor: { context: { kategori, il, ... } }
+            $context = $request->input('context', []);
+            $aiRequest = new Request([
+                'fiyat' => $context['fiyat'] ?? $request->input('fiyat'),
+                'para_birimi' => $context['paraBirimi'] ?? $context['para_birimi'] ?? $request->input('para_birimi', 'TRY'),
+                'kategori' => $this->getCategoryName($context['kategori'] ?? $request->input('kategori', 'Gayrimenkul')),
+                'metrekare' => $context['metrekare'] ?? $request->input('metrekare'),
+                'il' => $this->getLocationName($context['il'] ?? $request->input('il')),
+                'ilce' => $this->getLocationName($context['ilce'] ?? $request->input('ilce')),
+                'mahalle' => $this->getLocationName($context['mahalle'] ?? $request->input('mahalle'))
+            ]);
+
+            $response = $aiController->suggest(new Request([
+                'action' => 'price',
+                ...$aiRequest->all()
+            ]));
+
+            $data = json_decode($response->getContent(), true);
+
+            // Frontend formatına uyarla
+            // suggestPrice bir array döndürüyor: [['label' => '...', 'value' => ...], ...]
+            $suggestions = $data['suggestions'] ?? [];
+            $optimized = null;
+
+            // İlk öneriyi al (Pazarlık Payı veya Piyasa Ortalaması)
+            if (is_array($suggestions) && count($suggestions) > 0) {
+                // Piyasa Ortalaması varsa onu al, yoksa ilkini al
+                foreach ($suggestions as $suggestion) {
+                    if (
+                        isset($suggestion['label']) &&
+                        (strpos($suggestion['label'], 'Piyasa') !== false ||
+                            strpos($suggestion['label'], 'Ortalama') !== false)
+                    ) {
+                        $optimized = $suggestion['value'] ?? null;
+                        break;
+                    }
+                }
+                // Eğer bulamadıysak ilk öneriyi al
+                if ($optimized === null && isset($suggestions[0]['value'])) {
+                    $optimized = $suggestions[0]['value'];
+                }
+            }
+
+            return response()->json([
+                'success' => $data['success'] ?? true,
+                'optimized' => $optimized,
+                'data' => [
+                    'optimized' => $optimized,
+                    'suggestions' => $suggestions
+                ]
+            ]);
+        } catch (\Exception $e) {
+            Log::error('AI Price Optimization Error: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'AI fiyat optimizasyonu başarısız: ' . $e->getMessage(),
+                'optimized' => null
+            ], 500);
+        }
     }
 
     /**
@@ -1849,6 +2131,68 @@ class IlanController extends AdminController
     // See: App\Services\Ilan\IlanTypeHelper
 
     /**
+     * Duplicate a listing
+     * Context7: İlan kopyalama
+     * POST /admin/ilanlar/{ilan}/duplicate
+     *
+     * @param Ilan $ilan
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function duplicate(Ilan $ilan)
+    {
+        try {
+            DB::beginTransaction();
+
+            // Yeni ilan oluştur (mevcut ilanın kopyası)
+            $newIlan = $ilan->replicate();
+            $newIlan->baslik = $ilan->baslik . ' (Kopya)';
+            $newIlan->status = 'Taslak'; // Context7: Yeni kopya taslak olarak oluşturulur
+            $newIlan->referans_no = null; // Referans numarası sıfırlanır
+            $newIlan->created_at = now();
+            $newIlan->updated_at = now();
+            $newIlan->save();
+
+            // Fotoğrafları kopyala
+            if ($ilan->fotograflar) {
+                foreach ($ilan->fotograflar as $fotograf) {
+                    $newFoto = $fotograf->replicate();
+                    $newFoto->ilan_id = $newIlan->id;
+                    $newFoto->save();
+                }
+            }
+
+            // Özellikleri kopyala
+            if ($ilan->ozellikler) {
+                foreach ($ilan->ozellikler as $ozellik) {
+                    $newIlan->ozellikler()->attach($ozellik->id, [
+                        'deger' => $ozellik->pivot->deger ?? null
+                    ]);
+                }
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'İlan başarıyla kopyalandı',
+                'ilan_id' => $newIlan->id,
+                'redirect_url' => route('admin.ilanlar.edit', $newIlan->id)
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('İlan kopyalama hatası: ' . $e->getMessage(), [
+                'ilan_id' => $ilan->id,
+                'error' => $e->getTraceAsString()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'İlan kopyalanırken hata oluştu: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
      * Get features by category
      * Context7: Kategoriye göre özellikler
      * GET /admin/ilanlar/api/features/category/{categoryId}
@@ -1962,5 +2306,65 @@ class IlanController extends AdminController
                 'message' => 'İşlem sırasında hata oluştu: ' . $e->getMessage()
             ], 500);
         }
+    }
+
+    /**
+     * Get location name from ID
+     * Context7: Lokasyon ID'sinden isim al
+     */
+    protected function getLocationName($locationId)
+    {
+        if (!$locationId) {
+            return '';
+        }
+
+        // Zaten string ise direkt döndür (isim zaten gelmiş)
+        if (!is_numeric($locationId)) {
+            return $locationId;
+        }
+
+        // İl kontrolü
+        $il = Il::find($locationId);
+        if ($il) {
+            return $il->il_adi ?? $il->name ?? '';
+        }
+
+        // İlçe kontrolü
+        $ilce = Ilce::find($locationId);
+        if ($ilce) {
+            return $ilce->ilce_adi ?? $ilce->name ?? '';
+        }
+
+        // Mahalle kontrolü
+        $mahalle = Mahalle::find($locationId);
+        if ($mahalle) {
+            return $mahalle->mahalle_adi ?? $mahalle->name ?? '';
+        }
+
+        return '';
+    }
+
+    /**
+     * Get category name from ID or slug
+     * Context7: Kategori ID veya slug'ından isim al
+     */
+    protected function getCategoryName($categoryValue)
+    {
+        if (!$categoryValue) {
+            return '';
+        }
+
+        // Zaten string ise direkt döndür (isim zaten gelmiş)
+        if (!is_numeric($categoryValue)) {
+            return $categoryValue;
+        }
+
+        // Kategori kontrolü
+        $kategori = IlanKategori::find($categoryValue);
+        if ($kategori) {
+            return $kategori->name ?? $kategori->slug ?? '';
+        }
+
+        return '';
     }
 }

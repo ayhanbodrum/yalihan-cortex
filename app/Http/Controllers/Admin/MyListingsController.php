@@ -37,16 +37,10 @@ class MyListingsController extends AdminController
         // ✅ REFACTORED: Sort (Filterable trait)
         $query->sort($request->sort_by, $request->sort_order ?? 'desc', 'updated_at');
 
-        // ✅ REFACTORED: Status filter (Filterable trait + custom mapping)
+        // ✅ REFACTORED: Status filter (Context7: Doğrudan database değerlerini kullan)
         if ($request->has('status') && $request->status) {
-            $statusMap = [
-                'active' => 'Aktif',
-                'pending' => 'Beklemede',
-                'inactive' => 'Pasif',
-                'draft' => 'Taslak'
-            ];
-            $statusValue = $statusMap[$request->status] ?? $request->status;
-            $query->where('status', $statusValue);
+            // ✅ Context7: Frontend'den doğrudan database değerleri geliyor ('Aktif', 'Pasif', 'Taslak', 'Beklemede')
+            $query->where('status', $request->status);
         }
 
         // ✅ REFACTORED: Category filter
@@ -132,15 +126,10 @@ class MyListingsController extends AdminController
             ->where('danisman_id', $user->id);
 
         // Context7: Status mapping (active→Aktif, pending→Beklemede, vb.)
-        if ($request->has('status')) {
-            $statusMap = [
-                'active' => 'Aktif',
-                'pending' => 'Beklemede',
-                'inactive' => 'Pasif',
-                'draft' => 'Taslak'
-            ];
-            $statusValue = $statusMap[$request->status] ?? $request->status;
-            $query->where('status', $statusValue);
+        // ✅ Context7: Status filter (Doğrudan database değerlerini kullan)
+        if ($request->has('status') && $request->status) {
+            // ✅ Context7: Frontend'den doğrudan database değerleri geliyor ('Aktif', 'Pasif', 'Taslak', 'Beklemede')
+            $query->where('status', $request->status);
         }
 
         if ($request->has('category')) {

@@ -12,15 +12,16 @@ namespace App\Enums;
  */
 enum IlanStatus: string
 {
-    case TASLAK = 'taslak';
-    case YAYINDA = 'yayinda';
-    case AKTIF = 'Aktif'; // Backward compatibility
-    case PASIF = 'pasif';
-    case ARSIV = 'arsiv';
-    case ONAY_BEKLIYOR = 'onay_bekliyor';
-    case REDDEDILDI = 'reddedildi';
-    case SATISILDI = 'satisildi';
-    case KIRASILDI = 'kirasildi';
+    case TASLAK = 'Taslak'; // ✅ Context7: Database değeri ile uyumlu
+    case YAYINDA = 'yayinda'; // ⚠️ Legacy: Kullanımdan kaldırılmalı, 'Aktif' kullanılmalı
+    case AKTIF = 'Aktif'; // ✅ Context7: Database değeri ile uyumlu
+    case PASIF = 'Pasif'; // ✅ Context7: Database değeri ile uyumlu
+    case BEKLEMEDE = 'Beklemede'; // ✅ Context7: Database değeri ile uyumlu
+    case ARSIV = 'arsiv'; // ⚠️ Legacy: Kullanımdan kaldırılmalı
+    case ONAY_BEKLIYOR = 'onay_bekliyor'; // ⚠️ Legacy: 'Beklemede' kullanılmalı
+    case REDDEDILDI = 'reddedildi'; // ⚠️ Legacy: Kullanımdan kaldırılmalı
+    case SATISILDI = 'satisildi'; // ⚠️ Legacy: Kullanımdan kaldırılmalı
+    case KIRASILDI = 'kirasildi'; // ⚠️ Legacy: Kullanımdan kaldırılmalı
 
     /**
      * Get human-readable label
@@ -29,16 +30,17 @@ enum IlanStatus: string
      */
     public function label(): string
     {
-        return match($this) {
+        return match ($this) {
             self::TASLAK => 'Taslak',
-            self::YAYINDA => 'Yayında',
-            self::AKTIF => 'Aktif', // Backward compatibility
+            self::YAYINDA => 'Yayında', // ⚠️ Legacy
+            self::AKTIF => 'Aktif',
             self::PASIF => 'Pasif',
-            self::ARSIV => 'Arşiv',
-            self::ONAY_BEKLIYOR => 'Onay Bekliyor',
-            self::REDDEDILDI => 'Reddedildi',
-            self::SATISILDI => 'Satışıldı',
-            self::KIRASILDI => 'Kirası Verildi',
+            self::BEKLEMEDE => 'Beklemede',
+            self::ARSIV => 'Arşiv', // ⚠️ Legacy
+            self::ONAY_BEKLIYOR => 'Onay Bekliyor', // ⚠️ Legacy: 'Beklemede' kullanılmalı
+            self::REDDEDILDI => 'Reddedildi', // ⚠️ Legacy
+            self::SATISILDI => 'Satışıldı', // ⚠️ Legacy
+            self::KIRASILDI => 'Kirası Verildi', // ⚠️ Legacy
         };
     }
 
@@ -49,16 +51,17 @@ enum IlanStatus: string
      */
     public function description(): string
     {
-        return match($this) {
+        return match ($this) {
             self::TASLAK => 'İlan henüz yayınlanmadı',
-            self::YAYINDA => 'İlan aktif olarak yayında',
-            self::AKTIF => 'İlan aktif olarak yayında', // Backward compatibility
+            self::YAYINDA => 'İlan aktif olarak yayında', // ⚠️ Legacy
+            self::AKTIF => 'İlan aktif olarak yayında',
             self::PASIF => 'İlan geçici olarak pasif',
-            self::ARSIV => 'İlan arşivlendi',
-            self::ONAY_BEKLIYOR => 'İlan onay bekliyor',
-            self::REDDEDILDI => 'İlan reddedildi',
-            self::SATISILDI => 'İlan satışı tamamlandı',
-            self::KIRASILDI => 'İlanın kirası verildi',
+            self::BEKLEMEDE => 'İlan onay bekliyor',
+            self::ARSIV => 'İlan arşivlendi', // ⚠️ Legacy
+            self::ONAY_BEKLIYOR => 'İlan onay bekliyor', // ⚠️ Legacy: 'Beklemede' kullanılmalı
+            self::REDDEDILDI => 'İlan reddedildi', // ⚠️ Legacy
+            self::SATISILDI => 'İlan satışı tamamlandı', // ⚠️ Legacy
+            self::KIRASILDI => 'İlanın kirası verildi', // ⚠️ Legacy
         };
     }
 
@@ -69,16 +72,17 @@ enum IlanStatus: string
      */
     public function color(): string
     {
-        return match($this) {
+        return match ($this) {
             self::TASLAK => 'gray',
-            self::YAYINDA => 'green',
-            self::AKTIF => 'green', // Backward compatibility
+            self::YAYINDA => 'green', // ⚠️ Legacy
+            self::AKTIF => 'green',
             self::PASIF => 'yellow',
-            self::ARSIV => 'slate',
-            self::ONAY_BEKLIYOR => 'blue',
-            self::REDDEDILDI => 'red',
-            self::SATISILDI => 'purple',
-            self::KIRASILDI => 'indigo',
+            self::BEKLEMEDE => 'blue',
+            self::ARSIV => 'slate', // ⚠️ Legacy
+            self::ONAY_BEKLIYOR => 'blue', // ⚠️ Legacy: 'Beklemede' kullanılmalı
+            self::REDDEDILDI => 'red', // ⚠️ Legacy
+            self::SATISILDI => 'purple', // ⚠️ Legacy
+            self::KIRASILDI => 'indigo', // ⚠️ Legacy
         };
     }
 
@@ -89,16 +93,17 @@ enum IlanStatus: string
      */
     public function icon(): string
     {
-        return match($this) {
+        return match ($this) {
             self::TASLAK => '📝',
-            self::YAYINDA => '✅',
-            self::AKTIF => '✅', // Backward compatibility
+            self::YAYINDA => '✅', // ⚠️ Legacy
+            self::AKTIF => '✅',
             self::PASIF => '⏸️',
-            self::ARSIV => '📦',
-            self::ONAY_BEKLIYOR => '⏳',
-            self::REDDEDILDI => '❌',
-            self::SATISILDI => '🎉',
-            self::KIRASILDI => '🔑',
+            self::BEKLEMEDE => '⏳',
+            self::ARSIV => '📦', // ⚠️ Legacy
+            self::ONAY_BEKLIYOR => '⏳', // ⚠️ Legacy: 'Beklemede' kullanılmalı
+            self::REDDEDILDI => '❌', // ⚠️ Legacy
+            self::SATISILDI => '🎉', // ⚠️ Legacy
+            self::KIRASILDI => '🔑', // ⚠️ Legacy
         };
     }
 
@@ -139,7 +144,7 @@ enum IlanStatus: string
      */
     public function isPending(): bool
     {
-        return in_array($this, [self::TASLAK, self::ONAY_BEKLIYOR]);
+        return in_array($this, [self::TASLAK, self::BEKLEMEDE, self::ONAY_BEKLIYOR]);
     }
 
     /**
@@ -159,7 +164,7 @@ enum IlanStatus: string
      */
     public function canPublish(): bool
     {
-        return in_array($this, [self::TASLAK, self::PASIF, self::ONAY_BEKLIYOR]);
+        return in_array($this, [self::TASLAK, self::PASIF, self::BEKLEMEDE, self::ONAY_BEKLIYOR]);
     }
 
     /**

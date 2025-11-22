@@ -154,13 +154,36 @@ trait Filterable
         $sortBy = $sortBy ?: $defaultSort;
         $sortDirection = strtolower($sortDirection) === 'asc' ? 'asc' : 'desc';
 
-        // Column kontrolü
+        $query->reorder();
+        if ($sortBy === 'fiyat') {
+            try {
+                $driver = $query->getConnection()->getDriverName();
+            } catch (\Throwable $e) {
+                $driver = 'mysql';
+            }
+            if ($driver === 'sqlite') {
+                if ($sortDirection === 'desc') {
+                    $query->orderByRaw('(0 + fiyat) DESC');
+                } else {
+                    $query->orderByRaw('(0 + fiyat) ASC');
+                }
+                $query->orderBy($defaultSort, $sortDirection);
+                $query->orderBy('id', $sortDirection);
+            } else {
+                if ($sortDirection === 'desc') {
+                    $query->orderByRaw('(0 + fiyat) DESC');
+                } else {
+                    $query->orderByRaw('(0 + fiyat) ASC');
+                }
+                $query->orderBy($defaultSort, $sortDirection);
+                $query->orderBy('id', $sortDirection);
+            }
+            return $query;
+        }
         if ($this->getConnection()->getSchemaBuilder()->hasColumn($this->getTable(), $sortBy)) {
             return $query->orderBy($sortBy, $sortDirection);
         }
-
-        // Varsayılan sıralama
-        return $query->orderBy($defaultSort, 'desc');
+        return $query->orderBy($defaultSort, $sortDirection);
     }
 
     /**
@@ -242,8 +265,17 @@ trait Filterable
             return $query;
         }
 
-        // String değerleri boolean'a çevir
+        // ✅ Context7: String status değerlerini doğrudan kullan (örn: Ilan modeli için 'Aktif', 'Pasif', 'Taslak')
+        // Eğer status bir string ise, doğrudan kullan (boolean'a çevirme)
+        // Bu, Ilan gibi string-based status kullanan modeller için kritik
         if (is_string($status)) {
+            // Bilinen string status değerleri için doğrudan kullan
+            $knownStringStatuses = ['Aktif', 'Pasif', 'Taslak', 'Beklemede', 'yayinda', 'arsiv', 'onay_bekliyor', 'reddedildi', 'satisildi', 'kirasildi'];
+            if (in_array($status, $knownStringStatuses)) {
+                return $query->where($column, $status);
+            }
+            
+            // Eğer bilinen string değerlerden biri değilse, boolean'a çevir (backward compatibility)
             // Context7: enabled → status (backward compatibility için 'enabled' hala kabul ediliyor)
             $status = in_array(strtolower($status), ['active', 'aktif', '1', 'true', 'enabled']);
         }

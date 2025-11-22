@@ -1,0 +1,169 @@
+{
+  "title": "Status Kolonu Global Standart - Boolean Zorunluluğu",
+  "date": "2025-11-22",
+  "version": "1.0.0",
+  "status": "ACTIVE - PERMANENT",
+  "severity": "CRITICAL",
+  "category": "database_standards",
+  
+  "problem": {
+    "description": "Projede status kolonları 3 farklı formatta kullanılıyordu, bu IDE'lerin tip kontrolü yapmasını engelliyordu",
+    "formats_before": [
+      "VARCHAR(255) + 'Aktif'/'Pasif' string (10 tablo)",
+      "ENUM('Aktif','Pasif') (6 tablo)",
+      "TINYINT(1) boolean (20 tablo - doğru format)"
+    ],
+    "impact": [
+      "IDE'ler (trea, warp, cursor) tutarlı tip kontrolü yapamıyor",
+      "Kodda true/false vs 'Aktif'/'Pasif' karışıklığı",
+      "Her yeni tablo için format seçimi belirsiz",
+      "Sürekli düzeltme gereksinimi"
+    ]
+  },
+  
+  "solution": {
+    "standard": "TINYINT(1) NOT NULL DEFAULT 1",
+    "cast": "boolean",
+    "description": "TÜM basit status kolonları (aktif/pasif) MUTLAKA TINYINT(1) boolean olmalı",
+    "migration": "2025_11_22_152526_fix_all_status_columns_to_boolean_global_fix.php",
+    "migration_date": "2025-11-22",
+    "affected_tables": 16,
+    "tables_fixed": [
+      "blog_categories",
+      "blog_tags",
+      "ilanlar",
+      "kisiler",
+      "ozellik_kategorileri",
+      "ozellikler",
+      "projeler",
+      "takim_uyeleri",
+      "talepler",
+      "ulkeler",
+      "ai_logs",
+      "anahtar_yonetimi",
+      "ilan_ozellikleri",
+      "ilan_resimleri",
+      "ilceler",
+      "iller",
+      "mahalleler"
+    ]
+  },
+  
+  "forbidden_patterns": {
+    "database_types": [
+      "VARCHAR(255)",
+      "VARCHAR(50)",
+      "ENUM('Aktif','Pasif')",
+      "STRING"
+    ],
+    "code_values": [
+      "'Aktif'",
+      "'Pasif'",
+      "'active'",
+      "'inactive'",
+      "where('status', 'Aktif')",
+      "update(['status' => 'Aktif'])"
+    ],
+    "severity": "CRITICAL",
+    "auto_fix": false,
+    "reason": "IDE'ler tip kontrolü yapamaz, tutarsızlık yaratır"
+  },
+  
+  "required_patterns": {
+    "database_type": "TINYINT(1) NOT NULL DEFAULT 1",
+    "model_cast": "'status' => 'boolean'",
+    "code_values": [
+      "true",
+      "false",
+      "where('status', true)",
+      "update(['status' => true])",
+      "where('status', false)",
+      "update(['status' => false])"
+    ],
+    "migration_template": "DB::statement('ALTER TABLE {table} MODIFY COLUMN status TINYINT(1) NOT NULL DEFAULT 1')"
+  },
+  
+  "exceptions": {
+    "complex_status_tables": [
+      {
+        "table": "blog_posts",
+        "reason": "Çoklu durum: 'draft', 'published', 'scheduled'",
+        "keep_as": "VARCHAR(255)"
+      },
+      {
+        "table": "eslesmeler",
+        "reason": "Çoklu durum: 'beklemede', 'eslesti', 'iptal'",
+        "keep_as": "VARCHAR(255)"
+      },
+      {
+        "table": "gorevler",
+        "reason": "Çoklu durum: 'Beklemede', 'Devam Ediyor', 'Tamamlandi'",
+        "keep_as": "VARCHAR(255)"
+      },
+      {
+        "table": "yazlik_rezervasyonlar",
+        "reason": "Çoklu durum: 'beklemede', 'onaylandi', 'iptal', 'tamamlandi'",
+        "keep_as": "ENUM"
+      },
+      {
+        "table": "sites",
+        "reason": "Çoklu durum: 'active', 'inactive', 'pending'",
+        "keep_as": "ENUM"
+      }
+    ],
+    "rule": "Sadece aktif/pasif durumu olan tablolar boolean olmalı, çoklu durumlar VARCHAR veya ENUM kalabilir"
+  },
+  
+  "enforcement": {
+    "level": "STRICT",
+    "pre_commit_check": true,
+    "ci_cd_check": true,
+    "migration_validator": true,
+    "ide_integration": [
+      "trea",
+      "warp",
+      "cursor",
+      "vscode",
+      "phpstorm"
+    ],
+    "message": "Yeni tablolarda status kolonu MUTLAKA TINYINT(1) olmalı"
+  },
+  
+  "benefits": {
+    "ide_support": "Tüm IDE'ler tutarlı tip kontrolü yapabilir",
+    "code_consistency": "Kodda her yerde true/false kullanılabilir",
+    "no_confusion": "'Aktif'/'Pasif' string karışıklığı olmaz",
+    "context7_compliance": "%100 Context7 standartlarına uyumlu",
+    "maintainability": "Standart format, bakım kolaylığı"
+  },
+  
+  "reference_files": [
+    ".context7/authority.json",
+    "database/migrations/2025_11_22_152526_fix_all_status_columns_to_boolean_global_fix.php",
+    "database/migrations/2025_11_22_152324_convert_status_to_boolean_in_ilan_kategorileri_table.php"
+  ],
+  
+  "yalihan_bekci_rules": {
+    "always_use_boolean_status": {
+      "rule": "Yeni tablolarda status kolonu MUTLAKA TINYINT(1) boolean olmalı",
+      "severity": "CRITICAL",
+      "reason": "IDE tip kontrolü ve kod tutarlılığı için zorunlu"
+    },
+    "never_use_string_status": {
+      "rule": "Status kolonu için VARCHAR + 'Aktif'/'Pasif' YASAK",
+      "severity": "CRITICAL",
+      "reason": "IDE'ler tip kontrolü yapamaz"
+    },
+    "never_use_enum_aktif_pasif": {
+      "rule": "Status kolonu için ENUM('Aktif','Pasif') YASAK",
+      "severity": "CRITICAL",
+      "reason": "Boolean kullanılmalı"
+    },
+    "check_before_suggesting": {
+      "rule": "Status kolonu önerirken MUTLAKA TINYINT(1) öner",
+      "severity": "HIGH",
+      "reason": "Standart uyumluluk"
+    }
+  }
+}
+
