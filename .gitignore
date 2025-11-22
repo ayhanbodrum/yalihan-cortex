@@ -36,3 +36,12 @@ temp_structure.sql
 turkiye-il-ilce-sokak-mahalle-veri-tabani/
 *.tar.gz
 *.dump.rdb.zip
+
+# Temporary files
+storage/framework/sessions/*
+!storage/framework/sessions/.gitkeep
+storage/framework/views/*
+!storage/framework/views/.gitkeep
+.DS_Store
+screenshots/*
+!.gitkeep
