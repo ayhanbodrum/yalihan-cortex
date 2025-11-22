@@ -94,7 +94,7 @@ use Spatie\Permission\Traits\HasRoles;
  */
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, HasRoles, Notifiable, SoftDeletes;
+    use HasApiTokens, HasFactory, HasRoles, Notifiable, SoftDeletes, \App\Models\Traits\EncryptsAttributes;
 
     /**
      * The attributes that are mass assignable.
@@ -176,6 +176,11 @@ class User extends Authenticatable
         'calisma_saatleri' => 'array',
         'iletisim_tercihleri' => 'array',
         'deneyim_yili' => 'integer',
+    ];
+
+    protected $encrypted = [
+        'tc_kimlik',
+        'iban',
     ];
 
     /**
@@ -369,6 +374,11 @@ class User extends Authenticatable
     public function isActive()
     {
         return $this->status;
+    }
+
+    public function scopeActive($query)
+    {
+        return $query->where('status', 1);
     }
 
     /**

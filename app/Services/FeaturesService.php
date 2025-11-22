@@ -12,7 +12,7 @@ class FeaturesService
     public function list(?string $appliesTo = null, ?string $categorySlug = null, $yayinTipi = null): array
     {
         $key = 'features:list:' . md5(($appliesTo ?? '') . '|' . ($categorySlug ?? '') . '|' . ($yayinTipi ?? ''));
-        return Cache::remember($key, 300, function () use ($appliesTo, $categorySlug) {
+        return Cache::remember($key, 300, function () use ($appliesTo, $categorySlug, $yayinTipi) {
             $categoriesQuery = FeatureCategory::query();
             if ($appliesTo && Schema::hasColumn('feature_categories', 'applies_to')) {
                 $categoriesQuery->where(function ($q) use ($appliesTo) {
@@ -22,6 +22,15 @@ class FeaturesService
             }
             if ($categorySlug) {
                 $categoriesQuery->where('slug', $categorySlug);
+            }
+            if ($yayinTipi) {
+                if (Schema::hasColumn('feature_categories', 'publication_type_id')) {
+                    $categoriesQuery->where(function ($q) use ($yayinTipi) {
+                        $q->where('publication_type_id', $yayinTipi);
+                    });
+                } elseif (Schema::hasColumn('feature_categories', 'publication_types')) {
+                    $categoriesQuery->whereRaw("JSON_VALID(publication_types) AND JSON_CONTAINS(publication_types, JSON_QUOTE(?))", [$yayinTipi]);
+                }
             }
             $categoriesQuery->where('status', true);
             $categories = $categoriesQuery->orderBy('display_order')->orderBy('name')->get();
@@ -37,6 +46,17 @@ class FeaturesService
                         $q->where('applies_to', $appliesTo)->orWhereNull('applies_to');
                         $q->orWhereRaw("JSON_VALID(applies_to) AND JSON_CONTAINS(applies_to, JSON_QUOTE(?))", [$appliesTo]);
                     });
+                }
+                if ($yayinTipi) {
+                    if (Schema::hasColumn('features', 'publication_type_id')) {
+                        $featuresQuery->where(function ($q) use ($yayinTipi) {
+                            $q->where('publication_type_id', $yayinTipi)->orWhereNull('publication_type_id');
+                        });
+                    } elseif (Schema::hasColumn('features', 'publication_types')) {
+                        $featuresQuery->where(function ($q) use ($yayinTipi) {
+                            $q->orWhereRaw("JSON_VALID(publication_types) AND JSON_CONTAINS(publication_types, JSON_QUOTE(?))", [$yayinTipi]);
+                        });
+                    }
                 }
                 $featuresQuery->where('status', true);
                 $features = $featuresQuery->orderBy('display_order')->orderBy('name')->get([

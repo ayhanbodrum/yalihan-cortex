@@ -83,8 +83,8 @@ class ListingNavigationService
                         ->orderBy('id', 'desc');
 
                     // Apply filters
-                    if (!empty($filters['kategori_id'])) {
-                        $query->where('kategori_id', $filters['kategori_id']);
+                    if (!empty($filters['ana_kategori_id'])) {
+                        $query->where('ana_kategori_id', $filters['ana_kategori_id']);
                     }
 
                     if (!empty($filters['status'])) {
@@ -203,12 +203,12 @@ class ListingNavigationService
                         ])
                         ->orderByRaw('
                             CASE
-                                WHEN kategori_id = ? THEN 1
+                                WHEN ana_kategori_id = ? THEN 1
                                 WHEN il_id = ? THEN 2
                                 WHEN ilce_id = ? THEN 3
                                 ELSE 4
                             END
-                        ', [$ilan->kategori_id, $ilan->il_id, $ilan->ilce_id])
+                        ', [$ilan->ana_kategori_id, $ilan->il_id, $ilan->ilce_id])
                         ->orderBy('created_at', 'desc')
                         ->limit($limit);
 
@@ -231,8 +231,8 @@ class ListingNavigationService
     {
         $filters = [];
 
-        if ($ilan->kategori_id) {
-            $filters['kategori_id'] = $ilan->kategori_id;
+        if ($ilan->ana_kategori_id) {
+            $filters['ana_kategori_id'] = $ilan->ana_kategori_id;
         }
 
         return $this->getNavigation($ilan, $filters);

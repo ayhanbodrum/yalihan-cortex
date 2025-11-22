@@ -11,6 +11,8 @@ use App\Services\Cache\CacheHelper;
 use App\Services\Response\ResponseService;
 use App\Services\Logging\LogService;
 use Illuminate\Support\Facades\DB;
+use App\Models\IlanViewDaily;
+use App\Enums\TalepStatus;
 
 class DashboardController extends AdminController
 {
@@ -363,10 +365,10 @@ class DashboardController extends AdminController
             'ilanSahibi:id,ad,soyad',
             'il:id,il_adi',
             'ilce:id,ilce_adi',
-            'kategori:id,name'
+            'kategori:id,kategori_adi'
         ])
-        ->select(['id', 'baslik', 'ilan_basligi', 'fiyat', 'para_birimi', 'status',
-                  'ilan_sahibi_id', 'il_id', 'ilce_id', 'kategori_id', 'created_at'])
+        ->select(['id', 'baslik', 'fiyat', 'para_birimi', 'status',
+                  'ilan_sahibi_id', 'il_id', 'ilce_id', 'ana_kategori_id', 'created_at'])
         ->latest('created_at')
         ->limit(5)
         ->get();
@@ -377,10 +379,70 @@ class DashboardController extends AdminController
             ->limit(5)
             ->get();
 
+        // Public/CRM-only sayıları
+        $publicCount = \App\Models\Ilan::public()->count();
+        $crmOnlyCount = \App\Models\Ilan::where('crm_only', true)->count();
+
+        // En çok görüntülenen ilanlar (son 7 gün)
+        $start = now()->subDays(6)->startOfDay()->toDateString();
+        $topViewed = IlanViewDaily::with(['ilan:id,baslik,fiyat,para_birimi'])
+            ->where('tarih', '>=', $start)
+            ->selectRaw('ilan_id, SUM(adet) as views')
+            ->groupBy('ilan_id')
+            ->orderByDesc('views')
+            ->limit(5)
+            ->get();
+
+        // Talep metrikleri
+        $talepToplam = \App\Models\Talep::count();
+        $talepAktif = \App\Models\Talep::where('status', TalepStatus::AKTIF->value)->count();
+        $talepBeklemede = \App\Models\Talep::where('status', TalepStatus::BEKLEMEDE->value)->count();
+        $talepIptal = \App\Models\Talep::where('status', TalepStatus::IPTAL->value)->count();
+        $talepTamamlandi = \App\Models\Talep::where('status', TalepStatus::TAMAMLANDI->value)->count();
+        $talepAcil = \App\Models\Talep::where('status', TalepStatus::ACIL->value)->count();
+
+        $categoryPerf = DB::table('ilan_goruntulenme_gunluk as v')
+            ->join('ilanlar as i', 'v.ilan_id', '=', 'i.id')
+            ->leftJoin('ilan_kategorileri as k', 'i.ana_kategori_id', '=', 'k.id')
+            ->where('v.tarih', '>=', $start)
+            ->selectRaw('COALESCE(k.name, "Kategori") as name, SUM(v.adet) as views, COUNT(DISTINCT i.id) as listings')
+            ->groupBy('name')
+            ->orderByDesc('views')
+            ->limit(5)
+            ->get();
+
+        $locationPerf = DB::table('ilan_goruntulenme_gunluk as v')
+            ->join('ilanlar as i', 'v.ilan_id', '=', 'i.id')
+            ->leftJoin('iller as il', 'i.il_id', '=', 'il.id')
+            ->where('v.tarih', '>=', $start)
+            ->selectRaw('COALESCE(il.il_adi, "Lokasyon") as name, SUM(v.adet) as views, COUNT(DISTINCT i.id) as listings')
+            ->groupBy('name')
+            ->orderByDesc('views')
+            ->limit(5)
+            ->get();
+
+        $advisorPerf = DB::table('ilan_goruntulenme_gunluk as v')
+            ->join('ilanlar as i', 'v.ilan_id', '=', 'i.id')
+            ->leftJoin('users as u', 'i.danisman_id', '=', 'u.id')
+            ->where('v.tarih', '>=', $start)
+            ->selectRaw('COALESCE(u.name, "Danışman") as name, SUM(v.adet) as views, COUNT(DISTINCT i.id) as listings')
+            ->groupBy('name')
+            ->orderByDesc('views')
+            ->limit(5)
+            ->get();
+
         return [
             'quickStats' => [
                 'total_ilanlar' => \App\Models\Ilan::count(),
                 'active_ilanlar' => \App\Models\Ilan::where('status', true)->count(),
+                'public_ilanlar' => $publicCount,
+                'crm_only_ilanlar' => $crmOnlyCount,
+                'talep_toplam' => $talepToplam,
+                'talep_aktif' => $talepAktif,
+                'talep_beklemede' => $talepBeklemede,
+                'talep_iptal' => $talepIptal,
+                'talep_tamamlandi' => $talepTamamlandi,
+                'talep_acil' => $talepAcil,
                 'total_kullanicilar' => \App\Models\User::count(),
                 'total_danismanlar' => \App\Models\User::whereHas('roles', function($q) {
                     $q->where('name', 'danisman');
@@ -392,6 +454,11 @@ class DashboardController extends AdminController
                 ],
                 'recent_ilanlar' => $recentIlanlar,
                 'recent_kullanicilar' => $recentUsers,
+                'top_viewed' => $topViewed,
+                'category_perf' => $categoryPerf,
+                'location_perf' => $locationPerf,
+                'advisor_perf' => $advisorPerf,
+                'recent_talepler' => isset($recentTalepler) ? $recentTalepler : collect([]),
             ],
             'recentIlanlar' => $recentIlanlar,
             'recentUsers' => $recentUsers,

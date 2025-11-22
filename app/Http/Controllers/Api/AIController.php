@@ -214,8 +214,8 @@ class AIController extends Controller
             $stats = [
                 'total_requests' => \App\Models\AiLog::count(),
                 'successful_requests' => \App\Models\AiLog::where('status', 'success')->count(),
-                'failed_requests' => \App\Models\AiLog::where('status', 'error')->count(),
-                'average_response_time' => \App\Models\AiLog::avg('duration'),
+                'failed_requests' => \App\Models\AiLog::whereIn('status', ['failed', 'error', 'timeout'])->count(),
+                'average_response_time' => \App\Models\AiLog::avg('response_time'),
                 'most_used_provider' => \App\Models\AiLog::selectRaw('provider, COUNT(*) as count')
                     ->groupBy('provider')
                     ->orderByDesc('count')

@@ -3,76 +3,93 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Services\AIService as CoreAIService;
+use App\Services\AI\ChatService;
 use App\Services\AI\PriceService;
+use App\Services\AI\SuggestService;
 use App\Services\Response\ResponseService;
-use App\Models\AiLog;
 use Illuminate\Http\Request;
 
 class AdminAIController extends Controller
 {
+    public function __construct(
+        private ChatService $chat,
+        private PriceService $price,
+        private SuggestService $suggest
+    ) {
+    }
+
     public function chat(Request $request)
     {
-        $validated = $request->validate([
-            'session_id' => 'nullable|string|max:64',
-            'user_msg' => 'required|string|max:2000',
-            'context' => 'nullable|array',
-        ]);
-
-        try {
-            $service = app(CoreAIService::class);
-            $result = $service->generate($validated['user_msg'], $validated['context'] ?? []);
-            $meta = $result['metadata'] ?? [];
-            return ResponseService::success([
-                'message' => $result['data'] ?? '',
-            ], 'Chat yanıtı', 200, [
-                'provider' => $meta['provider'] ?? null,
-                'response_time' => $meta['duration'] ?? 0,
-                'timestamp' => $meta['timestamp'] ?? now()->toISOString(),
-            ]);
-        } catch (\Throwable $e) {
-            return ResponseService::serverError('Chat isteği başarısız', $e);
-        }
+        $payload = $request->all();
+        $res = $this->chat->chat($payload);
+        return ResponseService::success($res['data'], $res['message']);
     }
 
     public function pricePredict(Request $request)
     {
-        $validated = $request->validate([
-            'property_data' => 'required|array',
-            'currency' => 'nullable|string',
-        ]);
-        try {
-            $service = app(PriceService::class);
-            $out = $service->predict($validated['property_data']);
-            if (!empty($validated['currency'])) {
-                $conv = app(\App\Services\CurrencyConversionService::class)->convert((float)($out['predicted_price'] ?? 0), 'TRY', $validated['currency']);
-                if ($conv) {
-                    $out['predicted_price'] = (int)round($conv['amount']);
-                    $out['currency'] = $conv['currency'];
-                }
-            }
-            return ResponseService::success($out, 'Fiyat tahmini');
-        } catch (\Throwable $e) {
-            return ResponseService::serverError('Fiyat tahmini başarısız', $e);
-        }
+        $payload = $request->all();
+        $res = $this->price->predict($payload);
+        return ResponseService::success($res['data'], $res['message']);
     }
 
-    public function analytics(Request $request)
+    public function suggestFeatures(Request $request)
     {
-        $days = (int)($request->get('days', 30));
-        $total = AiLog::recent($days)->count();
-        $success = AiLog::recent($days)->successful()->count();
-        $failed = AiLog::recent($days)->failed()->count();
-        $avg = AiLog::averageResponseTime();
-        $providers = AiLog::providerUsage($days);
-        $errorRate = $total > 0 ? round(($failed / $total) * 100, 2) : 0;
-        $successRate = $total > 0 ? round(($success / $total) * 100, 2) : 0;
-        return ResponseService::success([
-            'average_response_time' => $avg,
-            'success_rate' => $successRate,
-            'error_rate' => $errorRate,
-            'provider_usage' => $providers,
-            'total_requests' => $total,
-        ], 'AI analytics');
+        $context = $request->all();
+        $res = $this->suggest->suggestFeatures($context);
+        return ResponseService::success($res['data'], $res['message']);
+    }
+
+    public function analytics()
+    {
+        $stats = [
+            'total_requests' => \App\Models\AiLog::count(),
+            'successful_requests' => \App\Models\AiLog::where('status', 'success')->count(),
+            'failed_requests' => \App\Models\AiLog::where('status', 'error')->count(),
+            'average_response_time' => \App\Models\AiLog::avg('duration'),
+            'cancelled_requests' => \App\Models\AiLog::where('status', 'cancelled')->count(),
+        ];
+        return ResponseService::success($stats, 'AI analytics');
+    }
+
+    public function promptPresets()
+    {
+        $lib = app(\App\Services\AI\PromptLibrary::class);
+        $presets = $lib->list();
+        $data = [];
+        foreach ($presets as $key => $conf) {
+            $data[] = [ 'key' => $key, 'title' => $conf['title'] ?? $key, 'version' => $conf['version'] ?? null ];
+        }
+        return ResponseService::success(['presets' => $data], 'Prompt presets');
+    }
+
+    public function chatStream(Request $request)
+    {
+        $validated = $request->validate([
+            'prompt' => 'required|string|max:2000',
+            'prompt_preset' => 'nullable|string|max:50',
+        ]);
+        $headers = [
+            'Content-Type' => 'text/event-stream',
+            'Cache-Control' => 'no-cache',
+            'X-Accel-Buffering' => 'no',
+        ];
+        return response()->stream(function () use ($validated) {
+            $payload = [
+                'prompt' => $validated['prompt'],
+                'prompt_preset' => $validated['prompt_preset'] ?? null,
+            ];
+            $res = $this->chat->chat($payload);
+            $text = (string)($res['data']['text'] ?? '');
+            $parts = preg_split('/\s+/', $text) ?: [];
+            foreach ($parts as $p) {
+                echo 'data: '.trim($p)."\n\n";
+                if (function_exists('ob_flush')) { @ob_flush(); }
+                flush();
+                usleep(25000);
+            }
+            echo "event: done\n";
+            echo "data: end\n\n";
+            flush();
+        }, 200, $headers);
     }
 }

@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use App\Traits\HasFeatures;
-use App\Traits\Filterable;
+    use App\Traits\Filterable;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -11,10 +11,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Builder;
 use App\Models\YazlikRezervasyon;
 use App\Models\YazlikFiyatlandirma;
 use App\Enums\IlanStatus;
 use App\Enums\YayinTipi;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Str;
 
 /**
  * App\Models\Ilan
@@ -25,7 +28,6 @@ use App\Enums\YayinTipi;
  * @property float $fiyat
  * @property string $para_birimi
  * @property Carbon|null $ilan_tarihi
- * @property bool $enabled
  * @property string $status
  * @property int|null $proje_id
  *
@@ -111,6 +113,7 @@ class Ilan extends Model
         'fiyat',                     // ✅ REQUIRED: Ana fiyat bilgisi (decimal(15,2), NULL allowed)
         'para_birimi',               // ✅ REQUIRED: Para birimi (varchar(10), NOT NULL, default: TRY)
         'status',                    // ✅ REQUIRED: İlan durumu (varchar(255), NOT NULL, default: 'Aktif')
+        'crm_only',
         'il_id',                     // ✅ REQUIRED: İl bilgisi (bigint unsigned, NULL allowed)
         'ilce_id',                   // ✅ REQUIRED: İlçe bilgisi (bigint unsigned, NULL allowed)
         'mahalle_id',                // ✅ REQUIRED: Mahalle bilgisi (bigint unsigned, NULL allowed)
@@ -318,7 +321,8 @@ class Ilan extends Model
         // ✅ REQUIRED FIELDS - Casts
         // ======================================================================
         'fiyat' => 'float',                          // ✅ REQUIRED: decimal(15,2) → float
-        'status' => IlanStatus::class,               // ✅ REQUIRED: varchar(255) → Enum (Context7)
+        'status' => 'string',
+        'crm_only' => 'boolean',
         'para_birimi' => 'string',                   // ✅ REQUIRED: varchar(10) → string
         'baslik' => 'string',                        // ✅ REQUIRED: varchar(255) → string
         'aciklama' => 'string',                      // ✅ REQUIRED: text → string
@@ -758,6 +762,30 @@ class Ilan extends Model
             ->withTimestamps();
     }
 
+    public function getDurumAttribute()
+    {
+        return $this->status instanceof IlanStatus ? $this->status->value : $this->status;
+    }
+
+    public function setDurumAttribute($value)
+    {
+        $this->attributes['status'] = $value;
+    }
+
+    public function getAktifAttribute()
+    {
+        $s = $this->status;
+        if ($s instanceof IlanStatus) {
+            return $s->isActive();
+        }
+        return in_array($s, ['yayinda', 'Aktif'], true);
+    }
+
+    public function setAktifAttribute($value)
+    {
+        $this->attributes['status'] = $value ? IlanStatus::YAYINDA->value : IlanStatus::PASIF->value;
+    }
+
     /**
      * İlanın takvim senkronizasyonlarını döndürür.
      */
@@ -780,6 +808,21 @@ class Ilan extends Model
     public function yazlikDetail()
     {
         return $this->hasOne(YazlikDetail::class, 'ilan_id');
+    }
+
+    public function site(): BelongsTo
+    {
+        return $this->belongsTo(SiteApartman::class, 'site_id');
+    }
+
+    public function documents(): HasMany
+    {
+        return $this->hasMany(IlanDocument::class, 'ilan_id')->orderBy('created_at', 'desc');
+    }
+
+    public function privateAudits()
+    {
+        return $this->hasMany(IlanPrivateAudit::class, 'ilan_id');
     }
 
     // ======================================================================
@@ -809,6 +852,33 @@ class Ilan extends Model
         return implode(', ', array_filter($adresParcalari));
     }
 
+    /**
+     * Owner private data (encrypted JSON)
+     * { desired_price_min, desired_price_max, notes }
+     */
+    public function getOwnerPrivateDataAttribute(): array
+    {
+        $enc = $this->owner_private_encrypted ?? null;
+        if (!$enc) return [];
+        try {
+            $json = Crypt::decryptString($enc);
+            $arr = json_decode($json, true);
+            return is_array($arr) ? $arr : [];
+        } catch (\Throwable $e) {
+            return [];
+        }
+    }
+
+    public function setOwnerPrivateDataAttribute($value): void
+    {
+        try {
+            $json = json_encode($value ?? [], JSON_UNESCAPED_UNICODE);
+            $this->attributes['owner_private_encrypted'] = Crypt::encryptString($json);
+        } catch (\Throwable $e) {
+            $this->attributes['owner_private_encrypted'] = null;
+        }
+    }
+
     // ======================================================================
     // KAPSAMLAR (SCOPES)
     // ======================================================================
@@ -818,8 +888,22 @@ class Ilan extends Model
      */
     public function scopeActive($query)
     {
-        // Context7: enabled kolonu YOK, sadece status var!
-        return $query->where('status', 'yayinda');
+        return $query->whereIn('status', ['yayinda','Aktif']);
+    }
+
+    public function scopePending($query)
+    {
+        return $query->whereIn('status', ['onay_bekliyor','Beklemede']);
+    }
+
+    public function scopeByStatus($query, string $status)
+    {
+        return $query->where('status', $status);
+    }
+
+    public function scopePublic($query)
+    {
+        return $query->where('crm_only', false)->whereIn('status', ['yayinda','Aktif']);
     }
 
     /**
@@ -871,5 +955,57 @@ class Ilan extends Model
         }
 
         return $query;
+    }
+
+    public function scopeSort(Builder $query, ?string $sortBy = null, string $sortDirection = 'desc', string $defaultSort = 'created_at')
+    {
+        $sortBy = $sortBy ?: $defaultSort;
+        $dir = strtolower($sortDirection) === 'asc' ? 'asc' : 'desc';
+        $query->reorder();
+        if ($sortBy === 'fiyat') {
+            try {
+                $driver = $query->getConnection()->getDriverName();
+            } catch (\Throwable $e) {
+                $driver = 'mysql';
+            }
+            if ($driver === 'sqlite') {
+                if ($dir === 'desc') {
+                    $query->orderByRaw('(0 + fiyat) DESC');
+                } else {
+                    $query->orderByRaw('(0 + fiyat) ASC');
+                }
+                $query->orderBy($defaultSort, $dir);
+                $query->orderBy('id', $dir);
+            }
+            else {
+                if ($dir === 'desc') {
+                    $query->orderByRaw('(0 + fiyat) DESC');
+                } else {
+                    $query->orderByRaw('(0 + fiyat) ASC');
+                }
+                $query->orderBy($defaultSort, $dir);
+                $query->orderBy('id', $dir);
+            }
+            return $query;
+        }
+        if ($this->getConnection()->getSchemaBuilder()->hasColumn($this->getTable(), $sortBy)) {
+            return $query->orderBy($sortBy, $dir);
+        }
+        return $query->orderByDesc($defaultSort);
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+        static::creating(function ($model) {
+            if (empty($model->slug) && !empty($model->baslik)) {
+                $model->slug = Str::slug($model->baslik . '-' . uniqid());
+            }
+        });
+        static::updating(function ($model) {
+            if (empty($model->slug) && !empty($model->baslik)) {
+                $model->slug = Str::slug($model->baslik . '-' . uniqid());
+            }
+        });
     }
 }

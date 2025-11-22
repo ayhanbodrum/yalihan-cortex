@@ -4,11 +4,12 @@ namespace App\Models;
 
 use App\Traits\HasFeatures;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Schema;
 
 class IlanKategori extends Model
 {
-    use HasFeatures;
+    use HasFeatures, SoftDeletes;
     /**
      * The table associated with the model.
      *
@@ -38,9 +39,9 @@ class IlanKategori extends Model
      * @var array
      */
     protected $casts = [
-        'status' => 'boolean', // Context7 kuralı: status → status
+        'status' => 'boolean', // ✅ FIX: TINYINT(1) boolean - artık true/false kullanabiliriz
         'seviye' => 'integer',
-        'display_order' => 'integer', // Context7: order → display_order
+        'display_order' => 'integer',
     ];
 
     /**
@@ -69,11 +70,17 @@ class IlanKategori extends Model
 
     /**
      * Mutator for 'active' attribute (backward compatibility)
+     * ✅ FIX: Artık boolean kullanıyoruz, direkt atama yapabiliriz
      */
     public function setActiveAttribute($value)
     {
-        $this->attributes['status'] = $value; // Context7 kuralı: status → status
+        $this->attributes['status'] = (bool) $value;
     }
+
+    /**
+     * ✅ REMOVED: setStatusAttribute mutator artık gerekli değil
+     * Laravel boolean cast otomatik olarak true/false'u 1/0'a çevirir
+     */
 
     /**
      * display_order kullanımı
@@ -196,7 +203,7 @@ class IlanKategori extends Model
         if ((int) ($this->seviye ?? -1) === 2 && $hasYayin) {
             return $this->hasMany(Ilan::class, 'yayin_tipi_id');
         }
-        if (!is_null($this->parent_id) && $hasAlt) {
+        if ($hasAlt) {
             return $this->hasMany(Ilan::class, 'alt_kategori_id');
         }
         if ($hasAna) {
@@ -242,10 +249,11 @@ class IlanKategori extends Model
 
     /**
      * Aktif scope - Bu method kategorileri filtrelemek için kullanılır
+     * ✅ FIX: Artık boolean kullanıyoruz
      */
     public function scopeActive($query)
     {
-        return $query->where('status', 1); // Context7 kuralı: status → status
+        return $query->where('status', true);
     }
 
     /**
@@ -267,11 +275,12 @@ class IlanKategori extends Model
     /**
      * Aktif alt kategorileri filtreleyen scope (seviye=1 + status=true)
      * Context7: Status filtresi ile aktif alt kategorileri getirir
+     * ✅ FIX: Artık boolean kullanıyoruz
      */
     public function scopeAktifAltKategoriler($query)
     {
         return $query->where('seviye', 1)
-            ->where('status', true) // Context7: status kullanımı
+            ->where('status', true)
             ->orderBy('display_order');
     }
 
@@ -283,7 +292,7 @@ class IlanKategori extends Model
     {
         return $query->where('seviye', 1)
             ->where('parent_id', $anaKategoriId)
-            ->where('status', true) // Context7: status kullanımı
+            ->where('status', 'Aktif')
             ->orderBy('display_order');
     }
 
@@ -299,6 +308,11 @@ class IlanKategori extends Model
      * Sıralı scope - kategorileri order sırasına göre sıralar
      */
     public function scopeSiralı($query)
+    {
+        return $query->orderBy('display_order');
+    }
+
+    public function scopeOrdered($query)
     {
         return $query->orderBy('display_order');
     }
@@ -416,6 +430,7 @@ class IlanKategori extends Model
 
     /**
      * Kategoride status çocuk var mı?
+     * ✅ FIX: Artık boolean kullanıyoruz
      */
     public function hasActiveChildren(): bool
     {

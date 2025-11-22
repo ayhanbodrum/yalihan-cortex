@@ -2,269 +2,480 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\Kisi;
-use App\Models\Talep;
-use App\Models\Eslesme;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Cache;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class CRMController extends AdminController
 {
     /**
-     * Display CRM dashboard
-     * Context7: CRM ana sayfası ve istatistikler
-     *
-     * @param Request $request
+     * CRM Dashboard
+     * Context7: admin.crm.dashboard route
+     * 
      * @return \Illuminate\View\View
      */
-    public function index(Request $request)
+    public function index()
     {
-        // ✅ CACHE: İstatistikleri cache ile optimize et (1800s = 30 dakika)
-        $stats = Cache::remember('crm_dashboard_stats', 1800, function () {
-            return [
-                'toplam_kisi' => Kisi::count(),
-                'active_kisi' => Kisi::where('status', 'Aktif')->count(),
-                'toplam_talep' => Talep::count(),
-                'active_talep' => Talep::where('status', 'Aktif')->count(),
-                'toplam_eslesme' => Eslesme::count(),
-                'basarili_eslesme' => Eslesme::where('status', 'Başarılı')->count(),
-            ];
-        });
+        // Context7: CRM dashboard stats
+        $stats = [
+            'total_customers' => \App\Models\Kisi::count(),
+            'active_customers' => \App\Models\Kisi::where('status', 'Aktif')->count(),
+            'pending_followups' => 0, // TODO: Implement followup tracking
+            'recent_activities' => [],
+        ];
 
-        // ✅ CACHE: Mükerrer email analizi cache ile optimize et (3600s = 1 saat)
-        $mukerrerKisiler = Cache::remember('crm_mukerrer_kisiler', 3600, function () {
-            // ✅ OPTIMIZED: N+1 query önlendi - Tüm mükerrer email'leri tek query'de al
-            $mukerrerEmails = Kisi::select('email')
-                ->whereNotNull('email')
-                ->groupBy('email')
-                ->havingRaw('COUNT(*) > 1')
-                ->pluck('email');
-
-            // ✅ EAGER LOADING: Tüm mükerrer kişileri tek query'de yükle
-            return Kisi::whereIn('email', $mukerrerEmails)
-                ->select(['id', 'ad', 'soyad', 'telefon', 'email'])
-                ->get()
-                ->groupBy('email')
-                ->map(function($kisiler, $email) {
-                    return [
-                        'email' => $email,
-                        'sayi' => $kisiler->count(),
-                        'kisiler' => $kisiler->map(function($kisi) {
-                            return [
-                                'id' => $kisi->id,
-                                'ad' => $kisi->ad,
-                                'soyad' => $kisi->soyad,
-                                'telefon' => $kisi->telefon
-                            ];
-                        })->values()
-                    ];
-                })
-                ->values();
-        });
-
-        // ✅ CACHE: AI önerileri cache ile optimize et (1800s = 30 dakika)
-        $aiOnerileri = Cache::remember('crm_ai_onerileri', 1800, function () {
-            // Check if skor column exists before querying
-            $hasSkorColumn = Schema::hasColumn('eslesmeler', 'skor');
-
-            // Safely get high score matches count with fallback
-            $yuksekSkorluEslesmeler = 0;
-            if ($hasSkorColumn) {
-                try {
-                    $yuksekSkorluEslesmeler = Eslesme::where('skor', '>=', 8)->count();
-                } catch (\Exception $e) {
-                    // Column might not exist yet, return 0
-                    $yuksekSkorluEslesmeler = 0;
-                }
-            }
-
-            return [
-                'mukerrer_kisiler' => [], // Yukarıda cache'lenmiş olarak alınacak
-                'eksik_bilgiler' => Kisi::where(function($query) {
-                    $query->whereNull('email')
-                          ->orWhereNull('telefon')
-                          ->orWhereNull('ad')
-                          ->orWhereNull('soyad');
-                })->count(),
-                'eslesmeyen_talepler' => Talep::whereDoesntHave('eslesmeler')->count(),
-                'yuksek_skorlu_eslesmeler' => $yuksekSkorluEslesmeler,
-            ];
-        });
-
-        // Mükerrer kişileri ekle
-        $aiOnerileri['mukerrer_kisiler'] = $mukerrerKisiler;
-
-        // ✅ CACHE: Etiketler cache ile optimize et (7200s = 2 saat)
-        $etiketler = Cache::remember('crm_etiketler', 7200, function () {
-            return \App\Models\Etiket::select(['id', 'name', 'color', 'status'])
-                ->orderBy('name')
-                ->get();
-        });
-
-        return view('admin.crm.index', compact('stats', 'aiOnerileri', 'etiketler'));
+        return view('admin.crm.dashboard', compact('stats'));
     }
 
     /**
-     * AI analysis for CRM data
-     * Context7: AI destekli CRM analizi
-     *
+     * Customers Index
+     * Context7: admin.crm.customers.index route
+     * 
+     * @return \Illuminate\View\View
+     */
+    public function customers()
+    {
+        return redirect()->route('admin.kisiler.index');
+    }
+
+    /**
+     * Create Customer
+     * Context7: admin.crm.customers.create route
+     * 
+     * @return \Illuminate\View\View
+     */
+    public function create()
+    {
+        return redirect()->route('admin.kisiler.create');
+    }
+
+    /**
+     * Store Customer
+     * Context7: admin.crm.customers.store route
+     * 
      * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function store(Request $request)
+    {
+        return redirect()->route('admin.kisiler.store');
+    }
+
+    /**
+     * Show Customer
+     * Context7: admin.crm.customers.show route
+     * 
+     * @param mixed $customer
+     * @return \Illuminate\View\View
+     */
+    public function show($customer)
+    {
+        return redirect()->route('admin.kisiler.show', $customer);
+    }
+
+    /**
+     * Edit Customer
+     * Context7: admin.crm.customers.edit route
+     * 
+     * @param mixed $customer
+     * @return \Illuminate\View\View
+     */
+    public function edit($customer)
+    {
+        return redirect()->route('admin.kisiler.edit', $customer);
+    }
+
+    /**
+     * Update Customer
+     * Context7: admin.crm.customers.update route
+     * 
+     * @param Request $request
+     * @param mixed $customer
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function update(Request $request, $customer)
+    {
+        return redirect()->route('admin.kisiler.update', $customer);
+    }
+
+    /**
+     * Add Note to Customer
+     * Context7: admin.crm.customers.notes.add route
+     * 
+     * @param Request $request
+     * @param mixed $customer
      * @return \Illuminate\Http\JsonResponse
      */
-    public function aiAnalyze(Request $request)
+    public function addNote(Request $request, $customer)
     {
-        $type = $request->get('type', 'all');
-
-        $analysis = [];
-
-        if ($type === 'all' || $type === 'duplicates') {
-            // ✅ OPTIMIZED: N+1 query önlendi
-            $duplicateEmails = Kisi::select('email')
-                ->whereNotNull('email')
-                ->groupBy('email')
-                ->havingRaw('COUNT(*) > 1')
-                ->pluck('email');
-
-            // ✅ EAGER LOADING: Tüm duplicate kayıtları tek query'de yükle
-            $duplicateRecords = Kisi::whereIn('email', $duplicateEmails)
-                ->select(['id', 'ad', 'soyad', 'telefon', 'email', 'created_at'])
-                ->get()
-                ->groupBy('email')
-                ->map(function($records, $email) {
-                    return [
-                        'email' => $email,
-                        'count' => $records->count(),
-                        'records' => $records->map(function($record) {
-                            return [
-                                'id' => $record->id,
-                                'ad' => $record->ad,
-                                'soyad' => $record->soyad,
-                                'telefon' => $record->telefon,
-                                'created_at' => $record->created_at
-                            ];
-                        })->values()
-                    ];
-                })
-                ->values();
-
-            $analysis['duplicates'] = $duplicateRecords;
-        }
-
-        if ($type === 'all' || $type === 'missing') {
-            $analysis['missing_data'] = [
-                'no_email' => Kisi::whereNull('email')->count(),
-                'no_phone' => Kisi::whereNull('telefon')->count(),
-                'no_name' => Kisi::where(function($q) {
-                    $q->whereNull('ad')->orWhereNull('soyad');
-                })->count(),
-            ];
-        }
-
-        if ($type === 'all' || $type === 'matching') {
-            // Check if skor column exists before querying
-            $hasSkorColumn = Schema::hasColumn('eslesmeler', 'skor');
-
-            // Safely get match counts with fallback
-            $lowScoreMatches = 0;
-            $highScoreMatches = 0;
-
-            if ($hasSkorColumn) {
-                try {
-                    $lowScoreMatches = Eslesme::where('skor', '<', 5)->count();
-                    $highScoreMatches = Eslesme::where('skor', '>=', 8)->count();
-                } catch (\Exception $e) {
-                    // Column might not exist yet, use defaults (0)
-                }
-            }
-
-            $analysis['matching_issues'] = [
-                'unmatched_requests' => Talep::whereDoesntHave('eslesmeler')->count(),
-                'low_score_matches' => $lowScoreMatches,
-                'high_score_matches' => $highScoreMatches,
-            ];
-        }
-
-        return response()->json([
-            'success' => true,
-            'analysis' => $analysis,
-            'timestamp' => now()->toISOString()
-        ]);
+        // TODO: Implement note adding
+        return response()->json(['success' => false, 'message' => 'Not implemented yet'], 501);
     }
 
     /**
-     * Fix duplicate customer records
-     * Context7: Mükerrer kayıt düzeltme
-     *
+     * Add Activity to Customer
+     * Context7: admin.crm.customers.activities.add route
+     * 
+     * @param Request $request
+     * @param mixed $customer
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function addActivity(Request $request, $customer)
+    {
+        // TODO: Implement activity adding
+        return response()->json(['success' => false, 'message' => 'Not implemented yet'], 501);
+    }
+
+    /**
+     * Update Follow Up
+     * Context7: admin.crm.customers.followup.update route
+     * 
+     * @param Request $request
+     * @param mixed $customer
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function updateFollowUp(Request $request, $customer)
+    {
+        // TODO: Implement followup update
+        return response()->json(['success' => false, 'message' => 'Not implemented yet'], 501);
+    }
+
+    /**
+     * AI Analysis for Customer
+     * Context7: admin.crm.customers.ai-analysis route
+     * 
+     * @param Request $request
+     * @param mixed $customer
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function aiAnalysis(Request $request, $customer)
+    {
+        // TODO: Implement AI analysis
+        return response()->json(['success' => false, 'message' => 'Not implemented yet'], 501);
+    }
+
+    /**
+     * Purchase Prediction for Customer
+     * Context7: admin.crm.customers.purchase-prediction route
+     * 
+     * @param Request $request
+     * @param mixed $customer
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function purchasePrediction(Request $request, $customer)
+    {
+        // TODO: Implement purchase prediction
+        return response()->json(['success' => false, 'message' => 'Not implemented yet'], 501);
+    }
+
+    /**
+     * AI Analyze
+     * Context7: admin.crm.ai-analyze route
+     * 
+     * @return \Illuminate\View\View
+     */
+    public function aiAnalyze()
+    {
+        // TODO: Implement AI analyze page
+        return view('admin.crm.ai-analyze');
+    }
+
+    /**
+     * Fix Duplicates
+     * Context7: admin.crm.fix-duplicates route
+     * 
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function fixDuplicates(Request $request)
     {
-        $email = $request->get('email');
-        $keepId = $request->get('keep_id');
-
-        if (!$email || !$keepId) {
-            return response()->json(['success' => false, 'message' => 'Geçersiz parametreler']);
-        }
-
-        $duplicates = Kisi::where('email', $email)->where('id', '!=', $keepId);
-        $deletedCount = $duplicates->count();
-        $duplicates->delete();
-
-        // ✅ CACHE INVALIDATION: İlgili cache'leri temizle
-        Cache::forget('crm_dashboard_stats');
-        Cache::forget('crm_mukerrer_kisiler');
-        Cache::forget('crm_ai_onerileri');
-
-        return response()->json([
-            'success' => true,
-            'message' => "{$deletedCount} mükerrer kayıt silindi",
-            'deleted_count' => $deletedCount
-        ]);
+        // TODO: Implement duplicate fixing
+        return response()->json(['success' => false, 'message' => 'Not implemented yet'], 501);
     }
 
     /**
-     * Generate CRM report
-     * Context7: CRM raporu oluşturma
-     *
+     * Generate Report
+     * Context7: admin.crm.generate-report route
+     * 
+     * @return \Illuminate\Http\Response
+     */
+    public function generateReport()
+    {
+        // TODO: Implement report generation
+        return response('Not implemented yet', 501);
+    }
+
+    /**
+     * Risk Score for Customer
+     * Context7: admin.crm.customers.risk-score route
+     * 
      * @param Request $request
+     * @param mixed $customer
      * @return \Illuminate\Http\JsonResponse
      */
-    public function generateReport(Request $request)
+    public function riskScore(Request $request, $customer)
     {
-        $report = [
-            'generated_at' => now()->format('d.m.Y H:i'),
-            'summary' => [
-                'total_customers' => Kisi::count(),
-                'active_customers' => Kisi::where('status', 'Aktif')->count(),
-                'total_requests' => Talep::count(),
-                'total_matches' => Eslesme::count(),
-                'success_rate' => Eslesme::count() > 0 ? round((Eslesme::where('status', 'Başarılı')->count() / Eslesme::count()) * 100, 2) : 0,
-            ],
-            'ai_insights' => [
-                'duplicate_emails' => Kisi::select('email')
-                    ->whereNotNull('email')
-                    ->groupBy('email')
-                    ->havingRaw('COUNT(*) > 1')
-                    ->count(),
-                'missing_data_percentage' => round((Kisi::where(function($q) {
-                    $q->whereNull('email')->orWhereNull('telefon')->orWhereNull('ad')->orWhereNull('soyad');
-                })->count() / Kisi::count()) * 100, 2),
-                'unmatched_requests' => Talep::whereDoesntHave('eslesmeler')->count(),
-            ],
-            'recommendations' => [
-                'Clean up duplicate customer records',
-                'Complete missing customer information',
-                'Review unmatched requests for better matching',
-                'Optimize matching algorithm parameters'
-            ]
-        ];
+        // TODO: Implement risk score calculation
+        return response()->json(['success' => false, 'message' => 'Not implemented yet'], 501);
+    }
 
-        return response()->json([
-            'success' => true,
-            'report' => $report
+    /**
+     * Follow Up Suggestions for Customer
+     * Context7: admin.crm.customers.followup-suggestions route
+     * 
+     * @param Request $request
+     * @param mixed $customer
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function followUpSuggestions(Request $request, $customer)
+    {
+        // TODO: Implement followup suggestions
+        return response()->json(['success' => false, 'message' => 'Not implemented yet'], 501);
+    }
+
+    /**
+     * Suggest Tags for Customer
+     * Context7: admin.crm.customers.suggest-tags route
+     * 
+     * @param Request $request
+     * @param mixed $customer
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function suggestTags(Request $request, $customer)
+    {
+        // TODO: Implement tag suggestions
+        return response()->json(['success' => false, 'message' => 'Not implemented yet'], 501);
+    }
+
+    public function publicationTypeChanges(Request $request)
+    {
+        $data = Cache::get('crm:publication_type_changes', []);
+        $kategoriId = (int) $request->query('kategoriId', 0);
+        $from = $request->query('from');
+        $to = $request->query('to');
+        $filtered = collect($data)->filter(function ($x) use ($kategoriId, $from, $to) {
+            if ($kategoriId && (int) ($x['kategori_id'] ?? 0) !== $kategoriId) {
+                return false;
+            }
+            if ($from) {
+                try {
+                    $f = Carbon::parse($from);
+                    $xts = isset($x['ts']) ? Carbon::parse($x['ts']) : null;
+                    if ($xts && $xts->lt($f)) {
+                        return false;
+                    }
+                } catch (\Throwable $e) {
+                }
+            }
+            if ($to) {
+                try {
+                    $t = Carbon::parse($to);
+                    $xts = isset($x['ts']) ? Carbon::parse($x['ts']) : null;
+                    if ($xts && $xts->gt($t)) {
+                        return false;
+                    }
+                } catch (\Throwable $e) {
+                }
+            }
+            return true;
+        })->values();
+        $payload = ['data' => $filtered];
+        $etag = sha1(json_encode($payload));
+        if ($request->headers->get('If-None-Match') === $etag) {
+            return response('', 304)->header('ETag', $etag);
+        }
+        return response()->json($payload, 200)->header('ETag', $etag);
+    }
+
+    public function publicationTypeChangesPage(Request $request)
+    {
+        return view('admin.crm.publication-type-changes');
+    }
+
+    public function publicationTypeChangesCsv(Request $request)
+    {
+        $data = Cache::get('crm:publication_type_changes', []);
+        $kategoriId = (int) $request->query('kategoriId', 0);
+        $from = $request->query('from');
+        $to = $request->query('to');
+        $filtered = collect($data)->filter(function ($x) use ($kategoriId, $from, $to) {
+            if ($kategoriId && (int) ($x['kategori_id'] ?? 0) !== $kategoriId) {
+                return false;
+            }
+            if ($from) {
+                try {
+                    $f = Carbon::parse($from);
+                    $xts = isset($x['ts']) ? Carbon::parse($x['ts']) : null;
+                    if ($xts && $xts->lt($f)) {
+                        return false;
+                    }
+                } catch (\Throwable $e) {
+                }
+            }
+            if ($to) {
+                try {
+                    $t = Carbon::parse($to);
+                    $xts = isset($x['ts']) ? Carbon::parse($x['ts']) : null;
+                    if ($xts && $xts->gt($t)) {
+                        return false;
+                    }
+                } catch (\Throwable $e) {
+                }
+            }
+            return true;
+        })->values();
+        $rows = [
+            ['type','kategori_id','from_id','to_id','deleted_id','affected','ts'],
+        ];
+        foreach ($filtered as $x) {
+            $rows[] = [
+                $x['type'] ?? '',
+                $x['kategori_id'] ?? '',
+                $x['from_id'] ?? '',
+                $x['to_id'] ?? '',
+                $x['deleted_id'] ?? '',
+                $x['affected'] ?? '',
+                $x['ts'] ?? '',
+            ];
+        }
+        $csv = '';
+        foreach ($rows as $r) {
+            $csv .= implode(',', array_map(function ($v) { return str_replace(["\n","\r",','],' ', (string) $v); }, $r)) . "\n";
+        }
+        return response($csv, 200, [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename="publication-type-changes.csv"',
         ]);
+    }
+
+    public function ilanlarExportCsv(Request $request)
+    {
+        $kategoriId = (int) $request->query('kategoriId', 0);
+        $yayinTipiId = (int) $request->query('yayinTipiId', 0);
+        $q = DB::table('ilanlar');
+        if ($kategoriId && Schema::hasColumn('ilanlar', 'kategori_id')) {
+            $q->where('kategori_id', $kategoriId);
+        }
+        if ($yayinTipiId && Schema::hasColumn('ilanlar', 'yayin_tipi_id')) {
+            $q->where('yayin_tipi_id', $yayinTipiId);
+        }
+        $cols = [];
+        foreach (['id','baslik','fiyat','para_birimi','status','kategori_id','yayin_tipi_id','created_at'] as $c) {
+            if (Schema::hasColumn('ilanlar', $c)) {
+                $cols[] = $c;
+            }
+        }
+        if (!empty($cols)) {
+            $q->select($cols);
+        }
+        $rows = $q->limit(10000)->get();
+        $header = !empty($cols) ? $cols : array_keys((array) ($rows->first() ?? []));
+        $csvRows = [$header];
+        foreach ($rows as $r) {
+            $line = [];
+            foreach ($header as $h) {
+                $line[] = str_replace(["\n","\r",','],' ', (string) ($r->$h ?? ''));
+            }
+            $csvRows[] = $line;
+        }
+        $csv = '';
+        foreach ($csvRows as $r) {
+            $csv .= implode(',', $r) . "\n";
+        }
+        return response($csv, 200, [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename="ilanlar.csv"',
+        ]);
+    }
+
+    public function ilanlarJson(Request $request)
+    {
+        $id = (int) $request->query('id', 0);
+        $kategoriId = (int) $request->query('kategoriId', 0);
+        $yayinTipiId = (int) $request->query('yayinTipiId', 0);
+        $status = (string) $request->query('status', '');
+        $q = (string) $request->query('q', '');
+        $minFiyat = $request->query('minFiyat');
+        $maxFiyat = $request->query('maxFiyat');
+        $sort = (string) $request->query('sort', 'id:desc');
+        $page = max(1, (int) $request->query('page', 1));
+        $perPage = min(100, max(1, (int) $request->query('perPage', 25)));
+        $cacheKey = 'crm:ilanlar_json:' . md5(http_build_query($request->query()));
+        $payload = Cache::remember($cacheKey, now()->addSeconds(15), function () use ($id, $kategoriId, $yayinTipiId, $status, $q, $minFiyat, $maxFiyat, $sort, $page, $perPage) {
+            $builder = DB::table('ilanlar');
+            if ($id) {
+                $builder->where('id', $id);
+            }
+            if ($kategoriId && Schema::hasColumn('ilanlar', 'kategori_id')) {
+                $builder->where('kategori_id', $kategoriId);
+            }
+            if ($yayinTipiId && Schema::hasColumn('ilanlar', 'yayin_tipi_id')) {
+                $builder->where('yayin_tipi_id', $yayinTipiId);
+            }
+        if ($status && Schema::hasColumn('ilanlar', 'status')) {
+            $builder->where('status', $status);
+        }
+        if ($q) {
+            if (Schema::hasColumn('ilanlar', 'baslik')) {
+                $builder->where('baslik', 'like', '%'.$q.'%');
+            }
+        }
+        if (Schema::hasColumn('ilanlar', 'fiyat')) {
+            if ($minFiyat !== null && $minFiyat !== '') {
+                $builder->where('fiyat', '>=', (float) $minFiyat);
+            }
+            if ($maxFiyat !== null && $maxFiyat !== '') {
+                $builder->where('fiyat', '<=', (float) $maxFiyat);
+            }
+        }
+        $allowedSorts = ['id','fiyat','created_at'];
+        $parts = explode(':', $sort);
+        $sortCol = $parts[0] ?? 'id';
+        $sortDir = strtolower($parts[1] ?? 'desc');
+        if (!in_array($sortCol, $allowedSorts, true)) {
+            $sortCol = 'id';
+        }
+        if (!in_array($sortDir, ['asc','desc'], true)) {
+            $sortDir = 'desc';
+        }
+            $total = (clone $builder)->count();
+            $allowed = ['id','baslik','fiyat','para_birimi','status','kategori_id','yayin_tipi_id','created_at'];
+            $select = [];
+            foreach ($allowed as $c) {
+                if (Schema::hasColumn('ilanlar', $c)) {
+                    $select[] = $c;
+                }
+            }
+            if (!empty($select)) {
+                $builder->select($select);
+            }
+            $items = $builder->orderBy($sortCol, $sortDir)->forPage($page, $perPage)->get();
+            return [
+                'data' => $items,
+                'meta' => [
+                    'page' => $page,
+                    'perPage' => $perPage,
+                    'total' => $total,
+                    'totalPages' => $perPage ? (int) ceil($total / $perPage) : 1,
+                ],
+            ];
+        });
+        $etag = sha1(json_encode($payload));
+        if ($request->headers->get('If-None-Match') === $etag) {
+            return response('', 304)->header('ETag', $etag);
+        }
+        return response()->json($payload, 200)->header('ETag', $etag);
+    }
+
+    public function ilanlarPage(Request $request)
+    {
+        return view('admin.crm.ilanlar-index');
+    }
+
+    public function ilanDetayPage($id)
+    {
+        return view('admin.crm.ilan-detay');
     }
 }

@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\View;
  */
 class AdminController extends Controller
 {
+    use \App\Traits\AdminMenu;
     /**
      * Constructor
      * Context7: Ortak değişkenleri tüm view'lara paylaş

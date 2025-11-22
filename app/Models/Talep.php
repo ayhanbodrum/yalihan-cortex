@@ -60,7 +60,7 @@ class Talep extends Model
      */
     public function kisi()
     {
-        return $this->belongsTo(Kisi::class, 'musteri_id');
+        return $this->belongsTo(Kisi::class, 'kisi_id');
     }
 
     /**
@@ -163,5 +163,9 @@ class Talep extends Model
         ];
 
         return implode(', ', array_filter($adresParcalari));
+    }
+    public function scopeActive($query)
+    {
+        return $query->whereIn('status', ['Aktif', 1, true]);
     }
 }

@@ -147,8 +147,8 @@ class CalendarSyncController extends AdminController
                                                 ->map(function ($item) {
                                                     return [
                                                         'date' => $item->tarih->format('Y-m-d'),
-                                                        'status' => $item->durum,
-                                                        'reason' => $item->not,
+                                                        'status' => $item->status,
+                                                        'reason' => $item->aciklama,
                                                     ];
                                                 });
 
@@ -192,8 +192,8 @@ class CalendarSyncController extends AdminController
                         'tarih' => $date,
                     ],
                     [
-                        'status' => 'blocked',
-                        'not' => $request->reason ?? 'Manuel engelleme',
+                        'status' => 'bloke',
+                        'aciklama' => $request->reason ?? 'Manuel engelleme',
                     ]
                 );
 

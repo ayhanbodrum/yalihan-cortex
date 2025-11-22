@@ -68,17 +68,17 @@ class YazlikDolulukDurumu extends Model
 
     public function isMusait()
     {
-        return $this->durum === 'musait';
+        return ($this->status ?? null) === 'musait';
     }
 
     public function isRezerve()
     {
-        return $this->durum === 'rezerve';
+        return ($this->status ?? null) === 'rezerve';
     }
 
     public function isBloke()
     {
-        return in_array($this->durum, ['bloke', 'bakim', 'temizlik', 'kapali']);
+        return in_array(($this->status ?? null), ['bloke', 'bakim', 'temizlik', 'kapali']);
     }
 
     public function setRezerve($rezervasyonId = null, $aciklama = null)

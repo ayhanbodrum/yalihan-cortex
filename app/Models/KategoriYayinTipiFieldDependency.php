@@ -49,7 +49,12 @@ class KategoriYayinTipiFieldDependency extends Model
      */
     public function scopeEnabled($query)
     {
-        return $query->where('status', true); // Context7: enabled → status
+        return $query->where('status', true);
+    }
+
+    public function scopeActive($query)
+    {
+        return $query->where('status', true);
     }
 
     /**

@@ -14,26 +14,25 @@ class TalepPortfolyoController extends AdminController
                 $query->select(['id', 'ad', 'soyad', 'telefon', 'email']);
             }])
             ->select(['id', 'kisi_id', 'baslik', 'aciklama', 'status', 'talep_tipi', 'created_at'])
-            // Not: Projedeki mevcut veriler 'Aktif'/'Beklemede' gibi Türkçe değerler kullanıyor
-            ->where('status', 'Aktif')
+            ->where('status', \App\Enums\TalepStatus::AKTIF->value)
             ->latest()
             ->paginate(20);
 
         $istatistikler = [
             'toplam_talep' => \App\Models\Talep::count(),
-            'aktif_talep' => \App\Models\Talep::where('status', 'Aktif')->count(),
+            'aktif_talep' => \App\Models\Talep::where('status', \App\Enums\TalepStatus::AKTIF->value)->count(),
             'basarili_eslesme' => \App\Models\Eslesme::where('status', 'Başarılı')->count(),
-            'bekleyen_talep' => \App\Models\Talep::where('status', 'Beklemede')->count(),
+            'bekleyen_talep' => \App\Models\Talep::where('status', \App\Enums\TalepStatus::BEKLEMEDE->value)->count(),
         ];
 
         // Context7: View compatibility - $talepStats alias
         $talepStats = [
             'toplam_talep' => \App\Models\Talep::count(),
-            'status_talep' => \App\Models\Talep::where('status', 'Aktif')->count(),
-            'acil_talep' => \App\Models\Talep::where('status', 'Acil')->count(),
+            'status_talep' => \App\Models\Talep::where('status', \App\Enums\TalepStatus::AKTIF->value)->count(),
+            'acil_talep' => \App\Models\Talep::where('status', \App\Enums\TalepStatus::ACIL->value)->count(),
             'bugun_talep' => \App\Models\Talep::whereDate('created_at', today())->count(),
             'portfolyo_onerildi' => \App\Models\Eslesme::whereDate('created_at', today())->count(),
-            'tamamlanan_talep' => \App\Models\Talep::where('status', 'Tamamlandı')->count(),
+            'tamamlanan_talep' => \App\Models\Talep::where('status', \App\Enums\TalepStatus::TAMAMLANDI->value)->count(),
         ];
 
         // Context7: View compatibility - $portfolyoStats alias (Database schema uyumlu)
@@ -215,6 +214,16 @@ class TalepPortfolyoController extends AdminController
             'talep_id' => $talepModel->id,
             'oneriler' => $oneriler,
         ]);
+    }
+
+    public function fragmentOneriler(Request $request)
+    {
+        $oneriler = \App\Models\Ilan::public()
+            ->orderByDesc('created_at')
+            ->limit(5)
+            ->get(['id', 'baslik', 'fiyat', 'para_birimi']);
+
+        return view('admin.talep-portfolyo.partials.oneriler-fragment', compact('oneriler'));
     }
 
     /**

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Enums\KisiTipi;
+use Illuminate\Support\Facades\Crypt;
 
 /**
  * App\Models\Kisi
@@ -80,6 +81,7 @@ class Kisi extends Model
 
         // CRM Genişletilmiş Alanları
         'tc_kimlik',
+        'tc_kimlik_encrypted',
         'dogum_tarihi',
         'meslek',
         'gelir_duzeyi',
@@ -148,6 +150,25 @@ class Kisi extends Model
         ];
 
         return $mapping[$value] ?? KisiTipi::tryFrom($value);
+    }
+
+    public function setTcKimlikAttribute($value): void
+    {
+        $this->attributes['tc_kimlik'] = $value;
+        try {
+            $this->attributes['tc_kimlik_encrypted'] = $value ? Crypt::encryptString($value) : null;
+        } catch (\Throwable $e) {
+            $this->attributes['tc_kimlik_encrypted'] = null;
+        }
+    }
+
+    public function getTcKimlikMaskedAttribute(): ?string
+    {
+        $v = $this->attributes['tc_kimlik'] ?? null;
+        if (!$v) return null;
+        $len = strlen($v);
+        if ($len <= 4) return str_repeat('*', max(0, $len));
+        return str_repeat('*', $len - 4) . substr($v, -4);
     }
 
     /**
@@ -245,7 +266,7 @@ class Kisi extends Model
 
     public function talepler(): HasMany
     {
-        return $this->hasMany(Talep::class, 'musteri_id');
+        return $this->hasMany(Talep::class, 'kisi_id');
     }
 
     /**
@@ -342,7 +363,12 @@ class Kisi extends Model
      */
     public function scopeAktif($query)
     {
-        return $query->where('status', 'Aktif');
+        return $query->whereIn('status', ['Aktif', 1, true]);
+    }
+
+    public function scopeActive($query)
+    {
+        return $this->scopeAktif($query);
     }
 
     /**

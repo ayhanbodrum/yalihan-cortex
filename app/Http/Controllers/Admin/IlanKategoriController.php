@@ -222,6 +222,7 @@ class IlanKategoriController extends AdminController
         );
 
         // İstatistikler (Context7: status field) - DB facade ile (model kullanmadan)
+        // ✅ FIX: status kolonu artık TINYINT(1) boolean - true/false kullanabiliriz
         $stats = [
             'toplam' => DB::table('ilan_kategorileri')->count(),
             'ana_kategoriler' => DB::table('ilan_kategorileri')->whereNull('parent_id')->count(),
@@ -245,7 +246,7 @@ class IlanKategoriController extends AdminController
     public function create(): \Illuminate\View\View
     {
         $anaKategoriler = IlanKategori::whereNull('parent_id')
-            ->where('status', true)
+            ->where('status', true) // ✅ FIX: status artık boolean - true/false kullanabiliriz
             ->orderBy('name')
             ->get();
 
@@ -291,7 +292,7 @@ class IlanKategoriController extends AdminController
                 'slug' => $slug,
                 'seviye' => $seviye,
                 'parent_id' => $parentId,
-                'status' => $validated['status'] ?? true,
+                'status' => $validated['status'] ?? true, // ✅ FIX: status artık boolean - true/false kullanabiliriz
                 'display_order' => $validated['order'] ?? 0, // ✅ Context7: order → display_order
                 'aciklama' => ''
             ]);
@@ -391,7 +392,7 @@ class IlanKategoriController extends AdminController
         $kategori = IlanKategori::findOrFail($id);
 
         $parentCategories = IlanKategori::whereNull('parent_id')
-            ->where('status', true) // Context7: is_active → status
+            ->where('status', true) // ✅ FIX: status artık boolean - true/false kullanabiliriz
             ->where('id', '!=', $id) // Kendi kendinin parent'ı olamaz
             ->orderBy('name')
             ->get();
@@ -441,7 +442,7 @@ class IlanKategoriController extends AdminController
                 'slug' => $slug,
                 'seviye' => $seviye,
                 'parent_id' => $parentId,
-                'status' => $validated['status'] ?? true,
+                'status' => $validated['status'] ?? true, // ✅ FIX: status artık boolean - true/false kullanabiliriz
                 'display_order' => $validated['order'] ?? 0, // ✅ Context7: order → display_order
                 'aciklama' => ''
             ]);
@@ -791,7 +792,7 @@ class IlanKategoriController extends AdminController
         }
 
         $altKategoriler = IlanKategori::where('parent_id', $parentId)
-            ->where('status', true) // ✅ Context7: status is boolean (FIXED!)
+            ->where('status', true) // ✅ FIX: status artık boolean - true/false kullanabiliriz
             ->select(['id', 'name', 'slug'])
             ->orderBy('display_order', 'asc') // ✅ Context7: order → display_order
             ->orderBy('name', 'asc')
@@ -924,11 +925,13 @@ class IlanKategoriController extends AdminController
             switch ($action) {
                 case 'activate':
                     // ✅ PERFORMANCE FIX: Bulk update kullan (N+1 query önlendi)
+                    // ✅ FIX: status artık boolean - true/false kullanabiliriz
                     $count = IlanKategori::whereIn('id', $ids)->update(['status' => true]);
                     break;
 
                 case 'deactivate':
                     // ✅ PERFORMANCE FIX: Bulk update kullan (N+1 query önlendi)
+                    // ✅ FIX: status artık boolean - true/false kullanabiliriz
                     $count = IlanKategori::whereIn('id', $ids)->update(['status' => false]);
                     break;
 

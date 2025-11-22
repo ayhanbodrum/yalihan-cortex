@@ -7,6 +7,8 @@ use Illuminate\Http\Response;
 use App\Models\Ulke;
 use App\Models\Talep;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class TalepController extends AdminController
 {
@@ -34,8 +36,8 @@ class TalepController extends AdminController
         // ✅ OPTIMIZED: İstatistikleri tek query'de hesapla
         $istatistikler = [
             'toplam' => \App\Models\Talep::count(),
-            'aktif' => \App\Models\Talep::where('status', 'Aktif')->count(),
-            'beklemede' => \App\Models\Talep::where('status', 'Beklemede')->count(),
+            'aktif' => \App\Models\Talep::where('status', \App\Enums\TalepStatus::AKTIF->value)->count(),
+            'beklemede' => \App\Models\Talep::where('status', \App\Enums\TalepStatus::BEKLEMEDE->value)->count(),
         ];
 
         // Context7: Tüm benzersiz statusları al
@@ -91,8 +93,8 @@ class TalepController extends AdminController
             $q->where('name', 'danisman');
         })->select(['id', 'name', 'email'])->get();
 
-        // ✅ Status options (needed by _form.blade.php)
-        $statuslar = ['active', 'pending', 'cancelled', 'completed'];
+        // ✅ Status options (enum tabanlı)
+        $statuslar = \App\Enums\TalepStatus::options();
 
         // ✅ CACHE: Ülkeler dropdown için cache ekle
         $ulkeler = Cache::remember('ulke_list', 7200, function () {
@@ -121,7 +123,7 @@ class TalepController extends AdminController
             'tip' => 'required|string|in:Satılık,Kiralık,Günlük Kiralık,Devren',
             'kategori_id' => 'nullable|exists:ilan_kategoriler,id',
             'alt_kategori_id' => 'nullable|exists:ilan_kategoriler,id',
-            'status' => 'required|string|in:Aktif,Beklemede,İptal',
+            'status' => 'required|string|in:' . implode(',', \App\Enums\TalepStatus::values()),
             'one_cikan' => 'nullable|boolean',
             'il_id' => 'required|exists:iller,id',
             'ilce_id' => 'nullable|exists:ilceler,id',
@@ -162,7 +164,16 @@ class TalepController extends AdminController
                 'ilce_id' => $validated['ilce_id'],
                 'mahalle_id' => $validated['mahalle_id'],
                 'kisi_id' => $validated['kisi_id'],
-                'danisman_id' => $validated['danisman_id'],
+                'danisman_id' => $validated['danisman_id'] ?? Auth::id(),
+            ]);
+
+            Log::channel('module_changes')->info('Talep oluşturuldu', [
+                'talep_id' => $talep->id,
+                'baslik' => $talep->baslik,
+                'status' => $talep->status,
+                'tip' => $talep->tip,
+                'kisi_id' => $talep->kisi_id,
+                'danisman_id' => $talep->danisman_id,
             ]);
 
             return redirect()
@@ -249,8 +260,8 @@ class TalepController extends AdminController
         // Context7: Talep Tipleri
         $talepTipleri = ['Satılık', 'Kiralık', 'Günlük Kiralık', 'Devren'];
 
-        // Context7: Statuslar
-        $statuslar = ['active', 'pending', 'closed', 'cancelled'];
+        // Context7: Statuslar (enum tabanlı)
+        $statuslar = \App\Enums\TalepStatus::options();
 
         // Context7: Ülkeler - select optimization
         $ulkeler = \App\Models\Ulke::select(['id', 'ulke_adi', 'ulke_kodu'])
