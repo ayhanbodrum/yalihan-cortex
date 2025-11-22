@@ -6,10 +6,12 @@ import { defineConfig } from 'vite';
 export default defineConfig({
     server: {
         hmr: {
-            host: 'localhost',
+            host: '127.0.0.1',
+            protocol: 'ws',
+            port: 5174,
         },
         host: '0.0.0.0',
-        port: 5173, // CSP'de izinli port
+        port: 5174,
     },
     plugins: [
         laravel({
@@ -21,6 +23,7 @@ export default defineConfig({
                 'resources/js/admin/global.js',
                 'resources/js/admin/feature-list.js',
                 'resources/js/admin/neo.js',
+                'resources/js/admin/portal-ids-validate.js',
                 'resources/js/leaflet-loader.js',
                 // Person selector components
                 'resources/js/components/UnifiedPersonSelector.js',
@@ -33,10 +36,13 @@ export default defineConfig({
                 'resources/js/admin/services/AutoSaveManager.js',
                 'resources/js/admin/services/api-adapter.js',
                 'resources/js/admin/services/list-paginate.js',
+                'resources/js/admin/my-listings-search.js',
                 // İlan Create Modular JS
                 'resources/js/admin/ilan-create.js',
                 // AI Settings Modular JS (Hybrid Architecture)
                 'resources/js/admin/ai-settings/core.js',
+                // AI Register (AdminAIService global export)
+                'resources/js/admin/ai-register.js',
 
                 // Advanced OpenStreetMap Integration
                 'resources/js/leaflet-integration.js',

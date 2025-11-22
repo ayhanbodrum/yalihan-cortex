@@ -1,26 +1,37 @@
-import AIService from './services/AIService.js'
+/**
+ * AI Register - AdminAIService Global Export
+ * Context7: AI Settings sayfası için AdminAIService'i window'a export eder
+ */
 
-document.addEventListener('DOMContentLoaded', () => {
-  try {
-    AIService.registerProvider('backend', {
-      base: '/api/admin/ai',
-      absolute: true,
-      operations: {
-        chat: { path: '/chat', method: 'POST' },
-        pricePredict: { path: '/price/predict', method: 'POST' },
-        suggestFeatures: { path: '/suggest-features', method: 'POST' },
-      },
-    })
-    AIService.useProvider('backend')
-    try { window.AdminAIService = AIService } catch (e) {}
-    if (window.AIOrchestrator && typeof window.AIOrchestrator.setMiddlewares === 'function') {
-      window.AIOrchestrator.setMiddlewares({
-        request: [function (payload) { return payload }],
-        response: [function (res) { return res }],
-      })
-    }
-    console.log('✅ AI provider "backend" kayıt edildi ve aktif')
-  } catch (e) {
-    console.warn('AI provider kaydı yapılamadı:', e)
-  }
-})
+import { AIService } from './services/AIService.js';
+
+// ✅ AdminAIService'i window'a export et (backward compatibility)
+if (typeof window !== 'undefined') {
+    window.AdminAIService = AIService;
+
+    // DOM yüklendiğinde provider status'u otomatik yükle
+    document.addEventListener('DOMContentLoaded', () => {
+        const statusEl = document.getElementById('ai-provider-status');
+        if (
+            statusEl &&
+            window.AdminAIService &&
+            typeof window.AdminAIService.getProviderStatus === 'function'
+        ) {
+            window.AdminAIService.getProviderStatus()
+                .then((res) => {
+                    if (res && res.success) {
+                        const d = res.data || res;
+                        statusEl.textContent =
+                            'Sağlayıcı: ' + (d.provider || '-') + ' • Model: ' + (d.model || '-');
+                    } else {
+                        statusEl.textContent = 'Durum alınamadı';
+                    }
+                })
+                .catch(() => {
+                    if (statusEl) statusEl.textContent = 'Durum alınamadı';
+                });
+        }
+    });
+}
+
+export default AIService;

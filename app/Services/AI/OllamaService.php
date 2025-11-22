@@ -5,6 +5,7 @@ namespace App\Services\AI;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
+use App\Models\Setting;
 
 /**
  * Ollama AI Service
@@ -34,8 +35,52 @@ class OllamaService
 
     public function __construct()
     {
-        $this->apiUrl = config('ai.ollama_api_url', 'http://51.75.64.121:11434');
-        $this->model = config('ai.ollama_model', 'gemma2:2b');
+        $this->apiUrl = $this->getOllamaUrl();
+        $this->model = $this->getOllamaModel();
+    }
+
+    /**
+     * Ollama URL'ini settings'ten veya config'ten al
+     */
+    protected function getOllamaUrl(): string
+    {
+        return Cache::remember('ollama_url', 300, function () {
+            return Setting::where('key', 'ollama_url')->value('value') 
+                ?? config('ai.ollama_api_url', 'http://51.75.64.121:11434');
+        });
+    }
+
+    /**
+     * Ollama Model'ini settings'ten veya config'ten al
+     * Öncelik: ai_default_model > ollama_model > config > default
+     */
+    protected function getOllamaModel(): string
+    {
+        return Cache::remember('ollama_model', 300, function () {
+            // Önce ai_default_model kontrol et (genel model ayarı)
+            $defaultModel = Setting::where('key', 'ai_default_model')->value('value');
+            if ($defaultModel) {
+                return $defaultModel;
+            }
+
+            // Sonra ollama_model kontrol et (Ollama özel ayarı)
+            $ollamaModel = Setting::where('key', 'ollama_model')->value('value');
+            if ($ollamaModel) {
+                return $ollamaModel;
+            }
+
+            // Son olarak config'ten al
+            return config('ai.ollama_model', 'gemma2:2b');
+        });
+    }
+
+    /**
+     * Model'i dinamik olarak güncelle (runtime'da değişiklik için)
+     */
+    public function setModel(string $model): void
+    {
+        $this->model = $model;
+        Cache::forget('ollama_model');
     }
 
     /**
