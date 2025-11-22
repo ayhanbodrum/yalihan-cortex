@@ -45,3 +45,10 @@ storage/framework/views/*
 .DS_Store
 screenshots/*
 !.gitkeep
+
+# Cache and temporary files
+.php-cs-fixer.cache
+*.pid
+*.log
+.trae/
+.warp/workflows/
