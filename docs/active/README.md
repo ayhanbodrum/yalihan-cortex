@@ -1,6 +1,7 @@
 # 📚 Aktif Dokümantasyon Dizini
 
-**Son Güncelleme:** 8 Kasım 2025  
+**Son Güncelleme:** 20 Kasım 2025  
+**Dosya Sayısı:** 5 dosya (sade ve temiz yapı)  
 **Kapsam:** `docs/active/` klasöründeki yaşayan, uzun ömürlü rehberler.
 
 Bu dizin; proje mimarisi, Context7 kuralları ve API referansları gibi ekibin günlük ihtiyaç duyduğu temel belgeleri içerir. Tarihli raporlar ve tamamlanmış analizler arşive taşınmıştır.
@@ -9,14 +10,12 @@ Bu dizin; proje mimarisi, Context7 kuralları ve API referansları gibi ekibin g
 
 ## 🔖 Çekirdek Belgeler
 
-| Belge                        | Amaç                                                                      |
-| ---------------------------- | ------------------------------------------------------------------------- |
-| `PROJECT-ANATOMY.md`         | Modül haritası, servis yapısı, Context7 × Yalıhan Bekçi ilişkisi          |
-| `CONTEXT7-MASTER-GUIDE.md`   | Context7 standartlarının üst düzey özeti                                  |
-| `CONTEXT7-RULES-DETAILED.md` | Yasaklı alan adları, Tailwind, form ve harita standartlarının tam listesi |
-| `API-REFERENCE.md`           | Context7 API uçları ve örnek kullanımlar                                  |
-| `DATABASE-SCHEMA.md`         | İlanlar ve bağlı tablolar için şema özeti                                 |
-| `SYSTEM-STATUS-2025.md`      | 2025 sistem durumu, metrikler ve izleme notları                           |
+| Belge | Amaç | Durum |
+|-------|------|-------|
+| `PROJE_CALISMA_SISTEMI_VE_GELISIM_PLANI.md` | **Ana Dokümantasyon** - Proje çalışma sistemi, mimari, modüller, API'ler, AI, Context7, Cache, Error Handling, Security, Queue, Environment, Frontend Standartları, Teknik Detaylar | ✅ Güncel (v1.3.0) |
+| `SYSTEM-STATUS-2025.md` | 2025 sistem durumu, metrikler ve izleme notları (dinamik rapor) | ✅ Güncel |
+| `YARIM_KALMIS_PLANLAMALAR.md` | Yarım kalmış planlar, önceliklendirme, süre tahminleri | ✅ Güncel |
+| `ANALIZ_VE_GELISIM_FIRSATLARI.md` | Mevcut durum analizi, yarım kalmış planlar, geliştirme fırsatları, önceliklendirme matrisi | ✅ Güncel (v2.0.0) |
 
 > Diğer güncel rehberler:  
 > • Standartlar → `docs/rules/`  
@@ -40,7 +39,7 @@ Bu dizin; proje mimarisi, Context7 kuralları ve API referansları gibi ekibin g
 
 - `scripts/generate-doc-index.sh` komutu ile doküman indekslerini yenileyebilirsin.
 - Bekçi raporlarında bu dizine referans vererek standart setini canlı tut.
-- Yeni modül veya servis eklendiğinde `PROJECT-ANATOMY.md` dosyasını güncelle.
+- Yeni modül veya servis eklendiğinde `PROJE_CALISMA_SISTEMI_VE_GELISIM_PLANI.md` dosyasını güncelle (Bölüm 3: Modül Sistemi).
 
 ---
 

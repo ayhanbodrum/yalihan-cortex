@@ -1,8 +1,8 @@
 {
   "context7": {
-    "version": "5.4.0",
-    "standard": "C7-PERMANENT-STANDARDS-2025-11-07",
-    "last_updated": "2025-11-07T23:00:00Z",
+    "version": "5.5.0",
+    "standard": "C7-PERMANENT-STANDARDS-2025-11-22",
+    "last_updated": "2025-11-22T15:30:00Z",
     "permanent_standards": {
       "status": "ACTIVE - NO ROLLBACK",
       "enabled_field": "FORBIDDEN - PERMANENT",
@@ -20,8 +20,8 @@
     "scope": "all-ides-all-ai-tools-auto-scripts",
     "description": "Merkezi Context7 referans sistemi - tüm IDE'ler, AI araçları ve otomatik script'ler bu dosyayı referans almalıdır",
     "critical_rules_added": "2025-10-11",
-    "critical_fixes": "71 files cleaned, 32 admin errors fixed, 3 AI services added, 5 API endpoints created, DROPDOWN READABILITY FIX (2025-11-01), SETTINGS SYSTEM MERGE (2025-11-05), CODE QUALITY PATTERNS (2025-11-07), ORDER → DISPLAY_ORDER STANDARD (2025-11-09), MIGRATION & SEEDER STANDARDS (2025-11-11)",
-    "latest_fix": "MIGRATION & SEEDER STANDARDS (11 Kasım 2025): Migration ve Seeder standartları oluşturuldu. DB::statement() kullanımı zorunlu, index kontrolü zorunlu, kolon tipi korunması zorunlu. ORDER → DISPLAY_ORDER STANDARD (9 Kasım 2025): Tüm order kolonları display_order olarak rename edildi. Migration: 2025_11_09_070721_rename_order_to_display_order_in_tables.php. 3 tablo güncellendi, 12 controller düzeltildi, backward compatibility sağlandı. CODE QUALITY PATTERNS (7 Kasım 2025): Undefined variables prevention, N+1 query optimization, Loading states pattern, Cache optimization pattern eklendi. 7 controller, 7 sayfa düzeltildi. DANISMAN STATUS SYSTEM (7 Kasım 2025): String tabanlı status sistemi eklendi, 7 status seçeneği, Position/Department kolonları, backward compatibility sağlandı.",
+    "critical_fixes": "71 files cleaned, 32 admin errors fixed, 3 AI services added, 5 API endpoints created, DROPDOWN READABILITY FIX (2025-11-01), SETTINGS SYSTEM MERGE (2025-11-05), CODE QUALITY PATTERNS (2025-11-07), ORDER → DISPLAY_ORDER STANDARD (2025-11-09), MIGRATION & SEEDER STANDARDS (2025-11-11), STATUS COLUMN GLOBAL STANDARDIZATION (2025-11-22)",
+    "latest_fix": "STATUS COLUMN GLOBAL STANDARDIZATION (22 Kasım 2025): Tüm basit status kolonları (16 tablo) TINYINT(1) boolean'a çevrildi. Migration: 2025_11_22_152526_fix_all_status_columns_to_boolean_global_fix.php. Artık tüm IDE'ler (trea, warp, cursor) tutarlı tip kontrolü yapabilir. Kodda her yerde true/false kullanılabilir. 'Aktif'/'Pasif' string karışıklığı ortadan kalktı. Context7 standartlarına %100 uyumlu. MIGRATION & SEEDER STANDARDS (11 Kasım 2025): Migration ve Seeder standartları oluşturuldu. DB::statement() kullanımı zorunlu, index kontrolü zorunlu, kolon tipi korunması zorunlu.",
     "master_update": "BREAKING CHANGE (1 Kasım 2025): Neo Design System KALDIRILDI → Pure Tailwind CSS ZORUNLU. Tüm neo-* class'ları YASAK. Tailwind utility classes + ZORUNLU transition/animation her işlemde.",
     "breaking_changes": {
       "date": "2025-11-01",
@@ -358,7 +358,20 @@
         "reason": "Context7 Kural İhlali: Türkçe alan adları yasak",
         "severity": "critical",
         "auto_fix": true,
-        "auto_fix_scope": "database_field_names_only"
+        "auto_fix_scope": "database_field_names_only",
+        "global_standard": {
+          "type": "TINYINT(1) NOT NULL DEFAULT 1",
+          "cast": "boolean",
+          "description": "TÜM basit status kolonları (aktif/pasif) MUTLAKA TINYINT(1) boolean olmalı",
+          "forbidden_types": ["VARCHAR(255)", "ENUM('Aktif','Pasif')", "VARCHAR(50)"],
+          "forbidden_values": ["'Aktif'", "'Pasif'", "'active'", "'inactive'"],
+          "required_values": [true, false, 1, 0],
+          "migration_date": "2025-11-22",
+          "migration_file": "2025_11_22_152526_fix_all_status_columns_to_boolean_global_fix.php",
+          "affected_tables": 16,
+          "enforcement": "STRICT - Yeni tablolarda status kolonu MUTLAKA TINYINT(1) olmalı",
+          "ide_support": "trea, warp, cursor ve tüm IDE'ler artık tutarlı tip kontrolü yapabilir"
+        }
       },
       "mahalle_id": {
         "standard": "mahalle_id",
@@ -1029,6 +1042,11 @@
       "version": "3.5.0",
       "date": "2025-10-31",
       "changes": "Location System Standard: mahalle_id zorunlu hale getirildi, semt_id YASAK. 7 JavaScript fonksiyonu düzeltildi (location.js). Database: ilanlar, sites tablolarında mahalle_id var, kisiler tablosunda yok (by design)."
+    },
+    {
+      "version": "5.5.0",
+      "date": "2025-11-22",
+      "changes": "STATUS COLUMN GLOBAL STANDARDIZATION: Tüm basit status kolonları (16 tablo) TINYINT(1) boolean'a çevrildi. Artık tüm IDE'ler (trea, warp, cursor) tutarlı tip kontrolü yapabilir. Kodda her yerde true/false kullanılabilir. 'Aktif'/'Pasif' string karışıklığı ortadan kalktı. Migration: 2025_11_22_152526_fix_all_status_columns_to_boolean_global_fix.php"
     }
   ],
   "site_management": {
