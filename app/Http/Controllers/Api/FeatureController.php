@@ -71,63 +71,37 @@ class FeatureController extends Controller
     }
 
     /**
-     * Get features by category slug (LEGACY - kept for backwards compatibility)
+     * Get features by category slug (applies_to filtresi ile)
+     * ✅ FIX: FeaturesService kullanarak applies_to filtresi ile tüm kategorileri döndür
      *
-     * @param string $categorySlug
+     * @param string $categorySlug - İlan kategori slug'ı (konut, arsa, vb.)
+     * @param Request $request - Query params: yayin_tipi
      * @return JsonResponse
      */
-    public function getByCategory(string $categorySlug): JsonResponse
+    public function getByCategory(string $categorySlug, Request $request): JsonResponse
     {
         try {
             Log::info('FeatureController::getByCategory başladı', [
                 'categorySlug' => $categorySlug,
+                'yayin_tipi' => $request->get('yayin_tipi'),
             ]);
 
-            // ✅ Context7: status field kontrolü (migration'da status var)
-            // Önce status kontrolü olmadan kategoriyi bul
-            $category = FeatureCategory::where('slug', $categorySlug)->first();
+            // ✅ FIX: FeaturesService kullanarak applies_to filtresi ile tüm kategorileri getir
+            $featuresService = new FeaturesService();
+            $yayinTipi = $request->get('yayin_tipi');
 
-            if (!$category) {
-                Log::warning('FeatureController::getByCategory - Kategori bulunamadı', [
-                    'categorySlug' => $categorySlug,
-                ]);
-                return ResponseService::notFound('Kategori bulunamadı');
-            }
-
-            // ✅ Context7: Status kontrolü - boolean true veya 1 kabul edilir
-            // Status field'ı varsa ve false/0 ise skip et
-            if (isset($category->status) && !$category->status) {
-                Log::warning('FeatureController::getByCategory - Kategori pasif', [
-                    'categorySlug' => $categorySlug,
-                    'status' => $category->status,
-                ]);
-                return ResponseService::notFound('Kategori bulunamadı');
-            }
-
-            Log::info('FeatureController::getByCategory - Kategori bulundu', [
-                'categoryId' => $category->id,
-                'categoryName' => $category->name,
-            ]);
-
-            // ✅ Context7: Features sorgusu
-            $features = Feature::where('feature_category_id', $category->id)
-                ->where('status', true) // ✅ Context7: status field kullanılıyor (migration'da var)
-                ->orderBy('display_order') // ✅ Context7: display_order field kullanılıyor
-                ->orderBy('name')
-                ->get(['id', 'name', 'slug']);
+            // ✅ Context7: applies_to = ilan kategori slug'ı (konut, arsa, vb.)
+            $categories = $featuresService->list($categorySlug, null, $yayinTipi);
 
             Log::info('FeatureController::getByCategory - Features yüklendi', [
                 'categorySlug' => $categorySlug,
-                'featuresCount' => $features->count(),
+                'categoriesCount' => count($categories),
+                'totalFeatures' => array_sum(array_map(fn($c) => count($c['features'] ?? []), $categories)),
             ]);
 
             return ResponseService::success([
-                'category' => [
-                    'id' => $category->id,
-                    'name' => $category->name,
-                    'slug' => $category->slug,
-                ],
-                'features' => $features
+                'data' => $categories, // ✅ FIX: FeaturesService format'ı (kategoriler + feature'lar)
+                'features' => $categories, // ✅ Backward compatibility
             ], 'Özellikler başarıyla getirildi');
         } catch (\Exception $e) {
             Log::error('FeatureController::getByCategory hatası', [

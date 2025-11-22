@@ -588,8 +588,9 @@ class DanismanController extends AdminController
     private function resolveDanisman($danisman): User
     {
         if ($danisman instanceof User) return $danisman;
+        // ✅ FIX: Context7 - Spatie Permission uses 'roles' (plural), not 'role'
         return User::whereKey($danisman)
-            ->whereHas('role', function ($q) {
+            ->whereHas('roles', function ($q) {
                 $q->where('name', 'danisman');
             })
             ->firstOrFail();

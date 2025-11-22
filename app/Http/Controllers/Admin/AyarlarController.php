@@ -337,8 +337,19 @@ class AyarlarController extends AdminController
             // Clear cache
             Setting::clearCache();
 
-            // Clear QR Code and Navigation caches
-            \Illuminate\Support\Facades\Cache::tags(['qrcode', 'navigation'])->flush();
+            // Clear QR Code and Navigation caches (only if cache driver supports tagging)
+            try {
+                $cacheStore = \Illuminate\Support\Facades\Cache::getStore();
+                if (method_exists($cacheStore, 'tags')) {
+                    \Illuminate\Support\Facades\Cache::tags(['qrcode', 'navigation'])->flush();
+                } else {
+                    // Fallback: Clear all cache if tagging is not supported
+                    \Illuminate\Support\Facades\Cache::flush();
+                }
+            } catch (\Exception $e) {
+                // Cache tagging not supported, use regular flush
+                \Illuminate\Support\Facades\Cache::flush();
+            }
 
             return redirect()->route('admin.ayarlar.index')
                 ->with('success', 'Ayarlar başarıyla güncellendi!');
