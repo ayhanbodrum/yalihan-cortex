@@ -71,11 +71,11 @@ class SecurityMiddleware
         if ($isDevelopment) {
             return implode('; ', [
                 "default-src 'self'",
-                "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://unpkg.com https://code.jquery.com http://localhost:5173 http://localhost:5175 ws://localhost:5173 ws://localhost:5175 https://maps.googleapis.com",
-                "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com http://localhost:5173 http://localhost:5175",
+                "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://unpkg.com https://code.jquery.com http://localhost:5173 http://localhost:5174 http://localhost:5175 http://127.0.0.1:5173 http://127.0.0.1:5174 http://127.0.0.1:5175 ws://localhost:5173 ws://localhost:5174 ws://localhost:5175 ws://127.0.0.1:5173 ws://127.0.0.1:5174 ws://127.0.0.1:5175 https://maps.googleapis.com",
+                "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com http://localhost:5173 http://localhost:5174 http://localhost:5175 http://127.0.0.1:5173 http://127.0.0.1:5174 http://127.0.0.1:5175",
                 "font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com",
                 "img-src 'self' data: https: blob:",
-                "connect-src 'self' https: wss: http://localhost:5173 http://localhost:5175 ws://localhost:5173 ws://localhost:5175 http://localhost:11434 http://localhost:51869" . $extraConnectSrc,
+                "connect-src 'self' https: wss: http://localhost:5173 http://localhost:5174 http://localhost:5175 http://127.0.0.1:5173 http://127.0.0.1:5174 http://127.0.0.1:5175 ws://localhost:5173 ws://localhost:5174 ws://localhost:5175 ws://127.0.0.1:5173 ws://127.0.0.1:5174 ws://127.0.0.1:5175 http://localhost:11434 http://localhost:51869" . $extraConnectSrc,
                 "media-src 'self'",
                 "object-src 'none'",
                 "child-src 'self'",
@@ -85,14 +85,14 @@ class SecurityMiddleware
             ]);
         }
 
-        // Production ortamında sıkı CSP
+        // Production ortamında sıkı CSP (unsafe-inline/eval kaldırıldı, localhost erişimi kapatıldı)
         return implode('; ', [
             "default-src 'self'",
-            "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://unpkg.com https://code.jquery.com https://maps.googleapis.com",
+            "script-src 'self' https://cdn.jsdelivr.net https://unpkg.com https://code.jquery.com https://maps.googleapis.com",
             "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com",
             "font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com",
             "img-src 'self' data: https: blob:",
-            "connect-src 'self' https: wss: http://localhost:11434" . $extraConnectSrc,
+            "connect-src 'self' https: wss:" . $extraConnectSrc,
             "media-src 'self'",
             "object-src 'none'",
             "child-src 'self'",
