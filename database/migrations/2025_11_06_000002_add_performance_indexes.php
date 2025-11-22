@@ -16,34 +16,34 @@ return new class extends Migration
     {
         // İlanlar table indexes
         Schema::table('ilanlar', function (Blueprint $table) {
-            // Status index (for filtering active/inactive listings)
-            if (!$this->indexExists('ilanlar', 'ilanlar_status_index')) {
-                $table->index('status', 'ilanlar_status_index');
+            // Status index (Context7: standardized naming)
+            if (!$this->indexExists('ilanlar', 'idx_ilanlar_status')) {
+                $table->index('status', 'idx_ilanlar_status');
             }
             
-            // Category indexes (for category filtering)
-            if (!$this->indexExists('ilanlar', 'ilanlar_ana_kategori_id_index')) {
-                $table->index('ana_kategori_id', 'ilanlar_ana_kategori_id_index');
+            // Category index (Context7: standardized naming)
+            if (!$this->indexExists('ilanlar', 'idx_ilanlar_ana_kategori')) {
+                $table->index('ana_kategori_id', 'idx_ilanlar_ana_kategori');
             }
             
-            // Location composite index (for location-based search)
-            if (!$this->indexExists('ilanlar', 'ilanlar_location_index')) {
-                $table->index(['il_id', 'ilce_id', 'mahalle_id'], 'ilanlar_location_index');
+            // Location composite index (Context7: standardized naming)
+            if (!$this->indexExists('ilanlar', 'idx_ilanlar_location')) {
+                $table->index(['il_id', 'ilce_id', 'mahalle_id'], 'idx_ilanlar_location');
             }
             
-            // Agent index (for agent dashboard)
-            if (!$this->indexExists('ilanlar', 'ilanlar_danisman_id_index')) {
-                $table->index('danisman_id', 'ilanlar_danisman_id_index');
+            // Agent index (Context7: standardized naming)
+            if (!$this->indexExists('ilanlar', 'idx_ilanlar_danisman')) {
+                $table->index('danisman_id', 'idx_ilanlar_danisman');
             }
             
-            // Price index (for price range filtering)
-            if (!$this->indexExists('ilanlar', 'ilanlar_fiyat_index')) {
-                $table->index('fiyat', 'ilanlar_fiyat_index');
+            // Price index (Context7: standardized naming)
+            if (!$this->indexExists('ilanlar', 'idx_ilanlar_fiyat')) {
+                $table->index('fiyat', 'idx_ilanlar_fiyat');
             }
             
-            // Created date index (for recent listings)
-            if (!$this->indexExists('ilanlar', 'ilanlar_created_at_index')) {
-                $table->index('created_at', 'ilanlar_created_at_index');
+            // Created date index (Context7: standardized naming)
+            if (!$this->indexExists('ilanlar', 'idx_ilanlar_created_at')) {
+                $table->index('created_at', 'idx_ilanlar_created_at');
             }
         });
 
@@ -116,12 +116,12 @@ return new class extends Migration
     {
         // İlanlar indexes
         Schema::table('ilanlar', function (Blueprint $table) {
-            $table->dropIndex('ilanlar_status_index');
-            $table->dropIndex('ilanlar_ana_kategori_id_index');
-            $table->dropIndex('ilanlar_location_index');
-            $table->dropIndex('ilanlar_danisman_id_index');
-            $table->dropIndex('ilanlar_fiyat_index');
-            $table->dropIndex('ilanlar_created_at_index');
+            $table->dropIndex('idx_ilanlar_status');
+            $table->dropIndex('idx_ilanlar_ana_kategori');
+            $table->dropIndex('idx_ilanlar_location');
+            $table->dropIndex('idx_ilanlar_danisman');
+            $table->dropIndex('idx_ilanlar_fiyat');
+            $table->dropIndex('idx_ilanlar_created_at');
         });
 
         // Kisiler indexes

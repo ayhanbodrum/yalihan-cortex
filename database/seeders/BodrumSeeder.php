@@ -8,7 +8,7 @@ use App\Models\IlanKategori;
 use App\Models\Ilce;
 use App\Models\Kisi; // Eski Il modeli yerine Sehir modeli kullanılıyor
 use App\Models\Mahalle;
-use App\Models\Sehir;
+use App\Models\Il;
 use App\Models\Talep;
 use App\Models\Ulke;
 use App\Models\User;
@@ -36,14 +36,10 @@ class BodrumSeeder extends Seeder
             return;
         }
 
-        // Muğla'yı bul veya oluştur
-        $mugla = Sehir::firstOrCreate(
-            ['il_adi' => 'Muğla', 'ulke_id' => $turkiye->id],
-            [
-                'plaka_kodu' => '48',
-                'telefon_kodu' => '252',
-                'status' => true,
-            ]
+        // Muğla'yı bul veya oluştur (yalnızca mevcut kolonlara göre)
+        $mugla = Il::firstOrCreate(
+            ['il_adi' => 'Muğla'],
+            []
         );
         $this->command->info('Mugla sehri bulundu veya olusturuldu.');
 
@@ -141,6 +137,35 @@ class BodrumSeeder extends Seeder
             'yeliztankucuk@gmail.com',
             '+905399553343',
             $editorRoleId
+        );
+
+        // Admin ve User demo hesapları oluştur
+        $adminRole = DB::table('roles')->where('name', 'admin')->first();
+        $userRole = DB::table('roles')->where('name', 'user')->first();
+        $adminRoleId = $adminRole ? $adminRole->id : DB::table('roles')->insertGetId([
+            'name' => 'admin',
+            'guard_name' => 'web',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+        $userRoleId = $userRole ? $userRole->id : DB::table('roles')->insertGetId([
+            'name' => 'user',
+            'guard_name' => 'web',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        $this->createUserWithRole(
+            'Admin Demo',
+            'admin@example.com',
+            '+900000000000',
+            $adminRoleId
+        );
+        $this->createUserWithRole(
+            'User Demo',
+            'user@example.com',
+            '+900000000001',
+            $userRoleId
         );
 
         $danismanlar = collect($danismanlar);

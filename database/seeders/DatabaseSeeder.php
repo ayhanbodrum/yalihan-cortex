@@ -36,11 +36,11 @@ class DatabaseSeeder extends Seeder
         ]);
 
         if (app()->environment(['local', 'development', 'testing'])) {
-            $this->command->info('🌱 Portfolio demo verileri yükleniyor...');
-            $this->call(PortfolioDemoSeeder::class);
+            $this->command->info('🏝️ Muğla Bodrum arsa ve yazlık kiralık verileri yükleniyor...');
+            $this->call(\Database\Seeders\BodrumArsaYazlikSeeder::class);
 
-            $this->command->info('🏖️ Bodrum demo verileri yükleniyor...');
-            $this->call(BodrumDemoSeeder::class);
+            $this->command->info('🪪 Golden Visa portföy verileri yükleniyor...');
+            $this->call(\Database\Seeders\GoldenVisaPortfolioSeeder::class);
         }
 
         $this->command->newLine();

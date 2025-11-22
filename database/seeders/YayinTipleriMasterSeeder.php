@@ -258,7 +258,7 @@ class YayinTipleriMasterSeeder extends Seeder
                         'yayin_tipi' => $yayinTipiAdi,
                     ],
                     [
-                        'status' => 'Aktif',
+                        'status' => true, // Context7: boolean (TINYINT(1))
                         'display_order' => $yayinTipiTanim['display_order'] ?? 99,
                     ]
                 );

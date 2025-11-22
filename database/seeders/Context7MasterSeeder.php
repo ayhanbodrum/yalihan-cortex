@@ -171,6 +171,9 @@ class Context7MasterSeeder extends Seeder
         if (Schema::hasTable('ilan_kategorileri') && Schema::hasTable('ilan_kategori_yayin_tipleri')) {
             try {
                 $this->call(YazlikKiralikAnaKategoriSeeder::class);
+                if (Schema::hasTable('kategori_yayin_tipi_field_dependencies')) {
+                    $this->call(Category39YazlikSeeder::class);
+                }
             } catch (\Exception $e) {
                 $this->command->warn('   ⚠️ YazlikKiralikAnaKategoriSeeder hatası: ' . $e->getMessage());
             }
