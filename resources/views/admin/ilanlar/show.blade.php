@@ -1,486 +1,700 @@
 @extends('admin.layouts.neo')
 
-@section('title', 'İlan Detayları')
+@section('title', 'İlan Detayı')
 
 @section('content')
-    <div class="container-fluid py-8">
-        <div class="max-w-7xl mx-auto">
-            <!-- Header -->
-            <div class="flex items-center justify-between mb-8">
-                <div>
-                    <h1 class="text-3xl font-bold text-gray-900 dark:text-white">{{ $ilan->baslik ?? 'İlan Detayları' }}</h1>
-                    <p class="text-gray-600 dark:text-gray-400 mt-2">İlan ID: #{{ $ilan->id ?? 'N/A' }}</p>
+    <div class="space-y-6">
+        <!-- Quick Actions Bar -->
+        <div class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-lg border border-blue-200 dark:border-blue-800 shadow-sm p-4"
+            x-data="quickActions({{ $ilan->id }})">
+            <div class="flex items-center justify-between flex-wrap gap-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
+                        <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-semibold text-gray-900 dark:text-white">Hızlı İşlemler</h4>
+                        <p class="text-xs text-gray-600 dark:text-gray-400">İlan yönetimi için hızlı erişim</p>
+                    </div>
                 </div>
-                <div class="flex space-x-3">
-                    <a href="{{ route('admin.ilanlar.edit', $ilan->id) }}"
-                        class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-                        <i class="fas fa-edit mr-2"></i>
-                        Düzenle
+                <div class="flex items-center gap-2 flex-wrap">
+                    <a href="{{ route('admin.ilanlar.edit', $ilan->id) }}" title="İlan bilgilerini düzenle"
+                        aria-label="İlanı düzenle"
+                        class="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 hover:scale-105 focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                        </svg>
+                        İlanı Düzenle
                     </a>
-                    <a href="{{ route('ilanlar.show', $ilan->id) }}" target="_blank"
-                        class="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
-                        <i class="fas fa-eye mr-2"></i>
-                        Websitesinde Görüntüle
-                    </a>
-                    {{-- QR Code Button --}}
-                    <div class="relative" x-data="{ showQR: false }">
-                        <button @click="showQR = !showQR"
-                                class="inline-flex items-center px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
-                            <i class="fas fa-qrcode mr-2"></i>
-                            QR Kod
-                        </button>
-                        <div x-show="showQR"
-                             @click.away="showQR = false"
-                             x-transition:enter="transition ease-out duration-200"
-                             x-transition:enter-start="opacity-0 transform scale-95"
-                             x-transition:enter-end="opacity-100 transform scale-100"
-                             x-transition:leave="transition ease-in duration-150"
-                             x-transition:leave-start="opacity-100 transform scale-100"
-                             x-transition:leave-end="opacity-0 transform scale-95"
-                             class="absolute right-0 mt-2 z-50">
-                            <x-qr-code-display :ilan="$ilan" :size="'medium'" />
+                    <button @click="duplicateListing()" :disabled="processing"
+                        title="Bu ilanın bir kopyasını oluştur (Taslak olarak kaydedilir)" aria-label="İlanı kopyala"
+                        class="inline-flex items-center px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 hover:scale-105 focus:ring-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200">
+                        <svg x-show="!processing" class="w-4 h-4 mr-2" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                        </svg>
+                        <svg x-show="processing" class="animate-spin w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24"
+                            aria-hidden="true">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor"
+                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                            </path>
+                        </svg>
+                        <span x-text="processing ? 'Kopyalanıyor...' : 'İlanı Kopyala'"></span>
+                    </button>
+                    <button @click="toggleStatus()" :disabled="processing"
+                        title="İlan durumunu Aktif/Pasif arasında değiştir" aria-label="İlan durumunu değiştir"
+                        class="inline-flex items-center px-4 py-2 bg-yellow-600 text-white text-sm font-medium rounded-lg hover:bg-yellow-700 hover:scale-105 focus:ring-2 focus:ring-yellow-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                        </svg>
+                        <span x-text="processing ? 'Değiştiriliyor...' : 'Durum Değiştir'"></span>
+                    </button>
+                    <button @click="analyzeWithAI()" :disabled="processing"
+                        title="AI ile ilan analizi yap (fiyat, başlık, SEO önerileri)" aria-label="AI ile ilan analizi yap"
+                        class="inline-flex items-center px-4 py-2 bg-purple-600 text-white text-sm font-medium rounded-lg hover:bg-purple-700 hover:scale-105 focus:ring-2 focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                        </svg>
+                        <span x-text="processing ? 'Analiz ediliyor...' : 'AI Analiz'"></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Header with Status Badge -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
+            <div class="flex items-start justify-between flex-wrap gap-4">
+                <div class="flex-1">
+                    <div class="flex items-center gap-3 mb-2">
+                        <h1 class="text-2xl font-bold text-gray-800 dark:text-gray-200">{{ $ilan->baslik }}</h1>
+                        <!-- Status Badge -->
+                        <span
+                            class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium
+            @if ($ilan->status === 'Aktif') bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300
+            @elseif($ilan->status === 'Pasif')
+              bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300
+            @elseif($ilan->status === 'Taslak')
+              bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300
+            @elseif($ilan->status === 'Beklemede')
+              bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300
+            @else
+              bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-300 @endif">
+                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd"
+                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                            {{ $ilan->status }}
+                        </span>
+                    </div>
+                    <div class="text-sm text-gray-600 dark:text-gray-300">Ref: {{ $ilan->referans_no ?? '-' }}</div>
+                </div>
+            </div>
+
+            <!-- İstatistikler -->
+            <div class="mt-6 grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <div class="text-2xl font-bold text-blue-600 dark:text-blue-400">
+                                {{ number_format($ilan->goruntulenme ?? 0) }}</div>
+                            <div class="text-xs text-gray-600 dark:text-gray-400 mt-1">Görüntülenme</div>
                         </div>
+                        <svg class="w-8 h-8 text-blue-400 dark:text-blue-500" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                    </div>
+                </div>
+                <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <div class="text-2xl font-bold text-red-600 dark:text-red-400">
+                                {{ number_format($ilan->favorite_count ?? 0) }}</div>
+                            <div class="text-xs text-gray-600 dark:text-gray-400 mt-1">Favori</div>
+                        </div>
+                        <svg class="w-8 h-8 text-red-400 dark:text-red-500" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                        </svg>
+                    </div>
+                </div>
+                <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <div class="text-2xl font-bold text-green-600 dark:text-green-400">
+                                {{ number_format($ilan->messages_count ?? 0) }}</div>
+                            <div class="text-xs text-gray-600 dark:text-gray-400 mt-1">Mesaj</div>
+                        </div>
+                        <svg class="w-8 h-8 text-green-400 dark:text-green-500" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                        </svg>
+                    </div>
+                </div>
+                <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <div class="text-2xl font-bold text-purple-600 dark:text-purple-400">
+                                {{ ($ilan->sahibinden_id ? 1 : 0) + ($ilan->emlakjet_id ? 1 : 0) + ($ilan->hepsiemlak_id ? 1 : 0) + ($ilan->zingat_id ? 1 : 0) + ($ilan->hurriyetemlak_id ? 1 : 0) }}
+                            </div>
+                            <div class="text-xs text-gray-600 dark:text-gray-400 mt-1">Portal Sync</div>
+                        </div>
+                        <svg class="w-8 h-8 text-purple-400 dark:text-purple-500" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                        </svg>
                     </div>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <!-- Ana İçerik -->
-                <div class="lg:col-span-2 space-y-8">
-                    <!-- Fotoğraflar -->
-                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
-                        <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center">
-                            <i class="fas fa-images text-blue-600 mr-3"></i>
-                            Fotoğraflar
-                        </h2>
-
-                        @if ($ilan->fotoğraflar && count($ilan->fotoğraflar) > 0)
-                            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-                                @foreach ($ilan->fotoğraflar as $index => $foto)
-                                    <div class="relative group cursor-pointer">
-                                        <img src="{{ $foto }}" alt="İlan fotoğrafı {{ $index + 1 }}"
-                                            class="w-full h-48 object-cover rounded-lg">
-                                        <div
-                                            class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all rounded-lg flex items-center justify-center">
-                                            <i
-                                                class="fas fa-search-plus text-white text-2xl opacity-0 group-hover:opacity-100 transition-opacity"></i>
-                                        </div>
-                                    </div>
-                                @endforeach
-                            </div>
-                        @else
-                            <div class="text-center py-12">
-                                <i class="fas fa-image text-4xl text-gray-400 mb-4"></i>
-                                <p class="text-gray-500">Henüz fotoğraf eklenmemiş</p>
-                            </div>
-                        @endif
+            <!-- Basic Info -->
+            <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <div class="text-sm text-gray-500 dark:text-gray-400">Kategori</div>
+                    <div class="text-base text-gray-900 dark:text-gray-100">{{ optional($ilan->kategori)->name ?? '-' }}
                     </div>
-
-                    <!-- Açıklama -->
-                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
-                        <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center">
-                            <i class="fas fa-align-left text-green-600 mr-3"></i>
-                            Açıklama
-                        </h2>
-                        <div class="prose prose-lg max-w-none dark:prose-invert">
-                            {!! nl2br(e($ilan->aciklama ?? 'Açıklama eklenmemiş')) !!}
-                        </div>
-                    </div>
-
-                    <!-- Özellikler -->
-                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
-                        <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center">
-                            <i class="fas fa-list text-purple-600 mr-3"></i>
-                            Özellikler
-                        </h2>
-
-                        <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-                            @if ($ilan->oda_sayisi)
-                                <div class="flex items-center space-x-3">
-                                    <i class="fas fa-bed text-blue-600"></i>
-                                    <span class="text-gray-600 dark:text-gray-400">Oda:</span>
-                                    <span class="font-semibold">{{ $ilan->oda_sayisi }}</span>
-                                </div>
-                            @endif
-
-                            @if ($ilan->banyo_sayisi)
-                                <div class="flex items-center space-x-3">
-                                    <i class="fas fa-bath text-blue-600"></i>
-                                    <span class="text-gray-600 dark:text-gray-400">Banyo:</span>
-                                    <span class="font-semibold">{{ $ilan->banyo_sayisi }}</span>
-                                </div>
-                            @endif
-
-                            @if ($ilan->brut_metrekare)
-                                <div class="flex items-center space-x-3">
-                                    <i class="fas fa-ruler-combined text-blue-600"></i>
-                                    <span class="text-gray-600 dark:text-gray-400">Brüt:</span>
-                                    <span class="font-semibold">{{ $ilan->brut_metrekare }} m²</span>
-                                </div>
-                            @endif
-
-                            @if ($ilan->net_metrekare)
-                                <div class="flex items-center space-x-3">
-                                    <i class="fas fa-square text-blue-600"></i>
-                                    <span class="text-gray-600 dark:text-gray-400">Net:</span>
-                                    <span class="font-semibold">{{ $ilan->net_metrekare }} m²</span>
-                                </div>
-                            @endif
-
-                            @if ($ilan->bina_yasi)
-                                <div class="flex items-center space-x-3">
-                                    <i class="fas fa-calendar text-blue-600"></i>
-                                    <span class="text-gray-600 dark:text-gray-400">Bina Yaşı:</span>
-                                    <span class="font-semibold">{{ $ilan->bina_yasi }} yıl</span>
-                                </div>
-                            @endif
-
-                            @if ($ilan->kat)
-                                <div class="flex items-center space-x-3">
-                                    <i class="fas fa-layer-group text-blue-600"></i>
-                                    <span class="text-gray-600 dark:text-gray-400">Kat:</span>
-                                    <span class="font-semibold">{{ $ilan->kat }}</span>
-                                </div>
-                            @endif
-                        </div>
-                    </div>
-
-                    @if(($ilan->ilan_turu ?? null) === 'kiralik' && $ilan->demirbaslar && $ilan->demirbaslar->count() > 0)
-                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
-                        <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center">
-                            <i class="fas fa-boxes text-orange-600 mr-3"></i>
-                            Demirbaşlar
-                        </h2>
-                        <div class="space-y-6">
-                            @php $grouped = $ilan->demirbaslar->groupBy('kategori_id'); @endphp
-                            @foreach($grouped as $kategoriId => $items)
-                                @php $kategori = \App\Models\DemirbasKategori::find($kategoriId); @endphp
-                                <div>
-                                    <h3 class="text-sm font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-3 flex items-center">
-                                        <i class="fas fa-cube text-orange-600 mr-2"></i>
-                                        {{ $kategori->name ?? 'Genel' }}
-                                    </h3>
-                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                        @foreach($items as $d)
-                                            <div class="flex items-center justify-between p-3 rounded-lg bg-orange-50 dark:bg-orange-900/20">
-                                                <div class="flex items-center gap-3">
-                                                    <span class="text-sm font-semibold text-gray-900 dark:text-white">{{ $d->name }}</span>
-                                                    @if($d->pivot->brand)
-                                                        <span class="text-xs text-gray-500">{{ $d->pivot->brand }}</span>
-                                                    @endif
-                                                </div>
-                                                <div class="text-sm font-semibold text-orange-700 dark:text-orange-400">
-                                                    {{ $d->pivot->quantity ?? 1 }}
-                                                </div>
-                                            </div>
-                                        @endforeach
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
-                    </div>
-                    @endif
-
-                    <!-- İlan Features (Dinamik Özellikler) -->
-                    @if($ilan->ozellikler && $ilan->ozellikler->count() > 0)
-                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
-                        <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center">
-                            <i class="fas fa-star text-lime-600 mr-3"></i>
-                            İlan Özellikleri
-                        </h2>
-
-                        @php
-                            $featureCategories = $ilan->ozellikler->groupBy('feature_category_id');
-                        @endphp
-
-                        @foreach($featureCategories as $categoryId => $features)
-                            @php
-                                $category = \App\Models\FeatureCategory::find($categoryId);
-                            @endphp
-
-                            @if($category)
-                            <div class="mb-6 last:mb-0">
-                                <h3 class="text-sm font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-3 flex items-center">
-                                    <i class="{{ $category->icon ?? 'fas fa-circle' }} text-lime-600 mr-2"></i>
-                                    {{ $category->name }}
-                                </h3>
-                                <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
-                                    @foreach($features as $feature)
-                                        <div class="flex items-center space-x-2 p-2 rounded-lg bg-lime-50 dark:bg-lime-900/20">
-                                            @if($feature->type === 'boolean')
-                                                <i class="fas fa-check-circle text-lime-600"></i>
-                                                <span class="text-sm text-gray-900 dark:text-white">{{ $feature->name }}</span>
-                                            @elseif($feature->type === 'number')
-                                                <span class="text-sm font-semibold text-lime-600">{{ $feature->pivot->value ?? 0 }}</span>
-                                                <span class="text-xs text-gray-500">{{ $feature->unit }}</span>
-                                                <span class="text-sm text-gray-900 dark:text-white">{{ $feature->name }}</span>
-                                            @else
-                                                <i class="fas fa-check text-lime-600"></i>
-                                                <span class="text-sm text-gray-900 dark:text-white">{{ $feature->name }}: {{ $feature->pivot->value ?? '-' }}</span>
-                                            @endif
-                                        </div>
-                                    @endforeach
-                                </div>
-                            </div>
-                            @endif
-                        @endforeach
-                    </div>
-                    @endif
                 </div>
-
-                <!-- Yan Panel -->
-                <div class="space-y-6">
-                    <!-- Fiyat Bilgileri -->
-                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Fiyat Bilgileri</h3>
-                        <div class="space-y-3">
-                            <div class="flex justify-between items-center">
-                                <span class="text-gray-600 dark:text-gray-400">Fiyat:</span>
-                                <span class="text-2xl font-bold text-green-600 dark:text-green-400">
-                                    {{ number_format($ilan->fiyat ?? 0, 0, ',', '.') }} {{ $ilan->para_birimi ?? 'TRY' }}
-                                    @if ($ilan->kiralama_turu)
-                                        @switch($ilan->kiralama_turu)
-                                            @case('gunluk')
-                                                <span class="text-lg font-normal text-gray-600 dark:text-gray-400">/Gün</span>
-                                            @break
-                                            @case('haftalik')
-                                                <span class="text-lg font-normal text-gray-600 dark:text-gray-400">/Hafta</span>
-                                            @break
-                                            @case('aylik')
-                                            @case('uzun_donem')
-                                                <span class="text-lg font-normal text-gray-600 dark:text-gray-400">/Ay</span>
-                                            @break
-                                            @case('sezonluk')
-                                                <span class="text-lg font-normal text-gray-600 dark:text-gray-400">/Sezon</span>
-                                            @break
-                                        @endswitch
-                                    @endif
-                                </span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-gray-600 dark:text-gray-400">Para Birimi:</span>
-                                <span class="font-semibold">{{ $ilan->para_birimi ?? 'TRY' }}</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-gray-600 dark:text-gray-400">İlan Türü:</span>
-                                <span class="font-semibold">{{ ucfirst($ilan->ilan_turu ?? 'Belirtilmemiş') }}</span>
-                            </div>
-                        </div>
+                <div>
+                    <div class="text-sm text-gray-500 dark:text-gray-400">Fiyat</div>
+                    <div class="text-base text-gray-900 dark:text-gray-100">{{ number_format($ilan->fiyat) }}
+                        {{ $ilan->para_birimi }}</div>
+                </div>
+                <div>
+                    <div class="text-sm text-gray-500 dark:text-gray-400">Lokasyon</div>
+                    <div class="text-base text-gray-900 dark:text-gray-100">
+                        {{ optional($ilan->il)->il_adi }}{{ optional($ilan->ilce)->ilce_adi ? ', ' . $ilan->ilce->ilce_adi : '' }}
                     </div>
-
-                    <!-- Lokasyon -->
-                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Lokasyon</h3>
-                        <div class="space-y-3">
-                            <div class="flex justify-between">
-                                <span class="text-gray-600 dark:text-gray-400">İl:</span>
-                                <span class="font-semibold">{{ $ilan->il->il_adi ?? 'Belirtilmemiş' }}</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-gray-600 dark:text-gray-400">İlçe:</span>
-                                <span class="font-semibold">{{ $ilan->ilce->ilce_adi ?? 'Belirtilmemiş' }}</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-gray-600 dark:text-gray-400">Mahalle:</span>
-                                <span class="font-semibold">{{ $ilan->mahalle->mahalle_adi ?? 'Belirtilmemiş' }}</span>
-                            </div>
-                            @if ($ilan->adres)
-                                <div class="pt-3 border-t border-gray-200 dark:border-gray-700">
-                                    <span class="text-gray-600 dark:text-gray-400 text-sm">Adres:</span>
-                                    <p class="text-sm text-gray-900 dark:text-white">{{ $ilan->adres }}</p>
-                                </div>
-                            @endif
-                        </div>
-                    </div>
-
-                    <!-- İlan Sahibi -->
-                    @if ($ilan->ilanSahibi)
-                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
-                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">İlan Sahibi</h3>
-                            <div class="flex items-center space-x-4">
-                                <div
-                                    class="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center">
-                                    <i class="fas fa-user text-blue-600"></i>
-                                </div>
-                                <div>
-                                    <h4 class="font-semibold text-gray-900 dark:text-white">
-                                        {{ $ilan->ilanSahibi->ad }} {{ $ilan->ilanSahibi->soyad }}
-                                    </h4>
-                                    <p class="text-gray-600 dark:text-gray-400 text-sm">{{ $ilan->ilanSahibi->telefon }}
-                                    </p>
-                                    @if ($ilan->ilanSahibi->email)
-                                        <p class="text-gray-600 dark:text-gray-400 text-sm">{{ $ilan->ilanSahibi->email }}
-                                        </p>
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
-                    @endif
-
-                    <!-- Danışman -->
-                    @if ($ilan->danisman)
-                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
-                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Sorumlu Danışman</h3>
-                            <div class="flex items-center space-x-4">
-                                <div
-                                    class="w-12 h-12 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center">
-                                    <i class="fas fa-user-tie text-green-600"></i>
-                                </div>
-                                <div>
-                                    <h4 class="font-semibold text-gray-900 dark:text-white">{{ $ilan->danisman->name }}
-                                    </h4>
-                                    <p class="text-gray-600 dark:text-gray-400 text-sm">{{ $ilan->danisman->email }}</p>
-                                </div>
-                            </div>
-                        </div>
-                    @endif
-
-                    <!-- Fiyat Geçmişi Grafik -->
-                    <div>
-                        <x-price-history-chart :ilan="$ilan" :showStats="true" :showTable="true" :height="'350px'" />
-                    </div>
-
-                    <!-- Yazlık Detayları -->
-                    @if($ilan->yazlikDetail)
-                    <div class="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-xl shadow-lg p-6 border border-blue-200 dark:border-blue-800">
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
-                            <i class="fas fa-umbrella-beach text-blue-600 mr-2"></i>
-                            Yazlık Kiralama Detayları
-                        </h3>
-                        <div class="space-y-3">
-                            @if($ilan->yazlikDetail->min_konaklama)
-                            <div class="flex justify-between">
-                                <span class="text-gray-600 dark:text-gray-400">Minimum Konaklama:</span>
-                                <span class="font-semibold">{{ $ilan->yazlikDetail->min_konaklama }} gün</span>
-                            </div>
-                            @endif
-
-                            @if($ilan->yazlikDetail->max_misafir)
-                            <div class="flex justify-between">
-                                <span class="text-gray-600 dark:text-gray-400">Max. Misafir:</span>
-                                <span class="font-semibold">{{ $ilan->yazlikDetail->max_misafir }} kişi</span>
-                            </div>
-                            @endif
-
-                            @if($ilan->yazlikDetail->havuz)
-                            <div class="flex items-center justify-between p-3 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
-                                <span class="text-gray-600 dark:text-gray-400">
-                                    <i class="fas fa-swimming-pool text-blue-600 mr-2"></i>
-                                    Havuz
-                                </span>
-                                <span class="font-semibold text-green-600">Var</span>
-                            </div>
-                            @endif
-
-                            @if($ilan->yazlikDetail->gunluk_fiyat)
-                            <div class="flex justify-between">
-                                <span class="text-gray-600 dark:text-gray-400">Günlük Fiyat:</span>
-                                <span class="font-semibold text-green-600 dark:text-green-400">{{ number_format($ilan->yazlikDetail->gunluk_fiyat, 0, ',', '.') }} {{ $ilan->para_birimi ?? 'TRY' }}/Gün</span>
-                            </div>
-                            @endif
-
-                            @if($ilan->yazlikDetail->haftalik_fiyat)
-                            <div class="flex justify-between">
-                                <span class="text-gray-600 dark:text-gray-400">Haftalık Fiyat:</span>
-                                <span class="font-semibold text-green-600 dark:text-green-400">{{ number_format($ilan->yazlikDetail->haftalik_fiyat, 0, ',', '.') }} {{ $ilan->para_birimi ?? 'TRY' }}/Hafta</span>
-                            </div>
-                            @endif
-
-                            @if($ilan->yazlikDetail->aylik_fiyat)
-                            <div class="flex justify-between">
-                                <span class="text-gray-600 dark:text-gray-400">Aylık Fiyat:</span>
-                                <span class="font-semibold text-green-600 dark:text-green-400">{{ number_format($ilan->yazlikDetail->aylik_fiyat, 0, ',', '.') }} {{ $ilan->para_birimi ?? 'TRY' }}/Ay</span>
-                            </div>
-                            @endif
-
-                            @if($ilan->yazlikDetail->sezon_baslangic)
-                            <div class="flex justify-between pt-3 border-t border-blue-200 dark:border-blue-800">
-                                <span class="text-gray-600 dark:text-gray-400">Sezon:</span>
-                                <span class="font-semibold text-sm">
-                                    {{ \Carbon\Carbon::parse($ilan->yazlikDetail->sezon_baslangic)->format('d.m.Y') }} -
-                                    {{ \Carbon\Carbon::parse($ilan->yazlikDetail->sezon_bitis)->format('d.m.Y') }}
-                                </span>
-                            </div>
-                            @endif
-                        </div>
-                    </div>
-                    @endif
-
-                    <!-- İlan Status -->
-                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">İlan Status</h3>
-                        <div class="space-y-3">
-                            <div class="flex justify-between">
-                                <span class="text-gray-600 dark:text-gray-400">Status:</span>
-                                <span
-                                    class="px-3 py-1 rounded-full text-sm font-medium
-                                {{ ($ilan->status instanceof \App\Enums\IlanStatus && $ilan->status->value === 'yayinda') || $ilan->status === 'yayinda' || $ilan->status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }}">
-                                    @if($ilan->status instanceof \App\Enums\IlanStatus)
-                                        {{ $ilan->status->label() }}
-                                    @else
-                                        {{ ucfirst($ilan->status ?? 'inactive') }}
-                                    @endif
-                                </span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-gray-600 dark:text-gray-400">Oluşturulma:</span>
-                                <span class="font-semibold">{{ $ilan->created_at->format('d.m.Y H:i') }}</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-gray-600 dark:text-gray-400">Güncellenme:</span>
-                                <span class="font-semibold">{{ $ilan->updated_at->format('d.m.Y H:i') }}</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Hızlı İşlemler -->
-                    <div
-                        class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl p-6">
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Hızlı İşlemler</h3>
-                        <div class="space-y-3">
-                            <a href="{{ route('admin.ilanlar.edit', $ilan->id) }}"
-                                class="w-full inline-flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-                                <i class="fas fa-edit mr-2"></i>
-                                Düzenle
-                            </a>
-                            <a href="{{ route('ilanlar.show', $ilan->id) }}" target="_blank"
-                                class="w-full inline-flex items-center justify-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
-                                <i class="fas fa-eye mr-2"></i>
-                                Websitesinde Görüntüle
-                            </a>
-                            <button onclick="shareProperty()"
-                                class="w-full inline-flex items-center justify-center px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
-                                <i class="fas fa-share-alt mr-2"></i>
-                                Paylaş
-                            </button>
-                        </div>
+                </div>
+                <div>
+                    <div class="text-sm text-gray-500 dark:text-gray-400">Yayın Tipi</div>
+                    <div class="text-base text-gray-900 dark:text-gray-100">{{ optional($ilan->yayinTipi)->name ?? '-' }}
                     </div>
                 </div>
             </div>
         </div>
 
-        {{-- Listing Navigation --}}
-        <div class="mt-8">
-            <x-listing-navigation :ilan="$ilan" :mode="'default'" :showSimilar="true" :similarLimit="4" />
+        <div x-data="{ tab: 'genel' }"
+            class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
+            <div class="px-6 pt-6">
+                <div class="flex flex-wrap gap-2">
+                    <button @click="tab='genel'"
+                        :class="tab === 'genel' ? 'bg-blue-600 text-white' :
+                            'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200'"
+                        class="px-4 py-2 rounded-lg">Genel</button>
+                    <button @click="tab='kisiler'"
+                        :class="tab === 'kisiler' ? 'bg-blue-600 text-white' :
+                            'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200'"
+                        class="px-4 py-2 rounded-lg">Kişiler</button>
+                    <button @click="tab='site'"
+                        :class="tab === 'site' ? 'bg-blue-600 text-white' :
+                            'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200'"
+                        class="px-4 py-2 rounded-lg">Site/Apartman</button>
+                    <button @click="tab='fotograflar'"
+                        :class="tab === 'fotograflar' ? 'bg-blue-600 text-white' :
+                            'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200'"
+                        class="px-4 py-2 rounded-lg">Fotoğraflar</button>
+                    <button @click="tab='belgeler'"
+                        :class="tab === 'belgeler' ? 'bg-blue-600 text-white' :
+                            'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200'"
+                        class="px-4 py-2 rounded-lg">Belgeler</button>
+                    <button @click="tab='arka'"
+                        :class="tab === 'arka' ? 'bg-blue-600 text-white' :
+                            'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200'"
+                        class="px-4 py-2 rounded-lg">Arka Plan</button>
+                    <button @click="tab='gecmis'"
+                        :class="tab === 'gecmis' ? 'bg-blue-600 text-white' :
+                            'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200'"
+                        class="px-4 py-2 rounded-lg">Geçmiş</button>
+                </div>
+            </div>
+            <div class="p-6 border-t border-gray-200 dark:border-gray-700">
+                <div x-show="tab==='genel'">
+                    <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Portal ID’ler</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                        <div><span class="text-gray-500 dark:text-gray-400">Sahibinden</span>
+                            <div class="font-mono">{{ $ilan->sahibinden_id ?? '-' }}</div>
+                        </div>
+                        <div><span class="text-gray-500 dark:text-gray-400">Emlakjet</span>
+                            <div class="font-mono">{{ $ilan->emlakjet_id ?? '-' }}</div>
+                        </div>
+                        <div><span class="text-gray-500 dark:text-gray-400">Hepsiemlak</span>
+                            <div class="font-mono">{{ $ilan->hepsiemlak_id ?? '-' }}</div>
+                        </div>
+                        <div><span class="text-gray-500 dark:text-gray-400">Zingat</span>
+                            <div class="font-mono">{{ $ilan->zingat_id ?? '-' }}</div>
+                        </div>
+                        <div><span class="text-gray-500 dark:text-gray-400">Hürriyet Emlak</span>
+                            <div class="font-mono">{{ $ilan->hurriyetemlak_id ?? '-' }}</div>
+                        </div>
+                    </div>
+                </div>
+                <div x-show="tab==='kisiler'">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div>
+                            <div class="text-sm text-gray-500 dark:text-gray-400">İlan Sahibi</div>
+                            <div class="text-base text-gray-900 dark:text-gray-100">{{ optional($ilan->ilanSahibi)->ad }}
+                                {{ optional($ilan->ilanSahibi)->soyad }}</div>
+                            <div class="text-sm text-gray-500 dark:text-gray-400">
+                                {{ optional($ilan->ilanSahibi)->telefon }}{{ optional($ilan->ilanSahibi)->email ? ' • ' . $ilan->ilanSahibi->email : '' }}
+                            </div>
+                        </div>
+                        <div>
+                            <div class="text-sm text-gray-500 dark:text-gray-400">Danışman</div>
+                            <div class="text-base text-gray-900 dark:text-gray-100">
+                                {{ optional($ilan->userDanisman)->name }}{{ optional($ilan->userDanisman)->email ? ' • ' . $ilan->userDanisman->email : '' }}
+                            </div>
+                            <div class="text-sm text-gray-500 dark:text-gray-400">
+                                {{ optional($ilan->userDanisman)->phone_number }}</div>
+                        </div>
+                        <div>
+                            <div class="text-sm text-gray-500 dark:text-gray-400">İlgili Kişi</div>
+                            <div class="text-base text-gray-900 dark:text-gray-100">{{ optional($ilan->ilgiliKisi)->ad }}
+                                {{ optional($ilan->ilgiliKisi)->soyad }}</div>
+                            <div class="text-sm text-gray-500 dark:text-gray-400">
+                                {{ optional($ilan->ilgiliKisi)->telefon }}{{ optional($ilan->ilgiliKisi)->email ? ' • ' . $ilan->ilgiliKisi->email : '' }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div x-show="tab==='site'">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div>
+                            <div class="text-sm text-gray-500 dark:text-gray-400">Site/Apartman</div>
+                            <div class="text-base text-gray-900 dark:text-gray-100">
+                                {{ optional($ilan->site)->name ?? '-' }}</div>
+                        </div>
+                        <div class="md:col-span-2">
+                            <div class="text-sm text-gray-500 dark:text-gray-400">Adres</div>
+                            <div class="text-base text-gray-900 dark:text-gray-100">
+                                {{ optional($ilan->site)->full_address ?? '-' }}</div>
+                        </div>
+                    </div>
+                </div>
+                <div x-show="tab==='fotograflar'">
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        @foreach ($ilan->fotograflar ?? [] as $photo)
+                            <div class="rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700">
+                                <img src="{{ Storage::url($photo->dosya_yolu) }}" alt="Fotoğraf"
+                                    class="w-full h-32 object-cover">
+                            </div>
+                        @endforeach
+                        @if (($ilan->fotograflar ?? collect())->count() === 0)
+                            <div class="text-sm text-gray-500 dark:text-gray-400">Fotoğraf bulunamadı</div>
+                        @endif
+                    </div>
+                </div>
+                <div x-show="tab==='belgeler'">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div>
+                            <div class="text-sm text-gray-500 dark:text-gray-400">Dosya Adı</div>
+                            <div class="text-base text-gray-900 dark:text-gray-100">{{ $ilan->dosya_adi ?? '-' }}</div>
+                        </div>
+                        <div>
+                            <div class="text-sm text-gray-500 dark:text-gray-400">YouTube</div>
+                            @if ($ilan->youtube_video_url)
+                                <a href="{{ $ilan->youtube_video_url }}" target="_blank" rel="noopener"
+                                    class="text-blue-600 underline">Videoyu aç</a>
+                            @else
+                                <div class="text-sm text-gray-500 dark:text-gray-400">-</div>
+                            @endif
+                        </div>
+                        <div>
+                            <div class="text-sm text-gray-500 dark:text-gray-400">Sanal Tur</div>
+                            @if ($ilan->sanal_tur_url)
+                                <a href="{{ $ilan->sanal_tur_url }}" target="_blank" rel="noopener"
+                                    class="text-blue-600 underline">Turu aç</a>
+                            @else
+                                <div class="text-sm text-gray-500 dark:text-gray-400">-</div>
+                            @endif
+                        </div>
+                    </div>
+                    <div class="mt-6">
+                        <h3 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Dokümanlar</h3>
+                        <div class="mb-2">
+                            <a href="/api/admin/ilanlar/{{ $ilan->id }}/documents.csv"
+                                class="px-3 py-1 rounded bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-sm">CSV
+                                İndir</a>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                                <thead class="bg-gray-50 dark:bg-gray-700">
+                                    <tr>
+                                        <th
+                                            class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300">
+                                            Başlık</th>
+                                        <th
+                                            class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300">
+                                            Tür</th>
+                                        <th
+                                            class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300">
+                                            Bağlantı</th>
+                                        <th
+                                            class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300">
+                                            Tarih</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                                    @foreach ($ilan->documents ?? [] as $doc)
+                                        <tr>
+                                            <td class="px-4 py-2 text-sm text-gray-900 dark:text-gray-100">
+                                                {{ $doc->title }}</td>
+                                            <td class="px-4 py-2 text-sm text-gray-700 dark:text-gray-200">
+                                                {{ $doc->type ?? '-' }}</td>
+                                            <td class="px-4 py-2 text-sm">
+                                                @if ($doc->url)
+                                                    <a href="{{ $doc->url }}" target="_blank" rel="noopener"
+                                                        class="text-blue-600 underline">Aç</a>
+                                                @elseif($doc->path)
+                                                    <a href="{{ Storage::url($doc->path) }}" target="_blank"
+                                                        rel="noopener" class="text-blue-600 underline">İndir</a>
+                                                @else
+                                                    <span class="text-gray-500 dark:text-gray-400">-</span>
+                                                @endif
+                                                <button type="button" onclick="deleteDoc({{ $doc->id }})"
+                                                    class="ml-3 px-2 py-1 rounded bg-red-600 text-white text-xs">Sil</button>
+                                            </td>
+                                            <td class="px-4 py-2 text-sm text-gray-700 dark:text-gray-200">
+                                                {{ $doc->created_at ? $doc->created_at->format('d.m.Y H:i') : '-' }}</td>
+                                        </tr>
+                                    @endforeach
+                                    @if (($ilan->documents ?? collect())->count() === 0)
+                                        <tr>
+                                            <td colspan="4" class="px-4 py-6 text-sm text-gray-500 dark:text-gray-400">
+                                                Doküman bulunamadı</td>
+                                        </tr>
+                                    @endif
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="mt-6">
+                        <h3 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Yeni Doküman Ekle</h3>
+                        <form id="doc-upload" enctype="multipart/form-data"
+                            class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                            <input type="hidden" id="doc-ilan-id" value="{{ $ilan->id }}" />
+                            <div>
+                                <label class="block text-xs text-gray-600 dark:text-gray-400">Başlık</label>
+                                <input id="doc-title" type="text"
+                                    class="w-full rounded border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                                    required />
+                            </div>
+                            <div>
+                                <label class="block text-xs text-gray-600 dark:text-gray-400">Tür</label>
+                                <input id="doc-type" type="text"
+                                    class="w-full rounded border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white" />
+                            </div>
+                            <div>
+                                <label class="block text-xs text-gray-600 dark:text-gray-400">URL</label>
+                                <input id="doc-url" type="url"
+                                    class="w-full rounded border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white" />
+                            </div>
+                            <div>
+                                <label class="block text-xs text-gray-600 dark:text-gray-400">Dosya</label>
+                                <input id="doc-file" type="file" class="w-full" />
+                            </div>
+                            <div class="md:col-span-4">
+                                <button type="submit" class="px-4 py-2 rounded bg-blue-600 text-white">Kaydet</button>
+                                <span id="doc-status" class="ml-2 text-sm text-gray-600"></span>
+                            </div>
+                        </form>
+                        <script>
+                            (function() {
+                                var form = document.getElementById('doc-upload');
+                                if (!form) return;
+                                form.addEventListener('submit', function(e) {
+                                    e.preventDefault();
+                                    var ilanId = document.getElementById('doc-ilan-id').value;
+                                    var fd = new FormData();
+                                    fd.append('title', document.getElementById('doc-title').value || '');
+                                    fd.append('type', document.getElementById('doc-type').value || '');
+                                    var url = document.getElementById('doc-url').value || '';
+                                    if (url) fd.append('url', url);
+                                    var file = document.getElementById('doc-file').files[0];
+                                    if (file) fd.append('file', file);
+                                    var status = document.getElementById('doc-status');
+                                    status.textContent = 'Yükleniyor...';
+                                    fetch('/api/admin/ilanlar/' + encodeURIComponent(ilanId) + '/documents', {
+                                        method: 'POST',
+                                        body: fd
+                                    }).then(function(r) {
+                                        if (!r.ok) throw new Error('' + r.status);
+                                        return r.json();
+                                    }).then(function() {
+                                        status.textContent = 'Kaydedildi';
+                                        location.reload();
+                                    }).catch(function(err) {
+                                        status.textContent = 'Hata: ' + (err && err.message ? err.message : 'Yüklenemedi');
+                                    });
+                                });
+                            })();
+
+                            function deleteDoc(id) {
+                                if (!confirm('Dokümanı silmek istediğinize emin misiniz?')) return;
+                                fetch('/api/admin/documents/' + encodeURIComponent(id), {
+                                        method: 'DELETE'
+                                    })
+                                    .then(function(r) {
+                                        if (!r.ok) throw new Error('' + r.status);
+                                        return r.json();
+                                    })
+                                    .then(function() {
+                                        location.reload();
+                                    })
+                                    .catch(function(err) {
+                                        alert('Silme hatası: ' + (err && err.message ? err.message : 'İstek başarısız'));
+                                    });
+                            }
+                        </script>
+                    </div>
+                </div>
+                <div x-show="tab==='arka'">
+                    @can('view-private-listing-data', $ilan)
+                        @php($priv = $ilan->owner_private_data)
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <div class="text-sm text-gray-500 dark:text-gray-400">İstenen Fiyat Min</div>
+                                <div class="text-base text-gray-900 dark:text-gray-100">
+                                    {{ isset($priv['desired_price_min']) ? number_format($priv['desired_price_min']) : '-' }}
+                                </div>
+                            </div>
+                            <div>
+                                <div class="text-sm text-gray-500 dark:text-gray-400">İstenen Fiyat Max</div>
+                                <div class="text-base text-gray-900 dark:text-gray-100">
+                                    {{ isset($priv['desired_price_max']) ? number_format($priv['desired_price_max']) : '-' }}
+                                </div>
+                            </div>
+                            <div>
+                                <div class="text-sm text-gray-500 dark:text-gray-400">Özel Notlar</div>
+                                <div class="text-base text-gray-900 dark:text-gray-100">{{ $priv['notes'] ?? '-' }}</div>
+                            </div>
+                        </div>
+                    @else
+                        <div class="text-sm text-gray-500 dark:text-gray-400">Arka plan bilgileri için yetki gerekli</div>
+                    @endcan
+                </div>
+                <div x-show="tab==='gecmis'">
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                            <thead class="bg-gray-50 dark:bg-gray-700">
+                                <tr>
+                                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300">
+                                        Tarih</th>
+                                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300">
+                                        Fiyat</th>
+                                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300">
+                                        Not</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                                @foreach ($ilan->fiyatGecmisi ?? [] as $fh)
+                                    <tr>
+                                        <td class="px-4 py-2 text-sm text-gray-700 dark:text-gray-200">
+                                            {{ $fh->created_at ? $fh->created_at->format('d.m.Y H:i') : '-' }}</td>
+                                        <td class="px-4 py-2 text-sm text-gray-700 dark:text-gray-200">
+                                            {{ number_format($fh->fiyat ?? 0) }} {{ $ilan->para_birimi }}</td>
+                                        <td class="px-4 py-2 text-sm text-gray-500 dark:text-gray-400">
+                                            {{ $fh->notlar ?? '-' }}</td>
+                                    </tr>
+                                @endforeach
+                                @if (($ilan->fiyatGecmisi ?? collect())->count() === 0)
+                                    <tr>
+                                        <td colspan="3" class="px-4 py-6 text-sm text-gray-500 dark:text-gray-400">
+                                            Kayıt yok</td>
+                                    </tr>
+                                @endif
+                            </tbody>
+                        </table>
+                    </div>
+                    @php($points = ($ilan->fiyatGecmisi ?? collect())->reverse()->take(20))
+                    @php($max = max($points->pluck('fiyat')->toArray() ?: [0]))
+                    @php($min = min($points->pluck('fiyat')->toArray() ?: [0]))
+                    @php($range = max(1, $max - $min))
+                    <div class="mt-4">
+                        <svg width="400" height="80" viewBox="0 0 400 80" preserveAspectRatio="none">
+                            @php($idx = 0)
+                            @php($step = max(1, intval(400 / max(1, $points->count() - 1))))
+                            @php($path = '')
+                            @foreach ($points as $fh)
+                                @php($x = $idx * $step)
+                                @php($y = 70 - intval(((($fh->fiyat ?? 0) - $min) / $range) * 60))
+                                @php($path .= ($idx === 0 ? 'M' : ' L') . $x . ' ' . $y)
+                                @php($idx++)
+                            @endforeach
+                            <path d="{{ $path }}" fill="none" stroke="#2563eb" stroke-width="2" />
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="flex items-center justify-between">
+            <div>
+                @if ($previousIlan)
+                    <a href="{{ route('admin.ilanlar.show', $previousIlan->id) }}"
+                        class="inline-flex items-center px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-lg text-gray-800 dark:text-gray-200">Önceki</a>
+                @endif
+            </div>
+            <div>
+                @if ($nextIlan)
+                    <a href="{{ route('admin.ilanlar.show', $nextIlan->id) }}"
+                        class="inline-flex items-center px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-lg text-gray-800 dark:text-gray-200">Sonraki</a>
+                @endif
+            </div>
         </div>
     </div>
 
-    <script>
-        function shareProperty() {
-            const url = window.location.origin + '/ilanlar/{{ $ilan->id }}';
-            const title = '{{ $ilan->baslik }}';
+    @push('scripts')
+        <script>
+            function quickActions(ilanId) {
+                return {
+                    processing: false,
+                    ilanId: ilanId,
 
-            if (navigator.share) {
-                navigator.share({
-                    title: title,
-                    text: 'Bu gayrimenkul ilginizi çekebilir',
-                    url: url
-                });
-            } else {
-                navigator.clipboard.writeText(url).then(() => {
-                    alert('İlan linki panoya kopyalandı!');
-                });
+                    async duplicateListing() {
+                        if (!confirm('Bu ilanı kopyalamak istediğinize emin misiniz?')) {
+                            return;
+                        }
+
+                        this.processing = true;
+                        try {
+                            const response = await fetch(`/admin/ilanlar/${this.ilanId}/duplicate`, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content,
+                                    'Accept': 'application/json'
+                                }
+                            });
+
+                            const data = await response.json();
+                            if (data.success) {
+                                if (window.MCP && window.MCP.toast && typeof window.MCP.toast.success === 'function') {
+                                    window.MCP.toast.success('İlan kopyalandı');
+                                } else if (window.toast && typeof window.toast.success === 'function') {
+                                    window.toast.success('İlan kopyalandı');
+                                }
+                                if (data.redirect_url) {
+                                    window.location.href = data.redirect_url;
+                                } else {
+                                    location.reload();
+                                }
+                            } else {
+                                throw new Error(data.message || 'Kopyalama başarısız');
+                            }
+                        } catch (error) {
+                            console.error('Duplicate error:', error);
+                            if (window.MCP && window.MCP.toast && typeof window.MCP.toast.error === 'function') {
+                                window.MCP.toast.error('Kopyalama başarısız: ' + error.message);
+                            } else if (window.toast && typeof window.toast.error === 'function') {
+                                window.toast.error('Kopyalama başarısız: ' + error.message);
+                            } else {
+                                alert('Kopyalama başarısız: ' + error.message);
+                            }
+                        } finally {
+                            this.processing = false;
+                        }
+                    },
+
+                    async toggleStatus() {
+                        this.processing = true;
+                        try {
+                            const response = await fetch(`/admin/ilanlar/${this.ilanId}/toggle-status`, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content,
+                                    'Accept': 'application/json'
+                                }
+                            });
+
+                            const data = await response.json();
+                            if (data.success) {
+                                if (window.toast) {
+                                    window.toast.success('Durum güncellendi: ' + data.new_status);
+                                }
+                                location.reload();
+                            } else {
+                                throw new Error(data.message || 'Durum güncelleme başarısız');
+                            }
+                        } catch (error) {
+                            console.error('Toggle status error:', error);
+                            if (window.toast) {
+                                window.toast.error('Durum güncelleme başarısız: ' + error.message);
+                            } else {
+                                alert('Durum güncelleme başarısız: ' + error.message);
+                            }
+                        } finally {
+                            this.processing = false;
+                        }
+                    },
+
+                    async analyzeWithAI() {
+                        this.processing = true;
+                        try {
+                            const response = await fetch(`/admin/ilanlar/ai/bulk-analyze`, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content,
+                                    'Accept': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    ilan_ids: [this.ilanId],
+                                    type: 'comprehensive'
+                                })
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content,
+                                    'Accept': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    ilan_ids: [this.ilanId],
+                                    type: 'comprehensive'
+                                })
+                            });
+
+                            const data = await response.json();
+                            if (data.success) {
+                                if (window.toast) {
+                                    window.toast.success('AI analiz tamamlandı');
+                                }
+                                console.log('AI Analysis Results:', data.results);
+                            } else {
+                                throw new Error(data.message || 'AI analiz başarısız');
+                            }
+                        } catch (error) {
+                            console.error('AI analysis error:', error);
+                            if (window.toast) {
+                                window.toast.error('AI analiz başarısız: ' + error.message);
+                            } else {
+                                alert('AI analiz başarısız: ' + error.message);
+                            }
+                        } finally {
+                            this.processing = false;
+                        }
+                    }
+                };
             }
-        }
-    </script>
+        </script>
+    @endpush
 @endsection

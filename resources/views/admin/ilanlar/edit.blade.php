@@ -26,27 +26,164 @@
             @csrf
             @method('PUT')
 
-            <div class="space-y-6">
-                <!-- Section 1: Temel Bilgiler + AI Yardımcısı -->
+            <div class="space-y-4 pb-24">
+                {{-- Sticky Navigation (AI-Optimized Order) --}}
                 <div
-                    class="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow duration-200">
-                    @include('admin.ilanlar.components.basic-info', ['ilan' => $ilan])
+                    class="sticky top-0 z-30 bg-white/80 dark:bg-gray-900/80 backdrop-blur border-b border-gray-200 dark:border-gray-800 mb-4">
+                    <div class="max-w-screen-xl mx-auto px-4 py-3">
+                        <div class="flex items-center gap-2 mb-2">
+                            <div class="w-full bg-gray-200 dark:bg-gray-700 h-2 rounded">
+                                <div id="edit-progress-bar" class="h-2 bg-green-500 rounded transition-all duration-500"
+                                    style="width: 0%"></div>
+                            </div>
+                            <span id="edit-progress-text"
+                                class="text-sm text-gray-700 dark:text-gray-300 whitespace-nowrap">0%</span>
+                        </div>
+                        <div class="flex flex-wrap gap-2" id="sticky-nav-links">
+                            <a href="#section-category" data-section="section-category"
+                                class="section-nav-link px-3 py-1.5 rounded-lg border border-gray-300 dark:border-gray-700 text-sm hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:border-blue-400 dark:hover:border-blue-600 transition-all duration-200">1.
+                                Kategori</a>
+                            <a href="#section-location" data-section="section-location"
+                                class="section-nav-link px-3 py-1.5 rounded-lg border border-gray-300 dark:border-gray-700 text-sm hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:border-blue-400 dark:hover:border-blue-600 transition-all duration-200">2.
+                                Lokasyon</a>
+                            <a href="#section-price" data-section="section-price"
+                                class="section-nav-link px-3 py-1.5 rounded-lg border border-gray-300 dark:border-gray-700 text-sm hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:border-blue-400 dark:hover:border-blue-600 transition-all duration-200">3.
+                                Fiyat</a>
+                            <a href="#section-basic-info" data-section="section-basic-info"
+                                class="section-nav-link px-3 py-1.5 rounded-lg border border-gray-300 dark:border-gray-700 text-sm hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:border-blue-400 dark:hover:border-blue-600 transition-all duration-200">4.
+                                Temel Bilgiler + AI</a>
+                            <a href="#section-photos" data-section="section-photos"
+                                class="section-nav-link px-3 py-1.5 rounded-lg border border-gray-300 dark:border-gray-700 text-sm hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:border-blue-400 dark:hover:border-blue-600 transition-all duration-200">5.
+                                Fotoğraflar</a>
+                            <a href="#section-fields" data-section="section-fields"
+                                class="section-nav-link px-3 py-1.5 rounded-lg border border-gray-300 dark:border-gray-700 text-sm hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:border-blue-400 dark:hover:border-blue-600 transition-all duration-200">6.
+                                İlan Özellikleri</a>
+                            <a href="#section-person" data-section="section-person"
+                                class="section-nav-link px-3 py-1.5 rounded-lg border border-gray-300 dark:border-gray-700 text-sm hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:border-blue-400 dark:hover:border-blue-600 transition-all duration-200">7.
+                                Kişi</a>
+                            <a href="#section-site" data-section="section-site"
+                                class="section-nav-link px-3 py-1.5 rounded-lg border border-gray-300 dark:border-gray-700 text-sm hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:border-blue-400 dark:hover:border-blue-600 transition-all duration-200">8.
+                                Site/Apartman</a>
+                            <a href="#section-key" data-section="section-key"
+                                class="section-nav-link px-3 py-1.5 rounded-lg border border-gray-300 dark:border-gray-700 text-sm hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:border-blue-400 dark:hover:border-blue-600 transition-all duration-200">9.
+                                Anahtar</a>
+                            <a href="#section-status" data-section="section-status"
+                                class="section-nav-link px-3 py-1.5 rounded-lg border border-gray-300 dark:border-gray-700 text-sm hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:border-blue-400 dark:hover:border-blue-600 transition-all duration-200">10.
+                                Yayın Durumu</a>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- Section 2: Kategori Sistemi -->
-                <div
+                {{-- BÖLÜM 1: KATEGORİ SİSTEMİ (AI için kritik - İLK!) --}}
+                <div id="section-category"
                     class="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow duration-200">
                     @include('admin.ilanlar.components.category-system', ['ilan' => $ilan])
                 </div>
 
-                <!-- Section 3: Lokasyon ve Harita -->
-                <div
+                {{-- BÖLÜM 2: LOKASYON VE HARİTA (AI için önemli - İKİNCİ!) --}}
+                <div id="section-location"
                     class="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow duration-200">
                     @include('admin.ilanlar.components.location-map', ['ilan' => $ilan])
                 </div>
 
-                <!-- Section 4: İlan Özellikleri (Field Dependencies) -->
-                <div
+                {{-- BÖLÜM 3: FİYAT YÖNETİMİ (AI için önemli - ÜÇÜNCÜ!) --}}
+                <div id="section-price"
+                    class="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow duration-200">
+                    @include('admin.ilanlar.components.price-management', ['ilan' => $ilan])
+                </div>
+
+                {{-- BÖLÜM 4: TEMEL BİLGİLER + AI YARDIMCISI (Artık yeterli context var!) --}}
+                <div id="section-basic-info"
+                    class="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow duration-200">
+                    @include('admin.ilanlar.components.basic-info', ['ilan' => $ilan])
+                    <div class="border-t border-gray-200 dark:border-gray-700"></div>
+                    <div id="ai-assistant-panel" class="p-4">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div
+                                class="flex items-center justify-center w-8 h-8 rounded-lg bg-gradient-to-br from-purple-600 to-indigo-600 text-white shadow">
+                                🤖
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Dijital Danışman</h3>
+                                <p class="text-xs text-gray-600 dark:text-gray-400">Kategori, lokasyon ve fiyat
+                                    bilgilerinize göre başlık, açıklama ve alan önerileri üretir</p>
+                            </div>
+                            <div class="ml-auto">
+                                <button type="button" id="ai-undo-btn"
+                                    class="px-2 py-1 text-xs rounded bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-700 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200">Geri
+                                    Al</button>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="text-xs text-gray-600 dark:text-gray-400">
+                                <span id="ai-context-status" class="font-semibold">Bağlam Durumu: %0</span>
+                                <span id="ai-missing-hints" class="ml-2 text-red-600 dark:text-red-400"></span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <div class="w-24 h-2 bg-gray-200 dark:bg-gray-800 rounded overflow-hidden">
+                                    <div id="ai-readiness-bar-fill"
+                                        class="h-2 bg-green-500 dark:bg-green-400 transition-all duration-300"
+                                        style="width:0%"></div>
+                                </div>
+                                <div id="ai-readiness-badge"
+                                    class="text-xs px-2 py-1 rounded bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300">
+                                    Hazır değil</div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <button type="button" id="ai-generate-title"
+                                class="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 8v8m-4-4h8" />
+                                </svg>
+                                Başlık Öner
+                            </button>
+                            <button type="button" id="ai-generate-description"
+                                class="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg hover:from-green-700 hover:to-emerald-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M7 8h10M7 12h8M7 16h6" />
+                                </svg>
+                                Açıklama Öner
+                            </button>
+                            <button type="button" id="ai-price-suggestion"
+                                class="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-yellow-500 to-orange-600 text-white rounded-lg hover:from-yellow-600 hover:to-orange-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                                </svg>
+                                Fiyat Öner
+                            </button>
+                            <button type="button" id="ai-field-suggestion"
+                                class="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-cyan-600 to-blue-600 text-white rounded-lg hover:from-cyan-700 hover:to-blue-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M7 8h10M7 12h10M7 16h8" />
+                                </svg>
+                                Alan Önerileri
+                            </button>
+                        </div>
+
+                        <div id="ai-suggestions" class="mt-4 space-y-2"></div>
+                        <div class="flex justify-end mt-2">
+                            <button type="button" id="ai-apply-all"
+                                class="px-3 py-1.5 text-xs rounded bg-blue-100 text-blue-700 hover:bg-blue-200 dark:bg-blue-900/30 dark:text-blue-300 transition-colors duration-200">Tümünü
+                                Uygula</button>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- BÖLÜM 5: FOTOĞRAFLAR (Görsel içerik, erken olmalı) --}}
+                <div id="section-photos"
+                    class="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow duration-200">
+                    @include('admin.ilanlar.components.photo-upload-manager', ['ilan' => $ilan])
+                </div>
+
+                {{-- BÖLÜM 6: İLAN ÖZELLİKLERİ (Kategoriye özel dinamik alanlar) --}}
+                <div id="section-fields"
                     class="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow duration-200">
                     {{-- Smart Field Organizer (Templates & AI) --}}
                     @include('admin.ilanlar.components.smart-field-organizer', ['ilan' => $ilan])
@@ -55,37 +192,60 @@
                     @include('admin.ilanlar.components.field-dependencies-dynamic', ['ilan' => $ilan])
                 </div>
 
-                <!-- Section 4.5: Yazlık Amenities (Features/EAV - Sadece Yazlık kategorisi için) -->
-                <div class="kategori-specific-section" data-show-for-categories="yazlik" style="display: none;">
-                    @include('admin.ilanlar.partials.yazlik-features', ['ilan' => $ilan])
-                </div>
+                <!-- Section 5.1: Mahrem Bilgiler (Yalnızca yetkili) -->
+                @can('view-private-listing-data', $ilan)
+                    <div
+                        class="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow duration-200">
+                        @include('admin.ilanlar.components.owner-private', ['ilan' => $ilan])
+                    </div>
+                @endcan
 
-                <!-- Section 4.6: Bedroom Layout (Yazlık için kritik!) -->
-                <div class="kategori-specific-section" data-show-for-categories="yazlik" style="display: none;">
-                    @include('admin.ilanlar.components.bedroom-layout-manager', ['ilan' => $ilan])
-                </div>
-
-                <!-- Section 4.7: Photo Upload (Tüm kategoriler için) -->
                 <div
                     class="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow duration-200">
-                    @include('admin.ilanlar.components.photo-upload-manager', ['ilan' => $ilan])
+                    <div class="p-6">
+                        <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">Portal ID Güncelle</h3>
+                        <form method="POST" action="{{ route('admin.ilanlar.portal-ids', $ilan) }}"
+                            class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                            @csrf
+                            <div>
+                                <label class="block text-sm">Sahibinden</label>
+                                <input type="text" name="sahibinden_id" value="{{ $ilan->sahibinden_id }}"
+                                    class="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white" />
+                            </div>
+                            <div>
+                                <label class="block text-sm">Emlakjet</label>
+                                <input type="text" name="emlakjet_id" value="{{ $ilan->emlakjet_id }}"
+                                    class="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white" />
+                            </div>
+                            <div>
+                                <label class="block text-sm">Hepsiemlak</label>
+                                <input type="text" name="hepsiemlak_id" value="{{ $ilan->hepsiemlak_id }}"
+                                    class="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white" />
+                            </div>
+                            <div>
+                                <label class="block text-sm">Zingat</label>
+                                <input type="text" name="zingat_id" value="{{ $ilan->zingat_id }}"
+                                    class="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white" />
+                            </div>
+                            <div>
+                                <label class="block text-sm">Hürriyet Emlak</label>
+                                <input type="text" name="hurriyetemlak_id" value="{{ $ilan->hurriyetemlak_id }}"
+                                    class="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white" />
+                            </div>
+                            <div class="md:col-span-3">
+                                <button type="submit"
+                                    class="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg">Kaydet</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
 
-                <!-- Section 4.8: Event/Booking Calendar (Yazlık için) -->
-                <div class="kategori-specific-section" data-show-for-categories="yazlik" style="display: none;">
-                    @include('admin.ilanlar.components.event-booking-manager', ['ilan' => $ilan])
-                </div>
-
-                <!-- Section 4.9: Season Pricing (Yazlık için) -->
-                <div class="kategori-specific-section" data-show-for-categories="yazlik" style="display: none;">
-                    @include('admin.ilanlar.components.season-pricing-manager', ['ilan' => $ilan])
-                </div>
-
-                <!-- Section 5: Fiyat Yönetimi -->
-                <div
-                    class="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow duration-200">
-                    @include('admin.ilanlar.components.price-management', ['ilan' => $ilan])
-                </div>
+                @can('view-private-listing-data', $ilan)
+                    <div
+                        class="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow duration-200">
+                        @include('admin.ilanlar.components.owner-private-audits', ['ilan' => $ilan])
+                    </div>
+                @endcan
 
                 <!-- Section 6: Kişi Bilgileri (CRM) -->
                 <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm"
@@ -112,12 +272,12 @@
                     <div class="flex items-center gap-4 mb-8 pb-6 border-b border-gray-200 dark:border-gray-700">
                         <div
                             class="flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 text-white shadow-lg shadow-green-500/50 font-bold text-lg">
-                            10
+                            13
                         </div>
                         <div>
                             <h2 class="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                                <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
+                                <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="none"
+                                    stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
@@ -154,17 +314,19 @@
                                        shadow-sm hover:shadow-md focus:shadow-lg
                                        appearance-none">
                                     <option value="">Bir durum seçin...</option>
-                                    <option value="draft"
-                                        {{ old('status', $ilan->status ?? '') == 'draft' ? 'selected' : '' }}>📝 Draft
+                                    <option value="Taslak"
+                                        {{ old('status', $ilan->status ?? '') == 'Taslak' ? 'selected' : '' }}>📝 Taslak
                                     </option>
-                                    <option value="active"
-                                        {{ old('status', $ilan->status ?? 'active') == 'active' ? 'selected' : '' }}>✅
-                                        Active</option>
-                                    <option value="inactive"
-                                        {{ old('status', $ilan->status ?? '') == 'inactive' ? 'selected' : '' }}>⏸️ Inactive
+                                    <option value="Aktif"
+                                        {{ old('status', $ilan->status ?? 'Aktif') == 'Aktif' ? 'selected' : '' }}>✅
+                                        Aktif</option>
+                                    <option value="Pasif"
+                                        {{ old('status', $ilan->status ?? '') == 'Pasif' ? 'selected' : '' }}>⏸️
+                                        Pasif
                                     </option>
-                                    <option value="pending"
-                                        {{ old('status', $ilan->status ?? '') == 'pending' ? 'selected' : '' }}>⏳ Pending
+                                    <option value="Beklemede"
+                                        {{ old('status', $ilan->status ?? '') == 'Beklemede' ? 'selected' : '' }}>⏳
+                                        Beklemede
                                     </option>
                                 </select>
                                 <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
@@ -235,42 +397,45 @@
             </div>
 
             <!-- 🎨 Form Actions (Tailwind Modernized) -->
-            <div class="sticky bottom-6 z-20">
+            <!-- 🎨 Form Actions (Context7 Optimized - Standardized) -->
+            <div class="sticky bottom-4 z-20">
                 <div
-                    class="bg-gradient-to-r from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl shadow-2xl border-2 border-gray-200 dark:border-gray-700 p-6 backdrop-blur-sm">
-                    <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
-                        <!-- Cancel Button -->
+                    class="bg-white dark:bg-gray-900 rounded-xl border-2 border-gray-200 dark:border-gray-700 shadow-lg p-4 sm:p-6">
+                    <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4">
+                        <!-- Cancel Button (Sol taraf) -->
                         <a href="{{ route('admin.ilanlar.index') }}"
-                            class="inline-flex items-center justify-center gap-2 px-6 py-3.5
-                              bg-gray-50 dark:bg-gray-800
-                              hover:bg-gray-50 dark:hover:bg-gray-600
-                              border-2 border-gray-300 dark:border-gray-600
-                              text-gray-900 dark:text-white font-semibold rounded-xl
-                              shadow-sm hover:shadow-lg
-                              focus:ring-4 focus:ring-blue-500/20 focus:outline-none
+                            class="inline-flex items-center justify-center gap-2 px-4 py-2.5
+                              bg-gray-100 dark:bg-gray-800
+                              hover:bg-gray-200 dark:hover:bg-gray-700
+                              border border-gray-300 dark:border-gray-600
+                              text-gray-700 dark:text-gray-300 font-medium rounded-lg
+                              focus:ring-2 focus:ring-blue-500 focus:outline-none
                               transition-all duration-200
-                              group">
+                              group
+                              w-full sm:w-auto">
                             <svg class="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none"
                                 stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M6 18L18 6M6 6l12 12" />
                             </svg>
-                            İptal Et
+                            <span>İptal Et</span>
+                            <span class="text-xs text-gray-500 dark:text-gray-400 ml-auto sm:ml-0 sm:hidden">Esc</span>
                         </a>
 
-                        <!-- Action Buttons -->
-                        <div class="flex gap-3">
-                            <!-- Save Draft -->
-                            <button type="submit" name="save_draft" value="1" id="save-draft-btn"
-                                class="inline-flex items-center justify-center gap-2 px-6 py-3.5
-                                       bg-gradient-to-r from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-600
-                                       hover:from-gray-200 hover:to-gray-300 dark:hover:from-gray-600 dark:hover:to-gray-500
-                                       border-2 border-gray-300 dark:border-gray-600
-                                       text-gray-800 dark:text-gray-200 font-semibold rounded-xl
-                                       shadow-md hover:shadow-xl
-                                       focus:ring-4 focus:ring-blue-500/20 focus:outline-none
+                        <!-- Action Buttons (Sağ taraf) -->
+                        <div class="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+                            <!-- Save Draft Button -->
+                            <button type="button" id="save-draft-btn"
+                                class="inline-flex items-center justify-center gap-2 px-4 py-2.5
+                                       bg-gray-100 dark:bg-gray-800
+                                       hover:bg-gray-200 dark:hover:bg-gray-700
+                                       border border-gray-300 dark:border-gray-600
+                                       text-gray-700 dark:text-gray-300 font-medium rounded-lg
+                                       focus:ring-2 focus:ring-blue-500 focus:outline-none
                                        transition-all duration-200
-                                       group">
+                                       group
+                                       relative
+                                       w-full sm:w-auto">
                                 <svg id="draft-icon" class="w-5 h-5 group-hover:scale-110 transition-transform"
                                     fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -285,27 +450,60 @@
                                     </path>
                                 </svg>
                                 <span id="draft-text">Taslak Kaydet</span>
+                                <span
+                                    class="text-xs text-gray-500 dark:text-gray-400 ml-auto sm:ml-0 sm:hidden">Ctrl+S</span>
+                                <!-- Tooltip -->
+                                <span
+                                    class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none hidden sm:block">
+                                    Ctrl+S - Taslak olarak kaydet
+                                </span>
                             </button>
 
-                            <!-- Update and Publish Listing -->
+                            <!-- Save Passive Button -->
+                            <button type="button" id="save-passive-btn"
+                                class="inline-flex items-center justify-center gap-2 px-4 py-2.5
+                                       bg-yellow-50 dark:bg-yellow-900/20
+                                       hover:bg-yellow-100 dark:hover:bg-yellow-900/30
+                                       border border-yellow-300 dark:border-yellow-700
+                                       text-yellow-800 dark:text-yellow-300 font-medium rounded-lg
+                                       focus:ring-2 focus:ring-yellow-500 focus:outline-none
+                                       transition-all duration-200
+                                       group
+                                       relative
+                                       w-full sm:w-auto">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <span>CRM'de Pasif Kaydet</span>
+                                <!-- Tooltip -->
+                                <span
+                                    class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none hidden sm:block">
+                                    Pasif durumda kaydet, yayınlanmaz
+                                </span>
+                            </button>
+
+                            <!-- Update and Publish Listing Button (Primary - En belirgin) -->
                             <button type="submit" id="submit-btn"
-                                class="inline-flex items-center justify-center gap-2 px-8 py-3.5
-                                       bg-gradient-to-r from-blue-600 to-purple-600
-                                       hover:from-blue-700 hover:to-purple-700
-                                       text-white font-bold rounded-xl
-                                       shadow-xl hover:shadow-2xl
-                                       focus:ring-4 focus:ring-blue-500/50 focus:outline-none
+                                class="inline-flex items-center justify-center gap-2 px-6 py-3
+                                       bg-gradient-to-r from-green-500 via-green-600 to-emerald-600
+                                       hover:from-green-600 hover:via-green-700 hover:to-emerald-700
+                                       text-white font-bold text-base rounded-xl
+                                       shadow-lg hover:shadow-xl
+                                       focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:outline-none
                                        transition-all duration-200
                                        transform hover:scale-105 active:scale-95
                                        disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100
-                                       group">
+                                       group
+                                       relative
+                                       w-full sm:w-auto sm:ml-auto">
                                 <svg id="submit-icon" class="w-5 h-5 group-hover:rotate-12 transition-transform"
                                     fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M5 13l4 4L19 7" />
                                 </svg>
                                 <span id="submit-text">Güncelle ve Yayınla</span>
-                                <svg id="submit-spinner" class="hidden w-5 h-5 mr-2 animate-spin" fill="none"
+                                <svg id="submit-spinner" class="hidden w-5 h-5 animate-spin" fill="none"
                                     viewBox="0 0 24 24">
                                     <circle class="opacity-25" cx="12" cy="12" r="10"
                                         stroke="currentColor" stroke-width="4"></circle>
@@ -359,6 +557,7 @@
     <script>
         window.editMode = true;
         window.ilanData = @json($ilan);
+        window.selectedFeatures = @json($selectedFeatures ?? []);
     </script>
 
     <!-- 🗺️ VanillaLocationManager (location-map component script) -->
@@ -495,6 +694,20 @@
 
                     log('✅ OpenStreetMap ready (Standart + Uydu layer)');
                     window.toast?.success('🗺️ Harita yüklendi');
+
+                    const mapElReady = document.getElementById('map');
+                    if (mapElReady) {
+                        mapElReady.setAttribute('aria-busy', 'true');
+                        this.standardLayer.once('load', () => {
+                            const overlay = mapElReady.querySelector('[role="status"]');
+                            if (overlay) {
+                                overlay.setAttribute('aria-busy', 'false');
+                                overlay.setAttribute('aria-hidden', 'true');
+                                overlay.classList.add('hidden');
+                            }
+                            mapElReady.setAttribute('aria-busy', 'false');
+                        });
+                    }
 
                     // ✅ Varolan koordinatları göster
                     this.loadExistingCoordinates();
@@ -919,7 +1132,7 @@
                                                             const option = mahalleSelect.options[i];
                                                             const optionText = option.text.toLowerCase().trim();
                                                             const searchText = neighborhoodName.toLowerCase()
-                                                        .trim();
+                                                                .trim();
 
                                                             if (optionText === searchText ||
                                                                 optionText.includes(searchText) ||
@@ -1129,6 +1342,7 @@
                 const gpsButton = document.querySelector('[onclick*="getCurrentLocation"]');
                 if (gpsButton) {
                     gpsButton.disabled = true;
+                    gpsButton.setAttribute('aria-disabled', 'true');
                     gpsButton.classList.add('opacity-50', 'cursor-wait', 'animate-pulse');
                     gpsButton.innerHTML = gpsButton.innerHTML.replace('📍', '⏳');
                 }
@@ -1155,6 +1369,7 @@
                         const gpsButton = document.querySelector('[onclick*="getCurrentLocation"]');
                         if (gpsButton) {
                             gpsButton.disabled = false;
+                            gpsButton.setAttribute('aria-disabled', 'false');
                             gpsButton.classList.remove('opacity-50', 'cursor-wait', 'animate-pulse');
                             gpsButton.innerHTML = gpsButton.innerHTML.replace('⏳', '📍');
                         }
@@ -1164,6 +1379,7 @@
                         const gpsButton = document.querySelector('[onclick*="getCurrentLocation"]');
                         if (gpsButton) {
                             gpsButton.disabled = false;
+                            gpsButton.setAttribute('aria-disabled', 'false');
                             gpsButton.classList.remove('opacity-50', 'cursor-wait', 'animate-pulse');
                             gpsButton.innerHTML = gpsButton.innerHTML.replace('⏳', '📍');
                         }
@@ -1775,9 +1991,9 @@
                 if (!field) return;
 
                 // Add error class (Tailwind)
-                field.classList.add('border-red-500', 'focus:ring-blue-500 dark:focus:ring-blue-400',
-                    'focus:border-red-500');
-                field.classList.remove('border-gray-300', 'focus:ring-blue-500', 'focus:border-blue-500');
+                field.classList.add('border-red-500', 'focus:ring-red-500', 'focus:border-red-500');
+                field.classList.remove('border-gray-300', 'focus:ring-blue-500', 'dark:focus:ring-blue-400',
+                    'focus:border-blue-500');
 
                 // Show error message
                 let errorDiv = field.parentElement.querySelector('.validation-error');
@@ -1805,9 +2021,8 @@
                 const field = document.getElementById(fieldName);
                 if (!field) return;
 
-                // Remove error class
-                field.classList.remove('border-red-500', 'focus:ring-blue-500 dark:focus:ring-blue-400',
-                    'focus:border-red-500');
+                // Remove error class - Context7: Her class ayrı ayrı remove edilmeli
+                field.classList.remove('border-red-500', 'focus:ring-red-500', 'focus:border-red-500');
                 field.classList.add('border-gray-300');
 
                 // Hide error message
@@ -1932,8 +2147,26 @@
                         submitText.textContent = 'Kaydediliyor...';
                     }
 
-                    if (!ValidationManager.validateAll()) {
+                    // ✅ DEBUG: Validation sonuçlarını logla
+                    const validationResult = ValidationManager.validateAll();
+                    console.log('🔍 Validation result:', validationResult);
+
+                    if (!validationResult) {
                         e.preventDefault();
+
+                        // Hangi alanlar hatalı?
+                        const errorFields = [];
+                        Object.keys(ValidationManager.rules).forEach(fieldName => {
+                            const field = document.getElementById(fieldName);
+                            if (field) {
+                                const result = ValidationManager.validate(fieldName, field.value);
+                                if (!result.valid) {
+                                    errorFields.push(fieldName + ': ' + result.message);
+                                }
+                            }
+                        });
+                        console.log('❌ Validation errors:', errorFields);
+
                         window.toast?.error('❌ Lütfen tüm gerekli alanları doldurun');
 
                         // Count errors
@@ -2330,6 +2563,72 @@
         });
     </script>
 
+    <!-- ✅ FIX: Exchange Rates Guard -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // AdvancedPriceManager guard: ensure convertedPrices exists and guard update
+            try {
+                if (typeof window.advancedPriceManager === 'function') {
+                    var _origAPM = window.advancedPriceManager;
+                    window.advancedPriceManager = function() {
+                        var obj = _origAPM();
+                        if (!obj.convertedPrices) {
+                            obj.convertedPrices = {
+                                TRY: '',
+                                USD: '',
+                                EUR: '',
+                                GBP: ''
+                            };
+                        }
+                        if (!obj.exchangeRates) {
+                            obj.exchangeRates = (window.currencyRates || {
+                                TRY: 1,
+                                USD: 34.5,
+                                EUR: 37.2,
+                                GBP: 43.8
+                            });
+                        }
+                        if (typeof obj.updateConvertedPrices === 'function') {
+                            var _origUpd = obj.updateConvertedPrices;
+                            obj.updateConvertedPrices = function() {
+                                try {
+                                    // Guard: exchangeRates yoksa varsayılan değerleri kullan
+                                    if (!this.exchangeRates || !this.exchangeRates.USD) {
+                                        this.exchangeRates = this.exchangeRates || (window.currencyRates ||
+                                        {
+                                            TRY: 1,
+                                            USD: 34.5,
+                                            EUR: 37.2,
+                                            GBP: 43.8
+                                        });
+                                    }
+                                    return _origUpd.apply(this, arguments);
+                                } catch (e) {
+                                    console.warn('updateConvertedPrices guard:', e);
+                                    this.convertedPrices = this.convertedPrices || {
+                                        TRY: '',
+                                        USD: '',
+                                        EUR: '',
+                                        GBP: ''
+                                    };
+                                    this.exchangeRates = this.exchangeRates || (window.currencyRates || {
+                                        TRY: 1,
+                                        USD: 34.5,
+                                        EUR: 37.2,
+                                        GBP: 43.8
+                                    });
+                                }
+                            };
+                        }
+                        return obj;
+                    };
+                }
+            } catch (e) {
+                console.warn('AdvancedPriceManager guard error:', e);
+            }
+        });
+    </script>
+
     <!-- Form submit loading states -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -2367,5 +2666,71 @@
                 });
             }
         });
+
+        // ===================================
+        // Sticky Navigation - Active Section Highlight
+        // Context7: UX iyileştirmesi - Aktif bölüm highlight
+        // ===================================
+        (function() {
+            const sections = document.querySelectorAll('[id^="section-"]');
+            const navLinks = document.querySelectorAll('.section-nav-link');
+
+            // Smooth scroll for navigation links
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = link.getAttribute('href');
+                    const targetSection = document.querySelector(targetId);
+                    if (targetSection) {
+                        const offsetTop = targetSection.offsetTop - 100; // Account for sticky nav
+                        window.scrollTo({
+                            top: offsetTop,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+
+            // Update active section on scroll
+            function updateActiveSection() {
+                const scrollPosition = window.scrollY + 150; // Offset for sticky nav
+
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    const sectionHeight = section.offsetHeight;
+                    const sectionId = section.getAttribute('id');
+
+                    if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+                        // Remove active class from all links
+                        navLinks.forEach(link => {
+                            link.classList.remove('bg-blue-100', 'dark:bg-blue-900/30',
+                                'border-blue-500', 'dark:border-blue-500', 'text-blue-700',
+                                'dark:text-blue-300', 'font-semibold');
+                        });
+
+                        // Add active class to current section link
+                        const activeLink = document.querySelector(
+                            `.section-nav-link[data-section="${sectionId}"]`);
+                        if (activeLink) {
+                            activeLink.classList.add('bg-blue-100', 'dark:bg-blue-900/30', 'border-blue-500',
+                                'dark:border-blue-500', 'text-blue-700', 'dark:text-blue-300',
+                                'font-semibold');
+                        }
+                    }
+                });
+            }
+
+            // Throttle scroll event
+            let scrollTimeout;
+            window.addEventListener('scroll', () => {
+                if (scrollTimeout) {
+                    clearTimeout(scrollTimeout);
+                }
+                scrollTimeout = setTimeout(updateActiveSection, 50);
+            });
+
+            // Initial update
+            updateActiveSection();
+        })();
     </script>
 @endpush

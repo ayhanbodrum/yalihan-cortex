@@ -20,15 +20,24 @@
         </div>
     </div>
 
-    {{-- Feature Categories Modal (Revy.com.tr Style) --}}
-    <div class="mb-6">
-        <x-feature-categories-modal :ilan-id="null" :selected-features="[]" />
+    {{-- ✅ FIX: Feature Categories Modal kaldırıldı - field-dependencies-container zaten çalışıyor --}}
+    {{-- İki sistem çakışıyordu, sadece field-dependencies-container kullanılıyor --}}
+
+    {{-- Category-Specific Field Indicators --}}
+    <div class="mb-6 space-y-4" x-data="{ selectedKategoriSlug: null, selectedYayinTipi: null }" x-init="window.addEventListener('category-changed', (e) => {
+        selectedKategoriSlug = e.detail?.category?.slug || e.detail?.category?.parent_slug || null;
+        selectedYayinTipi = e.detail?.yayinTipiId || e.detail?.yayinTipi || null;
+    });">
+        @include('admin.ilanlar.components.category-fields.arsa-fields')
+        @include('admin.ilanlar.components.category-fields.konut-fields')
+        @include('admin.ilanlar.components.category-fields.kiralik-fields')
     </div>
 
     <div id="field-dependencies-container" class="space-y-6">
         <div class="flex items-center gap-3 mb-4">
             <label for="feature-search" class="sr-only">Alan ara</label>
-            <input type="text" id="feature-search" placeholder="Alan ara" aria-label="Alan ara" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
+            <input type="text" id="feature-search" placeholder="Alan ara" aria-label="Alan ara"
+                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
         </div>
         {{-- Empty State - Enhanced --}}
         <div id="fields-empty-state"
@@ -185,21 +194,75 @@
             async loadFields() {
                 if (!this.selectedKategoriSlug) {
                     console.warn('⚠️ Context7: Kategori slug bulunamadı');
+                    this.reset();
                     return;
                 }
 
                 this.showLoading();
 
                 try {
-                    const list = await (window.featuresSystem ? window.featuresSystem.loadFeatures(this.selectedKategoriSlug, null, this.selectedYayinTipi) : Promise.resolve([]));
+                    // ✅ Context7: applies_to filtresi ile features yükle
+                    // applies_to = kategori slug (arsa, konut, vb.)
+                    const appliesTo = this.selectedKategoriSlug.toLowerCase();
+                    console.log('🔍 Loading features with applies_to:', appliesTo, 'yayin_tipi:', this
+                        .selectedYayinTipi);
+
+                    let list = [];
+
+                    // ✅ FIX: featuresSystem varsa kullan, yoksa direkt API çağır
+                    if (window.featuresSystem && typeof window.featuresSystem.loadFeatures === 'function') {
+                        console.log('✅ Using featuresSystem.loadFeatures');
+                        list = await window.featuresSystem.loadFeatures(appliesTo, null, this
+                            .selectedYayinTipi);
+                    } else {
+                        // ✅ FALLBACK: Direkt API çağrısı - FeaturesService format'ı
+                        console.log('⚠️ featuresSystem not found, using direct API call');
+                        try {
+                            const url =
+                                `/api/admin/features/category/${encodeURIComponent(appliesTo)}${this.selectedYayinTipi ? '?yayin_tipi=' + this.selectedYayinTipi : ''}`;
+                            console.log('📡 API URL:', url);
+
+                            const response = await fetch(url, {
+                                headers: {
+                                    'Accept': 'application/json',
+                                    'X-Requested-With': 'XMLHttpRequest'
+                                }
+                            });
+
+                            console.log('📡 API Response status:', response.status);
+
+                            if (response.ok) {
+                                const data = await response.json();
+                                console.log('📡 API Response data:', data);
+
+                                // ✅ FIX: FeaturesService format'ı - data.data veya data.features array
+                                list = data.data?.data || data.data || data.features || data
+                                    .featureCategories || [];
+                                console.log('✅ API response:', list.length, 'categories');
+                            } else {
+                                const errorText = await response.text();
+                                console.error('❌ API error:', response.status, errorText);
+                            }
+                        } catch (apiError) {
+                            console.error('❌ API call failed:', apiError);
+                        }
+                    }
+
+                    console.log('✅ Features loaded:', list.length, 'categories');
                     this.fieldCategories = list;
                     this.renderFields();
                 } catch (err) {
                     console.error('❌ Field Dependencies error:', err);
-                    this.showError(`Alanlar yüklenemedi: ${err && err.message ? err.message : 'Bilinmeyen hata'}`);
+                    this.showError(
+                        `Alanlar yüklenemedi: ${err && err.message ? err.message : 'Bilinmeyen hata'}`);
 
                     if (window.toast) {
                         window.toast.error('Alanlar yüklenemedi');
+                    }
+                } finally {
+                    // Loading state'i kaldır
+                    if (this.elements.loading) {
+                        this.elements.loading.classList.add('hidden');
                     }
                 }
             },
@@ -225,32 +288,98 @@
                 this.elements.error.classList.add('hidden');
                 this.elements.content.classList.remove('hidden');
 
+                // ✅ FIX: Edit mode - Load existing feature values
+                this.populateExistingValues();
+
                 console.log('✅ Fields rendered:', this.fieldCategories.length, 'categories');
+            },
+
+            populateExistingValues() {
+                // ✅ FIX: Edit mode'da mevcut feature değerlerini yükle
+                if (!window.editMode || !window.selectedFeatures) {
+                    return;
+                }
+
+                console.log('📝 Populating existing feature values:', window.selectedFeatures);
+
+                // selectedFeatures format: { 'feature_slug': 'value', ... }
+                Object.entries(window.selectedFeatures).forEach(([slug, value]) => {
+                    const input = document.getElementById(`field_${slug}`);
+                    if (!input) return;
+
+                    // ✅ FIX: Field type'a göre değer set et
+                    if (input.type === 'checkbox' || input.type === 'radio') {
+                        // Checkbox için: value '1' veya truthy ise checked
+                        input.checked = (value === '1' || value === 1 || value === true || value ===
+                            'true');
+                        // Badge'i güncelle
+                        const badge = input.closest('.flex')?.querySelector(
+                            'span[class*="bg-green"]') ||
+                            input.closest('.flex')?.querySelector('span[class*="bg-gray"]');
+                        if (badge) {
+                            badge.textContent = input.checked ? 'Dolu' : 'Boş';
+                            badge.className = input.checked ?
+                                'text-xs inline-flex items-center px-2 py-0.5 rounded bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300' :
+                                'text-xs inline-flex items-center px-2 py-0.5 rounded bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-400';
+                        }
+                    } else if (input.tagName === 'SELECT') {
+                        // Select için: value set et
+                        input.value = value || '';
+                        // Badge'i güncelle
+                        const badge = input.parentElement?.querySelector('span[class*="bg-green"]') ||
+                            input.parentElement?.querySelector('span[class*="bg-gray"]');
+                        if (badge) {
+                            const filled = input.value && input.value !== '' && input.value !== '0';
+                            badge.textContent = filled ? 'Dolu' : 'Boş';
+                            badge.className = filled ?
+                                'text-xs inline-flex items-center px-2 py-0.5 rounded ml-2 bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300' :
+                                'text-xs inline-flex items-center px-2 py-0.5 rounded ml-2 bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-400';
+                        }
+                    } else {
+                        // Text, number, textarea için: value set et
+                        input.value = value || '';
+                        // Badge'i güncelle
+                        const badge = input.parentElement?.querySelector('span[class*="bg-green"]') ||
+                            input.parentElement?.querySelector('span[class*="bg-gray"]');
+                        if (badge) {
+                            const filled = input.value && String(input.value).trim() !== '';
+                            badge.textContent = filled ? 'Dolu' : 'Boş';
+                            badge.className = filled ?
+                                'text-xs inline-flex items-center px-2 py-0.5 rounded ml-2 bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300' :
+                                'text-xs inline-flex items-center px-2 py-0.5 rounded ml-2 bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-400';
+                        }
+                    }
+
+                    // Change event'i tetikle (progress bar güncellemesi için)
+                    input.dispatchEvent(new Event('change', {
+                        bubbles: true
+                    }));
+                });
+
+                console.log('✅ Existing feature values populated');
             },
 
             createCategoryElement(category) {
                 const div = document.createElement('div');
                 const colorScheme = this.getCategoryColorScheme(category.name);
                 div.className =
-                    `bg-gradient-to-br ${colorScheme.bg} rounded-xl border-2 ${colorScheme.border} overflow-hidden`;
+                    `bg-gradient-to-br ${colorScheme.bg} rounded-xl border-2 ${colorScheme.border} overflow-hidden transition-all duration-300 hover:shadow-lg`;
 
-                // Accordion Header (Clickable)
+                // Accordion Header (Clickable) - Enhanced with better UX
                 const header = document.createElement('div');
                 header.className =
-                    'flex items-center justify-between p-5 cursor-pointer hover:bg-white/50 dark:hover:bg-gray-800/50 transition-colors';
+                    'flex items-center justify-between p-5 cursor-pointer hover:bg-white/50 dark:hover:bg-gray-800/50 transition-all duration-200 active:scale-[0.98]';
+                header.setAttribute('role', 'button');
+                header.setAttribute('aria-expanded', 'false');
+                header.setAttribute('tabindex', '0');
                 header.onclick = (e) => {
                     e.preventDefault();
-                    const content = header.nextElementSibling;
-                    const chevron = header.querySelector('svg');
-
-                    if (content && content.classList.contains('category-content')) {
-                        if (content.style.display === 'none') {
-                            content.style.display = 'block';
-                            if (chevron) chevron.style.transform = 'rotate(180deg)';
-                        } else {
-                            content.style.display = 'none';
-                            if (chevron) chevron.style.transform = 'rotate(0deg)';
-                        }
+                    this.toggleCategoryAccordion(header);
+                };
+                header.onkeydown = (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        this.toggleCategoryAccordion(header);
                     }
                 };
 
@@ -281,12 +410,25 @@
                 rightSection.className = 'flex items-center gap-4';
                 rightSection.innerHTML = `
                 <div class="text-right">
-                    <div class="text-sm font-bold ${fillPercentage > 0 ? 'text-green-600 dark:text-green-400' : 'text-gray-400'}">${fillPercentage}%</div>
-                    <div class="w-24 h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-                        <div class="h-full ${colorScheme.progress} transition-all duration-300" style="width: ${fillPercentage}%"></div>
+                    <div class="flex items-center gap-2 mb-1">
+                        <div class="text-sm font-bold ${fillPercentage > 0 ? 'text-green-600 dark:text-green-400' : 'text-gray-400'}">${fillPercentage}%</div>
+                        <span class="text-xs text-gray-500 dark:text-gray-400">(${filledCount}/${totalCount})</span>
+                    </div>
+                    <div class="w-32 h-2.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden shadow-inner">
+                        <div class="h-full ${colorScheme.progress} transition-all duration-500 ease-out rounded-full"
+                             style="width: ${fillPercentage}%"
+                             role="progressbar"
+                             aria-valuenow="${fillPercentage}"
+                             aria-valuemin="0"
+                             aria-valuemax="100">
+                        </div>
                     </div>
                 </div>
-                <svg class="w-5 h-5 text-gray-500 transform transition-transform category-chevron-${category.name}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-5 h-5 text-gray-500 dark:text-gray-400 transform transition-transform duration-200 category-chevron-${category.name}"
+                     fill="none"
+                     stroke="currentColor"
+                     viewBox="0 0 24 24"
+                     aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                 </svg>
             `;
@@ -332,6 +474,29 @@
                 return div;
             },
 
+            toggleCategoryAccordion(header) {
+                const content = header.nextElementSibling;
+                const chevron = header.querySelector('svg');
+                const isExpanded = header.getAttribute('aria-expanded') === 'true';
+
+                if (content && content.classList.contains('category-content')) {
+                    if (isExpanded) {
+                        content.style.display = 'none';
+                        header.setAttribute('aria-expanded', 'false');
+                        if (chevron) chevron.style.transform = 'rotate(0deg)';
+                    } else {
+                        content.style.display = 'block';
+                        header.setAttribute('aria-expanded', 'true');
+                        if (chevron) chevron.style.transform = 'rotate(180deg)';
+                        // Smooth scroll to content if needed
+                        content.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'nearest'
+                        });
+                    }
+                }
+            },
+
             getFeatureMap() {
                 return this.featureMap || {};
             },
@@ -342,7 +507,11 @@
                         this.elements.error.classList.remove('hidden');
                         this.elements.loading.classList.add('hidden');
                         this.elements.emptyState.classList.add('hidden');
-                        setTimeout(() => { try { this.elements.error.focus(); } catch(e){} }, 50);
+                        setTimeout(() => {
+                            try {
+                                this.elements.error.focus();
+                            } catch (e) {}
+                        }, 50);
                     }
                 } catch (e) {
                     console.warn('Error UI update failed', e);
@@ -434,8 +603,23 @@
                 let count = 0;
                 fields.forEach(field => {
                     const input = document.getElementById(`field_${field.slug}`);
-                    if (input && input.value && input.value !== '') {
-                        count++;
+                    if (!input) return;
+
+                    // ✅ FIX: Checkbox ve radio için checked kontrolü
+                    if (input.type === 'checkbox' || input.type === 'radio') {
+                        if (input.checked) {
+                            count++;
+                        }
+                    } else if (input.tagName === 'SELECT') {
+                        // Select için value kontrolü
+                        if (input.value && input.value !== '' && input.value !== '0') {
+                            count++;
+                        }
+                    } else {
+                        // Text, number, textarea için value kontrolü
+                        if (input.value && String(input.value).trim() !== '') {
+                            count++;
+                        }
                     }
                 });
                 return count;
@@ -493,10 +677,14 @@
                 const fLabel = String(field.name || '').toLowerCase();
                 let isCritical = false;
                 if (catSlug.includes('arsa') || catSlug.includes('land')) {
-                    isCritical = ['metrekare', 'imar', 'imar_durumu', 'tapu', 'tapu_durumu'].some(k => fSlug.includes(k) || fLabel.includes(k));
-                } else if (catSlug.includes('konut') || catSlug.includes('daire') || catSlug.includes('residential')) {
-                    isCritical = ['oda', 'oda_sayisi', 'metrekare'].some(k => fSlug.includes(k) || fLabel.includes(k));
-                } else if (catSlug.includes('isyeri') || catSlug.includes('ofis') || catSlug.includes('office')) {
+                    isCritical = ['metrekare', 'imar', 'imar_durumu', 'tapu', 'tapu_durumu'].some(k => fSlug
+                        .includes(k) || fLabel.includes(k));
+                } else if (catSlug.includes('konut') || catSlug.includes('daire') || catSlug.includes(
+                        'residential')) {
+                    isCritical = ['oda', 'oda_sayisi', 'metrekare'].some(k => fSlug.includes(k) || fLabel
+                        .includes(k));
+                } else if (catSlug.includes('isyeri') || catSlug.includes('ofis') || catSlug.includes(
+                        'office')) {
                     isCritical = ['metrekare'].some(k => fSlug.includes(k) || fLabel.includes(k));
                 }
                 if (isCritical) {
@@ -537,14 +725,18 @@
                 badge.className = 'text-xs inline-flex items-center px-2 py-0.5 rounded ml-2';
                 const update = () => {
                     let val = '';
-                    if (input.tagName === 'SELECT') { val = input.value; }
-                    else if (input.type === 'checkbox' || input.type === 'radio') { val = input.checked ? '1' : ''; }
-                    else { val = input.value; }
+                    if (input.tagName === 'SELECT') {
+                        val = input.value;
+                    } else if (input.type === 'checkbox' || input.type === 'radio') {
+                        val = input.checked ? '1' : '';
+                    } else {
+                        val = input.value;
+                    }
                     const filled = !!(val && String(val).trim() !== '');
                     badge.textContent = filled ? 'Dolu' : 'Boş';
-                    badge.className = filled
-                        ? 'text-xs inline-flex items-center px-2 py-0.5 rounded ml-2 bg-green-100 text-green-700'
-                        : 'text-xs inline-flex items-center px-2 py-0.5 rounded ml-2 bg-gray-100 text-gray-700';
+                    badge.className = filled ?
+                        'text-xs inline-flex items-center px-2 py-0.5 rounded ml-2 bg-green-100 text-green-700' :
+                        'text-xs inline-flex items-center px-2 py-0.5 rounded ml-2 bg-gray-100 text-gray-700';
                 };
                 update();
                 input.addEventListener('input', update);
@@ -585,13 +777,28 @@
                 if (field.required || field.is_required) input.required = true;
                 input.setAttribute('data-feature', field.slug);
                 input.setAttribute('data-feature-label', field.name);
+
                 input.setAttribute('data-feature-id', String(field.id));
                 if (groupName) input.setAttribute('data-feature-group', String(groupName));
 
                 const label = document.createElement('label');
                 label.htmlFor = `field_${field.slug}`;
-                label.className = 'text-sm text-gray-900 dark:text-white';
+                label.className = 'text-sm text-gray-900 dark:text-white flex items-center gap-2';
                 label.textContent = 'Evet';
+
+                // ✅ FIX: Badge ekle (checkbox'lar için de)
+                const badge = document.createElement('span');
+                badge.className = 'text-xs inline-flex items-center px-2 py-0.5 rounded';
+                const updateBadge = () => {
+                    const filled = input.checked;
+                    badge.textContent = filled ? 'Dolu' : 'Boş';
+                    badge.className = filled ?
+                        'text-xs inline-flex items-center px-2 py-0.5 rounded bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300' :
+                        'text-xs inline-flex items-center px-2 py-0.5 rounded bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-400';
+                };
+                updateBadge();
+                input.addEventListener('change', updateBadge);
+                label.appendChild(badge);
 
                 wrapper.appendChild(input);
                 wrapper.appendChild(label);

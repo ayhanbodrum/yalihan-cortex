@@ -22,7 +22,7 @@
                 <label for="anahtar_durumu" class="block text-sm font-medium text-gray-900 dark:text-white mb-2">
                     <span class="block text-sm font-medium text-gray-900 dark:text-white mb-2-text">Anahtar Durumu *</span>
                 </label>
-                <select  name="anahtar_durumu" id="anahtar_durumu" required class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 transition-all duration-200">
+                <select  name="anahtar_durumu" id="anahtar_durumu" class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 transition-all duration-200">
                     <option value="">Seçin...</option>
                     <option value="ofiste" {{ old('anahtar_durumu') == 'ofiste' ? 'selected' : '' }}>🏢 Ofiste</option>
                     <option value="sahibinde" {{ old('anahtar_durumu') == 'sahibinde' ? 'selected' : '' }}>👤 Sahibinde</option>

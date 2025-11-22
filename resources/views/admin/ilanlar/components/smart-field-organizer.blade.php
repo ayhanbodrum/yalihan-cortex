@@ -217,6 +217,11 @@ function smartFieldOrganizer() {
                     araSezon.value = Math.round(basePrice * 0.8); // -20% ara
                     araSezon.dispatchEvent(new Event('change', { bubbles: true }));
                 }
+                
+                // ✅ FIX: Toast optional chaining eklendi
+                if (window.toast?.success) {
+                    window.toast.success('AI önerileri uygulandı');
+                }
 
                 if (kisSezon && !kisSezon.value) {
                     kisSezon.value = Math.round(basePrice * 0.6); // -40% kış

@@ -87,13 +87,19 @@
                 window.addEventListener('category-changed', (e) => {
                     console.log('🎯 Features: Category changed event received', e.detail);
                     this.selectedCategory = e.detail.category;
-                    const yayinTipi = e.detail.yayinTipi || null;
+                    const yayinTipi = e.detail.yayinTipi || e.detail.yayinTipiId || null;
 
-                    if (this.selectedCategory && this.selectedCategory.id) {
-                        console.log('🎯 Loading features for category ID:', this.selectedCategory.id, 'yayinTipi:', yayinTipi);
-                        this.loadFeatures(this.selectedCategory.id, yayinTipi);
+                    // ✅ Context7: Get category slug for applies_to filtering
+                    let kategoriSlug = null;
+                    if (this.selectedCategory) {
+                        kategoriSlug = this.selectedCategory.parent_slug || this.selectedCategory.slug || null;
+                    }
+
+                    if (kategoriSlug) {
+                        console.log('🎯 Loading features with applies_to:', kategoriSlug, 'yayin_tipi:', yayinTipi);
+                        this.loadFeatures(kategoriSlug, yayinTipi);
                     } else {
-                        console.log('🎯 No category ID, resetting');
+                        console.log('🎯 No category slug, resetting');
                         this.reset();
                     }
                 });
@@ -101,22 +107,30 @@
                 console.log('✅ Vanilla JS Features Manager initialized');
             },
 
-            async loadFeatures(categoryId, yayinTipi = null) {
-                if (!categoryId) return;
+            async loadFeatures(kategoriSlug, yayinTipi = null) {
+                if (!kategoriSlug) return;
 
                 this.showLoading();
 
                 try {
-                    let url = `/api/admin/features?category_id=${categoryId}`;
+                    // ✅ Context7: Use applies_to filter instead of category_id
+                    const appliesTo = kategoriSlug.toLowerCase();
+                    let url = `/api/admin/features?applies_to=${encodeURIComponent(appliesTo)}`;
                     if (yayinTipi) {
                         url += `&yayin_tipi=${encodeURIComponent(yayinTipi)}`;
                     }
 
-                    const response = await fetch(url);
+                    const response = await fetch(url, {
+                        credentials: 'same-origin',
+                        headers: {
+                            'Accept': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    });
                     console.log('🎯 Features API Request URL:', url);
 
                     if (!response.ok) {
-                        throw new Error(`HTTP ${response.status}`);
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                     }
 
                     const data = await response.json();
@@ -134,6 +148,11 @@
 
                     if (window.toast) {
                         window.toast.error('Özellikler yüklenemedi');
+                    }
+                } finally {
+                    // Loading state'i kaldır
+                    if (this.elements.loading) {
+                        this.elements.loading.classList.add('hidden');
                     }
                 }
             },
@@ -195,7 +214,11 @@
                 const div = document.createElement('div');
                 div.className = 'space-y-2 feature-group';
 
+                // ✅ Context7: Get existing value from edit mode
+                const existingValue = this.getExistingFeatureValue(feature.slug);
+
                 if (feature.type === 'boolean') {
+                    const isChecked = existingValue === '1' || existingValue === 'true' || existingValue === true;
                     div.innerHTML = `
                         <label class="flex items-center justify-between cursor-pointer group">
                             <div class="flex items-center">
@@ -203,7 +226,8 @@
                                     name="features[${this.escape(feature.slug)}]"
                                     value="${feature.id}"
                                     id="feature_${feature.id}"
-                                    class="mr-3 rounded focus:ring-lime-500 text-lime-600">
+                                    ${isChecked ? 'checked' : ''}
+                                    class="mr-3 rounded focus:ring-lime-500 text-lime-600 transition-all duration-200">
                                 <span class="text-sm text-gray-900 dark:text-white">${this.escape(feature.name)}</span>
                             </div>
                             <button type="button"
@@ -230,6 +254,7 @@
                             <input type="number"
                                 name="features[${this.escape(feature.slug)}]"
                                 id="feature_${feature.id}"
+                                value="${existingValue || ''}"
                                 step="${feature.unit === 'm²' ? '0.01' : '1'}"
                                 min="0"
                                 class="flex-1 px-4 py-2.5 border border-gray-300 dark:border-gray-600 dark:bg-gray-800 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-lime-500 transition-all">
@@ -273,6 +298,9 @@
                             const option = document.createElement('option');
                             option.value = opt;
                             option.textContent = opt;
+                            if (existingValue && existingValue === opt) {
+                                option.selected = true;
+                            }
                             select.appendChild(option);
                         });
                     }
@@ -282,6 +310,14 @@
                 }
 
                 return div;
+            },
+
+            getExistingFeatureValue(featureSlug) {
+                // ✅ Context7: Get existing value from edit mode
+                if (window.editMode && window.selectedFeatures && window.selectedFeatures[featureSlug]) {
+                    return window.selectedFeatures[featureSlug];
+                }
+                return null;
             },
 
             showLoading() {

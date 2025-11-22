@@ -152,6 +152,7 @@
 function photoUploadManager(ilanId = null) {
     return {
         ilanId: ilanId,
+        // ✅ FIX: Ensure photos is always an array (Alpine.js reactive)
         photos: [],
         uploadErrors: [],
         uploading: false,
@@ -160,6 +161,10 @@ function photoUploadManager(ilanId = null) {
         draggedIndex: null,
 
         async init() {
+            // ✅ FIX: Ensure photos is always an array (Alpine.js reactive)
+            if (!Array.isArray(this.photos)) {
+                this.photos = [];
+            }
             // Mevcut fotoğrafları yükle (edit mode)
             if (this.ilanId) {
                 await this.loadExistingPhotos();
@@ -168,13 +173,34 @@ function photoUploadManager(ilanId = null) {
 
         async loadExistingPhotos() {
             try {
-                const response = await fetch(`/api/admin/ilanlar/${this.ilanId}/photos`);
+                console.log('📸 Loading photos for ilan:', this.ilanId);
+                // ✅ FIX: Route prefix kontrolü - api.php'de /api prefix'i var
+                const url = `/api/ilanlar/${this.ilanId}/photos`;
+                console.log('📸 Fetching from:', url);
+                
+                const response = await fetch(url, {
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+                
+                console.log('📸 Response status:', response.status);
+                
                 if (response.ok) {
                     const data = await response.json();
-                    this.photos = data.photos || [];
+                    console.log('📸 Photos data:', data);
+                    // ✅ FIX: ResponseService format: {success: true, data: {photos: [...]}}
+                    const photosArray = data.data?.photos || data.photos || data.data || [];
+                    // ✅ FIX: Alpine.js reactive array - ensure it's always an array
+                    this.photos = Array.isArray(photosArray) ? photosArray : [];
+                    console.log('📸 Loaded photos:', this.photos.length);
+                } else {
+                    const errorText = await response.text();
+                    console.error('📸 Photo load error:', response.status, errorText);
                 }
             } catch (error) {
-                console.error('Fotoğraflar yüklenemedi:', error);
+                console.error('📸 Fotoğraflar yüklenemedi:', error);
             }
         },
 
@@ -215,6 +241,7 @@ function photoUploadManager(ilanId = null) {
             this.uploading = true;
             this.uploadProgress = 0;
 
+            // ✅ FIX: Progress bar'ı düzgün güncellemek için her dosya için ayrı progress hesapla
             for (let i = 0; i < validFiles.length; i++) {
                 const file = validFiles[i];
 
@@ -231,20 +258,50 @@ function photoUploadManager(ilanId = null) {
                     uploading: true
                 };
 
-                this.photos.push(tempPhoto);
+                // ✅ FIX: Alpine.js reactive array - use spread operator instead of push
+                this.photos = [...(Array.isArray(this.photos) ? this.photos : []), tempPhoto];
 
-                // Upload to server (if ilan exists)
+                // ✅ FIX: Upload to server (if ilan exists) - await edilmeli
                 if (this.ilanId) {
-                    await this.uploadToServer(file, tempPhoto);
+                    try {
+                        await this.uploadToServer(file, tempPhoto);
+                        // ✅ FIX: Upload başarılı olduğunda uploading flag'i kaldır
+                        const photoIndex = this.photos.findIndex(p => p.id === tempPhoto.id);
+                        if (photoIndex !== -1) {
+                            this.photos[photoIndex].uploading = false;
+                        }
+                    } catch (error) {
+                        console.error('Upload error for file:', file.name, error);
+                        // Upload başarısız olduğunda fotoğrafı kaldır
+                        const photoIndex = this.photos.findIndex(p => p.id === tempPhoto.id);
+                        if (photoIndex !== -1) {
+                            this.photos.splice(photoIndex, 1);
+                        }
+                    }
+                } else {
+                    // İlan yoksa uploading flag'i kaldır
+                    tempPhoto.uploading = false;
                 }
 
+                // ✅ FIX: Progress bar'ı her dosya için güncelle
                 this.uploadProgress = Math.round(((i + 1) / validFiles.length) * 100);
             }
 
             this.uploading = false;
-            this.uploadProgress = 0;
+            // ✅ FIX: Progress bar'ı 100'de bırak, sıfırlama
+            if (this.uploadProgress < 100) {
+                this.uploadProgress = 100;
+            }
 
-            window.toast?.(`${validFiles.length} fotoğraf yüklendi`, 'success');
+            if (window.MCP && typeof window.MCP.showNotification === 'function') {
+                window.MCP.showNotification(`${validFiles.length} fotoğraf yüklendi`, 'success');
+            } else if (window.Context7 && typeof window.Context7.showNotification === 'function') {
+                window.Context7.showNotification(`${validFiles.length} fotoğraf yüklendi`, 'success');
+            } else if (window.toast && typeof window.toast.success === 'function') {
+                window.toast.success(`${validFiles.length} fotoğraf yüklendi`);
+            } else {
+                console.log(`${validFiles.length} fotoğraf yüklendi`);
+            }
         },
 
         async uploadToServer(file, tempPhoto) {
@@ -265,15 +322,36 @@ function photoUploadManager(ilanId = null) {
 
                 if (response.ok) {
                     const data = await response.json();
+                    console.log('📸 Upload success:', data);
                     // Update temp photo with server data
                     const photoIndex = this.photos.findIndex(p => p.id === tempPhoto.id);
                     if (photoIndex !== -1) {
-                        this.photos[photoIndex] = { ...data.photo, uploading: false };
+                        // ✅ FIX: Server'dan gelen data formatını kontrol et
+                        const photoData = data.data?.photo || data.photo || data;
+                        this.photos[photoIndex] = { 
+                            ...photoData, 
+                            uploading: false,
+                            url: photoData.url || photoData.dosya_yolu || tempPhoto.preview,
+                            preview: photoData.url || photoData.dosya_yolu || tempPhoto.preview
+                        };
+                        console.log('📸 Photo updated in array:', this.photos[photoIndex]);
                     }
+                } else {
+                    const errorText = await response.text();
+                    console.error('📸 Upload failed:', response.status, errorText);
+                    throw new Error(`Upload failed: ${response.status}`);
                 }
             } catch (error) {
                 console.error('Upload error:', error);
-                window.toast?.('Fotoğraf yüklenemedi', 'error');
+                if (window.MCP && typeof window.MCP.showNotification === 'function') {
+                    window.MCP.showNotification('Fotoğraf yüklenemedi', 'error');
+                } else if (window.Context7 && typeof window.Context7.showNotification === 'function') {
+                    window.Context7.showNotification('Fotoğraf yüklenemedi', 'error');
+                } else if (window.toast && typeof window.toast.error === 'function') {
+                    window.toast.error('Fotoğraf yüklenemedi');
+                } else {
+                    console.error('Fotoğraf yüklenemedi:', error);
+                }
             }
         },
 
@@ -298,7 +376,12 @@ function photoUploadManager(ilanId = null) {
         },
 
         async deletePhoto(index) {
-            if (!confirm('Bu fotoğrafı silmek istediğinize emin misiniz?')) return;
+            const ok = window.MCP && typeof window.MCP.confirm === 'function'
+                ? await window.MCP.confirm('Bu fotoğrafı silmek istediğinize emin misiniz?')
+                : window.Context7 && typeof window.Context7.confirm === 'function'
+                    ? await window.Context7.confirm('Bu fotoğrafı silmek istediğinize emin misiniz?')
+                : confirm('Bu fotoğrafı silmek istediğinize emin misiniz?');
+            if (!ok) return;
 
             const photo = this.photos[index];
 
@@ -328,7 +411,13 @@ function photoUploadManager(ilanId = null) {
                 this.photos[0].is_featured = true;
             }
 
-            window.toast?.('Fotoğraf silindi', 'success');
+            if (window.MCP && typeof window.MCP.showNotification === 'function') {
+                window.MCP.showNotification('Fotoğraf silindi', 'success');
+            } else if (window.Context7 && typeof window.Context7.showNotification === 'function') {
+                window.Context7.showNotification('Fotoğraf silindi', 'success');
+            } else if (window.toast && typeof window.toast.success === 'function') {
+                window.toast.success('Fotoğraf silindi');
+            }
         },
 
         dragStart(index) {

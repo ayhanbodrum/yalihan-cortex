@@ -1,7 +1,7 @@
 @extends('admin.layouts.neo')
 
 @section('content')
-    <div class="space-y-4">
+    <div class="space-y-4 pb-24">
         <!-- Page Header -->
         <div class="flex items-center justify-between">
             <div>
@@ -48,73 +48,165 @@
             @csrf
 
             <div class="space-y-4">
-                <!-- Section 1: Temel Bilgiler + AI Yardımcısı -->
+                {{-- Sticky Navigation (AI-Optimized Order) --}}
                 <div
+                    class="sticky top-0 z-30 bg-white/80 dark:bg-gray-900/80 backdrop-blur border-b border-gray-200 dark:border-gray-800 mb-4">
+                    <div class="max-w-screen-xl mx-auto px-4 py-3">
+                        <div class="flex items-center gap-2 mb-2">
+                            <div class="w-full bg-gray-200 dark:bg-gray-700 h-2 rounded">
+                                <div id="create-progress-bar" class="h-2 bg-green-500 rounded transition-all duration-500"
+                                    style="width: 0%"></div>
+                            </div>
+                            <span id="create-progress-text"
+                                class="text-sm text-gray-700 dark:text-gray-300 whitespace-nowrap">0%</span>
+                        </div>
+                        <div class="flex flex-wrap gap-2" id="sticky-nav-links">
+                            <a href="#section-category" data-section="section-category"
+                                class="section-nav-link px-3 py-1.5 rounded-lg border border-gray-300 dark:border-gray-700 text-sm hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:border-blue-400 dark:hover:border-blue-600 transition-all duration-200">1.
+                                Kategori</a>
+                            <a href="#section-location" data-section="section-location"
+                                class="section-nav-link px-3 py-1.5 rounded-lg border border-gray-300 dark:border-gray-700 text-sm hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:border-blue-400 dark:hover:border-blue-600 transition-all duration-200">2.
+                                Lokasyon</a>
+                            <a href="#section-price" data-section="section-price"
+                                class="section-nav-link px-3 py-1.5 rounded-lg border border-gray-300 dark:border-gray-700 text-sm hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:border-blue-400 dark:hover:border-blue-600 transition-all duration-200">3.
+                                Fiyat</a>
+                            <a href="#section-basic-info" data-section="section-basic-info"
+                                class="section-nav-link px-3 py-1.5 rounded-lg border border-gray-300 dark:border-gray-700 text-sm hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:border-blue-400 dark:hover:border-blue-600 transition-all duration-200">4.
+                                Temel Bilgiler + AI</a>
+                            <a href="#section-photos" data-section="section-photos"
+                                class="section-nav-link px-3 py-1.5 rounded-lg border border-gray-300 dark:border-gray-700 text-sm hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:border-blue-400 dark:hover:border-blue-600 transition-all duration-200">5.
+                                Fotoğraflar</a>
+                            <a href="#section-fields" data-section="section-fields"
+                                class="section-nav-link px-3 py-1.5 rounded-lg border border-gray-300 dark:border-gray-700 text-sm hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:border-blue-400 dark:hover:border-blue-600 transition-all duration-200">6.
+                                İlan Özellikleri</a>
+                            <a href="#section-person" data-section="section-person"
+                                class="section-nav-link px-3 py-1.5 rounded-lg border border-gray-300 dark:border-gray-700 text-sm hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:border-blue-400 dark:hover:border-blue-600 transition-all duration-200">7.
+                                Kişi</a>
+                            <a href="#section-site" data-section="section-site"
+                                class="section-nav-link px-3 py-1.5 rounded-lg border border-gray-300 dark:border-gray-700 text-sm hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:border-blue-400 dark:hover:border-blue-600 transition-all duration-200">8.
+                                Site/Apartman</a>
+                            <a href="#section-key" data-section="section-key"
+                                class="section-nav-link px-3 py-1.5 rounded-lg border border-gray-300 dark:border-gray-700 text-sm hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:border-blue-400 dark:hover:border-blue-600 transition-all duration-200">9.
+                                Anahtar</a>
+                            <a href="#section-status" data-section="section-status"
+                                class="section-nav-link px-3 py-1.5 rounded-lg border border-gray-300 dark:border-gray-700 text-sm hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:border-blue-400 dark:hover:border-blue-600 transition-all duration-200">10.
+                                Yayın Durumu</a>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- BÖLÜM 1: KATEGORİ SİSTEMİ (AI için kritik - İLK!) --}}
+                <div id="section-category"
+                    class="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow duration-200">
+                    @include('admin.ilanlar.components.category-system')
+                </div>
+
+                {{-- BÖLÜM 2: LOKASYON VE HARİTA (AI için önemli - İKİNCİ!) --}}
+                <div id="section-location"
+                    class="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow duration-200">
+                    @include('admin.ilanlar.components.location-map')
+                </div>
+
+                {{-- BÖLÜM 3: FİYAT YÖNETİMİ (AI için önemli - ÜÇÜNCÜ!) --}}
+                <div id="section-price"
+                    class="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow duration-200">
+                    @include('admin.ilanlar.components.price-management')
+                </div>
+
+                {{-- BÖLÜM 4: TEMEL BİLGİLER + AI YARDIMCISI (Artık yeterli context var!) --}}
+                <div id="section-basic-info"
                     class="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow duration-200">
                     @include('admin.ilanlar.components.basic-info')
                     <div class="border-t border-gray-200 dark:border-gray-700"></div>
                     <div id="ai-assistant-panel" class="p-4">
                         <div class="flex items-center gap-3 mb-3">
-                            <div class="flex items-center justify-center w-8 h-8 rounded-lg bg-gradient-to-br from-purple-600 to-indigo-600 text-white shadow">
+                            <div
+                                class="flex items-center justify-center w-8 h-8 rounded-lg bg-gradient-to-br from-purple-600 to-indigo-600 text-white shadow">
                                 🤖
                             </div>
                             <div>
                                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Dijital Danışman</h3>
-                                <p class="text-xs text-gray-600 dark:text-gray-400">Seçimlerinize göre başlık, açıklama ve alan önerileri üretir</p>
+                                <p class="text-xs text-gray-600 dark:text-gray-400">Kategori, lokasyon ve fiyat
+                                    bilgilerinize göre başlık, açıklama ve alan önerileri üretir</p>
                             </div>
                             <div class="ml-auto">
-                                <button type="button" id="ai-undo-btn" class="px-2 py-1 text-xs rounded bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-700">Geri Al</button>
+                                <button type="button" id="ai-undo-btn"
+                                    class="px-2 py-1 text-xs rounded bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-700 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200">Geri
+                                    Al</button>
                             </div>
                         </div>
 
                         <div class="flex items-center justify-between mb-3">
                             <div class="text-xs text-gray-600 dark:text-gray-400">
                                 <span id="ai-context-status" class="font-semibold">Bağlam Durumu: %0</span>
-                                <span id="ai-missing-hints" class="ml-2"></span>
+                                <span id="ai-missing-hints" class="ml-2 text-red-600 dark:text-red-400"></span>
                             </div>
-                            <div class="flex items-center gap-2"><div class="w-24 h-2 bg-gray-200 dark:bg-gray-800 rounded overflow-hidden"><div id="ai-readiness-bar-fill" class="h-2 bg-green-500 dark:bg-green-400" style="width:0%"></div></div><div id="ai-readiness-badge" class="text-xs px-2 py-1 rounded bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300">Hazır değil</div></div>
+                            <div class="flex items-center gap-2">
+                                <div class="w-24 h-2 bg-gray-200 dark:bg-gray-800 rounded overflow-hidden">
+                                    <div id="ai-readiness-bar-fill"
+                                        class="h-2 bg-green-500 dark:bg-green-400 transition-all duration-300"
+                                        style="width:0%"></div>
+                                </div>
+                                <div id="ai-readiness-badge"
+                                    class="text-xs px-2 py-1 rounded bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300">
+                                    Hazır değil</div>
+                            </div>
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                            <button type="button" id="ai-generate-title" class="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-colors">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v8m-4-4h8"/></svg>
+                            <button type="button" id="ai-generate-title"
+                                class="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 8v8m-4-4h8" />
+                                </svg>
                                 Başlık Öner
                             </button>
-                            <button type="button" id="ai-generate-description" class="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg hover:from-green-700 hover:to-emerald-700 transition-colors">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h8M7 16h6"/></svg>
+                            <button type="button" id="ai-generate-description"
+                                class="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg hover:from-green-700 hover:to-emerald-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M7 8h10M7 12h8M7 16h6" />
+                                </svg>
                                 Açıklama Öner
                             </button>
-                            <button type="button" id="ai-price-suggestion" class="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-yellow-500 to-orange-600 text-white rounded-lg hover:from-yellow-600 hover:to-orange-700 transition-colors">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                            <button type="button" id="ai-price-suggestion"
+                                class="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-yellow-500 to-orange-600 text-white rounded-lg hover:from-yellow-600 hover:to-orange-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                                </svg>
                                 Fiyat Öner
                             </button>
-                            <button type="button" id="ai-field-suggestion" class="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-cyan-600 to-blue-600 text-white rounded-lg hover:from-cyan-700 hover:to-blue-700 transition-colors">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h10M7 16h8"/></svg>
+                            <button type="button" id="ai-field-suggestion"
+                                class="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-cyan-600 to-blue-600 text-white rounded-lg hover:from-cyan-700 hover:to-blue-700 transition-all duration-200 shadow-sm hover:shadow-md">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M7 8h10M7 12h10M7 16h8" />
+                                </svg>
                                 Alan Önerileri
                             </button>
                         </div>
 
                         <div id="ai-suggestions" class="mt-4 space-y-2"></div>
                         <div class="flex justify-end mt-2">
-                            <button type="button" id="ai-apply-all" class="px-3 py-1.5 text-xs rounded bg-blue-100 text-blue-700 hover:bg-blue-200">Tümünü Uygula</button>
+                            <button type="button" id="ai-apply-all"
+                                class="px-3 py-1.5 text-xs rounded bg-blue-100 text-blue-700 hover:bg-blue-200 dark:bg-blue-900/30 dark:text-blue-300 transition-colors duration-200">Tümünü
+                                Uygula</button>
                         </div>
                     </div>
                 </div>
 
-                <!-- Section 2: Kategori Sistemi -->
-                <div
+                {{-- BÖLÜM 5: FOTOĞRAFLAR (Görsel içerik, erken olmalı) --}}
+                <div id="section-photos"
                     class="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow duration-200">
-                    @include('admin.ilanlar.components.category-system')
+                    @include('admin.ilanlar.components.photo-upload-manager', [
+                        'ilan' => new \App\Models\Ilan(),
+                    ])
                 </div>
 
-                <!-- Section 3: Lokasyon ve Harita -->
-                <div
-                    class="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow duration-200">
-                    @include('admin.ilanlar.components.location-map')
-                </div>
-
-                <!-- Section 4: İlan Özellikleri (Field Dependencies) -->
-                <div
+                {{-- BÖLÜM 6: İLAN ÖZELLİKLERİ (Kategoriye özel dinamik alanlar) --}}
+                <div id="section-fields"
                     class="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow duration-200">
                     {{-- Smart Field Organizer (Templates & AI) --}}
                     @include('admin.ilanlar.components.smart-field-organizer')
@@ -123,85 +215,84 @@
                     @include('admin.ilanlar.components.field-dependencies-dynamic')
                 </div>
 
-                
+                {{-- BÖLÜM 7: KİŞİ BİLGİLERİ (CRM) --}}
+                <div id="section-person"
+                    class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow duration-200"
+                    x-data="{ selectedPerson: null }">
+                    @include('admin.ilanlar.partials.stable._kisi-secimi')
+                </div>
 
-                <!-- Section 4.5: Yazlık Amenities (Features/EAV - Sadece Yazlık kategorisi için) -->
-                <div class="kategori-specific-section" data-show-for-categories="yazlik" style="display: none;">
+                {{-- BÖLÜM 8: SİTE/APARTMAN BİLGİLERİ (Sadece Konut kategorisi için) --}}
+                <div id="section-site"
+                    class="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow duration-200 kategori-specific-section"
+                    data-show-for-categories="konut" style="display: none;">
+                    @include('admin.ilanlar.components.site-apartman-context7')
+                </div>
+
+                {{-- BÖLÜM 9: ANAHTAR BİLGİLERİ (Sadece Konut kategorisi için) --}}
+                <div id="section-key"
+                    class="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow duration-200 kategori-specific-section"
+                    data-show-for-categories="konut" style="display: none;">
+                    @include('admin.ilanlar.components.key-management')
+                </div>
+
+                {{-- BÖLÜM 10: YAZLIK ÖZELLİKLERİ (Sadece Yazlık kategorisi için) --}}
+                {{-- Yazlık Amenities (Features/EAV) --}}
+                <div id="section-yazlik-amenities" class="kategori-specific-section" data-show-for-categories="yazlik"
+                    style="display: none;">
                     @include('admin.ilanlar.partials.yazlik-features')
                 </div>
 
-                <!-- Section 4.6: Bedroom Layout (Yazlık için kritik!) -->
-                <div class="kategori-specific-section" data-show-for-categories="yazlik" style="display: none;">
+                {{-- Bedroom Layout (Yazlık için kritik!) --}}
+                <div id="section-yazlik-bedroom" class="kategori-specific-section" data-show-for-categories="yazlik"
+                    style="display: none;">
                     @include('admin.ilanlar.components.bedroom-layout-manager', [
                         'ilan' => new \App\Models\Ilan(),
                     ])
                 </div>
 
-                <!-- Section 4.7: Photo Upload (Tüm kategoriler için) -->
-                <div
-                    class="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow duration-200">
-                    @include('admin.ilanlar.components.photo-upload-manager', [
-                        'ilan' => new \App\Models\Ilan(),
-                    ])
-                </div>
-
-                <!-- Section 4.8: Event/Booking Calendar (Yazlık için) -->
-                <div class="kategori-specific-section" data-show-for-categories="yazlik" style="display: none;">
+                {{-- Event/Booking Calendar (Yazlık için) --}}
+                <div id="section-yazlik-events" class="kategori-specific-section" data-show-for-categories="yazlik"
+                    style="display: none;">
                     @include('admin.ilanlar.components.event-booking-manager', [
                         'ilan' => new \App\Models\Ilan(),
                     ])
                 </div>
 
-                <!-- Section 4.9: Season Pricing (Yazlık için) -->
-                <div class="kategori-specific-section" data-show-for-categories="yazlik" style="display: none;">
+                {{-- Season Pricing (Yazlık için) --}}
+                <div id="section-yazlik-seasons" class="kategori-specific-section" data-show-for-categories="yazlik"
+                    style="display: none;">
                     @include('admin.ilanlar.components.season-pricing-manager', [
                         'ilan' => new \App\Models\Ilan(),
                     ])
                 </div>
 
-                <!-- Section 5: Fiyat Yönetimi -->
-                <div
-                    class="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow duration-200">
-                    @include('admin.ilanlar.components.price-management')
+                {{-- BÖLÜM 11: ARSA HESAPLAMA (Sadece Arsa kategorisi için) --}}
+                <div id="section-arsa-calc" class="kategori-specific-section" data-show-for-categories="arsa"
+                    style="display: none;">
+                    @include('admin.ilanlar.components.arsa-calculation')
                 </div>
 
-                <!-- Section 6: Kişi Bilgileri (CRM) -->
-                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm"
-                    x-data="{ selectedPerson: null }">
-                    @include('admin.ilanlar.partials.stable._kisi-secimi')
-                </div>
-
-                <!-- Section 7: Site/Apartman Bilgileri (Sadece Konut kategorisi için) -->
-                <div class="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow duration-200 kategori-specific-section"
-                    data-show-for-categories="konut" style="display: none;">
-                    @include('admin.ilanlar.components.site-apartman-context7')
-                </div>
-
-                <!-- Section 8: Anahtar Bilgileri (Sadece Konut kategorisi için) -->
-                <div class="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow duration-200 kategori-specific-section"
-                    data-show-for-categories="konut" style="display: none;">
-                    @include('admin.ilanlar.components.key-management')
-                </div>
-
-                <!-- 🎨 Section 10: Yayın Durumu (Context7 Optimized) -->
-                <div
+                {{-- BÖLÜM 12: YAYIN DURUMU (Context7 Optimized) --}}
+                <div id="section-status"
                     class="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow duration-200 p-5">
                     <!-- Section Header -->
                     <div class="flex items-center gap-3 mb-4 pb-3 border-b border-gray-200 dark:border-gray-700">
                         <div
                             class="flex items-center justify-center w-9 h-9 rounded-lg bg-gradient-to-br from-green-500 to-emerald-600 text-white shadow-md font-semibold text-sm">
-                            10
+                            12
                         </div>
                         <div>
                             <h2 class="text-xl font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-                                <svg class="w-5 h-5 text-green-600 dark:text-green-400" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
+                                <svg class="w-5 h-5 text-green-600 dark:text-green-400" fill="none"
+                                    stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
                                 Yayın Durumu
                             </h2>
-                            <p class="text-xs text-gray-600 dark:text-gray-400 mt-0.5">İlanınızın durumu ve öncelik seviyesi
+                            <p class="text-xs text-gray-600 dark:text-gray-400 mt-0.5">İlanınızın durumu ve öncelik
+                                seviyesi
                             </p>
                         </div>
                     </div>
@@ -220,26 +311,26 @@
                             </label>
                             <div class="relative">
                                 <select name="status" id="status" required
+                                    @error('status') aria-invalid="true" aria-describedby="status-error" data-error="true" @enderror
                                     class="w-full px-4 py-2.5 text-base
-                                       border border-gray-300 dark:border-gray-600
+                                       border-2 border-gray-300 dark:border-gray-600
                                        rounded-lg
-                                       bg-white dark:bg-gray-800
+                                       bg-white dark:bg-gray-900
                                        text-black dark:text-white
-                                       focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:focus:border-green-400
+                                       focus:ring-4 focus:ring-blue-500/20 focus:border-green-500 dark:focus:border-green-400
                                        transition-all duration-200
                                        hover:border-gray-400 dark:hover:border-gray-500
                                        cursor-pointer
-                                       focus:shadow-md
-                                       appearance-none">
+                                       shadow-sm hover:shadow-md focus:shadow-lg
+                                       appearance-none"
+                                    style="color-scheme: light dark;">
                                     <option value="">Bir durum seçin...</option>
-                                    <option value="Taslak" {{ old('status') == 'Taslak' ? 'selected' : '' }}>📝 Taslak
-                                    </option>
-                                    <option value="Aktif" {{ old('status', 'Aktif') == 'Aktif' ? 'selected' : '' }}>✅ Aktif
-                                    </option>
-                                    <option value="Pasif" {{ old('status') == 'Pasif' ? 'selected' : '' }}>⏸️ Pasif
-                                    </option>
-                                    <option value="Beklemede" {{ old('status') == 'Beklemede' ? 'selected' : '' }}>⏳
-                                        Beklemede</option>
+                                    @foreach ($statusOptions ?? [] as $opt)
+                                        <option value="{{ $opt['value'] }}"
+                                            {{ old('status', 'taslak') == $opt['value'] ? 'selected' : '' }}>
+                                            {{ $opt['icon'] ?? '' }} {{ $opt['label'] }}
+                                        </option>
+                                    @endforeach
                                 </select>
                                 <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                                     <svg class="w-5 h-5 text-gray-400 group-focus-within:text-green-500 transition-colors"
@@ -250,7 +341,7 @@
                                 </div>
                             </div>
                             @error('status')
-                                <div
+                                <div id="status-error"
                                     class="mt-2 flex items-center gap-2 text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 px-4 py-2.5 rounded-lg">
                                     <svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                                         <path fill-rule="evenodd"
@@ -275,16 +366,17 @@
                             <div class="relative">
                                 <select name="oncelik" id="oncelik"
                                     class="w-full px-4 py-2.5 text-base
-                                       border border-gray-300 dark:border-gray-600
+                                       border-2 border-gray-300 dark:border-gray-600
                                        rounded-lg
-                                       bg-white dark:bg-gray-800
+                                       bg-white dark:bg-gray-900
                                        text-black dark:text-white
-                                       focus:ring-2 focus:ring-green-500 focus:border-green-500 dark:focus:border-green-400
+                                       focus:ring-4 focus:ring-blue-500/20 focus:border-green-500 dark:focus:border-green-400
                                        transition-all duration-200
                                        hover:border-gray-400 dark:hover:border-gray-500
                                        cursor-pointer
-                                       focus:shadow-md
-                                       appearance-none">
+                                       shadow-sm hover:shadow-md focus:shadow-lg
+                                       appearance-none"
+                                    style="color-scheme: light dark;">
                                     <option value="normal" {{ old('oncelik', 'normal') == 'normal' ? 'selected' : '' }}>📋
                                         Normal</option>
                                     <option value="yuksek" {{ old('oncelik') == 'yuksek' ? 'selected' : '' }}>⭐ Yüksek
@@ -301,72 +393,157 @@
                                 </div>
                             </div>
                         </div>
+
+                        <!-- Sadece CRM'de Yayınla -->
+                        <div class="group">
+                            <label for="crm_only"
+                                class="block text-sm font-medium text-gray-900 dark:text-white mb-1.5 flex items-center gap-2">
+                                <span
+                                    class="flex items-center justify-center w-5 h-5 rounded-full bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 text-xs font-semibold">3</span>
+                                Sadece CRM'de yayınla
+                            </label>
+                            <div class="flex items-center gap-3">
+                                <input type="checkbox" name="crm_only" id="crm_only" value="1"
+                                    class="w-4 h-4 text-green-600 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 rounded focus:ring-green-500">
+                                <span class="text-sm text-gray-600 dark:text-gray-400">Bu seçenek işaretliyken ilan sadece
+                                    CRM'de görünür, web sitesinde yayınlanmaz.</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
+
+                <script>
+                    (function() {
+                        var requiredFields = ['baslik', 'fiyat', 'para_birimi', 'ana_kategori_id', 'alt_kategori_id',
+                            'yayin_tipi_id', 'ilan_sahibi_id', 'status'
+                        ];
+
+                        function valuePresent(name) {
+                            var el = document.querySelector('[name="' + name + '"]');
+                            if (!el) return false;
+                            if (el.type === 'checkbox') return el.checked;
+                            var v = (el.value || '').toString().trim();
+                            return v.length > 0;
+                        }
+
+                        function compute() {
+                            var filled = requiredFields.filter(function(n) {
+                                return valuePresent(n);
+                            }).length;
+                            var pct = Math.round((filled / requiredFields.length) * 100);
+                            var bar = document.getElementById('create-progress-bar');
+                            var txt = document.getElementById('create-progress-text');
+                            if (bar) bar.style.width = pct + '%';
+                            if (txt) txt.textContent = pct + '%';
+                        }
+                        document.addEventListener('change', compute, true);
+                        document.addEventListener('input', compute, true);
+                        window.addEventListener('load', compute);
+                    })();
+                </script>
+                <div id="page-bottom"></div>
             </div>
 
-            <!-- 🎨 Form Actions (Context7 Optimized) -->
+            <!-- 🎨 Form Actions (Context7 Optimized - İyileştirilmiş) -->
             <div class="sticky bottom-4 z-20">
                 <div
-                    class="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm p-4">
-                    <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-                        <!-- Cancel Button -->
+                    class="bg-white dark:bg-gray-900 rounded-xl border-2 border-gray-200 dark:border-gray-700 shadow-lg p-4 sm:p-6">
+                    <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4">
+                        <!-- Cancel Button (Sol taraf) -->
                         <a href="{{ route('admin.ilanlar.index') }}"
                             class="inline-flex items-center justify-center gap-2 px-4 py-2.5
                               bg-gray-100 dark:bg-gray-800
                               hover:bg-gray-200 dark:hover:bg-gray-700
                               border border-gray-300 dark:border-gray-600
-                              text-gray-900 dark:text-white font-medium rounded-lg
+                              text-gray-700 dark:text-gray-300 font-medium rounded-lg
                               focus:ring-2 focus:ring-blue-500 focus:outline-none
                               transition-all duration-200
-                              group">
+                              group
+                              w-full sm:w-auto">
                             <svg class="w-5 h-5 group-hover:-translate-x-1 transition-transform" fill="none"
                                 stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M6 18L18 6M6 6l12 12" />
                             </svg>
-                            İptal Et
+                            <span>İptal Et</span>
+                            <span class="text-xs text-gray-500 dark:text-gray-400 ml-auto sm:ml-0 sm:hidden">Esc</span>
                         </a>
 
-                        <!-- Action Buttons -->
-                        <div class="flex gap-2">
-                            <!-- Save Draft -->
+                        <!-- Action Buttons (Sağ taraf) -->
+                        <div class="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+                            <!-- Save Draft Button -->
                             <button type="button" id="save-draft-btn"
                                 class="inline-flex items-center justify-center gap-2 px-4 py-2.5
-                                       bg-gray-200 dark:bg-gray-700
-                                       hover:bg-gray-300 dark:hover:bg-gray-600
+                                       bg-gray-100 dark:bg-gray-800
+                                       hover:bg-gray-200 dark:hover:bg-gray-700
                                        border border-gray-300 dark:border-gray-600
-                                       text-gray-800 dark:text-gray-200 font-medium rounded-lg
+                                       text-gray-700 dark:text-gray-300 font-medium rounded-lg
                                        focus:ring-2 focus:ring-blue-500 focus:outline-none
                                        transition-all duration-200
-                                       group">
+                                       group
+                                       relative
+                                       w-full sm:w-auto">
                                 <svg class="w-5 h-5 group-hover:scale-110 transition-transform" fill="none"
                                     stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
                                 </svg>
                                 <span>Taslak Kaydet</span>
+                                <span
+                                    class="text-xs text-gray-500 dark:text-gray-400 ml-auto sm:ml-0 sm:hidden">Ctrl+S</span>
+                                <!-- Tooltip -->
+                                <span
+                                    class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none hidden sm:block">
+                                    Ctrl+S - Taslak olarak kaydet
+                                </span>
                             </button>
 
-                            <!-- Publish Listing -->
-                            <button type="submit" id="submit-btn"
-                                class="inline-flex items-center justify-center gap-2 px-6 py-2.5
-                                       bg-gradient-to-r from-green-500 to-emerald-600
-                                       hover:from-green-600 hover:to-emerald-700
-                                       text-white font-semibold rounded-lg
-                                       shadow-md hover:shadow-lg
-                                       focus:ring-2 focus:ring-green-500 focus:outline-none
+                            <!-- Save Passive Button -->
+                            <button type="button" id="save-passive-btn"
+                                class="inline-flex items-center justify-center gap-2 px-4 py-2.5
+                                       bg-yellow-50 dark:bg-yellow-900/20
+                                       hover:bg-yellow-100 dark:hover:bg-yellow-900/30
+                                       border border-yellow-300 dark:border-yellow-700
+                                       text-yellow-800 dark:text-yellow-300 font-medium rounded-lg
+                                       focus:ring-2 focus:ring-yellow-500 focus:outline-none
                                        transition-all duration-200
-                                       active:scale-95
-                                       disabled:opacity-50 disabled:cursor-not-allowed
-                                       group">
+                                       group
+                                       relative
+                                       w-full sm:w-auto">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <span>CRM'de Pasif Kaydet</span>
+                                <!-- Tooltip -->
+                                <span
+                                    class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none hidden sm:block">
+                                    Pasif durumda kaydet, yayınlanmaz
+                                </span>
+                            </button>
+
+                            <!-- Publish Listing Button (Primary - En belirgin) -->
+                            <button type="submit" id="submit-btn"
+                                class="inline-flex items-center justify-center gap-2 px-6 py-3
+                                       bg-gradient-to-r from-green-500 via-green-600 to-emerald-600
+                                       hover:from-green-600 hover:via-green-700 hover:to-emerald-700
+                                       text-white font-bold text-base rounded-xl
+                                       shadow-lg hover:shadow-xl
+                                       focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:outline-none
+                                       transition-all duration-200
+                                       transform hover:scale-105 active:scale-95
+                                       disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100
+                                       group
+                                       relative
+                                       w-full sm:w-auto sm:ml-auto">
                                 <svg id="submit-icon" class="w-5 h-5 group-hover:rotate-12 transition-transform"
                                     fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M5 13l4 4L19 7" />
                                 </svg>
                                 <span id="submit-text">İlanı Yayınla</span>
-                                <svg id="submit-spinner" class="hidden w-5 h-5 mr-2 animate-spin" fill="none"
+                                <span class="text-xs text-white/80 ml-auto sm:ml-0 sm:hidden">Ctrl+Enter</span>
+                                <svg id="submit-spinner" class="hidden w-5 h-5 animate-spin" fill="none"
                                     viewBox="0 0 24 24">
                                     <circle class="opacity-25" cx="12" cy="12" r="10"
                                         stroke="currentColor" stroke-width="4"></circle>
@@ -379,21 +556,29 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M13 7l5 5m0 0l-5 5m5-5H6" />
                                 </svg>
+                                <!-- Tooltip -->
+                                <span
+                                    class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 dark:bg-gray-700 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none hidden sm:block">
+                                    Ctrl+Enter - İlanı yayınla
+                                </span>
                             </button>
                         </div>
                     </div>
                 </div>
             </div>
+
+            <!-- Bottom Spacer: Sticky footer için gerekli alan -->
+            <div class="h-24"></div>
         </form>
     </div>
     @push('scripts')
         <script>
-            (function(){
-                document.addEventListener('DOMContentLoaded', function(){
+            (function() {
+                document.addEventListener('DOMContentLoaded', function() {
                     var inputs = Array.prototype.slice.call(document.querySelectorAll('input, select, textarea'));
-                    inputs.forEach(function(el){
+                    inputs.forEach(function(el) {
                         var id = el.id;
-                        var hasForLabel = id && document.querySelector('label[for="'+id+'"]');
+                        var hasForLabel = id && document.querySelector('label[for="' + id + '"]');
                         var parentLabel = el.closest('label');
                         if (!hasForLabel && !parentLabel) {
                             var name = el.getAttribute('name') || '';
@@ -406,10 +591,158 @@
             })();
         </script>
         <script>
-            (function(){
+            (function() {
+                document.addEventListener('DOMContentLoaded', function() {
+                    var requiredFields = ['baslik', 'fiyat', 'para_birimi', 'ana_kategori_id', 'alt_kategori_id',
+                        'yayin_tipi_id', 'ilan_sahibi_id', 'status'
+                    ];
+                    var fieldToSection = {
+                        'ana_kategori_id': 'section-category',
+                        'alt_kategori_id': 'section-category',
+                        'yayin_tipi_id': 'section-category',
+                        'il_id': 'section-location',
+                        'ilce_id': 'section-location',
+                        'mahalle_id': 'section-location',
+                        'fiyat': 'section-price',
+                        'para_birimi': 'section-price',
+                        'baslik': 'section-basic-info',
+                        'aciklama': 'section-basic-info',
+                        'ilan_sahibi_id': 'section-person',
+                        'status': 'section-status'
+                    };
+                    var submitBtn = document.getElementById('submit-btn');
+                    var form = document.querySelector('form');
+
+                    function getEl(name) {
+                        return document.querySelector('[name="' + name + '"]');
+                    }
+
+                    function isFilled(name) {
+                        var el = getEl(name);
+                        if (!el) return true;
+                        if (el.type === 'checkbox') return el.checked;
+                        var v = (el.value || '').toString().trim();
+                        return v.length > 0;
+                    }
+
+                    function missing() {
+                        return requiredFields.filter(function(n) {
+                            return !isFilled(n);
+                        });
+                    }
+
+                    function highlight(names) {
+                        names.forEach(function(n) {
+                            var el = getEl(n);
+                            if (el) {
+                                el.classList.add('ring-2', 'ring-red-500');
+                                setTimeout(function() {
+                                    el.classList.remove('ring-2', 'ring-red-500');
+                                }, 1500);
+                            }
+                        });
+                    }
+
+                    function scrollToFirst(names) {
+                        for (var i = 0; i < names.length; i++) {
+                            var secId = fieldToSection[names[i]] || 'section-fields';
+                            var sec = document.getElementById(secId);
+                            if (sec) {
+                                sec.scrollIntoView({
+                                    behavior: 'smooth',
+                                    block: 'start'
+                                });
+                                break;
+                            }
+                        }
+                    }
+                    if (submitBtn && form) {
+                        submitBtn.addEventListener('click', function(ev) {
+                            var miss = missing();
+                            if (miss.length) {
+                                ev.preventDefault();
+                                highlight(miss);
+                                scrollToFirst(miss);
+                            }
+                        });
+                    }
+                    var stepperLinks = Array.prototype.slice.call(document.querySelectorAll(
+                        'a[href^="#section-"]'));
+
+                    function sectionState() {
+                        var state = {
+                            'section-category': ['ana_kategori_id', 'alt_kategori_id', 'yayin_tipi_id'],
+                            'section-location': ['il_id'],
+                            'section-price': ['fiyat', 'para_birimi'],
+                            'section-basic-info': ['baslik', 'aciklama'],
+                            'section-photos': [],
+                            'section-fields': [],
+                            'section-person': ['ilan_sahibi_id'],
+                            'section-site': [],
+                            'section-key': [],
+                            'section-status': ['status']
+                        };
+                        stepperLinks.forEach(function(a) {
+                            var target = a.getAttribute('href').replace('#', '');
+                            var names = state[target] || [];
+                            var ok = names.every(isFilled);
+                            a.classList.toggle('bg-green-100', ok);
+                            a.classList.toggle('dark:bg-green-900/20', ok);
+                        });
+                    }
+                    document.addEventListener('change', sectionState, true);
+                    document.addEventListener('input', sectionState, true);
+                    sectionState();
+                });
+            })();
+        </script>
+        <script>
+            (function() {
+                document.addEventListener('DOMContentLoaded', function() {
+                    if (location.hash === '#bottom' || location.hash === '#page-bottom') {
+                        var target = document.getElementById(location.hash.replace('#', '')) || document.body;
+                        setTimeout(function() {
+                            target.scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'end'
+                            });
+                        }, 50);
+                    }
+                    var form = document.querySelector('form');
+                    var statusSel = document.getElementById('status');
+                    var crmOnly = document.getElementById('crm_only');
+                    var saveDraft = document.getElementById('save-draft-btn');
+                    var savePassive = document.getElementById('save-passive-btn');
+                    var submitBtn = document.getElementById('submit-btn');
+
+                    if (saveDraft) {
+                        saveDraft.addEventListener('click', function() {
+                            if (statusSel) statusSel.value = 'taslak';
+                            if (crmOnly) crmOnly.checked = true;
+                            if (form) form.submit();
+                        });
+                    }
+                    if (savePassive) {
+                        savePassive.addEventListener('click', function() {
+                            if (statusSel) statusSel.value = 'pasif';
+                            if (crmOnly) crmOnly.checked = true;
+                            if (form) form.submit();
+                        });
+                    }
+                    if (submitBtn) {
+                        submitBtn.addEventListener('click', function() {
+                            if (statusSel) statusSel.value = 'yayinda';
+                            if (crmOnly) crmOnly.checked = false;
+                        }, true);
+                    }
+                });
+            })();
+        </script>
+        <script>
+            (function() {
                 try {
                     var containers = Array.prototype.slice.call(document.querySelectorAll('.context7-live-search'));
-                    containers.forEach(function(ct){
+                    containers.forEach(function(ct) {
                         var input = ct.querySelector('input[type="text"]');
                         var hidden = ct.querySelector('input[type="hidden"]');
                         var results = ct.querySelector('.context7-search-results');
@@ -417,101 +750,138 @@
                         if (!input || !results || !endpoint) return;
                         var listboxId = results.id || ('ls-' + Math.random().toString(36).slice(2));
                         results.id = listboxId;
-                        results.setAttribute('role','listbox');
+                        results.setAttribute('role', 'listbox');
                         input.setAttribute('aria-controls', listboxId);
-                        input.setAttribute('aria-expanded','false');
+                        input.setAttribute('aria-expanded', 'false');
                         var activeIndex = -1;
                         var opts = [];
-                        var render = function(items){
+                        var render = function(items) {
                             results.innerHTML = '';
-                            opts = items.slice(0, parseInt(ct.getAttribute('data-max-results')||'10'));
+                            opts = items.slice(0, parseInt(ct.getAttribute('data-max-results') || '10'));
                             if (!opts.length) {
                                 var empty = document.createElement('div');
-                                empty.setAttribute('role','status');
-                                empty.setAttribute('aria-live','polite');
+                                empty.setAttribute('role', 'status');
+                                empty.setAttribute('aria-live', 'polite');
                                 empty.className = 'px-3 py-2 text-sm text-gray-500';
                                 empty.textContent = 'Sonuç yok';
                                 results.appendChild(empty);
-                                input.setAttribute('aria-expanded','false');
+                                input.setAttribute('aria-expanded', 'false');
                                 activeIndex = -1;
                                 return;
                             }
-                            opts.forEach(function(it, idx){
+                            opts.forEach(function(it, idx) {
                                 var li = document.createElement('div');
-                                li.className = 'px-3 py-2 cursor-pointer hover:bg-blue-50 dark:hover:bg-blue-900/20';
-                                var primary = (it.name||it.full_name||it.email||'Kayıt');
-                                var secondary = (it.email||it.phone||'');
-                                li.innerHTML = secondary ? ('<div class="text-sm">'+primary+'</div><div class="text-xs text-gray-500">'+secondary+'</div>') : primary;
+                                li.className =
+                                    'px-3 py-2 cursor-pointer hover:bg-blue-50 dark:hover:bg-blue-900/20';
+                                var primary = (it.name || it.full_name || it.email || 'Kayıt');
+                                var secondary = (it.email || it.phone || '');
+                                li.innerHTML = secondary ? ('<div class="text-sm">' + primary +
+                                    '</div><div class="text-xs text-gray-500">' + secondary +
+                                    '</div>') : primary;
                                 li.id = 'ls-opt-' + idx;
-                                li.setAttribute('role','option');
-                                li.addEventListener('click', function(){
+                                li.setAttribute('role', 'option');
+                                li.addEventListener('click', function() {
                                     if (hidden && it.id) hidden.value = it.id;
                                     input.value = primary;
                                     results.innerHTML = '';
-                                    input.setAttribute('aria-expanded','false');
+                                    input.setAttribute('aria-expanded', 'false');
                                 });
                                 results.appendChild(li);
                             });
                             activeIndex = opts.length ? 0 : -1;
                             if (activeIndex >= 0) {
                                 input.setAttribute('aria-activedescendant', 'ls-opt-' + activeIndex);
-                                Array.prototype.slice.call(results.children).forEach(function(el, i){ el.classList.toggle('bg-blue-50', i===activeIndex); });
+                                Array.prototype.slice.call(results.children).forEach(function(el, i) {
+                                    el.classList.toggle('bg-blue-50', i === activeIndex);
+                                });
                             }
                             input.setAttribute('aria-expanded', opts.length ? 'true' : 'false');
                         };
                         var fetcher;
-                        input.addEventListener('input', function(){
+                        input.addEventListener('input', function() {
                             var q = input.value.trim();
                             if (fetcher) clearTimeout(fetcher);
-                            fetcher = setTimeout(function(){
-                                if (q.length < 2) { results.innerHTML = ''; return; }
+                            fetcher = setTimeout(function() {
+                                if (q.length < 2) {
+                                    results.innerHTML = '';
+                                    return;
+                                }
                                 fetch(endpoint + '?q=' + encodeURIComponent(q))
-                                    .then(function(r){ return r.json(); })
-                                    .then(function(json){ render(Array.isArray(json)?json:(json.data||[])); })
-                                    .catch(function(){ results.innerHTML = ''; });
+                                    .then(function(r) {
+                                        return r.json();
+                                    })
+                                    .then(function(json) {
+                                        render(Array.isArray(json) ? json : (json.data || []));
+                                    })
+                                    .catch(function() {
+                                        results.innerHTML = '';
+                                    });
                             }, 200);
                         });
-                        input.addEventListener('keydown', function(ev){
+                        input.addEventListener('keydown', function(ev) {
                             if (!opts || !opts.length) return;
-                            if (ev.key === 'ArrowDown') { ev.preventDefault(); activeIndex = Math.min(activeIndex+1, opts.length-1); }
-                            if (ev.key === 'ArrowUp') { ev.preventDefault(); activeIndex = Math.max(activeIndex-1, 0); }
+                            if (ev.key === 'ArrowDown') {
+                                ev.preventDefault();
+                                activeIndex = Math.min(activeIndex + 1, opts.length - 1);
+                            }
+                            if (ev.key === 'ArrowUp') {
+                                ev.preventDefault();
+                                activeIndex = Math.max(activeIndex - 1, 0);
+                            }
                             if (ev.key === 'Enter') {
                                 ev.preventDefault();
                                 var it = opts[activeIndex];
                                 if (it) {
-                                    input.value = (it.name||it.full_name||it.email||'Kayıt');
+                                    input.value = (it.name || it.full_name || it.email || 'Kayıt');
                                     if (hidden && it.id) hidden.value = it.id;
                                     results.innerHTML = '';
-                                    input.setAttribute('aria-expanded','false');
+                                    input.setAttribute('aria-expanded', 'false');
                                 }
                             }
-                            if (ev.key === 'Escape') { results.innerHTML = ''; input.setAttribute('aria-expanded','false'); }
-                            Array.prototype.slice.call(results.children).forEach(function(el, i){ el.classList.toggle('bg-blue-50', i===activeIndex); });
+                            if (ev.key === 'Escape') {
+                                results.innerHTML = '';
+                                input.setAttribute('aria-expanded', 'false');
+                            }
+                            Array.prototype.slice.call(results.children).forEach(function(el, i) {
+                                el.classList.toggle('bg-blue-50', i === activeIndex);
+                            });
                             input.setAttribute('aria-activedescendant', 'ls-opt-' + activeIndex);
                         });
                     });
-                } catch(e) {}
+                } catch (e) {}
             })();
         </script>
         <script>
-            (function(){
+            (function() {
                 try {
-                    var dropdown = document.querySelector('div[ x-data] button[aria-label="Tema"]')?.closest('.flex.items-center.gap-2') || null;
+                    var dropdown = document.querySelector('div[ x-data] button[aria-label="Tema"]')?.closest(
+                        '.flex.items-center.gap-2') || null;
                     var menuBtn = document.querySelector('div.relative[x-data] > button');
                     var menu = document.querySelector('div.relative[x-data] > div');
                     if (menuBtn && menu) {
-                        menuBtn.setAttribute('aria-haspopup','true');
-                        menuBtn.setAttribute('aria-expanded','false');
-                        menu.setAttribute('role','menu');
-                        Array.prototype.slice.call(menu.querySelectorAll('a, button')).forEach(function(el){ el.setAttribute('role','menuitem'); });
-                        document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && menu.style.display !== 'none') { e.preventDefault(); menuBtn.click(); menuBtn.setAttribute('aria-expanded','false'); } });
-                        menuBtn.addEventListener('click', function(){ var expanded = menuBtn.getAttribute('aria-expanded') === 'true'; menuBtn.setAttribute('aria-expanded', expanded ? 'false' : 'true'); });
+                        menuBtn.setAttribute('aria-haspopup', 'true');
+                        menuBtn.setAttribute('aria-expanded', 'false');
+                        menu.setAttribute('role', 'menu');
+                        Array.prototype.slice.call(menu.querySelectorAll('a, button')).forEach(function(el) {
+                            el.setAttribute('role', 'menuitem');
+                        });
+                        document.addEventListener('keydown', function(e) {
+                            if (e.key === 'Escape' && menu.style.display !== 'none') {
+                                e.preventDefault();
+                                menuBtn.click();
+                                menuBtn.setAttribute('aria-expanded', 'false');
+                            }
+                        });
+                        menuBtn.addEventListener('click', function() {
+                            var expanded = menuBtn.getAttribute('aria-expanded') === 'true';
+                            menuBtn.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+                        });
                     }
-                } catch(e) {}
+                } catch (e) {}
             })();
         </script>
         <script>
-            (function(){
+            (function() {
                 try {
                     var appliedList = document.getElementById('ai-applied-list');
                     if (!appliedList) {
@@ -523,51 +893,88 @@
                             container.appendChild(appliedList);
                         }
                     }
-                    var addApplied = function(type, text){
+                    var addApplied = function(type, text) {
                         if (!appliedList) return;
                         var row = document.createElement('div');
-                        row.className = 'text-xs px-2 py-1 rounded bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200';
-                        row.textContent = (type+': '+text).slice(0,140);
+                        row.className =
+                            'text-xs px-2 py-1 rounded bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200';
+                        row.textContent = (type + ': ' + text).slice(0, 140);
                         appliedList.appendChild(row);
                     };
-                    var bindApply = function(){
-                        Array.prototype.slice.call(document.querySelectorAll('#ai-suggestions button[data-action="apply"]')).forEach(function(b){
-                            b.addEventListener('click', function(){ var t = b.getAttribute('data-type')||'öneri'; var v = b.getAttribute('data-value')||b.textContent||''; addApplied(t, v); });
+                    var bindApply = function() {
+                        Array.prototype.slice.call(document.querySelectorAll(
+                            '#ai-suggestions button[data-action="apply"]')).forEach(function(b) {
+                            b.addEventListener('click', function() {
+                                var t = b.getAttribute('data-type') || 'öneri';
+                                var v = b.getAttribute('data-value') || b.textContent || '';
+                                addApplied(t, v);
+                            });
                         });
                     };
                     document.addEventListener('DOMContentLoaded', bindApply);
-                    document.addEventListener('click', function(e){ if (e.target && e.target.matches('#ai-suggestions button[data-action="apply"]')) { var t = e.target.getAttribute('data-type')||'öneri'; var v = e.target.getAttribute('data-value')||e.target.textContent||''; addApplied(t, v); } });
-                } catch(e) {}
+                    document.addEventListener('click', function(e) {
+                        if (e.target && e.target.matches('#ai-suggestions button[data-action="apply"]')) {
+                            var t = e.target.getAttribute('data-type') || 'öneri';
+                            var v = e.target.getAttribute('data-value') || e.target.textContent || '';
+                            addApplied(t, v);
+                        }
+                    });
+                } catch (e) {}
             })();
         </script>
         <script>
-            (function(){
-                document.addEventListener('keydown', function(ev){
+            (function() {
+                document.addEventListener('keydown', function(ev) {
                     try {
-                        if (ev.key === '+') { ev.preventDefault(); window.VanillaLocationManager && window.VanillaLocationManager.zoomIn && window.VanillaLocationManager.zoomIn(); }
-                        if (ev.key === '-') { ev.preventDefault(); window.VanillaLocationManager && window.VanillaLocationManager.zoomOut && window.VanillaLocationManager.zoomOut(); }
-                        if (ev.key.toLowerCase() === 'l') { ev.preventDefault(); window.VanillaLocationManager && window.VanillaLocationManager.getCurrentLocation && window.VanillaLocationManager.getCurrentLocation(); }
-                    } catch(e) {}
+                        if (ev.key === '+') {
+                            ev.preventDefault();
+                            window.VanillaLocationManager && window.VanillaLocationManager.zoomIn && window
+                                .VanillaLocationManager.zoomIn();
+                        }
+                        if (ev.key === '-') {
+                            ev.preventDefault();
+                            window.VanillaLocationManager && window.VanillaLocationManager.zoomOut && window
+                                .VanillaLocationManager.zoomOut();
+                        }
+                        if (ev.key.toLowerCase() === 'l') {
+                            ev.preventDefault();
+                            window.VanillaLocationManager && window.VanillaLocationManager.getCurrentLocation &&
+                                window.VanillaLocationManager.getCurrentLocation();
+                        }
+                    } catch (e) {}
                 });
                 var toolbars = Array.prototype.slice.call(document.querySelectorAll('[aria-controls="map"]'));
-                toolbars.forEach(function(btn){ var p = btn.closest('div'); if (p) { p.setAttribute('role','toolbar'); p.setAttribute('aria-label','Harita araçları'); } });
+                toolbars.forEach(function(btn) {
+                    var p = btn.closest('div');
+                    if (p) {
+                        p.setAttribute('role', 'toolbar');
+                        p.setAttribute('aria-label', 'Harita araçları');
+                    }
+                });
             })();
         </script>
         <script>
-            (function () {
-                const csrf = document.querySelector('meta[name="csrf-token"]')?.content || document.querySelector('input[name="_token"]')?.value;
+            (function() {
+                const csrf = document.querySelector('meta[name="csrf-token"]')?.content || document.querySelector(
+                    'input[name="_token"]')?.value;
                 const changeStack = [];
 
                 function collectContext() {
                     const ctx = {};
                     // Kategori/Yayın Tipi (varsayılan seçim alanlarından topla; mevcut isimler kategori sistemine göre değişebilir)
-                    ctx.kategori = document.querySelector('[name="kategori"]')?.value || document.querySelector('[data-selected-category]')?.getAttribute('data-selected-category') || '';
-                    ctx.altKategori = document.querySelector('[name="alt_kategori"]')?.value || document.querySelector('[data-selected-subcategory]')?.getAttribute('data-selected-subcategory') || '';
-                    ctx.yayinTipi = document.querySelector('[name="yayin_tipi"]')?.value || document.querySelector('[data-selected-publication]')?.getAttribute('data-selected-publication') || '';
+                    ctx.kategori = document.querySelector('[name="kategori"]')?.value || document.querySelector(
+                        '[data-selected-category]')?.getAttribute('data-selected-category') || '';
+                    ctx.altKategori = document.querySelector('[name="alt_kategori"]')?.value || document.querySelector(
+                        '[data-selected-subcategory]')?.getAttribute('data-selected-subcategory') || '';
+                    ctx.yayinTipi = document.querySelector('[name="yayin_tipi"]')?.value || document.querySelector(
+                        '[data-selected-publication]')?.getAttribute('data-selected-publication') || '';
                     // Lokasyon
-                    ctx.il = document.querySelector('[name="il_id"]')?.value || document.querySelector('[data-selected-il]')?.getAttribute('data-selected-il') || '';
-                    ctx.ilce = document.querySelector('[name="ilce_id"]')?.value || document.querySelector('[data-selected-ilce]')?.getAttribute('data-selected-ilce') || '';
-                    ctx.mahalle = document.querySelector('[name="mahalle_id"]')?.value || document.querySelector('[data-selected-mahalle]')?.getAttribute('data-selected-mahalle') || '';
+                    ctx.il = document.querySelector('[name="il_id"]')?.value || document.querySelector('[data-selected-il]')
+                        ?.getAttribute('data-selected-il') || '';
+                    ctx.ilce = document.querySelector('[name="ilce_id"]')?.value || document.querySelector(
+                        '[data-selected-ilce]')?.getAttribute('data-selected-ilce') || '';
+                    ctx.mahalle = document.querySelector('[name="mahalle_id"]')?.value || document.querySelector(
+                        '[data-selected-mahalle]')?.getAttribute('data-selected-mahalle') || '';
                     // Alanlar
                     ctx.odaSayisi = document.querySelector('[name="oda_sayisi"]')?.value || '';
                     ctx.metrekare = document.querySelector('[name="metrekare"]')?.value || '';
@@ -575,7 +982,8 @@
                     ctx.fiyat = document.querySelector('[name="fiyat"]')?.value || '';
                     ctx.paraBirimi = document.querySelector('[name="para_birimi"]')?.value || '';
                     // Manzara gibi özellikler (checkbox/grup)
-                    ctx.manzara = Array.from(document.querySelectorAll('[name="manzara[]"], [data-feature-group="manzara"] input[type="checkbox"]'))
+                    ctx.manzara = Array.from(document.querySelectorAll(
+                            '[name="manzara[]"], [data-feature-group="manzara"] input[type="checkbox"]'))
                         .filter(el => el.checked)
                         .map(el => el.value || el.getAttribute('data-feature'));
                     return ctx;
@@ -583,8 +991,10 @@
 
                 function showSuggestion(title, body) {
                     const box = document.createElement('div');
-                    box.className = 'p-3 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700';
-                    box.innerHTML = `<div class="text-sm font-semibold text-gray-900 dark:text-white mb-1">${title}</div><div class="text-sm text-gray-700 dark:text-gray-300">${body}</div>`;
+                    box.className =
+                        'p-3 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700';
+                    box.innerHTML =
+                        `<div class="text-sm font-semibold text-gray-900 dark:text-white mb-1">${title}</div><div class="text-sm text-gray-700 dark:text-gray-300">${body}</div>`;
                     document.getElementById('ai-suggestions')?.prepend(box);
                 }
 
@@ -593,24 +1003,41 @@
                     let oldVal = null;
                     if (type === 'title') {
                         const el = document.querySelector('[name="ilan_basligi"], [name="title"]');
-                        if (el) { oldVal = el.value; el.value = value; }
+                        if (el) {
+                            oldVal = el.value;
+                            el.value = value;
+                        }
                     } else if (type === 'description') {
                         const el = document.querySelector('[name="aciklama"], [name="description"]');
-                        if (el) { oldVal = el.value; el.value = value; }
+                        if (el) {
+                            oldVal = el.value;
+                            el.value = value;
+                        }
                     } else if (type === 'price') {
                         const el = document.querySelector('[name="fiyat"], [name="price"]');
-                        if (el) { oldVal = el.value; el.value = value; }
+                        if (el) {
+                            oldVal = el.value;
+                            el.value = value;
+                        }
                     } else if (type === 'feature') {
-                        const key = typeof value === 'object' ? (value.key || value.value || value.label || '') : String(value || '');
+                        const key = typeof value === 'object' ? (value.key || value.value || value.label || '') : String(
+                            value || '');
                         const val = typeof value === 'object' ? (value.value ?? '') : '';
                         const group = typeof value === 'object' ? (value.group || '') : '';
 
-                        const fmap = (window.FieldDependenciesManager && (window.FieldDependenciesManager.getFeatureMap ? window.FieldDependenciesManager.getFeatureMap() : window.FieldDependenciesManager.featureMap)) || {};
+                        const fmap = (window.FieldDependenciesManager && (window.FieldDependenciesManager.getFeatureMap ?
+                            window.FieldDependenciesManager.getFeatureMap() : window.FieldDependenciesManager
+                            .featureMap)) || {};
                         let target = null;
                         if (fmap && key) {
-                            const entries = Object.entries(fmap).map(([slug, m]) => ({ slug, m }));
-                            const exactSlug = entries.find(e => e.slug && e.slug.toLowerCase() === key.toLowerCase() && (!group || (e.m.group || '') === group));
-                            const exactLabel = entries.find(e => e.m.label && e.m.label.toLowerCase() === key.toLowerCase() && (!group || (e.m.group || '') === group));
+                            const entries = Object.entries(fmap).map(([slug, m]) => ({
+                                slug,
+                                m
+                            }));
+                            const exactSlug = entries.find(e => e.slug && e.slug.toLowerCase() === key.toLowerCase() && (!
+                                group || (e.m.group || '') === group));
+                            const exactLabel = entries.find(e => e.m.label && e.m.label.toLowerCase() === key
+                                .toLowerCase() && (!group || (e.m.group || '') === group));
                             target = exactSlug || exactLabel || null;
                         }
 
@@ -622,19 +1049,35 @@
                                     let setVal = val || key;
                                     let matched = false;
                                     for (const opt of Array.from(el.options)) {
-                                        if (opt.value && opt.value.toLowerCase() === setVal.toLowerCase()) { el.value = opt.value; matched = true; break; }
-                                        if (opt.text && opt.text.toLowerCase() === setVal.toLowerCase()) { el.value = opt.value; matched = true; break; }
+                                        if (opt.value && opt.value.toLowerCase() === setVal.toLowerCase()) {
+                                            el.value = opt.value;
+                                            matched = true;
+                                            break;
+                                        }
+                                        if (opt.text && opt.text.toLowerCase() === setVal.toLowerCase()) {
+                                            el.value = opt.value;
+                                            matched = true;
+                                            break;
+                                        }
                                     }
-                                    if (!matched) { el.value = setVal; }
-                                    el.dispatchEvent(new Event('change', { bubbles: true }));
+                                    if (!matched) {
+                                        el.value = setVal;
+                                    }
+                                    el.dispatchEvent(new Event('change', {
+                                        bubbles: true
+                                    }));
                                 } else if (el.type === 'checkbox' || el.type === 'radio') {
                                     oldVal = el.checked;
                                     el.checked = true;
-                                    el.dispatchEvent(new Event('change', { bubbles: true }));
+                                    el.dispatchEvent(new Event('change', {
+                                        bubbles: true
+                                    }));
                                 } else {
                                     oldVal = el.value;
                                     el.value = val || key;
-                                    el.dispatchEvent(new Event('input', { bubbles: true }));
+                                    el.dispatchEvent(new Event('input', {
+                                        bubbles: true
+                                    }));
                                 }
                                 return oldVal;
                             }
@@ -662,19 +1105,35 @@
                                     let setVal = val || key;
                                     let matched = false;
                                     for (const opt of Array.from(el.options)) {
-                                        if (opt.value && opt.value.toLowerCase() === setVal.toLowerCase()) { el.value = opt.value; matched = true; break; }
-                                        if (opt.text && opt.text.toLowerCase() === setVal.toLowerCase()) { el.value = opt.value; matched = true; break; }
+                                        if (opt.value && opt.value.toLowerCase() === setVal.toLowerCase()) {
+                                            el.value = opt.value;
+                                            matched = true;
+                                            break;
+                                        }
+                                        if (opt.text && opt.text.toLowerCase() === setVal.toLowerCase()) {
+                                            el.value = opt.value;
+                                            matched = true;
+                                            break;
+                                        }
                                     }
-                                    if (!matched) { el.value = setVal; }
-                                    el.dispatchEvent(new Event('change', { bubbles: true }));
+                                    if (!matched) {
+                                        el.value = setVal;
+                                    }
+                                    el.dispatchEvent(new Event('change', {
+                                        bubbles: true
+                                    }));
                                 } else if (el.type === 'checkbox' || el.type === 'radio') {
                                     oldVal = el.checked;
                                     el.checked = true;
-                                    el.dispatchEvent(new Event('change', { bubbles: true }));
+                                    el.dispatchEvent(new Event('change', {
+                                        bubbles: true
+                                    }));
                                 } else {
                                     oldVal = el.value;
                                     el.value = val || key;
-                                    el.dispatchEvent(new Event('input', { bubbles: true }));
+                                    el.dispatchEvent(new Event('input', {
+                                        bubbles: true
+                                    }));
                                 }
                                 break;
                             }
@@ -700,7 +1159,8 @@
 
                 function showActionableSuggestion(type, title, body, payload) {
                     const box = document.createElement('div');
-                    box.className = 'p-3 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700';
+                    box.className =
+                        'p-3 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700';
                     box.innerHTML = `
                         <div class="flex items-start justify-between gap-3">
                             <div>
@@ -715,7 +1175,9 @@
                         </div>
                     `;
                     box.dataset.type = type || '';
-                    const valObj = typeof payload === 'object' ? payload : { value: payload ?? body };
+                    const valObj = typeof payload === 'object' ? payload : {
+                        value: payload ?? body
+                    };
                     box.dataset.value = JSON.stringify(valObj);
                     box.addEventListener('click', async (ev) => {
                         const btn = ev.target.closest('button[data-action]');
@@ -724,7 +1186,9 @@
                         if (action === 'apply') {
                             const t = box.dataset.type;
                             let parsed = {};
-                            try { parsed = JSON.parse(box.dataset.value || '{}'); } catch (e) {}
+                            try {
+                                parsed = JSON.parse(box.dataset.value || '{}');
+                            } catch (e) {}
                             const v = parsed;
                             const oldVal = applyToForm(t, parsed.value ?? parsed.key ?? parsed.label ?? parsed);
                             let fieldName = t;
@@ -733,7 +1197,13 @@
                                 const grp = parsed.group ? parsed.group + ':' : '';
                                 fieldName = 'feature:' + grp + key;
                             }
-                            changeStack.push({ type: t, key: parsed.key ?? parsed.value ?? parsed.label ?? '', group: parsed.group || '', old: oldVal, new: parsed.value ?? parsed });
+                            changeStack.push({
+                                type: t,
+                                key: parsed.key ?? parsed.value ?? parsed.label ?? '',
+                                group: parsed.group || '',
+                                old: oldVal,
+                                new: parsed.value ?? parsed
+                            });
                             await logChange('apply_suggestion', fieldName, oldVal, parsed.value ?? true);
                             box.remove();
                         } else if (action === 'ignore') {
@@ -742,7 +1212,9 @@
                         } else if (action === 'copy') {
                             const t = box.dataset.type;
                             let parsed = {};
-                            try { parsed = JSON.parse(box.dataset.value || '{}'); } catch (e) {}
+                            try {
+                                parsed = JSON.parse(box.dataset.value || '{}');
+                            } catch (e) {}
                             const textToCopy = String(parsed.value ?? parsed.key ?? parsed.label ?? body ?? '');
                             navigator.clipboard && navigator.clipboard.writeText(textToCopy);
                             box.remove();
@@ -783,17 +1255,24 @@
                         for (const el of elements) {
                             const featSlug = el.getAttribute('data-feature') || '';
                             const featLabel = el.getAttribute('data-feature-label') || '';
-                            const matches = (featSlug && featSlug.toLowerCase() === String(change.key).toLowerCase()) || (featLabel && featLabel.toLowerCase() === String(change.key).toLowerCase());
+                            const matches = (featSlug && featSlug.toLowerCase() === String(change.key).toLowerCase()) || (
+                                featLabel && featLabel.toLowerCase() === String(change.key).toLowerCase());
                             if (matches) {
                                 if (el.tagName === 'SELECT') {
                                     el.value = String(change.old || '');
-                                    el.dispatchEvent(new Event('change', { bubbles: true }));
+                                    el.dispatchEvent(new Event('change', {
+                                        bubbles: true
+                                    }));
                                 } else if (el.type === 'checkbox' || el.type === 'radio') {
                                     el.checked = !!change.old;
-                                    el.dispatchEvent(new Event('change', { bubbles: true }));
+                                    el.dispatchEvent(new Event('change', {
+                                        bubbles: true
+                                    }));
                                 } else {
                                     el.value = String(change.old || '');
-                                    el.dispatchEvent(new Event('input', { bubbles: true }));
+                                    el.dispatchEvent(new Event('input', {
+                                        bubbles: true
+                                    }));
                                 }
                                 break;
                             }
@@ -854,11 +1333,12 @@
                     if (slug.includes('arsa') || slug.includes('land')) threshold = 80;
                     else if (slug.includes('isyeri') || slug.includes('ofis') || slug.includes('office')) threshold = 75;
                     const criticalSet = new Set(
-                        slug.includes('arsa') || slug.includes('land')
-                            ? ['Metrekare', 'İmar Durumu', 'Tapu Durumu', 'Lokasyon']
-                            : slug.includes('isyeri') || slug.includes('ofis') || slug.includes('office')
-                            ? ['Metrekare', 'Lokasyon']
-                            : ['Oda Sayısı', 'Metrekare', 'Lokasyon']
+                        slug.includes('arsa') || slug.includes('land') ? ['Metrekare', 'İmar Durumu', 'Tapu Durumu',
+                            'Lokasyon'
+                        ] :
+                        slug.includes('isyeri') || slug.includes('ofis') || slug.includes('office') ? ['Metrekare',
+                            'Lokasyon'
+                        ] : ['Oda Sayısı', 'Metrekare', 'Lokasyon']
                     );
                     const missingCritical = missing.filter(l => criticalSet.has(l));
 
@@ -867,14 +1347,18 @@
                     const badgeEl = document.getElementById('ai-readiness-badge');
                     const barFillEl = document.getElementById('ai-readiness-bar-fill');
                     if (statusEl) statusEl.textContent = `Bağlam Durumu: %${pct}`;
-                    if (hintEl) hintEl.textContent = missing.length ? `Eksik: ${missing.join(', ')}${missingCritical.length ? ' • Kritik: ' + missingCritical.join(', ') : ''}` : '';
+                    if (hintEl) hintEl.textContent = missing.length ?
+                        `Eksik: ${missing.join(', ')}${missingCritical.length ? ' • Kritik: ' + missingCritical.join(', ') : ''}` :
+                        '';
                     if (badgeEl) {
                         if (pct >= threshold) {
                             badgeEl.textContent = 'Hazır';
-                            badgeEl.className = 'text-xs px-2 py-1 rounded bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300';
+                            badgeEl.className =
+                                'text-xs px-2 py-1 rounded bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300';
                         } else {
                             badgeEl.textContent = 'Hazır değil';
-                            badgeEl.className = 'text-xs px-2 py-1 rounded bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300';
+                            badgeEl.className =
+                                'text-xs px-2 py-1 rounded bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300';
                         }
                     }
 
@@ -902,8 +1386,11 @@
                     if (last) revertChange(last);
                 });
                 document.getElementById('ai-apply-all')?.addEventListener('click', () => {
-                    const btns = Array.from(document.querySelectorAll('#ai-suggestions button[data-action="apply"]'));
-                    btns.forEach(b => b.dispatchEvent(new MouseEvent('click', { bubbles: true })));
+                    const btns = Array.from(document.querySelectorAll(
+                        '#ai-suggestions button[data-action="apply"]'));
+                    btns.forEach(b => b.dispatchEvent(new MouseEvent('click', {
+                        bubbles: true
+                    })));
                 });
 
                 document.addEventListener('keydown', (e) => {
@@ -923,7 +1410,9 @@
                     if (k === 'a') {
                         e.preventDefault();
                         const top = document.querySelector('#ai-suggestions [data-action="apply"]');
-                        if (top) top.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+                        if (top) top.dispatchEvent(new MouseEvent('click', {
+                            bubbles: true
+                        }));
                         return;
                     }
                 });
@@ -931,7 +1420,9 @@
                 const formEl = document.getElementById('ilan-create-form');
                 if (formEl) {
                     formEl.addEventListener('submit', (e) => {
-                        const fmap = (window.FieldDependenciesManager && (window.FieldDependenciesManager.getFeatureMap ? window.FieldDependenciesManager.getFeatureMap() : window.FieldDependenciesManager.featureMap)) || {};
+                        const fmap = (window.FieldDependenciesManager && (window.FieldDependenciesManager
+                            .getFeatureMap ? window.FieldDependenciesManager.getFeatureMap() : window
+                            .FieldDependenciesManager.featureMap)) || {};
                         const containerId = 'features-hidden-container';
                         let container = document.getElementById(containerId);
                         if (!container) {
@@ -967,7 +1458,9 @@
                 document.getElementById('ai-generate-title')?.addEventListener('click', async () => {
                     const ctx = collectContext();
                     try {
-                        const data = await postJSON('/admin/ilanlar/generate-ai-title', { context: ctx });
+                        const data = await postJSON('/admin/ilanlar/generate-ai-title', {
+                            context: ctx
+                        });
                         const text = (data && (data.title || data.data?.title)) || 'Öneri üretilemedi';
                         showActionableSuggestion('title', 'Başlık Önerisi', text, text);
                         // İsteğe bağlı: form alanına yaz
@@ -981,8 +1474,11 @@
                 document.getElementById('ai-generate-description')?.addEventListener('click', async () => {
                     const ctx = collectContext();
                     try {
-                        const data = await postJSON('/admin/ilanlar/generate-ai-description', { context: ctx });
-                        const text = (data && (data.description || data.data?.description)) || 'Öneri üretilemedi';
+                        const data = await postJSON('/admin/ilanlar/generate-ai-description', {
+                            context: ctx
+                        });
+                        const text = (data && (data.description || data.data?.description)) ||
+                            'Öneri üretilemedi';
                         showActionableSuggestion('description', 'Açıklama Önerisi', text, text);
                         const descInput = document.querySelector('[name="aciklama"]');
                         if (descInput && text) descInput.value = text;
@@ -994,11 +1490,14 @@
                 document.getElementById('ai-price-suggestion')?.addEventListener('click', async () => {
                     const ctx = collectContext();
                     try {
-                        const data = await postJSON('/admin/ilanlar/ai-price-optimization', { context: ctx });
+                        const data = await postJSON('/admin/ilanlar/ai-price-optimization', {
+                            context: ctx
+                        });
                         const suggestion = data?.data?.optimized || data?.optimized || null;
                         const currency = ctx.paraBirimi || 'TRY';
                         if (suggestion) {
-                            showActionableSuggestion('price', 'Fiyat Önerisi', `${suggestion} ${currency}`, String(suggestion));
+                            showActionableSuggestion('price', 'Fiyat Önerisi', `${suggestion} ${currency}`,
+                                String(suggestion));
                             const priceInput = document.querySelector('[name="fiyat"]');
                             if (priceInput) priceInput.value = suggestion;
                         } else {
@@ -1012,12 +1511,17 @@
                 document.getElementById('ai-field-suggestion')?.addEventListener('click', async () => {
                     const ctx = collectContext();
                     try {
-                        const data = await postJSON('/admin/ilanlar/ai-property-suggestions', { context: ctx });
+                        const data = await postJSON('/admin/ilanlar/ai-property-suggestions', {
+                            context: ctx
+                        });
                         const items = data?.data?.suggestions || data?.suggestions || [];
                         if (Array.isArray(items) && items.length) {
                             items.slice(0, 5).forEach(s => {
-                                const label = s && typeof s === 'object' ? (s.label || s.key || s.value || '') : String(s || '');
-                                const payload = s && typeof s === 'object' ? s : { key: label };
+                                const label = s && typeof s === 'object' ? (s.label || s.key || s
+                                    .value || '') : String(s || '');
+                                const payload = s && typeof s === 'object' ? s : {
+                                    key: label
+                                };
                                 showActionableSuggestion('feature', 'Alan Önerisi', label, payload);
                             });
                         } else {
@@ -1030,88 +1534,144 @@
             })();
         </script>
         <script>
-            (function(){
+            (function() {
                 // Toast shim: window.toast('message','type')
                 try {
                     if (typeof window.toast !== 'function') {
-                        window.toast = function(msg, type){
+                        window.toast = function(msg, type) {
                             try {
-                                if (window.Toast && typeof window.Toast[(type||'info')] === 'function') {
-                                    window.Toast[(type||'info')](String(msg||''));
-                                } else if (window.toast && typeof window.toast[(type||'info')] === 'function') {
-                                    window.toast[(type||'info')](String(msg||''));
+                                if (window.Toast && typeof window.Toast[(type || 'info')] === 'function') {
+                                    window.Toast[(type || 'info')](String(msg || ''));
+                                } else if (window.toast && typeof window.toast[(type || 'info')] === 'function') {
+                                    window.toast[(type || 'info')](String(msg || ''));
                                 } else {
-                                    console[(type==='error'?'error':'log')](String(msg||''));
+                                    console[(type === 'error' ? 'error' : 'log')](String(msg || ''));
                                 }
-                            } catch(e){ console.log(String(msg||'')); }
+                            } catch (e) {
+                                console.log(String(msg || ''));
+                            }
                         };
                     }
-                } catch(e) {}
+                } catch (e) {}
 
                 // AdvancedPriceManager guard: ensure convertedPrices exists and guard update
                 try {
                     if (typeof window.advancedPriceManager === 'function') {
                         var _origAPM = window.advancedPriceManager;
-                        window.advancedPriceManager = function(){
+                        window.advancedPriceManager = function() {
                             var obj = _origAPM();
-                            if (!obj.convertedPrices) { obj.convertedPrices = {TRY:'',USD:'',EUR:'',GBP:''}; }
+                            if (!obj.convertedPrices) {
+                                obj.convertedPrices = {
+                                    TRY: '',
+                                    USD: '',
+                                    EUR: '',
+                                    GBP: ''
+                                };
+                            }
                             if (!obj.exchangeRates) {
-                                obj.exchangeRates = (window.currencyRates || {TRY:1,USD:0,EUR:0,GBP:0});
+                                obj.exchangeRates = (window.currencyRates || {
+                                    TRY: 1,
+                                    USD: 0,
+                                    EUR: 0,
+                                    GBP: 0
+                                });
                             }
                             if (typeof obj.updateConvertedPrices === 'function') {
                                 var _origUpd = obj.updateConvertedPrices;
-                                obj.updateConvertedPrices = function(){
-                                    try { return _origUpd.apply(this, arguments); }
-                                    catch(e){
+                                obj.updateConvertedPrices = function() {
+                                    try {
+                                        return _origUpd.apply(this, arguments);
+                                    } catch (e) {
                                         console.warn('updateConvertedPrices guard:', e);
-                                        this.convertedPrices = this.convertedPrices || {TRY:'',USD:'',EUR:'',GBP:''};
-                                        this.exchangeRates = this.exchangeRates || (window.currencyRates || {TRY:1,USD:0,EUR:0,GBP:0});
+                                        this.convertedPrices = this.convertedPrices || {
+                                            TRY: '',
+                                            USD: '',
+                                            EUR: '',
+                                            GBP: ''
+                                        };
+                                        this.exchangeRates = this.exchangeRates || (window.currencyRates || {
+                                            TRY: 1,
+                                            USD: 0,
+                                            EUR: 0,
+                                            GBP: 0
+                                        });
                                     }
                                 };
                             }
                             return obj;
                         };
                     }
-                } catch(e) {}
+                } catch (e) {}
 
                 // Submit guard: remove required from hidden/disabled controls to avoid focus errors
                 try {
                     var form = document.getElementById('ilan-create-form');
                     if (form) {
-                        form.addEventListener('submit', function(ev){
+                        form.addEventListener('submit', function(ev) {
                             var controls = Array.prototype.slice.call(form.querySelectorAll('[required]'));
-                            controls.forEach(function(el){
-                                var hidden = (el.offsetParent === null) || el.closest('[style*="display: none" ]');
-                                if (hidden || el.disabled) { el.removeAttribute('required'); }
+                            controls.forEach(function(el) {
+                                var hidden = (el.offsetParent === null) || el.closest(
+                                    '[style*="display: none" ]');
+                                if (hidden || el.disabled) {
+                                    el.removeAttribute('required');
+                                }
                             });
-                        }, {capture:true});
+                        }, {
+                            capture: true
+                        });
                     }
-                } catch(e) {}
+                } catch (e) {}
             })();
         </script>
         <script>
-            (function(){
+            (function() {
                 // Currency rates shim: ensure window.currencyRates is set
-                function setDefaults(){ window.currencyRates = window.currencyRates || {TRY:1,USD:0,EUR:0,GBP:0}; }
+                function setDefaults() {
+                    window.currencyRates = window.currencyRates || {
+                        TRY: 1,
+                        USD: 0,
+                        EUR: 0,
+                        GBP: 0
+                    };
+                }
                 setDefaults();
                 try {
-                    fetch('/api/currency/rates', { headers: { 'Accept': 'application/json' }})
-                        .then(function(r){ return r.json(); })
-                        .then(function(json){
+                    fetch('/api/currency/rates', {
+                            headers: {
+                                'Accept': 'application/json'
+                            }
+                        })
+                        .then(function(r) {
+                            return r.json();
+                        })
+                        .then(function(json) {
                             var data = Array.isArray(json) ? json : (json.data || json);
                             var rates = {};
                             if (data && typeof data === 'object') {
-                                ['TRY','USD','EUR','GBP'].forEach(function(k){
+                                ['TRY', 'USD', 'EUR', 'GBP'].forEach(function(k) {
                                     var v = data[k];
-                                    if (v && typeof v === 'object' && 'rate' in v) { rates[k] = Number(v.rate)||0; }
-                                    else { rates[k] = Number(v)||0; }
+                                    if (v && typeof v === 'object' && 'rate' in v) {
+                                        rates[k] = Number(v.rate) || 0;
+                                    } else {
+                                        rates[k] = Number(v) || 0;
+                                    }
                                 });
                             }
-                            if (Object.keys(rates).length) { window.currencyRates = rates; }
+                            if (Object.keys(rates).length) {
+                                window.currencyRates = rates;
+                            }
                         })
-                        .catch(function(){ /* silent */ });
-                } catch(e) {}
-                window.getCurrencyRate = function(code){ try { return Number((window.currencyRates||{})[code])||0; } catch(e){ return 0; } };
+                        .catch(function() {
+                            /* silent */
+                        });
+                } catch (e) {}
+                window.getCurrencyRate = function(code) {
+                    try {
+                        return Number((window.currencyRates || {})[code]) || 0;
+                    } catch (e) {
+                        return 0;
+                    }
+                };
             })();
         </script>
     @endpush
@@ -1141,26 +1701,42 @@
     @vite(['resources/js/admin/ilan-create.js'])
     <script type="module" src="{{ asset('js/leaflet-draw-loader.js') }}"></script>
     @push('scripts')
-    <script>
-    (function(){
-      if(!window.toast){
-        window.toast = {
-          error: function(msg){ if(window.showToast){ window.showToast('error', msg); } else { console.error(msg); } },
-          success: function(msg){ if(window.showToast){ window.showToast('success', msg); } else { console.log(msg); } }
-        };
-      }
-      const form = document.querySelector('form');
-      if(form){
-        form.addEventListener('submit', function(){
-          const nodes = form.querySelectorAll('input,select,textarea');
-          nodes.forEach(function(el){
-            const hidden = (el.offsetParent === null) || el.closest('[hidden]') || el.closest('.hidden');
-            if(hidden){ el.removeAttribute('required'); el.setAttribute('disabled','disabled'); }
-          });
-        });
-      }
-    })();
-    </script>
+        <script>
+            (function() {
+                if (!window.toast) {
+                    window.toast = {
+                        error: function(msg) {
+                            if (window.showToast) {
+                                window.showToast('error', msg);
+                            } else {
+                                console.error(msg);
+                            }
+                        },
+                        success: function(msg) {
+                            if (window.showToast) {
+                                window.showToast('success', msg);
+                            } else {
+                                console.log(msg);
+                            }
+                        }
+                    };
+                }
+                const form = document.querySelector('form');
+                if (form) {
+                    form.addEventListener('submit', function() {
+                        const nodes = form.querySelectorAll('input,select,textarea');
+                        nodes.forEach(function(el) {
+                            const hidden = (el.offsetParent === null) || el.closest('[hidden]') || el
+                                .closest('.hidden');
+                            if (hidden) {
+                                el.removeAttribute('required');
+                                el.setAttribute('disabled', 'disabled');
+                            }
+                        });
+                    });
+                }
+            })();
+        </script>
     @endpush
 
     <!-- Test Script (Sadece development için) -->
@@ -1176,6 +1752,7 @@
     <script>
         // 🎯 Debug Mode (set to false in production)
         const DEBUG_MODE = {{ config('app.debug') ? 'true' : 'false' }};
+        const NOMINATIM_EMAIL = {{ json_encode(config('mail.from.address')) }};
         const log = (...args) => DEBUG_MODE && console.log(...args);
 
         log('🚀 [DEBUG] VanillaLocationManager script yükleniyor...');
@@ -1615,12 +2192,15 @@
                     window.toast?.info('Adres bilgisi getiriliyor...', 2000);
 
                     // Nominatim Reverse Geocoding API
-                    const url = `https://nominatim.openstreetmap.org/reverse?` +
+                    let url = `https://nominatim.openstreetmap.org/reverse?` +
                         `lat=${lat}` +
                         `&lon=${lng}` +
                         `&format=json` +
                         `&addressdetails=1` +
                         `&accept-language=tr`;
+                    if (NOMINATIM_EMAIL) {
+                        url += `&email=${encodeURIComponent(NOMINATIM_EMAIL)}`;
+                    }
 
                     // ✅ RETRY LOGIC: 3 deneme
                     let response;
@@ -1995,11 +2575,14 @@
 
                     this.lastGeocodeCall = Date.now();
 
-                    const url = `https://nominatim.openstreetmap.org/search?` +
+                    let url = `https://nominatim.openstreetmap.org/search?` +
                         `q=${encodeURIComponent(query)}` +
                         `&format=json` +
                         `&limit=1` +
                         `&addressdetails=1`;
+                    if (NOMINATIM_EMAIL) {
+                        url += `&email=${encodeURIComponent(NOMINATIM_EMAIL)}`;
+                    }
 
                     // ✅ RETRY LOGIC: 3 deneme
                     let response;
@@ -2194,52 +2777,52 @@
         log('✅ Vanilla Location Manager registered globally');
         log('🔍 [DEBUG] window.VanillaLocationManager:', typeof window.VanillaLocationManager);
 
-        // ✅ DEBUG TOOLS: Harita durumu kontrolü için global fonksiyon
-        window.mapStatus = () => {
-            const manager = window.VanillaLocationManager;
-            if (!manager) {
-                return {
-                    status: 'error',
-                    message: 'VanillaLocationManager bulunamadı'
-                };
-            }
-
-            const map = manager.map;
-            const marker = manager.marker;
-            const lastGeocodeCall = manager.lastGeocodeCall || 0;
-            const now = Date.now();
-            const timeSinceLastCall = now - lastGeocodeCall;
-            const rateLimitWait = Math.max(0, 1000 - timeSinceLastCall);
-
-            return {
-                status: 'ok',
-                map: {
-                    initialized: !!map,
-                    center: map ? map.getCenter() : null,
-                    zoom: map ? map.getZoom() : null,
-                    bounds: map ? map.getBounds() : null
-                },
-                marker: {
-                    placed: !!marker,
-                    position: marker ? marker.getLatLng() : null,
-                    draggable: marker ? marker.draggable : false
-                },
-                geocoding: {
-                    lastCall: lastGeocodeCall ? new Date(lastGeocodeCall).toISOString() : 'Never',
-                    timeSinceLastCall: timeSinceLastCall,
-                    rateLimitWait: rateLimitWait,
-                    canCallNow: rateLimitWait === 0
-                },
-                config: {
-                    latField: manager.config?.latField || 'enlem',
-                    lngField: manager.config?.lngField || 'boylam',
-                    addressField: manager.config?.addressField || 'adres',
-                    isSilentUpdate: manager.isSilentUpdate || false
+        if (DEBUG_MODE) {
+            window.mapStatus = () => {
+                const manager = window.VanillaLocationManager;
+                if (!manager) {
+                    return {
+                        status: 'error',
+                        message: 'VanillaLocationManager bulunamadı'
+                    };
                 }
-            };
-        };
 
-        log('✅ Debug tool: window.mapStatus() hazır');
+                const map = manager.map;
+                const marker = manager.marker;
+                const lastGeocodeCall = manager.lastGeocodeCall || 0;
+                const now = Date.now();
+                const timeSinceLastCall = now - lastGeocodeCall;
+                const rateLimitWait = Math.max(0, 1000 - timeSinceLastCall);
+
+                return {
+                    status: 'ok',
+                    map: {
+                        initialized: !!map,
+                        center: map ? map.getCenter() : null,
+                        zoom: map ? map.getZoom() : null,
+                        bounds: map ? map.getBounds() : null
+                    },
+                    marker: {
+                        placed: !!marker,
+                        position: marker ? marker.getLatLng() : null,
+                        draggable: marker ? marker.draggable : false
+                    },
+                    geocoding: {
+                        lastCall: lastGeocodeCall ? new Date(lastGeocodeCall).toISOString() : 'Never',
+                        timeSinceLastCall: timeSinceLastCall,
+                        rateLimitWait: rateLimitWait,
+                        canCallNow: rateLimitWait === 0
+                    },
+                    config: {
+                        latField: manager.config?.latField || 'enlem',
+                        lngField: manager.config?.lngField || 'boylam',
+                        addressField: manager.config?.addressField || 'adres',
+                        isSilentUpdate: manager.isSilentUpdate || false
+                    }
+                };
+            };
+            log('✅ Debug tool: window.mapStatus() hazır');
+        }
 
         // Harita tipi değiştirme fonksiyonu (global scope)
         window.setMapType = function(type) {
@@ -3315,5 +3898,149 @@
             DraftAutoSave.init();
             console.log('✅ Draft Auto-save initialized');
         });
+
+        // ===================================
+        // Keyboard Shortcuts
+        // Context7: Kullanıcı deneyimi iyileştirmesi
+        // ===================================
+        document.addEventListener('keydown', (e) => {
+            // Ctrl+S veya Cmd+S: Taslak kaydet
+            if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+                // Form içindeyse ve textarea/input focus'ta değilse
+                const activeElement = document.activeElement;
+                const isInputFocused = activeElement && (
+                    activeElement.tagName === 'INPUT' ||
+                    activeElement.tagName === 'TEXTAREA' ||
+                    activeElement.isContentEditable
+                );
+
+                // Eğer input focus'ta değilse veya Ctrl+S ise (default save'i engelle)
+                if (!isInputFocused || e.ctrlKey || e.metaKey) {
+                    e.preventDefault();
+                    const saveDraftBtn = document.getElementById('save-draft-btn');
+                    if (saveDraftBtn) {
+                        saveDraftBtn.click();
+                        window.toast?.info('💾 Taslak kaydediliyor...');
+                    }
+                }
+            }
+
+            // Ctrl+Enter veya Cmd+Enter: İlanı yayınla
+            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                e.preventDefault();
+                const submitBtn = document.getElementById('submit-btn');
+                if (submitBtn && !submitBtn.disabled) {
+                    // Validation kontrolü
+                    const form = document.querySelector('form[action*="ilanlar"]');
+                    if (form) {
+                        const validationEvent = new Event('submit', {
+                            bubbles: true,
+                            cancelable: true
+                        });
+                        form.dispatchEvent(validationEvent);
+
+                        if (!validationEvent.defaultPrevented) {
+                            submitBtn.click();
+                            window.toast?.info('🚀 İlan yayınlanıyor...');
+                        }
+                    }
+                }
+            }
+
+            // Escape: İptal (onay ile)
+            if (e.key === 'Escape') {
+                const form = document.querySelector('form[action*="ilanlar"]');
+                if (form) {
+                    const hasChanges = DraftAutoSave?.hasChanges || false;
+                    if (hasChanges) {
+                        if (confirm(
+                                'Kaydedilmemiş değişiklikler var! Sayfadan ayrılmak istediğinize emin misiniz?')) {
+                            window.location.href = '{{ route('admin.ilanlar.index') }}';
+                        }
+                    } else {
+                        window.location.href = '{{ route('admin.ilanlar.index') }}';
+                    }
+                }
+            }
+        });
+
+        // Keyboard shortcuts bilgilendirmesi (ilk yüklemede göster)
+        document.addEventListener('DOMContentLoaded', () => {
+            const shortcutsShown = sessionStorage.getItem('ilan_create_shortcuts_shown');
+            if (!shortcutsShown) {
+                setTimeout(() => {
+                    window.toast?.info('💡 İpucu: Ctrl+S (Taslak), Ctrl+Enter (Yayınla), Esc (İptal)', {
+                        duration: 5000
+                    });
+                    sessionStorage.setItem('ilan_create_shortcuts_shown', 'true');
+                }, 2000);
+            }
+        });
+
+        // ===================================
+        // Sticky Navigation - Active Section Highlight
+        // Context7: UX iyileştirmesi - Aktif bölüm highlight
+        // ===================================
+        (function() {
+            const sections = document.querySelectorAll('[id^="section-"]');
+            const navLinks = document.querySelectorAll('.section-nav-link');
+
+            // Smooth scroll for navigation links
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = link.getAttribute('href');
+                    const targetSection = document.querySelector(targetId);
+                    if (targetSection) {
+                        const offsetTop = targetSection.offsetTop - 100; // Account for sticky nav
+                        window.scrollTo({
+                            top: offsetTop,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+
+            // Update active section on scroll
+            function updateActiveSection() {
+                const scrollPosition = window.scrollY + 150; // Offset for sticky nav
+
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    const sectionHeight = section.offsetHeight;
+                    const sectionId = section.getAttribute('id');
+
+                    if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+                        // Remove active class from all links
+                        navLinks.forEach(link => {
+                            link.classList.remove('bg-blue-100', 'dark:bg-blue-900/30',
+                                'border-blue-500', 'dark:border-blue-500', 'text-blue-700',
+                                'dark:text-blue-300', 'font-semibold');
+                        });
+
+                        // Add active class to current section link
+                        const activeLink = document.querySelector(
+                            `.section-nav-link[data-section="${sectionId}"]`);
+                        if (activeLink) {
+                            activeLink.classList.add('bg-blue-100', 'dark:bg-blue-900/30', 'border-blue-500',
+                                'dark:border-blue-500', 'text-blue-700', 'dark:text-blue-300',
+                                'font-semibold');
+                        }
+                    }
+                });
+            }
+
+            // Throttle scroll event
+            let scrollTimeout;
+            window.addEventListener('scroll', () => {
+                if (scrollTimeout) {
+                    clearTimeout(scrollTimeout);
+                }
+                scrollTimeout = setTimeout(updateActiveSection, 50);
+            });
+
+            // Initial update
+            updateActiveSection();
+        })();
     </script>
 @endpush
