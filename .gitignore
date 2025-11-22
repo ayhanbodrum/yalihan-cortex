@@ -52,3 +52,12 @@ screenshots/*
 *.log
 .trae/
 .warp/workflows/
+
+# Archive and completed folders
+.context7/archive/
+.yalihan-bekci/archive/
+.yalihan-bekci/completed/
+*.json
+!package.json
+!composer.json
+!tsconfig.json
