@@ -4,6 +4,7 @@ namespace Tests\Unit\Traits;
 
 use App\Models\Ilan;
 use App\Traits\Filterable;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
 use Tests\TestCase;
@@ -63,24 +64,20 @@ class FilterableTest extends TestCase
         ]);
 
         // Test ascending sort
-        $query = Ilan::query();
-        $query->sort('fiyat', 'asc', 'created_at');
-        $results = $query->get();
+        $results = Ilan::query()->sort('fiyat', 'asc', 'created_at')->get();
 
         $this->assertGreaterThanOrEqual(3, $results->count());
-        $firstPrice = $results->first()->fiyat;
-        $lastPrice = $results->last()->fiyat;
-        $this->assertLessThanOrEqual($lastPrice, $firstPrice); // Ascending: first <= last
+        $prices = $results->pluck('fiyat')->values();
+        $sortedAsc = (clone $prices)->sort()->values();
+        $this->assertSame($sortedAsc->all(), $prices->all());
 
         // Test descending sort
-        $query = Ilan::query();
-        $query->sort('fiyat', 'desc', 'created_at');
-        $results = $query->get();
+        $results = Ilan::query()->sort('fiyat', 'desc', 'created_at')->get();
 
         $this->assertGreaterThanOrEqual(3, $results->count());
-        $firstPrice = $results->first()->fiyat;
-        $lastPrice = $results->last()->fiyat;
-        $this->assertGreaterThanOrEqual($firstPrice, $lastPrice); // Descending: first >= last
+        $prices = $results->pluck('fiyat')->values();
+        $sortedDesc = (clone $prices)->sortDesc()->values();
+        $this->assertSame($sortedDesc->all(), $prices->all());
 
         // Test default sort (when sort_by is null)
         $query = Ilan::query();

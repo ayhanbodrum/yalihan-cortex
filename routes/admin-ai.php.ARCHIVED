@@ -152,6 +152,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
         Route::post('/test-provider', [\App\Http\Controllers\Admin\AISettingsController::class, 'testProvider'])->name('ai-settings.test-provider');
         Route::post('/update-locale', [\App\Http\Controllers\Admin\AISettingsController::class, 'updateLocale'])->name('ai-settings.update-locale');
         Route::post('/update-currency', [\App\Http\Controllers\Admin\AISettingsController::class, 'updateCurrency'])->name('ai-settings.update-currency');
+        Route::post('/update-provider', [\App\Http\Controllers\Admin\AISettingsController::class, 'updateProvider'])->name('ai-settings.update-provider');
+        Route::post('/update-model', [\App\Http\Controllers\Admin\AISettingsController::class, 'updateModel'])->name('ai-settings.update-model');
         Route::get('/', function(){ return view('admin.ai-settings.index'); })->name('ai-settings.index');
     });
 });

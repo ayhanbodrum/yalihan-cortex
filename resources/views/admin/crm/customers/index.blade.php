@@ -1,4 +1,4 @@
-@extends('admin.layouts.neo')
+@extends('admin.layouts.admin')
 
 @section('page-title', 'CRM - Müşteri Yönetimi')
 

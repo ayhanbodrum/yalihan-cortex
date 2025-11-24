@@ -7,6 +7,11 @@
     <div class="mb-6">
         <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Raporlar</h1>
         <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">Sistem raporlarını görüntüleyin ve yönetin</p>
+        <div class="mt-4 flex gap-2">
+            <a href="{{ route('admin.reports.link-health') }}" class="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all">
+                Link Sağlık Raporu
+            </a>
+        </div>
     </div>
         <!-- İstatistik Kartları -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">

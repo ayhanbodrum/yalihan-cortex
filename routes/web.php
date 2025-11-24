@@ -12,10 +12,7 @@ Route::prefix('preferences')->name('preferences.')->group(function () {
     })->name('currency');
 });
 
-// Ana Sayfa - Gerçek Admin Paneli (Context7 Standartları)
-Route::get('/', function () {
-    return redirect()->route('admin.dashboard.index');
-})->name('home');
+
 
 // Secure file routes
 Route::middleware(['web', 'throttle:secure_file'])->group(function () {
@@ -159,9 +156,13 @@ use App\Http\Controllers\Admin\TKGMParselController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\BlogSitemapController;
 use App\Http\Controllers\IlanPublicController;
+use App\Http\Controllers\HybridController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\CustomerProfileController;
+use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Ilan\PropertyFeatureController;
+use App\Http\Controllers\Admin\CRMController;
 use App\Modules\TalepAnaliz\Controllers\TalepAnalizController;
 use Illuminate\Http\Request;
 
@@ -221,15 +222,72 @@ Route::get('/iletisim', function () {
     return view('pages.contact');
 })->name('contact');
 
+// Admin CRM (Yalıhan Bekçi: auth + admin guard)
+Route::middleware(['web','auth','admin','throttle:120,1'])->prefix('admin/crm')->name('admin.crm.')->group(function () {
+    Route::get('/ilanlar', [CRMController::class, 'ilanlarJson'])->name('ilanlar.json');
+    Route::get('/ilanlar-index', [CRMController::class, 'ilanlarPage'])->name('ilanlar.index');
+    Route::get('/ilanlar-export.csv', [CRMController::class, 'ilanlarExportCsv'])->name('ilanlar.export');
+    Route::get('/publication-type-changes', [CRMController::class, 'publicationTypeChanges'])->name('publication.changes');
+    Route::get('/publication-type-changes.csv', [CRMController::class, 'publicationTypeChangesCsv'])->name('publication.changes.csv');
+});
+
+Route::post('/contact/property/{id}', [ContactController::class, 'property'])
+    ->middleware('throttle:contact-property')
+    ->name('contact.property');
+
 Route::get('/danismanlar', function () {
     return view('pages.advisors');
 })->name('advisors');
 
 // Frontend Danışmanlar Routes
 Route::prefix('danismanlar')->name('frontend.danismanlar.')->group(function () {
-    Route::get('/', function () {
-        return view('frontend.danismanlar.index');
+    Route::get('/', function (\Illuminate\Http\Request $request) {
+        $query = \App\Models\User::query()
+            ->whereHas('roles', function ($q) {
+                $q->where('name', 'danisman');
+            });
+
+        if ($request->filled('search')) {
+            $search = $request->get('search');
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->filled('status')) {
+            $status = $request->get('status');
+            $query->where('status', $status === 'aktif' ? 1 : 0);
+        }
+
+        switch ($request->get('sort', 'name_asc')) {
+            case 'name_desc':
+                $query->orderBy('name', 'desc');
+                break;
+            case 'created_desc':
+                $query->orderBy('created_at', 'desc');
+                break;
+            case 'created_asc':
+                $query->orderBy('created_at', 'asc');
+                break;
+            default:
+                $query->orderBy('name', 'asc');
+        }
+
+        $danismanlar = $query->paginate(12);
+
+        $stats = [
+            'total' => \App\Models\User::whereHas('roles', fn($q) => $q->where('name', 'danisman'))->count(),
+            'aktif' => \App\Models\User::whereHas('roles', fn($q) => $q->where('name', 'danisman'))->where('status', 1)->count(),
+            'toplam_ilan' => \App\Models\Ilan::count(),
+        ];
+
+        $departments = config('danisman.departments', []);
+        $positions = config('danisman.positions', []);
+
+        return view('frontend.danismanlar.index', compact('danismanlar', 'stats', 'departments', 'positions'));
     })->name('index');
+
     Route::get('/{id}', function ($id) {
         return view('frontend.danismanlar.show', compact('id'));
     })->name('show');
@@ -281,10 +339,18 @@ Route::get('/test-features', function () {
     ]);
 });
 
+// Hibrit sistem API (Public + CRM)
+Route::get('/api/hybrid/listings', [HybridController::class, 'listings'])->name('api.hybrid.listings');
+
 // Neo Location Selector Test
 Route::get('/test/neo-location', function () {
     return view('test.neo-location-test');
 })->name('test.neo-location');
+
+// Admin Raporlar
+Route::middleware(['web','auth'])->prefix('admin/reports')->name('admin.reports.')->group(function () {
+    Route::get('/visits', [ReportController::class, 'visits'])->name('visits');
+});
 
 // Lokasyon API Endpoint'leri
 Route::prefix('api/location')->group(function () {
@@ -578,18 +644,8 @@ Route::middleware('auth')->group(function () {
         return view('admin.context7-test');
     })->name('admin.context7-test');
 
-    // Danışman Management (Outside admin prefix)
-    Route::prefix('/danisman')->name('danisman.')->group(function () {
-        Route::get('/', [\App\Http\Controllers\Admin\DanismanController::class, 'index'])->name('index');
-        Route::get('/create', [\App\Http\Controllers\Admin\DanismanController::class, 'create'])->name('create');
-        Route::post('/', [\App\Http\Controllers\Admin\DanismanController::class, 'store'])->name('store');
-        Route::get('/{danisman}', [\App\Http\Controllers\Admin\DanismanController::class, 'show'])->name('show');
-        Route::get('/{danisman}/edit', [\App\Http\Controllers\Admin\DanismanController::class, 'edit'])->name('edit');
-        Route::put('/{danisman}', [\App\Http\Controllers\Admin\DanismanController::class, 'update'])->name('update');
-        Route::delete('/{danisman}', [\App\Http\Controllers\Admin\DanismanController::class, 'destroy'])->name('destroy');
-        Route::post('/{danisman}/toggle-status', [\App\Http\Controllers\Admin\DanismanController::class, 'toggleStatus'])->name('toggle-status');
-        Route::post('/bulk-action', [\App\Http\Controllers\Admin\DanismanController::class, 'bulkAction'])->name('bulk-action');
-    });
+    // ✅ REMOVED: Duplicate danışman routes - Already defined in routes/admin.php at line 639
+    // Danışman routes are now only in routes/admin.php with admin prefix
 
     // CRM - Kişi Yönetimi (Public access)
     Route::resource('/kisiler', KisiController::class)->parameters(['kisiler' => 'kisi']);
@@ -703,6 +759,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/admin/ai-monitor/conflicts', [\App\Http\Controllers\Admin\SystemMonitorController::class, 'apiConflictingRoutes'])->name('admin.ai-monitor.conflicts');
         // Sayfa Sağlığı
         Route::get('/admin/ai-monitor/pages-health', [\App\Http\Controllers\Admin\SystemMonitorController::class, 'apiPagesHealth'])->name('admin.ai-monitor.pages-health');
+        Route::get('/admin/ai-monitor/health', [\App\Http\Controllers\Admin\SystemMonitorController::class, 'apiAiHealth'])->name('admin.ai-monitor.health');
         // Context7 Öğretim ve Öneri Endpoint'leri
         Route::post('/admin/ai-monitor/run-context7-fix', [\App\Http\Controllers\Admin\SystemMonitorController::class, 'runContext7Fix'])->name('admin.ai-monitor.run-context7-fix');
         Route::post('/admin/ai-monitor/apply-suggestion', [\App\Http\Controllers\Admin\SystemMonitorController::class, 'applySuggestion'])->name('admin.ai-monitor.apply-suggestion');
@@ -761,3 +818,8 @@ Route::get('/api/ai/status', function () {
         ]);
     }
 })->name('api.ai.status');
+Route::middleware(['web'])->group(function () {
+    Route::middleware(['auth'])->group(function () {
+        Route::get('/profile', [\App\Http\Controllers\ProfileController::class, 'edit'])->name('profile.edit');
+    });
+});

@@ -117,4 +117,37 @@ return [
         'cache_ttl' => env('NOMINATIM_CACHE_TTL', 3600),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | n8n Automation Platform
+    |--------------------------------------------------------------------------
+    |
+    | n8n webhook URL for automation workflows
+    | Context7 Standard: C7-N8N-INTEGRATION-2025-11-20
+    |
+    */
+
+    'n8n' => [
+        'webhook_url' => env('N8N_WEBHOOK_URL', 'https://n8n.yalihanemlak.com.tr/webhook'),
+        'api_key' => env('N8N_API_KEY', ''),
+        'timeout' => env('N8N_TIMEOUT', 30),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | AnythingLLM Service
+    |--------------------------------------------------------------------------
+    |
+    | AnythingLLM knowledge base and AI service
+    | Context7 Standard: C7-ANYTHINGLLM-INTEGRATION-2025-11-20
+    |
+    */
+
+    'anythingllm' => [
+        'base_url' => env('ANYTHINGLLM_BASE_URL', 'http://51.75.64.121:3051'),
+        'api_key' => env('ANYTHINGLLM_API_KEY', ''),
+        'timeout' => env('ANYTHINGLLM_TIMEOUT', 20),
+        'workspace_id' => env('ANYTHINGLLM_WORKSPACE_ID', ''),
+    ],
+
 ];

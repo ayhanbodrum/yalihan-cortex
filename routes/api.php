@@ -149,7 +149,7 @@ Route::prefix('ilanlar')->group(function () {
 });
 
 // AI API Routes (CSRF exempt)
-Route::prefix('admin/ai')->group(function () {
+Route::prefix('admin/ai')->middleware(['auth'])->group(function () {
     Route::post('/analyze', [\App\Http\Controllers\Api\AIController::class, 'analyze']);
     Route::post('/suggest', [\App\Http\Controllers\Api\AIController::class, 'suggest']);
     Route::post('/generate', [\App\Http\Controllers\Api\AIController::class, 'generate']);
@@ -159,10 +159,84 @@ Route::prefix('admin/ai')->group(function () {
     Route::get('/stats', [\App\Http\Controllers\Api\AIController::class, 'getStats']);
     Route::get('/logs', [\App\Http\Controllers\Api\AIController::class, 'getLogs']);
 
+    Route::post('/chat', [\App\Http\Controllers\Api\AdminAIController::class, 'chat']);
+    Route::post('/price/predict', [\App\Http\Controllers\Api\AdminAIController::class, 'pricePredict']);
+    Route::post('/suggest-features', [\App\Http\Controllers\Api\AdminAIController::class, 'suggestFeatures']);
+    Route::get('/analytics', [\App\Http\Controllers\Api\AdminAIController::class, 'analytics']);
+
     // 🤖 Talepler Create - AI Assistant Endpoints (2025-11-01)
     Route::post('/suggest-price', [\App\Http\Controllers\Api\AIController::class, 'suggestPrice']);
     Route::post('/find-matches', [\App\Http\Controllers\Api\AIController::class, 'findMatches']);
     Route::post('/generate-description', [\App\Http\Controllers\Api\AIController::class, 'generateDescription']);
+});
+
+// Public AI Routes (admin-ai.php'den)
+Route::prefix('public-ai')->name('public.ai.')->group(function () {
+    // Genel Emlak AI Sorguları (Rate Limited)
+    Route::middleware('throttle:10,1')->post('/ilan-arama', function(\Illuminate\Http\Request $request) {
+        try {
+            $validated = $request->validate([
+                'query' => 'required|string|max:500',
+                'location' => 'nullable|string|max:100',
+                'budget_min' => 'nullable|numeric|min:0',
+                'budget_max' => 'nullable|numeric|min:0'
+            ]);
+
+            // Basit ilan arama (AI olmadan)
+            $ilanlar = \App\Models\Ilan::where('status', 'active')
+                ->where('yayinlandi', true)
+                ->when($validated['location'] ?? null, function($query, $location) {
+                    return $query->whereHas('city', function($q) use ($location) {
+                        $q->where('ad', 'like', "%{$location}%");
+                    })->orWhereHas('ilce', function($q) use ($location) {
+                        $q->where('ad', 'like', "%{$location}%");
+                    });
+                })
+                ->when($validated['budget_min'] ?? null, function($query, $budget) {
+                    return $query->where('fiyat', '>=', $budget);
+                })
+                ->when($validated['budget_max'] ?? null, function($query, $budget) {
+                    return $query->where('fiyat', '<=', $budget);
+                })
+                ->limit(20)
+                ->get(['id', 'baslik', 'fiyat', 'il_id', 'ilce_id']);
+
+            return response()->json([
+                'success' => true,
+                'query' => $validated['query'],
+                'results' => $ilanlar->map(function($ilan) {
+                    return [
+                        'id' => $ilan->id,
+                        'title' => $ilan->baslik,
+                        'price' => $ilan->fiyat,
+                        'location' => [
+                            'city' => $ilan->il->ad ?? '',
+                            'district' => $ilan->ilce->ad ?? ''
+                        ]
+                    ];
+                }),
+                'count' => $ilanlar->count(),
+                'timestamp' => now()->toISOString()
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'error' => 'Arama yapılamadı: ' . $e->getMessage()
+            ], 500);
+        }
+    })->name('ilan-arama');
+});
+
+Route::prefix('context7')->group(function () {
+    Route::get('/memory/performance', function () {
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'day_changes' => \App\Models\IlanPrivateAudit::whereDate('created_at', now()->toDateString())->count(),
+                'month_changes' => \App\Models\IlanPrivateAudit::whereBetween('created_at', [now()->startOfMonth(), now()->endOfMonth()])->count(),
+            ],
+        ]);
+    });
 });
 
 // AI Assist Routes for İlan Creation (CSRF exempt)
@@ -817,7 +891,7 @@ Route::prefix('wikimapia')->name('wikimapia.')->group(function () {
 });
 
 // 🆕 Field Dependencies API (Category-based dynamic fields system)
-Route::prefix('admin')->group(function () {
+Route::prefix('admin')->middleware(['web','auth','throttle:60,1'])->group(function () {
     Route::get('/field-dependencies', [\App\Http\Controllers\Api\FieldDependencyController::class, 'index']);
     Route::get('/field-dependencies/category/{kategoriId}', [\App\Http\Controllers\Api\FieldDependencyController::class, 'getByCategory']);
 
@@ -827,6 +901,109 @@ Route::prefix('admin')->group(function () {
     Route::patch('/photos/{id}', [PhotoController::class, 'update'])->name('api.photos.update');
     Route::delete('/photos/{id}', [PhotoController::class, 'destroy'])->name('api.photos.destroy');
     Route::post('/ilanlar/{id}/photos/reorder', [PhotoController::class, 'reorder'])->name('api.ilanlar.photos.reorder');
+});
+
+// ✅ FIX: Photo routes without /admin prefix (for frontend compatibility)
+Route::prefix('ilanlar')->middleware(['web','auth'])->group(function () {
+    Route::get('/{id}/photos', [PhotoController::class, 'index'])->name('api.ilanlar.photos.public');
+    Route::post('/{id}/photos/reorder', [PhotoController::class, 'reorder'])->name('api.ilanlar.photos.reorder.public');
+
+    Route::get('/ilanlar/{id}/documents', function (\Illuminate\Http\Request $request, $id) {
+        $docs = \App\Models\IlanDocument::where('ilan_id', (int) $id)
+            ->orderBy('created_at', 'desc')
+            ->get();
+        $payload = [
+            'data' => $docs->map(function ($d) {
+                $download = $d->path ? \Illuminate\Support\Facades\Storage::url($d->path) : null;
+                return [
+                    'id' => $d->id,
+                    'title' => $d->title,
+                    'type' => $d->type,
+                    'url' => $d->url,
+                    'path' => $d->path,
+                    'download_url' => $download,
+                    'created_at' => optional($d->created_at)->toISOString(),
+                ];
+            }),
+        ];
+        $etag = sha1(json_encode($payload));
+        if ($request->headers->get('If-None-Match') === $etag) {
+            return response('', 304)->header('ETag', $etag);
+        }
+        return response()->json($payload, 200)->header('ETag', $etag);
+    })->name('api.ilanlar.documents');
+
+    Route::get('/ilanlar/{id}/documents.csv', function ($id) {
+        $docs = \App\Models\IlanDocument::where('ilan_id', (int) $id)
+            ->orderBy('created_at', 'desc')
+            ->get();
+        $rows = [];
+        $rows[] = ['ID','Başlık','Tür','URL','İndir','Tarih'];
+        foreach ($docs as $d) {
+            $rows[] = [
+                $d->id,
+                $d->title,
+                $d->type,
+                $d->url,
+                $d->path ? \Illuminate\Support\Facades\Storage::url($d->path) : '',
+                optional($d->created_at)->format('Y-m-d H:i'),
+            ];
+        }
+        $out = '';
+        foreach ($rows as $row) {
+            $out .= implode(',', array_map(function($v){
+                $v = (string)$v;
+                $v = str_replace(["\r","\n"],' ', $v);
+                if (str_contains($v, ',')) { $v = '"'.str_replace('"','""',$v).'"'; }
+                return $v;
+            }, $row)) . "\n";
+        }
+        return response($out, 200, [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename="ilan_'+(string)$id+'_documents.csv"'
+        ]);
+    })->name('api.ilanlar.documents.csv');
+
+    Route::post('/ilanlar/{id}/documents', function (\Illuminate\Http\Request $request, $id) {
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'type' => 'nullable|string|max:100',
+            'url' => 'nullable|url',
+            'file' => 'nullable|file|max:10240',
+        ]);
+        $path = null;
+        if ($request->file('file')) {
+            $path = \Illuminate\Support\Facades\Storage::putFile('documents', $request->file('file'));
+        }
+        $doc = \App\Models\IlanDocument::create([
+            'ilan_id' => (int) $id,
+            'title' => $request->input('title'),
+            'type' => $request->input('type'),
+            'url' => $request->input('url'),
+            'path' => $path,
+            'created_by' => auth()->id(),
+        ]);
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'id' => $doc->id,
+                'title' => $doc->title,
+                'type' => $doc->type,
+                'url' => $doc->url,
+                'download_url' => $doc->path ? \Illuminate\Support\Facades\Storage::url($doc->path) : null,
+                'created_at' => optional($doc->created_at)->toISOString(),
+            ],
+        ], 201);
+    })->name('api.ilanlar.documents.store');
+
+    Route::delete('/documents/{docId}', function ($docId) {
+        $doc = \App\Models\IlanDocument::findOrFail((int) $docId);
+        if ($doc->path) {
+            \Illuminate\Support\Facades\Storage::delete($doc->path);
+        }
+        $doc->delete();
+        return response()->json(['success' => true]);
+    })->name('api.documents.destroy');
 
     // Event/Booking Management API (Context7 Compliant)
     Route::get('/ilanlar/{id}/events', [EventController::class, 'index'])->name('api.ilanlar.events');
@@ -891,4 +1068,20 @@ Route::prefix('reference')->middleware(['web', 'auth'])->group(function () {
 
     // Toplu ref numarası oluştur (batch)
     Route::post('/batch-generate', [\App\Http\Controllers\Api\ReferenceController::class, 'batchGenerateRef'])->name('api.reference.batch-generate');
+});
+
+// n8n Webhook API Routes (Context7 Standard: C7-N8N-WEBHOOK-2025-11-20)
+// n8n workflow'larından gelen webhook isteklerini işler
+Route::prefix('webhook/n8n')->group(function () {
+    // Test endpoint
+    Route::post('/test', [\App\Http\Controllers\Api\N8nWebhookController::class, 'test'])->name('api.webhook.n8n.test');
+
+    // AI İlan Taslağı
+    Route::post('/ai/ilan-taslagi', [\App\Http\Controllers\Api\N8nWebhookController::class, 'ilanTaslagi'])->name('api.webhook.n8n.ai.ilan-taslagi');
+
+    // AI Mesaj Taslağı
+    Route::post('/ai/mesaj-taslagi', [\App\Http\Controllers\Api\N8nWebhookController::class, 'mesajTaslagi'])->name('api.webhook.n8n.ai.mesaj-taslagi');
+
+    // AI Sözleşme Taslağı
+    Route::post('/ai/sozlesme-taslagi', [\App\Http\Controllers\Api\N8nWebhookController::class, 'sozlesmeTaslagi'])->name('api.webhook.n8n.ai.sozlesme-taslagi');
 });

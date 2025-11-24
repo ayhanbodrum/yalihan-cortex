@@ -7,32 +7,120 @@ use Illuminate\Support\Facades\Cache;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use App\Models\KisiTakip;
 
 class CRMController extends AdminController
 {
     /**
      * CRM Dashboard
      * Context7: admin.crm.dashboard route
-     * 
+     *
      * @return \Illuminate\View\View
      */
     public function index()
     {
         // Context7: CRM dashboard stats
+        $todayActivities = 0;
+        if (\Illuminate\Support\Facades\Schema::hasTable('crm_aktiviteler')) {
+            $todayActivities = (int) \Illuminate\Support\Facades\DB::table('crm_aktiviteler')
+                ->whereDate('created_at', now()->toDateString())
+                ->count();
+        }
+
+        // Calculate high priority followups (customers with overdue followups)
+        // Context7: sonraki_takip_tarihi kisi_takip tablosunda, talepler tablosunda değil
+        $highPriorityFollowups = 0;
+        if (Schema::hasTable('kisi_takip')) {
+            $highPriorityFollowups = KisiTakip::where('sonraki_takip_tarihi', '<', now())
+                ->where('takip_tipi', 'Aktif')
+                ->distinct()
+                ->count('kisi_id');
+        }
+
+        // Get customer segments (simple grouping by status)
+        $customerSegments = [
+            'Aktif' => \App\Models\Kisi::where('status', 'Aktif')->count(),
+            'Pasif' => \App\Models\Kisi::where('status', 'Pasif')->count(),
+            'Beklemede' => \App\Models\Kisi::where('status', 'Beklemede')->count(),
+        ];
+
+        // Get recent activities (last 10)
+        $recentActivities = [];
+        if (\Illuminate\Support\Facades\Schema::hasTable('crm_aktiviteler')) {
+            $recentActivities = \Illuminate\Support\Facades\DB::table('crm_aktiviteler')
+                ->leftJoin('kisiler', 'crm_aktiviteler.kisi_id', '=', 'kisiler.id')
+                ->leftJoin('users', 'crm_aktiviteler.danisman_id', '=', 'users.id')
+                ->select([
+                    'crm_aktiviteler.*',
+                    'kisiler.ad as kisi_ad',
+                    'kisiler.soyad as kisi_soyad',
+                    'users.name as danisman_ad'
+                ])
+                ->orderBy('crm_aktiviteler.created_at', 'desc')
+                ->limit(10)
+                ->get()
+                ->map(function ($activity) {
+                    return [
+                        'kisi' => [
+                            'id' => $activity->kisi_id ?? null,
+                            'ad' => $activity->kisi_ad ?? 'Bilinmiyor',
+                            'soyad' => $activity->kisi_soyad ?? '',
+                        ],
+                        'aciklama' => $activity->aciklama ?? '',
+                        'aktivite_tipi' => $activity->aktivite_tipi ?? 'Genel',
+                        'aktivite_tarihi' => $activity->created_at ?? now(),
+                        'status' => $activity->status ?? 'Bekliyor',
+                        'danisman' => [
+                            'ad' => $activity->danisman_ad ?? 'Atanmamış',
+                        ],
+                    ];
+                })
+                ->toArray();
+        }
+
+        // Get upcoming followups (next 7 days)
+        // Context7: sonraki_takip_tarihi kisi_takip tablosunda, talepler tablosunda değil
+        $upcomingFollowUps = [];
+        if (Schema::hasTable('kisi_takip')) {
+            $upcomingFollowUps = KisiTakip::where('takip_tipi', 'Aktif')
+                ->whereBetween('sonraki_takip_tarihi', [now(), now()->addDays(7)])
+                ->whereNotNull('sonraki_takip_tarihi')
+                ->with(['kisi:id,ad,soyad', 'danisman:id,name'])
+                ->orderBy('sonraki_takip_tarihi', 'asc')
+                ->limit(10)
+                ->get()
+                ->map(function ($takip) {
+                    return [
+                        'kisi' => [
+                            'id' => $takip->kisi_id ?? null,
+                            'ad' => $takip->kisi->ad ?? 'Bilinmiyor',
+                            'soyad' => $takip->kisi->soyad ?? '',
+                        ],
+                        'sonraki_takip_tarihi' => $takip->sonraki_takip_tarihi ?? now(),
+                        'danisman' => [
+                            'ad' => $takip->danisman->name ?? 'Atanmamış',
+                        ],
+                    ];
+                })
+                ->toArray();
+        }
+
         $stats = [
             'total_customers' => \App\Models\Kisi::count(),
             'active_customers' => \App\Models\Kisi::where('status', 'Aktif')->count(),
-            'pending_followups' => 0, // TODO: Implement followup tracking
+            'pending_followups' => 0,
+            'high_priority_followups' => $highPriorityFollowups,
             'recent_activities' => [],
+            'today_activities' => $todayActivities,
         ];
 
-        return view('admin.crm.dashboard', compact('stats'));
+        return view('admin.crm.dashboard', compact('stats', 'customerSegments', 'recentActivities', 'upcomingFollowUps'));
     }
 
     /**
      * Customers Index
      * Context7: admin.crm.customers.index route
-     * 
+     *
      * @return \Illuminate\View\View
      */
     public function customers()
@@ -43,7 +131,7 @@ class CRMController extends AdminController
     /**
      * Create Customer
      * Context7: admin.crm.customers.create route
-     * 
+     *
      * @return \Illuminate\View\View
      */
     public function create()
@@ -54,7 +142,7 @@ class CRMController extends AdminController
     /**
      * Store Customer
      * Context7: admin.crm.customers.store route
-     * 
+     *
      * @param Request $request
      * @return \Illuminate\Http\RedirectResponse
      */
@@ -66,7 +154,7 @@ class CRMController extends AdminController
     /**
      * Show Customer
      * Context7: admin.crm.customers.show route
-     * 
+     *
      * @param mixed $customer
      * @return \Illuminate\View\View
      */
@@ -78,7 +166,7 @@ class CRMController extends AdminController
     /**
      * Edit Customer
      * Context7: admin.crm.customers.edit route
-     * 
+     *
      * @param mixed $customer
      * @return \Illuminate\View\View
      */
@@ -90,7 +178,7 @@ class CRMController extends AdminController
     /**
      * Update Customer
      * Context7: admin.crm.customers.update route
-     * 
+     *
      * @param Request $request
      * @param mixed $customer
      * @return \Illuminate\Http\RedirectResponse
@@ -103,7 +191,7 @@ class CRMController extends AdminController
     /**
      * Add Note to Customer
      * Context7: admin.crm.customers.notes.add route
-     * 
+     *
      * @param Request $request
      * @param mixed $customer
      * @return \Illuminate\Http\JsonResponse
@@ -117,7 +205,7 @@ class CRMController extends AdminController
     /**
      * Add Activity to Customer
      * Context7: admin.crm.customers.activities.add route
-     * 
+     *
      * @param Request $request
      * @param mixed $customer
      * @return \Illuminate\Http\JsonResponse
@@ -131,7 +219,7 @@ class CRMController extends AdminController
     /**
      * Update Follow Up
      * Context7: admin.crm.customers.followup.update route
-     * 
+     *
      * @param Request $request
      * @param mixed $customer
      * @return \Illuminate\Http\JsonResponse
@@ -145,7 +233,7 @@ class CRMController extends AdminController
     /**
      * AI Analysis for Customer
      * Context7: admin.crm.customers.ai-analysis route
-     * 
+     *
      * @param Request $request
      * @param mixed $customer
      * @return \Illuminate\Http\JsonResponse
@@ -159,7 +247,7 @@ class CRMController extends AdminController
     /**
      * Purchase Prediction for Customer
      * Context7: admin.crm.customers.purchase-prediction route
-     * 
+     *
      * @param Request $request
      * @param mixed $customer
      * @return \Illuminate\Http\JsonResponse
@@ -173,7 +261,7 @@ class CRMController extends AdminController
     /**
      * AI Analyze
      * Context7: admin.crm.ai-analyze route
-     * 
+     *
      * @return \Illuminate\View\View
      */
     public function aiAnalyze()
@@ -185,7 +273,7 @@ class CRMController extends AdminController
     /**
      * Fix Duplicates
      * Context7: admin.crm.fix-duplicates route
-     * 
+     *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
@@ -198,7 +286,7 @@ class CRMController extends AdminController
     /**
      * Generate Report
      * Context7: admin.crm.generate-report route
-     * 
+     *
      * @return \Illuminate\Http\Response
      */
     public function generateReport()
@@ -210,7 +298,7 @@ class CRMController extends AdminController
     /**
      * Risk Score for Customer
      * Context7: admin.crm.customers.risk-score route
-     * 
+     *
      * @param Request $request
      * @param mixed $customer
      * @return \Illuminate\Http\JsonResponse
@@ -224,7 +312,7 @@ class CRMController extends AdminController
     /**
      * Follow Up Suggestions for Customer
      * Context7: admin.crm.customers.followup-suggestions route
-     * 
+     *
      * @param Request $request
      * @param mixed $customer
      * @return \Illuminate\Http\JsonResponse
@@ -238,7 +326,7 @@ class CRMController extends AdminController
     /**
      * Suggest Tags for Customer
      * Context7: admin.crm.customers.suggest-tags route
-     * 
+     *
      * @param Request $request
      * @param mixed $customer
      * @return \Illuminate\Http\JsonResponse
@@ -327,7 +415,7 @@ class CRMController extends AdminController
             return true;
         })->values();
         $rows = [
-            ['type','kategori_id','from_id','to_id','deleted_id','affected','ts'],
+            ['type', 'kategori_id', 'from_id', 'to_id', 'deleted_id', 'affected', 'ts'],
         ];
         foreach ($filtered as $x) {
             $rows[] = [
@@ -342,7 +430,9 @@ class CRMController extends AdminController
         }
         $csv = '';
         foreach ($rows as $r) {
-            $csv .= implode(',', array_map(function ($v) { return str_replace(["\n","\r",','],' ', (string) $v); }, $r)) . "\n";
+            $csv .= implode(',', array_map(function ($v) {
+                return str_replace(["\n", "\r", ','], ' ', (string) $v);
+            }, $r)) . "\n";
         }
         return response($csv, 200, [
             'Content-Type' => 'text/csv; charset=UTF-8',
@@ -362,7 +452,7 @@ class CRMController extends AdminController
             $q->where('yayin_tipi_id', $yayinTipiId);
         }
         $cols = [];
-        foreach (['id','baslik','fiyat','para_birimi','status','kategori_id','yayin_tipi_id','created_at'] as $c) {
+        foreach (['id', 'baslik', 'fiyat', 'para_birimi', 'status', 'kategori_id', 'yayin_tipi_id', 'created_at'] as $c) {
             if (Schema::hasColumn('ilanlar', $c)) {
                 $cols[] = $c;
             }
@@ -376,7 +466,7 @@ class CRMController extends AdminController
         foreach ($rows as $r) {
             $line = [];
             foreach ($header as $h) {
-                $line[] = str_replace(["\n","\r",','],' ', (string) ($r->$h ?? ''));
+                $line[] = str_replace(["\n", "\r", ','], ' ', (string) ($r->$h ?? ''));
             }
             $csvRows[] = $line;
         }
@@ -414,34 +504,34 @@ class CRMController extends AdminController
             if ($yayinTipiId && Schema::hasColumn('ilanlar', 'yayin_tipi_id')) {
                 $builder->where('yayin_tipi_id', $yayinTipiId);
             }
-        if ($status && Schema::hasColumn('ilanlar', 'status')) {
-            $builder->where('status', $status);
-        }
-        if ($q) {
-            if (Schema::hasColumn('ilanlar', 'baslik')) {
-                $builder->where('baslik', 'like', '%'.$q.'%');
+            if ($status && Schema::hasColumn('ilanlar', 'status')) {
+                $builder->where('status', $status);
             }
-        }
-        if (Schema::hasColumn('ilanlar', 'fiyat')) {
-            if ($minFiyat !== null && $minFiyat !== '') {
-                $builder->where('fiyat', '>=', (float) $minFiyat);
+            if ($q) {
+                if (Schema::hasColumn('ilanlar', 'baslik')) {
+                    $builder->where('baslik', 'like', '%' . $q . '%');
+                }
             }
-            if ($maxFiyat !== null && $maxFiyat !== '') {
-                $builder->where('fiyat', '<=', (float) $maxFiyat);
+            if (Schema::hasColumn('ilanlar', 'fiyat')) {
+                if ($minFiyat !== null && $minFiyat !== '') {
+                    $builder->where('fiyat', '>=', (float) $minFiyat);
+                }
+                if ($maxFiyat !== null && $maxFiyat !== '') {
+                    $builder->where('fiyat', '<=', (float) $maxFiyat);
+                }
             }
-        }
-        $allowedSorts = ['id','fiyat','created_at'];
-        $parts = explode(':', $sort);
-        $sortCol = $parts[0] ?? 'id';
-        $sortDir = strtolower($parts[1] ?? 'desc');
-        if (!in_array($sortCol, $allowedSorts, true)) {
-            $sortCol = 'id';
-        }
-        if (!in_array($sortDir, ['asc','desc'], true)) {
-            $sortDir = 'desc';
-        }
+            $allowedSorts = ['id', 'fiyat', 'created_at'];
+            $parts = explode(':', $sort);
+            $sortCol = $parts[0] ?? 'id';
+            $sortDir = strtolower($parts[1] ?? 'desc');
+            if (!in_array($sortCol, $allowedSorts, true)) {
+                $sortCol = 'id';
+            }
+            if (!in_array($sortDir, ['asc', 'desc'], true)) {
+                $sortDir = 'desc';
+            }
             $total = (clone $builder)->count();
-            $allowed = ['id','baslik','fiyat','para_birimi','status','kategori_id','yayin_tipi_id','created_at'];
+            $allowed = ['id', 'baslik', 'fiyat', 'para_birimi', 'status', 'kategori_id', 'yayin_tipi_id', 'created_at'];
             $select = [];
             foreach ($allowed as $c) {
                 if (Schema::hasColumn('ilanlar', $c)) {
