@@ -1,4 +1,4 @@
-@extends('admin.layouts.neo')
+@extends('admin.layouts.admin')
 
 @section('title', 'Feature Category Details - Yalıhan Emlak Pro')
 

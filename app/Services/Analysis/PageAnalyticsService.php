@@ -5,7 +5,6 @@ namespace App\Services\Analysis;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
-use Carbon\Carbon;
 
 class PageAnalyticsService
 {
@@ -20,13 +19,13 @@ class PageAnalyticsService
             'database_performance' => $this->getDatabaseMetrics(),
             'user_interactions' => $this->getUserInteractionMetrics(),
             'error_rates' => $this->getErrorRateMetrics(),
-            'context7_compliance' => $this->getContext7ComplianceMetrics()
+            'context7_compliance' => $this->getContext7ComplianceMetrics(),
         ];
     }
 
     protected function getPagePerformanceMetrics()
     {
-        $cacheKey = 'page_performance_' . date('Y-m-d-H-i');
+        $cacheKey = 'page_performance_'.date('Y-m-d-H-i');
 
         return Cache::remember($cacheKey, 60, function () {
             return [
@@ -34,32 +33,32 @@ class PageAnalyticsService
                     'avg_response_time' => $this->simulateResponseTime(120, 50),
                     'success_rate' => 98.5,
                     'last_error' => null,
-                    'active_users' => rand(5, 25)
+                    'active_users' => rand(5, 25),
                 ],
                 'adres_yonetimi' => [
                     'avg_response_time' => $this->simulateResponseTime(200, 80),
                     'success_rate' => 94.2,
                     'last_error' => 'Schema mismatch in iller table',
-                    'active_users' => rand(2, 15)
+                    'active_users' => rand(2, 15),
                 ],
                 'my_listings' => [
                     'avg_response_time' => $this->simulateResponseTime(500, 200),
                     'success_rate' => 45.0, // Low due to empty controller
                     'last_error' => 'Controller not implemented',
-                    'active_users' => 0
+                    'active_users' => 0,
                 ],
                 'analytics' => [
                     'avg_response_time' => $this->simulateResponseTime(800, 300),
                     'success_rate' => 30.0,
                     'last_error' => 'Analytics endpoint not implemented',
-                    'active_users' => 0
+                    'active_users' => 0,
                 ],
                 'notifications' => [
                     'avg_response_time' => $this->simulateResponseTime(150, 60),
                     'success_rate' => 85.5,
                     'last_error' => 'Controller methods missing',
-                    'active_users' => rand(1, 8)
-                ]
+                    'active_users' => rand(1, 8),
+                ],
             ];
         });
     }
@@ -81,19 +80,19 @@ class PageAnalyticsService
     {
         $controllerPath = app_path("Http/Controllers/Admin/{$controllerName}.php");
 
-        if (!File::exists($controllerPath)) {
+        if (! File::exists($controllerPath)) {
             return [
                 'status' => 'missing',
                 'health_score' => 0,
                 'issues' => ['Controller file not found'],
                 'method_count' => 0,
-                'last_modified' => null
+                'last_modified' => null,
             ];
         }
 
         $content = File::get($controllerPath);
         $methodCount = substr_count($content, 'public function');
-        $hasImplementation = !str_contains($content, 'to be implemented');
+        $hasImplementation = ! str_contains($content, 'to be implemented');
 
         $healthScore = $hasImplementation ?
             min(10, $methodCount * 1.5) :
@@ -105,13 +104,13 @@ class PageAnalyticsService
             'issues' => $hasImplementation ? [] : ['Missing implementation'],
             'method_count' => $methodCount,
             'last_modified' => File::lastModified($controllerPath),
-            'size_kb' => round(File::size($controllerPath) / 1024, 2)
+            'size_kb' => round(File::size($controllerPath) / 1024, 2),
         ];
     }
 
     protected function getDatabaseMetrics()
     {
-        return Cache::remember('db_metrics_' . date('Y-m-d-H-i'), 60, function () {
+        return Cache::remember('db_metrics_'.date('Y-m-d-H-i'), 60, function () {
             try {
                 $queries = DB::getQueryLog();
                 $avgQueryTime = collect($queries)->avg('time') ?? 0;
@@ -122,7 +121,7 @@ class PageAnalyticsService
                     'total_queries' => count($queries),
                     'connection_status' => 'connected',
                     'active_connections' => rand(5, 20),
-                    'cache_hit_rate' => rand(85, 95) . '%'
+                    'cache_hit_rate' => rand(85, 95).'%',
                 ];
             } catch (\Exception $e) {
                 return [
@@ -130,7 +129,7 @@ class PageAnalyticsService
                     'slow_queries' => 0,
                     'total_queries' => 0,
                     'connection_status' => 'error',
-                    'error' => $e->getMessage()
+                    'error' => $e->getMessage(),
                 ];
             }
         });
@@ -146,10 +145,10 @@ class PageAnalyticsService
                 'adres-yonetimi' => rand(30, 100),
                 'notifications' => rand(20, 80),
                 'analytics' => rand(5, 25),
-                'my-listings' => rand(0, 10)
+                'my-listings' => rand(0, 10),
             ],
-            'bounce_rate' => rand(20, 40) . '%',
-            'avg_session_duration' => rand(180, 600) . 's'
+            'bounce_rate' => rand(20, 40).'%',
+            'avg_session_duration' => rand(180, 600).'s',
         ];
     }
 
@@ -160,35 +159,35 @@ class PageAnalyticsService
             '4xx_errors' => rand(5, 25),
             'javascript_errors' => rand(2, 15),
             'failed_requests' => rand(1, 10),
-            'error_rate_percentage' => rand(1, 8) . '%',
+            'error_rate_percentage' => rand(1, 8).'%',
             'critical_errors' => [
                 'my-listings controller not implemented',
                 'analytics endpoint missing',
-                'schema mismatch in iller table'
-            ]
+                'schema mismatch in iller table',
+            ],
         ];
     }
 
     protected function getContext7ComplianceMetrics()
     {
         return [
-            'overall_compliance' => rand(75, 90) . '%',
+            'overall_compliance' => rand(75, 90).'%',
             'naming_conventions' => [
                 'compliant_files' => rand(80, 95),
                 'total_files' => 100,
-                'percentage' => rand(80, 95) . '%'
+                'percentage' => rand(80, 95).'%',
             ],
             'design_system_usage' => [
-                'neo_components' => rand(70, 90) . '%',
-                'consistent_layouts' => rand(85, 95) . '%',
-                'color_palette_compliance' => rand(90, 98) . '%'
+                'neo_components' => rand(70, 90).'%',
+                'consistent_layouts' => rand(85, 95).'%',
+                'color_palette_compliance' => rand(90, 98).'%',
             ],
-            'documentation_coverage' => rand(60, 85) . '%',
+            'documentation_coverage' => rand(60, 85).'%',
             'violations' => [
                 'Missing Context7 comments in 3 controllers',
                 'Inconsistent variable naming in 2 files',
-                'Non-compliant route structure in 1 file'
-            ]
+                'Non-compliant route structure in 1 file',
+            ],
         ];
     }
 
@@ -206,7 +205,7 @@ class PageAnalyticsService
             'overall_health' => $this->calculateOverallHealth($metrics),
             'critical_issues' => $this->identifyCriticalIssues($metrics),
             'recommendations' => $this->generateRecommendations($metrics),
-            'trend_analysis' => $this->analyzeTrends($metrics)
+            'trend_analysis' => $this->analyzeTrends($metrics),
         ];
     }
 
@@ -230,16 +229,25 @@ class PageAnalyticsService
         return [
             'score' => round($overallScore, 1),
             'status' => $this->getHealthStatus($overallScore),
-            'breakdown' => $scores
+            'breakdown' => $scores,
         ];
     }
 
     protected function getHealthStatus($score)
     {
-        if ($score >= 90) return 'excellent';
-        if ($score >= 75) return 'good';
-        if ($score >= 60) return 'fair';
-        if ($score >= 40) return 'poor';
+        if ($score >= 90) {
+            return 'excellent';
+        }
+        if ($score >= 75) {
+            return 'good';
+        }
+        if ($score >= 60) {
+            return 'fair';
+        }
+        if ($score >= 40) {
+            return 'poor';
+        }
+
         return 'critical';
     }
 
@@ -252,8 +260,8 @@ class PageAnalyticsService
                 $issues[] = [
                     'type' => 'critical',
                     'page' => $page,
-                    'issue' => 'Low success rate: ' . $performance['success_rate'] . '%',
-                    'impact' => 'high'
+                    'issue' => 'Low success rate: '.$performance['success_rate'].'%',
+                    'impact' => 'high',
                 ];
             }
         }
@@ -264,7 +272,7 @@ class PageAnalyticsService
                     'type' => 'critical',
                     'controller' => $controller,
                     'issue' => 'Controller not properly implemented',
-                    'impact' => 'high'
+                    'impact' => 'high',
                 ];
             }
         }
@@ -283,7 +291,7 @@ class PageAnalyticsService
                 'priority' => 'critical',
                 'action' => 'Implement missing controllers immediately',
                 'estimated_time' => '1-2 weeks',
-                'impact' => 'high'
+                'impact' => 'high',
             ];
         }
 
@@ -292,7 +300,7 @@ class PageAnalyticsService
                 'priority' => 'high',
                 'action' => 'Optimize database queries and add indexes',
                 'estimated_time' => '3-5 days',
-                'impact' => 'medium'
+                'impact' => 'medium',
             ];
         }
 
@@ -306,7 +314,7 @@ class PageAnalyticsService
             'performance_trend' => 'declining',
             'error_rate_trend' => 'increasing',
             'user_activity_trend' => 'stable',
-            'compliance_trend' => 'improving'
+            'compliance_trend' => 'improving',
         ];
     }
 
@@ -323,9 +331,9 @@ class PageAnalyticsService
                 'response_time' => '45ms',
                 'memory_usage' => '128MB',
                 'cpu_usage' => '15%',
-                'database_queries' => 23
+                'database_queries' => 23,
             ],
-            'real_time_data' => $this->collectRealTimeMetrics()
+            'real_time_data' => $this->collectRealTimeMetrics(),
         ];
     }
 
@@ -342,21 +350,28 @@ class PageAnalyticsService
                 'database' => 'healthy',
                 'cache' => 'healthy',
                 'storage' => 'healthy',
-                'api' => 'degraded'
+                'api' => 'degraded',
             ],
             'recommendations' => [
                 'Focus on critical issues first',
                 'Implement missing controllers',
-                'Add proper error handling'
-            ]
+                'Add proper error handling',
+            ],
         ];
     }
 
     protected function getHealthStatusText($score)
     {
-        if ($score >= 8) return 'excellent';
-        if ($score >= 6) return 'good';
-        if ($score >= 4) return 'warning';
+        if ($score >= 8) {
+            return 'excellent';
+        }
+        if ($score >= 6) {
+            return 'good';
+        }
+        if ($score >= 4) {
+            return 'warning';
+        }
+
         return 'critical';
     }
 }

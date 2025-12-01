@@ -9,7 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         // Blog Categories
-        if (!Schema::hasTable('blog_categories')) {
+        if (! Schema::hasTable('blog_categories')) {
             Schema::create('blog_categories', function (Blueprint $table) {
                 $table->id();
                 $table->string('name');
@@ -25,7 +25,7 @@ return new class extends Migration
         }
 
         // Blog Tags
-        if (!Schema::hasTable('blog_tags')) {
+        if (! Schema::hasTable('blog_tags')) {
             Schema::create('blog_tags', function (Blueprint $table) {
                 $table->id();
                 $table->string('name');
@@ -39,7 +39,7 @@ return new class extends Migration
         }
 
         // Blog Post Tags Pivot
-        if (!Schema::hasTable('blog_post_tags')) {
+        if (! Schema::hasTable('blog_post_tags')) {
             Schema::create('blog_post_tags', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId('post_id')->constrained('blog_posts')->onDelete('cascade');

@@ -1,4 +1,4 @@
-@extends('admin.layouts.neo')
+@extends('admin.layouts.admin')
 
 @section('title', 'Telegram Bot Yönetimi')
 
@@ -18,8 +18,7 @@
                 <p class="text-sm text-gray-600 mt-1">Bot statusu, webhook ayarları ve takım entegrasyonu</p>
             </div>
             <div class="flex items-center space-x-2">
-                <span
-                    class="status-badge active">
+                <span class="status-badge active">
                     <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
                         <path fill-rule="evenodd"
                             d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
@@ -210,5 +209,92 @@
                 </button>
             </div>
         </form>
+    </div>
+
+    <!-- Telegram Eşleştirme Kartı -->
+    <div class="bg-white border border-gray-200 rounded-xl p-6 shadow-sm mt-6">
+        <div class="flex items-center mb-6">
+            <div class="p-2 bg-green-100 rounded-lg mr-3">
+                <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z">
+                    </path>
+                </svg>
+            </div>
+            <div>
+                <h2 class="text-xl font-semibold text-gray-900">Telegram Hesap Eşleştirme</h2>
+                <p class="text-sm text-gray-600">Telegram botunuza hesabınızı bağlamak için eşleştirme kodu oluşturun</p>
+            </div>
+        </div>
+
+        <div class="space-y-4">
+            @php
+                $currentUser = auth()->user();
+                $hasPairingCode = $currentUser && $currentUser->telegram_pairing_code;
+                $isPaired = $currentUser && $currentUser->telegram_id && $currentUser->telegram_paired_at;
+            @endphp
+
+            @if ($isPaired)
+                <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                    <div class="flex items-center">
+                        <svg class="w-5 h-5 text-green-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd"
+                                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                clip-rule="evenodd"></path>
+                        </svg>
+                        <div>
+                            <p class="text-sm font-medium text-green-800">✅ Telegram hesabınız eşleştirilmiş</p>
+                            <p class="text-xs text-green-700 mt-1">Eşleştirme tarihi:
+                                {{ $currentUser->telegram_paired_at->format('d.m.Y H:i') }}</p>
+                        </div>
+                    </div>
+                </div>
+            @elseif($hasPairingCode)
+                <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-yellow-800">⏳ Eşleştirme kodu oluşturuldu</p>
+                            <p class="text-xs text-yellow-700 mt-1">Bu kodu Telegram botuna gönderin</p>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-2xl font-bold text-yellow-900 font-mono">
+                                {{ $currentUser->telegram_pairing_code }}</div>
+                            <p class="text-xs text-yellow-600 mt-1">6 haneli kod</p>
+                        </div>
+                    </div>
+                </div>
+            @else
+                <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                    <p class="text-sm text-gray-600 mb-4">Telegram botunuza hesabınızı bağlamak için eşleştirme kodu
+                        oluşturun.</p>
+                </div>
+            @endif
+
+            <form method="POST" action="{{ route('admin.telegram-bot.generate-pairing-code') }}" class="inline-block">
+                @csrf
+                <button type="submit"
+                    class="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-indigo-500 transition-all duration-200 shadow-md hover:shadow-lg font-medium">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 6v6m0 0v6m0-6h6m-6 0H6">
+                        </path>
+                    </svg>
+                    {{ $hasPairingCode ? 'Yeni Kod Oluştur' : 'Eşleştirme Kodu Oluştur' }}
+                </button>
+            </form>
+
+            @if ($hasPairingCode)
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-4">
+                    <h3 class="text-sm font-medium text-blue-800 mb-2">📋 Nasıl Kullanılır?</h3>
+                    <ol class="text-xs text-blue-700 space-y-1 list-decimal list-inside">
+                        <li>Telegram'da <strong>@YalihanCortex_Bot</strong> botunu açın</li>
+                        <li><strong>/start</strong> komutunu gönderin</li>
+                        <li>Bot size eşleştirme kodu isteyecek</li>
+                        <li>Yukarıdaki <strong>{{ $currentUser->telegram_pairing_code }}</strong> kodunu gönderin</li>
+                        <li>✅ Eşleştirme tamamlandığında bildirim alacaksınız</li>
+                    </ol>
+                </div>
+            @endif
+        </div>
     </div>
 @endsection

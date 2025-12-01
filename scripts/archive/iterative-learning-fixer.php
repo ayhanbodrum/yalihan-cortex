@@ -3,8 +3,7 @@
 /**
  * Iterative Learning Fixer - Sürekli öğrenen ve kalan hataları iteratif olarak çözen sistem
  */
-
-$migrationsDir = __DIR__ . '/../database/migrations';
+$migrationsDir = __DIR__.'/../database/migrations';
 $maxIterations = 5;
 $iteration = 0;
 
@@ -18,12 +17,12 @@ while ($iteration < $maxIterations) {
     $fixedInThisIteration = 0;
     $totalChecked = 0;
 
-    foreach (glob($migrationsDir . '/*.php') as $filePath) {
+    foreach (glob($migrationsDir.'/*.php') as $filePath) {
         $filename = basename($filePath);
         $totalChecked++;
 
         // Syntax check
-        $syntaxCheck = shell_exec("php -l " . escapeshellarg($filePath) . " 2>&1");
+        $syntaxCheck = shell_exec('php -l '.escapeshellarg($filePath).' 2>&1');
         if (strpos($syntaxCheck, 'No syntax errors') !== false) {
             continue; // Bu dosya temiz
         }
@@ -55,7 +54,7 @@ while ($iteration < $maxIterations) {
                 }
 
                 for ($j = 0; $j < $closeBraces; $j++) {
-                    if (!empty($braceStack)) {
+                    if (! empty($braceStack)) {
                         array_pop($braceStack);
                     }
                 }
@@ -77,7 +76,7 @@ while ($iteration < $maxIterations) {
             switch ($unexpectedToken) {
                 case 'public':
                     // Missing callback closure
-                    $content = preg_replace('/(\$table->[^;]+;)\s+(public function)/', '$1' . "\n        });\n    }\n\n    $2", $content);
+                    $content = preg_replace('/(\$table->[^;]+;)\s+(public function)/', '$1'."\n        });\n    }\n\n    $2", $content);
                     $wasFixed = true;
                     break;
 
@@ -100,7 +99,7 @@ while ($iteration < $maxIterations) {
                             $inFunction = true;
                         } elseif (strpos($line, '}') !== false && $inFunction) {
                             $inFunction = false;
-                        } elseif (!$inFunction && preg_match('/\s*(if|else|catch|try)/', $line)) {
+                        } elseif (! $inFunction && preg_match('/\s*(if|else|catch|try)/', $line)) {
                             continue; // Skip problematic lines outside functions
                         }
                         $newLines[] = $line;
@@ -114,21 +113,21 @@ while ($iteration < $maxIterations) {
 
         // 3. "expecting ')'" errors - Callback parameter issues
         if (strpos($syntaxCheck, 'expecting ")"') !== false) {
-            $content = preg_replace('/function\s*\([^)]*\$table[^)]*\s+public/', 'function (Blueprint $table) {' . "\n        // fixed\n    });\n    }\n\n    public", $content);
+            $content = preg_replace('/function\s*\([^)]*\$table[^)]*\s+public/', 'function (Blueprint $table) {'."\n        // fixed\n    });\n    }\n\n    public", $content);
             $wasFixed = true;
         }
 
         // 4. General structure reconstruction for complex cases
-        if (!$wasFixed && preg_match('/syntax error|Parse error/', $syntaxCheck)) {
+        if (! $wasFixed && preg_match('/syntax error|Parse error/', $syntaxCheck)) {
             // Extract any meaningful schema operations
             $schemaOps = [];
             preg_match_all('/\$table->[^;]+;/', $content, $matches);
-            if (!empty($matches[0])) {
+            if (! empty($matches[0])) {
                 $schemaOps = $matches[0];
             }
 
             // Reconstruct if we found schema operations
-            if (!empty($schemaOps)) {
+            if (! empty($schemaOps)) {
                 $upContent = implode("\n            ", $schemaOps);
                 $newContent = "<?php\n\n";
                 $newContent .= "use Illuminate\Database\Migrations\Migration;\n";
@@ -137,7 +136,7 @@ while ($iteration < $maxIterations) {
                 $newContent .= "return new class extends Migration\n{\n";
                 $newContent .= "    public function up(): void\n    {\n";
                 $newContent .= "        Schema::table('auto_reconstructed', function (Blueprint \$table) {\n";
-                $newContent .= "            " . $upContent . "\n";
+                $newContent .= '            '.$upContent."\n";
                 $newContent .= "        });\n";
                 $newContent .= "    }\n\n";
                 $newContent .= "    public function down(): void\n    {\n";
@@ -161,7 +160,7 @@ while ($iteration < $maxIterations) {
     echo "📊 Iterasyon $iteration: $fixedInThisIteration dosya düzeltildi\n";
 
     // Check current error count
-    $currentErrors = (int)shell_exec("find " . escapeshellarg($migrationsDir) . " -name '*.php' -exec php -l {} \\; 2>&1 | grep -c 'Parse error\\|Fatal error\\|syntax error' || echo '0'");
+    $currentErrors = (int) shell_exec('find '.escapeshellarg($migrationsDir)." -name '*.php' -exec php -l {} \\; 2>&1 | grep -c 'Parse error\\|Fatal error\\|syntax error' || echo '0'");
     echo "🎯 Kalan hatalar: $currentErrors\n\n";
 
     // Exit if no more fixes or no errors
@@ -176,14 +175,14 @@ while ($iteration < $maxIterations) {
 }
 
 // Final summary
-$finalErrors = (int)shell_exec("find " . escapeshellarg($migrationsDir) . " -name '*.php' -exec php -l {} \\; 2>&1 | grep -c 'Parse error\\|Fatal error\\|syntax error' || echo '0'");
+$finalErrors = (int) shell_exec('find '.escapeshellarg($migrationsDir)." -name '*.php' -exec php -l {} \\; 2>&1 | grep -c 'Parse error\\|Fatal error\\|syntax error' || echo '0'");
 $totalFixed = 205 - $finalErrors;
 
 echo "\n🎉 Iterative Learning Fixer Özeti:\n";
 echo "🔢 Başlangıç hataları: 205\n";
 echo "✅ Toplam düzeltilen: $totalFixed\n";
 echo "⚠️ Kalan hatalar: $finalErrors\n";
-echo "📈 Başarı oranı: " . round(($totalFixed / 205) * 100, 1) . "%\n";
+echo '📈 Başarı oranı: '.round(($totalFixed / 205) * 100, 1)."%\n";
 
 if ($finalErrors === 0) {
     echo "\n🚀 AUTOMATED LEARNING SİSTEMİ BAŞARIYLA TAMAMLANDI!\n";

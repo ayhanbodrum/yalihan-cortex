@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\Http\Request;
 use App\Models\Etiket;
+use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 class EtiketController extends AdminController
@@ -19,10 +19,10 @@ class EtiketController extends AdminController
         // Search functionality
         if ($request->has('search') && $request->search) {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('name', 'LIKE', "%{$search}%")
-                  ->orWhere('description', 'LIKE', "%{$search}%")
-                  ->orWhere('color', 'LIKE', "%{$search}%");
+                    ->orWhere('description', 'LIKE', "%{$search}%")
+                    ->orWhere('color', 'LIKE', "%{$search}%");
             });
         }
 
@@ -58,7 +58,7 @@ class EtiketController extends AdminController
             'description' => 'nullable|string|max:500',
             'color' => 'nullable|string|max:7',
             'icon' => 'nullable|string|max:100',
-            'status' => 'required|in:active,inactive'
+            'status' => 'required|in:active,inactive',
         ]);
 
         $data = $request->all();
@@ -74,7 +74,7 @@ class EtiketController extends AdminController
             return response()->json([
                 'success' => true,
                 'message' => 'Etiket created successfully',
-                'data' => $etiket
+                'data' => $etiket,
             ], 201);
         }
 
@@ -111,11 +111,11 @@ class EtiketController extends AdminController
     public function update(Request $request, Etiket $etiket)
     {
         $request->validate([
-            'name' => 'required|string|max:255|unique:etiketler,name,' . $etiket->id,
+            'name' => 'required|string|max:255|unique:etiketler,name,'.$etiket->id,
             'description' => 'nullable|string|max:500',
             'color' => 'nullable|string|max:7',
             'icon' => 'nullable|string|max:100',
-            'status' => 'required|in:active,inactive'
+            'status' => 'required|in:active,inactive',
         ]);
 
         $data = $request->all();
@@ -131,7 +131,7 @@ class EtiketController extends AdminController
             return response()->json([
                 'success' => true,
                 'message' => 'Etiket updated successfully',
-                'data' => $etiket->fresh()
+                'data' => $etiket->fresh(),
             ]);
         }
 
@@ -150,7 +150,7 @@ class EtiketController extends AdminController
             if (request()->expectsJson()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Cannot delete etiket that is being used by kisiler'
+                    'message' => 'Cannot delete etiket that is being used by kisiler',
                 ], 422);
             }
 
@@ -164,7 +164,7 @@ class EtiketController extends AdminController
         if (request()->expectsJson()) {
             return response()->json([
                 'success' => true,
-                'message' => 'Etiket deleted successfully'
+                'message' => 'Etiket deleted successfully',
             ]);
         }
 
@@ -181,7 +181,7 @@ class EtiketController extends AdminController
         $request->validate([
             'action' => 'required|in:delete,activate,deactivate',
             'ids' => 'required|array',
-            'ids.*' => 'exists:etiketler,id'
+            'ids.*' => 'exists:etiketler,id',
         ]);
 
         $etiketler = Etiket::whereIn('id', $request->ids);
@@ -204,7 +204,7 @@ class EtiketController extends AdminController
         if ($request->expectsJson()) {
             return response()->json([
                 'success' => true,
-                'message' => $message
+                'message' => $message,
             ]);
         }
 
@@ -242,7 +242,7 @@ class EtiketController extends AdminController
         return response()->json([
             'success' => true,
             'message' => 'Excel export generated',
-            'download_url' => '/exports/etiketler-' . date('Y-m-d') . '.xlsx'
+            'download_url' => '/exports/etiketler-'.date('Y-m-d').'.xlsx',
         ]);
     }
 
@@ -255,7 +255,7 @@ class EtiketController extends AdminController
         return response()->json([
             'success' => true,
             'message' => 'CSV export generated',
-            'download_url' => '/exports/etiketler-' . date('Y-m-d') . '.csv'
+            'download_url' => '/exports/etiketler-'.date('Y-m-d').'.csv',
         ]);
     }
 

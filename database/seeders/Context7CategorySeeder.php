@@ -28,6 +28,7 @@ class Context7CategorySeeder extends Seeder
 
         if ($existingCount > 0) {
             $this->command->info("\u2139\ufe0f Zaten {$existingCount} kategori mevcut. Seeder atlanıyor.");
+
             return;
         }
 
@@ -108,7 +109,7 @@ class Context7CategorySeeder extends Seeder
             );
         }
 
-        $this->command->info('✅ ' . count($mainCategories) . ' ana kategori oluşturuldu');
+        $this->command->info('✅ '.count($mainCategories).' ana kategori oluşturuldu');
     }
 
     /**
@@ -331,7 +332,7 @@ class Context7CategorySeeder extends Seeder
             );
         }
 
-        $this->command->info('✅ ' . count($subCategories) . ' alt kategori oluşturuldu');
+        $this->command->info('✅ '.count($subCategories).' alt kategori oluşturuldu');
     }
 
     /**
@@ -407,6 +408,6 @@ class Context7CategorySeeder extends Seeder
             }
         }
 
-        $this->command->info('✅ ' . count($featureCategories) . ' özellik kategorisi oluşturuldu');
+        $this->command->info('✅ '.count($featureCategories).' özellik kategorisi oluşturuldu');
     }
 }

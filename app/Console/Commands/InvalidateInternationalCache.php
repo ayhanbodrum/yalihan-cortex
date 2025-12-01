@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Cache;
 class InvalidateInternationalCache extends Command
 {
     protected $signature = 'context7:cache:invalidate-international';
+
     protected $description = 'International sayfa için ülke/şehir/tür listesi cache temizliği';
 
     public function handle(): int
@@ -21,6 +22,7 @@ class InvalidateInternationalCache extends Command
             Cache::forget($key);
         }
         $this->info('✅ International cache anahtarları temizlendi');
+
         return Command::SUCCESS;
     }
 }

@@ -1,9 +1,9 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Modules\Analitik\Controllers\Admin\DashboardController;
-use App\Modules\Analitik\Controllers\Admin\RaporController;
 use App\Modules\Analitik\Controllers\Admin\IstatistikController;
+use App\Modules\Analitik\Controllers\Admin\RaporController;
+use Illuminate\Support\Facades\Route;
 
 // ✅ CSRF koruması: web middleware grubu otomatik olarak CSRF koruması sağlar
 Route::prefix('admin/analitik')->name('admin.analitik.')->middleware(['web', 'auth', 'admin'])->group(function () {

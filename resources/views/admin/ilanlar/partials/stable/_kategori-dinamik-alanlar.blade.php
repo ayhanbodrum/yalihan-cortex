@@ -251,6 +251,7 @@
         };
 
         // ✅ CATEGORY-CHANGED EVENT LISTENER (Kategoriye Özel Alanları Yükle)
+        window._kategoriDinamikAlanlarLastEventKey = null;
         window.addEventListener('category-changed', (e) => {
             console.log('🎯 Kategori değişti:', e.detail);
 
@@ -258,6 +259,14 @@
                 console.log('❌ Kategori bilgisi yok');
                 return;
             }
+
+            // ✅ Duplicate kontrolü - Aynı event'i tekrar işleme
+            const eventKey = e.detail.category?.id + '-' + (e.detail.yayinTipiId || e.detail.yayinTipi || 'null');
+            if (window._kategoriDinamikAlanlarLastEventKey === eventKey) {
+                console.log('⏭️ Kategori dinamik alanlar: Aynı event zaten işlendi, atlanıyor');
+                return;
+            }
+            window._kategoriDinamikAlanlarLastEventKey = eventKey;
 
             // Ana kategori ID'sini al
             const categoryId = e.detail.category.id;

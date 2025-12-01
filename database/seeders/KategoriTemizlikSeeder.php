@@ -98,7 +98,7 @@ class KategoriTemizlikSeeder extends Seeder
                 'veri_secenekleri' => json_encode([
                     ['value' => 'kapali', 'label' => 'Kapalı Otopark'],
                     ['value' => 'acik', 'label' => 'Açık Otopark'],
-                    ['value' => 'yok', 'label' => 'Otopark Yok']
+                    ['value' => 'yok', 'label' => 'Otopark Yok'],
                 ]),
                 'aciklama' => 'Otopark statusu',
                 'uyumlu_emlak_turleri' => json_encode(['ev', 'daire', 'villa']),
@@ -114,7 +114,7 @@ class KategoriTemizlikSeeder extends Seeder
                     ['value' => 'kombi', 'label' => 'Kombi'],
                     ['value' => 'kalorifer', 'label' => 'Kalorifer'],
                     ['value' => 'elektrik', 'label' => 'Elektrik'],
-                    ['value' => 'klima', 'label' => 'Klima']
+                    ['value' => 'klima', 'label' => 'Klima'],
                 ]),
                 'aciklama' => 'Isıtma sistemi',
                 'uyumlu_emlak_turleri' => json_encode(['ev', 'daire', 'villa']),
@@ -130,7 +130,7 @@ class KategoriTemizlikSeeder extends Seeder
                     ['value' => 'dag', 'label' => 'Dağ Manzarası'],
                     ['value' => 'city', 'label' => 'Şehir Manzarası'],
                     ['value' => 'bahce', 'label' => 'Bahçe Manzarası'],
-                    ['value' => 'yok', 'label' => 'Manzara Yok']
+                    ['value' => 'yok', 'label' => 'Manzara Yok'],
                 ]),
                 'aciklama' => 'Manzara statusu',
                 'uyumlu_emlak_turleri' => json_encode(['ev', 'daire', 'villa']),
@@ -150,7 +150,7 @@ class KategoriTemizlikSeeder extends Seeder
             }
         }
 
-        $this->command->info("✅ " . count($kategoriler) . " Ev/Daire/Villa kategorisi eklendi.");
+        $this->command->info('✅ '.count($kategoriler).' Ev/Daire/Villa kategorisi eklendi.');
     }
 
     /**
@@ -240,7 +240,7 @@ class KategoriTemizlikSeeder extends Seeder
             }
         }
 
-        $this->command->info("✅ " . count($kategoriler) . " Yazlık Kiralık kategorisi eklendi.");
+        $this->command->info('✅ '.count($kategoriler).' Yazlık Kiralık kategorisi eklendi.');
     }
 
     /**
@@ -268,7 +268,7 @@ class KategoriTemizlikSeeder extends Seeder
                 'veri_secenekleri' => json_encode([
                     ['value' => 'imarli', 'label' => 'İmarlı'],
                     ['value' => 'imarsiz', 'label' => 'İmarsız'],
-                    ['value' => 'kismi-imar', 'label' => 'Kısmi İmar']
+                    ['value' => 'kismi-imar', 'label' => 'Kısmi İmar'],
                 ]),
                 'aciklama' => 'Arsa imar statusu',
                 'uyumlu_emlak_turleri' => json_encode(['arsa', 'arazi']),
@@ -301,7 +301,7 @@ class KategoriTemizlikSeeder extends Seeder
                     ['value' => 'kat-mulkiyeti', 'label' => 'Kat Mülkiyeti'],
                     ['value' => 'arsa-tapusu', 'label' => 'Arsa Tapusu'],
                     ['value' => 'hisseli-tapu', 'label' => 'Hisseli Tapu'],
-                    ['value' => 'irtifak', 'label' => 'İrtifak']
+                    ['value' => 'irtifak', 'label' => 'İrtifak'],
                 ]),
                 'aciklama' => 'Tapu statusu',
                 'uyumlu_emlak_turleri' => json_encode(['arsa', 'arazi']),
@@ -339,6 +339,6 @@ class KategoriTemizlikSeeder extends Seeder
             }
         }
 
-        $this->command->info("✅ " . count($kategoriler) . " Arsa/Arazi kategorisi eklendi.");
+        $this->command->info('✅ '.count($kategoriler).' Arsa/Arazi kategorisi eklendi.');
     }
 }

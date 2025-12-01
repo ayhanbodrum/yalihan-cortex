@@ -27,7 +27,7 @@ class IlanResim extends Model
         'ana_resim',
         'alt_text',
         'aciklama',
-        'status'
+        'status',
     ];
 
     protected $casts = [
@@ -81,7 +81,7 @@ class IlanResim extends Model
      */
     public function getUrlAttribute(): string
     {
-        return asset('storage/' . $this->dosya_yolu);
+        return asset('storage/'.$this->dosya_yolu);
     }
 
     /**
@@ -89,7 +89,7 @@ class IlanResim extends Model
      */
     public function getFormattedSizeAttribute(): string
     {
-        if (!$this->dosya_boyutu) {
+        if (! $this->dosya_boyutu) {
             return 'Bilinmiyor';
         }
 
@@ -100,6 +100,6 @@ class IlanResim extends Model
             $bytes /= 1024;
         }
 
-        return round($bytes, 2) . ' ' . $units[$i];
+        return round($bytes, 2).' '.$units[$i];
     }
 }

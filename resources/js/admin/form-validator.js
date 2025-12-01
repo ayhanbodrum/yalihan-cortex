@@ -306,8 +306,13 @@ class FormValidator {
         const firstError = this.form.querySelector('.field-error');
         if (firstError) {
             try {
-                const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-                firstError.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' });
+                const reduce =
+                    window.matchMedia &&
+                    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                firstError.scrollIntoView({
+                    behavior: reduce ? 'auto' : 'smooth',
+                    block: 'center',
+                });
             } catch {
                 firstError.scrollIntoView();
             }

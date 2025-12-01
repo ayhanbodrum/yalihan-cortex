@@ -3,7 +3,6 @@
 namespace App\Modules\Analitik\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 
 class IstatistikController extends Controller
 {

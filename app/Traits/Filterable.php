@@ -2,9 +2,9 @@
 
 namespace App\Traits;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
-use Carbon\Carbon;
 
 /**
  * Filterable Trait
@@ -13,18 +13,14 @@ use Carbon\Carbon;
  *
  * Standart filtreleme, arama, sıralama ve tarih aralığı işlemleri için trait
  * Code duplication'ı azaltmak ve tutarlı filter logic sağlamak için oluşturuldu
- *
- * @package App\Traits
  */
 trait Filterable
 {
     /**
      * Request'ten gelen filtreleri uygula
      *
-     * @param Builder $query
-     * @param Request|array $filters Request object veya filter array
-     * @param array $allowedFilters İzin verilen filter alanları (güvenlik için)
-     * @return Builder
+     * @param  Request|array  $filters  Request object veya filter array
+     * @param  array  $allowedFilters  İzin verilen filter alanları (güvenlik için)
      */
     public function scopeApplyFilters(Builder $query, $filters, array $allowedFilters = []): Builder
     {
@@ -50,7 +46,7 @@ trait Filterable
             $filters = $filterData;
         }
 
-        if (empty($filters) || !is_array($filters)) {
+        if (empty($filters) || ! is_array($filters)) {
             return $query;
         }
 
@@ -66,7 +62,7 @@ trait Filterable
             }
 
             // Column kontrolü cache'le
-            if (!isset($validColumns[$field])) {
+            if (! isset($validColumns[$field])) {
                 $validColumns[$field] = $schema->hasColumn($tableName, $field);
             }
 
@@ -85,10 +81,8 @@ trait Filterable
     /**
      * Genel arama scope'u
      *
-     * @param Builder $query
-     * @param string|null $search Arama terimi
-     * @param array $fields Aranacak alanlar (boşsa searchable property kullanılır)
-     * @return Builder
+     * @param  string|null  $search  Arama terimi
+     * @param  array  $fields  Aranacak alanlar (boşsa searchable property kullanılır)
      */
     public function scopeSearch(Builder $query, ?string $search, array $fields = []): Builder
     {
@@ -121,11 +115,9 @@ trait Filterable
     /**
      * İlişki üzerinden arama (whereHas)
      *
-     * @param Builder $query
-     * @param string $relation İlişki adı
-     * @param string|null $search Arama terimi
-     * @param array $fields Aranacak alanlar
-     * @return Builder
+     * @param  string  $relation  İlişki adı
+     * @param  string|null  $search  Arama terimi
+     * @param  array  $fields  Aranacak alanlar
      */
     public function scopeSearchRelation(Builder $query, string $relation, ?string $search, array $fields = []): Builder
     {
@@ -143,11 +135,9 @@ trait Filterable
     /**
      * Sıralama scope'u
      *
-     * @param Builder $query
-     * @param string|null $sortBy Sıralama alanı
-     * @param string $sortDirection Sıralama yönü (asc/desc)
-     * @param string $defaultSort Varsayılan sıralama alanı
-     * @return Builder
+     * @param  string|null  $sortBy  Sıralama alanı
+     * @param  string  $sortDirection  Sıralama yönü (asc/desc)
+     * @param  string  $defaultSort  Varsayılan sıralama alanı
      */
     public function scopeSort(Builder $query, ?string $sortBy = null, string $sortDirection = 'desc', string $defaultSort = 'created_at'): Builder
     {
@@ -178,27 +168,27 @@ trait Filterable
                 $query->orderBy($defaultSort, $sortDirection);
                 $query->orderBy('id', $sortDirection);
             }
+
             return $query;
         }
         if ($this->getConnection()->getSchemaBuilder()->hasColumn($this->getTable(), $sortBy)) {
             return $query->orderBy($sortBy, $sortDirection);
         }
+
         return $query->orderBy($defaultSort, $sortDirection);
     }
 
     /**
      * Tarih aralığı filtreleme
      *
-     * @param Builder $query
-     * @param string|null $startDate Başlangıç tarihi
-     * @param string|null $endDate Bitiş tarihi
-     * @param string $column Tarih kolonu (varsayılan: created_at)
-     * @return Builder
+     * @param  string|null  $startDate  Başlangıç tarihi
+     * @param  string|null  $endDate  Bitiş tarihi
+     * @param  string  $column  Tarih kolonu (varsayılan: created_at)
      */
     public function scopeDateRange(Builder $query, ?string $startDate = null, ?string $endDate = null, string $column = 'created_at'): Builder
     {
         // Column kontrolü
-        if (!$this->getConnection()->getSchemaBuilder()->hasColumn($this->getTable(), $column)) {
+        if (! $this->getConnection()->getSchemaBuilder()->hasColumn($this->getTable(), $column)) {
             return $query;
         }
 
@@ -226,16 +216,14 @@ trait Filterable
     /**
      * Fiyat aralığı filtreleme
      *
-     * @param Builder $query
-     * @param float|null $minPrice Minimum fiyat
-     * @param float|null $maxPrice Maksimum fiyat
-     * @param string $column Fiyat kolonu (varsayılan: fiyat)
-     * @return Builder
+     * @param  float|null  $minPrice  Minimum fiyat
+     * @param  float|null  $maxPrice  Maksimum fiyat
+     * @param  string  $column  Fiyat kolonu (varsayılan: fiyat)
      */
     public function scopePriceRange(Builder $query, ?float $minPrice = null, ?float $maxPrice = null, string $column = 'fiyat'): Builder
     {
         // Column kontrolü
-        if (!$this->getConnection()->getSchemaBuilder()->hasColumn($this->getTable(), $column)) {
+        if (! $this->getConnection()->getSchemaBuilder()->hasColumn($this->getTable(), $column)) {
             return $query;
         }
 
@@ -253,15 +241,13 @@ trait Filterable
     /**
      * Status filtreleme (Context7 uyumlu)
      *
-     * @param Builder $query
-     * @param mixed $status Status değeri (true/false, 1/0, 'active'/'inactive')
-     * @param string $column Status kolonu (varsayılan: status)
-     * @return Builder
+     * @param  mixed  $status  Status değeri (true/false, 1/0, 'active'/'inactive')
+     * @param  string  $column  Status kolonu (varsayılan: status)
      */
     public function scopeByStatus(Builder $query, $status, string $column = 'status'): Builder
     {
         // Column kontrolü
-        if (!$this->getConnection()->getSchemaBuilder()->hasColumn($this->getTable(), $column)) {
+        if (! $this->getConnection()->getSchemaBuilder()->hasColumn($this->getTable(), $column)) {
             return $query;
         }
 
@@ -274,7 +260,7 @@ trait Filterable
             if (in_array($status, $knownStringStatuses)) {
                 return $query->where($column, $status);
             }
-            
+
             // Eğer bilinen string değerlerden biri değilse, boolean'a çevir (backward compatibility)
             // Context7: enabled → status (backward compatibility için 'enabled' hala kabul ediliyor)
             $status = in_array(strtolower($status), ['active', 'aktif', '1', 'true', 'enabled']);
@@ -286,15 +272,12 @@ trait Filterable
     /**
      * Request'ten tüm filtreleri uygula (all-in-one method)
      *
-     * @param Builder $query
-     * @param Request $request
-     * @param array $options Seçenekler
-     *   - search_fields: Arama alanları
-     *   - allowed_filters: İzin verilen filter'lar
-     *   - date_column: Tarih kolonu
-     *   - price_column: Fiyat kolonu
-     *   - default_sort: Varsayılan sıralama
-     * @return Builder
+     * @param  array  $options  Seçenekler
+     *                          - search_fields: Arama alanları
+     *                          - allowed_filters: İzin verilen filter'lar
+     *                          - date_column: Tarih kolonu
+     *                          - price_column: Fiyat kolonu
+     *                          - default_sort: Varsayılan sıralama
      */
     public function scopeFilterFromRequest(Builder $query, Request $request, array $options = []): Builder
     {
@@ -339,9 +322,8 @@ trait Filterable
     /**
      * Pagination ile birlikte filtreleme (all-in-one)
      *
-     * @param Request $request
-     * @param array $options Seçenekler
-     * @param int $perPage Sayfa başına kayıt sayısı
+     * @param  array  $options  Seçenekler
+     * @param  int  $perPage  Sayfa başına kayıt sayısı
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
     public static function filterAndPaginate(Request $request, array $options = [], int $perPage = 15)

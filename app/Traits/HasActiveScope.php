@@ -24,7 +24,7 @@ trait HasActiveScope
      *
      * ❌ FORBIDDEN: enabled field (Context7 rule violation)
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeActive($query)
@@ -33,10 +33,10 @@ trait HasActiveScope
         if ($this->getConnection()->getSchemaBuilder()->hasColumn($this->getTable(), 'status')) {
             return $query->where(function ($q) {
                 $q->where('status', 'active')
-                  ->orWhere('status', 1)
-                  ->orWhere('status', true)
-                  ->orWhere('status', 'Aktif')
-                  ->orWhere('status', 'yayinda');
+                    ->orWhere('status', 1)
+                    ->orWhere('status', true)
+                    ->orWhere('status', 'Aktif')
+                    ->orWhere('status', 'yayinda');
             });
         }
 

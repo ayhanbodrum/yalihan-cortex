@@ -7,12 +7,14 @@
  *
  * Usage: php tools/context7/form-standards-checker.php
  */
-
 class FormStandardsChecker
 {
     private $violations = [];
+
     private $warnings = [];
+
     private $passed = [];
+
     private $stats = [
         'total_files' => 0,
         'total_inputs' => 0,
@@ -79,7 +81,7 @@ class FormStandardsChecker
         $files = $this->getBladeFiles($directory);
 
         echo "📂 Scanning directory: {$directory}\n";
-        echo "📄 Found " . count($files) . " blade files\n\n";
+        echo '📄 Found '.count($files)." blade files\n\n";
 
         foreach ($files as $file) {
             $this->checkFile($file);
@@ -130,7 +132,7 @@ class FormStandardsChecker
             (count($this->violations) > 0 || count($this->warnings) > 0)
         ) {
             // File has issues
-        } else if ($hasInputs || $hasSelects || $hasLabels) {
+        } elseif ($hasInputs || $hasSelects || $hasLabels) {
             $this->passed[] = $fileName;
         }
     }
@@ -157,7 +159,7 @@ class FormStandardsChecker
                         'type' => 'input',
                         'severity' => 'error',
                         'message' => "Missing required class: {$class}",
-                        'element' => substr($input, 0, 100) . '...',
+                        'element' => substr($input, 0, 100).'...',
                     ];
                     $compliant = false;
                 }
@@ -172,13 +174,13 @@ class FormStandardsChecker
                 }
             }
 
-            if (!$hasDarkMode) {
+            if (! $hasDarkMode) {
                 $this->warnings[] = [
                     'file' => $fileName,
                     'type' => 'input',
                     'severity' => 'warning',
-                    'message' => "Missing dark mode support",
-                    'element' => substr($input, 0, 100) . '...',
+                    'message' => 'Missing dark mode support',
+                    'element' => substr($input, 0, 100).'...',
                 ];
                 $compliant = false;
             }
@@ -213,20 +215,20 @@ class FormStandardsChecker
                         'type' => 'select',
                         'severity' => 'error',
                         'message' => "Missing required class: {$class}",
-                        'element' => substr($select, 0, 100) . '...',
+                        'element' => substr($select, 0, 100).'...',
                     ];
                     $compliant = false;
                 }
             }
 
             // Check for empty option
-            if (!preg_match('/<option[^>]*value=["\']["\']/', $select)) {
+            if (! preg_match('/<option[^>]*value=["\']["\']/', $select)) {
                 $this->warnings[] = [
                     'file' => $fileName,
                     'type' => 'select',
                     'severity' => 'warning',
-                    'message' => "Missing empty first option (best practice)",
-                    'element' => substr($select, 0, 100) . '...',
+                    'message' => 'Missing empty first option (best practice)',
+                    'element' => substr($select, 0, 100).'...',
                 ];
             }
 
@@ -239,12 +241,12 @@ class FormStandardsChecker
                 }
             }
 
-            if (!$hasDarkMode) {
+            if (! $hasDarkMode) {
                 $this->warnings[] = [
                     'file' => $fileName,
                     'type' => 'select',
                     'severity' => 'warning',
-                    'message' => "Missing dark mode support",
+                    'message' => 'Missing dark mode support',
                 ];
                 $compliant = false;
             }
@@ -280,13 +282,13 @@ class FormStandardsChecker
                 }
             }
 
-            if (!empty($missingClasses)) {
+            if (! empty($missingClasses)) {
                 $this->violations[] = [
                     'file' => $fileName,
                     'type' => 'label',
                     'severity' => 'error',
-                    'message' => "Missing required classes: " . implode(', ', $missingClasses),
-                    'element' => substr($label, 0, 100) . '...',
+                    'message' => 'Missing required classes: '.implode(', ', $missingClasses),
+                    'element' => substr($label, 0, 100).'...',
                 ];
             }
 
@@ -308,11 +310,13 @@ class FormStandardsChecker
                     'file' => $fileName,
                     'type' => 'live-search',
                     'severity' => 'error',
-                    'message' => "Context7 Live Search found but missing data-search-type attribute",
+                    'message' => 'Context7 Live Search found but missing data-search-type attribute',
                 ];
             }
+
             return true;
         }
+
         return false;
     }
 
@@ -324,7 +328,7 @@ class FormStandardsChecker
                 'file' => $fileName,
                 'type' => 'alpine',
                 'severity' => 'warning',
-                'message' => "Using @submit.prevent with custom handler - consider normal form submission",
+                'message' => 'Using @submit.prevent with custom handler - consider normal form submission',
             ];
         }
 
@@ -401,12 +405,12 @@ class FormStandardsChecker
         $overallCompliance = ($inputCompliance + $selectCompliance + $labelCompliance) / 3;
         $statusIcon = $overallCompliance >= 90 ? '✅' : ($overallCompliance >= 70 ? '⚠️' : '❌');
 
-        echo "Overall Compliance:      {$statusIcon} " . round($overallCompliance, 2) . "%\n\n";
+        echo "Overall Compliance:      {$statusIcon} ".round($overallCompliance, 2)."%\n\n";
 
         // Print violations
-        if (!empty($this->violations)) {
+        if (! empty($this->violations)) {
             echo "═══════════════════════════════════════════════════════════════\n";
-            echo "🚨 VIOLATIONS (" . count($this->violations) . ")\n";
+            echo '🚨 VIOLATIONS ('.count($this->violations).")\n";
             echo "═══════════════════════════════════════════════════════════════\n\n";
 
             $violationsByFile = [];
@@ -415,7 +419,7 @@ class FormStandardsChecker
             }
 
             foreach ($violationsByFile as $file => $fileViolations) {
-                echo "📄 {$file} (" . count($fileViolations) . " violations)\n";
+                echo "📄 {$file} (".count($fileViolations)." violations)\n";
                 foreach ($fileViolations as $violation) {
                     echo "   ❌ [{$violation['type']}] {$violation['message']}\n";
                 }
@@ -424,9 +428,9 @@ class FormStandardsChecker
         }
 
         // Print warnings
-        if (!empty($this->warnings)) {
+        if (! empty($this->warnings)) {
             echo "═══════════════════════════════════════════════════════════════\n";
-            echo "⚠️  WARNINGS (" . count($this->warnings) . ")\n";
+            echo '⚠️  WARNINGS ('.count($this->warnings).")\n";
             echo "═══════════════════════════════════════════════════════════════\n\n";
 
             $warningsByFile = [];
@@ -435,7 +439,7 @@ class FormStandardsChecker
             }
 
             foreach ($warningsByFile as $file => $fileWarnings) {
-                echo "📄 {$file} (" . count($fileWarnings) . " warnings)\n";
+                echo "📄 {$file} (".count($fileWarnings)." warnings)\n";
                 foreach ($fileWarnings as $warning) {
                     echo "   ⚠️  [{$warning['type']}] {$warning['message']}\n";
                 }
@@ -444,9 +448,9 @@ class FormStandardsChecker
         }
 
         // Print passed files
-        if (!empty($this->passed)) {
+        if (! empty($this->passed)) {
             echo "═══════════════════════════════════════════════════════════════\n";
-            echo "✅ COMPLIANT FILES (" . count($this->passed) . ")\n";
+            echo '✅ COMPLIANT FILES ('.count($this->passed).")\n";
             echo "═══════════════════════════════════════════════════════════════\n\n";
 
             foreach ($this->passed as $file) {
@@ -471,7 +475,7 @@ class FormStandardsChecker
 }
 
 // Run the checker
-$checker = new FormStandardsChecker();
+$checker = new FormStandardsChecker;
 
 // Check specific directories
 $directories = [

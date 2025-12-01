@@ -2,10 +2,9 @@
 
 namespace App\Services\Statistics;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
 
 /**
  * Statistics Service
@@ -14,21 +13,18 @@ use Carbon\Carbon;
  *
  * Standart statistics hesaplama için service
  * Code duplication'ı azaltmak ve tutarlı statistics logic sağlamak için oluşturuldu
- *
- * @package App\Services\Statistics
  */
 class StatisticsService
 {
     /**
      * Model için temel istatistikleri getir
      *
-     * @param string|Model $model Model class name veya instance
-     * @param array $options Seçenekler
-     *   - status_field: Status field adı (varsayılan: 'status')
-     *   - cache_key: Cache key (varsayılan: otomatik oluşturulur)
-     *   - cache_ttl: Cache TTL saniye (varsayılan: 3600)
-     *   - additional_stats: Ek istatistikler (closure array)
-     * @return array
+     * @param  string|Model  $model  Model class name veya instance
+     * @param  array  $options  Seçenekler
+     *                          - status_field: Status field adı (varsayılan: 'status')
+     *                          - cache_key: Cache key (varsayılan: otomatik oluşturulur)
+     *                          - cache_ttl: Cache TTL saniye (varsayılan: 3600)
+     *                          - additional_stats: Ek istatistikler (closure array)
      */
     public static function getModelStats($model, array $options = []): array
     {
@@ -36,7 +32,7 @@ class StatisticsService
         $modelInstance = is_string($model) ? new $model : $model;
 
         $statusField = $options['status_field'] ?? 'status';
-        $cacheKey = $options['cache_key'] ?? 'stats_' . str_replace('\\', '_', $modelClass);
+        $cacheKey = $options['cache_key'] ?? 'stats_'.str_replace('\\', '_', $modelClass);
         $cacheTtl = $options['cache_ttl'] ?? 3600;
 
         return Cache::remember($cacheKey, $cacheTtl, function () use ($modelInstance, $statusField, $options) {
@@ -66,13 +62,12 @@ class StatisticsService
     /**
      * Model için aylık istatistikleri getir
      *
-     * @param string|Model $model Model class name veya instance
-     * @param array $options Seçenekler
-     *   - date_field: Tarih field adı (varsayılan: 'created_at')
-     *   - months: Kaç ay geriye gidilecek (varsayılan: 12)
-     *   - cache_key: Cache key
-     *   - cache_ttl: Cache TTL saniye (varsayılan: 3600)
-     * @return array
+     * @param  string|Model  $model  Model class name veya instance
+     * @param  array  $options  Seçenekler
+     *                          - date_field: Tarih field adı (varsayılan: 'created_at')
+     *                          - months: Kaç ay geriye gidilecek (varsayılan: 12)
+     *                          - cache_key: Cache key
+     *                          - cache_ttl: Cache TTL saniye (varsayılan: 3600)
      */
     public static function getMonthlyStats($model, array $options = []): array
     {
@@ -81,7 +76,7 @@ class StatisticsService
 
         $dateField = $options['date_field'] ?? 'created_at';
         $months = $options['months'] ?? 12;
-        $cacheKey = $options['cache_key'] ?? 'monthly_stats_' . str_replace('\\', '_', $modelClass);
+        $cacheKey = $options['cache_key'] ?? 'monthly_stats_'.str_replace('\\', '_', $modelClass);
         $cacheTtl = $options['cache_ttl'] ?? 3600;
 
         return Cache::remember($cacheKey, $cacheTtl, function () use ($modelInstance, $dateField, $months) {
@@ -110,13 +105,12 @@ class StatisticsService
     /**
      * Model için günlük istatistikleri getir
      *
-     * @param string|Model $model Model class name veya instance
-     * @param array $options Seçenekler
-     *   - date_field: Tarih field adı (varsayılan: 'created_at')
-     *   - days: Kaç gün geriye gidilecek (varsayılan: 30)
-     *   - cache_key: Cache key
-     *   - cache_ttl: Cache TTL saniye (varsayılan: 1800)
-     * @return array
+     * @param  string|Model  $model  Model class name veya instance
+     * @param  array  $options  Seçenekler
+     *                          - date_field: Tarih field adı (varsayılan: 'created_at')
+     *                          - days: Kaç gün geriye gidilecek (varsayılan: 30)
+     *                          - cache_key: Cache key
+     *                          - cache_ttl: Cache TTL saniye (varsayılan: 1800)
      */
     public static function getDailyStats($model, array $options = []): array
     {
@@ -125,7 +119,7 @@ class StatisticsService
 
         $dateField = $options['date_field'] ?? 'created_at';
         $days = $options['days'] ?? 30;
-        $cacheKey = $options['cache_key'] ?? 'daily_stats_' . str_replace('\\', '_', $modelClass);
+        $cacheKey = $options['cache_key'] ?? 'daily_stats_'.str_replace('\\', '_', $modelClass);
         $cacheTtl = $options['cache_ttl'] ?? 1800;
 
         return Cache::remember($cacheKey, $cacheTtl, function () use ($modelInstance, $dateField, $days) {
@@ -154,13 +148,12 @@ class StatisticsService
     /**
      * Model için status bazlı istatistikleri getir
      *
-     * @param string|Model $model Model class name veya instance
-     * @param array $options Seçenekler
-     *   - status_field: Status field adı (varsayılan: 'status')
-     *   - status_values: Status değerleri array'i (varsayılan: ['active', 'inactive', 'pending'])
-     *   - cache_key: Cache key
-     *   - cache_ttl: Cache TTL saniye (varsayılan: 3600)
-     * @return array
+     * @param  string|Model  $model  Model class name veya instance
+     * @param  array  $options  Seçenekler
+     *                          - status_field: Status field adı (varsayılan: 'status')
+     *                          - status_values: Status değerleri array'i (varsayılan: ['active', 'inactive', 'pending'])
+     *                          - cache_key: Cache key
+     *                          - cache_ttl: Cache TTL saniye (varsayılan: 3600)
      */
     public static function getStatusStats($model, array $options = []): array
     {
@@ -169,14 +162,14 @@ class StatisticsService
 
         $statusField = $options['status_field'] ?? 'status';
         $statusValues = $options['status_values'] ?? ['active', 'inactive', 'pending'];
-        $cacheKey = $options['cache_key'] ?? 'status_stats_' . str_replace('\\', '_', $modelClass);
+        $cacheKey = $options['cache_key'] ?? 'status_stats_'.str_replace('\\', '_', $modelClass);
         $cacheTtl = $options['cache_ttl'] ?? 3600;
 
         return Cache::remember($cacheKey, $cacheTtl, function () use ($modelInstance, $statusField, $statusValues) {
             $stats = [];
 
             // Status field kontrolü
-            if (!$modelInstance->getConnection()->getSchemaBuilder()->hasColumn($modelInstance->getTable(), $statusField)) {
+            if (! $modelInstance->getConnection()->getSchemaBuilder()->hasColumn($modelInstance->getTable(), $statusField)) {
                 return $stats;
             }
 
@@ -191,9 +184,8 @@ class StatisticsService
     /**
      * Cache'i temizle
      *
-     * @param string|Model $model Model class name veya instance
-     * @param string|null $type Stats type (null ise tüm cache'ler temizlenir)
-     * @return void
+     * @param  string|Model  $model  Model class name veya instance
+     * @param  string|null  $type  Stats type (null ise tüm cache'ler temizlenir)
      */
     public static function clearCache($model, ?string $type = null): void
     {
@@ -208,7 +200,7 @@ class StatisticsService
         ];
 
         if ($type) {
-            $keys = array_filter($keys, fn($key) => str_starts_with($key, "{$type}_"));
+            $keys = array_filter($keys, fn ($key) => str_starts_with($key, "{$type}_"));
         }
 
         foreach ($keys as $key) {
@@ -216,4 +208,3 @@ class StatisticsService
         }
     }
 }
-

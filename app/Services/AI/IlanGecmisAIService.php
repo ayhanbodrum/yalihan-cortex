@@ -4,7 +4,6 @@ namespace App\Services\AI;
 
 use App\Models\Ilan;
 use App\Models\Kisi;
-use Illuminate\Support\Facades\Log;
 
 /**
  * AI İlan Geçmişi Analiz Servisi
@@ -23,10 +22,10 @@ class IlanGecmisAIService
     {
         $kisi = Kisi::find($kisiId);
 
-        if (!$kisi) {
+        if (! $kisi) {
             return [
                 'success' => false,
-                'message' => 'Kişi bulunamadı'
+                'message' => 'Kişi bulunamadı',
             ];
         }
 
@@ -41,7 +40,7 @@ class IlanGecmisAIService
                 'success' => true,
                 'has_history' => false,
                 'message' => 'Bu kişinin önceki ilanı yok. İlk ilan oluşturuluyor.',
-                'oneriler' => $this->getDefaultSuggestions()
+                'oneriler' => $this->getDefaultSuggestions(),
             ];
         }
 
@@ -51,7 +50,7 @@ class IlanGecmisAIService
             'kisi' => [
                 'id' => $kisi->id,
                 'tam_ad' => $kisi->tam_ad,
-                'crm_score' => $kisi->crm_score ?? 0
+                'crm_score' => $kisi->crm_score ?? 0,
             ],
             'total_ilanlar' => $oncekiIlanlar->count(),
             'baslik_analizi' => $this->analyzeBasliklar($oncekiIlanlar),
@@ -61,7 +60,7 @@ class IlanGecmisAIService
             'lokasyon_dagilimi' => $this->analyzeLokasyonlar($oncekiIlanlar),
             'fotograf_analizi' => $this->analyzeFotograflar($oncekiIlanlar),
             'basari_metrikleri' => $this->calculateSuccessMetrics($oncekiIlanlar),
-            'oneriler' => $this->generateSuggestions($oncekiIlanlar)
+            'oneriler' => $this->generateSuggestions($oncekiIlanlar),
         ];
     }
 
@@ -76,7 +75,7 @@ class IlanGecmisAIService
             return ['message' => 'Başlık verisi yok'];
         }
 
-        $uzunluklar = $basliklar->map(fn($b) => mb_strlen($b));
+        $uzunluklar = $basliklar->map(fn ($b) => mb_strlen($b));
 
         // En başarılı başlığı bul (görüntülenme bazlı)
         $enBasarili = $ilanlar->sortByDesc('goruntulenme_sayisi')->first();
@@ -90,10 +89,10 @@ class IlanGecmisAIService
             'en_basarili' => $enBasarili ? [
                 'baslik' => $enBasarili->baslik,
                 'uzunluk' => mb_strlen($enBasarili->baslik),
-                'goruntulenme' => $enBasarili->goruntulenme_sayisi ?? 0
+                'goruntulenme' => $enBasarili->goruntulenme_sayisi ?? 0,
             ] : null,
             'kalite_skoru' => $this->calculateBaslikKalite($basliklar),
-            'seo_analiz' => $this->analyzeSEOKeywords($basliklar)
+            'seo_analiz' => $this->analyzeSEOKeywords($basliklar),
         ];
     }
 
@@ -108,7 +107,7 @@ class IlanGecmisAIService
             return ['message' => 'Açıklama verisi yok'];
         }
 
-        $kelimeSayilari = $aciklamalar->map(fn($a) => str_word_count($a));
+        $kelimeSayilari = $aciklamalar->map(fn ($a) => str_word_count($a));
 
         return [
             'toplam_aciklama' => $aciklamalar->count(),
@@ -117,7 +116,7 @@ class IlanGecmisAIService
             'max_kelime' => $kelimeSayilari->max(),
             'onerilen_kelime' => 200, // Optimal: 200-250 kelime
             'detay_seviyesi' => $this->calculateDetailLevel($kelimeSayilari->avg()),
-            'paragraf_analizi' => $this->analyzeParagraphs($aciklamalar)
+            'paragraf_analizi' => $this->analyzeParagraphs($aciklamalar),
         ];
     }
 
@@ -147,7 +146,7 @@ class IlanGecmisAIService
             'para_birimi_dagilimi' => $paraBirimleri->toArray(),
             'en_cok_kullanilan' => $paraBirimleri->sortDesc()->keys()->first() ?? 'TRY',
             'trend' => $this->calculatePriceTrend($ilanlar),
-            'piyasa_pozisyon' => $this->compareToPazarOrtalamasi($ortalama)
+            'piyasa_pozisyon' => $this->compareToPazarOrtalamasi($ortalama),
         ];
     }
 
@@ -168,17 +167,17 @@ class IlanGecmisAIService
                 'ilan_sayisi' => $ilanlarGroup->count(),
                 'ortalama_fiyat' => round($ilanlarGroup->avg('fiyat'), 0),
                 'basari_orani' => $this->calculateSuccessRate($ilanlarGroup),
-                'yuzde' => round(($ilanlarGroup->count() / $ilanlar->count()) * 100, 1)
+                'yuzde' => round(($ilanlarGroup->count() / $ilanlar->count()) * 100, 1),
             ];
         }
 
         // En çok kullanılan kategoriye göre sırala
-        usort($tercihler, fn($a, $b) => $b['ilan_sayisi'] <=> $a['ilan_sayisi']);
+        usort($tercihler, fn ($a, $b) => $b['ilan_sayisi'] <=> $a['ilan_sayisi']);
 
         return [
             'tercihler' => $tercihler,
             'en_cok_kullanilan' => $tercihler[0] ?? null,
-            'kategori_cesitliligi' => count($tercihler)
+            'kategori_cesitliligi' => count($tercihler),
         ];
     }
 
@@ -197,16 +196,16 @@ class IlanGecmisAIService
                 'il_id' => $ilId,
                 'il_adi' => $il->il_adi ?? 'Bilinmiyor',
                 'ilan_sayisi' => $ilanlarGroup->count(),
-                'yuzde' => round(($ilanlarGroup->count() / $ilanlar->count()) * 100, 1)
+                'yuzde' => round(($ilanlarGroup->count() / $ilanlar->count()) * 100, 1),
             ];
         }
 
-        usort($ilDagilimi, fn($a, $b) => $b['ilan_sayisi'] <=> $a['ilan_sayisi']);
+        usort($ilDagilimi, fn ($a, $b) => $b['ilan_sayisi'] <=> $a['ilan_sayisi']);
 
         return [
             'il_dagilimi' => $ilDagilimi,
             'en_cok_kullanilan_il' => $ilDagilimi[0] ?? null,
-            'il_cesitliligi' => count($ilDagilimi)
+            'il_cesitliligi' => count($ilDagilimi),
         ];
     }
 
@@ -215,14 +214,14 @@ class IlanGecmisAIService
      */
     protected function analyzeFotograflar($ilanlar)
     {
-        $fotoSayilari = $ilanlar->map(fn($i) => $i->fotograflar->count());
+        $fotoSayilari = $ilanlar->map(fn ($i) => $i->fotograflar->count());
 
         return [
             'ortalama_foto' => round($fotoSayilari->avg(), 0),
             'min_foto' => $fotoSayilari->min(),
             'max_foto' => $fotoSayilari->max(),
             'onerilen_foto' => 8, // Optimal: 8-12 fotoğraf
-            'kapak_foto_kullanimi' => $ilanlar->filter(fn($i) => $i->fotograflar->where('kapak_fotografi', true)->count() > 0)->count()
+            'kapak_foto_kullanimi' => $ilanlar->filter(fn ($i) => $i->fotograflar->where('kapak_fotografi', true)->count() > 0)->count(),
         ];
     }
 
@@ -244,7 +243,7 @@ class IlanGecmisAIService
             'kiralama_oran' => $ilanlar->count() > 0 ? round(($kiralanan / $ilanlar->count()) * 100, 1) : 0,
             'ortalama_goruntulenme' => $ilanlar->count() > 0 ? round($toplamGoruntulenme / $ilanlar->count(), 0) : 0,
             'ortalama_favori' => $ilanlar->count() > 0 ? round($toplamFavori / $ilanlar->count(), 0) : 0,
-            'basari_skoru' => $this->calculateOverallSuccessScore($ilanlar)
+            'basari_skoru' => $this->calculateOverallSuccessScore($ilanlar),
         ];
     }
 
@@ -379,7 +378,7 @@ class IlanGecmisAIService
             if ($count > 0) {
                 $kullanim[$keyword] = [
                     'count' => $count,
-                    'percentage' => round(($count / $basliklar->count()) * 100, 1)
+                    'percentage' => round(($count / $basliklar->count()) * 100, 1),
                 ];
             }
         }
@@ -404,9 +403,9 @@ class IlanGecmisAIService
         $ilkOrtalama = $ilkIlanlar->avg('fiyat');
 
         if ($sonOrtalama > $ilkOrtalama * 1.1) {
-            return 'Artış eğilimi (+' . round((($sonOrtalama - $ilkOrtalama) / $ilkOrtalama) * 100, 1) . '%)';
+            return 'Artış eğilimi (+'.round((($sonOrtalama - $ilkOrtalama) / $ilkOrtalama) * 100, 1).'%)';
         } elseif ($sonOrtalama < $ilkOrtalama * 0.9) {
-            return 'Azalış eğilimi (-' . round((($ilkOrtalama - $sonOrtalama) / $ilkOrtalama) * 100, 1) . '%)';
+            return 'Azalış eğilimi (-'.round((($ilkOrtalama - $sonOrtalama) / $ilkOrtalama) * 100, 1).'%)';
         } else {
             return 'Stabil';
         }
@@ -427,6 +426,7 @@ class IlanGecmisAIService
     protected function calculateSuccessRate($ilanlar)
     {
         $satilan = $ilanlar->whereIn('status', ['Satıldı', 'Kiralandı'])->count();
+
         return $ilanlar->count() > 0 ? round(($satilan / $ilanlar->count()) * 100, 1) : 0;
     }
 
@@ -490,7 +490,7 @@ class IlanGecmisAIService
 
         return [
             'ortalama_paragraf' => round($paragrafSayilari->avg(), 0),
-            'onerilen_paragraf' => 3
+            'onerilen_paragraf' => 3,
         ];
     }
 
@@ -500,11 +500,11 @@ class IlanGecmisAIService
     protected function getDefaultSuggestions()
     {
         return [
-            "💡 İlk ilanınız! Başlık 60-80 karakter arasında olmalı.",
-            "💡 Açıklama 200-250 kelime, 3 paragraf olarak yazın.",
-            "📸 En az 8-12 fotoğraf ekleyin.",
-            "💰 Fiyatı piyasa araştırması yaparak belirleyin.",
-            "📍 Lokasyon bilgilerini eksiksiz doldurun."
+            '💡 İlk ilanınız! Başlık 60-80 karakter arasında olmalı.',
+            '💡 Açıklama 200-250 kelime, 3 paragraf olarak yazın.',
+            '📸 En az 8-12 fotoğraf ekleyin.',
+            '💰 Fiyatı piyasa araştırması yaparak belirleyin.',
+            '📍 Lokasyon bilgilerini eksiksiz doldurun.',
         ];
     }
 }

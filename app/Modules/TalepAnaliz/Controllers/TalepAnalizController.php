@@ -44,7 +44,6 @@ class TalepAnalizController extends Controller
      * Birden fazla talebi queue'da analiz eder
      * Progress tracking ile ilerleme takibi yapar
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
      */
     public function topluAnalizEt(Request $request)
@@ -55,7 +54,7 @@ class TalepAnalizController extends Controller
         ]);
 
         $talepIds = $request->talep_ids;
-        $jobId = 'talep_analiz_' . Str::uuid()->toString();
+        $jobId = 'talep_analiz_'.Str::uuid()->toString();
 
         // Job'ı queue'ya ekle
         TalepTopluAnalizJob::dispatch($talepIds, $jobId);
@@ -71,7 +70,7 @@ class TalepAnalizController extends Controller
         }
 
         return redirect()->route('admin.talepler.analiz.index')
-            ->with('success', 'Toplu analiz başlatıldı. Job ID: ' . $jobId)
+            ->with('success', 'Toplu analiz başlatıldı. Job ID: '.$jobId)
             ->with('job_id', $jobId);
     }
 
@@ -80,7 +79,6 @@ class TalepAnalizController extends Controller
      *
      * GET /admin/talepler/analiz/progress/{jobId}
      *
-     * @param string $jobId
      * @return \Illuminate\Http\JsonResponse
      */
     public function getProgress(string $jobId)
@@ -88,10 +86,10 @@ class TalepAnalizController extends Controller
         $progress = Cache::get("talep_toplu_analiz_{$jobId}_progress");
         $results = Cache::get("talep_toplu_analiz_{$jobId}_results");
 
-        if (!$progress) {
+        if (! $progress) {
             return response()->json([
                 'success' => false,
-                'message' => 'Job bulunamadı veya süresi dolmuş'
+                'message' => 'Job bulunamadı veya süresi dolmuş',
             ], 404);
         }
 
@@ -107,17 +105,16 @@ class TalepAnalizController extends Controller
      *
      * GET /admin/talepler/analiz/results/{jobId}
      *
-     * @param string $jobId
      * @return \Illuminate\Http\JsonResponse
      */
     public function getResults(string $jobId)
     {
         $results = Cache::get("talep_toplu_analiz_{$jobId}_results");
 
-        if (!$results) {
+        if (! $results) {
             return response()->json([
                 'success' => false,
-                'message' => 'Sonuçlar bulunamadı veya süresi dolmuş'
+                'message' => 'Sonuçlar bulunamadı veya süresi dolmuş',
             ], 404);
         }
 
@@ -140,13 +137,13 @@ class TalepAnalizController extends Controller
      * PDF ve Excel rapor oluşturur
      * TalepRaporController'a yönlendirir
      *
-     * @param Request $request
-     * @param int $id
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function raporOlustur(Request $request, $id)
     {
         $raporController = app(\App\Http\Controllers\Admin\TalepRaporController::class);
+
         return $raporController->raporOlustur($request, $id);
     }
 }

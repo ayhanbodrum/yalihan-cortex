@@ -2,26 +2,22 @@
 
 namespace App\Services;
 
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Cache;
-use App\Services\AICoreSystem;
-use App\Services\AIFormGenerator;
-use App\Services\AIMatrixManager;
-use App\Services\AISuggestionEngine;
-
 class AISystemIntegration
 {
     private $aiCore;
+
     private $formGenerator;
+
     private $matrixManager;
+
     private $suggestionEngine;
 
     public function __construct()
     {
-        $this->aiCore = new AICoreSystem();
-        $this->formGenerator = new AIFormGenerator();
-        $this->matrixManager = new AIMatrixManager();
-        $this->suggestionEngine = new AISuggestionEngine();
+        $this->aiCore = new AICoreSystem;
+        $this->formGenerator = new AIFormGenerator;
+        $this->matrixManager = new AIMatrixManager;
+        $this->suggestionEngine = new AISuggestionEngine;
     }
 
     /**
@@ -34,7 +30,7 @@ class AISystemIntegration
         // AI'den öğren
         $learnedPatterns = $this->aiCore->learnFromAI($context, [
             'category' => $category,
-            'publication_type' => $publicationType
+            'publication_type' => $publicationType,
         ]);
 
         // Akıllı form oluştur
@@ -51,7 +47,7 @@ class AISystemIntegration
         // AI'den öğren
         $learnedPatterns = $this->aiCore->learnFromAI($context, [
             'category' => $category,
-            'fields' => $fields
+            'fields' => $fields,
         ]);
 
         // Akıllı matrix oluştur
@@ -64,6 +60,7 @@ class AISystemIntegration
     public function generateSuggestions($context, $input)
     {
         $learnedPatterns = $this->aiCore->learnFromAI($context, $input);
+
         return $this->suggestionEngine->suggest($learnedPatterns, $input);
     }
 
@@ -77,7 +74,7 @@ class AISystemIntegration
         // AI'den öğren
         $learnedPatterns = $this->aiCore->learnFromAI($context, [
             'category' => $category,
-            'features' => $features
+            'features' => $features,
         ]);
 
         // Hibrit sıralama oluştur
@@ -113,12 +110,12 @@ class AISystemIntegration
             $siralama[] = [
                 'feature' => $feature,
                 'score' => $score,
-                'importance' => $this->determineImportance($score)
+                'importance' => $this->determineImportance($score),
             ];
         }
 
         // Skora göre sırala
-        usort($siralama, function($a, $b) {
+        usort($siralama, function ($a, $b) {
             return $b['score'] <=> $a['score'];
         });
 
@@ -133,7 +130,7 @@ class AISystemIntegration
         $score = 0;
 
         // Pattern'lerden skor al
-        if (!is_array($patterns) || empty($patterns)) {
+        if (! is_array($patterns) || empty($patterns)) {
             return rand(30, 80);
         }
 
@@ -156,9 +153,16 @@ class AISystemIntegration
      */
     private function determineImportance($score)
     {
-        if ($score >= 80) return 'cok_onemli';
-        if ($score >= 60) return 'onemli';
-        if ($score >= 40) return 'orta_onemli';
+        if ($score >= 80) {
+            return 'cok_onemli';
+        }
+        if ($score >= 60) {
+            return 'onemli';
+        }
+        if ($score >= 40) {
+            return 'orta_onemli';
+        }
+
         return 'dusuk_onemli';
     }
 }
@@ -178,7 +182,7 @@ class AIFormGenerator
                 'name' => $pattern['pattern'],
                 'type' => 'text',
                 'required' => $pattern['confidence'] > 0.7,
-                'ai_suggested' => true
+                'ai_suggested' => true,
             ];
         }
 
@@ -201,7 +205,7 @@ class AIMatrixManager
                 'field' => $pattern['pattern'],
                 'ai_suggestion' => $pattern['confidence'] > 0.6,
                 'ai_auto_fill' => $pattern['confidence'] > 0.8,
-                'required' => $pattern['confidence'] > 0.7
+                'required' => $pattern['confidence'] > 0.7,
             ];
         }
 
@@ -218,7 +222,7 @@ class AISuggestionEngine
     {
         $suggestions = [];
 
-        if (!is_array($patterns) || empty($patterns)) {
+        if (! is_array($patterns) || empty($patterns)) {
             return $suggestions;
         }
 
@@ -227,7 +231,7 @@ class AISuggestionEngine
                 $suggestions[] = [
                     'suggestion' => $pattern['pattern'],
                     'confidence' => $pattern['confidence'],
-                    'context' => $pattern['context']
+                    'context' => $pattern['context'],
                 ];
             }
         }

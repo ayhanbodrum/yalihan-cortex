@@ -187,6 +187,6 @@ class DemirbasKategoriSeeder extends Seeder
             'status' => true,
         ]);
 
-        $this->command->info('✅ Demirbaş kategorileri oluşturuldu: ' . DemirbasKategori::count() . ' adet');
+        $this->command->info('✅ Demirbaş kategorileri oluşturuldu: '.DemirbasKategori::count().' adet');
     }
 }

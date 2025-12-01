@@ -2,10 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Models\IlanKategori;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Schema;
-use App\Models\IlanKategori;
-use Illuminate\Support\Str;
 
 class CompleteIlanKategoriSeeder extends Seeder
 {
@@ -20,7 +19,7 @@ class CompleteIlanKategoriSeeder extends Seeder
         // Context7: status kolonu kontrolü (yasaklı komut kuralı)
         $hasStatusColumn = Schema::hasColumn('ilan_kategorileri', 'status');
 
-        if (!$hasStatusColumn) {
+        if (! $hasStatusColumn) {
             $this->command->warn('⚠️ status kolonu yok! Varsayılan değer kullanılacak.');
         }
 
@@ -52,7 +51,7 @@ class CompleteIlanKategoriSeeder extends Seeder
             );
         }
 
-        $this->command->info('   ✓ ' . count($anaKategoriler) . ' ana kategori oluşturuldu');
+        $this->command->info('   ✓ '.count($anaKategoriler).' ana kategori oluşturuldu');
 
         // ✅ Alt Kategoriler
         $altKategoriler = [
@@ -122,10 +121,10 @@ class CompleteIlanKategoriSeeder extends Seeder
             }
         }
 
-        $this->command->info('   ✓ ' . count($altKategoriler) . ' alt kategori oluşturuldu');
+        $this->command->info('   ✓ '.count($altKategoriler).' alt kategori oluşturuldu');
 
         $this->command->info('✅ Kategori hiyerarşisi tamamlandı!');
-        $this->command->info('   Ana Kategoriler: ' . IlanKategori::whereNull('parent_id')->count());
-        $this->command->info('   Alt Kategoriler: ' . IlanKategori::whereNotNull('parent_id')->count());
+        $this->command->info('   Ana Kategoriler: '.IlanKategori::whereNull('parent_id')->count());
+        $this->command->info('   Alt Kategoriler: '.IlanKategori::whereNotNull('parent_id')->count());
     }
 }

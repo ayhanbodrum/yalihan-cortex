@@ -3,21 +3,24 @@
 /**
  * Schema Callback Closure Fixer - Bu spesifik pattern'ı çözen targeted fixer
  */
-
 echo "🎯 Schema Callback Closure Fixer - Spesifik Pattern!\n";
 echo "🔧 'unexpected token public, expecting )' hatalarını çözüyoruz...\n\n";
 
-$migrationsDir = __DIR__ . '/../database/migrations';
+$migrationsDir = __DIR__.'/../database/migrations';
 $fixedCount = 0;
 
-foreach (glob($migrationsDir . '/*.php') as $filePath) {
+foreach (glob($migrationsDir.'/*.php') as $filePath) {
     $filename = basename($filePath);
 
-    $syntaxCheck = shell_exec("php -l " . escapeshellarg($filePath) . " 2>&1");
-    if (strpos($syntaxCheck, 'No syntax errors') !== false) continue;
+    $syntaxCheck = shell_exec('php -l '.escapeshellarg($filePath).' 2>&1');
+    if (strpos($syntaxCheck, 'No syntax errors') !== false) {
+        continue;
+    }
 
     // Sadece "unexpected token 'public', expecting ')'" hatalarını ele al
-    if (strpos($syntaxCheck, 'unexpected token "public", expecting ")"') === false) continue;
+    if (strpos($syntaxCheck, 'unexpected token "public", expecting ")"') === false) {
+        continue;
+    }
 
     echo "🔧 $filename -> ";
 
@@ -61,10 +64,10 @@ foreach (glob($migrationsDir . '/*.php') as $filePath) {
                 if (strpos($nextLine, 'public function') !== false && $bracketCount > 0) {
                     // Schema callback kapanmamış, önceki satırda kapat
                     if ($j > 0) {
-                        $prevLine = trim($lines[$j-1]);
+                        $prevLine = trim($lines[$j - 1]);
 
                         if ($prevLine === '}') {
-                            $lines[$j-1] = '        });';
+                            $lines[$j - 1] = '        });';
                             array_splice($lines, $j, 0, ['    }', '']);
                             $modified = true;
                             break;
@@ -73,7 +76,9 @@ foreach (glob($migrationsDir . '/*.php') as $filePath) {
                 }
             }
 
-            if ($modified) break;
+            if ($modified) {
+                break;
+            }
         }
     }
 
@@ -84,7 +89,7 @@ foreach (glob($migrationsDir . '/*.php') as $filePath) {
             $fixedCount++;
 
             // Verification
-            $verifyCheck = shell_exec("php -l " . escapeshellarg($filePath) . " 2>&1");
+            $verifyCheck = shell_exec('php -l '.escapeshellarg($filePath).' 2>&1');
             if (strpos($verifyCheck, 'No syntax errors') !== false) {
                 echo "✅ SUCCESS!\n";
             } else {
@@ -102,7 +107,7 @@ echo "\n📊 Schema Callback Fixer Özeti:\n";
 echo "🔧 Düzeltilen dosyalar: $fixedCount\n";
 
 // Error count check
-$currentErrors = (int)shell_exec("find " . escapeshellarg($migrationsDir) . " -name '*.php' -exec php -l {} \\; 2>&1 | grep -c 'Parse error\\|Fatal error\\|syntax error' || echo '0'");
+$currentErrors = (int) shell_exec('find '.escapeshellarg($migrationsDir)." -name '*.php' -exec php -l {} \\; 2>&1 | grep -c 'Parse error\\|Fatal error\\|syntax error' || echo '0'");
 $improvement = 197 - $currentErrors;
 
 echo "⚠️ Önceki hata sayısı: 197\n";

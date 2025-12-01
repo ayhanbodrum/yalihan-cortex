@@ -2,11 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use App\Models\Setting;
-use App\Models\FeatureCategory;
 use App\Models\Feature;
-use App\Models\IlanKategori;
+use App\Models\Setting;
+use Illuminate\Database\Seeder;
 
 class AIMasterDataSeeder extends Seeder
 {
@@ -98,8 +96,8 @@ class AIMasterDataSeeder extends Seeder
                     'categories' => ['Daire', 'Villa', 'Müstakil Ev', 'Rezidans'],
                     'features' => ['Oda Sayısı', 'Metrekare', 'Balkon', 'Asansör', 'Güvenlik'],
                     'keywords' => ['satılık', 'kiralık', '3+1', '4+1', 'deniz manzarası'],
-                    'price_ranges' => ['0-500000', '500000-1000000', '1000000-2000000', '2000000+']
-                ]
+                    'price_ranges' => ['0-500000', '500000-1000000', '1000000-2000000', '2000000+'],
+                ],
             ],
             [
                 'name' => 'Arsa Analizi',
@@ -108,8 +106,8 @@ class AIMasterDataSeeder extends Seeder
                     'categories' => ['Arsa', 'Bahçe', 'Tarla', 'Bağ'],
                     'features' => ['İmarlı', 'Ada Parsel', 'Tapu Durumu', 'Emsal'],
                     'keywords' => ['satılık arsa', 'imar', 'parsel', 'tapulu'],
-                    'price_ranges' => ['0-100000', '100000-300000', '300000-500000', '500000+']
-                ]
+                    'price_ranges' => ['0-100000', '100000-300000', '300000-500000', '500000+'],
+                ],
             ],
             [
                 'name' => 'İşyeri Analizi',
@@ -118,19 +116,19 @@ class AIMasterDataSeeder extends Seeder
                     'categories' => ['Ofis', 'Mağaza', 'Depo', 'Atölye'],
                     'features' => ['Metrekare', 'Cephe', 'Otopark', 'Güvenlik'],
                     'keywords' => ['işyeri', 'ofis', 'mağaza', 'depo'],
-                    'price_ranges' => ['0-2000000', '2000000-5000000', '5000000-10000000', '10000000+']
-                ]
-            ]
+                    'price_ranges' => ['0-2000000', '2000000-5000000', '5000000-10000000', '10000000+'],
+                ],
+            ],
         ];
 
         foreach ($categoryTrainingData as $data) {
             Setting::firstOrCreate(
-                ['key' => 'ai_training_' . strtolower(str_replace(' ', '_', $data['name']))],
+                ['key' => 'ai_training_'.strtolower(str_replace(' ', '_', $data['name']))],
                 [
                     'value' => json_encode($data['training_data']),
                     'type' => 'json',
                     'group' => 'ai_training',
-                    'description' => $data['description']
+                    'description' => $data['description'],
                 ]
             );
         }
@@ -145,35 +143,35 @@ class AIMasterDataSeeder extends Seeder
                 'value' => 'Bu emlak kategorilerini analiz et ve optimizasyon önerileri sun. Kategorilerin kullanım sıklığını, popülerlik durumunu ve iyileştirme alanlarını değerlendir.',
                 'type' => 'string',
                 'group' => 'ai_prompts',
-                'description' => 'Kategori analizi için AI prompt'
+                'description' => 'Kategori analizi için AI prompt',
             ],
             [
                 'key' => 'ai_prompt_feature_suggestions',
                 'value' => 'Bu emlak özelliklerini incele ve eksik özellikler için öneriler sun. Mevcut özelliklerin kullanıcı deneyimini nasıl iyileştirebileceğini değerlendir.',
                 'type' => 'string',
                 'group' => 'ai_prompts',
-                'description' => 'Özellik önerileri için AI prompt'
+                'description' => 'Özellik önerileri için AI prompt',
             ],
             [
                 'key' => 'ai_prompt_content_generation',
                 'value' => 'Bu emlak ilanı için çekici ve SEO uyumlu bir başlık ve açıklama oluştur. Hedef kitleyi düşünerek profesyonel ve satış odaklı bir içerik hazırla.',
                 'type' => 'string',
                 'group' => 'ai_prompts',
-                'description' => 'İçerik üretimi için AI prompt'
+                'description' => 'İçerik üretimi için AI prompt',
             ],
             [
                 'key' => 'ai_prompt_price_analysis',
                 'value' => 'Bu emlak için piyasa analizi yaparak uygun fiyat önerisi sun. Bölge, özellikler ve mevcut piyasa koşullarını dikkate al.',
                 'type' => 'string',
                 'group' => 'ai_prompts',
-                'description' => 'Fiyat analizi için AI prompt'
+                'description' => 'Fiyat analizi için AI prompt',
             ],
             [
                 'key' => 'ai_prompt_seo_optimization',
                 'value' => 'Bu emlak ilanını SEO açısından optimize et. Anahtar kelimeler, meta açıklamalar ve arama motoru uyumluluğunu iyileştir.',
                 'type' => 'string',
                 'group' => 'ai_prompts',
-                'description' => 'SEO optimizasyonu için AI prompt'
+                'description' => 'SEO optimizasyonu için AI prompt',
             ],
 
             // Market Analysis Prompts
@@ -182,14 +180,14 @@ class AIMasterDataSeeder extends Seeder
                 'value' => 'Emlak piyasası trendlerini analiz et ve gelecek öngörüleri sun. Bölgesel fiyat hareketleri, talep değişimleri ve yatırım fırsatlarını değerlendir.',
                 'type' => 'string',
                 'group' => 'ai_prompts',
-                'description' => 'Piyasa trendleri için AI prompt'
+                'description' => 'Piyasa trendleri için AI prompt',
             ],
             [
                 'key' => 'ai_prompt_location_analysis',
                 'value' => 'Bu lokasyonun emlak değerini analiz et. Ulaşım, sosyal tesisler, eğitim ve sağlık hizmetleri açısından değerlendirme yap.',
                 'type' => 'string',
                 'group' => 'ai_prompts',
-                'description' => 'Lokasyon analizi için AI prompt'
+                'description' => 'Lokasyon analizi için AI prompt',
             ],
 
             // User Experience Prompts
@@ -198,15 +196,15 @@ class AIMasterDataSeeder extends Seeder
                 'value' => 'Kullanıcı davranış verilerini analiz et ve platform iyileştirme önerileri sun. Arama kalıpları, tıklama davranışları ve kullanıcı tercihlerini değerlendir.',
                 'type' => 'string',
                 'group' => 'ai_prompts',
-                'description' => 'Kullanıcı davranış analizi için AI prompt'
+                'description' => 'Kullanıcı davranış analizi için AI prompt',
             ],
             [
                 'key' => 'ai_prompt_recommendations',
                 'value' => 'Bu kullanıcı için kişiselleştirilmiş emlak önerileri sun. Tercihler, bütçe ve ihtiyaçları dikkate alarak uygun ilanları öner.',
                 'type' => 'string',
                 'group' => 'ai_prompts',
-                'description' => 'Kişiselleştirilmiş öneriler için AI prompt'
-            ]
+                'description' => 'Kişiselleştirilmiş öneriler için AI prompt',
+            ],
         ];
 
         foreach ($aiPrompts as $prompt) {

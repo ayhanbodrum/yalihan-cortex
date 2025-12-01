@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Models\Ilce;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use App\Models\Ilce;
 
 class DidimMahallelerSeeder extends Seeder
 {
@@ -14,8 +14,9 @@ class DidimMahallelerSeeder extends Seeder
 
         $didim = Ilce::where('ilce_adi', 'Didim')->first();
 
-        if (!$didim) {
+        if (! $didim) {
             $this->command->error('❌ Didim ilçesi bulunamadı! Önce AydinIlceleriSeeder çalıştırın.');
+
             return;
         }
 
@@ -59,6 +60,6 @@ class DidimMahallelerSeeder extends Seeder
             );
         }
 
-        $this->command->info('✅ ' . count($mahalleler) . ' mahalle eklendi (Didim)');
+        $this->command->info('✅ '.count($mahalleler).' mahalle eklendi (Didim)');
     }
 }

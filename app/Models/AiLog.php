@@ -33,6 +33,11 @@ class AiLog extends Model
         'model',
         'version',
         'ip_address',
+        // AI Feedback fields (Context7: C7-AI-FEEDBACK-2025-11-25)
+        'user_rating',
+        'feedback_type',
+        'feedback_reason',
+        'feedback_at',
     ];
 
     protected $casts = [
@@ -41,6 +46,8 @@ class AiLog extends Model
         'tokens_used' => 'integer',
         'request_data' => 'array',
         'response_data' => 'array',
+        'user_rating' => 'integer',
+        'feedback_at' => 'datetime',
     ];
 
     /**

@@ -46,7 +46,7 @@ class SimpleTestDataSeeder extends Seeder
             );
         }
 
-        $this->command->info('✅ ' . count($categories) . ' kategori oluşturuldu');
+        $this->command->info('✅ '.count($categories).' kategori oluşturuldu');
     }
 
     private function createPersons(): void
@@ -77,7 +77,7 @@ class SimpleTestDataSeeder extends Seeder
                 'telefon' => '+905551234569',
                 'kisi_tipi' => 'yatirimci',
                 'status' => 'Aktif',
-            ]
+            ],
         ];
 
         foreach ($persons as $person) {
@@ -89,7 +89,7 @@ class SimpleTestDataSeeder extends Seeder
             );
         }
 
-        $this->command->info('✅ ' . count($persons) . ' kişi oluşturuldu');
+        $this->command->info('✅ '.count($persons).' kişi oluşturuldu');
     }
 
     private function createListings(): void
@@ -101,8 +101,9 @@ class SimpleTestDataSeeder extends Seeder
         $person = DB::table('kisiler')->first();
         $location = DB::table('mahalleler')->first();
 
-        if (!$category || !$person || !$location) {
+        if (! $category || ! $person || ! $location) {
             $this->command->warn('⚠️ Kategori, kişi veya lokasyon bulunamadı. İlan oluşturulamıyor.');
+
             return;
         }
 
@@ -117,7 +118,7 @@ class SimpleTestDataSeeder extends Seeder
                 'is_draft' => false,
                 'completion_percentage' => 100,
                 'last_saved_at' => now(),
-                
+
                 'ana_kategori_id' => $category->id,
                 'yayin_tipi_id' => 1, // Satılık
                 'danisman_id' => 1,
@@ -139,7 +140,7 @@ class SimpleTestDataSeeder extends Seeder
                 'is_draft' => false,
                 'completion_percentage' => 100,
                 'last_saved_at' => now(),
-                
+
                 'ana_kategori_id' => $category->id,
                 'yayin_tipi_id' => 2, // Kiralık
                 'danisman_id' => 1,
@@ -150,7 +151,7 @@ class SimpleTestDataSeeder extends Seeder
                 'adres' => 'Kadıköy Merkez, İstanbul',
                 'created_at' => now(),
                 'updated_at' => now(),
-            ]
+            ],
         ];
 
         foreach ($listings as $listing) {
@@ -159,6 +160,6 @@ class SimpleTestDataSeeder extends Seeder
             DB::table('ilanlar')->insert($listing);
         }
 
-        $this->command->info('✅ ' . count($listings) . ' ilan oluşturuldu');
+        $this->command->info('✅ '.count($listings).' ilan oluşturuldu');
     }
 }

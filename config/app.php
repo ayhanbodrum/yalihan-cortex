@@ -163,7 +163,6 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-        App\Providers\AdminMenuServiceProvider::class,
         App\Providers\TelescopeServiceProvider::class,
         App\Providers\ModuleServiceProvider::class,
         App\Providers\RoleServiceProvider::class,

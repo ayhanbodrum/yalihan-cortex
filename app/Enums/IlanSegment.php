@@ -42,7 +42,7 @@ enum IlanSegment: string
      */
     public function getTitle(): string
     {
-        return match($this) {
+        return match ($this) {
             self::PORTFOLIO_INFO => 'Portföy Bilgi Formu',
             self::DOCUMENTS_NOTES => 'Dökümanlar ve Notlar',
             self::PORTAL_LISTING => 'Portal İlan Bilgileri',
@@ -56,7 +56,7 @@ enum IlanSegment: string
      */
     public function getDescription(): string
     {
-        return match($this) {
+        return match ($this) {
             self::PORTFOLIO_INFO => 'Temel emlak bilgilerini girin',
             self::DOCUMENTS_NOTES => 'Yasal belgeler ve iç notlar',
             self::PORTAL_LISTING => 'Dış portallara yayın ayarları',
@@ -70,7 +70,7 @@ enum IlanSegment: string
      */
     public function getIcon(): string
     {
-        return match($this) {
+        return match ($this) {
             self::PORTFOLIO_INFO => 'fas fa-file-alt',
             self::DOCUMENTS_NOTES => 'fas fa-file-upload',
             self::PORTAL_LISTING => 'fas fa-globe',
@@ -114,7 +114,7 @@ enum IlanSegment: string
      */
     public function canComplete(): bool
     {
-        return match($this) {
+        return match ($this) {
             self::PORTFOLIO_INFO => true,  // Temel bilgiler yeterli
             self::DOCUMENTS_NOTES => true, // Dökümanlar opsiyonel
             self::PORTAL_LISTING => true,  // Portal ayarları opsiyonel
@@ -128,7 +128,7 @@ enum IlanSegment: string
      */
     public function isRequired(): bool
     {
-        return match($this) {
+        return match ($this) {
             self::PORTFOLIO_INFO => true,  // Temel bilgiler zorunlu
             self::DOCUMENTS_NOTES => false, // Dökümanlar opsiyonel
             self::PORTAL_LISTING => false, // Portal ayarları opsiyonel

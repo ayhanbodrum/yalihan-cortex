@@ -26,7 +26,7 @@ Route::prefix('location')->group(function () {
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Şehirler yüklenirken hata oluştu'
+                'message' => 'Şehirler yüklenirken hata oluştu',
             ], 500);
         }
     });
@@ -41,19 +41,19 @@ Route::prefix('location')->group(function () {
                     return [
                         'id' => $ilce->id,
                         'name' => $ilce->ilce_adi,
-                        'il_id' => $ilce->il_id
+                        'il_id' => $ilce->il_id,
                     ];
                 });
 
             return response()->json([
                 'success' => true,
                 'data' => $districts,
-                'ilceler' => $districts // Context7: Backward compatibility
+                'ilceler' => $districts, // Context7: Backward compatibility
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'İlçeler yüklenirken hata oluştu'
+                'message' => 'İlçeler yüklenirken hata oluştu',
             ], 500);
         }
     });
@@ -68,19 +68,19 @@ Route::prefix('location')->group(function () {
                     return [
                         'id' => $mahalle->id,
                         'name' => $mahalle->mahalle_adi,
-                        'ilce_id' => $mahalle->ilce_id
+                        'ilce_id' => $mahalle->ilce_id,
                     ];
                 });
 
             return response()->json([
                 'success' => true,
                 'data' => $neighborhoods,
-                'mahalleler' => $neighborhoods // Context7: Backward compatibility
+                'mahalleler' => $neighborhoods, // Context7: Backward compatibility
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Mahalleler yüklenirken hata oluştu'
+                'message' => 'Mahalleler yüklenirken hata oluştu',
             ], 500);
         }
     });
@@ -93,12 +93,12 @@ Route::prefix('location')->group(function () {
 
             return response()->json([
                 'success' => true,
-                'countries' => $countries
+                'countries' => $countries,
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Ülkeler yüklenirken hata oluştu'
+                'message' => 'Ülkeler yüklenirken hata oluştu',
             ], 500);
         }
     });
@@ -111,7 +111,7 @@ Route::prefix('location')->group(function () {
             if (strlen($query) < 2) {
                 return response()->json([
                     'success' => true,
-                    'results' => []
+                    'results' => [],
                 ]);
             }
 
@@ -136,8 +136,8 @@ Route::prefix('location')->group(function () {
                     'id' => $city->id,
                     'name' => $city->name,
                     'type' => 'city',
-                    'full_path' => $city->name . ', ' . $city->ulke->ulke_adi,
-                    'country' => $city->ulke->ulke_adi
+                    'full_path' => $city->name.', '.$city->ulke->ulke_adi,
+                    'country' => $city->ulke->ulke_adi,
                 ];
             }
 
@@ -146,20 +146,20 @@ Route::prefix('location')->group(function () {
                     'id' => $district->id,
                     'name' => $district->name,
                     'type' => 'district',
-                    'full_path' => $district->name . ', ' . $district->il->il_adi . ', ' . $district->il->ulke->ulke_adi,
+                    'full_path' => $district->name.', '.$district->il->il_adi.', '.$district->il->ulke->ulke_adi,
                     'city' => $district->il->il_adi,
-                    'country' => $district->il->ulke->ulke_adi
+                    'country' => $district->il->ulke->ulke_adi,
                 ];
             }
 
             return response()->json([
                 'success' => true,
-                'results' => $results
+                'results' => $results,
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Arama sırasında hata oluştu'
+                'message' => 'Arama sırasında hata oluştu',
             ], 500);
         }
     });
@@ -188,7 +188,7 @@ Route::prefix('location')->group(function () {
                     $neighborhood = \App\Models\Mahalle::with([
                         'ilce:id,ilce_adi,il_id',
                         'ilce.il:id,il_adi,ulke_id',
-                        'ilce.il.ulke:id,ulke_adi'
+                        'ilce.il.ulke:id,ulke_adi',
                     ])->find($id);
 
                     if ($neighborhood) {
@@ -196,7 +196,7 @@ Route::prefix('location')->group(function () {
                             'country' => $neighborhood->ilce->il->ulke,
                             'city' => $neighborhood->ilce->il,
                             'district' => $neighborhood->ilce,
-                            'neighborhood' => $neighborhood
+                            'neighborhood' => $neighborhood,
                         ];
                     }
                     break;
@@ -204,14 +204,14 @@ Route::prefix('location')->group(function () {
                 case 'district':
                     $district = \App\Models\Ilce::with([
                         'il:id,il_adi,ulke_id',
-                        'il.ulke:id,ulke_adi'
+                        'il.ulke:id,ulke_adi',
                     ])->find($id);
 
                     if ($district) {
                         $hierarchy = [
                             'country' => $district->il->ulke,
                             'city' => $district->il,
-                            'district' => $district
+                            'district' => $district,
                         ];
                     }
                     break;
@@ -222,7 +222,7 @@ Route::prefix('location')->group(function () {
                     if ($city) {
                         $hierarchy = [
                             'country' => $city->ulke,
-                            'city' => $city
+                            'city' => $city,
                         ];
                     }
                     break;
@@ -230,12 +230,12 @@ Route::prefix('location')->group(function () {
 
             return response()->json([
                 'success' => true,
-                'hierarchy' => $hierarchy
+                'hierarchy' => $hierarchy,
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Hiyerarşi bilgisi alınırken hata oluştu'
+                'message' => 'Hiyerarşi bilgisi alınırken hata oluştu',
             ], 500);
         }
     });

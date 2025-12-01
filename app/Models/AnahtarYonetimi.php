@@ -33,13 +33,13 @@ class AnahtarYonetimi extends Model
         'anahtar_ozellikleri',
         'status',
         'created_by',
-        'updated_by'
+        'updated_by',
     ];
 
     protected $casts = [
         'teslim_tarihi' => 'datetime',
         'anahtar_ozellikleri' => 'array',
-        'anahtar_sayisi' => 'integer'
+        'anahtar_sayisi' => 'integer',
     ];
 
     /**

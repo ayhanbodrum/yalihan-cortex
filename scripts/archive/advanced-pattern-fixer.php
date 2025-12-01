@@ -3,14 +3,13 @@
 /**
  * Advanced Pattern Fixer - Yaygın syntax hatalarını düzelten gelişmiş script
  */
-
-$migrationsDir = __DIR__ . '/../database/migrations';
+$migrationsDir = __DIR__.'/../database/migrations';
 $fixedFiles = [];
 $errorFiles = [];
 
 echo "🚀 Advanced Pattern Fixer başlatılıyor...\n";
 
-foreach (glob($migrationsDir . '/*.php') as $filePath) {
+foreach (glob($migrationsDir.'/*.php') as $filePath) {
     $filename = basename($filePath);
     echo "🔍 Kontrol ediliyor: $filename\n";
 
@@ -34,7 +33,7 @@ foreach (glob($migrationsDir . '/*.php') as $filePath) {
     // 3. Fix missing closing braces after up() function
     $content = preg_replace(
         '/(public function up\(\)[^{]*\{[^}]*\}\s*)(public function down\(\))/s',
-        '$1' . "\n\n    " . '$2',
+        '$1'."\n\n    ".'$2',
         $content
     );
 
@@ -51,15 +50,15 @@ foreach (glob($migrationsDir . '/*.php') as $filePath) {
         $content = preg_replace('/\}[\s}]*;[\s}]*$/', '};', $content);
 
         // Add missing closing brace if needed
-        if (!preg_match('/\};\s*$/', $content)) {
-            $content = rtrim($content) . "\n};";
+        if (! preg_match('/\};\s*$/', $content)) {
+            $content = rtrim($content)."\n};";
         }
     }
 
     // 6. Fix unexpected token "public" - missing closing brace for up()
     $content = preg_replace(
         '/(public function up\(\)[^{]*\{[^}]*)\s+(public function down\(\))/s',
-        '$1' . "\n    }\n\n    " . '$2',
+        '$1'."\n    }\n\n    ".'$2',
         $content
     );
 
@@ -81,16 +80,16 @@ foreach (glob($migrationsDir . '/*.php') as $filePath) {
 }
 
 echo "\n📊 Özet Rapor:\n";
-echo "✅ Düzeltilen dosyalar: " . count($fixedFiles) . "\n";
-echo "❌ Hata alan dosyalar: " . count($errorFiles) . "\n";
+echo '✅ Düzeltilen dosyalar: '.count($fixedFiles)."\n";
+echo '❌ Hata alan dosyalar: '.count($errorFiles)."\n";
 
-if (!empty($fixedFiles)) {
+if (! empty($fixedFiles)) {
     echo "\n🔧 Düzeltilen dosyalar:\n";
     foreach (array_slice($fixedFiles, 0, 10) as $file) {
         echo "  - $file\n";
     }
     if (count($fixedFiles) > 10) {
-        echo "  ... ve " . (count($fixedFiles) - 10) . " dosya daha\n";
+        echo '  ... ve '.(count($fixedFiles) - 10)." dosya daha\n";
     }
 }
 

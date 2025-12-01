@@ -42,7 +42,7 @@ class Kernel extends HttpKernel
 
         'api' => [
             \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
-            \Illuminate\Routing\Middleware\ThrottleRequests::class.':api',
+            \Illuminate\Routing\Middleware\ThrottleRequests::class . ':api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             \App\Http\Middleware\PerformanceOptimizationMiddleware::class,
         ],
@@ -86,5 +86,7 @@ class Kernel extends HttpKernel
         'context7.auth' => \App\Http\Middleware\Context7AuthMiddleware::class,
         'security' => \App\Http\Middleware\SecurityMiddleware::class,
         'rate.limit' => \App\Http\Middleware\RateLimitMiddleware::class,
+        'n8n.secret' => \App\Http\Middleware\CheckN8nSecret::class,
+        'frontend.api' => \App\Http\Middleware\VerifyFrontendApi::class,
     ];
 }

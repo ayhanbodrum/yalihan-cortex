@@ -61,6 +61,7 @@ Bu klasör, Yalıhan Emlak projesinin **Context7 standartlarını** ve **complia
 - **Kapsam:** Tüm IDE'ler, AI araçları, otomatik script'ler
 
 **İçerik:**
+
 - Forbidden patterns (yasak desenler)
 - Required patterns (zorunlu desenler)
 - Database field naming standards
@@ -72,14 +73,14 @@ Bu klasör, Yalıhan Emlak projesinin **Context7 standartlarını** ve **complia
 
 Her standart için ayrı bir dokümantasyon dosyası:
 
-| Dosya | Açıklama | Öncelik |
-|-------|----------|---------|
-| `FORBIDDEN_PATTERNS.md` | ⭐ Tüm yasak pattern'ler (birleştirilmiş) | ⭐⭐⭐⭐⭐ |
-| `FORM_DESIGN_STANDARDS.md` | Form tasarım standartları | ⭐⭐⭐⭐⭐ |
-| `TAILWIND-TRANSITION-RULE.md` | Tailwind CSS + transition zorunluluğu | ⭐⭐⭐⭐⭐ |
-| `MIGRATION_TEMPLATE_STANDARDS.md` | Migration şablon standartları | ⭐⭐⭐⭐ |
-| `STANDARDIZATION_STANDARDS.md` | Genel standartlaştırma kuralları | ⭐⭐⭐⭐ |
-| `standards/*.md` | Detaylı standart dokümantasyonları | ⭐⭐⭐ |
+| Dosya                             | Açıklama                                  | Öncelik    |
+| --------------------------------- | ----------------------------------------- | ---------- |
+| `FORBIDDEN_PATTERNS.md`           | ⭐ Tüm yasak pattern'ler (birleştirilmiş) | ⭐⭐⭐⭐⭐ |
+| `FORM_DESIGN_STANDARDS.md`        | Form tasarım standartları                 | ⭐⭐⭐⭐⭐ |
+| `TAILWIND-TRANSITION-RULE.md`     | Tailwind CSS + transition zorunluluğu     | ⭐⭐⭐⭐⭐ |
+| `MIGRATION_TEMPLATE_STANDARDS.md` | Migration şablon standartları             | ⭐⭐⭐⭐   |
+| `STANDARDIZATION_STANDARDS.md`    | Genel standartlaştırma kuralları          | ⭐⭐⭐⭐   |
+| `standards/*.md`                  | Detaylı standart dokümantasyonları        | ⭐⭐⭐     |
 
 ---
 
@@ -89,14 +90,14 @@ Her standart için ayrı bir dokümantasyon dosyası:
 
 ### Hızlı Referans
 
-| Kategori | Yasak | Zorunlu |
-|----------|-------|---------|
-| Status Field | `enabled`, `aktif`, `durum` | `status` |
-| Order Field | `order` | `display_order` |
-| Location | `sehir_id`, `semt_id` | `il_id`, `mahalle_id` |
-| Terminology | `musteri` | `kisi` |
-| CSS | `neo-*`, `btn-*` | Tailwind utilities |
-| Routes | `crm.*`, double prefix | `admin.*`, single prefix |
+| Kategori     | Yasak                       | Zorunlu                  |
+| ------------ | --------------------------- | ------------------------ |
+| Status Field | `enabled`, `aktif`, `durum` | `status`                 |
+| Order Field  | `order`                     | `display_order`          |
+| Location     | `sehir_id`, `semt_id`       | `il_id`, `mahalle_id`    |
+| Terminology  | `musteri`                   | `kisi`                   |
+| CSS          | `neo-*`, `btn-*`            | Tailwind utilities       |
+| Routes       | `crm.*`, double prefix      | `admin.*`, single prefix |
 
 **Detaylı dokümantasyon:** `.context7/standards/` klasöründe
 
@@ -114,12 +115,15 @@ Her standart için ayrı bir dokümantasyon dosyası:
 - ❌ Neo Design System, Bootstrap, Foundation YASAK
 
 **Örnek:**
+
 ```html
 <!-- ✅ DOĞRU -->
-<button class="px-4 py-2 bg-blue-600 text-white rounded-lg
+<button
+    class="px-4 py-2 bg-blue-600 text-white rounded-lg
                hover:bg-blue-700 hover:scale-105
                transition-all duration-200
-               dark:bg-blue-500 dark:hover:bg-blue-600">
+               dark:bg-blue-500 dark:hover:bg-blue-600"
+>
     Kaydet
 </button>
 
@@ -187,12 +191,24 @@ php scripts/context7-compliance-scanner.php
 
 Eski raporlar ve geçici analizler `.context7/archive/` klasöründe saklanır:
 
-- **Eski compliance raporları**
-- **Geçici analiz raporları**
-- **Eski log dosyaları**
-- **Daily reports arşivi**
+- **Eski compliance raporları** - Tarihsel kayıt
+- **Geçici analiz raporları** - Referans
+- **Eski log dosyaları** - Audit trail
+- **Daily reports arşivi** - Snapshot'lar
 
-**Not:** Arşivlenmiş dosyalar referans amaçlıdır, aktif kullanılmaz.
+**⚠️ ÖNEMLİ:**
+
+- Arşivlenmiş dosyalar **referans amaçlıdır**, aktif kullanılmaz
+- [outdated] / [duplicate_hint] flag'leri **o anki durum** içindi
+- **"Yapılacak iş" değil, tarihsel kayıttır**
+- Yalıhan Bekçi taraması bu klasörleri **dışarıda bırakmalı**
+
+**Aktif standart kaynakları:**
+
+- `.context7/authority.json`
+- `.context7/PERMANENT_STANDARDS.md`
+- `.context7/FORBIDDEN_PATTERNS.md`
+- `docs/active/RULES_KONSOLIDE_2025_11_25.md`
 
 ---
 
@@ -217,4 +233,3 @@ Eski raporlar ve geçici analizler `.context7/archive/` klasöründe saklanır:
 **Son Güncelleme:** Kasım 2025  
 **Versiyon:** 5.4.0  
 **Durum:** ✅ Aktif ve Güncel
-

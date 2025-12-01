@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Models\Feature;
 use App\Models\FeatureCategory;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Cache;
 
 class OzellikController extends AdminController
@@ -25,7 +24,7 @@ class OzellikController extends AdminController
             $query->where('status', $request->status == '1' ? true : false);
         }
         // Backward compatibility: accept 'enabled' but map to 'status'
-        if ($request->has('enabled') && $request->enabled !== '' && !$request->has('status')) {
+        if ($request->has('enabled') && $request->enabled !== '' && ! $request->has('status')) {
             $query->where('status', $request->enabled == '1' ? true : false);
         }
         $ozellikler = $query->paginate(20, ['*'], 'ozellikler_page');
@@ -85,6 +84,7 @@ class OzellikController extends AdminController
                 ->orderBy('name')
                 ->get();
         });
+
         return view('admin.ozellikler.create', compact('kategoriler'));
     }
 
@@ -102,12 +102,12 @@ class OzellikController extends AdminController
         ]);
 
         // Request'ten category_id gelirse feature_category_id'ye map et
-        if ($request->has('category_id') && !$request->has('feature_category_id')) {
+        if ($request->has('category_id') && ! $request->has('feature_category_id')) {
             $validated['feature_category_id'] = $request->category_id;
         }
 
         // Backward compatibility: enabled → status mapping
-        if ($request->has('enabled') && !$request->has('status')) {
+        if ($request->has('enabled') && ! $request->has('status')) {
             $validated['status'] = $request->boolean('enabled');
         }
 
@@ -138,11 +138,11 @@ class OzellikController extends AdminController
         $ozellik = Feature::findOrFail($id);
 
         // ✅ Context7: Legacy alanları doğrulama öncesinde normalize et
-        if (!$request->filled('type') && $request->filled('field_type')) {
+        if (! $request->filled('type') && $request->filled('field_type')) {
             $request->merge(['type' => $request->input('field_type')]);
         }
 
-        if (!$request->filled('feature_category_id') && $request->filled('category_id')) {
+        if (! $request->filled('feature_category_id') && $request->filled('category_id')) {
             $request->merge(['feature_category_id' => $request->input('category_id')]);
         }
 
@@ -165,12 +165,12 @@ class OzellikController extends AdminController
         // Context7: display_order tek kaynak olarak kullanılır
 
         // ✅ Context7: Backward compatibility - zorunlu → is_required mapping
-        if ($request->has('zorunlu') && !$request->has('is_required')) {
+        if ($request->has('zorunlu') && ! $request->has('is_required')) {
             $validated['is_required'] = $request->boolean('zorunlu');
         }
 
         // ✅ Context7: Backward compatibility - aciklama → description mapping
-        if ($request->has('aciklama') && !$request->has('description')) {
+        if ($request->has('aciklama') && ! $request->has('description')) {
             $validated['description'] = $request->input('aciklama');
         }
 
@@ -192,7 +192,7 @@ class OzellikController extends AdminController
         Cache::forget('feature_category_list');
 
         return redirect()->route('admin.ozellikler.edit', $ozellik->id)
-            ->with('success', $ozellik->name . ' başarıyla güncellendi! ✅');
+            ->with('success', $ozellik->name.' başarıyla güncellendi! ✅');
     }
 
     public function destroy($id)
@@ -212,7 +212,7 @@ class OzellikController extends AdminController
         $validated = $request->validate([
             'action' => 'required|in:activate,deactivate,delete',
             'ids' => 'required|array|min:1',
-            'ids.*' => 'exists:features,id'
+            'ids.*' => 'exists:features,id',
         ]);
 
         $action = $validated['action'];

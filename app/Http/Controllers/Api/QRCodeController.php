@@ -4,10 +4,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Ilan;
-use App\Services\QRCodeService;
 use App\Services\AIService;
-use App\Services\Response\ResponseService;
 use App\Services\Logging\LogService;
+use App\Services\QRCodeService;
+use App\Services\Response\ResponseService;
 use App\Traits\ValidatesApiRequests;
 use Illuminate\Http\Request;
 
@@ -23,6 +23,7 @@ class QRCodeController extends Controller
     use ValidatesApiRequests;
 
     protected QRCodeService $qrCodeService;
+
     protected AIService $aiService;
 
     public function __construct(QRCodeService $qrCodeService, AIService $aiService)
@@ -34,8 +35,6 @@ class QRCodeController extends Controller
     /**
      * Generate QR code for a listing
      *
-     * @param Request $request
-     * @param int $ilanId
      * @return \Illuminate\Http\JsonResponse
      */
     public function generateForListing(Request $request, int $ilanId)
@@ -45,7 +44,7 @@ class QRCodeController extends Controller
             'size' => 'sometimes|integer|min:100|max:1000',
             'format' => 'sometimes|in:png,jpg,svg',
             'foreground' => 'sometimes|array|size:3',
-            'background' => 'sometimes|array|size:3'
+            'background' => 'sometimes|array|size:3',
         ]);
 
         if ($validated instanceof \Illuminate\Http\JsonResponse) {
@@ -59,7 +58,7 @@ class QRCodeController extends Controller
                 'size' => $request->input('size', 300),
                 'format' => $request->input('format', 'png'),
                 'foreground' => $request->input('foreground', [0, 0, 0]),
-                'background' => $request->input('background', [255, 255, 255])
+                'background' => $request->input('background', [255, 255, 255]),
             ];
 
             $qrData = $this->qrCodeService->generateForListing($ilanId, $options);
@@ -69,11 +68,12 @@ class QRCodeController extends Controller
                 'ilan' => [
                     'id' => $ilan->id,
                     'baslik' => $ilan->baslik,
-                    'url' => route('ilanlar.show', $ilan->id)
-                ]
+                    'url' => route('ilanlar.show', $ilan->id),
+                ],
             ], 'QR kod başarıyla oluşturuldu');
         } catch (\Exception $e) {
             LogService::error('QR code generation API failed', ['ilan_id' => $ilanId], $e);
+
             return ResponseService::serverError('QR kod oluşturulurken hata oluştu', $e);
         }
     }
@@ -81,15 +81,13 @@ class QRCodeController extends Controller
     /**
      * Generate QR code for WhatsApp sharing
      *
-     * @param Request $request
-     * @param int $ilanId
      * @return \Illuminate\Http\JsonResponse
      */
     public function generateForWhatsApp(Request $request, int $ilanId)
     {
         // ✅ REFACTORED: Using ValidatesApiRequests trait (optional validation)
         $validated = $this->validateRequestFlexible($request, [
-            'phone' => 'sometimes|string|max:20'
+            'phone' => 'sometimes|string|max:20',
         ]);
 
         if ($validated instanceof \Illuminate\Http\JsonResponse) {
@@ -107,11 +105,12 @@ class QRCodeController extends Controller
                 'whatsapp_url' => "https://wa.me/{$phoneNumber}",
                 'ilan' => [
                     'id' => $ilan->id,
-                    'baslik' => $ilan->baslik
-                ]
+                    'baslik' => $ilan->baslik,
+                ],
             ], 'WhatsApp QR kod başarıyla oluşturuldu');
         } catch (\Exception $e) {
             LogService::error('WhatsApp QR code generation failed', ['ilan_id' => $ilanId], $e);
+
             return ResponseService::serverError('WhatsApp QR kod oluşturulurken hata oluştu', $e);
         }
     }
@@ -119,8 +118,6 @@ class QRCodeController extends Controller
     /**
      * Get AI-powered QR code suggestions
      *
-     * @param Request $request
-     * @param int $ilanId
      * @return \Illuminate\Http\JsonResponse
      */
     public function getAISuggestions(Request $request, int $ilanId)
@@ -136,9 +133,9 @@ class QRCodeController extends Controller
                     'baslik' => $ilan->baslik,
                     'kategori' => $ilan->kategori->name ?? null,
                     'fiyat' => $ilan->fiyat,
-                    'lokasyon' => $ilan->il->il_adi ?? null
+                    'lokasyon' => $ilan->il->il_adi ?? null,
                 ],
-                'type' => 'qr_code_suggestions'
+                'type' => 'qr_code_suggestions',
             ];
 
             $suggestions = $this->aiService->suggest($context, 'qr_code');
@@ -149,11 +146,12 @@ class QRCodeController extends Controller
                     'Print için QR kod ekleyin',
                     'Sosyal medya paylaşımları için kullanın',
                     'Fiziksel görüntülemelerde QR kod gösterin',
-                    'Mobil kullanıcılar için hızlı erişim sağlayın'
-                ]
+                    'Mobil kullanıcılar için hızlı erişim sağlayın',
+                ],
             ], 'AI önerileri başarıyla alındı');
         } catch (\Exception $e) {
             LogService::error('AI QR suggestions failed', ['ilan_id' => $ilanId], $e);
+
             return ResponseService::serverError('AI önerileri alınırken hata oluştu', $e);
         }
     }
@@ -171,6 +169,7 @@ class QRCodeController extends Controller
             return ResponseService::success($stats, 'QR kod istatistikleri başarıyla alındı');
         } catch (\Exception $e) {
             LogService::error('QR code statistics failed', [], $e);
+
             return ResponseService::serverError('İstatistikler alınırken hata oluştu', $e);
         }
     }

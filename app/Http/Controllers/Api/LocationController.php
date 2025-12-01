@@ -3,7 +3,12 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Il;
+use App\Models\Ilce;
+use App\Models\Mahalle;
 use App\Services\Response\ResponseService;
+use App\Services\TurkiyeAPIService;
+use App\Services\UnifiedLocationService;
 use App\Traits\ValidatesApiRequests;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -11,11 +16,6 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-use App\Models\Il;
-use App\Models\Ilce;
-use App\Models\Mahalle;
-use App\Services\TurkiyeAPIService;
-use App\Services\UnifiedLocationService;
 
 class LocationController extends Controller
 {
@@ -81,7 +81,7 @@ class LocationController extends Controller
                 ->get(['id', 'il_adi as name']);
 
             return ResponseService::success([
-                'locations' => $iller
+                'locations' => $iller,
             ], 'Lokasyon verileri başarıyla getirildi');
         } catch (\Exception $e) {
             return ResponseService::serverError('Lokasyon verileri yüklenirken hata oluştu', $e);
@@ -99,7 +99,7 @@ class LocationController extends Controller
 
             if (strlen($query) < 2) {
                 return ResponseService::success([
-                    'results' => []
+                    'results' => [],
                 ], 'Arama sorgusu en az 2 karakter olmalıdır');
             }
 
@@ -114,7 +114,7 @@ class LocationController extends Controller
                             'id' => $il->id,
                             'name' => $il->il_adi,
                             'type' => 'province',
-                            'display' => $il->il_adi . ' (İl)'
+                            'display' => $il->il_adi.' (İl)',
                         ];
                     });
                 $results = array_merge($results, $iller->toArray());
@@ -130,7 +130,7 @@ class LocationController extends Controller
                             'id' => $ilce->id,
                             'name' => $ilce->ilce_adi,
                             'type' => 'district',
-                            'display' => $ilce->ilce_adi . ' (İlçe) - ' . $ilce->il->il_adi
+                            'display' => $ilce->ilce_adi.' (İlçe) - '.$ilce->il->il_adi,
                         ];
                     });
                 $results = array_merge($results, $ilceler->toArray());
@@ -146,14 +146,14 @@ class LocationController extends Controller
                             'id' => $mahalle->id,
                             'name' => $mahalle->mahalle_adi,
                             'type' => 'neighborhood',
-                            'display' => $mahalle->mahalle_adi . ' (Mahalle) - ' . $mahalle->ilce->ilce_adi . ', ' . $mahalle->ilce->il->il_adi
+                            'display' => $mahalle->mahalle_adi.' (Mahalle) - '.$mahalle->ilce->ilce_adi.', '.$mahalle->ilce->il->il_adi,
                         ];
                     });
                 $results = array_merge($results, $mahalleler->toArray());
             }
 
             return ResponseService::success([
-                'results' => $results
+                'results' => $results,
             ], 'Lokasyon araması başarıyla tamamlandı');
         } catch (\Exception $e) {
             return ResponseService::serverError('Lokasyon arama sırasında hata oluştu', $e);
@@ -169,7 +169,7 @@ class LocationController extends Controller
         $validated = $this->validateRequestWithResponse($request, [
             'address' => 'required|string|max:500',
             'il_id' => 'nullable|integer|exists:iller,id',
-            'ilce_id' => 'nullable|integer|exists:ilceler,id'
+            'ilce_id' => 'nullable|integer|exists:ilceler,id',
         ]);
 
         if ($validated instanceof JsonResponse) {
@@ -178,20 +178,20 @@ class LocationController extends Controller
 
         try {
             $address = $request->input('address');
-            $cacheKey = 'geocode_' . md5($address);
+            $cacheKey = 'geocode_'.md5($address);
 
             $result = Cache::remember($cacheKey, 86400, function () use ($address) {
                 $googleMapsKey = config('services.google_maps.api_key');
 
-                if (!$googleMapsKey) {
+                if (! $googleMapsKey) {
                     throw new \Exception('Google Maps API key not configured');
                 }
 
                 $response = Http::get('https://maps.googleapis.com/maps/api/geocode/json', [
-                    'address' => $address . ', Turkey',
+                    'address' => $address.', Turkey',
                     'key' => $googleMapsKey,
                     'language' => 'tr',
-                    'region' => 'tr'
+                    'region' => 'tr',
                 ]);
 
                 if ($response->failed()) {
@@ -211,18 +211,18 @@ class LocationController extends Controller
                     'longitude' => $result['geometry']['location']['lng'],
                     'formatted_address' => $result['formatted_address'],
                     'place_id' => $result['place_id'],
-                    'address_components' => $result['address_components']
+                    'address_components' => $result['address_components'],
                 ];
             });
 
             return ResponseService::success([
                 'data' => $result,
-                'context7_status' => 'geocoding_successful'
+                'context7_status' => 'geocoding_successful',
             ], 'Adres koordinatlara dönüştürüldü (Context7 uyumlu)');
         } catch (\Exception $e) {
-            Log::error('LocationController@geocode error: ' . $e->getMessage(), [
+            Log::error('LocationController@geocode error: '.$e->getMessage(), [
                 'address' => $request->input('address'),
-                'context7_rule' => '#75_geocoding'
+                'context7_rule' => '#75_geocoding',
             ]);
 
             return ResponseService::error(
@@ -230,7 +230,7 @@ class LocationController extends Controller
                 422,
                 [
                     'error' => $e->getMessage(),
-                    'context7_status' => 'geocoding_failed'
+                    'context7_status' => 'geocoding_failed',
                 ]
             );
         }
@@ -244,7 +244,7 @@ class LocationController extends Controller
     {
         $validated = $this->validateRequestWithResponse($request, [
             'latitude' => 'required|numeric|between:-90,90',
-            'longitude' => 'required|numeric|between:-180,180'
+            'longitude' => 'required|numeric|between:-180,180',
         ]);
 
         if ($validated instanceof JsonResponse) {
@@ -254,12 +254,12 @@ class LocationController extends Controller
         try {
             $lat = $request->input('latitude');
             $lng = $request->input('longitude');
-            $cacheKey = 'reverse_geocode_' . md5("{$lat},{$lng}");
+            $cacheKey = 'reverse_geocode_'.md5("{$lat},{$lng}");
 
             $result = Cache::remember($cacheKey, 86400, function () use ($lat, $lng) {
                 $googleMapsKey = config('services.google_maps.api_key');
 
-                if (!$googleMapsKey) {
+                if (! $googleMapsKey) {
                     throw new \Exception('Google Maps API key not configured');
                 }
 
@@ -267,7 +267,7 @@ class LocationController extends Controller
                     'latlng' => "{$lat},{$lng}",
                     'key' => $googleMapsKey,
                     'language' => 'tr',
-                    'region' => 'tr'
+                    'region' => 'tr',
                 ]);
 
                 if ($response->failed()) {
@@ -288,19 +288,19 @@ class LocationController extends Controller
                     'address_components' => $result['address_components'],
                     'location_type' => $result['geometry']['location_type'],
                     'latitude' => $lat,
-                    'longitude' => $lng
+                    'longitude' => $lng,
                 ];
             });
 
             return ResponseService::success([
                 'data' => $result,
-                'context7_status' => 'reverse_geocoding_successful'
+                'context7_status' => 'reverse_geocoding_successful',
             ], 'Koordinatlar adrese dönüştürüldü (Context7 uyumlu)');
         } catch (\Exception $e) {
-            Log::error('LocationController@reverseGeocode error: ' . $e->getMessage(), [
+            Log::error('LocationController@reverseGeocode error: '.$e->getMessage(), [
                 'latitude' => $request->input('latitude'),
                 'longitude' => $request->input('longitude'),
-                'context7_rule' => '#75_reverse_geocoding'
+                'context7_rule' => '#75_reverse_geocoding',
             ]);
 
             return ResponseService::error(
@@ -308,7 +308,7 @@ class LocationController extends Controller
                 422,
                 [
                     'error' => $e->getMessage(),
-                    'context7_status' => 'reverse_geocoding_failed'
+                    'context7_status' => 'reverse_geocoding_failed',
                 ]
             );
         }
@@ -322,7 +322,7 @@ class LocationController extends Controller
     {
         try {
             // Context7: Haversine formula ile yakındaki mahalleler
-            $query = "
+            $query = '
                 SELECT id, mahalle_adi as name, lat, lng,
                 (6371 * acos(cos(radians(?)) * cos(radians(lat)) * cos(radians(lng) - radians(?)) + sin(radians(?)) * sin(radians(lat)))) AS distance
                 FROM mahalleler
@@ -330,7 +330,7 @@ class LocationController extends Controller
                 HAVING distance <= ?
                 ORDER BY distance ASC
                 LIMIT 20
-            ";
+            ';
 
             $nearbyPlaces = DB::select($query, [$latitude, $longitude, $latitude, $radius]);
 
@@ -340,16 +340,16 @@ class LocationController extends Controller
                 'search_params' => [
                     'latitude' => $latitude,
                     'longitude' => $longitude,
-                    'radius_km' => $radius
+                    'radius_km' => $radius,
                 ],
-                'context7_status' => 'nearby_search_successful'
+                'context7_status' => 'nearby_search_successful',
             ], 'Yakındaki konumlar bulundu (Context7 spatial query)');
         } catch (\Exception $e) {
-            Log::error('LocationController@findNearby error: ' . $e->getMessage(), [
+            Log::error('LocationController@findNearby error: '.$e->getMessage(), [
                 'latitude' => $latitude,
                 'longitude' => $longitude,
                 'radius' => $radius,
-                'context7_rule' => '#75_spatial_query'
+                'context7_rule' => '#75_spatial_query',
             ]);
 
             return ResponseService::serverError('Yakındaki konumlar bulunamadı', $e);
@@ -379,8 +379,8 @@ class LocationController extends Controller
                     'villages' => count($allLocations['villages']),
                     'total' => count($allLocations['neighborhoods']) +
                         count($allLocations['towns']) +
-                        count($allLocations['villages'])
-                ]
+                        count($allLocations['villages']),
+                ],
             ], 'Lokasyon tipleri başarıyla getirildi');
         } catch (\Exception $e) {
             return ResponseService::serverError('Lokasyon verileri alınamadı', $e);
@@ -397,7 +397,7 @@ class LocationController extends Controller
         $validated = $this->validateRequestWithResponse($request, [
             'lat' => 'required|numeric',
             'lon' => 'required|numeric',
-            'district_id' => 'nullable|integer'
+            'district_id' => 'nullable|integer',
         ]);
 
         if ($validated instanceof JsonResponse) {
@@ -414,7 +414,7 @@ class LocationController extends Controller
             );
 
             return ResponseService::success([
-                'data' => $profile
+                'data' => $profile,
             ], 'Lokasyon profili başarıyla oluşturuldu');
         } catch (\Exception $e) {
             return ResponseService::serverError('Lokasyon profili oluşturulamadı', $e);
@@ -431,7 +431,7 @@ class LocationController extends Controller
         $validated = $this->validateRequestWithResponse($request, [
             'lat' => 'required|numeric',
             'lon' => 'required|numeric',
-            'limit' => 'sometimes|integer|min:1|max:20'
+            'limit' => 'sometimes|integer|min:1|max:20',
         ]);
 
         if ($validated instanceof JsonResponse) {
@@ -449,7 +449,7 @@ class LocationController extends Controller
 
             return ResponseService::success([
                 'count' => count($sites),
-                'data' => $sites
+                'data' => $sites,
             ], 'Yakın siteler başarıyla getirildi');
         } catch (\Exception $e) {
             return ResponseService::serverError('Yakın siteler bulunamadı', $e);
@@ -462,7 +462,7 @@ class LocationController extends Controller
             'il_id' => 'required|integer|exists:iller,id',
             'ilce_id' => 'required|integer|exists:ilceler,id',
             'mahalle_id' => 'nullable|integer|exists:mahalleler,id',
-            'full_address' => 'required|string|max:500'
+            'full_address' => 'required|string|max:500',
         ]);
 
         if ($validated instanceof JsonResponse) {
@@ -477,13 +477,13 @@ class LocationController extends Controller
                 ->where('il_id', $request->il_id)
                 ->first();
 
-            if (!$district) {
+            if (! $district) {
                 return ResponseService::error(
                     'İl ve ilçe uyumsuz (Context7 hiyerarşi hatası)',
                     422,
                     [
                         'validation_errors' => ['ilce_id' => ['Seçilen ilçe, seçilen ile ait değil']],
-                        'context7_status' => 'hierarchy_validation_failed'
+                        'context7_status' => 'hierarchy_validation_failed',
                     ]
                 );
             }
@@ -496,13 +496,13 @@ class LocationController extends Controller
                     ->where('ilce_id', $request->ilce_id)
                     ->first();
 
-                if (!$neighborhood) {
+                if (! $neighborhood) {
                     return ResponseService::error(
                         'İlçe ve mahalle uyumsuz (Context7 hiyerarşi hatası)',
                         422,
                         [
                             'validation_errors' => ['mahalle_id' => ['Seçilen mahalle, seçilen ilçeye ait değil']],
-                            'context7_status' => 'hierarchy_validation_failed'
+                            'context7_status' => 'hierarchy_validation_failed',
                         ]
                     );
                 }
@@ -512,20 +512,24 @@ class LocationController extends Controller
 
             // Context7: Address scoring
             $addressScore = 100;
-            if (strlen($request->full_address) < 10) $addressScore -= 20;
-            if (!preg_match('/\d+/', $request->full_address)) $addressScore -= 15; // No numbers
+            if (strlen($request->full_address) < 10) {
+                $addressScore -= 20;
+            }
+            if (! preg_match('/\d+/', $request->full_address)) {
+                $addressScore -= 15;
+            } // No numbers
 
             return ResponseService::success([
                 'is_valid' => true,
                 'hierarchy_check' => 'passed',
                 'address_score' => $addressScore,
                 'validation_details' => $validationResults,
-                'context7_status' => 'address_validation_successful'
+                'context7_status' => 'address_validation_successful',
             ], 'Adres doğrulandı (Context7 uyumlu)');
         } catch (\Exception $e) {
-            Log::error('LocationController@validateAddress error: ' . $e->getMessage(), [
+            Log::error('LocationController@validateAddress error: '.$e->getMessage(), [
                 'request_data' => $request->all(),
-                'context7_rule' => '#75_address_validation'
+                'context7_rule' => '#75_address_validation',
             ]);
 
             return ResponseService::serverError('Adres doğrulanamadı (Context7 error)', $e);

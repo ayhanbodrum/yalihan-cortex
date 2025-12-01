@@ -8,16 +8,16 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
-     * 
+     *
      * Context7 Compliance: Add 'skor' column to eslesmeler table if it doesn't exist
      */
     public function up(): void
     {
-        if (!Schema::hasTable('eslesmeler')) {
+        if (! Schema::hasTable('eslesmeler')) {
             return;
         }
 
-        if (!Schema::hasColumn('eslesmeler', 'skor')) {
+        if (! Schema::hasColumn('eslesmeler', 'skor')) {
             Schema::table('eslesmeler', function (Blueprint $table) {
                 $table->integer('skor')->default(0)->after('danisman_id');
             });

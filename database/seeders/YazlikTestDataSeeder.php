@@ -2,10 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\Ilan;
 use App\Models\YazlikDetail;
-use Illuminate\Support\Str;
+use Illuminate\Database\Seeder;
 
 class YazlikTestDataSeeder extends Seeder
 {
@@ -15,13 +14,15 @@ class YazlikTestDataSeeder extends Seeder
 
         $ilan = Ilan::first();
 
-        if (!$ilan) {
+        if (! $ilan) {
             $this->command->error('Önce bir ilan oluşturun!');
+
             return;
         }
 
         if (YazlikDetail::where('ilan_id', $ilan->id)->exists()) {
             $this->command->warn('Bu ilan için zaten yazlık detayı var');
+
             return;
         }
 
@@ -74,7 +75,7 @@ class YazlikTestDataSeeder extends Seeder
         ]);
 
         $this->command->info('Yazlık detayları başarıyla eklendi!');
-        $this->command->info('İlan ID: ' . $ilan->id);
-        $this->command->info('Başlık: ' . $ilan->baslik);
+        $this->command->info('İlan ID: '.$ilan->id);
+        $this->command->info('Başlık: '.$ilan->baslik);
     }
 }

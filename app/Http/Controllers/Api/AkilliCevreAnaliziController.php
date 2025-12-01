@@ -3,19 +3,20 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Services\AkilliCevreAnaliziService;
 use App\Services\AIAkilliOnerilerService;
+use App\Services\AkilliCevreAnaliziService;
 use App\Services\Response\ResponseService;
 use App\Traits\ValidatesApiRequests;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class AkilliCevreAnaliziController extends Controller
 {
     use ValidatesApiRequests;
+
     protected $cevreAnaliziService;
+
     protected $aiOnerilerService;
 
     public function __construct(
@@ -35,7 +36,7 @@ class AkilliCevreAnaliziController extends Controller
         $validated = $this->validateRequestWithResponse($request, [
             'latitude' => 'required|numeric|between:-90,90',
             'longitude' => 'required|numeric|between:-180,180',
-            'property_type' => 'required|string|in:arsa,yazlik,villa_daire,isyeri'
+            'property_type' => 'required|string|in:arsa,yazlik,villa_daire,isyeri',
         ]);
 
         if ($validated instanceof \Illuminate\Http\JsonResponse) {
@@ -56,7 +57,7 @@ class AkilliCevreAnaliziController extends Controller
             // ✅ REFACTORED: Using ResponseService
             return ResponseService::success($analysis, 'Çevre analizi başarıyla tamamlandı');
         } catch (\Exception $e) {
-            Log::error('Çevre analizi hatası: ' . $e->getMessage());
+            Log::error('Çevre analizi hatası: '.$e->getMessage());
 
             // ✅ REFACTORED: Using ResponseService
             return ResponseService::serverError('Çevre analizi sırasında hata oluştu', $e);
@@ -71,7 +72,7 @@ class AkilliCevreAnaliziController extends Controller
         // ✅ REFACTORED: Using ValidatesApiRequests trait
         $validated = $this->validateRequestWithResponse($request, [
             'ilan_data' => 'required|array',
-            'context' => 'sometimes|string|in:create,edit,view'
+            'context' => 'sometimes|string|in:create,edit,view',
         ]);
 
         if ($validated instanceof \Illuminate\Http\JsonResponse) {
@@ -87,7 +88,7 @@ class AkilliCevreAnaliziController extends Controller
             // ✅ REFACTORED: Using ResponseService
             return ResponseService::success($recommendations, 'AI öneriler başarıyla alındı');
         } catch (\Exception $e) {
-            Log::error('AI öneriler hatası: ' . $e->getMessage());
+            Log::error('AI öneriler hatası: '.$e->getMessage());
 
             // ✅ REFACTORED: Using ResponseService
             return ResponseService::serverError('AI öneriler alınırken hata oluştu', $e);
@@ -105,7 +106,7 @@ class AkilliCevreAnaliziController extends Controller
             'from_lon' => 'required|numeric|between:-180,180',
             'to_lat' => 'required|numeric|between:-90,90',
             'to_lon' => 'required|numeric|between:-180,180',
-            'mode' => 'sometimes|string|in:walking,driving,public_transport'
+            'mode' => 'sometimes|string|in:walking,driving,public_transport',
         ]);
 
         if ($validated instanceof \Illuminate\Http\JsonResponse) {
@@ -132,10 +133,10 @@ class AkilliCevreAnaliziController extends Controller
                 'distance' => $distance,
                 'mode' => $mode,
                 'from' => ['lat' => $fromLat, 'lon' => $fromLon],
-                'to' => ['lat' => $toLat, 'lon' => $toLon]
+                'to' => ['lat' => $toLat, 'lon' => $toLon],
             ], 'Mesafe başarıyla hesaplandı');
         } catch (\Exception $e) {
-            Log::error('Mesafe hesaplama hatası: ' . $e->getMessage());
+            Log::error('Mesafe hesaplama hatası: '.$e->getMessage());
 
             // ✅ REFACTORED: Using ResponseService
             return ResponseService::serverError('Mesafe hesaplama sırasında hata oluştu', $e);
@@ -152,7 +153,7 @@ class AkilliCevreAnaliziController extends Controller
             'latitude' => 'required|numeric|between:-90,90',
             'longitude' => 'required|numeric|between:-180,180',
             'query' => 'required|string|max:255',
-            'radius' => 'sometimes|integer|min:100|max:5000'
+            'radius' => 'sometimes|integer|min:100|max:5000',
         ]);
 
         if ($validated instanceof \Illuminate\Http\JsonResponse) {
@@ -170,7 +171,7 @@ class AkilliCevreAnaliziController extends Controller
             // ✅ REFACTORED: Using ResponseService
             return ResponseService::success($pois, 'POI arama başarıyla tamamlandı');
         } catch (\Exception $e) {
-            Log::error('POI arama hatası: ' . $e->getMessage());
+            Log::error('POI arama hatası: '.$e->getMessage());
 
             // ✅ REFACTORED: Using ResponseService
             return ResponseService::serverError('POI arama sırasında hata oluştu', $e);
@@ -208,7 +209,7 @@ class AkilliCevreAnaliziController extends Controller
         return [
             'distance' => round($distance, 2),
             'duration' => $duration,
-            'mode' => $mode
+            'mode' => $mode,
         ];
     }
 
@@ -220,10 +221,11 @@ class AkilliCevreAnaliziController extends Controller
         $speeds = [
             'walking' => 1.4, // m/s
             'driving' => 13.9, // m/s (50 km/h)
-            'public_transport' => 8.3 // m/s (30 km/h)
+            'public_transport' => 8.3, // m/s (30 km/h)
         ];
 
         $speed = $speeds[$mode] ?? 1.4;
+
         return round($distance / $speed); // Saniye cinsinden
     }
 
@@ -239,15 +241,16 @@ class AkilliCevreAnaliziController extends Controller
                 'format' => 'json',
                 'limit' => 10,
                 'viewbox' => $this->createBoundingBox($latitude, $longitude, $radius),
-                'bounded' => 1
+                'bounded' => 1,
             ]);
 
             if ($response->successful()) {
                 $data = $response->json();
+
                 return $this->formatPOIResults($data, $latitude, $longitude);
             }
         } catch (\Exception $e) {
-            Log::error('POI arama API hatası: ' . $e->getMessage());
+            Log::error('POI arama API hatası: '.$e->getMessage());
         }
 
         return [];
@@ -288,7 +291,7 @@ class AkilliCevreAnaliziController extends Controller
                     floatval($item['lat']),
                     floatval($item['lon']),
                     'walking'
-                )['distance']
+                )['distance'],
             ];
         }
 

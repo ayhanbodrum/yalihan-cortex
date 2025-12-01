@@ -3,11 +3,11 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Schema;
 
 class StandardCheckCommand extends Command
 {
@@ -37,7 +37,7 @@ class StandardCheckCommand extends Command
             $exists = false;
             if (Schema::hasTable('ilanlar')) {
                 $rows = DB::select('SHOW INDEX FROM ilanlar WHERE Key_name = ?', [$name]);
-                $exists = !empty($rows);
+                $exists = ! empty($rows);
             }
             $this->line('Index '.$name.': '.($exists ? 'OK' : 'MISSING'));
         }
@@ -59,6 +59,7 @@ class StandardCheckCommand extends Command
         $this->line('Blade international: '.(File::exists($bladePath) ? 'OK' : 'MISSING'));
 
         $this->line('Completed');
+
         return Command::SUCCESS;
     }
 }

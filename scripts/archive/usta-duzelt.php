@@ -1,16 +1,16 @@
 <?php
 
-require __DIR__ . '/../vendor/autoload.php';
-$app = require_once __DIR__ . '/../bootstrap/app.php';
+require __DIR__.'/../vendor/autoload.php';
+$app = require_once __DIR__.'/../bootstrap/app.php';
 $app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap();
 
 echo "\n";
-echo str_repeat("=", 50) . "\n";
+echo str_repeat('=', 50)."\n";
 echo "🔧 USTA - Ultra Smart Auto-fix System\n";
-echo str_repeat("=", 50) . "\n\n";
+echo str_repeat('=', 50)."\n\n";
 
 $rapor = 'usta-test-raporu.md';
-if (!file_exists($rapor)) {
+if (! file_exists($rapor)) {
     echo "❌ USTA raporu bulunamadı: $rapor\n";
     echo "💡 Önce testi çalıştırın: node scripts/usta-test.mjs\n";
     exit(1);
@@ -38,12 +38,14 @@ if (preg_match_all('/Undefined Variable.*?\`\$(\w+)\`/', $raporIcerik, $matches)
                 ];
 
                 foreach ($paths as $path) {
-                    if (!file_exists($path)) continue;
+                    if (! file_exists($path)) {
+                        continue;
+                    }
 
                     $content = file_get_contents($path);
 
                     // Compact'te status var mı?
-                    if (!preg_match("/compact\([^)]*'status'/", $content)) {
+                    if (! preg_match("/compact\([^)]*'status'/", $content)) {
                         // Compact'e ekle
                         $content = preg_replace(
                             "/(compact\([^)]+)(\))/",
@@ -51,8 +53,8 @@ if (preg_match_all('/Undefined Variable.*?\`\$(\w+)\`/', $raporIcerik, $matches)
                             $content
                         );
                         file_put_contents($path, $content);
-                        echo "      ✅ " . basename($path) . " - status compact'e eklendi\n";
-                        $duzeltmeler[] = basename($path) . "::\$status";
+                        echo '      ✅ '.basename($path)." - status compact'e eklendi\n";
+                        $duzeltmeler[] = basename($path).'::$status';
                     }
                 }
                 break;
@@ -78,10 +80,11 @@ if (preg_match_all('/Tablo Eksik.*?\`(\w+)\`/', $raporIcerik, $matches)) {
     foreach ($tables as $tableName) {
         echo "   → {$tableName}\n";
 
-        $migrationFile = "database/migrations/" . date('Y_m_d_His') . "_create_{$tableName}_table.php";
+        $migrationFile = 'database/migrations/'.date('Y_m_d_His')."_create_{$tableName}_table.php";
 
         if (Schema::hasTable($tableName)) {
             echo "      ✅ Tablo zaten var\n";
+
             continue;
         }
 
@@ -108,11 +111,11 @@ if (count($duzeltmeler) > 0) {
     echo "   ✅ Cache temizlendi\n\n";
 }
 
-echo str_repeat("=", 50) . "\n";
+echo str_repeat('=', 50)."\n";
 echo "📊 USTA DÜZELTME ÖZETİ\n";
-echo str_repeat("=", 50) . "\n\n";
-echo "✅ Otomatik düzeltilen: " . count($duzeltmeler) . "\n";
-echo "⚠️  Manuel gerekli: " . (preg_match_all('/Manuel kontrol/', $raporIcerik, $m) ? count($m[0]) : 0) . "\n\n";
+echo str_repeat('=', 50)."\n\n";
+echo '✅ Otomatik düzeltilen: '.count($duzeltmeler)."\n";
+echo '⚠️  Manuel gerekli: '.(preg_match_all('/Manuel kontrol/', $raporIcerik, $m) ? count($m[0]) : 0)."\n\n";
 
 if (count($duzeltmeler) > 0) {
     echo "📋 Düzeltilenler:\n";

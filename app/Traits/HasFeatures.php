@@ -120,7 +120,7 @@ trait HasFeatures
         foreach ($featureIds as $featureId) {
             $feature = $features->get($featureId);
             // ✅ OPTIMIZED: Mevcut assignment kontrolü için database query yerine array kontrolü kullan
-            if ($feature && !in_array($featureId, $existingAssignments)) {
+            if ($feature && ! in_array($featureId, $existingAssignments)) {
                 $this->assignFeature($feature);
             }
         }
@@ -154,7 +154,7 @@ trait HasFeatures
     public function setFeatureValue(string $featureSlug, $value)
     {
         $feature = Feature::where('slug', $featureSlug)->first();
-        if (!$feature) {
+        if (! $feature) {
             return null;
         }
 

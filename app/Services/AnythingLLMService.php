@@ -9,15 +9,18 @@ use Illuminate\Support\Facades\Log;
 class AnythingLLMService
 {
     private Client $http;
+
     private string $baseUrl;
+
     private string $apiKey;
+
     private int $timeout;
 
     public function __construct()
     {
         $config = config('services.anythingllm');
         $baseUrl = (string) Arr::get($config, 'base_url', '');
-        $apiKey  = (string) Arr::get($config, 'api_key', '');
+        $apiKey = (string) Arr::get($config, 'api_key', '');
         $timeout = (int) Arr::get($config, 'timeout', 20);
 
         // Optional: override from Settings table if available
@@ -27,7 +30,7 @@ class AnythingLLMService
                     ->whereIn('key', ['ai_anythingllm_url', 'ai_anythingllm_api_key', 'ai_anythingllm_timeout'])
                     ->pluck('value', 'key');
                 $baseUrl = (string) ($settings['ai_anythingllm_url'] ?? $baseUrl);
-                $apiKey  = (string) ($settings['ai_anythingllm_api_key'] ?? $apiKey);
+                $apiKey = (string) ($settings['ai_anythingllm_api_key'] ?? $apiKey);
                 $timeout = (int) ($settings['ai_anythingllm_timeout'] ?? $timeout);
             }
         } catch (\Throwable $e) {
@@ -36,12 +39,12 @@ class AnythingLLMService
         }
 
         $this->baseUrl = $baseUrl;
-        $this->apiKey  = $apiKey;
+        $this->apiKey = $apiKey;
         $this->timeout = $timeout;
 
         $this->http = new Client([
-            'base_uri' => rtrim($this->baseUrl, '/') . '/',
-            'timeout'  => $this->timeout,
+            'base_uri' => rtrim($this->baseUrl, '/').'/',
+            'timeout' => $this->timeout,
         ]);
     }
 
@@ -54,9 +57,11 @@ class AnythingLLMService
             $res = $this->http->get('api/health', [
                 'headers' => $this->headers(),
             ]);
+
             return ['ok' => $res->getStatusCode() === 200];
         } catch (\Throwable $e) {
             Log::warning('AnythingLLM health error', ['error' => $e->getMessage()]);
+
             return ['ok' => false, 'message' => $e->getMessage()];
         }
     }
@@ -75,9 +80,11 @@ class AnythingLLMService
                 'json' => $payload,
             ]);
             $json = json_decode((string) $res->getBody(), true) ?: [];
+
             return ['ok' => true, 'data' => $json];
         } catch (\Throwable $e) {
             Log::error('AnythingLLM completions error', ['error' => $e->getMessage()]);
+
             return ['ok' => false, 'message' => $e->getMessage()];
         }
     }
@@ -94,9 +101,11 @@ class AnythingLLMService
                 'json' => $payload,
             ]);
             $json = json_decode((string) $res->getBody(), true) ?: [];
+
             return ['ok' => true, 'data' => $json];
         } catch (\Throwable $e) {
             Log::error('AnythingLLM embeddings error', ['error' => $e->getMessage()]);
+
             return ['ok' => false, 'message' => $e->getMessage()];
         }
     }
@@ -106,7 +115,7 @@ class AnythingLLMService
         return [
             'Accept' => 'application/json',
             'Content-Type' => 'application/json',
-            'Authorization' => 'Bearer ' . $this->apiKey,
+            'Authorization' => 'Bearer '.$this->apiKey,
         ];
     }
 }

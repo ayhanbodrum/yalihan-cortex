@@ -32,14 +32,14 @@ class SiteApartman extends Model
         'site_ozellikleri',
         'status',
         'created_by',
-        'updated_by'
+        'updated_by',
     ];
 
     protected $casts = [
         'site_ozellikleri' => 'array',
         'latitude' => 'float',
         'longitude' => 'float',
-        'toplam_daire_sayisi' => 'integer'
+        'toplam_daire_sayisi' => 'integer',
     ];
 
     /**

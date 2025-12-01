@@ -26,17 +26,41 @@ return [
 
     'anthropic_api_key' => env('ANTHROPIC_API_KEY', null),
 
-    'ollama_api_url' => env('OLLAMA_API_URL', 'http://51.75.64.121:11434'),
+    /*
+    |--------------------------------------------------------------------------
+    | ⚠️ GÜVENLİK NOTU: Ollama Endpoint (LOCALHOST)
+    |--------------------------------------------------------------------------
+    |
+    | ❗ BU AYAR SADECE SSH TUNNEL VEYA WIREGUARD VPN AKTİF OLDUĞUNDA ÇALIŞIR!
+    |
+    | Geçici Fix: Public HTTP bağlantısından kaçınmak için localhost kullanılıyor.
+    |
+    | SSH Tunnel Kurulumu:
+    |   ssh -L 11434:localhost:11434 root@51.75.64.121 -N -f
+    |
+    | WireGuard VPN Kurulumu:
+    |   wg-quick up wg0  (10.0.0.1:11434)
+    |
+    | Production Gereksinimi:
+    |   - Nginx Reverse Proxy ile HTTPS zorunlu
+    |   - Cloudflare Tunnel veya Let's Encrypt SSL sertifikası
+    |   - Rate limiting ve IP whitelisting
+    |
+    | KVKK Uyarısı: HTTP plain text ile müşteri verileri taşınmamalı!
+    |
+    */
+    'ollama_api_url' => env('OLLAMA_API_URL', 'http://localhost:11434'),
 
     'ollama_model' => env('OLLAMA_MODEL', 'gemma2:2b'),
 
-    'ollama_endpoint' => env('OLLAMA_API_URL', 'http://51.75.64.121:11434'),
+    'ollama_endpoint' => env('OLLAMA_API_URL', 'http://localhost:11434'),
 
     'provider' => env('AI_PROVIDER', 'ollama'),
 
     'default_model' => env('AI_DEFAULT_MODEL', 'gemma2:2b'),
 
     'fallback_model' => env('AI_FALLBACK_MODEL', 'gpt-3.5-turbo'),
+    'require_tls' => env('AI_REQUIRE_TLS', false),
 
     /*
     |--------------------------------------------------------------------------

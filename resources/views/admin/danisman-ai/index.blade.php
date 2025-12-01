@@ -1,4 +1,4 @@
-@extends('admin.layouts.neo')
+@extends('admin.layouts.admin')
 
 @section('content')
     <div class="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-8">

@@ -3,7 +3,6 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\DB;
 
 /**
  * AI Mesaj Taslakları Tablosu
@@ -32,7 +31,7 @@ return new class extends Migration
             if (Schema::hasTable('ai_conversations')) {
                 $table->foreign('conversation_id')->references('id')->on('ai_conversations')->onDelete('cascade');
             }
-            
+
             $table->unsignedBigInteger('communication_id')->nullable();
             if (Schema::hasTable('communications')) {
                 $table->foreign('communication_id')->references('id')->on('communications')->onDelete('set null');

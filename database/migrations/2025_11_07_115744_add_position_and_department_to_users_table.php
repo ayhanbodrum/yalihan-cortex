@@ -14,12 +14,12 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             // Position (Pozisyon) - Danışman pozisyonu
-            if (!Schema::hasColumn('users', 'position')) {
+            if (! Schema::hasColumn('users', 'position')) {
                 $table->string('position', 100)->nullable()->after('title');
             }
-            
+
             // Department (Departman) - Danışman departmanı
-            if (!Schema::hasColumn('users', 'department')) {
+            if (! Schema::hasColumn('users', 'department')) {
                 $table->string('department', 100)->nullable()->after('position');
             }
         });

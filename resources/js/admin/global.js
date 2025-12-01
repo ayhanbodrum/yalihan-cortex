@@ -98,31 +98,39 @@ window.formatDate = function (date, format = 'dd.mm.yyyy') {
 
 console.log('Admin global helpers yüklendi');
 
-document.addEventListener('DOMContentLoaded', function(){
-    const locBtns = document.querySelectorAll('[data-ai-locale]')
-    locBtns.forEach(function(btn){
-        btn.addEventListener('click', function(e){
-            e.preventDefault()
-            const locale = btn.getAttribute('data-ai-locale')
+document.addEventListener('DOMContentLoaded', () => {
+    const locBtns = document.querySelectorAll('[data-ai-locale]');
+    locBtns.forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const locale = btn.getAttribute('data-ai-locale');
             if (window.AdminAIService && locale) {
-                window.AdminAIService.updateLocale(locale).then(function(res){
-                    if (res.success) { window.showToast('Dil güncellendi', 'success'); location.reload() }
-                    else { window.showToast('Dil güncellenemedi', 'error') }
-                })
+                window.AdminAIService.updateLocale(locale).then((res) => {
+                    if (res.success) {
+                        window.showToast('Dil güncellendi', 'success');
+                        location.reload();
+                    } else {
+                        window.showToast('Dil güncellenemedi', 'error');
+                    }
+                });
             }
-        })
-    })
-    const curBtns = document.querySelectorAll('[data-ai-currency]')
-    curBtns.forEach(function(btn){
-        btn.addEventListener('click', function(e){
-            e.preventDefault()
-            const currency = btn.getAttribute('data-ai-currency')
+        });
+    });
+    const curBtns = document.querySelectorAll('[data-ai-currency]');
+    curBtns.forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const currency = btn.getAttribute('data-ai-currency');
             if (window.AdminAIService && currency) {
-                window.AdminAIService.updateCurrency(currency).then(function(res){
-                    if (res.success) { window.showToast('Para birimi güncellendi', 'success'); location.reload() }
-                    else { window.showToast('Para birimi güncellenemedi', 'error') }
-                })
+                window.AdminAIService.updateCurrency(currency).then((res) => {
+                    if (res.success) {
+                        window.showToast('Para birimi güncellendi', 'success');
+                        location.reload();
+                    } else {
+                        window.showToast('Para birimi güncellenemedi', 'error');
+                    }
+                });
             }
-        })
-    })
-})
+        });
+    });
+});

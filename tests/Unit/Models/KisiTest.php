@@ -2,9 +2,7 @@
 
 namespace Tests\Unit\Models;
 
-use App\Models\Ilan;
 use App\Models\Kisi;
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -196,4 +194,3 @@ class KisiTest extends TestCase
         }
     }
 }
-

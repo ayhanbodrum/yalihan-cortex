@@ -3,15 +3,15 @@
 /**
  * Bulk Migration Syntax Fixer - Multiple patterns için comprehensive automated fix
  */
-
 echo "🚀 Bulk Migration Syntax Fixer - Automated Learning Final Push!\n";
 echo "🎯 Kalan syntax hatalarını pattern matching ile toplu çözüyoruz...\n\n";
 
-$migrationsDir = __DIR__ . '/../database/migrations';
+$migrationsDir = __DIR__.'/../database/migrations';
 $fixedCount = 0;
 $patternsFixed = [];
 
-function fixSchemaCallbackClosures($content) {
+function fixSchemaCallbackClosures($content)
+{
     // Pattern 1: Schema callback eksik })
     $content = preg_replace(
         '/(\s*Schema::(create|table)\([^)]+function[^{]*\{[^}]+)\s*}\s*$/m',
@@ -29,33 +29,37 @@ function fixSchemaCallbackClosures($content) {
     return $content;
 }
 
-function fixFunctionSpacing($content) {
+function fixFunctionSpacing($content)
+{
     // Pattern: } ile public function arasında boş satır eksik
     $content = preg_replace(
         '/(\s*}\s*)(public function)/m',
-        '$1' . "\n" . '    $2',
+        '$1'."\n".'    $2',
         $content
     );
 
     return $content;
 }
 
-function fixUnexpectedTokens($content) {
+function fixUnexpectedTokens($content)
+{
     // Pattern: unexpected token ";" expecting "function"
     $content = preg_replace(
         '/(\$table->[^;]+;)\s*;\s*(public function)/m',
-        '$1' . "\n    }" . "\n\n    " . '$2',
+        '$1'."\n    }"."\n\n    ".'$2',
         $content
     );
 
     return $content;
 }
 
-foreach (glob($migrationsDir . '/*.php') as $filePath) {
+foreach (glob($migrationsDir.'/*.php') as $filePath) {
     $filename = basename($filePath);
 
-    $syntaxCheck = shell_exec("php -l " . escapeshellarg($filePath) . " 2>&1");
-    if (strpos($syntaxCheck, 'No syntax errors') !== false) continue;
+    $syntaxCheck = shell_exec('php -l '.escapeshellarg($filePath).' 2>&1');
+    if (strpos($syntaxCheck, 'No syntax errors') !== false) {
+        continue;
+    }
 
     echo "🔧 $filename -> ";
 
@@ -73,18 +77,18 @@ foreach (glob($migrationsDir . '/*.php') as $filePath) {
         $line = $lines[$i];
 
         // Schema içi indentation düzelt
-        if (preg_match('/^\s*\$table-/', $line) && !preg_match('/^\s{8,}/', $line)) {
-            $lines[$i] = '            ' . ltrim($line);
+        if (preg_match('/^\s*\$table-/', $line) && ! preg_match('/^\s{8,}/', $line)) {
+            $lines[$i] = '            '.ltrim($line);
         }
 
         // Schema callback closure indentation
-        if (preg_match('/^\s*}\);?\s*$/', $line) && !preg_match('/^\s{8,}/', $line)) {
+        if (preg_match('/^\s*}\);?\s*$/', $line) && ! preg_match('/^\s{8,}/', $line)) {
             $lines[$i] = '        });';
         }
 
         // Function indentation
-        if (preg_match('/^\s*public function/', $line) && !preg_match('/^\s{4}public/', $line)) {
-            $lines[$i] = '    ' . ltrim($line);
+        if (preg_match('/^\s*public function/', $line) && ! preg_match('/^\s{4}public/', $line)) {
+            $lines[$i] = '    '.ltrim($line);
         }
     }
 
@@ -93,7 +97,7 @@ foreach (glob($migrationsDir . '/*.php') as $filePath) {
     if ($newContent !== $originalContent) {
         if (file_put_contents($filePath, $newContent)) {
             // Verify fix
-            $verifyCheck = shell_exec("php -l " . escapeshellarg($filePath) . " 2>&1");
+            $verifyCheck = shell_exec('php -l '.escapeshellarg($filePath).' 2>&1');
             if (strpos($verifyCheck, 'No syntax errors') !== false) {
                 echo "✅ FIXED!\n";
                 $fixedCount++;
@@ -119,7 +123,7 @@ if ($fixedCount > 0) {
 }
 
 // Final error count
-$finalErrors = (int)shell_exec("find " . escapeshellarg($migrationsDir) . " -name '*.php' -exec php -l {} \\; 2>&1 | grep -c 'Parse error\\|Fatal error\\|syntax error' || echo '0'");
+$finalErrors = (int) shell_exec('find '.escapeshellarg($migrationsDir)." -name '*.php' -exec php -l {} \\; 2>&1 | grep -c 'Parse error\\|Fatal error\\|syntax error' || echo '0'");
 $improvement = 192 - $finalErrors;
 
 echo "\n📈 İstatistikler:\n";

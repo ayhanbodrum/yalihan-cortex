@@ -3,8 +3,8 @@
 namespace App\Modules\Crm\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Kisi;
 use App\Modules\Crm\Models\Aktivite;
-use App\Modules\Crm\Models\Kisi;
 use App\Modules\Crm\Services\AktiviteService;
 use App\Modules\Crm\Services\KisiService;
 use App\Modules\Danisman\Services\DanismanService;

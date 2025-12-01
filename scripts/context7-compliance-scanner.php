@@ -2,14 +2,14 @@
 
 /**
  * Context7 Compliance Scanner - PHP Version
- * 
+ *
  * Tüm projeyi tarar ve Context7 kurallarına aykırı pattern'leri bulur
  * Kullanım: php scripts/context7-compliance-scanner.php [--fix] [--report]
  */
-
 class Context7ComplianceScanner
 {
     private array $violations = [];
+
     private array $stats = [
         'total' => 0,
         'critical' => 0,
@@ -17,7 +17,7 @@ class Context7ComplianceScanner
         'medium' => 0,
         'low' => 0,
     ];
-    
+
     private array $patterns = [
         'database_fields' => [
             'order' => [
@@ -129,48 +129,48 @@ class Context7ComplianceScanner
         'migrations' => [
             'order_column' => [
                 'pattern' => "/\\\$table->.*\('order'\)/",
-                'replacement' => "display_order",
+                'replacement' => 'display_order',
                 'severity' => 'critical',
                 'message' => 'Migration\'da order → display_order kullanılmalı',
                 'exclude' => ['display_order'],
             ],
         ],
     ];
-    
+
     private array $scanPaths = [
         'app/',
         'database/',
         'resources/',
     ];
-    
+
     private array $fileExtensions = [
         'php',
         'blade.php',
         'js',
     ];
-    
+
     public function scan(bool $fixMode = false, ?string $reportFile = null): void
     {
         echo "🔍 Context7 Compliance Scanner başlatılıyor...\n\n";
-        
+
         foreach ($this->patterns as $category => $rules) {
             echo "📋 $category kontrol ediliyor...\n";
             $this->scanCategory($category, $rules, $fixMode);
             echo "\n";
         }
-        
+
         $this->printSummary();
-        
+
         if ($reportFile) {
             $this->generateReport($reportFile);
         }
     }
-    
+
     private function scanCategory(string $category, array $rules, bool $fixMode): void
     {
         foreach ($rules as $ruleName => $rule) {
             $files = $this->findFiles($rule['pattern'], $rule['exclude'] ?? []);
-            
+
             foreach ($files as $file => $matches) {
                 foreach ($matches as $match) {
                     $this->addViolation(
@@ -181,7 +181,7 @@ class Context7ComplianceScanner
                         $rule['message'],
                         $rule['replacement'] ?? null
                     );
-                    
+
                     if ($fixMode && isset($rule['replacement'])) {
                         $this->fixViolation($file, $match['line'], $match['content'], $rule['pattern'], $rule['replacement']);
                     }
@@ -189,45 +189,45 @@ class Context7ComplianceScanner
             }
         }
     }
-    
+
     private function findFiles(string $pattern, array $excludes = []): array
     {
         $results = [];
-        
+
         foreach ($this->scanPaths as $path) {
-            if (!is_dir($path)) {
+            if (! is_dir($path)) {
                 continue;
             }
-            
+
             $iterator = new RecursiveIteratorIterator(
                 new RecursiveDirectoryIterator($path)
             );
-            
+
             foreach ($iterator as $file) {
                 if ($file->isDir()) {
                     continue;
                 }
-                
+
                 $filePath = $file->getPathname();
                 $extension = $file->getExtension();
-                
+
                 // Dosya uzantısı kontrolü
-                if (!in_array($extension, $this->fileExtensions)) {
+                if (! in_array($extension, $this->fileExtensions)) {
                     continue;
                 }
-                
+
                 // Exclude paths
                 if (strpos($filePath, 'node_modules') !== false ||
                     strpos($filePath, 'vendor') !== false ||
                     strpos($filePath, '.git') !== false) {
                     continue;
                 }
-                
+
                 $lines = file($filePath, FILE_IGNORE_NEW_LINES);
                 if ($lines === false) {
                     continue;
                 }
-                
+
                 foreach ($lines as $lineNum => $line) {
                     // Exclude kontrolü
                     $shouldExclude = false;
@@ -239,16 +239,16 @@ class Context7ComplianceScanner
                             break;
                         }
                     }
-                    
+
                     if ($shouldExclude) {
                         continue;
                     }
-                    
+
                     if (preg_match($pattern, $line)) {
-                        if (!isset($results[$filePath])) {
+                        if (! isset($results[$filePath])) {
                             $results[$filePath] = [];
                         }
-                        
+
                         $results[$filePath][] = [
                             'line' => $lineNum + 1,
                             'content' => trim($line),
@@ -257,10 +257,10 @@ class Context7ComplianceScanner
                 }
             }
         }
-        
+
         return $results;
     }
-    
+
     private function addViolation(
         string $severity,
         string $file,
@@ -277,29 +277,29 @@ class Context7ComplianceScanner
             'message' => $message,
             'replacement' => $replacement,
         ];
-        
+
         $this->stats['total']++;
         $this->stats[$severity]++;
     }
-    
+
     private function fixViolation(string $file, int $line, string $content, string $pattern, string $replacement): void
     {
         // Basit fix - gerçek implementasyon daha karmaşık olmalı
         echo "  🔧 Düzeltiliyor: $file:$line\n";
     }
-    
+
     private function printSummary(): void
     {
         echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
         echo "📊 TARAMA ÖZETİ\n";
         echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n";
-        
+
         echo "Toplam İhlal: {$this->stats['total']}\n";
         echo "  ❌ Critical: {$this->stats['critical']}\n";
         echo "  ⚠️  High: {$this->stats['high']}\n";
         echo "  ℹ️  Medium: {$this->stats['medium']}\n";
         echo "  ℹ️  Low: {$this->stats['low']}\n\n";
-        
+
         if ($this->stats['total'] > 0) {
             echo "İlk 10 ihlal:\n";
             foreach (array_slice($this->violations, 0, 10) as $violation) {
@@ -308,16 +308,16 @@ class Context7ComplianceScanner
             }
         }
     }
-    
+
     private function generateReport(string $reportFile): void
     {
         $dir = dirname($reportFile);
-        if (!is_dir($dir)) {
+        if (! is_dir($dir)) {
             mkdir($dir, 0755, true);
         }
-        
+
         $content = "# Context7 Compliance Report\n\n";
-        $content .= "**Tarih:** " . date('Y-m-d H:i:s') . "\n";
+        $content .= '**Tarih:** '.date('Y-m-d H:i:s')."\n";
         $content .= "**Durum:** ⚠️ TARAMA TAMAMLANDI\n\n";
         $content .= "---\n\n";
         $content .= "## 📊 Özet\n\n";
@@ -327,22 +327,22 @@ class Context7ComplianceScanner
         $content .= "- **Medium:** {$this->stats['medium']}\n";
         $content .= "- **Low:** {$this->stats['low']}\n\n";
         $content .= "---\n\n";
-        
+
         // İhlalleri kategorilere göre grupla
         $grouped = [];
         foreach ($this->violations as $violation) {
             $severity = $violation['severity'];
-            if (!isset($grouped[$severity])) {
+            if (! isset($grouped[$severity])) {
                 $grouped[$severity] = [];
             }
             $grouped[$severity][] = $violation;
         }
-        
+
         foreach (['critical', 'high', 'medium', 'low'] as $severity) {
-            if (!isset($grouped[$severity]) || empty($grouped[$severity])) {
+            if (! isset($grouped[$severity]) || empty($grouped[$severity])) {
                 continue;
             }
-            
+
             $content .= "## $severity Violations\n\n";
             foreach ($grouped[$severity] as $violation) {
                 $content .= "### {$violation['file']}:{$violation['line']}\n\n";
@@ -354,7 +354,7 @@ class Context7ComplianceScanner
                 $content .= "---\n\n";
             }
         }
-        
+
         file_put_contents($reportFile, $content);
         echo "\n✅ Rapor oluşturuldu: $reportFile\n";
     }
@@ -367,20 +367,19 @@ if (php_sapi_name() === 'cli') {
     $reportFile = $reportIndex !== false && isset($argv[$reportIndex + 1])
         ? $argv[$reportIndex + 1]
         : null;
-    
+
     if ($reportIndex !== false && $reportFile === null) {
-        $reportFile = '.context7/compliance-report-' . date('Ymd-His') . '.md';
+        $reportFile = '.context7/compliance-report-'.date('Ymd-His').'.md';
     }
-    
-    $scanner = new Context7ComplianceScanner();
+
+    $scanner = new Context7ComplianceScanner;
     $scanner->scan($fixMode, $reportFile);
-    
+
     // Stats'e erişim için getter kullan
     $reflection = new ReflectionClass($scanner);
     $statsProperty = $reflection->getProperty('stats');
     $statsProperty->setAccessible(true);
     $stats = $statsProperty->getValue($scanner);
-    
+
     exit($stats['total'] > 0 ? 1 : 0);
 }
-

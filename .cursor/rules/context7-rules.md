@@ -4,7 +4,9 @@ Kaynak otorite: `.context7/authority.json`, `docs/context7-rules.md`, `.context7
 
 ## Zorunlu Standartlar
 - Tek layout: `admin.layouts.neo` kullanılacak. Başka layout eklenmeyecek.
-- UI: Sadece Neo Design System sınıfları (`neo-`) ve mevcut Blade component’leri.
+- UI: **Pure Tailwind CSS ZORUNLU** - Neo Design System kaldırıldı (1 Kasım 2025).
+- CSS: Tailwind utility classes + `transition-all duration-200` her interactive element'te.
+- Dark Mode: `dark:*` variant her element'te zorunlu.
 - Alan adları: `status|is_active|aktif` yasak → `status`. `il`/`il_id` yasak → `il`/`il_id`.
 - Blade güvenliği: Null-fallback zorunlu, escape edilmiş çıktı kullanılacak.
 - Rota isimleri: `admin.*` şeması, çakışan prefix yasak.
@@ -39,7 +41,11 @@ full_name  → name
 - `.context7/`, `docs/` içeriği referans kabul edilecek, değiştirilmez.
 
 ## Form Kuralları
-- Form grid: `neo-form-group`, `neo-input`, `neo-select`, `neo-switch` kullanılacak.
+- **Tailwind CSS form classes kullanılacak:**
+  - Input: `w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 transition-all duration-200`
+  - Select: `w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 transition-all duration-200`
+  - Button: `px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-200 hover:scale-105`
+- **YASAK:** Neo Design System form classes (`neo-form-group`, `neo-input`, `neo-select`)
 - Hata/valid durumları görsel olarak belirtilecek.
 - CSRF zorunlu; tüm fetch/AJAX isteklerinde `X-CSRF-TOKEN`.
 
@@ -82,8 +88,13 @@ full_name  → name
 - Remove `bolge()` relationships completely
 
 ## CSS Classes
-- Use Neo Design System: `neo-btn`, `neo-card`, `neo-form`
-- NEVER use Bootstrap classes: `btn-`, `card-`, `form-`
+- **BREAKING CHANGE (1 Kasım 2025):** Neo Design System KALDIRILDI
+- **ZORUNLU:** Pure Tailwind CSS utility classes
+- **ZORUNLU:** `transition-all duration-200` her interactive element'te
+- **ZORUNLU:** `dark:*` variant her element'te
+- **YASAK:** Neo Design System (`neo-btn`, `neo-card`, `neo-*`)
+- **YASAK:** Bootstrap classes (`btn-`, `card-`, `form-`)
+- **Reference:** `.context7/authority.json` → `breaking_changes`
 
 ## Authority Reference
 Always check `.context7/authority.json` for the latest compliance rules.

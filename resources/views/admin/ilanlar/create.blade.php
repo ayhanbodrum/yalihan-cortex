@@ -1,7 +1,7 @@
-@extends('admin.layouts.neo')
+@extends('admin.layouts.admin')
 
 @section('content')
-    <div class="space-y-4 pb-24">
+    <div class="space-y-4 pb-32">
         <!-- Page Header -->
         <div class="flex items-center justify-between">
             <div>
@@ -50,7 +50,7 @@
             <div class="space-y-4">
                 {{-- Sticky Navigation (AI-Optimized Order) --}}
                 <div
-                    class="sticky top-0 z-30 bg-white/80 dark:bg-gray-900/80 backdrop-blur border-b border-gray-200 dark:border-gray-800 mb-4">
+                    class="sticky top-0 z-30 bg-white bg-opacity-80 dark:bg-gray-900 dark:bg-opacity-80 backdrop-blur border-b border-gray-200 dark:border-gray-800 mb-4">
                     <div class="max-w-screen-xl mx-auto px-4 py-3">
                         <div class="flex items-center gap-2 mb-2">
                             <div class="w-full bg-gray-200 dark:bg-gray-700 h-2 rounded">
@@ -313,7 +313,7 @@
                                 <select name="status" id="status" required
                                     @error('status') aria-invalid="true" aria-describedby="status-error" data-error="true" @enderror
                                     class="w-full px-4 py-2.5 text-base
-                                       border-2 border-gray-300 dark:border-gray-600
+                                       border border-gray-300 dark:border-gray-600
                                        rounded-lg
                                        bg-white dark:bg-gray-900
                                        text-black dark:text-white
@@ -324,10 +324,9 @@
                                        shadow-sm hover:shadow-md focus:shadow-lg
                                        appearance-none"
                                     style="color-scheme: light dark;">
-                                    <option value="">Bir durum seçin...</option>
                                     @foreach ($statusOptions ?? [] as $opt)
                                         <option value="{{ $opt['value'] }}"
-                                            {{ old('status', 'taslak') == $opt['value'] ? 'selected' : '' }}>
+                                            {{ old('status', 'Aktif') == $opt['value'] ? 'selected' : '' }}>
                                             {{ $opt['icon'] ?? '' }} {{ $opt['label'] }}
                                         </option>
                                     @endforeach
@@ -366,7 +365,7 @@
                             <div class="relative">
                                 <select name="oncelik" id="oncelik"
                                     class="w-full px-4 py-2.5 text-base
-                                       border-2 border-gray-300 dark:border-gray-600
+                                       border border-gray-300 dark:border-gray-600
                                        rounded-lg
                                        bg-white dark:bg-gray-900
                                        text-black dark:text-white
@@ -444,10 +443,10 @@
                 <div id="page-bottom"></div>
             </div>
 
-            <!-- 🎨 Form Actions (Context7 Optimized - İyileştirilmiş) -->
-            <div class="sticky bottom-4 z-20">
-                <div
-                    class="bg-white dark:bg-gray-900 rounded-xl border-2 border-gray-200 dark:border-gray-700 shadow-lg p-4 sm:p-6">
+            <!-- 🎨 Form Actions (Context7 Optimized - Fixed Bottom) -->
+            <div
+                class="fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 shadow-lg">
+                <div class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
                     <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4">
                         <!-- Cancel Button (Sol taraf) -->
                         <a href="{{ route('admin.ilanlar.index') }}"
@@ -524,11 +523,11 @@
 
                             <!-- Publish Listing Button (Primary - En belirgin) -->
                             <button type="submit" id="submit-btn"
-                                class="inline-flex items-center justify-center gap-2 px-6 py-3
+                                class="inline-flex items-center justify-center gap-2 px-5 py-2.5
                                        bg-gradient-to-r from-green-500 via-green-600 to-emerald-600
                                        hover:from-green-600 hover:via-green-700 hover:to-emerald-700
-                                       text-white font-bold text-base rounded-xl
-                                       shadow-lg hover:shadow-xl
+                                       text-white font-medium text-base rounded-lg
+                                       shadow-md hover:shadow-lg
                                        focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:outline-none
                                        transition-all duration-200
                                        transform hover:scale-105 active:scale-95
@@ -567,7 +566,7 @@
                 </div>
             </div>
 
-            <!-- Bottom Spacer: Sticky footer için gerekli alan -->
+            <!-- Bottom Spacer: Fixed footer için gerekli alan (form içeriğinin altında görünmesi için) -->
             <div class="h-24"></div>
         </form>
     </div>
@@ -1884,6 +1883,12 @@
                     log('✅ OpenStreetMap ready (Standart + Uydu layer)');
                     window.toast?.success('🗺️ Harita yüklendi');
 
+                    // ✅ Hide loading indicator
+                    const loadingEl = document.getElementById('map-loading');
+                    if (loadingEl) {
+                        loadingEl.style.display = 'none';
+                    }
+
                     // ✅ Varolan koordinatları göster
                     this.loadExistingCoordinates();
 
@@ -1969,24 +1974,24 @@
                     return;
                 }
 
-                const btnStandard = document.getElementById('btn-map-standard');
-                const btnSatellite = document.getElementById('btn-map-satellite');
+                const buttonStandard = document.getElementById('button-map-standard');
+                const buttonSatellite = document.getElementById('button-map-satellite');
 
                 if (type === 'satellite') {
                     this.map.removeLayer(this.standardLayer);
                     this.map.addLayer(this.satelliteLayer);
                     this.useSatellite = true;
-                    if (btnStandard) btnStandard.className =
+                    if (buttonStandard) buttonStandard.className =
                         'flex items-center justify-center gap-1 px-2.5 py-1.5 rounded-lg transition-all duration-200 text-xs font-semibold text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700';
-                    if (btnSatellite) btnSatellite.className =
+                    if (buttonSatellite) buttonSatellite.className =
                         'flex items-center justify-center gap-1 px-2.5 py-1.5 rounded-lg transition-all duration-200 text-xs font-semibold bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-md hover:shadow-lg';
                 } else {
                     this.map.removeLayer(this.satelliteLayer);
                     this.map.addLayer(this.standardLayer);
                     this.useSatellite = false;
-                    if (btnStandard) btnStandard.className =
+                    if (buttonStandard) buttonStandard.className =
                         'flex items-center justify-center gap-1 px-2.5 py-1.5 rounded-lg transition-all duration-200 text-xs font-semibold bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-md hover:shadow-lg';
-                    if (btnSatellite) btnSatellite.className =
+                    if (buttonSatellite) buttonSatellite.className =
                         'flex items-center justify-center gap-1 px-2.5 py-1.5 rounded-lg transition-all duration-200 text-xs font-semibold text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700';
                 }
             },
@@ -2192,15 +2197,16 @@
                     window.toast?.info('Adres bilgisi getiriliyor...', 2000);
 
                     // Nominatim Reverse Geocoding API
-                    let url = `https://nominatim.openstreetmap.org/reverse?` +
-                        `lat=${lat}` +
-                        `&lon=${lng}` +
-                        `&format=json` +
-                        `&addressdetails=1` +
-                        `&accept-language=tr`;
+                    const params = new URLSearchParams();
+                    params.append('lat', lat.toString());
+                    params.append('lon', lng.toString());
+                    params.append('format', 'json');
+                    params.append('addressdetails', '1');
+                    params.append('accept-language', 'tr');
                     if (NOMINATIM_EMAIL) {
-                        url += `&email=${encodeURIComponent(NOMINATIM_EMAIL)}`;
+                        params.append('email', NOMINATIM_EMAIL);
                     }
+                    const url = 'https://nominatim.openstreetmap.org/reverse?' + params.toString();
 
                     // ✅ RETRY LOGIC: 3 deneme
                     let response;
@@ -2295,23 +2301,42 @@
 
             async autoSelectLocationDropdowns(addr) {
                 try {
-                    log('🔄 Dropdown otomatik seçimi başlıyor...');
+                    log('🔄 Dropdown otomatik seçimi başlıyor...', addr);
 
                     // 🔧 Silent update flag (prevent map refocus loop)
                     this.isSilentUpdate = true;
 
+                    // Türkçe karakter normalize fonksiyonu
+                    const normalizeTurkish = (str) => {
+                        if (!str) return '';
+                        return str.toLowerCase()
+                            .replace(/ı/g, 'i').replace(/İ/g, 'i')
+                            .replace(/ğ/g, 'g').replace(/Ğ/g, 'g')
+                            .replace(/ü/g, 'u').replace(/Ü/g, 'u')
+                            .replace(/ş/g, 's').replace(/Ş/g, 's')
+                            .replace(/ö/g, 'o').replace(/Ö/g, 'o')
+                            .replace(/ç/g, 'c').replace(/Ç/g, 'c')
+                            .trim();
+                    };
+
                     // 1️⃣ İl (Province) Seçimi
-                    const provinceName = addr.province || addr.state;
+                    const provinceName = addr.province || addr.state || addr.city;
                     if (provinceName) {
                         log('🔍 İl arıyor:', provinceName);
 
-                        // Tüm illeri çek
-                        const ilResponse = await fetch('/api/location/provinces');
+                        // Tüm illeri çek - Context7: Standart API endpoint kullan
+                        const ilResponse = await fetch('/api/location/iller');
                         const ilData = await ilResponse.json();
 
-                        // ✅ Context7: API response format'ı (direkt array - adres-yonetimi ile uyumlu)
-                        const iller = Array.isArray(ilData.data) ? ilData.data : (Array.isArray(ilData) ? ilData :
-                        []);
+                        // ✅ Context7: API response format'ı (ResponseService format: {success: true, data: [...]})
+                        let iller = [];
+                        if (ilData.success && ilData.data) {
+                            iller = Array.isArray(ilData.data) ? ilData.data : [];
+                        } else if (Array.isArray(ilData)) {
+                            iller = ilData;
+                        } else if (ilData.iller && Array.isArray(ilData.iller)) {
+                            iller = ilData.iller;
+                        }
 
                         if (!Array.isArray(iller)) {
                             console.error('❌ API response is not an array:', ilData);
@@ -2320,13 +2345,15 @@
 
                         log('✅ İller yüklendi:', iller.length, 'adet');
 
-                        // İl adını eşleştir (fuzzy match) - field name: 'name' or 'il_adi' or 'il'
+                        // İl adını eşleştir (fuzzy match + Türkçe karakter normalize) - field name: 'name' or 'il_adi' or 'il'
+                        // normalizeTurkish fonksiyonu zaten yukarıda tanımlı (autoSelectLocationDropdowns içinde)
+                        const searchNameNormalized = normalizeTurkish(provinceName);
                         const matchedIl = iller.find(il => {
-                            const ilName = (il.name || il.il_adi || il.il || '').toLowerCase().trim();
-                            const searchName = provinceName.toLowerCase().trim();
-                            return ilName === searchName ||
-                                ilName.includes(searchName) ||
-                                searchName.includes(ilName);
+                            const ilName = il.name || il.il_adi || il.il || '';
+                            const ilNameNormalized = normalizeTurkish(ilName);
+                            return ilNameNormalized === searchNameNormalized ||
+                                ilNameNormalized.includes(searchNameNormalized) ||
+                                searchNameNormalized.includes(ilNameNormalized);
                         });
 
                         if (matchedIl) {
@@ -2354,15 +2381,15 @@
 
                                     const ilceSelect = document.getElementById('ilce_id');
                                     if (ilceSelect && ilceSelect.options.length > 1) {
-                                        // Dropdown'daki seçeneklerden eşleştir
+                                        // Dropdown'daki seçeneklerden eşleştir (Türkçe karakter normalize)
+                                        const searchTextNormalized = normalizeTurkish(districtName);
                                         for (let i = 0; i < ilceSelect.options.length; i++) {
                                             const option = ilceSelect.options[i];
-                                            const optionText = option.text.toLowerCase().trim();
-                                            const searchText = districtName.toLowerCase().trim();
+                                            const optionTextNormalized = normalizeTurkish(option.text);
 
-                                            if (optionText === searchText ||
-                                                optionText.includes(searchText) ||
-                                                searchText.includes(optionText)) {
+                                            if (optionTextNormalized === searchTextNormalized ||
+                                                optionTextNormalized.includes(searchTextNormalized) ||
+                                                searchTextNormalized.includes(optionTextNormalized)) {
                                                 ilceSelect.value = option.value;
                                                 log('✅ İlçe otomatik seçildi:', option.text, '(ID:', option.value,
                                                     ')');
@@ -2386,16 +2413,19 @@
 
                                                     const mahalleSelect = document.getElementById('mahalle_id');
                                                     if (mahalleSelect && mahalleSelect.options.length > 1) {
-                                                        // Dropdown'daki seçeneklerden eşleştir
+                                                        // Dropdown'daki seçeneklerden eşleştir (Türkçe karakter normalize)
+                                                        const searchTextNormalized = normalizeTurkish(
+                                                            neighborhoodName);
                                                         for (let i = 0; i < mahalleSelect.options.length; i++) {
                                                             const option = mahalleSelect.options[i];
-                                                            const optionText = option.text.toLowerCase().trim();
-                                                            const searchText = neighborhoodName.toLowerCase()
-                                                                .trim();
+                                                            const optionTextNormalized = normalizeTurkish(option
+                                                                .text);
 
-                                                            if (optionText === searchText ||
-                                                                optionText.includes(searchText) ||
-                                                                searchText.includes(optionText)) {
+                                                            if (optionTextNormalized === searchTextNormalized ||
+                                                                optionTextNormalized.includes(
+                                                                    searchTextNormalized) ||
+                                                                searchTextNormalized.includes(optionTextNormalized)
+                                                            ) {
                                                                 mahalleSelect.value = option.value;
                                                                 log('✅ Mahalle otomatik seçildi:', option.text,
                                                                     '(ID:', option.value, ')');
@@ -2575,14 +2605,15 @@
 
                     this.lastGeocodeCall = Date.now();
 
-                    let url = `https://nominatim.openstreetmap.org/search?` +
-                        `q=${encodeURIComponent(query)}` +
-                        `&format=json` +
-                        `&limit=1` +
-                        `&addressdetails=1`;
+                    const searchParams = new URLSearchParams();
+                    searchParams.append('q', query);
+                    searchParams.append('format', 'json');
+                    searchParams.append('limit', '1');
+                    searchParams.append('addressdetails', '1');
                     if (NOMINATIM_EMAIL) {
-                        url += `&email=${encodeURIComponent(NOMINATIM_EMAIL)}`;
+                        searchParams.append('email', NOMINATIM_EMAIL);
                     }
+                    const url = 'https://nominatim.openstreetmap.org/search?' + searchParams.toString();
 
                     // ✅ RETRY LOGIC: 3 deneme
                     let response;
@@ -2769,6 +2800,10 @@
 
                 log('✅ Koordinat input listeners eklendi');
             }
+
+            // ✅ Adres dropdown'ları event listener'ları location-map.blade.php içinde tanımlı
+            // Burada duplicate listener eklemeye gerek yok - location-map.blade.php zaten hem dropdown'ları dolduruyor hem de haritayı güncelliyor
+            log('✅ İl/İlçe/Mahalle event listener\'ları location-map.blade.php\'de tanımlı');
         });
 
         // Global access

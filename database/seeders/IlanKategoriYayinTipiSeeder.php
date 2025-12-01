@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\IlanKategori;
 use App\Models\IlanKategoriYayinTipi;
+use Illuminate\Database\Seeder;
 
 class IlanKategoriYayinTipiSeeder extends Seeder
 {
@@ -75,8 +75,9 @@ class IlanKategoriYayinTipiSeeder extends Seeder
         foreach ($kategoriYayinMap as $kategoriSlug => $yayinTipleriList) {
             $kategori = IlanKategori::where('slug', $kategoriSlug)->first();
 
-            if (!$kategori) {
+            if (! $kategori) {
                 $this->command->warn("⚠️ Kategori bulunamadı: {$kategoriSlug}");
+
                 continue;
             }
 
@@ -100,8 +101,8 @@ class IlanKategoriYayinTipiSeeder extends Seeder
             }
         }
 
-        $this->command->info("✅ Yayın tipleri eklendi!");
-        $this->command->info("   Toplam: " . IlanKategoriYayinTipi::count());
+        $this->command->info('✅ Yayın tipleri eklendi!');
+        $this->command->info('   Toplam: '.IlanKategoriYayinTipi::count());
         $this->command->info("   Yeni eklenen: {$totalAdded}");
 
         // ✅ Kategori bazında dağılımı göster

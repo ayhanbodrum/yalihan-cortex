@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Cache;
 
 class UserController extends AdminController
 {
@@ -125,7 +125,7 @@ class UserController extends AdminController
 
         return view('admin.users.edit', [
             'user' => $kullanicilar,
-            'roles' => $roles
+            'roles' => $roles,
         ]);
     }
 
@@ -138,7 +138,7 @@ class UserController extends AdminController
         // ✅ Context7: Validation - status string olarak geliyor (0 veya 1)
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $kullanicilar->id,
+            'email' => 'required|string|email|max:255|unique:users,email,'.$kullanicilar->id,
             'password' => 'nullable|string|min:8|confirmed',
             'role' => 'required|string|in:superadmin,admin,danisman,editor,musteri', // ✅ Context7: Rol zorunlu
             'status' => 'nullable|in:0,1', // ✅ Context7: status string olarak (0 veya 1)
@@ -157,7 +157,7 @@ class UserController extends AdminController
         $updateData = [
             'name' => $request->name,
             'email' => $request->email,
-            'status' => $request->has('status') ? (int)$request->status : ($kullanicilar->status ?? 1), // ✅ Context7: status field (0 or 1)
+            'status' => $request->has('status') ? (int) $request->status : ($kullanicilar->status ?? 1), // ✅ Context7: status field (0 or 1)
         ];
 
         if ($request->filled('password')) {
@@ -169,7 +169,7 @@ class UserController extends AdminController
 
             // ✅ Context7: Update role using Spatie Permission
             $roleUpdated = false;
-            if ($request->filled('role') && !empty($request->role)) {
+            if ($request->filled('role') && ! empty($request->role)) {
                 try {
                     // Mevcut rolü kontrol et
                     $currentRole = $kullanicilar->getRoleNames()->first();
@@ -193,7 +193,7 @@ class UserController extends AdminController
                             'old_role' => $currentRole ?? 'Yok',
                             'new_role' => $newRole,
                             'roles_after' => $kullanicilar->getRoleNames()->toArray(),
-                            'has_role_check' => $kullanicilar->hasRole($newRole)
+                            'has_role_check' => $kullanicilar->hasRole($newRole),
                         ]);
                     } else {
                         // Rol değişmemiş, sadece log
@@ -208,11 +208,11 @@ class UserController extends AdminController
                         'user_id' => $kullanicilar->id,
                         'role' => $request->role,
                         'error' => $e->getMessage(),
-                        'trace' => $e->getTraceAsString()
+                        'trace' => $e->getTraceAsString(),
                     ]);
 
                     return redirect()->back()
-                        ->with('error', 'Rol atama sırasında bir hata oluştu: ' . $e->getMessage())
+                        ->with('error', 'Rol atama sırasında bir hata oluştu: '.$e->getMessage())
                         ->withInput();
                 }
             } else {
@@ -225,7 +225,7 @@ class UserController extends AdminController
             // ✅ Context7: Success message with role info
             $successMessage = 'Kullanıcı başarıyla güncellendi.';
             if ($roleUpdated) {
-                $successMessage .= ' Rol: ' . ucfirst($request->role);
+                $successMessage .= ' Rol: '.ucfirst($request->role);
             }
 
             return redirect()->route('admin.kullanicilar.edit', $kullanicilar->id)
@@ -234,11 +234,11 @@ class UserController extends AdminController
             \Illuminate\Support\Facades\Log::error('Kullanıcı güncelleme hatası', [
                 'user_id' => $kullanicilar->id,
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
 
             return redirect()->back()
-                ->with('error', 'Kullanıcı güncellenirken bir hata oluştu: ' . $e->getMessage())
+                ->with('error', 'Kullanıcı güncellenirken bir hata oluştu: '.$e->getMessage())
                 ->withInput();
         }
     }
@@ -260,13 +260,13 @@ class UserController extends AdminController
     public function toggleStatus(User $kullanicilar)
     {
         $kullanicilar->update([
-            'status' => !$kullanicilar->status // Context7: toggle status field
+            'status' => ! $kullanicilar->status, // Context7: toggle status field
         ]);
 
         return response()->json([
             'success' => true,
             'status' => $kullanicilar->status,
-            'message' => 'Kullanıcı statusu güncellendi.'
+            'message' => 'Kullanıcı statusu güncellendi.',
         ]);
     }
 }

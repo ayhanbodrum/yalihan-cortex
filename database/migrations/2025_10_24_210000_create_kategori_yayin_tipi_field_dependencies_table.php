@@ -36,7 +36,7 @@ return new class extends Migration
                 'textarea',  // Uzun metin
                 'date',      // Tarih
                 'price',     // Fiyat (özel)
-                'location'   // Konum (özel)
+                'location',   // Konum (özel)
             ])->comment('Field tipi');
 
             $table->string('field_category', 50)->comment('Field kategorisi: fiyat, ozellik, dokuман, sezonluk, arsa');

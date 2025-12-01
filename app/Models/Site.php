@@ -21,7 +21,7 @@ class Site extends Model
         'ilce_id',
         'mahalle_id',
         'lat',
-        'lng'
+        'lng',
     ];
 
     // ✅ Context7 uyumlu casts
@@ -74,7 +74,7 @@ class Site extends Model
     // ✅ Context7 uyumlu accessor
     public function getTamAdAttribute(): string
     {
-        return $this->name . ($this->address ? ' - ' . $this->address : '');
+        return $this->name.($this->address ? ' - '.$this->address : '');
     }
 
     // ✅ Context7 uyumlu helper methods

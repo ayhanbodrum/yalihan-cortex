@@ -2,11 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use App\Models\Ozellik;
 use App\Models\IlanKategori;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
+use App\Models\Ozellik;
+use Illuminate\Database\Seeder;
 
 class KonutTemelOzelliklerSeeder extends Seeder
 {
@@ -22,8 +20,9 @@ class KonutTemelOzelliklerSeeder extends Seeder
         $konut = IlanKategori::where('name', 'Konut')->first();
         $daire = IlanKategori::where('name', 'Daire')->first();
 
-        if (!$konut) {
+        if (! $konut) {
             $this->command->error('❌ Konut kategorisi bulunamadı!');
+
             return;
         }
 
@@ -45,7 +44,7 @@ class KonutTemelOzelliklerSeeder extends Seeder
                 'arama_filtresi' => true,
                 'ilan_kartinda_goster' => true,
                 'display_order' => 1,
-                'aciklama' => 'Örn: 1+1, 2+1, 3+1, 4+1, Stüdyo'
+                'aciklama' => 'Örn: 1+1, 2+1, 3+1, 4+1, Stüdyo',
             ],
             [
                 'name' => 'Brüt Metrekare',
@@ -57,7 +56,7 @@ class KonutTemelOzelliklerSeeder extends Seeder
                 'arama_filtresi' => true,
                 'ilan_kartinda_goster' => true,
                 'display_order' => 2,
-                'aciklama' => 'Brüt kullanım alanı'
+                'aciklama' => 'Brüt kullanım alanı',
             ],
             [
                 'name' => 'Net Metrekare',
@@ -69,7 +68,7 @@ class KonutTemelOzelliklerSeeder extends Seeder
                 'arama_filtresi' => true,
                 'ilan_kartinda_goster' => false,
                 'display_order' => 3,
-                'aciklama' => 'Net kullanım alanı (duvarlar hariç)'
+                'aciklama' => 'Net kullanım alanı (duvarlar hariç)',
             ],
             [
                 'name' => 'Banyo Sayısı',
@@ -81,7 +80,7 @@ class KonutTemelOzelliklerSeeder extends Seeder
                 'arama_filtresi' => true,
                 'ilan_kartinda_goster' => true,
                 'display_order' => 4,
-                'aciklama' => 'Toplam banyo/tuvalet sayısı'
+                'aciklama' => 'Toplam banyo/tuvalet sayısı',
             ],
             [
                 'name' => 'Bina Yaşı',
@@ -94,14 +93,14 @@ class KonutTemelOzelliklerSeeder extends Seeder
                     '11-15' => '11-15 Yıl',
                     '16-20' => '16-20 Yıl',
                     '21-25' => '21-25 Yıl',
-                    '26+' => '26+ Yıl'
+                    '26+' => '26+ Yıl',
                 ]),
                 'birim' => null,
                 'zorunlu' => false,
                 'arama_filtresi' => true,
                 'ilan_kartinda_goster' => false,
                 'display_order' => 5,
-                'aciklama' => 'Binanın yapım tarihi'
+                'aciklama' => 'Binanın yapım tarihi',
             ],
             [
                 'name' => 'Kat',
@@ -122,14 +121,14 @@ class KonutTemelOzelliklerSeeder extends Seeder
                     '10' => '10. Kat',
                     '10+' => '10+ Kat',
                     'Çatı Katı' => 'Çatı Katı',
-                    'Müstakil' => 'Müstakil'
+                    'Müstakil' => 'Müstakil',
                 ]),
                 'birim' => null,
                 'zorunlu' => false,
                 'arama_filtresi' => true,
                 'ilan_kartinda_goster' => true,
                 'display_order' => 6,
-                'aciklama' => 'Bulunduğu kat'
+                'aciklama' => 'Bulunduğu kat',
             ],
             [
                 'name' => 'Toplam Kat',
@@ -141,7 +140,7 @@ class KonutTemelOzelliklerSeeder extends Seeder
                 'arama_filtresi' => true,
                 'ilan_kartinda_goster' => false,
                 'display_order' => 7,
-                'aciklama' => 'Binadaki toplam kat sayısı'
+                'aciklama' => 'Binadaki toplam kat sayısı',
             ],
             [
                 'name' => 'Isıtma',
@@ -160,14 +159,14 @@ class KonutTemelOzelliklerSeeder extends Seeder
                     'Güneş Enerjisi' => 'Güneş Enerjisi',
                     'Elektrikli Radyatör' => 'Elektrikli Radyatör',
                     'Jeotermal' => 'Jeotermal',
-                    'VRV' => 'VRV'
+                    'VRV' => 'VRV',
                 ]),
                 'birim' => null,
                 'zorunlu' => false,
                 'arama_filtresi' => true,
                 'ilan_kartinda_goster' => false,
                 'display_order' => 8,
-                'aciklama' => 'Isınma sistemi türü'
+                'aciklama' => 'Isınma sistemi türü',
             ],
             [
                 'name' => 'Cephe',
@@ -181,14 +180,14 @@ class KonutTemelOzelliklerSeeder extends Seeder
                     'Güneydoğu' => 'Güneydoğu',
                     'Güneybatı' => 'Güneybatı',
                     'Kuzeydoğu' => 'Kuzeydoğu',
-                    'Kuzeybatı' => 'Kuzeybatı'
+                    'Kuzeybatı' => 'Kuzeybatı',
                 ]),
                 'birim' => null,
                 'zorunlu' => false,
                 'arama_filtresi' => true,
                 'ilan_kartinda_goster' => false,
                 'display_order' => 9,
-                'aciklama' => 'Konutun hangi yöne baktığı'
+                'aciklama' => 'Konutun hangi yöne baktığı',
             ],
             [
                 'name' => 'Balkon',
@@ -200,7 +199,7 @@ class KonutTemelOzelliklerSeeder extends Seeder
                 'arama_filtresi' => true,
                 'ilan_kartinda_goster' => true,
                 'display_order' => 10,
-                'aciklama' => 'Balkon var mı?'
+                'aciklama' => 'Balkon var mı?',
             ],
             [
                 'name' => 'Asansör',
@@ -212,7 +211,7 @@ class KonutTemelOzelliklerSeeder extends Seeder
                 'arama_filtresi' => true,
                 'ilan_kartinda_goster' => true,
                 'display_order' => 11,
-                'aciklama' => 'Asansör var mı?'
+                'aciklama' => 'Asansör var mı?',
             ],
             [
                 'name' => 'Otopark',
@@ -221,14 +220,14 @@ class KonutTemelOzelliklerSeeder extends Seeder
                 'veri_secenekleri' => json_encode([
                     'Yok' => 'Yok',
                     'Açık Otopark' => 'Açık Otopark',
-                    'Kapalı Otopark' => 'Kapalı Otopark'
+                    'Kapalı Otopark' => 'Kapalı Otopark',
                 ]),
                 'birim' => null,
                 'zorunlu' => false,
                 'arama_filtresi' => true,
                 'ilan_kartinda_goster' => true,
                 'display_order' => 12,
-                'aciklama' => 'Otopark durumu'
+                'aciklama' => 'Otopark durumu',
             ],
             [
                 'name' => 'Eşyalı',
@@ -237,14 +236,14 @@ class KonutTemelOzelliklerSeeder extends Seeder
                 'veri_secenekleri' => json_encode([
                     'Hayır' => 'Eşyasız',
                     'Kısmen' => 'Kısmen Eşyalı',
-                    'Evet' => 'Tam Eşyalı'
+                    'Evet' => 'Tam Eşyalı',
                 ]),
                 'birim' => null,
                 'zorunlu' => false,
                 'arama_filtresi' => true,
                 'ilan_kartinda_goster' => true,
                 'display_order' => 13,
-                'aciklama' => 'Eşyalı mı?'
+                'aciklama' => 'Eşyalı mı?',
             ],
             [
                 'name' => 'Kullanım Durumu',
@@ -253,14 +252,14 @@ class KonutTemelOzelliklerSeeder extends Seeder
                 'veri_secenekleri' => json_encode([
                     'Boş' => 'Boş',
                     'Kiracılı' => 'Kiracılı',
-                    'Mülk Sahibi' => 'Mülk Sahibi'
+                    'Mülk Sahibi' => 'Mülk Sahibi',
                 ]),
                 'birim' => null,
                 'zorunlu' => false,
                 'arama_filtresi' => false,
                 'ilan_kartinda_goster' => false,
                 'display_order' => 14,
-                'aciklama' => 'Mevcut kullanım durumu'
+                'aciklama' => 'Mevcut kullanım durumu',
             ],
             [
                 'name' => 'Site İçerisinde',
@@ -272,7 +271,7 @@ class KonutTemelOzelliklerSeeder extends Seeder
                 'arama_filtresi' => true,
                 'ilan_kartinda_goster' => true,
                 'display_order' => 15,
-                'aciklama' => 'Site içerisinde mi?'
+                'aciklama' => 'Site içerisinde mi?',
             ],
         ];
 
@@ -280,7 +279,7 @@ class KonutTemelOzelliklerSeeder extends Seeder
             // Önce slug'a göre kontrol et (duplicate önleme - GLOBAL check)
             $existing = Ozellik::where('slug', $ozellik['slug'])->first();
 
-            if (!$existing) {
+            if (! $existing) {
                 Ozellik::create([
                     'kategori_id' => $konut->id,
                     'name' => $ozellik['name'],
@@ -293,7 +292,7 @@ class KonutTemelOzelliklerSeeder extends Seeder
                     'zorunlu' => $ozellik['zorunlu'],
                     'arama_filtresi' => $ozellik['arama_filtresi'],
                     'ilan_kartinda_goster' => $ozellik['ilan_kartinda_goster'],
-                    'aciklama' => $ozellik['aciklama']
+                    'aciklama' => $ozellik['aciklama'],
                 ]);
 
                 $this->command->info("  ✅ {$ozellik['name']} eklendi");
@@ -306,8 +305,8 @@ class KonutTemelOzelliklerSeeder extends Seeder
         $this->command->info('🎉 Konut temel özellikleri başarıyla eklendi!');
         $this->command->newLine();
         $this->command->line('📊 İstatistikler:');
-        $this->command->line('  • Kategori: Konut (ID: ' . $konut->id . ')');
-        $this->command->line('  • Eklenen Özellik: ' . count($konutOzellikleri) . ' adet');
+        $this->command->line('  • Kategori: Konut (ID: '.$konut->id.')');
+        $this->command->line('  • Eklenen Özellik: '.count($konutOzellikleri).' adet');
         $this->command->line('  • Tüm alt kategoriler bu özellikleri kullanabilir');
     }
 }

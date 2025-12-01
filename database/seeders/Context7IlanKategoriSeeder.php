@@ -2,28 +2,28 @@
 
 namespace Database\Seeders;
 
+use App\Models\IlanKategori;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Schema;
-use App\Models\IlanKategori;
-use Illuminate\Support\Str;
 
 /**
  * Context7 İlan Kategori Seeder
- * 
+ *
  * Context7 MCP Uyumlu Kategori Sistemi
- * 
+ *
  * Yapı:
  * - Ana Kategoriler (seviye=0): Konut, Arsa
  * - Alt Kategoriler (seviye=1): Konut altında (Daire, Villa, vb.), Arsa altında (İmarlı Arsa, Tarla, vb.)
  * - Yayın Tipleri (seviye=2): Satılık, Kiralık, Yazlık Kiralık
- * 
+ *
  * Context7 Kuralları:
  * - ✅ status field kullanımı (aktif/is_active YASAK)
  * - ✅ display_order kullanımı (order YASAK)
  * - ✅ name kullanımı (ad YASAK)
  * - ✅ seviye field: 0=Ana, 1=Alt, 2=Yayın Tipi
- * 
+ *
  * @version Context7 v5.2.0
+ *
  * @date 2025-11-11
  */
 class Context7IlanKategoriSeeder extends Seeder
@@ -39,11 +39,11 @@ class Context7IlanKategoriSeeder extends Seeder
         $hasStatusColumn = Schema::hasColumn('ilan_kategorileri', 'status');
         $hasSeviyeColumn = Schema::hasColumn('ilan_kategorileri', 'seviye');
 
-        if (!$hasStatusColumn) {
+        if (! $hasStatusColumn) {
             $this->command->warn('⚠️ status kolonu yok! Varsayılan değer kullanılacak.');
         }
 
-        if (!$hasSeviyeColumn) {
+        if (! $hasSeviyeColumn) {
             $this->command->warn('⚠️ seviye kolonu yok! Varsayılan değer kullanılacak.');
         }
 
@@ -97,7 +97,7 @@ class Context7IlanKategoriSeeder extends Seeder
             $this->command->info("   ✓ {$kategoriData['name']} (ID: {$kategori->id})");
         }
 
-        $this->command->info('   ✅ ' . count($anaKategoriler) . ' ana kategori oluşturuldu');
+        $this->command->info('   ✅ '.count($anaKategoriler).' ana kategori oluşturuldu');
 
         // ======================================================================
         // 2. ALT KATEGORİLER (Seviye 1)
@@ -243,8 +243,9 @@ class Context7IlanKategoriSeeder extends Seeder
             $parentSlug = $kategoriData['parent_slug'];
             $parentId = $anaKategoriIds[$parentSlug] ?? null;
 
-            if (!$parentId) {
+            if (! $parentId) {
                 $this->command->warn("   ⚠️ Parent kategori bulunamadı: {$parentSlug}");
+
                 continue;
             }
 
@@ -272,7 +273,7 @@ class Context7IlanKategoriSeeder extends Seeder
             $this->command->info("   ✓ {$kategoriData['name']} (ID: {$kategori->id}, Parent: {$parentSlug})");
         }
 
-        $this->command->info('   ✅ ' . count($altKategoriler) . ' alt kategori oluşturuldu');
+        $this->command->info('   ✅ '.count($altKategoriler).' alt kategori oluşturuldu');
 
         // ======================================================================
         // 3. YAYIN TİPLERİ (Seviye 2)
@@ -333,7 +334,7 @@ class Context7IlanKategoriSeeder extends Seeder
             $this->command->info("   ✓ {$yayinTipiData['name']} (ID: {$kategori->id})");
         }
 
-        $this->command->info('   ✅ ' . count($yayinTipleri) . ' yayın tipi oluşturuldu');
+        $this->command->info('   ✅ '.count($yayinTipleri).' yayın tipi oluşturuldu');
 
         // ======================================================================
         // ÖZET
@@ -342,10 +343,10 @@ class Context7IlanKategoriSeeder extends Seeder
         $this->command->info('✅ Context7 Kategori Sistemi tamamlandı!');
         $this->command->info('');
         $this->command->info('📊 İstatistikler:');
-        $this->command->info('   • Ana Kategoriler: ' . IlanKategori::where('seviye', 0)->count());
-        $this->command->info('   • Alt Kategoriler: ' . IlanKategori::where('seviye', 1)->count());
-        $this->command->info('   • Yayın Tipleri: ' . IlanKategori::where('seviye', 2)->count());
-        $this->command->info('   • Toplam: ' . IlanKategori::count());
+        $this->command->info('   • Ana Kategoriler: '.IlanKategori::where('seviye', 0)->count());
+        $this->command->info('   • Alt Kategoriler: '.IlanKategori::where('seviye', 1)->count());
+        $this->command->info('   • Yayın Tipleri: '.IlanKategori::where('seviye', 2)->count());
+        $this->command->info('   • Toplam: '.IlanKategori::count());
         $this->command->info('');
         $this->command->info('🎯 Context7 Uyumluluk:');
         $this->command->info('   ✅ status field kullanımı');
@@ -354,4 +355,3 @@ class Context7IlanKategoriSeeder extends Seeder
         $this->command->info('   ✅ seviye field kullanımı (0=Ana, 1=Alt, 2=Yayın Tipi)');
     }
 }
-

@@ -1,0 +1,34 @@
+{
+  "name": "yalihan-bekci-mcp",
+  "version": "3.0.0",
+  "description": "Yalıhan Bekçi MCP Server - AI Learning & Teaching System for Context7 Standards",
+  "type": "module",
+  "main": "yalihan-bekci-mcp.js",
+  "scripts": {
+    "start": "node yalihan-bekci-mcp.js",
+    "start:bekci": "node yalihan-bekci-mcp.js",
+    "start:validator": "node context7-validator-mcp.js",
+    "start:laravel": "node laravel-mcp.cjs",
+    "start:all": "concurrently \"npm run start:bekci\" \"npm run start:validator\" \"npm run start:laravel\"",
+    "dev": "node --watch yalihan-bekci-mcp.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "mcp",
+    "ai",
+    "learning",
+    "context7",
+    "yalihan",
+    "bekci",
+    "validator",
+    "laravel"
+  ],
+  "author": "Yalıhan AI Team",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^0.5.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

@@ -26,7 +26,7 @@ class PropertyFeatureSuggestionController extends Controller
     {
         $validated = $this->validateRequestWithResponse($request, [
             'category' => 'required|string',
-            'sub_category' => 'sometimes|string'
+            'sub_category' => 'sometimes|string',
         ]);
 
         if ($validated instanceof \Illuminate\Http\JsonResponse) {
@@ -40,7 +40,7 @@ class PropertyFeatureSuggestionController extends Controller
             );
 
             return ResponseService::success([
-                'data' => $suggestions
+                'data' => $suggestions,
             ], 'Özellik önerileri başarıyla getirildi');
 
         } catch (\Exception $e) {
@@ -55,7 +55,7 @@ class PropertyFeatureSuggestionController extends Controller
     {
         $validated = $this->validateRequestWithResponse($request, [
             'category' => 'required|string',
-            'current_data' => 'sometimes|array'
+            'current_data' => 'sometimes|array',
         ]);
 
         if ($validated instanceof \Illuminate\Http\JsonResponse) {
@@ -70,7 +70,7 @@ class PropertyFeatureSuggestionController extends Controller
 
             return ResponseService::success([
                 'suggestions' => $suggestions,
-                'count' => count($suggestions)
+                'count' => count($suggestions),
             ], 'Akıllı öneriler başarıyla getirildi');
 
         } catch (\Exception $e) {
@@ -85,7 +85,7 @@ class PropertyFeatureSuggestionController extends Controller
     {
         $validated = $this->validateRequestWithResponse($request, [
             'category' => 'required|string',
-            'features' => 'required|array'
+            'features' => 'required|array',
         ]);
 
         if ($validated instanceof \Illuminate\Http\JsonResponse) {
@@ -99,7 +99,7 @@ class PropertyFeatureSuggestionController extends Controller
             $validationResults = $this->validateCategoryFeatures($category, $features);
 
             return ResponseService::success([
-                'data' => $validationResults
+                'data' => $validationResults,
             ], 'Özellik doğrulama başarıyla tamamlandı');
 
         } catch (\Exception $e) {
@@ -116,7 +116,7 @@ class PropertyFeatureSuggestionController extends Controller
             'valid' => true,
             'errors' => [],
             'warnings' => [],
-            'suggestions' => []
+            'suggestions' => [],
         ];
 
         switch (strtolower($category)) {
@@ -151,12 +151,12 @@ class PropertyFeatureSuggestionController extends Controller
             'valid' => true,
             'errors' => [],
             'warnings' => [],
-            'suggestions' => []
+            'suggestions' => [],
         ];
 
         // Ada numarası kontrolü
         if (isset($features['ada_no'])) {
-            if (!is_numeric($features['ada_no']) || $features['ada_no'] <= 0) {
+            if (! is_numeric($features['ada_no']) || $features['ada_no'] <= 0) {
                 $results['errors'][] = 'Ada numarası pozitif bir sayı olmalıdır';
                 $results['valid'] = false;
             }
@@ -164,7 +164,7 @@ class PropertyFeatureSuggestionController extends Controller
 
         // Parsel numarası kontrolü
         if (isset($features['parsel_no'])) {
-            if (!is_numeric($features['parsel_no']) || $features['parsel_no'] <= 0) {
+            if (! is_numeric($features['parsel_no']) || $features['parsel_no'] <= 0) {
                 $results['errors'][] = 'Parsel numarası pozitif bir sayı olmalıdır';
                 $results['valid'] = false;
             }
@@ -172,7 +172,7 @@ class PropertyFeatureSuggestionController extends Controller
 
         // KAKS kontrolü
         if (isset($features['kaks'])) {
-            $kaks = (float)$features['kaks'];
+            $kaks = (float) $features['kaks'];
             if ($kaks < 0 || $kaks > 2) {
                 $results['warnings'][] = 'KAKS değeri genellikle 0-2 arasındadır';
             }
@@ -180,7 +180,7 @@ class PropertyFeatureSuggestionController extends Controller
 
         // TAKS kontrolü
         if (isset($features['taks'])) {
-            $taks = (float)$features['taks'];
+            $taks = (float) $features['taks'];
             if ($taks < 0 || $taks > 1) {
                 $results['warnings'][] = 'TAKS değeri genellikle 0-1 arasındadır';
             }
@@ -198,12 +198,12 @@ class PropertyFeatureSuggestionController extends Controller
             'valid' => true,
             'errors' => [],
             'warnings' => [],
-            'suggestions' => []
+            'suggestions' => [],
         ];
 
         // Günlük fiyat kontrolü
         if (isset($features['gunluk_fiyat'])) {
-            $price = (float)$features['gunluk_fiyat'];
+            $price = (float) $features['gunluk_fiyat'];
             if ($price < 100) {
                 $results['warnings'][] = 'Günlük fiyat düşük görünüyor';
             } elseif ($price > 2000) {
@@ -213,7 +213,7 @@ class PropertyFeatureSuggestionController extends Controller
 
         // Minimum konaklama kontrolü
         if (isset($features['min_konaklama'])) {
-            $minKonaklama = (int)$features['min_konaklama'];
+            $minKonaklama = (int) $features['min_konaklama'];
             if ($minKonaklama < 1) {
                 $results['errors'][] = 'Minimum konaklama en az 1 gün olmalıdır';
                 $results['valid'] = false;
@@ -232,12 +232,12 @@ class PropertyFeatureSuggestionController extends Controller
             'valid' => true,
             'errors' => [],
             'warnings' => [],
-            'suggestions' => []
+            'suggestions' => [],
         ];
 
         // Oda sayısı kontrolü
         if (isset($features['oda_sayisi'])) {
-            $odaSayisi = (int)$features['oda_sayisi'];
+            $odaSayisi = (int) $features['oda_sayisi'];
             if ($odaSayisi < 1 || $odaSayisi > 10) {
                 $results['warnings'][] = 'Oda sayısı genellikle 1-10 arasındadır';
             }
@@ -245,7 +245,7 @@ class PropertyFeatureSuggestionController extends Controller
 
         // Net m² kontrolü
         if (isset($features['net_m2'])) {
-            $netM2 = (int)$features['net_m2'];
+            $netM2 = (int) $features['net_m2'];
             if ($netM2 < 30) {
                 $results['warnings'][] = 'Net m² düşük görünüyor';
             } elseif ($netM2 > 500) {
@@ -255,7 +255,7 @@ class PropertyFeatureSuggestionController extends Controller
 
         // Banyo sayısı kontrolü
         if (isset($features['banyo_sayisi'])) {
-            $banyoSayisi = (int)$features['banyo_sayisi'];
+            $banyoSayisi = (int) $features['banyo_sayisi'];
             if ($banyoSayisi < 1) {
                 $results['errors'][] = 'En az 1 banyo olmalıdır';
                 $results['valid'] = false;
@@ -274,12 +274,12 @@ class PropertyFeatureSuggestionController extends Controller
             'valid' => true,
             'errors' => [],
             'warnings' => [],
-            'suggestions' => []
+            'suggestions' => [],
         ];
 
         // Ciro bilgisi kontrolü
         if (isset($features['ciro_bilgisi'])) {
-            $ciro = (float)$features['ciro_bilgisi'];
+            $ciro = (float) $features['ciro_bilgisi'];
             if ($ciro < 0) {
                 $results['errors'][] = 'Ciro bilgisi negatif olamaz';
                 $results['valid'] = false;
@@ -288,7 +288,7 @@ class PropertyFeatureSuggestionController extends Controller
 
         // Personel kapasitesi kontrolü
         if (isset($features['personel_kapasitesi'])) {
-            $kapasite = (int)$features['personel_kapasitesi'];
+            $kapasite = (int) $features['personel_kapasitesi'];
             if ($kapasite < 0) {
                 $results['errors'][] = 'Personel kapasitesi negatif olamaz';
                 $results['valid'] = false;

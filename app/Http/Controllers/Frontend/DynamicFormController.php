@@ -18,14 +18,14 @@ class DynamicFormController extends Controller
             'konut' => 'Konut',
             'arsa' => 'Arsa',
             'yazlik' => 'Yazlık',
-            'isyeri' => 'İşyeri'
+            'isyeri' => 'İşyeri',
         ];
 
         $yayinTipleri = [
             'Satılık' => 'Satılık',
             'Kiralık' => 'Kiralık',
             'Sezonluk Kiralık' => 'Sezonluk Kiralık',
-            'Devren Satış' => 'Devren Satış'
+            'Devren Satış' => 'Devren Satış',
         ];
 
         return view('frontend.dynamic-form.index', compact('kategoriler', 'yayinTipleri'));
@@ -40,10 +40,10 @@ class DynamicFormController extends Controller
             $kategoriSlug = $request->get('kategori');
             $yayinTipi = $request->get('yayin_tipi');
 
-            if (!$kategoriSlug || !$yayinTipi) {
+            if (! $kategoriSlug || ! $yayinTipi) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Kategori ve yayın tipi seçimi zorunludur.'
+                    'message' => 'Kategori ve yayın tipi seçimi zorunludur.',
                 ], 400);
             }
 
@@ -57,7 +57,7 @@ class DynamicFormController extends Controller
             if ($fields->isEmpty()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Bu kategori ve yayın tipi için aktif field bulunamadı.'
+                    'message' => 'Bu kategori ve yayın tipi için aktif field bulunamadı.',
                 ], 404);
             }
 
@@ -69,18 +69,18 @@ class DynamicFormController extends Controller
                 'form_html' => $formHtml,
                 'fields_count' => $fields->count(),
                 'kategori' => $kategoriSlug,
-                'yayin_tipi' => $yayinTipi
+                'yayin_tipi' => $yayinTipi,
             ]);
 
         } catch (\Exception $e) {
             Log::error('Dynamic form render hatası', [
                 'error' => $e->getMessage(),
-                'request' => $request->all()
+                'request' => $request->all(),
             ]);
 
             return response()->json([
                 'success' => false,
-                'message' => 'Form oluşturulurken hata oluştu: ' . $e->getMessage()
+                'message' => 'Form oluşturulurken hata oluştu: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -92,20 +92,20 @@ class DynamicFormController extends Controller
     {
         $html = '<div class="neo-dynamic-form">';
         $html .= '<div class="neo-form-header">';
-        $html .= '<h3 class="neo-form-title">' . ucfirst($kategoriSlug) . ' - ' . $yayinTipi . ' Formu</h3>';
-        $html .= '<p class="neo-form-subtitle">' . $fields->count() . ' alan AI ile otomatik doldurulabilir</p>';
+        $html .= '<h3 class="neo-form-title">'.ucfirst($kategoriSlug).' - '.$yayinTipi.' Formu</h3>';
+        $html .= '<p class="neo-form-subtitle">'.$fields->count().' alan AI ile otomatik doldurulabilir</p>';
         $html .= '</div>';
 
-        $html .= '<form id="dynamicForm" class="neo-form" data-kategori="' . $kategoriSlug . '" data-yayin-tipi="' . $yayinTipi . '">';
-        $html .= '<input type="hidden" name="kategori" value="' . $kategoriSlug . '">';
-        $html .= '<input type="hidden" name="yayin_tipi" value="' . $yayinTipi . '">';
+        $html .= '<form id="dynamicForm" class="neo-form" data-kategori="'.$kategoriSlug.'" data-yayin-tipi="'.$yayinTipi.'">';
+        $html .= '<input type="hidden" name="kategori" value="'.$kategoriSlug.'">';
+        $html .= '<input type="hidden" name="yayin_tipi" value="'.$yayinTipi.'">';
 
         // Field'ları kategorilere göre grupla
         $groupedFields = $fields->groupBy('field_category');
 
         foreach ($groupedFields as $category => $categoryFields) {
             $html .= '<div class="neo-form-section">';
-            $html .= '<h4 class="neo-section-title">' . ucfirst($category) . ' Bilgileri</h4>';
+            $html .= '<h4 class="neo-section-title">'.ucfirst($category).' Bilgileri</h4>';
 
             foreach ($categoryFields as $field) {
                 $html .= $this->generateFieldHtml($field);
@@ -145,7 +145,7 @@ class DynamicFormController extends Controller
         $html = '<div class="neo-field-group">';
 
         // Label
-        $html .= '<label class="neo-field-label" for="' . $field->field_slug . '">';
+        $html .= '<label class="neo-field-label" for="'.$field->field_slug.'">';
         $html .= $field->field_name;
         if ($field->required) {
             $html .= ' <span class="neo-required">*</span>';
@@ -157,37 +157,45 @@ class DynamicFormController extends Controller
 
         switch ($field->field_type) {
             case 'text':
-                $html .= '<input type="text" id="' . $field->field_slug . '" name="' . $field->field_slug . '" ';
-                $html .= 'class="neo-input" placeholder="' . $field->field_name . ' giriniz"';
-                if ($field->required) $html .= ' required';
+                $html .= '<input type="text" id="'.$field->field_slug.'" name="'.$field->field_slug.'" ';
+                $html .= 'class="neo-input" placeholder="'.$field->field_name.' giriniz"';
+                if ($field->required) {
+                    $html .= ' required';
+                }
                 $html .= '>';
                 break;
 
             case 'number':
-                $html .= '<input type="number" id="' . $field->field_slug . '" name="' . $field->field_slug . '" ';
-                $html .= 'class="neo-input" placeholder="' . $field->field_name . ' giriniz"';
-                if ($field->required) $html .= ' required';
+                $html .= '<input type="number" id="'.$field->field_slug.'" name="'.$field->field_slug.'" ';
+                $html .= 'class="neo-input" placeholder="'.$field->field_name.' giriniz"';
+                if ($field->required) {
+                    $html .= ' required';
+                }
                 $html .= '>';
                 break;
 
             case 'textarea':
-                $html .= '<textarea id="' . $field->field_slug . '" name="' . $field->field_slug . '" ';
-                $html .= 'class="neo-textarea" placeholder="' . $field->field_name . ' giriniz"';
-                if ($field->required) $html .= ' required';
+                $html .= '<textarea id="'.$field->field_slug.'" name="'.$field->field_slug.'" ';
+                $html .= 'class="neo-textarea" placeholder="'.$field->field_name.' giriniz"';
+                if ($field->required) {
+                    $html .= ' required';
+                }
                 $html .= '></textarea>';
                 break;
 
             case 'select':
-                $html .= '<select id="' . $field->field_slug . '" name="' . $field->field_slug . '" ';
+                $html .= '<select id="'.$field->field_slug.'" name="'.$field->field_slug.'" ';
                 $html .= 'class="neo-select"';
-                if ($field->required) $html .= ' required';
+                if ($field->required) {
+                    $html .= ' required';
+                }
                 $html .= '>';
                 $html .= '<option value="">Seçiniz...</option>';
 
                 if ($field->field_options) {
                     $options = json_decode($field->field_options, true);
                     foreach ($options as $value => $label) {
-                        $html .= '<option value="' . $value . '">' . $label . '</option>';
+                        $html .= '<option value="'.$value.'">'.$label.'</option>';
                     }
                 }
 
@@ -196,23 +204,25 @@ class DynamicFormController extends Controller
 
             case 'boolean':
                 $html .= '<div class="neo-checkbox-group">';
-                $html .= '<input type="checkbox" id="' . $field->field_slug . '" name="' . $field->field_slug . '" ';
+                $html .= '<input type="checkbox" id="'.$field->field_slug.'" name="'.$field->field_slug.'" ';
                 $html .= 'class="neo-checkbox" value="1">';
-                $html .= '<label for="' . $field->field_slug . '" class="neo-checkbox-label">Evet</label>';
+                $html .= '<label for="'.$field->field_slug.'" class="neo-checkbox-label">Evet</label>';
                 $html .= '</div>';
                 break;
 
             case 'date':
-                $html .= '<input type="date" id="' . $field->field_slug . '" name="' . $field->field_slug . '" ';
+                $html .= '<input type="date" id="'.$field->field_slug.'" name="'.$field->field_slug.'" ';
                 $html .= 'class="neo-input"';
-                if ($field->required) $html .= ' required';
+                if ($field->required) {
+                    $html .= ' required';
+                }
                 $html .= '>';
                 break;
         }
 
         // Unit
         if ($field->field_unit) {
-            $html .= '<span class="neo-field-unit">' . $field->field_unit . '</span>';
+            $html .= '<span class="neo-field-unit">'.$field->field_unit.'</span>';
         }
 
         $html .= '</div>';
@@ -222,19 +232,19 @@ class DynamicFormController extends Controller
             $html .= '<div class="neo-ai-features">';
 
             if ($field->ai_suggestion) {
-                $html .= '<button type="button" class="neo-ai-btn neo-ai-suggestion" onclick="getAISuggestion(\'' . $field->field_slug . '\')">';
+                $html .= '<button type="button" class="neo-ai-btn neo-ai-suggestion" onclick="getAISuggestion(\''.$field->field_slug.'\')">';
                 $html .= '<i class="neo-icon-suggestion"></i> AI Öneri';
                 $html .= '</button>';
             }
 
             if ($field->ai_auto_fill) {
-                $html .= '<button type="button" class="neo-ai-btn neo-ai-autofill" onclick="autoFillField(\'' . $field->field_slug . '\')">';
+                $html .= '<button type="button" class="neo-ai-btn neo-ai-autofill" onclick="autoFillField(\''.$field->field_slug.'\')">';
                 $html .= '<i class="neo-icon-autofill"></i> Otomatik Doldur';
                 $html .= '</button>';
             }
 
             if ($field->ai_calculation) {
-                $html .= '<button type="button" class="neo-ai-btn neo-ai-calculation" onclick="calculateField(\'' . $field->field_slug . '\')">';
+                $html .= '<button type="button" class="neo-ai-btn neo-ai-calculation" onclick="calculateField(\''.$field->field_slug.'\')">';
                 $html .= '<i class="neo-icon-calculation"></i> Hesapla';
                 $html .= '</button>';
             }
@@ -259,10 +269,10 @@ class DynamicFormController extends Controller
             $kategoriSlug = $request->get('kategori');
             $yayinTipi = $request->get('yayin_tipi');
 
-            if (!$kategoriSlug || !$yayinTipi) {
+            if (! $kategoriSlug || ! $yayinTipi) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Kategori ve yayın tipi bilgisi eksik.'
+                    'message' => 'Kategori ve yayın tipi bilgisi eksik.',
                 ], 400);
             }
 
@@ -280,10 +290,10 @@ class DynamicFormController extends Controller
                 }
             }
 
-            if (!empty($missingFields)) {
+            if (! empty($missingFields)) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Zorunlu alanlar eksik: ' . implode(', ', $missingFields)
+                    'message' => 'Zorunlu alanlar eksik: '.implode(', ', $missingFields),
                 ], 400);
             }
 
@@ -291,24 +301,24 @@ class DynamicFormController extends Controller
             Log::info('Dynamic form submitted', [
                 'kategori' => $kategoriSlug,
                 'yayin_tipi' => $yayinTipi,
-                'data' => $formData
+                'data' => $formData,
             ]);
 
             return response()->json([
                 'success' => true,
                 'message' => 'Form başarıyla kaydedildi!',
-                'data' => $formData
+                'data' => $formData,
             ]);
 
         } catch (\Exception $e) {
             Log::error('Form submit hatası', [
                 'error' => $e->getMessage(),
-                'request' => $request->all()
+                'request' => $request->all(),
             ]);
 
             return response()->json([
                 'success' => false,
-                'message' => 'Form kaydedilirken hata oluştu: ' . $e->getMessage()
+                'message' => 'Form kaydedilirken hata oluştu: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -328,13 +338,13 @@ class DynamicFormController extends Controller
             return response()->json([
                 'success' => true,
                 'suggestion' => 'AI önerisi burada görünecek',
-                'field_slug' => $fieldSlug
+                'field_slug' => $fieldSlug,
             ]);
 
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'AI öneri alınamadı: ' . $e->getMessage()
+                'message' => 'AI öneri alınamadı: '.$e->getMessage(),
             ], 500);
         }
     }

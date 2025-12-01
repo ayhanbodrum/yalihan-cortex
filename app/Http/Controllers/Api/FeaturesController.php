@@ -4,8 +4,6 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Services\Response\ResponseService;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class FeaturesController extends Controller
@@ -20,10 +18,11 @@ class FeaturesController extends Controller
 
             return ResponseService::success([
                 'features' => $features,
-                'category_id' => $categoryId
+                'category_id' => $categoryId,
             ], 'Kategori özellikleri başarıyla getirildi');
         } catch (\Exception $e) {
-            Log::error('Özellik yükleme hatası: ' . $e->getMessage());
+            Log::error('Özellik yükleme hatası: '.$e->getMessage());
+
             return ResponseService::serverError('Özellikler yüklenirken hata oluştu.', $e);
         }
     }
@@ -47,7 +46,7 @@ class FeaturesController extends Controller
                     'toplam_kat' => ['label' => 'Toplam Kat', 'type' => 'number', 'required' => false],
                     'balkon_sayisi' => ['label' => 'Balkon Sayısı', 'type' => 'number', 'required' => false],
                     'asansor' => ['label' => 'Asansör', 'type' => 'checkbox', 'required' => false],
-                    'otopark' => ['label' => 'Otopark', 'type' => 'checkbox', 'required' => false]
+                    'otopark' => ['label' => 'Otopark', 'type' => 'checkbox', 'required' => false],
                 ];
                 break;
 
@@ -62,7 +61,7 @@ class FeaturesController extends Controller
                     'gabari' => ['label' => 'Gabari', 'type' => 'number', 'required' => false],
                     'elektrik' => ['label' => 'Elektrik', 'type' => 'checkbox', 'required' => false],
                     'su' => ['label' => 'Su', 'type' => 'checkbox', 'required' => false],
-                    'dogalgaz' => ['label' => 'Doğalgaz', 'type' => 'checkbox', 'required' => false]
+                    'dogalgaz' => ['label' => 'Doğalgaz', 'type' => 'checkbox', 'required' => false],
                 ];
                 break;
 
@@ -77,7 +76,7 @@ class FeaturesController extends Controller
                     'havuz' => ['label' => 'Havuz', 'type' => 'checkbox', 'required' => false],
                     'havuz_tipi' => ['label' => 'Havuz Tipi', 'type' => 'select', 'required' => false, 'options' => ['Özel', 'Ortak', 'Yok']],
                     'misafir_sayisi' => ['label' => 'Misafir Sayısı', 'type' => 'number', 'required' => true],
-                    'cocuk_sayisi' => ['label' => 'Çocuk Sayısı', 'type' => 'number', 'required' => false]
+                    'cocuk_sayisi' => ['label' => 'Çocuk Sayısı', 'type' => 'number', 'required' => false],
                 ];
                 break;
 
@@ -89,13 +88,13 @@ class FeaturesController extends Controller
                     'ruhsat_tipi' => ['label' => 'Ruhsat Tipi', 'type' => 'select', 'required' => false, 'options' => ['İşyeri', 'Ofis', 'Ticari']],
                     'kapasite' => ['label' => 'Kapasite', 'type' => 'number', 'required' => false],
                     'otopark' => ['label' => 'Otopark', 'type' => 'checkbox', 'required' => false],
-                    'depo' => ['label' => 'Depo', 'type' => 'checkbox', 'required' => false]
+                    'depo' => ['label' => 'Depo', 'type' => 'checkbox', 'required' => false],
                 ];
                 break;
 
             default:
                 $features = [
-                    'genel_ozellik' => ['label' => 'Genel Özellik', 'type' => 'text', 'required' => false]
+                    'genel_ozellik' => ['label' => 'Genel Özellik', 'type' => 'text', 'required' => false],
                 ];
                 break;
         }

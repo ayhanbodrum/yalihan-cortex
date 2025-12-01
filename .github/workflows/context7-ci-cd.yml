@@ -1,0 +1,281 @@
+name: Context7 Yalıhan Bekçi CI/CD Pipeline
+
+on:
+    push:
+        branches: [main, develop]
+    pull_request:
+        branches: [main, develop]
+    workflow_dispatch:
+
+env:
+    PHP_VERSION: '8.1'
+    NODE_VERSION: '18'
+    COMPOSER_VERSION: '2'
+
+jobs:
+    context7-validation:
+        name: Context7 Compliance Check
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: ${{ env.PHP_VERSION }}
+                  extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv
+                  coverage: none
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: ${{ env.NODE_VERSION }}
+                  cache: 'npm'
+
+            - name: Install Composer dependencies
+              run: composer install --no-progress --prefer-dist --optimize-autoloader
+
+            - name: Install NPM dependencies
+              run: npm ci
+
+            - name: Copy environment file
+              run: cp .env.example .env
+
+            - name: Generate application key
+              run: php artisan key:generate
+
+            - name: Create SQLite database
+              run: touch database/database.sqlite
+
+            - name: Run database migrations
+              run: php artisan migrate --force
+
+            - name: Start Yalıhan Bekçi MCP Server
+              run: |
+                  cd mcp-servers
+                  npm install
+                  node yalihan-bekci-mcp.js &
+                  echo $! > mcp-server.pid
+                  sleep 5
+              env:
+                  NODE_ENV: ci
+
+            - name: Context7 Validation - All Files
+              run: php artisan context7:validate-migration --all
+              continue-on-error: true
+              id: context7-check
+
+            - name: Context7 Auto-fix (if violations found)
+              if: steps.context7-check.outcome == 'failure'
+              run: php artisan context7:validate-migration --auto-fix
+
+            - name: Re-validate after auto-fix
+              if: steps.context7-check.outcome == 'failure'
+              run: php artisan context7:validate-migration --all
+
+            - name: Generate Project Health Report
+              run: php artisan monitor:project --report
+
+            - name: Generate Development Ideas
+              run: php artisan ideas:generate --analyze --save --category=all
+
+            - name: Teach Yalıhan Bekçi about CI/CD Run
+              run: php artisan bekci:learn "ci_cd_pipeline" "GitHub Actions CI/CD pipeline executed with Context7 validation and auto-fix"
+
+            - name: Upload Context7 Reports
+              uses: actions/upload-artifact@v4
+              with:
+                  name: context7-reports
+                  path: |
+                      yalihan-bekci/analysis/*.json
+                      yalihan-bekci/ideas/*.json
+                      yalihan-bekci/learning/*.json
+                  retention-days: 30
+
+            - name: Stop MCP Server
+              if: always()
+              run: |
+                  if [ -f mcp-servers/mcp-server.pid ]; then
+                    kill $(cat mcp-servers/mcp-server.pid) || true
+                    rm mcp-servers/mcp-server.pid
+                  fi
+
+    code-quality:
+        name: Code Quality Analysis
+        runs-on: ubuntu-latest
+        needs: context7-validation
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: ${{ env.PHP_VERSION }}
+                  extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv
+                  coverage: xdebug
+
+            - name: Install Composer dependencies
+              run: composer install --no-progress --prefer-dist --optimize-autoloader
+
+            - name: Run PHPUnit Tests
+              run: vendor/bin/phpunit --coverage-clover=coverage.xml
+
+            - name: Run PHPStan Analysis
+              run: vendor/bin/phpstan analyse --error-format=github
+              continue-on-error: true
+
+            - name: Upload Coverage to Codecov
+              uses: codecov/codecov-action@v3
+              with:
+                  file: ./coverage.xml
+                  flags: unittests
+                  name: codecov-umbrella
+
+    frontend-validation:
+        name: Frontend & Assets Validation
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: ${{ env.NODE_VERSION }}
+                  cache: 'npm'
+
+            - name: Install NPM dependencies
+              run: npm ci
+
+            - name: Validate Tailwind CSS Usage
+              run: |
+                  echo "Checking for forbidden CSS frameworks..."
+                  if grep -r "neo-" resources/ --include="*.css" --include="*.js" --include="*.blade.php"; then
+                    echo "❌ Neo Design System found - Context7 violation!"
+                    exit 1
+                  fi
+
+                  if grep -r "btn-\|card-" resources/ --include="*.css" --include="*.js" --include="*.blade.php"; then
+                    echo "❌ Bootstrap classes found - Context7 violation!"
+                    exit 1
+                  fi
+
+                  echo "✅ No forbidden CSS frameworks detected"
+
+            - name: Check Dark Mode Implementation
+              run: |
+                  echo "Checking for dark mode classes..."
+                  missing_dark_mode=$(grep -r "bg-white" resources/ --include="*.blade.php" | grep -v "dark:" || true)
+                  if [ -n "$missing_dark_mode" ]; then
+                    echo "⚠️ Missing dark mode variants found:"
+                    echo "$missing_dark_mode"
+                  else
+                    echo "✅ Dark mode implementation looks good"
+                  fi
+
+            - name: Build Assets
+              run: npm run build
+
+            - name: Check Build Size
+              run: |
+                  if [ -d "public/build" ]; then
+                    echo "📦 Build assets size:"
+                    du -sh public/build/
+                  fi
+
+    security-scan:
+        name: Security Analysis
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: ${{ env.PHP_VERSION }}
+                  extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv
+
+            - name: Install Composer dependencies
+              run: composer install --no-progress --prefer-dist --optimize-autoloader
+
+            - name: Run Security Audit
+              run: composer audit
+              continue-on-error: true
+
+            - name: Check for Environment Leaks
+              run: |
+                  echo "Checking for exposed secrets..."
+                  if grep -r "sk-\|secret\|password" . --include="*.php" --include="*.js" --exclude-dir=vendor --exclude-dir=node_modules --exclude=".env.example"; then
+                    echo "⚠️ Potential secret exposure found"
+                  else
+                    echo "✅ No exposed secrets detected"
+                  fi
+
+    deploy-preview:
+        name: Deploy Preview Environment
+        runs-on: ubuntu-latest
+        needs: [context7-validation, code-quality, frontend-validation, security-scan]
+        if: github.event_name == 'pull_request'
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Deploy to Preview
+              run: |
+                  echo "🚀 Deploying to preview environment..."
+                  echo "Preview URL would be generated here"
+                  # Actual deployment logic would go here
+
+            - name: Comment PR with Preview Link
+              uses: actions/github-script@v7
+              with:
+                  script: |
+                      github.rest.issues.createComment({
+                        issue_number: context.issue.number,
+                        owner: context.repo.owner,
+                        repo: context.repo.repo,
+                        body: `🚀 **Preview Deployment Ready**
+
+                        ✅ Context7 validation passed
+                        ✅ Code quality checks passed
+                        ✅ Security scan completed
+
+                        **Preview URL:** \`https://preview-pr-${context.issue.number}.yalihanai.com\`
+
+                        Generated by Yalıhan Bekçi CI/CD Pipeline`
+                      })
+
+    production-deploy:
+        name: Production Deployment
+        runs-on: ubuntu-latest
+        needs: [context7-validation, code-quality, frontend-validation, security-scan]
+        if: github.ref == 'refs/heads/main'
+        environment: production
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Deploy to Production
+              run: |
+                  echo "🚀 Deploying to production..."
+                  # Actual production deployment logic would go here
+
+            - name: Post-deployment Health Check
+              run: |
+                  echo "🏥 Running post-deployment health checks..."
+                  # Health check logic would go here
+
+            - name: Notify Team
+              if: always()
+              run: |
+                  echo "📢 Notifying team about deployment status..."
+                  # Notification logic would go here

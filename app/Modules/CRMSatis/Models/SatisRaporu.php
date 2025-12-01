@@ -3,8 +3,8 @@
 namespace App\Modules\CRMSatis\Models;
 
 use App\Modules\BaseModule\Models\BaseModel;
-use App\Modules\Emlak\Models\Ilan;
 use App\Modules\Crm\Models\Musteri;
+use App\Modules\Emlak\Models\Ilan;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -172,7 +172,7 @@ class SatisRaporu extends BaseModel
      */
     public function getDurumRengiAttribute(): string
     {
-        return match($this->status) {
+        return match ($this->status) {
             'hazirlaniyor' => 'yellow',
             'tamamlandi' => 'blue',
             'onaylandi' => 'green',
@@ -185,7 +185,7 @@ class SatisRaporu extends BaseModel
      */
     public function getRaporTipiEtiketiAttribute(): string
     {
-        return match($this->rapor_tipi) {
+        return match ($this->rapor_tipi) {
             'aylik' => 'Aylık Rapor',
             'haftalik' => 'Haftalık Rapor',
             'gunluk' => 'Günlük Rapor',
@@ -200,8 +200,8 @@ class SatisRaporu extends BaseModel
     public function tamamlanabilirMi(): bool
     {
         return $this->status === 'hazirlaniyor' &&
-               !empty($this->rapor_metni) &&
-               !empty($this->analiz_sonuclari);
+               ! empty($this->rapor_metni) &&
+               ! empty($this->analiz_sonuclari);
     }
 
     /**
@@ -244,7 +244,7 @@ class SatisRaporu extends BaseModel
     {
         $skor = $this->performans_skoru;
 
-        return match(true) {
+        return match (true) {
             $skor >= 80 => 'Mükemmel',
             $skor >= 60 => 'İyi',
             $skor >= 40 => 'Orta',

@@ -28,10 +28,10 @@ class Context7AuthMiddleware
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next, string $permission = null): Response
+    public function handle(Request $request, Closure $next, ?string $permission = null): Response
     {
         // Kullanıcı giriş yapmamışsa login sayfasına yönlendir
-        if (!Auth::check()) {
+        if (! Auth::check()) {
             return redirect()->route('login')->with('error', 'Bu sayfaya erişmek için giriş yapmanız gerekiyor.');
         }
 
@@ -54,26 +54,28 @@ class Context7AuthMiddleware
             'permission' => $permission,
             'route' => $request->route()->getName(),
             'hasPermission' => $permission ? $this->authService->hasPermission($context7User, $permission) : 'N/A',
-            'checkAccess' => $this->authService->checkAccess($context7User, $request->route()->getName())
+            'checkAccess' => $this->authService->checkAccess($context7User, $request->route()->getName()),
         ]);
 
         // Yetki kontrolü
-        if ($permission && !$this->authService->hasPermission($context7User, $permission)) {
+        if ($permission && ! $this->authService->hasPermission($context7User, $permission)) {
             Log::warning('Permission denied', [
                 'user' => $context7User->name,
-                'permission' => $permission
+                'permission' => $permission,
             ]);
+
             return redirect()->route('admin.dashboard.index')
                 ->with('error', 'Bu sayfaya erişim yetkiniz bulunmuyor.');
         }
 
         // Route bazlı erişim kontrolü
         $currentRoute = $request->route()->getName();
-        if (!$this->authService->checkAccess($context7User, $currentRoute)) {
+        if (! $this->authService->checkAccess($context7User, $currentRoute)) {
             Log::warning('Route access denied', [
                 'user' => $context7User->name,
-                'route' => $currentRoute
+                'route' => $currentRoute,
             ]);
+
             return redirect()->route('admin.dashboard.index')
                 ->with('error', 'Bu sayfaya erişim yetkiniz bulunmuyor.');
         }

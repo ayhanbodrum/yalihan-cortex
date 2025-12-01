@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         // 1. Feature Categories (Özellik Kategorileri)
-        if (!Schema::hasTable('feature_categories')) {
+        if (! Schema::hasTable('feature_categories')) {
             Schema::create('feature_categories', function (Blueprint $table) {
                 $table->id();
                 $table->string('name', 100);
@@ -32,7 +32,7 @@ return new class extends Migration
         }
 
         // 2. Features (Tüm Özellikler)
-        if (!Schema::hasTable('features')) {
+        if (! Schema::hasTable('features')) {
             Schema::create('features', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId('feature_category_id')->nullable()->constrained('feature_categories')->nullOnDelete(); // ✅ Context7: category_id → feature_category_id
@@ -79,7 +79,7 @@ return new class extends Migration
         }
 
         // 3. Feature Assignments (Polymorphic İlişkiler)
-        if (!Schema::hasTable('feature_assignments')) {
+        if (! Schema::hasTable('feature_assignments')) {
             Schema::create('feature_assignments', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId('feature_id')->constrained('features')->cascadeOnDelete();
@@ -106,7 +106,7 @@ return new class extends Migration
         }
 
         // 4. Feature Values (Gerçek Değerler - İlanlar için)
-        if (!Schema::hasTable('feature_values')) {
+        if (! Schema::hasTable('feature_values')) {
             Schema::create('feature_values', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId('feature_id')->constrained('features')->cascadeOnDelete();

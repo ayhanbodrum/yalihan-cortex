@@ -1,8 +1,17 @@
 {
   "context7": {
-    "version": "5.5.0",
-    "standard": "C7-PERMANENT-STANDARDS-2025-11-22",
-    "last_updated": "2025-11-22T15:30:00Z",
+    "version": "6.0.0",
+    "standard": "C7-UNIVERSAL-IDE-STANDARDS-2025-11-24",
+    "last_updated": "2025-11-24T12:00:00Z",
+    "universal_ide_support": {
+      "status": "ACTIVE - UNIVERSAL COMPLIANCE",
+      "supported_ides": ["vscode", "cursor", "windsurf", "warp", "jetbrains", "sublime", "neovim"],
+      "mcp_integration": "ENABLED - Real-time validation",
+      "workspace_config": "UNIFIED - Single source of truth",
+      "auto_teaching": "YALIHAN_BEKCI - AI learning enabled",
+      "real_time_monitoring": "ENABLED - Project state tracking",
+      "development_suggestions": "AI_POWERED - Auto-generated ideas"
+    },
     "permanent_standards": {
       "status": "ACTIVE - NO ROLLBACK",
       "enabled_field": "FORBIDDEN - PERMANENT",
@@ -2943,5 +2952,207 @@
       ".context7/MIGRATION_EXECUTION_STANDARD.md",
       ".context7/ORDER_DISPLAY_ORDER_STANDARD.md"
     ]
+  },
+
+  "yalihan_bekci_learning_system": {
+    "version": "2.0.0",
+    "status": "ACTIVE - AUTO TEACHING",
+    "last_updated": "2025-11-24T12:00:00Z",
+    "description": "Yalıhan Bekçi AI'ya yapılan tüm işlemleri öğretme sistemi",
+
+    "auto_teaching_triggers": {
+      "code_changes": {
+        "enabled": true,
+        "triggers": ["file_save", "git_commit", "context7_fix"],
+        "learning_data": ["pattern_analysis", "compliance_check", "improvement_suggestion"]
+      },
+      "development_actions": {
+        "enabled": true,
+        "triggers": ["migration_create", "controller_update", "route_add"],
+        "learning_data": ["action_context", "code_pattern", "result_analysis"]
+      },
+      "context7_violations": {
+        "enabled": true,
+        "triggers": ["violation_detected", "auto_fix_applied", "manual_fix"],
+        "learning_data": ["violation_type", "fix_method", "prevention_strategy"]
+      }
+    },
+
+    "knowledge_base": {
+      "storage": "yalihan-bekci/knowledge/",
+      "format": "JSON + Markdown",
+      "categories": ["patterns", "violations", "fixes", "improvements", "suggestions"],
+      "retention": "permanent",
+      "indexing": "semantic_search_enabled"
+    },
+
+    "learning_patterns": {
+      "pattern_recognition": "Kod değişikliklerinden pattern'leri çıkarma",
+      "violation_prediction": "Gelecekteki Context7 ihlallerini öngörme",
+      "improvement_suggestion": "Kod kalitesi artırma önerileri",
+      "development_trends": "Proje gelişim eğilimlerini analiz etme"
+    },
+
+    "mcp_integration": {
+      "enabled": true,
+      "server": "yalihan-bekci-mcp",
+      "port": 4001,
+      "tools": ["learn_from_action", "suggest_improvement", "analyze_pattern", "predict_violation"]
+    }
+  },
+
+  "mcp_server_integration": {
+    "version": "3.0.0",
+    "status": "ACTIVE - MULTI SERVER",
+    "last_updated": "2025-11-24T12:00:00Z",
+    "description": "Multiple MCP servers for Context7 ecosystem",
+
+    "active_servers": {
+      "context7_validator": {
+        "port": 4000,
+        "purpose": "Real-time Context7 validation",
+        "tools": ["validate", "auto_fix", "check_pattern", "scan_project"],
+        "priority": "high"
+      },
+      "yalihan_bekci": {
+        "port": 4001,
+        "purpose": "AI learning and teaching system",
+        "tools": ["learn", "suggest", "analyze", "predict"],
+        "priority": "high"
+      },
+      "project_monitor": {
+        "port": 4002,
+        "purpose": "Project state monitoring",
+        "tools": ["monitor_health", "track_performance", "analyze_metrics"],
+        "priority": "medium"
+      },
+      "dev_ideas_generator": {
+        "port": 4003,
+        "purpose": "Auto development ideas generation",
+        "tools": ["generate_ideas", "analyze_trends", "suggest_features"],
+        "priority": "low"
+      }
+    },
+
+    "coordination": {
+      "enabled": true,
+      "orchestrator": "context7_validator",
+      "data_sharing": "enabled",
+      "cross_server_communication": "webhook_based"
+    }
+  },
+
+  "universal_workspace_config": {
+    "version": "1.0.0",
+    "status": "ACTIVE - ALL IDES",
+    "last_updated": "2025-11-24T12:00:00Z",
+    "description": "Unified workspace configuration for all IDEs",
+
+    "config_structure": {
+      "vscode": {
+        "settings": ".vscode/settings.json",
+        "tasks": ".vscode/tasks.json",
+        "extensions": ".vscode/extensions.json",
+        "snippets": ".vscode/context7-snippets.code-snippets"
+      },
+      "cursor": {
+        "rules": ".cursorrules",
+        "memory": ".cursor/memory/",
+        "config": ".cursor/config.json"
+      },
+      "windsurf": {
+        "rules": ".windsurfrules",
+        "config": ".windsurf/config.json"
+      },
+      "warp": {
+        "workflows": ".warp/workflows/",
+        "rules": ".warp/rules/"
+      }
+    },
+
+    "shared_standards": {
+      "authority_file": ".context7/authority.json",
+      "rules_source": "SINGLE_SOURCE_OF_TRUTH",
+      "auto_sync": "enabled",
+      "conflict_resolution": "authority_json_wins"
+    }
+  },
+
+  "project_monitoring_system": {
+    "version": "1.0.0",
+    "status": "ACTIVE - REAL TIME",
+    "last_updated": "2025-11-24T12:00:00Z",
+    "description": "Real-time project state monitoring and analytics",
+
+    "monitoring_areas": {
+      "code_quality": {
+        "metrics": ["complexity", "duplication", "coverage", "compliance"],
+        "alerts": ["quality_decrease", "compliance_violation", "performance_issue"],
+        "frequency": "real_time"
+      },
+      "performance": {
+        "metrics": ["bundle_size", "load_time", "memory_usage", "query_performance"],
+        "thresholds": { "bundle_size": "50KB", "load_time": "2s", "memory": "128MB" },
+        "frequency": "continuous"
+      },
+      "development_velocity": {
+        "metrics": ["commits_per_day", "features_completed", "bugs_fixed", "refactoring_rate"],
+        "trends": "weekly_analysis",
+        "frequency": "daily"
+      }
+    },
+
+    "reporting": {
+      "daily_digest": ".context7/daily-reports/",
+      "weekly_summary": ".context7/weekly-reports/",
+      "monthly_analysis": ".context7/monthly-reports/",
+      "real_time_dashboard": "http://localhost:8080/context7-dashboard"
+    }
+  },
+
+  "auto_development_ideas": {
+    "version": "1.0.0",
+    "status": "ACTIVE - AI POWERED",
+    "last_updated": "2025-11-24T12:00:00Z",
+    "description": "AI-powered automatic development ideas generation",
+
+    "analysis_sources": {
+      "code_patterns": "Pattern analysis from codebase changes",
+      "user_behavior": "Usage analytics and feature adoption",
+      "performance_metrics": "Bottlenecks and optimization opportunities",
+      "industry_trends": "External API trends and best practices",
+      "context7_violations": "Common violation patterns for prevention"
+    },
+
+    "suggestion_categories": {
+      "performance_optimizations": {
+        "priority": "high",
+        "examples": ["Bundle size reduction", "Query optimization", "Caching strategies"]
+      },
+      "code_quality_improvements": {
+        "priority": "high",
+        "examples": ["Refactoring opportunities", "Test coverage gaps", "Pattern consolidation"]
+      },
+      "new_features": {
+        "priority": "medium",
+        "examples": ["User-requested features", "Market gap analysis", "Innovation opportunities"]
+      },
+      "technical_debt": {
+        "priority": "medium",
+        "examples": ["Legacy code modernization", "Dependency updates", "Architecture improvements"]
+      }
+    },
+
+    "generation_triggers": {
+      "scheduled": "daily_at_09_00",
+      "event_based": ["major_commit", "performance_issue", "user_feedback"],
+      "manual": "context7:generate-ideas command"
+    },
+
+    "output_format": {
+      "location": "docs/ideas/auto-generated/",
+      "format": "markdown_with_priority_tags",
+      "integration": "github_issues_creation_ready"
+    }
   }
 }

@@ -15,7 +15,7 @@ $adminPages = [
 echo "\n🔍 ADMIN SAYFA TESTİ\n";
 echo "═══════════════════════════════════════\n";
 echo "Sunucu: {$baseUrl}\n";
-echo "Test Zamanı: " . date('Y-m-d H:i:s') . "\n\n";
+echo 'Test Zamanı: '.date('Y-m-d H:i:s')."\n\n";
 
 $results = [];
 $totalTests = count($adminPages);
@@ -23,7 +23,7 @@ $passedTests = 0;
 $errors = [];
 
 foreach ($adminPages as $page) {
-    $url = $baseUrl . $page;
+    $url = $baseUrl.$page;
     echo "Testing: {$page}\n";
 
     $ch = curl_init($url);
@@ -60,11 +60,11 @@ foreach ($adminPages as $page) {
 
         if (preg_match('/SQLSTATE\[42S02\].*Table.*doesn\'t exist/s', $body, $tableMatch)) {
             preg_match('/Table \'.*?\.(\w+)\'/s', $body, $tableName);
-            $errorMessage = 'Tablo eksik: ' . ($tableName[1] ?? 'bilinmiyor');
+            $errorMessage = 'Tablo eksik: '.($tableName[1] ?? 'bilinmiyor');
         } elseif (preg_match('/Undefined variable \$(\w+)/s', $body, $varMatch)) {
-            $errorMessage = 'Tanımsız değişken: $' . $varMatch[1];
+            $errorMessage = 'Tanımsız değişken: $'.$varMatch[1];
         } elseif (preg_match('/Class ".*?\\\\(\w+)" not found/s', $body, $classMatch)) {
-            $errorMessage = 'Sınıf bulunamadı: ' . $classMatch[1];
+            $errorMessage = 'Sınıf bulunamadı: '.$classMatch[1];
         } else {
             $errorMessage = strip_tags($errorTitle);
         }
@@ -72,7 +72,7 @@ foreach ($adminPages as $page) {
         $errors[] = [
             'page' => $page,
             'error' => $errorMessage,
-            'code' => $httpCode
+            'code' => $httpCode,
         ];
     }
 
@@ -87,10 +87,10 @@ echo "\n📊 ÖZET İSTATİSTİKLER\n";
 echo "═══════════════════════════════════════\n";
 echo "Toplam Test: {$totalTests}\n";
 echo "Başarılı: {$passedTests}\n";
-echo "Redirect: " . ($totalTests - $passedTests - count($errors)) . "\n";
-echo "Hatalı: " . count($errors) . "\n";
+echo 'Redirect: '.($totalTests - $passedTests - count($errors))."\n";
+echo 'Hatalı: '.count($errors)."\n";
 
-if (!empty($errors)) {
+if (! empty($errors)) {
     echo "\n❌ BULUNAN HATALAR\n";
     echo "═══════════════════════════════════════\n";
     foreach ($errors as $error) {

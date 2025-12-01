@@ -13,13 +13,13 @@ $response = $kernel->handle(
 );
 
 // Test route tanımla
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/test-users-check', function () {
     try {
         $users = DB::table('users')->get();
-        echo "Toplam kullanıcı: " . count($users) . "\n";
+        echo 'Toplam kullanıcı: '.count($users)."\n";
 
         if (count($users) > 0) {
             foreach ($users as $user) {
@@ -29,9 +29,10 @@ Route::get('/test-users-check', function () {
             echo "Kullanıcı bulunamadı\n";
         }
 
-        return "Test tamamlandı";
+        return 'Test tamamlandı';
     } catch (Exception $e) {
-        echo "Hata: " . $e->getMessage() . "\n";
-        return "Hata oluştu";
+        echo 'Hata: '.$e->getMessage()."\n";
+
+        return 'Hata oluştu';
     }
 });

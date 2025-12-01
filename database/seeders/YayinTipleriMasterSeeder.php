@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\IlanKategori;
 use App\Models\IlanKategoriYayinTipi;
+use Illuminate\Database\Seeder;
 
 class YayinTipleriMasterSeeder extends Seeder
 {
@@ -232,8 +232,9 @@ class YayinTipleriMasterSeeder extends Seeder
         foreach ($kategoriYayinEslesmesi as $kategoriSlug => $yayinTipleriList) {
             $kategori = IlanKategori::where('slug', $kategoriSlug)->first();
 
-            if (!$kategori) {
+            if (! $kategori) {
                 $this->command->warn("⚠️  Kategori bulunamadı: {$kategoriSlug}");
+
                 continue;
             }
 
@@ -242,7 +243,7 @@ class YayinTipleriMasterSeeder extends Seeder
                 $yayinTipiTanim = collect($yayinTipleriTanim)->firstWhere('yayin_tipi', $yayinTipiAdi);
 
                 // Eğer tanım yoksa basit ekle
-                if (!$yayinTipiTanim) {
+                if (! $yayinTipiTanim) {
                     $yayinTipiTanim = [
                         'yayin_tipi' => $yayinTipiAdi,
                         'aciklama' => null,
@@ -268,12 +269,12 @@ class YayinTipleriMasterSeeder extends Seeder
                 }
             }
 
-            $this->command->info("✅ {$kategori->name}: " . count($yayinTipleriList) . " yayın tipi");
+            $this->command->info("✅ {$kategori->name}: ".count($yayinTipleriList).' yayın tipi');
         }
 
         $this->command->info("\n📊 YAYIN TİPİ İSTATİSTİKLERİ:");
         $this->command->info("   ✅ Yeni eklenen: {$totalCreated}");
-        $this->command->info("   📦 Toplam: " . IlanKategoriYayinTipi::count());
-        $this->command->info("   🎯 Benzersiz tip: " . IlanKategoriYayinTipi::distinct('yayin_tipi')->count('yayin_tipi'));
+        $this->command->info('   📦 Toplam: '.IlanKategoriYayinTipi::count());
+        $this->command->info('   🎯 Benzersiz tip: '.IlanKategoriYayinTipi::distinct('yayin_tipi')->count('yayin_tipi'));
     }
 }

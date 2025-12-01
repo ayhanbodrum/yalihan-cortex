@@ -42,7 +42,7 @@ return new class extends Migration
                 'ciro_bilgisi',
                 'ruhsat_durumu',
                 'personel_kapasitesi',
-                'isyeri_cephesi'
+                'isyeri_cephesi',
             ]);
         });
     }

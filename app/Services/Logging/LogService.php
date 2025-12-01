@@ -2,9 +2,9 @@
 
 namespace App\Services\Logging;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Request;
-use Illuminate\Support\Facades\Auth;
 
 /**
  * Standardized Logging Service
@@ -18,28 +18,32 @@ class LogService
      * Log levels
      */
     const LEVEL_DEBUG = 'debug';
+
     const LEVEL_INFO = 'info';
+
     const LEVEL_WARNING = 'warning';
+
     const LEVEL_ERROR = 'error';
+
     const LEVEL_CRITICAL = 'critical';
 
     /**
      * Log channels
      */
     const CHANNEL_DEFAULT = 'stack';
+
     const CHANNEL_API = 'api';
+
     const CHANNEL_DATABASE = 'database';
+
     const CHANNEL_AUTH = 'auth';
+
     const CHANNEL_PAYMENT = 'payment';
+
     const CHANNEL_AI = 'ai';
 
     /**
      * Log info message with context
-     *
-     * @param string $message
-     * @param array $context
-     * @param string|null $channel
-     * @return void
      */
     public static function info(string $message, array $context = [], ?string $channel = null): void
     {
@@ -48,12 +52,6 @@ class LogService
 
     /**
      * Log error message with context
-     *
-     * @param string $message
-     * @param array $context
-     * @param \Throwable|null $exception
-     * @param string|null $channel
-     * @return void
      */
     public static function error(
         string $message,
@@ -75,11 +73,6 @@ class LogService
 
     /**
      * Log warning message with context
-     *
-     * @param string $message
-     * @param array $context
-     * @param string|null $channel
-     * @return void
      */
     public static function warning(string $message, array $context = [], ?string $channel = null): void
     {
@@ -88,15 +81,10 @@ class LogService
 
     /**
      * Log debug message with context
-     *
-     * @param string $message
-     * @param array $context
-     * @param string|null $channel
-     * @return void
      */
     public static function debug(string $message, array $context = [], ?string $channel = null): void
     {
-        if (!config('app.debug')) {
+        if (! config('app.debug')) {
             return; // Don't log debug in production
         }
 
@@ -105,12 +93,6 @@ class LogService
 
     /**
      * Log critical message with context
-     *
-     * @param string $message
-     * @param array $context
-     * @param \Throwable|null $exception
-     * @param string|null $channel
-     * @return void
      */
     public static function critical(
         string $message,
@@ -132,12 +114,6 @@ class LogService
 
     /**
      * Log API request
-     *
-     * @param string $endpoint
-     * @param array $requestData
-     * @param array|null $responseData
-     * @param float|null $duration
-     * @return void
      */
     public static function api(
         string $endpoint,
@@ -166,12 +142,6 @@ class LogService
 
     /**
      * Log database operation
-     *
-     * @param string $operation
-     * @param string $table
-     * @param array $data
-     * @param int|null $affectedRows
-     * @return void
      */
     public static function database(
         string $operation,
@@ -185,7 +155,7 @@ class LogService
             'user_id' => Auth::id(),
         ];
 
-        if (!empty($data)) {
+        if (! empty($data)) {
             $context['data'] = $data;
         }
 
@@ -198,11 +168,6 @@ class LogService
 
     /**
      * Log authentication event
-     *
-     * @param string $event
-     * @param int|null $userId
-     * @param array $context
-     * @return void
      */
     public static function auth(string $event, ?int $userId = null, array $context = []): void
     {
@@ -216,12 +181,6 @@ class LogService
 
     /**
      * Log AI operation
-     *
-     * @param string $operation
-     * @param string $provider
-     * @param array $context
-     * @param float|null $duration
-     * @return void
      */
     public static function ai(
         string $operation,
@@ -242,12 +201,6 @@ class LogService
 
     /**
      * Core logging method
-     *
-     * @param string $level
-     * @param string $message
-     * @param array $context
-     * @param string|null $channel
-     * @return void
      */
     protected static function log(
         string $level,
@@ -273,12 +226,7 @@ class LogService
     /**
      * Create structured log entry
      *
-     * @param string $action
-     * @param string $resource
-     * @param mixed $resourceId
-     * @param array $context
-     * @param string $level
-     * @return void
+     * @param  mixed  $resourceId
      */
     public static function action(
         string $action,
@@ -298,5 +246,30 @@ class LogService
         $context['resource_id'] = $resourceId;
 
         self::log($level, $message, $context);
+    }
+
+    /**
+     * Start timer for performance tracking
+     * Context7: MCP uyumluluğu için milisaniye bazında ölçüm
+     *
+     * @param string $operation Operation name
+     * @return float Start time in microseconds
+     */
+    public static function startTimer(string $operation): float
+    {
+        return microtime(true);
+    }
+
+    /**
+     * Stop timer and return duration in milliseconds
+     * Context7: MCP uyumluluğu için milisaniye bazında ölçüm
+     *
+     * @param float $startTime Start time from startTimer()
+     * @return float Duration in milliseconds
+     */
+    public static function stopTimer(float $startTime): float
+    {
+        $duration = microtime(true) - $startTime;
+        return round($duration * 1000, 2); // Convert to milliseconds
     }
 }

@@ -391,5 +391,103 @@
         "Better accuracy"
       ]
     }
+  },
+
+  "smart_property_matcher_ai": {
+    "title": "SmartPropertyMatcherAI - Akıllı Eşleştirme Motoru",
+    "version": "1.0.0",
+    "last_updated": "2025-11-26",
+    "file": "app/Services/AI/SmartPropertyMatcherAI.php",
+    "description": "Talep ve İlan modelleri arasında gelişmiş eşleştirme algoritması",
+
+    "configuration_source": {
+      "type": "hardcoded_constants",
+      "location": "Class içinde private const olarak tanımlanmış",
+      "lines": "23-39",
+      "note": "Ayarlar şu anda hardcoded. Harici config dosyası veya database'den okunmuyor.",
+      "improvement_suggestion": "config/ai-matching.php veya settings tablosu kullanılabilir"
+    },
+
+    "settings": {
+      "scoring_weights": {
+        "SCORE_LOCATION": 40,
+        "SCORE_PRICE": 30,
+        "SCORE_FEATURES": 30,
+        "total": 100
+      },
+      "hard_filter_parameters": {
+        "PRICE_FLEXIBILITY": 0.20,
+        "MAX_DISTANCE_KM": 10,
+        "MAX_RESULTS": 20
+      },
+      "reverse_match_threshold": {
+        "min_score": 80
+      }
+    },
+
+    "methods": {
+      "match": {
+        "description": "Talep için uygun ilanları bulur",
+        "parameters": ["Talep $talep"],
+        "returns": "array",
+        "process": [
+          "1. Hard Filtering (Status, Fiyat, Kategori)",
+          "2. Soft Scoring (Konum: 40, Fiyat: 30, Özellik: 30)",
+          "3. Sıralama ve limit (MAX_RESULTS = 20)"
+        ]
+      },
+      "reverseMatch": {
+        "description": "İlan için uygun talepleri bulur",
+        "parameters": ["Ilan $ilan"],
+        "returns": "array",
+        "process": [
+          "1. Hard Filtering (Status, Fiyat, Kategori)",
+          "2. Soft Scoring (Konum: 40, Fiyat: 30, Özellik: 30)",
+          "3. Filtreleme (sadece 80+ puanlı sonuçlar)"
+        ]
+      }
+    },
+
+    "scoring_algorithm": {
+      "location_score": {
+        "ilce_match": "40 puan (tam puan)",
+        "il_match": "20 puan (yarı puan)",
+        "coordinate_based": "0-20 puan (Haversine, 10km çap)"
+      },
+      "price_score": {
+        "budget_center": "30 puan",
+        "budget_near": "Yakınlığa göre 0-30 puan",
+        "no_price_criteria": "15 puan (orta puan)"
+      },
+      "feature_score": {
+        "formula": "(Eşleşen özellik / Toplam aranan özellik) * 30",
+        "no_feature_criteria": "15 puan (orta puan)"
+      }
+    },
+
+    "usage_locations": {
+      "controller": "app/Http/Controllers/Api/AIController.php (findMatches method)",
+      "listener": "app/Listeners/FindMatchingDemands.php (IlanCreated event)",
+      "routes": "routes/admin-ai.php (talep-analiz, talep-eslesme endpoints)",
+      "widget": "resources/views/components/ai/smart-match-widget.blade.php"
+    },
+
+    "integration_with_aiservice": {
+      "note": "SmartPropertyMatcherAI, AIService'den bağımsız çalışır",
+      "relationship": "Paralel AI servisleri - farklı amaçlar",
+      "aiservice_purpose": "İçerik üretimi, analiz, öneriler",
+      "smartmatcher_purpose": "Talep-İlan eşleştirmesi, skorlama"
+    },
+
+    "context7_compliance": {
+      "status": "✅ Uyumlu",
+      "notes": [
+        "Status field: 'Aktif' (Context7 standardı)",
+        "Model relationships: Context7 naming",
+        "Logging: LogService kullanımı"
+      ]
+    },
+
+    "reference_file": "yalihan-bekci/knowledge/smart-property-matcher-ai-config-2025-11-26.json"
   }
 }

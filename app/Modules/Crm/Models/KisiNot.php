@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * @property-read \App\Modules\Crm\Models\Kisi|null $kisi
+ * @property-read \App\Models\Kisi|null $kisi
  * @property-read User|null $user
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|KisiNot newModelQuery()

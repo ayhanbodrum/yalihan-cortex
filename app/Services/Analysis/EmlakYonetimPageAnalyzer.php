@@ -4,12 +4,13 @@ namespace App\Services\Analysis;
 
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\DB;
 
 class EmlakYonetimPageAnalyzer
 {
     protected $emlakPages = [];
+
     protected $emlakControllers = [];
+
     protected $emlakViews = [];
 
     public function __construct()
@@ -32,7 +33,7 @@ class EmlakYonetimPageAnalyzer
                 'views' => ['admin.ilanlar.index', 'admin.ilanlar.create', 'admin.ilanlar.show', 'admin.ilanlar.edit'],
                 'routes' => ['ilanlar.index', 'ilanlar.create', 'ilanlar.store', 'ilanlar.show', 'ilanlar.edit', 'ilanlar.update', 'ilanlar.destroy'],
                 'category' => 'Emlak Yönetimi',
-                'priority' => 'HIGH'
+                'priority' => 'HIGH',
             ],
 
             // İlan Oluşturma Sayfaları
@@ -43,7 +44,7 @@ class EmlakYonetimPageAnalyzer
                 'views' => ['admin.ilanlar.create', 'admin.ilanlar.stable-create'],
                 'routes' => ['ilanlar.create', 'ilanlar.store'],
                 'category' => 'İlan Yönetimi',
-                'priority' => 'CRITICAL'
+                'priority' => 'CRITICAL',
             ],
 
             // Stable Create (AI Enhanced)
@@ -54,7 +55,7 @@ class EmlakYonetimPageAnalyzer
                 'views' => ['admin.ilanlar.stable-create'],
                 'routes' => ['ilanlar.stable-create'],
                 'category' => 'AI İlan Yönetimi',
-                'priority' => 'HIGH'
+                'priority' => 'HIGH',
             ],
 
             // Smart İlan Oluşturma
@@ -65,7 +66,7 @@ class EmlakYonetimPageAnalyzer
                 'views' => ['admin.ilanlar.smart-create'],
                 'routes' => ['ilanlar.smart-create', 'ilanlar.smart-store'],
                 'category' => 'AI İlan Yönetimi',
-                'priority' => 'HIGH'
+                'priority' => 'HIGH',
             ],
 
             // İlan Görüntüleme
@@ -76,7 +77,7 @@ class EmlakYonetimPageAnalyzer
                 'views' => ['admin.ilanlar.show'],
                 'routes' => ['ilanlar.show'],
                 'category' => 'İlan Yönetimi',
-                'priority' => 'HIGH'
+                'priority' => 'HIGH',
             ],
 
             // İlan Düzenleme
@@ -87,7 +88,7 @@ class EmlakYonetimPageAnalyzer
                 'views' => ['admin.ilanlar.edit'],
                 'routes' => ['ilanlar.edit', 'ilanlar.update'],
                 'category' => 'İlan Yönetimi',
-                'priority' => 'HIGH'
+                'priority' => 'HIGH',
             ],
 
             // İlan Kategorileri
@@ -98,7 +99,7 @@ class EmlakYonetimPageAnalyzer
                 'views' => ['admin.ilan-kategorileri.index', 'admin.ilan-kategorileri.create', 'admin.ilan-kategorileri.edit'],
                 'routes' => ['ilan-kategorileri.index', 'ilan-kategorileri.create', 'ilan-kategorileri.store'],
                 'category' => 'Kategori Yönetimi',
-                'priority' => 'MEDIUM'
+                'priority' => 'MEDIUM',
             ],
 
             // Danışman İlanları
@@ -109,7 +110,7 @@ class EmlakYonetimPageAnalyzer
                 'views' => ['admin.ilanlar.ilanlarim'],
                 'routes' => ['ilanlarim.index'],
                 'category' => 'Danışman Paneli',
-                'priority' => 'MEDIUM'
+                'priority' => 'MEDIUM',
             ],
 
             // Yazlık Kiralama
@@ -120,7 +121,7 @@ class EmlakYonetimPageAnalyzer
                 'views' => ['admin.yazlik-kiralama.ilanlar', 'admin.yazlik-kiralama.show', 'admin.yazlik-kiralama.edit'],
                 'routes' => ['yazlik-ilanlar.index', 'yazlik-ilanlar.show', 'yazlik-ilanlar.edit'],
                 'category' => 'Yazlık Kiralama',
-                'priority' => 'MEDIUM'
+                'priority' => 'MEDIUM',
             ],
 
             // İlan Segment Yönetimi
@@ -131,18 +132,18 @@ class EmlakYonetimPageAnalyzer
                 'views' => ['admin.ilanlar.segments.show', 'admin.ilanlar.segments.edit'],
                 'routes' => ['ilanlar.show.segment', 'ilanlar.store.segment'],
                 'category' => 'İlan Yönetimi',
-                'priority' => 'MEDIUM'
+                'priority' => 'MEDIUM',
             ],
 
             // İlan Fotoğraf Yönetimi
             'ilan-fotograf-yonetimi' => [
                 'name' => 'İlan Fotoğraf Yönetimi',
                 'controller' => 'IlanController',
-                'methods' => ['uploadPhotos', 'deletePhoto', 'updatePhotoOrder'],
+                'methods' => ['uploadPhotos', 'deletePhoto', 'updatePhotoSequence'], // Context7: order → display_order
                 'views' => ['admin.ilanlar.photos'],
                 'routes' => ['ilanlar.upload-photos', 'ilanlar.delete-photo', 'ilanlar.update-photo-order'],
                 'category' => 'Medya Yönetimi',
-                'priority' => 'MEDIUM'
+                'priority' => 'MEDIUM',
             ],
 
             // İlan Fiyat Geçmişi
@@ -153,7 +154,7 @@ class EmlakYonetimPageAnalyzer
                 'views' => ['admin.ilanlar.price-history'],
                 'routes' => ['ilanlar.price-history', 'ilanlar.refresh-rate'],
                 'category' => 'Fiyat Yönetimi',
-                'priority' => 'LOW'
+                'priority' => 'LOW',
             ],
 
             // İlan Durum Yönetimi
@@ -164,8 +165,8 @@ class EmlakYonetimPageAnalyzer
                 'views' => ['admin.ilanlar.status'],
                 'routes' => ['ilanlar.toggle-status', 'ilanlar.update-status'],
                 'category' => 'İlan Yönetimi',
-                'priority' => 'MEDIUM'
-            ]
+                'priority' => 'MEDIUM',
+            ],
         ];
     }
 
@@ -204,7 +205,7 @@ class EmlakYonetimPageAnalyzer
             'performance' => $this->analyzeEmlakPerformance($pageConfig),
             'ai_features' => $this->analyzeEmlakAIFeatures($pageConfig),
             'innovations' => $this->detectEmlakInnovations($pageConfig),
-            'recommendations' => []
+            'recommendations' => [],
         ];
 
         // Skor hesapla
@@ -230,7 +231,7 @@ class EmlakYonetimPageAnalyzer
             'crud_complete' => false,
             'ai_integration' => false,
             'error_handling' => false,
-            'validation' => false
+            'validation' => false,
         ];
 
         // Controller dosyasını kontrol et
@@ -286,7 +287,7 @@ class EmlakYonetimPageAnalyzer
             'csrf_protection' => 0,
             'responsive_design' => 0,
             'ai_widgets' => 0,
-            'context7_compliance' => 0
+            'context7_compliance' => 0,
         ];
 
         foreach ($views as $view) {
@@ -343,7 +344,7 @@ class EmlakYonetimPageAnalyzer
             'missing_routes' => [],
             'middleware_usage' => 0,
             'resource_routes' => 0,
-            'api_routes' => 0
+            'api_routes' => 0,
         ];
 
         $allRoutes = Route::getRoutes();
@@ -390,7 +391,7 @@ class EmlakYonetimPageAnalyzer
             'database_compliance' => $this->checkDatabaseCompliance($pageConfig),
             'view_compliance' => $this->checkViewCompliance($pageConfig),
             'route_compliance' => $this->checkRouteCompliance($pageConfig),
-            'overall_score' => 0
+            'overall_score' => 0,
         ];
     }
 
@@ -404,7 +405,7 @@ class EmlakYonetimPageAnalyzer
             'keyboard_navigation' => false,
             'screen_reader_support' => false,
             'color_contrast' => false,
-            'alt_texts' => 0
+            'alt_texts' => 0,
         ];
     }
 
@@ -418,7 +419,7 @@ class EmlakYonetimPageAnalyzer
             'database_optimization' => false,
             'asset_optimization' => false,
             'lazy_loading' => false,
-            'query_optimization' => false
+            'query_optimization' => false,
         ];
     }
 
@@ -449,7 +450,7 @@ class EmlakYonetimPageAnalyzer
         return [
             'features' => $aiFeatures,
             'count' => count($aiFeatures),
-            'integration_level' => count($aiFeatures) > 2 ? 'Advanced' : (count($aiFeatures) > 0 ? 'Basic' : 'None')
+            'integration_level' => count($aiFeatures) > 2 ? 'Advanced' : (count($aiFeatures) > 0 ? 'Basic' : 'None'),
         ];
     }
 
@@ -483,7 +484,7 @@ class EmlakYonetimPageAnalyzer
         return [
             'innovations' => $innovations,
             'count' => count($innovations),
-            'is_innovative' => count($innovations) > 0
+            'is_innovative' => count($innovations) > 0,
         ];
     }
 
@@ -496,11 +497,19 @@ class EmlakYonetimPageAnalyzer
 
         // Controller Analysis (25 points)
         $controllerScore = 0;
-        if ($analysis['controller_analysis']['controller_exists']) $controllerScore += 5;
+        if ($analysis['controller_analysis']['controller_exists']) {
+            $controllerScore += 5;
+        }
         $controllerScore += min(10, count($analysis['controller_analysis']['methods_implemented']) * 2);
-        if ($analysis['controller_analysis']['crud_complete']) $controllerScore += 5;
-        if ($analysis['controller_analysis']['ai_integration']) $controllerScore += 3;
-        if ($analysis['controller_analysis']['error_handling']) $controllerScore += 2;
+        if ($analysis['controller_analysis']['crud_complete']) {
+            $controllerScore += 5;
+        }
+        if ($analysis['controller_analysis']['ai_integration']) {
+            $controllerScore += 3;
+        }
+        if ($analysis['controller_analysis']['error_handling']) {
+            $controllerScore += 2;
+        }
         $score += min(25, $controllerScore);
 
         // View Analysis (25 points)
@@ -521,9 +530,15 @@ class EmlakYonetimPageAnalyzer
 
         // Context7 Compliance (15 points)
         $context7Score = 0;
-        if ($analysis['context7_compliance']['field_naming']) $context7Score += 5;
-        if ($analysis['context7_compliance']['database_compliance']) $context7Score += 5;
-        if ($analysis['context7_compliance']['view_compliance']) $context7Score += 5;
+        if ($analysis['context7_compliance']['field_naming']) {
+            $context7Score += 5;
+        }
+        if ($analysis['context7_compliance']['database_compliance']) {
+            $context7Score += 5;
+        }
+        if ($analysis['context7_compliance']['view_compliance']) {
+            $context7Score += 5;
+        }
         $score += min(15, $context7Score);
 
         // AI Features Bonus (10 points)
@@ -542,9 +557,16 @@ class EmlakYonetimPageAnalyzer
      */
     protected function determineEmlakSeverity($score)
     {
-        if ($score >= 8) return 'success';
-        if ($score >= 6) return 'warning';
-        if ($score >= 4) return 'warning';
+        if ($score >= 8) {
+            return 'success';
+        }
+        if ($score >= 6) {
+            return 'warning';
+        }
+        if ($score >= 4) {
+            return 'warning';
+        }
+
         return 'critical';
     }
 
@@ -588,10 +610,10 @@ class EmlakYonetimPageAnalyzer
                     'priority' => 'URGENT',
                     'icon' => '🏠',
                     'title' => "Emlak Yönetimi: {$analysis['page']} - Kritik Sorunlar",
-                    'description' => "İlan yönetimi sayfasında kritik sorunlar tespit edildi",
+                    'description' => 'İlan yönetimi sayfasında kritik sorunlar tespit edildi',
                     'action' => 'Controller implementasyonu ve view dosyalarını tamamlayın',
                     'affected_pages' => [$analysis['page']],
-                    'estimated_time' => '2-4 saat'
+                    'estimated_time' => '2-4 saat',
                 ];
             }
 
@@ -600,10 +622,10 @@ class EmlakYonetimPageAnalyzer
                     'priority' => 'MEDIUM',
                     'icon' => '🤖',
                     'title' => "AI Entegrasyonu: {$analysis['page']}",
-                    'description' => "Bu sayfa AI özelliklerinden yararlanabilir",
+                    'description' => 'Bu sayfa AI özelliklerinden yararlanabilir',
                     'action' => 'Smart features ve AI widget\'ları ekleyin',
                     'affected_pages' => [$analysis['page']],
-                    'estimated_time' => '1-2 saat'
+                    'estimated_time' => '1-2 saat',
                 ];
             }
         }

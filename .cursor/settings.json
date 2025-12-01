@@ -7,25 +7,68 @@
                 "DB_CONNECTION": "mysql",
                 "DB_HOST": "127.0.0.1",
                 "DB_PORT": "3306",
-                "DB_DATABASE": "yalihanemlak_db",
+                "DB_DATABASE": "yalihanemlak_ultra",
                 "DB_USERNAME": "root",
                 "DB_PASSWORD": "",
-                "CTX7_REPO_ROOT": "/Users/macbookpro/Projects/yalihanemlak",
-                "CTX7_MEMORY_TARGET": "/Users/macbookpro/Projects/yalihanemlak/docs/context7-master.md",
-                "CTX7_RULES_FILE": "/Users/macbookpro/Projects/yalihanemlak/docs/context7-rules.md",
-                "CTX7_CONFIG_FILE": "/Users/macbookpro/Projects/yalihanemlak/config/context7.json"
+                "CTX7_REPO_ROOT": "/Users/macbookpro/Projects/yalihanai",
+                "CTX7_MEMORY_TARGET": "/Users/macbookpro/Projects/yalihanai/docs/context7-master.md",
+                "CTX7_RULES_FILE": "/Users/macbookpro/Projects/yalihanai/docs/context7-rules.md",
+                "CTX7_CONFIG_FILE": "/Users/macbookpro/Projects/yalihanai/config/context7.json"
             }
         },
         "yalihan-bekci": {
             "command": "node",
             "args": [
-                "/Users/macbookpro/Projects/yalihanai /yalihan-bekci/server/mcp-server.js"
+                "/Users/macbookpro/Projects/yalihanai/mcp-servers/yalihan-bekci-mcp.js"
             ],
             "env": {
-                "PROJECT_ROOT": "/Users/macbookpro/Projects/yalihanai ",
+                "PROJECT_ROOT": "/Users/macbookpro/Projects/yalihanai",
                 "AUTO_LEARN": "true"
             }
+        },
+        "context7-validator": {
+            "command": "node",
+            "args": [
+                "/Users/macbookpro/Projects/yalihanai/mcp-servers/context7-validator-mcp.js"
+            ],
+            "env": {
+                "PROJECT_ROOT": "/Users/macbookpro/Projects/yalihanai"
+            }
         }
+    },
+    "cursor.ai.provider": "claude",
+    "cursor.ai.model": "claude-3.5-sonnet",
+    "cursor.general.enableCopilot": true,
+    "cursor.ai.enableCodeActions": true,
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": "explicit",
+        "source.organizeImports": "explicit"
+    },
+    "eslint.validate": [
+        "javascript",
+        "javascriptreact",
+        "typescript",
+        "typescriptreact",
+        "vue",
+        "php"
+    ],
+    "emmet.includeLanguages": {
+        "blade": "html",
+        "vue": "html"
+    },
+    "tailwindCSS.includeLanguages": {
+        "blade": "html",
+        "vue": "html"
+    },
+    "intelephense.files.exclude": [
+        "**/vendor/**",
+        "**/node_modules/**",
+        "**/storage/**",
+        "**/bootstrap/cache/**"
+    ],
+    "files.associations": {
+        "*.blade.php": "blade"
     },
     "rules": [
         {
@@ -67,21 +110,37 @@
             ]
         },
         {
-            "name": "Context7: Sync Config",
+            "name": "Context7: Auto Validation",
             "trigger": {
-                "onFileChange": "config/context7.json"
+                "onFileSave": "**/*.php"
             },
             "actions": [
                 {
-                    "type": "command",
-                    "command": "npx",
-                    "args": [
-                        "@upstash/context7-mcp@latest",
-                        "config",
-                        "sync",
-                        "--config",
-                        "config/context7.json"
-                    ]
+                    "type": "mcp",
+                    "server": "context7-validator",
+                    "tool": "validate_file",
+                    "args": {
+                        "file_path": "${filePath}",
+                        "auto_fix": true
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Context7: Learning from Changes",
+            "trigger": {
+                "onFileSave": "**/*"
+            },
+            "actions": [
+                {
+                    "type": "mcp",
+                    "server": "yalihan-bekci",
+                    "tool": "learn_from_action",
+                    "args": {
+                        "action_type": "code_change",
+                        "context": "File saved: ${filePath}",
+                        "files_changed": ["${filePath}"]
+                    }
                 }
             ]
         }

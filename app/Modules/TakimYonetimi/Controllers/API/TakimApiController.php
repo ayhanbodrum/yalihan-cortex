@@ -3,11 +3,11 @@
 namespace App\Modules\TakimYonetimi\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
 use App\Models\Gorev;
 use App\Models\Proje;
-use Illuminate\Http\Request;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class TakimApiController extends Controller
 {
@@ -16,7 +16,7 @@ class TakimApiController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        $query = User::whereHas('roles', function($q) {
+        $query = User::whereHas('roles', function ($q) {
             $q->where('name', 'danisman');
         })->with(['roles']);
 
@@ -27,9 +27,9 @@ class TakimApiController extends Controller
 
         if ($request->has('arama')) {
             $arama = $request->arama;
-            $query->where(function($q) use ($arama) {
+            $query->where(function ($q) use ($arama) {
                 $q->where('name', 'like', "%{$arama}%")
-                  ->orWhere('email', 'like', "%{$arama}%");
+                    ->orWhere('email', 'like', "%{$arama}%");
             });
         }
 
@@ -43,7 +43,7 @@ class TakimApiController extends Controller
         return response()->json([
             'success' => true,
             'data' => $takimlar,
-            'message' => 'Takım listesi getirildi'
+            'message' => 'Takım listesi getirildi',
         ]);
     }
 
@@ -72,7 +72,7 @@ class TakimApiController extends Controller
         return response()->json([
             'success' => true,
             'data' => $takim,
-            'message' => 'Takım üyesi detayı getirildi'
+            'message' => 'Takım üyesi detayı getirildi',
         ]);
     }
 
@@ -101,7 +101,7 @@ class TakimApiController extends Controller
         return response()->json([
             'success' => true,
             'data' => $user,
-            'message' => 'Takım üyesi başarıyla oluşturuldu'
+            'message' => 'Takım üyesi başarıyla oluşturuldu',
         ], 201);
     }
 
@@ -112,7 +112,7 @@ class TakimApiController extends Controller
     {
         $validated = $request->validate([
             'name' => 'sometimes|required|string|max:255',
-            'email' => 'sometimes|required|email|unique:users,email,' . $takim->id,
+            'email' => 'sometimes|required|email|unique:users,email,'.$takim->id,
             'phone_number' => 'nullable|string|max:20',
             'title' => 'nullable|string|max:255',
             'bio' => 'nullable|string',
@@ -126,7 +126,7 @@ class TakimApiController extends Controller
         return response()->json([
             'success' => true,
             'data' => $takim,
-            'message' => 'Takım üyesi başarıyla güncellendi'
+            'message' => 'Takım üyesi başarıyla güncellendi',
         ]);
     }
 
@@ -143,7 +143,7 @@ class TakimApiController extends Controller
         if ($statusGorevler > 0) {
             return response()->json([
                 'success' => false,
-                'message' => 'Bu kullanıcının status görevleri var. Önce görevleri tamamlayın veya başka kullanıcıya atayın.'
+                'message' => 'Bu kullanıcının status görevleri var. Önce görevleri tamamlayın veya başka kullanıcıya atayın.',
             ], 400);
         }
 
@@ -151,7 +151,7 @@ class TakimApiController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Takım üyesi başarıyla silindi'
+            'message' => 'Takım üyesi başarıyla silindi',
         ]);
     }
 
@@ -170,7 +170,7 @@ class TakimApiController extends Controller
         if ($user->hasRole('danisman')) {
             return response()->json([
                 'success' => false,
-                'message' => 'Bu kullanıcı zaten takım üyesi'
+                'message' => 'Bu kullanıcı zaten takım üyesi',
             ], 400);
         }
 
@@ -179,7 +179,7 @@ class TakimApiController extends Controller
         return response()->json([
             'success' => true,
             'data' => $user->load(['roles']),
-            'message' => 'Kullanıcı takıma başarıyla eklendi'
+            'message' => 'Kullanıcı takıma başarıyla eklendi',
         ]);
     }
 
@@ -190,10 +190,10 @@ class TakimApiController extends Controller
     {
         $user = User::find($uyeId);
 
-        if (!$user) {
+        if (! $user) {
             return response()->json([
                 'success' => false,
-                'message' => 'Kullanıcı bulunamadı'
+                'message' => 'Kullanıcı bulunamadı',
             ], 404);
         }
 
@@ -205,7 +205,7 @@ class TakimApiController extends Controller
         if ($statusGorevler > 0) {
             return response()->json([
                 'success' => false,
-                'message' => 'Bu kullanıcının status görevleri var. Önce görevleri tamamlayın veya başka kullanıcıya atayın.'
+                'message' => 'Bu kullanıcının status görevleri var. Önce görevleri tamamlayın veya başka kullanıcıya atayın.',
             ], 400);
         }
 
@@ -213,7 +213,7 @@ class TakimApiController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Kullanıcı takımdan başarıyla çıkarıldı'
+            'message' => 'Kullanıcı takımdan başarıyla çıkarıldı',
         ]);
     }
 
@@ -277,7 +277,7 @@ class TakimApiController extends Controller
         return response()->json([
             'success' => true,
             'data' => $performans,
-            'message' => 'Takım performansı getirildi'
+            'message' => 'Takım performansı getirildi',
         ]);
     }
 
@@ -320,7 +320,7 @@ class TakimApiController extends Controller
         return response()->json([
             'success' => true,
             'data' => $istatistikler,
-            'message' => 'Takım istatistikleri getirildi'
+            'message' => 'Takım istatistikleri getirildi',
         ]);
     }
 

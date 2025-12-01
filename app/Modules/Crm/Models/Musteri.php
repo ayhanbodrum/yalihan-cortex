@@ -2,7 +2,6 @@
 
 namespace App\Modules\Crm\Models;
 
-use App\Modules\Emlak\Models\Ilan;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -10,10 +9,9 @@ use Illuminate\Database\Eloquent\Model;
  * Musteri Model - DEPRECATED
  *
  * Context7: This model is an alias for Kisi
- * Use App\Models\Kisi or App\Modules\Crm\Models\Kisi instead
+ * Use App\Models\Kisi instead (Unified Model)
  *
  * @deprecated Use Kisi model instead (Context7 compliance)
- * @see App\Modules\Crm\Models\Kisi
  * @see App\Models\Kisi
  */
 class Musteri extends Kisi

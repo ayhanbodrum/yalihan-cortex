@@ -2,18 +2,16 @@
 
 namespace App\Services;
 
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Cache;
-
 class AILearningEngine
 {
     private $aiService;
+
     private $patternAnalyzer;
 
     public function __construct()
     {
-        $this->aiService = new AIService();
-        $this->patternAnalyzer = new PatternAnalyzer();
+        $this->aiService = new AIService;
+        $this->patternAnalyzer = new PatternAnalyzer;
     }
 
     /**
@@ -27,7 +25,7 @@ class AILearningEngine
         $response = $this->aiService->generate($prompt, [
             'model' => 'ollama',
             'temperature' => 0.7,
-            'max_tokens' => 1000
+            'max_tokens' => 1000,
         ]);
 
         // Öğrenilen pattern'i analiz et
@@ -45,6 +43,7 @@ class AILearningEngine
 
         if ($bestPattern) {
             $prompt = $this->buildApplicationPrompt($bestPattern, $input);
+
             return $this->aiService->generate($prompt);
         }
 
@@ -75,14 +74,14 @@ class AILearningEngine
         $prompt = "Sen bir emlak AI asistanısın. Aşağıdaki örnekleri incele ve öğren:\n\n";
 
         foreach ($examples as $index => $example) {
-            $prompt .= "Örnek " . ($index + 1) . ":\n";
-            $prompt .= "Giriş: " . $example['input'] . "\n";
-            $prompt .= "Beklenen Çıkış: " . $example['output'] . "\n\n";
+            $prompt .= 'Örnek '.($index + 1).":\n";
+            $prompt .= 'Giriş: '.$example['input']."\n";
+            $prompt .= 'Beklenen Çıkış: '.$example['output']."\n\n";
         }
 
         $prompt .= "Bu örnekleri analiz et ve benzer durumlar için nasıl yanıt vereceğini öğren.\n\n";
         $prompt .= "Bağlam: {$context}\n\n";
-        $prompt .= "Öğrendiklerin:";
+        $prompt .= 'Öğrendiklerin:';
 
         return $prompt;
     }
@@ -93,9 +92,9 @@ class AILearningEngine
     private function buildApplicationPrompt($pattern, $input)
     {
         $prompt = "Sen bir emlak AI asistanısın. Öğrendiğin pattern'leri kullanarak yanıt ver:\n\n";
-        $prompt .= "Öğrenilen Pattern: " . $pattern['pattern'] . "\n";
-        $prompt .= "Giriş: " . $input . "\n\n";
-        $prompt .= "Yanıt:";
+        $prompt .= 'Öğrenilen Pattern: '.$pattern['pattern']."\n";
+        $prompt .= 'Giriş: '.$input."\n\n";
+        $prompt .= 'Yanıt:';
 
         return $prompt;
     }
@@ -105,7 +104,9 @@ class AILearningEngine
      */
     private function selectBestPattern($patterns, $input)
     {
-        if (!$patterns) return null;
+        if (! $patterns) {
+            return null;
+        }
 
         $bestPattern = null;
         $bestScore = 0;
@@ -183,7 +184,7 @@ class AILearningEngine
             'accuracy_score' => $accuracy,
             'is_correct' => $accuracy > 0.7,
             'created_at' => now(),
-            'updated_at' => now()
+            'updated_at' => now(),
         ]);
     }
 
@@ -192,10 +193,18 @@ class AILearningEngine
      */
     private function extractContext($prompt)
     {
-        if (strpos($prompt, 'konut') !== false) return 'konut';
-        if (strpos($prompt, 'arsa') !== false) return 'arsa';
-        if (strpos($prompt, 'yazlik') !== false) return 'yazlik';
-        if (strpos($prompt, 'isyeri') !== false) return 'isyeri';
+        if (strpos($prompt, 'konut') !== false) {
+            return 'konut';
+        }
+        if (strpos($prompt, 'arsa') !== false) {
+            return 'arsa';
+        }
+        if (strpos($prompt, 'yazlik') !== false) {
+            return 'yazlik';
+        }
+        if (strpos($prompt, 'isyeri') !== false) {
+            return 'isyeri';
+        }
 
         return 'genel';
     }
@@ -224,7 +233,7 @@ class PatternAnalyzer
                 $patterns[] = [
                     'pattern' => implode(' ', $commonWords),
                     'confidence' => count($commonWords) / count($exampleWords),
-                    'context' => $example['context'] ?? 'genel'
+                    'context' => $example['context'] ?? 'genel',
                 ];
             }
         }

@@ -1,13 +1,14 @@
 <?php
+
 // scripts/context7-migration-syntax-fixer.php
 // Migration dosyalarındaki yaygın parantez ve blok hatalarını otomatik düzeltir.
 // Kullanım: php scripts/context7-migration-syntax-fixer.php
 
-$root = realpath(__DIR__ . '/../database/migrations');
+$root = realpath(__DIR__.'/../database/migrations');
 $fixed = 0;
 $errors = [];
 
-foreach (glob($root . '/*.php') as $file) {
+foreach (glob($root.'/*.php') as $file) {
     $content = file_get_contents($file);
     $orig = $content;
 
@@ -31,7 +32,7 @@ foreach (glob($root . '/*.php') as $file) {
     $content = preg_replace('/(public function down\(\): void\s*\{[\s\S]*?)\n*\}\n*;\n*$/m', '$1\n    }\n};\n', $content);
     // 10. Kapanmamış bloklar için: dosya sonunda } eksikse ekle
     if (substr(trim($content), -2) !== '};') {
-        $content = rtrim($content) . "\n};\n";
+        $content = rtrim($content)."\n};\n";
     }
 
     if ($content !== $orig) {

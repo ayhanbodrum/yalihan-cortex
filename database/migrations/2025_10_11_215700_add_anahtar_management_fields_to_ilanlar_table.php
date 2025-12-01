@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::table('ilanlar', function (Blueprint $table) {
             // Önce anahtar_kimde varsa onu kontrol et, yoksa ekle
-            if (!Schema::hasColumn('ilanlar', 'anahtar_kimde')) {
+            if (! Schema::hasColumn('ilanlar', 'anahtar_kimde')) {
                 $table->string('anahtar_kimde', 255)->nullable();
             }
 
@@ -26,11 +26,11 @@ return new class extends Migration
                 'kapici',
                 'emlakci',
                 'yonetici',
-                'diger'
+                'diger',
             ])->nullable();
 
             // Anahtar notları (talimatlar)
-            if (!Schema::hasColumn('ilanlar', 'anahtar_notlari')) {
+            if (! Schema::hasColumn('ilanlar', 'anahtar_notlari')) {
                 $table->text('anahtar_notlari')->nullable();
             }
 
@@ -51,7 +51,7 @@ return new class extends Migration
             $table->dropColumn([
                 'anahtar_turu',
                 'anahtar_ulasilabilirlik',
-                'anahtar_ek_bilgi'
+                'anahtar_ek_bilgi',
             ]);
         });
     }

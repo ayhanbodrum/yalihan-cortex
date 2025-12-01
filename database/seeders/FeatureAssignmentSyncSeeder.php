@@ -2,17 +2,16 @@
 
 namespace Database\Seeders;
 
+use App\Models\Feature;
+use App\Models\IlanKategoriYayinTipi;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Schema;
-use App\Models\IlanKategoriYayinTipi;
-use App\Models\Feature;
-use App\Models\FeatureCategory;
 
 class FeatureAssignmentSyncSeeder extends Seeder
 {
     public function run(): void
     {
-        if (!Schema::hasTable('ilan_kategori_yayin_tipleri') || !Schema::hasTable('features') || !Schema::hasTable('feature_categories')) {
+        if (! Schema::hasTable('ilan_kategori_yayin_tipleri') || ! Schema::hasTable('features') || ! Schema::hasTable('feature_categories')) {
             return;
         }
 
@@ -35,19 +34,19 @@ class FeatureAssignmentSyncSeeder extends Seeder
                     ->with('category')
                     ->whereHas('category', function ($q) use ($allowed, $slug) {
                         $q->whereIn('name', $allowed)
-                          ->orWhere('applies_to', $slug);
+                            ->orWhere('applies_to', $slug);
                     })
                     ->pluck('id')
                     ->toArray();
 
                 // Fallback: Yazlık Kiralık özel set (slug bazlı)
                 if ($pt->yayin_tipi === 'Yazlık Kiralık') {
-                    $fallbackSlugs = ['havuz','jakuzi','barbeku','klima','genis-teras','deniz-manzarasi','plaja-yakin'];
+                    $fallbackSlugs = ['havuz', 'jakuzi', 'barbeku', 'klima', 'genis-teras', 'deniz-manzarasi', 'plaja-yakin'];
                     $fallbackIds = Feature::enabled()->whereIn('slug', $fallbackSlugs)->pluck('id')->toArray();
                     $featureIds = array_values(array_unique(array_merge($featureIds, $fallbackIds)));
                 }
 
-                if (!empty($featureIds)) {
+                if (! empty($featureIds)) {
                     $pt->assignFeatures($featureIds, [
                         'is_visible' => true,
                     ]);

@@ -195,14 +195,14 @@ class YayinTipiYoneticisiController extends Controller
         // Context7: Schema kontrolü
         $hasStatusColumn = Schema::hasColumn('ilan_kategori_yayin_tipleri', 'status');
 
-        if (!$hasStatusColumn) {
+        if (! $hasStatusColumn) {
             return response()->json([
                 'success' => false,
                 'message' => 'Status kolonu bulunamadı!',
             ], 422);
         }
 
-        $yayinTipi->status = !$yayinTipi->status;
+        $yayinTipi->status = ! $yayinTipi->status;
         $yayinTipi->save();
 
         return response()->json([
@@ -238,11 +238,11 @@ class YayinTipiYoneticisiController extends Controller
             }
 
             // ✅ PERFORMANCE FIX: CASE WHEN ile gerçek bulk update (N query → 1 query)
-            if (!empty($ids)) {
+            if (! empty($ids)) {
                 $cases = [];
                 $bindings = [];
                 foreach ($updates as $id => $displayOrder) {
-                    $cases[] = "WHEN ? THEN ?";
+                    $cases[] = 'WHEN ? THEN ?';
                     $bindings[] = $id;
                     $bindings[] = $displayOrder;
                 }

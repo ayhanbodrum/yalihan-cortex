@@ -1,8 +1,8 @@
 <?php
 
 use App\Modules\TakimYonetimi\Controllers\Admin\GorevController;
-use App\Modules\TakimYonetimi\Controllers\Admin\TakimController;
 use App\Modules\TakimYonetimi\Controllers\Admin\ProjeController;
+use App\Modules\TakimYonetimi\Controllers\Admin\TakimController;
 use Illuminate\Support\Facades\Route;
 
 // Takım Yönetimi Admin Routes
@@ -25,6 +25,9 @@ Route::middleware(['web', 'auth', 'admin'])->prefix('admin/takim-yonetimi')->nam
     Route::get('takimlar/{takim}/performans', [TakimController::class, 'performans'])->name('takimlar.performans');
     Route::get('performans', [TakimController::class, 'performans'])->name('performans');
 
+    // Kanban Board
+    Route::get('board', [TakimController::class, 'board'])->name('board');
+
     // Görev Yönetimi
     Route::get('gorevler', [GorevController::class, 'index'])->name('gorevler.index');
     Route::get('gorevler/create', [GorevController::class, 'create'])->name('gorevler.create');
@@ -35,6 +38,7 @@ Route::middleware(['web', 'auth', 'admin'])->prefix('admin/takim-yonetimi')->nam
     Route::delete('gorevler/{gorev}', [GorevController::class, 'destroy'])->name('gorevler.destroy');
 
     // Görev İşlemleri
+    Route::get('gorevler/board', [GorevController::class, 'board'])->name('gorevler.board');
     Route::post('gorevler/{gorev}/atama', [GorevController::class, 'atama'])->name('gorevler.atama');
     Route::post('gorevler/{gorev}/status-guncelle', [GorevController::class, 'statusGuncelle'])->name('gorevler.status-guncelle');
     Route::get('gorevler/{gorev}/rapor', [GorevController::class, 'rapor'])->name('gorevler.rapor');

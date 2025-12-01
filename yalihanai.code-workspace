@@ -90,7 +90,7 @@
         "javascript.validate.enable": true,
         "typescript.preferences.includePackageJsonAutoImports": "off",
         "typescript.suggest.autoImports": "off",
-        "typescript.preferences.exclude": ["mcp-server/**/*", "**/mcp-server/**"],
+        "typescript.preferences.exclude": ["mcp-servers/**/*", "**/mcp-servers/**"],
 
         // Blade Template
         "blade.format.enable": true,
@@ -158,7 +158,7 @@
             "*.env.example": "dotenv",
             "*.md": "markdown",
             ".copilot-context.md": "markdown",
-            "mcp-server/*.js": "javascript",
+            "mcp-servers/*.js": "javascript",
             "*.mdc": "markdown",
             "*.neon": "yaml",
         },
@@ -315,6 +315,13 @@
                     "AUTO_LEARN": "true",
                 },
             },
+            "context7-validator": {
+                "command": "node",
+                "args": ["${workspaceFolder}/mcp-servers/context7-validator-mcp.js"],
+                "env": {
+                    "PROJECT_ROOT": "${workspaceFolder}"
+                }
+            },
             "context7": {
                 "command": "docker",
                 "args": ["run", "-i", "--rm", "mcp/context7"],
@@ -356,7 +363,7 @@
             },
             "laravel": {
                 "command": "node",
-                "args": ["${workspaceFolder}/mcp-servers/laravel-mcp.js"],
+                "args": ["${workspaceFolder}/mcp-servers/laravel-mcp.cjs"],
                 "env": {
                     "PROJECT_ROOT": "${workspaceFolder}",
                 },
@@ -690,6 +697,34 @@
                 "label": "🤖 Start Yalıhan Bekçi MCP",
                 "type": "shell",
                 "command": "./scripts/services/start-bekci-server.sh",
+                "group": "build",
+                "isBackground": true,
+                "presentation": {
+                    "echo": true,
+                    "reveal": "always",
+                    "focus": false,
+                    "panel": "shared",
+                },
+            },
+            {
+                "label": "🔍 Start Context7 Validator MCP",
+                "type": "shell",
+                "command": "node",
+                "args": ["mcp-servers/context7-validator-mcp.js"],
+                "group": "build",
+                "isBackground": true,
+                "presentation": {
+                    "echo": true,
+                    "reveal": "always",
+                    "focus": false,
+                    "panel": "shared",
+                },
+            },
+            {
+                "label": "🛠️ Start Laravel MCP",
+                "type": "shell",
+                "command": "node",
+                "args": ["mcp-servers/laravel-mcp.cjs"],
                 "group": "build",
                 "isBackground": true,
                 "presentation": {

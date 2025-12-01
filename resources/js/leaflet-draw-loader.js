@@ -1,30 +1,37 @@
 // Leaflet.draw Local Loader (Context7: Local, not CDN)
 // CSS import kaldırıldı - Vite CSS import'ları farklı çalışıyor, CSS zaten build'e dahil ediliyor
-;(function(){
-  function addCss(){
-    var href='https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.css';
-    if(!document.querySelector('link[href*="leaflet.draw.css"]')){
-      var link=document.createElement('link');
-      link.rel='stylesheet';
-      link.href=href;
-      document.head.appendChild(link);
+(function () {
+    function addCss() {
+        const href = 'https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.css';
+        if (!document.querySelector('link[href*="leaflet.draw.css"]')) {
+            const link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.href = href;
+            document.head.appendChild(link);
+        }
     }
-  }
-  function addJs(cb){
-    if(window.L && window.L.Draw){ cb&&cb(); return; }
-    var src='https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.js';
-    var s=document.createElement('script');
-    s.src=src;
-    s.onload=function(){ cb&&cb(); };
-    document.head.appendChild(s);
-  }
-  addCss();
-  addJs(function(){
-    if(window.L && window.L.Draw){
-      if(window.showToast){ window.showToast('success','Leaflet.draw yüklendi'); }
-      observeToolbar();
+    function addJs(cb) {
+        if (window.L && window.L.Draw) {
+            cb && cb();
+            return;
+        }
+        const src = 'https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.js';
+        const s = document.createElement('script');
+        s.src = src;
+        s.onload = function () {
+            cb && cb();
+        };
+        document.head.appendChild(s);
     }
-  });
+    addCss();
+    addJs(() => {
+        if (window.L && window.L.Draw) {
+            if (window.showToast) {
+                window.showToast('success', 'Leaflet.draw yüklendi');
+            }
+            observeToolbar();
+        }
+    });
 })();
 
 console.log('✅ Leaflet.draw loaded from npm (Context7: Local)');
@@ -247,46 +254,53 @@ if (typeof document !== 'undefined') {
             }
         }
     `;
-document.head.appendChild(style);
+    document.head.appendChild(style);
     console.log('✅ Leaflet.draw spritesheet yolu CSP uyumlu hale getirildi');
     console.log('✅ Leaflet.draw toolbar kompakt ve modern tasarım uygulandı');
 }
 
 export default 'leaflet-draw';
 
-function observeToolbar(){
-  var applied=new WeakSet();
-  function apply(root){
-    if(!root||applied.has(root)) return; applied.add(root);
-    root.setAttribute('role','toolbar');
-    root.setAttribute('aria-label','Çizim Araçları');
-    var btns=root.querySelectorAll('a');
-    btns.forEach(function(a){
-      a.setAttribute('tabindex','0');
-      var label='Araç';
-      if(a.classList.contains('leaflet-draw-draw-polygon')) label='Çokgen çiz';
-      else if(a.classList.contains('leaflet-draw-draw-polyline')) label='Çizgi çiz';
-      else if(a.classList.contains('leaflet-draw-draw-rectangle')) label='Dikdörtgen çiz';
-      else if(a.classList.contains('leaflet-draw-draw-circle')) label='Daire çiz';
-      else if(a.classList.contains('leaflet-draw-draw-marker')) label='İşaretçi ekle';
-      else if(a.classList.contains('leaflet-draw-edit-edit')) label='Düzenle';
-      else if(a.classList.contains('leaflet-draw-edit-remove')) label='Sil';
-      a.setAttribute('aria-label',label);
-      a.addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); a.click(); } });
+function observeToolbar() {
+    const applied = new WeakSet();
+    function apply(root) {
+        if (!root || applied.has(root)) return;
+        applied.add(root);
+        root.setAttribute('role', 'toolbar');
+        root.setAttribute('aria-label', 'Çizim Araçları');
+        const btns = root.querySelectorAll('a');
+        btns.forEach((a) => {
+            a.setAttribute('tabindex', '0');
+            let label = 'Araç';
+            if (a.classList.contains('leaflet-draw-draw-polygon')) label = 'Çokgen çiz';
+            else if (a.classList.contains('leaflet-draw-draw-polyline')) label = 'Çizgi çiz';
+            else if (a.classList.contains('leaflet-draw-draw-rectangle')) label = 'Dikdörtgen çiz';
+            else if (a.classList.contains('leaflet-draw-draw-circle')) label = 'Daire çiz';
+            else if (a.classList.contains('leaflet-draw-draw-marker')) label = 'İşaretçi ekle';
+            else if (a.classList.contains('leaflet-draw-edit-edit')) label = 'Düzenle';
+            else if (a.classList.contains('leaflet-draw-edit-remove')) label = 'Sil';
+            a.setAttribute('aria-label', label);
+            a.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    a.click();
+                }
+            });
+        });
+    }
+    const existing = document.querySelector('.leaflet-draw-toolbar');
+    if (existing) apply(existing);
+    const mo = new MutationObserver((muts) => {
+        muts.forEach((m) => {
+            m.addedNodes &&
+                m.addedNodes.forEach((n) => {
+                    if (n.nodeType === 1) {
+                        if (n.classList.contains('leaflet-draw-toolbar')) apply(n);
+                        const q = n.querySelector && n.querySelector('.leaflet-draw-toolbar');
+                        if (q) apply(q);
+                    }
+                });
+        });
     });
-  }
-  var existing=document.querySelector('.leaflet-draw-toolbar');
-  if(existing) apply(existing);
-  var mo=new MutationObserver(function(muts){
-    muts.forEach(function(m){
-      m.addedNodes&&m.addedNodes.forEach(function(n){
-        if(n.nodeType===1){
-          if(n.classList.contains('leaflet-draw-toolbar')) apply(n);
-          var q=n.querySelector&&n.querySelector('.leaflet-draw-toolbar');
-          if(q) apply(q);
-        }
-      });
-    });
-  });
-  mo.observe(document.body,{childList:true,subtree:true});
+    mo.observe(document.body, { childList: true, subtree: true });
 }

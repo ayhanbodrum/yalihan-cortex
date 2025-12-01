@@ -2,7 +2,6 @@
 
 namespace Tests\Unit\Models;
 
-use App\Models\Ilan;
 use App\Models\IlanKategori;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
@@ -107,7 +106,7 @@ class IlanKategoriTest extends TestCase
         $parent = IlanKategori::find($parentId);
 
         $this->assertGreaterThanOrEqual(2, $parent->children->count());
-        $this->assertTrue($parent->children->every(fn($child) => $child->parent_id === $parentId));
+        $this->assertTrue($parent->children->every(fn ($child) => $child->parent_id === $parentId));
     }
 
     /**
@@ -166,7 +165,7 @@ class IlanKategoriTest extends TestCase
         $activeKategoriler = IlanKategori::active()->get();
 
         $this->assertGreaterThanOrEqual(1, $activeKategoriler->count());
-        $this->assertTrue($activeKategoriler->every(fn($kategori) => $kategori->status === 'Aktif'));
+        $this->assertTrue($activeKategoriler->every(fn ($kategori) => $kategori->status === 'Aktif'));
     }
 
     /**
@@ -234,4 +233,3 @@ class IlanKategoriTest extends TestCase
         $this->assertNotNull(IlanKategori::withTrashed()->find($kategoriId));
     }
 }
-

@@ -2,8 +2,8 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
@@ -18,7 +18,7 @@ return new class extends Migration
         // Check and remove enabled from features table (if exists)
         if (Schema::hasColumn('features', 'enabled')) {
             // First, copy enabled values to status (if status doesn't exist)
-            if (!Schema::hasColumn('features', 'status')) {
+            if (! Schema::hasColumn('features', 'status')) {
                 Schema::table('features', function (Blueprint $table) {
                     // Context7: display_order kullan (order değil)
                     $afterColumn = Schema::hasColumn('features', 'display_order') ? 'display_order' : 'order';
@@ -41,7 +41,7 @@ return new class extends Migration
         // Check and remove enabled from feature_categories table (if exists)
         if (Schema::hasColumn('feature_categories', 'enabled')) {
             // First, copy enabled values to status (if status doesn't exist)
-            if (!Schema::hasColumn('feature_categories', 'status')) {
+            if (! Schema::hasColumn('feature_categories', 'status')) {
                 Schema::table('feature_categories', function (Blueprint $table) {
                     // Context7: display_order kullan (order değil)
                     $afterColumn = Schema::hasColumn('feature_categories', 'display_order') ? 'display_order' : 'order';
@@ -82,4 +82,3 @@ return new class extends Migration
         echo "⚠️ If rollback is required, use: php artisan migrate:rollback --step=1 --force\n";
     }
 };
-

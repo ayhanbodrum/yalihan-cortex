@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\Http\Request;
-
 class LocationController extends AdminController
 {
     /**
@@ -18,7 +16,7 @@ class LocationController extends AdminController
     {
         return response()->json([
             'success' => true,
-            'data' => []
+            'data' => [],
         ]);
     }
 
@@ -26,7 +24,7 @@ class LocationController extends AdminController
     {
         return response()->json([
             'success' => true,
-            'data' => []
+            'data' => [],
         ]);
     }
 
@@ -34,7 +32,7 @@ class LocationController extends AdminController
     {
         return response()->json([
             'success' => true,
-            'data' => []
+            'data' => [],
         ]);
     }
 
@@ -46,21 +44,21 @@ class LocationController extends AdminController
         // Mock location data
         $location = [
             'id' => $id,
-            'name' => 'Sample Location ' . $id,
+            'name' => 'Sample Location '.$id,
             'type' => 'district',
             'coordinates' => [
                 'latitude' => 41.0082,
-                'longitude' => 28.9784
+                'longitude' => 28.9784,
             ],
             'address' => 'Sample Address, Istanbul, Turkey',
             'details' => [
                 'population' => 15000,
                 'area' => '25.5 km²',
-                'postal_code' => '34000'
+                'postal_code' => '34000',
             ],
             'status' => 'active',
             'created_at' => now()->subDays(30)->toISOString(),
-            'updated_at' => now()->toISOString()
+            'updated_at' => now()->toISOString(),
         ];
 
         if (request()->expectsJson()) {

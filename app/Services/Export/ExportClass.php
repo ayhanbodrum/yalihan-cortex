@@ -2,25 +2,27 @@
 
 namespace App\Services\Export;
 
+use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\WithTitle;
-use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
-use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
-use Illuminate\Support\Collection;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 /**
  * Context7: Excel Export Class
- * 
+ *
  * Handles Excel formatting and data mapping
  */
 class ExportClass implements FromCollection, WithHeadings, WithMapping, WithStyles, WithTitle
 {
     protected Collection $data;
+
     protected array $headers;
+
     protected string $type;
 
     public function __construct(Collection $data, array $headers, string $type = '')
@@ -52,7 +54,7 @@ class ExportClass implements FromCollection, WithHeadings, WithMapping, WithStyl
     public function map($row): array
     {
         // Auto-detect type from data if not set
-        if (!$this->type) {
+        if (! $this->type) {
             $this->type = $this->detectType($row);
         }
 
@@ -66,9 +68,6 @@ class ExportClass implements FromCollection, WithHeadings, WithMapping, WithStyl
 
     /**
      * Detect type from row
-     * 
-     * @param mixed $row
-     * @return string
      */
     protected function detectType(mixed $row): string
     {
@@ -79,16 +78,15 @@ class ExportClass implements FromCollection, WithHeadings, WithMapping, WithStyl
             if (isset($row->tip)) {
                 return 'talep';
             }
+
             return 'kisi';
         }
+
         return '';
     }
 
     /**
      * Map generic row
-     * 
-     * @param mixed $row
-     * @return array
      */
     protected function mapGeneric(mixed $row): array
     {
@@ -97,9 +95,6 @@ class ExportClass implements FromCollection, WithHeadings, WithMapping, WithStyl
 
     /**
      * Map Ilan row
-     * 
-     * @param mixed $ilan
-     * @return array
      */
     protected function mapIlan(mixed $ilan): array
     {
@@ -109,7 +104,7 @@ class ExportClass implements FromCollection, WithHeadings, WithMapping, WithStyl
             number_format($ilan->fiyat ?? 0, 2, ',', '.'),
             $ilan->para_birimi ?? 'TRY',
             $ilan->status ?? 'Bilinmiyor',
-            $ilan->ilanSahibi ? ($ilan->ilanSahibi->ad . ' ' . $ilan->ilanSahibi->soyad) : '-',
+            $ilan->ilanSahibi ? ($ilan->ilanSahibi->ad.' '.$ilan->ilanSahibi->soyad) : '-',
             $ilan->il->il_adi ?? '-',
             $ilan->ilce->ilce_adi ?? '-',
             $ilan->anaKategori->name ?? '-',
@@ -120,15 +115,12 @@ class ExportClass implements FromCollection, WithHeadings, WithMapping, WithStyl
 
     /**
      * Map Kisi row
-     * 
-     * @param mixed $kisi
-     * @return array
      */
     protected function mapKisi(mixed $kisi): array
     {
         return [
             $kisi->id,
-            trim(($kisi->ad ?? '') . ' ' . ($kisi->soyad ?? '')),
+            trim(($kisi->ad ?? '').' '.($kisi->soyad ?? '')),
             $kisi->telefon ?? '-',
             $kisi->email ?? '-',
             $kisi->kisi_tipi ?? $kisi->musteri_tipi ?? '-',
@@ -142,9 +134,6 @@ class ExportClass implements FromCollection, WithHeadings, WithMapping, WithStyl
 
     /**
      * Map Talep row
-     * 
-     * @param mixed $talep
-     * @return array
      */
     protected function mapTalep(mixed $talep): array
     {
@@ -153,7 +142,7 @@ class ExportClass implements FromCollection, WithHeadings, WithMapping, WithStyl
             $talep->baslik ?? '-',
             $talep->tip ?? '-',
             $talep->status ?? '-',
-            $talep->kisi ? ($talep->kisi->ad . ' ' . $talep->kisi->soyad) : '-',
+            $talep->kisi ? ($talep->kisi->ad.' '.$talep->kisi->soyad) : '-',
             $talep->kisi ? ($talep->kisi->telefon ?? '-') : '-',
             $talep->il->il_adi ?? '-',
             $talep->ilce->ilce_adi ?? '-',
@@ -171,7 +160,7 @@ class ExportClass implements FromCollection, WithHeadings, WithMapping, WithStyl
                 'font' => ['bold' => true, 'color' => ['rgb' => 'FFFFFF']],
                 'fill' => [
                     'fillType' => Fill::FILL_SOLID,
-                    'startColor' => ['rgb' => '4472C4']
+                    'startColor' => ['rgb' => '4472C4'],
                 ],
                 'alignment' => [
                     'horizontal' => Alignment::HORIZONTAL_CENTER,
@@ -194,4 +183,3 @@ class ExportClass implements FromCollection, WithHeadings, WithMapping, WithStyl
         };
     }
 }
-

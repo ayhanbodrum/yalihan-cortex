@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use App\Models\OzellikKategori;
 use App\Models\Ozellik;
+use App\Models\OzellikKategori;
+use Illuminate\Database\Seeder;
 
 class YazlikEkstraOzelliklerSeeder extends Seeder
 {
@@ -74,7 +74,7 @@ class YazlikEkstraOzelliklerSeeder extends Seeder
                 $ozellik
             );
         }
-        $this->command->info("✅ Lisans ve Belgeler: 3 özellik");
+        $this->command->info('✅ Lisans ve Belgeler: 3 özellik');
 
         // ✅ 2. Premium Lokasyon Özellikleri
         $premiumLokasyonKategori = OzellikKategori::updateOrCreate(
@@ -153,7 +153,7 @@ class YazlikEkstraOzelliklerSeeder extends Seeder
                 $ozellik
             );
         }
-        $this->command->info("✅ Premium Lokasyon: 5 özellik");
+        $this->command->info('✅ Premium Lokasyon: 5 özellik');
 
         // ✅ 3. Site İçi Özellikler
         $siteOzellikleriKategori = OzellikKategori::updateOrCreate(
@@ -233,7 +233,7 @@ class YazlikEkstraOzelliklerSeeder extends Seeder
                 $ozellik
             );
         }
-        $this->command->info("✅ Site İçi Özellikler: 5 özellik");
+        $this->command->info('✅ Site İçi Özellikler: 5 özellik');
 
         // ✅ 4. Özel Hedef Kitle Özellikleri
         $hedefKitleKategori = OzellikKategori::updateOrCreate(
@@ -301,7 +301,7 @@ class YazlikEkstraOzelliklerSeeder extends Seeder
                 $ozellik
             );
         }
-        $this->command->info("✅ Özel Hedef Kitle: 4 özellik");
+        $this->command->info('✅ Özel Hedef Kitle: 4 özellik');
 
         // ✅ 5. Fiyata Dahil/Dahil Değil Özellikler
         $fiyatDahilKategori = OzellikKategori::updateOrCreate(
@@ -384,7 +384,7 @@ class YazlikEkstraOzelliklerSeeder extends Seeder
                 $ozellik
             );
         }
-        $this->command->info("✅ Fiyata Dahil Olanlar: 5 özellik");
+        $this->command->info('✅ Fiyata Dahil Olanlar: 5 özellik');
 
         // ✅ 6. Ekstra Hizmetler (Fiyata Dahil Değil)
         $ekstraHizmetKategori = OzellikKategori::updateOrCreate(
@@ -468,23 +468,23 @@ class YazlikEkstraOzelliklerSeeder extends Seeder
                 $ozellik
             );
         }
-        $this->command->info("✅ Ekstra Hizmetler: 5 özellik");
+        $this->command->info('✅ Ekstra Hizmetler: 5 özellik');
 
         $this->command->info("\n📊 YAZLIK EKSTRA ÖZELLİKLER RAPORU:");
-        $this->command->info("   ✅ Yeni Kategori: 4");
-        $this->command->info("   ✅ Yeni Özellik: 22");
-        $this->command->info("   📜 Lisans/Belge: 3");
-        $this->command->info("   🌟 Premium Lokasyon: 5");
-        $this->command->info("   🏢 Site İçi: 5");
-        $this->command->info("   👥 Hedef Kitle: 4");
-        $this->command->info("   ✅ Fiyata Dahil: 5");
+        $this->command->info('   ✅ Yeni Kategori: 4');
+        $this->command->info('   ✅ Yeni Özellik: 22');
+        $this->command->info('   📜 Lisans/Belge: 3');
+        $this->command->info('   🌟 Premium Lokasyon: 5');
+        $this->command->info('   🏢 Site İçi: 5');
+        $this->command->info('   👥 Hedef Kitle: 4');
+        $this->command->info('   ✅ Fiyata Dahil: 5');
 
         $this->command->info("\n🎯 ÖNE ÇIKAN ÖZELLİKLER:");
-        $this->command->info("   🏖️ Denize Sıfır");
-        $this->command->info("   🏝️  Özel Plajlı");
-        $this->command->info("   🏊 Özel Havuzlu");
-        $this->command->info("   🧕 Tesettüre Uygun");
-        $this->command->info("   🌲 Korunaklı/Doğa İçinde");
-        $this->command->info("   📜 Turizm Belgeli");
+        $this->command->info('   🏖️ Denize Sıfır');
+        $this->command->info('   🏝️  Özel Plajlı');
+        $this->command->info('   🏊 Özel Havuzlu');
+        $this->command->info('   🧕 Tesettüre Uygun');
+        $this->command->info('   🌲 Korunaklı/Doğa İçinde');
+        $this->command->info('   📜 Turizm Belgeli');
     }
 }

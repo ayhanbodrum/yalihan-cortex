@@ -16,8 +16,8 @@ class CategoryFieldValidator
     /**
      * Get validation rules for a specific category
      *
-     * @param string|null $kategoriSlug Category slug (arsa, konut, vb.)
-     * @param string|null $yayinTipi Publication type slug (kiralik, satilik)
+     * @param  string|null  $kategoriSlug  Category slug (arsa, konut, vb.)
+     * @param  string|null  $yayinTipi  Publication type slug (kiralik, satilik)
      * @return array Validation rules
      */
     public function getRules(?string $kategoriSlug = null, ?string $yayinTipi = null): array
@@ -71,12 +71,48 @@ class CategoryFieldValidator
     /**
      * Get Arsa (Land) specific validation rules
      *
-     * @return array
+     * Context7: JSON-based validation rules
+     * Source: docs/ai/GEMINI_COMPLETE_SYSTEM_DATA.json
      */
     protected function getArsaRules(): array
     {
+        // Config'den imar durumu seçeneklerini çek
+        $imarStatusuOptions = config('yali_options.imar_statusu', []);
+        $imarStatusuValues = [];
+
+        foreach ($imarStatusuOptions as $key => $option) {
+            if (is_array($option) && isset($option['label'])) {
+                $imarStatusuValues[] = $option['label'];
+            } else {
+                $imarStatusuValues[] = $key;
+            }
+        }
+
+        // Eğer config boşsa default değerler
+        if (empty($imarStatusuValues)) {
+            $imarStatusuValues = ['İmarlı', 'İmarsız', 'Tarla', 'Konut İmarlı', 'Ticari İmarlı'];
+        }
+
         return [
-            'features.imar-durumu' => 'required|string|in:İmarlı,İmarsız,Villa İmarlı,Konut İmarlı,Ticari İmarlı,Sanayi İmarlı,Turizm İmarlı,Tarla,Müstakil İmarlı',
+            // Context7: satis_fiyati zorunlu (Arsa × Satılık)
+            'satis_fiyati' => 'required|numeric|min:0',
+            'fiyat' => 'required|numeric|min:0', // Fallback for general price field
+
+            // Arsa özel field'ları
+            'ada_no' => 'nullable|string|max:50',
+            'parsel_no' => 'nullable|string|max:50',
+
+            // İmar durumu - Config'den çekilen seçenekler
+            'imar_statusu' => 'nullable|string|in:' . implode(',', $imarStatusuValues),
+
+            // Sayısal alanlar
+            'kaks' => 'nullable|numeric|min:0|max:10',
+            'taks' => 'nullable|numeric|min:0|max:1',
+            'gabari' => 'nullable|numeric|min:0',
+            'alan_m2' => 'nullable|numeric|min:0',
+
+            // Legacy feature fields (backward compatibility)
+            'features.imar-durumu' => 'nullable|string|in:' . implode(',', $imarStatusuValues),
             'features.ada-no' => 'nullable|string|max:50',
             'features.parsel-no' => 'nullable|string|max:50',
             'features.kaks' => 'nullable|numeric|min:0|max:10',
@@ -88,26 +124,72 @@ class CategoryFieldValidator
     /**
      * Get Konut (Residential) specific validation rules
      *
-     * @return array
+     * Context7: C7-KONUT-VALIDATION-2025-11-30
+     * Enhanced validation with Net/Brüt m² consistency check
      */
     protected function getKonutRules(): array
     {
+        // Config'den oda sayısı seçeneklerini çek
+        $odaSayisiOptions = config('yali_options.oda_sayisi_options', []);
+        $odaSayisiValues = [];
+
+        foreach ($odaSayisiOptions as $option) {
+            if (is_array($option) && isset($option['value'])) {
+                $odaSayisiValues[] = $option['value'];
+            } elseif (is_string($option)) {
+                $odaSayisiValues[] = $option;
+            }
+        }
+
+        // Eğer config boşsa default değerler
+        if (empty($odaSayisiValues)) {
+            $odaSayisiValues = ['1+0', '1+1', '2+1', '3+1', '4+1', '5+1'];
+        }
+
         return [
-            'features.oda-sayisi' => 'required|string|in:Stüdyo (1+0),1+1,2+1,3+1,4+1,5+1,6+1 ve üzeri',
+            'features.oda-sayisi' => 'required|string|in:' . implode(',', $odaSayisiValues),
             'features.brut-metrekare' => 'required|numeric|min:10|max:10000',
-            'features.net-metrekare' => 'nullable|numeric|min:10|max:10000',
+            'features.net-metrekare' => 'required|numeric|min:10|max:10000',
             'features.banyo-sayisi' => 'nullable|integer|min:0|max:10',
             'features.bulundugu-kat' => 'nullable|string',
             'features.kat-sayisi' => 'nullable|integer|min:1|max:100',
-            'features.bina-yasi' => 'nullable|string',
-            'features.isinma-tipi' => 'nullable|string',
+            'features.bina-yasi' => 'required|numeric',
+            'features.isinma-tipi' => 'required|string',
         ];
     }
 
     /**
-     * Get İşyeri (Commercial) specific validation rules
+     * Validate Konut specific custom rules
      *
-     * @return array
+     * Custom validation: Net m² cannot be greater than Brüt m²
+     *
+     * @param  array  $data  Request data
+     * @return \Illuminate\Validation\Validator
+     */
+    public function validateKonut(array $data): \Illuminate\Validation\Validator
+    {
+        $rules = $this->getKonutRules();
+
+        $validator = Validator::make($data, $rules);
+
+        // Custom validation: Net m² > Brüt m² kontrolü
+        $validator->after(function ($validator) use ($data) {
+            $netM2 = $data['features']['net-metrekare'] ?? $data['net_m2'] ?? null;
+            $brutM2 = $data['features']['brut-metrekare'] ?? $data['brut_m2'] ?? null;
+
+            if ($netM2 && $brutM2 && (float) $netM2 > (float) $brutM2) {
+                $validator->errors()->add(
+                    'net_metrekare',
+                    'Net metrekare, Brüt metrekareden büyük olamaz!'
+                );
+            }
+        });
+
+        return $validator;
+    }
+
+    /**
+     * Get İşyeri (Commercial) specific validation rules
      */
     protected function getIsyeriRules(): array
     {
@@ -120,8 +202,6 @@ class CategoryFieldValidator
 
     /**
      * Get Kiralık (Rental) specific validation rules
-     *
-     * @return array
      */
     protected function getKiralikRules(): array
     {
@@ -135,10 +215,6 @@ class CategoryFieldValidator
 
     /**
      * Get dynamic feature validation rules
-     *
-     * @param string|null $kategoriSlug
-     * @param string|null $yayinTipi
-     * @return array
      */
     protected function getFeatureRules(?string $kategoriSlug = null, ?string $yayinTipi = null): array
     {
@@ -154,9 +230,9 @@ class CategoryFieldValidator
     /**
      * Validate request data with category-specific rules
      *
-     * @param array $data Request data
-     * @param string|null $kategoriSlug Category slug
-     * @param string|null $yayinTipi Publication type slug
+     * @param  array  $data  Request data
+     * @param  string|null  $kategoriSlug  Category slug
+     * @param  string|null  $yayinTipi  Publication type slug
      * @return \Illuminate\Contracts\Validation\Validator
      */
     public function validate(array $data, ?string $kategoriSlug = null, ?string $yayinTipi = null)
@@ -168,8 +244,6 @@ class CategoryFieldValidator
 
     /**
      * Get validation messages
-     *
-     * @return array
      */
     public function getMessages(): array
     {
@@ -189,4 +263,3 @@ class CategoryFieldValidator
         ];
     }
 }
-

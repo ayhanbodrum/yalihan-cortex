@@ -2,13 +2,12 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Schema;
+use App\Models\FeatureAssignment;
+use App\Models\FeatureCategory;
 use App\Models\IlanKategori;
 use App\Models\IlanKategoriYayinTipi;
-use App\Models\Feature;
-use App\Models\FeatureCategory;
-use App\Models\FeatureAssignment;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Schema;
 
 /**
  * Yazlık Kiralık Ana Kategori Özellik İlişkilendirme Seeder
@@ -23,16 +22,18 @@ class YazlikKiralikOzellikIliskilendirmeSeeder extends Seeder
         $this->command->info('🔗 Yazlık Kiralık Özellik İlişkilendirmeleri oluşturuluyor...');
 
         // Context7: Schema kontrolü
-        if (!Schema::hasTable('feature_assignments')) {
+        if (! Schema::hasTable('feature_assignments')) {
             $this->command->warn('⚠️ feature_assignments tablosu bulunamadı!');
+
             return;
         }
 
         // Yazlık Kiralık ana kategoriyi bul
         $yazlikKiralik = IlanKategori::where('name', 'Yazlık Kiralık')->where('seviye', 0)->first();
 
-        if (!$yazlikKiralik) {
+        if (! $yazlikKiralik) {
             $this->command->warn('⚠️ Yazlık Kiralık ana kategorisi bulunamadı! Önce YazlikKiralikAnaKategoriSeeder çalıştırın.');
+
             return;
         }
 
@@ -43,6 +44,7 @@ class YazlikKiralikOzellikIliskilendirmeSeeder extends Seeder
 
         if ($yayinTipleri->isEmpty()) {
             $this->command->warn('⚠️ Yazlık Kiralık yayın tipleri bulunamadı!');
+
             return;
         }
 
@@ -50,20 +52,20 @@ class YazlikKiralikOzellikIliskilendirmeSeeder extends Seeder
         $this->command->info("  ✓ Yayın Tipi Sayısı: {$yayinTipleri->count()}");
 
         // Yazlık ile ilgili tüm özellik kategorilerini bul
-        $yazlikKategorileri = FeatureCategory::where(function($q) {
-                $q->where('name', 'like', '%Dış Mekan%')
-                  ->orWhere('name', 'like', '%İç Mekan%')
-                  ->orWhere('name', 'like', '%Yatak Odası%')
-                  ->orWhere('name', 'like', '%Banyo%')
-                  ->orWhere('name', 'like', '%Ek Hizmet%')
-                  ->orWhere('name', 'like', '%Ulaşım%')
-                  ->orWhere('name', 'like', '%Eğlence%')
-                  ->orWhere('name', 'like', '%Güvenlik%')
-                  ->orWhere('name', 'like', '%Çocuk%')
-                  ->orWhere('name', 'like', '%Evcil%')
-                  ->orWhere('name', 'like', '%Havuz Detay%');
-            })
-            ->with(['features' => function($q) {
+        $yazlikKategorileri = FeatureCategory::where(function ($q) {
+            $q->where('name', 'like', '%Dış Mekan%')
+                ->orWhere('name', 'like', '%İç Mekan%')
+                ->orWhere('name', 'like', '%Yatak Odası%')
+                ->orWhere('name', 'like', '%Banyo%')
+                ->orWhere('name', 'like', '%Ek Hizmet%')
+                ->orWhere('name', 'like', '%Ulaşım%')
+                ->orWhere('name', 'like', '%Eğlence%')
+                ->orWhere('name', 'like', '%Güvenlik%')
+                ->orWhere('name', 'like', '%Çocuk%')
+                ->orWhere('name', 'like', '%Evcil%')
+                ->orWhere('name', 'like', '%Havuz Detay%');
+        })
+            ->with(['features' => function ($q) {
                 $hasStatusColumn = Schema::hasColumn('features', 'status');
                 $hasEnabledColumn = Schema::hasColumn('features', 'enabled');
 
@@ -79,6 +81,7 @@ class YazlikKiralikOzellikIliskilendirmeSeeder extends Seeder
 
         if ($yazlikKategorileri->isEmpty()) {
             $this->command->warn('⚠️ Yazlık özellik kategorileri bulunamadı! Önce YazlikVillaOzellikleriSeeder çalıştırın.');
+
             return;
         }
 
@@ -109,7 +112,7 @@ class YazlikKiralikOzellikIliskilendirmeSeeder extends Seeder
                         $yayinTipiAtanan++;
                         $order++;
                     } catch (\Exception $e) {
-                        $this->command->warn("    ⚠️ {$feature->name} atanamadı: " . $e->getMessage());
+                        $this->command->warn("    ⚠️ {$feature->name} atanamadı: ".$e->getMessage());
                     }
                 }
             }
@@ -119,6 +122,6 @@ class YazlikKiralikOzellikIliskilendirmeSeeder extends Seeder
         }
 
         $this->command->info("✅ Toplam {$toplamAtanan} özellik Yazlık Kiralık yayın tiplerine atandı!");
-        $this->command->info("   📊 {$yayinTipleri->count()} yayın tipi × {$yazlikKategorileri->sum(fn($c) => $c->features->count())} özellik = {$toplamAtanan} atama");
+        $this->command->info("   📊 {$yayinTipleri->count()} yayın tipi × {$yazlikKategorileri->sum(fn ($c) => $c->features->count())} özellik = {$toplamAtanan} atama");
     }
 }

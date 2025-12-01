@@ -2,17 +2,16 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\TalepStatus;
 use App\Http\Requests\Admin\DashboardWidgetRequest;
 use App\Models\DashboardWidget;
+use App\Models\IlanViewDaily;
+use App\Services\Cache\CacheHelper;
+use App\Services\Logging\LogService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
-use App\Services\Cache\CacheHelper;
-use App\Services\Response\ResponseService;
-use App\Services\Logging\LogService;
 use Illuminate\Support\Facades\DB;
-use App\Models\IlanViewDaily;
-use App\Enums\TalepStatus;
 
 class DashboardController extends AdminController
 {
@@ -20,7 +19,6 @@ class DashboardController extends AdminController
      * Display the main dashboard.
      * Context7: Ana dashboard sayfası
      *
-     * @return \Illuminate\View\View
      * @throws \Exception
      */
     public function index(): \Illuminate\View\View
@@ -39,7 +37,7 @@ class DashboardController extends AdminController
             return view('admin.dashboard.index', [
                 'quickStats' => $this->getEmptyStats(),
                 'recentIlanlar' => [],
-                'recentUsers' => []
+                'recentUsers' => [],
             ]);
         }
     }
@@ -49,6 +47,7 @@ class DashboardController extends AdminController
      * Context7: Yeni widget oluşturma
      *
      * @return \Illuminate\View\View
+     *
      * @throws \Exception
      */
     public function create()
@@ -58,19 +57,19 @@ class DashboardController extends AdminController
                 'stat' => 'İstatistik Widget',
                 'chart' => 'Grafik Widget',
                 'table' => 'Tablo Widget',
-                'activity' => 'Aktivite Widget'
+                'activity' => 'Aktivite Widget',
             ];
 
             $dataSources = [
                 'ilanlar' => 'İlanlar',
                 'musteriler' => 'Müşteriler',
                 'talepler' => 'Talepler',
-                'satislar' => 'Satışlar'
+                'satislar' => 'Satışlar',
             ];
 
             return view('admin.dashboard.create', compact('widgetTypes', 'dataSources'));
         } catch (\Exception $e) {
-            return back()->with('error', 'Widget oluşturma formu yüklenirken hata: ' . $e->getMessage());
+            return back()->with('error', 'Widget oluşturma formu yüklenirken hata: '.$e->getMessage());
         }
     }
 
@@ -78,8 +77,6 @@ class DashboardController extends AdminController
      * Store a newly created dashboard widget.
      * Context7: Widget kaydetme
      *
-     * @param DashboardWidgetRequest $request
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
      * @throws \Exception
      */
     public function store(DashboardWidgetRequest $request): \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
@@ -108,7 +105,7 @@ class DashboardController extends AdminController
                 return response()->json([
                     'success' => true,
                     'message' => 'Widget başarıyla oluşturuldu',
-                    'data' => $widget
+                    'data' => $widget,
                 ], 201);
             }
 
@@ -117,11 +114,11 @@ class DashboardController extends AdminController
             if ($request->expectsJson()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Widget oluşturulurken hata: ' . $e->getMessage()
+                    'message' => 'Widget oluşturulurken hata: '.$e->getMessage(),
                 ], 500);
             }
 
-            return back()->withInput()->with('error', 'Widget oluşturulurken hata: ' . $e->getMessage());
+            return back()->withInput()->with('error', 'Widget oluşturulurken hata: '.$e->getMessage());
         }
     }
 
@@ -129,8 +126,9 @@ class DashboardController extends AdminController
      * Display the specified dashboard widget.
      * Context7: Widget detayları
      *
-     * @param int|string $id
+     * @param  int|string  $id
      * @return \Illuminate\View\View|\Illuminate\Http\JsonResponse
+     *
      * @throws \Exception
      */
     public function show($id)
@@ -139,11 +137,11 @@ class DashboardController extends AdminController
             // ✅ DashboardWidget model kullanımı
             $widget = DashboardWidget::forUser(Auth::id())->findOrFail($id);
 
-            if (!$widget) {
+            if (! $widget) {
                 if (request()->expectsJson()) {
                     return response()->json([
                         'success' => false,
-                        'message' => 'Widget bulunamadı'
+                        'message' => 'Widget bulunamadı',
                     ], 404);
                 }
 
@@ -153,7 +151,7 @@ class DashboardController extends AdminController
             if (request()->expectsJson()) {
                 return response()->json([
                     'success' => true,
-                    'data' => $widget
+                    'data' => $widget,
                 ]);
             }
 
@@ -162,11 +160,11 @@ class DashboardController extends AdminController
             if (request()->expectsJson()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Widget detayları alınırken hata: ' . $e->getMessage()
+                    'message' => 'Widget detayları alınırken hata: '.$e->getMessage(),
                 ], 500);
             }
 
-            return back()->with('error', 'Widget detayları alınırken hata: ' . $e->getMessage());
+            return back()->with('error', 'Widget detayları alınırken hata: '.$e->getMessage());
         }
     }
 
@@ -174,8 +172,9 @@ class DashboardController extends AdminController
      * Show the form for editing the specified dashboard widget.
      * Context7: Widget düzenleme
      *
-     * @param int|string $id
+     * @param  int|string  $id
      * @return \Illuminate\View\View
+     *
      * @throws \Exception
      */
     public function edit($id)
@@ -184,7 +183,7 @@ class DashboardController extends AdminController
             // ✅ DashboardWidget model kullanımı
             $widget = DashboardWidget::forUser(Auth::id())->findOrFail($id);
 
-            if (!$widget) {
+            if (! $widget) {
                 return redirect()->route('admin.dashboard.index')->with('error', 'Widget bulunamadı');
             }
 
@@ -192,19 +191,19 @@ class DashboardController extends AdminController
                 'stat' => 'İstatistik Widget',
                 'chart' => 'Grafik Widget',
                 'table' => 'Tablo Widget',
-                'activity' => 'Aktivite Widget'
+                'activity' => 'Aktivite Widget',
             ];
 
             $dataSources = [
                 'ilanlar' => 'İlanlar',
                 'musteriler' => 'Müşteriler',
                 'talepler' => 'Talepler',
-                'satislar' => 'Satışlar'
+                'satislar' => 'Satışlar',
             ];
 
             return view('admin.dashboard.edit', compact('widget', 'widgetTypes', 'dataSources'));
         } catch (\Exception $e) {
-            return back()->with('error', 'Widget düzenleme formu yüklenirken hata: ' . $e->getMessage());
+            return back()->with('error', 'Widget düzenleme formu yüklenirken hata: '.$e->getMessage());
         }
     }
 
@@ -212,9 +211,6 @@ class DashboardController extends AdminController
      * Update the specified dashboard widget.
      * Context7: Widget güncelleme
      *
-     * @param DashboardWidgetRequest $request
-     * @param int $id
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
      * @throws \Exception
      */
     public function update(DashboardWidgetRequest $request, int $id): \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
@@ -245,7 +241,7 @@ class DashboardController extends AdminController
                 return response()->json([
                     'success' => true,
                     'message' => 'Widget başarıyla güncellendi',
-                    'data' => $widget
+                    'data' => $widget,
                 ]);
             }
 
@@ -254,11 +250,11 @@ class DashboardController extends AdminController
             if ($request->expectsJson()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Widget güncellenirken hata: ' . $e->getMessage()
+                    'message' => 'Widget güncellenirken hata: '.$e->getMessage(),
                 ], 500);
             }
 
-            return back()->withInput()->with('error', 'Widget güncellenirken hata: ' . $e->getMessage());
+            return back()->withInput()->with('error', 'Widget güncellenirken hata: '.$e->getMessage());
         }
     }
 
@@ -266,8 +262,6 @@ class DashboardController extends AdminController
      * Remove the specified dashboard widget.
      * Context7: Widget silme
      *
-     * @param int $id
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
      * @throws \Exception
      */
     public function destroy(int $id): \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
@@ -284,7 +278,7 @@ class DashboardController extends AdminController
             if (request()->expectsJson()) {
                 return response()->json([
                     'success' => true,
-                    'message' => 'Widget başarıyla silindi'
+                    'message' => 'Widget başarıyla silindi',
                 ]);
             }
 
@@ -293,11 +287,11 @@ class DashboardController extends AdminController
             if (request()->expectsJson()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Widget silinirken hata: ' . $e->getMessage()
+                    'message' => 'Widget silinirken hata: '.$e->getMessage(),
                 ], 500);
             }
 
-            return back()->with('error', 'Widget silinirken hata: ' . $e->getMessage());
+            return back()->with('error', 'Widget silinirken hata: '.$e->getMessage());
         }
     }
 
@@ -305,6 +299,7 @@ class DashboardController extends AdminController
      * Context7: Dashboard verilerini getir
      *
      * @return \Illuminate\Http\JsonResponse
+     *
      * @throws \Exception
      */
     public function getDashboardStats()
@@ -314,12 +309,12 @@ class DashboardController extends AdminController
 
             return response()->json([
                 'success' => true,
-                'data' => $stats
+                'data' => $stats,
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Dashboard istatistikleri alınırken hata: ' . $e->getMessage()
+                'message' => 'Dashboard istatistikleri alınırken hata: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -328,6 +323,7 @@ class DashboardController extends AdminController
      * Context7: Dashboard widget'larını yenile
      *
      * @return \Illuminate\Http\JsonResponse
+     *
      * @throws \Exception
      */
     public function refresh()
@@ -342,12 +338,12 @@ class DashboardController extends AdminController
             return response()->json([
                 'success' => true,
                 'message' => 'Dashboard başarıyla yenilendi',
-                'data' => $dashboardData
+                'data' => $dashboardData,
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Dashboard yenilenirken hata: ' . $e->getMessage()
+                'message' => 'Dashboard yenilenirken hata: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -365,13 +361,13 @@ class DashboardController extends AdminController
             'ilanSahibi:id,ad,soyad',
             'il:id,il_adi',
             'ilce:id,ilce_adi',
-            'kategori:id,kategori_adi'
+            'kategori:id,kategori_adi',
         ])
-        ->select(['id', 'baslik', 'fiyat', 'para_birimi', 'status',
-                  'ilan_sahibi_id', 'il_id', 'ilce_id', 'ana_kategori_id', 'created_at'])
-        ->latest('created_at')
-        ->limit(5)
-        ->get();
+            ->select(['id', 'baslik', 'fiyat', 'para_birimi', 'status',
+                'ilan_sahibi_id', 'il_id', 'ilce_id', 'ana_kategori_id', 'created_at'])
+            ->latest('created_at')
+            ->limit(5)
+            ->get();
 
         // ✅ EAGER LOADING: User relationships
         $recentUsers = \App\Models\User::with(['roles:id,name'])
@@ -444,13 +440,13 @@ class DashboardController extends AdminController
                 'talep_tamamlandi' => $talepTamamlandi,
                 'talep_acil' => $talepAcil,
                 'total_kullanicilar' => \App\Models\User::count(),
-                'total_danismanlar' => \App\Models\User::whereHas('roles', function($q) {
+                'total_danismanlar' => \App\Models\User::whereHas('roles', function ($q) {
                     $q->where('name', 'danisman');
                 })->count(),
                 'system_status' => [
                     'database' => 'online',
                     'cache' => 'online',
-                    'storage' => 'online'
+                    'storage' => 'online',
                 ],
                 'recent_ilanlar' => $recentIlanlar,
                 'recent_kullanicilar' => $recentUsers,
@@ -480,7 +476,7 @@ class DashboardController extends AdminController
             'system_status' => [
                 'database' => 'unknown',
                 'cache' => 'unknown',
-                'storage' => 'unknown'
+                'storage' => 'unknown',
             ],
             'recent_ilanlar' => collect([]),
             'recent_kullanicilar' => collect([]),
@@ -497,19 +493,19 @@ class DashboardController extends AdminController
         return [
             'monthly_sales' => [
                 'labels' => [],
-                'data' => []
+                'data' => [],
             ],
             'ilan_categories' => [
                 'labels' => [],
-                'data' => []
-            ]
+                'data' => [],
+            ],
         ];
     }
 
     /**
      * Context7: Örnek widget verisi
      *
-     * @param int|string $id
+     * @param  int|string  $id
      * @return array|null
      */
     private function getSampleWidget($id)
@@ -523,7 +519,7 @@ class DashboardController extends AdminController
                 'position_x' => 0,
                 'position_y' => 0,
                 'width' => 6,
-                'height' => 2
+                'height' => 2,
             ],
             [
                 'id' => 2,
@@ -533,11 +529,11 @@ class DashboardController extends AdminController
                 'position_x' => 6,
                 'position_y' => 0,
                 'width' => 6,
-                'height' => 3
-            ]
+                'height' => 3,
+            ],
         ];
 
-        return collect($widgets)->firstWhere('id', (int)$id);
+        return collect($widgets)->firstWhere('id', (int) $id);
     }
 
     /**
@@ -553,20 +549,20 @@ class DashboardController extends AdminController
         // ✅ PERFORMANCE FIX: N+1 query önlendi - Eager loading eklendi
         $recentIlanlar = \App\Models\Ilan::with([
             'danisman:id,name',
-            'ilanSahibi:id,ad,soyad'
+            'ilanSahibi:id,ad,soyad',
         ])
-        ->select(['id', 'baslik', 'danisman_id', 'created_at'])
-        ->latest('created_at')
-        ->limit(3)
-        ->get();
+            ->select(['id', 'baslik', 'danisman_id', 'created_at'])
+            ->latest('created_at')
+            ->limit(3)
+            ->get();
 
         foreach ($recentIlanlar as $ilan) {
             $activities[] = [
                 'id' => $ilan->id,
                 'type' => 'ilan_created',
-                'message' => 'Yeni ilan eklendi: ' . ($ilan->baslik ?? 'Başlıksız'),
+                'message' => 'Yeni ilan eklendi: '.($ilan->baslik ?? 'Başlıksız'),
                 'time' => $ilan->created_at->diffForHumans(),
-                'user' => $ilan->danisman->name ?? 'System'
+                'user' => $ilan->danisman->name ?? 'System',
             ];
         }
 
@@ -579,9 +575,9 @@ class DashboardController extends AdminController
             $activities[] = [
                 'id' => $kisi->id,
                 'type' => 'kisi_created',
-                'message' => 'Yeni kişi eklendi: ' . ($kisi->adi . ' ' . ($kisi->soyadi ?? '')),
+                'message' => 'Yeni kişi eklendi: '.($kisi->adi.' '.($kisi->soyadi ?? '')),
                 'time' => $kisi->created_at->diffForHumans(),
-                'user' => 'Admin'
+                'user' => 'Admin',
             ];
         }
 
@@ -635,12 +631,12 @@ class DashboardController extends AdminController
         return [
             'monthly_sales' => [
                 'labels' => $monthlyLabels,
-                'data' => $monthlyData
+                'data' => $monthlyData,
             ],
             'ilan_categories' => [
                 'labels' => $categories->pluck('kategori_adi')->toArray(),
-                'data' => $categories->pluck('ilanlar_count')->toArray()
-            ]
+                'data' => $categories->pluck('ilanlar_count')->toArray(),
+            ],
         ];
     }
 }

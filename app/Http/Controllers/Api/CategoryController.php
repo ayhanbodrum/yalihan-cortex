@@ -22,7 +22,7 @@ class CategoryController extends Controller
     {
         try {
             Log::info('Getting subcategories', [
-                'parent_id' => $parentId
+                'parent_id' => $parentId,
             ]);
 
             $subCategories = \App\Models\IlanKategori::where('parent_id', $parentId)
@@ -35,7 +35,7 @@ class CategoryController extends Controller
             Log::info('Subcategories query result', [
                 'parent_id' => $parentId,
                 'count' => $subCategories->count(),
-                'categories' => $subCategories->pluck('name')->toArray()
+                'categories' => $subCategories->pluck('name')->toArray(),
             ]);
 
             // ✅ REFACTORED: Using ResponseService
@@ -45,15 +45,15 @@ class CategoryController extends Controller
                         'id' => $cat->id,
                         'name' => $cat->name,
                         'slug' => $cat->slug,
-                        'icon' => $cat->icon
+                        'icon' => $cat->icon,
                     ];
                 }),
-                'count' => $subCategories->count()
+                'count' => $subCategories->count(),
             ], 'Alt kategoriler başarıyla yüklendi');
         } catch (\Exception $e) {
             Log::error('Subcategories loading error', [
                 'parent_id' => $parentId,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
 
             // ✅ REFACTORED: Using ResponseService
@@ -68,12 +68,12 @@ class CategoryController extends Controller
     {
         try {
             Log::info('Getting publication types', [
-                'category_id' => $categoryId
+                'category_id' => $categoryId,
             ]);
 
             $category = \App\Models\IlanKategori::find($categoryId);
 
-            if (!$category) {
+            if (! $category) {
                 // ✅ REFACTORED: Using ResponseService
                 return ResponseService::notFound('Kategori bulunamadı');
             }
@@ -90,7 +90,7 @@ class CategoryController extends Controller
             Log::info('Publication types result', [
                 'parent_id' => $parentId,
                 'count' => $yayinTipleri->count(),
-                'types' => $yayinTipleri->pluck('name')->toArray()
+                'types' => $yayinTipleri->pluck('name')->toArray(),
             ]);
 
             if ($yayinTipleri->isEmpty()) {
@@ -98,7 +98,7 @@ class CategoryController extends Controller
                 return ResponseService::success([
                     'types' => [],
                     'count' => 0,
-                    'message' => 'Bu kategori için yayın tipi bulunamadı'
+                    'message' => 'Bu kategori için yayın tipi bulunamadı',
                 ], 'Bu kategori için yayın tipi bulunamadı');
             }
 
@@ -108,16 +108,16 @@ class CategoryController extends Controller
                     return [
                         'id' => $type->id,
                         'name' => $type->name,
-                        'slug' => $type->slug
+                        'slug' => $type->slug,
                     ];
                 }),
                 'count' => $yayinTipleri->count(),
-                'message' => 'Yayın tipleri yüklendi'
+                'message' => 'Yayın tipleri yüklendi',
             ], 'Yayın tipleri yüklendi');
         } catch (\Exception $e) {
             Log::error('Publication types loading error', [
                 'category_id' => $categoryId,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
 
             // ✅ REFACTORED: Using ResponseService

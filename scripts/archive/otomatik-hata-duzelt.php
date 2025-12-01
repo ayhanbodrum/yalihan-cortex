@@ -1,15 +1,15 @@
 <?php
 
-require __DIR__ . '/../vendor/autoload.php';
-$app = require_once __DIR__ . '/../bootstrap/app.php';
+require __DIR__.'/../vendor/autoload.php';
+$app = require_once __DIR__.'/../bootstrap/app.php';
 $app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap();
 
 echo "\n🔧 Otomatik Hata Düzeltici\n";
 echo "═══════════════════════════════════════\n\n";
 
-$raporDosyasi = __DIR__ . '/../admin-detayli-test-raporu.md';
+$raporDosyasi = __DIR__.'/../admin-detayli-test-raporu.md';
 
-if (!file_exists($raporDosyasi)) {
+if (! file_exists($raporDosyasi)) {
     echo "❌ Test raporu bulunamadı!\n";
     echo "Önce test çalıştırın: node scripts/admin-detayli-test.mjs\n";
     exit(1);
@@ -39,7 +39,7 @@ if (preg_match_all('/Tablo eksik: (\w+)/', $rapor, $matches)) {
     }
 }
 
-echo "✅ " . count($hatalar) . " hata tespit edildi\n\n";
+echo '✅ '.count($hatalar)." hata tespit edildi\n\n";
 
 $duzeltmeler = 0;
 
@@ -53,7 +53,7 @@ foreach ($hatalar as $hata) {
             $controllerPath = 'app/Http/Controllers/Admin/KisiController.php';
             if (file_exists($controllerPath)) {
                 $content = file_get_contents($controllerPath);
-                if (!str_contains($content, "'taslak'")) {
+                if (! str_contains($content, "'taslak'")) {
                     $content = str_replace(
                         "'pasif' => Kisi::pasif()->count(),",
                         "'pasif' => Kisi::pasif()->count(),\n            'taslak' => 0,",
@@ -77,15 +77,15 @@ foreach ($hatalar as $hata) {
             foreach ($controllers as $controllerPath) {
                 if (file_exists($controllerPath)) {
                     $content = file_get_contents($controllerPath);
-                    if (!preg_match('/\$status\s*=\s*\$request->get/', $content)) {
+                    if (! preg_match('/\$status\s*=\s*\$request->get/', $content)) {
                         $content = preg_replace(
                             '/(public function index\(Request \$request\)\s*\{)/',
-                            '$1' . "\n        \$status = \$request->get('status');",
+                            '$1'."\n        \$status = \$request->get('status');",
                             $content,
                             1
                         );
                         file_put_contents($controllerPath, $content);
-                        echo "   ✅ " . basename($controllerPath) . " güncellendi\n";
+                        echo '   ✅ '.basename($controllerPath)." güncellendi\n";
                         $duzeltmeler++;
                     }
                 }
@@ -104,7 +104,7 @@ foreach ($hatalar as $hata) {
 
 echo "\n📊 Özet:\n";
 echo "✅ Düzeltilen: {$duzeltmeler}\n";
-echo "⚠️  Manuel müdahale gereken: " . (count($hatalar) - $duzeltmeler) . "\n";
+echo '⚠️  Manuel müdahale gereken: '.(count($hatalar) - $duzeltmeler)."\n";
 
 if ($duzeltmeler > 0) {
     echo "\n🔄 Testi tekrar çalıştır:\n";

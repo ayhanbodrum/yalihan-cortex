@@ -2,10 +2,10 @@
 
 namespace App\Services\AI;
 
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
 use App\Models\Setting;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Ollama AI Service
@@ -14,7 +14,11 @@ use App\Models\Setting;
  *
  * Ollama entegrasyonu için servis sınıfı
  * Model: gemma2:2b (hafif ve hızlı)
- * Endpoint: http://51.75.64.121:11434
+ *
+ * ⚠️ GÜVENLİK NOTU:
+ * Endpoint: http://localhost:11434 (SSH tunnel veya VPN gerekli)
+ * Production: HTTPS + Nginx Reverse Proxy zorunlu
+ * KVKK Uyarısı: HTTP plain text trafiği engellenmeli!
  */
 class OllamaService
 {
@@ -37,6 +41,7 @@ class OllamaService
     {
         $this->apiUrl = $this->getOllamaUrl();
         $this->model = $this->getOllamaModel();
+        $this->enforceTlsIfRequired();
     }
 
     /**
@@ -45,9 +50,17 @@ class OllamaService
     protected function getOllamaUrl(): string
     {
         return Cache::remember('ollama_url', 300, function () {
-            return Setting::where('key', 'ollama_url')->value('value') 
-                ?? config('ai.ollama_api_url', 'http://51.75.64.121:11434');
+            return Setting::where('key', 'ollama_url')->value('value')
+                ?? config('ai.ollama_api_url', 'http://localhost:11434');
         });
+    }
+
+    protected function enforceTlsIfRequired(): void
+    {
+        $require = (bool) config('ai.require_tls', false) || app()->environment('production');
+        if ($require && str_starts_with($this->apiUrl, 'http://')) {
+            throw new \RuntimeException('Insecure Ollama API URL without TLS');
+        }
     }
 
     /**
@@ -85,13 +98,10 @@ class OllamaService
 
     /**
      * İlan başlığı üret
-     *
-     * @param array $data
-     * @return array
      */
     public function generateTitle(array $data): array
     {
-        $cacheKey = 'ollama_title_' . md5(json_encode($data));
+        $cacheKey = 'ollama_title_'.md5(json_encode($data));
 
         return Cache::remember($cacheKey, $this->cacheTTL, function () use ($data) {
             $prompt = $this->buildTitlePrompt($data);
@@ -112,13 +122,10 @@ class OllamaService
 
     /**
      * İlan açıklaması üret
-     *
-     * @param array $data
-     * @return string
      */
     public function generateDescription(array $data): string
     {
-        $cacheKey = 'ollama_desc_' . md5(json_encode($data));
+        $cacheKey = 'ollama_desc_'.md5(json_encode($data));
 
         return Cache::remember($cacheKey, $this->cacheTTL, function () use ($data) {
             $prompt = $this->buildDescriptionPrompt($data);
@@ -139,13 +146,10 @@ class OllamaService
 
     /**
      * Lokasyon analizi yap
-     *
-     * @param array $locationData
-     * @return array
      */
     public function analyzeLocation(array $locationData): array
     {
-        $cacheKey = 'ollama_location_' . md5(json_encode($locationData));
+        $cacheKey = 'ollama_location_'.md5(json_encode($locationData));
 
         return Cache::remember($cacheKey, $this->cacheTTL, function () use ($locationData) {
             $prompt = $this->buildLocationAnalysisPrompt($locationData);
@@ -166,9 +170,6 @@ class OllamaService
 
     /**
      * Fiyat önerisi ver
-     *
-     * @param array $propertyData
-     * @return array
      */
     public function suggestPrice(array $propertyData): array
     {
@@ -189,15 +190,11 @@ class OllamaService
 
     /**
      * Ollama API'ye istek gönder
-     *
-     * @param string $prompt
-     * @param int $maxTokens
-     * @return array
      */
     protected function sendRequest(string $prompt, int $maxTokens = 500): array
     {
         $response = Http::timeout(30)
-            ->post($this->apiUrl . '/api/generate', [
+            ->post($this->apiUrl.'/api/generate', [
                 'model' => $this->model,
                 'prompt' => $prompt,
                 'stream' => false,
@@ -205,14 +202,14 @@ class OllamaService
                     'temperature' => 0.7,
                     'top_p' => 0.9,
                     'num_predict' => $maxTokens,
-                ]
+                ],
             ]);
 
         if ($response->successful()) {
             return $response->json();
         }
 
-        throw new \Exception('Ollama API request failed: ' . $response->status());
+        throw new \Exception('Ollama API request failed: '.$response->status());
     }
 
     /**
@@ -232,7 +229,7 @@ class OllamaService
             'seo' => 'SEO optimize edilmiş, anahtar kelime yoğun, detaylı',
             'kurumsal' => 'Profesyonel, yatırım odaklı, kurumsal dil',
             'hizli_satis' => 'Dikkat çekici, acil, heyecan verici',
-            'luks' => 'Prestijli, özel, ayrıcalıklı dil'
+            'luks' => 'Prestijli, özel, ayrıcalıklı dil',
         ];
 
         $toneInstruction = $toneDescriptions[$tone] ?? $toneDescriptions['seo'];
@@ -405,7 +402,7 @@ Analiz:";
         return [
             'score' => $score,
             'grade' => $grade,
-            'potential' => $potential
+            'potential' => $potential,
         ];
     }
 
@@ -447,7 +444,7 @@ Analiz:";
         return [
             "{$lokasyon} {$yayin_tipi} {$kategori}",
             "{$yayin_tipi} {$kategori} - {$lokasyon}",
-            "{$lokasyon}'da {$yayin_tipi} {$kategori}"
+            "{$lokasyon}'da {$yayin_tipi} {$kategori}",
         ];
     }
 
@@ -456,7 +453,7 @@ Analiz:";
      */
     protected function getFallbackDescription(array $data): string
     {
-        return "Profesyonel bir ilan açıklaması hazırlanıyor...";
+        return 'Profesyonel bir ilan açıklaması hazırlanıyor...';
     }
 
     /**
@@ -467,7 +464,7 @@ Analiz:";
         return [
             'score' => 75,
             'grade' => 'B',
-            'potential' => 'Orta'
+            'potential' => 'Orta',
         ];
     }
 
@@ -489,13 +486,12 @@ Analiz:";
 
     /**
      * Health check
-     *
-     * @return bool
      */
     public function isHealthy(): bool
     {
         try {
             $response = Http::timeout(5)->get($this->apiUrl);
+
             return $response->successful();
         } catch (\Exception $e) {
             return false;

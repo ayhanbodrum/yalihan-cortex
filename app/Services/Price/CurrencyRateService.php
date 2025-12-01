@@ -39,8 +39,6 @@ class CurrencyRateService
 
     /**
      * Güncel döviz kurlarını al
-     *
-     * @return array
      */
     public function getRates(): array
     {
@@ -56,13 +54,13 @@ class CurrencyRateService
                             'rates' => $data['rates'],
                             'last_updated' => now()->toIso8601String(),
                             'source' => 'exchangerate-api.com',
-                            'base_currency' => 'TRY'
+                            'base_currency' => 'TRY',
                         ];
                     }
                 }
             } catch (\Exception $e) {
                 Log::warning('Currency rate API failed, using fallback rates', [
-                    'error' => $e->getMessage()
+                    'error' => $e->getMessage(),
                 ]);
             }
 
@@ -71,17 +69,13 @@ class CurrencyRateService
                 'rates' => self::FALLBACK_RATES,
                 'last_updated' => now()->toIso8601String(),
                 'source' => 'fallback',
-                'base_currency' => 'TRY'
+                'base_currency' => 'TRY',
             ];
         });
     }
 
     /**
      * Belirli bir para birimi çifti için kur al
-     *
-     * @param string $from
-     * @param string $to
-     * @return float
      */
     public function getRate(string $from, string $to): float
     {
@@ -104,6 +98,7 @@ class CurrencyRateService
         // X to Y (cross rate)
         if (isset($rates[$from]) && isset($rates[$to])) {
             $inTRY = $rates[$from];
+
             return $inTRY / $rates[$to];
         }
 
@@ -112,24 +107,16 @@ class CurrencyRateService
 
     /**
      * Para birimi çevir
-     *
-     * @param float $amount
-     * @param string $from
-     * @param string $to
-     * @return float
      */
     public function convert(float $amount, string $from, string $to): float
     {
         $rate = $this->getRate($from, $to);
+
         return round($amount * $rate, 2);
     }
 
     /**
      * Formatlanmış fiyat string'i
-     *
-     * @param float $amount
-     * @param string $currency
-     * @return string
      */
     public function format(float $amount, string $currency = 'TRY'): string
     {
@@ -143,24 +130,21 @@ class CurrencyRateService
         $formatted = number_format($amount, 2, ',', '.');
         $symbol = $symbols[$currency] ?? $currency;
 
-        return $formatted . ' ' . $symbol;
+        return $formatted.' '.$symbol;
     }
 
     /**
      * Cache'i temizle ve yenile
-     *
-     * @return array
      */
     public function refresh(): array
     {
         Cache::forget('currency_rates');
+
         return $this->getRates();
     }
 
     /**
      * Desteklenen para birimleri
-     *
-     * @return array
      */
     public function getSupportedCurrencies(): array
     {
@@ -174,10 +158,6 @@ class CurrencyRateService
 
     /**
      * Multi-currency fiyat listesi
-     *
-     * @param float $amount
-     * @param string $baseCurrency
-     * @return array
      */
     public function convertToAllCurrencies(float $amount, string $baseCurrency = 'TRY'): array
     {
@@ -189,7 +169,7 @@ class CurrencyRateService
                 'amount' => $converted,
                 'formatted' => $this->format($converted, $currency),
                 'symbol' => $info['symbol'],
-                'name' => $info['name']
+                'name' => $info['name'],
             ];
         }
 

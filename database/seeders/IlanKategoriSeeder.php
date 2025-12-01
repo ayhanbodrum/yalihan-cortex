@@ -2,9 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\IlanKategori;
-use Illuminate\Support\Str;
+use Illuminate\Database\Seeder;
 
 class IlanKategoriSeeder extends Seeder
 {
@@ -22,7 +21,7 @@ class IlanKategoriSeeder extends Seeder
                 'status' => true,
                 'display_order' => 1,
                 'icon' => 'home',
-                'description' => 'Daire, villa, müstakil ev gibi konut türleri'
+                'description' => 'Daire, villa, müstakil ev gibi konut türleri',
             ],
             [
                 'name' => 'İşyeri',
@@ -31,7 +30,7 @@ class IlanKategoriSeeder extends Seeder
                 'status' => true,
                 'display_order' => 2,
                 'icon' => 'building',
-                'description' => 'Ofis, dükkan, fabrika gibi ticari alanlar'
+                'description' => 'Ofis, dükkan, fabrika gibi ticari alanlar',
             ],
             [
                 'name' => 'Arsa',
@@ -40,7 +39,7 @@ class IlanKategoriSeeder extends Seeder
                 'status' => true,
                 'display_order' => 3,
                 'icon' => 'map',
-                'description' => 'İmar, tarım, orman arazileri'
+                'description' => 'İmar, tarım, orman arazileri',
             ],
             [
                 'name' => 'Yazlık Kiralama',
@@ -49,7 +48,7 @@ class IlanKategoriSeeder extends Seeder
                 'status' => true,
                 'display_order' => 4,
                 'icon' => 'sun',
-                'description' => 'Günlük, haftalık, aylık yazlık kiralama'
+                'description' => 'Günlük, haftalık, aylık yazlık kiralama',
             ],
             [
                 'name' => 'Turistik Tesisler',
@@ -58,8 +57,8 @@ class IlanKategoriSeeder extends Seeder
                 'status' => true,
                 'display_order' => 5,
                 'icon' => 'hotel',
-                'description' => 'Otel, pansiyon, tatil köyü gibi tesisler'
-            ]
+                'description' => 'Otel, pansiyon, tatil köyü gibi tesisler',
+            ],
         ];
 
         $anaKategoriIds = [];
@@ -79,7 +78,7 @@ class IlanKategoriSeeder extends Seeder
                 'status' => true,
                 'display_order' => 1,
                 'icon' => 'apartment',
-                'description' => 'Apartman dairesi'
+                'description' => 'Apartman dairesi',
             ],
             [
                 'name' => 'Villa',
@@ -89,7 +88,7 @@ class IlanKategoriSeeder extends Seeder
                 'status' => true,
                 'display_order' => 2,
                 'icon' => 'villa',
-                'description' => 'Müstakil villa'
+                'description' => 'Müstakil villa',
             ],
             [
                 'name' => 'Müstakil Ev',
@@ -99,7 +98,7 @@ class IlanKategoriSeeder extends Seeder
                 'status' => true,
                 'display_order' => 3,
                 'icon' => 'house',
-                'description' => 'Tek ailelik müstakil ev'
+                'description' => 'Tek ailelik müstakil ev',
             ],
             [
                 'name' => 'Dubleks',
@@ -109,7 +108,7 @@ class IlanKategoriSeeder extends Seeder
                 'status' => true,
                 'display_order' => 4,
                 'icon' => 'duplex',
-                'description' => 'İki katlı konut'
+                'description' => 'İki katlı konut',
             ],
 
             // İşyeri Alt Kategorileri
@@ -121,7 +120,7 @@ class IlanKategoriSeeder extends Seeder
                 'status' => true,
                 'display_order' => 1,
                 'icon' => 'office',
-                'description' => 'Büro ve ofis alanları'
+                'description' => 'Büro ve ofis alanları',
             ],
             [
                 'name' => 'Dükkan',
@@ -131,7 +130,7 @@ class IlanKategoriSeeder extends Seeder
                 'status' => true,
                 'display_order' => 2,
                 'icon' => 'shop',
-                'description' => 'Perakende satış dükkanları'
+                'description' => 'Perakende satış dükkanları',
             ],
             [
                 'name' => 'Fabrika',
@@ -141,7 +140,7 @@ class IlanKategoriSeeder extends Seeder
                 'status' => true,
                 'display_order' => 3,
                 'icon' => 'factory',
-                'description' => 'Üretim tesisleri'
+                'description' => 'Üretim tesisleri',
             ],
             [
                 'name' => 'Depo',
@@ -151,7 +150,7 @@ class IlanKategoriSeeder extends Seeder
                 'status' => true,
                 'display_order' => 4,
                 'icon' => 'warehouse',
-                'description' => 'Depolama alanları'
+                'description' => 'Depolama alanları',
             ],
 
             // Arsa Alt Kategorileri
@@ -163,7 +162,7 @@ class IlanKategoriSeeder extends Seeder
                 'status' => true,
                 'display_order' => 1,
                 'icon' => 'land',
-                'description' => 'İmar planına uygun arsalar'
+                'description' => 'İmar planına uygun arsalar',
             ],
             [
                 'name' => 'Tarım Arazileri',
@@ -173,7 +172,7 @@ class IlanKategoriSeeder extends Seeder
                 'status' => true,
                 'display_order' => 2,
                 'icon' => 'farm',
-                'description' => 'Tarımsal faaliyet için araziler'
+                'description' => 'Tarımsal faaliyet için araziler',
             ],
             [
                 'name' => 'Orman Arazileri',
@@ -183,7 +182,7 @@ class IlanKategoriSeeder extends Seeder
                 'status' => true,
                 'display_order' => 3,
                 'icon' => 'forest',
-                'description' => 'Ormanlık alanlar'
+                'description' => 'Ormanlık alanlar',
             ],
 
             // Yazlık Kiralama Alt Kategorileri
@@ -195,7 +194,7 @@ class IlanKategoriSeeder extends Seeder
                 'status' => true,
                 'display_order' => 1,
                 'icon' => 'calendar-day',
-                'description' => 'Günlük yazlık kiralama'
+                'description' => 'Günlük yazlık kiralama',
             ],
             [
                 'name' => 'Haftalık Kiralama',
@@ -205,7 +204,7 @@ class IlanKategoriSeeder extends Seeder
                 'status' => true,
                 'display_order' => 2,
                 'icon' => 'calendar-week',
-                'description' => 'Haftalık yazlık kiralama'
+                'description' => 'Haftalık yazlık kiralama',
             ],
             [
                 'name' => 'Aylık Kiralama',
@@ -215,7 +214,7 @@ class IlanKategoriSeeder extends Seeder
                 'status' => true,
                 'display_order' => 3,
                 'icon' => 'calendar-month',
-                'description' => 'Aylık yazlık kiralama'
+                'description' => 'Aylık yazlık kiralama',
             ],
 
             // Turistik Tesisler Alt Kategorileri
@@ -227,7 +226,7 @@ class IlanKategoriSeeder extends Seeder
                 'status' => true,
                 'display_order' => 1,
                 'icon' => 'hotel',
-                'description' => 'Otel tesisleri'
+                'description' => 'Otel tesisleri',
             ],
             [
                 'name' => 'Pansiyon',
@@ -237,7 +236,7 @@ class IlanKategoriSeeder extends Seeder
                 'status' => true,
                 'display_order' => 2,
                 'icon' => 'pension',
-                'description' => 'Pansiyon tesisleri'
+                'description' => 'Pansiyon tesisleri',
             ],
             [
                 'name' => 'Tatil Köyü',
@@ -247,8 +246,8 @@ class IlanKategoriSeeder extends Seeder
                 'status' => true,
                 'display_order' => 3,
                 'icon' => 'resort',
-                'description' => 'Tatil köyü tesisleri'
-            ]
+                'description' => 'Tatil köyü tesisleri',
+            ],
         ];
 
         $altKategoriIds = [];
@@ -268,7 +267,7 @@ class IlanKategoriSeeder extends Seeder
                 'status' => true,
                 'display_order' => 1,
                 'icon' => 'sale',
-                'description' => 'Satılık daire'
+                'description' => 'Satılık daire',
             ],
             [
                 'name' => 'Kiralık',
@@ -278,7 +277,7 @@ class IlanKategoriSeeder extends Seeder
                 'status' => true,
                 'display_order' => 2,
                 'icon' => 'rent',
-                'description' => 'Kiralık daire'
+                'description' => 'Kiralık daire',
             ],
 
             // Villa Yayın Tipleri
@@ -290,7 +289,7 @@ class IlanKategoriSeeder extends Seeder
                 'status' => true,
                 'display_order' => 1,
                 'icon' => 'sale',
-                'description' => 'Satılık villa'
+                'description' => 'Satılık villa',
             ],
             [
                 'name' => 'Kiralık',
@@ -300,7 +299,7 @@ class IlanKategoriSeeder extends Seeder
                 'status' => true,
                 'display_order' => 2,
                 'icon' => 'rent',
-                'description' => 'Kiralık villa'
+                'description' => 'Kiralık villa',
             ],
 
             // Müstakil Ev Yayın Tipleri
@@ -312,7 +311,7 @@ class IlanKategoriSeeder extends Seeder
                 'status' => true,
                 'display_order' => 1,
                 'icon' => 'sale',
-                'description' => 'Satılık müstakil ev'
+                'description' => 'Satılık müstakil ev',
             ],
             [
                 'name' => 'Kiralık',
@@ -322,7 +321,7 @@ class IlanKategoriSeeder extends Seeder
                 'status' => true,
                 'display_order' => 2,
                 'icon' => 'rent',
-                'description' => 'Kiralık müstakil ev'
+                'description' => 'Kiralık müstakil ev',
             ],
 
             // Dubleks Yayın Tipleri
@@ -334,7 +333,7 @@ class IlanKategoriSeeder extends Seeder
                 'status' => true,
                 'display_order' => 1,
                 'icon' => 'sale',
-                'description' => 'Satılık dubleks'
+                'description' => 'Satılık dubleks',
             ],
             [
                 'name' => 'Kiralık',
@@ -344,7 +343,7 @@ class IlanKategoriSeeder extends Seeder
                 'status' => true,
                 'display_order' => 2,
                 'icon' => 'rent',
-                'description' => 'Kiralık dubleks'
+                'description' => 'Kiralık dubleks',
             ],
 
             // Ofis Yayın Tipleri
@@ -356,7 +355,7 @@ class IlanKategoriSeeder extends Seeder
                 'status' => true,
                 'display_order' => 1,
                 'icon' => 'sale',
-                'description' => 'Satılık ofis'
+                'description' => 'Satılık ofis',
             ],
             [
                 'name' => 'Kiralık',
@@ -366,7 +365,7 @@ class IlanKategoriSeeder extends Seeder
                 'status' => true,
                 'display_order' => 2,
                 'icon' => 'rent',
-                'description' => 'Kiralık ofis'
+                'description' => 'Kiralık ofis',
             ],
 
             // Dükkan Yayın Tipleri
@@ -378,7 +377,7 @@ class IlanKategoriSeeder extends Seeder
                 'status' => true,
                 'display_order' => 1,
                 'icon' => 'sale',
-                'description' => 'Satılık dükkan'
+                'description' => 'Satılık dükkan',
             ],
             [
                 'name' => 'Kiralık',
@@ -388,7 +387,7 @@ class IlanKategoriSeeder extends Seeder
                 'status' => true,
                 'display_order' => 2,
                 'icon' => 'rent',
-                'description' => 'Kiralık dükkan'
+                'description' => 'Kiralık dükkan',
             ],
 
             // Fabrika Yayın Tipleri
@@ -400,7 +399,7 @@ class IlanKategoriSeeder extends Seeder
                 'status' => true,
                 'display_order' => 1,
                 'icon' => 'sale',
-                'description' => 'Satılık fabrika'
+                'description' => 'Satılık fabrika',
             ],
             [
                 'name' => 'Kiralık',
@@ -410,7 +409,7 @@ class IlanKategoriSeeder extends Seeder
                 'status' => true,
                 'display_order' => 2,
                 'icon' => 'rent',
-                'description' => 'Kiralık fabrika'
+                'description' => 'Kiralık fabrika',
             ],
 
             // Depo Yayın Tipleri
@@ -422,7 +421,7 @@ class IlanKategoriSeeder extends Seeder
                 'status' => true,
                 'display_order' => 1,
                 'icon' => 'sale',
-                'description' => 'Satılık depo'
+                'description' => 'Satılık depo',
             ],
             [
                 'name' => 'Kiralık',
@@ -432,7 +431,7 @@ class IlanKategoriSeeder extends Seeder
                 'status' => true,
                 'display_order' => 2,
                 'icon' => 'rent',
-                'description' => 'Kiralık depo'
+                'description' => 'Kiralık depo',
             ],
 
             // İmar Arsaları Yayın Tipleri
@@ -444,7 +443,7 @@ class IlanKategoriSeeder extends Seeder
                 'status' => true,
                 'display_order' => 1,
                 'icon' => 'sale',
-                'description' => 'Satılık imar arsası'
+                'description' => 'Satılık imar arsası',
             ],
 
             // Tarım Arazileri Yayın Tipleri
@@ -456,7 +455,7 @@ class IlanKategoriSeeder extends Seeder
                 'status' => true,
                 'display_order' => 1,
                 'icon' => 'sale',
-                'description' => 'Satılık tarım arazisi'
+                'description' => 'Satılık tarım arazisi',
             ],
 
             // Orman Arazileri Yayın Tipleri
@@ -468,7 +467,7 @@ class IlanKategoriSeeder extends Seeder
                 'status' => true,
                 'display_order' => 1,
                 'icon' => 'sale',
-                'description' => 'Satılık orman arazisi'
+                'description' => 'Satılık orman arazisi',
             ],
 
             // Günlük Kiralama Yayın Tipleri
@@ -480,7 +479,7 @@ class IlanKategoriSeeder extends Seeder
                 'status' => true,
                 'display_order' => 1,
                 'icon' => 'calendar-day',
-                'description' => 'Günlük yazlık kiralama'
+                'description' => 'Günlük yazlık kiralama',
             ],
 
             // Haftalık Kiralama Yayın Tipleri
@@ -492,7 +491,7 @@ class IlanKategoriSeeder extends Seeder
                 'status' => true,
                 'display_order' => 1,
                 'icon' => 'calendar-week',
-                'description' => 'Haftalık yazlık kiralama'
+                'description' => 'Haftalık yazlık kiralama',
             ],
 
             // Aylık Kiralama Yayın Tipleri
@@ -504,7 +503,7 @@ class IlanKategoriSeeder extends Seeder
                 'status' => true,
                 'display_order' => 1,
                 'icon' => 'calendar-month',
-                'description' => 'Aylık yazlık kiralama'
+                'description' => 'Aylık yazlık kiralama',
             ],
 
             // Otel Yayın Tipleri
@@ -516,7 +515,7 @@ class IlanKategoriSeeder extends Seeder
                 'status' => true,
                 'display_order' => 1,
                 'icon' => 'sale',
-                'description' => 'Satılık otel'
+                'description' => 'Satılık otel',
             ],
             [
                 'name' => 'Kiralık',
@@ -526,7 +525,7 @@ class IlanKategoriSeeder extends Seeder
                 'status' => true,
                 'display_order' => 2,
                 'icon' => 'rent',
-                'description' => 'Kiralık otel'
+                'description' => 'Kiralık otel',
             ],
 
             // Pansiyon Yayın Tipleri
@@ -538,7 +537,7 @@ class IlanKategoriSeeder extends Seeder
                 'status' => true,
                 'display_order' => 1,
                 'icon' => 'sale',
-                'description' => 'Satılık pansiyon'
+                'description' => 'Satılık pansiyon',
             ],
             [
                 'name' => 'Kiralık',
@@ -548,7 +547,7 @@ class IlanKategoriSeeder extends Seeder
                 'status' => true,
                 'display_order' => 2,
                 'icon' => 'rent',
-                'description' => 'Kiralık pansiyon'
+                'description' => 'Kiralık pansiyon',
             ],
 
             // Tatil Köyü Yayın Tipleri
@@ -560,7 +559,7 @@ class IlanKategoriSeeder extends Seeder
                 'status' => true,
                 'display_order' => 1,
                 'icon' => 'sale',
-                'description' => 'Satılık tatil köyü'
+                'description' => 'Satılık tatil köyü',
             ],
             [
                 'name' => 'Kiralık',
@@ -570,8 +569,8 @@ class IlanKategoriSeeder extends Seeder
                 'status' => true,
                 'display_order' => 2,
                 'icon' => 'rent',
-                'description' => 'Kiralık tatil köyü'
-            ]
+                'description' => 'Kiralık tatil köyü',
+            ],
         ];
 
         foreach ($yayinTipleri as $yayinTipi) {
@@ -579,8 +578,8 @@ class IlanKategoriSeeder extends Seeder
         }
 
         $this->command->info('İlan kategorileri başarıyla oluşturuldu!');
-        $this->command->info('Ana Kategoriler: ' . count($anaKategoriler));
-        $this->command->info('Alt Kategoriler: ' . count($altKategoriler));
-        $this->command->info('Yayın Tipleri: ' . count($yayinTipleri));
+        $this->command->info('Ana Kategoriler: '.count($anaKategoriler));
+        $this->command->info('Alt Kategoriler: '.count($altKategoriler));
+        $this->command->info('Yayın Tipleri: '.count($yayinTipleri));
     }
 }

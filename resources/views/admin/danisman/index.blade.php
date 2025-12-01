@@ -1,4 +1,4 @@
-@extends('admin.layouts.neo')
+@extends('admin.layouts.admin')
 
 @section('title', 'Danışman Yönetimi')
 
@@ -285,40 +285,70 @@
                                 <td class="px-6 py-4">
                                     <div class="space-y-2">
                                         <div class="flex items-center gap-2 flex-wrap">
-                                            {{-- ✅ Context7: Sadece aktif durum göster (status field kullanımı) --}}
+                                            {{-- ✅ Context7: Sadece bu danışmanın durumunu göster (tek badge) --}}
                                             @php
                                                 // Context7: status field kullanımı (aktif/is_active YASAK)
                                                 $statusValue = null;
+                                                $statusLabel = 'Aktif';
                                                 
-                                                // Boolean status kontrolü
-                                                if (is_bool($danisman->status)) {
-                                                    $statusValue = $danisman->status ? 'aktif' : 'pasif';
-                                                } elseif ($danisman->status === 1 || $danisman->status === '1') {
-                                                    $statusValue = 'aktif';
-                                                } elseif ($danisman->status === 0 || $danisman->status === '0') {
-                                                    $statusValue = 'pasif';
-                                                } else {
-                                                    // Default: aktif
-                                                    $statusValue = 'aktif';
-                                                }
-                                                
-                                                // status_text varsa ve geçerli bir durum ise kullan
+                                                // status_text varsa öncelikli olarak kullan
                                                 if (!empty($danisman->status_text)) {
                                                     $statusText = strtolower(trim($danisman->status_text));
-                                                    // Sadece geçerli durumlar
-                                                    $validStatuses = ['aktif', 'pasif', 'taslak', 'onay_bekliyor', 'yayinda', 'satildi', 'kiralandi', 'arsivlendi'];
-                                                    if (in_array($statusText, $validStatuses)) {
-                                                        $statusValue = $statusText;
+                                                    $statusValue = $statusText;
+                                                    
+                                                    // Label mapping
+                                                    $labelMap = [
+                                                        'aktif' => 'Aktif',
+                                                        'pasif' => 'Pasif',
+                                                        'taslak' => 'Taslak',
+                                                        'onay_bekliyor' => 'Onay Bekliyor',
+                                                        'yayinda' => 'Yayında',
+                                                        'satildi' => 'Satıldı',
+                                                        'kiralandi' => 'Kiralandı',
+                                                        'arsivlendi' => 'Arşivlendi',
+                                                    ];
+                                                    $statusLabel = $labelMap[$statusText] ?? ucfirst(str_replace('_', ' ', $statusText));
+                                                } else {
+                                                    // Boolean status kontrolü
+                                                    if (is_bool($danisman->status)) {
+                                                        $statusValue = $danisman->status ? 'aktif' : 'pasif';
+                                                        $statusLabel = $danisman->status ? 'Aktif' : 'Pasif';
+                                                    } elseif ($danisman->status === 1 || $danisman->status === '1') {
+                                                        $statusValue = 'aktif';
+                                                        $statusLabel = 'Aktif';
+                                                    } elseif ($danisman->status === 0 || $danisman->status === '0') {
+                                                        $statusValue = 'pasif';
+                                                        $statusLabel = 'Pasif';
+                                                    } else {
+                                                        $statusValue = 'aktif';
+                                                        $statusLabel = 'Aktif';
                                                     }
                                                 }
+                                                
+                                                // Renk mapping
+                                                $colorMap = [
+                                                    'aktif' => 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300',
+                                                    'pasif' => 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300',
+                                                    'taslak' => 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-300',
+                                                    'onay_bekliyor' => 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300',
+                                                    'yayinda' => 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300',
+                                                    'satildi' => 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300',
+                                                    'kiralandi' => 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-300',
+                                                    'arsivlendi' => 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-300',
+                                                ];
+                                                $colorClass = $colorMap[$statusValue] ?? 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-300';
                                             @endphp
                                             
-                                            {{-- ✅ Context7: Tek durum badge'i göster --}}
-                                            <x-neo.status-badge :value="$statusValue" size="xs" />
+                                            {{-- Tek durum badge'i (Tailwind ile) --}}
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $colorClass }} transition-all duration-200">
+                                                {{ $statusLabel }}
+                                            </span>
                                             
-                                            {{-- Online durum badge'i (ayrı) --}}
+                                            {{-- Online durum badge'i (ayrı, sadece online ise) --}}
                                             @if($danisman->last_activity_at && $danisman->last_activity_at->isAfter(now()->subMinutes(5)))
-                                                <x-neo.status-badge value="Online" category="info" size="xs" />
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 transition-all duration-200">
+                                                    Online
+                                                </span>
                                             @endif
                                         </div>
                                         

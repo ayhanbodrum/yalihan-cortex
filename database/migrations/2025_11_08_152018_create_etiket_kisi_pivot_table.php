@@ -17,10 +17,10 @@ return new class extends Migration
             $table->foreignId('kisi_id')->constrained('kisiler')->onDelete('cascade');
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null')->comment('Etiketi ekleyen kullanıcı');
             $table->timestamps();
-            
+
             // Unique constraint: Bir kişiye aynı etiket birden fazla kez eklenemez
             $table->unique(['etiket_id', 'kisi_id'], 'etiket_kisi_unique');
-            
+
             // Indexes
             $table->index('etiket_id');
             $table->index('kisi_id');

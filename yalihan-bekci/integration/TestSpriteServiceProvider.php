@@ -2,9 +2,9 @@
 
 namespace App\Services\MCP;
 
-use Illuminate\Support\ServiceProvider;
-use Illuminate\Console\Scheduling\Schedule;
 use App\Console\Commands\RunTestSpriteCommand;
+use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Support\ServiceProvider;
 
 class TestSpriteServiceProvider extends ServiceProvider
 {
@@ -16,7 +16,7 @@ class TestSpriteServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->singleton('testsprite', function ($app) {
-            return new TestSpriteService();
+            return new TestSpriteService;
         });
 
         $this->mergeConfigFrom(

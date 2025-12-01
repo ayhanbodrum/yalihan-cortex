@@ -9,7 +9,8 @@ class AiMonitorService
 {
     public function summary(int $hours = 24): array
     {
-        $key = 'ai_monitor:summary:' . $hours;
+        $key = 'ai_monitor:summary:'.$hours;
+
         return Cache::remember($key, now()->addMinutes(5), function () use ($hours) {
             $from = now()->subHours($hours);
 
@@ -41,7 +42,8 @@ class AiMonitorService
 
     public function byModel(int $days = 7): array
     {
-        $key = 'ai_monitor:by_model:' . $days;
+        $key = 'ai_monitor:by_model:'.$days;
+
         return Cache::remember($key, now()->addMinutes(5), function () use ($days) {
             $from = now()->subDays($days);
             $rows = AiLog::query()
@@ -67,6 +69,7 @@ class AiMonitorService
                     'total_cost' => round((float) ($row->cost ?? 0), 6),
                 ];
             }
+
             return $data;
         });
     }

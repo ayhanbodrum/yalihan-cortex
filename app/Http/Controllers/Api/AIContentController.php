@@ -6,13 +6,14 @@ use App\Http\Controllers\Controller;
 use App\Services\Response\ResponseService;
 use App\Traits\ValidatesApiRequests;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 class AIContentController extends Controller
 {
     use ValidatesApiRequests;
+
     /**
      * AI Başlık Üretimi
      */
@@ -22,7 +23,7 @@ class AIContentController extends Controller
             'provider' => 'required|string|in:ollama,openai,gemini,claude',
             'category' => 'required|string',
             'location' => 'required|string',
-            'features' => 'array'
+            'features' => 'array',
         ]);
 
         if ($validated instanceof \Illuminate\Http\JsonResponse) {
@@ -30,24 +31,25 @@ class AIContentController extends Controller
         }
 
         try {
-            $cacheKey = 'ai_titles_' . md5(json_encode($request->all()));
+            $cacheKey = 'ai_titles_'.md5(json_encode($request->all()));
 
             $titles = Cache::remember($cacheKey, 3600, function () use ($request) {
                 return $this->callAIProvider($request->provider, 'titles', [
                     'category' => $request->category,
                     'location' => $request->location,
-                    'features' => $request->features ?? []
+                    'features' => $request->features ?? [],
                 ]);
             });
 
             return ResponseService::success([
                 'titles' => $titles,
                 'provider' => $request->provider,
-                'generated_at' => now()->toISOString()
+                'generated_at' => now()->toISOString(),
             ], 'AI başlıklar başarıyla üretildi');
 
         } catch (\Exception $e) {
-            Log::error('AI Title Generation Error: ' . $e->getMessage());
+            Log::error('AI Title Generation Error: '.$e->getMessage());
+
             return ResponseService::serverError('Başlık üretimi sırasında hata oluştu.', $e);
         }
     }
@@ -61,7 +63,7 @@ class AIContentController extends Controller
             'provider' => 'required|string|in:ollama,openai,gemini,claude',
             'style' => 'required|string|in:professional,casual,luxury,technical',
             'length' => 'required|string|in:short,medium,long',
-            'formData' => 'required|array'
+            'formData' => 'required|array',
         ]);
 
         if ($validated instanceof \Illuminate\Http\JsonResponse) {
@@ -69,13 +71,13 @@ class AIContentController extends Controller
         }
 
         try {
-            $cacheKey = 'ai_description_' . md5(json_encode($request->all()));
+            $cacheKey = 'ai_description_'.md5(json_encode($request->all()));
 
             $description = Cache::remember($cacheKey, 3600, function () use ($request) {
                 return $this->callAIProvider($request->provider, 'description', [
                     'style' => $request->style,
                     'length' => $request->length,
-                    'formData' => $request->formData
+                    'formData' => $request->formData,
                 ]);
             });
 
@@ -84,11 +86,12 @@ class AIContentController extends Controller
                 'provider' => $request->provider,
                 'style' => $request->style,
                 'length' => $request->length,
-                'generated_at' => now()->toISOString()
+                'generated_at' => now()->toISOString(),
             ], 'AI açıklama başarıyla üretildi');
 
         } catch (\Exception $e) {
-            Log::error('AI Description Generation Error: ' . $e->getMessage());
+            Log::error('AI Description Generation Error: '.$e->getMessage());
+
             return ResponseService::serverError('Açıklama üretimi sırasında hata oluştu.', $e);
         }
     }
@@ -101,7 +104,7 @@ class AIContentController extends Controller
         $validated = $this->validateRequestWithResponse($request, [
             'provider' => 'required|string|in:ollama,openai,gemini,claude',
             'category' => 'required|string',
-            'location' => 'required|string'
+            'location' => 'required|string',
         ]);
 
         if ($validated instanceof \Illuminate\Http\JsonResponse) {
@@ -109,23 +112,24 @@ class AIContentController extends Controller
         }
 
         try {
-            $cacheKey = 'ai_features_' . md5(json_encode($request->all()));
+            $cacheKey = 'ai_features_'.md5(json_encode($request->all()));
 
             $features = Cache::remember($cacheKey, 3600, function () use ($request) {
                 return $this->callAIProvider($request->provider, 'features', [
                     'category' => $request->category,
-                    'location' => $request->location
+                    'location' => $request->location,
                 ]);
             });
 
             return ResponseService::success([
                 'features' => $features,
                 'provider' => $request->provider,
-                'generated_at' => now()->toISOString()
+                'generated_at' => now()->toISOString(),
             ], 'AI özellikler başarıyla üretildi');
 
         } catch (\Exception $e) {
-            Log::error('AI Features Generation Error: ' . $e->getMessage());
+            Log::error('AI Features Generation Error: '.$e->getMessage());
+
             return ResponseService::serverError('Özellik üretimi sırasında hata oluştu.', $e);
         }
     }
@@ -139,7 +143,7 @@ class AIContentController extends Controller
             'provider' => 'required|string|in:ollama,openai,gemini,claude',
             'title' => 'required|string',
             'description' => 'required|string',
-            'category' => 'required|string'
+            'category' => 'required|string',
         ]);
 
         if ($validated instanceof \Illuminate\Http\JsonResponse) {
@@ -147,24 +151,25 @@ class AIContentController extends Controller
         }
 
         try {
-            $cacheKey = 'ai_seo_' . md5(json_encode($request->all()));
+            $cacheKey = 'ai_seo_'.md5(json_encode($request->all()));
 
             $seo = Cache::remember($cacheKey, 3600, function () use ($request) {
                 return $this->callAIProvider($request->provider, 'seo', [
                     'title' => $request->title,
                     'description' => $request->description,
-                    'category' => $request->category
+                    'category' => $request->category,
                 ]);
             });
 
             return ResponseService::success([
                 'seo' => $seo,
                 'provider' => $request->provider,
-                'generated_at' => now()->toISOString()
+                'generated_at' => now()->toISOString(),
             ], 'AI SEO analizi başarıyla üretildi');
 
         } catch (\Exception $e) {
-            Log::error('AI SEO Generation Error: ' . $e->getMessage());
+            Log::error('AI SEO Generation Error: '.$e->getMessage());
+
             return ResponseService::serverError('SEO analizi sırasında hata oluştu.', $e);
         }
     }
@@ -178,12 +183,12 @@ class AIContentController extends Controller
             'ollama' => $this->checkOllamaStatus(),
             'openai' => $this->checkOpenAIStatus(),
             'gemini' => $this->checkGeminiStatus(),
-            'claude' => $this->checkClaudeStatus()
+            'claude' => $this->checkClaudeStatus(),
         ];
 
         return ResponseService::success([
             'providers' => $providers,
-            'timestamp' => now()->toISOString()
+            'timestamp' => now()->toISOString(),
         ], 'AI sağlayıcı durumu başarıyla kontrol edildi');
     }
 
@@ -216,14 +221,14 @@ class AIContentController extends Controller
         $response = Http::timeout(30)->post('http://51.75.64.121:11434/api/generate', [
             'model' => 'gemma2:2b',
             'prompt' => $prompt,
-            'stream' => false
+            'stream' => false,
         ]);
 
         if ($response->successful()) {
             return $this->parseOllamaResponse($response->json(), $type);
         }
 
-        throw new \Exception('Ollama API hatası: ' . $response->body());
+        throw new \Exception('Ollama API hatası: '.$response->body());
     }
 
     /**
@@ -234,22 +239,22 @@ class AIContentController extends Controller
         $prompt = $this->buildPrompt($type, $data);
 
         $response = Http::withHeaders([
-            'Authorization' => 'Bearer ' . config('ai.openai.api_key'),
-            'Content-Type' => 'application/json'
+            'Authorization' => 'Bearer '.config('ai.openai.api_key'),
+            'Content-Type' => 'application/json',
         ])->timeout(30)->post('https://api.openai.com/v1/chat/completions', [
             'model' => 'gpt-4',
             'messages' => [
-                ['role' => 'user', 'content' => $prompt]
+                ['role' => 'user', 'content' => $prompt],
             ],
             'max_tokens' => 1000,
-            'temperature' => 0.7
+            'temperature' => 0.7,
         ]);
 
         if ($response->successful()) {
             return $this->parseOpenAIResponse($response->json(), $type);
         }
 
-        throw new \Exception('OpenAI API hatası: ' . $response->body());
+        throw new \Exception('OpenAI API hatası: '.$response->body());
     }
 
     /**
@@ -263,17 +268,17 @@ class AIContentController extends Controller
             'contents' => [
                 [
                     'parts' => [
-                        ['text' => $prompt]
-                    ]
-                ]
-            ]
+                        ['text' => $prompt],
+                    ],
+                ],
+            ],
         ]);
 
         if ($response->successful()) {
             return $this->parseGeminiResponse($response->json(), $type);
         }
 
-        throw new \Exception('Gemini API hatası: ' . $response->body());
+        throw new \Exception('Gemini API hatası: '.$response->body());
     }
 
     /**
@@ -285,20 +290,20 @@ class AIContentController extends Controller
 
         $response = Http::withHeaders([
             'x-api-key' => config('ai.claude.api_key'),
-            'Content-Type' => 'application/json'
+            'Content-Type' => 'application/json',
         ])->timeout(30)->post('https://api.anthropic.com/v1/messages', [
             'model' => 'claude-3-sonnet-20240229',
             'max_tokens' => 1000,
             'messages' => [
-                ['role' => 'user', 'content' => $prompt]
-            ]
+                ['role' => 'user', 'content' => $prompt],
+            ],
         ]);
 
         if ($response->successful()) {
             return $this->parseClaudeResponse($response->json(), $type);
         }
 
-        throw new \Exception('Claude API hatası: ' . $response->body());
+        throw new \Exception('Claude API hatası: '.$response->body());
     }
 
     /**
@@ -325,11 +330,11 @@ class AIContentController extends Controller
      */
     private function buildTitlePrompt($data)
     {
-        return "Emlak ilanı için başlık önerileri oluştur:\n" .
-               "Kategori: {$data['category']}\n" .
-               "Konum: {$data['location']}\n" .
-               "Özellikler: " . implode(', ', $data['features'] ?? []) . "\n\n" .
-               "5 farklı başlık önerisi ver. Her biri çekici ve SEO uyumlu olsun.";
+        return "Emlak ilanı için başlık önerileri oluştur:\n".
+               "Kategori: {$data['category']}\n".
+               "Konum: {$data['location']}\n".
+               'Özellikler: '.implode(', ', $data['features'] ?? [])."\n\n".
+               '5 farklı başlık önerisi ver. Her biri çekici ve SEO uyumlu olsun.';
     }
 
     /**
@@ -340,11 +345,11 @@ class AIContentController extends Controller
         $style = $data['style'] ?? 'professional';
         $length = $data['length'] ?? 'medium';
 
-        return "Emlak ilanı için açıklama oluştur:\n" .
-               "Stil: {$style}\n" .
-               "Uzunluk: {$length}\n" .
-               "Form verileri: " . json_encode($data['formData']) . "\n\n" .
-               "Çekici ve detaylı bir açıklama yaz.";
+        return "Emlak ilanı için açıklama oluştur:\n".
+               "Stil: {$style}\n".
+               "Uzunluk: {$length}\n".
+               'Form verileri: '.json_encode($data['formData'])."\n\n".
+               'Çekici ve detaylı bir açıklama yaz.';
     }
 
     /**
@@ -352,10 +357,10 @@ class AIContentController extends Controller
      */
     private function buildFeaturesPrompt($data)
     {
-        return "Emlak ilanı için özellik önerileri oluştur:\n" .
-               "Kategori: {$data['category']}\n" .
-               "Konum: {$data['location']}\n\n" .
-               "Bu kategori ve konum için uygun özellikleri listele.";
+        return "Emlak ilanı için özellik önerileri oluştur:\n".
+               "Kategori: {$data['category']}\n".
+               "Konum: {$data['location']}\n\n".
+               'Bu kategori ve konum için uygun özellikleri listele.';
     }
 
     /**
@@ -363,11 +368,11 @@ class AIContentController extends Controller
      */
     private function buildSEOPrompt($data)
     {
-        return "Emlak ilanı için SEO analizi yap:\n" .
-               "Başlık: {$data['title']}\n" .
-               "Açıklama: {$data['description']}\n" .
-               "Kategori: {$data['category']}\n\n" .
-               "SEO skoru, okunabilirlik ve anahtar kelime önerileri ver.";
+        return "Emlak ilanı için SEO analizi yap:\n".
+               "Başlık: {$data['title']}\n".
+               "Açıklama: {$data['description']}\n".
+               "Kategori: {$data['category']}\n\n".
+               'SEO skoru, okunabilirlik ve anahtar kelime önerileri ver.';
     }
 
     /**
@@ -376,6 +381,7 @@ class AIContentController extends Controller
     private function parseOllamaResponse($response, $type)
     {
         $content = $response['response'] ?? '';
+
         return $this->parseContentByType($content, $type);
     }
 
@@ -385,6 +391,7 @@ class AIContentController extends Controller
     private function parseOpenAIResponse($response, $type)
     {
         $content = $response['choices'][0]['message']['content'] ?? '';
+
         return $this->parseContentByType($content, $type);
     }
 
@@ -394,6 +401,7 @@ class AIContentController extends Controller
     private function parseGeminiResponse($response, $type)
     {
         $content = $response['candidates'][0]['content']['parts'][0]['text'] ?? '';
+
         return $this->parseContentByType($content, $type);
     }
 
@@ -403,6 +411,7 @@ class AIContentController extends Controller
     private function parseClaudeResponse($response, $type)
     {
         $content = $response['content'][0]['text'] ?? '';
+
         return $this->parseContentByType($content, $type);
     }
 
@@ -435,10 +444,10 @@ class AIContentController extends Controller
 
         foreach ($lines as $line) {
             $line = trim($line);
-            if (!empty($line) && !preg_match('/^\d+\./', $line)) {
+            if (! empty($line) && ! preg_match('/^\d+\./', $line)) {
                 $titles[] = [
                     'text' => $line,
-                    'score' => rand(70, 95)
+                    'score' => rand(70, 95),
                 ];
             }
         }
@@ -456,12 +465,12 @@ class AIContentController extends Controller
 
         foreach ($lines as $line) {
             $line = trim($line);
-            if (!empty($line)) {
+            if (! empty($line)) {
                 $features[] = [
                     'name' => $line,
                     'description' => 'AI önerisi',
                     'category' => 'Genel',
-                    'selected' => false
+                    'selected' => false,
                 ];
             }
         }
@@ -479,7 +488,7 @@ class AIContentController extends Controller
             'keywords' => 'emlak, satılık, kiralık, villa, daire',
             'score' => rand(60, 95),
             'readability' => 'Orta',
-            'wordCount' => rand(150, 300)
+            'wordCount' => rand(150, 300),
         ];
     }
 
@@ -490,6 +499,7 @@ class AIContentController extends Controller
     {
         try {
             $response = Http::timeout(5)->get('http://51.75.64.121:11434/api/tags');
+
             return $response->successful();
         } catch (\Exception $e) {
             return false;
@@ -500,8 +510,9 @@ class AIContentController extends Controller
     {
         try {
             $response = Http::withHeaders([
-                'Authorization' => 'Bearer ' . config('ai.openai.api_key')
+                'Authorization' => 'Bearer '.config('ai.openai.api_key'),
             ])->timeout(5)->get('https://api.openai.com/v1/models');
+
             return $response->successful();
         } catch (\Exception $e) {
             return false;
@@ -512,6 +523,7 @@ class AIContentController extends Controller
     {
         try {
             $response = Http::timeout(5)->get('https://generativelanguage.googleapis.com/v1beta/models');
+
             return $response->successful();
         } catch (\Exception $e) {
             return false;
@@ -522,8 +534,9 @@ class AIContentController extends Controller
     {
         try {
             $response = Http::withHeaders([
-                'x-api-key' => config('ai.claude.api_key')
+                'x-api-key' => config('ai.claude.api_key'),
             ])->timeout(5)->get('https://api.anthropic.com/v1/messages');
+
             return $response->successful();
         } catch (\Exception $e) {
             return false;

@@ -68,7 +68,7 @@ class Context7SystemSeeder extends Seeder
             );
         }
 
-        $this->command->info('✅ ' . count($roles) . ' rol oluşturuldu');
+        $this->command->info('✅ '.count($roles).' rol oluşturuldu');
     }
 
     /**
@@ -104,7 +104,7 @@ class Context7SystemSeeder extends Seeder
         foreach ($adminUsers as $user) {
             $existingUser = DB::table('users')->where('email', $user['email'])->first();
 
-            if (!$existingUser) {
+            if (! $existingUser) {
                 $userId = DB::table('users')->insertGetId($user);
 
                 // Role assignment (simplified for now)
@@ -158,7 +158,7 @@ class Context7SystemSeeder extends Seeder
         foreach ($consultantUsers as $user) {
             $existingUser = DB::table('users')->where('email', $user['email'])->first();
 
-            if (!$existingUser) {
+            if (! $existingUser) {
                 $userId = DB::table('users')->insertGetId($user);
 
                 // Role assignment (simplified for now)
@@ -231,7 +231,7 @@ class Context7SystemSeeder extends Seeder
             );
         }
 
-        $this->command->info('✅ ' . count($expertiseAreas) . ' uzmanlık alanı oluşturuldu');
+        $this->command->info('✅ '.count($expertiseAreas).' uzmanlık alanı oluşturuldu');
     }
 
     /**

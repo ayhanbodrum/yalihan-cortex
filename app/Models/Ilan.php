@@ -2,20 +2,18 @@
 
 namespace App\Models;
 
+use App\Enums\IlanStatus;
+use App\Enums\YayinTipi;
+use App\Traits\Filterable;
 use App\Traits\HasFeatures;
-    use App\Traits\Filterable;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Builder;
-use App\Models\YazlikRezervasyon;
-use App\Models\YazlikFiyatlandirma;
-use App\Enums\IlanStatus;
-use App\Enums\YayinTipi;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Str;
 
@@ -79,7 +77,7 @@ use Illuminate\Support\Str;
  */
 class Ilan extends Model
 {
-    use HasFactory, SoftDeletes, HasFeatures, Filterable;
+    use Filterable, HasFactory, HasFeatures, SoftDeletes;
 
     protected $table = 'ilanlar';
 
@@ -778,6 +776,7 @@ class Ilan extends Model
         if ($s instanceof IlanStatus) {
             return $s->isActive();
         }
+
         return in_array($s, ['yayinda', 'Aktif'], true);
     }
 
@@ -859,10 +858,13 @@ class Ilan extends Model
     public function getOwnerPrivateDataAttribute(): array
     {
         $enc = $this->owner_private_encrypted ?? null;
-        if (!$enc) return [];
+        if (! $enc) {
+            return [];
+        }
         try {
             $json = Crypt::decryptString($enc);
             $arr = json_decode($json, true);
+
             return is_array($arr) ? $arr : [];
         } catch (\Throwable $e) {
             return [];
@@ -888,12 +890,12 @@ class Ilan extends Model
      */
     public function scopeActive($query)
     {
-        return $query->whereIn('status', ['yayinda','Aktif']);
+        return $query->whereIn('status', ['yayinda', 'Aktif']);
     }
 
     public function scopePending($query)
     {
-        return $query->whereIn('status', ['onay_bekliyor','Beklemede']);
+        return $query->whereIn('status', ['onay_bekliyor', 'Beklemede']);
     }
 
     public function scopeByStatus($query, string $status)
@@ -903,7 +905,7 @@ class Ilan extends Model
 
     public function scopePublic($query)
     {
-        return $query->where('crm_only', false)->whereIn('status', ['yayinda','Aktif']);
+        return $query->where('crm_only', false)->whereIn('status', ['yayinda', 'Aktif']);
     }
 
     /**
@@ -976,8 +978,7 @@ class Ilan extends Model
                 }
                 $query->orderBy($defaultSort, $dir);
                 $query->orderBy('id', $dir);
-            }
-            else {
+            } else {
                 if ($dir === 'desc') {
                     $query->orderByRaw('(0 + fiyat) DESC');
                 } else {
@@ -986,11 +987,13 @@ class Ilan extends Model
                 $query->orderBy($defaultSort, $dir);
                 $query->orderBy('id', $dir);
             }
+
             return $query;
         }
         if ($this->getConnection()->getSchemaBuilder()->hasColumn($this->getTable(), $sortBy)) {
             return $query->orderBy($sortBy, $dir);
         }
+
         return $query->orderByDesc($defaultSort);
     }
 
@@ -998,13 +1001,13 @@ class Ilan extends Model
     {
         parent::boot();
         static::creating(function ($model) {
-            if (empty($model->slug) && !empty($model->baslik)) {
-                $model->slug = Str::slug($model->baslik . '-' . uniqid());
+            if (empty($model->slug) && ! empty($model->baslik)) {
+                $model->slug = Str::slug($model->baslik.'-'.uniqid());
             }
         });
         static::updating(function ($model) {
-            if (empty($model->slug) && !empty($model->baslik)) {
-                $model->slug = Str::slug($model->baslik . '-' . uniqid());
+            if (empty($model->slug) && ! empty($model->baslik)) {
+                $model->slug = Str::slug($model->baslik.'-'.uniqid());
             }
         });
     }

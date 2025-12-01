@@ -20,6 +20,7 @@ class BookingRequestMail extends Mailable
     use Queueable, SerializesModels;
 
     public array $bookingData;
+
     public $villa;
 
     /**
@@ -37,7 +38,7 @@ class BookingRequestMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Yeni Rezervasyon Talebi - ' . ($this->villa->baslik ?? 'Villa'),
+            subject: 'Yeni Rezervasyon Talebi - '.($this->villa->baslik ?? 'Villa'),
         );
     }
 

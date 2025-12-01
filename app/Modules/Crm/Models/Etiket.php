@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string|null $color
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Modules\Crm\Models\Kisi> $kisiler
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Kisi> $kisiler
  * @property-read int|null $kisiler_count
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Etiket newModelQuery()

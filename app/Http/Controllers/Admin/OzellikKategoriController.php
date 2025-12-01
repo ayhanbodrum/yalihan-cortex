@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\FeatureCategory;
 use App\Models\Feature;
+use App\Models\FeatureCategory;
 use App\Models\OzellikKategori;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -62,23 +62,26 @@ class OzellikKategoriController extends AdminController
         if (empty($data['slug'])) {
             $data['slug'] = Str::slug($data['name']);
         }
-        if (!array_key_exists('display_order', $data) || is_null($data['display_order'])) {
+        if (! array_key_exists('display_order', $data) || is_null($data['display_order'])) {
             $data['display_order'] = (int) (FeatureCategory::max('display_order') + 1);
         }
 
         FeatureCategory::create($data);
+
         return redirect()->route('admin.ozellikler.kategoriler.index')->with('success', 'Kategori oluşturuldu.');
     }
 
     public function show(int $id)
     {
         $kategori = FeatureCategory::with('features')->findOrFail($id);
+
         return view('admin.ozellikler.kategoriler.ozellikler', compact('kategori'));
     }
 
     public function edit(int $id)
     {
         $kategori = FeatureCategory::with('features')->findOrFail($id);
+
         return view('admin.ozellikler.kategoriler.edit', compact('kategori'));
     }
 
@@ -110,7 +113,7 @@ class OzellikKategoriController extends AdminController
         ]);
 
         // ✅ Context7 Fix: applies_to STRING → JSON array conversion
-        if (!empty($data['applies_to'])) {
+        if (! empty($data['applies_to'])) {
             if (is_string($data['applies_to'])) {
                 // "konut,arsa" → ["konut", "arsa"]
                 $applies = explode(',', $data['applies_to']);
@@ -125,6 +128,7 @@ class OzellikKategoriController extends AdminController
         }
 
         $kategori->update($data);
+
         return redirect()->route('admin.ozellikler.kategoriler.index')->with('success', 'Kategori güncellendi.');
     }
 
@@ -132,12 +136,14 @@ class OzellikKategoriController extends AdminController
     {
         $kategori = FeatureCategory::findOrFail($id);
         $kategori->delete();
+
         return redirect()->route('admin.ozellikler.kategoriler.index')->with('success', 'Kategori silindi.');
     }
 
     public function kategorisizOzellikler()
     {
         $ozellikler = Feature::whereNull('feature_category_id')->orderBy('name')->paginate(50);
+
         return view('admin.ozellikler.kategoriler.kategorisiz-ozellikler', compact('ozellikler'));
     }
 
@@ -146,6 +152,7 @@ class OzellikKategoriController extends AdminController
         $model = FeatureCategory::findOrFail($kategori);
         $model->status = ! $model->status;
         $model->save();
+
         return response()->json(['success' => true, 'status' => $model->status]);
     }
 
@@ -168,11 +175,11 @@ class OzellikKategoriController extends AdminController
             }
 
             // ✅ PERFORMANCE FIX: CASE WHEN ile gerçek bulk update (N query → 1 query)
-            if (!empty($ids)) {
+            if (! empty($ids)) {
                 $cases = [];
                 $bindings = [];
                 foreach ($updates as $id => $displayOrder) {
-                    $cases[] = "WHEN ? THEN ?";
+                    $cases[] = 'WHEN ? THEN ?';
                     $bindings[] = $id;
                     $bindings[] = $displayOrder;
                 }
@@ -187,6 +194,7 @@ class OzellikKategoriController extends AdminController
                 );
             }
         });
+
         return response()->json(['success' => true]);
     }
 
@@ -195,8 +203,11 @@ class OzellikKategoriController extends AdminController
         $slug = (string) $request->get('slug');
         $excludeId = $request->integer('exclude_id');
         $query = OzellikKategori::where('slug', $slug);
-        if ($excludeId) $query->where('id', '!=', $excludeId);
+        if ($excludeId) {
+            $query->where('id', '!=', $excludeId);
+        }
         $exists = $query->exists();
+
         return response()->json(['unique' => ! $exists]);
     }
 
@@ -204,6 +215,7 @@ class OzellikKategoriController extends AdminController
     {
         $kategori = FeatureCategory::with('features')->findOrFail($id);
         $ozellikler = $kategori->features()->orderBy('display_order')->orderBy('name')->paginate(20);
+
         return view('admin.ozellikler.kategoriler.ozellikler', compact('kategori', 'ozellikler'));
     }
 
@@ -216,6 +228,7 @@ class OzellikKategoriController extends AdminController
             'display_order' => ['sometimes', 'integer'], // Context7: order → display_order
         ]);
         $kategori->update($data);
+
         return response()->json(['success' => true]);
     }
 
@@ -223,10 +236,11 @@ class OzellikKategoriController extends AdminController
     {
         $kategori = OzellikKategori::findOrFail($id);
         $yeni = $kategori->replicate();
-        $yeni->name = $kategori->name . ' Kopya';
+        $yeni->name = $kategori->name.' Kopya';
         $yeni->slug = null;
         $yeni->display_order = (int) (OzellikKategori::max('display_order') + 1);
         $yeni->save();
+
         return response()->json(['success' => true, 'id' => $yeni->id]);
     }
 
@@ -238,6 +252,7 @@ class OzellikKategoriController extends AdminController
             'status' => ['required', 'boolean'],
         ]);
         OzellikKategori::whereIn('id', $data['ids'])->update(['status' => $data['status']]);
+
         return response()->json(['success' => true]);
     }
 
@@ -248,6 +263,7 @@ class OzellikKategoriController extends AdminController
             'ids.*' => ['integer', 'exists:ozellik_kategorileri,id'],
         ]);
         OzellikKategori::whereIn('id', $data['ids'])->delete();
+
         return response()->json(['success' => true]);
     }
 
@@ -256,6 +272,7 @@ class OzellikKategoriController extends AdminController
         $toplam = OzellikKategori::count();
         $active = OzellikKategori::where('status', true)->count();
         $pasif = OzellikKategori::where('status', false)->count();
+
         return response()->json(compact('toplam', 'active', 'pasif'));
     }
 }

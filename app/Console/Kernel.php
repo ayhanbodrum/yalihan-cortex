@@ -38,6 +38,16 @@ class Kernel extends ConsoleKernel
         $schedule->exec(base_path('scripts/context7-daily-check.sh'))
             ->dailyAt('09:00')
             ->appendOutputTo(storage_path('logs/context7-daily-check.log'));
+
+        // Context7: Takım Yönetimi Otomasyonu - Görev Deadline Kontrolü
+        // Her gün sabah 08:00 ve öğleden sonra 14:00'te kontrol et
+        $schedule->command('gorevler:check-deadlines --gun=1')
+            ->dailyAt('08:00')
+            ->appendOutputTo(storage_path('logs/gorev-deadline-check.log'));
+
+        $schedule->command('gorevler:check-deadlines --gun=1')
+            ->dailyAt('14:00')
+            ->appendOutputTo(storage_path('logs/gorev-deadline-check.log'));
     }
 
     /**
@@ -45,7 +55,7 @@ class Kernel extends ConsoleKernel
      */
     protected function commands(): void
     {
-        $this->load(__DIR__.'/Commands');
+        $this->load(__DIR__ . '/Commands');
 
         require base_path('routes/console.php');
     }

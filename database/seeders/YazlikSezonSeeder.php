@@ -3,8 +3,8 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 /**
  * Yazlık Sezon Seeder
@@ -29,8 +29,9 @@ class YazlikSezonSeeder extends Seeder
         $this->command->newLine();
 
         // Context7: Schema kontrolü
-        if (!Schema::hasTable('ilan_takvim_sezonlar')) {
+        if (! Schema::hasTable('ilan_takvim_sezonlar')) {
             $this->command->warn('   ⚠️ ilan_takvim_sezonlar tablosu yok!');
+
             return;
         }
 

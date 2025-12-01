@@ -2,19 +2,17 @@
 
 namespace App\Services;
 
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Cache;
-
 class FlexibleStorageManager
 {
     private $provider;
+
     private $config;
 
     public function __construct()
     {
         $this->config = config('ai.storage', [
             'provider' => 'local_mysql',
-            'local_mysql' => ['table' => 'ai_storage']
+            'local_mysql' => ['table' => 'ai_storage'],
         ]);
         $this->provider = $this->createProvider();
     }
@@ -26,7 +24,7 @@ class FlexibleStorageManager
     {
         switch ($this->config['provider']) {
             case 'local_mysql':
-                return new LocalMySQLProvider();
+                return new LocalMySQLProvider;
 
             case 'remote_mysql':
                 return new RemoteMySQLProvider(
@@ -47,7 +45,7 @@ class FlexibleStorageManager
                 );
 
             default:
-                return new LocalMySQLProvider();
+                return new LocalMySQLProvider;
         }
     }
 
@@ -112,6 +110,7 @@ class LocalMySQLProvider
     public function get($key)
     {
         $record = \App\Models\AIStorage::findByKey($key);
+
         return $record ? $record->data : null;
     }
 
@@ -162,30 +161,30 @@ class RemoteMySQLProvider
                 $password
             );
         } catch (\PDOException $e) {
-            throw new \Exception("Remote MySQL connection failed: " . $e->getMessage());
+            throw new \Exception('Remote MySQL connection failed: '.$e->getMessage());
         }
     }
 
     public function store($key, $data)
     {
-        $stmt = $this->connection->prepare("
+        $stmt = $this->connection->prepare('
             INSERT INTO ai_storage (storage_key, data, type, context, updated_at)
             VALUES (?, ?, ?, ?, ?)
             ON DUPLICATE KEY UPDATE data = VALUES(data), updated_at = VALUES(updated_at)
-        ");
+        ');
 
         return $stmt->execute([
             $key,
             json_encode($data),
             'pattern',
             $this->extractContext($key),
-            now()
+            now(),
         ]);
     }
 
     public function get($key)
     {
-        $stmt = $this->connection->prepare("SELECT data FROM ai_storage WHERE storage_key = ?");
+        $stmt = $this->connection->prepare('SELECT data FROM ai_storage WHERE storage_key = ?');
         $stmt->execute([$key]);
         $record = $stmt->fetch(\PDO::FETCH_ASSOC);
 
@@ -194,25 +193,27 @@ class RemoteMySQLProvider
 
     public function delete($key)
     {
-        $stmt = $this->connection->prepare("DELETE FROM ai_storage WHERE storage_key = ?");
+        $stmt = $this->connection->prepare('DELETE FROM ai_storage WHERE storage_key = ?');
+
         return $stmt->execute([$key]);
     }
 
     public function exists($key)
     {
-        $stmt = $this->connection->prepare("SELECT 1 FROM ai_storage WHERE storage_key = ?");
+        $stmt = $this->connection->prepare('SELECT 1 FROM ai_storage WHERE storage_key = ?');
         $stmt->execute([$key]);
+
         return $stmt->fetch() !== false;
     }
 
     public function list($prefix = '')
     {
-        $sql = "SELECT storage_key FROM ai_storage";
+        $sql = 'SELECT storage_key FROM ai_storage';
         $params = [];
 
         if ($prefix) {
-            $sql .= " WHERE storage_key LIKE ?";
-            $params[] = $prefix . '%';
+            $sql .= ' WHERE storage_key LIKE ?';
+            $params[] = $prefix.'%';
         }
 
         $stmt = $this->connection->prepare($sql);
@@ -236,11 +237,30 @@ class RemoteMySQLProvider
  */
 class GoogleDriveProvider
 {
-    public function store($key, $data) { return true; }
-    public function get($key) { return null; }
-    public function delete($key) { return true; }
-    public function exists($key) { return false; }
-    public function list($prefix = '') { return []; }
+    public function store($key, $data)
+    {
+        return true;
+    }
+
+    public function get($key)
+    {
+        return null;
+    }
+
+    public function delete($key)
+    {
+        return true;
+    }
+
+    public function exists($key)
+    {
+        return false;
+    }
+
+    public function list($prefix = '')
+    {
+        return [];
+    }
 }
 
 /**
@@ -248,9 +268,28 @@ class GoogleDriveProvider
  */
 class AWSS3Provider
 {
-    public function store($key, $data) { return true; }
-    public function get($key) { return null; }
-    public function delete($key) { return true; }
-    public function exists($key) { return false; }
-    public function list($prefix = '') { return []; }
+    public function store($key, $data)
+    {
+        return true;
+    }
+
+    public function get($key)
+    {
+        return null;
+    }
+
+    public function delete($key)
+    {
+        return true;
+    }
+
+    public function exists($key)
+    {
+        return false;
+    }
+
+    public function list($prefix = '')
+    {
+        return [];
+    }
 }

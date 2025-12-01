@@ -19,7 +19,9 @@ use Illuminate\Support\Facades\Storage;
 class ImageBasedAIDescriptionService
 {
     private $apiKey;
+
     private $baseUrl;
+
     private $model;
 
     public function __construct()
@@ -49,7 +51,7 @@ class ImageBasedAIDescriptionService
             // Resmi base64'e çevir
             $imageBase64 = $this->encodeImageToBase64($imagePath);
 
-            if (!$imageBase64) {
+            if (! $imageBase64) {
                 throw new \Exception('Resim yüklenemedi');
             }
 
@@ -58,9 +60,9 @@ class ImageBasedAIDescriptionService
 
             // OpenAI API çağrısı
             $response = Http::withHeaders([
-                'Authorization' => 'Bearer ' . $this->apiKey,
+                'Authorization' => 'Bearer '.$this->apiKey,
                 'Content-Type' => 'application/json',
-            ])->timeout(60)->post($this->baseUrl . '/chat/completions', [
+            ])->timeout(60)->post($this->baseUrl.'/chat/completions', [
                 'model' => $this->model,
                 'messages' => [
                     [
@@ -68,24 +70,24 @@ class ImageBasedAIDescriptionService
                         'content' => [
                             [
                                 'type' => 'text',
-                                'text' => $prompt
+                                'text' => $prompt,
                             ],
                             [
                                 'type' => 'image_url',
                                 'image_url' => [
-                                    'url' => 'data:image/jpeg;base64,' . $imageBase64,
-                                    'detail' => $options['detail']
-                                ]
-                            ]
-                        ]
-                    ]
+                                    'url' => 'data:image/jpeg;base64,'.$imageBase64,
+                                    'detail' => $options['detail'],
+                                ],
+                            ],
+                        ],
+                    ],
                 ],
                 'max_tokens' => $options['max_tokens'],
                 'temperature' => 0.7,
             ]);
 
-            if (!$response->successful()) {
-                throw new \Exception('AI API hatası: ' . $response->body());
+            if (! $response->successful()) {
+                throw new \Exception('AI API hatası: '.$response->body());
             }
 
             $data = $response->json();
@@ -94,11 +96,12 @@ class ImageBasedAIDescriptionService
             return $this->parseImageAnalysis($analysis, $options);
 
         } catch (\Exception $e) {
-            Log::error('AI Resim Analizi Hatası: ' . $e->getMessage());
+            Log::error('AI Resim Analizi Hatası: '.$e->getMessage());
+
             return [
                 'success' => false,
                 'error' => $e->getMessage(),
-                'analysis' => null
+                'analysis' => null,
             ];
         }
     }
@@ -116,7 +119,7 @@ class ImageBasedAIDescriptionService
                 'include_style' => true,
             ]);
 
-            if (!$analysis['success']) {
+            if (! $analysis['success']) {
                 return [];
             }
 
@@ -140,7 +143,8 @@ class ImageBasedAIDescriptionService
             return array_unique($tags);
 
         } catch (\Exception $e) {
-            Log::error('AI Etiketleme Hatası: ' . $e->getMessage());
+            Log::error('AI Etiketleme Hatası: '.$e->getMessage());
+
             return [];
         }
     }
@@ -162,14 +166,15 @@ class ImageBasedAIDescriptionService
                 'quality_score' => $analysis['quality_score'] ?? 0,
                 'lighting' => $analysis['lighting'] ?? 'unknown',
                 'composition' => $analysis['composition'] ?? 'unknown',
-                'recommendations' => $analysis['recommendations'] ?? []
+                'recommendations' => $analysis['recommendations'] ?? [],
             ];
 
         } catch (\Exception $e) {
-            Log::error('AI Kalite Analizi Hatası: ' . $e->getMessage());
+            Log::error('AI Kalite Analizi Hatası: '.$e->getMessage());
+
             return [
                 'success' => false,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ];
         }
     }
@@ -182,18 +187,21 @@ class ImageBasedAIDescriptionService
         try {
             if (Storage::exists($imagePath)) {
                 $imageData = Storage::get($imagePath);
+
                 return base64_encode($imageData);
             }
 
             if (file_exists($imagePath)) {
                 $imageData = file_get_contents($imagePath);
+
                 return base64_encode($imageData);
             }
 
             return null;
 
         } catch (\Exception $e) {
-            Log::error('Resim Base64 Hatası: ' . $e->getMessage());
+            Log::error('Resim Base64 Hatası: '.$e->getMessage());
+
             return null;
         }
     }
@@ -251,7 +259,7 @@ class ImageBasedAIDescriptionService
                 return [
                     'success' => true,
                     'analysis' => $decoded,
-                    'raw_analysis' => $analysis
+                    'raw_analysis' => $analysis,
                 ];
             }
 
@@ -259,14 +267,14 @@ class ImageBasedAIDescriptionService
             return [
                 'success' => true,
                 'analysis' => $this->parseTextAnalysis($analysis),
-                'raw_analysis' => $analysis
+                'raw_analysis' => $analysis,
             ];
 
         } catch (\Exception $e) {
             return [
                 'success' => false,
-                'error' => 'Analiz parse edilemedi: ' . $e->getMessage(),
-                'raw_analysis' => $analysis
+                'error' => 'Analiz parse edilemedi: '.$e->getMessage(),
+                'raw_analysis' => $analysis,
             ];
         }
     }
@@ -280,7 +288,7 @@ class ImageBasedAIDescriptionService
 
         // Basit regex ile bilgileri çıkar
         if (preg_match('/kalite[:\s]*(\d+)/i', $analysis, $matches)) {
-            $result['quality_score'] = (int)$matches[1];
+            $result['quality_score'] = (int) $matches[1];
         }
 
         if (preg_match('/ışık[:\s]*([^.\n]+)/i', $analysis, $matches)) {

@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             // Status text (String durum: taslak, onay_bekliyor, aktif, satildi, kiralandi, pasif, arsivlendi)
-            if (!Schema::hasColumn('users', 'status_text')) {
+            if (! Schema::hasColumn('users', 'status_text')) {
                 $table->string('status_text', 50)->nullable()->after('status');
             }
         });

@@ -6,11 +6,8 @@ use App\Http\Requests\Admin\EventRequest;
 use App\Http\Requests\Admin\SeasonRequest;
 use App\Models\Event;
 use App\Models\Season;
-use App\Models\Ilan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 
 class TakvimController extends AdminController
 {
@@ -18,7 +15,6 @@ class TakvimController extends AdminController
      * Display a listing of the resource.
      * Context7: Takvim yönetimi ana sayfası
      *
-     * @return \Illuminate\View\View
      * @throws \Exception
      */
     public function index(): \Illuminate\View\View
@@ -39,13 +35,13 @@ class TakvimController extends AdminController
                 })->count(),
                 'upcoming' => collect($events)->filter(function ($event) {
                     return Carbon::parse($event['date'])->isFuture();
-                })->count()
+                })->count(),
             ];
 
             // PHASE 2: Yazlık-kiralama altında olduğu için admin.yazlik-kiralama.takvim view'ı kullan
             return view('admin.yazlik-kiralama.takvim', compact('events', 'stats', 'currentMonth', 'currentYear'));
         } catch (\Exception $e) {
-            return back()->with('error', 'Takvim yüklenirken hata oluştu: ' . $e->getMessage());
+            return back()->with('error', 'Takvim yüklenirken hata oluştu: '.$e->getMessage());
         }
     }
 
@@ -53,7 +49,6 @@ class TakvimController extends AdminController
      * Show the form for creating a new resource.
      * Context7: Yeni etkinlik oluşturma formu
      *
-     * @return \Illuminate\View\View
      * @throws \Exception
      */
     public function create(): \Illuminate\View\View
@@ -64,12 +59,12 @@ class TakvimController extends AdminController
                 'viewing' => 'İlan Görüntüleme',
                 'call' => 'Müşteri Araması',
                 'followup' => 'Takip',
-                'other' => 'Diğer'
+                'other' => 'Diğer',
             ];
 
             return view('admin.takvim.create', compact('eventTypes'));
         } catch (\Exception $e) {
-            return back()->with('error', 'Form yüklenirken hata oluştu: ' . $e->getMessage());
+            return back()->with('error', 'Form yüklenirken hata oluştu: '.$e->getMessage());
         }
     }
 
@@ -77,8 +72,6 @@ class TakvimController extends AdminController
      * Store a newly created resource in storage.
      * Context7: Yeni etkinlik kaydetme
      *
-     * @param EventRequest $request
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
      * @throws \Exception
      */
     public function store(EventRequest $request): \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
@@ -114,7 +107,7 @@ class TakvimController extends AdminController
                 return response()->json([
                     'success' => true,
                     'message' => 'Etkinlik başarıyla oluşturuldu',
-                    'data' => $eventData
+                    'data' => $eventData,
                 ], 201);
             }
 
@@ -123,11 +116,11 @@ class TakvimController extends AdminController
             if ($request->expectsJson()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Etkinlik oluşturulurken hata: ' . $e->getMessage()
+                    'message' => 'Etkinlik oluşturulurken hata: '.$e->getMessage(),
                 ], 500);
             }
 
-            return back()->withInput()->with('error', 'Etkinlik oluşturulurken hata: ' . $e->getMessage());
+            return back()->withInput()->with('error', 'Etkinlik oluşturulurken hata: '.$e->getMessage());
         }
     }
 
@@ -135,8 +128,6 @@ class TakvimController extends AdminController
      * Display the specified resource.
      * Context7: Belirli etkinlik detayları
      *
-     * @param int $id
-     * @return \Illuminate\View\View|\Illuminate\Http\JsonResponse
      * @throws \Exception
      */
     public function show(int $id): \Illuminate\View\View|\Illuminate\Http\JsonResponse
@@ -145,11 +136,11 @@ class TakvimController extends AdminController
             // Örnek etkinlik verisi
             $event = $this->getSampleEvent($id);
 
-            if (!$event) {
+            if (! $event) {
                 if (request()->expectsJson()) {
                     return response()->json([
                         'success' => false,
-                        'message' => 'Etkinlik bulunamadı'
+                        'message' => 'Etkinlik bulunamadı',
                     ], 404);
                 }
 
@@ -159,7 +150,7 @@ class TakvimController extends AdminController
             if (request()->expectsJson()) {
                 return response()->json([
                     'success' => true,
-                    'data' => $event
+                    'data' => $event,
                 ]);
             }
 
@@ -168,11 +159,11 @@ class TakvimController extends AdminController
             if (request()->expectsJson()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Etkinlik detayları alınırken hata: ' . $e->getMessage()
+                    'message' => 'Etkinlik detayları alınırken hata: '.$e->getMessage(),
                 ], 500);
             }
 
-            return back()->with('error', 'Etkinlik detayları alınırken hata: ' . $e->getMessage());
+            return back()->with('error', 'Etkinlik detayları alınırken hata: '.$e->getMessage());
         }
     }
 
@@ -180,8 +171,6 @@ class TakvimController extends AdminController
      * Show the form for editing the specified resource.
      * Context7: Etkinlik düzenleme formu
      *
-     * @param int $id
-     * @return \Illuminate\View\View
      * @throws \Exception
      */
     public function edit(int $id): \Illuminate\View\View
@@ -189,7 +178,7 @@ class TakvimController extends AdminController
         try {
             $event = $this->getSampleEvent($id);
 
-            if (!$event) {
+            if (! $event) {
                 return redirect()->route('admin.takvim.index')->with('error', 'Etkinlik bulunamadı');
             }
 
@@ -198,12 +187,12 @@ class TakvimController extends AdminController
                 'viewing' => 'İlan Görüntüleme',
                 'call' => 'Müşteri Araması',
                 'followup' => 'Takip',
-                'other' => 'Diğer'
+                'other' => 'Diğer',
             ];
 
             return view('admin.takvim.edit', compact('event', 'eventTypes'));
         } catch (\Exception $e) {
-            return back()->with('error', 'Form yüklenirken hata: ' . $e->getMessage());
+            return back()->with('error', 'Form yüklenirken hata: '.$e->getMessage());
         }
     }
 
@@ -211,9 +200,6 @@ class TakvimController extends AdminController
      * Update the specified resource in storage.
      * Context7: Etkinlik güncelleme
      *
-     * @param EventRequest $request
-     * @param int $id
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
      * @throws \Exception
      */
     public function update(EventRequest $request, int $id): \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
@@ -231,7 +217,7 @@ class TakvimController extends AdminController
                 'type' => $validated['type'],
                 'location' => $validated['location'] ?? null,
                 'attendees' => $validated['attendees'] ?? null,
-                'updated_at' => now()
+                'updated_at' => now(),
             ];
 
             // Event model ile güncelleme
@@ -250,7 +236,7 @@ class TakvimController extends AdminController
                 return response()->json([
                     'success' => true,
                     'message' => 'Etkinlik başarıyla güncellendi',
-                    'data' => $eventData
+                    'data' => $eventData,
                 ]);
             }
 
@@ -259,11 +245,11 @@ class TakvimController extends AdminController
             if ($request->expectsJson()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Etkinlik güncellenirken hata: ' . $e->getMessage()
+                    'message' => 'Etkinlik güncellenirken hata: '.$e->getMessage(),
                 ], 500);
             }
 
-            return back()->withInput()->with('error', 'Etkinlik güncellenirken hata: ' . $e->getMessage());
+            return back()->withInput()->with('error', 'Etkinlik güncellenirken hata: '.$e->getMessage());
         }
     }
 
@@ -271,8 +257,6 @@ class TakvimController extends AdminController
      * Remove the specified resource from storage.
      * Context7: Etkinlik silme
      *
-     * @param int $id
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
      * @throws \Exception
      */
     public function destroy(int $id): \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
@@ -285,7 +269,7 @@ class TakvimController extends AdminController
             if (request()->expectsJson()) {
                 return response()->json([
                     'success' => true,
-                    'message' => 'Etkinlik başarıyla silindi'
+                    'message' => 'Etkinlik başarıyla silindi',
                 ]);
             }
 
@@ -294,19 +278,19 @@ class TakvimController extends AdminController
             if (request()->expectsJson()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Etkinlik silinirken hata: ' . $e->getMessage()
+                    'message' => 'Etkinlik silinirken hata: '.$e->getMessage(),
                 ], 500);
             }
 
-            return back()->with('error', 'Etkinlik silinirken hata: ' . $e->getMessage());
+            return back()->with('error', 'Etkinlik silinirken hata: '.$e->getMessage());
         }
     }
 
     /**
      * Context7: Ay bazında etkinlik listesi
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
+     *
      * @throws \Exception
      */
     public function getMonthEvents(Request $request)
@@ -321,12 +305,12 @@ class TakvimController extends AdminController
                 'success' => true,
                 'events' => $events,
                 'month' => $month,
-                'year' => $year
+                'year' => $year,
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Etkinlikler alınırken hata: ' . $e->getMessage()
+                'message' => 'Etkinlikler alınırken hata: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -334,8 +318,8 @@ class TakvimController extends AdminController
     /**
      * Context7: Etkinlik arama
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
+     *
      * @throws \Exception
      */
     public function search(Request $request)
@@ -359,12 +343,12 @@ class TakvimController extends AdminController
                 'success' => true,
                 'events' => $events,
                 'query' => $query,
-                'type' => $type
+                'type' => $type,
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Arama yapılırken hata: ' . $e->getMessage()
+                'message' => 'Arama yapılırken hata: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -372,8 +356,8 @@ class TakvimController extends AdminController
     /**
      * Context7: Örnek takvim etkinlikleri
      *
-     * @param int|null $month
-     * @param int|null $year
+     * @param  int|null  $month
+     * @param  int|null  $year
      * @return array
      */
     private function getCalendarEvents($month = null, $year = null)
@@ -388,7 +372,7 @@ class TakvimController extends AdminController
                 'time' => '10:00',
                 'type' => 'meeting',
                 'location' => 'Ofis',
-                'attendees' => 'Bay Ahmet, Danışman Ali'
+                'attendees' => 'Bay Ahmet, Danışman Ali',
             ],
             [
                 'id' => 2,
@@ -398,7 +382,7 @@ class TakvimController extends AdminController
                 'time' => '14:00',
                 'type' => 'viewing',
                 'location' => 'Bodrum, Yalıkavak',
-                'attendees' => 'Fotoğrafçı Mehmet'
+                'attendees' => 'Fotoğrafçı Mehmet',
             ],
             [
                 'id' => 3,
@@ -408,21 +392,22 @@ class TakvimController extends AdminController
                 'time' => '09:30',
                 'type' => 'followup',
                 'location' => 'Telefon',
-                'attendees' => 'Hanım Zeynep'
-            ]
+                'attendees' => 'Hanım Zeynep',
+            ],
         ];
     }
 
     /**
      * Context7: Örnek etkinlik detayı
      *
-     * @param int|string $id
+     * @param  int|string  $id
      * @return array|null
      */
     private function getSampleEvent($id)
     {
         $events = $this->getCalendarEvents();
-        return collect($events)->firstWhere('id', (int)$id);
+
+        return collect($events)->firstWhere('id', (int) $id);
     }
 
     /**
@@ -430,6 +415,7 @@ class TakvimController extends AdminController
      * Context7: Yazlık kiralama sezonları yönetimi
      *
      * @return \Illuminate\View\View
+     *
      * @throws \Exception
      */
     public function sezonlar()
@@ -446,7 +432,7 @@ class TakvimController extends AdminController
                     'status' => true, // Context7: enabled → status
                     'sezon_tipi' => 'yuksek',
                     'minimum_konaklama_gun' => 7,
-                    'maksimum_konaklama_gun' => 30
+                    'maksimum_konaklama_gun' => 30,
                 ],
                 [
                     'id' => 2,
@@ -457,7 +443,7 @@ class TakvimController extends AdminController
                     'status' => true, // Context7: enabled → status
                     'sezon_tipi' => 'orta',
                     'minimum_konaklama_gun' => 3,
-                    'maksimum_konaklama_gun' => 15
+                    'maksimum_konaklama_gun' => 15,
                 ],
                 [
                     'id' => 3,
@@ -468,13 +454,13 @@ class TakvimController extends AdminController
                     'status' => false, // Context7: enabled → status
                     'sezon_tipi' => 'dusuk',
                     'minimum_konaklama_gun' => 2,
-                    'maksimum_konaklama_gun' => 10
-                ]
+                    'maksimum_konaklama_gun' => 10,
+                ],
             ]);
 
             return view('admin.takvim.sezonlar', compact('sezonlar'));
         } catch (\Exception $e) {
-            return back()->with('error', 'Sezonlar yüklenirken hata oluştu: ' . $e->getMessage());
+            return back()->with('error', 'Sezonlar yüklenirken hata oluştu: '.$e->getMessage());
         }
     }
 
@@ -482,8 +468,8 @@ class TakvimController extends AdminController
      * Sezon kaydetme
      * Context7: Yeni sezon oluşturma
      *
-     * @param SeasonRequest $request
      * @return \Illuminate\Http\JsonResponse
+     *
      * @throws \Exception
      */
     public function storeSezon(SeasonRequest $request)
@@ -509,12 +495,12 @@ class TakvimController extends AdminController
             return response()->json([
                 'success' => true,
                 'message' => 'Sezon başarıyla oluşturuldu!',
-                'data' => $season
+                'data' => $season,
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Hata: ' . $e->getMessage()
+                'message' => 'Hata: '.$e->getMessage(),
             ], 400);
         }
     }
@@ -523,9 +509,6 @@ class TakvimController extends AdminController
      * Sezon güncelleme
      * Context7: Mevcut sezon güncelleme
      *
-     * @param SeasonRequest $request
-     * @param int $id
-     * @return \Illuminate\Http\JsonResponse
      * @throws \Exception
      */
     public function updateSezon(SeasonRequest $request, int $id): \Illuminate\Http\JsonResponse
@@ -548,12 +531,12 @@ class TakvimController extends AdminController
             return response()->json([
                 'success' => true,
                 'message' => 'Sezon başarıyla güncellendi!',
-                'data' => $season
+                'data' => $season,
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Hata: ' . $e->getMessage()
+                'message' => 'Hata: '.$e->getMessage(),
             ], 400);
         }
     }
@@ -562,8 +545,6 @@ class TakvimController extends AdminController
      * Sezon silme
      * Context7: Sezon silme işlemi
      *
-     * @param int $id
-     * @return \Illuminate\Http\JsonResponse
      * @throws \Exception
      */
     public function destroySezon(int $id): \Illuminate\Http\JsonResponse
@@ -575,12 +556,12 @@ class TakvimController extends AdminController
 
             return response()->json([
                 'success' => true,
-                'message' => 'Sezon başarıyla silindi!'
+                'message' => 'Sezon başarıyla silindi!',
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Hata: ' . $e->getMessage()
+                'message' => 'Hata: '.$e->getMessage(),
             ], 400);
         }
     }

@@ -4,10 +4,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Services\Response\ResponseService;
-use App\Traits\ValidatesApiRequests;
-use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
 use App\Services\TKGMService;
+use App\Traits\ValidatesApiRequests;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 /**
  * TKGM API Controller
@@ -18,6 +18,7 @@ use App\Services\TKGMService;
 class TKGMController extends Controller
 {
     use ValidatesApiRequests;
+
     protected $tkgmService;
 
     public function __construct(TKGMService $tkgmService)
@@ -37,7 +38,7 @@ class TKGMController extends Controller
             'ada' => 'required|string|max:20',
             'parsel' => 'required|string|max:20',
             'il' => 'required|string|max:100',
-            'ilce' => 'required|string|max:100'
+            'ilce' => 'required|string|max:100',
         ]);
 
         if ($validated instanceof JsonResponse) {
@@ -71,7 +72,7 @@ class TKGMController extends Controller
             'ada' => 'required|string',
             'parsel' => 'required|string',
             'il' => 'required|string',
-            'ilce' => 'required|string'
+            'ilce' => 'required|string',
         ]);
 
         if ($validated instanceof JsonResponse) {
@@ -86,7 +87,7 @@ class TKGMController extends Controller
             $validated['ilce']
         );
 
-        if (!$parselSonuc['success']) {
+        if (! $parselSonuc['success']) {
             // ✅ REFACTORED: Using ResponseService
             return ResponseService::error('Parsel bilgileri alınamadı', 400);
         }
@@ -97,7 +98,7 @@ class TKGMController extends Controller
         // ✅ REFACTORED: Using ResponseService
         return ResponseService::success([
             'parsel_bilgileri' => $parselSonuc['parsel_bilgileri'],
-            'yatirim_analizi' => $analiz
+            'yatirim_analizi' => $analiz,
         ], 'Yatırım analizi başarıyla tamamlandı');
     }
 

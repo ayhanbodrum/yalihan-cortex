@@ -7,10 +7,10 @@ use App\Services\AdvancedAIPropertyGenerator;
 use App\Services\Response\ResponseService;
 use App\Traits\ValidatesApiRequests;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 
 /**
  * 🚀 Advanced AI Controller
@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Cache;
 class AdvancedAIController extends Controller
 {
     use ValidatesApiRequests;
+
     private AdvancedAIPropertyGenerator $aiGenerator;
 
     public function __construct(AdvancedAIPropertyGenerator $aiGenerator)
@@ -132,13 +133,13 @@ class AdvancedAIController extends Controller
             return ResponseService::success([
                 'data' => $result,
                 'generated_at' => now()->toISOString(),
-                'processing_time' => microtime(true) - LARAVEL_START
+                'processing_time' => microtime(true) - LARAVEL_START,
             ], 'AI içerik başarıyla üretildi');
         } catch (\Exception $e) {
             Log::error('Advanced AI content generation failed', [
                 'error' => $e->getMessage(),
                 'request_data' => $request->all(),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
 
             // ✅ REFACTORED: Using ResponseService
@@ -182,12 +183,12 @@ class AdvancedAIController extends Controller
             // ✅ REFACTORED: Using ResponseService
             return ResponseService::success([
                 'data' => $analysis,
-                'generated_at' => now()->toISOString()
+                'generated_at' => now()->toISOString(),
             ], 'Pazar analizi başarıyla oluşturuldu');
         } catch (\Exception $e) {
             Log::error('Market analysis generation failed', [
                 'error' => $e->getMessage(),
-                'request_data' => $request->all()
+                'request_data' => $request->all(),
             ]);
 
             // ✅ REFACTORED: Using ResponseService
@@ -231,12 +232,12 @@ class AdvancedAIController extends Controller
             // ✅ REFACTORED: Using ResponseService
             return ResponseService::success([
                 'data' => $analysis,
-                'generated_at' => now()->toISOString()
+                'generated_at' => now()->toISOString(),
             ], 'Fiyat analizi başarıyla oluşturuldu');
         } catch (\Exception $e) {
             Log::error('Price analysis generation failed', [
                 'error' => $e->getMessage(),
-                'request_data' => $request->all()
+                'request_data' => $request->all(),
             ]);
 
             // ✅ REFACTORED: Using ResponseService
@@ -276,12 +277,12 @@ class AdvancedAIController extends Controller
             // ✅ REFACTORED: Using ResponseService
             return ResponseService::success([
                 'data' => $keywords,
-                'generated_at' => now()->toISOString()
+                'generated_at' => now()->toISOString(),
             ], 'SEO anahtar kelimeler başarıyla oluşturuldu');
         } catch (\Exception $e) {
             Log::error('SEO keywords generation failed', [
                 'error' => $e->getMessage(),
-                'request_data' => $request->all()
+                'request_data' => $request->all(),
             ]);
 
             // ✅ REFACTORED: Using ResponseService
@@ -303,16 +304,16 @@ class AdvancedAIController extends Controller
                 'memory_usage' => [
                     'current' => memory_get_usage(true),
                     'peak' => memory_get_peak_usage(true),
-                    'limit' => ini_get('memory_limit')
+                    'limit' => ini_get('memory_limit'),
                 ],
-                'timestamp' => now()->toISOString()
+                'timestamp' => now()->toISOString(),
             ];
 
             // ✅ REFACTORED: Using ResponseService
             return ResponseService::success($health_status, 'Sistem sağlık kontrolü başarıyla tamamlandı');
         } catch (\Exception $e) {
             Log::error('System health check failed', [
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
 
             // ✅ REFACTORED: Using ResponseService
@@ -333,13 +334,13 @@ class AdvancedAIController extends Controller
             return [
                 'status' => $health['ok'] ? 'active' : 'inactive',
                 'message' => $health['message'] ?? 'Service available',
-                'response_time' => microtime(true) - LARAVEL_START
+                'response_time' => microtime(true) - LARAVEL_START,
             ];
         } catch (\Exception $e) {
             return [
                 'status' => 'error',
                 'message' => $e->getMessage(),
-                'response_time' => 0
+                'response_time' => 0,
             ];
         }
     }
@@ -348,14 +349,15 @@ class AdvancedAIController extends Controller
     {
         try {
             DB::connection()->getPdo();
+
             return [
                 'status' => 'connected',
-                'message' => 'Database connection successful'
+                'message' => 'Database connection successful',
             ];
         } catch (\Exception $e) {
             return [
                 'status' => 'disconnected',
-                'message' => $e->getMessage()
+                'message' => $e->getMessage(),
             ];
         }
     }
@@ -369,12 +371,12 @@ class AdvancedAIController extends Controller
 
             return [
                 'status' => $value === 'ok' ? 'active' : 'inactive',
-                'message' => $value === 'ok' ? 'Cache system working' : 'Cache system not responding'
+                'message' => $value === 'ok' ? 'Cache system working' : 'Cache system not responding',
             ];
         } catch (\Exception $e) {
             return [
                 'status' => 'error',
-                'message' => $e->getMessage()
+                'message' => $e->getMessage(),
             ];
         }
     }

@@ -2,11 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\Http\Request;
-use App\Services\AICategoryManager;
 use App\Models\IlanKategori;
-use App\Models\Ozellik;
-use Illuminate\Support\Facades\Log;
+use App\Services\AICategoryManager;
+use Illuminate\Http\Request;
 
 class AICategoryController extends AdminController
 {
@@ -14,7 +12,7 @@ class AICategoryController extends AdminController
 
     public function __construct()
     {
-        $this->aiCategoryManager = new AICategoryManager();
+        $this->aiCategoryManager = new AICategoryManager;
     }
 
     /**
@@ -52,7 +50,7 @@ class AICategoryController extends AdminController
     public function analyzeCategory(Request $request)
     {
         $request->validate([
-            'category_slug' => 'required|string'
+            'category_slug' => 'required|string',
         ]);
 
         $categorySlug = $request->category_slug;
@@ -63,13 +61,13 @@ class AICategoryController extends AdminController
             return response()->json([
                 'success' => true,
                 'analysis' => $analysis,
-                'category' => $categorySlug
+                'category' => $categorySlug,
             ]);
 
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -80,7 +78,7 @@ class AICategoryController extends AdminController
     public function getCategorySuggestions(Request $request)
     {
         $request->validate([
-            'category_slug' => 'required|string'
+            'category_slug' => 'required|string',
         ]);
 
         $categorySlug = $request->category_slug;
@@ -91,13 +89,13 @@ class AICategoryController extends AdminController
             return response()->json([
                 'success' => true,
                 'suggestions' => $suggestions,
-                'category' => $categorySlug
+                'category' => $categorySlug,
             ]);
 
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -108,7 +106,7 @@ class AICategoryController extends AdminController
     public function generateHibritSiralama(Request $request)
     {
         $request->validate([
-            'category_slug' => 'required|string'
+            'category_slug' => 'required|string',
         ]);
 
         $categorySlug = $request->category_slug;
@@ -119,13 +117,13 @@ class AICategoryController extends AdminController
             return response()->json([
                 'success' => true,
                 'siralama' => $siralama,
-                'category' => $categorySlug
+                'category' => $categorySlug,
             ]);
 
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -137,7 +135,7 @@ class AICategoryController extends AdminController
     {
         $request->validate([
             'category_slug' => 'required|string',
-            'publication_type' => 'nullable|string'
+            'publication_type' => 'nullable|string',
         ]);
 
         $categorySlug = $request->category_slug;
@@ -150,13 +148,13 @@ class AICategoryController extends AdminController
                 'success' => true,
                 'form' => $form,
                 'category' => $categorySlug,
-                'publication_type' => $publicationType
+                'publication_type' => $publicationType,
             ]);
 
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -167,7 +165,7 @@ class AICategoryController extends AdminController
     public function manageMatrix(Request $request)
     {
         $request->validate([
-            'category_slug' => 'required|string'
+            'category_slug' => 'required|string',
         ]);
 
         $categorySlug = $request->category_slug;
@@ -178,13 +176,13 @@ class AICategoryController extends AdminController
             return response()->json([
                 'success' => true,
                 'matrix' => $matrix,
-                'category' => $categorySlug
+                'category' => $categorySlug,
             ]);
 
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -198,7 +196,7 @@ class AICategoryController extends AdminController
             'category_slug' => 'required|string',
             'examples' => 'required|array',
             'examples.*.task' => 'required|string',
-            'examples.*.expected_output' => 'required|string'
+            'examples.*.expected_output' => 'required|string',
         ]);
 
         $categorySlug = $request->category_slug;
@@ -211,13 +209,13 @@ class AICategoryController extends AdminController
                 'success' => true,
                 'message' => 'AI başarıyla öğretildi!',
                 'category' => $categorySlug,
-                'examples_count' => count($examples)
+                'examples_count' => count($examples),
             ]);
 
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -232,13 +230,13 @@ class AICategoryController extends AdminController
 
             return response()->json([
                 'success' => true,
-                'results' => $results
+                'results' => $results,
             ]);
 
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -251,7 +249,7 @@ class AICategoryController extends AdminController
         $request->validate([
             'category_slug' => 'required|string',
             'task_type' => 'required|string',
-            'is_success' => 'required|boolean'
+            'is_success' => 'required|boolean',
         ]);
 
         $categorySlug = $request->category_slug;
@@ -266,13 +264,13 @@ class AICategoryController extends AdminController
                 'message' => 'AI başarı oranı güncellendi!',
                 'category' => $categorySlug,
                 'task_type' => $taskType,
-                'is_success' => $isSuccess
+                'is_success' => $isSuccess,
             ]);
 
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }

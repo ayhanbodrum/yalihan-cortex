@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Requests\Admin\PhotoRequest;
 use App\Http\Requests\Admin\PhotoBulkActionRequest;
+use App\Http\Requests\Admin\PhotoRequest;
 use App\Models\Photo;
-use App\Models\Ilan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -17,9 +16,6 @@ class PhotoController extends AdminController
     /**
      * Display a listing of the photos.
      * Context7: Fotoğraf galeri yönetimi
-     *
-     * @param Request $request
-     * @return \Illuminate\View\View|\Illuminate\Http\JsonResponse
      */
     public function index(Request $request): \Illuminate\View\View|\Illuminate\Http\JsonResponse
     {
@@ -38,8 +34,8 @@ class PhotoController extends AdminController
                     'data' => [
                         'photos' => $photos,
                         'categories' => $categories,
-                        'stats' => $stats
-                    ]
+                        'stats' => $stats,
+                    ],
                 ]);
             }
 
@@ -48,19 +44,17 @@ class PhotoController extends AdminController
             if ($request->expectsJson()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Fotoğraflar yüklenirken hata: ' . $e->getMessage()
+                    'message' => 'Fotoğraflar yüklenirken hata: '.$e->getMessage(),
                 ], 500);
             }
 
-            return back()->with('error', 'Fotoğraflar yüklenirken hata: ' . $e->getMessage());
+            return back()->with('error', 'Fotoğraflar yüklenirken hata: '.$e->getMessage());
         }
     }
 
     /**
      * Show the form for creating a new photo upload.
      * Context7: Fotoğraf yükleme formu
-     *
-     * @return \Illuminate\View\View
      */
     public function create(): \Illuminate\View\View
     {
@@ -71,7 +65,7 @@ class PhotoController extends AdminController
 
             return view('admin.photos.create', compact('categories', 'maxFileSize', 'allowedTypes'));
         } catch (\Exception $e) {
-            return back()->with('error', 'Form yüklenirken hata: ' . $e->getMessage());
+            return back()->with('error', 'Form yüklenirken hata: '.$e->getMessage());
         }
     }
 
@@ -79,8 +73,6 @@ class PhotoController extends AdminController
      * Store newly uploaded photos.
      * Context7: Fotoğraf yükleme ve kaydetme
      *
-     * @param Request $request
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
      * @throws \Exception
      */
     public function store(Request $request): \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
@@ -93,7 +85,7 @@ class PhotoController extends AdminController
                 'title' => 'nullable|string|max:255',
                 'description' => 'nullable|string|max:1000',
                 'alt_text' => 'nullable|string|max:255',
-                'tags' => 'nullable|string'
+                'tags' => 'nullable|string',
             ]);
 
             if ($validator->fails()) {
@@ -101,7 +93,7 @@ class PhotoController extends AdminController
                     return response()->json([
                         'success' => false,
                         'message' => 'Validation hatası',
-                        'errors' => $validator->errors()
+                        'errors' => $validator->errors(),
                     ], 422);
                 }
 
@@ -113,7 +105,7 @@ class PhotoController extends AdminController
 
             foreach ($photos as $index => $photo) {
                 // Benzersiz dosya adı oluştur
-                $filename = time() . '_' . $index . '_' . Str::slug($photo->getClientOriginalName(), '_');
+                $filename = time().'_'.$index.'_'.Str::slug($photo->getClientOriginalName(), '_');
 
                 // Fotoğrafı kaydet
                 $path = $photo->storeAs('photos/ilan', $filename, 'public');
@@ -158,28 +150,28 @@ class PhotoController extends AdminController
                     'description' => $request->description,
                     'alt_text' => $request->alt_text ?? $request->title,
                     'tags' => $request->tags,
-                    'uploaded_at' => $photoModel->created_at
+                    'uploaded_at' => $photoModel->created_at,
                 ];
             }
 
             if ($request->expectsJson()) {
                 return response()->json([
                     'success' => true,
-                    'message' => count($uploadedPhotos) . ' fotoğraf başarıyla yüklendi',
-                    'photos' => $uploadedPhotos // ✅ Context7 Fix: JavaScript data.photos bekliyor
+                    'message' => count($uploadedPhotos).' fotoğraf başarıyla yüklendi',
+                    'photos' => $uploadedPhotos, // ✅ Context7 Fix: JavaScript data.photos bekliyor
                 ], 201);
             }
 
-            return redirect()->route('admin.photos.index')->with('success', count($uploadedPhotos) . ' fotoğraf başarıyla yüklendi');
+            return redirect()->route('admin.photos.index')->with('success', count($uploadedPhotos).' fotoğraf başarıyla yüklendi');
         } catch (\Exception $e) {
             if ($request->expectsJson()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Fotoğraf yüklenirken hata: ' . $e->getMessage()
+                    'message' => 'Fotoğraf yüklenirken hata: '.$e->getMessage(),
                 ], 500);
             }
 
-            return back()->withInput()->with('error', 'Fotoğraf yüklenirken hata: ' . $e->getMessage());
+            return back()->withInput()->with('error', 'Fotoğraf yüklenirken hata: '.$e->getMessage());
         }
     }
 
@@ -187,8 +179,6 @@ class PhotoController extends AdminController
      * Display the specified photo.
      * Context7: Fotoğraf detayları ve bilgileri
      *
-     * @param int $id
-     * @return \Illuminate\View\View|\Illuminate\Http\JsonResponse
      * @throws \Exception
      */
     public function show(int $id): \Illuminate\View\View|\Illuminate\Http\JsonResponse
@@ -196,11 +186,11 @@ class PhotoController extends AdminController
         try {
             $photo = $this->getSamplePhoto($id);
 
-            if (!$photo) {
+            if (! $photo) {
                 if (request()->expectsJson()) {
                     return response()->json([
                         'success' => false,
-                        'message' => 'Fotoğraf bulunamadı'
+                        'message' => 'Fotoğraf bulunamadı',
                     ], 404);
                 }
 
@@ -213,7 +203,7 @@ class PhotoController extends AdminController
             if (request()->expectsJson()) {
                 return response()->json([
                     'success' => true,
-                    'data' => $photo
+                    'data' => $photo,
                 ]);
             }
 
@@ -222,11 +212,11 @@ class PhotoController extends AdminController
             if (request()->expectsJson()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Fotoğraf detayları alınırken hata: ' . $e->getMessage()
+                    'message' => 'Fotoğraf detayları alınırken hata: '.$e->getMessage(),
                 ], 500);
             }
 
-            return back()->with('error', 'Fotoğraf detayları alınırken hata: ' . $e->getMessage());
+            return back()->with('error', 'Fotoğraf detayları alınırken hata: '.$e->getMessage());
         }
     }
 
@@ -234,8 +224,6 @@ class PhotoController extends AdminController
      * Show the form for editing the specified photo.
      * Context7: Fotoğraf bilgilerini düzenleme
      *
-     * @param int $id
-     * @return \Illuminate\View\View
      * @throws \Exception
      */
     public function edit(int $id): \Illuminate\View\View
@@ -243,7 +231,7 @@ class PhotoController extends AdminController
         try {
             $photo = $this->getSamplePhoto($id);
 
-            if (!$photo) {
+            if (! $photo) {
                 return redirect()->route('admin.photos.index')->with('error', 'Fotoğraf bulunamadı');
             }
 
@@ -251,7 +239,7 @@ class PhotoController extends AdminController
 
             return view('admin.photos.edit', compact('photo', 'categories'));
         } catch (\Exception $e) {
-            return back()->with('error', 'Form yüklenirken hata: ' . $e->getMessage());
+            return back()->with('error', 'Form yüklenirken hata: '.$e->getMessage());
         }
     }
 
@@ -259,9 +247,6 @@ class PhotoController extends AdminController
      * Update the specified photo information.
      * Context7: Fotoğraf bilgileri güncelleme
      *
-     * @param PhotoRequest $request
-     * @param int $id
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
      * @throws \Exception
      */
     public function update(PhotoRequest $request, int $id): \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
@@ -288,14 +273,14 @@ class PhotoController extends AdminController
                 'size' => $photo->size,
                 'formatted_size' => $photo->formatted_size,
                 'views' => $photo->views,
-                'updated_at' => $photo->updated_at
+                'updated_at' => $photo->updated_at,
             ];
 
             if ($request->expectsJson()) {
                 return response()->json([
                     'success' => true,
                     'message' => 'Fotoğraf bilgileri başarıyla güncellendi',
-                    'data' => $photoData
+                    'data' => $photoData,
                 ]);
             }
 
@@ -304,11 +289,11 @@ class PhotoController extends AdminController
             if ($request->expectsJson()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Fotoğraf güncellenirken hata: ' . $e->getMessage()
+                    'message' => 'Fotoğraf güncellenirken hata: '.$e->getMessage(),
                 ], 500);
             }
 
-            return back()->withInput()->with('error', 'Fotoğraf güncellenirken hata: ' . $e->getMessage());
+            return back()->withInput()->with('error', 'Fotoğraf güncellenirken hata: '.$e->getMessage());
         }
     }
 
@@ -316,8 +301,6 @@ class PhotoController extends AdminController
      * Remove the specified photo.
      * Context7: Fotoğraf silme
      *
-     * @param int $id
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
      * @throws \Exception
      */
     public function destroy(int $id): \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
@@ -325,11 +308,11 @@ class PhotoController extends AdminController
         try {
             $photo = $this->getSamplePhoto($id);
 
-            if (!$photo) {
+            if (! $photo) {
                 if (request()->expectsJson()) {
                     return response()->json([
                         'success' => false,
-                        'message' => 'Fotoğraf bulunamadı'
+                        'message' => 'Fotoğraf bulunamadı',
                     ], 404);
                 }
 
@@ -361,7 +344,7 @@ class PhotoController extends AdminController
             if (request()->expectsJson()) {
                 return response()->json([
                     'success' => true,
-                    'message' => 'Fotoğraf başarıyla silindi'
+                    'message' => 'Fotoğraf başarıyla silindi',
                 ]);
             }
 
@@ -370,19 +353,17 @@ class PhotoController extends AdminController
             if (request()->expectsJson()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Fotoğraf silinirken hata: ' . $e->getMessage()
+                    'message' => 'Fotoğraf silinirken hata: '.$e->getMessage(),
                 ], 500);
             }
 
-            return back()->with('error', 'Fotoğraf silinirken hata: ' . $e->getMessage());
+            return back()->with('error', 'Fotoğraf silinirken hata: '.$e->getMessage());
         }
     }
 
     /**
      * Context7: Toplu fotoğraf işlemleri
      *
-     * @param PhotoBulkActionRequest $request
-     * @return \Illuminate\Http\JsonResponse
      * @throws \Exception
      */
     public function bulkAction(PhotoBulkActionRequest $request): \Illuminate\Http\JsonResponse
@@ -411,7 +392,7 @@ class PhotoController extends AdminController
                         }
                     }
 
-                    if (!empty($pathsToDelete)) {
+                    if (! empty($pathsToDelete)) {
                         Storage::disk('public')->delete($pathsToDelete);
                     }
 
@@ -443,12 +424,12 @@ class PhotoController extends AdminController
 
             return response()->json([
                 'success' => true,
-                'message' => $processedCount . ' fotoğraf için ' . $action . ' işlemi başarıyla tamamlandı'
+                'message' => $processedCount.' fotoğraf için '.$action.' işlemi başarıyla tamamlandı',
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Toplu işlem sırasında hata: ' . $e->getMessage()
+                'message' => 'Toplu işlem sırasında hata: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -456,8 +437,6 @@ class PhotoController extends AdminController
     /**
      * Context7: Fotoğraf optimizasyonu
      *
-     * @param int $id
-     * @return \Illuminate\Http\JsonResponse
      * @throws \Exception
      */
     public function optimize(int $id): \Illuminate\Http\JsonResponse
@@ -465,10 +444,10 @@ class PhotoController extends AdminController
         try {
             $photo = $this->getSamplePhoto($id);
 
-            if (!$photo) {
+            if (! $photo) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Fotoğraf bulunamadı'
+                    'message' => 'Fotoğraf bulunamadı',
                 ], 404);
             }
 
@@ -479,12 +458,12 @@ class PhotoController extends AdminController
                 'success' => true,
                 'message' => 'Fotoğraf başarıyla optimize edildi',
                 'original_size' => $photo['size'] ?? 0,
-                'optimized_size' => ($photo['size'] ?? 0) * 0.7 // %30 küçültme simülasyonu
+                'optimized_size' => ($photo['size'] ?? 0) * 0.7, // %30 küçültme simülasyonu
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Optimizasyon sırasında hata: ' . $e->getMessage()
+                'message' => 'Optimizasyon sırasında hata: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -492,9 +471,9 @@ class PhotoController extends AdminController
     /**
      * Context7: Örnek fotoğraf verileri
      *
-     * @param string $category
-     * @param string $search
-     * @param int $perPage
+     * @param  string  $category
+     * @param  string  $search
+     * @param  int  $perPage
      * @return array
      */
     private function getPhotos($category = 'all', $search = '', $perPage = 24)
@@ -510,7 +489,7 @@ class PhotoController extends AdminController
                 'views' => 145,
                 'uploaded_at' => now()->subDays(5),
                 'thumbnail_url' => '/storage/photos/thumbnails/villa_1_thumb.jpg',
-                'url' => '/storage/photos/ilan/villa_1.jpg'
+                'url' => '/storage/photos/ilan/villa_1.jpg',
             ],
             [
                 'id' => 2,
@@ -521,20 +500,19 @@ class PhotoController extends AdminController
                 'views' => 89,
                 'uploaded_at' => now()->subDays(3),
                 'thumbnail_url' => '/storage/photos/thumbnails/apartment_1_thumb.jpg',
-                'url' => '/storage/photos/ilan/apartment_1.jpg'
-            ]
+                'url' => '/storage/photos/ilan/apartment_1.jpg',
+            ],
         ];
 
         // Filtreleme
         if ($category !== 'all') {
-            $allPhotos = array_filter($allPhotos, fn($photo) => $photo['category'] === $category);
+            $allPhotos = array_filter($allPhotos, fn ($photo) => $photo['category'] === $category);
         }
 
-        if (!empty($search)) {
+        if (! empty($search)) {
             $allPhotos = array_filter(
                 $allPhotos,
-                fn($photo) =>
-                str_contains(strtolower($photo['title']), strtolower($search))
+                fn ($photo) => str_contains(strtolower($photo['title']), strtolower($search))
             );
         }
 
@@ -555,7 +533,7 @@ class PhotoController extends AdminController
             'isyeri' => 'İşyeri',
             'exterior' => 'Dış Mekan',
             'interior' => 'İç Mekan',
-            'other' => 'Diğer'
+            'other' => 'Diğer',
         ];
     }
 
@@ -574,27 +552,28 @@ class PhotoController extends AdminController
                 'villa' => 45,
                 'daire' => 68,
                 'arsa' => 22,
-                'isyeri' => 15
-            ]
+                'isyeri' => 15,
+            ],
         ];
     }
 
     /**
      * Context7: Örnek fotoğraf detayı
      *
-     * @param int|string $id
+     * @param  int|string  $id
      * @return array|null
      */
     private function getSamplePhoto($id)
     {
         $photos = $this->getPhotos();
-        return collect($photos)->firstWhere('id', (int)$id);
+
+        return collect($photos)->firstWhere('id', (int) $id);
     }
 
     /**
      * Context7: Thumbnail oluşturma (mock)
      *
-     * @param string $originalPath
+     * @param  string  $originalPath
      * @return string|null
      */
     private function createThumbnail($originalPath)
@@ -604,14 +583,11 @@ class PhotoController extends AdminController
 
     /**
      * Thumbnail generation
-     *
-     * @param string $originalPath
-     * @return string|null
      */
     private function generateThumbnail(string $originalPath): ?string
     {
         try {
-            $thumbnailPath = 'thumbnails/' . basename($originalPath);
+            $thumbnailPath = 'thumbnails/'.basename($originalPath);
 
             $image = Image::make(Storage::disk('public')->path($originalPath));
 
@@ -627,16 +603,14 @@ class PhotoController extends AdminController
 
             return $thumbnailPath;
         } catch (\Exception $e) {
-            \Log::error('Thumbnail generation error: ' . $e->getMessage());
+            \Log::error('Thumbnail generation error: '.$e->getMessage());
+
             return null;
         }
     }
 
     /**
      * Image optimization
-     *
-     * @param string $path
-     * @return int|null
      */
     private function optimizeImage(string $path): ?int
     {
@@ -658,25 +632,25 @@ class PhotoController extends AdminController
 
             return $image->filesize();
         } catch (\Exception $e) {
-            \Log::error('Image optimization error: ' . $e->getMessage());
+            \Log::error('Image optimization error: '.$e->getMessage());
+
             return null;
         }
     }
 
     /**
      * Views increment
-     *
-     * @param int $id
-     * @return int
      */
     private function incrementPhotoViews(int $id): int
     {
         try {
             $photo = Photo::findOrFail($id);
             $photo->incrementViews();
+
             return $photo->views;
         } catch (\Exception $e) {
-            \Log::error('Increment views error: ' . $e->getMessage());
+            \Log::error('Increment views error: '.$e->getMessage());
+
             return 0;
         }
     }

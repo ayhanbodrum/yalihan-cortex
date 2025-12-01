@@ -1,182 +1,135 @@
-@extends('admin.layouts.neo')
+@extends('admin.layouts.app')
 
-@section('title', 'Analytics Dashboard')
+@section('title', 'Context7 Analytics Dashboard - Yalıhan Bekçi')
 
 @section('content')
-    <div class="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-6" x-data="{ exportOpen: false, loading: false, refreshing: false }">
-        <!-- Header -->
-        <div class="flex items-center justify-between mb-6">
-            <div>
-                <h1 class="text-xl font-semibold text-gray-900 dark:text-white">
-                    <i class="fas fa-chart-line text-orange-500 mr-2"></i>
-                    Analytics Dashboard
-                </h1>
-                <p class="text-sm text-gray-600 dark:text-gray-400 mb-0">Form performance and user behavior insights</p>
-            </div>
-
-            <div class="flex items-center gap-3">
-                <!-- Period Selector -->
-                <select style="color-scheme: light dark;" id="period-selector" class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 w-auto transition-all duration-200">
-                    <option value="7d" {{ $period === '7d' ? 'selected' : '' }}>Last 7 Days</option>
-                    <option value="30d" {{ $period === '30d' ? 'selected' : '' }}>Last 30 Days</option>
-                    <option value="90d" {{ $period === '90d' ? 'selected' : '' }}>Last 90 Days</option>
-                    <option value="1y" {{ $period === '1y' ? 'selected' : '' }}>Last Year</option>
-                </select>
-
-                <!-- Export Button -->
-                <button class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200" @click="exportOpen = true">
-                    <i class="fas fa-download"></i>
-                    <span>Export</span>
-                </button>
-
-                <!-- Refresh Button -->
-                <button class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50" :disabled="refreshing"
-                    @click="refreshing = true; refreshAnalytics()">
-                    <i class="fas" :class="refreshing ? 'fa-spinner fa-spin' : 'fa-sync-alt'"></i>
-                    <span x-text="refreshing ? 'Yenileniyor...' : 'Refresh'"></span>
-                </button>
+    <div class="min-h-screen bg-gray-50 dark:bg-gray-900 transition-all duration-200 ease-in-out">
+        <!-- Header Section -->
+        <div
+            class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 transition-all duration-200 ease-in-out">
+            <div class="max-w-7xl mx-auto px-4 py-6">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h1 class="text-3xl font-bold text-gray-900 dark:text-white transition-all duration-200 ease-in-out">
+                            📊 Context7 Analytics Dashboard
+                        </h1>
+                        <p class="text-gray-600 dark:text-gray-300 mt-2 transition-all duration-200 ease-in-out">
+                            Yalıhan Bekçi - Real-time Project Analytics & AI Learning
+                        </p>
+                    </div>
+                    <div class="flex space-x-3">
+                        <button id="refresh-data"
+                            class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 active:scale-95 transition-all duration-200 ease-in-out hover:scale-105 shadow-lg">
+                            🔄 Yenile
+                        </button>
+                        <button id="recalculate-health"
+                            class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 active:scale-95 transition-all duration-200 ease-in-out hover:scale-105 shadow-lg">
+                            🔬 Sağlık Hesapla
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- Alerts Section -->
-        <div id="alerts-section" class="mb-4">
-            <!-- Alerts will be loaded here -->
-        </div>
-
-        <!-- Summary Cards -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all p-4">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <div class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">Total Submissions</div>
-                        <div class="text-xl font-semibold text-gray-900 dark:text-white" id="total-submissions">
-                            {{ number_format($analytics['form_analytics']['total_submissions'] ?? 0) }}
+        <!-- Main Dashboard -->
+        <div class="max-w-7xl mx-auto px-4 py-6">
+            <!-- Real-time Status Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <!-- Overall Health Card -->
+                <div
+                    class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg transition-all duration-200 ease-in-out hover:scale-105 border border-gray-200 dark:border-gray-700">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="text-3xl">🎯</div>
+                        <div id="health-trend"
+                            class="text-sm font-semibold px-2 py-1 rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300">
+                            📈 Improving
                         </div>
                     </div>
-                    <i class="fas fa-clipboard-list text-2xl text-gray-300 dark:text-gray-600"></i>
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Genel Sağlık</h3>
+                    <div class="flex items-end space-x-2">
+                        <span id="health-score" class="text-3xl font-bold text-blue-600 dark:text-blue-400">
+                            85.2
+                        </span>
+                        <span class="text-gray-500 dark:text-gray-400">%</span>
+                    </div>
+                    <p id="health-status" class="text-sm text-gray-600 dark:text-gray-300 mt-2 capitalize">
+                        Good Health
+                    </p>
                 </div>
-            </div>
 
-            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all p-4">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <div class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">Completion Rate</div>
-                        <div class="text-xl font-semibold text-gray-900 dark:text-white" id="completion-rate">
-                            {{ number_format($analytics['form_analytics']['completion_rate'] ?? 0, 1) }}%
+                <!-- Context7 Compliance Card -->
+                <div
+                    class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg transition-all duration-200 ease-in-out hover:scale-105 border border-gray-200 dark:border-gray-700">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="text-3xl">⚖️</div>
+                        <div class="text-sm text-green-600 dark:text-green-400 font-semibold">Context7</div>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Uyumluluk</h3>
+                    <div class="flex items-end space-x-2">
+                        <span id="context7-score" class="text-3xl font-bold text-green-600 dark:text-green-400">
+                            92.8
+                        </span>
+                        <span class="text-gray-500 dark:text-gray-400">%</span>
+                    </div>
+                    <p class="text-sm text-gray-600 dark:text-gray-300 mt-2">
+                        <span id="active-violations" class="font-semibold text-red-600 dark:text-red-400">3</span> aktif
+                        ihlal
+                    </p>
+                </div>
+
+                <!-- Today's Activity Card -->
+                <div
+                    class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg transition-all duration-200 ease-in-out hover:scale-105 border border-gray-200 dark:border-gray-700">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="text-3xl">⚡</div>
+                        <div class="text-sm text-purple-600 dark:text-purple-400 font-semibold">Bugün</div>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Aktivite</h3>
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600 dark:text-gray-300">Commit</span>
+                            <span id="commits-today" class="font-semibold text-purple-600 dark:text-purple-400">12</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600 dark:text-gray-300">Build</span>
+                            <span id="builds-today" class="font-semibold text-purple-600 dark:text-purple-400">8</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600 dark:text-gray-300">Test</span>
+                            <span id="tests-today" class="font-semibold text-purple-600 dark:text-purple-400">45</span>
                         </div>
                     </div>
-                    <i class="fas fa-percentage text-2xl text-gray-300 dark:text-gray-600"></i>
                 </div>
-            </div>
 
-            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all p-4">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <div class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">Avg. Completion Time
+                <!-- AI Learning Card -->
+                <div
+                    class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg transition-all duration-200 ease-in-out hover:scale-105 border border-gray-200 dark:border-gray-700">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="text-3xl">🧠</div>
+                        <div class="text-sm text-orange-600 dark:text-orange-400 font-semibold">AI Bekçi</div>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">Öğrenme</h3>
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600 dark:text-gray-300">Oturum</span>
+                            <span id="ai-sessions" class="font-semibold text-orange-600 dark:text-orange-400">7</span>
                         </div>
-                        <div class="text-xl font-semibold text-gray-900 dark:text-white" id="avg-completion-time">
-                            {{ number_format($analytics['form_analytics']['average_completion_time'] ?? 0, 1) }} min
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600 dark:text-gray-300">Kalıp</span>
+                            <span id="patterns-learned" class="font-semibold text-orange-600 dark:text-orange-400">15</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600 dark:text-gray-300">Fikir</span>
+                            <span id="ideas-generated" class="font-semibold text-orange-600 dark:text-orange-400">23</span>
                         </div>
                     </div>
-                    <i class="fas fa-clock text-2xl text-gray-300 dark:text-gray-600"></i>
-                </div>
-            </div>
-
-            <!-- EmlakLoc v3.0 Analytics Cards -->
-            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all p-4">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <div class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">Map Interactions</div>
-                        <div class="text-xl font-semibold text-gray-900 dark:text-white" id="map-interactions">
-                            {{ number_format($analytics['emlakloc_analytics']['map_interactions'] ?? 0) }}
-                        </div>
-                    </div>
-                    <i class="fas fa-map-marked-alt text-2xl text-gray-300 dark:text-gray-600"></i>
-                </div>
-            </div>
-
-            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all p-4">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <div class="text-xs font-medium text-red-600 dark:text-red-400 uppercase tracking-wide mb-1">
-                            Popular Locations
-                        </div>
-                        <div class="text-xl font-semibold text-gray-900 dark:text-white" id="popular-locations">
-                            {{ number_format($analytics['emlakloc_analytics']['popular_locations_used'] ?? 0) }}
-                        </div>
-                    </div>
-                    <i class="fas fa-star text-2xl text-gray-300 dark:text-gray-600"></i>
-                </div>
-            </div>
-
-            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all p-4">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <div class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1">
-                            Address Searches
-                        </div>
-                        <div class="text-xl font-semibold text-gray-900 dark:text-white" id="address-searches">
-                            {{ number_format($analytics['emlakloc_analytics']['address_searches'] ?? 0) }}
-                        </div>
-                    </div>
-                    <i class="fas fa-search text-2xl text-gray-300 dark:text-gray-600"></i>
-                </div>
-            </div>
-
-            <!-- Search Analytics Card -->
-            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all p-4">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <div class="text-xs font-medium text-yellow-600 dark:text-yellow-400 uppercase tracking-wide mb-1">
-                            Arama Analizi
-                        </div>
-                        <div class="text-xl font-semibold text-gray-900 dark:text-white" id="space-y-2">
-                            {{ number_format($analytics['context7_analytics']['total_searches'] ?? 0) }}
-                        </div>
-                    </div>
-                    <i class="fas fa-search text-2xl text-gray-300 dark:text-gray-600"></i>
-                </div>
-            </div>
-
-            <!-- AI Analytics Card -->
-            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all p-4">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <div class="text-xs font-medium text-purple-600 dark:text-purple-400 uppercase tracking-wide mb-1">
-                            AI Kullanımı
-                        </div>
-                        <div class="text-xl font-semibold text-gray-900 dark:text-white" id="ai-usage">
-                            {{ number_format($analytics['ai_analytics']['total_requests'] ?? 0) }}
-                        </div>
-                    </div>
-                    <i class="fas fa-robot text-2xl text-gray-300 dark:text-gray-600"></i>
-                </div>
-            </div>
-
-            <!-- Charts Row -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-                <!-- Conversion Funnel -->
-                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all p-4">
-                    <h6 class="mb-3 font-semibold text-gray-900 dark:text-white">
-                        <i class="fas fa-funnel-dollar mr-2 text-orange-500"></i>
-                        Conversion Funnel
-                    </h6>
-                    <canvas id="conversion-funnel-chart" width="400" height="200"></canvas>
-                </div>
-
-                <!-- Step Abandonment -->
-                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all p-4">
-                    <h6 class="mb-3 font-semibold text-gray-900 dark:text-white">
-                        <i class="fas fa-exclamation-triangle mr-2 text-orange-500"></i>
-                        Step Abandonment
-                    </h6>
-                    <canvas id="step-abandonment-chart" width="400" height="200"></canvas>
                 </div>
             </div>
 
             <!-- Search Analytics Section -->
             <div class="mb-6">
-                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all p-4">
+                <div
+                    class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all p-4">
                     <h5 class="mb-4 font-semibold text-gray-900 dark:text-white">
                         <i class="fas fa-search mr-2 text-orange-500"></i>
                         Arama Performans Paneli
@@ -193,15 +146,16 @@
                                     <div class="flex items-center">
                                         <div class="flex-1">
                                             <div class="h-2 rounded-full bg-gray-200 dark:bg-gray-700 mb-2">
-                                                <div class="h-2 rounded-full bg-blue-500" id="search-accuracy" style="width: 0%"
-                                                    role="progressbar"></div>
+                                                <div class="h-2 rounded-full bg-blue-500" id="search-accuracy"
+                                                    style="width: 0%" role="progressbar"></div>
                                             </div>
                                             <small class="text-sm text-gray-500 dark:text-gray-400">
                                                 Doğruluk Oranı: <span id="search-accuracy-percentage">0%</span>
                                             </small>
                                         </div>
                                         <div class="ml-3 text-right">
-                                            <div class="text-2xl font-bold text-yellow-600 dark:text-yellow-400" id="successful-searches">0</div>
+                                            <div class="text-2xl font-bold text-yellow-600 dark:text-yellow-400"
+                                                id="successful-searches">0</div>
                                             <small class="text-sm text-gray-500 dark:text-gray-400">Başarılı</small>
                                         </div>
                                     </div>
@@ -210,7 +164,8 @@
                                             <small class="text-sm text-gray-500 dark:text-gray-400">Başarısız</small>
                                         </div>
                                         <div class="ml-3 text-right">
-                                            <div class="text-2xl font-bold text-red-600 dark:text-red-400" id="failed-searches">0</div>
+                                            <div class="text-2xl font-bold text-red-600 dark:text-red-400"
+                                                id="failed-searches">0</div>
                                             <small class="text-sm text-gray-500 dark:text-gray-400">Başarısız</small>
                                         </div>
                                     </div>
@@ -226,12 +181,16 @@
                                 <div class="space-y-2">
                                     <div class="grid grid-cols-2 text-center gap-4">
                                         <div>
-                                            <div class="text-2xl font-bold text-yellow-600 dark:text-yellow-400" id="avg-search-time">0</div>
-                                            <small class="text-sm text-gray-500 dark:text-gray-400">Ort. Arama Süresi (sn)</small>
+                                            <div class="text-2xl font-bold text-yellow-600 dark:text-yellow-400"
+                                                id="avg-search-time">0</div>
+                                            <small class="text-sm text-gray-500 dark:text-gray-400">Ort. Arama Süresi
+                                                (sn)</small>
                                         </div>
                                         <div>
-                                            <div class="text-2xl font-bold text-blue-600 dark:text-blue-400" id="avg-results-clicked">0</div>
-                                            <small class="text-sm text-gray-500 dark:text-gray-400">Ort. Sonuç Tıklama</small>
+                                            <div class="text-2xl font-bold text-blue-600 dark:text-blue-400"
+                                                id="avg-results-clicked">0</div>
+                                            <small class="text-sm text-gray-500 dark:text-gray-400">Ort. Sonuç
+                                                Tıklama</small>
                                         </div>
                                     </div>
                                 </div>
@@ -244,31 +203,36 @@
 
         <!-- Performance Metrics -->
         <div class="mb-6">
-            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all p-4">
+            <div
+                class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all p-4">
                 <h6 class="mb-4 font-semibold text-gray-900 dark:text-white">
                     <i class="fas fa-tachometer-alt mr-2 text-orange-500"></i>
                     Performance Metrics
                 </h6>
                 <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <div class="text-center p-3 rounded-lg bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700">
+                    <div
+                        class="text-center p-3 rounded-lg bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700">
                         <div class="text-2xl font-bold text-gray-900 dark:text-white" id="page-load-time">
                             {{ number_format($analytics['form_analytics']['performance_metrics']['page_load_time'] ?? 0, 0) }}ms
                         </div>
                         <div class="text-xs text-gray-500 dark:text-gray-400">Page Load Time</div>
                     </div>
-                    <div class="text-center p-3 rounded-lg bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700">
+                    <div
+                        class="text-center p-3 rounded-lg bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700">
                         <div class="text-2xl font-bold text-gray-900 dark:text-white" id="api-response-time">
                             {{ number_format($analytics['form_analytics']['performance_metrics']['api_response_time'] ?? 0, 0) }}ms
                         </div>
                         <div class="text-xs text-gray-500 dark:text-gray-400">API Response Time</div>
                     </div>
-                    <div class="text-center p-3 rounded-lg bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700">
+                    <div
+                        class="text-center p-3 rounded-lg bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700">
                         <div class="text-2xl font-bold text-gray-900 dark:text-white" id="error-rate">
                             {{ number_format($analytics['form_analytics']['performance_metrics']['error_rate'] ?? 0, 2) }}%
                         </div>
                         <div class="text-xs text-gray-500 dark:text-gray-400">Error Rate</div>
                     </div>
-                    <div class="text-center p-3 rounded-lg bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700">
+                    <div
+                        class="text-center p-3 rounded-lg bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700">
                         <div class="text-2xl font-bold text-gray-900 dark:text-white" id="uptime">
                             {{ number_format($analytics['form_analytics']['performance_metrics']['uptime'] ?? 0, 2) }}%
                         </div>
@@ -281,7 +245,8 @@
         <!-- User Behavior -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
             <!-- Device Usage -->
-            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all">
+            <div
+                class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all">
                 <div class="border-b border-gray-200 dark:border-gray-700 px-6 py-3">
                     <h6 class="font-semibold text-blue-600 dark:text-blue-400">
                         <i class="fas fa-mobile-alt mr-2"></i>
@@ -294,7 +259,8 @@
             </div>
 
             <!-- Browser Usage -->
-            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all">
+            <div
+                class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all">
                 <div class="border-b border-gray-200 dark:border-gray-700 px-6 py-3">
                     <h6 class="font-semibold text-blue-600 dark:text-blue-400">
                         <i class="fas fa-globe mr-2"></i>
@@ -307,7 +273,8 @@
             </div>
 
             <!-- Session Duration -->
-            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all">
+            <div
+                class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all">
                 <div class="border-b border-gray-200 dark:border-gray-700 px-6 py-3">
                     <h6 class="font-semibold text-blue-600 dark:text-blue-400">
                         <i class="fas fa-hourglass-half mr-2"></i>
@@ -327,7 +294,8 @@
 
         <!-- Real-time Activity -->
         <div class="mb-6">
-            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all">
+            <div
+                class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all">
                 <div class="border-b border-gray-200 dark:border-gray-700 px-6 py-3">
                     <h6 class="font-semibold text-blue-600 dark:text-blue-400">
                         <i class="fas fa-broadcast-tower mr-2"></i>
@@ -336,121 +304,29 @@
                 </div>
                 <div class="p-6">
                     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-                            <div class="text-center">
-                                <div class="text-2xl font-bold text-green-600 dark:text-green-400" id="current-sessions">
-                                    {{ number_format($analytics['real_time_analytics']['current_sessions'] ?? 0) }}
-                                </div>
-                                <div class="text-sm text-gray-500 dark:text-gray-400">Current Sessions</div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-green-600 dark:text-green-400" id="current-sessions">
+                                {{ number_format($analytics['real_time_analytics']['current_sessions'] ?? 0) }}
                             </div>
-                            <div class="text-center">
-                                <div class="text-2xl font-bold text-blue-600 dark:text-blue-400" id="recent-submissions">
-                                    {{ number_format($analytics['real_time_analytics']['recent_submissions'] ?? 0) }}
-                                </div>
-                                <div class="text-sm text-gray-500 dark:text-gray-400">Recent Submissions</div>
-                            </div>
-                            <div class="text-center">
-                                <div class="text-2xl font-bold text-yellow-600 dark:text-yellow-400" id="cpu-usage">
-                                    {{ number_format($analytics['real_time_analytics']['system_health']['cpu_usage'] ?? 0) }}%
-                                </div>
-                                <div class="text-sm text-gray-500 dark:text-gray-400">CPU Usage</div>
-                            </div>
-                            <div class="text-center">
-                                <div class="text-2xl font-bold text-red-600 dark:text-red-400" id="memory-usage">
-                                    {{ number_format($analytics['real_time_analytics']['system_health']['memory_usage'] ?? 0) }}%
-                                </div>
-                                <div class="text-sm text-gray-500 dark:text-gray-400">Memory Usage</div>
-                            </div>
+                            <div class="text-sm text-gray-500 dark:text-gray-400">Current Sessions</div>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- EmlakLoc v3.0 Analytics Section -->
-        <div class="mb-6">
-            <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all">
-                <div class="border-b border-gray-200 dark:border-gray-700 px-6 py-3">
-                    <h5 class="font-semibold text-gray-900 dark:text-white">
-                        <i class="fas fa-map-marked-alt mr-2"></i>
-                        EmlakLoc v3.0 Performance Dashboard
-                    </h5>
-                </div>
-                <div class="p-6">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <!-- Top Neighborhoods -->
-                            <div>
-                                <h6 class="text-blue-600 dark:text-blue-400 mb-3">
-                                    <i class="fas fa-star mr-1"></i>
-                                    En Popüler Mahalleler
-                                </h6>
-                                <div id="top-neighborhoods-chart" class="h-[300px]">
-                                    <!-- Chart will be loaded here -->
-                                </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-blue-600 dark:text-blue-400" id="recent-submissions">
+                                {{ number_format($analytics['real_time_analytics']['recent_submissions'] ?? 0) }}
                             </div>
-
-                            <!-- API Response Times -->
-                            <div>
-                                <h6 class="text-green-600 dark:text-green-400 mb-3">
-                                    <i class="fas fa-tachometer-alt mr-1"></i>
-                                    API Response Times
-                                </h6>
-                                <div id="response-times-chart" class="h-[300px]">
-                                    <!-- Chart will be loaded here -->
-                                </div>
+                            <div class="text-sm text-gray-500 dark:text-gray-400">Recent Submissions</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-yellow-600 dark:text-yellow-400" id="cpu-usage">
+                                {{ number_format($analytics['real_time_analytics']['system_health']['cpu_usage'] ?? 0) }}%
                             </div>
-
-                            <!-- Cache Performance -->
-                            <div>
-                                <h6 class="text-blue-600 dark:text-blue-400 mb-3">
-                                    <i class="fas fa-database mr-1"></i>
-                                    Cache Performance
-                                </h6>
-                                <div class="space-y-2">
-                                    <div class="flex items-center">
-                                        <div class="flex-1">
-                                            <div class="h-2 rounded-full bg-gray-200 dark:bg-gray-700 mb-2">
-                                                <div class="h-2 rounded-full bg-green-500" id="cache-hit-rate" style="width: 0%"
-                                                    role="progressbar"></div>
-                                            </div>
-                                            <small class="text-sm text-gray-500 dark:text-gray-400">
-                                                Hit Rate: <span id="cache-hit-percentage">0%</span>
-                                            </small>
-                                        </div>
-                                        <div class="ml-3 text-right">
-                                            <div class="text-2xl font-bold text-green-600 dark:text-green-400" id="cache-hits">0</div>
-                                            <small class="text-sm text-gray-500 dark:text-gray-400">Hits</small>
-                                        </div>
-                                    </div>
-                                    <div class="flex items-center mt-2">
-                                        <div class="flex-1">
-                                            <small class="text-sm text-gray-500 dark:text-gray-400">Misses</small>
-                                        </div>
-                                        <div class="ml-3 text-right">
-                                            <div class="text-2xl font-bold text-red-600 dark:text-red-400" id="cache-misses">0</div>
-                                            <small class="text-sm text-gray-500 dark:text-gray-400">Misses</small>
-                                        </div>
-                                    </div>
-                                </div>
+                            <div class="text-sm text-gray-500 dark:text-gray-400">CPU Usage</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-red-600 dark:text-red-400" id="memory-usage">
+                                {{ number_format($analytics['real_time_analytics']['system_health']['memory_usage'] ?? 0) }}%
                             </div>
-
-                            <!-- User Behavior -->
-                            <div>
-                                <h6 class="text-yellow-600 dark:text-yellow-400 mb-3">
-                                    <i class="fas fa-users mr-1"></i>
-                                    Kullanıcı Davranışları
-                                </h6>
-                                <div class="grid grid-cols-2 text-center gap-4">
-                                    <div>
-                                        <div class="text-2xl font-bold text-blue-600 dark:text-blue-400" id="avg-session-duration">0</div>
-                                        <small class="text-sm text-gray-500 dark:text-gray-400">Ort. Oturum Süresi (dk)</small>
-                                    </div>
-                                    <div>
-                                        <div class="text-2xl font-bold text-blue-600 dark:text-blue-400" id="avg-interactions">0</div>
-                                        <small class="text-sm text-gray-500 dark:text-gray-400">Ort. Etkileşim/Session</small>
-                                    </div>
-                                </div>
-                                {{-- ✅ FIX: "Misses" alanı kaldırıldı - Cache Performance'a ait, burada gereksiz --}}
-                            </div>
+                            <div class="text-sm text-gray-500 dark:text-gray-400">Memory Usage</div>
                         </div>
                     </div>
                 </div>
@@ -458,13 +334,112 @@
         </div>
     </div>
 
+    <!-- EmlakLoc v3.0 Analytics Section -->
+    <div class="mb-6">
+        <div
+            class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all">
+            <div class="border-b border-gray-200 dark:border-gray-700 px-6 py-3">
+                <h5 class="font-semibold text-gray-900 dark:text-white">
+                    <i class="fas fa-map-marked-alt mr-2"></i>
+                    EmlakLoc v3.0 Performance Dashboard
+                </h5>
+            </div>
+            <div class="p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Top Neighborhoods -->
+                    <div>
+                        <h6 class="text-blue-600 dark:text-blue-400 mb-3">
+                            <i class="fas fa-star mr-1"></i>
+                            En Popüler Mahalleler
+                        </h6>
+                        <div id="top-neighborhoods-chart" class="h-[300px]">
+                            <!-- Chart will be loaded here -->
+                        </div>
+                    </div>
+
+                    <!-- API Response Times -->
+                    <div>
+                        <h6 class="text-green-600 dark:text-green-400 mb-3">
+                            <i class="fas fa-tachometer-alt mr-1"></i>
+                            API Response Times
+                        </h6>
+                        <div id="response-times-chart" class="h-[300px]">
+                            <!-- Chart will be loaded here -->
+                        </div>
+                    </div>
+
+                    <!-- Cache Performance -->
+                    <div>
+                        <h6 class="text-blue-600 dark:text-blue-400 mb-3">
+                            <i class="fas fa-database mr-1"></i>
+                            Cache Performance
+                        </h6>
+                        <div class="space-y-2">
+                            <div class="flex items-center">
+                                <div class="flex-1">
+                                    <div class="h-2 rounded-full bg-gray-200 dark:bg-gray-700 mb-2">
+                                        <div class="h-2 rounded-full bg-green-500" id="cache-hit-rate" style="width: 0%"
+                                            role="progressbar"></div>
+                                    </div>
+                                    <small class="text-sm text-gray-500 dark:text-gray-400">
+                                        Hit Rate: <span id="cache-hit-percentage">0%</span>
+                                    </small>
+                                </div>
+                                <div class="ml-3 text-right">
+                                    <div class="text-2xl font-bold text-green-600 dark:text-green-400" id="cache-hits">0
+                                    </div>
+                                    <small class="text-sm text-gray-500 dark:text-gray-400">Hits</small>
+                                </div>
+                            </div>
+                            <div class="flex items-center mt-2">
+                                <div class="flex-1">
+                                    <small class="text-sm text-gray-500 dark:text-gray-400">Misses</small>
+                                </div>
+                                <div class="ml-3 text-right">
+                                    <div class="text-2xl font-bold text-red-600 dark:text-red-400" id="cache-misses">0
+                                    </div>
+                                    <small class="text-sm text-gray-500 dark:text-gray-400">Misses</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- User Behavior -->
+                    <div>
+                        <h6 class="text-yellow-600 dark:text-yellow-400 mb-3">
+                            <i class="fas fa-users mr-1"></i>
+                            Kullanıcı Davranışları
+                        </h6>
+                        <div class="grid grid-cols-2 text-center gap-4">
+                            <div>
+                                <div class="text-2xl font-bold text-blue-600 dark:text-blue-400"
+                                    id="avg-session-duration">0</div>
+                                <small class="text-sm text-gray-500 dark:text-gray-400">Ort. Oturum Süresi (dk)</small>
+                            </div>
+                            <div>
+                                <div class="text-2xl font-bold text-blue-600 dark:text-blue-400" id="avg-interactions">0
+                                </div>
+                                <small class="text-sm text-gray-500 dark:text-gray-400">Ort. Etkileşim/Session</small>
+                            </div>
+                        </div>
+                        {{-- ✅ FIX: "Misses" alanı kaldırıldı - Cache Performance'a ait, burada gereksiz --}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    </div>
+
     <!-- Export Modal (Alpine) -->
     <div x-show="exportOpen" x-transition class="fixed inset-0 z-50 flex items-center justify-center p-4">
         <div class="absolute inset-0 bg-black/40" @click="exportOpen=false"></div>
-            <div class="relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-2xl w-full max-w-md">
+        <div
+            class="relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-2xl w-full max-w-md">
             <div class="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 px-4 py-2.5">
                 <h5 class="text-sm font-semibold text-gray-900 dark:text-white">Export Analytics Data</h5>
-                <button class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors" @click="exportOpen=false" aria-label="Kapat">
+                <button class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                    @click="exportOpen=false" aria-label="Kapat">
                     <svg class="w-5 h-5 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                     </svg>
@@ -474,7 +449,8 @@
                 <div>
                     <label for="export-type" class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Data
                         Type</label>
-                    <select style="color-scheme: light dark;" id="export-type" class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 w-full transition-all duration-200">
+                    <select style="color-scheme: light dark;" id="export-type"
+                        class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 w-full transition-all duration-200">
                         <option value="form_analytics">Form Analytics</option>
                         <option value="conversion_analytics">Conversion Analytics</option>
                         <option value="performance_metrics">Performance Metrics</option>
@@ -483,7 +459,8 @@
                 <div>
                     <label for="export-period"
                         class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Time Period</label>
-                    <select style="color-scheme: light dark;" id="export-period" class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 w-full transition-all duration-200">
+                    <select style="color-scheme: light dark;" id="export-period"
+                        class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 w-full transition-all duration-200">
                         <option value="7d">Last 7 Days</option>
                         <option value="30d">Last 30 Days</option>
                         <option value="90d">Last 90 Days</option>
@@ -492,9 +469,12 @@
                 </div>
             </div>
             <div class="flex justify-end gap-2 border-t border-gray-200 dark:border-gray-700 px-4 py-2.5">
-                <button type="button" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200" @click="exportOpen=false">Cancel</button>
-                <button type="button" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50" :disabled="loading"
-                    @click="loading = true; downloadExport()">
+                <button type="button"
+                    class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200"
+                    @click="exportOpen=false">Cancel</button>
+                <button type="button"
+                    class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50"
+                    :disabled="loading" @click="loading = true; downloadExport()">
                     <i class="fas" :class="loading ? 'fa-spinner fa-spin' : 'fa-download'"></i>
                     <span x-text="loading ? 'İndiriliyor...' : 'Download'"></span>
                 </button>
@@ -505,7 +485,6 @@
 @endsection
 
 @push('styles')
-
 @endpush
 
 @push('scripts')

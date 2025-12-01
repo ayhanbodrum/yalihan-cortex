@@ -85,8 +85,8 @@ class Category extends Model
      */
     public function scopeActive($query)
     {
-    // Context7: status → one_cikan
-    return $query->where('one_cikan', true);
+        // Context7: status → one_cikan
+        return $query->where('one_cikan', true);
     }
 
     /**

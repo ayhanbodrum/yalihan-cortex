@@ -2,11 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Models\User;
-use App\Models\DanismanYorumu;
-use App\Enums\UserRole;
 use Illuminate\Support\Facades\Schema;
 
 class DanismanController extends AdminController
@@ -20,12 +18,12 @@ class DanismanController extends AdminController
         $query->whereHas('roles', function ($q) {
             $q->where('name', 'danisman');
         });
-        
+
         // ✅ Context7: Varsayılan olarak sadece aktif danışmanları göster (status = 1)
-        if (!$request->has('status')) {
+        if (! $request->has('status')) {
             $query->where('status', 1);
         }
-        
+
         $search = trim((string) $request->get('search'));
         if ($search !== '') {
             $query->where(function ($q) use ($search) {
@@ -101,24 +99,24 @@ class DanismanController extends AdminController
         // Route model binding ile gelen $danisman otomatik olarak User modeli
 
         // Danışman rolünü kontrol et
-        if (!$danisman->hasRole('danisman')) {
+        if (! $danisman->hasRole('danisman')) {
             abort(404, 'Bu kullanıcı bir danışman değil');
         }
 
         // Eager loading
         $danisman->load([
             'roles:id,name',
-            'ilanlar' => function($q) {
+            'ilanlar' => function ($q) {
                 $q->where('status', 'Aktif')->latest()->limit(10);
-            }
+            },
         ]);
 
         // ✅ Context7: Danışman yorumları (tablo kontrolü ile)
         if (Schema::hasTable('danisman_yorumlari')) {
             $danisman->load([
-                'onayliDanismanYorumlari' => function($q) {
+                'onayliDanismanYorumlari' => function ($q) {
                     $q->with('kisi:id,tam_ad,email')->orderBy('created_at', 'desc');
-                }
+                },
             ]);
         }
 
@@ -143,7 +141,7 @@ class DanismanController extends AdminController
         $toplamYorum = 0;
         $onayliYorum = 0;
         $ortalamaRating = 0;
-        
+
         if (Schema::hasTable('danisman_yorumlari')) {
             $toplamYorum = $danisman->danismanYorumlari()->count();
             $onayliYorum = $danisman->onayliDanismanYorumlari()->count();
@@ -207,7 +205,7 @@ class DanismanController extends AdminController
         // Route model binding ile gelen $danisman otomatik olarak User modeli
 
         // Danışman rolünü kontrol et
-        if (!$danisman->hasRole('danisman')) {
+        if (! $danisman->hasRole('danisman')) {
             abort(404, 'Bu kullanıcı bir danışman değil');
         }
 
@@ -287,16 +285,16 @@ class DanismanController extends AdminController
             if ($request->has('uzmanlik_alanlari') && is_array($request->uzmanlik_alanlari)) {
                 // Sadece izin verilen değerleri filtrele
                 $allowedAreas = ['Konut', 'Arsa', 'İşyeri', 'Yazlık', 'Turistik Tesis'];
-                $filteredAreas = array_filter($request->uzmanlik_alanlari, function($area) use ($allowedAreas) {
+                $filteredAreas = array_filter($request->uzmanlik_alanlari, function ($area) use ($allowedAreas) {
                     return in_array($area, $allowedAreas);
                 });
-                if (!empty($filteredAreas)) {
+                if (! empty($filteredAreas)) {
                     $userData['uzmanlik_alanlari'] = array_values($filteredAreas); // JSON array olarak kaydet
                 }
             }
 
             // Eski tek seçim için backward compatibility
-            if ($request->filled('uzmanlik_alani') && !$request->has('uzmanlik_alanlari')) {
+            if ($request->filled('uzmanlik_alani') && ! $request->has('uzmanlik_alanlari')) {
                 $userData['uzmanlik_alani'] = $request->uzmanlik_alani;
             }
 
@@ -344,14 +342,14 @@ class DanismanController extends AdminController
                 ->with('success', 'Danışman başarıyla oluşturuldu.');
 
         } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error('Danışman oluşturma hatası: ' . $e->getMessage(), [
-                'trace' => $e->getTraceAsString()
+            \Illuminate\Support\Facades\Log::error('Danışman oluşturma hatası: '.$e->getMessage(), [
+                'trace' => $e->getTraceAsString(),
             ]);
 
             return redirect()
                 ->back()
                 ->withInput()
-                ->with('error', 'Danışman oluşturulurken hata oluştu: ' . $e->getMessage());
+                ->with('error', 'Danışman oluşturulurken hata oluştu: '.$e->getMessage());
         }
     }
 
@@ -360,7 +358,7 @@ class DanismanController extends AdminController
         // Route model binding ile gelen $danisman otomatik olarak User modeli
 
         // Danışman rolünü kontrol et
-        if (!$danisman->hasRole('danisman')) {
+        if (! $danisman->hasRole('danisman')) {
             abort(404, 'Bu kullanıcı bir danışman değil');
         }
 
@@ -369,7 +367,7 @@ class DanismanController extends AdminController
             'name' => 'nullable|string|max:255', // Backward compatibility - ad ve soyad birleştiriliyor
             'ad' => 'required_without:name|string|max:100',
             'soyad' => 'required_without:name|string|max:100',
-            'email' => 'required|email|unique:users,email,' . $danisman->id,
+            'email' => 'required|email|unique:users,email,'.$danisman->id,
             'phone_number' => 'nullable|string|max:20',
             'password' => 'nullable|string|min:8|confirmed',
             'title' => 'nullable|string|max:100',
@@ -402,7 +400,7 @@ class DanismanController extends AdminController
             if ($request->filled('ad') || $request->filled('soyad')) {
                 $ad = trim($request->ad ?? '');
                 $soyad = trim($request->soyad ?? '');
-                $fullName = trim($ad . ' ' . $soyad);
+                $fullName = trim($ad.' '.$soyad);
             } elseif (empty($fullName) && $danisman->name) {
                 // Mevcut değeri koru
                 $fullName = $danisman->name;
@@ -478,10 +476,10 @@ class DanismanController extends AdminController
             if ($request->has('uzmanlik_alanlari') && is_array($request->uzmanlik_alanlari)) {
                 // Sadece izin verilen değerleri filtrele
                 $allowedAreas = ['Konut', 'Arsa', 'İşyeri', 'Yazlık', 'Turistik Tesis'];
-                $filteredAreas = array_filter($request->uzmanlik_alanlari, function($area) use ($allowedAreas) {
+                $filteredAreas = array_filter($request->uzmanlik_alanlari, function ($area) use ($allowedAreas) {
                     return in_array($area, $allowedAreas);
                 });
-                if (!empty($filteredAreas)) {
+                if (! empty($filteredAreas)) {
                     $userData['uzmanlik_alanlari'] = array_values($filteredAreas); // JSON array olarak kaydet
                 }
             }
@@ -499,14 +497,14 @@ class DanismanController extends AdminController
                 ->route('admin.danisman.show', $danisman)
                 ->with('success', 'Danışman bilgileri başarıyla güncellendi.');
         } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error('Danışman güncelleme hatası: ' . $e->getMessage(), [
-                'trace' => $e->getTraceAsString()
+            \Illuminate\Support\Facades\Log::error('Danışman güncelleme hatası: '.$e->getMessage(), [
+                'trace' => $e->getTraceAsString(),
             ]);
 
             return redirect()
                 ->back()
                 ->withInput()
-                ->with('error', 'Danışman güncellenirken hata oluştu: ' . $e->getMessage());
+                ->with('error', 'Danışman güncellenirken hata oluştu: '.$e->getMessage());
         }
     }
 
@@ -517,7 +515,7 @@ class DanismanController extends AdminController
             $danismanAdi = $danisman->name;
 
             // Danışmanın rolünü kontrol et (Context7: Spatie Permission kullanımı)
-            if (!$danisman->hasRole('danisman')) {
+            if (! $danisman->hasRole('danisman')) {
                 return redirect()
                     ->route('admin.danisman.index')
                     ->with('error', 'Bu kullanıcı bir danışman değil.');
@@ -527,11 +525,11 @@ class DanismanController extends AdminController
 
             return redirect()
                 ->route('admin.danisman.index')
-                ->with('success', $danismanAdi . ' başarıyla silindi.');
+                ->with('success', $danismanAdi.' başarıyla silindi.');
         } catch (\Exception $e) {
             return redirect()
                 ->route('admin.danisman.index')
-                ->with('error', 'Danışman silinirken bir hata oluştu: ' . $e->getMessage());
+                ->with('error', 'Danışman silinirken bir hata oluştu: '.$e->getMessage());
         }
     }
 
@@ -545,17 +543,17 @@ class DanismanController extends AdminController
         // Route model binding ile gelen $danisman otomatik olarak User modeli
 
         // Danışman rolünü kontrol et
-        if (!$danisman->hasRole('danisman')) {
+        if (! $danisman->hasRole('danisman')) {
             return response()->json(['success' => false, 'message' => 'Bu kullanıcı bir danışman değil'], 404);
         }
 
-        $danisman->status = !$danisman->status;
+        $danisman->status = ! $danisman->status;
         $danisman->save();
 
         return response()->json([
             'success' => true,
             'status' => $danisman->status,
-            'message' => $danisman->status ? 'Danışman aktif edildi' : 'Danışman pasif edildi'
+            'message' => $danisman->status ? 'Danışman aktif edildi' : 'Danışman pasif edildi',
         ]);
     }
 
@@ -581,13 +579,19 @@ class DanismanController extends AdminController
 
     private function renderIfExists(string $view, array $data): Response|\Illuminate\Contracts\View\View
     {
-        if (view()->exists($view)) return response()->view($view, $data);
+        if (view()->exists($view)) {
+            return response()->view($view, $data);
+        }
+
         return response('Danışman sayfaları hazır değil', 200);
     }
 
     private function resolveDanisman($danisman): User
     {
-        if ($danisman instanceof User) return $danisman;
+        if ($danisman instanceof User) {
+            return $danisman;
+        }
+
         // ✅ FIX: Context7 - Spatie Permission uses 'roles' (plural), not 'role'
         return User::whereKey($danisman)
             ->whereHas('roles', function ($q) {

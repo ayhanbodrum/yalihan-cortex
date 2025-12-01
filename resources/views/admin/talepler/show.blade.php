@@ -1,4 +1,4 @@
-@extends('admin.layouts.neo')
+@extends('admin.layouts.admin')
 
 @section('title', 'Talep Detayı: ' . $talep->id)
 
@@ -114,6 +114,20 @@
     </div>
 
     <div class="container-fluid">
+        {{-- Yapay Zeka Önerileri - Smart Match Widget --}}
+        <div class="mt-6 mb-6">
+            <div class="mb-4">
+                <h2 class="text-xl font-semibold text-gray-900 dark:text-white flex items-center">
+                    <i class="fas fa-magic mr-2 text-blue-600 dark:text-blue-400"></i>
+                    Yapay Zeka Önerileri
+                </h2>
+                <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                    Bu talebe uygun ilanlar AI tarafından analiz ediliyor...
+                </p>
+            </div>
+            <x-ai.smart-match-widget :talepId="$talep->id" />
+        </div>
+
         <div class="detail-grid">
             <!-- Müşteri ve Talep Bilgileri -->
             <div class="detail-card">

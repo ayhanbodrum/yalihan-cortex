@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
 use App\Services\MCP\TestSpriteService;
+use Illuminate\Console\Command;
 
 class RunTestSpriteCommand extends Command
 {
@@ -31,7 +31,6 @@ class RunTestSpriteCommand extends Command
     /**
      * Komut oluşturucu
      *
-     * @param \App\Services\MCP\TestSpriteService $testSpriteService
      * @return void
      */
     public function __construct(TestSpriteService $testSpriteService)
@@ -53,11 +52,12 @@ class RunTestSpriteCommand extends Command
         $this->info('TestSprite MCP testleri başlatılıyor...');
 
         // MCP sunucusunun çalıştığını kontrol et
-        if (!$this->testSpriteService->isServerRunning()) {
+        if (! $this->testSpriteService->isServerRunning()) {
             $this->warn('TestSprite MCP sunucusu çalışmıyor. Başlatılıyor...');
 
-            if (!$this->testSpriteService->startServer()) {
+            if (! $this->testSpriteService->startServer()) {
                 $this->error('TestSprite MCP sunucusu başlatılamadı!');
+
                 return 1;
             }
 
@@ -76,6 +76,7 @@ class RunTestSpriteCommand extends Command
 
         if (isset($results['error'])) {
             $this->error($results['message']);
+
             return 1;
         }
 
@@ -87,7 +88,7 @@ class RunTestSpriteCommand extends Command
                 $results['summary']['totalTests'],
                 $results['summary']['passedTests'],
                 $results['summary']['failedTests'],
-                $results['summary']['successRate']
+                $results['summary']['successRate'],
             ]]
         );
 
@@ -104,11 +105,13 @@ class RunTestSpriteCommand extends Command
             if ($results['summary']['failedTests'] > 0) {
                 $this->warn("Dikkat: {$results['summary']['failedTests']} test başarısız oldu!");
                 $this->warn("Detaylı bilgi için raporu inceleyin: {$report['path']}");
+
                 return 1;
             }
         }
 
         $this->info('TestSprite MCP testleri tamamlandı.');
+
         return 0;
     }
 }

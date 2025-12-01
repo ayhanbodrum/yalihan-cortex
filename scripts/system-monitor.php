@@ -1,14 +1,15 @@
 <?php
+
 /**
  * Context7 Sistem İzleyici
  *
  * Sistem performansını, Context7 uyumluluğunu ve
  * genel sağlık durumunu izler ve raporlar.
  */
-
 class Context7SystemMonitor
 {
     private $metrics = [];
+
     private $alerts = [];
 
     public function __construct()
@@ -26,7 +27,7 @@ class Context7SystemMonitor
             'cache' => $this->checkCache(),
             'storage' => $this->checkStorage(),
             'performance' => $this->checkPerformance(),
-            'context7' => $this->checkContext7Compliance()
+            'context7' => $this->checkContext7Compliance(),
         ];
 
         $overall = array_sum($health) / count($health);
@@ -34,7 +35,7 @@ class Context7SystemMonitor
         $this->metrics['health'] = [
             'overall' => round($overall, 2),
             'details' => $health,
-            'timestamp' => date('Y-m-d H:i:s')
+            'timestamp' => date('Y-m-d H:i:s'),
         ];
 
         return $overall;
@@ -48,9 +49,11 @@ class Context7SystemMonitor
         try {
             // Basit veritabanı bağlantı testi
             $pdo = new PDO('mysql:host=localhost;dbname=yalihanemlak_ultra', 'root', '');
+
             return 100;
         } catch (\Exception $e) {
-            $this->alerts[] = "Veritabanı bağlantı hatası: " . $e->getMessage();
+            $this->alerts[] = 'Veritabanı bağlantı hatası: '.$e->getMessage();
+
             return 0;
         }
     }
@@ -66,9 +69,11 @@ class Context7SystemMonitor
             file_put_contents($cacheFile, 'ok');
             $result = file_get_contents($cacheFile);
             unlink($cacheFile);
+
             return $result === 'ok' ? 100 : 50;
         } catch (\Exception $e) {
-            $this->alerts[] = "Cache hatası: " . $e->getMessage();
+            $this->alerts[] = 'Cache hatası: '.$e->getMessage();
+
             return 0;
         }
     }
@@ -78,16 +83,18 @@ class Context7SystemMonitor
      */
     private function checkStorage()
     {
-        $storagePath = getcwd() . '/storage';
+        $storagePath = getcwd().'/storage';
         $freeSpace = disk_free_space($storagePath);
         $totalSpace = disk_total_space($storagePath);
         $usagePercent = (($totalSpace - $freeSpace) / $totalSpace) * 100;
 
         if ($usagePercent > 90) {
             $this->alerts[] = "Storage kullanımı %90'ın üzerinde!";
+
             return 50;
         } elseif ($usagePercent > 80) {
             $this->alerts[] = "Storage kullanımı %80'in üzerinde";
+
             return 75;
         }
 
@@ -112,9 +119,11 @@ class Context7SystemMonitor
 
                 if ($responseTime > 1000) {
                     $this->alerts[] = "Yavaş dosya okuma: {$responseTime}ms";
+
                     return 50;
                 } elseif ($responseTime > 500) {
                     $this->alerts[] = "Orta hızda dosya okuma: {$responseTime}ms";
+
                     return 75;
                 }
 
@@ -123,7 +132,8 @@ class Context7SystemMonitor
 
             return 75; // Dosya yok ama sistem çalışıyor
         } catch (\Exception $e) {
-            $this->alerts[] = "Performans testi hatası: " . $e->getMessage();
+            $this->alerts[] = 'Performans testi hatası: '.$e->getMessage();
+
             return 0;
         }
     }
@@ -176,20 +186,20 @@ class Context7SystemMonitor
             'memory_usage' => memory_get_usage(true),
             'memory_peak' => memory_get_peak_usage(true),
             'uptime' => $this->getUptime(),
-            'timestamp' => date('Y-m-d H:i:s')
+            'timestamp' => date('Y-m-d H:i:s'),
         ];
 
         $this->metrics['database'] = [
             'connection' => 'mysql',
             'driver' => 'mysql',
             'host' => 'localhost',
-            'timestamp' => date('Y-m-d H:i:s')
+            'timestamp' => date('Y-m-d H:i:s'),
         ];
 
         $this->metrics['cache'] = [
             'driver' => 'file',
             'stores' => ['file', 'redis'],
-            'timestamp' => date('Y-m-d H:i:s')
+            'timestamp' => date('Y-m-d H:i:s'),
         ];
     }
 
@@ -200,10 +210,11 @@ class Context7SystemMonitor
     {
         if (function_exists('sys_getloadavg')) {
             $load = sys_getloadavg();
+
             return [
                 'load_1min' => $load[0],
                 'load_5min' => $load[1],
-                'load_15min' => $load[2]
+                'load_15min' => $load[2],
             ];
         }
 
@@ -223,7 +234,7 @@ class Context7SystemMonitor
             'health_score' => $health,
             'metrics' => $this->metrics,
             'alerts' => $this->alerts,
-            'recommendations' => $this->getRecommendations($health)
+            'recommendations' => $this->getRecommendations($health),
         ];
 
         // JSON raporu kaydet
@@ -244,15 +255,15 @@ class Context7SystemMonitor
         $recommendations = [];
 
         if ($health < 80) {
-            $recommendations[] = "Sistem sağlığı düşük. Optimizasyon gerekli.";
+            $recommendations[] = 'Sistem sağlığı düşük. Optimizasyon gerekli.';
         }
 
         if (count($this->alerts) > 0) {
-            $recommendations[] = "Acil düzeltme gereken " . count($this->alerts) . " sorun var.";
+            $recommendations[] = 'Acil düzeltme gereken '.count($this->alerts).' sorun var.';
         }
 
         if ($this->metrics['health']['details']['context7'] < 95) {
-            $recommendations[] = "Context7 uyumluluğu artırılmalı.";
+            $recommendations[] = 'Context7 uyumluluğu artırılmalı.';
         }
 
         return $recommendations;
@@ -273,14 +284,14 @@ class Context7SystemMonitor
         echo "💿 Storage: %{$report['metrics']['health']['details']['storage']}\n";
         echo "⚡ Performans: %{$report['metrics']['health']['details']['performance']}\n";
 
-        if (!empty($report['alerts'])) {
+        if (! empty($report['alerts'])) {
             echo "\n⚠️ UYARILAR:\n";
             foreach ($report['alerts'] as $alert) {
                 echo "  - {$alert}\n";
             }
         }
 
-        if (!empty($report['recommendations'])) {
+        if (! empty($report['recommendations'])) {
             echo "\n💡 ÖNERİLER:\n";
             foreach ($report['recommendations'] as $rec) {
                 echo "  - {$rec}\n";
@@ -306,7 +317,7 @@ class Context7SystemMonitor
 
 // Script çalıştır
 if (php_sapi_name() === 'cli') {
-    $monitor = new Context7SystemMonitor();
+    $monitor = new Context7SystemMonitor;
 
     if (isset($argv[1]) && $argv[1] === '--continuous') {
         $monitor->startContinuousMonitoring();

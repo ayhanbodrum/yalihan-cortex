@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Log;
 class AIArsaAnalizService
 {
     protected string $n8nWebhookUrl;
+
     protected MarketDataService $marketDataService;
 
     public function __construct(MarketDataService $marketDataService)
@@ -43,7 +44,7 @@ class AIArsaAnalizService
             );
 
             // n8n webhook'a istek gönder
-            $response = Http::timeout(120)->post($this->n8nWebhookUrl . '/ai/arsa-analiz', [
+            $response = Http::timeout(120)->post($this->n8nWebhookUrl.'/ai/arsa-analiz', [
                 'ilan_id' => $ilanId,
                 'analysis_type' => $analysisType,
                 'ilan_data' => [
@@ -57,8 +58,8 @@ class AIArsaAnalizService
                 'market_data' => $marketData,
             ]);
 
-            if (!$response->successful()) {
-                throw new \Exception('n8n webhook request failed: ' . $response->status());
+            if (! $response->successful()) {
+                throw new \Exception('n8n webhook request failed: '.$response->status());
             }
 
             $aiResponse = $response->json();
@@ -99,4 +100,3 @@ class AIArsaAnalizService
         }
     }
 }
-

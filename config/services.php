@@ -57,7 +57,7 @@ return [
     ],
 
     'deepseek' => [
-        'api_key' => env('DEEPSEEK_API_KEY', ''),
+        'api_key' => env('sk-e09ad62590904bda8243f4f029f5128a.  ', ''),
     ],
 
     'gemini' => [
@@ -119,35 +119,56 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | n8n Automation Platform
+    | n8n Integration Service
+    | Context7: n8n webhook entegrasyonu için yapılandırma
     |--------------------------------------------------------------------------
-    |
-    | n8n webhook URL for automation workflows
-    | Context7 Standard: C7-N8N-INTEGRATION-2025-11-20
-    |
     */
 
     'n8n' => [
-        'webhook_url' => env('N8N_WEBHOOK_URL', 'https://n8n.yalihanemlak.com.tr/webhook'),
-        'api_key' => env('N8N_API_KEY', ''),
-        'timeout' => env('N8N_TIMEOUT', 30),
+        'webhook_url' => env('N8N_WEBHOOK_URL', 'http://localhost:5678'),
+        'webhook_secret' => env('N8N_WEBHOOK_SECRET', ''),
+        'timeout' => env('N8N_TIMEOUT', 30), // seconds
+        'new_ilan_webhook_url' => env('N8N_NEW_ILAN_WEBHOOK', 'https://n8n.yalihanemlak.com.tr/webhook/ilan-olustu'),
+
+        // Context7: Otonom Fiyat Değişim Takibi ve n8n Entegrasyonu
+        // Multi-Channel (Telegram, WhatsApp, Email) bildirim desteği
+        'ilan_price_changed_webhook_url' => env('N8N_ILAN_PRICE_CHANGED_WEBHOOK', 'https://n8n.yalihanemlak.com.tr/webhook/ilan-fiyat-degisti'),
+
+        // Context7: Takım Yönetimi Otomasyonu - Temel Event Sistemi
+        // Multi-Channel (Telegram, WhatsApp, Email) bildirim desteği
+        'gorev_created_webhook_url' => env('N8N_GOREV_CREATED_WEBHOOK', 'https://n8n.yalihanemlak.com.tr/webhook/gorev-olustu'),
+        'gorev_status_changed_webhook_url' => env('N8N_GOREV_STATUS_CHANGED_WEBHOOK', 'https://n8n.yalihanemlak.com.tr/webhook/gorev-durum-degisti'),
+        'gorev_deadline_yaklasiyor_webhook_url' => env('N8N_GOREV_DEADLINE_YAKLASIYOR_WEBHOOK', 'https://n8n.yalihanemlak.com.tr/webhook/gorev-deadline-yaklasiyor'),
+        'gorev_gecikti_webhook_url' => env('N8N_GOREV_GECIKTI_WEBHOOK', 'https://n8n.yalihanemlak.com.tr/webhook/gorev-gecikti'),
     ],
 
     /*
     |--------------------------------------------------------------------------
-    | AnythingLLM Service
+    | Telegram Bot Service
+    | Context7: YalihanCortex_Bot - AI özellikleri ve CRM entegrasyonu
     |--------------------------------------------------------------------------
-    |
-    | AnythingLLM knowledge base and AI service
-    | Context7 Standard: C7-ANYTHINGLLM-INTEGRATION-2025-11-20
-    |
     */
 
-    'anythingllm' => [
-        'base_url' => env('ANYTHINGLLM_BASE_URL', 'http://51.75.64.121:3051'),
-        'api_key' => env('ANYTHINGLLM_API_KEY', ''),
-        'timeout' => env('ANYTHINGLLM_TIMEOUT', 20),
-        'workspace_id' => env('ANYTHINGLLM_WORKSPACE_ID', ''),
+    'telegram' => [
+        'bot_token' => env('TELEGRAM_BOT_TOKEN', ''),
+        'bot_username' => env('TELEGRAM_BOT_USERNAME', 'YalihanCortex_Bot'),
+        'webhook_url' => env('TELEGRAM_WEBHOOK_URL', 'https://panel.yalihanemlak.com.tr/api/telegram/webhook'),
+        'team_channel_id' => env('TELEGRAM_TEAM_CHANNEL_ID', ''),
+        'admin_chat_id' => env('TELEGRAM_ADMIN_CHAT_ID', ''),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Frontend API Configuration
+    | Context7: Vitrin (Mağaza) ile Panel (Depo) arasındaki internal API
+    |--------------------------------------------------------------------------
+    */
+
+    'frontend_api' => [
+        'internal_key' => env('FRONTEND_API_KEY', ''),
+        'allowed_ips' => env('FRONTEND_API_ALLOWED_IPS', '172.17.0.0/16,10.0.0.0/8') ? explode(',', env('FRONTEND_API_ALLOWED_IPS', '172.17.0.0/16,10.0.0.0/8')) : [],
+        'log_requests' => env('FRONTEND_API_LOG_REQUESTS', false),
+        'rate_limit' => env('FRONTEND_API_RATE_LIMIT', 60), // istek/dakika
     ],
 
 ];

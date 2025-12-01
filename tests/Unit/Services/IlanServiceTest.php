@@ -6,7 +6,6 @@ use App\Models\Ilan;
 use App\Models\User;
 use App\Services\IlanService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
@@ -19,7 +18,7 @@ class IlanServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->ilanService = new IlanService();
+        $this->ilanService = new IlanService;
     }
 
     /**
@@ -125,4 +124,3 @@ class IlanServiceTest extends TestCase
         }
     }
 }
-

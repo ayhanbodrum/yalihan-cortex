@@ -1,26 +1,28 @@
 <?php
+
 /**
  * Migration Syntax Auto-Fixer
  * Otomatik migration dosyası syntax hatalarını düzeltir
  * Kullanım: php scripts/migration-syntax-auto-fixer.php
  */
-
 class MigrationSyntaxAutoFixer
 {
     private $migrationsPath;
+
     private $fixedFiles = [];
+
     private $errorFiles = [];
 
     public function __construct()
     {
-        $this->migrationsPath = __DIR__ . '/../database/migrations';
+        $this->migrationsPath = __DIR__.'/../database/migrations';
     }
 
     public function run()
     {
         echo "🚀 Migration Syntax Auto-Fixer başlatılıyor...\n";
 
-        $migrationFiles = glob($this->migrationsPath . '/*.php');
+        $migrationFiles = glob($this->migrationsPath.'/*.php');
 
         foreach ($migrationFiles as $file) {
             $this->fixMigrationFile($file);
@@ -114,21 +116,21 @@ class MigrationSyntaxAutoFixer
         // Pattern 2: Fix "unexpected public" - missing newlines
         $content = preg_replace(
             '/(\})\s*(public function)/ms',
-            '$1' . "\n\n" . '    $2',
+            '$1'."\n\n".'    $2',
             $content
         );
 
         // Pattern 3: Fix "unexpected fully qualified name" - missing opening brace
         $content = preg_replace(
             '/(return new class extends Migration)\s*\\\\n/ms',
-            '$1' . "\n" . '{',
+            '$1'."\n".'{',
             $content
         );
 
         // Pattern 4: Fix "unexpected fully qualified name" - missing opening brace for anonymous class
         $content = preg_replace(
             '/(return new class extends Migration)\s*\n(?!\s*\{)/ms',
-            '$1' . "\n" . '{',
+            '$1'."\n".'{',
             $content
         );
 
@@ -142,33 +144,33 @@ class MigrationSyntaxAutoFixer
         // Pattern 6: Fix "unexpected token public" after class declaration
         $content = preg_replace(
             '/(class[^{]*\{)\s*(public function)/ms',
-            '$1' . "\n" . '    $2',
+            '$1'."\n".'    $2',
             $content
         );
 
         // Pattern 7: Fix functions with only opening brace and comment
         $content = preg_replace(
             '/^(\s*public function (up|down)\(\)\s*:\s*void\s*\{\s*)\/\/[^\n]*\n(?!\s*\})(.*)$/ms',
-            '$1' . "\n" . '        // Migration content goes here' . "\n" . '    }',
+            '$1'."\n".'        // Migration content goes here'."\n".'    }',
             $content
         );
 
         // Pattern 8: Fix unexpected variable
         $content = preg_replace(
             '/(class[^{]*\{)\s*(\$table)/ms',
-            '$1' . "\n" . '    public function up(): void' . "\n" . '    {' . "\n" . '        Schema::table(\'tablename\', function (Blueprint $2) {',
+            '$1'."\n".'    public function up(): void'."\n".'    {'."\n".'        Schema::table(\'tablename\', function (Blueprint $2) {',
             $content
         );
 
         // Pattern 9: Fix unexpected if/catch/else - missing function wrapper
         $content = preg_replace(
             '/(class[^{]*\{)\s*(if|catch|else|try)/ms',
-            '$1' . "\n" . '    public function up(): void' . "\n" . '    {' . "\n" . '        $2',
+            '$1'."\n".'    public function up(): void'."\n".'    {'."\n".'        $2',
             $content
         );
 
         // Eksik fonksiyon kapatmalarını düzelt
-        if (!preg_match('/public function down\(\)/', $content) && preg_match('/public function up\(\)/', $content)) {
+        if (! preg_match('/public function down\(\)/', $content) && preg_match('/public function up\(\)/', $content)) {
             // down() fonksiyonu eksikse ekle
             $content = preg_replace(
                 '/(public function up\(\)[^}]*\})\s*\};?/s',
@@ -184,9 +186,9 @@ class MigrationSyntaxAutoFixer
         }
 
         // Eksik class kapatmalarını ekle
-        if (!preg_match('/\};\s*$/', $content) && preg_match('/return new class extends Migration/', $content)) {
+        if (! preg_match('/\};\s*$/', $content) && preg_match('/return new class extends Migration/', $content)) {
             $content = rtrim($content);
-            if (!preg_match('/\}\s*$/', $content)) {
+            if (! preg_match('/\}\s*$/', $content)) {
                 $content .= "\n    }\n\n    public function down(): void\n    {\n        // Bu migrationda yapılacak bir işlem yok (otomatik temizlik sonrası boş kaldı)\n    }\n};";
             } else {
                 $content .= "\n\n    public function down(): void\n    {\n        // Bu migrationda yapılacak bir işlem yok (otomatik temizlik sonrası boş kaldı)\n    }\n};";
@@ -218,6 +220,7 @@ class MigrationSyntaxAutoFixer
     {
         // PHPDoc blokları kaldır (Context7 uyumu için)
         $content = preg_replace('/\/\*\*[\s\S]*?\*\/\s*/', '', $content);
+
         return $content;
     }
 
@@ -226,7 +229,7 @@ class MigrationSyntaxAutoFixer
         // Fazla boşlukları temizle
         $content = preg_replace('/\n\s*\n\s*\n/', "\n\n", $content);
         $content = preg_replace('/\s+$/', '', $content);
-        $content = trim($content) . "\n";
+        $content = trim($content)."\n";
 
         return $content;
     }
@@ -234,17 +237,17 @@ class MigrationSyntaxAutoFixer
     private function printSummary()
     {
         echo "\n📊 Özet Rapor:\n";
-        echo "✅ Düzeltilen dosyalar: " . count($this->fixedFiles) . "\n";
-        echo "❌ Hata alan dosyalar: " . count($this->errorFiles) . "\n";
+        echo '✅ Düzeltilen dosyalar: '.count($this->fixedFiles)."\n";
+        echo '❌ Hata alan dosyalar: '.count($this->errorFiles)."\n";
 
-        if (!empty($this->fixedFiles)) {
+        if (! empty($this->fixedFiles)) {
             echo "\n🔧 Düzeltilen dosyalar:\n";
             foreach ($this->fixedFiles as $file) {
                 echo "  - $file\n";
             }
         }
 
-        if (!empty($this->errorFiles)) {
+        if (! empty($this->errorFiles)) {
             echo "\n⚠️ Hata alan dosyalar:\n";
             foreach ($this->errorFiles as $file) {
                 echo "  - $file\n";
@@ -256,5 +259,5 @@ class MigrationSyntaxAutoFixer
 }
 
 // Script çalıştır
-$fixer = new MigrationSyntaxAutoFixer();
+$fixer = new MigrationSyntaxAutoFixer;
 $fixer->run();

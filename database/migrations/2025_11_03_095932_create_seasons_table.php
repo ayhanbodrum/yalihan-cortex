@@ -22,7 +22,7 @@ return new class extends Migration
                 'ara_sezon',    // Ara Sezon (Nisan-Mayıs, Ekim)
                 'kis',          // Kış Sezonu (Kasım-Mart)
                 'bayram',       // Bayram dönemi
-                'ozel'          // Özel sezon (Yılbaşı, etc.)
+                'ozel',          // Özel sezon (Yılbaşı, etc.)
             ]);
 
             $table->date('start_date'); // Başlangıç tarihi

@@ -2,8 +2,8 @@
 
 namespace App\Services\AI;
 
-use App\Models\AIMessage;
 use App\Models\AIConversation;
+use App\Models\AIMessage;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
@@ -30,8 +30,7 @@ class AIMessageService
     /**
      * Cevap taslağı üret
      *
-     * @param int $communicationId İletişim ID
-     * @return AIMessage
+     * @param  int  $communicationId  İletişim ID
      */
     public function generateDraftReply(int $communicationId): AIMessage
     {
@@ -43,7 +42,7 @@ class AIMessageService
             $portfolioData = $this->collectPortfolioData($communication);
 
             // n8n webhook'a istek gönder
-            $response = Http::timeout(60)->post($this->n8nWebhookUrl . '/ai/mesaj-taslagi', [
+            $response = Http::timeout(60)->post($this->n8nWebhookUrl.'/ai/mesaj-taslagi', [
                 'communication_id' => $communicationId,
                 'message' => $communication->message,
                 'channel' => $communication->channel,
@@ -53,8 +52,8 @@ class AIMessageService
                 'portfolio_data' => $portfolioData,
             ]);
 
-            if (!$response->successful()) {
-                throw new \Exception('n8n webhook request failed: ' . $response->status());
+            if (! $response->successful()) {
+                throw new \Exception('n8n webhook request failed: '.$response->status());
             }
 
             $aiResponse = $response->json();
@@ -137,7 +136,7 @@ class AIMessageService
             ->whereJsonContains('messages', ['sender_id' => $communication->sender_id])
             ->first();
 
-        if (!$conversation) {
+        if (! $conversation) {
             // Yeni conversation oluştur
             $conversation = AIConversation::create([
                 'user_id' => $communication->created_by,
@@ -170,9 +169,8 @@ class AIMessageService
     /**
      * Mesajı onayla
      *
-     * @param int $messageId Mesaj ID
-     * @param int $userId Onaylayan kullanıcı ID
-     * @return AIMessage
+     * @param  int  $messageId  Mesaj ID
+     * @param  int  $userId  Onaylayan kullanıcı ID
      */
     public function approveMessage(int $messageId, int $userId): AIMessage
     {
@@ -195,8 +193,7 @@ class AIMessageService
     /**
      * Mesajı gönder
      *
-     * @param int $messageId Mesaj ID
-     * @return AIMessage
+     * @param  int  $messageId  Mesaj ID
      */
     public function sendMessage(int $messageId): AIMessage
     {
@@ -254,11 +251,12 @@ class AIMessageService
     {
         try {
             $communication = $message->communication;
-            if (!$communication || !$communication->sender_id) {
+            if (! $communication || ! $communication->sender_id) {
                 return false;
             }
 
             $telegramService = app(\App\Modules\TakimYonetimi\Services\TelegramBotService::class);
+
             return $telegramService->sendMessage(
                 (int) $communication->sender_id,
                 $message->content
@@ -268,6 +266,7 @@ class AIMessageService
                 'error' => $e->getMessage(),
                 'message_id' => $message->id,
             ]);
+
             return false;
         }
     }
@@ -279,7 +278,7 @@ class AIMessageService
     {
         try {
             $communication = $message->communication;
-            if (!$communication || !$communication->sender_email) {
+            if (! $communication || ! $communication->sender_email) {
                 return false;
             }
 
@@ -295,8 +294,8 @@ class AIMessageService
                 'error' => $e->getMessage(),
                 'message_id' => $message->id,
             ]);
+
             return false;
         }
     }
 }
-

@@ -3,12 +3,11 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Ilan;
 use App\Services\Response\ResponseService;
 use App\Traits\ValidatesApiRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use App\Models\Ilan;
-use App\Models\FeatureCategory;
 
 /**
  * AI Feature Suggestion Controller
@@ -20,11 +19,11 @@ use App\Models\FeatureCategory;
 class AIFeatureSuggestionController extends Controller
 {
     use ValidatesApiRequests;
+
     /**
      * Suggest Feature Values
      * Kategori ve mevcut bilgilere göre özellikleri öner
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function suggestFeatureValues(Request $request)
@@ -34,7 +33,7 @@ class AIFeatureSuggestionController extends Controller
             'sub_category_id' => 'nullable|integer',
             'area' => 'nullable|numeric',
             'location' => 'nullable|array',
-            'price' => 'nullable|numeric'
+            'price' => 'nullable|numeric',
         ]);
 
         if ($validated instanceof \Illuminate\Http\JsonResponse) {
@@ -52,13 +51,13 @@ class AIFeatureSuggestionController extends Controller
                 'suggestions' => $suggestions,
                 'suggested_count' => count($suggestions),
                 'confidence' => rand(75, 95), // AI confidence score
-                'based_on' => count($similarListings) . ' benzer ilan'
+                'based_on' => count($similarListings).' benzer ilan',
             ], 'AI önerileri başarıyla oluşturuldu');
 
         } catch (\Exception $e) {
             Log::error('AI Feature Suggestion Error:', [
                 'message' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
 
             return ResponseService::serverError('AI önerisi oluşturulurken hata oluştu.', $e);
@@ -69,14 +68,13 @@ class AIFeatureSuggestionController extends Controller
      * Suggest Single Feature
      * Tek bir özellik için AI önerisi
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function suggestSingleFeature(Request $request)
     {
         $validated = $this->validateRequestWithResponse($request, [
             'feature' => 'required|string',
-            'context' => 'nullable|array'
+            'context' => 'nullable|array',
         ]);
 
         if ($validated instanceof \Illuminate\Http\JsonResponse) {
@@ -91,12 +89,12 @@ class AIFeatureSuggestionController extends Controller
             $suggestion = $this->generateSingleFeatureSuggestion($featureName, $context);
 
             return ResponseService::success([
-                'data' => $suggestion
+                'data' => $suggestion,
             ], "$featureName için öneri oluşturuldu");
 
         } catch (\Exception $e) {
             Log::error('Single Feature Suggestion Error:', [
-                'message' => $e->getMessage()
+                'message' => $e->getMessage(),
             ]);
 
             return ResponseService::serverError('Öneri oluşturulurken hata oluştu.', $e);
@@ -107,7 +105,6 @@ class AIFeatureSuggestionController extends Controller
      * Analyze Property Type
      * Mülk tipini analiz et ve özellikleri öner
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function analyzePropertyType(Request $request)
@@ -116,7 +113,7 @@ class AIFeatureSuggestionController extends Controller
             'category_id' => 'nullable|integer',
             'area' => 'nullable|numeric',
             'location' => 'nullable|array',
-            'price' => 'nullable|numeric'
+            'price' => 'nullable|numeric',
         ]);
 
         if ($validated instanceof \Illuminate\Http\JsonResponse) {
@@ -128,12 +125,12 @@ class AIFeatureSuggestionController extends Controller
             $analysis = $this->performPropertyAnalysis($validated);
 
             return ResponseService::success([
-                'data' => $analysis
+                'data' => $analysis,
             ], 'Mülk analizi tamamlandı');
 
         } catch (\Exception $e) {
             Log::error('Property Analysis Error:', [
-                'message' => $e->getMessage()
+                'message' => $e->getMessage(),
             ]);
 
             return ResponseService::serverError('Analiz sırasında hata oluştu.', $e);
@@ -144,13 +141,12 @@ class AIFeatureSuggestionController extends Controller
      * Get Smart Defaults
      * Kategori için akıllı varsayılanlar
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function getSmartDefaults(Request $request)
     {
         $validated = $this->validateRequestWithResponse($request, [
-            'category_id' => 'required|integer'
+            'category_id' => 'required|integer',
         ]);
 
         if ($validated instanceof \Illuminate\Http\JsonResponse) {
@@ -162,12 +158,12 @@ class AIFeatureSuggestionController extends Controller
             $defaults = $this->getDefaultsByCategory($validated['category_id'], $request->all());
 
             return ResponseService::success([
-                'data' => $defaults
+                'data' => $defaults,
             ], 'Akıllı varsayılanlar alındı');
 
         } catch (\Exception $e) {
             Log::error('Smart Defaults Error:', [
-                'message' => $e->getMessage()
+                'message' => $e->getMessage(),
             ]);
 
             return ResponseService::serverError('Varsayılanlar alınırken hata oluştu.', $e);
@@ -178,7 +174,6 @@ class AIFeatureSuggestionController extends Controller
      * Find Similar Listings
      * Benzer ilanları bul (AI için veri kaynağı)
      *
-     * @param array $criteria
      * @return \Illuminate\Database\Eloquent\Collection
      */
     private function findSimilarListings(array $criteria)
@@ -201,8 +196,7 @@ class AIFeatureSuggestionController extends Controller
      * Generate Suggestions
      * AI önerilerini üret (şimdilik basit mantık, ileride gerçek AI)
      *
-     * @param array $context
-     * @param \Illuminate\Database\Eloquent\Collection $similarListings
+     * @param  \Illuminate\Database\Eloquent\Collection  $similarListings
      * @return array
      */
     private function generateSuggestions(array $context, $similarListings)
@@ -240,8 +234,6 @@ class AIFeatureSuggestionController extends Controller
      * Generate Single Feature Suggestion
      * Tek bir özellik için AI önerisi
      *
-     * @param string $featureName
-     * @param array $context
      * @return mixed
      */
     private function generateSingleFeatureSuggestion(string $featureName, array $context)
@@ -250,13 +242,21 @@ class AIFeatureSuggestionController extends Controller
         switch ($featureName) {
             case 'oda_sayisi':
                 $area = $context['area'] ?? 100;
-                if ($area < 75) return '1+1';
-                if ($area < 110) return '2+1';
-                if ($area < 150) return '3+1';
+                if ($area < 75) {
+                    return '1+1';
+                }
+                if ($area < 110) {
+                    return '2+1';
+                }
+                if ($area < 150) {
+                    return '3+1';
+                }
+
                 return '4+1';
 
             case 'banyo_sayisi':
                 $area = $context['area'] ?? 100;
+
                 return $area < 100 ? 1 : 2;
 
             case 'kat_sayisi':
@@ -277,7 +277,6 @@ class AIFeatureSuggestionController extends Controller
      * Perform Property Analysis
      * Mülk analizi yap
      *
-     * @param array $data
      * @return array
      */
     private function performPropertyAnalysis(array $data)
@@ -287,13 +286,13 @@ class AIFeatureSuggestionController extends Controller
             'estimated_features' => [
                 'oda_sayisi' => '2+1',
                 'banyo_sayisi' => 1,
-                'balkon' => true
+                'balkon' => true,
             ],
             'confidence' => rand(80, 95),
             'recommendations' => [
                 'Alan bilgisi girmeniz önerilir',
-                'Konum bilgisi daha detaylı olabilir'
-            ]
+                'Konum bilgisi daha detaylı olabilir',
+            ],
         ];
     }
 
@@ -301,8 +300,6 @@ class AIFeatureSuggestionController extends Controller
      * Get Defaults By Category
      * Kategori bazlı varsayılanlar
      *
-     * @param int $categoryId
-     * @param array $filters
      * @return array
      */
     private function getDefaultsByCategory(int $categoryId, array $filters)
@@ -312,7 +309,7 @@ class AIFeatureSuggestionController extends Controller
             'furnished' => false,
             'elevator' => true,
             'parking' => false,
-            'security' => false
+            'security' => false,
         ];
 
         // Fiyat bazlı öneriler

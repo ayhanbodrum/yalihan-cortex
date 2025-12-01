@@ -7,8 +7,6 @@ namespace App\Enums;
  *
  * Context7: Type-safe publication type enumeration
  * Replaces string-based yayin_tipi field with enum
- *
- * @package App\Enums
  */
 enum YayinTipi: string
 {
@@ -19,8 +17,6 @@ enum YayinTipi: string
 
     /**
      * Get human-readable label
-     *
-     * @return string
      */
     public function label(): string
     {
@@ -34,8 +30,6 @@ enum YayinTipi: string
 
     /**
      * Get description
-     *
-     * @return string
      */
     public function description(): string
     {
@@ -49,8 +43,6 @@ enum YayinTipi: string
 
     /**
      * Get icon
-     *
-     * @return string
      */
     public function icon(): string
     {
@@ -79,8 +71,6 @@ enum YayinTipi: string
 
     /**
      * Check if this is a sale type
-     *
-     * @return bool
      */
     public function isSale(): bool
     {
@@ -89,8 +79,6 @@ enum YayinTipi: string
 
     /**
      * Check if this is a rental type
-     *
-     * @return bool
      */
     public function isRental(): bool
     {
@@ -99,8 +87,6 @@ enum YayinTipi: string
 
     /**
      * Check if this requires daily pricing
-     *
-     * @return bool
      */
     public function requiresDailyPricing(): bool
     {
@@ -109,8 +95,6 @@ enum YayinTipi: string
 
     /**
      * Check if this requires transfer fee
-     *
-     * @return bool
      */
     public function requiresTransferFee(): bool
     {
@@ -119,8 +103,6 @@ enum YayinTipi: string
 
     /**
      * Get price label
-     *
-     * @return string
      */
     public function priceLabel(): string
     {
@@ -134,8 +116,6 @@ enum YayinTipi: string
 
     /**
      * Get contract type
-     *
-     * @return string
      */
     public function contractType(): string
     {
@@ -149,23 +129,19 @@ enum YayinTipi: string
 
     /**
      * Get all values as array
-     *
-     * @return array
      */
     public static function values(): array
     {
-        return array_map(fn($case) => $case->value, self::cases());
+        return array_map(fn ($case) => $case->value, self::cases());
     }
 
     /**
      * Get options for select dropdown
-     *
-     * @return array
      */
     public static function options(): array
     {
         return array_map(
-            fn($case) => [
+            fn ($case) => [
                 'value' => $case->value,
                 'label' => $case->label(),
                 'icon' => $case->icon(),
@@ -178,9 +154,6 @@ enum YayinTipi: string
 
     /**
      * Create from string (with fallback)
-     *
-     * @param string|null $value
-     * @return self|null
      */
     public static function tryFrom(?string $value): ?self
     {

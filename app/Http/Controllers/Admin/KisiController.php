@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Log;
-use App\Modules\Crm\Models\Kisi;
+use App\Models\Kisi;
 use App\Modules\Crm\Services\KisiService;
 use App\Services\Response\ResponseService;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class KisiController extends AdminController
 {
@@ -16,8 +15,6 @@ class KisiController extends AdminController
     /**
      * Constructor
      * Context7: KisiService dependency injection
-     *
-     * @param KisiService $kisiService
      */
     public function __construct(KisiService $kisiService)
     {
@@ -28,7 +25,6 @@ class KisiController extends AdminController
      * Display a listing of the resource.
      * Context7: Kişi listesi ve filtreleme
      *
-     * @param Request $request
      * @return Response|\Illuminate\Contracts\View\View
      */
     public function index(Request $request)
@@ -38,11 +34,11 @@ class KisiController extends AdminController
             'danisman:id,name,email',
             'il:id,il_adi',
             'ilce:id,ilce_adi',
-            'mahalle:id,mahalle_adi'
+            'mahalle:id,mahalle_adi',
         ])->select([
             'id', 'ad', 'soyad', 'telefon', 'email', 'status',
             'danisman_id', 'il_id', 'ilce_id', 'mahalle_id',
-            'kisi_tipi', 'created_at', 'updated_at'
+            'kisi_tipi', 'created_at', 'updated_at',
         ]);
 
         // Context7 uyumlu arama
@@ -161,6 +157,7 @@ class KisiController extends AdminController
         if (view()->exists('admin.kisiler.index')) {
             return response()->view('admin.kisiler.index', compact('kisiler', 'filters', 'stats', 'istatistikler', 'olasiKopyalar', 'taslak', 'danismanlar'));
         }
+
         return $this->renderAny(['Crm::musteriler.index'], compact('kisiler', 'filters', 'istatistikler'));
     }
 
@@ -211,8 +208,8 @@ class KisiController extends AdminController
      * Store a newly created resource in storage.
      * Context7: Yeni kişi kaydetme
      *
-     * @param Request $request
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
+     *
      * @throws \Exception
      */
     public function store(Request $request)
@@ -246,7 +243,7 @@ class KisiController extends AdminController
 
             return redirect()
                 ->route('admin.kisiler.index')
-                ->with('success', $kisi->ad . ' ' . $kisi->soyad . ' başarıyla eklendi! ✅');
+                ->with('success', $kisi->ad.' '.$kisi->soyad.' başarıyla eklendi! ✅');
         } catch (\Exception $e) {
             // ✅ STANDARDIZED: Using ResponseService (automatic logging)
             if ($request->expectsJson()) {
@@ -256,7 +253,7 @@ class KisiController extends AdminController
             return redirect()
                 ->back()
                 ->withInput()
-                ->with('error', 'Kişi eklenirken hata oluştu: ' . $e->getMessage());
+                ->with('error', 'Kişi eklenirken hata oluştu: '.$e->getMessage());
         }
     }
 
@@ -264,7 +261,7 @@ class KisiController extends AdminController
      * Display the specified resource.
      * Context7: Kişi detay sayfası
      *
-     * @param int|string|Kisi $kisi
+     * @param  int|string|Kisi  $kisi
      * @return Response|\Illuminate\Contracts\View\View
      */
     public function show($kisi)
@@ -287,7 +284,7 @@ class KisiController extends AdminController
      * Show the form for editing the specified resource.
      * Context7: Kişi düzenleme formu
      *
-     * @param int|string|Kisi $kisi
+     * @param  int|string|Kisi  $kisi
      * @return Response|\Illuminate\Contracts\View\View
      */
     public function edit($kisi)
@@ -365,7 +362,7 @@ class KisiController extends AdminController
             'musteriTipleri' => $musteriTipleri,
             'etiketler' => $etiketler,
             'kaynaklar' => $kaynaklar,
-            'kisiEtiketIds' => $kisiEtiketIds
+            'kisiEtiketIds' => $kisiEtiketIds,
         ]);
     }
 
@@ -373,9 +370,8 @@ class KisiController extends AdminController
      * Update the specified resource in storage.
      * Context7: Kişi güncelleme
      *
-     * @param Request $request
-     * @param Kisi $kisi
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
+     *
      * @throws \Exception
      */
     public function update(Request $request, Kisi $kisi)
@@ -418,7 +414,7 @@ class KisiController extends AdminController
 
             return redirect()
                 ->route('admin.kisiler.edit', $kisi->id)
-                ->with('success', $kisi->ad . ' ' . $kisi->soyad . ' başarıyla güncellendi! ✅');
+                ->with('success', $kisi->ad.' '.$kisi->soyad.' başarıyla güncellendi! ✅');
         } catch (\Exception $e) {
             // ✅ STANDARDIZED: Using ResponseService (automatic logging)
             if ($request->expectsJson()) {
@@ -428,7 +424,7 @@ class KisiController extends AdminController
             return redirect()
                 ->back()
                 ->withInput()
-                ->with('error', 'Kişi güncellenirken hata oluştu: ' . $e->getMessage());
+                ->with('error', 'Kişi güncellenirken hata oluştu: '.$e->getMessage());
         }
     }
 
@@ -436,42 +432,42 @@ class KisiController extends AdminController
      * Remove the specified resource from storage.
      * Context7: Kişi silme
      *
-     * @param Kisi $kisi
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
+     *
      * @throws \Exception
      */
     public function destroy(Kisi $kisi)
     {
         try {
             // ✅ REFACTORED: Use KisiService
-            $kisiAdi = $kisi->ad . ' ' . $kisi->soyad;
+            $kisiAdi = $kisi->ad.' '.$kisi->soyad;
             $this->kisiService->deleteKisi($kisi);
 
             // JSON response for AJAX requests
             if (request()->expectsJson()) {
                 return response()->json([
                     'success' => true,
-                    'message' => $kisiAdi . ' başarıyla silindi.'
+                    'message' => $kisiAdi.' başarıyla silindi.',
                 ]);
             }
 
             // Redirect for form submissions
             return redirect()
                 ->route('admin.kisiler.index')
-                ->with('success', $kisiAdi . ' başarıyla silindi.');
+                ->with('success', $kisiAdi.' başarıyla silindi.');
         } catch (\Exception $e) {
             // JSON response for AJAX requests
             if (request()->expectsJson()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Kişi silinirken bir hata oluştu: ' . $e->getMessage()
+                    'message' => 'Kişi silinirken bir hata oluştu: '.$e->getMessage(),
                 ], 500);
             }
 
             // Redirect for form submissions
             return redirect()
                 ->route('admin.kisiler.index')
-                ->with('error', 'Kişi silinirken bir hata oluştu: ' . $e->getMessage());
+                ->with('error', 'Kişi silinirken bir hata oluştu: '.$e->getMessage());
         }
     }
 
@@ -479,7 +475,6 @@ class KisiController extends AdminController
      * Search persons
      * Context7: Kişi arama endpoint
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function search(Request $request)
@@ -500,7 +495,7 @@ class KisiController extends AdminController
             ->map(function ($kisi) {
                 return [
                     'id' => $kisi->id,
-                    'text' => $kisi->tam_ad . ' - ' . ($kisi->telefon ?? 'Tel yok') . ' - ' . ($kisi->il->il_adi ?? ''),
+                    'text' => $kisi->tam_ad.' - '.($kisi->telefon ?? 'Tel yok').' - '.($kisi->il->il_adi ?? ''),
                     'tam_ad' => $kisi->tam_ad,
                     'telefon' => $kisi->telefon,
                     'email' => $kisi->email,
@@ -517,7 +512,6 @@ class KisiController extends AdminController
      * Check for duplicate persons
      * Context7: Mükerrer kişi kontrolü
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function checkDuplicate(Request $request)
@@ -535,7 +529,7 @@ class KisiController extends AdminController
                 $duplicates[] = [
                     'type' => 'email',
                     'kisi' => $emailDuplicate->tam_ad,
-                    'value' => $email
+                    'value' => $email,
                 ];
             }
         }
@@ -546,7 +540,7 @@ class KisiController extends AdminController
                 $duplicates[] = [
                     'type' => 'telefon',
                     'kisi' => $telefonDuplicate->tam_ad,
-                    'value' => $telefon
+                    'value' => $telefon,
                 ];
             }
         }
@@ -557,14 +551,14 @@ class KisiController extends AdminController
                 $duplicates[] = [
                     'type' => 'tc_kimlik',
                     'kisi' => $tcDuplicate->tam_ad,
-                    'value' => $tc_kimlik
+                    'value' => $tc_kimlik,
                 ];
             }
         }
 
         return response()->json([
-            'duplicate' => !empty($duplicates),
-            'duplicates' => $duplicates
+            'duplicate' => ! empty($duplicates),
+            'duplicates' => $duplicates,
         ]);
     }
 
@@ -572,7 +566,6 @@ class KisiController extends AdminController
      * Bulk action for persons
      * Context7: Toplu işlem endpoint
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function bulkAction(Request $request)
@@ -590,18 +583,18 @@ class KisiController extends AdminController
         switch ($action) {
             case 'activate':
                 $query->update(['status' => true]); // Context7 uyumlu
-                $message = count($ids) . ' kişi etkinleştirildi';
+                $message = count($ids).' kişi etkinleştirildi';
                 break;
 
             case 'pasif_yap':
                 $query->update(['status' => false]); // Context7 uyumlu
-                $message = count($ids) . ' kişi pasif yapıldı';
+                $message = count($ids).' kişi pasif yapıldı';
                 break;
 
             case 'sil':
             case 'delete':
                 $query->delete();
-                $message = count($ids) . ' kişi silindi';
+                $message = count($ids).' kişi silindi';
                 break;
 
             default:
@@ -615,7 +608,6 @@ class KisiController extends AdminController
      * AI analysis for person
      * Context7: AI destekli kişi analizi
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function aiAnalyze(Request $request)
@@ -624,7 +616,7 @@ class KisiController extends AdminController
         $kisiId = $request->get('kisi_id');
         $kisi = Kisi::find($kisiId);
 
-        if (!$kisi) {
+        if (! $kisi) {
             return response()->json(['success' => false, 'message' => 'Kişi bulunamadı']);
         }
 
@@ -635,39 +627,39 @@ class KisiController extends AdminController
             $suggestions[] = [
                 'type' => 'crm_score',
                 'priority' => 'high',
-                'message' => 'CRM skoru düşük (' . $kisi->crm_score . '/100). Eksik bilgileri tamamlayın.',
+                'message' => 'CRM skoru düşük ('.$kisi->crm_score.'/100). Eksik bilgileri tamamlayın.',
                 'actions' => [
-                    'tc_kimlik' => !$kisi->tc_kimlik ? 'TC Kimlik No ekleyin' : null,
-                    'telefon' => !$kisi->telefon ? 'Telefon numarası ekleyin' : null,
-                    'email' => !$kisi->email ? 'E-posta adresi ekleyin' : null,
-                    'adres' => !$kisi->il_id ? 'Adres bilgilerini tamamlayın' : null,
-                ]
+                    'tc_kimlik' => ! $kisi->tc_kimlik ? 'TC Kimlik No ekleyin' : null,
+                    'telefon' => ! $kisi->telefon ? 'Telefon numarası ekleyin' : null,
+                    'email' => ! $kisi->email ? 'E-posta adresi ekleyin' : null,
+                    'adres' => ! $kisi->il_id ? 'Adres bilgilerini tamamlayın' : null,
+                ],
             ];
         }
 
         // İlan sahibi uygunluğu
-        if (!$kisi->isOwnerEligible()) {
+        if (! $kisi->isOwnerEligible()) {
             $suggestions[] = [
                 'type' => 'owner_eligibility',
                 'priority' => 'medium',
                 'message' => 'Bu kişi ilan sahibi olarak uygun değil.',
                 'actions' => [
-                    'tc_kimlik' => !$kisi->tc_kimlik ? 'TC Kimlik No gerekli' : null,
-                    'telefon' => !$kisi->telefon ? 'Telefon numarası gerekli' : null,
-                    'adres' => !$kisi->il_id ? 'Adres bilgileri gerekli' : null,
-                ]
+                    'tc_kimlik' => ! $kisi->tc_kimlik ? 'TC Kimlik No gerekli' : null,
+                    'telefon' => ! $kisi->telefon ? 'Telefon numarası gerekli' : null,
+                    'adres' => ! $kisi->il_id ? 'Adres bilgileri gerekli' : null,
+                ],
             ];
         }
 
         // Kişi tipi önerileri (Context7: kisi_tipi)
-        if (!$kisi->kisi_tipi) {
+        if (! $kisi->kisi_tipi) {
             $suggestions[] = [
                 'type' => 'kisi_tipi',
                 'priority' => 'medium',
                 'message' => 'Kişi tipi belirtilmemiş.',
                 'actions' => [
-                    'kisi_tipi' => 'Kişi tipini seçin'
-                ]
+                    'kisi_tipi' => 'Kişi tipini seçin',
+                ],
             ];
         }
 
@@ -683,7 +675,6 @@ class KisiController extends AdminController
      * Person tracking page
      * Context7: Kişi takip sayfası
      *
-     * @param Request $request
      * @return Response|\Illuminate\Contracts\View\View
      */
     public function takip(Request $request)
@@ -695,14 +686,12 @@ class KisiController extends AdminController
      * Resolve person from various types
      * Context7: Kişi resolver helper
      *
-     * @param int|string|Kisi $kisi
-     * @return Kisi
+     * @param  int|string|Kisi  $kisi
      */
     /**
      * Context7: Kişi resolver helper
      *
-     * @param int|string|Kisi $kisi
-     * @return Kisi
+     * @param  int|string|Kisi  $kisi
      */
     private function resolve($kisi): Kisi
     {
@@ -722,16 +711,15 @@ class KisiController extends AdminController
     /**
      * Render any available view
      * Context7: View render helper
-     *
-     * @param array $views
-     * @param array $data
-     * @return Response|\Illuminate\Contracts\View\View
      */
     private function renderAny(array $views, array $data = []): Response|\Illuminate\Contracts\View\View
     {
         foreach ($views as $view) {
-            if (view()->exists($view)) return response()->view($view, $data);
+            if (view()->exists($view)) {
+                return response()->view($view, $data);
+            }
         }
+
         return response('Kişiler sayfaları hazır değil', 200);
     }
 }

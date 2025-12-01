@@ -294,7 +294,7 @@ class TuristikTesisModuleSeeder extends Seeder
             $basePrice = 600.00;
         }
 
-    switch ($status) {
+        switch ($status) {
             case 'available':
                 return $basePrice + rand(-200, 300);
             case 'option':
@@ -320,7 +320,7 @@ class TuristikTesisModuleSeeder extends Seeder
             'block' => ['Bloke edildi', 'Bakım', 'Özel etkinlik'],
         ];
 
-    $statusNotlari = $notlar[$status] ?? ['Bilgi yok'];
+        $statusNotlari = $notlar[$status] ?? ['Bilgi yok'];
 
         return $statusNotlari[array_rand($statusNotlari)];
     }
@@ -330,11 +330,11 @@ class TuristikTesisModuleSeeder extends Seeder
      */
     private function getRandomKosullar(string $status): ?string
     {
-    if ($status === 'available') {
+        if ($status === 'available') {
             return json_encode(['erken_rezervasyon_indirimi' => true, 'minimum_konaklama' => 1]);
         }
 
-    if ($status === 'option') {
+        if ($status === 'option') {
             return json_encode(['opsiyon_suresi' => 24, 'on_odeme_gerekli' => true]);
         }
 

@@ -116,7 +116,7 @@ class FeatureAssignment extends Model
             $operator = $condition['operator'] ?? '=';
             $value = $condition['value'] ?? null;
 
-            if (!isset($values[$field])) {
+            if (! isset($values[$field])) {
                 return false;
             }
 
@@ -142,7 +142,7 @@ class FeatureAssignment extends Model
                     }
                     break;
                 case 'in':
-                    if (!in_array($values[$field], (array) $value)) {
+                    if (! in_array($values[$field], (array) $value)) {
                         return false;
                     }
                     break;

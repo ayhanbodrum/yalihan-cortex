@@ -2,11 +2,10 @@
 
 namespace App\Modules\Emlak\Services;
 
-use App\Modules\Emlak\Models\Ilan;
+use App\Models\Talep;
 use App\Modules\Crm\Models\Musteri;
-use App\Modules\Crm\Models\Talep;
+use App\Modules\Emlak\Models\Ilan;
 use App\Modules\TakimYonetimi\Models\Gorev;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 
 class IlanService
@@ -74,7 +73,7 @@ class IlanService
             $musteri->id => array_merge([
                 'status' => 'ilgileniyor',
                 'created_at' => now(),
-            ], $pivotData)
+            ], $pivotData),
         ]);
     }
 
@@ -96,7 +95,7 @@ class IlanService
                 'skor' => $this->calculateMatchingScore($ilan, $talep),
                 'status' => 'eslesme',
                 'created_at' => now(),
-            ], $pivotData)
+            ], $pivotData),
         ]);
     }
 
@@ -117,7 +116,7 @@ class IlanService
             $gorev->id => array_merge([
                 'gorev_tipi' => 'ilan_islemi',
                 'created_at' => now(),
-            ], $pivotData)
+            ], $pivotData),
         ]);
     }
 

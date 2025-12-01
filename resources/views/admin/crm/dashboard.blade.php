@@ -1,4 +1,4 @@
-@extends('admin.layouts.neo')
+@extends('admin.layouts.admin')
 
 @section('title', 'CRM Dashboard')
 
@@ -10,6 +10,46 @@
                 <div>
                     <h1 class="text-3xl font-bold text-gray-900 dark:text-white">CRM Dashboard</h1>
                     <p class="text-gray-600 dark:text-gray-400 mt-2">Müşteri ilişkileri yönetimi ve analitikler</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow duration-200 mb-6">
+            <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+                <h5 class="text-lg font-bold text-gray-900 dark:text-white">Yüksek Riskli Müşteriler</h5>
+                <span class="text-xs text-gray-500 dark:text-gray-400">Churn Prediction</span>
+            </div>
+            <div class="px-6 py-4">
+                <div id="highRiskCustomersWidget"
+                     x-data="highRiskCustomersWidget()"
+                     x-init="load()"
+                     class="min-h-[80px] rounded-lg bg-gray-50 dark:bg-gray-800 border border-dashed border-gray-300 dark:border-gray-600 p-4">
+                    <template x-if="loading">
+                        <div class="flex items-center justify-center gap-2 text-gray-600 dark:text-gray-300">
+                            <i class="fas fa-spinner animate-spin"></i>
+                            <span>Yükleniyor...</span>
+                        </div>
+                    </template>
+                    <template x-if="error">
+                        <div class="text-red-600 dark:text-red-400 text-sm" x-text="error"></div>
+                    </template>
+                    <div x-show="!loading && customers.length === 0" class="text-sm text-gray-500 dark:text-gray-400">Veri bulunamadı</div>
+                    <div x-show="!loading && customers.length > 0" class="space-y-3">
+                        <template x-for="c in customers" :key="c.id">
+                            <div class="p-3 bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700">
+                                <div class="flex items-center justify-between mb-2">
+                                    <a :href="'/admin/crm/customers/' + c.id" class="text-sm font-semibold text-gray-900 dark:text-white hover:underline">
+                                        <span x-text="c.ad"></span> <span x-text="c.soyad"></span>
+                                    </a>
+                                    <span class="text-sm font-medium" :class="scoreColorClass(c.score)" x-text="c.score + '%' "></span>
+                                </div>
+                                <div class="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                                    <div class="h-full rounded-full" :class="scoreBarClass(c.score)" :style="'width:' + c.score + '%' "></div>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
                 </div>
             </div>
         </div>
@@ -277,6 +317,42 @@
     @push('scripts')
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <script>
+            function highRiskCustomersWidget() {
+                return {
+                    customers: [],
+                    loading: false,
+                    error: null,
+                    async load() {
+                        this.loading = true;
+                        this.error = null;
+                        try {
+                            const res = await fetch('/api/ai/churn-risk/top', {
+                                headers: {
+                                    'Accept': 'application/json',
+                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+                                }
+                            });
+                            if (!res.ok) throw new Error('HTTP ' + res.status);
+                            const data = await res.json();
+                            this.customers = (data.customers || []).slice(0, 10);
+                        } catch (e) {
+                            this.error = 'Veri yüklenemedi';
+                        } finally {
+                            this.loading = false;
+                        }
+                    },
+                    scoreColorClass(score) {
+                        if (score >= 70) return 'text-red-600 dark:text-red-400';
+                        if (score >= 40) return 'text-yellow-600 dark:text-yellow-400';
+                        return 'text-gray-600 dark:text-gray-300';
+                    },
+                    scoreBarClass(score) {
+                        if (score >= 70) return 'bg-red-500';
+                        if (score >= 40) return 'bg-yellow-500';
+                        return 'bg-gray-400';
+                    }
+                }
+            }
             document.addEventListener('DOMContentLoaded', function() {
                 // Customer Segments Chart
                 const ctx = document.getElementById('customerSegmentsChart').getContext('2d');

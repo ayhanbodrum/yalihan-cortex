@@ -219,4 +219,3 @@ class IlanKategoriControllerTest extends TestCase
         $response->assertStatus(302);
     }
 }
-

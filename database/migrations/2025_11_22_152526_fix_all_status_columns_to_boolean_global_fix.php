@@ -7,26 +7,26 @@ use Illuminate\Support\Facades\Schema;
 
 /**
  * GLOBAL STATUS COLUMN STANDARDIZATION
- * 
+ *
  * Context7 Compliance: Tüm basit status kolonları TINYINT(1) boolean olmalı
- * 
+ *
  * Sorun: Projede 3 farklı format kullanılıyor:
  * 1. VARCHAR(255) + 'Aktif'/'Pasif' string (10 tablo)
  * 2. ENUM('Aktif','Pasif') (6 tablo)
  * 3. TINYINT(1) boolean (20 tablo - doğru format)
- * 
+ *
  * Bu tutarsızlık IDE'lerin (trea, warp, cursor) tip kontrolü yapmasını engelliyor
  * ve sürekli 'Aktif'/'Pasif' vs true/false karışıklığına yol açıyor.
- * 
+ *
  * Çözüm: Tüm basit aktif/pasif status kolonlarını boolean'a çevir
- * 
+ *
  * ⚠️ KARMAŞIK STATUS'LAR DEĞİŞMEYECEK:
  * - blog_posts: 'draft', 'published', 'scheduled' (VARCHAR kalacak)
  * - eslesmeler: 'beklemede', 'eslesti', 'iptal' (VARCHAR kalacak)
  * - gorevler: 'Beklemede', 'Devam Ediyor', 'Tamamlandi' (VARCHAR kalacak)
  * - yazlik_rezervasyonlar: 'beklemede', 'onaylandi', 'iptal' (ENUM kalacak)
  * - sites: 'active', 'inactive', 'pending' (ENUM kalacak)
- * 
+ *
  * @see .context7/authority.json - database_fields.status
  */
 return new class extends Migration
@@ -47,7 +47,7 @@ return new class extends Migration
         'takim_uyeleri',
         'talepler',
         'ulkeler',
-        
+
         // ENUM('Aktif','Pasif')
         'anahtar_yonetimi',
         'ilan_ozellikleri',
@@ -63,7 +63,7 @@ return new class extends Migration
     public function up(): void
     {
         Log::info('🔧 GLOBAL STATUS COLUMN STANDARDIZATION başlatılıyor...');
-        Log::info('   Toplam tablo: ' . count($this->tablesToFix));
+        Log::info('   Toplam tablo: '.count($this->tablesToFix));
 
         $successCount = 0;
         $skipCount = 0;
@@ -71,16 +71,18 @@ return new class extends Migration
         foreach ($this->tablesToFix as $table) {
             try {
                 // Tablo varlık kontrolü
-                if (!Schema::hasTable($table)) {
+                if (! Schema::hasTable($table)) {
                     Log::warning("  ⚠️  Tablo bulunamadı: {$table}");
                     $skipCount++;
+
                     continue;
                 }
 
                 // Status kolonu varlık kontrolü
-                if (!Schema::hasColumn($table, 'status')) {
+                if (! Schema::hasColumn($table, 'status')) {
                     Log::warning("  ⚠️  Status kolonu bulunamadı: {$table}");
                     $skipCount++;
+
                     continue;
                 }
 
@@ -123,7 +125,7 @@ return new class extends Migration
                 $successCount++;
 
             } catch (\Exception $e) {
-                Log::error("    ❌ {$table} düzeltilemedi: " . $e->getMessage());
+                Log::error("    ❌ {$table} düzeltilemedi: ".$e->getMessage());
                 // Hata olsa bile devam et, diğer tabloları düzelt
             }
         }
@@ -147,7 +149,7 @@ return new class extends Migration
 
         foreach ($this->tablesToFix as $table) {
             try {
-                if (!Schema::hasTable($table) || !Schema::hasColumn($table, 'status')) {
+                if (! Schema::hasTable($table) || ! Schema::hasColumn($table, 'status')) {
                     continue;
                 }
 
@@ -164,7 +166,7 @@ return new class extends Migration
                 Log::info("  ✅ Geri alındı: {$table}");
 
             } catch (\Exception $e) {
-                Log::error("  ❌ Geri alma başarısız: {$table} - " . $e->getMessage());
+                Log::error("  ❌ Geri alma başarısız: {$table} - ".$e->getMessage());
             }
         }
 

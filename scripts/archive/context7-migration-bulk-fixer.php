@@ -1,9 +1,10 @@
 <?php
+
 // Context7 Migration Bulk Fixer
 // Tüm migration dosyalarını idempotent ve Context7 uyumlu hale getirir.
 
-$dir = __DIR__ . '/../database/migrations';
-$files = glob($dir . '/*.php');
+$dir = __DIR__.'/../database/migrations';
+$files = glob($dir.'/*.php');
 
 $fixCount = 0;
 foreach ($files as $file) {
@@ -17,7 +18,6 @@ foreach ($files as $file) {
     } elseif (preg_match('/Schema::create\(["\']([a-zA-Z0-9_]+)["\']/', $code, $mt)) {
         $tableName = $mt[1];
     }
-
 
     // 2. Tüm gereksiz kontrol bloklarını temizle (array_key_exists, hasColumn, hasIndex, Schema::hasIndex, Schema::hasColumn)
     $code = preg_replace('/if\s*\(\s*!?\s*array_key_exists\s*\([^)]+\)\s*\)\s*\{[^\}]*\}/ms', '', $code);

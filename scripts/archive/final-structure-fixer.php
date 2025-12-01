@@ -3,14 +3,13 @@
 /**
  * Final Migration Structure Fixer - Kalan yaygın syntax hatalarını düzelten script
  */
-
-$migrationsDir = __DIR__ . '/../database/migrations';
+$migrationsDir = __DIR__.'/../database/migrations';
 $fixedCount = 0;
 $totalChecked = 0;
 
 echo "🔧 Final Migration Structure Fixer başlatılıyor...\n";
 
-foreach (glob($migrationsDir . '/*.php') as $filePath) {
+foreach (glob($migrationsDir.'/*.php') as $filePath) {
     $filename = basename($filePath);
     $totalChecked++;
 
@@ -23,26 +22,26 @@ foreach (glob($migrationsDir . '/*.php') as $filePath) {
     if (preg_match('/public function down\(\)[^}]*\{[^}]*\};$/s', $content)) {
         $content = preg_replace(
             '/(public function down\(\)[^}]*\{[^}]*)\};$/s',
-            '$1' . "\n    }\n};",
+            '$1'."\n    }\n};",
             $content
         );
-        echo "✅ Down() closing fix ";
+        echo '✅ Down() closing fix ';
     }
 
     // Pattern 2: Missing } for up() function when down() exists
     if (preg_match('/public function up\(\)[^}]*\{[^}]*\n\s*public function down/s', $content)) {
         $content = preg_replace(
             '/(public function up\(\)[^}]*\{[^}]*)\n(\s*public function down)/s',
-            '$1' . "\n    }\n\n$2",
+            '$1'."\n    }\n\n$2",
             $content
         );
-        echo "✅ Up() closing fix ";
+        echo '✅ Up() closing fix ';
     }
 
     // Pattern 3: Class ending issues - no }; at end
-    if (!preg_match('/\};\s*$/', $content) && strpos($content, 'return new class extends Migration') !== false) {
-        $content = rtrim($content) . "\n};";
-        echo "✅ Class ending fix ";
+    if (! preg_match('/\};\s*$/', $content) && strpos($content, 'return new class extends Migration') !== false) {
+        $content = rtrim($content)."\n};";
+        echo '✅ Class ending fix ';
     }
 
     // Pattern 4: Extra empty lines and formatting
@@ -73,13 +72,13 @@ echo "✅ Düzeltilen dosyalar: $fixedCount\n";
 
 // Final syntax check
 echo "\n🔍 Final syntax kontrolü...\n";
-$syntaxErrors = shell_exec("find " . escapeshellarg($migrationsDir) . " -name '*.php' -exec php -l {} \\; 2>&1 | grep -c 'Parse error\\|Fatal error\\|syntax error' || echo '0'");
-echo "🎯 Kalan syntax hataları: " . trim($syntaxErrors) . "\n";
+$syntaxErrors = shell_exec('find '.escapeshellarg($migrationsDir)." -name '*.php' -exec php -l {} \\; 2>&1 | grep -c 'Parse error\\|Fatal error\\|syntax error' || echo '0'");
+echo '🎯 Kalan syntax hataları: '.trim($syntaxErrors)."\n";
 
 if (trim($syntaxErrors) == '0') {
     echo "🎉 TÜM SYNTAX HATALARI DÜZELTİLDİ!\n";
 } else {
-    echo "⚠️  Hâlâ " . trim($syntaxErrors) . " syntax hatası mevcut.\n";
+    echo '⚠️  Hâlâ '.trim($syntaxErrors)." syntax hatası mevcut.\n";
 }
 
 echo "\n🏁 Final Migration Structure Fixer tamamlandı!\n";

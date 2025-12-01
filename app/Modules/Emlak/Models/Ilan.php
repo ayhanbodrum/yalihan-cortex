@@ -2,9 +2,9 @@
 
 namespace App\Modules\Emlak\Models;
 
+use App\Models\IlanKategori;
 use App\Modules\Auth\Models\User;
 use App\Modules\BaseModule\Models\BaseModel;
-use App\Models\IlanKategori;
 use App\Traits\SearchableTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -21,11 +21,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * TARİH: 27 Ekim 2025
  * DURUM: Deprecated - Yeni model kullanılmalıdır
  */
-
 trigger_error(
-    "DEPRECATED: App\\Modules\\Emlak\\Models\\Ilan kullanılıyor. " .
-        "Lütfen App\\Models\\Ilan kullanın. " .
-        "Kaynak: " . debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1)[0]['file'] ?? 'unknown',
+    'DEPRECATED: App\\Modules\\Emlak\\Models\\Ilan kullanılıyor. '.
+        'Lütfen App\\Models\\Ilan kullanın. '.
+        'Kaynak: '.debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1)[0]['file'] ?? 'unknown',
     E_USER_DEPRECATED
 );
 
@@ -376,7 +375,6 @@ class Ilan extends BaseModel
         return $this->belongsTo(\App\Models\Il::class, 'il_id');
     }
 
-
     /**
      * İlanın ilçesi
      */
@@ -462,7 +460,7 @@ class Ilan extends BaseModel
      */
     public function owner()
     {
-        return $this->belongsTo(\App\Modules\Crm\Models\Kisi::class, 'owner_id');
+        return $this->belongsTo(\App\Models\Kisi::class, 'owner_id');
     }
 
     /**
@@ -628,7 +626,7 @@ class Ilan extends BaseModel
 
         $formattedPrice = number_format($this->fiyat, 0, ',', '.');
 
-        return $formattedPrice . ' ' . ($this->para_birimi ?? 'TL');
+        return $formattedPrice.' '.($this->para_birimi ?? 'TL');
     }
 
     /**
@@ -659,7 +657,7 @@ class Ilan extends BaseModel
         $kapakFotografi = $this->kapakFotografi;
 
         if ($kapakFotografi && $kapakFotografi->dosya_yolu) {
-            return asset('storage/' . $kapakFotografi->dosya_yolu);
+            return asset('storage/'.$kapakFotografi->dosya_yolu);
         }
 
         // Varsayılan resim
@@ -705,7 +703,7 @@ class Ilan extends BaseModel
             if ($danismanModel) {
                 return (object) [
                     'id' => $danismanModel->id,
-                    'name' => $danismanModel->ad . ' ' . $danismanModel->soyad,
+                    'name' => $danismanModel->ad.' '.$danismanModel->soyad,
                     'email' => $danismanModel->email,
                     'phone_number' => $danismanModel->telefon,
                     'source' => 'danisman_model',

@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\KategoriYayinTipiFieldDependency;
 use App\Models\IlanKategori;
+use App\Models\KategoriYayinTipiFieldDependency;
 use App\Services\Response\ResponseService;
 use App\Traits\ValidatesApiRequests;
 use Illuminate\Http\Request;
@@ -13,10 +13,10 @@ use Illuminate\Support\Facades\Log;
 class FieldDependencyController extends Controller
 {
     use ValidatesApiRequests;
+
     /**
      * Get field dependencies for a specific category and publication type
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function index(Request $request)
@@ -27,14 +27,14 @@ class FieldDependencyController extends Controller
             $kategoriId = $request->input('kategori_id');
 
             // Kategori slug'ı ID'den al (eğer sadece ID verilmişse)
-            if (!$kategoriSlug && $kategoriId) {
+            if (! $kategoriSlug && $kategoriId) {
                 $kategori = IlanKategori::find($kategoriId);
                 if ($kategori) {
                     $kategoriSlug = $kategori->slug;
                 }
             }
 
-            if (!$kategoriSlug) {
+            if (! $kategoriSlug) {
                 return ResponseService::error('Kategori slug veya ID gerekli', 400);
             }
 
@@ -49,7 +49,7 @@ class FieldDependencyController extends Controller
                 if (is_numeric($yayinTipi)) {
                     $yayinTipiId = (string) $yayinTipi;
                     // İlgili yayın tipinin metin karşılığını bul (varsa)
-                    $yayinTipiText = \App\Models\IlanKategoriYayinTipi::where('id', (int)$yayinTipi)
+                    $yayinTipiText = \App\Models\IlanKategoriYayinTipi::where('id', (int) $yayinTipi)
                         ->value('yayin_tipi');
 
                     $query->where(function ($q) use ($yayinTipiId, $yayinTipiText) {
@@ -93,7 +93,7 @@ class FieldDependencyController extends Controller
                             'ai_suggestion' => $field->ai_suggestion ?? false,
                             'ai_prompt_key' => $field->ai_prompt_key,
                         ];
-                    })->values()
+                    })->values(),
                 ];
             })->values();
 
@@ -104,11 +104,11 @@ class FieldDependencyController extends Controller
                     'yayin_tipi' => $yayinTipi,
                     'total_fields' => $fields->count(),
                     'required_fields' => $fields->where('required', true)->count(),
-                ]
+                ],
             ], 'Field dependencies başarıyla yüklendi');
         } catch (\Exception $e) {
-            Log::error('Field Dependencies API Error: ' . $e->getMessage(), [
-                'trace' => $e->getTraceAsString()
+            Log::error('Field Dependencies API Error: '.$e->getMessage(), [
+                'trace' => $e->getTraceAsString(),
             ]);
 
             return ResponseService::serverError('Field dependencies yüklenirken hata oluştu.', $e);
@@ -188,7 +188,7 @@ class FieldDependencyController extends Controller
                     return [
                         'category' => $categoryName,
                         'name' => $this->getCategoryDisplayName($categoryName),
-                        'fields' => $categoryFields->values()
+                        'fields' => $categoryFields->values(),
                     ];
                 })->values();
             });
@@ -200,8 +200,8 @@ class FieldDependencyController extends Controller
                         'name' => $kategori->name,
                         'slug' => $kategori->slug,
                     ],
-                    'fields_by_yayin_tipi' => $byYayinTipi
-                ]
+                    'fields_by_yayin_tipi' => $byYayinTipi,
+                ],
             ], 'Kategori field dependencies başarıyla getirildi');
         } catch (\Exception $e) {
             return ResponseService::serverError('Field dependencies yüklenirken hata oluştu.', $e);

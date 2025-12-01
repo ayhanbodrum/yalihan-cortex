@@ -2,9 +2,9 @@
 
 namespace App\Modules\Crm\Services;
 
+use App\Models\Kisi;
 use App\Modules\Auth\Models\User;
 use App\Modules\Crm\Models\Aktivite;
-use App\Modules\Crm\Models\Kisi;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 

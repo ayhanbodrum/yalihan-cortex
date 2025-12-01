@@ -2,11 +2,11 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use App\Models\SiteApartman;
 use App\Models\Il;
 use App\Models\Ilce;
 use App\Models\Mahalle;
+use App\Models\SiteApartman;
+use Illuminate\Database\Seeder;
 
 class SiteApartmanSeeder extends Seeder
 {
@@ -93,6 +93,6 @@ class SiteApartmanSeeder extends Seeder
         }
 
         $this->command->info('✅ Site/Apartman verileri eklendi!');
-        $this->command->info('   Toplam: ' . SiteApartman::count() . ' site');
+        $this->command->info('   Toplam: '.SiteApartman::count().' site');
     }
 }

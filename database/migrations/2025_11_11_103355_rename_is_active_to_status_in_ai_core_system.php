@@ -2,8 +2,8 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 /**
  * Context7 Compliance: is_active → status
@@ -22,20 +22,20 @@ return new class extends Migration
     {
         $tableName = 'ai_core_system';
 
-        if (!Schema::hasTable($tableName)) {
+        if (! Schema::hasTable($tableName)) {
             return;
         }
 
         $hasIsActive = Schema::hasColumn($tableName, 'is_active');
         $hasStatus = Schema::hasColumn($tableName, 'status');
 
-        if ($hasIsActive && !$hasStatus) {
+        if ($hasIsActive && ! $hasStatus) {
             // 1. Index'leri kontrol et ve kaldır
             $this->dropIndexesForColumn($tableName, 'is_active');
 
             // 2. Kolon bilgilerini al
             $columnInfo = DB::select("SHOW COLUMNS FROM `{$tableName}` WHERE Field = 'is_active'");
-            if (!empty($columnInfo)) {
+            if (! empty($columnInfo)) {
                 $col = $columnInfo[0];
                 $columnType = $col->Type;
                 $isNullable = $col->Null === 'YES' ? 'NULL' : 'NOT NULL';
@@ -74,7 +74,7 @@ return new class extends Migration
     {
         $tableName = 'ai_core_system';
 
-        if (!Schema::hasTable($tableName)) {
+        if (! Schema::hasTable($tableName)) {
             return;
         }
 
@@ -85,7 +85,7 @@ return new class extends Migration
             $this->dropIndexesForColumn($tableName, 'status');
 
             $columnInfo = DB::select("SHOW COLUMNS FROM `{$tableName}` WHERE Field = 'status'");
-            if (!empty($columnInfo)) {
+            if (! empty($columnInfo)) {
                 $col = $columnInfo[0];
                 $columnType = $col->Type;
                 $isNullable = $col->Null === 'YES' ? 'NULL' : 'NOT NULL';

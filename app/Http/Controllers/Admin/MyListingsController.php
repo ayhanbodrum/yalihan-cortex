@@ -5,19 +5,17 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Resources\IlanInternalResource;
 use App\Models\Ilan;
 use App\Models\IlanKategori;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
-use Barryvdh\DomPDF\Facade\Pdf;
 
 class MyListingsController extends AdminController
 {
     /**
      * Display user's own listings (İlanlarım sayfası)
      *
-     * @param Request $request
      * @return \Illuminate\View\View
      */
     public function index(Request $request)
@@ -26,7 +24,7 @@ class MyListingsController extends AdminController
         $user = Auth::user();
 
         // If user is not authenticated, redirect to login
-        if (!$user) {
+        if (! $user) {
             return redirect()->route('login')->with('error', 'Please login first');
         }
 
@@ -74,7 +72,7 @@ class MyListingsController extends AdminController
             'referans_no',
             'dosya_adi',
             'created_at',
-            'updated_at'
+            'updated_at',
         ])
             ->with([
                 'altKategori:id,name,icon',
@@ -83,7 +81,7 @@ class MyListingsController extends AdminController
                 'ilce:id,ilce_adi',
                 'fotograflar:id,ilan_id,dosya_yolu,sira' => function ($query) {
                     $query->orderBy('sira')->limit(1);
-                }
+                },
             ])
             ->paginate(20);
 
@@ -101,7 +99,7 @@ class MyListingsController extends AdminController
         ];
 
         // ✅ CACHE: Kategoriler dropdown için cache ekle
-        $categories = \Illuminate\Support\Facades\Cache::remember('my_listings_categories_' . $user->id, 3600, function () {
+        $categories = \Illuminate\Support\Facades\Cache::remember('my_listings_categories_'.$user->id, 3600, function () {
             return IlanKategori::select('id', 'name', 'icon')
                 ->whereNotNull('parent_id')
                 ->where('status', true)
@@ -115,7 +113,6 @@ class MyListingsController extends AdminController
     /**
      * Search listings via AJAX
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function search(Request $request)
@@ -161,26 +158,25 @@ class MyListingsController extends AdminController
             'ilce_id',
             'referans_no',
             'created_at',
-            'updated_at'
+            'updated_at',
         ])
             ->with([
                 'altKategori:id,name',
                 'anaKategori:id,name',
-                'il:id,il_adi'
+                'il:id,il_adi',
             ])
             ->orderBy('updated_at', 'desc')
             ->paginate(20);
 
         return response()->json([
             'success' => true,
-            'data' => IlanInternalResource::collection($listings)
+            'data' => IlanInternalResource::collection($listings),
         ]);
     }
 
     /**
      * Bulk actions (delete, activate, deactivate)
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function bulkAction(Request $request)
@@ -188,7 +184,7 @@ class MyListingsController extends AdminController
         $request->validate([
             'action' => 'required|in:delete,activate,deactivate,draft',
             'ids' => 'required|array',
-            'ids.*' => 'exists:ilanlar,id'
+            'ids.*' => 'exists:ilanlar,id',
         ]);
 
         $user = Auth::user();
@@ -203,7 +199,7 @@ class MyListingsController extends AdminController
         if ($listings->count() !== count($ids)) {
             return response()->json([
                 'success' => false,
-                'message' => 'Unauthorized: Some listings do not belong to you'
+                'message' => 'Unauthorized: Some listings do not belong to you',
             ], 403);
         }
 
@@ -211,34 +207,34 @@ class MyListingsController extends AdminController
         switch ($action) {
             case 'delete':
                 Ilan::whereIn('id', $ids)->delete();
-                $message = count($ids) . ' listings deleted successfully';
+                $message = count($ids).' listings deleted successfully';
                 break;
 
             case 'activate':
                 Ilan::whereIn('id', $ids)->update(['status' => 'Aktif']); // Context7: Database değeri
-                $message = count($ids) . ' listings activated successfully';
+                $message = count($ids).' listings activated successfully';
                 break;
 
             case 'deactivate':
                 Ilan::whereIn('id', $ids)->update(['status' => 'Pasif']); // Context7: Database değeri
-                $message = count($ids) . ' listings deactivated successfully';
+                $message = count($ids).' listings deactivated successfully';
                 break;
 
             case 'draft':
                 Ilan::whereIn('id', $ids)->update(['status' => 'Taslak']); // Context7: Database değeri
-                $message = count($ids) . ' listings moved to draft';
+                $message = count($ids).' listings moved to draft';
                 break;
 
             default:
                 return response()->json([
                     'success' => false,
-                    'message' => 'Invalid action'
+                    'message' => 'Invalid action',
                 ], 400);
         }
 
         return response()->json([
             'success' => true,
-            'message' => $message
+            'message' => $message,
         ]);
     }
 
@@ -275,7 +271,7 @@ class MyListingsController extends AdminController
 
         return response()->json([
             'success' => true,
-            'data' => $stats
+            'data' => $stats,
         ]);
     }
 
@@ -286,13 +282,12 @@ class MyListingsController extends AdminController
      *
      * GET /admin/my-listings/export?format=excel|pdf
      *
-     * @param Request $request
      * @return \Symfony\Component\HttpFoundation\BinaryFileResponse|\Illuminate\Http\Response
      */
     public function export(Request $request)
     {
         $request->validate([
-            'format' => 'nullable|in:excel,pdf'
+            'format' => 'nullable|in:excel,pdf',
         ]);
 
         $user = Auth::user();
@@ -312,13 +307,13 @@ class MyListingsController extends AdminController
             'ilce_id',
             'referans_no',
             'created_at',
-            'updated_at'
+            'updated_at',
         ])
             ->with([
                 'altKategori:id,name',
                 'anaKategori:id,name',
                 'il:id,il_adi',
-                'ilce:id,ilce_adi'
+                'ilce:id,ilce_adi',
             ])
             ->where('danisman_id', $user->id)
             ->orderBy('updated_at', 'desc')
@@ -362,14 +357,17 @@ class MyListingsController extends AdminController
             ];
         }
 
-        $dosyaAdi = "Ilanlarim_" . now()->format('Ymd_His') . '.xlsx';
+        $dosyaAdi = 'Ilanlarim_'.now()->format('Ymd_His').'.xlsx';
 
-        return Excel::download(new class($data) implements \Maatwebsite\Excel\Concerns\FromArray {
+        return Excel::download(new class($data) implements \Maatwebsite\Excel\Concerns\FromArray
+        {
             protected $data;
+
             public function __construct($data)
             {
                 $this->data = $data;
             }
+
             public function array(): array
             {
                 return $this->data;
@@ -390,7 +388,7 @@ class MyListingsController extends AdminController
 
         $pdf = Pdf::loadView('admin.ilanlar.exports.my-listings-pdf', $data);
 
-        $dosyaAdi = "Ilanlarim_" . now()->format('Ymd_His') . '.pdf';
+        $dosyaAdi = 'Ilanlarim_'.now()->format('Ymd_His').'.pdf';
 
         return $pdf->download($dosyaAdi);
     }

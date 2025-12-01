@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
+use App\Models\Il;
 use App\Models\Ilan;
 use App\Models\IlanKategori;
 use App\Models\IlanKategoriYayinTipi;
-use App\Models\Il;
 use App\Models\Ilce;
 use App\Models\Mahalle;
 use Illuminate\Database\Seeder;
@@ -36,8 +36,9 @@ class BodrumDemoSeeder extends Seeder
         $this->command->newLine();
 
         // Schema kontrolü
-        if (!Schema::hasTable('ilanlar')) {
+        if (! Schema::hasTable('ilanlar')) {
             $this->command->error('❌ ilanlar tablosu bulunamadı!');
+
             return;
         }
 
@@ -246,7 +247,7 @@ class BodrumDemoSeeder extends Seeder
 
             $ilanData = [
                 'baslik' => $data['baslik'],
-                'slug' => Str::slug($data['baslik']) . '-' . Str::random(6),
+                'slug' => Str::slug($data['baslik']).'-'.Str::random(6),
                 'aciklama' => $data['aciklama'],
                 'fiyat' => $data['fiyat'],
                 'para_birimi' => 'TRY',
@@ -260,7 +261,7 @@ class BodrumDemoSeeder extends Seeder
                 // Arsa özel alanlar
                 'ada_no' => $data['ada_no'],
                 'parsel_no' => $data['parsel_no'],
-                'ada_parsel' => $data['ada_no'] . '/' . $data['parsel_no'],
+                'ada_parsel' => $data['ada_no'].'/'.$data['parsel_no'],
                 'imar_statusu' => $data['imar_statusu'],
                 'alan_m2' => $data['alan_m2'],
                 'brut_m2' => $data['alan_m2'],
@@ -431,7 +432,7 @@ class BodrumDemoSeeder extends Seeder
 
             $ilanData = [
                 'baslik' => $data['baslik'],
-                'slug' => Str::slug($data['baslik']) . '-' . Str::random(6),
+                'slug' => Str::slug($data['baslik']).'-'.Str::random(6),
                 'aciklama' => $data['aciklama'],
                 'fiyat' => $data['gunluk_fiyat'], // Ana fiyat günlük fiyat
                 'para_birimi' => 'TRY',
@@ -604,7 +605,7 @@ class BodrumDemoSeeder extends Seeder
 
             $ilanData = [
                 'baslik' => $data['baslik'],
-                'slug' => Str::slug($data['baslik']) . '-' . Str::random(6),
+                'slug' => Str::slug($data['baslik']).'-'.Str::random(6),
                 'aciklama' => $data['aciklama'],
                 'fiyat' => $data['fiyat'],
                 'para_birimi' => 'TRY',

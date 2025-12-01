@@ -94,7 +94,7 @@ use Spatie\Permission\Traits\HasRoles;
  */
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, HasRoles, Notifiable, SoftDeletes, \App\Models\Traits\EncryptsAttributes;
+    use \App\Models\Traits\EncryptsAttributes, HasApiTokens, HasFactory, HasRoles, Notifiable, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -122,6 +122,9 @@ class User extends Authenticatable
         'twitter_profile',
         'telegram_username',
         'telegram_chat_id',
+        'telegram_id',
+        'telegram_pairing_code',
+        'telegram_paired_at',
         'position',
         // 'department', // ❌ KALDIRILDI - Artık kullanılmıyor
         'employee_id',

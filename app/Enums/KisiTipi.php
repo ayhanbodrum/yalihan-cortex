@@ -7,8 +7,6 @@ namespace App\Enums;
  *
  * Context7: Type-safe person type enumeration
  * Replaces string-based kisi_tipi field with enum
- *
- * @package App\Enums
  */
 enum KisiTipi: string
 {
@@ -19,11 +17,10 @@ enum KisiTipi: string
     case YATIRIMCI = 'yatirimci';
     case ARACI = 'araci';
     case DANISMAN = 'danisman';
+    case LEAD = 'lead'; // Aday Müşteri (Telegram Contact'tan gelen)
 
     /**
      * Get human-readable label
-     *
-     * @return string
      */
     public function label(): string
     {
@@ -35,13 +32,12 @@ enum KisiTipi: string
             self::YATIRIMCI => 'Yatırımcı',
             self::ARACI => 'Aracı',
             self::DANISMAN => 'Danışman',
+            self::LEAD => 'Aday Müşteri',
         };
     }
 
     /**
      * Get description
-     *
-     * @return string
      */
     public function description(): string
     {
@@ -53,13 +49,12 @@ enum KisiTipi: string
             self::YATIRIMCI => 'Yatırım amaçlı gayrimenkul arayan kişi',
             self::ARACI => 'Emlak aracısı',
             self::DANISMAN => 'Gayrimenkul danışmanı',
+            self::LEAD => 'Aday müşteri (henüz kategorize edilmemiş)',
         };
     }
 
     /**
      * Get icon/emoji
-     *
-     * @return string
      */
     public function icon(): string
     {
@@ -71,6 +66,7 @@ enum KisiTipi: string
             self::YATIRIMCI => '📈',
             self::ARACI => '🤝',
             self::DANISMAN => '👔',
+            self::LEAD => '📋',
         };
     }
 
@@ -94,8 +90,6 @@ enum KisiTipi: string
 
     /**
      * Check if this person type is a buyer
-     *
-     * @return bool
      */
     public function isBuyer(): bool
     {
@@ -104,8 +98,6 @@ enum KisiTipi: string
 
     /**
      * Check if this person type is a renter
-     *
-     * @return bool
      */
     public function isRenter(): bool
     {
@@ -114,8 +106,6 @@ enum KisiTipi: string
 
     /**
      * Check if this person type is a seller
-     *
-     * @return bool
      */
     public function isSeller(): bool
     {
@@ -124,8 +114,6 @@ enum KisiTipi: string
 
     /**
      * Check if this person type is a professional
-     *
-     * @return bool
      */
     public function isProfessional(): bool
     {
@@ -134,23 +122,19 @@ enum KisiTipi: string
 
     /**
      * Get all values as array
-     *
-     * @return array
      */
     public static function values(): array
     {
-        return array_map(fn($case) => $case->value, self::cases());
+        return array_map(fn ($case) => $case->value, self::cases());
     }
 
     /**
      * Get options for select dropdown
-     *
-     * @return array
      */
     public static function options(): array
     {
         return array_map(
-            fn($case) => [
+            fn ($case) => [
                 'value' => $case->value,
                 'label' => $case->label(),
                 'icon' => $case->icon(),
@@ -166,7 +150,7 @@ enum KisiTipi: string
      * Bu metod sadece dokümantasyon amaçlıdır.
      * Kullanım: KisiTipi::tryFrom($value) - PHP'nin built-in metodu otomatik null kontrolü yapar.
      *
-     * @param string|null $value
+     * @param  string|null  $value
      * @return self|null
      */
     // tryFrom() metodunu override etmeye gerek yok - PHP'nin built-in metodu kullanılmalı

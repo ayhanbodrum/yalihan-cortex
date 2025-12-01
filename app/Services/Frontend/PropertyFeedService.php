@@ -8,6 +8,7 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -16,18 +17,22 @@ class PropertyFeedService
 {
     public function __construct(
         private readonly CurrencyConversionService $currencyConversionService
-    ) {
-    }
+    ) {}
 
     public function getFeatured(int $limit = 6, ?string $currency = null): Collection
     {
         $currency = $this->resolveCurrency($currency);
+        $cacheKey = 'frontend:properties:featured:' . $limit . ':' . $currency;
+        $cacheTTL = 300; // 5 dakika
 
-        return $this->baseQuery()
-            ->latest()
-            ->limit($limit)
-            ->get()
-            ->map(fn (Ilan $ilan) => $this->transform($ilan, $currency));
+        return Cache::tags(['frontend-properties'])
+            ->remember($cacheKey, $cacheTTL, function () use ($limit, $currency) {
+                return $this->baseQuery()
+                    ->latest()
+                    ->limit($limit)
+                    ->get()
+                    ->map(fn(Ilan $ilan) => $this->transform($ilan, $currency));
+            });
     }
 
     public function paginate(array $filters = [], int $perPage = 12, ?string $currency = null): LengthAwarePaginator|Paginator
@@ -36,17 +41,28 @@ class PropertyFeedService
 
         $query = $this->applyFilters($this->baseQuery(), $filters);
 
-        return $query->paginate($perPage)
-            ->through(fn (Ilan $ilan) => $this->transform($ilan, $currency));
+        $paginator = $query->paginate($perPage);
+
+        // Transform items using getCollection()->transform() pattern
+        // @phpstan-ignore-next-line - getCollection() exists on LengthAwarePaginator
+        $paginator->getCollection()->transform(function (Ilan $ilan) use ($currency) {
+            return $this->transform($ilan, $currency);
+        });
+
+        return $paginator;
     }
 
     public function find(int $id, ?string $currency = null): ?array
     {
         $currency = $this->resolveCurrency($currency);
+        $cacheKey = 'frontend:properties:' . $id . ':' . $currency;
+        $cacheTTL = 600; // 10 dakika
 
-        $ilan = $this->baseQuery()->find($id);
-
-        return $ilan ? $this->transform($ilan, $currency) : null;
+        return Cache::tags(['frontend-properties'])
+            ->remember($cacheKey, $cacheTTL, function () use ($id, $currency) {
+                $ilan = $this->baseQuery()->find($id);
+                return $ilan ? $this->transform($ilan, $currency) : null;
+            });
     }
 
     protected function transform(Ilan $ilan, string $currency): array
@@ -54,7 +70,7 @@ class PropertyFeedService
         $photos = $ilan->fotograflar
             ->sortByDesc('kapak_fotografi')
             ->sortBy('sira')
-            ->map(fn ($photo) => [
+            ->map(fn($photo) => [
                 'url' => Storage::exists($photo->dosya_yolu)
                     ? Storage::url($photo->dosya_yolu)
                     : $this->placeholderImage(),
@@ -70,12 +86,13 @@ class PropertyFeedService
             optional($ilan->il)->il_adi,
         ])->filter()->unique();
 
-        $convertedPrice = $this->currencyConversionService->convert(
+        $convertedPriceData = $this->currencyConversionService->convert(
             $ilan->fiyat,
             $ilan->para_birimi,
             $currency
         );
 
+        $convertedPrice = $convertedPriceData['amount'] ?? $ilan->fiyat;
         $priceDisplay = $this->formatCurrency($convertedPrice, $currency);
         $pricePeriod = $this->determinePricePeriod($ilan);
         $badge = $this->determineBadge($ilan);
@@ -190,7 +207,7 @@ class PropertyFeedService
     protected function baseQuery(): Builder
     {
         return Ilan::query()
-            ->where('status', 'Aktif')
+            ->where('status', true) // Context7: boolean status
             ->select([
                 'id',
                 'baslik',
@@ -268,9 +285,9 @@ class PropertyFeedService
     protected function determinePricePeriod(Ilan $ilan): ?string
     {
         return match (true) {
-            !is_null($ilan->gunluk_fiyat) => '/gün',
-            !is_null($ilan->haftalik_fiyat) => '/hafta',
-            !is_null($ilan->aylik_fiyat) => '/ay',
+            ! is_null($ilan->gunluk_fiyat) => '/gün',
+            ! is_null($ilan->haftalik_fiyat) => '/hafta',
+            ! is_null($ilan->aylik_fiyat) => '/ay',
             default => null,
         };
     }
@@ -298,7 +315,7 @@ class PropertyFeedService
             ['label' => 'Brüt m²', 'value' => $ilan->brut_m2],
             ['label' => 'Kategori', 'value' => optional($ilan->anaKategori)->name],
         ])
-            ->filter(fn ($feature) => filled($feature['value']))
+            ->filter(fn($feature) => filled($feature['value']))
             ->values()
             ->all();
     }

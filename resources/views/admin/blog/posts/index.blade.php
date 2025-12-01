@@ -1,4 +1,4 @@
-@extends('admin.layouts.neo')
+@extends('admin.layouts.admin')
 
 @section('title', 'Blog Yazıları')
 @section('page-title', 'Blog Yazıları')

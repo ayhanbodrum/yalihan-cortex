@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use App\Models\Feature;
 use App\Models\FeatureCategory;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Str;
 
 class SampleFeaturesSeeder extends Seeder
 {
@@ -122,7 +121,7 @@ class SampleFeaturesSeeder extends Seeder
 
         $category = FeatureCategory::where('slug', 'arsa-ozellikleri')->first();
 
-        if (!$category) {
+        if (! $category) {
             $this->command->warn('   ⚠️ Arsa kategorisi bulunamadı, oluşturuluyor...');
             $category = FeatureCategory::create([
                 'name' => 'Arsa Özellikleri',
@@ -151,7 +150,7 @@ class SampleFeaturesSeeder extends Seeder
             );
         }
 
-        $this->command->info("   ✅ " . count($additionalFeatures) . " arsa özelliği eklendi");
+        $this->command->info('   ✅ '.count($additionalFeatures).' arsa özelliği eklendi');
     }
 
     private function createYazlikFeatures()
@@ -225,10 +224,10 @@ class SampleFeaturesSeeder extends Seeder
         $this->command->table(
             ['Kategori', 'Özellik Sayısı'],
             [
-                ['Konut Özellikleri', Feature::whereHas('category', fn($q) => $q->where('slug', 'konut-ozellikleri'))->count()],
-                ['İşyeri Özellikleri', Feature::whereHas('category', fn($q) => $q->where('slug', 'isyeri-ozellikleri'))->count()],
-                ['Arsa Özellikleri', Feature::whereHas('category', fn($q) => $q->where('slug', 'arsa-ozellikleri'))->count()],
-                ['Yazlık Özellikleri', Feature::whereHas('category', fn($q) => $q->where('slug', 'yazlik-ozellikleri'))->count()],
+                ['Konut Özellikleri', Feature::whereHas('category', fn ($q) => $q->where('slug', 'konut-ozellikleri'))->count()],
+                ['İşyeri Özellikleri', Feature::whereHas('category', fn ($q) => $q->where('slug', 'isyeri-ozellikleri'))->count()],
+                ['Arsa Özellikleri', Feature::whereHas('category', fn ($q) => $q->where('slug', 'arsa-ozellikleri'))->count()],
+                ['Yazlık Özellikleri', Feature::whereHas('category', fn ($q) => $q->where('slug', 'yazlik-ozellikleri'))->count()],
                 ['TOPLAM', Feature::count()],
             ]
         );

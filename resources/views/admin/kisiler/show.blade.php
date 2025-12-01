@@ -1,4 +1,4 @@
-@extends('admin.layouts.neo')
+@extends('admin.layouts.admin')
 
 @section('title', 'Müşteri Detayı')
 
@@ -167,6 +167,24 @@
                     </div>
                 </div>
             @endif
+
+            <!-- CORTEX FİNANSAL ANALİZİ -->
+            <div id="cortex-finansal-analiz" class="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700">
+                <h3 class="text-xl font-bold text-purple-800 dark:text-purple-200 mb-4 flex items-center">
+                    <svg class="w-6 h-6 mr-3 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                    </svg>
+                    🧠 CORTEX FİNANSAL ANALİZİ
+                </h3>
+                <div id="cortex-strategy-content" class="bg-gradient-to-br from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 rounded-lg p-6 border border-purple-200 dark:border-purple-800">
+                    <div class="flex items-center justify-center py-8">
+                        <div class="text-center">
+                            <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 dark:border-purple-400 mb-4"></div>
+                            <p class="text-gray-600 dark:text-gray-400">Pazarlık stratejisi analiz ediliyor...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <!-- Notlar -->
             @if ($kisi->notlar)
@@ -521,7 +539,193 @@
             @endif
         </div>
     </div>
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const kisiId = {{ $kisi->id }};
+        const strategyContent = document.getElementById('cortex-strategy-content');
+        
+        // API'den pazarlık stratejisini çek
+        fetch(`/api/v1/ai/strategy/${kisiId}`, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '',
+            },
+            credentials: 'same-origin',
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.data.strategy) {
+                const strategy = data.data.strategy;
+                const customerProfile = data.data.customer_profile || {};
+                
+                // Widget içeriğini oluştur
+                strategyContent.innerHTML = `
+                    <div class="space-y-4">
+                        <div class="bg-white dark:bg-gray-800 rounded-lg p-4 border border-purple-200 dark:border-purple-700">
+                            <h4 class="font-semibold text-purple-900 dark:text-purple-100 mb-2 flex items-center">
+                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                Pazarlık Önerisi
+                            </h4>
+                            <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
+                                ${strategy.summary || strategy.recommendation || 'Standart pazarlık stratejisi uygulayın.'}
+                            </p>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="bg-white dark:bg-gray-800 rounded-lg p-4 border border-purple-200 dark:border-purple-700">
+                                <h5 class="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-2">Müşteri Profili</h5>
+                                <div class="space-y-1 text-sm">
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-600 dark:text-gray-400">Yatırımcı Profili:</span>
+                                        <span class="font-semibold text-gray-900 dark:text-gray-100">${customerProfile.yatirimci_profili || 'Bilinmiyor'}</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-600 dark:text-gray-400">Satış Potansiyeli:</span>
+                                        <span class="font-semibold text-gray-900 dark:text-gray-100">${customerProfile.satis_potansiyeli || 0}/100</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-600 dark:text-gray-400">Gelir Düzeyi:</span>
+                                        <span class="font-semibold text-gray-900 dark:text-gray-100">${customerProfile.gelir_duzeyi || 'Bilinmiyor'}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-white dark:bg-gray-800 rounded-lg p-4 border border-purple-200 dark:border-purple-700">
+                                <h5 class="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-2">Strateji Detayları</h5>
+                                <div class="space-y-1 text-sm">
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-600 dark:text-gray-400">İndirim Yaklaşımı:</span>
+                                        <span class="font-semibold text-gray-900 dark:text-gray-100 capitalize">${strategy.discount_approach || 'moderate'}</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-600 dark:text-gray-400">Odak Noktası:</span>
+                                        <span class="font-semibold text-gray-900 dark:text-gray-100 capitalize">${strategy.focus || 'balanced'}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                strategyContent.innerHTML = `
+                    <div class="text-center py-8">
+                        <p class="text-red-600 dark:text-red-400">Pazarlık stratejisi yüklenemedi.</p>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">${data.message || 'Bir hata oluştu.'}</p>
+                    </div>
+                `;
+            }
+        })
+        .catch(error => {
+            console.error('Cortex strategy error:', error);
+            strategyContent.innerHTML = `
+                <div class="text-center py-8">
+                    <p class="text-red-600 dark:text-red-400">Pazarlık stratejisi yüklenirken bir hata oluştu.</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">Lütfen sayfayı yenileyin.</p>
+                </div>
+            `;
+        });
+    });
+</script>
+@endpush
+
 @endsection
 
 @push('styles')
+@endpush
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const kisiId = {{ $kisi->id }};
+        const strategyContent = document.getElementById('cortex-strategy-content');
+        
+        // API'den pazarlık stratejisini çek
+        fetch(`/api/v1/ai/strategy/${kisiId}`, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '',
+            },
+            credentials: 'same-origin',
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.data.strategy) {
+                const strategy = data.data.strategy;
+                const customerProfile = data.data.customer_profile || {};
+                
+                // Widget içeriğini oluştur
+                strategyContent.innerHTML = `
+                    <div class="space-y-4">
+                        <div class="bg-white dark:bg-gray-800 rounded-lg p-4 border border-purple-200 dark:border-purple-700">
+                            <h4 class="font-semibold text-purple-900 dark:text-purple-100 mb-2 flex items-center">
+                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                Pazarlık Önerisi
+                            </h4>
+                            <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
+                                ${strategy.summary || strategy.recommendation || 'Standart pazarlık stratejisi uygulayın.'}
+                            </p>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="bg-white dark:bg-gray-800 rounded-lg p-4 border border-purple-200 dark:border-purple-700">
+                                <h5 class="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-2">Müşteri Profili</h5>
+                                <div class="space-y-1 text-sm">
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-600 dark:text-gray-400">Yatırımcı Profili:</span>
+                                        <span class="font-semibold text-gray-900 dark:text-gray-100">${customerProfile.yatirimci_profili || 'Bilinmiyor'}</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-600 dark:text-gray-400">Satış Potansiyeli:</span>
+                                        <span class="font-semibold text-gray-900 dark:text-gray-100">${customerProfile.satis_potansiyeli || 0}/100</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-600 dark:text-gray-400">Gelir Düzeyi:</span>
+                                        <span class="font-semibold text-gray-900 dark:text-gray-100">${customerProfile.gelir_duzeyi || 'Bilinmiyor'}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-white dark:bg-gray-800 rounded-lg p-4 border border-purple-200 dark:border-purple-700">
+                                <h5 class="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-2">Strateji Detayları</h5>
+                                <div class="space-y-1 text-sm">
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-600 dark:text-gray-400">İndirim Yaklaşımı:</span>
+                                        <span class="font-semibold text-gray-900 dark:text-gray-100 capitalize">${strategy.discount_approach || 'moderate'}</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-600 dark:text-gray-400">Odak Noktası:</span>
+                                        <span class="font-semibold text-gray-900 dark:text-gray-100 capitalize">${strategy.focus || 'balanced'}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                strategyContent.innerHTML = `
+                    <div class="text-center py-8">
+                        <p class="text-red-600 dark:text-red-400">Pazarlık stratejisi yüklenemedi.</p>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">${data.message || 'Bir hata oluştu.'}</p>
+                    </div>
+                `;
+            }
+        })
+        .catch(error => {
+            console.error('Cortex strategy error:', error);
+            strategyContent.innerHTML = `
+                <div class="text-center py-8">
+                    <p class="text-red-600 dark:text-red-400">Pazarlık stratejisi yüklenirken bir hata oluştu.</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">Lütfen sayfayı yenileyin.</p>
+                </div>
+            `;
+        });
+    });
+</script>
 @endpush

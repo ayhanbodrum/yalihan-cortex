@@ -1,5 +1,6 @@
 #!/usr/bin/env php
 <?php
+
 /**
  * 🔍 FORM ELEMENT SCANNER
  *
@@ -9,7 +10,6 @@
  * Context7 Compliance: ✅
  * Yalıhan Bekçi: Form Analysis Tool
  */
-
 $stats = [
     'total_files' => 0,
     'files_with_forms' => 0,
@@ -23,7 +23,7 @@ $stats = [
 $details = [];
 
 // Scan resources/views directory
-$directory = __DIR__ . '/../resources/views';
+$directory = __DIR__.'/../resources/views';
 $iterator = new RecursiveIteratorIterator(
     new RecursiveDirectoryIterator($directory)
 );
@@ -40,7 +40,7 @@ foreach ($iterator as $file) {
 
     $stats['total_files']++;
     $filepath = $file->getPathname();
-    $relativePath = str_replace(__DIR__ . '/../', '', $filepath);
+    $relativePath = str_replace(__DIR__.'/../', '', $filepath);
     $content = file_get_contents($filepath);
 
     // Count existing Blade components
@@ -95,7 +95,7 @@ foreach ($iterator as $file) {
 }
 
 // Sort by total elements (descending)
-usort($details, fn($a, $b) => $b['total'] <=> $a['total']);
+usort($details, fn ($a, $b) => $b['total'] <=> $a['total']);
 
 // Display summary
 echo "📊 SUMMARY STATISTICS:\n";

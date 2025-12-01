@@ -34,7 +34,7 @@ return new class extends Migration
             $table->integer('dislike_count')->default(0);
             $table->timestamps();
             $table->softDeletes();
-            
+
             // Indexes
             $table->index('danisman_id');
             $table->index('kisi_id');

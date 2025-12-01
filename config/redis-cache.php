@@ -22,7 +22,7 @@ return [
             'port' => env('REDIS_PORT', '6379'),
             'database' => env('REDIS_CACHE_DB', 1),
             'options' => [
-                'prefix' => env('CACHE_PREFIX', 'emlak_pro') . ':',
+                'prefix' => env('CACHE_PREFIX', 'emlak_pro').':',
                 'serializer' => 'php',
             ],
         ],
@@ -33,7 +33,7 @@ return [
             'port' => env('REDIS_PORT', '6379'),
             'database' => env('REDIS_SESSION_DB', 2),
             'options' => [
-                'prefix' => env('CACHE_PREFIX', 'emlak_pro') . ':session:',
+                'prefix' => env('CACHE_PREFIX', 'emlak_pro').':session:',
             ],
         ],
 
@@ -43,7 +43,7 @@ return [
             'port' => env('REDIS_PORT', '6379'),
             'database' => env('REDIS_QUEUE_DB', 3),
             'options' => [
-                'prefix' => env('CACHE_PREFIX', 'emlak_pro') . ':queue:',
+                'prefix' => env('CACHE_PREFIX', 'emlak_pro').':queue:',
             ],
         ],
 

@@ -4,7 +4,6 @@ namespace Tests\Unit\Services;
 
 use App\Services\AIService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Cache;
 use Tests\TestCase;
 
 class AIServiceTest extends TestCase
@@ -16,7 +15,7 @@ class AIServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->aiService = new AIService();
+        $this->aiService = new AIService;
     }
 
     /**
@@ -97,4 +96,3 @@ class AIServiceTest extends TestCase
         $this->assertIsArray($result);
     }
 }
-

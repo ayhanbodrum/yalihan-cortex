@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\Http\Request;
 use App\Models\Setting;
+use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
 /**
@@ -75,7 +75,7 @@ class AyarlarController extends AdminController
         ]);
 
         // Additional validation for JSON type
-        if ($validated['type'] === 'json' && !empty($validated['value'])) {
+        if ($validated['type'] === 'json' && ! empty($validated['value'])) {
             json_decode($validated['value']);
             if (json_last_error() !== JSON_ERROR_NONE) {
                 return back()->withErrors(['value' => 'Geçersiz JSON formatı'])->withInput();
@@ -244,6 +244,7 @@ class AyarlarController extends AdminController
     public function edit($id)
     {
         $ayar = Setting::findOrFail($id);
+
         return view('admin.ayarlar.edit', compact('ayar'));
     }
 
@@ -283,10 +284,10 @@ class AyarlarController extends AdminController
             foreach ($settingsToUpdate as $key => $value) {
                 // Handle checkboxes (they don't send value if unchecked)
                 if (in_array($key, ['qrcode_enabled', 'qrcode_show_on_cards', 'qrcode_show_on_detail',
-                                    'navigation_enabled', 'navigation_show_similar',
-                                    'email_notifications', 'sms_notifications',
-                                    'ai_auto_description', 'ai_smart_tags',
-                                    'user_registration', 'password_strength'])) {
+                    'navigation_enabled', 'navigation_show_similar',
+                    'email_notifications', 'sms_notifications',
+                    'ai_auto_description', 'ai_smart_tags',
+                    'user_registration', 'password_strength'])) {
                     $value = $request->has($key) ? 'true' : 'false';
                 }
 
@@ -295,10 +296,10 @@ class AyarlarController extends AdminController
                 if (in_array($key, ['qrcode_default_size', 'navigation_similar_limit', 'max_upload_size', 'session_lifetime'])) {
                     $type = 'integer';
                 } elseif (in_array($key, ['qrcode_enabled', 'qrcode_show_on_cards', 'qrcode_show_on_detail',
-                                          'navigation_enabled', 'navigation_show_similar',
-                                          'email_notifications', 'sms_notifications',
-                                          'ai_auto_description', 'ai_smart_tags',
-                                          'user_registration', 'password_strength', 'maintenance_mode'])) {
+                    'navigation_enabled', 'navigation_show_similar',
+                    'email_notifications', 'sms_notifications',
+                    'ai_auto_description', 'ai_smart_tags',
+                    'user_registration', 'password_strength', 'maintenance_mode'])) {
                     $type = 'boolean';
                 }
 
@@ -357,7 +358,7 @@ class AyarlarController extends AdminController
             \App\Services\Logging\LogService::error('Settings bulk update failed', [], $e);
 
             return redirect()->back()
-                ->with('error', 'Ayarlar güncellenirken hata oluştu: ' . $e->getMessage())
+                ->with('error', 'Ayarlar güncellenirken hata oluştu: '.$e->getMessage())
                 ->withInput();
         }
     }
@@ -510,7 +511,7 @@ class AyarlarController extends AdminController
 
         return response()->json([
             'success' => true,
-            'message' => count($created) . ' ayar oluşturuldu!',
+            'message' => count($created).' ayar oluşturuldu!',
             'created' => $created,
         ]);
     }

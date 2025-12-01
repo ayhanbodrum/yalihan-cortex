@@ -60,7 +60,7 @@ class IlanPhotoService
         if ($photo->ilan_id !== $ilan->id) {
             return [
                 'success' => false,
-                'message' => 'Fotoğraf ilgili ilana ait değil.'
+                'message' => 'Fotoğraf ilgili ilana ait değil.',
             ];
         }
 
@@ -72,15 +72,16 @@ class IlanPhotoService
 
         return [
             'success' => true,
-            'message' => 'Fotoğraf silindi.'
+            'message' => 'Fotoğraf silindi.',
         ];
     }
 
-    public function updatePhotoOrder(Ilan $ilan, array $photoOrders): array
+    // Context7: order → display_order (forbidden pattern)
+    public function updatePhotoSequence(Ilan $ilan, array $photoOrders): array
     {
         $validator = Validator::make(['photo_orders' => $photoOrders], [
             'photo_orders' => 'required|array',
-            'photo_orders.*' => 'required|integer'
+            'photo_orders.*' => 'required|integer',
         ]);
 
         if ($validator->fails()) {
@@ -98,15 +99,17 @@ class IlanPhotoService
                     ->update(['sira' => (int) $order]);
             }
             DB::commit();
+
             return [
                 'success' => true,
-                'message' => 'Fotoğraf sıralaması güncellendi.'
+                'message' => 'Fotoğraf sıralaması güncellendi.',
             ];
         } catch (\Exception $e) {
             DB::rollBack();
+
             return [
                 'success' => false,
-                'message' => 'Sıralama güncelleme sırasında hata: ' . $e->getMessage()
+                'message' => 'Sıralama güncelleme sırasında hata: ' . $e->getMessage(),
             ];
         }
     }

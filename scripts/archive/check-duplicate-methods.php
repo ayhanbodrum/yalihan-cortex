@@ -1,12 +1,12 @@
 #!/usr/bin/env php
 <?php
+
 /**
  * Duplicate Method Checker
  * Yalıhan Bekçi - 2 Kasım 2025
  *
  * PHP dosyalarında duplicate method tanımlarını tespit eder.
  */
-
 echo "🔍 Duplicate method kontrolü başlıyor...\n";
 
 // Git'te staged PHP dosyalarını al
@@ -21,7 +21,7 @@ $hasError = false;
 $totalDuplicates = 0;
 
 foreach ($files as $file) {
-    if (!file_exists($file)) {
+    if (! file_exists($file)) {
         continue;
     }
 
@@ -46,7 +46,7 @@ foreach ($files as $file) {
     foreach ($matches as $match) {
         $methodName = $match[2];
 
-        if (!isset($methodCounts[$methodName])) {
+        if (! isset($methodCounts[$methodName])) {
             $methodCounts[$methodName] = 0;
             $methodLines[$methodName] = [];
         }
@@ -64,7 +64,7 @@ foreach ($files as $file) {
         if ($count > 1) {
             echo "❌ DUPLICATE METHOD: $file\n";
             echo "   Method: {$methodName}() - {$count} kez tanımlanmış\n";
-            echo "   Satırlar: " . implode(', ', $methodLines[$methodName]) . "\n";
+            echo '   Satırlar: '.implode(', ', $methodLines[$methodName])."\n";
             echo "\n";
 
             $hasError = true;

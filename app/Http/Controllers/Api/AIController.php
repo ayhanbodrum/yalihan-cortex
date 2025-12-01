@@ -3,21 +3,34 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Ilan;
+use App\Models\Kisi;
+use App\Models\Talep;
+use App\Services\AI\YalihanCortex;
 use App\Services\AIService;
+use App\Services\Logging\LogService;
 use App\Services\Response\ResponseService;
 use App\Traits\ValidatesApiRequests;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Validator;
 
 class AIController extends Controller
 {
     use ValidatesApiRequests;
 
-    protected $aiService;
+    /**
+     * Yalihan Cortex - Merkezi Zeka Sistemi
+     * Context7: Tüm AI işlemleri YalihanCortex üzerinden yönetilir
+     */
+    protected YalihanCortex $cortex;
 
-    public function __construct(AIService $aiService)
+    /**
+     * AI Service (İçerik üretimi için)
+     */
+    protected AIService $aiService;
+
+    public function __construct(YalihanCortex $cortex, AIService $aiService)
     {
+        $this->cortex = $cortex;
         $this->aiService = $aiService;
     }
 
@@ -27,7 +40,7 @@ class AIController extends Controller
         $validated = $this->validateRequestWithResponse($request, [
             'action' => 'sometimes|string',  // Made optional
             'data' => 'sometimes|array',     // Made optional
-            'context' => 'sometimes|array'
+            'context' => 'sometimes|array',
         ]);
 
         // If validation fails, response already sent
@@ -49,12 +62,86 @@ class AIController extends Controller
                 'metadata' => [
                     'cached' => false,
                     'provider' => 'Context7 Rule-Based',
-                    'action' => $action
-                ]
+                    'action' => $action,
+                ],
             ], 'AI analysis completed successfully');
         } catch (\Exception $e) {
             // ✅ REFACTORED: Using ResponseService
             return ResponseService::serverError('AI analysis failed', $e);
+        }
+    }
+
+    /**
+     * Churn Risk Analizi
+     * Context7: YalihanCortex üzerinden yönetilir
+     */
+    public function getChurnRisk(int $kisiId)
+    {
+        try {
+            $kisi = Kisi::find($kisiId);
+            if (! $kisi) {
+                return ResponseService::notFound('Kişi bulunamadı');
+            }
+
+            // ✅ REFACTORED: YalihanCortex üzerinden churn analizi
+            $cortexResult = $this->cortex->calculateChurnRisk($kisi);
+
+            // Hata durumu kontrolü
+            if (isset($cortexResult['success']) && !$cortexResult['success']) {
+                return ResponseService::serverError(
+                    $cortexResult['error'] ?? 'Churn riski hesaplanamadı',
+                    new \Exception($cortexResult['error'] ?? 'Unknown error')
+                );
+            }
+
+            return ResponseService::success([
+                'kisi_id' => $cortexResult['kisi_id'],
+                'risk' => [
+                    'score' => $cortexResult['risk_score'],
+                    'level' => $cortexResult['risk_level'],
+                    'breakdown' => $cortexResult['breakdown'],
+                    'recommendation' => $cortexResult['recommendation'],
+                ],
+                'metadata' => array_merge($cortexResult['metadata'] ?? [], [
+                    'provider' => 'YalihanCortex',
+                    'normalized' => true,
+                ]),
+            ], 'Churn riski hesaplandı');
+        } catch (\Exception $e) {
+            return ResponseService::serverError('Churn riski hesaplanamadı', $e);
+        }
+    }
+
+    /**
+     * Top Churn Risks Analizi
+     * Context7: YalihanCortex üzerinden yönetilir
+     */
+    public function getTopChurnRisks(int $limit = 10)
+    {
+        try {
+            $user = auth()->user();
+
+            // ✅ REFACTORED: YalihanCortex üzerinden top churn risks analizi
+            $cortexResult = $this->cortex->getTopChurnRisks($limit, $user->id ?? null);
+
+            // Hata durumu kontrolü
+            if (isset($cortexResult['success']) && !$cortexResult['success']) {
+                return ResponseService::serverError(
+                    $cortexResult['error'] ?? 'Top churn risk listesi oluşturulamadı',
+                    new \Exception($cortexResult['error'] ?? 'Unknown error')
+                );
+            }
+
+            return ResponseService::success([
+                'customers' => $cortexResult['customers'] ?? [],
+                'count' => $cortexResult['count'] ?? 0,
+                'metadata' => array_merge($cortexResult['metadata'] ?? [], [
+                    'provider' => 'YalihanCortex',
+                    'normalized' => true,
+                ]),
+            ], 'Top churn risk listesi oluşturuldu');
+        } catch (\Exception $e) {
+            return ResponseService::serverError('Top churn risk listesi oluşturulamadı', $e);
         }
     }
 
@@ -100,7 +187,7 @@ class AIController extends Controller
             'category' => $category,
             'priority' => $priority,
             'estimated_time' => $estimatedTime,
-            'suggestion' => $suggestion
+            'suggestion' => $suggestion,
         ];
     }
 
@@ -109,7 +196,7 @@ class AIController extends Controller
         // ✅ REFACTORED: Using ValidatesApiRequests trait
         $validated = $this->validateRequestWithResponse($request, [
             'context' => 'required|array',
-            'type' => 'sometimes|string|in:category,feature,content,general'
+            'type' => 'sometimes|string|in:category,feature,content,general',
         ]);
 
         if ($validated instanceof \Illuminate\Http\JsonResponse) {
@@ -135,7 +222,7 @@ class AIController extends Controller
         // ✅ REFACTORED: Using ValidatesApiRequests trait
         $validated = $this->validateRequestWithResponse($request, [
             'prompt' => 'required|string',
-            'options' => 'sometimes|array'
+            'options' => 'sometimes|array',
         ]);
 
         if ($validated instanceof \Illuminate\Http\JsonResponse) {
@@ -186,7 +273,7 @@ class AIController extends Controller
     {
         // ✅ REFACTORED: Using ValidatesApiRequests trait
         $validated = $this->validateRequestWithResponse($request, [
-            'provider' => 'required|string'
+            'provider' => 'required|string',
         ]);
 
         if ($validated instanceof \Illuminate\Http\JsonResponse) {
@@ -240,7 +327,7 @@ class AIController extends Controller
             'limit' => 'sometimes|integer|min:1|max:100',
             'status' => 'sometimes|string|in:success,error',
             'provider' => 'sometimes|string',
-            'action' => 'sometimes|string'
+            'action' => 'sometimes|string',
         ]);
 
         if ($validated instanceof \Illuminate\Http\JsonResponse) {
@@ -318,7 +405,7 @@ class AIController extends Controller
                 'category' => $category,
                 'location' => $location,
                 'property_type' => $propertyType,
-                'features' => $features
+                'features' => $features,
             ];
 
             $prompt = $this->buildTitlePrompt($normalizedData);
@@ -327,7 +414,7 @@ class AIController extends Controller
             // ✅ REFACTORED: Using ResponseService
             return ResponseService::success([
                 'suggestions' => $this->parseTitleSuggestions($result),
-                'prompt' => $prompt
+                'prompt' => $prompt,
             ], 'AI başlık önerileri başarıyla oluşturuldu');
         } catch (\Exception $e) {
             // ✅ REFACTORED: Using ResponseService
@@ -337,6 +424,7 @@ class AIController extends Controller
 
     /**
      * AI Açıklama Üretimi (OLD - Deprecated)
+     *
      * @deprecated Use generateDescription() method below
      */
     public function generateDescriptionOld(Request $request)
@@ -347,7 +435,7 @@ class AIController extends Controller
             'location' => 'required|string',
             'property_type' => 'required|string',
             'features' => 'sometimes|array',
-            'price' => 'sometimes|numeric'
+            'price' => 'sometimes|numeric',
         ]);
 
         if ($validated instanceof \Illuminate\Http\JsonResponse) {
@@ -361,7 +449,7 @@ class AIController extends Controller
             // ✅ REFACTORED: Using ResponseService
             return ResponseService::success([
                 'description' => $result,
-                'prompt' => $prompt
+                'prompt' => $prompt,
             ], 'AI açıklama başarıyla oluşturuldu (deprecated method)');
         } catch (\Exception $e) {
             // ✅ REFACTORED: Using ResponseService
@@ -371,6 +459,7 @@ class AIController extends Controller
 
     /**
      * AI Fiyat Önerisi (OLD - Deprecated - Use suggestPrice instead)
+     *
      * @deprecated Use suggestPrice() method below
      */
     public function suggestPriceOld(Request $request)
@@ -381,7 +470,7 @@ class AIController extends Controller
             'location' => 'required|string',
             'property_type' => 'required|string',
             'features' => 'sometimes|array',
-            'size' => 'sometimes|numeric'
+            'size' => 'sometimes|numeric',
         ]);
 
         if ($validated instanceof \Illuminate\Http\JsonResponse) {
@@ -395,7 +484,7 @@ class AIController extends Controller
             // ✅ REFACTORED: Using ResponseService
             return ResponseService::success([
                 'price_suggestion' => $this->parsePriceSuggestion($result),
-                'prompt' => $prompt
+                'prompt' => $prompt,
             ], 'AI fiyat önerisi başarıyla oluşturuldu (deprecated method)');
         } catch (\Exception $e) {
             // ✅ REFACTORED: Using ResponseService
@@ -410,6 +499,7 @@ class AIController extends Controller
     {
         try {
             $health = $this->aiService->healthCheck();
+
             // ✅ REFACTORED: Using ResponseService
             return ResponseService::success($health, 'AI service health check completed');
         } catch (\Exception $e) {
@@ -424,8 +514,8 @@ class AIController extends Controller
             "Kategori: {$data['category']}\n" .
             "Konum: {$data['location']}\n" .
             "Mülk Tipi: {$data['property_type']}\n" .
-            "Özellikler: " . implode(', ', $data['features'] ?? []) . "\n" .
-            "3 farklı başlık önerisi ver.";
+            'Özellikler: ' . implode(', ', $data['features'] ?? []) . "\n" .
+            '3 farklı başlık önerisi ver.';
     }
 
     private function buildDescriptionPrompt($data)
@@ -434,9 +524,9 @@ class AIController extends Controller
             "Kategori: {$data['category']}\n" .
             "Konum: {$data['location']}\n" .
             "Mülk Tipi: {$data['property_type']}\n" .
-            "Özellikler: " . implode(', ', $data['features'] ?? []) . "\n" .
-            "Fiyat: " . ($data['price'] ?? 'Belirtilmemiş') . "\n" .
-            "Profesyonel ve çekici bir açıklama yaz.";
+            'Özellikler: ' . implode(', ', $data['features'] ?? []) . "\n" .
+            'Fiyat: ' . ($data['price'] ?? 'Belirtilmemiş') . "\n" .
+            'Profesyonel ve çekici bir açıklama yaz.';
     }
 
     private function buildPricePrompt($data)
@@ -445,9 +535,9 @@ class AIController extends Controller
             "Kategori: {$data['category']}\n" .
             "Konum: {$data['location']}\n" .
             "Mülk Tipi: {$data['property_type']}\n" .
-            "Büyüklük: " . ($data['size'] ?? 'Belirtilmemiş') . " m²\n" .
-            "Özellikler: " . implode(', ', $data['features'] ?? []) . "\n" .
-            "Piyasa analizi yaparak fiyat önerisi ver.";
+            'Büyüklük: ' . ($data['size'] ?? 'Belirtilmemiş') . " m²\n" .
+            'Özellikler: ' . implode(', ', $data['features'] ?? []) . "\n" .
+            'Piyasa analizi yaparak fiyat önerisi ver.';
     }
 
     private function parseTitleSuggestions($result)
@@ -458,7 +548,7 @@ class AIController extends Controller
 
         foreach ($lines as $line) {
             $line = trim($line);
-            if (!empty($line) && !preg_match('/^\d+\./', $line)) {
+            if (! empty($line) && ! preg_match('/^\d+\./', $line)) {
                 $suggestions[] = $line;
             }
         }
@@ -470,6 +560,7 @@ class AIController extends Controller
     {
         // AI'dan gelen fiyat önerisini parse et
         preg_match('/\d+[\.,]?\d*/', $result, $matches);
+
         return $matches[0] ?? 'Belirtilmemiş';
     }
 
@@ -508,18 +599,18 @@ class AIController extends Controller
                 ')
                 ->first();
 
-            if (!$stats || $stats->count == 0) {
+            if (! $stats || $stats->count == 0) {
                 // ✅ REFACTORED: Using ResponseService - Varsayılan değerler
                 return ResponseService::success([
                     'price' => [
                         'min' => 500000,
                         'avg' => 1000000,
-                        'max' => 2000000
+                        'max' => 2000000,
                     ],
                     'metadata' => [
                         'source' => 'default',
-                        'count' => 0
-                    ]
+                        'count' => 0,
+                    ],
                 ], 'Benzer ilan bulunamadı, genel pazar verileri gösteriliyor');
             }
 
@@ -528,13 +619,13 @@ class AIController extends Controller
                 'price' => [
                     'min' => round($stats->min, -3), // Round to thousands
                     'avg' => round($stats->avg, -3),
-                    'max' => round($stats->max, -3)
+                    'max' => round($stats->max, -3),
                 ],
                 'metadata' => [
                     'source' => 'database',
                     'count' => $stats->count,
-                    'provider' => 'Context7 Market Analysis'
-                ]
+                    'provider' => 'Context7 Market Analysis',
+                ],
             ], 'Fiyat önerisi başarıyla oluşturuldu');
         } catch (\Exception $e) {
             // ✅ REFACTORED: Using ResponseService
@@ -545,60 +636,114 @@ class AIController extends Controller
     /**
      * AI İlan Eşleştirme
      * Context7: Talep kriterlerine göre uygun ilanları bul
+     *
+     * Yeni SmartPropertyMatcherAI servisi kullanılıyor (2025-11-24)
      */
     public function findMatches(Request $request)
     {
         try {
-            $kategoriId = $request->input('kategori_id');
-            $tip = $request->input('tip');
-            $ilId = $request->input('il_id');
-            $ilceId = $request->input('ilce_id');
-            $mahalleId = $request->input('mahalle_id');
+            // Talep ID varsa veritabanından bul, yoksa geçici nesne oluştur
+            $talepId = $request->input('talep_id');
 
-            // İlanları bul ve skorla
-            $ilanlar = \App\Models\Ilan::with(['il', 'ilce', 'mahalle', 'altKategori'])
-                ->when($kategoriId, fn($q) => $q->where('alt_kategori_id', $kategoriId))
-                ->when($tip, fn($q) => $q->where('yayin_tipi', $tip))
-                ->when($ilId, fn($q) => $q->where('il_id', $ilId))
-                ->when($ilceId, fn($q) => $q->where('ilce_id', $ilceId))
-                ->when($mahalleId, fn($q) => $q->where('mahalle_id', $mahalleId))
-                ->where('status', 'Aktif') // Context7: Database değeri
-                ->limit(5)
-                ->get()
-                ->map(function ($ilan) use ($mahalleId, $ilceId, $ilId) {
-                    // Basit scoring algoritması
-                    $score = 0.5; // Base score
+            if ($talepId) {
+                // Veritabanından Talep'i bul
+                $talep = Talep::with(['il', 'ilce', 'mahalle', 'altKategori'])->find($talepId);
 
-                    if ($ilan->mahalle_id == $mahalleId) $score += 0.3;
-                    elseif ($ilan->ilce_id == $ilceId) $score += 0.2;
-                    elseif ($ilan->il_id == $ilId) $score += 0.1;
+                if (! $talep) {
+                    return ResponseService::notFound('Talep bulunamadı');
+                }
+            } else {
+                // Request verileriyle geçici Talep nesnesi oluştur
+                $talep = new Talep;
+                $talep->fill([
+                    'alt_kategori_id' => $request->input('kategori_id') ?? $request->input('alt_kategori_id'),
+                    'il_id' => $request->input('il_id'),
+                    'ilce_id' => $request->input('ilce_id'),
+                    'mahalle_id' => $request->input('mahalle_id'),
+                    'min_fiyat' => $request->input('min_fiyat'),
+                    'max_fiyat' => $request->input('max_fiyat'),
+                    'min_metrekare' => $request->input('min_metrekare'),
+                    'max_metrekare' => $request->input('max_metrekare'),
+                    'aranan_ozellikler_json' => $request->input('aranan_ozellikler') ?? $request->input('aranan_ozellikler_json'),
+                    'metadata' => $request->input('metadata'),
+                ]);
 
-                    if ($ilan->goruntulenme > 100) $score += 0.1;
-                    if ($ilan->created_at && $ilan->created_at->diffInDays() < 7) $score += 0.1;
+                // Koordinatlar metadata içinde olabilir
+                if ($request->has('latitude') || $request->has('lat')) {
+                    $metadata = $talep->metadata ?? [];
+                    $metadata['latitude'] = $request->input('latitude') ?? $request->input('lat');
+                    $metadata['longitude'] = $request->input('longitude') ?? $request->input('lng');
+                    $talep->metadata = $metadata;
+                }
+            }
 
-                    return [
-                        'id' => $ilan->id,
-                        'baslik' => $ilan->baslik,
-                        'title' => $ilan->baslik,
-                        'price' => $ilan->fiyat,
-                        'location' => ($ilan->mahalle->mahalle_adi ?? '') . ', ' . ($ilan->ilce->ilce_adi ?? '') . ', ' . ($ilan->il->il_adi ?? ''),
-                        'match_score' => min(1.0, $score)
-                    ];
-                });
+            // ✅ YalihanCortex ile zenginleştirilmiş eşleştirme
+            $cortexResult = $this->cortex->matchForSale($talep);
 
-            // ✅ REFACTORED: Using ResponseService
+            // Sonuçları formatla - KÂR ODAKLI ZEKÂ: Action Score, Match Score ve Churn Score ayrı ayrı
+            $formattedMatches = collect($cortexResult['matches'] ?? [])->map(function ($match) {
+                return [
+                    'id' => $match['ilan_id'],
+                    'baslik' => $match['baslik'],
+                    'title' => $match['baslik'],
+                    'price' => $match['fiyat'],
+                    'para_birimi' => $match['para_birimi'],
+                    // 3 ayrı skor (0-100 arası)
+                    'match_score' => round($match['match_score'] ?? 0, 2), // 0-100 arası Match skoru
+                    'churn_score' => round($match['churn_score'] ?? 0, 2), // 0-100 arası Churn skoru
+                    'action_score' => round($match['action_score'] ?? 0, 2), // 0-100+ arası Action skoru (birleşik)
+                    // Normalize edilmiş skorlar (0-1 arası, geriye dönük uyumluluk için)
+                    'score' => round(($match['action_score'] ?? 0) / 100, 2), // Action score normalize edilmiş
+                    'match_level' => $match['match_level'],
+                    'priority' => $match['priority'],
+                    'reasons' => $match['reasons'] ?? [],
+                    'breakdown' => $match['breakdown'] ?? [],
+                ];
+            });
+
+            // ✅ REFACTORED: Using ResponseService with YalihanCortex
             return ResponseService::success([
-                'matches' => $ilanlar,
-                'count' => $ilanlar->count(),
-                'metadata' => [
-                    'algorithm' => 'Context7 Smart Matching v1.0',
-                    'provider' => 'Database + AI Scoring'
-                ]
+                'matches' => $formattedMatches,
+                'count' => $formattedMatches->count(),
+                'churn_analysis' => $cortexResult['churn_analysis'] ?? null,
+                'recommendations' => $cortexResult['recommendations'] ?? [],
+                'metadata' => array_merge($cortexResult['metadata'] ?? [], [
+                    'algorithm' => 'YalihanCortex v1.0',
+                    'provider' => 'Context7 AI Brain System',
+                    'scoring_system' => 'Action Score (Match + Churn * 0.5)',
+                    'filter_threshold' => 85, // action_score > 85
+                    'max_results' => 5, // İlk 5 ilan
+                    'talep_id' => $talepId,
+                ]),
             ], 'İlan eşleştirmesi başarıyla tamamlandı');
         } catch (\Exception $e) {
             // ✅ REFACTORED: Using ResponseService
             return ResponseService::serverError('Eşleştirme başarısız', $e);
         }
+    }
+
+    /**
+     * İlan lokasyonunu formatla
+     *
+     * @param  \App\Models\Ilan  $ilan
+     */
+    private function formatLocation($ilan): string
+    {
+        $parts = [];
+
+        if ($ilan->mahalle && $ilan->mahalle->mahalle_adi) {
+            $parts[] = $ilan->mahalle->mahalle_adi;
+        }
+
+        if ($ilan->ilce && $ilan->ilce->ilce_adi) {
+            $parts[] = $ilan->ilce->ilce_adi;
+        }
+
+        if ($ilan->il && $ilan->il->il_adi) {
+            $parts[] = $ilan->il->il_adi;
+        }
+
+        return implode(', ', $parts);
     }
 
     /**
@@ -642,7 +787,7 @@ Sadece açıklamayı döndür, başlık veya ek bilgi ekleme.";
 
                 $result = $this->aiService->generate($prompt, [
                     'max_tokens' => 200,
-                    'temperature' => 0.7
+                    'temperature' => 0.7,
                 ]);
 
                 $description = $result['data'] ?? null;
@@ -652,7 +797,7 @@ Sadece açıklamayı döndür, başlık veya ek bilgi ekleme.";
             }
 
             // Fallback: Rule-based description generation
-            if (!$description) {
+            if (! $description) {
                 $description = $this->generateDescriptionFallback($baslik, $tip, $kategoriAdi, $ilAdi, $ilceAdi);
             }
 
@@ -666,8 +811,8 @@ Sadece açıklamayı döndür, başlık veya ek bilgi ekleme.";
                 'metadata' => [
                     'provider' => $description ? 'Context7 Rule-Based' : 'Fallback',
                     'duration' => 0,
-                    'tokens' => 0
-                ]
+                    'tokens' => 0,
+                ],
             ], 'AI açıklama başarıyla oluşturuldu');
         } catch (\Exception $e) {
             // ✅ REFACTORED: Using ResponseService - Ultimate fallback
@@ -675,8 +820,8 @@ Sadece açıklamayı döndür, başlık veya ek bilgi ekleme.";
                 'description' => 'Profesyonel bir emlak talebi. Detaylar için lütfen bizi arayın.',
                 'metadata' => [
                     'provider' => 'Emergency Fallback',
-                    'error' => $e->getMessage()
-                ]
+                    'error' => $e->getMessage(),
+                ],
             ], 'Açıklama oluşturuldu (fallback)');
         }
     }
@@ -707,8 +852,162 @@ Sadece açıklamayı döndür, başlık veya ek bilgi ekleme.";
         }
 
         // Closing
-        $parts[] = "İlginize teşekkür ederiz, detaylı bilgi için iletişime geçebilirsiniz.";
+        $parts[] = 'İlginize teşekkür ederiz, detaylı bilgi için iletişime geçebilirsiniz.';
 
         return implode(' ', $parts);
+    }
+
+    /**
+     * AI Feedback Submission
+     * Context7: C7-AI-FEEDBACK-2025-11-25
+     * Danışman geri bildirimi: "İşe Yaradı/Yaramadı" + rating + reason
+     *
+     * ✅ REFACTORED: YalihanCortex üzerinden yönetilir
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function submitFeedback(Request $request, int $logId)
+    {
+        // ✅ REFACTORED: Using ValidatesApiRequests trait
+        $validated = $this->validateRequestWithResponse($request, [
+            'rating' => 'required|integer|min:1|max:5',
+            'feedback_type' => 'required|string|in:positive,negative,neutral',
+            'reason' => 'nullable|string|max:1000',
+        ]);
+
+        if ($validated instanceof \Illuminate\Http\JsonResponse) {
+            return $validated;
+        }
+
+        try {
+            $user = $request->user();
+
+            // ✅ REFACTORED: YalihanCortex üzerinden feedback kaydet
+            $cortexResult = $this->cortex->submitFeedback(
+                $logId,
+                $request->only(['rating', 'feedback_type', 'reason']),
+                $user->id
+            );
+
+            // Hata durumu kontrolü
+            if (! ($cortexResult['success'] ?? false)) {
+                $errorCode = $cortexResult['code'] ?? 500;
+                if ($errorCode === 403) {
+                    return ResponseService::error(
+                        $cortexResult['error'] ?? 'Yetkiniz yok',
+                        403
+                    );
+                }
+                if ($errorCode === 404 || str_contains($cortexResult['error'] ?? '', 'bulunamadı')) {
+                    return ResponseService::notFound($cortexResult['error'] ?? 'AI log kaydı bulunamadı');
+                }
+                return ResponseService::serverError(
+                    $cortexResult['error'] ?? 'Feedback kaydedilemedi',
+                    new \Exception($cortexResult['error'] ?? 'Unknown error')
+                );
+            }
+
+            // ✅ REFACTORED: Using ResponseService
+            return ResponseService::success([
+                'log_id' => $cortexResult['log_id'],
+                'rating' => $cortexResult['rating'],
+                'feedback_type' => $cortexResult['feedback_type'],
+                'message' => $cortexResult['message'] ?? 'Geri bildirim başarıyla kaydedildi. AI öğrenme döngüsüne katkı sağladınız!',
+                'metadata' => $cortexResult['metadata'] ?? [],
+            ], 'Geri bildirim başarıyla kaydedildi. AI öğrenme döngüsüne katkı sağladınız!');
+        } catch (\Exception $e) {
+            // ✅ REFACTORED: Using ResponseService
+            return ResponseService::serverError('Geri bildirim kaydedilemedi', $e);
+        }
+    }
+
+    /**
+     * Get negotiation strategy for a customer
+     *
+     * Context7: YalihanCortex üzerinden pazarlık stratejisi analizi
+     *
+     * @param Request $request
+     * @param int $kisiId
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getNegotiationStrategy(Request $request, int $kisiId)
+    {
+        try {
+            $kisi = Kisi::findOrFail($kisiId);
+
+            $result = $this->cortex->getNegotiationStrategy($kisi);
+
+            return ResponseService::success($result, 'Pazarlık stratejisi başarıyla oluşturuldu.');
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return ResponseService::error('Kişi bulunamadı.', 404);
+        } catch (\Exception $e) {
+            LogService::error(
+                'Negotiation strategy API failed',
+                [
+                    'kisi_id' => $kisiId,
+                    'error' => $e->getMessage(),
+                ],
+                $e,
+                LogService::CHANNEL_AI
+            );
+
+            return ResponseService::error('Pazarlık stratejisi oluşturulurken bir hata oluştu: ' . $e->getMessage(), 500);
+        }
+    }
+
+    /**
+     * Sesli komut ile hızlı kayıt oluşturma
+     * Context7: C7-VOICE-TO-CRM-2025-11-27
+     *
+     * Telegram/WhatsApp sesli mesajdan gelen metni parse edip
+     * Kisi ve Talep draft kayıtları oluşturur
+     *
+     * POST /api/v1/admin/ai/voice-to-crm
+     *
+     * Body:
+     * {
+     *   "text": "Yeni talep, Ahmet Yılmaz, 10 milyon TL, Bodrum Yalıkavak'ta villa arıyor.",
+     *   "danisman_id": 1
+     * }
+     */
+    public function voiceToCrm(Request $request)
+    {
+        // ✅ REFACTORED: Using ValidatesApiRequests trait
+        $validated = $this->validateRequestWithResponse($request, [
+            'text' => 'required|string|min:10|max:2000',
+            'danisman_id' => 'nullable|integer|exists:users,id',
+        ]);
+
+        if ($validated instanceof \Illuminate\Http\JsonResponse) {
+            return $validated;
+        }
+
+        try {
+            $user = $request->user();
+            $danismanId = $validated['danisman_id'] ?? $user->id;
+            $text = $validated['text'];
+
+            // ✅ YalihanCortex üzerinden voice-to-crm işlemi
+            $cortexResult = $this->cortex->createDraftFromText($text, $danismanId);
+
+            // Hata durumu kontrolü
+            if (!($cortexResult['success'] ?? false)) {
+                return ResponseService::serverError(
+                    $cortexResult['error'] ?? 'Sesli komut kaydı oluşturulamadı',
+                    new \Exception($cortexResult['error'] ?? 'Unknown error')
+                );
+            }
+
+            return ResponseService::success([
+                'kisi_id' => $cortexResult['kisi_id'],
+                'talep_id' => $cortexResult['talep_id'],
+                'kisi' => $cortexResult['kisi'],
+                'talep' => $cortexResult['talep'],
+                'message' => '✅ Kayıt alındı. Formu daha sonra doldurabilirsiniz.',
+                'metadata' => $cortexResult['metadata'] ?? [],
+            ], 'Sesli komut başarıyla işlendi');
+        } catch (\Exception $e) {
+            return ResponseService::serverError('Sesli komut işlenirken hata oluştu', $e);
+        }
     }
 }

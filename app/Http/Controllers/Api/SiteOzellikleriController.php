@@ -31,11 +31,12 @@ class SiteOzellikleriController extends Controller
             ];
 
             return ResponseService::success([
-                'data' => $ozellikler
+                'data' => $ozellikler,
             ], 'Site özellikleri başarıyla getirildi');
 
         } catch (\Exception $e) {
-            Log::error('Site özellikleri yükleme hatası: ' . $e->getMessage());
+            Log::error('Site özellikleri yükleme hatası: '.$e->getMessage());
+
             return ResponseService::serverError('Site özellikleri yüklenirken hata oluştu.', $e);
         }
     }

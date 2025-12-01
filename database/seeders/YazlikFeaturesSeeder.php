@@ -2,16 +2,16 @@
 
 namespace Database\Seeders;
 
+use App\Models\Feature;
+use App\Models\FeatureCategory;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Schema;
-use App\Models\FeatureCategory;
-use App\Models\Feature;
 
 class YazlikFeaturesSeeder extends Seeder
 {
     public function run(): void
     {
-        if (!Schema::hasTable('feature_categories') || !Schema::hasTable('features')) {
+        if (! Schema::hasTable('feature_categories') || ! Schema::hasTable('features')) {
             return;
         }
 

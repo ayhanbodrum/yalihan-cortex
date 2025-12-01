@@ -12,7 +12,7 @@ class AuditTrailMiddleware
     {
         $response = $next($request);
 
-        if (!in_array($request->method(), ['POST','PUT','PATCH','DELETE'])) {
+        if (! in_array($request->method(), ['POST', 'PUT', 'PATCH', 'DELETE'])) {
             return $response;
         }
 

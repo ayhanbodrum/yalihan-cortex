@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use App\Enums\KisiStatus;
+use App\Enums\KisiTipi;
+use App\Enums\YatirimciProfili;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Enums\KisiTipi;
 use Illuminate\Support\Facades\Crypt;
 
 /**
@@ -92,11 +94,27 @@ class Kisi extends Model
         'acil_status_iletisim',
         'tercihler',
         'risk_profili',
-        'musteri_segmenti',
+        'kisi_segmenti', // Context7: musteri_segmenti → kisi_segmenti
         'son_aktivite',
         'toplam_islem',
         'toplam_islem_tutari',
         'memnuniyet_skoru',
+
+        // AI Scoring Fields (Context7: CRM Intelligence)
+        'yatirimci_profili',
+        'satis_potansiyeli',
+        'aciliyet_derecesi',
+        'karar_verici_mi',
+        'crm_status',
+
+        // CRM Pipeline & Segmentation (Added: 2025-11-25)
+        'segment', // potansiyel, aktif, eski, vip
+        'skor', // Lead scoring 0-100
+        'pipeline_stage', // 1-5, 0 for lost
+        'son_etkilesim', // Last interaction timestamp
+        'referans_kisi_id', // Reference source
+        'referans_notlari', // Reference notes
+        'lead_source', // website, telefon, referans, etc.
     ];
 
     protected $appends = ['tam_ad', 'danisman_verisi'];
@@ -109,7 +127,10 @@ class Kisi extends Model
         'son_aktivite' => 'datetime',
         'toplam_islem_tutari' => 'decimal:2',
         'memnuniyet_skoru' => 'decimal:1',
+        'karar_verici_mi' => 'boolean',
+        'satis_potansiyeli' => 'integer',
         // kisi_tipi cast'i kaldırıldı - accessor/mutator kullanılıyor (Türkçe string → Enum dönüşümü için)
+        // crm_status ve yatirimci_profili accessor/mutator ile enum'a çevrilecek
     ];
 
     // ======================================================================
@@ -121,7 +142,7 @@ class Kisi extends Model
      */
     public function getKisiTipiAttribute($value): ?KisiTipi
     {
-        if (!$value) {
+        if (! $value) {
             return null;
         }
 
@@ -165,10 +186,15 @@ class Kisi extends Model
     public function getTcKimlikMaskedAttribute(): ?string
     {
         $v = $this->attributes['tc_kimlik'] ?? null;
-        if (!$v) return null;
+        if (! $v) {
+            return null;
+        }
         $len = strlen($v);
-        if ($len <= 4) return str_repeat('*', max(0, $len));
-        return str_repeat('*', $len - 4) . substr($v, -4);
+        if ($len <= 4) {
+            return str_repeat('*', max(0, $len));
+        }
+
+        return str_repeat('*', $len - 4).substr($v, -4);
     }
 
     /**
@@ -187,9 +213,71 @@ class Kisi extends Model
         }
     }
 
+    /**
+     * crm_status accessor: Veritabanındaki string'i Enum'a çevirir
+     */
+    public function getCrmStatusAttribute($value): ?KisiStatus
+    {
+        if (! $value) {
+            return null;
+        }
+
+        if ($value instanceof KisiStatus) {
+            return $value;
+        }
+
+        return KisiStatus::tryFrom($value);
+    }
+
+    /**
+     * crm_status mutator: Enum'ı veritabanına kaydedilecek string'e çevirir
+     */
+    public function setCrmStatusAttribute($value): void
+    {
+        if ($value instanceof KisiStatus) {
+            $this->attributes['crm_status'] = $value->value;
+        } elseif (is_string($value)) {
+            $enum = KisiStatus::tryFrom($value);
+            $this->attributes['crm_status'] = $enum?->value ?? $value;
+        } else {
+            $this->attributes['crm_status'] = $value;
+        }
+    }
+
+    /**
+     * yatirimci_profili accessor: Veritabanındaki string'i Enum'a çevirir
+     */
+    public function getYatirimciProfiliAttribute($value): ?YatirimciProfili
+    {
+        if (! $value) {
+            return null;
+        }
+
+        if ($value instanceof YatirimciProfili) {
+            return $value;
+        }
+
+        return YatirimciProfili::tryFrom($value);
+    }
+
+    /**
+     * yatirimci_profili mutator: Enum'ı veritabanına kaydedilecek string'e çevirir
+     */
+    public function setYatirimciProfiliAttribute($value): void
+    {
+        if ($value instanceof YatirimciProfili) {
+            $this->attributes['yatirimci_profili'] = $value->value;
+        } elseif (is_string($value)) {
+            $enum = YatirimciProfili::tryFrom($value);
+            $this->attributes['yatirimci_profili'] = $enum?->value ?? $value;
+        } else {
+            $this->attributes['yatirimci_profili'] = $value;
+        }
+    }
+
     public function getTamAdAttribute(): string
     {
-        return trim($this->ad . ' ' . $this->soyad);
+        return trim($this->ad.' '.$this->soyad);
     }
 
     public function getTamAdresAttribute(): string
@@ -231,7 +319,7 @@ class Kisi extends Model
             if ($danismanModel) {
                 return (object) [
                     'id' => $danismanModel->id,
-                    'name' => $danismanModel->ad . ' ' . $danismanModel->soyad,
+                    'name' => $danismanModel->ad.' '.$danismanModel->soyad,
                     'email' => $danismanModel->email,
                     'phone_number' => $danismanModel->telefon,
                     'source' => 'danisman_model',
@@ -275,6 +363,38 @@ class Kisi extends Model
     public function ilanlarAsSahibi(): HasMany
     {
         return $this->hasMany(Ilan::class, 'ilan_sahibi_id');
+    }
+
+    /**
+     * CRM - Etkileşim geçmişi
+     */
+    public function etkilesimler(): HasMany
+    {
+        return $this->hasMany(KisiEtkilesim::class, 'kisi_id');
+    }
+
+    /**
+     * CRM - Task'lar
+     */
+    public function tasks(): HasMany
+    {
+        return $this->hasMany(KisiTask::class, 'kisi_id');
+    }
+
+    /**
+     * CRM - Referans veren kişi
+     */
+    public function referansVeren(): BelongsTo
+    {
+        return $this->belongsTo(Kisi::class, 'referans_kisi_id');
+    }
+
+    /**
+     * CRM - Bu kişinin referans verdiği kişiler
+     */
+    public function referanslar(): HasMany
+    {
+        return $this->hasMany(Kisi::class, 'referans_kisi_id');
     }
 
     /**
@@ -406,6 +526,7 @@ class Kisi extends Model
 
     /**
      * Müşteri tipine göre filtrele (Context7 uyumlu).
+     *
      * @deprecated Use scopeByKisiTipi instead. This method uses kisi_tipi for backward compatibility.
      */
     public function scopeByMusteriTipi($query, $musteriTipi)
@@ -454,21 +575,41 @@ class Kisi extends Model
         $score = 0;
 
         // Temel bilgiler (40 puan)
-        if ($this->ad && $this->soyad) $score += 10;
-        if ($this->telefon) $score += 10;
-        if ($this->email) $score += 10;
-        if ($this->tc_kimlik) $score += 10;
+        if ($this->ad && $this->soyad) {
+            $score += 10;
+        }
+        if ($this->telefon) {
+            $score += 10;
+        }
+        if ($this->email) {
+            $score += 10;
+        }
+        if ($this->tc_kimlik) {
+            $score += 10;
+        }
 
         // Adres bilgileri (30 puan)
-        if ($this->il_id) $score += 10;
-        if ($this->ilce_id) $score += 10;
-        if ($this->mahalle_id) $score += 10;
+        if ($this->il_id) {
+            $score += 10;
+        }
+        if ($this->ilce_id) {
+            $score += 10;
+        }
+        if ($this->mahalle_id) {
+            $score += 10;
+        }
 
         // CRM bilgileri (30 puan)
         // ✅ Context7: kisi_tipi preferred, musteri_tipi backward compat
-        if ($this->kisi_tipi ?? $this->musteri_tipi) $score += 10;
-        if ($this->meslek) $score += 10;
-        if ($this->gelir_duzeyi) $score += 10;
+        if ($this->kisi_tipi ?? $this->musteri_tipi) {
+            $score += 10;
+        }
+        if ($this->meslek) {
+            $score += 10;
+        }
+        if ($this->gelir_duzeyi) {
+            $score += 10;
+        }
 
         return min($score, 100); // Maksimum 100 puan
     }
@@ -491,6 +632,7 @@ class Kisi extends Model
     {
         // ✅ Context7: kisi_tipi preferred, musteri_tipi backward compat
         $tip = $this->kisi_tipi ?? $this->musteri_tipi;
+
         return in_array($tip, ['alici', 'kiraci']) &&
             $this->status === 'Aktif';
     }
@@ -502,43 +644,108 @@ class Kisi extends Model
     {
         // ✅ Context7: kisi_tipi preferred, musteri_tipi backward compat
         $tip = $this->kisi_tipi ?? $this->musteri_tipi;
+
         return in_array($tip, ['satici', 'ev_sahibi']) &&
             $this->status === 'Aktif';
     }
 
-    // --- Yeni CRM İlişkileri ---
+    /**
+     * Kişinin aktif durumunu kontrol et
+     * Context7: Status helper metodu (Modül modelinden taşındı)
+     */
+    public function isActive(): bool
+    {
+        return $this->status === true || $this->status === 'Aktif' || $this->status === 1;
+    }
 
     /**
-     * Bu kişinin müşteri notları
+     * Görüntüleme metni (dropdown için)
+     * Context7: Display helper metodu (Modül modelinden taşındı)
      */
-    public function musteriNotlar(): HasMany
+    public function getDisplayTextAttribute(): string
+    {
+        $parts = [$this->tam_ad];
+
+        if ($this->telefon) {
+            $parts[] = $this->telefon;
+        }
+
+        if ($this->il) {
+            $parts[] = $this->il->il_adi;
+        }
+
+        return implode(' - ', $parts);
+    }
+
+    // --- Context7 Compliant CRM İlişkileri ---
+
+    /**
+     * Bu kişinin kişi notları (Context7 standard)
+     */
+    public function kisiNotlar(): HasMany
     {
         return $this->hasMany(MusteriNot::class, 'kisi_id');
     }
 
     /**
-     * Bu kişinin müşteri etiketleri
+     * @deprecated Use kisiNotlar() instead
+     * Backward compatibility alias
      */
-    public function musteriEtiketler()
+    public function musteriNotlar(): HasMany
+    {
+        return $this->kisiNotlar();
+    }
+
+    /**
+     * Bu kişinin kişi etiketleri (Context7 standard)
+     */
+    public function kisiEtiketler()
     {
         return $this->belongsToMany(MusteriEtiket::class, 'kisi_etiket', 'kisi_id', 'etiket_id')
             ->withTimestamps();
     }
 
     /**
-     * Bu kişinin müşteri aktiviteleri
+     * @deprecated Use kisiEtiketler() instead
+     * Backward compatibility alias
      */
-    public function musteriAktiviteler(): HasMany
+    public function musteriEtiketler()
+    {
+        return $this->kisiEtiketler();
+    }
+
+    /**
+     * Bu kişinin kişi aktiviteleri (Context7 standard)
+     */
+    public function kisiAktiviteler(): HasMany
     {
         return $this->hasMany(MusteriAktivite::class, 'kisi_id');
     }
 
     /**
-     * Bu kişinin müşteri takibi
+     * @deprecated Use kisiAktiviteler() instead
+     * Backward compatibility alias
+     */
+    public function musteriAktiviteler(): HasMany
+    {
+        return $this->kisiAktiviteler();
+    }
+
+    /**
+     * Bu kişinin kişi takibi (Context7 standard)
+     */
+    public function kisiTakip(): HasMany
+    {
+        return $this->hasMany(MusteriTakip::class, 'kisi_id');
+    }
+
+    /**
+     * @deprecated Use kisiTakip() instead
+     * Backward compatibility alias
      */
     public function musteriTakip(): HasMany
     {
-        return $this->hasMany(MusteriTakip::class, 'kisi_id');
+        return $this->kisiTakip();
     }
 
     /**

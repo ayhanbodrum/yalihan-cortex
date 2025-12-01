@@ -2,11 +2,11 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Schema;
 use App\Models\Il;
 use App\Models\Ilce;
 use App\Models\Mahalle;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Schema;
 
 /**
  * Muğla-Aydın Lokasyon Seeder
@@ -38,8 +38,9 @@ class MuglaAydinLocationSeeder extends Seeder
         $this->command->info('🏛️ 1. Muğla ili kontrol ediliyor...');
         $mugla = Il::where('plaka_kodu', '48')->first();
 
-        if (!$mugla) {
+        if (! $mugla) {
             $this->command->warn('   ⚠️ Muğla ili bulunamadı! Önce TurkiyeIlleriSeeder çalıştırın.');
+
             return;
         }
 
@@ -79,8 +80,9 @@ class MuglaAydinLocationSeeder extends Seeder
         $this->command->info('🏛️ 4. Aydın ili kontrol ediliyor...');
         $aydin = Il::where('plaka_kodu', '09')->first();
 
-        if (!$aydin) {
+        if (! $aydin) {
             $this->command->warn('   ⚠️ Aydın ili bulunamadı! Önce TurkiyeIlleriSeeder çalıştırın.');
+
             return;
         }
 
@@ -206,7 +208,7 @@ class MuglaAydinLocationSeeder extends Seeder
                 ->where('ilce_adi', $ilceData['ilce_adi'])
                 ->first();
 
-            if (!$ilce) {
+            if (! $ilce) {
                 continue;
             }
 
@@ -263,7 +265,7 @@ class MuglaAydinLocationSeeder extends Seeder
                 ->where('ilce_adi', $ilceData['ilce_adi'])
                 ->first();
 
-            if (!$ilce) {
+            if (! $ilce) {
                 continue;
             }
 

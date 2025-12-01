@@ -64,6 +64,4 @@ class IlanFotografi extends Model
     {
         return $this->dosya_yolu ? \Illuminate\Support\Facades\Storage::url($this->dosya_yolu) : null;
     }
-
-
 }

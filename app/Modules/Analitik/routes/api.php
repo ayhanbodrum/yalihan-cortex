@@ -1,9 +1,9 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Modules\Analitik\Controllers\API\DashboardApiController;
-use App\Modules\Analitik\Controllers\API\RaporApiController;
 use App\Modules\Analitik\Controllers\API\IstatistikApiController;
+use App\Modules\Analitik\Controllers\API\RaporApiController;
+use Illuminate\Support\Facades\Route;
 
 Route::prefix('api/analitik')->name('api.analitik.')->middleware(['auth:sanctum'])->group(function () {
 

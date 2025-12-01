@@ -47,7 +47,7 @@ return new class extends Migration
                 'location_data',
                 'wikimapia_place_id',
                 'environmental_scores',
-                'nearby_places'
+                'nearby_places',
             ]);
         });
     }

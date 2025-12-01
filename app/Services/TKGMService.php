@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Cache;
 
 /**
  * TKGM (Tapu Kadastro) Parsel Sorgulama Servisi
@@ -17,8 +17,11 @@ use Illuminate\Support\Facades\Cache;
 class TKGMService
 {
     protected $baseUrl;
+
     protected $apiKey;
+
     protected $timeout;
+
     protected $cacheEnabled;
 
     public function __construct()
@@ -39,7 +42,7 @@ class TKGMService
             return [
                 'success' => false,
                 'message' => 'Ada, parsel, il ve ilçe bilgileri zorunludur',
-                'error_code' => 'MISSING_PARAMS'
+                'error_code' => 'MISSING_PARAMS',
             ];
         }
 
@@ -50,6 +53,7 @@ class TKGMService
 
             if ($cached) {
                 Log::info('TKGM cache hit', ['ada' => $ada, 'parsel' => $parsel]);
+
                 return array_merge($cached, ['from_cache' => true]);
             }
         }
@@ -59,6 +63,7 @@ class TKGMService
             $realResult = $this->queryRealTKGMAPI($ada, $parsel, $il, $ilce, $mahalle);
             if ($realResult['success']) {
                 Log::info('TKGM API başarılı', ['ada' => $ada, 'parsel' => $parsel]);
+
                 return $realResult;
             }
 
@@ -68,7 +73,7 @@ class TKGMService
                 'parsel' => $parsel,
                 'il' => $il,
                 'ilce' => $ilce,
-                'api_error' => $realResult['message'] ?? 'Unknown error'
+                'api_error' => $realResult['message'] ?? 'Unknown error',
             ]);
 
             return $this->getFallbackData($ada, $parsel, $il, $ilce, $mahalle);
@@ -115,15 +120,15 @@ class TKGMService
                     'malik_adi' => $data['malik_adi'] ?? null,
                     'pafta_no' => $data['pafta_no'] ?? null,
                     'koordinat_x' => $data['koordinat_x'] ?? null,
-                    'koordinat_y' => $data['koordinat_y'] ?? null
+                    'koordinat_y' => $data['koordinat_y'] ?? null,
                 ],
                 'hesaplamalar' => $this->calculateMetrics($data),
                 'oneriler' => $this->generateSuggestions($data),
                 'metadata' => [
                     'query_time' => now()->toDateTimeString(),
                     'source' => 'TKGM API',
-                    'reliability' => 'high'
-                ]
+                    'reliability' => 'high',
+                ],
             ];
 
             // Cache'e kaydet (1 saat)
@@ -134,7 +139,7 @@ class TKGMService
             Log::info('TKGM başarılı sorgu', [
                 'ada' => $ada,
                 'parsel' => $parsel,
-                'yuzolcumu' => $result['parsel_bilgileri']['yuzolcumu']
+                'yuzolcumu' => $result['parsel_bilgileri']['yuzolcumu'],
             ]);
 
             return $result;
@@ -144,7 +149,7 @@ class TKGMService
                 'ada' => $ada,
                 'parsel' => $parsel,
                 'il' => $il,
-                'ilce' => $ilce
+                'ilce' => $ilce,
             ]);
 
             return $this->getFallbackData($ada, $parsel, $il, $ilce, $e->getMessage());
@@ -160,11 +165,11 @@ class TKGMService
             // İlk olarak mahalle ID'sini bulmalıyız
             $mahalleId = $this->findMahalleId($il, $ilce, $mahalle);
 
-            if (!$mahalleId) {
+            if (! $mahalleId) {
                 return [
                     'success' => false,
                     'message' => 'Mahalle bilgisi bulunamadı. Manuel giriş yapabilirsiniz.',
-                    'error_code' => 'MAHALLE_NOT_FOUND'
+                    'error_code' => 'MAHALLE_NOT_FOUND',
                 ];
             }
 
@@ -175,26 +180,26 @@ class TKGMService
                 'url' => $tkgmApiUrl,
                 'mahalle_id' => $mahalleId,
                 'ada' => $ada,
-                'parsel' => $parsel
+                'parsel' => $parsel,
             ]);
 
             $response = Http::timeout(15)
                 ->withHeaders([
                     'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-                    'Accept' => 'application/json'
+                    'Accept' => 'application/json',
                 ])
                 ->get($tkgmApiUrl);
 
-            if (!$response->successful()) {
+            if (! $response->successful()) {
                 Log::warning('TKGM API HTTP hatası', [
                     'status' => $response->status(),
-                    'url' => $tkgmApiUrl
+                    'url' => $tkgmApiUrl,
                 ]);
 
                 return [
                     'success' => false,
-                    'message' => 'TKGM API yanıt vermiyor (HTTP: ' . $response->status() . ')',
-                    'error_code' => 'API_HTTP_ERROR'
+                    'message' => 'TKGM API yanıt vermiyor (HTTP: '.$response->status().')',
+                    'error_code' => 'API_HTTP_ERROR',
                 ];
             }
 
@@ -204,7 +209,7 @@ class TKGMService
                 return [
                     'success' => false,
                     'message' => 'Bu parsel için TKGM veritabanında kayıt bulunamadı',
-                    'error_code' => 'NO_DATA_FOUND'
+                    'error_code' => 'NO_DATA_FOUND',
                 ];
             }
 
@@ -215,13 +220,13 @@ class TKGMService
             Log::error('TKGM API genel hatası', [
                 'error' => $e->getMessage(),
                 'ada' => $ada,
-                'parsel' => $parsel
+                'parsel' => $parsel,
             ]);
 
             return [
                 'success' => false,
-                'message' => 'TKGM API bağlantı hatası: ' . $e->getMessage(),
-                'error_code' => 'API_CONNECTION_ERROR'
+                'message' => 'TKGM API bağlantı hatası: '.$e->getMessage(),
+                'error_code' => 'API_CONNECTION_ERROR',
             ];
         }
     }
@@ -239,7 +244,7 @@ class TKGMService
             'muğla_bodrum_gümüşlük' => 17894,
         ];
 
-        $key = strtolower(str_replace(' ', '_', $il . '_' . $ilce . '_' . ($mahalle ?: 'merkez')));
+        $key = strtolower(str_replace(' ', '_', $il.'_'.$ilce.'_'.($mahalle ?: 'merkez')));
 
         return $knownLocations[$key] ?? null;
     }
@@ -266,7 +271,7 @@ class TKGMService
             'malik_adi' => $apiData['malik_adi'] ?? $apiData['owner'] ?? null,
             'pafta_no' => $apiData['pafta_no'] ?? $apiData['pafta'] ?? null,
             'koordinat_x' => $apiData['koordinat_x'] ?? $apiData['x'] ?? null,
-            'koordinat_y' => $apiData['koordinat_y'] ?? $apiData['y'] ?? null
+            'koordinat_y' => $apiData['koordinat_y'] ?? $apiData['y'] ?? null,
         ];
 
         $result = [
@@ -279,8 +284,8 @@ class TKGMService
                 'query_time' => now()->toDateTimeString(),
                 'source' => 'TKGM API',
                 'reliability' => 'high',
-                'api_data' => true
-            ]
+                'api_data' => true,
+            ],
         ];
 
         // Cache'e kaydet
@@ -312,12 +317,12 @@ class TKGMService
                     'pafta_no' => 'N18-C-11-C-3-B', 'imar_durumu' => 'İmarlı',
                     'taks' => 25, 'kaks' => 0.50, 'gabari' => 7.5,
                     'maksimum_kat' => 2, 'malik_adi' => 'Test Malik Adı',
-                    'koordinat_x' => 504123.45, 'koordinat_y' => 4107890.12
+                    'koordinat_x' => 504123.45, 'koordinat_y' => 4107890.12,
                 ],
                 'hesaplamalar' => [
                     'taban_alani' => 437.77, 'taban_alani_formatted' => '437,77 m²',
                     'insaat_alani' => 875.54, 'insaat_alani_formatted' => '875,54 m²',
-                    'maksimum_kat_sayisi' => 2, 'donum' => 1.75, 'donum_formatted' => '1,75 Dönüm'
+                    'maksimum_kat_sayisi' => 2, 'donum' => 1.75, 'donum_formatted' => '1,75 Dönüm',
                 ],
                 'oneriler' => [
                     '📏 Parsel alanı: 1.751,07 m² (1,75 dönüm) - Büyük parsel',
@@ -328,14 +333,14 @@ class TKGMService
                     '📏 Maksimum bina yüksekliği: 7.5 metre',
                     '👤 Malik: Test Malik Adı (TKGM kaydı)',
                     '📍 Lokasyon: Yalıkavak/Sülüklü mevkii',
-                    '🗺️ Pafta: N18-C-11-C-3-B'
+                    '🗺️ Pafta: N18-C-11-C-3-B',
                 ],
                 'metadata' => [
                     'query_time' => now()->toDateTimeString(),
                     'source' => 'TKGM Test Data',
                     'reliability' => 'high',
-                    'test_data' => true
-                ]
+                    'test_data' => true,
+                ],
             ],
 
             // Bodrum Geriş 212/89 parseli
@@ -358,7 +363,7 @@ class TKGMService
                             'type' => 'Feature',
                             'geometry' => [
                                 'type' => 'Polygon',
-                                'coordinates' => [[[27.26674,37.07849],[27.26691,37.07847],[27.26701,37.07846],[27.26718,37.07849],[27.26731,37.07847],[27.26736,37.07844],[27.26748,37.07837],[27.26772,37.07832],[27.26783,37.07838],[27.26786,37.07841],[27.26789,37.07844],[27.26791,37.07847],[27.26792,37.07851],[27.26798,37.07882],[27.2679,37.07881],[27.26733,37.07891],[27.26703,37.07902],[27.26654,37.07912],[27.26672,37.07852],[27.26674,37.07849]]]
+                                'coordinates' => [[[27.26674, 37.07849], [27.26691, 37.07847], [27.26701, 37.07846], [27.26718, 37.07849], [27.26731, 37.07847], [27.26736, 37.07844], [27.26748, 37.07837], [27.26772, 37.07832], [27.26783, 37.07838], [27.26786, 37.07841], [27.26789, 37.07844], [27.26791, 37.07847], [27.26792, 37.07851], [27.26798, 37.07882], [27.2679, 37.07881], [27.26733, 37.07891], [27.26703, 37.07902], [27.26654, 37.07912], [27.26672, 37.07852], [27.26674, 37.07849]]],
                             ],
                             'properties' => [
                                 'ParselNo' => '89',
@@ -369,15 +374,15 @@ class TKGMService
                                 'Il' => 'Muğla',
                                 'Ilce' => 'Bodrum',
                                 'Pafta' => 'N18-C-16-A-3-D',
-                                'Mahalle' => 'Geriş'
-                            ]
-                        ]]
-                    ])
+                                'Mahalle' => 'Geriş',
+                            ],
+                        ]],
+                    ]),
                 ],
                 'hesaplamalar' => [
                     'taban_alani' => 853.68, 'taban_alani_formatted' => '853,68 m²',
                     'insaat_alani' => 1707.36, 'insaat_alani_formatted' => '1.707,36 m²',
-                    'maksimum_kat_sayisi' => 2, 'donum' => 2.85, 'donum_formatted' => '2,85 Dönüm'
+                    'maksimum_kat_sayisi' => 2, 'donum' => 2.85, 'donum_formatted' => '2,85 Dönüm',
                 ],
                 'oneriler' => [
                     '📏 Parsel alanı: 2.845,60 m² (2,85 dönüm) - Çok büyük parsel',
@@ -389,19 +394,19 @@ class TKGMService
                     '👤 Malik: Geriş Test Malik (TKGM kaydı)',
                     '📍 Lokasyon: Geriş/Koyunbaba mevkii',
                     '🗺️ Pafta: N18-C-11-D-2-A',
-                    '🏆 Proje için ideal büyüklük - Villa/otel potansiyeli'
+                    '🏆 Proje için ideal büyüklük - Villa/otel potansiyeli',
                 ],
                 'metadata' => [
                     'query_time' => now()->toDateTimeString(),
                     'source' => 'TKGM Test Data',
                     'reliability' => 'high',
-                    'test_data' => true
-                ]
-            ]
+                    'test_data' => true,
+                ],
+            ],
         ];
 
         // Test case anahtarı oluştur
-        $testKey = strtolower(str_replace(' ', '_', $il . '_' . $ilce . '_' . ($mahalle ?: 'merkez') . '_' . $ada . '_' . $parsel));
+        $testKey = strtolower(str_replace(' ', '_', $il.'_'.$ilce.'_'.($mahalle ?: 'merkez').'_'.$ada.'_'.$parsel));
 
         if (isset($testCases[$testKey])) {
             return $testCases[$testKey];
@@ -416,19 +421,19 @@ class TKGMService
                 'ada' => $ada,
                 'parsel' => $parsel,
                 'il' => $il,
-                'ilce' => $ilce
+                'ilce' => $ilce,
             ],
             'oneriler' => [
                 '💡 TKGM servisi şu anda erişilemez durumda.',
                 '💡 Parsel bilgilerini manuel olarak girin.',
                 '💡 İmar durumu için belediyeye başvurabilirsiniz.',
-                '💡 TAKS/KAKS değerleri için imar planını kontrol edin.'
+                '💡 TAKS/KAKS değerleri için imar planını kontrol edin.',
             ],
             'metadata' => [
                 'query_time' => now()->toDateTimeString(),
                 'source' => 'fallback',
-                'reliability' => 'manual_required'
-            ]
+                'reliability' => 'manual_required',
+            ],
         ];
     }
 
@@ -448,14 +453,14 @@ class TKGMService
             if ($taks > 0) {
                 $tabanAlani = $yuzolcumu * ($taks / 100);
                 $hesaplamalar['taban_alani'] = round($tabanAlani, 2);
-                $hesaplamalar['taban_alani_formatted'] = number_format($tabanAlani, 2, ',', '.') . ' m²';
+                $hesaplamalar['taban_alani_formatted'] = number_format($tabanAlani, 2, ',', '.').' m²';
             }
 
             // KAKS hesaplama (İnşaat Alanı)
             if ($kaks > 0) {
                 $insaatAlani = $yuzolcumu * $kaks;
                 $hesaplamalar['insaat_alani'] = round($insaatAlani, 2);
-                $hesaplamalar['insaat_alani_formatted'] = number_format($insaatAlani, 2, ',', '.') . ' m²';
+                $hesaplamalar['insaat_alani_formatted'] = number_format($insaatAlani, 2, ',', '.').' m²';
 
                 // Maksimum kat sayısı
                 if ($taks > 0) {
@@ -466,7 +471,7 @@ class TKGMService
 
             // Dönüm dönüşümü (1 dönüm = 1000 m²)
             $hesaplamalar['donum'] = round($yuzolcumu / 1000, 2);
-            $hesaplamalar['donum_formatted'] = number_format($yuzolcumu / 1000, 2, ',', '.') . ' Dönüm';
+            $hesaplamalar['donum_formatted'] = number_format($yuzolcumu / 1000, 2, ',', '.').' Dönüm';
         }
 
         return $hesaplamalar;
@@ -497,8 +502,8 @@ class TKGMService
             $tabanAlani = $parselData['yuzolcumu'] * ($parselData['taks'] / 100);
             $maxKat = round($parselData['kaks'] / ($parselData['taks'] / 100), 0);
 
-            $suggestions[] = "🏢 İnşaat alanı: " . number_format($insaatAlani, 0, ',', '.') . " m² (KAKS: {$parselData['kaks']})";
-            $suggestions[] = "📐 Taban alanı: " . number_format($tabanAlani, 0, ',', '.') . " m² (TAKS: {$parselData['taks']}%)";
+            $suggestions[] = '🏢 İnşaat alanı: '.number_format($insaatAlani, 0, ',', '.')." m² (KAKS: {$parselData['kaks']})";
+            $suggestions[] = '📐 Taban alanı: '.number_format($tabanAlani, 0, ',', '.')." m² (TAKS: {$parselData['taks']}%)";
             $suggestions[] = "🏗️ Maksimum {$maxKat} kat yapı yapılabilir";
         }
 
@@ -524,7 +529,8 @@ class TKGMService
         if ($mahalle) {
             $key .= "_{$mahalle}";
         }
-        return 'tkgm_parsel_' . md5($key);
+
+        return 'tkgm_parsel_'.md5($key);
     }
 
     /**
@@ -535,11 +541,13 @@ class TKGMService
         if ($ada && $parsel && $il && $ilce) {
             $cacheKey = $this->getCacheKey($ada, $parsel, $il, $ilce);
             Cache::forget($cacheKey);
+
             return true;
         }
 
         // Tüm TKGM cache'ini temizle
         Cache::flush(); // Dikkatli kullan!
+
         return true;
     }
 
@@ -549,19 +557,19 @@ class TKGMService
     public function healthCheck()
     {
         try {
-            $response = Http::timeout(5)->get($this->baseUrl . '/health');
+            $response = Http::timeout(5)->get($this->baseUrl.'/health');
 
             return [
                 'success' => $response->successful(),
                 'status' => $response->status(),
                 'message' => $response->successful() ? 'TKGM servisi çalışıyor' : 'TKGM servisi yanıt vermiyor',
-                'endpoint' => $this->baseUrl
+                'endpoint' => $this->baseUrl,
             ];
         } catch (\Exception $e) {
             return [
                 'success' => false,
-                'message' => 'TKGM servisi erişilemiyor: ' . $e->getMessage(),
-                'endpoint' => $this->baseUrl
+                'message' => 'TKGM servisi erişilemiyor: '.$e->getMessage(),
+                'endpoint' => $this->baseUrl,
             ];
         }
     }
@@ -582,7 +590,7 @@ class TKGMService
             );
 
             $sonuclar[] = array_merge($sonuc, [
-                'input' => $parsel
+                'input' => $parsel,
             ]);
 
             // Rate limiting için kısa bekleme
@@ -594,7 +602,7 @@ class TKGMService
             'total' => count($parseller),
             'successful' => collect($sonuclar)->where('success', true)->count(),
             'failed' => collect($sonuclar)->where('success', false)->count(),
-            'results' => $sonuclar
+            'results' => $sonuclar,
         ];
     }
 
@@ -642,13 +650,13 @@ class TKGMService
         $imarDurumu = $parselData['imar_durumu'] ?? '';
         if (stripos($imarDurumu, 'İmarlı') !== false || stripos($imarDurumu, 'İmarda') !== false) {
             $imarSkor = 30;
-            $analizler[] = "✅ İmarlı arsa - Yapılaşmaya hazır";
+            $analizler[] = '✅ İmarlı arsa - Yapılaşmaya hazır';
         } elseif (stripos($imarDurumu, 'Plan') !== false) {
             $imarSkor = 25;
-            $analizler[] = "✅ Plan içinde - İmara açılabilir";
+            $analizler[] = '✅ Plan içinde - İmara açılabilir';
         } else {
             $imarSkor = 5;
-            $analizler[] = "⚠️ İmar dışı - Yapılaşma riski";
+            $analizler[] = '⚠️ İmar dışı - Yapılaşma riski';
         }
         $skor += $imarSkor;
 
@@ -665,7 +673,7 @@ class TKGMService
             $analizler[] = "⚠️ Küçük parsel ({$yuzolcumu} m²)";
         } else {
             $alanSkor = 5;
-            $analizler[] = "⚠️ Çok küçük parsel";
+            $analizler[] = '⚠️ Çok küçük parsel';
         }
         $skor += $alanSkor;
 
@@ -692,11 +700,9 @@ class TKGMService
             'degerlendirme' => $degerlendirme,
             'analizler' => $analizler,
             'risk_seviyesi' => $this->calculateRiskLevel($skor),
-            'tahmini_getiri' => $this->estimateROI($skor, $parselBilgileri)
+            'tahmini_getiri' => $this->estimateROI($skor, $parselBilgileri),
         ];
     }
-
-
 
     /**
      * Risk seviyesi hesaplama
@@ -737,7 +743,7 @@ class TKGMService
         return [
             'latitude' => $y,
             'longitude' => $x,
-            'system' => $to
+            'system' => $to,
         ];
     }
 
@@ -749,7 +755,7 @@ class TKGMService
         try {
             $planNotlariService = app(PlanNotlariAIService::class);
 
-            if (!$parselSorguSonucu['success'] || !isset($parselSorguSonucu['parsel_bilgileri'])) {
+            if (! $parselSorguSonucu['success'] || ! isset($parselSorguSonucu['parsel_bilgileri'])) {
                 throw new \Exception('Geçersiz parsel verisi');
             }
 
@@ -766,19 +772,19 @@ class TKGMService
                 'ai_plan_notlari' => $aiAnaliz['ai_analiz'],
                 'ilan_notlari' => $ilanNotlari,
                 'raw_ai_response' => $aiAnaliz['raw_response'] ?? null,
-                'fallback_used' => $aiAnaliz['fallback'] ?? false
+                'fallback_used' => $aiAnaliz['fallback'] ?? false,
             ];
 
         } catch (\Exception $e) {
             Log::error('AI plan notları hatası', [
                 'error' => $e->getMessage(),
-                'parsel_data' => $parselSorguSonucu
+                'parsel_data' => $parselSorguSonucu,
             ]);
 
             return [
                 'success' => false,
-                'error' => 'AI plan notları analizi yapılamadı: ' . $e->getMessage(),
-                'fallback_plan_notlari' => $this->basitPlanNotlari($parselSorguSonucu)
+                'error' => 'AI plan notları analizi yapılamadı: '.$e->getMessage(),
+                'fallback_plan_notlari' => $this->basitPlanNotlari($parselSorguSonucu),
             ];
         }
     }
@@ -788,32 +794,32 @@ class TKGMService
      */
     private function basitPlanNotlari($parselSorguSonucu)
     {
-        if (!$parselSorguSonucu['success']) {
+        if (! $parselSorguSonucu['success']) {
             return null;
         }
 
         $parsel = $parselSorguSonucu['parsel_bilgileri'];
         $notlar = [];
 
-        $notlar[] = "📍 Lokasyon: " . ($parsel['mahalle'] ?? '') . ", " . ($parsel['ilce'] ?? '') . ", " . ($parsel['il'] ?? '');
-        $notlar[] = "📏 Alan: " . ($parsel['tapu_alani'] ?? 'Belirtilmemiş') . " m²";
+        $notlar[] = '📍 Lokasyon: '.($parsel['mahalle'] ?? '').', '.($parsel['ilce'] ?? '').', '.($parsel['il'] ?? '');
+        $notlar[] = '📏 Alan: '.($parsel['tapu_alani'] ?? 'Belirtilmemiş').' m²';
 
         if (isset($parsel['imar_durumu'])) {
             $imar = $parsel['imar_durumu'];
-            $notlar[] = "🏗️ KAKS: " . ($imar['kaks'] ?? 'Belirtilmemiş');
-            $notlar[] = "🏗️ TAKS: %" . ($imar['taks'] ?? 'Belirtilmemiş');
-            $notlar[] = "📐 İnşaat Alanı: " . ($imar['insaat_alani'] ?? 'Belirtilmemiş') . " m²";
+            $notlar[] = '🏗️ KAKS: '.($imar['kaks'] ?? 'Belirtilmemiş');
+            $notlar[] = '🏗️ TAKS: %'.($imar['taks'] ?? 'Belirtilmemiş');
+            $notlar[] = '📐 İnşaat Alanı: '.($imar['insaat_alani'] ?? 'Belirtilmemiş').' m²';
         }
 
-        $notlar[] = "🏷️ Nitelik: " . ($parsel['nitelik'] ?? 'Belirtilmemiş');
+        $notlar[] = '🏷️ Nitelik: '.($parsel['nitelik'] ?? 'Belirtilmemiş');
 
         if (isset($parsel['mevkii'])) {
-            $notlar[] = "🗺️ Mevkii: " . $parsel['mevkii'];
+            $notlar[] = '🗺️ Mevkii: '.$parsel['mevkii'];
         }
 
         return [
             'plan_notlari' => implode("\n", $notlar),
-            'sonuc_skoru' => 60
+            'sonuc_skoru' => 60,
         ];
     }
 }

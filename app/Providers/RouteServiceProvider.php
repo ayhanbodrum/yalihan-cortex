@@ -52,6 +52,15 @@ class RouteServiceProvider extends ServiceProvider
                 ->prefix('api')
                 ->group(base_path('routes/api-admin.php'));
 
+            // API v1 Admin Routes
+            Route::middleware('api')
+                ->prefix('api/v1')
+                ->group(base_path('routes/api/v1/admin.php'));
+
+            // Advanced AI Routes (AI Dashboard)
+            Route::middleware('web')
+                ->group(base_path('routes/ai-advanced.php'));
+
         });
     }
 }

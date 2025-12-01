@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Log;
 class N8nService
 {
     protected $baseUrl;
+
     protected $webhookToken;
 
     public function __construct()
@@ -19,7 +20,7 @@ class N8nService
     public function triggerWebhook(string $webhookPath, array $data)
     {
         try {
-            $url = $this->baseUrl . '/webhook/' . $webhookPath;
+            $url = $this->baseUrl.'/webhook/'.$webhookPath;
 
             $response = Http::timeout(30)
                 ->withHeaders([
@@ -69,7 +70,7 @@ class N8nService
             'event' => 'ilan_created',
             'data' => $ilanData,
             'timestamp' => now()->toIso8601String(),
-            'url' => config('app.url') . '/admin/ilanlar/' . ($ilanData['id'] ?? ''),
+            'url' => config('app.url').'/admin/ilanlar/'.($ilanData['id'] ?? ''),
         ]);
     }
 
@@ -79,7 +80,7 @@ class N8nService
             'event' => 'kisi_created',
             'data' => $kisiData,
             'timestamp' => now()->toIso8601String(),
-            'url' => config('app.url') . '/admin/kisiler/' . ($kisiData['id'] ?? ''),
+            'url' => config('app.url').'/admin/kisiler/'.($kisiData['id'] ?? ''),
         ]);
     }
 

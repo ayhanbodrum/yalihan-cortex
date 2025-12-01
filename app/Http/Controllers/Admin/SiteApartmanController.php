@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\SiteApartman;
 use App\Models\Il;
 use App\Models\Ilce;
 use App\Models\Mahalle;
+use App\Models\SiteApartman;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -50,7 +50,7 @@ class SiteApartmanController extends AdminController
             'latitude' => 'nullable|numeric|between:-90,90',
             'longitude' => 'nullable|numeric|between:-180,180',
             'site_ozellikleri' => 'nullable|array',
-            'status' => 'required|in:active,inactive,pending'
+            'status' => 'required|in:active,inactive,pending',
         ]);
 
         if ($validator->fails()) {
@@ -71,7 +71,7 @@ class SiteApartmanController extends AdminController
             'site_ozellikleri' => $request->site_ozellikleri,
             'status' => $request->status,
             'created_by' => auth()->id(),
-            'updated_by' => auth()->id()
+            'updated_by' => auth()->id(),
         ]);
 
         return redirect()->route('admin.site-apartman.index')
@@ -105,7 +105,7 @@ class SiteApartmanController extends AdminController
             'latitude' => 'nullable|numeric|between:-90,90',
             'longitude' => 'nullable|numeric|between:-180,180',
             'site_ozellikleri' => 'nullable|array',
-            'status' => 'required|in:active,inactive,pending'
+            'status' => 'required|in:active,inactive,pending',
         ]);
 
         if ($validator->fails()) {
@@ -125,7 +125,7 @@ class SiteApartmanController extends AdminController
             'longitude' => $request->longitude,
             'site_ozellikleri' => $request->site_ozellikleri,
             'status' => $request->status,
-            'updated_by' => auth()->id()
+            'updated_by' => auth()->id(),
         ]);
 
         return redirect()->route('admin.site-apartman.index')
@@ -156,7 +156,7 @@ class SiteApartmanController extends AdminController
     {
         $ilId = $request->input('il_id');
 
-        if (!$ilId) {
+        if (! $ilId) {
             return response()->json(['success' => false, 'message' => 'İl ID gerekli']);
         }
 
@@ -167,7 +167,7 @@ class SiteApartmanController extends AdminController
 
         return response()->json([
             'success' => true,
-            'data' => $ilceler
+            'data' => $ilceler,
         ]);
     }
 
@@ -178,7 +178,7 @@ class SiteApartmanController extends AdminController
     {
         $ilceId = $request->input('ilce_id');
 
-        if (!$ilceId) {
+        if (! $ilceId) {
             return response()->json(['success' => false, 'message' => 'İlçe ID gerekli']);
         }
 
@@ -189,7 +189,7 @@ class SiteApartmanController extends AdminController
 
         return response()->json([
             'success' => true,
-            'data' => $mahalleler
+            'data' => $mahalleler,
         ]);
     }
 
@@ -201,10 +201,10 @@ class SiteApartmanController extends AdminController
         $query = $request->input('q');
         $limit = $request->input('limit', 20);
 
-        if (!$query) {
+        if (! $query) {
             return response()->json([
                 'success' => true,
-                'data' => []
+                'data' => [],
             ]);
         }
 
@@ -218,13 +218,13 @@ class SiteApartmanController extends AdminController
                     'id' => $site->id,
                     'name' => $site->name,
                     'full_address' => $site->full_address,
-                    'toplam_daire_sayisi' => $site->toplam_daire_sayisi
+                    'toplam_daire_sayisi' => $site->toplam_daire_sayisi,
                 ];
             });
 
         return response()->json([
             'success' => true,
-            'data' => $sites
+            'data' => $sites,
         ]);
     }
 }

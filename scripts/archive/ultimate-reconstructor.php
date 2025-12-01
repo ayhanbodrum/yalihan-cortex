@@ -3,19 +3,18 @@
 /**
  * Ultimate Migration Reconstructor - Kompleks syntax hatalarını yeniden yapılandırarak düzelten nihai script
  */
-
-$migrationsDir = __DIR__ . '/../database/migrations';
+$migrationsDir = __DIR__.'/../database/migrations';
 $fixedCount = 0;
 $totalChecked = 0;
 
 echo "⚡ Ultimate Migration Reconstructor başlatılıyor...\n";
 
-foreach (glob($migrationsDir . '/*.php') as $filePath) {
+foreach (glob($migrationsDir.'/*.php') as $filePath) {
     $filename = basename($filePath);
     $totalChecked++;
 
     // İlk syntax check
-    $syntaxCheck = shell_exec("php -l " . escapeshellarg($filePath) . " 2>&1");
+    $syntaxCheck = shell_exec('php -l '.escapeshellarg($filePath).' 2>&1');
     if (strpos($syntaxCheck, 'No syntax errors') !== false) {
         continue; // Bu dosya temiz
     }
@@ -67,7 +66,7 @@ foreach (glob($migrationsDir . '/*.php') as $filePath) {
         $upLines = explode("\n", $upContent);
         foreach ($upLines as $line) {
             if (trim($line)) {
-                $newContent .= "        " . trim($line) . "\n";
+                $newContent .= '        '.trim($line)."\n";
             }
         }
 
@@ -78,7 +77,7 @@ foreach (glob($migrationsDir . '/*.php') as $filePath) {
         $downLines = explode("\n", $downContent);
         foreach ($downLines as $line) {
             if (trim($line)) {
-                $newContent .= "        " . trim($line) . "\n";
+                $newContent .= '        '.trim($line)."\n";
             }
         }
 
@@ -105,14 +104,14 @@ echo "✅ Yeniden yapılandırılan dosyalar: $fixedCount\n";
 
 // Final syntax check
 echo "\n🔍 Final syntax kontrolü...\n";
-$syntaxErrors = shell_exec("find " . escapeshellarg($migrationsDir) . " -name '*.php' -exec php -l {} \\; 2>&1 | grep -c 'Parse error\\|Fatal error\\|syntax error' || echo '0'");
-echo "🎯 Kalan syntax hataları: " . trim($syntaxErrors) . "\n";
+$syntaxErrors = shell_exec('find '.escapeshellarg($migrationsDir)." -name '*.php' -exec php -l {} \\; 2>&1 | grep -c 'Parse error\\|Fatal error\\|syntax error' || echo '0'");
+echo '🎯 Kalan syntax hataları: '.trim($syntaxErrors)."\n";
 
 if (trim($syntaxErrors) == '0') {
     echo "🎉🎉🎉 TÜM MIGRATION SYNTAX HATALARI DÜZELTİLDİ! 🎉🎉🎉\n";
     echo "🚀 Artık tüm migration dosyaları temiz syntax'a sahip!\n";
 } else {
-    echo "⚠️ Hâlâ " . trim($syntaxErrors) . " syntax hatası mevcut.\n";
+    echo '⚠️ Hâlâ '.trim($syntaxErrors)." syntax hatası mevcut.\n";
 }
 
 echo "\n⚡ Ultimate Migration Reconstructor tamamlandı!\n";

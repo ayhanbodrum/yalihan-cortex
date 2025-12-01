@@ -58,10 +58,10 @@ class BookingRequest extends Model
         parent::boot();
 
         static::creating(function ($booking) {
-            if (!$booking->booking_reference) {
-                $booking->booking_reference = 'BK-' . now()->format('Ymd') . '-' . strtoupper(substr(md5($booking->guest_email . time()), 0, 6));
+            if (! $booking->booking_reference) {
+                $booking->booking_reference = 'BK-'.now()->format('Ymd').'-'.strtoupper(substr(md5($booking->guest_email.time()), 0, 6));
             }
-            if (!$booking->status) {
+            if (! $booking->status) {
                 $booking->status = 'pending';
             }
         });
@@ -96,13 +96,13 @@ class BookingRequest extends Model
      */
     public function scopeBetweenDates($query, $checkIn, $checkOut)
     {
-        return $query->where(function($q) use ($checkIn, $checkOut) {
+        return $query->where(function ($q) use ($checkIn, $checkOut) {
             $q->whereBetween('check_in', [$checkIn, $checkOut])
-              ->orWhereBetween('check_out', [$checkIn, $checkOut])
-              ->orWhere(function($q) use ($checkIn, $checkOut) {
-                  $q->where('check_in', '<=', $checkIn)
-                    ->where('check_out', '>=', $checkOut);
-              });
+                ->orWhereBetween('check_out', [$checkIn, $checkOut])
+                ->orWhere(function ($q) use ($checkIn, $checkOut) {
+                    $q->where('check_in', '<=', $checkIn)
+                        ->where('check_out', '>=', $checkOut);
+                });
         });
     }
 
@@ -125,7 +125,7 @@ class BookingRequest extends Model
         $this->update([
             'status' => 'cancelled',
             'cancelled_at' => now(),
-            'admin_notes' => $reason ? ($this->admin_notes . "\nİptal nedeni: " . $reason) : $this->admin_notes,
+            'admin_notes' => $reason ? ($this->admin_notes."\nİptal nedeni: ".$reason) : $this->admin_notes,
         ]);
     }
 }

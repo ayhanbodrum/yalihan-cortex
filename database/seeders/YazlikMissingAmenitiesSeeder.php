@@ -78,7 +78,7 @@ class YazlikMissingAmenitiesSeeder extends Seeder
                 ]
             );
         }
-        $this->command->info("   🧖 Wellness: 4 özellik eklendi");
+        $this->command->info('   🧖 Wellness: 4 özellik eklendi');
 
         // 2. ÇOCUK DOSTU
         $cocukFeatures = [
@@ -102,7 +102,7 @@ class YazlikMissingAmenitiesSeeder extends Seeder
                 ]
             );
         }
-        $this->command->info("   👶 Çocuk Dostu: 6 özellik eklendi");
+        $this->command->info('   👶 Çocuk Dostu: 6 özellik eklendi');
 
         // 3. DIŞ MEKAN
         $disFeatures = [
@@ -125,7 +125,7 @@ class YazlikMissingAmenitiesSeeder extends Seeder
                 ]
             );
         }
-        $this->command->info("   🏖️ Dış Mekan: 5 özellik eklendi");
+        $this->command->info('   🏖️ Dış Mekan: 5 özellik eklendi');
 
         // 4. MUTFAK EKİPMANLARI
         $mutfakFeatures = [
@@ -152,7 +152,7 @@ class YazlikMissingAmenitiesSeeder extends Seeder
                 ]
             );
         }
-        $this->command->info("   🍳 Mutfak: 9 özellik eklendi");
+        $this->command->info('   🍳 Mutfak: 9 özellik eklendi');
 
         // 5. BANYO
         $banyoFeatures = [
@@ -174,7 +174,7 @@ class YazlikMissingAmenitiesSeeder extends Seeder
                 ]
             );
         }
-        $this->command->info("   🛁 Banyo: 4 özellik eklendi");
+        $this->command->info('   🛁 Banyo: 4 özellik eklendi');
 
         // 6. EĞLENCE
         $eglenceFeatures = [
@@ -198,7 +198,7 @@ class YazlikMissingAmenitiesSeeder extends Seeder
                 ]
             );
         }
-        $this->command->info("   🎮 Eğlence: 6 özellik eklendi");
+        $this->command->info('   🎮 Eğlence: 6 özellik eklendi');
 
         // 7. MANZARA (Ayrı Özellikler)
         $manzaraFeatures = [
@@ -221,7 +221,7 @@ class YazlikMissingAmenitiesSeeder extends Seeder
                 ]
             );
         }
-        $this->command->info("   🌅 Manzara: 5 özellik eklendi");
+        $this->command->info('   🌅 Manzara: 5 özellik eklendi');
 
         // 8. KONUM VURGULARı (TatildeKirala/EtsTur tarzı)
         $konumFeatures = [
@@ -246,7 +246,7 @@ class YazlikMissingAmenitiesSeeder extends Seeder
                 ]
             );
         }
-        $this->command->info("   📍 Konum: 7 özellik eklendi");
+        $this->command->info('   📍 Konum: 7 özellik eklendi');
 
         // ÖZET
         $this->command->info('');

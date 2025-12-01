@@ -2,10 +2,10 @@
 
 namespace App\Traits;
 
+use App\Services\Response\ResponseService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
-use App\Services\Response\ResponseService;
 
 /**
  * ValidatesApiRequests Trait
@@ -36,11 +36,11 @@ trait ValidatesApiRequests
     /**
      * Validate request and return validated data
      *
-     * @param Request $request
-     * @param array $rules Validation rules
-     * @param array $messages Custom validation messages
-     * @param array $customAttributes Custom attribute names
+     * @param  array  $rules  Validation rules
+     * @param  array  $messages  Custom validation messages
+     * @param  array  $customAttributes  Custom attribute names
      * @return array Validated data
+     *
      * @throws ValidationException
      */
     protected function validateRequest(
@@ -66,10 +66,9 @@ trait ValidatesApiRequests
     /**
      * Validate request and return JSON error response if validation fails
      *
-     * @param Request $request
-     * @param array $rules Validation rules
-     * @param array $messages Custom validation messages
-     * @param array $customAttributes Custom attribute names
+     * @param  array  $rules  Validation rules
+     * @param  array  $messages  Custom validation messages
+     * @param  array  $customAttributes  Custom attribute names
      * @return array|null Validated data or null if validation fails (response already sent)
      */
     protected function validateRequestOrFail(
@@ -95,10 +94,9 @@ trait ValidatesApiRequests
     /**
      * Validate request and return ResponseService validation error if fails
      *
-     * @param Request $request
-     * @param array $rules Validation rules
-     * @param array $messages Custom validation messages
-     * @param array $customAttributes Custom attribute names
+     * @param  array  $rules  Validation rules
+     * @param  array  $messages  Custom validation messages
+     * @param  array  $customAttributes  Custom attribute names
      * @return array|JsonResponse Validated data or JsonResponse if validation fails
      */
     protected function validateRequestWithResponse(
@@ -127,9 +125,8 @@ trait ValidatesApiRequests
     /**
      * Validate request with flexible rules (supports both old and new formats)
      *
-     * @param Request $request
-     * @param array $rules Validation rules
-     * @param array $alternatives Alternative field names (e.g., ['category' => 'kategori'])
+     * @param  array  $rules  Validation rules
+     * @param  array  $alternatives  Alternative field names (e.g., ['category' => 'kategori'])
      * @return array Validated data with normalized field names
      */
     protected function validateRequestFlexible(
@@ -141,7 +138,7 @@ trait ValidatesApiRequests
 
         // Normalize alternative field names
         foreach ($alternatives as $primary => $alternatives) {
-            if (!isset($data[$primary])) {
+            if (! isset($data[$primary])) {
                 foreach ((array) $alternatives as $alt) {
                     if (isset($data[$alt])) {
                         $data[$primary] = $data[$alt];

@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Photo;
 use App\Models\Ilan;
+use App\Models\Photo;
 use App\Services\Response\ResponseService;
 use App\Traits\ValidatesApiRequests;
 use Illuminate\Http\Request;
@@ -42,10 +42,10 @@ class PhotoController extends Controller
         $file = $request->file('photo');
 
         // Generate unique filename
-        $filename = Str::random(40) . '.' . $file->getClientOriginalExtension();
+        $filename = Str::random(40).'.'.$file->getClientOriginalExtension();
 
         // Upload paths
-        $uploadPath = 'ilanlar/' . $ilan->id . '/photos';
+        $uploadPath = 'ilanlar/'.$ilan->id.'/photos';
 
         // Store original
         $path = $file->storeAs($uploadPath, $filename, 'public');
@@ -70,7 +70,7 @@ class PhotoController extends Controller
                 'filename' => $filename,
                 'is_featured' => $photo->kapak_fotografi,
                 'display_order' => $photo->sira, // Context7: API response'da display_order kullan
-            ]
+            ],
         ], 'Fotoğraf başarıyla yüklendi');
     }
 
@@ -83,7 +83,7 @@ class PhotoController extends Controller
         $photos = Photo::where('ilan_id', $ilanId)
             ->orderBy('sira') // ✅ Context7: Tablodaki gerçek kolon adı
             ->get()
-            ->map(fn($photo) => [
+            ->map(fn ($photo) => [
                 'id' => $photo->id,
                 'url' => Storage::url($photo->dosya_yolu),
                 'thumbnail' => Storage::url($photo->dosya_yolu), // Thumbnail için aynı dosya_yolu kullanılıyor

@@ -58,7 +58,7 @@ class AuthController extends BaseController
         }
 
         // Authentication failed
-        Log::info('Authentication failed for email: ' . $request->input('email'));
+        Log::info('Authentication failed for email: '.$request->input('email'));
 
         return back()->withErrors(['email' => 'E-posta veya şifre hatalı.']);
     }
@@ -82,7 +82,7 @@ class AuthController extends BaseController
         Log::info('AuthController@index called', [
             'controller' => static::class,
             'method' => __FUNCTION__,
-            'view_path' => 'admin.kullanicilar.index'
+            'view_path' => 'admin.kullanicilar.index',
         ]);
 
         // Query with search and filters
@@ -91,9 +91,9 @@ class AuthController extends BaseController
         // Search functionality
         if ($request->filled('search')) {
             $search = $request->get('search');
-            $query->where(function($q) use ($search) {
-                $q->where('name', 'like', '%' . $search . '%')
-                  ->orWhere('email', 'like', '%' . $search . '%');
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', '%'.$search.'%')
+                    ->orWhere('email', 'like', '%'.$search.'%');
             });
         }
 
@@ -116,7 +116,7 @@ class AuthController extends BaseController
             'users_count' => $users->count(),
             'roles_count' => $roles->count(),
             'users_class' => get_class($users),
-            'roles_class' => get_class($roles)
+            'roles_class' => get_class($roles),
         ]);
 
         return view('admin.kullanicilar.index', compact('users', 'roles'));
@@ -188,7 +188,7 @@ class AuthController extends BaseController
     {
         // Yetki kontrolü: Admin/Superadmin herkesi güncelleyebilir, danışman sadece kendi profilini
         $currentUser = Auth::user();
-        if (!$this->checkAdminPermission($currentUser) && $currentUser->id != $id) {
+        if (! $this->checkAdminPermission($currentUser) && $currentUser->id != $id) {
             abort(403, 'Bu kullanıcıyı güncelleme yetkiniz yok.');
         }
 
@@ -247,7 +247,7 @@ class AuthController extends BaseController
         $user = User::with('role')->findOrFail($id);
 
         // Yetki kontrolü: Admin/Superadmin herkesi düzenleyebilir, danışman sadece kendi profilini
-        if (!$this->checkAdminPermission($currentUser) && $currentUser->id != $id) {
+        if (! $this->checkAdminPermission($currentUser) && $currentUser->id != $id) {
             abort(403, 'Bu kullanıcıyı düzenleme yetkiniz yok.');
         }
 

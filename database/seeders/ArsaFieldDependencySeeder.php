@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\KategoriYayinTipiFieldDependency;
+use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
 class ArsaFieldDependencySeeder extends Seeder
@@ -201,10 +201,10 @@ class ArsaFieldDependencySeeder extends Seeder
             }
 
             DB::commit();
-            $this->command->info('✅ Arsa alan ilişkileri başarıyla eklendi! (' . count($fields) . ' alan)');
+            $this->command->info('✅ Arsa alan ilişkileri başarıyla eklendi! ('.count($fields).' alan)');
         } catch (\Exception $e) {
             DB::rollBack();
-            $this->command->error('❌ Hata: ' . $e->getMessage());
+            $this->command->error('❌ Hata: '.$e->getMessage());
         }
     }
 }

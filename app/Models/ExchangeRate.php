@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 /**
  * Exchange Rate Model
@@ -49,7 +49,7 @@ class ExchangeRate extends Model
     /**
      * Get latest rate for a currency
      *
-     * @param string $currencyCode
+     * @param  string  $currencyCode
      * @return float|null
      */
     public static function getLatestRate($currencyCode)
@@ -64,7 +64,7 @@ class ExchangeRate extends Model
     /**
      * Get today's rate
      *
-     * @param string $currencyCode
+     * @param  string  $currencyCode
      * @return static|null
      */
     public static function getTodayRate($currencyCode)

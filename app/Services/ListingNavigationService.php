@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Models\Ilan;
-use Illuminate\Support\Facades\Cache;
 use App\Services\Cache\CacheHelper;
 use App\Services\Logging\LogService;
 
@@ -53,23 +52,23 @@ class ListingNavigationService
     /**
      * Get previous and next listings for a given listing
      *
-     * @param Ilan $ilan Current listing
-     * @param array $filters Optional filters (category, status, etc.)
+     * @param  Ilan  $ilan  Current listing
+     * @param  array  $filters  Optional filters (category, status, etc.)
      * @return array ['previous' => Ilan|null, 'next' => Ilan|null]
      */
     public function getNavigation(Ilan $ilan, array $filters = []): array
     {
         // Check if navigation is enabled
-        if (!$this->isEnabled()) {
+        if (! $this->isEnabled()) {
             return [
                 'previous' => null,
                 'next' => null,
                 'current_index' => null,
-                'total' => 0
+                'total' => 0,
             ];
         }
 
-        $cacheKey = "listing_nav.{$ilan->id}." . md5(json_encode($filters));
+        $cacheKey = "listing_nav.{$ilan->id}.".md5(json_encode($filters));
 
         return CacheHelper::remember(
             'navigation',
@@ -83,19 +82,19 @@ class ListingNavigationService
                         ->orderBy('id', 'desc');
 
                     // Apply filters
-                    if (!empty($filters['ana_kategori_id'])) {
+                    if (! empty($filters['ana_kategori_id'])) {
                         $query->where('ana_kategori_id', $filters['ana_kategori_id']);
                     }
 
-                    if (!empty($filters['status'])) {
+                    if (! empty($filters['status'])) {
                         $query->where('status', $filters['status']);
                     }
 
-                    if (!empty($filters['il_id'])) {
+                    if (! empty($filters['il_id'])) {
                         $query->where('il_id', $filters['il_id']);
                     }
 
-                    if (!empty($filters['ilce_id'])) {
+                    if (! empty($filters['ilce_id'])) {
                         $query->where('ilce_id', $filters['ilce_id']);
                     }
 
@@ -123,7 +122,7 @@ class ListingNavigationService
                     }
 
                     // If not found in filtered results, try without filters
-                    if (!$previous && !$next) {
+                    if (! $previous && ! $next) {
                         $allListings = Ilan::where('id', '!=', $ilan->id)
                             ->orderBy('created_at', 'desc')
                             ->orderBy('id', 'desc')
@@ -149,15 +148,16 @@ class ListingNavigationService
                         'previous' => $previous,
                         'next' => $next,
                         'current_index' => $currentIndex !== false ? $currentIndex + 1 : null,
-                        'total' => count($allListings) + 1
+                        'total' => count($allListings) + 1,
                     ];
                 } catch (\Exception $e) {
                     LogService::error('Listing navigation failed', ['ilan_id' => $ilan->id], $e);
+
                     return [
                         'previous' => null,
                         'next' => null,
                         'current_index' => null,
-                        'total' => 0
+                        'total' => 0,
                     ];
                 }
             },
@@ -168,11 +168,11 @@ class ListingNavigationService
     /**
      * Get similar listings (same category/location)
      *
-     * @param Ilan $ilan Current listing
-     * @param int $limit Number of similar listings
+     * @param  Ilan  $ilan  Current listing
+     * @param  int  $limit  Number of similar listings
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function getSimilar(Ilan $ilan, int $limit = null)
+    public function getSimilar(Ilan $ilan, ?int $limit = null)
     {
         // Use default limit from settings if not provided
         $limit = $limit ?? $this->getDefaultSimilarLimit();
@@ -186,20 +186,14 @@ class ListingNavigationService
             function () use ($ilan, $limit) {
                 try {
                     $query = Ilan::where('id', '!=', $ilan->id)
-                        ->where(function($q) {
-                            // Context7: Support both enum and string status
-                            $q->where('status', \App\Enums\IlanStatus::YAYINDA->value)
-                              ->orWhere('status', 'yayinda')
-                              ->orWhere('status', 'Aktif')
-                              ->orWhere('status', 'active');
-                        })
+                        ->where('status', true) // Context7: boolean status
                         ->with([
                             'il:id,il_adi',
-                            'fotograflar' => function($q) {
+                            'fotograflar' => function ($q) {
                                 $q->select('id', 'ilan_id', 'dosya_yolu', 'sira', 'kapak_fotografi')
-                                  ->orderBy('sira')
-                                  ->limit(1);
-                            }
+                                    ->orderBy('sira')
+                                    ->limit(1);
+                            },
                         ])
                         ->orderByRaw('
                             CASE
@@ -215,6 +209,7 @@ class ListingNavigationService
                     return $query->get();
                 } catch (\Exception $e) {
                     LogService::error('Similar listings failed', ['ilan_id' => $ilan->id], $e);
+
                     return collect([]);
                 }
             }
@@ -224,8 +219,7 @@ class ListingNavigationService
     /**
      * Get navigation by category
      *
-     * @param Ilan $ilan Current listing
-     * @return array
+     * @param  Ilan  $ilan  Current listing
      */
     public function getByCategory(Ilan $ilan): array
     {
@@ -241,8 +235,7 @@ class ListingNavigationService
     /**
      * Get navigation by location
      *
-     * @param Ilan $ilan Current listing
-     * @return array
+     * @param  Ilan  $ilan  Current listing
      */
     public function getByLocation(Ilan $ilan): array
     {

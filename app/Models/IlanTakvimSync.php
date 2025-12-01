@@ -51,7 +51,7 @@ class IlanTakvimSync extends Model
     public function scopeActive($query)
     {
         return $query->where('sync_enabled', true)
-                     ->where('sync_status', 'active');
+            ->where('sync_status', 'active');
     }
 
     public function scopePlatform($query, $platform)
@@ -62,10 +62,10 @@ class IlanTakvimSync extends Model
     public function scopeNeedsSync($query)
     {
         return $query->where('sync_enabled', true)
-                     ->where(function($q) {
-                         $q->whereNull('next_sync_at')
-                           ->orWhere('next_sync_at', '<=', now());
-                     });
+            ->where(function ($q) {
+                $q->whereNull('next_sync_at')
+                    ->orWhere('next_sync_at', '<=', now());
+            });
     }
 
     public function markAsSynced()

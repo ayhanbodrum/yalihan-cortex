@@ -3,8 +3,6 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\IlanKategoriYayinTipi;
-use App\Models\IlanKategori;
 use Illuminate\Support\Facades\DB;
 
 class YayinTipleriYenidenDuzenlemeSeeder extends Seeder
@@ -230,16 +228,16 @@ class YayinTipleriYenidenDuzenlemeSeeder extends Seeder
         }
 
         $this->command->info("\n🎯 ÖZELLİKLE YAZLIK İÇİN:");
-        $this->command->info("   ✅ Günlük Kiralık (1-29 gün)");
-        $this->command->info("   ✅ Sezonluk Kiralık (3-6 ay)");
-        $this->command->info("   ✅ Kiralık (aylık/yıllık)");
+        $this->command->info('   ✅ Günlük Kiralık (1-29 gün)');
+        $this->command->info('   ✅ Sezonluk Kiralık (3-6 ay)');
+        $this->command->info('   ✅ Kiralık (aylık/yıllık)');
 
         $this->command->info("\n📋 YAYIN TİPİ KATEGORİLERİ:");
-        $this->command->info("   🏠 Ana Satış (4): Satılık, Kiralık, Günlük, Sezonluk");
-        $this->command->info("   🏗️ Özel Modeller (4): Kat Karşılığı, Devren Sat/Kira, Trampalı");
-        $this->command->info("   📈 Yatırım (3): Yatırımlık, Krediye Uygun, Sosyal Konut");
-        $this->command->info("   🏗️ Aşama (3): Ön Satış, İnşaat Halinde, Sıfır");
-        $this->command->info("   ⚡ Özel Durum (4): Acil, Sahibinden, Lüks, İhaleli");
-        $this->command->info("   🎯 Özel Kullanım (3): Öğrenci Evi, Ofis Dönüşümlü, Devren");
+        $this->command->info('   🏠 Ana Satış (4): Satılık, Kiralık, Günlük, Sezonluk');
+        $this->command->info('   🏗️ Özel Modeller (4): Kat Karşılığı, Devren Sat/Kira, Trampalı');
+        $this->command->info('   📈 Yatırım (3): Yatırımlık, Krediye Uygun, Sosyal Konut');
+        $this->command->info('   🏗️ Aşama (3): Ön Satış, İnşaat Halinde, Sıfır');
+        $this->command->info('   ⚡ Özel Durum (4): Acil, Sahibinden, Lüks, İhaleli');
+        $this->command->info('   🎯 Özel Kullanım (3): Öğrenci Evi, Ofis Dönüşümlü, Devren');
     }
 }

@@ -2,39 +2,38 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\Ilan;
-use App\Models\IlanKategori;
-use App\Models\IlanFotografi;
-use App\Models\IlanPriceHistory;
-use App\Models\Kisi;
-use App\Models\User;
+use App\Http\Controllers\Admin\AI\IlanAIController as AIController;
 use App\Models\Il;
+use App\Models\Ilan;
+use App\Models\IlanFotografi;
+use App\Models\IlanKategori;
+use App\Models\IlanPriceHistory;
 use App\Models\Ilce;
+use App\Models\Kisi;
 use App\Models\Mahalle;
+use App\Models\User;
+use App\Services\Cache\CacheHelper;
+use App\Services\CategoryFieldValidator;
+use App\Services\Ilan\IlanBulkService;
+use App\Services\Ilan\IlanExportService;
+use App\Services\Ilan\IlanFeatureService;
+use App\Services\Ilan\IlanPhotoService;
+use App\Services\Ilan\IlanTypeHelper;
+use App\Services\IlanReferansService;
+use App\Services\Logging\LogService;
+use App\Services\Response\ResponseService;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
-use App\Services\Ilan\IlanBulkService;
 use Illuminate\Support\Str;
-use Carbon\Carbon;
-use Maatwebsite\Excel\Facades\Excel;
 use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\WithHeadings;
-use Barryvdh\DomPDF\Facade\Pdf;
-use App\Services\Ilan\IlanPhotoService;
-use App\Services\Ilan\IlanExportService;
-use App\Services\Ilan\IlanTypeHelper;
-use App\Services\Ilan\IlanFeatureService;
-use App\Services\Cache\CacheHelper;
-use App\Services\Response\ResponseService;
-use App\Services\Logging\LogService;
-use Illuminate\Support\Facades\Log;
-use App\Services\IlanReferansService;
-use App\Services\CategoryFieldValidator;
-use App\Http\Controllers\Admin\AI\IlanAIController as AIController;
+use Maatwebsite\Excel\Facades\Excel;
 
 class IlanController extends AdminController
 {
@@ -42,7 +41,6 @@ class IlanController extends AdminController
      * Display a listing of the resource.
      * Context7: İlan listesi ve filtreleme
      *
-     * @param Request $request
      * @return \Illuminate\View\View
      */
     public function index(Request $request)
@@ -73,12 +71,12 @@ class IlanController extends AdminController
 
         // Count'lar
         $tabCounts = [
-            'active'   => Ilan::whereIn('status', $activeStatuses)->count(),
-            'expired'  => Ilan::whereIn('status', $activeStatuses)->where('updated_at', '<=', now()->subDays($expiryDays))->count(),
-            'passive'  => Ilan::where('status', 'Pasif')->count(), // ✅ Context7: Sadece 'Pasif' kullan (inactive kaldırıldı)
-            'office'   => Auth::check() ? Ilan::where('danisman_id', Auth::id())->count() : 0,
-            'drafts'   => Ilan::whereIn('status', $draftStatuses)->count(),
-            'deleted'  => Ilan::onlyTrashed()->count(),
+            'active' => Ilan::whereIn('status', $activeStatuses)->count(),
+            'expired' => Ilan::whereIn('status', $activeStatuses)->where('updated_at', '<=', now()->subDays($expiryDays))->count(),
+            'passive' => Ilan::where('status', 'Pasif')->count(), // ✅ Context7: Sadece 'Pasif' kullan (inactive kaldırıldı)
+            'office' => Auth::check() ? Ilan::where('danisman_id', Auth::id())->count() : 0,
+            'drafts' => Ilan::whereIn('status', $draftStatuses)->count(),
+            'deleted' => Ilan::onlyTrashed()->count(),
         ];
 
         if ($tab === 'active') {
@@ -218,7 +216,7 @@ class IlanController extends AdminController
             'sezonluk_fiyat',
             'goruntulenme', // ✅ Context7: goruntulenme_sayisi → goruntulenme (database column name)
             'created_at',
-            'updated_at'
+            'updated_at',
         ]);
 
         // ✅ EAGER LOADING: Prevent N+1 queries
@@ -405,6 +403,7 @@ class IlanController extends AdminController
         } catch (\Exception $e) {
             // ✅ STANDARDIZED: Using LogService
             LogService::warning('Context7 AutoSave Retrieval Error', ['error' => $e->getMessage()]);
+
             return null;
         }
     }
@@ -413,8 +412,8 @@ class IlanController extends AdminController
      * Store a newly created resource in storage.
      * Context7: Form field mapping fixed (2025-10-21)
      *
-     * @param Request $request
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
+     *
      * @throws \Exception
      */
     public function store(Request $request)
@@ -531,7 +530,7 @@ class IlanController extends AdminController
             ];
 
             // ✅ Context7: Add category-specific validation rules
-            $categoryValidator = new CategoryFieldValidator();
+            $categoryValidator = new CategoryFieldValidator;
             $categoryRules = $categoryValidator->getRules($kategoriSlug, $yayinTipiSlug);
             $allRules = array_merge($baseRules, $categoryRules);
 
@@ -643,7 +642,7 @@ class IlanController extends AdminController
                 }
 
                 // Attach features to ilan (pivot table: ilan_feature)
-                if (!empty($featuresToAttach)) {
+                if (! empty($featuresToAttach)) {
                     $ilan->features()->attach($featuresToAttach);
                     // ✅ STANDARDIZED: Using LogService
                     LogService::action('features_attached', 'ilan', $ilan->id, [
@@ -732,7 +731,6 @@ class IlanController extends AdminController
      * Display the specified resource.
      * Context7: İlan detay sayfası
      *
-     * @param Ilan $ilan
      * @return \Illuminate\View\View
      */
     public function show(Ilan $ilan)
@@ -750,7 +748,7 @@ class IlanController extends AdminController
             'ozellikler',
             'fiyatGecmisi' => function ($query) {
                 $query->orderBy('created_at', 'desc')->limit(10);
-            }
+            },
         ]);
 
         // ✅ REFACTORED: Use IlanTypeHelper service
@@ -786,7 +784,7 @@ class IlanController extends AdminController
         $request->validate([
             'owner_private_desired_price_min' => 'nullable|numeric|min:0',
             'owner_private_desired_price_max' => 'nullable|numeric|min:0',
-            'owner_private_notes' => 'nullable|string|max:2000'
+            'owner_private_notes' => 'nullable|string|max:2000',
         ]);
         if (\Illuminate\Support\Facades\Gate::denies('view-private-listing-data', $ilan)) {
             abort(403);
@@ -795,7 +793,7 @@ class IlanController extends AdminController
         $ilan->owner_private_data = [
             'desired_price_min' => $request->input('owner_private_desired_price_min'),
             'desired_price_max' => $request->input('owner_private_desired_price_max'),
-            'notes' => $request->input('owner_private_notes')
+            'notes' => $request->input('owner_private_notes'),
         ];
         $ilan->save();
         \App\Models\IlanPrivateAudit::create([
@@ -804,11 +802,12 @@ class IlanController extends AdminController
             'changes' => [
                 'before' => $before,
                 'after' => $ilan->owner_private_data,
-            ]
+            ],
         ]);
         if ($request->expectsJson()) {
             return response()->json(['success' => true]);
         }
+
         return redirect()->back()->with('success', 'Mahrem bilgiler güncellendi');
     }
 
@@ -826,9 +825,11 @@ class IlanController extends AdminController
         ]);
         $data = $request->only(['sahibinden_id', 'emlakjet_id', 'hepsiemlak_id', 'zingat_id', 'hurriyetemlak_id']);
         foreach ($data as $k => $v) {
-            if (is_string($v)) $data[$k] = trim($v);
+            if (is_string($v)) {
+                $data[$k] = trim($v);
+            }
         }
-        $normalizer = new \App\Services\Portal\PortalIdNormalizer();
+        $normalizer = new \App\Services\Portal\PortalIdNormalizer;
         foreach (['sahibinden_id', 'emlakjet_id', 'hepsiemlak_id', 'zingat_id', 'hurriyetemlak_id'] as $key) {
             if (isset($data[$key]) && $data[$key] !== null && $data[$key] !== '') {
                 $portal = str_replace('_id', '', $key);
@@ -840,6 +841,7 @@ class IlanController extends AdminController
         if ($request->expectsJson()) {
             return response()->json(['success' => true]);
         }
+
         return redirect()->back()->with('success', 'Portal ID’ler güncellendi');
     }
 
@@ -847,7 +849,6 @@ class IlanController extends AdminController
      * Show the form for editing the specified resource.
      * Context7: İlan düzenleme formu
      *
-     * @param Ilan $ilan
      * @return \Illuminate\View\View
      */
     public function edit(Ilan $ilan)
@@ -945,9 +946,8 @@ class IlanController extends AdminController
      * Update the specified resource in storage.
      * Context7: İlan güncelleme
      *
-     * @param Request $request
-     * @param Ilan $ilan
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
+     *
      * @throws \Exception
      */
     public function update(Request $request, Ilan $ilan)
@@ -1085,7 +1085,7 @@ class IlanController extends AdminController
                 $ilan->ozellikler()->sync($featuresToSync);
                 Log::info('Features synced for ilan', [
                     'ilan_id' => $ilan->id,
-                    'features_count' => count($featuresToSync)
+                    'features_count' => count($featuresToSync),
                 ]);
             } elseif ($request->has('features') && empty($request->features)) {
                 // Remove all features if features array is empty
@@ -1172,8 +1172,8 @@ class IlanController extends AdminController
      * Remove the specified resource from storage.
      * Context7: İlan silme (soft delete)
      *
-     * @param Ilan $ilan
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
+     *
      * @throws \Exception
      */
     public function destroy(Ilan $ilan)
@@ -1198,7 +1198,6 @@ class IlanController extends AdminController
      * Search listings via AJAX
      * Context7: İlan arama endpoint
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function search(Request $request)
@@ -1208,7 +1207,7 @@ class IlanController extends AdminController
             'danisman:id,name,email',
             'kategori:id,name',
             'il:id,il_adi',
-            'ilce:id,ilce_adi'
+            'ilce:id,ilce_adi',
         ])->orderBy('updated_at', 'desc');
 
         if ($request->has('q') && $request->q) {
@@ -1236,9 +1235,9 @@ class IlanController extends AdminController
                     'kategori' => optional($ilan->kategori)->ad,
                     'lokasyon' => optional($ilan->il)->il_adi . (optional($ilan->ilce)->ilce_adi ? ', ' . optional($ilan->ilce)->ilce_adi : ''),
                     'status' => $ilan->status,
-                    'url' => route('admin.ilanlar.show', $ilan)
+                    'url' => route('admin.ilanlar.show', $ilan),
                 ];
-            })
+            }),
         ]);
     }
 
@@ -1246,7 +1245,6 @@ class IlanController extends AdminController
      * Filter listings
      * Context7: İlan filtreleme endpoint
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function filter(Request $request)
@@ -1257,7 +1255,7 @@ class IlanController extends AdminController
             'userDanisman:id,name',
             'kategori:id,name',
             'il:id,il_adi',
-            'ilce:id,ilce_adi'
+            'ilce:id,ilce_adi',
         ]);
 
         // ✅ REFACTORED: Filterable trait kullanımı
@@ -1313,7 +1311,7 @@ class IlanController extends AdminController
                 'cards_html' => view('admin.ilanlar.partials.listings-cards', compact('ilanlar'))->render(),
                 // ✅ FIX: links() metodu LengthAwarePaginator'da mevcut, type hint eklendi
                 'pagination' => (string) $ilanlar->links(),
-                'total' => $ilanlar->total()
+                'total' => $ilanlar->total(),
             ]);
         }
 
@@ -1324,7 +1322,6 @@ class IlanController extends AdminController
      * Live search for listings
      * Context7: Canlı arama endpoint
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function liveSearch(Request $request)
@@ -1352,7 +1349,7 @@ class IlanController extends AdminController
                 'id' => $ilan->id,
                 'text' => $ilan->baslik . ' - ' . number_format($ilan->fiyat) . ' ' . $ilan->para_birimi,
                 'subtitle' => optional($ilan->ilanSahibi)->tam_ad . ' | ' . optional($ilan->kategori)->ad,
-                'url' => route('admin.ilanlar.show', $ilan)
+                'url' => route('admin.ilanlar.show', $ilan),
             ];
         });
 
@@ -1363,7 +1360,6 @@ class IlanController extends AdminController
      * Bulk update listings
      * Context7: Toplu güncelleme endpoint
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function bulkUpdate(Request $request)
@@ -1371,13 +1367,13 @@ class IlanController extends AdminController
         $validator = Validator::make($request->all(), [
             'ids' => 'required|array|min:1',
             'ids.*' => 'required|integer|exists:ilanlar,id',
-            'update_data' => 'required|array'
+            'update_data' => 'required|array',
         ]);
 
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
-                'errors' => $validator->errors()
+                'errors' => $validator->errors(),
             ], 422);
         }
 
@@ -1385,6 +1381,7 @@ class IlanController extends AdminController
             $service = app(IlanBulkService::class);
             $result = $service->bulkUpdate($request->ids, $request->update_data);
             $status = $result['success'] ? 200 : 400;
+
             return response()->json($result, $status);
         } catch (\Exception $e) {
             // ✅ STANDARDIZED: Using ResponseService
@@ -1396,20 +1393,19 @@ class IlanController extends AdminController
      * Bulk delete listings
      * Context7: Toplu silme endpoint
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function bulkDelete(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'ids' => 'required|array|min:1',
-            'ids.*' => 'required|integer|exists:ilanlar,id'
+            'ids.*' => 'required|integer|exists:ilanlar,id',
         ]);
 
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
-                'errors' => $validator->errors()
+                'errors' => $validator->errors(),
             ], 422);
         }
 
@@ -1417,6 +1413,7 @@ class IlanController extends AdminController
             $service = app(IlanBulkService::class);
             $result = $service->bulkDelete($request->ids);
             $status = $result['success'] ? 200 : 400;
+
             return response()->json($result, $status);
         } catch (\Exception $e) {
             // ✅ STANDARDIZED: Using ResponseService
@@ -1428,7 +1425,6 @@ class IlanController extends AdminController
      * Toggle listing status
      * Context7: İlan durumunu değiştir
      *
-     * @param Ilan $ilan
      * @return \Illuminate\Http\JsonResponse
      */
     public function toggleStatus(Ilan $ilan)
@@ -1440,15 +1436,16 @@ class IlanController extends AdminController
                 'status' => $newStatus,
                 // Context7: enabled field removed - use status only
             ]);
+
             return response()->json([
                 'success' => true,
                 'message' => 'İlan statusu başarıyla güncellendi.',
-                'new_status' => $newStatus
+                'new_status' => $newStatus,
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Durum güncelleme sırasında bir hata oluştu: ' . $e->getMessage()
+                'message' => 'Durum güncelleme sırasında bir hata oluştu: ' . $e->getMessage(),
             ], 500);
         }
     }
@@ -1457,20 +1454,18 @@ class IlanController extends AdminController
      * Update listing status
      * Context7: İlan durumunu güncelle
      *
-     * @param Request $request
-     * @param Ilan $ilan
      * @return \Illuminate\Http\JsonResponse
      */
     public function updateStatus(Request $request, Ilan $ilan)
     {
         $validator = Validator::make($request->all(), [
-            'status' => 'required|string|in:Taslak,Aktif,Pasif,Beklemede,Arşivlendi'
+            'status' => 'required|string|in:Taslak,Aktif,Pasif,Beklemede,Arşivlendi',
         ]);
 
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
-                'errors' => $validator->errors()
+                'errors' => $validator->errors(),
             ], 422);
         }
 
@@ -1479,15 +1474,16 @@ class IlanController extends AdminController
                 'status' => $request->status,
                 // Context7: enabled field removed - use status only
             ]);
+
             return response()->json([
                 'success' => true,
                 'message' => 'İlan statusu başarıyla güncellendi.',
-                'status' => $request->status
+                'status' => $request->status,
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Durum güncelleme sırasında bir hata oluştu: ' . $e->getMessage()
+                'message' => 'Durum güncelleme sırasında bir hata oluştu: ' . $e->getMessage(),
             ], 500);
         }
     }
@@ -1501,7 +1497,7 @@ class IlanController extends AdminController
             'delete' => 'silindi',
             'activate' => 'statusleştirildi',
             'deactivate' => 'pasifleştirildi',
-            'archive' => 'arşivlendi'
+            'archive' => 'arşivlendi',
         ];
 
         return $messages[$action] ?? 'güncellendi';
@@ -1511,7 +1507,6 @@ class IlanController extends AdminController
      * Generate AI-powered title for listing
      * Context7: AI destekli başlık üretimi
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function generateAiTitle(Request $request)
@@ -1531,12 +1526,12 @@ class IlanController extends AdminController
                 'fiyat' => $context['fiyat'] ?? $request->input('fiyat'),
                 'para_birimi' => $context['paraBirimi'] ?? $context['para_birimi'] ?? $request->input('para_birimi', 'TRY'),
                 'yayin_tipi' => $context['yayinTipi'] ?? $context['yayin_tipi'] ?? $request->input('yayin_tipi', 'Satılık'),
-                'ai_tone' => $request->input('ai_tone', 'seo')
+                'ai_tone' => $request->input('ai_tone', 'seo'),
             ]);
 
             $response = $aiController->suggest(new Request([
                 'action' => 'title',
-                ...$aiRequest->all()
+                ...$aiRequest->all(),
             ]));
 
             $data = json_decode($response->getContent(), true);
@@ -1544,22 +1539,23 @@ class IlanController extends AdminController
             // Frontend formatına uyarla
             // IlanAIController variants döndürüyor: ['Başlık 1', 'Başlık 2', ...]
             $variants = $data['variants'] ?? [];
-            $title = !empty($variants) ? $variants[0] : 'Başlık üretilemedi';
+            $title = ! empty($variants) ? $variants[0] : 'Başlık üretilemedi';
 
             return response()->json([
                 'success' => $data['success'] ?? true,
                 'title' => $title,
                 'alternatives' => array_slice($variants, 0, 3),
                 'data' => [
-                    'title' => $title
-                ]
+                    'title' => $title,
+                ],
             ]);
         } catch (\Exception $e) {
             Log::error('AI Title Generation Error: ' . $e->getMessage());
+
             return response()->json([
                 'success' => false,
                 'message' => 'AI başlık üretimi başarısız: ' . $e->getMessage(),
-                'title' => 'Başlık üretilemedi'
+                'title' => 'Başlık üretilemedi',
             ], 500);
         }
     }
@@ -1568,7 +1564,6 @@ class IlanController extends AdminController
      * Generate AI-powered description for listing
      * Context7: AI destekli açıklama üretimi
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function generateAiDescription(Request $request)
@@ -1589,12 +1584,12 @@ class IlanController extends AdminController
                 'para_birimi' => $context['paraBirimi'] ?? $context['para_birimi'] ?? $request->input('para_birimi', 'TRY'),
                 'metrekare' => $context['metrekare'] ?? $request->input('metrekare'),
                 'oda_sayisi' => $context['odaSayisi'] ?? $context['oda_sayisi'] ?? $request->input('oda_sayisi'),
-                'ai_tone' => $request->input('ai_tone', 'seo')
+                'ai_tone' => $request->input('ai_tone', 'seo'),
             ]);
 
             $response = $aiController->suggest(new Request([
                 'action' => 'description',
-                ...$aiRequest->all()
+                ...$aiRequest->all(),
             ]));
 
             $data = json_decode($response->getContent(), true);
@@ -1604,15 +1599,16 @@ class IlanController extends AdminController
                 'success' => $data['success'] ?? true,
                 'description' => $data['description'] ?? 'Açıklama üretilemedi',
                 'data' => [
-                    'description' => $data['description'] ?? 'Açıklama üretilemedi'
-                ]
+                    'description' => $data['description'] ?? 'Açıklama üretilemedi',
+                ],
             ]);
         } catch (\Exception $e) {
             Log::error('AI Description Generation Error: ' . $e->getMessage());
+
             return response()->json([
                 'success' => false,
                 'message' => 'AI açıklama üretimi başarısız: ' . $e->getMessage(),
-                'description' => 'Açıklama üretilemedi'
+                'description' => 'Açıklama üretilemedi',
             ], 500);
         }
     }
@@ -1621,7 +1617,7 @@ class IlanController extends AdminController
      * Get dynamic fields based on property type
      * Context7: Emlak tipine göre dinamik alanlar
      *
-     * @param string $propertyType
+     * @param  string  $propertyType
      * @return \Illuminate\Http\JsonResponse
      */
     public function getDynamicFields($propertyType)
@@ -1636,7 +1632,7 @@ class IlanController extends AdminController
                     ['name' => 'balkon_var', 'label' => 'Balkon', 'type' => 'checkbox'],
                     ['name' => 'asansor_var', 'label' => 'Asansör', 'type' => 'checkbox'],
                     ['name' => 'kat_no', 'label' => 'Kat Numarası', 'type' => 'number'],
-                    ['name' => 'toplam_kat', 'label' => 'Toplam Kat', 'type' => 'number']
+                    ['name' => 'toplam_kat', 'label' => 'Toplam Kat', 'type' => 'number'],
                 ];
                 break;
 
@@ -1646,7 +1642,7 @@ class IlanController extends AdminController
                     ['name' => 'bahce_var', 'label' => 'Bahçe', 'type' => 'checkbox'],
                     ['name' => 'havuz_var', 'label' => 'Havuz', 'type' => 'checkbox'],
                     ['name' => 'garaj_var', 'label' => 'Garaj', 'type' => 'checkbox'],
-                    ['name' => 'kat_sayisi', 'label' => 'Kat Sayısı', 'type' => 'number', 'min' => 1, 'max' => 4]
+                    ['name' => 'kat_sayisi', 'label' => 'Kat Sayısı', 'type' => 'number', 'min' => 1, 'max' => 4],
                 ];
                 break;
 
@@ -1656,19 +1652,19 @@ class IlanController extends AdminController
                     ['name' => 'ada_no', 'label' => 'Ada No', 'type' => 'text'],
                     ['name' => 'parsel_no', 'label' => 'Parsel No', 'type' => 'text'],
                     ['name' => 'kaks', 'label' => 'KAKS', 'type' => 'number', 'step' => '0.01'],
-                    ['name' => 'taban_alani', 'label' => 'Taban Alanı', 'type' => 'number']
+                    ['name' => 'taban_alani', 'label' => 'Taban Alanı', 'type' => 'number'],
                 ];
                 break;
 
             default:
                 $fields = [
-                    ['name' => 'aciklama', 'label' => 'Genel Açıklama', 'type' => 'textarea']
+                    ['name' => 'aciklama', 'label' => 'Genel Açıklama', 'type' => 'textarea'],
                 ];
         }
 
         return response()->json([
             'success' => true,
-            'fields' => $fields
+            'fields' => $fields,
         ]);
     }
 
@@ -1676,7 +1672,6 @@ class IlanController extends AdminController
      * Get AI property suggestions
      * Context7: AI destekli emlak önerileri
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function getAIPropertySuggestions(Request $request)
@@ -1694,12 +1689,12 @@ class IlanController extends AdminController
                 'ilce' => $this->getLocationName($context['ilce'] ?? $request->input('ilce')),
                 'mahalle' => $this->getLocationName($context['mahalle'] ?? $request->input('mahalle')),
                 'fiyat' => $context['fiyat'] ?? $request->input('fiyat'),
-                'metrekare' => $context['metrekare'] ?? $request->input('metrekare')
+                'metrekare' => $context['metrekare'] ?? $request->input('metrekare'),
             ]);
 
             $response = $aiController->suggest(new Request([
                 'action' => 'price',
-                ...$aiRequest->all()
+                ...$aiRequest->all(),
             ]));
 
             $data = json_decode($response->getContent(), true);
@@ -1713,15 +1708,16 @@ class IlanController extends AdminController
                 'success' => $data['success'] ?? true,
                 'suggestions' => $suggestions,
                 'data' => [
-                    'suggestions' => $suggestions
-                ]
+                    'suggestions' => $suggestions,
+                ],
             ]);
         } catch (\Exception $e) {
             Log::error('AI Property Suggestions Error: ' . $e->getMessage());
+
             return response()->json([
                 'success' => false,
                 'message' => 'AI önerileri alınamadı: ' . $e->getMessage(),
-                'suggestions' => []
+                'suggestions' => [],
             ], 500);
         }
     }
@@ -1730,7 +1726,6 @@ class IlanController extends AdminController
      * Optimize price with AI
      * Context7: AI destekli fiyat optimizasyonu
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function optimizePriceWithAi(Request $request)
@@ -1749,12 +1744,12 @@ class IlanController extends AdminController
                 'metrekare' => $context['metrekare'] ?? $request->input('metrekare'),
                 'il' => $this->getLocationName($context['il'] ?? $request->input('il')),
                 'ilce' => $this->getLocationName($context['ilce'] ?? $request->input('ilce')),
-                'mahalle' => $this->getLocationName($context['mahalle'] ?? $request->input('mahalle'))
+                'mahalle' => $this->getLocationName($context['mahalle'] ?? $request->input('mahalle')),
             ]);
 
             $response = $aiController->suggest(new Request([
                 'action' => 'price',
-                ...$aiRequest->all()
+                ...$aiRequest->all(),
             ]));
 
             $data = json_decode($response->getContent(), true);
@@ -1788,15 +1783,16 @@ class IlanController extends AdminController
                 'optimized' => $optimized,
                 'data' => [
                     'optimized' => $optimized,
-                    'suggestions' => $suggestions
-                ]
+                    'suggestions' => $suggestions,
+                ],
             ]);
         } catch (\Exception $e) {
             Log::error('AI Price Optimization Error: ' . $e->getMessage());
+
             return response()->json([
                 'success' => false,
                 'message' => 'AI fiyat optimizasyonu başarısız: ' . $e->getMessage(),
-                'optimized' => null
+                'optimized' => null,
             ], 500);
         }
     }
@@ -1805,7 +1801,6 @@ class IlanController extends AdminController
      * Export listings to Excel
      * Context7: İlanları Excel'e aktar
      *
-     * @param Request $request
      * @return \Symfony\Component\HttpFoundation\StreamedResponse|\Illuminate\Http\RedirectResponse
      */
     public function exportExcel(Request $request)
@@ -1837,7 +1832,7 @@ class IlanController extends AdminController
                         optional($ilan->kategori)->ad,
                         optional($ilan->il)->il_adi . (optional($ilan->ilce)->ilce_adi ? ', ' . optional($ilan->ilce)->ilce_adi : ''),
                         optional($ilan->ilanSahibi)->tam_ad,
-                        $ilan->created_at->format('d.m.Y H:i')
+                        $ilan->created_at->format('d.m.Y H:i'),
                     ]);
                 }
 
@@ -1854,7 +1849,6 @@ class IlanController extends AdminController
      * Export listings to PDF
      * Context7: İlanları PDF'e aktar
      *
-     * @param Request $request
      * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse
      */
     public function exportPdf(Request $request)
@@ -1874,8 +1868,6 @@ class IlanController extends AdminController
      * Upload photos for a listing
      * Context7: İlan fotoğrafları yükle
      *
-     * @param Request $request
-     * @param Ilan $ilan
      * @return \Illuminate\Http\JsonResponse
      */
     public function uploadPhotos(Request $request, Ilan $ilan)
@@ -1884,11 +1876,12 @@ class IlanController extends AdminController
             $service = app(IlanPhotoService::class);
             $result = $service->uploadPhotos($ilan, (array) $request->file('photos'));
             $status = $result['success'] ? 200 : 422;
+
             return response()->json($result, $status);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Fotoğraf yükleme sırasında hata: ' . $e->getMessage()
+                'message' => 'Fotoğraf yükleme sırasında hata: ' . $e->getMessage(),
             ], 500);
         }
     }
@@ -1897,8 +1890,6 @@ class IlanController extends AdminController
      * Delete a photo from listing
      * Context7: İlan fotoğrafı sil
      *
-     * @param Ilan $ilan
-     * @param IlanFotografi $photo
      * @return \Illuminate\Http\JsonResponse
      */
     public function deletePhoto(Ilan $ilan, IlanFotografi $photo)
@@ -1907,11 +1898,12 @@ class IlanController extends AdminController
             $service = app(IlanPhotoService::class);
             $result = $service->deletePhoto($ilan, $photo);
             $status = $result['success'] ? 200 : 400;
+
             return response()->json($result, $status);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Fotoğraf silme sırasında hata: ' . $e->getMessage()
+                'message' => 'Fotoğraf silme sırasında hata: ' . $e->getMessage(),
             ], 500);
         }
     }
@@ -1920,21 +1912,21 @@ class IlanController extends AdminController
      * Update photo order
      * Context7: Fotoğraf sıralamasını güncelle
      *
-     * @param Request $request
-     * @param Ilan $ilan
      * @return \Illuminate\Http\JsonResponse
      */
-    public function updatePhotoOrder(Request $request, Ilan $ilan)
+    // Context7: order → display_order (forbidden pattern)
+    public function updatePhotoSequence(Request $request, Ilan $ilan)
     {
         try {
             $service = app(IlanPhotoService::class);
-            $result = $service->updatePhotoOrder($ilan, (array) $request->photo_orders);
+            $result = $service->updatePhotoSequence($ilan, (array) $request->photo_orders);
             $status = $result['success'] ? 200 : 422;
+
             return response()->json($result, $status);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Sıralama güncelleme sırasında hata: ' . $e->getMessage()
+                'message' => 'Sıralama güncelleme sırasında hata: ' . $e->getMessage(),
             ], 500);
         }
     }
@@ -1943,8 +1935,6 @@ class IlanController extends AdminController
      * Get price history API
      * Context7: Fiyat geçmişi API endpoint
      *
-     * @param Ilan $ilan
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function priceHistoryApi(Ilan $ilan, Request $request)
@@ -1970,9 +1960,9 @@ class IlanController extends AdminController
                 'currency' => $ilan->para_birimi ?? 'TRY',
                 'change_reason' => 'initial',
                 'changed_by' => null,
-                'created_at' => $ilan->created_at
+                'created_at' => $ilan->created_at,
             ]]);
-        } else if ($history->isNotEmpty() && $history->first()->old_price === null) {
+        } elseif ($history->isNotEmpty() && $history->first()->old_price === null) {
             // İlk kayıt old_price null ise, ilanın başlangıç fiyatını ekle
             $firstRecord = $history->first();
             $history->prepend([
@@ -1983,13 +1973,13 @@ class IlanController extends AdminController
                 'currency' => $firstRecord->currency ?? 'TRY',
                 'change_reason' => 'initial',
                 'changed_by' => null,
-                'created_at' => $ilan->created_at ?? $firstRecord->created_at
+                'created_at' => $ilan->created_at ?? $firstRecord->created_at,
             ]);
         }
 
         return response()->json([
             'success' => true,
-            'data' => $history->values()
+            'data' => $history->values(),
         ]);
     }
 
@@ -1997,7 +1987,6 @@ class IlanController extends AdminController
      * Save draft listing
      * Context7: Taslak kaydetme
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function saveDraft(Request $request)
@@ -2012,12 +2001,12 @@ class IlanController extends AdminController
             return response()->json([
                 'success' => true,
                 'message' => 'Taslak kaydedildi.',
-                'draft_id' => uniqid()
+                'draft_id' => uniqid(),
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Taslak kaydetme sırasında hata: ' . $e->getMessage()
+                'message' => 'Taslak kaydetme sırasında hata: ' . $e->getMessage(),
             ], 500);
         }
     }
@@ -2026,7 +2015,6 @@ class IlanController extends AdminController
      * Context7 uyumlu auto-save listing data
      * Context7: Otomatik kayıt endpoint
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function autoSave(Request $request)
@@ -2043,7 +2031,7 @@ class IlanController extends AdminController
                 'timestamp' => now()->toISOString(),
                 'step' => $request->current_step ?? 1,
                 'progress' => $request->progress ?? 0,
-                'context7_version' => '1.0'
+                'context7_version' => '1.0',
             ];
 
             // Cache'e kaydet (Redis preferred, fallback to session)
@@ -2058,19 +2046,19 @@ class IlanController extends AdminController
                 'message' => 'Context7 otomatik kayıt tamamlandı',
                 'timestamp' => now()->format('H:i:s'),
                 'cache_key' => $cacheKey,
-                'data_size' => strlen(json_encode($autoSaveData)) . ' bytes'
+                'data_size' => strlen(json_encode($autoSaveData)) . ' bytes',
             ]);
         } catch (\Exception $e) {
             // ✅ STANDARDIZED: Using LogService
             LogService::error('Context7 AutoSave Error', [
                 'user_id' => Auth::id(),
-                'request_data' => $request->all()
+                'request_data' => $request->all(),
             ]);
 
             return response()->json([
                 'success' => false,
                 'message' => 'Context7 otomatik kayıt hatası: ' . $e->getMessage(),
-                'error_code' => 'CONTEXT7_AUTOSAVE_FAILED'
+                'error_code' => 'CONTEXT7_AUTOSAVE_FAILED',
             ], 500);
         }
     }
@@ -2079,7 +2067,6 @@ class IlanController extends AdminController
      * Get user's listings (ilanlarim)
      * Context7: Kullanıcının ilanları
      *
-     * @param Request $request
      * @return \Illuminate\View\View
      */
     public function ilanlarim(Request $request)
@@ -2097,8 +2084,6 @@ class IlanController extends AdminController
      * Refresh listing rate/stats
      * Context7: İlan istatistiklerini yenile
      *
-     * @param Request $request
-     * @param Ilan $ilan
      * @return \Illuminate\Http\JsonResponse
      */
     public function refreshRate(Request $request, Ilan $ilan)
@@ -2108,7 +2093,7 @@ class IlanController extends AdminController
             $ilan->update([
                 'view_count' => $ilan->view_count + rand(1, 5),
                 'favorite_count' => $ilan->favorite_count + rand(0, 2),
-                'updated_at' => now()
+                'updated_at' => now(),
             ]);
 
             return response()->json([
@@ -2116,13 +2101,13 @@ class IlanController extends AdminController
                 'message' => 'Veriler yenilendi.',
                 'stats' => [
                     'view_count' => $ilan->view_count,
-                    'favorite_count' => $ilan->favorite_count
-                ]
+                    'favorite_count' => $ilan->favorite_count,
+                ],
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Veri yenileme sırasında hata: ' . $e->getMessage()
+                'message' => 'Veri yenileme sırasında hata: ' . $e->getMessage(),
             ], 500);
         }
     }
@@ -2135,7 +2120,6 @@ class IlanController extends AdminController
      * Context7: İlan kopyalama
      * POST /admin/ilanlar/{ilan}/duplicate
      *
-     * @param Ilan $ilan
      * @return \Illuminate\Http\JsonResponse
      */
     public function duplicate(Ilan $ilan)
@@ -2165,7 +2149,7 @@ class IlanController extends AdminController
             if ($ilan->ozellikler) {
                 foreach ($ilan->ozellikler as $ozellik) {
                     $newIlan->ozellikler()->attach($ozellik->id, [
-                        'deger' => $ozellik->pivot->deger ?? null
+                        'deger' => $ozellik->pivot->deger ?? null,
                     ]);
                 }
             }
@@ -2176,18 +2160,18 @@ class IlanController extends AdminController
                 'success' => true,
                 'message' => 'İlan başarıyla kopyalandı',
                 'ilan_id' => $newIlan->id,
-                'redirect_url' => route('admin.ilanlar.edit', $newIlan->id)
+                'redirect_url' => route('admin.ilanlar.edit', $newIlan->id),
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('İlan kopyalama hatası: ' . $e->getMessage(), [
                 'ilan_id' => $ilan->id,
-                'error' => $e->getTraceAsString()
+                'error' => $e->getTraceAsString(),
             ]);
 
             return response()->json([
                 'success' => false,
-                'message' => 'İlan kopyalanırken hata oluştu: ' . $e->getMessage()
+                'message' => 'İlan kopyalanırken hata oluştu: ' . $e->getMessage(),
             ], 500);
         }
     }
@@ -2198,20 +2182,20 @@ class IlanController extends AdminController
      * GET /admin/ilanlar/api/features/category/{categoryId}
      * GET /api/admin/features?category_id={categoryId}
      *
-     * @param int|null $categoryId
+     * @param  int|null  $categoryId
      * @return \Illuminate\Http\JsonResponse
      */
     public function getFeaturesByCategory($categoryId = null)
     {
         try {
-            if (!$categoryId) {
+            if (! $categoryId) {
                 $categoryId = request()->get('category_id');
             }
 
-            if (!$categoryId) {
+            if (! $categoryId) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Category ID is required'
+                    'message' => 'Category ID is required',
                 ], 400);
             }
 
@@ -2223,12 +2207,12 @@ class IlanController extends AdminController
             return response()->json([
                 'success' => true,
                 'data' => $result['feature_categories'],
-                'debug' => $result['metadata']
+                'debug' => $result['metadata'],
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Özellikler yüklenirken hata oluştu: ' . $e->getMessage()
+                'message' => 'Özellikler yüklenirken hata oluştu: ' . $e->getMessage(),
             ], 500);
         }
     }
@@ -2238,7 +2222,6 @@ class IlanController extends AdminController
      * Context7: Toplu işlemler (activate, deactivate, delete, export, assign)
      * Yalıhan Bekçi: Advanced bulk operations implementation
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function bulkAction(Request $request)
@@ -2255,7 +2238,7 @@ class IlanController extends AdminController
                 return response()->json([
                     'success' => false,
                     'message' => 'Validasyon hatası.',
-                    'errors' => $validator->errors()
+                    'errors' => $validator->errors(),
                 ], 422);
             }
 
@@ -2280,12 +2263,15 @@ class IlanController extends AdminController
                     ];
                 })->toArray();
 
-                $export = new class($exportData) implements FromArray, WithHeadings {
+                $export = new class($exportData) implements FromArray, WithHeadings
+                {
                     public function __construct(private array $data) {}
+
                     public function array(): array
                     {
                         return $this->data;
                     }
+
                     public function headings(): array
                     {
                         return ['ID', 'Başlık', 'Fiyat', 'Para Birimi', 'Durum', 'Kategori', 'İl', 'İlçe', 'Oluşturulma'];
@@ -2298,12 +2284,14 @@ class IlanController extends AdminController
             $service = app(IlanBulkService::class);
             $result = $service->bulkAction($request->action, $request->ids, $request->value);
             $status = $result['success'] ? 200 : 400;
+
             return response()->json($result, $status);
         } catch (\Exception $e) {
             Log::error('Bulk action error: ' . $e->getMessage());
+
             return response()->json([
                 'success' => false,
-                'message' => 'İşlem sırasında hata oluştu: ' . $e->getMessage()
+                'message' => 'İşlem sırasında hata oluştu: ' . $e->getMessage(),
             ], 500);
         }
     }
@@ -2314,12 +2302,12 @@ class IlanController extends AdminController
      */
     protected function getLocationName($locationId)
     {
-        if (!$locationId) {
+        if (! $locationId) {
             return '';
         }
 
         // Zaten string ise direkt döndür (isim zaten gelmiş)
-        if (!is_numeric($locationId)) {
+        if (! is_numeric($locationId)) {
             return $locationId;
         }
 
@@ -2350,12 +2338,12 @@ class IlanController extends AdminController
      */
     protected function getCategoryName($categoryValue)
     {
-        if (!$categoryValue) {
+        if (! $categoryValue) {
             return '';
         }
 
         // Zaten string ise direkt döndür (isim zaten gelmiş)
-        if (!is_numeric($categoryValue)) {
+        if (! is_numeric($categoryValue)) {
             return $categoryValue;
         }
 

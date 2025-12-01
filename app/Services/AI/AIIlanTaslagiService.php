@@ -4,10 +4,9 @@ namespace App\Services\AI;
 
 use App\Models\AIIlanTaslagi;
 use App\Models\Ilan;
-use App\Models\User;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Cache;
 
 /**
  * AI İlan Taslağı Servisi
@@ -37,21 +36,20 @@ class AIIlanTaslagiService
     /**
      * İlan taslağı üret
      *
-     * @param array $data İlan verileri
-     * @param int $danismanId Danışman ID
-     * @return AIIlanTaslagi
+     * @param  array  $data  İlan verileri
+     * @param  int  $danismanId  Danışman ID
      */
     public function generateDraft(array $data, int $danismanId): AIIlanTaslagi
     {
         try {
             // n8n webhook'a istek gönder
-            $response = Http::timeout(30)->post($this->n8nWebhookUrl . '/ai/ilan-taslagi', [
+            $response = Http::timeout(30)->post($this->n8nWebhookUrl.'/ai/ilan-taslagi', [
                 'danisman_id' => $danismanId,
                 'data' => $data,
             ]);
 
-            if (!$response->successful()) {
-                throw new \Exception('n8n webhook request failed: ' . $response->status());
+            if (! $response->successful()) {
+                throw new \Exception('n8n webhook request failed: '.$response->status());
             }
 
             $aiResponse = $response->json();
@@ -85,15 +83,14 @@ class AIIlanTaslagiService
     /**
      * Taslağı onayla
      *
-     * @param int $taslakId Taslak ID
-     * @param int $userId Onaylayan kullanıcı ID
-     * @return bool
+     * @param  int  $taslakId  Taslak ID
+     * @param  int  $userId  Onaylayan kullanıcı ID
      */
     public function approve(int $taslakId, int $userId): bool
     {
         $taslak = AIIlanTaslagi::findOrFail($taslakId);
 
-        if (!$taslak->approve($userId)) {
+        if (! $taslak->approve($userId)) {
             return false;
         }
 
@@ -108,15 +105,14 @@ class AIIlanTaslagiService
     /**
      * Taslağı ilan'a dönüştür
      *
-     * @param int $taslakId Taslak ID
-     * @param int $userId Kullanıcı ID
-     * @return Ilan
+     * @param  int  $taslakId  Taslak ID
+     * @param  int  $userId  Kullanıcı ID
      */
     public function convertToIlan(int $taslakId, int $userId): Ilan
     {
         $taslak = AIIlanTaslagi::findOrFail($taslakId);
 
-        if (!$taslak->isApproved()) {
+        if (! $taslak->isApproved()) {
             throw new \Exception('Taslak onaylanmamış, ilan oluşturulamaz');
         }
 
@@ -129,7 +125,7 @@ class AIIlanTaslagiService
             'fiyat' => $aiResponse['fiyat'] ?? 0,
             'para_birimi' => $aiResponse['para_birimi'] ?? 'TRY',
             'danisman_id' => $taslak->danisman_id,
-            'status' => 'Aktif',
+            'status' => true, // Context7: boolean status
             // Diğer alanlar...
         ]);
 
@@ -151,8 +147,8 @@ class AIIlanTaslagiService
     /**
      * Danışmana ait taslakları getir
      *
-     * @param int $danismanId Danışman ID
-     * @param string|null $status Status filtresi
+     * @param  int  $danismanId  Danışman ID
+     * @param  string|null  $status  Status filtresi
      * @return \Illuminate\Database\Eloquent\Collection
      */
     public function getDraftsByDanisman(int $danismanId, ?string $status = null)
@@ -166,4 +162,3 @@ class AIIlanTaslagiService
         return $query->orderBy('created_at', 'desc')->get();
     }
 }
-

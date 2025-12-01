@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Services\TKGMService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 
 /**
  * Arsa Hesaplama Controller
@@ -34,14 +34,14 @@ class ArsaCalculationController extends AdminController
             'ada' => 'nullable|string',
             'parsel' => 'nullable|string',
             'il' => 'nullable|string',
-            'ilce' => 'nullable|string'
+            'ilce' => 'nullable|string',
         ]);
 
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
                 'message' => 'Hesaplama için gerekli bilgiler eksik',
-                'errors' => $validator->errors()
+                'errors' => $validator->errors(),
             ], 422);
         }
 
@@ -60,7 +60,7 @@ class ArsaCalculationController extends AdminController
                 'maksimum_taban_alani' => $taks > 0 ? $alanM2 * $taks : 0,
                 'maksimum_kat_sayisi' => ($kaks > 0 && $taks > 0) ? ceil($kaks / $taks) : 0,
                 'birim_fiyat_m2' => 0,
-                'toplam_deger' => 0
+                'toplam_deger' => 0,
             ];
 
             // TKGM Sorgulaması (isteğe bağlı)
@@ -82,18 +82,18 @@ class ArsaCalculationController extends AdminController
                 'calculations' => $calculations,
                 'tkgm_data' => $tkgmData,
                 'investment_score' => $investmentScore,
-                'calculated_at' => now()->toISOString()
+                'calculated_at' => now()->toISOString(),
             ]);
 
         } catch (\Exception $e) {
             Log::error('Arsa hesaplama hatası', [
                 'error' => $e->getMessage(),
-                'request_data' => $request->all()
+                'request_data' => $request->all(),
             ]);
 
             return response()->json([
                 'success' => false,
-                'message' => 'Hesaplama sırasında bir hata oluştu'
+                'message' => 'Hesaplama sırasında bir hata oluştu',
             ], 500);
         }
     }
@@ -108,14 +108,14 @@ class ArsaCalculationController extends AdminController
             'ada' => 'required|string',
             'parsel' => 'required|string',
             'il' => 'required|string',
-            'ilce' => 'required|string'
+            'ilce' => 'required|string',
         ]);
 
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
                 'message' => 'Ada, parsel, il ve ilçe bilgileri zorunludur',
-                'errors' => $validator->errors()
+                'errors' => $validator->errors(),
             ], 422);
         }
 
@@ -132,12 +132,12 @@ class ArsaCalculationController extends AdminController
         } catch (\Exception $e) {
             Log::error('TKGM sorgulama hatası', [
                 'error' => $e->getMessage(),
-                'request_data' => $request->all()
+                'request_data' => $request->all(),
             ]);
 
             return response()->json([
                 'success' => false,
-                'message' => 'Tapu kadastro sorgulaması sırasında bir hata oluştu'
+                'message' => 'Tapu kadastro sorgulaması sırasında bir hata oluştu',
             ], 500);
         }
     }
@@ -151,13 +151,13 @@ class ArsaCalculationController extends AdminController
         $validator = Validator::make($request->all(), [
             'value' => 'required|numeric|min:0',
             'from' => 'required|in:m2,dunum',
-            'to' => 'required|in:m2,dunum'
+            'to' => 'required|in:m2,dunum',
         ]);
 
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
-                'errors' => $validator->errors()
+                'errors' => $validator->errors(),
             ], 422);
         }
 
@@ -174,7 +174,7 @@ class ArsaCalculationController extends AdminController
         } else {
             return response()->json([
                 'success' => false,
-                'message' => 'Geçersiz birim çevirimi'
+                'message' => 'Geçersiz birim çevirimi',
             ], 400);
         }
 
@@ -182,12 +182,12 @@ class ArsaCalculationController extends AdminController
             'success' => true,
             'original' => [
                 'value' => $value,
-                'unit' => $from
+                'unit' => $from,
             ],
             'converted' => [
                 'value' => round($result, 2),
-                'unit' => $to
-            ]
+                'unit' => $to,
+            ],
         ]);
     }
 
@@ -268,9 +268,9 @@ class ArsaCalculationController extends AdminController
         // TKGM veri bonusu (0-10)
         if ($tkgmData && isset($tkgmData['success']) && $tkgmData['success']) {
             $score += 10;
-            $factors[] = "✅ TKGM verisi bulundu";
+            $factors[] = '✅ TKGM verisi bulundu';
         } else {
-            $factors[] = "⚠️ TKGM verisi bulunamadı";
+            $factors[] = '⚠️ TKGM verisi bulunamadı';
         }
 
         return [
@@ -278,7 +278,7 @@ class ArsaCalculationController extends AdminController
             'max_score' => $maxScore,
             'percentage' => round(($score / $maxScore) * 100, 1),
             'factors' => $factors,
-            'rating' => $this->getInvestmentRating($score)
+            'rating' => $this->getInvestmentRating($score),
         ];
     }
 
@@ -287,10 +287,19 @@ class ArsaCalculationController extends AdminController
      */
     private function getInvestmentRating($score)
     {
-        if ($score >= 80) return 'Mükemmel';
-        if ($score >= 60) return 'İyi';
-        if ($score >= 40) return 'Orta';
-        if ($score >= 20) return 'Zayıf';
+        if ($score >= 80) {
+            return 'Mükemmel';
+        }
+        if ($score >= 60) {
+            return 'İyi';
+        }
+        if ($score >= 40) {
+            return 'Orta';
+        }
+        if ($score >= 20) {
+            return 'Zayıf';
+        }
+
         return 'Çok Zayıf';
     }
 }

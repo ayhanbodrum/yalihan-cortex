@@ -23,7 +23,7 @@ class DemirbasController extends Controller
 
             Log::info('Getting demirbas categories', [
                 'kategori_id' => $kategoriId,
-                'yayin_tipi_id' => $yayinTipiId
+                'yayin_tipi_id' => $yayinTipiId,
             ]);
 
             // ✅ Context7: Arsa kategorisi için demirbaş gösterme (ID: 2)
@@ -31,7 +31,7 @@ class DemirbasController extends Controller
                 return ResponseService::success([
                     'categories' => [],
                     'count' => 0,
-                    'message' => 'Arsa kategorisi için demirbaş bulunmuyor'
+                    'message' => 'Arsa kategorisi için demirbaş bulunmuyor',
                 ], 'Arsa kategorisi için demirbaş bulunmuyor');
             }
 
@@ -97,7 +97,7 @@ class DemirbasController extends Controller
                                 'brand' => $demirbas->brand,
                                 'description' => $demirbas->description,
                             ];
-                        })
+                        }),
                     ];
                 });
 
@@ -118,7 +118,7 @@ class DemirbasController extends Controller
         } catch (\Exception $e) {
             Log::error('Demirbas categories loading error', [
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
 
             return ResponseService::serverError('Demirbaş kategorileri yüklenirken hata oluştu', $e);

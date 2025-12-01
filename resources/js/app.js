@@ -1,5 +1,5 @@
 import Alpine from 'alpinejs';
-import FeatureSuggest from './components/AI/FeatureSuggest.js'
+import FeatureSuggest from './components/AI/FeatureSuggest.js';
 import collapse from '@alpinejs/collapse';
 
 Alpine.plugin(collapse);
@@ -17,7 +17,9 @@ if (document.readyState === 'loading') {
                 if (document.body && typeof Alpine !== 'undefined') {
                     Alpine.start();
                     console.log('✅ Alpine started after modules loaded');
-                    try { FeatureSuggest.init() } catch {}
+                    try {
+                        FeatureSuggest.init();
+                    } catch {}
                 } else {
                     console.warn('⚠️ Alpine start delayed - DOM or Alpine not ready');
                     // Retry after a short delay
@@ -25,7 +27,9 @@ if (document.readyState === 'loading') {
                         if (document.body && typeof Alpine !== 'undefined') {
                             Alpine.start();
                             console.log('✅ Alpine started after retry');
-                            try { FeatureSuggest.init() } catch {}
+                            try {
+                                FeatureSuggest.init();
+                            } catch {}
                         }
                     }, 200);
                 }
@@ -42,7 +46,9 @@ if (document.readyState === 'loading') {
             if (document.body && typeof Alpine !== 'undefined') {
                 Alpine.start();
                 console.log('✅ Alpine started after modules loaded');
-                try { FeatureSuggest.init() } catch {}
+                try {
+                    FeatureSuggest.init();
+                } catch {}
             } else {
                 console.warn('⚠️ Alpine start delayed - DOM or Alpine not ready');
                 // Retry after a short delay
@@ -50,7 +56,9 @@ if (document.readyState === 'loading') {
                     if (document.body && typeof Alpine !== 'undefined') {
                         Alpine.start();
                         console.log('✅ Alpine started after retry');
-                        try { FeatureSuggest.init() } catch {}
+                        try {
+                            FeatureSuggest.init();
+                        } catch {}
                     }
                 }, 200);
             }

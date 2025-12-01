@@ -9,7 +9,6 @@ use App\Services\Logging\LogService;
 use App\Services\Response\ResponseService;
 use App\Traits\ValidatesApiRequests;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 /**
  * Reference & File Management API Controller
@@ -40,7 +39,6 @@ class ReferenceController extends Controller
      *
      * POST /api/reference/generate
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function generateRef(Request $request)
@@ -50,7 +48,7 @@ class ReferenceController extends Controller
             'ilan_id' => 'required|exists:ilanlar,id',
             'region_code' => 'nullable|string|max:10',
             'type_code' => 'nullable|string|max:5',
-            'force' => 'nullable|boolean'
+            'force' => 'nullable|boolean',
         ]);
 
         if ($validated instanceof \Illuminate\Http\JsonResponse) {
@@ -61,7 +59,7 @@ class ReferenceController extends Controller
             $ilan = Ilan::findOrFail($request->ilan_id);
 
             // Eğer ref numarası varsa ve force=false ise, hata döndür
-            if ($ilan->referans_no && !$request->boolean('force')) {
+            if ($ilan->referans_no && ! $request->boolean('force')) {
                 return ResponseService::error('Bu ilan için zaten ref numarası mevcut. Force=true ile yeniden oluşturabilirsiniz.', 400);
             }
 
@@ -69,7 +67,7 @@ class ReferenceController extends Controller
             $referansNo = $this->referansService->generateReferansNo($ilan);
 
             // Benzersizlik kontrolü
-            if (!$this->referansService->isUnique($referansNo, $ilan->id)) {
+            if (! $this->referansService->isUnique($referansNo, $ilan->id)) {
                 // Retry mekanizması (3 deneme)
                 for ($i = 0; $i < 3; $i++) {
                     $referansNo = $this->referansService->generateReferansNo($ilan);
@@ -85,18 +83,18 @@ class ReferenceController extends Controller
             LogService::info('Ref numarası oluşturuldu', [
                 'ilan_id' => $ilan->id,
                 'referans_no' => $referansNo,
-                'user_id' => auth()->id()
+                'user_id' => auth()->id(),
             ]);
 
             return ResponseService::success([
                 'referans_no' => $referansNo,
                 'ilan_id' => $ilan->id,
-                'message' => 'Ref numarası başarıyla oluşturuldu'
+                'message' => 'Ref numarası başarıyla oluşturuldu',
             ]);
         } catch (\Exception $e) {
             LogService::error('Ref numarası oluşturma hatası', [
                 'ilan_id' => $request->ilan_id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], $e);
 
             return ResponseService::serverError('Ref numarası oluşturulurken hata oluştu', $e);
@@ -108,7 +106,6 @@ class ReferenceController extends Controller
      *
      * GET /api/reference/validate/{referansNo}
      *
-     * @param string $referansNo
      * @return \Illuminate\Http\JsonResponse
      */
     public function validateRef(string $referansNo)
@@ -116,7 +113,7 @@ class ReferenceController extends Controller
         try {
             $ilan = $this->referansService->findByReferansNo($referansNo);
 
-            if (!$ilan) {
+            if (! $ilan) {
                 return ResponseService::error('Ref numarası bulunamadı', 404);
             }
 
@@ -125,7 +122,7 @@ class ReferenceController extends Controller
                 'referans_no' => $referansNo,
                 'ilan_id' => $ilan->id,
                 'baslik' => $ilan->baslik,
-                'status' => $ilan->status
+                'status' => $ilan->status,
             ]);
         } catch (\Exception $e) {
             return ResponseService::serverError('Ref numarası doğrulanırken hata oluştu', $e);
@@ -137,7 +134,6 @@ class ReferenceController extends Controller
      *
      * POST /api/reference/basename
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function generateBasename(Request $request)
@@ -146,7 +142,7 @@ class ReferenceController extends Controller
         $validated = $this->validateRequestWithResponse($request, [
             'ilan_id' => 'required|exists:ilanlar,id',
             'format' => 'nullable|in:full,short',
-            'include_owner' => 'nullable|boolean'
+            'include_owner' => 'nullable|boolean',
         ]);
 
         if ($validated instanceof \Illuminate\Http\JsonResponse) {
@@ -170,19 +166,19 @@ class ReferenceController extends Controller
                 'ilan_id' => $ilan->id,
                 'basename' => $basename,
                 'format' => $request->input('format', 'full'),
-                'user_id' => auth()->id()
+                'user_id' => auth()->id(),
             ]);
 
             return ResponseService::success([
                 'basename' => $basename,
                 'ilan_id' => $ilan->id,
                 'format' => $request->input('format', 'full'),
-                'message' => 'Basename başarıyla oluşturuldu'
+                'message' => 'Basename başarıyla oluşturuldu',
             ]);
         } catch (\Exception $e) {
             LogService::error('Basename oluşturma hatası', [
                 'ilan_id' => $request->ilan_id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], $e);
 
             return ResponseService::serverError('Basename oluşturulurken hata oluştu', $e);
@@ -194,7 +190,6 @@ class ReferenceController extends Controller
      *
      * POST /api/reference/portal
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function updatePortalNumber(Request $request)
@@ -203,7 +198,7 @@ class ReferenceController extends Controller
         $validated = $this->validateRequestWithResponse($request, [
             'ilan_id' => 'required|exists:ilanlar,id',
             'portal' => 'required|in:sahibinden,emlakjet,hepsiemlak,zingat,hurriyetemlak',
-            'portal_id' => 'required|string|max:100'
+            'portal_id' => 'required|string|max:100',
         ]);
 
         if ($validated instanceof \Illuminate\Http\JsonResponse) {
@@ -216,27 +211,27 @@ class ReferenceController extends Controller
             $portalId = $request->portal_id;
 
             // Portal ID alanını güncelle
-            $fieldName = $portal . '_id';
+            $fieldName = $portal.'_id';
             $ilan->update([$fieldName => $portalId]);
 
             LogService::info('Portal numarası güncellendi', [
                 'ilan_id' => $ilan->id,
                 'portal' => $portal,
                 'portal_id' => $portalId,
-                'user_id' => auth()->id()
+                'user_id' => auth()->id(),
             ]);
 
             return ResponseService::success([
                 'ilan_id' => $ilan->id,
                 'portal' => $portal,
                 'portal_id' => $portalId,
-                'message' => 'Portal numarası başarıyla güncellendi'
+                'message' => 'Portal numarası başarıyla güncellendi',
             ]);
         } catch (\Exception $e) {
             LogService::error('Portal numarası güncelleme hatası', [
                 'ilan_id' => $request->ilan_id,
                 'portal' => $request->portal,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], $e);
 
             return ResponseService::serverError('Portal numarası güncellenirken hata oluştu', $e);
@@ -248,7 +243,6 @@ class ReferenceController extends Controller
      *
      * GET /api/reference/{ilanId}
      *
-     * @param int $ilanId
      * @return \Illuminate\Http\JsonResponse
      */
     public function getReferenceInfo(int $ilanId)
@@ -268,7 +262,7 @@ class ReferenceController extends Controller
                     'hurriyetemlak' => $ilan->hurriyetemlak_id,
                 ],
                 'baslik' => $ilan->baslik,
-                'status' => $ilan->status
+                'status' => $ilan->status,
             ]);
         } catch (\Exception $e) {
             return ResponseService::serverError('Ref bilgileri alınırken hata oluştu', $e);
@@ -280,7 +274,6 @@ class ReferenceController extends Controller
      *
      * POST /api/reference/batch-generate
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function batchGenerateRef(Request $request)
@@ -289,7 +282,7 @@ class ReferenceController extends Controller
         $validated = $this->validateRequestWithResponse($request, [
             'ilan_ids' => 'required|array|min:1',
             'ilan_ids.*' => 'required|exists:ilanlar,id',
-            'force' => 'nullable|boolean'
+            'force' => 'nullable|boolean',
         ]);
 
         if ($validated instanceof \Illuminate\Http\JsonResponse) {
@@ -303,7 +296,7 @@ class ReferenceController extends Controller
                 'success' => 0,
                 'failed' => 0,
                 'skipped' => 0,
-                'errors' => []
+                'errors' => [],
             ];
 
             // ✅ PERFORMANCE FIX: N+1 query önlendi - Tüm ilanları tek query'de al
@@ -315,18 +308,20 @@ class ReferenceController extends Controller
             foreach ($ilanIds as $ilanId) {
                 try {
                     $ilan = $ilanlar->get($ilanId);
-                    if (!$ilan) {
+                    if (! $ilan) {
                         $results['failed']++;
                         $results['errors'][] = [
                             'ilan_id' => $ilanId,
-                            'error' => 'İlan bulunamadı'
+                            'error' => 'İlan bulunamadı',
                         ];
+
                         continue;
                     }
 
                     // Eğer ref varsa ve force=false ise, skip et
-                    if ($ilan->referans_no && !$force) {
+                    if ($ilan->referans_no && ! $force) {
                         $results['skipped']++;
+
                         continue;
                     }
 
@@ -334,7 +329,7 @@ class ReferenceController extends Controller
                     $referansNo = $this->referansService->generateReferansNo($ilan);
 
                     // Benzersizlik kontrolü
-                    if (!$this->referansService->isUnique($referansNo, $ilan->id)) {
+                    if (! $this->referansService->isUnique($referansNo, $ilan->id)) {
                         // Retry
                         for ($i = 0; $i < 3; $i++) {
                             $referansNo = $this->referansService->generateReferansNo($ilan);
@@ -350,18 +345,18 @@ class ReferenceController extends Controller
                     $results['failed']++;
                     $results['errors'][] = [
                         'ilan_id' => $ilanId,
-                        'error' => $e->getMessage()
+                        'error' => $e->getMessage(),
                     ];
                 }
             }
 
             // ✅ PERFORMANCE FIX: Bulk update (CASE WHEN ile)
-            if (!empty($updates)) {
+            if (! empty($updates)) {
                 $cases = [];
                 $bindings = [];
                 $ids = [];
                 foreach ($updates as $id => $referansNo) {
-                    $cases[] = "WHEN ? THEN ?";
+                    $cases[] = 'WHEN ? THEN ?';
                     $bindings[] = $id;
                     $bindings[] = $referansNo;
                     $ids[] = $id;
@@ -380,13 +375,13 @@ class ReferenceController extends Controller
             LogService::info('Toplu ref numarası oluşturuldu', [
                 'total' => count($ilanIds),
                 'results' => $results,
-                'user_id' => auth()->id()
+                'user_id' => auth()->id(),
             ]);
 
             return ResponseService::success([
                 'total' => count($ilanIds),
                 'results' => $results,
-                'message' => 'Toplu ref numarası oluşturma tamamlandı'
+                'message' => 'Toplu ref numarası oluşturma tamamlandı',
             ]);
         } catch (\Exception $e) {
             return ResponseService::serverError('Toplu ref numarası oluşturulurken hata oluştu', $e);

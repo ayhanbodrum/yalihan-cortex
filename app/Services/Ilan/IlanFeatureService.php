@@ -2,8 +2,8 @@
 
 namespace App\Services\Ilan;
 
-use App\Models\IlanKategori;
 use App\Models\FeatureCategory;
+use App\Models\IlanKategori;
 
 class IlanFeatureService
 {
@@ -11,63 +11,63 @@ class IlanFeatureService
     {
         $category = IlanKategori::findOrFail($categoryId);
 
-        $featureCategories = FeatureCategory::with(['features' => function($query) use ($category, $yayinTipi) {
+        $featureCategories = FeatureCategory::with(['features' => function ($query) use ($category, $yayinTipi) {
             $query->where('status', true)
-                  ->where(function($q) use ($category) {
-                      $q->where('applies_to', 'all')
+                ->where(function ($q) use ($category) {
+                    $q->where('applies_to', 'all')
                         ->orWhere('applies_to', $category->slug)
                         ->orWhere('applies_to', 'like', "%,{$category->slug},%")
                         ->orWhere('applies_to', 'like', "{$category->slug},%")
                         ->orWhere('applies_to', 'like', "%,{$category->slug}");
-                  });
+                });
 
             if ($yayinTipi) {
                 $yayinTipiLower = strtolower($yayinTipi);
-                $query->where(function($q) use ($category, $yayinTipiLower) {
+                $query->where(function ($q) use ($category, $yayinTipiLower) {
                     $q->where('applies_to', 'all')
-                      ->orWhere('applies_to', 'like', "%{$category->slug}|{$yayinTipiLower}")
-                      ->orWhere('applies_to', 'like', "{$category->slug}|{$yayinTipiLower}%")
-                      ->orWhere('applies_to', 'like', "%|{$yayinTipiLower}")
-                      ->orWhere('applies_to', 'like', "{$yayinTipiLower}|%")
-                      ->orWhere('applies_to', $yayinTipiLower);
+                        ->orWhere('applies_to', 'like', "%{$category->slug}|{$yayinTipiLower}")
+                        ->orWhere('applies_to', 'like', "{$category->slug}|{$yayinTipiLower}%")
+                        ->orWhere('applies_to', 'like', "%|{$yayinTipiLower}")
+                        ->orWhere('applies_to', 'like', "{$yayinTipiLower}|%")
+                        ->orWhere('applies_to', $yayinTipiLower);
                 });
             }
 
             $query->orderBy('display_order');
         }])
-        ->whereHas('features', function($query) use ($category, $yayinTipi) {
-            $query->where('status', true)
-                  ->where(function($q) use ($category) {
-                      $q->where('applies_to', 'all')
-                        ->orWhere('applies_to', $category->slug)
-                        ->orWhere('applies_to', 'like', "%,{$category->slug},%")
-                        ->orWhere('applies_to', 'like', "{$category->slug},%")
-                        ->orWhere('applies_to', 'like', "%,{$category->slug}");
-                  });
+            ->whereHas('features', function ($query) use ($category, $yayinTipi) {
+                $query->where('status', true)
+                    ->where(function ($q) use ($category) {
+                        $q->where('applies_to', 'all')
+                            ->orWhere('applies_to', $category->slug)
+                            ->orWhere('applies_to', 'like', "%,{$category->slug},%")
+                            ->orWhere('applies_to', 'like', "{$category->slug},%")
+                            ->orWhere('applies_to', 'like', "%,{$category->slug}");
+                    });
 
-            if ($yayinTipi) {
-                $yayinTipiLower = strtolower($yayinTipi);
-                $query->where(function($q) use ($category, $yayinTipiLower) {
-                    $q->where('applies_to', 'all')
-                      ->orWhere('applies_to', 'like', "%{$category->slug}|{$yayinTipiLower}")
-                      ->orWhere('applies_to', 'like', "{$category->slug}|{$yayinTipiLower}%")
-                      ->orWhere('applies_to', 'like', "%|{$yayinTipiLower}")
-                      ->orWhere('applies_to', 'like', "{$yayinTipiLower}|%")
-                      ->orWhere('applies_to', $yayinTipiLower);
-                });
-            }
-        })
-        ->where('status', true)
-        ->orderBy('display_order')
-        ->get();
+                if ($yayinTipi) {
+                    $yayinTipiLower = strtolower($yayinTipi);
+                    $query->where(function ($q) use ($category, $yayinTipiLower) {
+                        $q->where('applies_to', 'all')
+                            ->orWhere('applies_to', 'like', "%{$category->slug}|{$yayinTipiLower}")
+                            ->orWhere('applies_to', 'like', "{$category->slug}|{$yayinTipiLower}%")
+                            ->orWhere('applies_to', 'like', "%|{$yayinTipiLower}")
+                            ->orWhere('applies_to', 'like', "{$yayinTipiLower}|%")
+                            ->orWhere('applies_to', $yayinTipiLower);
+                    });
+                }
+            })
+            ->where('status', true)
+            ->orderBy('display_order')
+            ->get();
 
-        $transformed = $featureCategories->map(function($cat) {
+        $transformed = $featureCategories->map(function ($cat) {
             return [
                 'id' => $cat->id,
                 'name' => $cat->name,
                 'slug' => $cat->slug,
                 'icon' => $cat->icon ?? 'fas fa-star',
-                'features' => $cat->features->map(function($feature) {
+                'features' => $cat->features->map(function ($feature) {
                     return [
                         'id' => $feature->id,
                         'name' => $feature->name,
@@ -78,7 +78,7 @@ class IlanFeatureService
                         'required' => $feature->required ?? false,
                         'description' => $feature->description ?? null,
                     ];
-                })
+                }),
             ];
         });
 
@@ -87,8 +87,8 @@ class IlanFeatureService
             'metadata' => [
                 'category_slug' => $category->slug,
                 'yayin_tipi' => $yayinTipi,
-                'total_features' => $transformed->sum(fn($cat) => count($cat['features']))
-            ]
+                'total_features' => $transformed->sum(fn ($cat) => count($cat['features'])),
+            ],
         ];
     }
 }

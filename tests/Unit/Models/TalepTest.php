@@ -2,10 +2,8 @@
 
 namespace Tests\Unit\Models;
 
-use App\Models\Ilan;
 use App\Models\Kisi;
 use App\Models\Talep;
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -176,4 +174,3 @@ class TalepTest extends TestCase
         $this->assertEquals('Aktif', $talep->status);
     }
 }
-

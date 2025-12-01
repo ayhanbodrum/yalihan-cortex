@@ -21,8 +21,8 @@ class BulkKisiController extends AdminController
             'inactive_kisiler' => Kisi::where('status', 'inactive')->count(),
             'recent_additions' => Kisi::whereBetween('created_at', [
                 now()->subDays(7),
-                now()
-            ])->count()
+                now(),
+            ])->count(),
         ];
 
         return view('admin.bulk-kisi.index', compact('stats'));
@@ -49,13 +49,13 @@ class BulkKisiController extends AdminController
             'kisiler.*.telefon' => 'nullable|string|max:20',
             'kisiler.*.tc_kimlik' => 'nullable|string|size:11|unique:kisiler,tc_kimlik',
             'kisiler.*.tip' => 'required|in:musteri,mal_sahibi,danismani',
-            'kisiler.*.status' => 'required|in:active,inactive'
+            'kisiler.*.status' => 'required|in:active,inactive',
         ]);
 
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
-                'errors' => $validator->errors()
+                'errors' => $validator->errors(),
             ], 422);
         }
 
@@ -80,18 +80,19 @@ class BulkKisiController extends AdminController
                 try {
                     // ✅ PERFORMANCE FIX: Array kontrolü kullan (database query yerine)
                     $existingKisi = null;
-                    if (!empty($kisiData['email']) && in_array($kisiData['email'], $existingByEmail)) {
+                    if (! empty($kisiData['email']) && in_array($kisiData['email'], $existingByEmail)) {
                         $existingKisi = Kisi::find(array_search($kisiData['email'], $existingByEmail));
                     }
-                    if (!$existingKisi && !empty($kisiData['tc_kimlik']) && in_array($kisiData['tc_kimlik'], $existingByTc)) {
+                    if (! $existingKisi && ! empty($kisiData['tc_kimlik']) && in_array($kisiData['tc_kimlik'], $existingByTc)) {
                         $existingKisi = Kisi::find(array_search($kisiData['tc_kimlik'], $existingByTc));
                     }
 
                     if ($existingKisi) {
                         $errors[] = [
                             'index' => $index,
-                            'message' => "Kişi zaten mevcut (Email: {$kisiData['email']}, TC: {$kisiData['tc_kimlik']})"
+                            'message' => "Kişi zaten mevcut (Email: {$kisiData['email']}, TC: {$kisiData['tc_kimlik']})",
                         ];
+
                         continue;
                     }
 
@@ -103,14 +104,14 @@ class BulkKisiController extends AdminController
                         'tc_kimlik' => $kisiData['tc_kimlik'] ?? null,
                         'tip' => $kisiData['tip'],
                         'status' => $kisiData['status'],
-                        'created_by' => auth()->id()
+                        'created_by' => auth()->id(),
                     ]);
 
                     $created[] = $kisi;
                 } catch (\Exception $e) {
                     $errors[] = [
                         'index' => $index,
-                        'message' => "Kayıt hatası: " . $e->getMessage()
+                        'message' => 'Kayıt hatası: '.$e->getMessage(),
                     ];
                 }
             }
@@ -120,29 +121,29 @@ class BulkKisiController extends AdminController
             Log::info('Bulk kisi creation completed', [
                 'created_count' => count($created),
                 'error_count' => count($errors),
-                'user_id' => auth()->id()
+                'user_id' => auth()->id(),
             ]);
 
             return response()->json([
                 'success' => true,
-                'message' => count($created) . ' kişi başarıyla oluşturuldu.',
+                'message' => count($created).' kişi başarıyla oluşturuldu.',
                 'data' => [
                     'created_count' => count($created),
                     'error_count' => count($errors),
-                    'errors' => $errors
-                ]
+                    'errors' => $errors,
+                ],
             ]);
         } catch (\Exception $e) {
             DB::rollback();
 
             Log::error('Bulk kisi creation failed', [
                 'error' => $e->getMessage(),
-                'user_id' => auth()->id()
+                'user_id' => auth()->id(),
             ]);
 
             return response()->json([
                 'success' => false,
-                'message' => 'Toplu kayıt işlemi başarısız: ' . $e->getMessage()
+                'message' => 'Toplu kayıt işlemi başarısız: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -166,13 +167,13 @@ class BulkKisiController extends AdminController
             'updates' => 'required|array',
             'updates.status' => 'sometimes|in:active,inactive',
             'updates.tip' => 'sometimes|in:musteri,mal_sahibi,danismani',
-            'updates.danismanId' => 'sometimes|nullable|exists:users,id'
+            'updates.danismanId' => 'sometimes|nullable|exists:users,id',
         ]);
 
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
-                'errors' => $validator->errors()
+                'errors' => $validator->errors(),
             ], 422);
         }
 
@@ -190,25 +191,25 @@ class BulkKisiController extends AdminController
                 'updated_count' => $updatedCount,
                 'kisi_ids' => $request->kisi_ids,
                 'updates' => $request->updates,
-                'user_id' => auth()->id()
+                'user_id' => auth()->id(),
             ]);
 
             return response()->json([
                 'success' => true,
-                'message' => $updatedCount . ' kişi başarıyla güncellendi.',
-                'updated_count' => $updatedCount
+                'message' => $updatedCount.' kişi başarıyla güncellendi.',
+                'updated_count' => $updatedCount,
             ]);
         } catch (\Exception $e) {
             DB::rollback();
 
             Log::error('Bulk kisi update failed', [
                 'error' => $e->getMessage(),
-                'user_id' => auth()->id()
+                'user_id' => auth()->id(),
             ]);
 
             return response()->json([
                 'success' => false,
-                'message' => 'Toplu güncelleme işlemi başarısız: ' . $e->getMessage()
+                'message' => 'Toplu güncelleme işlemi başarısız: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -221,13 +222,13 @@ class BulkKisiController extends AdminController
         $validator = Validator::make($request->all(), [
             'kisi_ids' => 'required|array|min:1',
             'kisi_ids.*' => 'exists:kisiler,id',
-            'force_delete' => 'boolean'
+            'force_delete' => 'boolean',
         ]);
 
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
-                'errors' => $validator->errors()
+                'errors' => $validator->errors(),
             ], 422);
         }
 
@@ -246,25 +247,25 @@ class BulkKisiController extends AdminController
                 'deleted_count' => $deletedCount,
                 'kisi_ids' => $request->kisi_ids,
                 'force_delete' => $request->force_delete,
-                'user_id' => auth()->id()
+                'user_id' => auth()->id(),
             ]);
 
             return response()->json([
                 'success' => true,
-                'message' => $deletedCount . ' kişi başarıyla silindi.',
-                'deleted_count' => $deletedCount
+                'message' => $deletedCount.' kişi başarıyla silindi.',
+                'deleted_count' => $deletedCount,
             ]);
         } catch (\Exception $e) {
             DB::rollback();
 
             Log::error('Bulk kisi deletion failed', [
                 'error' => $e->getMessage(),
-                'user_id' => auth()->id()
+                'user_id' => auth()->id(),
             ]);
 
             return response()->json([
                 'success' => false,
-                'message' => 'Toplu silme işlemi başarısız: ' . $e->getMessage()
+                'message' => 'Toplu silme işlemi başarısız: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -278,13 +279,13 @@ class BulkKisiController extends AdminController
             'format' => 'required|in:csv,xlsx,json',
             'filters' => 'sometimes|array',
             'filters.tip' => 'sometimes|in:musteri,mal_sahibi,danismani',
-            'filters.status' => 'sometimes|in:active,inactive'
+            'filters.status' => 'sometimes|in:active,inactive',
         ]);
 
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
-                'errors' => $validator->errors()
+                'errors' => $validator->errors(),
             ], 422);
         }
 
@@ -306,11 +307,11 @@ class BulkKisiController extends AdminController
                     return response()->json([
                         'success' => true,
                         'data' => $kisiler,
-                        'count' => $kisiler->count()
+                        'count' => $kisiler->count(),
                     ]);
 
                 case 'csv':
-                    $filename = 'kisiler_export_' . date('Y-m-d_H-i-s') . '.csv';
+                    $filename = 'kisiler_export_'.date('Y-m-d_H-i-s').'.csv';
 
                     return response()->streamDownload(function () use ($kisiler) {
                         $file = fopen('php://output', 'w');
@@ -329,31 +330,31 @@ class BulkKisiController extends AdminController
                                 $kisi->tc_kimlik,
                                 $kisi->tip,
                                 $kisi->status,
-                                $kisi->created_at->format('Y-m-d H:i:s')
+                                $kisi->created_at->format('Y-m-d H:i:s'),
                             ]);
                         }
 
                         fclose($file);
                     }, $filename, [
                         'Content-Type' => 'text/csv',
-                        'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+                        'Content-Disposition' => 'attachment; filename="'.$filename.'"',
                     ]);
 
                 default:
                     return response()->json([
                         'success' => false,
-                        'message' => 'Desteklenmeyen format'
+                        'message' => 'Desteklenmeyen format',
                     ], 400);
             }
         } catch (\Exception $e) {
             Log::error('Bulk kisi export failed', [
                 'error' => $e->getMessage(),
-                'user_id' => auth()->id()
+                'user_id' => auth()->id(),
             ]);
 
             return response()->json([
                 'success' => false,
-                'message' => 'Export işlemi başarısız: ' . $e->getMessage()
+                'message' => 'Export işlemi başarısız: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -366,13 +367,13 @@ class BulkKisiController extends AdminController
         $validator = Validator::make($request->all(), [
             'file' => 'required|file|mimes:csv,txt|max:10240', // 10MB max
             'has_header' => 'boolean',
-            'delimiter' => 'sometimes|string|max:1'
+            'delimiter' => 'sometimes|string|max:1',
         ]);
 
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
-                'errors' => $validator->errors()
+                'errors' => $validator->errors(),
             ], 422);
         }
 
@@ -403,49 +404,51 @@ class BulkKisiController extends AdminController
                     $kisiData = [
                         'ad' => $row[0] ?? '',
                         'soyad' => $row[1] ?? '',
-                        'email' => !empty($row[2]) ? $row[2] : null,
-                        'telefon' => !empty($row[3]) ? $row[3] : null,
-                        'tc_kimlik' => !empty($row[4]) ? $row[4] : null,
+                        'email' => ! empty($row[2]) ? $row[2] : null,
+                        'telefon' => ! empty($row[3]) ? $row[3] : null,
+                        'tc_kimlik' => ! empty($row[4]) ? $row[4] : null,
                         'tip' => $row[5] ?? 'musteri',
-                        'status' => $row[6] ?? 'active'
+                        'status' => $row[6] ?? 'active',
                     ];
 
                     // Validate data
                     if (empty($kisiData['ad']) || empty($kisiData['soyad'])) {
                         $errors[] = [
                             'row' => $index + 1,
-                            'message' => 'Ad ve Soyad alanları zorunludur'
+                            'message' => 'Ad ve Soyad alanları zorunludur',
                         ];
+
                         continue;
                     }
 
                     // Check for duplicates
                     $existingKisi = null;
-                    if (!empty($kisiData['email'])) {
+                    if (! empty($kisiData['email'])) {
                         $existingKisi = Kisi::where('email', $kisiData['email'])->first();
                     }
-                    if (!$existingKisi && !empty($kisiData['tc_kimlik'])) {
+                    if (! $existingKisi && ! empty($kisiData['tc_kimlik'])) {
                         $existingKisi = Kisi::where('tc_kimlik', $kisiData['tc_kimlik'])->first();
                     }
 
                     if ($existingKisi) {
                         $errors[] = [
                             'row' => $index + 1,
-                            'message' => 'Kişi zaten mevcut: ' . $kisiData['email']
+                            'message' => 'Kişi zaten mevcut: '.$kisiData['email'],
                         ];
+
                         continue;
                     }
 
                     $kisi = Kisi::create([
                         ...$kisiData,
-                        'created_by' => auth()->id()
+                        'created_by' => auth()->id(),
                     ]);
 
                     $created[] = $kisi;
                 } catch (\Exception $e) {
                     $errors[] = [
                         'row' => $index + 1,
-                        'message' => 'Import hatası: ' . $e->getMessage()
+                        'message' => 'Import hatası: '.$e->getMessage(),
                     ];
                 }
             }
@@ -456,29 +459,29 @@ class BulkKisiController extends AdminController
                 'file_name' => $file->getClientOriginalName(),
                 'created_count' => count($created),
                 'error_count' => count($errors),
-                'user_id' => auth()->id()
+                'user_id' => auth()->id(),
             ]);
 
             return response()->json([
                 'success' => true,
-                'message' => count($created) . ' kişi başarıyla import edildi.',
+                'message' => count($created).' kişi başarıyla import edildi.',
                 'data' => [
                     'created_count' => count($created),
                     'error_count' => count($errors),
-                    'errors' => $errors
-                ]
+                    'errors' => $errors,
+                ],
             ]);
         } catch (\Exception $e) {
             DB::rollback();
 
             Log::error('Bulk kisi import failed', [
                 'error' => $e->getMessage(),
-                'user_id' => auth()->id()
+                'user_id' => auth()->id(),
             ]);
 
             return response()->json([
                 'success' => false,
-                'message' => 'Import işlemi başarısız: ' . $e->getMessage()
+                'message' => 'Import işlemi başarısız: '.$e->getMessage(),
             ], 500);
         }
     }

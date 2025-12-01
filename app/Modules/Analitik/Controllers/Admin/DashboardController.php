@@ -3,7 +3,6 @@
 namespace App\Modules\Analitik\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
@@ -17,8 +16,8 @@ class DashboardController extends Controller
         return response()->json([
             'success' => true,
             'data' => [
-                'message' => 'Analitik dashboard data'
-            ]
+                'message' => 'Analitik dashboard data',
+            ],
         ]);
     }
 }

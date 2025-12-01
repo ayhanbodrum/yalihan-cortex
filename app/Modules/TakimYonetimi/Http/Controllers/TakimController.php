@@ -3,9 +3,8 @@
 namespace App\Modules\TakimYonetimi\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\TakimUyesi;
-use App\Models\User;
+use Illuminate\Http\Request;
 
 class TakimController extends Controller
 {

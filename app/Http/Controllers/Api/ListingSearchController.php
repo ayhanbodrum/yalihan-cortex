@@ -4,16 +4,15 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Il;
+use App\Models\Ilan;
 use App\Models\Ilce;
 use App\Models\Mahalle;
-use App\Models\Ilan;
+use App\Services\Logging\LogService;
 use App\Services\Response\ResponseService;
 use App\Traits\ValidatesApiRequests;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use App\Services\Logging\LogService;
 
 class ListingSearchController extends Controller
 {
@@ -126,6 +125,7 @@ class ListingSearchController extends Controller
                 'q' => $q,
                 'type' => $type,
             ]);
+
             return ResponseService::serverError('İlan arama sırasında hata oluştu.', $e);
         }
     }
@@ -140,10 +140,11 @@ class ListingSearchController extends Controller
                 ->get();
 
             return ResponseService::success([
-                'data' => $provinces
+                'data' => $provinces,
             ], 'İller başarıyla getirildi');
         } catch (\Throwable $e) {
-            Log::error('ListingSearchController@getProvinces error: ' . $e->getMessage());
+            Log::error('ListingSearchController@getProvinces error: '.$e->getMessage());
+
             return ResponseService::serverError('İller yüklenirken hata oluştu.', $e);
         }
     }
@@ -157,14 +158,15 @@ class ListingSearchController extends Controller
                 ->get();
 
             return ResponseService::success([
-                'data' => $districts
+                'data' => $districts,
             ], 'İlçeler başarıyla getirildi');
         } catch (\Throwable $e) {
             // ✅ STANDARDIZED: Using LogService
             LogService::api('/api/districts', [], null, null);
             LogService::error('ListingSearchController@getDistricts error', [
-                'province_id' => $provinceId
+                'province_id' => $provinceId,
             ]);
+
             return ResponseService::serverError('İlçeler yüklenirken hata oluştu.', $e);
         }
     }
@@ -178,14 +180,15 @@ class ListingSearchController extends Controller
                 ->get();
 
             return ResponseService::success([
-                'data' => $neighborhoods
+                'data' => $neighborhoods,
             ], 'Mahalleler başarıyla getirildi');
         } catch (\Throwable $e) {
             // ✅ STANDARDIZED: Using LogService
             LogService::api('/api/neighborhoods', [], null, null);
             LogService::error('ListingSearchController@getNeighborhoods error', [
-                'district_id' => $districtId
+                'district_id' => $districtId,
             ]);
+
             return ResponseService::serverError('Mahalleler yüklenirken hata oluştu.', $e);
         }
     }

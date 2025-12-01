@@ -2,7 +2,7 @@
 
 namespace App\Modules\Crm\Services;
 
-use App\Modules\Crm\Models\Kisi;
+use App\Models\Kisi;
 use Illuminate\Support\Facades\Log;
 
 class KisiService
@@ -96,8 +96,6 @@ class KisiService
      * Kişi arama - API için optimize edilmiş
      * Context7 & Yalıhan Bekçi: Standart kişi arama metodu
      *
-     * @param string $searchTerm
-     * @param int $limit
      * @return \Illuminate\Database\Eloquent\Collection
      */
     public static function search(string $searchTerm, int $limit = 10)
@@ -118,7 +116,8 @@ class KisiService
             ->get()
             ->map(function ($kisi) {
                 // ✅ Context7: Response formatı standartlaştırıldı
-                $tamAd = trim($kisi->ad . ' ' . $kisi->soyad);
+                $tamAd = trim($kisi->ad.' '.$kisi->soyad);
+
                 return [
                     'id' => $kisi->id,
                     'ad' => $kisi->ad,
@@ -127,7 +126,7 @@ class KisiService
                     'telefon' => $kisi->telefon,
                     'email' => $kisi->email,
                     'kisi_tipi' => $kisi->kisi_tipi ?? null,
-                    'text' => $tamAd . ($kisi->telefon ? ' - ' . $kisi->telefon : ''), // Context7 Live Search için
+                    'text' => $tamAd.($kisi->telefon ? ' - '.$kisi->telefon : ''), // Context7 Live Search için
                 ];
             })
             ->values() // ✅ Collection index'lerini sıfırla (array uyumluluğu)
@@ -166,7 +165,7 @@ class KisiService
     /**
      * Kişinin ilan sahibi olarak uygunluk skorunu hesapla
      */
-    public static function calculateOwnerScore(\App\Modules\Crm\Models\Kisi $kisi): int
+    public static function calculateOwnerScore(\App\Models\Kisi $kisi): int
     {
         $score = 0;
 

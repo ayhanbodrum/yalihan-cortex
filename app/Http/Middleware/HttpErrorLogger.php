@@ -21,6 +21,7 @@ class HttpErrorLogger
                 'ip' => $request->ip(),
             ]);
         }
+
         return $response;
     }
 }

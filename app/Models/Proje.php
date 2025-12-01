@@ -2,14 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\HasActiveScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Traits\HasActiveScope;
 
 class Proje extends Model
 {
-    use HasFactory, SoftDeletes, HasActiveScope;
+    use HasActiveScope, HasFactory, SoftDeletes;
 
     protected $table = 'projeler';
 
@@ -27,7 +27,7 @@ class Proje extends Model
         'progress',
         'notlar',
         'tags',
-        'status'
+        'status',
     ];
 
     protected $casts = [
@@ -72,7 +72,7 @@ class Proje extends Model
             'devam_ediyor' => 'Devam Ediyor',
             'tamamlandi' => 'Tamamlandı',
             'iptal' => 'İptal',
-            'beklemede' => 'Beklemede'
+            'beklemede' => 'Beklemede',
         ];
 
         return $statuslar[$this->status] ?? 'Bilinmiyor';
@@ -84,7 +84,7 @@ class Proje extends Model
             'dusuk' => 'Düşük',
             'orta' => 'Orta',
             'yuksek' => 'Yüksek',
-            'kritik' => 'Kritik'
+            'kritik' => 'Kritik',
         ];
 
         return $oncelikler[$this->oncelik] ?? 'Bilinmiyor';
@@ -92,7 +92,7 @@ class Proje extends Model
 
     public function getKalanGunAttribute()
     {
-        if (!$this->bitis_tarihi) {
+        if (! $this->bitis_tarihi) {
             return null;
         }
 
@@ -108,7 +108,7 @@ class Proje extends Model
 
     public function getProgressYuzdeAttribute()
     {
-        return $this->progress . '%';
+        return $this->progress.'%';
     }
 
     // Scope'lar
@@ -137,7 +137,7 @@ class Proje extends Model
     public function scopeYaklasan($query, $gun = 7)
     {
         return $query->where('bitis_tarihi', '<=', now()->addDays($gun))
-                    ->where('bitis_tarihi', '>', now());
+            ->where('bitis_tarihi', '>', now());
     }
 
     // Metodlar
@@ -147,6 +147,7 @@ class Proje extends Model
 
         if ($toplamGorev == 0) {
             $this->update(['progress' => 0]);
+
             return;
         }
 

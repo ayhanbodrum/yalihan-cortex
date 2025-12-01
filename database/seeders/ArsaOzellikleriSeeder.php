@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use App\Models\OzellikKategori;
 use App\Models\Ozellik;
+use App\Models\OzellikKategori;
+use Illuminate\Database\Seeder;
 
 class ArsaOzellikleriSeeder extends Seeder
 {
@@ -133,7 +133,7 @@ class ArsaOzellikleriSeeder extends Seeder
                     $ozellik
                 );
             }
-            $this->command->info("   → 5 imar özelliği eklendi");
+            $this->command->info('   → 5 imar özelliği eklendi');
         }
 
         // ✅ Parsel Bilgileri Özellikleri
@@ -217,7 +217,7 @@ class ArsaOzellikleriSeeder extends Seeder
                     $ozellik
                 );
             }
-            $this->command->info("   → 6 parsel özelliği eklendi");
+            $this->command->info('   → 6 parsel özelliği eklendi');
         }
 
         // ✅ Altyapı ve Tesisat Özellikleri
@@ -299,7 +299,7 @@ class ArsaOzellikleriSeeder extends Seeder
                     $ozellik
                 );
             }
-            $this->command->info("   → 6 altyapı özelliği eklendi");
+            $this->command->info('   → 6 altyapı özelliği eklendi');
         }
 
         // ✅ Tarımsal Özellikler
@@ -431,15 +431,15 @@ class ArsaOzellikleriSeeder extends Seeder
                     $ozellik
                 );
             }
-            $this->command->info("   → 10 tarımsal özellik eklendi");
+            $this->command->info('   → 10 tarımsal özellik eklendi');
         }
 
         $this->command->info("\n📊 ARSA ÖZELLİKLERİ RAPORU:");
-        $this->command->info("   ✅ Özellik Kategorisi: 4");
-        $this->command->info("   ✅ Toplam Özellik: 21");
-        $this->command->info("   🎯 İmar ve Yapılaşma: 5");
-        $this->command->info("   🎯 Parsel Bilgileri: 6");
-        $this->command->info("   🎯 Altyapı: 6");
-        $this->command->info("   🎯 Tarımsal: 10");
+        $this->command->info('   ✅ Özellik Kategorisi: 4');
+        $this->command->info('   ✅ Toplam Özellik: 21');
+        $this->command->info('   🎯 İmar ve Yapılaşma: 5');
+        $this->command->info('   🎯 Parsel Bilgileri: 6');
+        $this->command->info('   🎯 Altyapı: 6');
+        $this->command->info('   🎯 Tarımsal: 10');
     }
 }

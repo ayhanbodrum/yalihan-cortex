@@ -3,8 +3,8 @@
 namespace App\Modules\CRMSatis\Models;
 
 use App\Modules\BaseModule\Models\BaseModel;
-use App\Modules\Emlak\Models\Ilan;
 use App\Modules\Crm\Models\Musteri;
+use App\Modules\Emlak\Models\Ilan;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -177,7 +177,7 @@ class Sozlesme extends BaseModel
      */
     public function getDurumRengiAttribute(): string
     {
-        return match($this->status) {
+        return match ($this->status) {
             'taslak' => 'gray',
             'onaylandi' => 'blue',
             'imzalandi' => 'green',
@@ -191,7 +191,7 @@ class Sozlesme extends BaseModel
      */
     public function getSozlesmeTipiEtiketiAttribute(): string
     {
-        return match($this->sozlesme_tipi) {
+        return match ($this->sozlesme_tipi) {
             'satis' => 'Satış Sözleşmesi',
             'kiralama' => 'Kiralama Sözleşmesi',
             'danismanlik' => 'Danışmanlık Sözleşmesi',
@@ -224,7 +224,7 @@ class Sozlesme extends BaseModel
     public function onaylanabilirMi(): bool
     {
         return $this->status === 'taslak' &&
-               !empty($this->sozlesme_metni);
+               ! empty($this->sozlesme_metni);
     }
 
     /**

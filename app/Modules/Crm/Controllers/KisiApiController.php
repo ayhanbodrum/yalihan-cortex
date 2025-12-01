@@ -3,8 +3,8 @@
 namespace App\Modules\Crm\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Kisi;
 use App\Modules\Crm\Models\Etiket;
-use App\Modules\Crm\Models\Kisi;
 use App\Modules\Crm\Services\EtiketService;
 use App\Modules\Crm\Services\KisiService;
 use Illuminate\Http\Request;

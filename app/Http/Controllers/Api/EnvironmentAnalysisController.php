@@ -6,8 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Services\AIService;
 use App\Services\Response\ResponseService;
 use App\Traits\ValidatesApiRequests;
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 /**
@@ -56,12 +56,12 @@ class EnvironmentAnalysisController extends Controller
                 'location' => [
                     'lat' => $lat,
                     'lng' => $lng,
-                    'radius' => $radius
+                    'radius' => $radius,
                 ],
                 'categories' => $analysis,
                 'insights' => $insights,
                 'scores' => $this->calculateLocationScores($analysis),
-                'recommendations' => $this->generateRecommendations($analysis)
+                'recommendations' => $this->generateRecommendations($analysis),
             ], 'Çevre analizi başarıyla tamamlandı');
         } catch (\Exception $e) {
             return ResponseService::serverError('Çevre analizi yapılırken hata oluştu.', $e);
@@ -91,10 +91,10 @@ class EnvironmentAnalysisController extends Controller
             'shopping',
             'recreation',
             'coastal',
-            'dining'
+            'dining',
         ];
 
-        if (!in_array($category, $validCategories)) {
+        if (! in_array($category, $validCategories)) {
             return ResponseService::error('Geçersiz kategori', 400);
         }
 
@@ -110,7 +110,7 @@ class EnvironmentAnalysisController extends Controller
                 'category' => $category,
                 'places' => $places,
                 'analysis' => $analysis,
-                'count' => count($places)
+                'count' => count($places),
             ], "{$category} analizi başarıyla tamamlandı");
         } catch (\Exception $e) {
             return ResponseService::serverError("'{$category}' analizi yapılırken hata oluştu.", $e);
@@ -128,7 +128,7 @@ class EnvironmentAnalysisController extends Controller
             'lng' => 'required|numeric',
             'property_type' => 'required|string|in:apartment,villa,office,land,commercial',
             'size' => 'nullable|numeric|min:1',
-            'features' => 'nullable|array'
+            'features' => 'nullable|array',
         ]);
 
         if ($validated instanceof JsonResponse) {
@@ -149,20 +149,20 @@ class EnvironmentAnalysisController extends Controller
                 'data' => [
                     'location' => [
                         'lat' => $request->get('lat'),
-                        'lng' => $request->get('lng')
+                        'lng' => $request->get('lng'),
                     ],
                     'property_type' => $request->get('property_type'),
                     'size' => $request->get('size'),
                     'features' => $request->get('features', []),
-                    'environment' => $environmental
-                ]
+                    'environment' => $environmental,
+                ],
             ]);
 
             return ResponseService::success([
                 'environmental_analysis' => $environmental,
                 'value_prediction' => $prediction,
                 'factors' => $this->getValueFactors($environmental),
-                'investment_score' => $this->calculateInvestmentScore($environmental)
+                'investment_score' => $this->calculateInvestmentScore($environmental),
             ], 'Değer tahmini başarıyla tamamlandı');
         } catch (\Exception $e) {
             return ResponseService::serverError('Değer tahmini yapılırken hata oluştu.', $e);
@@ -180,28 +180,28 @@ class EnvironmentAnalysisController extends Controller
                 'bus_station',
                 'public_transport',
                 'taxi_stand',
-                'ferry_terminal'
+                'ferry_terminal',
             ],
             'healthcare' => [
                 'hospital',
                 'clinic',
                 'pharmacy',
                 'dentist',
-                'veterinary'
+                'veterinary',
             ],
             'education' => [
                 'school',
                 'university',
                 'kindergarten',
                 'college',
-                'library'
+                'library',
             ],
             'shopping' => [
                 'supermarket',
                 'shopping_centre',
                 'marketplace',
                 'convenience',
-                'department_store'
+                'department_store',
             ],
             'recreation' => [
                 'park',
@@ -210,22 +210,22 @@ class EnvironmentAnalysisController extends Controller
                 'swimming_pool',
                 'fitness_centre',
                 'cinema',
-                'theatre'
+                'theatre',
             ],
             'coastal' => [
                 'beach',
                 'marina',
                 'pier',
                 'harbour',
-                'waterfront'
+                'waterfront',
             ],
             'dining' => [
                 'restaurant',
                 'cafe',
                 'fast_food',
                 'bar',
-                'pub'
-            ]
+                'pub',
+            ],
         ];
 
         $results = [];
@@ -241,7 +241,7 @@ class EnvironmentAnalysisController extends Controller
                 'places' => $places,
                 'count' => count($places),
                 'closest_distance' => $this->findClosestDistance($lat, $lng, $places),
-                'density_score' => $this->calculateDensityScore($places, $radius)
+                'density_score' => $this->calculateDensityScore($places, $radius),
             ];
         }
 
@@ -263,7 +263,7 @@ class EnvironmentAnalysisController extends Controller
 
         try {
             $response = file_get_contents(
-                'https://overpass-api.de/api/interpreter?data=' . urlencode($query)
+                'https://overpass-api.de/api/interpreter?data='.urlencode($query)
             );
 
             if ($response === false) {
@@ -272,7 +272,7 @@ class EnvironmentAnalysisController extends Controller
 
             $data = json_decode($response, true);
 
-            if (!isset($data['elements'])) {
+            if (! isset($data['elements'])) {
                 return [];
             }
 
@@ -283,13 +283,14 @@ class EnvironmentAnalysisController extends Controller
                     'lng' => $element['lon'] ?? $element['center']['lon'] ?? null,
                     'name' => $element['tags']['name'] ?? "Unnamed {$amenity}",
                     'amenity' => $amenity,
-                    'tags' => $element['tags'] ?? []
+                    'tags' => $element['tags'] ?? [],
                 ];
             }, array_filter($data['elements'], function ($element) {
                 return isset($element['lat']) || isset($element['center']['lat']);
             }));
         } catch (\Exception $e) {
-            Log::warning("Overpass API query failed for {$amenity}: " . $e->getMessage());
+            Log::warning("Overpass API query failed for {$amenity}: ".$e->getMessage());
+
             return [];
         }
     }
@@ -299,7 +300,9 @@ class EnvironmentAnalysisController extends Controller
      */
     private function findClosestDistance(float $lat, float $lng, array $places): ?float
     {
-        if (empty($places)) return null;
+        if (empty($places)) {
+            return null;
+        }
 
         $distances = array_map(function ($place) use ($lat, $lng) {
             return $this->calculateDistance(
@@ -353,25 +356,25 @@ class EnvironmentAnalysisController extends Controller
             $prompt = "Bu konum için çevre analizi sonuçlarını değerlendir ve Türkçe öneriler sun:
 
 Konum: {$lat}, {$lng}
-Analiz Sonuçları: " . json_encode($analysis, JSON_UNESCAPED_UNICODE);
+Analiz Sonuçları: ".json_encode($analysis, JSON_UNESCAPED_UNICODE);
 
             $insights = $this->aiService->generate([
                 'action' => 'analyze_environment',
-                'prompt' => $prompt
+                'prompt' => $prompt,
             ]);
 
             return [
                 'summary' => $insights['summary'] ?? 'Analiz tamamlandı',
                 'strengths' => $insights['strengths'] ?? [],
                 'weaknesses' => $insights['weaknesses'] ?? [],
-                'recommendations' => $insights['recommendations'] ?? []
+                'recommendations' => $insights['recommendations'] ?? [],
             ];
         } catch (\Exception $e) {
             return [
                 'summary' => 'AI analizi yapılamadı',
                 'strengths' => [],
                 'weaknesses' => [],
-                'recommendations' => []
+                'recommendations' => [],
             ];
         }
     }
@@ -388,16 +391,25 @@ Analiz Sonuçları: " . json_encode($analysis, JSON_UNESCAPED_UNICODE);
 
             // Distance score (closer is better)
             if ($data['closest_distance'] !== null) {
-                if ($data['closest_distance'] <= 0.5) $score += 40;
-                elseif ($data['closest_distance'] <= 1.0) $score += 30;
-                elseif ($data['closest_distance'] <= 2.0) $score += 20;
-                else $score += 10;
+                if ($data['closest_distance'] <= 0.5) {
+                    $score += 40;
+                } elseif ($data['closest_distance'] <= 1.0) {
+                    $score += 30;
+                } elseif ($data['closest_distance'] <= 2.0) {
+                    $score += 20;
+                } else {
+                    $score += 10;
+                }
             }
 
             // Count score
-            if ($data['count'] >= 5) $score += 30;
-            elseif ($data['count'] >= 3) $score += 20;
-            elseif ($data['count'] >= 1) $score += 10;
+            if ($data['count'] >= 5) {
+                $score += 30;
+            } elseif ($data['count'] >= 3) {
+                $score += 20;
+            } elseif ($data['count'] >= 1) {
+                $score += 10;
+            }
 
             // Density score
             $score += min(30, $data['density_score'] * 3);
@@ -447,8 +459,8 @@ Analiz Sonuçları: " . json_encode($analysis, JSON_UNESCAPED_UNICODE);
     {
         return [
             'impact_score' => rand(60, 95), // Placeholder
-            'value_increase' => rand(5, 25) . '%',
-            'market_demand' => ['Yüksek', 'Orta', 'Düşük'][rand(0, 2)]
+            'value_increase' => rand(5, 25).'%',
+            'market_demand' => ['Yüksek', 'Orta', 'Düşük'][rand(0, 2)],
         ];
     }
 
@@ -462,12 +474,12 @@ Analiz Sonuçları: " . json_encode($analysis, JSON_UNESCAPED_UNICODE);
                 'Metro/toplu taşıma yakınlığı',
                 'Sağlık tesisleri erişimi',
                 'Eğitim kurumları',
-                'Rekreasyon alanları'
+                'Rekreasyon alanları',
             ],
             'negative' => [
                 'Ulaşım eksikliği',
-                'Alışveriş merkezi uzaklığı'
-            ]
+                'Alışveriş merkezi uzaklığı',
+            ],
         ];
     }
 

@@ -178,6 +178,6 @@ class Context7ListingSeeder extends Seeder
             $this->command->info("✅ İlan eklendi: {$listing['ilan_basligi']} (ID: {$listingId})");
         }
 
-        $this->command->info('✅ ' . count($listings) . ' örnek ilan oluşturuldu');
+        $this->command->info('✅ '.count($listings).' örnek ilan oluşturuldu');
     }
 }

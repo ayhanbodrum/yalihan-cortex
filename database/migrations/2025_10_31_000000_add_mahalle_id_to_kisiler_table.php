@@ -21,9 +21,9 @@ return new class extends Migration
 
             // Add foreign key constraint
             $table->foreign('mahalle_id')
-                  ->references('id')
-                  ->on('mahalleler')
-                  ->onDelete('set null');
+                ->references('id')
+                ->on('mahalleler')
+                ->onDelete('set null');
 
             // Add index for location queries
             $table->index('mahalle_id', 'idx_kisiler_mahalle');

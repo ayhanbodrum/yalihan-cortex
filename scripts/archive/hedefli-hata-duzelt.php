@@ -1,14 +1,14 @@
 <?php
 
-require __DIR__ . '/../vendor/autoload.php';
-$app = require_once __DIR__ . '/../bootstrap/app.php';
+require __DIR__.'/../vendor/autoload.php';
+$app = require_once __DIR__.'/../bootstrap/app.php';
 $app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap();
 
 echo "\n🔧 Hedefli Otomatik Hata Düzeltici\n";
 echo "═══════════════════════════════════════\n\n";
 
 $rapor = 'hedefli-sayfa-test-raporu.md';
-if (!file_exists($rapor)) {
+if (! file_exists($rapor)) {
     echo "❌ Rapor bulunamadı: $rapor\n";
     exit(1);
 }
@@ -27,7 +27,7 @@ if (file_exists($takimController)) {
     // Eğer view'e gönderilmemişse ekle
     if (str_contains($content, "compact('takimUyeleri', 'istatistikler', 'lokasyonlar', 'status')")) {
         echo "   ✅ Zaten doğru\n";
-    } else if (str_contains($content, "compact('takimUyeleri', 'istatistikler', 'lokasyonlar')")) {
+    } elseif (str_contains($content, "compact('takimUyeleri', 'istatistikler', 'lokasyonlar')")) {
         $content = str_replace(
             "compact('takimUyeleri', 'istatistikler', 'lokasyonlar')",
             "compact('takimUyeleri', 'istatistikler', 'lokasyonlar', 'status')",
@@ -46,7 +46,7 @@ if (file_exists($kisiController)) {
     $content = file_get_contents($kisiController);
 
     // Compact'te var mı?
-    if (!str_contains($content, "'taslak'")) {
+    if (! str_contains($content, "'taslak'")) {
         // istatistikler array'ine ekle
         if (preg_match('/\'pasif\' => Kisi::pasif\(\)->count\(\),/', $content)) {
             $content = str_replace(
@@ -70,7 +70,7 @@ if (file_exists($crmController)) {
     $content = file_get_contents($crmController);
 
     // Use statement kontrolü
-    if (!str_contains($content, 'use App\Models\Eslesme;')) {
+    if (! str_contains($content, 'use App\Models\Eslesme;')) {
         $content = str_replace(
             "use App\Models\Talep;",
             "use App\Models\Talep;\nuse App\Models\Eslesme;",

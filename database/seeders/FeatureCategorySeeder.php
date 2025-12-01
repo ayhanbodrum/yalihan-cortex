@@ -2,11 +2,10 @@
 
 namespace Database\Seeders;
 
+use App\Models\Feature;
+use App\Models\FeatureCategory;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Schema;
-use App\Models\FeatureCategory;
-use App\Models\Feature;
-use Illuminate\Support\Str;
 
 class FeatureCategorySeeder extends Seeder
 {
@@ -222,7 +221,7 @@ class FeatureCategorySeeder extends Seeder
         // Özet
         $totalCategories = FeatureCategory::count();
         $totalFeatures = Feature::count();
-        $this->command->info("📊 Özet:");
+        $this->command->info('📊 Özet:');
         $this->command->info("   - Kategori Sayısı: {$totalCategories}");
         $this->command->info("   - Özellik Sayısı: {$totalFeatures}");
     }
@@ -237,15 +236,15 @@ class FeatureCategorySeeder extends Seeder
 
         foreach ($features as $index => $feature) {
             $featureData = [
-                    'name' => $feature['name'],
-                    'feature_category_id' => $category->id,
-                    'type' => $feature['input_type'] ?? 'text',
-                    'options' => isset($feature['options']) ? json_encode($feature['options']) : null,
-                    'unit' => $feature['unit'] ?? null,
+                'name' => $feature['name'],
+                'feature_category_id' => $category->id,
+                'type' => $feature['input_type'] ?? 'text',
+                'options' => isset($feature['options']) ? json_encode($feature['options']) : null,
+                'unit' => $feature['unit'] ?? null,
                 'is_required' => false,
                 'is_filterable' => true,
-                    'is_searchable' => false,
-                    'display_order' => $index + 1,
+                'is_searchable' => false,
+                'display_order' => $index + 1,
             ];
 
             // Context7: status kolonu varsa ekle

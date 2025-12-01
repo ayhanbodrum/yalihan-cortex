@@ -2,8 +2,8 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
@@ -15,18 +15,18 @@ return new class extends Migration
         // İller tablosuna eksik alanları ekle
         Schema::table('iller', function (Blueprint $table) {
             // ulke_id alanı eksikse ekle
-            if (!Schema::hasColumn('iller', 'country_id')) {
+            if (! Schema::hasColumn('iller', 'country_id')) {
                 $table->unsignedBigInteger('country_id')->nullable()->after('id')->comment('Ülke ID');
                 $table->foreign('country_id')->references('id')->on('ulkeler')->onDelete('set null');
             }
 
             // plaka_kodu alanı eksikse ekle (il_kodu yerine)
-            if (!Schema::hasColumn('iller', 'plaka_kodu')) {
+            if (! Schema::hasColumn('iller', 'plaka_kodu')) {
                 $table->string('plaka_kodu', 3)->nullable()->after('country_id')->comment('Plaka kodu');
             }
 
             // telefon_kodu alanı eksikse ekle
-            if (!Schema::hasColumn('iller', 'telefon_kodu')) {
+            if (! Schema::hasColumn('iller', 'telefon_kodu')) {
                 $table->string('telefon_kodu', 4)->nullable()->after('plaka_kodu')->comment('Telefon kodu');
             }
         });
@@ -34,7 +34,7 @@ return new class extends Migration
         // İlçeler tablosuna eksik alanları ekle
         Schema::table('ilceler', function (Blueprint $table) {
             // ilce_kodu alanı eksikse ekle
-            if (!Schema::hasColumn('ilceler', 'ilce_kodu')) {
+            if (! Schema::hasColumn('ilceler', 'ilce_kodu')) {
                 $table->string('ilce_kodu', 10)->nullable()->after('il_id')->comment('İlçe kodu');
             }
         });
@@ -42,7 +42,7 @@ return new class extends Migration
         // Mahalleler tablosuna eksik alanları ekle
         Schema::table('mahalleler', function (Blueprint $table) {
             // mahalle_kodu alanı eksikse ekle
-            if (!Schema::hasColumn('mahalleler', 'mahalle_kodu')) {
+            if (! Schema::hasColumn('mahalleler', 'mahalle_kodu')) {
                 $table->string('mahalle_kodu', 20)->nullable()->after('ilce_id')->comment('Mahalle kodu');
             }
         });
@@ -138,7 +138,7 @@ return new class extends Migration
                 ->update([
                     'lat' => $coords['lat'],
                     'lng' => $coords['lng'],
-                    'updated_at' => now()
+                    'updated_at' => now(),
                 ]);
         }
 
@@ -149,7 +149,7 @@ return new class extends Migration
                 ->update([
                     'lat' => $coords['lat'],
                     'lng' => $coords['lng'],
-                    'updated_at' => now()
+                    'updated_at' => now(),
                 ]);
         }
 
@@ -160,13 +160,13 @@ return new class extends Migration
                 ->update([
                     'enlem' => $coords['enlem'],
                     'boylam' => $coords['boylam'],
-                    'updated_at' => now()
+                    'updated_at' => now(),
                 ]);
         }
 
         // Türkiye'yi ülke olarak ekle (yoksa)
         $turkiye = DB::table('ulkeler')->where('ulke_kodu', 'TR')->first();
-        if (!$turkiye) {
+        if (! $turkiye) {
             $turkiyeId = DB::table('ulkeler')->insertGetId([
                 'ulke_adi' => 'Türkiye',
                 'ulke_kodu' => 'TR',
@@ -174,7 +174,7 @@ return new class extends Migration
                 'para_birimi' => 'TRY',
                 'status' => 'Aktif',
                 'created_at' => now(),
-                'updated_at' => now()
+                'updated_at' => now(),
             ]);
         } else {
             $turkiyeId = $turkiye->id;

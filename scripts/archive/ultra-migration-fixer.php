@@ -3,19 +3,18 @@
 /**
  * Ultra Migration Fixer - En karmaşık syntax hatalarını düzelten son çare script
  */
-
-$migrationsDir = __DIR__ . '/../database/migrations';
+$migrationsDir = __DIR__.'/../database/migrations';
 $fixedCount = 0;
 $totalChecked = 0;
 
 echo "🚨 Ultra Migration Fixer başlatılıyor...\n";
 
-foreach (glob($migrationsDir . '/*.php') as $filePath) {
+foreach (glob($migrationsDir.'/*.php') as $filePath) {
     $filename = basename($filePath);
     $totalChecked++;
 
     // İlk syntax check
-    $syntaxCheck = shell_exec("php -l " . escapeshellarg($filePath) . " 2>&1");
+    $syntaxCheck = shell_exec('php -l '.escapeshellarg($filePath).' 2>&1');
     if (strpos($syntaxCheck, 'No syntax errors') !== false) {
         continue; // Bu dosya temiz
     }
@@ -49,8 +48,8 @@ foreach (glob($migrationsDir . '/*.php') as $filePath) {
     // Step 5: Ensure proper class structure
     if (strpos($content, 'return new class extends Migration') !== false) {
         // Make sure it ends properly
-        if (!preg_match('/\};\s*$/', $content)) {
-            $content = rtrim($content) . "\n};";
+        if (! preg_match('/\};\s*$/', $content)) {
+            $content = rtrim($content)."\n};";
         }
 
         // Fix cases where class doesn't close properly
@@ -108,18 +107,18 @@ echo "✅ Düzeltilen dosyalar: $fixedCount\n";
 
 // Final syntax check
 echo "\n🔍 Final syntax kontrolü...\n";
-$syntaxErrors = shell_exec("find " . escapeshellarg($migrationsDir) . " -name '*.php' -exec php -l {} \\; 2>&1 | grep -c 'Parse error\\|Fatal error\\|syntax error' || echo '0'");
-echo "🎯 Kalan syntax hataları: " . trim($syntaxErrors) . "\n";
+$syntaxErrors = shell_exec('find '.escapeshellarg($migrationsDir)." -name '*.php' -exec php -l {} \\; 2>&1 | grep -c 'Parse error\\|Fatal error\\|syntax error' || echo '0'");
+echo '🎯 Kalan syntax hataları: '.trim($syntaxErrors)."\n";
 
 if (trim($syntaxErrors) == '0') {
     echo "🎉🎉🎉 TÜM SYNTAX HATALARI DÜZELTİLDİ! 🎉🎉🎉\n";
 } else {
-    echo "⚠️ Hâlâ " . trim($syntaxErrors) . " syntax hatası mevcut.\n";
+    echo '⚠️ Hâlâ '.trim($syntaxErrors)." syntax hatası mevcut.\n";
 
     // Show a few remaining examples
     echo "\n🔍 Kalan hata örnekleri:\n";
-    $examples = shell_exec("find " . escapeshellarg($migrationsDir) . " -name '*.php' -exec php -l {} \\; 2>&1 | grep -A1 'Parse error\\|Fatal error\\|syntax error' | head -10");
-    echo $examples . "\n";
+    $examples = shell_exec('find '.escapeshellarg($migrationsDir)." -name '*.php' -exec php -l {} \\; 2>&1 | grep -A1 'Parse error\\|Fatal error\\|syntax error' | head -10");
+    echo $examples."\n";
 }
 
 echo "\n🚨 Ultra Migration Fixer tamamlandı!\n";

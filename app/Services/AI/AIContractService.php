@@ -31,11 +31,10 @@ class AIContractService
     /**
      * Sözleşme taslağı üret
      *
-     * @param string $contractType Sözleşme tipi (kira, satis)
-     * @param int|null $propertyId İlan ID
-     * @param int|null $kisiId Kişi ID
-     * @param array $additionalData Ek veriler
-     * @return AIContractDraft
+     * @param  string  $contractType  Sözleşme tipi (kira, satis)
+     * @param  int|null  $propertyId  İlan ID
+     * @param  int|null  $kisiId  Kişi ID
+     * @param  array  $additionalData  Ek veriler
      */
     public function generateDraft(
         string $contractType,
@@ -49,7 +48,7 @@ class AIContractService
             $kisi = $kisiId ? Kisi::find($kisiId) : null;
 
             // n8n webhook'a istek gönder
-            $response = Http::timeout(30)->post($this->n8nWebhookUrl . '/ai/sozlesme-taslagi', [
+            $response = Http::timeout(30)->post($this->n8nWebhookUrl.'/ai/sozlesme-taslagi', [
                 'contract_type' => $contractType,
                 'property_id' => $propertyId,
                 'kisi_id' => $kisiId,
@@ -68,8 +67,8 @@ class AIContractService
                 'additional_data' => $additionalData,
             ]);
 
-            if (!$response->successful()) {
-                throw new \Exception('n8n webhook request failed: ' . $response->status());
+            if (! $response->successful()) {
+                throw new \Exception('n8n webhook request failed: '.$response->status());
             }
 
             $aiResponse = $response->json();
@@ -105,15 +104,14 @@ class AIContractService
     /**
      * Taslağı onayla
      *
-     * @param int $draftId Taslak ID
-     * @param int $userId Onaylayan kullanıcı ID
-     * @return bool
+     * @param  int  $draftId  Taslak ID
+     * @param  int  $userId  Onaylayan kullanıcı ID
      */
     public function approve(int $draftId, int $userId): bool
     {
         $draft = AIContractDraft::findOrFail($draftId);
 
-        if (!$draft->approve($userId)) {
+        if (! $draft->approve($userId)) {
             return false;
         }
 
@@ -128,15 +126,14 @@ class AIContractService
     /**
      * Taslağı reddet
      *
-     * @param int $draftId Taslak ID
-     * @param int $userId Reddeden kullanıcı ID
-     * @return bool
+     * @param  int  $draftId  Taslak ID
+     * @param  int  $userId  Reddeden kullanıcı ID
      */
     public function reject(int $draftId, int $userId): bool
     {
         $draft = AIContractDraft::findOrFail($draftId);
 
-        if (!$draft->reject($userId)) {
+        if (! $draft->reject($userId)) {
             return false;
         }
 
@@ -151,7 +148,7 @@ class AIContractService
     /**
      * Onaylanmış taslakları getir
      *
-     * @param string|null $contractType Sözleşme tipi filtresi
+     * @param  string|null  $contractType  Sözleşme tipi filtresi
      * @return \Illuminate\Database\Eloquent\Collection
      */
     public function getApprovedDrafts(?string $contractType = null)
@@ -165,4 +162,3 @@ class AIContractService
         return $query->orderBy('approved_at', 'desc')->get();
     }
 }
-

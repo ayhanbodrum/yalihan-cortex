@@ -1,0 +1,1102 @@
+# MD Audit Summary
+files: 441
+
+- docs/FORM_STANDARDS.md
+  * CRM: docs/FORM_STANDARDS.md:301
+
+- docs/README.md
+
+- docs/active/ADMIN-PANEL-STANDARDS-AND-ROADMAP.md [outdated,duplicate_hint]
+
+- docs/active/API-REFERENCE.md [duplicate_hint]
+
+- docs/active/CONTEXT7-COMPLIANCE.md
+  * MCP: docs/active/CONTEXT7-COMPLIANCE.md:12
+
+- docs/active/CONTEXT7-MASTER-GUIDE.md [duplicate_hint]
+
+- docs/active/CONTEXT7-MCP-USAGE.md
+  * MCP: docs/active/CONTEXT7-MCP-USAGE.md:1, docs/active/CONTEXT7-MCP-USAGE.md:4, docs/active/CONTEXT7-MCP-USAGE.md:5
+
+- docs/active/CONTEXT7-RULES-DETAILED.md [outdated,duplicate_hint]
+  * MCP: docs/active/CONTEXT7-RULES-DETAILED.md:4, docs/active/CONTEXT7-RULES-DETAILED.md:34
+  * dış API: docs/active/CONTEXT7-RULES-DETAILED.md:2319
+  * referans numarası: docs/active/CONTEXT7-RULES-DETAILED.md:2345, docs/active/CONTEXT7-RULES-DETAILED.md:2596
+  * CRM: docs/active/CONTEXT7-RULES-DETAILED.md:103, docs/active/CONTEXT7-RULES-DETAILED.md:172, docs/active/CONTEXT7-RULES-DETAILED.md:495
+  * apartman: docs/active/CONTEXT7-RULES-DETAILED.md:143
+  * portal ID: docs/active/CONTEXT7-RULES-DETAILED.md:2380, docs/active/CONTEXT7-RULES-DETAILED.md:2381, docs/active/CONTEXT7-RULES-DETAILED.md:2397
+
+- docs/active/DATABASE-SCHEMA.md
+
+- docs/active/PROJECT-ANATOMY.md [outdated,duplicate_hint]
+
+- docs/active/README.md
+
+- docs/active/SYSTEM-STATUS-2025.md [duplicate_hint]
+  * MCP: docs/active/SYSTEM-STATUS-2025.md:118
+  * CRM: docs/active/SYSTEM-STATUS-2025.md:96, docs/active/SYSTEM-STATUS-2025.md:224
+
+- docs/admin/admin-detayli-test-raporu.md
+  * CRM: docs/admin/admin-detayli-test-raporu.md:22, docs/admin/admin-detayli-test-raporu.md:34, docs/admin/admin-detayli-test-raporu.md:45
+
+- docs/admin/admin-kapsamli-test-raporu.md
+  * CRM: docs/admin/admin-kapsamli-test-raporu.md:58, docs/admin/admin-kapsamli-test-raporu.md:68, docs/admin/admin-kapsamli-test-raporu.md:70
+
+- docs/admin/admin-test-report.md
+
+- docs/ai/AI_KULLANIM_ORNEKLERI.md
+
+- docs/ai/AI_PROMPTS_CONTEXT7_REVIEW.md [duplicate_hint]
+
+- docs/ai/COPILOT_PROMPTS_GUIDE.md [outdated]
+
+- docs/ai-training/00-ANYTHINGLLM-MASTER-TRAINING.md [outdated]
+  * CRM: docs/ai-training/00-ANYTHINGLLM-MASTER-TRAINING.md:71, docs/ai-training/00-ANYTHINGLLM-MASTER-TRAINING.md:74, docs/ai-training/00-ANYTHINGLLM-MASTER-TRAINING.md:108
+  * apartman: docs/ai-training/00-ANYTHINGLLM-MASTER-TRAINING.md:444
+  * portal ID: docs/ai-training/00-ANYTHINGLLM-MASTER-TRAINING.md:188
+  * sahibinden: docs/ai-training/00-ANYTHINGLLM-MASTER-TRAINING.md:87
+
+- docs/ai-training/00-BASLA-BURADAN.md [duplicate_hint]
+
+- docs/ai-training/01-AI-FEATURES-GUIDE.md
+  * CRM: docs/ai-training/01-AI-FEATURES-GUIDE.md:273, docs/ai-training/01-AI-FEATURES-GUIDE.md:470
+
+- docs/ai-training/02-CONTEXT7-RULES-SIMPLIFIED.md [outdated]
+  * CRM: docs/ai-training/02-CONTEXT7-RULES-SIMPLIFIED.md:109
+
+- docs/ai-training/03-DATABASE-SCHEMA-FOR-AI.md [outdated]
+  * referans numarası: docs/ai-training/03-DATABASE-SCHEMA-FOR-AI.md:338
+  * CRM: docs/ai-training/03-DATABASE-SCHEMA-FOR-AI.md:86, docs/ai-training/03-DATABASE-SCHEMA-FOR-AI.md:106, docs/ai-training/03-DATABASE-SCHEMA-FOR-AI.md:109
+  * apartman: docs/ai-training/03-DATABASE-SCHEMA-FOR-AI.md:206
+  * portal ID: docs/ai-training/03-DATABASE-SCHEMA-FOR-AI.md:49, docs/ai-training/03-DATABASE-SCHEMA-FOR-AI.md:50, docs/ai-training/03-DATABASE-SCHEMA-FOR-AI.md:52
+  * sahibinden: docs/ai-training/03-DATABASE-SCHEMA-FOR-AI.md:359, docs/ai-training/03-DATABASE-SCHEMA-FOR-AI.md:376
+
+- docs/ai-training/04-PROMPT-TEMPLATES.md [outdated]
+  * CRM: docs/ai-training/04-PROMPT-TEMPLATES.md:256, docs/ai-training/04-PROMPT-TEMPLATES.md:261, docs/ai-training/04-PROMPT-TEMPLATES.md:270
+  * sahibinden: docs/ai-training/04-PROMPT-TEMPLATES.md:352, docs/ai-training/04-PROMPT-TEMPLATES.md:355
+
+- docs/ai-training/05-USE-CASES-AND-SCENARIOS.md
+  * CRM: docs/ai-training/05-USE-CASES-AND-SCENARIOS.md:274, docs/ai-training/05-USE-CASES-AND-SCENARIOS.md:294
+  * sahibinden: docs/ai-training/05-USE-CASES-AND-SCENARIOS.md:169, docs/ai-training/05-USE-CASES-AND-SCENARIOS.md:194
+
+- docs/ai-training/06-API-REFERENCE.md
+  * CRM: docs/ai-training/06-API-REFERENCE.md:290
+
+- docs/ai-training/07-EMBEDDING-GUIDE.md [outdated,duplicate_hint]
+  * CRM: docs/ai-training/07-EMBEDDING-GUIDE.md:89, docs/ai-training/07-EMBEDDING-GUIDE.md:451, docs/ai-training/07-EMBEDDING-GUIDE.md:589
+
+- docs/ai-training/08-TRAINING-CHECKLIST.md [duplicate_hint]
+  * CRM: docs/ai-training/08-TRAINING-CHECKLIST.md:257
+
+- docs/ai-training/09-OLLAMA-INTEGRATION.md [duplicate_hint]
+
+- docs/ai-training/10-REAL-WORLD-EXAMPLES.md
+  * CRM: docs/ai-training/10-REAL-WORLD-EXAMPLES.md:620, docs/ai-training/10-REAL-WORLD-EXAMPLES.md:636
+  * sahibinden: docs/ai-training/10-REAL-WORLD-EXAMPLES.md:329
+
+- docs/ai-training/AI-TRAINING-SUMMARY.md [outdated,duplicate_hint]
+  * CRM: docs/ai-training/AI-TRAINING-SUMMARY.md:180, docs/ai-training/AI-TRAINING-SUMMARY.md:232, docs/ai-training/AI-TRAINING-SUMMARY.md:271
+
+- docs/ai-training/BASARILI-EMBEDDING-ORNEGI.md [outdated]
+  * CRM: docs/ai-training/BASARILI-EMBEDDING-ORNEGI.md:24, docs/ai-training/BASARILI-EMBEDDING-ORNEGI.md:391, docs/ai-training/BASARILI-EMBEDDING-ORNEGI.md:402
+
+- docs/ai-training/DEPLOYMENT-GUIDE.md [outdated,duplicate_hint]
+
+- docs/ai-training/EKOSISTEM-ISLEYIS-REHBERI.md
+  * MCP: docs/ai-training/EKOSISTEM-ISLEYIS-REHBERI.md:8, docs/ai-training/EKOSISTEM-ISLEYIS-REHBERI.md:15, docs/ai-training/EKOSISTEM-ISLEYIS-REHBERI.md:16
+
+- docs/ai-training/EKOSISTEM-MONITOR-STATUS.md
+  * MCP: docs/ai-training/EKOSISTEM-MONITOR-STATUS.md:10, docs/ai-training/EKOSISTEM-MONITOR-STATUS.md:39, docs/ai-training/EKOSISTEM-MONITOR-STATUS.md:41
+  * apartman: docs/ai-training/EKOSISTEM-MONITOR-STATUS.md:25
+
+- docs/ai-training/HIZLI-REFERANS.md
+  * sahibinden: docs/ai-training/HIZLI-REFERANS.md:148
+
+- docs/ai-training/INDEX.md [duplicate_hint]
+  * CRM: docs/ai-training/INDEX.md:112
+
+- docs/ai-training/KULLANIMA-HAZIR.md [duplicate_hint]
+  * CRM: docs/ai-training/KULLANIMA-HAZIR.md:201, docs/ai-training/KULLANIMA-HAZIR.md:304
+
+- docs/ai-training/MASTER-OZET.md [duplicate_hint]
+
+- docs/ai-training/QUICK-START.md [duplicate_hint]
+  * CRM: docs/ai-training/QUICK-START.md:69, docs/ai-training/QUICK-START.md:146
+
+- docs/ai-training/README.md [duplicate_hint]
+
+- docs/ai-training/VIDEO-TRANSCRIPT.md
+
+- docs/analysis/ILAN_CREATE_PAGE_STRUCTURE_2025_11_12.md [duplicate_hint]
+  * apartman: docs/analysis/ILAN_CREATE_PAGE_STRUCTURE_2025_11_12.md:250, docs/analysis/ILAN_CREATE_PAGE_STRUCTURE_2025_11_12.md:251, docs/analysis/ILAN_CREATE_PAGE_STRUCTURE_2025_11_12.md:252
+
+- docs/analysis/ILAN_CREATE_TEST_REPORT_2025_11_12.md [duplicate_hint]
+  * apartman: docs/analysis/ILAN_CREATE_TEST_REPORT_2025_11_12.md:40, docs/analysis/ILAN_CREATE_TEST_REPORT_2025_11_12.md:315, docs/analysis/ILAN_CREATE_TEST_REPORT_2025_11_12.md:316
+
+- docs/analysis/ILAN_YONETIMI_ANALIZ.md [outdated,duplicate_hint]
+  * apartman: docs/analysis/ILAN_YONETIMI_ANALIZ.md:131, docs/analysis/ILAN_YONETIMI_ANALIZ.md:132, docs/analysis/ILAN_YONETIMI_ANALIZ.md:137
+
+- docs/analysis/yazlik-kiralama-ozellik-analizi.md [duplicate_hint]
+
+- docs/api/context7-api-documentation.md [duplicate_hint]
+
+- docs/archive/2025-11/README_CONTEXT7_SCANNER-2025-11-14.md [duplicate_hint]
+  * CRM: docs/archive/2025-11/README_CONTEXT7_SCANNER-2025-11-14.md:75
+
+- docs/archive/2025-11/root-reports/ADDITIONAL_IMPROVEMENTS_COMPLETE_2025-11-07.md [outdated,duplicate_hint]
+
+- docs/archive/2025-11/root-reports/AI_SISTEM_AKTIFLESTIRME_FINAL_RAPORU.md [outdated,duplicate_hint]
+
+- docs/archive/2025-11/root-reports/AI_SISTEM_AKTIFLESTIRME_ILERLEME.md
+
+- docs/archive/2025-11/root-reports/AI_SISTEM_AKTIFLESTIRME_OZET.md [duplicate_hint]
+
+- docs/archive/2025-11/root-reports/AI_SISTEM_AKTIFLESTIRME_PLANI.md [outdated]
+
+- docs/archive/2025-11/root-reports/APP-MODULES-ARCHITECTURE.md
+  * CRM: docs/archive/2025-11/root-reports/APP-MODULES-ARCHITECTURE.md:33, docs/archive/2025-11/root-reports/APP-MODULES-ARCHITECTURE.md:79, docs/archive/2025-11/root-reports/APP-MODULES-ARCHITECTURE.md:81
+
+- docs/archive/2025-11/root-reports/BOOTSTRAP_MIGRATION_2025-11-06.md [outdated,duplicate_hint]
+  * CRM: docs/archive/2025-11/root-reports/BOOTSTRAP_MIGRATION_2025-11-06.md:169, docs/archive/2025-11/root-reports/BOOTSTRAP_MIGRATION_2025-11-06.md:179
+
+- docs/archive/2025-11/root-reports/COMPREHENSIVE_AUDIT_2025-11-06.md [outdated,duplicate_hint]
+  * CRM: docs/archive/2025-11/root-reports/COMPREHENSIVE_AUDIT_2025-11-06.md:86, docs/archive/2025-11/root-reports/COMPREHENSIVE_AUDIT_2025-11-06.md:87, docs/archive/2025-11/root-reports/COMPREHENSIVE_AUDIT_2025-11-06.md:98
+
+- docs/archive/2025-11/root-reports/COMPREHENSIVE_CODE_ANALYSIS_2025-11-07.md [outdated,duplicate_hint]
+
+- docs/archive/2025-11/root-reports/COMPREHENSIVE_CODE_QUALITY_DESIGN_ANALYSIS_2025-11-07.md [outdated,duplicate_hint]
+
+- docs/archive/2025-11/root-reports/COMPREHENSIVE_SYSTEM_ANALYSIS_2025-11-06.md [outdated,duplicate_hint]
+  * CRM: docs/archive/2025-11/root-reports/COMPREHENSIVE_SYSTEM_ANALYSIS_2025-11-06.md:73, docs/archive/2025-11/root-reports/COMPREHENSIVE_SYSTEM_ANALYSIS_2025-11-06.md:76, docs/archive/2025-11/root-reports/COMPREHENSIVE_SYSTEM_ANALYSIS_2025-11-06.md:78
+  * sahibinden: docs/archive/2025-11/root-reports/COMPREHENSIVE_SYSTEM_ANALYSIS_2025-11-06.md:328
+
+- docs/archive/2025-11/root-reports/CONTEXT7_COMPLIANCE_REPORT_2025-11-04.md
+
+- docs/archive/2025-11/root-reports/CONTEXT7_FIX_COMPLETE_2025-11-06.md [outdated,duplicate_hint]
+  * CRM: docs/archive/2025-11/root-reports/CONTEXT7_FIX_COMPLETE_2025-11-06.md:53, docs/archive/2025-11/root-reports/CONTEXT7_FIX_COMPLETE_2025-11-06.md:58, docs/archive/2025-11/root-reports/CONTEXT7_FIX_COMPLETE_2025-11-06.md:59
+
+- docs/archive/2025-11/root-reports/CONTEXT7_VIOLATIONS_REPORT_2025-11-06.md [outdated,duplicate_hint]
+  * CRM: docs/archive/2025-11/root-reports/CONTEXT7_VIOLATIONS_REPORT_2025-11-06.md:59, docs/archive/2025-11/root-reports/CONTEXT7_VIOLATIONS_REPORT_2025-11-06.md:67, docs/archive/2025-11/root-reports/CONTEXT7_VIOLATIONS_REPORT_2025-11-06.md:73
+
+- docs/archive/2025-11/root-reports/CONTEXT7_YALIHAN_BEKCI_DURUM_RAPORU.md [duplicate_hint]
+  * MCP: docs/archive/2025-11/root-reports/CONTEXT7_YALIHAN_BEKCI_DURUM_RAPORU.md:51, docs/archive/2025-11/root-reports/CONTEXT7_YALIHAN_BEKCI_DURUM_RAPORU.md:187
+
+- docs/archive/2025-11/root-reports/CRM_MODULE_REFACTORING_COMPLETE_2025-11-06.md [outdated,duplicate_hint]
+  * CRM: docs/archive/2025-11/root-reports/CRM_MODULE_REFACTORING_COMPLETE_2025-11-06.md:1, docs/archive/2025-11/root-reports/CRM_MODULE_REFACTORING_COMPLETE_2025-11-06.md:13, docs/archive/2025-11/root-reports/CRM_MODULE_REFACTORING_COMPLETE_2025-11-06.md:18
+
+- docs/archive/2025-11/root-reports/DARK_MODE_FIX_COMPLETE_2025-11-07.md [duplicate_hint]
+
+- docs/archive/2025-11/root-reports/DESIGN_CONSISTENCY_REPORT_2025-11-07.md [outdated]
+
+- docs/archive/2025-11/root-reports/DIZIN-TEMIZLIK-PLANI-2025-11-05.md [outdated,duplicate_hint]
+
+- docs/archive/2025-11/root-reports/ENABLED_FIELD_REMOVAL_COMPLETE_2025-11-06.md [outdated,duplicate_hint]
+
+- docs/archive/2025-11/root-reports/ENUM_CLASSES_COMPLETE_2025-11-07.md [outdated,duplicate_hint]
+
+- docs/archive/2025-11/root-reports/EXPORT_IMPLEMENTATION_COMPLETE_2025-11-06.md [duplicate_hint]
+
+- docs/archive/2025-11/root-reports/FINAL_RECOMMENDATIONS_2025-11-07.md [outdated,duplicate_hint]
+
+- docs/archive/2025-11/root-reports/FINAL_REPORT_ALL_FIXES_COMPLETE_2025-11-07.md [duplicate_hint]
+
+- docs/archive/2025-11/root-reports/FIXES_APPLIED_FINAL_REPORT_2025-11-07.md [outdated,duplicate_hint]
+
+- docs/archive/2025-11/root-reports/FIXES_COMPLETE_SUMMARY_2025-11-07.md [duplicate_hint]
+
+- docs/archive/2025-11/root-reports/FIXES_IN_PROGRESS_2025-11-07.md
+
+- docs/archive/2025-11/root-reports/FRONTEND_BOOTSTRAP_ANALYSIS_2025-11-07.md [outdated]
+
+- docs/archive/2025-11/root-reports/FRONTEND_BOOTSTRAP_FIX_COMPLETE_2025-11-07.md [outdated,duplicate_hint]
+
+- docs/archive/2025-11/root-reports/FRONTEND_CLEANUP_REPORT_2025-11-07.md [outdated,duplicate_hint]
+
+- docs/archive/2025-11/root-reports/FRONTEND_FIXES_COMPLETE_2025-11-07.md [outdated,duplicate_hint]
+
+- docs/archive/2025-11/root-reports/FRONTEND_FIXES_SUMMARY_2025-11-07.md [duplicate_hint]
+
+- docs/archive/2025-11/root-reports/FRONTEND_HOMEPAGE_DESIGN_FIX_2025-11-07.md [outdated,duplicate_hint]
+
+- docs/archive/2025-11/root-reports/FRONTEND_IMPROVEMENTS_COMPLETE_2025-11-07.md [duplicate_hint]
+
+- docs/archive/2025-11/root-reports/FRONTEND_PAGES_DESIGN_FIX_2025-11-07.md [outdated,duplicate_hint]
+
+- docs/archive/2025-11/root-reports/FRONTEND_TEMPLATE_ANALYSIS_2025-11-07.md
+
+- docs/archive/2025-11/root-reports/FULL_SYSTEM_AUDIT_2025-11-06.md [duplicate_hint]
+  * CRM: docs/archive/2025-11/root-reports/FULL_SYSTEM_AUDIT_2025-11-06.md:168, docs/archive/2025-11/root-reports/FULL_SYSTEM_AUDIT_2025-11-06.md:174, docs/archive/2025-11/root-reports/FULL_SYSTEM_AUDIT_2025-11-06.md:175
+
+- docs/archive/2025-11/root-reports/HOMEPAGE_DESIGN_UPDATE_2025-11-07.md [duplicate_hint]
+
+- docs/archive/2025-11/root-reports/ILAN_ALT_KATEGORI_FIX_COMPLETE_2025-11-06.md [duplicate_hint]
+
+- docs/archive/2025-11/root-reports/ILAN_FIELDS_DOCUMENTATION_COMPLETE_2025-11-06.md [outdated,duplicate_hint]
+  * portal ID: docs/archive/2025-11/root-reports/ILAN_FIELDS_DOCUMENTATION_COMPLETE_2025-11-06.md:81
+
+- docs/archive/2025-11/root-reports/PAGE_ANALYSIS_AND_RECOMMENDATIONS_2025-11-07.md
+
+- docs/archive/2025-11/root-reports/TODAYS_COMPLETE_ACHIEVEMENTS_2025-11-06.md [outdated,duplicate_hint]
+  * CRM: docs/archive/2025-11/root-reports/TODAYS_COMPLETE_ACHIEVEMENTS_2025-11-06.md:22, docs/archive/2025-11/root-reports/TODAYS_COMPLETE_ACHIEVEMENTS_2025-11-06.md:23, docs/archive/2025-11/root-reports/TODAYS_COMPLETE_ACHIEVEMENTS_2025-11-06.md:183
+
+- docs/archive/2025-11/root-reports/TODAY_FINAL_REPORT_2025-11-06.md [outdated,duplicate_hint]
+  * CRM: docs/archive/2025-11/root-reports/TODAY_FINAL_REPORT_2025-11-06.md:33, docs/archive/2025-11/root-reports/TODAY_FINAL_REPORT_2025-11-06.md:34, docs/archive/2025-11/root-reports/TODAY_FINAL_REPORT_2025-11-06.md:170
+
+- docs/archive/2025-11/root-reports/TURKIYEAPI-WIKIMAPIA-ENTEGRASYON-2025-11-05.md [duplicate_hint]
+  * apartman: docs/archive/2025-11/root-reports/TURKIYEAPI-WIKIMAPIA-ENTEGRASYON-2025-11-05.md:17, docs/archive/2025-11/root-reports/TURKIYEAPI-WIKIMAPIA-ENTEGRASYON-2025-11-05.md:80, docs/archive/2025-11/root-reports/TURKIYEAPI-WIKIMAPIA-ENTEGRASYON-2025-11-05.md:390
+
+- docs/archive/2025-11/root-reports/WIKIMAPIA-FULL-AUDIT-2025-11-05.md [duplicate_hint]
+  * apartman: docs/archive/2025-11/root-reports/WIKIMAPIA-FULL-AUDIT-2025-11-05.md:264, docs/archive/2025-11/root-reports/WIKIMAPIA-FULL-AUDIT-2025-11-05.md:268, docs/archive/2025-11/root-reports/WIKIMAPIA-FULL-AUDIT-2025-11-05.md:442
+
+- docs/archive/2025-11/scripts-README-2025-11-14.md [duplicate_hint]
+
+- docs/archive/2025-11-04-completed/14-SAATLİK-MARATON-FINAL-OZET-2025-11-04.md [duplicate_hint]
+
+- docs/archive/2025-11-04-completed/BUGUN_FINAL_OZET_2025-11-03.md [duplicate_hint]
+
+- docs/archive/2025-11-04-completed/BUGUN_TAMAMLANAN_ISLER_2025-11-03.md [duplicate_hint]
+
+- docs/archive/2025-11-04-completed/FORM_DUZENLEME_PLANI_2025-11-03.md
+
+- docs/archive/2025-11-04-completed/PHOTO_UPLOAD_SYSTEM_REPORT.md
+
+- docs/archive/2025-11-04-completed/RAKIP-SITE-ANALIZI-2025-11-04.md
+
+- docs/archive/2025-11-04-completed/SIRADAKI-ISLER-2025-11-04.md [outdated,duplicate_hint]
+
+- docs/archive/2025-11-04-completed/SMART_FORM_ORGANIZATION_PROPOSAL.md
+
+- docs/archive/2025-11-04-completed/TODO-RAPORU-2025-11-04.md [duplicate_hint]
+
+- docs/archive/2025-11-04-completed/TODO_AUTH_LOGIN_VIEW.md
+
+- docs/archive/2025-11-04-completed/VILLA-LISTING-FINAL-2025-11-04.md [duplicate_hint]
+
+- docs/archive/2025-11-04-completed/YAZLIK-EKSIK-OZELLIKLER-2025-11-04.md
+
+- docs/archive/ALAN_ILISKILERI_YONETIM_SISTEMI.md
+
+- docs/archive/CLEANUP-REPORT-20251012.md [outdated,duplicate_hint]
+
+- docs/archive/FINAL_COMPLETE_ANALYSIS.md [outdated,duplicate_hint]
+  * MCP: docs/archive/FINAL_COMPLETE_ANALYSIS.md:228
+  * apartman: docs/archive/FINAL_COMPLETE_ANALYSIS.md:187, docs/archive/FINAL_COMPLETE_ANALYSIS.md:202
+
+- docs/archive/ILAN_CREATE_FINAL_STATUS.md [outdated,duplicate_hint]
+  * apartman: docs/archive/ILAN_CREATE_FINAL_STATUS.md:17, docs/archive/ILAN_CREATE_FINAL_STATUS.md:47, docs/archive/ILAN_CREATE_FINAL_STATUS.md:48
+
+- docs/archive/ILAN_CREATE_SAYFA_ANALIZI_2025_10_29.md [outdated,duplicate_hint]
+  * CRM: docs/archive/ILAN_CREATE_SAYFA_ANALIZI_2025_10_29.md:724
+  * apartman: docs/archive/ILAN_CREATE_SAYFA_ANALIZI_2025_10_29.md:45, docs/archive/ILAN_CREATE_SAYFA_ANALIZI_2025_10_29.md:68, docs/archive/ILAN_CREATE_SAYFA_ANALIZI_2025_10_29.md:364
+
+- docs/archive/ILAN_ETIKET_SISTEMI.md
+
+- docs/archive/ILAN_KATEGORI_STRUCTURE_COMPLETE.md
+
+- docs/archive/ILAN_SISTEMI_TAMAMLAMA_RAPORU_2025_10_27.md [duplicate_hint]
+
+- docs/archive/ILAN_YONETIM_SISTEMI_MASTER_DOKUMAN.md
+  * apartman: docs/archive/ILAN_YONETIM_SISTEMI_MASTER_DOKUMAN.md:173, docs/archive/ILAN_YONETIM_SISTEMI_MASTER_DOKUMAN.md:174, docs/archive/ILAN_YONETIM_SISTEMI_MASTER_DOKUMAN.md:694
+
+- docs/archive/OZELLIK_SISTEMI_ENTEGRASYON_RAPORU.md
+
+- docs/archive/SISTEM_TAMAMEN_TAMAMLANDI.md [outdated,duplicate_hint]
+  * apartman: docs/archive/SISTEM_TAMAMEN_TAMAMLANDI.md:18, docs/archive/SISTEM_TAMAMEN_TAMAMLANDI.md:44, docs/archive/SISTEM_TAMAMEN_TAMAMLANDI.md:57
+
+- docs/archive/SİSTEM_GELİŞİM_RAPORLARI_2025.md [duplicate_hint]
+  * apartman: docs/archive/SİSTEM_GELİŞİM_RAPORLARI_2025.md:285, docs/archive/SİSTEM_GELİŞİM_RAPORLARI_2025.md:290
+
+- docs/archive/TAKVIM_API_DOKUMANTASYONU.md [duplicate_hint]
+
+- docs/archive/TAKVIM_ENTEGRASYON_SISTEMI.md
+
+- docs/archive/TAMAMLANAN_ISLEMLER_2025_10_30.md [duplicate_hint]
+  * apartman: docs/archive/TAMAMLANAN_ISLEMLER_2025_10_30.md:32, docs/archive/TAMAMLANAN_ISLEMLER_2025_10_30.md:34, docs/archive/TAMAMLANAN_ISLEMLER_2025_10_30.md:39
+
+- docs/archive/docs-folder-cleanup-recommendations-2025.md [outdated,duplicate_hint]
+
+- docs/archive/november-2025/BACKEND_TAMAMLAMA_RAPORU.md [outdated,duplicate_hint]
+
+- docs/archive/november-2025/BUGUN-YAPILAN-ISLER-2025-11-02.md [outdated,duplicate_hint]
+
+- docs/archive/november-2025/BUGUN_TAMAMLANANLAR_FINAL_2025_11_01.md [outdated,duplicate_hint]
+
+- docs/archive/november-2025/BULK_ACTIONS_IMPLEMENTATION.md [duplicate_hint]
+
+- docs/archive/november-2025/CLEANUP_COMPLETE_2025_11_01.md [duplicate_hint]
+  * apartman: docs/archive/november-2025/CLEANUP_COMPLETE_2025_11_01.md:69
+
+- docs/archive/november-2025/CSS_KARISIKLIK_RAPORU.md [outdated]
+
+- docs/archive/november-2025/DERIN_ANALIZ_RAPORU_2025_11_01.md [outdated,duplicate_hint]
+
+- docs/archive/november-2025/DIZIN_TEMIZLIK_PLANI.md [outdated,duplicate_hint]
+
+- docs/archive/november-2025/DIZIN_TEMIZLIK_RAPORU_FINAL.md [outdated,duplicate_hint]
+
+- docs/archive/november-2025/DRAFT_AUTOSAVE_PLAN.md [duplicate_hint]
+
+- docs/archive/november-2025/FEATURES_COMPONENT_IMPLEMENTATION_COMPLETE.md [duplicate_hint]
+
+- docs/archive/november-2025/FEATURES_IMPLEMENTATION_PLAN.md [outdated]
+
+- docs/archive/november-2025/FIELD_ANALYSIS_RECOMMENDATIONS.md [duplicate_hint]
+
+- docs/archive/november-2025/FIELD_DEPENDENCIES_FINAL_IMPLEMENTATION_2025_11_01.md [duplicate_hint]
+
+- docs/archive/november-2025/FIELD_STRATEGY.md
+
+- docs/archive/november-2025/FIELD_SYNC_TEST_RESULTS.md [duplicate_hint]
+  * CRM: docs/archive/november-2025/FIELD_SYNC_TEST_RESULTS.md:177, docs/archive/november-2025/FIELD_SYNC_TEST_RESULTS.md:243, docs/archive/november-2025/FIELD_SYNC_TEST_RESULTS.md:398
+
+- docs/archive/november-2025/FIELD_SYNC_VALIDATION_SETUP.md [duplicate_hint]
+
+- docs/archive/november-2025/FIELD_SYSTEM_COMPLETE_SUMMARY.md [duplicate_hint]
+  * CRM: docs/archive/november-2025/FIELD_SYSTEM_COMPLETE_SUMMARY.md:132
+
+- docs/archive/november-2025/FIELD_SYSTEM_DEPLOYMENT_COMPLETE.md [duplicate_hint]
+  * CRM: docs/archive/november-2025/FIELD_SYSTEM_DEPLOYMENT_COMPLETE.md:121
+
+- docs/archive/november-2025/FORM_STANDARDIZATION_STRATEGY_2025_11_02.md [outdated,duplicate_hint]
+  * CRM: docs/archive/november-2025/FORM_STANDARDIZATION_STRATEGY_2025_11_02.md:117, docs/archive/november-2025/FORM_STANDARDIZATION_STRATEGY_2025_11_02.md:392
+
+- docs/archive/november-2025/FORM_STANDARDS_MIGRATION_REPORT_2025_11_02.md [outdated,duplicate_hint]
+  * CRM: docs/archive/november-2025/FORM_STANDARDS_MIGRATION_REPORT_2025_11_02.md:217, docs/archive/november-2025/FORM_STANDARDS_MIGRATION_REPORT_2025_11_02.md:327
+
+- docs/archive/november-2025/GEREKSIZ_DOSYA_TEMIZLIK_RAPORU_2025_11_01.md [outdated,duplicate_hint]
+
+- docs/archive/november-2025/HATA_KONTROL_REHBERI.md [outdated,duplicate_hint]
+
+- docs/archive/november-2025/ILAN_ISLEMLERI_SAYFA_ANALIZI_2025_11_01.md [duplicate_hint]
+  * apartman: docs/archive/november-2025/ILAN_ISLEMLERI_SAYFA_ANALIZI_2025_11_01.md:43, docs/archive/november-2025/ILAN_ISLEMLERI_SAYFA_ANALIZI_2025_11_01.md:88, docs/archive/november-2025/ILAN_ISLEMLERI_SAYFA_ANALIZI_2025_11_01.md:90
+
+- docs/archive/november-2025/ILAN_YONETIMI_DUZELTME_RAPORU_2025_11_01.md [outdated,duplicate_hint]
+
+- docs/archive/november-2025/ILAN_YONETIMI_KAPSAMLI_DUZELTME_PLANI_2025_11_01.md [outdated,duplicate_hint]
+  * CRM: docs/archive/november-2025/ILAN_YONETIMI_KAPSAMLI_DUZELTME_PLANI_2025_11_01.md:14
+
+- docs/archive/november-2025/INLINE_STATUS_TOGGLE_PLAN.md [duplicate_hint]
+
+- docs/archive/november-2025/JQUERY_MIGRATION_PLAN.md [duplicate_hint]
+
+- docs/archive/november-2025/KULLANIM_REHBERI_POLYMORPHIC_FEATURES.md [outdated,duplicate_hint]
+
+- docs/archive/november-2025/LEGACY_CLEANUP_REPORT.md [outdated]
+
+- docs/archive/november-2025/MAJOR_FEATURES_ALL_COMPLETE_2025_11_01.md [duplicate_hint]
+  * apartman: docs/archive/november-2025/MAJOR_FEATURES_ALL_COMPLETE_2025_11_01.md:230
+
+- docs/archive/november-2025/MAJOR_FEATURES_COMPLETE_2025_11_01.md [duplicate_hint]
+
+- docs/archive/november-2025/POLYMORPHIC_FEATURES_SYSTEM_REPORT.md [outdated,duplicate_hint]
+
+- docs/archive/november-2025/POLYMORPHIC_SYSTEM_FINAL_REPORT.md [outdated,duplicate_hint]
+
+- docs/archive/november-2025/POLYMORPHIC_SYSTEM_IMPLEMENTATION_COMPLETE.md [outdated,duplicate_hint]
+
+- docs/archive/november-2025/POLYMORPHIC_SYSTEM_SUCCESS.md [duplicate_hint]
+
+- docs/archive/november-2025/POST_MORTEM_ANALYSIS_2025_11_02.md [outdated,duplicate_hint]
+
+- docs/archive/november-2025/PROPERTY_TYPE_OZELLIKLER_SISTEM_RAPORU.md [outdated]
+
+- docs/archive/november-2025/SONRAKI_HEDEFLER_GUNCELLENMIS_2025_11_01.md [outdated,duplicate_hint]
+
+- docs/archive/november-2025/SYSTEM_IMPROVEMENTS_REPORT_2025_11_02.md [duplicate_hint]
+
+- docs/archive/november-2025/YALIHAN-BEKCI-OGRENME-RAPORU-2025-11-02.md [outdated,duplicate_hint]
+  * MCP: docs/archive/november-2025/YALIHAN-BEKCI-OGRENME-RAPORU-2025-11-02.md:325
+
+- docs/archive/november-2025/YAYIN_TIPI_FILTRELEME_RAPORU_2025_11_01.md [duplicate_hint]
+
+- docs/archive/reports-2025-11-05/analysis-reports/AI-ANALIZLERIN-DEGERLENDIRMESI.md
+  * CRM: docs/archive/reports-2025-11-05/analysis-reports/AI-ANALIZLERIN-DEGERLENDIRMESI.md:55, docs/archive/reports-2025-11-05/analysis-reports/AI-ANALIZLERIN-DEGERLENDIRMESI.md:59, docs/archive/reports-2025-11-05/analysis-reports/AI-ANALIZLERIN-DEGERLENDIRMESI.md:65
+
+- docs/archive/reports-2025-11-05/analysis-reports/ANYTHINGLLM-N8N-ENTEGRASYON-PLANI.md
+
+- docs/archive/reports-2025-11-05/analysis-reports/API-ENTEGRASYON-PLANI-2025-11-04.md [duplicate_hint]
+  * apartman: docs/archive/reports-2025-11-05/analysis-reports/API-ENTEGRASYON-PLANI-2025-11-04.md:249, docs/archive/reports-2025-11-05/analysis-reports/API-ENTEGRASYON-PLANI-2025-11-04.md:271, docs/archive/reports-2025-11-05/analysis-reports/API-ENTEGRASYON-PLANI-2025-11-04.md:281
+
+- docs/archive/reports-2025-11-05/analysis-reports/AYARLAR-CREATE-ANALIZ.md [duplicate_hint]
+
+- docs/archive/reports-2025-11-05/analysis-reports/AYARLAR-SISTEM-UPGRADE-2025-11-05.md [outdated,duplicate_hint]
+
+- docs/archive/reports-2025-11-05/analysis-reports/DIZIN-BOYUTU-ANALIZI.md
+
+- docs/archive/reports-2025-11-05/analysis-reports/ESKi-FRONTEND-TEMIZLIK-PLANI.md [outdated]
+
+- docs/archive/reports-2025-11-05/analysis-reports/FRONTEND-CSS-KARAR.md [duplicate_hint]
+
+- docs/archive/reports-2025-11-05/analysis-reports/FRONTEND-DETAYLI-TARAMA-RAPORU.md [outdated,duplicate_hint]
+
+- docs/archive/reports-2025-11-05/analysis-reports/FRONTEND-INCELEME-RAPORU.md
+
+- docs/archive/reports-2025-11-05/analysis-reports/GIT-BUYUK-DOSYA-ANALIZI.md
+
+- docs/archive/reports-2025-11-05/analysis-reports/GIT-FRESH-START-RAPORU.md [outdated,duplicate_hint]
+
+- docs/archive/reports-2025-11-05/analysis-reports/GIT-TEMIZLIK-SECENEKLER.md [outdated]
+
+- docs/archive/reports-2025-11-05/analysis-reports/HORIZON-COZUM.md
+
+- docs/archive/reports-2025-11-05/analysis-reports/HORIZON-VS-TELESCOPE-ACIKLAMA.md
+
+- docs/archive/reports-2025-11-05/analysis-reports/KRITIK_VERI_KURTARMA_RAPORU.md [outdated]
+
+- docs/archive/reports-2025-11-05/analysis-reports/KULLANILMAYAN-DOSYALAR-RAPORU.md [outdated,duplicate_hint]
+
+- docs/archive/reports-2025-11-05/analysis-reports/OZEL-MODULLER-DURUM-RAPORU-2025-11-04.md [outdated,duplicate_hint]
+  * arsa hesaplamaları: docs/archive/reports-2025-11-05/analysis-reports/OZEL-MODULLER-DURUM-RAPORU-2025-11-04.md:14, docs/archive/reports-2025-11-05/analysis-reports/OZEL-MODULLER-DURUM-RAPORU-2025-11-04.md:129, docs/archive/reports-2025-11-05/analysis-reports/OZEL-MODULLER-DURUM-RAPORU-2025-11-04.md:137
+
+- docs/archive/reports-2025-11-05/analysis-reports/OZEL-MODULLER-EK-RAPOR-2025-11-04.md
+  * dış API: docs/archive/reports-2025-11-05/analysis-reports/OZEL-MODULLER-EK-RAPOR-2025-11-04.md:548, docs/archive/reports-2025-11-05/analysis-reports/OZEL-MODULLER-EK-RAPOR-2025-11-04.md:616
+  * arsa hesaplamaları: docs/archive/reports-2025-11-05/analysis-reports/OZEL-MODULLER-EK-RAPOR-2025-11-04.md:586
+  * CRM: docs/archive/reports-2025-11-05/analysis-reports/OZEL-MODULLER-EK-RAPOR-2025-11-04.md:342, docs/archive/reports-2025-11-05/analysis-reports/OZEL-MODULLER-EK-RAPOR-2025-11-04.md:347, docs/archive/reports-2025-11-05/analysis-reports/OZEL-MODULLER-EK-RAPOR-2025-11-04.md:348
+  * apartman: docs/archive/reports-2025-11-05/analysis-reports/OZEL-MODULLER-EK-RAPOR-2025-11-04.md:44, docs/archive/reports-2025-11-05/analysis-reports/OZEL-MODULLER-EK-RAPOR-2025-11-04.md:85, docs/archive/reports-2025-11-05/analysis-reports/OZEL-MODULLER-EK-RAPOR-2025-11-04.md:87
+
+- docs/archive/reports-2025-11-05/analysis-reports/PROJE-ANATOMISI-VE-ONERILER-2025-11-04.md [outdated,duplicate_hint]
+  * CRM: docs/archive/reports-2025-11-05/analysis-reports/PROJE-ANATOMISI-VE-ONERILER-2025-11-04.md:115, docs/archive/reports-2025-11-05/analysis-reports/PROJE-ANATOMISI-VE-ONERILER-2025-11-04.md:163, docs/archive/reports-2025-11-05/analysis-reports/PROJE-ANATOMISI-VE-ONERILER-2025-11-04.md:591
+  * apartman: docs/archive/reports-2025-11-05/analysis-reports/PROJE-ANATOMISI-VE-ONERILER-2025-11-04.md:232, docs/archive/reports-2025-11-05/analysis-reports/PROJE-ANATOMISI-VE-ONERILER-2025-11-04.md:374
+
+- docs/archive/reports-2025-11-05/analysis-reports/TAILWIND-V4-BETA-DETAYLI-ANALIZ.md
+
+- docs/archive/reports-2025-11-05/analysis-reports/TAILWIND-V4-FRONTEND-STRATEJISI.md [outdated]
+
+- docs/archive/reports-2025-11-05/analysis-reports/TAILWIND-V4-MIGRATION-SORUN.md
+
+- docs/archive/reports-2025-11-05/analysis-reports/TEMIZLIK-RAPORU-2025-11-04.md [duplicate_hint]
+  * CRM: docs/archive/reports-2025-11-05/analysis-reports/TEMIZLIK-RAPORU-2025-11-04.md:34, docs/archive/reports-2025-11-05/analysis-reports/TEMIZLIK-RAPORU-2025-11-04.md:35, docs/archive/reports-2025-11-05/analysis-reports/TEMIZLIK-RAPORU-2025-11-04.md:36
+
+- docs/archive/reports-2025-11-05/analysis-reports/WIKIMAPIA-API-ISSUE-2025-11-05.md [outdated,duplicate_hint]
+  * apartman: docs/archive/reports-2025-11-05/analysis-reports/WIKIMAPIA-API-ISSUE-2025-11-05.md:98, docs/archive/reports-2025-11-05/analysis-reports/WIKIMAPIA-API-ISSUE-2025-11-05.md:227
+
+- docs/archive/reports-2025-11-05/analysis-reports/YALIHANEMLAK_ULTRA_BOS_SEBEB_RAPORU.md [outdated,duplicate_hint]
+
+- docs/archive/reports-2025-11-05/migration-reports/12-SAYFA-HARDCORE-MODE-FINAL-2025-11-05.md [duplicate_hint]
+
+- docs/archive/reports-2025-11-05/migration-reports/15-SAYFA-LEGENDARY-FINAL-2025-11-05.md [duplicate_hint]
+  * CRM: docs/archive/reports-2025-11-05/migration-reports/15-SAYFA-LEGENDARY-FINAL-2025-11-05.md:326
+
+- docs/archive/reports-2025-11-05/migration-reports/50-SAYFA-ULTIMATE-FINAL-2025-11-05.md [outdated,duplicate_hint]
+
+- docs/archive/reports-2025-11-05/migration-reports/6-SAYFA-MIGRATION-FINAL-2025-11-05.md [duplicate_hint]
+
+- docs/archive/reports-2025-11-05/migration-reports/9-SAYFA-MIGRATION-FINAL-2025-11-05.md [duplicate_hint]
+
+- docs/archive/reports-2025-11-05/migration-reports/AI-CATEGORY-MIGRATION-REPORT-2025-11-05.md [duplicate_hint]
+
+- docs/archive/reports-2025-11-05/migration-reports/COMPONENT-LIBRARY-COMPLETE-REPORT-2025-11-05.md [outdated,duplicate_hint]
+
+- docs/archive/reports-2025-11-05/migration-reports/COMPONENT-LIBRARY-COMPLETE.md [duplicate_hint]
+
+- docs/archive/reports-2025-11-05/migration-reports/TALEPLER-INDEX-MIGRATION-REPORT-2025-11-05.md [duplicate_hint]
+
+- docs/archive/reports-2025-11-05/old-reports/BU-GECE-FINAL-OZET.md [outdated,duplicate_hint]
+
+- docs/archive/reports-2025-11-05/old-reports/BUGUN-FINAL-OZET-2025-11-04-GECE.md [duplicate_hint]
+
+- docs/archive/reports-2025-11-05/old-reports/BUGUN-GECE-FINAL-2025-11-05.md [duplicate_hint]
+
+- docs/archive/reports-2025-11-05/old-reports/BUGUN-TAMAMLANAN-2025-11-04-FINAL.md [outdated,duplicate_hint]
+
+- docs/archive/reports-2025-11-05/old-reports/GECE-COMPREHENSIVE-REPORT-2025-11-05.md [duplicate_hint]
+
+- docs/archive/reports-2025-11-05/old-reports/GECE-FINAL-COMPREHENSIVE-REPORT-2025-11-05.md [duplicate_hint]
+  * dış API: docs/archive/reports-2025-11-05/old-reports/GECE-FINAL-COMPREHENSIVE-REPORT-2025-11-05.md:374
+
+- docs/archive/reports-2025-11-05/old-reports/GECE-FINAL-OZET-2025-11-04.md [outdated,duplicate_hint]
+
+- docs/archive/reports-2025-11-05/old-reports/GECE-FINAL-RAPOR-2025-11-04.md [outdated]
+
+- docs/archive/reports-2025-11-05/old-reports/YARIN-PLAN-2025-11-05.md [duplicate_hint]
+
+- docs/archive/reports-november-2025/BUGUN-FINAL-RAPOR-2025-11-03.md [outdated,duplicate_hint]
+  * apartman: docs/archive/reports-november-2025/BUGUN-FINAL-RAPOR-2025-11-03.md:61, docs/archive/reports-november-2025/BUGUN-FINAL-RAPOR-2025-11-03.md:278, docs/archive/reports-november-2025/BUGUN-FINAL-RAPOR-2025-11-03.md:415
+
+- docs/archive/reports-november-2025/FEATURE_YAYIN_TIPI_KONTROLU_PLANI.md
+
+- docs/archive/reports-november-2025/GECE-BOYU-DIZIN-KONTROLU-FINAL-2025-11-03.md [outdated,duplicate_hint]
+  * apartman: docs/archive/reports-november-2025/GECE-BOYU-DIZIN-KONTROLU-FINAL-2025-11-03.md:481
+
+- docs/archive/reports-november-2025/ILANLAR-CREATE-MIGRATION-REPORT-2025-11-03.md [outdated,duplicate_hint]
+  * apartman: docs/archive/reports-november-2025/ILANLAR-CREATE-MIGRATION-REPORT-2025-11-03.md:27, docs/archive/reports-november-2025/ILANLAR-CREATE-MIGRATION-REPORT-2025-11-03.md:141, docs/archive/reports-november-2025/ILANLAR-CREATE-MIGRATION-REPORT-2025-11-03.md:146
+
+- docs/archive/reports-november-2025/KAPSAMLI-DIZIN-KONTROLU-2025-11-03.md [outdated,duplicate_hint]
+  * CRM: docs/archive/reports-november-2025/KAPSAMLI-DIZIN-KONTROLU-2025-11-03.md:49
+
+- docs/archive/reports-november-2025/KOLAY_KULLANIM.md [outdated]
+
+- docs/archive/reports-november-2025/PROPERTY-TYPE-MANAGER-FINAL-REPORT-2025-11-03.md [outdated,duplicate_hint]
+
+- docs/archive/reports-november-2025/QUICK-WINS-TEMIZLIK-2025-11-04.md [duplicate_hint]
+  * CRM: docs/archive/reports-november-2025/QUICK-WINS-TEMIZLIK-2025-11-04.md:70, docs/archive/reports-november-2025/QUICK-WINS-TEMIZLIK-2025-11-04.md:71, docs/archive/reports-november-2025/QUICK-WINS-TEMIZLIK-2025-11-04.md:121
+
+- docs/archive/reports-november-2025/SECENEK-1-FORM-MIGRATION-2025-11-03.md [outdated,duplicate_hint]
+  * apartman: docs/archive/reports-november-2025/SECENEK-1-FORM-MIGRATION-2025-11-03.md:30, docs/archive/reports-november-2025/SECENEK-1-FORM-MIGRATION-2025-11-03.md:116, docs/archive/reports-november-2025/SECENEK-1-FORM-MIGRATION-2025-11-03.md:124
+
+- docs/cleanup/CLEANUP_SUCCESS_REPORT.md [outdated,duplicate_hint]
+  * MCP: docs/cleanup/CLEANUP_SUCCESS_REPORT.md:1, docs/cleanup/CLEANUP_SUCCESS_REPORT.md:27, docs/cleanup/CLEANUP_SUCCESS_REPORT.md:30
+
+- docs/cleanup/MD_CLEANUP_ANALYSIS.md [outdated]
+  * MCP: docs/cleanup/MD_CLEANUP_ANALYSIS.md:47, docs/cleanup/MD_CLEANUP_ANALYSIS.md:52, docs/cleanup/MD_CLEANUP_ANALYSIS.md:59
+
+- docs/deployment/FREE_TOOLS_SETUP.md [outdated,duplicate_hint]
+
+- docs/development/CATEGORY_SPECIFIC_FEATURES_IMPLEMENTATION_2025_11_12.md [duplicate_hint]
+
+- docs/development/COMPONENT-LIBRARY-GUIDE.md
+
+- docs/development/COMPONENT-USAGE-EXAMPLES.md [outdated]
+
+- docs/development/FRONTEND_UI_IMPLEMENTATION_GUIDE.md [duplicate_hint]
+
+- docs/development/SESSION_SUMMARY_2025_11_12.md [duplicate_hint]
+
+- docs/features/HARITA_SISTEMI.md [outdated,duplicate_hint]
+  * dış API: docs/features/HARITA_SISTEMI.md:715
+  * sahibinden: docs/features/HARITA_SISTEMI.md:1261
+
+- docs/features/PROPERTY_TYPE_MANAGER.md [outdated,duplicate_hint]
+  * MCP: docs/features/PROPERTY_TYPE_MANAGER.md:366
+
+- docs/features/YAZLIK_KIRALAMA.md [duplicate_hint]
+  * MCP: docs/features/YAZLIK_KIRALAMA.md:403
+  * CRM: docs/features/YAZLIK_KIRALAMA.md:211
+
+- docs/frontend-global-redesign-plan.md [outdated,duplicate_hint]
+
+- docs/index.md [outdated]
+  * MCP: docs/index.md:88
+  * CRM: docs/index.md:198
+
+- docs/integrations/TCMB-KUR-API-RAPOR-2025-11-05.md [duplicate_hint]
+
+- docs/integrations/maps/LOCATION_SYSTEM_UPDATE.md [outdated,duplicate_hint]
+
+- docs/integrations/maps/google-maps-location-system.md [outdated,duplicate_hint]
+
+- docs/integrations/n8n-ai-entegrasyon-senaryolari.md [outdated]
+  * sahibinden: docs/integrations/n8n-ai-entegrasyon-senaryolari.md:78
+
+- docs/integrations/n8n-entegrasyonu.md
+  * CRM: docs/integrations/n8n-entegrasyonu.md:495
+  * sahibinden: docs/integrations/n8n-entegrasyonu.md:490
+
+- docs/integrations/tkgm/live-search-tkgm-entegrasyonu-2025.md [duplicate_hint]
+  * apartman: docs/integrations/tkgm/live-search-tkgm-entegrasyonu-2025.md:7, docs/integrations/tkgm/live-search-tkgm-entegrasyonu-2025.md:38, docs/integrations/tkgm/live-search-tkgm-entegrasyonu-2025.md:144
+
+- docs/integrations/tkgm/tkgm-parsel-entegrasyonu-implementation.md [duplicate_hint]
+
+- docs/integrations/tkgm/tkgm-php-class-entegrasyonu-2025.md [duplicate_hint]
+
+- docs/migration-auto-fixer.md [duplicate_hint]
+
+- docs/prompts/danisman-raporu.prompt.md
+
+- docs/prompts/ilan-aciklama.prompt.md
+
+- docs/prompts/ilan-baslik.prompt.md
+
+- docs/prompts/talep-eslesme.prompt.md
+
+- docs/roadmaps/2025/MODERNIZATION_PLAN.md [duplicate_hint]
+  * MCP: docs/roadmaps/2025/MODERNIZATION_PLAN.md:25, docs/roadmaps/2025/MODERNIZATION_PLAN.md:26, docs/roadmaps/2025/MODERNIZATION_PLAN.md:56
+
+- docs/roadmaps/2025/SIRADAKI-3-ADIM.md [outdated,duplicate_hint]
+  * arsa hesaplamaları: docs/roadmaps/2025/SIRADAKI-3-ADIM.md:286
+  * CRM: docs/roadmaps/2025/SIRADAKI-3-ADIM.md:310
+  * apartman: docs/roadmaps/2025/SIRADAKI-3-ADIM.md:301
+
+- docs/roadmaps/2025/context7-roadmap-2025.md [outdated,duplicate_hint]
+
+- docs/roadmaps/2025/enterprise-ilan-sistemi-roadmap-2025.md [duplicate_hint]
+  * CRM: docs/roadmaps/2025/enterprise-ilan-sistemi-roadmap-2025.md:341
+
+- docs/roadmaps/2025/next-steps-roadmap-2025.md [duplicate_hint]
+
+- docs/roadmaps/YALIHAN_EMLAK_ROADMAP_2025.md [duplicate_hint]
+  * CRM: docs/roadmaps/YALIHAN_EMLAK_ROADMAP_2025.md:3
+  * portal ID: docs/roadmaps/YALIHAN_EMLAK_ROADMAP_2025.md:299
+
+- docs/roadmaps/proje-yol-haritasi-2025-2026.md [duplicate_hint]
+  * CRM: docs/roadmaps/proje-yol-haritasi-2025-2026.md:37, docs/roadmaps/proje-yol-haritasi-2025-2026.md:38, docs/roadmaps/proje-yol-haritasi-2025-2026.md:187
+  * apartman: docs/roadmaps/proje-yol-haritasi-2025-2026.md:51
+
+- docs/rules/STANDARDIZATION_GUIDE.md [outdated,duplicate_hint]
+
+- docs/rules/instructions/ai-model-kurallari.instructions.md
+
+- docs/rules/master-rules.md
+  * MCP: docs/rules/master-rules.md:50
+  * CRM: docs/rules/master-rules.md:39, docs/rules/master-rules.md:43, docs/rules/master-rules.md:44
+
+- docs/technical/CONTEXT7-LIVE-SEARCH-MIGRATION-2025-10-13.md [outdated,duplicate_hint]
+  * MCP: docs/technical/CONTEXT7-LIVE-SEARCH-MIGRATION-2025-10-13.md:240, docs/technical/CONTEXT7-LIVE-SEARCH-MIGRATION-2025-10-13.md:243, docs/technical/CONTEXT7-LIVE-SEARCH-MIGRATION-2025-10-13.md:244
+  * CRM: docs/technical/CONTEXT7-LIVE-SEARCH-MIGRATION-2025-10-13.md:32
+  * apartman: docs/technical/CONTEXT7-LIVE-SEARCH-MIGRATION-2025-10-13.md:28, docs/technical/CONTEXT7-LIVE-SEARCH-MIGRATION-2025-10-13.md:172
+
+- docs/technical/NEO-TO-TAILWIND-PATTERN-GUIDE.md
+
+- docs/technical/README.md
+
+- docs/technical/SCRIPTS_KULLANIM_REHBERI.md [duplicate_hint]
+  * CRM: docs/technical/SCRIPTS_KULLANIM_REHBERI.md:327
+
+- docs/technical/STABLE-CREATE-TEKNOLOJI-ANALIZ-2025-10-13.md [duplicate_hint]
+  * CRM: docs/technical/STABLE-CREATE-TEKNOLOJI-ANALIZ-2025-10-13.md:100, docs/technical/STABLE-CREATE-TEKNOLOJI-ANALIZ-2025-10-13.md:321
+
+- docs/technical/TAILWIND_MIGRATION.md [duplicate_hint]
+  * MCP: docs/technical/TAILWIND_MIGRATION.md:465, docs/technical/TAILWIND_MIGRATION.md:469
+  * apartman: docs/technical/TAILWIND_MIGRATION.md:26, docs/technical/TAILWIND_MIGRATION.md:289, docs/technical/TAILWIND_MIGRATION.md:291
+
+- docs/technical/api/context7-live-search-implementation.md [duplicate_hint]
+  * CRM: docs/technical/api/context7-live-search-implementation.md:16
+  * apartman: docs/technical/api/context7-live-search-implementation.md:12, docs/technical/api/context7-live-search-implementation.md:18, docs/technical/api/context7-live-search-implementation.md:181
+
+- docs/technical/api/hybrid-search-system-implementation-complete-2025.md [duplicate_hint]
+  * apartman: docs/technical/api/hybrid-search-system-implementation-complete-2025.md:128
+
+- docs/technical/api/hybrid-search-usage-guide-2025.md [duplicate_hint]
+  * apartman: docs/technical/api/hybrid-search-usage-guide-2025.md:26, docs/technical/api/hybrid-search-usage-guide-2025.md:69
+
+- docs/technical/context7-dual-system-usage.md
+  * MCP: docs/technical/context7-dual-system-usage.md:13, docs/technical/context7-dual-system-usage.md:29, docs/technical/context7-dual-system-usage.md:47
+
+- docs/technical/context7-mcp-integration.md [outdated]
+  * MCP: docs/technical/context7-mcp-integration.md:1, docs/technical/context7-mcp-integration.md:12, docs/technical/context7-mcp-integration.md:18
+
+- docs/technical/context7-mcp-project-knowledge.md
+  * MCP: docs/technical/context7-mcp-project-knowledge.md:1, docs/technical/context7-mcp-project-knowledge.md:13, docs/technical/context7-mcp-project-knowledge.md:41
+
+- docs/technical/context7-scripts-mcp-benefits.md [outdated]
+  * MCP: docs/technical/context7-scripts-mcp-benefits.md:1, docs/technical/context7-scripts-mcp-benefits.md:9, docs/technical/context7-scripts-mcp-benefits.md:11
+
+- docs/technical/context7-scripts-mcp-integration.md [outdated]
+  * MCP: docs/technical/context7-scripts-mcp-integration.md:1, docs/technical/context7-scripts-mcp-integration.md:9, docs/technical/context7-scripts-mcp-integration.md:11
+
+- docs/technical/context7-scripts-mcp-summary.md [outdated,duplicate_hint]
+  * MCP: docs/technical/context7-scripts-mcp-summary.md:1, docs/technical/context7-scripts-mcp-summary.md:9, docs/technical/context7-scripts-mcp-summary.md:13
+
+- docs/technical/database/schemas/ilanlar-schema.md
+
+- docs/technical/database/schemas/kisiler-schema.md
+
+- docs/technical/database/schemas/neo-design-schema.md
+
+- docs/technical/database/schemas/users-schema.md [duplicate_hint]
+
+- docs/technical/ilan-yonetimi-iliski-ozellik-listesi.md [outdated]
+  * MCP: docs/technical/ilan-yonetimi-iliski-ozellik-listesi.md:3
+
+- docs/technical/performance/backend-fiyat-arsa-hesaplama-sistemi-2025.md [duplicate_hint]
+  * arsa hesaplamaları: docs/technical/performance/backend-fiyat-arsa-hesaplama-sistemi-2025.md:1
+
+- docs/technical/react-select-implementation-guide-2025.md [duplicate_hint]
+  * apartman: docs/technical/react-select-implementation-guide-2025.md:142
+
+- docs/technical/system/ilan-olusturma-sistemi-duzeltmeleri-2025-01-30.md [outdated,duplicate_hint]
+
+- docs/technical/system/implementation-standards.md [outdated]
+
+- docs/technical/system/sistem-calisma-akisi-2025.md [duplicate_hint]
+
+- docs/usage/CLI_GUIDE.md [duplicate_hint]
+  * MCP: docs/usage/CLI_GUIDE.md:402, docs/usage/CLI_GUIDE.md:414
+
+- docs/usage/KOMUTLAR_REHBERI.md [outdated,duplicate_hint]
+
+- docs/usage/STABLE-CREATE-KULLANIM-REHBERI.md [outdated]
+  * CRM: docs/usage/STABLE-CREATE-KULLANIM-REHBERI.md:115, docs/usage/STABLE-CREATE-KULLANIM-REHBERI.md:267, docs/usage/STABLE-CREATE-KULLANIM-REHBERI.md:281
+  * apartman: docs/usage/STABLE-CREATE-KULLANIM-REHBERI.md:63, docs/usage/STABLE-CREATE-KULLANIM-REHBERI.md:343
+
+- docs/usage/USTA_4.0_KULLANIM_REHBERI.md [outdated]
+
+- docs/usage/USTA_4.0_WEB_DEVELOPER_OZET.md [outdated,duplicate_hint]
+
+- docs/usage/USTA_AUTO_FIX_GUIDE.md
+
+- docs/yalihan-bekci/CONTEXT7-INTEGRATION-GUIDE.md [duplicate_hint]
+
+- docs/yalihan-bekci/tkgm-parsel-sistemi.md [duplicate_hint]
+  * MCP: docs/yalihan-bekci/tkgm-parsel-sistemi.md:427
+  * arsa hesaplamaları: docs/yalihan-bekci/tkgm-parsel-sistemi.md:18, docs/yalihan-bekci/tkgm-parsel-sistemi.md:44, docs/yalihan-bekci/tkgm-parsel-sistemi.md:153
+
+- yalihan-bekci/CSS_CLEANUP_SUMMARY.md [outdated,duplicate_hint]
+
+- yalihan-bekci/HARITA-ARACLARI-V2-OZET-2025-11-05.md [duplicate_hint]
+  * MCP: yalihan-bekci/HARITA-ARACLARI-V2-OZET-2025-11-05.md:244
+  * dış API: yalihan-bekci/HARITA-ARACLARI-V2-OZET-2025-11-05.md:104
+
+- yalihan-bekci/INSTALL.md [outdated]
+  * MCP: yalihan-bekci/INSTALL.md:1, yalihan-bekci/INSTALL.md:3, yalihan-bekci/INSTALL.md:14
+
+- yalihan-bekci/LIGHT-MODE-DESIGN-SYSTEM.md [outdated]
+
+- yalihan-bekci/POLYMORPHIC-SYSTEM-QUICK-REF.md [outdated]
+
+- yalihan-bekci/QUICK-START.md
+  * MCP: yalihan-bekci/QUICK-START.md:47, yalihan-bekci/QUICK-START.md:49
+
+- yalihan-bekci/README.md [outdated,duplicate_hint]
+  * MCP: yalihan-bekci/README.md:22, yalihan-bekci/README.md:51, yalihan-bekci/README.md:76
+
+- yalihan-bekci/SYSTEM-UPDATE-2025-11-02.md [outdated,duplicate_hint]
+  * MCP: yalihan-bekci/SYSTEM-UPDATE-2025-11-02.md:334
+
+- yalihan-bekci/analysis/cleanup-recommendations-2025-11-01.md [outdated]
+
+- yalihan-bekci/analysis/css-conflict-analysis-2025-10-31.md [outdated]
+
+- yalihan-bekci/analysis/emlak-tech-stack-recommendations-2025-10-31.md [duplicate_hint]
+  * CRM: yalihan-bekci/analysis/emlak-tech-stack-recommendations-2025-10-31.md:253, yalihan-bekci/analysis/emlak-tech-stack-recommendations-2025-10-31.md:538, yalihan-bekci/analysis/emlak-tech-stack-recommendations-2025-10-31.md:551
+
+- yalihan-bekci/analysis/harita-tutarsizlik-analiz-2025-11-05.md [duplicate_hint]
+  * MCP: yalihan-bekci/analysis/harita-tutarsizlik-analiz-2025-11-05.md:370
+  * dış API: yalihan-bekci/analysis/harita-tutarsizlik-analiz-2025-11-05.md:292
+
+- yalihan-bekci/analysis/ilan-create-js-system-2025-10-31.md [duplicate_hint]
+  * CRM: yalihan-bekci/analysis/ilan-create-js-system-2025-10-31.md:39, yalihan-bekci/analysis/ilan-create-js-system-2025-10-31.md:61, yalihan-bekci/analysis/ilan-create-js-system-2025-10-31.md:527
+
+- yalihan-bekci/analysis/ilan-pages-analysis-2025-11-01.md
+
+- yalihan-bekci/analysis/ilan-yonetimi-comparative-analysis-2025-10-31.md [duplicate_hint]
+
+- yalihan-bekci/analysis/neo-design-cleanup-2025-11-01.md [duplicate_hint]
+  * CRM: yalihan-bekci/analysis/neo-design-cleanup-2025-11-01.md:1, yalihan-bekci/analysis/neo-design-cleanup-2025-11-01.md:4, yalihan-bekci/analysis/neo-design-cleanup-2025-11-01.md:47
+
+- yalihan-bekci/analysis/talepler-create-analysis-2025-10-31.md [outdated]
+
+- yalihan-bekci/analysis/talepler-create-code-quality-2025-11-01.md [outdated,duplicate_hint]
+
+- yalihan-bekci/knowledge/ADMIN-CREATE-PAGE-LEARNING-COMPLETE.md [duplicate_hint]
+  * MCP: yalihan-bekci/knowledge/ADMIN-CREATE-PAGE-LEARNING-COMPLETE.md:202
+
+- yalihan-bekci/knowledge/CDN-TO-LOCAL-MIGRATION-RULES.md [duplicate_hint]
+
+- yalihan-bekci/knowledge/DEEP-RESEARCH-UI-UX-FINDINGS-2025-10-20.md
+
+- yalihan-bekci/knowledge/ESLESMELER-CREATE-CONTEXT7-RAPOR.md [outdated,duplicate_hint]
+
+- yalihan-bekci/knowledge/ILAN_ETIKET_SISTEMI.md
+
+- yalihan-bekci/knowledge/ILAN_MODULLERI_SISTEM_ANALIZI.md [outdated,duplicate_hint]
+  * CRM: yalihan-bekci/knowledge/ILAN_MODULLERI_SISTEM_ANALIZI.md:32, yalihan-bekci/knowledge/ILAN_MODULLERI_SISTEM_ANALIZI.md:194, yalihan-bekci/knowledge/ILAN_MODULLERI_SISTEM_ANALIZI.md:282
+
+- yalihan-bekci/knowledge/INDEX.md [outdated,duplicate_hint]
+
+- yalihan-bekci/knowledge/IZOLASYON-SISTEMLERI-2025-10-24.md [outdated,duplicate_hint]
+
+- yalihan-bekci/knowledge/KISILER-CREATE-CONTEXT7-RAPOR.md [outdated,duplicate_hint]
+  * CRM: yalihan-bekci/knowledge/KISILER-CREATE-CONTEXT7-RAPOR.md:33, yalihan-bekci/knowledge/KISILER-CREATE-CONTEXT7-RAPOR.md:87
+
+- yalihan-bekci/knowledge/KULLANICI-REHBERI-YENi-SISTEM.md [outdated]
+  * CRM: yalihan-bekci/knowledge/KULLANICI-REHBERI-YENi-SISTEM.md:144
+
+- yalihan-bekci/knowledge/QUICK-REFERENCE-2025-10-22.md [outdated]
+
+- yalihan-bekci/knowledge/README.md [duplicate_hint]
+  * MCP: yalihan-bekci/knowledge/README.md:29
+
+- yalihan-bekci/knowledge/SISTEM_ANALIZ_OZETI.md [outdated,duplicate_hint]
+  * CRM: yalihan-bekci/knowledge/SISTEM_ANALIZ_OZETI.md:95
+
+- yalihan-bekci/knowledge/STABLE-CREATE-STABLE-VERSION.md [duplicate_hint]
+  * CRM: yalihan-bekci/knowledge/STABLE-CREATE-STABLE-VERSION.md:62, yalihan-bekci/knowledge/STABLE-CREATE-STABLE-VERSION.md:76
+
+- yalihan-bekci/knowledge/TAILWIND-CSS-MIGRATION-GUIDE-2025-10-30.md [duplicate_hint]
+  * apartman: yalihan-bekci/knowledge/TAILWIND-CSS-MIGRATION-GUIDE-2025-10-30.md:168
+
+- yalihan-bekci/knowledge/TAKVIM_ENTEGRASYON_SISTEMI.md
+
+- yalihan-bekci/knowledge/TECHNOLOGY-STANDARDS-2025-10-21.md [outdated,duplicate_hint]
+
+- yalihan-bekci/knowledge/TURKIYE-API-START-HERE.md
+
+- yalihan-bekci/knowledge/VANILLA-JS-ENFORCEMENT-RULES.md [duplicate_hint]
+  * MCP: yalihan-bekci/knowledge/VANILLA-JS-ENFORCEMENT-RULES.md:167, yalihan-bekci/knowledge/VANILLA-JS-ENFORCEMENT-RULES.md:169, yalihan-bekci/knowledge/VANILLA-JS-ENFORCEMENT-RULES.md:178
+
+- yalihan-bekci/knowledge/YAPILACAKLAR_2025_10_27.md [outdated,duplicate_hint]
+  * MCP: yalihan-bekci/knowledge/YAPILACAKLAR_2025_10_27.md:17
+
+- yalihan-bekci/knowledge/YAPILAN_ISLER_2025_10_26.md [outdated,duplicate_hint]
+
+- yalihan-bekci/knowledge/YAZLIK_KIRALAMA_SISTEMI.md [duplicate_hint]
+  * CRM: yalihan-bekci/knowledge/YAZLIK_KIRALAMA_SISTEMI.md:209
+
+- yalihan-bekci/knowledge/admin-controller-anti-patterns-2025-11-02.md [outdated,duplicate_hint]
+
+- yalihan-bekci/knowledge/advanced-cleanup-strategies-2025-10-20.md [outdated,duplicate_hint]
+  * MCP: yalihan-bekci/knowledge/advanced-cleanup-strategies-2025-10-20.md:5, yalihan-bekci/knowledge/advanced-cleanup-strategies-2025-10-20.md:644
+  * CRM: yalihan-bekci/knowledge/advanced-cleanup-strategies-2025-10-20.md:29, yalihan-bekci/knowledge/advanced-cleanup-strategies-2025-10-20.md:150, yalihan-bekci/knowledge/advanced-cleanup-strategies-2025-10-20.md:160
+
+- yalihan-bekci/knowledge/ai-context7-integration.md [outdated]
+
+- yalihan-bekci/knowledge/ai-training-index.md [duplicate_hint]
+  * MCP: yalihan-bekci/knowledge/ai-training-index.md:221
+
+- yalihan-bekci/knowledge/alpine-error-report.md
+  * CRM: yalihan-bekci/knowledge/alpine-error-report.md:56, yalihan-bekci/knowledge/alpine-error-report.md:111
+
+- yalihan-bekci/knowledge/alpine-fix-report.md
+  * CRM: yalihan-bekci/knowledge/alpine-fix-report.md:29, yalihan-bekci/knowledge/alpine-fix-report.md:32, yalihan-bekci/knowledge/alpine-fix-report.md:127
+
+- yalihan-bekci/knowledge/alpine-vite-hatalar.md [outdated]
+
+- yalihan-bekci/knowledge/bodrum-demographic-real-data-2025-10-23.md
+
+- yalihan-bekci/knowledge/context7-compliance-report-2025-10-22.md [outdated,duplicate_hint]
+  * MCP: yalihan-bekci/knowledge/context7-compliance-report-2025-10-22.md:20, yalihan-bekci/knowledge/context7-compliance-report-2025-10-22.md:401
+
+- yalihan-bekci/knowledge/css-system-standards-2025-11-02.md [outdated,duplicate_hint]
+  * MCP: yalihan-bekci/knowledge/css-system-standards-2025-11-02.md:461, yalihan-bekci/knowledge/css-system-standards-2025-11-02.md:576
+
+- yalihan-bekci/knowledge/dokuman-birlestirme-2025-10-21.md [outdated,duplicate_hint]
+  * apartman: yalihan-bekci/knowledge/dokuman-birlestirme-2025-10-21.md:86
+
+- yalihan-bekci/knowledge/duplicate-learning-summary.md [outdated,duplicate_hint]
+
+- yalihan-bekci/knowledge/gelismis-konum-harita-sistemi-context7.md [duplicate_hint]
+
+- yalihan-bekci/knowledge/gelismis-konum-harita-sistemi-implementation-report.md [duplicate_hint]
+
+- yalihan-bekci/knowledge/ilan-create-full-analysis-2025-10-24.md [outdated,duplicate_hint]
+  * arsa hesaplamaları: yalihan-bekci/knowledge/ilan-create-full-analysis-2025-10-24.md:117, yalihan-bekci/knowledge/ilan-create-full-analysis-2025-10-24.md:120, yalihan-bekci/knowledge/ilan-create-full-analysis-2025-10-24.md:181
+  * CRM: yalihan-bekci/knowledge/ilan-create-full-analysis-2025-10-24.md:63
+  * apartman: yalihan-bekci/knowledge/ilan-create-full-analysis-2025-10-24.md:68, yalihan-bekci/knowledge/ilan-create-full-analysis-2025-10-24.md:69, yalihan-bekci/knowledge/ilan-create-full-analysis-2025-10-24.md:70
+
+- yalihan-bekci/knowledge/ilan-yonetimi-birlesik-analiz-2025-10-22.md [outdated,duplicate_hint]
+
+- yalihan-bekci/knowledge/javascript-hatalari-ve-cozumleri-egitim.md [duplicate_hint]
+  * dış API: yalihan-bekci/knowledge/javascript-hatalari-ve-cozumleri-egitim.md:58, yalihan-bekci/knowledge/javascript-hatalari-ve-cozumleri-egitim.md:111, yalihan-bekci/knowledge/javascript-hatalari-ve-cozumleri-egitim.md:476
+
+- yalihan-bekci/knowledge/kisiler-table-schema-fix.md
+
+- yalihan-bekci/knowledge/learning-report-code-quality-2025-11-07.md [duplicate_hint]
+
+- yalihan-bekci/knowledge/order-display-order-learning-report-2025-11-09.md
+
+- yalihan-bekci/knowledge/order-display-order-seeder-fix-2025-11-10.md [duplicate_hint]
+
+- yalihan-bekci/knowledge/site-apartman-live-search-test-2025-10-24.md [duplicate_hint]
+  * apartman: yalihan-bekci/knowledge/site-apartman-live-search-test-2025-10-24.md:1, yalihan-bekci/knowledge/site-apartman-live-search-test-2025-10-24.md:4, yalihan-bekci/knowledge/site-apartman-live-search-test-2025-10-24.md:16
+
+- yalihan-bekci/knowledge/smart-cleanup-strategies-2025-10-20.md [outdated,duplicate_hint]
+  * MCP: yalihan-bekci/knowledge/smart-cleanup-strategies-2025-10-20.md:5, yalihan-bekci/knowledge/smart-cleanup-strategies-2025-10-20.md:473
+
+- yalihan-bekci/knowledge/stable-create-final-success.md
+  * CRM: yalihan-bekci/knowledge/stable-create-final-success.md:76, yalihan-bekci/knowledge/stable-create-final-success.md:78, yalihan-bekci/knowledge/stable-create-final-success.md:108
+
+- yalihan-bekci/knowledge/stable-create-system-logic.md [outdated,duplicate_hint]
+  * dış API: yalihan-bekci/knowledge/stable-create-system-logic.md:620
+  * CRM: yalihan-bekci/knowledge/stable-create-system-logic.md:26, yalihan-bekci/knowledge/stable-create-system-logic.md:41, yalihan-bekci/knowledge/stable-create-system-logic.md:61
+
+- yalihan-bekci/knowledge/tailwind-kok-sorun-cozum.md [outdated]
+
+- yalihan-bekci/knowledge/tailwind-v3-downgrade-fix.md
+
+- yalihan-bekci/knowledge/tailwind-v4-apply-problem.md [outdated]
+
+- yalihan-bekci/knowledge/turkiye-api-deep-integration-plan-2025-10-23.md [duplicate_hint]
+
+- yalihan-bekci/knowledge/turkiye-api-implementation-roadmap-2025-10-23.md [duplicate_hint]
+
+- yalihan-bekci/knowledge/turkiye-location-apis-comparison-2025-10-24.md [outdated]
+
+- yalihan-bekci/knowledge/vite-restart-solution.md [outdated]
+  * CRM: yalihan-bekci/knowledge/vite-restart-solution.md:21
+
+- yalihan-bekci/learned/GUNUN-FINALI-2025-11-04.md [outdated,duplicate_hint]
+
+- yalihan-bekci/learned/LIGHT-MODE-QUICK-REFERENCE-2024-12-27.md [outdated]
+
+- yalihan-bekci/learned/MAINTENANCE-SESSION-2025-11-04.md [outdated,duplicate_hint]
+  * CRM: yalihan-bekci/learned/MAINTENANCE-SESSION-2025-11-04.md:20, yalihan-bekci/learned/MAINTENANCE-SESSION-2025-11-04.md:82
+
+- yalihan-bekci/learned/PHOTO-MODEL-IMPLEMENTATION-2025-11-04.md [duplicate_hint]
+
+- yalihan-bekci/learned/POLYMORPHIC-SYSTEM-MIGRATION-GUIDE-2025-11-02.md [outdated,duplicate_hint]
+
+- yalihan-bekci/learned/autocomplete-decision-2025-10-31.md [duplicate_hint]
+
+- yalihan-bekci/learned/horizon-sentry-installation-2025-10-31.md [duplicate_hint]
+
+- yalihan-bekci/learned/ilan-context7-compliance-2025-10-31.md [duplicate_hint]
+  * MCP: yalihan-bekci/learned/ilan-context7-compliance-2025-10-31.md:161, yalihan-bekci/learned/ilan-context7-compliance-2025-10-31.md:163
+
+- yalihan-bekci/learned/laravel-backup-installation-2025-10-31.md [duplicate_hint]
+
+- yalihan-bekci/milestones/DROPDOWN_FIX_MILESTONE_2025-11-01.md [duplicate_hint]
+
+- yalihan-bekci/milestones/harita-araclari-v2-2025-11-05.md [duplicate_hint]
+  * dış API: yalihan-bekci/milestones/harita-araclari-v2-2025-11-05.md:197
+
+- yalihan-bekci/recommendations/immediate-actions-ilan-yonetimi-2025-10-31.md
+
+- yalihan-bekci/recommendations/sirada-ne-var-2025-10-31.md [duplicate_hint]
+
+- yalihan-bekci/reports/2025-11/A11Y_PERF_LISTS_2025-11-15.md
+
+- yalihan-bekci/reports/2025-11/ADMIN_UI_API_STANDARDIZATION_2025-11-15.md [outdated]
+
+- yalihan-bekci/reports/2025-11/API_V1_UI_ADAPTER_AND_CALCULATOR_2025-11-15.md
+
+- yalihan-bekci/reports/2025-11/LIST_PAGINATE_AUTO_INIT_2025-11-15.md
+
+- yalihan-bekci/reports/CUMA_PLAN_2025-11-07.md [outdated,duplicate_hint]
+
+- yalihan-bekci/reports/PAGE_ANALYSIS_AND_RECOMMENDATIONS_2025-11-07.md
+
+- yalihan-bekci/reports/adres-sistemi-nasil-calismali.md [duplicate_hint]
+
+- yalihan-bekci/reports/archive/2024-12/CSS_CLEANUP_REPORT_2024-12-27.md [outdated,duplicate_hint]
+
+- yalihan-bekci/reports/archive/2024-12/CSS_CONFLICT_ANALYSIS_2024-12-27.md [outdated]
+
+- yalihan-bekci/reports/archive/2024-12/FORM_COMPLIANCE_REPORT_2024-12-27.md [outdated]
+  * CRM: yalihan-bekci/reports/archive/2024-12/FORM_COMPLIANCE_REPORT_2024-12-27.md:55, yalihan-bekci/reports/archive/2024-12/FORM_COMPLIANCE_REPORT_2024-12-27.md:116, yalihan-bekci/reports/archive/2024-12/FORM_COMPLIANCE_REPORT_2024-12-27.md:118
+
+- yalihan-bekci/reports/archive/2025-10/harita-sistemi-upgrade-ozet-2025-10-31.md [outdated,duplicate_hint]
+
+- yalihan-bekci/reports/archive/2025-10/phase-1-implementation-complete-2025-10-31.md [duplicate_hint]
+
+- yalihan-bekci/reports/archive/2025-10/quick-wins-complete-2025-10-31.md [duplicate_hint]
+  * CRM: yalihan-bekci/reports/archive/2025-10/quick-wins-complete-2025-10-31.md:36, yalihan-bekci/reports/archive/2025-10/quick-wins-complete-2025-10-31.md:232, yalihan-bekci/reports/archive/2025-10/quick-wins-complete-2025-10-31.md:233
+
+- yalihan-bekci/reports/archive/2025-10/undefined-variables-fix-2025-10-31.md [duplicate_hint]
+
+- yalihan-bekci/reports/archive/2025-11/MUSTERI_TIPI_TO_KISI_TIPI_COMPLETE_2025-11-06.md [outdated,duplicate_hint]
+
+- yalihan-bekci/reports/archive/2025-11/MUSTERI_TO_KISI_MODELS_COMPLETE_2025-11-06.md [outdated,duplicate_hint]
+
+- yalihan-bekci/reports/archive/2025-11/N1_QUERY_OPTIMIZATION_COMPLETE_2025-11-06.md [outdated,duplicate_hint]
+
+- yalihan-bekci/reports/archive/2025-11/NEXT_STEPS_2025-11-07.md [outdated,duplicate_hint]
+  * CRM: yalihan-bekci/reports/archive/2025-11/NEXT_STEPS_2025-11-07.md:12, yalihan-bekci/reports/archive/2025-11/NEXT_STEPS_2025-11-07.md:16, yalihan-bekci/reports/archive/2025-11/NEXT_STEPS_2025-11-07.md:17
+
+- yalihan-bekci/reports/archive/2025-11/PHASE3-PROGRESS-2025-11-05.md [duplicate_hint]
+
+- yalihan-bekci/reports/archive/2025-11/RISK_ANALYSIS_FIXED_ISSUES_2025-11-07.md
+
+- yalihan-bekci/reports/archive/2025-11/ROUTE_ERROR_PREVENTION_COMPLETE_2025-11-07.md [duplicate_hint]
+  * CRM: yalihan-bekci/reports/archive/2025-11/ROUTE_ERROR_PREVENTION_COMPLETE_2025-11-07.md:13, yalihan-bekci/reports/archive/2025-11/ROUTE_ERROR_PREVENTION_COMPLETE_2025-11-07.md:20, yalihan-bekci/reports/archive/2025-11/ROUTE_ERROR_PREVENTION_COMPLETE_2025-11-07.md:21
+
+- yalihan-bekci/reports/archive/2025-11/SIRADA-YAPMAK-LISTE.md [outdated,duplicate_hint]
+  * dış API: yalihan-bekci/reports/archive/2025-11/SIRADA-YAPMAK-LISTE.md:296, yalihan-bekci/reports/archive/2025-11/SIRADA-YAPMAK-LISTE.md:512, yalihan-bekci/reports/archive/2025-11/SIRADA-YAPMAK-LISTE.md:529
+  * arsa hesaplamaları: yalihan-bekci/reports/archive/2025-11/SIRADA-YAPMAK-LISTE.md:185
+  * CRM: yalihan-bekci/reports/archive/2025-11/SIRADA-YAPMAK-LISTE.md:333
+
+- yalihan-bekci/reports/archive/2025-11/SIRADA_NE_VAR_2025-11-06.md [outdated,duplicate_hint]
+  * CRM: yalihan-bekci/reports/archive/2025-11/SIRADA_NE_VAR_2025-11-06.md:14, yalihan-bekci/reports/archive/2025-11/SIRADA_NE_VAR_2025-11-06.md:158, yalihan-bekci/reports/archive/2025-11/SIRADA_NE_VAR_2025-11-06.md:161
+
+- yalihan-bekci/reports/archive/2025-11/SIRADA_YAPILACAKLAR_2025-11-07.md [outdated,duplicate_hint]
+
+- yalihan-bekci/reports/archive/2025-11/SISTEM_KAPSAMLI_ANALIZ_RAPORU.md [outdated,duplicate_hint]
+  * MCP: yalihan-bekci/reports/archive/2025-11/SISTEM_KAPSAMLI_ANALIZ_RAPORU.md:454
+  * CRM: yalihan-bekci/reports/archive/2025-11/SISTEM_KAPSAMLI_ANALIZ_RAPORU.md:199, yalihan-bekci/reports/archive/2025-11/SISTEM_KAPSAMLI_ANALIZ_RAPORU.md:203, yalihan-bekci/reports/archive/2025-11/SISTEM_KAPSAMLI_ANALIZ_RAPORU.md:204
+
+- yalihan-bekci/reports/archive/2025-11/STANDARDS_FINALIZED_2025-11-07.md [duplicate_hint]
+
+- yalihan-bekci/reports/archive/2025-11/SYSTEM_IMPROVEMENT_RECOMMENDATIONS_2025-11-07.md [outdated,duplicate_hint]
+  * dış API: yalihan-bekci/reports/archive/2025-11/SYSTEM_IMPROVEMENT_RECOMMENDATIONS_2025-11-07.md:361
+
+- yalihan-bekci/reports/archive/2025-11/TODAY_COMPLETED_2025-11-06.md [outdated,duplicate_hint]
+  * CRM: yalihan-bekci/reports/archive/2025-11/TODAY_COMPLETED_2025-11-06.md:33, yalihan-bekci/reports/archive/2025-11/TODAY_COMPLETED_2025-11-06.md:34, yalihan-bekci/reports/archive/2025-11/TODAY_COMPLETED_2025-11-06.md:147
+
+- yalihan-bekci/reports/archive/2025-11/TYPE_HINTS_COMPLETE_2025-11-06.md [outdated,duplicate_hint]
+  * CRM: yalihan-bekci/reports/archive/2025-11/TYPE_HINTS_COMPLETE_2025-11-06.md:248, yalihan-bekci/reports/archive/2025-11/TYPE_HINTS_COMPLETE_2025-11-06.md:315
+
+- yalihan-bekci/reports/archive/2025-11/TYPE_HINTS_PHASE_1_COMPLETE_2025-11-06.md [duplicate_hint]
+
+- yalihan-bekci/reports/archive/2025-11/VIEW_RENAME_COMPLETE_2025-11-06.md [duplicate_hint]
+
+- yalihan-bekci/reports/archive/2025-11/YALIHAN_BEKCI_FINAL_REPORT_2025-11-06.md [outdated,duplicate_hint]
+  * CRM: yalihan-bekci/reports/archive/2025-11/YALIHAN_BEKCI_FINAL_REPORT_2025-11-06.md:18, yalihan-bekci/reports/archive/2025-11/YALIHAN_BEKCI_FINAL_REPORT_2025-11-06.md:91, yalihan-bekci/reports/archive/2025-11/YALIHAN_BEKCI_FINAL_REPORT_2025-11-06.md:188
+  * sahibinden: yalihan-bekci/reports/archive/2025-11/YALIHAN_BEKCI_FINAL_REPORT_2025-11-06.md:409
+
+- yalihan-bekci/reports/google-maps-roadmap-hatasi-cozum.md [duplicate_hint]
+  * dış API: yalihan-bekci/reports/google-maps-roadmap-hatasi-cozum.md:189, yalihan-bekci/reports/google-maps-roadmap-hatasi-cozum.md:191
+
+- yalihan-bekci/reports/javascript-final-cozum-raporu.md [outdated,duplicate_hint]
+
+- yalihan-bekci/reports/javascript-hata-cozum-ozet-raporu.md [duplicate_hint]
+
+- yalihan-bekci/reports/route-error-root-cause-analysis-2025-11-07.md [duplicate_hint]
+  * CRM: yalihan-bekci/reports/route-error-root-cause-analysis-2025-11-07.md:3, yalihan-bekci/reports/route-error-root-cause-analysis-2025-11-07.md:15, yalihan-bekci/reports/route-error-root-cause-analysis-2025-11-07.md:22
+
+- yalihan-bekci/reports/sorun-dokumantasyon-eslesmesi.md [duplicate_hint]
+  * MCP: yalihan-bekci/reports/sorun-dokumantasyon-eslesmesi.md:140
+
+- yalihan-bekci/reports/summary/bekci-summary-2025-11-08_11-18-38.md [duplicate_hint]
+
+- yalihan-bekci/reports/summary/bekci-summary-2025-11-08_11-19-31.md [duplicate_hint]
+
+- yalihan-bekci/reports/summary/bekci-summary-2025-11-08_11-20-53.md [duplicate_hint]
+
+- yalihan-bekci/reports/summary/bekci-summary-2025-11-08_11-21-28.md [duplicate_hint]
+
+- yalihan-bekci/rules/harita-araclari-standart-2025-11-05.md
+  * dış API: yalihan-bekci/rules/harita-araclari-standart-2025-11-05.md:347
+
+- reports/archive/2025-11-04/AI_DERIN_ANALIZ_VE_ONERILER.md [duplicate_hint]
+  * CRM: reports/archive/2025-11-04/AI_DERIN_ANALIZ_VE_ONERILER.md:40, reports/archive/2025-11-04/AI_DERIN_ANALIZ_VE_ONERILER.md:74, reports/archive/2025-11-04/AI_DERIN_ANALIZ_VE_ONERILER.md:81
+
+- reports/archive/2025-11-04/AI_KARSILASTIRMA_RAPORU.md [duplicate_hint]
+  * CRM: reports/archive/2025-11-04/AI_KARSILASTIRMA_RAPORU.md:380, reports/archive/2025-11-04/AI_KARSILASTIRMA_RAPORU.md:994, reports/archive/2025-11-04/AI_KARSILASTIRMA_RAPORU.md:999
+  * sahibinden: reports/archive/2025-11-04/AI_KARSILASTIRMA_RAPORU.md:526, reports/archive/2025-11-04/AI_KARSILASTIRMA_RAPORU.md:623
+
+- reports/archive/2025-11-04/AI_PRATIK_KARSILASTIRMA_VE_IMPLEMENTASYON.md [duplicate_hint]
+  * CRM: reports/archive/2025-11-04/AI_PRATIK_KARSILASTIRMA_VE_IMPLEMENTASYON.md:1370
+
+- reports/archive/2025-11-04/IYILESTIRME-ROADMAP-2025-11-04.md [outdated]
+
+- reports/archive/2025-11-04/PHASE-1-COMPLETE-REPORT.md [duplicate_hint]
+
+- reports/archive/2025-11-04/PHASE-2-AJAX-MIGRATION-PLAN.md
+
+- reports/archive/2025-11-04/TAILWIND_MIGRATION_SUCCESS_2025-11-04.md [outdated,duplicate_hint]
+
+- reports/archive/2025-11-04/TELESCOPE-HATA-RAPORU-2025-11-04.md [outdated,duplicate_hint]
+
+- ai/prompts/arsa-aciklama-olustur.prompt.md
+
+- ai/prompts/daire-aciklama-olustur.prompt.md
+
+- ai/prompts/daire-baslik-olustur.prompt.md
+
+- ai/prompts/emlak-segment-workflow-aciklama-olustur.prompt.md [duplicate_hint]
+  * sahibinden: ai/prompts/emlak-segment-workflow-aciklama-olustur.prompt.md:27
+
+- ai/prompts/ilan-ekleme-aciklama-olustur.prompt.md
+
+- ai/prompts/ilan-ekleme-baslik-olustur.prompt.md
+
+- ai/prompts/ilan-ekleme-fiyat-onerisi.prompt.md
+
+- ai/prompts/ilan-ekleme-lokasyon-analizi.prompt.md
+
+- ai/prompts/talep-analizi-legacy.prompt.md
+
+- ai/prompts/villa-aciklama-olustur.prompt.md
+
+- ai/prompts/villa-baslik-olustur.prompt.md
+
+- ai/prompts/yakin-cevre-analiz.prompt.md [duplicate_hint]
+
+- scripts/DEEP_ERROR_ANALYSIS_SCRIPTS.md [duplicate_hint]
+  * CRM: scripts/DEEP_ERROR_ANALYSIS_SCRIPTS.md:110
+
+- scripts/README-code-cleanup-tool.md [outdated,duplicate_hint]
+
+- scripts/README_CONTEXT7_SCANNER.md [outdated]
+  * CRM: scripts/README_CONTEXT7_SCANNER.md:66, scripts/README_CONTEXT7_SCANNER.md:85, scripts/README_CONTEXT7_SCANNER.md:86
+
+- scripts/SCRIPTS_STATUS_REPORT_2025-11-11.md [outdated,duplicate_hint]
+
+- scripts/SCRIPT_IMPROVEMENTS_2025-11-11.md [outdated]
+
+- scripts/SCRIPT_INVENTORY_2025-11-11.md [duplicate_hint]
+  * CRM: scripts/SCRIPT_INVENTORY_2025-11-11.md:24
+
+- scripts/SCRIPT_MIGRATION_PLAN.md [outdated]
+
+- scripts/SCRIPT_TEST_RESULTS_2025-11-11.md [duplicate_hint]

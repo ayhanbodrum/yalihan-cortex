@@ -6,9 +6,8 @@
  * Tüm Admin Controller'ları AdminController'dan extend edecek şekilde günceller
  * Context7: Undefined variable sorunlarını çözmek için
  */
-
-$controllerPath = __DIR__ . '/../app/Http/Controllers/Admin';
-$files = glob($controllerPath . '/*.php');
+$controllerPath = __DIR__.'/../app/Http/Controllers/Admin';
+$files = glob($controllerPath.'/*.php');
 
 $updated = 0;
 $skipped = 0;
@@ -21,6 +20,7 @@ foreach ($files as $file) {
     if ($filename === 'AdminController.php') {
         echo "⏭️  SKIPPED: {$filename} (base controller)\n";
         $skipped++;
+
         continue;
     }
 
@@ -30,6 +30,7 @@ foreach ($files as $file) {
     if (strpos($content, 'extends AdminController') !== false) {
         echo "⏭️  SKIPPED: {$filename} (already extends AdminController)\n";
         $skipped++;
+
         continue;
     }
 
@@ -37,6 +38,7 @@ foreach ($files as $file) {
     if (strpos($content, 'extends Controller') === false) {
         echo "⏭️  SKIPPED: {$filename} (not a controller)\n";
         $skipped++;
+
         continue;
     }
 

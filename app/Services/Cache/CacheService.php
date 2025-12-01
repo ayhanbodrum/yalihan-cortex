@@ -4,7 +4,6 @@ namespace App\Services\Cache;
 
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Config;
 
 /**
  * Standardized Cache Service
@@ -57,20 +56,20 @@ class CacheService
      * Format: {prefix}:{namespace}:{key}:{params?}
      * Example: emlak_pro:ilan:stats:active
      *
-     * @param string $namespace Cache namespace (e.g., 'ilan', 'category', 'ai')
-     * @param string $key Cache key
-     * @param array $params Optional parameters for key uniqueness
+     * @param  string  $namespace  Cache namespace (e.g., 'ilan', 'category', 'ai')
+     * @param  string  $key  Cache key
+     * @param  array  $params  Optional parameters for key uniqueness
      * @return string Standardized cache key
      */
     public function key(string $namespace, string $key, array $params = []): string
     {
         $parts = [$this->prefix, $namespace, $key];
 
-        if (!empty($params)) {
+        if (! empty($params)) {
             // Sort params for consistent key generation
             ksort($params);
             $paramString = implode(':', array_map(function ($k, $v) {
-                return $k . '=' . (is_array($v) ? md5(json_encode($v)) : $v);
+                return $k.'='.(is_array($v) ? md5(json_encode($v)) : $v);
             }, array_keys($params), $params));
             $parts[] = $paramString;
         }
@@ -81,8 +80,8 @@ class CacheService
     /**
      * Get value from cache
      *
-     * @param string $key Cache key
-     * @param mixed $default Default value if not found
+     * @param  string  $key  Cache key
+     * @param  mixed  $default  Default value if not found
      * @return mixed
      */
     public function get(string $key, $default = null)
@@ -94,14 +93,14 @@ class CacheService
         if (config('redis-cache.monitoring.log_hits', false) && $value !== null) {
             Log::debug('Cache Hit', [
                 'key' => $key,
-                'duration_ms' => round($duration, 2)
+                'duration_ms' => round($duration, 2),
             ]);
         }
 
         if (config('redis-cache.monitoring.log_misses', true) && $value === null) {
             Log::debug('Cache Miss', [
                 'key' => $key,
-                'duration_ms' => round($duration, 2)
+                'duration_ms' => round($duration, 2),
             ]);
         }
 
@@ -111,36 +110,36 @@ class CacheService
     /**
      * Store value in cache
      *
-     * @param string $key Cache key
-     * @param mixed $value Value to cache
-     * @param int|string|null $ttl TTL in seconds or preset name (e.g., 'short', 'medium')
-     * @return bool
+     * @param  string  $key  Cache key
+     * @param  mixed  $value  Value to cache
+     * @param  int|string|null  $ttl  TTL in seconds or preset name (e.g., 'short', 'medium')
      */
     public function put(string $key, $value, $ttl = null): bool
     {
         $ttl = $this->resolveTtl($ttl ?? 'medium');
+
         return Cache::put($key, $value, $ttl);
     }
 
     /**
      * Remember value in cache (get or compute)
      *
-     * @param string $key Cache key
-     * @param int|string|null $ttl TTL in seconds or preset name
-     * @param callable $callback Callback to compute value if not cached
+     * @param  string  $key  Cache key
+     * @param  int|string|null  $ttl  TTL in seconds or preset name
+     * @param  callable  $callback  Callback to compute value if not cached
      * @return mixed
      */
     public function remember(string $key, $ttl, callable $callback)
     {
         $ttl = $this->resolveTtl($ttl ?? 'medium');
+
         return Cache::remember($key, $ttl, $callback);
     }
 
     /**
      * Check if key exists in cache
      *
-     * @param string $key Cache key
-     * @return bool
+     * @param  string  $key  Cache key
      */
     public function has(string $key): bool
     {
@@ -150,8 +149,7 @@ class CacheService
     /**
      * Remove value from cache
      *
-     * @param string $key Cache key
-     * @return bool
+     * @param  string  $key  Cache key
      */
     public function forget(string $key): bool
     {
@@ -161,13 +159,14 @@ class CacheService
     /**
      * Invalidate cache by namespace
      *
-     * @param string $namespace Namespace to invalidate
-     * @param array $params Optional parameters to match specific keys
+     * @param  string  $namespace  Namespace to invalidate
+     * @param  array  $params  Optional parameters to match specific keys
      * @return int Number of keys invalidated
      */
     public function invalidateNamespace(string $namespace, array $params = []): int
     {
         $pattern = $this->key($namespace, '*', $params);
+
         // Note: Redis pattern matching requires implementation
         // For now, we'll use a tag-based approach or manual key tracking
         return $this->invalidateByTag($this->getTagForNamespace($namespace));
@@ -176,7 +175,7 @@ class CacheService
     /**
      * Invalidate cache by tag
      *
-     * @param string $tag Tag name
+     * @param  string  $tag  Tag name
      * @return int Number of keys invalidated
      */
     public function invalidateByTag(string $tag): int
@@ -184,12 +183,13 @@ class CacheService
         try {
             if (Cache::getStore() instanceof \Illuminate\Cache\TaggedCache) {
                 Cache::tags([$tag])->flush();
+
                 return 1; // Tag-based flush
             }
         } catch (\Exception $e) {
             Log::warning('Tag-based cache invalidation not available', [
                 'tag' => $tag,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
 
@@ -199,9 +199,8 @@ class CacheService
     /**
      * Invalidate related caches when model changes
      *
-     * @param string $modelName Model name (e.g., 'Ilan', 'Category')
-     * @param int|null $modelId Optional model ID for specific invalidation
-     * @return void
+     * @param  string  $modelName  Model name (e.g., 'Ilan', 'Category')
+     * @param  int|null  $modelId  Optional model ID for specific invalidation
      */
     public function invalidateModel(string $modelName, ?int $modelId = null): void
     {
@@ -232,7 +231,7 @@ class CacheService
     /**
      * Get TTL value (resolve preset names to seconds)
      *
-     * @param int|string $ttl TTL in seconds or preset name
+     * @param  int|string  $ttl  TTL in seconds or preset name
      * @return int TTL in seconds
      */
     protected function resolveTtl($ttl): int
@@ -251,7 +250,7 @@ class CacheService
     /**
      * Get tag for namespace
      *
-     * @param string $namespace Namespace
+     * @param  string  $namespace  Namespace
      * @return string Tag name
      */
     protected function getTagForNamespace(string $namespace): string
@@ -261,8 +260,6 @@ class CacheService
 
     /**
      * Clear all cache
-     *
-     * @return bool
      */
     public function flush(): bool
     {
@@ -271,8 +268,6 @@ class CacheService
 
     /**
      * Get cache statistics
-     *
-     * @return array
      */
     public function getStats(): array
     {

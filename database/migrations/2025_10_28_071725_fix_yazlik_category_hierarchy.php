@@ -1,8 +1,6 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -24,9 +22,10 @@ return new class extends Migration
             ->where('slug', 'yazlik-kiralama')
             ->first();
 
-        if (!$yazlikKiralama) {
+        if (! $yazlikKiralama) {
             // Yazlık Kiralama kategorisi yoksa migration'ı atla
             Log::warning('Yazlık Kiralama kategorisi bulunamadı, migration atlanıyor.');
+
             return;
         }
 
@@ -53,16 +52,18 @@ return new class extends Migration
         $altKategoriler = [$daire, $villa];
 
         foreach ($altKategoriler as $altKategori) {
-            if (!$altKategori) continue;
+            if (! $altKategori) {
+                continue;
+            }
 
             foreach ($yayinTipleri as $yayin) {
                 // Duplicate slug olmaması için slug'a alt kategori ekle
-                $slug = $altKategori->slug . '-' . $yayin['slug'];
+                $slug = $altKategori->slug.'-'.$yayin['slug'];
 
                 DB::table('ilan_kategorileri')->insert([
                     'name' => $yayin['name'],
                     'slug' => $slug,
-                    'aciklama' => $altKategori->name . ' - ' . $yayin['name'],
+                    'aciklama' => $altKategori->name.' - '.$yayin['name'],
                     'parent_id' => $altKategori->id,
                     'seviye' => 2,
                     'display_order' => $yayin['display_order'], // Context7: order → display_order

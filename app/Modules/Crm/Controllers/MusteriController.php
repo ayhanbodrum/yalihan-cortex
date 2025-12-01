@@ -3,8 +3,8 @@
 namespace App\Modules\Crm\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Modules\Crm\Models\Aktivite;
-use App\Modules\Crm\Models\Kisi; // ✅ Context7: Musteri → Kisi
+use App\Models\Kisi;
+use App\Modules\Crm\Models\Aktivite; // ✅ Context7: Musteri → Kisi (Unified Model)
 use App\Modules\Crm\Models\Musteri; // Backward compat alias
 use App\Modules\Crm\Models\Randevu;
 use App\Modules\Emlak\Models\Ilan;
@@ -154,11 +154,11 @@ class MusteriController extends Controller
             'ad' => 'required|string|max:255',
             'soyad' => 'required|string|max:255',
             'telefon' => 'nullable|string|max:20',
-            'email' => 'nullable|email|max:255|unique:musteriler,email',
+            'email' => 'nullable|email|max:255|unique:kisiler,email',
             'adres' => 'nullable|string',
             'il' => 'nullable|string|max:50',
             'ilce' => 'nullable|string|max:50',
-            'tc_kimlik' => 'nullable|string|max:11|unique:musteriler,tc_kimlik',
+            'tc_kimlik' => 'nullable|string|max:11|unique:kisiler,tc_kimlik',
             'dogum_tarihi' => 'nullable|date',
             'meslek' => 'nullable|string|max:100',
             'gelir_duzeyi' => 'nullable|string|max:50',
@@ -267,11 +267,11 @@ class MusteriController extends Controller
             'ad' => 'required|string|max:255',
             'soyad' => 'required|string|max:255',
             'telefon' => 'nullable|string|max:20',
-            'email' => 'nullable|email|max:255|unique:musteriler,email,'.$id,
+            'email' => 'nullable|email|max:255|unique:kisiler,email,'.$id,
             'adres' => 'nullable|string',
             'il' => 'nullable|string|max:50',
             'ilce' => 'nullable|string|max:50',
-            'tc_kimlik' => 'nullable|string|max:11|unique:musteriler,tc_kimlik,'.$id,
+            'tc_kimlik' => 'nullable|string|max:11|unique:kisiler,tc_kimlik,'.$id,
             'dogum_tarihi' => 'nullable|date',
             'meslek' => 'nullable|string|max:100',
             'gelir_duzeyi' => 'nullable|string|max:50',

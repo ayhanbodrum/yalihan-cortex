@@ -3,10 +3,10 @@
 namespace App\Providers;
 
 use App\Models\Ilan;
+use App\Models\Setting;
 use App\Modules\ModuleServiceProvider;
 use App\Observers\IlanObserver;
 use App\Services\AIService;
-use App\Models\Setting;
 use App\Services\CurrencyConversionService;
 use App\Services\PlanNotlariAIService;
 use Illuminate\Support\Facades\Blade;
@@ -79,10 +79,21 @@ class AppServiceProvider extends ServiceProvider
 
         Ilan::observe(IlanObserver::class);
 
+        // CRM Observer (Added: 2025-11-25)
+        \App\Models\Kisi::observe(\App\Observers\KisiObserver::class);
+
+        // Talep Observer (Added: 2025-11-29)
+        // Context7: Otonom Fırsat Sentezi ve Bildirim Sistemi
+        \App\Models\Talep::observe(\App\Observers\TalepObserver::class);
+
+        // Görev Observer (Added: 2025-11-27)
+        // Context7: Takım Yönetimi Otomasyonu - Temel Event Sistemi
+        \App\Modules\TakimYonetimi\Models\Gorev::observe(\App\Observers\GorevObserver::class);
+
         // Google Drive Storage (for Laravel Backup)
         try {
             Storage::extend('google', function ($app, $config) {
-                $client = new \Google\Client();
+                $client = new \Google\Client;
                 $client->setClientId($config['clientId']);
                 $client->setClientSecret($config['clientSecret']);
                 $client->refreshToken($config['refreshToken']);
@@ -97,9 +108,13 @@ class AppServiceProvider extends ServiceProvider
         }
 
         $appLocale = Setting::where('key', 'app_locale')->value('value');
-        if ($appLocale) { app()->setLocale($appLocale); }
+        if ($appLocale) {
+            app()->setLocale($appLocale);
+        }
         $defaultCurrency = Setting::where('key', 'currency_default')->value('value');
-        if ($defaultCurrency) { session(['currency' => $defaultCurrency]); }
+        if ($defaultCurrency) {
+            session(['currency' => $defaultCurrency]);
+        }
 
         View::composer('components.frontend.global.topbar', function ($view) {
             $locales = config('localization.supported_locales', []);

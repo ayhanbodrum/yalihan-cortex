@@ -186,10 +186,10 @@ showMapError(message) {
     mapEl.innerHTML = `
         <div class="flex items-center justify-center h-full min-h-[400px] 
                     bg-red-50 dark:bg-red-900/20 
-                    border-2 border-red-300 dark:border-red-700 rounded-lg">
+                    border border-red-300 dark:border-red-700 rounded-lg">
             <div class="text-center p-6">
                 <svg class="w-16 h-16 text-red-500 mx-auto mb-4">...</svg>
-                <h3 class="text-lg font-bold text-red-800 dark:text-red-200 mb-2">
+                <h3 class="text-lg font-medium text-red-800 dark:text-red-200 mb-2">
                     Harita Yüklenemedi
                 </h3>
                 <p class="text-sm text-red-600 dark:text-red-400 mb-4">

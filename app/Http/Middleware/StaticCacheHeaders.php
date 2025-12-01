@@ -13,7 +13,7 @@ class StaticCacheHeaders
 
         $path = $request->path();
         $ext = strtolower(pathinfo($path, PATHINFO_EXTENSION));
-        $cacheable = in_array($ext, ['css','js','jpg','jpeg','png','gif','svg','webp','woff','woff2']);
+        $cacheable = in_array($ext, ['css', 'js', 'jpg', 'jpeg', 'png', 'gif', 'svg', 'webp', 'woff', 'woff2']);
 
         if ($cacheable) {
             $response->headers->set('Cache-Control', 'public, max-age=604800');

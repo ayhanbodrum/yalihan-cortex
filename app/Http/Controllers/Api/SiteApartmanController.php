@@ -6,12 +6,13 @@ use App\Http\Controllers\Controller;
 use App\Models\SiteApartman;
 use App\Services\Response\ResponseService;
 use App\Traits\ValidatesApiRequests;
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class SiteApartmanController extends Controller
 {
     use ValidatesApiRequests;
+
     /**
      * Site/Apartman arama
      */
@@ -19,7 +20,7 @@ class SiteApartmanController extends Controller
     {
         $validated = $this->validateRequestWithResponse($request, [
             'q' => 'required|string|min:2',
-            'type' => 'nullable|string|in:site,apartman'
+            'type' => 'nullable|string|in:site,apartman',
         ]);
 
         if ($validated instanceof JsonResponse) {
@@ -35,13 +36,13 @@ class SiteApartmanController extends Controller
             }
 
             // Arama
-            $query->where(function($q) use ($request) {
-                $q->where('name', 'LIKE', '%' . $request->q . '%')
-                  ->orWhere('adres', 'LIKE', '%' . $request->q . '%');
+            $query->where(function ($q) use ($request) {
+                $q->where('name', 'LIKE', '%'.$request->q.'%')
+                    ->orWhere('adres', 'LIKE', '%'.$request->q.'%');
             });
 
             $results = $query->limit(10)->get([
-                'id', 'name', 'adres', 'toplam_daire_sayisi', 'tip'
+                'id', 'name', 'adres', 'toplam_daire_sayisi', 'tip',
             ]);
 
             // Context7 Live Search compatibility: add 'text' field
@@ -52,7 +53,7 @@ class SiteApartmanController extends Controller
 
             return ResponseService::success([
                 'data' => $results,
-                'count' => $results->count()
+                'count' => $results->count(),
             ], 'Site/Apartman araması başarıyla tamamlandı');
 
         } catch (\Exception $e) {
@@ -69,7 +70,7 @@ class SiteApartmanController extends Controller
             $site = SiteApartman::findOrFail($id);
 
             return ResponseService::success([
-                'site' => $site
+                'site' => $site,
             ], 'Site/Apartman detayları başarıyla getirildi');
 
         } catch (\Exception $e) {

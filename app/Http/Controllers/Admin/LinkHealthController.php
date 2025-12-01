@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route as RouteFacade;
-use Illuminate\Routing\Controller as BaseController;
 
 class LinkHealthController extends BaseController
 {
@@ -25,15 +25,16 @@ class LinkHealthController extends BaseController
 
         foreach ($targets as $t) {
             $url = RouteFacade::has($t['route']) ? route($t['route']) : null;
-            if (!$url) {
+            if (! $url) {
                 $results[] = [
                     'name' => $t['name'],
                     'route' => $t['route'],
                     'url' => null,
                     'ok' => false,
                     'status' => null,
-                    'error' => 'Route not found'
+                    'error' => 'Route not found',
                 ];
+
                 continue;
             }
             try {
@@ -44,7 +45,7 @@ class LinkHealthController extends BaseController
                     'url' => $url,
                     'ok' => $response->successful(),
                     'status' => $response->status(),
-                    'error' => $response->successful() ? null : ($response->body() ? 'HTTP Error' : 'Unknown')
+                    'error' => $response->successful() ? null : ($response->body() ? 'HTTP Error' : 'Unknown'),
                 ];
             } catch (\Throwable $e) {
                 $results[] = [

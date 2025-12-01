@@ -1,5 +1,6 @@
 #!/usr/bin/env php
 <?php
+
 /**
  * Dropdown Auto-Fixer - Yalıhan Bekçi
  *
@@ -14,20 +15,23 @@
  * 4. neo-select/neo-input → Tailwind classes (in select tags)
  * 5. Add transition classes to select tags without them
  */
-
 class DropdownFixer
 {
     private $basePath;
+
     private $dryRun = false;
+
     private $fixedFiles = [];
+
     private $totalFixes = 0;
+
     private $backupDir;
 
     public function __construct($basePath = null, $dryRun = false)
     {
         $this->basePath = $basePath ?? dirname(__DIR__, 2);
         $this->dryRun = $dryRun;
-        $this->backupDir = $this->basePath . '/yalihan-bekci/backups/dropdown-fix-' . date('Y-m-d-His');
+        $this->backupDir = $this->basePath.'/yalihan-bekci/backups/dropdown-fix-'.date('Y-m-d-His');
     }
 
     public function fix($path = 'resources/views/admin')
@@ -43,11 +47,11 @@ class DropdownFixer
             echo "✅ Backup directory created\n\n";
         }
 
-        $fullPath = $this->basePath . '/' . $path;
+        $fullPath = $this->basePath.'/'.$path;
         $files = $this->getBladeFiles($fullPath);
 
         echo "📁 Scanning: $path\n";
-        echo "📄 Found " . count($files) . " Blade files\n\n";
+        echo '📄 Found '.count($files)." Blade files\n\n";
 
         foreach ($files as $file) {
             $this->fixFile($file);
@@ -76,7 +80,7 @@ class DropdownFixer
     {
         $content = file_get_contents($filePath);
         $originalContent = $content;
-        $relativePath = str_replace($this->basePath . '/', '', $filePath);
+        $relativePath = str_replace($this->basePath.'/', '', $filePath);
         $fixCount = 0;
 
         // Find all select tags
@@ -87,8 +91,8 @@ class DropdownFixer
         }
 
         // Create backup
-        if (!$this->dryRun) {
-            $backupPath = $this->backupDir . '/' . str_replace('/', '_', $relativePath);
+        if (! $this->dryRun) {
+            $backupPath = $this->backupDir.'/'.str_replace('/', '_', $relativePath);
             file_put_contents($backupPath, $originalContent);
         }
 
@@ -136,8 +140,8 @@ class DropdownFixer
             if (strpos($selectTag, 'transition-') === false) {
                 // Find the class attribute and add transition
                 if (preg_match('/class="([^"]*)"/', $selectTag, $classMatch)) {
-                    $newClass = $classMatch[1] . ' transition-all duration-200';
-                    $selectTag = str_replace('class="' . $classMatch[1] . '"', 'class="' . $newClass . '"', $selectTag);
+                    $newClass = $classMatch[1].' transition-all duration-200';
+                    $selectTag = str_replace('class="'.$classMatch[1].'"', 'class="'.$newClass.'"', $selectTag);
                     $fixCount++;
                 } else {
                     // No class attribute, add one
@@ -153,7 +157,7 @@ class DropdownFixer
         }
 
         if ($fixCount > 0) {
-            if (!$this->dryRun) {
+            if (! $this->dryRun) {
                 file_put_contents($filePath, $content);
                 echo "✅ Fixed: $relativePath ($fixCount fixes)\n";
             } else {
@@ -162,7 +166,7 @@ class DropdownFixer
 
             $this->fixedFiles[] = [
                 'file' => $relativePath,
-                'fixes' => $fixCount
+                'fixes' => $fixCount,
             ];
             $this->totalFixes += $fixCount;
         }
@@ -174,11 +178,12 @@ class DropdownFixer
         echo "📊 FIX SUMMARY\n";
         echo "==========================================\n\n";
 
-        echo "📄 Files Processed: " . count($this->fixedFiles) . "\n";
+        echo '📄 Files Processed: '.count($this->fixedFiles)."\n";
         echo "🔧 Total Fixes Applied: {$this->totalFixes}\n\n";
 
         if (empty($this->fixedFiles)) {
             echo "✅ All files are already Context7 compliant!\n";
+
             return;
         }
 
@@ -189,7 +194,7 @@ class DropdownFixer
             echo "✅ {$file['file']} ({$file['fixes']} fixes)\n";
         }
 
-        if (!$this->dryRun) {
+        if (! $this->dryRun) {
             echo "\n💾 Backup Location: {$this->backupDir}\n";
             echo "🔄 To restore: cp {$this->backupDir}/* back to original locations\n\n";
         }
@@ -200,7 +205,7 @@ class DropdownFixer
 
     private function saveReport()
     {
-        $reportPath = $this->basePath . '/yalihan-bekci/reports/dropdown-fix-' . date('Y-m-d-His') . '.json';
+        $reportPath = $this->basePath.'/yalihan-bekci/reports/dropdown-fix-'.date('Y-m-d-His').'.json';
 
         $report = [
             'fix_date' => date('Y-m-d H:i:s'),
@@ -214,13 +219,13 @@ class DropdownFixer
                 'dark_text_gray_100_to_white' => 'Applied',
                 'color_scheme_property_added' => 'Applied',
                 'neo_classes_replaced' => 'Applied',
-                'transition_classes_added' => 'Applied'
-            ]
+                'transition_classes_added' => 'Applied',
+            ],
         ];
 
         file_put_contents($reportPath, json_encode($report, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
 
-        echo "💾 Report saved: " . str_replace($this->basePath . '/', '', $reportPath) . "\n";
+        echo '💾 Report saved: '.str_replace($this->basePath.'/', '', $reportPath)."\n";
     }
 }
 

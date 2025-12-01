@@ -2,18 +2,17 @@
 
 namespace App\Models;
 
-use Carbon\Carbon;
+use App\Traits\HasActiveScope;
+use App\Traits\HasAIUsageTracking;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Traits\HasActiveScope;
-use App\Traits\HasAIUsageTracking;
 
 class AIKnowledgeBase extends Model
 {
-    use HasFactory, SoftDeletes, HasActiveScope, HasAIUsageTracking;
+    use HasActiveScope, HasAIUsageTracking, HasFactory, SoftDeletes;
 
     protected $table = 'ai_knowledge_base';
 
@@ -170,7 +169,7 @@ class AIKnowledgeBase extends Model
     public function removeTag($tag)
     {
         $tags = $this->tags ?? [];
-        $tags = array_filter($tags, fn($t) => $t !== $tag);
+        $tags = array_filter($tags, fn ($t) => $t !== $tag);
         $this->tags = array_values($tags);
         $this->save();
     }
@@ -206,7 +205,7 @@ class AIKnowledgeBase extends Model
         $currentChunk = '';
 
         foreach ($sentences as $sentence) {
-            if (strlen($currentChunk . ' ' . $sentence) > $maxChunkSize) {
+            if (strlen($currentChunk.' '.$sentence) > $maxChunkSize) {
                 if (! empty($currentChunk)) {
                     $chunks[] = trim($currentChunk);
                     $currentChunk = $sentence;
@@ -215,7 +214,7 @@ class AIKnowledgeBase extends Model
                     $words = explode(' ', $sentence);
                     $wordChunk = '';
                     foreach ($words as $word) {
-                        if (strlen($wordChunk . ' ' . $word) > $maxChunkSize) {
+                        if (strlen($wordChunk.' '.$word) > $maxChunkSize) {
                             if (! empty($wordChunk)) {
                                 $chunks[] = trim($wordChunk);
                                 $wordChunk = $word;
@@ -223,7 +222,7 @@ class AIKnowledgeBase extends Model
                                 $chunks[] = $word; // Single word is too long
                             }
                         } else {
-                            $wordChunk .= ($wordChunk ? ' ' : '') . $word;
+                            $wordChunk .= ($wordChunk ? ' ' : '').$word;
                         }
                     }
                     if (! empty($wordChunk)) {
@@ -231,7 +230,7 @@ class AIKnowledgeBase extends Model
                     }
                 }
             } else {
-                $currentChunk .= ($currentChunk ? ' ' : '') . $sentence;
+                $currentChunk .= ($currentChunk ? ' ' : '').$sentence;
             }
         }
 

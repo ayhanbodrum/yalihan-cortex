@@ -15,7 +15,6 @@ use Illuminate\Support\Facades\Cache;
  * - Replace SiteSetting::getGroup() with Setting::getByGroup()
  *
  * All data should be migrated from site_settings table to settings table.
- *
  * @see \App\Models\Setting
  */
 class SiteSetting extends Model

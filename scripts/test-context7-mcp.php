@@ -3,28 +3,27 @@
 
 /**
  * Context7 MCP Test Script
- * 
+ *
  * Bu script Context7 MCP'nin çalışıp çalışmadığını test eder.
- * 
+ *
  * Kullanım:
  *   php scripts/test-context7-mcp.php
  */
-
 echo "🔍 Context7 MCP Test Script\n";
 echo "==========================\n\n";
 
 // 1. MCP.json kontrolü
 echo "1️⃣  MCP.json kontrolü...\n";
-$mcpJsonPath = $_SERVER['HOME'] . '/.cursor/mcp.json';
+$mcpJsonPath = $_SERVER['HOME'].'/.cursor/mcp.json';
 
-if (!file_exists($mcpJsonPath)) {
+if (! file_exists($mcpJsonPath)) {
     echo "   ❌ mcp.json dosyası bulunamadı: {$mcpJsonPath}\n";
     exit(1);
 }
 
 $mcpConfig = json_decode(file_get_contents($mcpJsonPath), true);
 
-if (!isset($mcpConfig['mcpServers']['context7'])) {
+if (! isset($mcpConfig['mcpServers']['context7'])) {
     echo "   ❌ Context7 MCP konfigürasyonu bulunamadı\n";
     exit(1);
 }
@@ -32,7 +31,7 @@ if (!isset($mcpConfig['mcpServers']['context7'])) {
 $context7Config = $mcpConfig['mcpServers']['context7'];
 echo "   ✅ Context7 MCP konfigürasyonu bulundu\n";
 echo "      Command: {$context7Config['command']}\n";
-echo "      Args: " . implode(' ', $context7Config['args']) . "\n";
+echo '      Args: '.implode(' ', $context7Config['args'])."\n";
 
 // 2. API Key kontrolü
 echo "\n2️⃣  API Key kontrolü...\n";
@@ -44,24 +43,24 @@ foreach ($context7Config['args'] as $arg) {
     }
 }
 
-if (!$apiKey) {
+if (! $apiKey) {
     // Environment variable kontrolü
     if (isset($context7Config['env']['CONTEXT7_API_KEY'])) {
         $apiKey = $context7Config['env']['CONTEXT7_API_KEY'];
     }
 }
 
-if (!$apiKey) {
+if (! $apiKey) {
     echo "   ⚠️  API Key bulunamadı (opsiyonel - rate limit ile çalışabilir)\n";
 } else {
-    echo "   ✅ API Key bulundu: " . substr($apiKey, 0, 20) . "...\n";
+    echo '   ✅ API Key bulundu: '.substr($apiKey, 0, 20)."...\n";
 }
 
 // 3. Node.js/npx kontrolü
 echo "\n3️⃣  Node.js/npx kontrolü...\n";
 $nodeVersion = shell_exec('node --version 2>&1');
 if ($nodeVersion) {
-    echo "   ✅ Node.js yüklü: " . trim($nodeVersion) . "\n";
+    echo '   ✅ Node.js yüklü: '.trim($nodeVersion)."\n";
 } else {
     echo "   ❌ Node.js yüklü değil\n";
     exit(1);
@@ -69,7 +68,7 @@ if ($nodeVersion) {
 
 $npxVersion = shell_exec('npx --version 2>&1');
 if ($npxVersion) {
-    echo "   ✅ npx yüklü: " . trim($npxVersion) . "\n";
+    echo '   ✅ npx yüklü: '.trim($npxVersion)."\n";
 } else {
     echo "   ❌ npx yüklü değil\n";
     exit(1);
@@ -95,7 +94,7 @@ $checks = [
 ];
 
 foreach ($checks as $file => $description) {
-    $filePath = $projectRoot . '/' . $file;
+    $filePath = $projectRoot.'/'.$file;
     if (file_exists($filePath)) {
         echo "   ✅ {$description}: {$file}\n";
     } else {
@@ -104,9 +103,9 @@ foreach ($checks as $file => $description) {
 }
 
 // 6. Özet
-echo "\n" . str_repeat("=", 50) . "\n";
+echo "\n".str_repeat('=', 50)."\n";
 echo "📊 ÖZET\n";
-echo str_repeat("=", 50) . "\n";
+echo str_repeat('=', 50)."\n";
 echo "✅ Context7 MCP kurulumu tamamlandı\n";
 echo "✅ MCP.json konfigürasyonu doğru\n";
 echo "✅ Node.js/npx hazır\n";
@@ -118,4 +117,3 @@ echo "\n📚 Dokümantasyon:\n";
 echo "   - docs/technical/context7-mcp-integration.md\n";
 echo "   - .cursorrules (Context7 MCP kuralları)\n";
 echo "\n";
-

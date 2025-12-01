@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Services;
+
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
@@ -35,7 +36,7 @@ class MenuService
                 'type' => 'link',
                 'name' => 'Dashboard',
                 'route' => 'admin.dashboard.index',
-                'icon' => 'dashboard'
+                'icon' => 'dashboard',
             ],
             [
                 'type' => 'group',
@@ -48,13 +49,13 @@ class MenuService
                     ['type' => 'link', 'name' => 'Yayın Tipi Yöneticisi', 'route' => 'admin.property_types.index'],
                     ['type' => 'link', 'name' => 'Özellik Grupları', 'route' => 'admin.ozellikler.kategoriler.index'],
                     ['type' => 'link', 'name' => 'Özellikler', 'route' => 'admin.ozellikler.index'],
-                ]
+                ],
             ],
             [
                 'type' => 'link',
                 'name' => 'Kullanıcılar',
                 'route' => 'admin.kullanicilar.index',
-                'icon' => 'users'
+                'icon' => 'users',
             ],
             [
                 'type' => 'group',
@@ -66,7 +67,18 @@ class MenuService
                     ['type' => 'link', 'name' => 'Talepler', 'route' => 'admin.talepler.index'],
                     ['type' => 'link', 'name' => 'Eşleştirmeler', 'route' => 'admin.eslesmeler.index'],
                     ['type' => 'link', 'name' => 'Talep-Portföy', 'route' => 'admin.talep-portfolyo.index'],
-                ]
+                ],
+            ],
+            [
+                'type' => 'group',
+                'name' => 'Finans Yönetimi',
+                'icon' => 'finance',
+                'children' => [
+                    ['type' => 'link', 'name' => 'Finansal İşlemler', 'route' => 'admin.finans.islemler.index'],
+                    ['type' => 'link', 'name' => 'Yeni İşlem', 'route' => 'admin.finans.islemler.create'],
+                    ['type' => 'link', 'name' => 'Komisyonlar', 'route' => 'admin.finans.komisyonlar.index'],
+                    ['type' => 'link', 'name' => 'Yeni Komisyon', 'route' => 'admin.finans.komisyonlar.create'],
+                ],
             ],
             [
                 'type' => 'group',
@@ -76,7 +88,7 @@ class MenuService
                     ['type' => 'link', 'name' => 'AI Ayarları', 'route' => 'admin.ai-settings.index'],
                     ['type' => 'link', 'name' => 'AI Analytics', 'route' => 'admin.ai-settings.analytics'],
                     ['type' => 'link', 'name' => 'AI Monitoring', 'route' => 'admin.ai-monitor.index'],
-                ]
+                ],
             ],
             [
                 'type' => 'group',
@@ -86,7 +98,7 @@ class MenuService
                     ['type' => 'link', 'name' => 'Yazılar', 'route' => 'admin.blog.posts.index'],
                     ['type' => 'link', 'name' => 'Kategoriler', 'route' => 'admin.blog.categories.index'],
                     ['type' => 'link', 'name' => 'Yorumlar', 'route' => 'admin.blog.comments.index'],
-                ]
+                ],
             ],
             [
                 'type' => 'group',
@@ -95,54 +107,56 @@ class MenuService
                 'children' => [
                     ['type' => 'link', 'name' => 'Adres Yönetimi', 'route' => 'admin.adres-yonetimi.index'],
                     ['type' => 'link', 'name' => 'Wikimapia Arama', 'route' => 'admin.wikimapia-search.index'],
-                ]
+                ],
             ],
             [
                 'type' => 'link',
                 'name' => 'Raporlar',
                 'route' => 'admin.reports.index',
-                'icon' => 'reports'
+                'icon' => 'reports',
             ],
             [
                 'type' => 'link',
                 'name' => 'Bildirimler',
                 'route' => 'admin.notifications.index',
-                'icon' => 'notifications'
+                'icon' => 'notifications',
             ],
             [
                 'type' => 'link',
                 'name' => 'Ayarlar',
                 'route' => 'admin.ayarlar.index',
-                'icon' => 'settings'
+                'icon' => 'settings',
             ],
         ];
 
-        $cacheKey = 'admin_menu:'.($role ?? 'guest').':'.($userId ?? '0');
+        $cacheKey = 'admin_menu:' . ($role ?? 'guest') . ':' . ($userId ?? '0');
+
         return Cache::remember($cacheKey, now()->addMinutes(10), function () use ($baseMenu, $role) {
             $allowed = Gate::allows('view-admin-panel');
             $filtered = [];
             foreach ($baseMenu as $item) {
-                if (isset($item['route']) && !Route::has($item['route'])) {
+                if (isset($item['route']) && ! Route::has($item['route'])) {
                     continue;
                 }
-                if (!$allowed && ($item['route'] ?? null) !== 'admin.dashboard.index') {
+                if (! $allowed && ($item['route'] ?? null) !== 'admin.dashboard.index') {
                     continue;
                 }
                 if (isset($item['children'])) {
                     $children = [];
                     foreach ($item['children'] as $child) {
-                        if (isset($child['route']) && !Route::has($child['route'])) {
+                        if (isset($child['route']) && ! Route::has($child['route'])) {
                             continue;
                         }
-                        if (!$allowed) {
+                        if (! $allowed) {
                             continue;
                         }
                         $children[] = $child;
                     }
-                    if (!empty($children)) {
+                    if (! empty($children)) {
                         $item['children'] = $children;
                         $filtered[] = $item;
                     }
+
                     continue;
                 }
                 $filtered[] = $item;
@@ -151,6 +165,7 @@ class MenuService
                 'role' => $role,
                 'count' => count($filtered),
             ]);
+
             return $filtered;
         });
     }

@@ -29,11 +29,11 @@ class TalepServiceProvider extends ServiceProvider
         */
 
         // Çeviri tanımları
-        $this->loadTranslationsFrom(__DIR__ . '/Lang', 'talep');
+        $this->loadTranslationsFrom(__DIR__.'/Lang', 'talep');
 
         // Config dosyalarının yayınlanması
         $this->publishes([
-            __DIR__ . '/Config' => config_path('talep'),
+            __DIR__.'/Config' => config_path('talep'),
         ], 'talep-config');
     }
 
@@ -54,7 +54,7 @@ class TalepServiceProvider extends ServiceProvider
 
         // Config dosyalarının birleştirilmesi
         $this->mergeConfigFrom(
-            __DIR__ . '/Config/talep.php',
+            __DIR__.'/Config/talep.php',
             'talep'
         );
     }

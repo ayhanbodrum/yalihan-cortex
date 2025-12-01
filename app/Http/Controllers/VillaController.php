@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Event;
+use App\Models\Il;
 use App\Models\Ilan;
 use App\Models\IlanKategori;
-use App\Models\Event;
 use App\Models\Season;
-use App\Models\Il;
-use App\Models\Ilce;
-use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 
 /**
  * Public Villa Listing Controller
@@ -26,7 +25,7 @@ class VillaController extends Controller
         // Yazlık kategorisi
         $yazlikKategori = IlanKategori::where('slug', 'yazlik')->first();
 
-        if (!$yazlikKategori) {
+        if (! $yazlikKategori) {
             abort(404, 'Yazlık kiralama kategorisi bulunamadı');
         }
 
@@ -34,15 +33,15 @@ class VillaController extends Controller
         // Base query
         $query = Ilan::with(['photos', 'featuredPhoto', 'il', 'ilce', 'mahalle', 'seasons'])
             ->where('ana_kategori_id', $yazlikKategori->id)
-            ->where('status', 'Aktif');
+            ->where('status', true); // Context7: boolean status
 
         // ✅ REFACTORED: Location filter (relation search - özel durum)
         if ($request->filled('location')) {
             $location = $request->get('location');
             $query->where(function ($q) use ($location) {
-                $q->whereHas('il', fn($q) => $q->where('name', 'LIKE', "%{$location}%"))
-                    ->orWhereHas('ilce', fn($q) => $q->where('name', 'LIKE', "%{$location}%"))
-                    ->orWhereHas('mahalle', fn($q) => $q->where('name', 'LIKE', "%{$location}%"));
+                $q->whereHas('il', fn ($q) => $q->where('name', 'LIKE', "%{$location}%"))
+                    ->orWhereHas('ilce', fn ($q) => $q->where('name', 'LIKE', "%{$location}%"))
+                    ->orWhereHas('mahalle', fn ($q) => $q->where('name', 'LIKE', "%{$location}%"));
             });
         }
 
@@ -74,7 +73,7 @@ class VillaController extends Controller
         if ($request->filled('amenities')) {
             $amenities = $request->get('amenities');
             foreach ($amenities as $amenity) {
-                $query->whereHas('features', fn($q) => $q->where('features.slug', $amenity));
+                $query->whereHas('features', fn ($q) => $q->where('features.slug', $amenity));
             }
         }
 
@@ -132,8 +131,8 @@ class VillaController extends Controller
             'ilce',
             'mahalle',
             'features',
-            'seasons' => fn($q) => $q->active(),
-            'events' => fn($q) => $q->active()
+            'seasons' => fn ($q) => $q->active(),
+            'events' => fn ($q) => $q->active(),
         ])
             ->where('status', 'Aktif') // Context7 compliant!
             ->findOrFail($id);
@@ -187,7 +186,7 @@ class VillaController extends Controller
         // Fiyat hesapla
         $pricing = Season::calculatePriceForDateRange($villa->id, $checkIn, $checkOut);
 
-        if (!$pricing) {
+        if (! $pricing) {
             // Fallback: varsayılan fiyat
             $nightCount = Carbon::parse($checkOut)->diffInDays(Carbon::parse($checkIn));
             $pricing = [

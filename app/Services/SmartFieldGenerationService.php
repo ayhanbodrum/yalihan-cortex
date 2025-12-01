@@ -4,9 +4,7 @@ namespace App\Services;
 
 use App\Models\Ozellik;
 use App\Models\OzellikKategori;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
-use App\Services\AIService;
 
 class SmartFieldGenerationService
 {
@@ -24,7 +22,7 @@ class SmartFieldGenerationService
     {
         $cacheKey = "smart_fields_{$kategoriSlug}_{$yayinTipi}";
 
-        return Cache::remember($cacheKey, 3600, function() use ($kategoriSlug, $yayinTipi) {
+        return Cache::remember($cacheKey, 3600, function () use ($kategoriSlug, $yayinTipi) {
             // Mevcut özellikleri al
             $existingFields = $this->getExistingFields($kategoriSlug, $yayinTipi);
 
@@ -60,7 +58,7 @@ class SmartFieldGenerationService
             'ozellikler.arama_filtresi',
             'ozellikler.ilan_kartinda_goster',
             'ozellik_kategorileri.name as kategori_name',
-            'ozellik_kategorileri.slug as kategori_slug'
+            'ozellik_kategorileri.slug as kategori_slug',
         ])->get();
     }
 
@@ -72,7 +70,7 @@ class SmartFieldGenerationService
         $result = [
             'existing_fields' => $existingFields,
             'ai_suggestions' => $aiSuggestions,
-            'smart_recommendations' => $this->generateSmartRecommendations($existingFields, $aiSuggestions)
+            'smart_recommendations' => $this->generateSmartRecommendations($existingFields, $aiSuggestions),
         ];
 
         return $result;
@@ -91,7 +89,7 @@ class SmartFieldGenerationService
                 'type' => 'existing',
                 'field' => $field,
                 'priority' => $this->calculateFieldPriority($field),
-                'ai_enhancement' => $this->getAIEnhancement($field)
+                'ai_enhancement' => $this->getAIEnhancement($field),
             ];
         }
 
@@ -102,13 +100,13 @@ class SmartFieldGenerationService
                     'type' => 'ai_suggestion',
                     'field' => $suggestion,
                     'priority' => $suggestion['importance'] ?? 3,
-                    'ai_enhancement' => 'new'
+                    'ai_enhancement' => 'new',
                 ];
             }
         }
 
         // Öncelik sırasına göre sırala
-        usort($recommendations, function($a, $b) {
+        usort($recommendations, function ($a, $b) {
             return $b['priority'] <=> $a['priority'];
         });
 
@@ -172,7 +170,7 @@ class SmartFieldGenerationService
     {
         $cacheKey = "category_matrix_{$kategoriSlug}";
 
-        return Cache::remember($cacheKey, 3600, function() use ($kategoriSlug) {
+        return Cache::remember($cacheKey, 3600, function () use ($kategoriSlug) {
             $matrix = [];
 
             // Tüm özellik kategorilerini al
@@ -189,7 +187,7 @@ class SmartFieldGenerationService
                 $matrix[$kategori->slug] = [
                     'kategori' => $kategori,
                     'ozellikler' => $ozellikler,
-                    'ai_suggestions' => $this->getAISuggestionsForCategory($kategori->slug, $kategoriSlug)
+                    'ai_suggestions' => $this->getAISuggestionsForCategory($kategori->slug, $kategoriSlug),
                 ];
             }
 
@@ -204,7 +202,7 @@ class SmartFieldGenerationService
     {
         $context = [
             'ozellik_kategori' => $ozellikKategoriSlug,
-            'emlak_kategori' => $kategoriSlug
+            'emlak_kategori' => $kategoriSlug,
         ];
 
         return $this->aiService->suggestFieldsForCategory($kategoriSlug, null, $context);
@@ -217,7 +215,7 @@ class SmartFieldGenerationService
     {
         $cacheKey = "smart_form_{$kategoriSlug}_{$yayinTipi}";
 
-        return Cache::remember($cacheKey, 3600, function() use ($kategoriSlug, $yayinTipi) {
+        return Cache::remember($cacheKey, 3600, function () use ($kategoriSlug, $yayinTipi) {
             // Mevcut field'ları al
             $existingFields = $this->getExistingFields($kategoriSlug, $yayinTipi);
 
@@ -237,7 +235,7 @@ class SmartFieldGenerationService
         $form = [
             'sections' => [],
             'ai_enhancements' => [],
-            'smart_features' => []
+            'smart_features' => [],
         ];
 
         // Kategorilere göre grupla
@@ -246,7 +244,7 @@ class SmartFieldGenerationService
         foreach ($groupedFields as $kategoriSlug => $fields) {
             $form['sections'][$kategoriSlug] = [
                 'title' => $fields->first()->kategori_name,
-                'fields' => $fields->map(function($field) {
+                'fields' => $fields->map(function ($field) {
                     return [
                         'id' => $field->id,
                         'name' => $field->name,
@@ -257,9 +255,9 @@ class SmartFieldGenerationService
                         'required' => $field->zorunlu,
                         'searchable' => $field->arama_filtresi,
                         'show_in_card' => $field->ilan_kartinda_goster,
-                        'ai_enhancements' => $this->getAIEnhancement($field)
+                        'ai_enhancements' => $this->getAIEnhancement($field),
                     ];
-                })->toArray()
+                })->toArray(),
             ];
         }
 
@@ -268,7 +266,7 @@ class SmartFieldGenerationService
             'auto_completion' => true,
             'smart_suggestions' => true,
             'intelligent_validation' => true,
-            'context_aware_fields' => true
+            'context_aware_fields' => true,
         ];
 
         // Akıllı özellikler
@@ -276,7 +274,7 @@ class SmartFieldGenerationService
             'dynamic_required_fields' => true,
             'conditional_display' => true,
             'ai_powered_validation' => true,
-            'smart_defaults' => true
+            'smart_defaults' => true,
         ];
 
         return $form;

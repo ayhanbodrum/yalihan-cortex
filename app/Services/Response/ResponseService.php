@@ -4,10 +4,10 @@ namespace App\Services\Response;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Request;
 
 /**
  * Standardized Response Service
@@ -20,10 +20,9 @@ class ResponseService
     /**
      * Standard success response for API
      *
-     * @param mixed $data Response data
-     * @param string $message Success message
-     * @param int $status HTTP status code
-     * @return JsonResponse
+     * @param  mixed  $data  Response data
+     * @param  string  $message  Success message
+     * @param  int  $status  HTTP status code
      */
     public static function success($data = null, string $message = 'İşlem başarılı', int $status = 200, array $meta = []): JsonResponse
     {
@@ -63,11 +62,10 @@ class ResponseService
     /**
      * Standard error response for API
      *
-     * @param string $message Error message
-     * @param int $status HTTP status code
-     * @param array $errors Additional error details
-     * @param string|null $code Error code
-     * @return JsonResponse
+     * @param  string  $message  Error message
+     * @param  int  $status  HTTP status code
+     * @param  array  $errors  Additional error details
+     * @param  string|null  $code  Error code
      */
     public static function error(
         string $message = 'Bir hata oluştu',
@@ -97,9 +95,8 @@ class ResponseService
     /**
      * Standard validation error response
      *
-     * @param array $errors Validation errors
-     * @param string $message Error message
-     * @return JsonResponse
+     * @param  array  $errors  Validation errors
+     * @param  string  $message  Error message
      */
     public static function validationError(array $errors, string $message = 'Validasyon hatası'): JsonResponse
     {
@@ -109,8 +106,7 @@ class ResponseService
     /**
      * Standard not found response
      *
-     * @param string $message Error message
-     * @return JsonResponse
+     * @param  string  $message  Error message
      */
     public static function notFound(string $message = 'Kayıt bulunamadı'): JsonResponse
     {
@@ -120,8 +116,7 @@ class ResponseService
     /**
      * Standard unauthorized response
      *
-     * @param string $message Error message
-     * @return JsonResponse
+     * @param  string  $message  Error message
      */
     public static function unauthorized(string $message = 'Yetkisiz erişim'): JsonResponse
     {
@@ -131,8 +126,7 @@ class ResponseService
     /**
      * Standard forbidden response
      *
-     * @param string $message Error message
-     * @return JsonResponse
+     * @param  string  $message  Error message
      */
     public static function forbidden(string $message = 'Bu işlem için yetkiniz yok'): JsonResponse
     {
@@ -142,9 +136,8 @@ class ResponseService
     /**
      * Standard server error response
      *
-     * @param string $message Error message
-     * @param \Throwable|null $exception Exception for logging
-     * @return JsonResponse
+     * @param  string  $message  Error message
+     * @param  \Throwable|null  $exception  Exception for logging
      */
     public static function serverError(string $message = 'Sunucu hatası', ?\Throwable $exception = null): JsonResponse
     {
@@ -158,23 +151,22 @@ class ResponseService
     /**
      * Standard rate limit response
      *
-     * @param string $message Error message
-     * @param int $retryAfter Seconds to retry
-     * @return JsonResponse
+     * @param  string  $message  Error message
+     * @param  int  $retryAfter  Seconds to retry
      */
     public static function rateLimitExceeded(string $message = 'Çok fazla istek', int $retryAfter = 60): JsonResponse
     {
         $response = self::error($message, 429, [], 'RATE_LIMIT_EXCEEDED');
         $response->header('Retry-After', $retryAfter);
+
         return $response;
     }
 
     /**
      * Web redirect response with success message
      *
-     * @param string $route Route name
-     * @param string $message Success message
-     * @return RedirectResponse
+     * @param  string  $route  Route name
+     * @param  string  $message  Success message
      */
     public static function redirectSuccess(string $route, string $message = 'İşlem başarılı'): RedirectResponse
     {
@@ -184,9 +176,8 @@ class ResponseService
     /**
      * Web redirect response with error message
      *
-     * @param string $route Route name
-     * @param string $message Error message
-     * @return RedirectResponse
+     * @param  string  $route  Route name
+     * @param  string  $message  Error message
      */
     public static function redirectError(string $route, string $message = 'Bir hata oluştu'): RedirectResponse
     {
@@ -196,8 +187,7 @@ class ResponseService
     /**
      * Web back redirect with success message
      *
-     * @param string $message Success message
-     * @return RedirectResponse
+     * @param  string  $message  Success message
      */
     public static function backSuccess(string $message = 'İşlem başarılı'): RedirectResponse
     {
@@ -207,8 +197,7 @@ class ResponseService
     /**
      * Web back redirect with error message
      *
-     * @param string $message Error message
-     * @return RedirectResponse
+     * @param  string  $message  Error message
      */
     public static function backError(string $message = 'Bir hata oluştu'): RedirectResponse
     {
@@ -217,12 +206,6 @@ class ResponseService
 
     /**
      * Log error with context
-     *
-     * @param string $message
-     * @param int $status
-     * @param array $errors
-     * @param string|null $code
-     * @return void
      */
     protected static function logError(string $message, int $status, array $errors, ?string $code): void
     {
@@ -240,9 +223,6 @@ class ResponseService
 
     /**
      * Log exception with context
-     *
-     * @param \Throwable $exception
-     * @return void
      */
     protected static function logException(\Throwable $exception): void
     {

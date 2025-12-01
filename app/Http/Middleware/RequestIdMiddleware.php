@@ -4,8 +4,8 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class RequestIdMiddleware
 {
@@ -16,6 +16,7 @@ class RequestIdMiddleware
         Log::withContext(['request_id' => $rid]);
         $response = $next($request);
         $response->headers->set('X-Request-Id', $rid);
+
         return $response;
     }
 }

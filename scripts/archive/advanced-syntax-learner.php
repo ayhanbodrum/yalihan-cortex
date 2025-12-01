@@ -3,31 +3,33 @@
 /**
  * Advanced Syntax Error Learner - Error attachment'lardan öğrenilen son pattern'ları çözen sistem
  */
-
 echo "🧠 Advanced Syntax Error Learner başlatılıyor...\n";
 echo "🎯 Yeni error pattern'ları automated learning ile çözülüyor...\n\n";
 
-$migrationsDir = __DIR__ . '/../database/migrations';
+$migrationsDir = __DIR__.'/../database/migrations';
 $fixedCount = 0;
 
 // Spesifik error attachment dosyalarını hedef al
 $problemFiles = [
     '2025_06_14_091754_add_alt_kategori_to_ilanlar_table.php',
     '1000_03_01_000003_create_feature_category_translations_table.php',
-    '1000_02_01_000001_create_roles_table.php'
+    '1000_02_01_000001_create_roles_table.php',
 ];
 
 foreach ($problemFiles as $filename) {
-    $filePath = $migrationsDir . '/' . $filename;
-    if (!file_exists($filePath)) continue;
+    $filePath = $migrationsDir.'/'.$filename;
+    if (! file_exists($filePath)) {
+        continue;
+    }
 
     echo "🔧 Targeted fix: $filename\n";
 
     $content = file_get_contents($filePath);
-    $syntaxCheck = shell_exec("php -l " . escapeshellarg($filePath) . " 2>&1");
+    $syntaxCheck = shell_exec('php -l '.escapeshellarg($filePath).' 2>&1');
 
     if (strpos($syntaxCheck, 'No syntax errors') !== false) {
         echo "   ✅ Already clean\n";
+
         continue;
     }
 
@@ -58,14 +60,14 @@ foreach ($problemFiles as $filename) {
 
             // Eğer function satırında parantez açık kalmışsa
             if (strpos($line, 'function') !== false && $parenStack > 0) {
-                $lines[$i] = rtrim($line, '{ ') . ') {';
+                $lines[$i] = rtrim($line, '{ ').') {';
                 $parenStack = 0;
             }
 
             // Eğer Schema satırında parantez/brace açık kalmışsa
             if (strpos($line, 'Schema::') !== false && ($parenStack > 0 || $braceStack > 0)) {
-                if (!preg_match('/\);?\s*$/', $line)) {
-                    $lines[$i] = rtrim($line) . '});';
+                if (! preg_match('/\);?\s*$/', $line)) {
+                    $lines[$i] = rtrim($line).'});';
                     $parenStack = 0;
                     $braceStack = 0;
                 }
@@ -114,7 +116,7 @@ foreach ($problemFiles as $filename) {
             }
 
             // Comment block dışarıdaysa skip et
-            if (!$inFunction && (strpos($trimmedLine, '/*') !== false || strpos($trimmedLine, '*/') !== false || strpos($trimmedLine, '*') === 0)) {
+            if (! $inFunction && (strpos($trimmedLine, '/*') !== false || strpos($trimmedLine, '*/') !== false || strpos($trimmedLine, '*') === 0)) {
                 continue;
             }
 
@@ -146,13 +148,17 @@ foreach ($problemFiles as $filename) {
 echo "🔄 General sweep for remaining patterns...\n";
 $generalFixed = 0;
 
-foreach (glob($migrationsDir . '/*.php') as $filePath) {
+foreach (glob($migrationsDir.'/*.php') as $filePath) {
     $filename = basename($filePath);
 
-    if (in_array($filename, $problemFiles)) continue; // Zaten işlendi
+    if (in_array($filename, $problemFiles)) {
+        continue;
+    } // Zaten işlendi
 
-    $syntaxCheck = shell_exec("php -l " . escapeshellarg($filePath) . " 2>&1");
-    if (strpos($syntaxCheck, 'No syntax errors') !== false) continue;
+    $syntaxCheck = shell_exec('php -l '.escapeshellarg($filePath).' 2>&1');
+    if (strpos($syntaxCheck, 'No syntax errors') !== false) {
+        continue;
+    }
 
     $content = file_get_contents($filePath);
     $originalContent = $content;
@@ -162,7 +168,7 @@ foreach (glob($migrationsDir . '/*.php') as $filePath) {
         // Unclosed parenthesis in Schema calls
         '/Schema::(table|create)\([^)]+function[^)]+\$table[^)]*\{/' => 'Schema::$1($2, function (Blueprint $table) {',
         // Missing closing for callbacks
-        '/(\$table->[^;]+;)\s*(public function)/' => '$1' . "\n        });\n    }\n\n    $2",
+        '/(\$table->[^;]+;)\s*(public function)/' => '$1'."\n        });\n    }\n\n    $2",
         // Comment cleanup
         '/\n\s*\/\*[^*]*\*\/\s*\n/' => "\n",
     ];
@@ -183,7 +189,7 @@ echo "🎯 Targeted fixes: $fixedCount dosya\n";
 echo "🔄 General sweep: $generalFixed dosya\n";
 
 // Final error count
-$finalErrors = (int)shell_exec("find " . escapeshellarg($migrationsDir) . " -name '*.php' -exec php -l {} \\; 2>&1 | grep -c 'Parse error\\|Fatal error\\|syntax error' || echo '0'");
+$finalErrors = (int) shell_exec('find '.escapeshellarg($migrationsDir)." -name '*.php' -exec php -l {} \\; 2>&1 | grep -c 'Parse error\\|Fatal error\\|syntax error' || echo '0'");
 echo "⚠️ Kalan hatalar: $finalErrors\n";
 
 if ($finalErrors < 200) {

@@ -28,7 +28,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-    @vite(['resources/css/app.css', 'resources/css/leaflet.css', 'resources/js/leaflet-loader.js', 'resources/js/app.js', 'resources/js/admin/global.js', 'resources/js/admin/neo.js', 'resources/js/components/UnifiedPersonSelector.js', 'resources/js/admin/ai-register.js'])
+    @vite(['resources/css/app.css', 'resources/css/leaflet.css', 'resources/js/leaflet-loader.js', 'resources/js/app.js', 'resources/js/admin/global.js', 'resources/js/admin/neo.js', 'resources/js/components/UnifiedPersonSelector.js'])
 
     <!-- Context7 Components CSS -->
     <!-- Tailwind CSS utility classes kullanılır (tailwind.config.js) -->
@@ -37,7 +37,16 @@
     <!-- Toast component uses Tailwind CSS classes directly, no external CSS needed -->
 
     <!-- PHASE 2: AJAX & UI Utilities (Context7 Standards) -->
-    <script src="{{ asset('js/admin/toast-system.js') }}" defer></script>
+    <script>
+        // Prevent multiple toast-system initialization
+        if (typeof window.ToastSystem === 'undefined') {
+            // Load toast-system.js inline to prevent multiple loads
+            const script = document.createElement('script');
+            script.src = '{{ asset('js/admin/toast-system.js') }}';
+            script.defer = true;
+            document.head.appendChild(script);
+        }
+    </script>
     <script src="{{ asset('js/admin/ajax-helpers.js') }}" defer></script>
     <script src="{{ asset('js/admin/ui-helpers.js') }}" defer></script>
 
@@ -66,7 +75,7 @@
                             <div class="hidden md:block">
                                 <div class="relative">
                                     <input type="search" placeholder="Ara..."
-                                        class="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200 pl-9 w-72"
+                                        class="w-72 md:w-80 px-4 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent transition-all duration-200 pl-9"
                                         maxlength="100" pattern="[a-zA-ZğüşıöçĞÜŞİÖÇ0-9\s\-_]+"
                                         title="Sadece harf, rakam ve temel karakterler kullanın" />
                                     <svg class="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2"
@@ -76,6 +85,9 @@
                                     </svg>
                                 </div>
                             </div>
+                            {{-- Notification Dropdown --}}
+                            <x-admin.header.notification-dropdown />
+
                             <button class="text-gray-400-btn touch-target-optimized touch-target-optimized"
                                 @click="toggleDark()" :aria-pressed="dark.toString()" aria-label="Tema">
                                 <svg x-show="!dark" class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
@@ -120,59 +132,96 @@
                 <main id="main" class="flex-1 overflow-y-auto bg-gray-50">
                     <div class="w-full px-4 sm:px-6 lg:px-8 py-6">
                         {{-- Flash Messages --}}
+                        {{-- Flash Messages --}}
                         @if (session('success'))
-                            <div class="rounded-lg border border-blue-200 bg-blue-50 p-4 text-blue-800 dark:bg-blue-900 dark:border-blue-800 dark:text-blue-200 rounded-lg border border-blue-200 bg-blue-50 p-4 text-blue-800 dark:bg-blue-900 dark:border-blue-800 dark:text-blue-200-success mb-6"
+                            <div class="mb-6 p-4 rounded-lg border border-green-200 bg-green-50 text-green-800 dark:bg-green-900/30 dark:border-green-800 dark:text-green-200"
                                 x-data="{ show: true }" x-show="show" x-transition>
-                                <div class="flex items-center">
-                                    <i class="text-gray-400 text-gray-400-check-circle mr-3"></i>
+                                <div class="flex items-center gap-3">
+                                    <svg class="w-5 h-5 text-green-600 dark:text-green-400" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
                                     <span>{{ session('success') }}</span>
+                                    <button @click="show = false"
+                                        class="ml-auto text-green-600 dark:text-green-300 hover:opacity-75"
+                                        aria-label="Kapat">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M6 18L18 6M6 6l12 12" />
+                                        </svg>
+                                    </button>
                                 </div>
-                                <button @click="show = false"
-                                    class="rounded-lg border border-blue-200 bg-blue-50 p-4 text-blue-800 dark:bg-blue-900 dark:border-blue-800 dark:text-blue-200-close">
-                                    <i class="text-gray-400 text-gray-400-close"></i>
-                                </button>
                             </div>
                         @endif
 
                         @if (session('error'))
-                            <div class="rounded-lg border border-blue-200 bg-blue-50 p-4 text-blue-800 dark:bg-blue-900 dark:border-blue-800 dark:text-blue-200 rounded-lg border border-blue-200 bg-blue-50 p-4 text-blue-800 dark:bg-blue-900 dark:border-blue-800 dark:text-blue-200-error mb-6"
+                            <div class="mb-6 p-4 rounded-lg border border-red-200 bg-red-50 text-red-800 dark:bg-red-900/30 dark:border-red-800 dark:text-red-200"
                                 x-data="{ show: true }" x-show="show" x-transition>
-                                <div class="flex items-center">
-                                    <i class="text-gray-400 text-gray-400-exclamation-circle mr-3"></i>
+                                <div class="flex items-center gap-3">
+                                    <svg class="w-5 h-5 text-red-600 dark:text-red-400" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
                                     <span>{{ session('error') }}</span>
+                                    <button @click="show = false"
+                                        class="ml-auto text-red-600 dark:text-red-300 hover:opacity-75"
+                                        aria-label="Kapat">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M6 18L18 6M6 6l12 12" />
+                                        </svg>
+                                    </button>
                                 </div>
-                                <button @click="show = false"
-                                    class="rounded-lg border border-blue-200 bg-blue-50 p-4 text-blue-800 dark:bg-blue-900 dark:border-blue-800 dark:text-blue-200-close">
-                                    <i class="text-gray-400 text-gray-400-close"></i>
-                                </button>
                             </div>
                         @endif
 
                         @if (session('warning'))
-                            <div class="rounded-lg border border-blue-200 bg-blue-50 p-4 text-blue-800 dark:bg-blue-900 dark:border-blue-800 dark:text-blue-200 rounded-lg border border-blue-200 bg-blue-50 p-4 text-blue-800 dark:bg-blue-900 dark:border-blue-800 dark:text-blue-200-warning mb-6"
+                            <div class="mb-6 p-4 rounded-lg border border-yellow-200 bg-yellow-50 text-yellow-800 dark:bg-yellow-900/30 dark:border-yellow-800 dark:text-yellow-200"
                                 x-data="{ show: true }" x-show="show" x-transition>
-                                <div class="flex items-center">
-                                    <i class="text-gray-400 text-gray-400-exclamation-triangle mr-3"></i>
+                                <div class="flex items-center gap-3">
+                                    <svg class="w-5 h-5 text-yellow-600 dark:text-yellow-400" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                    </svg>
                                     <span>{{ session('warning') }}</span>
+                                    <button @click="show = false"
+                                        class="ml-auto text-yellow-600 dark:text-yellow-300 hover:opacity-75"
+                                        aria-label="Kapat">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M6 18L18 6M6 6l12 12" />
+                                        </svg>
+                                    </button>
                                 </div>
-                                <button @click="show = false"
-                                    class="rounded-lg border border-blue-200 bg-blue-50 p-4 text-blue-800 dark:bg-blue-900 dark:border-blue-800 dark:text-blue-200-close">
-                                    <i class="text-gray-400 text-gray-400-close"></i>
-                                </button>
                             </div>
                         @endif
 
                         @if (session('info'))
-                            <div class="rounded-lg border border-blue-200 bg-blue-50 p-4 text-blue-800 dark:bg-blue-900 dark:border-blue-800 dark:text-blue-200 rounded-lg border border-blue-200 bg-blue-50 p-4 text-blue-800 dark:bg-blue-900 dark:border-blue-800 dark:text-blue-200-info mb-6"
+                            <div class="mb-6 p-4 rounded-lg border border-blue-200 bg-blue-50 text-blue-800 dark:bg-blue-900/30 dark:border-blue-800 dark:text-blue-200"
                                 x-data="{ show: true }" x-show="show" x-transition>
-                                <div class="flex items-center">
-                                    <i class="text-gray-400 text-gray-400-info-circle mr-3"></i>
+                                <div class="flex items-center gap-3">
+                                    <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
                                     <span>{{ session('info') }}</span>
+                                    <button @click="show = false"
+                                        class="ml-auto text-blue-600 dark:text-blue-300 hover:opacity-75"
+                                        aria-label="Kapat">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M6 18L18 6M6 6l12 12" />
+                                        </svg>
+                                    </button>
                                 </div>
-                                <button @click="show = false"
-                                    class="rounded-lg border border-blue-200 bg-blue-50 p-4 text-blue-800 dark:bg-blue-900 dark:border-blue-800 dark:text-blue-200-close">
-                                    <i class="text-gray-400 text-gray-400-close"></i>
-                                </button>
                             </div>
                         @endif
 
@@ -194,12 +243,245 @@
     <script src="{{ asset('js/context7-live-search.js') }}"></script>
     <link href="{{ asset('css/context7-live-search.css') }}" rel="stylesheet">
 
-    <script src="{{ asset('js/admin/csrf-handler.js') }}"></script>
+    <!-- ⚠️ GEÇICI: jQuery - Migration tamamlanana kadar (2025-10-21) -->
+    <!-- FIXME: 6 dosya hala $.ajax() kullanıyor - Vanilla JS'e migrate edilecek -->
+    <!-- Dosyalar: address-select.js, location-helper.js, location-map-helper.js, ilan-form.js -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script>
+        console.log('🔍 Context7 Live Search Active - Vanilla JS (35KB, 0 dependencies)');
+        console.log('⚠️ jQuery temporarily loaded - Migration in progress...');
+    </script>
 
     <!-- Alpine.js - Vite app.js içinde yükleniyor (CDN kaldırıldı) -->
 
     <!-- Context7 Toast Component Include -->
     <x-admin.toast />
+
+    <!-- Event Booking Manager - Must be defined before Alpine.js -->
+    <script>
+        // Define eventBookingManager globally before Alpine.js initializes
+        if (typeof window.eventBookingManager === 'undefined') {
+            window.eventBookingManager = function(ilanId = null) {
+                return {
+                    ilanId: ilanId,
+                    events: [],
+                    currentMonth: new Date(),
+                    selectedDate: null,
+                    showCreateModal: false,
+                    editingEvent: null,
+                    formData: {
+                        event_type: 'booking',
+                        guest_name: '',
+                        guest_phone: '',
+                        guest_email: '',
+                        guest_count: 2,
+                        check_in: '',
+                        check_out: '',
+                        nights: 0,
+                        total_price: 0,
+                        status: 'pending',
+                        notes: ''
+                    },
+                    get currentMonthName() {
+                        return this.currentMonth.toLocaleDateString('tr-TR', {
+                            month: 'long',
+                            year: 'numeric'
+                        });
+                    },
+                    get calendarDays() {
+                        const year = this.currentMonth.getFullYear();
+                        const month = this.currentMonth.getMonth();
+                        const firstDay = new Date(year, month, 1);
+                        const lastDay = new Date(year, month + 1, 0);
+                        const startDay = firstDay.getDay() === 0 ? 6 : firstDay.getDay() - 1;
+                        const days = [];
+                        const today = new Date();
+                        today.setHours(0, 0, 0, 0);
+                        for (let i = startDay - 1; i >= 0; i--) {
+                            const date = new Date(year, month, -i);
+                            days.push(this.createDayObject(date, false));
+                        }
+                        for (let i = 1; i <= lastDay.getDate(); i++) {
+                            const date = new Date(year, month, i);
+                            days.push(this.createDayObject(date, true));
+                        }
+                        const remaining = 42 - days.length;
+                        for (let i = 1; i <= remaining; i++) {
+                            const date = new Date(year, month + 1, i);
+                            days.push(this.createDayObject(date, false));
+                        }
+                        return days;
+                    },
+                    get upcomingEvents() {
+                        const today = new Date();
+                        today.setHours(0, 0, 0, 0);
+                        return this.events
+                            .filter(e => new Date(e.check_out) >= today)
+                            .sort((a, b) => new Date(a.check_in) - new Date(b.check_in))
+                            .slice(0, 5);
+                    },
+                    async init() {
+                        if (this.ilanId) {
+                            await this.loadEvents();
+                        }
+                    },
+                    async loadEvents() {
+                        try {
+                            const response = await fetch(`/api/admin/ilanlar/${this.ilanId}/events`);
+                            if (response.ok) {
+                                const data = await response.json();
+                                this.events = data.events || [];
+                            }
+                        } catch (error) {
+                            console.error('Events yüklenemedi:', error);
+                        }
+                    },
+                    createDayObject(date, isCurrentMonth) {
+                        const dateStr = date.toISOString().split('T')[0];
+                        const today = new Date();
+                        today.setHours(0, 0, 0, 0);
+                        date.setHours(0, 0, 0, 0);
+                        const bookedEvent = this.events.find(e =>
+                            e.event_type === 'booking' &&
+                            e.status !== 'cancelled' &&
+                            dateStr >= e.check_in &&
+                            dateStr < e.check_out
+                        );
+                        const blockedEvent = this.events.find(e =>
+                            e.event_type === 'blocked' &&
+                            dateStr >= e.check_in &&
+                            dateStr < e.check_out
+                        );
+                        return {
+                            date: dateStr,
+                            dayNumber: date.getDate(),
+                            isCurrentMonth: isCurrentMonth,
+                            isToday: date.getTime() === today.getTime(),
+                            isBooked: !!bookedEvent,
+                            isBlocked: !!blockedEvent,
+                            isSelected: this.selectedDate === dateStr
+                        };
+                    },
+                    selectDate(day) {
+                        if (!day.isCurrentMonth) return;
+                        this.selectedDate = day.date;
+                        this.formData.check_in = day.date;
+                        this.showCreateModal = true;
+                    },
+                    previousMonth() {
+                        this.currentMonth = new Date(this.currentMonth.getFullYear(), this.currentMonth.getMonth() - 1,
+                            1);
+                    },
+                    nextMonth() {
+                        this.currentMonth = new Date(this.currentMonth.getFullYear(), this.currentMonth.getMonth() + 1,
+                            1);
+                    },
+                    calculateNights() {
+                        if (this.formData.check_in && this.formData.check_out) {
+                            const start = new Date(this.formData.check_in);
+                            const end = new Date(this.formData.check_out);
+                            const diffTime = end - start;
+                            this.formData.nights = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                        } else {
+                            this.formData.nights = 0;
+                        }
+                    },
+                    async saveEvent() {
+                        if (!this.formData.check_in || !this.formData.check_out) {
+                            window.toast?.('Giriş ve çıkış tarihleri gerekli', 'error');
+                            return;
+                        }
+                        if (this.formData.event_type === 'booking' && !this.formData.guest_name) {
+                            window.toast?.('Misafir adı gerekli', 'error');
+                            return;
+                        }
+                        const url = this.editingEvent ?
+                            `/api/admin/events/${this.editingEvent.id}` :
+                            '/api/admin/events';
+                        const method = this.editingEvent ? 'PATCH' : 'POST';
+                        try {
+                            const response = await fetch(url, {
+                                method: method,
+                                headers: {
+                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
+                                        .content,
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    ...this.formData,
+                                    ilan_id: this.ilanId
+                                })
+                            });
+                            if (response.ok) {
+                                await this.loadEvents();
+                                this.closeModal();
+                                window.toast?.('Rezervasyon kaydedildi', 'success');
+                            }
+                        } catch (error) {
+                            console.error('Save error:', error);
+                            window.toast?.('Kaydetme hatası', 'error');
+                        }
+                    },
+                    editEvent(event) {
+                        this.editingEvent = event;
+                        this.formData = {
+                            ...event
+                        };
+                        this.showCreateModal = true;
+                    },
+                    async deleteEvent(eventId) {
+                        if (!confirm('Bu rezervasyonu silmek istediğinize emin misiniz?')) return;
+                        try {
+                            const response = await fetch(`/api/admin/events/${eventId}`, {
+                                method: 'DELETE',
+                                headers: {
+                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
+                                        .content
+                                }
+                            });
+                            if (response.ok) {
+                                await this.loadEvents();
+                                window.toast?.('Rezervasyon silindi', 'success');
+                            }
+                        } catch (error) {
+                            console.error('Delete error:', error);
+                        }
+                    },
+                    closeModal() {
+                        this.showCreateModal = false;
+                        this.editingEvent = null;
+                        this.formData = {
+                            event_type: 'booking',
+                            guest_name: '',
+                            guest_phone: '',
+                            guest_email: '',
+                            guest_count: 2,
+                            check_in: '',
+                            check_out: '',
+                            nights: 0,
+                            total_price: 0,
+                            status: 'pending',
+                            notes: ''
+                        };
+                    },
+                    formatDate(dateStr) {
+                        if (!dateStr) return '';
+                        return new Date(dateStr).toLocaleDateString('tr-TR', {
+                            day: 'numeric',
+                            month: 'short',
+                            year: 'numeric'
+                        });
+                    },
+                    formatPrice(price) {
+                        return new Intl.NumberFormat('tr-TR', {
+                            style: 'currency',
+                            currency: 'TRY'
+                        }).format(price);
+                    }
+                };
+            };
+        }
+    </script>
 
     <script>
         // Admin Alpine.js Functions

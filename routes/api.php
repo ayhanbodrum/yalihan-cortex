@@ -1,19 +1,21 @@
 <?php
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\IlanSearchController;
-use App\Http\Controllers\Api\CurrencyRateController;
-use App\Http\Controllers\Api\UnifiedSearchController;
-use App\Http\Controllers\Api\EnvironmentAnalysisController;
-use App\Http\Controllers\Api\PhotoController;
-use App\Http\Controllers\Api\EventController;
-use App\Http\Controllers\Api\SeasonController;
+use App\Http\Controllers\Api\AnalyticsController;
 use App\Http\Controllers\Api\BookingRequestController;
 use App\Http\Controllers\Api\BulkOperationsController;
+use App\Http\Controllers\Api\CurrencyRateController;
+use App\Http\Controllers\Api\EnvironmentAnalysisController;
+use App\Http\Controllers\Api\EventController;
 use App\Http\Controllers\Api\ExchangeRateController;
 use App\Http\Controllers\Api\Frontend\PropertyFeedController;
 use App\Http\Controllers\Api\GeoProxyController;
+use App\Http\Controllers\Api\KisiCRMController;
+use App\Http\Controllers\Api\PhotoController;
+use App\Http\Controllers\Api\SeasonController;
+use App\Http\Controllers\Api\UnifiedSearchController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,7 +28,7 @@ Route::get('/health', function () {
     return response()->json([
         'success' => true,
         'message' => 'API is healthy',
-        'timestamp' => now()->toISOString()
+        'timestamp' => now()->toISOString(),
     ]);
 });
 
@@ -77,34 +79,38 @@ Route::prefix('admin/bulk')->middleware(['web', 'auth'])->group(function () {
 // Location API (Context7 Standard - İzolasyon Sistemi)
 Route::get('/ilceler', function () {
     $ilceler = \App\Models\Ilce::with('il')->orderBy('ilce_adi')->get(['id', 'il_id', 'ilce_adi']);
+
     return response()->json([
         'success' => true,
         'data' => $ilceler,
-        'districts' => $ilceler // Context7: Dual format for compatibility
+        'districts' => $ilceler, // Context7: Dual format for compatibility
     ]);
 });
 Route::get('/ilceler/{ilId}', function ($ilId) {
     $ilceler = \App\Models\Ilce::where('il_id', $ilId)->orderBy('ilce_adi')->get(['id', 'il_id', 'ilce_adi']);
+
     return response()->json([
         'success' => true,
         'data' => $ilceler,
-        'districts' => $ilceler // Context7: Dual format for compatibility
+        'districts' => $ilceler, // Context7: Dual format for compatibility
     ]);
 });
 Route::get('/mahalleler', function () {
     $mahalleler = \App\Models\Mahalle::with('ilce')->orderBy('mahalle_adi')->get(['id', 'ilce_id', 'mahalle_adi']);
+
     return response()->json([
         'success' => true,
         'data' => $mahalleler,
-        'neighborhoods' => $mahalleler // Context7: Dual format for compatibility
+        'neighborhoods' => $mahalleler, // Context7: Dual format for compatibility
     ]);
 });
 Route::get('/mahalleler/{ilceId}', function ($ilceId) {
     $mahalleler = \App\Models\Mahalle::where('ilce_id', $ilceId)->orderBy('mahalle_adi')->get(['id', 'ilce_id', 'mahalle_adi']);
+
     return response()->json([
         'success' => true,
         'data' => $mahalleler,
-        'neighborhoods' => $mahalleler // Context7: Dual format for compatibility
+        'neighborhoods' => $mahalleler, // Context7: Dual format for compatibility
     ]);
 });
 
@@ -114,6 +120,7 @@ Route::get('/sites/search', [\App\Http\Controllers\Admin\SiteController::class, 
 Route::get('/site-apartman/search', function (\Illuminate\Http\Request $request) {
     // Context7: Dual endpoint for compatibility (site-apartman-selection.blade.php uses this)
     $controller = app(\App\Http\Controllers\Admin\SiteController::class);
+
     return $controller->search($request);
 })->name('api.site-apartman.search');
 
@@ -149,7 +156,7 @@ Route::prefix('ilanlar')->group(function () {
 });
 
 // AI API Routes (CSRF exempt)
-Route::prefix('admin/ai')->middleware(['auth'])->group(function () {
+Route::prefix('admin/ai')->group(function () {
     Route::post('/analyze', [\App\Http\Controllers\Api\AIController::class, 'analyze']);
     Route::post('/suggest', [\App\Http\Controllers\Api\AIController::class, 'suggest']);
     Route::post('/generate', [\App\Http\Controllers\Api\AIController::class, 'generate']);
@@ -159,84 +166,18 @@ Route::prefix('admin/ai')->middleware(['auth'])->group(function () {
     Route::get('/stats', [\App\Http\Controllers\Api\AIController::class, 'getStats']);
     Route::get('/logs', [\App\Http\Controllers\Api\AIController::class, 'getLogs']);
 
-    Route::post('/chat', [\App\Http\Controllers\Api\AdminAIController::class, 'chat']);
-    Route::post('/price/predict', [\App\Http\Controllers\Api\AdminAIController::class, 'pricePredict']);
-    Route::post('/suggest-features', [\App\Http\Controllers\Api\AdminAIController::class, 'suggestFeatures']);
-    Route::get('/analytics', [\App\Http\Controllers\Api\AdminAIController::class, 'analytics']);
-
     // 🤖 Talepler Create - AI Assistant Endpoints (2025-11-01)
     Route::post('/suggest-price', [\App\Http\Controllers\Api\AIController::class, 'suggestPrice']);
     Route::post('/find-matches', [\App\Http\Controllers\Api\AIController::class, 'findMatches']);
     Route::post('/generate-description', [\App\Http\Controllers\Api\AIController::class, 'generateDescription']);
 });
 
-// Public AI Routes (admin-ai.php'den)
-Route::prefix('public-ai')->name('public.ai.')->group(function () {
-    // Genel Emlak AI Sorguları (Rate Limited)
-    Route::middleware('throttle:10,1')->post('/ilan-arama', function(\Illuminate\Http\Request $request) {
-        try {
-            $validated = $request->validate([
-                'query' => 'required|string|max:500',
-                'location' => 'nullable|string|max:100',
-                'budget_min' => 'nullable|numeric|min:0',
-                'budget_max' => 'nullable|numeric|min:0'
-            ]);
-
-            // Basit ilan arama (AI olmadan)
-            $ilanlar = \App\Models\Ilan::where('status', 'active')
-                ->where('yayinlandi', true)
-                ->when($validated['location'] ?? null, function($query, $location) {
-                    return $query->whereHas('city', function($q) use ($location) {
-                        $q->where('ad', 'like', "%{$location}%");
-                    })->orWhereHas('ilce', function($q) use ($location) {
-                        $q->where('ad', 'like', "%{$location}%");
-                    });
-                })
-                ->when($validated['budget_min'] ?? null, function($query, $budget) {
-                    return $query->where('fiyat', '>=', $budget);
-                })
-                ->when($validated['budget_max'] ?? null, function($query, $budget) {
-                    return $query->where('fiyat', '<=', $budget);
-                })
-                ->limit(20)
-                ->get(['id', 'baslik', 'fiyat', 'il_id', 'ilce_id']);
-
-            return response()->json([
-                'success' => true,
-                'query' => $validated['query'],
-                'results' => $ilanlar->map(function($ilan) {
-                    return [
-                        'id' => $ilan->id,
-                        'title' => $ilan->baslik,
-                        'price' => $ilan->fiyat,
-                        'location' => [
-                            'city' => $ilan->il->ad ?? '',
-                            'district' => $ilan->ilce->ad ?? ''
-                        ]
-                    ];
-                }),
-                'count' => $ilanlar->count(),
-                'timestamp' => now()->toISOString()
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'error' => 'Arama yapılamadı: ' . $e->getMessage()
-            ], 500);
-        }
-    })->name('ilan-arama');
-});
-
-Route::prefix('context7')->group(function () {
-    Route::get('/memory/performance', function () {
-        return response()->json([
-            'success' => true,
-            'data' => [
-                'day_changes' => \App\Models\IlanPrivateAudit::whereDate('created_at', now()->toDateString())->count(),
-                'month_changes' => \App\Models\IlanPrivateAudit::whereBetween('created_at', [now()->startOfMonth(), now()->endOfMonth()])->count(),
-            ],
-        ]);
-    });
+// AI Feedback API (Context7: C7-AI-FEEDBACK-2025-11-25)
+// Danışman geri bildirim sistemi - AI öğrenme döngüsü için
+Route::prefix('ai')->middleware(['auth:sanctum'])->group(function () {
+    Route::post('/feedback/{logId}', [\App\Http\Controllers\Api\AIController::class, 'submitFeedback'])
+        ->name('api.ai.feedback')
+        ->where('logId', '[0-9]+');
 });
 
 // AI Assist Routes for İlan Creation (CSRF exempt)
@@ -274,6 +215,14 @@ Route::prefix('kisiler')->group(function () {
 
     // Kişi oluştur (modal'dan) - KisiController kullan (mevcut)
     Route::post('/', [\App\Http\Controllers\Api\KisiController::class, 'store']);
+
+    // CRM Enhanced API (Added: 2025-11-25 - Using KisiCRMController)
+    Route::get('/{id}/etkilesimler', [KisiCRMController::class, 'getEtkilesimler'])->name('api.kisiler.etkilesimler');
+    Route::post('/{id}/etkilesim', [KisiCRMController::class, 'addEtkilesim'])->name('api.kisiler.add-etkilesim');
+    Route::get('/{id}/tasks', [KisiCRMController::class, 'getTasks'])->name('api.kisiler.tasks');
+    Route::post('/{id}/task', [KisiCRMController::class, 'addTask'])->name('api.kisiler.add-task');
+    Route::put('/task/{taskId}', [KisiCRMController::class, 'updateTask'])->name('api.kisiler.update-task');
+    Route::get('/{id}/calculate-score', [KisiCRMController::class, 'calculateScore'])->name('api.kisiler.calculate-score');
 });
 
 // Users API (Sistem Danışmanları - users tablosu)
@@ -339,41 +288,41 @@ Route::prefix('ai')->middleware(['throttle:30,1'])->group(function () {
                 'price_analysis' => [
                     'suggested_price' => rand(800000, 1500000),
                     'market_comparison' => 'Bölge ortalamalarına uygun',
-                    'price_confidence' => rand(75, 95) . '%'
+                    'price_confidence' => rand(75, 95) . '%',
                 ],
                 'title_suggestions' => [
                     'Merkezi Konumda Satılık ' . ($data['category'] ?? 'Daire'),
                     'Yatırım Fırsatı ' . ($data['category'] ?? 'Emlak'),
-                    'Özel Tasarım ' . ($data['category'] ?? 'Konut')
+                    'Özel Tasarım ' . ($data['category'] ?? 'Konut'),
                 ],
                 'description_improvements' => [
                     'Lokasyon avantajları vurgulanabilir',
                     'Yatırım potansiyeli eklenebilir',
-                    'Çevre imkanları detaylandırılabilir'
+                    'Çevre imkanları detaylandırılabilir',
                 ],
                 'seo_keywords' => [
                     'satılık daire',
                     'merkezi konum',
                     'yatırım fırsatı',
-                    'modern tasarım'
+                    'modern tasarım',
                 ],
                 'market_insights' => [
                     'Bu bölgede talep yüksek',
                     'Benzer ilanlar 15 gün içinde satılıyor',
-                    'Fiyat artış trendi: %8 (yıllık)'
-                ]
+                    'Fiyat artış trendi: %8 (yıllık)',
+                ],
             ];
 
             return response()->json([
                 'success' => true,
                 'analysis' => $analysis,
                 'message' => 'AI analizi tamamlandı',
-                'processing_time' => '1.2s'
+                'processing_time' => '1.2s',
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'AI analizi sırasında hata oluştu: ' . $e->getMessage()
+                'message' => 'AI analizi sırasında hata oluştu: ' . $e->getMessage(),
             ], 500);
         }
     });
@@ -384,9 +333,9 @@ Route::prefix('ai')->middleware(['throttle:30,1'])->group(function () {
             'suggestions' => [
                 'title' => 'AI ile ilan başlığı önerisi',
                 'description' => 'AI ile ilan açıklaması önerisi',
-                'keywords' => ['emlak', 'satılık', 'kiralık', 'ev', 'daire']
+                'keywords' => ['emlak', 'satılık', 'kiralık', 'ev', 'daire'],
             ],
-            'message' => 'AI suggestions endpoint aktif (Context7 uyumlu)'
+            'message' => 'AI suggestions endpoint aktif (Context7 uyumlu)',
         ]);
     });
 });
@@ -406,12 +355,12 @@ Route::prefix('categories')->group(function () {
                 'success' => true,
                 'subcategories' => $subcategories,
                 'count' => $subcategories->count(),
-                'message' => 'Subcategories loaded (Context7 uyumlu)'
+                'message' => 'Subcategories loaded (Context7 uyumlu)',
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Alt kategoriler yüklenirken hata oluştu: ' . $e->getMessage()
+                'message' => 'Alt kategoriler yüklenirken hata oluştu: ' . $e->getMessage(),
             ], 500);
         }
     });
@@ -419,27 +368,27 @@ Route::prefix('categories')->group(function () {
     // Get publication types by category ID (Context7 - Fixed Logic)
     Route::get('/publication-types/{id}', function ($id) {
         try {
-            \Illuminate\Support\Facades\Log::info("🔍 Getting publication types", ['kategori_id' => $id]);
+            \Illuminate\Support\Facades\Log::info('🔍 Getting publication types', ['kategori_id' => $id]);
 
             // ✅ Context7: Önce kategoriyi çek
             $kategori = \App\Models\IlanKategori::find($id);
 
-            if (!$kategori) {
+            if (! $kategori) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Kategori bulunamadı'
+                    'message' => 'Kategori bulunamadı',
                 ], 404);
             }
 
             // ✅ FIX: Alt kategori ise parent'ın yayın tiplerini kullan!
             $targetKategoriId = $kategori->parent_id ?: $id;
 
-            \Illuminate\Support\Facades\Log::info("🎯 Yayın tipi arama", [
+            \Illuminate\Support\Facades\Log::info('🎯 Yayın tipi arama', [
                 'original_id' => $id,
                 'target_id' => $targetKategoriId,
                 'kategori_name' => $kategori->name,
                 'parent_id' => $kategori->parent_id,
-                'seviye' => $kategori->seviye
+                'seviye' => $kategori->seviye,
             ]);
 
             // ✅ Yayın tiplerini parent'tan çek
@@ -449,9 +398,9 @@ Route::prefix('categories')->group(function () {
                 ->orderBy('yayin_tipi')
                 ->get();
 
-            \Illuminate\Support\Facades\Log::info("✅ Yayın tipleri bulundu", [
+            \Illuminate\Support\Facades\Log::info('✅ Yayın tipleri bulundu', [
                 'count' => $publicationTypes->count(),
-                'types' => $publicationTypes->pluck('yayin_tipi')->toArray()
+                'types' => $publicationTypes->pluck('yayin_tipi')->toArray(),
             ]);
 
             return response()->json([
@@ -470,19 +419,19 @@ Route::prefix('categories')->group(function () {
                     'kategori_name' => $kategori->name,
                     'seviye' => $kategori->seviye,
                     'parent_id' => $kategori->parent_id,
-                    'target_kategori_id' => $targetKategoriId
-                ]
+                    'target_kategori_id' => $targetKategoriId,
+                ],
             ]);
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\Log::error('Yayın tipi yükleme hatası:', [
                 'kategori_id' => $id,
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
 
             return response()->json([
                 'success' => false,
-                'message' => 'Yayın tipleri yüklenirken hata oluştu: ' . $e->getMessage()
+                'message' => 'Yayın tipleri yüklenirken hata oluştu: ' . $e->getMessage(),
             ], 500);
         }
     });
@@ -540,7 +489,7 @@ Route::prefix('kisiler')->group(function () {
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Kişi arama hatası: ' . $e->getMessage()
+                'message' => 'Kişi arama hatası: ' . $e->getMessage(),
             ], 500);
         }
     });
@@ -584,7 +533,7 @@ Route::prefix('ilanlar')->group(function () {
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'İlan arama hatası: ' . $e->getMessage()
+                'message' => 'İlan arama hatası: ' . $e->getMessage(),
             ], 500);
         }
     });
@@ -619,7 +568,7 @@ Route::prefix('sites')->group(function () {
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Site arama hatası: ' . $e->getMessage()
+                'message' => 'Site arama hatası: ' . $e->getMessage(),
             ], 500);
         }
     });
@@ -644,22 +593,22 @@ Route::prefix('categories')->group(function () {
                         'id' => $cat->id,
                         'name' => $cat->name,
                         'slug' => $cat->slug,
-                        'icon' => $cat->icon
+                        'icon' => $cat->icon,
                     ];
                 }),
                 'count' => $subcategories->count(),
-                'message' => $subcategories->isEmpty() ? 'Bu kategori için alt kategori bulunamadı' : 'Alt kategoriler yüklendi'
+                'message' => $subcategories->isEmpty() ? 'Bu kategori için alt kategori bulunamadı' : 'Alt kategoriler yüklendi',
             ]);
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\Log::error('Alt kategori yükleme hatası:', [
                 'parent_id' => $parentId,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
 
             return response()->json([
                 'success' => false,
                 'message' => 'Alt kategoriler yüklenirken hata oluştu',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     });
@@ -707,13 +656,13 @@ Route::prefix('categories')->group(function () {
                     'ana_kategori_id' => $ana_kategori_id,
                     'alt_kategori_id' => $alt_kategori_id,
                     'yayin_tipi_id' => $yayin_tipi_id,
-                ]
+                ],
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
                 'error' => 'Kategori alanları yüklenemedi',
-                'fields' => []
+                'fields' => [],
             ]);
         }
     });
@@ -732,7 +681,7 @@ Route::prefix('location')->group(function () {
 
         return response()->json([
             'success' => $data['success'],
-            'iller' => $data['data'] ?? []
+            'iller' => $data['data'] ?? [],
         ]);
     });
 
@@ -838,7 +787,7 @@ Route::prefix('environment')->middleware(['throttle:120,1'])->group(function () 
 // Wikimapia API Test
 Route::prefix('wikimapia')->name('wikimapia.')->group(function () {
     Route::get('/test', function () {
-        $service = new \App\Services\WikimapiaService();
+        $service = new \App\Services\WikimapiaService;
 
         // Test Istanbul coordinates
         $lat = 41.0082;
@@ -850,12 +799,12 @@ Route::prefix('wikimapia')->name('wikimapia.')->group(function () {
         return response()->json([
             'success' => true,
             'data' => $results,
-            'message' => 'Wikimapia API test successful'
+            'message' => 'Wikimapia API test successful',
         ]);
     });
 
     Route::get('/search', function (\Illuminate\Http\Request $request) {
-        $service = new \App\Services\WikimapiaService();
+        $service = new \App\Services\WikimapiaService;
 
         $query = $request->input('q', '');
         $lat = $request->input('lat', 41.0082);
@@ -865,12 +814,12 @@ Route::prefix('wikimapia')->name('wikimapia.')->group(function () {
 
         return response()->json([
             'success' => true,
-            'data' => $results
+            'data' => $results,
         ]);
     });
 
     Route::post('/places/nearby', function (\Illuminate\Http\Request $request) {
-        $service = new \App\Services\WikimapiaService();
+        $service = new \App\Services\WikimapiaService;
 
         $lat = $request->input('lat');
         $lon = $request->input('lon');
@@ -885,13 +834,13 @@ Route::prefix('wikimapia')->name('wikimapia.')->group(function () {
 
         return response()->json([
             'success' => true,
-            'data' => $places
+            'data' => $places,
         ]);
     });
 });
 
 // 🆕 Field Dependencies API (Category-based dynamic fields system)
-Route::prefix('admin')->middleware(['web','auth','throttle:60,1'])->group(function () {
+Route::prefix('admin')->group(function () {
     Route::get('/field-dependencies', [\App\Http\Controllers\Api\FieldDependencyController::class, 'index']);
     Route::get('/field-dependencies/category/{kategoriId}', [\App\Http\Controllers\Api\FieldDependencyController::class, 'getByCategory']);
 
@@ -901,109 +850,6 @@ Route::prefix('admin')->middleware(['web','auth','throttle:60,1'])->group(functi
     Route::patch('/photos/{id}', [PhotoController::class, 'update'])->name('api.photos.update');
     Route::delete('/photos/{id}', [PhotoController::class, 'destroy'])->name('api.photos.destroy');
     Route::post('/ilanlar/{id}/photos/reorder', [PhotoController::class, 'reorder'])->name('api.ilanlar.photos.reorder');
-});
-
-// ✅ FIX: Photo routes without /admin prefix (for frontend compatibility)
-Route::prefix('ilanlar')->middleware(['web','auth'])->group(function () {
-    Route::get('/{id}/photos', [PhotoController::class, 'index'])->name('api.ilanlar.photos.public');
-    Route::post('/{id}/photos/reorder', [PhotoController::class, 'reorder'])->name('api.ilanlar.photos.reorder.public');
-
-    Route::get('/ilanlar/{id}/documents', function (\Illuminate\Http\Request $request, $id) {
-        $docs = \App\Models\IlanDocument::where('ilan_id', (int) $id)
-            ->orderBy('created_at', 'desc')
-            ->get();
-        $payload = [
-            'data' => $docs->map(function ($d) {
-                $download = $d->path ? \Illuminate\Support\Facades\Storage::url($d->path) : null;
-                return [
-                    'id' => $d->id,
-                    'title' => $d->title,
-                    'type' => $d->type,
-                    'url' => $d->url,
-                    'path' => $d->path,
-                    'download_url' => $download,
-                    'created_at' => optional($d->created_at)->toISOString(),
-                ];
-            }),
-        ];
-        $etag = sha1(json_encode($payload));
-        if ($request->headers->get('If-None-Match') === $etag) {
-            return response('', 304)->header('ETag', $etag);
-        }
-        return response()->json($payload, 200)->header('ETag', $etag);
-    })->name('api.ilanlar.documents');
-
-    Route::get('/ilanlar/{id}/documents.csv', function ($id) {
-        $docs = \App\Models\IlanDocument::where('ilan_id', (int) $id)
-            ->orderBy('created_at', 'desc')
-            ->get();
-        $rows = [];
-        $rows[] = ['ID','Başlık','Tür','URL','İndir','Tarih'];
-        foreach ($docs as $d) {
-            $rows[] = [
-                $d->id,
-                $d->title,
-                $d->type,
-                $d->url,
-                $d->path ? \Illuminate\Support\Facades\Storage::url($d->path) : '',
-                optional($d->created_at)->format('Y-m-d H:i'),
-            ];
-        }
-        $out = '';
-        foreach ($rows as $row) {
-            $out .= implode(',', array_map(function($v){
-                $v = (string)$v;
-                $v = str_replace(["\r","\n"],' ', $v);
-                if (str_contains($v, ',')) { $v = '"'.str_replace('"','""',$v).'"'; }
-                return $v;
-            }, $row)) . "\n";
-        }
-        return response($out, 200, [
-            'Content-Type' => 'text/csv; charset=UTF-8',
-            'Content-Disposition' => 'attachment; filename="ilan_'+(string)$id+'_documents.csv"'
-        ]);
-    })->name('api.ilanlar.documents.csv');
-
-    Route::post('/ilanlar/{id}/documents', function (\Illuminate\Http\Request $request, $id) {
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'type' => 'nullable|string|max:100',
-            'url' => 'nullable|url',
-            'file' => 'nullable|file|max:10240',
-        ]);
-        $path = null;
-        if ($request->file('file')) {
-            $path = \Illuminate\Support\Facades\Storage::putFile('documents', $request->file('file'));
-        }
-        $doc = \App\Models\IlanDocument::create([
-            'ilan_id' => (int) $id,
-            'title' => $request->input('title'),
-            'type' => $request->input('type'),
-            'url' => $request->input('url'),
-            'path' => $path,
-            'created_by' => auth()->id(),
-        ]);
-        return response()->json([
-            'success' => true,
-            'data' => [
-                'id' => $doc->id,
-                'title' => $doc->title,
-                'type' => $doc->type,
-                'url' => $doc->url,
-                'download_url' => $doc->path ? \Illuminate\Support\Facades\Storage::url($doc->path) : null,
-                'created_at' => optional($doc->created_at)->toISOString(),
-            ],
-        ], 201);
-    })->name('api.ilanlar.documents.store');
-
-    Route::delete('/documents/{docId}', function ($docId) {
-        $doc = \App\Models\IlanDocument::findOrFail((int) $docId);
-        if ($doc->path) {
-            \Illuminate\Support\Facades\Storage::delete($doc->path);
-        }
-        $doc->delete();
-        return response()->json(['success' => true]);
-    })->name('api.documents.destroy');
 
     // Event/Booking Management API (Context7 Compliant)
     Route::get('/ilanlar/{id}/events', [EventController::class, 'index'])->name('api.ilanlar.events');
@@ -1018,6 +864,9 @@ Route::prefix('ilanlar')->middleware(['web','auth'])->group(function () {
     Route::patch('/seasons/{id}', [SeasonController::class, 'update'])->name('api.seasons.update');
     Route::delete('/seasons/{id}', [SeasonController::class, 'destroy'])->name('api.seasons.destroy');
     Route::post('/seasons/calculate-price', [SeasonController::class, 'calculatePrice'])->name('api.seasons.calculate-price');
+
+    // Villa Pricing Calculator API (Context7 Compliant)
+    // TODO: VillaPricingController silindi, route'lar kaldırıldı
 });
 
 // Public Booking Request API (Context7 Compliant)
@@ -1070,18 +919,50 @@ Route::prefix('reference')->middleware(['web', 'auth'])->group(function () {
     Route::post('/batch-generate', [\App\Http\Controllers\Api\ReferenceController::class, 'batchGenerateRef'])->name('api.reference.batch-generate');
 });
 
-// n8n Webhook API Routes (Context7 Standard: C7-N8N-WEBHOOK-2025-11-20)
-// n8n workflow'larından gelen webhook isteklerini işler
-Route::prefix('webhook/n8n')->group(function () {
-    // Test endpoint
-    Route::post('/test', [\App\Http\Controllers\Api\N8nWebhookController::class, 'test'])->name('api.webhook.n8n.test');
+// Analytics API Routes (Context7 Standard: C7-ANALYTICS-API-2025-11-25)
+Route::prefix('analytics')->middleware(['auth:sanctum'])->name('api.analytics.')->group(function () {
+    // AI Karar Tutarsızlığı Analizi
+    Route::post('/ai-decision-inconsistency', [AnalyticsController::class, 'aiDecisionInconsistency'])
+        ->name('ai-decision-inconsistency');
 
-    // AI İlan Taslağı
-    Route::post('/ai/ilan-taslagi', [\App\Http\Controllers\Api\N8nWebhookController::class, 'ilanTaslagi'])->name('api.webhook.n8n.ai.ilan-taslagi');
+    // Belirli request_data için detaylı analiz
+    Route::post('/ai-decision-by-request-data', [AnalyticsController::class, 'aiDecisionByRequestData'])
+        ->name('ai-decision-by-request-data');
 
-    // AI Mesaj Taslağı
-    Route::post('/ai/mesaj-taslagi', [\App\Http\Controllers\Api\N8nWebhookController::class, 'mesajTaslagi'])->name('api.webhook.n8n.ai.mesaj-taslagi');
+    // Komisyon Eksikliği Risk Analizi
+    Route::post('/commission-risk', [AnalyticsController::class, 'commissionRisk'])
+        ->name('commission-risk');
 
-    // AI Sözleşme Taslağı
-    Route::post('/ai/sozlesme-taslagi', [\App\Http\Controllers\Api\N8nWebhookController::class, 'sozlesmeTaslagi'])->name('api.webhook.n8n.ai.sozlesme-taslagi');
+    // CSS İhlalleri Taraması
+    Route::post('/css-violations', [AnalyticsController::class, 'cssViolations'])
+        ->name('css-violations');
+});
+
+// Telegram Webhook API Routes (Context7 Standard: C7-TELEGRAM-WEBHOOK-2025-11-25)
+// Telegram Bot API'den gelen webhook isteklerini işler
+Route::prefix('telegram')->name('api.telegram.')->group(function () {
+    // Telegram webhook endpoint (CSRF exempt - VerifyCsrfToken middleware'de tanımlı)
+    Route::post('/webhook', [\App\Http\Controllers\Api\TelegramWebhookController::class, 'handleWebhook'])
+        ->name('webhook');
+
+    // Webhook test endpoint
+    Route::get('/webhook/test', [\App\Http\Controllers\Api\TelegramWebhookController::class, 'test'])
+        ->name('webhook.test');
+});
+
+// Frontend API Routes (Context7 Standard: C7-FRONTEND-API-2025-12-01)
+// Vitrin (Mağaza) ile Panel (Depo) arasındaki internal API
+// Docker network üzerinden erişilir, Internal API Key ile korunur
+Route::prefix('frontend')->name('api.frontend.')->middleware([
+    'throttle:' . config('services.frontend_api.rate_limit', 60) . ',1',
+    \App\Http\Middleware\VerifyFrontendApi::class,
+])->group(function () {
+    Route::get('/properties', [\App\Http\Controllers\Api\Frontend\PropertyFeedController::class, 'index'])
+        ->name('properties.index');
+
+    Route::get('/properties/featured', [\App\Http\Controllers\Api\Frontend\PropertyFeedController::class, 'featured'])
+        ->name('properties.featured');
+
+    Route::get('/properties/{id}', [\App\Http\Controllers\Api\Frontend\PropertyFeedController::class, 'show'])
+        ->name('properties.show');
 });

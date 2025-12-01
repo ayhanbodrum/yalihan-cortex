@@ -2,9 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
 use App\Models\SiteOzellik;
+use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 
 class SiteOzellikleriSeeder extends Seeder
@@ -44,7 +43,7 @@ class SiteOzellikleriSeeder extends Seeder
                 ['slug' => Str::slug($ozellik['name'])],
                 array_merge($ozellik, [
                     'slug' => Str::slug($ozellik['name']),
-                    'status' => true
+                    'status' => true,
                 ])
             );
         }

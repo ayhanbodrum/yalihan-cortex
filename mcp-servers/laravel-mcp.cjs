@@ -3,6 +3,10 @@
 /**
  * Laravel MCP Server - EmlakPro Custom
  * Laravel Artisan komutları ve database erişimi
+ *
+ * @version 2.0.0
+ * @updated 2025-11-30
+ * @description Enhanced with Context7 integration and improved project detection
  */
 
 const { Server } = require("@modelcontextprotocol/sdk/server/index.js");
@@ -21,11 +25,11 @@ class LaravelMCP {
     constructor() {
         this.projectRoot =
             process.env.PROJECT_ROOT ||
-            "/Users/macbookpro/Projects/yalihanemlakwarp";
+            "/Users/macbookpro/Projects/yalihanai";
         this.server = new Server(
             {
                 name: "laravel-emlakpro",
-                version: "1.0.0",
+                version: "2.0.0",
             },
             {
                 capabilities: {

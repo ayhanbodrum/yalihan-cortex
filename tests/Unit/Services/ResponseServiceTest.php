@@ -46,7 +46,7 @@ class ResponseServiceTest extends TestCase
     {
         $errors = [
             'email' => ['Email geçersiz'],
-            'password' => ['Şifre gerekli']
+            'password' => ['Şifre gerekli'],
         ];
 
         $response = ResponseService::validationError($errors);

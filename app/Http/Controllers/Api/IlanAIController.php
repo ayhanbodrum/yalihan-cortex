@@ -3,474 +3,363 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Services\AIService;
+use App\Services\CortexKnowledgeService;
 use App\Services\Response\ResponseService;
+use App\Services\TKGMService;
 use App\Traits\ValidatesApiRequests;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use App\Models\IlanKategori;
-use App\Models\Feature;
-use App\Models\FeatureCategory;
-use Illuminate\Support\Str;
 
+/**
+ * İlan AI Controller
+ *
+ * Context7 Standard: C7-ILAN-AI-API-2025-11-30
+ *
+ * AI-powered endpoints for listing management
+ */
 class IlanAIController extends Controller
 {
     use ValidatesApiRequests;
 
-    protected $aiService;
+    protected TKGMService $tkgmService;
 
-    public function __construct(AIService $aiService)
-    {
-        $this->aiService = $aiService;
+    protected CortexKnowledgeService $cortexKnowledgeService;
+
+    public function __construct(
+        TKGMService $tkgmService,
+        CortexKnowledgeService $cortexKnowledgeService
+    ) {
+        $this->tkgmService = $tkgmService;
+        $this->cortexKnowledgeService = $cortexKnowledgeService;
     }
 
     /**
-     * Otomatik kategori tespiti
+     * TKGM'den parsel bilgilerini çek
+     *
+     * POST /api/ai/fetch-tkgm
+     *
+     * Input: il_id, ilce_id, mahalle_id, ada_no, parsel_no
+     * Response: { "alan_m2": 1500.50, "lat": 38.4, "lng": 27.1, ... }
      */
-    public function autoDetectCategory(Request $request)
+    public function fetchTkgm(Request $request): JsonResponse
     {
         $validated = $this->validateRequestWithResponse($request, [
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string'
+            'il_id' => 'required|exists:iller,id',
+            'ilce_id' => 'required|exists:ilceler,id',
+            'mahalle_id' => 'nullable|exists:mahalleler,id',
+            'ada_no' => 'required|string|max:20',
+            'parsel_no' => 'required|string|max:20',
         ]);
 
-        if ($validated instanceof \Illuminate\Http\JsonResponse) {
+        if ($validated instanceof JsonResponse) {
             return $validated;
         }
 
         try {
-            $title = $request->input('title');
-            $description = $request->input('description', '');
+            // İl, ilçe, mahalle isimlerini çek
+            $il = \App\Models\Il::findOrFail($validated['il_id']);
+            $ilce = \App\Models\Ilce::findOrFail($validated['ilce_id']);
+            $mahalle = $validated['mahalle_id']
+                ? \App\Models\Mahalle::findOrFail($validated['mahalle_id'])
+                : null;
 
-            // AI prompt hazırla
-            $prompt = $this->buildCategoryDetectionPrompt($title, $description);
+            // TKGM servisinden parsel bilgilerini çek
+            $result = $this->tkgmService->parselSorgula(
+                $validated['ada_no'],
+                $validated['parsel_no'],
+                $il->il_adi,
+                $ilce->ilce_adi,
+                $mahalle?->mahalle_adi
+            );
 
-            // AI'dan kategori önerisi al
-            $aiResult = $this->aiService->analyze([
-                'title' => $title,
-                'description' => $description
-            ], [
-                'type' => 'category_detection',
-                'available_categories' => IlanKategori::pluck('name')->toArray()
-            ]);
+            if (!isset($result['success']) || !$result['success']) {
+                return ResponseService::error(
+                    $result['message'] ?? 'TKGM sorgulama başarısız',
+                    400
+                );
+            }
 
-            // AI sonucunu parse et
-            $suggestedCategory = $this->parseCategorySuggestion($aiResult['data']);
-
-            // En yakın kategoriyi bul
-            $closestCategory = IlanKategori::where('name', 'like', "%{$suggestedCategory}%")->first();
+            // Response formatını standardize et
+            $parselBilgileri = $result['parsel_bilgileri'] ?? $result;
 
             return ResponseService::success([
-                'suggested_category' => $suggestedCategory,
-                'category_id' => $closestCategory?->id,
-                'confidence' => $this->calculateConfidence($title, $description, $suggestedCategory),
-                'alternative_categories' => $this->getAlternativeCategories($suggestedCategory)
-            ], 'Kategori tespiti başarıyla tamamlandı');
+                'alan_m2' => $parselBilgileri['alan_m2'] ?? $parselBilgileri['alan'] ?? null,
+                'lat' => $parselBilgileri['lat'] ?? $parselBilgileri['latitude'] ?? null,
+                'lng' => $parselBilgileri['lng'] ?? $parselBilgileri['longitude'] ?? null,
+                'imar_statusu' => $parselBilgileri['imar_statusu'] ?? $parselBilgileri['zoning_status'] ?? null,
+                'kaks' => $parselBilgileri['kaks'] ?? null,
+                'taks' => $parselBilgileri['taks'] ?? null,
+                'gabari' => $parselBilgileri['gabari'] ?? null,
+                'from_cache' => $result['from_cache'] ?? false,
+                'raw_data' => $parselBilgileri, // Tam veri (debugging için)
+            ], 'TKGM sorgulama başarılı');
         } catch (\Exception $e) {
-            return ResponseService::serverError('Kategori tespiti başarısız.', $e);
+            return ResponseService::serverError(
+                'TKGM sorgulama sırasında bir hata oluştu: ' . $e->getMessage(),
+                $e
+            );
         }
     }
 
     /**
-     * Akıllı fiyat önerisi
+     * m² Fiyatı hesapla
+     *
+     * POST /api/ai/calculate-m2-price
+     *
+     * Input: satis_fiyati, alan_m2
+     * Logic: satis_fiyati / alan_m2
+     * Response: { "m2_fiyati": 3500 }
      */
-    public function suggestOptimalPrice(Request $request)
+    public function calculateM2Price(Request $request): JsonResponse
     {
         $validated = $this->validateRequestWithResponse($request, [
-            'category_id' => 'required|exists:ilan_kategorileri,id',
-            'location_id' => 'required|exists:iller,id',
-            'features' => 'nullable|array',
-            'metrekare' => 'nullable|numeric|min:1',
-            'oda_sayisi' => 'nullable|integer|min:1'
+            'satis_fiyati' => 'required|numeric|min:0',
+            'alan_m2' => 'required|numeric|min:0.01', // En az 0.01 m² olmalı
         ]);
 
-        if ($validated instanceof \Illuminate\Http\JsonResponse) {
+        if ($validated instanceof JsonResponse) {
             return $validated;
         }
 
         try {
-            $data = $request->only(['category_id', 'location_id', 'features', 'metrekare', 'oda_sayisi']);
+            $satisFiyati = (float) $validated['satis_fiyati'];
+            $alanM2 = (float) $validated['alan_m2'];
 
-            // Piyasa verilerini analiz et
-            $marketData = $this->getMarketData($data);
+            if ($alanM2 <= 0) {
+                return ResponseService::error(
+                    'Alan metrekare değeri 0\'dan büyük olmalıdır',
+                    400
+                );
+            }
 
-            // AI ile fiyat analizi
-            $prompt = $this->buildPriceAnalysisPrompt($data, $marketData);
-
-            $aiResult = $this->aiService->analyze([
-                'property_data' => $data,
-                'market_data' => $marketData
-            ], [
-                'type' => 'price_analysis'
-            ]);
-
-            $priceAnalysis = $this->parsePriceAnalysis($aiResult['data']);
+            // m² fiyatı hesapla: satis_fiyati / alan_m2
+            $m2Fiyati = round($satisFiyati / $alanM2, 2);
 
             return ResponseService::success([
-                'suggested_price' => $priceAnalysis['suggested_price'],
-                'price_range' => $priceAnalysis['price_range'],
-                'confidence' => $priceAnalysis['confidence'],
-                'market_comparison' => $priceAnalysis['market_comparison'],
-                'factors' => $priceAnalysis['factors']
-            ], 'Fiyat önerisi başarıyla oluşturuldu');
+                'm2_fiyati' => $m2Fiyati,
+                'satis_fiyati' => $satisFiyati,
+                'alan_m2' => $alanM2,
+                'formula' => "{$satisFiyati} / {$alanM2} = {$m2Fiyati}",
+            ], 'm² fiyatı başarıyla hesaplandı');
         } catch (\Exception $e) {
-            return ResponseService::serverError('Fiyat önerisi başarısız.', $e);
+            return ResponseService::serverError(
+                'm² fiyatı hesaplanırken bir hata oluştu: ' . $e->getMessage(),
+                $e
+            );
         }
     }
 
     /**
-     * İçerik üretimi (SEO uyumlu açıklama)
+     * İmar Plan ve İnşaat Hakları Analizi
+     *
+     * POST /api/ai/analyze-construction
+     *
+     * Input: ada_no, parsel_no, alan_m2, ilce, mahalle (opsiyonel)
+     * Response: { "kaks": 2.0, "taks": 0.6, "gabari": 12.5, ... }
+     *
+     * Context7: CortexKnowledgeService ile AnythingLLM RAG entegrasyonu
      */
-    public function generateDescription(Request $request)
+    public function analyzeConstruction(Request $request): JsonResponse
     {
         $validated = $this->validateRequestWithResponse($request, [
-            'title' => 'required|string|max:255',
-            'category_id' => 'required|exists:ilan_kategorileri,id',
-            'features' => 'nullable|array',
-            'location' => 'required|array',
-            'location.il' => 'required|exists:iller,id',
-            'location.ilce' => 'nullable|exists:ilceler,id'
+            'ada_no' => 'required|string|max:20',
+            'parsel_no' => 'required|string|max:20',
+            'alan_m2' => 'required|numeric|min:0.01',
+            'ilce' => 'required|string|max:100',
+            'mahalle' => 'nullable|string|max:100',
         ]);
 
-        if ($validated instanceof \Illuminate\Http\JsonResponse) {
+        if ($validated instanceof JsonResponse) {
             return $validated;
         }
 
         try {
-            $data = $request->all();
+            // CortexKnowledgeService'e gönderilecek veri formatı
+            $data = [
+                'ilce' => $validated['ilce'],
+                'mahalle' => $validated['mahalle'] ?? null,
+                'ada' => $validated['ada_no'],
+                'parsel' => $validated['parsel_no'],
+                'm2' => (float) $validated['alan_m2'],
+            ];
 
-            // AI prompt hazırla
-            $prompt = $this->buildDescriptionPrompt($data);
+            // CortexKnowledgeService ile AnythingLLM'e sorgu gönder
+            $result = $this->cortexKnowledgeService->queryConstructionRights($data);
 
-            $aiResult = $this->aiService->generate($prompt, [
-                'max_tokens' => 500,
-                'temperature' => 0.8
-            ]);
+            if (! $result['success']) {
+                return ResponseService::error(
+                    $result['message'] ?? 'İmar plan analizi başarısız',
+                    400
+                );
+            }
 
-            return ResponseService::success([
-                'description' => $aiResult['data'],
-                'seo_score' => $this->calculateSEOScore($aiResult['data']),
-                'keywords' => $this->extractKeywords($aiResult['data'])
-            ], 'Açıklama başarıyla üretildi');
+            // Başarılı response
+            return ResponseService::success(
+                $result['data'],
+                'İmar plan analizi tamamlandı',
+                200,
+                [
+                    'source' => $result['source'] ?? 'AnythingLLM - İmar Plan Notları',
+                ]
+            );
         } catch (\Exception $e) {
-            return ResponseService::serverError('Açıklama üretimi başarısız.', $e);
+            return ResponseService::serverError(
+                'İmar plan analizi sırasında bir hata oluştu: ' . $e->getMessage(),
+                $e
+            );
         }
     }
 
     /**
-     * SEO optimizasyonu
+     * Yazlık Sezonluk Fiyatlandırma Hesaplama
+     *
+     * POST /api/ai/calculate-seasonal-price
+     *
+     * Input: gunluk_fiyat (required|numeric)
+     * Response: { "haftalik": 66500, "aylik": 255000, "kis_sezonu_gunluk": 5000, ... }
+     *
+     * Context7: C7-YAZLIK-PRICING-AUTOMATION-2025-11-30
      */
-    public function optimizeForSEO(Request $request)
+    public function calculateSeasonalPrice(Request $request): JsonResponse
     {
         $validated = $this->validateRequestWithResponse($request, [
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'category_id' => 'required|exists:ilan_kategorileri,id'
+            'gunluk_fiyat' => 'required|numeric|min:0.01',
         ]);
 
-        if ($validated instanceof \Illuminate\Http\JsonResponse) {
+        if ($validated instanceof JsonResponse) {
             return $validated;
         }
 
         try {
-            $data = $request->all();
+            $gunlukFiyat = (float) $validated['gunluk_fiyat'];
 
-            // SEO analizi yap
-            $seoAnalysis = $this->analyzeSEO($data);
+            // Config'den fiyatlandırma kurallarını al
+            $pricingRules = config('yali_options.pricing_rules', []);
+            $discounts = $pricingRules['discounts'] ?? [];
+            $seasonalMultipliers = $pricingRules['seasonal_multipliers'] ?? [];
 
-            // AI ile SEO optimizasyonu
-            $prompt = $this->buildSEOOptimizationPrompt($data, $seoAnalysis);
+            // Varsayılan değerler (config yoksa)
+            $weeklyDiscount = $discounts['weekly'] ?? 0.05;      // %5
+            $monthlyDiscount = $discounts['monthly'] ?? 0.15;    // %15
+            $yazMultiplier = $seasonalMultipliers['yaz'] ?? 1.00;      // %100
+            $araSezonMultiplier = $seasonalMultipliers['ara_sezon'] ?? 0.70; // %70
+            $kisMultiplier = $seasonalMultipliers['kis'] ?? 0.50;      // %50
 
-            $aiResult = $this->aiService->analyze([
-                'content' => $data,
-                'seo_analysis' => $seoAnalysis
-            ], [
-                'type' => 'seo_optimization'
-            ]);
+            // Haftalık fiyat: günlük * 7 * (1 - weekly_discount)
+            $haftalikFiyat = $gunlukFiyat * 7 * (1 - $weeklyDiscount);
 
-            $optimization = $this->parseSEOOptimization($aiResult['data']);
+            // Aylık fiyat: günlük * 30 * (1 - monthly_discount)
+            $aylikFiyat = $gunlukFiyat * 30 * (1 - $monthlyDiscount);
+
+            // Sezonluk günlük fiyatlar
+            $yazSezonuGunluk = $gunlukFiyat * $yazMultiplier;
+            $araSezonGunluk = $gunlukFiyat * $araSezonMultiplier;
+            $kisSezonuGunluk = $gunlukFiyat * $kisMultiplier;
+
+            // Sezonluk haftalık fiyatlar
+            $yazSezonuHaftalik = $yazSezonuGunluk * 7 * (1 - $weeklyDiscount);
+            $araSezonHaftalik = $araSezonGunluk * 7 * (1 - $weeklyDiscount);
+            $kisSezonuHaftalik = $kisSezonuGunluk * 7 * (1 - $weeklyDiscount);
+
+            // Sezonluk aylık fiyatlar
+            $yazSezonuAylik = $yazSezonuGunluk * 30 * (1 - $monthlyDiscount);
+            $araSezonAylik = $araSezonGunluk * 30 * (1 - $monthlyDiscount);
+            $kisSezonuAylik = $kisSezonuGunluk * 30 * (1 - $monthlyDiscount);
 
             return ResponseService::success([
-                'meta_title' => $optimization['meta_title'],
-                'meta_description' => $optimization['meta_description'],
-                'slug' => $optimization['slug'],
-                'seo_score' => $optimization['seo_score'],
-                'improvements' => $optimization['improvements']
-            ], 'SEO optimizasyonu başarıyla tamamlandı');
+                'gunluk_fiyat' => round($gunlukFiyat, 2),
+                'haftalik_fiyat' => round($haftalikFiyat, 2),
+                'aylik_fiyat' => round($aylikFiyat, 2),
+                'sezonluk_fiyatlar' => [
+                    'yaz' => [
+                        'gunluk' => round($yazSezonuGunluk, 2),
+                        'haftalik' => round($yazSezonuHaftalik, 2),
+                        'aylik' => round($yazSezonuAylik, 2),
+                    ],
+                    'ara_sezon' => [
+                        'gunluk' => round($araSezonGunluk, 2),
+                        'haftalik' => round($araSezonHaftalik, 2),
+                        'aylik' => round($araSezonAylik, 2),
+                    ],
+                    'kis' => [
+                        'gunluk' => round($kisSezonuGunluk, 2),
+                        'haftalik' => round($kisSezonuHaftalik, 2),
+                        'aylik' => round($kisSezonuAylik, 2),
+                    ],
+                ],
+                'formulas' => [
+                    'haftalik' => "{$gunlukFiyat} × 7 × (1 - {$weeklyDiscount}) = {$haftalikFiyat}",
+                    'aylik' => "{$gunlukFiyat} × 30 × (1 - {$monthlyDiscount}) = {$aylikFiyat}",
+                    'kis_gunluk' => "{$gunlukFiyat} × {$kisMultiplier} = {$kisSezonuGunluk}",
+                ],
+            ], 'Sezonluk fiyatlandırma hesaplaması tamamlandı');
         } catch (\Exception $e) {
-            return ResponseService::serverError('SEO optimizasyonu başarısız.', $e);
+            return ResponseService::serverError(
+                'Sezonluk fiyatlandırma hesaplanırken bir hata oluştu: ' . $e->getMessage(),
+                $e
+            );
         }
     }
 
     /**
-     * Görsel analizi
+     * Konut Metrikleri Hesaplama
+     *
+     * POST /api/ai/calculate-konut-metrics
+     *
+     * Input: satis_fiyati, brut_m2
+     * Response: { "m2_birim_fiyat": 25000, "formatted": "25.000 TL/m²" }
+     *
+     * Context7: C7-KONUT-METRICS-2025-11-30
      */
-    public function analyzeUploadedImages(Request $request)
+    public function calculateKonutMetrics(Request $request): JsonResponse
     {
         $validated = $this->validateRequestWithResponse($request, [
-            'images' => 'required|array|min:1',
-            'images.*' => 'required|string|url'
+            'satis_fiyati' => 'required|numeric|min:0.01',
+            'brut_m2' => 'required|numeric|min:10',
         ]);
 
-        if ($validated instanceof \Illuminate\Http\JsonResponse) {
+        if ($validated instanceof JsonResponse) {
             return $validated;
         }
 
         try {
-            $images = $request->input('images');
+            $satisFiyati = (float) $validated['satis_fiyati'];
+            $brutM2 = (float) $validated['brut_m2'];
 
-            // Her görsel için AI analizi
-            $analysisResults = [];
-
-            foreach ($images as $imageUrl) {
-                $analysis = $this->analyzeImage($imageUrl);
-                $analysisResults[] = [
-                    'url' => $imageUrl,
-                    'analysis' => $analysis
-                ];
+            if ($brutM2 <= 0) {
+                return ResponseService::error(
+                    'Brüt metrekare değeri 0\'dan büyük olmalıdır',
+                    400
+                );
             }
 
-            // Genel değerlendirme
-            $overallScore = $this->calculateOverallImageScore($analysisResults);
+            // m² birim fiyatı hesapla: satis_fiyati / brut_m2
+            $m2BirimFiyat = round($satisFiyati / $brutM2, 2);
+
+            // Formatlanmış değer (Türkçe format)
+            $formatted = number_format($m2BirimFiyat, 0, ',', '.') . ' TL/m²';
+
+            // Piyasa analizi (basit karşılaştırma)
+            $piyasaOrtalamasi = 35000; // TL/m² (örnek değer, gerçekte veritabanından çekilebilir)
+            $durum = $m2BirimFiyat > $piyasaOrtalamasi ? 'üstünde' : ($m2BirimFiyat < $piyasaOrtalamasi * 0.8 ? 'altında' : 'ortalamada');
 
             return ResponseService::success([
-                'images' => $analysisResults,
-                'overall_score' => $overallScore,
-                'recommendations' => $this->getImageRecommendations($analysisResults)
-            ], 'Görsel analizi başarıyla tamamlandı');
+                'm2_birim_fiyat' => $m2BirimFiyat,
+                'formatted' => $formatted,
+                'satis_fiyati' => $satisFiyati,
+                'brut_m2' => $brutM2,
+                'formula' => "{$satisFiyati} / {$brutM2} = {$m2BirimFiyat}",
+                'piyasa_analizi' => [
+                    'durum' => $durum,
+                    'piyasa_ortalamasi' => $piyasaOrtalamasi,
+                    'fark_yuzdesi' => round((($m2BirimFiyat - $piyasaOrtalamasi) / $piyasaOrtalamasi) * 100, 2),
+                ],
+            ], 'm² birim fiyatı başarıyla hesaplandı');
         } catch (\Exception $e) {
-            return ResponseService::serverError('Görsel analizi başarısız.', $e);
+            return ResponseService::serverError(
+                'Konut metrikleri hesaplanırken bir hata oluştu: ' . $e->getMessage(),
+                $e
+            );
         }
-    }
-
-    // Private helper methods
-
-    private function buildCategoryDetectionPrompt($title, $description)
-    {
-        $categories = IlanKategori::pluck('name')->implode(', ');
-
-        return "Bu emlak ilanını analiz et ve en uygun kategoriyi öner:\n\n" .
-            "Başlık: {$title}\n" .
-            "Açıklama: {$description}\n\n" .
-            "Mevcut kategoriler: {$categories}\n\n" .
-            "Sadece kategori adını döndür.";
-    }
-
-    private function parseCategorySuggestion($aiResult)
-    {
-        // AI sonucundan kategori adını çıkar
-        $result = trim($aiResult);
-
-        // Kategori adını temizle
-        $result = preg_replace('/[^\w\s]/', '', $result);
-
-        return $result;
-    }
-
-    private function calculateConfidence($title, $description, $suggestedCategory)
-    {
-        // Basit confidence hesaplama (gerçek uygulamada daha karmaşık olabilir)
-        $keywords = strtolower($title . ' ' . $description);
-        $categoryKeywords = strtolower($suggestedCategory);
-
-        $matches = 0;
-        $words = explode(' ', $categoryKeywords);
-
-        foreach ($words as $word) {
-            if (strpos($keywords, $word) !== false) {
-                $matches++;
-            }
-        }
-
-        return min(100, ($matches / count($words)) * 100);
-    }
-
-    private function getAlternativeCategories($suggestedCategory)
-    {
-        return IlanKategori::where('name', 'like', "%{$suggestedCategory}%")
-            ->orWhere('name', 'like', "%" . substr($suggestedCategory, 0, 3) . "%")
-            ->limit(3)
-            ->pluck('name', 'id')
-            ->toArray();
-    }
-
-    private function getMarketData($data)
-    {
-        // Piyasa verilerini getir (gerçek uygulamada veritabanından)
-        return [
-            'average_price' => 500000,
-            'price_per_sqm' => 2500,
-            'location_factor' => 1.2,
-            'category_factor' => 1.1
-        ];
-    }
-
-    private function buildPriceAnalysisPrompt($data, $marketData)
-    {
-        return "Bu emlak için optimal fiyat önerisi yap:\n\n" .
-            "Özellikler: " . json_encode($data) . "\n" .
-            "Piyasa Verileri: " . json_encode($marketData) . "\n\n" .
-            "Fiyat önerisi ve gerekçelerini JSON formatında döndür.";
-    }
-
-    private function parsePriceAnalysis($aiResult)
-    {
-        // AI sonucunu parse et
-        $data = json_decode($aiResult, true);
-
-        return [
-            'suggested_price' => $data['suggested_price'] ?? 0,
-            'price_range' => $data['price_range'] ?? [],
-            'confidence' => $data['confidence'] ?? 0,
-            'market_comparison' => $data['market_comparison'] ?? [],
-            'factors' => $data['factors'] ?? []
-        ];
-    }
-
-    private function buildDescriptionPrompt($data)
-    {
-        $category = IlanKategori::find($data['category_id'])->name ?? 'Emlak';
-
-        return "Bu {$category} için çekici ve SEO uyumlu bir açıklama yaz:\n\n" .
-            "Başlık: {$data['title']}\n" .
-            "Özellikler: " . json_encode($data['features']) . "\n" .
-            "Lokasyon: " . json_encode($data['location']) . "\n\n" .
-            "Açıklama en az 200 kelime olsun ve SEO anahtar kelimeleri içersin.";
-    }
-
-    private function calculateSEOScore($description)
-    {
-        // Basit SEO skoru hesaplama
-        $score = 0;
-
-        if (strlen($description) > 200) $score += 20;
-        if (strlen($description) > 300) $score += 10;
-        if (preg_match('/\b(daire|villa|arsa|satılık|kiralık)\b/i', $description)) $score += 15;
-        if (preg_match('/\b(metrekare|m²|oda|banyo)\b/i', $description)) $score += 15;
-
-        return min(100, $score);
-    }
-
-    private function extractKeywords($description)
-    {
-        // Basit anahtar kelime çıkarma
-        $words = str_word_count(strtolower($description), 1, 'çğıöşüÇĞIÖŞÜ');
-        $wordCount = array_count_values($words);
-
-        arsort($wordCount);
-
-        return array_slice(array_keys($wordCount), 0, 10);
-    }
-
-    private function analyzeSEO($data)
-    {
-        return [
-            'title_length' => strlen($data['title']),
-            'description_length' => strlen($data['description'] ?? ''),
-            'keyword_density' => $this->calculateKeywordDensity($data['title'] . ' ' . $data['description']),
-            'readability_score' => $this->calculateReadabilityScore($data['description'] ?? '')
-        ];
-    }
-
-    private function calculateKeywordDensity($text)
-    {
-        $words = str_word_count(strtolower($text), 1);
-        $wordCount = array_count_values($words);
-        $totalWords = count($words);
-
-        $densities = [];
-        foreach ($wordCount as $word => $count) {
-            if (strlen($word) > 3) {
-                $densities[$word] = ($count / $totalWords) * 100;
-            }
-        }
-
-        return $densities;
-    }
-
-    private function calculateReadabilityScore($text)
-    {
-        // Basit okunabilirlik skoru
-        $sentences = preg_split('/[.!?]+/', $text);
-        $words = str_word_count($text);
-        $syllables = $this->countSyllables($text);
-
-        if (count($sentences) > 0 && $words > 0) {
-            return 206.835 - (1.015 * ($words / count($sentences))) - (84.6 * ($syllables / $words));
-        }
-
-        return 0;
-    }
-
-    private function countSyllables($text)
-    {
-        // Basit hece sayma (Türkçe için geliştirilmeli)
-        return preg_match_all('/[aeiouAEIOUçğıöşüÇĞIÖŞÜ]/', $text);
-    }
-
-    private function buildSEOOptimizationPrompt($data, $seoAnalysis)
-    {
-        return "Bu içerik için SEO optimizasyonu yap:\n\n" .
-            "Başlık: {$data['title']}\n" .
-            "Açıklama: {$data['description']}\n" .
-            "Kategori: {$data['category_id']}\n\n" .
-            "SEO Analizi: " . json_encode($seoAnalysis) . "\n\n" .
-            "Meta title, meta description ve slug öner.";
-    }
-
-    private function parseSEOOptimization($aiResult)
-    {
-        $data = json_decode($aiResult, true);
-
-        return [
-            'meta_title' => $data['meta_title'] ?? '',
-            'meta_description' => $data['meta_description'] ?? '',
-            'slug' => $data['slug'] ?? Str::slug($data['meta_title'] ?? ''),
-            'seo_score' => $data['seo_score'] ?? 0,
-            'improvements' => $data['improvements'] ?? []
-        ];
-    }
-
-    private function analyzeImage($imageUrl)
-    {
-        // Basit görsel analizi (gerçek uygulamada AI vision API kullanılabilir)
-        return [
-            'quality_score' => rand(60, 95),
-            'room_detection' => ['salon', 'yatak odası', 'banyo'],
-            'lighting_score' => rand(70, 90),
-            'composition_score' => rand(65, 85),
-            'recommendations' => [
-                'Görsel kalitesi iyi',
-                'Işıklandırma yeterli',
-                'Kompozisyon düzgün'
-            ]
-        ];
-    }
-
-    private function calculateOverallImageScore($analysisResults)
-    {
-        if (empty($analysisResults)) return 0;
-
-        $totalScore = 0;
-        foreach ($analysisResults as $result) {
-            $totalScore += $result['analysis']['quality_score'];
-        }
-
-        return round($totalScore / count($analysisResults));
-    }
-
-    private function getImageRecommendations($analysisResults)
-    {
-        $recommendations = [];
-
-        foreach ($analysisResults as $result) {
-            if ($result['analysis']['quality_score'] < 70) {
-                $recommendations[] = 'Görsel kalitesi iyileştirilebilir';
-            }
-            if ($result['analysis']['lighting_score'] < 75) {
-                $recommendations[] = 'Daha iyi ışıklandırma gerekli';
-            }
-        }
-
-        return array_unique($recommendations);
     }
 }

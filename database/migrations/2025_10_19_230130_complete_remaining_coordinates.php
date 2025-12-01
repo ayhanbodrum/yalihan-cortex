@@ -1,8 +1,6 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
@@ -44,7 +42,7 @@ return new class extends Migration
                 ->update([
                     'lat' => $coords['lat'],
                     'lng' => $coords['lng'],
-                    'updated_at' => now()
+                    'updated_at' => now(),
                 ]);
         }
 
@@ -71,7 +69,7 @@ return new class extends Migration
                 ->update([
                     'lat' => $coords['lat'],
                     'lng' => $coords['lng'],
-                    'updated_at' => now()
+                    'updated_at' => now(),
                 ]);
         }
 
@@ -102,7 +100,7 @@ return new class extends Migration
                 ->update([
                     'enlem' => $coords['enlem'],
                     'boylam' => $coords['boylam'],
-                    'updated_at' => now()
+                    'updated_at' => now(),
                 ]);
         }
 
@@ -124,7 +122,7 @@ return new class extends Migration
                     ->update([
                         'enlem' => $randomLat,
                         'boylam' => $randomLng,
-                        'updated_at' => now()
+                        'updated_at' => now(),
                     ]);
             }
         }

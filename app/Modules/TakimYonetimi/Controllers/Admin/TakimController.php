@@ -10,8 +10,8 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\View\View;
 
 class TakimController extends Controller
@@ -160,12 +160,12 @@ class TakimController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'user_id' => 'required|exists:users,id|unique:takim_uyeleri,user_id',
-            'rol' => 'required|in:'.implode(',', TakimUyesi::getRoller()),
+            'rol' => 'required|in:' . implode(',', TakimUyesi::getRoller()),
             'uzmanlik_alani' => 'nullable|array',
             'uzmanlik_alani.*' => 'string|max:100',
             'calisma_saati' => 'nullable|array',
             'lokasyon' => 'nullable|string|max:255',
-            'status' => 'required|in:'.implode(',', TakimUyesi::getDurumlar()),
+            'status' => 'required|in:' . implode(',', TakimUyesi::getDurumlar()),
         ]);
 
         if ($validator->fails()) {
@@ -194,14 +194,13 @@ class TakimController extends Controller
                 'message' => 'Takım üyesi başarıyla eklendi!',
                 'data' => $takimUyesi->load('user'),
             ]);
-
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Takım üyesi ekleme hatası: '.$e->getMessage());
+            Log::error('Takım üyesi ekleme hatası: ' . $e->getMessage());
 
             return response()->json([
                 'success' => false,
-                'message' => 'Takım üyesi eklenirken hata oluştu: '.$e->getMessage(),
+                'message' => 'Takım üyesi eklenirken hata oluştu: ' . $e->getMessage(),
             ], 500);
         }
     }
@@ -254,14 +253,13 @@ class TakimController extends Controller
                 'success' => true,
                 'message' => 'Takım üyesi başarıyla çıkarıldı!',
             ]);
-
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Takım üyesi çıkarma hatası: '.$e->getMessage());
+            Log::error('Takım üyesi çıkarma hatası: ' . $e->getMessage());
 
             return response()->json([
                 'success' => false,
-                'message' => 'Takım üyesi çıkarılırken hata oluştu: '.$e->getMessage(),
+                'message' => 'Takım üyesi çıkarılırken hata oluştu: ' . $e->getMessage(),
             ], 500);
         }
     }
@@ -393,7 +391,7 @@ class TakimController extends Controller
             ->get();
 
         // Context7: Danışmanlar listesi (view için gerekli)
-        $danismanlar = \App\Models\User::whereHas('roles', function($q) {
+        $danismanlar = \App\Models\User::whereHas('roles', function ($q) {
             $q->where('name', 'danisman');
         })->select(['id', 'name', 'email'])->get();
 
@@ -429,8 +427,8 @@ class TakimController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'user_id' => 'required|exists:users,id|unique:takim_uyeleri,user_id',
-            'rol' => 'required|in:'.implode(',', TakimUyesi::getRoller()),
-            'status' => 'required|in:'.implode(',', TakimUyesi::getDurumlar()),
+            'rol' => 'required|in:' . implode(',', TakimUyesi::getRoller()),
+            'status' => 'required|in:' . implode(',', TakimUyesi::getDurumlar()),
             'lokasyon' => 'nullable|string|max:255',
             'uzmanlik_alani' => 'nullable|array',
             'calisma_saati' => 'nullable|array',
@@ -452,13 +450,12 @@ class TakimController extends Controller
                 'message' => 'Takım üyesi başarıyla eklendi!',
                 'data' => $takimUyesi,
             ]);
-
         } catch (\Exception $e) {
-            Log::error('Takım üyesi ekleme hatası: '.$e->getMessage());
+            Log::error('Takım üyesi ekleme hatası: ' . $e->getMessage());
 
             return response()->json([
                 'success' => false,
-                'message' => 'Takım üyesi eklenirken hata oluştu: '.$e->getMessage(),
+                'message' => 'Takım üyesi eklenirken hata oluştu: ' . $e->getMessage(),
             ], 500);
         }
     }
@@ -487,8 +484,8 @@ class TakimController extends Controller
         $takimUyesi = TakimUyesi::findOrFail($takimId);
 
         $validator = Validator::make($request->all(), [
-            'rol' => 'required|in:'.implode(',', TakimUyesi::getRoller()),
-            'status' => 'required|in:'.implode(',', TakimUyesi::getDurumlar()),
+            'rol' => 'required|in:' . implode(',', TakimUyesi::getRoller()),
+            'status' => 'required|in:' . implode(',', TakimUyesi::getDurumlar()),
             'lokasyon' => 'nullable|string|max:255',
             'uzmanlik_alani' => 'nullable|array',
             'calisma_saati' => 'nullable|array',
@@ -510,13 +507,12 @@ class TakimController extends Controller
                 'message' => 'Takım üyesi başarıyla güncellendi!',
                 'data' => $takimUyesi,
             ]);
-
         } catch (\Exception $e) {
-            Log::error('Takım üyesi güncelleme hatası: '.$e->getMessage());
+            Log::error('Takım üyesi güncelleme hatası: ' . $e->getMessage());
 
             return response()->json([
                 'success' => false,
-                'message' => 'Takım üyesi güncellenirken hata oluştu: '.$e->getMessage(),
+                'message' => 'Takım üyesi güncellenirken hata oluştu: ' . $e->getMessage(),
             ], 500);
         }
     }
@@ -534,14 +530,60 @@ class TakimController extends Controller
                 'success' => true,
                 'message' => 'Takım üyesi başarıyla silindi!',
             ]);
-
         } catch (\Exception $e) {
-            Log::error('Takım üyesi silme hatası: '.$e->getMessage());
+            Log::error('Takım üyesi silme hatası: ' . $e->getMessage());
 
             return response()->json([
                 'success' => false,
-                'message' => 'Takım üyesi silinirken hata oluştu: '.$e->getMessage(),
+                'message' => 'Takım üyesi silinirken hata oluştu: ' . $e->getMessage(),
             ], 500);
         }
+    }
+
+    /**
+     * Kanban Board - Personel bazlı görev görselleştirme
+     */
+    public function board(Request $request): View
+    {
+        // Tüm danışmanları getir
+        $danismanlar = User::whereHas('roles', function ($q) {
+            $q->where('name', 'danisman');
+        })->orWhereHas('takimUyesi', function ($q) {
+            $q->where('rol', 'danisman');
+        })->select(['id', 'name', 'email', 'avatar'])->orderBy('name')->get();
+
+        // Seçili danışman filtresi
+        $selectedDanismanId = $request->get('danisman_id');
+
+        // Görevleri getir
+        $gorevQuery = Gorev::with(['danisman', 'admin', 'musteri', 'proje'])
+            ->whereIn('status', ['bekliyor', 'beklemede', 'devam_ediyor', 'tamamlandi']);
+
+        // Filtreleme: Eğer danışman seçiliyse sadece onun görevlerini getir
+        if ($selectedDanismanId) {
+            $gorevQuery->where('danisman_id', $selectedDanismanId);
+        } else {
+            // Admin değilse sadece kendi görevlerini görsün
+            $user = auth()->user();
+            $isAdmin = $user && ($user->role_id == 1 || $user->role_id == 2); // 1: SuperAdmin, 2: Admin
+            if (!$isAdmin) {
+                $gorevQuery->where('danisman_id', auth()->id());
+            }
+        }
+
+        $gorevler = $gorevQuery->orderBy('bitis_tarihi', 'asc')->get();
+
+        // Status'e göre grupla (bekliyor ve beklemede -> Yapılacaklar)
+        $gorevlerByStatus = [
+            'bekliyor' => $gorevler->whereIn('status', ['bekliyor', 'beklemede'])->values(),
+            'devam_ediyor' => $gorevler->where('status', 'devam_ediyor')->values(),
+            'tamamlandi' => $gorevler->where('status', 'tamamlandi')->values(),
+        ];
+
+        return view('admin.takim-yonetimi.takim.board', compact(
+            'danismanlar',
+            'selectedDanismanId',
+            'gorevlerByStatus'
+        ));
     }
 }

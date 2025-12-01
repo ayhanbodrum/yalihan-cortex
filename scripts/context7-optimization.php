@@ -1,14 +1,15 @@
 <?php
+
 /**
  * Context7 Sistem Optimizasyon Scripti
  *
  * Bu script sistemin %100 Context7 uyumlu hale getirilmesi için
  * otomatik düzeltmeler yapar.
  */
-
 class Context7Optimizer
 {
     private $violations = [];
+
     private $fixes = [];
 
     public function __construct()
@@ -33,7 +34,7 @@ class Context7Optimizer
             'app/Http/Controllers/Admin/BlogController.php',
             'app/Http/Controllers/Admin/EtiketController.php',
             'app/Http/Controllers/Admin/SystemMonitorController.php',
-            'app/Http/Controllers/Admin/OzellikKategoriController.php'
+            'app/Http/Controllers/Admin/OzellikKategoriController.php',
         ];
 
         foreach ($controllers as $controller) {
@@ -66,10 +67,10 @@ class Context7Optimizer
             $missingVars[] = '$ulkeler = \\App\\Models\\Ulke::all();';
         }
 
-        if (!empty($missingVars)) {
+        if (! empty($missingVars)) {
             // Index methodunu bul ve değişkenleri ekle
             $pattern = '/(public function index\([^)]*\)\s*\{)/';
-            $replacement = '$1' . "\n        // Context7 uyumlu değişkenler\n        " . implode("\n        ", $missingVars) . "\n";
+            $replacement = '$1'."\n        // Context7 uyumlu değişkenler\n        ".implode("\n        ", $missingVars)."\n";
 
             $content = preg_replace($pattern, $replacement, $content);
             file_put_contents($file, $content);
@@ -84,7 +85,7 @@ class Context7Optimizer
         echo "🎨 CSS classes düzeltiliyor...\n";
 
         $views = [
-            'resources/views/admin/ai/advanced-dashboard.blade.php'
+            'resources/views/admin/ai/advanced-dashboard.blade.php',
         ];
 
         foreach ($views as $view) {
@@ -191,6 +192,6 @@ class Context7Optimizer
 
 // Script çalıştır
 if (php_sapi_name() === 'cli') {
-    $optimizer = new Context7Optimizer();
+    $optimizer = new Context7Optimizer;
     $optimizer->run();
 }

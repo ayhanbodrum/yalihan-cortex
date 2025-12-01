@@ -2,13 +2,13 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
+use App\Models\Il;
 use App\Models\Ilan;
 use App\Models\IlanKategori;
 use App\Models\Ulke;
-use App\Models\Il;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class GoldenVisaPortfolioSeeder extends Seeder
 {
@@ -36,7 +36,7 @@ class GoldenVisaPortfolioSeeder extends Seeder
             $title = $c['title'];
             $data = [
                 'baslik' => $title,
-                'slug' => \Illuminate\Support\Str::slug($title) . '-' . $i,
+                'slug' => \Illuminate\Support\Str::slug($title).'-'.$i,
                 'aciklama' => 'Vatandaşlık programına uygun nitelikte, yüksek kira getirili portföy.',
                 'fiyat' => $c['price'],
                 'para_birimi' => $c['currency'],
@@ -63,15 +63,15 @@ class GoldenVisaPortfolioSeeder extends Seeder
 
     protected function attachPhoto(int $ilanId, string $source): void
     {
-        $publicPath = public_path('images/' . $source . '.png');
+        $publicPath = public_path('images/'.$source.'.png');
         if (! file_exists($publicPath)) {
             return;
         }
-        $target = 'seed/gv-' . $source . '-' . $ilanId . '.png';
+        $target = 'seed/gv-'.$source.'-'.$ilanId.'.png';
         Storage::disk('public')->put($target, file_get_contents($publicPath));
         DB::table('ilan_fotograflari')->insert([
             'ilan_id' => $ilanId,
-            'dosya_adi' => 'gv-' . $source . '-' . $ilanId . '.png',
+            'dosya_adi' => 'gv-'.$source.'-'.$ilanId.'.png',
             'dosya_yolu' => $target,
             'dosya_boyutu' => null,
             'mime_type' => 'image/png',

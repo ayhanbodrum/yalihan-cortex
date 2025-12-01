@@ -1,12 +1,13 @@
 <?php
+
 /**
  * Context7 Migration Analyzer
  * Detects Context7 violations in migration files
  */
-
 class Context7MigrationAnalyzer
 {
     private array $violations = [];
+
     private array $turkishToEnglish = [
         // Field names
         'ad' => 'name',
@@ -73,7 +74,7 @@ class Context7MigrationAnalyzer
 
     public function analyzeMigrationsDirectory(string $directory): array
     {
-        $files = glob($directory . '/*.php');
+        $files = glob($directory.'/*.php');
 
         foreach ($files as $file) {
             $this->analyzeFile($file);
@@ -101,7 +102,7 @@ class Context7MigrationAnalyzer
                     'type' => 'turkish_field_name',
                     'violation' => $turkish,
                     'suggestion' => $english,
-                    'line' => $this->getLineNumber($content, $turkish)
+                    'line' => $this->getLineNumber($content, $turkish),
                 ];
             }
 
@@ -112,7 +113,7 @@ class Context7MigrationAnalyzer
                     'type' => 'turkish_enum_value',
                     'violation' => $turkish,
                     'suggestion' => $english,
-                    'line' => $this->getLineNumber($content, $turkish)
+                    'line' => $this->getLineNumber($content, $turkish),
                 ];
             }
 
@@ -123,7 +124,7 @@ class Context7MigrationAnalyzer
                     'type' => 'turkish_reference',
                     'violation' => $turkish,
                     'suggestion' => $english,
-                    'line' => $this->getLineNumber($content, $turkish)
+                    'line' => $this->getLineNumber($content, $turkish),
                 ];
             }
         }
@@ -137,25 +138,27 @@ class Context7MigrationAnalyzer
                 return $index + 1;
             }
         }
+
         return 0;
     }
 
     public function generateReport(): string
     {
         $report = "# Context7 Migration Analysis Report\n\n";
-        $report .= "Generated: " . date('Y-m-d H:i:s') . "\n\n";
+        $report .= 'Generated: '.date('Y-m-d H:i:s')."\n\n";
 
         if (empty($this->violations)) {
             $report .= "✅ **No Context7 violations found!**\n\n";
+
             return $report;
         }
 
-        $report .= "❌ **Found " . count($this->violations) . " Context7 violations:**\n\n";
+        $report .= '❌ **Found '.count($this->violations)." Context7 violations:**\n\n";
 
         $groupedViolations = [];
         foreach ($this->violations as $violation) {
             $key = $violation['file'];
-            if (!isset($groupedViolations[$key])) {
+            if (! isset($groupedViolations[$key])) {
                 $groupedViolations[$key] = [];
             }
             $groupedViolations[$key][] = $violation;
@@ -166,7 +169,7 @@ class Context7MigrationAnalyzer
 
             foreach ($violations as $violation) {
                 $report .= "- **Line {$violation['line']}**: ";
-                $report .= ucfirst(str_replace('_', ' ', $violation['type'])) . " ";
+                $report .= ucfirst(str_replace('_', ' ', $violation['type'])).' ';
                 $report .= "`{$violation['violation']}` → should be `{$violation['suggestion']}`\n";
             }
             $report .= "\n";
@@ -177,7 +180,7 @@ class Context7MigrationAnalyzer
 }
 
 // Run analysis
-$analyzer = new Context7MigrationAnalyzer();
+$analyzer = new Context7MigrationAnalyzer;
 $violations = $analyzer->analyzeMigrationsDirectory('database/migrations');
 $report = $analyzer->generateReport();
 

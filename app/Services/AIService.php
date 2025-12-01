@@ -2,19 +2,20 @@
 
 namespace App\Services;
 
+use App\Models\AiLog;
 use App\Models\KategoriYayinTipiFieldDependency;
+use App\Models\Setting;
+use App\Services\Cache\CacheHelper;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
-use App\Models\Setting;
-use App\Models\AiLog;
-use App\Services\Cache\CacheHelper;
 
 class AIService
 {
     protected $provider;
+
     protected $config;
+
     protected $defaultProvider = 'openai';
 
     public function __construct()
@@ -25,10 +26,6 @@ class AIService
 
     /**
      * Analyze data with AI
-     *
-     * @param mixed $data
-     * @param array $context
-     * @return array
      */
     public function analyze(mixed $data, array $context = []): array
     {
@@ -36,27 +33,23 @@ class AIService
         if (app()->environment('testing')) {
             return $this->callProvider('analyze', $prompt, $context);
         }
+
         return $this->makeRequest('analyze', $prompt, $context);
     }
 
     /**
      * Get AI suggestions
-     *
-     * @param mixed $context
-     * @param string $type
-     * @return array
      */
     public function suggest(mixed $context, string $type = 'general'): array
     {
         $prompt = $this->buildSuggestionPrompt($context, $type);
+
         return $this->makeRequest('suggest', $prompt, $context);
     }
 
     /**
      * Generate content with AI
      *
-     * @param string $prompt
-     * @param array $options
      * @return array
      */
     public function generate(string $prompt, array $options = []): mixed
@@ -64,6 +57,7 @@ class AIService
         if (app()->environment('testing')) {
             return 'generated';
         }
+
         return $this->makeRequest('generate', $prompt, $options);
     }
 
@@ -74,8 +68,8 @@ class AIService
     /**
      * Konut özellikleri hibrit sıralama sistemi
      *
-     * @param string $kategoriSlug Kategori (konut, arsa, yazlik)
-     * @param array $context Ek bağlam
+     * @param  string  $kategoriSlug  Kategori (konut, arsa, yazlik)
+     * @param  array  $context  Ek bağlam
      * @return array Hibrit sıralama verileri
      */
     public function getKonutHibritSiralama(string $kategoriSlug = 'konut', array $context = []): array
@@ -85,7 +79,7 @@ class AIService
             'ai',
             'konut_hibrit_siralama',
             'medium', // 1 hour
-            function () use ($kategoriSlug) {
+            function () {
                 return \App\Models\KonutOzellikHibritSiralama::active()
                     ->ordered()
                     ->get()
@@ -98,9 +92,9 @@ class AIService
     /**
      * Hibrit skor hesaplama
      *
-     * @param int $kullanimSikligi Kullanım sıklığı
-     * @param float $aiOneri AI öneri yüzdesi
-     * @param float $kullaniciTercih Kullanıcı tercih yüzdesi
+     * @param  int  $kullanimSikligi  Kullanım sıklığı
+     * @param  float  $aiOneri  AI öneri yüzdesi
+     * @param  float  $kullaniciTercih  Kullanıcı tercih yüzdesi
      * @return float Hibrit skor
      */
     public function calculateHibritSkor(int $kullanimSikligi, float $aiOneri, float $kullaniciTercih): float
@@ -117,22 +111,29 @@ class AIService
     /**
      * Önem seviyesi belirleme
      *
-     * @param float $hibritSkor Hibrit skor
+     * @param  float  $hibritSkor  Hibrit skor
      * @return string Önem seviyesi
      */
     public function determineOnemSeviyesi(float $hibritSkor): string
     {
-        if ($hibritSkor >= 80) return 'cok_onemli';
-        if ($hibritSkor >= 60) return 'onemli';
-        if ($hibritSkor >= 40) return 'orta_onemli';
+        if ($hibritSkor >= 80) {
+            return 'cok_onemli';
+        }
+        if ($hibritSkor >= 60) {
+            return 'onemli';
+        }
+        if ($hibritSkor >= 40) {
+            return 'orta_onemli';
+        }
+
         return 'dusuk_onemli';
     }
 
     /**
      * AI ile özellik önerisi
      *
-     * @param string $kategoriSlug Kategori
-     * @param array $mevcutOzellikler Mevcut özellikler
+     * @param  string  $kategoriSlug  Kategori
+     * @param  array  $mevcutOzellikler  Mevcut özellikler
      * @return array AI önerileri
      */
     public function suggestKonutOzellikleri($kategoriSlug = 'konut', $mevcutOzellikler = [])
@@ -140,12 +141,12 @@ class AIService
         $hibritSiralama = $this->getKonutHibritSiralama($kategoriSlug);
 
         // Mevcut olmayan özellikleri filtrele
-        $oneriOzellikleri = array_filter($hibritSiralama, function($ozellik) use ($mevcutOzellikler) {
-            return !in_array($ozellik->ozellik_slug, $mevcutOzellikler);
+        $oneriOzellikleri = array_filter($hibritSiralama, function ($ozellik) use ($mevcutOzellikler) {
+            return ! in_array($ozellik->ozellik_slug, $mevcutOzellikler);
         });
 
         // Hibrit skoruna göre sırala
-        usort($oneriOzellikleri, function($a, $b) {
+        usort($oneriOzellikleri, function ($a, $b) {
             return $b->hibrit_skor <=> $a->hibrit_skor;
         });
 
@@ -159,19 +160,20 @@ class AIService
     /**
      * AI ile tek field için öneri
      *
-     * @param string $kategoriSlug Kategori (konut, arsa, yazlik)
-     * @param string $yayinTipi Yayın Tipi (Satılık, Kiralık, Sezonluk)
-     * @param string $fieldSlug Field slug (ada_no, gunluk_fiyat)
-     * @param array $context Form context (diğer field değerleri)
+     * @param  string  $kategoriSlug  Kategori (konut, arsa, yazlik)
+     * @param  string  $yayinTipi  Yayın Tipi (Satılık, Kiralık, Sezonluk)
+     * @param  string  $fieldSlug  Field slug (ada_no, gunluk_fiyat)
+     * @param  array  $context  Form context (diğer field değerleri)
      * @return mixed AI önerisi
      */
     public function suggestFieldValue(string $kategoriSlug, string $yayinTipi, string $fieldSlug, array $context = [])
     {
         // Cache key
-        $cacheKey = "ai_field_suggest_{$kategoriSlug}_{$yayinTipi}_{$fieldSlug}_" . md5(json_encode($context));
+        $cacheKey = "ai_field_suggest_{$kategoriSlug}_{$yayinTipi}_{$fieldSlug}_".md5(json_encode($context));
 
         return Cache::remember($cacheKey, 3600, function () use ($kategoriSlug, $yayinTipi, $fieldSlug, $context) {
             $prompt = $this->buildFieldSuggestionPrompt($kategoriSlug, $yayinTipi, $fieldSlug, $context);
+
             return $this->makeRequest('suggest_field', $prompt, compact('kategoriSlug', 'yayinTipi', 'fieldSlug', 'context'));
         });
     }
@@ -179,9 +181,7 @@ class AIService
     /**
      * AI ile tüm field'ları otomatik doldur
      *
-     * @param string $kategoriSlug
-     * @param string $yayinTipi
-     * @param array $existingData Mevcut form verileri
+     * @param  array  $existingData  Mevcut form verileri
      * @return array Field slug => AI value
      */
     public function autoFillFields(string $kategoriSlug, string $yayinTipi, array $existingData = []): array
@@ -200,7 +200,7 @@ class AIService
                 $value = $this->suggestFieldValue($kategoriSlug, $yayinTipi, $field->field_slug, $existingData);
                 $suggestions[$field->field_slug] = $value;
             } catch (\Exception $e) {
-                Log::warning("AI auto-fill failed for {$field->field_slug}: " . $e->getMessage());
+                Log::warning("AI auto-fill failed for {$field->field_slug}: ".$e->getMessage());
             }
         }
 
@@ -212,10 +212,10 @@ class AIService
      * Örnek: Günlük fiyattan haftalık/aylık hesapla
      * Örnek: Satış fiyatından m² fiyatı hesapla
      *
-     * @param string $sourceField Kaynak field (gunluk_fiyat)
-     * @param mixed $sourceValue Kaynak değer (500)
-     * @param string $targetField Hedef field (haftalik_fiyat)
-     * @param array $context Hesaplama context'i
+     * @param  string  $sourceField  Kaynak field (gunluk_fiyat)
+     * @param  mixed  $sourceValue  Kaynak değer (500)
+     * @param  string  $targetField  Hedef field (haftalik_fiyat)
+     * @param  array  $context  Hesaplama context'i
      * @return mixed Hesaplanan değer
      */
     public function smartCalculate(string $sourceField, $sourceValue, string $targetField, array $context = [])
@@ -224,7 +224,7 @@ class AIService
 Hesaplama Görevi:
 - Kaynak Field: {$sourceField} = {$sourceValue}
 - Hedef Field: {$targetField}
-- Context: " . json_encode($context) . "
+- Context: ".json_encode($context).'
 
 Türkiye emlak sektörü standartlarına göre hesapla.
 
@@ -236,13 +236,15 @@ Türkiye emlak sektörü standartlarına göre hesapla.
 - Satış fiyatı 1,000,000 TL + Alan 100 m² → m² fiyatı = 10,000 TL/m²
 
 Sadece hesaplanan sayısal değeri döndür (birim olmadan).
-";
+';
 
         try {
             $result = $this->makeRequest('calculate', $prompt, compact('sourceField', 'sourceValue', 'targetField', 'context'));
+
             return $result['value'] ?? null;
         } catch (\Exception $e) {
-            Log::warning("AI smart calculate failed: " . $e->getMessage());
+            Log::warning('AI smart calculate failed: '.$e->getMessage());
+
             return null;
         }
     }
@@ -279,7 +281,7 @@ Sadece hesaplanan sayısal değeri döndür (birim olmadan).
             ],
         ];
 
-        $fieldContext = $categoryContext[$kategoriSlug][$fieldSlug] ?? "Bu field için uygun değer öner.";
+        $fieldContext = $categoryContext[$kategoriSlug][$fieldSlug] ?? 'Bu field için uygun değer öner.';
 
         $prompt = "
 🎯 Emlak İlan Field Suggestion
@@ -289,7 +291,7 @@ Yayın Tipi: {$yayinTipi}
 Field: {$fieldSlug}
 
 Context:
-" . json_encode($context, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) . "
+".json_encode($context, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)."
 
 Görev: {$fieldContext}
 
@@ -306,16 +308,17 @@ Sadece önerilen değeri döndür (açıklama veya birim olmadan).
     {
         try {
             $response = $this->makeRequest('health', 'test', []);
+
             return [
                 'status' => 'healthy',
                 'provider' => $this->provider,
-                'response_time' => $response['duration'] ?? 0
+                'response_time' => $response['duration'] ?? 0,
             ];
         } catch (\Exception $e) {
             return [
                 'status' => 'unhealthy',
                 'provider' => $this->provider,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ];
         }
     }
@@ -346,7 +349,7 @@ Sadece önerilen değeri döndür (açıklama veya birim olmadan).
                 case 'analyze':
                     return ['category' => 'general', 'priority' => 'normal', 'score' => 0.9];
                 case 'suggest':
-                    return ['items' => ['oneri1','oneri2'], 'count' => 2];
+                    return ['items' => ['oneri1', 'oneri2'], 'count' => 2];
                 case 'generate':
                     return ['value' => 'generated'];
                 case 'health':
@@ -383,22 +386,23 @@ Sadece önerilen değeri döndür (açıklama veya birim olmadan).
         }
 
         $response = Http::withHeaders([
-            'Authorization' => 'Bearer ' . $apiKey,
+            'Authorization' => 'Bearer '.$apiKey,
             'Content-Type' => 'application/json',
         ])->timeout(30)->post('https://api.openai.com/v1/chat/completions', [
             'model' => $model,
             'messages' => [
-                ['role' => 'user', 'content' => $prompt]
+                ['role' => 'user', 'content' => $prompt],
             ],
             'max_tokens' => $options['max_tokens'] ?? 1000,
             'temperature' => $options['temperature'] ?? 0.7,
         ]);
 
-        if (!$response->successful()) {
-            throw new \Exception('OpenAI API error: ' . $response->body());
+        if (! $response->successful()) {
+            throw new \Exception('OpenAI API error: '.$response->body());
         }
 
         $data = $response->json();
+
         return $data['choices'][0]['message']['content'] ?? '';
     }
 
@@ -415,19 +419,20 @@ Sadece önerilen değeri döndür (açıklama veya birim olmadan).
             'Content-Type' => 'application/json',
         ])->timeout(30)->post("https://generativelanguage.googleapis.com/v1beta/models/{$model}:generateContent?key={$apiKey}", [
             'contents' => [
-                ['parts' => [['text' => $prompt]]]
+                ['parts' => [['text' => $prompt]]],
             ],
             'generationConfig' => [
                 'maxOutputTokens' => $options['max_tokens'] ?? 1000,
                 'temperature' => $options['temperature'] ?? 0.7,
-            ]
+            ],
         ]);
 
-        if (!$response->successful()) {
-            throw new \Exception('Google API error: ' . $response->body());
+        if (! $response->successful()) {
+            throw new \Exception('Google API error: '.$response->body());
         }
 
         $data = $response->json();
+
         return $data['candidates'][0]['content']['parts'][0]['text'] ?? '';
     }
 
@@ -448,15 +453,16 @@ Sadece önerilen değeri döndür (açıklama veya birim olmadan).
             'model' => $model,
             'max_tokens' => $options['max_tokens'] ?? 1000,
             'messages' => [
-                ['role' => 'user', 'content' => $prompt]
-            ]
+                ['role' => 'user', 'content' => $prompt],
+            ],
         ]);
 
-        if (!$response->successful()) {
-            throw new \Exception('Claude API error: ' . $response->body());
+        if (! $response->successful()) {
+            throw new \Exception('Claude API error: '.$response->body());
         }
 
         $data = $response->json();
+
         return $data['content'][0]['text'] ?? '';
     }
 
@@ -470,22 +476,23 @@ Sadece önerilen değeri döndür (açıklama veya birim olmadan).
         }
 
         $response = Http::withHeaders([
-            'Authorization' => 'Bearer ' . $apiKey,
+            'Authorization' => 'Bearer '.$apiKey,
             'Content-Type' => 'application/json',
         ])->timeout(30)->post('https://api.deepseek.com/v1/chat/completions', [
             'model' => $model,
             'messages' => [
-                ['role' => 'user', 'content' => $prompt]
+                ['role' => 'user', 'content' => $prompt],
             ],
             'max_tokens' => $options['max_tokens'] ?? 1000,
             'temperature' => $options['temperature'] ?? 0.7,
         ]);
 
-        if (!$response->successful()) {
-            throw new \Exception('DeepSeek API error: ' . $response->body());
+        if (! $response->successful()) {
+            throw new \Exception('DeepSeek API error: '.$response->body());
         }
 
         $data = $response->json();
+
         return $data['choices'][0]['message']['content'] ?? '';
     }
 
@@ -500,28 +507,28 @@ Sadece önerilen değeri döndür (açıklama veya birim olmadan).
 
         // MiniMax API v2 endpoint
         $response = Http::withHeaders([
-            'Authorization' => 'Bearer ' . $apiKey,
+            'Authorization' => 'Bearer '.$apiKey,
             'Content-Type' => 'application/json',
         ])->timeout(60)->post('https://api.minimax.chat/v1/text/chatcompletion_v2', [
             'model' => $model,
             'messages' => [
                 [
                     'role' => 'user',
-                    'content' => $prompt
-                ]
+                    'content' => $prompt,
+                ],
             ],
             'temperature' => $options['temperature'] ?? 0.7,
             'max_tokens' => $options['max_tokens'] ?? 2000,
             'stream' => false,
         ]);
 
-        if (!$response->successful()) {
+        if (! $response->successful()) {
             $errorBody = $response->body();
             Log::error('MiniMax API error', [
                 'status' => $response->status(),
                 'body' => $errorBody,
             ]);
-            throw new \Exception('MiniMax API error: ' . $errorBody);
+            throw new \Exception('MiniMax API error: '.$errorBody);
         }
 
         $data = $response->json();
@@ -554,36 +561,37 @@ Sadece önerilen değeri döndür (açıklama veya birim olmadan).
             'options' => [
                 'temperature' => $options['temperature'] ?? 0.7,
                 'num_predict' => $options['max_tokens'] ?? 1000,
-            ]
+            ],
         ]);
 
-        if (!$response->successful()) {
-            throw new \Exception('Ollama API error: ' . $response->body());
+        if (! $response->successful()) {
+            throw new \Exception('Ollama API error: '.$response->body());
         }
 
         $data = $response->json();
+
         return $data['response'] ?? '';
     }
 
     protected function buildAnalysisPrompt($data, $context)
     {
-        $basePrompt = "Analiz et ve öneriler sun:";
+        $basePrompt = 'Analiz et ve öneriler sun:';
 
         if (isset($context['type'])) {
             switch ($context['type']) {
                 case 'category':
-                    $basePrompt = "Kategori analizi yap ve optimizasyon önerileri sun:";
+                    $basePrompt = 'Kategori analizi yap ve optimizasyon önerileri sun:';
                     break;
                 case 'feature':
-                    $basePrompt = "Özellik analizi yap ve öneriler sun:";
+                    $basePrompt = 'Özellik analizi yap ve öneriler sun:';
                     break;
                 case 'content':
-                    $basePrompt = "İçerik analizi yap ve iyileştirme önerileri sun:";
+                    $basePrompt = 'İçerik analizi yap ve iyileştirme önerileri sun:';
                     break;
             }
         }
 
-        return $basePrompt . "\n\n" . json_encode($data, JSON_PRETTY_PRINT);
+        return $basePrompt."\n\n".json_encode($data, JSON_PRETTY_PRINT);
     }
 
     protected function buildSuggestionPrompt($context, $type)
@@ -594,7 +602,7 @@ Sadece önerilen değeri döndür (açıklama veya birim olmadan).
             'content' => 'Bu içerik için öneriler sun:',
             'qr_code' => 'QR kod kullanımı için öneriler sun. İlan bilgilerine göre QR kodun nerede ve nasıl kullanılacağına dair pratik öneriler ver:',
             'navigation' => 'İlan navigasyonu için öneriler sun. Kullanıcı deneyimini iyileştirmek için önceki/sonraki ilan navigasyonu ve benzer ilanlar önerileri ver:',
-            'general' => 'Genel öneriler sun:'
+            'general' => 'Genel öneriler sun:',
         ];
 
         $basePrompt = $prompts[$type] ?? $prompts['general'];
@@ -602,10 +610,10 @@ Sadece önerilen değeri döndür (açıklama veya birim olmadan).
         // QR Code için özel prompt
         if ($type === 'qr_code' && isset($context['ilan'])) {
             $basePrompt .= "\n\nİlan Bilgileri:\n";
-            $basePrompt .= "- Başlık: " . ($context['ilan']['baslik'] ?? 'N/A') . "\n";
-            $basePrompt .= "- Kategori: " . ($context['ilan']['kategori'] ?? 'N/A') . "\n";
-            $basePrompt .= "- Lokasyon: " . ($context['ilan']['lokasyon'] ?? 'N/A') . "\n";
-            $basePrompt .= "- Fiyat: " . ($context['ilan']['fiyat'] ?? 'N/A') . "\n";
+            $basePrompt .= '- Başlık: '.($context['ilan']['baslik'] ?? 'N/A')."\n";
+            $basePrompt .= '- Kategori: '.($context['ilan']['kategori'] ?? 'N/A')."\n";
+            $basePrompt .= '- Lokasyon: '.($context['ilan']['lokasyon'] ?? 'N/A')."\n";
+            $basePrompt .= '- Fiyat: '.($context['ilan']['fiyat'] ?? 'N/A')."\n";
             $basePrompt .= "\nQR kod kullanım önerileri:\n";
             $basePrompt .= "- Fiziksel görüntülemelerde nerede kullanılmalı?\n";
             $basePrompt .= "- Print materyallerde nasıl yerleştirilmeli?\n";
@@ -616,17 +624,17 @@ Sadece önerilen değeri döndür (açıklama veya birim olmadan).
         // Navigation için özel prompt
         if ($type === 'navigation' && isset($context['ilan'])) {
             $basePrompt .= "\n\nİlan Bilgileri:\n";
-            $basePrompt .= "- Başlık: " . ($context['ilan']['baslik'] ?? 'N/A') . "\n";
-            $basePrompt .= "- Kategori: " . ($context['ilan']['kategori'] ?? 'N/A') . "\n";
-            $basePrompt .= "- Lokasyon: " . ($context['ilan']['lokasyon'] ?? 'N/A') . "\n";
-            $basePrompt .= "- Fiyat: " . ($context['ilan']['fiyat'] ?? 'N/A') . "\n";
+            $basePrompt .= '- Başlık: '.($context['ilan']['baslik'] ?? 'N/A')."\n";
+            $basePrompt .= '- Kategori: '.($context['ilan']['kategori'] ?? 'N/A')."\n";
+            $basePrompt .= '- Lokasyon: '.($context['ilan']['lokasyon'] ?? 'N/A')."\n";
+            $basePrompt .= '- Fiyat: '.($context['ilan']['fiyat'] ?? 'N/A')."\n";
             $basePrompt .= "\nNavigasyon önerileri:\n";
             $basePrompt .= "- Hangi ilanlar önceki/sonraki olarak gösterilmeli?\n";
             $basePrompt .= "- Benzer ilanlar nasıl belirlenmeli?\n";
             $basePrompt .= "- Kullanıcı deneyimini iyileştirmek için ne yapılmalı?\n";
         }
 
-        return $basePrompt . "\n\n" . json_encode($context, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        return $basePrompt."\n\n".json_encode($context, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
     }
 
     protected function formatResponse($response, $duration)
@@ -637,8 +645,8 @@ Sadece önerilen değeri döndür (açıklama veya birim olmadan).
             'metadata' => [
                 'provider' => $this->provider,
                 'duration' => round($duration, 3),
-                'timestamp' => now()->toISOString()
-            ]
+                'timestamp' => now()->toISOString(),
+            ],
         ];
     }
 
@@ -659,7 +667,7 @@ Sadece önerilen değeri döndür (açıklama veya birim olmadan).
                 'claude_api_key', 'claude_model',
                 'deepseek_api_key', 'deepseek_model',
                 'minimax_api_key', 'minimax_model',
-                'ollama_url', 'ollama_model'
+                'ollama_url', 'ollama_model',
             ];
 
             return Setting::whereIn('key', $keys)->pluck('value', 'key')->toArray();
@@ -675,7 +683,7 @@ Sadece önerilen değeri döndür (açıklama veya birim olmadan).
             'response' => is_string($response) ? $response : json_encode($response),
             'duration' => $duration,
             'status' => 'success',
-            'user_id' => auth()->id()
+            'user_id' => auth()->id(),
         ]);
     }
 
@@ -688,7 +696,7 @@ Sadece önerilen değeri döndür (açıklama veya birim olmadan).
             'response' => $error,
             'duration' => $duration,
             'status' => 'error',
-            'user_id' => auth()->id()
+            'user_id' => auth()->id(),
         ]);
     }
 
@@ -699,13 +707,13 @@ Sadece önerilen değeri döndür (açıklama veya birim olmadan).
             'google' => 'Google Gemini',
             'claude' => 'Anthropic Claude',
             'deepseek' => 'DeepSeek',
-            'ollama' => 'Ollama (Local)'
+            'ollama' => 'Ollama (Local)',
         ];
     }
 
     public function switchProvider($provider)
     {
-        if (!array_key_exists($provider, $this->getAvailableProviders())) {
+        if (! array_key_exists($provider, $this->getAvailableProviders())) {
             throw new \Exception("Invalid provider: {$provider}");
         }
 
@@ -726,11 +734,12 @@ Sadece önerilen değeri döndür (açıklama veya birim olmadan).
     public function getOllamaModels()
     {
         try {
-            $ollamaUrl = config('ai.ollama_api_url', 'http://51.75.64.121:11434');
+            // ⚠️ GÜVENLİK: localhost sadece SSH tunnel/VPN ile erişilebilir
+            $ollamaUrl = config('ai.ollama_api_url', 'http://localhost:11434');
 
-            $response = Http::timeout(10)->get($ollamaUrl . '/api/tags');
+            $response = Http::timeout(10)->get($ollamaUrl.'/api/tags');
 
-            if (!$response->successful()) {
+            if (! $response->successful()) {
                 throw new \Exception('Ollama sunucusuna erişilemiyor');
             }
 
@@ -746,7 +755,7 @@ Sadece önerilen değeri döndür (açıklama veya birim olmadan).
                         'family' => $model['details']['family'] ?? 'unknown',
                         'parameter_size' => $model['details']['parameter_size'] ?? 'unknown',
                         'quantization' => $model['details']['quantization_level'] ?? 'unknown',
-                        'modified_at' => $model['modified_at'] ?? null
+                        'modified_at' => $model['modified_at'] ?? null,
                     ];
                 }
             }
@@ -754,14 +763,14 @@ Sadece önerilen değeri döndür (açıklama veya birim olmadan).
             return [
                 'success' => true,
                 'models' => $models,
-                'server_url' => $ollamaUrl
+                'server_url' => $ollamaUrl,
             ];
 
         } catch (\Exception $e) {
             return [
                 'success' => false,
                 'error' => $e->getMessage(),
-                'models' => []
+                'models' => [],
             ];
         }
     }
@@ -777,7 +786,7 @@ Sadece önerilen değeri döndür (açıklama veya birim olmadan).
             $bytes /= 1024;
         }
 
-        return round($bytes, $precision) . ' ' . $units[$i];
+        return round($bytes, $precision).' '.$units[$i];
     }
 
     /**
@@ -792,7 +801,7 @@ Sadece önerilen değeri döndür (açıklama veya birim olmadan).
                 'performance' => 'Yüksek',
                 'speed' => 'Orta',
                 'memory' => '4.7 GB',
-                'recommended' => true
+                'recommended' => true,
             ],
             'qwen2.5:3b' => [
                 'title' => 'Qwen 2.5 (3B)',
@@ -800,7 +809,7 @@ Sadece önerilen değeri döndür (açıklama veya birim olmadan).
                 'performance' => 'İyi',
                 'speed' => 'Hızlı',
                 'memory' => '1.9 GB',
-                'recommended' => false
+                'recommended' => false,
             ],
             'phi3:mini' => [
                 'title' => 'Phi-3 Mini (3.8B)',
@@ -808,7 +817,7 @@ Sadece önerilen değeri döndür (açıklama veya birim olmadan).
                 'performance' => 'Orta',
                 'speed' => 'Hızlı',
                 'memory' => '2.2 GB',
-                'recommended' => false
+                'recommended' => false,
             ],
             'gemma2:2b' => [
                 'title' => 'Gemma 2 (2B)',
@@ -816,8 +825,8 @@ Sadece önerilen değeri döndür (açıklama veya birim olmadan).
                 'performance' => 'Temel',
                 'speed' => 'Çok Hızlı',
                 'memory' => '1.6 GB',
-                'recommended' => false
-            ]
+                'recommended' => false,
+            ],
         ];
     }
 
@@ -829,8 +838,9 @@ Sadece önerilen değeri döndür (açıklama veya birim olmadan).
     {
         $cacheKey = "ai_suggest_fields_{$kategoriSlug}_{$yayinTipi}";
 
-        return Cache::remember($cacheKey, 3600, function() use ($kategoriSlug, $yayinTipi, $context) {
+        return Cache::remember($cacheKey, 3600, function () use ($kategoriSlug, $yayinTipi, $context) {
             $prompt = $this->buildFieldSuggestionPrompt($kategoriSlug, $yayinTipi, $context);
+
             return $this->makeRequest('suggest-fields', $prompt, $context);
         });
     }
@@ -842,6 +852,7 @@ Sadece önerilen değeri döndür (açıklama veya birim olmadan).
     public function analyzePropertyFeatures($propertyData, $context = [])
     {
         $prompt = $this->buildPropertyAnalysisPrompt($propertyData, $context);
+
         return $this->makeRequest('analyze-property', $prompt, $context);
     }
 
@@ -853,26 +864,26 @@ Sadece önerilen değeri döndür (açıklama veya birim olmadan).
     {
         $cacheKey = "ai_smart_form_{$kategoriSlug}_{$yayinTipi}";
 
-        return Cache::remember($cacheKey, 3600, function() use ($kategoriSlug, $yayinTipi, $context) {
+        return Cache::remember($cacheKey, 3600, function () use ($kategoriSlug, $yayinTipi, $context) {
             $prompt = $this->buildSmartFormPrompt($kategoriSlug, $yayinTipi, $context);
+
             return $this->makeRequest('generate-form', $prompt, $context);
         });
     }
-
 
     /**
      * Property Analysis Prompt Builder
      */
     private function buildPropertyAnalysisPrompt($propertyData, $context)
     {
-        return "Mevcut emlak özellikleri analizi:\n\n" .
-               "Özellikler: " . json_encode($propertyData, JSON_UNESCAPED_UNICODE) . "\n\n" .
-               "Bu özellikler için:\n" .
-               "1. Eksik olan önemli özellikler neler?\n" .
-               "2. Hangi özellikler daha detaylandırılabilir?\n" .
-               "3. Bu emlak için hangi özellikler değer katabilir?\n" .
-               "4. AI ile otomatik doldurulabilecek özellikler hangileri?\n\n" .
-               "Her öneri için önem derecesi ve gerekçe belirt.";
+        return "Mevcut emlak özellikleri analizi:\n\n".
+               'Özellikler: '.json_encode($propertyData, JSON_UNESCAPED_UNICODE)."\n\n".
+               "Bu özellikler için:\n".
+               "1. Eksik olan önemli özellikler neler?\n".
+               "2. Hangi özellikler daha detaylandırılabilir?\n".
+               "3. Bu emlak için hangi özellikler değer katabilir?\n".
+               "4. AI ile otomatik doldurulabilecek özellikler hangileri?\n\n".
+               'Her öneri için önem derecesi ve gerekçe belirt.';
     }
 
     /**
@@ -884,24 +895,24 @@ Sadece önerilen değeri döndür (açıklama veya birim olmadan).
             'konut' => 'Konut',
             'arsa' => 'Arsa',
             'yazlik' => 'Yazlık',
-            'isyeri' => 'İşyeri'
+            'isyeri' => 'İşyeri',
         ];
 
         $kategoriName = $kategoriNames[$kategoriSlug] ?? $kategoriSlug;
 
-        return "{$kategoriName} kategorisi için akıllı form oluştur:\n\n" .
-               "Form field'ları şu kategorilerde organize et:\n" .
-               "1. Altyapı\n" .
-               "2. Genel Özellikler\n" .
-               "3. Manzara\n" .
-               "4. Konum\n\n" .
-               "Her field için:\n" .
-               "- Field tipi (text, number, boolean, select, textarea)\n" .
-               "- Zorunlu mu? (true/false)\n" .
-               "- AI önerisi var mı? (true/false)\n" .
-               "- AI otomatik doldurma var mı? (true/false)\n" .
-               "- Select seçenekleri (eğer select ise)\n" .
-               "- Birim (m², km, vs.)\n\n" .
-               "JSON formatında döndür.";
+        return "{$kategoriName} kategorisi için akıllı form oluştur:\n\n".
+               "Form field'ları şu kategorilerde organize et:\n".
+               "1. Altyapı\n".
+               "2. Genel Özellikler\n".
+               "3. Manzara\n".
+               "4. Konum\n\n".
+               "Her field için:\n".
+               "- Field tipi (text, number, boolean, select, textarea)\n".
+               "- Zorunlu mu? (true/false)\n".
+               "- AI önerisi var mı? (true/false)\n".
+               "- AI otomatik doldurma var mı? (true/false)\n".
+               "- Select seçenekleri (eğer select ise)\n".
+               "- Birim (m², km, vs.)\n\n".
+               'JSON formatında döndür.';
     }
 }

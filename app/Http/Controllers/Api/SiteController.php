@@ -4,9 +4,6 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\SiteApartman;
-use App\Models\Il;
-use App\Models\Ilce;
-use App\Models\Mahalle;
 use App\Services\Response\ResponseService;
 use App\Traits\ValidatesApiRequests;
 use Illuminate\Http\Request;
@@ -20,6 +17,7 @@ use Illuminate\Support\Facades\Log;
 class SiteController extends Controller
 {
     use ValidatesApiRequests;
+
     /**
      * Site/Apartman Live Search
      * GET /admin/api/sites/search
@@ -30,7 +28,7 @@ class SiteController extends Controller
             'q' => 'required|string|min:2|max:100',
             'il_id' => 'nullable|exists:iller,id',
             'ilce_id' => 'nullable|exists:ilceler,id',
-            'limit' => 'nullable|integer|min:1|max:50'
+            'limit' => 'nullable|integer|min:1|max:50',
         ]);
 
         if ($validated instanceof \Illuminate\Http\JsonResponse) {
@@ -72,20 +70,20 @@ class SiteController extends Controller
                     'il_id' => $site->il_id,
                     'ilce_id' => $site->ilce_id,
                     'mahalle_id' => $site->mahalle_id,
-                    'display_text' => $this->buildDisplayText($site)
+                    'display_text' => $this->buildDisplayText($site),
                 ];
             });
 
             return ResponseService::success([
                 'data' => $formattedSites,
                 'count' => $formattedSites->count(),
-                'query' => $query
+                'query' => $query,
             ], 'Site araması başarıyla tamamlandı');
         } catch (\Exception $e) {
             Log::error('Site arama hatası', [
                 'error' => $e->getMessage(),
                 'query' => $request->input('q'),
-                'filters' => $request->only(['il_id', 'ilce_id'])
+                'filters' => $request->only(['il_id', 'ilce_id']),
             ]);
 
             return ResponseService::serverError('Arama sırasında hata oluştu.', $e);
@@ -104,7 +102,7 @@ class SiteController extends Controller
             'ilce_id' => 'required|exists:ilceler,id',
             'mahalle_id' => 'nullable|exists:mahalleler,id',
             'blok_adi' => 'nullable|string|max:100',
-            'adres' => 'nullable|string|max:500'
+            'adres' => 'nullable|string|max:500',
         ]);
 
         if ($validated instanceof \Illuminate\Http\JsonResponse) {
@@ -123,8 +121,8 @@ class SiteController extends Controller
                     'existing_site' => [
                         'id' => $existingSite->id,
                         'name' => $existingSite->name,
-                        'display_text' => $this->buildDisplayText($existingSite)
-                    ]
+                        'display_text' => $this->buildDisplayText($existingSite),
+                    ],
                 ], 'DUPLICATE_SITE');
             }
 
@@ -136,7 +134,7 @@ class SiteController extends Controller
                 'ilce_id' => $request->ilce_id,
                 'mahalle_id' => $request->mahalle_id,
                 'status' => 'active',
-                'created_by' => auth()->id()
+                'created_by' => auth()->id(),
             ]);
 
             // İlişkileri yükle
@@ -145,7 +143,7 @@ class SiteController extends Controller
             Log::info('Yeni site oluşturuldu', [
                 'site_id' => $site->id,
                 'name' => $site->name,
-                'user_id' => auth()->id()
+                'user_id' => auth()->id(),
             ]);
 
             return ResponseService::success([
@@ -154,12 +152,12 @@ class SiteController extends Controller
                 'blok_adi' => $site->blok_adi,
                 'adres' => $site->adres,
                 'full_address' => $this->buildFullAddress($site),
-                'display_text' => $this->buildDisplayText($site)
+                'display_text' => $this->buildDisplayText($site),
             ], 'Site/apartman başarıyla oluşturuldu', 201);
         } catch (\Exception $e) {
             Log::error('Site oluşturma hatası', [
                 'error' => $e->getMessage(),
-                'request_data' => $request->all()
+                'request_data' => $request->all(),
             ]);
 
             return ResponseService::serverError('Site oluşturma sırasında hata oluştu.', $e);
@@ -187,8 +185,8 @@ class SiteController extends Controller
                     'ilce_id' => $site->ilce_id,
                     'mahalle_id' => $site->mahalle_id,
                     'status' => $site->status,
-                    'display_text' => $this->buildDisplayText($site)
-                ]
+                    'display_text' => $this->buildDisplayText($site),
+                ],
             ], 'Site detayları başarıyla getirildi');
         } catch (\Exception $e) {
             return ResponseService::notFound('Site bulunamadı');
@@ -231,7 +229,7 @@ class SiteController extends Controller
                     'full_address' => $this->buildFullAddress($site),
                     'status' => $site->status,
                     'display_text' => $this->buildDisplayText($site),
-                    'created_at' => $site->created_at?->format('d.m.Y H:i')
+                    'created_at' => $site->created_at?->format('d.m.Y H:i'),
                 ];
             });
 
@@ -241,13 +239,13 @@ class SiteController extends Controller
                     'current_page' => $sites->currentPage(),
                     'last_page' => $sites->lastPage(),
                     'per_page' => $sites->perPage(),
-                    'total' => $sites->total()
-                ]
+                    'total' => $sites->total(),
+                ],
             ], 'Site listesi başarıyla getirildi');
         } catch (\Exception $e) {
             Log::error('Site listeleme hatası', [
                 'error' => $e->getMessage(),
-                'filters' => $request->all()
+                'filters' => $request->all(),
             ]);
 
             return ResponseService::serverError('Site listesi alınırken hata oluştu.', $e);

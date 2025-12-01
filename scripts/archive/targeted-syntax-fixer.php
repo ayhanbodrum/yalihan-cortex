@@ -3,18 +3,17 @@
 /**
  * Targeted Syntax Fixer - Spesifik syntax hatalarını hedef alarak düzelten script
  */
-
-$migrationsDir = __DIR__ . '/../database/migrations';
+$migrationsDir = __DIR__.'/../database/migrations';
 $fixedFiles = [];
 $errorFiles = [];
 
 echo "🎯 Targeted Syntax Fixer başlatılıyor...\n";
 
-foreach (glob($migrationsDir . '/*.php') as $filePath) {
+foreach (glob($migrationsDir.'/*.php') as $filePath) {
     $filename = basename($filePath);
 
     // İlk önce syntax kontrolü yaparak hatalı dosyaları tespit et
-    $syntaxCheck = shell_exec("php -l " . escapeshellarg($filePath) . " 2>&1");
+    $syntaxCheck = shell_exec('php -l '.escapeshellarg($filePath).' 2>&1');
     if (strpos($syntaxCheck, 'No syntax errors') !== false) {
         continue; // Bu dosya zaten temiz
     }
@@ -31,9 +30,9 @@ foreach (glob($migrationsDir . '/*.php') as $filePath) {
             // Yanlış: }; beklenen: } veya function
             if (trim($lines[$i]) === '};' && $i < count($lines) - 3) {
                 // Eğer bu satırdan sonra 'public function down' geliyorsa
-                if (isset($lines[$i+1]) && strpos($lines[$i+1], 'public function down') !== false) {
+                if (isset($lines[$i + 1]) && strpos($lines[$i + 1], 'public function down') !== false) {
                     $lines[$i] = '    }'; // Sadece } yap
-                    echo "  ✅ Line " . ($i+1) . ": '}; -> }' düzeltildi\n";
+                    echo '  ✅ Line '.($i + 1).": '}; -> }' düzeltildi\n";
                 }
                 // Eğer bu class'ın gerçek sonuysa
                 elseif ($i > count($lines) - 5) {
@@ -42,7 +41,7 @@ foreach (glob($migrationsDir . '/*.php') as $filePath) {
                 // Ortada bir yerdeyse ve sonrasında function geliyorsa
                 else {
                     $lines[$i] = '    }';
-                    echo "  ✅ Line " . ($i+1) . ": Intermediate '}; -> }' düzeltildi\n";
+                    echo '  ✅ Line '.($i + 1).": Intermediate '}; -> }' düzeltildi\n";
                 }
             }
         }
@@ -50,7 +49,7 @@ foreach (glob($migrationsDir . '/*.php') as $filePath) {
 
     // Problem 2: "Unmatched '}'" - Genellikle line 18-20
     if (preg_match('/Unmatched \'}\' in .* on line (\d+)/', $syntaxCheck, $matches)) {
-        $errorLine = (int)$matches[1] - 1; // 0-indexed
+        $errorLine = (int) $matches[1] - 1; // 0-indexed
 
         if ($errorLine > 0 && $errorLine < count($lines)) {
             $problematicLine = trim($lines[$errorLine]);
@@ -71,16 +70,16 @@ foreach (glob($migrationsDir . '/*.php') as $filePath) {
                 }
 
                 // up() function var ama down() yok, bu line down()'ın başlangıcı olmalı
-                if ($foundUpFunction && !$foundDownFunction) {
-                    $lines[$errorLine] = '    }' . "\n\n" . '    public function down(): void' . "\n" . '    {' . "\n" . '        //';
-                    echo "  ✅ Line " . ($errorLine+1) . ": Missing down() function added\n";
+                if ($foundUpFunction && ! $foundDownFunction) {
+                    $lines[$errorLine] = '    }'."\n\n".'    public function down(): void'."\n".'    {'."\n".'        //';
+                    echo '  ✅ Line '.($errorLine + 1).": Missing down() function added\n";
                 }
                 // down() function da var, bu class'ın kapanışı olmalı
                 elseif ($foundUpFunction && $foundDownFunction) {
                     // Son satırda ise class kapanışı
                     if ($errorLine > count($lines) - 4) {
-                        $lines[$errorLine] = '    }' . "\n" . '};';
-                        echo "  ✅ Line " . ($errorLine+1) . ": Class closing fixed\n";
+                        $lines[$errorLine] = '    }'."\n".'};';
+                        echo '  ✅ Line '.($errorLine + 1).": Class closing fixed\n";
                     }
                 }
             }
@@ -94,16 +93,16 @@ foreach (glob($migrationsDir . '/*.php') as $filePath) {
     if (strpos($newContent, 'public function up') !== false && strpos($newContent, 'public function down') === false) {
         $newContent = preg_replace(
             '/(.*public function up\(\)[^}]*\})/s',
-            '$1' . "\n\n" . '    public function down(): void' . "\n" . '    {' . "\n" . '        //' . "\n" . '    }',
+            '$1'."\n\n".'    public function down(): void'."\n".'    {'."\n".'        //'."\n".'    }',
             $newContent
         );
         echo "  ✅ Missing down() function added\n";
     }
 
     // Problem 4: Class ending düzeltme
-    if (!preg_match('/\};\s*$/', $newContent) && strpos($newContent, 'return new class extends Migration') !== false) {
+    if (! preg_match('/\};\s*$/', $newContent) && strpos($newContent, 'return new class extends Migration') !== false) {
         $newContent = rtrim($newContent);
-        if (!preg_match('/\}\s*$/', $newContent)) {
+        if (! preg_match('/\}\s*$/', $newContent)) {
             $newContent .= "\n    }\n};";
         } else {
             $newContent .= "\n};";
@@ -123,10 +122,10 @@ foreach (glob($migrationsDir . '/*.php') as $filePath) {
 }
 
 echo "\n📊 Targeted Syntax Fixer Özeti:\n";
-echo "✅ Düzeltilen dosyalar: " . count($fixedFiles) . "\n";
-echo "❌ Hata alan dosyalar: " . count($errorFiles) . "\n";
+echo '✅ Düzeltilen dosyalar: '.count($fixedFiles)."\n";
+echo '❌ Hata alan dosyalar: '.count($errorFiles)."\n";
 
-if (!empty($fixedFiles)) {
+if (! empty($fixedFiles)) {
     echo "\n🔧 Düzeltilen dosyalar:\n";
     foreach ($fixedFiles as $file) {
         echo "  - $file\n";

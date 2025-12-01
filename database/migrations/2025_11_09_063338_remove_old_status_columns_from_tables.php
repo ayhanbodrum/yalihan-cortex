@@ -2,8 +2,8 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
@@ -54,7 +54,7 @@ return new class extends Migration
         ];
 
         foreach ($tablesToClean as $tableName => $oldColumn) {
-            if (!Schema::hasTable($tableName)) {
+            if (! Schema::hasTable($tableName)) {
                 continue;
             }
 
@@ -62,12 +62,12 @@ return new class extends Migration
             $hasStatus = Schema::hasColumn($tableName, 'status');
             $hasOldColumn = Schema::hasColumn($tableName, $oldColumn);
 
-            if (!$hasOldColumn) {
+            if (! $hasOldColumn) {
                 // Eski kolon yoksa atla
                 continue;
             }
 
-            if (!$hasStatus) {
+            if (! $hasStatus) {
                 // Status kolonu yoksa ekle ve veri taşı
                 Schema::table($tableName, function (Blueprint $table) use ($oldColumn) {
                     $table->boolean('status')->default(true)->after($oldColumn);
@@ -127,12 +127,12 @@ return new class extends Migration
         ];
 
         foreach ($tablesToRestore as $tableName => $columns) {
-            if (!Schema::hasTable($tableName)) {
+            if (! Schema::hasTable($tableName)) {
                 continue;
             }
 
             foreach ($columns as $columnName => $columnType) {
-                if (!Schema::hasColumn($tableName, $columnName)) {
+                if (! Schema::hasColumn($tableName, $columnName)) {
                     Schema::table($tableName, function (Blueprint $table) use ($columnName, $columnType) {
                         if ($columnType === 'tinyint') {
                             $table->tinyInteger($columnName)->default(1)->after('status');

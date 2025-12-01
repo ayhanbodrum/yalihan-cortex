@@ -7,12 +7,12 @@ use App\Services\AI\ImageBasedAIDescriptionService;
 use App\Services\Response\ResponseService;
 use App\Traits\ValidatesApiRequests;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 
 class ImageAIController extends Controller
 {
     use ValidatesApiRequests;
+
     protected $imageAIService;
 
     public function __construct(ImageBasedAIDescriptionService $imageAIService)
@@ -53,7 +53,7 @@ class ImageAIController extends Controller
             // Geçici dosyayı sil
             Storage::disk('public')->delete($imagePath);
 
-            if (!$analysis['success']) {
+            if (! $analysis['success']) {
                 // ✅ REFACTORED: Using ResponseService
                 return ResponseService::error('AI analizi başarısız', 500, [], null, $analysis['error'] ?? 'Unknown error');
             }
@@ -61,7 +61,7 @@ class ImageAIController extends Controller
             // ✅ REFACTORED: Using ResponseService
             return ResponseService::success([
                 'data' => $analysis['analysis'],
-                'raw_analysis' => $analysis['raw_analysis'] ?? null
+                'raw_analysis' => $analysis['raw_analysis'] ?? null,
             ], 'Resim analizi başarıyla tamamlandı');
         } catch (\Exception $e) {
             // ✅ REFACTORED: Using ResponseService
@@ -94,7 +94,7 @@ class ImageAIController extends Controller
             // ✅ REFACTORED: Using ResponseService
             return ResponseService::success([
                 'tags' => $tags,
-                'tag_count' => count($tags)
+                'tag_count' => count($tags),
             ], 'Etiketleme başarıyla tamamlandı');
         } catch (\Exception $e) {
             // ✅ REFACTORED: Using ResponseService
@@ -124,7 +124,7 @@ class ImageAIController extends Controller
 
             Storage::disk('public')->delete($imagePath);
 
-            if (!$quality['success']) {
+            if (! $quality['success']) {
                 // ✅ REFACTORED: Using ResponseService
                 return ResponseService::error('Kalite analizi başarısız', 500, [], null, $quality['error'] ?? 'Unknown error');
             }
@@ -165,7 +165,7 @@ class ImageAIController extends Controller
                 $results[] = [
                     'index' => $index,
                     'filename' => $image->getClientOriginalName(),
-                    'analysis' => $analysis
+                    'analysis' => $analysis,
                 ];
 
                 Storage::disk('public')->delete($imagePath);
@@ -174,7 +174,7 @@ class ImageAIController extends Controller
             // ✅ REFACTORED: Using ResponseService
             return ResponseService::success([
                 'results' => $results,
-                'total_images' => count($images)
+                'total_images' => count($images),
             ], 'Toplu resim analizi başarıyla tamamlandı');
         } catch (\Exception $e) {
             // ✅ REFACTORED: Using ResponseService

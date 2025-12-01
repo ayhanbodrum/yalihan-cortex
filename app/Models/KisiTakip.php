@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * KisiTakip Model
- * 
+ *
  * Context7 Standardı: kisi_takip table
  * Replaces: MusteriTakip (deprecated)
  */
@@ -221,4 +221,3 @@ class KisiTakip extends Model
         return $query->whereIn('oncelik', ['Yüksek', 'Acil']);
     }
 }
-

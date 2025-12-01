@@ -86,8 +86,6 @@ class Etiket extends Model
         }
     }
 
-    
-
     protected static function boot()
     {
         parent::boot();
@@ -99,7 +97,7 @@ class Etiket extends Model
                 $counter = 1;
 
                 while (static::where('slug', $slug)->exists()) {
-                    $slug = $baseSlug . '-' . $counter;
+                    $slug = $baseSlug.'-'.$counter;
                     $counter++;
                 }
 
@@ -121,8 +119,8 @@ class Etiket extends Model
     public function scopeBadges($query)
     {
         return $query->where('is_badge', true)
-                     ->where('status', true)
-                     ->orderBy('display_order'); // Context7: order → display_order
+            ->where('status', true)
+            ->orderBy('display_order'); // Context7: order → display_order
     }
 
     public function scopeType($query, $type)
@@ -133,7 +131,7 @@ class Etiket extends Model
     public function ilanlar()
     {
         return $this->belongsToMany(Ilan::class, 'ilan_etiketler')
-                    ->withPivot(['display_order', 'is_featured'])
-                    ->withTimestamps();
+            ->withPivot(['display_order', 'is_featured'])
+            ->withTimestamps();
     }
 }

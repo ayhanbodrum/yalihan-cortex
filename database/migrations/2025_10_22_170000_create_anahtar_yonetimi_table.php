@@ -19,7 +19,7 @@ return new class extends Migration
                 'Hazır',
                 'Teslim Edildi',
                 'Geri Alındı',
-                'Kayıp'
+                'Kayıp',
             ])->default('Beklemede'); // Anahtar durumu
             $table->datetime('teslim_tarihi')->nullable(); // Teslim tarihi
             $table->unsignedBigInteger('teslim_eden_kisi_id')->nullable(); // Teslim eden kişi
@@ -31,7 +31,7 @@ return new class extends Migration
                 'Yedek Anahtar',
                 'Kodlu Anahtar',
                 'Kartlı Anahtar',
-                'Uzaktan Kumanda'
+                'Uzaktan Kumanda',
             ])->default('Ana Anahtar'); // Anahtar tipi
             $table->integer('anahtar_sayisi')->default(1); // Anahtar sayısı
             $table->json('anahtar_ozellikleri')->nullable(); // Anahtar özellikleri

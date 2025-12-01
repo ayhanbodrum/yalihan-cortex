@@ -13,6 +13,7 @@ class IlanPolicy
         if ($user->role && $user->role->name === UserRole::SUPERADMIN->value) {
             return true;
         }
+
         return $user->id === ($ilan->danisman_id ?? 0);
     }
 }

@@ -1,5 +1,6 @@
 #!/usr/bin/env php
 <?php
+
 /**
  * Database Schema Usage Validator
  * Yalıhan Bekçi - 2 Kasım 2025
@@ -11,7 +12,6 @@
  * - DESCRIBE table_name çalıştıracak
  * - Query'lerdeki kolonları karşılaştıracak
  */
-
 echo "🔍 Database schema validation (BETA)...\n";
 echo "⚠️  Bu özellik henüz tam implement edilmedi.\n";
 echo "\n";
@@ -29,7 +29,7 @@ echo "📋 Kontrol edilen dosyalar:\n";
 $suspiciousPatterns = 0;
 
 foreach ($files as $file) {
-    if (!file_exists($file)) {
+    if (! file_exists($file)) {
         continue;
     }
 
@@ -40,7 +40,7 @@ foreach ($files as $file) {
 
     // 1. Türkçe kolon adları
     if (preg_match('/->orderBy\([\'"](?:durum|aktif|sehir|ad_soyad)[\'"]/', $content)) {
-        $suspiciousQueries[] = "Türkçe kolon adı kullanımı (durum, aktif, sehir, etc.)";
+        $suspiciousQueries[] = 'Türkçe kolon adı kullanımı (durum, aktif, sehir, etc.)';
     }
 
     // 2. Context7'de yasaklı kolon adları
@@ -57,7 +57,7 @@ foreach ($files as $file) {
         $suspiciousQueries[] = "->get(['icon']) kullanımı (etiketler tablosunda yok!)";
     }
 
-    if (!empty($suspiciousQueries)) {
+    if (! empty($suspiciousQueries)) {
         echo "\n⚠️  $file:\n";
         foreach ($suspiciousQueries as $query) {
             echo "   - $query\n";

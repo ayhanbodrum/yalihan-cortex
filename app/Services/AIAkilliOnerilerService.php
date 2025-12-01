@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Http;
 
 /**
  * AI Akıllı Öneriler Servisi
@@ -28,7 +27,7 @@ class AIAkilliOnerilerService
      */
     public function getSmartRecommendations(array $ilanData, string $context = 'create'): array
     {
-        $cacheKey = "ai_oneriler_" . md5(serialize($ilanData) . $context);
+        $cacheKey = 'ai_oneriler_'.md5(serialize($ilanData).$context);
 
         return Cache::remember($cacheKey, 1800, function () use ($ilanData, $context) {
             return $this->generateSmartRecommendations($ilanData, $context);
@@ -46,7 +45,7 @@ class AIAkilliOnerilerService
             'fiyat_onerileri' => $this->getPriceRecommendations($ilanData),
             'seo_onerileri' => $this->getSEORecommendations($ilanData),
             'ozellik_onerileri' => $this->getFeatureRecommendations($ilanData),
-            'aciklama_onerileri' => $this->getDescriptionRecommendations($ilanData)
+            'aciklama_onerileri' => $this->getDescriptionRecommendations($ilanData),
         ];
 
         return $recommendations;
@@ -72,8 +71,8 @@ class AIAkilliOnerilerService
                 'suggestions' => [
                     'İmar durumunu net belirtin',
                     'Altyapı durumunu açıklayın',
-                    'Yatırım potansiyelini vurgulayın'
-                ]
+                    'Yatırım potansiyelini vurgulayın',
+                ],
             ];
         }
 
@@ -86,8 +85,8 @@ class AIAkilliOnerilerService
                 'suggestions' => [
                     'Sezon bilgilerini detaylandırın',
                     'Havuz ve plaj mesafesini belirtin',
-                    'Misafir kapasitesini açıklayın'
-                ]
+                    'Misafir kapasitesini açıklayın',
+                ],
             ];
         }
 
@@ -116,8 +115,8 @@ class AIAkilliOnerilerService
                 'suggestions' => [
                     'Yakın çevredeki önemli noktaları belirtin',
                     'Ulaşım kolaylığını vurgulayın',
-                    'Manzara özelliklerini açıklayın'
-                ]
+                    'Manzara özelliklerini açıklayın',
+                ],
             ];
         }
 
@@ -131,8 +130,8 @@ class AIAkilliOnerilerService
                 'suggestions' => [
                     'Bölgenin gelişim potansiyelini belirtin',
                     'Yakın projeleri araştırın',
-                    'Bölge hakkında bilgi verin'
-                ]
+                    'Bölge hakkında bilgi verin',
+                ],
             ];
         }
 
@@ -160,8 +159,8 @@ class AIAkilliOnerilerService
                 'suggestions' => [
                     'Bölge ortalaması ile karşılaştırın',
                     'Özelliklerinizi fiyatlandırın',
-                    'Pazarlama stratejisi geliştirin'
-                ]
+                    'Pazarlama stratejisi geliştirin',
+                ],
             ];
         }
 
@@ -189,8 +188,8 @@ class AIAkilliOnerilerService
                 'suggestions' => [
                     'Başlığı 30-60 karakter arasında tutun',
                     'Anahtar kelimeleri başlığa ekleyin',
-                    'Konum bilgisini başlığa dahil edin'
-                ]
+                    'Konum bilgisini başlığa dahil edin',
+                ],
             ];
         }
 
@@ -204,8 +203,8 @@ class AIAkilliOnerilerService
                 'suggestions' => [
                     'Açıklamayı en az 200 karakter yapın',
                     'Anahtar kelimeleri doğal şekilde kullanın',
-                    'Özellikleri detaylandırın'
-                ]
+                    'Özellikleri detaylandırın',
+                ],
             ];
         }
 
@@ -233,8 +232,8 @@ class AIAkilliOnerilerService
                     'İmarlı/İmarsız durumu',
                     'Altyapı durumu (Elektrik, Su, Doğalgaz)',
                     'Yatırım potansiyeli',
-                    'Manzara özellikleri'
-                ]
+                    'Manzara özellikleri',
+                ],
             ];
         }
 
@@ -248,8 +247,8 @@ class AIAkilliOnerilerService
                     'Havuz durumu',
                     'Denize mesafe',
                     'Misafir kapasitesi',
-                    'Sezon bilgileri'
-                ]
+                    'Sezon bilgileri',
+                ],
             ];
         }
 
@@ -276,8 +275,8 @@ class AIAkilliOnerilerService
                     'Detaylı açıklama yazın',
                     'Özellikleri listeleyin',
                     'Konum avantajlarını belirtin',
-                    'İletişim bilgilerini ekleyin'
-                ]
+                    'İletişim bilgilerini ekleyin',
+                ],
             ];
         }
 
@@ -296,10 +295,11 @@ class AIAkilliOnerilerService
             return [
                 'ai_recommendations' => $response,
                 'confidence' => $this->calculateConfidence($response),
-                'timestamp' => now()
+                'timestamp' => now(),
             ];
         } catch (\Exception $e) {
-            \Log::error('AI öneriler hatası: ' . $e->getMessage());
+            \Log::error('AI öneriler hatası: '.$e->getMessage());
+
             return [];
         }
     }
@@ -309,7 +309,7 @@ class AIAkilliOnerilerService
      */
     private function buildRecommendationPrompt(array $ilanData): string
     {
-        return "Bu emlak ilanı için akıllı öneriler ver: " . json_encode($ilanData);
+        return 'Bu emlak ilanı için akıllı öneriler ver: '.json_encode($ilanData);
     }
 
     /**
@@ -349,7 +349,7 @@ class AIAkilliOnerilerService
             'fiyat' => [],
             'seo' => [],
             'ozellik' => [],
-            'aciklama' => []
+            'aciklama' => [],
         ];
 
         foreach ($recommendations as $recommendation) {

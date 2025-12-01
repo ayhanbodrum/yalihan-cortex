@@ -105,7 +105,7 @@ class IlanInternalResource extends JsonResource
                 return $this->fotograflar->map(function ($foto) {
                     return [
                         'id' => $foto->id,
-                        'url' => $foto->url ?? asset('storage/' . $foto->dosya_yolu),
+                        'url' => $foto->url ?? asset('storage/'.$foto->dosya_yolu),
                         'sira' => $foto->sira,
                         'kapak_fotografi' => $foto->kapak_fotografi ?? false,
                         'dosya_yolu' => $foto->dosya_yolu, // INTERNAL

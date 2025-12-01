@@ -3,11 +3,10 @@
 namespace App\Modules\TakimYonetimi\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Models\Proje;
 use App\Models\Gorev;
-use App\Models\User;
-use Illuminate\Http\Request;
+use App\Models\Proje;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class ProjeApiController extends Controller
 {
@@ -37,9 +36,9 @@ class ProjeApiController extends Controller
 
         if ($request->has('arama')) {
             $arama = $request->arama;
-            $query->where(function($q) use ($arama) {
+            $query->where(function ($q) use ($arama) {
                 $q->where('proje_adi', 'like', "%{$arama}%")
-                  ->orWhere('aciklama', 'like', "%{$arama}%");
+                    ->orWhere('aciklama', 'like', "%{$arama}%");
             });
         }
 
@@ -53,7 +52,7 @@ class ProjeApiController extends Controller
         return response()->json([
             'success' => true,
             'data' => $projeler,
-            'message' => 'Proje listesi getirildi'
+            'message' => 'Proje listesi getirildi',
         ]);
     }
 
@@ -69,7 +68,7 @@ class ProjeApiController extends Controller
             'toplam_gorev' => $proje->gorevler->count(),
             'tamamlanan_gorev' => $proje->gorevler->where('status', 'tamamlandi')->count(),
             'devam_eden_gorev' => $proje->gorevler->where('status', 'devam_ediyor')->count(),
-            'gecikmis_gorev' => $proje->gorevler->filter(function($gorev) {
+            'gecikmis_gorev' => $proje->gorevler->filter(function ($gorev) {
                 return $gorev->isGecikmis();
             })->count(),
             'progress_yuzde' => $proje->progress,
@@ -83,7 +82,7 @@ class ProjeApiController extends Controller
         return response()->json([
             'success' => true,
             'data' => $proje,
-            'message' => 'Proje detayı getirildi'
+            'message' => 'Proje detayı getirildi',
         ]);
     }
 
@@ -112,7 +111,7 @@ class ProjeApiController extends Controller
         return response()->json([
             'success' => true,
             'data' => $proje,
-            'message' => 'Proje başarıyla oluşturuldu'
+            'message' => 'Proje başarıyla oluşturuldu',
         ], 201);
     }
 
@@ -143,7 +142,7 @@ class ProjeApiController extends Controller
         return response()->json([
             'success' => true,
             'data' => $proje,
-            'message' => 'Proje başarıyla güncellendi'
+            'message' => 'Proje başarıyla güncellendi',
         ]);
     }
 
@@ -160,7 +159,7 @@ class ProjeApiController extends Controller
         if ($statusGorevler > 0) {
             return response()->json([
                 'success' => false,
-                'message' => 'Bu projede status görevler var. Önce görevleri tamamlayın veya silin.'
+                'message' => 'Bu projede status görevler var. Önce görevleri tamamlayın veya silin.',
             ], 400);
         }
 
@@ -168,7 +167,7 @@ class ProjeApiController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Proje başarıyla silindi'
+            'message' => 'Proje başarıyla silindi',
         ]);
     }
 
@@ -201,7 +200,7 @@ class ProjeApiController extends Controller
         return response()->json([
             'success' => true,
             'data' => $gorev,
-            'message' => 'Görev projeye başarıyla eklendi'
+            'message' => 'Görev projeye başarıyla eklendi',
         ], 201);
     }
 
@@ -218,7 +217,7 @@ class ProjeApiController extends Controller
                 'toplam_gorev' => $proje->gorevler->count(),
                 'tamamlanan_gorev' => $proje->gorevler->where('status', 'tamamlandi')->count(),
                 'devam_eden_gorev' => $proje->gorevler->where('status', 'devam_ediyor')->count(),
-                'gecikmis_gorev' => $proje->gorevler->filter(function($gorev) {
+                'gecikmis_gorev' => $proje->gorevler->filter(function ($gorev) {
                     return $gorev->isGecikmis();
                 })->count(),
                 'progress_yuzde' => $proje->progress,
@@ -242,7 +241,7 @@ class ProjeApiController extends Controller
             'gorev_dagilimi' => [
                 'status_dagilimi' => $proje->gorevler->groupBy('status')->map->count(),
                 'oncelik_dagilimi' => $proje->gorevler->groupBy('oncelik')->map->count(),
-                'kullanici_dagilimi' => $proje->gorevler->groupBy('user_id')->map(function($gorevler) {
+                'kullanici_dagilimi' => $proje->gorevler->groupBy('user_id')->map(function ($gorevler) {
                     return [
                         'kullanici' => $gorevler->first()->user->name ?? 'Bilinmiyor',
                         'gorev_sayisi' => $gorevler->count(),
@@ -260,7 +259,7 @@ class ProjeApiController extends Controller
         return response()->json([
             'success' => true,
             'data' => $rapor,
-            'message' => 'Proje raporu oluşturuldu'
+            'message' => 'Proje raporu oluşturuldu',
         ]);
     }
 
@@ -277,7 +276,7 @@ class ProjeApiController extends Controller
         return response()->json([
             'success' => true,
             'data' => $gorevler,
-            'message' => 'Proje görevleri getirildi'
+            'message' => 'Proje görevleri getirildi',
         ]);
     }
 
@@ -292,7 +291,7 @@ class ProjeApiController extends Controller
         return response()->json([
             'success' => true,
             'data' => $proje,
-            'message' => 'Proje progress\'i güncellendi'
+            'message' => 'Proje progress\'i güncellendi',
         ]);
     }
 
@@ -310,7 +309,7 @@ class ProjeApiController extends Controller
         $proje->update(['status' => $validated['status']]);
 
         // Durum değişikliğine göre özel işlemler
-        if ($validated['status'] === 'devam_ediyor' && !$proje->baslangic_tarihi) {
+        if ($validated['status'] === 'devam_ediyor' && ! $proje->baslangic_tarihi) {
             $proje->update(['baslangic_tarihi' => now()]);
         }
 
@@ -322,7 +321,7 @@ class ProjeApiController extends Controller
         return response()->json([
             'success' => true,
             'data' => $proje->load(['user', 'takim']),
-            'message' => 'Proje statusu başarıyla güncellendi'
+            'message' => 'Proje statusu başarıyla güncellendi',
         ]);
     }
 
@@ -365,7 +364,7 @@ class ProjeApiController extends Controller
         return response()->json([
             'success' => true,
             'data' => $istatistikler,
-            'message' => 'Proje istatistikleri getirildi'
+            'message' => 'Proje istatistikleri getirildi',
         ]);
     }
 }

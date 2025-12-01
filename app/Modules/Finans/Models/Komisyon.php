@@ -2,9 +2,9 @@
 
 namespace App\Modules\Finans\Models;
 
+use App\Models\Kisi;
 use App\Modules\BaseModule\Models\BaseModel;
-use App\Modules\Emlak\Models\Ilan;
-use App\Modules\Crm\Models\Musteri;
+use App\Modules\Emlak\Models\Ilan; // Context7: musteri → kisi
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -26,11 +26,19 @@ class Komisyon extends BaseModel
      */
     protected $fillable = [
         'ilan_id',
-        'musteri_id',
+        'kisi_id', // Context7: musteri_id → kisi_id
         'danisman_id',
+        // Split Commission Fields (Context7: C7-SPLIT-COMMISSION-2025-11-25)
+        'satici_danisman_id',
+        'alici_danisman_id',
         'komisyon_tipi', // satis, kiralama, danismanlik
         'komisyon_orani',
         'komisyon_tutari',
+        // Split Commission Fields
+        'satici_komisyon_orani',
+        'alici_komisyon_orani',
+        'satici_komisyon_tutari',
+        'alici_komisyon_tutari',
         'para_birimi',
         'ilan_fiyati',
         'hesaplama_tarihi',
@@ -47,6 +55,10 @@ class Komisyon extends BaseModel
     protected $casts = [
         'komisyon_orani' => 'decimal:2',
         'komisyon_tutari' => 'decimal:2',
+        'satici_komisyon_orani' => 'decimal:2',
+        'alici_komisyon_orani' => 'decimal:2',
+        'satici_komisyon_tutari' => 'decimal:2',
+        'alici_komisyon_tutari' => 'decimal:2',
         'ilan_fiyati' => 'decimal:2',
         'hesaplama_tarihi' => 'date',
         'odeme_tarihi' => 'date',
@@ -61,19 +73,51 @@ class Komisyon extends BaseModel
     }
 
     /**
-     * Müşteri ile ilişki
+     * Kişi ile ilişki (Context7: musteri → kisi)
      */
-    public function musteri()
+    public function kisi()
     {
-        return $this->belongsTo(Musteri::class);
+        return $this->belongsTo(Kisi::class, 'kisi_id');
     }
 
     /**
-     * Danışman ile ilişki
+     * Müşteri ile ilişki (Deprecated - Backward compatibility)
+     *
+     * @deprecated 2025-11-25 Use kisi() instead. This method will be removed in v2.0.0
+     * @see kisi() For the Context7-compliant relationship
+     */
+    public function musteri()
+    {
+        return $this->belongsTo(Kisi::class, 'kisi_id');
+    }
+
+    /**
+     * Danışman ile ilişki (Deprecated - Backward compatibility)
+     *
+     * @deprecated 2025-11-25 Use saticiDanisman() or aliciDanisman() instead. This method will be removed in v2.0.0
+     * @see saticiDanisman() For seller's consultant relationship
+     * @see aliciDanisman() For buyer's consultant relationship
+     * Context7: Split commission system (C7-SPLIT-COMMISSION-2025-11-25)
      */
     public function danisman()
     {
         return $this->belongsTo(\App\Modules\Auth\Models\User::class, 'danisman_id');
+    }
+
+    /**
+     * Satıcı danışman ile ilişki (Context7: C7-SPLIT-COMMISSION-2025-11-25)
+     */
+    public function saticiDanisman()
+    {
+        return $this->belongsTo(\App\Modules\Auth\Models\User::class, 'satici_danisman_id');
+    }
+
+    /**
+     * Alıcı danışman ile ilişki (Context7: C7-SPLIT-COMMISSION-2025-11-25)
+     */
+    public function aliciDanisman()
+    {
+        return $this->belongsTo(\App\Modules\Auth\Models\User::class, 'alici_danisman_id');
     }
 
     /**
@@ -125,7 +169,7 @@ class Komisyon extends BaseModel
      */
     private function getKomisyonOrani(): float
     {
-        return match($this->komisyon_tipi) {
+        return match ($this->komisyon_tipi) {
             'satis' => 3.0, // %3
             'kiralama' => 1.0, // %1
             'danismanlik' => 2.0, // %2
@@ -155,11 +199,14 @@ class Komisyon extends BaseModel
     }
 
     /**
-     * Komisyon durumu rengi
+     * Komisyon durumu rengi (Status color)
+     *
+     * Context7: Attribute accessor - "durum" is not a database field
+     * Returns color code based on status field value
      */
     public function getDurumRengiAttribute(): string
     {
-        return match($this->status) {
+        return match ($this->status) {
             'hesaplandi' => 'yellow',
             'onaylandi' => 'green',
             'odendi' => 'blue',
@@ -172,7 +219,7 @@ class Komisyon extends BaseModel
      */
     public function getKomisyonTipiEtiketiAttribute(): string
     {
-        return match($this->komisyon_tipi) {
+        return match ($this->komisyon_tipi) {
             'satis' => 'Satış Komisyonu',
             'kiralama' => 'Kiralama Komisyonu',
             'danismanlik' => 'Danışmanlık Komisyonu',

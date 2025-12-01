@@ -2,13 +2,13 @@
 
 namespace App\Services;
 
-use App\Models\IlanKategori;
-use App\Models\Kisi;
-use App\Models\User;
 use App\Models\Il;
+use App\Models\IlanKategori;
 use App\Models\Ilce;
+use App\Models\Kisi;
 use App\Models\Mahalle;
 use App\Models\Site;
+use App\Models\User;
 use Illuminate\Support\Collection;
 
 /**
@@ -25,8 +25,6 @@ class IlanDataProviderService
 {
     /**
      * Tüm ilan create/edit sayfaları için standart veri seti
-     *
-     * @return array
      */
     public function getStandardFormData(): array
     {
@@ -40,8 +38,6 @@ class IlanDataProviderService
 
     /**
      * Ana kategorileri getir (parent_id = null)
-     *
-     * @return Collection
      */
     public function getAnaKategoriler(): Collection
     {
@@ -52,8 +48,6 @@ class IlanDataProviderService
 
     /**
      * Aktif kişileri getir (İlan sahipleri için)
-     *
-     * @return Collection
      */
     public function getAktifKisiler(): Collection
     {
@@ -65,23 +59,19 @@ class IlanDataProviderService
 
     /**
      * Danışmanları getir (User modeli, danisman rolü)
-     *
-     * @return Collection
      */
     public function getDanismanlar(): Collection
     {
-        return User::whereHas('roles', function($q) {
+        return User::whereHas('roles', function ($q) {
             $q->where('name', 'danisman');
         })
-        ->where('status', 1)
-        ->orderBy('name')
-        ->get(['id', 'name', 'email']);
+            ->where('status', 1)
+            ->orderBy('name')
+            ->get(['id', 'name', 'email']);
     }
 
     /**
      * İlleri getir
-     *
-     * @return Collection
      */
     public function getIller(): Collection
     {
@@ -91,9 +81,6 @@ class IlanDataProviderService
 
     /**
      * Alt kategorileri getir (AJAX için)
-     *
-     * @param int $anaKategoriId
-     * @return Collection
      */
     public function getAltKategoriler(int $anaKategoriId): Collection
     {
@@ -106,9 +93,6 @@ class IlanDataProviderService
 
     /**
      * Yayın tiplerini getir (AJAX için)
-     *
-     * @param int $altKategoriId
-     * @return Collection
      */
     public function getYayinTipleri(int $altKategoriId): Collection
     {
@@ -122,9 +106,6 @@ class IlanDataProviderService
 
     /**
      * İlçeleri getir (AJAX için)
-     *
-     * @param int $ilId
-     * @return Collection
      */
     public function getIlceler(int $ilId): Collection
     {
@@ -135,9 +116,6 @@ class IlanDataProviderService
 
     /**
      * Mahalleleri getir (AJAX için)
-     *
-     * @param int $ilceId
-     * @return Collection
      */
     public function getMahalleler(int $ilceId): Collection
     {
@@ -148,8 +126,6 @@ class IlanDataProviderService
 
     /**
      * Aktif siteleri getir (Context7 Live Search için)
-     *
-     * @return Collection
      */
     public function getAktifSiteler(): Collection
     {
@@ -160,9 +136,6 @@ class IlanDataProviderService
 
     /**
      * İl bazında siteleri getir
-     *
-     * @param int $ilId
-     * @return Collection
      */
     public function getSitelerByIl(int $ilId): Collection
     {
@@ -174,9 +147,6 @@ class IlanDataProviderService
 
     /**
      * İlçe bazında siteleri getir
-     *
-     * @param int $ilceId
-     * @return Collection
      */
     public function getSitelerByIlce(int $ilceId): Collection
     {
@@ -188,16 +158,13 @@ class IlanDataProviderService
 
     /**
      * Kategori bazlı özellikleri getir
-     *
-     * @param int|null $altKategoriId
-     * @return Collection
      */
     public function getOzelliklerByKategori(?int $altKategoriId = null): Collection
     {
         if ($altKategoriId) {
             // Kategoriye özel özellikler
             return \App\Models\Feature::where('active', true)
-                ->whereHas('categories', function($q) use ($altKategoriId) {
+                ->whereHas('categories', function ($q) use ($altKategoriId) {
                     $q->where('ilan_kategori_id', $altKategoriId);
                 })
                 ->orderBy('display_order')
@@ -212,9 +179,6 @@ class IlanDataProviderService
 
     /**
      * İlan istatistikleri
-     *
-     * @param int|null $danismanId
-     * @return array
      */
     public function getIstatistikler(?int $danismanId = null): array
     {
@@ -235,8 +199,6 @@ class IlanDataProviderService
     /**
      * Danışman bazlı ilanlar
      *
-     * @param int $danismanId
-     * @param int $perPage
      * @return \Illuminate\Pagination\LengthAwarePaginator
      */
     public function getDanismanIlanlari(int $danismanId, int $perPage = 20)
@@ -249,8 +211,6 @@ class IlanDataProviderService
 
     /**
      * Context7 uyumlu field mapping
-     *
-     * @return array
      */
     public function getFieldMapping(): array
     {
@@ -266,9 +226,6 @@ class IlanDataProviderService
     /**
      * Cache'li veri getirme (Performance optimization)
      *
-     * @param string $key
-     * @param callable $callback
-     * @param int $minutes
      * @return mixed
      */
     protected function remember(string $key, callable $callback, int $minutes = 60)
@@ -282,24 +239,20 @@ class IlanDataProviderService
 
     /**
      * Cache'li ana kategoriler
-     *
-     * @return Collection
      */
     public function getCachedAnaKategoriler(): Collection
     {
-        return $this->remember('ilan_ana_kategoriler', function() {
+        return $this->remember('ilan_ana_kategoriler', function () {
             return $this->getAnaKategoriler();
         }, 60);
     }
 
     /**
      * Cache'li iller
-     *
-     * @return Collection
      */
     public function getCachedIller(): Collection
     {
-        return $this->remember('iller', function() {
+        return $this->remember('iller', function () {
             return $this->getIller();
         }, 120);
     }

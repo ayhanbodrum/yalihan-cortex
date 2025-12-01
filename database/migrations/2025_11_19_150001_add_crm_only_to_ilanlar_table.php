@@ -8,12 +8,12 @@ return new class extends Migration
 {
     public function up(): void
     {
-        if (!Schema::hasTable('ilanlar')) {
+        if (! Schema::hasTable('ilanlar')) {
             return;
         }
 
         Schema::table('ilanlar', function (Blueprint $table) {
-            if (!Schema::hasColumn('ilanlar', 'crm_only')) {
+            if (! Schema::hasColumn('ilanlar', 'crm_only')) {
                 $table->boolean('crm_only')->default(false)->after('status');
                 $table->index('crm_only');
             }
@@ -22,7 +22,7 @@ return new class extends Migration
 
     public function down(): void
     {
-        if (!Schema::hasTable('ilanlar')) {
+        if (! Schema::hasTable('ilanlar')) {
             return;
         }
 

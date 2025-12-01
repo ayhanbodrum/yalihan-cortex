@@ -134,6 +134,15 @@
                         return;
                     }
 
+                    // ✅ Duplicate kontrolü - Aynı event'i tekrar işleme
+                    const eventKey = e.detail.category?.id + '-' + (e.detail.yayinTipiId || e.detail
+                        .yayinTipi || 'null');
+                    if (this._lastProcessedEventKey === eventKey) {
+                        console.log('⏭️ Field Dependencies: Aynı event zaten işlendi, atlanıyor');
+                        return;
+                    }
+                    this._lastProcessedEventKey = eventKey;
+
                     // ✅ Context7: Kategori ve yayın tipi bilgilerini al
                     const kategori = e.detail.category;
                     const yayinTipi = e.detail.yayinTipiId || e.detail.yayinTipi || null;
@@ -314,7 +323,7 @@
                             'true');
                         // Badge'i güncelle
                         const badge = input.closest('.flex')?.querySelector(
-                            'span[class*="bg-green"]') ||
+                                'span[class*="bg-green"]') ||
                             input.closest('.flex')?.querySelector('span[class*="bg-gray"]');
                         if (badge) {
                             badge.textContent = input.checked ? 'Dolu' : 'Boş';
@@ -850,11 +859,114 @@
                     ];
                 }
 
-                if (options && Array.isArray(options)) {
+                // ✅ Context7: İmar durumu için renkli seçenekler
+                if (field.slug === 'imar_statusu') {
+                    // Config'den imar durumu seçeneklerini çek
+                    const imarStatusuConfig = @json(config('yali_options.imar_statusu', []));
+
+                    if (imarStatusuConfig && Object.keys(imarStatusuConfig).length > 0) {
+                        Object.entries(imarStatusuConfig).forEach(([key, config]) => {
+                            if (typeof config === 'object' && config.label) {
+                                const option = document.createElement('option');
+                                option.value = config.label;
+                                option.textContent = `${config.icon || ''} ${config.label}`;
+
+                                // ✅ Context7: Renk bilgisini data attribute olarak ekle
+                                if (config.color) {
+                                    option.setAttribute('data-color', config.color);
+                                    // Tailwind CSS class'larını ekle (green, yellow, purple, blue, orange, gray)
+                                    const colorClasses = {
+                                        'green': 'bg-green-50 text-green-900 dark:bg-green-900/20 dark:text-green-100',
+                                        'yellow': 'bg-yellow-50 text-yellow-900 dark:bg-yellow-900/20 dark:text-yellow-100',
+                                        'purple': 'bg-purple-50 text-purple-900 dark:bg-purple-900/20 dark:text-purple-100',
+                                        'blue': 'bg-blue-50 text-blue-900 dark:bg-blue-900/20 dark:text-blue-100',
+                                        'orange': 'bg-orange-50 text-orange-900 dark:bg-orange-900/20 dark:text-orange-100',
+                                        'gray': 'bg-gray-50 text-gray-900 dark:bg-gray-900/20 dark:text-gray-100'
+                                    };
+                                    if (colorClasses[config.color]) {
+                                        option.className = colorClasses[config.color];
+                                    }
+                                }
+
+                                select.appendChild(option);
+                            }
+                        });
+                    } else if (options && Array.isArray(options)) {
+                        // Fallback: Eğer config yoksa options array'ini kullan
+                        options.forEach(opt => {
+                            const option = document.createElement('option');
+                            option.value = opt;
+                            option.textContent = opt;
+                            select.appendChild(option);
+                        });
+                    }
+                }
+                // ✅ Context7: Oda Sayısı için renkli seçenekler (Konut kategorisi)
+                else if (field.slug === 'oda_sayisi' || field.slug === 'oda-sayisi') {
+                    const odaSayisiConfig = @json(config('yali_options.oda_sayisi_options', []));
+
+                    if (odaSayisiConfig && Array.isArray(odaSayisiConfig) && odaSayisiConfig.length > 0) {
+                        odaSayisiConfig.forEach((config) => {
+                            if (typeof config === 'object' && config.value) {
+                                const option = document.createElement('option');
+                                option.value = config.value;
+                                option.textContent =
+                                    `${config.icon || ''} ${config.label || config.value}`;
+                                option.setAttribute('data-color-classes', config.color || '');
+
+                                // Renk sınıflarını ekle
+                                if (config.color) {
+                                    option.className = config.color;
+                                }
+
+                                select.appendChild(option);
+                            } else if (typeof config === 'string') {
+                                // Fallback: String formatında ise
+                                const option = document.createElement('option');
+                                option.value = config;
+                                option.textContent = config;
+                                select.appendChild(option);
+                            }
+                        });
+
+                        // Select değiştiğinde renk uygula
+                        select.addEventListener('change', function() {
+                            const selectedOption = this.options[this.selectedIndex];
+                            if (selectedOption && selectedOption.getAttribute('data-color-classes')) {
+                                const colorClasses = selectedOption.getAttribute('data-color-classes');
+                                // Select'in kendisine renk uygula
+                                select.className =
+                                    'w-full px-4 py-2.5 border-2 rounded-lg font-semibold focus:ring-2 focus:ring-lime-500 transition-all duration-200 ' +
+                                    colorClasses;
+                            } else {
+                                // Varsayılan stil
+                                select.className =
+                                    'w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 dark:bg-gray-900 text-black dark:text-white font-semibold rounded-lg focus:ring-2 focus:ring-lime-500';
+                            }
+                        });
+                    } else if (options && Array.isArray(options)) {
+                        // Fallback: Eğer config yoksa options array'ini kullan
+                        options.forEach(opt => {
+                            const option = document.createElement('option');
+                            option.value = opt;
+                            option.textContent = opt;
+                            select.appendChild(option);
+                        });
+                    }
+                } else if (options && Array.isArray(options)) {
+                    // Diğer select field'lar için normal options
                     options.forEach(opt => {
                         const option = document.createElement('option');
                         option.value = opt;
                         option.textContent = opt;
+                        select.appendChild(option);
+                    });
+                } else if (options && typeof options === 'object' && !Array.isArray(options)) {
+                    // Object formatında options (key-value pairs)
+                    Object.entries(options).forEach(([key, value]) => {
+                        const option = document.createElement('option');
+                        option.value = key;
+                        option.textContent = value;
                         select.appendChild(option);
                     });
                 }
@@ -894,19 +1006,216 @@
             },
 
             createText(field, groupName) {
+                // ✅ Context7: TKGM sorgulama butonu için özel wrapper
+                const wrapper = document.createElement('div');
+                wrapper.className = 'relative';
+
                 const input = document.createElement('input');
                 input.type = 'text';
                 input.name = `field_${field.slug}`;
                 input.id = `field_${field.slug}`;
                 input.placeholder = field.placeholder || field.name;
                 input.className =
-                    'w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 dark:bg-gray-900 text-black dark:text-white font-semibold rounded-lg focus:ring-2 focus:ring-lime-500 placeholder-gray-600 dark:placeholder-gray-500';
+                    'w-full px-4 py-2.5 pr-12 border border-gray-300 dark:border-gray-600 dark:bg-gray-900 text-black dark:text-white font-semibold rounded-lg focus:ring-2 focus:ring-lime-500 placeholder-gray-600 dark:placeholder-gray-500';
                 if (field.required || field.is_required) input.required = true;
                 input.setAttribute('data-feature', field.slug);
                 input.setAttribute('data-feature-label', field.name);
                 input.setAttribute('data-feature-id', String(field.id));
                 if (groupName) input.setAttribute('data-feature-group', String(groupName));
+
+                // ✅ Context7: TKGM butonu sadece ada_no ve parsel_no için
+                if (field.slug === 'ada_no' || field.slug === 'parsel_no') {
+                    const tkgmButton = document.createElement('button');
+                    tkgmButton.type = 'button';
+                    tkgmButton.className =
+                        'absolute right-2 top-1/2 -translate-y-1/2 px-3 py-1.5 text-xs font-semibold bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 active:scale-95 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed';
+                    tkgmButton.innerHTML = '🔍 TKGM';
+                    tkgmButton.setAttribute('title', 'TKGM\'den sorgula');
+                    tkgmButton.setAttribute('data-field-slug', field.slug);
+                    tkgmButton.onclick = (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        this.queryTKGM(field.slug, tkgmButton);
+                    };
+
+                    wrapper.appendChild(input);
+                    wrapper.appendChild(tkgmButton);
+                    return wrapper;
+                }
+
                 return input;
+            },
+
+            /**
+             * TKGM sorgulama fonksiyonu
+             * Context7: C7-TKGM-QUERY-2025-11-30
+             */
+            async queryTKGM(fieldSlug, buttonElement) {
+                try {
+                    // İl, ilçe, mahalle bilgilerini al
+                    const ilId = document.getElementById('il_id')?.value || document.querySelector(
+                        '[name="il_id"]')?.value;
+                    const ilceId = document.getElementById('ilce_id')?.value || document.querySelector(
+                        '[name="ilce_id"]')?.value;
+                    const mahalleId = document.getElementById('mahalle_id')?.value || document
+                        .querySelector('[name="mahalle_id"]')?.value;
+                    const adaNo = document.getElementById('field_ada_no')?.value || '';
+                    const parselNo = document.getElementById('field_parsel_no')?.value || '';
+
+                    if (!ilId || !ilceId) {
+                        const msg = 'TKGM sorgulama için İl ve İlçe seçimi zorunludur.';
+                        if (window.toast) {
+                            window.toast.error(msg);
+                        } else {
+                            alert('⚠️ ' + msg);
+                        }
+                        return;
+                    }
+
+                    if (!adaNo || !parselNo) {
+                        const msg = 'TKGM sorgulama için Ada No ve Parsel No bilgileri gereklidir.';
+                        if (window.toast) {
+                            window.toast.warning(msg);
+                        } else {
+                            alert('⚠️ ' + msg);
+                        }
+                        return;
+                    }
+
+                    // Loading state
+                    const button = buttonElement || document.querySelector(
+                        `button[data-field-slug="${fieldSlug}"]`);
+                    if (button) {
+                        button.disabled = true;
+                        button.innerHTML = '⏳ Sorgulanıyor...';
+                    }
+
+                    // API çağrısı
+                    const response = await fetch('/api/ai/fetch-tkgm', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
+                                ?.content || ''
+                        },
+                        body: JSON.stringify({
+                            il_id: parseInt(ilId),
+                            ilce_id: parseInt(ilceId),
+                            mahalle_id: mahalleId ? parseInt(mahalleId) : null,
+                            ada_no: adaNo,
+                            parsel_no: parselNo
+                        })
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success && data.data) {
+                        // TKGM verilerini form alanlarına doldur
+                        if (data.data.alan_m2) {
+                            const alanM2Input = document.getElementById('field_alan_m2');
+                            if (alanM2Input) alanM2Input.value = data.data.alan_m2;
+                        }
+
+                        if (data.data.imar_statusu) {
+                            const imarStatusuSelect = document.getElementById('field_imar_statusu');
+                            if (imarStatusuSelect) {
+                                imarStatusuSelect.value = data.data.imar_statusu;
+                                imarStatusuSelect.dispatchEvent(new Event('change'));
+                            }
+                        }
+
+                        if (data.data.kaks) {
+                            const kaksInput = document.getElementById('field_kaks');
+                            if (kaksInput) kaksInput.value = data.data.kaks;
+                        }
+
+                        if (data.data.taks) {
+                            const taksInput = document.getElementById('field_taks');
+                            if (taksInput) taksInput.value = data.data.taks;
+                        }
+
+                        if (data.data.gabari) {
+                            const gabariInput = document.getElementById('field_gabari');
+                            if (gabariInput) gabariInput.value = data.data.gabari;
+                        }
+
+                        // Koordinat bilgisi varsa map'e ekle
+                        if (data.data.lat && data.data.lng) {
+                            // Map'e marker ekle (eğer map varsa)
+                            if (window.locationMap && typeof window.locationMap.setMarker === 'function') {
+                                window.locationMap.setMarker(data.data.lat, data.data.lng);
+                            }
+                        }
+
+                        // m² fiyatını otomatik hesapla (eğer fiyat ve alan varsa)
+                        const fiyatInput = document.querySelector('[name="satis_fiyati"]') || document
+                            .getElementById('field_satis_fiyati');
+                        if (fiyatInput && data.data.alan_m2 && parseFloat(fiyatInput.value) > 0) {
+                            this.calculateM2Price(parseFloat(fiyatInput.value), data.data.alan_m2);
+                        }
+
+                        // Başarı mesajı
+                        if (window.toast) {
+                            window.toast.success('TKGM sorgulama başarılı! Veriler otomatik dolduruldu.');
+                        } else {
+                            alert('✅ TKGM sorgulama başarılı! Veriler otomatik dolduruldu.');
+                        }
+                    } else {
+                        throw new Error(data.message || 'TKGM sorgulama başarısız');
+                    }
+                } catch (error) {
+                    console.error('TKGM Query Error:', error);
+                    const errorMsg = error.message || 'TKGM sorgulama sırasında bir hata oluştu.';
+
+                    if (window.toast) {
+                        window.toast.error(errorMsg);
+                    } else {
+                        alert('❌ ' + errorMsg);
+                    }
+                } finally {
+                    // Loading state'i kaldır
+                    const button = buttonElement || document.querySelector(
+                        `button[data-field-slug="${fieldSlug}"]`);
+                    if (button) {
+                        button.disabled = false;
+                        button.innerHTML = '🔍 TKGM';
+                    }
+                }
+            },
+
+            /**
+             * m² Fiyatı hesapla
+             * Context7: C7-M2-PRICE-CALC-2025-11-30
+             */
+            async calculateM2Price(satisFiyati, alanM2) {
+                try {
+                    const response = await fetch('/api/ai/calculate-m2-price', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
+                                ?.content || ''
+                        },
+                        body: JSON.stringify({
+                            satis_fiyati: satisFiyati,
+                            alan_m2: alanM2
+                        })
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success && data.data && data.data.m2_fiyati) {
+                        const m2FiyatiInput = document.getElementById('field_m2_fiyati');
+                        if (m2FiyatiInput) {
+                            m2FiyatiInput.value = data.data.m2_fiyati;
+                            m2FiyatiInput.dispatchEvent(new Event('change'));
+                        }
+                    }
+                } catch (error) {
+                    console.error('m² Price Calculation Error:', error);
+                }
             },
 
             showLoading() {

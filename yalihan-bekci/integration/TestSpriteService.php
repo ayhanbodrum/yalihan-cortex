@@ -2,9 +2,9 @@
 
 namespace App\Services\MCP;
 
+use Exception;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-use Exception;
 
 class TestSpriteService
 {
@@ -34,7 +34,7 @@ class TestSpriteService
     /**
      * Testleri çalıştır
      *
-     * @param array $options Test seçenekleri
+     * @param  array  $options  Test seçenekleri
      * @return array Test sonuçları
      */
     public function runTests(array $options = [])
@@ -48,21 +48,21 @@ class TestSpriteService
 
             Log::error('TestSprite MCP sunucusu hata döndürdü', [
                 'status' => $response->status(),
-                'body' => $response->body()
+                'body' => $response->body(),
             ]);
 
             return [
                 'error' => true,
-                'message' => 'TestSprite MCP sunucusu hata döndürdü: ' . $response->status()
+                'message' => 'TestSprite MCP sunucusu hata döndürdü: '.$response->status(),
             ];
         } catch (Exception $e) {
             Log::error('TestSprite MCP sunucusuna bağlanırken hata oluştu', [
-                'exception' => $e->getMessage()
+                'exception' => $e->getMessage(),
             ]);
 
             return [
                 'error' => true,
-                'message' => 'TestSprite MCP sunucusuna bağlanırken hata oluştu: ' . $e->getMessage()
+                'message' => 'TestSprite MCP sunucusuna bağlanırken hata oluştu: '.$e->getMessage(),
             ];
         }
     }
@@ -70,14 +70,14 @@ class TestSpriteService
     /**
      * Bilgi tabanında arama yap
      *
-     * @param string $query Arama sorgusu
+     * @param  string  $query  Arama sorgusu
      * @return array Arama sonuçları
      */
     public function search(string $query)
     {
         try {
             $response = Http::get("{$this->serverUrl}/knowledge", [
-                'q' => $query
+                'q' => $query,
             ]);
 
             if ($response->successful()) {
@@ -86,12 +86,12 @@ class TestSpriteService
 
             return [
                 'error' => true,
-                'message' => 'Arama yapılırken hata oluştu: ' . $response->status()
+                'message' => 'Arama yapılırken hata oluştu: '.$response->status(),
             ];
         } catch (Exception $e) {
             return [
                 'error' => true,
-                'message' => 'Arama yapılırken hata oluştu: ' . $e->getMessage()
+                'message' => 'Arama yapılırken hata oluştu: '.$e->getMessage(),
             ];
         }
     }
@@ -99,14 +99,14 @@ class TestSpriteService
     /**
      * Rapor oluştur
      *
-     * @param string $type Rapor türü (summary, detailed, changelog)
+     * @param  string  $type  Rapor türü (summary, detailed, changelog)
      * @return array Rapor bilgileri
      */
     public function generateReport(string $type = 'summary')
     {
         try {
             $response = Http::get("{$this->serverUrl}/reports", [
-                'type' => $type
+                'type' => $type,
             ]);
 
             if ($response->successful()) {
@@ -115,12 +115,12 @@ class TestSpriteService
 
             return [
                 'error' => true,
-                'message' => 'Rapor oluşturulurken hata oluştu: ' . $response->status()
+                'message' => 'Rapor oluşturulurken hata oluştu: '.$response->status(),
             ];
         } catch (Exception $e) {
             return [
                 'error' => true,
-                'message' => 'Rapor oluşturulurken hata oluştu: ' . $e->getMessage()
+                'message' => 'Rapor oluşturulurken hata oluştu: '.$e->getMessage(),
             ];
         }
     }
@@ -134,6 +134,7 @@ class TestSpriteService
     {
         try {
             $response = Http::get($this->serverUrl);
+
             return $response->successful();
         } catch (Exception $e) {
             return false;
@@ -150,15 +151,16 @@ class TestSpriteService
         $nodePath = $this->config['node_path'] ?? 'node';
         $serverPath = base_path('testsprite/server/index.js');
 
-        if (!file_exists($serverPath)) {
+        if (! file_exists($serverPath)) {
             Log::error('TestSprite MCP sunucu dosyası bulunamadı', [
-                'path' => $serverPath
+                'path' => $serverPath,
             ]);
+
             return false;
         }
 
         try {
-            $command = "{$nodePath} {$serverPath} > " . storage_path('logs/testsprite.log') . " 2>&1 &";
+            $command = "{$nodePath} {$serverPath} > ".storage_path('logs/testsprite.log').' 2>&1 &';
             exec($command);
 
             // Sunucunun başlaması için biraz bekle
@@ -167,8 +169,9 @@ class TestSpriteService
             return $this->isServerRunning();
         } catch (Exception $e) {
             Log::error('TestSprite MCP sunucusu başlatılırken hata oluştu', [
-                'exception' => $e->getMessage()
+                'exception' => $e->getMessage(),
             ]);
+
             return false;
         }
     }

@@ -3,11 +3,9 @@
 namespace Tests\Unit\Services;
 
 use App\Models\Ilan;
-use App\Models\User;
 use App\Services\Statistics\StatisticsService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
 class StatisticsServiceTest extends TestCase
@@ -19,7 +17,7 @@ class StatisticsServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->statisticsService = new StatisticsService();
+        $this->statisticsService = new StatisticsService;
     }
 
     /**
@@ -157,8 +155,7 @@ class StatisticsServiceTest extends TestCase
     {
         // This should not throw an exception
         $this->statisticsService->clearCache(Ilan::class);
-        
+
         $this->assertTrue(true); // If no exception, test passes
     }
 }
-

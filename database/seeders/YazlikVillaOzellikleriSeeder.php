@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
+use App\Models\Feature;
+use App\Models\FeatureCategory;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Schema;
-use App\Models\FeatureCategory;
-use App\Models\Feature;
 
 /**
  * Yazlık Villa Özellikleri Seeder
@@ -20,8 +20,9 @@ class YazlikVillaOzellikleriSeeder extends Seeder
         $this->command->info('🏖️ Yazlık Villa Özellikleri oluşturuluyor...');
 
         // Context7: Schema kontrolü
-        if (!Schema::hasTable('feature_categories') || !Schema::hasTable('features')) {
+        if (! Schema::hasTable('feature_categories') || ! Schema::hasTable('features')) {
             $this->command->warn('⚠️ Feature tabloları bulunamadı!');
+
             return;
         }
 
@@ -33,7 +34,7 @@ class YazlikVillaOzellikleriSeeder extends Seeder
             'Barbekü', 'Mangal Alanı', 'Açık Mutfak', 'Dış Mekan Duşu', 'Çocuk Oyun Alanı',
             'Açık Otopark', 'Kapalı Otopark', 'Deniz Manzarası', 'Dağ Manzarası',
             'Havuz Manzarası', 'Güvenlik Sistemi', 'Kamera Güvenliği', 'Bahçe Aydınlatması',
-            'Denize Sıfır', 'Deniz Erişimi', 'Özel Plaj', 'Plaj Şemsiyesi', 'Plaj Şezlongu'
+            'Denize Sıfır', 'Deniz Erişimi', 'Özel Plaj', 'Plaj Şemsiyesi', 'Plaj Şezlongu',
         ]);
 
         // 2. İÇ MEKAN ÖZELLİKLERİ
@@ -44,19 +45,19 @@ class YazlikVillaOzellikleriSeeder extends Seeder
             'Buzdolabı', 'Derin Dondurucu', 'Fırın', 'Mikrodalga', 'Kahve Makinesi',
             'Espresso Makinesi', 'Su Sebili', 'Ankastre Mutfak', 'Tam Donanımlı Mutfak',
             'Mutfak Gereçleri', 'Bardak Takımı', 'Tabak Takımı', 'Çatal Bıçak Takımı',
-            'Balkon', 'Balkon Mobilyası', 'Çatı Katı', 'Depo', 'Kiler', 'Köşe Dolapları'
+            'Balkon', 'Balkon Mobilyası', 'Çatı Katı', 'Depo', 'Kiler', 'Köşe Dolapları',
         ]);
 
         // 3. YATAK ODASI ÖZELLİKLERİ
         $yatakOdasiKategori = $this->createFeatureCategory('Yatak Odası Özellikleri', 'yatak-odasi-ozellikleri', 'checkbox', [
             'Ebeveyn Yatak Odası', 'Ebeveyn Banyosu', 'Ebeveyn Balkonu', 'Giyinme Odası',
-            'Yatak Odası Kliması', 'Yatak Odası TV', 'Gardırop', 'Karyola', 'Yatak Takımı'
+            'Yatak Odası Kliması', 'Yatak Odası TV', 'Gardırop', 'Karyola', 'Yatak Takımı',
         ]);
 
         // 4. BANYO ÖZELLİKLERİ
         $banyoKategori = $this->createFeatureCategory('Banyo Özellikleri', 'banyo-ozellikleri', 'checkbox', [
             'Jakuzi', 'Duşakabin', 'Banyo Penceresi', 'Saç Kurutma Makinesi',
-            'Banyo Havlusu', 'Banyo Aynası', 'Banyo Dolabı', 'Bebek Banyosu'
+            'Banyo Havlusu', 'Banyo Aynası', 'Banyo Dolabı', 'Bebek Banyosu',
         ]);
 
         // 5. EK HİZMETLER
@@ -65,48 +66,48 @@ class YazlikVillaOzellikleriSeeder extends Seeder
             'Çamaşır Yıkama Hizmeti', 'Ütü Hizmeti', 'Oda Servisi', 'Kahvaltı Servisi',
             'Akşam Yemeği Servisi', 'Barbekü Hazırlama', 'Transfer Hizmeti', 'Havaalanı Transferi',
             'Otopark Hizmeti', 'Bebek Bakıcısı', 'Çocuk Bakıcısı', 'Şoför Hizmeti',
-            'Yemek Servisi', 'Market Alışverişi', 'Rezervasyon Yardımı', 'Tur Organizasyonu'
+            'Yemek Servisi', 'Market Alışverişi', 'Rezervasyon Yardımı', 'Tur Organizasyonu',
         ]);
 
         // 6. ULAŞIM VE KONUM
         $ulasimKonumKategori = $this->createFeatureCategory('Ulaşım ve Konum', 'ulasim-konum', 'checkbox', [
             'Merkeze Yakın', 'Plaja Yakın', 'Denize Sıfır', 'Market Yakın', 'Restoran Yakın',
             'Havaalanına Yakın', 'Şehir Merkezine Yakın', 'Alışveriş Merkezine Yakın',
-            'Sahil Yolu', 'Ana Yola Yakın', 'Toplu Taşıma Erişimi'
+            'Sahil Yolu', 'Ana Yola Yakın', 'Toplu Taşıma Erişimi',
         ]);
 
         // 7. EĞLENCE VE AKTİVİTE
         $eglenceKategori = $this->createFeatureCategory('Eğlence ve Aktivite', 'eglence-aktivite', 'checkbox', [
             'Masa Tenisi', 'Bilardo', 'Tavla', 'Okey', 'PlayStation', 'Xbox',
             'Oyun Konsolu', 'Müzik Sistemi', 'Ses Sistemi', 'Projeksiyon',
-            'Sinema Odası', 'Fitness Ekipmanları', 'Spa', 'Hamam', 'Sauna'
+            'Sinema Odası', 'Fitness Ekipmanları', 'Spa', 'Hamam', 'Sauna',
         ]);
 
         // 8. GÜVENLİK VE ERİŞİM
         $guvenlikKategori = $this->createFeatureCategory('Güvenlik ve Erişim', 'guvenlik-erisim', 'checkbox', [
             '24 Saat Güvenlik', 'Güvenlik Kamerası', 'Alarm Sistemi', 'Kasa', 'Şifreli Kasa',
             'Güvenli Otopark', 'Kapıcı', 'Ziyaretçi Kontrolü', 'Kartlı Erişim',
-            'Yangın Tüpü', 'İlk Yardım Çantası', 'Duman Dedektörü', 'Karbon Monoksit Dedektörü'
+            'Yangın Tüpü', 'İlk Yardım Çantası', 'Duman Dedektörü', 'Karbon Monoksit Dedektörü',
         ]);
 
         // 9. ÇOCUK VE BEBEK DOSTU
         $cocukBebekKategori = $this->createFeatureCategory('Çocuk ve Bebek Dostu', 'cocuk-bebek-dostu', 'checkbox', [
             'Bebek Yatağı', 'Bebek Sandalyesi', 'Bebek Beşiği', 'Bebek Arabası',
             'Çocuk Yatağı', 'Çocuk Sandalyesi', 'Çocuk Güvenlik Kapısı', 'Çocuk Oyun Alanı',
-            'Çocuk Havuzu', 'Bebek Bakım Seti', 'Bebek Banyosu', 'Çocuk Dostu Mutfak'
+            'Çocuk Havuzu', 'Bebek Bakım Seti', 'Bebek Banyosu', 'Çocuk Dostu Mutfak',
         ]);
 
         // 10. EVCİL HAYVAN
         $evcilHayvanKategori = $this->createFeatureCategory('Evcil Hayvan', 'evcil-hayvan', 'checkbox', [
             'Evcil Hayvan Kabul', 'Evcil Hayvan Yatağı', 'Evcil Hayvan Maması Kasesi',
-            'Evcil Hayvan Oyun Alanı', 'Evcil Hayvan Temizlik Malzemeleri'
+            'Evcil Hayvan Oyun Alanı', 'Evcil Hayvan Temizlik Malzemeleri',
         ]);
 
         // 11. ÖZEL HAVUZ DETAYLARI
         $havuzDetayKategori = $this->createFeatureCategory('Havuz Detayları', 'havuz-detaylari', 'checkbox', [
             'Havuz Isıtma Sistemi', 'Havuz Temizleme Sistemi', 'Havuz Aydınlatması',
             'Havuz Müzik Sistemi', 'Havuz Barı', 'Havuz Şezlongu', 'Havuz Şemsiyesi',
-            'Havuz Çevresi Döşeme', 'Havuz Güvenlik Bariyeri', 'Havuz Bakım Hizmeti'
+            'Havuz Çevresi Döşeme', 'Havuz Güvenlik Bariyeri', 'Havuz Bakım Hizmeti',
         ]);
 
         $this->command->info('✅ Yazlık villa özellikleri oluşturuldu!');
@@ -161,7 +162,7 @@ class YazlikVillaOzellikleriSeeder extends Seeder
 
         // Slug'a kategori ID'si ekle (unique constraint için)
         $baseSlug = \Illuminate\Support\Str::slug($name);
-        $slug = $baseSlug . '-yazlik-' . $categoryId;
+        $slug = $baseSlug.'-yazlik-'.$categoryId;
 
         $data = [
             'feature_category_id' => $categoryId,

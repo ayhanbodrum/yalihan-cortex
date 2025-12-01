@@ -3,8 +3,8 @@
 namespace App\Modules\Crm\Controllers;
 
 use App\Http\Controllers\Controller; // BaseController yerine Laravel'in temel Controller'ı kullanılacak
+use App\Models\Kisi;
 use App\Modules\Auth\Models\User;
-use App\Modules\Crm\Models\Kisi;
 use App\Modules\Crm\Services\EtiketService;
 use App\Modules\Crm\Services\KisiService;
 use Illuminate\Http\Request;

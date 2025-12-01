@@ -2,11 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\AiLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Cache;
-use App\Models\AiLog;
 
 class SystemMonitorController extends AdminController
 {
@@ -211,6 +209,7 @@ class SystemMonitorController extends AdminController
     public function apiRecentErrors(Request $request)
     {
         $errors = $this->getRecentErrors();
+
         return response()->json(['data' => $errors], 200);
     }
 
@@ -227,7 +226,7 @@ class SystemMonitorController extends AdminController
                 'summary' => $aiSummary,
                 'overall' => $overall,
                 'timestamp' => now()->toIso8601String(),
-            ]
+            ],
         ], 200);
     }
 
@@ -239,9 +238,11 @@ class SystemMonitorController extends AdminController
         // TODO: Load Context7 rules from authority.json
         return response()->json(['data' => []], 200);
     }
+
     public function apiPagesHealth(Request $request)
     {
         $data = [];
+
         return response()->json(['data' => $data], 200);
     }
 
@@ -252,6 +253,7 @@ class SystemMonitorController extends AdminController
             'health_score' => 100,
             'issues' => [],
         ];
+
         return response()->json(['data' => $data], 200);
     }
 

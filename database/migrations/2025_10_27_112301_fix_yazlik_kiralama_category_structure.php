@@ -1,8 +1,6 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
@@ -12,8 +10,9 @@ return new class extends Migration
         $yazlikKiralama = DB::table('ilan_kategorileri')->where('slug', 'yazlik-kiralama')->first();
         $konut = DB::table('ilan_kategorileri')->where('slug', 'konut')->first();
 
-        if (!$yazlikKiralama) {
+        if (! $yazlikKiralama) {
             echo "Yazlık Kiralama kategorisi bulunamadı!\n";
+
             return;
         }
 
@@ -31,7 +30,7 @@ return new class extends Migration
             ]);
 
         $mustakil = DB::table('ilan_kategorileri')->where('slug', 'mustakil')->where('parent_id', $yazlikKiralama->id)->first();
-        if (!$mustakil) {
+        if (! $mustakil) {
             DB::table('ilan_kategorileri')->insert([
                 'name' => 'Müstakil',
                 'slug' => 'mustakil-yazlik',
@@ -46,7 +45,7 @@ return new class extends Migration
         }
 
         $bungalov = DB::table('ilan_kategorileri')->where('slug', 'bungalov')->where('parent_id', $yazlikKiralama->id)->first();
-        if (!$bungalov) {
+        if (! $bungalov) {
             DB::table('ilan_kategorileri')->insert([
                 'name' => 'Bungalov',
                 'slug' => 'bungalov',
@@ -62,7 +61,7 @@ return new class extends Migration
 
         // Yayın Tipleri (seviye=2)
         $gunluk = DB::table('ilan_kategorileri')->where('slug', 'gunluk-kiralama')->first();
-        if (!$gunluk) {
+        if (! $gunluk) {
             DB::table('ilan_kategorileri')->insert([
                 'name' => 'Günlük Kiralama',
                 'slug' => 'gunluk-kiralama',
@@ -78,7 +77,7 @@ return new class extends Migration
         }
 
         $haftalik = DB::table('ilan_kategorileri')->where('slug', 'haftalik-kiralama')->first();
-        if (!$haftalik) {
+        if (! $haftalik) {
             DB::table('ilan_kategorileri')->insert([
                 'name' => 'Haftalık Kiralama',
                 'slug' => 'haftalik-kiralama',
@@ -94,7 +93,7 @@ return new class extends Migration
         }
 
         $aylik = DB::table('ilan_kategorileri')->where('slug', 'aylik-kiralama')->first();
-        if (!$aylik) {
+        if (! $aylik) {
             DB::table('ilan_kategorileri')->insert([
                 'name' => 'Aylık Kiralama',
                 'slug' => 'aylik-kiralama',
@@ -110,7 +109,7 @@ return new class extends Migration
         }
 
         $sezonluk = DB::table('ilan_kategorileri')->where('slug', 'sezonluk-kiralama')->first();
-        if (!$sezonluk) {
+        if (! $sezonluk) {
             DB::table('ilan_kategorileri')->insert([
                 'name' => 'Sezonluk Kiralama',
                 'slug' => 'sezonluk-kiralama',

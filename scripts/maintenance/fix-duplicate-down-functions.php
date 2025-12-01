@@ -3,14 +3,13 @@
 /**
  * Duplicate down() function'larını temizlemek için script
  */
-
-$migrationsDir = __DIR__ . '/../database/migrations';
+$migrationsDir = __DIR__.'/../database/migrations';
 $fixedFiles = [];
 $errorFiles = [];
 
 echo "🚀 Duplicate down() function temizleyici başlatılıyor...\n";
 
-foreach (glob($migrationsDir . '/*.php') as $filePath) {
+foreach (glob($migrationsDir.'/*.php') as $filePath) {
     $filename = basename($filePath);
     echo "🔍 Kontrol ediliyor: $filename\n";
 
@@ -34,10 +33,10 @@ foreach (glob($migrationsDir . '/*.php') as $filePath) {
 }
 
 echo "\n📊 Özet Rapor:\n";
-echo "✅ Düzeltilen dosyalar: " . count($fixedFiles) . "\n";
-echo "❌ Hata alan dosyalar: " . count($errorFiles) . "\n";
+echo '✅ Düzeltilen dosyalar: '.count($fixedFiles)."\n";
+echo '❌ Hata alan dosyalar: '.count($errorFiles)."\n";
 
-if (!empty($fixedFiles)) {
+if (! empty($fixedFiles)) {
     echo "\n🔧 Düzeltilen dosyalar:\n";
     foreach ($fixedFiles as $file) {
         echo "  - $file\n";
@@ -62,7 +61,7 @@ function fixDuplicateDownFunctions($content)
         // İlk down() function'ı class sonuna ekle
         $content = preg_replace(
             '/(\s*)\};?\s*$/',
-            "\n\n    " . $firstDownFunction . "\n};",
+            "\n\n    ".$firstDownFunction."\n};",
             $content
         );
     }

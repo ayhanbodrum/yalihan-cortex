@@ -1,4 +1,4 @@
-@extends('admin.layouts.neo')
+@extends('admin.layouts.admin')
 
 @section('title', 'Talep Detay - ' . $talep->kisi->ad . ' ' . $talep->kisi->soyad)
 

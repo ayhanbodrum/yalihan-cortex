@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Comprehensive Form Standards Migration
  *
@@ -10,20 +11,20 @@
  * php scripts/comprehensive-form-migration.php
  *
  * @version 2.0.0
+ *
  * @since 2025-11-02
  */
-
 $isDryRun = in_array('--dry-run', $argv);
 
 echo "\n";
 echo "========================================================\n";
 echo "🚀 COMPREHENSIVE FORM STANDARDS MIGRATION\n";
 echo "========================================================\n";
-echo "Mode: " . ($isDryRun ? "DRY RUN (preview only)" : "⚠️  LIVE (files WILL be modified)") . "\n";
+echo 'Mode: '.($isDryRun ? 'DRY RUN (preview only)' : '⚠️  LIVE (files WILL be modified)')."\n";
 echo "Scope: ALL admin pages (including sub-pages)\n";
 echo "========================================================\n\n";
 
-if (!$isDryRun) {
+if (! $isDryRun) {
     echo "⚠️  WARNING: This will modify 185+ files!\n";
     echo "Press ENTER to continue or CTRL+C to cancel...\n";
     fgets(STDIN);
@@ -169,7 +170,7 @@ foreach ($files as $file) {
                 'total' => $totalFileReplacements,
             ];
 
-            if (!$isDryRun) {
+            if (! $isDryRun) {
                 file_put_contents($filepath, $content);
                 echo "✅ {$relativePath} ({$totalFileReplacements} changes)\n";
             } else {
@@ -211,7 +212,7 @@ if ($isDryRun && $stats['modified_files'] > 0) {
     echo "========================================================\n";
     echo "To apply these changes, run:\n";
     echo "  php scripts/comprehensive-form-migration.php\n\n";
-} elseif (!$isDryRun && $stats['modified_files'] > 0) {
+} elseif (! $isDryRun && $stats['modified_files'] > 0) {
     echo "========================================================\n";
     echo "✅ MIGRATION COMPLETE\n";
     echo "========================================================\n";
@@ -234,10 +235,10 @@ if ($stats['modified_files'] === 0) {
 }
 
 // Generate detailed report file
-if (!$isDryRun && $stats['modified_files'] > 0) {
-    $reportFile = 'migration-report-' . date('Y-m-d-His') . '.txt';
+if (! $isDryRun && $stats['modified_files'] > 0) {
+    $reportFile = 'migration-report-'.date('Y-m-d-His').'.txt';
     $reportContent = "FORM STANDARDS MIGRATION REPORT\n";
-    $reportContent .= "Generated: " . date('Y-m-d H:i:s') . "\n\n";
+    $reportContent .= 'Generated: '.date('Y-m-d H:i:s')."\n\n";
     $reportContent .= "SUMMARY:\n";
     $reportContent .= "Total files: {$stats['total_files']}\n";
     $reportContent .= "Modified files: {$stats['modified_files']}\n";

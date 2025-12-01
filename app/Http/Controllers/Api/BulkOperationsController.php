@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Feature;
-use App\Models\FeatureCategory;
 use App\Services\Response\ResponseService;
 use App\Traits\ValidatesApiRequests;
 use Illuminate\Http\Request;
@@ -18,11 +17,13 @@ use Illuminate\Support\Facades\Log;
  * Context7 Compliant
  *
  * @author Yalıhan Emlak - Context7 Team
+ *
  * @date 2025-11-04
  */
 class BulkOperationsController extends Controller
 {
     use ValidatesApiRequests;
+
     /**
      * Toplu kategori atama
      * POST /api/admin/bulk/assign-category
@@ -32,7 +33,7 @@ class BulkOperationsController extends Controller
         $validated = $this->validateRequestWithResponse($request, [
             'items' => 'required|array|min:1',
             'items.*' => 'required|exists:features,id',
-            'category_id' => 'required|exists:feature_categories,id'
+            'category_id' => 'required|exists:feature_categories,id',
         ]);
 
         if ($validated instanceof \Illuminate\Http\JsonResponse) {
@@ -51,18 +52,18 @@ class BulkOperationsController extends Controller
                 'items_count' => count($request->items),
                 'category_id' => $request->category_id,
                 'updated' => $updated,
-                'user_id' => auth()->id()
+                'user_id' => auth()->id(),
             ]);
 
             return ResponseService::success([
-                'updated_count' => $updated
+                'updated_count' => $updated,
             ], "{$updated} özellik kategoriye atandı");
         } catch (\Exception $e) {
             DB::rollBack();
 
             Log::error('Bulk category assignment failed', [
                 'error' => $e->getMessage(),
-                'user_id' => auth()->id()
+                'user_id' => auth()->id(),
             ]);
 
             return ResponseService::serverError('Toplu kategori atama başarısız.', $e);
@@ -78,7 +79,7 @@ class BulkOperationsController extends Controller
         $validated = $this->validateRequestWithResponse($request, [
             'items' => 'required|array|min:1',
             'items.*' => 'required|exists:features,id',
-            'status' => 'required|boolean' // Context7: enabled → status
+            'status' => 'required|boolean', // Context7: enabled → status
         ]);
 
         if ($validated instanceof \Illuminate\Http\JsonResponse) {
@@ -99,18 +100,18 @@ class BulkOperationsController extends Controller
                 'items_count' => count($request->items),
                 'status' => $request->status, // Context7: enabled → status
                 'updated' => $updated,
-                'user_id' => auth()->id()
+                'user_id' => auth()->id(),
             ]);
 
             return ResponseService::success([
-                'updated_count' => $updated
+                'updated_count' => $updated,
             ], "{$updated} özellik {$action} yapıldı");
         } catch (\Exception $e) {
             DB::rollBack();
 
             Log::error('Bulk status toggle failed', [
                 'error' => $e->getMessage(),
-                'user_id' => auth()->id()
+                'user_id' => auth()->id(),
             ]);
 
             return ResponseService::serverError('Toplu durum değiştirme başarısız.', $e);
@@ -125,7 +126,7 @@ class BulkOperationsController extends Controller
     {
         $validated = $this->validateRequestWithResponse($request, [
             'items' => 'required|array|min:1',
-            'items.*' => 'required|exists:features,id'
+            'items.*' => 'required|exists:features,id',
         ]);
 
         if ($validated instanceof \Illuminate\Http\JsonResponse) {
@@ -142,18 +143,18 @@ class BulkOperationsController extends Controller
             Log::warning('Bulk delete performed', [
                 'items_count' => count($request->items),
                 'deleted' => $deleted,
-                'user_id' => auth()->id()
+                'user_id' => auth()->id(),
             ]);
 
             return ResponseService::success([
-                'deleted_count' => $deleted
+                'deleted_count' => $deleted,
             ], "{$deleted} özellik silindi");
         } catch (\Exception $e) {
             DB::rollBack();
 
             Log::error('Bulk delete failed', [
                 'error' => $e->getMessage(),
-                'user_id' => auth()->id()
+                'user_id' => auth()->id(),
             ]);
 
             return ResponseService::serverError('Toplu silme başarısız.', $e);
@@ -169,7 +170,7 @@ class BulkOperationsController extends Controller
         $validated = $this->validateRequestWithResponse($request, [
             'items' => 'required|array|min:1',
             'items.*.id' => 'required|exists:features,id',
-            'items.*.order' => 'required|integer|min:0'
+            'items.*.order' => 'required|integer|min:0',
         ]);
 
         if ($validated instanceof \Illuminate\Http\JsonResponse) {
@@ -189,7 +190,7 @@ class BulkOperationsController extends Controller
 
             Log::info('Bulk reorder performed', [
                 'items_count' => count($request->items),
-                'user_id' => auth()->id()
+                'user_id' => auth()->id(),
             ]);
 
             return ResponseService::success([], 'Sıralama güncellendi');
@@ -198,7 +199,7 @@ class BulkOperationsController extends Controller
 
             Log::error('Bulk reorder failed', [
                 'error' => $e->getMessage(),
-                'user_id' => auth()->id()
+                'user_id' => auth()->id(),
             ]);
 
             return ResponseService::serverError('Sıralama güncellenemedi.', $e);

@@ -2,16 +2,15 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
-use Illuminate\View\View;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\DB;
 use App\Models\Kisi;
-use App\Models\KisiNot;
 use Carbon\Carbon;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\View\View;
 
 class KisiNotController extends AdminController
 {
@@ -29,7 +28,7 @@ class KisiNotController extends AdminController
                 'search' => $request->input('search'),
                 'date_from' => $request->input('date_from'),
                 'date_to' => $request->input('date_to'),
-                'tag' => $request->input('tag')
+                'tag' => $request->input('tag'),
             ];
 
             // Statistics
@@ -41,7 +40,7 @@ class KisiNotController extends AdminController
                 'top_tags' => $this->getTopTags(),
                 'completion_rate' => $this->getCompletionRate(),
                 'avg_notes_per_person' => $this->getAverageNotesPerPerson(),
-                'this_month_notes' => $this->getThisMonthNotes()
+                'this_month_notes' => $this->getThisMonthNotes(),
             ];
 
             // Get paginated notes with relationships
@@ -65,7 +64,7 @@ class KisiNotController extends AdminController
                     'notlar' => $notlar,
                     'kategoriler' => $kategoriler,
                     'popularTags' => $popularTags,
-                    'filters' => $filters
+                    'filters' => $filters,
                 ]);
             }
 
@@ -79,12 +78,12 @@ class KisiNotController extends AdminController
             ));
 
         } catch (\Exception $e) {
-            Log::error('KisiNot index error: ' . $e->getMessage());
+            Log::error('KisiNot index error: '.$e->getMessage());
 
             if ($request->expectsJson()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Notlar yüklenirken hata oluştu.'
+                    'message' => 'Notlar yüklenirken hata oluştu.',
                 ], 500);
             }
 
@@ -95,7 +94,7 @@ class KisiNotController extends AdminController
                 'popularTags' => [],
                 'recentActivities' => [],
                 'filters' => [],
-                'error' => 'Notlar yüklenirken hata oluştu.'
+                'error' => 'Notlar yüklenirken hata oluştu.',
             ]);
         }
     }
@@ -108,11 +107,11 @@ class KisiNotController extends AdminController
         try {
             $not = $this->getNotById($id);
 
-            if (!$not) {
+            if (! $not) {
                 if ($request->expectsJson()) {
                     return response()->json([
                         'success' => false,
-                        'message' => 'Not bulunamadı.'
+                        'message' => 'Not bulunamadı.',
                     ], 404);
                 }
 
@@ -139,7 +138,7 @@ class KisiNotController extends AdminController
                     'relatedNotes' => $relatedNotes,
                     'noteHistory' => $noteHistory,
                     'availableTags' => $availableTags,
-                    'availableCategories' => $availableCategories
+                    'availableCategories' => $availableCategories,
                 ]);
             }
 
@@ -152,12 +151,12 @@ class KisiNotController extends AdminController
             ));
 
         } catch (\Exception $e) {
-            Log::error('KisiNot show error: ' . $e->getMessage());
+            Log::error('KisiNot show error: '.$e->getMessage());
 
             if ($request->expectsJson()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Not detayları yüklenirken hata oluştu.'
+                    'message' => 'Not detayları yüklenirken hata oluştu.',
                 ], 500);
             }
 
@@ -197,7 +196,7 @@ class KisiNotController extends AdminController
                     'tags' => $tags,
                     'onemDereceleri' => $onemDereceleri,
                     'templates' => $templates,
-                    'recentKisiler' => $recentKisiler
+                    'recentKisiler' => $recentKisiler,
                 ]);
             }
 
@@ -211,12 +210,12 @@ class KisiNotController extends AdminController
             ));
 
         } catch (\Exception $e) {
-            Log::error('KisiNot create form error: ' . $e->getMessage());
+            Log::error('KisiNot create form error: '.$e->getMessage());
 
             if ($request->expectsJson()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Form yüklenirken hata oluştu.'
+                    'message' => 'Form yüklenirken hata oluştu.',
                 ], 500);
             }
 
@@ -243,14 +242,14 @@ class KisiNotController extends AdminController
                 'is_private' => 'boolean',
                 'is_completed' => 'boolean',
                 'due_date' => 'nullable|date',
-                'related_ilan_id' => 'nullable|integer|exists:ilanlar,id'
+                'related_ilan_id' => 'nullable|integer|exists:ilanlar,id',
             ]);
 
             if ($validator->fails()) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Validasyon hatası.',
-                    'errors' => $validator->errors()
+                    'errors' => $validator->errors(),
                 ], 422);
             }
 
@@ -284,16 +283,16 @@ class KisiNotController extends AdminController
                 'success' => true,
                 'message' => 'Not başarıyla kaydedildi.',
                 'note_id' => $notId,
-                'redirect' => route('admin.kisi-not.show', $notId)
+                'redirect' => route('admin.kisi-not.show', $notId),
             ]);
 
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('KisiNot store error: ' . $e->getMessage());
+            Log::error('KisiNot store error: '.$e->getMessage());
 
             return response()->json([
                 'success' => false,
-                'message' => 'Not kaydedilirken hata oluştu: ' . $e->getMessage()
+                'message' => 'Not kaydedilirken hata oluştu: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -306,11 +305,11 @@ class KisiNotController extends AdminController
         try {
             $not = $this->getNotById($id);
 
-            if (!$not) {
+            if (! $not) {
                 if ($request->expectsJson()) {
                     return response()->json([
                         'success' => false,
-                        'message' => 'Not bulunamadı.'
+                        'message' => 'Not bulunamadı.',
                     ], 404);
                 }
 
@@ -331,7 +330,7 @@ class KisiNotController extends AdminController
                     'kategoriler' => $kategoriler,
                     'tags' => $tags,
                     'onemDereceleri' => $onemDereceleri,
-                    'templates' => $templates
+                    'templates' => $templates,
                 ]);
             }
 
@@ -344,12 +343,12 @@ class KisiNotController extends AdminController
             ));
 
         } catch (\Exception $e) {
-            Log::error('KisiNot edit form error: ' . $e->getMessage());
+            Log::error('KisiNot edit form error: '.$e->getMessage());
 
             if ($request->expectsJson()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Düzenleme formu yüklenirken hata oluştu.'
+                    'message' => 'Düzenleme formu yüklenirken hata oluştu.',
                 ], 500);
             }
 
@@ -375,23 +374,23 @@ class KisiNotController extends AdminController
                 'is_private' => 'boolean',
                 'is_completed' => 'boolean',
                 'due_date' => 'nullable|date',
-                'related_ilan_id' => 'nullable|integer|exists:ilanlar,id'
+                'related_ilan_id' => 'nullable|integer|exists:ilanlar,id',
             ]);
 
             if ($validator->fails()) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Validasyon hatası.',
-                    'errors' => $validator->errors()
+                    'errors' => $validator->errors(),
                 ], 422);
             }
 
             $not = $this->getNotById($id);
 
-            if (!$not) {
+            if (! $not) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Not bulunamadı.'
+                    'message' => 'Not bulunamadı.',
                 ], 404);
             }
 
@@ -429,16 +428,16 @@ class KisiNotController extends AdminController
 
             return response()->json([
                 'success' => true,
-                'message' => 'Not başarıyla güncellendi.'
+                'message' => 'Not başarıyla güncellendi.',
             ]);
 
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('KisiNot update error: ' . $e->getMessage());
+            Log::error('KisiNot update error: '.$e->getMessage());
 
             return response()->json([
                 'success' => false,
-                'message' => 'Not güncellenirken hata oluştu: ' . $e->getMessage()
+                'message' => 'Not güncellenirken hata oluştu: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -451,10 +450,10 @@ class KisiNotController extends AdminController
         try {
             $not = $this->getNotById($id);
 
-            if (!$not) {
+            if (! $not) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Not bulunamadı.'
+                    'message' => 'Not bulunamadı.',
                 ], 404);
             }
 
@@ -475,16 +474,16 @@ class KisiNotController extends AdminController
 
             return response()->json([
                 'success' => true,
-                'message' => 'Not başarıyla silindi.'
+                'message' => 'Not başarıyla silindi.',
             ]);
 
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('KisiNot destroy error: ' . $e->getMessage());
+            Log::error('KisiNot destroy error: '.$e->getMessage());
 
             return response()->json([
                 'success' => false,
-                'message' => 'Not silinirken hata oluştu: ' . $e->getMessage()
+                'message' => 'Not silinirken hata oluştu: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -499,14 +498,14 @@ class KisiNotController extends AdminController
                 'action' => 'required|string|in:delete,archive,complete,uncomplete,tag,untag,category',
                 'note_ids' => 'required|array|min:1',
                 'note_ids.*' => 'integer|exists:kisi_notlar,id',
-                'value' => 'nullable|string' // For tag/category operations
+                'value' => 'nullable|string', // For tag/category operations
             ]);
 
             if ($validator->fails()) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Validasyon hatası.',
-                    'errors' => $validator->errors()
+                    'errors' => $validator->errors(),
                 ], 422);
             }
 
@@ -543,7 +542,7 @@ class KisiNotController extends AdminController
                         break;
                 }
 
-                $this->logNoteActivity($noteId, 'bulk_' . $action, "Bulk operation: $action");
+                $this->logNoteActivity($noteId, 'bulk_'.$action, "Bulk operation: $action");
             }
 
             DB::commit();
@@ -551,22 +550,22 @@ class KisiNotController extends AdminController
             Log::info('KisiNot bulk operation', [
                 'action' => $action,
                 'count' => count($noteIds),
-                'results' => $results
+                'results' => $results,
             ]);
 
             return response()->json([
                 'success' => true,
-                'message' => "Toplu işlem başarıyla tamamlandı. " . count($results) . " not işlendi.",
-                'results' => $results
+                'message' => 'Toplu işlem başarıyla tamamlandı. '.count($results).' not işlendi.',
+                'results' => $results,
             ]);
 
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('KisiNot bulk operation error: ' . $e->getMessage());
+            Log::error('KisiNot bulk operation error: '.$e->getMessage());
 
             return response()->json([
                 'success' => false,
-                'message' => 'Toplu işlem sırasında hata oluştu: ' . $e->getMessage()
+                'message' => 'Toplu işlem sırasında hata oluştu: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -580,16 +579,16 @@ class KisiNotController extends AdminController
             $format = $request->input('format', 'xlsx');
             $filters = $request->only(['kisi_id', 'kategori', 'onem_derecesi', 'date_from', 'date_to']);
 
-            $filename = 'kisi_notlar_' . date('Y-m-d') . '.' . $format;
+            $filename = 'kisi_notlar_'.date('Y-m-d').'.'.$format;
 
             return $this->exportNotes($filters, $format, $filename);
 
         } catch (\Exception $e) {
-            Log::error('KisiNot export error: ' . $e->getMessage());
+            Log::error('KisiNot export error: '.$e->getMessage());
 
             return response()->json([
                 'success' => false,
-                'message' => 'Export işlemi başarısız: ' . $e->getMessage()
+                'message' => 'Export işlemi başarısız: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -606,7 +605,7 @@ class KisiNotController extends AdminController
             if (strlen($query) < 2) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Arama terimi en az 2 karakter olmalıdır.'
+                    'message' => 'Arama terimi en az 2 karakter olmalıdır.',
                 ], 422);
             }
 
@@ -616,15 +615,15 @@ class KisiNotController extends AdminController
                 'success' => true,
                 'results' => $results,
                 'count' => count($results),
-                'query' => $query
+                'query' => $query,
             ]);
 
         } catch (\Exception $e) {
-            Log::error('KisiNot search error: ' . $e->getMessage());
+            Log::error('KisiNot search error: '.$e->getMessage());
 
             return response()->json([
                 'success' => false,
-                'message' => 'Arama sırasında hata oluştu.'
+                'message' => 'Arama sırasında hata oluştu.',
             ], 500);
         }
     }
@@ -670,7 +669,7 @@ class KisiNotController extends AdminController
                 ['tag' => 'takip', 'count' => rand(15, 40)],
                 ['tag' => 'müşteri', 'count' => rand(10, 35)],
                 ['tag' => 'acil', 'count' => rand(8, 25)],
-                ['tag' => 'görüşme', 'count' => rand(5, 20)]
+                ['tag' => 'görüşme', 'count' => rand(5, 20)],
             ];
         });
     }
@@ -700,7 +699,7 @@ class KisiNotController extends AdminController
             'top_tags' => [],
             'completion_rate' => 0,
             'avg_notes_per_person' => 0,
-            'this_month_notes' => 0
+            'this_month_notes' => 0,
         ];
     }
 
@@ -713,7 +712,7 @@ class KisiNotController extends AdminController
             'sikayet' => 'Şikayet',
             'oneri' => 'Öneri',
             'hatirlatma' => 'Hatırlatma',
-            'ozel' => 'Özel'
+            'ozel' => 'Özel',
         ];
     }
 
@@ -723,7 +722,7 @@ class KisiNotController extends AdminController
             'dusuk' => 'Düşük',
             'orta' => 'Orta',
             'yuksek' => 'Yüksek',
-            'kritik' => 'Kritik'
+            'kritik' => 'Kritik',
         ];
     }
 
@@ -738,16 +737,17 @@ class KisiNotController extends AdminController
             $mockNotes[] = [
                 'id' => $i,
                 'kisi_id' => rand(1, 100),
-                'kisi_adi' => 'Test Kişi ' . $i,
-                'baslik' => 'Test Not Başlığı ' . $i,
+                'kisi_adi' => 'Test Kişi '.$i,
+                'baslik' => 'Test Not Başlığı '.$i,
                 'icerik' => 'Bu bir test not içeriğidir...',
                 'kategori' => array_rand(array_flip(['genel', 'gorusme', 'takip'])),
                 'onem_derecesi' => array_rand(array_flip(['dusuk', 'orta', 'yuksek'])),
                 'is_completed' => rand(0, 1),
                 'created_at' => Carbon::now()->subDays(rand(1, 30)),
-                'tags' => ['test', 'örnek']
+                'tags' => ['test', 'örnek'],
             ];
         }
+
         return $mockNotes;
     }
 
@@ -765,7 +765,7 @@ class KisiNotController extends AdminController
             'is_completed' => false,
             'tags' => ['test', 'örnek'],
             'created_at' => Carbon::now()->subDays(5),
-            'updated_at' => Carbon::now()->subDays(2)
+            'updated_at' => Carbon::now()->subDays(2),
         ];
     }
 
@@ -793,7 +793,7 @@ class KisiNotController extends AdminController
         Log::info("Note activity: $action", [
             'note_id' => $noteId,
             'description' => $description,
-            'user_id' => auth()->id()
+            'user_id' => auth()->id(),
         ]);
     }
 }

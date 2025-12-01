@@ -1,11 +1,11 @@
 <?php
+
 // scripts/context7-migration-auto-cleaner.php
 // Tüm migration dosyalarını Context7 ve Laravel standartlarına uygun şekilde otomatik temizler.
 // Kapanmamış/fazla parantez, boş/işlevsiz blok ve uyumsuz kodları düzeltir.
 
-$dir = __DIR__ . '/../database/migrations';
-$files = glob($dir . '/*.php');
-
+$dir = __DIR__.'/../database/migrations';
+$files = glob($dir.'/*.php');
 
 $fixed = 0;
 $syntaxErrors = [];
@@ -26,6 +26,7 @@ foreach ($files as $file) {
             if ($body === '' || preg_match('/^\/\//m', $body) || preg_match('/^\*+$/m', $body)) {
                 return '';
             }
+
             return $m[0];
         },
         $code
@@ -33,24 +34,24 @@ foreach ($files as $file) {
 
     // 2. Kapanmamış veya fazla süslü parantezleri düzelt (en sık görülen hatalar için)
     $code = preg_replace('/^\s*}\s*}+$\s*$/m', "\n}", $code);
-    $code = preg_replace('/^\s*}\s*$/m', "", $code);
+    $code = preg_replace('/^\s*}\s*$/m', '', $code);
     $code = preg_replace('/return;[\s\S]+?\}/m', "return;\n    }", $code);
 
     // 3. up() fonksiyonu tamamen boşsa tek satıra indir
     $code = preg_replace('/public function up\(\): void\s*\{[\s\S]*?\}/m', "public function up(): void\n    {\n        // Bu migrationda yapılacak bir işlem yok (otomatik temizlik sonrası boş kaldı)\n    }", $code);
 
     // 4. Gereksiz noktalı virgül ve class kapanışı ekle
-    $code = preg_replace('/\}\s*;\s*$/m', "}", $code); // Fazla noktalı virgül kaldır
-    if (!preg_match('/\}\s*;\s*$/', $code)) {
-        $code = rtrim($code) . "\n};\n";
+    $code = preg_replace('/\}\s*;\s*$/m', '}', $code); // Fazla noktalı virgül kaldır
+    if (! preg_match('/\}\s*;\s*$/', $code)) {
+        $code = rtrim($code)."\n};\n";
     }
 
     // 5. PHP syntax kontrolü
     $tmpFile = tempnam(sys_get_temp_dir(), 'mig');
     file_put_contents($tmpFile, $code);
-    $lint = shell_exec("php -l " . escapeshellarg($tmpFile));
+    $lint = shell_exec('php -l '.escapeshellarg($tmpFile));
     if (strpos($lint, 'No syntax errors detected') === false) {
-        $syntaxErrors[] = $file . ": " . trim($lint);
+        $syntaxErrors[] = $file.': '.trim($lint);
     }
     unlink($tmpFile);
 
@@ -76,27 +77,27 @@ foreach ($files as $file) {
 
 // 8. Raporlama
 if ($syntaxErrors) {
-    file_put_contents(__DIR__ . '/../reports/migration-syntax-errors.txt', implode("\n", $syntaxErrors));
+    file_put_contents(__DIR__.'/../reports/migration-syntax-errors.txt', implode("\n", $syntaxErrors));
     echo "[HATA] PHP syntax hatası bulunan dosyalar: reports/migration-syntax-errors.txt\n";
 }
 if ($emptyMigrations) {
-    file_put_contents(__DIR__ . '/../reports/migration-empty.txt', implode("\n", $emptyMigrations));
+    file_put_contents(__DIR__.'/../reports/migration-empty.txt', implode("\n", $emptyMigrations));
     echo "[BİLGİ] Tamamen boş migrationlar: reports/migration-empty.txt\n";
 }
 if ($namingViolations) {
-    file_put_contents(__DIR__ . '/../reports/migration-naming-violations.txt', implode("\n", $namingViolations));
+    file_put_contents(__DIR__.'/../reports/migration-naming-violations.txt', implode("\n", $namingViolations));
     echo "[UYARI] Naming convention hatası: reports/migration-naming-violations.txt\n";
 }
 if ($enumViolations) {
-    file_put_contents(__DIR__ . '/../reports/migration-enum-violations.txt', implode("\n", $enumViolations));
+    file_put_contents(__DIR__.'/../reports/migration-enum-violations.txt', implode("\n", $enumViolations));
     echo "[UYARI] Enum/Türkçe karakter hatası: reports/migration-enum-violations.txt\n";
 }
 
 echo "\nToplam düzeltme: $fixed dosya\n";
 
 // 9. Otomatik migrate testi
-$output = shell_exec('php ' . escapeshellarg(__DIR__ . '/../artisan') . ' migrate:fresh 2>&1');
-file_put_contents(__DIR__ . '/../reports/migration-migrate-output.txt', $output);
+$output = shell_exec('php '.escapeshellarg(__DIR__.'/../artisan').' migrate:fresh 2>&1');
+file_put_contents(__DIR__.'/../reports/migration-migrate-output.txt', $output);
 if (strpos($output, 'ParseError') !== false || strpos($output, 'syntax error') !== false) {
     echo "[HATA] Migration zinciri migrate sırasında hata verdi. Ayrıntı: reports/migration-migrate-output.txt\n";
 }

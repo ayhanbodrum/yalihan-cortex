@@ -68,6 +68,7 @@ class FeatureValue extends Model
         };
 
         $this->value = is_array($value) ? json_encode($value) : $value;
+
         return $this;
     }
 
@@ -155,7 +156,7 @@ class FeatureValue extends Model
 
         foreach ($values as $featureSlug => $value) {
             $feature = $features->get($featureSlug);
-            if (!$feature) {
+            if (! $feature) {
                 continue;
             }
 
@@ -191,20 +192,20 @@ class FeatureValue extends Model
         }
 
         // ✅ PERFORMANCE FIX: Bulk insert
-        if (!empty($toInsert)) {
+        if (! empty($toInsert)) {
             static::insert($toInsert);
         }
 
         // ✅ PERFORMANCE FIX: Bulk update (CASE WHEN ile)
-        if (!empty($toUpdate)) {
+        if (! empty($toUpdate)) {
             $valueCases = [];
             $valueTypeCases = [];
             $bindings = [];
             $ids = [];
 
             foreach ($toUpdate as $update) {
-                $valueCases[] = "WHEN ? THEN ?";
-                $valueTypeCases[] = "WHEN ? THEN ?";
+                $valueCases[] = 'WHEN ? THEN ?';
+                $valueTypeCases[] = 'WHEN ? THEN ?';
                 $bindings[] = $update['id'];
                 $bindings[] = $update['value'];
                 $bindings[] = $update['id'];

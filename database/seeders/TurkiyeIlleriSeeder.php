@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -111,6 +110,6 @@ class TurkiyeIlleriSeeder extends Seeder
             );
         }
 
-        $this->command->info('✅ ' . count($provinces) . ' il eklendi (iller tablosuna)');
+        $this->command->info('✅ '.count($provinces).' il eklendi (iller tablosuna)');
     }
 }

@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Schema;
 use App\Models\IlanKategori;
+use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 /**
  * İlan Yayın Tipi Seeder
@@ -32,8 +32,9 @@ class IlanYayinTipiSeeder extends Seeder
         $this->command->newLine();
 
         // Context7: Schema kontrolü
-        if (!Schema::hasTable('ilan_kategori_yayin_tipleri')) {
+        if (! Schema::hasTable('ilan_kategori_yayin_tipleri')) {
             $this->command->warn('   ⚠️ ilan_kategori_yayin_tipleri tablosu yok!');
+
             return;
         }
 
@@ -46,8 +47,9 @@ class IlanYayinTipiSeeder extends Seeder
         $turistikTesis = IlanKategori::where('slug', 'turistik-tesis')->first();
         $yazlik = IlanKategori::where('slug', 'yazlik')->first();
 
-        if (!$konut || !$arsa || !$isyeri) {
+        if (! $konut || ! $arsa || ! $isyeri) {
             $this->command->warn('   ⚠️ Ana kategoriler bulunamadı! Önce CompleteIlanKategoriSeeder çalıştırın.');
+
             return;
         }
 

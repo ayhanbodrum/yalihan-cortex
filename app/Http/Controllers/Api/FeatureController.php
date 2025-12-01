@@ -5,13 +5,11 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Feature;
 use App\Models\FeatureCategory;
-use App\Services\Response\ResponseService;
-use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Str;
 use App\Services\FeaturesService;
+use App\Services\Response\ResponseService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class FeatureController extends Controller
 {
@@ -46,7 +44,7 @@ class FeatureController extends Controller
             };
 
             // ✅ Load categories with filtering
-            $service = new FeaturesService();
+            $service = new FeaturesService;
             $result = $service->list($appliesTo, $categorySlugFilter, $yayinTipi);
 
             return ResponseService::success([
@@ -56,7 +54,7 @@ class FeatureController extends Controller
                     'applies_to' => $appliesTo,
                     'yayin_tipi' => $yayinTipi,
                     'total_categories' => count($result),
-                    'total_features' => collect($result)->sum(fn($cat) => count($cat['features'])),
+                    'total_features' => collect($result)->sum(fn ($cat) => count($cat['features'])),
                 ],
             ], 'Özellikler başarıyla getirildi');
         } catch (\Exception $e) {
@@ -66,6 +64,7 @@ class FeatureController extends Controller
                 'line' => $e->getLine(),
                 'trace' => $e->getTraceAsString(),
             ]);
+
             return ResponseService::serverError('Özellikler yüklenirken hata oluştu.', $e);
         }
     }
@@ -74,9 +73,8 @@ class FeatureController extends Controller
      * Get features by category slug (applies_to filtresi ile)
      * ✅ FIX: FeaturesService kullanarak applies_to filtresi ile tüm kategorileri döndür
      *
-     * @param string $categorySlug - İlan kategori slug'ı (konut, arsa, vb.)
-     * @param Request $request - Query params: yayin_tipi
-     * @return JsonResponse
+     * @param  string  $categorySlug  - İlan kategori slug'ı (konut, arsa, vb.)
+     * @param  Request  $request  - Query params: yayin_tipi
      */
     public function getByCategory(string $categorySlug, Request $request): JsonResponse
     {
@@ -87,7 +85,7 @@ class FeatureController extends Controller
             ]);
 
             // ✅ FIX: FeaturesService kullanarak applies_to filtresi ile tüm kategorileri getir
-            $featuresService = new FeaturesService();
+            $featuresService = new FeaturesService;
             $yayinTipi = $request->get('yayin_tipi');
 
             // ✅ Context7: applies_to = ilan kategori slug'ı (konut, arsa, vb.)
@@ -96,7 +94,7 @@ class FeatureController extends Controller
             Log::info('FeatureController::getByCategory - Features yüklendi', [
                 'categorySlug' => $categorySlug,
                 'categoriesCount' => count($categories),
-                'totalFeatures' => array_sum(array_map(fn($c) => count($c['features'] ?? []), $categories)),
+                'totalFeatures' => array_sum(array_map(fn ($c) => count($c['features'] ?? []), $categories)),
             ]);
 
             return ResponseService::success([
@@ -109,16 +107,15 @@ class FeatureController extends Controller
                 'file' => $e->getFile(),
                 'line' => $e->getLine(),
                 'categorySlug' => $categorySlug,
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
+
             return ResponseService::serverError('Özellikler yüklenirken hata oluştu.', $e);
         }
     }
 
     /**
      * Get all feature categories
-     *
-     * @return JsonResponse
      */
     public function getCategories(): JsonResponse
     {
@@ -135,7 +132,7 @@ class FeatureController extends Controller
                 ->get(['id', 'name', 'slug', 'icon']);
 
             return ResponseService::success([
-                'categories' => $categories
+                'categories' => $categories,
             ], 'Özellik kategorileri başarıyla getirildi');
         } catch (\Exception $e) {
             // ✅ Context7: Hata detaylarını logla
@@ -143,8 +140,9 @@ class FeatureController extends Controller
                 'message' => $e->getMessage(),
                 'file' => $e->getFile(),
                 'line' => $e->getLine(),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
+
             return ResponseService::serverError('Kategoriler yüklenirken hata oluştu.', $e);
         }
     }

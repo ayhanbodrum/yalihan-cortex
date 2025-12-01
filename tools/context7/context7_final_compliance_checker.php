@@ -6,12 +6,14 @@
  * This script provides a comprehensive analysis of the current Context7 compliance
  * status after all transformations and optimizations.
  */
-
 class Context7FinalComplianceChecker
 {
     private $baseDir;
+
     private $forbiddenFields = ['status', 'is_active', 'aktif', 'il'];
+
     private $violations = [];
+
     private $stats = [];
 
     // Critical directories to check
@@ -23,7 +25,7 @@ class Context7FinalComplianceChecker
         'resources/views',
         'resources/js',
         'config',
-        'routes'
+        'routes',
     ];
 
     // Directories to exclude from compliance check
@@ -32,7 +34,7 @@ class Context7FinalComplianceChecker
         'tests',
         '.context7',
         'backup',
-        'backups'
+        'backups',
     ];
 
     public function __construct($baseDir)
@@ -42,13 +44,13 @@ class Context7FinalComplianceChecker
 
     public function runFullComplianceCheck()
     {
-        echo "\n🔍 Context7 Final Compliance Check - " . date('Y-m-d H:i:s') . "\n";
-        echo str_repeat("=", 70) . "\n";
+        echo "\n🔍 Context7 Final Compliance Check - ".date('Y-m-d H:i:s')."\n";
+        echo str_repeat('=', 70)."\n";
 
         $this->initializeStats();
 
         foreach ($this->directories as $directory) {
-            $fullPath = $this->baseDir . '/' . $directory;
+            $fullPath = $this->baseDir.'/'.$directory;
             if (is_dir($fullPath)) {
                 echo "\n📁 Analyzing: $directory\n";
                 $this->scanDirectory($fullPath, $directory);
@@ -56,6 +58,7 @@ class Context7FinalComplianceChecker
         }
 
         $this->generateComprehensiveReport();
+
         return $this->violations;
     }
 
@@ -65,7 +68,7 @@ class Context7FinalComplianceChecker
             $this->stats[$field] = [
                 'count' => 0,
                 'files' => [],
-                'categories' => []
+                'categories' => [],
             ];
         }
         $this->stats['total'] = 0;
@@ -91,7 +94,7 @@ class Context7FinalComplianceChecker
                     }
                 }
 
-                if (!$shouldExclude) {
+                if (! $shouldExclude) {
                     $this->stats['files_scanned']++;
                     $this->scanFile($file->getPathname(), $relativePath);
                 }
@@ -104,8 +107,8 @@ class Context7FinalComplianceChecker
         $extension = pathinfo($filePath, PATHINFO_EXTENSION);
         $allowedExtensions = ['php', 'js', 'vue', 'blade.php', 'json', 'yaml', 'yml'];
 
-        if (!in_array($extension, $allowedExtensions) &&
-            !str_contains($filePath, '.blade.php')) {
+        if (! in_array($extension, $allowedExtensions) &&
+            ! str_contains($filePath, '.blade.php')) {
             return;
         }
 
@@ -118,10 +121,10 @@ class Context7FinalComplianceChecker
                 if ($this->containsViolation($line, $field, $filePath)) {
                     $violation = [
                         'field' => $field,
-                        'file' => str_replace($this->baseDir . '/', '', $filePath),
+                        'file' => str_replace($this->baseDir.'/', '', $filePath),
                         'line' => $lineNumber + 1,
                         'content' => trim($line),
-                        'category' => $this->categorizeViolation($line, $field, $baseDir)
+                        'category' => $this->categorizeViolation($line, $field, $baseDir),
                     ];
 
                     $fileViolations[] = $violation;
@@ -129,12 +132,12 @@ class Context7FinalComplianceChecker
                     $this->stats[$field]['count']++;
                     $this->stats['total']++;
 
-                    if (!in_array($violation['file'], $this->stats[$field]['files'])) {
+                    if (! in_array($violation['file'], $this->stats[$field]['files'])) {
                         $this->stats[$field]['files'][] = $violation['file'];
                     }
 
                     $category = $violation['category'];
-                    if (!isset($this->stats[$field]['categories'][$category])) {
+                    if (! isset($this->stats[$field]['categories'][$category])) {
                         $this->stats[$field]['categories'][$category] = 0;
                     }
                     $this->stats[$field]['categories'][$category]++;
@@ -160,7 +163,7 @@ class Context7FinalComplianceChecker
             $legitimateCompounds = [
                 'imar_durumu', 'tapu_durumu', 'kredi_durumu',
                 'yapim_durumu', 'satis_durumu', 'kira_durumu',
-                'proje_durumu', 'yapisal_durumu'
+                'proje_durumu', 'yapisal_durumu',
             ];
 
             foreach ($legitimateCompounds as $compound) {
@@ -172,11 +175,11 @@ class Context7FinalComplianceChecker
 
         // Check for field usage patterns
         $patterns = [
-            '/\b' . preg_quote($field, '/') . '\b/',
-            '/["\']' . preg_quote($field, '/') . '["\']/',
-            '/' . preg_quote($field, '/') . '\s*[:=]/',
-            '/\$' . preg_quote($field, '/') . '\b/',
-            '/\.' . preg_quote($field, '/') . '\b/',
+            '/\b'.preg_quote($field, '/').'\b/',
+            '/["\']'.preg_quote($field, '/').'["\']/',
+            '/'.preg_quote($field, '/').'\s*[:=]/',
+            '/\$'.preg_quote($field, '/').'\b/',
+            '/\.'.preg_quote($field, '/').'\b/',
         ];
 
         foreach ($patterns as $pattern) {
@@ -192,8 +195,13 @@ class Context7FinalComplianceChecker
     {
         // Database-related
         if (strpos($baseDir, 'migrations') !== false) {
-            if (preg_match('/Schema::/', $line)) return 'migration_schema';
-            if (preg_match('/index|Index/', $line)) return 'migration_index';
+            if (preg_match('/Schema::/', $line)) {
+                return 'migration_schema';
+            }
+            if (preg_match('/index|Index/', $line)) {
+                return 'migration_index';
+            }
+
             return 'migration_other';
         }
 
@@ -203,22 +211,37 @@ class Context7FinalComplianceChecker
 
         // Model-related
         if (strpos($baseDir, 'Models') !== false) {
-            if (preg_match('/fillable|guarded/', $line)) return 'model_fillable';
-            if (preg_match('/casts/', $line)) return 'model_casts';
-            if (preg_match('/function|method/', $line)) return 'model_method';
+            if (preg_match('/fillable|guarded/', $line)) {
+                return 'model_fillable';
+            }
+            if (preg_match('/casts/', $line)) {
+                return 'model_casts';
+            }
+            if (preg_match('/function|method/', $line)) {
+                return 'model_method';
+            }
+
             return 'model_other';
         }
 
         // Controller-related
         if (strpos($baseDir, 'Controllers') !== false) {
-            if (preg_match('/where|orWhere/', $line)) return 'controller_query';
-            if (preg_match('/request|Request/', $line)) return 'controller_request';
+            if (preg_match('/where|orWhere/', $line)) {
+                return 'controller_query';
+            }
+            if (preg_match('/request|Request/', $line)) {
+                return 'controller_request';
+            }
+
             return 'controller_other';
         }
 
         // View-related
         if (strpos($baseDir, 'views') !== false) {
-            if (preg_match('/\{\{|\@/', $line)) return 'blade_template';
+            if (preg_match('/\{\{|\@/', $line)) {
+                return 'blade_template';
+            }
+
             return 'view_other';
         }
 
@@ -232,15 +255,15 @@ class Context7FinalComplianceChecker
 
     private function generateComprehensiveReport()
     {
-        echo "\n" . str_repeat("=", 70) . "\n";
+        echo "\n".str_repeat('=', 70)."\n";
         echo "📊 FINAL CONTEXT7 COMPLIANCE REPORT\n";
-        echo str_repeat("=", 70) . "\n";
+        echo str_repeat('=', 70)."\n";
 
         // Overall Statistics
         echo "\n🏆 OVERALL STATISTICS:\n";
-        echo "├── Total Violations: " . $this->stats['total'] . "\n";
-        echo "├── Files Scanned: " . $this->stats['files_scanned'] . "\n";
-        echo "├── Clean Files: " . $this->stats['clean_files'] . "\n";
+        echo '├── Total Violations: '.$this->stats['total']."\n";
+        echo '├── Files Scanned: '.$this->stats['files_scanned']."\n";
+        echo '├── Clean Files: '.$this->stats['clean_files']."\n";
         $complianceRate = round(($this->stats['clean_files'] / $this->stats['files_scanned']) * 100, 2);
         echo "└── Compliance Rate: {$complianceRate}%\n";
 
@@ -251,7 +274,7 @@ class Context7FinalComplianceChecker
             $fileCount = count($this->stats[$field]['files']);
             echo "├── '$field': $count violations in $fileCount files\n";
 
-            if (!empty($this->stats[$field]['categories'])) {
+            if (! empty($this->stats[$field]['categories'])) {
                 arsort($this->stats[$field]['categories']);
                 $topCategories = array_slice($this->stats[$field]['categories'], 0, 3, true);
                 foreach ($topCategories as $category => $categoryCount) {
@@ -267,10 +290,10 @@ class Context7FinalComplianceChecker
         // Progress Tracking
         echo "\n📈 PROGRESS TRACKING:\n";
         echo "├── Started with: ~1,729 violations\n";
-        echo "├── Current total: " . $this->stats['total'] . " violations\n";
+        echo '├── Current total: '.$this->stats['total']." violations\n";
         $reductionPercent = round((1 - ($this->stats['total'] / 1729)) * 100, 2);
         echo "├── Total reduction: {$reductionPercent}%\n";
-        echo "└── Remaining work: " . $this->stats['total'] . " violations to resolve\n";
+        echo '└── Remaining work: '.$this->stats['total']." violations to resolve\n";
 
         // Category Breakdown
         echo "\n📋 DETAILED BREAKDOWN BY CATEGORY:\n";
@@ -286,7 +309,7 @@ class Context7FinalComplianceChecker
                 continue;
             }
 
-            if (!empty($data['categories'])) {
+            if (! empty($data['categories'])) {
                 foreach ($data['categories'] as $category => $count) {
                     $priority = $this->calculatePriority($category, $count);
                     $priorities[] = [
@@ -294,14 +317,14 @@ class Context7FinalComplianceChecker
                         'category' => $category,
                         'count' => $count,
                         'priority' => $priority,
-                        'action' => $this->suggestAction($category, $field)
+                        'action' => $this->suggestAction($category, $field),
                     ];
                 }
             }
         }
 
         // Sort by priority (higher is more important)
-        usort($priorities, function($a, $b) {
+        usort($priorities, function ($a, $b) {
             return $b['priority'] - $a['priority'];
         });
 
@@ -322,7 +345,7 @@ class Context7FinalComplianceChecker
             'migration_index' => 9,
             'model_fillable' => 8,
             'controller_query' => 7,
-            'blade_template' => 6
+            'blade_template' => 6,
         ];
 
         if (isset($highPriorityCategories[$category])) {
@@ -330,9 +353,13 @@ class Context7FinalComplianceChecker
         }
 
         // Adjust based on count
-        if ($count > 50) $basePriority += 3;
-        elseif ($count > 20) $basePriority += 2;
-        elseif ($count > 10) $basePriority += 1;
+        if ($count > 50) {
+            $basePriority += 3;
+        } elseif ($count > 20) {
+            $basePriority += 2;
+        } elseif ($count > 10) {
+            $basePriority += 1;
+        }
 
         return $basePriority;
     }
@@ -360,7 +387,7 @@ class Context7FinalComplianceChecker
         foreach ($this->stats as $field => $data) {
             if (is_array($data) && isset($data['categories'])) {
                 foreach ($data['categories'] as $category => $count) {
-                    if (!isset($allCategories[$category])) {
+                    if (! isset($allCategories[$category])) {
                         $allCategories[$category] = [];
                     }
                     $allCategories[$category][$field] = $count;
@@ -384,4 +411,4 @@ $checker = new Context7FinalComplianceChecker(__DIR__);
 $violations = $checker->runFullComplianceCheck();
 
 echo "\n✅ Final compliance check completed!\n";
-echo "📄 Total violations found: " . count($violations) . "\n\n";
+echo '📄 Total violations found: '.count($violations)."\n\n";

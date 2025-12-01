@@ -3,7 +3,6 @@
 namespace Tests\Feature\Admin;
 
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
@@ -14,11 +13,12 @@ class AiMonitorEndpointsTest extends TestCase
     protected function actingAsAdmin()
     {
         $user = User::query()->first();
-        if (!$user) {
+        if (! $user) {
             $user = User::factory()->create();
         }
         // DB bağımlılığını azaltmak için kullanıcıyı oluşturup kaydetmeden oturum açıyoruz
         $user = User::factory()->make(['id' => 1]);
+
         return $this->actingAs($user);
     }
 

@@ -6,8 +6,6 @@ namespace App\Enums;
  * Ana Kategori Enum
  *
  * Context7: Type-safe main category enumeration
- *
- * @package App\Enums
  */
 enum AnaKategori: string
 {
@@ -20,8 +18,6 @@ enum AnaKategori: string
 
     /**
      * Get human-readable label
-     *
-     * @return string
      */
     public function label(): string
     {
@@ -37,8 +33,6 @@ enum AnaKategori: string
 
     /**
      * Get description
-     *
-     * @return string
      */
     public function description(): string
     {
@@ -54,8 +48,6 @@ enum AnaKategori: string
 
     /**
      * Get icon
-     *
-     * @return string
      */
     public function icon(): string
     {
@@ -88,8 +80,6 @@ enum AnaKategori: string
 
     /**
      * Check if this category is residential
-     *
-     * @return bool
      */
     public function isResidential(): bool
     {
@@ -98,8 +88,6 @@ enum AnaKategori: string
 
     /**
      * Check if this category is commercial
-     *
-     * @return bool
      */
     public function isCommercial(): bool
     {
@@ -108,8 +96,6 @@ enum AnaKategori: string
 
     /**
      * Check if this category is land
-     *
-     * @return bool
      */
     public function isLand(): bool
     {
@@ -118,8 +104,6 @@ enum AnaKategori: string
 
     /**
      * Check if this category supports daily rental
-     *
-     * @return bool
      */
     public function supportsDailyRental(): bool
     {
@@ -128,8 +112,6 @@ enum AnaKategori: string
 
     /**
      * Get required fields for this category
-     *
-     * @return array
      */
     public function requiredFields(): array
     {
@@ -145,8 +127,6 @@ enum AnaKategori: string
 
     /**
      * Get optional fields for this category
-     *
-     * @return array
      */
     public function optionalFields(): array
     {
@@ -162,23 +142,19 @@ enum AnaKategori: string
 
     /**
      * Get all values as array
-     *
-     * @return array
      */
     public static function values(): array
     {
-        return array_map(fn($case) => $case->value, self::cases());
+        return array_map(fn ($case) => $case->value, self::cases());
     }
 
     /**
      * Get options for select dropdown
-     *
-     * @return array
      */
     public static function options(): array
     {
         return array_map(
-            fn($case) => [
+            fn ($case) => [
                 'value' => $case->value,
                 'label' => $case->label(),
                 'icon' => $case->icon(),
@@ -191,9 +167,6 @@ enum AnaKategori: string
 
     /**
      * Create from string (with fallback)
-     *
-     * @param string|null $value
-     * @return self|null
      */
     public static function tryFrom(?string $value): ?self
     {

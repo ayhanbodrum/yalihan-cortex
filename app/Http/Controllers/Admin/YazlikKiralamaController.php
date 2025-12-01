@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\FeatureCategory;
 use App\Models\Ilan;
 use App\Models\IlanFotografi;
 use App\Models\IlanKategori;
-use App\Models\FeatureCategory;
 use App\Models\YazlikRezervasyon;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
-use Carbon\Carbon;
 
 class YazlikKiralamaController extends AdminController
 {
@@ -28,14 +28,14 @@ class YazlikKiralamaController extends AdminController
             ->orWhere('name', 'like', '%Yazlık%Kiralık%')
             ->first();
 
-        if (!$yazlikKategori) {
+        if (! $yazlikKategori) {
             // Fallback: Ana Yazlık kategorisini bul
             $yazlikKategori = IlanKategori::where('slug', 'yazlik')
                 ->orWhere('name', 'like', '%Yazlık%')
                 ->where('seviye', 0)
                 ->first();
 
-            if (!$yazlikKategori) {
+            if (! $yazlikKategori) {
                 return redirect()->back()->with('error', 'Yazlık Kiralama kategorisi bulunamadı. Lütfen kategori yönetiminden Yazlık kategorisini oluşturun.');
             }
         }
@@ -44,7 +44,7 @@ class YazlikKiralamaController extends AdminController
         $query = Ilan::with([
             'anaKategori:id,name,slug',
             'altKategori:id,name,slug',
-            'fotograflar:id,ilan_id,url,order'
+            'fotograflar:id,ilan_id,url,order',
         ])
             ->select([
                 'id',
@@ -58,7 +58,7 @@ class YazlikKiralamaController extends AdminController
                 'ilce_id',
                 'status',
                 'adres',
-                'created_at'
+                'created_at',
             ])
             ->where(function ($q) use ($yazlikKategori) {
                 $q->where('ana_kategori_id', $yazlikKategori->id)
@@ -89,7 +89,7 @@ class YazlikKiralamaController extends AdminController
         // ✅ REFACTORED: Price range filter (Filterable trait)
         if ($request->filled('price_range')) {
             [$min, $max] = explode('-', $request->get('price_range'));
-            $query->priceRange((int)$min, (int)$max, 'fiyat');
+            $query->priceRange((int) $min, (int) $max, 'fiyat');
         } else {
             // ✅ REFACTORED: Min/max price filters (Filterable trait)
             $query->priceRange(
@@ -147,7 +147,7 @@ class YazlikKiralamaController extends AdminController
             })->count(),
             'active_reservations' => $activeReservations,
             'monthly_revenue' => $this->calculateMonthlyRevenue(),
-            'occupancy_rate' => 75.5 // Mock data - implement real calculation
+            'occupancy_rate' => 75.5, // Mock data - implement real calculation
         ];
 
         $yazliklar = $ilanlar;
@@ -214,13 +214,13 @@ class YazlikKiralamaController extends AdminController
             'cleaning_fee' => 'nullable|numeric|min:0',
             'extra_guest_fee' => 'nullable|numeric|min:0',
             'status' => 'required|in:active,inactive,pending',
-            'fotograflar.*' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120'
+            'fotograflar.*' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
         ]);
 
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
-                'errors' => $validator->errors()
+                'errors' => $validator->errors(),
             ], 422);
         }
 
@@ -269,15 +269,15 @@ class YazlikKiralamaController extends AdminController
             // Handle photo uploads
             if ($request->hasFile('fotograflar')) {
                 foreach ($request->file('fotograflar') as $index => $file) {
-                    $filename = time() . '_' . $index . '.' . $file->getClientOriginalExtension();
-                    $path = $file->storeAs('ilanlar/' . $ilan->id, $filename, 'public');
+                    $filename = time().'_'.$index.'.'.$file->getClientOriginalExtension();
+                    $path = $file->storeAs('ilanlar/'.$ilan->id, $filename, 'public');
 
                     IlanFotografi::create([
                         'ilan_id' => $ilan->id,
                         'dosya_adi' => $filename,
                         'dosya_yolu' => $path,
                         'sira' => $index + 1,
-                        'is_main' => $index === 0
+                        'is_main' => $index === 0,
                     ]);
                 }
             }
@@ -287,25 +287,25 @@ class YazlikKiralamaController extends AdminController
             Log::info('Summer rental listing created', [
                 'ilan_id' => $ilan->id,
                 'title' => $ilan->baslik,
-                'user_id' => auth()->id()
+                'user_id' => auth()->id(),
             ]);
 
             return response()->json([
                 'success' => true,
                 'message' => 'Yazlık kiralama ilanı başarıyla oluşturuldu.',
-                'data' => ['ilan_id' => $ilan->id]
+                'data' => ['ilan_id' => $ilan->id],
             ]);
         } catch (\Exception $e) {
             DB::rollback();
 
             Log::error('Summer rental listing creation failed', [
                 'error' => $e->getMessage(),
-                'user_id' => auth()->id()
+                'user_id' => auth()->id(),
             ]);
 
             return response()->json([
                 'success' => false,
-                'message' => 'İlan oluşturma işlemi başarısız: ' . $e->getMessage()
+                'message' => 'İlan oluşturma işlemi başarısız: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -380,13 +380,13 @@ class YazlikKiralamaController extends AdminController
             'max_guests' => 'required|integer|min:1|max:20',
             'min_stay_days' => 'required|integer|min:1',
             'rental_type' => 'required|in:daily,weekly,monthly,seasonal',
-            'status' => 'required|in:active,inactive,pending'
+            'status' => 'required|in:active,inactive,pending',
         ]);
 
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
-                'errors' => $validator->errors()
+                'errors' => $validator->errors(),
             ], 422);
         }
 
@@ -414,7 +414,7 @@ class YazlikKiralamaController extends AdminController
                 'cancellation_policy',
                 'security_deposit',
                 'cleaning_fee',
-                'extra_guest_fee'
+                'extra_guest_fee',
             ]);
 
             // ✅ Context7: ana_kategori_id ekle (kategori_id yerine)
@@ -432,14 +432,14 @@ class YazlikKiralamaController extends AdminController
                 $maxSira = $ilan->fotograflar()->max('sira') ?? 0;
 
                 foreach ($request->file('new_fotograflar') as $index => $file) {
-                    $filename = time() . '_' . ($maxSira + $index + 1) . '.' . $file->getClientOriginalExtension();
-                    $path = $file->storeAs('ilanlar/' . $ilan->id, $filename, 'public');
+                    $filename = time().'_'.($maxSira + $index + 1).'.'.$file->getClientOriginalExtension();
+                    $path = $file->storeAs('ilanlar/'.$ilan->id, $filename, 'public');
 
                     IlanFotografi::create([
                         'ilan_id' => $ilan->id,
                         'dosya_adi' => $filename,
                         'dosya_yolu' => $path,
-                        'sira' => $maxSira + $index + 1
+                        'sira' => $maxSira + $index + 1,
                     ]);
                 }
             }
@@ -449,12 +449,12 @@ class YazlikKiralamaController extends AdminController
             Log::info('Summer rental listing updated', [
                 'ilan_id' => $ilan->id,
                 'title' => $ilan->baslik,
-                'user_id' => auth()->id()
+                'user_id' => auth()->id(),
             ]);
 
             return response()->json([
                 'success' => true,
-                'message' => 'Yazlık kiralama ilanı başarıyla güncellendi.'
+                'message' => 'Yazlık kiralama ilanı başarıyla güncellendi.',
             ]);
         } catch (\Exception $e) {
             DB::rollback();
@@ -462,12 +462,12 @@ class YazlikKiralamaController extends AdminController
             Log::error('Summer rental listing update failed', [
                 'ilan_id' => $id,
                 'error' => $e->getMessage(),
-                'user_id' => auth()->id()
+                'user_id' => auth()->id(),
             ]);
 
             return response()->json([
                 'success' => false,
-                'message' => 'İlan güncelleme işlemi başarısız: ' . $e->getMessage()
+                'message' => 'İlan güncelleme işlemi başarısız: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -487,13 +487,13 @@ class YazlikKiralamaController extends AdminController
             $fotoYollari = $ilan->fotograflar->pluck('dosya_yolu')->filter()->toArray();
 
             // ✅ PERFORMANCE FIX: Mevcut dosyaları filtrele ve toplu sil
-            if (!empty($fotoYollari)) {
+            if (! empty($fotoYollari)) {
                 $existingFiles = array_filter($fotoYollari, function ($path) {
                     return Storage::disk('public')->exists($path);
                 });
 
                 // Toplu silme (Storage::delete() array kabul eder)
-                if (!empty($existingFiles)) {
+                if (! empty($existingFiles)) {
                     Storage::disk('public')->delete($existingFiles);
                 }
             }
@@ -509,12 +509,12 @@ class YazlikKiralamaController extends AdminController
             Log::info('Summer rental listing deleted', [
                 'ilan_id' => $id,
                 'title' => $ilan->baslik,
-                'user_id' => auth()->id()
+                'user_id' => auth()->id(),
             ]);
 
             return response()->json([
                 'success' => true,
-                'message' => 'Yazlık kiralama ilanı başarıyla silindi.'
+                'message' => 'Yazlık kiralama ilanı başarıyla silindi.',
             ]);
         } catch (\Exception $e) {
             DB::rollback();
@@ -522,12 +522,12 @@ class YazlikKiralamaController extends AdminController
             Log::error('Summer rental listing deletion failed', [
                 'ilan_id' => $id,
                 'error' => $e->getMessage(),
-                'user_id' => auth()->id()
+                'user_id' => auth()->id(),
             ]);
 
             return response()->json([
                 'success' => false,
-                'message' => 'İlan silme işlemi başarısız: ' . $e->getMessage()
+                'message' => 'İlan silme işlemi başarısız: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -553,7 +553,7 @@ class YazlikKiralamaController extends AdminController
             if (count($dateRange) === 2) {
                 $query->whereBetween('check_in', [
                     Carbon::parse($dateRange[0])->format('Y-m-d'),
-                    Carbon::parse($dateRange[1])->format('Y-m-d')
+                    Carbon::parse($dateRange[1])->format('Y-m-d'),
                 ]);
             }
         }
@@ -572,13 +572,13 @@ class YazlikKiralamaController extends AdminController
     {
         $validator = Validator::make($request->all(), [
             'status' => 'required|in:pending,confirmed,cancelled,completed',
-            'notes' => 'nullable|string|max:1000'
+            'notes' => 'nullable|string|max:1000',
         ]);
 
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
-                'errors' => $validator->errors()
+                'errors' => $validator->errors(),
             ], 422);
         }
 
@@ -593,23 +593,23 @@ class YazlikKiralamaController extends AdminController
             Log::info('Booking status updated', [
                 'booking_id' => $bookingId,
                 'status' => $request->status,
-                'user_id' => auth()->id()
+                'user_id' => auth()->id(),
             ]);
 
             return response()->json([
                 'success' => true,
-                'message' => 'Rezervasyon durumu güncellendi.'
+                'message' => 'Rezervasyon durumu güncellendi.',
             ]);
         } catch (\Exception $e) {
             Log::error('Booking status update failed', [
                 'booking_id' => $bookingId,
                 'error' => $e->getMessage(),
-                'user_id' => auth()->id()
+                'user_id' => auth()->id(),
             ]);
 
             return response()->json([
                 'success' => false,
-                'message' => 'Durum güncelleme başarısız: ' . $e->getMessage()
+                'message' => 'Durum güncelleme başarısız: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -658,15 +658,16 @@ class YazlikKiralamaController extends AdminController
                     'balcony' => 'Balkon',
                     'terrace' => 'Teras',
                     'bbq' => 'Barbekü',
-                    'security' => 'Güvenlik'
+                    'security' => 'Güvenlik',
                 ];
             }
 
             return $amenities;
         } catch (\Exception $e) {
             Log::warning('FeatureCategory entegrasyonu hatası, fallback kullanılıyor', [
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
+
             // Fallback to hardcoded list
             return [
                 'wifi' => 'Wi-Fi',
@@ -684,7 +685,7 @@ class YazlikKiralamaController extends AdminController
                 'balcony' => 'Balkon',
                 'terrace' => 'Teras',
                 'bbq' => 'Barbekü',
-                'security' => 'Güvenlik'
+                'security' => 'Güvenlik',
             ];
         }
     }
@@ -695,7 +696,7 @@ class YazlikKiralamaController extends AdminController
             'daily' => 'Günlük',
             'weekly' => 'Haftalık',
             'monthly' => 'Aylık',
-            'seasonal' => 'Sezonluk'
+            'seasonal' => 'Sezonluk',
         ];
     }
 
@@ -709,6 +710,7 @@ class YazlikKiralamaController extends AdminController
                 ->sum('toplam_fiyat') ?? 0;
         } catch (\Exception $e) {
             Log::warning('Monthly revenue hesaplama hatası', ['error' => $e->getMessage()]);
+
             return 0;
         }
     }
@@ -738,16 +740,17 @@ class YazlikKiralamaController extends AdminController
                 'confirmed_bookings' => $confirmedCount,
                 'pending_bookings' => $rezervasyonlar->where('status', 'beklemede')->count(),
                 'occupancy_rate' => $occupancyRate,
-                'avg_stay_duration' => $avgStayDuration
+                'avg_stay_duration' => $avgStayDuration,
             ];
         } catch (\Exception $e) {
             Log::warning('Booking stats hesaplama hatası', ['ilan_id' => $ilanId, 'error' => $e->getMessage()]);
+
             return [
                 'total_bookings' => 0,
                 'confirmed_bookings' => 0,
                 'pending_bookings' => 0,
                 'occupancy_rate' => 0,
-                'avg_stay_duration' => 0
+                'avg_stay_duration' => 0,
             ];
         }
     }
@@ -774,6 +777,7 @@ class YazlikKiralamaController extends AdminController
             // Revenue growth (basit versiyon - geliştirilebilir)
             $lastMonthRevenue = $onayliRezervasyonlar->filter(function ($r) {
                 $lastMonth = Carbon::now()->subMonth();
+
                 return $r->created_at->month == $lastMonth->month && $r->created_at->year == $lastMonth->year;
             })->sum('toplam_fiyat');
 
@@ -785,15 +789,16 @@ class YazlikKiralamaController extends AdminController
                 'monthly_revenue' => $monthlyRevenue,
                 'total_revenue' => $totalRevenue,
                 'avg_nightly_rate' => $avgNightlyRate,
-                'revenue_growth' => $revenueGrowth
+                'revenue_growth' => $revenueGrowth,
             ];
         } catch (\Exception $e) {
             Log::warning('Revenue stats hesaplama hatası', ['ilan_id' => $ilanId, 'error' => $e->getMessage()]);
+
             return [
                 'monthly_revenue' => 0,
                 'total_revenue' => 0,
                 'avg_nightly_rate' => 0,
-                'revenue_growth' => 0
+                'revenue_growth' => 0,
             ];
         }
     }
@@ -809,7 +814,7 @@ class YazlikKiralamaController extends AdminController
             $calendar[] = [
                 'date' => $date->format('Y-m-d'),
                 'status' => rand(0, 10) > 7 ? 'booked' : 'available',
-                'price' => rand(500, 1500)
+                'price' => rand(500, 1500),
             ];
         }
 

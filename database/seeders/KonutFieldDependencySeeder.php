@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\KategoriYayinTipiFieldDependency;
+use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
 class KonutFieldDependencySeeder extends Seeder
@@ -150,7 +150,7 @@ class KonutFieldDependencySeeder extends Seeder
             $this->command->info('✅ Konut alan ilişkileri başarıyla eklendi!');
         } catch (\Exception $e) {
             DB::rollBack();
-            $this->command->error('❌ Hata: ' . $e->getMessage());
+            $this->command->error('❌ Hata: '.$e->getMessage());
         }
     }
 }

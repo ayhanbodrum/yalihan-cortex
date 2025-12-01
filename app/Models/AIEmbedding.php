@@ -2,16 +2,16 @@
 
 namespace App\Models;
 
+use App\Traits\HasAIUsageTracking;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Str;
-use App\Traits\HasAIUsageTracking;
 
 class AIEmbedding extends Model
 {
-    use HasFactory, HasAIUsageTracking;
+    use HasAIUsageTracking, HasFactory;
 
     protected $table = 'ai_embeddings';
 
@@ -126,7 +126,7 @@ class AIEmbedding extends Model
         } elseif ($daysSinceLastUse <= 30) {
             return 'Bu ay kullanıldı';
         } else {
-            return $daysSinceLastUse . ' gün önce kullanıldı';
+            return $daysSinceLastUse.' gün önce kullanıldı';
         }
     }
 
@@ -238,7 +238,7 @@ class AIEmbedding extends Model
         // This would typically involve generating an embedding for the content first
         // For now, we'll do a simple text search as fallback
         $query = static::query()
-            ->where('content', 'LIKE', '%' . $content . '%');
+            ->where('content', 'LIKE', '%'.$content.'%');
 
         if ($type) {
             $query->byType($type);
@@ -291,6 +291,7 @@ class AIEmbedding extends Model
         foreach ($types as $type) {
             if (! class_exists($type)) {
                 $orphaned += static::where('embeddable_type', $type)->delete();
+
                 continue;
             }
 
@@ -306,7 +307,7 @@ class AIEmbedding extends Model
 
             // ✅ PERFORMANCE FIX: Bulk delete kullan (N query → 1 query)
             $orphanedIds = array_diff($embeddableIds, $existingIds);
-            if (!empty($orphanedIds)) {
+            if (! empty($orphanedIds)) {
                 $deletedCount = static::where('embeddable_type', $type)
                     ->whereIn('embeddable_id', $orphanedIds)
                     ->delete();

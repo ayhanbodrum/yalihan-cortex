@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
@@ -40,20 +39,20 @@ class OzellikKategorileriSeeder extends Seeder
             ['name' => 'Konum', 'slug' => 'konum', 'icon' => '📍', 'display_order' => 4],
         ];
 
-        foreach($kategoriler as $kategori) {
+        foreach ($kategoriler as $kategori) {
             DB::table('ozellik_kategorileri')->updateOrInsert(
                 ['slug' => $kategori['slug']],
                 array_merge($kategori, [
-                    'aciklama' => $kategori['name'] . ' ile ilgili özellikler',
+                    'aciklama' => $kategori['name'].' ile ilgili özellikler',
                     'parent_id' => null,
                     'status' => 'active',
                     'created_at' => now(),
-                    'updated_at' => now()
+                    'updated_at' => now(),
                 ])
             );
         }
 
-        echo "✅ " . count($kategoriler) . " ana kategori oluşturuldu\n\n";
+        echo '✅ '.count($kategoriler)." ana kategori oluşturuldu\n\n";
     }
 
     private function seedAltOzellikler(): void
@@ -103,10 +102,10 @@ class OzellikKategorileriSeeder extends Seeder
             'konum' => $konumOzellikleri,
         ];
 
-        foreach($allOzellikleri as $kategoriSlug => $ozellikleri) {
+        foreach ($allOzellikleri as $kategoriSlug => $ozellikleri) {
             $kategoriId = DB::table('ozellik_kategorileri')->where('slug', $kategoriSlug)->value('id');
 
-            foreach($ozellikleri as $index => $ozellik) {
+            foreach ($ozellikleri as $index => $ozellik) {
                 DB::table('ozellikler')->updateOrInsert(
                     ['slug' => $ozellik['alt_kategori_slug']],
                     [
@@ -121,15 +120,15 @@ class OzellikKategorileriSeeder extends Seeder
                         'zorunlu' => 0,
                         'arama_filtresi' => 1,
                         'ilan_kartinda_goster' => 1,
-                        'aciklama' => $ozellik['alt_kategori_adi'] . ' özelliği',
+                        'aciklama' => $ozellik['alt_kategori_adi'].' özelliği',
                         'created_at' => now(),
-                        'updated_at' => now()
+                        'updated_at' => now(),
                     ]
                 );
             }
         }
 
-        echo "✅ " . array_sum(array_map('count', $allOzellikleri)) . " alt özellik oluşturuldu\n\n";
+        echo '✅ '.array_sum(array_map('count', $allOzellikleri))." alt özellik oluşturuldu\n\n";
     }
 
     private function seed4DMatrix(): void
@@ -141,12 +140,12 @@ class OzellikKategorileriSeeder extends Seeder
 
         $matrixData = [];
 
-        foreach($kategoriler as $kategoriSlug) {
-            foreach($yayinTipleri as $yayinTipi) {
+        foreach ($kategoriler as $kategoriSlug) {
+            foreach ($yayinTipleri as $yayinTipi) {
                 // Her kategori için uygun özellikleri seç
                 $ozellikler = $this->getKategoriOzellikleri($kategoriSlug, $yayinTipi);
 
-                foreach($ozellikler as $ozellik) {
+                foreach ($ozellikler as $ozellik) {
                     $matrixData[] = [
                         'kategori_slug' => $kategoriSlug,
                         'yayin_tipi' => $yayinTipi,
@@ -158,20 +157,21 @@ class OzellikKategorileriSeeder extends Seeder
                         'ai_auto_fill' => $ozellik['ai_auto_fill'],
                         'sira' => $ozellik['sira'],
                         'created_at' => now(),
-                        'updated_at' => now()
+                        'updated_at' => now(),
                     ];
                 }
             }
         }
 
         // Mevcut matrix tablosu yoksa oluştur
-        if (!Schema::hasTable('kategori_ozellik_matrix')) {
+        if (! Schema::hasTable('kategori_ozellik_matrix')) {
             echo "⚠️  Matrix tablosu bulunamadı, mevcut yapı kullanılıyor\n";
+
             return;
         }
 
         DB::table('kategori_ozellik_matrix')->insert($matrixData);
-        echo "✅ " . count($matrixData) . " matrix kombinasyonu oluşturuldu\n\n";
+        echo '✅ '.count($matrixData)." matrix kombinasyonu oluşturuldu\n\n";
     }
 
     private function getKategoriOzellikleri($kategoriSlug, $yayinTipi): array
@@ -182,38 +182,38 @@ class OzellikKategorileriSeeder extends Seeder
                 'altyapi' => ['elektrik', 'su', 'dogalgaz', 'telefon', 'kanalizasyon'],
                 'genel_ozellikler' => ['bahce', 'havuz', 'otopark', 'guvenlik', 'asansor'],
                 'manzara' => ['deniz', 'dag', 'sehir'],
-                'konum' => ['merkezi', 'ulasim', 'okul', 'hastane', 'alisveris']
+                'konum' => ['merkezi', 'ulasim', 'okul', 'hastane', 'alisveris'],
             ],
             'arsa' => [
                 'altyapi' => ['elektrik', 'su', 'yol'],
                 'genel_ozellikler' => ['bahce'],
                 'manzara' => ['deniz', 'dag', 'sehir', 'doga'],
-                'konum' => ['merkezi', 'ulasim']
+                'konum' => ['merkezi', 'ulasim'],
             ],
             'yazlik' => [
                 'altyapi' => ['elektrik', 'su', 'telefon', 'yol'],
                 'genel_ozellikler' => ['bahce', 'havuz', 'otopark', 'guvenlik'],
                 'manzara' => ['deniz', 'dag', 'doga'],
-                'konum' => ['merkezi', 'ulasim']
+                'konum' => ['merkezi', 'ulasim'],
             ],
             'isyeri' => [
                 'altyapi' => ['elektrik', 'su', 'telefon', 'dogalgaz'],
                 'genel_ozellikler' => ['otopark', 'guvenlik', 'asansor'],
                 'manzara' => ['sehir'],
-                'konum' => ['merkezi', 'ulasim', 'alisveris']
-            ]
+                'konum' => ['merkezi', 'ulasim', 'alisveris'],
+            ],
         ];
 
         $ozellikler = [];
         $sira = 1;
 
-        foreach($kategoriOzellikleri[$kategoriSlug] as $kategoriSlug => $altOzellikler) {
+        foreach ($kategoriOzellikleri[$kategoriSlug] as $kategoriSlug => $altOzellikler) {
             $kategoriId = DB::table('ozellik_kategorileri')->where('slug', $kategoriSlug)->value('id');
 
-            foreach($altOzellikler as $altOzellikSlug) {
+            foreach ($altOzellikler as $altOzellikSlug) {
                 $ozellikId = DB::table('ozellikler')->where('slug', $altOzellikSlug)->value('id');
 
-                if($kategoriId && $ozellikId) {
+                if ($kategoriId && $ozellikId) {
                     $ozellikler[] = [
                         'kategori_id' => $kategoriId,
                         'ozellik_id' => $ozellikId,
@@ -221,7 +221,7 @@ class OzellikKategorileriSeeder extends Seeder
                         'zorunlu' => in_array($altOzellikSlug, ['elektrik', 'su', 'yol']),
                         'ai_suggestion' => in_array($altOzellikSlug, ['deniz', 'bahce', 'havuz', 'otopark']),
                         'ai_auto_fill' => in_array($altOzellikSlug, ['merkezi', 'ulasim']),
-                        'sira' => $sira++
+                        'sira' => $sira++,
                     ];
                 }
             }

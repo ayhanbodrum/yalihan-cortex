@@ -140,15 +140,15 @@ class TakimUyesi extends Model
         $oran = $this->getBasariOraniAttribute();
 
         if ($oran >= 90) {
-            return '<span class="badge bg-success">%' . $oran . ' Mükemmel</span>';
+            return '<span class="badge bg-success">%'.$oran.' Mükemmel</span>';
         } elseif ($oran >= 80) {
-            return '<span class="badge bg-primary">%' . $oran . ' Çok İyi</span>';
+            return '<span class="badge bg-primary">%'.$oran.' Çok İyi</span>';
         } elseif ($oran >= 70) {
-            return '<span class="badge bg-info">%' . $oran . ' İyi</span>';
+            return '<span class="badge bg-info">%'.$oran.' İyi</span>';
         } elseif ($oran >= 60) {
-            return '<span class="badge bg-warning">%' . $oran . ' Orta</span>';
+            return '<span class="badge bg-warning">%'.$oran.' Orta</span>';
         } else {
-            return '<span class="badge bg-danger">%' . $oran . ' Düşük</span>';
+            return '<span class="badge bg-danger">%'.$oran.' Düşük</span>';
         }
     }
 
@@ -157,15 +157,15 @@ class TakimUyesi extends Model
         $skor = $this->performans_skoru;
 
         if ($skor >= 8.5) {
-            return '<span class="badge bg-success">' . $skor . '/10 Mükemmel</span>';
+            return '<span class="badge bg-success">'.$skor.'/10 Mükemmel</span>';
         } elseif ($skor >= 7.0) {
-            return '<span class="badge bg-primary">' . $skor . '/10 Çok İyi</span>';
+            return '<span class="badge bg-primary">'.$skor.'/10 Çok İyi</span>';
         } elseif ($skor >= 5.5) {
-            return '<span class="badge bg-info">' . $skor . '/10 İyi</span>';
+            return '<span class="badge bg-info">'.$skor.'/10 İyi</span>';
         } elseif ($skor >= 4.0) {
-            return '<span class="badge bg-warning">' . $skor . '/10 Orta</span>';
+            return '<span class="badge bg-warning">'.$skor.'/10 Orta</span>';
         } else {
-            return '<span class="badge bg-danger">' . $skor . '/10 Düşük</span>';
+            return '<span class="badge bg-danger">'.$skor.'/10 Düşük</span>';
         }
     }
 

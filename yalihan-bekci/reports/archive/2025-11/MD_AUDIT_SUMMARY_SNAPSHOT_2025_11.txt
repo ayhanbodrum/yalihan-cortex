@@ -1,0 +1,45 @@
+# MD AUDIT SUMMARY - SNAPSHOT (Kasım 2025)
+
+⚠️ BU BİR SNAPSHOT RAPORUDUR ⚠️
+
+Bu rapor Kasım 2025'teki anlık durumu gösterir.
+[outdated] ve [duplicate_hint] işaretleri o anki durum içindi.
+
+Arşiv klasörlerindeki işaretler (docs/archive/, .context7/archive/)
+"yapılacak iş" DEĞIL, tarihsel kayıttır.
+
+Güncel aktif standartlar:
+- .context7/authority.json
+- docs/active/RULES_KONSOLIDE_2025_11_25.md
+- YALIHAN_BEKCI_EGITIM_DOKUMANI.md
+
+════════════════════════════════════════════════════════════════════
+ORJINAL SNAPSHOT (Kasım 2025):
+════════════════════════════════════════════════════════════════════
+
+# MD Audit Summary
+files: 441
+
+- docs/FORM_STANDARDS.md
+  * CRM: docs/FORM_STANDARDS.md:301
+
+- docs/README.md
+
+- docs/active/ADMIN-PANEL-STANDARDS-AND-ROADMAP.md [outdated,duplicate_hint]
+
+- docs/active/API-REFERENCE.md [duplicate_hint]
+
+- docs/active/CONTEXT7-COMPLIANCE.md
+  * MCP: docs/active/CONTEXT7-COMPLIANCE.md:12
+
+- docs/active/CONTEXT7-MASTER-GUIDE.md [duplicate_hint]
+
+- docs/active/CONTEXT7-MCP-USAGE.md
+  * MCP: docs/active/CONTEXT7-MCP-USAGE.md:1, docs/active/CONTEXT7-MCP-USAGE.md:4, docs/active/CONTEXT7-MCP-USAGE.md:5
+
+- docs/active/CONTEXT7-RULES-DETAILED.md [outdated,duplicate_hint]
+
+(Snapshot devam ediyor - tam liste için dosyanın tamamına bakınız)
+
+NOT: Bu işaretler o anki durum için geçerliydi. Sonraki güncellemeler bu raporda yansıtılmamıştır.
+Aktif standartlar için yukarıdaki 3 dosyaya bakınız.

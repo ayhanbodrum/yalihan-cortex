@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Services\Analysis\PageAnalyticsService;
 use App\Services\Analysis\EmlakYonetimPageAnalyzer;
-use Illuminate\Routing\Controller;
+use App\Services\Analysis\PageAnalyticsService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
@@ -12,12 +11,13 @@ use Illuminate\Support\Facades\Storage;
 class PageAnalyzerController extends AdminController
 {
     protected $analyticsService;
+
     protected $emlakAnalyzer;
 
     public function __construct(PageAnalyticsService $analyticsService)
     {
         $this->analyticsService = $analyticsService;
-        $this->emlakAnalyzer = new EmlakYonetimPageAnalyzer();
+        $this->emlakAnalyzer = new EmlakYonetimPageAnalyzer;
     }
 
     /**
@@ -52,7 +52,7 @@ class PageAnalyzerController extends AdminController
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'analysis_type' => 'required|in:complete,partial,single',
-            'target_pages' => 'nullable|array'
+            'target_pages' => 'nullable|array',
         ]);
 
         // Run analysis and store results
@@ -64,14 +64,14 @@ class PageAnalyzerController extends AdminController
             'description' => $request->description,
             'analysis_type' => $request->analysis_type,
             'results' => $results,
-            'created_at' => now()
+            'created_at' => now(),
         ];
 
         if ($request->expectsJson()) {
             return response()->json([
                 'success' => true,
                 'message' => 'Analysis session created successfully',
-                'data' => $sessionData
+                'data' => $sessionData,
             ], 201);
         }
 
@@ -89,11 +89,11 @@ class PageAnalyzerController extends AdminController
         $results = $this->runEnhancedAnalysis();
         $specificResult = $results['pages'][$id] ?? null;
 
-        if (!$specificResult) {
+        if (! $specificResult) {
             if (request()->expectsJson()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Analysis result not found'
+                    'message' => 'Analysis result not found',
                 ], 404);
             }
 
@@ -129,7 +129,7 @@ class PageAnalyzerController extends AdminController
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'analysis_type' => 'required|in:complete,partial,single',
-            'target_pages' => 'nullable|array'
+            'target_pages' => 'nullable|array',
         ]);
 
         // Update analysis configuration
@@ -138,7 +138,7 @@ class PageAnalyzerController extends AdminController
         if ($request->expectsJson()) {
             return response()->json([
                 'success' => true,
-                'message' => 'Analysis configuration updated successfully'
+                'message' => 'Analysis configuration updated successfully',
             ]);
         }
 
@@ -158,7 +158,7 @@ class PageAnalyzerController extends AdminController
         if (request()->expectsJson()) {
             return response()->json([
                 'success' => true,
-                'message' => 'Analysis session deleted successfully'
+                'message' => 'Analysis session deleted successfully',
             ]);
         }
 
@@ -175,10 +175,10 @@ class PageAnalyzerController extends AdminController
         // Mock configuration - implement actual config retrieval
         return [
             'id' => $id,
-            'name' => 'Analysis Config ' . $id,
+            'name' => 'Analysis Config '.$id,
             'analysis_type' => 'complete',
             'target_pages' => [],
-            'created_at' => now()
+            'created_at' => now(),
         ];
     }
 
@@ -213,34 +213,34 @@ class PageAnalyzerController extends AdminController
             'telegram_bot' => [
                 'success_rate' => 85,
                 'avg_response_time' => 234,
-                'active_users' => 12
+                'active_users' => 12,
             ],
             'adres_yonetimi' => [
                 'success_rate' => 92,
                 'avg_response_time' => 180,
-                'last_error' => 'None'
+                'last_error' => 'None',
             ],
             'my_listings' => [
                 'success_rate' => 45,
                 'avg_response_time' => 520,
-                'status' => 'Not Implemented'
+                'status' => 'Not Implemented',
             ],
             'analytics' => [
                 'success_rate' => 30,
                 'avg_response_time' => 890,
-                'status' => 'Not Implemented'
+                'status' => 'Not Implemented',
             ],
             'notifications' => [
                 'success_rate' => 78,
                 'avg_response_time' => 150,
-                'active_users' => 24
-            ]
+                'active_users' => 24,
+            ],
         ];
 
         // Health data
         $healthData = [
             'score' => (int) $results['average_score'] * 10,
-            'status' => $results['average_score'] >= 8 ? 'excellent' : ($results['average_score'] >= 6 ? 'good' : ($results['average_score'] >= 4 ? 'fair' : 'poor'))
+            'status' => $results['average_score'] >= 8 ? 'excellent' : ($results['average_score'] >= 6 ? 'good' : ($results['average_score'] >= 4 ? 'fair' : 'poor')),
         ];
 
         return view('admin.page-analyzer.dashboard', [
@@ -256,10 +256,9 @@ class PageAnalyzerController extends AdminController
             'categoryBreakdown' => array_merge_recursive($results['category_breakdown'], $emlakResults['category_breakdown']),
             'performanceData' => $performanceData,
             'healthData' => $healthData,
-            'emlakResults' => $emlakResults
+            'emlakResults' => $emlakResults,
         ]);
     }
-
 
     /**
      * Export analysis results
@@ -282,13 +281,13 @@ class PageAnalyzerController extends AdminController
                 default:
                     return response()->json([
                         'success' => false,
-                        'message' => 'Desteklenmeyen export formatı'
+                        'message' => 'Desteklenmeyen export formatı',
                     ], 400);
             }
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Export sırasında hata oluştu: ' . $e->getMessage()
+                'message' => 'Export sırasında hata oluştu: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -330,7 +329,7 @@ class PageAnalyzerController extends AdminController
             $categoryBreakdown = [];
             foreach ($emlakPages as $page) {
                 $category = $page['category'];
-                if (!isset($categoryBreakdown[$category])) {
+                if (! isset($categoryBreakdown[$category])) {
                     $categoryBreakdown[$category] = ['count' => 0, 'avg_score' => 0, 'total_score' => 0];
                 }
                 $categoryBreakdown[$category]['count']++;
@@ -350,8 +349,8 @@ class PageAnalyzerController extends AdminController
                 'emlak_specific' => [
                     'ai_features_count' => array_sum(array_column(array_column($emlakPages, 'ai_features'), 'count')),
                     'innovation_count' => array_sum(array_column(array_column($emlakPages, 'innovations'), 'count')),
-                    'context7_compliance' => 85 // Average compliance for emlak pages
-                ]
+                    'context7_compliance' => 85, // Average compliance for emlak pages
+                ],
             ];
         } catch (\Exception $e) {
             return [
@@ -363,7 +362,7 @@ class PageAnalyzerController extends AdminController
                 'pages' => [],
                 'recommendations' => [],
                 'category_breakdown' => [],
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ];
         }
     }
@@ -386,7 +385,7 @@ class PageAnalyzerController extends AdminController
         $output = [];
         $returnVar = 0;
 
-        exec('cd ' . base_path() . ' && php artisan analyze:pages-complete 2>&1', $output, $returnVar);
+        exec('cd '.base_path().' && php artisan analyze:pages-complete 2>&1', $output, $returnVar);
 
         if ($returnVar !== 0) {
             return $this->generateFallbackData();
@@ -413,7 +412,7 @@ class PageAnalyzerController extends AdminController
             'critical' => 0,
             'danger' => 0,
             'warning' => 0,
-            'success' => 0
+            'success' => 0,
         ];
 
         $pageDetails = [];
@@ -425,7 +424,7 @@ class PageAnalyzerController extends AdminController
                 'severity' => $analysis['severity'],
                 'type' => $analysis['type'],
                 'controller' => $analysis['controller'],
-                'issues' => $analysis['controller_analysis']['issues'] ?? []
+                'issues' => $analysis['controller_analysis']['issues'] ?? [],
             ];
         }
 
@@ -441,15 +440,22 @@ class PageAnalyzerController extends AdminController
             'recommendations' => $recommendations,
             'css_stats' => $data['css_compliance_stats'] ?? [],
             'innovation_stats' => $data['innovation_stats'] ?? [],
-            'category_breakdown' => $this->calculateCategoryBreakdown($pageDetails)
+            'category_breakdown' => $this->calculateCategoryBreakdown($pageDetails),
         ];
     }
 
     private function determineSeverity($score)
     {
-        if ($score >= 8) return 'success';
-        if ($score >= 6) return 'warning';
-        if ($score >= 4) return 'danger';
+        if ($score >= 8) {
+            return 'success';
+        }
+        if ($score >= 6) {
+            return 'warning';
+        }
+        if ($score >= 4) {
+            return 'danger';
+        }
+
         return 'critical';
     }
 
@@ -465,8 +471,8 @@ class PageAnalyzerController extends AdminController
             'recommendations' => [
                 'Implement missing controllers (Priority: Critical)',
                 'Add proper error handling and validation',
-                'Ensure Context7 compliance in all files'
-            ]
+                'Ensure Context7 compliance in all files',
+            ],
         ];
     }
 
@@ -477,9 +483,9 @@ class PageAnalyzerController extends AdminController
         // 🎯 AKILLI ÖNERİ SİSTEMİ
 
         // Critical issues analysis
-        $criticalPages = array_filter($pages, fn($p) => $p['severity'] === 'critical');
-        $warningPages = array_filter($pages, fn($p) => $p['severity'] === 'warning');
-        $successPages = array_filter($pages, fn($p) => $p['severity'] === 'success');
+        $criticalPages = array_filter($pages, fn ($p) => $p['severity'] === 'critical');
+        $warningPages = array_filter($pages, fn ($p) => $p['severity'] === 'warning');
+        $successPages = array_filter($pages, fn ($p) => $p['severity'] === 'success');
 
         // CSS compliance analysis
         $legacyCSSPages = [];
@@ -493,7 +499,7 @@ class PageAnalyzerController extends AdminController
                 if ($cssAnalysis['legacy_usage'] > 0) {
                     $legacyCSSPages[] = $page['name'];
                 }
-                if (!$cssAnalysis['compliant']) {
+                if (! $cssAnalysis['compliant']) {
                     $nonNeoPages[] = $page['name'];
                 }
             }
@@ -513,10 +519,10 @@ class PageAnalyzerController extends AdminController
                 'priority' => 'URGENT',
                 'icon' => '🚨',
                 'title' => 'Critical Controller Issues',
-                'description' => count($criticalPages) . ' sayfa kritik durumda - hemen controller implementasyonu gerekli',
+                'description' => count($criticalPages).' sayfa kritik durumda - hemen controller implementasyonu gerekli',
                 'action' => 'Öncelikle eksik controller methodlarını implement edin',
                 'affected_pages' => array_slice(array_column($criticalPages, 'name'), 0, 5),
-                'estimated_time' => '2-4 saat'
+                'estimated_time' => '2-4 saat',
             ];
         }
 
@@ -526,10 +532,10 @@ class PageAnalyzerController extends AdminController
                 'priority' => 'HIGH',
                 'icon' => '🎨',
                 'title' => 'CSS Sistem Uyumsuzluğu',
-                'description' => count($legacyCSSPages) . ' sayfada legacy CSS class kullanımı tespit edildi',
+                'description' => count($legacyCSSPages).' sayfada legacy CSS class kullanımı tespit edildi',
                 'action' => 'Neo Design System classes ile değiştirin (btn- → neo-btn, card- → neo-card)',
                 'affected_pages' => array_slice($legacyCSSPages, 0, 5),
-                'estimated_time' => '1-2 saat'
+                'estimated_time' => '1-2 saat',
             ];
         }
 
@@ -540,10 +546,10 @@ class PageAnalyzerController extends AdminController
                 'priority' => 'MEDIUM',
                 'icon' => '🚀',
                 'title' => 'Modern UI Enhancement',
-                'description' => $nonInnovativePages . ' sayfa modern özelliklerden yoksun',
+                'description' => $nonInnovativePages.' sayfa modern özelliklerden yoksun',
                 'action' => 'Alpine.js, modern CSS Grid/Flexbox, API entegrasyonları ekleyin',
                 'affected_pages' => ['Various pages need modernization'],
-                'estimated_time' => '3-5 saat'
+                'estimated_time' => '3-5 saat',
             ];
         }
 
@@ -553,10 +559,10 @@ class PageAnalyzerController extends AdminController
                 'priority' => 'MEDIUM',
                 'icon' => '⚡',
                 'title' => 'Performans Optimizasyonu',
-                'description' => 'Sadece ' . count($successPages) . ' sayfa yüksek performanslı',
+                'description' => 'Sadece '.count($successPages).' sayfa yüksek performanslı',
                 'action' => 'N+1 query problemlerini çözün, cache strategileri uygulayın',
                 'affected_pages' => ['Database queries', 'View caching', 'Asset optimization'],
-                'estimated_time' => '2-3 saat'
+                'estimated_time' => '2-3 saat',
             ];
         }
 
@@ -568,7 +574,7 @@ class PageAnalyzerController extends AdminController
             'description' => 'Tüm sayfaları Context7 kurallarına uygun hale getirin',
             'action' => 'Field naming conventions (il_id, aktif_mi, created_at) kontrol edin',
             'affected_pages' => ['Database schema', 'Model relationships', 'Migration files'],
-            'estimated_time' => '1-2 saat'
+            'estimated_time' => '1-2 saat',
         ];
 
         // Success Recognition
@@ -577,10 +583,10 @@ class PageAnalyzerController extends AdminController
                 'priority' => 'SUCCESS',
                 'icon' => '✅',
                 'title' => 'İyi İş!',
-                'description' => count($successPages) . ' sayfa mükemmel durumda',
-                'action' => 'Bu sayfaları diğer sayfalara örnek alın: ' . implode(', ', array_slice(array_column($successPages, 'name'), 0, 3)),
+                'description' => count($successPages).' sayfa mükemmel durumda',
+                'action' => 'Bu sayfaları diğer sayfalara örnek alın: '.implode(', ', array_slice(array_column($successPages, 'name'), 0, 3)),
                 'affected_pages' => array_column($successPages, 'name'),
-                'estimated_time' => ''
+                'estimated_time' => '',
             ];
         }
 
@@ -590,10 +596,10 @@ class PageAnalyzerController extends AdminController
                 'priority' => 'INNOVATION',
                 'icon' => '💡',
                 'title' => 'Yenilik Liderleri',
-                'description' => count($innovativePages) . ' sayfa modern teknolojiler kullanıyor',
+                'description' => count($innovativePages).' sayfa modern teknolojiler kullanıyor',
                 'action' => 'Bu sayfaların özelliklerini diğer sayfalara yaygınlaştırın',
                 'affected_pages' => array_slice($innovativePages, 0, 3),
-                'estimated_time' => ''
+                'estimated_time' => '',
             ];
         }
 
@@ -619,7 +625,7 @@ class PageAnalyzerController extends AdminController
                 $results = [
                     'category_breakdown' => [$category => $results['category_breakdown'][$category]],
                     'total_pages' => count($results['category_breakdown'][$category]),
-                    'average_score' => $results['category_breakdown'][$category]['avg_score'] ?? 0
+                    'average_score' => $results['category_breakdown'][$category]['avg_score'] ?? 0,
                 ];
             }
 
@@ -628,18 +634,18 @@ class PageAnalyzerController extends AdminController
                     'success' => true,
                     'results' => $results,
                     'generated_at' => now()->toISOString(),
-                    'analysis_type' => $pageType
+                    'analysis_type' => $pageType,
                 ]);
             }
 
             return response()->json([
                 'success' => true,
-                'data' => $results
+                'data' => $results,
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Analiz sırasında hata oluştu: ' . $e->getMessage()
+                'message' => 'Analiz sırasında hata oluştu: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -649,9 +655,10 @@ class PageAnalyzerController extends AdminController
         $output = [];
         $returnVar = 0;
 
-        exec('cd ' . base_path() . " && php artisan analyze:pages-complete --page={$page} --format=json 2>&1", $output, $returnVar);
+        exec('cd '.base_path()." && php artisan analyze:pages-complete --page={$page} --format=json 2>&1", $output, $returnVar);
 
         $jsonOutput = implode("\n", $output);
+
         return json_decode($jsonOutput, true) ?? [];
     }
 
@@ -669,40 +676,40 @@ class PageAnalyzerController extends AdminController
                     'response_time' => '45ms',
                     'memory_usage' => '128MB',
                     'cpu_usage' => '15%',
-                    'database_queries' => 23
+                    'database_queries' => 23,
                 ],
                 'performance' => [
                     'telegram_bot' => [
                         'success_rate' => 75,
                         'avg_response_time' => 250,
                         'active_users' => 12,
-                        'last_error' => 'None'
+                        'last_error' => 'None',
                     ],
                     'adres_yonetimi' => [
                         'success_rate' => 85,
                         'avg_response_time' => 180,
                         'active_users' => 45,
-                        'last_error' => 'None'
+                        'last_error' => 'None',
                     ],
                     'my_listings' => [
                         'success_rate' => 60,
                         'avg_response_time' => 320,
                         'active_users' => 23,
-                        'last_error' => 'Controller method missing'
+                        'last_error' => 'Controller method missing',
                     ],
                     'analytics' => [
                         'success_rate' => 70,
                         'avg_response_time' => 150,
                         'active_users' => 8,
-                        'last_error' => 'None'
+                        'last_error' => 'None',
                     ],
                     'notifications' => [
                         'success_rate' => 90,
                         'avg_response_time' => 95,
                         'active_users' => 156,
-                        'last_error' => 'None'
-                    ]
-                ]
+                        'last_error' => 'None',
+                    ],
+                ],
             ];
 
             return response()->json($metrics);
@@ -723,30 +730,30 @@ class PageAnalyzerController extends AdminController
                     'database' => 'healthy',
                     'cache' => 'healthy',
                     'storage' => 'healthy',
-                    'api' => 'degraded'
+                    'api' => 'degraded',
                 ],
                 'critical_issues' => [
                     [
                         'page' => 'Bulk Kisi Management',
                         'issue' => 'Missing controller methods',
-                        'severity' => 'critical'
+                        'severity' => 'critical',
                     ],
                     [
                         'page' => 'Yazlik Kiralama Management',
                         'issue' => 'Controller not implemented',
-                        'severity' => 'critical'
+                        'severity' => 'critical',
                     ],
                     [
                         'page' => 'Toast Demo',
                         'issue' => 'Controller file not found',
-                        'severity' => 'critical'
-                    ]
+                        'severity' => 'critical',
+                    ],
                 ],
                 'recommendations' => [
                     'Focus on critical issues first',
                     'Implement missing controllers',
-                    'Add proper error handling'
-                ]
+                    'Add proper error handling',
+                ],
             ];
 
             return response()->json($health);
@@ -760,7 +767,7 @@ class PageAnalyzerController extends AdminController
         $results = $this->runCompleteAnalysis();
 
         return response()->json([
-            'recommendations' => $results['recommendations']
+            'recommendations' => $results['recommendations'],
         ]);
     }
 
@@ -770,7 +777,7 @@ class PageAnalyzerController extends AdminController
 
         $results = json_decode(Storage::get('analysis/complete_pages_analysis.json'), true);
 
-        if (!$results) {
+        if (! $results) {
             return $this->getDefaultEnhancedResults();
         }
 
@@ -788,15 +795,15 @@ class PageAnalyzerController extends AdminController
 
         return [
             'total_pages' => count($pages),
-            'critical_count' => count(array_filter($pages, fn($p) => ($p['score'] ?? 0) < 5)),
-            'warning_count' => count(array_filter($pages, fn($p) => ($p['score'] ?? 0) >= 5 && ($p['score'] ?? 0) < 7)),
-            'success_count' => count(array_filter($pages, fn($p) => ($p['score'] ?? 0) >= 7)),
+            'critical_count' => count(array_filter($pages, fn ($p) => ($p['score'] ?? 0) < 5)),
+            'warning_count' => count(array_filter($pages, fn ($p) => ($p['score'] ?? 0) >= 5 && ($p['score'] ?? 0) < 7)),
+            'success_count' => count(array_filter($pages, fn ($p) => ($p['score'] ?? 0) >= 7)),
             'average_score' => count($pages) > 0 ? array_sum(array_column($pages, 'score')) / count($pages) : 0,
             'pages' => $pages,
             'recommendations' => $recommendations,
             'css_stats' => $cssStats,
             'innovation_stats' => $innovationStats,
-            'category_breakdown' => $categoryBreakdown
+            'category_breakdown' => $categoryBreakdown,
         ];
     }
 
@@ -812,7 +819,7 @@ class PageAnalyzerController extends AdminController
             'recommendations' => [],
             'css_stats' => ['neo_count' => 0, 'legacy_count' => 0, 'compliance_rate' => 0],
             'innovation_stats' => ['ai_features' => 0, 'modern_css' => 0, 'pwa_features' => 0, 'real_time' => 0],
-            'category_breakdown' => []
+            'category_breakdown' => [],
         ];
     }
 
@@ -834,7 +841,7 @@ class PageAnalyzerController extends AdminController
         return [
             'neo_count' => $neoCount,
             'legacy_count' => $legacyCount,
-            'compliance_rate' => $complianceRate
+            'compliance_rate' => $complianceRate,
         ];
     }
 
@@ -844,7 +851,7 @@ class PageAnalyzerController extends AdminController
             'ai_features' => 0,
             'modern_css' => 0,
             'pwa_features' => 0,
-            'real_time' => 0
+            'real_time' => 0,
         ];
 
         foreach ($pages as $page) {
@@ -872,11 +879,11 @@ class PageAnalyzerController extends AdminController
 
         foreach ($pages as $page) {
             $category = $page['category'] ?? 'Diğer';
-            if (!isset($breakdown[$category])) {
+            if (! isset($breakdown[$category])) {
                 $breakdown[$category] = [
                     'count' => 0,
                     'avg_score' => 0,
-                    'total_score' => 0
+                    'total_score' => 0,
                 ];
             }
             $breakdown[$category]['count']++;
@@ -896,7 +903,7 @@ class PageAnalyzerController extends AdminController
      */
     private function exportToPdf($results)
     {
-        $filename = 'sayfa-analizi-raporu-' . date('Y-m-d') . '.pdf';
+        $filename = 'sayfa-analizi-raporu-'.date('Y-m-d').'.pdf';
 
         // For now, return a simple response
         // In a real implementation, you would use a PDF library like DomPDF
@@ -904,7 +911,7 @@ class PageAnalyzerController extends AdminController
             'success' => true,
             'message' => 'PDF raporu oluşturuldu',
             'filename' => $filename,
-            'download_url' => route('admin.page-analyzer.download', ['file' => $filename])
+            'download_url' => route('admin.page-analyzer.download', ['file' => $filename]),
         ]);
     }
 
@@ -913,7 +920,7 @@ class PageAnalyzerController extends AdminController
      */
     private function exportToExcel($results)
     {
-        $filename = 'sayfa-analizi-raporu-' . date('Y-m-d') . '.xlsx';
+        $filename = 'sayfa-analizi-raporu-'.date('Y-m-d').'.xlsx';
 
         // For now, return a simple response
         // In a real implementation, you would use Laravel Excel
@@ -921,7 +928,7 @@ class PageAnalyzerController extends AdminController
             'success' => true,
             'message' => 'Excel raporu oluşturuldu',
             'filename' => $filename,
-            'download_url' => route('admin.page-analyzer.download', ['file' => $filename])
+            'download_url' => route('admin.page-analyzer.download', ['file' => $filename]),
         ]);
     }
 
@@ -930,13 +937,13 @@ class PageAnalyzerController extends AdminController
      */
     private function exportToJson($results)
     {
-        $filename = 'sayfa-analizi-raporu-' . date('Y-m-d') . '.json';
+        $filename = 'sayfa-analizi-raporu-'.date('Y-m-d').'.json';
 
         // Save to storage
-        Storage::put('reports/' . $filename, json_encode($results, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+        Storage::put('reports/'.$filename, json_encode($results, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
 
         return response()->download(
-            storage_path('app/reports/' . $filename),
+            storage_path('app/reports/'.$filename),
             $filename,
             ['Content-Type' => 'application/json']
         );
@@ -954,18 +961,18 @@ class PageAnalyzerController extends AdminController
             // Update session data (mock implementation)
             $sessionData = [
                 'id' => $id,
-                'name' => 'Re-run Analysis - ' . now()->format('Y-m-d H:i'),
+                'name' => 'Re-run Analysis - '.now()->format('Y-m-d H:i'),
                 'type' => $request->get('type', 'complete'),
                 'results' => $results,
                 'updated_at' => now()->toISOString(),
-                'duration' => '2.5s'
+                'duration' => '2.5s',
             ];
 
             if ($request->expectsJson()) {
                 return response()->json([
                     'success' => true,
                     'message' => 'Analysis re-run successfully',
-                    'data' => $sessionData
+                    'data' => $sessionData,
                 ]);
             }
 
@@ -977,13 +984,13 @@ class PageAnalyzerController extends AdminController
             if ($request->expectsJson()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Error re-running analysis: ' . $e->getMessage()
+                    'message' => 'Error re-running analysis: '.$e->getMessage(),
                 ], 500);
             }
 
             return redirect()
                 ->route('admin.page-analyzer.show', $id)
-                ->with('error', 'Error re-running analysis: ' . $e->getMessage());
+                ->with('error', 'Error re-running analysis: '.$e->getMessage());
         }
     }
 }

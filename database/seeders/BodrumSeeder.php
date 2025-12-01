@@ -2,13 +2,13 @@
 
 namespace Database\Seeders;
 
+use App\Models\Il;
 use App\Models\Ilan;
 use App\Models\IlanFotografi;
 use App\Models\IlanKategori;
-use App\Models\Ilce;
-use App\Models\Kisi; // Eski Il modeli yerine Sehir modeli kullanılıyor
+use App\Models\Ilce; // Eski Il modeli yerine Sehir modeli kullanılıyor
+use App\Models\Kisi;
 use App\Models\Mahalle;
-use App\Models\Il;
 use App\Models\Talep;
 use App\Models\Ulke;
 use App\Models\User;

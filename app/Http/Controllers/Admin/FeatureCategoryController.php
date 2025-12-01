@@ -72,7 +72,7 @@ class FeatureCategoryController extends AdminController
             return response()->json([
                 'success' => true,
                 'message' => 'Feature category created successfully',
-                'data' => $category
+                'data' => $category,
             ], 201);
         }
 
@@ -112,7 +112,7 @@ class FeatureCategoryController extends AdminController
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'slug' => 'nullable|string|max:255|unique:feature_categories,slug,' . $featureCategory->id,
+            'slug' => 'nullable|string|max:255|unique:feature_categories,slug,'.$featureCategory->id,
             'description' => 'nullable|string',
             'icon' => 'nullable|string|max:100',
             'display_order' => 'nullable|integer|min:0', // ✅ Context7: order → display_order
@@ -136,7 +136,7 @@ class FeatureCategoryController extends AdminController
             return response()->json([
                 'success' => true,
                 'message' => 'Feature category updated successfully',
-                'data' => $featureCategory->fresh()
+                'data' => $featureCategory->fresh(),
             ]);
         }
 
@@ -158,7 +158,7 @@ class FeatureCategoryController extends AdminController
             if (request()->expectsJson()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Cannot delete category with existing features'
+                    'message' => 'Cannot delete category with existing features',
                 ], 422);
             }
 
@@ -172,7 +172,7 @@ class FeatureCategoryController extends AdminController
         if (request()->expectsJson()) {
             return response()->json([
                 'success' => true,
-                'message' => 'Feature category deleted successfully'
+                'message' => 'Feature category deleted successfully',
             ]);
         }
 

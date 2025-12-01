@@ -2,13 +2,10 @@
 
 namespace Database\Seeders;
 
+use App\Models\Il;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Schema;
-use App\Models\IlanKategori;
 use Spatie\Permission\Models\Role;
-use App\Models\Il;
-use App\Models\Ilce;
-use App\Models\Mahalle;
 
 /**
  * Context7 Master Seeder
@@ -50,7 +47,7 @@ class Context7MasterSeeder extends Seeder
         if (Il::count() == 0) {
             $this->call(TurkiyeIlleriSeeder::class);
         } else {
-            $this->command->info('   ✓ İller zaten mevcut (' . Il::count() . ' adet)');
+            $this->command->info('   ✓ İller zaten mevcut ('.Il::count().' adet)');
         }
 
         // 2. İlan Kategorileri (Emlak Yönetimi)
@@ -79,7 +76,7 @@ class Context7MasterSeeder extends Seeder
             try {
                 $this->call(SiteApartmanSeeder::class);
             } catch (\Exception $e) {
-                $this->command->warn('   ⚠️ SiteApartmanSeeder hatası: ' . $e->getMessage());
+                $this->command->warn('   ⚠️ SiteApartmanSeeder hatası: '.$e->getMessage());
             }
         } else {
             $this->command->warn('   ⚠️ site_apartmanlar tablosu yok');
@@ -95,7 +92,7 @@ class Context7MasterSeeder extends Seeder
             try {
                 $this->call(FeatureCategorySeeder::class);
             } catch (\Exception $e) {
-                $this->command->warn('   ⚠️ FeatureCategorySeeder hatası: ' . $e->getMessage());
+                $this->command->warn('   ⚠️ FeatureCategorySeeder hatası: '.$e->getMessage());
                 $this->command->info('   ℹ️ Schema kontrolü eklenmeli');
             }
         } else {
@@ -108,7 +105,7 @@ class Context7MasterSeeder extends Seeder
             try {
                 $this->call(RevyStyleFeatureCategoriesSeeder::class);
             } catch (\Exception $e) {
-                $this->command->warn('   ⚠️ RevyStyleFeatureCategoriesSeeder hatası: ' . $e->getMessage());
+                $this->command->warn('   ⚠️ RevyStyleFeatureCategoriesSeeder hatası: '.$e->getMessage());
             }
         } else {
             $this->command->warn('   ⚠️ feature_categories veya features tablosu yok');
@@ -120,7 +117,7 @@ class Context7MasterSeeder extends Seeder
             try {
                 $this->call(ComprehensiveFeatureSeeder::class);
             } catch (\Exception $e) {
-                $this->command->warn('   ⚠️ ComprehensiveFeatureSeeder hatası: ' . $e->getMessage());
+                $this->command->warn('   ⚠️ ComprehensiveFeatureSeeder hatası: '.$e->getMessage());
             }
         } else {
             $this->command->warn('   ⚠️ features tablosu yok');
@@ -132,7 +129,7 @@ class Context7MasterSeeder extends Seeder
             try {
                 $this->call(ProjeOzellikleriSeeder::class);
             } catch (\Exception $e) {
-                $this->command->warn('   ⚠️ ProjeOzellikleriSeeder hatası: ' . $e->getMessage());
+                $this->command->warn('   ⚠️ ProjeOzellikleriSeeder hatası: '.$e->getMessage());
             }
         }
 
@@ -142,7 +139,7 @@ class Context7MasterSeeder extends Seeder
             try {
                 $this->call(YazlikVillaOzellikleriSeeder::class);
             } catch (\Exception $e) {
-                $this->command->warn('   ⚠️ YazlikVillaOzellikleriSeeder hatası: ' . $e->getMessage());
+                $this->command->warn('   ⚠️ YazlikVillaOzellikleriSeeder hatası: '.$e->getMessage());
             }
         }
 
@@ -152,7 +149,7 @@ class Context7MasterSeeder extends Seeder
             try {
                 $this->call(ArsaIsyeriYayinTipiSeeder::class);
             } catch (\Exception $e) {
-                $this->command->warn('   ⚠️ ArsaIsyeriYayinTipiSeeder hatası: ' . $e->getMessage());
+                $this->command->warn('   ⚠️ ArsaIsyeriYayinTipiSeeder hatası: '.$e->getMessage());
             }
         }
 
@@ -162,7 +159,7 @@ class Context7MasterSeeder extends Seeder
             try {
                 $this->call(KonutYazlikYayinTipiSeeder::class);
             } catch (\Exception $e) {
-                $this->command->warn('   ⚠️ KonutYazlikYayinTipiSeeder hatası: ' . $e->getMessage());
+                $this->command->warn('   ⚠️ KonutYazlikYayinTipiSeeder hatası: '.$e->getMessage());
             }
         }
 
@@ -175,7 +172,7 @@ class Context7MasterSeeder extends Seeder
                     $this->call(Category39YazlikSeeder::class);
                 }
             } catch (\Exception $e) {
-                $this->command->warn('   ⚠️ YazlikKiralikAnaKategoriSeeder hatası: ' . $e->getMessage());
+                $this->command->warn('   ⚠️ YazlikKiralikAnaKategoriSeeder hatası: '.$e->getMessage());
             }
         }
 
@@ -185,7 +182,7 @@ class Context7MasterSeeder extends Seeder
             try {
                 $this->call(YazlikOzellikIliskilendirmeSeeder::class);
             } catch (\Exception $e) {
-                $this->command->warn('   ⚠️ YazlikOzellikIliskilendirmeSeeder hatası: ' . $e->getMessage());
+                $this->command->warn('   ⚠️ YazlikOzellikIliskilendirmeSeeder hatası: '.$e->getMessage());
             }
         }
 
@@ -195,7 +192,7 @@ class Context7MasterSeeder extends Seeder
             try {
                 $this->call(YazlikKiralikOzellikIliskilendirmeSeeder::class);
             } catch (\Exception $e) {
-                $this->command->warn('   ⚠️ YazlikKiralikOzellikIliskilendirmeSeeder hatası: ' . $e->getMessage());
+                $this->command->warn('   ⚠️ YazlikKiralikOzellikIliskilendirmeSeeder hatası: '.$e->getMessage());
             }
         }
 
@@ -205,7 +202,7 @@ class Context7MasterSeeder extends Seeder
             try {
                 $this->call(AIProviderSettingsSeeder::class);
             } catch (\Exception $e) {
-                $this->command->warn('   ⚠️ AIProviderSettingsSeeder hatası: ' . $e->getMessage());
+                $this->command->warn('   ⚠️ AIProviderSettingsSeeder hatası: '.$e->getMessage());
             }
         }
 
@@ -215,7 +212,7 @@ class Context7MasterSeeder extends Seeder
             try {
                 $this->call(ProjeOzellikIliskilendirmeSeeder::class);
             } catch (\Exception $e) {
-                $this->command->warn('   ⚠️ ProjeOzellikIliskilendirmeSeeder hatası: ' . $e->getMessage());
+                $this->command->warn('   ⚠️ ProjeOzellikIliskilendirmeSeeder hatası: '.$e->getMessage());
             }
         }
 
@@ -224,14 +221,14 @@ class Context7MasterSeeder extends Seeder
         $this->command->info('📊 Tüm veriler Context7 standartlarına uygun olarak yüklendi');
     }
 
-
     /**
      * Roller ve izinleri seed et
      */
     private function seedRoles(): void
     {
         if (Role::count() > 0) {
-            $this->command->info('   ✓ Roller zaten mevcut (' . Role::count() . ' adet)');
+            $this->command->info('   ✓ Roller zaten mevcut ('.Role::count().' adet)');
+
             return;
         }
 
@@ -249,6 +246,6 @@ class Context7MasterSeeder extends Seeder
             );
         }
 
-        $this->command->info('   ✓ ' . count($roles) . ' rol oluşturuldu');
+        $this->command->info('   ✓ '.count($roles).' rol oluşturuldu');
     }
 }

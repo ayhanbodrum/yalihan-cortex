@@ -2,8 +2,8 @@
 
 namespace App\Modules\Crm\Services;
 
+use App\Models\Kisi;
 use App\Modules\Crm\Models\Etiket;
-use App\Modules\Crm\Models\Kisi;
 use Illuminate\Support\Facades\Log;
 
 class EtiketService

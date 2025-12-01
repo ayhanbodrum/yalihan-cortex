@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
-use App\Models\FeatureCategory;
 
 class FeatureController extends AdminController
 {
@@ -17,7 +16,7 @@ class FeatureController extends AdminController
         try {
             $request->validate([
                 'analysis_type' => 'required|string|in:grouping,optimization,suggestions,reorganization',
-                'property_type' => 'required|string'
+                'property_type' => 'required|string',
             ]);
 
             // Feature categories tablosundan verileri al
@@ -27,7 +26,7 @@ class FeatureController extends AdminController
                 'total_categories' => $categories->count(),
                 'optimized_categories' => $categories->where('status', true)->count(),
                 'suggestions_count' => rand(3, 8),
-                'confidence_score' => rand(75, 95)
+                'confidence_score' => rand(75, 95),
             ];
 
             $suggestions = [
@@ -35,35 +34,35 @@ class FeatureController extends AdminController
                     'id' => 1,
                     'title' => 'Konut kategorisini alt kategorilere ayırın',
                     'description' => 'Villa, Daire, Müstakil Ev kategorilerini ayrı alt kategoriler halinde organize edin',
-                    'priority' => 'high'
+                    'priority' => 'high',
                 ],
                 [
                     'id' => 2,
                     'title' => 'Emlak özelliklerini gruplandırın',
                     'description' => 'Oda sayısı, metrekare, kat bilgisi gibi özellikleri temel bilgiler kategorisinde toplayın',
-                    'priority' => 'medium'
+                    'priority' => 'medium',
                 ],
                 [
                     'id' => 3,
                     'title' => 'Lüks özellikler kategorisi ekleyin',
                     'description' => 'Havuz, jakuzi, güvenlik sistemi gibi özellikler için lüks kategorisi oluşturun',
-                    'priority' => 'low'
-                ]
+                    'priority' => 'low',
+                ],
             ];
 
             return response()->json([
                 'success' => true,
                 'data' => [
                     'suggestions' => $suggestions,
-                    'stats' => $analysisData
+                    'stats' => $analysisData,
                 ],
-                'message' => 'AI analizi başarıyla tamamlandı'
+                'message' => 'AI analizi başarıyla tamamlandı',
             ]);
 
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Analiz sırasında hata oluştu: ' . $e->getMessage()
+                'message' => 'Analiz sırasında hata oluştu: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -79,16 +78,16 @@ class FeatureController extends AdminController
                 'message' => 'Kategori verileri AI\'ya başarıyla beslendi',
                 'data' => [
                     'categories_trained' => $categories->count(),
-                    'features_trained' => $categories->sum(function($category) {
+                    'features_trained' => $categories->sum(function ($category) {
                         return $category->features->count();
-                    })
-                ]
+                    }),
+                ],
             ]);
 
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Eğitim sırasında hata oluştu: ' . $e->getMessage()
+                'message' => 'Eğitim sırasında hata oluştu: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -101,14 +100,14 @@ class FeatureController extends AdminController
                 'message' => 'Kullanıcı davranış verileri AI\'ya başarıyla beslendi',
                 'data' => [
                     'user_sessions' => rand(100, 500),
-                    'search_patterns' => rand(50, 200)
-                ]
+                    'search_patterns' => rand(50, 200),
+                ],
             ]);
 
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Eğitim sırasında hata oluştu: ' . $e->getMessage()
+                'message' => 'Eğitim sırasında hata oluştu: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -121,14 +120,14 @@ class FeatureController extends AdminController
                 'message' => 'Pazar trend verileri AI\'ya başarıyla beslendi',
                 'data' => [
                     'market_data_points' => rand(1000, 5000),
-                    'price_trends' => rand(100, 500)
-                ]
+                    'price_trends' => rand(100, 500),
+                ],
             ]);
 
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Eğitim sırasında hata oluştu: ' . $e->getMessage()
+                'message' => 'Eğitim sırasında hata oluştu: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -163,26 +162,26 @@ class FeatureController extends AdminController
                     'category_classifier' => true,
                     'feature_extractor' => true,
                     'market_predictor' => true,
-                    'user_behavior_analyzer' => true
+                    'user_behavior_analyzer' => true,
                 ],
                 'performance_metrics' => [
                     'accuracy' => rand(85, 98),
                     'precision' => rand(80, 95),
                     'recall' => rand(82, 96),
-                    'f1_score' => rand(83, 94)
-                ]
+                    'f1_score' => rand(83, 94),
+                ],
             ];
 
             return response()->json([
                 'success' => true,
                 'data' => $trainingStatus,
-                'message' => 'AI eğitim durumu başarıyla alındı'
+                'message' => 'AI eğitim durumu başarıyla alındı',
             ]);
 
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Eğitim durumu alınırken hata oluştu: ' . $e->getMessage()
+                'message' => 'Eğitim durumu alınırken hata oluştu: '.$e->getMessage(),
             ], 500);
         }
     }

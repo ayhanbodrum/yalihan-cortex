@@ -43,7 +43,7 @@ class AIStorage extends Model
      */
     public function scopeByPrefix($query, $prefix)
     {
-        return $query->where('storage_key', 'like', $prefix . '%');
+        return $query->where('storage_key', 'like', $prefix.'%');
     }
 
     /**

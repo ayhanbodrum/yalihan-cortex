@@ -2,12 +2,13 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
 use App\Models\IlanPrivateAudit;
+use Illuminate\Console\Command;
 
 class ReportOwnerPrivateAudit extends Command
 {
     protected $signature = 'report:owner-private-audit';
+
     protected $description = 'Mahrem veri audit özetini rapor dosyasına yazar';
 
     public function handle(): int
@@ -19,17 +20,20 @@ class ReportOwnerPrivateAudit extends Command
         $monthCount = IlanPrivateAudit::whereBetween('created_at', [$monthStart, $monthEnd])->count();
         $uniqueListings = IlanPrivateAudit::distinct('ilan_id')->whereBetween('created_at', [$monthStart, $monthEnd])->count('ilan_id');
         $ym = $now->format('Y-m');
-        $dir = base_path('yalihan-bekci/reports/' . $ym);
-        if (!is_dir($dir)) @mkdir($dir, 0777, true);
-        $file = $dir . '/owner-private-audit-summary.txt';
+        $dir = base_path('yalihan-bekci/reports/'.$ym);
+        if (! is_dir($dir)) {
+            @mkdir($dir, 0777, true);
+        }
+        $file = $dir.'/owner-private-audit-summary.txt';
         $lines = [
-            'day_changes: ' . $dayCount,
-            'month_changes: ' . $monthCount,
-            'unique_listings_month: ' . $uniqueListings,
-            'generated_at: ' . $now->toIso8601String(),
+            'day_changes: '.$dayCount,
+            'month_changes: '.$monthCount,
+            'unique_listings_month: '.$uniqueListings,
+            'generated_at: '.$now->toIso8601String(),
         ];
         @file_put_contents($file, implode("\n", $lines));
-        $this->info('Audit summary written: ' . $file);
+        $this->info('Audit summary written: '.$file);
+
         return self::SUCCESS;
     }
 }

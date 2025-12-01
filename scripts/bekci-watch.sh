@@ -79,35 +79,37 @@ start_watch() {
         CHECK_INTERVAL=30
 
         while true; do
-            echo '[$(date '+%Y-%m-%d %H:%M:%S')] 🔍 Tarama yapılıyor...' >> '$LOG_DIR/bekci-watch.log'
+            TIMESTAMP=\$(date '+%Y-%m-%d %H:%M:%S')
+            echo \"[\$TIMESTAMP] 🔍 Tarama yapılıyor...\" >> '$LOG_DIR/bekci-watch.log'
 
-            # Enforcement check
-            OUTPUT=\$(php artisan bekci:enforce --scan 2>&1)
+            # Context7 check (ana kontrol)
+            CONTEXT7_OUTPUT=\$(php artisan context7:check 2>&1)
+            CONTEXT7_VIOLATIONS=\$(echo \"\$CONTEXT7_OUTPUT\" | grep -oP '\\d+ ihlal' | grep -oP '\\d+' | head -1)
 
-            # İhlal sayısını bul
-            VIOLATIONS=\$(echo \"\$OUTPUT\" | grep -oP '\\d+ ihlal bulundu' | grep -oP '\\d+' | head -1)
-
-            if [ -z \"\$VIOLATIONS\" ]; then
-                VIOLATIONS=0
+            if [ -z \"\$CONTEXT7_VIOLATIONS\" ]; then
+                CONTEXT7_VIOLATIONS=0
             fi
+
+            # Bekçi Health Check
+            BEKCI_HEALTH=\$(php artisan bekci:health 2>&1 | tail -5)
+            echo \"[\$TIMESTAMP] 🏥 Bekçi Health Check yapıldı\" >> '$LOG_DIR/bekci-watch.log'
 
             # Değişiklik varsa bildir
-            if [ \"\$VIOLATIONS\" -ne \"\$LAST_VIOLATIONS\" ]; then
-                if [ \"\$VIOLATIONS\" -eq 0 ]; then
-                    echo '[$(date '+%Y-%m-%d %H:%M:%S')] ✅ Hiç ihlal yok!' >> '$LOG_DIR/bekci-watch.log'
-                elif [ \"\$VIOLATIONS\" -gt \"\$LAST_VIOLATIONS\" ]; then
-                    echo '[$(date '+%Y-%m-%d %H:%M:%S')] ⚠️ YENİ İHLAL! \$LAST_VIOLATIONS → \$VIOLATIONS' >> '$LOG_DIR/bekci-watch.log'
-                    echo '[$(date '+%Y-%m-%d %H:%M:%S')] 🚨 UYARI: İhlal sayısı arttı!' >> '$LOG_DIR/bekci-violations.log'
+            if [ \"\$CONTEXT7_VIOLATIONS\" -ne \"\$LAST_VIOLATIONS\" ]; then
+                if [ \"\$CONTEXT7_VIOLATIONS\" -eq 0 ]; then
+                    echo \"[\$TIMESTAMP] ✅ Hiç Context7 ihlali yok!\" >> '$LOG_DIR/bekci-watch.log'
+                elif [ \"\$CONTEXT7_VIOLATIONS\" -gt \"\$LAST_VIOLATIONS\" ]; then
+                    echo \"[\$TIMESTAMP] ⚠️ YENİ İHLAL! \$LAST_VIOLATIONS → \$CONTEXT7_VIOLATIONS\" >> '$LOG_DIR/bekci-watch.log'
+                    echo \"[\$TIMESTAMP] 🚨 UYARI: Context7 ihlal sayısı arttı!\" >> '$LOG_DIR/bekci-violations.log'
                 else
-                    echo '[$(date '+%Y-%m-%d %H:%M:%S')] ✅ İhlal azaldı! \$LAST_VIOLATIONS → \$VIOLATIONS' >> '$LOG_DIR/bekci-watch.log'
+                    echo \"[\$TIMESTAMP] ✅ İhlal azaldı! \$LAST_VIOLATIONS → \$CONTEXT7_VIOLATIONS\" >> '$LOG_DIR/bekci-watch.log'
                 fi
-                LAST_VIOLATIONS=\$VIOLATIONS
+                LAST_VIOLATIONS=\$CONTEXT7_VIOLATIONS
             fi
 
-            # Context7 check
-            CONTEXT7_OUTPUT=\$(php artisan context7:check 2>&1 | grep 'Context7 İhlali' | grep -oP '\\d+')
-            if [ ! -z \"\$CONTEXT7_OUTPUT\" ]; then
-                echo '[$(date '+%Y-%m-%d %H:%M:%S')] 📊 Context7: \$CONTEXT7_OUTPUT ihlal' >> '$LOG_DIR/bekci-watch.log'
+            # Context7 detaylı log
+            if [ \"\$CONTEXT7_VIOLATIONS\" -gt 0 ]; then
+                echo \"[\$TIMESTAMP] 📊 Context7: \$CONTEXT7_VIOLATIONS ihlal tespit edildi\" >> '$LOG_DIR/bekci-watch.log'
             fi
 
             sleep \$CHECK_INTERVAL

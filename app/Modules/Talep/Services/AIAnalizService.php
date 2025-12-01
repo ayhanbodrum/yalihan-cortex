@@ -13,7 +13,6 @@ use Illuminate\Support\Facades\Log;
  * Lütfen App\Modules\TalepAnaliz\Services\AIAnalizService kullanın.
  *
  * Migration: Bu service'den TalepAnaliz\Services\AIAnalizService'e geçiş yapılmalıdır.
- *
  * @see \App\Modules\TalepAnaliz\Services\AIAnalizService
  */
 class AIAnalizService

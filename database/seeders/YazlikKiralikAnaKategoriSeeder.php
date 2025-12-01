@@ -2,11 +2,11 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\DB;
 use App\Models\IlanKategori;
 use App\Models\IlanKategoriYayinTipi;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 /**
  * Yazlık Kiralık Ana Kategori Seeder
@@ -25,8 +25,9 @@ class YazlikKiralikAnaKategoriSeeder extends Seeder
         $this->command->info('🏖️ Yazlık Kiralık Ana Kategori Sistemi oluşturuluyor...');
 
         // Context7: Schema kontrolü
-        if (!Schema::hasTable('ilan_kategorileri') || !Schema::hasTable('ilan_kategori_yayin_tipleri')) {
+        if (! Schema::hasTable('ilan_kategorileri') || ! Schema::hasTable('ilan_kategori_yayin_tipleri')) {
             $this->command->warn('⚠️ Gerekli tablolar bulunamadı!');
+
             return;
         }
 
@@ -35,7 +36,7 @@ class YazlikKiralikAnaKategoriSeeder extends Seeder
         $yazlikAna = IlanKategori::updateOrCreate(
             [
                 'name' => 'Yazlık Kiralık',
-                'seviye' => 0
+                'seviye' => 0,
             ],
             [
                 'slug' => 'yazlik-kiralik',
@@ -43,7 +44,7 @@ class YazlikKiralikAnaKategoriSeeder extends Seeder
                 'parent_id' => null,
                 'display_order' => 6, // Diğer kategorilerden sonra
                 'status' => Schema::hasColumn('ilan_kategorileri', 'status') ? true : null,
-                'aciklama' => 'Yazlık kiralık konut ve tesisler'
+                'aciklama' => 'Yazlık kiralık konut ve tesisler',
             ]
         );
         $this->command->info("    ✓ Yazlık Kiralık (ID: {$yazlikAna->id})");
@@ -66,14 +67,14 @@ class YazlikKiralikAnaKategoriSeeder extends Seeder
                 [
                     'name' => $altKat['name'],
                     'parent_id' => $yazlikAna->id,
-                    'seviye' => 1
+                    'seviye' => 1,
                 ],
                 [
                     'slug' => $altKat['slug'],
                     'icon' => $altKat['icon'],
                     'display_order' => $altKat['display_order'],
                     'status' => Schema::hasColumn('ilan_kategorileri', 'status') ? true : null,
-                    'aciklama' => "Yazlık kiralık {$altKat['name']}"
+                    'aciklama' => "Yazlık kiralık {$altKat['name']}",
                 ]
             );
             $altKategoriIds[$altKat['slug']] = $altKategori->id;
@@ -93,11 +94,11 @@ class YazlikKiralikAnaKategoriSeeder extends Seeder
             $yayinTipi = IlanKategoriYayinTipi::updateOrCreate(
                 [
                     'kategori_id' => $yazlikAna->id,
-                    'yayin_tipi' => $yt['tip']
+                    'yayin_tipi' => $yt['tip'],
                 ],
                 [
                     'status' => Schema::hasColumn('ilan_kategori_yayin_tipleri', 'status') ? true : null,
-                    'display_order' => $yt['display_order']
+                    'display_order' => $yt['display_order'],
                 ]
             );
             $yayinTipiIds[$yt['tip']] = $yayinTipi->id;
@@ -114,23 +115,23 @@ class YazlikKiralikAnaKategoriSeeder extends Seeder
                     DB::table('alt_kategori_yayin_tipi')->updateOrInsert(
                         [
                             'alt_kategori_id' => $altKatId,
-                            'yayin_tipi_id' => $ytId
+                            'yayin_tipi_id' => $ytId,
                         ],
                         [
                             'enabled' => true,
                             'display_order' => $order++,
                             'created_at' => now(),
-                            'updated_at' => now()
+                            'updated_at' => now(),
                         ]
                     );
                 }
             }
-            $this->command->info("    ✓ " . (count($altKategoriIds) * count($yayinTipiIds)) . " ilişki oluşturuldu");
+            $this->command->info('    ✓ '.(count($altKategoriIds) * count($yayinTipiIds)).' ilişki oluşturuldu');
         } else {
             $this->command->warn('    ⚠️ alt_kategori_yayin_tipi tablosu bulunamadı!');
         }
 
         $this->command->info('✅ Yazlık Kiralık Ana Kategori Sistemi tamamlandı!');
-        $this->command->info("   📊 Özet: {$yazlikAna->name} → " . count($altKategoriler) . " alt kategori → " . count($yayinTipleri) . " yayın tipi");
+        $this->command->info("   📊 Özet: {$yazlikAna->name} → ".count($altKategoriler).' alt kategori → '.count($yayinTipleri).' yayın tipi');
     }
 }

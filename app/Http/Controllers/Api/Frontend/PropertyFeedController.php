@@ -7,13 +7,10 @@ use App\Services\Frontend\PropertyFeedService;
 use App\Services\Response\ResponseService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 class PropertyFeedController extends Controller
 {
-    public function __construct(private readonly PropertyFeedService $propertyFeedService)
-    {
-    }
+    public function __construct(private readonly PropertyFeedService $propertyFeedService) {}
 
     public function featured(Request $request): JsonResponse
     {
@@ -64,7 +61,7 @@ class PropertyFeedController extends Controller
 
         $property = $this->propertyFeedService->find($propertyId, $currency);
 
-        if (!$property) {
+        if (! $property) {
             return ResponseService::notFound('İlan bulunamadı');
         }
 

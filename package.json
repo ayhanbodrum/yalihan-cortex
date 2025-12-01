@@ -7,7 +7,7 @@
   "scripts": {
     "start": "node index.mjs",
     "dev": "vite",
-    "mcp:context7": "CONTEXT7_API_KEY=\${CONTEXT7_API_KEY} npx -y @upstash/context7-mcp --transport stdio",
+    "mcp:context7": "CONTEXT7_API_KEY=${CONTEXT7_API_KEY} npx -y @upstash/context7-mcp --transport stdio",
     "build": "vite build",
     "test": "vitest run --environment jsdom",
     "mcp:dev": "node --watch index.mjs",

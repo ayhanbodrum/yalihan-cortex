@@ -3,8 +3,6 @@
 namespace App\Services;
 
 use App\Models\Ilan;
-use App\Models\IlanKategori;
-use Illuminate\Support\Str;
 
 /**
  * Yalıhan Emlak Referans Numarası Sistemi
@@ -31,9 +29,6 @@ class IlanReferansService
      *
      * Format: YE-{YAYINTIPI}-{LOKASYON}-{KATEGORI}-{SIRANO}
      * Örnek: YE-SAT-YALKVK-DAİRE-001234
-     *
-     * @param Ilan $ilan
-     * @return string
      */
     public function generateReferansNo(Ilan $ilan): string
     {
@@ -42,7 +37,7 @@ class IlanReferansService
             $this->getYayinTipiKodu($ilan),
             $this->getLokasyonKodu($ilan),
             $this->getKategoriKodu($ilan),
-            $this->getSiraNo($ilan)
+            $this->getSiraNo($ilan),
         ];
 
         return implode('-', array_filter($parts));
@@ -53,9 +48,6 @@ class IlanReferansService
      *
      * Format: {Lokasyon} {YayınTipi} {Site} ({Mal Sahibi}) {Kategori} Ref No {ReferansNo}
      * Örnek: Yalıkavak Satılık Ülkerler Sitesi (Ahmet Yılmaz) Daire Ref No YE-SAT-YALKVK-DAİRE-001234
-     *
-     * @param Ilan $ilan
-     * @return string
      */
     public function generateDosyaAdi(Ilan $ilan): string
     {
@@ -80,7 +72,7 @@ class IlanReferansService
 
         // Mal Sahibi (Parantez içinde)
         if ($ilan->ilanSahibi) {
-            $malSahibi = trim($ilan->ilanSahibi->ad . ' ' . $ilan->ilanSahibi->soyad);
+            $malSahibi = trim($ilan->ilanSahibi->ad.' '.$ilan->ilanSahibi->soyad);
             $parts[] = "({$malSahibi})";
         }
 
@@ -88,7 +80,7 @@ class IlanReferansService
         $parts[] = $this->getKategoriAdi($ilan);
 
         // Referans No
-        $parts[] = "Ref No " . $this->generateReferansNo($ilan);
+        $parts[] = 'Ref No '.$this->generateReferansNo($ilan);
 
         return implode(' ', array_filter($parts));
     }
@@ -99,9 +91,6 @@ class IlanReferansService
      * Context7 Standardı: Doküman formatına uygun
      * Format: {LOKASYON_KODU}-{YAYINTIPI}{YIL}-{SIRANO}_{Lokasyon}_{Site}_{Kategori}_{MalSahibi}
      * Örnek: YLK-S25-0012_Yalikavak_Sandima_No5_Daire_AKucuk
-     *
-     * @param Ilan $ilan
-     * @return string
      */
     public function generateKisaDosyaAdi(Ilan $ilan): string
     {
@@ -142,32 +131,33 @@ class IlanReferansService
             $ad = $ilan->ilanSahibi->ad ?? '';
             $soyad = $ilan->ilanSahibi->soyad ?? '';
             if ($ad && $soyad) {
-                $malSahibi = mb_substr($ad, 0, 1) . mb_substr($soyad, 0, 1);
+                $malSahibi = mb_substr($ad, 0, 1).mb_substr($soyad, 0, 1);
                 $malSahibi = mb_strtoupper($malSahibi, 'UTF-8');
             }
         }
 
         // Parçaları birleştir
         $parts = [$refKisim, $lokasyon];
-        if ($site) $parts[] = $site;
+        if ($site) {
+            $parts[] = $site;
+        }
         $parts[] = $kategori;
-        if ($malSahibi) $parts[] = $malSahibi;
+        if ($malSahibi) {
+            $parts[] = $malSahibi;
+        }
 
         return implode('_', array_filter($parts));
     }
 
     /**
      * Yayın tipi kodu (SAT, KİR, GÜN)
-     *
-     * @param Ilan $ilan
-     * @return string
      */
     protected function getYayinTipiKodu(Ilan $ilan): string
     {
         // İlan kategorisinden yayın tipini al
         $kategori = $ilan->kategori;
 
-        if (!$kategori) {
+        if (! $kategori) {
             return 'SAT'; // Varsayılan
         }
 
@@ -188,9 +178,6 @@ class IlanReferansService
 
     /**
      * Yayın tipi adı (Satılık, Kiralık, vb.)
-     *
-     * @param Ilan $ilan
-     * @return string
      */
     protected function getYayinTipiAdi(Ilan $ilan): string
     {
@@ -200,7 +187,7 @@ class IlanReferansService
             'SAT' => 'Satılık',
             'KİR' => 'Kiralık',
             'GÜN' => 'Günlük Kiralık',
-            'DEV' => 'Devren'
+            'DEV' => 'Devren',
         ];
 
         return $mapping[$kod] ?? 'Satılık';
@@ -208,9 +195,6 @@ class IlanReferansService
 
     /**
      * Lokasyon kodu (İlçe/Mahalle kısa adı)
-     *
-     * @param Ilan $ilan
-     * @return string
      */
     protected function getLokasyonKodu(Ilan $ilan): string
     {
@@ -238,15 +222,12 @@ class IlanReferansService
 
     /**
      * Kategori kodu
-     *
-     * @param Ilan $ilan
-     * @return string
      */
     protected function getKategoriKodu(Ilan $ilan): string
     {
         $kategori = $ilan->kategori;
 
-        if (!$kategori) {
+        if (! $kategori) {
             return 'GENEL';
         }
 
@@ -286,9 +267,6 @@ class IlanReferansService
 
     /**
      * Kategori adı (tam)
-     *
-     * @param Ilan $ilan
-     * @return string
      */
     protected function getKategoriAdi(Ilan $ilan): string
     {
@@ -297,9 +275,6 @@ class IlanReferansService
 
     /**
      * Sıra numarası (6 haneli) - Sequence tablosu ile benzersiz
-     *
-     * @param Ilan $ilan
-     * @return string
      */
     protected function getSiraNo(Ilan $ilan): string
     {
@@ -325,9 +300,6 @@ class IlanReferansService
 
     /**
      * Türkçe karakter temizle (dosya adı için güvenli)
-     *
-     * @param string $text
-     * @return string
      */
     protected function turkceKarakterTemizle(string $text): string
     {
@@ -345,9 +317,6 @@ class IlanReferansService
 
     /**
      * Referans numarasından ilan bul
-     *
-     * @param string $referansNo
-     * @return Ilan|null
      */
     public function findByReferansNo(string $referansNo): ?Ilan
     {
@@ -368,8 +337,6 @@ class IlanReferansService
 
     /**
      * Toplu referans numarası güncelle (mevcut ilanlar için)
-     *
-     * @return array
      */
     public function updateAllReferansNumbers(): array
     {
@@ -387,7 +354,7 @@ class IlanReferansService
 
                 $updates[$ilan->id] = [
                     'referans_no' => $referansNo,
-                    'dosya_adi' => $dosyaAdi
+                    'dosya_adi' => $dosyaAdi,
                 ];
             } catch (\Exception $e) {
                 $errors++;
@@ -395,15 +362,15 @@ class IlanReferansService
         }
 
         // ✅ PERFORMANCE FIX: Bulk update (CASE WHEN ile)
-        if (!empty($updates)) {
+        if (! empty($updates)) {
             $referansCases = [];
             $dosyaCases = [];
             $bindings = [];
             $ids = [];
 
             foreach ($updates as $id => $data) {
-                $referansCases[] = "WHEN ? THEN ?";
-                $dosyaCases[] = "WHEN ? THEN ?";
+                $referansCases[] = 'WHEN ? THEN ?';
+                $dosyaCases[] = 'WHEN ? THEN ?';
                 $bindings[] = $id;
                 $bindings[] = $data['referans_no'];
                 $bindings[] = $id;
@@ -431,16 +398,12 @@ class IlanReferansService
             'success' => true,
             'updated' => $updated,
             'errors' => $errors,
-            'total' => $ilanlar->count()
+            'total' => $ilanlar->count(),
         ];
     }
 
     /**
      * Referans numarası benzersizlik kontrolü
-     *
-     * @param string $referansNo
-     * @param int|null $excludeIlanId
-     * @return bool
      */
     public function isUnique(string $referansNo, ?int $excludeIlanId = null): bool
     {
@@ -455,9 +418,6 @@ class IlanReferansService
 
     /**
      * Başarı mesajı oluştur (copyable referans no ile)
-     *
-     * @param Ilan $ilan
-     * @return array
      */
     public function getSuccessMessage(Ilan $ilan): array
     {
@@ -470,14 +430,13 @@ class IlanReferansService
             'dosya_adi' => $dosyaAdi,
             'message' => "İlanınız başarıyla eklendi. Referans No: {$referansNo}",
             'copy_text' => $dosyaAdi,
-            'show_modal' => true
+            'show_modal' => true,
         ];
     }
 
     /**
      * Arama query builder (referans no, telefon, portal, site)
      *
-     * @param string $searchTerm
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function searchQuery(string $searchTerm)
@@ -492,6 +451,7 @@ class IlanReferansService
         // Telefon ile arama
         if (preg_match('/^[0-9+\s()-]+$/', $searchTerm)) {
             $cleanPhone = preg_replace('/[^0-9]/', '', $searchTerm);
+
             return $query->whereHas('ilanSahibi', function ($q) use ($cleanPhone) {
                 $q->where('telefon', 'LIKE', "%{$cleanPhone}%")
                     ->orWhere('cep_telefonu', 'LIKE', "%{$cleanPhone}%");

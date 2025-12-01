@@ -4,21 +4,18 @@ namespace App\Services;
 
 use App\Models\IlanKategori;
 use App\Models\KategoriYayinTipiFieldDependency;
-use App\Models\Ozellik;
-use App\Services\AICoreSystem;
-use App\Services\AISystemIntegration;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
 
 class AICategoryManager
 {
     private $aiCore;
+
     private $aiIntegration;
 
     public function __construct()
     {
-        $this->aiCore = new AICoreSystem();
-        $this->aiIntegration = new AISystemIntegration();
+        $this->aiCore = new AICoreSystem;
+        $this->aiIntegration = new AISystemIntegration;
     }
 
     /**
@@ -34,7 +31,7 @@ class AICategoryManager
         // AI'den analiz iste
         $analysis = $this->aiCore->testAI($context, [
             'category' => $categorySlug,
-            'data' => $categoryData
+            'data' => $categoryData,
         ]);
 
         return $analysis;
@@ -53,7 +50,7 @@ class AICategoryManager
         // AI'den öneri iste
         $suggestions = $this->aiIntegration->generateSuggestions($context, [
             'category' => $categorySlug,
-            'features' => $features
+            'features' => $features,
         ]);
 
         return $suggestions;
@@ -112,7 +109,7 @@ class AICategoryManager
         return Cache::remember("category_data_{$categorySlug}", 3600, function () use ($categorySlug) {
             $category = IlanKategori::where('slug', $categorySlug)->first();
 
-            if (!$category) {
+            if (! $category) {
                 return null;
             }
 
@@ -125,7 +122,7 @@ class AICategoryManager
                 'features_count' => $category->features()->count(),
                 'ilan_count' => $category->ilanlar()->count(),
                 'parent' => $category->parent ? $category->parent->name : null,
-                'children_count' => $category->children()->count()
+                'children_count' => $category->children()->count(),
             ];
         });
     }
@@ -138,7 +135,7 @@ class AICategoryManager
         return Cache::remember("category_features_{$categorySlug}", 3600, function () use ($categorySlug) {
             $category = IlanKategori::where('slug', $categorySlug)->first();
 
-            if (!$category) {
+            if (! $category) {
                 return [];
             }
 
@@ -151,7 +148,7 @@ class AICategoryManager
                     'required' => $feature->zorunlu,
                     'searchable' => $feature->arama_filtresi,
                     'show_in_card' => $feature->ilan_kartinda_goster,
-                    'usage_count' => $feature->kullanim_sayisi ?? 0
+                    'usage_count' => $feature->kullanim_sayisi ?? 0,
                 ];
             })->toArray();
         });
@@ -172,7 +169,7 @@ class AICategoryManager
                         'field_type' => $field->field_type,
                         'ai_suggestion' => $field->ai_suggestion,
                         'ai_auto_fill' => $field->ai_auto_fill,
-                        'required' => $field->required
+                        'required' => $field->required,
                     ];
                 })
                 ->toArray();
@@ -199,6 +196,7 @@ class AICategoryManager
     public function updateCategoryAISuccess($categorySlug, $taskType, $isSuccess)
     {
         $context = "category_{$categorySlug}";
+
         return $this->aiCore->updateSuccessRate($context, $taskType, $isSuccess);
     }
 
@@ -214,7 +212,7 @@ class AICategoryManager
             $results[$category] = [
                 'analysis' => $this->analyzeCategory($category),
                 'suggestions' => $this->getCategorySuggestions($category),
-                'hibrit_siralama' => $this->generateHibritSiralama($category)
+                'hibrit_siralama' => $this->generateHibritSiralama($category),
             ];
         }
 

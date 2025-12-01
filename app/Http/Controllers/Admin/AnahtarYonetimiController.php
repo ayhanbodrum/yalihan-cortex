@@ -48,7 +48,7 @@ class AnahtarYonetimiController extends AdminController
             'anahtar_notlari' => 'nullable|string',
             'anahtar_tipi' => 'required|in:Ana Anahtar,Yedek Anahtar,Kodlu Anahtar,Kartlı Anahtar,Uzaktan Kumanda',
             'anahtar_sayisi' => 'required|integer|min:1',
-            'anahtar_ozellikleri' => 'nullable|array'
+            'anahtar_ozellikleri' => 'nullable|array',
         ]);
 
         if ($validator->fails()) {
@@ -69,7 +69,7 @@ class AnahtarYonetimiController extends AdminController
             'anahtar_sayisi' => $request->anahtar_sayisi,
             'anahtar_ozellikleri' => $request->anahtar_ozellikleri,
             'created_by' => auth()->id(),
-            'updated_by' => auth()->id()
+            'updated_by' => auth()->id(),
         ]);
 
         return redirect()->route('admin.anahtar-yonetimi.index')
@@ -115,7 +115,7 @@ class AnahtarYonetimiController extends AdminController
             'anahtar_notlari' => 'nullable|string',
             'anahtar_tipi' => 'required|in:Ana Anahtar,Yedek Anahtar,Kodlu Anahtar,Kartlı Anahtar,Uzaktan Kumanda',
             'anahtar_sayisi' => 'required|integer|min:1',
-            'anahtar_ozellikleri' => 'nullable|array'
+            'anahtar_ozellikleri' => 'nullable|array',
         ]);
 
         if ($validator->fails()) {
@@ -134,7 +134,7 @@ class AnahtarYonetimiController extends AdminController
             'anahtar_tipi' => $request->anahtar_tipi,
             'anahtar_sayisi' => $request->anahtar_sayisi,
             'anahtar_ozellikleri' => $request->anahtar_ozellikleri,
-            'updated_by' => auth()->id()
+            'updated_by' => auth()->id(),
         ]);
 
         return redirect()->route('admin.anahtar-yonetimi.index')
@@ -161,27 +161,27 @@ class AnahtarYonetimiController extends AdminController
         $anahtar = AnahtarYonetimi::findOrFail($id);
 
         $validator = Validator::make($request->all(), [
-            'anahtar_durumu' => 'required|in:Beklemede,Hazır,Teslim Edildi,Geri Alındı,Kayıp'
+            'anahtar_durumu' => 'required|in:Beklemede,Hazır,Teslim Edildi,Geri Alındı,Kayıp',
         ]);
 
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
                 'message' => 'Validation Error.',
-                'errors' => $validator->errors()
+                'errors' => $validator->errors(),
             ], 400);
         }
 
         $anahtar->update([
             'anahtar_durumu' => $request->anahtar_durumu,
             'teslim_tarihi' => $request->anahtar_durumu === 'Teslim Edildi' ? now() : $anahtar->teslim_tarihi,
-            'updated_by' => auth()->id()
+            'updated_by' => auth()->id(),
         ]);
 
         return response()->json([
             'success' => true,
             'message' => 'Anahtar durumu başarıyla güncellendi.',
-            'data' => $anahtar
+            'data' => $anahtar,
         ]);
     }
 
@@ -192,23 +192,23 @@ class AnahtarYonetimiController extends AdminController
     {
         $anahtar = AnahtarYonetimi::findOrFail($id);
 
-        if (!$anahtar->canBeDelivered()) {
+        if (! $anahtar->canBeDelivered()) {
             return response()->json([
                 'success' => false,
-                'message' => 'Bu anahtar teslim edilemez.'
+                'message' => 'Bu anahtar teslim edilemez.',
             ], 400);
         }
 
         $validator = Validator::make($request->all(), [
             'teslim_alan_kisi_id' => 'required|exists:users,id',
-            'anahtar_notlari' => 'nullable|string'
+            'anahtar_notlari' => 'nullable|string',
         ]);
 
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
                 'message' => 'Validation Error.',
-                'errors' => $validator->errors()
+                'errors' => $validator->errors(),
             ], 400);
         }
 
@@ -218,13 +218,13 @@ class AnahtarYonetimiController extends AdminController
             'teslim_alan_kisi_id' => $request->teslim_alan_kisi_id,
             'teslim_eden_kisi_id' => auth()->id(),
             'anahtar_notlari' => $request->anahtar_notlari,
-            'updated_by' => auth()->id()
+            'updated_by' => auth()->id(),
         ]);
 
         return response()->json([
             'success' => true,
             'message' => 'Anahtar başarıyla teslim edildi.',
-            'data' => $anahtar
+            'data' => $anahtar,
         ]);
     }
 }

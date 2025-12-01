@@ -63,7 +63,7 @@ return new class extends Migration
                 'zingat_id',
                 'hurriyetemlak_id',
                 'portal_sync_status',
-                'portal_pricing'
+                'portal_pricing',
             ]);
         });
     }

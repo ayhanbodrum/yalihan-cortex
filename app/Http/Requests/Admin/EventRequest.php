@@ -57,13 +57,13 @@ class EventRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         // event_date ve start/end alanlarını birleştir
-        if ($this->has('start') && !$this->has('event_date')) {
+        if ($this->has('start') && ! $this->has('event_date')) {
             $this->merge([
                 'event_date' => $this->start,
             ]);
         }
 
-        if ($this->has('end') && !$this->has('check_out')) {
+        if ($this->has('end') && ! $this->has('check_out')) {
             $this->merge([
                 'check_out' => $this->end,
             ]);

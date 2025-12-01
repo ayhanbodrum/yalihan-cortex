@@ -1,4 +1,4 @@
-@extends('admin.layouts.neo')
+@extends('admin.layouts.admin')
 
 @section('title', 'Müşteriler')
 
@@ -426,6 +426,9 @@
                                     <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
                                         Danışman</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
+                                        🤖 AI Analizi / Potansiyel
+                                    </th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
                                         <a href="{{ route('admin.kisiler.index', array_merge(request()->except('page'), ['sort' => request('sort') === 'created_desc' ? 'created_asc' : 'created_desc'])) }}"
                                             class="inline-flex items-center gap-1 hover:underline">
                                             Kayıt Tarihi
@@ -525,6 +528,55 @@
                                                 <span class="text-gray-400">Atanmamış</span>
                                             @endif
                                         </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex flex-col gap-2.5 min-w-[180px]">
+                                                {{-- Satış Potansiyeli Progress Bar --}}
+                                                @if($kisi->satis_potansiyeli !== null)
+                                                    <div class="space-y-1.5">
+                                                        <div class="flex items-center justify-between gap-2">
+                                                            <span class="text-xs font-medium text-gray-600 dark:text-gray-400">
+                                                                Potansiyel
+                                                            </span>
+                                                            <span class="text-xs font-bold {{ $kisi->satis_potansiyeli > 80 ? 'text-green-600 dark:text-green-400' : ($kisi->satis_potansiyeli > 50 ? 'text-yellow-600 dark:text-yellow-400' : 'text-gray-500 dark:text-gray-400') }}">
+                                                                %{{ $kisi->satis_potansiyeli }}
+                                                            </span>
+                                                        </div>
+                                                        <div class="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden shadow-inner transition-all duration-300">
+                                                            <div class="h-full rounded-full transition-all duration-500 ease-out {{ $kisi->satis_potansiyeli > 80 ? 'bg-green-500' : ($kisi->satis_potansiyeli > 50 ? 'bg-yellow-500' : 'bg-gray-400 dark:bg-gray-600') }}"
+                                                                 role="progressbar"
+                                                                 aria-valuenow="{{ $kisi->satis_potansiyeli }}"
+                                                                 aria-valuemin="0"
+                                                                 aria-valuemax="100"
+                                                                 style="width: {{ $kisi->satis_potansiyeli }}%">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                @else
+                                                    <div class="text-xs text-gray-400 dark:text-gray-500 italic">
+                                                        Analiz edilmedi
+                                                    </div>
+                                                @endif
+
+                                                {{-- Yatırımcı Profili Badge --}}
+                                                @if($kisi->yatirimci_profili)
+                                                    @php
+                                                        $profil = $kisi->yatirimci_profili;
+                                                        $colorMap = [
+                                                            'konservatif' => 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 border border-blue-200 dark:border-blue-700',
+                                                            'agresif' => 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300 border border-red-200 dark:border-red-700',
+                                                            'firsatci' => 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300 border border-orange-200 dark:border-orange-700',
+                                                            'denge' => 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300 border border-green-200 dark:border-green-700',
+                                                            'yeni_baslayan' => 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300 border border-yellow-200 dark:border-yellow-700',
+                                                        ];
+                                                        $color = $colorMap[$profil->value] ?? 'bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-300 border border-gray-200 dark:border-gray-700';
+                                                    @endphp
+                                                    <div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-xs font-medium {{ $color }} transition-all duration-200 hover:scale-105">
+                                                        <span class="text-[10px]">{{ $profil->icon() }}</span>
+                                                        <span>{{ $profil->label() }}</span>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                                             {{ $kisi->created_at ? $kisi->created_at->format('d.m.Y') : 'Belirtilmemiş' }}
                                         </td>
@@ -590,7 +642,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="8"
+                                        <td colspan="9"
                                             class="px-6 py-12 text-center text-gray-500 dark:text-gray-400">
                                             <svg class="mx-auto h-12 w-12 text-gray-400" fill="none"
                                                 stroke="currentColor" viewBox="0 0 24 24">

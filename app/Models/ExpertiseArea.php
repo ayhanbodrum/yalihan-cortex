@@ -3,13 +3,13 @@
 namespace App\Models;
 
 use App\Modules\Auth\Models\User;
+use App\Traits\HasActiveScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Traits\HasActiveScope;
 
 class ExpertiseArea extends Model
 {
-    use HasFactory, HasActiveScope;
+    use HasActiveScope, HasFactory;
 
     /**
      * The attributes that are mass assignable.

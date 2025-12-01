@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 
 class CustomerSeeder extends Seeder
 {
@@ -105,13 +104,13 @@ class CustomerSeeder extends Seeder
                 'id' => $customer['id'],
                 'ad' => $customer['ad'],
                 'soyad' => $customer['soyad'],
-                'tam_ad' => $customer['ad'] . ' ' . $customer['soyad'],
+                'tam_ad' => $customer['ad'].' '.$customer['soyad'],
                 'email' => $customer['email'],
                 'telefon' => $customer['telefon'],
                 'identity_number' => $customer['tc_kimlik'],
                 'type' => $customer['kisi_tipi'],
                 'status' => $customer['status'] === 'Aktif' ? 1 : 0,
-                'notes' => 'Kaynak: ' . $customer['kaynak'],
+                'notes' => 'Kaynak: '.$customer['kaynak'],
                 'created_at' => $customer['created_at'],
                 'updated_at' => $customer['updated_at'],
             ]);

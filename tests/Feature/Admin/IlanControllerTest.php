@@ -242,4 +242,3 @@ class IlanControllerTest extends TestCase
         $response->assertStatus(302);
     }
 }
-

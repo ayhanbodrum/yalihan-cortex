@@ -2,16 +2,16 @@
 
 namespace App\Models;
 
+use App\Traits\HasActiveScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Support\Str;
-use App\Traits\HasActiveScope;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
 
 class BlogTag extends Model
 {
-    use HasFactory, HasActiveScope;
+    use HasActiveScope, HasFactory;
 
     protected $fillable = [
         'name',

@@ -1,4 +1,4 @@
-@extends('admin.layouts.neo')
+@extends('admin.layouts.admin')
 
 @section('title', 'Müşteri Profili')
 @section('page-title', 'Müşteri Profili')

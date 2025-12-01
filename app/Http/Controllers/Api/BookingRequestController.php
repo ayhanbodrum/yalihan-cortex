@@ -3,14 +3,14 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Ilan;
-use App\Models\BookingRequest;
 use App\Mail\BookingRequestMail;
+use App\Models\BookingRequest;
+use App\Models\Ilan;
 use App\Services\Response\ResponseService;
 use App\Traits\ValidatesApiRequests;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 /**
  * Booking Request API Controller
@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Log;
 class BookingRequestController extends Controller
 {
     use ValidatesApiRequests;
+
     /**
      * Submit booking request
      * POST /api/booking-request
@@ -62,7 +63,7 @@ class BookingRequestController extends Controller
                 'nights' => $request->nights ?? 1,
                 'total_price' => $request->total_price ?? 0,
                 'villa_title' => $villa->baslik,
-                'villa_location' => ($villa->il->il_adi ?? '') . ', ' . ($villa->ilce->ilce_adi ?? ''),
+                'villa_location' => ($villa->il->il_adi ?? '').', '.($villa->ilce->ilce_adi ?? ''),
                 'status' => 'pending',
             ]);
 
@@ -71,7 +72,7 @@ class BookingRequestController extends Controller
                 'booking_reference' => $bookingRequest->booking_reference,
                 'villa_id' => $villa->id,
                 'villa_title' => $villa->baslik,
-                'villa_location' => ($villa->il->il_adi ?? '') . ', ' . ($villa->ilce->ilce_adi ?? ''),
+                'villa_location' => ($villa->il->il_adi ?? '').', '.($villa->ilce->ilce_adi ?? ''),
                 'check_in' => $request->check_in,
                 'check_out' => $request->check_out,
                 'guests' => $request->guests,

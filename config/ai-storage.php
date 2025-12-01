@@ -6,7 +6,7 @@ return [
 
         'local_mysql' => [
             'table' => 'ai_storage',
-            'connection' => 'mysql'
+            'connection' => 'mysql',
         ],
 
         'remote_mysql' => [
@@ -14,31 +14,31 @@ return [
             'database' => env('AI_REMOTE_DB_DATABASE', 'yalihan_ai'),
             'username' => env('AI_REMOTE_DB_USERNAME', 'root'),
             'password' => env('AI_REMOTE_DB_PASSWORD', ''),
-            'port' => env('AI_REMOTE_DB_PORT', 3306)
+            'port' => env('AI_REMOTE_DB_PORT', 3306),
         ],
 
         'google_drive' => [
             'credentials' => storage_path('app/google-credentials.json'),
             'folder_id' => env('AI_GOOGLE_DRIVE_FOLDER_ID'),
-            'scopes' => ['https://www.googleapis.com/auth/drive']
+            'scopes' => ['https://www.googleapis.com/auth/drive'],
         ],
 
         'aws_s3' => [
             'credentials' => [
                 'key' => env('AI_AWS_ACCESS_KEY'),
                 'secret' => env('AI_AWS_SECRET_KEY'),
-                'region' => env('AI_AWS_REGION', 'eu-west-1')
+                'region' => env('AI_AWS_REGION', 'eu-west-1'),
             ],
             'bucket' => env('AI_AWS_BUCKET'),
-            'prefix' => env('AI_AWS_PREFIX', 'ai-storage/')
-        ]
+            'prefix' => env('AI_AWS_PREFIX', 'ai-storage/'),
+        ],
     ],
 
     'learning' => [
         'enabled' => env('AI_LEARNING_ENABLED', true),
         'auto_save' => env('AI_AUTO_SAVE', true),
         'success_threshold' => env('AI_SUCCESS_THRESHOLD', 0.7),
-        'max_patterns' => env('AI_MAX_PATTERNS', 1000)
+        'max_patterns' => env('AI_MAX_PATTERNS', 1000),
     ],
 
     'prompts' => [
@@ -49,8 +49,8 @@ return [
                     'Türkçe yanıt ver',
                     'Emlak sektörüne uygun',
                     'Kullanıcı dostu',
-                    'Zorunlu alanları belirt'
-                ]
+                    'Zorunlu alanları belirt',
+                ],
             ],
             'matrix_management' => [
                 'template' => "Sen bir emlak matrix uzmanısın. {category} kategorisi için field dependency matrix oluştur.\n\nKategori: {category}\nAlanlar: {fields}\n\nMatrix:",
@@ -58,8 +58,8 @@ return [
                     'Türkçe yanıt ver',
                     'Mantıklı bağımlılıklar',
                     'AI destekli alanları belirt',
-                    'Kullanıcı deneyimi odaklı'
-                ]
+                    'Kullanıcı deneyimi odaklı',
+                ],
             ],
             'suggestion_engine' => [
                 'template' => "Sen bir emlak öneri uzmanısın. {context} bağlamında {input} için öneriler ver.\n\nBağlam: {context}\nGiriş: {input}\n\nÖneriler:",
@@ -67,8 +67,8 @@ return [
                     'Türkçe yanıt ver',
                     'Pratik öneriler',
                     'Kullanıcı odaklı',
-                    'Detaylı açıklama'
-                ]
+                    'Detaylı açıklama',
+                ],
             ],
             'hibrit_siralama' => [
                 'template' => "Sen bir emlak sıralama uzmanısın. {category} kategorisi için özellikleri önem sırasına göre sırala.\n\nKategori: {category}\nÖzellikler: {features}\n\nSıralama:",
@@ -76,34 +76,34 @@ return [
                     'Türkçe yanıt ver',
                     'Önem sırasına göre',
                     'Kullanım sıklığına göre',
-                    'AI önerilerine göre'
-                ]
-            ]
+                    'AI önerilerine göre',
+                ],
+            ],
         ],
 
         'context_rules' => [
             'konut' => [
                 'Alanlar: Oda sayısı, Banyo sayısı, Metrekare, Kat, Isıtma, Asansör',
-                'AI Destekli: Fiyat tahmini, Özellik önerileri, Benzer ilanlar'
+                'AI Destekli: Fiyat tahmini, Özellik önerileri, Benzer ilanlar',
             ],
             'arsa' => [
                 'Alanlar: Ada, Parsel, İmar durumu, KAKS, TAKS, Gabari',
-                'AI Destekli: Değerleme, İmar analizi, Yatırım potansiyeli'
+                'AI Destekli: Değerleme, İmar analizi, Yatırım potansiyeli',
             ],
             'yazlik' => [
                 'Alanlar: Günlük fiyat, Minimum konaklama, Havuz, Sezon',
-                'AI Destekli: Fiyat optimizasyonu, Sezon analizi, Rezervasyon önerileri'
+                'AI Destekli: Fiyat optimizasyonu, Sezon analizi, Rezervasyon önerileri',
             ],
             'isyeri' => [
                 'Alanlar: Metrekare, Kat, Otopark, Asansör, Lokasyon',
-                'AI Destekli: Kira analizi, Lokasyon değerlendirmesi, Yatırım önerileri'
-            ]
-        ]
+                'AI Destekli: Kira analizi, Lokasyon değerlendirmesi, Yatırım önerileri',
+            ],
+        ],
     ],
 
     'cache' => [
         'enabled' => env('AI_CACHE_ENABLED', true),
         'ttl' => env('AI_CACHE_TTL', 3600),
-        'prefix' => env('AI_CACHE_PREFIX', 'ai_')
-    ]
+        'prefix' => env('AI_CACHE_PREFIX', 'ai_'),
+    ],
 ];

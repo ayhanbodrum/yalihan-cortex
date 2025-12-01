@@ -5,7 +5,6 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\RateLimiter;
 
 /**
  * Security Middleware - Context7 Standard
@@ -18,6 +17,7 @@ use Illuminate\Support\Facades\RateLimiter;
  * - Input Sanitization
  *
  * @version 1.0.0
+ *
  * @author Context7 Team
  */
 class SecurityMiddleware
@@ -75,13 +75,13 @@ class SecurityMiddleware
                 "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com http://localhost:5173 http://localhost:5174 http://localhost:5175 http://127.0.0.1:5173 http://127.0.0.1:5174 http://127.0.0.1:5175",
                 "font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com",
                 "img-src 'self' data: https: blob:",
-                "connect-src 'self' https: wss: http://localhost:5173 http://localhost:5174 http://localhost:5175 http://127.0.0.1:5173 http://127.0.0.1:5174 http://127.0.0.1:5175 ws://localhost:5173 ws://localhost:5174 ws://localhost:5175 ws://127.0.0.1:5173 ws://127.0.0.1:5174 ws://127.0.0.1:5175 http://localhost:11434 http://localhost:51869" . $extraConnectSrc,
+                "connect-src 'self' https: wss: http://localhost:5173 http://localhost:5174 http://localhost:5175 http://127.0.0.1:5173 http://127.0.0.1:5174 http://127.0.0.1:5175 ws://localhost:5173 ws://localhost:5174 ws://localhost:5175 ws://127.0.0.1:5173 ws://127.0.0.1:5174 ws://127.0.0.1:5175 http://localhost:11434 http://localhost:51869".$extraConnectSrc,
                 "media-src 'self'",
                 "object-src 'none'",
                 "child-src 'self'",
                 "frame-ancestors 'none'",
                 "form-action 'self'",
-                "base-uri 'self'"
+                "base-uri 'self'",
             ]);
         }
 
@@ -92,13 +92,13 @@ class SecurityMiddleware
             "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com",
             "font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com",
             "img-src 'self' data: https: blob:",
-            "connect-src 'self' https: wss:" . $extraConnectSrc,
+            "connect-src 'self' https: wss:".$extraConnectSrc,
             "media-src 'self'",
             "object-src 'none'",
             "child-src 'self'",
             "frame-ancestors 'none'",
             "form-action 'self'",
-            "base-uri 'self'"
+            "base-uri 'self'",
         ]);
     }
 
@@ -114,7 +114,7 @@ class SecurityMiddleware
                 $override = \App\Models\Setting::query()
                     ->where('key', 'ai_anythingllm_url')
                     ->value('value');
-                if (!empty($override)) {
+                if (! empty($override)) {
                     $baseUrl = (string) $override;
                 }
             }
@@ -130,11 +130,11 @@ class SecurityMiddleware
 
             $scheme = $parts['scheme'];
             $host = $parts['host'];
-            $port = isset($parts['port']) ? (':' . $parts['port']) : '';
-            $origin = $scheme . '://' . $host . $port;
+            $port = isset($parts['port']) ? (':'.$parts['port']) : '';
+            $origin = $scheme.'://'.$host.$port;
 
             // Prepend a space to join safely
-            return ' ' . $origin;
+            return ' '.$origin;
         } catch (\Throwable $e) {
             return '';
         }
@@ -154,7 +154,7 @@ class SecurityMiddleware
                 'method' => $request->method(),
                 'headers' => $request->headers->all(),
                 'input' => $request->all(),
-                'timestamp' => now()->toISOString()
+                'timestamp' => now()->toISOString(),
             ]);
         }
 
@@ -166,7 +166,7 @@ class SecurityMiddleware
                 'url' => $request->fullUrl(),
                 'method' => $request->method(),
                 'status_code' => $response->getStatusCode(),
-                'timestamp' => now()->toISOString()
+                'timestamp' => now()->toISOString(),
             ]);
         }
     }

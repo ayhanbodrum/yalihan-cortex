@@ -1,10 +1,10 @@
 # 🏠 Yalıhan Emlak - Warp
 
-**Modern Emlak Yönetim Sistemi** - Laravel 11 + Context7 + Tailwind CSS
+**Modern Emlak Yönetim Sistemi** - Laravel 10 + Context7 + Tailwind CSS + AI-First
 
 ---
 
-## 📊 **CURRENT STATUS** (8 Kasım 2025)
+## 📊 **CURRENT STATUS** (24 Kasım 2025 - Universal IDE Standards Aktif)
 
 ### ✅ **COMPLETED TODAY (Nov 6)**
 
@@ -51,14 +51,17 @@
 ## 🎯 **PROJECT METRICS**
 
 ```yaml
-Context7 Compliance: 98.3% → 99.5% (target)
-  Version: 5.4.0 (C7-PERMANENT-STANDARDS-2025-11-07)
+Context7 Compliance: 98.82% → 99.5% (target)
+  Version: 6.0.0 (C7-UNIVERSAL-IDE-STANDARDS-2025-11-24)
   - enabled field: 100% ✅ (PERMANENT STANDARD)
   - Neo classes: 100% ✅ (FORBIDDEN - Tailwind ONLY)
   - Status field: 100% ✅ (PERMANENT STANDARD)
   - Route naming: 100% ✅ (DOUBLE_PREFIX_FORBIDDEN)
   - musteri → kisi: 95% ⚠️ (backward compat only)
   - CRM routes: 50% ⚠️ (needs consolidation)
+  - Universal IDE Support: ✅ ACTIVE (vscode, cursor, windsurf, warp, jetbrains, sublime, neovim)
+  - MCP Integration: ✅ ENABLED (Real-time validation)
+  - Auto Teaching: ✅ YALIHAN_BEKCI (AI learning enabled)
 
 Component Library: 12 components ✅
 Bundle Size: 44KB (11.57KB gzipped) ✅ EXCELLENT!
@@ -139,8 +142,11 @@ yalihanemlakwarp/
 ### **Context7 Rules** 🚫 ❌ (PERMANENT STANDARDS - NO ROLLBACK)
 
 ```yaml
-Version: 5.4.0 (C7-PERMANENT-STANDARDS-2025-11-07)
+Version: 6.0.0 (C7-UNIVERSAL-IDE-STANDARDS-2025-11-24)
 Enforcement: STRICT - Pre-commit + CI/CD + Templates
+Universal IDE Support: ACTIVE (vscode, cursor, windsurf, warp, jetbrains, sublime, neovim)
+MCP Integration: ENABLED - Real-time validation
+Auto Teaching: YALIHAN_BEKCI - AI learning enabled
 
 Forbidden (Auto-blocked by Pre-commit):
     - enabled, is_active → status ⚠️ PERMANENT (Nov 6)
@@ -216,16 +222,17 @@ Password: admin123
 
 ### **Quick Reference**
 
-- `COMPONENT-LIBRARY-COMPLETE.md` - Component usage guide
-- `WIKIMAPIA-FULL-AUDIT-2025-11-05.md` - WikiMapia integration analysis
+- `docs/active/CONTEXT7_KONSOLIDE_2025_11_25.md` - Complete Context7 guide
+- `docs/active/ILAN_SISTEMI_KONSOLIDE_2025_11_25.md` - Property system docs
+- `docs/active/MODULES_KONSOLIDE_2025_11_25.md` - Module documentation
+- `docs/active/USAGE_KONSOLIDE_2025_11_25.md` - Usage guides
 - `.context7/authority.json` - Context7 rules
-- `docs/technical/` - Technical docs
 
 ### **Status Reports**
 
-- `GECE-COMPREHENSIVE-REPORT-2025-11-05.md` - Tonight's full report
-- `BUGUN-GECE-FINAL-2025-11-05.md` - Summary
-- `CONTEXT7_ULTIMATE_STATUS_REPORT.md` - Context7 status
+- `docs/active/DIZIN_KONSOLIDASYON_RAPORU_2025_11_25.md` - Complete consolidation report
+- `docs/active/ROADMAP_KONSOLIDE_2025_11_25.md` - Project roadmap 2025-2026
+- `docs/active/RULES_KONSOLIDE_2025_11_25.md` - Development standards
 
 ---
 
@@ -307,14 +314,15 @@ Password: admin123
 
 ---
 
-**Last Updated:** 8 Kasım 2025  
+**Last Updated:** 24 Kasım 2025  
 **Version:** 3.7.0  
 **Status:** 🟢 Active Development  
-**Context7 Version:** 5.4.0 (C7-PERMANENT-STANDARDS-2025-11-07)  
-**Context7 Compliance:** 98.3% → 99.5% (target)
+**Context7 Version:** 6.0.0 (C7-UNIVERSAL-IDE-STANDARDS-2025-11-24)  
+**Context7 Compliance:** 98.82% → 99.5% (target)
 
 ### 📈 Recent Achievements
 
+- ✅ **Context7 v6.0.0** (Nov 24) - Universal IDE Standards - Multi-IDE support activated
 - ✅ **Context7 v5.4.0** (Nov 8) - Permanent standards enforced
 - ✅ **enabled Field Prohibition** (Nov 6) - PERMANENT STANDARD
 - ✅ **Neo Design Removal** (Nov 1) - Tailwind CSS ONLY, FORBIDDEN PERMANENT

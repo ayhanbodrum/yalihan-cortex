@@ -15,7 +15,7 @@ class IlanExportService
             $search = $request->get('search');
             $query->where(function ($q) use ($search) {
                 $q->where('baslik', 'like', "%{$search}%")
-                  ->orWhere('aciklama', 'like', "%{$search}%");
+                    ->orWhere('aciklama', 'like', "%{$search}%");
             });
         }
 

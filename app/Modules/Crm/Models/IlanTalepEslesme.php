@@ -2,13 +2,14 @@
 
 namespace App\Modules\Crm\Models;
 
+use App\Models\Talep;
 use App\Modules\BaseModule\Models\BaseModel;
 use App\Modules\Emlak\Models\Ilan;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * @property-read Ilan|null $ilan
- * @property-read \App\Modules\Crm\Models\Talep|null $talep
+ * @property-read \App\Models\Talep|null $talep
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|IlanTalepEslesme newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|IlanTalepEslesme newQuery()

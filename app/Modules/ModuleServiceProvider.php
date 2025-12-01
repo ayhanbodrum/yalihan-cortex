@@ -3,11 +3,12 @@
 namespace App\Modules;
 
 use App\Modules\Admin\AdminServiceProvider;
+use App\Modules\Analitik\AnalitikServiceProvider;
 use App\Modules\Auth\AuthServiceProvider;
 use App\Modules\Crm\CrmServiceProvider;
 use App\Modules\Emlak\EmlakServiceProvider;
+use App\Modules\Finans\FinansServiceProvider;
 use App\Modules\TakimYonetimi\TakimYonetimiServiceProvider;
-use App\Modules\Analitik\AnalitikServiceProvider;
 // use App\Modules\Location\LocationServiceProvider; // Bu satırı kaldır
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\ServiceProvider;
@@ -27,6 +28,7 @@ class ModuleServiceProvider extends ServiceProvider
         $this->app->register(CrmServiceProvider::class);
         $this->app->register(TakimYonetimiServiceProvider::class);
         $this->app->register(AnalitikServiceProvider::class);
+        $this->app->register(FinansServiceProvider::class);
         // $this->app->register(LocationServiceProvider::class); // Bu satırı kaldır
     }
 

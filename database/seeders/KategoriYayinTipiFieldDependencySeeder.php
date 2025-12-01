@@ -96,7 +96,7 @@ class KategoriYayinTipiFieldDependencySeeder extends Seeder
         $fields[] = $this->createField('konut', 'Sezonluk Kiralık', 'check_out', 'Check-out Saati', 'select', 'sezonluk', json_encode(['10:00' => '10:00', '11:00' => '11:00', '12:00' => '12:00']), null, $order++, false, false, false, '⏰');
 
         DB::table('kategori_yayin_tipi_field_dependencies')->insert($fields);
-        Log::info('  ✅ Konut kategorisi fieldlari eklendi (' . count($fields) . ' adet)');
+        Log::info('  ✅ Konut kategorisi fieldlari eklendi ('.count($fields).' adet)');
     }
 
     // ═══════════════════════════════════════════════════════════
@@ -134,7 +134,7 @@ class KategoriYayinTipiFieldDependencySeeder extends Seeder
         $fields[] = $this->createField('arsa', 'Kiralık', 'alan_m2', 'Arsa Metrekare', 'number', 'arsa', null, 'm²', $order++, false, true, true, '📐');
 
         DB::table('kategori_yayin_tipi_field_dependencies')->insert($fields);
-        Log::info('  ✅ Arsa kategorisi fieldlari eklendi (' . count($fields) . ' adet)');
+        Log::info('  ✅ Arsa kategorisi fieldlari eklendi ('.count($fields).' adet)');
     }
 
     // ═══════════════════════════════════════════════════════════
@@ -189,7 +189,7 @@ class KategoriYayinTipiFieldDependencySeeder extends Seeder
         $fields[] = $this->createField('yazlik', 'Sezonluk Kiralık', 'esyali', 'Eşyalı', 'select', 'ozellik', json_encode(['Hayır' => 'Hayır', 'Kısmen' => 'Kısmen', 'Tam Eşyalı' => 'Tam Eşyalı']), null, $order++, false, true, true, '🛋️');
 
         DB::table('kategori_yayin_tipi_field_dependencies')->insert($fields);
-        Log::info('  ✅ Yazlik kategorisi fieldlari eklendi (' . count($fields) . ' adet)');
+        Log::info('  ✅ Yazlik kategorisi fieldlari eklendi ('.count($fields).' adet)');
     }
 
     // ═══════════════════════════════════════════════════════════
@@ -277,6 +277,6 @@ class KategoriYayinTipiFieldDependencySeeder extends Seeder
 
         // Veritabanına kaydet
         DB::table('kategori_yayin_tipi_field_dependencies')->insert($fields);
-        Log::info("🏢 İşyeri kategorisi için " . count($fields) . " field dependency oluşturuldu");
+        Log::info('🏢 İşyeri kategorisi için '.count($fields).' field dependency oluşturuldu');
     }
 }

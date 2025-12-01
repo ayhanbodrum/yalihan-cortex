@@ -1,4 +1,4 @@
-@extends('admin.layouts.neo') {{-- Context7: layouts.app → admin.layouts.neo --}}
+@extends('admin.layouts.admin') {{-- Context7: layouts.app → admin.layouts.neo --}}
 
 @section('title', 'Dinamik Form Oluşturucu')
 @section('description', 'AI destekli dinamik form sistemi - Kategori ve yayın tipine göre otomatik form oluşturma')

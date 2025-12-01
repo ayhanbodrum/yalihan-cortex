@@ -97,7 +97,7 @@ class AIIlanTaslagiController extends Controller
             if ($request->wantsJson() || $request->ajax()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Onaylama sırasında hata oluştu: ' . $e->getMessage(),
+                    'message' => 'Onaylama sırasında hata oluştu: '.$e->getMessage(),
                 ], 500);
             }
 
@@ -140,7 +140,7 @@ class AIIlanTaslagiController extends Controller
             if ($request->wantsJson() || $request->ajax()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Reddetme sırasında hata oluştu: ' . $e->getMessage(),
+                    'message' => 'Reddetme sırasında hata oluştu: '.$e->getMessage(),
                 ], 500);
             }
 
@@ -192,7 +192,7 @@ class AIIlanTaslagiController extends Controller
             if ($request->wantsJson() || $request->ajax()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Yayınlama sırasında hata oluştu: ' . $e->getMessage(),
+                    'message' => 'Yayınlama sırasında hata oluştu: '.$e->getMessage(),
                 ], 500);
             }
 

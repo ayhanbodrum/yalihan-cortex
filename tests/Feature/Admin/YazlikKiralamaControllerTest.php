@@ -2,11 +2,8 @@
 
 namespace Tests\Feature\Admin;
 
-use App\Models\Ilan;
-use App\Models\IlanKategori;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
@@ -93,4 +90,3 @@ class YazlikKiralamaControllerTest extends TestCase
         $response->assertStatus(200);
     }
 }
-

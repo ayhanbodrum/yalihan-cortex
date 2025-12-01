@@ -2,9 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\IlanKategori;
-use Illuminate\Support\Str;
+use Illuminate\Database\Seeder;
 
 class ArsaKategorileriSeeder extends Seeder
 {
@@ -17,8 +16,9 @@ class ArsaKategorileriSeeder extends Seeder
         // Ana kategori: Arsa
         $arsa = IlanKategori::where('name', 'Arsa')->first();
 
-        if (!$arsa) {
+        if (! $arsa) {
             $this->command->error('❌ Arsa ana kategorisi bulunamadı!');
+
             return;
         }
 
@@ -158,6 +158,6 @@ class ArsaKategorileriSeeder extends Seeder
         $this->command->info("\n📊 ARSA ALT KATEGORİLERİ:");
         $this->command->info("   ✅ Yeni: {$created}");
         $this->command->info("   ✏️  Güncel: {$updated}");
-        $this->command->info("   📦 Toplam: " . ($created + $updated));
+        $this->command->info('   📦 Toplam: '.($created + $updated));
     }
 }

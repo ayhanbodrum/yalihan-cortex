@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\AiLog;
+use App\Models\Setting;
 use App\Services\AIService;
 use App\Services\Response\ResponseService;
-use App\Models\Setting;
-use App\Models\AiLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -203,9 +203,11 @@ class AISettingsController extends Controller
             return ResponseService::serverError('Analytics yüklenirken hata oluştu', $e);
         }
     }
+
     public function providerStatus()
     {
         $service = app(AIService::class);
+
         return ResponseService::success([
             'provider' => config('ai.provider'),
             'model' => config('ai.default_model'),
@@ -220,6 +222,7 @@ class AISettingsController extends Controller
             'api_key' => 'nullable|string',
             'model' => 'nullable|string',
         ]);
+
         return ResponseService::success([
             'test' => 'ok',
             'provider' => $validated['provider'],
@@ -233,6 +236,7 @@ class AISettingsController extends Controller
             'locale' => 'required|string|in:tr,en',
         ]);
         Setting::updateOrCreate(['key' => 'app_locale'], ['value' => $validated['locale']]);
+
         return ResponseService::success(['locale' => $validated['locale']], 'Dil ayarı güncellendi');
     }
 
@@ -242,6 +246,7 @@ class AISettingsController extends Controller
             'currency' => 'required|string|in:TRY,USD,EUR,GBP',
         ]);
         Setting::updateOrCreate(['key' => 'currency_default'], ['value' => $validated['currency']]);
+
         return ResponseService::success(['currency' => $validated['currency']], 'Para birimi ayarı güncellendi');
     }
 
@@ -254,6 +259,7 @@ class AISettingsController extends Controller
         $ai = app(AIService::class);
         try {
             $ai->switchProvider($validated['provider']);
+
             return ResponseService::success(['provider' => $validated['provider']], 'AI sağlayıcı güncellendi');
         } catch (\Throwable $e) {
             return ResponseService::serverError('Sağlayıcı güncellenemedi', $e);
@@ -291,7 +297,7 @@ class AISettingsController extends Controller
         return ResponseService::success([
             'model' => $validated['model'],
             'provider' => $provider,
-            'model_key' => $modelKey
+            'model_key' => $modelKey,
         ], 'Model ayarı güncellendi');
     }
 
@@ -420,7 +426,8 @@ class AISettingsController extends Controller
         if (strlen($key) <= 8) {
             return str_repeat('*', strlen($key));
         }
-        return substr($key, 0, 4) . str_repeat('*', strlen($key) - 8) . substr($key, -4);
+
+        return substr($key, 0, 4).str_repeat('*', strlen($key) - 8).substr($key, -4);
     }
 
     /**

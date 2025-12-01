@@ -2,8 +2,8 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
@@ -44,15 +44,15 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('ilanlar', function (Blueprint $table) {
-            if (!Schema::hasColumn('ilanlar', 'kategori_id')) {
+            if (! Schema::hasColumn('ilanlar', 'kategori_id')) {
                 $table->foreignId('kategori_id')->nullable()->constrained('ilan_kategorileri')->onDelete('set null');
             }
 
-            if (!Schema::hasColumn('ilanlar', 'parent_kategori_id')) {
+            if (! Schema::hasColumn('ilanlar', 'parent_kategori_id')) {
                 $table->foreignId('parent_kategori_id')->nullable()->constrained('ilan_kategorileri')->onDelete('set null');
             }
 
-            if (!Schema::hasColumn('ilanlar', 'yayinlama_tipi')) {
+            if (! Schema::hasColumn('ilanlar', 'yayinlama_tipi')) {
                 $table->string('yayinlama_tipi')->nullable();
             }
         });

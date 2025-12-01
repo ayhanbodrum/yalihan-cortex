@@ -32,7 +32,7 @@ class AdminMiddleware
             }
         }
 
-        if (!$hasAllowedRole) {
+        if (! $hasAllowedRole) {
             abort(403, 'Bu sayfaya erişim yetkiniz bulunmamaktadır.');
         }
 

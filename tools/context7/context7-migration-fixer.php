@@ -1,9 +1,9 @@
 <?php
+
 /**
  * Context7 Migration Auto-Fixer
  * Automatically fixes Context7 violations in migration files
  */
-
 class Context7MigrationFixer
 {
     private array $replacements = [
@@ -95,11 +95,12 @@ class Context7MigrationFixer
     ];
 
     private array $processedFiles = [];
+
     private array $errors = [];
 
     public function fixMigrationsDirectory(string $directory): array
     {
-        $files = glob($directory . '/*.php');
+        $files = glob($directory.'/*.php');
         $fixed = 0;
 
         foreach ($files as $file) {
@@ -111,7 +112,7 @@ class Context7MigrationFixer
         return [
             'processed' => count($files),
             'fixed' => $fixed,
-            'errors' => $this->errors
+            'errors' => $this->errors,
         ];
     }
 
@@ -153,7 +154,7 @@ class Context7MigrationFixer
 
         if ($hasChanges) {
             // Add Context7 compliance header
-            if (!strpos($content, 'Context7 MCP Compliant')) {
+            if (! strpos($content, 'Context7 MCP Compliant')) {
                 $content = str_replace(
                     '<?php',
                     "<?php\n// Context7 MCP Compliant - English field names and enum values only",
@@ -162,19 +163,21 @@ class Context7MigrationFixer
             }
 
             // Backup original file
-            $backupPath = $filePath . '.context7-backup';
-            if (!file_exists($backupPath)) {
+            $backupPath = $filePath.'.context7-backup';
+            if (! file_exists($backupPath)) {
                 copy($filePath, $backupPath);
             }
 
             // Write fixed content
             if (file_put_contents($filePath, $content) === false) {
                 $this->errors[] = "Failed to write to: $filename";
+
                 return false;
             }
 
             $this->processedFiles[] = $filename;
             echo "✅ Fixed: $filename\n";
+
             return true;
         }
 
@@ -184,14 +187,14 @@ class Context7MigrationFixer
     public function generateReport(array $results): string
     {
         $report = "# Context7 Migration Auto-Fix Report\n\n";
-        $report .= "Generated: " . date('Y-m-d H:i:s') . "\n\n";
+        $report .= 'Generated: '.date('Y-m-d H:i:s')."\n\n";
 
         $report .= "## 📊 Summary\n\n";
         $report .= "- **Files processed**: {$results['processed']}\n";
         $report .= "- **Files fixed**: {$results['fixed']}\n";
-        $report .= "- **Errors**: " . count($results['errors']) . "\n\n";
+        $report .= '- **Errors**: '.count($results['errors'])."\n\n";
 
-        if (!empty($results['errors'])) {
+        if (! empty($results['errors'])) {
             $report .= "## ❌ Errors\n\n";
             foreach ($results['errors'] as $error) {
                 $report .= "- $error\n";
@@ -240,11 +243,11 @@ class Context7MigrationFixer
 // Run the fixer
 echo "🚀 Starting Context7 Migration Auto-Fixer...\n\n";
 
-$fixer = new Context7MigrationFixer();
+$fixer = new Context7MigrationFixer;
 $results = $fixer->fixMigrationsDirectory('database/migrations');
 $report = $fixer->generateReport($results);
 
-echo "\n" . $report;
+echo "\n".$report;
 
 // Save report
 file_put_contents('context7-migration-fix-report.md', $report);

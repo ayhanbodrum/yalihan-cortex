@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Services\TKGMService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 
 /**
  * TKGM Parsel Sorgulama Controller
@@ -28,15 +28,15 @@ class TKGMParselController extends AdminController
      */
     public function index()
     {
-        $recentQueries = Cache::get('tkgm_recent_queries_' . auth()->id(), []);
+        $recentQueries = Cache::get('tkgm_recent_queries_'.auth()->id(), []);
 
         return view('admin.tkgm-parsel.index', [
             'recentQueries' => $recentQueries,
             'pageTitle' => 'TKGM Parsel Sorgulama',
             'breadcrumbs' => [
                 ['name' => 'Admin Panel', 'url' => route('admin.dashboard.index')],
-                ['name' => 'TKGM Parsel Sorgulama', 'active' => true]
-            ]
+                ['name' => 'TKGM Parsel Sorgulama', 'active' => true],
+            ],
         ]);
     }
 
@@ -51,14 +51,14 @@ class TKGMParselController extends AdminController
             'parsel' => 'required|string|max:20',
             'il' => 'required|string|max:50',
             'ilce' => 'required|string|max:50',
-            'mahalle' => 'nullable|string|max:100'
+            'mahalle' => 'nullable|string|max:100',
         ]);
 
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
                 'message' => 'Parsel bilgileri eksik veya hatalı',
-                'errors' => $validator->errors()
+                'errors' => $validator->errors(),
             ], 422);
         }
 
@@ -85,7 +85,7 @@ class TKGMParselController extends AdminController
                 'il' => $request->il,
                 'ilce' => $request->ilce,
                 'success' => $result['success'],
-                'response_time' => $result['response_time'] ?? null
+                'response_time' => $result['response_time'] ?? null,
             ]);
 
             return response()->json($result);
@@ -94,13 +94,13 @@ class TKGMParselController extends AdminController
             Log::error('TKGM parsel sorgulama hatası', [
                 'error' => $e->getMessage(),
                 'request_data' => $request->all(),
-                'user_id' => auth()->id()
+                'user_id' => auth()->id(),
             ]);
 
             return response()->json([
                 'success' => false,
                 'message' => 'Parsel sorgulaması sırasında bir hata oluştu',
-                'error_code' => 'QUERY_ERROR'
+                'error_code' => 'QUERY_ERROR',
             ], 500);
         }
     }
@@ -116,14 +116,14 @@ class TKGMParselController extends AdminController
             'queries.*.ada' => 'required|string|max:20',
             'queries.*.parsel' => 'required|string|max:20',
             'queries.*.il' => 'required|string|max:50',
-            'queries.*.ilce' => 'required|string|max:50'
+            'queries.*.ilce' => 'required|string|max:50',
         ]);
 
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
                 'message' => 'Toplu sorgu verileri hatalı',
-                'errors' => $validator->errors()
+                'errors' => $validator->errors(),
             ], 422);
         }
 
@@ -146,7 +146,7 @@ class TKGMParselController extends AdminController
                         'index' => $index,
                         'query' => $query,
                         'result' => $result,
-                        'success' => $result['success']
+                        'success' => $result['success'],
                     ];
 
                     if ($result['success']) {
@@ -166,9 +166,9 @@ class TKGMParselController extends AdminController
                         'query' => $query,
                         'result' => [
                             'success' => false,
-                            'message' => 'Sorgu hatası: ' . $e->getMessage()
+                            'message' => 'Sorgu hatası: '.$e->getMessage(),
                         ],
-                        'success' => false
+                        'success' => false,
                     ];
                     $failureCount++;
                 }
@@ -178,7 +178,7 @@ class TKGMParselController extends AdminController
                 'user_id' => auth()->id(),
                 'total_queries' => count($queries),
                 'success_count' => $successCount,
-                'failure_count' => $failureCount
+                'failure_count' => $failureCount,
             ]);
 
             return response()->json([
@@ -187,20 +187,20 @@ class TKGMParselController extends AdminController
                 'summary' => [
                     'total' => count($queries),
                     'success' => $successCount,
-                    'failure' => $failureCount
+                    'failure' => $failureCount,
                 ],
-                'results' => $results
+                'results' => $results,
             ]);
 
         } catch (\Exception $e) {
             Log::error('TKGM toplu sorgulama hatası', [
                 'error' => $e->getMessage(),
-                'user_id' => auth()->id()
+                'user_id' => auth()->id(),
             ]);
 
             return response()->json([
                 'success' => false,
-                'message' => 'Toplu sorgulama sırasında bir hata oluştu'
+                'message' => 'Toplu sorgulama sırasında bir hata oluştu',
             ], 500);
         }
     }
@@ -217,7 +217,7 @@ class TKGMParselController extends AdminController
             $perPage = $request->input('per_page', 20);
 
             // Cache'den geçmiş sorguları al
-            $allQueries = Cache::get('tkgm_all_queries_' . $userId, []);
+            $allQueries = Cache::get('tkgm_all_queries_'.$userId, []);
 
             // Sayfalama
             $total = count($allQueries);
@@ -231,14 +231,14 @@ class TKGMParselController extends AdminController
                     'current_page' => $page,
                     'per_page' => $perPage,
                     'total' => $total,
-                    'last_page' => ceil($total / $perPage)
-                ]
+                    'last_page' => ceil($total / $perPage),
+                ],
             ]);
 
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Geçmiş sorguları alırken hata oluştu'
+                'message' => 'Geçmiş sorguları alırken hata oluştu',
             ], 500);
         }
     }
@@ -251,26 +251,26 @@ class TKGMParselController extends AdminController
     {
         try {
             $userId = auth()->id();
-            $recentQueries = Cache::get('tkgm_recent_queries_' . $userId, []);
-            $allQueries = Cache::get('tkgm_all_queries_' . $userId, []);
+            $recentQueries = Cache::get('tkgm_recent_queries_'.$userId, []);
+            $allQueries = Cache::get('tkgm_all_queries_'.$userId, []);
 
             $stats = [
                 'total_queries' => count($allQueries),
                 'recent_queries' => count($recentQueries),
                 'success_rate' => $this->calculateSuccessRate($allQueries),
                 'most_queried_locations' => $this->getMostQueriedLocations($allQueries),
-                'daily_stats' => $this->getDailyStats($allQueries)
+                'daily_stats' => $this->getDailyStats($allQueries),
             ];
 
             return response()->json([
                 'success' => true,
-                'stats' => $stats
+                'stats' => $stats,
             ]);
 
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'İstatistikler alınırken hata oluştu'
+                'message' => 'İstatistikler alınırken hata oluştu',
             ], 500);
         }
     }
@@ -281,8 +281,8 @@ class TKGMParselController extends AdminController
     private function saveRecentQuery($queryData, $result)
     {
         $userId = auth()->id();
-        $cacheKey = 'tkgm_recent_queries_' . $userId;
-        $allQueriesKey = 'tkgm_all_queries_' . $userId;
+        $cacheKey = 'tkgm_recent_queries_'.$userId;
+        $allQueriesKey = 'tkgm_all_queries_'.$userId;
 
         $queryRecord = [
             'id' => uniqid(),
@@ -292,7 +292,7 @@ class TKGMParselController extends AdminController
             'ilce' => $queryData['ilce'],
             'success' => $result['success'],
             'timestamp' => now()->toISOString(),
-            'response_time' => $result['response_time'] ?? null
+            'response_time' => $result['response_time'] ?? null,
         ];
 
         // Son 10 sorguyu cache'te tut
@@ -332,11 +332,12 @@ class TKGMParselController extends AdminController
         $locations = [];
 
         foreach ($queries as $query) {
-            $key = $query['il'] . ' / ' . $query['ilce'];
+            $key = $query['il'].' / '.$query['ilce'];
             $locations[$key] = ($locations[$key] ?? 0) + 1;
         }
 
         arsort($locations);
+
         return array_slice($locations, 0, 5, true);
     }
 
@@ -351,7 +352,7 @@ class TKGMParselController extends AdminController
         foreach ($queries as $query) {
             $date = \Carbon\Carbon::parse($query['timestamp'])->format('Y-m-d');
 
-            if (!isset($dailyStats[$date])) {
+            if (! isset($dailyStats[$date])) {
                 $dailyStats[$date] = ['total' => 0, 'success' => 0];
             }
 

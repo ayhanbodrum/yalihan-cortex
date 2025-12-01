@@ -2,13 +2,13 @@
 
 namespace Database\Seeders;
 
+use App\Models\Il;
+use App\Models\Ilan;
+use App\Models\IlanKategori;
+use App\Models\Ilce;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
-use App\Models\Ilan;
-use App\Models\IlanKategori;
-use App\Models\Il;
-use App\Models\Ilce;
 
 class BodrumArsaYazlikSeeder extends Seeder
 {
@@ -32,10 +32,10 @@ class BodrumArsaYazlikSeeder extends Seeder
     protected function seedArsa(int $ilId, ?int $ilceId, int $kategoriId): void
     {
         for ($i = 1; $i <= 10; $i++) {
-            $title = 'Bodrum ' . $i . ' Parsel Deniz Manzaralı Arsa';
+            $title = 'Bodrum '.$i.' Parsel Deniz Manzaralı Arsa';
             $ilan = Ilan::create([
                 'baslik' => $title,
-                'slug' => \Illuminate\Support\Str::slug($title) . '-' . $i,
+                'slug' => \Illuminate\Support\Str::slug($title).'-'.$i,
                 'aciklama' => 'Denize yakın konumda, imar durumu uygun, yatırım fırsatı.',
                 'fiyat' => 4500000 + ($i * 150000),
                 'para_birimi' => 'TRY',
@@ -56,10 +56,10 @@ class BodrumArsaYazlikSeeder extends Seeder
     protected function seedYazlik(int $ilId, ?int $ilceId, int $kategoriId): void
     {
         for ($i = 1; $i <= 10; $i++) {
-            $title = 'Bodrum ' . $i . ' Özel Havuzlu Yazlık Kiralık';
+            $title = 'Bodrum '.$i.' Özel Havuzlu Yazlık Kiralık';
             $ilan = Ilan::create([
                 'baslik' => $title,
-                'slug' => \Illuminate\Support\Str::slug($title) . '-' . $i,
+                'slug' => \Illuminate\Support\Str::slug($title).'-'.$i,
                 'aciklama' => 'Merkeze yakın, denize erişimli, ailelere uygun konaklama.',
                 'fiyat' => 12500 + ($i * 500),
                 'para_birimi' => 'TRY',
@@ -84,15 +84,15 @@ class BodrumArsaYazlikSeeder extends Seeder
 
     protected function attachPhoto(int $ilanId, string $source): void
     {
-        $publicPath = public_path('images/' . $source . '.png');
+        $publicPath = public_path('images/'.$source.'.png');
         if (! file_exists($publicPath)) {
             return;
         }
-        $target = 'seed/' . $source . '-' . $ilanId . '.png';
+        $target = 'seed/'.$source.'-'.$ilanId.'.png';
         Storage::disk('public')->put($target, file_get_contents($publicPath));
         DB::table('ilan_fotograflari')->insert([
             'ilan_id' => $ilanId,
-            'dosya_adi' => $source . '-' . $ilanId . '.png',
+            'dosya_adi' => $source.'-'.$ilanId.'.png',
             'dosya_yolu' => $target,
             'dosya_boyutu' => null,
             'mime_type' => 'image/png',

@@ -11,7 +11,7 @@ return [
     |
     */
 
-'api' => [
+    'api' => [
         'url' => env('CONTEXT7_API_URL', 'https://context7.com/api/v1'),
         // Defaultsız: .env zorunlu, repoda gizli anahtar tutulmaz
         'key' => env('CONTEXT7_API_KEY'),

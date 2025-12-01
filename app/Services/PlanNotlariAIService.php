@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Services\AIService;
 use Illuminate\Support\Facades\Log;
 
 class PlanNotlariAIService
@@ -24,7 +23,7 @@ class PlanNotlariAIService
 
             $response = $this->aiService->generate($prompt, [
                 'max_tokens' => 2000,
-                'temperature' => 0.7
+                'temperature' => 0.7,
             ]);
 
             return $this->parsePlanNotlariResponse($response);
@@ -32,12 +31,14 @@ class PlanNotlariAIService
         } catch (\Exception $e) {
             Log::error('Plan notları AI analizi hatası', [
                 'error' => $e->getMessage(),
-                'parsel' => $parselData
+                'parsel' => $parselData,
             ]);
 
             return $this->fallbackPlanNotlari($parselData);
         }
-    }    /**
+    }
+
+    /**
      * AI için plan notları prompt'u oluştur
      */
     private function buildPlanNotlariPrompt($parselData, $teknikBilgiler)
@@ -46,29 +47,29 @@ class PlanNotlariAIService
 
         // Parsel temel bilgileri
         $prompt .= "📋 PARSEL BİLGİLERİ:\n";
-        $prompt .= "- İl: " . ($parselData['il'] ?? 'Belirtilmemiş') . "\n";
-        $prompt .= "- İlçe: " . ($parselData['ilce'] ?? 'Belirtilmemiş') . "\n";
-        $prompt .= "- Mahalle: " . ($parselData['mahalle'] ?? 'Belirtilmemiş') . "\n";
-        $prompt .= "- Ada: " . ($parselData['ada'] ?? 'Belirtilmemiş') . "\n";
-        $prompt .= "- Parsel: " . ($parselData['parsel'] ?? 'Belirtilmemiş') . "\n";
-        $prompt .= "- Tapu Alanı: " . ($parselData['tapu_alani'] ?? 'Belirtilmemiş') . " m²\n";
-        $prompt .= "- Nitelik: " . ($parselData['nitelik'] ?? 'Belirtilmemiş') . "\n";
-        $prompt .= "- Mevkii: " . ($parselData['mevkii'] ?? 'Belirtilmemiş') . "\n\n";
+        $prompt .= '- İl: '.($parselData['il'] ?? 'Belirtilmemiş')."\n";
+        $prompt .= '- İlçe: '.($parselData['ilce'] ?? 'Belirtilmemiş')."\n";
+        $prompt .= '- Mahalle: '.($parselData['mahalle'] ?? 'Belirtilmemiş')."\n";
+        $prompt .= '- Ada: '.($parselData['ada'] ?? 'Belirtilmemiş')."\n";
+        $prompt .= '- Parsel: '.($parselData['parsel'] ?? 'Belirtilmemiş')."\n";
+        $prompt .= '- Tapu Alanı: '.($parselData['tapu_alani'] ?? 'Belirtilmemiş')." m²\n";
+        $prompt .= '- Nitelik: '.($parselData['nitelik'] ?? 'Belirtilmemiş')."\n";
+        $prompt .= '- Mevkii: '.($parselData['mevkii'] ?? 'Belirtilmemiş')."\n\n";
 
         // İmar bilgileri
         if (isset($parselData['imar_durumu'])) {
             $prompt .= "🏗️ İMAR BİLGİLERİ:\n";
-            $prompt .= "- TAKS: %" . ($parselData['imar_durumu']['taks'] ?? 'Belirtilmemiş') . "\n";
-            $prompt .= "- KAKS: " . ($parselData['imar_durumu']['kaks'] ?? 'Belirtilmemiş') . "\n";
-            $prompt .= "- Taban Alanı: " . ($parselData['imar_durumu']['taban_alani'] ?? 'Belirtilmemiş') . " m²\n";
-            $prompt .= "- İnşaat Alanı: " . ($parselData['imar_durumu']['insaat_alani'] ?? 'Belirtilmemiş') . " m²\n\n";
+            $prompt .= '- TAKS: %'.($parselData['imar_durumu']['taks'] ?? 'Belirtilmemiş')."\n";
+            $prompt .= '- KAKS: '.($parselData['imar_durumu']['kaks'] ?? 'Belirtilmemiş')."\n";
+            $prompt .= '- Taban Alanı: '.($parselData['imar_durumu']['taban_alani'] ?? 'Belirtilmemiş')." m²\n";
+            $prompt .= '- İnşaat Alanı: '.($parselData['imar_durumu']['insaat_alani'] ?? 'Belirtilmemiş')." m²\n\n";
         }
 
         // Teknik bilgiler
-        if (!empty($teknikBilgiler)) {
+        if (! empty($teknikBilgiler)) {
             $prompt .= "⚙️ TEKNİK BİLGİLER:\n";
             foreach ($teknikBilgiler as $key => $value) {
-                $prompt .= "- " . ucfirst(str_replace('_', ' ', $key)) . ": " . $value . "\n";
+                $prompt .= '- '.ucfirst(str_replace('_', ' ', $key)).': '.$value."\n";
             }
             $prompt .= "\n";
         }
@@ -94,7 +95,7 @@ class PlanNotlariAIService
         $prompt .= "    \"roi_tahmini\": \"Tahmin\"\n";
         $prompt .= "  },\n";
         $prompt .= "  \"sonuc_skoru\": 85\n";
-        $prompt .= "}";
+        $prompt .= '}';
 
         return $prompt;
     }
@@ -123,7 +124,7 @@ class PlanNotlariAIService
                 return [
                     'success' => true,
                     'ai_analiz' => $jsonData,
-                    'raw_response' => $content
+                    'raw_response' => $content,
                 ];
             }
         }
@@ -133,11 +134,13 @@ class PlanNotlariAIService
             'success' => true,
             'ai_analiz' => [
                 'plan_notlari' => $content,
-                'sonuc_skoru' => 70
+                'sonuc_skoru' => 70,
             ],
-            'raw_response' => $content
+            'raw_response' => $content,
         ];
-    }    /**
+    }
+
+    /**
      * AI hatası durumunda fallback plan notları
      */
     private function fallbackPlanNotlari($parselData)
@@ -166,9 +169,9 @@ class PlanNotlariAIService
                 'plan_notlari' => $planNotlari,
                 'yatirim_onerileri' => ['Uzman değerlendirmesi alın'],
                 'riskler' => ['Detaylı analiz gerekli'],
-                'sonuc_skoru' => 50
+                'sonuc_skoru' => 50,
             ],
-            'fallback' => true
+            'fallback' => true,
         ];
     }
 
@@ -180,7 +183,7 @@ class PlanNotlariAIService
         $ilanNotlari = [];
 
         // Ana başlık
-        $lokasyon = trim(($parselData['mahalle'] ?? '') . ', ' . ($parselData['ilce'] ?? '') . ', ' . ($parselData['il'] ?? ''));
+        $lokasyon = trim(($parselData['mahalle'] ?? '').', '.($parselData['ilce'] ?? '').', '.($parselData['il'] ?? ''));
         $ilanNotlari['baslik'] = "Yatırım Fırsatı - {$lokasyon} {$parselData['ada']}/{$parselData['parsel']}";
 
         // Kısa açıklama
@@ -188,10 +191,10 @@ class PlanNotlariAIService
 
         // Öne çıkan özellikler
         $ilanNotlari['ozellikler'] = [
-            "Alan: " . ($parselData['tapu_alani'] ?? 'Belirtilmemiş') . " m²",
-            "KAKS: " . ($parselData['imar_durumu']['kaks'] ?? 'Belirtilmemiş'),
-            "TAKS: %" . ($parselData['imar_durumu']['taks'] ?? 'Belirtilmemiş'),
-            "İnşaat Alanı: " . ($parselData['imar_durumu']['insaat_alani'] ?? 'Belirtilmemiş') . " m²"
+            'Alan: '.($parselData['tapu_alani'] ?? 'Belirtilmemiş').' m²',
+            'KAKS: '.($parselData['imar_durumu']['kaks'] ?? 'Belirtilmemiş'),
+            'TAKS: %'.($parselData['imar_durumu']['taks'] ?? 'Belirtilmemiş'),
+            'İnşaat Alanı: '.($parselData['imar_durumu']['insaat_alani'] ?? 'Belirtilmemiş').' m²',
         ];
 
         // Yatırım puanı

@@ -2,16 +2,16 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Schema;
 use App\Models\IlanKategoriYayinTipi;
 use App\Models\KategoriYayinTipiFieldDependency;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Schema;
 
 class YazlikFieldDependenciesSeeder extends Seeder
 {
     public function run(): void
     {
-        if (!Schema::hasTable('ilan_kategori_yayin_tipleri') || !Schema::hasTable('kategori_yayin_tipi_field_dependencies')) {
+        if (! Schema::hasTable('ilan_kategori_yayin_tipleri') || ! Schema::hasTable('kategori_yayin_tipi_field_dependencies')) {
             return;
         }
 
@@ -30,7 +30,9 @@ class YazlikFieldDependenciesSeeder extends Seeder
             ->get()
             ->each(function (IlanKategoriYayinTipi $pt) use ($base) {
                 $kategoriSlug = $pt->kategori?->slug;
-                if (!$kategoriSlug) return;
+                if (! $kategoriSlug) {
+                    return;
+                }
 
                 foreach ($base as $f) {
                     KategoriYayinTipiFieldDependency::updateOrCreate(

@@ -14,6 +14,7 @@ class IlanService
     public function update(Ilan $ilan, array $data): Ilan
     {
         $ilan->update($data);
+
         return $ilan;
     }
 

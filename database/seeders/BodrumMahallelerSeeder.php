@@ -18,8 +18,9 @@ class BodrumMahallelerSeeder extends Seeder
         // Muğla ilini bul
         $mugla = Il::where('il_adi', 'Muğla')->first();
 
-        if (!$mugla) {
+        if (! $mugla) {
             $this->command->error('❌ Muğla ili bulunamadı!');
+
             return;
         }
 
@@ -92,7 +93,7 @@ class BodrumMahallelerSeeder extends Seeder
             ['mahalle_adi' => 'Çiftlik', 'nufus' => 0],
         ];
 
-        $this->command->info("📍 Bodrum mahalleleri ekleniyor...");
+        $this->command->info('📍 Bodrum mahalleleri ekleniyor...');
 
         $eklenenSayisi = 0;
         $mevcutSayisi = 0;
@@ -101,11 +102,11 @@ class BodrumMahallelerSeeder extends Seeder
             $mahalle = Mahalle::firstOrCreate(
                 [
                     'ilce_id' => $bodrum->id,
-                    'mahalle_adi' => $mahalleData['mahalle_adi']
+                    'mahalle_adi' => $mahalleData['mahalle_adi'],
                 ],
                 [
                     'mahalle_kodu' => null,
-                    'posta_kodu' => null
+                    'posta_kodu' => null,
                 ]
             );
 
@@ -118,24 +119,24 @@ class BodrumMahallelerSeeder extends Seeder
         }
 
         $this->command->newLine();
-        $this->command->info("📊 İşlem Özeti:");
+        $this->command->info('📊 İşlem Özeti:');
         $this->command->table(
             ['Durum', 'Sayı'],
             [
                 ['Yeni Eklenen', $eklenenSayisi],
                 ['Zaten Mevcut', $mevcutSayisi],
-                ['Toplam', count($mahalleler)]
+                ['Toplam', count($mahalleler)],
             ]
         );
 
         $this->command->newLine();
-        $this->command->info("🎉 Bodrum mahalleleri başarıyla yüklendi!");
+        $this->command->info('🎉 Bodrum mahalleleri başarıyla yüklendi!');
         $this->command->line("   📍 İlçe: Bodrum (ID: {$bodrum->id})");
-        $this->command->line("   🏘️  Mahalle: " . count($mahalleler) . " adet");
+        $this->command->line('   🏘️  Mahalle: '.count($mahalleler).' adet');
 
         // Test için örnek mahalle göster
         $this->command->newLine();
-        $this->command->info("🧪 Test Mahallesi:");
+        $this->command->info('🧪 Test Mahallesi:');
         $dirmil = Mahalle::where('ilce_id', $bodrum->id)
             ->where('mahalle_adi', 'Dirmil Mahallesi')
             ->first();

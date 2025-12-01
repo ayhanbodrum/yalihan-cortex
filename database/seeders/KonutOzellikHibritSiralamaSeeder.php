@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -24,7 +23,7 @@ class KonutOzellikHibritSiralamaSeeder extends Seeder
                 'onem_seviyesi' => 'cok_onemli',
                 'siralama' => 1,
                 'aktif' => true,
-                'aciklama' => 'TV ve uydu sistemi özelliği'
+                'aciklama' => 'TV ve uydu sistemi özelliği',
             ],
             [
                 'ozellik_adi' => 'Özel Havuzlu',
@@ -36,7 +35,7 @@ class KonutOzellikHibritSiralamaSeeder extends Seeder
                 'onem_seviyesi' => 'cok_onemli',
                 'siralama' => 2,
                 'aktif' => true,
-                'aciklama' => 'Özel havuz özelliği'
+                'aciklama' => 'Özel havuz özelliği',
             ],
             [
                 'ozellik_adi' => 'Ebeveyn Banyosu',
@@ -48,7 +47,7 @@ class KonutOzellikHibritSiralamaSeeder extends Seeder
                 'onem_seviyesi' => 'cok_onemli',
                 'siralama' => 3,
                 'aktif' => true,
-                'aciklama' => 'Ebeveyn banyosu özelliği'
+                'aciklama' => 'Ebeveyn banyosu özelliği',
             ],
             [
                 'ozellik_adi' => 'Internet Bağlantısı',
@@ -60,7 +59,7 @@ class KonutOzellikHibritSiralamaSeeder extends Seeder
                 'onem_seviyesi' => 'cok_onemli',
                 'siralama' => 4,
                 'aktif' => true,
-                'aciklama' => 'Internet bağlantısı özelliği'
+                'aciklama' => 'Internet bağlantısı özelliği',
             ],
             [
                 'ozellik_adi' => 'Bebek Yatağı',
@@ -72,7 +71,7 @@ class KonutOzellikHibritSiralamaSeeder extends Seeder
                 'onem_seviyesi' => 'onemli',
                 'siralama' => 5,
                 'aktif' => true,
-                'aciklama' => 'Bebek yatağı özelliği'
+                'aciklama' => 'Bebek yatağı özelliği',
             ],
             [
                 'ozellik_adi' => 'Jakuzi',
@@ -84,7 +83,7 @@ class KonutOzellikHibritSiralamaSeeder extends Seeder
                 'onem_seviyesi' => 'onemli',
                 'siralama' => 6,
                 'aktif' => true,
-                'aciklama' => 'Jakuzi özelliği'
+                'aciklama' => 'Jakuzi özelliği',
             ],
             [
                 'ozellik_adi' => 'Mama Sandalyesi',
@@ -96,7 +95,7 @@ class KonutOzellikHibritSiralamaSeeder extends Seeder
                 'onem_seviyesi' => 'onemli',
                 'siralama' => 7,
                 'aktif' => true,
-                'aciklama' => 'Mama sandalyesi özelliği'
+                'aciklama' => 'Mama sandalyesi özelliği',
             ],
             [
                 'ozellik_adi' => 'Çocuk Havuzu',
@@ -108,7 +107,7 @@ class KonutOzellikHibritSiralamaSeeder extends Seeder
                 'onem_seviyesi' => 'onemli',
                 'siralama' => 8,
                 'aktif' => true,
-                'aciklama' => 'Çocuk havuzu özelliği'
+                'aciklama' => 'Çocuk havuzu özelliği',
             ],
             [
                 'ozellik_adi' => 'Korunaklı havuz',
@@ -120,7 +119,7 @@ class KonutOzellikHibritSiralamaSeeder extends Seeder
                 'onem_seviyesi' => 'onemli',
                 'siralama' => 9,
                 'aktif' => true,
-                'aciklama' => 'Korunaklı havuz özelliği'
+                'aciklama' => 'Korunaklı havuz özelliği',
             ],
             [
                 'ozellik_adi' => 'Isıtmalı Havuz',
@@ -132,7 +131,7 @@ class KonutOzellikHibritSiralamaSeeder extends Seeder
                 'onem_seviyesi' => 'onemli',
                 'siralama' => 10,
                 'aktif' => true,
-                'aciklama' => 'Isıtmalı havuz özelliği'
+                'aciklama' => 'Isıtmalı havuz özelliği',
             ],
             [
                 'ozellik_adi' => 'Sauna',
@@ -144,7 +143,7 @@ class KonutOzellikHibritSiralamaSeeder extends Seeder
                 'onem_seviyesi' => 'onemli',
                 'siralama' => 11,
                 'aktif' => true,
-                'aciklama' => 'Sauna özelliği'
+                'aciklama' => 'Sauna özelliği',
             ],
             [
                 'ozellik_adi' => 'Kapalı Havuz',
@@ -156,7 +155,7 @@ class KonutOzellikHibritSiralamaSeeder extends Seeder
                 'onem_seviyesi' => 'onemli',
                 'siralama' => 12,
                 'aktif' => true,
-                'aciklama' => 'Kapalı havuz özelliği'
+                'aciklama' => 'Kapalı havuz özelliği',
             ],
             [
                 'ozellik_adi' => 'Şömine',
@@ -168,7 +167,7 @@ class KonutOzellikHibritSiralamaSeeder extends Seeder
                 'onem_seviyesi' => 'onemli',
                 'siralama' => 13,
                 'aktif' => true,
-                'aciklama' => 'Şömine özelliği'
+                'aciklama' => 'Şömine özelliği',
             ],
             [
                 'ozellik_adi' => 'Hamam',
@@ -180,7 +179,7 @@ class KonutOzellikHibritSiralamaSeeder extends Seeder
                 'onem_seviyesi' => 'onemli',
                 'siralama' => 14,
                 'aktif' => true,
-                'aciklama' => 'Hamam özelliği'
+                'aciklama' => 'Hamam özelliği',
             ],
             [
                 'ozellik_adi' => 'Masa Tenisi',
@@ -192,7 +191,7 @@ class KonutOzellikHibritSiralamaSeeder extends Seeder
                 'onem_seviyesi' => 'orta_onemli',
                 'siralama' => 15,
                 'aktif' => true,
-                'aciklama' => 'Masa tenisi özelliği'
+                'aciklama' => 'Masa tenisi özelliği',
             ],
             [
                 'ozellik_adi' => 'Oyun Alanı',
@@ -204,7 +203,7 @@ class KonutOzellikHibritSiralamaSeeder extends Seeder
                 'onem_seviyesi' => 'orta_onemli',
                 'siralama' => 16,
                 'aktif' => true,
-                'aciklama' => 'Oyun alanı özelliği'
+                'aciklama' => 'Oyun alanı özelliği',
             ],
             [
                 'ozellik_adi' => 'Langırt',
@@ -216,7 +215,7 @@ class KonutOzellikHibritSiralamaSeeder extends Seeder
                 'onem_seviyesi' => 'orta_onemli',
                 'siralama' => 17,
                 'aktif' => true,
-                'aciklama' => 'Langırt özelliği'
+                'aciklama' => 'Langırt özelliği',
             ],
             [
                 'ozellik_adi' => 'Yerden Isıtma',
@@ -228,7 +227,7 @@ class KonutOzellikHibritSiralamaSeeder extends Seeder
                 'onem_seviyesi' => 'orta_onemli',
                 'siralama' => 18,
                 'aktif' => true,
-                'aciklama' => 'Yerden ısıtma özelliği'
+                'aciklama' => 'Yerden ısıtma özelliği',
             ],
             [
                 'ozellik_adi' => 'Site İçınde',
@@ -240,7 +239,7 @@ class KonutOzellikHibritSiralamaSeeder extends Seeder
                 'onem_seviyesi' => 'orta_onemli',
                 'siralama' => 19,
                 'aktif' => true,
-                'aciklama' => 'Site içinde özelliği'
+                'aciklama' => 'Site içinde özelliği',
             ],
             [
                 'ozellik_adi' => 'Güvenlik',
@@ -252,7 +251,7 @@ class KonutOzellikHibritSiralamaSeeder extends Seeder
                 'onem_seviyesi' => 'orta_onemli',
                 'siralama' => 20,
                 'aktif' => true,
-                'aciklama' => 'Güvenlik özelliği'
+                'aciklama' => 'Güvenlik özelliği',
             ],
             [
                 'ozellik_adi' => 'Jeneratör',
@@ -264,7 +263,7 @@ class KonutOzellikHibritSiralamaSeeder extends Seeder
                 'onem_seviyesi' => 'dusuk_onemli',
                 'siralama' => 21,
                 'aktif' => true,
-                'aciklama' => 'Jeneratör özelliği'
+                'aciklama' => 'Jeneratör özelliği',
             ],
             [
                 'ozellik_adi' => 'Bilardo',
@@ -276,7 +275,7 @@ class KonutOzellikHibritSiralamaSeeder extends Seeder
                 'onem_seviyesi' => 'dusuk_onemli',
                 'siralama' => 22,
                 'aktif' => true,
-                'aciklama' => 'Bilardo özelliği'
+                'aciklama' => 'Bilardo özelliği',
             ],
             [
                 'ozellik_adi' => 'Denize Sıfır',
@@ -288,8 +287,8 @@ class KonutOzellikHibritSiralamaSeeder extends Seeder
                 'onem_seviyesi' => 'dusuk_onemli',
                 'siralama' => 23,
                 'aktif' => true,
-                'aciklama' => 'Denize sıfır özelliği'
-            ]
+                'aciklama' => 'Denize sıfır özelliği',
+            ],
         ];
 
         foreach ($konutOzellikleri as $ozellik) {
@@ -297,7 +296,7 @@ class KonutOzellikHibritSiralamaSeeder extends Seeder
                 ['ozellik_slug' => $ozellik['ozellik_slug']],
                 array_merge($ozellik, [
                     'created_at' => now(),
-                    'updated_at' => now()
+                    'updated_at' => now(),
                 ])
             );
         }

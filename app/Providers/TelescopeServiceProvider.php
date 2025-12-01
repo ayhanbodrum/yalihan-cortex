@@ -81,7 +81,7 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
             }
 
             // ✅ Context7: Production'da sadece authenticated kullanıcılar
-            if (!$user) {
+            if (! $user) {
                 return false;
             }
 

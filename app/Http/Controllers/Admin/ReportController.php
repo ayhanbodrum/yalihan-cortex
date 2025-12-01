@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Admin\AdminController;
 use App\Models\Ilan;
 use App\Models\IlanViewDaily;
 use Illuminate\Http\Request;
@@ -12,7 +11,11 @@ class ReportController extends AdminController
     public function visits(Request $request)
     {
         $days = (int) ($request->get('days', 7));
-        if ($days < 1) $days = 7; if ($days > 30) $days = 30;
+        if ($days < 1) {
+            $days = 7;
+        } if ($days > 30) {
+            $days = 30;
+        }
         $start = now()->subDays($days - 1)->startOfDay()->toDateString();
 
         $daily = IlanViewDaily::where('tarih', '>=', $start)

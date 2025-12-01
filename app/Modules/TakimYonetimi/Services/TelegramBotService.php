@@ -6,6 +6,8 @@ use App\Models\User;
 use App\Modules\TakimYonetimi\Models\Gorev;
 use App\Modules\TakimYonetimi\Models\GorevTakip;
 use App\Modules\TakimYonetimi\Models\TakimUyesi;
+use App\Services\AudioTranscriptionService;
+use App\Services\VoiceCommandProcessor;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -90,7 +92,7 @@ class TelegramBotService
             // Erişim kontrolü - Sadece Yalıhan Emlak ekibi
             $accessCheck = $this->checkAccess($chatId);
             if (! $accessCheck['granted']) {
-                $this->sendMessage($chatId, "🚫 *Erişim Reddedildi*\n\n".$accessCheck['reason']);
+                $this->sendMessage($chatId, "🚫 *Erişim Reddedildi*\n\n" . $accessCheck['reason']);
                 Log::warning('Unauthorized Telegram access attempt', [
                     'chat_id' => $chatId,
                     'reason' => $accessCheck['reason'],
@@ -100,15 +102,97 @@ class TelegramBotService
                 return;
             }
 
+            // Voice mesaj kontrolü
+            if (isset($message['voice'])) {
+                $this->processVoiceMessage($chatId, $message['voice'], $from);
+                return;
+            }
+
             // Erişim onaylandı, mesajı işle
             if (str_starts_with($text, '/')) {
                 $this->processCommand($chatId, $text, $from);
             } else {
                 $this->processMessage($chatId, $text, $from);
             }
-
         } catch (\Exception $e) {
-            Log::error('Telegram webhook error: '.$e->getMessage());
+            Log::error('Telegram webhook error: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Voice mesaj işle (Context7: C7-VOICE-TO-CRM-2025-12-01)
+     */
+    protected function processVoiceMessage(int $chatId, array $voice, array $from): void
+    {
+        try {
+            $this->sendMessage($chatId, "🎤 Sesli not alınıyor...");
+
+            // Kullanıcıyı bul
+            $user = $this->findUserByTelegram($from);
+            if (!$user) {
+                $this->sendMessage($chatId, "❌ Kullanıcı bulunamadı. Lütfen /start komutu ile başlayın.");
+                return;
+            }
+
+            $audioService = new AudioTranscriptionService();
+            $commandProcessor = new VoiceCommandProcessor();
+
+            // 1. Voice dosyasını indir
+            $fileId = $voice['file_id'] ?? null;
+            if (!$fileId) {
+                $this->sendMessage($chatId, "❌ Ses dosyası bulunamadı.");
+                return;
+            }
+
+            $localFilePath = null;
+            try {
+                $localFilePath = $audioService->downloadTelegramVoice($fileId, $this->botToken);
+            } catch (\Exception $e) {
+                Log::error('Voice download error', ['error' => $e->getMessage()]);
+                $this->sendMessage($chatId, "❌ Ses dosyası indirilemedi: " . $e->getMessage());
+                return;
+            }
+
+            // 2. Transkript et
+            $transcript = null;
+            try {
+                $transcript = $audioService->transcribe($localFilePath);
+            } catch (\Exception $e) {
+                Log::error('Voice transcription error', ['error' => $e->getMessage()]);
+                $this->sendMessage($chatId, "❌ Ses yazıya çevrilemedi: " . $e->getMessage());
+                $audioService->cleanup($localFilePath);
+                return;
+            } finally {
+                // Geçici dosyayı temizle
+                if ($localFilePath) {
+                    $audioService->cleanup($localFilePath);
+                }
+            }
+
+            if (empty($transcript)) {
+                $this->sendMessage($chatId, "❌ Ses dosyasından metin çıkarılamadı.");
+                return;
+            }
+
+            // 3. Komutu analiz et
+            $commandData = $commandProcessor->process($transcript, $user->id);
+
+            // 4. CRM aksiyonunu uygula
+            $result = $commandProcessor->executeAction($commandData, $user->id);
+
+            if ($result['success']) {
+                $actionType = $result['action_type'] ?? 'gorusme_notu';
+                $actionName = $actionType === 'gorev' ? 'Görev' : 'Görüşme Notu';
+                $this->sendMessage($chatId, "✅ {$actionName} oluşturuldu!\n\n📝 Transkript: " . substr($transcript, 0, 200));
+            } else {
+                $this->sendMessage($chatId, "❌ İşlem başarısız: " . ($result['message'] ?? 'Bilinmeyen hata'));
+            }
+        } catch (\Exception $e) {
+            Log::error('Voice message processing error', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+            $this->sendMessage($chatId, "❌ Sesli not işlenirken hata oluştu: " . $e->getMessage());
         }
     }
 
@@ -264,7 +348,7 @@ class TelegramBotService
             $deadline = $gorev->deadline ? $gorev->deadline->format('d.m.Y H:i') : 'Belirtilmemiş';
 
             $message .= "{$priority} *{$gorev->baslik}*\n";
-            $message .= "{$status} Durum: ".ucfirst(str_replace('_', ' ', $gorev->status))."\n";
+            $message .= "{$status} Durum: " . ucfirst(str_replace('_', ' ', $gorev->status)) . "\n";
             $message .= "⏰ Deadline: {$deadline}\n";
             $message .= "🆔 ID: `{$gorev->id}`\n\n";
         }
@@ -306,7 +390,7 @@ class TelegramBotService
 
         $message = "👤 *Kullanıcı Durumu:*\n\n";
         $message .= "👤 Ad: {$user->name}\n";
-        $message .= '🎯 Rol: '.ucfirst(str_replace('_', ' ', $takimUyesi->rol))."\n";
+        $message .= '🎯 Rol: ' . ucfirst(str_replace('_', ' ', $takimUyesi->rol)) . "\n";
         $message .= "📊 Performans: {$takimUyesi->performans_skoru}/100\n";
         $message .= "📋 Aktif Görev: {$statusGorevler}\n";
         $message .= "✅ Tamamlanan: {$tamamlananGorevler}\n";
@@ -341,11 +425,11 @@ class TelegramBotService
 
         $message = "📊 *Performans Raporu:*\n\n";
         $message .= "👤 {$user->name}\n";
-        $message .= '📅 '.now()->format('F Y')."\n\n";
+        $message .= '📅 ' . now()->format('F Y') . "\n\n";
         $message .= "📋 Bu Ay Tamamlanan: {$buAyGorevler}\n";
         $message .= "🏆 Genel Başarı: {$takimUyesi->basari_orani}%\n";
         $message .= "⭐ Performans Skoru: {$takimUyesi->performans_skoru}/100\n";
-        $message .= '⏱️ Ortalama Süre: '.($takimUyesi->ortalama_sure_formatli ?? 'N/A')."\n";
+        $message .= '⏱️ Ortalama Süre: ' . ($takimUyesi->ortalama_sure_formatli ?? 'N/A') . "\n";
 
         $this->sendMessage($chatId, $message);
     }
@@ -404,7 +488,7 @@ class TelegramBotService
 
             $message .= "{$priority} *{$gorev->baslik}*\n";
             $message .= "👤 Danışman: {$danisman}\n";
-            $message .= "{$status} Durum: ".ucfirst(str_replace('_', ' ', $gorev->status))."\n";
+            $message .= "{$status} Durum: " . ucfirst(str_replace('_', ' ', $gorev->status)) . "\n";
             $message .= "⏰ Deadline: {$deadline}\n";
             $message .= "🆔 ID: `{$gorev->id}`\n\n";
         }
@@ -433,7 +517,7 @@ class TelegramBotService
         $message .= "📋 Aktif Görev: {$statusGorev}\n";
         $message .= "✅ Tamamlanan: {$tamamlananGorev}\n";
         $message .= "⚠️ Geciken: {$gecikenGorev}\n";
-        $message .= '📊 Başarı Oranı: '.($tamamlananGorev > 0 ? round(($tamamlananGorev / ($statusGorev + $tamamlananGorev)) * 100) : 0)."%\n";
+        $message .= '📊 Başarı Oranı: ' . ($tamamlananGorev > 0 ? round(($tamamlananGorev / ($statusGorev + $tamamlananGorev)) * 100) : 0) . "%\n";
 
         $this->sendMessage($chatId, $message);
     }
@@ -537,13 +621,12 @@ class TelegramBotService
                 'notlar' => 'Telegram bot üzerinden başlatıldı',
             ]);
 
-            $this->sendMessage($chatId, "✅ Görev başarıyla başlatıldı!\n\n📋 *{$gorev->baslik}*\n⏰ Başlangıç: ".now()->format('d.m.Y H:i'));
+            $this->sendMessage($chatId, "✅ Görev başarıyla başlatıldı!\n\n📋 *{$gorev->baslik}*\n⏰ Başlangıç: " . now()->format('d.m.Y H:i'));
 
             // Admin'lere bildirim gönder
-            $this->notifyAdmins("🚀 Görev Başlatıldı\n\n📋 {$gorev->baslik}\n👤 {$user->name}\n⏰ ".now()->format('d.m.Y H:i'));
-
+            $this->notifyAdmins("🚀 Görev Başlatıldı\n\n📋 {$gorev->baslik}\n👤 {$user->name}\n⏰ " . now()->format('d.m.Y H:i'));
         } catch (\Exception $e) {
-            Log::error('Görev başlatma hatası: '.$e->getMessage());
+            Log::error('Görev başlatma hatası: ' . $e->getMessage());
             $this->sendMessage($chatId, '❌ Görev başlatılırken hata oluştu.');
         }
     }
@@ -572,17 +655,16 @@ class TelegramBotService
                 $statusTakip->update([
                     'status' => 'tamamlandi',
                     'bitis_zamani' => now(),
-                    'notlar' => ($statusTakip->notlar ? $statusTakip->notlar."\n" : '').'Telegram bot üzerinden tamamlandı',
+                    'notlar' => ($statusTakip->notlar ? $statusTakip->notlar . "\n" : '') . 'Telegram bot üzerinden tamamlandı',
                 ]);
             }
 
-            $this->sendMessage($chatId, "🎉 Görev başarıyla tamamlandı!\n\n📋 *{$gorev->baslik}*\n⏰ Tamamlanma: ".now()->format('d.m.Y H:i'));
+            $this->sendMessage($chatId, "🎉 Görev başarıyla tamamlandı!\n\n📋 *{$gorev->baslik}*\n⏰ Tamamlanma: " . now()->format('d.m.Y H:i'));
 
             // Admin'lere bildirim gönder
-            $this->notifyAdmins("🎉 Görev Tamamlandı\n\n📋 {$gorev->baslik}\n👤 {$user->name}\n⏰ ".now()->format('d.m.Y H:i'));
-
+            $this->notifyAdmins("🎉 Görev Tamamlandı\n\n📋 {$gorev->baslik}\n👤 {$user->name}\n⏰ " . now()->format('d.m.Y H:i'));
         } catch (\Exception $e) {
-            Log::error('Görev tamamlama hatası: '.$e->getMessage());
+            Log::error('Görev tamamlama hatası: ' . $e->getMessage());
             $this->sendMessage($chatId, '❌ Görev tamamlanırken hata oluştu.');
         }
     }
@@ -611,17 +693,16 @@ class TelegramBotService
                 $statusTakip->update([
                     'status' => 'durduruldu',
                     'bitis_zamani' => now(),
-                    'notlar' => ($statusTakip->notlar ? $statusTakip->notlar."\n" : '').'Telegram bot üzerinden durduruldu',
+                    'notlar' => ($statusTakip->notlar ? $statusTakip->notlar . "\n" : '') . 'Telegram bot üzerinden durduruldu',
                 ]);
             }
 
-            $this->sendMessage($chatId, "⏸️ Görev durduruldu!\n\n📋 *{$gorev->baslik}*\n⏰ Durdurulma: ".now()->format('d.m.Y H:i'));
+            $this->sendMessage($chatId, "⏸️ Görev durduruldu!\n\n📋 *{$gorev->baslik}*\n⏰ Durdurulma: " . now()->format('d.m.Y H:i'));
 
             // Admin'lere bildirim gönder
-            $this->notifyAdmins("⏸️ Görev Durduruldu\n\n📋 {$gorev->baslik}\n👤 {$user->name}\n⏰ ".now()->format('d.m.Y H:i'));
-
+            $this->notifyAdmins("⏸️ Görev Durduruldu\n\n📋 {$gorev->baslik}\n👤 {$user->name}\n⏰ " . now()->format('d.m.Y H:i'));
         } catch (\Exception $e) {
-            Log::error('Görev durdurma hatası: '.$e->getMessage());
+            Log::error('Görev durdurma hatası: ' . $e->getMessage());
             $this->sendMessage($chatId, '❌ Görev durdurulurken hata oluştu.');
         }
     }
@@ -660,14 +741,13 @@ class TelegramBotService
 
             if ($statusTakip) {
                 $statusTakip->update([
-                    'notlar' => ($statusTakip->notlar ? $statusTakip->notlar."\n" : '').'📝 '.now()->format('d.m.Y H:i').": {$note}",
+                    'notlar' => ($statusTakip->notlar ? $statusTakip->notlar . "\n" : '') . '📝 ' . now()->format('d.m.Y H:i') . ": {$note}",
                 ]);
             }
 
             $this->sendMessage($chatId, "📝 Not başarıyla eklendi!\n\n📋 *{$gorev->baslik}*\n💬 Not: {$note}");
-
         } catch (\Exception $e) {
-            Log::error('Not ekleme hatası: '.$e->getMessage());
+            Log::error('Not ekleme hatası: ' . $e->getMessage());
             $this->sendMessage($chatId, '❌ Not eklenirken hata oluştu.');
         }
     }
@@ -700,9 +780,8 @@ class TelegramBotService
                 'chat_id' => $chatId,
                 'user_name' => $user->name,
             ]);
-
         } catch (\Exception $e) {
-            Log::error('Chat ID kaydetme hatası: '.$e->getMessage(), [
+            Log::error('Chat ID kaydetme hatası: ' . $e->getMessage(), [
                 'chat_id' => $chatId,
             ]);
         }
@@ -819,7 +898,7 @@ class TelegramBotService
             try {
                 $this->sendMessage($chatId, $message);
             } catch (\Exception $e) {
-                Log::error("Admin bildirimi gönderilemedi (chat_id: {$chatId}): ".$e->getMessage());
+                Log::error("Admin bildirimi gönderilemedi (chat_id: {$chatId}): " . $e->getMessage());
             }
         }
     }
@@ -852,9 +931,60 @@ class TelegramBotService
 
                 return false;
             }
-
         } catch (\Exception $e) {
-            Log::error('Telegram mesaj gönderme exception: '.$e->getMessage());
+            Log::error('Telegram mesaj gönderme exception: ' . $e->getMessage());
+
+            return false;
+        }
+    }
+
+    /**
+     * Chat action gönder (typing, upload_voice, find_location, vb.)
+     *
+     * Context7 Standard: C7-TELEGRAM-TYPING-2025-12-01
+     *
+     * @param int $chatId
+     * @param string $action typing|upload_voice|upload_photo|find_location|record_video|upload_video|record_audio|upload_audio|upload_document|find_location|record_voice|upload_voice
+     * @return bool
+     */
+    public function sendChatAction(int $chatId, string $action = 'typing'): bool
+    {
+        try {
+            $validActions = [
+                'typing',
+                'upload_photo',
+                'record_video',
+                'upload_video',
+                'record_audio',
+                'upload_audio',
+                'upload_document',
+                'find_location',
+                'record_voice',
+                'upload_voice',
+            ];
+
+            if (!in_array($action, $validActions)) {
+                $action = 'typing'; // Varsayılan
+            }
+
+            $response = Http::post("{$this->apiBaseUrl}/sendChatAction", [
+                'chat_id' => $chatId,
+                'action' => $action,
+            ]);
+
+            if ($response->successful()) {
+                return true;
+            } else {
+                Log::warning('Telegram chat action gönderme hatası', [
+                    'chat_id' => $chatId,
+                    'action' => $action,
+                    'response' => $response->body(),
+                ]);
+
+                return false;
+            }
+        } catch (\Exception $e) {
+            Log::error('Telegram chat action exception: ' . $e->getMessage());
 
             return false;
         }
@@ -874,7 +1004,7 @@ class TelegramBotService
 
             return [];
         } catch (\Exception $e) {
-            Log::error('Bot bilgisi alınamadı: '.$e->getMessage());
+            Log::error('Bot bilgisi alınamadı: ' . $e->getMessage());
 
             return [];
         }
@@ -892,7 +1022,7 @@ class TelegramBotService
 
             return $response->successful();
         } catch (\Exception $e) {
-            Log::error('Webhook ayarlanamadı: '.$e->getMessage());
+            Log::error('Webhook ayarlanamadı: ' . $e->getMessage());
 
             return false;
         }
@@ -912,7 +1042,7 @@ class TelegramBotService
 
             return [];
         } catch (\Exception $e) {
-            Log::error('Webhook bilgisi alınamadı: '.$e->getMessage());
+            Log::error('Webhook bilgisi alınamadı: ' . $e->getMessage());
 
             return [];
         }
@@ -985,11 +1115,11 @@ class TelegramBotService
             } else {
                 return [
                     'success' => false,
-                    'message' => 'Mesaj gönderilemedi: '.$response->body(),
+                    'message' => 'Mesaj gönderilemedi: ' . $response->body(),
                 ];
             }
         } catch (\Exception $e) {
-            Log::error('Test mesajı gönderme hatası: '.$e->getMessage());
+            Log::error('Test mesajı gönderme hatası: ' . $e->getMessage());
 
             return [
                 'success' => false,
@@ -1033,7 +1163,7 @@ class TelegramBotService
             }
 
             foreach ($updates as $key => $value) {
-                if (strpos($envContent, $key.'=') !== false) {
+                if (strpos($envContent, $key . '=') !== false) {
                     $envContent = preg_replace("/^{$key}=.*/m", "{$key}={$value}", $envContent);
                 } else {
                     $envContent .= "\n{$key}={$value}";
@@ -1050,7 +1180,7 @@ class TelegramBotService
                 'message' => 'Ayarlar güncellendi',
             ];
         } catch (\Exception $e) {
-            Log::error('Telegram ayarları güncelleme hatası: '.$e->getMessage());
+            Log::error('Telegram ayarları güncelleme hatası: ' . $e->getMessage());
 
             return [
                 'success' => false,
@@ -1092,7 +1222,7 @@ class TelegramBotService
                 ];
             }
         } catch (\Exception $e) {
-            Log::error('Bot statusu alma hatası: '.$e->getMessage());
+            Log::error('Bot statusu alma hatası: ' . $e->getMessage());
 
             return [
                 'connected' => false,
@@ -1115,7 +1245,7 @@ class TelegramBotService
             if (! $response->successful()) {
                 return [
                     'success' => false,
-                    'message' => 'Bot bağlantısı başarısız: '.$response->body(),
+                    'message' => 'Bot bağlantısı başarısız: ' . $response->body(),
                 ];
             }
 
@@ -1126,14 +1256,14 @@ class TelegramBotService
             if ($chatId) {
                 $testResponse = Http::post("{$this->apiBaseUrl}/sendMessage", [
                     'chat_id' => $chatId,
-                    'text' => "🤖 Bot Testi Başarılı!\n\nBot: @{$botInfo['result']['username']}\nTarih: ".now()->format('Y-m-d H:i:s'),
+                    'text' => "🤖 Bot Testi Başarılı!\n\nBot: @{$botInfo['result']['username']}\nTarih: " . now()->format('Y-m-d H:i:s'),
                     'parse_mode' => 'HTML',
                 ]);
 
                 if (! $testResponse->successful()) {
                     return [
                         'success' => false,
-                        'message' => 'Test mesajı gönderilemedi: '.$testResponse->body(),
+                        'message' => 'Test mesajı gönderilemedi: ' . $testResponse->body(),
                     ];
                 }
             }
@@ -1144,11 +1274,11 @@ class TelegramBotService
                 'bot_info' => $botInfo['result'],
             ];
         } catch (\Exception $e) {
-            Log::error('Bot testi hatası: '.$e->getMessage());
+            Log::error('Bot testi hatası: ' . $e->getMessage());
 
             return [
                 'success' => false,
-                'message' => 'Bot testi sırasında hata: '.$e->getMessage(),
+                'message' => 'Bot testi sırasında hata: ' . $e->getMessage(),
             ];
         }
     }

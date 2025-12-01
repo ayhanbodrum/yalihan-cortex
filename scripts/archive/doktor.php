@@ -1,25 +1,26 @@
 <?php
+
 // scripts/doktor.php
 // Tüm Context7 migration, forbidden scan, compliance, auto-fix ve şema export işlemlerini tek noktadan yürüten "doktor" scripti.
 // Kullanım: php scripts/doktor.php [temizle|fix|scan|export|check|full]
 
-
-$usage = "Kullanım: php scripts/doktor.php [temizle|fix|scan|export|check|full]\n\n" .
-    "temizle: Migration dosyalarını Context7/Laravel uyumlu hale getirir\n" .
-    "fix: Kodda Context7 kural ihlallerini otomatik düzeltir\n" .
-    "scan: Yasak/legacy alanları ve forbidden pattern'leri tarar (tüm varyasyonlar, blade/seed dahil)\n" .
-    "export: Tüm önemli tabloların şemasını markdown olarak export eder\n" .
-    "check: Context7 compliance ve önleyici kontrolleri çalıştırır\n" .
+$usage = "Kullanım: php scripts/doktor.php [temizle|fix|scan|export|check|full]\n\n".
+    "temizle: Migration dosyalarını Context7/Laravel uyumlu hale getirir\n".
+    "fix: Kodda Context7 kural ihlallerini otomatik düzeltir\n".
+    "scan: Yasak/legacy alanları ve forbidden pattern'leri tarar (tüm varyasyonlar, blade/seed dahil)\n".
+    "export: Tüm önemli tabloların şemasını markdown olarak export eder\n".
+    "check: Context7 compliance ve önleyici kontrolleri çalıştırır\n".
     "full: Tüm işlemleri sırasıyla uygular ve raporlar (derin forbidden scan, Türkçe-İngilizce karışıklık, tekrarlar)\n";
 
 $cmd = $argv[1] ?? null;
-if (!$cmd || in_array($cmd, ['-h', '--help', 'help'])) {
+if (! $cmd || in_array($cmd, ['-h', '--help', 'help'])) {
     echo $usage;
     exit(0);
 }
 
-function run($desc, $cmd) {
-    echo "\n==== $desc ====" . PHP_EOL;
+function run($desc, $cmd)
+{
+    echo "\n==== $desc ====".PHP_EOL;
     passthru($cmd, $code);
     if ($code !== 0) {
         echo "[HATA] $desc başarısız!\n";
@@ -27,7 +28,7 @@ function run($desc, $cmd) {
     }
 }
 
-$root = realpath(__DIR__ . '/..');
+$root = realpath(__DIR__.'/..');
 
 switch ($cmd) {
     case 'temizle':
@@ -61,13 +62,13 @@ switch ($cmd) {
         // DERİN FORBIDDEN SCAN (tüm varyasyonlar, blade/seed dahil)
         echo "\n==== Yasaklı Alan/Pattern Derin Taraması (Tüm Varyasyonlar, Blade/Seed Dahil) ====".PHP_EOL;
         $forbiddenList = [
-            'status','durum','is_active','aktif','site','sites','ayar','ayarlari','settings','setting',
-            'il','city','il_id','city_id','ilce','district','ilce_id','district_id','mahalle','neighborhood','mahalle_id','neighborhood_id',
-            'category_id','kategori_id','company_setting','company_settings','company_ayar','company_ayarlari'
+            'status', 'durum', 'is_active', 'aktif', 'site', 'sites', 'ayar', 'ayarlari', 'settings', 'setting',
+            'il', 'city', 'il_id', 'city_id', 'ilce', 'district', 'ilce_id', 'district_id', 'mahalle', 'neighborhood', 'mahalle_id', 'neighborhood_id',
+            'category_id', 'kategori_id', 'company_setting', 'company_settings', 'company_ayar', 'company_ayarlari',
         ];
         $forbiddenRx = implode('|', array_map('preg_quote', $forbiddenList));
         $scanTargets = [
-            'app/Models','app/Http/Controllers','app/Modules','resources/views','database/seeders','database/migrations'
+            'app/Models', 'app/Http/Controllers', 'app/Modules', 'resources/views', 'database/seeders', 'database/migrations',
         ];
         $summary = [];
         $repeatMap = [];
@@ -75,13 +76,19 @@ switch ($cmd) {
         foreach ($scanTargets as $dir) {
             $rii = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($root.'/'.$dir, FilesystemIterator::SKIP_DOTS));
             foreach ($rii as $file) {
-                if (!$file->isFile()) continue;
+                if (! $file->isFile()) {
+                    continue;
+                }
                 $path = $file->getPathname();
-                $rel = substr($path, strlen($root)+1);
+                $rel = substr($path, strlen($root) + 1);
                 $ext = pathinfo($rel, PATHINFO_EXTENSION);
-                if (!in_array($ext, ['php','js','json','md','sql']) && substr($rel, -10) !== '.blade.php') continue;
+                if (! in_array($ext, ['php', 'js', 'json', 'md', 'sql']) && substr($rel, -10) !== '.blade.php') {
+                    continue;
+                }
                 $lines = @file($path);
-                if (!$lines) continue;
+                if (! $lines) {
+                    continue;
+                }
                 $found = [];
                 foreach ($lines as $ln => $text) {
                     if (preg_match_all('/\b('.$forbiddenRx.')\b/i', $text, $mm)) {
@@ -89,7 +96,7 @@ switch ($cmd) {
                             $found[] = strtolower($match);
                             // Türkçe-İngilizce karışık değer/alan kontrolü
                             if (preg_match('/[a-zA-Z]+/', $match) && preg_match('/[ğüşıöçĞÜŞİÖÇ]+/', $match)) {
-                                $trEnMix[$rel][] = [ 'line' => $ln+1, 'text' => trim($text), 'match' => $match ];
+                                $trEnMix[$rel][] = ['line' => $ln + 1, 'text' => trim($text), 'match' => $match];
                             }
                         }
                     }
@@ -97,29 +104,35 @@ switch ($cmd) {
                 if (count($found) > 0) {
                     $summary[$rel] = array_count_values($found);
                     // Tekrarlayan forbidden alanlar
-                    foreach (array_count_values($found) as $k=>$v) {
-                        if ($v > 1) $repeatMap[$rel][$k] = $v;
+                    foreach (array_count_values($found) as $k => $v) {
+                        if ($v > 1) {
+                            $repeatMap[$rel][$k] = $v;
+                        }
                     }
                 }
             }
         }
         // Raporlama
         echo "\n==== Yasaklı Alan Kullanım Özeti ====".PHP_EOL;
-        foreach ($summary as $file=>$counts) {
+        foreach ($summary as $file => $counts) {
             echo "$file: ";
-            foreach ($counts as $k=>$v) echo "$k($v) ";
+            foreach ($counts as $k => $v) {
+                echo "$k($v) ";
+            }
             echo "\n";
         }
         echo "\n==== Tekrarlayan Yasaklı Alanlar ====".PHP_EOL;
-        foreach ($repeatMap as $file=>$fields) {
+        foreach ($repeatMap as $file => $fields) {
             echo "$file: ";
-            foreach ($fields as $k=>$v) echo "$k($v) ";
+            foreach ($fields as $k => $v) {
+                echo "$k($v) ";
+            }
             echo "\n";
         }
         echo "\n==== Türkçe-İngilizce Karışık Alan/Değerler ====".PHP_EOL;
-        foreach ($trEnMix as $file=>$arr) {
+        foreach ($trEnMix as $file => $arr) {
             foreach ($arr as $item) {
-                echo "$file:{$item['line']}: [{$item['match']}] ".mb_substr($item['text'],0,120)."\n";
+                echo "$file:{$item['line']}: [{$item['match']}] ".mb_substr($item['text'], 0, 120)."\n";
             }
         }
 

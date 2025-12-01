@@ -2,10 +2,11 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     public function up(): void
     {
         Schema::table('ilanlar', function (Blueprint $table) {
@@ -18,9 +19,10 @@ return new class extends Migration {
         });
 
         Schema::table('ilanlar', function (Blueprint $table) {
-            $exists = function(string $name): bool {
-                $rows = DB::select("SHOW INDEX FROM ilanlar WHERE Key_name = ?", [$name]);
-                return !empty($rows);
+            $exists = function (string $name): bool {
+                $rows = DB::select('SHOW INDEX FROM ilanlar WHERE Key_name = ?', [$name]);
+
+                return ! empty($rows);
             };
             if (Schema::hasColumn('ilanlar', 'ulke_id') && ! $exists('idx_ilanlar_ulke')) {
                 $table->index('ulke_id', 'idx_ilanlar_ulke');
@@ -29,7 +31,7 @@ return new class extends Migration {
                 $table->index('citizenship_eligible', 'idx_ilanlar_citizenship');
             }
             if (Schema::hasColumn('ilanlar', 'ulke_id') && Schema::hasColumn('ilanlar', 'fiyat') && ! $exists('idx_ilanlar_ulke_fiyat')) {
-                $table->index(['ulke_id','fiyat'], 'idx_ilanlar_ulke_fiyat');
+                $table->index(['ulke_id', 'fiyat'], 'idx_ilanlar_ulke_fiyat');
             }
         });
     }

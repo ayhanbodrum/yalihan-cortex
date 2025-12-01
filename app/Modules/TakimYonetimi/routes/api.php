@@ -1,8 +1,8 @@
 <?php
 
 use App\Modules\TakimYonetimi\Controllers\API\GorevApiController;
-use App\Modules\TakimYonetimi\Controllers\API\TakimApiController;
 use App\Modules\TakimYonetimi\Controllers\API\ProjeApiController;
+use App\Modules\TakimYonetimi\Controllers\API\TakimApiController;
 use Illuminate\Support\Facades\Route;
 
 // Takım Yönetimi API Routes

@@ -2,23 +2,22 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\DB;
 use App\Models\IlanKategori;
 use App\Models\IlanKategoriYayinTipi;
 use App\Models\KategoriYayinTipiFieldDependency;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Schema;
 
 class Category39YazlikSeeder extends Seeder
 {
     public function run(): void
     {
-        if (!Schema::hasTable('ilan_kategori_yayin_tipleri') || !Schema::hasTable('kategori_yayin_tipi_field_dependencies') || !Schema::hasTable('ilan_kategorileri')) {
+        if (! Schema::hasTable('ilan_kategori_yayin_tipleri') || ! Schema::hasTable('kategori_yayin_tipi_field_dependencies') || ! Schema::hasTable('ilan_kategorileri')) {
             return;
         }
 
         $kategori = IlanKategori::find(39);
-        if (!$kategori) {
+        if (! $kategori) {
             return;
         }
 

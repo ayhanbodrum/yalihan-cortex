@@ -63,7 +63,7 @@ class Context7LocationSeeder extends Seeder
             );
         }
 
-        $this->command->info('✅ ' . count($countries) . ' ülke oluşturuldu');
+        $this->command->info('✅ '.count($countries).' ülke oluşturuldu');
     }
 
     /**
@@ -98,7 +98,7 @@ class Context7LocationSeeder extends Seeder
             );
         }
 
-        $this->command->info('✅ ' . count($provinces) . ' il oluşturuldu');
+        $this->command->info('✅ '.count($provinces).' il oluşturuldu');
     }
 
     /**
@@ -161,7 +161,7 @@ class Context7LocationSeeder extends Seeder
             );
         }
 
-        $this->command->info('✅ ' . count($districts) . ' ilçe oluşturuldu');
+        $this->command->info('✅ '.count($districts).' ilçe oluşturuldu');
     }
 
     /**
@@ -230,6 +230,6 @@ class Context7LocationSeeder extends Seeder
             );
         }
 
-        $this->command->info('✅ ' . count($neighborhoods) . ' mahalle oluşturuldu');
+        $this->command->info('✅ '.count($neighborhoods).' mahalle oluşturuldu');
     }
 }

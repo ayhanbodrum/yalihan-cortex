@@ -51,10 +51,10 @@ class IlanSegmentController extends AdminController
     public function show(Request $request, $ilanId = null, $segment = null)
     {
         try {
-            $ilan = $ilanId ? Ilan::findOrFail($ilanId) : new Ilan();
+            $ilan = $ilanId ? Ilan::findOrFail($ilanId) : new Ilan;
 
             // Varsayılan segment
-            if (!$segment) {
+            if (! $segment) {
                 $segment = IlanSegment::PORTFOLIO_INFO;
             } else {
                 $segment = IlanSegment::from($segment);
@@ -80,7 +80,7 @@ class IlanSegmentController extends AdminController
                 'error' => $e->getMessage(),
                 'file' => $e->getFile(),
                 'line' => $e->getLine(),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ], 500);
         }
     }
@@ -102,7 +102,7 @@ class IlanSegmentController extends AdminController
         }
 
         // İlan oluştur veya güncelle
-        $ilan = $ilanId ? Ilan::findOrFail($ilanId) : new Ilan();
+        $ilan = $ilanId ? Ilan::findOrFail($ilanId) : new Ilan;
 
         // Segment verilerini işle
         $this->processSegmentData($ilan, $segment, $request);
@@ -116,11 +116,11 @@ class IlanSegmentController extends AdminController
             if ($ilan->id) {
                 return redirect()->route('admin.ilanlar.segments.show', [
                     'ilan' => $ilan->id,
-                    'segment' => $nextSegment->value
+                    'segment' => $nextSegment->value,
                 ])->with('success', 'Segment kaydedildi. Sonraki adıma geçiliyor...');
             } else {
                 return redirect()->route('admin.ilanlar.segments.create', [
-                    'segment' => $nextSegment->value
+                    'segment' => $nextSegment->value,
                 ])->with('success', 'Segment kaydedildi. Sonraki adıma geçiliyor...');
             }
         }
@@ -201,7 +201,7 @@ class IlanSegmentController extends AdminController
                     'ilan_turu',
                     'brut_metrekare',
                     'ada_no',
-                    'parsel_no'
+                    'parsel_no',
                 ]));
                 $ilan->status = 'draft';
                 break;
@@ -267,11 +267,11 @@ class IlanSegmentController extends AdminController
         }
 
         return match ($segment) {
-            IlanSegment::PORTFOLIO_INFO => !empty($ilan->baslik) && !empty($ilan->fiyat),
-            IlanSegment::DOCUMENTS_NOTES => !empty($ilan->notes) || $ilan->documents()->exists(),
-            IlanSegment::PORTAL_LISTING => !empty($ilan->portal_descriptions),
-            IlanSegment::SUITABLE_BUYERS => !empty($ilan->suitable_buyers),
-            IlanSegment::TRANSACTION_CLOSURE => !empty($ilan->transaction_type),
+            IlanSegment::PORTFOLIO_INFO => ! empty($ilan->baslik) && ! empty($ilan->fiyat),
+            IlanSegment::DOCUMENTS_NOTES => ! empty($ilan->notes) || $ilan->documents()->exists(),
+            IlanSegment::PORTAL_LISTING => ! empty($ilan->portal_descriptions),
+            IlanSegment::SUITABLE_BUYERS => ! empty($ilan->suitable_buyers),
+            IlanSegment::TRANSACTION_CLOSURE => ! empty($ilan->transaction_type),
         };
     }
 
@@ -337,7 +337,7 @@ class IlanSegmentController extends AdminController
         // ✅ PERFORMANCE FIX: N+1 query önlendi - Bulk insert kullanıldı
         $documents = [];
         foreach ($files as $file) {
-            $path = $file->store('ilan-documents/' . $ilan->id, 'public');
+            $path = $file->store('ilan-documents/'.$ilan->id, 'public');
 
             $documents[] = [
                 'ilan_id' => $ilan->id,
@@ -351,7 +351,7 @@ class IlanSegmentController extends AdminController
         }
 
         // ✅ PERFORMANCE FIX: Bulk insert (N query → 1 query)
-        if (!empty($documents)) {
+        if (! empty($documents)) {
             \Illuminate\Support\Facades\DB::table('ilan_documents')->insert($documents);
         }
     }

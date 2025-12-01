@@ -1,34 +1,45 @@
 // Leaflet.draw Local Loader (Context7: Local, not CDN)
-;(function(){
-  function addCss(){
-    var href='https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.css';
-    if(!document.querySelector('link[href*="leaflet.draw.css"]')){
-      var link=document.createElement('link');
-      link.rel='stylesheet';
-      link.href=href;
-      document.head.appendChild(link);
+(function () {
+    function addCss() {
+        var href = 'https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.css';
+        if (!document.querySelector('link[href*="leaflet.draw.css"]')) {
+            var link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.href = href;
+            document.head.appendChild(link);
+        }
     }
-  }
-  function addJs(cb){
-    if(window.L && window.L.Draw){ cb&&cb(); return; }
-    var src='https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.js';
-    var s=document.createElement('script');
-    s.src=src;
-    s.onload=function(){ cb&&cb(); };
-    document.head.appendChild(s);
-  }
-  addCss();
-  addJs(function(){
-    if(window.L && window.L.Draw){
-      if(window.showToast){ window.showToast('success','Leaflet.draw yüklendi'); }
-      if (typeof L !== 'undefined' && typeof L.Control !== 'undefined' && typeof L.Control.Draw !== 'undefined') {
-        console.log('✅ L.Control.Draw available globally');
-        setupA11yObserver();
-      } else {
-        console.warn('⚠️ Leaflet.draw loaded but L.Control.Draw not found');
-      }
+    function addJs(cb) {
+        if (window.L && window.L.Draw) {
+            cb && cb();
+            return;
+        }
+        var src = 'https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.js';
+        var s = document.createElement('script');
+        s.src = src;
+        s.onload = function () {
+            cb && cb();
+        };
+        document.head.appendChild(s);
     }
-  });
+    addCss();
+    addJs(function () {
+        if (window.L && window.L.Draw) {
+            if (window.showToast) {
+                window.showToast('success', 'Leaflet.draw yüklendi');
+            }
+            if (
+                typeof L !== 'undefined' &&
+                typeof L.Control !== 'undefined' &&
+                typeof L.Control.Draw !== 'undefined'
+            ) {
+                console.log('✅ L.Control.Draw available globally');
+                setupA11yObserver();
+            } else {
+                console.warn('⚠️ Leaflet.draw loaded but L.Control.Draw not found');
+            }
+        }
+    });
 })();
 
 console.log('✅ Leaflet.draw loader initialized (Context7: Local)');
@@ -253,50 +264,78 @@ if (typeof document !== 'undefined') {
 export default 'leaflet-draw';
 
 // A11y: toolbar bulunduğunda ARIA ve klavye etkileşimi uygula
-function setupA11yObserver(){
-  try{
-    const observer=new MutationObserver(function(mutations,obs){
-      const toolbar=document.querySelector('.leaflet-draw-toolbar');
-      if(toolbar){
-        applyDrawToolbarA11y(toolbar);
-        obs.disconnect();
-      }
-    });
-    observer.observe(document.body,{ childList:true, subtree:true });
-  }catch(e){ console.warn('Leaflet.draw A11y observer başlatılamadı',e); }
+function setupA11yObserver() {
+    try {
+        const observer = new MutationObserver(function (mutations, obs) {
+            const toolbar = document.querySelector('.leaflet-draw-toolbar');
+            if (toolbar) {
+                applyDrawToolbarA11y(toolbar);
+                obs.disconnect();
+            }
+        });
+        observer.observe(document.body, { childList: true, subtree: true });
+    } catch (e) {
+        console.warn('Leaflet.draw A11y observer başlatılamadı', e);
+    }
 }
 
-function applyDrawToolbarA11y(toolbar){
-  const btns=toolbar.querySelectorAll('a');
-  const labelMap={
-    'leaflet-draw-draw-polygon':'Polygon çiz',
-    'leaflet-draw-edit-edit':'Şekilleri düzenle',
-    'leaflet-draw-edit-remove':'Seçili şekilleri sil'
-  };
-  const items=Array.from(btns);
-  items.forEach(function(a,idx){
-    a.setAttribute('role','button');
-    a.setAttribute('tabindex','0');
-    const cls=a.className.split(' ');
-    const key=cls.find(function(c){ return labelMap[c]; });
-    if(key){ a.setAttribute('aria-label',labelMap[key]); }
-    a.addEventListener('keydown',function(ev){
-      const code=ev.key;
-      if(code==='Enter'||code===' '){ ev.preventDefault(); a.click(); }
-      if(code==='ArrowRight'||code==='ArrowDown'){
-        ev.preventDefault(); const next=items[(idx+1)%items.length]; next.focus();
-      }
-      if(code==='ArrowLeft'||code==='ArrowUp'){
-        ev.preventDefault(); const prev=items[(idx-1+items.length)%items.length]; prev.focus();
-      }
-      if(code==='Home'){ ev.preventDefault(); items[0].focus(); }
-      if(code==='End'){ ev.preventDefault(); items[items.length-1].focus(); }
-      if(code==='Escape'){ a.blur(); }
+function applyDrawToolbarA11y(toolbar) {
+    const btns = toolbar.querySelectorAll('a');
+    const labelMap = {
+        'leaflet-draw-draw-polygon': 'Polygon çiz',
+        'leaflet-draw-edit-edit': 'Şekilleri düzenle',
+        'leaflet-draw-edit-remove': 'Seçili şekilleri sil',
+    };
+    const items = Array.from(btns);
+    items.forEach(function (a, idx) {
+        a.setAttribute('role', 'button');
+        a.setAttribute('tabindex', '0');
+        const cls = a.className.split(' ');
+        const key = cls.find(function (c) {
+            return labelMap[c];
+        });
+        if (key) {
+            a.setAttribute('aria-label', labelMap[key]);
+        }
+        a.addEventListener('keydown', function (ev) {
+            const code = ev.key;
+            if (code === 'Enter' || code === ' ') {
+                ev.preventDefault();
+                a.click();
+            }
+            if (code === 'ArrowRight' || code === 'ArrowDown') {
+                ev.preventDefault();
+                const next = items[(idx + 1) % items.length];
+                next.focus();
+            }
+            if (code === 'ArrowLeft' || code === 'ArrowUp') {
+                ev.preventDefault();
+                const prev = items[(idx - 1 + items.length) % items.length];
+                prev.focus();
+            }
+            if (code === 'Home') {
+                ev.preventDefault();
+                items[0].focus();
+            }
+            if (code === 'End') {
+                ev.preventDefault();
+                items[items.length - 1].focus();
+            }
+            if (code === 'Escape') {
+                a.blur();
+            }
+        });
     });
-  });
-  console.log('✅ Leaflet.draw toolbar a11y uygulandı');
+    console.log('✅ Leaflet.draw toolbar a11y uygulandı');
 }
-        /* Focus görünürlüğü */
+
+// Focus görünürlüğü CSS'i style tag'ine ekle
+if (typeof document !== 'undefined') {
+    const style = document.createElement('style');
+    style.textContent += `
         .leaflet-draw-toolbar a:focus-visible {
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.6) !important;
         }
+    `;
+    document.head.appendChild(style);
+}

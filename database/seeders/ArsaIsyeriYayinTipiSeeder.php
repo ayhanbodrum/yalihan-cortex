@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 use App\Models\IlanKategori;
 use App\Models\IlanKategoriYayinTipi;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Arsa, İşyeri, Yazlık ve Projeler Kategorileri için Mantıklı Yayın Tipi İlişkileri
@@ -56,7 +56,7 @@ class ArsaIsyeriYayinTipiSeeder extends Seeder
             $this->createAltKategoriYayinTipi($turistikArsa->id, $satilik->id, 1);
             $this->createAltKategoriYayinTipi($turistikArsa->id, $ticari->id, 2);
             $this->createAltKategoriYayinTipi($turistikArsa->id, $katKarsiligi->id, 3);
-            $this->command->info("    ✓ Turistik Arsa → Satılık, Ticari, Kat Karşılığı");
+            $this->command->info('    ✓ Turistik Arsa → Satılık, Ticari, Kat Karşılığı');
         }
 
         // Diğer alt kategoriler → Sadece Satılık
@@ -94,8 +94,9 @@ class ArsaIsyeriYayinTipiSeeder extends Seeder
         // Yazlık alt kategori olarak bul
         $yazlik = IlanKategori::where('name', 'Yazlık')->where('seviye', 1)->first();
 
-        if (!$yazlik) {
+        if (! $yazlik) {
             $this->command->warn('    ⚠️ Yazlık kategorisi bulunamadı');
+
             return;
         }
 
@@ -107,7 +108,7 @@ class ArsaIsyeriYayinTipiSeeder extends Seeder
 
         // Yazlık alt kategori için Kiralık ekle
         $this->createAltKategoriYayinTipi($yazlik->id, $kiralik->id, 1);
-        $this->command->info("    ✓ Yazlık → Kiralık");
+        $this->command->info('    ✓ Yazlık → Kiralık');
     }
 
     private function seedProjelerKategorisi(): void
@@ -136,11 +137,11 @@ class ArsaIsyeriYayinTipiSeeder extends Seeder
         return IlanKategoriYayinTipi::firstOrCreate(
             [
                 'kategori_id' => $kategoriId,
-                'yayin_tipi' => $yayinTipi
+                'yayin_tipi' => $yayinTipi,
             ],
             [
                 'status' => true,
-                'display_order' => $order
+                'display_order' => $order,
             ]
         );
     }
@@ -150,13 +151,13 @@ class ArsaIsyeriYayinTipiSeeder extends Seeder
         DB::table('alt_kategori_yayin_tipi')->updateOrInsert(
             [
                 'alt_kategori_id' => $altKategoriId,
-                'yayin_tipi_id' => $yayinTipiId
+                'yayin_tipi_id' => $yayinTipiId,
             ],
             [
                 'enabled' => true,
                 'display_order' => $order,
                 'created_at' => now(),
-                'updated_at' => now()
+                'updated_at' => now(),
             ]
         );
     }

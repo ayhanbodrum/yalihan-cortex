@@ -2,22 +2,24 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\Http\Request;
 use App\Services\AICoreSystem;
 use App\Services\AISystemIntegration;
 use App\Services\FlexibleStorageManager;
+use Illuminate\Http\Request;
 
 class AICoreTestController extends AdminController
 {
     private $aiCore;
+
     private $aiIntegration;
+
     private $storageManager;
 
     public function __construct()
     {
-        $this->aiCore = new AICoreSystem();
-        $this->aiIntegration = new AISystemIntegration();
-        $this->storageManager = new FlexibleStorageManager();
+        $this->aiCore = new AICoreSystem;
+        $this->aiIntegration = new AISystemIntegration;
+        $this->storageManager = new FlexibleStorageManager;
     }
 
     /**
@@ -35,7 +37,7 @@ class AICoreTestController extends AdminController
     {
         $request->validate([
             'context' => 'required|string',
-            'input' => 'required|string'
+            'input' => 'required|string',
         ]);
 
         $context = $request->context;
@@ -49,13 +51,13 @@ class AICoreTestController extends AdminController
                 'success' => true,
                 'response' => $response,
                 'context' => $context,
-                'input' => $input
+                'input' => $input,
             ]);
 
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -68,7 +70,7 @@ class AICoreTestController extends AdminController
         $request->validate([
             'context' => 'required|string',
             'task' => 'required|string',
-            'expected_output' => 'required|string'
+            'expected_output' => 'required|string',
         ]);
 
         $context = $request->context;
@@ -82,13 +84,13 @@ class AICoreTestController extends AdminController
             return response()->json([
                 'success' => true,
                 'result' => $result,
-                'message' => 'AI başarıyla öğretildi!'
+                'message' => 'AI başarıyla öğretildi!',
             ]);
 
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -100,7 +102,7 @@ class AICoreTestController extends AdminController
     {
         $request->validate([
             'key' => 'required|string',
-            'data' => 'required|string'
+            'data' => 'required|string',
         ]);
 
         $key = $request->key;
@@ -117,13 +119,13 @@ class AICoreTestController extends AdminController
                 'success' => true,
                 'stored' => $data,
                 'retrieved' => $retrieved,
-                'key' => $key
+                'key' => $key,
             ]);
 
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -137,18 +139,18 @@ class AICoreTestController extends AdminController
             $status = [
                 'ai_core' => $this->testAICore(),
                 'storage' => $this->testStorageInternal(),
-                'integration' => $this->testIntegration()
+                'integration' => $this->testIntegration(),
             ];
 
             return response()->json([
                 'success' => true,
-                'status' => $status
+                'status' => $status,
             ]);
 
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -160,6 +162,7 @@ class AICoreTestController extends AdminController
     {
         try {
             $response = $this->aiCore->testAI('test', 'Merhaba');
+
             return ['status' => 'active', 'response' => $response];
         } catch (\Exception $e) {
             return ['status' => 'error', 'error' => $e->getMessage()];
@@ -172,7 +175,7 @@ class AICoreTestController extends AdminController
     private function testStorageInternal()
     {
         try {
-            $testKey = 'test_' . time();
+            $testKey = 'test_'.time();
             $testData = ['test' => 'data', 'timestamp' => now()];
 
             $this->storageManager->store($testKey, $testData);
@@ -191,6 +194,7 @@ class AICoreTestController extends AdminController
     {
         try {
             $suggestions = $this->aiIntegration->generateSuggestions('test', 'test input');
+
             return ['status' => 'active', 'suggestions' => $suggestions];
         } catch (\Exception $e) {
             return ['status' => 'error', 'error' => $e->getMessage()];

@@ -22,13 +22,13 @@ return new class extends Migration
     {
         if (Schema::hasTable('ai_land_plot_analyses')) {
             Schema::table('ai_land_plot_analyses', function (Blueprint $table) {
-                if (!Schema::hasColumn('ai_land_plot_analyses', 'display_order')) {
+                if (! Schema::hasColumn('ai_land_plot_analyses', 'display_order')) {
                     $table->integer('display_order')->default(0)->comment('Sıralama (Context7: order → display_order)');
                 }
-                if (!Schema::hasColumn('ai_land_plot_analyses', 'status')) {
+                if (! Schema::hasColumn('ai_land_plot_analyses', 'status')) {
                     $table->tinyInteger('status')->default(1)->comment('0=inactive, 1=active (Context7 boolean - PERMANENT STANDARD)');
                 }
-                if (!Schema::hasColumn('ai_land_plot_analyses', 'created_at')) {
+                if (! Schema::hasColumn('ai_land_plot_analyses', 'created_at')) {
                     $table->timestamps();
                 }
             });

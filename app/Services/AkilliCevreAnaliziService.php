@@ -2,8 +2,8 @@
 
 namespace App\Services;
 
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Http;
 
 /**
  * Akıllı Yakın Çevre Analizi Servisi
@@ -37,7 +37,7 @@ class AkilliCevreAnaliziService
             'poi_analysis' => $this->getPOIAnalysis($latitude, $longitude, $propertyType),
             'distance_analysis' => $this->getDistanceAnalysis($latitude, $longitude, $propertyType),
             'value_impact' => $this->getValueImpactAnalysis($latitude, $longitude, $propertyType),
-            'recommendations' => $this->getRecommendations($latitude, $longitude, $propertyType)
+            'recommendations' => $this->getRecommendations($latitude, $longitude, $propertyType),
         ];
 
         return $analysis;
@@ -55,7 +55,7 @@ class AkilliCevreAnaliziService
 
         try {
             $response = Http::timeout(30)->post('https://overpass-api.de/api/interpreter', [
-                'data' => $overpassQuery
+                'data' => $overpassQuery,
             ]);
 
             if ($response->successful()) {
@@ -63,7 +63,7 @@ class AkilliCevreAnaliziService
                 $pois = $this->parsePOIData($data, $propertyType);
             }
         } catch (\Exception $e) {
-            \Log::error('POI analizi hatası: ' . $e->getMessage());
+            \Log::error('POI analizi hatası: '.$e->getMessage());
         }
 
         return $pois;
@@ -97,7 +97,7 @@ class AkilliCevreAnaliziService
      */
     private function getRadiusForPropertyType(string $propertyType): int
     {
-        return match($propertyType) {
+        return match ($propertyType) {
             'arsa' => 2000,      // 2km - Arsa için geniş alan
             'yazlik' => 1500,    // 1.5km - Yazlık için orta alan
             'villa_daire' => 1000, // 1km - Villa/daire için dar alan
@@ -117,7 +117,7 @@ class AkilliCevreAnaliziService
             'alısveris' => [],
             'ulasim' => [],
             'eglence' => [],
-            'diger' => []
+            'diger' => [],
         ];
 
         foreach ($data['elements'] ?? [] as $element) {
@@ -148,11 +148,11 @@ class AkilliCevreAnaliziService
             $category = 'egitim';
         } elseif (in_array($amenity, ['hospital', 'pharmacy', 'clinic'])) {
             $category = 'saglik';
-        } elseif (!empty($shop) || in_array($amenity, ['restaurant', 'cafe', 'bank'])) {
+        } elseif (! empty($shop) || in_array($amenity, ['restaurant', 'cafe', 'bank'])) {
             $category = 'alısveris';
-        } elseif (!empty($public_transport) || in_array($amenity, ['fuel', 'parking'])) {
+        } elseif (! empty($public_transport) || in_array($amenity, ['fuel', 'parking'])) {
             $category = 'ulasim';
-        } elseif (!empty($leisure) || in_array($amenity, ['cinema', 'theatre'])) {
+        } elseif (! empty($leisure) || in_array($amenity, ['cinema', 'theatre'])) {
             $category = 'eglence';
         }
 
@@ -161,7 +161,7 @@ class AkilliCevreAnaliziService
             'category' => $category,
             'type' => $amenity ?: $shop ?: $leisure ?: $public_transport,
             'distance' => $this->calculateDistance($element, $propertyType),
-            'importance' => $this->calculateImportance($element, $propertyType)
+            'importance' => $this->calculateImportance($element, $propertyType),
         ];
     }
 
@@ -173,7 +173,7 @@ class AkilliCevreAnaliziService
         return [
             'walking_distances' => $this->getWalkingDistances($latitude, $longitude, $propertyType),
             'driving_distances' => $this->getDrivingDistances($latitude, $longitude, $propertyType),
-            'public_transport' => $this->getPublicTransportAccess($latitude, $longitude, $propertyType)
+            'public_transport' => $this->getPublicTransportAccess($latitude, $longitude, $propertyType),
         ];
     }
 
@@ -191,7 +191,7 @@ class AkilliCevreAnaliziService
             'otobus' => 'Otobüs Durağı',
             'market' => 'Market',
             'okul' => 'Okul',
-            'hastane' => 'Hastane'
+            'hastane' => 'Hastane',
         ];
 
         foreach ($importantPOIs as $key => $name) {
@@ -213,7 +213,7 @@ class AkilliCevreAnaliziService
             'havaalani' => 'Havaalanı',
             'merkez' => 'Şehir Merkezi',
             'avm' => 'AVM',
-            'hastane' => 'Hastane'
+            'hastane' => 'Hastane',
         ];
 
         foreach ($importantDestinations as $key => $name) {
@@ -231,7 +231,7 @@ class AkilliCevreAnaliziService
         return [
             'metro_erisim' => $this->checkMetroAccess($latitude, $longitude),
             'otobus_erisim' => $this->checkBusAccess($latitude, $longitude),
-            'dolmus_erisim' => $this->checkDolmusAccess($latitude, $longitude)
+            'dolmus_erisim' => $this->checkDolmusAccess($latitude, $longitude),
         ];
     }
 
@@ -244,7 +244,7 @@ class AkilliCevreAnaliziService
             'cevre_puani' => $this->calculateEnvironmentScore($latitude, $longitude, $propertyType),
             'yatirim_potansiyeli' => $this->calculateInvestmentPotential($latitude, $longitude, $propertyType),
             'deger_artis_tahmini' => $this->calculateValueIncreaseEstimate($latitude, $longitude, $propertyType),
-            'risk_faktorleri' => $this->identifyRiskFactors($latitude, $longitude, $propertyType)
+            'risk_faktorleri' => $this->identifyRiskFactors($latitude, $longitude, $propertyType),
         ];
     }
 
@@ -261,7 +261,7 @@ class AkilliCevreAnaliziService
             'saglik' => 15,
             'alısveris' => 10,
             'ulasim' => 25,
-            'eglence' => 5
+            'eglence' => 5,
         ];
 
         $pois = $this->getPOIAnalysis($latitude, $longitude, $propertyType);
@@ -280,10 +280,19 @@ class AkilliCevreAnaliziService
     {
         $score = $this->calculateEnvironmentScore($latitude, $longitude, $propertyType);
 
-        if ($score >= 80) return 'Çok Yüksek';
-        if ($score >= 60) return 'Yüksek';
-        if ($score >= 40) return 'Orta';
-        if ($score >= 20) return 'Düşük';
+        if ($score >= 80) {
+            return 'Çok Yüksek';
+        }
+        if ($score >= 60) {
+            return 'Yüksek';
+        }
+        if ($score >= 40) {
+            return 'Orta';
+        }
+        if ($score >= 20) {
+            return 'Düşük';
+        }
+
         return 'Çok Düşük';
     }
 
@@ -297,7 +306,7 @@ class AkilliCevreAnaliziService
         return [
             '1_yil' => $this->calculateYearlyIncrease($score, 1),
             '3_yil' => $this->calculateYearlyIncrease($score, 3),
-            '5_yil' => $this->calculateYearlyIncrease($score, 5)
+            '5_yil' => $this->calculateYearlyIncrease($score, 5),
         ];
     }
 
@@ -307,6 +316,7 @@ class AkilliCevreAnaliziService
     private function calculateYearlyIncrease(int $score, int $years): float
     {
         $baseIncrease = ($score / 100) * 0.15; // %15'e kadar
+
         return round($baseIncrease * $years, 2);
     }
 

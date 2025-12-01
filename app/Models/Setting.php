@@ -75,14 +75,15 @@ class Setting extends Model
      * Get setting value with caching
      * Context7: Cache-aware getter
      *
-     * @param string $key Setting key
-     * @param mixed $default Default value if not found
+     * @param  string  $key  Setting key
+     * @param  mixed  $default  Default value if not found
      * @return mixed
      */
     public static function get($key, $default = null)
     {
-        return Cache::remember('setting.' . $key, 3600, function () use ($key, $default) {
+        return Cache::remember('setting.'.$key, 3600, function () use ($key, $default) {
             $setting = static::where('key', $key)->first();
+
             return $setting ? $setting->value : $default;
         });
     }
@@ -91,17 +92,17 @@ class Setting extends Model
      * Set setting value with auto-detection
      * Context7: Smart setter with type auto-detection
      *
-     * @param string $key Setting key
-     * @param mixed $value Setting value
-     * @param string $group Setting group (default: general)
-     * @param string|null $type Value type (auto-detected if null)
-     * @param string|null $description Setting description
+     * @param  string  $key  Setting key
+     * @param  mixed  $value  Setting value
+     * @param  string  $group  Setting group (default: general)
+     * @param  string|null  $type  Value type (auto-detected if null)
+     * @param  string|null  $description  Setting description
      * @return static
      */
     public static function set($key, $value, $group = 'general', $type = null, $description = null)
     {
         // Auto-detect type if not provided
-        if (!$type) {
+        if (! $type) {
             $type = is_bool($value) ? 'boolean'
                   : (is_array($value) ? 'json'
                   : (is_numeric($value) ? 'integer'
@@ -119,7 +120,7 @@ class Setting extends Model
         );
 
         // Clear cache
-        Cache::forget('setting.' . $key);
+        Cache::forget('setting.'.$key);
 
         return $setting;
     }
@@ -127,12 +128,12 @@ class Setting extends Model
     /**
      * Get all settings by group
      *
-     * @param string $group Group name
+     * @param  string  $group  Group name
      * @return \Illuminate\Database\Eloquent\Collection
      */
     public static function getByGroup($group)
     {
-        return Cache::remember('settings.group.' . $group, 3600, function () use ($group) {
+        return Cache::remember('settings.group.'.$group, 3600, function () use ($group) {
             return static::where('group', $group)->get();
         });
     }
@@ -161,13 +162,13 @@ class Setting extends Model
     {
         $keys = static::pluck('key');
         foreach ($keys as $key) {
-            Cache::forget('setting.' . $key);
+            Cache::forget('setting.'.$key);
         }
         Cache::forget('settings.groups');
 
         $groups = static::distinct()->pluck('group');
         foreach ($groups as $group) {
-            Cache::forget('settings.group.' . $group);
+            Cache::forget('settings.group.'.$group);
         }
     }
 }

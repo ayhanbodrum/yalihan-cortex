@@ -2,8 +2,8 @@
 
 namespace App\Services;
 
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 /**
@@ -22,11 +22,17 @@ use Illuminate\Support\Facades\Log;
 class WikimapiaService
 {
     protected string $baseUrl;
+
     protected string $apiKey;
+
     protected int $timeout;
+
     protected bool $cacheEnabled;
+
     protected int $cacheTtl;
+
     protected string $language;
+
     protected string $format;
 
     public function __construct()
@@ -44,13 +50,13 @@ class WikimapiaService
     /**
      * Get place information by ID
      *
-     * @param int $id Place ID
-     * @param array $dataBlocks Additional data blocks to retrieve
+     * @param  int  $id  Place ID
+     * @param  array  $dataBlocks  Additional data blocks to retrieve
      * @return array|null
      */
     public function getPlaceById(int $id, array $dataBlocks = ['main', 'location'])
     {
-        $cacheKey = "wikimapia.place.{$id}." . implode(',', $dataBlocks);
+        $cacheKey = "wikimapia.place.{$id}.".implode(',', $dataBlocks);
 
         return Cache::remember($cacheKey, $this->cacheTtl, function () use ($id, $dataBlocks) {
             try {
@@ -91,11 +97,11 @@ class WikimapiaService
     /**
      * Get places in a bounding box
      *
-     * @param float $lonMin Minimum longitude
-     * @param float $latMin Minimum latitude
-     * @param float $lonMax Maximum longitude
-     * @param float $latMax Maximum latitude
-     * @param array $options Additional options
+     * @param  float  $lonMin  Minimum longitude
+     * @param  float  $latMin  Minimum latitude
+     * @param  float  $lonMax  Maximum longitude
+     * @param  float  $latMax  Maximum latitude
+     * @param  array  $options  Additional options
      * @return array|null
      */
     public function getPlacesByArea(float $lonMin, float $latMin, float $lonMax, float $latMax, array $options = [])
@@ -105,7 +111,7 @@ class WikimapiaService
         $category = $options['category'] ?? null;
         $dataBlocks = $options['data_blocks'] ?? ['main', 'location'];
 
-        $cacheKey = "wikimapia.area.{$lonMin},{$latMin},{$lonMax},{$latMax}.{$page}.{$count}." . ($category ?? 'all');
+        $cacheKey = "wikimapia.area.{$lonMin},{$latMin},{$lonMax},{$latMax}.{$page}.{$count}.".($category ?? 'all');
 
         return Cache::remember($cacheKey, $this->cacheTtl, function () use ($lonMin, $latMin, $lonMax, $latMax, $page, $count, $category, $dataBlocks) {
             try {
@@ -133,15 +139,16 @@ class WikimapiaService
                     'body' => substr($response->body(), 0, 500),
                 ]);
 
-                                if ($response->successful()) {
+                if ($response->successful()) {
                     $data = $response->json();
 
                     // API boş dönüyorsa BOŞ ARRAY döndür (Controller Nominatim'e geçecek)
-                    if (empty($data) || !isset($data['places']) || empty($data['places'])) {
+                    if (empty($data) || ! isset($data['places']) || empty($data['places'])) {
                         Log::info('Wikimapia API returned empty response, will fallback to OpenStreetMap Nominatim');
+
                         return [
                             'places' => [],
-                            'found' => 0
+                            'found' => 0,
                         ];
                     }
 
@@ -169,9 +176,9 @@ class WikimapiaService
     /**
      * Get nearest places to coordinates
      *
-     * @param float $lat Latitude
-     * @param float $lon Longitude
-     * @param array $options Additional options
+     * @param  float  $lat  Latitude
+     * @param  float  $lon  Longitude
+     * @param  array  $options  Additional options
      * @return array|null
      */
     public function getNearestPlaces(float $lat, float $lon, array $options = [])
@@ -180,7 +187,7 @@ class WikimapiaService
         $category = $options['category'] ?? null;
         $dataBlocks = $options['data_blocks'] ?? ['main', 'location'];
 
-        $cacheKey = "wikimapia.nearest.{$lat},{$lon}.{$count}." . ($category ?? 'all');
+        $cacheKey = "wikimapia.nearest.{$lat},{$lon}.{$count}.".($category ?? 'all');
 
         return Cache::remember($cacheKey, $this->cacheTtl, function () use ($lat, $lon, $count, $category, $dataBlocks) {
             try {
@@ -227,10 +234,10 @@ class WikimapiaService
     /**
      * Search places by query
      *
-     * @param string $query Search query
-     * @param float $lat Latitude
-     * @param float $lon Longitude
-     * @param array $options Additional options
+     * @param  string  $query  Search query
+     * @param  float  $lat  Latitude
+     * @param  float  $lon  Longitude
+     * @param  array  $options  Additional options
      * @return array|null
      */
     public function searchPlaces(string $query, float $lat, float $lon, array $options = [])
@@ -280,8 +287,8 @@ class WikimapiaService
     /**
      * Get all categories
      *
-     * @param int $page Page number
-     * @param int $count Results per page
+     * @param  int  $page  Page number
+     * @param  int  $count  Results per page
      * @return array|null
      */
     public function getAllCategories(int $page = 1, int $count = 50)
@@ -324,7 +331,7 @@ class WikimapiaService
     /**
      * Get street information by ID
      *
-     * @param int $id Street ID
+     * @param  int  $id  Street ID
      * @return array|null
      */
     public function getStreetById(int $id)
@@ -369,24 +376,24 @@ class WikimapiaService
      * Search for residential complexes, sites, and apartments
      * Özel olarak site/apartman araması için optimize edilmiş
      *
-     * @param string $query Site/apartman adı
-     * @param float $lat Latitude
-     * @param float $lon Longitude
-     * @param float $radius Search radius in degrees (default 0.05 ≈ 5km)
+     * @param  string  $query  Site/apartman adı
+     * @param  float  $lat  Latitude
+     * @param  float  $lon  Longitude
+     * @param  float  $radius  Search radius in degrees (default 0.05 ≈ 5km)
      * @return array|null
      */
     public function searchResidentialComplexes(string $query, float $lat, float $lon, float $radius = 0.05)
     {
         // Önce getNearestPlaces kullan
         $nearestResults = $this->getNearestPlaces($lat, $lon, [
-            'count' => 100
+            'count' => 100,
         ]);
 
         if ($nearestResults && isset($nearestResults['places'])) {
             return [
                 'success' => true,
                 'count' => count($nearestResults['places']),
-                'places' => $nearestResults['places']
+                'places' => $nearestResults['places'],
             ];
         }
 
@@ -403,7 +410,7 @@ class WikimapiaService
 
                 // Önce bölgede arama yap
                 $areaResults = $this->getPlacesByArea($lonMin, $latMin, $lonMax, $latMax, [
-                    'count' => 50
+                    'count' => 50,
                 ]);
 
                 // Sonuçları filtrele
@@ -426,7 +433,7 @@ class WikimapiaService
                 return [
                     'success' => true,
                     'count' => count($filteredResults),
-                    'places' => $filteredResults
+                    'places' => $filteredResults,
                 ];
             } catch (\Exception $e) {
                 Log::error('Wikimapia residential search exception', [

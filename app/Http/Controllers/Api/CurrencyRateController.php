@@ -27,8 +27,6 @@ class CurrencyRateController extends Controller
 
     /**
      * Get current exchange rates
-     *
-     * @return JsonResponse
      */
     public function getRates(): JsonResponse
     {
@@ -39,7 +37,7 @@ class CurrencyRateController extends Controller
                 'rates' => $rateData['rates'],
                 'last_updated' => $rateData['last_updated'],
                 'source' => $rateData['source'],
-                'base_currency' => $rateData['base_currency']
+                'base_currency' => $rateData['base_currency'],
             ], 'Döviz kurları başarıyla getirildi');
         } catch (\Exception $e) {
             return ResponseService::serverError('Döviz kurları yüklenirken hata oluştu.', $e);
@@ -48,9 +46,6 @@ class CurrencyRateController extends Controller
 
     /**
      * Convert between currencies
-     *
-     * @param Request $request
-     * @return JsonResponse
      */
     public function convert(Request $request): JsonResponse
     {
@@ -75,14 +70,14 @@ class CurrencyRateController extends Controller
                 'original' => [
                     'amount' => $request->amount,
                     'currency' => $request->from,
-                    'formatted' => $this->currencyService->format($request->amount, $request->from)
+                    'formatted' => $this->currencyService->format($request->amount, $request->from),
                 ],
                 'converted' => [
                     'amount' => $converted,
                     'currency' => $request->to,
-                    'formatted' => $this->currencyService->format($converted, $request->to)
+                    'formatted' => $this->currencyService->format($converted, $request->to),
                 ],
-                'rate' => $this->currencyService->getRate($request->from, $request->to)
+                'rate' => $this->currencyService->getRate($request->from, $request->to),
             ], 'Para birimi dönüşümü başarıyla tamamlandı');
         } catch (\Exception $e) {
             return ResponseService::serverError('Döviz çevrimi başarısız.', $e);
@@ -91,20 +86,16 @@ class CurrencyRateController extends Controller
 
     /**
      * Get supported currencies
-     *
-     * @return JsonResponse
      */
     public function getSupportedCurrencies(): JsonResponse
     {
         return ResponseService::success([
-            'currencies' => $this->currencyService->getSupportedCurrencies()
+            'currencies' => $this->currencyService->getSupportedCurrencies(),
         ], 'Desteklenen para birimleri başarıyla getirildi');
     }
 
     /**
      * Refresh rates cache
-     *
-     * @return JsonResponse
      */
     public function refresh(): JsonResponse
     {
@@ -112,7 +103,7 @@ class CurrencyRateController extends Controller
             $rates = $this->currencyService->refresh();
 
             return ResponseService::success([
-                'rates' => $rates
+                'rates' => $rates,
             ], 'Döviz kurları güncellendi');
         } catch (\Exception $e) {
             return ResponseService::serverError('Kurlar yenilenirken hata oluştu.', $e);

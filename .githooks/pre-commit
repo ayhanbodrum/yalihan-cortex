@@ -1,21 +1,91 @@
 #!/bin/bash
-# Context7 Pre-Commit Hook
-# Otomatik Context7 kuralları kontrolü
+# Context7 Yalıhan Bekçi Pre-Commit Hook
+# Otomatik Context7 kuralları kontrolü ve AI learning entegrasyonu
 
-echo "🔍 Context7 Pre-Commit Kontrolü Başlatılıyor..."
-echo ""
+echo "🔍 Context7 Yalıhan Bekçi Pre-commit Hook"
+echo "========================================="
 
-# Renk kodları
+# Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
-# Hata sayacı
+# Function to print colored output
+print_error() {
+    echo -e "${RED}❌ [ERROR]${NC} $1"
+}
+
+print_success() {
+    echo -e "${GREEN}✅ [SUCCESS]${NC} $1"
+}
+
+print_warning() {
+    echo -e "${YELLOW}⚠️  [WARNING]${NC} $1"
+}
+
+print_info() {
+    echo -e "${BLUE}ℹ️  [INFO]${NC} $1"
+}
+
+# Variables
+VIOLATIONS_FOUND=0
+AUTO_FIX_APPLIED=0
 ERRORS=0
 WARNINGS=0
 
-# 1. Toast Sistemi Kontrolü
+# Get commit info for analytics
+PROJECT_ROOT=$(git rev-parse --show-toplevel)
+files_changed=$(git diff --cached --name-only | wc -l)
+lines_added=$(git diff --cached --numstat | awk '{sum+=$1} END {print sum+0}')
+lines_deleted=$(git diff --cached --numstat | awk '{sum+=$2} END {print sum+0}')
+
+print_info "📊 Analytics: $files_changed files, +$lines_added/-$lines_deleted lines"
+
+# Record git metrics for analytics
+if [ -f "$PROJECT_ROOT/artisan" ]; then
+    cd "$PROJECT_ROOT"
+    print_info "Recording git metrics for Context7 Analytics Dashboard..."
+
+    php artisan analytics:record-metric \
+        "git_activity" "files_changed" "$files_changed" --source="pre_commit" > /dev/null 2>&1 || true
+
+    php artisan analytics:record-metric \
+        "git_activity" "lines_added" "$lines_added" --source="pre_commit" > /dev/null 2>&1 || true
+
+    php artisan analytics:record-metric \
+        "git_activity" "lines_deleted" "$lines_deleted" --source="pre_commit" > /dev/null 2>&1 || true
+fi
+
+        # Log each violation to analytics
+        while IFS= read -r line; do
+            if [[ $line == *"HATA"* ]] || [[ $line == *"ERROR"* ]]; then
+                ERRORS=$((ERRORS + 1))
+                violation_type=$(echo "$line" | cut -d':' -f1 | xargs | sed 's/❌ HATA/Context7_Error/')
+                violation_desc=$(echo "$line" | cut -d':' -f2- | xargs)
+
+                # Log to analytics
+                if [ -f "$PROJECT_ROOT/artisan" ]; then
+                    cd "$PROJECT_ROOT"
+                    php artisan analytics:log-violation \
+                        "$violation_type" "$violation_desc" \
+                        --source="pre_commit" --severity="error" > /dev/null 2>&1 || true
+                fi
+            elif [[ $line == *"UYARI"* ]] || [[ $line == *"WARNING"* ]]; then
+                WARNINGS=$((WARNINGS + 1))
+                violation_type=$(echo "$line" | cut -d':' -f1 | xargs | sed 's/⚠️  UYARI/Context7_Warning/')
+                violation_desc=$(echo "$line" | cut -d':' -f2- | xargs)
+
+                # Log to analytics
+                if [ -f "$PROJECT_ROOT/artisan" ]; then
+                    cd "$PROJECT_ROOT"
+                    php artisan analytics:log-violation \
+                        "$violation_type" "$violation_desc" \
+                        --source="pre_commit" --severity="warning" > /dev/null 2>&1 || true
+                fi
+            fi
+        done
 echo "📱 Toast Sistemi Kontrolü..."
 if git diff --cached --name-only | grep -q "\.blade\.php$\|\.js$\|\.vue$"; then
     if git diff --cached | grep -E "subtleVibrantToast|customToast|toastr\." > /dev/null; then
@@ -103,18 +173,44 @@ if [ -f ".yalihan-bekci/tools/git-commit-suggester.sh" ]; then
     bash .yalihan-bekci/tools/git-commit-suggester.sh --suggest --warn 2>/dev/null || true
 fi
 
-# Sonuç
+# Sonuç ve Analytics Kayıtları
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+# Record analytics metrics
+if [ -f "$PROJECT_ROOT/artisan" ]; then
+    cd "$PROJECT_ROOT"
+
+    # Record validation results
+    php artisan analytics:record-metric \
+        "context7_health" "pre_commit_errors" "$ERRORS" --source="pre_commit" --severity="error" > /dev/null 2>&1 || true
+
+    php artisan analytics:record-metric \
+        "context7_health" "pre_commit_warnings" "$WARNINGS" --source="pre_commit" --severity="warning" > /dev/null 2>&1 || true
+
+    # Calculate health score (100 - penalty for errors/warnings)
+    health_score=$((100 - (ERRORS * 10) - (WARNINGS * 2)))
+    php artisan analytics:record-metric \
+        "context7_health" "pre_commit_health_score" "$health_score" --source="pre_commit" > /dev/null 2>&1 || true
+
+    # Teach Yalıhan Bekçi about validation results
+    if php artisan list | grep -q "bekci:learn"; then
+        validation_data="Pre-commit validation: $ERRORS errors, $WARNINGS warnings, health score: $health_score%"
+        php artisan bekci:learn "pre_commit_validation" "$validation_data" > /dev/null 2>&1 || true
+    fi
+fi
+
 if [ $ERRORS -eq 0 ]; then
     if [ $WARNINGS -eq 0 ]; then
         echo -e "${GREEN}✅ TÜM KONTROLLER BAŞARILI!${NC}"
         echo -e "${GREEN}✅ Context7 v3.1.0 kurallarına uygun${NC}"
+        echo -e "${GREEN}✅ Analytics verisi kaydedildi${NC}"
         echo -e "${GREEN}✅ Commit işlemine devam ediliyor...${NC}"
         echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
         exit 0
     else
         echo -e "${YELLOW}⚠️  ${WARNINGS} UYARI bulundu${NC}"
+        echo -e "${GREEN}ℹ️  Analytics verisi kaydedildi${NC}"
         echo -e "${GREEN}ℹ️  Commit işlemine devam ediliyor...${NC}"
         echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
         exit 0
@@ -125,6 +221,7 @@ else
     if [ $WARNINGS -gt 0 ]; then
         echo -e "${YELLOW}⚠️  ${WARNINGS} UYARI bulundu${NC}"
     fi
+    echo -e "${BLUE}📊 Analytics verisi kaydedildi (hata tracking için)${NC}"
     echo ""
     echo -e "${GREEN}Hataları düzeltin ve tekrar deneyin.${NC}"
     echo -e "${YELLOW}Acil durumlarda: git commit --no-verify${NC}"

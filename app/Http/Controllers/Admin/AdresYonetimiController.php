@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\Ulke;
 use App\Models\Il;
 use App\Models\Ilce;
 use App\Models\Mahalle;
+use App\Models\Ulke;
 use App\Services\TurkiyeAPIService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 
 class AdresYonetimiController extends AdminController
@@ -21,6 +21,7 @@ class AdresYonetimiController extends AdminController
     {
         $this->turkiyeAPI = $turkiyeAPI;
     }
+
     public function index()
     {
         // ✅ CACHE: Ülkeler ve İller için cache ekle (7200s = 2 saat)
@@ -52,7 +53,7 @@ class AdresYonetimiController extends AdminController
                     $relatedData = [
                         'iller_count' => Il::count(), // Context7: ulke_id kolonu olmadığı için tüm illeri say
                         'type' => 'Ülke',
-                        'name' => $item->ulke_adi
+                        'name' => $item->ulke_adi,
                     ];
                     break;
 
@@ -62,7 +63,7 @@ class AdresYonetimiController extends AdminController
                     $relatedData = [
                         'ilceler_count' => Ilce::where('il_id', $id)->count(),
                         'type' => 'İl',
-                        'name' => $item->il_adi
+                        'name' => $item->il_adi,
                     ];
                     break;
 
@@ -75,7 +76,7 @@ class AdresYonetimiController extends AdminController
                         'mahalleler_count' => Mahalle::where('ilce_id', $id)->count(),
                         'parent_name' => $item->il->il_adi ?? 'Bilinmiyor',
                         'type' => 'İlçe',
-                        'name' => $item->ilce_adi
+                        'name' => $item->ilce_adi,
                     ];
                     break;
 
@@ -88,14 +89,14 @@ class AdresYonetimiController extends AdminController
                         'parent_name' => $item->ilce->ilce_adi ?? 'Bilinmiyor',
                         'grandparent_name' => $item->ilce->il->il_adi ?? 'Bilinmiyor',
                         'type' => 'Mahalle',
-                        'name' => $item->mahalle_adi
+                        'name' => $item->mahalle_adi,
                     ];
                     break;
 
                 default:
                     return response()->json([
                         'success' => false,
-                        'message' => 'Geçersiz tür'
+                        'message' => 'Geçersiz tür',
                     ], 422);
             }
 
@@ -103,7 +104,7 @@ class AdresYonetimiController extends AdminController
                 return response()->json([
                     'success' => true,
                     'item' => $item,
-                    'related_data' => $relatedData
+                    'related_data' => $relatedData,
                 ]);
             }
 
@@ -112,12 +113,12 @@ class AdresYonetimiController extends AdminController
             if (request()->expectsJson()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Öğe bulunamadı: ' . $e->getMessage()
+                    'message' => 'Öğe bulunamadı: '.$e->getMessage(),
                 ], 404);
             }
 
             return redirect()->route('admin.adres-yonetimi.index')
-                ->with('error', 'Öğe bulunamadı: ' . $e->getMessage());
+                ->with('error', 'Öğe bulunamadı: '.$e->getMessage());
         }
     }
 
@@ -171,7 +172,7 @@ class AdresYonetimiController extends AdminController
             return view('admin.adres-yonetimi.create', compact('type', 'parentOptions'));
         } catch (\Exception $e) {
             return redirect()->route('admin.adres-yonetimi.index')
-                ->with('error', 'Form yüklenirken hata: ' . $e->getMessage());
+                ->with('error', 'Form yüklenirken hata: '.$e->getMessage());
         }
     }
 
@@ -232,7 +233,7 @@ class AdresYonetimiController extends AdminController
             return view('admin.adres-yonetimi.edit', compact('item', 'type', 'parentOptions'));
         } catch (\Exception $e) {
             return redirect()->route('admin.adres-yonetimi.index')
-                ->with('error', 'Öğe bulunamadı: ' . $e->getMessage());
+                ->with('error', 'Öğe bulunamadı: '.$e->getMessage());
         }
     }
 
@@ -244,6 +245,7 @@ class AdresYonetimiController extends AdminController
                 ->orderBy('ulke_adi')
                 ->get();
         });
+
         return response()->json(['success' => true, 'ulkeler' => $ulkeler]);
     }
 
@@ -268,7 +270,7 @@ class AdresYonetimiController extends AdminController
 
                 $turkiyeIller = $this->turkiyeAPI->getProvinces();
 
-                if (!empty($turkiyeIller)) {
+                if (! empty($turkiyeIller)) {
                     DB::beginTransaction();
 
                     foreach ($turkiyeIller as $il) {
@@ -302,7 +304,7 @@ class AdresYonetimiController extends AdminController
                 DB::rollBack();
                 Log::error('TurkiyeAPI: Otomatik sync hatası', [
                     'error' => $e->getMessage(),
-                    'trace' => $e->getTraceAsString()
+                    'trace' => $e->getTraceAsString(),
                 ]);
                 // Hata durumunda boş array döndür (kullanıcı manuel sync yapabilir)
             }
@@ -316,12 +318,14 @@ class AdresYonetimiController extends AdminController
         // Context7: iller tablosunda ulke_id kolonu yok - tüm illeri döndür
         // TODO: Eğer ulke filtrelemesi gerekiyorsa, migration ile ulke_id kolonu eklenmeli
         $iller = Il::orderBy('il_adi')->get(['id', 'il_adi']);
+
         return response()->json(['success' => true, 'iller' => $iller]);
     }
 
     public function getIlceler()
     {
         $ilceler = Ilce::orderBy('ilce_adi')->get(['id', 'il_id', 'ilce_adi']);
+
         return response()->json(['success' => true, 'ilceler' => $ilceler]);
     }
 
@@ -334,12 +338,14 @@ class AdresYonetimiController extends AdminController
                 ->orderBy('ilce_adi')
                 ->get();
         });
+
         return response()->json(['success' => true, 'ilceler' => $ilceler]);
     }
 
     public function getMahalleler()
     {
         $mahalleler = Mahalle::orderBy('mahalle_adi')->get(['id', 'ilce_id', 'mahalle_adi']);
+
         return response()->json(['success' => true, 'mahalleler' => $mahalleler]);
     }
 
@@ -352,6 +358,7 @@ class AdresYonetimiController extends AdminController
                 ->orderBy('mahalle_adi')
                 ->get();
         });
+
         return response()->json(['success' => true, 'mahalleler' => $mahalleler]);
     }
 
@@ -363,6 +370,7 @@ class AdresYonetimiController extends AdminController
             $item = Ulke::create(['ulke_adi' => $name]);
             // ✅ CACHE INVALIDATION: Ülkeler cache'ini temizle
             Cache::forget('adres_yonetimi_ulkeler');
+
             return response()->json(['success' => true, 'item' => $item]);
         }
         if ($type === 'il') {
@@ -370,6 +378,7 @@ class AdresYonetimiController extends AdminController
             $item = Il::create(['il_adi' => $name]);
             // ✅ CACHE INVALIDATION: İller cache'ini temizle
             Cache::forget('adres_yonetimi_iller');
+
             return response()->json(['success' => true, 'item' => $item]);
         }
         if ($type === 'ilce') {
@@ -377,14 +386,17 @@ class AdresYonetimiController extends AdminController
             // ✅ CACHE INVALIDATION: İlçeler cache'lerini temizle
             Cache::forget('adres_yonetimi_all_ilceler');
             Cache::forget("adres_yonetimi_ilceler_il_{$parentId}");
+
             return response()->json(['success' => true, 'item' => $item]);
         }
         if ($type === 'mahalle') {
             $item = Mahalle::create(['ilce_id' => $parentId, 'mahalle_adi' => $name]);
             // ✅ CACHE INVALIDATION: Mahalleler cache'ini temizle
             Cache::forget("adres_yonetimi_mahalleler_ilce_{$parentId}");
+
             return response()->json(['success' => true, 'item' => $item]);
         }
+
         return response()->json(['success' => false, 'message' => 'Geçersiz tür'], 422);
     }
 
@@ -396,6 +408,7 @@ class AdresYonetimiController extends AdminController
             $item->update(['ulke_adi' => $name]);
             // ✅ CACHE INVALIDATION: Ülkeler cache'ini temizle
             Cache::forget('adres_yonetimi_ulkeler');
+
             return response()->json(['success' => true]);
         }
         if ($type === 'il') {
@@ -403,6 +416,7 @@ class AdresYonetimiController extends AdminController
             $item->update(['il_adi' => $name]);
             // ✅ CACHE INVALIDATION: İller cache'ini temizle
             Cache::forget('adres_yonetimi_iller');
+
             return response()->json(['success' => true]);
         }
         if ($type === 'ilce') {
@@ -415,6 +429,7 @@ class AdresYonetimiController extends AdminController
             if ($item->il_id !== $oldIlId) {
                 Cache::forget("adres_yonetimi_ilceler_il_{$item->il_id}");
             }
+
             return response()->json(['success' => true]);
         }
         if ($type === 'mahalle') {
@@ -426,8 +441,10 @@ class AdresYonetimiController extends AdminController
             if ($item->ilce_id !== $oldIlceId) {
                 Cache::forget("adres_yonetimi_mahalleler_ilce_{$item->ilce_id}");
             }
+
             return response()->json(['success' => true]);
         }
+
         return response()->json(['success' => false, 'message' => 'Geçersiz tür'], 422);
     }
 
@@ -437,12 +454,14 @@ class AdresYonetimiController extends AdminController
             Ulke::where('id', $id)->delete();
             // ✅ CACHE INVALIDATION: Ülkeler cache'ini temizle
             Cache::forget('adres_yonetimi_ulkeler');
+
             return response()->json(['success' => true]);
         }
         if ($type === 'il') {
             Il::where('id', $id)->delete();
             // ✅ CACHE INVALIDATION: İller cache'ini temizle
             Cache::forget('adres_yonetimi_iller');
+
             return response()->json(['success' => true]);
         }
         if ($type === 'ilce') {
@@ -454,6 +473,7 @@ class AdresYonetimiController extends AdminController
             if ($ilId) {
                 Cache::forget("adres_yonetimi_ilceler_il_{$ilId}");
             }
+
             return response()->json(['success' => true]);
         }
         if ($type === 'mahalle') {
@@ -464,8 +484,10 @@ class AdresYonetimiController extends AdminController
             if ($ilceId) {
                 Cache::forget("adres_yonetimi_mahalleler_ilce_{$ilceId}");
             }
+
             return response()->json(['success' => true]);
         }
+
         return response()->json(['success' => false, 'message' => 'Geçersiz tür'], 422);
     }
 
@@ -479,7 +501,7 @@ class AdresYonetimiController extends AdminController
             $validated = $request->validate([
                 'type' => 'required|in:ulke,il,ilce,mahalle',
                 'ids' => 'required|array|min:1',
-                'ids.*' => 'required|integer'
+                'ids.*' => 'required|integer',
             ], [
                 'type.required' => 'Tip belirtilmelidir',
                 'type.in' => 'Geçersiz tip. İzin verilen tipler: ulke, il, ilce, mahalle',
@@ -487,7 +509,7 @@ class AdresYonetimiController extends AdminController
                 'ids.array' => 'ID\'ler bir dizi olmalıdır',
                 'ids.min' => 'En az bir öğe seçilmelidir',
                 'ids.*.required' => 'Her ID değeri gereklidir',
-                'ids.*.integer' => 'Her ID bir tam sayı olmalıdır'
+                'ids.*.integer' => 'Her ID bir tam sayı olmalıdır',
             ]);
 
             $type = $validated['type'];
@@ -534,33 +556,33 @@ class AdresYonetimiController extends AdminController
             if ($deletedCount > 0) {
                 return response()->json([
                     'success' => true,
-                    'message' => "{$deletedCount} öğe başarıyla silindi" . (count($errors) > 0 ? '. Bazı öğeler silinemedi.' : ''),
+                    'message' => "{$deletedCount} öğe başarıyla silindi".(count($errors) > 0 ? '. Bazı öğeler silinemedi.' : ''),
                     'deleted_count' => $deletedCount,
-                    'errors' => $errors
+                    'errors' => $errors,
                 ]);
             } else {
                 return response()->json([
                     'success' => false,
                     'message' => 'Hiçbir öğe silinemedi. Seçilen ID\'ler veritabanında bulunamadı.',
-                    'errors' => $errors
+                    'errors' => $errors,
                 ], 422);
             }
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Validation hatası',
-                'errors' => $e->errors()
+                'errors' => $e->errors(),
             ], 422);
         } catch (\Exception $e) {
             Log::error('Bulk delete hatası', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
-                'request_data' => $request->all()
+                'request_data' => $request->all(),
             ]);
 
             return response()->json([
                 'success' => false,
-                'message' => 'Toplu silme işlemi sırasında hata: ' . $e->getMessage()
+                'message' => 'Toplu silme işlemi sırasında hata: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -635,7 +657,7 @@ class AdresYonetimiController extends AdminController
                             Ilce::updateOrCreate(
                                 [
                                     'il_id' => $il['id'],
-                                    'ilce_adi' => $ilce['name']
+                                    'ilce_adi' => $ilce['name'],
                                 ],
                                 $ilceData
                             );
@@ -643,6 +665,7 @@ class AdresYonetimiController extends AdminController
                             // Unique constraint hatası - duplicate kayıt zaten var, devam et
                             if ($e->getCode() === '23000') {
                                 Log::debug("TurkiyeAPI: Duplicate ilçe atlandı - {$ilce['name']} (İl ID: {$il['id']})");
+
                                 continue;
                             }
                             throw $e;
@@ -721,7 +744,7 @@ class AdresYonetimiController extends AdminController
                     // Belirli bir ilçe için mahalleleri çek (TurkiyeAPI ID'si ile)
                     if ($turkiyeAPIDistrictId) {
                         $mahalleler = $this->turkiyeAPI->getNeighborhoods($turkiyeAPIDistrictId);
-                        Log::info("TurkiyeAPI: İlçe ID {$turkiyeAPIDistrictId} için " . count($mahalleler) . " mahalle çekildi");
+                        Log::info("TurkiyeAPI: İlçe ID {$turkiyeAPIDistrictId} için ".count($mahalleler).' mahalle çekildi');
                     } else {
                         Log::error("TurkiyeAPI: TurkiyeAPI District ID bulunamadı - districtId: {$districtId}");
                         $mahalleler = [];
@@ -752,7 +775,7 @@ class AdresYonetimiController extends AdminController
                             Mahalle::updateOrCreate(
                                 [
                                     'ilce_id' => $dbDistrictId, // Context7: Veritabanındaki ilçe ID'sini kullan
-                                    'mahalle_adi' => $mahalle['name']
+                                    'mahalle_adi' => $mahalle['name'],
                                 ],
                                 $mahalleData
                             );
@@ -760,6 +783,7 @@ class AdresYonetimiController extends AdminController
                             // Unique constraint hatası - duplicate kayıt zaten var, devam et
                             if ($e->getCode() === '23000') {
                                 Log::debug("TurkiyeAPI: Duplicate mahalle atlandı - {$mahalle['name']} (İlçe ID: {$districtId})");
+
                                 continue;
                             }
                             throw $e;
@@ -791,8 +815,9 @@ class AdresYonetimiController extends AdminController
                                 return mb_strtolower(trim($tIlce['name'])) === mb_strtolower(trim($ilce->ilce_adi));
                             });
 
-                            if (!$turkiyeAPIIlce) {
+                            if (! $turkiyeAPIIlce) {
                                 Log::debug("TurkiyeAPI: İlçe '{$ilce->ilce_adi}' (ID: {$ilce->id}) için TurkiyeAPI'de eşleşme bulunamadı");
+
                                 continue;
                             }
 
@@ -801,6 +826,7 @@ class AdresYonetimiController extends AdminController
 
                             if (empty($mahalleler)) {
                                 Log::debug("TurkiyeAPI: İlçe '{$ilce->ilce_adi}' (TurkiyeAPI ID: {$turkiyeAPIIlce['id']}) için mahalle bulunamadı");
+
                                 continue;
                             }
 
@@ -829,13 +855,14 @@ class AdresYonetimiController extends AdminController
                                     Mahalle::updateOrCreate(
                                         [
                                             'ilce_id' => $ilce->id,
-                                            'mahalle_adi' => $mahalle['name'] ?? 'İsimsiz Mahalle'
+                                            'mahalle_adi' => $mahalle['name'] ?? 'İsimsiz Mahalle',
                                         ],
                                         $mahalleData
                                     );
                                 } catch (\Illuminate\Database\QueryException $e) {
                                     if ($e->getCode() === '23000') {
                                         Log::debug("TurkiyeAPI: Duplicate mahalle atlandı - {$mahalle['name']} (İlçe ID: {$ilce->id})");
+
                                         continue;
                                     }
                                     throw $e;
@@ -848,8 +875,9 @@ class AdresYonetimiController extends AdminController
                             Cache::forget("adres_yonetimi_mahalleler_ilce_{$ilce->id}");
                         } catch (\Exception $e) {
                             Log::warning("TurkiyeAPI: İlçe {$ilce->id} ({$ilce->ilce_adi}) için mahalle sync hatası", [
-                                'error' => $e->getMessage()
+                                'error' => $e->getMessage(),
                             ]);
+
                             continue;
                         }
                     }
@@ -873,8 +901,9 @@ class AdresYonetimiController extends AdminController
                         try {
                             // İlçe adına göre TurkiyeAPI'den ilçe ID'sini bul
                             $il = $ilce->il;
-                            if (!$il) {
+                            if (! $il) {
                                 Log::warning("TurkiyeAPI: İlçe {$ilce->id} için il bulunamadı");
+
                                 continue;
                             }
 
@@ -886,8 +915,9 @@ class AdresYonetimiController extends AdminController
                                 return mb_strtolower(trim($tIlce['name'])) === mb_strtolower(trim($ilce->ilce_adi));
                             });
 
-                            if (!$turkiyeAPIIlce) {
+                            if (! $turkiyeAPIIlce) {
                                 Log::debug("TurkiyeAPI: İlçe '{$ilce->ilce_adi}' (ID: {$ilce->id}) için TurkiyeAPI'de eşleşme bulunamadı");
+
                                 continue;
                             }
 
@@ -896,6 +926,7 @@ class AdresYonetimiController extends AdminController
 
                             if (empty($mahalleler)) {
                                 Log::debug("TurkiyeAPI: İlçe '{$ilce->ilce_adi}' (TurkiyeAPI ID: {$turkiyeAPIIlce['id']}) için mahalle bulunamadı");
+
                                 continue;
                             }
 
@@ -925,7 +956,7 @@ class AdresYonetimiController extends AdminController
                                     Mahalle::updateOrCreate(
                                         [
                                             'ilce_id' => $ilce->id,
-                                            'mahalle_adi' => $mahalle['name'] ?? 'İsimsiz Mahalle'
+                                            'mahalle_adi' => $mahalle['name'] ?? 'İsimsiz Mahalle',
                                         ],
                                         $mahalleData
                                     );
@@ -933,6 +964,7 @@ class AdresYonetimiController extends AdminController
                                     // Unique constraint hatası - duplicate kayıt zaten var, devam et
                                     if ($e->getCode() === '23000') {
                                         Log::debug("TurkiyeAPI: Duplicate mahalle atlandı - {$mahalle['name']} (İlçe ID: {$ilce->id})");
+
                                         continue;
                                     }
                                     throw $e;
@@ -953,8 +985,9 @@ class AdresYonetimiController extends AdminController
                         } catch (\Exception $e) {
                             Log::warning("TurkiyeAPI: İlçe {$ilce->id} ({$ilce->ilce_adi}) için mahalle sync hatası", [
                                 'error' => $e->getMessage(),
-                                'trace' => $e->getTraceAsString()
+                                'trace' => $e->getTraceAsString(),
                             ]);
+
                             // Hata olsa bile devam et
                             continue;
                         }
@@ -965,7 +998,7 @@ class AdresYonetimiController extends AdminController
                         'processed_ilceler' => $processedIlceler,
                         'total_ilceler' => count($allIlceler),
                         'total_mahalleler' => $totalMahalleler,
-                        'note' => "Tüm ilçeler sync edildi."
+                        'note' => 'Tüm ilçeler sync edildi.',
                     ]);
                 }
             }
@@ -976,19 +1009,19 @@ class AdresYonetimiController extends AdminController
                 'success' => true,
                 'message' => 'TurkiyeAPI\'den veri sync edildi',
                 'results' => $syncResults,
-                'source' => 'turkiyeapi'
+                'source' => 'turkiyeapi',
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
 
             Log::error('TurkiyeAPI sync hatası', [
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
 
             return response()->json([
                 'success' => false,
-                'message' => 'Sync hatası: ' . $e->getMessage()
+                'message' => 'Sync hatası: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -1006,12 +1039,12 @@ class AdresYonetimiController extends AdminController
                 'success' => true,
                 'ilceler' => $ilceler,
                 'source' => 'turkiyeapi',
-                'count' => count($ilceler)
+                'count' => count($ilceler),
             ]);
         } catch (\Exception $e) {
             Log::error('TurkiyeAPI ilçe getirme hatası', [
                 'il_id' => $ilId,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
 
             // Fallback: Local DB'den çek
@@ -1022,7 +1055,7 @@ class AdresYonetimiController extends AdminController
                 'ilceler' => $ilceler,
                 'source' => 'local_db',
                 'count' => count($ilceler),
-                'warning' => 'TurkiyeAPI kullanılamadı, local DB kullanıldı'
+                'warning' => 'TurkiyeAPI kullanılamadı, local DB kullanıldı',
             ]);
         }
     }
@@ -1046,13 +1079,13 @@ class AdresYonetimiController extends AdminController
                     'villages' => count($allLocations['villages'] ?? []),
                     'total' => count($allLocations['neighborhoods'] ?? []) +
                         count($allLocations['towns'] ?? []) +
-                        count($allLocations['villages'] ?? [])
-                ]
+                        count($allLocations['villages'] ?? []),
+                ],
             ]);
         } catch (\Exception $e) {
             Log::error('TurkiyeAPI lokasyon tipleri getirme hatası', [
                 'ilce_id' => $ilceId,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
 
             // Fallback: Local DB'den sadece mahalleleri çek
@@ -1067,14 +1100,14 @@ class AdresYonetimiController extends AdminController
                             'name' => $m->mahalle_adi,
                             'type' => 'mahalle',
                             'type_label' => 'Mahalle',
-                            'icon' => '📍'
+                            'icon' => '📍',
                         ];
                     })->toArray(),
                     'towns' => [],
-                    'villages' => []
+                    'villages' => [],
                 ],
                 'source' => 'local_db',
-                'warning' => 'TurkiyeAPI kullanılamadı, sadece mahalleler gösteriliyor'
+                'warning' => 'TurkiyeAPI kullanılamadı, sadece mahalleler gösteriliyor',
             ]);
         }
     }
@@ -1102,7 +1135,7 @@ class AdresYonetimiController extends AdminController
             if ($provinceId && ($fetchType === 'auto' || $fetchType === 'districts')) {
                 $ilceler = $this->turkiyeAPI->getDistricts($provinceId);
                 $results['districts'] = $ilceler;
-                Log::info("TurkiyeAPI: İl ID {$provinceId} için " . count($ilceler) . " ilçe çekildi");
+                Log::info("TurkiyeAPI: İl ID {$provinceId} için ".count($ilceler).' ilçe çekildi');
 
                 // Context7: İlçeler içinde mahalleler varsa onları da çıkar
                 // TurkiyeAPI bazen ilçeleri mahalleleriyle birlikte döndürüyor
@@ -1121,7 +1154,7 @@ class AdresYonetimiController extends AdminController
 
                 // Context7: İl seçildiyse ve ilçe seçilmemişse, tüm ilçelerin mahallelerini de çek (opsiyonel)
                 // Bu çok fazla veri olabilir, bu yüzden sadece ilk 5 ilçe için yapıyoruz
-                if (!$districtId && $fetchType === 'auto' && empty($results['neighborhoods'])) {
+                if (! $districtId && $fetchType === 'auto' && empty($results['neighborhoods'])) {
                     $firstDistricts = array_slice($ilceler, 0, 5); // İlk 5 ilçe
                     foreach ($firstDistricts as $ilce) {
                         try {
@@ -1143,9 +1176,9 @@ class AdresYonetimiController extends AdminController
                 $results['neighborhoods'] = array_merge($results['neighborhoods'] ?? [], $allLocations['neighborhoods'] ?? []);
                 $results['towns'] = array_merge($results['towns'] ?? [], $allLocations['towns'] ?? []);
                 $results['villages'] = array_merge($results['villages'] ?? [], $allLocations['villages'] ?? []);
-                Log::info("TurkiyeAPI: İlçe ID {$districtId} için " .
-                    (count($allLocations['neighborhoods'] ?? []) + count($allLocations['towns'] ?? []) + count($allLocations['villages'] ?? [])) .
-                    " lokasyon çekildi");
+                Log::info("TurkiyeAPI: İlçe ID {$districtId} için ".
+                    (count($allLocations['neighborhoods'] ?? []) + count($allLocations['towns'] ?? []) + count($allLocations['villages'] ?? [])).
+                    ' lokasyon çekildi');
             }
 
             // Debug: Log results
@@ -1171,25 +1204,25 @@ class AdresYonetimiController extends AdminController
                     'total' => count($results['districts']) +
                         count($results['neighborhoods']) +
                         count($results['towns']) +
-                        count($results['villages'])
+                        count($results['villages']),
                 ],
                 'source' => 'turkiyeapi',
                 'debug' => [
                     'province_id' => $provinceId,
                     'district_id' => $districtId,
                     'fetch_type' => $fetchType,
-                ]
+                ],
             ]);
         } catch (\Exception $e) {
             Log::error('TurkiyeAPI fetch hatası', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
-                'request_data' => $request->all()
+                'request_data' => $request->all(),
             ]);
 
             return response()->json([
                 'success' => false,
-                'message' => 'Veri çekme hatası: ' . $e->getMessage()
+                'message' => 'Veri çekme hatası: '.$e->getMessage(),
             ], 500);
         }
     }

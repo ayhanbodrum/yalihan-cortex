@@ -3,7 +3,8 @@
     <div class="mb-6 flex items-start justify-between">
         <div>
             <h2 class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-2 flex items-center">
-                <span class="bg-lime-100 dark:bg-lime-900 text-lime-600 dark:text-lime-400 rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-3">9</span>
+                <span
+                    class="bg-lime-100 dark:bg-lime-900 text-lime-600 dark:text-lime-400 rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-3">9</span>
                 ✨ İlan Özellikleri
             </h2>
             <p class="text-gray-600 dark:text-gray-400 text-sm">
@@ -51,7 +52,8 @@
         </div>
 
         {{-- Error State --}}
-        <div id="features-error" class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 hidden">
+        <div id="features-error"
+            class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 hidden">
             <div class="flex items-center">
                 <i class="fas fa-exclamation-triangle text-red-600 dark:text-red-400 mr-3"></i>
                 <p class="text-red-800 dark:text-red-200" id="features-error-message"></p>
@@ -84,19 +86,39 @@
 
                 console.log('🔧 FeaturesManager elements:', this.elements);
 
+                // ✅ Duplicate kontrolü için son işlenen event key'i sakla
+                this._lastProcessedEventKey = null;
+
                 window.addEventListener('category-changed', (e) => {
                     console.log('🎯 Features: Category changed event received', e.detail);
+
+                    if (!e.detail || !e.detail.category) {
+                        console.log('⏭️ Features: Kategori bilgisi yok, atlanıyor');
+                        return;
+                    }
+
+                    // ✅ Duplicate kontrolü - Aynı event'i tekrar işleme
+                    const eventKey = e.detail.category?.id + '-' + (e.detail.yayinTipi || e.detail
+                        .yayinTipiId || 'null');
+                    if (this._lastProcessedEventKey === eventKey) {
+                        console.log('⏭️ Features: Aynı event zaten işlendi, atlanıyor');
+                        return;
+                    }
+                    this._lastProcessedEventKey = eventKey;
+
                     this.selectedCategory = e.detail.category;
                     const yayinTipi = e.detail.yayinTipi || e.detail.yayinTipiId || null;
 
                     // ✅ Context7: Get category slug for applies_to filtering
                     let kategoriSlug = null;
                     if (this.selectedCategory) {
-                        kategoriSlug = this.selectedCategory.parent_slug || this.selectedCategory.slug || null;
+                        kategoriSlug = this.selectedCategory.parent_slug || this.selectedCategory
+                            .slug || null;
                     }
 
                     if (kategoriSlug) {
-                        console.log('🎯 Loading features with applies_to:', kategoriSlug, 'yayin_tipi:', yayinTipi);
+                        console.log('🎯 Loading features with applies_to:', kategoriSlug, 'yayin_tipi:',
+                            yayinTipi);
                         this.loadFeatures(kategoriSlug, yayinTipi);
                     } else {
                         console.log('🎯 No category slug, resetting');
@@ -115,10 +137,13 @@
                 try {
                     // ✅ Context7: Use applies_to filter instead of category_id
                     const appliesTo = kategoriSlug.toLowerCase();
-                    let url = `/api/admin/features?applies_to=${encodeURIComponent(appliesTo)}`;
+                    const params = new URLSearchParams({
+                        applies_to: appliesTo
+                    });
                     if (yayinTipi) {
-                        url += `&yayin_tipi=${encodeURIComponent(yayinTipi)}`;
+                        params.append('yayin_tipi', yayinTipi);
                     }
+                    const url = `/api/admin/features?${params.toString()}`;
 
                     const response = await fetch(url, {
                         credentials: 'same-origin',
@@ -186,10 +211,12 @@
 
             createCategoryElement(category) {
                 const div = document.createElement('div');
-                div.className = 'bg-gradient-to-br from-lime-50 to-green-50 dark:from-lime-900/20 dark:to-green-900/20 rounded-lg p-6';
+                div.className =
+                    'bg-gradient-to-br from-lime-50 to-green-50 dark:from-lime-900/20 dark:to-green-900/20 rounded-lg p-6';
 
                 const header = document.createElement('h4');
-                header.className = 'text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4 flex items-center';
+                header.className =
+                    'text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4 flex items-center';
                 header.innerHTML = `
                     <i class="${category.icon || 'fas fa-star'} mr-2 text-lime-600"></i>
                     <span>${this.escape(category.name)}</span>
@@ -218,7 +245,8 @@
                 const existingValue = this.getExistingFeatureValue(feature.slug);
 
                 if (feature.type === 'boolean') {
-                    const isChecked = existingValue === '1' || existingValue === 'true' || existingValue === true;
+                    const isChecked = existingValue === '1' || existingValue === 'true' || existingValue ===
+                        true;
                     div.innerHTML = `
                         <label class="flex items-center justify-between cursor-pointer group">
                             <div class="flex items-center">
@@ -264,19 +292,23 @@
                 } else if (feature.type === 'select') {
                     const label = document.createElement('label');
                     label.htmlFor = `feature_${feature.id}`;
-                    label.className = 'flex items-center justify-between text-sm font-medium text-gray-900 dark:text-white mb-1';
+                    label.className =
+                        'flex items-center justify-between text-sm font-medium text-gray-900 dark:text-white mb-1';
 
                     const labelText = document.createElement('span');
                     labelText.textContent = feature.name;
 
                     const aiBtn = document.createElement('button');
                     aiBtn.type = 'button';
-                    aiBtn.className = 'ai-suggest-btn inline-flex items-center px-2 py-1 text-xs font-medium text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 hover:bg-purple-50 dark:hover:bg-purple-900/20 rounded transition-all';
+                    aiBtn.className =
+                        'ai-suggest-btn inline-flex items-center px-2 py-1 text-xs font-medium text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 hover:bg-purple-50 dark:hover:bg-purple-900/20 rounded transition-all';
                     aiBtn.title = 'AI ile öner';
-                    aiBtn.innerHTML = '<i class="fas fa-magic mr-1"></i><span class="hidden sm:inline">AI</span>';
+                    aiBtn.innerHTML =
+                        '<i class="fas fa-magic mr-1"></i><span class="hidden sm:inline">AI</span>';
                     aiBtn.onclick = () => {
                         if (window.FeaturesAI) {
-                            window.FeaturesAI.suggestSingle(feature.slug, document.getElementById(`feature_${feature.id}`));
+                            window.FeaturesAI.suggestSingle(feature.slug, document.getElementById(
+                                `feature_${feature.id}`));
                         }
                     };
 
@@ -286,7 +318,8 @@
                     const select = document.createElement('select');
                     select.name = `features[${feature.slug}]`;
                     select.id = `feature_${feature.id}`;
-                    select.className = 'w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 dark:bg-gray-800 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-lime-500 transition-all';
+                    select.className =
+                        'w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 dark:bg-gray-800 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-lime-500 transition-all';
 
                     const placeholder = document.createElement('option');
                     placeholder.value = '';
@@ -375,9 +408,12 @@
 <style>
     /* AI Suggested Animation */
     @keyframes ai-pulse {
-        0%, 100% {
+
+        0%,
+        100% {
             box-shadow: 0 0 0 0 rgba(168, 85, 247, 0.4);
         }
+
         50% {
             box-shadow: 0 0 0 10px rgba(168, 85, 247, 0);
         }

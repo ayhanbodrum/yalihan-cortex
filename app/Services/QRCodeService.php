@@ -2,11 +2,11 @@
 
 namespace App\Services;
 
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Cache;
 use App\Services\Cache\CacheHelper;
 use App\Services\Logging\LogService;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 /**
  * QR Code Service
@@ -20,10 +20,12 @@ use App\Services\Logging\LogService;
 class QRCodeService
 {
     protected string $storagePath = 'public/qrcodes';
+
     protected int $defaultSize = 300;
+
     protected array $defaultColors = [
         'foreground' => [0, 0, 0], // Siyah
-        'background' => [255, 255, 255] // Beyaz
+        'background' => [255, 255, 255], // Beyaz
     ];
 
     /**
@@ -53,18 +55,18 @@ class QRCodeService
     /**
      * Generate QR code for a listing
      *
-     * @param int $ilanId Listing ID
-     * @param array $options QR code options
+     * @param  int  $ilanId  Listing ID
+     * @param  array  $options  QR code options
      * @return array QR code data (path, url, base64)
      */
     public function generateForListing(int $ilanId, array $options = []): array
     {
         // Check if QR code is enabled
-        if (!$this->isEnabled()) {
+        if (! $this->isEnabled()) {
             throw new \Exception('QR kod özelliği devre dışı bırakılmış');
         }
 
-        $cacheKey = "qrcode.listing.{$ilanId}." . md5(json_encode($options));
+        $cacheKey = "qrcode.listing.{$ilanId}.".md5(json_encode($options));
 
         return CacheHelper::remember(
             'qrcode',
@@ -98,7 +100,7 @@ class QRCodeService
                     }
 
                     // Save to storage
-                    $filename = "listing-{$ilanId}-" . time() . ".{$format}";
+                    $filename = "listing-{$ilanId}-".time().".{$format}";
                     $path = "{$this->storagePath}/{$filename}";
 
                     Storage::put($path, $qrCode);
@@ -106,10 +108,10 @@ class QRCodeService
                     return [
                         'path' => $path,
                         'url' => Storage::url($path),
-                        'base64' => 'data:image/' . ($format === 'svg' ? 'svg+xml' : $format) . ';base64,' . base64_encode($qrCode),
+                        'base64' => 'data:image/'.($format === 'svg' ? 'svg+xml' : $format).';base64,'.base64_encode($qrCode),
                         'filename' => $filename,
                         'size' => $size,
-                        'format' => $format
+                        'format' => $format,
                     ];
                 } catch (\Exception $e) {
                     LogService::error('QR code generation failed', ['ilan_id' => $ilanId], $e);
@@ -123,9 +125,8 @@ class QRCodeService
     /**
      * Generate QR code for WhatsApp sharing
      *
-     * @param int $ilanId Listing ID
-     * @param string|null $phoneNumber WhatsApp number
-     * @return array
+     * @param  int  $ilanId  Listing ID
+     * @param  string|null  $phoneNumber  WhatsApp number
      */
     public function generateForWhatsApp(int $ilanId, ?string $phoneNumber = null): array
     {
@@ -136,16 +137,15 @@ class QRCodeService
 
         return $this->generateForUrl($whatsappUrl, [
             'size' => 250,
-            'filename_prefix' => "whatsapp-{$ilanId}"
+            'filename_prefix' => "whatsapp-{$ilanId}",
         ]);
     }
 
     /**
      * Generate QR code for any URL
      *
-     * @param string $url URL to encode
-     * @param array $options Options
-     * @return array
+     * @param  string  $url  URL to encode
+     * @param  array  $options  Options
      */
     public function generateForUrl(string $url, array $options = []): array
     {
@@ -160,7 +160,7 @@ class QRCodeService
                 ->errorCorrection('H')
                 ->generate($url);
 
-            $filename = "{$filename}-" . time() . ".{$format}";
+            $filename = "{$filename}-".time().".{$format}";
             $path = "{$this->storagePath}/{$filename}";
 
             Storage::put($path, $qrCode);
@@ -168,8 +168,8 @@ class QRCodeService
             return [
                 'path' => $path,
                 'url' => Storage::url($path),
-                'base64' => 'data:image/' . ($format === 'svg' ? 'svg+xml' : $format) . ';base64,' . base64_encode($qrCode),
-                'filename' => $filename
+                'base64' => 'data:image/'.($format === 'svg' ? 'svg+xml' : $format).';base64,'.base64_encode($qrCode),
+                'filename' => $filename,
             ];
         } catch (\Exception $e) {
             LogService::error('QR code generation failed', ['url' => $url], $e);
@@ -180,8 +180,7 @@ class QRCodeService
     /**
      * Get QR code data (with cache)
      *
-     * @param int $ilanId Listing ID
-     * @return array|null
+     * @param  int  $ilanId  Listing ID
      */
     public function getForListing(int $ilanId): ?array
     {
@@ -189,6 +188,7 @@ class QRCodeService
             return $this->generateForListing($ilanId);
         } catch (\Exception $e) {
             LogService::error('QR code retrieval failed', ['ilan_id' => $ilanId], $e);
+
             return null;
         }
     }
@@ -196,8 +196,7 @@ class QRCodeService
     /**
      * Delete QR code for a listing
      *
-     * @param int $ilanId Listing ID
-     * @return bool
+     * @param  int  $ilanId  Listing ID
      */
     public function deleteForListing(int $ilanId): bool
     {
@@ -216,14 +215,13 @@ class QRCodeService
             return true;
         } catch (\Exception $e) {
             LogService::error('QR code deletion failed', ['ilan_id' => $ilanId], $e);
+
             return false;
         }
     }
 
     /**
      * Get QR code statistics
-     *
-     * @return array
      */
     public function getStatistics(): array
     {
@@ -239,14 +237,15 @@ class QRCodeService
                 'total_files' => count($files),
                 'total_size' => $totalSize,
                 'total_size_mb' => round($totalSize / 1024 / 1024, 2),
-                'storage_path' => $this->storagePath
+                'storage_path' => $this->storagePath,
             ];
         } catch (\Exception $e) {
             LogService::error('QR code statistics failed', [], $e);
+
             return [
                 'total_files' => 0,
                 'total_size' => 0,
-                'total_size_mb' => 0
+                'total_size_mb' => 0,
             ];
         }
     }

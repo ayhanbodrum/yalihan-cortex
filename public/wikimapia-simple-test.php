@@ -1,4 +1,5 @@
 <?php
+
 /**
  * WikiMapia API Simple JSON Test
  *
@@ -12,8 +13,8 @@ $apiKey = '2A164909-AFCD1C06-7F3C5F21-526B8425-306B474E-B58D4B62-1A9A5C7D-968D43
 // Test 1: Get place by ID
 $placeId = 12345; // örnek ID
 
-echo "<h1>WikiMapia API Simple Test</h1>";
-echo "<hr>";
+echo '<h1>WikiMapia API Simple Test</h1>';
+echo '<hr>';
 
 // Test place.getbyid
 echo "<h2>Test 1: place.getbyid (ID: $placeId)</h2>";
@@ -31,12 +32,12 @@ curl_close($ch);
 echo "<p><strong>HTTP Code:</strong> $httpCode</p>";
 echo "<pre style='background:#f5f5f5;padding:15px;border-radius:5px;overflow-x:auto;'>";
 echo json_encode(json_decode($response), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
-echo "</pre>";
+echo '</pre>';
 
-echo "<hr>";
+echo '<hr>';
 
 // Test 2: box.getbyarea (Bodrum area)
-echo "<h2>Test 2: box.getbyarea (Bodrum)</h2>";
+echo '<h2>Test 2: box.getbyarea (Bodrum)</h2>';
 $lat = 37.0344;
 $lon = 27.4305;
 $radius = 0.05;
@@ -62,18 +63,18 @@ echo "<p><strong>HTTP Code:</strong> $httpCode</p>";
 echo "<pre style='background:#f5f5f5;padding:15px;border-radius:5px;overflow-x:auto;'>";
 $data = json_decode($response, true);
 echo json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
-echo "</pre>";
+echo '</pre>';
 
 // Analysis
 if ($httpCode == 200 && isset($data['found'])) {
-    echo "<hr>";
-    echo "<h2>📊 Analysis</h2>";
+    echo '<hr>';
+    echo '<h2>📊 Analysis</h2>';
     echo "<p><strong>Found:</strong> {$data['found']} places</p>";
 
-    if (!empty($data['places'])) {
+    if (! empty($data['places'])) {
         $firstPlace = $data['places'][0];
         echo "<p><strong>First Place Title:</strong> {$firstPlace['title']}</p>";
-        echo "<p><strong>First Place Description:</strong> " . substr($firstPlace['description'] ?? 'N/A', 0, 100) . "...</p>";
+        echo '<p><strong>First Place Description:</strong> '.substr($firstPlace['description'] ?? 'N/A', 0, 100).'...</p>';
 
         // Check if test data
         if (stripos($firstPlace['description'] ?? '', 'deneme') !== false) {
@@ -85,6 +86,5 @@ if ($httpCode == 200 && isset($data['found'])) {
     }
 }
 
-echo "<hr>";
+echo '<hr>';
 echo "<p><a href='/wikimapia-test.php'>→ Kapsamlı Test İçin Tıkla</a> (Her iki key + detaylı analiz)</p>";
-?>

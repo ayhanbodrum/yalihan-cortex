@@ -73,13 +73,15 @@ return new class extends Migration
         try {
             // PHASE 1: Fix simple boolean status fields
             foreach ($this->simpleBooleanTables as $table) {
-                if (!Schema::hasTable($table)) {
+                if (! Schema::hasTable($table)) {
                     Log::warning("⚠️  Table {$table} not found, skipping");
+
                     continue;
                 }
 
-                if (!Schema::hasColumn($table, 'status')) {
+                if (! Schema::hasColumn($table, 'status')) {
                     Log::warning("⚠️  Table {$table} has no status column, skipping");
+
                     continue;
                 }
 
@@ -89,7 +91,7 @@ return new class extends Migration
             // PHASE 2: Log complex status tables (manual review needed)
             Log::info('📝 Complex status tables (manual review needed):', [
                 'tables' => $this->complexStatusTables,
-                'note' => 'These tables have multi-state status, not simple boolean. Review individually.'
+                'note' => 'These tables have multi-state status, not simple boolean. Review individually.',
             ]);
 
             DB::commit();
@@ -103,7 +105,7 @@ return new class extends Migration
             DB::rollBack();
             Log::error('❌ MASTER STATUS FIELD FIX FAILED', [
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
             throw $e;
         }
@@ -149,7 +151,7 @@ return new class extends Migration
             Log::info("  ✅ {$table} fixed successfully ({$affectedRows} rows)");
 
         } catch (\Exception $e) {
-            Log::error("  ❌ {$table} fix failed: " . $e->getMessage());
+            Log::error("  ❌ {$table} fix failed: ".$e->getMessage());
             throw $e;
         }
     }
@@ -163,7 +165,7 @@ return new class extends Migration
 
         // Revert simple boolean tables to VARCHAR
         foreach ($this->simpleBooleanTables as $table) {
-            if (!Schema::hasTable($table)) {
+            if (! Schema::hasTable($table)) {
                 continue;
             }
 
@@ -184,7 +186,7 @@ return new class extends Migration
                 Log::info("  ✅ {$table} reverted to VARCHAR");
 
             } catch (\Exception $e) {
-                Log::error("  ❌ {$table} revert failed: " . $e->getMessage());
+                Log::error("  ❌ {$table} revert failed: ".$e->getMessage());
             }
         }
 

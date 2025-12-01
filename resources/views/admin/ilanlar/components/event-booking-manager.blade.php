@@ -1,7 +1,7 @@
 {{-- Event/Booking Manager Component --}}
 {{-- Pure Tailwind + Alpine.js, NO FULLCALENDAR! --}}
 {{-- Yalıhan Bekçi kurallarına %100 uyumlu --}}
-{{-- Function is defined in layout (neo.blade.php) before Alpine.js loads --}}
+{{-- Function is defined in layout (admin.blade.php) before Alpine.js loads --}}
 
 <div x-data="eventBookingManager({{ json_encode($ilan->id ?? null) }})" x-init="init()"
     class="bg-white dark:bg-gray-800 rounded-xl border-2 border-gray-200 dark:border-gray-700 p-6">

@@ -112,7 +112,7 @@ class AIMessageController extends Controller
             if ($request->wantsJson() || $request->ajax()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Taslak oluşturulurken hata oluştu: ' . $e->getMessage(),
+                    'message' => 'Taslak oluşturulurken hata oluştu: '.$e->getMessage(),
                 ], 500);
             }
 
@@ -147,7 +147,7 @@ class AIMessageController extends Controller
             if ($request->wantsJson() || $request->ajax()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Onaylama sırasında hata oluştu: ' . $e->getMessage(),
+                    'message' => 'Onaylama sırasında hata oluştu: '.$e->getMessage(),
                 ], 500);
             }
 
@@ -190,7 +190,7 @@ class AIMessageController extends Controller
             if ($request->wantsJson() || $request->ajax()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Reddetme sırasında hata oluştu: ' . $e->getMessage(),
+                    'message' => 'Reddetme sırasında hata oluştu: '.$e->getMessage(),
                 ], 500);
             }
 
@@ -225,7 +225,7 @@ class AIMessageController extends Controller
             if ($request->wantsJson() || $request->ajax()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Gönderme sırasında hata oluştu: ' . $e->getMessage(),
+                    'message' => 'Gönderme sırasında hata oluştu: '.$e->getMessage(),
                 ], 500);
             }
 
@@ -278,7 +278,7 @@ class AIMessageController extends Controller
             if ($request->wantsJson() || $request->ajax()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Güncelleme sırasında hata oluştu: ' . $e->getMessage(),
+                    'message' => 'Güncelleme sırasında hata oluştu: '.$e->getMessage(),
                 ], 500);
             }
 

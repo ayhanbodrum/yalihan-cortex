@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AI\AdvancedAIController;
+use Illuminate\Support\Facades\Route;
 
 /**
  * Context7 Advanced AI Routes
@@ -11,9 +11,9 @@ use App\Http\Controllers\AI\AdvancedAIController;
  * Rate limiting ve middleware koruması
  *
  * @version 1.0.0
+ *
  * @author Context7 System
  */
-
 Route::prefix('ai')->middleware(['throttle:60,1'])->group(function () {
 
     // Smart Property Matcher AI

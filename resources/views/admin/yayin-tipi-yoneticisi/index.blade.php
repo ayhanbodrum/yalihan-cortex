@@ -1,4 +1,4 @@
-@extends('admin.layouts.neo')
+@extends('admin.layouts.admin')
 
 @section('title', 'Yayın Tipi Yöneticisi')
 @section('meta_description', 'Tek sayfada kategori, yayın tipi ve ilişki yönetimi')

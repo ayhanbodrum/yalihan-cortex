@@ -24,7 +24,7 @@ echo "🔍 Context7 Database Schema Compliance Checker\n";
 echo "==============================================\n\n";
 
 $issues = [];
-$tables = DB::select("SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE()");
+$tables = DB::select('SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE()');
 
 foreach ($tables as $table) {
     $tableName = $table->TABLE_NAME;
@@ -34,8 +34,8 @@ foreach ($tables as $table) {
         continue;
     }
 
-    $columns = DB::select("SELECT COLUMN_NAME, DATA_TYPE, COLUMN_TYPE FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ?", [$tableName]);
-    $columnNames = array_map(fn($col) => $col->COLUMN_NAME, $columns);
+    $columns = DB::select('SELECT COLUMN_NAME, DATA_TYPE, COLUMN_TYPE FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ?', [$tableName]);
+    $columnNames = array_map(fn ($col) => $col->COLUMN_NAME, $columns);
 
     // Check 1: status kolonu var mı?
     $hasStatus = in_array('status', $columnNames);
@@ -53,16 +53,16 @@ foreach ($tables as $table) {
     $modelFile = app_path("Models/{$tableName}.php");
     $moduleModelFile = glob(app_path("Modules/*/Models/{$tableName}.php"));
 
-    if (file_exists($modelFile) || !empty($moduleModelFile)) {
+    if (file_exists($modelFile) || ! empty($moduleModelFile)) {
         $modelContent = file_exists($modelFile) ? file_get_contents($modelFile) : file_get_contents($moduleModelFile[0]);
         $codeUsesStatus = strpos($modelContent, "->where('status'") !== false ||
-                         strpos($modelContent, "->where(\"status\"") !== false ||
+                         strpos($modelContent, '->where("status"') !== false ||
                          strpos($modelContent, "'status'") !== false ||
                          strpos($modelContent, '"status"') !== false;
     }
 
     // Issue detection
-    if ($codeUsesStatus && !$hasStatus) {
+    if ($codeUsesStatus && ! $hasStatus) {
         $issues[] = [
             'table' => $tableName,
             'severity' => 'CRITICAL',
@@ -86,7 +86,7 @@ foreach ($tables as $table) {
     }
 
     // Check 3: order kolonu var mı? (Context7: order → display_order)
-    if ($hasOrder && !$hasDisplayOrder) {
+    if ($hasOrder && ! $hasDisplayOrder) {
         $issues[] = [
             'table' => $tableName,
             'severity' => 'CRITICAL',
@@ -103,7 +103,7 @@ if (empty($issues)) {
     exit(0);
 }
 
-echo "❌ " . count($issues) . " sorun tespit edildi:\n\n";
+echo '❌ '.count($issues)." sorun tespit edildi:\n\n";
 
 $criticalCount = 0;
 $warningCount = 0;
@@ -132,7 +132,7 @@ foreach ($issues as $issue) {
 echo "\n📊 Özet:\n";
 echo "   - Critical: {$criticalCount}\n";
 echo "   - Warning: {$warningCount}\n";
-echo "   - Toplam: " . count($issues) . "\n\n";
+echo '   - Toplam: '.count($issues)."\n\n";
 
 if ($criticalCount > 0) {
     echo "🚨 CRITICAL sorunlar var! Migration yapılmalı.\n";
@@ -140,4 +140,3 @@ if ($criticalCount > 0) {
 }
 
 exit(0);
-

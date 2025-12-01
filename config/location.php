@@ -31,7 +31,7 @@ return [
     | Harita ve coğrafi konumların merkezi ve yakınlık değerleri
     |
     */
-'map' => [
+    'map' => [
         'default_latitude' => 37.0346, // Bodrum merkez enlem
         'default_longitude' => 27.4309, // Bodrum merkez boylam
         'default_zoom' => 12, // Bodrum için daha yakın zoom seviyesi

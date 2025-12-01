@@ -2,8 +2,8 @@
 
 namespace App\Services;
 
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 /**
@@ -16,9 +16,13 @@ use Illuminate\Support\Facades\Log;
 class NominatimService
 {
     protected string $baseUrl;
+
     protected string $email;
+
     protected int $timeout;
+
     protected bool $cacheEnabled;
+
     protected int $cacheTtl;
 
     public function __construct()
@@ -38,7 +42,7 @@ class NominatimService
         $cacheKey = "nominatim.search.{$query}.{$lat}.{$lon}.{$limit}";
 
         return $this->cacheEnabled
-            ? Cache::remember($cacheKey, $this->cacheTtl, fn() => $this->performSearch($query, $lat, $lon, $limit))
+            ? Cache::remember($cacheKey, $this->cacheTtl, fn () => $this->performSearch($query, $lat, $lon, $limit))
             : $this->performSearch($query, $lat, $lon, $limit);
     }
 
@@ -50,7 +54,7 @@ class NominatimService
         $cacheKey = "nominatim.nearby.{$lat}.{$lon}.{$radius}";
 
         return $this->cacheEnabled
-            ? Cache::remember($cacheKey, $this->cacheTtl, fn() => $this->performNearbySearch($lat, $lon, $radius))
+            ? Cache::remember($cacheKey, $this->cacheTtl, fn () => $this->performNearbySearch($lat, $lon, $radius))
             : $this->performNearbySearch($lat, $lon, $radius);
     }
 
@@ -65,9 +69,9 @@ class NominatimService
 
             $response = Http::timeout($this->timeout)
                 ->withHeaders([
-                    'User-Agent' => 'Yalihan Emlak / ' . $this->email,
+                    'User-Agent' => 'Yalihan Emlak / '.$this->email,
                 ])
-                ->get($this->baseUrl . '/search', [
+                ->get($this->baseUrl.'/search', [
                     'q' => $query,
                     'format' => 'json',
                     'addressdetails' => 1,
@@ -78,6 +82,7 @@ class NominatimService
 
             if ($response->successful()) {
                 $data = $response->json();
+
                 return $this->formatResults($data);
             }
 
@@ -109,9 +114,9 @@ class NominatimService
             // zoom=14: neighbourhood/suburb level (better than zoom=16 street level)
             $response = Http::timeout($this->timeout)
                 ->withHeaders([
-                    'User-Agent' => 'Yalihan Emlak / ' . $this->email,
+                    'User-Agent' => 'Yalihan Emlak / '.$this->email,
                 ])
-                ->get($this->baseUrl . '/reverse', [
+                ->get($this->baseUrl.'/reverse', [
                     'lat' => $lat,
                     'lon' => $lon,
                     'format' => 'json',
@@ -123,7 +128,7 @@ class NominatimService
                 $data = $response->json();
                 Log::info('Nominatim reverse geocode result', [
                     'display_name' => $data['display_name'] ?? 'N/A',
-                    'type' => $data['type'] ?? 'N/A'
+                    'type' => $data['type'] ?? 'N/A',
                 ]);
 
                 // Format single result as array
@@ -132,6 +137,7 @@ class NominatimService
                 // If reverse geocode found nothing useful, try area search
                 if (empty($formatted['places'])) {
                     Log::info('Reverse geocode empty, trying area search');
+
                     return $this->searchAreaPlaces($lat, $lon, $radius);
                 }
 
@@ -159,9 +165,9 @@ class NominatimService
             // Get neighbourhood/suburb name from reverse geocode
             $response = Http::timeout($this->timeout)
                 ->withHeaders([
-                    'User-Agent' => 'Yalihan Emlak / ' . $this->email,
+                    'User-Agent' => 'Yalihan Emlak / '.$this->email,
                 ])
-                ->get($this->baseUrl . '/search', [
+                ->get($this->baseUrl.'/search', [
                     'format' => 'json',
                     'addressdetails' => 1,
                     'limit' => 50,
@@ -173,7 +179,8 @@ class NominatimService
 
             if ($response->successful()) {
                 $data = $response->json();
-                Log::info('Nominatim area search returned ' . count($data) . ' raw results');
+                Log::info('Nominatim area search returned '.count($data).' raw results');
+
                 return $this->formatResults($data);
             }
 
@@ -197,12 +204,13 @@ class NominatimService
 
         foreach ($data as $item) {
             // Filter: Reject roads but accept places/neighbourhoods/buildings
-            if (!$this->isResidentialPlace($item)) {
+            if (! $this->isResidentialPlace($item)) {
                 Log::info('Nominatim filter REJECTED', [
                     'type' => $item['type'] ?? 'N/A',
                     'class' => $item['class'] ?? 'N/A',
-                    'name' => $item['display_name'] ?? 'N/A'
+                    'name' => $item['display_name'] ?? 'N/A',
                 ]);
+
                 continue;
             }
 
@@ -217,7 +225,7 @@ class NominatimService
                 'address' => $item['display_name'] ?? '',
                 'type' => $item['type'] ?? 'building',
                 'category' => $item['class'] ?? 'place',
-                'url' => 'https://www.openstreetmap.org/' . ($item['osm_type'] ?? 'node') . '/' . ($item['osm_id'] ?? ''),
+                'url' => 'https://www.openstreetmap.org/'.($item['osm_type'] ?? 'node').'/'.($item['osm_id'] ?? ''),
                 'source' => 'openstreetmap',
             ];
         }
@@ -240,7 +248,7 @@ class NominatimService
         $blacklist = [
             'highway', 'road', 'street', 'footway', 'path', 'track',
             'motorway', 'trunk', 'primary', 'secondary', 'tertiary',
-            'residential_road', 'service', 'cycleway', 'pedestrian'
+            'residential_road', 'service', 'cycleway', 'pedestrian',
         ];
 
         // Eğer blacklist'te varsa REJECT!
@@ -255,11 +263,11 @@ class NominatimService
             'apartment_building', 'residential_complex',
             // Places & Settlements
             'neighbourhood', 'suburb', 'quarter', 'city', 'town',
-            'village', 'hamlet', 'locality', 'district', 'municipality'
+            'village', 'hamlet', 'locality', 'district', 'municipality',
         ];
 
         $residentialClasses = [
-            'building', 'place', 'tourism', 'amenity', 'boundary'
+            'building', 'place', 'tourism', 'amenity', 'boundary',
         ];
 
         // Building, place, settlement varsa ACCEPT!
@@ -279,40 +287,41 @@ class NominatimService
     protected function extractTitle(array $item): string
     {
         // Priority 1: Named building
-        if (!empty($item['namedetails']['name'])) {
+        if (! empty($item['namedetails']['name'])) {
             return $item['namedetails']['name'];
         }
 
-        if (!empty($item['name'])) {
+        if (! empty($item['name'])) {
             return $item['name'];
         }
 
         // Priority 2: Building name from address
-        if (!empty($item['address']['building'])) {
+        if (! empty($item['address']['building'])) {
             return $item['address']['building'];
         }
 
-        if (!empty($item['address']['apartments'])) {
+        if (! empty($item['address']['apartments'])) {
             return $item['address']['apartments'];
         }
 
         // Priority 3: Neighbourhood/suburb (site location)
-        if (!empty($item['address']['neighbourhood'])) {
-            return $item['address']['neighbourhood'] . ' Bölgesi';
+        if (! empty($item['address']['neighbourhood'])) {
+            return $item['address']['neighbourhood'].' Bölgesi';
         }
 
-        if (!empty($item['address']['suburb'])) {
-            return $item['address']['suburb'] . ' Bölgesi';
+        if (! empty($item['address']['suburb'])) {
+            return $item['address']['suburb'].' Bölgesi';
         }
 
         // Priority 4: City/town
-        if (!empty($item['address']['city'])) {
-            return $item['address']['city'] . ' - ' . ($item['type'] ?? 'Bölge');
+        if (! empty($item['address']['city'])) {
+            return $item['address']['city'].' - '.($item['type'] ?? 'Bölge');
         }
 
         // Fallback: Display name (shorten it)
         $displayName = $item['display_name'] ?? 'Bilinmeyen Yer';
         $parts = explode(',', $displayName);
+
         return $parts[0] ?? $displayName;
     }
 
@@ -330,31 +339,31 @@ class NominatimService
         }
 
         // Street address
-        if (!empty($item['address']['road'])) {
+        if (! empty($item['address']['road'])) {
             $parts[] = $item['address']['road'];
         }
 
         // Neighbourhood/suburb
-        if (!empty($item['address']['neighbourhood'])) {
+        if (! empty($item['address']['neighbourhood'])) {
             $parts[] = $item['address']['neighbourhood'];
-        } elseif (!empty($item['address']['suburb'])) {
+        } elseif (! empty($item['address']['suburb'])) {
             $parts[] = $item['address']['suburb'];
         }
 
         // District
-        if (!empty($item['address']['city_district'])) {
+        if (! empty($item['address']['city_district'])) {
             $parts[] = $item['address']['city_district'];
         }
 
         // City
-        if (!empty($item['address']['city'])) {
+        if (! empty($item['address']['city'])) {
             $parts[] = $item['address']['city'];
-        } elseif (!empty($item['address']['town'])) {
+        } elseif (! empty($item['address']['town'])) {
             $parts[] = $item['address']['town'];
         }
 
         // Province
-        if (!empty($item['address']['state'])) {
+        if (! empty($item['address']['state'])) {
             $parts[] = $item['address']['state'];
         }
 

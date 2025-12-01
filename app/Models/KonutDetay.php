@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class KonutDetay extends Model
 {
     protected $table = 'konut_detaylari';
+
     protected $fillable = [
         'ilan_id',
         'oda_sayisi',

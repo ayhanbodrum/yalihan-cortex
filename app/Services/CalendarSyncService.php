@@ -5,7 +5,6 @@ namespace App\Services;
 use App\Models\Ilan;
 use App\Models\IlanTakvimSync;
 use App\Models\YazlikRezervasyon;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 
 class CalendarSyncService
@@ -15,17 +14,17 @@ class CalendarSyncService
         try {
             $ilan = Ilan::findOrFail($ilanId);
             $sync = IlanTakvimSync::where('ilan_id', $ilanId)
-                                  ->where('platform', $platform)
-                                  ->first();
+                ->where('platform', $platform)
+                ->first();
 
-            if (!$sync || !$sync->sync_enabled) {
+            if (! $sync || ! $sync->sync_enabled) {
                 return ['success' => false, 'message' => 'Senkronizasyon aktif değil'];
             }
 
             $reservations = YazlikRezervasyon::where('ilan_id', $ilanId)
-                                             ->whereIn('status', ['beklemede', 'onaylandi'])
-                                             ->where('check_out', '>=', now())
-                                             ->get();
+                ->whereIn('status', ['beklemede', 'onaylandi'])
+                ->where('check_out', '>=', now())
+                ->get();
 
             $dates = [];
             foreach ($reservations as $rezervasyon) {
@@ -40,9 +39,11 @@ class CalendarSyncService
 
             if ($externalResponse['success']) {
                 $sync->markAsSynced();
+
                 return ['success' => true, 'message' => 'Senkronizasyon başarılı', 'dates' => count($dates)];
             } else {
                 $sync->markAsFailed($externalResponse['error']);
+
                 return ['success' => false, 'message' => $externalResponse['error']];
             }
 
@@ -79,7 +80,7 @@ class CalendarSyncService
     {
         $externalListingId = $sync->external_listing_id;
 
-        if (!$externalListingId) {
+        if (! $externalListingId) {
             return ['success' => false, 'error' => 'External listing ID bulunamadı'];
         }
 
@@ -90,7 +91,7 @@ class CalendarSyncService
     {
         $externalListingId = $sync->external_listing_id;
 
-        if (!$externalListingId) {
+        if (! $externalListingId) {
             return ['success' => false, 'error' => 'External listing ID bulunamadı'];
         }
 
@@ -101,7 +102,7 @@ class CalendarSyncService
     {
         $externalCalendarId = $sync->external_calendar_id;
 
-        if (!$externalCalendarId) {
+        if (! $externalCalendarId) {
             return ['success' => false, 'error' => 'External calendar ID bulunamadı'];
         }
 

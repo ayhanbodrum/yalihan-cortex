@@ -3,8 +3,8 @@
 namespace App\Modules\CRMSatis\Models;
 
 use App\Modules\BaseModule\Models\BaseModel;
-use App\Modules\Emlak\Models\Ilan;
 use App\Modules\Crm\Models\Musteri;
+use App\Modules\Emlak\Models\Ilan;
 use App\Modules\TakimYonetimi\Models\Gorev;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -29,11 +29,19 @@ class Satis extends BaseModel
         'ilan_id',
         'musteri_id',
         'danisman_id',
+        // Split Commission Fields (Context7: C7-SPLIT-COMMISSION-2025-11-25)
+        'satici_danisman_id',
+        'alici_danisman_id',
         'satis_tipi', // satis, kiralama, danismanlik
         'satis_fiyati',
         'para_birimi',
         'komisyon_orani',
         'komisyon_tutari',
+        // Split Commission Fields
+        'satici_komisyon_orani',
+        'alici_komisyon_orani',
+        'satici_komisyon_tutari',
+        'alici_komisyon_tutari',
         'satis_tarihi',
         'sozlesme_tarihi',
         'teslim_tarihi',
@@ -56,6 +64,10 @@ class Satis extends BaseModel
         'satis_fiyati' => 'decimal:2',
         'komisyon_orani' => 'decimal:2',
         'komisyon_tutari' => 'decimal:2',
+        'satici_komisyon_orani' => 'decimal:2',
+        'alici_komisyon_orani' => 'decimal:2',
+        'satici_komisyon_tutari' => 'decimal:2',
+        'alici_komisyon_tutari' => 'decimal:2',
         'odenen_tutar' => 'decimal:2',
         'kalan_tutar' => 'decimal:2',
         'satis_tarihi' => 'date',
@@ -80,11 +92,29 @@ class Satis extends BaseModel
     }
 
     /**
-     * Danışman ile ilişki
+     * Danışman ile ilişki (Deprecated - Backward compatibility)
+     *
+     * @deprecated Use saticiDanisman() or aliciDanisman() instead
      */
     public function danisman()
     {
         return $this->belongsTo(\App\Modules\Auth\Models\User::class, 'danisman_id');
+    }
+
+    /**
+     * Satıcı danışman ile ilişki (Context7: C7-SPLIT-COMMISSION-2025-11-25)
+     */
+    public function saticiDanisman()
+    {
+        return $this->belongsTo(\App\Modules\Auth\Models\User::class, 'satici_danisman_id');
+    }
+
+    /**
+     * Alıcı danışman ile ilişki (Context7: C7-SPLIT-COMMISSION-2025-11-25)
+     */
+    public function aliciDanisman()
+    {
+        return $this->belongsTo(\App\Modules\Auth\Models\User::class, 'alici_danisman_id');
     }
 
     /**
@@ -170,7 +200,7 @@ class Satis extends BaseModel
     /**
      * Ödeme durumunu güncelle
      */
-    public function updateOdemeDurumu(string $odemeDurumu, float $odenenTutar = null): bool
+    public function updateOdemeDurumu(string $odemeDurumu, ?float $odenenTutar = null): bool
     {
         $data = ['odeme_durumu' => $odemeDurumu];
 
@@ -187,7 +217,7 @@ class Satis extends BaseModel
      */
     public function getDurumRengiAttribute(): string
     {
-        return match($this->status) {
+        return match ($this->status) {
             'baslangic' => 'blue',
             'sozlesme' => 'yellow',
             'odeme' => 'orange',
@@ -203,7 +233,7 @@ class Satis extends BaseModel
      */
     public function getSatisTipiEtiketiAttribute(): string
     {
-        return match($this->satis_tipi) {
+        return match ($this->satis_tipi) {
             'satis' => 'Satış',
             'kiralama' => 'Kiralama',
             'danismanlik' => 'Danışmanlık',
@@ -216,7 +246,7 @@ class Satis extends BaseModel
      */
     public function getOdemeDurumuEtiketiAttribute(): string
     {
-        return match($this->odeme_durumu) {
+        return match ($this->odeme_durumu) {
             'bekliyor' => 'Bekliyor',
             'kismi' => 'Kısmi',
             'tamamlandi' => 'Tamamlandı',

@@ -15,8 +15,6 @@ class AiHealthController extends Controller
 {
     /**
      * Check health status of all AI providers
-     *
-     * @return JsonResponse
      */
     public function health(): JsonResponse
     {
@@ -27,7 +25,7 @@ class AiHealthController extends Controller
             'local' => $this->checkLocal(),
         ];
 
-        $availableCount = collect($providers)->filter(fn($p) => $p['available'])->count();
+        $availableCount = collect($providers)->filter(fn ($p) => $p['available'])->count();
 
         return ResponseService::success([
             'providers' => $providers,
@@ -39,8 +37,6 @@ class AiHealthController extends Controller
 
     /**
      * Check OpenAI provider
-     *
-     * @return array
      */
     private function checkOpenAI(): array
     {
@@ -64,8 +60,6 @@ class AiHealthController extends Controller
 
     /**
      * Check Anthropic Claude provider
-     *
-     * @return array
      */
     private function checkAnthropic(): array
     {
@@ -88,8 +82,6 @@ class AiHealthController extends Controller
 
     /**
      * Check Google Gemini provider
-     *
-     * @return array
      */
     private function checkGoogle(): array
     {
@@ -112,8 +104,6 @@ class AiHealthController extends Controller
 
     /**
      * Check Local AI provider
-     *
-     * @return array
      */
     private function checkLocal(): array
     {

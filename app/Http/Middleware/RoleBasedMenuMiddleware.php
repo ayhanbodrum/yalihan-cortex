@@ -24,11 +24,11 @@ class RoleBasedMenuMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        Log::info('RoleBasedMenuMiddleware - ÇALIŞIYOR! URL: ' . $request->url());
+        Log::info('RoleBasedMenuMiddleware - ÇALIŞIYOR! URL: '.$request->url());
 
         if (auth()->check()) {
             $user = auth()->user();
-            Log::info('RoleBasedMenuMiddleware - Kullanıcı giriş yapmış: ' . $user->email);
+            Log::info('RoleBasedMenuMiddleware - Kullanıcı giriş yapmış: '.$user->email);
 
             // Kullanıcının en yüksek rolünü belirle
             $roleName = 'user'; // Default
@@ -44,8 +44,8 @@ class RoleBasedMenuMiddleware
             }
 
             $menuItems = $this->menuService->getMenuForRole($roleName);
-            Log::info('RoleBasedMenuMiddleware - MenuItems sayısı: ' . count($menuItems));
-            Log::info('RoleBasedMenuMiddleware - Role: ' . $roleName);
+            Log::info('RoleBasedMenuMiddleware - MenuItems sayısı: '.count($menuItems));
+            Log::info('RoleBasedMenuMiddleware - Role: '.$roleName);
 
             // View'a veri paylaş
             view()->share('menuItems', $menuItems);
@@ -58,7 +58,7 @@ class RoleBasedMenuMiddleware
             Log::info('RoleBasedMenuMiddleware - Kullanıcı giriş yapmamış, default menu');
             // Kullanıcı giriş yapmamışsa default menu
             $menuItems = $this->menuService->getMenuForRole('user');
-            Log::info('RoleBasedMenuMiddleware - Default MenuItems sayısı: ' . count($menuItems));
+            Log::info('RoleBasedMenuMiddleware - Default MenuItems sayısı: '.count($menuItems));
 
             // View'a veri paylaş
             view()->share('menuItems', $menuItems);

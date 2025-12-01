@@ -2,13 +2,12 @@
 
 namespace App\Services;
 
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Cache;
 use App\Services\Cache\CacheHelper;
 
 class AIPromptManager
 {
     private $promptTemplates;
+
     private $contextRules;
 
     public function __construct()
@@ -82,8 +81,8 @@ class AIPromptManager
                     'Türkçe yanıt ver',
                     'Emlak sektörüne uygun',
                     'Kullanıcı dostu',
-                    'Zorunlu alanları belirt'
-                ]
+                    'Zorunlu alanları belirt',
+                ],
             ],
             'matrix_management' => [
                 'template' => "Sen bir emlak matrix uzmanısın. {category} kategorisi için field dependency matrix oluştur.\n\nKategori: {category}\nAlanlar: {fields}\n\nMatrix:",
@@ -91,8 +90,8 @@ class AIPromptManager
                     'Türkçe yanıt ver',
                     'Mantıklı bağımlılıklar',
                     'AI destekli alanları belirt',
-                    'Kullanıcı deneyimi odaklı'
-                ]
+                    'Kullanıcı deneyimi odaklı',
+                ],
             ],
             'suggestion_engine' => [
                 'template' => "Sen bir emlak öneri uzmanısın. {context} bağlamında {input} için öneriler ver.\n\nBağlam: {context}\nGiriş: {input}\n\nÖneriler:",
@@ -100,8 +99,8 @@ class AIPromptManager
                     'Türkçe yanıt ver',
                     'Pratik öneriler',
                     'Kullanıcı odaklı',
-                    'Detaylı açıklama'
-                ]
+                    'Detaylı açıklama',
+                ],
             ],
             'hibrit_siralama' => [
                 'template' => "Sen bir emlak sıralama uzmanısın. {category} kategorisi için özellikleri önem sırasına göre sırala.\n\nKategori: {category}\nÖzellikler: {features}\n\nSıralama:",
@@ -109,9 +108,9 @@ class AIPromptManager
                     'Türkçe yanıt ver',
                     'Önem sırasına göre',
                     'Kullanım sıklığına göre',
-                    'AI önerilerine göre'
-                ]
-            ]
+                    'AI önerilerine göre',
+                ],
+            ],
         ];
     }
 
@@ -123,20 +122,20 @@ class AIPromptManager
         return [
             'konut' => [
                 'Alanlar: Oda sayısı, Banyo sayısı, Metrekare, Kat, Isıtma, Asansör',
-                'AI Destekli: Fiyat tahmini, Özellik önerileri, Benzer ilanlar'
+                'AI Destekli: Fiyat tahmini, Özellik önerileri, Benzer ilanlar',
             ],
             'arsa' => [
                 'Alanlar: Ada, Parsel, İmar durumu, KAKS, TAKS, Gabari',
-                'AI Destekli: Değerleme, İmar analizi, Yatırım potansiyeli'
+                'AI Destekli: Değerleme, İmar analizi, Yatırım potansiyeli',
             ],
             'yazlik' => [
                 'Alanlar: Günlük fiyat, Minimum konaklama, Havuz, Sezon',
-                'AI Destekli: Fiyat optimizasyonu, Sezon analizi, Rezervasyon önerileri'
+                'AI Destekli: Fiyat optimizasyonu, Sezon analizi, Rezervasyon önerileri',
             ],
             'isyeri' => [
                 'Alanlar: Metrekare, Kat, Otopark, Asansör, Lokasyon',
-                'AI Destekli: Kira analizi, Lokasyon değerlendirmesi, Yatırım önerileri'
-            ]
+                'AI Destekli: Kira analizi, Lokasyon değerlendirmesi, Yatırım önerileri',
+            ],
         ];
     }
 
@@ -146,6 +145,7 @@ class AIPromptManager
     private function getTemplate($context)
     {
         $templateKey = $this->extractTemplateKey($context);
+
         return $this->promptTemplates[$templateKey]['template'] ?? $this->getDefaultTemplate();
     }
 
@@ -155,6 +155,7 @@ class AIPromptManager
     private function getContextRules($context)
     {
         $category = $this->extractCategory($context);
+
         return $this->contextRules[$category] ?? $this->getDefaultRules();
     }
 
@@ -175,7 +176,7 @@ class AIPromptManager
 
         // Kuralları ekle
         if ($rules) {
-            $prompt .= "\n\nKurallar:\n" . implode("\n", $rules);
+            $prompt .= "\n\nKurallar:\n".implode("\n", $rules);
         }
 
         return $prompt;
@@ -186,10 +187,18 @@ class AIPromptManager
      */
     private function extractTemplateKey($context)
     {
-        if (strpos($context, 'form_generation') !== false) return 'form_generation';
-        if (strpos($context, 'matrix_management') !== false) return 'matrix_management';
-        if (strpos($context, 'suggestion_engine') !== false) return 'suggestion_engine';
-        if (strpos($context, 'hibrit_siralama') !== false) return 'hibrit_siralama';
+        if (strpos($context, 'form_generation') !== false) {
+            return 'form_generation';
+        }
+        if (strpos($context, 'matrix_management') !== false) {
+            return 'matrix_management';
+        }
+        if (strpos($context, 'suggestion_engine') !== false) {
+            return 'suggestion_engine';
+        }
+        if (strpos($context, 'hibrit_siralama') !== false) {
+            return 'hibrit_siralama';
+        }
 
         return 'suggestion_engine';
     }
@@ -199,10 +208,18 @@ class AIPromptManager
      */
     private function extractCategory($context)
     {
-        if (strpos($context, 'konut') !== false) return 'konut';
-        if (strpos($context, 'arsa') !== false) return 'arsa';
-        if (strpos($context, 'yazlik') !== false) return 'yazlik';
-        if (strpos($context, 'isyeri') !== false) return 'isyeri';
+        if (strpos($context, 'konut') !== false) {
+            return 'konut';
+        }
+        if (strpos($context, 'arsa') !== false) {
+            return 'arsa';
+        }
+        if (strpos($context, 'yazlik') !== false) {
+            return 'yazlik';
+        }
+        if (strpos($context, 'isyeri') !== false) {
+            return 'isyeri';
+        }
 
         return 'genel';
     }
@@ -232,7 +249,7 @@ class AIPromptManager
             'Türkçe yanıt ver',
             'Emlak sektörüne uygun',
             'Kullanıcı dostu',
-            'Detaylı açıklama'
+            'Detaylı açıklama',
         ];
     }
 }

@@ -3,12 +3,11 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Services\TCMBCurrencyService;
-use App\Models\ExchangeRate;
 use App\Services\Response\ResponseService;
+use App\Services\TCMBCurrencyService;
 use App\Traits\ValidatesApiRequests;
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 /**
  * Exchange Rate API Controller
@@ -40,7 +39,7 @@ class ExchangeRateController extends Controller
                 'data' => $rates,
                 'count' => count($rates),
                 'source' => 'TCMB',
-                'updated_at' => now()->toDateTimeString()
+                'updated_at' => now()->toDateTimeString(),
             ], 'Döviz kurları başarıyla getirildi');
         } catch (\Exception $e) {
             return ResponseService::serverError('Döviz kurları yüklenirken hata oluştu.', $e);
@@ -57,7 +56,7 @@ class ExchangeRateController extends Controller
         try {
             $rate = $this->currencyService->getRate($code);
 
-            if (!$rate) {
+            if (! $rate) {
                 return ResponseService::notFound("Para birimi {$code} bulunamadı");
             }
 
@@ -66,7 +65,7 @@ class ExchangeRateController extends Controller
             return ResponseService::success([
                 'data' => $rates[$code] ?? null,
                 'rate' => $rate,
-                'symbol' => $this->currencyService->getCurrencySymbol($code)
+                'symbol' => $this->currencyService->getCurrencySymbol($code),
             ], "Para birimi {$code} başarıyla getirildi");
         } catch (\Exception $e) {
             return ResponseService::serverError('Para birimi kuru yüklenirken hata oluştu.', $e);
@@ -83,7 +82,7 @@ class ExchangeRateController extends Controller
         $validated = $this->validateRequestWithResponse($request, [
             'amount' => 'required|numeric|min:0',
             'from' => 'required|string|size:3',
-            'to' => 'required|string|size:3'
+            'to' => 'required|string|size:3',
         ]);
 
         if ($validated instanceof JsonResponse) {
@@ -111,7 +110,7 @@ class ExchangeRateController extends Controller
                 'to' => $to,
                 'result' => round($result, 2),
                 'rate' => $from === 'TRY' ? null : $this->currencyService->getRate($from),
-                'formatted' => $this->currencyService->getCurrencySymbol($to) . ' ' . number_format($result, 2)
+                'formatted' => $this->currencyService->getCurrencySymbol($to).' '.number_format($result, 2),
             ], 'Para birimi dönüşümü başarıyla tamamlandı');
         } catch (\Exception $e) {
             return ResponseService::serverError('Para birimi dönüşümü sırasında hata oluştu.', $e);
@@ -136,11 +135,11 @@ class ExchangeRateController extends Controller
                         'date' => $rate->rate_date->format('Y-m-d'),
                         'buying' => $rate->buying_rate,
                         'selling' => $rate->selling_rate,
-                        'average' => ($rate->buying_rate + $rate->selling_rate) / 2
+                        'average' => ($rate->buying_rate + $rate->selling_rate) / 2,
                     ];
                 }),
                 'currency' => $code,
-                'days' => $days
+                'days' => $days,
             ], 'Döviz kuru geçmişi başarıyla getirildi');
         } catch (\Exception $e) {
             return ResponseService::serverError('Döviz kuru geçmişi yüklenirken hata oluştu.', $e);
@@ -161,9 +160,9 @@ class ExchangeRateController extends Controller
                 return [
                     'code' => $code,
                     'symbol' => $this->currencyService->getCurrencySymbol($code),
-                    'name' => $this->getCurrencyName($code)
+                    'name' => $this->getCurrencyName($code),
                 ];
-            })
+            }),
         ], 'Desteklenen para birimleri başarıyla getirildi');
     }
 
@@ -178,7 +177,7 @@ class ExchangeRateController extends Controller
             $updated = $this->currencyService->updateRates();
 
             return ResponseService::success([
-                'updated_count' => $updated
+                'updated_count' => $updated,
             ], "{$updated} döviz kuru başarıyla güncellendi");
         } catch (\Exception $e) {
             return ResponseService::serverError('Döviz kurları güncellenirken hata oluştu.', $e);
@@ -188,12 +187,12 @@ class ExchangeRateController extends Controller
     /**
      * Get currency name
      *
-     * @param string $code
+     * @param  string  $code
      * @return string
      */
     private function getCurrencyName($code)
     {
-        return match($code) {
+        return match ($code) {
             'TRY' => 'Türk Lirası',
             'USD' => 'Amerikan Doları',
             'EUR' => 'Euro',

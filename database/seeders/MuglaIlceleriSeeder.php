@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Models\Il;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use App\Models\Il;
 
 class MuglaIlceleriSeeder extends Seeder
 {
@@ -20,8 +20,9 @@ class MuglaIlceleriSeeder extends Seeder
         // Muğla'yı bul
         $mugla = Il::where('plaka_kodu', '48')->first();
 
-        if (!$mugla) {
+        if (! $mugla) {
             $this->command->error('❌ Muğla ili bulunamadı! Önce TurkiyeIlleriSeeder çalıştırın.');
+
             return;
         }
 
@@ -52,6 +53,6 @@ class MuglaIlceleriSeeder extends Seeder
             );
         }
 
-        $this->command->info('✅ ' . count($districts) . ' ilçe eklendi (Muğla)');
+        $this->command->info('✅ '.count($districts).' ilçe eklendi (Muğla)');
     }
 }

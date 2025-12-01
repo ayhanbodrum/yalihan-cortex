@@ -2,16 +2,16 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 /**
  * Context7 Compliance: enabled → status
- * 
+ *
  * Bu migration aşağıdaki tablolardaki `enabled` kolonlarını `status` olarak yeniden adlandırır:
  * - kategori_yayin_tipi_field_dependencies.enabled → status
  * - yayin_tipleri.enabled → status
- * 
+ *
  * Context7 Standard: MIGRATION_STANDARDS.md
  */
 return new class extends Migration
@@ -27,27 +27,27 @@ return new class extends Migration
         ];
 
         foreach ($tables as $tableName) {
-            if (!Schema::hasTable($tableName)) {
+            if (! Schema::hasTable($tableName)) {
                 continue;
             }
 
             $hasEnabled = Schema::hasColumn($tableName, 'enabled');
             $hasStatus = Schema::hasColumn($tableName, 'status');
 
-            if ($hasEnabled && !$hasStatus) {
+            if ($hasEnabled && ! $hasStatus) {
                 // 1. Index'leri kontrol et ve kaldır
                 $this->dropIndexesForColumn($tableName, 'enabled');
 
                 // 2. Kolon bilgilerini al
                 $columnInfo = DB::select("SHOW COLUMNS FROM `{$tableName}` WHERE Field = 'enabled'");
-                if (!empty($columnInfo)) {
+                if (! empty($columnInfo)) {
                     $col = $columnInfo[0];
                     $columnType = $col->Type;
                     $isNullable = $col->Null === 'YES' ? 'NULL' : 'NOT NULL';
-                    $default = $col->Default !== null 
-                        ? "DEFAULT '{$col->Default}'" 
+                    $default = $col->Default !== null
+                        ? "DEFAULT '{$col->Default}'"
                         : ($col->Null === 'YES' ? 'DEFAULT NULL' : 'DEFAULT 0');
-                    
+
                     // 3. MySQL'de direkt SQL ile rename (Context7: DB::statement kullan)
                     DB::statement("ALTER TABLE `{$tableName}` CHANGE `enabled` `status` {$columnType} {$isNullable} {$default}");
                 } else {
@@ -84,7 +84,7 @@ return new class extends Migration
         ];
 
         foreach ($tables as $tableName) {
-            if (!Schema::hasTable($tableName)) {
+            if (! Schema::hasTable($tableName)) {
                 continue;
             }
 
@@ -95,14 +95,14 @@ return new class extends Migration
                 $this->dropIndexesForColumn($tableName, 'status');
 
                 $columnInfo = DB::select("SHOW COLUMNS FROM `{$tableName}` WHERE Field = 'status'");
-                if (!empty($columnInfo)) {
+                if (! empty($columnInfo)) {
                     $col = $columnInfo[0];
                     $columnType = $col->Type;
                     $isNullable = $col->Null === 'YES' ? 'NULL' : 'NOT NULL';
-                    $default = $col->Default !== null 
-                        ? "DEFAULT '{$col->Default}'" 
+                    $default = $col->Default !== null
+                        ? "DEFAULT '{$col->Default}'"
                         : ($col->Null === 'YES' ? 'DEFAULT NULL' : 'DEFAULT 0');
-                    
+
                     DB::statement("ALTER TABLE `{$tableName}` CHANGE `status` `enabled` {$columnType} {$isNullable} {$default}");
                 } else {
                     DB::statement("ALTER TABLE `{$tableName}` CHANGE `status` `enabled` TINYINT(1) NOT NULL DEFAULT 1");

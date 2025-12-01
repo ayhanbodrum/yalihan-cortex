@@ -2,12 +2,12 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\User;
+use App\Services\Logging\LogService;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
-use App\Models\User;
-use App\Services\Logging\LogService;
 use Symfony\Component\HttpFoundation\Response;
 
 class TrackUserActivity

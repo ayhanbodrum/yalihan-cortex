@@ -60,9 +60,10 @@ class TalepTopluAnalizJob implements ShouldQueue
             try {
                 $talep = Talep::find($talepId);
 
-                if (!$talep) {
+                if (! $talep) {
                     $failed++;
                     $processed++;
+
                     continue;
                 }
 
@@ -80,7 +81,7 @@ class TalepTopluAnalizJob implements ShouldQueue
                 Log::error('Talep toplu analiz hatası', [
                     'talep_id' => $talepId,
                     'job_id' => $this->jobId,
-                    'error' => $e->getMessage()
+                    'error' => $e->getMessage(),
                 ]);
 
                 $results[] = [
@@ -146,7 +147,7 @@ class TalepTopluAnalizJob implements ShouldQueue
         Log::error('Talep toplu analiz job başarısız', [
             'job_id' => $this->jobId,
             'error' => $exception->getMessage(),
-            'trace' => $exception->getTraceAsString()
+            'trace' => $exception->getTraceAsString(),
         ]);
     }
 }

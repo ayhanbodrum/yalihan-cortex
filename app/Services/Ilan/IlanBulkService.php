@@ -16,7 +16,7 @@ class IlanBulkService
         if (empty($updateData)) {
             return [
                 'success' => false,
-                'message' => 'Güncellenecek veri bulunamadı.'
+                'message' => 'Güncellenecek veri bulunamadı.',
             ];
         }
 
@@ -25,7 +25,7 @@ class IlanBulkService
 
         return [
             'success' => true,
-            'message' => $updatedCount . ' ilan başarıyla güncellendi.',
+            'message' => $updatedCount.' ilan başarıyla güncellendi.',
             'updated_count' => $updatedCount,
         ];
     }
@@ -36,7 +36,7 @@ class IlanBulkService
 
         return [
             'success' => true,
-            'message' => $deletedCount . ' ilan başarıyla silindi.',
+            'message' => $deletedCount.' ilan başarıyla silindi.',
             'deleted_count' => $deletedCount,
         ];
     }
@@ -53,42 +53,42 @@ class IlanBulkService
                 case 'activate':
                     $affected = Ilan::whereIn('id', $ids)->update([
                         'status' => 'active',
-                        'updated_at' => now()
+                        'updated_at' => now(),
                     ]);
-                    $message = $affected . ' ilan aktif yapıldı.';
+                    $message = $affected.' ilan aktif yapıldı.';
                     break;
 
                 case 'deactivate':
                     $affected = Ilan::whereIn('id', $ids)->update([
                         'status' => 'inactive',
                     ]);
-                    $message = $affected . ' ilan pasif yapıldı.';
+                    $message = $affected.' ilan pasif yapıldı.';
                     break;
 
                 case 'delete':
                     $affected = Ilan::whereIn('id', $ids)->delete();
-                    $message = $affected . ' ilan silindi.';
+                    $message = $affected.' ilan silindi.';
                     break;
 
                 case 'assign_danisman':
-                    if (!$value || !is_numeric($value)) {
+                    if (! $value || ! is_numeric($value)) {
                         return [
                             'success' => false,
-                            'message' => 'Danışman seçilmedi.'
+                            'message' => 'Danışman seçilmedi.',
                         ];
                     }
                     $affected = Ilan::whereIn('id', $ids)->update([
                         'danisman_id' => $value,
-                        'updated_at' => now()
+                        'updated_at' => now(),
                     ]);
-                    $message = $affected . ' ilana danışman atandı.';
+                    $message = $affected.' ilana danışman atandı.';
                     break;
 
                 case 'add_tag':
-                    if (!$value || !is_numeric($value)) {
+                    if (! $value || ! is_numeric($value)) {
                         return [
                             'success' => false,
-                            'message' => 'Etiket seçilmedi.'
+                            'message' => 'Etiket seçilmedi.',
                         ];
                     }
                     // ✅ PERFORMANCE FIX: N+1 query önlendi - Bulk attach kullanıldı
@@ -97,14 +97,14 @@ class IlanBulkService
                         $ilan->etiketler()->syncWithoutDetaching([$value]);
                         $affected++;
                     }
-                    $message = $affected . ' ilana etiket eklendi.';
+                    $message = $affected.' ilana etiket eklendi.';
                     break;
 
                 case 'remove_tag':
-                    if (!$value || !is_numeric($value)) {
+                    if (! $value || ! is_numeric($value)) {
                         return [
                             'success' => false,
-                            'message' => 'Etiket seçilmedi.'
+                            'message' => 'Etiket seçilmedi.',
                         ];
                     }
                     // ✅ PERFORMANCE FIX: N+1 query önlendi - Bulk detach kullanıldı
@@ -113,13 +113,13 @@ class IlanBulkService
                         $ilan->etiketler()->detach([$value]);
                         $affected++;
                     }
-                    $message = $affected . ' ilandan etiket kaldırıldı.';
+                    $message = $affected.' ilandan etiket kaldırıldı.';
                     break;
 
                 default:
                     return [
                         'success' => false,
-                        'message' => 'Geçersiz işlem.'
+                        'message' => 'Geçersiz işlem.',
                     ];
             }
 
@@ -132,9 +132,10 @@ class IlanBulkService
             ];
         } catch (\Exception $e) {
             DB::rollBack();
+
             return [
                 'success' => false,
-                'message' => 'İşlem sırasında hata oluştu: ' . $e->getMessage(),
+                'message' => 'İşlem sırasında hata oluştu: '.$e->getMessage(),
             ];
         }
     }

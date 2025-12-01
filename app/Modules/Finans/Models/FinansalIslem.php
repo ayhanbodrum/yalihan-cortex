@@ -2,9 +2,9 @@
 
 namespace App\Modules\Finans\Models;
 
+use App\Models\Kisi;
 use App\Modules\BaseModule\Models\BaseModel;
-use App\Modules\Emlak\Models\Ilan;
-use App\Modules\Crm\Models\Musteri;
+use App\Modules\Emlak\Models\Ilan; // Context7: musteri → kisi
 use App\Modules\TakimYonetimi\Models\Gorev;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -27,7 +27,7 @@ class FinansalIslem extends BaseModel
      */
     protected $fillable = [
         'ilan_id',
-        'musteri_id',
+        'kisi_id', // Context7: musteri_id → kisi_id
         'gorev_id',
         'islem_tipi', // komisyon, odeme, masraf, gelir, gider
         'miktar',
@@ -62,11 +62,22 @@ class FinansalIslem extends BaseModel
     }
 
     /**
-     * Müşteri ile ilişki
+     * Kişi ile ilişki (Context7: musteri → kisi)
+     */
+    public function kisi()
+    {
+        return $this->belongsTo(Kisi::class, 'kisi_id');
+    }
+
+    /**
+     * Müşteri ile ilişki (Deprecated - Backward compatibility)
+     *
+     * @deprecated 2025-11-25 Use kisi() instead. This method will be removed in v2.0.0
+     * @see kisi() For the Context7-compliant relationship
      */
     public function musteri()
     {
-        return $this->belongsTo(Musteri::class);
+        return $this->belongsTo(Kisi::class, 'kisi_id');
     }
 
     /**
@@ -153,11 +164,14 @@ class FinansalIslem extends BaseModel
     }
 
     /**
-     * İşlem durumu rengi
+     * İşlem durumu rengi (Status color)
+     *
+     * Context7: Attribute accessor - "durum" is not a database field
+     * Returns color code based on status field value
      */
     public function getDurumRengiAttribute(): string
     {
-        return match($this->status) {
+        return match ($this->status) {
             'bekliyor' => 'yellow',
             'onaylandi' => 'green',
             'reddedildi' => 'red',
@@ -171,7 +185,7 @@ class FinansalIslem extends BaseModel
      */
     public function getIslemTipiEtiketiAttribute(): string
     {
-        return match($this->islem_tipi) {
+        return match ($this->islem_tipi) {
             'komisyon' => 'Komisyon',
             'odeme' => 'Ödeme',
             'masraf' => 'Masraf',

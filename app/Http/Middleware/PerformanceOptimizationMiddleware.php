@@ -17,7 +17,6 @@ class PerformanceOptimizationMiddleware
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
@@ -36,7 +35,7 @@ class PerformanceOptimizationMiddleware
             Log::info('Cache Hit', [
                 'url' => $request->url(),
                 'method' => $request->method(),
-                'cache_key' => $cacheKey
+                'cache_key' => $cacheKey,
             ]);
 
             return response()->json($cachedResponse)
@@ -60,7 +59,7 @@ class PerformanceOptimizationMiddleware
                     'url' => $request->url(),
                     'method' => $request->method(),
                     'cache_key' => $cacheKey,
-                    'ttl' => $cacheTtl
+                    'ttl' => $cacheTtl,
                 ]);
             }
         }
@@ -68,7 +67,7 @@ class PerformanceOptimizationMiddleware
         // Performance headers ekle
         $executionTime = round((microtime(true) - $startTime) * 1000, 2);
 
-        $response->headers->set('X-Execution-Time', $executionTime . 'ms');
+        $response->headers->set('X-Execution-Time', $executionTime.'ms');
         $response->headers->set('X-Cache', 'MISS');
         $response->headers->set('X-Cache-Key', $cacheKey);
 
@@ -77,9 +76,9 @@ class PerformanceOptimizationMiddleware
             Log::warning('Slow Query Detected', [
                 'url' => $request->url(),
                 'method' => $request->method(),
-                'execution_time' => $executionTime . 'ms',
+                'execution_time' => $executionTime.'ms',
                 'user_agent' => $request->userAgent(),
-                'ip' => $request->ip()
+                'ip' => $request->ip(),
             ]);
         }
 
@@ -91,19 +90,19 @@ class PerformanceOptimizationMiddleware
      */
     private function generateCacheKey(Request $request): string
     {
-        $key = $request->method() . ':' . $request->url();
+        $key = $request->method().':'.$request->url();
 
         // Query parametrelerini ekle
         if ($request->query()) {
-            $key .= ':' . md5(serialize($request->query()));
+            $key .= ':'.md5(serialize($request->query()));
         }
 
         // Auth user varsa ekle
         if ($request->user()) {
-            $key .= ':user:' . $request->user()->id;
+            $key .= ':user:'.$request->user()->id;
         }
 
-        return 'api_cache:' . md5($key);
+        return 'api_cache:'.md5($key);
     }
 
     /**

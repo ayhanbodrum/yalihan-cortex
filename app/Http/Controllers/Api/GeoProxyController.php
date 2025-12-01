@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
-use App\Http\Controllers\Controller;
 
 class GeoProxyController extends Controller
 {
@@ -26,7 +26,7 @@ class GeoProxyController extends Controller
         $query = trim($request->input('query'));
         $limit = (int) ($request->input('limit', 5));
 
-        $cacheKey = 'geo:geocode:' . md5($query . '|' . $limit);
+        $cacheKey = 'geo:geocode:'.md5($query.'|'.$limit);
         $data = Cache::remember($cacheKey, $this->ttl(), function () use ($query, $limit) {
             $url = 'https://nominatim.openstreetmap.org/search';
             $resp = Http::withHeaders([
@@ -41,7 +41,7 @@ class GeoProxyController extends Controller
                 'addressdetails' => 1,
             ]);
 
-            if (!$resp->ok()) {
+            if (! $resp->ok()) {
                 abort($resp->status(), 'Geocode upstream error');
             }
 
@@ -64,7 +64,7 @@ class GeoProxyController extends Controller
         $lat = (float) $request->input('latitude');
         $lng = (float) $request->input('longitude');
 
-        $cacheKey = 'geo:reverse:' . md5($lat . '|' . $lng);
+        $cacheKey = 'geo:reverse:'.md5($lat.'|'.$lng);
         $data = Cache::remember($cacheKey, $this->ttl(), function () use ($lat, $lng) {
             $url = 'https://nominatim.openstreetmap.org/reverse';
             $resp = Http::withHeaders([
@@ -79,7 +79,7 @@ class GeoProxyController extends Controller
                 'accept-language' => 'tr',
             ]);
 
-            if (!$resp->ok()) {
+            if (! $resp->ok()) {
                 abort($resp->status(), 'Reverse geocode upstream error');
             }
 
@@ -107,10 +107,10 @@ class GeoProxyController extends Controller
         $radius = (int) $request->query('radius', 2000);
 
         // Map UI category to Overpass amenity if needed
-        $amenityMap = [ 'gas_station' => 'fuel' ];
+        $amenityMap = ['gas_station' => 'fuel'];
         $amenity = $amenityMap[$type] ?? $type;
 
-        $cacheKey = 'geo:nearby:' . md5($lat . '|' . $lng . '|' . $amenity . '|' . $radius);
+        $cacheKey = 'geo:nearby:'.md5($lat.'|'.$lng.'|'.$amenity.'|'.$radius);
         $data = Cache::remember($cacheKey, $this->ttl(), function () use ($lat, $lng, $amenity, $radius) {
             $query = <<<OVERPASS
 [out:json][timeout:25];
@@ -129,7 +129,7 @@ OVERPASS;
                 'data' => $query,
             ]);
 
-            if (!$resp->ok()) {
+            if (! $resp->ok()) {
                 abort($resp->status(), 'Nearby upstream error');
             }
 

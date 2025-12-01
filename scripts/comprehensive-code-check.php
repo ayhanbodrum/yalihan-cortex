@@ -20,19 +20,18 @@
  * 9. Dependency Issues (Bağımlılıklar)
  * 10. Code Coverage (Test kapsamı)
  */
-
-$basePath = __DIR__ . '/../';
+$basePath = __DIR__.'/../';
 $results = [
     'timestamp' => date('Y-m-d H:i:s'),
     'summary' => [],
-    'details' => []
+    'details' => [],
 ];
 
 // 1. LINT KONTROLÜ
 echo "🔍 1/10: Lint Kontrolü...\n";
 $lintErrors = [];
 $phpFiles = new RecursiveIteratorIterator(
-    new RecursiveDirectoryIterator($basePath . 'app'),
+    new RecursiveDirectoryIterator($basePath.'app'),
     RecursiveIteratorIterator::LEAVES_ONLY
 );
 
@@ -44,12 +43,12 @@ foreach ($phpFiles as $file) {
         // Syntax kontrolü
         $output = [];
         $returnVar = 0;
-        exec("php -l " . escapeshellarg($file->getPathname()) . " 2>&1", $output, $returnVar);
+        exec('php -l '.escapeshellarg($file->getPathname()).' 2>&1', $output, $returnVar);
 
         if ($returnVar !== 0) {
             $lintErrors[] = [
                 'file' => $relativePath,
-                'error' => implode("\n", $output)
+                'error' => implode("\n", $output),
             ];
         }
     }
@@ -80,13 +79,19 @@ foreach ($phpFiles as $file) {
         // Method çağrılarını bul
         if (preg_match_all('/(\w+)::(\w+)|->(\w+)\(/', $content, $matches)) {
             foreach ($matches[1] as $class) {
-                if ($class) $calledMethods[] = $class;
+                if ($class) {
+                    $calledMethods[] = $class;
+                }
             }
             foreach ($matches[2] as $method) {
-                if ($method) $calledMethods[] = $method;
+                if ($method) {
+                    $calledMethods[] = $method;
+                }
             }
             foreach ($matches[3] as $method) {
-                if ($method) $calledMethods[] = $method;
+                if ($method) {
+                    $calledMethods[] = $method;
+                }
             }
         }
     }
@@ -96,7 +101,7 @@ $results['summary']['dead_code'] = count($allClasses) - count(array_unique($call
 $results['details']['dead_code'] = [
     'total_classes' => count($allClasses),
     'called_methods' => count(array_unique($calledMethods)),
-    'unused_potential' => count($allClasses) - count(array_unique($calledMethods))
+    'unused_potential' => count($allClasses) - count(array_unique($calledMethods)),
 ];
 
 // 3. ORPHANED CODE
@@ -105,7 +110,7 @@ $orphanedControllers = [];
 
 // ✅ FIX: Tüm route dosyalarını bul (recursive)
 $routeFilesList = new RecursiveIteratorIterator(
-    new RecursiveDirectoryIterator($basePath . 'routes'),
+    new RecursiveDirectoryIterator($basePath.'routes'),
     RecursiveIteratorIterator::LEAVES_ONLY
 );
 
@@ -113,13 +118,13 @@ $routeFilesList = new RecursiveIteratorIterator(
 $allRoutesContent = '';
 foreach ($routeFilesList as $routeFile) {
     if ($routeFile->isFile() && $routeFile->getExtension() === 'php') {
-        $allRoutesContent .= file_get_contents($routeFile->getPathname()) . "\n";
+        $allRoutesContent .= file_get_contents($routeFile->getPathname())."\n";
     }
 }
 
 // Controller dosyalarını bul
 $controllerFiles = new RecursiveIteratorIterator(
-    new RecursiveDirectoryIterator($basePath . 'app/Http/Controllers'),
+    new RecursiveDirectoryIterator($basePath.'app/Http/Controllers'),
     RecursiveIteratorIterator::LEAVES_ONLY
 );
 
@@ -136,7 +141,7 @@ foreach ($controllerFiles as $controllerFile) {
             $fullClassName = null;
             if (preg_match('/namespace\s+([^;]+);/', $content, $nsMatch)) {
                 $namespace = trim($nsMatch[1]);
-                $fullClassName = $namespace . '\\' . $controllerName;
+                $fullClassName = $namespace.'\\'.$controllerName;
             }
 
             // ✅ FIX: Çoklu kontrol yöntemleri
@@ -148,23 +153,23 @@ foreach ($controllerFiles as $controllerFile) {
             }
 
             // 2. Full class name kontrolü (use statement veya ::class)
-            if (!$found && $fullClassName) {
+            if (! $found && $fullClassName) {
                 // use statement kontrolü
-                if (preg_match('/use\s+' . preg_quote($fullClassName, '/') . '/', $allRoutesContent)) {
+                if (preg_match('/use\s+'.preg_quote($fullClassName, '/').'/', $allRoutesContent)) {
                     $found = true;
                 }
                 // ::class kontrolü
-                if (!$found && preg_match('/' . preg_quote($controllerName, '/') . '::class/', $allRoutesContent)) {
+                if (! $found && preg_match('/'.preg_quote($controllerName, '/').'::class/', $allRoutesContent)) {
                     $found = true;
                 }
                 // Full class name kontrolü (string olarak)
-                if (!$found && strpos($allRoutesContent, $fullClassName) !== false) {
+                if (! $found && strpos($allRoutesContent, $fullClassName) !== false) {
                     $found = true;
                 }
             }
 
             // 3. Relative path kontrolü (bazı route dosyalarında dosya yolu kullanılıyor olabilir)
-            if (!$found) {
+            if (! $found) {
                 $relativePathForCheck = str_replace('app/Http/Controllers/', '', $relativePath);
                 $relativePathForCheck = str_replace('.php', '', $relativePathForCheck);
                 if (strpos($allRoutesContent, $relativePathForCheck) !== false) {
@@ -172,7 +177,7 @@ foreach ($controllerFiles as $controllerFile) {
                 }
             }
 
-            if (!$found) {
+            if (! $found) {
                 $orphanedControllers[] = $relativePath;
             }
         }
@@ -187,7 +192,7 @@ echo "🔍 4/10: Incomplete Implementation (Yarım Kalmış Kod) Analizi...\n";
 $incomplete = [
     'todos' => [],
     'empty_methods' => [],
-    'stub_methods' => []
+    'stub_methods' => [],
 ];
 
 foreach ($phpFiles as $file) {
@@ -202,7 +207,7 @@ foreach ($phpFiles as $file) {
                 $incomplete['todos'][] = [
                     'file' => $relativePath,
                     'line' => $line,
-                    'text' => trim(substr($match[0], 0, 100))
+                    'text' => trim(substr($match[0], 0, 100)),
                 ];
             }
         }
@@ -214,7 +219,7 @@ foreach ($phpFiles as $file) {
                 $incomplete['empty_methods'][] = [
                     'file' => $relativePath,
                     'line' => $line,
-                    'method' => $methodName
+                    'method' => $methodName,
                 ];
             }
         }
@@ -226,7 +231,7 @@ foreach ($phpFiles as $file) {
                 $incomplete['stub_methods'][] = [
                     'file' => $relativePath,
                     'line' => $line,
-                    'method' => $methodName
+                    'method' => $methodName,
                 ];
             }
         }
@@ -236,7 +241,7 @@ foreach ($phpFiles as $file) {
 $results['summary']['incomplete'] = [
     'todos' => count($incomplete['todos']),
     'empty_methods' => count($incomplete['empty_methods']),
-    'stub_methods' => count($incomplete['stub_methods'])
+    'stub_methods' => count($incomplete['stub_methods']),
 ];
 $results['details']['incomplete'] = $incomplete;
 
@@ -247,7 +252,7 @@ $disabledCode = [];
 // Route dosyalarını bul
 $routeFiles = [];
 $routeFilesList = new RecursiveIteratorIterator(
-    new RecursiveDirectoryIterator($basePath . 'routes'),
+    new RecursiveDirectoryIterator($basePath.'routes'),
     RecursiveIteratorIterator::LEAVES_ONLY
 );
 
@@ -258,7 +263,7 @@ foreach ($routeFilesList as $routeFile) {
 }
 
 foreach ($routeFiles as $routeFile) {
-    $filePath = $basePath . $routeFile;
+    $filePath = $basePath.$routeFile;
     if (file_exists($filePath)) {
         $content = file_get_contents($filePath);
         if (preg_match_all('/\/\/.*(Route|route).*(disabled|DISABLED|TEMPORARILY)/i', $content, $matches, PREG_OFFSET_CAPTURE)) {
@@ -267,7 +272,7 @@ foreach ($routeFiles as $routeFile) {
                 $disabledCode[] = [
                     'file' => $routeFile,
                     'line' => $line,
-                    'text' => trim(substr($match[0], 0, 100))
+                    'text' => trim(substr($match[0], 0, 100)),
                 ];
             }
         }
@@ -286,7 +291,7 @@ foreach ($phpFiles as $file) {
                 $disabledCode[] = [
                     'file' => $relativePath,
                     'line' => $line,
-                    'text' => trim(substr($match[0], 0, 100))
+                    'text' => trim(substr($match[0], 0, 100)),
                 ];
             }
         }
@@ -303,7 +308,7 @@ $duplication = [];
 // ✅ CONTEXT7 MCP ENTEGRASYONU: Context7 kurallarını yükle
 $context7Patterns = [];
 $context7Rules = null;
-$context7AuthorityFile = $basePath . '.context7/authority.json';
+$context7AuthorityFile = $basePath.'.context7/authority.json';
 
 // Context7 authority dosyasından kuralları yükle
 if (file_exists($context7AuthorityFile)) {
@@ -315,7 +320,7 @@ if (file_exists($context7AuthorityFile)) {
             echo "  ✅ Context7: Authority dosyası yüklendi\n";
         }
     } catch (\Exception $e) {
-        echo "  ⚠️  Context7: Authority dosyası yüklenemedi: " . $e->getMessage() . "\n";
+        echo '  ⚠️  Context7: Authority dosyası yüklenemedi: '.$e->getMessage()."\n";
     }
 }
 
@@ -324,11 +329,11 @@ $context7ApiUrl = getenv('CONTEXT7_API_URL') ?: 'https://context7.com/api/v1';
 $context7ApiKey = getenv('CONTEXT7_API_KEY');
 if ($context7ApiKey && function_exists('curl_init')) {
     try {
-        $ch = curl_init($context7ApiUrl . '/patterns/duplication');
+        $ch = curl_init($context7ApiUrl.'/patterns/duplication');
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            'Authorization: Bearer ' . $context7ApiKey,
-            'Content-Type: application/json'
+            'Authorization: Bearer '.$context7ApiKey,
+            'Content-Type: application/json',
         ]);
         curl_setopt($ch, CURLOPT_TIMEOUT, 5);
         $apiResponse = curl_exec($ch);
@@ -339,7 +344,7 @@ if ($context7ApiKey && function_exists('curl_init')) {
             $apiData = json_decode($apiResponse, true);
             if ($apiData && isset($apiData['patterns'])) {
                 $context7Patterns = $apiData['patterns'];
-                echo "  ✅ Context7 API: " . count($context7Patterns) . " duplication pattern yüklendi\n";
+                echo '  ✅ Context7 API: '.count($context7Patterns)." duplication pattern yüklendi\n";
             }
         }
     } catch (\Exception $e) {
@@ -361,12 +366,12 @@ foreach ($phpFiles as $file) {
                 $signature = $matches[1][$index];
                 $bodyHash = md5($methodBody);
 
-                if (!isset($methodSignatures[$bodyHash])) {
+                if (! isset($methodSignatures[$bodyHash])) {
                     $methodSignatures[$bodyHash] = [];
                 }
                 $methodSignatures[$bodyHash][] = [
                     'file' => $relativePath,
-                    'method' => $signature
+                    'method' => $signature,
                 ];
             }
         }
@@ -380,11 +385,11 @@ foreach ($methodSignatures as $hash => $methods) {
             'methods' => $methods,
             'context7_validated' => false,
             'context7_suggestions' => [],
-            'context7_compliance' => 'unknown'
+            'context7_compliance' => 'unknown',
         ];
 
         // ✅ CONTEXT7 MCP ENTEGRASYONU: Duplication'ı Context7 kurallarına göre kontrol et
-        if (!empty($context7Patterns)) {
+        if (! empty($context7Patterns)) {
             foreach ($methods as $method) {
                 $methodName = $method['method'];
                 // Context7 pattern'lerine göre kontrol et
@@ -412,7 +417,7 @@ foreach ($methodSignatures as $hash => $methods) {
                         $duplicationItem['context7_suggestions'][] = "Method '$methodName' yasaklı pattern içeriyor: $pattern";
                     } elseif (is_array($pattern) && isset($pattern['pattern'])) {
                         // Array formatında pattern varsa
-                        $patternStr = is_string($pattern['pattern']) ? $pattern['pattern'] : (string)$pattern['pattern'];
+                        $patternStr = is_string($pattern['pattern']) ? $pattern['pattern'] : (string) $pattern['pattern'];
                         if (stripos($methodName, $patternStr) !== false) {
                             $duplicationItem['context7_compliance'] = 'violation';
                             $duplicationItem['context7_suggestions'][] = "Method '$methodName' yasaklı pattern içeriyor: $patternStr";
@@ -427,7 +432,7 @@ foreach ($methodSignatures as $hash => $methods) {
             $methodNames = array_unique(array_column($methods, 'method'));
             if (count($methodNames) === 1) {
                 // Aynı metod adı farklı dosyalarda - trait önerisi
-                $duplicationItem['context7_suggestions'][] = "Aynı metod '" . $methodNames[0] . "' birden fazla dosyada bulunuyor. Trait'e çıkarılabilir.";
+                $duplicationItem['context7_suggestions'][] = "Aynı metod '".$methodNames[0]."' birden fazla dosyada bulunuyor. Trait'e çıkarılabilir.";
             }
         }
 
@@ -437,12 +442,12 @@ foreach ($methodSignatures as $hash => $methods) {
 
 // ✅ CONTEXT7 MCP ENTEGRASYONU: Sistem yapısı analizi ile duplication doğrulama
 $systemStructure = null;
-$systemStructureFile = $basePath . '.yalihan-bekci/knowledge/system-structure.json';
+$systemStructureFile = $basePath.'.yalihan-bekci/knowledge/system-structure.json';
 if (file_exists($systemStructureFile)) {
     try {
         $systemStructure = json_decode(file_get_contents($systemStructureFile), true);
         if ($systemStructure && isset($systemStructure['models'])) {
-            echo "  ✅ Context7: Sistem yapısı analizi yapıldı (" . count($systemStructure['models']) . " model)\n";
+            echo '  ✅ Context7: Sistem yapısı analizi yapıldı ('.count($systemStructure['models'])." model)\n";
         }
     } catch (\Exception $e) {
         echo "  ⚠️  Context7: Sistem yapısı analizi başarısız (devam ediliyor)\n";
@@ -455,8 +460,8 @@ $results['details']['duplication_context7'] = [
     'patterns_loaded' => count($context7Patterns),
     'authority_loaded' => $context7Rules !== null,
     'system_structure_analyzed' => $systemStructure !== null,
-    'context7_validated_count' => count(array_filter($duplication, fn($item) => $item['context7_validated'] ?? false)),
-    'context7_violations' => count(array_filter($duplication, fn($item) => ($item['context7_compliance'] ?? 'unknown') === 'violation'))
+    'context7_validated_count' => count(array_filter($duplication, fn ($item) => $item['context7_validated'] ?? false)),
+    'context7_violations' => count(array_filter($duplication, fn ($item) => ($item['context7_compliance'] ?? 'unknown') === 'violation')),
 ];
 
 // 7. SECURITY ISSUES
@@ -479,7 +484,7 @@ foreach ($phpFiles as $file) {
                         'file' => $relativePath,
                         'line' => $line,
                         'type' => 'potential_sql_injection',
-                        'text' => trim(substr($match[0], 0, 100))
+                        'text' => trim(substr($match[0], 0, 100)),
                     ];
                 }
             }
@@ -492,17 +497,17 @@ foreach ($phpFiles as $file) {
         // - Service dosyaları route değil
         if (
             preg_match('/Route::(post|put|delete|patch)/', $content) &&
-            !preg_match('/middleware.*csrf|VerifyCsrfToken|middleware.*web|middleware.*api/', $content) &&
-            !preg_match('/Service\.php$|\.php.*Service/', $relativePath)
+            ! preg_match('/middleware.*csrf|VerifyCsrfToken|middleware.*web|middleware.*api/', $content) &&
+            ! preg_match('/Service\.php$|\.php.*Service/', $relativePath)
         ) {
             // Sadece gerçek route dosyalarında ve web middleware olmadan kontrol et
             if (strpos($relativePath, 'routes/') !== false || strpos($relativePath, 'Routes/') !== false) {
                 // web middleware kontrolü - eğer Route::group(['middleware' => 'web']) varsa false positive
-                if (!preg_match('/middleware.*web|Route::group.*web/', $content)) {
+                if (! preg_match('/middleware.*web|Route::group.*web/', $content)) {
                     $securityIssues[] = [
                         'file' => $relativePath,
                         'type' => 'missing_csrf_protection',
-                        'text' => 'CSRF middleware eksik olabilir (web middleware kontrol edilmeli)'
+                        'text' => 'CSRF middleware eksik olabilir (web middleware kontrol edilmeli)',
                     ];
                 }
             }
@@ -534,7 +539,7 @@ foreach ($phpFiles as $file) {
                 // 1. Array işlemleri (sadece array'e atama, N+1 değil)
                 if (
                     preg_match('/\$[a-zA-Z_][a-zA-Z0-9_]*\s*=\s*\[/', $matchContent) &&
-                    !preg_match('/->(find|where|get|first|create|update|delete)\(/', $matchContent)
+                    ! preg_match('/->(find|where|get|first|create|update|delete)\(/', $matchContent)
                 ) {
                     $isFalsePositive = true;
                 }
@@ -562,7 +567,7 @@ foreach ($phpFiles as $file) {
                 // 6. Sadece array'e ekleme (push, add, append)
                 if (
                     preg_match('/->(push|add|append|put)\(/', $matchContent) &&
-                    !preg_match('/->(find|where|get|first|create|update|delete)\(/', $matchContent)
+                    ! preg_match('/->(find|where|get|first|create|update|delete)\(/', $matchContent)
                 ) {
                     $isFalsePositive = true;
                 }
@@ -572,12 +577,12 @@ foreach ($phpFiles as $file) {
                     $isFalsePositive = true;
                 }
 
-                if (!$isFalsePositive) {
+                if (! $isFalsePositive) {
                     $performanceIssues[] = [
                         'file' => $relativePath,
                         'line' => $line,
                         'type' => 'potential_n_plus_one',
-                        'text' => 'Loop içinde database query - N+1 riski'
+                        'text' => 'Loop içinde database query - N+1 riski',
                     ];
                 }
             }
@@ -586,7 +591,7 @@ foreach ($phpFiles as $file) {
         // Eager loading eksikliği (with() kullanılmamış)
         if (
             preg_match('/->(find|where|get|first|paginate)\(/', $content) &&
-            !preg_match('/->with\(/', $content)
+            ! preg_match('/->with\(/', $content)
         ) {
             // Basit kontrol - detaylı analiz için daha gelişmiş araç gerekli
         }
@@ -601,7 +606,7 @@ echo "🔍 9/10: Dependency Issues (Bağımlılıklar) Analizi...\n";
 $dependencyIssues = [];
 
 // Composer paketlerini kontrol et
-$composerLock = $basePath . 'composer.lock';
+$composerLock = $basePath.'composer.lock';
 if (file_exists($composerLock)) {
     $composerData = json_decode(file_get_contents($composerLock), true);
     $installedPackages = [];
@@ -637,7 +642,7 @@ echo "🔍 10/10: Code Coverage (Test Kapsamı) Analizi...\n";
 // ✅ FIX: glob() recursive pattern desteklemiyor, RecursiveIteratorIterator kullan
 $testFiles = [];
 $testIterator = new RecursiveIteratorIterator(
-    new RecursiveDirectoryIterator($basePath . 'tests'),
+    new RecursiveDirectoryIterator($basePath.'tests'),
     RecursiveIteratorIterator::LEAVES_ONLY
 );
 foreach ($testIterator as $file) {
@@ -656,7 +661,7 @@ foreach ($testFiles as $testFile) {
 $results['summary']['test_coverage'] = count($testFiles);
 $results['details']['test_coverage'] = [
     'total_test_files' => count($testFiles),
-    'test_classes' => $testClasses
+    'test_classes' => $testClasses,
 ];
 
 // ÖZET
@@ -664,39 +669,39 @@ echo "\n📊 KAPSAMLI KOD KONTROLÜ TAMAMLANDI!\n";
 echo "=====================================\n\n";
 
 echo "📋 ÖZET:\n";
-echo "  - Lint Hataları: " . $results['summary']['lint'] . "\n";
-echo "  - Dead Code: " . ($results['summary']['dead_code'] ?? 0) . "\n";
-echo "  - Orphaned Code: " . $results['summary']['orphaned_code'] . "\n";
-echo "  - TODO/FIXME: " . $results['summary']['incomplete']['todos'] . "\n";
-echo "  - Boş Metodlar: " . $results['summary']['incomplete']['empty_methods'] . "\n";
-echo "  - Stub Metodlar: " . $results['summary']['incomplete']['stub_methods'] . "\n";
-echo "  - Disabled Code: " . $results['summary']['disabled_code'] . "\n";
-echo "  - Code Duplication: " . $results['summary']['duplication'] . "\n";
-echo "  - Security Issues: " . $results['summary']['security'] . "\n";
-echo "  - Performance Issues: " . $results['summary']['performance'] . "\n";
-echo "  - Dependency Issues: " . $results['summary']['dependency'] . "\n";
-echo "  - Test Files: " . $results['summary']['test_coverage'] . "\n";
+echo '  - Lint Hataları: '.$results['summary']['lint']."\n";
+echo '  - Dead Code: '.($results['summary']['dead_code'] ?? 0)."\n";
+echo '  - Orphaned Code: '.$results['summary']['orphaned_code']."\n";
+echo '  - TODO/FIXME: '.$results['summary']['incomplete']['todos']."\n";
+echo '  - Boş Metodlar: '.$results['summary']['incomplete']['empty_methods']."\n";
+echo '  - Stub Metodlar: '.$results['summary']['incomplete']['stub_methods']."\n";
+echo '  - Disabled Code: '.$results['summary']['disabled_code']."\n";
+echo '  - Code Duplication: '.$results['summary']['duplication']."\n";
+echo '  - Security Issues: '.$results['summary']['security']."\n";
+echo '  - Performance Issues: '.$results['summary']['performance']."\n";
+echo '  - Dependency Issues: '.$results['summary']['dependency']."\n";
+echo '  - Test Files: '.$results['summary']['test_coverage']."\n";
 
 // JSON raporu kaydet
-$reportDir = $basePath . '.yalihan-bekci/reports/';
-if (!is_dir($reportDir)) {
+$reportDir = $basePath.'.yalihan-bekci/reports/';
+if (! is_dir($reportDir)) {
     mkdir($reportDir, 0755, true);
 }
 
-$reportFile = $reportDir . 'comprehensive-code-check-' . date('Y-m-d-His') . '.json';
+$reportFile = $reportDir.'comprehensive-code-check-'.date('Y-m-d-His').'.json';
 file_put_contents($reportFile, json_encode($results, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
 
-echo "\n✅ Detaylı rapor kaydedildi: " . $reportFile . "\n";
+echo "\n✅ Detaylı rapor kaydedildi: ".$reportFile."\n";
 
 // Yalıhan Bekçi'ye öğret
-$knowledgeFile = $basePath . '.yalihan-bekci/knowledge/code-check-results-' . date('Y-m-d') . '.json';
+$knowledgeFile = $basePath.'.yalihan-bekci/knowledge/code-check-results-'.date('Y-m-d').'.json';
 file_put_contents($knowledgeFile, json_encode([
     'timestamp' => date('Y-m-d H:i:s'),
     'results' => $results,
-    'recommendations' => generateRecommendations($results)
+    'recommendations' => generateRecommendations($results),
 ], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
 
-echo "✅ Yalıhan Bekçi'ye öğretildi: " . $knowledgeFile . "\n";
+echo "✅ Yalıhan Bekçi'ye öğretildi: ".$knowledgeFile."\n";
 
 function generateRecommendations($results)
 {
@@ -706,7 +711,7 @@ function generateRecommendations($results)
         $recommendations[] = [
             'priority' => 'HIGH',
             'action' => 'Lint hatalarını düzelt',
-            'count' => $results['summary']['lint']
+            'count' => $results['summary']['lint'],
         ];
     }
 
@@ -714,7 +719,7 @@ function generateRecommendations($results)
         $recommendations[] = [
             'priority' => 'MEDIUM',
             'action' => 'Orphaned controller\'ları kaldır veya route\'lara bağla',
-            'count' => $results['summary']['orphaned_code']
+            'count' => $results['summary']['orphaned_code'],
         ];
     }
 
@@ -722,7 +727,7 @@ function generateRecommendations($results)
         $recommendations[] = [
             'priority' => 'MEDIUM',
             'action' => 'TODO/FIXME yorumlarını gözden geçir ve tamamla',
-            'count' => $results['summary']['incomplete']['todos']
+            'count' => $results['summary']['incomplete']['todos'],
         ];
     }
 
@@ -730,7 +735,7 @@ function generateRecommendations($results)
         $recommendations[] = [
             'priority' => 'CRITICAL',
             'action' => 'Güvenlik sorunlarını hemen düzelt',
-            'count' => $results['summary']['security']
+            'count' => $results['summary']['security'],
         ];
     }
 

@@ -6,8 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Services\Response\ResponseService;
 use App\Traits\ValidatesApiRequests;
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
@@ -35,14 +35,14 @@ class UserController extends Controller
                 ->where('status', 1); // ✅ Context7: Sadece aktif kullanıcılar
 
             // ✅ Role filter (Spatie Permission)
-            if (!empty($role)) {
+            if (! empty($role)) {
                 $usersQuery->whereHas('roles', function ($q) use ($role) {
                     $q->where('name', $role);
                 });
             }
 
             // Search filter
-            if (!empty($query)) {
+            if (! empty($query)) {
                 $usersQuery->where(function ($q) use ($query) {
                     $q->where('name', 'LIKE', "%{$query}%")
                         ->orWhere('email', 'LIKE', "%{$query}%");
@@ -60,22 +60,22 @@ class UserController extends Controller
                     'id' => $user->id,
                     'name' => $user->name,
                     'email' => $user->email,
-                    'text' => $user->name . ($user->email ? ' - ' . $user->email : ''), // Context7 Live Search için
+                    'text' => $user->name.($user->email ? ' - '.$user->email : ''), // Context7 Live Search için
                     'kisi_tipi' => 'Sistem Danışmanı', // For compatibility with kişiler
                 ];
             })
-            ->values() // ✅ Collection index'lerini sıfırla (array uyumluluğu)
-            ->toArray(); // ✅ Context7: Array döndür (JavaScript uyumluluğu için)
+                ->values() // ✅ Collection index'lerini sıfırla (array uyumluluğu)
+                ->toArray(); // ✅ Context7: Array döndür (JavaScript uyumluluğu için)
 
             // ✅ REFACTORED: Using ResponseService
             return ResponseService::success([
                 'data' => $formattedUsers,
                 'count' => count($formattedUsers),
                 'query' => $query,
-                'source' => 'users' // To differentiate from kisiler
+                'source' => 'users', // To differentiate from kisiler
             ], 'Danışman araması başarıyla tamamlandı');
         } catch (\Exception $e) {
-            Log::error('User search error: ' . $e->getMessage());
+            Log::error('User search error: '.$e->getMessage());
 
             // ✅ REFACTORED: Using ResponseService
             return ResponseService::serverError('Danışman araması sırasında hata oluştu', $e);
@@ -100,10 +100,10 @@ class UserController extends Controller
             // ✅ REFACTORED: Using ResponseService
             return ResponseService::success([
                 'data' => $danismanlar,
-                'count' => $danismanlar->count()
+                'count' => $danismanlar->count(),
             ], 'Danışmanlar listesi başarıyla alındı');
         } catch (\Exception $e) {
-            Log::error('Danismanlar list error: ' . $e->getMessage());
+            Log::error('Danismanlar list error: '.$e->getMessage());
 
             // ✅ REFACTORED: Using ResponseService
             return ResponseService::serverError('Danışmanlar listesi alınamadı', $e);

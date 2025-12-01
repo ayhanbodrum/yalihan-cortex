@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Season;
 use App\Models\Ilan;
+use App\Models\Season;
 use App\Services\Response\ResponseService;
 use App\Traits\ValidatesApiRequests;
-use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 
 /**
  * Season Pricing Management API Controller
@@ -28,7 +28,7 @@ class SeasonController extends Controller
         $seasons = Season::where('ilan_id', $ilanId)
             ->orderBy('baslangic_tarihi') // ✅ Context7: Tablodaki gerçek kolon adı
             ->get()
-            ->map(fn($season) => [
+            ->map(fn ($season) => [
                 'id' => $season->id,
                 'season_type' => $season->sezon_tipi, // ✅ Context7: Tablodaki gerçek kolon adı
                 'start_date' => $season->baslangic_tarihi, // Backward compatibility için accessor kullanılıyor
@@ -114,14 +114,30 @@ class SeasonController extends Controller
         }
 
         $updateData = [];
-        if ($request->has('season_type')) $updateData['sezon_tipi'] = $request->season_type;
-        if ($request->has('start_date')) $updateData['baslangic_tarihi'] = $request->start_date;
-        if ($request->has('end_date')) $updateData['bitis_tarihi'] = $request->end_date;
-        if ($request->has('daily_price')) $updateData['gunluk_fiyat'] = $request->daily_price;
-        if ($request->has('weekly_price')) $updateData['haftalik_fiyat'] = $request->weekly_price;
-        if ($request->has('monthly_price')) $updateData['aylik_fiyat'] = $request->monthly_price;
-        if ($request->has('minimum_stay')) $updateData['minimum_konaklama'] = $request->minimum_stay;
-        if ($request->has('maximum_stay')) $updateData['maksimum_konaklama'] = $request->maximum_stay;
+        if ($request->has('season_type')) {
+            $updateData['sezon_tipi'] = $request->season_type;
+        }
+        if ($request->has('start_date')) {
+            $updateData['baslangic_tarihi'] = $request->start_date;
+        }
+        if ($request->has('end_date')) {
+            $updateData['bitis_tarihi'] = $request->end_date;
+        }
+        if ($request->has('daily_price')) {
+            $updateData['gunluk_fiyat'] = $request->daily_price;
+        }
+        if ($request->has('weekly_price')) {
+            $updateData['haftalik_fiyat'] = $request->weekly_price;
+        }
+        if ($request->has('monthly_price')) {
+            $updateData['aylik_fiyat'] = $request->monthly_price;
+        }
+        if ($request->has('minimum_stay')) {
+            $updateData['minimum_konaklama'] = $request->minimum_stay;
+        }
+        if ($request->has('maximum_stay')) {
+            $updateData['maksimum_konaklama'] = $request->maximum_stay;
+        }
         if ($request->has('status')) {
             $updateData['status'] = $request->status;
         } elseif ($request->has('is_active')) {
@@ -175,7 +191,7 @@ class SeasonController extends Controller
             ->where('bitis_tarihi', '>=', $request->check_out) // ✅ Context7: Tablodaki gerçek kolon adı
             ->first();
 
-        if (!$season) {
+        if (! $season) {
             // ✅ REFACTORED: Using ResponseService
             return ResponseService::notFound('Bu tarihler için sezon fiyatı bulunamadı');
         }
@@ -202,7 +218,7 @@ class SeasonController extends Controller
             'nights' => $nights,
             'daily_price' => $season->gunluk_fiyat, // Backward compatibility için accessor kullanılıyor
             'total_price' => $totalPrice,
-            'currency' => 'TRY'
+            'currency' => 'TRY',
         ], 'Fiyat hesaplandı');
     }
 }

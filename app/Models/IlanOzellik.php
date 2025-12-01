@@ -22,7 +22,7 @@ class IlanOzellik extends Model
         'ozellik_id',
         'deger',
         'aciklama',
-        'status'
+        'status',
     ];
 
     protected $casts = [

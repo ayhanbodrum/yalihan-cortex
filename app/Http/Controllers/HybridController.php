@@ -11,7 +11,11 @@ class HybridController extends Controller
     public function listings(Request $request)
     {
         $days = (int) ($request->get('days', 7));
-        if ($days < 1) $days = 7; if ($days > 30) $days = 30;
+        if ($days < 1) {
+            $days = 7;
+        } if ($days > 30) {
+            $days = 30;
+        }
         $start = now()->subDays($days - 1)->startOfDay()->toDateString();
 
         $publicQuery = Ilan::public();
@@ -28,14 +32,14 @@ class HybridController extends Controller
             ->limit(10)
             ->get();
 
-        $recentCrmOnly = $crmOnlyQuery->latest('updated_at')->limit(10)->get(['id','baslik','status','updated_at']);
+        $recentCrmOnly = $crmOnlyQuery->latest('updated_at')->limit(10)->get(['id', 'baslik', 'status', 'updated_at']);
 
         return response()->json([
             'success' => true,
             'days' => $days,
             'public' => [
                 'count' => $publicCount,
-                'top' => $topPublic->map(fn($i) => [
+                'top' => $topPublic->map(fn ($i) => [
                     'ilan_id' => $i->ilan_id,
                     'baslik' => $i->ilan?->baslik,
                     'fiyat' => $i->ilan?->fiyat,
@@ -45,7 +49,7 @@ class HybridController extends Controller
             ],
             'crm_only' => [
                 'count' => $crmOnlyCount,
-                'recent' => $recentCrmOnly->map(fn($r) => [
+                'recent' => $recentCrmOnly->map(fn ($r) => [
                     'id' => $r->id,
                     'baslik' => $r->baslik,
                     'status' => $r->status,

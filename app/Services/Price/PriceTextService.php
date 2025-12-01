@@ -16,40 +16,28 @@ class PriceTextService
 {
     /**
      * Fiyatı yazıya çevir (Türkçe)
-     *
-     * @param float $price
-     * @param string $currency
-     * @return string
      */
     public function convertToText(float $price, string $currency = 'TRY'): string
     {
         $text = $this->numberToText($price, 'tr');
         $currencyText = $this->getCurrencyText($currency, 'tr');
 
-        return $text . ' ' . $currencyText;
+        return $text.' '.$currencyText;
     }
 
     /**
      * Fiyatı yazıya çevir (İngilizce)
-     *
-     * @param float $price
-     * @param string $currency
-     * @return string
      */
     public function convertToTextEnglish(float $price, string $currency = 'USD'): string
     {
         $text = $this->numberToText($price, 'en');
         $currencyText = $this->getCurrencyText($currency, 'en');
 
-        return $text . ' ' . $currencyText;
+        return $text.' '.$currencyText;
     }
 
     /**
      * Sayıyı yazıya çevir
-     *
-     * @param float $number
-     * @param string $language
-     * @return string
      */
     protected function numberToText(float $number, string $language = 'tr'): string
     {
@@ -60,7 +48,8 @@ class PriceTextService
         // Negatif sayılar için
         if ($number < 0) {
             $prefix = $language === 'tr' ? 'Eksi ' : 'Minus ';
-            return $prefix . $this->numberToText(abs($number), $language);
+
+            return $prefix.$this->numberToText(abs($number), $language);
         }
 
         // Tam sayı kısmı
@@ -75,8 +64,8 @@ class PriceTextService
         if ($decimalPart > 0) {
             $decimalText = $this->integerToText($decimalPart, $language);
             $text .= $language === 'tr'
-                ? ' Lira ' . $decimalText . ' Kuruş'
-                : ' and ' . $decimalText . ' Cents';
+                ? ' Lira '.$decimalText.' Kuruş'
+                : ' and '.$decimalText.' Cents';
         }
 
         return $text;
@@ -84,10 +73,6 @@ class PriceTextService
 
     /**
      * Tam sayıyı yazıya çevir
-     *
-     * @param int $number
-     * @param string $language
-     * @return string
      */
     protected function integerToText(int $number, string $language = 'tr'): string
     {
@@ -100,13 +85,12 @@ class PriceTextService
 
     /**
      * Türkçe sayı yazımı
-     *
-     * @param int $number
-     * @return string
      */
     protected function integerToTextTurkish(int $number): string
     {
-        if ($number == 0) return 'Sıfır';
+        if ($number == 0) {
+            return 'Sıfır';
+        }
 
         $ones = ['', 'Bir', 'İki', 'Üç', 'Dört', 'Beş', 'Altı', 'Yedi', 'Sekiz', 'Dokuz'];
         $tens = ['', 'On', 'Yirmi', 'Otuz', 'Kırk', 'Elli', 'Altmış', 'Yetmiş', 'Seksen', 'Doksan'];
@@ -116,40 +100,40 @@ class PriceTextService
         // Milyar
         if ($number >= 1000000000) {
             $billions = floor($number / 1000000000);
-            $result .= ($billions == 1 ? '' : $this->integerToTextTurkish($billions) . ' ') . 'Milyar ';
+            $result .= ($billions == 1 ? '' : $this->integerToTextTurkish($billions).' ').'Milyar ';
             $number %= 1000000000;
         }
 
         // Milyon
         if ($number >= 1000000) {
             $millions = floor($number / 1000000);
-            $result .= ($millions == 1 ? '' : $this->integerToTextTurkish($millions) . ' ') . 'Milyon ';
+            $result .= ($millions == 1 ? '' : $this->integerToTextTurkish($millions).' ').'Milyon ';
             $number %= 1000000;
         }
 
         // Bin
         if ($number >= 1000) {
             $thousands = floor($number / 1000);
-            $result .= ($thousands == 1 ? '' : $this->integerToTextTurkish($thousands) . ' ') . 'Bin ';
+            $result .= ($thousands == 1 ? '' : $this->integerToTextTurkish($thousands).' ').'Bin ';
             $number %= 1000;
         }
 
         // Yüzler
         if ($number >= 100) {
             $hundreds = floor($number / 100);
-            $result .= ($hundreds == 1 ? '' : $ones[$hundreds] . ' ') . 'Yüz ';
+            $result .= ($hundreds == 1 ? '' : $ones[$hundreds].' ').'Yüz ';
             $number %= 100;
         }
 
         // Onlar
         if ($number >= 10) {
-            $result .= $tens[floor($number / 10)] . ' ';
+            $result .= $tens[floor($number / 10)].' ';
             $number %= 10;
         }
 
         // Birler
         if ($number > 0) {
-            $result .= $ones[$number] . ' ';
+            $result .= $ones[$number].' ';
         }
 
         return trim($result);
@@ -157,13 +141,12 @@ class PriceTextService
 
     /**
      * İngilizce sayı yazımı
-     *
-     * @param int $number
-     * @return string
      */
     protected function integerToTextEnglish(int $number): string
     {
-        if ($number == 0) return 'Zero';
+        if ($number == 0) {
+            return 'Zero';
+        }
 
         $ones = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'];
         $teens = ['Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
@@ -174,46 +157,47 @@ class PriceTextService
         // Billions
         if ($number >= 1000000000) {
             $billions = floor($number / 1000000000);
-            $result .= $this->integerToTextEnglish($billions) . ' Billion ';
+            $result .= $this->integerToTextEnglish($billions).' Billion ';
             $number %= 1000000000;
         }
 
         // Millions
         if ($number >= 1000000) {
             $millions = floor($number / 1000000);
-            $result .= $this->integerToTextEnglish($millions) . ' Million ';
+            $result .= $this->integerToTextEnglish($millions).' Million ';
             $number %= 1000000;
         }
 
         // Thousands
         if ($number >= 1000) {
             $thousands = floor($number / 1000);
-            $result .= $this->integerToTextEnglish($thousands) . ' Thousand ';
+            $result .= $this->integerToTextEnglish($thousands).' Thousand ';
             $number %= 1000;
         }
 
         // Hundreds
         if ($number >= 100) {
             $hundreds = floor($number / 100);
-            $result .= $ones[$hundreds] . ' Hundred ';
+            $result .= $ones[$hundreds].' Hundred ';
             $number %= 100;
         }
 
         // Teens
         if ($number >= 10 && $number < 20) {
-            $result .= $teens[$number - 10] . ' ';
+            $result .= $teens[$number - 10].' ';
+
             return trim($result);
         }
 
         // Tens
         if ($number >= 10) {
-            $result .= $tens[floor($number / 10)] . ' ';
+            $result .= $tens[floor($number / 10)].' ';
             $number %= 10;
         }
 
         // Ones
         if ($number > 0) {
-            $result .= $ones[$number] . ' ';
+            $result .= $ones[$number].' ';
         }
 
         return trim($result);
@@ -221,10 +205,6 @@ class PriceTextService
 
     /**
      * Para birimi metni
-     *
-     * @param string $currency
-     * @param string $language
-     * @return string
      */
     protected function getCurrencyText(string $currency, string $language = 'tr'): string
     {
@@ -234,15 +214,15 @@ class PriceTextService
                 'TL' => 'Türk Lirası',
                 'USD' => 'Amerikan Doları',
                 'EUR' => 'Euro',
-                'GBP' => 'İngiliz Sterlini'
+                'GBP' => 'İngiliz Sterlini',
             ],
             'en' => [
                 'TRY' => 'Turkish Lira',
                 'TL' => 'Turkish Lira',
                 'USD' => 'US Dollars',
                 'EUR' => 'Euros',
-                'GBP' => 'British Pounds'
-            ]
+                'GBP' => 'British Pounds',
+            ],
         ];
 
         return $currencies[$language][$currency] ?? $currency;
@@ -250,26 +230,17 @@ class PriceTextService
 
     /**
      * Fiyat aralığını yazıya çevir
-     *
-     * @param float $minPrice
-     * @param float $maxPrice
-     * @param string $currency
-     * @return string
      */
     public function convertRangeToText(float $minPrice, float $maxPrice, string $currency = 'TRY'): string
     {
         $minText = $this->convertToText($minPrice, $currency);
         $maxText = $this->convertToText($maxPrice, $currency);
 
-        return $minText . ' ile ' . $maxText . ' arası';
+        return $minText.' ile '.$maxText.' arası';
     }
 
     /**
      * Kısa format (sadece büyük birimler)
-     *
-     * @param float $price
-     * @param string $currency
-     * @return string
      */
     public function convertToShortText(float $price, string $currency = 'TRY'): string
     {
@@ -277,27 +248,27 @@ class PriceTextService
 
         if ($price >= 1000000000) {
             $value = $price / 1000000000;
-            return number_format($value, 1) . ' Milyar ' . $currencySymbol;
+
+            return number_format($value, 1).' Milyar '.$currencySymbol;
         }
 
         if ($price >= 1000000) {
             $value = $price / 1000000;
-            return number_format($value, 1) . ' Milyon ' . $currencySymbol;
+
+            return number_format($value, 1).' Milyon '.$currencySymbol;
         }
 
         if ($price >= 1000) {
             $value = $price / 1000;
-            return number_format($value, 0) . ' Bin ' . $currencySymbol;
+
+            return number_format($value, 0).' Bin '.$currencySymbol;
         }
 
-        return number_format($price, 0) . ' ' . $currencySymbol;
+        return number_format($price, 0).' '.$currencySymbol;
     }
 
     /**
      * Para birimi sembolü
-     *
-     * @param string $currency
-     * @return string
      */
     protected function getCurrencySymbol(string $currency): string
     {
@@ -306,7 +277,7 @@ class PriceTextService
             'TL' => '₺',
             'USD' => '$',
             'EUR' => '€',
-            'GBP' => '£'
+            'GBP' => '£',
         ];
 
         return $symbols[$currency] ?? $currency;

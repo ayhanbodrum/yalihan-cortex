@@ -4,10 +4,9 @@ namespace App\Modules\TakimYonetimi\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\Gorev;
-use App\Models\Proje;
 use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class GorevApiController extends Controller
 {
@@ -53,7 +52,7 @@ class GorevApiController extends Controller
         return response()->json([
             'success' => true,
             'data' => $gorevler,
-            'message' => 'Görevler başarıyla getirildi'
+            'message' => 'Görevler başarıyla getirildi',
         ]);
     }
 
@@ -67,7 +66,7 @@ class GorevApiController extends Controller
         return response()->json([
             'success' => true,
             'data' => $gorev,
-            'message' => 'Görev detayı getirildi'
+            'message' => 'Görev detayı getirildi',
         ]);
     }
 
@@ -97,7 +96,7 @@ class GorevApiController extends Controller
         return response()->json([
             'success' => true,
             'data' => $gorev,
-            'message' => 'Görev başarıyla oluşturuldu'
+            'message' => 'Görev başarıyla oluşturuldu',
         ], 201);
     }
 
@@ -128,7 +127,7 @@ class GorevApiController extends Controller
         return response()->json([
             'success' => true,
             'data' => $gorev,
-            'message' => 'Görev başarıyla güncellendi'
+            'message' => 'Görev başarıyla güncellendi',
         ]);
     }
 
@@ -141,7 +140,7 @@ class GorevApiController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Görev başarıyla silindi'
+            'message' => 'Görev başarıyla silindi',
         ]);
     }
 
@@ -163,7 +162,7 @@ class GorevApiController extends Controller
         return response()->json([
             'success' => true,
             'data' => $gorev,
-            'message' => 'Görev başarıyla atandı'
+            'message' => 'Görev başarıyla atandı',
         ]);
     }
 
@@ -185,7 +184,7 @@ class GorevApiController extends Controller
         $gorev->addTakip($aciklama);
 
         // Durum değişikliğine göre özel işlemler
-        if ($validated['status'] === 'devam_ediyor' && !$gorev->baslangic_tarihi) {
+        if ($validated['status'] === 'devam_ediyor' && ! $gorev->baslangic_tarihi) {
             $gorev->baslat();
         }
 
@@ -198,7 +197,7 @@ class GorevApiController extends Controller
         return response()->json([
             'success' => true,
             'data' => $gorev,
-            'message' => 'Görev statusu başarıyla güncellendi'
+            'message' => 'Görev statusu başarıyla güncellendi',
         ]);
     }
 
@@ -226,7 +225,7 @@ class GorevApiController extends Controller
         return response()->json([
             'success' => true,
             'data' => $rapor,
-            'message' => 'Görev raporu oluşturuldu'
+            'message' => 'Görev raporu oluşturuldu',
         ]);
     }
 
@@ -253,7 +252,7 @@ class GorevApiController extends Controller
         return response()->json([
             'success' => true,
             'data' => $dosya,
-            'message' => 'Dosya başarıyla eklendi'
+            'message' => 'Dosya başarıyla eklendi',
         ]);
     }
 
@@ -267,7 +266,7 @@ class GorevApiController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Dosya başarıyla silindi'
+            'message' => 'Dosya başarıyla silindi',
         ]);
     }
 
@@ -284,7 +283,7 @@ class GorevApiController extends Controller
         return response()->json([
             'success' => true,
             'data' => $gecmis,
-            'message' => 'Görev geçmişi getirildi'
+            'message' => 'Görev geçmişi getirildi',
         ]);
     }
 
@@ -320,7 +319,7 @@ class GorevApiController extends Controller
                 'son_gorevler' => $son_gorevler,
                 'yaklasan_gorevler' => $yaklasan_gorevler,
             ],
-            'message' => 'Dashboard verileri getirildi'
+            'message' => 'Dashboard verileri getirildi',
         ]);
     }
 
@@ -356,7 +355,7 @@ class GorevApiController extends Controller
         return response()->json([
             'success' => true,
             'data' => $raporlar,
-            'message' => 'Raporlar oluşturuldu'
+            'message' => 'Raporlar oluşturuldu',
         ]);
     }
 
@@ -390,7 +389,7 @@ class GorevApiController extends Controller
         return response()->json([
             'success' => true,
             'data' => $istatistikler,
-            'message' => 'İstatistikler getirildi'
+            'message' => 'İstatistikler getirildi',
         ]);
     }
 
@@ -410,7 +409,7 @@ class GorevApiController extends Controller
         $oneri = [
             'oncelik' => 'orta',
             'tahmini_sure' => 480, // 8 saat
-            'oneri_kullanici' => User::whereHas('roles', function($q) {
+            'oneri_kullanici' => User::whereHas('roles', function ($q) {
                 $q->where('name', 'danisman');
             })->inRandomOrder()->first()->id,
             'aciklama' => 'AI tarafından önerilen görev parametreleri',
@@ -419,7 +418,7 @@ class GorevApiController extends Controller
         return response()->json([
             'success' => true,
             'data' => $oneri,
-            'message' => 'AI görev önerisi oluşturuldu'
+            'message' => 'AI görev önerisi oluşturuldu',
         ]);
     }
 
@@ -444,7 +443,7 @@ class GorevApiController extends Controller
         return response()->json([
             'success' => true,
             'data' => $analiz,
-            'message' => 'AI performans analizi tamamlandı'
+            'message' => 'AI performans analizi tamamlandı',
         ]);
     }
 
@@ -460,7 +459,7 @@ class GorevApiController extends Controller
         $gorev = Gorev::find($validated['gorev_id']);
 
         // AI atama algoritması burada yapılacak
-        $oneri_kullanici = User::whereHas('roles', function($q) {
+        $oneri_kullanici = User::whereHas('roles', function ($q) {
             $q->where('name', 'danisman');
         })->inRandomOrder()->first();
 
@@ -473,7 +472,7 @@ class GorevApiController extends Controller
                 'gorev' => $gorev->load(['user', 'atayan']),
                 'atama_nedeni' => 'AI algoritması tarafından en uygun kullanıcı seçildi',
             ],
-            'message' => 'Görev AI tarafından otomatik atandı'
+            'message' => 'Görev AI tarafından otomatik atandı',
         ]);
     }
 

@@ -150,7 +150,7 @@ class TalepSeeder extends Seeder
             Talep::create($talep);
         }
 
-        $this->command->info('✅ ' . count($talepler) . ' adet test talebi başarıyla eklendi!');
+        $this->command->info('✅ '.count($talepler).' adet test talebi başarıyla eklendi!');
         $this->command->info('📊 Context7 uyumlu talep verileri hazır.');
     }
 }

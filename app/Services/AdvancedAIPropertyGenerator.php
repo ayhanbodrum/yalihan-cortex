@@ -2,12 +2,8 @@
 
 namespace App\Services;
 
-use App\Models\Ilan;
-use App\Models\IlanKategori;
-use App\Models\Kisi;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 /**
  * 🚀 Advanced AI Property Generator
@@ -23,6 +19,7 @@ use Illuminate\Support\Facades\Cache;
 class AdvancedAIPropertyGenerator
 {
     private AnythingLLMService $anythingLLM;
+
     private PropertyValuationService $valuationService;
 
     public function __construct(
@@ -70,7 +67,7 @@ class AdvancedAIPropertyGenerator
             $prompt = $this->buildAdvancedPrompt($propertyData, $options, [
                 'market_analysis' => $marketAnalysis,
                 'price_analysis' => $priceAnalysis,
-                'seo_keywords' => $seoKeywords
+                'seo_keywords' => $seoKeywords,
             ]);
 
             // AI'dan içerik al
@@ -79,11 +76,11 @@ class AdvancedAIPropertyGenerator
                 'temperature' => $this->getTemperatureByTone($options['tone']),
                 'top_p' => 0.9,
                 'frequency_penalty' => 0.2,
-                'presence_penalty' => 0.1
+                'presence_penalty' => 0.1,
             ]);
 
-            if (!$aiResponse['ok']) {
-                throw new \Exception('AI content generation failed: ' . $aiResponse['message']);
+            if (! $aiResponse['ok']) {
+                throw new \Exception('AI content generation failed: '.$aiResponse['message']);
             }
 
             // Çoklu varyant üret
@@ -109,20 +106,20 @@ class AdvancedAIPropertyGenerator
                     'tone' => $options['tone'],
                     'variant_count' => count($variants),
                     'languages' => $options['languages'],
-                    'ab_test_enabled' => $options['ab_test']
-                ]
+                    'ab_test_enabled' => $options['ab_test'],
+                ],
             ];
         } catch (\Exception $e) {
             Log::error('Advanced AI content generation failed', [
                 'error' => $e->getMessage(),
                 'property_data' => $propertyData,
-                'options' => $options
+                'options' => $options,
             ]);
 
             return [
                 'success' => false,
-                'message' => 'AI içerik üretimi başarısız: ' . $e->getMessage(),
-                'fallback' => $this->generateFallbackContent($propertyData, $options)
+                'message' => 'AI içerik üretimi başarısız: '.$e->getMessage(),
+                'fallback' => $this->generateFallbackContent($propertyData, $options),
             ];
         }
     }
@@ -133,7 +130,7 @@ class AdvancedAIPropertyGenerator
     public function generateMarketAnalysis(array $propertyData): array
     {
         try {
-            $cacheKey = 'market_analysis_' . md5(serialize($propertyData));
+            $cacheKey = 'market_analysis_'.md5(serialize($propertyData));
 
             return Cache::remember($cacheKey, 3600, function () use ($propertyData) {
                 $location = $this->getLocationString($propertyData);
@@ -155,27 +152,27 @@ class AdvancedAIPropertyGenerator
                         'location' => $location,
                         'score' => $locationScore,
                         'advantages' => $this->getLocationAdvantages($propertyData),
-                        'disadvantages' => $this->getLocationDisadvantages($propertyData)
+                        'disadvantages' => $this->getLocationDisadvantages($propertyData),
                     ],
                     'market_trends' => $marketTrends,
                     'similar_properties' => $similarProperties,
                     'price_analysis' => [
                         'price_per_sqm' => $area > 0 ? $price / $area : 0,
                         'market_average' => $this->getMarketAverage($similarProperties),
-                        'price_position' => $this->getPricePosition($price, $similarProperties)
+                        'price_position' => $this->getPricePosition($price, $similarProperties),
                     ],
-                    'recommendations' => $this->getMarketRecommendations($propertyData, $similarProperties)
+                    'recommendations' => $this->getMarketRecommendations($propertyData, $similarProperties),
                 ];
             });
         } catch (\Exception $e) {
             Log::error('Market analysis generation failed', [
                 'error' => $e->getMessage(),
-                'property_data' => $propertyData
+                'property_data' => $propertyData,
             ]);
 
             return [
                 'error' => 'Pazar analizi oluşturulamadı',
-                'location' => $this->getLocationString($propertyData)
+                'location' => $this->getLocationString($propertyData),
             ];
         }
     }
@@ -203,9 +200,9 @@ class AdvancedAIPropertyGenerator
                             'base_value' => $valuation['base_value'],
                             'location_multiplier' => $valuation['location_multiplier'],
                             'size_multiplier' => $valuation['size_multiplier'],
-                            'market_multiplier' => $valuation['market_multiplier']
+                            'market_multiplier' => $valuation['market_multiplier'],
                         ],
-                        'recommendations' => $this->getPriceRecommendations($currentPrice, $valuation['calculated_value'])
+                        'recommendations' => $this->getPriceRecommendations($currentPrice, $valuation['calculated_value']),
                     ];
                 }
             }
@@ -225,18 +222,18 @@ class AdvancedAIPropertyGenerator
                     'location' => $valuation['location_factor'],
                     'size' => $valuation['size_factor'],
                     'condition' => $valuation['condition_factor'],
-                    'market' => $valuation['market_factor']
-                ]
+                    'market' => $valuation['market_factor'],
+                ],
             ];
         } catch (\Exception $e) {
             Log::error('Price analysis generation failed', [
                 'error' => $e->getMessage(),
-                'property_data' => $propertyData
+                'property_data' => $propertyData,
             ]);
 
             return [
                 'error' => 'Fiyat analizi oluşturulamadı',
-                'current_price' => $propertyData['fiyat'] ?? 0
+                'current_price' => $propertyData['fiyat'] ?? 0,
             ];
         }
     }
@@ -275,13 +272,13 @@ class AdvancedAIPropertyGenerator
         } catch (\Exception $e) {
             Log::error('SEO keywords generation failed', [
                 'error' => $e->getMessage(),
-                'property_data' => $propertyData
+                'property_data' => $propertyData,
             ]);
 
             return [
                 'location' => [$location],
                 'property_type' => [$propertyType],
-                'seo_score' => 50
+                'seo_score' => 50,
             ];
         }
     }
@@ -301,25 +298,25 @@ class AdvancedAIPropertyGenerator
         $prompt .= "Emlak Bilgileri:\n";
         $prompt .= "- Lokasyon: {$location}\n";
         $prompt .= "- Tip: {$propertyType}\n";
-        $prompt .= "- Fiyat: " . number_format($price, 0, ',', '.') . " TL\n";
+        $prompt .= '- Fiyat: '.number_format($price, 0, ',', '.')." TL\n";
         $prompt .= "- Alan: {$area} m²\n";
 
-        if (!empty($propertyData['ozellikler'])) {
-            $prompt .= "- Özellikler: " . implode(', ', $propertyData['ozellikler']) . "\n";
+        if (! empty($propertyData['ozellikler'])) {
+            $prompt .= '- Özellikler: '.implode(', ', $propertyData['ozellikler'])."\n";
         }
 
         // Market analizi ekle
         if ($analysis['market_analysis']) {
             $prompt .= "\nPazar Analizi:\n";
-            $prompt .= "- Lokasyon Skoru: " . ($analysis['market_analysis']['location_analysis']['score'] ?? 'N/A') . "/100\n";
-            $prompt .= "- Pazar Trendi: " . ($analysis['market_analysis']['market_trends']['trend'] ?? 'Stabil') . "\n";
+            $prompt .= '- Lokasyon Skoru: '.($analysis['market_analysis']['location_analysis']['score'] ?? 'N/A')."/100\n";
+            $prompt .= '- Pazar Trendi: '.($analysis['market_analysis']['market_trends']['trend'] ?? 'Stabil')."\n";
         }
 
         // SEO anahtar kelimeleri ekle
-        if (!empty($analysis['seo_keywords'])) {
+        if (! empty($analysis['seo_keywords'])) {
             $prompt .= "\nSEO Anahtar Kelimeler:\n";
-            $prompt .= "- Lokasyon: " . implode(', ', $analysis['seo_keywords']['location'] ?? []) . "\n";
-            $prompt .= "- Emlak Tipi: " . implode(', ', $analysis['seo_keywords']['property_type'] ?? []) . "\n";
+            $prompt .= '- Lokasyon: '.implode(', ', $analysis['seo_keywords']['location'] ?? [])."\n";
+            $prompt .= '- Emlak Tipi: '.implode(', ', $analysis['seo_keywords']['property_type'] ?? [])."\n";
         }
 
         // Ton ayarları
@@ -354,7 +351,7 @@ class AdvancedAIPropertyGenerator
                     'seo_score' => $variant['seo_score'] ?? 70,
                     'cta' => $variant['cta'] ?? 'Detaylı bilgi için hemen arayın!',
                     'tone' => $options['tone'],
-                    'created_at' => now()->toISOString()
+                    'created_at' => now()->toISOString(),
                 ];
             }
         }
@@ -374,7 +371,8 @@ class AdvancedAIPropertyGenerator
     {
         return array_map(function ($variant, $index) {
             $variant['ab_test_group'] = $index % 2 === 0 ? 'A' : 'B';
-            $variant['test_id'] = 'test_' . time() . '_' . $index;
+            $variant['test_id'] = 'test_'.time().'_'.$index;
+
             return $variant;
         }, $variants, array_keys($variants));
     }
@@ -387,7 +385,9 @@ class AdvancedAIPropertyGenerator
         $multilingual = [];
 
         foreach ($languages as $lang) {
-            if ($lang === 'TR') continue; // Türkçe zaten var
+            if ($lang === 'TR') {
+                continue;
+            } // Türkçe zaten var
 
             $multilingual[$lang] = array_map(function ($variant) use ($lang) {
                 return [
@@ -395,7 +395,7 @@ class AdvancedAIPropertyGenerator
                     'title' => $this->translateText($variant['title'], $lang),
                     'description' => $this->translateText($variant['description'], $lang),
                     'cta' => $this->translateText($variant['cta'], $lang),
-                    'language' => $lang
+                    'language' => $lang,
                 ];
             }, $variants);
         }
@@ -411,7 +411,7 @@ class AdvancedAIPropertyGenerator
         $parts = array_filter([
             $propertyData['mahalle'] ?? null,
             $propertyData['ilce'] ?? null,
-            $propertyData['il'] ?? null
+            $propertyData['il'] ?? null,
         ]);
 
         return implode(', ', $parts);
@@ -453,9 +453,9 @@ class AdvancedAIPropertyGenerator
                     'seo_score' => 60,
                     'cta' => 'Detaylı bilgi için hemen arayın!',
                     'tone' => $options['tone'],
-                    'created_at' => now()->toISOString()
-                ]
-            ]
+                    'created_at' => now()->toISOString(),
+                ],
+            ],
         ];
     }
 
@@ -471,7 +471,7 @@ class AdvancedAIPropertyGenerator
             'seo_score' => 65,
             'cta' => 'Hemen iletişime geçin!',
             'tone' => $options['tone'],
-            'created_at' => now()->toISOString()
+            'created_at' => now()->toISOString(),
         ];
     }
 
@@ -482,16 +482,17 @@ class AdvancedAIPropertyGenerator
             'EN' => [
                 'Satılık' => 'For Sale',
                 'Kiralık' => 'For Rent',
-                'Detaylı bilgi için hemen arayın!' => 'Call now for detailed information!'
+                'Detaylı bilgi için hemen arayın!' => 'Call now for detailed information!',
             ],
             'RU' => [
                 'Satılık' => 'Продается',
                 'Kiralık' => 'В аренду',
-                'Detaylı bilgi için hemen arayın!' => 'Звоните сейчас для подробной информации!'
-            ]
+                'Detaylı bilgi için hemen arayın!' => 'Звоните сейчас для подробной информации!',
+            ],
         ];
 
         $text = $translations[$language][$text] ?? $text;
+
         return $text;
     }
 
@@ -500,66 +501,82 @@ class AdvancedAIPropertyGenerator
     {
         return [];
     }
+
     private function getMarketTrends(string $location, string $propertyType): array
     {
         return [];
     }
+
     private function calculateLocationScore(array $propertyData): int
     {
         return 75;
     }
+
     private function getLocationAdvantages(array $propertyData): array
     {
         return [];
     }
+
     private function getLocationDisadvantages(array $propertyData): array
     {
         return [];
     }
+
     private function getMarketAverage(array $properties): float
     {
         return 0;
     }
+
     private function getPricePosition(float $price, array $properties): string
     {
         return 'medium';
     }
+
     private function getMarketRecommendations(array $propertyData, array $properties): array
     {
         return [];
     }
+
     private function calculatePropertyValue(array $propertyData): array
     {
         return ['value' => 0, 'confidence' => 50];
     }
+
     private function getMarketComparison(array $propertyData): array
     {
         return [];
     }
+
     private function getPriceRecommendations(float $current, float $suggested): array
     {
         return [];
     }
+
     private function generateLocationKeywords(array $propertyData): array
     {
         return [];
     }
+
     private function generatePropertyTypeKeywords(string $type): array
     {
         return [];
     }
+
     private function generateFeatureKeywords(array $features): array
     {
         return [];
     }
+
     private function generateLongTailKeywords(array $propertyData): array
     {
         return [];
     }
+
     private function getTrendingKeywords(string $location, string $type): array
     {
         return [];
     }
+
     private function calculateSEOScore(array $keywords): int
     {
         return 70;

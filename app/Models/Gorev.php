@@ -22,10 +22,10 @@ class Gorev extends Model
         'tahmini_sure',
         'admin_id',
         'danisman_id',
-        'musteri_id',
+        'kisi_id', // Context7: musteri_id → kisi_id
         'proje_id',
         'tags',
-        'metadata'
+        'metadata',
     ];
 
     protected $casts = [
@@ -49,9 +49,21 @@ class Gorev extends Model
         return $this->belongsTo(User::class, 'danisman_id');
     }
 
+    /**
+     * Context7: kisi relation (musteri → kisi)
+     */
+    public function kisi()
+    {
+        return $this->belongsTo(User::class, 'kisi_id');
+    }
+
+    /**
+     * @deprecated Use kisi() instead
+     * Backward compatibility alias
+     */
     public function musteri()
     {
-        return $this->belongsTo(User::class, 'musteri_id');
+        return $this->kisi();
     }
 
     public function proje()
@@ -77,7 +89,7 @@ class Gorev extends Model
             'devam_ediyor' => 'Devam Ediyor',
             'tamamlandi' => 'Tamamlandı',
             'iptal' => 'İptal',
-            'askida' => 'Askıda'
+            'askida' => 'Askıda',
         ];
 
         return $statuslar[$this->status] ?? 'Bilinmiyor';
@@ -89,7 +101,7 @@ class Gorev extends Model
             'dusuk' => 'Düşük',
             'orta' => 'Orta',
             'yuksek' => 'Yüksek',
-            'kritik' => 'Kritik'
+            'kritik' => 'Kritik',
         ];
 
         return $oncelikler[$this->oncelik] ?? 'Bilinmiyor';
@@ -97,7 +109,7 @@ class Gorev extends Model
 
     public function getKalanGunAttribute()
     {
-        if (!$this->bitis_tarihi) {
+        if (! $this->bitis_tarihi) {
             return null;
         }
 
@@ -160,14 +172,14 @@ class Gorev extends Model
     public function scopeYaklasan($query, $gun = 3)
     {
         return $query->where('bitis_tarihi', '<=', now()->addDays($gun))
-                    ->where('bitis_tarihi', '>', now())
-                    ->where('status', '!=', 'tamamlandi');
+            ->where('bitis_tarihi', '>', now())
+            ->where('status', '!=', 'tamamlandi');
     }
 
     public function scopeGecikmis($query)
     {
         return $query->where('bitis_tarihi', '<', now())
-                    ->where('status', '!=', 'tamamlandi');
+            ->where('status', '!=', 'tamamlandi');
     }
 
     // Metodlar
@@ -193,14 +205,14 @@ class Gorev extends Model
     {
         $this->update([
             'status' => 'tamamlandi',
-            'bitis_tarihi' => now()
+            'bitis_tarihi' => now(),
         ]);
     }
 
     public function iptalEt()
     {
         $this->update([
-            'status' => 'iptal'
+            'status' => 'iptal',
         ]);
     }
 
@@ -208,14 +220,14 @@ class Gorev extends Model
     {
         $this->update([
             'status' => 'devam_ediyor',
-            'baslangic_tarihi' => now()
+            'baslangic_tarihi' => now(),
         ]);
     }
 
     public function askiyaAl()
     {
         $this->update([
-            'status' => 'askida'
+            'status' => 'askida',
         ]);
     }
 
@@ -224,7 +236,7 @@ class Gorev extends Model
         return $this->takip()->create([
             'aciklama' => $aciklama,
             'user_id' => $userId ?? auth()->id(),
-            'tarih' => now()
+            'tarih' => now(),
         ]);
     }
 
@@ -245,7 +257,7 @@ class Gorev extends Model
         // Deadline varsa ve geçmişse, görev tamamlanmamışsa gecikmiş
         return $this->deadline &&
                $this->deadline < now() &&
-               !in_array($this->status, ['tamamlandi', 'iptal']);
+               ! in_array($this->status, ['tamamlandi', 'iptal']);
     }
 
     /**
@@ -257,7 +269,7 @@ class Gorev extends Model
         return $this->deadline &&
                $this->deadline <= now()->addDays($gun) &&
                $this->deadline > now() &&
-               !in_array($this->status, ['tamamlandi', 'iptal']);
+               ! in_array($this->status, ['tamamlandi', 'iptal']);
     }
 
     /**
@@ -270,7 +282,7 @@ class Gorev extends Model
             'devam_ediyor' => 'info',
             'tamamlandi' => 'success',
             'iptal' => 'danger',
-            'askida' => 'secondary'
+            'askida' => 'secondary',
         ];
 
         return $renkler[$this->status] ?? 'secondary';
@@ -285,7 +297,7 @@ class Gorev extends Model
             'dusuk' => 'success',
             'orta' => 'warning',
             'yuksek' => 'danger',
-            'kritik' => 'danger'
+            'kritik' => 'danger',
         ];
 
         return $renkler[$this->oncelik] ?? 'secondary';

@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\Http\Request;
 use App\Services\Export\ExportService;
+use Illuminate\Http\Request;
 
 class ReportingController extends AdminController
 {
@@ -48,10 +48,10 @@ class ReportingController extends AdminController
             $type = $request->input('type', 'ilan'); // Default: ilan
 
             // Validate type
-            if (!in_array($type, ['ilan', 'kisi', 'talep'])) {
+            if (! in_array($type, ['ilan', 'kisi', 'talep'])) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Geçersiz export tipi'
+                    'message' => 'Geçersiz export tipi',
                 ], 400);
             }
 
@@ -59,7 +59,7 @@ class ReportingController extends AdminController
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Excel export hatası: ' . $e->getMessage()
+                'message' => 'Excel export hatası: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -74,10 +74,10 @@ class ReportingController extends AdminController
             $type = $request->input('type', 'ilan'); // Default: ilan
 
             // Validate type
-            if (!in_array($type, ['ilan', 'kisi', 'talep'])) {
+            if (! in_array($type, ['ilan', 'kisi', 'talep'])) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Geçersiz export tipi'
+                    'message' => 'Geçersiz export tipi',
                 ], 400);
             }
 
@@ -85,7 +85,7 @@ class ReportingController extends AdminController
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'PDF export hatası: ' . $e->getMessage()
+                'message' => 'PDF export hatası: '.$e->getMessage(),
             ], 500);
         }
     }

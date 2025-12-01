@@ -1,4 +1,4 @@
-@extends('admin.layouts.neo')
+@extends('admin.layouts.admin')
 
 @section('title', 'Yeni Talep Oluştur')
 @section('meta_description',
@@ -60,17 +60,16 @@
                 <!-- Sol Kolon - Temel Bilgiler -->
                 <div class="space-y-6">
                     <!-- Temel Bilgiler Card - Tailwind CSS + Transitions -->
-                    <div
                         class="bg-gray-50 dark:bg-gray-800
-                                rounded-xl shadow-lg
+                                rounded-lg shadow-sm
                                 border border-gray-200 dark:border-gray-700
                                 transition-all duration-300 ease-in-out
-                                hover:shadow-xl hover:-translate-y-1">
+                                hover:shadow-md hover:-translate-y-1">
                         <div
                             class="px-6 py-4 border-b border-gray-200 dark:border-gray-700
                                     bg-gradient-to-r from-blue-50 to-indigo-50
                                     dark:from-gray-800 dark:to-gray-700
-                                    rounded-t-xl">
+                                    rounded-t-lg">
                             <h2
                                 class="text-xl font-bold text-gray-900 dark:text-white
                                        flex items-center">
@@ -301,17 +300,17 @@
                     <!-- 📍 Lokasyon Bilgileri -->
                     <div
                         class="bg-gray-50 dark:bg-gray-800
-                                rounded-xl shadow-lg
-                                border-2 border-gray-200 dark:border-gray-600
+                                rounded-lg shadow-sm
+                                border border-gray-200 dark:border-gray-600
                                 transition-all duration-300 ease-in-out
-                                hover:shadow-2xl hover:-translate-y-1">
+                                hover:shadow-md hover:-translate-y-1">
 
                         <!-- Card Header -->
                         <div
-                            class="px-6 py-4 border-b-2 border-gray-200 dark:border-gray-600
+                            class="px-6 py-4 border-b border-gray-200 dark:border-gray-600
                                     bg-gradient-to-r from-green-50 via-teal-50 to-emerald-50
                                     dark:from-gray-700 dark:via-gray-700 dark:to-gray-700
-                                    rounded-t-xl">
+                                    rounded-t-lg">
                             <div class="flex items-center justify-between">
                                 <h2 class="text-xl font-bold text-gray-900 dark:text-white flex items-center">
                                     <div
@@ -335,14 +334,14 @@
                         </div>
 
                         <!-- Card Body -->
-                        <div class="p-6 bg-gray-50 dark:bg-gray-900 rounded-b-xl">
+                        <div class="p-6 bg-gray-50 dark:bg-gray-900 rounded-b-lg">
                             <div class="space-y-6">
                                 <!-- İl ve İlçe Row -->
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <!-- İl -->
                                     <div class="space-y-2">
                                         <label for="il_id"
-                                            class="block text-sm font-bold text-gray-800 dark:text-gray-100 mb-2
+                                            class="block text-sm font-medium text-gray-800 dark:text-gray-100 mb-2
                                                                  flex items-center gap-2">
                                             <span class="flex items-center gap-1.5">
                                                 <svg class="w-4 h-4 text-green-600 dark:text-green-400"
@@ -358,7 +357,7 @@
                                         </label>
                                         <select id="il_id" name="il_id"
                                             class="w-full px-4 py-2.5
-                                                       border-2 @error('il_id') border-red-500 dark:border-red-400 @else border-gray-300 dark:border-gray-500 @enderror
+                                                       border @error('il_id') border-red-500 dark:border-red-400 @else border-gray-300 dark:border-gray-500 @enderror
                                                        rounded-lg
                                                        bg-gray-50 dark:bg-gray-800
                                                        text-gray-900 dark:text-white
@@ -402,7 +401,7 @@
                                     <!-- İlçe -->
                                     <div class="space-y-2">
                                         <label for="ilce_id"
-                                            class="block text-sm font-bold text-gray-800 dark:text-gray-100 mb-2
+                                            class="block text-sm font-medium text-gray-800 dark:text-gray-100 mb-2
                                                                      flex items-center gap-2">
                                             <span class="flex items-center gap-1.5">
                                                 <svg class="w-4 h-4 text-green-600 dark:text-green-400"
@@ -415,7 +414,7 @@
                                         </label>
                                         <select id="ilce_id" name="ilce_id"
                                             class="w-full px-4 py-2.5
-                                                       border-2 border-gray-300 dark:border-gray-500
+                                                       border border-gray-300 dark:border-gray-500
                                                        rounded-lg
                                                        bg-gray-50 dark:bg-gray-800
                                                        text-gray-900 dark:text-white
@@ -478,7 +477,7 @@
                                 <!-- Mahalle alanı -->
                                 <div class="space-y-2">
                                     <label for="mahalle_id"
-                                        class="block text-sm font-bold text-gray-800 dark:text-gray-100 mb-2
+                                        class="block text-sm font-medium text-gray-800 dark:text-gray-100 mb-2
                                                                  flex items-center gap-2">
                                         <span class="flex items-center gap-1.5">
                                             <svg class="w-4 h-4 text-green-600 dark:text-green-400" fill="currentColor"
@@ -491,7 +490,7 @@
                                     </label>
                                     <select id="mahalle_id" name="mahalle_id"
                                         class="w-full px-4 py-2.5
-                                                   border-2 border-gray-300 dark:border-gray-500
+                                                   border border-gray-300 dark:border-gray-500
                                                    rounded-lg
                                                    bg-gray-50 dark:bg-gray-800
                                                    text-gray-900 dark:text-white
@@ -571,15 +570,15 @@
                     <!-- Kişi Bilgileri - Tailwind CSS + Transitions -->
                     <div
                         class="bg-gray-50 dark:bg-gray-800
-                                rounded-xl shadow-lg
+                                rounded-lg shadow-sm
                                 border border-gray-200 dark:border-gray-700
                                 transition-all duration-300 ease-in-out
-                                hover:shadow-xl hover:-translate-y-1">
+                                hover:shadow-md hover:-translate-y-1">
                         <div
                             class="px-6 py-4 border-b border-gray-200 dark:border-gray-700
                                     bg-gradient-to-r from-purple-50 to-pink-50
                                     dark:from-gray-800 dark:to-gray-700
-                                    rounded-t-xl">
+                                    rounded-t-lg">
                             <h2 class="text-xl font-bold text-gray-900 dark:text-white flex items-center">
                                 <svg class="w-6 h-6 mr-3 text-purple-600 dark:text-purple-400" fill="none"
                                     stroke="currentColor" viewBox="0 0 24 24">
@@ -593,7 +592,7 @@
                             <!-- Kişi Seç (Live Search) -->
                             <div class="mb-6 space-y-2">
                                 <label for="kisi_id"
-                                    class="block text-sm font-bold text-gray-800 dark:text-gray-100 mb-2
+                                    class="block text-sm font-medium text-gray-800 dark:text-gray-100 mb-2
                                                              flex items-center gap-2">
                                     <span class="flex items-center gap-1.5">
                                         <svg class="w-4 h-4 text-purple-600 dark:text-purple-400" fill="currentColor"
@@ -609,7 +608,7 @@
                                     <input type="hidden" id="kisi_id" name="kisi_id" x-model="form.kisi_id">
                                     <input type="text"
                                         class="w-full px-4 py-2.5
-                                                  border-2 border-gray-300 dark:border-gray-500
+                                                  border border-gray-300 dark:border-gray-500
                                                   rounded-lg
                                                   bg-gray-50 dark:bg-gray-800
                                                   text-gray-900 dark:text-white
@@ -625,7 +624,7 @@
                                         class="context7-search-results
                                                 absolute z-[9999] w-full mt-1
                                                 bg-gray-50 dark:bg-gray-800
-                                                border-2 border-purple-300 dark:border-purple-700
+                                                border border-purple-300 dark:border-purple-700
                                                 rounded-lg shadow-2xl
                                                 hidden max-h-96 overflow-y-auto
                                                 animate-fadeIn">
@@ -668,7 +667,7 @@
                                 </button>
                                 <button type="button"
                                     class="inline-flex items-center px-4 py-2.5 text-sm
-                                                   border-2 border-gray-300 text-gray-700 font-medium
+                                                   border border-gray-300 text-gray-700 font-medium
                                                    rounded-lg
                                                    hover:bg-gray-50 hover:border-gray-400 hover:scale-105
                                                    active:scale-95
@@ -700,8 +699,8 @@
                         <div x-show="showNewKisiForm" x-collapse
                             class="mt-6 p-6
                                         bg-purple-50 dark:bg-gray-800
-                                        border-2 border-purple-200 dark:border-purple-800
-                                        rounded-xl
+                                        border border-purple-200 dark:border-purple-800
+                                        rounded-lg
                                         transition-all duration-500">
                             <h4 class="text-lg font-bold text-purple-900 dark:text-purple-200 mb-4 flex items-center">
                                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1179,6 +1178,7 @@
                     loading: false,
                     showNewKisiForm: false,
                     altKategoriler: [],
+                    loadingAltKategoriler: false,
                     ilceler: [],
                     mahalleler: [],
                     loadingIlceler: false,
@@ -1224,22 +1224,68 @@
                         if (this.form.ilce_id) {
                             setTimeout(() => this.loadMahalleler(), 500);
                         }
+                        // Load alt kategoriler if kategori_id is pre-filled
+                        if (this.form.kategori_id) {
+                            this.loadAltKategoriler();
+                        }
                     },
 
                     async loadAltKategoriler() {
                         if (!this.form.kategori_id) {
                             this.altKategoriler = [];
                             this.form.alt_kategori_id = '';
+                            this.loadingAltKategoriler = false;
                             return;
                         }
 
+                        this.loadingAltKategoriler = true;
+                        this.form.alt_kategori_id = ''; // Ana kategori değiştiğinde alt kategoriyi temizle
+
                         try {
-                            const response = await fetch(`/api/kategoriler/${this.form.kategori_id}/alt-kategoriler`);
-                            const data = await response.json();
-                            this.altKategoriler = data.data || data.alt_kategoriler || [];
+                            // ✅ Context7: Standart API endpoint kullan
+                            const response = await fetch(`/api/categories/sub/${this.form.kategori_id}`, {
+                                headers: {
+                                    'Accept': 'application/json',
+                                    'X-Requested-With': 'XMLHttpRequest'
+                                }
+                            });
+
+                            if (!response.ok) {
+                                throw new Error(`HTTP ${response.status}`);
+                            }
+
+                            const result = await response.json();
+
+                            // ✅ Context7: ResponseService format'ına uygun parse
+                            // ResponseService format: {success: true, data: {subcategories: [...]}, message: "..."}
+                            if (result.success) {
+                                if (result.data) {
+                                    // ResponseService format: data içinde subcategories var
+                                    this.altKategoriler = result.data.subcategories || result.data.alt_kategoriler || (Array.isArray(result.data) ? result.data : []);
+                                } else if (result.subcategories) {
+                                    // Direct format (backward compatibility)
+                                    this.altKategoriler = result.subcategories;
+                                } else {
+                                    this.altKategoriler = [];
+                                }
+                            } else {
+                                this.altKategoriler = [];
+                            }
+
+                            // Kategori seçildiğinde alt kategori seçimini temizle
+                            if (this.altKategoriler.length === 0) {
+                                this.form.alt_kategori_id = '';
+                                console.log('⚠️ Bu kategori için alt kategori bulunamadı');
+                            } else {
+                                console.log(`✅ ${this.altKategoriler.length} alt kategori yüklendi`);
+                            }
                         } catch (error) {
-                            console.error('Alt kategoriler yüklenemedi:', error);
+                            console.error('❌ Alt kategoriler yüklenemedi:', error);
                             this.altKategoriler = [];
+                            this.form.alt_kategori_id = '';
+                            window.toast?.error('Alt kategoriler yüklenirken bir hata oluştu');
+                        } finally {
+                            this.loadingAltKategoriler = false;
                         }
                     },
 

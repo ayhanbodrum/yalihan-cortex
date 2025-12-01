@@ -1,7 +1,11 @@
 {{-- 🎨 Section 5: Fiyat Yönetimi (Tailwind Modernized) --}}
 <div class="bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 p-8 hover:shadow-2xl transition-shadow duration-300">
     <!-- Section Header -->
-    <div class="flex items-center gap-4 mb-8 pb-6 border-b border-gray-200 dark:border-gray-700">
+    <div class="px-5 py-3 border-b border-gray-200 dark:border-gray-700 
+                bg-gradient-to-r from-gray-50 to-white
+                dark:from-gray-800 dark:to-gray-800
+                rounded-t-lg
+                flex items-center gap-4 mb-8">
         <div class="flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-yellow-500 to-orange-600 text-white shadow-lg shadow-yellow-500/50 font-bold text-lg">
             5
         </div>
@@ -60,10 +64,10 @@
                                    font-semibold text-sm rounded-r-lg
                                    focus:outline-none focus:ring-2 focus:ring-yellow-500/50
                                    cursor-pointer transition-all duration-200">
-                            <option value="TRY">₺ TL</option>
-                            <option value="USD">$ USD</option>
-                            <option value="EUR">€ EUR</option>
-                            <option value="GBP">£ GBP</option>
+                            <option value="TRY" {{ old('para_birimi', 'TRY') == 'TRY' ? 'selected' : '' }}>₺ TL</option>
+                            <option value="USD" {{ old('para_birimi') == 'USD' ? 'selected' : '' }}>$ USD</option>
+                            <option value="EUR" {{ old('para_birimi') == 'EUR' ? 'selected' : '' }}>€ EUR</option>
+                            <option value="GBP" {{ old('para_birimi') == 'GBP' ? 'selected' : '' }}>£ GBP</option>
                         </select>
                     </div>
                 </div>

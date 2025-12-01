@@ -2,16 +2,18 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     public function up(): void
     {
         Schema::table('ilanlar', function (Blueprint $table) {
-            $exists = function(string $name): bool {
-                $rows = DB::select("SHOW INDEX FROM ilanlar WHERE Key_name = ?", [$name]);
-                return !empty($rows);
+            $exists = function (string $name): bool {
+                $rows = DB::select('SHOW INDEX FROM ilanlar WHERE Key_name = ?', [$name]);
+
+                return ! empty($rows);
             };
             if (Schema::hasColumn('ilanlar', 'status') && ! $exists('idx_ilanlar_status')) {
                 $table->index('status', 'idx_ilanlar_status');
@@ -49,11 +51,11 @@ return new class extends Migration {
                 Schema::hasColumn('ilanlar', 'ana_kategori_id') &&
                 ! $exists('idx_ilanlar_status_il_kategori')
             ) {
-                $table->index(['status','il_id','ana_kategori_id'], 'idx_ilanlar_status_il_kategori');
+                $table->index(['status', 'il_id', 'ana_kategori_id'], 'idx_ilanlar_status_il_kategori');
             }
             if (Schema::hasColumn('ilanlar', 'baslik') && Schema::hasColumn('ilanlar', 'aciklama')) {
                 try {
-                    DB::statement("ALTER TABLE ilanlar ADD FULLTEXT ft_ilanlar_baslik_aciklama (baslik, aciklama)");
+                    DB::statement('ALTER TABLE ilanlar ADD FULLTEXT ft_ilanlar_baslik_aciklama (baslik, aciklama)');
                 } catch (\Throwable $e) {
                 }
             }
@@ -94,7 +96,7 @@ return new class extends Migration {
                 $table->dropIndex('idx_ilanlar_created_at');
             }
             try {
-                DB::statement("ALTER TABLE ilanlar DROP INDEX ft_ilanlar_baslik_aciklama");
+                DB::statement('ALTER TABLE ilanlar DROP INDEX ft_ilanlar_baslik_aciklama');
             } catch (\Throwable $e) {
             }
         });

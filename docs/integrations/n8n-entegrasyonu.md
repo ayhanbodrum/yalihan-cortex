@@ -207,9 +207,15 @@ return [
 
 ```bash
 # .env
-N8N_URL=http://localhost:5678
-N8N_WEBHOOK_TOKEN=your-secret-token-here
+N8N_WEBHOOK_URL=http://localhost:5678
+N8N_WEBHOOK_SECRET=your-secret-token-here
+N8N_TIMEOUT=30
 ```
+
+**Güvenlik Notu:**
+- `N8N_WEBHOOK_SECRET` değeri n8n workflow'larında `X-N8N-SECRET` header'ı olarak gönderilmelidir
+- Bu secret, webhook endpoint'lerini yetkisiz erişimlere karşı korur
+- Production'da güçlü bir secret kullanın (en az 32 karakter)
 
 #### **Kullanım Örnekleri:**
 

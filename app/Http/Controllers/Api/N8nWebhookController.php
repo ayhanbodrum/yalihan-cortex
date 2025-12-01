@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Events\IlanCreated;
 use App\Http\Controllers\Controller;
+use App\Models\Ilan;
+use App\Services\AI\AIContractService;
 use App\Services\AI\AIIlanTaslagiService;
 use App\Services\AI\AIMessageService;
-use App\Services\AI\AIContractService;
+use App\Services\Logging\LogService;
 use App\Services\Response\ResponseService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 /**
@@ -22,7 +24,9 @@ use Illuminate\Support\Facades\Validator;
 class N8nWebhookController extends Controller
 {
     protected AIIlanTaslagiService $ilanTaslagiService;
+
     protected AIMessageService $messageService;
+
     protected AIContractService $contractService;
 
     public function __construct(
@@ -68,20 +72,20 @@ class N8nWebhookController extends Controller
                 'ai_generated_at' => now(),
             ]);
 
-            Log::info('n8n webhook: AI ilan taslağı kaydedildi', [
+            LogService::info('n8n webhook: AI ilan taslağı kaydedildi', [
                 'taslak_id' => $taslak->id,
                 'danisman_id' => $request->danisman_id,
-            ]);
+            ], LogService::CHANNEL_API);
 
             return ResponseService::success([
                 'taslak_id' => $taslak->id,
                 'status' => $taslak->status,
             ], 'AI ilan taslağı başarıyla oluşturuldu');
         } catch (\Exception $e) {
-            Log::error('n8n webhook: AI ilan taslağı hatası', [
+            LogService::error('n8n webhook: AI ilan taslağı hatası', [
                 'error' => $e->getMessage(),
                 'request' => $request->all(),
-            ]);
+            ], $e, LogService::CHANNEL_API);
 
             return ResponseService::serverError('AI ilan taslağı oluşturulamadı', $e);
         }
@@ -119,20 +123,20 @@ class N8nWebhookController extends Controller
                 'ai_generated_at' => now(),
             ]);
 
-            Log::info('n8n webhook: AI mesaj taslağı kaydedildi', [
+            LogService::info('n8n webhook: AI mesaj taslağı kaydedildi', [
                 'message_id' => $message->id,
                 'communication_id' => $request->communication_id,
-            ]);
+            ], LogService::CHANNEL_API);
 
             return ResponseService::success([
                 'message_id' => $message->id,
                 'status' => $message->status,
             ], 'AI mesaj taslağı başarıyla oluşturuldu');
         } catch (\Exception $e) {
-            Log::error('n8n webhook: AI mesaj taslağı hatası', [
+            LogService::error('n8n webhook: AI mesaj taslağı hatası', [
                 'error' => $e->getMessage(),
                 'request' => $request->all(),
-            ]);
+            ], $e, LogService::CHANNEL_API);
 
             return ResponseService::serverError('AI mesaj taslağı oluşturulamadı', $e);
         }
@@ -171,20 +175,20 @@ class N8nWebhookController extends Controller
                 'ai_generated_at' => now(),
             ]);
 
-            Log::info('n8n webhook: AI sözleşme taslağı kaydedildi', [
+            LogService::info('n8n webhook: AI sözleşme taslağı kaydedildi', [
                 'draft_id' => $draft->id,
                 'contract_type' => $request->contract_type,
-            ]);
+            ], LogService::CHANNEL_API);
 
             return ResponseService::success([
                 'draft_id' => $draft->id,
                 'status' => $draft->status,
             ], 'AI sözleşme taslağı başarıyla oluşturuldu');
         } catch (\Exception $e) {
-            Log::error('n8n webhook: AI sözleşme taslağı hatası', [
+            LogService::error('n8n webhook: AI sözleşme taslağı hatası', [
                 'error' => $e->getMessage(),
                 'request' => $request->all(),
-            ]);
+            ], $e, LogService::CHANNEL_API);
 
             return ResponseService::serverError('AI sözleşme taslağı oluşturulamadı', $e);
         }
@@ -199,15 +203,242 @@ class N8nWebhookController extends Controller
      */
     public function test(Request $request)
     {
-        Log::info('n8n webhook test', [
+        LogService::info('n8n webhook test', [
             'request' => $request->all(),
             'headers' => $request->headers->all(),
-        ]);
+        ], LogService::CHANNEL_API);
 
         return ResponseService::success([
             'message' => 'n8n webhook test başarılı',
             'timestamp' => now()->toISOString(),
             'received_data' => $request->all(),
         ], 'Webhook test başarılı');
+    }
+
+    /**
+     * Emsal Arama (Market Analysis)
+     *
+     * n8n'den gelen emsal arama isteklerini işler.
+     * Gelen kriterlere göre Ilan tablosunda emsal arama yapar.
+     *
+     * POST /api/v1/webhook/n8n/analyze-market
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function analyzeMarket(Request $request)
+    {
+        try {
+            $validated = Validator::make($request->all(), [
+                'location' => 'required|string|max:255',
+                'm2' => 'required|numeric|min:1',
+                'type' => 'required|string|in:tarla,arsa,konut,isyeri,villa,yazlik',
+            ]);
+
+            if ($validated->fails()) {
+                return ResponseService::validationError($validated->errors()->toArray());
+            }
+
+            $location = $request->input('location');
+            $m2 = $request->input('m2');
+            $type = $request->input('type');
+
+            LogService::api(
+                'n8n_webhook_analyze_market',
+                [
+                    'location' => $location,
+                    'm2' => $m2,
+                    'type' => $type,
+                ]
+            );
+
+            // Emsal arama: Benzer konum, benzer m2, benzer tip
+            // %20 esneme payı ile m2 aralığı
+            $m2Min = $m2 * 0.8;
+            $m2Max = $m2 * 1.2;
+
+            $emsalIlans = Ilan::query()
+                ->where('status', 'Aktif')
+                ->whereNull('deleted_at')
+                ->where(function ($query) use ($location) {
+                    $query->where('ilce_id', 'like', "%{$location}%")
+                        ->orWhere('mahalle_id', 'like', "%{$location}%")
+                        ->orWhere('tam_adres', 'like', "%{$location}%");
+                })
+                ->whereBetween('metrekare', [$m2Min, $m2Max])
+                ->whereHas('altKategori', function ($query) use ($type) {
+                    $query->where('slug', 'like', "%{$type}%");
+                })
+                ->with(['il:id,il_adi', 'ilce:id,ilce_adi', 'mahalle:id,mahalle_adi'])
+                ->orderBy('created_at', 'desc')
+                ->limit(10)
+                ->get()
+                ->map(function ($ilan) {
+                    return [
+                        'id' => $ilan->id,
+                        'baslik' => $ilan->baslik,
+                        'fiyat' => $ilan->fiyat,
+                        'para_birimi' => $ilan->para_birimi,
+                        'metrekare' => $ilan->metrekare,
+                        'location' => [
+                            'il' => $ilan->il->il_adi ?? null,
+                            'ilce' => $ilan->ilce->ilce_adi ?? null,
+                            'mahalle' => $ilan->mahalle->mahalle_adi ?? null,
+                        ],
+                        'tarih' => $ilan->created_at->format('Y-m-d'),
+                        'fiyat_per_m2' => $ilan->metrekare > 0 ? round($ilan->fiyat / $ilan->metrekare, 2) : null,
+                    ];
+                });
+
+            return ResponseService::success([
+                'emsal_count' => $emsalIlans->count(),
+                'emsal_ilans' => $emsalIlans,
+                'search_criteria' => [
+                    'location' => $location,
+                    'm2' => $m2,
+                    'm2_range' => [$m2Min, $m2Max],
+                    'type' => $type,
+                ],
+            ], 'Emsal arama başarıyla tamamlandı');
+        } catch (\Exception $e) {
+            LogService::error(
+                'n8n webhook: Emsal arama hatası',
+                [
+                    'error' => $e->getMessage(),
+                    'request' => $request->all(),
+                ],
+                $e,
+                LogService::CHANNEL_API
+            );
+
+            return ResponseService::serverError('Emsal arama sırasında hata oluştu', $e);
+        }
+    }
+
+    /**
+     * Taslak İlan Oluştur (Telegram'dan gelen ham metin)
+     *
+     * n8n'den gelen Telegram mesajını taslak ilan olarak kaydeder.
+     *
+     * POST /api/v1/webhook/n8n/create-draft-listing
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function createDraftListing(Request $request)
+    {
+        try {
+            $validated = Validator::make($request->all(), [
+                'text' => 'required|string|min:10',
+                'danisman_id' => 'nullable|integer|exists:users,id',
+                'source' => 'nullable|string|in:telegram,whatsapp,instagram,email',
+            ]);
+
+            if ($validated->fails()) {
+                return ResponseService::validationError($validated->errors()->toArray());
+            }
+
+            $text = $request->input('text');
+            $danismanId = $request->input('danisman_id', auth()->id());
+            $source = $request->input('source', 'telegram');
+
+            LogService::api(
+                'n8n_webhook_create_draft_listing',
+                [
+                    'danisman_id' => $danismanId,
+                    'source' => $source,
+                    'text_length' => strlen($text),
+                ]
+            );
+
+            // AIIlanTaslagiService kullanarak taslak oluştur
+            $taslak = $this->ilanTaslagiService->generateDraft([
+                'raw_text' => $text,
+                'source' => $source,
+                'extracted_data' => [], // n8n'den gelecek parse edilmiş veri
+            ], $danismanId);
+
+            return ResponseService::success([
+                'taslak_id' => $taslak->id,
+                'status' => $taslak->status,
+                'message' => 'Taslak ilan başarıyla oluşturuldu',
+            ], 'Taslak ilan başarıyla oluşturuldu');
+        } catch (\Exception $e) {
+            LogService::error(
+                'n8n webhook: Taslak ilan oluşturma hatası',
+                [
+                    'error' => $e->getMessage(),
+                    'request' => $request->all(),
+                ],
+                $e,
+                LogService::CHANNEL_API
+            );
+
+            return ResponseService::serverError('Taslak ilan oluşturulamadı', $e);
+        }
+    }
+
+    /**
+     * Tersine Eşleştirme Tetikle (Reverse Match Trigger)
+     *
+     * n8n'den gelen ilan_id ile tersine eşleştirme işlemini manuel tetikler.
+     *
+     * POST /api/v1/webhook/n8n/trigger-reverse-match
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function triggerReverseMatch(Request $request)
+    {
+        try {
+            $validated = Validator::make($request->all(), [
+                'ilan_id' => 'required|integer|exists:ilanlar,id',
+            ]);
+
+            if ($validated->fails()) {
+                return ResponseService::validationError($validated->errors()->toArray());
+            }
+
+            $ilanId = $request->input('ilan_id');
+
+            LogService::api(
+                'n8n_webhook_trigger_reverse_match',
+                [
+                    'ilan_id' => $ilanId,
+                ]
+            );
+
+            // İlan'ı bul
+            $ilan = Ilan::findOrFail($ilanId);
+
+            // Sadece 'Aktif' ilanlar için event fire et
+            if ($ilan->status !== 'Aktif') {
+                return ResponseService::error(
+                    'Sadece aktif ilanlar için tersine eşleştirme yapılabilir',
+                    400,
+                    [],
+                    'INVALID_STATUS'
+                );
+            }
+
+            // IlanCreated event'ini manuel tetikle
+            event(new IlanCreated($ilan));
+
+            return ResponseService::success([
+                'ilan_id' => $ilan->id,
+                'ilan_baslik' => $ilan->baslik,
+                'status' => $ilan->status,
+                'message' => 'Tersine eşleştirme işlemi tetiklendi. Queue\'da işlenecek.',
+            ], 'Tersine eşleştirme başarıyla tetiklendi');
+        } catch (\Exception $e) {
+            LogService::error(
+                'n8n webhook: Tersine eşleştirme tetikleme hatası',
+                [
+                    'error' => $e->getMessage(),
+                    'request' => $request->all(),
+                ],
+                $e,
+                LogService::CHANNEL_API
+            );
+
+            return ResponseService::serverError('Tersine eşleştirme tetiklenemedi', $e);
+        }
     }
 }

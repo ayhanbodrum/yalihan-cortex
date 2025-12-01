@@ -1,20 +1,19 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Schema;
 
 /**
  * Context7 Compliance: Status field MUST be boolean (TINYINT(1))
- * 
+ *
  * Sorun: status kolonu varchar(255) ve 'Aktif' string değeri kullanıyor
  * Bu tutarsızlık sürekli sorun yaratıyor (true/false vs 'Aktif'/'Pasif')
- * 
+ *
  * Çözüm: status kolonunu TINYINT(1) boolean'a çevir
  * Böylece kodda true/false kullanabiliriz, veritabanında otomatik 1/0 olur
- * 
+ *
  * @see .context7/MIGRATION_STANDARDS.md
  */
 return new class extends Migration
@@ -25,12 +24,12 @@ return new class extends Migration
     public function up(): void
     {
         // ✅ CONTEXT7: Tablo varlık kontrolü
-        if (!Schema::hasTable('ilan_kategorileri')) {
+        if (! Schema::hasTable('ilan_kategorileri')) {
             return;
         }
 
         // ✅ CONTEXT7: Kolon varlık kontrolü
-        if (!Schema::hasColumn('ilan_kategorileri', 'status')) {
+        if (! Schema::hasColumn('ilan_kategorileri', 'status')) {
             return;
         }
 
@@ -75,7 +74,7 @@ return new class extends Migration
             Log::info("  ✅ ilan_kategorileri.status converted successfully ({$affectedRows} rows)");
 
         } catch (\Exception $e) {
-            Log::error('  ❌ ilan_kategorileri.status conversion failed: ' . $e->getMessage());
+            Log::error('  ❌ ilan_kategorileri.status conversion failed: '.$e->getMessage());
             throw $e;
         }
     }
@@ -85,11 +84,11 @@ return new class extends Migration
      */
     public function down(): void
     {
-        if (!Schema::hasTable('ilan_kategorileri')) {
+        if (! Schema::hasTable('ilan_kategorileri')) {
             return;
         }
 
-        if (!Schema::hasColumn('ilan_kategorileri', 'status')) {
+        if (! Schema::hasColumn('ilan_kategorileri', 'status')) {
             return;
         }
 
@@ -109,7 +108,7 @@ return new class extends Migration
             Log::info('  ✅ Reverted successfully');
 
         } catch (\Exception $e) {
-            Log::error('  ❌ Revert failed: ' . $e->getMessage());
+            Log::error('  ❌ Revert failed: '.$e->getMessage());
             throw $e;
         }
     }

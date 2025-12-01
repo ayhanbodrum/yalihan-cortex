@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\View;
 class AdminController extends Controller
 {
     use \App\Traits\AdminMenu;
+
     /**
      * Constructor
      * Context7: Ortak değişkenleri tüm view'lara paylaş
@@ -66,6 +67,7 @@ class AdminController extends Controller
                         ->orderBy('id')
                         ->get();
                 }
+
                 return collect([]);
             }),
 
@@ -75,6 +77,7 @@ class AdminController extends Controller
                     return \App\Models\Ulke::orderBy('ulke_adi')
                         ->get();
                 }
+
                 return collect([]);
             }),
 
@@ -93,6 +96,7 @@ class AdminController extends Controller
                         ->orderBy('yayin_tipi')
                         ->get();
                 }
+
                 return collect([]);
             }),
         ]);
@@ -109,4 +113,3 @@ class AdminController extends Controller
         Cache::forget('admin.yayin_tipleri');
     }
 }
-

@@ -72,13 +72,15 @@ return new class extends Migration
         // No need for manual DB::beginTransaction()
 
         foreach ($this->phase1Tables as $table => $info) {
-            if (!Schema::hasTable($table)) {
+            if (! Schema::hasTable($table)) {
                 Log::warning("⚠️  Table {$table} not found, skipping");
+
                 continue;
             }
 
-            if (!Schema::hasColumn($table, 'status')) {
+            if (! Schema::hasColumn($table, 'status')) {
                 Log::warning("⚠️  Table {$table} has no status column, skipping");
+
                 continue;
             }
 
@@ -108,9 +110,9 @@ return new class extends Migration
                 ->groupBy('status')
                 ->get();
 
-            Log::info("   Current data:", [
+            Log::info('   Current data:', [
                 'total_rows' => $totalRows,
-                'status_distribution' => $statusValues->pluck('count', 'status')->toArray()
+                'status_distribution' => $statusValues->pluck('count', 'status')->toArray(),
             ]);
 
             // Step 2: Convert to VARCHAR first (to handle ENUM)
@@ -154,7 +156,7 @@ return new class extends Migration
             ]);
 
         } catch (\Exception $e) {
-            Log::error("  ❌ {$table} fix failed: " . $e->getMessage());
+            Log::error("  ❌ {$table} fix failed: ".$e->getMessage());
             throw $e;
         }
     }
@@ -167,7 +169,7 @@ return new class extends Migration
         Log::info('⏮️  REVERTING PHASE 1 STATUS FIELD FIX');
 
         foreach (array_keys($this->phase1Tables) as $table) {
-            if (!Schema::hasTable($table)) {
+            if (! Schema::hasTable($table)) {
                 continue;
             }
 
@@ -188,7 +190,7 @@ return new class extends Migration
                 Log::info("  ✅ {$table} reverted to VARCHAR");
 
             } catch (\Exception $e) {
-                Log::error("  ❌ {$table} revert failed: " . $e->getMessage());
+                Log::error("  ❌ {$table} revert failed: ".$e->getMessage());
             }
         }
 

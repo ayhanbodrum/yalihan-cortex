@@ -7,12 +7,12 @@
 
 use App\Models\Setting;
 
-if (!function_exists('setting')) {
+if (! function_exists('setting')) {
     /**
      * Get setting value
      *
-     * @param string $key Setting key
-     * @param mixed $default Default value
+     * @param  string  $key  Setting key
+     * @param  mixed  $default  Default value
      * @return mixed
      */
     function setting($key, $default = null)
@@ -21,15 +21,15 @@ if (!function_exists('setting')) {
     }
 }
 
-if (!function_exists('setting_set')) {
+if (! function_exists('setting_set')) {
     /**
      * Set setting value
      *
-     * @param string $key Setting key
-     * @param mixed $value Setting value
-     * @param string $group Setting group
-     * @param string|null $type Value type
-     * @param string|null $description Description
+     * @param  string  $key  Setting key
+     * @param  mixed  $value  Setting value
+     * @param  string  $group  Setting group
+     * @param  string|null  $type  Value type
+     * @param  string|null  $description  Description
      * @return Setting
      */
     function setting_set($key, $value, $group = 'general', $type = null, $description = null)
@@ -38,11 +38,11 @@ if (!function_exists('setting_set')) {
     }
 }
 
-if (!function_exists('setting_group')) {
+if (! function_exists('setting_group')) {
     /**
      * Get settings by group
      *
-     * @param string $group Group name
+     * @param  string  $group  Group name
      * @return \Illuminate\Database\Eloquent\Collection
      */
     function setting_group($group)
@@ -51,7 +51,7 @@ if (!function_exists('setting_group')) {
     }
 }
 
-if (!function_exists('setting_groups')) {
+if (! function_exists('setting_groups')) {
     /**
      * Get all groups with counts
      *

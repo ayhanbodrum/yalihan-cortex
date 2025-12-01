@@ -2,10 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\Ilan;
+use App\Models\Il;
 use App\Models\IlanKategori;
 use App\Models\IlanKategoriYayinTipi;
-use App\Models\Il;
 use App\Models\Ilce;
 use App\Models\Mahalle;
 use Illuminate\Database\Seeder;
@@ -53,7 +52,7 @@ class PortfolioDemoSeeder extends Seeder
             $mahalleler = [];
             $allRecords->each(function ($payload) use ($ilce, &$mahalleler) {
                 $mahalleAdi = $payload['location']['mahalle'];
-                if (!isset($mahalleler[$mahalleAdi])) {
+                if (! isset($mahalleler[$mahalleAdi])) {
                     $mahalleler[$mahalleAdi] = Mahalle::firstOrCreate(
                         ['ilce_id' => $ilce->id, 'mahalle_adi' => $mahalleAdi]
                     );
@@ -68,7 +67,7 @@ class PortfolioDemoSeeder extends Seeder
                 $data['ilce_id'] = $ilce->id;
                 $data['mahalle_id'] = $mahalle->id;
                 $data['status'] = 'yayinda'; // Context7: enum değeri
-                
+
                 // Database'de olmayan field'ları kaldır
                 $data = array_diff_key($data, ['ilan_turu' => true]);
 
@@ -115,7 +114,7 @@ class PortfolioDemoSeeder extends Seeder
                 ],
                 'data' => [
                     'baslik' => $record['title'],
-                    'slug' => Str::slug($record['title']) . '-' . Str::random(5),
+                    'slug' => Str::slug($record['title']).'-'.Str::random(5),
                     'aciklama' => "<p>{$record['title']}</p>",
                     'fiyat' => $record['price'],
                     'para_birimi' => 'TRY',
@@ -212,7 +211,7 @@ class PortfolioDemoSeeder extends Seeder
                 ],
                 'data' => [
                     'baslik' => $record['title'],
-                    'slug' => Str::slug($record['title']) . '-' . Str::random(5),
+                    'slug' => Str::slug($record['title']).'-'.Str::random(5),
                     'aciklama' => "<p>{$record['title']}</p>",
                     'fiyat' => $record['price'],
                     'para_birimi' => 'TRY',
@@ -302,7 +301,7 @@ class PortfolioDemoSeeder extends Seeder
                 ],
                 'data' => [
                     'baslik' => $record['title'],
-                    'slug' => Str::slug($record['title']) . '-' . Str::random(5),
+                    'slug' => Str::slug($record['title']).'-'.Str::random(5),
                     'aciklama' => "<p>{$record['title']}</p>",
                     'fiyat' => $record['price'],
                     'para_birimi' => 'TRY',
@@ -324,4 +323,3 @@ class PortfolioDemoSeeder extends Seeder
         })->all();
     }
 }
-

@@ -2,20 +2,21 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Services\WikimapiaService;
+use App\Models\Ilce;
 use App\Services\NominatimService;
 use App\Services\TurkiyeAPIService;
-use App\Models\Ilce;
-use App\Models\Il;
+use App\Services\WikimapiaService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\DB;
 
 class WikimapiaSearchController extends AdminController
 {
     protected WikimapiaService $wikimapiaService;
+
     protected NominatimService $nominatimService;
+
     protected TurkiyeAPIService $turkiyeAPI;
 
     public function __construct(
@@ -50,7 +51,7 @@ class WikimapiaSearchController extends AdminController
                 'query' => 'required|string|min:2',
                 'lat' => 'required|numeric',
                 'lon' => 'required|numeric',
-                'radius' => 'sometimes|numeric|min:0.01|max:1'
+                'radius' => 'sometimes|numeric|min:0.01|max:1',
             ]);
 
             $query = $request->input('query');
@@ -63,7 +64,7 @@ class WikimapiaSearchController extends AdminController
             return response()->json([
                 'success' => true,
                 'data' => $results,
-                'message' => 'Arama tamamlandı'
+                'message' => 'Arama tamamlandı',
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
             $errors = $e->errors();
@@ -71,19 +72,20 @@ class WikimapiaSearchController extends AdminController
             foreach ($errors as $field => $messages) {
                 $errorMessages[] = implode(', ', $messages);
             }
+
             return response()->json([
                 'success' => false,
-                'message' => 'Validation error: ' . implode(', ', $errorMessages)
+                'message' => 'Validation error: '.implode(', ', $errorMessages),
             ], 422);
         } catch (\Exception $e) {
             Log::error('Wikimapia search error', [
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
 
             return response()->json([
                 'success' => false,
-                'message' => 'Arama sırasında hata oluştu: ' . $e->getMessage()
+                'message' => 'Arama sırasında hata oluştu: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -96,7 +98,7 @@ class WikimapiaSearchController extends AdminController
         $request->validate([
             'query' => 'required|string|min:2',
             'lat' => 'required|numeric',
-            'lon' => 'required|numeric'
+            'lon' => 'required|numeric',
         ]);
 
         try {
@@ -108,12 +110,12 @@ class WikimapiaSearchController extends AdminController
 
             return response()->json([
                 'success' => true,
-                'data' => $results
+                'data' => $results,
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => $e->getMessage()
+                'message' => $e->getMessage(),
             ], 500);
         }
     }
@@ -129,7 +131,7 @@ class WikimapiaSearchController extends AdminController
         $request->validate([
             'lat' => 'required|numeric',
             'lon' => 'required|numeric',
-            'radius' => 'sometimes|numeric|min:0.01|max:0.5'
+            'radius' => 'sometimes|numeric|min:0.01|max:0.5',
         ]);
 
         try {
@@ -152,17 +154,18 @@ class WikimapiaSearchController extends AdminController
             $wikimapiaFound = $wikimapiaResults['found'] ?? count($wikimapiaPlaces);
 
             // If WikiMapia returned real data, use it
-            if (!empty($wikimapiaPlaces) && $wikimapiaFound > 0) {
+            if (! empty($wikimapiaPlaces) && $wikimapiaFound > 0) {
                 // Quality check: Is it test data?
                 $isReal = $this->isRealData($wikimapiaResults);
 
                 if ($isReal) {
                     Log::info('✅ WikiMapia returned REAL data', ['count' => count($wikimapiaPlaces)]);
+
                     return response()->json([
                         'success' => true,
                         'data' => $wikimapiaResults,
                         'source' => 'wikimapia',
-                        'quality' => 'verified'
+                        'quality' => 'verified',
                     ]);
                 }
             }
@@ -172,34 +175,36 @@ class WikimapiaSearchController extends AdminController
 
             $nominatimResults = $this->nominatimService->searchNearby($lat, $lon, $radius);
 
-            if (!empty($nominatimResults['places'])) {
+            if (! empty($nominatimResults['places'])) {
                 Log::info('✅ OpenStreetMap Nominatim returned data', ['count' => count($nominatimResults['places'])]);
+
                 return response()->json([
                     'success' => true,
                     'data' => $nominatimResults,
                     'source' => 'openstreetmap',
-                    'quality' => 'free_alternative'
+                    'quality' => 'free_alternative',
                 ]);
             }
 
             // Both failed, return empty results
             Log::warning('⚠️ Both WikiMapia and OpenStreetMap failed, returning empty results');
+
             return response()->json([
                 'success' => true,
                 'data' => ['places' => [], 'found' => 0],
                 'source' => 'none',
                 'quality' => 'no_data',
-                'message' => 'Yakınlarda yer bulunamadı'
+                'message' => 'Yakınlarda yer bulunamadı',
             ]);
         } catch (\Exception $e) {
             Log::error('Nearby search error', [
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
 
             return response()->json([
                 'success' => false,
-                'message' => $e->getMessage()
+                'message' => $e->getMessage(),
             ], 500);
         }
     }
@@ -223,7 +228,7 @@ class WikimapiaSearchController extends AdminController
             'deneme site',
             'deneme apartman',
             'test data',
-            'Wikimapia API\'den veri gelmediği'
+            'Wikimapia API\'den veri gelmediği',
         ];
 
         foreach ($testIndicators as $indicator) {
@@ -248,12 +253,12 @@ class WikimapiaSearchController extends AdminController
 
             return response()->json([
                 'success' => true,
-                'data' => $place
+                'data' => $place,
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => $e->getMessage()
+                'message' => $e->getMessage(),
             ], 500);
         }
     }
@@ -285,15 +290,15 @@ class WikimapiaSearchController extends AdminController
         } catch (\Illuminate\Validation\ValidationException $e) {
             Log::warning('Site kaydetme validation hatası', [
                 'errors' => $e->errors(),
-                'request_data' => $request->all()
+                'request_data' => $request->all(),
             ]);
 
             return response()->json([
                 'success' => false,
-                'message' => 'Validation hatası: ' . implode(', ', array_map(function ($errors) {
+                'message' => 'Validation hatası: '.implode(', ', array_map(function ($errors) {
                     return implode(', ', $errors);
                 }, $e->errors())),
-                'errors' => $e->errors()
+                'errors' => $e->errors(),
             ], 422);
         }
 
@@ -319,7 +324,7 @@ class WikimapiaSearchController extends AdminController
                 return response()->json([
                     'success' => false,
                     'message' => 'Bu site/apartman zaten kayıtlı!',
-                    'data' => $existing
+                    'data' => $existing,
                 ], 409);
             }
 
@@ -328,7 +333,7 @@ class WikimapiaSearchController extends AdminController
                 'name' => $request->input('name'),
                 'tip' => $request->input('tip', 'site'),
                 'adres' => $request->input('address') ?? $request->input('description'),
-                'notlar' => $request->input('description') . "\n\n[WikiMapia ID: " . ($request->input('wikimapia_id') ?? 'N/A') . " | Source: " . ($request->input('source', 'unknown')) . "]",
+                'notlar' => $request->input('description')."\n\n[WikiMapia ID: ".($request->input('wikimapia_id') ?? 'N/A').' | Source: '.($request->input('source', 'unknown')).']',
             ];
 
             // Context7: Latitude ve longitude kolonları varsa ekle
@@ -351,7 +356,7 @@ class WikimapiaSearchController extends AdminController
                 $siteData['site_ozellikleri'] = [
                     'wikimapia_id' => $request->input('wikimapia_id'),
                     'source' => $request->input('source', 'unknown'),
-                    'imported_from' => 'wikimapia_search'
+                    'imported_from' => 'wikimapia_search',
                 ];
             }
 
@@ -360,7 +365,7 @@ class WikimapiaSearchController extends AdminController
             Log::info('Site/Apartman kaydedildi', [
                 'site_id' => $site->id,
                 'name' => $site->name,
-                'source' => $request->input('source')
+                'source' => $request->input('source'),
             ]);
 
             // Response data hazırla
@@ -383,17 +388,17 @@ class WikimapiaSearchController extends AdminController
             return response()->json([
                 'success' => true,
                 'message' => 'Site/Apartman başarıyla kaydedildi!',
-                'data' => $responseData
+                'data' => $responseData,
             ]);
         } catch (\Exception $e) {
             Log::error('Site kaydetme hatası', [
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
 
             return response()->json([
                 'success' => false,
-                'message' => 'Kaydetme sırasında hata oluştu: ' . $e->getMessage()
+                'message' => 'Kaydetme sırasında hata oluştu: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -405,10 +410,10 @@ class WikimapiaSearchController extends AdminController
     {
         try {
             // Tablo yoksa boş liste döndür (ilk kurulumda 500 engelle)
-            if (!Schema::hasTable('site_apartmanlar')) {
+            if (! Schema::hasTable('site_apartmanlar')) {
                 return response()->json([
                     'success' => true,
-                    'data' => []
+                    'data' => [],
                 ]);
             }
 
@@ -416,11 +421,11 @@ class WikimapiaSearchController extends AdminController
             $hasLat = Schema::hasColumn('site_apartmanlar', 'latitude');
             $hasLng = Schema::hasColumn('site_apartmanlar', 'longitude');
 
-            if (!($hasLat && $hasLng)) {
+            if (! ($hasLat && $hasLng)) {
                 // Latitude/Longitude kolonları yoksa boş döndür (migration bekleniyor)
                 return response()->json([
                     'success' => true,
-                    'data' => []
+                    'data' => [],
                 ]);
             }
 
@@ -455,12 +460,12 @@ class WikimapiaSearchController extends AdminController
                         'longitude' => (float) $site->longitude,
                         'address' => $site->adres ?? null,
                     ];
-                })
+                }),
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => $e->getMessage()
+                'message' => $e->getMessage(),
             ], 500);
         }
     }
@@ -484,30 +489,30 @@ class WikimapiaSearchController extends AdminController
                     break;
 
                 case 'districts':
-                    if (!$provinceId) {
+                    if (! $provinceId) {
                         return response()->json([
                             'success' => false,
-                            'message' => 'province_id gereklidir'
+                            'message' => 'province_id gereklidir',
                         ], 422);
                     }
                     $data = $this->turkiyeAPI->getDistricts($provinceId);
                     break;
 
                 case 'neighborhoods':
-                    if (!$districtId) {
+                    if (! $districtId) {
                         return response()->json([
                             'success' => false,
-                            'message' => 'district_id gereklidir'
+                            'message' => 'district_id gereklidir',
                         ], 422);
                     }
                     $data = $this->turkiyeAPI->getNeighborhoods($districtId);
                     break;
 
                 case 'all-types':
-                    if (!$districtId) {
+                    if (! $districtId) {
                         return response()->json([
                             'success' => false,
-                            'message' => 'district_id gereklidir'
+                            'message' => 'district_id gereklidir',
                         ], 422);
                     }
                     $data = $this->turkiyeAPI->getAllLocations($districtId);
@@ -516,7 +521,7 @@ class WikimapiaSearchController extends AdminController
                 default:
                     return response()->json([
                         'success' => false,
-                        'message' => 'Geçersiz tip'
+                        'message' => 'Geçersiz tip',
                     ], 422);
             }
 
@@ -524,17 +529,17 @@ class WikimapiaSearchController extends AdminController
                 'success' => true,
                 'data' => $data,
                 'source' => 'turkiyeapi',
-                'type' => $type
+                'type' => $type,
             ]);
         } catch (\Exception $e) {
             Log::error('TurkiyeAPI lokasyon verisi getirme hatası', [
                 'error' => $e->getMessage(),
-                'type' => $request->input('type')
+                'type' => $request->input('type'),
             ]);
 
             return response()->json([
                 'success' => false,
-                'message' => 'Lokasyon verileri alınamadı: ' . $e->getMessage()
+                'message' => 'Lokasyon verileri alınamadı: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -547,7 +552,7 @@ class WikimapiaSearchController extends AdminController
     {
         $request->validate([
             'lat' => 'required|numeric|between:-90,90',
-            'lon' => 'required|numeric|between:-180,180'
+            'lon' => 'required|numeric|between:-180,180',
         ]);
 
         try {
@@ -559,7 +564,7 @@ class WikimapiaSearchController extends AdminController
             // Haversine formula kullanarak local DB'de arama yapabiliriz
 
             // Önce yakındaki mahalleleri bul (5km yarıçap)
-            $nearbyMahalleler = DB::select("
+            $nearbyMahalleler = DB::select('
                 SELECT id, mahalle_adi, ilce_id, enlem, boylam,
                 (6371 * acos(cos(radians(?)) * cos(radians(enlem)) * cos(radians(boylam) - radians(?)) + sin(radians(?)) * sin(radians(enlem)))) AS distance
                 FROM mahalleler
@@ -567,9 +572,9 @@ class WikimapiaSearchController extends AdminController
                 HAVING distance <= 5
                 ORDER BY distance ASC
                 LIMIT 5
-            ", [$lat, $lon, $lat]);
+            ', [$lat, $lon, $lat]);
 
-            if (!empty($nearbyMahalleler)) {
+            if (! empty($nearbyMahalleler)) {
                 $mahalle = $nearbyMahalleler[0];
                 $ilce = Ilce::with('il')->find($mahalle->ilce_id);
 
@@ -594,24 +599,24 @@ class WikimapiaSearchController extends AdminController
                         ] : null,
                         'all_locations' => $allLocations,
                     ],
-                    'source' => 'turkiyeapi+local_db'
+                    'source' => 'turkiyeapi+local_db',
                 ]);
             }
 
             return response()->json([
                 'success' => false,
-                'message' => 'Yakında lokasyon bulunamadı'
+                'message' => 'Yakında lokasyon bulunamadı',
             ], 404);
         } catch (\Exception $e) {
             Log::error('Koordinat lokasyon getirme hatası', [
                 'error' => $e->getMessage(),
                 'lat' => $request->input('lat'),
-                'lon' => $request->input('lon')
+                'lon' => $request->input('lon'),
             ]);
 
             return response()->json([
                 'success' => false,
-                'message' => 'Lokasyon bilgisi alınamadı: ' . $e->getMessage()
+                'message' => 'Lokasyon bilgisi alınamadı: '.$e->getMessage(),
             ], 500);
         }
     }

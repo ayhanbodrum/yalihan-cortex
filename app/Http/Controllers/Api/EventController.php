@@ -7,8 +7,8 @@ use App\Models\Event;
 use App\Models\Ilan;
 use App\Services\Response\ResponseService;
 use App\Traits\ValidatesApiRequests;
-use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 
 /**
  * Event/Booking Management API Controller
@@ -28,7 +28,7 @@ class EventController extends Controller
         $events = Event::where('ilan_id', $ilanId)
             ->orderBy('check_in')
             ->get()
-            ->map(fn($event) => [
+            ->map(fn ($event) => [
                 'id' => $event->id,
                 'event_type' => $event->event_type,
                 'check_in' => $event->check_in,
@@ -185,8 +185,8 @@ class EventController extends Controller
 
         // ✅ REFACTORED: Using ResponseService
         return ResponseService::success([
-            'available' => !$conflicts,
-            'message' => $conflicts ? 'Bu tarihler rezerve edilmiş' : 'Tarihler müsait'
+            'available' => ! $conflicts,
+            'message' => $conflicts ? 'Bu tarihler rezerve edilmiş' : 'Tarihler müsait',
         ], $conflicts ? 'Bu tarihler rezerve edilmiş' : 'Tarihler müsait');
     }
 }

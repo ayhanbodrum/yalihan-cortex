@@ -11,7 +11,7 @@
     - Dark mode support
     - Enterprise features
 --}}
-@extends('admin.layouts.neo')
+@extends('admin.layouts.admin')
 
 @section('title', 'Valuation Dashboard')
 

@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\User;
 use App\Models\Ilan;
-use Illuminate\Http\Request;
+use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
@@ -41,7 +41,7 @@ class AnalyticsController extends AdminController
                 $count = $dailyCounts[$dateKey] ?? 0;
                 $ilanTrendi[] = [
                     'date' => $date->format('d.m'),
-                    'count' => $count
+                    'count' => $count,
                 ];
             }
 
@@ -53,7 +53,7 @@ class AnalyticsController extends AdminController
                 ->map(function ($kategori) {
                     return [
                         'name' => $kategori->name,
-                        'count' => $kategori->ilanlar_count
+                        'count' => $kategori->ilanlar_count,
                     ];
                 });
 
@@ -71,7 +71,7 @@ class AnalyticsController extends AdminController
                 'kategori_dagilimi' => $kategoriDagilimi,
                 'top_kategori' => $topKategori ? $topKategori->name : 'Veri yok',
                 'top_kategori_count' => $topKategori ? $topKategori->ilanlar_count : 0,
-                'last_updated' => now()->format('d.m.Y H:i')
+                'last_updated' => now()->format('d.m.Y H:i'),
             ];
         });
 
@@ -111,7 +111,7 @@ class AnalyticsController extends AdminController
                 $count = $dailyCounts[$dateKey] ?? 0;
                 $ilanTrendi[] = [
                     'date' => $date->format('d.m'),
-                    'count' => $count
+                    'count' => $count,
                 ];
             }
 
@@ -123,7 +123,7 @@ class AnalyticsController extends AdminController
                 ->map(function ($kategori) {
                     return [
                         'name' => $kategori->name,
-                        'count' => $kategori->ilanlar_count
+                        'count' => $kategori->ilanlar_count,
                     ];
                 });
 
@@ -141,7 +141,7 @@ class AnalyticsController extends AdminController
                 'kategori_dagilimi' => $kategoriDagilimi,
                 'top_kategori' => $topKategori ? $topKategori->name : 'Veri yok',
                 'top_kategori_count' => $topKategori ? $topKategori->ilanlar_count : 0,
-                'last_updated' => now()->format('d.m.Y H:i')
+                'last_updated' => now()->format('d.m.Y H:i'),
             ];
         });
 
@@ -157,7 +157,7 @@ class AnalyticsController extends AdminController
         // Specific analytics item details
         $analyticsItem = $this->getAnalyticsItem($id);
 
-        if (!$analyticsItem) {
+        if (! $analyticsItem) {
             return redirect()->route('admin.analytics.index')
                 ->with('error', 'Analitik veri bulunamadı.');
         }
@@ -188,7 +188,7 @@ class AnalyticsController extends AdminController
             'report_type' => 'required|string',
             'date_range' => 'required|string',
             'metrics' => 'required|array',
-            'description' => 'nullable|string|max:1000'
+            'description' => 'nullable|string|max:1000',
         ]);
 
         try {
@@ -200,7 +200,7 @@ class AnalyticsController extends AdminController
 
         } catch (\Exception $e) {
             return back()->withInput()
-                ->with('error', 'Rapor oluşturulurken hata oluştu: ' . $e->getMessage());
+                ->with('error', 'Rapor oluşturulurken hata oluştu: '.$e->getMessage());
         }
     }
 
@@ -212,7 +212,7 @@ class AnalyticsController extends AdminController
     {
         $analyticsItem = $this->getAnalyticsItem($id);
 
-        if (!$analyticsItem) {
+        if (! $analyticsItem) {
             return redirect()->route('admin.analytics.index')
                 ->with('error', 'Analitik veri bulunamadı.');
         }
@@ -234,13 +234,13 @@ class AnalyticsController extends AdminController
             'report_type' => 'required|string',
             'date_range' => 'required|string',
             'metrics' => 'required|array',
-            'description' => 'nullable|string|max:1000'
+            'description' => 'nullable|string|max:1000',
         ]);
 
         try {
             $analyticsItem = $this->getAnalyticsItem($id);
 
-            if (!$analyticsItem) {
+            if (! $analyticsItem) {
                 return redirect()->route('admin.analytics.index')
                     ->with('error', 'Analitik veri bulunamadı.');
             }
@@ -253,7 +253,7 @@ class AnalyticsController extends AdminController
 
         } catch (\Exception $e) {
             return back()->withInput()
-                ->with('error', 'Rapor güncellenirken hata oluştu: ' . $e->getMessage());
+                ->with('error', 'Rapor güncellenirken hata oluştu: '.$e->getMessage());
         }
     }
 
@@ -302,7 +302,7 @@ class AnalyticsController extends AdminController
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Export sırasında hata oluştu: ' . $e->getMessage()
+                'message' => 'Export sırasında hata oluştu: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -320,7 +320,7 @@ class AnalyticsController extends AdminController
             'conversion_rate' => 3.2, // Mock data
             'avg_session_duration' => '4:32', // Mock data
             'bounce_rate' => 24.5, // Mock data
-            'growth_rate' => 12.8 // Mock data
+            'growth_rate' => 12.8, // Mock data
         ];
     }
 
@@ -331,17 +331,17 @@ class AnalyticsController extends AdminController
     {
         return [
             'daily_visits' => [
-                'labels' => collect(range(6, 0))->map(fn($days) => Carbon::now()->subDays($days)->format('M d')),
-                'data' => [145, 168, 192, 201, 234, 267, 298]
+                'labels' => collect(range(6, 0))->map(fn ($days) => Carbon::now()->subDays($days)->format('M d')),
+                'data' => [145, 168, 192, 201, 234, 267, 298],
             ],
             'property_views' => [
                 'labels' => ['Sat', 'Kir', 'Tic'],
-                'data' => [45, 30, 25]
+                'data' => [45, 30, 25],
             ],
             'user_activity' => [
-                'labels' => collect(range(23, 0))->map(fn($hour) => Carbon::now()->subHours($hour)->format('H:i')),
-                'data' => collect(range(0, 23))->map(fn() => rand(10, 100))
-            ]
+                'labels' => collect(range(23, 0))->map(fn ($hour) => Carbon::now()->subHours($hour)->format('H:i')),
+                'data' => collect(range(0, 23))->map(fn () => rand(10, 100)),
+            ],
         ];
     }
 
@@ -353,12 +353,12 @@ class AnalyticsController extends AdminController
         // Mock data - implement actual data retrieval
         return [
             'id' => $id,
-            'name' => 'Özel Rapor ' . $id,
+            'name' => 'Özel Rapor '.$id,
             'report_type' => 'property_performance',
             'date_range' => '30_days',
             'metrics' => ['views', 'conversions', 'revenue'],
             'description' => 'Özel analitik raporu açıklaması',
-            'created_at' => Carbon::now()->subDays(rand(1, 30))
+            'created_at' => Carbon::now()->subDays(rand(1, 30)),
         ];
     }
 
@@ -372,7 +372,7 @@ class AnalyticsController extends AdminController
             'property_performance' => 'İlan Performansı',
             'conversion_analysis' => 'Dönüşüm Analizi',
             'revenue_tracking' => 'Gelir Takibi',
-            'traffic_sources' => 'Trafik Kaynakları'
+            'traffic_sources' => 'Trafik Kaynakları',
         ];
     }
 
@@ -386,7 +386,7 @@ class AnalyticsController extends AdminController
             '30_days' => 'Son 30 Gün',
             '90_days' => 'Son 3 Ay',
             '1_year' => 'Son 1 Yıl',
-            'custom' => 'Özel Tarih Aralığı'
+            'custom' => 'Özel Tarih Aralığı',
         ];
     }
 
@@ -400,7 +400,7 @@ class AnalyticsController extends AdminController
             'id' => rand(1000, 9999),
             'name' => $data['name'],
             'status' => 'generated',
-            'created_at' => now()
+            'created_at' => now(),
         ];
     }
 
@@ -416,11 +416,30 @@ class AnalyticsController extends AdminController
     /**
      * Get various analytics data methods
      */
-    private function getUserAnalytics($dateRange) { return ['users' => 1234]; }
-    private function getPropertyAnalytics($dateRange) { return ['properties' => 567]; }
-    private function getPerformanceAnalytics($dateRange) { return ['performance' => 89.5]; }
-    private function getRevenueAnalytics($dateRange) { return ['revenue' => 45670]; }
-    private function getDashboardAnalytics($dateRange) { return $this->getDashboardMetrics(); }
+    private function getUserAnalytics($dateRange)
+    {
+        return ['users' => 1234];
+    }
+
+    private function getPropertyAnalytics($dateRange)
+    {
+        return ['properties' => 567];
+    }
+
+    private function getPerformanceAnalytics($dateRange)
+    {
+        return ['performance' => 89.5];
+    }
+
+    private function getRevenueAnalytics($dateRange)
+    {
+        return ['revenue' => 45670];
+    }
+
+    private function getDashboardAnalytics($dateRange)
+    {
+        return $this->getDashboardMetrics();
+    }
 
     /**
      * Analitik raporu sil
@@ -431,10 +450,10 @@ class AnalyticsController extends AdminController
         try {
             $analyticsItem = $this->getAnalyticsItem($id);
 
-            if (!$analyticsItem) {
+            if (! $analyticsItem) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Analitik veri bulunamadı.'
+                    'message' => 'Analitik veri bulunamadı.',
                 ], 404);
             }
 
@@ -444,7 +463,7 @@ class AnalyticsController extends AdminController
             if ($request->expectsJson()) {
                 return response()->json([
                     'success' => true,
-                    'message' => 'Analitik raporu başarıyla silindi.'
+                    'message' => 'Analitik raporu başarıyla silindi.',
                 ]);
             }
 
@@ -455,11 +474,11 @@ class AnalyticsController extends AdminController
             if ($request->expectsJson()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Rapor silinirken hata oluştu: ' . $e->getMessage()
+                    'message' => 'Rapor silinirken hata oluştu: '.$e->getMessage(),
                 ], 500);
             }
 
-            return back()->with('error', 'Rapor silinirken hata oluştu: ' . $e->getMessage());
+            return back()->with('error', 'Rapor silinirken hata oluştu: '.$e->getMessage());
         }
     }
 
@@ -475,7 +494,18 @@ class AnalyticsController extends AdminController
     /**
      * Export methods
      */
-    private function exportToPdf($type, $dateRange) { return response()->json(['message' => 'PDF export - to be implemented']); }
-    private function exportToCsv($type, $dateRange) { return response()->json(['message' => 'CSV export - to be implemented']); }
-    private function exportToExcel($type, $dateRange) { return response()->json(['message' => 'Excel export - to be implemented']); }
+    private function exportToPdf($type, $dateRange)
+    {
+        return response()->json(['message' => 'PDF export - to be implemented']);
+    }
+
+    private function exportToCsv($type, $dateRange)
+    {
+        return response()->json(['message' => 'CSV export - to be implemented']);
+    }
+
+    private function exportToExcel($type, $dateRange)
+    {
+        return response()->json(['message' => 'Excel export - to be implemented']);
+    }
 }

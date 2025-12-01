@@ -25,10 +25,6 @@ trait HasAIUsageTracking
 {
     /**
      * Scope: Dil bazlı filtreleme
-     *
-     * @param Builder $query
-     * @param string|null $language
-     * @return Builder
      */
     public function scopeByLanguage(Builder $query, ?string $language = null): Builder
     {
@@ -45,10 +41,6 @@ trait HasAIUsageTracking
 
     /**
      * Scope: Son kullanılan kayıtlar
-     *
-     * @param Builder $query
-     * @param int $days
-     * @return Builder
      */
     public function scopeRecentlyUsed(Builder $query, int $days = 30): Builder
     {
@@ -57,10 +49,6 @@ trait HasAIUsageTracking
 
     /**
      * Scope: Popüler kayıtlar (kullanım sayısına göre)
-     *
-     * @param Builder $query
-     * @param int $minUsage
-     * @return Builder
      */
     public function scopePopular(Builder $query, int $minUsage = 10): Builder
     {
@@ -69,8 +57,6 @@ trait HasAIUsageTracking
 
     /**
      * Kullanım sayısını artır ve son kullanım tarihini güncelle
-     *
-     * @return void
      */
     public function incrementUsage(): void
     {

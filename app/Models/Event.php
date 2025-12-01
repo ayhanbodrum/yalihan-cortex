@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Carbon\Carbon;
 
 /**
  * Event Model - Rezervasyon/Etkinlik sistemi
@@ -121,11 +121,11 @@ class Event extends Model
     {
         return $query->where(function ($q) use ($startDate, $endDate) {
             $q->whereBetween('check_in', [$startDate, $endDate])
-              ->orWhereBetween('check_out', [$startDate, $endDate])
-              ->orWhere(function ($q) use ($startDate, $endDate) {
-                  $q->where('check_in', '<=', $startDate)
-                    ->where('check_out', '>=', $endDate);
-              });
+                ->orWhereBetween('check_out', [$startDate, $endDate])
+                ->orWhere(function ($q) use ($startDate, $endDate) {
+                    $q->where('check_in', '<=', $startDate)
+                        ->where('check_out', '>=', $endDate);
+                });
         });
     }
 
@@ -182,10 +182,11 @@ class Event extends Model
 
     /**
      * Helper: Çakışma kontrolü
-     * @param int $ilanId
-     * @param string $checkIn
-     * @param string $checkOut
-     * @param int|null $excludeEventId
+     *
+     * @param  int  $ilanId
+     * @param  string  $checkIn
+     * @param  string  $checkOut
+     * @param  int|null  $excludeEventId
      * @return bool
      */
     public static function hasConflict($ilanId, $checkIn, $checkOut, $excludeEventId = null)
@@ -206,6 +207,6 @@ class Event extends Model
      */
     public static function isAvailable($ilanId, $checkIn, $checkOut)
     {
-        return !static::hasConflict($ilanId, $checkIn, $checkOut);
+        return ! static::hasConflict($ilanId, $checkIn, $checkOut);
     }
 }

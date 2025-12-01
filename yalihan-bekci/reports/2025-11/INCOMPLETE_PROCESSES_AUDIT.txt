@@ -1,0 +1,76 @@
+# Incomplete Processes Audit
+
+## turkiye_disi_konut_satisi
+- docs/ai-training/05-USE-CASES-AND-SCENARIOS.md:141
+- yalihan-bekci/knowledge/TURKIYE-API-START-HERE.md:201
+- yalihan-bekci/knowledge/bodrum-demographic-real-data-2025-10-23.md:180
+
+## golden_vize
+- none
+
+## mcp_yapilari
+- docs/active/CONTEXT7-COMPLIANCE.md:12
+- docs/active/CONTEXT7-MCP-USAGE.md:1
+- docs/active/CONTEXT7-RULES-DETAILED.md:4
+- docs/active/SYSTEM-STATUS-2025.md:118
+- docs/ai-training/EKOSISTEM-ISLEYIS-REHBERI.md:8
+- docs/ai-training/EKOSISTEM-MONITOR-STATUS.md:10
+- docs/archive/2025-11/root-reports/CONTEXT7_YALIHAN_BEKCI_DURUM_RAPORU.md:51
+- docs/archive/FINAL_COMPLETE_ANALYSIS.md:228
+- docs/archive/november-2025/YALIHAN-BEKCI-OGRENME-RAPORU-2025-11-02.md:325
+- docs/cleanup/CLEANUP_SUCCESS_REPORT.md:1
+- docs/cleanup/MD_CLEANUP_ANALYSIS.md:47
+- docs/features/PROPERTY_TYPE_MANAGER.md:366
+- docs/features/YAZLIK_KIRALAMA.md:403
+- docs/index.md:88
+- docs/roadmaps/2025/MODERNIZATION_PLAN.md:25
+- docs/rules/master-rules.md:50
+- docs/technical/CONTEXT7-LIVE-SEARCH-MIGRATION-2025-10-13.md:240
+- docs/technical/TAILWIND_MIGRATION.md:465
+- docs/technical/context7-dual-system-usage.md:13
+- docs/technical/context7-mcp-integration.md:1
+- docs/technical/context7-mcp-project-knowledge.md:1
+- docs/technical/context7-scripts-mcp-benefits.md:1
+- docs/technical/context7-scripts-mcp-integration.md:1
+- docs/technical/context7-scripts-mcp-summary.md:1
+- docs/technical/ilan-yonetimi-iliski-ozellik-listesi.md:3
+- docs/usage/CLI_GUIDE.md:402
+- docs/yalihan-bekci/tkgm-parsel-sistemi.md:427
+- yalihan-bekci/HARITA-ARACLARI-V2-OZET-2025-11-05.md:244
+- yalihan-bekci/INSTALL.md:1
+- yalihan-bekci/QUICK-START.md:47
+- yalihan-bekci/README.md:22
+- yalihan-bekci/SYSTEM-UPDATE-2025-11-02.md:334
+- yalihan-bekci/analysis/harita-tutarsizlik-analiz-2025-11-05.md:370
+- yalihan-bekci/knowledge/ADMIN-CREATE-PAGE-LEARNING-COMPLETE.md:202
+- yalihan-bekci/knowledge/README.md:29
+- yalihan-bekci/knowledge/VANILLA-JS-ENFORCEMENT-RULES.md:167
+- yalihan-bekci/knowledge/YAPILACAKLAR_2025_10_27.md:17
+- yalihan-bekci/knowledge/advanced-cleanup-strategies-2025-10-20.md:5
+- yalihan-bekci/knowledge/ai-training-index.md:221
+- yalihan-bekci/knowledge/context7-compliance-report-2025-10-22.md:20
+- yalihan-bekci/knowledge/css-system-standards-2025-11-02.md:461
+- yalihan-bekci/knowledge/smart-cleanup-strategies-2025-10-20.md:5
+- yalihan-bekci/learned/ilan-context7-compliance-2025-10-31.md:161
+- yalihan-bekci/reports/archive/2025-11/SISTEM_KAPSAMLI_ANALIZ_RAPORU.md:454
+- yalihan-bekci/reports/sorun-dokumantasyon-eslesmesi.md:140
+
+## dis_baglanti_api
+- docs/archive/reports-2025-11-05/old-reports/GECE-FINAL-COMPREHENSIVE-REPORT-2025-11-05.md:374
+- docs/features/HARITA_SISTEMI.md:715
+- yalihan-bekci/HARITA-ARACLARI-V2-OZET-2025-11-05.md:104
+- yalihan-bekci/analysis/harita-tutarsizlik-analiz-2025-11-05.md:292
+- yalihan-bekci/knowledge/javascript-hatalari-ve-cozumleri-egitim.md:58
+- yalihan-bekci/knowledge/stable-create-system-logic.md:620
+- yalihan-bekci/milestones/harita-araclari-v2-2025-11-05.md:197
+- yalihan-bekci/reports/archive/2025-11/SYSTEM_IMPROVEMENT_RECOMMENDATIONS_2025-11-07.md:361
+- yalihan-bekci/reports/google-maps-roadmap-hatasi-cozum.md:189
+- yalihan-bekci/rules/harita-araclari-standart-2025-11-05.md:347
+
+## referans_numarasi_sistemleri
+- docs/active/CONTEXT7-RULES-DETAILED.md:2345
+- docs/active/CONTEXT7-RULES-DETAILED.md:2358
+- docs/ai-training/00-ANYTHINGLLM-MASTER-TRAINING.md:192
+- docs/ai-training/03-DATABASE-SCHEMA-FOR-AI.md:338
+- docs/ai-training/03-DATABASE-SCHEMA-FOR-AI.md:59
+- docs/archive/2025-11/root-reports/ILAN_FIELDS_DOCUMENTATION_COMPLETE_2025-11-06.md:77

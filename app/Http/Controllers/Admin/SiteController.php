@@ -27,7 +27,7 @@ class SiteController extends AdminController
                 'success' => true,
                 'data' => [],
                 'results' => [], // Context7: Dual format for compatibility
-                'message' => 'En az 2 karakter giriniz'
+                'message' => 'En az 2 karakter giriniz',
             ]);
         }
 
@@ -35,16 +35,16 @@ class SiteController extends AdminController
             $query = SiteApartman::query();
 
             // Type filter if provided
-            if (!empty($type)) {
+            if (! empty($type)) {
                 $query->where('tip', $type);
             }
 
             $sites = $query->where('name', 'LIKE', "%{$searchTerm}%") // Context7: name kullan (NOT site_adi)
                 ->orWhere('adres', 'LIKE', "%{$searchTerm}%")
-                ->orWhereHas('il', function($q) use ($searchTerm) {
+                ->orWhereHas('il', function ($q) use ($searchTerm) {
                     $q->where('il_adi', 'LIKE', "%{$searchTerm}%"); // Context7: sehir → il
                 })
-                ->orWhereHas('ilce', function($q) use ($searchTerm) {
+                ->orWhereHas('ilce', function ($q) use ($searchTerm) {
                     $q->where('ilce_adi', 'LIKE', "%{$searchTerm}%");
                 })
                 ->with(['il', 'ilce', 'mahalle']) // Eager load ilişkiler
@@ -53,14 +53,14 @@ class SiteController extends AdminController
                 ->map(function ($site) {
                     return [
                         'id' => $site->id,
-                        'text' => $site->name . ' - ' . $site->adres . ($site->il ? ', ' . $site->il->il_adi : ''),
+                        'text' => $site->name.' - '.$site->adres.($site->il ? ', '.$site->il->il_adi : ''),
                         'name' => $site->name,
                         'adres' => $site->adres,
                         'il' => $site->il ? $site->il->il_adi : null, // Context7: sehir → il
                         'ilce' => $site->ilce ? $site->ilce->ilce_adi : null,
                         'mahalle' => $site->mahalle ? $site->mahalle->mahalle_adi : null,
                         'toplam_daire_sayisi' => $site->toplam_daire_sayisi ?? 0, // Context7: Frontend expects this key
-                        'daire_sayisi' => $site->toplam_daire_sayisi ?? 0 // Keep old key for compatibility
+                        'daire_sayisi' => $site->toplam_daire_sayisi ?? 0, // Keep old key for compatibility
                     ];
                 });
 
@@ -71,14 +71,14 @@ class SiteController extends AdminController
                 'data' => $resultsArray, // Context7: Standard key
                 'results' => $resultsArray, // Context7: Dual format for site-apartman-selection.blade.php
                 'count' => $sites->count(),
-                'message' => $sites->count() . ' sonuç bulundu'
+                'message' => $sites->count().' sonuç bulundu',
             ]);
 
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
                 'data' => [],
-                'message' => 'Arama sırasında hata oluştu: ' . $e->getMessage()
+                'message' => 'Arama sırasında hata oluştu: '.$e->getMessage(),
             ], 500);
         }
     }

@@ -2,8 +2,8 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
@@ -24,7 +24,7 @@ return new class extends Migration
                 WHEN status = 1 THEN 1
                 WHEN status = 0 THEN 0
                 ELSE 1
-            END")
+            END"),
         ]);
 
         // Step 2: Change column type to TINYINT(1)
@@ -49,7 +49,7 @@ return new class extends Migration
                 WHEN status = 1 THEN 'Aktif'
                 WHEN status = 0 THEN 'Pasif'
                 ELSE 'Aktif'
-            END")
+            END"),
         ]);
     }
 };

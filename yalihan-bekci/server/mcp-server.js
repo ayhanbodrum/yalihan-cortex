@@ -48,7 +48,8 @@ class YalihanBekciMCP {
             tools: [
                 {
                     name: 'context7_validate',
-                    description: 'Context7 kurallarına göre kod doğrular',
+                    description:
+                        'Context7 kurallarına göre kod doğrular - Geliştirilmiş: Akıllı pattern matching, otomatik öğrenme, iyileştirme önerileri',
                     inputSchema: {
                         type: 'object',
                         properties: {
@@ -58,10 +59,55 @@ class YalihanBekciMCP {
                             },
                             filePath: {
                                 type: 'string',
-                                description: 'Dosya yolu',
+                                description: 'Dosya yolu (context-aware detection için önemli)',
+                            },
+                            autoFix: {
+                                type: 'boolean',
+                                description: 'Otomatik düzeltme önerileri göster',
+                                default: true,
                             },
                         },
                         required: ['code'],
+                    },
+                },
+                {
+                    name: 'context7_auto_fix',
+                    description: 'Context7 ihlallerini otomatik düzeltir',
+                    inputSchema: {
+                        type: 'object',
+                        properties: {
+                            code: {
+                                type: 'string',
+                                description: 'Düzeltilecek kod',
+                            },
+                            filePath: {
+                                type: 'string',
+                                description: 'Dosya yolu',
+                            },
+                        },
+                        required: ['code', 'filePath'],
+                    },
+                },
+                {
+                    name: 'context7_learn_pattern',
+                    description: 'Yeni Context7 pattern öğrenir ve kaydeder',
+                    inputSchema: {
+                        type: 'object',
+                        properties: {
+                            pattern: {
+                                type: 'string',
+                                description: 'Yasaklı pattern',
+                            },
+                            reason: {
+                                type: 'string',
+                                description: 'Yasak olma nedeni',
+                            },
+                            suggestion: {
+                                type: 'string',
+                                description: 'Önerilen alternatif',
+                            },
+                        },
+                        required: ['pattern', 'reason', 'suggestion'],
                     },
                 },
                 {
@@ -170,6 +216,11 @@ class YalihanBekciMCP {
             const { name, arguments: args } = request.params;
 
             switch (name) {
+                case 'context7_auto_fix':
+                    return await this.autoFixCode(args);
+
+                case 'context7_learn_pattern':
+                    return await this.learnPattern(args);
                 case 'context7_validate':
                     return await this.validateCode(args);
 
@@ -283,25 +334,444 @@ class YalihanBekciMCP {
     }
 
     async validateCode(args) {
-        const rules = context7Rules.loadRules();
-        const violations = context7Rules.checkCode(args.code, args.filePath || 'unknown');
+        try {
+            const rules = context7Rules.loadRules();
+            const violations = context7Rules.checkCode(args.code, args.filePath || 'unknown');
+
+            // Super uyarı modu kontrolü
+            const verbose = process.env.VERBOSE === 'true' || process.env.VERBOSE === '1';
+
+            // Geliştirilmiş violation detayları ekle
+            const enhancedViolations = this.enhanceViolations(
+                violations,
+                args.code,
+                args.filePath,
+                verbose
+            );
+
+            // İyileştirme önerileri ekle
+            const suggestions = this.generateImprovementSuggestions(
+                enhancedViolations,
+                args.code,
+                args.filePath
+            );
+
+            // Violation kategorilerine ayır
+            const categorized = this.categorizeViolations(enhancedViolations);
+
+            // Öğrenme: Yeni pattern'ler varsa kaydet
+            if (enhancedViolations.length > 0) {
+                this.learnFromViolations(enhancedViolations, args.filePath);
+            }
+
+            return {
+                content: [
+                    {
+                        type: 'text',
+                        text: JSON.stringify(
+                            {
+                                success: true,
+                                violations: enhancedViolations,
+                                count: enhancedViolations.length,
+                                passed: enhancedViolations.length === 0,
+                                categorized: categorized,
+                                suggestions: suggestions,
+                                autoFixable: enhancedViolations.filter((v) => v.autoFix).length,
+                                summary: this.generateSummary(enhancedViolations, categorized),
+                                filePath: args.filePath || 'unknown',
+                                fileUrl: args.filePath ? this.generateFileUrl(args.filePath) : null,
+                            },
+                            null,
+                            2
+                        ),
+                    },
+                ],
+            };
+        } catch (error) {
+            return {
+                content: [
+                    {
+                        type: 'text',
+                        text: JSON.stringify({
+                            success: false,
+                            error: error.message,
+                            violations: [],
+                            count: 0,
+                        }),
+                    },
+                ],
+            };
+        }
+    }
+
+    /**
+     * Violation'ları geliştir - dosya yolu, satır numarası, context ekle
+     * @param {boolean} verbose - Super uyarı modu (detaylı bilgi)
+     */
+    enhanceViolations(violations, code, filePath, verbose = false) {
+        if (!code || !filePath) {
+            return violations;
+        }
+
+        const lines = code.split('\n');
+
+        return violations.map((violation) => {
+            const enhanced = { ...violation };
+
+            // Satır numarasını bul
+            if (!enhanced.line && violation.code) {
+                const lineIndex = lines.findIndex(
+                    (line) => line.includes(violation.code.trim()) || line.includes(violation.rule)
+                );
+                if (lineIndex !== -1) {
+                    enhanced.line = lineIndex + 1;
+                }
+            }
+
+            // Dosya yolu ekle
+            enhanced.filePath = filePath;
+            enhanced.fileName = filePath.split('/').pop();
+            enhanced.relativePath = filePath
+                .replace(process.env.PROJECT_ROOT || '', '')
+                .replace(/^\//, '');
+
+            // Context ekle (satır öncesi ve sonrası)
+            if (enhanced.line) {
+                const lineNum = enhanced.line - 1;
+                enhanced.context = {
+                    before: lineNum > 0 ? lines[lineNum - 1].trim() : null,
+                    current: lines[lineNum]?.trim() || violation.code,
+                    after: lineNum < lines.length - 1 ? lines[lineNum + 1].trim() : null,
+                };
+            }
+
+            // Dosya açma URL'i
+            enhanced.fileUrl = this.generateFileUrl(filePath, enhanced.line);
+
+            // Daha detaylı mesaj (super mode'da daha fazla detay)
+            enhanced.detailedMessage = this.generateDetailedMessage(enhanced, verbose);
+
+            // Super mode'da ekstra bilgiler
+            if (verbose) {
+                enhanced.superMode = true;
+                enhanced.timestamp = new Date().toISOString();
+                enhanced.fileSize = code.length;
+                enhanced.lineCount = lines.length;
+                enhanced.violationDensity = violations.length / lines.length;
+            }
+
+            return enhanced;
+        });
+    }
+
+    /**
+     * Dosya açma URL'i oluştur
+     */
+    generateFileUrl(filePath, lineNumber = null) {
+        const relativePath = filePath
+            .replace(process.env.PROJECT_ROOT || '', '')
+            .replace(/^\//, '');
+        let url = `file://${relativePath}`;
+
+        if (lineNumber) {
+            url += `#L${lineNumber}`;
+        }
+
+        return url;
+    }
+
+    /**
+     * Detaylı hata mesajı oluştur
+     * @param {boolean} verbose - Super uyarı modu
+     */
+    generateDetailedMessage(violation, verbose = false) {
+        const parts = [];
+
+        parts.push(`❌ Context7 İhlali: ${violation.rule || 'Bilinmeyen kural'}`);
+
+        if (violation.fileName) {
+            parts.push(`📁 Dosya: ${violation.fileName}`);
+        }
+
+        if (violation.relativePath && verbose) {
+            parts.push(`📂 Yol: ${violation.relativePath}`);
+        }
+
+        if (violation.line) {
+            parts.push(`📍 Satır: ${violation.line}`);
+        }
+
+        if (violation.column && verbose) {
+            parts.push(`📍 Kolon: ${violation.column}`);
+        }
+
+        if (violation.suggestion) {
+            parts.push(`💡 Öneri: ${violation.suggestion}`);
+        }
+
+        if (violation.severity) {
+            const severityEmoji = {
+                critical: '🔴',
+                high: '🟠',
+                medium: '🟡',
+                low: '🟢',
+            };
+            parts.push(`${severityEmoji[violation.severity] || '⚪'} Önem: ${violation.severity}`);
+        }
+
+        if (violation.context?.current) {
+            const codePreview = verbose
+                ? violation.context.current
+                : violation.context.current.substring(0, 100);
+            parts.push(`📝 Kod: ${codePreview}`);
+        }
+
+        // Super mode'da ekstra context
+        if (verbose && violation.context) {
+            if (violation.context.before) {
+                parts.push(`⬆️ Önceki satır: ${violation.context.before.substring(0, 60)}`);
+            }
+            if (violation.context.after) {
+                parts.push(`⬇️ Sonraki satır: ${violation.context.after.substring(0, 60)}`);
+            }
+        }
+
+        if (verbose && violation.fileUrl) {
+            parts.push(`🔗 Dosya: ${violation.fileUrl}`);
+        }
+
+        return parts.join('\n');
+    }
+
+    /**
+     * Violation'ları kategorize et
+     */
+    categorizeViolations(violations) {
+        const categories = {
+            critical: [],
+            high: [],
+            medium: [],
+            low: [],
+        };
+
+        violations.forEach((v) => {
+            const severity = v.severity || 'medium';
+            if (categories[severity]) {
+                categories[severity].push(v);
+            } else {
+                categories.medium.push(v);
+            }
+        });
+
+        return categories;
+    }
+
+    /**
+     * İyileştirme önerileri oluştur - Geliştirilmiş detaylı öneriler
+     */
+    generateImprovementSuggestions(violations, code, filePath) {
+        const suggestions = [];
+
+        if (violations.length === 0) {
+            return [
+                {
+                    type: 'success',
+                    message: '✅ Kod Context7 standartlarına uygun!',
+                    icon: '✅',
+                },
+            ];
+        }
+
+        // En sık görülen hatalar
+        const commonIssues = this.findCommonIssues(violations);
+        commonIssues.forEach((issue) => {
+            suggestions.push({
+                type: 'warning',
+                icon: '⚠️',
+                message: `${issue.rule} kullanımı tespit edildi (${issue.count} kez)`,
+                suggestion: issue.suggestion,
+                autoFix: issue.autoFix,
+                examples: issue.examples || [],
+            });
+        });
+
+        // Kritik ihlaller için özel uyarı
+        const criticalViolations = violations.filter((v) => v.severity === 'critical');
+        if (criticalViolations.length > 0) {
+            suggestions.push({
+                type: 'error',
+                icon: '🔴',
+                message: `${criticalViolations.length} kritik ihlal bulundu - Öncelikli düzeltme gerekli!`,
+                files: [...new Set(criticalViolations.map((v) => v.fileName || v.filePath))],
+            });
+        }
+
+        // Dosya tipine özel öneriler
+        const fileType = filePath ? filePath.split('.').pop() : 'unknown';
+        if (fileType === 'blade.php') {
+            suggestions.push({
+                type: 'info',
+                icon: '💡',
+                message: "Blade dosyası: Tailwind CSS + dark mode variant'ları kontrol edin",
+                checklist: [
+                    'bg-white dark:bg-gray-800 kullanıldı mı?',
+                    'text-gray-900 dark:text-white kullanıldı mı?',
+                    'transition-all duration-200 eklendi mi?',
+                ],
+            });
+        }
+
+        // Otomatik düzeltilebilir ihlaller
+        const autoFixable = violations.filter((v) => v.autoFix);
+        if (autoFixable.length > 0) {
+            suggestions.push({
+                type: 'info',
+                icon: '🔧',
+                message: `${autoFixable.length} ihlal otomatik düzeltilebilir`,
+                action: "context7_auto_fix tool'unu kullanabilirsiniz",
+            });
+        }
+
+        return suggestions;
+    }
+
+    /**
+     * Yaygın sorunları bul - Geliştirilmiş örneklerle
+     */
+    findCommonIssues(violations) {
+        const issueMap = new Map();
+
+        violations.forEach((v) => {
+            const key = v.rule;
+            if (!issueMap.has(key)) {
+                issueMap.set(key, {
+                    rule: key,
+                    count: 0,
+                    suggestion: v.suggestion,
+                    autoFix: v.autoFix ? true : false,
+                    examples: [],
+                    files: new Set(),
+                });
+            }
+            const issue = issueMap.get(key);
+            issue.count++;
+
+            // Örnek ekle (max 3)
+            if (issue.examples.length < 3 && v.code) {
+                issue.examples.push({
+                    code: v.code.substring(0, 80),
+                    line: v.line,
+                    file: v.fileName || v.filePath,
+                });
+            }
+
+            // Dosya ekle
+            if (v.fileName) {
+                issue.files.add(v.fileName);
+            }
+        });
+
+        return Array.from(issueMap.values())
+            .map((issue) => ({
+                ...issue,
+                files: Array.from(issue.files),
+            }))
+            .sort((a, b) => b.count - a.count);
+    }
+
+    /**
+     * Violation'lardan öğren
+     */
+    learnFromViolations(violations, filePath) {
+        violations.forEach((v) => {
+            // Yeni pattern öğren
+            if (v.autoFix) {
+                errorLearner.learnPattern({
+                    pattern: v.rule,
+                    context: v.context,
+                    fix: v.autoFix,
+                    file: filePath,
+                });
+            }
+        });
+    }
+
+    /**
+     * Özet oluştur - Geliştirilmiş detaylı özet
+     */
+    generateSummary(violations, categorized) {
+        if (violations.length === 0) {
+            return {
+                status: 'passed',
+                message: '✅ Tüm kontroller geçti!',
+                details: {
+                    total: 0,
+                    bySeverity: {},
+                    byFile: {},
+                    autoFixable: 0,
+                },
+            };
+        }
+
+        const criticalCount = categorized.critical.length;
+        const highCount = categorized.high.length;
+        const mediumCount = categorized.medium.length;
+        const lowCount = categorized.low.length;
+        const autoFixableCount = violations.filter((v) => v.autoFix).length;
+
+        // Dosya bazında grupla
+        const byFile = {};
+        violations.forEach((v) => {
+            const file = v.fileName || v.filePath || 'unknown';
+            if (!byFile[file]) {
+                byFile[file] = {
+                    count: 0,
+                    critical: 0,
+                    high: 0,
+                    medium: 0,
+                    low: 0,
+                    violations: [],
+                };
+            }
+            byFile[file].count++;
+            byFile[file][v.severity || 'medium']++;
+            byFile[file].violations.push({
+                rule: v.rule,
+                line: v.line,
+                severity: v.severity,
+            });
+        });
+
+        // En çok ihlal olan dosyalar
+        const topFiles = Object.entries(byFile)
+            .sort((a, b) => b[1].count - a[1].count)
+            .slice(0, 5)
+            .map(([file, data]) => ({
+                file,
+                count: data.count,
+                critical: data.critical,
+            }));
 
         return {
-            content: [
-                {
-                    type: 'text',
-                    text: JSON.stringify(
-                        {
-                            success: true,
-                            violations: violations,
-                            count: violations.length,
-                            passed: violations.length === 0,
-                        },
-                        null,
-                        2
-                    ),
+            status: criticalCount > 0 ? 'failed' : highCount > 0 ? 'warning' : 'info',
+            message: `${violations.length} ihlal bulundu (${criticalCount} kritik, ${highCount} yüksek, ${mediumCount} orta, ${lowCount} düşük, ${autoFixableCount} otomatik düzeltilebilir)`,
+            priority: criticalCount > 0 ? 'high' : highCount > 0 ? 'medium' : 'low',
+            details: {
+                total: violations.length,
+                bySeverity: {
+                    critical: criticalCount,
+                    high: highCount,
+                    medium: mediumCount,
+                    low: lowCount,
                 },
-            ],
+                byFile: byFile,
+                topFiles: topFiles,
+                autoFixable: autoFixableCount,
+                autoFixRate:
+                    violations.length > 0
+                        ? Math.round((autoFixableCount / violations.length) * 100)
+                        : 0,
+            },
         };
     }
 
@@ -327,6 +797,104 @@ class YalihanBekciMCP {
                 },
             ],
         };
+    }
+
+    /**
+     * Otomatik düzeltme yap
+     */
+    async autoFixCode(args) {
+        try {
+            const { code, filePath } = args;
+            const violations = context7Rules.checkCode(code, filePath || 'unknown');
+
+            let fixedCode = code;
+            const fixes = [];
+
+            violations.forEach((v) => {
+                if (v.autoFix) {
+                    fixedCode = fixedCode.replace(v.code, v.autoFix.fixed);
+                    fixes.push({
+                        rule: v.rule,
+                        line: v.line,
+                        original: v.code,
+                        fixed: v.autoFix.fixed,
+                    });
+                }
+            });
+
+            return {
+                content: [
+                    {
+                        type: 'text',
+                        text: JSON.stringify(
+                            {
+                                success: true,
+                                fixed: fixedCode !== code,
+                                fixesApplied: fixes.length,
+                                fixes: fixes,
+                                fixedCode: fixedCode !== code ? fixedCode : null,
+                            },
+                            null,
+                            2
+                        ),
+                    },
+                ],
+            };
+        } catch (error) {
+            return {
+                content: [
+                    {
+                        type: 'text',
+                        text: JSON.stringify({
+                            success: false,
+                            error: error.message,
+                        }),
+                    },
+                ],
+            };
+        }
+    }
+
+    /**
+     * Yeni pattern öğren
+     */
+    async learnPattern(args) {
+        try {
+            const { pattern, reason, suggestion } = args;
+            const added = context7Rules.addForbiddenPattern(pattern, reason, 'user_input');
+
+            return {
+                content: [
+                    {
+                        type: 'text',
+                        text: JSON.stringify(
+                            {
+                                success: true,
+                                pattern: pattern,
+                                added: added,
+                                message: added
+                                    ? `✅ Yeni pattern öğrenildi: ${pattern}`
+                                    : `ℹ️ Pattern zaten mevcut: ${pattern}`,
+                            },
+                            null,
+                            2
+                        ),
+                    },
+                ],
+            };
+        } catch (error) {
+            return {
+                content: [
+                    {
+                        type: 'text',
+                        text: JSON.stringify({
+                            success: false,
+                            error: error.message,
+                        }),
+                    },
+                ],
+            };
+        }
     }
 
     async checkPattern(args) {
@@ -764,8 +1332,24 @@ ${
     }
 
     async run() {
+        // Super uyarı modu kontrolü
+        const autoLearn = process.env.AUTO_LEARN === 'true';
+        const verbose = process.env.VERBOSE === 'true' || process.env.VERBOSE === '1';
+        const superMode = autoLearn && verbose;
+
+        if (superMode) {
+            console.error('🚀 SUPER UYARI MODU AKTİF!');
+            console.error('   ✅ AUTO_LEARN: Açık');
+            console.error('   ✅ VERBOSE: Açık');
+            console.error('   📊 Detaylı uyarılar ve öğrenme aktif');
+        } else if (autoLearn) {
+            console.error('🧠 AUTO_LEARN modu aktif (Normal öğrenme)');
+        } else if (verbose) {
+            console.error('📊 VERBOSE modu aktif (Detaylı uyarılar)');
+        }
+
         // Auto-learn başlat
-        if (process.env.AUTO_LEARN === 'true') {
+        if (autoLearn) {
             console.error('🧠 Context7 kuralları öğreniliyor...');
             context7Rules.loadAllRules();
             systemMemory.learnSystemStructure();
@@ -781,7 +1365,11 @@ ${
         const transport = new StdioServerTransport();
         await this.server.connect(transport);
 
-        console.error('🛡️ Yalıhan Bekçi MCP hazır!');
+        if (superMode) {
+            console.error('🛡️ Yalıhan Bekçi MCP hazır! (SUPER MODE)');
+        } else {
+            console.error('🛡️ Yalıhan Bekçi MCP hazır!');
+        }
     }
 }
 

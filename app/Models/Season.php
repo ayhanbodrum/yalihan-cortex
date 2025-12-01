@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Carbon\Carbon;
 
 /**
  * Season Model - Sezonluk fiyatlandırma sistemi
@@ -146,8 +146,9 @@ class Season extends Model
 
     /**
      * Helper: Belirli bir tarih için fiyat getir
-     * @param string $date
-     * @param bool $isWeekend
+     *
+     * @param  string  $date
+     * @param  bool  $isWeekend
      * @return float|null
      */
     public function getPriceForDate($date, $isWeekend = false)
@@ -165,8 +166,9 @@ class Season extends Model
 
     /**
      * Helper: Tarih aralığı için toplam fiyat hesapla
-     * @param string $checkIn
-     * @param string $checkOut
+     *
+     * @param  string  $checkIn
+     * @param  string  $checkOut
      * @return array
      */
     public function calculatePrice($checkIn, $checkOut)
@@ -222,7 +224,7 @@ class Season extends Model
      */
     public function meetsMaximumStay($nightCount)
     {
-        if (!$this->maksimum_konaklama) {
+        if (! $this->maksimum_konaklama) {
             return true;
         }
 
@@ -250,7 +252,7 @@ class Season extends Model
             ->orderBy('baslangic_tarihi', 'desc') // ✅ Context7: Tablodaki gerçek kolon adı
             ->first();
 
-        if (!$season) {
+        if (! $season) {
             return null;
         }
 

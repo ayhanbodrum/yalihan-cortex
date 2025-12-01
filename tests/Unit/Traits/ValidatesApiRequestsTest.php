@@ -18,12 +18,12 @@ class ValidatesApiRequestsTest extends TestCase
     {
         $request = Request::create('/test', 'POST', [
             'email' => 'test@example.com',
-            'password' => 'password123'
+            'password' => 'password123',
         ]);
 
         $rules = [
             'email' => 'required|email',
-            'password' => 'required|min:8'
+            'password' => 'required|min:8',
         ];
 
         $validated = $this->validateRequest($request, $rules);
@@ -41,12 +41,12 @@ class ValidatesApiRequestsTest extends TestCase
 
         $request = Request::create('/test', 'POST', [
             'email' => 'invalid-email',
-            'password' => '123'
+            'password' => '123',
         ]);
 
         $rules = [
             'email' => 'required|email',
-            'password' => 'required|min:8'
+            'password' => 'required|min:8',
         ];
 
         $this->validateRequest($request, $rules);
@@ -59,12 +59,12 @@ class ValidatesApiRequestsTest extends TestCase
     {
         $request = Request::create('/test', 'POST', [
             'email' => 'test@example.com',
-            'password' => 'password123'
+            'password' => 'password123',
         ]);
 
         $rules = [
             'email' => 'required|email',
-            'password' => 'required|min:8'
+            'password' => 'required|min:8',
         ];
 
         $result = $this->validateRequestWithResponse($request, $rules);
@@ -81,12 +81,12 @@ class ValidatesApiRequestsTest extends TestCase
     {
         $request = Request::create('/test', 'POST', [
             'email' => 'invalid-email',
-            'password' => '123'
+            'password' => '123',
         ]);
 
         $rules = [
             'email' => 'required|email',
-            'password' => 'required|min:8'
+            'password' => 'required|min:8',
         ];
 
         $result = $this->validateRequestWithResponse($request, $rules);
@@ -102,12 +102,12 @@ class ValidatesApiRequestsTest extends TestCase
     {
         $request = Request::create('/test', 'POST', [
             'email' => 'test@example.com',
-            'password' => 'password123'
+            'password' => 'password123',
         ]);
 
         $rules = [
             'email' => 'required|email',
-            'password' => 'required|min:8'
+            'password' => 'required|min:8',
         ];
 
         $result = $this->validateRequestFlexible($request, $rules);

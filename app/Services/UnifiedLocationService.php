@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Log;
 class UnifiedLocationService
 {
     protected TurkiyeAPIService $turkiyeAPI;
+
     protected WikimapiaService $wikiMapia;
 
     public function __construct(
@@ -30,14 +31,13 @@ class UnifiedLocationService
      * Get comprehensive location profile
      * TurkiyeAPI (official) + WikiMapia (environmental)
      *
-     * @param float $lat Latitude
-     * @param float $lon Longitude
-     * @param int|null $districtId District ID for location suggestions
-     * @return array
+     * @param  float  $lat  Latitude
+     * @param  float  $lon  Longitude
+     * @param  int|null  $districtId  District ID for location suggestions
      */
     public function getLocationProfile(float $lat, float $lon, ?int $districtId = null): array
     {
-        $cacheKey = "unified.location.{$lat}.{$lon}." . ($districtId ?? 'none');
+        $cacheKey = "unified.location.{$lat}.{$lon}.".($districtId ?? 'none');
 
         return Cache::remember($cacheKey, 3600, function () use ($lat, $lon, $districtId) {
             $profile = [
@@ -45,7 +45,7 @@ class UnifiedLocationService
                 'official' => null,
                 'environment' => [],
                 'scores' => [],
-                'suggestions' => []
+                'suggestions' => [],
             ];
 
             try {
@@ -54,14 +54,14 @@ class UnifiedLocationService
                     $allLocations = $this->turkiyeAPI->getAllLocations($districtId);
                     $profile['official'] = [
                         'district_id' => $districtId,
-                        'locations' => $allLocations
+                        'locations' => $allLocations,
                     ];
                 }
 
                 // 2. WikiMapia → Çevresel özellikler (2km çevresinde)
                 $nearbyPlaces = $this->wikiMapia->getNearestPlaces($lat, $lon, [
                     'count' => 100,
-                    'data_blocks' => ['main', 'location']
+                    'data_blocks' => ['main', 'location'],
                 ]);
 
                 if ($nearbyPlaces && isset($nearbyPlaces['places'])) {
@@ -81,6 +81,7 @@ class UnifiedLocationService
                 return $profile;
             } catch (\Exception $e) {
                 Log::error('UnifiedLocationService profile exception', ['error' => $e->getMessage()]);
+
                 return $profile;
             }
         });
@@ -89,9 +90,9 @@ class UnifiedLocationService
     /**
      * Categorize nearby places from WikiMapia
      *
-     * @param array $places WikiMapia places
-     * @param float $baseLat Base latitude
-     * @param float $baseLon Base longitude
+     * @param  array  $places  WikiMapia places
+     * @param  float  $baseLat  Base latitude
+     * @param  float  $baseLon  Base longitude
      * @return array
      */
     private function categorizeNearbyPlaces($places, $baseLat, $baseLon)
@@ -104,7 +105,7 @@ class UnifiedLocationService
             'transport' => [],    // Ulaşım
             'social' => [],       // Park, plaj, spor
             'food' => [],         // Restoran, kafe
-            'other' => []
+            'other' => [],
         ];
 
         foreach ($places as $place) {
@@ -122,7 +123,7 @@ class UnifiedLocationService
                 'name' => $place['title'] ?? 'Unknown',
                 'distance' => round($distance * 1000), // metre
                 'url' => $place['url'] ?? null,
-                'description' => $place['description'] ?? null
+                'description' => $place['description'] ?? null,
             ];
 
             $categorized[$category][] = $placeData;
@@ -130,7 +131,7 @@ class UnifiedLocationService
 
         // Her kategoriyi mesafeye göre sırala
         foreach ($categorized as $key => $items) {
-            usort($categorized[$key], fn($a, $b) => $a['distance'] <=> $b['distance']);
+            usort($categorized[$key], fn ($a, $b) => $a['distance'] <=> $b['distance']);
         }
 
         return $categorized;
@@ -139,7 +140,7 @@ class UnifiedLocationService
     /**
      * Detect category from place title
      *
-     * @param string $title Place title (lowercase)
+     * @param  string  $title  Place title (lowercase)
      * @return string Category key
      */
     private function detectCategory($title)
@@ -168,10 +169,10 @@ class UnifiedLocationService
     /**
      * Calculate distance between two coordinates (Haversine)
      *
-     * @param float $lat1
-     * @param float $lon1
-     * @param float $lat2
-     * @param float $lon2
+     * @param  float  $lat1
+     * @param  float  $lon1
+     * @param  float  $lat2
+     * @param  float  $lon2
      * @return float Distance in kilometers
      */
     private function calculateDistance($lat1, $lon1, $lat2, $lon2)
@@ -181,11 +182,11 @@ class UnifiedLocationService
         $dLat = deg2rad($lat2 - $lat1);
         $dLon = deg2rad($lon2 - $lon1);
 
-        $a = sin($dLat/2) * sin($dLat/2) +
+        $a = sin($dLat / 2) * sin($dLat / 2) +
              cos(deg2rad($lat1)) * cos(deg2rad($lat2)) *
-             sin($dLon/2) * sin($dLon/2);
+             sin($dLon / 2) * sin($dLon / 2);
 
-        $c = 2 * atan2(sqrt($a), sqrt(1-$a));
+        $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
 
         return $earthRadius * $c;
     }
@@ -193,7 +194,7 @@ class UnifiedLocationService
     /**
      * Calculate location scores
      *
-     * @param array $environment Categorized places
+     * @param  array  $environment  Categorized places
      * @return array Scores (0-100)
      */
     private function calculateScores($environment)
@@ -203,21 +204,28 @@ class UnifiedLocationService
             'convenience' => 0,
             'family_friendly' => 0,
             'investment_potential' => 0,
-            'beach_proximity' => 0
+            'beach_proximity' => 0,
         ];
 
         // Yürünebilirlik (Walkability)
         $nearestMarket = $environment['shopping'][0] ?? null;
         if ($nearestMarket) {
-            if ($nearestMarket['distance'] < 500) $scores['walkability'] += 40;
-            elseif ($nearestMarket['distance'] < 1000) $scores['walkability'] += 25;
-            elseif ($nearestMarket['distance'] < 2000) $scores['walkability'] += 10;
+            if ($nearestMarket['distance'] < 500) {
+                $scores['walkability'] += 40;
+            } elseif ($nearestMarket['distance'] < 1000) {
+                $scores['walkability'] += 25;
+            } elseif ($nearestMarket['distance'] < 2000) {
+                $scores['walkability'] += 10;
+            }
         }
 
         $nearestTransport = $environment['transport'][0] ?? null;
         if ($nearestTransport) {
-            if ($nearestTransport['distance'] < 500) $scores['walkability'] += 30;
-            elseif ($nearestTransport['distance'] < 1000) $scores['walkability'] += 15;
+            if ($nearestTransport['distance'] < 500) {
+                $scores['walkability'] += 30;
+            } elseif ($nearestTransport['distance'] < 1000) {
+                $scores['walkability'] += 15;
+            }
         }
 
         if (count($environment['social']) > 0) {
@@ -240,8 +248,11 @@ class UnifiedLocationService
         // Aile Uygunluğu (Family Friendly)
         $nearestSchool = $environment['education'][0] ?? null;
         if ($nearestSchool) {
-            if ($nearestSchool['distance'] < 1000) $scores['family_friendly'] += 50;
-            elseif ($nearestSchool['distance'] < 2000) $scores['family_friendly'] += 30;
+            if ($nearestSchool['distance'] < 1000) {
+                $scores['family_friendly'] += 50;
+            } elseif ($nearestSchool['distance'] < 2000) {
+                $scores['family_friendly'] += 30;
+            }
         }
 
         if (count($environment['social']) > 0) {
@@ -256,9 +267,13 @@ class UnifiedLocationService
         foreach ($environment['social'] as $place) {
             $title = strtolower($place['name']);
             if (strpos($title, 'plaj') !== false || strpos($title, 'beach') !== false) {
-                if ($place['distance'] < 500) $scores['beach_proximity'] = 100;
-                elseif ($place['distance'] < 1000) $scores['beach_proximity'] = 80;
-                elseif ($place['distance'] < 2000) $scores['beach_proximity'] = 60;
+                if ($place['distance'] < 500) {
+                    $scores['beach_proximity'] = 100;
+                } elseif ($place['distance'] < 1000) {
+                    $scores['beach_proximity'] = 80;
+                } elseif ($place['distance'] < 2000) {
+                    $scores['beach_proximity'] = 60;
+                }
                 break;
             }
         }
@@ -277,7 +292,7 @@ class UnifiedLocationService
     /**
      * Generate smart suggestions
      *
-     * @param array $profile Location profile
+     * @param  array  $profile  Location profile
      * @return array Suggestions
      */
     private function generateSuggestions($profile)
@@ -292,7 +307,7 @@ class UnifiedLocationService
             $suggestions[] = [
                 'type' => 'positive',
                 'icon' => '✅',
-                'text' => 'Yürüme mesafesinde her şey var! Araç gerektirmez.'
+                'text' => 'Yürüme mesafesinde her şey var! Araç gerektirmez.',
             ];
         }
 
@@ -304,7 +319,7 @@ class UnifiedLocationService
                 'icon' => '🏘️',
                 'text' => "Yakın site: {$nearest['name']} ({$nearest['distance']}m)",
                 'action' => 'select_site',
-                'site_id' => $nearest['id']
+                'site_id' => $nearest['id'],
             ];
         }
 
@@ -313,7 +328,7 @@ class UnifiedLocationService
             $suggestions[] = [
                 'type' => 'positive',
                 'icon' => '🏖️',
-                'text' => 'Denize çok yakın! Tatil villaları için ideal.'
+                'text' => 'Denize çok yakın! Tatil villaları için ideal.',
             ];
         }
 
@@ -322,7 +337,7 @@ class UnifiedLocationService
             $suggestions[] = [
                 'type' => 'positive',
                 'icon' => '👨‍👩‍👧‍👦',
-                'text' => 'Aileler için uygun bölge. Okul ve park yakın.'
+                'text' => 'Aileler için uygun bölge. Okul ve park yakın.',
             ];
         }
 
@@ -331,7 +346,7 @@ class UnifiedLocationService
             $suggestions[] = [
                 'type' => 'warning',
                 'icon' => '⚠️',
-                'text' => 'Yakında market bulunamadı. Uzak bölge olabilir.'
+                'text' => 'Yakında market bulunamadı. Uzak bölge olabilir.',
             ];
         }
 
@@ -342,16 +357,16 @@ class UnifiedLocationService
      * Get nearest residential complex (Site/Apartman)
      * WikiMapia'dan en yakın siteyi bul
      *
-     * @param float $lat
-     * @param float $lon
-     * @param int $limit
+     * @param  float  $lat
+     * @param  float  $lon
+     * @param  int  $limit
      * @return array
      */
     public function getNearestResidentialComplex($lat, $lon, $limit = 5)
     {
         try {
             $nearby = $this->wikiMapia->getNearestPlaces($lat, $lon, [
-                'count' => 50
+                'count' => 50,
             ]);
 
             $sites = [];
@@ -382,21 +397,24 @@ class UnifiedLocationService
                             'url' => $place['url'] ?? null,
                             'coordinates' => [
                                 'lat' => $place['location']['lat'] ?? null,
-                                'lon' => $place['location']['lon'] ?? null
-                            ]
+                                'lon' => $place['location']['lon'] ?? null,
+                            ],
                         ];
 
-                        if (count($sites) >= $limit) break;
+                        if (count($sites) >= $limit) {
+                            break;
+                        }
                     }
                 }
             }
 
             // Mesafeye göre sırala
-            usort($sites, fn($a, $b) => $a['distance'] <=> $b['distance']);
+            usort($sites, fn ($a, $b) => $a['distance'] <=> $b['distance']);
 
             return $sites;
         } catch (\Exception $e) {
             Log::error('getNearestResidentialComplex exception', ['error' => $e->getMessage()]);
+
             return [];
         }
     }
@@ -405,7 +423,7 @@ class UnifiedLocationService
      * Get environmental summary
      * Çevresel özet bilgi
      *
-     * @param array $environment Categorized places
+     * @param  array  $environment  Categorized places
      * @return array
      */
     public function getEnvironmentalSummary($environment)
@@ -433,8 +451,8 @@ class UnifiedLocationService
                 'count' => $count,
                 'nearest' => $nearest ? [
                     'name' => $nearest['name'],
-                    'distance' => $nearest['distance']
-                ] : null
+                    'distance' => $nearest['distance'],
+                ] : null,
             ];
         }
 
@@ -445,7 +463,7 @@ class UnifiedLocationService
      * Export location data for AI description
      * AI için lokasyon verisi hazırla
      *
-     * @param array $profile Location profile
+     * @param  array  $profile  Location profile
      * @return string
      */
     public function exportForAI($profile)
@@ -460,9 +478,9 @@ class UnifiedLocationService
                 $text .= ", Nüfus: {$profile['official']['population']}";
             }
             if ($profile['official']['is_coastal']) {
-                $text .= ", Kıyı bölgesi";
+                $text .= ', Kıyı bölgesi';
             }
-            $text .= ". ";
+            $text .= '. ';
         }
 
         // Environment
@@ -483,7 +501,7 @@ class UnifiedLocationService
         }
 
         if ($profile['scores']['beach_proximity'] >= 80) {
-            $text .= "Denize çok yakın lokasyon. ";
+            $text .= 'Denize çok yakın lokasyon. ';
         }
 
         return trim($text);

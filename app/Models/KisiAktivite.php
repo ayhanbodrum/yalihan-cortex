@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * KisiAktivite Model
- * 
+ *
  * Context7 Standardı: kisi_aktiviteler table
  * Replaces: MusteriAktivite (deprecated)
  */
@@ -64,7 +64,7 @@ class KisiAktivite extends Model
     {
         return $query->whereBetween('aktivite_tarihi', [
             now()->startOfWeek(),
-            now()->endOfWeek()
+            now()->endOfWeek(),
         ]);
     }
 
@@ -75,7 +75,7 @@ class KisiAktivite extends Model
     {
         return $query->whereBetween('aktivite_tarihi', [
             now()->startOfMonth(),
-            now()->endOfMonth()
+            now()->endOfMonth(),
         ]);
     }
 
@@ -95,4 +95,3 @@ class KisiAktivite extends Model
         return $query->where('status', 'Bekliyor');
     }
 }
-

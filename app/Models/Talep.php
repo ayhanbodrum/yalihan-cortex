@@ -22,7 +22,7 @@ class Talep extends Model
         'talep_tipi',
         'aciklama',
         'status',
-        'musteri_id',
+        'kisi_id', // Context7: musteri_id → kisi_id (reform 2025-11-24)
         'danisman_id',
         'alt_kategori_id', // Context7: category_id yerine alt_kategori_id
         'il_id',
@@ -30,6 +30,8 @@ class Talep extends Model
         'mahalle_id',
         'min_fiyat',
         'max_fiyat',
+        'min_metrekare', // Context7: Talep reformu - 2025-11-24
+        'max_metrekare', // Context7: Talep reformu - 2025-11-24
         'metadata',
         'baslik', // Context7: Başlık alanı eklendi
         'oda_sayisi', // Context7: Özellik alanları
@@ -38,6 +40,7 @@ class Talep extends Model
         'manzara',
         'ozel_tercihler',
         'ozel_ozellikler',
+        'aranan_ozellikler_json', // Context7: Talep reformu - 2025-11-24
         'notlar',
     ];
 
@@ -49,7 +52,10 @@ class Talep extends Model
     protected $casts = [
         'min_fiyat' => 'decimal:2',
         'max_fiyat' => 'decimal:2',
+        'min_metrekare' => 'integer',
+        'max_metrekare' => 'integer',
         'aranan_ozellikler_json' => 'array',
+        'metadata' => 'array',
         'deleted_at' => 'datetime',
     ];
 
@@ -164,6 +170,7 @@ class Talep extends Model
 
         return implode(', ', array_filter($adresParcalari));
     }
+
     public function scopeActive($query)
     {
         return $query->whereIn('status', ['Aktif', 1, true]);

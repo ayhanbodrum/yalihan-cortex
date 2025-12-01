@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Admin\AI;
 
 use App\Http\Controllers\Controller;
-use App\Services\AI\OllamaService;
 use App\Models\Setting;
+use App\Services\AI\OllamaService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -33,7 +33,7 @@ class IlanAIController extends Controller
     public function suggest(Request $request): JsonResponse
     {
         $request->validate([
-            'action' => 'required|in:title,description,location,price'
+            'action' => 'required|in:title,description,location,price',
         ]);
 
         try {
@@ -55,14 +55,14 @@ class IlanAIController extends Controller
                 default:
                     return response()->json([
                         'success' => false,
-                        'error' => 'Invalid action'
+                        'error' => 'Invalid action',
                     ], 400);
             }
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
                 'error' => 'AI işlemi başarısız',
-                'message' => $e->getMessage()
+                'message' => $e->getMessage(),
             ], 500);
         }
     }
@@ -77,7 +77,7 @@ class IlanAIController extends Controller
             'lokasyon' => $this->getLocation($request),
             'yayin_tipi' => $request->input('yayin_tipi', 'Satılık'),
             'fiyat' => $this->formatPrice($request->input('fiyat'), $request->input('para_birimi')),
-            'tone' => $request->input('ai_tone', 'seo')
+            'tone' => $request->input('ai_tone', 'seo'),
         ];
 
         $titles = $this->ollamaService->generateTitle($data);
@@ -89,7 +89,7 @@ class IlanAIController extends Controller
             'success' => true,
             'variants' => $titles,
             'count' => count($titles),
-            'model' => $currentModel
+            'model' => $currentModel,
         ]);
     }
 
@@ -104,7 +104,7 @@ class IlanAIController extends Controller
             'fiyat' => $this->formatPrice($request->input('fiyat'), $request->input('para_birimi')),
             'metrekare' => $request->input('metrekare', ''),
             'oda_sayisi' => $request->input('oda_sayisi', ''),
-            'tone' => $request->input('ai_tone', 'seo')
+            'tone' => $request->input('ai_tone', 'seo'),
         ];
 
         $description = $this->ollamaService->generateDescription($data);
@@ -116,7 +116,7 @@ class IlanAIController extends Controller
             'success' => true,
             'description' => $description,
             'length' => strlen($description),
-            'model' => $currentModel
+            'model' => $currentModel,
         ]);
     }
 
@@ -130,7 +130,7 @@ class IlanAIController extends Controller
             'ilce' => $request->input('ilce'),
             'mahalle' => $request->input('mahalle', ''),
             'latitude' => $request->input('latitude'),
-            'longitude' => $request->input('longitude')
+            'longitude' => $request->input('longitude'),
         ];
 
         $analysis = $this->ollamaService->analyzeLocation($locationData);
@@ -141,7 +141,7 @@ class IlanAIController extends Controller
         return response()->json([
             'success' => true,
             'analysis' => $analysis,
-            'model' => $currentModel
+            'model' => $currentModel,
         ]);
     }
 
@@ -154,7 +154,7 @@ class IlanAIController extends Controller
             'base_price' => (float) $request->input('fiyat', 0),
             'kategori' => $request->input('kategori', 'Gayrimenkul'),
             'metrekare' => $request->input('metrekare', 0),
-            'lokasyon' => $this->getLocation($request)
+            'lokasyon' => $this->getLocation($request),
         ];
 
         $suggestions = $this->ollamaService->suggestPrice($propertyData);
@@ -165,7 +165,7 @@ class IlanAIController extends Controller
         return response()->json([
             'success' => true,
             'suggestions' => $suggestions,
-            'model' => $currentModel
+            'model' => $currentModel,
         ]);
     }
 
@@ -177,7 +177,7 @@ class IlanAIController extends Controller
     {
         $request->validate([
             'ilan_ids' => 'required|array',
-            'ilan_ids.*' => 'exists:ilanlar,id'
+            'ilan_ids.*' => 'exists:ilanlar,id',
         ]);
 
         try {
@@ -188,7 +188,7 @@ class IlanAIController extends Controller
             foreach ($ilanIds as $ilanId) {
                 $ilan = \App\Models\Ilan::with(['kategori', 'il', 'ilce', 'ilanSahibi'])->find($ilanId);
 
-                if (!$ilan) {
+                if (! $ilan) {
                     continue;
                 }
 
@@ -196,7 +196,7 @@ class IlanAIController extends Controller
                 $results[] = [
                     'ilan_id' => $ilanId,
                     'baslik' => $ilan->baslik,
-                    'analysis' => $analysis
+                    'analysis' => $analysis,
                 ];
             }
 
@@ -204,13 +204,13 @@ class IlanAIController extends Controller
                 'success' => true,
                 'results' => $results,
                 'count' => count($results),
-                'type' => $analysisType
+                'type' => $analysisType,
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
                 'error' => 'Toplu analiz başarısız',
-                'message' => $e->getMessage()
+                'message' => $e->getMessage(),
             ], 500);
         }
     }
@@ -238,7 +238,7 @@ class IlanAIController extends Controller
                     'price' => $this->analyzePrice($ilan),
                     'title' => $this->analyzeTitle($ilan),
                     'seo' => $this->analyzeSEO($ilan),
-                    'recommendations' => $this->getRecommendations($ilan)
+                    'recommendations' => $this->getRecommendations($ilan),
                 ];
                 break;
         }
@@ -266,7 +266,7 @@ class IlanAIController extends Controller
             'suggested_price' => round($suggestedPrice, 2),
             'price_per_sqm' => $ilan->metrekare ? round($currentPrice / $ilan->metrekare, 2) : null,
             'confidence' => $confidence,
-            'recommendation' => $suggestedPrice > $currentPrice ? 'Fiyat artırılabilir' : 'Fiyat uygun görünüyor'
+            'recommendation' => $suggestedPrice > $currentPrice ? 'Fiyat artırılabilir' : 'Fiyat uygun görünüyor',
         ];
     }
 
@@ -280,9 +280,9 @@ class IlanAIController extends Controller
 
         // Basit başlık önerileri
         if ($ilan->kategori && $ilan->il) {
-            $suggestedTitles[] = $ilan->kategori->name . ' - ' . $ilan->il->il_adi;
+            $suggestedTitles[] = $ilan->kategori->name.' - '.$ilan->il->il_adi;
             if ($ilan->ilce) {
-                $suggestedTitles[] = $ilan->kategori->name . ' ' . $ilan->ilce->ilce_adi . ', ' . $ilan->il->il_adi;
+                $suggestedTitles[] = $ilan->kategori->name.' '.$ilan->ilce->ilce_adi.', '.$ilan->il->il_adi;
             }
         }
 
@@ -291,7 +291,7 @@ class IlanAIController extends Controller
             'suggested_titles' => $suggestedTitles,
             'current_length' => strlen($currentTitle),
             'seo_score' => $this->calculateSEOScore($currentTitle),
-            'recommendation' => strlen($currentTitle) < 30 ? 'Başlık kısa, daha detaylı olabilir' : 'Başlık uygun görünüyor'
+            'recommendation' => strlen($currentTitle) < 30 ? 'Başlık kısa, daha detaylı olabilir' : 'Başlık uygun görünüyor',
         ];
     }
 
@@ -313,8 +313,8 @@ class IlanAIController extends Controller
             'overall_score' => ($seoScore + $descriptionScore) / 2,
             'recommendations' => [
                 strlen($title) < 30 ? 'Başlık daha uzun olmalı' : null,
-                strlen($description) < 100 ? 'Açıklama daha detaylı olmalı' : null
-            ]
+                strlen($description) < 100 ? 'Açıklama daha detaylı olmalı' : null,
+            ],
         ];
     }
 
@@ -337,7 +337,7 @@ class IlanAIController extends Controller
         }
 
         // Özel karakter kontrolü
-        if (!preg_match('/[!@#$%^&*(),.?":{}|<>]/', $text)) {
+        if (! preg_match('/[!@#$%^&*(),.?":{}|<>]/', $text)) {
             $score += 0.1;
         }
 
@@ -351,15 +351,15 @@ class IlanAIController extends Controller
     {
         $recommendations = [];
 
-        if (!$ilan->aciklama || strlen($ilan->aciklama) < 100) {
+        if (! $ilan->aciklama || strlen($ilan->aciklama) < 100) {
             $recommendations[] = 'Açıklama eksik veya çok kısa';
         }
 
-        if (!$ilan->fotograflar || $ilan->fotograflar->count() < 3) {
+        if (! $ilan->fotograflar || $ilan->fotograflar->count() < 3) {
             $recommendations[] = 'En az 3 fotoğraf eklenmeli';
         }
 
-        if (!$ilan->metrekare) {
+        if (! $ilan->metrekare) {
             $recommendations[] = 'Metrekare bilgisi eksik';
         }
 
@@ -377,7 +377,7 @@ class IlanAIController extends Controller
             'success' => $isHealthy,
             'model' => config('ai.ollama_model'),
             'endpoint' => config('ai.ollama_api_url'),
-            'status' => $isHealthy ? 'online' : 'offline'
+            'status' => $isHealthy ? 'online' : 'offline',
         ]);
     }
 
@@ -389,7 +389,7 @@ class IlanAIController extends Controller
         $parts = array_filter([
             $request->input('il'),
             $request->input('ilce'),
-            $request->input('mahalle')
+            $request->input('mahalle'),
         ]);
 
         return implode(', ', $parts) ?: 'Bodrum';
@@ -400,7 +400,7 @@ class IlanAIController extends Controller
      */
     protected function formatPrice(?string $amount, ?string $currency): string
     {
-        if (!$amount) {
+        if (! $amount) {
             return '';
         }
 
@@ -408,13 +408,13 @@ class IlanAIController extends Controller
             'TRY' => '₺',
             'USD' => '$',
             'EUR' => '€',
-            'GBP' => '£'
+            'GBP' => '£',
         ];
 
         $formatted = number_format((float) $amount, 0, ',', '.');
         $symbol = $symbols[$currency ?? 'TRY'] ?? '₺';
 
-        return $formatted . ' ' . $symbol;
+        return $formatted.' '.$symbol;
     }
 
     /**

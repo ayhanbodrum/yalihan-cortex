@@ -2,25 +2,21 @@
 
 namespace App\Services;
 
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Cache;
 use App\Services\Cache\CacheHelper;
-use App\Services\FlexibleStorageManager;
-use App\Services\AIPromptManager;
-use App\Services\AILearningEngine;
-use App\Services\AIService;
 
 class AICoreSystem
 {
     private $storageManager;
+
     private $promptManager;
+
     private $learningEngine;
 
     public function __construct()
     {
-        $this->storageManager = new FlexibleStorageManager();
-        $this->promptManager = new AIPromptManager();
-        $this->learningEngine = new AILearningEngine();
+        $this->storageManager = new FlexibleStorageManager;
+        $this->promptManager = new AIPromptManager;
+        $this->learningEngine = new AILearningEngine;
     }
 
     /**
@@ -36,7 +32,7 @@ class AICoreSystem
             'prompt' => $prompt,
             'result' => $result,
             'context' => $context,
-            'learned_at' => now()
+            'learned_at' => now(),
         ]);
 
         return $result;
@@ -48,6 +44,7 @@ class AICoreSystem
     public function learnFromAI($context, $input)
     {
         $patterns = $this->storageManager->get("pattern_{$context}");
+
         return $this->learningEngine->applyPatterns($patterns, $input);
     }
 
@@ -90,7 +87,7 @@ class AICoreSystem
      */
     private function generateDefaultResponse($context, $input)
     {
-        $aiService = new AIService();
+        $aiService = new AIService;
 
         // Input'u string'e çevir
         if (is_array($input)) {
@@ -102,7 +99,7 @@ class AICoreSystem
         return $aiService->generate($prompt, [
             'model' => 'ollama',
             'temperature' => 0.7,
-            'max_tokens' => 500
+            'max_tokens' => 500,
         ]);
     }
 

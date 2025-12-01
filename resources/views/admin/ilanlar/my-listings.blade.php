@@ -1,4 +1,4 @@
-@extends('admin.layouts.neo')
+@extends('admin.layouts.admin')
 
 @php
     // ✅ Context7: Storage facade - tek seferlik kullanım (duplicate use statement hatası önlendi)

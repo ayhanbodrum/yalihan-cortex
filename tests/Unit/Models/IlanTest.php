@@ -145,7 +145,7 @@ class IlanTest extends TestCase
         $activeIlans = Ilan::active()->get();
 
         $this->assertGreaterThanOrEqual(1, $activeIlans->count());
-        $this->assertTrue($activeIlans->every(fn($ilan) => $ilan->status === 'Aktif'));
+        $this->assertTrue($activeIlans->every(fn ($ilan) => $ilan->status === 'Aktif'));
     }
 
     /**
@@ -162,7 +162,7 @@ class IlanTest extends TestCase
         $pendingIlans = Ilan::pending()->get();
 
         $this->assertGreaterThanOrEqual(1, $pendingIlans->count());
-        $this->assertTrue($pendingIlans->every(fn($ilan) => $ilan->status === 'Beklemede'));
+        $this->assertTrue($pendingIlans->every(fn ($ilan) => $ilan->status === 'Beklemede'));
     }
 
     /**
@@ -182,7 +182,7 @@ class IlanTest extends TestCase
             ->get();
 
         $this->assertGreaterThanOrEqual(1, $results->count());
-        $this->assertTrue($results->every(fn($ilan) => $ilan->fiyat >= 150000 && $ilan->fiyat <= 250000));
+        $this->assertTrue($results->every(fn ($ilan) => $ilan->fiyat >= 150000 && $ilan->fiyat <= 250000));
     }
 
     /**
@@ -201,7 +201,7 @@ class IlanTest extends TestCase
             ->get();
 
         $this->assertGreaterThanOrEqual(1, $results->count());
-        $this->assertTrue($results->contains(fn($ilan) => str_contains($ilan->baslik, 'Villa')));
+        $this->assertTrue($results->contains(fn ($ilan) => str_contains($ilan->baslik, 'Villa')));
     }
 
     /**
@@ -220,7 +220,7 @@ class IlanTest extends TestCase
             ->get();
 
         $this->assertGreaterThanOrEqual(1, $results->count());
-        $this->assertTrue($results->every(fn($ilan) => $ilan->status === 'Aktif'));
+        $this->assertTrue($results->every(fn ($ilan) => $ilan->status === 'Aktif'));
     }
 
     /**
@@ -245,4 +245,3 @@ class IlanTest extends TestCase
         $this->assertNotNull(Ilan::withTrashed()->find($ilanId));
     }
 }
-

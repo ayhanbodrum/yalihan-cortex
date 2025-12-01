@@ -33,12 +33,6 @@ class RefSequence extends Model
 
     /**
      * Sequence key oluştur
-     *
-     * @param string $yayinTipi
-     * @param string $lokasyonKodu
-     * @param string $kategoriKodu
-     * @param int|null $year
-     * @return string
      */
     public static function generateSequenceKey(
         string $yayinTipi,
@@ -59,9 +53,6 @@ class RefSequence extends Model
 
     /**
      * Sonraki sequence numarasını al (thread-safe)
-     *
-     * @param string $sequenceKey
-     * @return int
      */
     public static function getNextSequence(string $sequenceKey): int
     {
@@ -70,7 +61,7 @@ class RefSequence extends Model
                 ->where('sequence_key', $sequenceKey)
                 ->first();
 
-            if (!$sequence) {
+            if (! $sequence) {
                 // Yeni sequence oluştur
                 $parts = explode('-', $sequenceKey);
                 $sequence = self::create([
@@ -95,9 +86,6 @@ class RefSequence extends Model
 
     /**
      * Sequence'ı sıfırla (yıl bazlı)
-     *
-     * @param int $year
-     * @return int
      */
     public static function resetYearlySequences(int $year): int
     {

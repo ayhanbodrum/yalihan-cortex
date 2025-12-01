@@ -9,10 +9,7 @@ trait SearchableTrait
     /**
      * Genel arama scope'u
      *
-     * @param Builder $query
-     * @param string $search
-     * @param array $fields Aranacak alanlar
-     * @return Builder
+     * @param  array  $fields  Aranacak alanlar
      */
     public function scopeSearch(Builder $query, string $search, array $fields = []): Builder
     {
@@ -38,7 +35,7 @@ trait SearchableTrait
         return $query->where(function (Builder $q) use ($search, $fields, $schema, $tableName, &$validFields) {
             foreach ($fields as $field) {
                 // Column kontrolü cache'le (aynı request içinde tekrar kullanılabilir)
-                if (!isset($validFields[$field])) {
+                if (! isset($validFields[$field])) {
                     $validFields[$field] = $schema->hasColumn($tableName, $field);
                 }
 
@@ -51,10 +48,6 @@ trait SearchableTrait
 
     /**
      * Tam metin arama scope'u
-     *
-     * @param Builder $query
-     * @param string $search
-     * @return Builder
      */
     public function scopeFullTextSearch(Builder $query, string $search): Builder
     {
@@ -65,6 +58,7 @@ trait SearchableTrait
         // MySQL FULLTEXT search desteği varsa kullan
         if (property_exists($this, 'fullTextColumns')) {
             $columns = implode(',', $this->fullTextColumns);
+
             return $query->whereRaw("MATCH({$columns}) AGAINST(? IN BOOLEAN MODE)", [$search]);
         }
 
@@ -74,10 +68,6 @@ trait SearchableTrait
 
     /**
      * Filtreleme scope'u
-     *
-     * @param Builder $query
-     * @param array $filters
-     * @return Builder
      */
     public function scopeFilter(Builder $query, array $filters = []): Builder
     {
@@ -96,7 +86,7 @@ trait SearchableTrait
             }
 
             // Column kontrolü cache'le (aynı request içinde tekrar kullanılabilir)
-            if (!isset($validColumns[$field])) {
+            if (! isset($validColumns[$field])) {
                 $validColumns[$field] = $schema->hasColumn($tableName, $field);
             }
 
@@ -114,11 +104,6 @@ trait SearchableTrait
 
     /**
      * Sıralama scope'u
-     *
-     * @param Builder $query
-     * @param string $sortBy
-     * @param string $sortDirection
-     * @return Builder
      */
     public function scopeSortBy(Builder $query, string $sortBy = 'created_at', string $sortDirection = 'desc'): Builder
     {
@@ -132,11 +117,6 @@ trait SearchableTrait
     /**
      * Pagination ile birlikte arama
      *
-     * @param string $search
-     * @param array $filters
-     * @param int $perPage
-     * @param string $sortBy
-     * @param string $sortDirection
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
     public static function searchAndPaginate(

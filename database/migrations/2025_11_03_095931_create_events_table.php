@@ -46,14 +46,14 @@ return new class extends Migration
                 'confirmed',    // Onaylandı
                 'cancelled',    // İptal edildi
                 'completed',    // Tamamlandı
-                'no_show'       // Gelmedi
+                'no_show',       // Gelmedi
             ])->default('pending');
 
             $table->enum('payment_status', [
                 'unpaid',       // Ödenmedi
                 'partial',      // Kısmi ödendi
                 'paid',         // Tamamen ödendi
-                'refunded'      // İade edildi
+                'refunded',      // İade edildi
             ])->default('unpaid');
 
             // Ek Bilgiler
@@ -70,7 +70,7 @@ return new class extends Migration
                 'email',        // Email
                 'airbnb',       // Airbnb
                 'booking',      // Booking.com
-                'admin'         // Admin panel
+                'admin',         // Admin panel
             ])->default('website');
 
             $table->timestamps();

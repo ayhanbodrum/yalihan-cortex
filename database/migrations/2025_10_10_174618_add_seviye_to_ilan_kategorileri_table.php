@@ -8,12 +8,12 @@ return new class extends Migration
 {
     public function up(): void
     {
-        if (!Schema::hasTable('ilan_kategorileri')) {
+        if (! Schema::hasTable('ilan_kategorileri')) {
             return;
         }
 
         Schema::table('ilan_kategorileri', function (Blueprint $table) {
-            if (!Schema::hasColumn('ilan_kategorileri', 'seviye')) {
+            if (! Schema::hasColumn('ilan_kategorileri', 'seviye')) {
                 $table->integer('seviye')->default(1)->after('parent_id');
                 $table->index('seviye');
             }
@@ -22,7 +22,7 @@ return new class extends Migration
 
     public function down(): void
     {
-        if (!Schema::hasTable('ilan_kategorileri')) {
+        if (! Schema::hasTable('ilan_kategorileri')) {
             return;
         }
 

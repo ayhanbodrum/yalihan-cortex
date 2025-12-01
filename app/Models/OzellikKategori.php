@@ -99,8 +99,8 @@ class OzellikKategori extends Model
             }
         });
 
-        static::saved(fn() => Cache::forget('ozellik_kategorileri_full'));
-        static::deleted(fn() => Cache::forget('ozellik_kategorileri_full'));
+        static::saved(fn () => Cache::forget('ozellik_kategorileri_full'));
+        static::deleted(fn () => Cache::forget('ozellik_kategorileri_full'));
     }
 
     /**
@@ -250,14 +250,12 @@ class OzellikKategori extends Model
 
         return $renkler[$this->veri_tipi] ?? '#6B7280';
     }
-
-    
 }
 
 if (! function_exists('cachedOzellikKategorileri')) {
     function cachedOzellikKategorileri()
     {
         // Context7: Database column is 'display_order'
-        return Cache::remember('ozellik_kategorileri_full', 300, fn() => OzellikKategori::withCount('ozellikler')->orderBy('display_order')->get());
+        return Cache::remember('ozellik_kategorileri_full', 300, fn () => OzellikKategori::withCount('ozellikler')->orderBy('display_order')->get());
     }
 }

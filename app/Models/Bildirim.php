@@ -21,7 +21,7 @@ class Bildirim extends Model
         'okundu',
         'okunma_tarihi',
         'gonderim_tarihi',
-        'status'
+        'status',
     ];
 
     protected $casts = [
@@ -29,7 +29,7 @@ class Bildirim extends Model
         'okundu' => 'boolean',
         'status' => 'boolean',
         'okunma_tarihi' => 'datetime',
-        'gonderim_tarihi' => 'datetime'
+        'gonderim_tarihi' => 'datetime',
     ];
 
     /**

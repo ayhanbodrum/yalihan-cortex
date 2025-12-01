@@ -7,8 +7,6 @@ namespace App\Enums;
  *
  * Context7: Type-safe listing status enumeration
  * Replaces string-based status field with enum
- *
- * @package App\Enums
  */
 enum IlanStatus: string
 {
@@ -25,8 +23,6 @@ enum IlanStatus: string
 
     /**
      * Get human-readable label
-     *
-     * @return string
      */
     public function label(): string
     {
@@ -46,8 +42,6 @@ enum IlanStatus: string
 
     /**
      * Get description
-     *
-     * @return string
      */
     public function description(): string
     {
@@ -88,8 +82,6 @@ enum IlanStatus: string
 
     /**
      * Get icon
-     *
-     * @return string
      */
     public function icon(): string
     {
@@ -109,8 +101,6 @@ enum IlanStatus: string
 
     /**
      * Check if listing is active
-     *
-     * @return bool
      */
     public function isActive(): bool
     {
@@ -119,8 +109,6 @@ enum IlanStatus: string
 
     /**
      * Check if listing is visible to public
-     *
-     * @return bool
      */
     public function isPublic(): bool
     {
@@ -129,8 +117,6 @@ enum IlanStatus: string
 
     /**
      * Check if listing is completed
-     *
-     * @return bool
      */
     public function isCompleted(): bool
     {
@@ -139,8 +125,6 @@ enum IlanStatus: string
 
     /**
      * Check if listing is pending
-     *
-     * @return bool
      */
     public function isPending(): bool
     {
@@ -149,18 +133,14 @@ enum IlanStatus: string
 
     /**
      * Check if listing can be edited
-     *
-     * @return bool
      */
     public function isEditable(): bool
     {
-        return !in_array($this, [self::SATISILDI, self::KIRASILDI, self::ARSIV]);
+        return ! in_array($this, [self::SATISILDI, self::KIRASILDI, self::ARSIV]);
     }
 
     /**
      * Check if listing can be published
-     *
-     * @return bool
      */
     public function canPublish(): bool
     {
@@ -169,23 +149,19 @@ enum IlanStatus: string
 
     /**
      * Get all values as array
-     *
-     * @return array
      */
     public static function values(): array
     {
-        return array_map(fn($case) => $case->value, self::cases());
+        return array_map(fn ($case) => $case->value, self::cases());
     }
 
     /**
      * Get options for select dropdown
-     *
-     * @return array
      */
     public static function options(): array
     {
         return array_map(
-            fn($case) => [
+            fn ($case) => [
                 'value' => $case->value,
                 'label' => $case->label(),
                 'icon' => $case->icon(),
@@ -198,8 +174,6 @@ enum IlanStatus: string
 
     /**
      * Get active statuses
-     *
-     * @return array
      */
     public static function activeStatuses(): array
     {
@@ -208,8 +182,6 @@ enum IlanStatus: string
 
     /**
      * Get completed statuses
-     *
-     * @return array
      */
     public static function completedStatuses(): array
     {

@@ -1,8 +1,6 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -42,7 +40,7 @@ return new class extends Migration
             'field' => 'status',
             'old_type' => 'VARCHAR/mixed',
             'new_type' => 'TINYINT(1)',
-            'fixed_at' => now()
+            'fixed_at' => now(),
         ]);
     }
 

@@ -84,7 +84,7 @@ function collectFormDataForAI() {
     // Location info
     data.il = document.getElementById('il_id')?.selectedOptions[0]?.text || '';
     data.ilce = document.getElementById('ilce_id')?.selectedOptions[0]?.text || '';
-    data.semt = document.getElementById('semt_id')?.selectedOptions[0]?.text || '';
+    data.mahalle = document.getElementById('mahalle_id')?.selectedOptions[0]?.text || '';
     data.cadde_sokak = formData.get('cadde_sokak') || '';
 
     // Features

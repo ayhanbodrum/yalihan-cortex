@@ -9,7 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('ilanlar', function (Blueprint $table) {
-            if (!Schema::hasColumn('ilanlar', 'owner_private_encrypted')) {
+            if (! Schema::hasColumn('ilanlar', 'owner_private_encrypted')) {
                 $table->text('owner_private_encrypted')->nullable()->after('portal_pricing');
             }
         });

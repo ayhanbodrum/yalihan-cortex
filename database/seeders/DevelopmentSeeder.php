@@ -2,11 +2,11 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use App\Models\FeatureCategory;
-use App\Models\OzellikKategori;
 use App\Models\Feature;
+use App\Models\FeatureCategory;
 use App\Models\FeatureTranslation;
+use App\Models\OzellikKategori;
+use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 
 /**
@@ -103,7 +103,7 @@ class DevelopmentSeeder extends Seeder
             $this->command->line("  ✓ {$oz['ad']}");
         }
 
-        $this->command->info("🏷️ " . count($ozellikKategoriler) . " OzellikKategori oluşturuldu.");
+        $this->command->info('🏷️ '.count($ozellikKategoriler).' OzellikKategori oluşturuldu.');
     }
 
     /**
@@ -118,6 +118,7 @@ class DevelopmentSeeder extends Seeder
 
         if ($categories->isEmpty() || $ozellikKategoriler->isEmpty()) {
             $this->command->error('❌ Kategoriler bulunamadı! Önce kategorileri oluşturun.');
+
             return;
         }
 
@@ -178,7 +179,7 @@ class DevelopmentSeeder extends Seeder
             FeatureTranslation::updateOrCreate(
                 [
                     'feature_id' => $feature->id,
-                    'locale' => 'tr'
+                    'locale' => 'tr',
                 ],
                 [
                     'name' => $featureData['name'],
@@ -189,7 +190,7 @@ class DevelopmentSeeder extends Seeder
             $this->command->line("  ✓ {$featureData['name']} ({$featureData['type']})");
         }
 
-        $this->command->info("⚡ " . count($features) . " Feature oluşturuldu.");
+        $this->command->info('⚡ '.count($features).' Feature oluşturuldu.');
     }
 
     /**
@@ -199,10 +200,10 @@ class DevelopmentSeeder extends Seeder
     {
         $this->command->info('');
         $this->command->info('📊 ÖZET RAPOR:');
-        $this->command->line('  FeatureCategory: ' . FeatureCategory::count());
-        $this->command->line('  OzellikKategori: ' . OzellikKategori::count());
-        $this->command->line('  Feature: ' . Feature::count());
-        $this->command->line('  FeatureTranslation: ' . FeatureTranslation::count());
+        $this->command->line('  FeatureCategory: '.FeatureCategory::count());
+        $this->command->line('  OzellikKategori: '.OzellikKategori::count());
+        $this->command->line('  Feature: '.Feature::count());
+        $this->command->line('  FeatureTranslation: '.FeatureTranslation::count());
         $this->command->info('');
         $this->command->info('🎉 Artık /admin/ozellikler/create sayfası tam çalışır statusda!');
         $this->command->info('💡 Test etmek için: http://127.0.0.1:8000/admin/ozellikler/create');

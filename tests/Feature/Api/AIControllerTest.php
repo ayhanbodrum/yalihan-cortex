@@ -193,4 +193,3 @@ class AIControllerTest extends TestCase
             ]);
     }
 }
-

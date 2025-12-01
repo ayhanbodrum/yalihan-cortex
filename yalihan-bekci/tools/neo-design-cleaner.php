@@ -1,4 +1,5 @@
 <?php
+
 /**
  * NEO DESIGN CLEANER
  *
@@ -7,7 +8,6 @@
  * Tarih: 2025-11-01
  * Amaç: neo-btn, neo-card, neo-input kullanımlarını Tailwind ile değiştirmek
  */
-
 $replacements = [
     // BUTTON REPLACEMENTS
     'neo-btn neo-btn-primary' => 'inline-flex items-center px-6 py-3 bg-orange-600 text-white font-semibold rounded-lg shadow-md hover:bg-orange-700 hover:scale-105 hover:shadow-lg active:scale-95 focus:ring-2 focus:ring-orange-500 focus:outline-none transition-all duration-200',
@@ -64,11 +64,12 @@ $totalFixed = 0;
 $report = [];
 
 echo "🔧 NEO DESIGN CLEANER - Context7 Standardı\n";
-echo str_repeat('=', 60) . "\n\n";
+echo str_repeat('=', 60)."\n\n";
 
 foreach ($files as $file) {
-    if (!file_exists($file)) {
+    if (! file_exists($file)) {
         echo "⚠️  Dosya bulunamadı: $file\n";
+
         continue;
     }
 
@@ -90,15 +91,15 @@ foreach ($files as $file) {
 
         $report[] = [
             'file' => $file,
-            'fixes' => $fileFixed
+            'fixes' => $fileFixed,
         ];
     }
 }
 
-echo "\n" . str_repeat('=', 60) . "\n";
+echo "\n".str_repeat('=', 60)."\n";
 echo "📊 ÖZET:\n";
 echo "  • Toplam Düzeltme: $totalFixed\n";
-echo "  • İşlenen Dosya: " . count($report) . "\n";
+echo '  • İşlenen Dosya: '.count($report)."\n";
 echo "\n";
 
 // Context7 Authority'ye raporla
@@ -109,7 +110,7 @@ if (file_exists($authorityFile)) {
         'date' => date('Y-m-d H:i:s'),
         'total_fixes' => $totalFixed,
         'files' => count($report),
-        'status' => 'COMPLETED'
+        'status' => 'COMPLETED',
     ];
     file_put_contents($authorityFile, json_encode($authority, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
     echo "✅ Context7 Authority güncellendi\n";

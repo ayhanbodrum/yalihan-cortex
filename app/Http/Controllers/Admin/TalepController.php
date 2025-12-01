@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Talep;
+use App\Models\Ulke;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Models\Ulke;
-use App\Models\Talep;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
 class TalepController extends AdminController
@@ -16,7 +16,6 @@ class TalepController extends AdminController
      * Display a listing of the resource.
      * Context7: Talep listesi ve filtreleme
      *
-     * @param Request $request
      * @return Response|\Illuminate\Contracts\View\View
      */
     public function index(Request $request)
@@ -24,14 +23,14 @@ class TalepController extends AdminController
         // ✅ EAGER LOADING: Select optimization ile birlikte
         $talepler = \App\Models\Talep::with([
             'kisi:id,ad,soyad,telefon,email',
-            'danisman:id,name,email'
+            'danisman:id,name,email',
         ])
-        ->select([
-            'id', 'baslik', 'tip', 'status', 'kisi_id', 'danisman_id',
-            'kategori_id', 'il_id', 'ilce_id', 'created_at', 'updated_at'
-        ])
-        ->latest()
-        ->paginate(20);
+            ->select([
+                'id', 'baslik', 'tip', 'status', 'kisi_id', 'danisman_id',
+                'alt_kategori_id', 'il_id', 'ilce_id', 'created_at', 'updated_at',
+            ])
+            ->latest()
+            ->paginate(20);
 
         // ✅ OPTIMIZED: İstatistikleri tek query'de hesapla
         $istatistikler = [
@@ -110,8 +109,8 @@ class TalepController extends AdminController
      * Store a newly created resource in storage.
      * Context7: Yeni talep kaydetme
      *
-     * @param Request $request
      * @return \Illuminate\Http\RedirectResponse
+     *
      * @throws \Exception
      */
     public function store(Request $request)
@@ -121,9 +120,8 @@ class TalepController extends AdminController
             'baslik' => 'required|string|max:255',
             'aciklama' => 'nullable|string',
             'tip' => 'required|string|in:Satılık,Kiralık,Günlük Kiralık,Devren',
-            'kategori_id' => 'nullable|exists:ilan_kategoriler,id',
-            'alt_kategori_id' => 'nullable|exists:ilan_kategoriler,id',
-            'status' => 'required|string|in:' . implode(',', \App\Enums\TalepStatus::values()),
+            'alt_kategori_id' => 'nullable|exists:ilan_kategoriler,id', // Context7: kategori_id → alt_kategori_id (reform 2025-11-24)
+            'status' => 'required|string|in:'.implode(',', \App\Enums\TalepStatus::values()),
             'one_cikan' => 'nullable|boolean',
             'il_id' => 'required|exists:iller,id',
             'ilce_id' => 'nullable|exists:ilceler,id',
@@ -139,7 +137,7 @@ class TalepController extends AdminController
 
         try {
             // Eğer kişi_id yoksa ve yeni kişi bilgileri varsa, önce kişi oluştur
-            if (!$validated['kisi_id'] && $validated['kisi_ad']) {
+            if (! $validated['kisi_id'] && $validated['kisi_ad']) {
                 $kisi = \App\Models\Kisi::create([
                     'ad' => $validated['kisi_ad'],
                     'soyad' => $validated['kisi_soyad'],
@@ -156,8 +154,7 @@ class TalepController extends AdminController
                 'baslik' => $validated['baslik'],
                 'aciklama' => $validated['aciklama'],
                 'tip' => $validated['tip'],
-                'kategori_id' => $validated['kategori_id'],
-                'alt_kategori_id' => $validated['alt_kategori_id'],
+                'alt_kategori_id' => $validated['alt_kategori_id'], // Context7: kategori_id kaldırıldı (reform 2025-11-24)
                 'status' => $validated['status'],
                 'one_cikan' => $validated['one_cikan'] ?? false,
                 'il_id' => $validated['il_id'],
@@ -183,7 +180,7 @@ class TalepController extends AdminController
             return redirect()
                 ->back()
                 ->withInput()
-                ->with('error', 'Talep oluşturulurken hata oluştu: ' . $e->getMessage());
+                ->with('error', 'Talep oluşturulurken hata oluştu: '.$e->getMessage());
         }
     }
 
@@ -191,7 +188,6 @@ class TalepController extends AdminController
      * Display the specified resource.
      * Context7: Talep detay sayfası
      *
-     * @param Talep $talep
      * @return Response|\Illuminate\Contracts\View\View
      */
     public function show(Talep $talep)
@@ -214,7 +210,6 @@ class TalepController extends AdminController
      * Show the form for editing the specified resource.
      * Context7: Talep düzenleme formu
      *
-     * @param Talep $talep
      * @return Response|\Illuminate\Contracts\View\View
      */
     public function edit(Talep $talep)
@@ -251,8 +246,8 @@ class TalepController extends AdminController
         $danismanlar = \App\Models\User::whereHas('roles', function ($q) {
             $q->where('name', 'danisman');
         })
-        ->select(['id', 'name', 'email'])
-        ->get();
+            ->select(['id', 'name', 'email'])
+            ->get();
 
         // Context7: Emlak Tipleri
         $emlakTipleri = ['Daire', 'Villa', 'Arsa', 'İşyeri', 'Yazlık'];
@@ -275,8 +270,6 @@ class TalepController extends AdminController
      * Update the specified resource in storage.
      * Context7: Talep güncelleme
      *
-     * @param Request $request
-     * @param Talep $talep
      * @return \Illuminate\Http\RedirectResponse
      */
     public function update(Request $request, Talep $talep)
@@ -288,8 +281,8 @@ class TalepController extends AdminController
      * Remove the specified resource from storage.
      * Context7: Talep silme
      *
-     * @param Talep $talep
      * @return \Illuminate\Http\RedirectResponse
+     *
      * @throws \Exception
      */
     public function destroy(Talep $talep)
@@ -299,16 +292,16 @@ class TalepController extends AdminController
             $talep->load('kisi:id,ad,soyad');
 
             // Talep bilgilerini al
-            $talepBilgi = $talep->kisi ? ($talep->kisi->ad . ' ' . $talep->kisi->soyad) : 'Talep #' . $talep->id;
+            $talepBilgi = $talep->kisi ? ($talep->kisi->ad.' '.$talep->kisi->soyad) : 'Talep #'.$talep->id;
             $talep->delete();
 
             return redirect()
                 ->route('admin.talepler.index')
-                ->with('success', $talepBilgi . ' başarıyla silindi.');
+                ->with('success', $talepBilgi.' başarıyla silindi.');
         } catch (\Exception $e) {
             return redirect()
                 ->route('admin.talepler.index')
-                ->with('error', 'Talep silinirken bir hata oluştu: ' . $e->getMessage());
+                ->with('error', 'Talep silinirken bir hata oluştu: '.$e->getMessage());
         }
     }
 
@@ -316,7 +309,7 @@ class TalepController extends AdminController
      * Display matched listings for a request
      * Context7: Eşleşen ilanlar
      *
-     * @param int|string $talep
+     * @param  int|string  $talep
      * @return Response|\Illuminate\Contracts\View\View
      */
     public function eslesen($talep)
@@ -328,7 +321,6 @@ class TalepController extends AdminController
      * Search requests
      * Context7: Talep arama endpoint
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function search(Request $request)
@@ -340,7 +332,6 @@ class TalepController extends AdminController
      * Bulk action for requests
      * Context7: Toplu işlem endpoint
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function bulkAction(Request $request)
@@ -373,14 +364,13 @@ class TalepController extends AdminController
     /**
      * Render view helper
      * Context7: View render helper
-     *
-     * @param string $view
-     * @param array $data
-     * @return Response|\Illuminate\Contracts\View\View
      */
     private function render(string $view, array $data = []): Response|\Illuminate\Contracts\View\View
     {
-        if (view()->exists($view)) return response()->view($view, $data);
+        if (view()->exists($view)) {
+            return response()->view($view, $data);
+        }
+
         return response('Talepler sayfaları hazır değil', 200);
     }
 }

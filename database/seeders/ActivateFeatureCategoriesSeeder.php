@@ -37,8 +37,8 @@ class ActivateFeatureCategoriesSeeder extends Seeder
             $this->printStatistics();
         } catch (\Exception $e) {
             DB::rollBack();
-            $this->command->error('❌ Hata: ' . $e->getMessage());
-            $this->command->error('Stack trace: ' . $e->getTraceAsString());
+            $this->command->error('❌ Hata: '.$e->getMessage());
+            $this->command->error('Stack trace: '.$e->getTraceAsString());
         }
     }
 
@@ -52,7 +52,7 @@ class ActivateFeatureCategoriesSeeder extends Seeder
         // ID bazlı ilişkilendirme (slug kolonu olmadığı için)
         $propertyTypes = IlanKategoriYayinTipi::whereIn('id', [1, 2, 3, 4])->get();
 
-        $this->command->info("   🔍 " . $propertyTypes->count() . " Property Type bulundu");
+        $this->command->info('   🔍 '.$propertyTypes->count().' Property Type bulundu');
 
         foreach ($propertyTypes as $propertyType) {
             // Property Type ID'sine göre category belirle
@@ -64,7 +64,7 @@ class ActivateFeatureCategoriesSeeder extends Seeder
                 default => null
             };
 
-            if (!$categorySlug) {
+            if (! $categorySlug) {
                 continue;
             }
 
@@ -74,6 +74,7 @@ class ActivateFeatureCategoriesSeeder extends Seeder
 
             if ($features->isEmpty()) {
                 $this->command->warn("   ⚠️  {$categorySlug} için özellik bulunamadı");
+
                 continue;
             }
 
@@ -84,12 +85,12 @@ class ActivateFeatureCategoriesSeeder extends Seeder
                         'is_required' => $index < 2, // İlk 2 özellik zorunlu
                         'is_visible' => true,
                         'display_order' => $index,
-                        'group_name' => $index < 4 ? 'Genel Bilgiler' : 'Özellikler'
+                        'group_name' => $index < 4 ? 'Genel Bilgiler' : 'Özellikler',
                     ]
                 );
             }
 
-            $this->command->info("   ✅ Property Type #{$propertyType->id}: " . $features->count() . " özellik atandı");
+            $this->command->info("   ✅ Property Type #{$propertyType->id}: ".$features->count().' özellik atandı');
         }
     }
 
@@ -106,20 +107,20 @@ class ActivateFeatureCategoriesSeeder extends Seeder
                     'Feature Categories',
                     FeatureCategory::count(),
                     FeatureCategory::where('enabled', true)->count(),
-                    FeatureCategory::where('enabled', false)->count()
+                    FeatureCategory::where('enabled', false)->count(),
                 ],
                 [
                     'Features',
                     Feature::count(),
                     Feature::where('enabled', true)->count(),
-                    Feature::where('enabled', false)->count()
+                    Feature::where('enabled', false)->count(),
                 ],
                 [
                     'Feature Assignments',
                     DB::table('feature_assignments')->count(),
                     DB::table('feature_assignments')->where('is_visible', true)->count(),
-                    DB::table('feature_assignments')->where('is_visible', false)->count()
-                ]
+                    DB::table('feature_assignments')->where('is_visible', false)->count(),
+                ],
             ]
         );
     }

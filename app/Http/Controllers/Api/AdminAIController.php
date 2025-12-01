@@ -15,13 +15,13 @@ class AdminAIController extends Controller
         private ChatService $chat,
         private PriceService $price,
         private SuggestService $suggest
-    ) {
-    }
+    ) {}
 
     public function chat(Request $request)
     {
         $payload = $request->all();
         $res = $this->chat->chat($payload);
+
         return ResponseService::success($res['data'], $res['message']);
     }
 
@@ -29,6 +29,7 @@ class AdminAIController extends Controller
     {
         $payload = $request->all();
         $res = $this->price->predict($payload);
+
         return ResponseService::success($res['data'], $res['message']);
     }
 
@@ -36,6 +37,7 @@ class AdminAIController extends Controller
     {
         $context = $request->all();
         $res = $this->suggest->suggestFeatures($context);
+
         return ResponseService::success($res['data'], $res['message']);
     }
 
@@ -48,6 +50,7 @@ class AdminAIController extends Controller
             'average_response_time' => \App\Models\AiLog::avg('duration'),
             'cancelled_requests' => \App\Models\AiLog::where('status', 'cancelled')->count(),
         ];
+
         return ResponseService::success($stats, 'AI analytics');
     }
 
@@ -57,8 +60,9 @@ class AdminAIController extends Controller
         $presets = $lib->list();
         $data = [];
         foreach ($presets as $key => $conf) {
-            $data[] = [ 'key' => $key, 'title' => $conf['title'] ?? $key, 'version' => $conf['version'] ?? null ];
+            $data[] = ['key' => $key, 'title' => $conf['title'] ?? $key, 'version' => $conf['version'] ?? null];
         }
+
         return ResponseService::success(['presets' => $data], 'Prompt presets');
     }
 
@@ -73,17 +77,20 @@ class AdminAIController extends Controller
             'Cache-Control' => 'no-cache',
             'X-Accel-Buffering' => 'no',
         ];
+
         return response()->stream(function () use ($validated) {
             $payload = [
                 'prompt' => $validated['prompt'],
                 'prompt_preset' => $validated['prompt_preset'] ?? null,
             ];
             $res = $this->chat->chat($payload);
-            $text = (string)($res['data']['text'] ?? '');
+            $text = (string) ($res['data']['text'] ?? '');
             $parts = preg_split('/\s+/', $text) ?: [];
             foreach ($parts as $p) {
                 echo 'data: '.trim($p)."\n\n";
-                if (function_exists('ob_flush')) { @ob_flush(); }
+                if (function_exists('ob_flush')) {
+                    @ob_flush();
+                }
                 flush();
                 usleep(25000);
             }

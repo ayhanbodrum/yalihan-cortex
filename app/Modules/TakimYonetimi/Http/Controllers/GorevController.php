@@ -3,8 +3,8 @@
 namespace App\Modules\TakimYonetimi\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Gorev;
+use Illuminate\Http\Request;
 
 class GorevController extends Controller
 {
@@ -20,7 +20,7 @@ class GorevController extends Controller
         $gorevler = $query->paginate(20);
 
         // Context7: Danışmanlar listesi (view için gerekli)
-        $danismanlar = \App\Models\User::whereHas('roles', function($q) {
+        $danismanlar = \App\Models\User::whereHas('roles', function ($q) {
             $q->where('name', 'danisman');
         })->select(['id', 'name', 'email'])->get();
 

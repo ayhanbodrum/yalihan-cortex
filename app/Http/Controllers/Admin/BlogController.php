@@ -47,6 +47,7 @@ class BlogController extends AdminController
         $comment->approve(Auth::id());
         // ✅ CACHE INVALIDATION: İstatistik cache'ini temizle
         Cache::forget('blog_comments_stats');
+
         return response()->json(['success' => true]);
     }
 
@@ -56,6 +57,7 @@ class BlogController extends AdminController
         $comment->reject(Auth::id(), $reason);
         // ✅ CACHE INVALIDATION: İstatistik cache'ini temizle
         Cache::forget('blog_comments_stats');
+
         return response()->json(['success' => true]);
     }
 
@@ -65,6 +67,7 @@ class BlogController extends AdminController
         $comment->markAsSpam(Auth::id(), $reason);
         // ✅ CACHE INVALIDATION: İstatistik cache'ini temizle
         Cache::forget('blog_comments_stats');
+
         return response()->json(['success' => true]);
     }
 
@@ -103,11 +106,11 @@ class BlogController extends AdminController
         // ✅ N+1 FIX: Eager loading with select optimization
         $posts = \App\Models\BlogPost::with([
             'category:id,name,slug',
-            'author:id,name,email'
+            'author:id,name,email',
         ])
-        ->select(['id', 'title', 'slug', 'status', 'category_id', 'author_id', 'created_at', 'updated_at'])
-        ->latest()
-        ->paginate(20);
+            ->select(['id', 'title', 'slug', 'status', 'category_id', 'author_id', 'created_at', 'updated_at'])
+            ->latest()
+            ->paginate(20);
 
         // ✅ CACHE: İstatistikler cache ile optimize et (1800s = 30 dakika)
         $istatistikler = Cache::remember('blog_posts_stats', 1800, function () {

@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Schema;
 class IlanKategori extends Model
 {
     use HasFeatures, SoftDeletes;
+
     /**
      * The table associated with the model.
      *
@@ -140,7 +141,7 @@ class IlanKategori extends Model
     /**
      * Sadece yayın tiplerini döndüren bir ilişki (seviye=2) - DEPRECATED
      * ✅ Context7: display_order kullan (order değil)
-     * 
+     *
      * ⚠️ DEPRECATED: Artık ilan_kategori_yayin_tipleri tablosu kullanılıyor
      * Bu ilişki backward compatibility için korunuyor
      */
@@ -187,7 +188,7 @@ class IlanKategori extends Model
      */
     public function ilanlar()
     {
-        $ilanTable = (new Ilan())->getTable(); // 'ilanlar'
+        $ilanTable = (new Ilan)->getTable(); // 'ilanlar'
 
         $hasKategori = Schema::hasColumn($ilanTable, 'kategori_id');
         $hasAna = Schema::hasColumn($ilanTable, 'ana_kategori_id');
@@ -333,7 +334,7 @@ class IlanKategori extends Model
 
                 // Unique slug oluştur
                 while (static::where('slug', $slug)->exists()) {
-                    $slug = $baseSlug . '-' . $counter;
+                    $slug = $baseSlug.'-'.$counter;
                     $counter++;
                 }
 
@@ -350,7 +351,7 @@ class IlanKategori extends Model
 
                 // Unique slug oluştur (mevcut kategori hariç)
                 while (static::where('slug', $slug)->where('id', '!=', $kategori->id)->exists()) {
-                    $slug = $baseSlug . '-' . $counter;
+                    $slug = $baseSlug.'-'.$counter;
                     $counter++;
                 }
 

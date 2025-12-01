@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\IlanPublicResource;
+use App\Models\Il;
 use App\Models\Ilan;
 use App\Models\IlanKategori;
-use App\Models\Il;
 use App\Models\Ulke;
 use App\Services\CurrencyConversionService;
 use Illuminate\Http\Request;
@@ -103,7 +103,7 @@ class IlanPublicController extends Controller
             'ilce_id',
             'slug',
             'created_at',
-            'updated_at'
+            'updated_at',
         ]);
 
         $query->with([
@@ -112,7 +112,7 @@ class IlanPublicController extends Controller
             'kategori:id,name',
             'anaKategori:id,name,slug',
             'altKategori:id,name,slug,parent_id',
-            'yayinTipi:id,name,slug'
+            'yayinTipi:id,name,slug',
         ]);
 
         $query->with(['fotograflar']);
@@ -132,7 +132,7 @@ class IlanPublicController extends Controller
                     'last_page' => $ilanlar->lastPage(),
                     'per_page' => $ilanlar->perPage(),
                     'total' => $ilanlar->total(),
-                ]
+                ],
             ]);
         }
 
@@ -189,7 +189,7 @@ class IlanPublicController extends Controller
             'brut_m2',
             'net_m2',
             'created_at',
-            'updated_at'
+            'updated_at',
         ]);
 
         $query->with([
@@ -209,6 +209,7 @@ class IlanPublicController extends Controller
                 $property->para_birimi,
                 $currency
             );
+
             return $property;
         });
 
@@ -218,7 +219,7 @@ class IlanPublicController extends Controller
             'total_properties' => Ilan::count(),
             'active_properties' => Ilan::where('status', 'Aktif')->count(),
             'total_value' => $totalValue ? ($totalValue / 1000000) : 0,
-            'locations' => Il::distinct()->count('id')
+            'locations' => Il::distinct()->count('id'),
         ];
 
         // Filtreler için veriler
@@ -394,7 +395,7 @@ class IlanPublicController extends Controller
                 ? Ilan::where('status', 'Aktif')->whereNotNull('ulke_id')->distinct('ulke_id')->count('ulke_id')
                 : Ilan::where('status', 'Aktif')->distinct('il_id')->count('il_id'),
             'average_price' => optional((clone $statsQuery)->avg('fiyat'), function ($avg) {
-                return number_format($avg, 0, ',', '.') . ' ₺';
+                return number_format($avg, 0, ',', '.').' ₺';
             }) ?? '—',
         ];
 
@@ -501,7 +502,7 @@ class IlanPublicController extends Controller
             'fotograflar' => function ($q) {
                 $q->select('id', 'ilan_id', 'dosya_yolu', 'sira', 'kapak_fotografi')
                     ->orderBy('sira');
-            }
+            },
         ])
             ->where(function ($query) {
                 // Context7: Support both enum and string status
@@ -515,7 +516,7 @@ class IlanPublicController extends Controller
         if (request()->expectsJson()) {
             return response()->json([
                 'success' => true,
-                'data' => new IlanPublicResource($ilan)
+                'data' => new IlanPublicResource($ilan),
             ]);
         }
 

@@ -8,17 +8,17 @@ class PromptLibrary
         'seo_kurumsal' => [
             'title' => 'Kurumsal SEO',
             'version' => '1.0.0',
-            'content' => 'Kurumsal tonda, lokasyon ve fiyat odaklı SEO uyumlu metin üret. '
+            'content' => 'Kurumsal tonda, lokasyon ve fiyat odaklı SEO uyumlu metin üret. ',
         ],
         'hizli_satis' => [
             'title' => 'Hızlı Satış',
             'version' => '1.0.0',
-            'content' => 'Hızlı satış odaklı, avantajları vurgulayan kısa ve etkili metin üret. '
+            'content' => 'Hızlı satış odaklı, avantajları vurgulayan kısa ve etkili metin üret. ',
         ],
         'luks' => [
             'title' => 'Lüks',
             'version' => '1.0.0',
-            'content' => 'Lüks segment için özellikleri ve yaşam tarzını öne çıkaran metin üret. '
+            'content' => 'Lüks segment için özellikleri ve yaşam tarzını öne çıkaran metin üret. ',
         ],
     ];
 

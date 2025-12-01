@@ -73,21 +73,6 @@ return [
             ]) : [],
         ],
 
-        'market' => [
-            'driver' => 'mysql',
-            'host' => env('MARKET_DB_HOST', env('DB_HOST', '127.0.0.1')),
-            'port' => env('MARKET_DB_PORT', env('DB_PORT', '3306')),
-            'database' => env('MARKET_DB_DATABASE', 'yalihan_market'),
-            'username' => env('MARKET_DB_USERNAME', env('DB_USERNAME', 'root')),
-            'password' => env('MARKET_DB_PASSWORD', env('DB_PASSWORD', '')),
-            'charset' => env('DB_CHARSET', 'utf8mb4'),
-            'collation' => env('DB_COLLATION', 'utf8mb4_unicode_ci'),
-            'prefix' => '',
-            'prefix_indexes' => true,
-            'strict' => true,
-            'engine' => null,
-        ],
-
         'pgsql' => [
             'driver' => 'pgsql',
             'url' => env('DB_URL'),
@@ -116,6 +101,36 @@ return [
             'prefix_indexes' => true,
             // 'encrypt' => env('DB_ENCRYPT', 'yes'),
             // 'trust_server_certificate' => env('DB_TRUST_SERVER_CERTIFICATE', 'false'),
+        ],
+
+        /*
+        |--------------------------------------------------------------------------
+        | Market Intelligence Database Connection
+        |--------------------------------------------------------------------------
+        |
+        | Pazar İstihbaratı (Market Intelligence) verileri için ayrı veritabanı.
+        | Dış kaynaklardan (Sahibinden, Hepsiemlak, Emlakjet) çekilen piyasa
+        | verilerini saklamak için kullanılır.
+        |
+        */
+        'market_intelligence' => [
+            'driver' => 'mysql',
+            'url' => env('MARKET_DB_URL'),
+            'host' => env('MARKET_DB_HOST', env('DB_HOST', '127.0.0.1')),
+            'port' => env('MARKET_DB_PORT', env('DB_PORT', '3306')),
+            'database' => env('MARKET_DB_DATABASE', 'yalihan_market'),
+            'username' => env('MARKET_DB_USERNAME', env('DB_USERNAME', 'root')),
+            'password' => env('MARKET_DB_PASSWORD', env('DB_PASSWORD', '')),
+            'unix_socket' => env('MARKET_DB_SOCKET', env('DB_SOCKET', '')),
+            'charset' => env('MARKET_DB_CHARSET', env('DB_CHARSET', 'utf8mb4')),
+            'collation' => env('MARKET_DB_COLLATION', env('DB_COLLATION', 'utf8mb4_unicode_ci')),
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => true,
+            'engine' => null,
+            'options' => extension_loaded('pdo_mysql') ? array_filter([
+                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+            ]) : [],
         ],
 
     ],
@@ -150,7 +165,7 @@ return [
 
         'options' => [
             'cluster' => env('REDIS_CLUSTER', 'redis'),
-            'prefix' => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_').'_database_'),
+            'prefix' => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_') . '_database_'),
             'persistent' => env('REDIS_PERSISTENT', false),
         ],
 

@@ -27,10 +27,10 @@ class IlanKategoriRequest extends FormRequest
             'name' => 'required|string|max:255',
             'parent_id' => [
                 'nullable',
-                'exists:ilan_kategorileri,id' . ($id ? '|not_in:' . $id : ''),
+                'exists:ilan_kategorileri,id'.($id ? '|not_in:'.$id : ''),
                 // Context7: Alt kategori (seviye=1) için parent_id zorunlu
                 function ($attribute, $value, $fail) use ($seviye) {
-                    if (($seviye == 1 || $seviye == 2) && !$value) {
+                    if (($seviye == 1 || $seviye == 2) && ! $value) {
                         $fail('Alt kategori veya Yayın Tipi için Üst Kategori seçmelisiniz.');
                     }
                     if ($seviye == 0 && $value) {
@@ -41,7 +41,7 @@ class IlanKategoriRequest extends FormRequest
             'seviye' => 'required|integer|in:0,1,2',
             'status' => 'nullable|boolean', // Context7: status kullanımı
             'display_order' => 'nullable|integer|min:0', // ✅ Context7: order → display_order
-            'slug' => 'nullable|string|max:255|unique:ilan_kategorileri,slug' . ($id ? ',' . $id : ''),
+            'slug' => 'nullable|string|max:255|unique:ilan_kategorileri,slug'.($id ? ','.$id : ''),
             'icon' => 'nullable|string|max:100',
             'aciklama' => 'nullable|string|max:500',
         ];

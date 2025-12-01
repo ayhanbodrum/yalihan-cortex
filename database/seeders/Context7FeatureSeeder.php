@@ -492,7 +492,7 @@ class Context7FeatureSeeder extends Seeder
         // Özellik zaten var mı kontrol et
         $existingFeature = DB::table('features')->where('slug', $slug)->first();
 
-        if (!$existingFeature) {
+        if (! $existingFeature) {
             $featureId = DB::table('features')->insertGetId($featureData);
 
             // Özellik çevirisini ekle

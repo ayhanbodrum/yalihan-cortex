@@ -1,23 +1,23 @@
 <?php
 
-require __DIR__ . '/vendor/autoload.php';
+require __DIR__.'/vendor/autoload.php';
 
-$app = require_once __DIR__ . '/bootstrap/app.php';
+$app = require_once __DIR__.'/bootstrap/app.php';
 $app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap();
 
 use App\Services\N8nService;
 
 echo "\n🔄 n8n ENTEGRASYON TESTİ\n";
 echo "═══════════════════════════════════════\n";
-echo "Test Zamanı: " . date('Y-m-d H:i:s') . "\n\n";
+echo 'Test Zamanı: '.date('Y-m-d H:i:s')."\n\n";
 
 $n8n = app(N8nService::class);
 
 echo "1️⃣ n8n Servisi Kontrolü\n";
-echo "   URL: " . config('services.n8n.url') . "\n";
-echo "   Status: " . (config('services.n8n.enabled') ? '✅ Aktif' : '⚠️  Kapalı') . "\n\n";
+echo '   URL: '.config('services.n8n.url')."\n";
+echo '   Status: '.(config('services.n8n.enabled') ? '✅ Aktif' : '⚠️  Kapalı')."\n\n";
 
-if (!config('services.n8n.enabled')) {
+if (! config('services.n8n.enabled')) {
     echo "⚠️  n8n entegrasyonu kapalı!\n";
     echo "Aktif etmek için .env dosyasına ekle:\n";
     echo "N8N_ENABLED=true\n";
@@ -33,10 +33,10 @@ $result = $n8n->sendNotification('test', [
 
 if ($result['success']) {
     echo "   ✅ Başarılı!\n";
-    echo "   Response: " . json_encode($result['data'], JSON_PRETTY_PRINT) . "\n\n";
+    echo '   Response: '.json_encode($result['data'], JSON_PRETTY_PRINT)."\n\n";
 } else {
     echo "   ❌ Hata!\n";
-    echo "   Error: " . ($result['error'] ?? 'Bilinmeyen hata') . "\n\n";
+    echo '   Error: '.($result['error'] ?? 'Bilinmeyen hata')."\n\n";
 }
 
 echo "3️⃣ Örnek İlan Data Gönderiliyor...\n";
@@ -51,7 +51,7 @@ $result = $n8n->sendNewIlan([
 if ($result['success']) {
     echo "   ✅ Başarılı!\n\n";
 } else {
-    echo "   ❌ Hata: " . ($result['error'] ?? 'Webhook tetiklenemedi') . "\n\n";
+    echo '   ❌ Hata: '.($result['error'] ?? 'Webhook tetiklenemedi')."\n\n";
 }
 
 echo "4️⃣ Örnek Kişi Data Gönderiliyor...\n";
@@ -66,14 +66,14 @@ $result = $n8n->sendNewKisi([
 if ($result['success']) {
     echo "   ✅ Başarılı!\n\n";
 } else {
-    echo "   ❌ Hata: " . ($result['error'] ?? 'Webhook tetiklenemedi') . "\n\n";
+    echo '   ❌ Hata: '.($result['error'] ?? 'Webhook tetiklenemedi')."\n\n";
 }
 
 echo "\n📊 TEST SONUCU\n";
 echo "═══════════════════════════════════════\n";
 echo "n8n Servisi: ✅ Hazır\n";
 echo "Config: ✅ Ayarlandı\n";
-echo "Webhook Test: " . ($result['success'] ? '✅' : '⚠️') . "\n";
+echo 'Webhook Test: '.($result['success'] ? '✅' : '⚠️')."\n";
 
 echo "\n💡 SONRAKI ADIMLAR:\n";
 echo "═══════════════════════════════════════\n";

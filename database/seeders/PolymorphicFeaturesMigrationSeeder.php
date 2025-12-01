@@ -38,8 +38,8 @@ class PolymorphicFeaturesMigrationSeeder extends Seeder
             $this->printStatistics();
         } catch (\Exception $e) {
             DB::rollBack();
-            $this->command->error('❌ Migration hatası: ' . $e->getMessage());
-            $this->command->error('Stack trace: ' . $e->getTraceAsString());
+            $this->command->error('❌ Migration hatası: '.$e->getMessage());
+            $this->command->error('Stack trace: '.$e->getTraceAsString());
         }
     }
 
@@ -81,7 +81,7 @@ class PolymorphicFeaturesMigrationSeeder extends Seeder
         foreach ($ozellikler as $ozellik) {
             // Find category
             $categoryId = null;
-            if (!empty($ozellik->kategori_id)) {
+            if (! empty($ozellik->kategori_id)) {
                 $oldKategori = DB::table('ozellik_kategorileri')
                     ->where('id', $ozellik->kategori_id)
                     ->first();
@@ -97,7 +97,7 @@ class PolymorphicFeaturesMigrationSeeder extends Seeder
                 'slug' => $ozellik->slug ?? Str::slug($ozellik->name),
                 'description' => $ozellik->description ?? null,
                 'field_type' => $this->mapFieldType($ozellik->type ?? 'text'),
-                'field_options' => !empty($ozellik->options) ? json_decode($ozellik->options, true) : null,
+                'field_options' => ! empty($ozellik->options) ? json_decode($ozellik->options, true) : null,
                 'field_unit' => $ozellik->unit ?? null,
                 'field_icon' => $ozellik->icon ?? null,
                 'is_required' => $ozellik->is_required ?? false,
@@ -123,8 +123,9 @@ class PolymorphicFeaturesMigrationSeeder extends Seeder
     {
         $this->command->info('📦 Site Özellikleri migrate ediliyor...');
 
-        if (!DB::getSchemaBuilder()->hasTable('site_ozellikleri')) {
+        if (! DB::getSchemaBuilder()->hasTable('site_ozellikleri')) {
             $this->command->warn('   ⚠️ site_ozellikleri tablosu bulunamadı');
+
             return;
         }
 

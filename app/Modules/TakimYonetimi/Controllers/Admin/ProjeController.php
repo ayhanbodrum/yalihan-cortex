@@ -11,6 +11,7 @@ class ProjeController extends Controller
     public function index()
     {
         $projeler = Proje::with(['user', 'takim'])->paginate(15);
+
         return view('takimyonetimi::admin.projeler.index', compact('projeler'));
     }
 
@@ -41,6 +42,7 @@ class ProjeController extends Controller
     public function show(Proje $proje)
     {
         $proje->load(['user', 'takim', 'gorevler']);
+
         return view('takimyonetimi::admin.projeler.show', compact('proje'));
     }
 

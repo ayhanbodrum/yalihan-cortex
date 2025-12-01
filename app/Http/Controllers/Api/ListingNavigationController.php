@@ -4,10 +4,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Ilan;
-use App\Services\ListingNavigationService;
 use App\Services\AIService;
-use App\Services\Response\ResponseService;
+use App\Services\ListingNavigationService;
 use App\Services\Logging\LogService;
+use App\Services\Response\ResponseService;
 use App\Traits\ValidatesApiRequests;
 use Illuminate\Http\Request;
 
@@ -24,6 +24,7 @@ class ListingNavigationController extends Controller
     use ValidatesApiRequests;
 
     protected ListingNavigationService $navigationService;
+
     protected AIService $aiService;
 
     public function __construct(ListingNavigationService $navigationService, AIService $aiService)
@@ -35,8 +36,6 @@ class ListingNavigationController extends Controller
     /**
      * Get navigation for a listing
      *
-     * @param Request $request
-     * @param int $ilanId
      * @return \Illuminate\Http\JsonResponse
      */
     public function getNavigation(Request $request, int $ilanId)
@@ -47,7 +46,7 @@ class ListingNavigationController extends Controller
             'kategori_id' => 'sometimes|exists:ilan_kategorileri,id',
             'status' => 'sometimes|string',
             'il_id' => 'sometimes|exists:iller,id',
-            'ilce_id' => 'sometimes|exists:ilceler,id'
+            'ilce_id' => 'sometimes|exists:ilceler,id',
         ]);
 
         if ($validated instanceof \Illuminate\Http\JsonResponse) {
@@ -73,21 +72,22 @@ class ListingNavigationController extends Controller
                         'baslik' => $navigation['previous']->baslik,
                         'fiyat' => $navigation['previous']->fiyat,
                         'para_birimi' => $navigation['previous']->para_birimi,
-                        'url' => route('ilanlar.show', $navigation['previous']->id)
+                        'url' => route('ilanlar.show', $navigation['previous']->id),
                     ] : null,
                     'next' => $navigation['next'] ? [
                         'id' => $navigation['next']->id,
                         'baslik' => $navigation['next']->baslik,
                         'fiyat' => $navigation['next']->fiyat,
                         'para_birimi' => $navigation['next']->para_birimi,
-                        'url' => route('ilanlar.show', $navigation['next']->id)
+                        'url' => route('ilanlar.show', $navigation['next']->id),
                     ] : null,
                     'current_index' => $navigation['current_index'],
-                    'total' => $navigation['total']
-                ]
+                    'total' => $navigation['total'],
+                ],
             ], 'Navigasyon bilgileri başarıyla alındı');
         } catch (\Exception $e) {
             LogService::error('Navigation API failed', ['ilan_id' => $ilanId], $e);
+
             return ResponseService::serverError('Navigasyon bilgileri alınırken hata oluştu', $e);
         }
     }
@@ -95,15 +95,13 @@ class ListingNavigationController extends Controller
     /**
      * Get similar listings
      *
-     * @param Request $request
-     * @param int $ilanId
      * @return \Illuminate\Http\JsonResponse
      */
     public function getSimilar(Request $request, int $ilanId)
     {
         // ✅ REFACTORED: Using ValidatesApiRequests trait (optional validation)
         $validated = $this->validateRequestFlexible($request, [
-            'limit' => 'sometimes|integer|min:1|max:20'
+            'limit' => 'sometimes|integer|min:1|max:20',
         ]);
 
         if ($validated instanceof \Illuminate\Http\JsonResponse) {
@@ -124,12 +122,13 @@ class ListingNavigationController extends Controller
                         'fiyat' => $similarIlan->fiyat,
                         'para_birimi' => $similarIlan->para_birimi,
                         'kapak_fotografi_url' => $similarIlan->kapak_fotografi_url,
-                        'url' => route('ilanlar.show', $similarIlan->id)
+                        'url' => route('ilanlar.show', $similarIlan->id),
                     ];
-                })
+                }),
             ], 'Benzer ilanlar başarıyla alındı');
         } catch (\Exception $e) {
             LogService::error('Similar listings API failed', ['ilan_id' => $ilanId], $e);
+
             return ResponseService::serverError('Benzer ilanlar alınırken hata oluştu', $e);
         }
     }
@@ -137,8 +136,6 @@ class ListingNavigationController extends Controller
     /**
      * Get AI-powered navigation suggestions
      *
-     * @param Request $request
-     * @param int $ilanId
      * @return \Illuminate\Http\JsonResponse
      */
     public function getAISuggestions(Request $request, int $ilanId)
@@ -153,10 +150,10 @@ class ListingNavigationController extends Controller
                     'id' => $ilan->id,
                     'baslik' => $ilan->baslik,
                     'kategori' => $ilan->kategori->name ?? null,
-                    'lokasyon' => ($ilan->il->il_adi ?? '') . ', ' . ($ilan->ilce->ilce_adi ?? ''),
-                    'fiyat' => $ilan->fiyat
+                    'lokasyon' => ($ilan->il->il_adi ?? '').', '.($ilan->ilce->ilce_adi ?? ''),
+                    'fiyat' => $ilan->fiyat,
                 ],
-                'type' => 'navigation_suggestions'
+                'type' => 'navigation_suggestions',
             ];
 
             $suggestions = $this->aiService->suggest($context, 'navigation');
@@ -167,11 +164,12 @@ class ListingNavigationController extends Controller
                     'Benzer fiyat aralığındaki ilanlara bakın',
                     'Aynı bölgedeki ilanları inceleyin',
                     'Kategori bazlı navigasyon kullanın',
-                    'Mobilde swipe navigation deneyin'
-                ]
+                    'Mobilde swipe navigation deneyin',
+                ],
             ], 'AI navigasyon önerileri başarıyla alındı');
         } catch (\Exception $e) {
             LogService::error('AI navigation suggestions failed', ['ilan_id' => $ilanId], $e);
+
             return ResponseService::serverError('AI önerileri alınırken hata oluştu', $e);
         }
     }

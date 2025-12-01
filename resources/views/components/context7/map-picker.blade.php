@@ -42,13 +42,8 @@
             class="bg-white/95 dark:bg-gray-800/95 backdrop-blur-md rounded-xl shadow-xl border-2 border-gray-200 dark:border-gray-700 p-1.5">
             <div class="flex gap-1" role="toolbar" aria-label="Harita görünüm seçici">
                 <button type="button"
-                    onclick="(function(){
-                        const s=document.getElementById('btn-map-standard');
-                        const t=document.getElementById('btn-map-satellite');
-                        if(s){s.setAttribute('aria-pressed','true');}
-                        if(t){t.setAttribute('aria-pressed','false');}
-                    })(); VanillaLocationManager?.setMapType?.('standard')"
                     id="btn-map-standard"
+                    data-map-type="standard"
                     class="flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg transition-all duration-200 text-xs font-bold bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 motion-reduce:transform-none motion-reduce:transition-none"
                     title="Standart Harita" aria-label="Standart Harita" aria-controls="{{ $mapId }}"
                     aria-pressed="true">
@@ -59,13 +54,8 @@
                     <span class="hidden sm:inline">Standart</span>
                 </button>
                 <button type="button"
-                    onclick="(function(){
-                        const s=document.getElementById('btn-map-standard');
-                        const t=document.getElementById('btn-map-satellite');
-                        if(s){s.setAttribute('aria-pressed','false');}
-                        if(t){t.setAttribute('aria-pressed','true');}
-                    })(); VanillaLocationManager?.setMapType?.('satellite')"
                     id="btn-map-satellite"
+                    data-map-type="satellite"
                     class="flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg transition-all duration-200 text-xs font-bold text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 hover:scale-105 active:scale-95 motion-reduce:transform-none motion-reduce:transition-none"
                     title="Uydu Görüntüsü" aria-label="Uydu Görüntüsü" aria-controls="{{ $mapId }}"
                     aria-pressed="false">
@@ -82,6 +72,64 @@
         (function() {
             const el = document.getElementById(@json($mapId));
             if (!el) return;
+            
+            // ✅ Map type toggle buttons - Event listeners (Context7: No inline onclick)
+            const initMapTypeButtons = () => {
+                const standardBtn = document.getElementById('btn-map-standard');
+                const satelliteBtn = document.getElementById('btn-map-satellite');
+                
+                if (!standardBtn || !satelliteBtn) return;
+                
+                const handleMapTypeChange = (type) => {
+                    if (!window.VanillaLocationManager || typeof window.VanillaLocationManager.setMapType !== 'function') {
+                        console.warn('⚠️ VanillaLocationManager not ready yet');
+                        return;
+                    }
+                    
+                    try {
+                        const isStandard = type === 'standard';
+                        
+                        // Update aria-pressed attributes
+                        standardBtn.setAttribute('aria-pressed', isStandard ? 'true' : 'false');
+                        satelliteBtn.setAttribute('aria-pressed', isStandard ? 'false' : 'true');
+                        
+                        // Base classes (same for both buttons)
+                        const baseClasses = 'flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg transition-all duration-200 text-xs font-bold shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 motion-reduce:transform-none motion-reduce:transition-none';
+                        
+                        // Active state: blue gradient
+                        const activeClasses = baseClasses + ' bg-gradient-to-br from-blue-500 to-blue-600 text-white';
+                        // Inactive state: gray
+                        const inactiveClasses = baseClasses + ' bg-gray-50 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600';
+                        
+                        // Apply styles based on state
+                        if (isStandard) {
+                            standardBtn.className = activeClasses;
+                            satelliteBtn.className = inactiveClasses;
+                        } else {
+                            satelliteBtn.className = activeClasses;
+                            standardBtn.className = inactiveClasses;
+                        }
+                        
+                        window.VanillaLocationManager.setMapType(type);
+                    } catch (error) {
+                        console.error('❌ Error updating map type:', error);
+                    }
+                };
+                
+                standardBtn.addEventListener('click', () => handleMapTypeChange('standard'));
+                satelliteBtn.addEventListener('click', () => handleMapTypeChange('satellite'));
+            };
+            
+            // ✅ Initialize map type buttons when VanillaLocationManager is ready
+            const waitForVanillaLocationManager = () => {
+                if (window.VanillaLocationManager) {
+                    initMapTypeButtons();
+                } else {
+                    // Retry after 100ms if not ready yet
+                    setTimeout(waitForVanillaLocationManager, 100);
+                }
+            };
+            
             const init = () => {
                 if (window.VanillaLocationManager && typeof window.VanillaLocationManager.initMap === 'function') {
                     window.VanillaLocationManager.initMap(@json($mapId));
@@ -93,6 +141,15 @@
                     }));
                 }
             };
+            
+            // ✅ Initialize button listeners on DOMContentLoaded
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', waitForVanillaLocationManager);
+            } else {
+                // DOM already loaded, start immediately
+                waitForVanillaLocationManager();
+            }
+            
             if ('IntersectionObserver' in window) {
                 const io = new IntersectionObserver((entries) => {
                     entries.forEach(e => {

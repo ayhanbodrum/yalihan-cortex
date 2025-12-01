@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 
 /**
  * Yalıhan Bekçi Dashboard Controller
@@ -32,6 +32,7 @@ class YalihanBekciController extends AdminController
     public function liveData()
     {
         $report = $this->generateReport();
+
         return response()->json($report);
     }
 
@@ -47,7 +48,7 @@ class YalihanBekciController extends AdminController
         return response()->json([
             'success' => true,
             'message' => 'Kontrol tamamlandı',
-            'output' => $output
+            'output' => $output,
         ]);
     }
 
@@ -57,10 +58,10 @@ class YalihanBekciController extends AdminController
     public function autoFix(Request $request)
     {
         // Basit auth kontrolü
-        if (!auth()->check()) {
+        if (! auth()->check()) {
             return response()->json([
                 'success' => false,
-                'message' => 'Giriş yapmalısınız'
+                'message' => 'Giriş yapmalısınız',
             ], 401);
         }
 
@@ -70,7 +71,7 @@ class YalihanBekciController extends AdminController
         return response()->json([
             'success' => true,
             'message' => 'Otomatik düzeltme tamamlandı',
-            'output' => $output
+            'output' => $output,
         ]);
     }
 
@@ -115,7 +116,7 @@ class YalihanBekciController extends AdminController
         return [
             'violations' => $violations,
             'status' => $violations === 0 ? 'perfect' : ($violations < 100 ? 'good' : 'needs_fix'),
-            'percentage' => max(0, 100 - ($violations / 10))
+            'percentage' => max(0, 100 - ($violations / 10)),
         ];
     }
 
@@ -139,7 +140,7 @@ class YalihanBekciController extends AdminController
             'rate' => $rate,
             'total_forms' => $totalForms,
             'component_usage' => $componentUsage,
-            'status' => $rate > 80 ? 'perfect' : ($rate > 50 ? 'good' : 'needs_fix')
+            'status' => $rate > 80 ? 'perfect' : ($rate > 50 ? 'good' : 'needs_fix'),
         ];
     }
 
@@ -158,7 +159,7 @@ class YalihanBekciController extends AdminController
 
         return [
             'todo_count' => $todoCount,
-            'status' => $todoCount < 20 ? 'perfect' : ($todoCount < 50 ? 'good' : 'needs_fix')
+            'status' => $todoCount < 20 ? 'perfect' : ($todoCount < 50 ? 'good' : 'needs_fix'),
         ];
     }
 
@@ -171,13 +172,13 @@ class YalihanBekciController extends AdminController
             return [
                 'status' => 'healthy',
                 'table_count' => count($tables),
-                'connection' => 'status'
+                'connection' => 'status',
             ];
         } catch (\Exception $e) {
             return [
                 'status' => 'error',
                 'message' => $e->getMessage(),
-                'connection' => 'failed'
+                'connection' => 'failed',
             ];
         }
     }
@@ -191,12 +192,12 @@ class YalihanBekciController extends AdminController
 
             return [
                 'cache' => $cacheWorks ? 'status' : 'inactive',
-                'status' => $cacheWorks ? 'perfect' : 'needs_fix'
+                'status' => $cacheWorks ? 'perfect' : 'needs_fix',
             ];
         } catch (\Exception $e) {
             return [
                 'cache' => 'error',
-                'status' => 'error'
+                'status' => 'error',
             ];
         }
     }
@@ -241,8 +242,13 @@ class YalihanBekciController extends AdminController
 
     private function getStatus($score)
     {
-        if ($score >= 90) return ['text' => 'MÜKEMMEL', 'class' => 'success', 'icon' => '🎉'];
-        if ($score >= 70) return ['text' => 'İYİ', 'class' => 'warning', 'icon' => '⚠️'];
+        if ($score >= 90) {
+            return ['text' => 'MÜKEMMEL', 'class' => 'success', 'icon' => '🎉'];
+        }
+        if ($score >= 70) {
+            return ['text' => 'İYİ', 'class' => 'warning', 'icon' => '⚠️'];
+        }
+
         return ['text' => 'DİKKAT', 'class' => 'danger', 'icon' => '❌'];
     }
 
@@ -250,7 +256,7 @@ class YalihanBekciController extends AdminController
     {
         $logFile = storage_path('logs/yalihan-bekci.log');
 
-        if (!File::exists($logFile)) {
+        if (! File::exists($logFile)) {
             return [];
         }
 
@@ -271,7 +277,7 @@ class YalihanBekciController extends AdminController
 
             $history[] = [
                 'date' => $date,
-                'score' => $score
+                'score' => $score,
             ];
         }
 

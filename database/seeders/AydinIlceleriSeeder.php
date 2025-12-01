@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Models\Il;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use App\Models\Il;
 
 class AydinIlceleriSeeder extends Seeder
 {
@@ -14,8 +14,9 @@ class AydinIlceleriSeeder extends Seeder
 
         $aydin = Il::where('plaka_kodu', '09')->first();
 
-        if (!$aydin) {
+        if (! $aydin) {
             $this->command->error('❌ Aydın ili bulunamadı!');
+
             return;
         }
 
@@ -50,6 +51,6 @@ class AydinIlceleriSeeder extends Seeder
             );
         }
 
-        $this->command->info('✅ ' . count($districts) . ' ilçe eklendi (Aydın)');
+        $this->command->info('✅ '.count($districts).' ilçe eklendi (Aydın)');
     }
 }

@@ -60,4 +60,3 @@ class CurrencyConversionService
         return Str::upper(config('currency.default', 'TRY'));
     }
 }
-

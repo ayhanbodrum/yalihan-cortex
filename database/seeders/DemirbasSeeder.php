@@ -321,6 +321,6 @@ class DemirbasSeeder extends Seeder
             ]);
         }
 
-        $this->command->info('✅ Demirbaşlar oluşturuldu: ' . Demirbas::count() . ' adet');
+        $this->command->info('✅ Demirbaşlar oluşturuldu: '.Demirbas::count().' adet');
     }
 }

@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class IlanKategoriYayinTipi extends Model
 {
-    use HasFactory, SoftDeletes, HasFeatures;
+    use HasFactory, HasFeatures, SoftDeletes;
 
     protected $table = 'ilan_kategori_yayin_tipleri';
 
@@ -92,6 +92,4 @@ class IlanKategoriYayinTipi extends Model
     {
         return $this->yayin_tipi;
     }
-
-    
 }

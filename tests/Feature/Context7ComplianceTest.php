@@ -3,7 +3,6 @@
 namespace Tests\Feature;
 
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class Context7ComplianceTest extends TestCase
 {
@@ -12,7 +11,7 @@ class Context7ComplianceTest extends TestCase
      */
     public function test_context7_compliance_meets_minimum_requirements()
     {
-        $checker = new \Context7ComplianceChecker();
+        $checker = new \Context7ComplianceChecker;
         $result = $checker->checkCompliance();
 
         $this->assertGreaterThanOrEqual(95, $result['compliance']);
@@ -25,11 +24,11 @@ class Context7ComplianceTest extends TestCase
     public function test_no_new_context7_violations()
     {
         // Run compliance check
-        $output = shell_exec('php ' . base_path('scripts/context7_final_compliance_checker.php'));
+        $output = shell_exec('php '.base_path('scripts/context7_final_compliance_checker.php'));
 
         // Parse violation count
         preg_match('/Toplam ihlal: (\d+)/', $output, $matches);
-        $violations = (int)($matches[1] ?? 0);
+        $violations = (int) ($matches[1] ?? 0);
 
         // Should not exceed current baseline
         $this->assertLessThanOrEqual(142, $violations, 'New Context7 violations detected!');
@@ -54,7 +53,7 @@ class Context7ComplianceTest extends TestCase
     {
         $patterns = [
             '/\b(?:status|status|status|il)\b/',
-            '/[\'\"](?:status|status|status|il)[\'\"]/'
+            '/[\'\"](?:status|status|status|il)[\'\"]/',
         ];
 
         $violations = [];

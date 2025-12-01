@@ -2,16 +2,14 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
-use Illuminate\View\View;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\DB;
-use App\Models\Kisi;
-use App\Models\Ilan;
 use Carbon\Carbon;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\View\View;
 
 class DanismanAIController extends AdminController
 {
@@ -30,7 +28,7 @@ class DanismanAIController extends AdminController
                 'popular_topics' => $this->getPopularTopics(),
                 'ai_recommendations' => $this->getAIRecommendations(),
                 'customer_satisfaction' => $this->getCustomerSatisfaction(),
-                'daily_interactions' => $this->getDailyInteractions()
+                'daily_interactions' => $this->getDailyInteractions(),
             ];
 
             // Recent AI conversations
@@ -55,7 +53,7 @@ class DanismanAIController extends AdminController
                 'aiConfig'
             ));
         } catch (\Exception $e) {
-            Log::error('DanismanAI index error: ' . $e->getMessage());
+            Log::error('DanismanAI index error: '.$e->getMessage());
 
             return view('admin.danisman-ai.index', [
                 'stats' => $this->getDefaultStats(),
@@ -63,7 +61,7 @@ class DanismanAIController extends AdminController
                 'performanceMetrics' => [],
                 'popularQueries' => [],
                 'aiConfig' => $this->getDefaultAIConfig(),
-                'error' => 'Dashboard yüklenirken bir hata oluştu.'
+                'error' => 'Dashboard yüklenirken bir hata oluştu.',
             ]);
         }
     }
@@ -76,11 +74,11 @@ class DanismanAIController extends AdminController
         try {
             $conversation = $this->getConversationById($id);
 
-            if (!$conversation) {
+            if (! $conversation) {
                 if ($request->expectsJson()) {
                     return response()->json([
                         'success' => false,
-                        'message' => 'Konuşma bulunamadı.'
+                        'message' => 'Konuşma bulunamadı.',
                     ], 404);
                 }
 
@@ -101,7 +99,7 @@ class DanismanAIController extends AdminController
                     'success' => true,
                     'conversation' => $conversation,
                     'analytics' => $analytics,
-                    'suggestions' => $suggestions
+                    'suggestions' => $suggestions,
                 ]);
             }
 
@@ -111,12 +109,12 @@ class DanismanAIController extends AdminController
                 'suggestions'
             ));
         } catch (\Exception $e) {
-            Log::error('DanismanAI show error: ' . $e->getMessage());
+            Log::error('DanismanAI show error: '.$e->getMessage());
 
             if ($request->expectsJson()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Konuşma detayları yüklenirken hata oluştu.'
+                    'message' => 'Konuşma detayları yüklenirken hata oluştu.',
                 ], 500);
             }
 
@@ -150,7 +148,7 @@ class DanismanAIController extends AdminController
                 'defaultConfig'
             ));
         } catch (\Exception $e) {
-            Log::error('DanismanAI create form error: ' . $e->getMessage());
+            Log::error('DanismanAI create form error: '.$e->getMessage());
 
             return redirect()->route('admin.danisman-ai.index')
                 ->with('error', 'Yapılandırma formu yüklenirken hata oluştu.');
@@ -173,14 +171,14 @@ class DanismanAIController extends AdminController
                 'enable_context' => 'boolean',
                 'max_context_length' => 'integer|min:1|max:20',
                 'enable_learning' => 'boolean',
-                'auto_suggestions' => 'boolean'
+                'auto_suggestions' => 'boolean',
             ]);
 
             if ($validator->fails()) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Validasyon hatası.',
-                    'errors' => $validator->errors()
+                    'errors' => $validator->errors(),
                 ], 422);
             }
 
@@ -199,7 +197,7 @@ class DanismanAIController extends AdminController
 
             Log::info('DanismanAI configuration created', [
                 'config_id' => $configId,
-                'test_result' => $testResult
+                'test_result' => $testResult,
             ]);
 
             return response()->json([
@@ -207,15 +205,15 @@ class DanismanAIController extends AdminController
                 'message' => 'AI yapılandırması başarıyla kaydedildi.',
                 'config_id' => $configId,
                 'test_result' => $testResult,
-                'redirect' => route('admin.danisman-ai.show', $configId)
+                'redirect' => route('admin.danisman-ai.show', $configId),
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('DanismanAI store error: ' . $e->getMessage());
+            Log::error('DanismanAI store error: '.$e->getMessage());
 
             return response()->json([
                 'success' => false,
-                'message' => 'AI yapılandırması kaydedilirken hata oluştu: ' . $e->getMessage()
+                'message' => 'AI yapılandırması kaydedilirken hata oluştu: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -228,7 +226,7 @@ class DanismanAIController extends AdminController
         try {
             $config = $this->getAIConfigurationById($id);
 
-            if (!$config) {
+            if (! $config) {
                 return redirect()->route('admin.danisman-ai.index')
                     ->with('error', 'Yapılandırma bulunamadı.');
             }
@@ -245,7 +243,7 @@ class DanismanAIController extends AdminController
                 'templates'
             ));
         } catch (\Exception $e) {
-            Log::error('DanismanAI edit form error: ' . $e->getMessage());
+            Log::error('DanismanAI edit form error: '.$e->getMessage());
 
             return redirect()->route('admin.danisman-ai.index')
                 ->with('error', 'Düzenleme formu yüklenirken hata oluştu.');
@@ -269,23 +267,23 @@ class DanismanAIController extends AdminController
                 'max_context_length' => 'integer|min:1|max:20',
                 'enable_learning' => 'boolean',
                 'auto_suggestions' => 'boolean',
-                'status' => 'boolean' // Context7: is_active → status
+                'status' => 'boolean', // Context7: is_active → status
             ]);
 
             if ($validator->fails()) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Validasyon hatası.',
-                    'errors' => $validator->errors()
+                    'errors' => $validator->errors(),
                 ], 422);
             }
 
             $config = $this->getAIConfigurationById($id);
 
-            if (!$config) {
+            if (! $config) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Yapılandırma bulunamadı.'
+                    'message' => 'Yapılandırma bulunamadı.',
                 ], 404);
             }
 
@@ -304,21 +302,21 @@ class DanismanAIController extends AdminController
 
             Log::info('DanismanAI configuration updated', [
                 'config_id' => $id,
-                'test_result' => $testResult
+                'test_result' => $testResult,
             ]);
 
             return response()->json([
                 'success' => true,
                 'message' => 'AI yapılandırması başarıyla güncellendi.',
-                'test_result' => $testResult
+                'test_result' => $testResult,
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('DanismanAI update error: ' . $e->getMessage());
+            Log::error('DanismanAI update error: '.$e->getMessage());
 
             return response()->json([
                 'success' => false,
-                'message' => 'Yapılandırma güncellenirken hata oluştu: ' . $e->getMessage()
+                'message' => 'Yapılandırma güncellenirken hata oluştu: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -331,10 +329,10 @@ class DanismanAIController extends AdminController
         try {
             $config = $this->getAIConfigurationById($id);
 
-            if (!$config) {
+            if (! $config) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Yapılandırma bulunamadı.'
+                    'message' => 'Yapılandırma bulunamadı.',
                 ], 404);
             }
 
@@ -355,15 +353,15 @@ class DanismanAIController extends AdminController
 
             return response()->json([
                 'success' => true,
-                'message' => 'AI yapılandırması başarıyla silindi.'
+                'message' => 'AI yapılandırması başarıyla silindi.',
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('DanismanAI destroy error: ' . $e->getMessage());
+            Log::error('DanismanAI destroy error: '.$e->getMessage());
 
             return response()->json([
                 'success' => false,
-                'message' => 'Yapılandırma silinirken hata oluştu: ' . $e->getMessage()
+                'message' => 'Yapılandırma silinirken hata oluştu: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -378,14 +376,14 @@ class DanismanAIController extends AdminController
                 'message' => 'required|string|max:1000',
                 'session_id' => 'nullable|string|max:100',
                 'context' => 'nullable|array',
-                'user_id' => 'nullable|integer|exists:kisiler,id'
+                'user_id' => 'nullable|integer|exists:kisiler,id',
             ]);
 
             if ($validator->fails()) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Geçersiz mesaj formatı.',
-                    'errors' => $validator->errors()
+                    'errors' => $validator->errors(),
                 ], 422);
             }
 
@@ -405,13 +403,13 @@ class DanismanAIController extends AdminController
                 'user_id' => $userId,
                 'response_time' => $aiResponse['response_time'],
                 'tokens_used' => $aiResponse['tokens_used'],
-                'context' => $context
+                'context' => $context,
             ]);
 
             Log::info('DanismanAI chat processed', [
                 'session_id' => $sessionId,
                 'conversation_id' => $conversationId,
-                'response_time' => $aiResponse['response_time']
+                'response_time' => $aiResponse['response_time'],
             ]);
 
             return response()->json([
@@ -420,15 +418,15 @@ class DanismanAIController extends AdminController
                 'session_id' => $sessionId,
                 'conversation_id' => $conversationId,
                 'suggestions' => $aiResponse['suggestions'] ?? [],
-                'response_time' => $aiResponse['response_time']
+                'response_time' => $aiResponse['response_time'],
             ]);
         } catch (\Exception $e) {
-            Log::error('DanismanAI chat error: ' . $e->getMessage());
+            Log::error('DanismanAI chat error: '.$e->getMessage());
 
             return response()->json([
                 'success' => false,
                 'message' => 'AI yanıt üretilirken hata oluştu.',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -448,20 +446,20 @@ class DanismanAIController extends AdminController
                 'performance' => $this->getPerformanceAnalytics($period, $startDate, $endDate),
                 'topics' => $this->getTopicAnalytics($period, $startDate, $endDate),
                 'satisfaction' => $this->getSatisfactionAnalytics($period, $startDate, $endDate),
-                'usage' => $this->getUsageAnalytics($period, $startDate, $endDate)
+                'usage' => $this->getUsageAnalytics($period, $startDate, $endDate),
             ];
 
             return response()->json([
                 'success' => true,
                 'analytics' => $analytics,
-                'period' => $period
+                'period' => $period,
             ]);
         } catch (\Exception $e) {
-            Log::error('DanismanAI analytics error: ' . $e->getMessage());
+            Log::error('DanismanAI analytics error: '.$e->getMessage());
 
             return response()->json([
                 'success' => false,
-                'message' => 'Analitik veriler yüklenirken hata oluştu.'
+                'message' => 'Analitik veriler yüklenirken hata oluştu.',
             ], 500);
         }
     }
@@ -476,14 +474,14 @@ class DanismanAIController extends AdminController
                 'type' => 'required|string|in:response,improvement,feature,optimization',
                 'context' => 'nullable|array',
                 'user_id' => 'nullable|integer|exists:kisiler,id',
-                'conversation_id' => 'nullable|integer'
+                'conversation_id' => 'nullable|integer',
             ]);
 
             if ($validator->fails()) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Geçersiz parametreler.',
-                    'errors' => $validator->errors()
+                    'errors' => $validator->errors(),
                 ], 422);
             }
 
@@ -497,21 +495,21 @@ class DanismanAIController extends AdminController
             Log::info('DanismanAI suggestions generated', [
                 'type' => $type,
                 'user_id' => $userId,
-                'suggestions_count' => count($suggestions)
+                'suggestions_count' => count($suggestions),
             ]);
 
             return response()->json([
                 'success' => true,
                 'suggestions' => $suggestions,
                 'type' => $type,
-                'generated_at' => now()->toISOString()
+                'generated_at' => now()->toISOString(),
             ]);
         } catch (\Exception $e) {
-            Log::error('DanismanAI suggest error: ' . $e->getMessage());
+            Log::error('DanismanAI suggest error: '.$e->getMessage());
 
             return response()->json([
                 'success' => false,
-                'message' => 'Öneri üretilirken hata oluştu: ' . $e->getMessage()
+                'message' => 'Öneri üretilirken hata oluştu: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -549,7 +547,7 @@ class DanismanAIController extends AdminController
 
             Log::info('DanismanAI analysis completed', [
                 'type' => $analysisType,
-                'period' => $period
+                'period' => $period,
             ]);
 
             return response()->json([
@@ -557,14 +555,14 @@ class DanismanAIController extends AdminController
                 'analysis' => $analysis,
                 'type' => $analysisType,
                 'period' => $period,
-                'generated_at' => now()->toISOString()
+                'generated_at' => now()->toISOString(),
             ]);
         } catch (\Exception $e) {
-            Log::error('DanismanAI analyze error: ' . $e->getMessage());
+            Log::error('DanismanAI analyze error: '.$e->getMessage());
 
             return response()->json([
                 'success' => false,
-                'message' => 'Analiz işlemi başarısız: ' . $e->getMessage()
+                'message' => 'Analiz işlemi başarısız: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -578,7 +576,7 @@ class DanismanAIController extends AdminController
             $format = $request->input('format', 'xlsx');
             $type = $request->input('type', 'conversations'); // conversations, analytics, configurations
 
-            $filename = 'danisman_ai_' . $type . '_' . date('Y-m-d') . '.' . $format;
+            $filename = 'danisman_ai_'.$type.'_'.date('Y-m-d').'.'.$format;
 
             switch ($type) {
                 case 'conversations':
@@ -591,11 +589,11 @@ class DanismanAIController extends AdminController
                     return $this->exportAll($format, $filename);
             }
         } catch (\Exception $e) {
-            Log::error('DanismanAI export error: ' . $e->getMessage());
+            Log::error('DanismanAI export error: '.$e->getMessage());
 
             return response()->json([
                 'success' => false,
-                'message' => 'Export işlemi başarısız: ' . $e->getMessage()
+                'message' => 'Export işlemi başarısız: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -642,7 +640,7 @@ class DanismanAIController extends AdminController
                 ['topic' => 'Lokasyon Bilgileri', 'count' => rand(40, 120)],
                 ['topic' => 'Kredi İmkanları', 'count' => rand(30, 100)],
                 ['topic' => 'Yasal İşlemler', 'count' => rand(25, 80)],
-                ['topic' => 'Değerlendirme', 'count' => rand(20, 70)]
+                ['topic' => 'Değerlendirme', 'count' => rand(20, 70)],
             ];
         });
     }
@@ -652,7 +650,7 @@ class DanismanAIController extends AdminController
         return [
             ['type' => 'optimization', 'message' => 'Yanıt süresini iyileştirmek için model optimizasyonu önerilir'],
             ['type' => 'training', 'message' => 'Emlak terminolojisi için ek eğitim verisi eklenebilir'],
-            ['type' => 'feature', 'message' => 'Görsel analiz özelliği eklenebilir']
+            ['type' => 'feature', 'message' => 'Görsel analiz özelliği eklenebilir'],
         ];
     }
 
@@ -667,9 +665,10 @@ class DanismanAIController extends AdminController
         for ($i = 6; $i >= 0; $i--) {
             $data[] = [
                 'date' => Carbon::now()->subDays($i)->format('Y-m-d'),
-                'interactions' => rand(10, 50)
+                'interactions' => rand(10, 50),
             ];
         }
+
         return $data;
     }
 
@@ -679,20 +678,20 @@ class DanismanAIController extends AdminController
         return [
             [
                 'id' => 1,
-                'session_id' => 'sess_' . uniqid(),
+                'session_id' => 'sess_'.uniqid(),
                 'user_message' => 'Beylikdüzü\'nde daire fiyatları nasıl?',
                 'ai_response' => 'Beylikdüzü bölgesinde daire fiyatları m² başına ortalama 8.500-12.000 TL arasında değişmektedir...',
                 'created_at' => Carbon::now()->subMinutes(5),
-                'satisfaction' => 4.5
+                'satisfaction' => 4.5,
             ],
             [
                 'id' => 2,
-                'session_id' => 'sess_' . uniqid(),
+                'session_id' => 'sess_'.uniqid(),
                 'user_message' => 'Konut kredisi faiz oranları nedir?',
                 'ai_response' => 'Güncel konut kredisi faiz oranları bankaya göre değişmekle birlikte...',
                 'created_at' => Carbon::now()->subMinutes(15),
-                'satisfaction' => 4.8
-            ]
+                'satisfaction' => 4.8,
+            ],
         ];
     }
 
@@ -704,7 +703,7 @@ class DanismanAIController extends AdminController
             'error_rate' => round(100 - $this->getSuccessRate(), 2),
             'uptime' => 99.8,
             'token_usage' => rand(50000, 150000),
-            'cost_per_conversation' => round(rand(5, 25) / 100, 3)
+            'cost_per_conversation' => round(rand(5, 25) / 100, 3),
         ];
     }
 
@@ -715,7 +714,7 @@ class DanismanAIController extends AdminController
             'Hangi bölgelerde yatırım yapabilirim?',
             'Konut kredisi başvurusu nasıl yapılır?',
             'Tapu devir işlemleri nedir?',
-            'Emlak vergileri ne kadar?'
+            'Emlak vergileri ne kadar?',
         ];
     }
 
@@ -728,7 +727,7 @@ class DanismanAIController extends AdminController
             'temperature' => 0.7,
             'response_style' => 'professional',
             'enable_context' => true,
-            'max_context_length' => 10
+            'max_context_length' => 10,
         ];
     }
 
@@ -742,7 +741,7 @@ class DanismanAIController extends AdminController
             'popular_topics' => [],
             'ai_recommendations' => [],
             'customer_satisfaction' => 0,
-            'daily_interactions' => []
+            'daily_interactions' => [],
         ];
     }
 
@@ -757,7 +756,7 @@ class DanismanAIController extends AdminController
             'enable_context' => true,
             'max_context_length' => 10,
             'enable_learning' => true,
-            'auto_suggestions' => true
+            'auto_suggestions' => true,
         ];
     }
 
@@ -784,18 +783,18 @@ class DanismanAIController extends AdminController
             'quick_responses' => [
                 'Emlak fiyatları hakkında detaylı bilgi verebilirim',
                 'Lokasyon bazlı öneriler sunabilirim',
-                'Kredi imkanları konusunda yardımcı olabilirim'
+                'Kredi imkanları konusunda yardımcı olabilirim',
             ],
             'contextual_suggestions' => [
                 'Kullanıcının geçmiş sorgularına dayalı öneriler',
                 'Popüler emlak bölgeleri hakkında bilgi',
-                'Güncel piyasa trendleri'
+                'Güncel piyasa trendleri',
             ],
             'personalized' => [
                 'Kullanıcı tercihlerine göre özelleştirilmiş yanıtlar',
                 'Bütçe aralığına uygun seçenekler',
-                'Lokasyon tercihlerine göre öneriler'
-            ]
+                'Lokasyon tercihlerine göre öneriler',
+            ],
         ];
     }
 
@@ -805,18 +804,18 @@ class DanismanAIController extends AdminController
             'response_quality' => [
                 'Daha detaylı emlak bilgileri eklenebilir',
                 'Görsel içerik desteği artırılabilir',
-                'Kullanıcı deneyimi iyileştirilebilir'
+                'Kullanıcı deneyimi iyileştirilebilir',
             ],
             'performance' => [
                 'Yanıt süresi optimizasyonu',
                 'Cache stratejisi iyileştirmesi',
-                'Model performansı artırımı'
+                'Model performansı artırımı',
             ],
             'features' => [
                 'Çok dilli destek eklenebilir',
                 'Sesli yanıt özelliği',
-                'Görsel analiz yeteneği'
-            ]
+                'Görsel analiz yeteneği',
+            ],
         ];
     }
 
@@ -826,18 +825,18 @@ class DanismanAIController extends AdminController
             'new_features' => [
                 'Emlak değerlendirme aracı',
                 'Fiyat tahmin motoru',
-                'Lokasyon karşılaştırma sistemi'
+                'Lokasyon karşılaştırma sistemi',
             ],
             'enhancements' => [
                 'Gelişmiş arama filtreleri',
                 'Kişiselleştirilmiş öneriler',
-                'Gerçek zamanlı bildirimler'
+                'Gerçek zamanlı bildirimler',
             ],
             'integrations' => [
                 'Harita entegrasyonu',
                 'Sosyal medya paylaşımı',
-                'WhatsApp entegrasyonu'
-            ]
+                'WhatsApp entegrasyonu',
+            ],
         ];
     }
 
@@ -847,18 +846,18 @@ class DanismanAIController extends AdminController
             'system_optimization' => [
                 'Database sorgu optimizasyonu',
                 'Cache stratejisi iyileştirmesi',
-                'API response time optimizasyonu'
+                'API response time optimizasyonu',
             ],
             'ai_optimization' => [
                 'Model fine-tuning önerileri',
                 'Prompt engineering iyileştirmeleri',
-                'Context window optimizasyonu'
+                'Context window optimizasyonu',
             ],
             'user_experience' => [
                 'UI/UX iyileştirmeleri',
                 'Loading time optimizasyonu',
-                'Mobile responsiveness'
-            ]
+                'Mobile responsiveness',
+            ],
         ];
     }
 
@@ -868,13 +867,13 @@ class DanismanAIController extends AdminController
             'general' => [
                 'Sistem genel performansı iyi durumda',
                 'Kullanıcı memnuniyeti yüksek',
-                'Sürekli iyileştirme önerilir'
+                'Sürekli iyileştirme önerilir',
             ],
             'monitoring' => [
                 'Performans metrikleri takip edilmeli',
                 'Kullanıcı geri bildirimleri değerlendirilmeli',
-                'Sistem sağlığı düzenli kontrol edilmeli'
-            ]
+                'Sistem sağlığı düzenli kontrol edilmeli',
+            ],
         ];
     }
 
@@ -886,22 +885,22 @@ class DanismanAIController extends AdminController
                 'average' => $this->getAverageResponseTime(),
                 'min' => 0.8,
                 'max' => 2.5,
-                'trend' => 'improving'
+                'trend' => 'improving',
             ],
             'success_rate' => [
                 'current' => $this->getSuccessRate(),
                 'target' => 95.0,
-                'trend' => 'stable'
+                'trend' => 'stable',
             ],
             'error_rate' => [
                 'current' => round(100 - $this->getSuccessRate(), 2),
-                'trend' => 'decreasing'
+                'trend' => 'decreasing',
             ],
             'recommendations' => [
                 'Model optimizasyonu önerilir',
                 'Cache stratejisi iyileştirilebilir',
-                'Response time için token optimizasyonu'
-            ]
+                'Response time için token optimizasyonu',
+            ],
         ];
     }
 
@@ -914,13 +913,13 @@ class DanismanAIController extends AdminController
             'conversation_flow' => [
                 'started' => rand(200, 400),
                 'completed' => rand(180, 380),
-                'abandoned' => rand(10, 30)
+                'abandoned' => rand(10, 30),
             ],
             'insights' => [
                 'En popüler konu: Emlak fiyatları',
                 'Ortalama konuşma süresi: 3.2 dakika',
-                'Müşteri memnuniyeti: %92'
-            ]
+                'Müşteri memnuniyeti: %92',
+            ],
         ];
     }
 
@@ -930,18 +929,18 @@ class DanismanAIController extends AdminController
             'peak_hours' => [
                 'morning' => '09:00-11:00',
                 'afternoon' => '14:00-16:00',
-                'evening' => '19:00-21:00'
+                'evening' => '19:00-21:00',
             ],
             'user_patterns' => [
                 'first_time_users' => rand(30, 60),
                 'returning_users' => rand(40, 80),
-                'power_users' => rand(10, 25)
+                'power_users' => rand(10, 25),
             ],
             'engagement_metrics' => [
                 'avg_session_duration' => '4.5 dakika',
                 'messages_per_session' => 3.2,
-                'satisfaction_score' => 4.6
-            ]
+                'satisfaction_score' => 4.6,
+            ],
         ];
     }
 
@@ -951,18 +950,18 @@ class DanismanAIController extends AdminController
             'accuracy' => [
                 'emlak_queries' => 94.5,
                 'general_queries' => 89.2,
-                'complex_queries' => 82.1
+                'complex_queries' => 82.1,
             ],
             'response_quality' => [
                 'helpful' => 91.3,
                 'accurate' => 89.7,
-                'relevant' => 93.1
+                'relevant' => 93.1,
             ],
             'improvement_areas' => [
                 'Teknik sorular için daha detaylı yanıtlar',
                 'Lokasyon bazlı önerileri güçlendirme',
-                'Görsel analiz özelliği ekleme'
-            ]
+                'Görsel analiz özelliği ekleme',
+            ],
         ];
     }
 
@@ -973,12 +972,12 @@ class DanismanAIController extends AdminController
             'response_time' => $this->getAverageResponseTime(),
             'error_rate' => 0.2,
             'resource_usage' => [
-                'cpu' => rand(20, 40) . '%',
-                'memory' => rand(45, 65) . '%',
-                'storage' => rand(30, 50) . '%'
+                'cpu' => rand(20, 40).'%',
+                'memory' => rand(45, 65).'%',
+                'storage' => rand(30, 50).'%',
             ],
             'alerts' => [],
-            'status' => 'healthy'
+            'status' => 'healthy',
         ];
     }
 
@@ -992,16 +991,16 @@ class DanismanAIController extends AdminController
                     'conversations' => $this->getTotalConversations(),
                     'success_rate' => $this->getSuccessRate(),
                     'response_time' => $this->getAverageResponseTime(),
-                    'satisfaction' => $this->getCustomerSatisfaction()
-                ]
+                    'satisfaction' => $this->getCustomerSatisfaction(),
+                ],
             ],
             'performance' => $this->analyzePerformance($period, $startDate, $endDate),
             'conversations' => $this->analyzeConversations($period, $startDate, $endDate),
             'recommendations' => [
                 'Sistem performansı iyi durumda',
                 'AI model optimizasyonu yapılabilir',
-                'Kullanıcı deneyimi sürekli iyileştirilmeli'
-            ]
+                'Kullanıcı deneyimi sürekli iyileştirilmeli',
+            ],
         ];
     }
 
@@ -1013,13 +1012,13 @@ class DanismanAIController extends AdminController
         // Simulated conversation data
         return [
             'id' => $id,
-            'session_id' => 'sess_' . $id,
+            'session_id' => 'sess_'.$id,
             'messages' => [
                 ['type' => 'user', 'message' => 'Test mesajı', 'timestamp' => Carbon::now()->subMinutes(10)],
-                ['type' => 'ai', 'message' => 'Test yanıtı', 'timestamp' => Carbon::now()->subMinutes(9)]
+                ['type' => 'ai', 'message' => 'Test yanıtı', 'timestamp' => Carbon::now()->subMinutes(9)],
             ],
             'satisfaction' => 4.5,
-            'created_at' => Carbon::now()->subHour()
+            'created_at' => Carbon::now()->subHour(),
         ];
     }
 
@@ -1032,8 +1031,8 @@ class DanismanAIController extends AdminController
             'tokens_used' => rand(50, 200),
             'suggestions' => [
                 'Daha fazla bilgi için nasıl yardımcı olabilirim?',
-                'Başka sorularınız var mı?'
-            ]
+                'Başka sorularınız var mı?',
+            ],
         ];
     }
 
@@ -1050,7 +1049,7 @@ class DanismanAIController extends AdminController
             'gpt-4' => 'GPT-4',
             'gpt-3.5-turbo' => 'GPT-3.5 Turbo',
             'claude-3' => 'Claude 3',
-            'gemini-pro' => 'Gemini Pro'
+            'gemini-pro' => 'Gemini Pro',
         ];
     }
 
@@ -1060,7 +1059,7 @@ class DanismanAIController extends AdminController
             'tr' => 'Türkçe',
             'en' => 'English',
             'de' => 'Deutsch',
-            'fr' => 'Français'
+            'fr' => 'Français',
         ];
     }
 
@@ -1070,7 +1069,7 @@ class DanismanAIController extends AdminController
             'emlak' => 'Emlak Uzmanı',
             'musteri' => 'Müşteri Hizmetleri',
             'satis' => 'Satış Danışmanı',
-            'teknik' => 'Teknik Destek'
+            'teknik' => 'Teknik Destek',
         ];
     }
 }

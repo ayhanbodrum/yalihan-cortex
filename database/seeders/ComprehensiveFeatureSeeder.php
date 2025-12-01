@@ -7,7 +7,6 @@ use App\Models\FeatureCategory;
 use App\Models\FeatureTranslation;
 use App\Models\OzellikKategori;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Str;
 
 class ComprehensiveFeatureSeeder extends Seeder
 {
@@ -24,7 +23,7 @@ class ComprehensiveFeatureSeeder extends Seeder
         $this->seedYazlikOzellikleri();
 
         $this->command->info('✅ Comprehensive Feature Seeding completed successfully!');
-        $this->command->info('📊 Total Features Created: ' . Feature::count());
+        $this->command->info('📊 Total Features Created: '.Feature::count());
     }
 
     /**
@@ -45,7 +44,7 @@ class ComprehensiveFeatureSeeder extends Seeder
                 'slug' => 'brut-alan',
                 'applies_to' => 'konut,arsa,isyeri,yazlik',
                 'is_required' => true,
-                'display_order' => 1
+                'display_order' => 1,
             ],
             [
                 'name' => 'Net Alan',
@@ -55,7 +54,7 @@ class ComprehensiveFeatureSeeder extends Seeder
                 'slug' => 'net-alan',
                 'applies_to' => 'konut,arsa,isyeri,yazlik',
                 'is_required' => true,
-                'display_order' => 2
+                'display_order' => 2,
             ],
 
             // Yapım & Yaş Bilgileri
@@ -67,7 +66,7 @@ class ComprehensiveFeatureSeeder extends Seeder
                 'slug' => 'yapim-yili',
                 'applies_to' => 'konut,isyeri,yazlik',
                 'is_required' => false,
-                'display_order' => 3
+                'display_order' => 3,
             ],
             [
                 'name' => 'Bina Yaşı',
@@ -77,7 +76,7 @@ class ComprehensiveFeatureSeeder extends Seeder
                 'slug' => 'bina-yasi',
                 'applies_to' => 'konut,isyeri,yazlik',
                 'is_required' => false,
-                'display_order' => 4
+                'display_order' => 4,
             ],
 
             // Konum & Yön
@@ -89,7 +88,7 @@ class ComprehensiveFeatureSeeder extends Seeder
                 'slug' => 'cephe-yonu',
                 'applies_to' => 'konut,isyeri,yazlik',
                 'is_required' => false,
-                'display_order' => 5
+                'display_order' => 5,
             ],
             [
                 'name' => 'Kat Sayısı',
@@ -99,7 +98,7 @@ class ComprehensiveFeatureSeeder extends Seeder
                 'slug' => 'kat-sayisi',
                 'applies_to' => 'konut,isyeri',
                 'is_required' => false,
-                'display_order' => 6
+                'display_order' => 6,
             ],
             [
                 'name' => 'Bulunduğu Kat',
@@ -109,7 +108,7 @@ class ComprehensiveFeatureSeeder extends Seeder
                 'slug' => 'bulundugu-kat',
                 'applies_to' => 'konut,isyeri',
                 'is_required' => false,
-                'display_order' => 7
+                'display_order' => 7,
             ],
 
             // Tapu & Hukuki Durum
@@ -121,7 +120,7 @@ class ComprehensiveFeatureSeeder extends Seeder
                 'slug' => 'tapu-statusu',
                 'applies_to' => 'konut,arsa,isyeri,yazlik',
                 'is_required' => true,
-                'display_order' => 8
+                'display_order' => 8,
             ],
             [
                 'name' => 'Takas',
@@ -131,7 +130,7 @@ class ComprehensiveFeatureSeeder extends Seeder
                 'slug' => 'takas',
                 'applies_to' => 'konut,arsa,isyeri,yazlik',
                 'is_required' => false,
-                'display_order' => 9
+                'display_order' => 9,
             ],
             [
                 'name' => 'Kredi Uygunluğu',
@@ -141,12 +140,12 @@ class ComprehensiveFeatureSeeder extends Seeder
                 'slug' => 'kredi-uygunlugu',
                 'applies_to' => 'konut,arsa,isyeri,yazlik',
                 'is_required' => false,
-                'display_order' => 10
-            ]
+                'display_order' => 10,
+            ],
         ];
 
         $this->createFeaturesWithTranslations($genelOzellikler, $category, $ozellikKategori);
-        $this->command->info('✅ Genel Özellikler eklendi: ' . count($genelOzellikler));
+        $this->command->info('✅ Genel Özellikler eklendi: '.count($genelOzellikler));
     }
 
     /**
@@ -168,7 +167,7 @@ class ComprehensiveFeatureSeeder extends Seeder
                 'slug' => 'oda-sayisi',
                 'applies_to' => 'konut',
                 'is_required' => true,
-                'display_order' => 1
+                'display_order' => 1,
             ],
             [
                 'name' => 'Banyo Sayısı',
@@ -178,7 +177,7 @@ class ComprehensiveFeatureSeeder extends Seeder
                 'slug' => 'banyo-sayisi',
                 'applies_to' => 'konut',
                 'is_required' => true,
-                'display_order' => 2
+                'display_order' => 2,
             ],
             [
                 'name' => 'Salon Sayısı',
@@ -188,7 +187,7 @@ class ComprehensiveFeatureSeeder extends Seeder
                 'slug' => 'salon-sayisi',
                 'applies_to' => 'konut',
                 'is_required' => false,
-                'display_order' => 3
+                'display_order' => 3,
             ],
             [
                 'name' => 'Balkon Sayısı',
@@ -198,7 +197,7 @@ class ComprehensiveFeatureSeeder extends Seeder
                 'slug' => 'balkon-sayisi',
                 'applies_to' => 'konut',
                 'is_required' => false,
-                'display_order' => 4
+                'display_order' => 4,
             ],
 
             // Isitma & Soğutma
@@ -210,7 +209,7 @@ class ComprehensiveFeatureSeeder extends Seeder
                 'slug' => 'isitma-tipi',
                 'applies_to' => 'konut',
                 'is_required' => false,
-                'display_order' => 5
+                'display_order' => 5,
             ],
             [
                 'name' => 'Yakıt Tipi',
@@ -220,7 +219,7 @@ class ComprehensiveFeatureSeeder extends Seeder
                 'slug' => 'yakit-tipi',
                 'applies_to' => 'konut',
                 'is_required' => false,
-                'display_order' => 6
+                'display_order' => 6,
             ],
 
             // Güvenlik & Konfor
@@ -232,7 +231,7 @@ class ComprehensiveFeatureSeeder extends Seeder
                 'slug' => 'guvenlik',
                 'applies_to' => 'konut',
                 'is_required' => false,
-                'display_order' => 7
+                'display_order' => 7,
             ],
             [
                 'name' => 'Asansör',
@@ -242,7 +241,7 @@ class ComprehensiveFeatureSeeder extends Seeder
                 'slug' => 'asansor',
                 'applies_to' => 'konut',
                 'is_required' => false,
-                'display_order' => 8
+                'display_order' => 8,
             ],
             [
                 'name' => 'Otopark',
@@ -252,7 +251,7 @@ class ComprehensiveFeatureSeeder extends Seeder
                 'slug' => 'otopark',
                 'applies_to' => 'konut',
                 'is_required' => false,
-                'display_order' => 9
+                'display_order' => 9,
             ],
 
             // Mutfak & Donanım
@@ -264,7 +263,7 @@ class ComprehensiveFeatureSeeder extends Seeder
                 'slug' => 'mutfak',
                 'applies_to' => 'konut',
                 'is_required' => false,
-                'display_order' => 10
+                'display_order' => 10,
             ],
             [
                 'name' => 'Beyaz Eşya',
@@ -274,7 +273,7 @@ class ComprehensiveFeatureSeeder extends Seeder
                 'slug' => 'beyaz-esya',
                 'applies_to' => 'konut',
                 'is_required' => false,
-                'display_order' => 11
+                'display_order' => 11,
             ],
             [
                 'name' => 'Eşyalı',
@@ -284,7 +283,7 @@ class ComprehensiveFeatureSeeder extends Seeder
                 'slug' => 'esyali',
                 'applies_to' => 'konut',
                 'is_required' => false,
-                'display_order' => 12
+                'display_order' => 12,
             ],
 
             // Site & Yapısal Özellikler
@@ -296,7 +295,7 @@ class ComprehensiveFeatureSeeder extends Seeder
                 'slug' => 'site-icerisinde',
                 'applies_to' => 'konut',
                 'is_required' => false,
-                'display_order' => 13
+                'display_order' => 13,
             ],
             [
                 'name' => 'Havuz',
@@ -306,7 +305,7 @@ class ComprehensiveFeatureSeeder extends Seeder
                 'slug' => 'havuz',
                 'applies_to' => 'konut',
                 'is_required' => false,
-                'display_order' => 14
+                'display_order' => 14,
             ],
             [
                 'name' => 'Aidat',
@@ -316,7 +315,7 @@ class ComprehensiveFeatureSeeder extends Seeder
                 'slug' => 'aidat',
                 'applies_to' => 'konut',
                 'is_required' => false,
-                'display_order' => 15
+                'display_order' => 15,
             ],
             [
                 'name' => 'Kullanım Durumu',
@@ -326,8 +325,8 @@ class ComprehensiveFeatureSeeder extends Seeder
                 'slug' => 'kullanim-statusu',
                 'applies_to' => 'konut',
                 'is_required' => false,
-                'display_order' => 16
-            ]
+                'display_order' => 16,
+            ],
         ];
 
         // İlk yarı Oda ve Alan kategorisine
@@ -344,7 +343,7 @@ class ComprehensiveFeatureSeeder extends Seeder
             $ozellikKategoriEk
         );
 
-        $this->command->info('✅ Konut Özellikleri eklendi: ' . count($konutOzellikleri));
+        $this->command->info('✅ Konut Özellikleri eklendi: '.count($konutOzellikleri));
     }
 
     /**
@@ -365,7 +364,7 @@ class ComprehensiveFeatureSeeder extends Seeder
                 'slug' => 'imar-statusu',
                 'applies_to' => 'arsa',
                 'is_required' => true,
-                'display_order' => 1
+                'display_order' => 1,
             ],
             [
                 'name' => 'İfraz / Tevhit',
@@ -375,7 +374,7 @@ class ComprehensiveFeatureSeeder extends Seeder
                 'slug' => 'ifraz-tevhit',
                 'applies_to' => 'arsa',
                 'is_required' => false,
-                'display_order' => 2
+                'display_order' => 2,
             ],
             [
                 'name' => 'Gabari',
@@ -385,7 +384,7 @@ class ComprehensiveFeatureSeeder extends Seeder
                 'slug' => 'gabari',
                 'applies_to' => 'arsa',
                 'is_required' => false,
-                'display_order' => 3
+                'display_order' => 3,
             ],
             [
                 'name' => 'Emsal',
@@ -395,7 +394,7 @@ class ComprehensiveFeatureSeeder extends Seeder
                 'slug' => 'emsal',
                 'applies_to' => 'arsa',
                 'is_required' => false,
-                'display_order' => 4
+                'display_order' => 4,
             ],
             [
                 'name' => 'TAKS',
@@ -405,7 +404,7 @@ class ComprehensiveFeatureSeeder extends Seeder
                 'slug' => 'taks',
                 'applies_to' => 'arsa',
                 'is_required' => false,
-                'display_order' => 5
+                'display_order' => 5,
             ],
 
             // Altyapı & Hizmetler
@@ -417,7 +416,7 @@ class ComprehensiveFeatureSeeder extends Seeder
                 'slug' => 'elektrik',
                 'applies_to' => 'arsa',
                 'is_required' => false,
-                'display_order' => 6
+                'display_order' => 6,
             ],
             [
                 'name' => 'Su',
@@ -427,7 +426,7 @@ class ComprehensiveFeatureSeeder extends Seeder
                 'slug' => 'su',
                 'applies_to' => 'arsa',
                 'is_required' => false,
-                'display_order' => 7
+                'display_order' => 7,
             ],
             [
                 'name' => 'Doğalgaz',
@@ -437,7 +436,7 @@ class ComprehensiveFeatureSeeder extends Seeder
                 'slug' => 'dogalgaz',
                 'applies_to' => 'arsa',
                 'is_required' => false,
-                'display_order' => 8
+                'display_order' => 8,
             ],
             [
                 'name' => 'Telefon',
@@ -447,7 +446,7 @@ class ComprehensiveFeatureSeeder extends Seeder
                 'slug' => 'telefon',
                 'applies_to' => 'arsa',
                 'is_required' => false,
-                'display_order' => 9
+                'display_order' => 9,
             ],
             [
                 'name' => 'İnternet',
@@ -457,7 +456,7 @@ class ComprehensiveFeatureSeeder extends Seeder
                 'slug' => 'internet',
                 'applies_to' => 'arsa',
                 'is_required' => false,
-                'display_order' => 10
+                'display_order' => 10,
             ],
 
             // Coğrafi & Çevresel
@@ -469,7 +468,7 @@ class ComprehensiveFeatureSeeder extends Seeder
                 'slug' => 'arsa-egimi',
                 'applies_to' => 'arsa',
                 'is_required' => false,
-                'display_order' => 11
+                'display_order' => 11,
             ],
             [
                 'name' => 'Arsa Manzarası',
@@ -479,7 +478,7 @@ class ComprehensiveFeatureSeeder extends Seeder
                 'slug' => 'arsa-manzarasi',
                 'applies_to' => 'arsa',
                 'is_required' => false,
-                'display_order' => 12
+                'display_order' => 12,
             ],
             [
                 'name' => 'Yol Bağlantısı',
@@ -489,7 +488,7 @@ class ComprehensiveFeatureSeeder extends Seeder
                 'slug' => 'yol-baglantisi',
                 'applies_to' => 'arsa',
                 'is_required' => false,
-                'display_order' => 13
+                'display_order' => 13,
             ],
             [
                 'name' => 'Arsa İçi Durum',
@@ -499,12 +498,12 @@ class ComprehensiveFeatureSeeder extends Seeder
                 'slug' => 'arsa-ici-status',
                 'applies_to' => 'arsa',
                 'is_required' => false,
-                'display_order' => 14
-            ]
+                'display_order' => 14,
+            ],
         ];
 
         $this->createFeaturesWithTranslations($arsaOzellikleri, $category, $ozellikKategori);
-        $this->command->info('✅ Arsa Özellikleri eklendi: ' . count($arsaOzellikleri));
+        $this->command->info('✅ Arsa Özellikleri eklendi: '.count($arsaOzellikleri));
     }
 
     /**
@@ -526,7 +525,7 @@ class ComprehensiveFeatureSeeder extends Seeder
                 'slug' => 'isyeri-turu',
                 'applies_to' => 'isyeri',
                 'is_required' => true,
-                'display_order' => 1
+                'display_order' => 1,
             ],
             [
                 'name' => 'Ticaret Unvanı',
@@ -536,7 +535,7 @@ class ComprehensiveFeatureSeeder extends Seeder
                 'slug' => 'ticaret-unvani',
                 'applies_to' => 'isyeri',
                 'is_required' => false,
-                'display_order' => 2
+                'display_order' => 2,
             ],
             [
                 'name' => 'Kira Getirisi',
@@ -546,7 +545,7 @@ class ComprehensiveFeatureSeeder extends Seeder
                 'slug' => 'kira-getirisi',
                 'applies_to' => 'isyeri',
                 'is_required' => false,
-                'display_order' => 3
+                'display_order' => 3,
             ],
 
             // Teknik Özellikler
@@ -558,7 +557,7 @@ class ComprehensiveFeatureSeeder extends Seeder
                 'slug' => 'tavan-yuksekligi',
                 'applies_to' => 'isyeri',
                 'is_required' => false,
-                'display_order' => 4
+                'display_order' => 4,
             ],
             [
                 'name' => 'Kalorifer Tipi',
@@ -568,7 +567,7 @@ class ComprehensiveFeatureSeeder extends Seeder
                 'slug' => 'kalorifer-tipi',
                 'applies_to' => 'isyeri',
                 'is_required' => false,
-                'display_order' => 5
+                'display_order' => 5,
             ],
             [
                 'name' => 'Klima',
@@ -578,7 +577,7 @@ class ComprehensiveFeatureSeeder extends Seeder
                 'slug' => 'klima',
                 'applies_to' => 'isyeri',
                 'is_required' => false,
-                'display_order' => 6
+                'display_order' => 6,
             ],
             [
                 'name' => 'Jeneratör',
@@ -588,7 +587,7 @@ class ComprehensiveFeatureSeeder extends Seeder
                 'slug' => 'jenerator',
                 'applies_to' => 'isyeri',
                 'is_required' => false,
-                'display_order' => 7
+                'display_order' => 7,
             ],
 
             // Erişim & Konum
@@ -600,7 +599,7 @@ class ComprehensiveFeatureSeeder extends Seeder
                 'slug' => 'vitrin',
                 'applies_to' => 'isyeri',
                 'is_required' => false,
-                'display_order' => 8
+                'display_order' => 8,
             ],
             [
                 'name' => 'Giriş Yüksekliği',
@@ -610,7 +609,7 @@ class ComprehensiveFeatureSeeder extends Seeder
                 'slug' => 'giris-yuksekligi',
                 'applies_to' => 'isyeri',
                 'is_required' => false,
-                'display_order' => 9
+                'display_order' => 9,
             ],
             [
                 'name' => 'WC Sayısı',
@@ -620,7 +619,7 @@ class ComprehensiveFeatureSeeder extends Seeder
                 'slug' => 'wc-sayisi',
                 'applies_to' => 'isyeri',
                 'is_required' => false,
-                'display_order' => 10
+                'display_order' => 10,
             ],
 
             // Güvenlik & Sistem
@@ -632,7 +631,7 @@ class ComprehensiveFeatureSeeder extends Seeder
                 'slug' => 'yangin-cikisi',
                 'applies_to' => 'isyeri',
                 'is_required' => false,
-                'display_order' => 11
+                'display_order' => 11,
             ],
             [
                 'name' => 'Engelli Erişimi',
@@ -642,7 +641,7 @@ class ComprehensiveFeatureSeeder extends Seeder
                 'slug' => 'engelli-erisimi',
                 'applies_to' => 'isyeri',
                 'is_required' => false,
-                'display_order' => 12
+                'display_order' => 12,
             ],
             [
                 'name' => 'İşletme Ruhsatı',
@@ -652,7 +651,7 @@ class ComprehensiveFeatureSeeder extends Seeder
                 'slug' => 'isletme-ruhsati',
                 'applies_to' => 'isyeri',
                 'is_required' => false,
-                'display_order' => 13
+                'display_order' => 13,
             ],
             [
                 'name' => 'Devren Satış',
@@ -662,8 +661,8 @@ class ComprehensiveFeatureSeeder extends Seeder
                 'slug' => 'devren-satis',
                 'applies_to' => 'isyeri',
                 'is_required' => false,
-                'display_order' => 14
-            ]
+                'display_order' => 14,
+            ],
         ];
 
         // İlk yarı Ek Özellikler kategorisine
@@ -680,7 +679,7 @@ class ComprehensiveFeatureSeeder extends Seeder
             $ozellikKategoriFiyat
         );
 
-        $this->command->info('✅ İşyeri Özellikleri eklendi: ' . count($isyeriOzellikleri));
+        $this->command->info('✅ İşyeri Özellikleri eklendi: '.count($isyeriOzellikleri));
     }
 
     /**
@@ -701,7 +700,7 @@ class ComprehensiveFeatureSeeder extends Seeder
                 'slug' => 'denize-mesafe',
                 'applies_to' => 'yazlik',
                 'is_required' => false,
-                'display_order' => 1
+                'display_order' => 1,
             ],
             [
                 'name' => 'Manzara',
@@ -711,7 +710,7 @@ class ComprehensiveFeatureSeeder extends Seeder
                 'slug' => 'manzara',
                 'applies_to' => 'yazlik',
                 'is_required' => false,
-                'display_order' => 2
+                'display_order' => 2,
             ],
             [
                 'name' => 'Plaj',
@@ -721,7 +720,7 @@ class ComprehensiveFeatureSeeder extends Seeder
                 'slug' => 'plaj',
                 'applies_to' => 'yazlik',
                 'is_required' => false,
-                'display_order' => 3
+                'display_order' => 3,
             ],
             [
                 'name' => 'Bahçe',
@@ -731,7 +730,7 @@ class ComprehensiveFeatureSeeder extends Seeder
                 'slug' => 'bahce',
                 'applies_to' => 'yazlik',
                 'is_required' => false,
-                'display_order' => 4
+                'display_order' => 4,
             ],
 
             // Rekreasyon & Eğlence
@@ -743,7 +742,7 @@ class ComprehensiveFeatureSeeder extends Seeder
                 'slug' => 'ozel-havuz',
                 'applies_to' => 'yazlik',
                 'is_required' => false,
-                'display_order' => 5
+                'display_order' => 5,
             ],
             [
                 'name' => 'Jakuzi',
@@ -753,7 +752,7 @@ class ComprehensiveFeatureSeeder extends Seeder
                 'slug' => 'jakuzi',
                 'applies_to' => 'yazlik',
                 'is_required' => false,
-                'display_order' => 6
+                'display_order' => 6,
             ],
             [
                 'name' => 'Sauna',
@@ -763,7 +762,7 @@ class ComprehensiveFeatureSeeder extends Seeder
                 'slug' => 'sauna',
                 'applies_to' => 'yazlik',
                 'is_required' => false,
-                'display_order' => 7
+                'display_order' => 7,
             ],
             [
                 'name' => 'Tenis Kortu',
@@ -773,7 +772,7 @@ class ComprehensiveFeatureSeeder extends Seeder
                 'slug' => 'tenis-kortu',
                 'applies_to' => 'yazlik',
                 'is_required' => false,
-                'display_order' => 8
+                'display_order' => 8,
             ],
             [
                 'name' => 'Spor Salonu',
@@ -783,7 +782,7 @@ class ComprehensiveFeatureSeeder extends Seeder
                 'slug' => 'spor-salonu',
                 'applies_to' => 'yazlik',
                 'is_required' => false,
-                'display_order' => 9
+                'display_order' => 9,
             ],
 
             // Konfor & Hizmet
@@ -795,7 +794,7 @@ class ComprehensiveFeatureSeeder extends Seeder
                 'slug' => 'kamelyali',
                 'applies_to' => 'yazlik',
                 'is_required' => false,
-                'display_order' => 10
+                'display_order' => 10,
             ],
             [
                 'name' => 'Barbekü',
@@ -805,7 +804,7 @@ class ComprehensiveFeatureSeeder extends Seeder
                 'slug' => 'barbeku',
                 'applies_to' => 'yazlik',
                 'is_required' => false,
-                'display_order' => 11
+                'display_order' => 11,
             ],
             [
                 'name' => 'Çamaşırhane',
@@ -815,7 +814,7 @@ class ComprehensiveFeatureSeeder extends Seeder
                 'slug' => 'camasirhane',
                 'applies_to' => 'yazlik',
                 'is_required' => false,
-                'display_order' => 12
+                'display_order' => 12,
             ],
             [
                 'name' => 'Hizmetli Odası',
@@ -825,7 +824,7 @@ class ComprehensiveFeatureSeeder extends Seeder
                 'slug' => 'hizmetli-odasi',
                 'applies_to' => 'yazlik',
                 'is_required' => false,
-                'display_order' => 13
+                'display_order' => 13,
             ],
             [
                 'name' => 'Kamelya',
@@ -835,12 +834,12 @@ class ComprehensiveFeatureSeeder extends Seeder
                 'slug' => 'kamelya',
                 'applies_to' => 'yazlik',
                 'is_required' => false,
-                'display_order' => 14
-            ]
+                'display_order' => 14,
+            ],
         ];
 
         $this->createFeaturesWithTranslations($yazlikOzellikleri, $category, $ozellikKategori);
-        $this->command->info('✅ Yazlık Özellikleri eklendi: ' . count($yazlikOzellikleri));
+        $this->command->info('✅ Yazlık Özellikleri eklendi: '.count($yazlikOzellikleri));
     }
 
     /**
@@ -853,6 +852,7 @@ class ComprehensiveFeatureSeeder extends Seeder
             $existingFeature = Feature::withTrashed()->where('slug', $featureData['slug'])->first();
             if ($existingFeature) {
                 $this->command->warn("Skipping duplicate feature: {$featureData['name']} (slug: {$featureData['slug']})");
+
                 continue;
             }
 

@@ -34,6 +34,7 @@ _ide_helper_models.php
 # Büyük dosyalar - GitHub limiti nedeniyle
 temp_structure.sql
 turkiye-il-ilce-sokak-mahalle-veri-tabani/
+*.sql
 *.tar.gz
 *.dump.rdb.zip
 

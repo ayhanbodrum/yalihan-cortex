@@ -2,16 +2,15 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\Feature;
 use App\Models\FeatureCategory;
-use Illuminate\Support\Str;
+use Illuminate\Database\Seeder;
 
 class CategorySpecificFeaturesSeeder extends Seeder
 {
     /**
      * Run the database seeds.
-     * 
+     *
      * Bu seeder, kategori-özel özellikleri ekler:
      * - Arsa özellikleri (imar, ada/parsel, KAKS, vb.)
      * - Konut özellikleri (oda sayısı, kat, ısınma, vb.)
@@ -51,7 +50,7 @@ class CategorySpecificFeaturesSeeder extends Seeder
                 'icon' => 'fas fa-mountain',
                 'display_order' => 1,
                 'applies_to' => 'arsa', // ✅ Context7: string format (not JSON)
-                'status' => true
+                'status' => true,
             ]
         );
 
@@ -71,12 +70,12 @@ class CategorySpecificFeaturesSeeder extends Seeder
                     'Sanayi İmarlı',
                     'Turizm İmarlı',
                     'Tarla',
-                    'Müstakil İmarlı'
+                    'Müstakil İmarlı',
                 ]),
                 'is_required' => true,
                 'is_filterable' => true,
                 'display_order' => 1,
-                'applies_to' => 'arsa'
+                'applies_to' => 'arsa',
             ],
             // Ada No
             [
@@ -87,7 +86,7 @@ class CategorySpecificFeaturesSeeder extends Seeder
                 'is_required' => false,
                 'is_filterable' => false,
                 'display_order' => 2,
-                'applies_to' => 'arsa'
+                'applies_to' => 'arsa',
             ],
             // Parsel No
             [
@@ -98,7 +97,7 @@ class CategorySpecificFeaturesSeeder extends Seeder
                 'is_required' => false,
                 'is_filterable' => false,
                 'display_order' => 3,
-                'applies_to' => 'arsa'
+                'applies_to' => 'arsa',
             ],
             // KAKS (Kat Alanları Kat Sayısı)
             [
@@ -110,7 +109,7 @@ class CategorySpecificFeaturesSeeder extends Seeder
                 'is_required' => false,
                 'is_filterable' => true,
                 'display_order' => 4,
-                'applies_to' => 'arsa'
+                'applies_to' => 'arsa',
             ],
             // Gabari
             [
@@ -122,7 +121,7 @@ class CategorySpecificFeaturesSeeder extends Seeder
                 'is_required' => false,
                 'is_filterable' => false,
                 'display_order' => 5,
-                'applies_to' => 'arsa'
+                'applies_to' => 'arsa',
             ],
             // Taban Alanı Katsayısı
             [
@@ -134,7 +133,7 @@ class CategorySpecificFeaturesSeeder extends Seeder
                 'is_required' => false,
                 'is_filterable' => false,
                 'display_order' => 6,
-                'applies_to' => 'arsa'
+                'applies_to' => 'arsa',
             ],
             // Tapu Durumu
             [
@@ -148,12 +147,12 @@ class CategorySpecificFeaturesSeeder extends Seeder
                     'Arsa Tapulu',
                     'Hisseli Tapu',
                     'Müstakil Tapu',
-                    'Tahsisli'
+                    'Tahsisli',
                 ]),
                 'is_required' => false,
                 'is_filterable' => true,
                 'display_order' => 7,
-                'applies_to' => 'arsa'
+                'applies_to' => 'arsa',
             ],
             // Elektrik
             [
@@ -164,7 +163,7 @@ class CategorySpecificFeaturesSeeder extends Seeder
                 'is_required' => false,
                 'is_filterable' => true,
                 'display_order' => 8,
-                'applies_to' => 'arsa'
+                'applies_to' => 'arsa',
             ],
             // Su
             [
@@ -175,7 +174,7 @@ class CategorySpecificFeaturesSeeder extends Seeder
                 'is_required' => false,
                 'is_filterable' => true,
                 'display_order' => 9,
-                'applies_to' => 'arsa'
+                'applies_to' => 'arsa',
             ],
             // Doğalgaz
             [
@@ -186,7 +185,7 @@ class CategorySpecificFeaturesSeeder extends Seeder
                 'is_required' => false,
                 'is_filterable' => true,
                 'display_order' => 10,
-                'applies_to' => 'arsa'
+                'applies_to' => 'arsa',
             ],
             // Kanalizasyon
             [
@@ -197,7 +196,7 @@ class CategorySpecificFeaturesSeeder extends Seeder
                 'is_required' => false,
                 'is_filterable' => true,
                 'display_order' => 11,
-                'applies_to' => 'arsa'
+                'applies_to' => 'arsa',
             ],
             // Yol
             [
@@ -208,7 +207,7 @@ class CategorySpecificFeaturesSeeder extends Seeder
                 'is_required' => false,
                 'is_filterable' => true,
                 'display_order' => 12,
-                'applies_to' => 'arsa'
+                'applies_to' => 'arsa',
             ],
             // Deniz Manzarası
             [
@@ -219,7 +218,7 @@ class CategorySpecificFeaturesSeeder extends Seeder
                 'is_required' => false,
                 'is_filterable' => true,
                 'display_order' => 13,
-                'applies_to' => 'arsa'
+                'applies_to' => 'arsa',
             ],
         ];
 
@@ -247,7 +246,7 @@ class CategorySpecificFeaturesSeeder extends Seeder
                 'icon' => 'fas fa-home',
                 'display_order' => 2,
                 'applies_to' => 'konut',
-                'status' => true
+                'status' => true,
             ]
         );
 
@@ -265,12 +264,12 @@ class CategorySpecificFeaturesSeeder extends Seeder
                     '3+1',
                     '4+1',
                     '5+1',
-                    '6+1 ve üzeri'
+                    '6+1 ve üzeri',
                 ]),
                 'is_required' => true,
                 'is_filterable' => true,
                 'display_order' => 1,
-                'applies_to' => 'konut'
+                'applies_to' => 'konut',
             ],
             // Brüt M²
             [
@@ -282,7 +281,7 @@ class CategorySpecificFeaturesSeeder extends Seeder
                 'is_required' => true,
                 'is_filterable' => true,
                 'display_order' => 2,
-                'applies_to' => 'konut'
+                'applies_to' => 'konut',
             ],
             // Net M²
             [
@@ -294,7 +293,7 @@ class CategorySpecificFeaturesSeeder extends Seeder
                 'is_required' => false,
                 'is_filterable' => true,
                 'display_order' => 3,
-                'applies_to' => 'konut'
+                'applies_to' => 'konut',
             ],
             // Banyo Sayısı
             [
@@ -306,7 +305,7 @@ class CategorySpecificFeaturesSeeder extends Seeder
                 'is_required' => false,
                 'is_filterable' => true,
                 'display_order' => 4,
-                'applies_to' => 'konut'
+                'applies_to' => 'konut',
             ],
             // Bulunduğu Kat
             [
@@ -326,12 +325,12 @@ class CategorySpecificFeaturesSeeder extends Seeder
                     '6-10 Kat arası',
                     '11-15 Kat arası',
                     '16 Kat ve üzeri',
-                    'Villa/Müstakil'
+                    'Villa/Müstakil',
                 ]),
                 'is_required' => false,
                 'is_filterable' => true,
                 'display_order' => 5,
-                'applies_to' => 'konut'
+                'applies_to' => 'konut',
             ],
             // Kat Sayısı
             [
@@ -343,7 +342,7 @@ class CategorySpecificFeaturesSeeder extends Seeder
                 'is_required' => false,
                 'is_filterable' => true,
                 'display_order' => 6,
-                'applies_to' => 'konut'
+                'applies_to' => 'konut',
             ],
             // Bina Yaşı
             [
@@ -359,12 +358,12 @@ class CategorySpecificFeaturesSeeder extends Seeder
                     '16-20 Yıl',
                     '21-25 Yıl',
                     '26-30 Yıl',
-                    '31 Yıl ve üzeri'
+                    '31 Yıl ve üzeri',
                 ]),
                 'is_required' => false,
                 'is_filterable' => true,
                 'display_order' => 7,
-                'applies_to' => 'konut'
+                'applies_to' => 'konut',
             ],
             // Isınma Tipi
             [
@@ -380,12 +379,12 @@ class CategorySpecificFeaturesSeeder extends Seeder
                     'Soba',
                     'Elektrikli Isıtma',
                     'Jeotermal',
-                    'Güneş Enerjisi'
+                    'Güneş Enerjisi',
                 ]),
                 'is_required' => false,
                 'is_filterable' => true,
                 'display_order' => 8,
-                'applies_to' => 'konut'
+                'applies_to' => 'konut',
             ],
             // Balkon
             [
@@ -396,7 +395,7 @@ class CategorySpecificFeaturesSeeder extends Seeder
                 'is_required' => false,
                 'is_filterable' => true,
                 'display_order' => 9,
-                'applies_to' => 'konut'
+                'applies_to' => 'konut',
             ],
             // Asansör
             [
@@ -407,7 +406,7 @@ class CategorySpecificFeaturesSeeder extends Seeder
                 'is_required' => false,
                 'is_filterable' => true,
                 'display_order' => 10,
-                'applies_to' => 'konut'
+                'applies_to' => 'konut',
             ],
             // Otopark
             [
@@ -418,7 +417,7 @@ class CategorySpecificFeaturesSeeder extends Seeder
                 'is_required' => false,
                 'is_filterable' => true,
                 'display_order' => 11,
-                'applies_to' => 'konut'
+                'applies_to' => 'konut',
             ],
             // Site İçi
             [
@@ -429,7 +428,7 @@ class CategorySpecificFeaturesSeeder extends Seeder
                 'is_required' => false,
                 'is_filterable' => true,
                 'display_order' => 12,
-                'applies_to' => 'konut'
+                'applies_to' => 'konut',
             ],
             // Güvenlik
             [
@@ -440,7 +439,7 @@ class CategorySpecificFeaturesSeeder extends Seeder
                 'is_required' => false,
                 'is_filterable' => true,
                 'display_order' => 13,
-                'applies_to' => 'konut'
+                'applies_to' => 'konut',
             ],
             // Havuz
             [
@@ -451,7 +450,7 @@ class CategorySpecificFeaturesSeeder extends Seeder
                 'is_required' => false,
                 'is_filterable' => true,
                 'display_order' => 14,
-                'applies_to' => 'konut'
+                'applies_to' => 'konut',
             ],
         ];
 
@@ -479,7 +478,7 @@ class CategorySpecificFeaturesSeeder extends Seeder
                 'icon' => 'fas fa-key',
                 'display_order' => 3,
                 'applies_to' => 'kiralik',
-                'status' => true
+                'status' => true,
             ]
         );
 
@@ -494,7 +493,7 @@ class CategorySpecificFeaturesSeeder extends Seeder
                 'is_required' => false,
                 'is_filterable' => true,
                 'display_order' => 1,
-                'applies_to' => 'kiralik'
+                'applies_to' => 'kiralik',
             ],
             // Aidat
             [
@@ -506,7 +505,7 @@ class CategorySpecificFeaturesSeeder extends Seeder
                 'is_required' => false,
                 'is_filterable' => false,
                 'display_order' => 2,
-                'applies_to' => 'kiralik'
+                'applies_to' => 'kiralik',
             ],
             // Elektrik Faturası Dahil Mi?
             [
@@ -517,7 +516,7 @@ class CategorySpecificFeaturesSeeder extends Seeder
                 'is_required' => false,
                 'is_filterable' => true,
                 'display_order' => 3,
-                'applies_to' => 'kiralik'
+                'applies_to' => 'kiralik',
             ],
             // Su Faturası Dahil Mi?
             [
@@ -528,7 +527,7 @@ class CategorySpecificFeaturesSeeder extends Seeder
                 'is_required' => false,
                 'is_filterable' => true,
                 'display_order' => 4,
-                'applies_to' => 'kiralik'
+                'applies_to' => 'kiralik',
             ],
             // Doğalgaz Dahil Mi?
             [
@@ -539,7 +538,7 @@ class CategorySpecificFeaturesSeeder extends Seeder
                 'is_required' => false,
                 'is_filterable' => true,
                 'display_order' => 5,
-                'applies_to' => 'kiralik'
+                'applies_to' => 'kiralik',
             ],
             // İnternet Dahil Mi?
             [
@@ -550,7 +549,7 @@ class CategorySpecificFeaturesSeeder extends Seeder
                 'is_required' => false,
                 'is_filterable' => true,
                 'display_order' => 6,
-                'applies_to' => 'kiralik'
+                'applies_to' => 'kiralik',
             ],
             // Eşyalı/Eşyasız
             [
@@ -561,12 +560,12 @@ class CategorySpecificFeaturesSeeder extends Seeder
                 'options' => json_encode([
                     'Eşyalı',
                     'Eşyasız',
-                    'Yarı Eşyalı'
+                    'Yarı Eşyalı',
                 ]),
                 'is_required' => false,
                 'is_filterable' => true,
                 'display_order' => 7,
-                'applies_to' => 'kiralik'
+                'applies_to' => 'kiralik',
             ],
             // Kira Süresi
             [
@@ -581,12 +580,12 @@ class CategorySpecificFeaturesSeeder extends Seeder
                     '6 Ay',
                     '1 Yıl',
                     '2 Yıl',
-                    'Belirsiz'
+                    'Belirsiz',
                 ]),
                 'is_required' => false,
                 'is_filterable' => true,
                 'display_order' => 8,
-                'applies_to' => 'kiralik'
+                'applies_to' => 'kiralik',
             ],
             // Tahliye Tarihi
             [
@@ -597,7 +596,7 @@ class CategorySpecificFeaturesSeeder extends Seeder
                 'is_required' => false,
                 'is_filterable' => false,
                 'display_order' => 9,
-                'applies_to' => 'kiralik'
+                'applies_to' => 'kiralik',
             ],
             // Ön Ödeme
             [
@@ -608,7 +607,7 @@ class CategorySpecificFeaturesSeeder extends Seeder
                 'is_required' => false,
                 'is_filterable' => false,
                 'display_order' => 10,
-                'applies_to' => 'kiralik'
+                'applies_to' => 'kiralik',
             ],
         ];
 

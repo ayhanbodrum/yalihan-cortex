@@ -8,7 +8,7 @@ class IlanTypeHelper
 {
     public function getTypeColor(Ilan $ilan): string
     {
-        if (!$ilan->kategori) {
+        if (! $ilan->kategori) {
             return 'bg-gray-100 text-gray-800';
         }
 
@@ -35,7 +35,7 @@ class IlanTypeHelper
 
     public function getTypeIcon(Ilan $ilan): string
     {
-        if (!$ilan->kategori) {
+        if (! $ilan->kategori) {
             return 'fas fa-building';
         }
 
@@ -69,11 +69,11 @@ class IlanTypeHelper
 
         return [
             'type' => optional($ilan->kategori)->ad ?? 'Kategorisiz',
-            'price' => number_format($ilan->fiyat) . ' ' . $ilan->para_birimi,
-            'area' => ($ilan->net_metrekare ? $ilan->net_metrekare . ' m²' : 'Belirtilmemiş'),
+            'price' => number_format($ilan->fiyat).' '.$ilan->para_birimi,
+            'area' => ($ilan->net_metrekare ? $ilan->net_metrekare.' m²' : 'Belirtilmemiş'),
             'category' => optional($ilan->kategori)->ad ?? 'Yok',
             'status' => $statusValue,
-            'special' => $this->getSpecialBadge($ilan)
+            'special' => $this->getSpecialBadge($ilan),
         ];
     }
 
@@ -88,22 +88,22 @@ class IlanTypeHelper
             'fields' => [
                 'fiyat' => [
                     'label' => 'Fiyat',
-                    'value' => number_format($ilan->fiyat) . ' ' . $ilan->para_birimi,
-                    'type' => 'price'
+                    'value' => number_format($ilan->fiyat).' '.$ilan->para_birimi,
+                    'type' => 'price',
                 ],
                 'status' => [
                     'label' => 'Durum',
                     'value' => $ilan->status instanceof \App\Enums\IlanStatus
                         ? $ilan->status->label()
                         : ($ilan->status ?? 'Bilinmiyor'),
-                    'type' => 'status'
+                    'type' => 'status',
                 ],
                 'ilan_tarihi' => [
                     'label' => 'İlan Tarihi',
                     'value' => $ilan->created_at ? $ilan->created_at->format('d.m.Y') : 'Belirtilmemiş',
-                    'type' => 'date'
-                ]
-            ]
+                    'type' => 'date',
+                ],
+            ],
         ];
 
         return $fields;

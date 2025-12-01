@@ -23,7 +23,7 @@ $crudPages = [
 echo "\n🔍 ADMIN CRUD SAYFA TESTİ\n";
 echo "═══════════════════════════════════════════════\n";
 echo "Sunucu: {$baseUrl}\n";
-echo "Test Zamanı: " . date('Y-m-d H:i:s') . "\n\n";
+echo 'Test Zamanı: '.date('Y-m-d H:i:s')."\n\n";
 
 $totalTests = 0;
 $passedTests = 0;
@@ -31,11 +31,11 @@ $errors = [];
 
 foreach ($crudPages as $module => $pages) {
     echo "📦 {$module}\n";
-    echo str_repeat('-', 47) . "\n";
+    echo str_repeat('-', 47)."\n";
 
     foreach ($pages as $type => $path) {
         $totalTests++;
-        $url = $baseUrl . $path;
+        $url = $baseUrl.$path;
         $typeName = $type === 'list' ? 'Liste' : 'Oluştur';
 
         echo "  Testing: {$typeName} ({$path})\n";
@@ -70,17 +70,17 @@ foreach ($crudPages as $module => $pages) {
                 'module' => $module,
                 'type' => $typeName,
                 'path' => $path,
-                'error' => $errorMessage
+                'error' => $errorMessage,
             ];
         } elseif ($httpCode === 500) {
             $statusIcon = '💥';
 
             if (preg_match('/SQLSTATE\[42S02\].*Table \'.*?\.(\w+)\'/s', $body, $tableName)) {
-                $errorMessage = 'Tablo eksik: ' . $tableName[1];
+                $errorMessage = 'Tablo eksik: '.$tableName[1];
             } elseif (preg_match('/Undefined variable \$(\w+)/s', $body, $varMatch)) {
-                $errorMessage = 'Tanımsız değişken: $' . $varMatch[1];
+                $errorMessage = 'Tanımsız değişken: $'.$varMatch[1];
             } elseif (preg_match('/Class ".*?\\\\(\w+)" not found/s', $body, $classMatch)) {
-                $errorMessage = 'Model eksik: ' . $classMatch[1];
+                $errorMessage = 'Model eksik: '.$classMatch[1];
             } elseif (preg_match('/Method.*?does not exist/s', $body)) {
                 $errorMessage = 'Method bulunamadı';
             } else {
@@ -92,7 +92,7 @@ foreach ($crudPages as $module => $pages) {
                 'module' => $module,
                 'type' => $typeName,
                 'path' => $path,
-                'error' => $errorMessage
+                'error' => $errorMessage,
             ];
         }
 
@@ -109,10 +109,10 @@ echo "\n📊 ÖZET İSTATİSTİKLER\n";
 echo "═══════════════════════════════════════════════\n";
 echo "Toplam Test: {$totalTests}\n";
 echo "Başarılı: {$passedTests}\n";
-echo "Hatalı: " . count($errors) . "\n";
-echo "Başarı Oranı: " . round(($passedTests / $totalTests) * 100, 2) . "%\n";
+echo 'Hatalı: '.count($errors)."\n";
+echo 'Başarı Oranı: '.round(($passedTests / $totalTests) * 100, 2)."%\n";
 
-if (!empty($errors)) {
+if (! empty($errors)) {
     echo "\n❌ DÜZELTILMESI GEREKEN HATALAR\n";
     echo "═══════════════════════════════════════════════\n";
     foreach ($errors as $error) {

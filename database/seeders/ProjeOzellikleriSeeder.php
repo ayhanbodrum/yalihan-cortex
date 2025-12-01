@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
+use App\Models\Feature;
+use App\Models\FeatureCategory;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Schema;
-use App\Models\FeatureCategory;
-use App\Models\Feature;
 
 /**
  * Proje Özellikleri Seeder
@@ -19,8 +19,9 @@ class ProjeOzellikleriSeeder extends Seeder
         $this->command->info('🏗️ Proje Özellikleri oluşturuluyor...');
 
         // Context7: Schema kontrolü
-        if (!Schema::hasTable('feature_categories') || !Schema::hasTable('features')) {
+        if (! Schema::hasTable('feature_categories') || ! Schema::hasTable('features')) {
             $this->command->warn('⚠️ Feature tabloları bulunamadı!');
+
             return;
         }
 
@@ -29,30 +30,30 @@ class ProjeOzellikleriSeeder extends Seeder
 
         // 1. PROJE TİPİ KATEGORİSİ
         $projeTipiKategori = $this->createFeatureCategory('Proje Tipi', 'proje-tipi', 'checkbox', [
-            'Daire', 'Dükkan', 'Villa', 'Residence', 'Müstakil Ev'
+            'Daire', 'Dükkan', 'Villa', 'Residence', 'Müstakil Ev',
         ]);
 
         // 2. SİTE ÖZELLİKLERİ KATEGORİSİ
         $siteOzellikleriKategori = $this->createFeatureCategory('Site Özellikleri', 'site-ozellikleri', 'checkbox', [
             'Kapalı otopark', 'Çocuk oyun alanları', 'Fitness merkezi', 'Açık yüzme havuzu',
-            'Güvenlik', 'Kameralı güvenlik', 'Basketbol sahası'
+            'Güvenlik', 'Kameralı güvenlik', 'Basketbol sahası',
         ]);
 
         // 3. BİNA ÖZELLİKLERİ KATEGORİSİ
         $binaOzellikleriKategori = $this->createFeatureCategory('Bina Özellikleri', 'bina-ozellikleri', 'checkbox', [
-            'Asansör', 'Jeneratör', 'Su Deposu', 'Hidrofor', 'Yangın merdiveni'
+            'Asansör', 'Jeneratör', 'Su Deposu', 'Hidrofor', 'Yangın merdiveni',
         ]);
 
         // 4. KONUT ÖZELLİKLERİ KATEGORİSİ
         $konutOzellikleriKategori = $this->createFeatureCategory('Konut Özellikleri', 'konut-ozellikleri', 'checkbox', [
             'Ankastre beyaz eşya', 'Ebeveyn banyosu', 'Duşakabin', 'Balkon',
-            'Depo/kiler', 'Bahçe Kullanımlı', 'İntercom sistemi', 'Ebeveyn giyinme odası'
+            'Depo/kiler', 'Bahçe Kullanımlı', 'İntercom sistemi', 'Ebeveyn giyinme odası',
         ]);
 
         // 5. İNŞAAT TEKNİKLERİ KATEGORİSİ
         $insaatTeknikleriKategori = $this->createFeatureCategory('İnşaat Teknikleri', 'insaat-teknikleri', 'checkbox', [
             'Yapı denetimi yapılmış', 'Zemin etüdü yapılmış', 'Deprem yönetmeliğine uygun',
-            'Yalıtım yönetmeliğine uygun', 'Radye temel', 'Tünel Kalıp'
+            'Yalıtım yönetmeliğine uygun', 'Radye temel', 'Tünel Kalıp',
         ]);
 
         $this->command->info('✅ Proje özellikleri oluşturuldu!');
@@ -107,7 +108,7 @@ class ProjeOzellikleriSeeder extends Seeder
 
         // Slug'a kategori ID'si ekle (unique constraint için)
         $baseSlug = \Illuminate\Support\Str::slug($name);
-        $slug = $baseSlug . '-' . $categoryId;
+        $slug = $baseSlug.'-'.$categoryId;
 
         $data = [
             'feature_category_id' => $categoryId,

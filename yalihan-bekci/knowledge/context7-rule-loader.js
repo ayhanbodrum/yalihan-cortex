@@ -193,31 +193,201 @@ class Context7RuleLoader {
 
     /**
      * Kod içinde yasaklı kullanım var mı kontrol et
+     * Geliştirilmiş: Daha akıllı pattern matching, context-aware detection
      */
     checkCode(code, filePath) {
         const violations = [];
+        const lines = code.split('\n');
+        const fileType = this.detectFileType(filePath);
+
+        // Context-aware exclusion patterns (false positive önleme)
+        const exclusionPatterns = {
+            php: [
+                /\/\/.*/, // Comments
+                /\/\*[\s\S]*?\*\//, // Multi-line comments
+                /['"`].*['"`]/, // Strings (handled separately)
+                /->orderBy\(/, // Laravel orderBy() method (allowed)
+                /orderByDesc\(/, // Laravel orderByDesc() method (allowed)
+                /orderByAsc\(/, // Laravel orderByAsc() method (allowed)
+                /@order/, // PHP annotations
+            ],
+            blade: [
+                /@.*/, // Blade directives
+                /{{.*}}/, // Blade echo
+                /{!!.*!!}/, // Blade raw echo
+                /<!--.*-->/, // HTML comments
+            ],
+            js: [
+                /\/\/.*/, // Comments
+                /\/\*[\s\S]*?\*\//, // Multi-line comments
+                /['"`].*['"`]/, // Strings
+                /\.orderBy\(/, // Method calls
+            ],
+        };
 
         Object.entries(this.rules.forbidden).forEach(([forbidden, rule]) => {
-            const regex = new RegExp(`\\b${forbidden}\\b`, 'gi');
-            let match;
-            let lineNumber = 1;
-
-            const lines = code.split('\n');
+            // Daha akıllı regex: word boundary + context-aware
+            const regex = this.buildSmartRegex(forbidden, fileType);
+            
             lines.forEach((line, index) => {
-                if (regex.test(line)) {
+                // Exclusion check
+                if (this.isExcluded(line, exclusionPatterns[fileType] || [])) {
+                    return;
+                }
+
+                // Context-aware violation check
+                const match = regex.exec(line);
+                if (match) {
+                    // False positive kontrolü
+                    if (this.isFalsePositive(line, forbidden, fileType)) {
+                        return;
+                    }
+
                     violations.push({
                         rule: forbidden,
                         line: index + 1,
+                        column: match.index + 1,
                         code: line.trim(),
                         suggestion: rule.reason,
                         severity: rule.severity,
                         file: filePath,
+                        context: this.getContext(lines, index),
+                        autoFix: this.generateAutoFix(line, forbidden, rule),
                     });
                 }
             });
         });
 
-        return violations;
+        // Duplicate violation'ları temizle (aynı satır, farklı pattern)
+        return this.deduplicateViolations(violations);
+    }
+
+    /**
+     * Dosya tipini tespit et
+     */
+    detectFileType(filePath) {
+        const ext = filePath.split('.').pop()?.toLowerCase();
+        if (ext === 'php') return 'php';
+        if (ext === 'blade.php' || filePath.includes('.blade.')) return 'blade';
+        if (ext === 'js' || ext === 'mjs') return 'js';
+        if (ext === 'vue') return 'vue';
+        return 'unknown';
+    }
+
+    /**
+     * Akıllı regex oluştur (context-aware)
+     */
+    buildSmartRegex(pattern, fileType) {
+        // Özel pattern'ler için özel regex
+        const specialPatterns = {
+            'order': /(?:^|\s|['"`])\border\b(?:\s*[=:]\s*|['"`]|$)/gi, // 'order' field, not orderBy()
+            'durum': /(?:^|\s|['"`])\bdurum\b(?:\s*[=:]\s*|['"`]|$)/gi, // 'durum' field
+            'aktif': /(?:^|\s|['"`])\baktif\b(?:\s*[=:]\s*|['"`]|$)/gi, // 'aktif' field
+            'musteri': /(?:^|\s|['"`])\bmusteri\b(?:\s*[=:]\s*|['"`]|$)/gi, // 'musteri' field
+            'sehir': /(?:^|\s|['"`])\bsehir\b(?:\s*[=:]\s*|['"`]|$)/gi, // 'sehir' field
+        };
+
+        if (specialPatterns[pattern]) {
+            return specialPatterns[pattern];
+        }
+
+        // Genel pattern için word boundary
+        return new RegExp(`\\b${pattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'gi');
+    }
+
+    /**
+     * Exclusion pattern kontrolü
+     */
+    isExcluded(line, patterns) {
+        return patterns.some(pattern => pattern.test(line));
+    }
+
+    /**
+     * False positive kontrolü
+     */
+    isFalsePositive(line, forbidden, fileType) {
+        const falsePositivePatterns = {
+            'order': [
+                /orderBy\(/, // Laravel query builder
+                /orderByDesc\(/,
+                /orderByAsc\(/,
+                /ORDER BY/, // SQL (uppercase)
+                /@order/, // PHP attribute
+                /\/\/.*order/, // Comment
+            ],
+            'durum': [
+                /\/\/.*durum/, // Comment
+                /['"`].*durum.*['"`]/, // String literal (display text)
+            ],
+            'aktif': [
+                /\/\/.*aktif/, // Comment
+                /['"`].*aktif.*['"`]/, // String literal
+            ],
+        };
+
+        const patterns = falsePositivePatterns[forbidden] || [];
+        return patterns.some(pattern => pattern.test(line));
+    }
+
+    /**
+     * Context bilgisi al (öncesi/sonrası satırlar)
+     */
+    getContext(lines, index, contextSize = 2) {
+        const start = Math.max(0, index - contextSize);
+        const end = Math.min(lines.length, index + contextSize + 1);
+        return {
+            before: lines.slice(start, index).map((l, i) => ({
+                line: start + i + 1,
+                code: l.trim(),
+            })),
+            current: {
+                line: index + 1,
+                code: lines[index].trim(),
+            },
+            after: lines.slice(index + 1, end).map((l, i) => ({
+                line: index + i + 2,
+                code: l.trim(),
+            })),
+        };
+    }
+
+    /**
+     * Otomatik düzeltme önerisi oluştur
+     */
+    generateAutoFix(line, forbidden, rule) {
+        const fixes = {
+            'order': line.replace(/\border\b/gi, 'display_order'),
+            'durum': line.replace(/\bdurum\b/gi, 'status'),
+            'aktif': line.replace(/\baktif\b/gi, 'status'),
+            'musteri': line.replace(/\bmusteri\b/gi, 'kisi'),
+            'sehir': line.replace(/\bsehir\b/gi, 'il'),
+        };
+
+        const fixed = fixes[forbidden];
+        if (fixed && fixed !== line) {
+            return {
+                original: line,
+                fixed: fixed,
+                confidence: 0.9,
+            };
+        }
+
+        return null;
+    }
+
+    /**
+     * Duplicate violation'ları temizle
+     */
+    deduplicateViolations(violations) {
+        const seen = new Map();
+        return violations.filter(v => {
+            const key = `${v.file}:${v.line}:${v.rule}`;
+            if (seen.has(key)) {
+                return false;
+            }
+            seen.set(key, true);
+            return true;
+        });
     }
 
     /**

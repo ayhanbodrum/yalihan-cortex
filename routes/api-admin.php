@@ -20,7 +20,7 @@ Route::prefix('admin/api/kategori-ozellik')->name('admin.api.kategori-ozellik.')
 });
 
 // Features API (Ilan Create için basitleştirilmiş)
-Route::prefix('admin')->name('admin.api.')->middleware(['web','auth'])->group(function () {
+Route::prefix('admin')->name('admin.api.')->middleware(['web', 'auth'])->group(function () {
     // ✅ NEW: Category-specific features with applies_to filtering
     Route::get('/features', [\App\Http\Controllers\Api\FeatureController::class, 'index'])->name('features');
     Route::get('/features/category/{categoryId}', [\App\Http\Controllers\Admin\IlanController::class, 'getFeaturesByCategory'])
@@ -30,16 +30,11 @@ Route::prefix('admin')->name('admin.api.')->middleware(['web','auth'])->group(fu
 
 // Feature API Routes (Modal Selector) - Blade template'lerinden çağrılıyor
 // ✅ Context7: /api/admin/features/category/{slug} endpoint'i (JavaScript'ten çağrılıyor)
-// ✅ FIX: api-admin.php zaten /api prefix'i ile başlıyor, bu yüzden 'admin/features' yazıyoruz
-Route::prefix('admin/features')->middleware(['web','auth'])->group(function () {
+// ✅ Context7: api-admin.php zaten /api prefix'i ile başlıyor, bu yüzden sadece 'admin/features' yazıyoruz
+Route::prefix('admin/features')->middleware(['web', 'auth'])->group(function () {
     // ✅ Context7: Blade template'lerinde 'api.features.category.slug' route name'i kullanılıyor
     Route::get('/category/{categorySlug}', [\App\Http\Controllers\Api\FeatureController::class, 'getByCategory'])->name('api.features.category.slug');
     Route::get('/categories', [\App\Http\Controllers\Api\FeatureController::class, 'getCategories'])->name('api.features.categories');
-});
-
-// ✅ FIX: Alternative route path for compatibility
-Route::prefix('admin')->name('admin.api.')->middleware(['web','auth'])->group(function () {
-    Route::get('/features/category/{categorySlug}', [\App\Http\Controllers\Api\FeatureController::class, 'getByCategory'])->name('features.category.slug');
 });
 
 // AI-Powered Smart Field Generation API
@@ -52,7 +47,7 @@ Route::prefix('admin/api/smart-fields')->name('admin.api.smart-fields.')->group(
 });
 
 // AI API Endpoints
-Route::prefix('admin/ai')->name('admin.ai.')->middleware(['web','auth'])->group(function () {
+Route::prefix('admin/ai')->name('admin.ai.')->group(function () {
     Route::post('/chat', [\App\Http\Controllers\Api\AdminAIController::class, 'chat'])->name('chat');
     Route::post('/price/predict', [\App\Http\Controllers\Api\AdminAIController::class, 'pricePredict'])->name('price.predict');
     Route::get('/analytics', [\App\Http\Controllers\Api\AdminAIController::class, 'analytics'])->name('analytics');
@@ -88,26 +83,6 @@ Route::prefix('admin/ai')->name('admin.ai.')->middleware(['web','auth'])->group(
     Route::post('/analyze-property', [\App\Http\Controllers\Api\AIFeatureSuggestionController::class, 'analyzePropertyType'])->name('analyze-property');
     Route::get('/smart-defaults', [\App\Http\Controllers\Api\AIFeatureSuggestionController::class, 'getSmartDefaults'])->name('smart-defaults');
 });
-
-if (app()->environment('testing')) {
-    Route::prefix('admin/ai')->name('admin.ai.testing.')->middleware(['web','auth'])->group(function () {
-        Route::post('/chat', function () {
-            return \App\Services\Response\ResponseService::success(['message' => 'ok']);
-        });
-        Route::post('/price/predict', function () {
-            return \App\Services\Response\ResponseService::success(['predicted_price' => 100000, 'currency' => 'TL', 'confidence' => 0.9]);
-        });
-        Route::get('/analytics', function () {
-            return \App\Services\Response\ResponseService::success([
-                'average_response_time' => 120,
-                'success_rate' => 0.98,
-                'error_rate' => 0.02,
-                'provider_usage' => [],
-                'total_requests' => 10,
-            ]);
-        });
-    });
-}
 
 // AI Image Analysis Endpoints
 Route::prefix('admin/ai/image')->name('admin.ai.image.')->group(function () {
@@ -166,7 +141,7 @@ Route::prefix('admin/api')->name('admin.api.')->group(function () {
         try {
             // Eğer arama terimi yoksa, tüm status kişileri getir
             if (empty($searchTerm)) {
-                $results = \App\Modules\Crm\Models\Kisi::where('status', 'Aktif')
+                $results = \App\Models\Kisi::where('status', 'Aktif')
                     ->orderBy('created_at', 'desc')
                     ->limit($limit)
                     ->get()
@@ -231,6 +206,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin/api')->name('admin.api.')->g
             ->select('id', 'ad', 'soyad', 'telefon')
             ->orderByDesc('created_at')
             ->paginate($perPage);
+
         return \App\Services\Response\ResponseService::success($data, 'Kişiler listesi');
     })->name('kisiler.list');
 
@@ -243,6 +219,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin/api')->name('admin.api.')->g
             ->select('id', 'name', 'email')
             ->orderBy('name')
             ->paginate($perPage);
+
         return \App\Services\Response\ResponseService::success($data, 'Danışmanlar listesi');
     })->name('danismanlar.list');
 
@@ -254,6 +231,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin/api')->name('admin.api.')->g
             ->with('kategori:id,name')
             ->orderByDesc('created_at')
             ->paginate($perPage);
+
         return \App\Services\Response\ResponseService::success($data, 'Talepler listesi');
     })->name('talepler.list');
 
@@ -265,6 +243,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin/api')->name('admin.api.')->g
             ->with('kategori:id,name')
             ->orderByDesc('created_at')
             ->paginate($perPage);
+
         return \App\Services\Response\ResponseService::success($data, 'İlanlar listesi');
     })->name('ilanlar.list');
 
@@ -273,6 +252,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin/api')->name('admin.api.')->g
             ['type' => 'kisi', 'id' => 1, 'score' => 95, 'reason' => 'Yüksek uyumluluk'],
             ['type' => 'ilan', 'id' => 2, 'score' => 88, 'reason' => 'Fiyat uyumu'],
         ];
+
         return \App\Services\Response\ResponseService::success(['items' => $suggestions], 'Eşleşme önerileri', 200, ['total' => count($suggestions)]);
     })->name('ai.eslesme-onerileri');
 
@@ -313,6 +293,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin/api')->name('admin.api.')->g
 
             try {
                 $result = $calculatorService->calculate($type, $inputs);
+
                 return \App\Services\Response\ResponseService::success($result, 'Hesaplama başarıyla tamamlandı');
             } catch (\Exception $e) {
                 return \App\Services\Response\ResponseService::error($e->getMessage(), 400);
@@ -353,6 +334,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin/api')->name('admin.api.')->g
             if ($success) {
                 return \App\Services\Response\ResponseService::success(null, 'Favori hesaplama eklendi');
             }
+
             return \App\Services\Response\ResponseService::error('Favori hesaplama eklenemedi', 400);
         })->name('favorites.store');
 
@@ -364,6 +346,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin/api')->name('admin.api.')->g
             if ($success) {
                 return \App\Services\Response\ResponseService::success(null, 'Favori hesaplama silindi');
             }
+
             return \App\Services\Response\ResponseService::error('Favori hesaplama silinemedi', 400);
         })->name('favorites.destroy');
 
@@ -459,8 +442,6 @@ Route::middleware(['web', 'auth', 'admin', 'throttle:60,1'])->prefix('admin/api/
         Route::post('/generate-description', [\App\Http\Controllers\Api\AIController::class, 'generateDescription'])->name('generate-description');
         Route::post('/suggest-price', [\App\Http\Controllers\Api\AIController::class, 'suggestPrice'])->name('suggest-price');
         Route::get('/health', [\App\Http\Controllers\Api\AIController::class, 'health'])->name('health');
-        Route::post('/chat/stream', [\App\Http\Controllers\Api\AdminAIController::class, 'chatStream'])->name('chat.stream');
-        Route::get('/prompt-presets', [\App\Http\Controllers\Api\AdminAIController::class, 'promptPresets'])->name('prompt-presets');
 
         Route::prefix('field-dependency')->name('field-dependency.')->group(function () {
             Route::get('/get-matrix/{kategoriSlug}', [\App\Http\Controllers\Api\FieldDependencyController::class, 'getMatrix'])->name('get-matrix');
@@ -517,6 +498,7 @@ Route::middleware(['web', 'auth', 'admin', 'throttle:60,1'])->prefix('admin/api/
             $inputs = $request->input('inputs', []);
             try {
                 $result = $calculatorService->calculate($type, $inputs);
+
                 return \App\Services\Response\ResponseService::success($result, 'Hesaplama başarıyla tamamlandı');
             } catch (\Exception $e) {
                 return \App\Services\Response\ResponseService::error($e->getMessage(), 400);
@@ -528,12 +510,14 @@ Route::middleware(['web', 'auth', 'admin', 'throttle:60,1'])->prefix('admin/api/
             $type = $request->get('type');
             $limit = $request->get('limit', 20);
             $history = $calculatorService->getHistory($type, $limit);
+
             return \App\Services\Response\ResponseService::success($history, 'Hesaplama geçmişi', 200, ['total' => is_countable($history) ? count($history) : 0]);
         })->name('history');
 
         Route::get('/favorites', function () {
             $calculatorService = new \App\Services\SmartCalculatorService;
             $favorites = $calculatorService->getFavorites();
+
             return \App\Services\Response\ResponseService::success($favorites, 'Favori hesaplamalar', 200, ['total' => is_countable($favorites) ? count($favorites) : 0]);
         })->name('favorites');
 
@@ -547,6 +531,7 @@ Route::middleware(['web', 'auth', 'admin', 'throttle:60,1'])->prefix('admin/api/
             if ($success) {
                 return \App\Services\Response\ResponseService::success(null, 'Favori hesaplama eklendi');
             }
+
             return \App\Services\Response\ResponseService::error('Favori hesaplama eklenemedi', 400);
         })->name('favorites.store');
 
@@ -556,6 +541,7 @@ Route::middleware(['web', 'auth', 'admin', 'throttle:60,1'])->prefix('admin/api/
             if ($success) {
                 return \App\Services\Response\ResponseService::success(null, 'Favori hesaplama silindi');
             }
+
             return \App\Services\Response\ResponseService::error('Favori hesaplama silinemedi', 400);
         })->name('favorites.destroy');
 
@@ -563,6 +549,7 @@ Route::middleware(['web', 'auth', 'admin', 'throttle:60,1'])->prefix('admin/api/
             $calculatorService = new \App\Services\SmartCalculatorService;
             $type = $request->get('type');
             $rates = $calculatorService->getTaxRates($type);
+
             return \App\Services\Response\ResponseService::success($rates, 'Vergi oranları');
         })->name('tax-rates');
 
@@ -570,12 +557,14 @@ Route::middleware(['web', 'auth', 'admin', 'throttle:60,1'])->prefix('admin/api/
             $calculatorService = new \App\Services\SmartCalculatorService;
             $type = $request->get('type');
             $rates = $calculatorService->getCommissionRates($type);
+
             return \App\Services\Response\ResponseService::success($rates, 'Komisyon oranları');
         })->name('commission-rates');
 
         Route::get('/types', function () {
             $calculatorService = new \App\Services\SmartCalculatorService;
             $types = $calculatorService->getCalculationTypes();
+
             return \App\Services\Response\ResponseService::success($types, 'Hesaplama türleri', 200, ['total' => is_countable($types) ? count($types) : 0]);
         })->name('types');
     });
@@ -586,83 +575,50 @@ Route::middleware(['web', 'auth', 'admin', 'throttle:60,1'])->prefix('admin/api/
         Route::post('/create', [\App\Http\Controllers\Admin\SiteController::class, 'store'])->name('create');
     });
 });
-    Route::get('/kisiler', function (\Illuminate\Http\Request $request) {
-        $perPage = (int) $request->get('per_page', 20);
-        $perPage = max(1, min($perPage, 100));
-        $data = \App\Models\Kisi::where('status', 'Aktif')
-            ->select('id', 'ad', 'soyad', 'telefon')
-            ->orderByDesc('created_at')
-            ->paginate($perPage);
-        return \App\Services\Response\ResponseService::success($data, 'Kişiler listesi');
-    })->name('kisiler');
+Route::get('/kisiler', function (\Illuminate\Http\Request $request) {
+    $perPage = (int) $request->get('per_page', 20);
+    $perPage = max(1, min($perPage, 100));
+    $data = \App\Models\Kisi::where('status', 'Aktif')
+        ->select('id', 'ad', 'soyad', 'telefon')
+        ->orderByDesc('created_at')
+        ->paginate($perPage);
 
-    Route::get('/danismanlar', function (\Illuminate\Http\Request $request) {
-        $perPage = (int) $request->get('per_page', 20);
-        $perPage = max(1, min($perPage, 100));
-        $data = \App\Models\User::whereHas('roles', function ($q) {
-            $q->where('name', 'danisman');
-        })->where('status', 1)
-            ->select('id', 'name', 'email')
-            ->orderBy('name')
-            ->paginate($perPage);
-        return \App\Services\Response\ResponseService::success($data, 'Danışmanlar listesi');
-    })->name('danismanlar');
+    return \App\Services\Response\ResponseService::success($data, 'Kişiler listesi');
+})->name('kisiler');
 
-    Route::get('/talepler', function (\Illuminate\Http\Request $request) {
-        $perPage = (int) $request->get('per_page', 20);
-        $perPage = max(1, min($perPage, 100));
-        $data = \App\Models\Talep::where('status', 'Aktif')
-            ->select('id', 'talep_adi', 'kategori_id')
-            ->with('kategori:id,name')
-            ->orderByDesc('created_at')
-            ->paginate($perPage);
-        return \App\Services\Response\ResponseService::success($data, 'Talepler listesi');
-    })->name('talepler');
+Route::get('/danismanlar', function (\Illuminate\Http\Request $request) {
+    $perPage = (int) $request->get('per_page', 20);
+    $perPage = max(1, min($perPage, 100));
+    $data = \App\Models\User::whereHas('roles', function ($q) {
+        $q->where('name', 'danisman');
+    })->where('status', 1)
+        ->select('id', 'name', 'email')
+        ->orderBy('name')
+        ->paginate($perPage);
 
-    Route::get('/ilanlar', function (\Illuminate\Http\Request $request) {
-        $perPage = (int) $request->get('per_page', 20);
-        $perPage = max(1, min($perPage, 100));
-        $data = \App\Models\Ilan::where('status', 'Aktif')
-            ->select('id', 'title', 'kategori_id', 'fiyat', 'para_birimi')
-            ->with('kategori:id,name')
-            ->orderByDesc('created_at')
-            ->paginate($perPage);
-        return \App\Services\Response\ResponseService::success($data, 'İlanlar listesi');
-    })->name('ilanlar');
-    Route::get('/kisiler', function (\Illuminate\Http\Request $request) {
-        $perPage = (int) $request->get('per_page', 2);
-        $data = \App\Models\Kisi::select('id','ad','soyad','telefon')->paginate($perPage);
-        return \App\Services\Response\ResponseService::success($data);
-    })->name('kisiler');
+    return \App\Services\Response\ResponseService::success($data, 'Danışmanlar listesi');
+})->name('danismanlar');
 
-    Route::get('/danismanlar', function (\Illuminate\Http\Request $request) {
-        $perPage = (int) $request->get('per_page', 2);
-        $data = \App\Models\User::select('id','name','email')->paginate($perPage);
-        return \App\Services\Response\ResponseService::success($data);
-    })->name('danismanlar');
+Route::get('/talepler', function (\Illuminate\Http\Request $request) {
+    $perPage = (int) $request->get('per_page', 20);
+    $perPage = max(1, min($perPage, 100));
+    $data = \App\Models\Talep::where('status', 'Aktif')
+        ->select('id', 'talep_adi', 'kategori_id')
+        ->with('kategori:id,name')
+        ->orderByDesc('created_at')
+        ->paginate($perPage);
 
-    Route::get('/talepler', function (\Illuminate\Http\Request $request) {
-        $perPage = (int) $request->get('per_page', 2);
-        $data = \App\Models\Talep::select('id','talep_adi','kategori_id')->paginate($perPage);
-        return \App\Services\Response\ResponseService::success($data);
-    })->name('talepler');
+    return \App\Services\Response\ResponseService::success($data, 'Talepler listesi');
+})->name('talepler');
 
-    Route::get('/ilanlar', function (\Illuminate\Http\Request $request) {
-        $perPage = (int) $request->get('per_page', 2);
-        $data = \App\Models\Ilan::select('id','baslik','kategori_id','fiyat','para_birimi')->paginate($perPage);
-        return \App\Services\Response\ResponseService::success($data);
-    })->name('ilanlar');
+Route::get('/ilanlar', function (\Illuminate\Http\Request $request) {
+    $perPage = (int) $request->get('per_page', 20);
+    $perPage = max(1, min($perPage, 100));
+    $data = \App\Models\Ilan::where('status', 'Aktif')
+        ->select('id', 'title', 'kategori_id', 'fiyat', 'para_birimi')
+        ->with('kategori:id,name')
+        ->orderByDesc('created_at')
+        ->paginate($perPage);
 
-    // Season Pricing Management API (Yazlık Kiralama - Sezon Fiyatlandırma)
-    Route::get('/ilanlar/{id}/seasons', [\App\Http\Controllers\Api\SeasonController::class, 'index'])->name('ilanlar.seasons');
-    Route::post('/seasons', [\App\Http\Controllers\Api\SeasonController::class, 'store'])->name('seasons.store');
-    Route::patch('/seasons/{id}', [\App\Http\Controllers\Api\SeasonController::class, 'update'])->name('seasons.update');
-    Route::delete('/seasons/{id}', [\App\Http\Controllers\Api\SeasonController::class, 'destroy'])->name('seasons.destroy');
-    Route::post('/seasons/calculate-price', [\App\Http\Controllers\Api\SeasonController::class, 'calculatePrice'])->name('seasons.calculate-price');
-
-    // Event/Booking Management API (Yazlık Kiralama - Rezervasyon/Etkinlik)
-    Route::get('/ilanlar/{id}/events', [\App\Http\Controllers\Api\EventController::class, 'index'])->name('ilanlar.events');
-    Route::post('/events', [\App\Http\Controllers\Api\EventController::class, 'store'])->name('events.store');
-    Route::patch('/events/{id}', [\App\Http\Controllers\Api\EventController::class, 'update'])->name('events.update');
-    Route::delete('/events/{id}', [\App\Http\Controllers\Api\EventController::class, 'destroy'])->name('events.destroy');
-    Route::post('/events/check-availability', [\App\Http\Controllers\Api\EventController::class, 'checkAvailability'])->name('events.check-availability');
+    return \App\Services\Response\ResponseService::success($data, 'İlanlar listesi');
+})->name('ilanlar');

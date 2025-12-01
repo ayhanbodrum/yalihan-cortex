@@ -12,14 +12,18 @@ cd "$(dirname "$0")/server"
 case "$1" in
   start)
     echo "🚀 Bekçi başlatılıyor..."
-    npm run bekci > /tmp/yalihan-bekci.log 2>&1 &
+    npm run start > /tmp/yalihan-bekci.log 2>&1 &
     PID=$!
     echo $PID > ../bekci.pid
     echo "✅ Başlatıldı (PID: $PID)"
     echo "📍 Port: 3334"
     echo "📝 Log: /tmp/yalihan-bekci.log"
     sleep 2
-    curl -s http://localhost:3334/ | jq -r '"✅ \(.name) aktif!"'
+    if curl -s http://localhost:3334/ > /dev/null 2>&1; then
+      curl -s http://localhost:3334/ | jq -r '"✅ \(.name) aktif!"' 2>/dev/null || echo "✅ Bekçi başlatıldı"
+    else
+      echo "⚠️ Bekçi başlatılıyor, kontrol ediliyor..."
+    fi
     ;;
 
   stop)

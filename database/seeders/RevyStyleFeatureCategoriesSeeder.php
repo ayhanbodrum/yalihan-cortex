@@ -2,11 +2,10 @@
 
 namespace Database\Seeders;
 
+use App\Models\Feature;
+use App\Models\FeatureCategory;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Schema;
-use App\Models\FeatureCategory;
-use App\Models\Feature;
-use Illuminate\Support\Str;
 
 /**
  * Revy.com.tr Tarzı Özellik Kategorileri Seeder
@@ -305,7 +304,7 @@ class RevyStyleFeatureCategoriesSeeder extends Seeder
             'muhit',
             'ulasim',
             'cephe',
-            'manzara'
+            'manzara',
         ])->count();
 
         $revyFeatures = Feature::whereHas('category', function ($query) {
@@ -315,11 +314,11 @@ class RevyStyleFeatureCategoriesSeeder extends Seeder
                 'muhit',
                 'ulasim',
                 'cephe',
-                'manzara'
+                'manzara',
             ]);
         })->count();
 
-        $this->command->info("📊 Özet:");
+        $this->command->info('📊 Özet:');
         $this->command->info("   - Revy Kategorileri: {$revyCategories}");
         $this->command->info("   - Revy Özellikleri: {$revyFeatures}");
     }

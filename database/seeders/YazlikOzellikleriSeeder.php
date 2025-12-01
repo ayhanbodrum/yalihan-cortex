@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use App\Models\OzellikKategori;
 use App\Models\Ozellik;
+use App\Models\OzellikKategori;
+use Illuminate\Database\Seeder;
 
 class YazlikOzellikleriSeeder extends Seeder
 {
@@ -163,7 +163,7 @@ class YazlikOzellikleriSeeder extends Seeder
                     $ozellik
                 );
             }
-            $this->command->info("   → 6 konaklama özelliği eklendi");
+            $this->command->info('   → 6 konaklama özelliği eklendi');
         }
 
         // ✅ 2. Fiyatlandırma Özellikleri
@@ -238,7 +238,7 @@ class YazlikOzellikleriSeeder extends Seeder
                     $ozellik
                 );
             }
-            $this->command->info("   → 5 fiyatlandırma özelliği eklendi");
+            $this->command->info('   → 5 fiyatlandırma özelliği eklendi');
         }
 
         // ✅ 3. Havuz ve Su Sporları
@@ -336,7 +336,7 @@ class YazlikOzellikleriSeeder extends Seeder
                     $ozellik
                 );
             }
-            $this->command->info("   → 7 havuz/su sporları özelliği eklendi");
+            $this->command->info('   → 7 havuz/su sporları özelliği eklendi');
         }
 
         // ✅ 4. Dış Mekan Özellikleri
@@ -420,7 +420,7 @@ class YazlikOzellikleriSeeder extends Seeder
                     $ozellik
                 );
             }
-            $this->command->info("   → 6 dış mekan özelliği eklendi");
+            $this->command->info('   → 6 dış mekan özelliği eklendi');
         }
 
         // ✅ 5. İç Mekan Donanımları
@@ -526,7 +526,7 @@ class YazlikOzellikleriSeeder extends Seeder
                     $ozellik
                 );
             }
-            $this->command->info("   → 8 iç mekan özelliği eklendi");
+            $this->command->info('   → 8 iç mekan özelliği eklendi');
         }
 
         // ✅ 6. Konfor ve Eğlence
@@ -636,23 +636,23 @@ class YazlikOzellikleriSeeder extends Seeder
                     $ozellik
                 );
             }
-            $this->command->info("   → 8 konfor/eğlence özelliği eklendi");
+            $this->command->info('   → 8 konfor/eğlence özelliği eklendi');
         }
 
         $this->command->info("\n📊 YAZLIK KİRALIK ÖZELLİKLERİ RAPORU:");
-        $this->command->info("   ✅ Özellik Kategorisi: 6");
-        $this->command->info("   ✅ Toplam Özellik: 30");
-        $this->command->info("   🏖️ Konaklama: 6");
-        $this->command->info("   💰 Fiyatlandırma: 5");
-        $this->command->info("   🏊 Havuz/Su Sporları: 7");
-        $this->command->info("   🌳 Dış Mekan: 6");
-        $this->command->info("   🛋️  İç Mekan: 8");
-        $this->command->info("   📺 Konfor/Eğlence: 8");
+        $this->command->info('   ✅ Özellik Kategorisi: 6');
+        $this->command->info('   ✅ Toplam Özellik: 30');
+        $this->command->info('   🏖️ Konaklama: 6');
+        $this->command->info('   💰 Fiyatlandırma: 5');
+        $this->command->info('   🏊 Havuz/Su Sporları: 7');
+        $this->command->info('   🌳 Dış Mekan: 6');
+        $this->command->info('   🛋️  İç Mekan: 8');
+        $this->command->info('   📺 Konfor/Eğlence: 8');
 
         $this->command->info("\n🎯 ÖZEL NOTLAR:");
-        $this->command->info("   • Günlük/haftalık/aylık fiyat → ilanlar tablosunda (field)");
-        $this->command->info("   • Havuz → ilanlar tablosunda (field) + özellik olarak");
-        $this->command->info("   • Denize mesafe → özellik olarak");
-        $this->command->info("   • Tüm özellikler ZORUNLU DEĞİL (esnek)");
+        $this->command->info('   • Günlük/haftalık/aylık fiyat → ilanlar tablosunda (field)');
+        $this->command->info('   • Havuz → ilanlar tablosunda (field) + özellik olarak');
+        $this->command->info('   • Denize mesafe → özellik olarak');
+        $this->command->info('   • Tüm özellikler ZORUNLU DEĞİL (esnek)');
     }
 }

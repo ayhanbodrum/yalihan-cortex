@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Eslesme;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Models\Eslesme;
 
 class EslesmeController extends AdminController
 {
@@ -12,7 +12,6 @@ class EslesmeController extends AdminController
      * Display a listing of the resource.
      * Context7: Eşleştirme listesi ve filtreleme
      *
-     * @param Request $request
      * @return Response|\Illuminate\Contracts\View\View
      */
     public function index(Request $request)
@@ -21,11 +20,11 @@ class EslesmeController extends AdminController
         $eslesmeler = \App\Models\Eslesme::with([
             'ilan:id,baslik,fiyat,para_birimi,status',
             'kisi:id,ad,soyad,telefon,email',
-            'danisman:id,name,email'
+            'danisman:id,name,email',
         ])
-        ->select(['id', 'ilan_id', 'kisi_id', 'danisman_id', 'status', 'one_cikan', 'created_at'])
-        ->latest()
-        ->paginate(20);
+            ->select(['id', 'ilan_id', 'kisi_id', 'danisman_id', 'status', 'one_cikan', 'created_at'])
+            ->latest()
+            ->paginate(20);
 
         $istatistikler = [
             'toplam' => \App\Models\Eslesme::count(),
@@ -56,7 +55,7 @@ class EslesmeController extends AdminController
             ->with([
                 'kategori:id,name,slug',
                 'il:id,il_adi',
-                'ilce:id,ilce_adi'
+                'ilce:id,ilce_adi',
             ])
             ->select(['id', 'baslik', 'fiyat', 'para_birimi', 'kategori_id', 'il_id', 'ilce_id', 'created_at'])
             ->orderBy('created_at', 'desc')
@@ -66,7 +65,7 @@ class EslesmeController extends AdminController
         $talepler = \App\Models\Talep::where('status', 'Aktif')
             ->with([
                 'kisi:id,ad,soyad,telefon',
-                'kategori:id,name,slug'
+                'kategori:id,name,slug',
             ])
             ->select(['id', 'baslik', 'kisi_id', 'kategori_id', 'il_id', 'ilce_id', 'created_at'])
             ->orderBy('created_at', 'desc')
@@ -76,16 +75,16 @@ class EslesmeController extends AdminController
         $danismanlar = \App\Models\User::whereHas('roles', function ($q) {
             $q->where('name', 'danisman');
         })
-        ->select(['id', 'name', 'email'])
-        ->orderBy('name')
-        ->get();
+            ->select(['id', 'name', 'email'])
+            ->orderBy('name')
+            ->get();
 
         $data = [
             'pageTitle' => 'Yeni Eşleştirme Oluştur',
             'breadcrumbs' => [
                 ['name' => 'Dashboard', 'url' => route('admin.dashboard')],
                 ['name' => 'Eşleştirmeler', 'url' => route('admin.eslesmeler.index')],
-                ['name' => 'Yeni Eşleştirme', 'active' => true]
+                ['name' => 'Yeni Eşleştirme', 'active' => true],
             ],
             'kisiler' => $kisiler,
             'ilanlar' => $ilanlar,
@@ -100,8 +99,8 @@ class EslesmeController extends AdminController
      * Store a newly created resource in storage.
      * Context7: Yeni eşleştirme kaydetme
      *
-     * @param Request $request
      * @return \Illuminate\Http\RedirectResponse
+     *
      * @throws \Exception
      */
     public function store(Request $request)
@@ -115,7 +114,7 @@ class EslesmeController extends AdminController
             'status' => 'required|string|in:Aktif,Beklemede,İptal,Tamamlandı',
             'one_cikan' => 'nullable|boolean',
             'notlar' => 'nullable|string|max:1000',
-            'eslesme_tarihi' => 'nullable|date'
+            'eslesme_tarihi' => 'nullable|date',
         ]);
 
         try {
@@ -129,7 +128,7 @@ class EslesmeController extends AdminController
                 'one_cikan' => $validated['one_cikan'] ?? false,
                 'notlar' => $validated['notlar'] ?? null,
                 'eslesme_tarihi' => $validated['eslesme_tarihi'] ?? now(),
-                'son_guncelleme' => now()
+                'son_guncelleme' => now(),
             ];
 
             $eslesme = \App\Models\Eslesme::create($eslesmeData);
@@ -142,7 +141,7 @@ class EslesmeController extends AdminController
             return redirect()
                 ->back()
                 ->withInput()
-                ->with('error', 'Eşleştirme oluşturulurken hata oluştu: ' . $e->getMessage());
+                ->with('error', 'Eşleştirme oluşturulurken hata oluştu: '.$e->getMessage());
         }
     }
 
@@ -150,7 +149,7 @@ class EslesmeController extends AdminController
      * Display the specified resource.
      * Context7: Eşleştirme detay sayfası
      *
-     * @param int|string|Eslesme $eslesme
+     * @param  int|string|Eslesme  $eslesme
      * @return Response|\Illuminate\Contracts\View\View
      */
     public function show($eslesme)
@@ -162,7 +161,7 @@ class EslesmeController extends AdminController
      * Show the form for editing the specified resource.
      * Context7: Eşleştirme düzenleme formu
      *
-     * @param int|string|Eslesme $eslesme
+     * @param  int|string|Eslesme  $eslesme
      * @return Response|\Illuminate\Contracts\View\View
      */
     public function edit($eslesme)
@@ -174,8 +173,7 @@ class EslesmeController extends AdminController
      * Update the specified resource in storage.
      * Context7: Eşleştirme güncelleme
      *
-     * @param Request $request
-     * @param int|string|Eslesme $eslesme
+     * @param  int|string|Eslesme  $eslesme
      * @return \Illuminate\Http\RedirectResponse
      */
     public function update(Request $request, $eslesme)
@@ -187,8 +185,8 @@ class EslesmeController extends AdminController
      * Remove the specified resource from storage.
      * Context7: Eşleştirme silme
      *
-     * @param Eslesme $eslesme
      * @return \Illuminate\Http\RedirectResponse
+     *
      * @throws \Exception
      */
     public function destroy(Eslesme $eslesme)
@@ -198,19 +196,19 @@ class EslesmeController extends AdminController
             $eslesme->load('ilan:id,baslik');
 
             // Eşleşme bilgilerini al
-            $eslesmeBilgi = 'Eşleşme #' . $eslesme->id;
+            $eslesmeBilgi = 'Eşleşme #'.$eslesme->id;
             if ($eslesme->ilan) {
-                $eslesmeBilgi .= ' (' . $eslesme->ilan->baslik . ')';
+                $eslesmeBilgi .= ' ('.$eslesme->ilan->baslik.')';
             }
             $eslesme->delete();
 
             return redirect()
                 ->route('admin.eslesmeler.index')
-                ->with('success', $eslesmeBilgi . ' başarıyla silindi.');
+                ->with('success', $eslesmeBilgi.' başarıyla silindi.');
         } catch (\Exception $e) {
             return redirect()
                 ->route('admin.eslesmeler.index')
-                ->with('error', 'Eşleşme silinirken bir hata oluştu: ' . $e->getMessage());
+                ->with('error', 'Eşleşme silinirken bir hata oluştu: '.$e->getMessage());
         }
     }
 
@@ -229,7 +227,6 @@ class EslesmeController extends AdminController
      * Bulk create matches
      * Context7: Toplu eşleştirme oluşturma
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function bulkCreate(Request $request)
@@ -256,7 +253,7 @@ class EslesmeController extends AdminController
                         'ad' => $kisi->ad,
                         'soyad' => $kisi->soyad,
                         'telefon' => $kisi->telefon,
-                        'display_name' => "{$kisi->ad} {$kisi->soyad}" . ($kisi->telefon ? " - {$kisi->telefon}" : '')
+                        'display_name' => "{$kisi->ad} {$kisi->soyad}".($kisi->telefon ? " - {$kisi->telefon}" : ''),
                     ];
                 });
 
@@ -307,7 +304,7 @@ class EslesmeController extends AdminController
                         'baslik' => $talep->baslik,
                         'il' => $talep->il,
                         'ilce' => $talep->ilce,
-                        'display_name' => "{$talep->baslik} - {$talep->il}" . ($talep->ilce ? "/{$talep->ilce}" : '')
+                        'display_name' => "{$talep->baslik} - {$talep->il}".($talep->ilce ? "/{$talep->ilce}" : ''),
                     ];
                 });
 
@@ -332,15 +329,15 @@ class EslesmeController extends AdminController
                 ->limit(100)
                 ->get()
                 ->map(function ($ilan) {
-                    $fiyatText = $ilan->fiyat ? number_format($ilan->fiyat) . ' ' . ($ilan->para_birimi ?? 'TL') : 'Fiyat Yok';
-                    $lokasyonText = $ilan->adres_il . ($ilan->adres_ilce ? "/{$ilan->adres_ilce}" : '');
+                    $fiyatText = $ilan->fiyat ? number_format($ilan->fiyat).' '.($ilan->para_birimi ?? 'TL') : 'Fiyat Yok';
+                    $lokasyonText = $ilan->adres_il.($ilan->adres_ilce ? "/{$ilan->adres_ilce}" : '');
 
                     return [
                         'id' => $ilan->id,
                         'baslik' => $ilan->baslik,
                         'fiyat' => $ilan->fiyat,
                         'para_birimi' => $ilan->para_birimi,
-                        'display_name' => "{$ilan->baslik} - {$fiyatText} ({$lokasyonText})"
+                        'display_name' => "{$ilan->baslik} - {$fiyatText} ({$lokasyonText})",
                     ];
                 });
 
@@ -354,7 +351,6 @@ class EslesmeController extends AdminController
      * Get AI matching suggestions
      * Context7: AI destekli eşleştirme önerileri
      *
-     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function getAIEslesmeOnerileri(Request $request)
@@ -366,24 +362,24 @@ class EslesmeController extends AdminController
                     'score' => 95,
                     'reason' => 'Lokasyon ve fiyat uyumu mükemmel',
                     'ilan_id' => 1,
-                    'confidence' => 'Yüksek'
+                    'confidence' => 'Yüksek',
                 ],
                 [
                     'score' => 87,
                     'reason' => 'Özellikler büyük oranda eşleşiyor',
                     'ilan_id' => 2,
-                    'confidence' => 'Orta'
-                ]
+                    'confidence' => 'Orta',
+                ],
             ];
 
             return response()->json([
                 'success' => true,
-                'suggestions' => $suggestions
+                'suggestions' => $suggestions,
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'error' => 'AI önerileri alınamadı'
+                'error' => 'AI önerileri alınamadı',
             ], 500);
         }
     }
@@ -391,14 +387,13 @@ class EslesmeController extends AdminController
     /**
      * Render view helper
      * Context7: View render helper
-     *
-     * @param string $view
-     * @param array $data
-     * @return Response|\Illuminate\Contracts\View\View
      */
     private function render(string $view, array $data = []): Response|\Illuminate\Contracts\View\View
     {
-        if (view()->exists($view)) return response()->view($view, $data);
+        if (view()->exists($view)) {
+            return response()->view($view, $data);
+        }
+
         return response('Eşleşmeler sayfaları hazır değil', 200);
     }
 }

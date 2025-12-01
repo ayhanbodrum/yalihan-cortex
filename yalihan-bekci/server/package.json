@@ -6,7 +6,8 @@
   "main": "mcp-server.js",
   "scripts": {
     "start": "node mcp-server.js",
-    "mcp": "AUTO_LEARN=true PROJECT_ROOT=/Users/macbookpro/Projects/yalihanemlakwarp node mcp-server.js",
+    "mcp": "AUTO_LEARN=true PROJECT_ROOT=/Users/macbookpro/Projects/yalihanai node mcp-server.js",
+    "mcp-super": "AUTO_LEARN=true VERBOSE=true PROJECT_ROOT=/Users/macbookpro/Projects/yalihanai node mcp-server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Yalıhan Emlak",

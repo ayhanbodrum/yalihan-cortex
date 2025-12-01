@@ -1,4 +1,4 @@
-@extends('admin.layouts.neo')
+@extends('admin.layouts.admin')
 
 @section('title', 'Yeni Eşleştirme Oluştur')
 @section('meta_description', 'Müşteri talepleri ile ilanları eşleştirin - AI destekli akıllı eşleştirme sistemi ile müşteri memnuniyetini artırın.')

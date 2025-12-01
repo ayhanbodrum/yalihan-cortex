@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Models\Setting;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use App\Models\Setting;
 
 /**
  * Context7 Module Seeder
@@ -111,13 +111,13 @@ class Context7ModuleSeeder extends Seeder
             DB::table('komisyon_oranlari')->updateOrInsert(
                 [
                     'kategori' => $rate['kategori'],
-                    'alt_kategori' => $rate['alt_kategori']
+                    'alt_kategori' => $rate['alt_kategori'],
                 ],
                 $rate
             );
         }
 
-        $this->command->info('✅ ' . count($commissionRates) . ' komisyon oranı oluşturuldu');
+        $this->command->info('✅ '.count($commissionRates).' komisyon oranı oluşturuldu');
     }
 
     /**
@@ -164,7 +164,7 @@ class Context7ModuleSeeder extends Seeder
             );
         }
 
-        $this->command->info('✅ ' . count($taxRates) . ' vergi oranı oluşturuldu');
+        $this->command->info('✅ '.count($taxRates).' vergi oranı oluşturuldu');
     }
 
     /**
@@ -224,7 +224,7 @@ class Context7ModuleSeeder extends Seeder
             );
         }
 
-        $this->command->info('✅ ' . count($currencies) . ' para birimi oluşturuldu');
+        $this->command->info('✅ '.count($currencies).' para birimi oluşturuldu');
     }
 
     /**
@@ -320,7 +320,7 @@ class Context7ModuleSeeder extends Seeder
             );
         }
 
-        $this->command->info('✅ ' . count($siteSettings) . ' site ayarı oluşturuldu');
+        $this->command->info('✅ '.count($siteSettings).' site ayarı oluşturuldu');
     }
 
     /**
@@ -380,6 +380,6 @@ class Context7ModuleSeeder extends Seeder
             );
         }
 
-        $this->command->info('✅ ' . count($initialSettings) . ' başlangıç ayarı oluşturuldu');
+        $this->command->info('✅ '.count($initialSettings).' başlangıç ayarı oluşturuldu');
     }
 }

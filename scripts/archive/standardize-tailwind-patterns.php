@@ -1,5 +1,6 @@
 #!/usr/bin/env php
 <?php
+
 /**
  * Tailwind Pattern Standardization Script
  * Yalıhan Bekçi - 2 Kasım 2025
@@ -10,7 +11,6 @@
  * - focus:ring-indigo-500 → focus:ring-blue-500
  * - dark:bg-gray-700 → dark:bg-gray-800
  */
-
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
 echo "🎨 TAILWIND PATTERN STANDARDIZATION\n";
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
@@ -23,7 +23,7 @@ $verbose = in_array('--verbose', $argv);
 // Get path (skip script name and flags)
 $path = 'resources/views';
 foreach ($argv as $i => $arg) {
-    if ($i > 0 && !str_starts_with($arg, '--')) {
+    if ($i > 0 && ! str_starts_with($arg, '--')) {
         $path = $arg;
         break;
     }
@@ -45,7 +45,7 @@ foreach ($files as $file) {
     }
 }
 
-echo "📁 Dosya sayısı: " . count($bladeFiles) . "\n\n";
+echo '📁 Dosya sayısı: '.count($bladeFiles)."\n\n";
 
 // Statistics
 $stats = [
@@ -112,7 +112,7 @@ foreach ($bladeFiles as $file) {
             $fileModified = true;
 
             if ($verbose) {
-                echo "  ✓ " . $config['description'] . " ({$matches}x)\n";
+                echo '  ✓ '.$config['description']." ({$matches}x)\n";
             }
         }
     }
@@ -121,12 +121,12 @@ foreach ($bladeFiles as $file) {
     if ($fileModified) {
         $stats['files_modified']++;
 
-        if (!$dryRun) {
+        if (! $dryRun) {
             file_put_contents($file, $content);
         }
 
-        $relativePath = str_replace(getcwd() . '/', '', $file);
-        echo "✅ " . $relativePath . "\n";
+        $relativePath = str_replace(getcwd().'/', '', $file);
+        echo '✅ '.$relativePath."\n";
 
         if ($verbose) {
             echo "\n";

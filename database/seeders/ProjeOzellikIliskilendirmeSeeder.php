@@ -2,14 +2,12 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\DB;
+use App\Models\FeatureAssignment;
+use App\Models\FeatureCategory;
 use App\Models\IlanKategori;
 use App\Models\IlanKategoriYayinTipi;
-use App\Models\Feature;
-use App\Models\FeatureCategory;
-use App\Models\FeatureAssignment;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Schema;
 
 /**
  * Proje Kategori Özellik İlişkilendirme Seeder
@@ -23,16 +21,18 @@ class ProjeOzellikIliskilendirmeSeeder extends Seeder
         $this->command->info('🔗 Proje Özellik İlişkilendirmeleri oluşturuluyor...');
 
         // Context7: Schema kontrolü
-        if (!Schema::hasTable('feature_assignments')) {
+        if (! Schema::hasTable('feature_assignments')) {
             $this->command->warn('⚠️ feature_assignments tablosu bulunamadı!');
+
             return;
         }
 
         // Projeler kategori ve yayın tipini bul
         $projeler = IlanKategori::find(5); // Projeler
 
-        if (!$projeler) {
+        if (! $projeler) {
             $this->command->warn('⚠️ Projeler kategorisi bulunamadı!');
+
             return;
         }
 
@@ -41,8 +41,9 @@ class ProjeOzellikIliskilendirmeSeeder extends Seeder
             ->where('yayin_tipi', 'Satılık')
             ->first();
 
-        if (!$satilik) {
+        if (! $satilik) {
             $this->command->warn('⚠️ Satılık yayın tipi bulunamadı!');
+
             return;
         }
 
@@ -50,14 +51,14 @@ class ProjeOzellikIliskilendirmeSeeder extends Seeder
         $this->command->info("  ✓ Satılık Yayın Tipi ID: {$satilik->id}");
 
         // Proje ile ilgili tüm özellik kategorilerini bul
-        $projeKategorileri = FeatureCategory::where(function($q) {
-                $q->where('name', 'like', '%Proje%')
-                  ->orWhere('name', 'like', '%Site%')
-                  ->orWhere('name', 'like', '%Bina%')
-                  ->orWhere('name', 'like', '%Konut%')
-                  ->orWhere('name', 'like', '%İnşaat%');
-            })
-            ->with(['features' => function($q) {
+        $projeKategorileri = FeatureCategory::where(function ($q) {
+            $q->where('name', 'like', '%Proje%')
+                ->orWhere('name', 'like', '%Site%')
+                ->orWhere('name', 'like', '%Bina%')
+                ->orWhere('name', 'like', '%Konut%')
+                ->orWhere('name', 'like', '%İnşaat%');
+        })
+            ->with(['features' => function ($q) {
                 $hasStatusColumn = Schema::hasColumn('features', 'status');
                 $hasEnabledColumn = Schema::hasColumn('features', 'enabled');
 
@@ -96,7 +97,7 @@ class ProjeOzellikIliskilendirmeSeeder extends Seeder
                     $toplamAtanan++;
                     $order++;
                 } catch (\Exception $e) {
-                    $this->command->warn("    ⚠️ {$feature->name} atanamadı: " . $e->getMessage());
+                    $this->command->warn("    ⚠️ {$feature->name} atanamadı: ".$e->getMessage());
                 }
             }
 

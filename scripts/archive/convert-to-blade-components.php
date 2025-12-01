@@ -1,5 +1,6 @@
 #!/usr/bin/env php
 <?php
+
 /**
  * 🔄 BLADE COMPONENT CONVERTER
  *
@@ -13,7 +14,6 @@
  * Context7 Compliance: ✅
  * Yalıhan Bekçi: Smart Form Converter
  */
-
 $dryRun = in_array('--dry-run', $argv);
 $singleFile = null;
 
@@ -49,7 +49,7 @@ $priorityFiles = [
 ];
 
 // Target directory
-$directory = __DIR__ . '/../resources/views';
+$directory = __DIR__.'/../resources/views';
 
 if ($singleFile) {
     $files = [$singleFile];
@@ -69,11 +69,11 @@ if ($singleFile) {
 }
 
 foreach ($files as $filepath) {
-    if (!file_exists($filepath)) {
+    if (! file_exists($filepath)) {
         continue;
     }
 
-    $relativePath = str_replace(__DIR__ . '/../', '', $filepath);
+    $relativePath = str_replace(__DIR__.'/../', '', $filepath);
     $content = file_get_contents($filepath);
     $originalContent = $content;
     $changed = false;
@@ -87,7 +87,7 @@ foreach ($files as $filepath) {
 
     foreach ($matches as $match) {
         $fullTag = $match[0];
-        $attrs = $match[1] . $match[2];
+        $attrs = $match[1].$match[2];
 
         // Extract attributes
         $name = extractAttribute($attrs, 'name');
@@ -96,13 +96,14 @@ foreach ($files as $filepath) {
         $required = strpos($attrs, 'required') !== false;
         $id = extractAttribute($attrs, 'id');
 
-        if (!$name) {
+        if (! $name) {
             $stats['skipped_complex']++;
+
             continue; // Skip if no name
         }
 
         // Look for label before input
-        $labelPattern = '/<label[^>]*for=["\']?' . preg_quote($id ?: $name, '/') . '["\']?[^>]*>(.*?)<\/label>/s';
+        $labelPattern = '/<label[^>]*for=["\']?'.preg_quote($id ?: $name, '/').'["\']?[^>]*>(.*?)<\/label>/s';
         preg_match($labelPattern, $content, $labelMatch);
         $label = $labelMatch ? strip_tags($labelMatch[1]) : ucfirst(str_replace('_', ' ', $name));
         $label = trim(str_replace('*', '', $label));
@@ -133,7 +134,7 @@ foreach ($files as $filepath) {
         $component .= "\n/>";
 
         // Only convert if we have a name
-        if ($name && !isComplexInput($attrs)) {
+        if ($name && ! isComplexInput($attrs)) {
             $content = str_replace($fullTag, $component, $content);
             $stats['inputs_converted']++;
             $changed = true;
@@ -160,13 +161,14 @@ foreach ($files as $filepath) {
         $id = extractAttribute($attrs, 'id');
         $required = strpos($attrs, 'required') !== false;
 
-        if (!$name || isComplexSelect($options)) {
+        if (! $name || isComplexSelect($options)) {
             $stats['skipped_complex']++;
+
             continue;
         }
 
         // Look for label
-        $labelPattern = '/<label[^>]*for=["\']?' . preg_quote($id ?: $name, '/') . '["\']?[^>]*>(.*?)<\/label>/s';
+        $labelPattern = '/<label[^>]*for=["\']?'.preg_quote($id ?: $name, '/').'["\']?[^>]*>(.*?)<\/label>/s';
         preg_match($labelPattern, $content, $labelMatch);
         $label = $labelMatch ? strip_tags($labelMatch[1]) : ucfirst(str_replace('_', ' ', $name));
         $label = trim(str_replace('*', '', $label));
@@ -207,13 +209,14 @@ foreach ($files as $filepath) {
         $rows = extractAttribute($attrs, 'rows');
         $required = strpos($attrs, 'required') !== false;
 
-        if (!$name) {
+        if (! $name) {
             $stats['skipped_complex']++;
+
             continue;
         }
 
         // Look for label
-        $labelPattern = '/<label[^>]*for=["\']?' . preg_quote($id ?: $name, '/') . '["\']?[^>]*>(.*?)<\/label>/s';
+        $labelPattern = '/<label[^>]*for=["\']?'.preg_quote($id ?: $name, '/').'["\']?[^>]*>(.*?)<\/label>/s';
         preg_match($labelPattern, $content, $labelMatch);
         $label = $labelMatch ? strip_tags($labelMatch[1]) : ucfirst(str_replace('_', ' ', $name));
         $label = trim(str_replace('*', '', $label));
@@ -233,7 +236,7 @@ foreach ($files as $filepath) {
 
         $component .= "\n>";
         $component .= $value;
-        $component .= "</x-form.textarea>";
+        $component .= '</x-form.textarea>';
 
         $content = str_replace($fullTag, $component, $content);
         $stats['textareas_converted']++;
@@ -248,7 +251,7 @@ foreach ($files as $filepath) {
     if ($changed) {
         $stats['files_processed']++;
 
-        if (!$dryRun) {
+        if (! $dryRun) {
             file_put_contents($filepath, $content);
             echo "✅ {$relativePath}\n";
         } else {
@@ -260,7 +263,7 @@ foreach ($files as $filepath) {
                 $diffLines = array_slice(explode("\n", $content), 0, 10);
                 foreach ($diffLines as $line) {
                     if (strpos($line, '<x-form.') !== false) {
-                        echo "   + " . trim($line) . "\n";
+                        echo '   + '.trim($line)."\n";
                         break;
                     }
                 }
@@ -271,13 +274,16 @@ foreach ($files as $filepath) {
 }
 
 // Helper functions
-function extractAttribute($attrs, $name) {
-    $pattern = '/' . preg_quote($name, '/') . '=["\']([^"\']*)["\']?/';
+function extractAttribute($attrs, $name)
+{
+    $pattern = '/'.preg_quote($name, '/').'=["\']([^"\']*)["\']?/';
     preg_match($pattern, $attrs, $match);
+
     return $match[1] ?? null;
 }
 
-function isComplexInput($attrs) {
+function isComplexInput($attrs)
+{
     // Skip if has Alpine.js bindings, multiple classes with logic, etc.
     if (strpos($attrs, 'x-') !== false || strpos($attrs, '@') !== false) {
         return true;
@@ -285,10 +291,12 @@ function isComplexInput($attrs) {
     if (strpos($attrs, 'wire:') !== false) {
         return true;
     }
+
     return false;
 }
 
-function isComplexSelect($options) {
+function isComplexSelect($options)
+{
     // Skip if has @foreach or complex logic
     if (strpos($options, '@foreach') !== false || strpos($options, '@forelse') !== false) {
         return true;
@@ -296,6 +304,7 @@ function isComplexSelect($options) {
     if (strpos($options, 'x-') !== false) {
         return true;
     }
+
     return false;
 }
 

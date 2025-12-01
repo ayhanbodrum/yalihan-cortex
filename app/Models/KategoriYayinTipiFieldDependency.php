@@ -29,7 +29,7 @@ class KategoriYayinTipiFieldDependency extends Model
         'ai_calculation',
         'ai_prompt_key',
         'searchable',
-        'show_in_card'
+        'show_in_card',
     ];
 
     protected $casts = [
@@ -41,7 +41,7 @@ class KategoriYayinTipiFieldDependency extends Model
         'ai_calculation' => 'boolean',
         'searchable' => 'boolean',
         'show_in_card' => 'boolean',
-        'display_order' => 'integer' // Context7: order → display_order
+        'display_order' => 'integer', // Context7: order → display_order
     ];
 
     /**
@@ -63,7 +63,7 @@ class KategoriYayinTipiFieldDependency extends Model
     public function scopeForKategoriYayinTipi($query, $kategoriSlug, $yayinTipi)
     {
         return $query->where('kategori_slug', $kategoriSlug)
-                    ->where('yayin_tipi', $yayinTipi);
+            ->where('yayin_tipi', $yayinTipi);
     }
 
     /**
@@ -71,10 +71,10 @@ class KategoriYayinTipiFieldDependency extends Model
      */
     public function scopeWithAI($query)
     {
-        return $query->where(function($q) {
+        return $query->where(function ($q) {
             $q->where('ai_auto_fill', true)
-              ->orWhere('ai_suggestion', true)
-              ->orWhere('ai_calculation', true);
+                ->orWhere('ai_suggestion', true)
+                ->orWhere('ai_calculation', true);
         });
     }
 

@@ -3,23 +3,20 @@
 /**
  * CSS Conflict Fixer - Blade template'lerinde Tailwind CSS çakışmalarını düzelten script
  */
-
 echo "🎨 CSS Conflict Fixer - Tailwind Border Conflicts!\n";
 echo "🔧 border-gray-300 ve @error border-red-500 çakışmalarını düzeltiyoruz...\n\n";
 
-$viewFile = __DIR__ . '/../resources/views/admin/ilanlar/stable-create.blade.php';
+$viewFile = __DIR__.'/../resources/views/admin/ilanlar/stable-create.blade.php';
 $content = file_get_contents($viewFile);
 $fixedCount = 0;
 
 // Pattern: border-gray-300 ile @error('field') border-red-500 çakışmaları
 $patterns = [
     // Pattern 1: Standard border conflict
-    '/class="([^"]*)\bborder-gray-300([^"]*)\s@error\([^)]+\)\s+border-red-500\s+@enderror([^"]*)"/i' =>
-    'class="$1@error($2) border-red-500 @else border-gray-300 @enderror$3"',
+    '/class="([^"]*)\bborder-gray-300([^"]*)\s@error\([^)]+\)\s+border-red-500\s+@enderror([^"]*)"/i' => 'class="$1@error($2) border-red-500 @else border-gray-300 @enderror$3"',
 
     // Pattern 2: Dark mode ile birlikte
-    '/class="([^"]*)\bborder-gray-300\s+dark:border-gray-600([^"]*)\s@error\([^)]+\)\s+border-red-500\s+@enderror([^"]*)"/i' =>
-    'class="$1@error($2) border-red-500 @else border-gray-300 dark:border-gray-600 @enderror$3"'
+    '/class="([^"]*)\bborder-gray-300\s+dark:border-gray-600([^"]*)\s@error\([^)]+\)\s+border-red-500\s+@enderror([^"]*)"/i' => 'class="$1@error($2) border-red-500 @else border-gray-300 dark:border-gray-600 @enderror$3"',
 ];
 
 foreach ($patterns as $pattern => $replacement) {
@@ -44,7 +41,7 @@ $originalContent = file_get_contents($viewFile);
 // Generic fix for all input fields with border conflicts
 $content = preg_replace_callback(
     '/class="([^"]*border[^"]*@error\([\'"]([^\'"]+)[\'"]\)[^"]*border-red-500[^"]*@enderror[^"]*)"/i',
-    function($matches) {
+    function ($matches) {
         $fullClass = $matches[1];
         $fieldName = $matches[2];
 
@@ -54,9 +51,9 @@ $content = preg_replace_callback(
         $cleanClass = preg_replace('/@error\([\'"][^\'"]+[\'"]\)\s+border-red-500\s+@enderror/', '', $cleanClass);
 
         // Rebuild with proper conditional
-        $newClass = trim($cleanClass) . " @error('$fieldName') border-red-500 @else border-gray-300 dark:border-gray-600 @enderror";
+        $newClass = trim($cleanClass)." @error('$fieldName') border-red-500 @else border-gray-300 dark:border-gray-600 @enderror";
 
-        return 'class="' . preg_replace('/\s+/', ' ', $newClass) . '"';
+        return 'class="'.preg_replace('/\s+/', ' ', $newClass).'"';
     },
     $content
 );
@@ -78,6 +75,6 @@ echo "📁 Dosya: stable-create.blade.php\n";
 
 // Count remaining warnings
 $remainingConflicts = substr_count(file_get_contents($viewFile), 'border-gray-300') + substr_count(file_get_contents($viewFile), 'border-red-500');
-echo "⚠️ Kalan potansiyel çakışmalar: " . ($remainingConflicts > 0 ? "Kontrol edilecek" : "Temiz") . "\n";
+echo '⚠️ Kalan potansiyel çakışmalar: '.($remainingConflicts > 0 ? 'Kontrol edilecek' : 'Temiz')."\n";
 
 echo "\n🎨 CSS Conflict Fixer tamamlandı!\n";

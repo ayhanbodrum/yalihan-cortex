@@ -46,7 +46,7 @@ class VillaSezonlukIliskiSeeder extends Seeder
             ]);
         }
 
-        $this->command->info('✅ ' . count($yazlikOzellikIds) . ' yeni Villa + Sezonluk ilişkisi eklendi.');
+        $this->command->info('✅ '.count($yazlikOzellikIds).' yeni Villa + Sezonluk ilişkisi eklendi.');
 
         // Sonucu kontrol et
         $baglantiSayisi = DB::table('ilan_kategori_ozellik_baglanti')
@@ -54,6 +54,6 @@ class VillaSezonlukIliskiSeeder extends Seeder
             ->where('baglanti_tipi', 'yayin')
             ->count();
 
-        $this->command->info('📊 Toplam Villa + Sezonluk ilişkisi: ' . $baglantiSayisi);
+        $this->command->info('📊 Toplam Villa + Sezonluk ilişkisi: '.$baglantiSayisi);
     }
 }

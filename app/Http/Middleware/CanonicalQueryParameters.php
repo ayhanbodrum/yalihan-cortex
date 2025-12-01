@@ -21,11 +21,11 @@ class CanonicalQueryParameters
                 $allowed = [];
             } elseif (str_starts_with($path, 'ilanlar/international')) {
                 $allowed = [
-                    'country','city','citizenship','min_price','max_price','property_type','delivery','min_area','max_area','type','sort'
+                    'country', 'city', 'citizenship', 'min_price', 'max_price', 'property_type', 'delivery', 'min_area', 'max_area', 'type', 'sort',
                 ];
             } elseif (str_starts_with($path, 'ai/explore')) {
                 $allowed = [
-                    'budget_min','budget_max','city','scenario','risk','timeline'
+                    'budget_min', 'budget_max', 'city', 'scenario', 'risk', 'timeline',
                 ];
             }
 
@@ -34,7 +34,7 @@ class CanonicalQueryParameters
                 if ($key === '_token' || $key === 'parent_id') {
                     continue;
                 }
-                if (!in_array($key, $allowed, true)) {
+                if (! in_array($key, $allowed, true)) {
                     continue;
                 }
                 if (is_array($value)) {
@@ -47,8 +47,8 @@ class CanonicalQueryParameters
             }
 
             $target = $request->url();
-            if (!empty($canonical)) {
-                $target .= '?' . http_build_query($canonical);
+            if (! empty($canonical)) {
+                $target .= '?'.http_build_query($canonical);
             }
 
             if ($target !== $request->fullUrl()) {
