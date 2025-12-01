@@ -147,7 +147,7 @@
                     } catch (error) {
                         // 401 (Unauthorized) ve 404 (Not Found) hataları sessizce yakalanır
                         // Bu hatalar notification sisteminin çalışmaması durumunda normaldir
-                        if (error.message?.includes('401') || error.message?.includes('404') || 
+                        if (error.message?.includes('401') || error.message?.includes('404') ||
                             error.message === 'Network response was not ok') {
                             console.debug('Notification fetch error (non-critical):', error.message);
                         } else {

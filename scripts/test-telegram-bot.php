@@ -3,7 +3,7 @@
 
 /**
  * Telegram Bot Test Script
- * 
+ *
  * Bu script Telegram bot sistemini test eder:
  * 1. Bot token kontrolü
  * 2. Webhook durumu
@@ -56,7 +56,7 @@ echo "━━━━━━━━━━━━━━━━━━━━━━━━�
 
 try {
     $response = Http::timeout(10)->get("https://api.telegram.org/bot{$botToken}/getMe");
-    
+
     if ($response->successful()) {
         $data = $response->json();
         if ($data['ok'] ?? false) {
@@ -84,17 +84,17 @@ echo "━━━━━━━━━━━━━━━━━━━━━━━━�
 
 try {
     $response = Http::timeout(10)->get("https://api.telegram.org/bot{$botToken}/getWebhookInfo");
-    
+
     if ($response->successful()) {
         $data = $response->json();
         if ($data['ok'] ?? false) {
             $webhook = $data['result'] ?? [];
             $url = $webhook['url'] ?? 'Tanımsız';
             $pendingUpdates = $webhook['pending_update_count'] ?? 0;
-            
+
             echo "✅ Webhook URL: {$url}\n";
             echo "   Bekleyen Güncellemeler: {$pendingUpdates}\n";
-            
+
             if (empty($url) || $url === '') {
                 echo "⚠️  Webhook ayarlanmamış!\n";
                 echo "   Webhook ayarlamak için:\n";
@@ -114,19 +114,19 @@ echo "\n";
 if (!empty($adminChatId)) {
     echo "📋 4. TEST MESAJI GÖNDERME\n";
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
-    
+
     try {
         $testMessage = "🧪 *Telegram Bot Test*\n\n";
         $testMessage .= "✅ Bot çalışıyor!\n";
         $testMessage .= "🕐 Test Zamanı: " . now()->format('d.m.Y H:i:s') . "\n";
         $testMessage .= "🔗 Webhook: " . url('/api/telegram/webhook') . "\n";
-        
+
         $response = Http::timeout(10)->post("https://api.telegram.org/bot{$botToken}/sendMessage", [
             'chat_id' => $adminChatId,
             'text' => $testMessage,
             'parse_mode' => 'Markdown',
         ]);
-        
+
         if ($response->successful()) {
             $data = $response->json();
             if ($data['ok'] ?? false) {
@@ -143,7 +143,7 @@ if (!empty($adminChatId)) {
     } catch (\Exception $e) {
         echo "❌ Test mesajı gönderilirken hata: " . $e->getMessage() . "\n";
     }
-    
+
     echo "\n";
 }
 
@@ -154,13 +154,13 @@ echo "━━━━━━━━━━━━━━━━━━━━━━━━�
 try {
     $webhookUrl = url('/api/telegram/webhook');
     $testUrl = url('/api/telegram/webhook/test');
-    
+
     echo "✅ Webhook URL: {$webhookUrl}\n";
     echo "✅ Test URL: {$testUrl}\n";
-    
+
     // Test endpoint'ini kontrol et
     $response = Http::timeout(5)->get($testUrl);
-    
+
     if ($response->successful()) {
         $data = $response->json();
         if ($data['success'] ?? false) {
