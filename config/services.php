@@ -57,7 +57,7 @@ return [
     ],
 
     'deepseek' => [
-        'api_key' => env('sk-e09ad62590904bda8243f4f029f5128a.  ', ''),
+        'api_key' => env('DEEPSEEK_API_KEY', ''),
     ],
 
     'gemini' => [

@@ -48,6 +48,16 @@ class Kernel extends ConsoleKernel
         $schedule->command('gorevler:check-deadlines --gun=1')
             ->dailyAt('14:00')
             ->appendOutputTo(storage_path('logs/gorev-deadline-check.log'));
+
+        // Context7: Queue Worker Alert System - Her 5 dakikada bir kontrol
+        // C7-QUEUE-WORKER-ALERT-2025-12-01
+        $schedule->command('queue:check-worker')
+            ->everyFiveMinutes()
+            ->withoutOverlapping()
+            ->runInBackground()
+            ->onFailure(function () {
+                \Illuminate\Support\Facades\Log::error('CheckQueueWorker: Cron job başarısız oldu');
+            });
     }
 
     /**

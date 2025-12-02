@@ -156,6 +156,15 @@ Route::prefix('ai')->name('api.ai.')->middleware(['throttle:30,1'])->group(funct
     // AI Health Check
     Route::get('/health', [AiHealthController::class, 'health'])->name('health');
 
+    // Health Check API Endpoints (Context7: C7-HEALTH-CHECK-API-2025-12-01)
+    // Monitoring araçları için (Prometheus, Grafana, UptimeRobot)
+    Route::prefix('health')->name('health.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\AI\AdvancedAIController::class, 'healthCheck'])->name('check');
+        Route::get('/system', [\App\Http\Controllers\AI\AdvancedAIController::class, 'systemHealthApi'])->name('system');
+        Route::get('/queue', [\App\Http\Controllers\AI\AdvancedAIController::class, 'queueHealth'])->name('queue');
+        Route::get('/telegram', [\App\Http\Controllers\AI\AdvancedAIController::class, 'telegramHealth'])->name('telegram');
+    });
+
     // AI İlan Analizi
     Route::post('/analyze-listing', function (Request $request) {
         try {

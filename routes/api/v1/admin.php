@@ -30,6 +30,10 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::prefix('admin')->name('api.admin.')->middleware(['web', 'auth'])->group(function () {
+    // Menu Items API (Lazy Loading için)
+    Route::get('/menu-items', [\App\Http\Controllers\Api\Admin\MenuItemsController::class, 'index'])->name('menu-items');
+    Route::post('/menu-items/clear-cache', [\App\Http\Controllers\Api\Admin\MenuItemsController::class, 'clearCache'])->name('menu-items.clear-cache');
+    
     // Bulk Operations API
     Route::prefix('bulk')->name('bulk.')->group(function () {
         Route::post('/assign-category', [BulkOperationsController::class, 'assignCategory'])->name('assign-category');

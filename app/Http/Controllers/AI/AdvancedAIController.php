@@ -74,6 +74,74 @@ class AdvancedAIController extends Controller
     }
 
     /**
+     * Health Check API Endpoint
+     *
+     * Context7 Standard: C7-HEALTH-CHECK-API-2025-12-01
+     * Monitoring araçları için health check endpoint
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function healthCheck(): \Illuminate\Http\JsonResponse
+    {
+        $systemHealth = $this->getSystemHealth();
+        $queueStatus = $this->getQueueWorkerStatus();
+        $telegramStats = $this->getTelegramNotificationStats();
+
+        return response()->json([
+            'status' => 'ok',
+            'timestamp' => now()->toIso8601String(),
+            'services' => [
+                'laravel' => 'ok',
+                'ollama' => $systemHealth['ollama']['status'] ?? 'unknown',
+                'anythingllm' => $systemHealth['anythingllm']['status'] ?? 'unknown',
+                'queue' => $queueStatus['status'] ?? 'unknown',
+                'telegram' => $telegramStats['configured'] ? 'ok' : 'not_configured',
+            ],
+            'details' => [
+                'system_health' => $systemHealth,
+                'queue_status' => $queueStatus,
+                'telegram_stats' => $telegramStats,
+            ],
+        ]);
+    }
+
+    /**
+     * System Health API Endpoint
+     *
+     * Context7 Standard: C7-HEALTH-CHECK-API-2025-12-01
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function systemHealthApi(): \Illuminate\Http\JsonResponse
+    {
+        return response()->json($this->getSystemHealth());
+    }
+
+    /**
+     * Queue Health API Endpoint
+     *
+     * Context7 Standard: C7-HEALTH-CHECK-API-2025-12-01
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function queueHealth(): \Illuminate\Http\JsonResponse
+    {
+        return response()->json($this->getQueueWorkerStatus());
+    }
+
+    /**
+     * Telegram Health API Endpoint
+     *
+     * Context7 Standard: C7-HEALTH-CHECK-API-2025-12-01
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function telegramHealth(): \Illuminate\Http\JsonResponse
+    {
+        return response()->json($this->getTelegramNotificationStats());
+    }
+
+    /**
      * Performance Report
      *
      * Context7: Detaylı performans raporu
