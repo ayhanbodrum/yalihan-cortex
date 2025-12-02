@@ -59,6 +59,9 @@ screenshots/*
 # Archive and completed folders
 .context7/archive/
 .yalihan-bekci/archive/
+yalihan-bekci/archive/
+yalihan-bekci/archive-backup-*.tar.gz
+screenshots-backup-*.tar.gz
 .yalihan-bekci/completed/
 *.json
 !package.json
