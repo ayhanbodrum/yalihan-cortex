@@ -11,7 +11,7 @@
 ✅ Commit oluşturuldu (58873e7)  
 ✅ Branch 'main' olarak ayarlandı  
 ✅ Remote repository eklendi  
-✅ .env dosyası güvenli (commit'te yok)  
+✅ .env dosyası güvenli (commit'te yok)
 
 ⚠️ **GEREKLİ:** GitHub Authentication
 
@@ -30,22 +30,22 @@ gh auth login
 ### Adım 2: Sorulara Cevap Verin
 
 1. **What account do you want to log into?**
-   - `GitHub.com` seçin (Enter)
+    - `GitHub.com` seçin (Enter)
 
 2. **What is your preferred protocol for Git operations?**
-   - `HTTPS` seçin (Enter)
+    - `HTTPS` seçin (Enter)
 
 3. **Authenticate Git with your GitHub credentials?**
-   - `Yes` seçin (Y)
+    - `Yes` seçin (Y)
 
 4. **How would you like to authenticate GitHub CLI?**
-   - `Login with a web browser` seçin (Enter)
+    - `Login with a web browser` seçin (Enter)
 
 5. **Press Enter to open github.com in your browser...**
-   - Enter'a basın
-   - Browser'da GitHub login sayfası açılacak
-   - GitHub'da authorize edin
-   - Terminal'de "✓ Authentication complete" mesajını göreceksiniz
+    - Enter'a basın
+    - Browser'da GitHub login sayfası açılacak
+    - GitHub'da authorize edin
+    - Terminal'de "✓ Authentication complete" mesajını göreceksiniz
 
 ### Adım 3: Push İşlemi
 
@@ -178,4 +178,3 @@ Branch 'main' set up to track remote branch 'main' from 'origin'.
 ---
 
 **Son Güncelleme:** 01 Aralık 2025
-
