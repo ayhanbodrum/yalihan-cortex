@@ -194,7 +194,7 @@ class Kisi extends Model
             return str_repeat('*', max(0, $len));
         }
 
-        return str_repeat('*', $len - 4).substr($v, -4);
+        return str_repeat('*', $len - 4) . substr($v, -4);
     }
 
     /**
@@ -277,7 +277,7 @@ class Kisi extends Model
 
     public function getTamAdAttribute(): string
     {
-        return trim($this->ad.' '.$this->soyad);
+        return trim($this->ad . ' ' . $this->soyad);
     }
 
     public function getTamAdresAttribute(): string
@@ -319,7 +319,7 @@ class Kisi extends Model
             if ($danismanModel) {
                 return (object) [
                     'id' => $danismanModel->id,
-                    'name' => $danismanModel->ad.' '.$danismanModel->soyad,
+                    'name' => $danismanModel->ad . ' ' . $danismanModel->soyad,
                     'email' => $danismanModel->email,
                     'phone_number' => $danismanModel->telefon,
                     'source' => 'danisman_model',
@@ -684,7 +684,7 @@ class Kisi extends Model
      */
     public function kisiNotlar(): HasMany
     {
-        return $this->hasMany(MusteriNot::class, 'kisi_id');
+        return $this->hasMany(KisiNot::class, 'kisi_id');
     }
 
     /**
@@ -701,7 +701,7 @@ class Kisi extends Model
      */
     public function kisiEtiketler()
     {
-        return $this->belongsToMany(MusteriEtiket::class, 'kisi_etiket', 'kisi_id', 'etiket_id')
+        return $this->belongsToMany(KisiEtiket::class, 'kisi_etiket', 'kisi_id', 'etiket_id')
             ->withTimestamps();
     }
 
@@ -719,7 +719,7 @@ class Kisi extends Model
      */
     public function kisiAktiviteler(): HasMany
     {
-        return $this->hasMany(MusteriAktivite::class, 'kisi_id');
+        return $this->hasMany(KisiAktivite::class, 'kisi_id');
     }
 
     /**
@@ -736,7 +736,7 @@ class Kisi extends Model
      */
     public function kisiTakip(): HasMany
     {
-        return $this->hasMany(MusteriTakip::class, 'kisi_id');
+        return $this->hasMany(KisiTakip::class, 'kisi_id');
     }
 
     /**
@@ -753,7 +753,7 @@ class Kisi extends Model
      */
     public function statusMusteriTakip()
     {
-        return $this->hasOne(MusteriTakip::class, 'kisi_id')->where('takip_tipi', 'Aktif');
+        return $this->hasOne(KisiTakip::class, 'kisi_id')->where('takip_tipi', 'Aktif');
     }
 
     /**
@@ -761,7 +761,7 @@ class Kisi extends Model
      */
     public function sonAktivite()
     {
-        return $this->hasOne(MusteriAktivite::class, 'kisi_id')->latest('aktivite_tarihi');
+        return $this->hasOne(KisiAktivite::class, 'kisi_id')->latest('aktivite_tarihi');
     }
 
     /**
@@ -769,7 +769,7 @@ class Kisi extends Model
      */
     public function bugunAktiviteler()
     {
-        return $this->hasMany(MusteriAktivite::class, 'kisi_id')->bugun();
+        return $this->hasMany(KisiAktivite::class, 'kisi_id')->bugun();
     }
 
     /**
@@ -777,7 +777,7 @@ class Kisi extends Model
      */
     public function buHaftaAktiviteler()
     {
-        return $this->hasMany(MusteriAktivite::class, 'kisi_id')->buHafta();
+        return $this->hasMany(KisiAktivite::class, 'kisi_id')->buHafta();
     }
 
     /**
@@ -785,7 +785,7 @@ class Kisi extends Model
      */
     public function buAyAktiviteler()
     {
-        return $this->hasMany(MusteriAktivite::class, 'kisi_id')->buAy();
+        return $this->hasMany(KisiAktivite::class, 'kisi_id')->buAy();
     }
 
     /**
@@ -793,7 +793,7 @@ class Kisi extends Model
      */
     public function gecikmisTakipler()
     {
-        return $this->hasMany(MusteriTakip::class, 'kisi_id')->gecikmis();
+        return $this->hasMany(KisiTakip::class, 'kisi_id')->gecikmis();
     }
 
     /**
@@ -801,7 +801,7 @@ class Kisi extends Model
      */
     public function acilTakipler()
     {
-        return $this->hasMany(MusteriTakip::class, 'kisi_id')->acil();
+        return $this->hasMany(KisiTakip::class, 'kisi_id')->acil();
     }
 
     /**
@@ -809,6 +809,6 @@ class Kisi extends Model
      */
     public function yuksekOncelikliTakipler()
     {
-        return $this->hasMany(MusteriTakip::class, 'kisi_id')->yuksekOncelik();
+        return $this->hasMany(KisiTakip::class, 'kisi_id')->yuksekOncelik();
     }
 }
