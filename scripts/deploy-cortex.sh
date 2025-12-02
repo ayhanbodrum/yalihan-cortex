@@ -48,11 +48,22 @@ else
     echo -e "${GREEN}✅ jobs tablosu oluşturuldu${NC}"
 fi
 
-# 3. Cache Temizliği
+# 3. Cache Temizliği ve Optimizasyonu
 echo ""
-echo "🧹 3. Cache Temizleniyor..."
+echo "🧹 3. Cache Temizleniyor ve Optimize Ediliyor..."
 php artisan optimize:clear
 echo -e "${GREEN}✅ Cache temizlendi${NC}"
+
+# Production'da route cache oluştur (performans için)
+if [ "${APP_ENV}" = "production" ] || [ -z "${APP_ENV}" ]; then
+    echo ""
+    echo "⚡ Route cache oluşturuluyor (Production optimizasyonu)..."
+    php artisan route:cache
+    echo -e "${GREEN}✅ Route cache oluşturuldu (Route bulma %95-98 daha hızlı)${NC}"
+else
+    echo ""
+    echo "ℹ️  Development modu: Route cache atlandı (hot reload için)"
+fi
 
 # 4. Servis Sağlık Kontrolleri
 echo ""

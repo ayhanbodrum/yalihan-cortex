@@ -10,6 +10,7 @@ use App\Models\Talep;
 use App\Models\User;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\RequestException;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
@@ -72,6 +73,9 @@ class TelegramService
     /**
      * Kritik fırsat bildirimi gönder
      *
+     * Context7 Standard: C7-TELEGRAM-RATE-LIMITING-2025-12-01
+     * Rate limiting: Aynı ilan/talep için 1 saat içinde max 1 bildirim
+     *
      * @param array $opportunityData
      * @param int $maxRetries Maksimum retry sayısı (varsayılan: 3)
      * @return bool
@@ -86,6 +90,17 @@ class TelegramService
         if (empty($this->adminChatId)) {
             Log::warning('TelegramService: Admin chat ID eksik, bildirim gönderilemedi.');
             return false;
+        }
+
+        // Rate limiting kontrolü: Aynı ilan/talep için 1 saat içinde max 1 bildirim
+        $rateLimitKey = $this->getRateLimitKey($opportunityData);
+        if (Cache::has($rateLimitKey)) {
+            Log::info('TelegramService: Rate limit hit - Bildirim zaten gönderilmiş', [
+                'rate_limit_key' => $rateLimitKey,
+                'ilan_id' => $opportunityData['ilan_id'] ?? null,
+                'talep_id' => $opportunityData['talep_id'] ?? null,
+            ]);
+            return false; // Zaten bildirim gönderilmiş
         }
 
         try {
@@ -118,10 +133,13 @@ class TelegramService
                 ])
                 ->throw(); // Hata durumunda exception fırlat
 
-            // Başarılı
+            // Başarılı - Rate limit kaydet (1 saat)
+            Cache::put($rateLimitKey, true, now()->addHour());
+
             Log::info('TelegramService: Kritik fırsat bildirimi gönderildi', [
                 'opportunity_id' => $opportunityData['id'] ?? null,
                 'score' => $opportunityData['score'] ?? null,
+                'rate_limit_key' => $rateLimitKey,
             ]);
 
             return true;
@@ -164,6 +182,23 @@ class TelegramService
 
             return false;
         }
+    }
+
+    /**
+     * Rate limit key oluştur
+     *
+     * Context7 Standard: C7-TELEGRAM-RATE-LIMITING-2025-12-01
+     * Key format: telegram:alert:{ilan_id}:{talep_id}
+     *
+     * @param array $opportunityData
+     * @return string
+     */
+    private function getRateLimitKey(array $opportunityData): string
+    {
+        $ilanId = $opportunityData['ilan_id'] ?? 'unknown';
+        $talepId = $opportunityData['talep_id'] ?? 'unknown';
+
+        return "telegram:alert:{$ilanId}:{$talepId}";
     }
 
     /**
