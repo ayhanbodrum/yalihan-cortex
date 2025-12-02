@@ -112,10 +112,10 @@ Route::post('/api/ilanlar/upload-photos-deprecated', function (\Illuminate\Http\
         $uploadedPhotos = [];
 
         // Create temporary directory for photos before ilan creation
-        $tempDir = 'temp-photos/'.uniqid();
+        $tempDir = 'temp-photos/' . uniqid();
 
         foreach ($request->file('photos') as $photo) {
-            $fileName = time().'_'.uniqid().'.'.$photo->getClientOriginalExtension();
+            $fileName = time() . '_' . uniqid() . '.' . $photo->getClientOriginalExtension();
             $path = $photo->storeAs($tempDir, $fileName, 'public');
 
             $uploadedPhotos[] = [
@@ -131,7 +131,7 @@ Route::post('/api/ilanlar/upload-photos-deprecated', function (\Illuminate\Http\
 
         return response()->json([
             'success' => true,
-            'message' => count($uploadedPhotos).' fotoğraf geçici olarak yüklendi.',
+            'message' => count($uploadedPhotos) . ' fotoğraf geçici olarak yüklendi.',
             'photos' => array_map(function ($photo) {
                 return [
                     'id' => uniqid(),
@@ -143,10 +143,11 @@ Route::post('/api/ilanlar/upload-photos-deprecated', function (\Illuminate\Http\
     } catch (\Exception $e) {
         return response()->json([
             'success' => false,
-            'message' => 'Fotoğraf yükleme hatası: '.$e->getMessage(),
+            'message' => 'Fotoğraf yükleme hatası: ' . $e->getMessage(),
         ], 500);
     }
 })->middleware('web');
+
 use App\Http\Controllers\Admin\CustomerProfileController;
 use App\Http\Controllers\Admin\EtiketController;
 use App\Http\Controllers\Admin\FeatureCategoryController;
@@ -163,10 +164,10 @@ use App\Http\Controllers\ProfileController;
 use App\Modules\TalepAnaliz\Controllers\TalepAnalizController;
 
 // Auth rotalarını dahil et
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
 
 // Include validation routes
-require __DIR__.'/web/admin/validation.php';
+require __DIR__ . '/web/admin/validation.php';
 
 /*
 |--------------------------------------------------------------------------
@@ -317,7 +318,7 @@ Route::prefix('api/location')->group(function () {
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Alt kategoriler yüklenirken hata oluştu: '.$e->getMessage(),
+                'message' => 'Alt kategoriler yüklenirken hata oluştu: ' . $e->getMessage(),
             ], 500);
         }
     });
@@ -361,7 +362,7 @@ Route::prefix('api/location')->group(function () {
                 'type' => 'province',
                 'id' => $province->id,
                 'name' => $province->name,
-                'display' => $province->name." ({$province->code})",
+                'display' => $province->name . " ({$province->code})",
             ];
         }
 
@@ -378,7 +379,7 @@ Route::prefix('api/location')->group(function () {
                 'type' => 'district',
                 'id' => $district->id,
                 'name' => $district->name,
-                'display' => $district->name.' / '.$district->province_name,
+                'display' => $district->name . ' / ' . $district->province_name,
             ];
         }
 
@@ -603,8 +604,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/filter/{level}', [IlanKategoriController::class, 'filterByLevel'])->name('filterByLevel');
     });
 
-    // Etiket Yönetimi
-    Route::resource('/etiketler', EtiketController::class)->except(['show']);
+    // Etiket Yönetimi - REMOVED (controller deleted, feature unused)
 
     // Talep Analiz Modülü
     Route::prefix('/talep-analiz')->name('talep-analiz.')->group(function () {
@@ -676,15 +676,7 @@ Route::middleware('auth')->group(function () {
         })->name('market-trends');
     });
 
-    // Tip Yönetimi
-    Route::prefix('tip-yonetimi')->name('tip-yonetimi.')->group(function () {
-        Route::get('/', [\App\Http\Controllers\Admin\TipYonetimiController::class, 'index'])->name('index');
-        Route::get('/{kategori}/create', [\App\Http\Controllers\Admin\TipYonetimiController::class, 'create'])->name('create');
-        Route::post('/{kategori}', [\App\Http\Controllers\Admin\TipYonetimiController::class, 'store'])->name('store');
-        Route::get('/{kategori}/{id}/edit', [\App\Http\Controllers\Admin\TipYonetimiController::class, 'edit'])->name('edit');
-        Route::put('/{kategori}/{id}', [\App\Http\Controllers\Admin\TipYonetimiController::class, 'update'])->name('update');
-        Route::delete('/{kategori}/{id}', [\App\Http\Controllers\Admin\TipYonetimiController::class, 'destroy'])->name('destroy');
-    });
+    // Tip Yönetimi - REMOVED (controller deleted, feature unused)
 
     // Feature API Routes (Modal Selector) - MOVED TO api-admin.php (API routes için)
 

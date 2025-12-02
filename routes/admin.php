@@ -742,27 +742,7 @@ Route::middleware(['web'])->prefix('admin')->name('admin.')->group(function () {
             Route::post('/ai/summary', [\App\Modules\Finans\Controllers\FinansalIslemController::class, 'aiGenerateSummary'])->name('ai.summary');
         });
 
-        // Komisyonlar (Commissions)
-        Route::prefix('/komisyonlar')->name('komisyonlar.')->group(function () {
-            Route::get('/', [\App\Modules\Finans\Controllers\KomisyonController::class, 'index'])->name('index');
-            Route::get('/create', function () {
-                return view('admin.finans.komisyonlar.create');
-            })->name('create');
-            Route::post('/', [\App\Modules\Finans\Controllers\KomisyonController::class, 'store'])->name('store');
-            Route::get('/{id}', [\App\Modules\Finans\Controllers\KomisyonController::class, 'show'])->name('show');
-            Route::put('/{id}', [\App\Modules\Finans\Controllers\KomisyonController::class, 'update'])->name('update');
-            Route::delete('/{id}', [\App\Modules\Finans\Controllers\KomisyonController::class, 'destroy'])->name('destroy');
-
-            // Status Management
-            Route::post('/{id}/approve', [\App\Modules\Finans\Controllers\KomisyonController::class, 'approve'])->name('approve');
-            Route::post('/{id}/pay', [\App\Modules\Finans\Controllers\KomisyonController::class, 'pay'])->name('pay');
-            Route::post('/{id}/recalculate', [\App\Modules\Finans\Controllers\KomisyonController::class, 'recalculate'])->name('recalculate');
-
-            // 🤖 AI-Powered Endpoints
-            Route::post('/ai/suggest-rate', [\App\Modules\Finans\Controllers\KomisyonController::class, 'aiSuggestRate'])->name('ai.suggest-rate');
-            Route::post('/{id}/ai/optimize', [\App\Modules\Finans\Controllers\KomisyonController::class, 'aiOptimize'])->name('ai.optimize');
-            Route::post('/ai/analyze', [\App\Modules\Finans\Controllers\KomisyonController::class, 'aiAnalyze'])->name('ai.analyze');
-        });
+        // Komisyonlar (Commissions) - REMOVED (views deleted, module deprecated)
     });
 
     // Sistem Ayarları
@@ -1132,16 +1112,7 @@ Route::prefix('admin/analytics')->name('admin.analytics.')->group(function () {
     Route::get('/{id}', [\App\Http\Controllers\Admin\AnalyticsController::class, 'show'])->name('show');
 });
 
-// Feature Category Management Routes
-Route::prefix('admin/feature-categories')->name('admin.feature-categories.')->middleware(['web'])->group(function () {
-    Route::get('/', [\App\Http\Controllers\Admin\FeatureCategoryController::class, 'index'])->name('index');
-    Route::get('/create', [\App\Http\Controllers\Admin\FeatureCategoryController::class, 'create'])->name('create');
-    Route::post('/', [\App\Http\Controllers\Admin\FeatureCategoryController::class, 'store'])->name('store');
-    Route::get('/{featureCategory}', [\App\Http\Controllers\Admin\FeatureCategoryController::class, 'show'])->name('show');
-    Route::get('/{featureCategory}/edit', [\App\Http\Controllers\Admin\FeatureCategoryController::class, 'edit'])->name('edit');
-    Route::put('/{featureCategory}', [\App\Http\Controllers\Admin\FeatureCategoryController::class, 'update'])->name('update');
-    Route::delete('/{featureCategory}', [\App\Http\Controllers\Admin\FeatureCategoryController::class, 'destroy'])->name('destroy');
-});
+// Feature Category Management Routes - REMOVED (unused)
 
 // Address Management Routes
 Route::prefix('admin/address')->name('admin.address.')->middleware(['web'])->group(function () {
