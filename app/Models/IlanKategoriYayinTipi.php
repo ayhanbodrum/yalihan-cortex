@@ -87,9 +87,21 @@ class IlanKategoriYayinTipi extends Model
 
     /**
      * Name accessor (Context7: yayin_tipi -> name)
+     *
+     * IMPORTANT: When using select(['id', 'name']),
+     * you MUST also select 'yayin_tipi' column
+     * because this accessor relies on it.
+     *
+     * Better: Use select(['id', 'yayin_tipi']) and access via $model->yayin_tipi
+     * OR add appends in model if you need 'name' attribute
      */
     public function getNameAttribute()
     {
-        return $this->yayin_tipi;
+        return $this->attributes['yayin_tipi'] ?? $this->yayin_tipi ?? null;
     }
+
+    /**
+     * Appends for JSON serialization
+     */
+    protected $appends = ['name'];
 }
