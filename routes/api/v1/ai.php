@@ -91,10 +91,10 @@ Route::prefix('ai')->name('api.ai.')->middleware(['auth'])->group(function () {
     Route::post('/analyze-construction', [IlanAIController::class, 'analyzeConstruction'])->name('analyze-construction');
     Route::post('/calculate-seasonal-price', [IlanAIController::class, 'calculateSeasonalPrice'])->name('calculate-seasonal-price');
     Route::post('/start-video-render/{ilanId}', [AIController::class, 'startVideoRender'])
-        ->name('start-video-render')
+        ->name('start-video-render') // Group prefix otomatik ekler: api.ai.start-video-render
         ->where('ilanId', '[0-9]+');
     Route::get('/video-status/{ilanId}', [AIController::class, 'getVideoStatus'])
-        ->name('video-status')
+        ->name('video-status') // Group prefix otomatik ekler: api.ai.video-status
         ->where('ilanId', '[0-9]+');
 });
 
