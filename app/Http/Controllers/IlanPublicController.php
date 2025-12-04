@@ -112,7 +112,7 @@ class IlanPublicController extends Controller
             'kategori:id,name',
             'anaKategori:id,name,slug',
             'altKategori:id,name,slug,parent_id',
-            'yayinTipi:id,name,slug',
+            'yayinTipi:id,yayin_tipi', // Context7: Tablo kolonu yayin_tipi (name accessor var)
         ]);
 
         $query->with(['fotograflar']);
