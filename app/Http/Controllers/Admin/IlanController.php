@@ -234,7 +234,7 @@ class IlanController extends AdminController
             'ilce:id,ilce_adi',
             'anaKategori:id,name',
             'altKategori:id,name',
-            'yayinTipi:id,name', // Template'de kullanılıyor
+            'yayinTipi:id,yayin_tipi', // Context7: Tablo kolonu yayin_tipi (name accessor var)
             'fotograflar' => function ($query) {
                 $query->select('id', 'ilan_id', 'dosya_yolu', 'kapak_fotografi', 'sira')
                     ->orderBy('sira', 'asc')
@@ -1008,7 +1008,7 @@ class IlanController extends AdminController
             'mahalle:id,mahalle_adi',
             'anaKategori:id,name,slug',
             'altKategori:id,name,slug',
-            'yayinTipi:id,name',
+            'yayinTipi:id,yayin_tipi', // Context7: Tablo kolonu yayin_tipi
         ]);
 
         // ✅ Context7 FIX: Status değerleri tutarlı hale getirildi
