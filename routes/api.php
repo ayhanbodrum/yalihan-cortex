@@ -22,11 +22,11 @@ use Illuminate\Support\Facades\Route;
 */
 
 // API v1 routes with versioning prefix
-Route::prefix('v1')->name('api.')->group(function () {
+Route::prefix('v1')->group(function () {
     // Health check - always available
     require __DIR__ . '/api/v1/health.php';
 
-    // Modular API routes (v1)
+    // Modular API routes (v1) - NO name prefix here, let each module define its own
     require __DIR__ . '/api/v1/location.php';
     require __DIR__ . '/api/v1/frontend.php';
     require __DIR__ . '/api/v1/admin.php';
