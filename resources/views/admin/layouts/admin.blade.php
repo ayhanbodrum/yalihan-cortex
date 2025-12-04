@@ -29,6 +29,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     @vite(['resources/css/app.css', 'resources/css/leaflet.css', 'resources/js/leaflet-loader.js', 'resources/js/app.js', 'resources/js/admin/global.js', 'resources/js/admin/neo.js', 'resources/js/components/UnifiedPersonSelector.js'])
+    
+    <!-- ✅ Context7: API Endpoint Management System -->
+    <script src="{{ asset('js/api-config.js') }}" defer></script>
 
     <!-- Context7 Components CSS -->
     <!-- Tailwind CSS utility classes kullanılır (tailwind.config.js) -->
@@ -238,6 +241,9 @@
     <script src="{{ asset('js/admin/progressive-loader.js') }}"></script>
 
     @stack('scripts')
+
+    <!-- Context7 API Config - Must load first (2025-12-03) -->
+    <script src="{{ asset('js/api-config.js') }}"></script>
 
     <!-- Context7 Live Search - Always Active (2025-10-21) -->
     <script src="{{ asset('js/context7-live-search.js') }}"></script>

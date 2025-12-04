@@ -48,6 +48,64 @@ Route::get('/yalihan/properties', function () {
     return view('yaliihan-property-listing');
 })->name('yalihan.properties');
 
+// TKGM Parsel Sorgulama - Context7 Standard (Gerçek Veri)
+Route::any('/api/properties/tkgm-lookup', function (\Illuminate\Http\Request $request, \App\Services\Integrations\TKGMService $service) {
+    try {
+        // Mod 1: Koordinat bazlı sorgulama (haritadan seçim)
+        $lat = $request->input('lat');
+        $lon = $request->input('lng') ?? $request->input('lon');
+
+        if ($lat && $lon) {
+            $result = $service->getParcelByCoordinates((float) $lat, (float) $lon);
+
+            if ($result && ($result['success'] ?? false)) {
+                return response()->json($result);
+            }
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Bu konumda parsel verisi bulunamadı.'
+            ], 404);
+        }
+
+        // Mod 2: Ada/Parsel bazlı sorgulama (formdan giriş)
+        $il = $request->input('il');
+        $ilce = $request->input('ilce');
+        $ada = $request->input('ada');
+        $parsel = $request->input('parsel');
+
+        if ($il && $ilce && $ada && $parsel) {
+            $result = $service->queryParcel($il, $ilce, $ada, $parsel);
+
+            if ($result && ($result['success'] ?? false)) {
+                return response()->json($result);
+            }
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Parsel bilgileri bulunamadı. Lütfen Ada ve Parsel numaralarını kontrol edin.'
+            ], 404);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Koordinat (lat, lng) veya adres bilgileri (il, ilce, ada, parsel) gereklidir.'
+        ], 400);
+    } catch (\Exception $e) {
+        \Illuminate\Support\Facades\Log::error('TKGM Lookup Error', [
+            'message' => $e->getMessage(),
+            'trace' => $e->getTraceAsString(),
+            'request' => $request->all(),
+        ]);
+
+        return response()->json([
+            'success' => false,
+            'message' => 'TKGM servisi şu anda kullanılamıyor. Lütfen daha sonra tekrar deneyin.',
+            'error' => config('app.debug') ? $e->getMessage() : null,
+        ], 500);
+    }
+})->middleware(['auth', 'throttle:20,1'])->name('api.properties.tkgm-lookup');
+
 // Yalihan Contact Page
 Route::get('/yalihan/contact', function () {
     return view('yaliihan-contact');
@@ -150,7 +208,6 @@ Route::post('/api/ilanlar/upload-photos-deprecated', function (\Illuminate\Http\
 
 use App\Http\Controllers\Admin\CustomerProfileController;
 use App\Http\Controllers\Admin\EtiketController;
-use App\Http\Controllers\Admin\FeatureCategoryController;
 use App\Http\Controllers\Admin\FeatureController;
 use App\Http\Controllers\Admin\IlanKategoriController;
 use App\Http\Controllers\Admin\KisiController;
@@ -166,8 +223,7 @@ use App\Modules\TalepAnaliz\Controllers\TalepAnalizController;
 // Auth rotalarını dahil et
 require __DIR__ . '/auth.php';
 
-// Include validation routes
-require __DIR__ . '/web/admin/validation.php';
+// Include validation routes - REMOVED (duplicate with admin.php validate routes)
 
 /*
 |--------------------------------------------------------------------------
@@ -625,16 +681,7 @@ Route::middleware('auth')->group(function () {
         Route::put('/{id}', [FeatureController::class, 'update'])->name('update');
         Route::delete('/{id}', [FeatureController::class, 'destroy'])->name('destroy');
 
-        // Feature Categories
-        Route::prefix('kategoriler')->name('kategoriler.')->group(function () {
-            Route::get('/', [FeatureCategoryController::class, 'index'])->name('index');
-            Route::get('/create', [FeatureCategoryController::class, 'create'])->name('create');
-            Route::post('/', [FeatureCategoryController::class, 'store'])->name('store');
-            Route::get('/{id}/edit', [FeatureCategoryController::class, 'edit'])->name('edit');
-            Route::put('/{id}', [FeatureCategoryController::class, 'update'])->name('update');
-            Route::delete('/{id}', [FeatureCategoryController::class, 'destroy'])->name('destroy');
-            Route::get('/{id}/features', [FeatureCategoryController::class, 'features'])->name('features');
-        });
+        // Feature Categories - REMOVED (Controller deleted)
     });
 
     // Kullanıcı Yönetimi - MOVED TO admin.php with proper AuthController

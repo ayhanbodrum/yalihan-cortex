@@ -224,30 +224,85 @@
                             1: ['ana_kategori_id', 'alt_kategori_id', 'yayin_tipi_id', 'baslik', 'fiyat', 'para_birimi',
                                 'il_id', 'ilce_id', 'adres'
                             ],
-                            2: [], // Kategoriye göre değişir
+                            2: [], // Kategoriye göre değişir - dinamik olarak bulunur
                             3: ['aciklama', 'ilan_sahibi_id', 'status']
                         };
 
-                        // Step 2 için kategoriye göre alanlar
+                        // Step 2 için kategoriye göre alanlar - required attribute'lu alanları otomatik bul
                         if (step === 2) {
-                            const altKategoriSelect = document.querySelector('[name="alt_kategori_id"]');
-                            if (altKategoriSelect && altKategoriSelect.value) {
-                                const selectedOption = altKategoriSelect.options[altKategoriSelect.selectedIndex];
-                                const categorySlug = selectedOption?.getAttribute('data-slug') || '';
-                                const categoryName = selectedOption?.text.toLowerCase() || '';
+                            const form = document.getElementById('ilan-wizard-form');
+                            if (!form) return [];
 
-                                // Arsa kontrolü
-                                if (categorySlug.includes('arsa') || categoryName.includes('arsa')) {
-                                    return ['ada_no', 'parsel_no'];
-                                }
-                                // Konut kontrolü
-                                else if (categorySlug.includes('konut') || categorySlug.includes('daire') ||
-                                    categorySlug.includes('villa') || categoryName.includes('konut') ||
-                                    categoryName.includes('daire') || categoryName.includes('villa')) {
-                                    return ['oda_sayisi', 'brut_alan', 'net_alan'];
-                                }
+                            // Kategoriyi belirle
+                            const altKategoriSelect = document.querySelector('[name="alt_kategori_id"]');
+                            if (!altKategoriSelect || !altKategoriSelect.value) {
+                                return [];
                             }
-                            return []; // Kategori seçilmemişse boş
+
+                            const selectedOption = altKategoriSelect.options[altKategoriSelect.selectedIndex];
+                            const categorySlug = selectedOption?.getAttribute('data-slug') || '';
+                            const categoryName = selectedOption?.text.toLowerCase() || '';
+
+                            // Kategori tipini belirle
+                            const isArsa = categorySlug.includes('arsa') || categoryName.includes('arsa') ||
+                                categorySlug.includes('tarla') || categoryName.includes('tarla') ||
+                                categorySlug.includes('arazi') || categoryName.includes('arazi');
+                            const isKonut = categorySlug.includes('konut') || categorySlug.includes('daire') ||
+                                categorySlug.includes('villa') || categoryName.includes('konut') ||
+                                categoryName.includes('daire') || categoryName.includes('villa');
+
+                            // Step 2'deki tüm required alanları bul
+                            const allRequiredFields = form.querySelectorAll(
+                                'input[required], select[required], textarea[required]'
+                            );
+
+                            // Step 2'ye ait olanları filtrele ve kategoriye göre seç
+                            const step2Fields = Array.from(allRequiredFields).filter(field => {
+                                const fieldName = field.name || field.id;
+                                if (!fieldName) return false;
+
+                                // Step 1 alanlarını hariç tut
+                                const step1Fields = ['ana_kategori_id', 'alt_kategori_id', 'yayin_tipi_id',
+                                    'baslik', 'fiyat', 'para_birimi', 'il_id', 'ilce_id', 'adres', 'enlem',
+                                    'boylam'
+                                ];
+                                if (step1Fields.includes(fieldName)) return false;
+
+                                // Step 3 alanlarını hariç tut
+                                const step3Fields = ['aciklama', 'ilan_sahibi_id', 'status'];
+                                if (step3Fields.includes(fieldName)) return false;
+
+                                // Kategoriye göre filtrele
+                                if (isArsa) {
+                                    // Arsa için sadece arsa alanları
+                                    const arsaFields = ['alan_m2', 'imar_statusu'];
+                                    return arsaFields.includes(fieldName);
+                                } else if (isKonut) {
+                                    // Konut için sadece konut alanları
+                                    const konutFields = ['oda_sayisi', 'banyo_sayisi', 'brut_alan', 'net_alan'];
+                                    return konutFields.includes(fieldName);
+                                }
+
+                                return false;
+                            });
+
+                            const fieldNames = step2Fields
+                                .map(field => field.name || field.id)
+                                .filter(name => name && name !== 'csrf_token' && name !== '_token');
+
+                            // Eğer dinamik bulma başarısız olursa fallback kullan
+                            if (fieldNames.length > 0) {
+                                return fieldNames;
+                            }
+
+                            // Fallback: Kategoriye göre hardcoded alanlar
+                            if (isArsa) {
+                                return ['alan_m2', 'imar_statusu'];
+                            } else if (isKonut) {
+                                return ['oda_sayisi', 'banyo_sayisi', 'brut_alan', 'net_alan'];
+                            }
+
+                            return [];
                         }
 
                         return stepFieldsMap[step] || [];
@@ -297,32 +352,131 @@
 
                     saveDraft() {
                         const form = document.getElementById('ilan-wizard-form');
-                        const formData = new FormData(form);
+                        if (!form) return;
 
-                        // Save to localStorage
                         const draftData = {};
-                        for (let [key, value] of formData.entries()) {
-                            draftData[key] = value;
-                        }
-                        localStorage.setItem('ilan_wizard_draft', JSON.stringify(draftData));
 
+                        // ✅ Context7: Tüm form alanlarını düzgün işle (FormData yerine direkt form elementlerinden)
+                        const inputs = form.querySelectorAll('input, select, textarea');
+                        inputs.forEach(field => {
+                            const name = field.name;
+                            if (!name || name === '_token' || name === 'csrf_token') return;
+
+                            // Array checkbox'lar (site_ozellikleri[], vb.)
+                            if (name.endsWith('[]') && field.type === 'checkbox') {
+                                const arrayKey = name.slice(0, -2);
+                                if (!draftData[arrayKey]) {
+                                    draftData[arrayKey] = [];
+                                }
+                                if (field.checked) {
+                                    const value = field.value || '1';
+                                    if (!draftData[arrayKey].includes(value)) {
+                                        draftData[arrayKey].push(value);
+                                    }
+                                }
+                            }
+                            // Normal checkbox'lar
+                            else if (field.type === 'checkbox') {
+                                draftData[name] = field.checked ? (field.value || '1') : '0';
+                            }
+                            // Radio button'lar
+                            else if (field.type === 'radio') {
+                                if (field.checked) {
+                                    draftData[name] = field.value;
+                                }
+                            }
+                            // Multi-select
+                            else if (field.tagName === 'SELECT' && field.multiple) {
+                                const selectedValues = Array.from(field.selectedOptions)
+                                    .map(opt => opt.value)
+                                    .filter(v => v);
+                                draftData[name] = selectedValues.length > 0 ? selectedValues : [];
+                            }
+                            // Normal input, select, textarea
+                            else {
+                                draftData[name] = field.value || '';
+                            }
+                        });
+
+                        localStorage.setItem('ilan_wizard_draft', JSON.stringify(draftData));
                         this.showNotification('Taslak kaydedildi', 'success');
                     },
 
                     loadDraft() {
                         const draftData = localStorage.getItem('ilan_wizard_draft');
-                        if (draftData) {
-                            try {
-                                const data = JSON.parse(draftData);
-                                Object.keys(data).forEach(key => {
-                                    const field = document.querySelector(`[name="${key}"]`);
-                                    if (field) {
-                                        field.value = data[key];
+                        if (!draftData) return;
+
+                        try {
+                            const data = JSON.parse(draftData);
+                            const form = document.getElementById('ilan-wizard-form');
+                            if (!form) return;
+
+                            Object.keys(data).forEach(key => {
+                                const value = data[key];
+
+                                // ✅ Array field'ları (site_ozellikleri[], vb.)
+                                if (Array.isArray(value)) {
+                                    // Array checkbox'lar için
+                                    const arrayCheckboxes = form.querySelectorAll(`[name="${key}[]"]`);
+                                    arrayCheckboxes.forEach(checkbox => {
+                                        checkbox.checked = value.includes(checkbox.value);
+                                    });
+
+                                    // Multi-select için
+                                    const multiSelect = form.querySelector(`[name="${key}"]`);
+                                    if (multiSelect && multiSelect.multiple) {
+                                        Array.from(multiSelect.options).forEach(option => {
+                                            option.selected = value.includes(option.value);
+                                        });
+                                        // Change event'i tetikle
+                                        multiSelect.dispatchEvent(new Event('change', {
+                                            bubbles: true
+                                        }));
                                     }
-                                });
-                            } catch (e) {
-                                console.error('Draft yüklenemedi:', e);
-                            }
+                                } else {
+                                    // Normal field'lar
+                                    const fields = form.querySelectorAll(`[name="${key}"]`);
+
+                                    if (fields.length === 0) return;
+
+                                    fields.forEach(field => {
+                                        if (field.type === 'checkbox') {
+                                            // Checkbox için
+                                            field.checked = (value === field.value || value === '1' ||
+                                                value === true);
+                                        } else if (field.type === 'radio') {
+                                            // Radio button için
+                                            field.checked = (field.value === value);
+                                        } else {
+                                            // Input, select, textarea için
+                                            field.value = value || '';
+                                            // Cascade dropdown'lar için change event'i tetikle
+                                            if (field.tagName === 'SELECT' && (key === 'ana_kategori_id' ||
+                                                    key === 'alt_kategori_id' || key === 'il_id' || key ===
+                                                    'ilce_id')) {
+                                                field.dispatchEvent(new Event('change', {
+                                                    bubbles: true
+                                                }));
+                                            }
+                                        }
+                                    });
+                                }
+                            });
+
+                            // Cascade dropdown'lar için sıralı event tetikleme
+                            const cascadeSelects = ['ana_kategori_id', 'alt_kategori_id', 'il_id', 'ilce_id'];
+                            cascadeSelects.forEach(selectName => {
+                                const select = form.querySelector(`[name="${selectName}"]`);
+                                if (select && select.value) {
+                                    setTimeout(() => {
+                                        select.dispatchEvent(new Event('change', {
+                                            bubbles: true
+                                        }));
+                                    }, 100);
+                                }
+                            });
+                        } catch (e) {
+                            console.error('Draft yüklenemedi:', e);
                         }
                     },
 
@@ -369,7 +523,8 @@
                                 method: 'POST',
                                 body: formData,
                                 headers: {
-                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content ||
+                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
+                                        ?.content ||
                                         '',
                                     'Accept': 'application/json'
                                 }
@@ -389,7 +544,8 @@
                                     // HTML response (redirect)
                                     this.showNotification('İlan başarıyla oluşturuldu!', 'success');
                                     setTimeout(() => {
-                                        window.location.href = response.url || '{{ route('admin.ilanlar.index') }}';
+                                        window.location.href = response.url ||
+                                            '{{ route('admin.ilanlar.index') }}';
                                     }, 1000);
                                 }
                             } else {

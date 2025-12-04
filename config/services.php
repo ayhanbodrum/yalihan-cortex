@@ -119,6 +119,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | ElevenLabs TTS Service
+    |--------------------------------------------------------------------------
+    */
+
+    'elevenlabs' => [
+        'base_url' => env('ELEVENLABS_BASE_URL', 'https://api.elevenlabs.io'),
+        'api_key' => env('ELEVENLABS_API_KEY', ''),
+        'model' => env('ELEVENLABS_MODEL', 'eleven_multilingual_v2'),
+        'timeout' => env('ELEVENLABS_TIMEOUT', 20),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | n8n Integration Service
     | Context7: n8n webhook entegrasyonu için yapılandırma
     |--------------------------------------------------------------------------

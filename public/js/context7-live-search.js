@@ -211,12 +211,18 @@ if (typeof window.Context7LiveSearch === 'undefined') {
          * API URL oluştur
          */
         buildApiUrl(instance) {
-            // Hibrit API kullan (Select2, Context7, React Select uyumlu)
-            const baseUrl = '/api/hybrid-search';
+            // ✅ Context7: Merkezi API config kullan (api-config.js)
+            const endpointMap = window.APIConfig?.liveSearch || {
+                kisiler: '/api/kisiler/search',
+                danismanlar: '/api/users/search',
+                sites: '/api/sites/search',
+                unified: '/api/search/unified',
+            };
+
+            const baseUrl = endpointMap[instance.searchType] || '/api/kisiler/search';
             const params = new URLSearchParams({
                 q: instance.currentQuery,
                 limit: instance.config.maxResults || this.options.maxResults,
-                format: 'context7',
             });
 
             // Context7 uyumlu ek parametreler
@@ -228,7 +234,7 @@ if (typeof window.Context7LiveSearch === 'undefined') {
                 });
             }
 
-            return `${baseUrl}/${instance.searchType}?${params.toString()}`;
+            return `${baseUrl}?${params.toString()}`;
         }
 
         /**

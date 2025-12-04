@@ -5,12 +5,14 @@
 **CRITICAL RULE:** Tailwind CSS is the **ONLY** CSS framework allowed in this project.
 
 ### ✅ REQUIRED:
+
 - **ALL styling must use Tailwind utility classes**
 - Tailwind plugins for extended functionality
 - `@apply` directive in CSS files (only in `@layer base`)
 - Tailwind config customization (`tailwind.config.js`)
 
 ### ❌ FORBIDDEN:
+
 - Bootstrap (`btn-`, `card-`, `form-control`)
 - Neo Design System (`neo-btn`, `neo-card`, `neo-input`, `neo-*`)
 - Foundation, Bulma, Material UI
@@ -21,24 +23,29 @@
 ### 🎯 Examples:
 
 **✅ CORRECT:**
+
 ```html
-<button class="px-4 py-2.5 bg-blue-600 text-white rounded-lg
+<button
+    class="px-4 py-2.5 bg-blue-600 text-white rounded-lg
                hover:bg-blue-700 hover:scale-105
                active:scale-95
                focus:ring-2 focus:ring-blue-500
                transition-all duration-200
-               shadow-md hover:shadow-lg">
+               shadow-md hover:shadow-lg"
+>
     Kaydet
 </button>
 ```
 
 **❌ WRONG:**
+
 ```html
 <button class="neo-btn neo-btn-primary">Kaydet</button>
 <button class="btn btn-primary">Kaydet</button>
 ```
 
 ### 📚 Documentation:
+
 - `.context7/TAILWIND-TRANSITION-RULE.md`
 - `.context7/authority.json` → `master_css_framework`
 
@@ -47,6 +54,7 @@
 ## 🚫 FORBIDDEN PATTERNS
 
 ### Database Fields:
+
 - `durum` → `status`
 - `is_active` → `status`
 - `aktif` → `status`
@@ -55,15 +63,18 @@
 - `full_name` → `name`
 
 ### CSS Classes:
+
 - `neo-*` → Tailwind utility classes
 - `btn-*` → Tailwind utility classes
 - `card-*` → Tailwind utility classes
 - `form-control` → Tailwind utility classes
 
 ### Layouts:
+
 - `@extends('layouts.app')` → `@extends('admin.layouts.neo')`
 
 ### Routes:
+
 - `route('crm.*')` → `route('admin.*')`
 
 ---
@@ -71,22 +82,21 @@
 ## ✅ REQUIRED STANDARDS
 
 ### 1. Transition/Animation (MANDATORY):
+
 ```html
 <!-- ALWAYS add transitions -->
-transition-all duration-200 ease-in-out
-hover:scale-105 hover:shadow-lg
-active:scale-95
+transition-all duration-200 ease-in-out hover:scale-105 hover:shadow-lg active:scale-95
 ```
 
 ### 2. Dark Mode (MANDATORY):
+
 ```html
 <!-- EVERY element must have dark mode variant -->
-bg-white dark:bg-gray-800
-text-gray-900 dark:text-white
-border-gray-200 dark:border-gray-700
+bg-white dark:bg-gray-800 text-gray-900 dark:text-white border-gray-200 dark:border-gray-700
 ```
 
 ### 3. Responsive Design (MANDATORY):
+
 ```html
 <!-- Mobile-first approach -->
 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3
@@ -121,11 +131,13 @@ Before any code suggestion, ALWAYS check:
 **Status:** STRICT - Tailwind CSS is the ONLY CSS framework
 
 **Auto-reject patterns:**
+
 - Any Bootstrap classes
 - Any Neo Design System classes
 - Custom CSS that duplicates Tailwind
 
 **Required on code review:**
+
 - All styling uses Tailwind utilities
 - Transitions present on interactive elements
 - Dark mode variants present
@@ -136,6 +148,7 @@ Before any code suggestion, ALWAYS check:
 ## 🤖 AI ASSISTANT INSTRUCTIONS
 
 When suggesting code:
+
 1. **ALWAYS use Tailwind CSS utility classes**
 2. **NEVER suggest Bootstrap, Neo Design, or custom CSS**
 3. **ALWAYS include transitions** (`transition-all duration-200`)
@@ -149,25 +162,27 @@ When suggesting code:
 ### 🎯 TWO CONTEXT7 SYSTEMS:
 
 1. **Upstash Context7 MCP** (External - Library Documentation)
-   - Purpose: General library documentation (Laravel, React, MySQL, etc.)
-   - Tools: `resolve-library-id`, `get-library-docs`
-   - When to use: Library/framework questions
+    - Purpose: General library documentation (Laravel, React, MySQL, etc.)
+    - Tools: `resolve-library-id`, `get-library-docs`
+    - When to use: Library/framework questions
 
 2. **Yalıhan Bekçi Context7** (Internal - Project Rules)
-   - Purpose: Project-specific rules and standards
-   - Tools: `get_context7_rules`, `check_pattern`, `get_system_structure`, `validate`
-   - When to use: Project compliance, code validation, project structure
+    - Purpose: Project-specific rules and standards
+    - Tools: `get_context7_rules`, `check_pattern`, `get_system_structure`, `validate`
+    - When to use: Project compliance, code validation, project structure
 
 ### ✅ AUTOMATIC DUAL SYSTEM USAGE:
 
 When user says **"Context7 kullan"** or asks about Context7:
 
 **STEP 1: Upstash Context7 MCP (Library Documentation)**
+
 - Automatically use `resolve-library-id` and `get-library-docs` for library questions
 - Get latest API documentation from official sources
 - Provide up-to-date code examples
 
 **STEP 2: Yalıhan Bekçi Context7 (Project Rules)**
+
 - Automatically use `get_context7_rules` to get project rules
 - Use `check_pattern` to validate code against project patterns
 - Use `get_system_structure` to understand project architecture
@@ -193,6 +208,7 @@ When user says **"Context7 kullan"** or asks about Context7:
 ### 📝 USAGE EXAMPLES:
 
 **Example 1: User says "Context7 kullan"**
+
 ```
 User: "Context7 kullan, Laravel migration nasıl oluşturulur?"
 → BOTH systems activate:
@@ -202,6 +218,7 @@ User: "Context7 kullan, Laravel migration nasıl oluşturulur?"
 ```
 
 **Example 2: Code Generation**
+
 ```
 User: "Context7 kullan, yeni bir model oluştur"
 → BOTH systems activate:
@@ -213,6 +230,7 @@ User: "Context7 kullan, yeni bir model oluştur"
 ```
 
 **Example 3: Project Compliance**
+
 ```
 User: "Context7 kullan, bu kod uyumlu mu?"
 → BOTH systems activate:
@@ -233,17 +251,20 @@ User: "Context7 kullan, bu kod uyumlu mu?"
 ### 🔍 WHEN TO USE DUAL SYSTEM:
 
 ✅ **USE BOTH when:**
+
 - User explicitly says "Context7 kullan"
 - User asks about library features AND project compliance
 - Code generation needs both library docs and project rules
 - User needs validation against project standards
 
 ✅ **USE Upstash Context7 MCP ONLY when:**
+
 - User asks about library/framework features
 - User needs code examples from official docs
 - User asks "how to" questions about libraries
 
 ✅ **USE Yalıhan Bekçi Context7 ONLY when:**
+
 - User asks about project-specific rules
 - User needs code validation
 - User asks about project structure
@@ -254,6 +275,7 @@ User: "Context7 kullan, bu kod uyumlu mu?"
 ## 📖 REFERENCE
 
 For complete rules, see:
+
 - `.context7/authority.json` (master authority file)
 - `.context7/CURSOR_MEMORY_CONTEXT7.md` (Cursor Memory dokümantasyonu)
 - `.context7/CURSOR_MCP_SETUP.md` (Context7 MCP setup guide)
@@ -262,7 +284,200 @@ For complete rules, see:
 
 ---
 
-**Last Updated:** 2025-11-12
-**Version:** Context7 v5.4.0
+## 🌐 API ENDPOINT MANAGEMENT SYSTEM
+
+**CRITICAL RULE:** Tüm API endpoint'ler merkezi sistem üzerinden yönetilir. Hardcoded endpoint'ler YASAKTIR.
+
+### ✅ REQUIRED:
+
+1. **Merkezi Endpoint Registry:**
+    - Backend: `config/api-endpoints.php` - Tüm endpoint'ler burada tanımlı
+    - Frontend: `public/js/api-config.js` - JavaScript endpoint config
+    - Yeni endpoint eklerken MUTLAKA her iki dosyaya da ekle
+
+2. **JavaScript'te Endpoint Kullanımı:**
+
+    ```javascript
+    // ✅ DOĞRU (Merkezi config)
+    fetch(window.APIConfig.location.districts(48));
+    fetch(window.APIConfig.categories.subcategories(parentId));
+    fetch(window.APIConfig.admin.generateAiTitle);
+
+    // ❌ YANLIŞ (Hardcoded - YASAK!)
+    fetch('/api/location/districts/48');
+    fetch(`/api/categories/sub/${parentId}`);
+    ```
+
+3. **Backend'de Endpoint Kullanımı:**
+
+    ```php
+    // ✅ DOĞRU (Config'den al)
+    $endpoint = config('api-endpoints.location.districts');
+    $url = str_replace('{id}', $id, $endpoint);
+
+    // ❌ YANLIŞ (Hardcoded - YASAK!)
+    $url = "/api/location/districts/{$id}";
+    ```
+
+4. **Yeni Endpoint Ekleme Süreci:**
+    -   1. `config/api-endpoints.php`'ye ekle
+    -   2. `public/js/api-config.js`'ye ekle
+    -   3. Route'u `routes/api.php` veya `routes/api/v1/*.php`'ye ekle
+    -   4. `php artisan api:validate-routes` ile kontrol et
+    -   5. `php artisan api:test-endpoints` ile test et
+
+### ❌ FORBIDDEN:
+
+- **Hardcoded endpoint'ler** JavaScript veya PHP kodunda
+- **Doğrudan URL yazma** (`'/api/...'` formatında)
+- **String concatenation** ile endpoint oluşturma
+- **Config dosyalarını güncellemeden** yeni endpoint ekleme
+
+### 🔄 MIGRATION RULE:
+
+**Her yeni kod yazarken veya eski kodu güncellerken:**
+
+1. **Hardcoded endpoint'leri tespit et:**
+
+    ```bash
+    grep -r "/api/" public/js/ resources/js/ app/Http/Controllers/
+    ```
+
+2. **Merkezi sisteme geçir:**
+    - JavaScript: `window.APIConfig` kullan
+    - PHP: `config('api-endpoints.*')` kullan
+
+3. **Test et:**
+    ```bash
+    php artisan api:validate-routes
+    php artisan api:test-endpoints
+    ```
+
+### 📋 API SYSTEM STRUCTURE:
+
+```
+API Sistemi
+├── Backend Config: config/api-endpoints.php
+├── Frontend Config: public/js/api-config.js
+├── Routes: routes/api.php + routes/api/v1/*.php
+├── Validator: php artisan api:validate-routes
+├── Docs Generator: php artisan api:generate-docs
+└── Health Check: php artisan api:test-endpoints
+```
+
+### 🎯 EXAMPLES:
+
+**JavaScript - Location API:**
+
+```javascript
+// ✅ DOĞRU
+const response = await fetch(window.APIConfig.location.districts(ilId));
+
+// ❌ YANLIŞ
+const response = await fetch(`/api/location/districts/${ilId}`);
+```
+
+**JavaScript - Categories API:**
+
+```javascript
+// ✅ DOĞRU
+const url = window.APIConfig.categories.subcategories(parentId);
+const response = await fetch(url);
+
+// ❌ YANLIŞ
+const url = `/api/categories/sub/${parentId}`;
+```
+
+**PHP - Config Kullanımı:**
+
+```php
+// ✅ DOĞRU
+$endpoint = config('api-endpoints.location.districts');
+$url = str_replace('{id}', $ilId, $endpoint);
+
+// ❌ YANLIŞ
+$url = "/api/location/districts/{$ilId}";
+```
+
+### 📚 DOCUMENTATION:
+
+- **API Endpoint Management:** `docs/API-ENDPOINT-MANAGEMENT.md`
+- **API Routes Structure:** `routes/api/README.md`
+- **Config Files:** `config/api-endpoints.php`, `public/js/api-config.js`
+
+### ⚠️ AUTO-CHECK:
+
+Her kod önerisinde:
+
+1. ✅ Hardcoded endpoint var mı kontrol et
+2. ✅ `window.APIConfig` kullanılıyor mu kontrol et
+3. ✅ Yeni endpoint eklendiyse config dosyalarına eklendi mi kontrol et
+4. ✅ Route validator çalıştırıldı mı kontrol et
+
+### 🔄 AUTOMATIC MIGRATION RULE:
+
+**CRITICAL:** Her yeni kod yazarken veya mevcut kodu düzenlerken:
+
+1. **Hardcoded endpoint tespit et:**
+    - Dosyada `'/api/` veya `"/api/` araması yap
+    - Eğer bulunursa, otomatik olarak yeni sisteme geçir
+
+2. **Migration süreci:**
+
+    ```javascript
+    // ❌ BULUNAN (Eski sistem)
+    fetch('/api/location/districts/48');
+
+    // ✅ OTOMATIK DÖNÜŞTÜR (Yeni sistem)
+    fetch(window.APIConfig.location.districts(48));
+    ```
+
+3. **Config kontrolü:**
+    - Endpoint config'de yoksa, önce config'e ekle
+    - Sonra kodu güncelle
+
+4. **Test:**
+    - `php artisan api:validate-routes` çalıştır
+    - Kodun çalıştığını doğrula
+
+### 📋 MIGRATION CHECKLIST:
+
+Her dosya düzenlendiğinde:
+
+- [ ] Hardcoded endpoint var mı? → Varsa geçir
+- [ ] Config dosyalarında tanımlı mı? → Yoksa ekle
+- [ ] `window.APIConfig` kullanılıyor mu? → Kullanılmıyorsa düzelt
+- [ ] Route validator çalıştırıldı mı? → Çalıştır
+
+### 🎯 MIGRATION PRIORITY:
+
+**Yüksek Öncelik (Hemen geçir):**
+
+- Sık kullanılan dosyalar
+- Yeni eklenen özellikler
+- Bug fix'lerde kullanılan endpoint'ler
+
+**Orta Öncelik (Sırayla geçir):**
+
+- Orta sıklıkta kullanılan dosyalar
+- Refactoring sırasında
+
+**Düşük Öncelik (Zaman buldukça):**
+
+- Az kullanılan dosyalar
+- Legacy kodlar
+
+### 📚 MIGRATION DOCUMENTATION:
+
+- **Migration Plan:** `docs/API-MIGRATION-PLAN.md`
+- **API Management:** `docs/API-ENDPOINT-MANAGEMENT.md`
+- **Tespit Edilen Dosyalar:** 23 dosya (1 tamamlandı, 22 kalan)
+
+---
+
+**Last Updated:** 2025-12-03
+**Version:** Context7 v5.5.0
 **Enforcement:** STRICT
 **Cursor Memory:** ✅ Aktif - Otomatik Çalışıyor
+**API Management:** ✅ Aktif - Merkezi Sistem
+**Auto Migration:** ✅ Aktif - Her işlemde kontrol ediliyor

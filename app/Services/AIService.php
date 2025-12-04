@@ -169,7 +169,7 @@ class AIService
     public function suggestFieldValue(string $kategoriSlug, string $yayinTipi, string $fieldSlug, array $context = [])
     {
         // Cache key
-        $cacheKey = "ai_field_suggest_{$kategoriSlug}_{$yayinTipi}_{$fieldSlug}_".md5(json_encode($context));
+        $cacheKey = "ai_field_suggest_{$kategoriSlug}_{$yayinTipi}_{$fieldSlug}_" . md5(json_encode($context));
 
         return Cache::remember($cacheKey, 3600, function () use ($kategoriSlug, $yayinTipi, $fieldSlug, $context) {
             $prompt = $this->buildFieldSuggestionPrompt($kategoriSlug, $yayinTipi, $fieldSlug, $context);
@@ -200,7 +200,7 @@ class AIService
                 $value = $this->suggestFieldValue($kategoriSlug, $yayinTipi, $field->field_slug, $existingData);
                 $suggestions[$field->field_slug] = $value;
             } catch (\Exception $e) {
-                Log::warning("AI auto-fill failed for {$field->field_slug}: ".$e->getMessage());
+                Log::warning("AI auto-fill failed for {$field->field_slug}: " . $e->getMessage());
             }
         }
 
@@ -224,7 +224,7 @@ class AIService
 Hesaplama Görevi:
 - Kaynak Field: {$sourceField} = {$sourceValue}
 - Hedef Field: {$targetField}
-- Context: ".json_encode($context).'
+- Context: " . json_encode($context) . '
 
 Türkiye emlak sektörü standartlarına göre hesapla.
 
@@ -243,7 +243,7 @@ Sadece hesaplanan sayısal değeri döndür (birim olmadan).
 
             return $result['value'] ?? null;
         } catch (\Exception $e) {
-            Log::warning('AI smart calculate failed: '.$e->getMessage());
+            Log::warning('AI smart calculate failed: ' . $e->getMessage());
 
             return null;
         }
@@ -291,7 +291,7 @@ Yayın Tipi: {$yayinTipi}
 Field: {$fieldSlug}
 
 Context:
-".json_encode($context, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)."
+" . json_encode($context, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) . "
 
 Görev: {$fieldContext}
 
@@ -334,7 +334,6 @@ Sadece önerilen değeri döndür (açıklama veya birim olmadan).
             $this->logRequest($action, $prompt, $response, $duration);
 
             return $this->formatResponse($response, $duration);
-
         } catch (\Exception $e) {
             $duration = microtime(true) - $startTime;
             $this->logError($action, $prompt, $e->getMessage(), $duration);
@@ -386,7 +385,7 @@ Sadece önerilen değeri döndür (açıklama veya birim olmadan).
         }
 
         $response = Http::withHeaders([
-            'Authorization' => 'Bearer '.$apiKey,
+            'Authorization' => 'Bearer ' . $apiKey,
             'Content-Type' => 'application/json',
         ])->timeout(30)->post('https://api.openai.com/v1/chat/completions', [
             'model' => $model,
@@ -398,7 +397,7 @@ Sadece önerilen değeri döndür (açıklama veya birim olmadan).
         ]);
 
         if (! $response->successful()) {
-            throw new \Exception('OpenAI API error: '.$response->body());
+            throw new \Exception('OpenAI API error: ' . $response->body());
         }
 
         $data = $response->json();
@@ -428,7 +427,7 @@ Sadece önerilen değeri döndür (açıklama veya birim olmadan).
         ]);
 
         if (! $response->successful()) {
-            throw new \Exception('Google API error: '.$response->body());
+            throw new \Exception('Google API error: ' . $response->body());
         }
 
         $data = $response->json();
@@ -458,7 +457,7 @@ Sadece önerilen değeri döndür (açıklama veya birim olmadan).
         ]);
 
         if (! $response->successful()) {
-            throw new \Exception('Claude API error: '.$response->body());
+            throw new \Exception('Claude API error: ' . $response->body());
         }
 
         $data = $response->json();
@@ -476,7 +475,7 @@ Sadece önerilen değeri döndür (açıklama veya birim olmadan).
         }
 
         $response = Http::withHeaders([
-            'Authorization' => 'Bearer '.$apiKey,
+            'Authorization' => 'Bearer ' . $apiKey,
             'Content-Type' => 'application/json',
         ])->timeout(30)->post('https://api.deepseek.com/v1/chat/completions', [
             'model' => $model,
@@ -488,7 +487,7 @@ Sadece önerilen değeri döndür (açıklama veya birim olmadan).
         ]);
 
         if (! $response->successful()) {
-            throw new \Exception('DeepSeek API error: '.$response->body());
+            throw new \Exception('DeepSeek API error: ' . $response->body());
         }
 
         $data = $response->json();
@@ -507,7 +506,7 @@ Sadece önerilen değeri döndür (açıklama veya birim olmadan).
 
         // MiniMax API v2 endpoint
         $response = Http::withHeaders([
-            'Authorization' => 'Bearer '.$apiKey,
+            'Authorization' => 'Bearer ' . $apiKey,
             'Content-Type' => 'application/json',
         ])->timeout(60)->post('https://api.minimax.chat/v1/text/chatcompletion_v2', [
             'model' => $model,
@@ -528,7 +527,7 @@ Sadece önerilen değeri döndür (açıklama veya birim olmadan).
                 'status' => $response->status(),
                 'body' => $errorBody,
             ]);
-            throw new \Exception('MiniMax API error: '.$errorBody);
+            throw new \Exception('MiniMax API error: ' . $errorBody);
         }
 
         $data = $response->json();
@@ -548,24 +547,44 @@ Sadece önerilen değeri döndür (açıklama veya birim olmadan).
 
     protected function callOllama($action, $prompt, $options)
     {
-        $url = $this->config['ollama_url'] ?? 'http://localhost:11434';
+        $url = $this->config['ollama_url'] ?? 'https://ollama.yalihanemlak.internal';
         $model = $this->config['ollama_model'] ?? 'llama2';
+
+        // 🛡️ KVKK COMPLIANCE CHECK: TLS/HTTPS Zorunluluğu
+        if (config('ai.require_tls', true) && ! str_starts_with($url, 'https://')) {
+            Log::critical('KVKK VIOLATION ATTEMPT: AI endpoint must use HTTPS/TLS', [
+                'url' => $url,
+                'action' => $action,
+                'user_id' => auth()->id(),
+                'timestamp' => now(),
+            ]);
+
+            throw new \Exception(
+                'KVKK Compliance Error: AI servisi HTTPS/TLS kullanmalıdır! ' .
+                    'Kişisel veriler şifrelenmeden iletilemez. (KVKK Madde 12)'
+            );
+        }
 
         // Debug: Model seçimini kontrol et
         Log::info('Ollama Config:', ['url' => $url, 'model' => $model]);
 
-        $response = Http::timeout(120)->post("{$url}/api/generate", [
-            'model' => $model,
-            'prompt' => $prompt,
-            'stream' => false,
-            'options' => [
-                'temperature' => $options['temperature'] ?? 0.7,
-                'num_predict' => $options['max_tokens'] ?? 1000,
-            ],
-        ]);
+        // 🔒 SSL Verification (Production'da zorunlu)
+        $response = Http::timeout(120)
+            ->withOptions([
+                'verify' => config('app.env') === 'production', // SSL sertifika doğrulama
+            ])
+            ->post("{$url}/api/generate", [
+                'model' => $model,
+                'prompt' => $prompt,
+                'stream' => false,
+                'options' => [
+                    'temperature' => $options['temperature'] ?? 0.7,
+                    'num_predict' => $options['max_tokens'] ?? 1000,
+                ],
+            ]);
 
         if (! $response->successful()) {
-            throw new \Exception('Ollama API error: '.$response->body());
+            throw new \Exception('Ollama API error: ' . $response->body());
         }
 
         $data = $response->json();
@@ -591,7 +610,7 @@ Sadece önerilen değeri döndür (açıklama veya birim olmadan).
             }
         }
 
-        return $basePrompt."\n\n".json_encode($data, JSON_PRETTY_PRINT);
+        return $basePrompt . "\n\n" . json_encode($data, JSON_PRETTY_PRINT);
     }
 
     protected function buildSuggestionPrompt($context, $type)
@@ -610,10 +629,10 @@ Sadece önerilen değeri döndür (açıklama veya birim olmadan).
         // QR Code için özel prompt
         if ($type === 'qr_code' && isset($context['ilan'])) {
             $basePrompt .= "\n\nİlan Bilgileri:\n";
-            $basePrompt .= '- Başlık: '.($context['ilan']['baslik'] ?? 'N/A')."\n";
-            $basePrompt .= '- Kategori: '.($context['ilan']['kategori'] ?? 'N/A')."\n";
-            $basePrompt .= '- Lokasyon: '.($context['ilan']['lokasyon'] ?? 'N/A')."\n";
-            $basePrompt .= '- Fiyat: '.($context['ilan']['fiyat'] ?? 'N/A')."\n";
+            $basePrompt .= '- Başlık: ' . ($context['ilan']['baslik'] ?? 'N/A') . "\n";
+            $basePrompt .= '- Kategori: ' . ($context['ilan']['kategori'] ?? 'N/A') . "\n";
+            $basePrompt .= '- Lokasyon: ' . ($context['ilan']['lokasyon'] ?? 'N/A') . "\n";
+            $basePrompt .= '- Fiyat: ' . ($context['ilan']['fiyat'] ?? 'N/A') . "\n";
             $basePrompt .= "\nQR kod kullanım önerileri:\n";
             $basePrompt .= "- Fiziksel görüntülemelerde nerede kullanılmalı?\n";
             $basePrompt .= "- Print materyallerde nasıl yerleştirilmeli?\n";
@@ -624,17 +643,17 @@ Sadece önerilen değeri döndür (açıklama veya birim olmadan).
         // Navigation için özel prompt
         if ($type === 'navigation' && isset($context['ilan'])) {
             $basePrompt .= "\n\nİlan Bilgileri:\n";
-            $basePrompt .= '- Başlık: '.($context['ilan']['baslik'] ?? 'N/A')."\n";
-            $basePrompt .= '- Kategori: '.($context['ilan']['kategori'] ?? 'N/A')."\n";
-            $basePrompt .= '- Lokasyon: '.($context['ilan']['lokasyon'] ?? 'N/A')."\n";
-            $basePrompt .= '- Fiyat: '.($context['ilan']['fiyat'] ?? 'N/A')."\n";
+            $basePrompt .= '- Başlık: ' . ($context['ilan']['baslik'] ?? 'N/A') . "\n";
+            $basePrompt .= '- Kategori: ' . ($context['ilan']['kategori'] ?? 'N/A') . "\n";
+            $basePrompt .= '- Lokasyon: ' . ($context['ilan']['lokasyon'] ?? 'N/A') . "\n";
+            $basePrompt .= '- Fiyat: ' . ($context['ilan']['fiyat'] ?? 'N/A') . "\n";
             $basePrompt .= "\nNavigasyon önerileri:\n";
             $basePrompt .= "- Hangi ilanlar önceki/sonraki olarak gösterilmeli?\n";
             $basePrompt .= "- Benzer ilanlar nasıl belirlenmeli?\n";
             $basePrompt .= "- Kullanıcı deneyimini iyileştirmek için ne yapılmalı?\n";
         }
 
-        return $basePrompt."\n\n".json_encode($context, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        return $basePrompt . "\n\n" . json_encode($context, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
     }
 
     protected function formatResponse($response, $duration)
@@ -662,12 +681,18 @@ Sadece önerilen değeri döndür (açıklama veya birim olmadan).
         // ✅ STANDARDIZED: Using CacheHelper
         return CacheHelper::remember('ai', 'config', 'short', function () {
             $keys = [
-                'openai_api_key', 'openai_model',
-                'google_api_key', 'google_model',
-                'claude_api_key', 'claude_model',
-                'deepseek_api_key', 'deepseek_model',
-                'minimax_api_key', 'minimax_model',
-                'ollama_url', 'ollama_model',
+                'openai_api_key',
+                'openai_model',
+                'google_api_key',
+                'google_model',
+                'claude_api_key',
+                'claude_model',
+                'deepseek_api_key',
+                'deepseek_model',
+                'minimax_api_key',
+                'minimax_model',
+                'ollama_url',
+                'ollama_model',
             ];
 
             return Setting::whereIn('key', $keys)->pluck('value', 'key')->toArray();
@@ -734,10 +759,19 @@ Sadece önerilen değeri döndür (açıklama veya birim olmadan).
     public function getOllamaModels()
     {
         try {
-            // ⚠️ GÜVENLİK: localhost sadece SSH tunnel/VPN ile erişilebilir
-            $ollamaUrl = config('ai.ollama_api_url', 'http://localhost:11434');
+            // 🛡️ KVKK: HTTPS/TLS zorunlu
+            $ollamaUrl = config('ai.ollama_api_url', 'https://ollama.yalihanemlak.internal');
 
-            $response = Http::timeout(10)->get($ollamaUrl.'/api/tags');
+            // 🛡️ TLS Compliance Check
+            if (config('ai.require_tls', true) && ! str_starts_with($ollamaUrl, 'https://')) {
+                throw new \Exception('KVKK Compliance Error: Ollama endpoint must use HTTPS/TLS');
+            }
+
+            $response = Http::timeout(10)
+                ->withOptions([
+                    'verify' => config('app.env') === 'production',
+                ])
+                ->get($ollamaUrl . '/api/tags');
 
             if (! $response->successful()) {
                 throw new \Exception('Ollama sunucusuna erişilemiyor');
@@ -765,7 +799,6 @@ Sadece önerilen değeri döndür (açıklama veya birim olmadan).
                 'models' => $models,
                 'server_url' => $ollamaUrl,
             ];
-
         } catch (\Exception $e) {
             return [
                 'success' => false,
@@ -786,7 +819,7 @@ Sadece önerilen değeri döndür (açıklama veya birim olmadan).
             $bytes /= 1024;
         }
 
-        return round($bytes, $precision).' '.$units[$i];
+        return round($bytes, $precision) . ' ' . $units[$i];
     }
 
     /**
@@ -876,14 +909,14 @@ Sadece önerilen değeri döndür (açıklama veya birim olmadan).
      */
     private function buildPropertyAnalysisPrompt($propertyData, $context)
     {
-        return "Mevcut emlak özellikleri analizi:\n\n".
-               'Özellikler: '.json_encode($propertyData, JSON_UNESCAPED_UNICODE)."\n\n".
-               "Bu özellikler için:\n".
-               "1. Eksik olan önemli özellikler neler?\n".
-               "2. Hangi özellikler daha detaylandırılabilir?\n".
-               "3. Bu emlak için hangi özellikler değer katabilir?\n".
-               "4. AI ile otomatik doldurulabilecek özellikler hangileri?\n\n".
-               'Her öneri için önem derecesi ve gerekçe belirt.';
+        return "Mevcut emlak özellikleri analizi:\n\n" .
+            'Özellikler: ' . json_encode($propertyData, JSON_UNESCAPED_UNICODE) . "\n\n" .
+            "Bu özellikler için:\n" .
+            "1. Eksik olan önemli özellikler neler?\n" .
+            "2. Hangi özellikler daha detaylandırılabilir?\n" .
+            "3. Bu emlak için hangi özellikler değer katabilir?\n" .
+            "4. AI ile otomatik doldurulabilecek özellikler hangileri?\n\n" .
+            'Her öneri için önem derecesi ve gerekçe belirt.';
     }
 
     /**
@@ -900,19 +933,19 @@ Sadece önerilen değeri döndür (açıklama veya birim olmadan).
 
         $kategoriName = $kategoriNames[$kategoriSlug] ?? $kategoriSlug;
 
-        return "{$kategoriName} kategorisi için akıllı form oluştur:\n\n".
-               "Form field'ları şu kategorilerde organize et:\n".
-               "1. Altyapı\n".
-               "2. Genel Özellikler\n".
-               "3. Manzara\n".
-               "4. Konum\n\n".
-               "Her field için:\n".
-               "- Field tipi (text, number, boolean, select, textarea)\n".
-               "- Zorunlu mu? (true/false)\n".
-               "- AI önerisi var mı? (true/false)\n".
-               "- AI otomatik doldurma var mı? (true/false)\n".
-               "- Select seçenekleri (eğer select ise)\n".
-               "- Birim (m², km, vs.)\n\n".
-               'JSON formatında döndür.';
+        return "{$kategoriName} kategorisi için akıllı form oluştur:\n\n" .
+            "Form field'ları şu kategorilerde organize et:\n" .
+            "1. Altyapı\n" .
+            "2. Genel Özellikler\n" .
+            "3. Manzara\n" .
+            "4. Konum\n\n" .
+            "Her field için:\n" .
+            "- Field tipi (text, number, boolean, select, textarea)\n" .
+            "- Zorunlu mu? (true/false)\n" .
+            "- AI önerisi var mı? (true/false)\n" .
+            "- AI otomatik doldurma var mı? (true/false)\n" .
+            "- Select seçenekleri (eğer select ise)\n" .
+            "- Birim (m², km, vs.)\n\n" .
+            'JSON formatında döndür.';
     }
 }

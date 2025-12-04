@@ -5,14 +5,27 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Resources\IlanInternalResource;
 use App\Models\Ilan;
 use App\Models\IlanKategori;
+use App\Services\AI\YalihanCortex;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Maatwebsite\Excel\Facades\Excel;
 
+/**
+ * My Listings Controller
+ *
+ * Context7: İlanlarım - Kullanıcının kendi ilanlarını yönetir
+ * ✅ REFACTORED: YalihanCortex merkezi AI sistemi kullanılıyor
+ */
 class MyListingsController extends AdminController
 {
+    protected YalihanCortex $cortex;
+
+    public function __construct(YalihanCortex $cortex)
+    {
+        $this->cortex = $cortex;
+    }
     /**
      * Display user's own listings (İlanlarım sayfası)
      *
@@ -107,7 +120,13 @@ class MyListingsController extends AdminController
                 ->get();
         });
 
-        return view('admin.ilanlar.my-listings', compact('listings', 'stats', 'categories'));
+        // ✅ NEW: AI analiz sonuçları (opsiyonel, lazy load)
+        $aiAnalysis = null;
+        if ($request->has('ai_analysis') && $request->ai_analysis) {
+            $aiAnalysis = $this->cortex->analyzeMyListings($user->id);
+        }
+
+        return view('admin.ilanlar.my-listings', compact('listings', 'stats', 'categories', 'aiAnalysis'));
     }
 
     /**
@@ -391,5 +410,36 @@ class MyListingsController extends AdminController
         $dosyaAdi = 'Ilanlarim_'.now()->format('Ymd_His').'.pdf';
 
         return $pdf->download($dosyaAdi);
+    }
+
+    /**
+     * API: İlanlarım AI Analizi
+     *
+     * GET /api/admin/my-listings/ai-analysis
+     * ✅ REFACTORED: YalihanCortex kullanılıyor
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function aiAnalysis(Request $request)
+    {
+        try {
+            $user = Auth::user();
+            $options = [
+                'days' => $request->input('days', 30),
+                'include_recommendations' => $request->input('include_recommendations', true),
+            ];
+
+            $result = $this->cortex->analyzeMyListings($user->id, $options);
+
+            return response()->json([
+                'success' => $result['success'] ?? false,
+                'data' => $result,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'error' => 'AI analizi başarısız oldu: ' . $e->getMessage(),
+            ], 500);
+        }
     }
 }

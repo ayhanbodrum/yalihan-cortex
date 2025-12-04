@@ -1,12 +1,597 @@
 // ilan-create-location.js - OpenStreetMap Location System v3.0
 // Context7 uyumlu - Leaflet.js ile açık kaynak harita sistemi
 
-// OpenStreetMap Configuration
 console.log('📍 OpenStreetMap location system loaded (Context7 uyumlu)');
 
-// OpenStreetMap global variables
+// Leaflet map global variable
 let leafletMap = null;
+let currentMarker = null;
 let searchHistory = JSON.parse(localStorage.getItem('addressSearchHistory') || '[]');
+
+// Map configuration
+const MAP_CONFIG = {
+    DEFAULT_ZOOM: 6,
+    DEFAULT_LAT: 38.9637, // Ankara center
+    DEFAULT_LNG: 35.2433,
+    TURKEY_BOUNDS: [
+        [35.5, 25.5],
+        [42.5, 45.0],
+    ],
+    ZOOM_ON_PLACE: 14,
+};
+
+// ============================================================================
+// 🗺️ VANILLA LOCATION MANAGER - Modern Leaflet-based map management
+// ============================================================================
+class VanillaLocationManager {
+    constructor(mapContainerId = 'map') {
+        this.mapContainer = document.getElementById(mapContainerId);
+        this.map = null;
+        this.marker = null;
+        this.searchTimeout = null;
+        this.isSilentUpdate = false; // Used to prevent duplicate events
+
+        if (!this.mapContainer) {
+            console.warn('❌ Map container not found:', mapContainerId);
+            return;
+        }
+
+        this.init();
+    }
+
+    init() {
+        try {
+            if (typeof L === 'undefined') {
+                console.warn('⚠️ Leaflet library not loaded. Retrying...');
+                setTimeout(() => this.init(), 500);
+                return;
+            }
+
+            // Create Leaflet map
+            this.map = L.map(this.mapContainer.id).setView(
+                [MAP_CONFIG.DEFAULT_LAT, MAP_CONFIG.DEFAULT_LNG],
+                MAP_CONFIG.DEFAULT_ZOOM
+            );
+
+            // Add OpenStreetMap tile layer
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors',
+                maxZoom: 19,
+            }).addTo(this.map);
+
+            // Set bounds for Turkey
+            this.map.setMaxBounds(L.latLngBounds(MAP_CONFIG.TURKEY_BOUNDS));
+
+            // Setup event listeners
+            this.setupEventListeners();
+
+            // Load existing coordinates if any
+            const lat = document.getElementById('latitude')?.value;
+            const lng = document.getElementById('longitude')?.value;
+            if (lat && lng) {
+                const coords = [parseFloat(lat), parseFloat(lng)];
+                this.setMarker(coords);
+                this.map.setView(coords, MAP_CONFIG.ZOOM_ON_PLACE);
+            }
+
+            // Hide loading indicator
+            document.getElementById('map-loading')?.style.display = 'none';
+
+            console.log('✅ OpenStreetMap with Leaflet initialized');
+        } catch (error) {
+            console.error('❌ Leaflet initialization error:', error);
+        }
+    }
+
+    setupEventListeners() {
+        // Map click to place marker and fill coordinates
+        this.map.on('click', (e) => this.handleMapClick(e));
+
+        // Input field listeners for coordinate sync
+        const latField = document.getElementById('latitude');
+        const lngField = document.getElementById('longitude');
+
+        if (latField) latField.addEventListener('change', () => this.syncMapFromInputs());
+        if (lngField) lngField.addEventListener('change', () => this.syncMapFromInputs());
+
+        // Address search input
+        const addressSearch = document.getElementById('address-search-input');
+        if (addressSearch) {
+            addressSearch.addEventListener('input', (e) =>
+                this.handleAddressSearch(e.target.value)
+            );
+        }
+
+        // ✨ NEW: Location cascade - İl dropdown change → map focus
+        const ilSelect = document.getElementById('il_id');
+        if (ilSelect) {
+            ilSelect.addEventListener('change', (e) => {
+                if (e.target.value) {
+                    this.focusMapOnProvince(e.target.value);
+                    console.log(`📍 Il changed to ${e.target.value}, focusing map...`);
+                }
+            });
+        }
+
+        // ✨ NEW: District focus - İlçe dropdown change → more precise map focus
+        const ilceSelect = document.getElementById('ilce_id');
+        if (ilceSelect) {
+            ilceSelect.addEventListener('change', (e) => {
+                if (e.target.value) {
+                    this.focusMapOnDistrict(e.target.value);
+                    console.log(`📍 İlçe changed to ${e.target.value}, focusing map...`);
+                }
+            });
+        }
+
+        // ✨ NEW: Neighborhood focus - Mahalle dropdown change
+        const mahalleSelect = document.getElementById('mahalle_id');
+        if (mahalleSelect) {
+            mahalleSelect.addEventListener('change', (e) => {
+                if (e.target.value) {
+                    // Try to get mahalle coordinates and focus
+                    console.log(`📍 Mahalle changed to ${e.target.value}`);
+                }
+            });
+        }
+
+        // ✨ TKGM AUTO-FILL: Ada/Parsel blur event (Gemini AI Önerisi - 2025-12-02)
+        // Context7: imar_durumu → imar_statusu
+        // Yalıhan Bekçi: TKGM Integration
+        this.setupTKGMAutoFill();
+    }
+
+    /**
+     * TKGM Auto-Fill Integration
+     * Ada/Parsel girildiğinde arsa bilgilerini otomatik doldurmak
+     *
+     * Gemini AI Önerisi: İlan ekleme verimliliğini artırmak
+     * Context7: imar_durumu → imar_statusu
+     */
+    setupTKGMAutoFill() {
+        const adaNoInput = document.getElementById('ada_no');
+        const parselNoInput = document.getElementById('parsel_no');
+
+        if (!adaNoInput || !parselNoInput) {
+            console.log(
+                'ℹ️ TKGM Auto-Fill: Ada/Parsel input alanları bulunamadı (Bu sayfa Arsa değilse normaldir)'
+            );
+            return;
+        }
+
+        let tkgmTimeout = null;
+
+        // Blur event (input'tan çıkınca otomatik sorgula)
+        const handleTKGMQuery = () => {
+            clearTimeout(tkgmTimeout);
+
+            tkgmTimeout = setTimeout(() => {
+                const ada = adaNoInput.value.trim();
+                const parsel = parselNoInput.value.trim();
+                const ilId = document.getElementById('il_id')?.value;
+                const ilceId = document.getElementById('ilce_id')?.value;
+
+                // Tüm field'lar dolu mu?
+                if (!ada || !parsel || !ilId || !ilceId) {
+                    console.log('ℹ️ TKGM Auto-Fill: İl, İlçe, Ada veya Parsel eksik');
+                    return;
+                }
+
+                // İl ve İlçe adlarını dropdown'dan al
+                const ilSelect = document.getElementById('il_id');
+                const ilceSelect = document.getElementById('ilce_id');
+                const ilAdi = ilSelect?.options[ilSelect.selectedIndex]?.text || '';
+                const ilceAdi = ilceSelect?.options[ilceSelect.selectedIndex]?.text || '';
+
+                if (!ilAdi || !ilceAdi) {
+                    console.log('ℹ️ TKGM Auto-Fill: İl veya İlçe adı alınamadı');
+                    return;
+                }
+
+                // TKGM API çağrısı
+                this.fetchTKGMData(ilAdi, ilceAdi, ada, parsel);
+            }, 800); // 800ms debounce
+        };
+
+        adaNoInput.addEventListener('blur', handleTKGMQuery);
+        parselNoInput.addEventListener('blur', handleTKGMQuery);
+
+        console.log('✅ TKGM Auto-Fill event listeners initialized');
+    }
+
+    /**
+     * TKGM API çağrısı ve form doldurma
+     */
+    async fetchTKGMData(il, ilce, ada, parsel) {
+        // Loading indicator göster
+        const loadingIndicator = this.showTKGMLoadingIndicator();
+
+        try {
+            console.log(`🔍 TKGM sorgulanıyor: ${il} / ${ilce} - Ada: ${ada}, Parsel: ${parsel}`);
+
+            const response = await fetch('/api/properties/tkgm-lookup', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN':
+                        document.querySelector('meta[name="csrf-token"]')?.content || '',
+                    Accept: 'application/json',
+                },
+                body: JSON.stringify({ il, ilce, ada, parsel }),
+            });
+
+            const result = await response.json();
+
+            if (result.success && result.data) {
+                this.fillFormWithTKGMData(result.data);
+                this.showTKGMSuccessMessage('Parsel bilgileri başarıyla alındı! 🎉');
+            } else {
+                this.showTKGMErrorMessage(result.message || 'Parsel bilgileri bulunamadı');
+            }
+        } catch (error) {
+            console.error('❌ TKGM API Error:', error);
+            this.showTKGMErrorMessage('TKGM bağlantı hatası: ' + error.message);
+        } finally {
+            this.hideTKGMLoadingIndicator(loadingIndicator);
+        }
+    }
+
+    /**
+     * TKGM datasını form field'larına doldur
+     */
+    fillFormWithTKGMData(data) {
+        console.log('✅ TKGM Data alındı:', data);
+
+        // Alan (m²)
+        if (data.alan_m2 && document.getElementById('alan_m2')) {
+            document.getElementById('alan_m2').value = data.alan_m2;
+        }
+
+        // İmar Durumu (Context7: imar_statusu)
+        if (data.imar_statusu && document.getElementById('imar_statusu')) {
+            document.getElementById('imar_statusu').value = data.imar_statusu;
+        }
+
+        // KAKS
+        if (data.kaks && document.getElementById('kaks')) {
+            document.getElementById('kaks').value = data.kaks;
+        }
+
+        // TAKS
+        if (data.taks && document.getElementById('taks')) {
+            document.getElementById('taks').value = data.taks;
+        }
+
+        // Gabari
+        if (data.gabari && document.getElementById('gabari')) {
+            document.getElementById('gabari').value = data.gabari;
+        }
+
+        // Yola Cephe (checkbox)
+        if (typeof data.yola_cephe !== 'undefined' && document.getElementById('yola_cephe')) {
+            document.getElementById('yola_cephe').checked = data.yola_cephe;
+        }
+
+        // Altyapı: Elektrik
+        if (
+            typeof data.altyapi_elektrik !== 'undefined' &&
+            document.getElementById('altyapi_elektrik')
+        ) {
+            document.getElementById('altyapi_elektrik').checked = data.altyapi_elektrik;
+        }
+
+        // Altyapı: Su
+        if (typeof data.altyapi_su !== 'undefined' && document.getElementById('altyapi_su')) {
+            document.getElementById('altyapi_su').checked = data.altyapi_su;
+        }
+
+        // Altyapı: Doğalgaz
+        if (
+            typeof data.altyapi_dogalgaz !== 'undefined' &&
+            document.getElementById('altyapi_dogalgaz')
+        ) {
+            document.getElementById('altyapi_dogalgaz').checked = data.altyapi_dogalgaz;
+        }
+
+        // Koordinatlar (enlem/boylam) - Haritayı güncelle
+        if (data.center_lat && data.center_lng) {
+            const lat = parseFloat(data.center_lat);
+            const lng = parseFloat(data.center_lng);
+
+            // Input field'ları güncelle
+            const latField =
+                document.getElementById('latitude') || document.getElementById('enlem');
+            const lngField =
+                document.getElementById('longitude') || document.getElementById('boylam');
+
+            if (latField) latField.value = lat.toFixed(6);
+            if (lngField) lngField.value = lng.toFixed(6);
+
+            // Haritayı güncelle ve marker koy
+            if (this.map) {
+                this.setMarker([lat, lng]);
+                this.map.setView([lat, lng], MAP_CONFIG.ZOOM_ON_PLACE);
+                console.log(`📍 Harita güncellendi: ${lat}, ${lng}`);
+            }
+        }
+
+        console.log('✅ Form başarıyla dolduruldu (TKGM Auto-Fill)');
+    }
+
+    /**
+     * TKGM Loading indicator göster
+     */
+    showTKGMLoadingIndicator() {
+        const indicator = document.createElement('div');
+        indicator.id = 'tkgm-loading-indicator';
+        indicator.className =
+            'fixed top-4 right-4 bg-blue-500 text-white px-4 py-2 rounded-lg shadow-lg z-50 flex items-center gap-2';
+        indicator.innerHTML = `
+            <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <span>TKGM sorgulanıyor...</span>
+        `;
+        document.body.appendChild(indicator);
+        return indicator;
+    }
+
+    /**
+     * TKGM Loading indicator gizle
+     */
+    hideTKGMLoadingIndicator(indicator) {
+        if (indicator && indicator.parentNode) {
+            indicator.parentNode.removeChild(indicator);
+        }
+    }
+
+    /**
+     * TKGM Success mesajı göster
+     */
+    showTKGMSuccessMessage(message) {
+        this.showTKGMToast(message, 'success');
+    }
+
+    /**
+     * TKGM Error mesajı göster
+     */
+    showTKGMErrorMessage(message) {
+        this.showTKGMToast(message, 'error');
+    }
+
+    /**
+     * TKGM Toast notification
+     */
+    showTKGMToast(message, type = 'success') {
+        const toast = document.createElement('div');
+        toast.className = `fixed top-4 right-4 px-6 py-3 rounded-lg shadow-lg z-50 flex items-center gap-2 transition-all duration-300 ${
+            type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
+        }`;
+        toast.innerHTML = `
+            <span>${type === 'success' ? '✅' : '❌'}</span>
+            <span>${message}</span>
+        `;
+        document.body.appendChild(toast);
+
+        // 5 saniye sonra kaldır
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            setTimeout(() => {
+                if (toast.parentNode) {
+                    toast.parentNode.removeChild(toast);
+                }
+            }, 300);
+        }, 5000);
+    }
+
+    handleMapClick(e) {
+        const { lat, lng } = e.latlng;
+        this.setCoordinates(lat, lng);
+        this.setMarker([lat, lng]);
+        this.reverseGeocode(lat, lng);
+    }
+
+    setCoordinates(lat, lng) {
+        const latField = document.getElementById('latitude');
+        const lngField = document.getElementById('longitude');
+
+        if (latField) latField.value = lat.toFixed(6);
+        if (lngField) lngField.value = lng.toFixed(6);
+
+        // Dispatch custom event for other components
+        window.dispatchEvent(
+            new CustomEvent('location-changed', {
+                detail: { lat, lng },
+                bubbles: true,
+            })
+        );
+    }
+
+    setMarker([lat, lng]) {
+        // Remove existing marker
+        if (this.marker) {
+            this.map.removeLayer(this.marker);
+        }
+
+        // Add new marker
+        this.marker = L.marker([lat, lng], {
+            draggable: true,
+            title: 'Harita üzerinde konumu ayarla',
+        }).addTo(this.map);
+
+        // Drag end listener
+        this.marker.on('dragend', () => {
+            const { lat, lng } = this.marker.getLatLng();
+            this.setCoordinates(lat, lng);
+            this.reverseGeocode(lat, lng);
+        });
+
+        // Center map on marker
+        this.map.setView([lat, lng], MAP_CONFIG.ZOOM_ON_PLACE);
+    }
+
+    reverseGeocode(lat, lng) {
+        fetch(
+            `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&addressdetails=1`
+        )
+            .then((r) => r.json())
+            .then((data) => {
+                if (data.address) {
+                    const address = data.address;
+                    const roadName = address.road || address.footway || address.house_number || '';
+                    const city = address.city || address.suburb || address.town || '';
+
+                    // Fill address field
+                    const addressField = document.getElementById('cadde_sokak');
+                    if (addressField && !addressField.value) {
+                        addressField.value = `${roadName} ${city}`.trim();
+                    }
+
+                    // ✨ NEW: Try to fill il/ilce from OSM data (best effort)
+                    // Note: Nominatim doesn't always return Turkish administrative boundaries
+                    // We'll use province/state matching if available
+                    console.log('📍 Reverse geocoded address:', {
+                        province: address.state,
+                        city: address.city,
+                        county: address.county,
+                        display_name: data.display_name,
+                    });
+                }
+            })
+            .catch((err) => console.warn('Reverse geocode failed:', err));
+    }
+
+    syncMapFromInputs() {
+        const lat = parseFloat(document.getElementById('latitude')?.value);
+        const lng = parseFloat(document.getElementById('longitude')?.value);
+
+        if (!isNaN(lat) && !isNaN(lng)) {
+            this.setMarker([lat, lng]);
+            this.map.setView([lat, lng], MAP_CONFIG.ZOOM_ON_PLACE);
+        }
+    }
+
+    handleAddressSearch(query) {
+        clearTimeout(this.searchTimeout);
+
+        if (!query || query.length < 3) {
+            document.getElementById('address-search-results')?.innerHTML = '';
+            return;
+        }
+
+        this.searchTimeout = setTimeout(() => {
+            fetch(
+                `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}%20Türkiye&format=json&limit=5&countrycodes=tr`
+            )
+                .then((r) => r.json())
+                .then((results) => this.displaySearchResults(results))
+                .catch((err) => console.warn('Address search failed:', err));
+        }, 300);
+    }
+
+    displaySearchResults(results) {
+        const container = document.getElementById('address-search-results');
+        if (!container) return;
+
+        if (results.length === 0) {
+            container.innerHTML = '<div class="p-2 text-gray-500 text-sm">Sonuç bulunamadı</div>';
+            return;
+        }
+
+        container.innerHTML = results
+            .map(
+                (r) =>
+                    `<div class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer text-sm border-b last:border-b-0"
+                  onclick="window.mapManager.selectSearchResult(${r.lat}, ${r.lon}, '${r.display_name.replace(/'/g, "\\'")}')">
+                ${r.display_name}
+            </div>`
+            )
+            .join('');
+    }
+
+    selectSearchResult(lat, lng, displayName) {
+        this.setCoordinates(lat, lng);
+        this.setMarker([lat, lng]);
+        this.reverseGeocode(lat, lng);
+        document.getElementById('address-search-results').innerHTML = '';
+        document.getElementById('address-search-input').value = displayName;
+    }
+
+    focusMapOnProvince(provinceId) {
+        if (!provinceId) return;
+
+        // Fetch province coordinates from API
+        fetch(`/api/location/provinces/${provinceId}`)
+            .then((r) => r.json())
+            .then((data) => {
+                if (data.success && data.data) {
+                    const lat = parseFloat(data.data.lat) || parseFloat(data.data.latitude);
+                    const lng = parseFloat(data.data.lng) || parseFloat(data.data.longitude);
+
+                    if (!isNaN(lat) && !isNaN(lng)) {
+                        this.map.setView([lat, lng], 8); // 8 = province level zoom
+                        console.log(`🗺️ Map focused on province ${provinceId}`);
+                    }
+                }
+            })
+            .catch((err) => {
+                console.warn('Province focus failed:', err);
+                // Fallback: use hardcoded centers if API fails
+                const fallbackCenters = {
+                    6: [39.9334, 32.8597], // Ankara
+                    35: [38.4161, 27.133], // İzmir
+                    34: [41.0082, 28.9784], // İstanbul
+                    16: [36.904, 34.6345], // Adana
+                    31: [36.2383, 29.1219], // Hatay
+                    48: [37.0344, 27.4305], // Muğla (Bodrum)
+                };
+
+                if (fallbackCenters[String(provinceId)]) {
+                    const [lat, lng] = fallbackCenters[String(provinceId)];
+                    this.map.setView([lat, lng], 8);
+                }
+            });
+    }
+
+    focusMapOnDistrict(districtId) {
+        if (!districtId) return;
+
+        // Fetch district coordinates from API
+        fetch(`/api/location/districts/${districtId}`)
+            .then((r) => r.json())
+            .then((data) => {
+                if (data.success && data.data) {
+                    const lat = parseFloat(data.data.lat) || parseFloat(data.data.latitude);
+                    const lng = parseFloat(data.data.lng) || parseFloat(data.data.longitude);
+
+                    if (!isNaN(lat) && !isNaN(lng)) {
+                        this.map.setView([lat, lng], 10); // 10 = district level zoom
+                        console.log(`🗺️ Map focused on district ${districtId}`);
+                    }
+                }
+            })
+            .catch((err) => console.warn('District focus failed:', err));
+    }
+
+    focusMapOnNeighborhood(lat, lng) {
+        if (lat && lng) {
+            this.setMarker([lat, lng]);
+            this.map.setView([lat, lng], MAP_CONFIG.ZOOM_ON_PLACE);
+        }
+    }
+
+    getMap() {
+        return this.map;
+    }
+}
+
+// Global initialization
+window.VanillaLocationManager = VanillaLocationManager;
+
+// ============================================================================
+// LEGACY FUNCTIONS (for backward compatibility)
+// ============================================================================
 
 // Helper functions (Context7 uyumlu)
 function showLoading(message) {
@@ -27,77 +612,13 @@ function showNotification(message, type = 'info') {
     }
 }
 
-// Context7: Dead code removed - LocationManager ve updateFormValues kullanılmıyor
-
-// Update coordinate fields
+// Update coordinate fields (legacy)
 function updateCoordinateFields(latitude, longitude) {
     const latElement = document.getElementById('latitude');
     const lngElement = document.getElementById('longitude');
 
     if (latElement) latElement.value = latitude;
     if (lngElement) lngElement.value = longitude;
-}
-
-// Fill address from geocoding result
-function fillAddressFromGeocoding(addressData) {
-    if (addressData.formatted_address) {
-        const addressField = document.getElementById('cadde_sokak');
-        if (addressField && !addressField.value) {
-            addressField.value = addressData.formatted_address.split(',')[0].trim();
-        }
-    }
-}
-
-// Context7: Dead code removed - initializeLegacySystem kullanılmıyor
-
-function loadIlceler(ilId) {
-    // Context7: LocationManager opsiyonel, basic implementation kullanılıyor
-    // if (locationManager) {
-    //     console.log("📍 Using LocationManager for district loading");
-    //     return;
-    // }
-
-    // Legacy fallback
-    if (!ilId) {
-        clearIlceler();
-        return Promise.resolve();
-    }
-
-    showLoading('İlçeler yükleniyor...');
-
-    // ✅ Context7: Sadece veritabanından veri çek (TurkiyeAPI kullanma)
-    return fetch(`/api/location/districts/${ilId}`)
-        .then((response) => response.json())
-        .then((result) => {
-            hideLoading();
-            // ✅ Context7: API response format'ı (direkt array - adres-yonetimi ile uyumlu)
-            const districts = Array.isArray(result.data) ? result.data : [];
-            if (result.success && districts.length > 0) {
-                populateIlceler(districts);
-
-                // 🗺️ V2.0: İl seçildiğinde haritayı o ile odakla (Leaflet)
-                try {
-                    if (typeof focusMapOnProvince === 'function') {
-                        focusMapOnProvince(ilId);
-                    }
-                } catch (e) {
-                    console.log('📍 Map focus skipped:', e);
-                }
-                return Promise.resolve();
-            } else {
-                // Context7: DB'de ilçe yoksa boş liste göster
-                console.log("⚠️ DB'de ilçe bulunamadı");
-                populateIlceler([]);
-                showNotification('Bu il için ilçe bulunamadı', 'info');
-                return Promise.resolve();
-            }
-        })
-        .catch((error) => {
-            hideLoading();
-            console.error('İlçe yükleme hatası:', error);
-            showNotification('İlçeler yüklenemedi', 'error');
-            return Promise.reject(error);
-        });
 }
 
 // Context7: TurkiyeAPI kullanımı kaldırıldı - Sadece veritabanından veri çekiliyor
@@ -1420,3 +1941,29 @@ console.error = function (...args) {
     // Call original console.error
     originalConsoleError.apply(console, args);
 };
+
+// ============================================================================
+// AUTO-INITIALIZATION
+// ============================================================================
+document.addEventListener('DOMContentLoaded', () => {
+    // Initialize VanillaLocationManager when map container is available
+    if (document.getElementById('map')) {
+        try {
+            window.mapManager = new VanillaLocationManager('map');
+            console.log('✅ VanillaLocationManager initialized');
+        } catch (error) {
+            console.error('❌ Failed to initialize VanillaLocationManager:', error);
+        }
+    }
+});
+
+// Allow manual initialization if needed
+window.initMapManager = () => {
+    if (!window.mapManager && document.getElementById('map')) {
+        window.mapManager = new VanillaLocationManager('map');
+        return window.mapManager;
+    }
+    return window.mapManager;
+};
+
+console.log('✅ Location system ready (VanillaLocationManager will auto-initialize)');

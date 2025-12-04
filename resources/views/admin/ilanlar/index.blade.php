@@ -353,7 +353,22 @@
 
                     {{-- Mobile Card View --}}
                     <div class="md:hidden">
-                        @include('admin.ilanlar.partials.listings-cards', ['ilanlar' => $ilanlar])
+                        <div class="space-y-4">
+                            @foreach ($ilanlar as $ilan)
+                                <div class="bg-white dark:bg-gray-900 p-4 rounded-lg shadow">
+                                    <h3 class="font-bold text-lg mb-2">{{ $ilan->baslik }}</h3>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                                        {{ $ilan->ilce->ilce_adi ?? '' }} / {{ $ilan->il->il_adi ?? '' }}
+                                    </p>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-green-600 font-bold">{{ number_format($ilan->fiyat) }}
+                                            {{ $ilan->para_birimi }}</span>
+                                        <a href="{{ route('admin.ilanlar.show', $ilan->id) }}"
+                                            class="text-blue-600">Detay</a>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
                     </div>
 
                     {{-- Desktop Table View --}}
@@ -410,16 +425,22 @@
                                                     @endif
                                                 </div>
                                                 <div class="ml-4 flex-1">
-                                                    <div class="text-sm font-medium text-gray-900 dark:text-white">
-                                                        <a href="{{ route('admin.ilanlar.show', $ilan->id) }}"
-                                                            class="hover:text-blue-600 dark:hover:text-blue-400">
-                                                            {{ $ilan->baslik ?? 'İlan #' . $ilan->id }}
-                                                        </a>
+                                                    <div class="flex items-center gap-3 mb-2">
+                                                        {{-- ✨ REFERANS BADGE (Gemini AI Önerisi - 3 Katmanlı Sistem) --}}
+                                                        @include('admin.ilanlar.partials.referans-badge', [
+                                                            'ilan' => $ilan,
+                                                        ])
+
+                                                        <div class="text-sm font-medium text-gray-900 dark:text-white">
+                                                            <a href="{{ route('admin.ilanlar.show', $ilan->id) }}"
+                                                                class="hover:text-blue-600 dark:hover:text-blue-400">
+                                                                {{ $ilan->baslik ?? 'İlan #' . $ilan->id }}
+                                                            </a>
+                                                        </div>
                                                     </div>
                                                     <div class="text-sm text-gray-500 dark:text-gray-400">
-                                                        ID: #{{ $ilan->id }}
                                                         @if ($ilan->il && $ilan->ilce)
-                                                            • {{ $ilan->il->il_adi }}, {{ $ilan->ilce->ilce_adi }}
+                                                            {{ $ilan->il->il_adi }}, {{ $ilan->ilce->ilce_adi }}
                                                         @endif
                                                     </div>
                                                     <div class="mt-2 text-xs text-gray-600 dark:text-gray-400">
@@ -888,7 +909,7 @@
                         this.processing = true;
 
                         try {
-                            const response = await fetch('{{ route('admin.ilanlar.bulk-action') }}', {
+                            const response = await fetch('{{ route('admin.ilanlar.bulk.action') }}', {
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json',

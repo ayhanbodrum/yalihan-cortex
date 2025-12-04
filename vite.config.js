@@ -39,6 +39,7 @@ export default defineConfig({
                 'resources/js/admin/my-listings-search.js',
                 // İlan Create Modular JS
                 'resources/js/admin/ilan-create.js',
+                'resources/js/admin/ilan-create/tkgm-autofill.js',
                 // AI Settings Modular JS (Hybrid Architecture)
                 'resources/js/admin/ai-settings/core.js',
                 // AI Register (AdminAIService global export)

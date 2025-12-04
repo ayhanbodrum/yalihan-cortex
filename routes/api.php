@@ -14,7 +14,9 @@ use App\Http\Controllers\Api\KisiCRMController;
 use App\Http\Controllers\Api\PhotoController;
 use App\Http\Controllers\Api\SeasonController;
 use App\Http\Controllers\Api\UnifiedSearchController;
+use App\Services\Integrations\TKGMService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -31,6 +33,9 @@ Route::get('/health', function () {
         'timestamp' => now()->toISOString(),
     ]);
 });
+
+
+// TKGM Lookup API moved to routes/web.php (CSRF token gerektiği için)
 
 // Geo Proxy (Context7) - Nominatim/Overpass via server with cache
 Route::prefix('geo')->group(function () {
@@ -57,7 +62,10 @@ Route::prefix('navigation')->middleware(['web'])->group(function () {
 });
 
 // Frontend Property Feed API
-Route::prefix('frontend/properties')->name('api.frontend.properties.')->group(function () {
+Route::prefix('frontend/properties')->name('api.frontend.properties.')->middleware([
+    'throttle:' . config('services.frontend_api.rate_limit', 60) . ',1',
+    \App\Http\Middleware\VerifyFrontendApi::class,
+])->group(function () {
     Route::get('/', [PropertyFeedController::class, 'index'])->name('index');
     Route::get('/featured', [PropertyFeedController::class, 'featured'])->name('featured');
     Route::get('/{propertyId}', [PropertyFeedController::class, 'show'])->name('show');
@@ -155,6 +163,17 @@ Route::prefix('ilanlar')->group(function () {
     Route::get('/by-site', [IlanSearchController::class, 'findBySite']);
 });
 
+// Video Asistanı API (Admin Panelden çağrılır)
+Route::prefix('ai')->name('api.ai.')->middleware(['web', 'auth'])->group(function () {
+    Route::post('/start-video-render/{ilanId}', [\App\Http\Controllers\Api\AIController::class, 'startVideoRender'])
+        ->name('start-video-render')
+        ->whereNumber('ilanId');
+
+    Route::get('/video-status/{ilanId}', [\App\Http\Controllers\Api\AIController::class, 'getVideoStatus'])
+        ->name('video-status')
+        ->whereNumber('ilanId');
+});
+
 // AI API Routes (CSRF exempt)
 Route::prefix('admin/ai')->group(function () {
     Route::post('/analyze', [\App\Http\Controllers\Api\AIController::class, 'analyze']);
@@ -245,7 +264,6 @@ Route::prefix('admin/calendars')->middleware(['web', 'auth'])->group(function ()
     Route::post('/{ilan}/block', [\App\Http\Controllers\Admin\CalendarSyncController::class, 'blockDates']);
 });
 
-// TKGM Parsel Sorgulama API - Geçici Endpoint (Context7 Kural #70)
 Route::prefix('admin/api/tkgm-parsel')->middleware(['web', 'auth', 'throttle:20,1'])->group(function () {
     Route::post('/query', [\App\Http\Controllers\Admin\TKGMParselController::class, 'query'])->name('api.tkgm-parsel.query');
     Route::post('/bulk-query', [\App\Http\Controllers\Admin\TKGMParselController::class, 'bulkQuery'])->name('api.tkgm-parsel.bulk-query');
@@ -700,6 +718,14 @@ Route::prefix('location')->group(function () {
     Route::post('/reverse-geocode', [App\Http\Controllers\Api\LocationController::class, 'reverseGeocode']);
     Route::get('/nearby/{lat}/{lng}/{radius?}', [App\Http\Controllers\Api\LocationController::class, 'findNearby']);
     Route::post('/validate-address', [App\Http\Controllers\Api\LocationController::class, 'validateAddress']);
+
+    // ✨ NEW: Location cascade routes (for map focus)
+    Route::get('/provinces/{id}', [App\Http\Controllers\Api\LocationController::class, 'getProvince'])
+        ->name('api.location.province');
+    // ✅ FIX: getDistrict route'u /district/{id} olarak değiştirildi (çakışmayı önlemek için)
+    // Not: /districts/{id} zaten getDistrictsByProvince için kullanılıyor (il ID'sine göre ilçeleri getirir)
+    Route::get('/district/{id}', [App\Http\Controllers\Api\LocationController::class, 'getDistrict'])
+        ->name('api.location.district');
 });
 
 // Unified Search Routes
@@ -725,6 +751,11 @@ Route::prefix('categories')->group(function () {
     // ✅ Yayın tiplerini getir (Alt kategori ID'sine göre - ilan_kategori_yayin_tipleri tablosundan)
     Route::get('/publication-types/{categoryId}', [\App\Http\Controllers\Api\CategoriesController::class, 'getPublicationTypes'])
         ->name('api.categories.publication-types');
+
+    // ✅ Type-based fields getir (Kategori + Yayın Tipi'ne göre dinamik alanlar)
+    Route::get('/fields/{categoryId}/{publicationTypeId?}', [\App\Http\Controllers\Api\CategoriesController::class, 'getFields'])
+        ->name('api.categories.fields')
+        ->where(['categoryId' => '[0-9]+', 'publicationTypeId' => '[0-9]+']);
 });
 
 // ✅ Context7: Demirbaşlar API Routes (Hiyerarşik Yapı)
@@ -953,16 +984,4 @@ Route::prefix('telegram')->name('api.telegram.')->group(function () {
 // Frontend API Routes (Context7 Standard: C7-FRONTEND-API-2025-12-01)
 // Vitrin (Mağaza) ile Panel (Depo) arasındaki internal API
 // Docker network üzerinden erişilir, Internal API Key ile korunur
-Route::prefix('frontend')->name('api.frontend.')->middleware([
-    'throttle:' . config('services.frontend_api.rate_limit', 60) . ',1',
-    \App\Http\Middleware\VerifyFrontendApi::class,
-])->group(function () {
-    Route::get('/properties', [\App\Http\Controllers\Api\Frontend\PropertyFeedController::class, 'index'])
-        ->name('properties.index');
-
-    Route::get('/properties/featured', [\App\Http\Controllers\Api\Frontend\PropertyFeedController::class, 'featured'])
-        ->name('properties.featured');
-
-    Route::get('/properties/{id}', [\App\Http\Controllers\Api\Frontend\PropertyFeedController::class, 'show'])
-        ->name('properties.show');
-});
+// Routes already defined above in api.frontend.properties.* group

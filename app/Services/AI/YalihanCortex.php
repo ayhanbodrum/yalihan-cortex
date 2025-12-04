@@ -7,6 +7,7 @@ use App\Models\Ilan;
 use App\Models\Talep;
 use App\Modules\Finans\Services\FinansService;
 use App\Services\AIService;
+use App\Services\AI\OllamaService;
 use App\Services\Logging\LogService;
 use App\Services\TKGMService;
 use Illuminate\Support\Facades\Auth;
@@ -46,9 +47,19 @@ class YalihanCortex
     protected TKGMService $tkgmService;
 
     /**
+     * Arsa Proje Analiz Servisi
+     */
+    protected ArsaProjectService $arsaProjectService;
+
+    /**
      * AI Content Generation Service
      */
     protected AIService $aiService;
+
+    /**
+     * Ollama Service (Local AI)
+     */
+    protected OllamaService $ollamaService;
 
     /**
      * Fallback providers (yedek sistemler)
@@ -67,13 +78,256 @@ class YalihanCortex
         KisiChurnService $churnService,
         FinansService $finansService,
         TKGMService $tkgmService,
-        AIService $aiService
+        ArsaProjectService $arsaProjectService,
+        AIService $aiService,
+        OllamaService $ollamaService
     ) {
         $this->propertyMatcher = $propertyMatcher;
         $this->churnService = $churnService;
         $this->finansService = $finansService;
         $this->tkgmService = $tkgmService;
+        $this->arsaProjectService = $arsaProjectService;
         $this->aiService = $aiService;
+        $this->ollamaService = $ollamaService;
+    }
+
+    /**
+     * Arsa için Proje Potansiyeli Analizi
+     *
+     * @CortexDecision
+     * TKGM (KAKS/TAKS) + basit fiyat varsayımı ile
+     * maksimum inşaat alanı, konut sayısı ve tahmini
+     * satış gelirini hesaplar.
+     *
+     * Örnek Senaryo:
+     *  Alan: 2.845 m², KAKS: 0.60 → 1.707 m² inşaat alanı
+     *  Konut: 1.707 / 200 ≈ 8 daire
+     *  Bölge ortalaması: 1.500.000 ₺/daire → ~12M ₺ proje potansiyeli
+     *
+     * @param Ilan  $ilan
+     * @param array $options ['proje_tipi' => 'villa|daire|otomatik']
+     * @return array
+     */
+    public function analyzeProjectPotential(Ilan $ilan, array $options = []): array
+    {
+        $startTime = LogService::startTimer('yalihan_cortex_arsa_project_potential');
+
+        try {
+            LogService::ai(
+                'arsa_project_potential_started',
+                'YalihanCortex',
+                [
+                    'ilan_id' => $ilan->id,
+                    'baslik' => $ilan->baslik,
+                    'kategori' => $ilan->anaKategori->slug ?? null,
+                ]
+            );
+
+            // Sadece arsa kategorisi için çalıştır
+            $kategoriSlug = strtolower($ilan->anaKategori->slug ?? '');
+            if ($kategoriSlug !== 'arsa') {
+                $durationMs = LogService::stopTimer($startTime);
+
+                return [
+                    'success' => false,
+                    'error' => 'Bu analiz sadece arsa ilanları için geçerlidir.',
+                    'ilan_id' => $ilan->id,
+                    'category' => $kategoriSlug,
+                    'metadata' => [
+                        'processed_at' => now()->toISOString(),
+                        'duration_ms' => $durationMs,
+                        'algorithm' => 'YalihanCortex v1.0',
+                    ],
+                ];
+            }
+
+            // TKGM parsel bilgilerini al (mevcut TKGMService kullanımı ile uyumlu)
+            $tkgmResult = $this->tkgmService->parselSorgula(
+                $ilan->ada_no,
+                $ilan->parsel_no,
+                $ilan->il_id,
+                $ilan->ilce_id,
+                $ilan->mahalle_id
+            );
+
+            if (! ($tkgmResult['success'] ?? false) || ! isset($tkgmResult['parsel_bilgileri'])) {
+                $durationMs = LogService::stopTimer($startTime);
+
+                return [
+                    'success' => false,
+                    'error' => $tkgmResult['message'] ?? 'TKGM parsel bilgileri alınamadı.',
+                    'ilan_id' => $ilan->id,
+                    'metadata' => [
+                        'processed_at' => now()->toISOString(),
+                        'duration_ms' => $durationMs,
+                        'algorithm' => 'YalihanCortex v1.0',
+                    ],
+                ];
+            }
+
+            $parsel = $tkgmResult['parsel_bilgileri'];
+
+            // TKGM verisini ArsaProjectService için normalize et
+            $tkgmNormalized = [
+                'alan_m2' => $parsel['yuzolcumu'] ?? null,
+                'kaks' => $parsel['kaks'] ?? null,
+            ];
+
+            $projeTipiInput = $options['proje_tipi'] ?? 'otomatik';
+
+            $projectAnalysis = $this->arsaProjectService->calculateProfitPotential(
+                $tkgmNormalized,
+                $projeTipiInput
+            );
+
+            $durationMs = LogService::stopTimer($startTime);
+
+            $result = [
+                'success' => $projectAnalysis['success'],
+                'ilan_id' => $ilan->id,
+                'project' => $projectAnalysis,
+                'tkgm' => [
+                    'parsel' => $parsel,
+                    'hesaplamalar' => $tkgmResult['hesaplamalar'] ?? null,
+                    'source' => $tkgmResult['metadata']['source'] ?? 'TKGM',
+                ],
+                'metadata' => [
+                    'processed_at' => now()->toISOString(),
+                    'duration_ms' => $durationMs,
+                    'algorithm' => 'YalihanCortex v1.0',
+                    'category' => $kategoriSlug,
+                ],
+            ];
+
+            // AiLog kaydı
+            $this->logCortexDecision('arsa_project_potential', [
+                'ilan_id' => $ilan->id,
+                'ada_no' => $ilan->ada_no,
+                'parsel_no' => $ilan->parsel_no,
+                'max_insaat_alani' => $projectAnalysis['max_insaat_alani'] ?? null,
+                'max_konut_sayisi' => $projectAnalysis['max_konut_sayisi'] ?? null,
+                'tahmini_satis_fiyati' => $projectAnalysis['tahmini_satis_fiyati'] ?? null,
+                'onerilen_proje_tipi' => $projectAnalysis['onerilen_proje_tipi'] ?? null,
+            ], $durationMs, $projectAnalysis['success'] ?? false);
+
+            LogService::ai(
+                'arsa_project_potential_completed',
+                'YalihanCortex',
+                [
+                    'ilan_id' => $ilan->id,
+                    'max_insaat_alani' => $projectAnalysis['max_insaat_alani'] ?? null,
+                    'max_konut_sayisi' => $projectAnalysis['max_konut_sayisi'] ?? null,
+                    'tahmini_satis_fiyati' => $projectAnalysis['tahmini_satis_fiyati'] ?? null,
+                    'duration_ms' => $durationMs,
+                ]
+            );
+
+            return $result;
+        } catch (\Exception $e) {
+            $durationMs = LogService::stopTimer($startTime);
+
+            $this->logCortexDecision('arsa_project_potential', [
+                'ilan_id' => $ilan->id,
+                'error' => $e->getMessage(),
+            ], $durationMs, false);
+
+            LogService::error(
+                'YalihanCortex arsa project potential failed',
+                [
+                    'ilan_id' => $ilan->id,
+                    'error' => $e->getMessage(),
+                ],
+                $e,
+                LogService::CHANNEL_AI
+            );
+
+            return [
+                'success' => false,
+                'ilan_id' => $ilan->id,
+                'error' => $e->getMessage(),
+                'metadata' => [
+                    'processed_at' => now()->toISOString(),
+                    'duration_ms' => $durationMs,
+                    'algorithm' => 'YalihanCortex v1.0',
+                ],
+            ];
+        }
+    }
+
+    /**
+     * Pazarlama Videosu için Metin Scripti Üretimi
+     *
+     * Ton: Sakin, güven veren ve lüks.
+     * İçerik: TKGM verileri (alan, imar) + nearby_places (POI listesi)
+     * 3 bölüm: Giriş, Çevre, Özellikler.
+     */
+    public function generateVideoScript(Ilan $ilan): array
+    {
+        try {
+            $tkgmSummary = [
+                'ada_no' => $ilan->ada_no,
+                'parsel_no' => $ilan->parsel_no,
+                'alan_m2' => $ilan->alan_m2,
+                'imar_statusu' => $ilan->imar_statusu,
+                'kaks' => $ilan->kaks,
+                'taks' => $ilan->taks,
+            ];
+
+            $nearby = $ilan->nearby_places ?? [];
+
+            $prompt = [
+                'instruction' => 'Sakin, güven veren ve lüks bir tonda Türkçe pazarlama videosu scripti üret.',
+                'structure' => [
+                    'bolumler' => ['Giriş', 'Çevre', 'Özellikler'],
+                    'language' => 'tr-TR',
+                ],
+                'ilan' => [
+                    'id' => $ilan->id,
+                    'baslik' => $ilan->baslik,
+                    'aciklama' => $ilan->aciklama,
+                    'fiyat' => $ilan->fiyat,
+                    'para_birimi' => $ilan->para_birimi,
+                    'adres' => $ilan->adres,
+                ],
+                'tkgm' => $tkgmSummary,
+                'nearby_places' => $nearby,
+            ];
+
+            $result = $this->aiService->generate(json_encode($prompt, JSON_UNESCAPED_UNICODE), [
+                'tone' => 'calm_luxury',
+                'max_tokens' => 800,
+            ]);
+
+            $script = $result['content'] ?? ($result['text'] ?? null);
+
+            return [
+                'success' => $script !== null,
+                'ilan_id' => $ilan->id,
+                'script' => $script,
+                'sections' => [
+                    'intro' => null,
+                    'environment' => null,
+                    'features' => null,
+                ],
+                'preview_url' => null,
+            ];
+        } catch (\Throwable $e) {
+            LogService::error(
+                'YalihanCortex video script generation failed',
+                [
+                    'ilan_id' => $ilan->id,
+                    'error' => $e->getMessage(),
+                ],
+                $e,
+                LogService::CHANNEL_AI
+            );
+
+            return [
+                'success' => false,
+                'ilan_id' => $ilan->id,
+                'error' => $e->getMessage(),
+            ];
+        }
     }
 
     /**
@@ -737,19 +991,19 @@ class YalihanCortex
                         default => ['success' => false, 'error' => 'Unknown action'],
                     };
 
-                if ($result['success'] ?? false) {
-                    LogService::info("AI Provider fallback success", [
-                        'original' => $provider,
-                        'fallback' => $fallbackProvider,
-                    ]);
+                    if ($result['success'] ?? false) {
+                        LogService::info("AI Provider fallback success", [
+                            'original' => $provider,
+                            'fallback' => $fallbackProvider,
+                        ]);
 
-                    return array_merge($result, [
-                        'metadata' => array_merge($result['metadata'] ?? [], [
-                            'original_provider' => $provider,
-                            'fallback_provider' => $fallbackProvider,
-                            'used_fallback' => true,
-                        ]),
-                    ]);
+                        return array_merge($result, [
+                            'metadata' => array_merge($result['metadata'] ?? [], [
+                                'original_provider' => $provider,
+                                'fallback_provider' => $fallbackProvider,
+                                'used_fallback' => true,
+                            ]),
+                        ]);
                     }
                 } catch (\Exception $callbackException) {
                     throw $callbackException;
@@ -764,11 +1018,11 @@ class YalihanCortex
                         'exception_type' => 'ProviderException',
                     ]);
                 } else {
-                LogService::warning("AI Provider fallback failed", [
-                    'original' => $provider,
-                    'fallback' => $fallbackProvider,
-                    'error' => $e->getMessage(),
-                ]);
+                    LogService::warning("AI Provider fallback failed", [
+                        'original' => $provider,
+                        'fallback' => $fallbackProvider,
+                        'error' => $e->getMessage(),
+                    ]);
                 }
 
                 continue; // Sonraki fallback'i dene
@@ -920,25 +1174,25 @@ class YalihanCortex
     {
         return collect($matches)
             ->map(function ($match) use ($talep, $churnScore) {
-            $ilan = $match['ilan'];
+                $ilan = $match['ilan'];
                 $matchScore = (float) $match['score']; // 0-100 arası match skoru
 
                 // Action Score hesaplama: match_score + (churn_score * 0.5)
                 $actionScore = $matchScore + ($churnScore * 0.5);
 
-            return [
-                'ilan_id' => $ilan->id,
-                'baslik' => $ilan->baslik,
-                'fiyat' => $ilan->fiyat,
-                'para_birimi' => $ilan->para_birimi ?? 'TRY',
+                return [
+                    'ilan_id' => $ilan->id,
+                    'baslik' => $ilan->baslik,
+                    'fiyat' => $ilan->fiyat,
+                    'para_birimi' => $ilan->para_birimi ?? 'TRY',
                     'match_score' => round($matchScore, 2), // 0-100 arası
                     'churn_score' => round($churnScore, 2), // 0-100 arası
                     'action_score' => round($actionScore, 2), // Birleşik skor
                     'match_level' => $this->getMatchLevel($matchScore),
-                'reasons' => $match['reasons'] ?? [],
-                'breakdown' => $match['breakdown'] ?? [],
+                    'reasons' => $match['reasons'] ?? [],
+                    'breakdown' => $match['breakdown'] ?? [],
                     'priority' => $this->calculatePriority($match, $talep, $churnScore),
-            ];
+                ];
             })
             ->filter(function ($match) {
                 // Sadece action_score > 85 olanları filtrele
@@ -1838,5 +2092,1329 @@ PROMPT;
                 'confidence_score' => $talepData['confidence_score'] ?? 0,
             ],
         ]);
+    }
+
+    /**
+     * Check İlan Quality - Pre-Publishing Validation
+     *
+     * ✅ Context7: İlan yayınlanmadan önce kalite kontrolü yapı
+     * Zorunlu alanların %80'inin doldurulduğundan emin olur.
+     *
+     * Arsa: 16 zorunlu alan
+     * Yazlık: 14 zorunlu alan
+     *
+     * @param \App\Models\Ilan $ilan
+     * @return array ['passed' => bool, 'risk_level' => 'low|medium|high', 'missing_fields' => [], 'completion_percentage' => int, 'message' => string]
+     */
+    public function checkIlanQuality(Ilan $ilan): array
+    {
+        $kategoriSlug = null;
+        $missingFields = [];
+        $requiredFields = [];
+        $filledCount = 0;
+
+        // Kategoriye göre zorunlu alanları belirle
+        if ($ilan->anaKategori) {
+            $kategoriSlug = strtolower($ilan->anaKategori->slug ?? '');
+        }
+
+        // ✅ ARSA KATEGORISI: 16 zorunlu alan
+        if ($kategoriSlug === 'arsa') {
+            $requiredFields = [
+                'baslik' => 'İlan Başlığı',
+                'aciklama' => 'İlan Açıklaması',
+                'fiyat' => 'Fiyat',
+                'il_id' => 'İl',
+                'ilce_id' => 'İlçe',
+                'alan_m2' => 'Alan (m²)',
+                'ada_no' => 'Ada Numarası',
+                'parsel_no' => 'Parsel Numarası',
+                'imar_statusu' => 'İmar Durumu',
+                'yola_cephe' => 'Yola Cephe',
+                'altyapi_elektrik' => 'Elektrik Altyapısı',
+                'altyapi_su' => 'Su Altyapısı',
+                'kaks' => 'KAKS',
+                'taks' => 'TAKS',
+                'latitude' => 'Enlem',
+                'longitude' => 'Boylam',
+            ];
+        }
+        // ✅ YAZLIK KATEGORISI: 14 zorunlu alan
+        elseif ($kategoriSlug === 'yazlık' || $kategoriSlug === 'yazlik') {
+            $requiredFields = [
+                'baslik' => 'İlan Başlığı',
+                'aciklama' => 'İlan Açıklaması',
+                'gunluk_fiyat' => 'Günlük Fiyat',
+                'il_id' => 'İl',
+                'ilce_id' => 'İlçe',
+                'oda_sayisi' => 'Oda Sayısı',
+                'banyo_sayisi' => 'Banyo Sayısı',
+                'net_m2' => 'Net Alan (m²)',
+                'max_misafir' => 'Maksimum Misafir',
+                'havuz' => 'Havuz',
+                'sezon_baslangic' => 'Sezon Başlangıcı',
+                'sezon_bitis' => 'Sezon Bitişi',
+                'latitude' => 'Enlem',
+                'longitude' => 'Boylam',
+            ];
+        }
+        // Diğer kategoriler için temel kontrol (10 alan)
+        else {
+            $requiredFields = [
+                'baslik' => 'İlan Başlığı',
+                'aciklama' => 'İlan Açıklaması',
+                'fiyat' => 'Fiyat',
+                'il_id' => 'İl',
+                'ilce_id' => 'İlçe',
+                'ilan_sahibi_id' => 'İlan Sahibi',
+                'status' => 'Durum',
+                'latitude' => 'Enlem',
+                'longitude' => 'Boylam',
+                'ana_kategori_id' => 'Ana Kategori',
+            ];
+        }
+
+        // Zorunlu alanları kontrol et
+        foreach ($requiredFields as $field => $label) {
+            $value = $ilan->{$field} ?? null;
+
+            // Değer kontrolü (boş, null, 0, '0', false değerlerini kontrol et)
+            $isFilled = !empty($value) && $value !== '0' && $value !== 0 && $value !== false;
+
+            if ($isFilled) {
+                $filledCount++;
+            } else {
+                $missingFields[] = [
+                    'field' => $field,
+                    'label' => $label,
+                ];
+            }
+        }
+
+        // Tamamlanma yüzdesini hesapla
+        $totalFields = count($requiredFields);
+        $completionPercentage = $totalFields > 0 ? round(($filledCount / $totalFields) * 100) : 0;
+
+        // %80 ve üzerinde başarılı
+        $passed = $completionPercentage >= 80;
+
+        // Risk seviyesini belirle
+        $riskLevel = 'low'; // Default
+        if ($completionPercentage < 50) {
+            $riskLevel = 'high';
+        } elseif ($completionPercentage < 80) {
+            $riskLevel = 'medium';
+        }
+
+        // ✅ Detaylı mesaj oluştur
+        if ($passed) {
+            $message = "✅ İlan başarılı bir şekilde yayınlanmaya hazır ({$completionPercentage}% tamamlanmış).";
+        } else {
+            $categoryName = match ($kategoriSlug) {
+                'arsa' => 'Arsa',
+                'yazlık', 'yazlik' => 'Yazlık',
+                default => 'İlan'
+            };
+
+            $missingCount = count($missingFields);
+
+            if ($riskLevel === 'high') {
+                $criticalFields = array_slice($missingFields, 0, 3);
+                $criticalLabels = implode(', ', array_map(fn($f) => $f['label'], $criticalFields));
+                $message = "🚨 UYARI: {$categoryName} kategorisinde kritik zorunlu alanlar ({$criticalLabels}) eksik! Lütfen hemen düzenleyiniz. ({$completionPercentage}% tamamlanmış)";
+            } else {
+                $message = "⚠️ ÖNEMLİ: İlanın {$categoryName} Modülünde {$missingCount} adet eksik alan tespit edildi. Yayın kalitenizi artırmak için doldurun. ({$completionPercentage}% tamamlanmış)";
+            }
+        }
+
+        return [
+            'passed' => $passed,
+            'risk_level' => $riskLevel,
+            'completion_percentage' => $completionPercentage,
+            'missing_fields' => $missingFields,
+            'total_required_fields' => $totalFields,
+            'filled_fields' => $filledCount,
+            'category' => $kategoriSlug ?? 'unknown',
+            'message' => $message,
+        ];
+    }
+
+    /**
+     * İlan Başlığı Üretimi
+     *
+     * Context7: YalihanCortex üzerinden merkezi başlık üretimi
+     * Yalıhan Bekçi: Tüm AI başlık üretimi bu metod üzerinden yönetilir
+     *
+     * @param Ilan|array $ilan İlan modeli veya ilan verisi
+     * @param array $options ['tone' => 'seo|kurumsal|hizli_satis|luks', 'provider' => 'ollama|openai|gemini']
+     * @return array
+     */
+    public function generateIlanTitle($ilan, array $options = []): array
+    {
+        $startTime = LogService::startTimer('yalihan_cortex_generate_title');
+
+        try {
+            // İlan verisini normalize et
+            $ilanData = $this->normalizeIlanData($ilan);
+
+            // Provider seçimi (akıllı seçim)
+            $provider = $options['provider'] ?? $this->selectBestProvider('title', $ilanData);
+
+            LogService::ai(
+                'yalihan_cortex_title_generation_started',
+                'YalihanCortex',
+                [
+                    'ilan_id' => $ilanData['id'] ?? null,
+                    'provider' => $provider,
+                    'tone' => $options['tone'] ?? 'seo',
+                ]
+            );
+
+            // OllamaService kullan (şimdilik sadece Ollama)
+            $ollamaData = [
+                'kategori' => $ilanData['kategori'] ?? 'Gayrimenkul',
+                'lokasyon' => $this->buildLocationString($ilanData),
+                'yayin_tipi' => $ilanData['yayin_tipi'] ?? 'Satılık',
+                'fiyat' => $this->formatPriceForAI($ilanData['fiyat'] ?? null, $ilanData['para_birimi'] ?? 'TRY'),
+                'tone' => $options['tone'] ?? 'seo',
+            ];
+
+            $titles = $this->ollamaService->generateTitle($ollamaData);
+
+            $durationMs = LogService::stopTimer($startTime);
+
+            $result = [
+                'success' => !empty($titles),
+                'titles' => $titles,
+                'count' => count($titles),
+                'provider' => $provider,
+                'model' => config('ai.ollama_model', 'ollama'),
+                'metadata' => [
+                    'processed_at' => now()->toISOString(),
+                    'duration_ms' => $durationMs,
+                    'algorithm' => 'YalihanCortex v2.0',
+                    'tone' => $options['tone'] ?? 'seo',
+                ],
+            ];
+
+            // AiLog kaydı
+            $this->logCortexDecision('generate_ilan_title', [
+                'ilan_id' => $ilanData['id'] ?? null,
+                'provider' => $provider,
+                'titles_count' => count($titles),
+                'tone' => $options['tone'] ?? 'seo',
+            ], $durationMs, $result['success']);
+
+            LogService::ai(
+                'yalihan_cortex_title_generation_completed',
+                'YalihanCortex',
+                [
+                    'ilan_id' => $ilanData['id'] ?? null,
+                    'titles_count' => count($titles),
+                    'duration_ms' => $durationMs,
+                ]
+            );
+
+            return $result;
+        } catch (\Exception $e) {
+            $durationMs = LogService::stopTimer($startTime);
+
+            $this->logCortexDecision('generate_ilan_title', [
+                'ilan_id' => is_array($ilan) ? ($ilan['id'] ?? null) : ($ilan->id ?? null),
+                'error' => $e->getMessage(),
+            ], $durationMs, false);
+
+            LogService::error(
+                'YalihanCortex title generation failed',
+                [
+                    'error' => $e->getMessage(),
+                    'ilan_id' => is_array($ilan) ? ($ilan['id'] ?? null) : ($ilan->id ?? null),
+                ],
+                $e,
+                LogService::CHANNEL_AI
+            );
+
+            return [
+                'success' => false,
+                'titles' => [],
+                'error' => $e->getMessage(),
+                'metadata' => [
+                    'processed_at' => now()->toISOString(),
+                    'duration_ms' => $durationMs,
+                    'algorithm' => 'YalihanCortex v2.0',
+                ],
+            ];
+        }
+    }
+
+    /**
+     * İlan Açıklaması Üretimi
+     *
+     * Context7: YalihanCortex üzerinden merkezi açıklama üretimi
+     * Yalıhan Bekçi: Tüm AI açıklama üretimi bu metod üzerinden yönetilir
+     *
+     * @param Ilan|array $ilan İlan modeli veya ilan verisi
+     * @param array $options ['tone' => 'seo|kurumsal|hizli_satis|luks', 'length' => 'short|medium|long', 'provider' => 'ollama|openai|gemini']
+     * @return array
+     */
+    public function generateIlanDescription($ilan, array $options = []): array
+    {
+        $startTime = LogService::startTimer('yalihan_cortex_generate_description');
+
+        try {
+            // İlan verisini normalize et
+            $ilanData = $this->normalizeIlanData($ilan);
+
+            // Provider seçimi
+            $provider = $options['provider'] ?? $this->selectBestProvider('description', $ilanData);
+
+            LogService::ai(
+                'yalihan_cortex_description_generation_started',
+                'YalihanCortex',
+                [
+                    'ilan_id' => $ilanData['id'] ?? null,
+                    'provider' => $provider,
+                    'tone' => $options['tone'] ?? 'seo',
+                ]
+            );
+
+            // OllamaService kullan
+            $ollamaData = [
+                'kategori' => $ilanData['kategori'] ?? 'Gayrimenkul',
+                'lokasyon' => $this->buildLocationString($ilanData),
+                'fiyat' => $this->formatPriceForAI($ilanData['fiyat'] ?? null, $ilanData['para_birimi'] ?? 'TRY'),
+                'metrekare' => $ilanData['metrekare'] ?? '',
+                'oda_sayisi' => $ilanData['oda_sayisi'] ?? '',
+                'tone' => $options['tone'] ?? 'seo',
+            ];
+
+            $description = $this->ollamaService->generateDescription($ollamaData);
+
+            $durationMs = LogService::stopTimer($startTime);
+
+            $result = [
+                'success' => !empty($description),
+                'description' => $description,
+                'length' => strlen($description),
+                'provider' => $provider,
+                'model' => config('ai.ollama_model', 'ollama'),
+                'metadata' => [
+                    'processed_at' => now()->toISOString(),
+                    'duration_ms' => $durationMs,
+                    'algorithm' => 'YalihanCortex v2.0',
+                    'tone' => $options['tone'] ?? 'seo',
+                ],
+            ];
+
+            // AiLog kaydı
+            $this->logCortexDecision('generate_ilan_description', [
+                'ilan_id' => $ilanData['id'] ?? null,
+                'provider' => $provider,
+                'description_length' => strlen($description),
+                'tone' => $options['tone'] ?? 'seo',
+            ], $durationMs, $result['success']);
+
+            LogService::ai(
+                'yalihan_cortex_description_generation_completed',
+                'YalihanCortex',
+                [
+                    'ilan_id' => $ilanData['id'] ?? null,
+                    'description_length' => strlen($description),
+                    'duration_ms' => $durationMs,
+                ]
+            );
+
+            return $result;
+        } catch (\Exception $e) {
+            $durationMs = LogService::stopTimer($startTime);
+
+            $this->logCortexDecision('generate_ilan_description', [
+                'ilan_id' => is_array($ilan) ? ($ilan['id'] ?? null) : ($ilan->id ?? null),
+                'error' => $e->getMessage(),
+            ], $durationMs, false);
+
+            LogService::error(
+                'YalihanCortex description generation failed',
+                [
+                    'error' => $e->getMessage(),
+                    'ilan_id' => is_array($ilan) ? ($ilan['id'] ?? null) : ($ilan->id ?? null),
+                ],
+                $e,
+                LogService::CHANNEL_AI
+            );
+
+            return [
+                'success' => false,
+                'description' => '',
+                'error' => $e->getMessage(),
+                'metadata' => [
+                    'processed_at' => now()->toISOString(),
+                    'duration_ms' => $durationMs,
+                    'algorithm' => 'YalihanCortex v2.0',
+                ],
+            ];
+        }
+    }
+
+    /**
+     * Lokasyon Analizi
+     *
+     * Context7: YalihanCortex üzerinden merkezi lokasyon analizi
+     *
+     * @param array $locationData ['il', 'ilce', 'mahalle', 'latitude', 'longitude']
+     * @return array
+     */
+    public function analyzeLocation(array $locationData): array
+    {
+        $startTime = LogService::startTimer('yalihan_cortex_analyze_location');
+
+        try {
+            LogService::ai(
+                'yalihan_cortex_location_analysis_started',
+                'YalihanCortex',
+                [
+                    'il' => $locationData['il'] ?? null,
+                    'ilce' => $locationData['ilce'] ?? null,
+                    'mahalle' => $locationData['mahalle'] ?? null,
+                ]
+            );
+
+            $analysis = $this->ollamaService->analyzeLocation($locationData);
+
+            $durationMs = LogService::stopTimer($startTime);
+
+            $result = [
+                'success' => true,
+                'analysis' => $analysis,
+                'provider' => 'ollama',
+                'model' => config('ai.ollama_model', 'ollama'),
+                'metadata' => [
+                    'processed_at' => now()->toISOString(),
+                    'duration_ms' => $durationMs,
+                    'algorithm' => 'YalihanCortex v2.0',
+                ],
+            ];
+
+            // AiLog kaydı
+            $this->logCortexDecision('analyze_location', [
+                'il' => $locationData['il'] ?? null,
+                'ilce' => $locationData['ilce'] ?? null,
+                'mahalle' => $locationData['mahalle'] ?? null,
+            ], $durationMs, true);
+
+            return $result;
+        } catch (\Exception $e) {
+            $durationMs = LogService::stopTimer($startTime);
+
+            $this->logCortexDecision('analyze_location', [
+                'error' => $e->getMessage(),
+            ], $durationMs, false);
+
+            LogService::error(
+                'YalihanCortex location analysis failed',
+                [
+                    'error' => $e->getMessage(),
+                ],
+                $e,
+                LogService::CHANNEL_AI
+            );
+
+            return [
+                'success' => false,
+                'analysis' => [],
+                'error' => $e->getMessage(),
+                'metadata' => [
+                    'processed_at' => now()->toISOString(),
+                    'duration_ms' => $durationMs,
+                    'algorithm' => 'YalihanCortex v2.0',
+                ],
+            ];
+        }
+    }
+
+    /**
+     * Fiyat Önerisi
+     *
+     * Context7: YalihanCortex üzerinden merkezi fiyat önerisi
+     *
+     * @param Ilan|array $ilan İlan modeli veya ilan verisi
+     * @param array $options ['strategy' => 'aggressive|moderate|premium']
+     * @return array
+     */
+    public function suggestPrice($ilan, array $options = []): array
+    {
+        $startTime = LogService::startTimer('yalihan_cortex_suggest_price');
+
+        try {
+            // İlan verisini normalize et
+            $ilanData = $this->normalizeIlanData($ilan);
+
+            LogService::ai(
+                'yalihan_cortex_price_suggestion_started',
+                'YalihanCortex',
+                [
+                    'ilan_id' => $ilanData['id'] ?? null,
+                    'base_price' => $ilanData['fiyat'] ?? null,
+                ]
+            );
+
+            $propertyData = [
+                'base_price' => (float) ($ilanData['fiyat'] ?? 0),
+                'kategori' => $ilanData['kategori'] ?? 'Gayrimenkul',
+                'metrekare' => (float) ($ilanData['metrekare'] ?? 0),
+                'lokasyon' => $this->buildLocationString($ilanData),
+            ];
+
+            $suggestions = $this->ollamaService->suggestPrice($propertyData);
+
+            $durationMs = LogService::stopTimer($startTime);
+
+            $result = [
+                'success' => !empty($suggestions),
+                'suggestions' => $suggestions,
+                'provider' => 'ollama',
+                'model' => config('ai.ollama_model', 'ollama'),
+                'metadata' => [
+                    'processed_at' => now()->toISOString(),
+                    'duration_ms' => $durationMs,
+                    'algorithm' => 'YalihanCortex v2.0',
+                ],
+            ];
+
+            // AiLog kaydı
+            $this->logCortexDecision('suggest_price', [
+                'ilan_id' => $ilanData['id'] ?? null,
+                'base_price' => $ilanData['fiyat'] ?? null,
+                'suggestions_count' => count($suggestions),
+            ], $durationMs, $result['success']);
+
+            return $result;
+        } catch (\Exception $e) {
+            $durationMs = LogService::stopTimer($startTime);
+
+            $this->logCortexDecision('suggest_price', [
+                'ilan_id' => is_array($ilan) ? ($ilan['id'] ?? null) : ($ilan->id ?? null),
+                'error' => $e->getMessage(),
+            ], $durationMs, false);
+
+            LogService::error(
+                'YalihanCortex price suggestion failed',
+                [
+                    'error' => $e->getMessage(),
+                    'ilan_id' => is_array($ilan) ? ($ilan['id'] ?? null) : ($ilan->id ?? null),
+                ],
+                $e,
+                LogService::CHANNEL_AI
+            );
+
+            return [
+                'success' => false,
+                'suggestions' => [],
+                'error' => $e->getMessage(),
+                'metadata' => [
+                    'processed_at' => now()->toISOString(),
+                    'duration_ms' => $durationMs,
+                    'algorithm' => 'YalihanCortex v2.0',
+                ],
+            ];
+        }
+    }
+
+    /**
+     * AI Provider Seçimi (Akıllı Fallback)
+     *
+     * Context7: Task tipine göre en uygun provider seçilir
+     *
+     * @param string $taskType 'title|description|analysis|generation'
+     * @param array $context
+     * @return string Provider name ('ollama', 'openai', 'gemini', 'deepseek')
+     */
+    protected function selectBestProvider(string $taskType, array $context = []): string
+    {
+        // Şimdilik sadece Ollama kullan (local, hızlı, ücretsiz)
+        // Gelecekte: Task tipine, context'e ve provider health durumuna göre seçim yapılabilir
+        return 'ollama';
+    }
+
+    /**
+     * İlan verisini normalize et
+     *
+     * @param Ilan|array $ilan
+     * @return array
+     */
+    protected function normalizeIlanData($ilan): array
+    {
+        if (is_array($ilan)) {
+            return $ilan;
+        }
+
+        // Ilan modelinden array'e çevir
+        return [
+            'id' => $ilan->id ?? null,
+            'kategori' => $ilan->altKategori->name ?? $ilan->anaKategori->name ?? 'Gayrimenkul',
+            'il' => $ilan->il->il_adi ?? null,
+            'ilce' => $ilan->ilce->ilce_adi ?? null,
+            'mahalle' => $ilan->mahalle->mahalle_adi ?? null,
+            'yayin_tipi' => $ilan->yayinTipi->name ?? 'Satılık',
+            'fiyat' => $ilan->fiyat ?? null,
+            'para_birimi' => $ilan->para_birimi ?? 'TRY',
+            'metrekare' => $ilan->metrekare ?? null,
+            'oda_sayisi' => $ilan->oda_sayisi ?? null,
+            'baslik' => $ilan->baslik ?? null,
+            'aciklama' => $ilan->aciklama ?? null,
+        ];
+    }
+
+    /**
+     * Lokasyon string'i oluştur
+     *
+     * @param array $ilanData
+     * @return string
+     */
+    protected function buildLocationString(array $ilanData): string
+    {
+        $parts = array_filter([
+            $ilanData['il'] ?? null,
+            $ilanData['ilce'] ?? null,
+            $ilanData['mahalle'] ?? null,
+        ]);
+
+        return implode(', ', $parts) ?: 'Bodrum';
+    }
+
+    /**
+     * Fiyatı AI için formatla
+     *
+     * @param float|null $amount
+     * @param string $currency
+     * @return string
+     */
+    protected function formatPriceForAI(?float $amount, string $currency = 'TRY'): string
+    {
+        if (!$amount) {
+            return '';
+        }
+
+        $symbols = [
+            'TRY' => '₺',
+            'USD' => '$',
+            'EUR' => '€',
+            'GBP' => '£',
+        ];
+
+        $formatted = number_format($amount, 0, ',', '.');
+        $symbol = $symbols[$currency] ?? '₺';
+
+        return "{$formatted} {$symbol}";
+    }
+
+    /**
+     * Pazar İstihbaratı: Piyasa Trend Analizi
+     *
+     * Context7: Market Intelligence - AI destekli piyasa analizi
+     *
+     * @param array $filters Bölge, kategori, tarih aralığı filtreleri
+     * @param array $options Analiz seçenekleri
+     * @return array Trend analizi sonuçları
+     */
+    public function analyzeMarketTrends(array $filters = [], array $options = []): array
+    {
+        $startTime = LogService::startTimer('yalihan_cortex_market_trends');
+
+        try {
+            LogService::ai(
+                'yalihan_cortex_market_trends_started',
+                'YalihanCortex',
+                ['filters' => $filters, 'options' => $options]
+            );
+
+            // MarketListing verilerini çek
+            $query = \App\Models\MarketListing::query();
+
+            if (isset($filters['il_id'])) {
+                $query->where('location_il', $filters['il_id']);
+            }
+            if (isset($filters['ilce_id'])) {
+                $query->where('location_ilce', $filters['ilce_id']);
+            }
+            if (isset($filters['date_from'])) {
+                $query->where('listing_date', '>=', $filters['date_from']);
+            }
+            if (isset($filters['date_to'])) {
+                $query->where('listing_date', '<=', $filters['date_to']);
+            }
+
+            $listings = $query->where('status', 1)
+                ->orderBy('listing_date', 'desc')
+                ->limit(1000)
+                ->get();
+
+            // AI ile trend analizi
+            $prompt = $this->buildMarketTrendPrompt($listings, $filters);
+            $aiResult = $this->aiService->generate($prompt, [
+                'type' => 'market_trends',
+                'max_tokens' => 1000,
+            ]);
+
+            $parsedResult = $this->parseAIResponse($aiResult);
+
+            $result = [
+                'success' => true,
+                'trends' => $this->extractTrends($parsedResult, $listings),
+                'statistics' => $this->calculateMarketStatistics($listings),
+                'insights' => $parsedResult['insights'] ?? [],
+                'recommendations' => $parsedResult['recommendations'] ?? [],
+                'metadata' => [
+                    'processed_at' => now()->toISOString(),
+                    'listings_analyzed' => $listings->count(),
+                    'algorithm' => 'YalihanCortex Market Intelligence v1.0',
+                ],
+            ];
+
+            $durationMs = LogService::stopTimer($startTime);
+            $result['metadata']['duration_ms'] = $durationMs;
+
+            $this->logCortexDecision('market_trends', [
+                'listings_count' => $listings->count(),
+                'filters' => $filters,
+            ], $durationMs, true);
+
+            return $result;
+        } catch (\Exception $e) {
+            LogService::error('Market trend analysis failed', [
+                'error' => $e->getMessage(),
+                'filters' => $filters,
+            ], $e, LogService::CHANNEL_AI);
+
+            return [
+                'success' => false,
+                'error' => $e->getMessage(),
+                'metadata' => [
+                    'processed_at' => now()->toISOString(),
+                ],
+            ];
+        }
+    }
+
+    /**
+     * Pazar İstihbaratı: Fiyat Karşılaştırması
+     *
+     * @param Ilan $ilan Karşılaştırılacak ilan
+     * @param array $options Karşılaştırma seçenekleri
+     * @return array Fiyat karşılaştırma sonuçları
+     */
+    public function compareMarketPrices(Ilan $ilan, array $options = []): array
+    {
+        $startTime = LogService::startTimer('yalihan_cortex_price_compare');
+
+        try {
+            // Benzer ilanları bul (MarketListing'lerden)
+            $similarListings = \App\Models\MarketListing::query()
+                ->where('location_il', $ilan->il->il_adi ?? null)
+                ->where('location_ilce', $ilan->ilce->ilce_adi ?? null)
+                ->where('m2_brut', '>=', ($ilan->metrekare ?? 0) * 0.8)
+                ->where('m2_brut', '<=', ($ilan->metrekare ?? 0) * 1.2)
+                ->where('status', 1)
+                ->orderBy('listing_date', 'desc')
+                ->limit(50)
+                ->get();
+
+            $currentPrice = $ilan->fiyat ?? 0;
+            $avgMarketPrice = $similarListings->avg('price') ?? $currentPrice;
+            $minMarketPrice = $similarListings->min('price') ?? $currentPrice;
+            $maxMarketPrice = $similarListings->max('price') ?? $currentPrice;
+
+            $priceDifference = $currentPrice - $avgMarketPrice;
+            $priceDifferencePercent = $avgMarketPrice > 0 ? ($priceDifference / $avgMarketPrice) * 100 : 0;
+
+            // AI ile fiyat önerisi
+            $prompt = $this->buildPriceComparisonPrompt($ilan, $similarListings);
+            $aiResult = $this->aiService->generate($prompt, [
+                'type' => 'price_comparison',
+                'max_tokens' => 500,
+            ]);
+
+            $result = [
+                'success' => true,
+                'current_price' => $currentPrice,
+                'market_average' => round($avgMarketPrice, 2),
+                'market_min' => round($minMarketPrice, 2),
+                'market_max' => round($maxMarketPrice, 2),
+                'price_difference' => round($priceDifference, 2),
+                'price_difference_percent' => round($priceDifferencePercent, 2),
+                'competitiveness' => $this->calculateCompetitiveness($priceDifferencePercent),
+                'ai_recommendation' => $this->parseAIResponse($aiResult)['recommendation'] ?? null,
+                'similar_listings_count' => $similarListings->count(),
+                'metadata' => [
+                    'processed_at' => now()->toISOString(),
+                    'algorithm' => 'YalihanCortex Price Comparison v1.0',
+                ],
+            ];
+
+            $durationMs = LogService::stopTimer($startTime);
+            $result['metadata']['duration_ms'] = $durationMs;
+
+            return $result;
+        } catch (\Exception $e) {
+            LogService::error('Price comparison failed', [
+                'ilan_id' => $ilan->id,
+                'error' => $e->getMessage(),
+            ], $e, LogService::CHANNEL_AI);
+
+            return [
+                'success' => false,
+                'error' => $e->getMessage(),
+            ];
+        }
+    }
+
+    /**
+     * İlanlarım: Kullanıcının İlanlarını Analiz Et
+     *
+     * @param int $userId Kullanıcı ID
+     * @param array $options Analiz seçenekleri
+     * @return array İlanlar analizi
+     */
+    public function analyzeMyListings(int $userId, array $options = []): array
+    {
+        $startTime = LogService::startTimer('yalihan_cortex_my_listings');
+
+        try {
+            $listings = Ilan::where('danisman_id', $userId)
+                ->with(['altKategori', 'il', 'ilce', 'fotograflar'])
+                ->get();
+
+            $stats = [
+                'total' => $listings->count(),
+                'active' => $listings->where('status', 'Aktif')->count(),
+                'pending' => $listings->where('status', 'Beklemede')->count(),
+                'draft' => $listings->where('status', 'Taslak')->count(),
+                'total_views' => $listings->sum('goruntulenme') ?? 0,
+                'avg_price' => $listings->avg('fiyat') ?? 0,
+            ];
+
+            // AI ile öneriler
+            $prompt = $this->buildMyListingsAnalysisPrompt($listings, $stats);
+            $aiResult = $this->aiService->generate($prompt, [
+                'type' => 'my_listings_analysis',
+                'max_tokens' => 800,
+            ]);
+
+            $result = [
+                'success' => true,
+                'statistics' => $stats,
+                'insights' => $this->parseAIResponse($aiResult)['insights'] ?? [],
+                'recommendations' => $this->parseAIResponse($aiResult)['recommendations'] ?? [],
+                'top_performers' => $this->getTopPerformers($listings),
+                'needs_attention' => $this->getNeedsAttention($listings),
+                'metadata' => [
+                    'processed_at' => now()->toISOString(),
+                    'user_id' => $userId,
+                ],
+            ];
+
+            $durationMs = LogService::stopTimer($startTime);
+            $result['metadata']['duration_ms'] = $durationMs;
+
+            return $result;
+        } catch (\Exception $e) {
+            LogService::error('My listings analysis failed', [
+                'user_id' => $userId,
+                'error' => $e->getMessage(),
+            ], $e, LogService::CHANNEL_AI);
+
+            return [
+                'success' => false,
+                'error' => $e->getMessage(),
+            ];
+        }
+    }
+
+    /**
+     * Rapor Üretimi: AI Destekli Rapor Oluştur
+     *
+     * @param string $reportType Rapor tipi (ilan, satis, finans, musteri, performans)
+     * @param array $filters Rapor filtreleri
+     * @param array $options Rapor seçenekleri
+     * @return array Rapor verileri
+     */
+    public function generateReport(string $reportType, array $filters = [], array $options = []): array
+    {
+        $startTime = LogService::startTimer('yalihan_cortex_generate_report');
+
+        try {
+            $data = $this->collectReportData($reportType, $filters);
+            $prompt = $this->buildReportPrompt($reportType, $data, $filters);
+            $aiResult = $this->aiService->generate($prompt, [
+                'type' => 'report_generation',
+                'max_tokens' => 1500,
+            ]);
+
+            $result = [
+                'success' => true,
+                'report_type' => $reportType,
+                'data' => $data,
+                'summary' => $aiResult['summary'] ?? null,
+                'insights' => $this->parseAIResponse($aiResult)['insights'] ?? [],
+                'recommendations' => $this->parseAIResponse($aiResult)['recommendations'] ?? [],
+                'charts' => $this->generateChartData($data, $reportType),
+                'metadata' => [
+                    'processed_at' => now()->toISOString(),
+                    'filters' => $filters,
+                ],
+            ];
+
+            $durationMs = LogService::stopTimer($startTime);
+            $result['metadata']['duration_ms'] = $durationMs;
+
+            return $result;
+        } catch (\Exception $e) {
+            LogService::error('Report generation failed', [
+                'report_type' => $reportType,
+                'error' => $e->getMessage(),
+            ], $e, LogService::CHANNEL_AI);
+
+            return [
+                'success' => false,
+                'error' => $e->getMessage(),
+            ];
+        }
+    }
+
+    /**
+     * Bildirimler: Akıllı Bildirim Önceliklendirme
+     *
+     * @param array $notifications Bildirimler
+     * @param array $options Seçenekler
+     * @return array Önceliklendirilmiş bildirimler
+     */
+    public function prioritizeNotifications(array $notifications, array $options = []): array
+    {
+        $startTime = LogService::startTimer('yalihan_cortex_notifications');
+
+        try {
+            // AI ile öncelik skoru hesapla
+            $prompt = $this->buildNotificationPriorityPrompt($notifications);
+            $aiResult = $this->aiService->generate($prompt, [
+                'type' => 'notification_priority',
+                'max_tokens' => 600,
+            ]);
+
+            $prioritized = [];
+            foreach ($notifications as $notification) {
+                $priority = $this->calculateNotificationPriority($notification, $aiResult);
+                $prioritized[] = [
+                    'notification' => $notification,
+                    'priority_score' => $priority,
+                    'priority_level' => $this->getPriorityLevel($priority),
+                ];
+            }
+
+            // Önceliğe göre sırala
+            usort($prioritized, fn($a, $b) => $b['priority_score'] <=> $a['priority_score']);
+
+            $result = [
+                'success' => true,
+                'notifications' => $prioritized,
+                'metadata' => [
+                    'processed_at' => now()->toISOString(),
+                    'total_count' => count($notifications),
+                ],
+            ];
+
+            $durationMs = LogService::stopTimer($startTime);
+            $result['metadata']['duration_ms'] = $durationMs;
+
+            return $result;
+        } catch (\Exception $e) {
+            LogService::error('Notification prioritization failed', [
+                'error' => $e->getMessage(),
+            ], $e, LogService::CHANNEL_AI);
+
+            return [
+                'success' => false,
+                'notifications' => $notifications,
+                'error' => $e->getMessage(),
+            ];
+        }
+    }
+
+    /**
+     * Takım Yönetimi: Takım Performans Analizi
+     *
+     * @param int $teamId Takım ID (opsiyonel)
+     * @param array $options Analiz seçenekleri
+     * @return array Performans analizi
+     */
+    public function analyzeTeamPerformance(?int $teamId = null, array $options = []): array
+    {
+        $startTime = LogService::startTimer('yalihan_cortex_team_performance');
+
+        try {
+            $query = \App\Modules\TakimYonetimi\Models\Gorev::query();
+
+            if ($teamId) {
+                $query->whereHas('takimUyesi', fn($q) => $q->where('takim_id', $teamId));
+            }
+
+            $gorevler = $query->with(['takimUyesi', 'proje'])
+                ->where('created_at', '>=', now()->subDays($options['days'] ?? 30))
+                ->get();
+
+            $stats = [
+                'total' => $gorevler->count(),
+                'completed' => $gorevler->where('durum', 'tamamlandi')->count(),
+                'in_progress' => $gorevler->where('durum', 'devam_ediyor')->count(),
+                'overdue' => $gorevler->where('bitis_tarihi', '<', now())
+                    ->where('durum', '!=', 'tamamlandi')
+                    ->count(),
+            ];
+
+            // AI ile performans analizi
+            $prompt = $this->buildTeamPerformancePrompt($gorevler, $stats);
+            $aiResult = $this->aiService->generate($prompt, [
+                'type' => 'team_performance',
+                'max_tokens' => 800,
+            ]);
+
+            $result = [
+                'success' => true,
+                'statistics' => $stats,
+                'insights' => $this->parseAIResponse($aiResult)['insights'] ?? [],
+                'recommendations' => $this->parseAIResponse($aiResult)['recommendations'] ?? [],
+                'top_performers' => $this->getTopTeamPerformers($gorevler),
+                'needs_attention' => $this->getTeamNeedsAttention($gorevler),
+                'metadata' => [
+                    'processed_at' => now()->toISOString(),
+                    'team_id' => $teamId,
+                ],
+            ];
+
+            $durationMs = LogService::stopTimer($startTime);
+            $result['metadata']['duration_ms'] = $durationMs;
+
+            return $result;
+        } catch (\Exception $e) {
+            LogService::error('Team performance analysis failed', [
+                'team_id' => $teamId,
+                'error' => $e->getMessage(),
+            ], $e, LogService::CHANNEL_AI);
+
+            return [
+                'success' => false,
+                'error' => $e->getMessage(),
+            ];
+        }
+    }
+
+    // ========== HELPER METHODS ==========
+
+    protected function buildMarketTrendPrompt($listings, array $filters): string
+    {
+        $avgPrice = $listings->avg('price') ?? 0;
+        $priceTrend = $this->calculatePriceTrend($listings);
+
+        return "Piyasa trend analizi yap:\n\n" .
+            "Toplam ilan sayısı: {$listings->count()}\n" .
+            "Ortalama fiyat: " . number_format($avgPrice, 2) . " TRY\n" .
+            "Fiyat trendi: {$priceTrend}\n\n" .
+            "Bu verilere göre piyasa trendlerini, fırsatları ve riskleri analiz et.";
+    }
+
+    protected function buildPriceComparisonPrompt(Ilan $ilan, $similarListings): string
+    {
+        $currentPrice = $ilan->fiyat ?? 0;
+        $avgPrice = $similarListings->avg('price') ?? $currentPrice;
+
+        return "Fiyat karşılaştırması yap:\n\n" .
+            "İlan fiyatı: " . number_format($currentPrice, 2) . " TRY\n" .
+            "Piyasa ortalaması: " . number_format($avgPrice, 2) . " TRY\n" .
+            "Benzer ilan sayısı: {$similarListings->count()}\n\n" .
+            "Bu ilanın fiyatının rekabetçi olup olmadığını değerlendir ve öneriler sun.";
+    }
+
+    protected function buildMyListingsAnalysisPrompt($listings, array $stats): string
+    {
+        return "Kullanıcının ilanlarını analiz et:\n\n" .
+            "Toplam ilan: {$stats['total']}\n" .
+            "Aktif ilan: {$stats['active']}\n" .
+            "Toplam görüntülenme: {$stats['total_views']}\n" .
+            "Ortalama fiyat: " . number_format($stats['avg_price'], 2) . " TRY\n\n" .
+            "Performans analizi yap ve iyileştirme önerileri sun.";
+    }
+
+    protected function buildReportPrompt(string $reportType, array $data, array $filters): string
+    {
+        return "{$reportType} raporu oluştur:\n\n" .
+            "Veri: " . json_encode($data, JSON_UNESCAPED_UNICODE) . "\n\n" .
+            "Bu verilere göre detaylı bir rapor hazırla, önemli bulguları ve önerileri belirt.";
+    }
+
+    protected function buildNotificationPriorityPrompt(array $notifications): string
+    {
+        return "Bildirimleri önceliklendir:\n\n" .
+            "Toplam bildirim: " . count($notifications) . "\n" .
+            "Bildirimler: " . json_encode($notifications, JSON_UNESCAPED_UNICODE) . "\n\n" .
+            "Her bildirimin önemini ve aciliyetini değerlendir.";
+    }
+
+    protected function buildTeamPerformancePrompt($gorevler, array $stats): string
+    {
+        return "Takım performans analizi yap:\n\n" .
+            "Toplam görev: {$stats['total']}\n" .
+            "Tamamlanan: {$stats['completed']}\n" .
+            "Devam eden: {$stats['in_progress']}\n" .
+            "Geciken: {$stats['overdue']}\n\n" .
+            "Performans analizi yap ve iyileştirme önerileri sun.";
+    }
+
+    protected function extractTrends($aiResult, $listings): array
+    {
+        return [
+            'price_trend' => $this->calculatePriceTrend($listings),
+            'volume_trend' => $this->calculateVolumeTrend($listings),
+            'ai_insights' => $aiResult['insights'] ?? [],
+        ];
+    }
+
+    protected function calculateMarketStatistics($listings): array
+    {
+        return [
+            'total_listings' => $listings->count(),
+            'avg_price' => round($listings->avg('price') ?? 0, 2),
+            'min_price' => round($listings->min('price') ?? 0, 2),
+            'max_price' => round($listings->max('price') ?? 0, 2),
+            'median_price' => round($listings->median('price') ?? 0, 2),
+        ];
+    }
+
+    protected function calculatePriceTrend($listings): string
+    {
+        if ($listings->count() < 2) {
+            return 'yetersiz_veri';
+        }
+
+        $recent = $listings->take(10)->avg('price') ?? 0;
+        $older = $listings->skip(10)->take(10)->avg('price') ?? 0;
+
+        if ($older == 0) {
+            return 'yetersiz_veri';
+        }
+
+        $change = (($recent - $older) / $older) * 100;
+
+        if ($change > 5) {
+            return 'artis';
+        } elseif ($change < -5) {
+            return 'azalis';
+        }
+
+        return 'stabil';
+    }
+
+    protected function calculateVolumeTrend($listings): string
+    {
+        $recent = $listings->where('listing_date', '>=', now()->subDays(7))->count();
+        $older = $listings->where('listing_date', '>=', now()->subDays(14))
+            ->where('listing_date', '<', now()->subDays(7))
+            ->count();
+
+        if ($older == 0) {
+            return 'yetersiz_veri';
+        }
+
+        $change = (($recent - $older) / $older) * 100;
+
+        if ($change > 10) {
+            return 'artis';
+        } elseif ($change < -10) {
+            return 'azalis';
+        }
+
+        return 'stabil';
+    }
+
+    protected function calculateCompetitiveness(float $priceDifferencePercent): string
+    {
+        if ($priceDifferencePercent < -10) {
+            return 'cok_uygun';
+        } elseif ($priceDifferencePercent < 0) {
+            return 'uygun';
+        } elseif ($priceDifferencePercent < 10) {
+            return 'normal';
+        } else {
+            return 'pahali';
+        }
+    }
+
+    protected function getTopPerformers($listings)
+    {
+        return $listings->sortByDesc('goruntulenme')
+            ->take(5)
+            ->map(fn($l) => [
+                'id' => $l->id,
+                'baslik' => $l->baslik,
+                'views' => $l->goruntulenme ?? 0,
+            ])
+            ->values();
+    }
+
+    protected function getNeedsAttention($listings)
+    {
+        return $listings->where('status', 'Aktif')
+            ->where('goruntulenme', '<', 10)
+            ->take(5)
+            ->map(fn($l) => [
+                'id' => $l->id,
+                'baslik' => $l->baslik,
+                'views' => $l->goruntulenme ?? 0,
+            ])
+            ->values();
+    }
+
+    protected function collectReportData(string $reportType, array $filters): array
+    {
+        switch ($reportType) {
+            case 'ilan':
+                return $this->collectIlanReportData($filters);
+            case 'satis':
+                return $this->collectSatisReportData($filters);
+            case 'finans':
+                return $this->collectFinansReportData($filters);
+            case 'musteri':
+                return $this->collectMusteriReportData($filters);
+            case 'performans':
+                return $this->collectPerformansReportData($filters);
+            default:
+                return [];
+        }
+    }
+
+    protected function collectIlanReportData(array $filters): array
+    {
+        $query = Ilan::query();
+        if (isset($filters['date_from'])) {
+            $query->where('created_at', '>=', $filters['date_from']);
+        }
+        return [
+            'total' => $query->count(),
+            'active' => $query->where('status', 'Aktif')->count(),
+            'by_category' => $query->groupBy('alt_kategori_id')->count(),
+        ];
+    }
+
+    protected function collectSatisReportData(array $filters): array
+    {
+        // Satış raporu verileri
+        return [];
+    }
+
+    protected function collectFinansReportData(array $filters): array
+    {
+        // Finans raporu verileri
+        return [];
+    }
+
+    protected function collectMusteriReportData(array $filters): array
+    {
+        // Müşteri raporu verileri
+        return [];
+    }
+
+    protected function collectPerformansReportData(array $filters): array
+    {
+        // Performans raporu verileri
+        return [];
+    }
+
+    protected function generateChartData(array $data, string $reportType): array
+    {
+        // Grafik verileri oluştur
+        return [];
+    }
+
+    protected function calculateNotificationPriority($notification, $aiResult): float
+    {
+        // Bildirim öncelik skoru hesapla
+        $baseScore = 50;
+        if (isset($notification['type'])) {
+            $typeScores = [
+                'urgent' => 90,
+                'important' => 70,
+                'normal' => 50,
+                'low' => 30,
+            ];
+            $baseScore = $typeScores[$notification['type']] ?? 50;
+        }
+        return $baseScore;
+    }
+
+    protected function getPriorityLevel(float $score): string
+    {
+        if ($score >= 80) {
+            return 'yuksek';
+        } elseif ($score >= 50) {
+            return 'orta';
+        }
+        return 'dusuk';
+    }
+
+    protected function getTopTeamPerformers($gorevler)
+    {
+        return $gorevler->groupBy('atanan_user_id')
+            ->map(fn($g) => [
+                'user_id' => $g->first()->atanan_user_id,
+                'completed' => $g->where('durum', 'tamamlandi')->count(),
+                'total' => $g->count(),
+            ])
+            ->sortByDesc('completed')
+            ->take(5)
+            ->values();
+    }
+
+    protected function getTeamNeedsAttention($gorevler)
+    {
+        return $gorevler->where('bitis_tarihi', '<', now())
+            ->where('durum', '!=', 'tamamlandi')
+            ->take(5)
+            ->map(fn($g) => [
+                'id' => $g->id,
+                'baslik' => $g->baslik,
+                'overdue_days' => now()->diffInDays($g->bitis_tarihi),
+            ])
+            ->values();
+    }
+
+    /**
+     * AI yanıtını parse et
+     *
+     * @param mixed $aiResult AI servisinden gelen ham yanıt
+     * @return array Parse edilmiş yanıt
+     */
+    protected function parseAIResponse($aiResult): array
+    {
+        if (is_string($aiResult)) {
+            // String ise JSON parse etmeyi dene
+            $decoded = json_decode($aiResult, true);
+            if (json_last_error() === JSON_ERROR_NONE) {
+                return $decoded;
+            }
+            // JSON değilse, basit bir yapı oluştur
+            return [
+                'summary' => $aiResult,
+                'insights' => [],
+                'recommendations' => [],
+            ];
+        }
+
+        if (is_array($aiResult)) {
+            return $aiResult;
+        }
+
+        return [
+            'summary' => 'AI analizi tamamlandı',
+            'insights' => [],
+            'recommendations' => [],
+        ];
     }
 }

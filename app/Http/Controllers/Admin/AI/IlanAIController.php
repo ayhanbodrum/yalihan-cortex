@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin\AI;
 
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
-use App\Services\AI\OllamaService;
+use App\Services\AI\YalihanCortex;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -12,17 +12,18 @@ use Illuminate\Support\Facades\Cache;
 /**
  * İlan AI Controller
  *
- * Context7 Standardı: C7-ILAN-AI-CONTROLLER-2025-10-11
+ * Context7 Standardı: C7-ILAN-AI-CONTROLLER-2025-12-03
+ * Yalıhan Bekçi: Tüm AI işlemleri YalihanCortex üzerinden yönetilir
  *
- * Ollama Gemma2:2b ile AI içerik üretimi
+ * ✅ REFACTORED: YalihanCortex merkezi "Beyin" sistemi kullanılıyor
  */
 class IlanAIController extends Controller
 {
-    protected OllamaService $ollamaService;
+    protected YalihanCortex $cortex;
 
-    public function __construct(OllamaService $ollamaService)
+    public function __construct(YalihanCortex $cortex)
     {
-        $this->ollamaService = $ollamaService;
+        $this->cortex = $cortex;
     }
 
     /**
@@ -69,59 +70,68 @@ class IlanAIController extends Controller
 
     /**
      * Başlık üret
+     * ✅ REFACTORED: YalihanCortex üzerinden
      */
     protected function generateTitle(Request $request): JsonResponse
     {
-        $data = [
+        // İlan verisini hazırla
+        $ilanData = [
             'kategori' => $request->input('kategori', 'Gayrimenkul'),
-            'lokasyon' => $this->getLocation($request),
+            'il' => $request->input('il'),
+            'ilce' => $request->input('ilce'),
+            'mahalle' => $request->input('mahalle'),
             'yayin_tipi' => $request->input('yayin_tipi', 'Satılık'),
-            'fiyat' => $this->formatPrice($request->input('fiyat'), $request->input('para_birimi')),
-            'tone' => $request->input('ai_tone', 'seo'),
+            'fiyat' => $request->input('fiyat'),
+            'para_birimi' => $request->input('para_birimi', 'TRY'),
         ];
 
-        $titles = $this->ollamaService->generateTitle($data);
-
-        // ✅ Context7: Settings'ten gerçek model adını al
-        $currentModel = $this->getCurrentModel();
+        // ✅ YalihanCortex üzerinden başlık üret
+        $result = $this->cortex->generateIlanTitle($ilanData, [
+            'tone' => $request->input('ai_tone', 'seo'),
+        ]);
 
         return response()->json([
-            'success' => true,
-            'variants' => $titles,
-            'count' => count($titles),
-            'model' => $currentModel,
+            'success' => $result['success'] ?? true,
+            'variants' => $result['titles'] ?? [],
+            'count' => $result['count'] ?? 0,
+            'model' => $result['model'] ?? 'unknown',
         ]);
     }
 
     /**
      * Açıklama üret
+     * ✅ REFACTORED: YalihanCortex üzerinden
      */
     protected function generateDescription(Request $request): JsonResponse
     {
-        $data = [
+        // İlan verisini hazırla
+        $ilanData = [
             'kategori' => $request->input('kategori', 'Gayrimenkul'),
-            'lokasyon' => $this->getLocation($request),
-            'fiyat' => $this->formatPrice($request->input('fiyat'), $request->input('para_birimi')),
-            'metrekare' => $request->input('metrekare', ''),
-            'oda_sayisi' => $request->input('oda_sayisi', ''),
-            'tone' => $request->input('ai_tone', 'seo'),
+            'il' => $request->input('il'),
+            'ilce' => $request->input('ilce'),
+            'mahalle' => $request->input('mahalle'),
+            'fiyat' => $request->input('fiyat'),
+            'para_birimi' => $request->input('para_birimi', 'TRY'),
+            'metrekare' => $request->input('metrekare'),
+            'oda_sayisi' => $request->input('oda_sayisi'),
         ];
 
-        $description = $this->ollamaService->generateDescription($data);
-
-        // ✅ Context7: Settings'ten gerçek model adını al
-        $currentModel = $this->getCurrentModel();
+        // ✅ YalihanCortex üzerinden açıklama üret
+        $result = $this->cortex->generateIlanDescription($ilanData, [
+            'tone' => $request->input('ai_tone', 'seo'),
+        ]);
 
         return response()->json([
-            'success' => true,
-            'description' => $description,
-            'length' => strlen($description),
-            'model' => $currentModel,
+            'success' => $result['success'] ?? true,
+            'description' => $result['description'] ?? 'Açıklama üretilemedi',
+            'length' => $result['length'] ?? 0,
+            'model' => $result['model'] ?? 'unknown',
         ]);
     }
 
     /**
      * Lokasyon analizi
+     * ✅ REFACTORED: YalihanCortex üzerinden
      */
     protected function analyzeLocation(Request $request): JsonResponse
     {
@@ -133,39 +143,39 @@ class IlanAIController extends Controller
             'longitude' => $request->input('longitude'),
         ];
 
-        $analysis = $this->ollamaService->analyzeLocation($locationData);
-
-        // ✅ Context7: Settings'ten gerçek model adını al
-        $currentModel = $this->getCurrentModel();
+        // ✅ YalihanCortex üzerinden lokasyon analizi
+        $result = $this->cortex->analyzeLocation($locationData);
 
         return response()->json([
-            'success' => true,
-            'analysis' => $analysis,
-            'model' => $currentModel,
+            'success' => $result['success'] ?? true,
+            'analysis' => $result['analysis'] ?? [],
+            'model' => $result['model'] ?? 'unknown',
         ]);
     }
 
     /**
      * Fiyat önerisi
+     * ✅ REFACTORED: YalihanCortex üzerinden
      */
     protected function suggestPrice(Request $request): JsonResponse
     {
-        $propertyData = [
-            'base_price' => (float) $request->input('fiyat', 0),
+        // İlan verisini hazırla
+        $ilanData = [
+            'fiyat' => $request->input('fiyat', 0),
             'kategori' => $request->input('kategori', 'Gayrimenkul'),
             'metrekare' => $request->input('metrekare', 0),
-            'lokasyon' => $this->getLocation($request),
+            'il' => $request->input('il'),
+            'ilce' => $request->input('ilce'),
+            'mahalle' => $request->input('mahalle'),
         ];
 
-        $suggestions = $this->ollamaService->suggestPrice($propertyData);
-
-        // ✅ Context7: Settings'ten gerçek model adını al
-        $currentModel = $this->getCurrentModel();
+        // ✅ YalihanCortex üzerinden fiyat önerisi
+        $result = $this->cortex->suggestPrice($ilanData);
 
         return response()->json([
-            'success' => true,
-            'suggestions' => $suggestions,
-            'model' => $currentModel,
+            'success' => $result['success'] ?? true,
+            'suggestions' => $result['suggestions'] ?? [],
+            'model' => $result['model'] ?? 'unknown',
         ]);
     }
 
@@ -280,9 +290,9 @@ class IlanAIController extends Controller
 
         // Basit başlık önerileri
         if ($ilan->kategori && $ilan->il) {
-            $suggestedTitles[] = $ilan->kategori->name.' - '.$ilan->il->il_adi;
+            $suggestedTitles[] = $ilan->kategori->name . ' - ' . $ilan->il->il_adi;
             if ($ilan->ilce) {
-                $suggestedTitles[] = $ilan->kategori->name.' '.$ilan->ilce->ilce_adi.', '.$ilan->il->il_adi;
+                $suggestedTitles[] = $ilan->kategori->name . ' ' . $ilan->ilce->ilce_adi . ', ' . $ilan->il->il_adi;
             }
         }
 
@@ -368,16 +378,18 @@ class IlanAIController extends Controller
 
     /**
      * Health check
+     * ✅ REFACTORED: YalihanCortex üzerinden
      */
     public function health(): JsonResponse
     {
-        $isHealthy = $this->ollamaService->isHealthy();
+        // ✅ YalihanCortex performans bilgisi
+        $performance = $this->cortex->getPerformance();
 
         return response()->json([
-            'success' => $isHealthy,
-            'model' => config('ai.ollama_model'),
-            'endpoint' => config('ai.ollama_api_url'),
-            'status' => $isHealthy ? 'online' : 'offline',
+            'success' => true,
+            'cortex_status' => 'online',
+            'performance' => $performance,
+            'model' => config('ai.ollama_model', 'ollama'),
         ]);
     }
 
@@ -414,7 +426,7 @@ class IlanAIController extends Controller
         $formatted = number_format((float) $amount, 0, ',', '.');
         $symbol = $symbols[$currency ?? 'TRY'] ?? '₺';
 
-        return $formatted.' '.$symbol;
+        return $formatted . ' ' . $symbol;
     }
 
     /**

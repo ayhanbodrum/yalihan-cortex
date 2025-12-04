@@ -213,4 +213,74 @@ class CategoriesController extends Controller
 
         return $types;
     }
+
+    /**
+     * Kategori + Yayın Tipi'ne göre dinamik alanları getir
+     * ✅ Context7: Type-based fields for smart form organizer
+     *
+     * Query: /api/categories/fields/1/5 (categoryId=1, publicationTypeId=5)
+     */
+    public function getFields($categoryId, $publicationTypeId = null)
+    {
+        try {
+            Log::info('Getting fields by category and publication type', [
+                'category_id' => $categoryId,
+                'publication_type_id' => $publicationTypeId,
+            ]);
+
+            $category = \App\Models\IlanKategori::find($categoryId);
+
+            if (!$category) {
+                return ResponseService::notFound('Kategori bulunamadı');
+            }
+
+            // Get features/fields for this category
+            $fields = [];
+
+            // Polimorfik features: bu kategori için hangi özellikler gerekli?
+            $features = \App\Models\Feature::where('kategori_id', $categoryId)
+                ->where('aktif_mi', true)
+                ->orderBy('display_order')
+                ->orderBy('name')
+                ->get(['id', 'name', 'field_type', 'required', 'display_order', 'description']);
+
+            $fields = $features->map(function ($feature) {
+                return [
+                    'id' => $feature->id,
+                    'name' => $feature->name,
+                    'field_type' => $feature->field_type, // text, select, number, boolean, etc.
+                    'required' => $feature->required ?? false,
+                    'description' => $feature->description ?? '',
+                ];
+            })->toArray();
+
+            // If publication type specified, filter further
+            if ($publicationTypeId) {
+                $publicationType = \App\Models\IlanKategoriYayinTipi::find($publicationTypeId);
+                if ($publicationType && isset($publicationType->required_fields)) {
+                    $requiredFieldIds = json_decode($publicationType->required_fields, true) ?? [];
+                    $fields = array_filter($fields, function ($field) use ($requiredFieldIds) {
+                        return in_array($field['id'], $requiredFieldIds);
+                    });
+                }
+            }
+
+            Log::info('Fields loaded successfully', [
+                'category_id' => $categoryId,
+                'field_count' => count($fields),
+            ]);
+
+            return ResponseService::success([
+                'fields' => array_values($fields),
+                'count' => count($fields),
+            ], 'Alanlar başarıyla yüklendi');
+        } catch (\Exception $e) {
+            Log::error('Fields loading error', [
+                'category_id' => $categoryId,
+                'error' => $e->getMessage(),
+            ]);
+
+            return ResponseService::serverError('Alanlar yüklenemedi', $e);
+        }
+    }
 }

@@ -269,6 +269,123 @@ Password: admin123
 
 ---
 
+## 📱 **ÇEVRİMDIŞI MOD & İNTERNET GEREKSİNİMLERİ**
+
+### **Offline Desteği**
+
+Proje, Service Worker ve PWA teknolojileri ile temel çevrimdışı desteğe sahiptir:
+
+- ✅ **Service Worker** - Statik asset'lerin cache'lenmesi
+- ✅ **PWA Desteği** - Progressive Web App özellikleri
+- ✅ **Offline Bildirim** - İnternet bağlantısı kesildiğinde uyarı
+- ✅ **Offline Sync** - Veriler localStorage'da saklanıp online olduğunda senkronize edilir
+
+### **Çevrimdışı Çalışabilen Özellikler**
+
+✅ **Çalışır (Offline):**
+
+- Önbelleğe alınmış sayfaları görüntüleme
+- Önceden yüklenmiş ilan listesi görüntüleme
+- LocalStorage'da saklanan veriler
+- Offline bildirimleri
+- Temel navigasyon (cache'lenmiş sayfalar)
+
+### **İnternet Bağlantısı Gerektiren Özellikler**
+
+🔴 **Çalışmaz (Online Gerekli):**
+
+- **AI Servisleri** (GPT-4, Gemini, Claude, DeepSeek, Ollama)
+    - AI analiz ve öneriler
+    - AI içerik üretimi
+    - AI asistan özellikleri
+
+- **Dış API Entegrasyonları:**
+    - **TCMB API** - Döviz kurları
+    - **TKGM API** - Arsa sorgulama ve değerleme
+    - **WikiMapia API** - Site/Apartman arama
+    - **TurkiyeAPI** - Lokasyon verileri
+
+- **Veritabanı İşlemleri:**
+    - Yeni kayıt oluşturma
+    - Veri güncelleme
+    - Veri silme
+    - Gerçek zamanlı arama
+
+- **Yükleme İşlemleri:**
+    - Fotoğraf yükleme
+    - Dosya yükleme
+    - API endpoint çağrıları
+
+### **Offline Mod Davranışı**
+
+Çevrimdışı modda:
+
+1. **Otomatik Tespit:**
+    - Browser'ın `online/offline` event'leri dinlenir
+    - Service Worker network hatalarını yakalar
+
+2. **Kullanıcı Bildirimi:**
+
+    ```
+    "İnternet bağlantısı yok - Offline mod"
+    ```
+
+3. **Fallback Sayfası:**
+    - `offline.html` sayfası gösterilir
+    - Veya Service Worker minimal HTML oluşturur:
+
+    ```html
+    "Çevrimdışı - Bağlantı yok. İnternet geldiğinde tekrar deneyin."
+    ```
+
+4. **API İstekleri:**
+    - Tüm API istekleri `503 Service Unavailable` döner
+    - JSON response: `{ error: 'Offline', message: 'Bu işlem için internet bağlantısı gerekli', offline: true }`
+
+5. **Görseller:**
+    - Placeholder SVG gösterilir
+    - Cache'lenmiş görseller kullanılır
+
+### **Service Worker Yapılandırması**
+
+```javascript
+Cache Strategies:
+  - Static assets: cache-first
+  - Dynamic content: network-first
+  - API calls: network-first
+  - Images: cache-first
+
+Cached Assets:
+  - CSS/JS dosyaları
+  - Logo ve statik görseller
+  - offline.html sayfası
+  - Manifest.json
+```
+
+### **Offline Sync Mekanizması**
+
+1. **LocalStorage Kullanımı:**
+    - Offline'da yapılan işlemler localStorage'da saklanır
+    - Online olduğunda otomatik senkronize edilir
+
+2. **Background Sync:**
+    - Service Worker background sync event'leri kullanır
+    - İnternet geldiğinde bekleyen işlemler otomatik çalışır
+
+### **Geliştirme Notları**
+
+⚠️ **Development Mode:**
+
+- Service Worker minimal cache kullanır
+- Production'da daha agresif cache stratejisi aktif olacak
+
+📝 **Offline Sayfası:**
+
+- `public/offline.html` dosyası oluşturulmalı (şu an Service Worker fallback kullanıyor)
+- Özelleştirilebilir offline deneyimi için geliştirme yapılabilir
+
+---
+
 ## 📞 **SUPPORT**
 
 - **Documentation:** `docs/` folder

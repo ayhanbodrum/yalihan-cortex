@@ -1457,7 +1457,10 @@
                 document.getElementById('ai-generate-title')?.addEventListener('click', async () => {
                     const ctx = collectContext();
                     try {
-                        const data = await postJSON('/admin/ilanlar/generate-ai-title', {
+                        // ✅ Context7: Merkezi API config kullan
+                        const generateTitleUrl = window.APIConfig?.endpoints?.admin?.generateAiTitle || 
+                            '/admin/ilanlar/generate-ai-title';
+                        const data = await postJSON(generateTitleUrl, {
                             context: ctx
                         });
                         const text = (data && (data.title || data.data?.title)) || 'Öneri üretilemedi';
@@ -1473,7 +1476,10 @@
                 document.getElementById('ai-generate-description')?.addEventListener('click', async () => {
                     const ctx = collectContext();
                     try {
-                        const data = await postJSON('/admin/ilanlar/generate-ai-description', {
+                        // ✅ Context7: Merkezi API config kullan
+                        const generateDescUrl = window.APIConfig?.endpoints?.admin?.generateAiDescription || 
+                            '/admin/ilanlar/generate-ai-description';
+                        const data = await postJSON(generateDescUrl, {
                             context: ctx
                         });
                         const text = (data && (data.description || data.data?.description)) ||

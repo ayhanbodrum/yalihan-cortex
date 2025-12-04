@@ -15,16 +15,8 @@ use Illuminate\Support\Facades\Route;
 // (Legacy) Wizard test routes kaldırıldı
 
 Route::middleware(['web'])->prefix('admin')->name('admin.')->group(function () {
-    // AI Command Center Dashboard (Yukarı taşındı - öncelikli)
-    Route::prefix('ai')->name('ai.')->group(function () {
-        Route::get('/dashboard', [\App\Http\Controllers\AI\AdvancedAIController::class, 'performanceDashboard'])
-            ->name('dashboard')
-            ->middleware('auth'); // Auth middleware eklendi
-        Route::get('/health', [\App\Http\Controllers\AI\AdvancedAIController::class, 'systemHealth'])
-            ->name('health');
-        Route::get('/statistics', [\App\Http\Controllers\AI\AdvancedAIController::class, 'usageStatistics'])
-            ->name('statistics');
-    });
+    // AI Command Center Dashboard routes moved to routes/ai-advanced.php
+    // (Keeping admin.ai prefix group for backward compatibility if needed)
 
     // Main dashboard route - Context7: Controller kullanımı (kod tekrarı önlendi)
     Route::get('/dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
@@ -226,37 +218,60 @@ Route::middleware(['web'])->prefix('admin')->name('admin.')->group(function () {
 
     // My Listings
     Route::prefix('/my-listings')->name('my-listings.')->group(function () {
+        Route::get('/ai-analysis', [\App\Http\Controllers\Admin\MyListingsController::class, 'aiAnalysis'])->name('ai-analysis');
         Route::get('/', [\App\Http\Controllers\Admin\MyListingsController::class, 'index'])->name('index');
         Route::post('/search', [\App\Http\Controllers\Admin\MyListingsController::class, 'search'])->name('search');
-        Route::post('/bulk-action', [\App\Http\Controllers\Admin\MyListingsController::class, 'bulkAction'])->name('bulk-action');
+        Route::post('/bulk-action', [\App\Http\Controllers\Admin\MyListingsController::class, 'bulkAction'])->name('bulk.action');
         Route::get('/stats', [\App\Http\Controllers\Admin\MyListingsController::class, 'getStats'])->name('stats');
         Route::get('/export', [\App\Http\Controllers\Admin\MyListingsController::class, 'export'])->name('export');
     });
 
     // İlan Yönetimi
     // Context7 Smart İlan System Routes
+
+    // 🎯 WIZARD: Yeni İlan Ekleme (3 Adımlı) - Resource route'dan ÖNCE tanımlanmalı
+    Route::get('/ilanlar/create-wizard', [\App\Http\Controllers\Admin\IlanController::class, 'createWizard'])->name('ilanlar.create-wizard');
+
     Route::resource('/ilanlar', \App\Http\Controllers\Admin\IlanController::class)->parameters(['ilanlar' => 'ilan']);
 
-    // Bulk Actions (Context7: Toplu işlemler)
-    Route::post('/ilanlar/bulk-action', [\App\Http\Controllers\Admin\IlanController::class, 'bulkAction'])
-        ->name('ilanlar.bulk-action');
+    // ✅ Mahrem Bilgiler ve Portal ID Yönetimi (Resource dışı özel route'lar)
+    Route::post('/ilanlar/{ilan}/owner-private', [\App\Http\Controllers\Admin\IlanController::class, 'ownerPrivate'])->name('ilanlar.owner-private');
+    Route::post('/ilanlar/{ilan}/portal-ids', [\App\Http\Controllers\Admin\IlanController::class, 'updatePortalIds'])->name('ilanlar.portal-ids');
+
+    // 🎨 DEMO: Modern Form Design
+    Route::get('/ilanlar-elegant-demo', function () {
+        return view('admin.ilanlar.create-elegant-demo', [
+            'ilan' => new \App\Models\Ilan()
+        ]);
+    })->name('ilanlar.create-elegant-demo');
+
+    // 🎨 FULL: Modern İlan Ekleme (Tüm Componentler)
+    Route::get('/ilanlar-elegant-full', function () {
+        return view('admin.ilanlar.create-elegant-full', [
+            'ilan' => new \App\Models\Ilan(),
+            'categories' => \App\Models\IlanKategori::whereNull('parent_id')->get(),
+            'users' => \App\Models\User::all(),
+            'sites' => \App\Models\Site::all(),
+            'iller' => \App\Models\Il::all()
+        ]);
+    })->name('ilanlar.create-elegant-full');
 
     // Test route for category cascading
     // DEPRECATED: Test route removed (kategori sistemi production'da test edildi)
     // Route::get('/ilanlar-test', [\App\Http\Controllers\Admin\IlanController::class, 'testCategories'])->name('ilanlar.test-categories');
 
-    // Draft Save Route (Context7 uyumlu)
-    Route::post('/ilanlar/draft', function () {
-        return response()->json([
-            'success' => true,
-            'message' => 'Draft saved successfully (Context7 uyumlu)',
-            'data' => [
-                'id' => rand(1000, 9999),
-                'status' => 'draft',
-                'created_at' => now()->toISOString(),
-            ],
-        ]);
-    })->name('ilanlar.draft');
+    // ✅ Context7: Draft Save Routes (Auth + Throttle required)
+    Route::post('/ilanlar/draft', [\App\Http\Controllers\Admin\IlanDraftController::class, 'save'])
+        ->name('ilanlar.draft')
+        ->middleware(['auth', 'throttle:30,1']); // 30 requests per minute
+
+    Route::get('/ilanlar/draft', [\App\Http\Controllers\Admin\IlanDraftController::class, 'load'])
+        ->name('ilanlar.draft.load')
+        ->middleware(['auth', 'throttle:10,1']);
+
+    Route::delete('/ilanlar/draft', [\App\Http\Controllers\Admin\IlanDraftController::class, 'clear'])
+        ->name('ilanlar.draft.clear')
+        ->middleware(['auth', 'throttle:10,1']);
 
     Route::prefix('/changelog')->name('changelog.')->group(function () {
         Route::post('/', [\App\Http\Controllers\Admin\ChangelogController::class, 'store'])->name('store');
@@ -273,8 +288,8 @@ Route::middleware(['web'])->prefix('admin')->name('admin.')->group(function () {
         // AJAX & API Routes
         Route::get('/search', [\App\Http\Controllers\Admin\IlanController::class, 'search'])->name('search');
         Route::get('/filter', [\App\Http\Controllers\Admin\IlanController::class, 'filter'])->name('filter');
-        Route::post('/bulk-action', [\App\Http\Controllers\Admin\IlanController::class, 'bulkAction'])->name('bulk-action');
-        Route::post('/{ilan}/toggle-status', [\App\Http\Controllers\Admin\IlanController::class, 'toggleStatus'])->name('toggle-status');
+        Route::post('/bulk-action', [\App\Http\Controllers\Admin\IlanController::class, 'bulkAction'])->name('bulk.action');
+        Route::post('/{ilan}/toggle-status', [\App\Http\Controllers\Admin\IlanController::class, 'toggleStatus'])->name('toggle.status');
 
         // Segment-based workflow routes
         Route::prefix('/segments')->name('segments.')->group(function () {
@@ -300,7 +315,7 @@ Route::middleware(['web'])->prefix('admin')->name('admin.')->group(function () {
         Route::prefix('/ai')->name('ai.')->group(function () {
             Route::post('/bulk-analyze', [\App\Http\Controllers\Admin\AI\IlanAIController::class, 'bulkAnalyze'])->name('bulk-analyze');
             Route::post('/suggest', [\App\Http\Controllers\Admin\AI\IlanAIController::class, 'suggest'])->name('suggest');
-            Route::get('/health', [\App\Http\Controllers\Admin\AI\IlanAIController::class, 'health'])->name('health');
+            Route::get('/health', [\App\Http\Controllers\Admin\AI\IlanAIController::class, 'health'])->name('system-check');
         });
 
         // Export Routes
@@ -317,6 +332,7 @@ Route::middleware(['web'])->prefix('admin')->name('admin.')->group(function () {
         Route::get('/live-search', [\App\Http\Controllers\Admin\IlanController::class, 'liveSearch'])->name('live-search');
         Route::post('/generate-ai-title', [\App\Http\Controllers\Admin\IlanController::class, 'generateAiTitle'])->name('generate-ai-title');
         Route::post('/generate-ai-description', [\App\Http\Controllers\Admin\IlanController::class, 'generateAiDescription'])->name('generate-ai-description');
+        Route::post('/convert-price-to-text', [\App\Http\Controllers\Admin\IlanController::class, 'convertPriceToText'])->name('convert-price-to-text');
         Route::get('/{ilan}/price-history', [\App\Http\Controllers\Admin\IlanController::class, 'priceHistoryApi'])->name('price-history');
         Route::post('/{ilan}/refresh-rate', [\App\Http\Controllers\Admin\IlanController::class, 'refreshRate'])->name('refresh-rate');
         Route::post('/{ilan}/upload-photos', [\App\Http\Controllers\Admin\IlanController::class, 'uploadPhotos'])->name('upload-photos');
@@ -429,7 +445,7 @@ Route::middleware(['web'])->prefix('admin')->name('admin.')->group(function () {
         Route::get('/{kategori}/edit', [\App\Http\Controllers\Admin\IlanKategoriController::class, 'edit'])->name('edit');
         Route::put('/{kategori}', [\App\Http\Controllers\Admin\IlanKategoriController::class, 'update'])->name('update');
         Route::delete('/{kategori}', [\App\Http\Controllers\Admin\IlanKategoriController::class, 'destroy'])->name('destroy');
-        Route::post('/bulk-action', [\App\Http\Controllers\Admin\IlanKategoriController::class, 'bulkAction'])->name('bulk-action');
+        Route::post('/bulk-action', [\App\Http\Controllers\Admin\IlanKategoriController::class, 'bulkAction'])->name('bulk.action');
         Route::post('/reorder', [\App\Http\Controllers\Admin\IlanKategoriController::class, 'updateOrder'])->name('reorder');
 
         // Context7 Dynamic Form Fields API
@@ -526,7 +542,7 @@ Route::middleware(['web'])->prefix('admin')->name('admin.')->group(function () {
         Route::post('/', [\App\Http\Controllers\Admin\KisiController::class, 'store'])->name('store');
         Route::get('/search', [\App\Http\Controllers\Admin\KisiController::class, 'search'])->name('search');
         Route::post('/check-duplicate', [\App\Http\Controllers\Admin\KisiController::class, 'checkDuplicate'])->name('check-duplicate');
-        Route::post('/bulk-action', [\App\Http\Controllers\Admin\KisiController::class, 'bulkAction'])->name('bulk-action');
+        Route::post('/bulk-action', [\App\Http\Controllers\Admin\KisiController::class, 'bulkAction'])->name('kisi.bulk.action');
         Route::post('/ai-analyze', [\App\Http\Controllers\Admin\KisiController::class, 'aiAnalyze'])->name('ai-analyze');
         Route::get('/takip', [\App\Http\Controllers\Admin\KisiController::class, 'takip'])->name('takip');
         Route::get('/{kisi}', [\App\Http\Controllers\Admin\KisiController::class, 'show'])->name('show');
@@ -566,9 +582,9 @@ Route::middleware(['web'])->prefix('admin')->name('admin.')->group(function () {
 
         // AJAX işlemleri
         Route::get('/search', [\App\Http\Controllers\Admin\DanismanController::class, 'search'])->name('search');
-        Route::post('/toggle-status/{danisman}', [\App\Http\Controllers\Admin\DanismanController::class, 'toggleStatus'])->name('toggle-status');
+        Route::post('/toggle-status/{danisman}', [\App\Http\Controllers\Admin\DanismanController::class, 'toggleStatus'])->name('danisman.toggle.status');
         Route::post('/update-online-status/{danisman}', [\App\Http\Controllers\Admin\DanismanController::class, 'updateOnlineStatus'])->name('update-online-status');
-        Route::post('/bulk-action', [\App\Http\Controllers\Admin\DanismanController::class, 'bulkAction'])->name('bulk-action');
+        Route::post('/bulk-action', [\App\Http\Controllers\Admin\DanismanController::class, 'bulkAction'])->name('danisman.bulk.action');
 
         // Raporlar
         Route::get('/performance-report', [\App\Http\Controllers\Admin\DanismanController::class, 'performanceReport'])->name('performance-report');
@@ -585,7 +601,7 @@ Route::middleware(['web'])->prefix('admin')->name('admin.')->group(function () {
         Route::delete('/{talep}', [\App\Http\Controllers\Admin\TalepController::class, 'destroy'])->name('destroy');
         Route::get('/{talep}/eslesen', [\App\Http\Controllers\Admin\TalepController::class, 'eslesen'])->name('eslesen');
         Route::get('/search', [\App\Http\Controllers\Admin\TalepController::class, 'search'])->name('search');
-        Route::post('/bulk-action', [\App\Http\Controllers\Admin\TalepController::class, 'bulkAction'])->name('bulk-action');
+        Route::post('/bulk-action', [\App\Http\Controllers\Admin\TalepController::class, 'bulkAction'])->name('talep.bulk.action');
         Route::get('/test', [\App\Http\Controllers\Admin\TalepController::class, 'test'])->name('test');
         Route::get('/debug', [\App\Http\Controllers\Admin\TalepController::class, 'debug'])->name('debug');
     });
@@ -624,7 +640,7 @@ Route::middleware(['web'])->prefix('admin')->name('admin.')->group(function () {
         Route::get('/', [\App\Http\Controllers\Admin\OzellikController::class, 'index'])->name('index');
         Route::get('/create', [\App\Http\Controllers\Admin\OzellikController::class, 'create'])->name('create');
         Route::post('/', [\App\Http\Controllers\Admin\OzellikController::class, 'store'])->name('store');
-        Route::post('/bulk-action', [\App\Http\Controllers\Admin\OzellikController::class, 'bulkAction'])->name('bulk-action'); // ✅ Bulk Actions
+        Route::post('/bulk-action', [\App\Http\Controllers\Admin\OzellikController::class, 'bulkAction'])->name('ozellik.bulk.action'); // ✅ Bulk Actions
         Route::get('/{ozellik}/edit', [\App\Http\Controllers\Admin\OzellikController::class, 'edit'])->name('edit');
         Route::put('/{ozellik}', [\App\Http\Controllers\Admin\OzellikController::class, 'update'])->name('update');
         Route::delete('/{ozellik}', [\App\Http\Controllers\Admin\OzellikController::class, 'destroy'])->name('destroy');
@@ -713,7 +729,7 @@ Route::middleware(['web'])->prefix('admin')->name('admin.')->group(function () {
         // Health Check
         Route::get('/health', function () {
             return response()->json(['success' => true, 'module' => 'finans', 'ai_enabled' => true]);
-        })->name('health');
+        })->name('system-health');
 
         // Finansal İşlemler (Financial Transactions)
         Route::prefix('/islemler')->name('islemler.')->group(function () {
@@ -1007,7 +1023,7 @@ Route::middleware(['web'])->prefix('admin')->name('admin.')->group(function () {
         Route::get('/export/{id?}', [\App\Http\Controllers\Admin\PageAnalyzerController::class, 'export'])->name('export');
         Route::post('/rerun/{id}', [\App\Http\Controllers\Admin\PageAnalyzerController::class, 'rerun'])->name('rerun');
         Route::get('/metrics', [\App\Http\Controllers\Admin\PageAnalyzerController::class, 'metrics'])->name('metrics');
-        Route::get('/health', [\App\Http\Controllers\Admin\PageAnalyzerController::class, 'health'])->name('health');
+        Route::get('/health', [\App\Http\Controllers\Admin\PageAnalyzerController::class, 'health'])->name('system-status');
         Route::get('/recommendations', [\App\Http\Controllers\Admin\PageAnalyzerController::class, 'recommendations'])->name('recommendations');
     });
 });
@@ -1130,19 +1146,19 @@ Route::prefix('admin/address')->name('admin.address.')->middleware(['web'])->gro
     Route::post('/bulk', [\App\Http\Controllers\Admin\AddressController::class, 'bulkAction'])->name('bulk');
 });
 
-// Etiket Management Routes
+// Etiket Management Routes (CRM Module)
 Route::prefix('admin/etiket')->name('admin.etiket.')->middleware(['web'])->group(function () {
-    Route::get('/', [\App\Http\Controllers\Admin\EtiketController::class, 'index'])->name('index');
-    Route::get('/create', [\App\Http\Controllers\Admin\EtiketController::class, 'create'])->name('create');
-    Route::post('/', [\App\Http\Controllers\Admin\EtiketController::class, 'store'])->name('store');
-    Route::get('/{etiket}', [\App\Http\Controllers\Admin\EtiketController::class, 'show'])->name('show');
-    Route::get('/{etiket}/edit', [\App\Http\Controllers\Admin\EtiketController::class, 'edit'])->name('edit');
-    Route::put('/{etiket}', [\App\Http\Controllers\Admin\EtiketController::class, 'update'])->name('update');
-    Route::delete('/{etiket}', [\App\Http\Controllers\Admin\EtiketController::class, 'destroy'])->name('destroy');
+    Route::get('/', [\App\Modules\Crm\Controllers\EtiketController::class, 'index'])->name('index');
+    Route::get('/create', [\App\Modules\Crm\Controllers\EtiketController::class, 'create'])->name('create');
+    Route::post('/', [\App\Modules\Crm\Controllers\EtiketController::class, 'store'])->name('store');
+    Route::get('/{etiket}', [\App\Modules\Crm\Controllers\EtiketController::class, 'show'])->name('show');
+    Route::get('/{etiket}/edit', [\App\Modules\Crm\Controllers\EtiketController::class, 'edit'])->name('edit');
+    Route::put('/{etiket}', [\App\Modules\Crm\Controllers\EtiketController::class, 'update'])->name('update');
+    Route::delete('/{etiket}', [\App\Modules\Crm\Controllers\EtiketController::class, 'destroy'])->name('destroy');
 
     // Additional routes
-    Route::post('/bulk-action', [\App\Http\Controllers\Admin\EtiketController::class, 'bulkAction'])->name('bulk-action');
-    Route::get('/export', [\App\Http\Controllers\Admin\EtiketController::class, 'export'])->name('export');
+    Route::post('/bulk-action', [\App\Modules\Crm\Controllers\EtiketController::class, 'bulkAction'])->name('etiket.bulk.action');
+    Route::get('/export', [\App\Modules\Crm\Controllers\EtiketController::class, 'export'])->name('export');
 });
 
 // Location Management Routes
@@ -1157,31 +1173,7 @@ Route::prefix('admin/locations')->name('admin.locations.')->middleware(['web'])-
 });
 
 // KisiNot Management Routes
-Route::prefix('admin/kisi-not')->name('admin.kisi-not.')->middleware(['web'])->group(function () {
-    Route::get('/', [\App\Http\Controllers\Admin\KisiNotController::class, 'index'])->name('index');
-    Route::get('/create', [\App\Http\Controllers\Admin\KisiNotController::class, 'create'])->name('create');
-    Route::post('/', [\App\Http\Controllers\Admin\KisiNotController::class, 'store'])->name('store');
-    Route::get('/{id}', [\App\Http\Controllers\Admin\KisiNotController::class, 'show'])->name('show');
-    Route::get('/{id}/edit', [\App\Http\Controllers\Admin\KisiNotController::class, 'edit'])->name('edit');
-    Route::put('/{id}', [\App\Http\Controllers\Admin\KisiNotController::class, 'update'])->name('update');
-    Route::delete('/{id}', [\App\Http\Controllers\Admin\KisiNotController::class, 'destroy'])->name('destroy');
 
-    // Additional routes
-    Route::post('/bulk', [\App\Http\Controllers\Admin\KisiNotController::class, 'bulk'])->name('bulk');
-    Route::get('/export', [\App\Http\Controllers\Admin\KisiNotController::class, 'export'])->name('export');
-    Route::post('/search', [\App\Http\Controllers\Admin\KisiNotController::class, 'search'])->name('search');
-});
-
-// Ayarlar Management Routes
-Route::prefix('admin/ayarlar')->name('admin.ayarlar.')->middleware(['web'])->group(function () {
-    Route::get('/', [\App\Http\Controllers\Admin\AyarlarController::class, 'index'])->name('index');
-    Route::get('/create', [\App\Http\Controllers\Admin\AyarlarController::class, 'create'])->name('create');
-    Route::post('/', [\App\Http\Controllers\Admin\AyarlarController::class, 'store'])->name('store');
-    Route::get('/{id}', [\App\Http\Controllers\Admin\AyarlarController::class, 'show'])->name('show');
-    Route::get('/{id}/edit', [\App\Http\Controllers\Admin\AyarlarController::class, 'edit'])->name('edit');
-    Route::put('/{id}', [\App\Http\Controllers\Admin\AyarlarController::class, 'update'])->name('update');
-    Route::delete('/{id}', [\App\Http\Controllers\Admin\AyarlarController::class, 'destroy'])->name('destroy');
-});
 
 // Pazar İstihbaratı (Market Intelligence) Routes
 Route::prefix('admin/market-intelligence')->name('admin.market-intelligence.')->middleware(['web'])->group(function () {
@@ -1203,7 +1195,9 @@ Route::prefix('api/market-intelligence')->name('api.market-intelligence.')->midd
 });
 
 // n8n Bot Sync Endpoint (CSRF exempt - n8n secret middleware ile korumalı)
-Route::prefix('api/admin/market-intelligence')->name('admin.api.market-intelligence.')->group(function () {
+Route::prefix('api/admin/market-intelligence')->name('admin.api.market-intelligence.')->middleware(['web', 'auth'])->group(function () {
+    Route::post('/compare-price', [\App\Http\Controllers\Admin\MarketIntelligenceController::class, 'comparePrice'])->name('compare-price');
+    Route::post('/analyze-trends', [\App\Http\Controllers\Admin\MarketIntelligenceController::class, 'analyzeTrends'])->name('analyze-trends');
     Route::post('/sync', [\App\Http\Controllers\Admin\MarketIntelligenceController::class, 'sync'])->name('sync');
 });
 

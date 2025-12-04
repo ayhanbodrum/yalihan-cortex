@@ -49,18 +49,18 @@ return [
     | KVKK Uyarısı: HTTP plain text ile müşteri verileri taşınmamalı!
     |
     */
-    'ollama_api_url' => env('OLLAMA_API_URL', 'http://localhost:11434'),
+    'ollama_api_url' => env('OLLAMA_API_URL', 'https://ollama.yalihanemlak.internal'),
 
     'ollama_model' => env('OLLAMA_MODEL', 'gemma2:2b'),
 
-    'ollama_endpoint' => env('OLLAMA_API_URL', 'http://localhost:11434'),
+    'ollama_endpoint' => env('OLLAMA_API_URL', 'https://ollama.yalihanemlak.internal'),
 
     'provider' => env('AI_PROVIDER', 'ollama'),
 
     'default_model' => env('AI_DEFAULT_MODEL', 'gemma2:2b'),
 
     'fallback_model' => env('AI_FALLBACK_MODEL', 'gpt-3.5-turbo'),
-    'require_tls' => env('AI_REQUIRE_TLS', false),
+    'require_tls' => env('AI_REQUIRE_TLS', false), // ✅ KVKK Compliance: Production'da env ile true yapılmalı, local'de false
 
     /*
     |--------------------------------------------------------------------------

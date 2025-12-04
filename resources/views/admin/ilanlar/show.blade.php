@@ -4,67 +4,124 @@
 
 @section('content')
     <div class="space-y-6">
-        <!-- Quick Actions Bar -->
-        <div class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-lg border border-blue-200 dark:border-blue-800 shadow-sm p-4"
-            x-data="quickActions({{ $ilan->id }})">
-            <div class="flex items-center justify-between flex-wrap gap-4">
+        {{-- ✅ Kalite Kontrol Uyarı Mesajı --}}
+        @if (session('warning'))
+            <div class="bg-orange-50 dark:bg-orange-900/20 border-l-4 border-orange-500 p-4 rounded-r-lg shadow-sm">
+                <div class="flex items-start gap-3">
+                    <div class="flex-shrink-0">
+                        <svg class="w-6 h-6 text-orange-600 dark:text-orange-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd"
+                                d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                                clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="text-sm font-semibold text-orange-800 dark:text-orange-300 mb-1">
+                            İlan Kalite Uyarısı
+                        </h3>
+                        <p class="text-sm text-orange-700 dark:text-orange-200">
+                            {{ session('warning') }}
+                        </p>
+                        @if (session('qualityCheck') && !empty(session('qualityCheck.missing_fields')))
+                            <details class="mt-2">
+                                <summary
+                                    class="text-sm font-medium text-orange-700 dark:text-orange-200 cursor-pointer hover:underline">
+                                    Eksik alanları göster ({{ count(session('qualityCheck.missing_fields')) }})
+                                </summary>
+                                <ul class="mt-2 space-y-1 text-sm text-orange-600 dark:text-orange-300 pl-4">
+                                    @foreach (session('qualityCheck.missing_fields') as $field)
+                                        <li class="list-disc">{{ $field['label'] }}</li>
+                                    @endforeach
+                                </ul>
+                            </details>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        @endif
+
+        {{-- ✅ Success Mesajı --}}
+        @if (session('success'))
+            <div class="bg-green-50 dark:bg-green-900/20 border-l-4 border-green-500 p-4 rounded-r-lg shadow-sm">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
-                        <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor"
+                    <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd"
+                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                            clip-rule="evenodd" />
+                    </svg>
+                    <p class="text-sm text-green-800 dark:text-green-300">{{ session('success') }}</p>
+                </div>
+            </div>
+        @endif
+
+        <!-- Quick Actions Bar - İyileştirilmiş -->
+        <div class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl border border-blue-200 dark:border-blue-800 shadow-lg p-6"
+            x-data="quickActions({{ $ilan->id }})">
+            <div class="flex items-center justify-between flex-wrap gap-6">
+                {{-- Sol Taraf: Başlık ve Açıklama --}}
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center shadow-sm">
+                        <svg class="w-7 h-7 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor"
                             viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M13 10V3L4 14h7v7l9-11h-7z" />
                         </svg>
                     </div>
                     <div>
-                        <h4 class="text-sm font-semibold text-gray-900 dark:text-white">Hızlı İşlemler</h4>
-                        <p class="text-xs text-gray-600 dark:text-gray-400">İlan yönetimi için hızlı erişim</p>
+                        <h4 class="text-base font-bold text-gray-900 dark:text-white mb-1">Hızlı İşlemler</h4>
+                        <p class="text-sm text-gray-600 dark:text-gray-400">İlan yönetimi için hızlı erişim araçları</p>
                     </div>
                 </div>
-                <div class="flex items-center gap-2 flex-wrap">
-                    <a href="{{ route('admin.ilanlar.edit', $ilan->id) }}" title="İlan bilgilerini düzenle"
-                        aria-label="İlanı düzenle"
-                        class="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 hover:scale-105 focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200">
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                            aria-hidden="true">
+
+                {{-- Sağ Taraf: İyileştirilmiş Butonlar (Yatay Düzen) --}}
+                <div class="flex items-center gap-3 flex-wrap">
+                    {{-- İlanı Düzenle --}}
+                    <a href="{{ route('admin.ilanlar.edit', $ilan->id)"
+                        class="inline-flex items-center gap-2 px-5 py-3 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-xl shadow-md hover:shadow-xl hover:scale-105 active:scale-95 focus:ring-4 focus:ring-blue-500/50 transition-all duration-200"
+                        title="İlan bilgilerini düzenle">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                         </svg>
-                        İlanı Düzenle
+                        <span>İlanı Düzenle</span>
                     </a>
+
+                    {{-- İlanı Kopyala --}}
                     <button @click="duplicateListing()" :disabled="processing"
-                        title="Bu ilanın bir kopyasını oluştur (Taslak olarak kaydedilir)" aria-label="İlanı kopyala"
-                        class="inline-flex items-center px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 hover:scale-105 focus:ring-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200">
-                        <svg x-show="!processing" class="w-4 h-4 mr-2" fill="none" stroke="currentColor"
-                            viewBox="0 0 24 24" aria-hidden="true">
+                        class="inline-flex items-center gap-2 px-5 py-3 bg-green-600 hover:bg-green-700 text-white text-sm font-semibold rounded-xl shadow-md hover:shadow-xl hover:scale-105 active:scale-95 focus:ring-4 focus:ring-green-500/50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                        title="Bu ilanın bir kopyasını oluştur (Taslak olarak kaydedilir)"
+                        aria-label="İlanı kopyala">
+                        <svg x-show="!processing" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                         </svg>
-                        <svg x-show="processing" class="animate-spin w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24"
-                            aria-hidden="true">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
-                                stroke-width="4"></circle>
+                        <svg x-show="processing" class="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                             <path class="opacity-75" fill="currentColor"
                                 d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
                             </path>
                         </svg>
                         <span x-text="processing ? 'Kopyalanıyor...' : 'İlanı Kopyala'"></span>
                     </button>
+
+                    {{-- Durum Değiştir --}}
                     <button @click="toggleStatus()" :disabled="processing"
-                        title="İlan durumunu Aktif/Pasif arasında değiştir" aria-label="İlan durumunu değiştir"
-                        class="inline-flex items-center px-4 py-2 bg-yellow-600 text-white text-sm font-medium rounded-lg hover:bg-yellow-700 hover:scale-105 focus:ring-2 focus:ring-yellow-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200">
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                            aria-hidden="true">
+                        class="inline-flex items-center gap-2 px-5 py-3 bg-yellow-600 hover:bg-yellow-700 text-white text-sm font-semibold rounded-xl shadow-md hover:shadow-xl hover:scale-105 active:scale-95 focus:ring-4 focus:ring-yellow-500/50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                        title="İlan durumunu Aktif/Pasif arasında değiştir"
+                        aria-label="İlan durumunu değiştir">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
                         </svg>
                         <span x-text="processing ? 'Değiştiriliyor...' : 'Durum Değiştir'"></span>
                     </button>
+
+                    {{-- AI Analiz --}}
                     <button @click="analyzeWithAI()" :disabled="processing"
-                        title="AI ile ilan analizi yap (fiyat, başlık, SEO önerileri)" aria-label="AI ile ilan analizi yap"
-                        class="inline-flex items-center px-4 py-2 bg-purple-600 text-white text-sm font-medium rounded-lg hover:bg-purple-700 hover:scale-105 focus:ring-2 focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200">
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                            aria-hidden="true">
+                        class="inline-flex items-center gap-2 px-5 py-3 bg-purple-600 hover:bg-purple-700 text-white text-sm font-semibold rounded-xl shadow-md hover:shadow-xl hover:scale-105 active:scale-95 focus:ring-4 focus:ring-purple-500/50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                        title="AI ile ilan analizi yap (fiyat, başlık, SEO önerileri)"
+                        aria-label="AI ile ilan analizi yap">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                         </svg>
@@ -100,12 +157,15 @@
                             {{ $ilan->status }}
                         </span>
                     </div>
-                    <div class="text-sm text-gray-600 dark:text-gray-300">Ref: {{ $ilan->referans_no ?? '-' }}</div>
+                    {{-- ✨ REFERANS BADGE (Gemini AI Önerisi - 3 Katmanlı Sistem) --}}
+                    <div class="mt-2">
+                        @include('admin.ilanlar.partials.referans-badge', ['ilan' => $ilan])
+                    </div>
                 </div>
             </div>
 
             <!-- İstatistikler -->
-            <div class="mt-6 grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="mt-6 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
                 <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 border border-gray-200 dark:border-gray-600">
                     <div class="flex items-center justify-between">
                         <div>
@@ -225,6 +285,18 @@
                         :class="tab === 'gecmis' ? 'bg-blue-600 text-white' :
                             'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200'"
                         class="px-4 py-2 rounded-lg">Geçmiş</button>
+                    @php
+                        $isArsa =
+                            optional($ilan->altKategori)->slug === 'arsa' ||
+                            optional($ilan->altKategori)->name === 'Arsa' ||
+                            (optional($ilan->altKategori)->name && stripos($ilan->altKategori->name, 'arsa') !== false);
+                    @endphp
+                    @if ($isArsa)
+                        <button @click="tab='video'"
+                            :class="tab === 'video' ? 'bg-blue-600 text-white' :
+                                'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200'"
+                            class="px-4 py-2 rounded-lg transition-all duration-200">Video</button>
+                    @endif
                 </div>
             </div>
             <div class="p-6 border-t border-gray-200 dark:border-gray-700">
@@ -247,6 +319,9 @@
                             <div class="font-mono">{{ $ilan->hurriyetemlak_id ?? '-' }}</div>
                         </div>
                     </div>
+                </div>
+                <div x-show="tab==='video'">
+                    @include('admin.ilanlar.components.video-tab', ['ilan' => $ilan])
                 </div>
                 <div x-show="tab==='kisiler'">
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">

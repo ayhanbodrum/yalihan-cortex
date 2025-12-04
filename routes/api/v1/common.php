@@ -124,15 +124,8 @@ Route::prefix('exchange-rates')->name('api.exchange-rates.')->group(function () 
         ->name('update');
 });
 
-// Reference & File Management API (Context7 Compliant)
-Route::prefix('reference')->name('api.reference.')->middleware(['web', 'auth'])->group(function () {
-    Route::post('/generate', [ReferenceController::class, 'generateRef'])->name('generate');
-    Route::get('/validate/{referansNo}', [ReferenceController::class, 'validateRef'])->name('validate');
-    Route::post('/basename', [ReferenceController::class, 'generateBasename'])->name('basename');
-    Route::post('/portal', [ReferenceController::class, 'updatePortalNumber'])->name('portal');
-    Route::get('/{ilanId}', [ReferenceController::class, 'getReferenceInfo'])->name('info');
-    Route::post('/batch-generate', [ReferenceController::class, 'batchGenerateRef'])->name('batch-generate');
-});
+// Reference & File Management API - REMOVED (duplicate with api.php routes)
+// Use api.reference.* routes from routes/api.php instead
 
 // n8n Webhook API Routes (Context7 Standard: C7-N8N-WEBHOOK-2025-11-20)
 Route::prefix('webhook/n8n')->name('api.webhook.n8n.')
@@ -212,6 +205,23 @@ Route::prefix('tkgm')->name('api.tkgm.')->middleware(['throttle:20,1'])->group(f
     Route::post('/clear-cache', [TKGMController::class, 'clearCache'])
         ->middleware('can:admin')
         ->name('clear-cache');
+});
+
+// Property API Routes (Gemini AI Önerisi - 2025-12-02)
+// TKGM Auto-Fill Integration
+// ✅ Context7: Web ve API middleware desteği (Wizard form için)
+Route::prefix('properties')->name('api.properties.')
+    ->middleware(['throttle:20,1'])
+    ->group(function () {
+    // TKGM Parsel Lookup (Ajax için - İlan oluştururken otomatik doldurmak için)
+    // Web middleware (wizard form) ve Sanctum (API) desteği
+        Route::post('/tkgm-lookup', [\App\Http\Controllers\Api\PropertyController::class, 'tkgmLookup'])
+            ->middleware(['web', 'auth'])
+            ->name('tkgm-lookup');
+    
+    // TKGM Health Check
+        Route::get('/tkgm-health', [\App\Http\Controllers\Api\PropertyController::class, 'tkgmHealth'])
+            ->name('tkgm-health');
 });
 
 // Public Booking Request API (Context7 Compliant)

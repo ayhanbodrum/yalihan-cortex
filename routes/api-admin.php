@@ -460,11 +460,7 @@ Route::middleware(['web', 'auth', 'admin', 'throttle:60,1'])->prefix('admin/api/
         Route::post('/analyze-batch', [\App\Http\Controllers\Api\ImageAIController::class, 'analyzeBatch'])->name('analyze-batch');
     });
 
-    Route::prefix('property-features')->name('property-features.')->group(function () {
-        Route::get('/suggestions', [\App\Http\Controllers\Api\PropertyFeatureSuggestionController::class, 'getFeatureSuggestions'])->name('suggestions');
-        Route::get('/smart-suggestions', [\App\Http\Controllers\Api\PropertyFeatureSuggestionController::class, 'getSmartSuggestions'])->name('smart-suggestions');
-        Route::post('/validate', [\App\Http\Controllers\Api\PropertyFeatureSuggestionController::class, 'validateFeatures'])->name('validate');
-    });
+    // ✅ DUPLICATE REMOVED: property-features with name('property-features.') was duplicate of admin/property-features (line 96)
 
     Route::prefix('cevre-analizi')->name('cevre-analizi.')->group(function () {
         Route::post('/', [\App\Http\Controllers\Api\AkilliCevreAnaliziController::class, 'analyzeEnvironment'])->name('analyze');

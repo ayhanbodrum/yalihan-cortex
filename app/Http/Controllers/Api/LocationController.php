@@ -535,4 +535,59 @@ class LocationController extends Controller
             return ResponseService::serverError('Adres doğrulanamadı (Context7 error)', $e);
         }
     }
+
+    /**
+     * ✨ NEW: Get single province with coordinates (for map focus)
+     * GET /api/location/provinces/{id}
+     */
+    public function getProvince($ilId)
+    {
+        try {
+            $il = Il::select('id', 'il_adi', 'lat', 'lng', 'plaka_kodu')->find($ilId);
+
+            if (!$il) {
+                return ResponseService::notFound('İl bulunamadı');
+            }
+
+            return ResponseService::success([
+                'id' => $il->id,
+                'name' => $il->il_adi,
+                'latitude' => $il->lat ?? null,
+                'longitude' => $il->lng ?? null,
+                'lat' => $il->lat ?? null,
+                'lng' => $il->lng ?? null,
+            ], 'İl başarıyla getirildi');
+        } catch (\Exception $e) {
+            Log::error('LocationController@getProvince error', ['il_id' => $ilId]);
+            return ResponseService::serverError('İl getirilemedi', $e);
+        }
+    }
+
+    /**
+     * ✨ NEW: Get single district with coordinates (for map focus)
+     * GET /api/location/districts/{id}
+     */
+    public function getDistrict($ilceId)
+    {
+        try {
+            $ilce = Ilce::select('id', 'ilce_adi', 'il_id', 'lat', 'lng')->find($ilceId);
+
+            if (!$ilce) {
+                return ResponseService::notFound('İlçe bulunamadı');
+            }
+
+            return ResponseService::success([
+                'id' => $ilce->id,
+                'name' => $ilce->ilce_adi,
+                'il_id' => $ilce->il_id,
+                'latitude' => $ilce->lat ?? null,
+                'longitude' => $ilce->lng ?? null,
+                'lat' => $ilce->lat ?? null,
+                'lng' => $ilce->lng ?? null,
+            ], 'İlçe başarıyla getirildi');
+        } catch (\Exception $e) {
+            Log::error('LocationController@getDistrict error', ['ilce_id' => $ilceId]);
+            return ResponseService::serverError('İlçe getirilemedi', $e);
+        }
+    }
 }

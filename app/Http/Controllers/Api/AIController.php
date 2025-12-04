@@ -256,6 +256,58 @@ class AIController extends Controller
         }
     }
 
+    /**
+     * Pazarlama videosu render sürecini başlatır.
+     */
+    public function startVideoRender(int $ilanId)
+    {
+        try {
+            $ilan = Ilan::find($ilanId);
+            if (! $ilan) {
+                return ResponseService::notFound('İlan bulunamadı');
+            }
+
+            $ilan->video_status = 'queued';
+            $ilan->video_last_frame = 0;
+            $ilan->save();
+
+            \App\Jobs\RenderMarketingVideo::dispatch($ilan->id);
+
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'ilan_id' => $ilan->id,
+                    'video_status' => $ilan->video_status,
+                ],
+                'message' => 'Video render işlemi kuyruğa alındı',
+            ], 202);
+        } catch (\Exception $e) {
+            return ResponseService::serverError('Video render işlemi başlatılamadı', $e);
+        }
+    }
+
+    /**
+     * Video durumunu döndürür (polling için).
+     */
+    public function getVideoStatus(int $ilanId)
+    {
+        try {
+            $ilan = Ilan::find($ilanId);
+            if (! $ilan) {
+                return ResponseService::notFound('İlan bulunamadı');
+            }
+
+            return ResponseService::success([
+                'ilan_id' => $ilan->id,
+                'video_status' => $ilan->video_status ?? 'none',
+                'video_last_frame' => (int) ($ilan->video_last_frame ?? 0),
+                'video_url' => $ilan->video_url,
+            ], 'Video durumu getirildi');
+        } catch (\Exception $e) {
+            return ResponseService::serverError('Video durumu alınamadı', $e);
+        }
+    }
+
     public function getProviders()
     {
         try {

@@ -57,9 +57,32 @@ class OllamaService
 
     protected function enforceTlsIfRequired(): void
     {
-        $require = (bool) config('ai.require_tls', false) || app()->environment('production');
-        if ($require && str_starts_with($this->apiUrl, 'http://')) {
+        // ✅ FIX: Local development'ta TLS kontrolünü gevşet
+        $require = (bool) config('ai.require_tls', false);
+        $isProduction = app()->environment('production');
+
+        // Local development'ta localhost veya local IP için HTTP'ye izin ver
+        $isLocalhost = str_contains($this->apiUrl, 'localhost')
+            || str_contains($this->apiUrl, '127.0.0.1')
+            || str_contains($this->apiUrl, '192.168.')
+            || str_contains($this->apiUrl, '10.0.')
+            || str_contains($this->apiUrl, '172.16.')
+            || str_contains($this->apiUrl, '213.199.36.160'); // ✅ Development server IP
+
+        // Local development'ta HTTP'ye izin ver (require_tls false ise veya localhost/IP ise)
+        if (!$isProduction && (!$require || $isLocalhost) && str_starts_with($this->apiUrl, 'http://')) {
+            // Local development'ta HTTP'ye izin ver
+            return;
+        }
+
+        // Production'da veya require_tls true ise HTTPS zorunlu
+        if (($isProduction || $require) && !$isLocalhost && str_starts_with($this->apiUrl, 'http://')) {
             throw new \RuntimeException('Insecure Ollama API URL without TLS');
+        }
+
+        // Production'da localhost bile olsa HTTP'ye izin verme (güvenlik)
+        if ($isProduction && str_starts_with($this->apiUrl, 'http://')) {
+            throw new \RuntimeException('Insecure Ollama API URL without TLS - Production requires HTTPS');
         }
     }
 
@@ -101,7 +124,7 @@ class OllamaService
      */
     public function generateTitle(array $data): array
     {
-        $cacheKey = 'ollama_title_'.md5(json_encode($data));
+        $cacheKey = 'ollama_title_' . md5(json_encode($data));
 
         return Cache::remember($cacheKey, $this->cacheTTL, function () use ($data) {
             $prompt = $this->buildTitlePrompt($data);
@@ -125,7 +148,7 @@ class OllamaService
      */
     public function generateDescription(array $data): string
     {
-        $cacheKey = 'ollama_desc_'.md5(json_encode($data));
+        $cacheKey = 'ollama_desc_' . md5(json_encode($data));
 
         return Cache::remember($cacheKey, $this->cacheTTL, function () use ($data) {
             $prompt = $this->buildDescriptionPrompt($data);
@@ -149,7 +172,7 @@ class OllamaService
      */
     public function analyzeLocation(array $locationData): array
     {
-        $cacheKey = 'ollama_location_'.md5(json_encode($locationData));
+        $cacheKey = 'ollama_location_' . md5(json_encode($locationData));
 
         return Cache::remember($cacheKey, $this->cacheTTL, function () use ($locationData) {
             $prompt = $this->buildLocationAnalysisPrompt($locationData);
@@ -193,8 +216,10 @@ class OllamaService
      */
     protected function sendRequest(string $prompt, int $maxTokens = 500): array
     {
-        $response = Http::timeout(30)
-            ->post($this->apiUrl.'/api/generate', [
+        // ✅ FIX: Timeout süresini artır (Ollama büyük modeller için daha uzun sürebilir)
+        // qwen2.5:14b gibi büyük modeller için 120 saniye timeout
+        $response = Http::timeout(120)
+            ->post($this->apiUrl . '/api/generate', [
                 'model' => $this->model,
                 'prompt' => $prompt,
                 'stream' => false,
@@ -209,7 +234,7 @@ class OllamaService
             return $response->json();
         }
 
-        throw new \Exception('Ollama API request failed: '.$response->status());
+        throw new \Exception('Ollama API request failed: ' . $response->status());
     }
 
     /**

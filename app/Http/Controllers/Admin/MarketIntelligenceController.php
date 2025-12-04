@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Il;
+use App\Models\Ilan;
 use App\Models\MarketIntelligenceSetting;
+use App\Services\AI\YalihanCortex;
 use App\Services\Response\ResponseService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -15,9 +17,16 @@ use Illuminate\Support\Facades\DB;
  *
  * Context7: Market Intelligence - Pazar İstihbaratı
  * Bölge yönetimi ve veri çekme ayarları
+ * ✅ REFACTORED: YalihanCortex merkezi AI sistemi kullanılıyor
  */
 class MarketIntelligenceController extends Controller
 {
+    protected YalihanCortex $cortex;
+
+    public function __construct(YalihanCortex $cortex)
+    {
+        $this->cortex = $cortex;
+    }
     /**
      * Dashboard - Genel bakış
      */
@@ -45,20 +54,44 @@ class MarketIntelligenceController extends Controller
 
     /**
      * Compare - Fiyat karşılaştırma sayfası
+     * ✅ REFACTORED: YalihanCortex ile AI destekli fiyat karşılaştırması
      */
     public function compare($ilanId = null)
     {
+        $comparisonData = null;
+
+        if ($ilanId) {
+            $ilan = Ilan::with(['il', 'ilce', 'mahalle'])->find($ilanId);
+            if ($ilan) {
+                $comparisonData = $this->cortex->compareMarketPrices($ilan);
+            }
+        }
+
         return view('admin.market-intelligence.compare', [
             'ilan_id' => $ilanId,
+            'comparison_data' => $comparisonData,
         ]);
     }
 
     /**
      * Trends - Piyasa trendleri sayfası
+     * ✅ REFACTORED: YalihanCortex ile AI destekli trend analizi
      */
-    public function trends()
+    public function trends(Request $request)
     {
-        return view('admin.market-intelligence.trends');
+        $filters = [
+            'il_id' => $request->input('il_id'),
+            'ilce_id' => $request->input('ilce_id'),
+            'date_from' => $request->input('date_from', now()->subDays(30)->toDateString()),
+            'date_to' => $request->input('date_to', now()->toDateString()),
+        ];
+
+        $trendData = $this->cortex->analyzeMarketTrends($filters);
+
+        return view('admin.market-intelligence.trends', [
+            'trend_data' => $trendData,
+            'filters' => $filters,
+        ]);
     }
 
     /**
@@ -338,6 +371,55 @@ class MarketIntelligenceController extends Controller
             );
 
             return ResponseService::serverError('Veri senkronizasyonu başarısız oldu: ' . $e->getMessage(), $e);
+        }
+    }
+
+    /**
+     * API: Fiyat karşılaştırması yap
+     *
+     * POST /api/admin/market-intelligence/compare-price
+     * ✅ REFACTORED: YalihanCortex kullanılıyor
+     */
+    public function comparePrice(Request $request)
+    {
+        try {
+            $request->validate([
+                'ilan_id' => 'required|exists:ilanlar,id',
+            ]);
+
+            $ilan = Ilan::with(['il', 'ilce', 'mahalle'])->findOrFail($request->ilan_id);
+            $result = $this->cortex->compareMarketPrices($ilan);
+
+            return ResponseService::success($result, 'Fiyat karşılaştırması tamamlandı');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return ResponseService::validationError($e->errors());
+        } catch (\Exception $e) {
+            return ResponseService::serverError('Fiyat karşılaştırması başarısız oldu', $e);
+        }
+    }
+
+    /**
+     * API: Piyasa trend analizi yap
+     *
+     * POST /api/admin/market-intelligence/analyze-trends
+     * ✅ REFACTORED: YalihanCortex kullanılıyor
+     */
+    public function analyzeTrends(Request $request)
+    {
+        try {
+            $filters = [
+                'il_id' => $request->input('il_id'),
+                'ilce_id' => $request->input('ilce_id'),
+                'mahalle_id' => $request->input('mahalle_id'),
+                'date_from' => $request->input('date_from', now()->subDays(30)->toDateString()),
+                'date_to' => $request->input('date_to', now()->toDateString()),
+            ];
+
+            $result = $this->cortex->analyzeMarketTrends($filters);
+
+            return ResponseService::success($result, 'Trend analizi tamamlandı');
+        } catch (\Exception $e) {
+            return ResponseService::serverError('Trend analizi başarısız oldu', $e);
         }
     }
 }

@@ -98,9 +98,9 @@ Route::prefix('admin/ai')->middleware(['web', 'auth'])->group(function () {
     Route::get('/report', [AdvancedAIController::class, 'performanceReport'])
         ->name('admin.ai.report');
 
-    // AI System Health (Admin)
-    Route::get('/health', [AdvancedAIController::class, 'systemHealth'])
-        ->name('admin.ai.health');
+    // AI System Health - REMOVED (use admin.ilanlar.ai.system-check instead)
+    // Route::get('/health', [AdvancedAIController::class, 'systemHealth'])
+    //     ->name('admin.ai.health');
 
     // AI Usage Statistics (Admin)
     Route::get('/statistics', [AdvancedAIController::class, 'usageStatistics'])

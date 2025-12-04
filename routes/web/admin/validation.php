@@ -13,9 +13,9 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
-    // Field-level validation
+    // ✅ Real-time field validation widget (Context7: Unique name to avoid duplicate with admin.validate.field)
     Route::post('/validate-field', [ValidationController::class, 'validateField'])
-        ->name('validate.field');
+        ->name('validation-widget.field');
 
     // Step-level validation for form wizard
     Route::post('/validate-step', [ValidationController::class, 'validateStep'])

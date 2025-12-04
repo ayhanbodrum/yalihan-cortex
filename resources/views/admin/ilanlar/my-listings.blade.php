@@ -990,7 +990,7 @@
 
                     this.processing = true;
                     try {
-                        const response = await fetch('{{ route('admin.my-listings.bulk-action') }}', {
+                        const response = await fetch('{{ route('admin.my-listings.bulk.action') }}', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',

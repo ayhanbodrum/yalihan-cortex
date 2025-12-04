@@ -109,6 +109,7 @@ class Ilan extends Model
         'baslik',                    // ✅ REQUIRED: İlan başlığı (varchar(255), NOT NULL)
         'aciklama',                  // ✅ REQUIRED: İlan açıklaması (text, NULL allowed)
         'fiyat',                     // ✅ REQUIRED: Ana fiyat bilgisi (decimal(15,2), NULL allowed)
+        'price_text',                // ✅ REQUIRED: Fiyatın yazıyla gösterimi
         'para_birimi',               // ✅ REQUIRED: Para birimi (varchar(10), NOT NULL, default: TRY)
         'status',                    // ✅ REQUIRED: İlan durumu (varchar(255), NOT NULL, default: 'Aktif')
         'crm_only',
@@ -227,6 +228,9 @@ class Ilan extends Model
         // Medya
         'youtube_video_url',         // 🔵 OPTIONAL: YouTube video URL
         'sanal_tur_url',             // 🔵 OPTIONAL: Sanal tur URL
+        'video_url',                 // 🔵 OPTIONAL: Pazarlama videosu URL
+        'video_status',              // 🔵 OPTIONAL: Video render durumu (none, queued, rendering, completed, failed)
+        'video_last_frame',          // 🔵 OPTIONAL: Render ilerlemesi (0-100)
 
         // TurkiyeAPI + WikiMapia Integration (5 Kasım 2025)
         'location_type',             // 🔵 OPTIONAL: Lokasyon tipi (mahalle, belde, koy)
@@ -428,13 +432,17 @@ class Ilan extends Model
         // Medya
         'youtube_video_url' => 'string',             // 🔵 OPTIONAL: varchar(255) → string
         'sanal_tur_url' => 'string',                 // 🔵 OPTIONAL: varchar(255) → string
+        'video_url' => 'string',                     // 🔵 OPTIONAL: varchar(255) → string
+        'video_status' => 'string',                  // 🔵 OPTIONAL: varchar(50) → string
+        'video_last_frame' => 'integer',             // 🔵 OPTIONAL: tinyint → integer
 
         // TurkiyeAPI + WikiMapia Integration
         'location_type' => 'string',                 // 🔵 OPTIONAL: varchar(255) → string
         'location_data' => 'array',                  // 🔵 OPTIONAL: json → array
+        'nearby_places' => 'array',                  // 🔵 OPTIONAL: json → array
         'wikimapia_place_id' => 'string',            // 🔵 OPTIONAL: varchar(255) → string
         'environmental_scores' => 'array',           // 🔵 OPTIONAL: json → array
-        'nearby_places' => 'array',                  // 🔵 OPTIONAL: json → array
+        'price_text' => 'string',                    // 🔵 OPTIONAL: varchar(255) → string
 
         // Portal Entegrasyonları
         'sahibinden_id' => 'string',                 // 🔵 OPTIONAL: varchar(50) → string
@@ -837,6 +845,98 @@ class Ilan extends Model
     }
 
     /**
+     * Kısa referans numarası (Müşteri için - Frontend)
+     *
+     * Format: Son 3 hane, 0 ile doldurulmuş
+     * Örnek: 001, 234, 567
+     *
+     * Gemini AI Önerisi: Müşteri tarafında kısa, danışman arama yapınca bulur
+     * Context7: REFNOMAT İK Sistemi
+     *
+     * @return string
+     */
+    public function getKisaReferansAttribute(): string
+    {
+        if (!$this->referans_no) {
+            return '';
+        }
+
+        // YE-SAT-YALKVK-DAİRE-001234 → 234
+        $parts = explode('-', $this->referans_no);
+        $siraNo = end($parts);
+
+        // Son 3 haneyi al ve 0 ile doldur
+        return str_pad(substr($siraNo, -3), 3, '0', STR_PAD_LEFT);
+        // Sonuç: 001, 234, 567
+    }
+
+    /**
+     * Orta referans numarası (Danışman için - Hover/Tooltip)
+     *
+     * Format: Ref No: 001 Lokasyon Kategori Site (Mal Sahibi)
+     * Örnek: Ref No: 001 Yalıkavak Satılık Daire Ülkerler Sitesi (Ahmet Yılmaz)
+     *
+     * Gemini AI Önerisi: Danışman hover'da görür, kopyalar
+     * Yalıhan Bekçi: Frontend görünüm için optimize edilmiş format
+     *
+     * @return string
+     */
+    public function getOrtaReferansAttribute(): string
+    {
+        $parts = [];
+
+        // Kısa referans
+        $parts[] = 'Ref No: ' . $this->kisa_referans;
+
+        // Lokasyon
+        if ($this->mahalle) {
+            $parts[] = $this->mahalle->mahalle_adi;
+        } elseif ($this->ilce) {
+            $parts[] = $this->ilce->ilce_adi;
+        }
+
+        // Yayın Tipi
+        if ($this->yayinTipi) {
+            $parts[] = $this->yayinTipi->name;
+        }
+
+        // Kategori
+        if ($this->altKategori) {
+            $parts[] = $this->altKategori->name;
+        } elseif ($this->anaKategori) {
+            $parts[] = $this->anaKategori->name;
+        }
+
+        // Site
+        if ($this->site) {
+            $parts[] = $this->site->name;
+        }
+
+        // Mal Sahibi (Parantez içinde)
+        if ($this->ilanSahibi) {
+            $sahip = trim($this->ilanSahibi->ad . ' ' . $this->ilanSahibi->soyad);
+            $parts[] = "({$sahip})";
+        }
+
+        return implode(' ', array_filter($parts));
+    }
+
+    /**
+     * Uzun referans numarası (Sistem için - Dosya Adı)
+     *
+     * Format: Ref YE-SAT-YALKVK-DAİRE-001234 - Yalıkavak Satılık...
+     *
+     * Gemini AI Önerisi: Dosya oluşturma ve arşivleme için
+     * Context7: REFNOMATİK tam format
+     *
+     * @return string
+     */
+    public function getUzunReferansAttribute(): string
+    {
+        return $this->dosya_adi ?? $this->referans_no ?? '';
+    }
+
+    /**
      * Tam adres metnini oluşturur.
      */
     public function getTamAdresAttribute(): string
@@ -1002,12 +1102,12 @@ class Ilan extends Model
         parent::boot();
         static::creating(function ($model) {
             if (empty($model->slug) && ! empty($model->baslik)) {
-                $model->slug = Str::slug($model->baslik.'-'.uniqid());
+                $model->slug = Str::slug($model->baslik . '-' . uniqid());
             }
         });
         static::updating(function ($model) {
             if (empty($model->slug) && ! empty($model->baslik)) {
-                $model->slug = Str::slug($model->baslik.'-'.uniqid());
+                $model->slug = Str::slug($model->baslik . '-' . uniqid());
             }
         });
     }

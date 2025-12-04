@@ -45,6 +45,17 @@ module.exports = {
             fontFamily: {
                 sans: ['Inter', 'system-ui', 'sans-serif'],
             },
+            animation: {
+                shake: 'shake 0.3s ease-in-out',
+                'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            },
+            keyframes: {
+                shake: {
+                    '0%, 100%': { transform: 'translateX(0)' },
+                    '25%': { transform: 'translateX(-4px)' },
+                    '75%': { transform: 'translateX(4px)' },
+                },
+            },
         },
     },
     plugins: [

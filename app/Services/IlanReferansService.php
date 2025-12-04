@@ -46,12 +46,21 @@ class IlanReferansService
     /**
      * Kullanıcı dostu dosya adı oluştur
      *
-     * Format: {Lokasyon} {YayınTipi} {Site} ({Mal Sahibi}) {Kategori} Ref No {ReferansNo}
-     * Örnek: Yalıkavak Satılık Ülkerler Sitesi (Ahmet Yılmaz) Daire Ref No YE-SAT-YALKVK-DAİRE-001234
+     * Format: Ref {ReferansNo} - {Lokasyon} {YayınTipi} {Kategori} {Site} ({Mal Sahibi})
+     * Örnek: Ref YE-SAT-YALKVK-DAİRE-001234 - Yalıkavak Satılık Daire Ülkerler Sitesi (Ahmet Yılmaz)
+     *
+     * Context7: Referans numarası başta (telefonda kolay okunur)
+     * Yalıhan Bekçi: Smart naming convention (2025-12-02)
      */
     public function generateDosyaAdi(Ilan $ilan): string
     {
         $parts = [];
+
+        // Referans No (BAŞTA - Telefonda kolay okunur)
+        $parts[] = 'Ref ' . $this->generateReferansNo($ilan);
+
+        // Ayırıcı
+        $parts[] = '-';
 
         // Lokasyon (İlçe veya Mahalle)
         if ($ilan->mahalle) {
@@ -65,22 +74,19 @@ class IlanReferansService
         // Yayın Tipi (Satılık, Kiralık, vb.)
         $parts[] = $this->getYayinTipiAdi($ilan);
 
+        // Kategori
+        $parts[] = $this->getKategoriAdi($ilan);
+
         // Site/Apartman
         if ($ilan->site) {
             $parts[] = $ilan->site->name;
         }
 
-        // Mal Sahibi (Parantez içinde)
+        // Mal Sahibi (Parantez içinde - EN SONDA)
         if ($ilan->ilanSahibi) {
-            $malSahibi = trim($ilan->ilanSahibi->ad.' '.$ilan->ilanSahibi->soyad);
+            $malSahibi = trim($ilan->ilanSahibi->ad . ' ' . $ilan->ilanSahibi->soyad);
             $parts[] = "({$malSahibi})";
         }
-
-        // Kategori
-        $parts[] = $this->getKategoriAdi($ilan);
-
-        // Referans No
-        $parts[] = 'Ref No '.$this->generateReferansNo($ilan);
 
         return implode(' ', array_filter($parts));
     }
@@ -131,7 +137,7 @@ class IlanReferansService
             $ad = $ilan->ilanSahibi->ad ?? '';
             $soyad = $ilan->ilanSahibi->soyad ?? '';
             if ($ad && $soyad) {
-                $malSahibi = mb_substr($ad, 0, 1).mb_substr($soyad, 0, 1);
+                $malSahibi = mb_substr($ad, 0, 1) . mb_substr($soyad, 0, 1);
                 $malSahibi = mb_strtoupper($malSahibi, 'UTF-8');
             }
         }
