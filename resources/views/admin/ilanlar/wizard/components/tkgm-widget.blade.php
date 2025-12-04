@@ -43,28 +43,48 @@
         </div>
     </div>
 
-    {{-- TKGM Sorgula Butonu --}}
-    <button type="button" @click="fetchTKGM()" :disabled="loading || !canFetch"
-        class="w-full px-6 py-3 bg-blue-600 dark:bg-blue-500 text-white rounded-lg
-                   hover:bg-blue-700 dark:hover:bg-blue-600 hover:scale-105 active:scale-95
-                   focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
-                   disabled:opacity-50 disabled:cursor-not-allowed
-                   transition-all duration-200 ease-in-out
-                   shadow-md hover:shadow-lg font-medium flex items-center justify-center gap-2">
-        <svg x-show="!loading" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-        </svg>
-        <svg x-show="loading" class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
-            </circle>
-            <path class="opacity-75" fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-            </path>
-        </svg>
-        <span
-            x-text="loading ? 'TKGM Sorgulanıyor...' : (hasCoordinates ? '🔍 TKGM\'den Otomatik Doldur (Koordinat)' : '🔍 TKGM\'den Otomatik Doldur (Ada/Parsel)')"></span>
-    </button>
+    {{-- TKGM Sorgula / JSON Yükle Butonları --}}
+    <div class="space-y-2">
+        <button type="button" @click="fetchTKGM()" :disabled="loading || !canFetch"
+            class="w-full px-6 py-3 bg-blue-600 dark:bg-blue-500 text-white rounded-lg
+                       hover:bg-blue-700 dark:hover:bg-blue-600 hover:scale-105 active:scale-95
+                       focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
+                       disabled:opacity-50 disabled:cursor-not-allowed
+                       transition-all duration-200 ease-in-out
+                       shadow-md hover:shadow-lg font-medium flex items-center justify-center gap-2">
+            <svg x-show="!loading" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <svg x-show="loading" class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+                </circle>
+                <path class="opacity-75" fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                </path>
+            </svg>
+            <span
+                x-text="loading ? 'TKGM Sorgulanıyor...' : (hasCoordinates ? '🔍 TKGM\'den Otomatik Doldur (Koordinat)' : '🔍 TKGM\'den Otomatik Doldur (Ada/Parsel)')"></span>
+        </button>
+
+        <div class="flex items-center justify-between gap-3">
+            <div class="flex-1">
+                <label
+                    class="inline-flex items-center justify-center w-full px-4 py-2.5 border border-dashed border-blue-300 dark:border-blue-700 rounded-lg text-xs font-medium text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-900/10 hover:bg-blue-100 dark:hover:bg-blue-900/30 hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer">
+                    <input type="file" class="hidden" accept=".json,.geojson,application/geo+json,application/json"
+                        @change="handleGeoJsonUpload($event)">
+                    <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1M4 8l4-4m0 0l4 4M8 4v12" />
+                    </svg>
+                    <span>JSON / GeoJSON Yükle</span>
+                </label>
+            </div>
+            <p class="hidden sm:block text-[11px] text-gray-500 dark:text-gray-400">
+                TKGM ekranından indirdiğiniz dosyayı yükleyebilirsiniz.
+            </p>
+        </div>
+    </div>
 
     {{-- TKGM Sonuçları --}}
     <div x-show="tkgmData && tkgmData !== null" x-transition:enter="transition ease-out duration-300"
@@ -72,7 +92,7 @@
         x-transition:enter-end="opacity-100 transform translate-y-0"
         class="mt-6 p-4 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
 
-        <div class="flex items-center gap-2 mb-3">
+        <div class="flex items-center gap-2 mb-2">
             <svg class="w-5 h-5 text-green-600 dark:text-green-400" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd"
                     d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
@@ -80,38 +100,36 @@
             </svg>
             <h5 class="font-bold text-green-800 dark:text-green-300">TKGM'den Gelen Bilgiler</h5>
         </div>
+        <p class="mb-3 text-[11px] text-gray-600 dark:text-gray-400">
+            API yanıtı veya JSON/GeoJSON dosyasındaki tüm alanlar aşağıda listelenir.
+        </p>
 
-        <div class="grid grid-cols-2 gap-3 text-sm">
-            <div>
-                <span class="text-gray-600 dark:text-gray-400">Alan:</span>
-                <strong class="ml-2 text-gray-900 dark:text-white"
-                    x-text="tkgmData && tkgmData.alan_m2 ? tkgmData.alan_m2 + ' m²' : 'N/A'"></strong>
-            </div>
-            <div>
-                <span class="text-gray-600 dark:text-gray-400">İmar Durumu:</span>
-                <strong class="ml-2 text-gray-900 dark:text-white"
-                    x-text="tkgmData ? (tkgmData.imar_statusu || tkgmData.imar_durumu || 'N/A') : 'N/A'"></strong>
-            </div>
-            <div>
-                <span class="text-gray-600 dark:text-gray-400">KAKS:</span>
-                <strong class="ml-2 text-gray-900 dark:text-white"
-                    x-text="tkgmData && tkgmData.kaks ? tkgmData.kaks : 'N/A'"></strong>
-            </div>
-            <div>
-                <span class="text-gray-600 dark:text-gray-400">TAKS:</span>
-                <strong class="ml-2 text-gray-900 dark:text-white"
-                    x-text="tkgmData && tkgmData.taks ? tkgmData.taks : 'N/A'"></strong>
-            </div>
-            <div>
-                <span class="text-gray-600 dark:text-gray-400">Gabari:</span>
-                <strong class="ml-2 text-gray-900 dark:text-white"
-                    x-text="tkgmData && tkgmData.gabari ? tkgmData.gabari + ' m' : 'N/A'"></strong>
-            </div>
-            <div>
-                <span class="text-gray-600 dark:text-gray-400">Koordinatlar:</span>
-                <strong class="ml-2 text-gray-900 dark:text-white"
-                    x-text="tkgmData && tkgmData.center_lat && tkgmData.center_lng ?
-                                tkgmData.center_lat.toFixed(4) + ', ' + tkgmData.center_lng.toFixed(4) : 'N/A'"></strong>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs sm:text-sm" x-show="tkgmDisplayEntries.length">
+            <template x-for="[key, value] in tkgmDisplayEntries" :key="key">
+                <div class="flex items-start gap-1.5">
+                    <span class="text-gray-600 dark:text-gray-400 capitalize"
+                        x-text="key.replace(/_/g, ' ') + ':'"></span>
+                    <span class="ml-1 font-semibold text-gray-900 dark:text-white break-all"
+                        x-text="typeof value === 'object' ? JSON.stringify(value) : value"></span>
+                </div>
+            </template>
+        </div>
+
+        <div class="mt-3 space-y-1" x-show="tkgmRawJson">
+            <button type="button" @click="showRawJson = !showRawJson"
+                class="inline-flex items-center px-3 py-1.5 rounded-md text-[11px] font-medium
+                       bg-white/70 dark:bg-gray-900/40 border border-gray-200 dark:border-gray-700
+                       text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800
+                       hover:scale-105 active:scale-95 transition-all duration-200">
+                <svg class="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
+                </svg>
+                <span x-text="showRawJson ? 'Ham JSON\'u Gizle' : 'Ham JSON\'u Göster'"></span>
+            </button>
+
+            <div x-show="showRawJson" x-transition
+                class="max-h-56 overflow-auto rounded-md bg-black/90 text-green-100 text-[11px] leading-relaxed p-3 font-mono border border-gray-800">
+                <pre x-text="tkgmRawJson"></pre>
             </div>
         </div>
 
@@ -146,6 +164,9 @@
             parselNo: '',
             loading: false,
             tkgmData: null,
+            tkgmDisplayEntries: [],
+            tkgmRawJson: '',
+            showRawJson: false,
             error: null,
             canFetch: false,
             hasCoordinates: false,
@@ -157,6 +178,14 @@
                 window.tkgmWidgetInstance = this;
                 this.setupCoordinateListener();
                 this.checkCoordinates();
+
+                // Step 1'den gelen GeoJSON verisini dinle
+                document.addEventListener('step1-geojson-ready', (e) => {
+                    if (e.detail && e.detail.feature) {
+                        console.log('✅ Step 1\'den GeoJSON verisi alındı, Step 2\'ye aktarılıyor...');
+                        this.applyGeoJsonData(e.detail);
+                    }
+                });
             },
 
             setupCoordinateListener() {
@@ -236,10 +265,195 @@
                 }, false);
             },
 
+            handleGeoJsonUpload(event) {
+                const file = event.target.files?.[0];
+                if (!file) return;
+
+                if (file.size > 2 * 1024 * 1024) {
+                    this.error = 'Dosya boyutu 2MB\'den küçük olmalıdır';
+                    event.target.value = '';
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    try {
+                        const text = e.target.result;
+                        const data = JSON.parse(text);
+                        this.applyGeoJsonData(data);
+                        this.error = null;
+                    } catch (_) {
+                        this.error = 'Geçerli bir JSON / GeoJSON dosyası yükleyin';
+                    }
+                };
+
+                reader.readAsText(file);
+            },
+
+            applyGeoJsonData(data) {
+                let feature = null;
+
+                if (data?.type === 'FeatureCollection' && Array.isArray(data.features) && data.features.length) {
+                    feature = data.features[0];
+                } else if (data?.type === 'Feature') {
+                    feature = data;
+                }
+
+                if (!feature || !feature.geometry) {
+                    this.error = 'GeoJSON içinde geçerli bir Feature bulunamadı';
+                    return;
+                }
+
+                const props = feature.properties || {};
+
+                // Ada / Parsel
+                this.adaNo = props.Ada || props.ada || props.ada_no || this.adaNo;
+                this.parselNo = props.ParselNo || props.parsel || props.Parsel || props.parsel_no || this.parselNo;
+
+                // Ada/Parsel form alanlarına aktar
+                const adaInput = document.getElementById('ada_no');
+                const parselInput = document.getElementById('parsel_no');
+                if (adaInput && this.adaNo) adaInput.value = this.adaNo;
+                if (parselInput && this.parselNo) parselInput.value = this.parselNo;
+
+                this.checkTKGMReady();
+
+                // Alan (m²) - Normalize ve form alanına aktar
+                const alanInput = document.getElementById('alan_m2');
+                if (props.Alan && alanInput) {
+                    const normalized = this.normalizeArea(props.Alan);
+                    if (!Number.isNaN(normalized)) {
+                        alanInput.value = normalized;
+                    }
+                }
+
+                // Nitelik -> İmar Durumu (Tarla, vb.)
+                const nitelik = props.Nitelik || props.nitelik;
+                const imarStatusuInput = document.getElementById('imar_statusu');
+                if (nitelik && imarStatusuInput) {
+                    // Nitelik değerini imar durumuna map et
+                    const nitelikMap = {
+                        'Tarla': 'imar_dışı',
+                        'tarla': 'imar_dışı',
+                        'İmarlı': 'imarlı',
+                        'imarlı': 'imarlı',
+                        'İmarsız': 'imar_dışı',
+                        'imarsız': 'imar_dışı',
+                        'Konut': 'imarlı',
+                        'konut': 'imarlı',
+                        'Ticari': 'imarlı',
+                        'ticari': 'imarlı',
+                    };
+                    const mappedValue = nitelikMap[nitelik] || nitelik.toLowerCase();
+                    // Select'te bu değer varsa seç
+                    for (let option of imarStatusuInput.options) {
+                        if (option.value === mappedValue || option.text.toLowerCase().includes(nitelik.toLowerCase())) {
+                            imarStatusuInput.value = option.value;
+                            break;
+                        }
+                    }
+                }
+
+                // İmar Durumu (direkt)
+                if (props.ImarDurumu || props.imar_durumu || props.imar_statusu) {
+                    const imarValue = props.ImarDurumu || props.imar_durumu || props.imar_statusu;
+                    if (imarStatusuInput) {
+                        for (let option of imarStatusuInput.options) {
+                            if (option.value === imarValue || option.text.toLowerCase().includes(imarValue
+                                    .toLowerCase())) {
+                                imarStatusuInput.value = option.value;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                // KAKS, TAKS, Gabari
+                if (props.KAKS || props.kaks) {
+                    const kaksInput = document.getElementById('kaks');
+                    if (kaksInput) {
+                        const kaksValue = parseFloat(props.KAKS || props.kaks);
+                        if (!Number.isNaN(kaksValue)) kaksInput.value = kaksValue;
+                    }
+                }
+
+                if (props.TAKS || props.taks) {
+                    const taksInput = document.getElementById('taks');
+                    if (taksInput) {
+                        const taksValue = parseFloat(props.TAKS || props.taks);
+                        if (!Number.isNaN(taksValue)) taksInput.value = taksValue;
+                    }
+                }
+
+                if (props.Gabari || props.gabari) {
+                    const gabariInput = document.getElementById('gabari');
+                    if (gabariInput) {
+                        const gabariValue = parseFloat(props.Gabari || props.gabari);
+                        if (!Number.isNaN(gabariValue)) gabariInput.value = gabariValue;
+                    }
+                }
+
+                // Haritada gösterim
+                if (window.L && window.step2Map && feature.geometry) {
+                    try {
+                        if (window.uploadedGeoJsonLayer) {
+                            window.step2Map.removeLayer(window.uploadedGeoJsonLayer);
+                        }
+
+                        const layer = window.L.geoJSON(feature, {
+                            style: {
+                                color: '#2563eb',
+                                weight: 2,
+                                fillColor: '#3b82f6',
+                                fillOpacity: 0.25,
+                            },
+                        }).addTo(window.step2Map);
+
+                        window.uploadedGeoJsonLayer = layer;
+
+                        const bounds = layer.getBounds();
+                        if (bounds.isValid && bounds.isValid()) {
+                            const center = bounds.getCenter();
+                            window.step2Map.fitBounds(bounds);
+
+                            const latInput = document.querySelector('[name="enlem"]') || document.querySelector(
+                                '[name="latitude"]');
+                            const lngInput = document.querySelector('[name="boylam"]') || document.querySelector(
+                                '[name="longitude"]');
+                            if (latInput) latInput.value = center.lat.toFixed(6);
+                            if (lngInput) lngInput.value = center.lng.toFixed(6);
+
+                            if (window.wizardMap && window.wizardMarker) {
+                                window.wizardMap.setView([center.lat, center.lng], window.wizardMap.getZoom());
+                                window.wizardMarker.setLatLng([center.lat, center.lng]);
+                            }
+                        }
+                    } catch (e) {
+                        console.warn('GeoJSON haritaya eklenemedi:', e);
+                    }
+                }
+
+                this.tkgmData = props;
+                this.tkgmDisplayEntries = Object.entries(props || {});
+                this.tkgmRawJson = JSON.stringify(data, null, 2);
+                this.showRawJson = false;
+            },
+
+            normalizeArea(value) {
+                const raw = String(value).trim();
+                if (!raw) return NaN;
+                const normalized = raw.replace(/\./g, '').replace(',', '.');
+                const num = parseFloat(normalized);
+                return Number.isFinite(num) ? num : NaN;
+            },
+
             async performTKGMRequest(payload, autoFill = false) {
                 this.loading = true;
                 this.error = null;
                 this.tkgmData = null;
+                this.tkgmDisplayEntries = [];
+                this.tkgmRawJson = '';
+                this.showRawJson = false;
 
                 try {
                     const url = window.APIConfig?.properties?.tkgmLookup || '/api/properties/tkgm-lookup';
@@ -263,6 +477,9 @@
 
                     if (result.success && result.data) {
                         this.tkgmData = result.data;
+                        this.tkgmDisplayEntries = Object.entries(result.data || {});
+                        this.tkgmRawJson = JSON.stringify(result, null, 2);
+                        this.showRawJson = false;
                         this.error = null;
 
                         if (result.data.ada_no) this.adaNo = result.data.ada_no;
@@ -276,10 +493,16 @@
                     } else {
                         this.error = result.message || 'TKGM verisi bulunamadı. Lütfen manuel girebilirsiniz.';
                         this.tkgmData = null;
+                        this.tkgmDisplayEntries = [];
+                        this.tkgmRawJson = '';
+                        this.showRawJson = false;
                     }
                 } catch (err) {
                     this.error = 'TKGM bağlantı hatası: ' + (err.message || 'Bilinmeyen hata');
                     this.tkgmData = null;
+                    this.tkgmDisplayEntries = [];
+                    this.tkgmRawJson = '';
+                    this.showRawJson = false;
                 } finally {
                     this.loading = false;
                 }

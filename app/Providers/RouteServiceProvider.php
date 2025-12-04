@@ -34,7 +34,9 @@ class RouteServiceProvider extends ServiceProvider
         });
 
         $this->routes(function () {
-            // API Routes
+            // API Routes (Clean modular architecture)
+            // ✅ All API routes integrated in routes/api.php with modular v1 structure
+            // ❌ Removed legacy: api-admin.php, api-location.php (now in routes/api/v1/*)
             Route::middleware('api')
                 ->prefix('api')
                 ->group(base_path('routes/api.php'));
@@ -47,20 +49,9 @@ class RouteServiceProvider extends ServiceProvider
             Route::middleware('web')
                 ->group(base_path('routes/web.php'));
 
-            // Admin API Routes
-            Route::middleware('api')
-                ->prefix('api')
-                ->group(base_path('routes/api-admin.php'));
-
-            // API v1 Admin Routes
-            Route::middleware('api')
-                ->prefix('api/v1')
-                ->group(base_path('routes/api/v1/admin.php'));
-
             // Advanced AI Routes (AI Dashboard)
             Route::middleware('web')
                 ->group(base_path('routes/ai-advanced.php'));
-
         });
     }
 }

@@ -395,22 +395,7 @@ class IlanController extends AdminController
         $ilceler = collect();
         $mahalleler = collect();
 
-        return view('admin.ilanlar.create', compact(
-            'kategoriler',
-            'anaKategoriler',
-            'altKategoriler',
-            'yayinTipleri',
-            'kisiler',
-            'danismanlar',
-            'iller',
-            'ilceler',
-            'mahalleler',
-            'autoSaveData',
-            'statusOptions',
-            'taslak',
-            'etiketler',
-            'ulkeler'
-        ));
+        return redirect()->route('admin.ilanlar.create-wizard');
     }
 
     /**
@@ -565,6 +550,10 @@ class IlanController extends AdminController
                 'boylam' => 'nullable|numeric|between:-180,180',
                 'adres' => 'nullable|string|max:500',
 
+                // ✅ Context7: Çevresel Bilgiler (POI & Tags)
+                'environment_pois' => 'nullable|string', // JSON string olarak gelir
+                'environment_tags' => 'nullable|array', // Array olarak gelir
+
                 // Villa/Daire Validation Rules (YENİ)
                 'isinma_tipi' => 'nullable|string|in:Doğalgaz,Kombi,Klima,Soba,Merkezi,Yerden Isıtma',
                 'site_ozellikleri' => 'nullable|array',
@@ -708,6 +697,10 @@ class IlanController extends AdminController
                 'altyapi_elektrik' => $request->boolean('altyapi_elektrik', false),
                 'altyapi_su' => $request->boolean('altyapi_su', false),
                 'altyapi_dogalgaz' => $request->boolean('altyapi_dogalgaz', false),
+
+                // ✅ Context7: Çevresel Bilgiler (POI & Tags)
+                'environment_pois' => $request->environment_pois ? (is_string($request->environment_pois) ? json_decode($request->environment_pois, true) : $request->environment_pois) : null,
+                'environment_tags' => $request->environment_tags ? (is_array($request->environment_tags) ? $request->environment_tags : json_decode($request->environment_tags, true)) : null,
             ]);
 
             // Create price history entry

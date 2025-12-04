@@ -5,7 +5,7 @@ console.log('📍 OpenStreetMap location system loaded (Context7 uyumlu)');
 
 // Leaflet map global variable
 let leafletMap = null;
-let currentMarker = null;
+const currentMarker = null;
 let searchHistory = JSON.parse(localStorage.getItem('addressSearchHistory') || '[]');
 
 // Map configuration
@@ -75,7 +75,10 @@ class VanillaLocationManager {
             }
 
             // Hide loading indicator
-            document.getElementById('map-loading')?.style.display = 'none';
+            const loadingElement = document.getElementById('map-loading');
+            if (loadingElement) {
+                loadingElement.style.display = 'none';
+            }
 
             console.log('✅ OpenStreetMap with Leaflet initialized');
         } catch (error) {
@@ -124,13 +127,23 @@ class VanillaLocationManager {
             });
         }
 
-        // ✨ NEW: Neighborhood focus - Mahalle dropdown change
+        // ✅ Mahalle seçildiğinde haritayı odakla
         const mahalleSelect = document.getElementById('mahalle_id');
-        if (mahalleSelect) {
-            mahalleSelect.addEventListener('change', (e) => {
-                if (e.target.value) {
-                    // Try to get mahalle coordinates and focus
-                    console.log(`📍 Mahalle changed to ${e.target.value}`);
+        if (mahalleSelect && !mahalleSelect.hasAttribute('data-vanilla-listener')) {
+            mahalleSelect.setAttribute('data-vanilla-listener', 'true');
+            const self = this; // Context7: VanillaLocationManager instance'ını koru
+            mahalleSelect.addEventListener('change', async function () {
+                const mahalleId = this.value;
+                if (!mahalleId) return;
+
+                const mahalleName = this.options[this.selectedIndex]?.text?.trim();
+                const ilceSelect = document.getElementById('ilce_id');
+                const ilSelect = document.getElementById('il_id');
+                const ilceName = ilceSelect?.options[ilceSelect?.selectedIndex]?.text?.trim();
+                const ilName = ilSelect?.options[ilSelect?.selectedIndex]?.text?.trim();
+
+                if (mahalleName && ilceName && ilName && self) {
+                    await self.focusMapOnNeighborhood(mahalleId, mahalleName, ilceName, ilName);
                 }
             });
         }
@@ -389,6 +402,8 @@ class VanillaLocationManager {
         const { lat, lng } = e.latlng;
         this.setCoordinates(lat, lng);
         this.setMarker([lat, lng]);
+        // ✅ Marker tıklandığında zoom 18
+        this.map.setView([lat, lng], 18);
         this.reverseGeocode(lat, lng);
     }
 
@@ -476,7 +491,8 @@ class VanillaLocationManager {
         clearTimeout(this.searchTimeout);
 
         if (!query || query.length < 3) {
-            document.getElementById('address-search-results')?.innerHTML = '';
+            const resultsEl = document.getElementById('address-search-results');
+            if (resultsEl) resultsEl.innerHTML = '';
             return;
         }
 
@@ -530,7 +546,7 @@ class VanillaLocationManager {
                     const lng = parseFloat(data.data.lng) || parseFloat(data.data.longitude);
 
                     if (!isNaN(lat) && !isNaN(lng)) {
-                        this.map.setView([lat, lng], 8); // 8 = province level zoom
+                        this.map.setView([lat, lng], 13); // ✅ İl seçimi: zoom 13
                         console.log(`🗺️ Map focused on province ${provinceId}`);
                     }
                 }
@@ -549,7 +565,7 @@ class VanillaLocationManager {
 
                 if (fallbackCenters[String(provinceId)]) {
                     const [lat, lng] = fallbackCenters[String(provinceId)];
-                    this.map.setView([lat, lng], 8);
+                    this.map.setView([lat, lng], 13); // ✅ İl seçimi: zoom 13
                 }
             });
     }
@@ -566,7 +582,7 @@ class VanillaLocationManager {
                     const lng = parseFloat(data.data.lng) || parseFloat(data.data.longitude);
 
                     if (!isNaN(lat) && !isNaN(lng)) {
-                        this.map.setView([lat, lng], 10); // 10 = district level zoom
+                        this.map.setView([lat, lng], 13); // ✅ İlçe seçimi: zoom 13
                         console.log(`🗺️ Map focused on district ${districtId}`);
                     }
                 }
@@ -574,10 +590,65 @@ class VanillaLocationManager {
             .catch((err) => console.warn('District focus failed:', err));
     }
 
-    focusMapOnNeighborhood(lat, lng) {
-        if (lat && lng) {
-            this.setMarker([lat, lng]);
-            this.map.setView([lat, lng], MAP_CONFIG.ZOOM_ON_PLACE);
+    /**
+     * ✅ Mahalle seçildiğinde haritayı odakla
+     * Önce veritabanından koordinatları çek, yoksa Nominatim kullan
+     */
+    async focusMapOnNeighborhood(mahalleId, mahalleName = null, ilceName = null, ilName = null) {
+        if (!mahalleId) {
+            console.warn('⚠️ focusMapOnNeighborhood: mahalleId gerekli');
+            return;
+        }
+
+        try {
+            // Önce veritabanından koordinatları çek
+            const response = await fetch(`/api/location/neighborhood/${mahalleId}/coordinates`);
+            const result = await response.json();
+
+            if (result.success && result.data) {
+                const { lat, lng, source } = result.data;
+                console.log(
+                    `✅ Mahalle koordinatları ${source === 'database' ? 'veritabanından' : "Nominatim'den"} alındı:`,
+                    lat,
+                    lng
+                );
+
+                this.setMarker([lat, lng]);
+                this.map.flyTo([lat, lng], 18, {
+                    // Zoom 18 = mahalle seviyesi
+                    duration: 1.5,
+                    easeLinearity: 0.5,
+                });
+
+                if (mahalleName) {
+                    window.toast?.success(`Harita ${mahalleName} mahallesine odaklandı`);
+                }
+                return;
+            }
+
+            // Fallback: Nominatim ile geocoding (eğer veritabanında yoksa)
+            if (mahalleName && ilceName && ilName) {
+                console.log('🔄 Veritabanında koordinat yok, Nominatim deneniyor...');
+                const query = `${mahalleName}, ${ilceName}, ${ilName}, Turkey`;
+                const geocodeResponse = await fetch(
+                    `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1&countrycodes=tr`
+                );
+                const geocodeData = await geocodeResponse.json();
+
+                if (geocodeData && geocodeData.length > 0) {
+                    const lat = parseFloat(geocodeData[0].lat);
+                    const lng = parseFloat(geocodeData[0].lon);
+                    this.setMarker([lat, lng]);
+                    this.map.flyTo([lat, lng], 18, {
+                        duration: 1.5,
+                        easeLinearity: 0.5,
+                    });
+                    window.toast?.success(`Harita ${mahalleName} mahallesine odaklandı`);
+                }
+            }
+        } catch (error) {
+            console.error('❌ Mahalle focus hatası:', error);
+            window.toast?.error('Mahalle konumu yüklenemedi');
         }
     }
 
@@ -1411,7 +1482,10 @@ document.addEventListener('DOMContentLoaded', () => {
                             '🎯 [DEBUG] SON ADIM: Mahalle focus (cascade complete):',
                             mahalleName
                         );
+                        // ✅ Mahalle ID'yi kullanarak koordinatları çek
+                        const mahalleId = this.value;
                         window.VanillaLocationManager.focusMapOnNeighborhood(
+                            mahalleId,
                             mahalleName,
                             ilceName,
                             ilName
@@ -1811,34 +1885,13 @@ function showAddressSuggestions(query) {
             showNotification('Arama geçmişinden öneriler mevcut', 'info');
         }
     }
-
-    // TODO: Implement modern Places API autocomplete when available
 }
 
-// Context7: Google Maps KULLANILMIYOR
-// OpenStreetMap (Leaflet.js) location-map.blade.php component'inde kullanılıyor
-// Bu fonksiyonlar legacy kod olarak bırakıldı ama kullanılmıyor
+// ✅ Context7: Location yönetimi VanillaLocationManager class'ı ile yapılıyor
+// ✅ Harita initialization location-map.blade.php component'inde Alpine.js ile yapılıyor
+// ✅ Google Maps kullanılmıyor - OpenStreetMap (Leaflet.js) kullanılıyor
 
-// Main initialization function
-async function initializeLocation() {
-    try {
-        console.log('🗺️ Initializing location system...');
-
-        // Context7: OpenStreetMap kullanılıyor (location-map.blade.php component'inde)
-        // Google Maps API'ye ihtiyaç YOK
-        console.log('📍 Using OpenStreetMap (Leaflet.js) - Context7 uyumlu');
-
-        // Map initialization location-map.blade.php component'inde Alpine.js ile yapılıyor
-        console.log('✅ Location system uses Alpine.js locationManager() from blade component');
-
-        console.log('✅ Location system initialized successfully');
-    } catch (error) {
-        console.error('❌ Location system initialization failed:', error);
-        showNotification('Harita sistemi yüklenemedi. Sayfayı yenileyin.', 'error');
-    }
-}
-
-// Alpine.js data function
+// Alpine.js data function (sadece gerekli yerlerde kullanılıyor)
 window.advancedLocationManager = function () {
     return {
         selectedIl: '',

@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('kategori_icon', 50)->nullable(); // 🏗️, 🌳, 🏔️, 📍
             $table->text('aciklama')->nullable();
             $table->integer('sira')->default(0);
-            $table->boolean('aktif')->default(true);
+            $table->boolean('status')->default(true);
             $table->timestamps();
         });
     }

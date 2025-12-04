@@ -238,24 +238,6 @@ Route::middleware(['web'])->prefix('admin')->name('admin.')->group(function () {
     Route::post('/ilanlar/{ilan}/owner-private', [\App\Http\Controllers\Admin\IlanController::class, 'ownerPrivate'])->name('ilanlar.owner-private');
     Route::post('/ilanlar/{ilan}/portal-ids', [\App\Http\Controllers\Admin\IlanController::class, 'updatePortalIds'])->name('ilanlar.portal-ids');
 
-    // 🎨 DEMO: Modern Form Design
-    Route::get('/ilanlar-elegant-demo', function () {
-        return view('admin.ilanlar.create-elegant-demo', [
-            'ilan' => new \App\Models\Ilan()
-        ]);
-    })->name('ilanlar.create-elegant-demo');
-
-    // 🎨 FULL: Modern İlan Ekleme (Tüm Componentler)
-    Route::get('/ilanlar-elegant-full', function () {
-        return view('admin.ilanlar.create-elegant-full', [
-            'ilan' => new \App\Models\Ilan(),
-            'categories' => \App\Models\IlanKategori::whereNull('parent_id')->get(),
-            'users' => \App\Models\User::all(),
-            'sites' => \App\Models\Site::all(),
-            'iller' => \App\Models\Il::all()
-        ]);
-    })->name('ilanlar.create-elegant-full');
-
     // Test route for category cascading
     // DEPRECATED: Test route removed (kategori sistemi production'da test edildi)
     // Route::get('/ilanlar-test', [\App\Http\Controllers\Admin\IlanController::class, 'testCategories'])->name('ilanlar.test-categories');

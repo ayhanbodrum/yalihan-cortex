@@ -252,3 +252,12 @@ Route::prefix('environment')->name('api.environment.')->middleware(['throttle:12
     Route::post('/value-prediction', [\App\Http\Controllers\Api\EnvironmentAnalysisController::class, 'predictLocationValue'])
         ->name('value-prediction');
 });
+
+// AI Chat Endpoints (Context7: C7-AI-CHAT-API-2025-12-04)
+Route::prefix('chat')->name('api.chat.')->middleware('throttle:30,1')->group(function () {
+    Route::post('/message', [\App\Http\Controllers\Api\AIChatController::class, 'chat'])->name('message');
+    Route::post('/generate-description', [\App\Http\Controllers\Api\AIChatController::class, 'generateDescription'])->name('generate-description');
+    Route::post('/suggest-tags', [\App\Http\Controllers\Api\AIChatController::class, 'suggestTags'])->name('suggest-tags');
+    Route::post('/analyze-demand', [\App\Http\Controllers\Api\AIChatController::class, 'analyzeDemand'])->name('analyze-demand');
+    Route::post('/find-matching-properties', [\App\Http\Controllers\Api\AIChatController::class, 'findMatchingProperties'])->name('find-matching-properties');
+});

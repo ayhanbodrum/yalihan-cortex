@@ -69,7 +69,7 @@ return new class extends Migration
                 $this->dropIndexesForColumn($tableName, 'order');
 
                 Schema::table($tableName, function (Blueprint $table) {
-                    $table->dropColumn('order');
+                    $table->dropColumn('display_order');
                 });
 
                 echo "✅ Merged and removed: {$tableName}.order → {$tableName}.display_order\n";

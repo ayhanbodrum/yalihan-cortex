@@ -31,10 +31,7 @@ Route::get('/yalihan', function () {
     return view('yaliihan-home-clean');
 })->name('yalihan.home');
 
-// Context7 Gerçek Admin Paneli - Demo yerine gerçek proje
-Route::get('/context7-demo', function () {
-    return redirect()->route('admin.dashboard.index');
-})->name('context7.demo');
+// Context7 demo route removed - use admin.dashboard
 
 // Yalihan Design System - Component Version (Kaldırıldı)
 
@@ -48,63 +45,9 @@ Route::get('/yalihan/properties', function () {
     return view('yaliihan-property-listing');
 })->name('yalihan.properties');
 
-// TKGM Parsel Sorgulama - Context7 Standard (Gerçek Veri)
-Route::any('/api/properties/tkgm-lookup', function (\Illuminate\Http\Request $request, \App\Services\Integrations\TKGMService $service) {
-    try {
-        // Mod 1: Koordinat bazlı sorgulama (haritadan seçim)
-        $lat = $request->input('lat');
-        $lon = $request->input('lng') ?? $request->input('lon');
-
-        if ($lat && $lon) {
-            $result = $service->getParcelByCoordinates((float) $lat, (float) $lon);
-
-            if ($result && ($result['success'] ?? false)) {
-                return response()->json($result);
-            }
-
-            return response()->json([
-                'success' => false,
-                'message' => 'Bu konumda parsel verisi bulunamadı.'
-            ], 404);
-        }
-
-        // Mod 2: Ada/Parsel bazlı sorgulama (formdan giriş)
-        $il = $request->input('il');
-        $ilce = $request->input('ilce');
-        $ada = $request->input('ada');
-        $parsel = $request->input('parsel');
-
-        if ($il && $ilce && $ada && $parsel) {
-            $result = $service->queryParcel($il, $ilce, $ada, $parsel);
-
-            if ($result && ($result['success'] ?? false)) {
-                return response()->json($result);
-            }
-
-            return response()->json([
-                'success' => false,
-                'message' => 'Parsel bilgileri bulunamadı. Lütfen Ada ve Parsel numaralarını kontrol edin.'
-            ], 404);
-        }
-
-        return response()->json([
-            'success' => false,
-            'message' => 'Koordinat (lat, lng) veya adres bilgileri (il, ilce, ada, parsel) gereklidir.'
-        ], 400);
-    } catch (\Exception $e) {
-        \Illuminate\Support\Facades\Log::error('TKGM Lookup Error', [
-            'message' => $e->getMessage(),
-            'trace' => $e->getTraceAsString(),
-            'request' => $request->all(),
-        ]);
-
-        return response()->json([
-            'success' => false,
-            'message' => 'TKGM servisi şu anda kullanılamıyor. Lütfen daha sonra tekrar deneyin.',
-            'error' => config('app.debug') ? $e->getMessage() : null,
-        ], 500);
-    }
-})->middleware(['auth', 'throttle:20,1'])->name('api.properties.tkgm-lookup');
+// TKGM Parsel Sorgulama - MOVED TO routes/api/v1/admin.php
+// Route: POST /api/v1/admin/properties/tkgm-lookup
+// This endpoint is now centralized in the API system
 
 // Yalihan Contact Page
 Route::get('/yalihan/contact', function () {
@@ -160,51 +103,9 @@ Route::get('/ilan-success/{ilan}', function ($ilan) {
 
 // ===== STABLE-CREATE ROUTES REMOVED - USE /admin/ilanlar/create INSTEAD =====
 
-// Old Photo upload endpoint - Deprecated
-Route::post('/api/ilanlar/upload-photos-deprecated', function (\Illuminate\Http\Request $request) {
-    try {
-        $request->validate([
-            'photos.*' => 'required|image|mimes:jpeg,png,jpg,webp|max:5120', // 5MB max per photo
-        ]);
-
-        $uploadedPhotos = [];
-
-        // Create temporary directory for photos before ilan creation
-        $tempDir = 'temp-photos/' . uniqid();
-
-        foreach ($request->file('photos') as $photo) {
-            $fileName = time() . '_' . uniqid() . '.' . $photo->getClientOriginalExtension();
-            $path = $photo->storeAs($tempDir, $fileName, 'public');
-
-            $uploadedPhotos[] = [
-                'temp_path' => $path,
-                'original_name' => $photo->getClientOriginalName(),
-                'size' => $photo->getSize(),
-                'preview_url' => \Illuminate\Support\Facades\Storage::url($path),
-            ];
-        }
-
-        // Store in session for later processing
-        session(['temp_photos' => $uploadedPhotos]);
-
-        return response()->json([
-            'success' => true,
-            'message' => count($uploadedPhotos) . ' fotoğraf geçici olarak yüklendi.',
-            'photos' => array_map(function ($photo) {
-                return [
-                    'id' => uniqid(),
-                    'url' => $photo['preview_url'],
-                    'name' => $photo['original_name'],
-                ];
-            }, $uploadedPhotos),
-        ]);
-    } catch (\Exception $e) {
-        return response()->json([
-            'success' => false,
-            'message' => 'Fotoğraf yükleme hatası: ' . $e->getMessage(),
-        ], 500);
-    }
-})->middleware('web');
+// DEPRECATED: Old Photo upload endpoint - REMOVED (use /api/v1/admin/photos instead)
+// This endpoint was marked as deprecated and has been removed
+// Archived in routes/api/v1/admin.php if needed for backward compatibility
 
 use App\Http\Controllers\Admin\CustomerProfileController;
 use App\Http\Controllers\Admin\EtiketController;
@@ -236,20 +137,7 @@ Route::get('/', function () {
     return view('yaliihan-home-clean');
 })->name('home');
 
-// Demo sayfası
-Route::get('/demo-interactive', function () {
-    return view('demo-interactive');
-})->name('demo.interactive');
-
-// Test ayarlar sayfası
-Route::get('/test-ayarlar', function () {
-    $ayarlar = App\Models\Setting::all()->pluck('value', 'key')->toArray();
-
-    return view('admin.ayarlar.index', compact('ayarlar'))
-        ->with('featureCategories', collect())
-        ->with('ilanFeatureAyarlari', [])
-        ->with('nearbyPlaceCategories', collect());
-})->name('test.ayarlar');
+// Test and demo routes removed - use production endpoints instead
 
 // Modern Frontend Routes - Redirected to main
 Route::prefix('modern')->name('modern.')->group(function () {
@@ -275,18 +163,14 @@ Route::get('/iletisim', function () {
     return view('pages.contact');
 })->name('contact');
 
+// Frontend Danışmanlar Routes
 Route::get('/danismanlar', function () {
-    return view('pages.advisors');
+    return redirect()->route('frontend.danismanlar.index');
 })->name('advisors');
 
-// Frontend Danışmanlar Routes
 Route::prefix('danismanlar')->name('frontend.danismanlar.')->group(function () {
-    Route::get('/', function () {
-        return view('frontend.danismanlar.index');
-    })->name('index');
-    Route::get('/{id}', function ($id) {
-        return view('frontend.danismanlar.show', compact('id'));
-    })->name('show');
+    Route::get('/', [\App\Http\Controllers\Frontend\DanismanController::class, 'index'])->name('index');
+    Route::get('/{id}', [\App\Http\Controllers\Frontend\DanismanController::class, 'show'])->name('show');
 });
 
 // Public Ilan routes (only published)
@@ -335,113 +219,8 @@ Route::get('/test-features', function () {
     ]);
 });
 
-// Neo Location Selector Test
-Route::get('/test/neo-location', function () {
-    return view('test.neo-location-test');
-})->name('test.neo-location');
-
-// Lokasyon API Endpoint'leri
-Route::prefix('api/location')->group(function () {
-    Route::get('/countries', function () {
-        $countries = \Illuminate\Support\Facades\DB::table('ulkeler')
-            ->select('id', 'ulke_adi as name', 'ulke_kodu as code')
-            ->orderBy('ulke_adi')
-            ->get();
-
-        return response()->json(['success' => true, 'countries' => $countries]);
-    });
-
-    Route::get('/provinces', [\App\Http\Controllers\Api\LocationController::class, 'getProvinces']);
-
-    Route::get('/districts', [\App\Http\Controllers\Api\LocationController::class, 'getDistricts']);
-
-    Route::get('/neighborhoods', [\App\Http\Controllers\Api\LocationController::class, 'getNeighborhoods']);
-
-    // Alt Kategoriler API
-    Route::get('/alt-kategoriler/{anaKategoriId}', function ($anaKategoriId) {
-        try {
-            $altKategoriler = \Illuminate\Support\Facades\DB::table('ilan_kategorileri')
-                ->where('parent_id', $anaKategoriId)
-                ->where('status', 1)
-                ->select('id', 'name', 'parent_id')
-                ->orderBy('name')
-                ->get();
-
-            return response()->json([
-                'success' => true,
-                'data' => $altKategoriler,
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Alt kategoriler yüklenirken hata oluştu: ' . $e->getMessage(),
-            ], 500);
-        }
-    });
-
-    // EmlakLoc v4.1.0 - Form Wizard için ek endpointler
-    Route::get('/districts-by-province', [\App\Http\Controllers\Admin\AddressController::class, 'getDistrictsByProvince']);
-    Route::get('/neighborhoods-by-district', [\App\Http\Controllers\Admin\AddressController::class, 'getNeighborhoodsByDistrict']);
-
-    Route::get('/neighborhood/{id}', function ($id) {
-        $neighborhood = \Illuminate\Support\Facades\DB::table('mahalleler')
-            ->select('id', 'mahalle_adi as name', 'ilce_id as district_id', 'enlem', 'boylam')
-            ->where('id', $id)
-            ->first();
-
-        if (! $neighborhood) {
-            return response()->json(['success' => false, 'message' => 'Neighborhood not found'], 404);
-        }
-
-        return response()->json(['success' => true, 'neighborhood' => $neighborhood]);
-    });
-
-    Route::get('/search', function (\Illuminate\Http\Request $request) {
-        $query = $request->get('q', '');
-        $limit = $request->get('limit', 10);
-
-        if (strlen($query) < 2) {
-            return response()->json(['success' => true, 'results' => []]);
-        }
-
-        $results = [];
-
-        // İl arama
-        $provinces = \Illuminate\Support\Facades\DB::table('iller')
-            ->select('id', 'il_adi as name', 'plaka_kodu as code')
-            ->where('il_adi', 'LIKE', "%{$query}%")
-            ->limit($limit)
-            ->get();
-
-        foreach ($provinces as $province) {
-            $results[] = [
-                'type' => 'province',
-                'id' => $province->id,
-                'name' => $province->name,
-                'display' => $province->name . " ({$province->code})",
-            ];
-        }
-
-        // İlçe arama
-        $districts = \Illuminate\Support\Facades\DB::table('ilceler as ic')
-            ->join('iller as il', 'ic.il_id', '=', 'il.id')
-            ->select('ic.id', 'ic.ilce_adi as name', 'il.il_adi as province_name')
-            ->where('ic.ilce_adi', 'LIKE', "%{$query}%")
-            ->limit($limit)
-            ->get();
-
-        foreach ($districts as $district) {
-            $results[] = [
-                'type' => 'district',
-                'id' => $district->id,
-                'name' => $district->name,
-                'display' => $district->name . ' / ' . $district->province_name,
-            ];
-        }
-
-        return response()->json(['success' => true, 'results' => array_slice($results, 0, $limit)]);
-    });
-});
+// Neo Location Selector Test - REMOVED
+// Use /api/v1/location/* endpoints instead
 
 // Test sayfaları
 Route::get('/test-form-handler', function () {
@@ -511,83 +290,7 @@ if (config('app.env') === 'local') {
     })->name('test.site-live-search');
 }
 
-// TKGM Public Test Routes (Auth gerektirmez)
-Route::get('/test-tkgm', function () {
-    return view('test-tkgm');
-})->name('test-tkgm');
-
-Route::get('/tkgm-test-center', function () {
-    return view('tkgm-test-center');
-})->name('tkgm-test-center');
-
-Route::post('/test-tkgm-direct', function (\Illuminate\Http\Request $request) {
-    $service = app(\App\Services\TKGMService::class);
-
-    return $service->parselSorgula(
-        $request->ada,
-        $request->parsel,
-        $request->il,
-        $request->ilce,
-        $request->mahalle
-    );
-})->name('test-tkgm-direct');
-
-Route::post('/test-tkgm-investment', function (\Illuminate\Http\Request $request) {
-    $service = app(\App\Services\TKGMService::class);
-
-    // Önce parsel bilgilerini al
-    $parselResult = $service->parselSorgula(
-        $request->ada,
-        $request->parsel,
-        $request->il,
-        $request->ilce,
-        $request->mahalle
-    );
-
-    if (! $parselResult['success']) {
-        return response()->json([
-            'success' => false,
-            'message' => 'Önce parsel bilgileri bulunmalı',
-        ]);
-    }
-
-    // Yatırım analizini yap
-    $investmentAnalysis = $service->yatirimAnalizi($parselResult['parsel_bilgileri']);
-
-    return response()->json([
-        'success' => true,
-        'parsel_bilgileri' => $parselResult['parsel_bilgileri'],
-        'yatirim_analizi' => $investmentAnalysis,
-    ]);
-})->name('test-tkgm-investment');
-
-Route::post('/test-tkgm-ai-plan', function (\Illuminate\Http\Request $request) {
-    $service = app(\App\Services\TKGMService::class);
-
-    // Önce parsel sorgula
-    $parselResult = $service->parselSorgula(
-        $request->input('ada'),
-        $request->input('parsel'),
-        $request->input('il'),
-        $request->input('ilce'),
-        $request->input('mahalle')
-    );
-
-    if (! $parselResult['success']) {
-        return response()->json($parselResult);
-    }
-
-    // AI plan notları analizi
-    $teknikBilgiler = $request->input('teknik_bilgiler', []);
-    $aiPlanNotlari = $service->aiPlanNotlariAnalizi($parselResult, $teknikBilgiler);
-
-    return response()->json([
-        'success' => true,
-        'parsel_bilgileri' => $parselResult['parsel_bilgileri'],
-        'ai_plan_notlari' => $aiPlanNotlari,
-        'timestamp' => now()->toISOString(),
-    ]);
-})->name('test-tkgm-ai-plan');
+// TKGM Test Routes - REMOVED: Eski sistem temizlendi, yeni sistem routes/api/v1/admin.php'de
 
 Route::get('/test-ollama-models', function () {
     $aiService = app(\App\Services\AIService::class);
@@ -632,11 +335,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin', function () {
         return redirect()->route('admin.dashboard.index');
     });
-
-    // Context7 Test Route
-    Route::get('/admin/context7-test', function () {
-        return view('admin.context7-test');
-    })->name('admin.context7-test');
 
     // Danışman Management (Outside admin prefix)
     Route::prefix('/danisman')->name('danisman.')->group(function () {
@@ -727,24 +425,10 @@ Route::middleware('auth')->group(function () {
 
     // Feature API Routes (Modal Selector) - MOVED TO api-admin.php (API routes için)
 
-    // AI Monitoring Dashboard
+    // AI Monitoring Dashboard - Web UI (JSON APIs moved to routes/api/v1/admin.php)
     Route::middleware(['web', 'auth', 'throttle:60,1'])->group(function () {
         Route::get('/admin/ai-monitor', [\App\Http\Controllers\Admin\SystemMonitorController::class, 'index'])->name('admin.ai-monitor.index');
-        // JSON live endpoints
-        Route::get('/admin/ai-monitor/mcp', [\App\Http\Controllers\Admin\SystemMonitorController::class, 'apiMcpStatus'])->name('admin.ai-monitor.mcp');
-        Route::get('/admin/ai-monitor/apis', [\App\Http\Controllers\Admin\SystemMonitorController::class, 'apiApiStatus'])->name('admin.ai-monitor.apis');
-        Route::get('/admin/ai-monitor/self-healing', [\App\Http\Controllers\Admin\SystemMonitorController::class, 'apiSelfHealing'])->name('admin.ai-monitor.self');
-        Route::get('/admin/ai-monitor/errors', [\App\Http\Controllers\Admin\SystemMonitorController::class, 'apiRecentErrors'])->name('admin.ai-monitor.errors');
-        // Yeni ekosistem analiz endpoint'leri
-        Route::get('/admin/ai-monitor/code-health', [\App\Http\Controllers\Admin\SystemMonitorController::class, 'apiCodeHealth'])->name('admin.ai-monitor.code-health');
-        Route::get('/admin/ai-monitor/duplicates', [\App\Http\Controllers\Admin\SystemMonitorController::class, 'apiDuplicateFiles'])->name('admin.ai-monitor.duplicates');
-        Route::get('/admin/ai-monitor/conflicts', [\App\Http\Controllers\Admin\SystemMonitorController::class, 'apiConflictingRoutes'])->name('admin.ai-monitor.conflicts');
-        // Sayfa Sağlığı
-        Route::get('/admin/ai-monitor/pages-health', [\App\Http\Controllers\Admin\SystemMonitorController::class, 'apiPagesHealth'])->name('admin.ai-monitor.pages-health');
-        // Context7 Öğretim ve Öneri Endpoint'leri
-        Route::post('/admin/ai-monitor/run-context7-fix', [\App\Http\Controllers\Admin\SystemMonitorController::class, 'runContext7Fix'])->name('admin.ai-monitor.run-context7-fix');
-        Route::post('/admin/ai-monitor/apply-suggestion', [\App\Http\Controllers\Admin\SystemMonitorController::class, 'applySuggestion'])->name('admin.ai-monitor.apply-suggestion');
-        Route::get('/admin/ai-monitor/context7-rules', [\App\Http\Controllers\Admin\SystemMonitorController::class, 'getContext7Rules'])->name('admin.ai-monitor.context7-rules');
+        // Note: JSON live endpoints are now at /api/v1/admin/ai-monitor/*
     });
 });
 
@@ -754,8 +438,11 @@ Route::middleware('auth')->group(function () {
 |--------------------------------------------------------------------------
 */
 
-// AI API Routes (Web middleware for CSRF support)
-Route::prefix('api/ai')->group(function () {
+// AI Chat Routes - MOVED TO routes/api/v1/ai.php
+// Centralized API: POST /api/v1/chat/* endpoints
+// Note: Backward compatibility routes - deprecated, use v1 endpoints
+Route::prefix('api/ai')->middleware('throttle:30,1')->group(function () {
+    // DEPRECATED: Use /api/v1/chat/* instead
     Route::post('/chat', [App\Http\Controllers\Api\AIChatController::class, 'chat']);
     Route::post('/generate-description', [App\Http\Controllers\Api\AIChatController::class, 'generateDescription']);
     Route::post('/suggest-tags', [App\Http\Controllers\Api\AIChatController::class, 'suggestTags']);
@@ -765,36 +452,10 @@ Route::prefix('api/ai')->group(function () {
 
 // Advanced AI Routes moved to api.php
 
-// Test routes removed - AI Monitor working correctly
+// Test routes removed - use production APIs
 
-// ===== FRONTEND DYNAMIC FORM ROUTES =====
-Route::prefix('dynamic-form')->name('dynamic-form.')->group(function () {
-    Route::get('/', [\App\Http\Controllers\Frontend\DynamicFormController::class, 'index'])->name('index');
-    Route::post('/render', [\App\Http\Controllers\Frontend\DynamicFormController::class, 'renderForm'])->name('render');
-    Route::post('/submit', [\App\Http\Controllers\Frontend\DynamicFormController::class, 'submitForm'])->name('submit');
-    Route::post('/ai-suggestion', [\App\Http\Controllers\Frontend\DynamicFormController::class, 'getAISuggestion'])->name('ai-suggestion');
-});
+// FRONTEND DYNAMIC FORM ROUTES - Use /api/v1/* endpoints for form handling
 
-// ===== AI STATUS API =====
-Route::get('/api/ai/status', function () {
-    try {
-        $aiService = app(\App\Services\AIService::class);
-        $settings = \App\Models\Setting::whereIn('key', ['ollama_url', 'ollama_model', 'ai_provider'])->pluck('value', 'key');
-
-        return response()->json([
-            'success' => true,
-            'model' => $settings['ollama_model'] ?? 'Ollama Qwen2.5',
-            'connected' => true, // Basit kontrol
-            'features' => 68, // Matrix'teki toplam field sayısı
-            'provider' => $settings['ai_provider'] ?? 'ollama',
-        ]);
-    } catch (\Exception $e) {
-        return response()->json([
-            'success' => false,
-            'model' => 'Bilinmiyor',
-            'connected' => false,
-            'features' => 0,
-            'error' => $e->getMessage(),
-        ]);
-    }
-})->name('api.ai.status');
+// ===== AI STATUS API - MOVED TO routes/api/v1/ai.php =====
+// Route: GET /api/v1/environment/status or similar
+// This endpoint has been centralized in the API system

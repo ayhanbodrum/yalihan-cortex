@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::table('takim_uyeleri', function (Blueprint $table) {
             // Status kolonu yoksa ekle
             if (! Schema::hasColumn('takim_uyeleri', 'status')) {
-                $table->string('status', 50)->default('aktif')->after('durum');
+                $table->string('status', 50)->default('status')->after('durum');
             }
         });
 

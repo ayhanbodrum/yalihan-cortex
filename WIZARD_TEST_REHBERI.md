@@ -9,9 +9,7 @@
 ## 🎯 TEST BAŞLANGICI
 
 ### Test URL:
-```
-http://127.0.0.1:8000/admin/ilanlar/create-wizard
-```
+`/admin/ilanlar/create-wizard`
 
 ### Test Senaryosu:
 Arsa kategorisi seçilerek, tüm adımlar doldurulacak ve form submit edilecek.

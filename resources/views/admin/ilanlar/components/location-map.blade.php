@@ -1,3 +1,5 @@
+@props(['ilan', 'iller' => [], 'ilceler' => [], 'mahalleler' => []])
+
 {{-- 🎨 Section 3: Lokasyon ve Harita Sistemi (Tailwind Modernized) --}}
 <div
     class="bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 p-8 hover:shadow-2xl transition-shadow duration-300">

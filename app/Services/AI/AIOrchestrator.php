@@ -7,7 +7,7 @@ use App\Models\Talep;
 use App\Modules\Finans\Services\FinansService;
 use App\Services\AIService;
 use App\Services\Logging\LogService;
-use App\Services\TKGMService;
+use App\Services\Integrations\TKGMService;
 
 /**
  * Yalihan Cortex - Merkezi Zeka Sistemi

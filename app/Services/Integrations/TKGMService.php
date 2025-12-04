@@ -363,4 +363,214 @@ class TKGMService
             ];
         }
     }
+
+    /**
+     * Eski sistem uyumluluğu için: parselSorgula metodu
+     * Yeni sistem: queryParcel metodunu kullanır
+     *
+     * @param string $ada Ada numarası
+     * @param string $parsel Parsel numarası
+     * @param string $il İl adı
+     * @param string $ilce İlçe adı
+     * @param string|null $mahalle Mahalle adı (opsiyonel, kullanılmıyor)
+     * @return array Eski format uyumlu sonuç
+     */
+    public function parselSorgula(string $ada, string $parsel, string $il, string $ilce, ?string $mahalle = null): array
+    {
+        $result = $this->queryParcel($il, $ilce, $ada, $parsel);
+
+        if (!$result || !isset($result['success']) || !$result['success']) {
+            return [
+                'success' => false,
+                'message' => $result['message'] ?? 'Parsel sorgulama başarısız',
+                'parsel_bilgileri' => null,
+            ];
+        }
+
+        // Yeni formatı eski formata çevir
+        $data = $result['data'] ?? [];
+        
+        return [
+            'success' => true,
+            'message' => 'Parsel sorgulama başarılı',
+            'parsel_bilgileri' => [
+                'ada' => $data['ada_no'] ?? $ada,
+                'parsel' => $data['parsel_no'] ?? $parsel,
+                'il' => $data['il'] ?? $il,
+                'ilce' => $data['ilce'] ?? $ilce,
+                'mahalle' => $data['mahalle'] ?? $mahalle,
+                'yuzolcumu' => $data['alan_m2'] ?? null,
+                'nitelik' => $data['nitelik'] ?? 'Arsa',
+                'imar_durumu' => $data['imar_statusu'] ?? null,
+                'taks' => $data['taks'] ?? null,
+                'kaks' => $data['kaks'] ?? null,
+                'gabari' => $data['gabari'] ?? null,
+                'maksimum_kat' => null,
+                'malik_adi' => null,
+                'pafta_no' => $data['pafta'] ?? null,
+                'koordinat_x' => $data['center_lng'] ?? null,
+                'koordinat_y' => $data['center_lat'] ?? null,
+            ],
+            'metadata' => [
+                'query_time' => now()->toDateTimeString(),
+                'source' => $data['source'] ?? 'TKGM_LIVE',
+                'reliability' => 'high',
+            ],
+        ];
+    }
+
+    /**
+     * Cache temizle
+     *
+     * @param string|null $ada
+     * @param string|null $parsel
+     * @param string|null $il
+     * @param string|null $ilce
+     * @return bool
+     */
+    public function clearCache(?string $ada = null, ?string $parsel = null, ?string $il = null, ?string $ilce = null): bool
+    {
+        if ($ada && $parsel && $il && $ilce) {
+            $cacheKey = $this->buildCacheKey($il, $ilce, $ada, $parsel);
+            Cache::forget($cacheKey);
+            Cache::forget($cacheKey . ':stale');
+            return true;
+        }
+
+        // Tüm TKGM cache'ini temizle (dikkatli kullan!)
+        Cache::flush();
+        return true;
+    }
+
+    /**
+     * Yatırım analizi (Parsel bilgilerine göre)
+     *
+     * @param array $parselBilgileri Parsel bilgileri array'i
+     * @return array Yatırım analizi sonuçları
+     */
+    public function yatirimAnalizi(array $parselBilgileri): array
+    {
+        $skor = 0;
+        $maxSkor = 100;
+        $analizler = [];
+
+        // KAKS skoru (0-30)
+        $kaks = $parselBilgileri['kaks'] ?? 0;
+        if ($kaks >= 1.5) {
+            $kaksSkor = 30;
+            $analizler[] = "✅ Yüksek KAKS ({$kaks}) - Mükemmel inşaat potansiyeli";
+        } elseif ($kaks >= 1.0) {
+            $kaksSkor = 20;
+            $analizler[] = "✅ İyi KAKS ({$kaks}) - İyi inşaat potansiyeli";
+        } elseif ($kaks >= 0.5) {
+            $kaksSkor = 10;
+            $analizler[] = "⚠️ Orta KAKS ({$kaks}) - Orta inşaat potansiyeli";
+        } else {
+            $kaksSkor = 0;
+            $analizler[] = "❌ Düşük KAKS ({$kaks}) - Sınırlı inşaat";
+        }
+        $skor += $kaksSkor;
+
+        // TAKS skoru (0-20)
+        $taks = $parselBilgileri['taks'] ?? 0;
+        if ($taks >= 30 && $taks <= 40) {
+            $taksSkor = 20;
+            $analizler[] = "✅ Optimal TAKS ({$taks}%) - İdeal taban alanı";
+        } elseif ($taks >= 20) {
+            $taksSkor = 15;
+            $analizler[] = "✅ İyi TAKS ({$taks}%)";
+        } else {
+            $taksSkor = 5;
+            $analizler[] = "⚠️ Düşük TAKS ({$taks}%)";
+        }
+        $skor += $taksSkor;
+
+        // İmar durumu skoru (0-30)
+        $imarDurumu = $parselBilgileri['imar_durumu'] ?? '';
+        if (stripos($imarDurumu, 'İmarlı') !== false || stripos($imarDurumu, 'İmarda') !== false) {
+            $imarSkor = 30;
+            $analizler[] = '✅ İmarlı arsa - Yapılaşmaya hazır';
+        } elseif (stripos($imarDurumu, 'Plan') !== false) {
+            $imarSkor = 25;
+            $analizler[] = '✅ Plan içinde - İmara açılabilir';
+        } else {
+            $imarSkor = 5;
+            $analizler[] = '⚠️ İmar dışı - Yapılaşma riski';
+        }
+        $skor += $imarSkor;
+
+        // Alan skoru (0-20)
+        $yuzolcumu = $parselBilgileri['yuzolcumu'] ?? 0;
+        if ($yuzolcumu >= 1000) {
+            $alanSkor = 20;
+            $analizler[] = "✅ Büyük parsel ({$yuzolcumu} m²) - Proje imkanı";
+        } elseif ($yuzolcumu >= 500) {
+            $alanSkor = 15;
+            $analizler[] = "✅ Orta büyüklük ({$yuzolcumu} m²)";
+        } elseif ($yuzolcumu >= 200) {
+            $alanSkor = 10;
+            $analizler[] = "⚠️ Küçük parsel ({$yuzolcumu} m²)";
+        } else {
+            $alanSkor = 5;
+            $analizler[] = '⚠️ Çok küçük parsel';
+        }
+        $skor += $alanSkor;
+
+        // Genel değerlendirme
+        $degerlendirme = '';
+        $harfNotu = '';
+        if ($skor >= 80) {
+            $degerlendirme = 'Mükemmel yatırım fırsatı';
+            $harfNotu = 'A+';
+        } elseif ($skor >= 60) {
+            $degerlendirme = 'İyi yatırım potansiyeli';
+            $harfNotu = 'A';
+        } elseif ($skor >= 40) {
+            $degerlendirme = 'Orta seviye yatırım';
+            $harfNotu = 'B';
+        } else {
+            $degerlendirme = 'Düşük yatırım potansiyeli';
+            $harfNotu = 'C';
+        }
+
+        return [
+            'yatirim_skoru' => $skor,
+            'max_skor' => $maxSkor,
+            'harf_notu' => $harfNotu,
+            'degerlendirme' => $degerlendirme,
+            'analizler' => $analizler,
+            'risk_seviyesi' => $this->calculateRiskLevel($skor),
+            'tahmini_getiri' => $this->estimateROI($skor, $parselBilgileri),
+        ];
+    }
+
+    /**
+     * Risk seviyesi hesaplama
+     */
+    protected function calculateRiskLevel(int $skor): string
+    {
+        if ($skor >= 70) {
+            return 'Düşük';
+        } elseif ($skor >= 50) {
+            return 'Orta';
+        } else {
+            return 'Yüksek';
+        }
+    }
+
+    /**
+     * ROI tahmini
+     */
+    protected function estimateROI(int $skor, array $parselBilgileri): string
+    {
+        if ($skor >= 80) {
+            return 'Yıllık %15-20 değer artışı beklenir';
+        } elseif ($skor >= 60) {
+            return 'Yıllık %10-15 değer artışı beklenir';
+        } elseif ($skor >= 40) {
+            return 'Yıllık %5-10 değer artışı beklenir';
+        } else {
+            return 'Uzun vadeli yatırım (5+ yıl)';
+        }
+    }
 }

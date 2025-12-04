@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Services\CortexKnowledgeService;
 use App\Services\Response\ResponseService;
-use App\Services\TKGMService;
+use App\Services\Integrations\TKGMService;
 use App\Traits\ValidatesApiRequests;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;

@@ -144,71 +144,75 @@
         </div>
 
         <div class="space-y-4">
-            {{-- İl --}}
-            <div>
-                <label for="il_id" class="block text-sm font-medium text-gray-900 dark:text-white mb-2">
-                    <div class="flex items-center gap-2">
-                        <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                        </svg>
-                        <span>İl <span class="text-red-500">*</span></span>
-                    </div>
-                </label>
-                <select name="il_id" id="il_id" required onchange="loadIlceler(this.value)"
-                    class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg
-                                   bg-white dark:bg-gray-800 text-black dark:text-white
-                                   focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-                                   transition-all duration-200">
-                    <option value="">İl Seçin</option>
-                    @foreach ($iller ?? [] as $il)
-                        <option value="{{ $il->id }}" {{ old('il_id') == $il->id ? 'selected' : '' }}>
-                            {{ $il->il_adi ?? $il->name }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {{-- İl --}}
+                <div>
+                    <label for="il_id" class="block text-sm font-medium text-gray-900 dark:text-white mb-2">
+                        <div class="flex items-center gap-2">
+                            <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                            </svg>
+                            <span>İl <span class="text-red-500">*</span></span>
+                        </div>
+                    </label>
+                    <select name="il_id" id="il_id" required onchange="loadIlceler(this.value)"
+                        class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg
+                                       bg-white dark:bg-gray-800 text-black dark:text-white
+                                       focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+                                       transition-all duration-200">
+                        <option value="">İl Seçin</option>
+                        @foreach ($iller ?? [] as $il)
+                            <option value="{{ $il->id }}" {{ old('il_id') == $il->id ? 'selected' : '' }}>
+                                {{ $il->il_adi ?? $il->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
 
-            {{-- İlçe --}}
-            <div>
-                <label for="ilce_id" class="block text-sm font-medium text-gray-900 dark:text-white mb-2">
-                    <div class="flex items-center gap-2">
-                        <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                        </svg>
-                        <span>İlçe <span class="text-red-500">*</span></span>
-                    </div>
-                </label>
-                <select name="ilce_id" id="ilce_id" required onchange="loadMahalleler(this.value)" disabled
-                    class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg
-                                   bg-white dark:bg-gray-800 text-black dark:text-white
-                                   focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-                                   disabled:opacity-50 disabled:cursor-not-allowed
-                                   transition-all duration-200">
-                    <option value="">Önce İl Seçin</option>
-                </select>
-            </div>
+                {{-- İlçe --}}
+                <div>
+                    <label for="ilce_id" class="block text-sm font-medium text-gray-900 dark:text-white mb-2">
+                        <div class="flex items-center gap-2">
+                            <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                            </svg>
+                            <span>İlçe <span class="text-red-500">*</span></span>
+                        </div>
+                    </label>
+                    <select name="ilce_id" id="ilce_id" required onchange="loadMahalleler(this.value)" disabled
+                        class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg
+                                       bg-white dark:bg-gray-800 text-black dark:text-white
+                                       focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+                                       disabled:opacity-50 disabled:cursor-not-allowed
+                                       transition-all duration-200">
+                        <option value="">Önce İl Seçin</option>
+                    </select>
+                </div>
 
-            {{-- Mahalle --}}
-            <div>
-                <label for="mahalle_id" class="block text-sm font-medium text-gray-900 dark:text-white mb-2">
-                    <div class="flex items-center gap-2">
-                        <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                        </svg>
-                        <span>Mahalle</span>
-                    </div>
-                </label>
-                <select name="mahalle_id" id="mahalle_id" disabled
-                    class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg
-                                   bg-white dark:bg-gray-800 text-black dark:text-white
-                                   focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-                                   disabled:opacity-50 disabled:cursor-not-allowed
-                                   transition-all duration-200">
-                    <option value="">Önce İlçe Seçin</option>
-                </select>
+                {{-- Mahalle --}}
+                <div>
+                    <label for="mahalle_id" class="block text-sm font-medium text-gray-900 dark:text-white mb-2">
+                        <div class="flex items-center gap-2">
+                            <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                            </svg>
+                            <span>Mahalle</span>
+                        </div>
+                    </label>
+                    <select name="mahalle_id" id="mahalle_id" disabled
+                        class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg
+                                       bg-white dark:bg-gray-800 text-black dark:text-white
+                                       focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+                                       disabled:opacity-50 disabled:cursor-not-allowed
+                                       transition-all duration-200">
+                        <option value="">Önce İlçe Seçin</option>
+                    </select>
+                </div>
             </div>
 
             {{-- Adres --}}
@@ -225,7 +229,7 @@
                     </div>
                 </label>
                 <div class="relative">
-                    <textarea name="adres" id="adres" required rows="3"
+                    <textarea name="adres" id="adres" rows="3"
                         placeholder="Sokak, cadde, mahalle ve bina numarası bilgilerini girin"
                         class="w-full px-4 py-2.5 pr-12 border border-gray-300 dark:border-gray-600 rounded-lg
                                    bg-white dark:bg-gray-800 text-black dark:text-white
@@ -253,6 +257,60 @@
         </div>
     </div>
 
+</div>
+
+{{-- GeoJSON Yükleme Kartı (Step 1) --}}
+<div x-data="geojsonUploader()" x-init="init()"
+    class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-lg overflow-hidden mt-6">
+    <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
+                <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor"
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                </svg>
+            </div>
+            <div>
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white">TKGM GeoJSON Yükle</h3>
+                <p class="text-xs text-gray-600 dark:text-gray-400">TKGM'den indirdiğiniz JSON/GeoJSON dosyasını
+                    yükleyin, harita otomatik güncellenecek</p>
+            </div>
+        </div>
+    </div>
+    <div class="p-4">
+        <div class="flex items-center gap-4">
+            <input type="file" id="step1_geojson_upload" accept=".json,.geojson" class="hidden"
+                @change="handleGeoJsonUpload($event)">
+            <label for="step1_geojson_upload"
+                class="flex-1 px-6 py-3 bg-blue-600 dark:bg-blue-500 text-white rounded-lg
+                       hover:bg-blue-700 dark:hover:bg-blue-600 hover:scale-105 active:scale-95
+                       focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
+                       transition-all duration-200 ease-in-out
+                       shadow-md hover:shadow-lg font-medium flex items-center justify-center gap-2 cursor-pointer">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                </svg>
+                <span>JSON / GeoJSON Yükle</span>
+            </label>
+        </div>
+        <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
+            <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            Dosya yüklendiğinde harita otomatik olarak parsel konumuna gidecek ve İl/İlçe/Mahalle alanları doldurulacak
+        </p>
+        <div x-show="error"
+            class="mt-3 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+            <p class="text-sm text-red-700 dark:text-red-300" x-text="error"></p>
+        </div>
+        <div x-show="success"
+            class="mt-3 p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+            <p class="text-sm text-green-700 dark:text-green-300">✅ GeoJSON başarıyla yüklendi! Harita güncellendi.</p>
+        </div>
+    </div>
 </div>
 
 {{-- Harita Görünümü (Altta - Tam Genişlik) --}}
@@ -306,6 +364,129 @@
                 </div>
             </div>
         </div>
+    </div>
+</div>
+
+{{-- Yakın Lokasyonlar (POI) Kartı --}}
+<div x-data="poiWidget()" x-init="init()"
+    class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-lg overflow-hidden mt-6">
+    <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+        <div class="flex items-center justify-between flex-wrap gap-4">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center">
+                    <svg class="w-6 h-6 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-gray-900 dark:text-white">Yakın Lokasyonlar (POI)</h3>
+                    <p class="text-xs text-gray-600 dark:text-gray-400">Fotoğraflarda ve videoda gösterilecek yakın
+                        noktaları seçin</p>
+                </div>
+            </div>
+            <button type="button" @click="loadPOIs()" :disabled="loading"
+                class="px-4 py-2 bg-purple-600 dark:bg-purple-500 text-white text-sm font-medium rounded-lg
+                       hover:bg-purple-700 dark:hover:bg-purple-600 hover:scale-105 active:scale-95
+                       focus:ring-2 focus:ring-purple-500 transition-all duration-200 shadow-md
+                       disabled:opacity-50 disabled:cursor-not-allowed">
+                <span x-show="!loading">🔄 Yenile</span>
+                <span x-show="loading" class="flex items-center gap-2">
+                    <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                            stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                        </path>
+                    </svg>
+                    Yükleniyor...
+                </span>
+            </button>
+        </div>
+    </div>
+
+    <div class="p-4">
+        {{-- Kategori Filtreleri --}}
+        <div x-show="pois.length > 0 || loading" class="mb-4">
+            <div class="flex items-center gap-2 flex-wrap">
+                <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Kategoriler:</span>
+                <button type="button" @click="selectedCategories = []; loadPOIs()"
+                    :class="selectedCategories.length === 0 ?
+                        'px-3 py-1.5 bg-purple-600 text-white rounded-lg text-xs font-medium' :
+                        'px-3 py-1.5 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg text-xs font-medium hover:bg-gray-300 dark:hover:bg-gray-600'">
+                    Tümü
+                </button>
+                <template x-for="category in availableCategories" :key="category.type">
+                    <button type="button" @click="toggleCategory(category.type)"
+                        :class="selectedCategories.includes(category.type) ?
+                            'px-3 py-1.5 bg-purple-600 text-white rounded-lg text-xs font-medium' :
+                            'px-3 py-1.5 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg text-xs font-medium hover:bg-gray-300 dark:hover:bg-gray-600'">
+                        <span x-text="category.label"></span>
+                        <span x-show="getCategoryCount(category.type) > 0"
+                            class="ml-1.5 px-1.5 py-0.5 bg-white/20 rounded text-[10px]"
+                            x-text="getCategoryCount(category.type)"></span>
+                    </button>
+                </template>
+            </div>
+        </div>
+
+        <template x-if="pois.length === 0 && !loading">
+            <div class="text-center py-8 text-gray-500 dark:text-gray-400">
+                <svg class="w-16 h-16 mx-auto mb-4 opacity-50" fill="none" stroke="currentColor"
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                </svg>
+                <p class="text-sm">Önce haritada konum seçin, sonra yakın lokasyonları yükleyin</p>
+            </div>
+        </template>
+
+        <template x-if="loading">
+            <div class="text-center py-8">
+                <div class="inline-flex items-center gap-2 text-gray-600 dark:text-gray-400">
+                    <svg class="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                            stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                        </path>
+                    </svg>
+                    <span>Yakın lokasyonlar yükleniyor...</span>
+                </div>
+            </div>
+        </template>
+
+        <div x-show="pois.length > 0" class="space-y-3 max-h-[400px] overflow-y-auto">
+            <template x-for="poi in filteredPOIs" :key="poi.id">
+                <label
+                    class="flex items-center gap-3 p-3 rounded-lg border border-gray-200 dark:border-gray-700
+                           hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer
+                           transition-all duration-200">
+                    <input type="checkbox" :value="poi.id" x-model="selectedPOIs" @change="updatePOIInput()"
+                        class="w-5 h-5 text-purple-600 border-gray-300 rounded focus:ring-purple-500
+                               dark:bg-gray-700 dark:border-gray-600">
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center justify-between gap-2">
+                            <span class="font-medium text-gray-900 dark:text-white" x-text="poi.name"></span>
+                            <span class="text-xs text-gray-500 dark:text-gray-400"
+                                x-text="poi.distance_m + ' m'"></span>
+                        </div>
+                        <div class="flex items-center gap-2 mt-1">
+                            <span
+                                class="text-xs px-2 py-0.5 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded"
+                                x-text="poi.category"></span>
+                            <span class="text-xs text-gray-500 dark:text-gray-400"
+                                x-text="poi.walking_minutes + ' dk yürüyüş'"></span>
+                        </div>
+                    </div>
+                </label>
+            </template>
+        </div>
+
+        <input type="hidden" name="environment_pois" id="environment_pois" :value="JSON.stringify(selectedPOIData)">
     </div>
 </div>
 
@@ -1032,4 +1213,424 @@
 
         return `${price.toLocaleString('tr-TR')} ${currencyNames[currency] || 'Türk Lirası'}`;
     }
+
+    // ✅ POI Widget - Context7 Standard
+    window.poiWidget = function() {
+        return {
+            pois: [],
+            selectedPOIs: [],
+            selectedCategories: [],
+            loading: false,
+            error: null,
+            availableCategories: [{
+                    type: 'okul',
+                    label: '🏫 Eğitim',
+                    icon: 'school'
+                },
+                {
+                    type: 'market',
+                    label: '🛒 Alışveriş',
+                    icon: 'shopping-cart'
+                },
+                {
+                    type: 'hastane',
+                    label: '🏥 Sağlık',
+                    icon: 'hospital'
+                },
+                {
+                    type: 'otel',
+                    label: '🏨 Konaklama',
+                    icon: 'hotel'
+                },
+                {
+                    type: 'sahil',
+                    label: '🏖️ Sahil & Deniz',
+                    icon: 'beach'
+                },
+                {
+                    type: 'park',
+                    label: '🌳 Park & Yeşil Alan',
+                    icon: 'tree'
+                },
+                {
+                    type: 'ulasim',
+                    label: '🚌 Ulaşım',
+                    icon: 'bus'
+                },
+            ],
+
+            get filteredPOIs() {
+                if (this.selectedCategories.length === 0) {
+                    return this.pois;
+                }
+                return this.pois.filter(poi => this.selectedCategories.includes(poi.type));
+            },
+
+            getCategoryCount(type) {
+                return this.pois.filter(poi => poi.type === type).length;
+            },
+
+            toggleCategory(type) {
+                const index = this.selectedCategories.indexOf(type);
+                if (index > -1) {
+                    this.selectedCategories.splice(index, 1);
+                } else {
+                    this.selectedCategories.push(type);
+                }
+            },
+
+            init() {
+                // Haritada konum seçildiğinde POI'leri otomatik yükle
+                document.addEventListener('wizard-map-marker-moved', (e) => {
+                    if (e.detail && e.detail.lat && e.detail.lng) {
+                        setTimeout(() => this.loadPOIs(e.detail.lat, e.detail.lng), 500);
+                    }
+                });
+
+                // Form submit'te seçili POI'leri kaydet
+                const form = document.getElementById('ilan-wizard-form');
+                if (form) {
+                    form.addEventListener('submit', () => {
+                        this.updatePOIInput();
+                    });
+                }
+            },
+
+            async loadPOIs(lat = null, lng = null) {
+                // Koordinatları haritadan veya form alanlarından al
+                if (!lat || !lng) {
+                    const latInput = document.querySelector('[name="enlem"]') || document.querySelector(
+                        '[name="latitude"]');
+                    const lngInput = document.querySelector('[name="boylam"]') || document.querySelector(
+                        '[name="longitude"]');
+
+                    if (!latInput || !lngInput || !latInput.value || !lngInput.value) {
+                        this.error = 'Önce haritada konum seçin';
+                        return;
+                    }
+                    lat = parseFloat(latInput.value);
+                    lng = parseFloat(lngInput.value);
+                }
+
+                this.loading = true;
+                this.error = null;
+
+                try {
+                    // Kategori filtresi varsa types parametresine ekle
+                    let typesParam = '';
+                    if (this.selectedCategories.length > 0) {
+                        typesParam = '&types=' + this.selectedCategories.join(',');
+                    }
+
+                    const url = window.APIConfig?.environment?.pois ?
+                        window.APIConfig.environment.pois(lat, lng, 2000, this.selectedCategories.length > 0 ?
+                            this.selectedCategories : null) :
+                        `/api/environment/pois?lat=${lat}&lng=${lng}&radius=2000${typesParam}`;
+
+                    const response = await fetch(url, {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest',
+                        },
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+
+                    const data = await response.json();
+
+                    if (data.success && data.data && Array.isArray(data.data.pois)) {
+                        this.pois = data.data.pois;
+                        this.updateMapMarkers();
+                    } else {
+                        throw new Error('Geçersiz API yanıtı');
+                    }
+                } catch (error) {
+                    console.error('POI yükleme hatası:', error);
+                    this.error = 'Yakın lokasyonlar yüklenirken hata oluştu: ' + error.message;
+                    this.pois = [];
+                } finally {
+                    this.loading = false;
+                }
+            },
+
+            updateMapMarkers() {
+                // Haritada POI marker'larını göster (wizard haritası varsa)
+                if (window.wizardMap && this.pois.length > 0) {
+                    // Mevcut POI marker'larını temizle
+                    if (window.poiMarkers) {
+                        window.poiMarkers.forEach(marker => window.wizardMap.removeLayer(marker));
+                    }
+                    window.poiMarkers = [];
+
+                    // Yeni marker'ları ekle
+                    this.pois.forEach(poi => {
+                        if (window.L) {
+                            const marker = window.L.marker([poi.lat, poi.lng], {
+                                icon: window.L.divIcon({
+                                    className: 'poi-marker',
+                                    html: `<div class="poi-marker-content" style="background: ${this.selectedPOIs.includes(poi.id) ? '#9333ea' : '#6b7280'}; color: white; padding: 4px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; white-space: nowrap;">${poi.name}</div>`,
+                                    iconSize: [100, 20],
+                                })
+                            }).addTo(window.wizardMap);
+
+                            marker.bindPopup(`
+                                <div class="text-sm">
+                                    <strong>${poi.name}</strong><br>
+                                    <span class="text-gray-600">${poi.category}</span><br>
+                                    <span class="text-purple-600">${poi.distance_m} m (${poi.walking_minutes} dk yürüyüş)</span>
+                                </div>
+                            `);
+
+                            window.poiMarkers.push(marker);
+                        }
+                    });
+                }
+            },
+
+            updatePOIInput() {
+                // Seçili POI'leri JSON olarak hidden input'a kaydet
+                const selectedData = this.pois
+                    .filter(poi => this.selectedPOIs.includes(poi.id))
+                    .map(poi => ({
+                        id: poi.id,
+                        name: poi.name,
+                        type: poi.type,
+                        category: poi.category,
+                        lat: poi.lat,
+                        lng: poi.lng,
+                        distance_m: poi.distance_m,
+                        walking_minutes: poi.walking_minutes,
+                    }));
+
+                const input = document.getElementById('environment_pois');
+                if (input) {
+                    input.value = JSON.stringify(selectedData);
+                }
+
+                // Harita marker'larını güncelle
+                this.updateMapMarkers();
+            },
+
+            get selectedPOIData() {
+                return this.pois
+                    .filter(poi => this.selectedPOIs.includes(poi.id))
+                    .map(poi => ({
+                        id: poi.id,
+                        name: poi.name,
+                        type: poi.type,
+                        category: poi.category,
+                        lat: poi.lat,
+                        lng: poi.lng,
+                        distance_m: poi.distance_m,
+                        walking_minutes: poi.walking_minutes,
+                    }));
+            },
+        };
+    };
+
+    // ✅ GeoJSON Uploader Widget - Step 1
+    window.geojsonUploader = function() {
+        return {
+            error: null,
+            success: false,
+
+            init() {
+                // Step 2'ye geçildiğinde GeoJSON verisini aktar
+                document.addEventListener('wizard-step-changed', (e) => {
+                    if (e.detail.step === 2) {
+                        this.transferDataToStep2();
+                    }
+                });
+            },
+
+            handleGeoJsonUpload(event) {
+                const file = event.target.files?.[0];
+                if (!file) return;
+
+                if (file.size > 2 * 1024 * 1024) {
+                    this.error = 'Dosya boyutu 2MB\'den küçük olmalıdır';
+                    event.target.value = '';
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    try {
+                        const text = e.target.result;
+                        const data = JSON.parse(text);
+                        this.applyGeoJsonData(data);
+                        this.error = null;
+                        this.success = true;
+                        setTimeout(() => this.success = false, 5000);
+                    } catch (err) {
+                        this.error = 'Geçerli bir JSON / GeoJSON dosyası yükleyin: ' + err.message;
+                        this.success = false;
+                    }
+                };
+
+                reader.readAsText(file);
+            },
+
+            applyGeoJsonData(data) {
+                let feature = null;
+
+                if (data?.type === 'FeatureCollection' && Array.isArray(data.features) && data.features.length) {
+                    feature = data.features[0];
+                } else if (data?.type === 'Feature') {
+                    feature = data;
+                }
+
+                if (!feature || !feature.geometry) {
+                    this.error = 'GeoJSON içinde geçerli bir Feature bulunamadı';
+                    return;
+                }
+
+                const props = feature.properties || {};
+
+                // İl/İlçe/Mahalle alanlarını doldur
+                this.fillLocationFields(props);
+
+                // Koordinatları kaydet ve haritayı güncelle
+                this.updateMapFromGeoJSON(feature);
+
+                // GeoJSON verisini global'e kaydet (Step 2'de kullanılacak)
+                window.uploadedGeoJsonData = {
+                    feature: feature,
+                    properties: props,
+                    timestamp: Date.now()
+                };
+            },
+
+            fillLocationFields(props) {
+                // İl seçimi (Il veya Ilce varsa)
+                if (props.Il || props.il) {
+                    const ilAdi = props.Il || props.il;
+                    const ilSelect = document.getElementById('il_id');
+                    if (ilSelect) {
+                        for (let option of ilSelect.options) {
+                            if (option.text.trim() === ilAdi.trim()) {
+                                ilSelect.value = option.value;
+                                ilSelect.dispatchEvent(new Event('change'));
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                // İlçe seçimi (Ilce varsa)
+                if (props.Ilce || props.ilce) {
+                    setTimeout(() => {
+                        const ilceAdi = props.Ilce || props.ilce;
+                        const ilceSelect = document.getElementById('ilce_id');
+                        if (ilceSelect && !ilceSelect.disabled) {
+                            for (let option of ilceSelect.options) {
+                                if (option.text.trim() === ilceAdi.trim()) {
+                                    ilceSelect.value = option.value;
+                                    ilceSelect.dispatchEvent(new Event('change'));
+                                    break;
+                                }
+                            }
+                        }
+                    }, 500);
+                }
+
+                // Mahalle seçimi (Mahalle varsa)
+                if (props.Mahalle || props.mahalle) {
+                    setTimeout(() => {
+                        const mahalleAdi = props.Mahalle || props.mahalle;
+                        const mahalleSelect = document.getElementById('mahalle_id');
+                        if (mahalleSelect && !mahalleSelect.disabled) {
+                            for (let option of mahalleSelect.options) {
+                                if (option.text.trim() === mahalleAdi.trim()) {
+                                    mahalleSelect.value = option.value;
+                                    break;
+                                }
+                            }
+                        }
+                    }, 1000);
+                }
+            },
+
+            updateMapFromGeoJSON(feature) {
+                if (!window.L || !window.wizardMap) {
+                    console.warn('Harita henüz yüklenmedi, bekleniyor...');
+                    setTimeout(() => this.updateMapFromGeoJSON(feature), 500);
+                    return;
+                }
+
+                try {
+                    // Mevcut GeoJSON layer'ı temizle
+                    if (window.step1GeoJsonLayer) {
+                        window.wizardMap.removeLayer(window.step1GeoJsonLayer);
+                    }
+
+                    // Yeni layer ekle
+                    const layer = window.L.geoJSON(feature, {
+                        style: {
+                            color: '#2563eb',
+                            weight: 3,
+                            fillColor: '#3b82f6',
+                            fillOpacity: 0.25,
+                        },
+                    }).addTo(window.wizardMap);
+
+                    window.step1GeoJsonLayer = layer;
+
+                    // Haritayı parsel sınırlarına göre ayarla
+                    const bounds = layer.getBounds();
+                    if (bounds.isValid && bounds.isValid()) {
+                        window.wizardMap.fitBounds(bounds, {
+                            padding: [50, 50]
+                        });
+
+                        const center = bounds.getCenter();
+
+                        // Koordinatları form alanlarına kaydet
+                        const latInput = document.querySelector('[name="enlem"]') || document.querySelector(
+                            '[name="latitude"]');
+                        const lngInput = document.querySelector('[name="boylam"]') || document.querySelector(
+                            '[name="longitude"]');
+                        if (latInput) latInput.value = center.lat.toFixed(6);
+                        if (lngInput) lngInput.value = center.lng.toFixed(6);
+
+                        // Marker'ı güncelle
+                        if (window.wizardMarker) {
+                            window.wizardMarker.setLatLng([center.lat, center.lng]);
+                        } else {
+                            window.wizardMarker = window.L.marker([center.lat, center.lng], {
+                                draggable: true
+                            }).addTo(window.wizardMap);
+                        }
+
+                        // POI'leri otomatik yükle
+                        setTimeout(() => {
+                            if (window.poiWidget && typeof window.poiWidget === 'function') {
+                                const poiInstance = Alpine.$data(document.querySelector(
+                                    '[x-data*="poiWidget"]'));
+                                if (poiInstance && poiInstance.loadPOIs) {
+                                    poiInstance.loadPOIs(center.lat, center.lng);
+                                }
+                            }
+                        }, 1000);
+                    }
+                } catch (e) {
+                    console.error('GeoJSON haritaya eklenemedi:', e);
+                    this.error = 'Harita güncellenirken hata oluştu: ' + e.message;
+                }
+            },
+
+            transferDataToStep2() {
+                // Step 2'ye geçildiğinde GeoJSON verisini aktar
+                if (window.uploadedGeoJsonData && window.uploadedGeoJsonData.feature) {
+                    // Step 2'deki TKGM widget'a veri aktar
+                    document.dispatchEvent(new CustomEvent('step1-geojson-ready', {
+                        detail: window.uploadedGeoJsonData
+                    }));
+                }
+            },
+        };
+    };
 </script>

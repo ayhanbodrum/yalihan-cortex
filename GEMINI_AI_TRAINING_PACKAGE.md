@@ -139,7 +139,7 @@ $satis->raporlar()          // Satış raporları (audit trail)
 ---
 
 ### **4. FORM VE VERİ GIRIŞ ÇEKIRDEĞI**
-**Dosya:** `resources/views/admin/ilanlar/create.blade.php` (4082 satır)
+**Dosya:** `resources/views/admin/ilanlar/create-wizard.blade.php` (wizard ana sayfa)
 
 **Nedir?** Danışmanın emlak ilanı oluşturduğu arayüz. 10 adımlı, AI-assisted form.
 

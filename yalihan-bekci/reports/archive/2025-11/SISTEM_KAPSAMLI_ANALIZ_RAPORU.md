@@ -37,7 +37,7 @@
 
 **Views:**
 - `resources/views/admin/ilanlar/index.blade.php`
-- `resources/views/admin/ilanlar/create.blade.php`
+- `resources/views/admin/ilanlar/create-wizard.blade.php`
 - `resources/views/admin/ilanlar/edit.blade.php`
 - `resources/views/admin/ilanlar/show.blade.php`
 - `resources/views/admin/ilanlar/my-listings.blade.php`

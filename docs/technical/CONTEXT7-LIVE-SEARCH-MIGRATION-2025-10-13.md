@@ -31,7 +31,7 @@ Tüm admin sayfalarındaki arama sistemlerini tek bir standart'a geçirmek:
 
 - `resources/views/admin/ilanlar/components/person-crm.blade.php`
 - `resources/views/admin/ilanlar/components/site-selection.blade.php`
-- `resources/views/admin/ilanlar/create.blade.php`
+- `resources/views/admin/ilanlar/create-wizard.blade.php`
 
 **API:**
 

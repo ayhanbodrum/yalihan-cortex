@@ -31,13 +31,12 @@ GET /api/properties/tkgm-health
 ```
 
 **Test URL:**
-```
-http://127.0.0.1:8000/admin/ilanlar/create
-→ İl: Muğla, İlçe: Bodrum
-→ Ada: 1234, Parsel: 5
-→ Parsel input'undan çık
+`/admin/ilanlar/create-wizard`
+
+→ İl: Muğla, İlçe: Bodrum  
+→ Ada: 1234, Parsel: 5  
+→ Parsel input'undan çık  
 → SONUÇ: 16 alan otomatik doldurulur!
-```
 
 ---
 

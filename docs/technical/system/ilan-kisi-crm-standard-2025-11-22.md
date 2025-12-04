@@ -75,7 +75,7 @@ Context7 ek kolonlar (uygulamada mevcut):
 
 ## 2. İlan Formunda Kişi Alanları (Create/Edit)
 
-Kaynak: `resources/views/admin/ilanlar/create.blade.php` + `partials/stable/_kisi-secimi.blade.php`
+Kaynak: `resources/views/admin/ilanlar/create-wizard.blade.php` + `partials/stable/_kisi-secimi.blade.php`
 
 ### 2.1. Standart 3 alan
 

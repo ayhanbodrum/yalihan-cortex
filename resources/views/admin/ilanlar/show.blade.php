@@ -60,7 +60,8 @@
             <div class="flex items-center justify-between flex-wrap gap-6">
                 {{-- Sol Taraf: Başlık ve Açıklama --}}
                 <div class="flex items-center gap-4">
-                    <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center shadow-sm">
+                    <div
+                        class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center shadow-sm">
                         <svg class="w-7 h-7 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor"
                             viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -76,7 +77,7 @@
                 {{-- Sağ Taraf: İyileştirilmiş Butonlar (Yatay Düzen) --}}
                 <div class="flex items-center gap-3 flex-wrap">
                     {{-- İlanı Düzenle --}}
-                    <a href="{{ route('admin.ilanlar.edit', $ilan->id)"
+                    <a href="{{ route('admin.ilanlar.edit', $ilan->id) }}"
                         class="inline-flex items-center gap-2 px-5 py-3 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-xl shadow-md hover:shadow-xl hover:scale-105 active:scale-95 focus:ring-4 focus:ring-blue-500/50 transition-all duration-200"
                         title="İlan bilgilerini düzenle">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -89,14 +90,14 @@
                     {{-- İlanı Kopyala --}}
                     <button @click="duplicateListing()" :disabled="processing"
                         class="inline-flex items-center gap-2 px-5 py-3 bg-green-600 hover:bg-green-700 text-white text-sm font-semibold rounded-xl shadow-md hover:shadow-xl hover:scale-105 active:scale-95 focus:ring-4 focus:ring-green-500/50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
-                        title="Bu ilanın bir kopyasını oluştur (Taslak olarak kaydedilir)"
-                        aria-label="İlanı kopyala">
+                        title="Bu ilanın bir kopyasını oluştur (Taslak olarak kaydedilir)" aria-label="İlanı kopyala">
                         <svg x-show="!processing" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                         </svg>
                         <svg x-show="processing" class="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                stroke-width="4"></circle>
                             <path class="opacity-75" fill="currentColor"
                                 d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
                             </path>
@@ -107,8 +108,7 @@
                     {{-- Durum Değiştir --}}
                     <button @click="toggleStatus()" :disabled="processing"
                         class="inline-flex items-center gap-2 px-5 py-3 bg-yellow-600 hover:bg-yellow-700 text-white text-sm font-semibold rounded-xl shadow-md hover:shadow-xl hover:scale-105 active:scale-95 focus:ring-4 focus:ring-yellow-500/50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
-                        title="İlan durumunu Aktif/Pasif arasında değiştir"
-                        aria-label="İlan durumunu değiştir">
+                        title="İlan durumunu Aktif/Pasif arasında değiştir" aria-label="İlan durumunu değiştir">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
@@ -119,8 +119,7 @@
                     {{-- AI Analiz --}}
                     <button @click="analyzeWithAI()" :disabled="processing"
                         class="inline-flex items-center gap-2 px-5 py-3 bg-purple-600 hover:bg-purple-700 text-white text-sm font-semibold rounded-xl shadow-md hover:shadow-xl hover:scale-105 active:scale-95 focus:ring-4 focus:ring-purple-500/50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
-                        title="AI ile ilan analizi yap (fiyat, başlık, SEO önerileri)"
-                        aria-label="AI ile ilan analizi yap">
+                        title="AI ile ilan analizi yap (fiyat, başlık, SEO önerileri)" aria-label="AI ile ilan analizi yap">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
@@ -128,6 +127,151 @@
                         <span x-text="processing ? 'Analiz ediliyor...' : 'AI Analiz'"></span>
                     </button>
                 </div>
+            </div>
+        </div>
+
+        <!-- ✅ Yalihan Cortex: Analiz, Video, Fotoğraf Kartları -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+            {{-- Analiz Raporu Kartı --}}
+            <div class="bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20 rounded-xl border border-purple-200 dark:border-purple-800 shadow-lg p-6 hover:shadow-xl transition-all duration-200"
+                x-data="cortexAnaliz({{ $ilan->id }})">
+                <div class="flex items-start justify-between mb-4">
+                    <div class="flex items-center gap-3">
+                        <div
+                            class="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-xl flex items-center justify-center">
+                            <svg class="w-7 h-7 text-purple-600 dark:text-purple-400" fill="none"
+                                stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-900 dark:text-white">Analiz Raporu</h3>
+                            <p class="text-xs text-gray-600 dark:text-gray-400">AI destekli detaylı analiz</p>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-sm text-gray-700 dark:text-gray-300 mb-4">
+                    İlan için çevresel analiz, fiyat tahmini ve pazar analizi raporu oluşturun.
+                </p>
+                <button @click="generateReport()" :disabled="loading"
+                    class="w-full px-4 py-3 bg-purple-600 dark:bg-purple-500 text-white rounded-lg font-medium
+                           hover:bg-purple-700 dark:hover:bg-purple-600 hover:scale-105 active:scale-95
+                           focus:ring-2 focus:ring-purple-500 transition-all duration-200 shadow-md
+                           disabled:opacity-50 disabled:cursor-not-allowed">
+                    <span x-show="!loading" class="flex items-center justify-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        Rapor Oluştur
+                    </span>
+                    <span x-show="loading" class="flex items-center justify-center gap-2">
+                        <svg class="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor"
+                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                            </path>
+                        </svg>
+                        Oluşturuluyor...
+                    </span>
+                </button>
+            </div>
+
+            {{-- Video Oluştur Kartı --}}
+            <div class="bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20 rounded-xl border border-blue-200 dark:border-blue-800 shadow-lg p-6 hover:shadow-xl transition-all duration-200"
+                x-data="cortexVideo({{ $ilan->id }})">
+                <div class="flex items-start justify-between mb-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center">
+                            <svg class="w-7 h-7 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-900 dark:text-white">Video Oluştur</h3>
+                            <p class="text-xs text-gray-600 dark:text-gray-400">AI destekli video üretimi</p>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-sm text-gray-700 dark:text-gray-300 mb-4">
+                    İlan için profesyonel tanıtım videosu oluşturun. Harita animasyonları ve POI bilgileri dahil.
+                </p>
+                <button @click="generateVideo()" :disabled="loading"
+                    class="w-full px-4 py-3 bg-blue-600 dark:bg-blue-500 text-white rounded-lg font-medium
+                           hover:bg-blue-700 dark:hover:bg-blue-600 hover:scale-105 active:scale-95
+                           focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md
+                           disabled:opacity-50 disabled:cursor-not-allowed">
+                    <span x-show="!loading" class="flex items-center justify-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        Video Oluştur
+                    </span>
+                    <span x-show="loading" class="flex items-center justify-center gap-2">
+                        <svg class="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor"
+                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                            </path>
+                        </svg>
+                        Oluşturuluyor...
+                    </span>
+                </button>
+            </div>
+
+            {{-- Fotoğraf & PDF Kartı --}}
+            <div class="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-xl border border-green-200 dark:border-green-800 shadow-lg p-6 hover:shadow-xl transition-all duration-200"
+                x-data="cortexFoto({{ $ilan->id }})">
+                <div class="flex items-start justify-between mb-4">
+                    <div class="flex items-center gap-3">
+                        <div
+                            class="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center">
+                            <svg class="w-7 h-7 text-green-600 dark:text-green-400" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-900 dark:text-white">Fotoğraf & PDF</h3>
+                            <p class="text-xs text-gray-600 dark:text-gray-400">Harita görüntüleri ve PDF</p>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-sm text-gray-700 dark:text-gray-300 mb-4">
+                    Harita görüntülerini otomatik yakalayın ve profesyonel PDF raporu oluşturun.
+                </p>
+                <button @click="generatePhotos()" :disabled="loading"
+                    class="w-full px-4 py-3 bg-green-600 dark:bg-green-500 text-white rounded-lg font-medium
+                           hover:bg-green-700 dark:hover:bg-green-600 hover:scale-105 active:scale-95
+                           focus:ring-2 focus:ring-green-500 transition-all duration-200 shadow-md
+                           disabled:opacity-50 disabled:cursor-not-allowed">
+                    <span x-show="!loading" class="flex items-center justify-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                        Fotoğraf & PDF Oluştur
+                    </span>
+                    <span x-show="loading" class="flex items-center justify-center gap-2">
+                        <svg class="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor"
+                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                            </path>
+                        </svg>
+                        Oluşturuluyor...
+                    </span>
+                </button>
             </div>
         </div>
 
@@ -639,6 +783,114 @@
 
     @push('scripts')
         <script>
+            // ✅ Yalihan Cortex: Analiz Raporu
+            function cortexAnaliz(ilanId) {
+                return {
+                    loading: false,
+                    async generateReport() {
+                        this.loading = true;
+                        try {
+                            const url = window.APIConfig?.cortex?.analyze(ilanId) || `/api/admin/cortex/analyze/${ilanId}`;
+                            const response = await fetch(url, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content,
+                                    'Accept': 'application/json',
+                                },
+                            });
+
+                            const data = await response.json();
+                            if (data.success) {
+                                window.toast?.success('Analiz raporu oluşturuluyor...');
+                                if (data.download_url) {
+                                    window.open(data.download_url, '_blank');
+                                }
+                            } else {
+                                throw new Error(data.message || 'Rapor oluşturulamadı');
+                            }
+                        } catch (error) {
+                            console.error('Analiz hatası:', error);
+                            window.toast?.error('Rapor oluşturulamadı: ' + error.message);
+                        } finally {
+                            this.loading = false;
+                        }
+                    },
+                };
+            }
+
+            // ✅ Yalihan Cortex: Video Oluştur
+            function cortexVideo(ilanId) {
+                return {
+                    loading: false,
+                    async generateVideo() {
+                        this.loading = true;
+                        try {
+                            const url = window.APIConfig?.cortex?.video(ilanId) || `/api/admin/cortex/video/${ilanId}`;
+                            const response = await fetch(url, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content,
+                                    'Accept': 'application/json',
+                                },
+                            });
+
+                            const data = await response.json();
+                            if (data.success) {
+                                window.toast?.success('Video oluşturuluyor...');
+                                if (data.video_url) {
+                                    window.open(data.video_url, '_blank');
+                                }
+                            } else {
+                                throw new Error(data.message || 'Video oluşturulamadı');
+                            }
+                        } catch (error) {
+                            console.error('Video hatası:', error);
+                            window.toast?.error('Video oluşturulamadı: ' + error.message);
+                        } finally {
+                            this.loading = false;
+                        }
+                    },
+                };
+            }
+
+            // ✅ Yalihan Cortex: Fotoğraf & PDF
+            function cortexFoto(ilanId) {
+                return {
+                    loading: false,
+                    async generatePhotos() {
+                        this.loading = true;
+                        try {
+                            const url = window.APIConfig?.cortex?.photos(ilanId) || `/api/admin/cortex/photos/${ilanId}`;
+                            const response = await fetch(url, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content,
+                                    'Accept': 'application/json',
+                                },
+                            });
+
+                            const data = await response.json();
+                            if (data.success) {
+                                window.toast?.success('Fotoğraflar ve PDF oluşturuluyor...');
+                                if (data.download_url) {
+                                    window.open(data.download_url, '_blank');
+                                }
+                            } else {
+                                throw new Error(data.message || 'Fotoğraf/PDF oluşturulamadı');
+                            }
+                        } catch (error) {
+                            console.error('Fotoğraf hatası:', error);
+                            window.toast?.error('Fotoğraf/PDF oluşturulamadı: ' + error.message);
+                        } finally {
+                            this.loading = false;
+                        }
+                    },
+                };
+            }
+
             function quickActions(ilanId) {
                 return {
                     processing: false,

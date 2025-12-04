@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('field_unit', 20)->nullable(); // m², ₺, km, vs.
             $table->text('aciklama')->nullable();
             $table->integer('sira')->default(0);
-            $table->boolean('aktif')->default(true);
+            $table->boolean('status')->default(true);
             $table->timestamps();
         });
     }

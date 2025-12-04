@@ -69,6 +69,182 @@ class EnvironmentAnalysisController extends Controller
     }
 
     /**
+     * 📍 Points of Interest (POI) API
+     * GET /api/environment/pois?lat={lat}&lng={lng}&radius={radius}&types={types}
+     *
+     * Context7 Standard: Tüm ilan tipleri için ortak POI servisi
+     * Returns nearby points of interest (okul, market, hastane, otel, sahil, vb.)
+     */
+    public function getPOIs(Request $request): JsonResponse
+    {
+        $validated = $this->validateRequestWithResponse($request, [
+            'lat' => 'required|numeric|between:-90,90',
+            'lng' => 'required|numeric|between:-180,180',
+            'radius' => 'nullable|integer|min:100|max:5000',
+            'types' => 'nullable|string', // Comma-separated: okul,market,hastane,otel,sahil
+        ]);
+
+        if ($validated instanceof JsonResponse) {
+            return $validated;
+        }
+
+        $lat = (float) $request->get('lat');
+        $lng = (float) $request->get('lng');
+        $radius = (int) ($request->get('radius', 2000)); // Default 2km
+        $requestedTypes = $request->get('types') ? explode(',', $request->get('types')) : null;
+
+        try {
+            // ✅ Gerçek OSM verilerini Overpass API ile çek
+            $pois = $this->getRealPOIs($lat, $lng, $radius, $requestedTypes);
+
+            return ResponseService::success([
+                'location' => [
+                    'lat' => $lat,
+                    'lng' => $lng,
+                    'radius' => $radius,
+                ],
+                'pois' => $pois,
+                'total' => count($pois),
+            ], 'POI verileri başarıyla alındı');
+        } catch (\Exception $e) {
+            Log::error('POI API Error', [
+                'message' => $e->getMessage(),
+                'lat' => $lat,
+                'lng' => $lng,
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return ResponseService::serverError('POI verileri alınırken hata oluştu.', $e);
+        }
+    }
+
+    /**
+     * ✅ Gerçek OSM POI verilerini Overpass API ile çek
+     * Context7: Deniz içinde POI göstermemek için gerçek veri kullanıyoruz
+     */
+    private function getRealPOIs(float $lat, float $lng, int $radius, ?array $requestedTypes): array
+    {
+        // OSM amenity mapping (Türkçe kategori → OSM tag)
+        $amenityMapping = [
+            'okul' => ['school', 'university', 'college', 'kindergarten'],
+            'market' => ['supermarket', 'marketplace', 'convenience', 'mall'],
+            'hastane' => ['hospital', 'clinic', 'pharmacy', 'doctors'],
+            'otel' => ['hotel', 'hostel', 'guesthouse'],
+            'sahil' => ['beach_resort', 'marina'],
+            'park' => ['park', 'playground', 'sports_centre', 'fitness_centre'],
+            'ulasim' => ['bus_station', 'taxi', 'ferry_terminal'],
+        ];
+
+        $allPOIs = [];
+        $poiId = 1;
+
+        // Eğer types filtresi yoksa, tüm kategorileri çek
+        $typesToQuery = $requestedTypes ?: array_keys($amenityMapping);
+
+        foreach ($typesToQuery as $type) {
+            if (!isset($amenityMapping[$type])) {
+                continue;
+            }
+
+            $amenities = $amenityMapping[$type];
+            foreach ($amenities as $amenity) {
+                $osmResults = $this->queryOverpassAPI($lat, $lng, $amenity, $radius);
+
+                foreach ($osmResults as $osmItem) {
+                    if (!isset($osmItem['lat']) || !isset($osmItem['lng'])) {
+                        continue;
+                    }
+
+                    // Mesafe hesapla
+                    $distance = $this->calculateDistance($lat, $lng, $osmItem['lat'], $osmItem['lng']) * 1000; // km → m
+
+                    // Radius içinde mi kontrol et
+                    if ($distance > $radius) {
+                        continue;
+                    }
+
+                    $name = $osmItem['name'] ?? $this->getDefaultNameForAmenity($amenity);
+                    $walkingMinutes = round($distance / 80); // Ortalama yürüme hızı: 80m/dk
+
+                    $allPOIs[] = [
+                        'id' => $poiId++,
+                        'name' => $name,
+                        'type' => $type,
+                        'category' => $this->getPOICategoryLabel($type),
+                        'lat' => round($osmItem['lat'], 6),
+                        'lng' => round($osmItem['lng'], 6),
+                        'distance_m' => round($distance),
+                        'distance_km' => round($distance / 1000, 2),
+                        'walking_minutes' => $walkingMinutes,
+                        'icon' => $this->getPOIIcon($type),
+                        'osm_id' => $osmItem['id'] ?? null,
+                        'tags' => $osmItem['tags'] ?? [],
+                    ];
+                }
+            }
+        }
+
+        // Mesafeye göre sırala
+        usort($allPOIs, fn($a, $b) => $a['distance_m'] <=> $b['distance_m']);
+
+        // Maksimum 50 POI döndür (performans için)
+        return array_slice($allPOIs, 0, 50);
+    }
+
+    /**
+     * Amenity için varsayılan isim
+     */
+    private function getDefaultNameForAmenity(string $amenity): string
+    {
+        $names = [
+            'school' => 'Okul',
+            'university' => 'Üniversite',
+            'supermarket' => 'Süpermarket',
+            'hospital' => 'Hastane',
+            'pharmacy' => 'Eczane',
+            'hotel' => 'Otel',
+            'park' => 'Park',
+            'bus_station' => 'Otobüs Durağı',
+        ];
+
+        return $names[$amenity] ?? 'POI';
+    }
+
+    /**
+     * POI tipi için Türkçe kategori etiketi
+     */
+    private function getPOICategoryLabel(string $type): string
+    {
+        return match ($type) {
+            'okul' => 'Eğitim',
+            'market' => 'Alışveriş',
+            'hastane' => 'Sağlık',
+            'otel' => 'Konaklama',
+            'sahil' => 'Sahil & Deniz',
+            'park' => 'Park & Yeşil Alan',
+            'ulasim' => 'Ulaşım',
+            default => 'Diğer',
+        };
+    }
+
+    /**
+     * POI tipi için icon adı (frontend'de kullanılacak)
+     */
+    private function getPOIIcon(string $type): string
+    {
+        return match ($type) {
+            'okul' => 'school',
+            'market' => 'shopping-cart',
+            'hastane' => 'hospital',
+            'otel' => 'hotel',
+            'sahil' => 'beach',
+            'park' => 'tree',
+            'ulasim' => 'bus',
+            default => 'map-pin',
+        };
+    }
+
+    /**
      * Specific category analysis
      * GET /api/environment/category/{category}?lat={lat}&lng={lng}
      */
@@ -263,7 +439,7 @@ class EnvironmentAnalysisController extends Controller
 
         try {
             $response = file_get_contents(
-                'https://overpass-api.de/api/interpreter?data='.urlencode($query)
+                'https://overpass-api.de/api/interpreter?data=' . urlencode($query)
             );
 
             if ($response === false) {
@@ -289,7 +465,7 @@ class EnvironmentAnalysisController extends Controller
                 return isset($element['lat']) || isset($element['center']['lat']);
             }));
         } catch (\Exception $e) {
-            Log::warning("Overpass API query failed for {$amenity}: ".$e->getMessage());
+            Log::warning("Overpass API query failed for {$amenity}: " . $e->getMessage());
 
             return [];
         }
@@ -356,7 +532,7 @@ class EnvironmentAnalysisController extends Controller
             $prompt = "Bu konum için çevre analizi sonuçlarını değerlendir ve Türkçe öneriler sun:
 
 Konum: {$lat}, {$lng}
-Analiz Sonuçları: ".json_encode($analysis, JSON_UNESCAPED_UNICODE);
+Analiz Sonuçları: " . json_encode($analysis, JSON_UNESCAPED_UNICODE);
 
             $insights = $this->aiService->generate([
                 'action' => 'analyze_environment',
@@ -444,23 +620,37 @@ Analiz Sonuçları: ".json_encode($analysis, JSON_UNESCAPED_UNICODE);
 
     /**
      * Search places by specific category
+     * ✅ Context7: performEnvironmentAnalysis kullanılıyor, bu fonksiyon placeholder
      */
     private function searchPlacesByCategory(float $lat, float $lng, string $category, int $radius): array
     {
-        // Implementation would be similar to performEnvironmentAnalysis
-        // but focused on a single category
-        return [];
+        // performEnvironmentAnalysis zaten kategori bazlı analiz yapıyor
+        $analysis = $this->performEnvironmentAnalysis($lat, $lng, $radius);
+        return $analysis[$category]['places'] ?? [];
     }
 
     /**
      * Analyze category impact on property value
+     * ✅ Context7: Gerçek analiz için AI servisi kullanılmalı, placeholder kaldırıldı
      */
     private function analyzeCategoryImpact(array $places, string $category): array
     {
+        if (empty($places)) {
+            return [
+                'impact_score' => 0,
+                'value_increase' => '0%',
+                'market_demand' => 'Düşük',
+            ];
+        }
+
+        // Gerçek analiz için AI servisi kullanılabilir
+        $count = count($places);
+        $avgDistance = array_sum(array_column($places, 'distance')) / $count;
+
         return [
-            'impact_score' => rand(60, 95), // Placeholder
-            'value_increase' => rand(5, 25).'%',
-            'market_demand' => ['Yüksek', 'Orta', 'Düşük'][rand(0, 2)],
+            'impact_score' => min(100, $count * 10 + (1000 - $avgDistance) / 10),
+            'value_increase' => min(25, $count * 2) . '%',
+            'market_demand' => $count >= 5 ? 'Yüksek' : ($count >= 2 ? 'Orta' : 'Düşük'),
         ];
     }
 

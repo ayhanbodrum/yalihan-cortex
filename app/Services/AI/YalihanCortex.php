@@ -9,7 +9,7 @@ use App\Modules\Finans\Services\FinansService;
 use App\Services\AIService;
 use App\Services\AI\OllamaService;
 use App\Services\Logging\LogService;
-use App\Services\TKGMService;
+use App\Services\Integrations\TKGMService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 

@@ -415,6 +415,10 @@ class Ilan extends Model
         'latitude' => 'float',                       // 🔵 OPTIONAL: decimal(10,8) → float (legacy)
         'longitude' => 'float',                      // 🔵 OPTIONAL: decimal(11,8) → float (legacy)
 
+        // Çevresel Bilgiler (POI & Tags)
+        'environment_pois' => 'array',               // 🔵 OPTIONAL: json → array (POI listesi)
+        'environment_tags' => 'array',               // 🔵 OPTIONAL: json → array (Çevresel etiketler)
+
         // İlan Yönetimi
         'ilan_no' => 'string',                       // 🔵 OPTIONAL: varchar(255) → string
         'referans_no' => 'string',                   // 🔵 OPTIONAL: varchar(50) → string

@@ -411,4 +411,62 @@ Route::prefix('admin')->name('api.admin.')->middleware(['web', 'auth'])->group(f
         Route::post('/{id}/read', [NotificationController::class, 'markAsReadApi'])->name('read');
         Route::post('/mark-all-read', [NotificationController::class, 'markAllAsRead'])->name('mark-all-read');
     });
+
+    // TKGM Parsel Sorgulama (Context7: C7-TKGM-API-2025-12-04)
+    Route::any('/properties/tkgm-lookup', function (\Illuminate\Http\Request $request, \App\Services\Integrations\TKGMService $service) {
+        try {
+            $lat = $request->input('lat');
+            $lon = $request->input('lng') ?? $request->input('lon');
+
+            if ($lat && $lon) {
+                $result = $service->getParcelByCoordinates((float) $lat, (float) $lon);
+                if ($result && ($result['success'] ?? false)) {
+                    return response()->json($result);
+                }
+                return response()->json([
+                    'success' => false,
+                    'message' => 'TKGM sorgusunda hata oluştu',
+                    'error' => $result['error'] ?? null,
+                ], 400);
+            }
+
+            $parcelNumber = $request->input('parcel_number');
+            $districtCode = $request->input('district_code');
+            $provinceCode = $request->input('province_code');
+            $streetCode = $request->input('street_code');
+            $blockNumber = $request->input('block_number');
+
+            if ($parcelNumber && $districtCode && $provinceCode) {
+                $result = $service->getParcelByCode($provinceCode, $districtCode, $streetCode, $blockNumber, $parcelNumber);
+                if ($result && ($result['success'] ?? false)) {
+                    return response()->json($result);
+                }
+            }
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Geçersiz parametreler',
+            ], 400);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    })->name('properties.tkgm-lookup');
+
+    // AI Monitoring Dashboard - JSON API Endpoints (Context7: C7-AI-MONITOR-API-2025-12-04)
+    Route::prefix('ai-monitor')->name('ai-monitor.')->middleware('throttle:60,1')->group(function () {
+        Route::get('/mcp', [\App\Http\Controllers\Admin\SystemMonitorController::class, 'apiMcpStatus'])->name('mcp');
+        Route::get('/apis', [\App\Http\Controllers\Admin\SystemMonitorController::class, 'apiApiStatus'])->name('apis');
+        Route::get('/self-healing', [\App\Http\Controllers\Admin\SystemMonitorController::class, 'apiSelfHealing'])->name('self-healing');
+        Route::get('/errors', [\App\Http\Controllers\Admin\SystemMonitorController::class, 'apiRecentErrors'])->name('errors');
+        Route::get('/code-health', [\App\Http\Controllers\Admin\SystemMonitorController::class, 'apiCodeHealth'])->name('code-health');
+        Route::get('/duplicates', [\App\Http\Controllers\Admin\SystemMonitorController::class, 'apiDuplicateFiles'])->name('duplicates');
+        Route::get('/conflicts', [\App\Http\Controllers\Admin\SystemMonitorController::class, 'apiConflictingRoutes'])->name('conflicts');
+        Route::get('/pages-health', [\App\Http\Controllers\Admin\SystemMonitorController::class, 'apiPagesHealth'])->name('pages-health');
+        Route::post('/run-context7-fix', [\App\Http\Controllers\Admin\SystemMonitorController::class, 'runContext7Fix'])->name('run-context7-fix');
+        Route::post('/apply-suggestion', [\App\Http\Controllers\Admin\SystemMonitorController::class, 'applySuggestion'])->name('apply-suggestion');
+        Route::get('/context7-rules', [\App\Http\Controllers\Admin\SystemMonitorController::class, 'getContext7Rules'])->name('context7-rules');
+    });
 });

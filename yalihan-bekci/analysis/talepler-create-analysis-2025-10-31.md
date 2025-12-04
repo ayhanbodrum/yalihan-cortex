@@ -295,7 +295,7 @@ console.log('❌ Error:', error);
 **Views:**
 
 - `resources/views/admin/talepler/create.blade.php` (Bu dosya)
-- `resources/views/admin/ilanlar/create.blade.php` (Referans)
+- `resources/views/admin/ilanlar/create-wizard.blade.php` (Wizard referansı)
 - `resources/views/admin/kisiler/edit.blade.php` (Referans)
 
 **Routes:**

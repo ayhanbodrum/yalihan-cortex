@@ -44,10 +44,11 @@
         <form action="{{ route('admin.ozellikler.update', $ozellik) }}" method="POST" x-data="{
             isSubmitting: false,
             status: {{ $ozellik->status ? 'true' : 'false' }},
-            veriTipi: '{{ $ozellik->field_type ?? ($ozellik->type ?? 'text') }}',
+            veriTipi: '{{ $ozellik->field_type ?? 'text' }}',
             selectedCategory: '{{ old('feature_category_id', $ozellik->feature_category_id) }}',
-            selectedOrder: '{{ old('display_order', $ozellik->display_order ?? ($ozellik->order ?? '')) }}',
+            selectedOrder: '{{ old('display_order', $ozellik->display_order ?? '') }}',
             showOptions: false,
+            options: @json(old('field_options', $ozellik->field_options ?? [])) || [],
             getCategoryName() {
                 const select = document.getElementById('feature_category_id');
                 const option = select ? select.options[select.selectedIndex] : null;
@@ -114,8 +115,7 @@
                             <input type="number" id="display_order" name="display_order" min="0"
                                 x-model="selectedOrder"
                                 class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
-                                placeholder="Otomatik"
-                                value="{{ old('display_order', $ozellik->display_order ?? ($ozellik->order ?? '')) }}">
+                                placeholder="Otomatik" value="{{ old('display_order', $ozellik->display_order ?? '') }}">
                             <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Boş bırakılırsa otomatik sıralanır</p>
                             @error('display_order')
                                 <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
@@ -160,26 +160,26 @@
                                 x-model="veriTipi" @change="updateOptionsVisibility()">
                                 <option value="">Veri Tipi Seçin</option>
                                 <option value="text"
-                                    {{ old('field_type', $ozellik->field_type ?? ($ozellik->type ?? 'text')) == 'text' ? 'selected' : '' }}>
+                                    {{ old('field_type', $ozellik->field_type ?? 'text') == 'text' ? 'selected' : '' }}>
                                     Metin
                                     (Text)</option>
                                 <option value="number"
-                                    {{ old('field_type', $ozellik->field_type ?? ($ozellik->type ?? 'text')) == 'number' ? 'selected' : '' }}>
+                                    {{ old('field_type', $ozellik->field_type ?? 'text') == 'number' ? 'selected' : '' }}>
                                     Sayı (Number)</option>
                                 <option value="select"
-                                    {{ old('field_type', $ozellik->field_type ?? ($ozellik->type ?? 'text')) == 'select' ? 'selected' : '' }}>
+                                    {{ old('field_type', $ozellik->field_type ?? 'text') == 'select' ? 'selected' : '' }}>
                                     Seçim (Select)</option>
                                 <option value="boolean"
-                                    {{ old('field_type', $ozellik->field_type ?? ($ozellik->type ?? 'text')) == 'boolean' ? 'selected' : '' }}>
+                                    {{ old('field_type', $ozellik->field_type ?? 'text') == 'boolean' ? 'selected' : '' }}>
                                     Evet/Hayır (Boolean)</option>
                                 <option value="checkbox"
-                                    {{ old('field_type', $ozellik->field_type ?? ($ozellik->type ?? 'text')) == 'checkbox' ? 'selected' : '' }}>
+                                    {{ old('field_type', $ozellik->field_type ?? 'text') == 'checkbox' ? 'selected' : '' }}>
                                     Checkbox</option>
                                 <option value="radio"
-                                    {{ old('field_type', $ozellik->field_type ?? ($ozellik->type ?? 'text')) == 'radio' ? 'selected' : '' }}>
+                                    {{ old('field_type', $ozellik->field_type ?? 'text') == 'radio' ? 'selected' : '' }}>
                                     Radio</option>
                                 <option value="textarea"
-                                    {{ old('field_type', $ozellik->field_type ?? ($ozellik->type ?? 'text')) == 'textarea' ? 'selected' : '' }}>
+                                    {{ old('field_type', $ozellik->field_type ?? 'text') == 'textarea' ? 'selected' : '' }}>
                                     Textarea</option>
                             </select>
                             @error('field_type')
@@ -193,7 +193,7 @@
                                 Birim
                             </label>
                             <input type="text" id="unit" name="unit"
-                                value="{{ old('unit', $ozellik->unit ?? ($ozellik->field_unit ?? '')) }}"
+                                value="{{ old('unit', $ozellik->unit ?? '') }}"
                                 class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
                                 placeholder="Örn: m², adet, TL, gün">
                             <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Sadece sayısal alanlar için</p>
@@ -208,7 +208,7 @@
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             Veri Seçenekleri <span class="text-red-500">*</span>
                         </label>
-                        <div x-data="{ options: @json(old('field_options', $ozellik->field_options ?? ($ozellik->options ?? []))) }">
+                        <div>
                             <template x-for="(option, index) in options" :key="index">
                                 <div class="flex items-center space-x-2 mb-2">
                                     <input type="text" x-model="option.value"
@@ -250,7 +250,7 @@
                         </label>
                         <textarea id="description" name="description" rows="4"
                             class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 resize-none"
-                            placeholder="Özellik hakkında detaylı açıklama...">{{ old('description', $ozellik->description ?? ($ozellik->aciklama ?? '')) }}</textarea>
+                            placeholder="Özellik hakkında detaylı açıklama...">{{ old('description', $ozellik->description ?? '') }}</textarea>
                         @error('description')
                             <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                         @enderror
@@ -359,24 +359,16 @@
             }
         });
 
-        // Veri tipi seçenekleri görünürlüğü
+        // Veri tipi seçenekleri görünürlüğü - Alpine.js state senkronizasyonu
         function updateOptionsVisibility() {
             const veriTipiSelect = document.getElementById('field_type');
-            const veriTipi = veriTipiSelect ? veriTipiSelect.value : '';
-            const showOptions = veriTipi === 'select' || veriTipi === 'checkbox' || veriTipi === 'radio';
+            const veriTipi = veriTipiSelect ? veriTipiSelect.value : 'text';
+            const showOptions = ['select', 'checkbox', 'radio'].includes(veriTipi);
 
-            // Alpine.js için
-            if (window.Alpine) {
-                const form = document.querySelector('form');
-                if (form && form._x_dataStack && form._x_dataStack[0]) {
-                    form._x_dataStack[0].showOptions = showOptions;
-                }
-            }
-
-            // Normal JavaScript için
-            const optionsDiv = document.querySelector('[x-show=\"showOptions\"]');
-            if (optionsDiv) {
-                optionsDiv.style.display = showOptions ? 'block' : 'none';
+            // Alpine.js component state'ini güncelle
+            const form = document.querySelector('form');
+            if (form && form._x_dataStack && form._x_dataStack[0]) {
+                form._x_dataStack[0].showOptions = showOptions;
             }
         }
 

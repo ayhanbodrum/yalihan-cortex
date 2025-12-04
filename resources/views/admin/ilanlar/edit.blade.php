@@ -83,7 +83,12 @@
                 {{-- BÖLÜM 2: LOKASYON VE HARİTA (AI için önemli - İKİNCİ!) --}}
                 <div id="section-location"
                     class="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow duration-200">
-                    @include('admin.ilanlar.components.location-map', ['ilan' => $ilan])
+                    @include('admin.ilanlar.components.location-map', [
+                        'ilan' => $ilan,
+                        'iller' => $iller ?? [],
+                        'ilceler' => $ilceler ?? [],
+                        'mahalleler' => $mahalleler ?? [],
+                    ])
                 </div>
 
                 {{-- BÖLÜM 3: FİYAT YÖNETİMİ (AI için önemli - ÜÇÜNCÜ!) --}}

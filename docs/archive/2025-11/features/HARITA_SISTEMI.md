@@ -1099,7 +1099,7 @@ Boundary: ✅
       - Create logic (+9 fields)
 
 3. Views:
-   ✅ resources/views/admin/ilanlar/create.blade.php
+   ✅ resources/views/admin/ilanlar/create-wizard.blade.php
       - VanillaLocationManager updated
       - Reverse geocoding parser
       - Distance calculator system
@@ -1283,7 +1283,7 @@ Migration: ✅ 2025_10_31_175103_add_address_components_to_ilanlar_table.php
 
 Modified Controllers: ✅ app/Http/Controllers/Admin/IlanController.php
 
-Modified Views: ✅ resources/views/admin/ilanlar/create.blade.php
+Modified Views: ✅ resources/views/admin/ilanlar/create-wizard.blade.php
     ✅ resources/views/admin/ilanlar/components/location-map.blade.php
 
 NPM Packages:
@@ -1334,7 +1334,7 @@ Production: Ready to deploy
 
 ```
 1. Hard Refresh (Cmd+Shift+R)
-   http://127.0.0.1:8000/admin/ilanlar/create
+   /admin/ilanlar/create-wizard
 
 2. Test ALL 3 Features:
    ✅ Address auto-fill

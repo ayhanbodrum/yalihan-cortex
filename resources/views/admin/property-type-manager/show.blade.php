@@ -388,27 +388,52 @@ $fieldDep = \App\Models\KategoriYayinTipiFieldDependency::where(
 
         <!-- 4. Features Toggle -->
         <div class="bg-gray-50 dark:bg-gray-800 rounded-xl shadow-lg p-6">
-            <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4">
-                ✨ Özellikler
-            </h2>
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-xl font-bold text-gray-900 dark:text-white">
+                    ✨ Özellikler
+                </h2>
+                <a href="{{ route('admin.ozellikler.index') }}"
+                    class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-semibold rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-all duration-200 transform hover:scale-105 active:scale-95 text-sm">
+                    <i class="fas fa-cog mr-2"></i>
+                    Özellik Yönetimi
+                </a>
+            </div>
 
-            @foreach ($featureCategories as $category)
-                <div class="mb-6 last:mb-0">
-                    <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">
-                        {{ $category->name }}
-                    </h3>
-                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-                        @foreach ($category->features as $feature)
-                            <label
-                                class="flex items-center p-3 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer">
-                                <input type="checkbox" class="rounded mr-2" data-feature-id="{{ $feature->id }}"
-                                    {{ $feature->status ? 'checked' : '' }}>
-                                <span class="text-sm text-gray-900 dark:text-white">{{ $feature->name }}</span>
-                            </label>
-                        @endforeach
-                    </div>
+            @if (($featureCategories ?? collect())->isNotEmpty())
+                @foreach ($featureCategories as $category)
+                    @if ($category->features->isNotEmpty())
+                        <div class="mb-6 last:mb-0">
+                            <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">
+                                {{ $category->name }}
+                            </h3>
+                            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                                @foreach ($category->features as $feature)
+                                    <label
+                                        class="flex items-center p-3 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition-all duration-200">
+                                        <input type="checkbox" class="rounded mr-2 feature-toggle"
+                                            data-feature-id="{{ $feature->id }}"
+                                            data-feature-name="{{ $feature->name }}"
+                                            {{ $feature->status ? 'checked' : '' }}>
+                                        <span class="text-sm text-gray-900 dark:text-white">{{ $feature->name }}</span>
+                                    </label>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
+                @endforeach
+            @else
+                <div class="text-center py-8">
+                    <i class="fas fa-inbox text-4xl text-gray-300 dark:text-gray-600 mb-3"></i>
+                    <p class="text-gray-500 dark:text-gray-400 mb-4">
+                        Bu kategori için özellik bulunmuyor.
+                    </p>
+                    <a href="{{ route('admin.ozellikler.index') }}"
+                        class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg shadow-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 transform hover:scale-105 active:scale-95">
+                        <i class="fas fa-plus mr-2"></i>
+                        Özellik Ekle
+                    </a>
                 </div>
-            @endforeach
+            @endif
         </div>
 
         <!-- Save Button -->
@@ -860,6 +885,47 @@ $fieldDep = \App\Models\KategoriYayinTipiFieldDependency::where(
             });
 
             // ============================================================================
+            // 🎯 FEATURE TOGGLE
+            // ============================================================================
+
+            // Feature Toggle (Özellik Açma/Kapama)
+            document.addEventListener('DOMContentLoaded', function() {
+                document.querySelectorAll('.feature-toggle').forEach(checkbox => {
+                    checkbox.addEventListener('change', async function() {
+                        const featureId = this.dataset.featureId;
+                        const featureName = this.dataset.featureName || 'Özellik';
+                        const status = this.checked;
+
+                        // Loading state
+                        this.disabled = true;
+
+                        try {
+                            const data = await PropertyTypeManager.request(
+                                '{{ route('admin.property_types.toggle_feature') }}',
+                                {
+                                    feature_id: featureId,
+                                    kategori_id: {{ $kategori->id }},
+                                    status: status
+                                }
+                            );
+
+                            if (data.success) {
+                                PropertyTypeManager.showSuccess(
+                                    `${featureName} ${status ? 'etkinleştirildi' : 'devre dışı bırakıldı'}`
+                                );
+                            }
+                        } catch (error) {
+                            console.error('❌ Feature toggle hatası:', error);
+                            this.checked = !status; // Revert
+                            PropertyTypeManager.showError(error.message || 'Özellik güncellenemedi!');
+                        } finally {
+                            this.disabled = false;
+                        }
+                    });
+                });
+            });
+
+            // ============================================================================
             // 🎯 BULK OPERATIONS
             // ============================================================================
 
@@ -928,8 +994,8 @@ $fieldDep = \App\Models\KategoriYayinTipiFieldDependency::where(
                         });
                     });
 
-                    // Özellikler
-                    document.querySelectorAll('[data-feature-id]').forEach(cb => {
+                    // Özellikler (Feature Toggle)
+                    document.querySelectorAll('.feature-toggle[data-feature-id]').forEach(cb => {
                         changes.features.push({
                             id: cb.dataset.featureId,
                             status: cb.checked // Context7: enabled → status

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('yayin_tipi', 50); // Satılık, Kiralık, Sezonluk Kiralık, Devren Satış
             $table->foreignId('ozellik_kategori_id')->constrained('ozellik_kategorileri')->onDelete('cascade');
             $table->foreignId('ozellik_alt_kategori_id')->constrained('ozellik_alt_kategorileri')->onDelete('cascade');
-            $table->boolean('aktif')->default(true);
+            $table->boolean('status')->default(true);
             $table->boolean('zorunlu')->default(false);
             $table->boolean('ai_suggestion')->default(false);
             $table->boolean('ai_auto_fill')->default(false);

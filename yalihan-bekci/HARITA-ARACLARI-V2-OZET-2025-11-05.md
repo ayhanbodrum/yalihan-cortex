@@ -152,9 +152,7 @@ window.mapStatus()
 ```
 
 ### **Production'da Kullan:**
-```
-http://127.0.0.1:8000/admin/ilanlar/create
-```
+`/admin/ilanlar/create-wizard`
 
 ### **Debug:**
 ```javascript

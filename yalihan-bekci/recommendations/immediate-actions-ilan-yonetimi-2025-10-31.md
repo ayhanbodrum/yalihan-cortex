@@ -406,7 +406,7 @@ Create:
 [ ] Define validation rules
 [ ] Attach event listeners
 [ ] Add form submit handler
-[ ] Test: http://127.0.0.1:8000/admin/ilanlar/create
+[ ] Test: /admin/ilanlar/create-wizard
 [ ] ✅ Try invalid input (should show error immediately)
 [ ] ✅ Try submit invalid form (should prevent)
 [ ] ✅ Try valid form (should submit normally)

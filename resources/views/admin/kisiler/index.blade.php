@@ -48,7 +48,8 @@
         <!-- İstatistik Kartları -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             <!-- Toplam Müşteri -->
-            <div class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl border border-blue-200 dark:border-blue-700 p-6 transition-colors duration-200">
+            <div
+                class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl border border-blue-200 dark:border-blue-700 p-6 transition-colors duration-200">
                 <div class="flex items-center">
                     <div
                         class="w-12 h-12 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
@@ -66,7 +67,8 @@
             </div>
 
             <!-- Aktif Müşteri -->
-            <div class="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-xl border border-green-200 dark:border-green-700 p-6 transition-colors duration-200">
+            <div
+                class="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-xl border border-green-200 dark:border-green-700 p-6 transition-colors duration-200">
                 <div class="flex items-center">
                     <div
                         class="w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-600 rounded-lg flex items-center justify-center">
@@ -83,7 +85,8 @@
             </div>
 
             <!-- Potansiyel Müşteri -->
-            <div class="bg-gradient-to-r from-yellow-50 to-amber-50 dark:from-yellow-900/20 dark:to-amber-900/20 rounded-xl border border-yellow-200 dark:border-yellow-700 p-6 transition-colors duration-200">
+            <div
+                class="bg-gradient-to-r from-yellow-50 to-amber-50 dark:from-yellow-900/20 dark:to-amber-900/20 rounded-xl border border-yellow-200 dark:border-yellow-700 p-6 transition-colors duration-200">
                 <div class="flex items-center">
                     <div
                         class="w-12 h-12 bg-gradient-to-r from-yellow-500 to-amber-600 rounded-lg flex items-center justify-center">
@@ -93,14 +96,16 @@
                         </svg>
                     </div>
                     <div class="ml-4">
-                        <h3 class="text-2xl font-bold text-yellow-800 dark:text-yellow-300">{{ $stats['potential'] ?? 0 }}</h3>
+                        <h3 class="text-2xl font-bold text-yellow-800 dark:text-yellow-300">{{ $stats['potential'] ?? 0 }}
+                        </h3>
                         <p class="text-sm text-yellow-600 dark:text-yellow-400 font-medium">Potansiyel Müşteri</p>
                     </div>
                 </div>
             </div>
 
             <!-- Bu Ay Eklenen -->
-            <div class="bg-gradient-to-r from-purple-50 to-violet-50 dark:from-purple-900/20 dark:to-violet-900/20 rounded-xl border border-purple-200 dark:border-purple-700 p-6 transition-colors duration-200">
+            <div
+                class="bg-gradient-to-r from-purple-50 to-violet-50 dark:from-purple-900/20 dark:to-violet-900/20 rounded-xl border border-purple-200 dark:border-purple-700 p-6 transition-colors duration-200">
                 <div class="flex items-center">
                     <div
                         class="w-12 h-12 bg-gradient-to-r from-purple-500 to-violet-600 rounded-lg flex items-center justify-center">
@@ -111,7 +116,8 @@
                         </svg>
                     </div>
                     <div class="ml-4">
-                        <h3 class="text-2xl font-bold text-purple-800 dark:text-purple-300">{{ $stats['this_month'] ?? 0 }}</h3>
+                        <h3 class="text-2xl font-bold text-purple-800 dark:text-purple-300">{{ $stats['this_month'] ?? 0 }}
+                        </h3>
                         <p class="text-sm text-purple-600 dark:text-purple-400 font-medium">Bu Ay Eklenen</p>
                     </div>
                 </div>
@@ -122,7 +128,8 @@
         <!-- Modern Arama ve Filtreleme -->
         <div class="bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm mb-8 p-6">
             <h3 class="text-xl font-bold text-blue-800 dark:text-blue-300 mb-6 flex items-center">
-                <svg class="w-6 h-6 mr-3 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-6 h-6 mr-3 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor"
+                    viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                 </svg>
@@ -141,7 +148,8 @@
                         <div class="context7-live-search" data-search-type="kisiler"
                             data-placeholder="Ad, soyad, telefon..." data-max-results="20">
                             <input type="hidden" name="kisi_id" id="kisi_id">
-                            <input type="text" id="kisi_search" class="{{ App\Helpers\FormStandards::input() }} text-lg py-4"
+                            <input type="text" id="kisi_search"
+                                class="{{ App\Helpers\FormStandards::input() }} text-lg py-4"
                                 placeholder="Ad, soyad, telefon, e-posta..." autocomplete="off">
                             <div
                                 class="context7-search-results absolute z-50 w-full mt-1 bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg hidden max-h-60 overflow-y-auto">
@@ -156,10 +164,14 @@
                     <div class="mb-6">
                         <label for="status" class="{{ App\Helpers\FormStandards::label() }}">Durum</label>
                         <select name="status" id="status" class="{{ App\Helpers\FormStandards::select() }}">
-                            <option class="{{ App\Helpers\FormStandards::option() }}" value="">Tüm Durumlar</option>
-                            <option class="{{ App\Helpers\FormStandards::option() }}" value="Aktif" {{ request('status') == 'Aktif' ? 'selected' : '' }}>Aktif</option>
-                            <option class="{{ App\Helpers\FormStandards::option() }}" value="Pasif" {{ request('status') == 'Pasif' ? 'selected' : '' }}>Pasif</option>
-                            <option class="{{ App\Helpers\FormStandards::option() }}" value="Potansiyel" {{ request('status') == 'Potansiyel' ? 'selected' : '' }}>
+                            <option class="{{ App\Helpers\FormStandards::option() }}" value="">Tüm Durumlar
+                            </option>
+                            <option class="{{ App\Helpers\FormStandards::option() }}" value="Aktif"
+                                {{ request('status') == 'Aktif' ? 'selected' : '' }}>Aktif</option>
+                            <option class="{{ App\Helpers\FormStandards::option() }}" value="Pasif"
+                                {{ request('status') == 'Pasif' ? 'selected' : '' }}>Pasif</option>
+                            <option class="{{ App\Helpers\FormStandards::option() }}" value="Potansiyel"
+                                {{ request('status') == 'Potansiyel' ? 'selected' : '' }}>
                                 Potansiyel
                             </option>
                         </select>
@@ -169,15 +181,20 @@
                         <label for="musteri_tipi" class="{{ App\Helpers\FormStandards::label() }}">Müşteri Tipi</label>
                         <select name="musteri_tipi" id="musteri_tipi" class="{{ App\Helpers\FormStandards::select() }}">
                             <option class="{{ App\Helpers\FormStandards::option() }}" value="">Tüm Tipler</option>
-                            <option class="{{ App\Helpers\FormStandards::option() }}" value="Müşteri" {{ request('musteri_tipi') == 'Müşteri' ? 'selected' : '' }}>
+                            <option class="{{ App\Helpers\FormStandards::option() }}" value="Müşteri"
+                                {{ request('musteri_tipi') == 'Müşteri' ? 'selected' : '' }}>
                                 Müşteri</option>
-                            <option class="{{ App\Helpers\FormStandards::option() }}" value="Potansiyel" {{ request('musteri_tipi') == 'Potansiyel' ? 'selected' : '' }}>
+                            <option class="{{ App\Helpers\FormStandards::option() }}" value="Potansiyel"
+                                {{ request('musteri_tipi') == 'Potansiyel' ? 'selected' : '' }}>
                                 Potansiyel</option>
-                            <option class="{{ App\Helpers\FormStandards::option() }}" value="Danışman" {{ request('musteri_tipi') == 'Danışman' ? 'selected' : '' }}>
+                            <option class="{{ App\Helpers\FormStandards::option() }}" value="Danışman"
+                                {{ request('musteri_tipi') == 'Danışman' ? 'selected' : '' }}>
                                 Danışman</option>
-                            <option class="{{ App\Helpers\FormStandards::option() }}" value="Ev Sahibi" {{ request('musteri_tipi') == 'Ev Sahibi' ? 'selected' : '' }}>
+                            <option class="{{ App\Helpers\FormStandards::option() }}" value="Ev Sahibi"
+                                {{ request('musteri_tipi') == 'Ev Sahibi' ? 'selected' : '' }}>
                                 Ev Sahibi</option>
-                            <option class="{{ App\Helpers\FormStandards::option() }}" value="Alıcı" {{ request('musteri_tipi') == 'Alıcı' ? 'selected' : '' }}>
+                            <option class="{{ App\Helpers\FormStandards::option() }}" value="Alıcı"
+                                {{ request('musteri_tipi') == 'Alıcı' ? 'selected' : '' }}>
                                 Alıcı</option>
                         </select>
                     </div>
@@ -188,7 +205,8 @@
                     <div class="mb-6">
                         <label for="danisman_id" class="{{ App\Helpers\FormStandards::label() }}">Danışman</label>
                         <select name="danisman_id" id="danisman_id" class="{{ App\Helpers\FormStandards::select() }}">
-                            <option class="{{ App\Helpers\FormStandards::option() }}" value="">Tüm Danışmanlar</option>
+                            <option class="{{ App\Helpers\FormStandards::option() }}" value="">Tüm Danışmanlar
+                            </option>
                             @foreach ($danismanlar ?? [] as $danisman)
                                 <option class="{{ App\Helpers\FormStandards::option() }}" value="{{ $danisman->id }}"
                                     {{ request('danisman_id') == $danisman->id ? 'selected' : '' }}>
@@ -238,7 +256,8 @@
             </div>
 
             <!-- Context7 AI Önerileri Banner -->
-            <div class="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-xl border border-blue-200 dark:border-blue-700 shadow-sm mb-6 p-6 transition-colors duration-200">
+            <div
+                class="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-xl border border-blue-200 dark:border-blue-700 shadow-sm mb-6 p-6 transition-colors duration-200">
                 <div class="flex items-center justify-between">
                     <div class="flex items-center">
                         <div
@@ -250,19 +269,51 @@
                         </div>
                         <div>
                             <h3 class="text-lg font-bold text-blue-800 dark:text-blue-300">🤖 AI Önerileri</h3>
-                            <p class="text-sm text-blue-600 dark:text-blue-400">Context7 Intelligence ile akıllı müşteri analizi</p>
+                            <p class="text-sm text-blue-600 dark:text-blue-400">Context7 Intelligence ile akıllı müşteri
+                                analizi</p>
                         </div>
                     </div>
                     <div class="flex items-center gap-2">
-                        <span class="px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 text-xs font-medium rounded-full">✓ Context7
+                        <span
+                            class="px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 text-xs font-medium rounded-full">✓
+                            Context7
                             Uyumlu</span>
-                        <span class="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 text-xs font-medium rounded-full">AI Aktif</span>
+                        <span
+                            class="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 text-xs font-medium rounded-full">AI
+                            Aktif</span>
                     </div>
                 </div>
             </div>
 
             <!-- Müşteri Listesi -->
-            <div class="bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm" x-data="{ selectedItems: [], showFilters: false, filterStatus: '', filterTag: '', filterStart: '', filterEnd: '' }">
+            <div class="bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm"
+                x-data="{
+                    selectedItems: [],
+                    showFilters: false,
+                    filterStatus: '',
+                    filterTag: '',
+                    filterStart: '',
+                    filterEnd: '',
+                    async submitBulkAction(action, url) {
+                            if (this.selectedItems.length === 0) return;
+                            if (action === 'delete' && !confirm(this.selectedItems.length + ' kayıt silinecek. Onaylıyor musunuz?')) return;
+                            try {
+                                const formData = new FormData();
+                                formData.append('action', action);
+                                formData.append('_token', document.querySelector('meta[name=\"csrf-token\"]')?.content || '' ); this.selectedItems.forEach(id=>
+                formData.append('ids[]', id));
+                const response = await fetch(url, { method: 'POST', body: formData });
+                if (response.ok) {
+                window.toast?.success('İşlem başarıyla tamamlandı');
+                setTimeout(() => location.reload(), 1000);
+                } else {
+                throw new Error('İşlem başarısız');
+                }
+                } catch (error) {
+                window.toast?.error('Hata: ' + error.message);
+                }
+                }
+                }">
                 <div class="p-6">
                     <div class="flex items-center justify-between mb-6">
                         <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 flex items-center">
@@ -327,7 +378,8 @@
                             </div>
                             <div class="flex items-center gap-2">
                                 <x-neo.button variant="warning" size="sm"
-                                    @click="(() => { if(selectedItems.length===0){return;} const f=document.createElement('form'); f.method='POST'; f.action='{{ url('/admin/kisiler/bulk-action') }}'; const t=document.createElement('input'); t.type='hidden'; t.name='_token'; t.value=document.querySelector('meta[name=csrf-token]')?.content||''; f.appendChild(t); const a=document.createElement('input'); a.type='hidden'; a.name='action'; a.value='status_potansiyel'; f.appendChild(a); selectedItems.forEach(id=>{ const i=document.createElement('input'); i.type='hidden'; i.name='ids[]'; i.value=id; f.appendChild(i); }); document.body.appendChild(f); f.submit(); })()">
+                                    @click="submitBulkAction('status_potansiyel', '{{ route('admin.kisiler.bulk-action') }}')"
+                                    x-bind:disabled="selectedItems.length === 0">
                                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -335,7 +387,8 @@
                                     Potansiyel Yap
                                 </x-neo.button>
                                 <x-neo.button variant="danger" size="sm"
-                                    @click="(() => { if(selectedItems.length===0){return;} if(!confirm(selectedItems.length + ' kayıt silinecek. Onaylıyor musunuz?')){return;} const f=document.createElement('form'); f.method='POST'; f.action='{{ url('/admin/kisiler/bulk-action') }}'; const t=document.createElement('input'); t.type='hidden'; t.name='_token'; t.value=document.querySelector('meta[name=csrf-token]')?.content||''; f.appendChild(t); const a=document.createElement('input'); a.type='hidden'; a.name='action'; a.value='delete'; f.appendChild(a); selectedItems.forEach(id=>{ const i=document.createElement('input'); i.type='hidden'; i.name='ids[]'; i.value=id; f.appendChild(i); }); document.body.appendChild(f); f.submit(); })()">
+                                    @click="submitBulkAction('delete', '{{ route('admin.kisiler.bulk-action') }}')"
+                                    x-bind:disabled="selectedItems.length === 0">
                                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
@@ -352,24 +405,32 @@
                             <div>
                                 <label class="{{ App\Helpers\FormStandards::label() }}">Durum</label>
                                 <select class="{{ App\Helpers\FormStandards::select() }}" x-model="filterStatus">
-                                    <option class="{{ App\Helpers\FormStandards::option() }}" value="">Tümü</option>
-                                    <option class="{{ App\Helpers\FormStandards::option() }}" value="Aktif">Aktif</option>
-                                    <option class="{{ App\Helpers\FormStandards::option() }}" value="Pasif">Pasif</option>
-                                    <option class="{{ App\Helpers\FormStandards::option() }}" value="Potansiyel">Potansiyel</option>
-                                    <option class="{{ App\Helpers\FormStandards::option() }}" value="Yeni">Yeni</option>
+                                    <option class="{{ App\Helpers\FormStandards::option() }}" value="">Tümü
+                                    </option>
+                                    <option class="{{ App\Helpers\FormStandards::option() }}" value="Aktif">Aktif
+                                    </option>
+                                    <option class="{{ App\Helpers\FormStandards::option() }}" value="Pasif">Pasif
+                                    </option>
+                                    <option class="{{ App\Helpers\FormStandards::option() }}" value="Potansiyel">
+                                        Potansiyel</option>
+                                    <option class="{{ App\Helpers\FormStandards::option() }}" value="Yeni">Yeni
+                                    </option>
                                 </select>
                             </div>
                             <div>
                                 <label class="{{ App\Helpers\FormStandards::label() }}">Etiket</label>
-                                <input type="text" class="{{ App\Helpers\FormStandards::input() }}" x-model="filterTag" placeholder="Etiket adı">
+                                <input type="text" class="{{ App\Helpers\FormStandards::input() }}"
+                                    x-model="filterTag" placeholder="Etiket adı">
                             </div>
                             <div>
                                 <label class="{{ App\Helpers\FormStandards::label() }}">Başlangıç Tarihi</label>
-                                <input type="date" class="{{ App\Helpers\FormStandards::input() }}" x-model="filterStart">
+                                <input type="date" class="{{ App\Helpers\FormStandards::input() }}"
+                                    x-model="filterStart">
                             </div>
                             <div>
                                 <label class="{{ App\Helpers\FormStandards::label() }}">Bitiş Tarihi</label>
-                                <input type="date" class="{{ App\Helpers\FormStandards::input() }}" x-model="filterEnd">
+                                <input type="date" class="{{ App\Helpers\FormStandards::input() }}"
+                                    x-model="filterEnd">
                             </div>
                         </div>
                         <x-slot:footer>
@@ -531,23 +592,25 @@
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             <div class="flex flex-col gap-2.5 min-w-[180px]">
                                                 {{-- Satış Potansiyeli Progress Bar --}}
-                                                @if($kisi->satis_potansiyeli !== null)
+                                                @if ($kisi->satis_potansiyeli !== null)
                                                     <div class="space-y-1.5">
                                                         <div class="flex items-center justify-between gap-2">
-                                                            <span class="text-xs font-medium text-gray-600 dark:text-gray-400">
+                                                            <span
+                                                                class="text-xs font-medium text-gray-600 dark:text-gray-400">
                                                                 Potansiyel
                                                             </span>
-                                                            <span class="text-xs font-bold {{ $kisi->satis_potansiyeli > 80 ? 'text-green-600 dark:text-green-400' : ($kisi->satis_potansiyeli > 50 ? 'text-yellow-600 dark:text-yellow-400' : 'text-gray-500 dark:text-gray-400') }}">
+                                                            <span
+                                                                class="text-xs font-bold {{ $kisi->satis_potansiyeli > 80 ? 'text-green-600 dark:text-green-400' : ($kisi->satis_potansiyeli > 50 ? 'text-yellow-600 dark:text-yellow-400' : 'text-gray-500 dark:text-gray-400') }}">
                                                                 %{{ $kisi->satis_potansiyeli }}
                                                             </span>
                                                         </div>
-                                                        <div class="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden shadow-inner transition-all duration-300">
+                                                        <div
+                                                            class="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden shadow-inner transition-all duration-300">
                                                             <div class="h-full rounded-full transition-all duration-500 ease-out {{ $kisi->satis_potansiyeli > 80 ? 'bg-green-500' : ($kisi->satis_potansiyeli > 50 ? 'bg-yellow-500' : 'bg-gray-400 dark:bg-gray-600') }}"
-                                                                 role="progressbar"
-                                                                 aria-valuenow="{{ $kisi->satis_potansiyeli }}"
-                                                                 aria-valuemin="0"
-                                                                 aria-valuemax="100"
-                                                                 style="width: {{ $kisi->satis_potansiyeli }}%">
+                                                                role="progressbar"
+                                                                aria-valuenow="{{ $kisi->satis_potansiyeli }}"
+                                                                aria-valuemin="0" aria-valuemax="100"
+                                                                style="width: {{ $kisi->satis_potansiyeli }}%">
                                                             </div>
                                                         </div>
                                                     </div>
@@ -558,19 +621,27 @@
                                                 @endif
 
                                                 {{-- Yatırımcı Profili Badge --}}
-                                                @if($kisi->yatirimci_profili)
+                                                @if ($kisi->yatirimci_profili)
                                                     @php
                                                         $profil = $kisi->yatirimci_profili;
                                                         $colorMap = [
-                                                            'konservatif' => 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 border border-blue-200 dark:border-blue-700',
-                                                            'agresif' => 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300 border border-red-200 dark:border-red-700',
-                                                            'firsatci' => 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300 border border-orange-200 dark:border-orange-700',
-                                                            'denge' => 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300 border border-green-200 dark:border-green-700',
-                                                            'yeni_baslayan' => 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300 border border-yellow-200 dark:border-yellow-700',
+                                                            'konservatif' =>
+                                                                'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 border border-blue-200 dark:border-blue-700',
+                                                            'agresif' =>
+                                                                'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300 border border-red-200 dark:border-red-700',
+                                                            'firsatci' =>
+                                                                'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300 border border-orange-200 dark:border-orange-700',
+                                                            'denge' =>
+                                                                'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300 border border-green-200 dark:border-green-700',
+                                                            'yeni_baslayan' =>
+                                                                'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300 border border-yellow-200 dark:border-yellow-700',
                                                         ];
-                                                        $color = $colorMap[$profil->value] ?? 'bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-300 border border-gray-200 dark:border-gray-700';
+                                                        $color =
+                                                            $colorMap[$profil->value] ??
+                                                            'bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-300 border border-gray-200 dark:border-gray-700';
                                                     @endphp
-                                                    <div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-xs font-medium {{ $color }} transition-all duration-200 hover:scale-105">
+                                                    <div
+                                                        class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-xs font-medium {{ $color }} transition-all duration-200 hover:scale-105">
                                                         <span class="text-[10px]">{{ $profil->icon() }}</span>
                                                         <span>{{ $profil->label() }}</span>
                                                     </div>
@@ -593,13 +664,16 @@
                                                         icon='<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>'>
                                                         Düzenle
                                                     </x-neo.dropdown-item>
-                                                    <x-neo.dropdown-item variant="danger" @click="openDelete{{ $kisi->id }} = true"
+                                                    <x-neo.dropdown-item variant="danger"
+                                                        @click="openDelete{{ $kisi->id }} = true"
                                                         icon='<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>'>
                                                         Sil
                                                     </x-neo.dropdown-item>
                                                 </x-neo.dropdown>
 
-                                                <x-admin.modal x-show="openDelete{{ $kisi->id }}" @click.away="openDelete{{ $kisi->id }} = false" title="Silme Onayı" size="sm">
+                                                <x-admin.modal x-show="openDelete{{ $kisi->id }}"
+                                                    @click.away="openDelete{{ $kisi->id }} = false"
+                                                    title="Silme Onayı" size="sm">
                                                     <div class="text-center">
                                                         <svg class="mx-auto h-12 w-12 text-red-400" fill="none"
                                                             stroke="currentColor" viewBox="0 0 24 24">
@@ -616,7 +690,8 @@
                                                     </div>
                                                     <x-slot:footer>
                                                         <div class="flex justify-end gap-3">
-                                                            <x-neo.button variant="secondary" @click="openDelete{{ $kisi->id }} = false">
+                                                            <x-neo.button variant="secondary"
+                                                                @click="openDelete{{ $kisi->id }} = false">
                                                                 Vazgeç
                                                             </x-neo.button>
                                                             <form action="{{ route('admin.kisiler.destroy', $kisi->id) }}"
@@ -660,14 +735,13 @@
                         </x-admin.table>
                     </div>
 
-                    <x-admin.meta-info
-                        title="Kişiler"
-                        :meta="['total' => $kisiler->total(), 'current_page' => $kisiler->currentPage(), 'last_page' => $kisiler->lastPage(), 'per_page' => $kisiler->perPage()]"
-                        :show-per-page="true"
-                        :per-page-options="[20,50,100]"
-                        listId="kisiler"
-                        listEndpoint="/api/admin/api/v1/kisiler"
-                    />
+                    <x-admin.meta-info title="Kişiler" :meta="[
+                        'total' => $kisiler->total(),
+                        'current_page' => $kisiler->currentPage(),
+                        'last_page' => $kisiler->lastPage(),
+                        'per_page' => $kisiler->perPage(),
+                    ]" :show-per-page="true" :per-page-options="[20, 50, 100]"
+                        listId="kisiler" listEndpoint="/api/admin/api/v1/kisiler" />
 
                     @if ($kisiler->hasPages())
                         <div class="mt-6">
@@ -728,12 +802,7 @@
                 }
 
                 .admin-input {
-                    @apply w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg
-                           bg-white dark:bg-gray-800 text-gray-900 dark:text-white
-                           placeholder-gray-500 dark:placeholder-gray-400
-                           focus:border-blue-500 dark:focus:border-blue-400
-                           focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400
-                           focus:outline-none transition-all duration-200;
+                    @apply w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:outline-none transition-all duration-200;
                 }
 
                 /* Context7 Button Standartları - Unified */
@@ -915,7 +984,7 @@
                     // Create form and submit
                     const form = document.createElement('form');
                     form.method = 'POST';
-                    form.action = '{{ url('/admin/kisiler/bulk-action') }}';
+                    form.action = '{{ route('admin.kisiler.bulk-action') }}';
 
                     const token = document.createElement('input');
                     token.type = 'hidden';
@@ -1013,7 +1082,7 @@
                 });
             </script>
             <script>
-                document.addEventListener('DOMContentLoaded', function () {
+                document.addEventListener('DOMContentLoaded', function() {
                     const paginateContainer = document.querySelector('.mt-6')
                     const tableBody = document.querySelector('table tbody')
                     if (!window.ApiAdapter || !paginateContainer || !tableBody) return
@@ -1024,68 +1093,99 @@
                     const perSelect = metaContainer.querySelector('select[data-per-page-select]')
                     let currentPer = 20
                     const urlInit = new URL(window.location.href)
-                    const qPer = parseInt(urlInit.searchParams.get('per_page')||'')
+                    const qPer = parseInt(urlInit.searchParams.get('per_page') || '')
                     const storageKey = 'yalihan_admin_per_page'
-                    const sPer = parseInt(localStorage.getItem(storageKey)||'')
-                    if (qPer) { currentPer = qPer; perSelect.value = String(qPer) }
-                    else if (sPer) { currentPer = sPer; perSelect.value = String(sPer) }
-                    perSelect.addEventListener('change', function(){ currentPer = parseInt(perSelect.value||'20'); const u = new URL(window.location.href); u.searchParams.set('per_page', String(currentPer)); window.history.replaceState({}, '', u.toString()); loadPage(1) })
+                    const sPer = parseInt(localStorage.getItem(storageKey) || '')
+                    if (qPer) {
+                        currentPer = qPer;
+                        perSelect.value = String(qPer)
+                    } else if (sPer) {
+                        currentPer = sPer;
+                        perSelect.value = String(sPer)
+                    }
+                    perSelect.addEventListener('change', function() {
+                        currentPer = parseInt(perSelect.value || '20');
+                        const u = new URL(window.location.href);
+                        u.searchParams.set('per_page', String(currentPer));
+                        window.history.replaceState({}, '', u.toString());
+                        loadPage(1)
+                    })
 
-                    function setLoading(flag){
+                    function setLoading(flag) {
                         statusEl.setAttribute('aria-busy', flag ? 'true' : 'false')
                         statusEl.textContent = flag ? 'Yükleniyor…' : ''
                     }
 
-                    function renderRows(items){
-                        if (!items || items.length === 0){
-                            tableBody.innerHTML = '<tr><td colspan="8" class="px-6 py-12 text-center text-gray-500 dark:text-gray-400">Kayıt bulunamadı</td></tr>'
+                    function renderRows(items) {
+                        if (!items || items.length === 0) {
+                            tableBody.innerHTML =
+                                '<tr><td colspan="8" class="px-6 py-12 text-center text-gray-500 dark:text-gray-400">Kayıt bulunamadı</td></tr>'
                             return
                         }
-                        const rows = items.map(function(it){
+                        const rows = items.map(function(it) {
                             const name = [it.ad || '', it.soyad || ''].join(' ').trim()
                             const phone = it.telefon || ''
                             return (
-                                '<tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">'
-                                + '<td class="px-6 py-4"><input type="checkbox"></td>'
-                                + '<td class="px-6 py-4">' + name + '</td>'
-                                + '<td class="px-6 py-4">' + phone + '</td>'
-                                + '<td class="px-6 py-4">' + '' + '</td>'
-                                + '<td class="px-6 py-4">' + '' + '</td>'
-                                + '<td class="px-6 py-4">' + '' + '</td>'
-                                + '<td class="px-6 py-4">' + '' + '</td>'
-                                + '<td class="px-6 py-4 text-right">' + '<a href="/admin/kisiler/'+ (it.id||'') +'" class="text-blue-600">Detay</a>' + '</td>'
-                                + '</tr>'
+                                '<tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">' +
+                                '<td class="px-6 py-4"><input type="checkbox"></td>' +
+                                '<td class="px-6 py-4">' + name + '</td>' +
+                                '<td class="px-6 py-4">' + phone + '</td>' +
+                                '<td class="px-6 py-4">' + '' + '</td>' +
+                                '<td class="px-6 py-4">' + '' + '</td>' +
+                                '<td class="px-6 py-4">' + '' + '</td>' +
+                                '<td class="px-6 py-4">' + '' + '</td>' +
+                                '<td class="px-6 py-4 text-right">' + '<a href="/admin/kisiler/' + (it.id ||
+                                    '') + '" class="text-blue-600">Detay</a>' + '</td>' +
+                                '</tr>'
                             )
                         }).join('')
                         tableBody.innerHTML = rows
                     }
 
-                    function updateMeta(meta){
+                    function updateMeta(meta) {
                         if (!meta) return
                         totalEl.textContent = 'Toplam: ' + (meta.total != null ? meta.total : '-')
                         pageEl.innerHTML = '📄 Sayfa: ' + (meta.current_page || 1) + ' / ' + (meta.last_page || 1)
-                        if (meta.per_page){ currentPer = parseInt(meta.per_page); perSelect.value = String(meta.per_page); localStorage.setItem(storageKey, String(meta.per_page)) }
+                        if (meta.per_page) {
+                            currentPer = parseInt(meta.per_page);
+                            perSelect.value = String(meta.per_page);
+                            localStorage.setItem(storageKey, String(meta.per_page))
+                        }
                         const links = paginateContainer.querySelectorAll('a[href*="page="]')
-                        links.forEach(function(a){
+                        links.forEach(function(a) {
                             const u = new URL(a.href, window.location.origin)
-                            const p = parseInt(u.searchParams.get('page')||'1')
-                            a.setAttribute('aria-label','Sayfa ' + p)
-                            if (p === meta.current_page) { a.setAttribute('aria-disabled','true') } else { a.removeAttribute('aria-disabled') }
+                            const p = parseInt(u.searchParams.get('page') || '1')
+                            a.setAttribute('aria-label', 'Sayfa ' + p)
+                            if (p === meta.current_page) {
+                                a.setAttribute('aria-disabled', 'true')
+                            } else {
+                                a.removeAttribute('aria-disabled')
+                            }
                         })
                     }
 
-                    function loadPage(page){
+                    function loadPage(page) {
                         setLoading(true)
-                        window.ApiAdapter.get('/kisiler', { page: Number(page||1), per_page: currentPer })
-                            .then(function(res){ renderRows(res.data || []); updateMeta(res.meta || null); setLoading(false) })
-                            .catch(function(err){
+                        window.ApiAdapter.get('/kisiler', {
+                                page: Number(page || 1),
+                                per_page: currentPer
+                            })
+                            .then(function(res) {
+                                renderRows(res.data || []);
+                                updateMeta(res.meta || null);
+                                setLoading(false)
+                            })
+                            .catch(function(err) {
                                 setLoading(false)
                                 const alert = document.createElement('div')
-                                alert.setAttribute('role','alert')
+                                alert.setAttribute('role', 'alert')
                                 alert.className = 'px-6 py-2 text-sm text-red-600'
-                                alert.textContent = 'Hata: ' + ((err.response && err.response.message) || err.message || 'Bilinmeyen hata')
+                                alert.textContent = 'Hata: ' + ((err.response && err.response.message) || err.message ||
+                                    'Bilinmeyen hata')
                                 paginateContainer.parentNode.insertBefore(alert, paginateContainer)
-                                setTimeout(function(){ alert.remove() }, 4000)
+                                setTimeout(function() {
+                                    alert.remove()
+                                }, 4000)
                             })
                     }
 

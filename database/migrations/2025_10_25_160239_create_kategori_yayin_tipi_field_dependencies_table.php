@@ -34,7 +34,7 @@ return new class extends Migration
             $table->string('field_unit', 20)->nullable()->comment('Field birimi: m², TL, gün');
 
             // Behavior
-            $table->boolean('enabled')->default(true)->comment('Field aktif mi?');
+            $table->boolean('status')->default(true)->comment('Field aktif mi?');
             $table->boolean('required')->default(false)->comment('Field zorunlu mu?');
             $table->integer('display_order')->default(0)->comment('Sıralama'); // Context7: order → display_order
 

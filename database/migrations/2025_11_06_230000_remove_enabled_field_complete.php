@@ -28,7 +28,7 @@ return new class extends Migration
             ');
 
             Schema::table('features', function (Blueprint $table) {
-                $table->dropColumn('enabled');
+                $table->dropColumn('status');
             });
 
             echo "✅ Removed 'enabled' column from features table\n";
@@ -44,7 +44,7 @@ return new class extends Migration
             ');
 
             Schema::table('feature_categories', function (Blueprint $table) {
-                $table->dropColumn('enabled');
+                $table->dropColumn('status');
             });
 
             echo "✅ Removed 'enabled' column from feature_categories table\n";

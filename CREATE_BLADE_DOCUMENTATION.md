@@ -1,6 +1,6 @@
 # 📋 İlan Oluştur Formu - Teknik Dokümantasyon
 
-**Dosya:** `resources/views/admin/ilanlar/create.blade.php`  
+**Dosya:** `resources/views/admin/ilanlar/create-wizard.blade.php`  
 **Satır:** 4082 satır  
 **Amaç:** 10 adımlı, AI-assisted emlak ilanı oluşturma arayüzü
 

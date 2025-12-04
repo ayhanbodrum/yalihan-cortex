@@ -1,7 +1,8 @@
 {{-- STEP 2: DETAYLAR (Kategoriye Özel) --}}
 <div class="space-y-6">
     {{-- Büyük Harita (Üstte - Step 1 ile Senkronize) --}}
-    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-lg overflow-hidden">
+    <div
+        class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-lg overflow-hidden">
         <div class="p-4 border-b border-gray-200 dark:border-gray-700">
             <div class="flex items-center justify-between flex-wrap gap-4">
                 <div class="flex items-center gap-3">
@@ -14,7 +15,8 @@
                     </div>
                     <div>
                         <h3 class="text-lg font-bold text-gray-900 dark:text-white">Harita (Step 1 ile Senkronize)</h3>
-                        <p class="text-xs text-gray-600 dark:text-gray-400">Konum seçimi Step 1'deki harita ile senkronize</p>
+                        <p class="text-xs text-gray-600 dark:text-gray-400">Konum seçimi Step 1'deki harita ile
+                            senkronize</p>
                     </div>
                 </div>
                 <div id="step2-map-layer-control" class="flex items-center gap-2">
@@ -34,7 +36,8 @@
                 <div class="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 z-10"
                     id="step2-map-loading" role="status" aria-live="polite" aria-busy="true">
                     <div class="text-center">
-                        <div class="inline-flex items-center justify-center w-16 h-16 rounded-xl bg-white dark:bg-gray-800 shadow-xl mb-3">
+                        <div
+                            class="inline-flex items-center justify-center w-16 h-16 rounded-xl bg-white dark:bg-gray-800 shadow-xl mb-3">
                             <svg class="w-8 h-8 text-blue-500 animate-pulse" fill="none" stroke="currentColor"
                                 viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -117,265 +120,291 @@
             }
         }
     }">
-        {{-- ARSA İSE: TKGM Widget --}}
-        <div x-show="categoryType === 'arsa'" x-transition class="space-y-6">
-            {{-- TKGM Widget (Sadece Widget, Harita Üstte) --}}
-            <div>
-                @include('admin.ilanlar.wizard.components.tkgm-widget')
+        <div x-show="categoryType === 'arsa'" x-transition class="space-y-4">
+            <div
+                class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-lg p-6 space-y-6">
+                <div class="flex items-center justify-between gap-3 mb-2">
+                    <div>
+                        <h4 class="text-base font-semibold text-gray-900 dark:text-white">Arsa Detayları</h4>
+                        <p class="text-xs text-gray-600 dark:text-gray-400">
+                            TKGM'den gelen verilerle birlikte parsel ve imar bilgilerini kontrol edin.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    @include('admin.ilanlar.wizard.components.tkgm-widget')
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    <div>
+                        <label for="alan_m2" class="block text-sm font-medium text-gray-900 dark:text-white mb-2">
+                            Alan (m²) <span class="text-red-500">*</span>
+                        </label>
+                        <input type="number" name="alan_m2" id="alan_m2" required step="0.01" placeholder="5000.9"
+                            class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg
+                                      bg-white dark:bg-gray-800 text-black dark:text-white
+                                      focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+                                      transition-all duration-200">
+                    </div>
+
+                    <div>
+                        <label for="imar_statusu" class="block text-sm font-medium text-gray-900 dark:text-white mb-2">
+                            İmar Durumu <span class="text-red-500">*</span>
+                        </label>
+                        <select name="imar_statusu" id="imar_statusu" required
+                            class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg
+                                      bg-white dark:bg-gray-800 text-black dark:text-white
+                                      focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+                                      transition-all duration-200">
+                            <option value="">Seçin</option>
+                            <option value="imarlı">İmarlı</option>
+                            <option value="imar_dışı">İmar Dışı</option>
+                            <option value="imar_uygulama">İmar Uygulama</option>
+                            <option value="tapu_tahsis">Tapu Tahsis</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="kaks" class="block text-sm font-medium text-gray-900 dark:text-white mb-1">
+                            KAKS (Kat Alanı Katsayısı)
+                        </label>
+                        <input type="number" name="kaks" id="kaks" step="0.01" placeholder="0.3"
+                            class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg
+                                      bg-white dark:bg-gray-800 text-black dark:text-white
+                                      focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+                                      transition-all duration-200">
+                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Opsiyonel alan</p>
+                    </div>
+
+                    <div>
+                        <label for="taks" class="block text-sm font-medium text-gray-900 dark:text-white mb-1">
+                            TAKS (Taban Alanı Katsayısı)
+                        </label>
+                        <input type="number" name="taks" id="taks" step="0.01" placeholder="0.25"
+                            class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg
+                                      bg-white dark:bg-gray-800 text-black dark:text-white
+                                      focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+                                      transition-all duration-200">
+                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Opsiyonel alan</p>
+                    </div>
+
+                    <div>
+                        <label for="gabari" class="block text-sm font-medium text-gray-900 dark:text-white mb-1">
+                            Gabari (m)
+                        </label>
+                        <input type="number" name="gabari" id="gabari" step="0.1" placeholder="7.5"
+                            class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg
+                                      bg-white dark:bg-gray-800 text-black dark:text-white
+                                      focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+                                      transition-all duration-200">
+                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Opsiyonel alan</p>
+                    </div>
+
+                    <div>
+                        <label for="ada_no" class="block text-sm font-medium text-gray-900 dark:text-white mb-2">
+                            Ada No
+                        </label>
+                        <input type="text" name="ada_no" id="ada_no" placeholder="701"
+                            class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg
+                                      bg-white dark:bg-gray-800 text-black dark:text-white
+                                      focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+                                      transition-all duration-200">
+                    </div>
+
+                    <div>
+                        <label for="parsel_no" class="block text-sm font-medium text-gray-900 dark:text-white mb-2">
+                            Parsel No
+                        </label>
+                        <input type="text" name="parsel_no" id="parsel_no" placeholder="35"
+                            class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg
+                                      bg-white dark:bg-gray-800 text-black dark:text-white
+                                      focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+                                      transition-all duration-200">
+                    </div>
+                </div>
+
+                <input type="hidden" name="enlem" id="enlem">
+                <input type="hidden" name="boylam" id="boylam">
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-900 dark:text-white mb-2">
+                            Altyapı
+                        </label>
+                        <div class="space-y-2">
+                            <label class="flex items-center">
+                                <input type="checkbox" name="altyapi_elektrik" value="1"
+                                    class="w-4 h-4 text-blue-600 rounded focus:ring-blue-500">
+                                <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">Elektrik</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" name="altyapi_su" value="1"
+                                    class="w-4 h-4 text-blue-600 rounded focus:ring-blue-500">
+                                <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">Su</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" name="altyapi_dogalgaz" value="1"
+                                    class="w-4 h-4 text-blue-600 rounded focus:ring-blue-500">
+                                <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">Doğalgaz</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-900 dark:text-white mb-2">
+                            Yola Cephe
+                        </label>
+                        <label class="flex items-center">
+                            <input type="checkbox" name="yola_cephe" value="1"
+                                class="w-4 h-4 text-blue-600 rounded focus:ring-blue-500">
+                            <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">Yola Cephe Var</span>
+                        </label>
+                    </div>
+                </div>
             </div>
+        </div>
 
-            {{-- Arsa Detay Alanları (TKGM'den Otomatik Doldurulabilir) --}}
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <div>
-                    <label for="alan_m2" class="block text-sm font-medium text-gray-900 dark:text-white mb-2">
-                        Alan (m²) <span class="text-red-500">*</span>
-                    </label>
-                    <input type="number" name="alan_m2" id="alan_m2" required step="0.01" placeholder="5000.9"
-                        class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg
-                                  bg-white dark:bg-gray-800 text-black dark:text-white
-                                  focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-                                  transition-all duration-200">
+        <div x-show="categoryType === 'konut' || categoryType === 'daire' || categoryType === 'villa' || categoryType.includes('konut')"
+            x-transition class="space-y-4">
+            <div
+                class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-lg p-6 space-y-6">
+                <div class="flex items-center justify-between gap-3 mb-2">
+                    <div>
+                        <h4 class="text-base font-semibold text-gray-900 dark:text-white">Konut Detayları</h4>
+                        <p class="text-xs text-gray-600 dark:text-gray-400">
+                            Oda yapısı, metrekare ve bina bilgilerini eksiksiz doldurun.
+                        </p>
+                    </div>
                 </div>
 
-                <div>
-                    <label for="imar_statusu" class="block text-sm font-medium text-gray-900 dark:text-white mb-2">
-                        İmar Durumu <span class="text-red-500">*</span>
-                    </label>
-                    <select name="imar_statusu" id="imar_statusu" required
-                        class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg
-                                  bg-white dark:bg-gray-800 text-black dark:text-white
-                                  focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-                                  transition-all duration-200">
-                        <option value="">Seçin</option>
-                        <option value="imarlı">İmarlı</option>
-                        <option value="imar_dışı">İmar Dışı</option>
-                        <option value="imar_uygulama">İmar Uygulama</option>
-                        <option value="tapu_tahsis">Tapu Tahsis</option>
-                    </select>
-                </div>
-
-                <div>
-                    <label for="kaks" class="block text-sm font-medium text-gray-900 dark:text-white mb-2">
-                        KAKS (Kat Alanı Katsayısı)
-                    </label>
-                    <input type="number" name="kaks" id="kaks" step="0.01" placeholder="0.3"
-                        class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg
-                                  bg-white dark:bg-gray-800 text-black dark:text-white
-                                  focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-                                  transition-all duration-200">
-                </div>
-
-                <div>
-                    <label for="taks" class="block text-sm font-medium text-gray-900 dark:text-white mb-2">
-                        TAKS (Taban Alanı Katsayısı)
-                    </label>
-                    <input type="number" name="taks" id="taks" step="0.01" placeholder="0.25"
-                        class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg
-                                  bg-white dark:bg-gray-800 text-black dark:text-white
-                                  focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-                                  transition-all duration-200">
-                </div>
-
-                <div>
-                    <label for="gabari" class="block text-sm font-medium text-gray-900 dark:text-white mb-2">
-                        Gabari (m)
-                    </label>
-                    <input type="number" name="gabari" id="gabari" step="0.1" placeholder="7.5"
-                        class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg
-                                  bg-white dark:bg-gray-800 text-black dark:text-white
-                                  focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-                                  transition-all duration-200">
-                </div>
-
-                <div>
-                    <label for="ada_no" class="block text-sm font-medium text-gray-900 dark:text-white mb-2">
-                        Ada No
-                    </label>
-                    <input type="text" name="ada_no" id="ada_no" placeholder="701"
-                        class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg
-                                  bg-white dark:bg-gray-800 text-black dark:text-white
-                                  focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-                                  transition-all duration-200">
-                </div>
-
-                <div>
-                    <label for="parsel_no" class="block text-sm font-medium text-gray-900 dark:text-white mb-2">
-                        Parsel No
-                    </label>
-                    <input type="text" name="parsel_no" id="parsel_no" placeholder="35"
-                        class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg
-                                  bg-white dark:bg-gray-800 text-black dark:text-white
-                                  focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-                                  transition-all duration-200">
-                </div>
-            </div>
-
-            {{-- Koordinatlar (Hidden - TKGM'den otomatik doldurulur) --}}
-            <input type="hidden" name="enlem" id="enlem">
-            <input type="hidden" name="boylam" id="boylam">
-
-            {{-- Diğer Arsa Alanları --}}
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
-                <div>
-                    <label class="block text-sm font-medium text-gray-900 dark:text-white mb-2">
-                        Altyapı
-                    </label>
-                    <div class="space-y-2">
-                        <label class="flex items-center">
-                            <input type="checkbox" name="altyapi_elektrik" value="1"
-                                class="w-4 h-4 text-blue-600 rounded focus:ring-blue-500">
-                            <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">Elektrik</span>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    <div>
+                        <label for="oda_sayisi" class="block text-sm font-medium text-gray-900 dark:text-white mb-2">
+                            Oda Sayısı <span class="text-red-500">*</span>
                         </label>
-                        <label class="flex items-center">
-                            <input type="checkbox" name="altyapi_su" value="1"
-                                class="w-4 h-4 text-blue-600 rounded focus:ring-blue-500">
-                            <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">Su</span>
+                        <select name="oda_sayisi" id="oda_sayisi" required
+                            class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg
+                                       bg-white dark:bg-gray-800 text-black dark:text-white
+                                       focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+                                       transition-all duration-200">
+                            <option value="">Seçin</option>
+                            <option value="1+1">1+1</option>
+                            <option value="2+1">2+1</option>
+                            <option value="3+1">3+1</option>
+                            <option value="4+1">4+1</option>
+                            <option value="5+1">5+1</option>
+                            <option value="6+1">6+1</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="banyo_sayisi"
+                            class="block text-sm font-medium text-gray-900 dark:text-white mb-2">
+                            Banyo Sayısı <span class="text-red-500">*</span>
                         </label>
-                        <label class="flex items-center">
-                            <input type="checkbox" name="altyapi_dogalgaz" value="1"
-                                class="w-4 h-4 text-blue-600 rounded focus:ring-blue-500">
-                            <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">Doğalgaz</span>
+                        <select name="banyo_sayisi" id="banyo_sayisi" required
+                            class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg
+                                       bg-white dark:bg-gray-800 text-black dark:text-white
+                                       focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+                                       transition-all duration-200">
+                            <option value="">Seçin</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4+</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    <div>
+                        <label for="brut_alan" class="block text-sm font-medium text-gray-900 dark:text-white mb-2">
+                            Brüt Alan (m²) <span class="text-red-500">*</span>
                         </label>
+                        <input type="number" name="brut_alan" id="brut_alan" required step="0.01"
+                            placeholder="150"
+                            class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg
+                                      bg-white dark:bg-gray-800 text-black dark:text-white
+                                      focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+                                      transition-all duration-200">
+                    </div>
+
+                    <div>
+                        <label for="net_alan" class="block text-sm font-medium text-gray-900 dark:text-white mb-2">
+                            Net Alan (m²) <span class="text-red-500">*</span>
+                        </label>
+                        <input type="number" name="net_alan" id="net_alan" required step="0.01"
+                            placeholder="120"
+                            class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg
+                                      bg-white dark:bg-gray-800 text-black dark:text-white
+                                      focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+                                      transition-all duration-200">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    <div>
+                        <label for="bulundugu_kat"
+                            class="block text-sm font-medium text-gray-900 dark:text-white mb-1">
+                            Bulunduğu Kat
+                        </label>
+                        <input type="number" name="bulundugu_kat" id="bulundugu_kat" placeholder="3"
+                            class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg
+                                      bg-white dark:bg-gray-800 text-black dark:text-white
+                                      focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+                                      transition-all duration-200">
+                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Opsiyonel alan</p>
+                    </div>
+
+                    <div>
+                        <label for="toplam_kat" class="block text-sm font-medium text-gray-900 dark:text-white mb-1">
+                            Toplam Kat
+                        </label>
+                        <input type="number" name="toplam_kat" id="toplam_kat" placeholder="5"
+                            class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg
+                                      bg-white dark:bg-gray-800 text-black dark:text-white
+                                      focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+                                      transition-all duration-200">
+                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Opsiyonel alan</p>
                     </div>
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-900 dark:text-white mb-2">
-                        Yola Cephe
+                        Site Özellikleri
                     </label>
-                    <label class="flex items-center">
-                        <input type="checkbox" name="yola_cephe" value="1"
-                            class="w-4 h-4 text-blue-600 rounded focus:ring-blue-500">
-                        <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">Yola Cephe Var</span>
-                    </label>
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-2">
+                        <label class="flex items-center">
+                            <input type="checkbox" name="site_ozellikleri[]" value="havuz"
+                                class="w-4 h-4 text-blue-600 rounded focus:ring-blue-500">
+                            <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">Havuz</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="checkbox" name="site_ozellikleri[]" value="otopark"
+                                class="w-4 h-4 text-blue-600 rounded focus:ring-blue-500">
+                            <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">Otopark</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="checkbox" name="site_ozellikleri[]" value="asansor"
+                                class="w-4 h-4 text-blue-600 rounded focus:ring-blue-500">
+                            <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">Asansör</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="checkbox" name="site_ozellikleri[]" value="guvenlik"
+                                class="w-4 h-4 text-blue-600 rounded focus:ring-blue-500">
+                            <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">Güvenlik</span>
+                        </label>
+                    </div>
                 </div>
             </div>
         </div>
 
-        {{-- KONUT İSE: Oda, m², Banyo vb. --}}
-        <div x-show="categoryType === 'konut' || categoryType === 'daire' || categoryType === 'villa' || categoryType.includes('konut')"
-            x-transition class="space-y-6">
-
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <div>
-                    <label for="oda_sayisi" class="block text-sm font-medium text-gray-900 dark:text-white mb-2">
-                        Oda Sayısı <span class="text-red-500">*</span>
-                    </label>
-                    <select name="oda_sayisi" id="oda_sayisi" required
-                        class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg
-                                   bg-white dark:bg-gray-800 text-black dark:text-white
-                                   focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-                                   transition-all duration-200">
-                        <option value="">Seçin</option>
-                        <option value="1+1">1+1</option>
-                        <option value="2+1">2+1</option>
-                        <option value="3+1">3+1</option>
-                        <option value="4+1">4+1</option>
-                        <option value="5+1">5+1</option>
-                        <option value="6+1">6+1</option>
-                    </select>
-                </div>
-
-                <div>
-                    <label for="banyo_sayisi" class="block text-sm font-medium text-gray-900 dark:text-white mb-2">
-                        Banyo Sayısı <span class="text-red-500">*</span>
-                    </label>
-                    <select name="banyo_sayisi" id="banyo_sayisi" required
-                        class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg
-                                   bg-white dark:bg-gray-800 text-black dark:text-white
-                                   focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-                                   transition-all duration-200">
-                        <option value="">Seçin</option>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4+</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <div>
-                    <label for="brut_alan" class="block text-sm font-medium text-gray-900 dark:text-white mb-2">
-                        Brüt Alan (m²) <span class="text-red-500">*</span>
-                    </label>
-                    <input type="number" name="brut_alan" id="brut_alan" required step="0.01" placeholder="150"
-                        class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg
-                                  bg-white dark:bg-gray-800 text-black dark:text-white
-                                  focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-                                  transition-all duration-200">
-                </div>
-
-                <div>
-                    <label for="net_alan" class="block text-sm font-medium text-gray-900 dark:text-white mb-2">
-                        Net Alan (m²) <span class="text-red-500">*</span>
-                    </label>
-                    <input type="number" name="net_alan" id="net_alan" required step="0.01" placeholder="120"
-                        class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg
-                                  bg-white dark:bg-gray-800 text-black dark:text-white
-                                  focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-                                  transition-all duration-200">
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <div>
-                    <label for="bulundugu_kat" class="block text-sm font-medium text-gray-900 dark:text-white mb-2">
-                        Bulunduğu Kat
-                    </label>
-                    <input type="number" name="bulundugu_kat" id="bulundugu_kat" placeholder="3"
-                        class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg
-                                  bg-white dark:bg-gray-800 text-black dark:text-white
-                                  focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-                                  transition-all duration-200">
-                </div>
-
-                <div>
-                    <label for="toplam_kat" class="block text-sm font-medium text-gray-900 dark:text-white mb-2">
-                        Toplam Kat
-                    </label>
-                    <input type="number" name="toplam_kat" id="toplam_kat" placeholder="5"
-                        class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg
-                                  bg-white dark:bg-gray-800 text-black dark:text-white
-                                  focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-                                  transition-all duration-200">
-                </div>
-            </div>
-
-            <div>
-                <label class="block text-sm font-medium text-gray-900 dark:text-white mb-2">
-                    Site Özellikleri
-                </label>
-                <div class="grid grid-cols-2 lg:grid-cols-4 gap-2">
-                    <label class="flex items-center">
-                        <input type="checkbox" name="site_ozellikleri[]" value="havuz"
-                            class="w-4 h-4 text-blue-600 rounded focus:ring-blue-500">
-                        <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">Havuz</span>
-                    </label>
-                    <label class="flex items-center">
-                        <input type="checkbox" name="site_ozellikleri[]" value="otopark"
-                            class="w-4 h-4 text-blue-600 rounded focus:ring-blue-500">
-                        <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">Otopark</span>
-                    </label>
-                    <label class="flex items-center">
-                        <input type="checkbox" name="site_ozellikleri[]" value="asansor"
-                            class="w-4 h-4 text-blue-600 rounded focus:ring-blue-500">
-                        <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">Asansör</span>
-                    </label>
-                    <label class="flex items-center">
-                        <input type="checkbox" name="site_ozellikleri[]" value="guvenlik"
-                            class="w-4 h-4 text-blue-600 rounded focus:ring-blue-500">
-                        <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">Güvenlik</span>
-                    </label>
-                </div>
-            </div>
-        </div>
-
-        {{-- Diğer Kategoriler için Genel Alanlar --}}
         <div x-show="!categoryType || (categoryType !== 'arsa' && categoryType !== 'konut' && categoryType !== 'daire' && categoryType !== 'villa' && !categoryType.includes('arsa') && !categoryType.includes('konut'))"
-            x-transition class="text-center py-8 text-gray-500 dark:text-gray-400">
-            <p>Bu kategori için özel alanlar henüz tanımlanmamış.</p>
-            <p class="text-sm mt-2">Genel bilgileri Adım 3'te doldurabilirsiniz.</p>
+            x-transition
+            class="mt-4 px-4 py-3 rounded-xl border border-dashed border-blue-300 dark:border-blue-700 bg-blue-50 dark:bg-blue-900/20 text-sm text-blue-800 dark:text-blue-200 text-center">
+            <p>Bu kategori için özel alanlar henüz tanımlanmadı.</p>
+            <p class="mt-1">Genel bilgileri Adım 3'te doldurabilirsiniz.</p>
         </div>
     </div>
 </div>
@@ -389,6 +418,12 @@
             let step2MapLayers = null;
 
             function initStep2Map() {
+                if (window.step2Map) {
+                    setTimeout(() => {
+                        if (window.step2Map) window.step2Map.invalidateSize();
+                    }, 200);
+                    return;
+                }
                 const mapElement = document.getElementById('step2-map');
                 const loadingElement = document.getElementById('step2-map-loading');
 
@@ -464,8 +499,10 @@
                     }
 
                     // Koordinatları kaydet
-                    const latInput = document.querySelector('[name="enlem"]') || document.querySelector('[name="latitude"]');
-                    const lngInput = document.querySelector('[name="boylam"]') || document.querySelector('[name="longitude"]');
+                    const latInput = document.querySelector('[name="enlem"]') || document.querySelector(
+                        '[name="latitude"]');
+                    const lngInput = document.querySelector('[name="boylam"]') || document.querySelector(
+                        '[name="longitude"]');
                     if (latInput) latInput.value = lat.toFixed(6);
                     if (lngInput) lngInput.value = lng.toFixed(6);
                 });
@@ -483,8 +520,10 @@
                     }
 
                     // Koordinatları kaydet
-                    const latInput = document.querySelector('[name="enlem"]') || document.querySelector('[name="latitude"]');
-                    const lngInput = document.querySelector('[name="boylam"]') || document.querySelector('[name="longitude"]');
+                    const latInput = document.querySelector('[name="enlem"]') || document.querySelector(
+                        '[name="latitude"]');
+                    const lngInput = document.querySelector('[name="boylam"]') || document.querySelector(
+                        '[name="longitude"]');
                     if (latInput) latInput.value = lat.toFixed(6);
                     if (lngInput) lngInput.value = lng.toFixed(6);
                 });
@@ -519,10 +558,12 @@
                                 const pos = e.target.getLatLng();
                                 step2Marker.setLatLng([pos.lat, pos.lng]);
                                 step2Map.setView([pos.lat, pos.lng], step2Map.getZoom());
-                                
+
                                 // Koordinatları kaydet
-                                const latInput = document.querySelector('[name="enlem"]') || document.querySelector('[name="latitude"]');
-                                const lngInput = document.querySelector('[name="boylam"]') || document.querySelector('[name="longitude"]');
+                                const latInput = document.querySelector('[name="enlem"]') || document
+                                    .querySelector('[name="latitude"]');
+                                const lngInput = document.querySelector('[name="boylam"]') || document
+                                    .querySelector('[name="longitude"]');
                                 if (latInput) latInput.value = pos.lat.toFixed(6);
                                 if (lngInput) lngInput.value = pos.lng.toFixed(6);
                             }
@@ -554,6 +595,10 @@
                 window.step2Map = map;
                 window.step2Marker = marker;
                 window.step2MapLayers = step2MapLayers;
+
+                setTimeout(() => {
+                    map.invalidateSize();
+                }, 200);
             }
 
             window.switchStep2MapView = function(viewType) {

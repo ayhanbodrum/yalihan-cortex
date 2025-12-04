@@ -48,7 +48,7 @@ return new class extends Migration
             Schema::table('kategori_yayin_tipi_field_dependencies', function (Blueprint $table) {
                 // Eski enabled kolonu ve index'ini sil
                 $table->dropIndex('idx_enabled');
-                $table->dropColumn('enabled');
+                $table->dropColumn('status');
 
                 // Yeni status index'i ekle
                 $table->index('status', 'idx_status');

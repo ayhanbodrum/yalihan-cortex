@@ -4,11 +4,23 @@
     $propertyTypesSummary = $yayinTipleri
         ->map(function ($yayinTipi) use ($fieldDependencies) {
             $slug = $yayinTipi->slug ?? $yayinTipi->yayin_tipi;
-            return [
-                'id' => $yayinTipi->id,
-                'slug' => $slug,
-                'name' => $yayinTipi->yayin_tipi,
-                'count' => isset($fieldDependencies[$slug]) ? $fieldDependencies[$slug]->count() : 0,
+            $yayinTipiId = $yayinTipi->id;
+
+            // ✅ Field dependencies'den bu yayın tipine ait alan sayısını hesapla
+        $count = 0;
+        if (is_array($fieldDependencies)) {
+            foreach ($fieldDependencies as $fieldSlug => $fieldData) {
+                if (isset($fieldData['yayin_tipleri'][$yayinTipiId]) && $fieldData['yayin_tipleri'][$yayinTipiId]) {
+                    $count++;
+                }
+            }
+        }
+
+        return [
+            'id' => $yayinTipiId,
+            'slug' => $slug,
+            'name' => $yayinTipi->yayin_tipi,
+            'count' => $count,
             ];
         })
         ->values();

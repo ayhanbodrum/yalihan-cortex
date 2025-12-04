@@ -22,7 +22,7 @@ return new class extends Migration
             $table->integer('height')->default(2);
             $table->json('settings')->nullable(); // Ekstra ayarlar (JSON)
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->boolean('is_active')->default(true);
+            $table->boolean('status')->default(true);
             $table->integer('display_order')->default(0); // Context7: order → display_order
             $table->timestamps();
             $table->softDeletes();

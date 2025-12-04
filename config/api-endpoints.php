@@ -2,12 +2,12 @@
 
 /**
  * API Endpoint Registry
- * 
+ *
  * Context7 Standard: C7-API-ENDPOINT-REGISTRY-2025-12-03
- * 
+ *
  * Merkezi API endpoint kayıt sistemi.
  * Tüm endpoint'ler burada tanımlanır ve JavaScript'te kullanılır.
- * 
+ *
  * @version 1.0.0
  * @since 2025-12-03
  */
@@ -83,6 +83,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Environment API Endpoints
+    |--------------------------------------------------------------------------
+    */
+    'environment' => [
+        'analyze' => '/api/environment/analyze',
+        'category' => '/api/environment/category/{category}',
+        'value_prediction' => '/api/environment/value-prediction',
+        'pois' => '/api/environment/pois',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | AI API Endpoints
     |--------------------------------------------------------------------------
     */
@@ -109,6 +121,17 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Yalihan Cortex API Endpoints
+    |--------------------------------------------------------------------------
+    */
+    'cortex' => [
+        'analyze' => '/api/admin/cortex/analyze/{id}',
+        'video' => '/api/admin/cortex/video/{id}',
+        'photos' => '/api/admin/cortex/photos/{id}',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Helper Functions
     |--------------------------------------------------------------------------
     */
@@ -125,4 +148,3 @@ return [
         },
     ],
 ];
-

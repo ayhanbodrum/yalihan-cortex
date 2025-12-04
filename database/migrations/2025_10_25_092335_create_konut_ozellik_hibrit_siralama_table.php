@@ -21,7 +21,7 @@ return new class extends Migration
             $table->decimal('hibrit_skor', 8, 2)->default(0.00);
             $table->enum('onem_seviyesi', ['cok_onemli', 'onemli', 'orta_onemli', 'dusuk_onemli'])->default('orta_onemli');
             $table->integer('siralama')->default(0);
-            $table->boolean('aktif')->default(true);
+            $table->boolean('status')->default(true);
             $table->text('aciklama')->nullable();
             $table->timestamps();
         });

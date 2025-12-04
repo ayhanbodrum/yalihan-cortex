@@ -55,18 +55,78 @@ class LocationController extends Controller
 
     /**
      * Mahalleleri getir (ilçe ID'ye göre) - Context7 uyumlu
+     * ✅ Koordinat bilgileri de dahil (enlem, boylam)
      */
     public function getNeighborhoodsByDistrict($ilceId)
     {
         try {
             $mahalleler = Mahalle::where('ilce_id', $ilceId)
                 ->orderBy('mahalle_adi')
-                ->get(['id', 'mahalle_adi as name']);
+                ->get(['id', 'mahalle_adi as name', 'enlem as lat', 'boylam as lng']);
 
             // ✅ Context7: Direkt array döndür (adres-yonetimi ile uyumlu)
             return ResponseService::success($mahalleler, 'Mahalleler başarıyla getirildi');
         } catch (\Exception $e) {
             return ResponseService::serverError('Mahalleler yüklenirken hata oluştu', $e);
+        }
+    }
+
+    /**
+     * ✅ Mahalle koordinatlarını getir (mahalle ID'ye göre)
+     * GET /api/location/neighborhood/{id}/coordinates
+     */
+    public function getNeighborhoodCoordinates($mahalleId)
+    {
+        try {
+            $mahalle = Mahalle::find($mahalleId);
+
+            if (!$mahalle) {
+                return ResponseService::error('Mahalle bulunamadı', 404);
+            }
+
+            // Önce veritabanından koordinatları kontrol et
+            if ($mahalle->enlem && $mahalle->boylam) {
+                return ResponseService::success([
+                    'id' => $mahalle->id,
+                    'name' => $mahalle->mahalle_adi,
+                    'lat' => (float) $mahalle->enlem,
+                    'lng' => (float) $mahalle->boylam,
+                    'source' => 'database',
+                ], 'Mahalle koordinatları başarıyla getirildi');
+            }
+
+            // Veritabanında yoksa Nominatim ile geocoding yap
+            $mahalle->load(['ilce.il']);
+            $query = "{$mahalle->mahalle_adi}, " . 
+                     ($mahalle->ilce ? $mahalle->ilce->ilce_adi . ', ' : '') .
+                     ($mahalle->ilce && $mahalle->ilce->il ? $mahalle->ilce->il->il_adi . ', ' : '') .
+                     'Turkey';
+
+            try {
+                $response = Http::timeout(10)->get('https://nominatim.openstreetmap.org/search', [
+                    'q' => $query,
+                    'format' => 'json',
+                    'limit' => 1,
+                    'countrycodes' => 'tr',
+                ]);
+
+                if ($response->successful() && count($response->json()) > 0) {
+                    $result = $response->json()[0];
+                    return ResponseService::success([
+                        'id' => $mahalle->id,
+                        'name' => $mahalle->mahalle_adi,
+                        'lat' => (float) $result['lat'],
+                        'lng' => (float) $result['lon'],
+                        'source' => 'nominatim',
+                    ], 'Mahalle koordinatları başarıyla getirildi');
+                }
+            } catch (\Exception $e) {
+                Log::warning("Nominatim geocoding failed for mahalle {$mahalleId}: " . $e->getMessage());
+            }
+
+            return ResponseService::error('Mahalle koordinatları bulunamadı', 404);
+        } catch (\Exception $e) {
+            return ResponseService::serverError('Mahalle koordinatları yüklenirken hata oluştu', $e);
         }
     }
 

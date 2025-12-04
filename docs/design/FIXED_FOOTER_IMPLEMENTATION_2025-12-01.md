@@ -1,7 +1,7 @@
 # ✅ Fixed Footer Implementation - Kalıcı Çözüm
 
 **Tarih:** 1 Aralık 2025  
-**Dosya:** `resources/views/admin/ilanlar/create.blade.php`  
+**Dosya:** `resources/views/admin/ilanlar/create-wizard.blade.php`  
 **Problem:** Sayfa uzayıp gidiyor, action button'lar görünmüyor  
 **Çözüm:** Fixed bottom footer (Kalıcı alt çubuk)  
 **Durum:** ✅ TAMAMLANDI

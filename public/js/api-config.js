@@ -1,11 +1,11 @@
 /**
  * API Endpoint Configuration
- * 
+ *
  * Context7 Standard: C7-API-CONFIG-JS-2025-12-03
- * 
+ *
  * Merkezi API endpoint yönetimi için JavaScript config dosyası.
  * Tüm endpoint'ler buradan alınır, hardcoded endpoint'ler yasaktır.
- * 
+ *
  * @version 1.0.0
  * @since 2025-12-03
  */
@@ -84,6 +84,22 @@ if (typeof window.APIConfig === 'undefined') {
         },
 
         /**
+         * Environment API Endpoints
+         */
+        environment: {
+            analyze: '/api/environment/analyze',
+            category: (category) => `/api/environment/category/${category}`,
+            valuePrediction: '/api/environment/value-prediction',
+            pois: (lat, lng, radius = 2000, types = null) => {
+                let url = `/api/environment/pois?lat=${lat}&lng=${lng}&radius=${radius}`;
+                if (types) {
+                    url += `&types=${Array.isArray(types) ? types.join(',') : types}`;
+                }
+                return url;
+            },
+        },
+
+        /**
          * AI API Endpoints
          */
         ai: {
@@ -106,9 +122,18 @@ if (typeof window.APIConfig === 'undefined') {
         },
 
         /**
+         * Yalihan Cortex API Endpoints
+         */
+        cortex: {
+            analyze: (id) => `/api/admin/cortex/analyze/${id}`,
+            video: (id) => `/api/admin/cortex/video/${id}`,
+            photos: (id) => `/api/admin/cortex/photos/${id}`,
+        },
+
+        /**
          * Helper: Replace parameters in endpoint
          */
-        replaceParams: function(endpoint, params = {}) {
+        replaceParams: function (endpoint, params = {}) {
             let url = endpoint;
             for (const [key, value] of Object.entries(params)) {
                 url = url.replace(`{${key}}`, value);
@@ -122,14 +147,14 @@ if (typeof window.APIConfig === 'undefined') {
         /**
          * Helper: Get full URL
          */
-        getUrl: function(endpoint, params = {}) {
-            const url = typeof endpoint === 'function' 
-                ? endpoint(...Object.values(params))
-                : this.replaceParams(endpoint, params);
+        getUrl: function (endpoint, params = {}) {
+            const url =
+                typeof endpoint === 'function'
+                    ? endpoint(...Object.values(params))
+                    : this.replaceParams(endpoint, params);
             return `${this.baseUrl}${url}`;
         },
     };
 
     console.log('✅ API Config loaded - All endpoints centralized');
 }
-

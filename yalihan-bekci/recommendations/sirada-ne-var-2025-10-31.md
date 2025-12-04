@@ -71,7 +71,7 @@ Sonuç:
       → AJAX filter (no page reload)
       → Loading spinner works
 
-   ✅ http://127.0.0.1:8000/admin/ilanlar/create
+   ✅ /admin/ilanlar/create-wizard
       → Real-time validation works
       → Inline errors show
       → Form submit prevention

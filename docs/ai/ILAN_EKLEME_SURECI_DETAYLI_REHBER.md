@@ -1015,7 +1015,7 @@ yazlik_rezervasyonlar (Yazlık için)
 
 - `resources/js/admin/ilan-create/categories.js` - Kategori seçim sistemi
 - `resources/js/admin/ilan-create/field-dependencies.js` - Field dependencies manager
-- `resources/views/admin/ilanlar/create.blade.php` - Ana form sayfası
+- `resources/views/admin/ilanlar/create-wizard.blade.php` - Ana form sayfası (wizard)
 
 ### Backend (PHP)
 

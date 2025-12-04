@@ -3,7 +3,7 @@
 @section('title', 'Kategori Özellikleri: ' . $kategori->name)
 
 @section('content')
-    <div class="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-md transition-all duration-200 dark:border-gray-700 dark:bg-gray-800"
+    <div class="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm hover:shadow-md transition-all duration-200"
         x-data="{
             selectedIds: [],
             selectAll: false,
@@ -20,23 +20,45 @@
                 }
                 this.selectAll = this.selectedIds.length === {{ $kategori->features->count() }};
             },
-            submitBulkAction(action) {
-                if (this.selectedIds.length === 0) {
-                    alert('Lütfen en az bir özellik seçin!');
-                    return;
-                }
-                if (action === 'delete' && !confirm(this.selectedIds.length + ' özelliği silmek istediğinizden emin misiniz?')) {
-                    return;
-                }
-                document.getElementById('bulk-action').value = action;
-                document.getElementById('bulk-ids').value = JSON.stringify(this.selectedIds);
-                document.getElementById('bulk-form').submit();
-            }
+            async submitBulkAction(action) {
+                    if (this.selectedIds.length === 0) {
+                        window.toast?.error('Lütfen en az bir özellik seçin!');
+                        return;
+                    }
+                    if (action === 'delete' && !confirm(this.selectedIds.length + ' özelliği silmek istediğinizden emin misiniz?')) {
+                        return;
+                    }
+        
+                    try {
+                        const formData = new FormData();
+                        formData.append('action', action);
+                        formData.append('_token', document.querySelector('meta[name="csrf-token"]')?.content || '' ); this.selectedIds.forEach(id=> formData.append('ids[]', id));
+
+        // ✅ Context7: Merkezi endpoint sistemi kullan (route helper)
+        const url = '{{ route('admin.ozellikler.ozellik.bulk.action') }}';
+        const response = await fetch(url, {
+        method: 'POST',
+        body: formData,
+        });
+
+        if (response.ok) {
+        window.toast?.success('İşlem başarıyla tamamlandı');
+        setTimeout(() => location.reload(), 1000);
+        } else {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || 'İşlem başarısız');
+        }
+        } catch (error) {
+        console.error('Bulk action error:', error);
+        window.toast?.error('İşlem sırasında hata oluştu: ' + error.message);
+        }
+        }
         }">
         <div class="p-6">
             <!-- Success Message -->
             @if (session('success'))
-                <div class="bg-green-50 border-l-4 border-green-500 text-green-800 p-4 mb-6 rounded-r-lg">
+                <div
+                    class="bg-green-50 dark:bg-green-900/20 border-l-4 border-green-500 text-green-800 dark:text-green-300 p-4 mb-6 rounded-r-lg">
                     <div class="flex items-center">
                         <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd"
@@ -52,31 +74,39 @@
                 <h1 class="text-2xl font-semibold text-gray-800 dark:text-gray-200">
                     <i class="fas fa-tag mr-2"></i> {{ $kategori->name }} Kategorisindeki Özellikler
                 </h1>
-                <div class="flex space-x-2">
+                <div class="flex gap-3">
                     <a href="{{ route('admin.ozellikler.kategoriler.index') }}"
-                        class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 bg-white text-gray-700 rounded-lg hover:bg-gray-50 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-gray-500 transition-all duration-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700 touch-target-optimized">
-                        <i class="fas fa-arrow-left mr-2"></i> Kategorilere Dön
+                        class="inline-flex items-center gap-2 px-4 py-2.5 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-gray-500 transition-all duration-200">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                        </svg>
+                        Kategorilere Dön
                     </a>
                     <a href="{{ route('admin.ozellikler.features.create') }}"
-                        class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-2 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg touch-target-optimized">
-                        <i class="fas fa-plus mr-2"></i> Yeni Özellik Ekle
+                        class="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 dark:bg-blue-500 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-blue-500 transition-all duration-200 shadow-md hover:shadow-lg">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                        </svg>
+                        Yeni Özellik Ekle
                     </a>
                 </div>
             </div>
             <!-- Kategori Bilgileri -->
-            <div class="mb-6 p-4 bg-blue-50 dark:bg-blue-900 rounded-lg">
-                <div class="flex flex-col md:flex-row md:justify-between">
+            <div class="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
                     <div>
                         <h2 class="text-lg font-semibold text-blue-800 dark:text-blue-200">Kategori Bilgileri</h2>
                         <p class="text-blue-600 dark:text-blue-300 mt-1">{{ $kategori->name }}</p>
                     </div>
-                    <div class="mt-3 md:mt-0">
+                    <div class="flex items-center gap-3">
                         <span
-                            class="px-3 py-1 text-sm {{ $kategori->status ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200' }} rounded-full">
+                            class="px-3 py-1 text-sm font-medium rounded-full {{ $kategori->status ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300' : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300' }}">
                             {{ $kategori->status ? 'Aktif' : 'Pasif' }}
                         </span>
-                        <span class="ml-2 text-gray-600 dark:text-gray-400 text-sm">Oluşturulma:
-                            {{ $kategori->created_at->format('d.m.Y') }}</span>
+                        <span class="text-sm text-gray-600 dark:text-gray-400">
+                            Oluşturulma: {{ $kategori->created_at->format('d.m.Y') }}
+                        </span>
                     </div>
                 </div>
             </div>
@@ -101,9 +131,9 @@
                                     seçin</p>
                             </div>
                         </div>
-                        <div class="flex gap-2">
+                        <div class="flex gap-2 flex-wrap">
                             <button type="button" @click="submitBulkAction('activate')"
-                                class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors duration-200 flex items-center gap-2 font-medium text-sm">
+                                class="px-4 py-2 bg-green-600 dark:bg-green-500 text-white rounded-lg hover:bg-green-700 dark:hover:bg-green-600 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-green-500 transition-all duration-200 flex items-center gap-2 font-medium text-sm shadow-md">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M5 13l4 4L19 7" />
@@ -111,7 +141,7 @@
                                 Aktif Et
                             </button>
                             <button type="button" @click="submitBulkAction('deactivate')"
-                                class="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg transition-colors duration-200 flex items-center gap-2 font-medium text-sm">
+                                class="px-4 py-2 bg-yellow-600 dark:bg-yellow-500 text-white rounded-lg hover:bg-yellow-700 dark:hover:bg-yellow-600 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-yellow-500 transition-all duration-200 flex items-center gap-2 font-medium text-sm shadow-md">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -119,7 +149,7 @@
                                 Pasif Et
                             </button>
                             <button type="button" @click="submitBulkAction('delete')"
-                                class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors duration-200 flex items-center gap-2 font-medium text-sm">
+                                class="px-4 py-2 bg-red-600 dark:bg-red-500 text-white rounded-lg hover:bg-red-700 dark:hover:bg-red-600 hover:scale-105 active:scale-95 focus:ring-2 focus:ring-red-500 transition-all duration-200 flex items-center gap-2 font-medium text-sm shadow-md">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -131,12 +161,6 @@
                 </div>
             @endif
 
-            <!-- Bulk Action Form (Hidden) -->
-            <form id="bulk-form" method="POST" action="{{ route('admin.ozellik.bulk.action') }}" style="display: none;">
-                @csrf
-                <input type="hidden" id="bulk-action" name="action">
-                <input type="hidden" id="bulk-ids" name="ids">
-            </form>
 
             <!-- Özellikler Tablosu -->
             @if ($kategori->features->count() > 0)
