@@ -401,66 +401,82 @@
                                                 @change="updateSelectAll()">
                                         </td>
                                         <td class="px-6 py-4">
-                                            <div class="flex items-start">
-                                                <div
-                                                    class="flex-shrink-0 w-32 h-24 md:w-48 md:h-32 lg:w-64 lg:h-40 rounded-lg overflow-hidden">
-                                                    @php
-                                                        $firstPhoto = $ilan->fotograflar?->first();
-                                                        $photoPath = $firstPhoto?->dosya_yolu;
-                                                    @endphp
-                                                    @if ($photoPath && file_exists(storage_path('app/public/' . $photoPath)))
-                                                        <img class="w-full h-full object-cover"
-                                                            src="{{ asset('storage/' . $photoPath) }}"
-                                                            alt="İlan görseli">
-                                                    @else
-                                                        <div
-                                                            class="w-full h-full rounded-lg bg-gray-200 dark:bg-gray-800 flex items-center justify-center">
-                                                            <svg class="h-8 w-8 text-gray-400" fill="none"
-                                                                stroke="currentColor" viewBox="0 0 24 24">
-                                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                                    stroke-width="2"
-                                                                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                                            </svg>
-                                                        </div>
-                                                    @endif
-                                                </div>
-                                                <div class="ml-4 flex-1">
-                                                    <div class="flex items-center gap-3 mb-2">
-                                                        {{-- ✨ REFERANS BADGE (Gemini AI Önerisi - 3 Katmanlı Sistem) --}}
-                                                        @include('admin.ilanlar.partials.referans-badge', [
-                                                            'ilan' => $ilan,
-                                                        ])
+                                            <div class="flex flex-col gap-3">
+                                                {{-- BAŞLIK (ÜST) - Resmin üstünde --}}
+                                                <div class="flex items-center gap-3">
+                                                    {{-- ✨ REFERANS BADGE --}}
+                                                    @include('admin.ilanlar.partials.referans-badge', [
+                                                        'ilan' => $ilan,
+                                                    ])
 
-                                                        <div class="text-sm font-medium text-gray-900 dark:text-white">
-                                                            <a href="{{ route('admin.ilanlar.show', $ilan->id) }}"
-                                                                class="hover:text-blue-600 dark:hover:text-blue-400">
-                                                                {{ $ilan->baslik ?? 'İlan #' . $ilan->id }}
-                                                            </a>
-                                                        </div>
+                                                    <div class="text-sm font-medium text-gray-900 dark:text-white">
+                                                        <a href="{{ route('admin.ilanlar.show', $ilan->id) }}"
+                                                            class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200">
+                                                            {{ $ilan->baslik ?? 'İlan #' . $ilan->id }}
+                                                        </a>
                                                     </div>
-                                                    <div class="text-sm text-gray-500 dark:text-gray-400">
-                                                        @if ($ilan->il && $ilan->ilce)
-                                                            {{ $ilan->il->il_adi }}, {{ $ilan->ilce->ilce_adi }}
-                                                        @endif
-                                                    </div>
-                                                    <div class="mt-2 text-xs text-gray-600 dark:text-gray-400">
-                                                        <span class="font-semibold">Sahibi:</span>
-                                                        @if ($ilan->ilanSahibi)
-                                                            {{ $ilan->ilanSahibi->ad }} {{ $ilan->ilanSahibi->soyad }}
-                                                        @else
-                                                            -
-                                                        @endif
-                                                    </div>
-                                                    @php
-                                                        $ilanNotu = $ilan->anahtar_notlari ?? ($ilan->aciklama ?? null);
-                                                    @endphp
-                                                    @if ($ilanNotu)
-                                                        <div class="mt-2 text-xs italic text-gray-700 dark:text-gray-300">
-                                                            <span class="font-semibold not-italic">Not:</span>
-                                                            {{ Str::limit($ilanNotu, 160) }}
-                                                        </div>
-                                                    @endif
                                                 </div>
+
+                                                {{-- RESİM + DETAYLAR (ORTA) --}}
+                                                <div class="flex items-start gap-4">
+                                                    {{-- Resim --}}
+                                                    <div
+                                                        class="flex-shrink-0 w-32 h-24 md:w-48 md:h-32 lg:w-64 lg:h-40 rounded-lg overflow-hidden shadow-md">
+                                                        @php
+                                                            $firstPhoto = $ilan->fotograflar?->first();
+                                                            $photoPath = $firstPhoto?->dosya_yolu;
+                                                        @endphp
+                                                        @if ($photoPath && file_exists(storage_path('app/public/' . $photoPath)))
+                                                            <img class="w-full h-full object-cover"
+                                                                src="{{ asset('storage/' . $photoPath) }}"
+                                                                alt="İlan görseli">
+                                                        @else
+                                                            <div
+                                                                class="w-full h-full rounded-lg bg-gray-200 dark:bg-gray-800 flex items-center justify-center">
+                                                                <svg class="h-8 w-8 text-gray-400" fill="none"
+                                                                    stroke="currentColor" viewBox="0 0 24 24">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                                        stroke-width="2"
+                                                                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                                                </svg>
+                                                            </div>
+                                                        @endif
+                                                    </div>
+
+                                                    {{-- Lokasyon ve Sahibi --}}
+                                                    <div class="flex-1 space-y-2">
+                                                        <div class="text-sm text-gray-500 dark:text-gray-400">
+                                                            @if ($ilan->il && $ilan->ilce)
+                                                                <span class="inline-flex items-center gap-1">
+                                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                                    </svg>
+                                                                    {{ $ilan->il->il_adi }}, {{ $ilan->ilce->ilce_adi }}
+                                                                </span>
+                                                            @endif
+                                                        </div>
+                                                        <div class="text-xs text-gray-600 dark:text-gray-400">
+                                                            <span class="font-semibold">Sahibi:</span>
+                                                            @if ($ilan->ilanSahibi)
+                                                                {{ $ilan->ilanSahibi->ad }} {{ $ilan->ilanSahibi->soyad }}
+                                                            @else
+                                                                -
+                                                            @endif
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                {{-- NOT (ALT) - Resmin altında --}}
+                                                @php
+                                                    $ilanNotu = $ilan->anahtar_notlari ?? ($ilan->aciklama ?? null);
+                                                @endphp
+                                                @if ($ilanNotu)
+                                                    <div class="text-xs italic text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-800/50 p-3 rounded-lg border border-gray-200 dark:border-gray-700">
+                                                        <span class="font-semibold not-italic text-gray-900 dark:text-white">Not:</span>
+                                                        {{ Str::limit($ilanNotu, 160) }}
+                                                    </div>
+                                                @endif
                                             </div>
                                         </td>
                                         <td class="px-6 py-4">
