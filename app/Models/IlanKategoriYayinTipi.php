@@ -13,25 +13,18 @@ class IlanKategoriYayinTipi extends Model
 
     protected $table = 'ilan_kategori_yayin_tipleri';
 
-    // ✅ Context7: Sadece tabloda OLAN kolonlar (DESC ilan_kategori_yayin_tipleri)
+    // ✅ Context7: Sadece tabloda OLAN kolonlar
     protected $fillable = [
         'kategori_id',      // ✅ Tabloda var
         'yayin_tipi',       // ✅ Tabloda var (VARCHAR)
-        'status',           // ✅ Tabloda var (TINYINT(1) - FIXED!)
-        'display_order',    // ✅ Context7: order → display_order
-        // alt_kategori_id  // ❌ Tabloda yok!
-        // name             // ❌ Tabloda yok!
-        // slug             // ❌ Tabloda yok!
-        // icon             // ❌ Tabloda yok!
-        // description      // ❌ Tabloda yok!
-        // restrictions     // ❌ Tabloda yok!
-        // required_features// ❌ Tabloda yok!
+        'status',           // ✅ Tabloda var (TINYINT(1))
+        'display_order',    // ✅ Context7 compliant
     ];
 
-    // ✅ Context7: status is now TINYINT(1) - boolean (FIXED VIO-2025-01-24-002)
+    // ✅ Context7: status is TINYINT(1) - boolean
     protected $casts = [
-        'status' => 'boolean',  // ✅ FIXED: TINYINT(1) → boolean
-        'display_order' => 'integer', // ✅ Context7: order → display_order
+        'status' => 'boolean',
+        'display_order' => 'integer',
     ];
 
     /**

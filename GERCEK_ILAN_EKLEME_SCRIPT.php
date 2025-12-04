@@ -2,10 +2,10 @@
 
 /**
  * Gerçek İlan Ekleme Script
- * 
+ *
  * KULLANIM:
  * php artisan tinker < GERCEK_ILAN_EKLEME_SCRIPT.php
- * 
+ *
  * VEYA:
  * php GERCEK_ILAN_EKLEME_SCRIPT.php (Laravel bootstrap ile)
  */
@@ -90,8 +90,8 @@ echo "Mahalle - Yalıkavak ID: " . ($yalıkavak->id ?? 'BULUNAMADI') . "\n";
 $ilan = Ilan::create([
     // Temel Bilgiler
     'baslik' => 'Yalıkavak Deniz Manzaralı Lüks Daire - Ülküler Sitesi',
-    'aciklama' => 'Yalıkavak\'ın prestijli Ülküler Sitesi\'nde, deniz manzaralı 3+1 lüks daire. 
-    
+    'aciklama' => 'Yalıkavak\'ın prestijli Ülküler Sitesi\'nde, deniz manzaralı 3+1 lüks daire.
+
 🏡 Daire Özellikleri:
 • 145 m² brüt alan, 125 m² net kullanım alanı
 • 3 yatak odası + 1 salon
@@ -120,16 +120,16 @@ $ilan = Ilan::create([
 
 📞 İletişim: Ahmet Duran
 👷 Görevli: Nahar Osman Bölük',
-    
+
     'fiyat' => 5500000,
     'para_birimi' => 'TRY',
     'fiyat_text' => 'Beş Milyon Beş Yüz Bin Türk Lirası',
-    
+
     // Kategori
     'kategori_id' => $konut->id,
     'alt_kategori_id' => $daire->id,
     'yayin_tipi_id' => $satilik->id,
-    
+
     // Lokasyon
     'il_id' => $mugla->id,
     'ilce_id' => $bodrum->id,
@@ -137,7 +137,7 @@ $ilan = Ilan::create([
     'adres' => 'Ülküler Sitesi, Yalıkavak, Bodrum',
     'enlem' => 37.1676,
     'boylam' => 27.2035,
-    
+
     // Daire Özel Alanlar
     'oda_sayisi' => 3,
     'salon_sayisi' => 1,
@@ -154,22 +154,22 @@ $ilan = Ilan::create([
     'asansor' => 1,
     'otopark' => 1,
     'balkon' => 1,
-    
+
     // İlan Sahibi ve Görevli
     'ilan_sahibi_kisi_id' => $ahmetDuran->id,
     'ilgili_kisi_id' => $naharOsman->id,  // Görevli
     'danisman_id' => 1,  // Varsayılan danışman
-    
+
     // Meta
     'status' => 1,  // Aktif
     'aktif_mi' => 1,
     'onay_durumu' => 'onaylandi',
     'tapu_durumu' => 'Kat Mülkiyeti',
-    
+
     // AI Flags
     'ai_generated_description' => false,  // Manuel yazıldı
     'ai_confidence_score' => null,
-    
+
     // Tarihler
     'ilan_tarihi' => now(),
     'created_at' => now(),
