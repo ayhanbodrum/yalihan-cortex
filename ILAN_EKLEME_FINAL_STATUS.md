@@ -12,6 +12,7 @@
 ### ✅ Çalışan Özellikler
 
 #### 1. Wizard Form Yapısı
+
 ```
 Route: GET /admin/ilanlar/create-wizard
 Controller: IlanController@createWizard
@@ -20,6 +21,7 @@ Alpine Component: ilanWizard()
 ```
 
 **Adımlar:**
+
 - ✅ Step 1: Temel Bilgiler (Kategori, Başlık, Fiyat, Lokasyon)
 - ✅ Step 2: Detaylar (Kategoriye özel: TKGM, Oda sayısı, vs.)
 - ✅ Step 3: Ek Bilgiler (Açıklama, İlan sahibi, Durum)
@@ -27,6 +29,7 @@ Alpine Component: ilanWizard()
 - ✅ Navigation (Geri/İleri butonları)
 
 #### 2. TKGM Widget (Arsa için)
+
 ```
 Lokasyon: Step 2 (Arsa kategorisi seçildiğinde)
 Dosya: resources/views/admin/ilanlar/wizard/components/tkgm-widget.blade.php
@@ -41,6 +44,7 @@ Dosya: resources/views/admin/ilanlar/wizard/components/tkgm-widget.blade.php
 **Status:** ✅ Çalışıyor
 
 #### 3. AI Özellikleri
+
 ```
 ├─ AI Başlık Üretimi (SuggestService)
 ├─ AI Açıklama Üretimi (AIDescriptionService)
@@ -50,6 +54,7 @@ Dosya: resources/views/admin/ilanlar/wizard/components/tkgm-widget.blade.php
 **Status:** ✅ Çalışıyor
 
 #### 4. Cascade Dropdown'lar
+
 ```
 Ana Kategori seçildi
     ↓ (API: /api/v1/categories/sub/{id})
@@ -61,6 +66,7 @@ Yayın Tipi yüklendi
 **Status:** ✅ Çalışıyor (API endpoint'ler merkezi config'de)
 
 #### 5. Lokasyon Sistemi
+
 ```
 İl seçildi
     ↓ (API: window.APIConfig.location.districts(id))
@@ -77,16 +83,18 @@ Mahalle yüklendi
 ## 🔧 TEKNİK DETAYLAR
 
 ### Frontend Stack
+
 ```yaml
 CSS: Tailwind CSS (ONLY)
 JavaScript:
-  - Vanilla JS (Ana mantık)
-  - Alpine.js (Reaktif UI)
-  - Leaflet.js (Harita)
+    - Vanilla JS (Ana mantık)
+    - Alpine.js (Reaktif UI)
+    - Leaflet.js (Harita)
 Build: Vite
 ```
 
 ### API Entegrasyonları
+
 ```yaml
 Merkezi Config: ✅
 ├─ public/js/api-config.js
@@ -101,6 +109,7 @@ Kullanılan API'ler:
 ```
 
 ### Context7 Uyumluluğu
+
 ```
 ✅ Tailwind CSS kullanımı (Neo Design yok)
 ✅ Dark mode variants
@@ -130,11 +139,13 @@ Kullanılan API'ler:
 ```
 
 ### Linter Status
+
 ```
 No linter errors found. ✅
 ```
 
 ### Route Status
+
 ```
 GET  /admin/ilanlar/create-wizard → IlanController@createWizard ✅
 POST /admin/ilanlar → IlanController@store ✅
@@ -145,16 +156,19 @@ POST /admin/ilanlar → IlanController@store ✅
 ## 🎯 BİLİNEN KÜÇÜK SORUNLAR (Kritik Değil)
 
 ### 1. Map Picker (Modal)
+
 **Durum:** TODO olarak işaretli  
 **Etki:** Düşük (koordinat manuel girilebilir)  
 **Çözüm:** Gelecekte Leaflet modal eklenebilir
 
 ### 2. Fotoğraf Drag-Drop Sıralama
+
 **Durum:** Temel yükleme var, sıralama basit  
 **Etki:** Düşük (çalışıyor ama UX iyileştirilebilir)  
 **Çözüm:** Sortable.js eklenebilir
 
 ### 3. AI Widget Loading States
+
 **Durum:** Basit spinner var  
 **Etki:** Düşük (kullanıcı bekleyebiliyor)  
 **Çözüm:** Skeleton loader eklenebilir
@@ -226,6 +240,7 @@ POST /admin/ilanlar → IlanController@store ✅
 ## 📋 FINAL CHECKLIST
 
 ### Fonksiyonellik
+
 - [x] Route tanımlı ve çalışıyor
 - [x] Wizard form adımları çalışıyor
 - [x] Kategori cascade dropdown
@@ -238,6 +253,7 @@ POST /admin/ilanlar → IlanController@store ✅
 - [x] Submit & store
 
 ### UI/UX
+
 - [x] Tailwind CSS styling
 - [x] Dark mode support
 - [x] Transitions & animations
@@ -247,6 +263,7 @@ POST /admin/ilanlar → IlanController@store ✅
 - [x] Success feedback
 
 ### Context7
+
 - [x] Merkezi API endpoint sistemi
 - [x] Forbidden pattern yok
 - [x] status field (NOT enabled)
@@ -254,6 +271,7 @@ POST /admin/ilanlar → IlanController@store ✅
 - [x] il_id (NOT sehir_id)
 
 ### Performance
+
 - [x] API calls optimize
 - [x] Cache kullanımı
 - [x] Lazy loading
@@ -264,6 +282,7 @@ POST /admin/ilanlar → IlanController@store ✅
 ## 🎯 ÖNERİLER (Gelecek İçin)
 
 ### Öncelik 1: Küçük UX İyileştirmeleri (1-2 saat)
+
 ```
 □ Map modal picker (haritadan seç)
 □ Fotoğraf drag-drop sıralama
@@ -272,6 +291,7 @@ POST /admin/ilanlar → IlanController@store ✅
 ```
 
 ### Öncelik 2: Telegram Entegrasyonu Tam (2-3 saat)
+
 ```
 □ Voice-to-Draft tam test
 □ TKGM otomatik doldurma (Telegram'dan)
@@ -280,6 +300,7 @@ POST /admin/ilanlar → IlanController@store ✅
 ```
 
 ### Öncelik 3: Kalite Kontrolü Artırma (3-4 saat)
+
 ```
 □ AI kalite skorunu %80 → %90'a çıkar
 □ Zorunlu alan kontrolü sıkılaştır
@@ -317,15 +338,18 @@ git push
 ### 🟡 YARIN (Fresh Kafayla):
 
 **Seçenek A: Vision 3.0 Başlat**
+
 - TKGM Learning Engine database
 - Pattern detection algoritması
 
 **Seçenek B: Wizard UX İyileştir**
+
 - Map modal
 - Drag-drop photo
 - AI skeleton
 
 **Seçenek C: Telegram Test**
+
 - Voice-to-CRM gerçek test
 - Production deployment
 
@@ -335,12 +359,12 @@ git push
 
 ```yaml
 Yapılan İşler:
-  - TKGM Cleanup: ✅ (826 satır temizlendi)
-  - AI Dokümantasyon: ✅ (35 servis kataloglandı)
-  - Gemini Eğitim: ✅ (4 haftalık program)
-  - Telegram Entegrasyon: ✅ (Tam döküman)
-  - Pazar Analizi: ✅ (5 modül açıklandı)
-  - Wizard Form Kontrol: ✅ (Çalışıyor)
+    - TKGM Cleanup: ✅ (826 satır temizlendi)
+    - AI Dokümantasyon: ✅ (35 servis kataloglandı)
+    - Gemini Eğitim: ✅ (4 haftalık program)
+    - Telegram Entegrasyon: ✅ (Tam döküman)
+    - Pazar Analizi: ✅ (5 modül açıklandı)
+    - Wizard Form Kontrol: ✅ (Çalışıyor)
 
 Oluşturulan Döküman: 11 dosya (~80KB)
 Temizlenen Kod: 826 satır
@@ -361,9 +385,9 @@ Durum: 🎉 BAŞARILI GÜN!
 1. ✅ **Bugünü Bitir** (Commit at, 15 dk)
 2. 😴 **Dinlen** (Çok iş yaptık!)
 3. 🌅 **Yarın Taze Kafayla:**
-   - Vision 3.0'a başla
-   - VEYA Wizard UX iyileştir
-   - VEYA Telegram production test
+    - Vision 3.0'a başla
+    - VEYA Wizard UX iyileştir
+    - VEYA Telegram production test
 
 **Hazır mısın commit için?** 🚀
 
@@ -372,4 +396,3 @@ Durum: 🎉 BAŞARILI GÜN!
 **Generated by:** Yalihan QA Team  
 **Status:** ✅ Ready to Commit  
 **Next:** Rest & Fresh Start Tomorrow
-
