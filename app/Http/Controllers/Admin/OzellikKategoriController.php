@@ -24,14 +24,14 @@ class OzellikKategoriController extends AdminController
                     ->orWhere('description', 'like', "%{$q}%");
             });
         }
-        // Context7: Schema kontrolü (status vs enabled)
+        // Context7: Schema kontrolü (yalnızca status alanı kullanılır)
         if ($request->filled('status')) {
             $status = (bool) $request->input('status');
-            // ✅ Context7: ONLY status field (enabled FORBIDDEN)
+            // ✅ Context7: ONLY status field (enabled yasak)
             if (Schema::hasColumn('feature_categories', 'status')) {
                 $query->where('status', $status);
             }
-            // ❌ REMOVED: enabled field fallback (Context7 violation)
+            // ❌ enabled alanı fallback kaldırıldı (Context7)
         }
 
         $kategoriler = $query->withCount('features')->orderBy('display_order')->orderBy('name')->paginate(20)->withQueryString();
@@ -51,17 +51,16 @@ class OzellikKategoriController extends AdminController
     {
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'slug' => ['nullable', 'string', 'max:255', Rule::unique('feature_categories', 'slug')],
+            'slug' => ['nullable', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
             'icon' => ['nullable', 'string', 'max:64'],
             'applies_to' => ['nullable', 'string'],
             'status' => ['required', 'boolean'],
-            'display_order' => ['nullable', 'integer'], // ✅ Context7: order → display_order
+            'display_order' => ['nullable', 'integer'], // ✅ Context7: display_order alanı
         ]);
 
-        if (empty($data['slug'])) {
-            $data['slug'] = Str::slug($data['name']);
-        }
+        // ✅ Slug benzersizliği: otomatik ekle (manzara, manzara-2, manzara-3)
+        $data['slug'] = $this->generateUniqueSlug($data['slug'] ?? $data['name']);
         if (! array_key_exists('display_order', $data) || is_null($data['display_order'])) {
             $data['display_order'] = (int) (FeatureCategory::max('display_order') + 1);
         }
@@ -90,7 +89,7 @@ class OzellikKategoriController extends AdminController
         $kategori = FeatureCategory::findOrFail($id);
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'slug' => ['nullable', 'string', 'max:255', Rule::unique('feature_categories', 'slug')->ignore($kategori->id)],
+            'slug' => ['nullable', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
             'icon' => ['nullable', 'string', 'max:64'],
             'applies_to' => ['nullable', 'string'],
@@ -107,7 +106,7 @@ class OzellikKategoriController extends AdminController
             'validasyon_kurallari' => ['nullable', 'array'],
             'varsayilan_deger' => ['nullable'],
             'status' => ['required', 'boolean'],
-            'display_order' => ['nullable', 'integer'], // Context7: order → display_order
+            'display_order' => ['nullable', 'integer'], // Context7: display_order alanı
             'meta_title' => ['nullable', 'string', 'max:255'],
             'meta_description' => ['nullable', 'string'],
         ]);
@@ -123,9 +122,8 @@ class OzellikKategoriController extends AdminController
             $data['applies_to'] = null;
         }
 
-        if (empty($data['slug'])) {
-            $data['slug'] = Str::slug($data['name']);
-        }
+        // ✅ Slug benzersizliği: otomatik ekle (güncellemede mevcut ID hariç tut)
+        $data['slug'] = $this->generateUniqueSlug($data['slug'] ?? $data['name'], $kategori->id);
 
         $kategori->update($data);
 
@@ -225,7 +223,7 @@ class OzellikKategoriController extends AdminController
         $data = $request->validate([
             'name' => ['sometimes', 'string', 'max:255'],
             'status' => ['sometimes', 'boolean'],
-            'display_order' => ['sometimes', 'integer'], // Context7: order → display_order
+            'display_order' => ['sometimes', 'integer'], // Context7: display_order alanı
         ]);
         $kategori->update($data);
 
@@ -236,7 +234,7 @@ class OzellikKategoriController extends AdminController
     {
         $kategori = OzellikKategori::findOrFail($id);
         $yeni = $kategori->replicate();
-        $yeni->name = $kategori->name.' Kopya';
+        $yeni->name = $kategori->name . ' Kopya';
         $yeni->slug = null;
         $yeni->display_order = (int) (OzellikKategori::max('display_order') + 1);
         $yeni->save();
@@ -274,5 +272,26 @@ class OzellikKategoriController extends AdminController
         $pasif = OzellikKategori::where('status', false)->count();
 
         return response()->json(compact('toplam', 'active', 'pasif'));
+    }
+
+    /**
+     * Benzersiz slug üretir (manzara, manzara-2, manzara-3 ...)
+     */
+    private function generateUniqueSlug(string $base, ?int $excludeId = null): string
+    {
+        $slug = Str::slug($base);
+        $original = $slug;
+        $counter = 2;
+
+        while (
+            FeatureCategory::where('slug', $slug)
+            ->when($excludeId, fn($q) => $q->where('id', '!=', $excludeId))
+            ->exists()
+        ) {
+            $slug = "{$original}-{$counter}";
+            $counter++;
+        }
+
+        return $slug;
     }
 }

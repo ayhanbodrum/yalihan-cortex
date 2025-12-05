@@ -2,25 +2,17 @@
 
 @php
     $propertyTypesSummary = $yayinTipleri
-        ->map(function ($yayinTipi) use ($fieldDependencies) {
+        ->map(function ($yayinTipi) use ($assignmentCounts) {
             $slug = $yayinTipi->slug ?? $yayinTipi->yayin_tipi;
             $yayinTipiId = $yayinTipi->id;
 
-            // ✅ Field dependencies'den bu yayın tipine ait alan sayısını hesapla
-        $count = 0;
-        if (is_array($fieldDependencies)) {
-            foreach ($fieldDependencies as $fieldSlug => $fieldData) {
-                if (isset($fieldData['yayin_tipleri'][$yayinTipiId]) && $fieldData['yayin_tipleri'][$yayinTipiId]) {
-                    $count++;
-                }
-            }
-        }
+            $count = $assignmentCounts[$yayinTipiId] ?? 0;
 
-        return [
-            'id' => $yayinTipiId,
-            'slug' => $slug,
-            'name' => $yayinTipi->yayin_tipi,
-            'count' => $count,
+            return [
+                'id' => $yayinTipiId,
+                'slug' => $slug,
+                'name' => $yayinTipi->yayin_tipi,
+                'count' => $count,
             ];
         })
         ->values();
@@ -396,7 +388,7 @@
                                         :class="activeTab === '{{ $typeSlug }}' ?
                                             'bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200' :
                                             'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300'">
-                                        {{ isset($fieldDependencies[$typeSlug]) ? $fieldDependencies[$typeSlug]->count() : 0 }}
+                                        {{ $assignmentCounts[$yayinTipi->id] ?? 0 }}
                                     </span>
                                 </button>
                             @endforeach
@@ -420,8 +412,7 @@
                                         {{ $yayinTipi->yayin_tipi }} - Atanmış Özellikler
                                     </h3>
                                     <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                                        {{ isset($fieldDependencies[$typeSlug]) ? $fieldDependencies[$typeSlug]->count() : 0 }}
-                                        özellik atandı
+                                        {{ $assignmentCounts[$yayinTipi->id] ?? 0 }} özellik atandı
                                     </p>
                                 </div>
                                 <button @click="setPropertyType('{{ $typeSlug }}'); showAddFeatureModal = true"
@@ -437,9 +428,7 @@
 
                             <!-- Assigned Features List -->
                             @php
-                                $assignments = isset($fieldDependencies[$typeSlug])
-                                    ? $fieldDependencies[$typeSlug]
-                                    : collect([]);
+                                $assignments = $assignmentsByType[$yayinTipi->id] ?? collect([]);
                             @endphp
 
                             @if ($assignments && $assignments->count() > 0)
@@ -503,7 +492,7 @@
                                                             {{ $assignment->is_visible ? 'checked' : '' }}
                                                             @change="toggleAssignment({{ $assignment->id }}, 'is_visible', $event.target.checked)">
                                                         <div
-                                                            class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
+                                                            class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white dark:after:bg-gray-100 after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600 dark:peer-checked:bg-blue-500">
                                                         </div>
                                                     </div>
                                                 </label>
@@ -522,7 +511,7 @@
                                                             {{ $assignment->is_required ? 'checked' : '' }}
                                                             @change="toggleAssignment({{ $assignment->id }}, 'is_required', $event.target.checked)">
                                                         <div
-                                                            class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-red-300 dark:peer-focus:ring-red-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-red-600">
+                                                            class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-red-300 dark:peer-focus:ring-red-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white dark:after:bg-gray-100 after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-red-600 dark:peer-checked:bg-red-500">
                                                         </div>
                                                     </div>
                                                 </label>

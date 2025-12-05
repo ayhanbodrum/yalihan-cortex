@@ -1,4 +1,4 @@
-@extends('admin.layouts.app')
+@extends('admin.layouts.admin')
 
 @section('title', 'Context7 Analytics Dashboard - Yalıhan Bekçi')
 
@@ -432,7 +432,7 @@
     </div>
 
     <!-- Export Modal (Alpine) -->
-    <div x-show="exportOpen" x-transition class="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div x-data="{ exportOpen: false }" x-show="exportOpen" x-transition class="fixed inset-0 z-50 flex items-center justify-center p-4">
         <div class="absolute inset-0 bg-black/40" @click="exportOpen=false"></div>
         <div
             class="relative bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-2xl w-full max-w-md">
@@ -450,7 +450,7 @@
                     <label for="export-type" class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Data
                         Type</label>
                     <select style="color-scheme: light dark;" id="export-type"
-                        class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 w-full transition-all duration-200">
+                        class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 transition-all duration-200">
                         <option value="form_analytics">Form Analytics</option>
                         <option value="conversion_analytics">Conversion Analytics</option>
                         <option value="performance_metrics">Performance Metrics</option>
@@ -460,7 +460,7 @@
                     <label for="export-period"
                         class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Time Period</label>
                     <select style="color-scheme: light dark;" id="export-period"
-                        class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 w-full transition-all duration-200">
+                        class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 transition-all duration-200">
                         <option value="7d">Last 7 Days</option>
                         <option value="30d">Last 30 Days</option>
                         <option value="90d">Last 90 Days</option>
@@ -799,20 +799,54 @@
             charts.abandonment.update();
         }
 
-        // Export analytics
+        // Export analytics - Alpine.js ile modal açma
         function exportAnalytics() {
-            $('#exportModal').modal('show');
+            // Alpine.js component'ini bul ve exportOpen'ı true yap
+            if (window.Alpine) {
+                const modalElement = document.querySelector('[x-data*="exportOpen"]');
+                if (modalElement && window.Alpine.$data) {
+                    const component = window.Alpine.$data(modalElement);
+                    if (component) {
+                        component.exportOpen = true;
+                        return;
+                    }
+                }
+            }
+            // Fallback: CustomEvent ile modal açma
+            window.dispatchEvent(new CustomEvent('open-export-modal'));
         }
 
-        // Download export
+        // Download export - Alpine.js ile modal kapatma
         function downloadExport() {
             const type = document.getElementById('export-type').value;
             const period = document.getElementById('export-period').value;
 
             window.location.href = `/admin/analytics/export?type=${type}&period=${period}`;
 
-            $('#exportModal').modal('hide');
+            // Alpine.js component'ini bul ve exportOpen'ı false yap
+            if (window.Alpine) {
+                const modalElement = document.querySelector('[x-data*="exportOpen"]');
+                if (modalElement && window.Alpine.$data) {
+                    const component = window.Alpine.$data(modalElement);
+                    if (component) {
+                        component.exportOpen = false;
+                    }
+                }
+            }
         }
+
+        // CustomEvent listener (fallback için)
+        window.addEventListener('open-export-modal', function() {
+            if (window.Alpine) {
+                const modalElement = document.querySelector('[x-data*="exportOpen"]');
+                if (modalElement && window.Alpine.$data) {
+                    const component = window.Alpine.$data(modalElement);
+                    if (component) {
+                        component.exportOpen = true;
+                    }
+                }
+            }
+        });
 
         // Period selector change
         document.getElementById('period-selector').addEventListener('change', function() {

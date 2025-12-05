@@ -21,6 +21,9 @@ Route::prefix('location')->name('api.location.')->group(function () {
     Route::get('/neighborhoods/{id}', [LocationController::class, 'getNeighborhoodsByDistrict'])
         ->name('neighborhoods');
 
+    Route::get('/neighborhood/{id}/coordinates', [LocationController::class, 'getNeighborhoodCoordinates'])
+        ->name('neighborhood.coordinates');
+
     Route::get('/provinces', [LocationController::class, 'getProvinces'])
         ->name('provinces');
 

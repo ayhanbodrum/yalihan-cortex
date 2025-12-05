@@ -271,7 +271,7 @@ Route::middleware(['web', 'auth', 'verified', 'can:view-admin-panel'])->prefix('
         Route::get('/search', [\App\Http\Controllers\Admin\IlanController::class, 'search'])->name('search');
         Route::get('/filter', [\App\Http\Controllers\Admin\IlanController::class, 'filter'])->name('filter');
         Route::post('/bulk-action', [\App\Http\Controllers\Admin\IlanController::class, 'bulkAction'])->name('bulk.action');
-        Route::post('/{ilan}/toggle-status', [\App\Http\Controllers\Admin\IlanController::class, 'toggleStatus'])->name('toggle.status')->middleware('can:edit-ilanlar');
+        Route::post('/{ilan}/toggle-status', [\App\Http\Controllers\Admin\IlanController::class, 'toggleStatus'])->name('toggle.status')->middleware(['can:edit-ilanlar','throttle:60,1']);
 
         // Segment-based workflow routes
         Route::prefix('/segments')->name('segments.')->group(function () {
@@ -306,11 +306,11 @@ Route::middleware(['web', 'auth', 'verified', 'can:view-admin-panel'])->prefix('
         Route::get('/export', [\App\Http\Controllers\Admin\IlanController::class, 'exportExcel'])->name('export');
 
         // Legacy Routes
-        Route::post('/save-draft', [\App\Http\Controllers\Admin\IlanController::class, 'saveDraft'])->name('save-draft');
-        Route::post('/auto-save', [\App\Http\Controllers\Admin\IlanController::class, 'autoSave'])->name('auto-save');
-        Route::post('/{ilan}/update-status', [\App\Http\Controllers\Admin\IlanController::class, 'updateStatus'])->name('update-status')->middleware('can:edit-ilanlar');
-        Route::post('/bulk-update', [\App\Http\Controllers\Admin\IlanController::class, 'bulkUpdate'])->name('bulk-update')->middleware('can:manage-ilanlar');
-        Route::post('/bulk-delete', [\App\Http\Controllers\Admin\IlanController::class, 'bulkDelete'])->name('bulk-delete')->middleware('can:manage-ilanlar');
+        Route::post('/save-draft', [\App\Http\Controllers\Admin\IlanController::class, 'saveDraft'])->name('save-draft')->middleware(['auth','throttle:30,1']);
+        Route::post('/auto-save', [\App\Http\Controllers\Admin\IlanController::class, 'autoSave'])->name('auto-save')->middleware(['auth','throttle:30,1']);
+        Route::post('/{ilan}/update-status', [\App\Http\Controllers\Admin\IlanController::class, 'updateStatus'])->name('update-status')->middleware(['can:edit-ilanlar','throttle:60,1']);
+        Route::post('/bulk-update', [\App\Http\Controllers\Admin\IlanController::class, 'bulkUpdate'])->name('bulk-update')->middleware(['can:manage-ilanlar','throttle:60,1']);
+        Route::post('/bulk-delete', [\App\Http\Controllers\Admin\IlanController::class, 'bulkDelete'])->name('bulk-delete')->middleware(['can:manage-ilanlar','throttle:60,1']);
         Route::get('/live-search', [\App\Http\Controllers\Admin\IlanController::class, 'liveSearch'])->name('live-search');
         Route::post('/generate-ai-title', [\App\Http\Controllers\Admin\IlanController::class, 'generateAiTitle'])->name('generate-ai-title');
         Route::post('/generate-ai-description', [\App\Http\Controllers\Admin\IlanController::class, 'generateAiDescription'])->name('generate-ai-description');
@@ -1011,7 +1011,7 @@ Route::middleware(['web', 'auth', 'verified', 'can:view-admin-panel'])->prefix('
 });
 
 // Context7 AI Features - Public routes (no auth required)
-Route::prefix('admin/ozellikler')->name('admin.ozellikler.')->group(function () {
+Route::prefix('admin/ozellikler')->name('admin.ozellikler.')->middleware(['web','ai.rate.limit'])->group(function () {
     Route::post('/context7/suggest', [\App\Http\Controllers\Admin\FeatureController::class, 'suggestFeatures'])->name('context7.suggest');
     Route::post('/context7/search', [\App\Http\Controllers\Admin\FeatureController::class, 'smartSearch'])->name('context7.search');
     Route::post('/context7/categorize', [\App\Http\Controllers\Admin\FeatureController::class, 'categorizeFeatures'])->name('context7.categorize');

@@ -102,11 +102,24 @@ fi
 echo "🎨 Layout Dosyası Kontrolü..."
 if git diff --cached | grep -E "@extends\('layouts\.app'\)|@extends\('Crm::" > /dev/null; then
     echo -e "${RED}❌ HATA: Deprecated layout dosyası tespit edildi!${NC}"
-    echo -e "${GREEN}✅ ÇÖZÜM: @extends('admin.layouts.neo') kullanın${NC}"
+    echo -e "${GREEN}✅ ÇÖZÜM: @extends('admin.layouts.admin') kullanın${NC}"
     echo ""
     git diff --cached | grep -n -E "@extends\('layouts\.app'\)|@extends\('Crm::" | head -5
     echo ""
     ERRORS=$((ERRORS + 1))
+fi
+
+# 2.1. Admin Layout Tutarlılık Kontrolü
+echo "🎨 Admin Layout Tutarlılık Kontrolü..."
+if git diff --cached --name-only | grep -q "resources/views/admin/.*\.blade\.php$"; then
+    if git diff --cached | grep -E "@extends\('admin\.layouts\.(neo|app)'\)" > /dev/null; then
+        echo -e "${RED}❌ HATA: Geçersiz admin layout kullanımı tespit edildi!${NC}"
+        echo -e "${GREEN}✅ ÇÖZÜM: Tüm admin sayfaları @extends('admin.layouts.admin') kullanmalı${NC}"
+        echo ""
+        git diff --cached | grep -n -E "@extends\('admin\.layouts\.(neo|app)'\)" | head -5
+        echo ""
+        ERRORS=$((ERRORS + 1))
+    fi
 fi
 
 # 3. Route Naming Kontrolü

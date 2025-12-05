@@ -205,6 +205,7 @@
                         </div>
                     </label>
                     <select name="mahalle_id" id="mahalle_id" disabled
+                        onchange="updateMarkerFromMahalle(this.value, this.options[this.selectedIndex])"
                         class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg
                                        bg-white dark:bg-gray-800 text-black dark:text-white
                                        focus:ring-2 focus:ring-blue-500 focus:border-blue-500
@@ -802,18 +803,48 @@
         // ✅ Context7: Merkezi API config kullan
         const subcategoriesUrl = window.APIConfig?.categories?.subcategories ?
             window.APIConfig.categories.subcategories(anaKategoriId) :
-            `/api/categories/sub/${anaKategoriId}`;
+            `/api/v1/categories/sub/${anaKategoriId}`;
+
+        console.log('🔍 Alt kategori yükleme başlatıldı:', {
+            anaKategoriId,
+            url: subcategoriesUrl
+        });
 
         fetch(subcategoriesUrl)
-            .then(res => res.json())
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error(`HTTP error! status: ${res.status}`);
+                }
+                return res.json();
+            })
             .then(data => {
+                console.log('📦 API Response:', data);
                 altKategoriSelect.innerHTML = '<option value="">Alt Kategori Seçin</option>';
 
-                // Response format: {success: true, subcategories: [...], count: 8}
-                const categories = data.subcategories || data.data || data.categories || (Array.isArray(data) ?
-                    data : []);
+                // ✅ ResponseService format: {success: true, data: {subcategories: [...], count: ...}}
+                // ✅ Backward compatibility: Eski formatları da destekle
+                let categories = [];
+
+                if (data.success && data.data) {
+                    // ResponseService format
+                    categories = data.data.subcategories || data.data.alt_kategoriler || data.data.data || [];
+                    console.log('✅ ResponseService format algılandı, subcategories:', categories.length);
+                } else if (data.subcategories) {
+                    // Direkt subcategories format
+                    categories = data.subcategories;
+                    console.log('✅ Direkt subcategories format algılandı:', categories.length);
+                } else if (data.data && Array.isArray(data.data)) {
+                    // Array format
+                    categories = data.data;
+                    console.log('✅ Array format algılandı:', categories.length);
+                } else if (Array.isArray(data)) {
+                    // Direkt array format
+                    categories = data;
+                    console.log('✅ Direkt array format algılandı:', categories.length);
+                }
 
                 if (Array.isArray(categories) && categories.length > 0) {
+                    console.log('✅ Alt kategoriler yüklendi:', categories.length, 'adet');
                     categories.forEach(kategori => {
                         const option = document.createElement('option');
                         option.value = kategori.id;
@@ -827,7 +858,7 @@
                     altKategoriSelect.disabled = false;
                 } else {
                     altKategoriSelect.innerHTML = '<option value="">Alt kategori bulunamadı</option>';
-                    console.warn('Alt kategoriler boş:', data);
+                    console.warn('⚠️ Alt kategoriler boş:', data);
                 }
             })
             .catch(error => {
@@ -852,7 +883,7 @@
         // ✅ Context7: Merkezi API config kullan
         const publicationTypesUrl = window.APIConfig?.categories?.publicationTypes ?
             window.APIConfig.categories.publicationTypes(altKategoriId) :
-            `/api/categories/publication-types/${altKategoriId}`;
+            `/api/v1/categories/publication-types/${altKategoriId}`;
 
         fetch(publicationTypesUrl)
             .then(res => res.json())
@@ -981,6 +1012,11 @@
                         option.value = mahalle.id;
                         option.textContent = mahalle.mahalle_adi || mahalle.name || mahalle
                             .neighborhood_name;
+                        // ✅ Koordinat bilgisini data attribute olarak sakla
+                        if (mahalle.lat && mahalle.lng) {
+                            option.setAttribute('data-lat', mahalle.lat);
+                            option.setAttribute('data-lng', mahalle.lng);
+                        }
                         mahalleSelect.appendChild(option);
                     });
                     mahalleSelect.disabled = false;
@@ -992,6 +1028,68 @@
                 console.error('Mahalleler yüklenemedi:', error);
                 mahalleSelect.innerHTML = '<option value="">Hata oluştu</option>';
             });
+    }
+
+    // ✅ Mahalle seçildiğinde marker'ı güncelle
+    async function updateMarkerFromMahalle(mahalleId, selectedOption) {
+        if (!mahalleId || !selectedOption) {
+            return;
+        }
+
+        // Önce data attribute'lardan koordinatları kontrol et
+        let lat = selectedOption.getAttribute('data-lat');
+        let lng = selectedOption.getAttribute('data-lng');
+
+        // Eğer data attribute'da yoksa API'den çek
+        if (!lat || !lng) {
+            try {
+                const response = await fetch(`/api/v1/location/neighborhood/${mahalleId}/coordinates`);
+                const result = await response.json();
+
+                if (result.success && result.data) {
+                    lat = result.data.lat;
+                    lng = result.data.lng;
+                    console.log(`✅ Mahalle koordinatları API'den alındı: ${lat}, ${lng}`);
+                } else {
+                    console.warn('⚠️ Mahalle koordinatları bulunamadı');
+                    return;
+                }
+            } catch (error) {
+                console.error('❌ Mahalle koordinatları yüklenemedi:', error);
+                return;
+            }
+        }
+
+        // Koordinatları float'a çevir
+        lat = parseFloat(lat);
+        lng = parseFloat(lng);
+
+        if (isNaN(lat) || isNaN(lng)) {
+            console.warn('⚠️ Geçersiz koordinatlar:', lat, lng);
+            return;
+        }
+
+        // Marker'ı güncelle
+        if (window.wizardMap && window.wizardMarker) {
+            window.wizardMarker.setLatLng([lat, lng]);
+            window.wizardMap.setView([lat, lng], 16, {
+                animate: true,
+                duration: 0.5
+            });
+
+            // Koordinatları form alanlarına kaydet
+            saveCoordinates(lat, lng);
+
+            // Popup güncelle
+            const mahalleName = selectedOption.textContent;
+            window.wizardMarker.bindPopup(
+                `📍 ${mahalleName}<br><small>Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}</small>`)
+            .openPopup();
+
+            console.log(`✅ Marker güncellendi: ${mahalleName} (${lat}, ${lng})`);
+        } else {
+            console.warn('⚠️ Harita veya marker bulunamadı');
+        }
     }
 
     // AI Title Generation

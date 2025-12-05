@@ -47,24 +47,47 @@ function loadAltKategoriler(anaKategoriId) {
 
     showLoading('Alt kategoriler yükleniyor...');
 
-    // Context7: /api/categories/sub/{id} endpoint'i routes/api.php'de mevcut
-    return fetch(`/api/categories/sub/${anaKategoriId}`, {
+    const subcategoriesUrl = window.APIConfig?.categories?.subcategories
+        ? window.APIConfig.categories.subcategories(anaKategoriId)
+        : `/api/v1/categories/sub/${anaKategoriId}`;
+
+    return fetch(subcategoriesUrl, {
         cache: 'no-cache',
         headers: { 'Cache-Control': 'no-cache' },
     })
-        .then((response) => response.json())
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
         .then((data) => {
             hideLoading();
             // ✅ Context7: ResponseService format kontrolü
-            if (data.success) {
-                // ResponseService format: data.data.subcategories veya data.data
-                const responseData = data.data || data;
-                const subcategories = responseData.subcategories || responseData.kategoriler || [];
+            let subcategories = [];
+
+            if (data.success && data.data) {
+                // ResponseService format: {success: true, data: {subcategories: [...], count: ...}}
+                subcategories =
+                    data.data.subcategories || data.data.alt_kategoriler || data.data.data || [];
+            } else if (data.subcategories) {
+                // Direkt subcategories format
+                subcategories = data.subcategories;
+            } else if (data.data && Array.isArray(data.data)) {
+                // Array format
+                subcategories = data.data;
+            } else if (Array.isArray(data)) {
+                // Direkt array format
+                subcategories = data;
+            }
+
+            if (Array.isArray(subcategories) && subcategories.length > 0) {
                 populateAltKategoriler(subcategories);
                 return Promise.resolve();
             } else {
-                showNotification('Alt kategoriler yüklenemedi', 'error');
-                return Promise.reject(new Error('Alt kategoriler yüklenemedi'));
+                showNotification('Alt kategoriler bulunamadı', 'warning');
+                populateAltKategoriler([]);
+                return Promise.resolve();
             }
         })
         .catch((error) => {
@@ -143,8 +166,11 @@ function loadYayinTipleri(altKategoriId) {
     const anaKategoriSlug =
         anaKategoriSelect?.options[anaKategoriSelect.selectedIndex]?.dataset?.slug;
 
-    // Context7: Alt kategori ID'sine göre filtrelenmiş yayın tiplerini yükle
-    return fetch(`/api/categories/publication-types/${altKategoriId}`, {
+    const publicationTypesUrl = window.APIConfig?.categories?.publicationTypes
+        ? window.APIConfig.categories.publicationTypes(altKategoriId)
+        : `/api/v1/categories/publication-types/${altKategoriId}`;
+
+    return fetch(publicationTypesUrl, {
         cache: 'no-cache',
         headers: { 'Cache-Control': 'no-cache' },
     })
@@ -250,7 +276,11 @@ function loadTypeBasedFields() {
 
     showLoading('Özel alanlar yükleniyor...');
 
-    fetch(`/api/categories/fields/${anaKategoriId}/${altKategoriId}/${yayinTipiId}`)
+    const fieldsUrl = window.APIConfig?.categories?.fields
+        ? window.APIConfig.categories.fields(anaKategoriId, yayinTipiId)
+        : `/api/v1/categories/fields/${anaKategoriId}/${yayinTipiId}`;
+
+    fetch(fieldsUrl)
         .then((response) => response.json())
         .then((data) => {
             hideLoading();

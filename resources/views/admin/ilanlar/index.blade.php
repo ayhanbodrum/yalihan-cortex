@@ -448,9 +448,14 @@
                                                         <div class="text-sm text-gray-500 dark:text-gray-400">
                                                             @if ($ilan->il && $ilan->ilce)
                                                                 <span class="inline-flex items-center gap-1">
-                                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                                    <svg class="w-4 h-4" fill="none"
+                                                                        stroke="currentColor" viewBox="0 0 24 24">
+                                                                        <path stroke-linecap="round"
+                                                                            stroke-linejoin="round" stroke-width="2"
+                                                                            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                                                        <path stroke-linecap="round"
+                                                                            stroke-linejoin="round" stroke-width="2"
+                                                                            d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                                                                     </svg>
                                                                     {{ $ilan->il->il_adi }}, {{ $ilan->ilce->ilce_adi }}
                                                                 </span>
@@ -472,11 +477,82 @@
                                                     $ilanNotu = $ilan->anahtar_notlari ?? ($ilan->aciklama ?? null);
                                                 @endphp
                                                 @if ($ilanNotu)
-                                                    <div class="text-xs italic text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-800/50 p-3 rounded-lg border border-gray-200 dark:border-gray-700">
-                                                        <span class="font-semibold not-italic text-gray-900 dark:text-white">Not:</span>
+                                                    <div
+                                                        class="text-xs italic text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-800/50 p-3 rounded-lg border border-gray-200 dark:border-gray-700">
+                                                        <span
+                                                            class="font-semibold not-italic text-gray-900 dark:text-white">Not:</span>
                                                         {{ Str::limit($ilanNotu, 160) }}
                                                     </div>
                                                 @endif
+
+                                                {{-- 📊 METRİKLER - Sahibinden tarzı --}}
+                                                <div
+                                                    class="flex items-center gap-4 mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
+                                                    {{-- Görüntülenme --}}
+                                                    <div
+                                                        class="flex items-center gap-1.5 text-xs text-gray-600 dark:text-gray-400 group hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor"
+                                                            viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                stroke-width="2"
+                                                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                                        </svg>
+                                                        <span
+                                                            class="font-medium">{{ number_format($ilan->goruntulenme_sayisi ?? 0) }}</span>
+                                                    </div>
+
+                                                    {{-- Arama Sayısı --}}
+                                                    <div
+                                                        class="flex items-center gap-1.5 text-xs text-gray-600 dark:text-gray-400 group hover:text-green-600 dark:hover:text-green-400 transition-colors">
+                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor"
+                                                            viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                stroke-width="2"
+                                                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                                        </svg>
+                                                        <span
+                                                            class="font-medium">{{ number_format($ilan->arama_sayisi ?? 0) }}</span>
+                                                    </div>
+
+                                                    {{-- Favori Sayısı --}}
+                                                    <div
+                                                        class="flex items-center gap-1.5 text-xs text-gray-600 dark:text-gray-400 group hover:text-red-500 dark:hover:text-red-400 transition-colors">
+                                                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                                                            <path
+                                                                d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                                                        </svg>
+                                                        <span
+                                                            class="font-medium">{{ number_format($ilan->favori_sayisi ?? 0) }}</span>
+                                                    </div>
+
+                                                    {{-- Telefon Görüntüleme --}}
+                                                    <div
+                                                        class="flex items-center gap-1.5 text-xs text-gray-600 dark:text-gray-400 group hover:text-purple-600 dark:hover:text-purple-400 transition-colors">
+                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor"
+                                                            viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                stroke-width="2"
+                                                                d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                                                        </svg>
+                                                        <span
+                                                            class="font-medium">{{ number_format($ilan->telefon_goruntuleme_sayisi ?? 0) }}</span>
+                                                    </div>
+
+                                                    {{-- Paylaşım --}}
+                                                    <div
+                                                        class="flex items-center gap-1.5 text-xs text-gray-600 dark:text-gray-400 group hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor"
+                                                            viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                stroke-width="2"
+                                                                d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                                                        </svg>
+                                                        <span
+                                                            class="font-medium">{{ number_format($ilan->paylasim_sayisi ?? 0) }}</span>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </td>
                                         <td class="px-6 py-4">
@@ -490,29 +566,74 @@
                                                 @endif
                                             </div>
                                         </td>
-                                        <td class="px-6 py-4 text-sm font-medium text-gray-900 dark:text-white">
-                                            {{ number_format($ilan->fiyat ?? 0, 0, ',', '.') }}
-                                            {{ $ilan->para_birimi ?? 'TRY' }}
-                                            @if ($ilan->kiralama_turu)
-                                                @switch($ilan->kiralama_turu)
-                                                    @case('gunluk')
-                                                        <span class="text-xs text-gray-600 dark:text-gray-400">/Gün</span>
-                                                    @break
+                                        <td class="px-6 py-4">
+                                            <div class="space-y-2">
+                                                {{-- Fiyat --}}
+                                                <div class="text-sm font-medium text-gray-900 dark:text-white">
+                                                    {{ number_format($ilan->fiyat ?? 0, 0, ',', '.') }}
+                                                    {{ $ilan->para_birimi ?? 'TRY' }}
+                                                    @if ($ilan->kiralama_turu)
+                                                        @switch($ilan->kiralama_turu)
+                                                            @case('gunluk')
+                                                                <span class="text-xs text-gray-600 dark:text-gray-400">/Gün</span>
+                                                            @break
 
-                                                    @case('haftalik')
-                                                        <span class="text-xs text-gray-600 dark:text-gray-400">/Hafta</span>
-                                                    @break
+                                                            @case('haftalik')
+                                                                <span
+                                                                    class="text-xs text-gray-600 dark:text-gray-400">/Hafta</span>
+                                                            @break
 
-                                                    @case('aylik')
-                                                    @case('uzun_donem')
-                                                        <span class="text-xs text-gray-600 dark:text-gray-400">/Ay</span>
-                                                    @break
+                                                            @case('aylik')
+                                                            @case('uzun_donem')
+                                                                <span class="text-xs text-gray-600 dark:text-gray-400">/Ay</span>
+                                                            @break
 
-                                                    @case('sezonluk')
-                                                        <span class="text-xs text-gray-600 dark:text-gray-400">/Sezon</span>
-                                                    @break
-                                                @endswitch
-                                            @endif
+                                                            @case('sezonluk')
+                                                                <span
+                                                                    class="text-xs text-gray-600 dark:text-gray-400">/Sezon</span>
+                                                            @break
+                                                        @endswitch
+                                                    @endif
+                                                </div>
+
+                                                {{-- 🧠 TKGM AI Badge (Arsa/Tarla için) --}}
+                                                @if ($ilan->altKategori && in_array(strtolower($ilan->altKategori->name ?? ''), ['arsa', 'tarla']))
+                                                    @php
+                                                        // Basit AI tahmin simülasyonu (gerçekte API'den gelecek)
+$aiEstimate = $ilan->fiyat * 0.95; // %5 daha uygun fiyat
+$marketStatus = 'normal'; // 'low', 'normal', 'high'
+
+if ($ilan->fiyat > 0) {
+    $diff = (($ilan->fiyat - $aiEstimate) / $aiEstimate) * 100;
+
+    if ($diff > 10) {
+        $marketStatus = 'high';
+    } elseif ($diff < -5) {
+        $marketStatus = 'low';
+                                                            }
+                                                        }
+                                                    @endphp
+                                                    <div
+                                                        class="inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium transition-all duration-200
+                                                        {{ $marketStatus === 'low' ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400' : '' }}
+                                                        {{ $marketStatus === 'normal' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400' : '' }}
+                                                        {{ $marketStatus === 'high' ? 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400' : '' }}">
+                                                        <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                                                            <path
+                                                                d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z">
+                                                            </path>
+                                                        </svg>
+                                                        <span>AI:</span>
+                                                        @if ($marketStatus === 'low')
+                                                            <span>Fırsat</span>
+                                                        @elseif($marketStatus === 'high')
+                                                            <span>Piyasa Üstü</span>
+                                                        @else
+                                                            <span>Uygun Fiyat</span>
+                                                        @endif
+                                                    </div>
+                                                @endif
+                                            </div>
                                         </td>
                                         <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">
                                             @if ($ilan->userDanisman)
@@ -595,29 +716,141 @@
                                             {{ $ilan->updated_at?->format('d.m.Y H:i') ?? '-' }}
                                         </td>
                                         <td class="px-6 py-4">
-                                            <div class="flex items-center gap-3">
-                                                <a href="{{ route('admin.ilanlar.show', $ilan->id) }}"
-                                                    class="text-blue-600 hover:text-blue-900 dark:text-blue-400"
-                                                    title="Görüntüle">
-                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor"
-                                                        viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                                            stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                                            stroke-width="2"
-                                                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                                    </svg>
-                                                </a>
-                                                <a href="{{ route('admin.ilanlar.edit', $ilan->id) }}"
-                                                    class="text-yellow-600 hover:text-yellow-900 dark:text-yellow-400"
-                                                    title="Düzenle">
-                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor"
-                                                        viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                                            stroke-width="2"
-                                                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                                    </svg>
-                                                </a>
+                                            {{-- 🚀 Quick Actions (Sahibinden tarzı) --}}
+                                            <div x-data="{ open: false }" @click.outside="open = false" class="relative">
+                                                <div class="flex items-center gap-2">
+                                                    <a href="{{ route('admin.ilanlar.show', $ilan->id) }}"
+                                                        class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-lg
+                                                            bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400
+                                                            hover:bg-blue-200 dark:hover:bg-blue-900/50
+                                                            transition-all duration-200 hover:scale-105"
+                                                        title="Görüntüle">
+                                                        <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor"
+                                                            viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                stroke-width="2"
+                                                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                                        </svg>
+                                                        Görüntüle
+                                                    </a>
+
+                                                    <a href="{{ route('admin.ilanlar.edit', $ilan->id) }}"
+                                                        class="inline-flex items-center px-3 py-1.5 text-xs font-semibold rounded-lg
+                                                            bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400
+                                                            hover:bg-green-200 dark:hover:bg-green-900/50
+                                                            transition-all duration-200 hover:scale-105"
+                                                        title="Düzenle">
+                                                        <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor"
+                                                            viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                stroke-width="2"
+                                                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                                        </svg>
+                                                        Düzenle
+                                                    </a>
+
+                                                    <button @click="open = !open" type="button"
+                                                        class="inline-flex items-center p-2 text-gray-600 dark:text-gray-300
+                                                            bg-gray-100 dark:bg-gray-800 rounded-lg
+                                                            hover:bg-gray-200 dark:hover:bg-gray-700
+                                                            transition-all duration-200 hover:scale-105"
+                                                        title="Daha Fazla">
+                                                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                                            <path
+                                                                d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
+                                                        </svg>
+                                                    </button>
+                                                </div>
+
+                                                <div x-show="open" x-transition
+                                                    class="absolute right-0 z-50 mt-2 w-60 rounded-lg shadow-xl
+                                                        bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700
+                                                        divide-y divide-gray-100 dark:divide-gray-700">
+
+                                                    <div class="py-1">
+                                                        <button type="button"
+                                                            class="w-full text-left px-4 py-2.5 text-sm font-semibold
+                                                                text-red-600 dark:text-red-400
+                                                                hover:bg-red-50 dark:hover:bg-red-900/20
+                                                                flex items-center gap-3 transition-colors">
+                                                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                                                <path
+                                                                    d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" />
+                                                            </svg>
+                                                            <div>
+                                                                <div>İlanı Turbola</div>
+                                                                <div class="text-xs text-gray-500 dark:text-gray-400">Öne
+                                                                    çıkar</div>
+                                                            </div>
+                                                        </button>
+
+                                                        <button type="button"
+                                                            class="w-full text-left px-4 py-2.5 text-sm font-semibold
+                                                                text-indigo-600 dark:text-indigo-400
+                                                                hover:bg-indigo-50 dark:hover:bg-indigo-900/20
+                                                                flex items-center gap-3 transition-colors">
+                                                            <svg class="w-5 h-5" fill="none" stroke="currentColor"
+                                                                viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                                    stroke-width="2"
+                                                                    d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                                                            </svg>
+                                                            <div>
+                                                                <div>Paylaş Kazan</div>
+                                                                <div class="text-xs text-gray-500 dark:text-gray-400">
+                                                                    Sosyal medyada paylaş</div>
+                                                            </div>
+                                                        </button>
+                                                    </div>
+
+                                                    <div class="py-1">
+                                                        <a href="{{ route('admin.ilanlar.show', $ilan->id) }}"
+                                                            class="w-full text-left px-4 py-2 text-sm
+                                                                text-gray-700 dark:text-gray-200
+                                                                hover:bg-gray-50 dark:hover:bg-gray-700
+                                                                flex items-center gap-3 transition-colors">
+                                                            <svg class="w-5 h-5" fill="none" stroke="currentColor"
+                                                                viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                                    stroke-width="2"
+                                                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                                            </svg>
+                                                            İstatistikler
+                                                        </a>
+
+                                                        <a href="{{ route('admin.ilanlar.edit', $ilan->id) }}"
+                                                            class="w-full text-left px-4 py-2 text-sm
+                                                                text-gray-700 dark:text-gray-200
+                                                                hover:bg-gray-50 dark:hover:bg-gray-700
+                                                                flex items-center gap-3 transition-colors">
+                                                            <svg class="w-5 h-5" fill="none" stroke="currentColor"
+                                                                viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                                    stroke-width="2"
+                                                                    d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+                                                            </svg>
+                                                            Gelişmiş Ayarlar
+                                                        </a>
+                                                    </div>
+
+                                                    <div class="py-1">
+                                                        <button type="button"
+                                                            class="w-full text-left px-4 py-2 text-sm font-semibold
+                                                                text-red-600 dark:text-red-400
+                                                                hover:bg-red-50 dark:hover:bg-red-900/20
+                                                                flex items-center gap-3 transition-colors">
+                                                            <svg class="w-5 h-5" fill="none" stroke="currentColor"
+                                                                viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                                    stroke-width="2"
+                                                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                            </svg>
+                                                            İlanı Sil
+                                                        </button>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </td>
                                     </tr>

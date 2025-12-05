@@ -4,6 +4,7 @@
 - Yönetim rotaları panel düzeyinde kimlik ve yetki kontrolü ile korunuyor (`routes/admin.php:17`).
 - İlan modülünde hassas aksiyonlar için yetki denetimleri rota seviyesinde güçlendirildi.
 - Listeleme ve filtre uçlarında dinamik `per_page` desteği eklendi (20/50/100).
+- Public AI özellik route’ları `web` ve `ai.rate.limit` ile sınırlandı; draft ve status/bulk uçlarına throttling getirildi.
 
 ## Mimari ve Rotalar
 - Ana admin grubu: `routes/admin.php:17` → `web + auth + verified + can:view-admin-panel`.
@@ -41,9 +42,9 @@
 ## Yapılan İyileştirmeler
 1. Hassas ilan aksiyonlarına yetki middleware eklendi (owner-private, portal-ids, status, bulk).
 2. `per_page` desteği index ve filter uçlarına eklendi; UI ile senkron.
+3. Public AI route’ları rate limit altına alındı; legacy draft ve status/bulk uçlarında `throttle` eklendi.
 
 ## Sonraki Adımlar
 - İndeks migration’ları: yoğun filtrelenen alanlara tekil/composite indeks.
 - Kolon görünürlüğü ve sıralama seçenekleri (UI/UX geliştirme).
 - Büyük toplu işlemler için queue ve ilerleme izleme.
-

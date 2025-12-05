@@ -28,12 +28,13 @@ return [
     |--------------------------------------------------------------------------
     */
     'location' => [
-        'provinces' => '/api/location/iller',
-        'districts' => '/api/location/districts/{id}',
-        'neighborhoods' => '/api/location/neighborhoods/{id}',
-        'geocode' => '/api/location/geocode',
-        'reverse_geocode' => '/api/location/reverse-geocode',
-        'nearby' => '/api/location/nearby/{lat}/{lng}/{radius?}',
+        'provinces' => '/api/v1/location/provinces',
+        'districts' => '/api/v1/location/districts/{id}',
+        'neighborhoods' => '/api/v1/location/neighborhoods/{id}',
+        'neighborhood_coordinates' => '/api/v1/location/neighborhood/{id}/coordinates',
+        'geocode' => '/api/v1/location/geocode',
+        'reverse_geocode' => '/api/v1/location/reverse-geocode',
+        'nearby' => '/api/v1/location/nearby/{lat}/{lng}/{radius?}',
     ],
 
     /*
@@ -42,10 +43,10 @@ return [
     |--------------------------------------------------------------------------
     */
     'categories' => [
-        'subcategories' => '/api/categories/sub/{parentId}',
-        'publication_types' => '/api/categories/publication-types/{categoryId}',
-        'fields' => '/api/categories/fields/{categoryId}/{publicationTypeId?}',
-        'detail' => '/api/categories/{id}',
+        'subcategories' => '/api/v1/categories/sub/{parentId}',
+        'publication_types' => '/api/v1/categories/publication-types/{categoryId}',
+        'fields' => '/api/v1/categories/fields/{categoryId}/{publicationTypeId?}',
+        'detail' => '/api/v1/categories/{id}',
     ],
 
     /*
@@ -54,10 +55,10 @@ return [
     |--------------------------------------------------------------------------
     */
     'live_search' => [
-        'kisiler' => '/api/kisiler/search',
-        'danismanlar' => '/api/users/search',
-        'sites' => '/api/sites/search',
-        'unified' => '/api/search/unified',
+        'kisiler' => '/api/v1/kisiler/search',
+        'danismanlar' => '/api/v1/users/search',
+        'sites' => '/api/v1/sites/search',
+        'unified' => '/api/v1/search/unified',
     ],
 
     /*
@@ -66,9 +67,9 @@ return [
     |--------------------------------------------------------------------------
     */
     'tkgm' => [
-        'parsel_sorgu' => '/api/tkgm/parsel-sorgu',
-        'yatirim_analizi' => '/api/tkgm/yatirim-analizi',
-        'health' => '/api/tkgm/health',
+        'parsel_sorgu' => '/api/v1/tkgm/parsel-sorgu',
+        'yatirim_analizi' => '/api/v1/tkgm/yatirim-analizi',
+        'health' => '/api/v1/tkgm/health',
     ],
 
     /*
@@ -77,8 +78,8 @@ return [
     |--------------------------------------------------------------------------
     */
     'properties' => [
-        'tkgm_lookup' => '/api/properties/tkgm-lookup',
-        'calculate' => '/api/properties/calculate',
+        'tkgm_lookup' => '/api/v1/properties/tkgm-lookup',
+        'calculate' => '/api/v1/properties/calculate',
     ],
 
     /*
@@ -87,10 +88,10 @@ return [
     |--------------------------------------------------------------------------
     */
     'environment' => [
-        'analyze' => '/api/environment/analyze',
-        'category' => '/api/environment/category/{category}',
-        'value_prediction' => '/api/environment/value-prediction',
-        'pois' => '/api/environment/pois',
+        'analyze' => '/api/v1/environment/analyze',
+        'category' => '/api/v1/environment/category/{category}',
+        'value_prediction' => '/api/v1/environment/value-prediction',
+        'pois' => '/api/v1/environment/pois',
     ],
 
     /*
@@ -99,12 +100,12 @@ return [
     |--------------------------------------------------------------------------
     */
     'ai' => [
-        'analyze' => '/api/ai/analyze',
-        'suggest' => '/api/ai/suggest',
-        'generate' => '/api/ai/generate',
-        'health' => '/api/ai/health',
-        'start_video_render' => '/api/ai/start-video-render/{ilanId}',
-        'video_status' => '/api/ai/video-status/{ilanId}',
+        'analyze' => '/api/v1/ai/analyze',
+        'suggest' => '/api/v1/ai/suggest',
+        'generate' => '/api/v1/ai/generate',
+        'health' => '/api/v1/ai/health',
+        'start_video_render' => '/api/v1/ai/start-video-render/{ilanId}',
+        'video_status' => '/api/v1/ai/video-status/{ilanId}',
     ],
 
     /*
@@ -128,6 +129,18 @@ return [
         'analyze' => '/api/admin/cortex/analyze/{id}',
         'video' => '/api/admin/cortex/video/{id}',
         'photos' => '/api/admin/cortex/photos/{id}',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Market Analysis API (TKGM Learning Engine)
+    |--------------------------------------------------------------------------
+    */
+    'market_analysis' => [
+        'predict_price' => '/api/v1/market-analysis/predict-price',
+        'analysis' => '/api/v1/market-analysis/{il_id}/{ilce_id?}',
+        'hotspots' => '/api/v1/market-analysis/hotspots/{il_id}',
+        'stats' => '/api/v1/market-analysis/stats',
     ],
 
     /*
