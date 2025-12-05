@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Route;
 
 // (Legacy) Wizard test routes kaldırıldı
 
-Route::middleware(['web'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['web', 'auth', 'verified', 'can:view-admin-panel'])->prefix('admin')->name('admin.')->group(function () {
     // AI Command Center Dashboard routes moved to routes/ai-advanced.php
     // (Keeping admin.ai prefix group for backward compatibility if needed)
 
@@ -235,8 +235,8 @@ Route::middleware(['web'])->prefix('admin')->name('admin.')->group(function () {
     Route::resource('/ilanlar', \App\Http\Controllers\Admin\IlanController::class)->parameters(['ilanlar' => 'ilan']);
 
     // ✅ Mahrem Bilgiler ve Portal ID Yönetimi (Resource dışı özel route'lar)
-    Route::post('/ilanlar/{ilan}/owner-private', [\App\Http\Controllers\Admin\IlanController::class, 'ownerPrivate'])->name('ilanlar.owner-private');
-    Route::post('/ilanlar/{ilan}/portal-ids', [\App\Http\Controllers\Admin\IlanController::class, 'updatePortalIds'])->name('ilanlar.portal-ids');
+    Route::post('/ilanlar/{ilan}/owner-private', [\App\Http\Controllers\Admin\IlanController::class, 'ownerPrivate'])->name('ilanlar.owner-private')->middleware('can:viewPrivateListingData,ilan');
+    Route::post('/ilanlar/{ilan}/portal-ids', [\App\Http\Controllers\Admin\IlanController::class, 'updatePortalIds'])->name('ilanlar.portal-ids')->middleware('can:edit-ilanlar');
 
     // Test route for category cascading
     // DEPRECATED: Test route removed (kategori sistemi production'da test edildi)
@@ -271,7 +271,7 @@ Route::middleware(['web'])->prefix('admin')->name('admin.')->group(function () {
         Route::get('/search', [\App\Http\Controllers\Admin\IlanController::class, 'search'])->name('search');
         Route::get('/filter', [\App\Http\Controllers\Admin\IlanController::class, 'filter'])->name('filter');
         Route::post('/bulk-action', [\App\Http\Controllers\Admin\IlanController::class, 'bulkAction'])->name('bulk.action');
-        Route::post('/{ilan}/toggle-status', [\App\Http\Controllers\Admin\IlanController::class, 'toggleStatus'])->name('toggle.status');
+        Route::post('/{ilan}/toggle-status', [\App\Http\Controllers\Admin\IlanController::class, 'toggleStatus'])->name('toggle.status')->middleware('can:edit-ilanlar');
 
         // Segment-based workflow routes
         Route::prefix('/segments')->name('segments.')->group(function () {
@@ -308,9 +308,9 @@ Route::middleware(['web'])->prefix('admin')->name('admin.')->group(function () {
         // Legacy Routes
         Route::post('/save-draft', [\App\Http\Controllers\Admin\IlanController::class, 'saveDraft'])->name('save-draft');
         Route::post('/auto-save', [\App\Http\Controllers\Admin\IlanController::class, 'autoSave'])->name('auto-save');
-        Route::post('/{ilan}/update-status', [\App\Http\Controllers\Admin\IlanController::class, 'updateStatus'])->name('update-status');
-        Route::post('/bulk-update', [\App\Http\Controllers\Admin\IlanController::class, 'bulkUpdate'])->name('bulk-update');
-        Route::post('/bulk-delete', [\App\Http\Controllers\Admin\IlanController::class, 'bulkDelete'])->name('bulk-delete');
+        Route::post('/{ilan}/update-status', [\App\Http\Controllers\Admin\IlanController::class, 'updateStatus'])->name('update-status')->middleware('can:edit-ilanlar');
+        Route::post('/bulk-update', [\App\Http\Controllers\Admin\IlanController::class, 'bulkUpdate'])->name('bulk-update')->middleware('can:manage-ilanlar');
+        Route::post('/bulk-delete', [\App\Http\Controllers\Admin\IlanController::class, 'bulkDelete'])->name('bulk-delete')->middleware('can:manage-ilanlar');
         Route::get('/live-search', [\App\Http\Controllers\Admin\IlanController::class, 'liveSearch'])->name('live-search');
         Route::post('/generate-ai-title', [\App\Http\Controllers\Admin\IlanController::class, 'generateAiTitle'])->name('generate-ai-title');
         Route::post('/generate-ai-description', [\App\Http\Controllers\Admin\IlanController::class, 'generateAiDescription'])->name('generate-ai-description');

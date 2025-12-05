@@ -2,6 +2,7 @@
 
 namespace App\Services\Integrations;
 
+use App\Services\Intelligence\TKGMLearningService;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
@@ -33,11 +34,17 @@ class TKGMService
     protected TKGMAgent $agent;
 
     /**
+     * Learning Engine instance
+     */
+    protected TKGMLearningService $learningEngine;
+
+    /**
      * Constructor - Dependency Injection
      */
-    public function __construct(TKGMAgent $agent)
+    public function __construct(TKGMAgent $agent, TKGMLearningService $learningEngine)
     {
         $this->agent = $agent;
+        $this->learningEngine = $learningEngine;
     }
 
     /**
@@ -100,6 +107,9 @@ class TKGMService
 
             // Store as stale backup (30 days)
             Cache::put($staleCacheKey, $parsedData, 30 * 24 * 60 * 60);
+
+            // 🧠 LEARNING ENGINE: Kaydet ve öğren
+            $this->learnFromQuery($parsedData, $lat, $lon);
 
             return $parsedData;
         } catch (\Exception $e) {
@@ -389,7 +399,7 @@ class TKGMService
 
         // Yeni formatı eski formata çevir
         $data = $result['data'] ?? [];
-        
+
         return [
             'success' => true,
             'message' => 'Parsel sorgulama başarılı',
@@ -572,5 +582,69 @@ class TKGMService
         } else {
             return 'Uzun vadeli yatırım (5+ yıl)';
         }
+    }
+
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    // 🧠 LEARNING ENGINE ENTEGRASYONU
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+    /**
+     * TKGM sorgusunu Learning Engine'e kaydet
+     *
+     * @param array $parsedData TKGM verisi
+     * @param float $lat Enlem
+     * @param float $lon Boylam
+     * @return void
+     */
+    protected function learnFromQuery(array $parsedData, float $lat, float $lon): void
+    {
+        try {
+            // İl/İlçe bilgisini bul (Nominatim'den gelebilir)
+            $locationData = $this->getLocationFromCoordinates($lat, $lon);
+
+            $context = [
+                'il_id' => $locationData['il_id'] ?? null,
+                'ilce_id' => $locationData['ilce_id'] ?? null,
+                'mahalle_id' => $locationData['mahalle_id'] ?? null,
+                'source' => 'tkgm_service',
+                'user_id' => auth()->id(),
+            ];
+
+            // Learning Engine'e kaydet
+            $this->learningEngine->learn($parsedData, $context);
+        } catch (\Exception $e) {
+            // Learning engine hatası ana akışı etkilememeli
+            Log::warning('Learning Engine error (non-critical)', [
+                'error' => $e->getMessage(),
+                'lat' => $lat,
+                'lon' => $lon,
+            ]);
+        }
+    }
+
+    /**
+     * Koordinatlardan İl/İlçe bilgisi al (Nominatim API)
+     *
+     * @param float $lat
+     * @param float $lon
+     * @return array
+     */
+    protected function getLocationFromCoordinates(float $lat, float $lon): array
+    {
+        $cacheKey = "nominatim_location_{$lat}_{$lon}";
+
+        return Cache::remember($cacheKey, 86400, function () use ($lat, $lon) {
+            // Nominatim API çağrısı (mevcut implementasyon varsa kullan)
+            // Yoksa basit DB lookup yap
+
+            // TODO: Nominatim entegrasyonu veya DB'den en yakın il/ilçe bulma
+            // Şimdilik null döndür, sonra implement edilecek
+
+            return [
+                'il_id' => null,
+                'ilce_id' => null,
+                'mahalle_id' => null,
+            ];
+        });
     }
 }

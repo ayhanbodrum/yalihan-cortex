@@ -284,7 +284,11 @@ class IlanController extends AdminController
 
         // Paginate FIRST (efficient: only loads needed rows)
         // ✅ Eager loading already applied with with() above
-        $ilanlar = $query->paginate(20);
+        $perPage = (int) $request->get('per_page', 20);
+        if (! in_array($perPage, [20, 50, 100], true)) {
+            $perPage = 20;
+        }
+        $ilanlar = $query->paginate($perPage);
 
         // ⚡ CACHE: Statistics (5 min cache)
         // ✅ STANDARDIZED: Using CacheHelper
@@ -1450,7 +1454,11 @@ class IlanController extends AdminController
         $query->sort($request->sort_by, $request->sort_order ?? 'desc', 'updated_at');
 
         /** @var \Illuminate\Pagination\LengthAwarePaginator $ilanlar */
-        $ilanlar = $query->paginate(20);
+        $perPage = (int) $request->get('per_page', 20);
+        if (! in_array($perPage, [20, 50, 100], true)) {
+            $perPage = 20;
+        }
+        $ilanlar = $query->paginate($perPage);
 
         if ($request->ajax()) {
             // Context7: Responsive - Return both table and card views

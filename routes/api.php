@@ -31,6 +31,7 @@ Route::prefix('v1')->group(function () {
     require __DIR__ . '/api/v1/frontend.php';
     require __DIR__ . '/api/v1/admin.php';
     require __DIR__ . '/api/v1/ai.php';
+    require __DIR__ . '/api/v1/market-analysis.php'; // 🧠 TKGM Learning Engine
     require __DIR__ . '/api/v1/common.php';
 });
 
@@ -61,4 +62,3 @@ Route::prefix('v1')->group(function () {
 | ✅ Clear documentation
 |
 */
-
